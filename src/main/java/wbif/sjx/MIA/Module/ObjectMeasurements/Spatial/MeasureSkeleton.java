@@ -13,9 +13,9 @@ import sc.fiji.analyzeSkeleton.Graph;
 import sc.fiji.analyzeSkeleton.Point;
 import sc.fiji.analyzeSkeleton.SkeletonResult;
 import sc.fiji.analyzeSkeleton.Vertex;
-import wbif.sjx.MIA.Module.Hidden.InputControl;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
+import wbif.sjx.MIA.Module.Core.InputControl;
 import wbif.sjx.MIA.Module.Category;
 import wbif.sjx.MIA.Module.Categories;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.InvertIntensity;
@@ -27,7 +27,7 @@ import wbif.sjx.MIA.Object.Measurement;
 import wbif.sjx.MIA.Object.Obj;
 import wbif.sjx.MIA.Object.ObjCollection;
 import wbif.sjx.MIA.Object.Status;
-import wbif.sjx.MIA.Object.Units;
+import wbif.sjx.MIA.Object.Units.SpatialUnit;
 import wbif.sjx.MIA.Object.VolumeTypesInterface;
 import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.MIA.Object.Parameters.BooleanP;
@@ -66,7 +66,7 @@ public class MeasureSkeleton extends Module {
 
     public interface Measurements {
         String edgeLengthPx = "SKELETON // LENGTH_(PX)";
-        String edgeLengthCal = "SKELETON // LENGTH_(${CAL})";
+        String edgeLengthCal = "SKELETON // LENGTH_(${SCAL})";
 
     }
 
@@ -122,7 +122,7 @@ public class MeasureSkeleton extends Module {
                 double calLength = edge.getLength();
                 Measurement lengthPx = new Measurement(Measurements.edgeLengthPx, calLength / dppXY);
                 edgeObj.addMeasurement(lengthPx);
-                Measurement lengthCal = new Measurement(Units.replace(Measurements.edgeLengthCal), calLength);
+                Measurement lengthCal = new Measurement(Measurements.edgeLengthCal, calLength);
                 edgeObj.addMeasurement(lengthCal);
 
             }
@@ -396,7 +396,7 @@ public class MeasureSkeleton extends Module {
         parameters.add(new OutputSkeletonObjectsP(OUTPUT_LOOP_OBJECTS, this));
         parameters.add(new SeparatorP(ANALYSIS_SEPARATOR, this));
         parameters.add(new DoubleP(MINIMUM_BRANCH_LENGTH, this, 0d));
-        parameters.add(new BooleanP(CALIBRATED_UNITS, this, false,"When selected, spatial values are assumed to be specified in calibrated units (as defined by the \"" + new InputControl(null).getName() + "\" parameter \"" + InputControl.SPATIAL_UNITS + "\").  Otherwise, pixel units are assumed."
+        parameters.add(new BooleanP(CALIBRATED_UNITS, this, false,"When selected, spatial values are assumed to be specified in calibrated units (as defined by the \"" + new InputControl(null).getName() + "\" parameter \"" + InputControl.SPATIAL_UNIT + "\").  Otherwise, pixel units are assumed."
 ));
         parameters.add(new SeparatorP(EXECUTION_SEPARATOR, this));
         parameters.add(new BooleanP(ENABLE_MULTITHREADING, this, true));
@@ -448,7 +448,7 @@ public class MeasureSkeleton extends Module {
         ObjMeasurementRef ref = objectMeasurementRefs.getOrPut(Measurements.edgeLengthPx);
         ref.setObjectsName(edgeObjectsName);
         returnedRefs.add(ref);
-        ref = objectMeasurementRefs.getOrPut(Units.replace(Measurements.edgeLengthCal));
+        ref = objectMeasurementRefs.getOrPut(Measurements.edgeLengthCal);
         ref.setObjectsName(edgeObjectsName);
         returnedRefs.add(ref);
 

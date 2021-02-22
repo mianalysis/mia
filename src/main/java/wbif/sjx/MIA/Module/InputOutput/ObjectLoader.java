@@ -17,14 +17,14 @@ import util.opencsv.CSVReader;
 import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
+import wbif.sjx.MIA.Module.Core.InputControl;
 import wbif.sjx.MIA.Module.Category;
 import wbif.sjx.MIA.Module.Categories;
-import wbif.sjx.MIA.Module.Hidden.InputControl;
 import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.Obj;
 import wbif.sjx.MIA.Object.ObjCollection;
 import wbif.sjx.MIA.Object.Status;
-import wbif.sjx.MIA.Object.Units;
+import wbif.sjx.MIA.Object.Units.SpatialUnit;
 import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.MIA.Object.Parameters.BooleanP;
 import wbif.sjx.MIA.Object.Parameters.ChoiceP;
@@ -405,7 +405,7 @@ public class ObjectLoader extends Module {
         }
         if (cal == null) return Status.FAIL;
 
-        String units = Units.getOMEUnits().getSymbol();
+        String units = SpatialUnit.getOMEUnit().getSymbol();
         SpatCal calibration = new SpatCal(cal[0],cal[1],units,limits[0],limits[1],limits[2]);
 
         // Creating output objects

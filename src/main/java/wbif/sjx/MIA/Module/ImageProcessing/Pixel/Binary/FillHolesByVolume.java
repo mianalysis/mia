@@ -16,9 +16,9 @@ import ij.process.ImageProcessor;
 import inra.ijpb.binary.conncomp.FloodFillComponentsLabeling3D;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
+import wbif.sjx.MIA.Module.Core.InputControl;
 import wbif.sjx.MIA.Module.Category;
 import wbif.sjx.MIA.Module.Categories;
-import wbif.sjx.MIA.Module.Hidden.InputControl;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.InvertIntensity;
 import wbif.sjx.MIA.Module.ImageProcessing.Stack.ImageTypeConverter;
 import wbif.sjx.MIA.Module.ObjectProcessing.Identification.IdentifyObjects;
@@ -390,7 +390,7 @@ public class FillHolesByVolume extends Module {
 
       parameters.get(MAXIMUM_VOLUME).setDescription("");
 
-      parameters.get(CALIBRATED_UNITS).setDescription("When selected, hole size limits are assumed to be specified in calibrated units (as defined by the \""+new InputControl(null).getName()+"\" parameter \""+InputControl.SPATIAL_UNITS+"\").  Otherwise, pixel units are assumed.");
+      parameters.get(CALIBRATED_UNITS).setDescription("When selected, hole size limits are assumed to be specified in calibrated units (as defined by the \""+new InputControl(null).getName()+"\" parameter \""+InputControl.SPATIAL_UNIT+"\").  Otherwise, pixel units are assumed.");
 
       parameters.get(ENABLE_MULTITHREADING).setDescription("Break the image down into strips, each one processed on a separate CPU thread.  The overhead required to do this means it's best for large multi-core CPUs, but should be left disabled for small images or on CPUs with few cores.");
 

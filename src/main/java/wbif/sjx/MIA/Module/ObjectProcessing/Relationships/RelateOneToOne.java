@@ -100,9 +100,9 @@ import com.drew.lang.annotations.Nullable;
 
 import fiji.plugin.trackmate.tracking.sparselap.costmatrix.DefaultCostMatrixCreator;
 import fiji.plugin.trackmate.tracking.sparselap.linker.JaqamanLinker;
-import wbif.sjx.MIA.Module.Hidden.InputControl;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
+import wbif.sjx.MIA.Module.Core.InputControl;
 import wbif.sjx.MIA.Module.Category;
 import wbif.sjx.MIA.Module.Categories;
 import wbif.sjx.MIA.Module.Deprecated.ResolveCoOccurrence;
@@ -582,7 +582,7 @@ public class RelateOneToOne extends Module {
 
         parameters.get(CALIBRATED_UNITS).setDescription(
                 "When selected, spatial values are assumed to be specified in calibrated units (as defined by the \""
-                        + new InputControl(null).getName() + "\" parameter \"" + InputControl.SPATIAL_UNITS
+                        + new InputControl(null).getName() + "\" parameter \"" + InputControl.SPATIAL_UNIT
                         + "\").  Otherwise, pixel units are assumed.");
 
         parameters.get(MINIMUM_OVERLAP_PC_1).setDescription("If \"" + RELATIONSHIP_MODE + "\" is set to \""

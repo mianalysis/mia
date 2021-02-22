@@ -3,9 +3,9 @@ package wbif.sjx.MIA.Module.ObjectProcessing.Refinement;
 import java.util.Iterator;
 
 import ij.Prefs;
-import wbif.sjx.MIA.Module.Hidden.InputControl;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
+import wbif.sjx.MIA.Module.Core.InputControl;
 import wbif.sjx.MIA.Module.Category;
 import wbif.sjx.MIA.Module.Categories;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.InvertIntensity;
@@ -357,7 +357,7 @@ public class ExpandShrinkObjects extends Module {
 
         parameters.get(RADIUS_CHANGE).setDescription("Distance from the object boundary to test for potential inclusion or removal of coordinates.  When expanding, any non-object coordinates within this distance of the object are included in the object.  While shrinking, any object coordinates within this distance of the object boundary are removed from the object.  This value is assumed specified in pixel coordinates unless \""+CALIBRATED_UNITS+"\" is selected.");
 
-        parameters.get(CALIBRATED_UNITS).setDescription("When selected, \""+RADIUS_CHANGE+"\" is assumed to be specified in calibrated units (as defined by the \""+new InputControl(null).getName()+"\" parameter \""+InputControl.SPATIAL_UNITS+"\").  Otherwise, pixel units are assumed.");
+        parameters.get(CALIBRATED_UNITS).setDescription("When selected, \""+RADIUS_CHANGE+"\" is assumed to be specified in calibrated units (as defined by the \""+new InputControl(null).getName()+"\" parameter \""+InputControl.SPATIAL_UNIT+"\").  Otherwise, pixel units are assumed.");
 
     }
 }

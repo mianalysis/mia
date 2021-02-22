@@ -1,6 +1,7 @@
 package wbif.sjx.MIA.Object.References.Collections;
 
-import wbif.sjx.MIA.Object.Units;
+import wbif.sjx.MIA.Object.Units.SpatialUnit;
+import wbif.sjx.MIA.Object.Units.TemporalUnit;
 import wbif.sjx.MIA.Object.References.ObjMeasurementRef;
 
 import java.util.TreeMap;
@@ -20,8 +21,9 @@ public class ObjMeasurementRefCollection extends TreeMap<String,ObjMeasurementRe
     }
 
     public ObjMeasurementRef getOrPut(String key) {
-        // Stripping placeholder for units
-        key = Units.replace(key);
+        // Stripping placeholders for units
+        key = SpatialUnit.replace(key);
+        key = TemporalUnit.replace(key);
 
         putIfAbsent((String) key,new ObjMeasurementRef((String) key));
 

@@ -7,9 +7,9 @@ package wbif.sjx.MIA.Module.ObjectProcessing.Identification;
 import de.biomedical_imaging.ij.steger.*;
 import ij.ImagePlus;
 import ij.measure.Calibration;
-import wbif.sjx.MIA.Module.Hidden.InputControl;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
+import wbif.sjx.MIA.Module.Core.InputControl;
 import wbif.sjx.MIA.Module.Category;
 import wbif.sjx.MIA.Module.Categories;
 import wbif.sjx.MIA.Object.*;
@@ -23,6 +23,7 @@ import wbif.sjx.MIA.Object.References.Collections.MetadataRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.ObjMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.ParentChildRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.PartnerRefCollection;
+import wbif.sjx.MIA.Object.Units.SpatialUnit;
 import wbif.sjx.common.MathFunc.CumStat;
 import wbif.sjx.common.Object.Volume.PointOutOfRangeException;
 import wbif.sjx.common.Object.Volume.SpatCal;
@@ -74,11 +75,11 @@ public class RidgeDetection extends Module {
 
     private interface Measurements {
         String LENGTH_PX = "RIDGE_DETECT // LENGTH_(PX)";
-        String LENGTH_CAL = "RIDGE_DETECT // LENGTH_(${CAL})";
+        String LENGTH_CAL = "RIDGE_DETECT // LENGTH_(${SCAL})";
         String MEAN_HALFWIDTH_PX = "RIDGE_DETECT // MEAN_HALFWIDTH_(PX)";
         String STDEV_HALFWIDTH_PX = "RIDGE_DETECT // STDEV_HALFWIDTH_(PX)";
-        String MEAN_HALFWIDTH_CAL = "RIDGE_DETECT // MEAN_HALFWIDTH_(${CAL})";
-        String STDEV_HALFWIDTH_CAL = "RIDGE_DETECT // STDEV_HALFWIDTH_(${CAL})";
+        String MEAN_HALFWIDTH_CAL = "RIDGE_DETECT // MEAN_HALFWIDTH_(${SCAL})";
+        String STDEV_HALFWIDTH_CAL = "RIDGE_DETECT // STDEV_HALFWIDTH_(${SCAL})";
     }
 
     private interface ContourContrast {
@@ -467,7 +468,7 @@ public class RidgeDetection extends Module {
         reference = objectMeasurementRefs.getOrPut(Measurements.LENGTH_CAL);
         reference.setObjectsName(parameters.getValue(OUTPUT_OBJECTS));
         reference.setDescription("Length of detected, \""+outputObjectsName+"\" ridge object.  Measured in calibrated " +
-                "("+Units.getOMEUnits().getSymbol()+") units.");
+                "("+SpatialUnit.getOMEUnit().getSymbol()+") units.");
         returnedRefs.add(reference);
 
         if ((boolean) parameters.getValue(ESTIMATE_WIDTH)) {
@@ -488,14 +489,14 @@ public class RidgeDetection extends Module {
             reference.setObjectsName(parameters.getValue(OUTPUT_OBJECTS));
             reference.setDescription("Mean half width of detected, \""+outputObjectsName+"\" ridge object.  Half width" +
                     "is from the central (backbone) of the ridge to the edge.  Measured in calibrated " +
-                    "("+Units.getOMEUnits().getSymbol()+") units.");
+                    "("+SpatialUnit.getOMEUnit().getSymbol()+") units.");
             returnedRefs.add(reference);
 
             reference = objectMeasurementRefs.getOrPut(Measurements.STDEV_HALFWIDTH_CAL);
             reference.setObjectsName(parameters.getValue(OUTPUT_OBJECTS));
             reference.setDescription("Standard deviation of the half width of detected, \""+outputObjectsName+"\" " +
                     "ridge object.  Half width is from the central (backbone) of the ridge to the edge.  Measured in " +
-                    "calibrated ("+Units.getOMEUnits().getSymbol()+") units.");
+                    "calibrated ("+SpatialUnit.getOMEUnit().getSymbol()+") units.");
             returnedRefs.add(reference);
 
         }
@@ -538,7 +539,7 @@ public class RidgeDetection extends Module {
         parameters.get(SIGMA).setDescription("Sigma of the derivatives to be applied to the input image when detecting ridges.  This is related to the width of the lines to be detected and is greater than or equal to \"width/(2*sqrt(3))\".");
 
         parameters.get(CALIBRATED_UNITS).setDescription("When selected, spatial values are assumed to be specified in calibrated units (as defined by the \""
-                + new InputControl(null).getName() + "\" parameter \"" + InputControl.SPATIAL_UNITS
+                + new InputControl(null).getName() + "\" parameter \"" + InputControl.SPATIAL_UNIT
                 + "\").  Otherwise, pixel units are assumed.");
 
         parameters.get(EXTEND_LINE).setDescription("Lines are extended in an attempt to locate more junction points.");

@@ -5,8 +5,8 @@ import ij.measure.ResultsTable;
 import wbif.sjx.MIA.Macro.MacroOperation;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Object.Obj;
-import wbif.sjx.MIA.Object.Units;
 import wbif.sjx.MIA.Object.Workspace;
+import wbif.sjx.MIA.Object.Units.SpatialUnit;
 
 public class MIA_MeasureSingleObjectCentroid extends MacroOperation {
     public MIA_MeasureSingleObjectCentroid(MacroExtension theHandler) {
@@ -23,7 +23,7 @@ public class MIA_MeasureSingleObjectCentroid extends MacroOperation {
         String inputObjectsName = (String) objects[0];
         int inputObjectsID = (int) Math.round((Double) objects[1]);
 
-        String units = Units.getOMEUnits().getSymbol();
+        String units = SpatialUnit.getOMEUnit().getSymbol();
 
         Obj inputObject = workspace.getObjectSet(inputObjectsName).get(inputObjectsID);
 

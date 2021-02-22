@@ -17,7 +17,7 @@ import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleTest;
 import wbif.sjx.MIA.Object.Obj;
 import wbif.sjx.MIA.Object.ObjCollection;
-import wbif.sjx.MIA.Object.Units;
+import wbif.sjx.MIA.Object.Units.SpatialUnit;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.Object.Volume.VolumeType;
 
@@ -50,7 +50,7 @@ public class FitLongestChordTest extends ModuleTest {
         double expected = inputObj.getMeasurement(HorizontalCylinderR22.Measures.LC_LENGTH_PX.name()).getValue();
         assertEquals(expected,actual,tolerance);
 
-        actual = inputObj.getMeasurement(Units.replace(FitLongestChord.Measurements.LENGTH_CAL)).getValue();
+        actual = inputObj.getMeasurement(SpatialUnit.replace(FitLongestChord.Measurements.LENGTH_CAL)).getValue();
         expected = inputObj.getMeasurement(HorizontalCylinderR22.Measures.LC_LENGTH_CAL.name()).getValue();
         assertEquals(expected,actual,tolerance);
 
@@ -58,7 +58,7 @@ public class FitLongestChordTest extends ModuleTest {
         expected = inputObj.getMeasurement(HorizontalCylinderR22.Measures.MEAN_DIST_PX.name()).getValue();
         assertEquals(expected,actual,expected*0.2);
 
-        actual = inputObj.getMeasurement(Units.replace(FitLongestChord.Measurements.MEAN_SURF_DIST_CAL)).getValue();
+        actual = inputObj.getMeasurement(SpatialUnit.replace(FitLongestChord.Measurements.MEAN_SURF_DIST_CAL)).getValue();
         expected = inputObj.getMeasurement(HorizontalCylinderR22.Measures.MEAN_DIST_CAL.name()).getValue();
         assertEquals(expected,actual,expected*0.2);
 
@@ -66,7 +66,7 @@ public class FitLongestChordTest extends ModuleTest {
         expected = inputObj.getMeasurement(HorizontalCylinderR22.Measures.MAX_DIST_PX.name()).getValue();
         assertEquals(expected,actual,expected*0.1);
 
-        actual = inputObj.getMeasurement(Units.replace(FitLongestChord.Measurements.MAX_SURF_DIST_CAL)).getValue();
+        actual = inputObj.getMeasurement(SpatialUnit.replace(FitLongestChord.Measurements.MAX_SURF_DIST_CAL)).getValue();
         expected = inputObj.getMeasurement(HorizontalCylinderR22.Measures.MAX_DIST_CAL.name()).getValue();
         assertEquals(expected,actual,expected*0.1);
 
@@ -119,7 +119,7 @@ public class FitLongestChordTest extends ModuleTest {
         double expected = inputObj.getMeasurement(VerticalCylinderR5.Measures.LC_LENGTH_PX.name()).getValue();
         assertEquals(expected,actual,tolerance);
 
-        actual = inputObj.getMeasurement(Units.replace(FitLongestChord.Measurements.LENGTH_CAL)).getValue();
+        actual = inputObj.getMeasurement(SpatialUnit.replace(FitLongestChord.Measurements.LENGTH_CAL)).getValue();
         expected = inputObj.getMeasurement(VerticalCylinderR5.Measures.LC_LENGTH_CAL.name()).getValue();
         assertEquals(expected,actual,tolerance);
 
@@ -127,7 +127,7 @@ public class FitLongestChordTest extends ModuleTest {
         expected = inputObj.getMeasurement(VerticalCylinderR5.Measures.MEAN_DIST_PX.name()).getValue();
         assertEquals(expected,actual,expected*0.2);
 
-        actual = inputObj.getMeasurement(Units.replace(FitLongestChord.Measurements.MEAN_SURF_DIST_CAL)).getValue();
+        actual = inputObj.getMeasurement(SpatialUnit.replace(FitLongestChord.Measurements.MEAN_SURF_DIST_CAL)).getValue();
         expected = inputObj.getMeasurement(VerticalCylinderR5.Measures.MEAN_DIST_CAL.name()).getValue();
         assertEquals(expected,actual,expected*0.2);
 
@@ -135,7 +135,7 @@ public class FitLongestChordTest extends ModuleTest {
         expected = inputObj.getMeasurement(VerticalCylinderR5.Measures.MAX_DIST_PX.name()).getValue();
         assertEquals(expected,actual,expected*0.1);
 
-        actual = inputObj.getMeasurement(Units.replace(FitLongestChord.Measurements.MAX_SURF_DIST_CAL)).getValue();
+        actual = inputObj.getMeasurement(SpatialUnit.replace(FitLongestChord.Measurements.MAX_SURF_DIST_CAL)).getValue();
         expected = inputObj.getMeasurement(VerticalCylinderR5.Measures.MAX_DIST_CAL.name()).getValue();
         assertEquals(expected,actual,expected*0.1);
 

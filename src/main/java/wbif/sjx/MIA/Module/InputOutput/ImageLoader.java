@@ -37,21 +37,23 @@ import loci.plugins.util.ImageProcessorReader;
 import loci.plugins.util.LociPrefs;
 import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
+import ome.units.UNITS;
 import ome.units.quantity.Length;
+import ome.units.quantity.Time;
 import ome.units.unit.Unit;
 import ome.xml.meta.IMetadata;
 import ome.xml.model.primitives.Color;
 import wbif.sjx.MIA.MIA;
+import wbif.sjx.MIA.Module.Categories;
+import wbif.sjx.MIA.Module.Category;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
-import wbif.sjx.MIA.Module.Category;
-import wbif.sjx.MIA.Module.Categories;
-import wbif.sjx.MIA.Module.Hidden.InputControl;
-import wbif.sjx.MIA.Module.ImageProcessing.Stack.Convert3DStack;
+import wbif.sjx.MIA.Module.Core.InputControl;
+import wbif.sjx.MIA.Module.Core.InputControl.AvailableSpatialUnits;
+import wbif.sjx.MIA.Module.Core.InputControl.AvailableTemporalUnits;
 import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.Measurement;
 import wbif.sjx.MIA.Object.Status;
-import wbif.sjx.MIA.Object.Units;
 import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.MIA.Object.Parameters.BooleanP;
 import wbif.sjx.MIA.Object.Parameters.ChoiceP;
@@ -69,6 +71,8 @@ import wbif.sjx.MIA.Object.References.Collections.MetadataRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.ObjMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.ParentChildRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.PartnerRefCollection;
+import wbif.sjx.MIA.Object.Units.SpatialUnit;
+import wbif.sjx.MIA.Object.Units.TemporalUnit;
 import wbif.sjx.MIA.Process.CommaSeparatedStringInterpreter;
 import wbif.sjx.common.MetadataExtractors.CV7000FilenameExtractor;
 import wbif.sjx.common.MetadataExtractors.IncuCyteShortFilenameExtractor;
@@ -112,9 +116,11 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
     public static final String SCALE_FACTOR_Y = "Y scale factor";
 
     public static final String CALIBRATION_SEPARATOR = "Spatial and intensity calibration";
-    public static final String SET_CAL = "Set manual spatial calibration";
+    public static final String SET_SPATIAL_CAL = "Set manual spatial calibration";
     public static final String XY_CAL = "XY calibration (dist/px)";
     public static final String Z_CAL = "Z calibration (dist/px)";
+    public static final String SET_TEMPORAL_CAL = "Set manual temporal calibration";
+    public static final String FRAME_INTERVAL = "Frame interval (time/frame)";
     public static final String FORCE_BIT_DEPTH = "Force bit depth";
     public static final String OUTPUT_BIT_DEPTH = "Output bit depth";
     public static final String MIN_INPUT_INTENSITY = "Minimum input intensity";
@@ -154,10 +160,10 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
     }
 
     // public interface ThreeDModes {
-    //     String TIMESERIES = "Timeseries";
-    //     String ZSTACK = "Z-Stack";
+    // String TIMESERIES = "Timeseries";
+    // String ZSTACK = "Z-Stack";
 
-    //     String[] ALL = new String[] { TIMESERIES, ZSTACK };
+    // String[] ALL = new String[] { TIMESERIES, ZSTACK };
 
     // }
 
@@ -267,7 +273,7 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
     }
 
     public ImagePlus getBFImage(String path, int seriesNumber, @NotNull String[] dimRanges, @Nullable int[] crop,
-            double[] scaleFactors, String scaleMode, @Nullable double[] intRange, boolean manualCal,
+            double[] scaleFactors, String scaleMode, @Nullable double[] intRange, boolean[] manualCal,
             boolean localVerbose) throws ServiceException, DependencyException, IOException, FormatException {
         DebugTools.enableLogging("off");
         DebugTools.setRootLevel("off");
@@ -427,47 +433,22 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
         ipl.setPosition(1, 1, 1);
         ipl.updateAndDraw();
 
-        Unit<Length> unit = Units.getOMEUnits();
-
-        // Add spatial calibration
-        if (meta != null & !manualCal) {
-            if (meta.getPixelsPhysicalSizeX(seriesNumber - 1) != null) {
-                Length physicalSizeX = meta.getPixelsPhysicalSizeX(seriesNumber - 1);
-                if (!unit.isConvertible(physicalSizeX.unit())) {
-                    MIA.log.writeWarning("Can't convert units for file \"" + new File(path).getName()
-                            + "\".  Spatially calibrated values may be wrong");
-                    reader.close();
-                    return ipl;
-                }
-                ipl.getCalibration().pixelWidth = (double) physicalSizeX.value(unit) / scaleFactors[0];
-                ipl.getCalibration().setXUnit(unit.getSymbol());
-            } else {
-                MIA.log.writeWarning("Can't interpret units for file \"" + new File(path).getName()
-                        + "\".  Spatial calibration set to pixel units.");
-                ipl.getCalibration().pixelWidth = 1.0;
-                ipl.getCalibration().setXUnit("px");
+        // Adding spatial calibration
+        if (!manualCal[0]) {
+            if (!setSpatialCalibrationBF(ipl, meta, seriesNumber, scaleFactors)) {
+                MIA.log.writeWarning("Can't apply spatial units for file \"" + new File(path).getName()
+                        + "\".  Spatially calibrated values will be unavailable.");
+                setDummySpatialCalibration(ipl);
             }
+        }
 
-            if (meta.getPixelsPhysicalSizeY(seriesNumber - 1) != null) {
-                Length physicalSizeY = meta.getPixelsPhysicalSizeY(seriesNumber - 1);
-                ipl.getCalibration().pixelHeight = (double) physicalSizeY.value(unit) / scaleFactors[1];
-                ipl.getCalibration().setYUnit(unit.getSymbol());
-            } else {
-                ipl.getCalibration().pixelHeight = 1.0;
-                ipl.getCalibration().setYUnit("px");
+        // Adding temporal calibration
+        if (!manualCal[1]) {
+            if (!setTemporalCalibrationBF(ipl, meta, seriesNumber)) {
+                MIA.log.writeWarning("Can't apply temporal units for file \"" + new File(path).getName()
+                        + "\".  Temporally calibrated values will be unavailable.");
+                setDummyTemporalCalibration(ipl);
             }
-
-            if (ipl.getNSlices() > 1 && meta.getPixelsPhysicalSizeZ(seriesNumber - 1) != null) {
-                Length physicalSizeZ = meta.getPixelsPhysicalSizeZ(seriesNumber - 1);
-                ipl.getCalibration().pixelDepth = (double) physicalSizeZ.value(unit);
-                ipl.getCalibration().setZUnit(unit.getSymbol());
-            } else {
-                ipl.getCalibration().pixelDepth = 1.0;
-                ipl.getCalibration().setZUnit("px");
-            }
-        } else if (!manualCal) {
-            MIA.log.writeWarning("Can't interpret units for file \"" + new File(path).getName()
-                    + "\".  Spatially calibrated values may be wrong");
         }
 
         ipl.setPosition(1, 1, 1);
@@ -479,9 +460,184 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
 
     }
 
-    public ImagePlus getImageSequence(String absolutePath, int seriesNumber, String channels, String slices, String frames,
-            int[] crop, double[] scaleFactors, String scaleMode, @Nullable double[] intRange, boolean manualCal)
-            throws ServiceException, DependencyException, FormatException, IOException {
+    boolean setSpatialCalibrationBF(ImagePlus ipl, IMetadata meta, int seriesNumber, double[] scaleFactors) {
+        // Add spatial calibration
+        Unit<Length> spatialUnits = SpatialUnit.getOMEUnit();
+
+        Calibration cal = ipl.getCalibration();
+        cal.setXUnit(spatialUnits.getSymbol());
+        cal.setYUnit(spatialUnits.getSymbol());
+        cal.setZUnit(spatialUnits.getSymbol());
+
+        if (meta == null)
+            return false;
+
+        if (meta.getPixelsPhysicalSizeX(seriesNumber - 1) == null) {
+            return false;
+        } else {
+            Length physicalSizeX = meta.getPixelsPhysicalSizeX(seriesNumber - 1);
+            cal.pixelWidth = (double) physicalSizeX.value(spatialUnits) / scaleFactors[0];
+        }
+
+        if (meta.getPixelsPhysicalSizeY(seriesNumber - 1) == null) {
+            return false;
+        } else {
+            Length physicalSizeY = meta.getPixelsPhysicalSizeY(seriesNumber - 1);
+            cal.pixelHeight = (double) physicalSizeY.value(spatialUnits) / scaleFactors[1];
+        }
+
+        if (ipl.getNSlices() > 1) {
+            if (meta.getPixelsPhysicalSizeZ(seriesNumber - 1) == null) {
+                return false;
+            } else {
+                Length physicalSizeZ = meta.getPixelsPhysicalSizeZ(seriesNumber - 1);
+                cal.pixelDepth = (double) physicalSizeZ.value(spatialUnits);
+            }
+        }
+
+        return true;
+
+    }
+
+    boolean setTemporalCalibrationBF(ImagePlus ipl, IMetadata meta, int seriesNumber) {
+        // Add spatial calibration
+        Unit<Time> temporalUnits = TemporalUnit.getOMEUnit();
+
+        Calibration cal = ipl.getCalibration();
+        cal.setTimeUnit(TemporalUnit.getOMEUnit().getSymbol());
+
+        if (meta == null)
+            return false;
+
+        if (meta.getPixelsTimeIncrement(seriesNumber - 1) == null) {
+            return false;
+        } else {
+            Time frameInterval = meta.getPixelsTimeIncrement(seriesNumber - 1);
+            ipl.getCalibration().frameInterval = (double) frameInterval.value(temporalUnits);
+            cal.fps = 1 / (double) frameInterval.value(UNITS.SECOND);
+        }
+
+        return true;
+
+    }
+
+    void setDummySpatialCalibration(ImagePlus ipl) {
+        Calibration cal = ipl.getCalibration();
+
+        cal.pixelWidth = Double.NaN;
+        cal.pixelHeight = Double.NaN;
+        cal.pixelDepth = Double.NaN;
+
+    }
+
+    void setDummyTemporalCalibration(ImagePlus ipl) {
+        Calibration cal = ipl.getCalibration();
+
+        cal.frameInterval = Double.NaN;
+        cal.fps = Double.NaN;
+
+    }
+
+    void parseImageJSpatialCalibration(ImagePlus ipl, String path) {
+        Calibration cal = ipl.getCalibration();
+
+        // Checking if spatial units match those selected in InputControl
+        String currUnit = cal.getUnit().toLowerCase();
+        Unit<Length> currUnitOME = null;
+        Unit<Length> targetUnitOME = SpatialUnit.getOMEUnit();
+
+        if (currUnit.matches("um") || currUnit.matches("μm") || currUnit.contains("micron")
+                || currUnit.contains("micrometer") || currUnit.contains("micrometre")) {
+            currUnitOME = UNITS.MICROMETER;
+
+        } else if (currUnit.matches("mm") || currUnit.contains("millimeter")
+                || currUnit.contains("millimetre")) {
+            currUnitOME = UNITS.MILLIMETER;
+
+        } else if (currUnit.matches("cm") || currUnit.contains("centimeter")
+                || currUnit.contains("centimetre")) {
+            currUnitOME = UNITS.CENTIMETER;
+
+        } else if (currUnit.matches("nm") || currUnit.contains("nanometer")
+                || currUnit.contains("nanometre")) {
+            currUnitOME = UNITS.NANOMETER;
+
+        } else if (currUnit.matches("A") || currUnit.matches("Å")
+                || currUnit.contains("angstrom")) {
+            currUnitOME = UNITS.ANGSTROM;
+
+        } else if (currUnit.matches("m") || currUnit.contains("meter")
+                || currUnit.contains("metre")) {
+            // THIS ONE HAS TO BE THE LAST ONE AS IT WILL PROBABLY MATCH
+            currUnitOME = UNITS.METER;
+        }
+
+        if (currUnitOME == null) {
+            if (path == null) {
+                MIA.log.writeWarning(
+                        "Can't apply spatial units for image loaded from ImageJ.  Spatially calibrated values will be unavailable.");
+            } else {
+                MIA.log.writeWarning("Can't apply spatial units for file \"" + new File(path).getName()
+                        + "\".  Spatially calibrated values will be unavailable.");
+            }
+            setDummySpatialCalibration(ipl);
+
+        } else if (currUnitOME != targetUnitOME) {
+            cal.pixelWidth = currUnitOME.convertValue(cal.pixelWidth, targetUnitOME);
+            cal.pixelHeight = currUnitOME.convertValue(cal.pixelHeight, targetUnitOME);
+            cal.pixelDepth = currUnitOME.convertValue(cal.pixelDepth, targetUnitOME);
+            cal.setUnit(targetUnitOME.getSymbol());
+        }
+    }
+
+    void parseImageJTemporalCalibration(ImagePlus ipl, String path) {
+        Calibration cal = ipl.getCalibration();
+
+        // Checking if spatial units match those selected in InputControl
+        String currUnit = cal.getTimeUnit().toLowerCase();
+        Unit<Time> currUnitOME = null;
+        Unit<Time> targetUnitOME = TemporalUnit.getOMEUnit();
+
+        if (currUnit.matches("ns") || currUnit.contains("nanosecond")) {
+            currUnitOME = UNITS.NANOSECOND;
+
+        } else if (currUnit.matches("ms") || currUnit.contains("millisecond")) {
+            currUnitOME = UNITS.MILLISECOND;
+
+        } else if (currUnit.matches("m") || currUnit.contains("min") || currUnit.contains("minute")) {
+            currUnitOME = UNITS.MINUTE;
+
+        } else if (currUnit.matches("h") || currUnit.contains("hour")) {
+            currUnitOME = UNITS.HOUR;
+
+        } else if (currUnit.matches("d") || currUnit.matches("day")) {
+            currUnitOME = UNITS.DAY;
+
+        } else if (currUnit.matches("s") || currUnit.contains("sec") || currUnit.contains("second")) {
+            // THIS ONE HAS TO BE THE LAST ONE AS IT WILL PROBABLY MATCH
+            currUnitOME = UNITS.SECOND;
+        }
+
+        if (currUnitOME == null) {
+            if (path == null) {
+                MIA.log.writeWarning(
+                        "Can't apply temporal units for image loaded from ImageJ.  Temporally calibrated values will be unavailable.");
+            } else {
+                MIA.log.writeWarning("Can't apply temporal units for file \"" + new File(path).getName()
+                        + "\".  Temporally calibrated values will be unavailable.");
+            }
+            setDummyTemporalCalibration(ipl);
+
+        } else if (currUnitOME != targetUnitOME) {
+            cal.frameInterval = currUnitOME.convertValue(cal.frameInterval, targetUnitOME);
+            cal.fps = 1 / targetUnitOME.convertValue(cal.frameInterval, UNITS.SECOND);
+            cal.setTimeUnit(targetUnitOME.getSymbol());
+        }
+    }
+
+    public ImagePlus getImageSequence(String absolutePath, int seriesNumber, String channels, String slices,
+            String frames, int[] crop, double[] scaleFactors, String scaleMode, @Nullable double[] intRange,
+            boolean[] manualCal) throws ServiceException, DependencyException, FormatException, IOException {
 
         // Number format
         Pattern pattern = Pattern.compile("Z\\{0+}");
@@ -568,7 +724,7 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
     }
 
     public ImagePlus getAllInFolder(File rootFile, int[] crop, double[] scaleFactors, String scaleMode,
-            @Nullable double[] intRange, boolean manualCal)
+            @Nullable double[] intRange, boolean[] manualCal)
             throws ServiceException, DependencyException, FormatException, IOException {
 
         // Creating a FileCrawler to get all the valid files in this folder
@@ -767,9 +923,11 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
         String scaleMode = parameters.getValue(SCALE_MODE);
         double scaleFactorX = parameters.getValue(SCALE_FACTOR_X);
         double scaleFactorY = parameters.getValue(SCALE_FACTOR_Y);
-        boolean setCalibration = parameters.getValue(SET_CAL);
+        boolean setSpatialCalibration = parameters.getValue(SET_SPATIAL_CAL);
         double xyCal = parameters.getValue(XY_CAL);
         double zCal = parameters.getValue(Z_CAL);
+        boolean setTemporalCalibration = parameters.getValue(SET_TEMPORAL_CAL);
+        double frameInterval = parameters.getValue(FRAME_INTERVAL);
         boolean forceBitDepth = parameters.getValue(FORCE_BIT_DEPTH);
         String outputBitDepth = parameters.getValue(OUTPUT_BIT_DEPTH);
         double minIntensity = parameters.getValue(MIN_INPUT_INTENSITY);
@@ -813,12 +971,14 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
                 ? new double[] { Double.parseDouble(outputBitDepth), minIntensity, maxIntensity }
                 : null;
 
+        boolean[] manualCalibration = new boolean[] { setSpatialCalibration, setTemporalCalibration };
+
         ImagePlus ipl = null;
         try {
             switch (importMode) {
                 case ImportModes.ALL_IN_FOLDER:
                     File file = workspace.getMetadata().getFile();
-                    ipl = getAllInFolder(file, crop, scaleFactors, scaleMode, intRange, setCalibration);
+                    ipl = getAllInFolder(file, crop, scaleFactors, scaleMode, intRange, manualCalibration);
                     break;
                 case ImportModes.CURRENT_FILE:
                     file = workspace.getMetadata().getFile();
@@ -835,10 +995,12 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
                     switch (reader) {
                         case Readers.BIOFORMATS:
                             ipl = getBFImage(file.getAbsolutePath(), seriesNumber, dimRanges, crop, scaleFactors,
-                                    scaleMode, intRange, setCalibration, true);
+                                    scaleMode, intRange, manualCalibration, true);
                             break;
                         case Readers.IMAGEJ:
                             ipl = IJ.openImage(file.getAbsolutePath());
+                            parseImageJSpatialCalibration(ipl, file.getAbsolutePath());
+                            parseImageJTemporalCalibration(ipl, file.getAbsolutePath());
                             break;
                     }
                     break;
@@ -849,13 +1011,15 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
                         MIA.log.writeWarning("No image open in ImageJ.  Skipping.");
                         return Status.FAIL;
                     }
+                    parseImageJSpatialCalibration(ipl, null);
+                    parseImageJTemporalCalibration(ipl, null);
                     break;
 
                 case ImportModes.IMAGE_SEQUENCE:
                     Metadata metadata = (Metadata) workspace.getMetadata().clone();
                     String absolutePath = metadata.insertMetadataValues(sequenceRootName);
                     ipl = getImageSequence(absolutePath, seriesNumber, channels, slices, frames, crop, scaleFactors,
-                            scaleMode, intRange, setCalibration);
+                            scaleMode, intRange, manualCalibration);
 
                     break;
 
@@ -894,10 +1058,12 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
                     switch (reader) {
                         case Readers.BIOFORMATS:
                             ipl = getBFImage(file.getAbsolutePath(), seriesNumber, dimRanges, crop, scaleFactors,
-                                    scaleMode, intRange, setCalibration, true);
+                                    scaleMode, intRange, manualCalibration, true);
                             break;
                         case Readers.IMAGEJ:
                             ipl = IJ.openImage(file.getAbsolutePath());
+                            parseImageJSpatialCalibration(ipl, file.getAbsolutePath());
+                            parseImageJTemporalCalibration(ipl, file.getAbsolutePath());
                             break;
                     }
 
@@ -912,10 +1078,12 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
                     switch (reader) {
                         case Readers.BIOFORMATS:
                             ipl = getBFImage(filePath, seriesNumber, dimRanges, crop, scaleFactors, scaleMode, intRange,
-                                    setCalibration, true);
+                                    manualCalibration, true);
                             break;
                         case Readers.IMAGEJ:
                             ipl = IJ.openImage(filePath);
+                            parseImageJSpatialCalibration(ipl, filePath);
+                            parseImageJTemporalCalibration(ipl, filePath);
                             break;
                     }
                     break;
@@ -929,14 +1097,28 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
             return Status.FAIL;
 
         // If necessary, setting the spatial calibration
-        if (setCalibration) {
+        if (setSpatialCalibration) {
             writeStatus("Setting spatial calibration (XY = " + xyCal + ", Z = " + zCal + ")");
             Calibration calibration = new Calibration();
 
             calibration.pixelHeight = xyCal;
             calibration.pixelWidth = xyCal;
             calibration.pixelDepth = zCal;
-            calibration.setUnit(Units.getOMEUnits().getSymbol());
+            calibration.setUnit(SpatialUnit.getOMEUnit().getSymbol());
+
+            ipl.setCalibration(calibration);
+            ipl.updateChannelAndDraw();
+
+        }
+
+        // If necessary, setting the spatial calibration
+        if (setTemporalCalibration) {
+            writeStatus("Setting temporal calibration (frame interval = " + frameInterval + ")");
+            Calibration calibration = new Calibration();
+
+            calibration.frameInterval = frameInterval;
+            calibration.fps = 1 / TemporalUnit.getOMEUnit().convertValue(frameInterval, UNITS.SECOND);
+            calibration.setTimeUnit(TemporalUnit.getOMEUnit().getSymbol());
 
             ipl.setCalibration(calibration);
             ipl.updateChannelAndDraw();
@@ -947,16 +1129,20 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
         if (ipl.getBitDepth() == 24)
             ipl = CompositeConverter.makeComposite(ipl);
 
-        // // If either number of slices or timepoints is 1 check it's the right dimension.
-        // // This should only be wrong if a Stack rather than Hyperstack was loaded, so if
+        // // If either number of slices or timepoints is 1 check it's the right
+        // dimension.
+        // // This should only be wrong if a Stack rather than Hyperstack was loaded, so
+        // if
         // // there are multiple channels it shouldn't be an issue.
         // if (reader.equals(Readers.IMAGEJ) && ipl.getNChannels() == 1) {
-        //     if (threeDMode.equals(ThreeDModes.TIMESERIES) && ipl.getNFrames() == 1 && ipl.getNSlices() > 1) {
-        //         Convert3DStack.process(ipl, Convert3DStack.Modes.OUTPUT_TIMESERIES);
-        //         ipl.getCalibration().pixelDepth = 1;
-        //     } else if (threeDMode.equals(ThreeDModes.ZSTACK) && ipl.getNSlices() == 1 && ipl.getNFrames() > 1) {
-        //         Convert3DStack.process(ipl, Convert3DStack.Modes.OUTPUT_Z_STACK);
-        //     }
+        // if (threeDMode.equals(ThreeDModes.TIMESERIES) && ipl.getNFrames() == 1 &&
+        // ipl.getNSlices() > 1) {
+        // Convert3DStack.process(ipl, Convert3DStack.Modes.OUTPUT_TIMESERIES);
+        // ipl.getCalibration().pixelDepth = 1;
+        // } else if (threeDMode.equals(ThreeDModes.ZSTACK) && ipl.getNSlices() == 1 &&
+        // ipl.getNFrames() > 1) {
+        // Convert3DStack.process(ipl, Convert3DStack.Modes.OUTPUT_Z_STACK);
+        // }
         // }
 
         // Adding image to workspace
@@ -1000,7 +1186,8 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
         parameters.add(new StringP(SLICES, this, "1-end"));
         parameters.add(new StringP(FRAMES, this, "1-end"));
         parameters.add(new IntegerP(CHANNEL, this, 1));
-        // parameters.add(new ChoiceP(THREE_D_MODE, this, ThreeDModes.ZSTACK, ThreeDModes.ALL));
+        // parameters.add(new ChoiceP(THREE_D_MODE, this, ThreeDModes.ZSTACK,
+        // ThreeDModes.ALL));
         parameters.add(new ChoiceP(CROP_MODE, this, CropModes.NONE, CropModes.ALL));
         parameters.add(new InputImageP(REFERENCE_IMAGE, this));
         parameters.add(new IntegerP(LEFT, this, 0));
@@ -1012,9 +1199,11 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
         parameters.add(new DoubleP(SCALE_FACTOR_Y, this, 1));
 
         parameters.add(new SeparatorP(CALIBRATION_SEPARATOR, this));
-        parameters.add(new BooleanP(SET_CAL, this, false));
+        parameters.add(new BooleanP(SET_SPATIAL_CAL, this, false));
         parameters.add(new DoubleP(XY_CAL, this, 1d));
         parameters.add(new DoubleP(Z_CAL, this, 1d));
+        parameters.add(new BooleanP(SET_TEMPORAL_CAL, this, false));
+        parameters.add(new DoubleP(FRAME_INTERVAL, this, 1d));
         parameters.add(new BooleanP(FORCE_BIT_DEPTH, this, false));
         parameters.add(new ChoiceP(OUTPUT_BIT_DEPTH, this, OutputBitDepths.EIGHT, OutputBitDepths.ALL));
         parameters.add(new DoubleP(MIN_INPUT_INTENSITY, this, 0d));
@@ -1124,11 +1313,15 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
         }
 
         returnedParameters.add(parameters.getParameter(CALIBRATION_SEPARATOR));
-        returnedParameters.add(parameters.getParameter(SET_CAL));
-        if ((boolean) parameters.getValue(SET_CAL)) {
+        returnedParameters.add(parameters.getParameter(SET_SPATIAL_CAL));
+        if ((boolean) parameters.getValue(SET_SPATIAL_CAL)) {
             returnedParameters.add(parameters.getParameter(XY_CAL));
             returnedParameters.add(parameters.getParameter(Z_CAL));
         }
+
+        returnedParameters.add(parameters.getParameter(SET_TEMPORAL_CAL));
+        if ((boolean) parameters.getValue(SET_TEMPORAL_CAL))
+            returnedParameters.add(parameters.getParameter(FRAME_INTERVAL));
 
         if (parameters.getValue(READER).equals(Readers.BIOFORMATS)) {
             returnedParameters.add(parameters.getParameter(FORCE_BIT_DEPTH));
@@ -1278,7 +1471,8 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
         parameters.get(CHANNEL).setDescription("Channel to load when constructing a \"Yokogawa\" format name.");
 
         // parameters.get(THREE_D_MODE).setDescription(
-        //         "ImageJ will load 3D tifs as Z-stacks by default.  This control provides a choice between loading as a Z-stack or timeseries.");
+        // "ImageJ will load 3D tifs as Z-stacks by default. This control provides a
+        // choice between loading as a Z-stack or timeseries.");
 
         parameters.get(CROP_MODE).setDescription("Choice of loading the entire image, or cropping in XY:<br><ul>"
 
@@ -1326,7 +1520,7 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
                 + SCALE_MODE
                 + "\" is in an image scaling mode).  Values <1 will reduce image height, while values >1 will increase it.");
 
-        parameters.get(SET_CAL).setDescription(
+        parameters.get(SET_SPATIAL_CAL).setDescription(
                 "Option to use the automatically-applied spatial calibration or manually specify these values.");
 
         parameters.get(XY_CAL).setDescription(

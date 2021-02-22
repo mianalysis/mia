@@ -17,7 +17,7 @@ import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.Measurement;
 import wbif.sjx.MIA.Object.Obj;
 import wbif.sjx.MIA.Object.ObjCollection;
-import wbif.sjx.MIA.Object.Units;
+import wbif.sjx.MIA.Object.Units.SpatialUnit;
 import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.MIA.Object.Parameters.ChoiceP;
 import wbif.sjx.MIA.Object.Parameters.ImageMeasurementP;
@@ -72,7 +72,7 @@ public class MeasureSpecificWidth extends Module {
     
     public interface Measurements {
         String WIDTH_PX = "WIDTH_(PX)";
-        String WIDTH_CAL = "WIDTH_(${CAL})";
+        String WIDTH_CAL = "WIDTH_(${SCAL})";
         String X1_PX = "X1_(PX)";
         String Y1_PX = "Y1_(PX)";
         String Z1_SLICE = "Z1_(SLICE)";
@@ -179,7 +179,7 @@ public class MeasureSpecificWidth extends Module {
     
     static void addMeasurements(Obj obj, WidthMeasurementResult result, String prefix) {
         obj.addMeasurement(new Measurement(getFullName(Measurements.WIDTH_PX,prefix),result.calculateWidth(true)));
-        obj.addMeasurement(new Measurement(Units.replace(getFullName(Measurements.WIDTH_CAL,prefix)),result.calculateWidth(false)));
+        obj.addMeasurement(new Measurement(getFullName(Measurements.WIDTH_CAL,prefix),result.calculateWidth(false)));
         obj.addMeasurement(new Measurement(getFullName(Measurements.X1_PX,prefix),result.getEnd1().x));
         obj.addMeasurement(new Measurement(getFullName(Measurements.Y1_PX,prefix),result.getEnd1().y));
         obj.addMeasurement(new Measurement(getFullName(Measurements.Z1_SLICE,prefix),result.getEnd1().z));
@@ -377,7 +377,7 @@ public class MeasureSpecificWidth extends Module {
         ref.setObjectsName(inputObjectsName);
         returnedRefs.add(ref);
         
-        ref = objectMeasurementRefs.getOrPut(Units.replace(getFullName(Measurements.WIDTH_CAL,prefix)));
+        ref = objectMeasurementRefs.getOrPut(getFullName(Measurements.WIDTH_CAL,prefix));
         ref.setObjectsName(inputObjectsName);
         returnedRefs.add(ref);
         

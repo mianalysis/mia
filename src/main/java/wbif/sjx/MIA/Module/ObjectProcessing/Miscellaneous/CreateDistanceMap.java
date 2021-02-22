@@ -42,7 +42,7 @@ public class CreateDistanceMap extends Module {
     public static final String INVERT_MAP_WITHIN_OBJECTS = "Invert map within objects";
     public static final String MASKING_MODE = "Masking mode";
     public static final String NORMALISE_MAP_PER_OBJECT = "Normalise map per object";
-    public static final String SPATIAL_UNITS = "Spatial units";
+    public static final String SPATIAL_UNITS_MODE = "Spatial units mode";
 
     public CreateDistanceMap(ModuleCollection modules) {
         super("Create distance map", modules);
@@ -65,7 +65,7 @@ public class CreateDistanceMap extends Module {
 
     }
 
-    public interface SpatialUnits {
+    public interface SpatialUnitsModes {
         String CALIBRATED = "Calibrated";
         String PIXELS = "Pixel";
 
@@ -226,7 +226,7 @@ public class CreateDistanceMap extends Module {
         boolean invertInside = parameters.getValue(INVERT_MAP_WITHIN_OBJECTS);
         String maskingMode = parameters.getValue(MASKING_MODE);
         boolean normaliseMap = parameters.getValue(NORMALISE_MAP_PER_OBJECT);
-        String spatialUnits = parameters.getValue(SPATIAL_UNITS);
+        String spatialUnits = parameters.getValue(SPATIAL_UNITS_MODE);
 
         // Initialising the distance map
         Image distanceMap = null;
@@ -252,7 +252,7 @@ public class CreateDistanceMap extends Module {
 
         // Applying spatial calibration (as long as we're not normalising the map)
         if (!maskingMode.equals(MaskingModes.INSIDE_ONLY) && !normaliseMap
-                && spatialUnits.equals(SpatialUnits.CALIBRATED)) {
+                && spatialUnits.equals(SpatialUnitsModes.CALIBRATED)) {
             double dppXY = inputImage.getImagePlus().getCalibration().pixelWidth;
             DistanceMap.applyCalibratedUnits(distanceMap, dppXY);
         }
@@ -275,7 +275,7 @@ public class CreateDistanceMap extends Module {
         parameters.add(new BooleanP(INVERT_MAP_WITHIN_OBJECTS, this, true));
         parameters.add(new ChoiceP(MASKING_MODE, this, MaskingModes.INSIDE_AND_OUTSIDE, MaskingModes.ALL));
         parameters.add(new BooleanP(NORMALISE_MAP_PER_OBJECT, this, false));
-        parameters.add(new ChoiceP(SPATIAL_UNITS, this, SpatialUnits.PIXELS, SpatialUnits.ALL));
+        parameters.add(new ChoiceP(SPATIAL_UNITS_MODE, this, SpatialUnitsModes.PIXELS, SpatialUnitsModes.ALL));
 
     }
 
@@ -305,7 +305,7 @@ public class CreateDistanceMap extends Module {
         // units to be specified.
         if (!parameters.getValue(MASKING_MODE).equals(MaskingModes.INSIDE_ONLY)
                 && !(boolean) parameters.getValue(NORMALISE_MAP_PER_OBJECT)) {
-            returnedParameters.add(parameters.getParameter(SPATIAL_UNITS));
+            returnedParameters.add(parameters.getParameter(SPATIAL_UNITS_MODE));
         }
 
         return returnedParameters;

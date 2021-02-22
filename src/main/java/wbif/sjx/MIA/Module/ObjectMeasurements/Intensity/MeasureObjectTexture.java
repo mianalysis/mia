@@ -56,7 +56,7 @@ public class MeasureObjectTexture extends Module {
 
     public static String getFullName(String imageName, String measurement, double[] offs, boolean calibrated) {
         if (calibrated) {
-            return "TEXTURE // " + imageName + "_" + measurement + "_(" + offs[0] + "," + offs[1] + "," + offs[2] + " ${CAL})";
+            return "TEXTURE // " + imageName + "_" + measurement + "_(" + offs[0] + "," + offs[1] + "," + offs[2] + " ${SCAL})";
         } else {
             return "TEXTURE // " + imageName + "_" + measurement + "_(" + offs[0] + "," + offs[1] + "," + offs[2] + " PX)";
         }

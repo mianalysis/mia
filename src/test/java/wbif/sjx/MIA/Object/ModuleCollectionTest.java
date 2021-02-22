@@ -22,6 +22,7 @@ import wbif.sjx.MIA.Object.Parameters.ParameterGroup;
 import wbif.sjx.MIA.Object.References.Collections.ImageMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.ObjMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.ParentChildRefCollection;
+import wbif.sjx.MIA.Object.Units.SpatialUnit;
 
 import java.util.LinkedHashSet;
 
@@ -188,9 +189,9 @@ public class ModuleCollectionTest<T extends RealType<T> & NativeType<T>> {
         double[] offs = new double[] { 1, 0, 0 };
         String[] expectedNames1 = new String[] { MeasureObjectCentroid.Measurements.MEAN_X_PX,
                 MeasureObjectCentroid.Measurements.MEAN_Y_PX, MeasureObjectCentroid.Measurements.MEAN_Z_SLICE,
-                Units.replace(MeasureObjectCentroid.Measurements.MEAN_X_CAL),
-                Units.replace(MeasureObjectCentroid.Measurements.MEAN_Y_CAL),
-                Units.replace(MeasureObjectCentroid.Measurements.MEAN_Z_CAL),
+                SpatialUnit.replace(MeasureObjectCentroid.Measurements.MEAN_X_CAL),
+                SpatialUnit.replace(MeasureObjectCentroid.Measurements.MEAN_Y_CAL),
+                SpatialUnit.replace(MeasureObjectCentroid.Measurements.MEAN_Z_CAL),
                 MeasureObjectTexture.getFullName("", MeasureObjectTexture.Measurements.ASM, offs, false),
                 MeasureObjectTexture.getFullName("", MeasureObjectTexture.Measurements.CONTRAST, offs, false),
                 MeasureObjectTexture.getFullName("", MeasureObjectTexture.Measurements.CORRELATION, offs, false),
@@ -205,11 +206,11 @@ public class ModuleCollectionTest<T extends RealType<T> & NativeType<T>> {
         assertEquals(9, references2.size());
 
         String[] expectedNames2 = new String[] { MeasureObjectShape.Measurements.PROJ_DIA_PX,
-                Units.replace(MeasureObjectShape.Measurements.PROJ_DIA_CAL), MeasureObjectShape.Measurements.VOLUME_PX,
-                Units.replace(MeasureObjectShape.Measurements.VOLUME_CAL), MeasureObjectShape.Measurements.BASE_AREA_PX,
-                Units.replace(MeasureObjectShape.Measurements.BASE_AREA_CAL),
+                SpatialUnit.replace(MeasureObjectShape.Measurements.PROJ_DIA_CAL), MeasureObjectShape.Measurements.VOLUME_PX,
+                SpatialUnit.replace(MeasureObjectShape.Measurements.VOLUME_CAL), MeasureObjectShape.Measurements.BASE_AREA_PX,
+                SpatialUnit.replace(MeasureObjectShape.Measurements.BASE_AREA_CAL),
                 MeasureObjectShape.Measurements.HEIGHT_SLICE,
-                Units.replace(MeasureObjectShape.Measurements.HEIGHT_CAL) };
+                SpatialUnit.replace(MeasureObjectShape.Measurements.HEIGHT_CAL) };
 
         for (String expectedName2 : expectedNames2) {
             assertTrue(references2.containsKey(expectedName2));
@@ -254,9 +255,9 @@ public class ModuleCollectionTest<T extends RealType<T> & NativeType<T>> {
 
         String[] expectedNames1 = new String[] { MeasureObjectCentroid.Measurements.MEAN_X_PX,
                 MeasureObjectCentroid.Measurements.MEAN_Y_PX, MeasureObjectCentroid.Measurements.MEAN_Z_SLICE,
-                Units.replace(MeasureObjectCentroid.Measurements.MEAN_X_CAL),
-                Units.replace(MeasureObjectCentroid.Measurements.MEAN_Y_CAL),
-                Units.replace(MeasureObjectCentroid.Measurements.MEAN_Z_CAL) };
+                SpatialUnit.replace(MeasureObjectCentroid.Measurements.MEAN_X_CAL),
+                SpatialUnit.replace(MeasureObjectCentroid.Measurements.MEAN_Y_CAL),
+                SpatialUnit.replace(MeasureObjectCentroid.Measurements.MEAN_Z_CAL) };
 
         for (String expectedName1 : expectedNames1) {
             assertTrue(references1.containsKey(expectedName1));

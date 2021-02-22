@@ -40,7 +40,7 @@ public class MIA_LoadImageFromImageJ extends MacroOperation {
         imageLoader.updateParameterValue(ImageLoader.TOP,0);
         imageLoader.updateParameterValue(ImageLoader.WIDTH,0);
         imageLoader.updateParameterValue(ImageLoader.HEIGHT,0);
-        imageLoader.updateParameterValue(ImageLoader.SET_CAL,false);
+        imageLoader.updateParameterValue(ImageLoader.SET_SPATIAL_CAL,false);
         imageLoader.updateParameterValue(ImageLoader.XY_CAL,0d);
         imageLoader.updateParameterValue(ImageLoader.Z_CAL,0d);
         imageLoader.updateParameterValue(ImageLoader.FORCE_BIT_DEPTH,false);

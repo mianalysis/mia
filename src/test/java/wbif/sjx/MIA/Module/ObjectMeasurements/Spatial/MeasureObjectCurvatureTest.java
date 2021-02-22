@@ -21,7 +21,7 @@ import wbif.sjx.MIA.Module.ModuleTest;
 import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.Obj;
 import wbif.sjx.MIA.Object.ObjCollection;
-import wbif.sjx.MIA.Object.Units;
+import wbif.sjx.MIA.Object.Units.SpatialUnit;
 import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.MIA.Object.WorkspaceCollection;
 import wbif.sjx.common.Object.Volume.VolumeType;
@@ -91,7 +91,7 @@ public class MeasureObjectCurvatureTest extends ModuleTest {
             assertEquals(expected, actual, tolerance);
 
             expected = testObject.getMeasurement(Rings2D.Measures.EXP_MEAN_CURVATURE_ABS_CAL.name()).getValue();
-            actual = testObject.getMeasurement(Units.replace(MeasureObjectCurvature.Measurements.MEAN_ABSOLUTE_CURVATURE_CAL)).getValue();
+            actual = testObject.getMeasurement(SpatialUnit.replace(MeasureObjectCurvature.Measurements.MEAN_ABSOLUTE_CURVATURE_CAL)).getValue();
             assertEquals(expected, actual, tolerance/dppXY);
 
         }
@@ -147,7 +147,7 @@ public class MeasureObjectCurvatureTest extends ModuleTest {
             assertEquals(expected, actual, tolerance);
 
             expected = testObject.getMeasurement(Rings2D.Measures.EXP_MEAN_CURVATURE_ABS_CAL.name()).getValue();
-            actual = testObject.getMeasurement(Units.replace(MeasureObjectCurvature.Measurements.MEAN_ABSOLUTE_CURVATURE_CAL)).getValue();
+            actual = testObject.getMeasurement(SpatialUnit.replace(MeasureObjectCurvature.Measurements.MEAN_ABSOLUTE_CURVATURE_CAL)).getValue();
             assertEquals(expected, actual, tolerance/dppXY);
 
             expected = testObject.getMeasurement(Rings2D.Measures.EXP_MEAN_CURVATURE_REFACW_PX.name()).getValue();
@@ -155,7 +155,7 @@ public class MeasureObjectCurvatureTest extends ModuleTest {
             assertEquals(expected, actual, tolerance);
 
             expected = testObject.getMeasurement(Rings2D.Measures.EXP_MEAN_CURVATURE_REFACW_CAL.name()).getValue();
-            actual = testObject.getMeasurement(Units.replace(MeasureObjectCurvature.Measurements.MEAN_SIGNED_CURVATURE_CAL)).getValue();
+            actual = testObject.getMeasurement(SpatialUnit.replace(MeasureObjectCurvature.Measurements.MEAN_SIGNED_CURVATURE_CAL)).getValue();
             assertEquals(expected, actual, tolerance/dppXY);
 
         }
@@ -211,7 +211,7 @@ public class MeasureObjectCurvatureTest extends ModuleTest {
             assertEquals(expected, actual, tolerance);
 
             expected = testObject.getMeasurement(Rings2D.Measures.EXP_MEAN_CURVATURE_ABS_CAL.name()).getValue();
-            actual = testObject.getMeasurement(Units.replace(MeasureObjectCurvature.Measurements.MEAN_ABSOLUTE_CURVATURE_CAL)).getValue();
+            actual = testObject.getMeasurement(SpatialUnit.replace(MeasureObjectCurvature.Measurements.MEAN_ABSOLUTE_CURVATURE_CAL)).getValue();
             assertEquals(expected, actual, tolerance/dppXY);
 
             expected = testObject.getMeasurement(Rings2D.Measures.EXP_MEAN_CURVATURE_REFCW_PX.name()).getValue();
@@ -219,7 +219,7 @@ public class MeasureObjectCurvatureTest extends ModuleTest {
             assertEquals(expected, actual, tolerance);
 
             expected = testObject.getMeasurement(Rings2D.Measures.EXP_MEAN_CURVATURE_REFCW_CAL.name()).getValue();
-            actual = testObject.getMeasurement(Units.replace(MeasureObjectCurvature.Measurements.MEAN_SIGNED_CURVATURE_CAL)).getValue();
+            actual = testObject.getMeasurement(SpatialUnit.replace(MeasureObjectCurvature.Measurements.MEAN_SIGNED_CURVATURE_CAL)).getValue();
             assertEquals(expected, actual, tolerance/dppXY);
 
         }

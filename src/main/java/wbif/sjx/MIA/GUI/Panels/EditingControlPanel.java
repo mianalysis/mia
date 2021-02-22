@@ -122,6 +122,10 @@ public class EditingControlPanel extends JPanel {
         for (Category childCategory : category.getChildren()) {
             ModuleListMenu childCategoryMenu = new ModuleListMenu(childCategory.getName(), new ArrayList<>(), rootMenu);
 
+            // If this category isn't to be shown, skip to next (note: child modules also won't be shown)
+            if (!childCategory.showInMenu())
+                continue;
+                
             if (parentMenu == null)
                 rootMenu.add(childCategoryMenu);
             else
@@ -143,51 +147,6 @@ public class EditingControlPanel extends JPanel {
 
         Category root = Categories.getRootCategory();
         addCategoryModules(moduleListMenu, null, root);
-
-        // TreeMap<String, Module> availableModules = GUI.getAvailableModules();
-        // TreeSet<ModuleListMenu> topList = new TreeSet<>();
-        // TreeSet<String> moduleNames = new TreeSet<>();
-        // moduleNames.addAll(availableModules.keySet());
-
-        // for (String name : moduleNames) {
-        // // ActiveList starts at the top list
-        // TreeSet<ModuleListMenu> activeList = topList;
-        // ModuleListMenu activeItem = null;
-
-        // String[] names = name.split("\\\\");
-        // for (int i = 0; i < names.length-1; i++) {
-        // String curr_name = names[i];
-        // if (name.substring(0,1).equals(".")) curr_name = curr_name.substring(1);
-
-        // boolean found = false;
-        // for (ModuleListMenu listItem : activeList) {
-        // if (listItem.getName().equals(curr_name)) {
-        // activeItem = listItem;
-        // found = true;
-        // }
-        // }
-
-        // if (!found) {
-        // // It's a new package
-        // ModuleListMenu newItem = new ModuleListMenu(curr_name, new
-        // ArrayList<>(),moduleListMenu);
-        // newItem.setName(curr_name);
-        // activeList.add(newItem);
-        // if (activeItem != null) activeItem.add(newItem);
-        // activeItem = newItem;
-        // }
-
-        // activeList = activeItem.getChildren();
-
-        // }
-
-        // if (activeItem != null) activeItem.addMenuItem(availableModules.get(name));
-
-        // }
-
-        // for (ModuleListMenu listMenu : topList) {
-        // moduleListMenu.add(listMenu);
-        // }
 
         addModuleButton.setToolTipText("Add module");
         addModuleButton.setEnabled(true);

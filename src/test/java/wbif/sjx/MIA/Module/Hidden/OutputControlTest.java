@@ -3,6 +3,7 @@ package wbif.sjx.MIA.Module.Hidden;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import wbif.sjx.MIA.Module.ModuleTest;
+import wbif.sjx.MIA.Module.Core.OutputControl;
 
 /**
  * Created by sc13967 on 26/06/2018.

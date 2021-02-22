@@ -31,6 +31,7 @@ import wbif.sjx.MIA.Object.References.Collections.MetadataRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.ObjMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.ParentChildRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.PartnerRefCollection;
+import wbif.sjx.MIA.Object.Units.SpatialUnit;
 import wbif.sjx.MIA.Process.ColourFactory;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.Object.Volume.PointOutOfRangeException;
@@ -79,9 +80,9 @@ public class RunTrackMate extends Module {
 
     public interface Measurements {
         String RADIUS_PX = "SPOT_DETECT_TRACK // RADIUS_(PX)";
-        String RADIUS_CAL = "SPOT_DETECT_TRACK // RADIUS_(${CAL})";
+        String RADIUS_CAL = "SPOT_DETECT_TRACK // RADIUS_(${SCAL})";
         String ESTIMATED_DIAMETER_PX = "SPOT_DETECT_TRACK // EST_DIAMETER_(PX)";
-        String ESTIMATED_DIAMETER_CAL = "SPOT_DETECT_TRACK // EST_DIAMETER_(${CAL})";
+        String ESTIMATED_DIAMETER_CAL = "SPOT_DETECT_TRACK // EST_DIAMETER_(${SCAL})";
         String QUALITY = "SPOT_DETECT_TRACK // QUALITY";
 
     }
@@ -301,8 +302,6 @@ public class RunTrackMate extends Module {
 
     }
 
-
-
     @Override
     public Category getCategory() {
         return Categories.OBJECT_PROCESSING_IDENTIFICATION;
@@ -466,7 +465,7 @@ public class RunTrackMate extends Module {
         reference = objectMeasurementRefs.getOrPut(Measurements.RADIUS_CAL);
         reference.setObjectsName(outputSpotObjectsName);
         reference.setDescription("Radius used as size estimate for spot detection.  Measured in calibrated " +
-                "("+Units.getOMEUnits().getSymbol()+") units.");
+                "("+SpatialUnit.getOMEUnit().getSymbol()+") units.");
         returnedRefs.add(reference);
 
         reference = objectMeasurementRefs.getOrPut(Measurements.ESTIMATED_DIAMETER_PX);
@@ -477,7 +476,7 @@ public class RunTrackMate extends Module {
         reference = objectMeasurementRefs.getOrPut(Measurements.ESTIMATED_DIAMETER_CAL);
         reference.setObjectsName(outputSpotObjectsName);
         reference.setDescription("Diameter of spots as estimated by TrackMate.  Measured in calibrated " +
-                "("+Units.getOMEUnits().getSymbol()+") units.");
+                "("+SpatialUnit.getOMEUnit().getSymbol()+") units.");
         returnedRefs.add(reference);
 
         reference = objectMeasurementRefs.getOrPut(Measurements.QUALITY);

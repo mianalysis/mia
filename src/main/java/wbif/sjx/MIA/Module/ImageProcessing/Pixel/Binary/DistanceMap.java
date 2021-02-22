@@ -38,9 +38,9 @@ public class DistanceMap extends Module {
     public static final String OUTPUT_IMAGE = "Output image";
     public static final String DISTANCE_MAP_SEPARATOR = "Distance map controls";
     public static final String MATCH_Z_TO_X = "Match Z to XY";
-    public static final String SPATIAL_UNITS = "Spatial units";
+    public static final String SPATIAL_UNITS_MODE = "Spatial units mode";
 
-    public interface SpatialUnits {
+    public interface SpatialUnitsModes {
         String CALIBRATED = "Calibrated";
         String PIXELS = "Pixel";
 
@@ -141,13 +141,13 @@ public class DistanceMap extends Module {
         // Getting parameters
         String outputImageName = parameters.getValue(OUTPUT_IMAGE);
         boolean matchZToXY = parameters.getValue(MATCH_Z_TO_X);
-        String spatialUnits = parameters.getValue(SPATIAL_UNITS);
+        String spatialUnits = parameters.getValue(SPATIAL_UNITS_MODE);
 
         // Running distance map
         Image distanceMap = process(inputImage, outputImageName, matchZToXY, true);
 
         // Applying spatial calibration
-        if (spatialUnits.equals(SpatialUnits.CALIBRATED)) {
+        if (spatialUnits.equals(SpatialUnitsModes.CALIBRATED)) {
             double dppXY = inputImage.getImagePlus().getCalibration().pixelWidth;
             applyCalibratedUnits(distanceMap, dppXY);
         }
@@ -170,7 +170,7 @@ public class DistanceMap extends Module {
 
         parameters.add(new SeparatorP(DISTANCE_MAP_SEPARATOR, this));
         parameters.add(new BooleanP(MATCH_Z_TO_X, this, true));
-        parameters.add(new ChoiceP(SPATIAL_UNITS, this, SpatialUnits.PIXELS, SpatialUnits.ALL));
+        parameters.add(new ChoiceP(SPATIAL_UNITS_MODE, this, SpatialUnitsModes.PIXELS, SpatialUnitsModes.ALL));
 
         addParameterDescriptions();
 
