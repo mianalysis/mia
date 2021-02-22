@@ -8,7 +8,7 @@ import wbif.sjx.MIA.Object.Measurement;
 import wbif.sjx.MIA.Object.Obj;
 import wbif.sjx.MIA.Object.ObjCollection;
 import wbif.sjx.MIA.Object.Status;
-import wbif.sjx.MIA.Object.Units;
+import wbif.sjx.MIA.Object.Units.SpatialUnit;
 import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.MIA.Object.Parameters.BooleanP;
 import wbif.sjx.MIA.Object.Parameters.InputObjectsP;
@@ -42,7 +42,7 @@ public class FitLongestChord extends Module {
 
     public interface Measurements {
         String LENGTH_PX = "LONGEST_CHORD // LENGTH (PX)";
-        String LENGTH_CAL = "LONGEST_CHORD // LENGTH (${CAL})";
+        String LENGTH_CAL = "LONGEST_CHORD // LENGTH (${SCAL})";
         String X1_PX = "LONGEST_CHORD // X1 (PX)";
         String Y1_PX = "LONGEST_CHORD // Y1 (PX)";
         String Z1_SLICE = "LONGEST_CHORD // Z1 (SLICE)";
@@ -50,11 +50,11 @@ public class FitLongestChord extends Module {
         String Y2_PX = "LONGEST_CHORD // Y2 (PX)";
         String Z2_SLICE = "LONGEST_CHORD // Z2 (SLICE)";
         String MEAN_SURF_DIST_PX = "LONGEST_CHORD // MEAN_SURF_DIST (PX)";
-        String MEAN_SURF_DIST_CAL = "LONGEST_CHORD // MEAN_SURF_DIST (${CAL})";
+        String MEAN_SURF_DIST_CAL = "LONGEST_CHORD // MEAN_SURF_DIST (${SCAL})";
         String STD_SURF_DIST_PX = "LONGEST_CHORD // STD_SURF_DIST (PX)";
-        String STD_SURF_DIST_CAL = "LONGEST_CHORD // STD_SURF_DIST (${CAL})";
+        String STD_SURF_DIST_CAL = "LONGEST_CHORD // STD_SURF_DIST (${SCAL})";
         String MAX_SURF_DIST_PX = "LONGEST_CHORD // MAX_SURF_DIST (PX)";
-        String MAX_SURF_DIST_CAL = "LONGEST_CHORD // MAX_SURF_DIST (${CAL})";
+        String MAX_SURF_DIST_CAL = "LONGEST_CHORD // MAX_SURF_DIST (${SCAL})";
         String ORIENTATION_XY_DEGS = "LONGEST_CHORD // ORIENTATION_XY_(DEGS)";
 
     }
@@ -199,7 +199,7 @@ public class FitLongestChord extends Module {
         reference.setObjectsName(inputObjectsName);
         reference.setDescription("Length of the longest chord (the vector passing between the two points on the " + "\""
                 + inputObjectsName + "\" object surface with the greatest spacing).  Measured in calibrated ("
-                + Units.getOMEUnits().getSymbol() + ") units.");
+                + SpatialUnit.getOMEUnit().getSymbol() + ") units.");
         returnedRefs.add(reference);
 
         if (storeEndPoints) {
@@ -254,7 +254,7 @@ public class FitLongestChord extends Module {
             reference.setDescription(
                     "Mean distance of all points on the \"" + inputObjectsName + "\" object surface to the "
                             + "respective closest point on the longest chord.  Measured in calibrated ("
-                            + Units.getOMEUnits().getSymbol() + ") units.");
+                            + SpatialUnit.getOMEUnit().getSymbol() + ") units.");
             returnedRefs.add(reference);
 
             reference = objectMeasurementRefs.getOrPut(Measurements.STD_SURF_DIST_PX);
@@ -270,7 +270,7 @@ public class FitLongestChord extends Module {
             reference.setDescription(
                     "Standard deviation distance of all points on the \"" + inputObjectsName + "\" object "
                             + "surface to the respective closest point on the longest chord.  Measured in calibrated ("
-                            + Units.getOMEUnits().getSymbol() + ") units.");
+                            + SpatialUnit.getOMEUnit().getSymbol() + ") units.");
             returnedRefs.add(reference);
 
             reference = objectMeasurementRefs.getOrPut(Measurements.MAX_SURF_DIST_PX);
@@ -286,7 +286,7 @@ public class FitLongestChord extends Module {
             reference.setDescription(
                     "Maximum distance of all points on the \"" + inputObjectsName + "\" object surface to the "
                             + "respective closest point on the longest chord.  Measured in calibrated ("
-                            + Units.getOMEUnits().getSymbol() + ") units.");
+                            + SpatialUnit.getOMEUnit().getSymbol() + ") units.");
             returnedRefs.add(reference);
         }
 

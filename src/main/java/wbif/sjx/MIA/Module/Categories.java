@@ -3,7 +3,7 @@ package wbif.sjx.MIA.Module;
 public class Categories {
     public final static Category ROOT = new Category("Modules", "All operations are performed using dedicated modules. Typically, a module will perform one specific task, such as loading an image or measuring the shapes of objects.", null);
 
-    public final static Category CORE = new Category("Core", "Required modules for input and output control.  Each workflow contains one copy of each module.", ROOT);
+    public final static Category CORE = new Category("Core", "Required modules for input and output control.  Each workflow contains one copy of each module.", ROOT, false);
     
     public final static Category DEPRECATED = new Category("Deprecated",
                     "Modules which will be removed in future releases of MIA.  In all cases, functionality is provided by alternative modules.  See individual module documentation for details.", ROOT);

@@ -16,7 +16,7 @@ import javax.swing.text.Document;
 import javax.swing.text.PlainDocument;
 
 import wbif.sjx.MIA.GUI.GUI;
-import wbif.sjx.MIA.Module.Hidden.OutputControl;
+import wbif.sjx.MIA.Module.Core.OutputControl;
 import wbif.sjx.MIA.Object.Parameters.Text.TextAreaP;
 
 public class TextAreaParameter extends ParameterControl implements FocusListener {

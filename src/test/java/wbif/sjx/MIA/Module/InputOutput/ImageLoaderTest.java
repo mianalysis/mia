@@ -18,7 +18,7 @@ import wbif.sjx.MIA.Module.ModuleTest;
 import wbif.sjx.MIA.Module.ImageProcessing.Stack.CropImage;
 import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.Status;
-import wbif.sjx.MIA.Object.Units;
+import wbif.sjx.MIA.Object.Units.SpatialUnit;
 import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.MIA.Object.WorkspaceCollection;
 
@@ -33,7 +33,7 @@ public class ImageLoaderTest extends ModuleTest {
 
     @BeforeEach
     public void setupTest() {
-        Units.setUnits(Units.SpatialUnits.MICROMETRE);
+        SpatialUnit.setUnit(SpatialUnit.AvailableUnits.MICROMETRE);
     }
 
     @Override
@@ -248,7 +248,7 @@ public class ImageLoaderTest extends ModuleTest {
         imageFileLoader.updateParameterValue(ImageLoader.CHANNELS,"1-end");
         imageFileLoader.updateParameterValue(ImageLoader.SLICES,"1-end");
         imageFileLoader.updateParameterValue(ImageLoader.FRAMES,"1-end");
-        imageFileLoader.updateParameterValue(ImageLoader.SET_CAL,true);
+        imageFileLoader.updateParameterValue(ImageLoader.SET_SPATIAL_CAL,true);
         imageFileLoader.updateParameterValue(ImageLoader.XY_CAL,0.5);
         imageFileLoader.updateParameterValue(ImageLoader.Z_CAL,0.2);
 
@@ -300,7 +300,7 @@ public class ImageLoaderTest extends ModuleTest {
         imageFileLoader.updateParameterValue(ImageLoader.CHANNELS,"2-2");
         imageFileLoader.updateParameterValue(ImageLoader.SLICES,"1-end");
         imageFileLoader.updateParameterValue(ImageLoader.FRAMES,"1-end");
-        imageFileLoader.updateParameterValue(ImageLoader.SET_CAL,false);
+        imageFileLoader.updateParameterValue(ImageLoader.SET_SPATIAL_CAL,false);
 
         // Running module
         imageFileLoader.execute(workspace);
@@ -350,7 +350,7 @@ public class ImageLoaderTest extends ModuleTest {
         imageFileLoader.updateParameterValue(ImageLoader.CHANNELS,"0-3");
         imageFileLoader.updateParameterValue(ImageLoader.SLICES,"1-end");
         imageFileLoader.updateParameterValue(ImageLoader.FRAMES,"1-end");
-        imageFileLoader.updateParameterValue(ImageLoader.SET_CAL,false);
+        imageFileLoader.updateParameterValue(ImageLoader.SET_SPATIAL_CAL,false);
 
         // Running module
         Status status = imageFileLoader.execute(workspace);
@@ -378,7 +378,7 @@ public class ImageLoaderTest extends ModuleTest {
         imageFileLoader.updateParameterValue(ImageLoader.CHANNELS,"5-8");
         imageFileLoader.updateParameterValue(ImageLoader.SLICES,"1-end");
         imageFileLoader.updateParameterValue(ImageLoader.FRAMES,"1-end");
-        imageFileLoader.updateParameterValue(ImageLoader.SET_CAL,false);
+        imageFileLoader.updateParameterValue(ImageLoader.SET_SPATIAL_CAL,false);
 
         // Running module
         Status status = imageFileLoader.execute(workspace);
@@ -406,7 +406,7 @@ public class ImageLoaderTest extends ModuleTest {
         imageFileLoader.updateParameterValue(ImageLoader.CHANNELS,"1-end");
         imageFileLoader.updateParameterValue(ImageLoader.SLICES,"3-6");
         imageFileLoader.updateParameterValue(ImageLoader.FRAMES,"1-end");
-        imageFileLoader.updateParameterValue(ImageLoader.SET_CAL,false);
+        imageFileLoader.updateParameterValue(ImageLoader.SET_SPATIAL_CAL,false);
 
         // Running module
         imageFileLoader.execute(workspace);
@@ -456,7 +456,7 @@ public class ImageLoaderTest extends ModuleTest {
         imageFileLoader.updateParameterValue(ImageLoader.CHANNELS,"1-end");
         imageFileLoader.updateParameterValue(ImageLoader.SLICES,"0-1");
         imageFileLoader.updateParameterValue(ImageLoader.FRAMES,"1-end");
-        imageFileLoader.updateParameterValue(ImageLoader.SET_CAL,false);
+        imageFileLoader.updateParameterValue(ImageLoader.SET_SPATIAL_CAL,false);
 
         // Running module
         Status status = imageFileLoader.execute(workspace);
@@ -484,7 +484,7 @@ public class ImageLoaderTest extends ModuleTest {
         imageFileLoader.updateParameterValue(ImageLoader.CHANNELS,"1-end");
         imageFileLoader.updateParameterValue(ImageLoader.SLICES,"13");
         imageFileLoader.updateParameterValue(ImageLoader.FRAMES,"1-end");
-        imageFileLoader.updateParameterValue(ImageLoader.SET_CAL,false);
+        imageFileLoader.updateParameterValue(ImageLoader.SET_SPATIAL_CAL,false);
 
         // Running module
         Status status = imageFileLoader.execute(workspace);
@@ -512,7 +512,7 @@ public class ImageLoaderTest extends ModuleTest {
         imageFileLoader.updateParameterValue(ImageLoader.CHANNELS,"1-end");
         imageFileLoader.updateParameterValue(ImageLoader.SLICES,"1-end");
         imageFileLoader.updateParameterValue(ImageLoader.FRAMES,"2-4");
-        imageFileLoader.updateParameterValue(ImageLoader.SET_CAL,false);
+        imageFileLoader.updateParameterValue(ImageLoader.SET_SPATIAL_CAL,false);
 
         // Running module
         imageFileLoader.execute(workspace);
@@ -562,7 +562,7 @@ public class ImageLoaderTest extends ModuleTest {
         imageFileLoader.updateParameterValue(ImageLoader.CHANNELS,"1-end");
         imageFileLoader.updateParameterValue(ImageLoader.SLICES,"1-end");
         imageFileLoader.updateParameterValue(ImageLoader.FRAMES,"-4");
-        imageFileLoader.updateParameterValue(ImageLoader.SET_CAL,false);
+        imageFileLoader.updateParameterValue(ImageLoader.SET_SPATIAL_CAL,false);
 
         // Running module
         Status status = imageFileLoader.execute(workspace);
@@ -590,7 +590,7 @@ public class ImageLoaderTest extends ModuleTest {
         imageFileLoader.updateParameterValue(ImageLoader.CHANNELS,"1-end");
         imageFileLoader.updateParameterValue(ImageLoader.SLICES,"1-end");
         imageFileLoader.updateParameterValue(ImageLoader.FRAMES,"7-8");
-        imageFileLoader.updateParameterValue(ImageLoader.SET_CAL,false);
+        imageFileLoader.updateParameterValue(ImageLoader.SET_SPATIAL_CAL,false);
 
         // Running module
         Status status = imageFileLoader.execute(workspace);
@@ -618,7 +618,7 @@ public class ImageLoaderTest extends ModuleTest {
         imageFileLoader.updateParameterValue(ImageLoader.CHANNELS,"2");
         imageFileLoader.updateParameterValue(ImageLoader.SLICES,"3-8");
         imageFileLoader.updateParameterValue(ImageLoader.FRAMES,"3,4");
-        imageFileLoader.updateParameterValue(ImageLoader.SET_CAL,false);
+        imageFileLoader.updateParameterValue(ImageLoader.SET_SPATIAL_CAL,false);
 
         // Running module
         imageFileLoader.execute(workspace);
@@ -750,7 +750,7 @@ public class ImageLoaderTest extends ModuleTest {
         imageFileLoader.updateParameterValue(ImageLoader.IMPORT_MODE, ImageLoader.ImportModes.CURRENT_FILE);
         imageFileLoader.updateParameterValue(ImageLoader.OUTPUT_IMAGE,"Test_Output_Image");
         imageFileLoader.updateParameterValue(ImageLoader.CROP_MODE,ImageLoader.CropModes.NONE);
-        imageFileLoader.updateParameterValue(ImageLoader.SET_CAL,true);
+        imageFileLoader.updateParameterValue(ImageLoader.SET_SPATIAL_CAL,true);
         imageFileLoader.updateParameterValue(ImageLoader.XY_CAL,0.5);
         imageFileLoader.updateParameterValue(ImageLoader.Z_CAL,1.2);
 
@@ -780,7 +780,7 @@ public class ImageLoaderTest extends ModuleTest {
     @Test
     public void testRunWithNanometreCalibration() throws Exception {
         // Setting the spatial calibration
-        Units.setUnits(Units.SpatialUnits.NANOMETRE);
+        SpatialUnit.setUnit(SpatialUnit.AvailableUnits.NANOMETRE);
 
         // Getting path to image file
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient/NoisyGradient5D_8bit.tif").getPath(),"UTF-8");
@@ -797,7 +797,7 @@ public class ImageLoaderTest extends ModuleTest {
         imageFileLoader.updateParameterValue(ImageLoader.IMPORT_MODE, ImageLoader.ImportModes.CURRENT_FILE);
         imageFileLoader.updateParameterValue(ImageLoader.OUTPUT_IMAGE,"Test_Output_Image");
         imageFileLoader.updateParameterValue(ImageLoader.CROP_MODE,ImageLoader.CropModes.NONE);
-        imageFileLoader.updateParameterValue(ImageLoader.SET_CAL,false);
+        imageFileLoader.updateParameterValue(ImageLoader.SET_SPATIAL_CAL,false);
 
         // Running module
         imageFileLoader.execute(workspace);
@@ -827,14 +827,14 @@ public class ImageLoaderTest extends ModuleTest {
         assertEquals(calibratedUnits,image.getImagePlus().getCalibration().getUnits());
 
         // Need to return calibration to microns, else the other tests may fail
-        Units.setUnits(Units.SpatialUnits.MICROMETRE);
+        SpatialUnit.setUnit(SpatialUnit.AvailableUnits.MICROMETRE);
 
     }
 
     @Test
     public void testRunWithMillimetreCalibration() throws Exception {
         // Setting the spatial calibration
-        Units.setUnits(Units.SpatialUnits.MILLIMETRE);
+        SpatialUnit.setUnit(SpatialUnit.AvailableUnits.MILLIMETRE);
 
         // Getting path to image file
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient/NoisyGradient5D_8bit.tif").getPath(),"UTF-8");
@@ -851,7 +851,7 @@ public class ImageLoaderTest extends ModuleTest {
         imageFileLoader.updateParameterValue(ImageLoader.IMPORT_MODE, ImageLoader.ImportModes.CURRENT_FILE);
         imageFileLoader.updateParameterValue(ImageLoader.OUTPUT_IMAGE,"Test_Output_Image");
         imageFileLoader.updateParameterValue(ImageLoader.CROP_MODE,ImageLoader.CropModes.NONE);
-        imageFileLoader.updateParameterValue(ImageLoader.SET_CAL,false);
+        imageFileLoader.updateParameterValue(ImageLoader.SET_SPATIAL_CAL,false);
 
         // Running module
         imageFileLoader.execute(workspace);
@@ -881,7 +881,7 @@ public class ImageLoaderTest extends ModuleTest {
         assertEquals(calibratedUnits,image.getImagePlus().getCalibration().getUnits());
 
         // Need to return calibration to microns, else the other tests may fail
-        Units.setUnits(Units.SpatialUnits.MICROMETRE);
+        SpatialUnit.setUnit(SpatialUnit.AvailableUnits.MICROMETRE);
 
     }
 

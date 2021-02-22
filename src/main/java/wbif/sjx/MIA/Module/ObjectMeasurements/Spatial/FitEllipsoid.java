@@ -76,21 +76,21 @@ public class FitEllipsoid extends Module {
 
     public interface Measurements {
         String X_CENT_PX = "ELLIPSOID // X_CENTROID (PX)";
-        String X_CENT_CAL = "ELLIPSOID // X_CENTROID (${CAL})";
+        String X_CENT_CAL = "ELLIPSOID // X_CENTROID (${SCAL})";
         String Y_CENT_PX = "ELLIPSOID // Y_CENTROID (PX)";
-        String Y_CENT_CAL = "ELLIPSOID // Y_CENTROID (${CAL})";
+        String Y_CENT_CAL = "ELLIPSOID // Y_CENTROID (${SCAL})";
         String Z_CENT_SLICE = "ELLIPSOID // Z_CENTROID (SLICE)";
-        String Z_CENT_CAL = "ELLIPSOID // Z_CENTROID (${CAL})";
+        String Z_CENT_CAL = "ELLIPSOID // Z_CENTROID (${SCAL})";
         String RADIUS_1_PX = "ELLIPSOID // RADIUS_1 (PX)";
-        String RADIUS_1_CAL = "ELLIPSOID // RADIUS_1 (${CAL})";
+        String RADIUS_1_CAL = "ELLIPSOID // RADIUS_1 (${SCAL})";
         String RADIUS_2_PX = "ELLIPSOID // RADIUS_2 (PX)";
-        String RADIUS_2_CAL = "ELLIPSOID // RADIUS_2 (${CAL})";
+        String RADIUS_2_CAL = "ELLIPSOID // RADIUS_2 (${SCAL})";
         String RADIUS_3_PX = "ELLIPSOID // RADIUS_3 (PX)";
-        String RADIUS_3_CAL = "ELLIPSOID // RADIUS_3 (${CAL})";
+        String RADIUS_3_CAL = "ELLIPSOID // RADIUS_3 (${SCAL})";
         String SURFACE_AREA_PX = "ELLIPSOID // SURFACE_AREA (PX²)";
-        String SURFACE_AREA_CAL = "ELLIPSOID // SURFACE_AREA (${CAL}²)";
+        String SURFACE_AREA_CAL = "ELLIPSOID // SURFACE_AREA (${SCAL}²)";
         String VOLUME_PX = "ELLIPSOID // VOLUME (PX³)";
-        String VOLUME_CAL = "ELLIPSOID // VOLUME (${CAL}³)";
+        String VOLUME_CAL = "ELLIPSOID // VOLUME (${SCAL}³)";
         String ORIENTATION_1 = "ELLIPSOID // ORIENTATION_1 (DEGS)";
         String ORIENTATION_2 = "ELLIPSOID // ORIENTATION_2 (DEGS)";
         String SPHERICITY = "ELLIPSOID // SPHERICITY";

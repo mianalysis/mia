@@ -16,6 +16,7 @@ import wbif.sjx.MIA.Object.References.Collections.MetadataRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.ObjMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.ParentChildRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.PartnerRefCollection;
+import wbif.sjx.MIA.Object.Units.SpatialUnit;
 
 import java.util.ArrayList;
 
@@ -34,9 +35,9 @@ public class MeasureObjectCentroid extends Module {
         String MEAN_X_PX = "CENTROID // MEAN_X_(PX)";
         String MEAN_Y_PX = "CENTROID // MEAN_Y_(PX)";
         String MEAN_Z_SLICE = "CENTROID // MEAN_Z_(SLICE)";
-        String MEAN_X_CAL = "CENTROID // MEAN_X_(${CAL})";
-        String MEAN_Y_CAL = "CENTROID // MEAN_Y_(${CAL})";
-        String MEAN_Z_CAL = "CENTROID // MEAN_Z_(${CAL})";
+        String MEAN_X_CAL = "CENTROID // MEAN_X_(${SCAL})";
+        String MEAN_Y_CAL = "CENTROID // MEAN_Y_(${SCAL})";
+        String MEAN_Z_CAL = "CENTROID // MEAN_Z_(${SCAL})";
 
     }
 
@@ -129,19 +130,19 @@ public class MeasureObjectCentroid extends Module {
         reference = objectMeasurementRefs.getOrPut(Measurements.MEAN_X_CAL);
         reference.setObjectsName(inputObjectsName);
         reference.setDescription("Mean x-position of all pixels in the object, \""+inputObjectsName+"\"." +
-                "  Measured in calibrated ("+Units.getOMEUnits().getSymbol()+") units.");
+                "  Measured in calibrated ("+SpatialUnit.getOMEUnit().getSymbol()+") units.");
         returnedRefs.add(reference);
 
         reference = objectMeasurementRefs.getOrPut(Measurements.MEAN_Y_CAL);
         reference.setObjectsName(inputObjectsName);
         reference.setDescription("Mean y-position of all pixels in the object, \""+inputObjectsName+"\"." +
-                "  Measured in calibrated ("+Units.getOMEUnits().getSymbol()+") units.");
+                "  Measured in calibrated ("+SpatialUnit.getOMEUnit().getSymbol()+") units.");
         returnedRefs.add(reference);
 
         reference = objectMeasurementRefs.getOrPut(Measurements.MEAN_Z_CAL);
         reference.setObjectsName(inputObjectsName);
         reference.setDescription("Mean z-position of all pixels in the object, \""+inputObjectsName+"\"." +
-                "  Measured in calibrated ("+Units.getOMEUnits().getSymbol()+") units.");
+                "  Measured in calibrated ("+SpatialUnit.getOMEUnit().getSymbol()+") units.");
         returnedRefs.add(reference);
 
         return returnedRefs;

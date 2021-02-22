@@ -20,8 +20,8 @@ import wbif.sjx.MIA.GUI.Panels.ParametersPanel;
 import wbif.sjx.MIA.GUI.Panels.ProgressBarPanel;
 import wbif.sjx.MIA.GUI.Panels.StatusPanel;
 import wbif.sjx.MIA.Module.Module;
-import wbif.sjx.MIA.Module.Hidden.InputControl;
-import wbif.sjx.MIA.Module.Hidden.OutputControl;
+import wbif.sjx.MIA.Module.Core.InputControl;
+import wbif.sjx.MIA.Module.Core.OutputControl;
 import wbif.sjx.MIA.Process.AnalysisHandling.Analysis;
 import wbif.sjx.MIA.Process.AnalysisHandling.AnalysisTester;
 

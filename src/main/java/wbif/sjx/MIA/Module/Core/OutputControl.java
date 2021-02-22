@@ -1,4 +1,4 @@
-package wbif.sjx.MIA.Module.Hidden;
+package wbif.sjx.MIA.Module.Core;
 
 import java.io.File;
 

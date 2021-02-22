@@ -218,11 +218,8 @@ public abstract class AutomaticRegistration<T extends RealType<T> & NativeType<T
             AbstractAffineModel2D model = getAffineModel2D(reference.getImagePlus().getProcessor(),
                     warped.getImagePlus().getProcessor(), param);
 
-            if (model == null)
-                MIA.log.writeDebug("Model null");
-
             InverseTransformMapping mapping = new InverseTransformMapping<AbstractAffineModel2D<?>>(model);
-            MIA.log.writeDebug(mapping.getTransform());
+            
             // Applying the transformation to the whole stack.
             // All channels should move in the same way, so are processed with the same
             // transformation.

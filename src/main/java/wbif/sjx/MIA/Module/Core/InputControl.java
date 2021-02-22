@@ -1,4 +1,4 @@
-package wbif.sjx.MIA.Module.Hidden;
+package wbif.sjx.MIA.Module.Core;
 
 import java.io.File;
 import java.util.HashSet;
@@ -26,7 +26,6 @@ import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.Miscellaneous.Macros.RunMacroOnImage;
 import wbif.sjx.MIA.Module.Miscellaneous.Macros.RunMacroOnObjects;
 import wbif.sjx.MIA.Object.Status;
-import wbif.sjx.MIA.Object.Units;
 import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.MIA.Object.Parameters.BooleanP;
 import wbif.sjx.MIA.Object.Parameters.ChoiceP;
@@ -43,6 +42,8 @@ import wbif.sjx.MIA.Object.References.Collections.MetadataRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.ObjMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.ParentChildRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.PartnerRefCollection;
+import wbif.sjx.MIA.Object.Units.SpatialUnit;
+import wbif.sjx.MIA.Object.Units.TemporalUnit;
 import wbif.sjx.MIA.Process.CommaSeparatedStringInterpreter;
 import wbif.sjx.common.FileConditions.ExtensionMatchesString;
 import wbif.sjx.common.FileConditions.FileCondition;
@@ -58,7 +59,8 @@ public class InputControl extends Module {
     public static final String IMPORT_SEPARATOR = "Core import controls";
     public static final String INPUT_PATH = "Input path";
     // public static final String FILE_LIST = "File list";
-    public static final String SPATIAL_UNITS = "Spatial units";
+    public static final String SPATIAL_UNIT = "Spatial unit";
+    public static final String TEMPORAL_UNIT = "Temporal unit";
     public static final String SIMULTANEOUS_JOBS = "Simultaneous jobs";
     public static final String MACRO_WARNING = "Macro warning";
     public static final String SERIES_MODE = "Series mode";
@@ -112,7 +114,10 @@ public class InputControl extends Module {
 
     }
 
-    public static interface SpatialUnits extends Units.SpatialUnits {
+    public static interface AvailableSpatialUnits extends SpatialUnit.AvailableUnits {
+    }
+
+    public static interface AvailableTemporalUnits extends TemporalUnit.AvailableUnits {
     }
 
     public File getRootFile() {
@@ -316,7 +321,6 @@ public class InputControl extends Module {
 
     }
 
-
     @Override
     public Category getCategory() {
         return Categories.CORE;
@@ -360,7 +364,8 @@ public class InputControl extends Module {
         collection.add(new ChoiceP(FILTER_TYPE, this, FilterTypes.INCLUDE_MATCHES_PARTIALLY, FilterTypes.ALL));
         parameters.add(new ParameterGroup(ADD_FILTER, this, collection, 0));
 
-        parameters.add(new ChoiceP(SPATIAL_UNITS, this, SpatialUnits.MICROMETRE, SpatialUnits.ALL));
+        parameters.add(new ChoiceP(SPATIAL_UNIT, this, AvailableSpatialUnits.MICROMETRE, AvailableSpatialUnits.ALL));
+        parameters.add(new ChoiceP(TEMPORAL_UNIT, this, AvailableTemporalUnits.MILLISECOND, AvailableTemporalUnits.ALL));
         parameters.add(new MessageP(NO_LOAD_MESSAGE, this,
                 "\"Input control\" only specifies the path to the root image; no image is loaded into the active workspace at this point.  To load images, add a \"Load Image\" module (multiple copies of this can be added to a single workflow).",
                 Colours.RED));
@@ -385,7 +390,8 @@ public class InputControl extends Module {
                 break;
         }
         returnedParameters.add(parameters.getParameter(LOAD_FIRST_PER_FOLDER));
-        returnedParameters.add(parameters.getParameter(SPATIAL_UNITS));
+        returnedParameters.add(parameters.getParameter(SPATIAL_UNIT));
+        returnedParameters.add(parameters.getParameter(TEMPORAL_UNIT));
         returnedParameters.add(parameters.getParameter(SIMULTANEOUS_JOBS));
 
         // If a the RunMacro module is present, this analysis must be run as a single
@@ -489,8 +495,11 @@ public class InputControl extends Module {
         parameters.get(ADD_FILTER)
                 .setDescription("Add another filename filter.  All images to be processed will pass all filters.");
 
-        parameters.get(SPATIAL_UNITS).setDescription(
+        parameters.get(SPATIAL_UNIT).setDescription(
                 "Spatial units for calibrated measurements.  Assuming spatial calibration can be read from the input file when loaded, this will convert the input calibrated units to the units specified here.");
+
+        parameters.get(TEMPORAL_UNIT).setDescription(
+                "Temporal units for calibrated measurements.  Assuming temporal calibration can be read from the input file when loaded, this will convert the input calibrated units to the units specified here.");
 
     }
 }

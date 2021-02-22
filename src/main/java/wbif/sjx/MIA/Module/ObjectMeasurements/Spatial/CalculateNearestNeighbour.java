@@ -29,7 +29,7 @@ import wbif.sjx.MIA.Object.Measurement;
 import wbif.sjx.MIA.Object.Obj;
 import wbif.sjx.MIA.Object.ObjCollection;
 import wbif.sjx.MIA.Object.Status;
-import wbif.sjx.MIA.Object.Units;
+import wbif.sjx.MIA.Object.Units.SpatialUnit;
 import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.MIA.Object.Parameters.BooleanP;
 import wbif.sjx.MIA.Object.Parameters.ChoiceP;
@@ -110,7 +110,7 @@ public class CalculateNearestNeighbour extends Module {
 
     public interface Measurements {
         String NN_DISTANCE_PX = "NN_DISTANCE_TO_${NEIGHBOUR}_(PX)";
-        String NN_DISTANCE_CAL = "NN_DISTANCE_TO_${NEIGHBOUR}_(${CAL})";
+        String NN_DISTANCE_CAL = "NN_DISTANCE_TO_${NEIGHBOUR}_(${SCAL})";
         String NN_ID = "NN_${NEIGHBOUR}_ID";
     }
 
@@ -256,7 +256,7 @@ public class CalculateNearestNeighbour extends Module {
         cell.setCellStyle(cellStyle);
 
         cell = row.createCell(colCount++);
-        cell.setCellValue(Units.replace("DISTANCE (${CAL})"));
+        cell.setCellValue(SpatialUnit.replace("DISTANCE (${SCAL})"));
         cell.setCellStyle(cellStyle);
 
         if (distances.size() == 0)

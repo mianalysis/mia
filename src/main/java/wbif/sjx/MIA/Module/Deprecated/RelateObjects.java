@@ -15,7 +15,7 @@ import wbif.sjx.MIA.Object.Measurement;
 import wbif.sjx.MIA.Object.Obj;
 import wbif.sjx.MIA.Object.ObjCollection;
 import wbif.sjx.MIA.Object.Status;
-import wbif.sjx.MIA.Object.Units;
+import wbif.sjx.MIA.Object.Units.SpatialUnit;
 import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.MIA.Object.Parameters.BooleanP;
 import wbif.sjx.MIA.Object.Parameters.ChoiceP;
@@ -92,10 +92,10 @@ public class RelateObjects extends Module {
     public interface Measurements {
         String DIST_SURFACE_PX = "DIST_TO_${PARENT}_SURF_(PX)";
         String DIST_CENTROID_PX = "DIST_TO_${PARENT}_CENT_(PX)";
-        String DIST_SURFACE_CAL = "DIST_TO_${PARENT}_SURF_(${CAL})";
-        String DIST_CENTROID_CAL = "DIST_TO_${PARENT}_CENT_(${CAL})";
+        String DIST_SURFACE_CAL = "DIST_TO_${PARENT}_SURF_(${SCAL})";
+        String DIST_CENTROID_CAL = "DIST_TO_${PARENT}_CENT_(${SCAL})";
         String DIST_CENT_SURF_PX = "DIST_FROM_CENT_TO_${PARENT}_SURF_(PX)";
-        String DIST_CENT_SURF_CAL = "DIST_FROM_CENT_TO_${PARENT}_SURF_(${CAL})";
+        String DIST_CENT_SURF_CAL = "DIST_FROM_CENT_TO_${PARENT}_SURF_(${SCAL})";
         String DIST_CENT_SURF_FRAC = "DIST_FROM_CENT_TO_${PARENT}_SURF_(FRAC)";
         String OVERLAP_PC = "OVERLAP_WITH_${PARENT}_PERCENTAGE";
 
@@ -604,7 +604,7 @@ public class RelateObjects extends Module {
         ObjMeasurementRef distSurfCal = objectMeasurementRefs.getOrPut(measurementName);
         distSurfCal.setDescription("Shortest distance between the surface of this object and that of the closest \""
                 + parentObjectName + "\" object.  Negative values indicate this object is inside the relevant \""
-                + parentObjectName + "\" object. Measured in calibrated (" + Units.getOMEUnits().getSymbol()
+                + parentObjectName + "\" object. Measured in calibrated (" + SpatialUnit.getOMEUnit().getSymbol()
                 + ") units.");
 
         measurementName = getFullName(Measurements.DIST_CENTROID_PX, parentObjectName);
@@ -616,7 +616,7 @@ public class RelateObjects extends Module {
         ObjMeasurementRef distCentCal = objectMeasurementRefs.getOrPut(measurementName);
         distCentCal.setDescription(
                 "Distance between the centroid of this object and that of the closest \"" + parentObjectName
-                        + "\"object.  Measured in calibrated (" + Units.getOMEUnits().getSymbol() + ") units.");
+                        + "\"object.  Measured in calibrated (" + SpatialUnit.getOMEUnit().getSymbol() + ") units.");
 
         measurementName = getFullName(Measurements.DIST_CENT_SURF_PX, parentObjectName);
         ObjMeasurementRef distCentSurfPx = objectMeasurementRefs.getOrPut(measurementName);
@@ -629,7 +629,7 @@ public class RelateObjects extends Module {
         distCentSurfCal.setDescription("Shortest distance between the centroid of this object and the surface of the "
                 + "closest \"" + parentObjectName + "\" object.  Negative values indicate this object is inside the "
                 + "relevant \"" + parentObjectName + "\" object. Measured in calibrated ("
-                + Units.getOMEUnits().getSymbol() + ") " + "units.");
+                + SpatialUnit.getOMEUnit().getSymbol() + ") " + "units.");
 
         measurementName = getFullName(Measurements.DIST_CENT_SURF_FRAC, parentObjectName);
         ObjMeasurementRef distCentSurfFrac = objectMeasurementRefs.getOrPut(measurementName);

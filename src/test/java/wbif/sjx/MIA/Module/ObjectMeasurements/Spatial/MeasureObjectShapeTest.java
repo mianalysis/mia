@@ -14,7 +14,7 @@ import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleTest;
 import wbif.sjx.MIA.Object.Obj;
 import wbif.sjx.MIA.Object.ObjCollection;
-import wbif.sjx.MIA.Object.Units;
+import wbif.sjx.MIA.Object.Units.SpatialUnit;
 import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.MIA.Object.WorkspaceCollection;
 import wbif.sjx.common.Object.Volume.VolumeType;
@@ -81,7 +81,7 @@ public class MeasureObjectShapeTest extends ModuleTest {
             assertEquals(expectedProjDiaPX, actualProjDiaPX, tolerance);
 
             double expectedProjDiaCal = testObject.getMeasurement(Objects3D.Measures.EXP_PROJ_DIA_CAL.name()).getValue();
-            double actualProjDiaCal = testObject.getMeasurement(Units.replace(MeasureObjectShape.Measurements.PROJ_DIA_CAL)).getValue();
+            double actualProjDiaCal = testObject.getMeasurement(SpatialUnit.replace(MeasureObjectShape.Measurements.PROJ_DIA_CAL)).getValue();
             assertEquals(expectedProjDiaCal, actualProjDiaCal, tolerance);
 
         }

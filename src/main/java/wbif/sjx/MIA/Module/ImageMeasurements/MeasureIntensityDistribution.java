@@ -68,7 +68,7 @@ public class MeasureIntensityDistribution extends Module {
     public static final String PROFILE_FILE_SUFFIX = "Profile file suffix";
     public static final String INPUT_OBJECTS = "Input objects";
     public static final String PROXIMAL_DISTANCE = "Proximal distance";
-    public static final String SPATIAL_UNITS = "Spatial units";
+    public static final String SPATIAL_UNITS_MODE = "Spatial units mode";
     public static final String IGNORE_ON_OBJECTS = "Ignore values on objects";
     public static final String EDGE_DISTANCE_MODE = "Edge distance mode";
 
@@ -94,7 +94,7 @@ public class MeasureIntensityDistribution extends Module {
 
     }
 
-    public interface SpatialUnits {
+    public interface SpatialUnitModes {
         String CALIBRATED = "Calibrated";
         String PIXELS = "Pixel";
 
@@ -127,9 +127,9 @@ public class MeasureIntensityDistribution extends Module {
         String MEAN_INT_INRANGE = "MEAN_INT_INRANGE";
         String MEAN_INT_OUTRANGE = "MEAN_INT_OUTRANGE";
         String MEAN_PROXIMITY_PX = "MEAN_PROXIMITY_PX";
-        String MEAN_PROXIMITY_CAL = "MEAN_PROXIMITY_${CAL}";
+        String MEAN_PROXIMITY_CAL = "MEAN_PROXIMITY_${SCAL}";
         String STDEV_PROXIMITY_PX = "STDEV_PROXIMITY_PX";
-        String STDEV_PROXIMITY_CAL = "STDEV_PROXIMITY_${CAL}";
+        String STDEV_PROXIMITY_CAL = "STDEV_PROXIMITY_${SCAL}";
 
     }
 
@@ -435,13 +435,13 @@ public class MeasureIntensityDistribution extends Module {
         String profileFileSuffix = parameters.getValue(PROFILE_FILE_SUFFIX);
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
         double proximalDistance = parameters.getValue(PROXIMAL_DISTANCE);
-        String spatialUnits = parameters.getValue(SPATIAL_UNITS);
+        String spatialUnits = parameters.getValue(SPATIAL_UNITS_MODE);
         boolean ignoreOnObjects = parameters.getValue(IGNORE_ON_OBJECTS);
         String edgeDistanceMode = parameters.getValue(EDGE_DISTANCE_MODE);
 
         Image inputImage = workspace.getImages().get(inputImageName);
 
-        if (spatialUnits.equals(SpatialUnits.CALIBRATED)) {
+        if (spatialUnits.equals(SpatialUnitModes.CALIBRATED)) {
             Calibration calibration = inputImage.getImagePlus().getCalibration();
             proximalDistance = calibration.getRawX(proximalDistance);
         }
@@ -581,7 +581,7 @@ public class MeasureIntensityDistribution extends Module {
         parameters.add(new StringP(PROFILE_FILE_SUFFIX,this));
         parameters.add(new InputObjectsP(INPUT_OBJECTS, this));
         parameters.add(new DoubleP(PROXIMAL_DISTANCE, this,2d));
-        parameters.add(new ChoiceP(SPATIAL_UNITS, this, SpatialUnits.PIXELS, SpatialUnits.ALL));
+        parameters.add(new ChoiceP(SPATIAL_UNITS_MODE, this, SpatialUnitModes.PIXELS, SpatialUnitModes.ALL));
         parameters.add(new BooleanP(IGNORE_ON_OBJECTS, this, false));
         parameters.add(new ChoiceP(EDGE_DISTANCE_MODE,this, EdgeDistanceModes.INSIDE_AND_OUTSIDE, EdgeDistanceModes.ALL));
 
@@ -615,7 +615,7 @@ public class MeasureIntensityDistribution extends Module {
             case MeasurementTypes.FRACTION_PROXIMAL_TO_OBJECTS:
                 returnedParameters.add(parameters.getParameter(INPUT_OBJECTS));
                 returnedParameters.add(parameters.getParameter(PROXIMAL_DISTANCE));
-                returnedParameters.add(parameters.getParameter(SPATIAL_UNITS));
+                returnedParameters.add(parameters.getParameter(SPATIAL_UNITS_MODE));
                 returnedParameters.add(parameters.getParameter(IGNORE_ON_OBJECTS));
                 break;
 

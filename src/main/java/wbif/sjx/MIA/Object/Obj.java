@@ -10,6 +10,8 @@ import ij.ImagePlus;
 import ij.gui.Roi;
 import ij.plugin.filter.ThresholdToSelection;
 import ij.process.ImageProcessor;
+import wbif.sjx.MIA.Object.Units.SpatialUnit;
+import wbif.sjx.MIA.Object.Units.TemporalUnit;
 import wbif.sjx.MIA.Process.ColourFactory;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.Object.Point;
@@ -111,11 +113,18 @@ public class Obj extends Volume {
     public Measurement getMeasurement(String name) {
         if (measurements.get(name) == null)
             return null;
+
+        name = SpatialUnit.replace(name);
+        name = TemporalUnit.replace(name);
+
         return measurements.get(name);
 
     }
 
     public void removeMeasurement(String name) {
+        name = SpatialUnit.replace(name);
+        name = TemporalUnit.replace(name);
+
         measurements.remove(name);
 
     }
@@ -540,7 +549,7 @@ public class Obj extends Volume {
 
     public void clearROIs() {
         rois = new HashMap<>();
-        
+
     }
 
     @Override

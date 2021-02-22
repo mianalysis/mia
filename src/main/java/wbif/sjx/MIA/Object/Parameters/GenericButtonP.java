@@ -8,7 +8,7 @@ import wbif.sjx.MIA.GUI.GUI;
 import wbif.sjx.MIA.GUI.ParameterControls.GenericButton;
 import wbif.sjx.MIA.GUI.ParameterControls.ParameterControl;
 import wbif.sjx.MIA.Module.Module;
-import wbif.sjx.MIA.Module.Hidden.OutputControl;
+import wbif.sjx.MIA.Module.Core.OutputControl;
 import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
 
 public class GenericButtonP extends Parameter {

@@ -7,13 +7,24 @@ import wbif.sjx.MIA.Object.References.Abstract.Ref;
 public class Category extends Ref implements Comparable {
     private final Category parent;
     private final TreeSet<Category> children = new TreeSet<>();
+    private final boolean showInMenu;
 
     public Category(String name, String description, Category parent) {
         super(name);
         this.setDescription(description);
         this.parent = parent;
-        if (parent != null) 
+        if (parent != null)
             parent.addChild(this);
+        this.showInMenu = true;
+    }
+
+    public Category(String name, String description, Category parent, boolean showInMenu) {
+        super(name);
+        this.setDescription(description);
+        this.parent = parent;
+        if (parent != null)
+            parent.addChild(this);
+        this.showInMenu = showInMenu;
     }
 
     public void addChild(Category child) {
@@ -26,6 +37,10 @@ public class Category extends Ref implements Comparable {
 
     public TreeSet<Category> getChildren() {
         return children;
+    }
+
+    public boolean showInMenu() {
+        return showInMenu;
     }
 
     @Override

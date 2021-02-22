@@ -26,6 +26,7 @@ import wbif.sjx.MIA.Object.References.Collections.MetadataRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.ObjMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.ParentChildRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.PartnerRefCollection;
+import wbif.sjx.MIA.Object.Units.SpatialUnit;
 import wbif.sjx.common.MathFunc.CumStat;
 import wbif.sjx.common.Object.Point;
 
@@ -77,9 +78,9 @@ public class MeasureObjectIntensity extends Module {
         String Z_CENT_STDEV = "Z_CENTRE_STDEV (SLICE)";
 
         String MEAN_EDGE_DISTANCE_PX = "MEAN_EDGE_DISTANCE (PX)";
-        String MEAN_EDGE_DISTANCE_CAL = "MEAN_EDGE_DISTANCE (${CAL})";
+        String MEAN_EDGE_DISTANCE_CAL = "MEAN_EDGE_DISTANCE (${SCAL})";
         String STD_EDGE_DISTANCE_PX = "STD_EDGE_DISTANCE (PX)";
-        String STD_EDGE_DISTANCE_CAL = "STD_EDGE_DISTANCE (${CAL})";
+        String STD_EDGE_DISTANCE_CAL = "STD_EDGE_DISTANCE (${SCAL})";
 
         String EDGE_PROFILE = "EDGE_PROFILE";
 
@@ -270,7 +271,7 @@ public class MeasureObjectIntensity extends Module {
         for (int i = 0; i < nDigits; i++)
             stringBuilder.append("0");
         DecimalFormat intFormat = new DecimalFormat(stringBuilder.toString());
-        String units = (boolean) parameters.getValue(CALIBRATED_DISTANCES) ? Units.getOMEUnits().getSymbol() : "PX";
+        String units = (boolean) parameters.getValue(CALIBRATED_DISTANCES) ? SpatialUnit.getOMEUnit().getSymbol() : "PX";
 
         DecimalFormat decFormat = new DecimalFormat(getBinNameFormat(calibratedDistances));
 
@@ -504,7 +505,7 @@ public class MeasureObjectIntensity extends Module {
             reference.setDescription("Mean intensity-weighted distance of all signal in the image, \"" + inputImageName
                     + "\", to each object, \"" + inputObjectsName + "\".  This value will get smaller as the brightest "
                     + "regions of the image get closer to the input objects.  Measured in calibrated ("
-                    + Units.getOMEUnits().getSymbol() + ") units.");
+                    + SpatialUnit.getOMEUnit().getSymbol() + ") units.");
             returnedRefs.add(reference);
 
             name = getFullName(inputImageName, Measurements.STD_EDGE_DISTANCE_PX);
@@ -523,7 +524,7 @@ public class MeasureObjectIntensity extends Module {
                     + inputImageName + "\", to each object, \"" + inputObjectsName
                     + "\".  This value will get smaller as "
                     + "the brightest regions of the image get closer to the input objects.  Measured in calibrated ("
-                    + Units.getOMEUnits().getSymbol() + ") units.");
+                    + SpatialUnit.getOMEUnit().getSymbol() + ") units.");
             returnedRefs.add(reference);
 
         }
@@ -533,7 +534,7 @@ public class MeasureObjectIntensity extends Module {
             double maxDist = parameters.getValue(MAXIMUM_DISTANCE);
             int nMeasurements = parameters.getValue(NUMBER_OF_MEASUREMENTS);
             double[] bins = getProfileBins(minDist, maxDist, nMeasurements);
-            String units = (boolean) parameters.getValue(CALIBRATED_DISTANCES) ? Units.getOMEUnits().getSymbol() : "PX";
+            String units = (boolean) parameters.getValue(CALIBRATED_DISTANCES) ? SpatialUnit.getOMEUnit().getSymbol() : "PX";
 
             // Bin names must be in alphabetical order (for the ObjMeasurementRefCollection
             // TreeMap)

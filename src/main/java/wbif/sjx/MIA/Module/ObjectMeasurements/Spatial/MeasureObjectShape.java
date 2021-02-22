@@ -16,7 +16,7 @@ import wbif.sjx.MIA.Object.Measurement;
 import wbif.sjx.MIA.Object.Obj;
 import wbif.sjx.MIA.Object.ObjCollection;
 import wbif.sjx.MIA.Object.Status;
-import wbif.sjx.MIA.Object.Units;
+import wbif.sjx.MIA.Object.Units.SpatialUnit;
 import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.MIA.Object.Parameters.BooleanP;
 import wbif.sjx.MIA.Object.Parameters.InputObjectsP;
@@ -54,17 +54,17 @@ public class MeasureObjectShape extends Module {
     public interface Measurements {
         String N_VOXELS = "SHAPE // N_VOXELS";
         String VOLUME_PX = "SHAPE // VOLUME_(PX³)";
-        String VOLUME_CAL = "SHAPE // VOLUME_(${CAL}³)";
+        String VOLUME_CAL = "SHAPE // VOLUME_(${SCAL}³)";
         String BASE_AREA_PX = "SHAPE // BASE_AREA_(PX²)";
-        String BASE_AREA_CAL = "SHAPE // BASE_AREA_(${CAL}²)";
+        String BASE_AREA_CAL = "SHAPE // BASE_AREA_(${SCAL}²)";
         String HEIGHT_SLICE = "SHAPE // HEIGHT_(SLICE)";
-        String HEIGHT_CAL = "SHAPE // HEIGHT_(${CAL})";
+        String HEIGHT_CAL = "SHAPE // HEIGHT_(${SCAL})";
         String PROJ_AREA_PX = "SHAPE // PROJ_AREA_(PX²)";
-        String PROJ_AREA_CAL = "SHAPE // PROJ_AREA_(${CAL}²)";
+        String PROJ_AREA_CAL = "SHAPE // PROJ_AREA_(${SCAL}²)";
         String PROJ_DIA_PX = "SHAPE // PROJ_DIA_(PX)";
-        String PROJ_DIA_CAL = "SHAPE // PROJ_DIA_(${CAL})";
+        String PROJ_DIA_CAL = "SHAPE // PROJ_DIA_(${SCAL})";
         String PROJ_PERIM_PX = "SHAPE // PROJ_PERIM_(PX)";
-        String PROJ_PERIM_CAL = "SHAPE // PROJ_PERIM_(${CAL})";
+        String PROJ_PERIM_CAL = "SHAPE // PROJ_PERIM_(${SCAL})";
         String PROJ_CIRCULARITY = "SHAPE // PROJ_CIRCULARITY";
 
     }
@@ -310,7 +310,7 @@ public class MeasureObjectShape extends Module {
             reference.setDescription("Volume of the object, \"" + inputObjectsName
                     + "\".  Takes spatial scaling of XY vs "
                     + "Z into account (i.e. converts object height from slice units to pixel units prior to conversion"
-                    + " to calibrated units.  Measured in calibrated (" + Units.getOMEUnits().getSymbol() + ") units.");
+                    + " to calibrated units.  Measured in calibrated (" + SpatialUnit.getOMEUnit().getSymbol() + ") units.");
 
             reference = objectMeasurementRefs.getOrPut(Measurements.BASE_AREA_PX);
             returnedRefs.add(reference);
@@ -322,7 +322,7 @@ public class MeasureObjectShape extends Module {
             returnedRefs.add(reference);
             reference.setObjectsName(inputObjectsName);
             reference.setDescription("Area of the lowest slice present for the object, \"" + inputObjectsName + "\".  "
-                    + "Measured in calibrated (" + Units.getOMEUnits().getSymbol() + ") units.");
+                    + "Measured in calibrated (" + SpatialUnit.getOMEUnit().getSymbol() + ") units.");
 
             reference = objectMeasurementRefs.getOrPut(Measurements.HEIGHT_SLICE);
             returnedRefs.add(reference);
@@ -333,7 +333,7 @@ public class MeasureObjectShape extends Module {
             returnedRefs.add(reference);
             reference.setObjectsName(inputObjectsName);
             reference.setDescription("Height of the object, \"" + inputObjectsName + "\".  Measured in calibrated "
-                    + "(" + Units.getOMEUnits().getSymbol() + ") units.");
+                    + "(" + SpatialUnit.getOMEUnit().getSymbol() + ") units.");
 
         }
 
@@ -348,7 +348,7 @@ public class MeasureObjectShape extends Module {
             returnedRefs.add(reference);
             reference.setObjectsName(inputObjectsName);
             reference.setDescription("Area of the 2D Z-projection of the object, \"" + inputObjectsName
-                    + "\".  Measured " + "in calibrated (" + Units.getOMEUnits().getSymbol() + ") units.");
+                    + "\".  Measured " + "in calibrated (" + SpatialUnit.getOMEUnit().getSymbol() + ") units.");
         }
 
         if ((boolean) parameters.getValue(MEASURE_PROJECTED_DIA)) {
@@ -362,7 +362,7 @@ public class MeasureObjectShape extends Module {
             returnedRefs.add(reference);
             reference.setObjectsName(inputObjectsName);
             reference.setDescription("Longest distance between any two points of the 2D Z-projection of the object, \""
-                    + inputObjectsName + "\".  Measured in calibrated (" + Units.getOMEUnits().getSymbol() + ") "
+                    + inputObjectsName + "\".  Measured in calibrated (" + SpatialUnit.getOMEUnit().getSymbol() + ") "
                     + "units.");
         }
 
@@ -377,7 +377,7 @@ public class MeasureObjectShape extends Module {
             returnedRefs.add(reference);
             reference.setObjectsName(inputObjectsName);
             reference.setDescription("Perimeter of the 2D Z-projection of the object, \"" + inputObjectsName + "\".  "
-                    + "Measured in calibrated (" + Units.getOMEUnits().getSymbol() + ") " + "units.");
+                    + "Measured in calibrated (" + SpatialUnit.getOMEUnit().getSymbol() + ") " + "units.");
 
             reference = objectMeasurementRefs.getOrPut(Measurements.PROJ_CIRCULARITY);
             returnedRefs.add(reference);

@@ -14,6 +14,7 @@ import wbif.sjx.MIA.Object.References.Collections.MetadataRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.ObjMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.ParentChildRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.PartnerRefCollection;
+import wbif.sjx.MIA.Object.Units.SpatialUnit;
 
 public class MeasureObjectLimits extends Module {
     public static final String INPUT_SEPARATOR = "Object input";
@@ -25,19 +26,19 @@ public class MeasureObjectLimits extends Module {
 
     public interface Measurements {
         String MIN_X_PX = "LIMITS // MIN_X_(PX)";
-        String MIN_X_CAL = "LIMITS // MIN_X_(${CAL})";
+        String MIN_X_CAL = "LIMITS // MIN_X_(${SCAL})";
         String MAX_X_PX = "LIMITS // MAX_X_(PX)";
-        String MAX_X_CAL = "LIMITS // MAX_X_(${CAL})";
+        String MAX_X_CAL = "LIMITS // MAX_X_(${SCAL})";
         String MIN_Y_PX = "LIMITS // MIN_Y_(PX)";
-        String MIN_Y_CAL = "LIMITS // MIN_Y_(${CAL})";
+        String MIN_Y_CAL = "LIMITS // MIN_Y_(${SCAL})";
         String MAX_Y_PX = "LIMITS // MAX_Y_(PX)";
-        String MAX_Y_CAL = "LIMITS // MAX_Y_(${CAL})";
+        String MAX_Y_CAL = "LIMITS // MAX_Y_(${SCAL})";
         String MIN_Z_PX = "LIMITS // MIN_Z_(PX)";
         String MAX_Z_PX = "LIMITS // MAX_Z_(PX)";
         String MIN_Z_SLICE = "LIMITS // MIN_Z_(SLICE)";
-        String MIN_Z_CAL = "LIMITS // MIN_Z_(${CAL})";
+        String MIN_Z_CAL = "LIMITS // MIN_Z_(${SCAL})";
         String MAX_Z_SLICE = "LIMITS // MAX_Z_(SLICE)";
-        String MAX_Z_CAL = "LIMITS // MAX_Z_(${CAL})";
+        String MAX_Z_CAL = "LIMITS // MAX_Z_(${SCAL})";
 
     }
 
@@ -122,7 +123,7 @@ public class MeasureObjectLimits extends Module {
         reference = objectMeasurementRefs.getOrPut(Measurements.MIN_X_CAL);
         reference.setObjectsName(inputObjectsName);
         reference.setDescription("Minimum x-coordinate for all pixels in the object, \""+inputObjectsName+"\".  " +
-                "Measured in calibrated ("+Units.getOMEUnits().getSymbol()+") units.");
+                "Measured in calibrated ("+SpatialUnit.getOMEUnit().getSymbol()+") units.");
         returnedRefs.add(reference);
 
         reference = objectMeasurementRefs.getOrPut(Measurements.MAX_X_PX);
@@ -134,7 +135,7 @@ public class MeasureObjectLimits extends Module {
         reference = objectMeasurementRefs.getOrPut(Measurements.MAX_X_CAL);
         reference.setObjectsName(inputObjectsName);
         reference.setDescription("Maximum x-coordinate for all pixels in the object, \""+inputObjectsName+"\".  " +
-                "Measured in calibrated ("+Units.getOMEUnits().getSymbol()+") units.");
+                "Measured in calibrated ("+SpatialUnit.getOMEUnit().getSymbol()+") units.");
         returnedRefs.add(reference);
 
         reference = objectMeasurementRefs.getOrPut(Measurements.MIN_Y_PX);
@@ -146,7 +147,7 @@ public class MeasureObjectLimits extends Module {
         reference = objectMeasurementRefs.getOrPut(Measurements.MIN_Y_CAL);
         reference.setObjectsName(inputObjectsName);
         reference.setDescription("Minimum y-coordinate for all pixels in the object, \""+inputObjectsName+"\".  " +
-                "Measured in calibrated ("+Units.getOMEUnits().getSymbol()+") units.");
+                "Measured in calibrated ("+SpatialUnit.getOMEUnit().getSymbol()+") units.");
         returnedRefs.add(reference);
 
         reference = objectMeasurementRefs.getOrPut(Measurements.MAX_Y_PX);
@@ -158,7 +159,7 @@ public class MeasureObjectLimits extends Module {
         reference = objectMeasurementRefs.getOrPut(Measurements.MAX_Y_CAL);
         reference.setObjectsName(inputObjectsName);
         reference.setDescription("Maximum y-coordinate for all pixels in the object, \""+inputObjectsName+"\".  " +
-                "Measured in calibrated ("+Units.getOMEUnits().getSymbol()+") units.");
+                "Measured in calibrated ("+SpatialUnit.getOMEUnit().getSymbol()+") units.");
         returnedRefs.add(reference);
 
         reference = objectMeasurementRefs.getOrPut(Measurements.MIN_Z_PX);
@@ -182,7 +183,7 @@ public class MeasureObjectLimits extends Module {
         reference = objectMeasurementRefs.getOrPut(Measurements.MIN_Z_CAL);
         reference.setObjectsName(inputObjectsName);
         reference.setDescription("Minimum z-coordinate for all pixels in the object, \""+inputObjectsName+"\".  " +
-                "Measured in calibrated ("+Units.getOMEUnits().getSymbol()+") units.");
+                "Measured in calibrated ("+SpatialUnit.getOMEUnit().getSymbol()+") units.");
         returnedRefs.add(reference);
 
         reference = objectMeasurementRefs.getOrPut(Measurements.MAX_Z_SLICE);
@@ -194,7 +195,7 @@ public class MeasureObjectLimits extends Module {
         reference = objectMeasurementRefs.getOrPut(Measurements.MAX_Z_CAL);
         reference.setObjectsName(inputObjectsName);
         reference.setDescription("Maximum z-coordinate for all pixels in the object, \""+inputObjectsName+"\".  " +
-                "Measured in calibrated ("+Units.getOMEUnits().getSymbol()+") units.");
+                "Measured in calibrated ("+SpatialUnit.getOMEUnit().getSymbol()+") units.");
         returnedRefs.add(reference);
 
         return returnedRefs;

@@ -8,7 +8,7 @@ import javax.swing.JButton;
 import javax.swing.JComponent;
 
 import wbif.sjx.MIA.GUI.GUI;
-import wbif.sjx.MIA.Module.Hidden.OutputControl;
+import wbif.sjx.MIA.Module.Core.OutputControl;
 import wbif.sjx.MIA.Object.Parameters.RemoveParameters;
 
 /**

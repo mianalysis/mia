@@ -23,7 +23,7 @@ import wbif.sjx.MIA.Object.Measurement;
 import wbif.sjx.MIA.Object.Obj;
 import wbif.sjx.MIA.Object.ObjCollection;
 import wbif.sjx.MIA.Object.Status;
-import wbif.sjx.MIA.Object.Units;
+import wbif.sjx.MIA.Object.Units.SpatialUnit;
 import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.MIA.Object.Parameters.BooleanP;
 import wbif.sjx.MIA.Object.Parameters.ChoiceP;
@@ -92,10 +92,10 @@ public class RelateManyToOne extends Module {
     public interface Measurements {
         String DIST_SURFACE_PX = "DIST_TO_${PARENT}_SURF_(PX)";
         String DIST_CENTROID_PX = "DIST_TO_${PARENT}_CENT_(PX)";
-        String DIST_SURFACE_CAL = "DIST_TO_${PARENT}_SURF_(${CAL})";
-        String DIST_CENTROID_CAL = "DIST_TO_${PARENT}_CENT_(${CAL})";
+        String DIST_SURFACE_CAL = "DIST_TO_${PARENT}_SURF_(${SCAL})";
+        String DIST_CENTROID_CAL = "DIST_TO_${PARENT}_CENT_(${SCAL})";
         String DIST_CENT_SURF_PX = "DIST_FROM_CENT_TO_${PARENT}_SURF_(PX)";
-        String DIST_CENT_SURF_CAL = "DIST_FROM_CENT_TO_${PARENT}_SURF_(${CAL})";
+        String DIST_CENT_SURF_CAL = "DIST_FROM_CENT_TO_${PARENT}_SURF_(${SCAL})";
         String DIST_CENT_SURF_FRAC = "DIST_FROM_CENT_TO_${PARENT}_SURF_(FRAC)";
         String OVERLAP_PC = "OVERLAP_WITH_${PARENT}_PERCENTAGE";
         String WAS_LINKED = "WAS_LINKED_${PARENT}";
@@ -679,7 +679,7 @@ public class RelateManyToOne extends Module {
                         distCentCal.setDescription(
                                 "Distance between the centroid of this object and that of the closest \""
                                         + parentObjectName + "\"object.  Measured in calibrated ("
-                                        + Units.getOMEUnits().getSymbol() + ") units.");
+                                        + SpatialUnit.getOMEUnit().getSymbol() + ") units.");
                         distCentCal.setObjectsName(childObjectsName);
                         returnedRefs.add(distCentCal);
                         break;
@@ -702,7 +702,7 @@ public class RelateManyToOne extends Module {
                                         + parentObjectName
                                         + "\" object.  Negative values indicate this object is inside the relevant \""
                                         + parentObjectName + "\" object. Measured in calibrated ("
-                                        + Units.getOMEUnits().getSymbol() + ") units.");
+                                        + SpatialUnit.getOMEUnit().getSymbol() + ") units.");
                         distSurfCal.setObjectsName(childObjectsName);
                         returnedRefs.add(distSurfCal);
                         break;
@@ -725,7 +725,7 @@ public class RelateManyToOne extends Module {
                                         + "closest \"" + parentObjectName
                                         + "\" object.  Negative values indicate this object is inside the "
                                         + "relevant \"" + parentObjectName + "\" object. Measured in calibrated ("
-                                        + Units.getOMEUnits().getSymbol() + ") " + "units.");
+                                        + SpatialUnit.getOMEUnit().getSymbol() + ") " + "units.");
                         distCentSurfCal.setObjectsName(childObjectsName);
                         returnedRefs.add(distCentSurfCal);
 

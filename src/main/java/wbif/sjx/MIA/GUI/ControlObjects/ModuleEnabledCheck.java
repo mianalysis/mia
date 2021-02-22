@@ -7,7 +7,7 @@ import javax.swing.JCheckBox;
 
 import wbif.sjx.MIA.GUI.GUI;
 import wbif.sjx.MIA.Module.Module;
-import wbif.sjx.MIA.Module.Hidden.OutputControl;
+import wbif.sjx.MIA.Module.Core.OutputControl;
 
 /**
  * Created by sc13967 on 07/06/2017.

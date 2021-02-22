@@ -4,9 +4,9 @@ import com.drew.lang.annotations.Nullable;
 
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
+import wbif.sjx.MIA.Module.Core.InputControl;
 import wbif.sjx.MIA.Module.Category;
 import wbif.sjx.MIA.Module.Categories;
-import wbif.sjx.MIA.Module.Hidden.InputControl;
 import wbif.sjx.MIA.Object.Status;
 import wbif.sjx.MIA.Object.Obj;
 import wbif.sjx.MIA.Object.ObjCollection;
@@ -348,7 +348,7 @@ public class GetLocalObjectRegion extends Module {
 
         parameters.get(CALIBRATED_UNITS).setDescription(
                 "When selected, spot radius values (irrespective of whether they are fixed values, measurements or parent measurements) are assumed to be specified in calibrated units (as defined by the \""
-                        + new InputControl(null).getName() + "\" parameter \"" + InputControl.SPATIAL_UNITS
+                        + new InputControl(null).getName() + "\" parameter \"" + InputControl.SPATIAL_UNIT
                         + "\").  Otherwise, pixel units are assumed.");
 
     }

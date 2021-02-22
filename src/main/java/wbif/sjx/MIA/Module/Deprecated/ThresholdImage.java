@@ -43,7 +43,7 @@ public class ThresholdImage extends Module {
     public static final String USE_LOWER_THRESHOLD_LIMIT = "Use lower threshold limit";
     public static final String LOWER_THRESHOLD_LIMIT = "Lower threshold limit";
     public static final String LOCAL_RADIUS = "Local radius";
-    public static final String SPATIAL_UNITS = "Spatial units";
+    public static final String SPATIAL_UNITS_MODE = "Spatial units mode";
     public static final String THRESHOLD_VALUE = "Threshold value";
     public static final String USE_GLOBAL_Z = "Use full Z-range (\"Global Z\")";
     public static final String WHITE_BACKGROUND = "Black objects/white background";
@@ -101,7 +101,7 @@ public class ThresholdImage extends Module {
 
     }
 
-    public interface SpatialUnits {
+    public interface SpatialUnitModes {
         String CALIBRATED = "Calibrated";
         String PIXELS = "Pixel";
 
@@ -254,12 +254,12 @@ public class ThresholdImage extends Module {
         double lowerLim = parameters.getValue(LOWER_THRESHOLD_LIMIT);
         double localRadius = parameters.getValue(LOCAL_RADIUS);
         int thresholdValue = parameters.getValue(THRESHOLD_VALUE);
-        String spatialUnits = parameters.getValue(SPATIAL_UNITS);
+        String spatialUnits = parameters.getValue(SPATIAL_UNITS_MODE);
         boolean useGlobalZ = parameters.getValue(USE_GLOBAL_Z);
 
         int threshold = 0;
 
-        if (spatialUnits.equals(SpatialUnits.CALIBRATED)) {
+        if (spatialUnits.equals(SpatialUnitModes.CALIBRATED)) {
             localRadius = inputImagePlus.getCalibration().getRawX(localRadius);
         }
 
@@ -365,8 +365,8 @@ public class ThresholdImage extends Module {
         parameters.add(new DoubleP(THRESHOLD_MULTIPLIER, this,1.0,"Prior to application of automatically-calculated thresholds the threshold value is multiplied by this value.  This allows the threshold to be systematically increased or decreased.  For example, a \""+THRESHOLD_MULTIPLIER+"\" of 0.9 applied to an automatically-calculated threshold of 200 will see the image thresholded at the level 180."));
         parameters.add(new BooleanP(USE_LOWER_THRESHOLD_LIMIT, this, false,"Limit the lowest threshold that can be applied to the image.  This is used to prevent unintentional segmentation of an image containing only background (i.e. no features present)."));
         parameters.add(new DoubleP(LOWER_THRESHOLD_LIMIT, this, 0.0, "Lowest absolute threshold value that can be applied."));
-        parameters.add(new DoubleP(LOCAL_RADIUS, this, 1.0, "Radius of region to be used when calculating local intensity thresholds.  Units controlled by \""+SPATIAL_UNITS+"\" control."));
-        parameters.add(new ChoiceP(SPATIAL_UNITS, this, SpatialUnits.PIXELS, SpatialUnits.ALL, "Units that the local radius is specified using."));
+        parameters.add(new DoubleP(LOCAL_RADIUS, this, 1.0, "Radius of region to be used when calculating local intensity thresholds.  Units controlled by \""+SPATIAL_UNITS_MODE+"\" control."));
+        parameters.add(new ChoiceP(SPATIAL_UNITS_MODE, this, SpatialUnitModes.PIXELS, SpatialUnitModes.ALL, "Units that the local radius is specified using."));
         parameters.add(new IntegerP(THRESHOLD_VALUE, this, 1, "Absolute manual threshold value that will be applied to all pixels."));
         parameters.add(new BooleanP(USE_GLOBAL_Z,this,false, "When performing 3D local thresholding, this takes all z-values at a location into account.  If disabled, pixels will be sampled in z according to the \""+LOCAL_RADIUS+"\" setting."));
         parameters.add(new BooleanP(WHITE_BACKGROUND, this,true, "Controls the logic of the output image in terms of what is considered foreground and background."));
@@ -397,7 +397,7 @@ public class ThresholdImage extends Module {
                 returnedParameters.add(parameters.getParameter(THRESHOLD_MULTIPLIER));
                 returnedParameters.add(parameters.getParameter(LOCAL_ALGORITHM));
                 returnedParameters.add(parameters.getParameter(LOCAL_RADIUS));
-                returnedParameters.add(parameters.getParameter(SPATIAL_UNITS));
+                returnedParameters.add(parameters.getParameter(SPATIAL_UNITS_MODE));
                 returnedParameters.add(parameters.getParameter(USE_GLOBAL_Z));
                 break;
 

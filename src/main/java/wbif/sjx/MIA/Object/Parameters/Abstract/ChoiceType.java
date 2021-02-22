@@ -1,5 +1,9 @@
 package wbif.sjx.MIA.Object.Parameters.Abstract;
 
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+
+import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.GUI.ParameterControls.ChoiceArrayParameter;
 import wbif.sjx.MIA.GUI.ParameterControls.ParameterControl;
 import wbif.sjx.MIA.Module.Module;
@@ -52,6 +56,21 @@ public abstract class ChoiceType extends Parameter {
     @Override
     public <T> void setValue(T value) {
         choice = (String) value;
+    }
+
+    @Override
+    public void setAttributesFromXML(Node node) {
+        super.setAttributesFromXML(node);
+
+        NamedNodeMap map = node.getAttributes();
+
+        // ChoiceType values can be from hard-coded sources, so we check if they're labelled for reassignment.
+        String xmlValue = map.getNamedItem("VALUE").getNodeValue();
+        xmlValue = MIA.lostAndFound.findParameterValue(module.getClass().getSimpleName(), getName(), xmlValue);
+        setValueFromString(xmlValue);
+
+        setVisible(Boolean.parseBoolean(map.getNamedItem("VISIBLE").getNodeValue()));
+
     }
 
     @Override

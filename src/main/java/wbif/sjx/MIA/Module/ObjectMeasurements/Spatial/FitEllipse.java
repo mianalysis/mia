@@ -17,7 +17,7 @@ import wbif.sjx.MIA.Object.Measurement;
 import wbif.sjx.MIA.Object.Obj;
 import wbif.sjx.MIA.Object.ObjCollection;
 import wbif.sjx.MIA.Object.Status;
-import wbif.sjx.MIA.Object.Units;
+import wbif.sjx.MIA.Object.Units.SpatialUnit;
 import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.MIA.Object.Parameters.BooleanP;
 import wbif.sjx.MIA.Object.Parameters.ChoiceP;
@@ -78,13 +78,13 @@ public class FitEllipse extends Module {
 
     public interface Measurements {
         String X_CENTRE_PX = "ELLIPSE // X_CENTRE_(PX)";
-        String X_CENTRE_CAL = "ELLIPSE // X_CENTRE_(${CAL})";
+        String X_CENTRE_CAL = "ELLIPSE // X_CENTRE_(${SCAL})";
         String Y_CENTRE_PX = "ELLIPSE // Y_CENTRE_(PX)";
-        String Y_CENTRE_CAL = "ELLIPSE // Y_CENTRE_(${CAL})";
+        String Y_CENTRE_CAL = "ELLIPSE // Y_CENTRE_(${SCAL})";
         String SEMI_MAJOR_PX = "ELLIPSE // SEMI_MAJOR_AXIS_LENGTH_(PX)";
-        String SEMI_MAJOR_CAL = "ELLIPSE // SEMI_MAJOR_AXIS_LENGTH_(${CAL})";
+        String SEMI_MAJOR_CAL = "ELLIPSE // SEMI_MAJOR_AXIS_LENGTH_(${SCAL})";
         String SEMI_MINOR_PX = "ELLIPSE // SEMI_MINOR_AXIS_LENGTH_(PX)";
-        String SEMI_MINOR_CAL = "ELLIPSE // SEMI_MINOR_AXIS_LENGTH_(${CAL})";
+        String SEMI_MINOR_CAL = "ELLIPSE // SEMI_MINOR_AXIS_LENGTH_(${SCAL})";
         String ECCENTRICITY = "ELLIPSE // ECCENTRICITY";
         String MAJOR_MINOR_RATIO = "ELLIPSE // MAJOR_MINOR_RATIO";
         String ORIENTATION_DEGS = "ELLIPSE // ORIENTATION_(DEGS)";
@@ -343,7 +343,7 @@ public class FitEllipse extends Module {
         reference = objectMeasurementRefs.getOrPut(Measurements.X_CENTRE_CAL);
         reference.setObjectsName(inputObjectsName);
         reference.setDescription("X-coordinate for the centre of the ellipse fit to the 2D Z-projection of the "
-                + "object, \"" + inputObjectsName + "\".  Measured in calibrated (" + Units.getOMEUnits().getSymbol()
+                + "object, \"" + inputObjectsName + "\".  Measured in calibrated (" + SpatialUnit.getOMEUnit().getSymbol()
                 + ") " + "units.");
         returnedRefs.add(reference);
 
@@ -356,7 +356,7 @@ public class FitEllipse extends Module {
         reference = objectMeasurementRefs.getOrPut(Measurements.Y_CENTRE_CAL);
         reference.setObjectsName(inputObjectsName);
         reference.setDescription("Y-coordinate for the centre of the ellipse fit to the 2D Z-projection of the "
-                + "object, \"" + inputObjectsName + "\".  Measured in calibrated (" + Units.getOMEUnits().getSymbol()
+                + "object, \"" + inputObjectsName + "\".  Measured in calibrated (" + SpatialUnit.getOMEUnit().getSymbol()
                 + ") " + "units.");
         returnedRefs.add(reference);
 
@@ -371,7 +371,7 @@ public class FitEllipse extends Module {
         reference.setObjectsName(inputObjectsName);
         reference.setDescription("Semi-major axis length of ellipse fit to 2D Z-projection of the object, \""
                 + inputObjectsName + "\".  The semi-major axis passes from the centre of the ellipse to the furthest "
-                + "point on its perimeter.  Measured in calibrated (" + Units.getOMEUnits().getSymbol() + ") units.");
+                + "point on its perimeter.  Measured in calibrated (" + SpatialUnit.getOMEUnit().getSymbol() + ") units.");
         returnedRefs.add(reference);
 
         reference = objectMeasurementRefs.getOrPut(Measurements.SEMI_MINOR_PX);
@@ -385,7 +385,7 @@ public class FitEllipse extends Module {
         reference.setObjectsName(inputObjectsName);
         reference.setDescription("Semi-major axis length of ellipse fit to 2D Z-projection of the object, \""
                 + inputObjectsName + "\".  The semi-minor axis passes from the centre of the ellipse in the direction"
-                + "perpendiculart to the semi-major axis.  Measured in calibrated (" + Units.getOMEUnits().getSymbol()
+                + "perpendiculart to the semi-major axis.  Measured in calibrated (" + SpatialUnit.getOMEUnit().getSymbol()
                 + ") " + "units.");
         returnedRefs.add(reference);
 

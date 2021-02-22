@@ -22,10 +22,11 @@ import wbif.sjx.MIA.GUI.Panels.MainPanels.MainPanel;
 import wbif.sjx.MIA.Macro.MacroHandler;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
-import wbif.sjx.MIA.Module.Hidden.InputControl;
-import wbif.sjx.MIA.Module.Hidden.OutputControl;
+import wbif.sjx.MIA.Module.Core.InputControl;
+import wbif.sjx.MIA.Module.Core.OutputControl;
 import wbif.sjx.MIA.Module.InputOutput.ImageLoader;
-import wbif.sjx.MIA.Object.Units;
+import wbif.sjx.MIA.Object.Units.SpatialUnit;
+import wbif.sjx.MIA.Object.Units.TemporalUnit;
 import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.MIA.Object.WorkspaceCollection;
 import wbif.sjx.MIA.Object.Parameters.ChoiceP;
@@ -144,10 +145,6 @@ public class GUI {
                     Module module = (Module) constructor.newInstance(availableModules);
                     availableModules.add(module);
                     
-                    // String packageName = module.getPackageName();
-                    // String moduleName = module.getName();
-                    // availableModules.put(packageName + moduleName, module);
-
                 }
             } catch (ClassNotFoundException | NoSuchMethodException | IllegalAccessException | InstantiationException
                     | InvocationTargetException | NoClassDefFoundError e) {
@@ -263,7 +260,8 @@ public class GUI {
         // workspace
         InputControl inputControl = analysis.getModules().getInputControl();
         String inputPath = ((FileFolderPathP) inputControl.getParameter(InputControl.INPUT_PATH)).getPath();
-        Units.setUnits(((ChoiceP) inputControl.getParameter(InputControl.SPATIAL_UNITS)).getChoice());
+        SpatialUnit.setUnit(((ChoiceP) inputControl.getParameter(InputControl.SPATIAL_UNIT)).getChoice());
+        TemporalUnit.setUnit(((ChoiceP) inputControl.getParameter(InputControl.TEMPORAL_UNIT)).getChoice());
 
         // Getting the next file
         File nextFile = null;

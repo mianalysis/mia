@@ -2,78 +2,137 @@ package wbif.sjx.MIA.Process.AnalysisHandling;
 
 import java.util.HashMap;
 
+import wbif.sjx.MIA.Module.Core.InputControl;
+import wbif.sjx.MIA.Module.Deprecated.ThresholdImage;
+import wbif.sjx.MIA.Module.ImageMeasurements.MeasureIntensityDistribution;
+import wbif.sjx.MIA.Module.ImageProcessing.Pixel.Binary.DistanceMap;
+import wbif.sjx.MIA.Module.ImageProcessing.Pixel.Threshold.LocalAutoThreshold;
 import wbif.sjx.MIA.Module.ImageProcessing.Stack.Registration.SIFTRegistration;
 import wbif.sjx.MIA.Module.InputOutput.ObjectLoader;
 import wbif.sjx.MIA.Module.Miscellaneous.GlobalVariables;
 import wbif.sjx.MIA.Module.ObjectMeasurements.Miscellaneous.ReplaceMeasurementValue;
 import wbif.sjx.MIA.Module.ObjectMeasurements.Spatial.CalculateNearestNeighbour;
 import wbif.sjx.MIA.Module.ObjectProcessing.Identification.GetLocalObjectRegion;
+import wbif.sjx.MIA.Module.ObjectProcessing.Miscellaneous.CreateDistanceMap;
 import wbif.sjx.MIA.Module.ObjectProcessing.Refinement.ExpandShrinkObjects;
 import wbif.sjx.MIA.Module.ObjectProcessing.Relationships.RelateManyToOne;
 import wbif.sjx.MIA.Module.WorkflowHandling.WorkflowHandling;
+import wbif.sjx.MIA.Object.Units.SpatialUnit;
 
 public class LostAndFound {
     private HashMap<String, String> lostModules = new HashMap<>();
-    private HashMap<String, HashMap<String, String>> lostParameters = new HashMap<>();
-
+    private HashMap<String, HashMap<String, String>> lostParameterNames = new HashMap<>();
+    private HashMap<String, HashMap<String, HashMap<String, String>>> lostParameterValues = new HashMap<>();
 
     public LostAndFound() {
         //// Populating hard-coded module reassignments ////
         lostModules.put("ConditionalAnalysisTermination", new WorkflowHandling(null).getClass().getSimpleName());
         lostModules.put("AutomaticRegistration", new SIFTRegistration(null).getClass().getSimpleName());
 
+        
         //// Populating hard-coded parameter reassignments ////
         // CalculateNearestNeighbour
-        HashMap<String, String> currentParameters = new HashMap<>();
-        currentParameters.put("ParentChildRef mode", CalculateNearestNeighbour.RELATIONSHIP_MODE);
+        HashMap<String, String> currentParameterNames = new HashMap<>();
+        currentParameterNames.put("ParentChildRef mode", CalculateNearestNeighbour.RELATIONSHIP_MODE);
         String moduleName = new CalculateNearestNeighbour(null).getClass().getSimpleName();
-        lostParameters.put(moduleName, currentParameters);
+        lostParameterNames.put(moduleName, currentParameterNames);
+
+        // CreateDistanceMap
+        currentParameterNames = new HashMap<>();
+        currentParameterNames.put("Spatial units", CreateDistanceMap.SPATIAL_UNITS_MODE);
+        moduleName = new CreateDistanceMap(null).getClass().getSimpleName();
+        lostParameterNames.put(moduleName, currentParameterNames);
+
+        // DistanceMap
+        currentParameterNames = new HashMap<>();
+        currentParameterNames.put("Spatial units", DistanceMap.SPATIAL_UNITS_MODE);
+        moduleName = new DistanceMap(null).getClass().getSimpleName();
+        lostParameterNames.put(moduleName, currentParameterNames);
 
         // ExpandShrinkObjects
-        currentParameters = new HashMap<>();
-        currentParameters.put("Radius change (px)", ExpandShrinkObjects.RADIUS_CHANGE);
+        currentParameterNames = new HashMap<>();
+        currentParameterNames.put("Radius change (px)", ExpandShrinkObjects.RADIUS_CHANGE);
         moduleName = new ExpandShrinkObjects(null).getClass().getSimpleName();
-        lostParameters.put(moduleName, currentParameters);
+        lostParameterNames.put(moduleName, currentParameterNames);
 
         // GetObjectLocalRegion
-        currentParameters = new HashMap<>();
-        currentParameters.put("Local radius", GetLocalObjectRegion.FIXED_VALUE);
-        currentParameters.put("Measurement name", GetLocalObjectRegion.RADIUS_MEASUREMENT);
-        currentParameters.put("Calibrated radius", GetLocalObjectRegion.CALIBRATED_UNITS);
+        currentParameterNames = new HashMap<>();
+        currentParameterNames.put("Local radius", GetLocalObjectRegion.FIXED_VALUE);
+        currentParameterNames.put("Measurement name", GetLocalObjectRegion.RADIUS_MEASUREMENT);
+        currentParameterNames.put("Calibrated radius", GetLocalObjectRegion.CALIBRATED_UNITS);
         moduleName = new GetLocalObjectRegion(null).getClass().getSimpleName();
-        lostParameters.put(moduleName, currentParameters);
+        lostParameterNames.put(moduleName, currentParameterNames);
 
         // GlobalVariables
-        currentParameters = new HashMap<>();
-        currentParameters.put("Control type", GlobalVariables.VARIABLE_TYPE);
+        currentParameterNames = new HashMap<>();
+        currentParameterNames.put("Control type", GlobalVariables.VARIABLE_TYPE);
         moduleName = new GlobalVariables(null).getClass().getSimpleName();
-        lostParameters.put(moduleName, currentParameters);        
+        lostParameterNames.put(moduleName, currentParameterNames);
+
+        // InputControl
+        currentParameterNames = new HashMap<>();
+        currentParameterNames.put("Spatial units", InputControl.SPATIAL_UNIT);
+        moduleName = new InputControl(null).getClass().getSimpleName();
+        lostParameterNames.put(moduleName, currentParameterNames);
+
+        // LocalAutoThreshold
+        currentParameterNames = new HashMap<>();
+        currentParameterNames.put("Spatial units", LocalAutoThreshold.SPATIAL_UNITS_MODE);
+        moduleName = new LocalAutoThreshold(null).getClass().getSimpleName();
+        lostParameterNames.put(moduleName, currentParameterNames);
+
+        // MeasureIntensityDistribution
+        currentParameterNames = new HashMap<>();
+        currentParameterNames.put("Spatial units", MeasureIntensityDistribution.SPATIAL_UNITS_MODE);
+        moduleName = new MeasureIntensityDistribution(null).getClass().getSimpleName();
+        lostParameterNames.put(moduleName, currentParameterNames);
 
         // ObjectLoader
-        currentParameters = new HashMap<>();
-        currentParameters.put("Output parent clusters name", ObjectLoader.PARENT_OBJECTS_NAME);
-        currentParameters.put("Output tracks clusters name", ObjectLoader.PARENT_OBJECTS_NAME);
+        currentParameterNames = new HashMap<>();
+        currentParameterNames.put("Output parent clusters name", ObjectLoader.PARENT_OBJECTS_NAME);
+        currentParameterNames.put("Output tracks clusters name", ObjectLoader.PARENT_OBJECTS_NAME);
         moduleName = new ObjectLoader(null).getClass().getSimpleName();
-        lostParameters.put(moduleName, currentParameters);
+        lostParameterNames.put(moduleName, currentParameterNames);
 
         // RelateManyToOne
-        currentParameters = new HashMap<>();
-        currentParameters.put("Reference point", RelateManyToOne.REFERENCE_MODE);
+        currentParameterNames = new HashMap<>();
+        currentParameterNames.put("Reference point", RelateManyToOne.REFERENCE_MODE);
         moduleName = new RelateManyToOne(null).getClass().getSimpleName();
-        lostParameters.put(moduleName, currentParameters);
+        lostParameterNames.put(moduleName, currentParameterNames);
 
         // ReplaceMeasurementValue
-        currentParameters = new HashMap<>();
-        currentParameters.put("Value to replace", ReplaceMeasurementValue.REFERENCE_VALUE);
+        currentParameterNames = new HashMap<>();
+        currentParameterNames.put("Value to replace", ReplaceMeasurementValue.REFERENCE_VALUE);
         moduleName = new ReplaceMeasurementValue(null).getClass().getSimpleName();
-        lostParameters.put(moduleName, currentParameters);
+        lostParameterNames.put(moduleName, currentParameterNames);
+
+        // ThresholdImage
+        currentParameterNames = new HashMap<>();
+        currentParameterNames.put("Spatial units", ThresholdImage.SPATIAL_UNITS_MODE);
+        moduleName = new ThresholdImage(null).getClass().getSimpleName();
+        lostParameterNames.put(moduleName, currentParameterNames);
 
         // WorkflowHandling
-        currentParameters = new HashMap<>();
-        currentParameters.put("Reference image measurement mode", WorkflowHandling.NUMERIC_FILTER_MODE);
-        currentParameters.put("Reference value", WorkflowHandling.REFERENCE_NUMERIC_VALUE);
+        currentParameterNames = new HashMap<>();
+        currentParameterNames.put("Reference image measurement mode", WorkflowHandling.NUMERIC_FILTER_MODE);
+        currentParameterNames.put("Reference value", WorkflowHandling.REFERENCE_NUMERIC_VALUE);
         moduleName = new WorkflowHandling(null).getClass().getSimpleName();
-        lostParameters.put(moduleName, currentParameters);
+        lostParameterNames.put(moduleName, currentParameterNames);
+
+
+        //// Populating hard-coded parameter value reassignments ////
+        // InputControl
+        HashMap<String, String> currentValues = new HashMap<>();
+        currentValues.put("METRE",SpatialUnit.AvailableUnits.METRE);
+        currentValues.put("CENTIMETRE",SpatialUnit.AvailableUnits.CENTIMETRE);
+        currentValues.put("MILLIMETRE", SpatialUnit.AvailableUnits.MILLIMETRE);
+        currentValues.put("MICROMETRE",SpatialUnit.AvailableUnits.MICROMETRE);
+        currentValues.put("NANOMETRE",SpatialUnit.AvailableUnits.NANOMETRE);
+        currentValues.put("ANGSTROM",SpatialUnit.AvailableUnits.ANGSTROM);
+        HashMap<String, HashMap<String, String>> currentParameterValues = new HashMap<>();
+        currentParameterValues.put(InputControl.SPATIAL_UNIT,currentValues);
+        moduleName = new InputControl(null).getClass().getSimpleName();
+        lostParameterValues.put(moduleName, currentParameterValues);
 
     }
 
@@ -92,18 +151,34 @@ public class LostAndFound {
 
     }
 
-    public String findParameter(String moduleName, String oldName) {
+    public String findParameter(String moduleSimpleName, String oldName) {
         // If no name is found, return the old name
-        HashMap<String, String> currentParameters = lostParameters.get(moduleName);
+        HashMap<String, String> currentParameters = lostParameterNames.get(moduleSimpleName);
         if (currentParameters == null)
             return oldName;
 
         String newName = currentParameters.get(oldName);
         if (newName == null)
-            newName = oldName;
+            return oldName;
+        else
+            return newName;
 
-        return newName;
+    }
 
+    public String findParameterValue(String moduleSimpleName, String parameterName, String oldValue) {
+        HashMap<String, HashMap<String, String>> currentParameters = lostParameterValues.get(moduleSimpleName);
+        if (currentParameters == null)
+            return oldValue;
+
+        HashMap<String, String> currentValues = currentParameters.get(parameterName);
+        if (currentValues == null)
+            return oldValue;
+
+        String newValue = currentValues.get(oldValue);
+        if (newValue == null)
+            return oldValue;
+        else
+            return newValue;
     }
 
     public void addLostModuleAssignment(String oldName, String newName) {
@@ -112,7 +187,7 @@ public class LostAndFound {
     }
 
     public void addLostParameterAssignment(String moduleName, String oldName, String newName) {
-        HashMap<String, String> currentParameters = lostParameters.putIfAbsent(moduleName, new HashMap<>());
+        HashMap<String, String> currentParameters = lostParameterNames.putIfAbsent(moduleName, new HashMap<>());
         currentParameters.put(oldName, newName);
 
     }

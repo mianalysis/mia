@@ -41,7 +41,7 @@ public class LocalAutoThreshold extends Module {
     public static final String USE_LOWER_THRESHOLD_LIMIT = "Use lower threshold limit";
     public static final String LOWER_THRESHOLD_LIMIT = "Lower threshold limit";
     public static final String LOCAL_RADIUS = "Local radius";
-    public static final String SPATIAL_UNITS = "Spatial units";
+    public static final String SPATIAL_UNITS_MODE = "Spatial units mode";
     public static final String USE_GLOBAL_Z = "Use full Z-range (\"Global Z\")";
     public static final String WHITE_BACKGROUND = "Black objects/white background";
 
@@ -85,7 +85,7 @@ public class LocalAutoThreshold extends Module {
 
     }
 
-    public interface SpatialUnits {
+    public interface SpatialUnitsModes {
         String CALIBRATED = "Calibrated";
         String PIXELS = "Pixel";
 
@@ -166,10 +166,10 @@ public class LocalAutoThreshold extends Module {
         boolean useLowerLim = parameters.getValue(USE_LOWER_THRESHOLD_LIMIT);
         double lowerLim = parameters.getValue(LOWER_THRESHOLD_LIMIT);
         double localRadius = parameters.getValue(LOCAL_RADIUS);
-        String spatialUnits = parameters.getValue(SPATIAL_UNITS);
+        String spatialUnits = parameters.getValue(SPATIAL_UNITS_MODE);
         boolean useGlobalZ = parameters.getValue(USE_GLOBAL_Z);
 
-        if (spatialUnits.equals(SpatialUnits.CALIBRATED)) {
+        if (spatialUnits.equals(SpatialUnitsModes.CALIBRATED)) {
             localRadius = inputImagePlus.getCalibration().getRawX(localRadius);
         }
 
@@ -226,7 +226,7 @@ public class LocalAutoThreshold extends Module {
         parameters.add(new BooleanP(USE_LOWER_THRESHOLD_LIMIT, this, false));
         parameters.add(new DoubleP(LOWER_THRESHOLD_LIMIT, this, 0.0));
         parameters.add(new DoubleP(LOCAL_RADIUS, this, 1.0));
-        parameters.add(new ChoiceP(SPATIAL_UNITS, this, SpatialUnits.PIXELS, SpatialUnits.ALL));
+        parameters.add(new ChoiceP(SPATIAL_UNITS_MODE, this, SpatialUnitsModes.PIXELS, SpatialUnitsModes.ALL));
         parameters.add(new BooleanP(USE_GLOBAL_Z,this,false));
         parameters.add(new BooleanP(WHITE_BACKGROUND, this, true));
 
@@ -251,13 +251,13 @@ public class LocalAutoThreshold extends Module {
             case ThresholdModes.SLICE:
                 returnedParameters.add(parameters.getParameter(ALGORITHM_SLICE));
                 returnedParameters.add(parameters.getParameter(LOCAL_RADIUS));
-                returnedParameters.add(parameters.getParameter(SPATIAL_UNITS));
+                returnedParameters.add(parameters.getParameter(SPATIAL_UNITS_MODE));
                 break;
 
             case ThresholdModes.THREE_D:
                 returnedParameters.add(parameters.getParameter(ALGORITHM_3D));
                 returnedParameters.add(parameters.getParameter(LOCAL_RADIUS));
-                returnedParameters.add(parameters.getParameter(SPATIAL_UNITS));
+                returnedParameters.add(parameters.getParameter(SPATIAL_UNITS_MODE));
                 returnedParameters.add(parameters.getParameter(THRESHOLD_MULTIPLIER));
                 returnedParameters.add(parameters.getParameter(USE_GLOBAL_Z));
 
@@ -330,9 +330,9 @@ public class LocalAutoThreshold extends Module {
 
         parameters.get(LOWER_THRESHOLD_LIMIT).setDescription("Lowest absolute threshold value that can be applied.");
 
-        parameters.get(LOCAL_RADIUS).setDescription("Radius of region to be used when calculating local intensity thresholds.  Units controlled by \""+SPATIAL_UNITS+"\" control.");
+        parameters.get(LOCAL_RADIUS).setDescription("Radius of region to be used when calculating local intensity thresholds.  Units controlled by \""+SPATIAL_UNITS_MODE+"\" control.");
 
-        parameters.get(SPATIAL_UNITS).setDescription("Units that the local radius is specified using.");
+        parameters.get(SPATIAL_UNITS_MODE).setDescription("Units that the local radius is specified using.");
 
         parameters.get(USE_GLOBAL_Z).setDescription("When performing 3D local thresholding, this takes all z-values at a location into account.  If disabled, pixels will be sampled in z according to the \""+LOCAL_RADIUS+"\" setting.");
 

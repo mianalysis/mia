@@ -96,13 +96,11 @@ import java.util.LinkedHashMap;
 
 import ij.ImagePlus;
 import wbif.sjx.MIA.MIA;
-import wbif.sjx.MIA.Module.Hidden.InputControl;
+import wbif.sjx.MIA.Module.Categories;
+import wbif.sjx.MIA.Module.Category;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
-import wbif.sjx.MIA.Module.Category;
-import wbif.sjx.MIA.Module.Categories;
-import wbif.sjx.MIA.Module.ObjectProcessing.Relationships.RelateManyToOne;
-import wbif.sjx.MIA.Module.ObjectProcessing.Relationships.RelateOneToOne;
+import wbif.sjx.MIA.Module.Core.InputControl;
 import wbif.sjx.MIA.Object.Measurement;
 import wbif.sjx.MIA.Object.Obj;
 import wbif.sjx.MIA.Object.ObjCollection;
@@ -112,11 +110,11 @@ import wbif.sjx.MIA.Object.Parameters.BooleanP;
 import wbif.sjx.MIA.Object.Parameters.ChoiceP;
 import wbif.sjx.MIA.Object.Parameters.InputObjectsP;
 import wbif.sjx.MIA.Object.Parameters.ObjectMeasurementP;
-import wbif.sjx.MIA.Object.Parameters.SeparatorP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.Parameters.ParameterGroup;
-import wbif.sjx.MIA.Object.Parameters.Objects.OutputClusterObjectsP;
 import wbif.sjx.MIA.Object.Parameters.ParameterGroup.ParameterUpdaterAndGetter;
+import wbif.sjx.MIA.Object.Parameters.SeparatorP;
+import wbif.sjx.MIA.Object.Parameters.Objects.OutputClusterObjectsP;
 import wbif.sjx.MIA.Object.Parameters.Text.DoubleP;
 import wbif.sjx.MIA.Object.References.ObjMeasurementRef;
 import wbif.sjx.MIA.Object.References.Collections.ImageMeasurementRefCollection;
@@ -237,8 +235,6 @@ public class RelateManyToMany extends Module {
         // If not accepting all inside, test against the magnitude of the distance
         if (!acceptAllInside)
             overlap = Math.abs(overlap);
-
-        MIA.log.writeDebug(overlap);
 
         // Test if this point is within linking distance
         return overlap <= maxSeparation;
@@ -366,9 +362,10 @@ public class RelateManyToMany extends Module {
 
     @Override
     public String getDescription() {
-        return "Relate objects of two classes based on spatial proximity or overlap.  With this module, each object from a collection can be linked to an unlimited number of other objects (see \""+ new RelateManyToOne(null).getName() +"\" and \""+ new RelateOneToOne(null).getName() +"\" modules for alternatives).  As such, the assigned relationships can form a network of relationships, with each object connected to multiple others.  Related objects are assigned partner relationships and can optionally also be related by a common cluster (parent) object.  Measurements associated with these relationship (e.g. a record of whether each object was linked) are stored as measurements of the relevant object.";
+        return "Relate objects of two classes based on spatial proximity or overlap.  With this module, each object from a collection can be linked to an unlimited number of other objects (see \""
+                + new RelateManyToOne(null).getName() + "\" and \"" + new RelateOneToOne(null).getName()
+                + "\" modules for alternatives).  As such, the assigned relationships can form a network of relationships, with each object connected to multiple others.  Related objects are assigned partner relationships and can optionally also be related by a common cluster (parent) object.  Measurements associated with these relationship (e.g. a record of whether each object was linked) are stored as measurements of the relevant object.";
     }
-
 
     @Override
     public Category getCategory() {
@@ -712,13 +709,12 @@ public class RelateManyToMany extends Module {
 
         parameters.get(CALIBRATED_UNITS).setDescription(
                 "When selected, spatial values are assumed to be specified in calibrated units (as defined by the \""
-                        + new InputControl(null).getName() + "\" parameter \"" + InputControl.SPATIAL_UNITS
+                        + new InputControl(null).getName() + "\" parameter \"" + InputControl.SPATIAL_UNIT
                         + "\").  Otherwise, pixel units are assumed.");
 
-        parameters.get(ACCEPT_ALL_INSIDE)
-                .setDescription("When selected and \"" + SPATIAL_SEPARATION_MODE + "\" is set to \""
-                        + SpatialSeparationModes.SURFACE_SEPARATION
-                        + "\", any instances of objects fully enclosed within another are accepted as being related.  Otherwise, the absolute distance between object surfaces will be used.");
+        parameters.get(ACCEPT_ALL_INSIDE).setDescription("When selected and \"" + SPATIAL_SEPARATION_MODE
+                + "\" is set to \"" + SpatialSeparationModes.SURFACE_SEPARATION
+                + "\", any instances of objects fully enclosed within another are accepted as being related.  Otherwise, the absolute distance between object surfaces will be used.");
 
         parameters.get(MINIMUM_OVERLAP_PC_1).setDescription("If \"" + SPATIAL_SEPARATION_MODE + "\" is set to \""
                 + SpatialSeparationModes.SPATIAL_OVERLAP
