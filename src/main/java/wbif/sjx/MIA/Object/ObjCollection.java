@@ -4,6 +4,9 @@ import ij.IJ;
 import ij.ImagePlus;
 import ij.measure.Calibration;
 import ij.measure.ResultsTable;
+import ome.units.UNITS;
+import ome.units.quantity.Time;
+import ome.units.unit.Unit;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Object.References.ObjMeasurementRef;
@@ -28,11 +31,15 @@ public class ObjCollection extends LinkedHashMap<Integer, Obj> {
     private int maxID = 0;
     private SpatCal spatCal;
     private int nFrames;
+    private double frameInterval;
+    private Unit<Time> temporalUnit;
 
-    public ObjCollection(String name, SpatCal cal, int nFrames) {
+    public ObjCollection(String name, SpatCal cal, int nFrames, double frameInterval, Unit<Time> temporalUnit) {
         this.name = name;
         this.spatCal = cal;
         this.nFrames = nFrames;
+        this.frameInterval = frameInterval;
+        this.temporalUnit = temporalUnit;
 
     }
 
@@ -40,11 +47,13 @@ public class ObjCollection extends LinkedHashMap<Integer, Obj> {
         this.name = name;
         this.spatCal = exampleCollection.getSpatialCalibration();
         this.nFrames = exampleCollection.getNFrames();
+        this.frameInterval = exampleCollection.getFrameInterval();
+        this.temporalUnit = exampleCollection.getTemporalUnit();
 
     }
 
     public Obj createAndAddNewObject(VolumeType volumeType) {
-        Obj newObject = new Obj(volumeType, name, getAndIncrementID(), spatCal, nFrames);
+        Obj newObject = new Obj(volumeType, name, getAndIncrementID(), this);
         add(newObject);
 
         return newObject;
@@ -188,8 +197,12 @@ public class ObjCollection extends LinkedHashMap<Integer, Obj> {
         Calibration calibration = image.getImagePlus().getCalibration();
         calibration.pixelWidth = obj.getDppXY();
         calibration.pixelHeight = obj.getDppXY();
-        calibration.pixelDepth = obj.getDppZ();
+        calibration.pixelDepth = obj.getDppZ();        
         calibration.setUnit(obj.getUnits());
+
+        calibration.frameInterval = frameInterval;
+        calibration.fps = 1 / temporalUnit.convertValue(frameInterval, UNITS.SECOND);
+        calibration.setTimeUnit(temporalUnit.getSymbol());
 
     }
 
@@ -406,7 +419,15 @@ public class ObjCollection extends LinkedHashMap<Integer, Obj> {
         return nFrames;
     }
 
-    public void setNFrmes(int nFrames) {
+    public double getFrameInterval() {
+        return frameInterval;
+    }
+
+    public Unit<Time> getTemporalUnit() {
+        return temporalUnit;
+    }
+
+    public void setNFrames(int nFrames) {
         this.nFrames = nFrames;
     }
 }

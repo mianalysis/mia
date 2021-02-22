@@ -60,6 +60,7 @@ public class Workspace {
      */
     public void addObject(Obj obj) {
         String objectName = obj.getName();
+        ObjCollection newObjCollection = new ObjCollection(objectName, obj.getSpatialCalibration());
         objects.putIfAbsent(objectName,new ObjCollection(objectName,obj.getSpatialCalibration(),obj.getNFrames()));
         objects.get(objectName).add(obj);
 
