@@ -4,6 +4,7 @@ import ij.ImagePlus;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.Category;
+import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Categories;
 import wbif.sjx.MIA.Module.Hidden.InputControl;
 import wbif.sjx.MIA.Object.Image;
@@ -37,6 +38,7 @@ public class MeasureImageDimensions extends Module {
         String N_FRAMES= "NUMBER_OF_FRAMES";
         String DIST_PER_PX_XY = "DISTANCE_PER_PX_XY_(${CAL})";
         String DIST_PER_SLICE_Z = "DISTANCE_PER_SLICE_Z_(${CAL})";
+        String FRAME_INTERVAL = "FRAME_INTERVAL_(SECONDS)";
 
     }
 
@@ -82,7 +84,11 @@ public class MeasureImageDimensions extends Module {
         inputImage.addMeasurement(new Measurement(getFullName(Measurements.DIST_PER_PX_XY),distXY));
 
         double distZ = inputImagePlus.getCalibration().pixelDepth;
-        inputImage.addMeasurement(new Measurement(getFullName(Measurements.DIST_PER_SLICE_Z),distZ));
+        inputImage.addMeasurement(new Measurement(getFullName(Measurements.DIST_PER_SLICE_Z), distZ));
+
+        MIA.log.writeDebug(inputImagePlus.getCalibration().fps + "_" + inputImagePlus.getCalibration().frameInterval);
+        double frameIntervalSecs = 1 / inputImagePlus.getCalibration().fps;
+        inputImage.addMeasurement(new Measurement(getFullName(Measurements.FRAME_INTERVAL),frameIntervalSecs));
 
         if (showOutput) inputImage.showMeasurements(this);
 
@@ -147,6 +153,12 @@ public class MeasureImageDimensions extends Module {
         reference = imageMeasurementRefs.getOrPut(name);
         reference.setImageName(inputImageName);
         reference.setDescription("Z-axis spatial calibration for the image \""+parameters.getValue(INPUT_IMAGE)+"\". Measured in calibrated_units/slice units, where <i>calibrated_units</i> is determined by the \""+InputControl.SPATIAL_UNITS+"\" parameter of the \""+new InputControl(null).getName()+"\" module.");
+        returnedRefs.add(reference);
+
+        name = getFullName(Measurements.FRAME_INTERVAL);
+        reference = imageMeasurementRefs.getOrPut(name);
+        reference.setImageName(inputImageName);
+        reference.setDescription("Time between successive frames in a timeseries (measured in seconds).");
         returnedRefs.add(reference);
 
         return returnedRefs;

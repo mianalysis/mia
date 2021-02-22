@@ -465,6 +465,9 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
                 ipl.getCalibration().pixelDepth = 1.0;
                 ipl.getCalibration().setZUnit("px");
             }
+
+            MIA.log.writeDebug("Need to add frame interval calibration to Bioformats reader (ImageLoader line 469)");
+            
         } else if (!manualCal) {
             MIA.log.writeWarning("Can't interpret units for file \"" + new File(path).getName()
                     + "\".  Spatially calibrated values may be wrong");
