@@ -1,15 +1,24 @@
 package wbif.sjx.MIA.GUI.ParameterControls;
 
+import java.awt.Color;
+import java.awt.Component;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.DefaultListCellRenderer;
 import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.ListCellRenderer;
 
+import wbif.sjx.MIA.MIA;
+import wbif.sjx.MIA.GUI.Colours;
 import wbif.sjx.MIA.GUI.GUI;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.Core.OutputControl;
+import wbif.sjx.MIA.Module.Miscellaneous.GUISeparator;
 import wbif.sjx.MIA.Object.Parameters.ModuleP;
 
 /**
@@ -21,7 +30,8 @@ public class ModuleChoiceParameter extends ParameterControl implements ActionLis
     public ModuleChoiceParameter(ModuleP parameter) {
         super(parameter);
 
-        // Choices may have not been initialised when this first runs, so a blank list is created
+        // Choices may have not been initialised when this first runs, so a blank list
+        // is created
         Module[] choices = parameter.getModules();
         control = new WiderDropDownCombo(choices);
 
@@ -29,6 +39,8 @@ public class ModuleChoiceParameter extends ParameterControl implements ActionLis
         control.setSelectedItem(parameter.getSelectedModule());
         control.addActionListener(this);
         control.setWide(true);
+
+        control.setRenderer(new ModuleListRenderer(control.getRenderer()));
 
     }
 
@@ -39,7 +51,8 @@ public class ModuleChoiceParameter extends ParameterControl implements ActionLis
         ((ModuleP) parameter).setSelectedModule((Module) control.getSelectedItem());
 
         int idx = GUI.getModules().indexOf(parameter.getModule());
-        if (idx <= GUI.getLastModuleEval() & !(parameter.getModule() instanceof OutputControl)) GUI.setLastModuleEval(idx-1);
+        if (idx <= GUI.getLastModuleEval() & !(parameter.getModule() instanceof OutputControl))
+            GUI.setLastModuleEval(idx - 1);
 
         GUI.updateTestFile(true);
         GUI.updateModuleStates(true);
@@ -71,5 +84,27 @@ public class ModuleChoiceParameter extends ParameterControl implements ActionLis
         control.repaint();
         control.revalidate();
 
+    }
+}
+
+class ModuleListRenderer extends DefaultListCellRenderer {
+    private ListCellRenderer defaultRenderer;
+
+    public ModuleListRenderer(ListCellRenderer defaultRenderer) {
+        this.defaultRenderer = defaultRenderer;
+    }
+
+    @Override
+    public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected,
+            boolean cellHasFocus) {
+        Component c = defaultRenderer.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+
+        if (value == null) 
+            return c;
+
+        if (c instanceof JLabel && value instanceof GUISeparator)
+            c.setForeground(Colours.DARK_BLUE);
+        
+        return c;
     }
 }

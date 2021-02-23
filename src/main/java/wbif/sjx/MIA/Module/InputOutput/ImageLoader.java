@@ -1099,7 +1099,7 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
         // If necessary, setting the spatial calibration
         if (setSpatialCalibration) {
             writeStatus("Setting spatial calibration (XY = " + xyCal + ", Z = " + zCal + ")");
-            Calibration calibration = new Calibration();
+            Calibration calibration = ipl.getCalibration();
 
             calibration.pixelHeight = xyCal;
             calibration.pixelWidth = xyCal;
@@ -1114,7 +1114,7 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
         // If necessary, setting the spatial calibration
         if (setTemporalCalibration) {
             writeStatus("Setting temporal calibration (frame interval = " + frameInterval + ")");
-            Calibration calibration = new Calibration();
+            Calibration calibration = ipl.getCalibration();
 
             calibration.frameInterval = frameInterval;
             calibration.fps = 1 / TemporalUnit.getOMEUnit().convertValue(frameInterval, UNITS.SECOND);
