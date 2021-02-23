@@ -146,9 +146,10 @@ public class FitGaussian2D extends Module {
 
     static void assignVolume(ObjCollection objects) {
         // Replacing spot volumes with explicit volume
+        ObjCollection tempObjects = new ObjCollection("SpotVolume",objects);
         for (Obj spotObject:objects.values()) {
             double radius = spotObject.getMeasurement(Measurements.SIGMA_X_PX).getValue();
-            Obj volumeObject = GetLocalObjectRegion.getLocalRegion(spotObject, "SpotVolume", radius, false, false);
+            Obj volumeObject = GetLocalObjectRegion.getLocalRegion(spotObject, tempObjects, radius, false, false);
             spotObject.getCoordinateSet().clear();
             spotObject.getCoordinateSet().addAll(volumeObject.getCoordinateSet());
             spotObject.clearSurface();

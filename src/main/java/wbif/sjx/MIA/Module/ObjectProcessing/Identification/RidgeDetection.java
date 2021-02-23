@@ -24,6 +24,7 @@ import wbif.sjx.MIA.Object.References.Collections.ObjMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.ParentChildRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.PartnerRefCollection;
 import wbif.sjx.MIA.Object.Units.SpatialUnit;
+import wbif.sjx.MIA.Object.Units.TemporalUnit;
 import wbif.sjx.common.MathFunc.CumStat;
 import wbif.sjx.common.Object.Volume.PointOutOfRangeException;
 import wbif.sjx.common.Object.Volume.SpatCal;
@@ -311,7 +312,8 @@ public class RidgeDetection extends Module {
         LineDetector lineDetector = new LineDetector();
         SpatCal calibration = getCalibration(inputImage);
         int nFrames = inputIpl.getNFrames();
-        ObjCollection outputObjects = new ObjCollection(outputObjectsName,calibration,nFrames);
+        double frameInterval = inputIpl.getCalibration().frameInterval;
+        ObjCollection outputObjects = new ObjCollection(outputObjectsName,calibration,nFrames,frameInterval,TemporalUnit.getOMEUnit());
         workspace.addObjects(outputObjects);
 
         // Iterating over each image in the stack

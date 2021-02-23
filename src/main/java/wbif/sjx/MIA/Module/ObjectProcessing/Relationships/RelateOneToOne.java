@@ -262,10 +262,9 @@ public class RelateOneToOne extends Module {
             object2.addPartner(object1);
 
             // Creating new object
-            if (outputObjectsName != null) {
-                int ID = outputObjects.getAndIncrementID();
-                outputObjects.add(createClusterObject(object1, object2, outputObjectsName, ID));
-            }
+            if (outputObjectsName != null)
+                createClusterObject(object1, object2, outputObjects);
+            
         }
 
         return outputObjects;
@@ -287,8 +286,8 @@ public class RelateOneToOne extends Module {
         }
     }
 
-    static Obj createClusterObject(Obj object1, Obj object2, String outputObjectsName, int ID) {
-        Obj outputObject = new Obj(outputObjectsName, ID, object1);
+    static Obj createClusterObject(Obj object1, Obj object2, ObjCollection outputObjects) {
+        Obj outputObject = outputObjects.createAndAddNewObject(object1.getVolumeType());
         outputObject.setT(object1.getT());
 
         // Adding relationships

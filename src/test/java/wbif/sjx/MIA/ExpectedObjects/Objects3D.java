@@ -7,12 +7,14 @@ import wbif.sjx.common.Object.Volume.VolumeType;
 import java.util.HashMap;
 import java.util.List;
 
+import ome.units.UNITS;
+
 /**
  * Created by Stephen Cross on 29/08/2017.
  */
 public class Objects3D extends ExpectedObjects {
     public Objects3D(VolumeType volumeType) {
-        super(volumeType, 64, 76, 12, 1);
+        super(volumeType, 64, 76, 12, 1, 0.02, UNITS.SECOND);
     }
 
     public enum Measures {

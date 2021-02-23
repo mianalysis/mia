@@ -46,21 +46,17 @@ public class CombineObjectSets extends Module {
 
     public static void combineAndCreate(ObjCollection inputObjects, ObjCollection outputObjects) {
         for (Obj obj : inputObjects.values()) {
-            int ID = outputObjects.getAndIncrementID();
-            Obj newObj = new Obj(outputObjects.getName(), ID, obj);
+            Obj newObj = outputObjects.createAndAddNewObject(obj.getVolumeType());
             newObj.setCoordinateSet(obj.getCoordinateSet().duplicate());
             newObj.setT(obj.getT());
-            outputObjects.add(newObj);
         }
     }
 
     static void combineAndAdd(ObjCollection targetObjects, ObjCollection sourceObjects) {
         for (Obj obj : sourceObjects.values()) {
-            int ID = targetObjects.getAndIncrementID();
-            Obj newObj = new Obj(targetObjects.getName(), ID, obj);
+            Obj newObj = targetObjects.createAndAddNewObject(obj.getVolumeType());
             newObj.setCoordinateSet(obj.getCoordinateSet().duplicate());
             newObj.setT(obj.getT());
-            targetObjects.add(newObj);
         }
     }
 

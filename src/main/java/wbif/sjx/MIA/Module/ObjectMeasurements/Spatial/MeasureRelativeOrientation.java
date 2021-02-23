@@ -25,8 +25,11 @@ import wbif.sjx.MIA.Object.References.Collections.PartnerRefCollection;
 import wbif.sjx.common.Analysis.Volume.SurfaceSeparationCalculator;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.Object.Point;
+import wbif.sjx.common.Object.Volume.PointCoordinates;
 import wbif.sjx.common.Object.Volume.PointOutOfRangeException;
 import wbif.sjx.common.Object.Volume.SpatCal;
+import wbif.sjx.common.Object.Volume.Volume;
+import wbif.sjx.common.Object.Volume.VolumeType;
 
 public class MeasureRelativeOrientation extends Module {
     public static final String INPUT_OBJECTS = "Input objects";
@@ -232,15 +235,15 @@ public class MeasureRelativeOrientation extends Module {
                 int y1 = (int) inputObject.getYMean(true);
                 int z1 = (int) inputObject.getZMean(true, false);
 
-                Obj centroidObj = new Obj("Temp", 0, inputObject);
+                Volume centroidVol = new Volume(VolumeType.POINTLIST, inputObject.getSpatialCalibration());                
                 try {
-                    centroidObj.add(x1, y1, z1);
+                    centroidVol.add(x1, y1, z1);
                 } catch (IntegerOverflowException e) {
                     e.printStackTrace();
                 } catch (PointOutOfRangeException e) {
                 }
 
-                SurfaceSeparationCalculator calculator = new SurfaceSeparationCalculator(centroidObj, referenceObject);
+                SurfaceSeparationCalculator calculator = new SurfaceSeparationCalculator(centroidVol, referenceObject);
                 Point<Integer> p2 = calculator.getP2();
                 Point<Double> referencePoint = new Point<>((double) p2.getX(), (double) p2.getY(), (double) p2.getZ());
 

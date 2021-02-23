@@ -4,6 +4,9 @@ import ij.IJ;
 import ij.ImagePlus;
 import ij.measure.Calibration;
 import ij.measure.ResultsTable;
+import ome.units.quantity.Time;
+import ome.units.unit.Unit;
+import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Object.References.ObjMeasurementRef;
@@ -28,11 +31,15 @@ public class ObjCollection extends LinkedHashMap<Integer, Obj> {
     private int maxID = 0;
     private SpatCal spatCal;
     private int nFrames;
+    private double frameInterval;
+    private Unit<Time> temporalUnit;
 
-    public ObjCollection(String name, SpatCal cal, int nFrames) {
+    public ObjCollection(String name, SpatCal cal, int nFrames, double frameInterval, Unit<Time> temporalUnit) {
         this.name = name;
         this.spatCal = cal;
         this.nFrames = nFrames;
+        this.frameInterval = frameInterval;
+        this.temporalUnit = temporalUnit;
 
     }
 
@@ -40,11 +47,21 @@ public class ObjCollection extends LinkedHashMap<Integer, Obj> {
         this.name = name;
         this.spatCal = exampleCollection.getSpatialCalibration();
         this.nFrames = exampleCollection.getNFrames();
+        this.frameInterval = exampleCollection.getFrameInterval();
+        this.temporalUnit = exampleCollection.getTemporalUnit();
 
     }
 
     public Obj createAndAddNewObject(VolumeType volumeType) {
-        Obj newObject = new Obj(volumeType, name, getAndIncrementID(), spatCal, nFrames);
+        Obj newObject = new Obj(this, volumeType, getAndIncrementID());
+        add(newObject);
+
+        return newObject;
+
+    }
+
+    public Obj createAndAddNewObject(VolumeType volumeType, int ID) {
+        Obj newObject = new Obj(this, volumeType, ID);
         add(newObject);
 
         return newObject;
@@ -62,6 +79,30 @@ public class ObjCollection extends LinkedHashMap<Integer, Obj> {
 
     public SpatCal getSpatialCalibration() {
         return spatCal;
+    }
+
+    public int getWidth() {
+        return spatCal.getWidth();
+    }
+
+    public int getHeight() {
+        return spatCal.getHeight();
+    }
+
+    public int getNSlices() {
+        return spatCal.getNSlices();
+    }
+
+    public double getDppXY() {
+        return spatCal.getDppXY();
+    }
+
+    public double getDppZ() {
+        return spatCal.getDppZ();
+    }
+
+    public String getSpatialUnits() {
+        return spatCal.getUnits();
     }
 
     public void setSpatialCalibration(SpatCal spatCal, boolean updateAllObjects) {
@@ -190,6 +231,8 @@ public class ObjCollection extends LinkedHashMap<Integer, Obj> {
         calibration.pixelHeight = obj.getDppXY();
         calibration.pixelDepth = obj.getDppZ();
         calibration.setUnit(obj.getUnits());
+
+        calibration.frameInterval = frameInterval;
 
     }
 
@@ -404,6 +447,14 @@ public class ObjCollection extends LinkedHashMap<Integer, Obj> {
 
     public int getNFrames() {
         return nFrames;
+    }
+
+    public double getFrameInterval() {
+        return frameInterval;
+    }
+
+    public Unit<Time> getTemporalUnit() {
+        return temporalUnit;
     }
 
     public void setNFrmes(int nFrames) {

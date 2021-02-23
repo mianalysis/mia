@@ -125,6 +125,7 @@ import wbif.sjx.MIA.Object.References.Collections.PartnerRefCollection;
 import wbif.sjx.MIA.Process.ColourFactory;
 import wbif.sjx.common.Object.LUTs;
 import wbif.sjx.common.Object.Volume.SpatCal;
+import wbif.sjx.common.Object.Volume.VolumeType;
 
 public class RelateManyToMany extends Module {
     public static final String INPUT_SEPARATOR = "Objects input/output";
@@ -321,17 +322,14 @@ public class RelateManyToMany extends Module {
 
     }
 
-    static ObjCollection createClusters(String outputObjectsName, HashMap<Obj, Integer> assignments,
-            SpatCal calibration, int nFrames) {
-        ObjCollection outputObjects = new ObjCollection(outputObjectsName, calibration, nFrames);
+    static ObjCollection createClusters(ObjCollection outputObjects, HashMap<Obj, Integer> assignments) {        
         for (Obj object : assignments.keySet()) {
             int groupID = assignments.get(object);
 
             // Getting cluster object
             if (!outputObjects.containsKey(groupID)) {
-                Obj outputObject = new Obj(outputObjectsName, groupID, object);
+                Obj outputObject = outputObjects.createAndAddNewObject(VolumeType.POINTLIST, groupID);
                 outputObject.setT(object.getT());
-                outputObjects.put(groupID, outputObject);
             }
             Obj outputObject = outputObjects.get(groupID);
 
@@ -412,8 +410,7 @@ public class RelateManyToMany extends Module {
 
         // Skipping the module if no objects are present in one collection
         if (inputObjects1.size() == 0 || inputObjects2.size() == 0) {
-            workspace.addObjects(new ObjCollection(outputObjectsName, inputObjects1.getSpatialCalibration(),
-                    inputObjects1.getNFrames()));
+            workspace.addObjects(new ObjCollection(outputObjectsName, inputObjects1));
             return Status.PASS;
         }
 
@@ -484,8 +481,8 @@ public class RelateManyToMany extends Module {
                 workspace.removeObjects(outputObjectsName, false);
             }
 
-            ObjCollection outputObjects = createClusters(outputObjectsName, assignments,
-                    inputObjects1.getSpatialCalibration(), inputObjects1.getNFrames());
+            ObjCollection outputObjects = new ObjCollection(outputObjectsName, inputObjects1);
+            createClusters(outputObjects, assignments);
             workspace.addObjects(outputObjects);
 
             if (showOutput) {

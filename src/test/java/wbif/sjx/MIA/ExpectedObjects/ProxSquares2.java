@@ -5,12 +5,14 @@ import wbif.sjx.common.Object.Volume.VolumeType;
 import java.util.HashMap;
 import java.util.List;
 
+import ome.units.UNITS;
+
 /**
  * Created by sc13967 on 12/02/2018.
  */
 public class ProxSquares2 extends ExpectedObjects {
     public ProxSquares2(VolumeType volumeType) {
-        super(volumeType, 64, 76, 1, 1);
+        super(volumeType, 64, 76, 1, 1, 0.02, UNITS.SECOND);
     }
 
     public enum Measures {

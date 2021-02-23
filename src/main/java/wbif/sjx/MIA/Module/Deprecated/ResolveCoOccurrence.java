@@ -187,8 +187,8 @@ public class ResolveCoOccurrence extends Module {
             if (overlap2[1] != object1.getID()) continue;
 
             // Merge objects and adding to output objects
-            Obj outputObject = new Obj(outputObjects.getName(), outputObjects.getAndIncrementID(),object1);
-
+            Obj outputObject = outputObjects.createAndAddNewObject(object1.getVolumeType());
+            
             // Adding measurements
             double nPoints1 = (double) object1.size();
             double nPoints2 = (double) object2.size();

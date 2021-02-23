@@ -25,6 +25,7 @@ import wbif.sjx.MIA.Object.Obj;
 import wbif.sjx.MIA.Object.ObjCollection;
 import wbif.sjx.MIA.Object.Status;
 import wbif.sjx.MIA.Object.Units.SpatialUnit;
+import wbif.sjx.MIA.Object.Units.TemporalUnit;
 import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.MIA.Object.Parameters.BooleanP;
 import wbif.sjx.MIA.Object.Parameters.ChoiceP;
@@ -79,6 +80,7 @@ public class ObjectLoader extends Module {
     public static final String HEIGHT = "Height";
     public static final String N_SLICES = "Number of slices";
     public static final String N_FRAMES = "Number of timepoints";
+    public static final String FRAME_INTERVAL = "Frame interval";
     public static final String CALIBRATION_SOURCE = "Calibration source";
     public static final String CALIBRATION_REFERENCE_IMAGE = "Calibration reference image";
     public static final String XY_CAL = "XY calibration (dist/px)";
@@ -180,9 +182,7 @@ public class ObjectLoader extends Module {
         }
     }
 
-    int[] getLimitsFromImage(Workspace workspace) {
-        String referenceImageName = parameters.getValue(LIMITS_REFERENCE_IMAGE);
-        Image image = workspace.getImage(referenceImageName);
+    int[] getLimitsFromImage(Image image) {        
         ImagePlus ipl = image.getImagePlus();
 
         return new int[]{ipl.getWidth(),ipl.getHeight(),ipl.getNSlices(),ipl.getNFrames()};
@@ -324,7 +324,8 @@ public class ObjectLoader extends Module {
                         int parentID = (int) Math.round((double) Double.parseDouble(row[parentsIdx]));
 
                         // Getting parent object.  If it doesn't exist, adding it to the parent objects collection
-                        parentObjects.putIfAbsent(parentID,new Obj(parentObjects.getName(),parentID,obj));
+                        if (!parentObjects.containsKey(parentID))
+                            parentObjects.createAndAddNewObject(obj.getVolumeType(),parentID);
                         Obj parentObj = parentObjects.get(parentID);
 
                         // Adding relationship
@@ -370,6 +371,8 @@ public class ObjectLoader extends Module {
         // Getting parameters
         String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);
         String limitsSource = parameters.getValue(LIMITS_SOURCE);
+        String referenceImageName = parameters.getValue(LIMITS_REFERENCE_IMAGE);
+        double frameInterval = parameters.getValue(FRAME_INTERVAL);
         String calSource = parameters.getValue(CALIBRATION_SOURCE);
         boolean createParents = parameters.getValue(CREATE_PARENTS);
         String parentType = parameters.getValue(PARENT_TYPE);
@@ -382,7 +385,9 @@ public class ObjectLoader extends Module {
         int[] limits = null;
         switch (limitsSource) {
             case LimitsSources.FROM_IMAGE:
-                limits = getLimitsFromImage(workspace);
+                Image image = workspace.getImage(referenceImageName);
+                frameInterval = image.getImagePlus().getCalibration().frameInterval;
+                limits = getLimitsFromImage(image);
                 break;
             case LimitsSources.MANUAL:
                 limits = getLimitsFromManualValues();
@@ -409,13 +414,13 @@ public class ObjectLoader extends Module {
         SpatCal calibration = new SpatCal(cal[0],cal[1],units,limits[0],limits[1],limits[2]);
 
         // Creating output objects
-        ObjCollection outputObjects = new ObjCollection(outputObjectsName,calibration,limits[3]);
+        ObjCollection outputObjects = new ObjCollection(outputObjectsName,calibration,limits[3],frameInterval,TemporalUnit.getOMEUnit());
         workspace.addObjects(outputObjects);
 
         // Creating parent objects
         ObjCollection parentObjects = null;
         if (createParents) {
-            parentObjects = new ObjCollection(parentObjectsName,calibration,limits[3]);
+            parentObjects = new ObjCollection(parentObjectsName,calibration,limits[3],frameInterval,TemporalUnit.getOMEUnit());
             workspace.addObjects(parentObjects);
         }
 
@@ -458,6 +463,7 @@ public class ObjectLoader extends Module {
         parameters.add(new IntegerP(HEIGHT,this,512));
         parameters.add(new IntegerP(N_SLICES,this,1));
         parameters.add(new IntegerP(N_FRAMES,this,1));
+        parameters.add(new DoubleP(FRAME_INTERVAL, this, 1d));
         parameters.add(new ChoiceP(CALIBRATION_SOURCE,this,CalibrationSources.FROM_IMAGE,CalibrationSources.ALL));
         parameters.add(new InputImageP(CALIBRATION_REFERENCE_IMAGE,this));
         parameters.add(new DoubleP(XY_CAL, this, 1d));
@@ -527,6 +533,7 @@ public class ObjectLoader extends Module {
                 returnedParameters.add(parameters.get(HEIGHT));
                 returnedParameters.add(parameters.get(N_SLICES));
                 returnedParameters.add(parameters.get(N_FRAMES));
+                returnedParameters.add(parameters.get(FRAME_INTERVAL));
                 break;
         }
 

@@ -32,6 +32,7 @@ import wbif.sjx.MIA.Process.ColourFactory;
 import wbif.sjx.common.MathFunc.Indexer;
 import wbif.sjx.common.Object.LUTs;
 import wbif.sjx.common.Object.Point;
+import wbif.sjx.common.Object.Volume.VolumeType;
 
 import java.util.*;
 
@@ -363,17 +364,12 @@ public class TrackObjects extends Module {
     }
 
     public static void createNewTrack(Obj currObj, ObjCollection trackObjects) {
-        String trackObjectsName = trackObjects.getName();
-
         // Creating a new track object
-        Obj track = new Obj(trackObjectsName, trackObjects.getAndIncrementID(),currObj);
+        Obj track = trackObjects.createAndAddNewObject(VolumeType.POINTLIST);
 
         // Setting relationship between the current object and track
         track.addChild(currObj);
         currObj.addParent(track);
-
-        // Adding the track to the track collection
-        trackObjects.add(track);
 
     }
 

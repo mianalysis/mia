@@ -54,17 +54,6 @@ public class Workspace {
         objects.put(object.getName(), object);
     }
 
-    /*
-     * Adds the provided Obj to the relevant ObjCollection.
-     * If there isn't already such a collection, one is created.
-     */
-    public void addObject(Obj obj) {
-        String objectName = obj.getName();
-        objects.putIfAbsent(objectName,new ObjCollection(objectName,obj.getSpatialCalibration(),obj.getNFrames()));
-        objects.get(objectName).add(obj);
-
-    }
-
     public void removeObjects(String name, boolean retainMeasurements) {
         if (retainMeasurements) {
             for (Obj obj:objects.get(name).values()) {
@@ -194,7 +183,12 @@ public class Workspace {
                 }
 
                 // Adding the current Obj to the new Workspace
-                workspaceList.get(t).addObject(obj);
+                if (workspaceList.get(t).getObjectSet(obj.getName()) == null) {
+                    ObjCollection currObjects = new ObjCollection(obj.getName(), obj.getObjectCollection());
+                    workspaceList.get(t).addObjects(currObjects);
+                }
+                
+                workspaceList.get(t).getObjectSet(obj.getName()).add(obj);
 
             }
         }

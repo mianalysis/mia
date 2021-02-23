@@ -58,7 +58,7 @@ public class GetLocalObjectRegion extends Module {
         super("Get local object region", modules);
     }
 
-    public static Obj getLocalRegion(Obj inputObject, String outputObjectsName, double radius, boolean calibrated,
+    public static Obj getLocalRegion(Obj inputObject, ObjCollection outputObjects, double radius, boolean calibrated,
             boolean addRelationship) throws IntegerOverflowException {
         // Getting spatial calibration
         double dppXY = inputObject.getDppXY();
@@ -66,7 +66,7 @@ public class GetLocalObjectRegion extends Module {
         double xy_z_ratio = dppXY / dppZ;
 
         // Creating new object and assigning relationship to input objects
-        Obj outputObject = new Obj(outputObjectsName, inputObject.getID(), inputObject);
+        Obj outputObject = outputObjects.createAndAddNewObject(inputObject.getVolumeType(), inputObject.getID());
 
         // Getting centroid coordinates
         double xCent = inputObject.getXMean(true);
@@ -203,10 +203,7 @@ public class GetLocalObjectRegion extends Module {
             }
 
             // Getting local region object
-            Obj outputObject = getLocalRegion(inputObject, outputObjectsName, radius, calibrated, true);
-
-            // Adding local region object to output collection
-            outputObjects.add(outputObject);
+            getLocalRegion(inputObject, outputObjects, radius, calibrated, true);
 
         }
 

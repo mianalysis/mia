@@ -177,10 +177,10 @@ public class MeasureObjectShape extends Module {
 
                     double heightCal = inputObject.getHeight(false, false);
                     inputObject.addMeasurement(new Measurement(Measurements.HEIGHT_CAL, heightCal));
-
                 }
 
                 // If necessary analyses are included
+                ObjCollection projectedObjects = new ObjCollection("Projected", inputObjects);
                 Obj projectedObject = null;
                 if (measureProjectedArea || measureProjectedDiameter || measureProjectedPerimeter) {
                     if (inputObject.is2D()) {
@@ -190,7 +190,7 @@ public class MeasureObjectShape extends Module {
                             if (inputObject.is2D())
                                 projectedObject = inputObject;
                             else
-                                projectedObject = ProjectObjects.process(inputObject, "Projected", false);
+                                projectedObject = ProjectObjects.process(inputObject, projectedObjects, false);
                         } catch (IntegerOverflowException e) {
                             MIA.log.writeWarning(e);
                             return;

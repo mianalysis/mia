@@ -127,9 +127,9 @@ public class FilterSpecificObjectIDs extends AbstractObjectFilter implements Act
             count++;
             if (remove) {
                 obj.removeRelationships();
-                if (outputObjects != null) {
-                    obj.setName(outputObjects.getName());
+                if (outputObjects != null) {                    
                     outputObjects.add(obj);
+                    obj.setObjectCollection(outputObjects);
                 }
                 inputObjects.remove(id);
             }

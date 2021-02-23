@@ -2,17 +2,17 @@ package wbif.sjx.MIA.Module.ObjectMeasurements.Spatial;
 
 import java.awt.Polygon;
 
+import wbif.sjx.MIA.Module.Categories;
+import wbif.sjx.MIA.Module.Category;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
-import wbif.sjx.MIA.Module.Category;
-import wbif.sjx.MIA.Module.Categories;
-import wbif.sjx.MIA.Object.Status;
 import wbif.sjx.MIA.Object.Obj;
 import wbif.sjx.MIA.Object.ObjCollection;
+import wbif.sjx.MIA.Object.Status;
 import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.MIA.Object.Parameters.InputObjectsP;
-import wbif.sjx.MIA.Object.Parameters.SeparatorP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
+import wbif.sjx.MIA.Object.Parameters.SeparatorP;
 import wbif.sjx.MIA.Object.Parameters.Objects.OutputObjectsP;
 import wbif.sjx.MIA.Object.References.Collections.ImageMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.MetadataRefCollection;
@@ -20,7 +20,6 @@ import wbif.sjx.MIA.Object.References.Collections.ObjMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.ParentChildRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.PartnerRefCollection;
 import wbif.sjx.common.Object.Volume.PointOutOfRangeException;
-import wbif.sjx.common.Object.Volume.SpatCal;
 import wbif.sjx.common.Object.Volume.VolumeType;
 
 public class ConvexHull2D extends Module {
@@ -29,12 +28,12 @@ public class ConvexHull2D extends Module {
     public static final String OUTPUT_OBJECTS = "Output objects";
 
 
-    public Obj processObject(Obj inputObject, String outputObjectsName, int outputID) {
+    public Obj processObject(Obj inputObject, ObjCollection outputObjects) {
         Polygon polygon = inputObject.getRoi(0).getConvexHull();
 
         // We have to explicitly define this, as the number of slices is 1 (potentially unlike the input object)
-        SpatCal cal = new SpatCal(inputObject.getDppXY(),inputObject.getDppZ(),inputObject.getUnits(),inputObject.getWidth(),inputObject.getHeight(),inputObject.getNSlices());
-        Obj outputObject = new Obj(VolumeType.QUADTREE,outputObjectsName,outputID,cal,inputObject.getNFrames());
+        Obj outputObject = outputObjects.createAndAddNewObject(VolumeType.QUADTREE);
+        
         try {outputObject.addPointsFromPolygon(polygon,0);}
         catch (PointOutOfRangeException e) {}
 
@@ -44,7 +43,7 @@ public class ConvexHull2D extends Module {
         inputObject.addChild(outputObject);
 
         return outputObject;
-
+        
     }
 
     public ConvexHull2D(ModuleCollection modules) {
@@ -76,11 +75,8 @@ public class ConvexHull2D extends Module {
         ObjCollection outputObjects = new ObjCollection(outputObjectsName,inputObjects);
         workspace.addObjects(outputObjects);
 
-        for (Obj inputObject:inputObjects.values()) {
-            int ID = outputObjects.getAndIncrementID();
-            Obj outputObject = processObject(inputObject,outputObjectsName,ID);
-            outputObjects.add(outputObject);
-        }
+        for (Obj inputObject:inputObjects.values())
+            processObject(inputObject,outputObjects);            
 
         if (showOutput) outputObjects.convertToImageRandomColours().showImage();
 

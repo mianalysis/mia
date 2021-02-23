@@ -86,33 +86,26 @@ public class SingleClassCluster extends Module {
         List<CentroidCluster<LocationWrapper>> clusters = clusterer.cluster(locations);
 
         // Assigning relationships between points and clusters
-        for (CentroidCluster<LocationWrapper> cluster:clusters) {
-            Obj outputObject = new Obj(VolumeType.POINTLIST,outputObjectsName,outputObjects.getAndIncrementID(),outputObjects.getSpatialCalibration(),outputObjects.getNFrames());
-
+        for (CentroidCluster<LocationWrapper> cluster : clusters) {
+            Obj outputObject = outputObjects.createAndAddNewObject(VolumeType.POINTLIST);
+            
             for (LocationWrapper point:cluster.getPoints()) {
                 Obj pointObject = point.getObject();
                 outputObject.setT(pointObject.getT());
                 pointObject.addParent(outputObject);
                 outputObject.addChild(pointObject);
             }
-
-            outputObjects.add(outputObject);
-
         }
 
         // Add single object cluster object for unclustered objects
         for (LocationWrapper wrapper:locations) {
             Obj obj = wrapper.getObject();
             if (obj.getParent(outputObjectsName) == null) {
-                int ID = outputObjects.getAndIncrementID();
-                VolumeType type = VolumeType.POINTLIST;
-                Obj outputObject = new Obj(type,outputObjectsName,ID,outputObjects.getSpatialCalibration(),outputObjects.getNFrames());
+                Obj outputObject = outputObjects.createAndAddNewObject(VolumeType.POINTLIST);
                 outputObject.setT(obj.getT());
 
                 obj.addParent(outputObject);
                 outputObject.addChild(obj);
-
-                outputObjects.add(outputObject);
 
             }
         }
@@ -131,9 +124,7 @@ public class SingleClassCluster extends Module {
 
         // Assigning relationships between points and clusters
         for (Cluster<LocationWrapper> cluster:clusters) {
-            int ID = outputObjects.getAndIncrementID();
-            VolumeType type = VolumeType.POINTLIST;
-            Obj outputObject = new Obj(type,outputObjectsName,ID,outputObjects.getSpatialCalibration(),outputObjects.getNFrames());
+            Obj outputObject = outputObjects.createAndAddNewObject(VolumeType.POINTLIST);
 
             for (LocationWrapper point:cluster.getPoints()) {
                 Obj pointObject = point.getObject();
@@ -141,24 +132,17 @@ public class SingleClassCluster extends Module {
                 pointObject.addParent(outputObject);
                 outputObject.addChild(pointObject);
             }
-
-            outputObjects.add(outputObject);
-
         }
 
         // Add single object cluster object for unclustered objects
         for (LocationWrapper wrapper:locations) {
             Obj obj = wrapper.getObject();
             if (obj.getParent(outputObjectsName) == null) {
-                int ID = outputObjects.getAndIncrementID();
-                VolumeType type = VolumeType.POINTLIST;
-                Obj outputObject = new Obj(type,outputObjectsName,ID,outputObjects.getSpatialCalibration(),outputObjects.getNFrames());
+                Obj outputObject = outputObjects.createAndAddNewObject(VolumeType.POINTLIST);
                 outputObject.setT(obj.getT());
 
                 obj.addParent(outputObject);
                 outputObject.addChild(obj);
-
-                outputObjects.add(outputObject);
 
             }
         }
@@ -173,9 +157,10 @@ public class SingleClassCluster extends Module {
         CoordinateSet coordinateSet = outputObject.getCoordinateSet();
 
         // Initial pass, adding all coordinates to cluster object
+        ObjCollection tempObjects = new ObjCollection("Cluster", childObjects);
         for (Obj child:children.values()) {
             // Getting local region around children (local region with radius equal to epsilon)
-            Obj region = GetLocalObjectRegion.getLocalRegion(child, "Cluster", eps, false, false);
+            Obj region = GetLocalObjectRegion.getLocalRegion(child, tempObjects, eps, false, false);
 
             // Adding coordinates from region to the cluster object
             coordinateSet.addAll(region.getCoordinateSet());

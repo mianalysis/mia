@@ -155,12 +155,13 @@ public class MeasureObjectTexture extends Module {
         // Initialising the texture calculator
         TextureCalculator textureCalculator = new TextureCalculator((int) offs[0], (int) offs[1], (int) offs[2]);
 
+        ObjCollection tempObjects = new ObjCollection("Temp", inputObjects);
         int nObjects = inputObjects.size();
         AtomicInteger iter = new AtomicInteger(0);
         for (Obj object:inputObjects.values()) {
                 Obj regionObject = object;
                 if (centroidMeasurement) {
-                    regionObject = GetLocalObjectRegion.getLocalRegion(object, "Centroid", radius, calibrated, false);
+                    regionObject = GetLocalObjectRegion.getLocalRegion(object, tempObjects, radius, calibrated, false);
                 }
                 processObject(object, regionObject, inputImage, textureCalculator, offs, calibratedOffset);
                 writeStatus("Processed " + (iter.incrementAndGet()) + " of " + nObjects);

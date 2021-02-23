@@ -2,6 +2,8 @@ package wbif.sjx.MIA.Process;
 
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
+
+import ome.units.UNITS;
 import wbif.sjx.MIA.Object.Measurement;
 import wbif.sjx.MIA.Object.Obj;
 import wbif.sjx.MIA.Object.ObjCollection;
@@ -25,17 +27,12 @@ public class LabelFactoryTest {
         SpatCal calibration = new SpatCal(dppXY,dppZ,calibratedUnits,1,1,1);
 
         // Creating the ObjCollection
-        ObjCollection collection = new ObjCollection("Obj",calibration,1);
+        ObjCollection collection = new ObjCollection("Obj",calibration,1,0.02,UNITS.SECOND);
 
         // Adding objects
-        Obj obj = new Obj(volumeType,"Obj",0,calibration,1);
-        collection.add(obj);
-
-        obj = new Obj(volumeType,"Obj",1,calibration,1);
-        collection.add(obj);
-
-        obj = new Obj(volumeType,"Obj",2,calibration,1);
-        collection.add(obj);
+        Obj obj = collection.createAndAddNewObject(volumeType, 0);
+        obj = collection.createAndAddNewObject(volumeType, 1);
+        obj = collection.createAndAddNewObject(volumeType, 2);
 
         DecimalFormat df = LabelFactory.getDecimalFormat(2,true);
         HashMap<Integer, String> actual = LabelFactory.getIDLabels(collection,df);
@@ -58,17 +55,12 @@ public class LabelFactoryTest {
         SpatCal calibration = new SpatCal(dppXY,dppZ,calibratedUnits,1,1,1);
 
         // Creating the ObjCollection
-        ObjCollection collection = new ObjCollection("Obj",calibration,1);
+        ObjCollection collection = new ObjCollection("Obj",calibration,1,0.02,UNITS.SECOND);
 
         // Adding objects
-        Obj obj = new Obj(volumeType,"Obj",0,calibration,1);
-        collection.add(obj);
-
-        obj = new Obj(volumeType,"Obj",1,calibration,1);
-        collection.add(obj);
-
-        obj = new Obj(volumeType,"Obj",2,calibration,1);
-        collection.add(obj);
+        Obj obj = collection.createAndAddNewObject(volumeType, 0);
+        obj = collection.createAndAddNewObject(volumeType, 1);
+        obj = collection.createAndAddNewObject(volumeType, 2);
 
         DecimalFormat df = LabelFactory.getDecimalFormat(0,false);
         HashMap<Integer, String> actual = LabelFactory.getIDLabels(collection,df);
@@ -90,17 +82,12 @@ public class LabelFactoryTest {
         SpatCal calibration = new SpatCal(dppXY,dppZ,calibratedUnits,1,1,1);
 
         // Creating the ObjCollection
-        ObjCollection collection = new ObjCollection("Obj",calibration,1);
+        ObjCollection collection = new ObjCollection("Obj",calibration,1,0.02,UNITS.SECOND);
 
         // Adding objects
-        Obj obj = new Obj(volumeType,"Obj",0,calibration,1);
-        collection.add(obj);
-
-        obj = new Obj(volumeType,"Obj",1,calibration,1);
-        collection.add(obj);
-
-        obj = new Obj(volumeType,"Obj",2,calibration,1);
-        collection.add(obj);
+        Obj obj = collection.createAndAddNewObject(volumeType, 0);
+        obj = collection.createAndAddNewObject(volumeType, 1);
+        obj = collection.createAndAddNewObject(volumeType, 2);
 
         DecimalFormat df = LabelFactory.getDecimalFormat(1,false);
         HashMap<Integer, String> actual = LabelFactory.getIDLabels(collection,df);
@@ -123,17 +110,12 @@ public class LabelFactoryTest {
         SpatCal calibration = new SpatCal(dppXY,dppZ,calibratedUnits,1,1,1);
 
         // Creating the ObjCollection
-        ObjCollection collection = new ObjCollection("Obj",calibration,1);
+        ObjCollection collection = new ObjCollection("Obj",calibration,1,0.02,UNITS.SECOND);
 
         // Adding objects
-        Obj obj = new Obj(volumeType,"Obj",0,calibration,1);
-        collection.add(obj);
-
-        obj = new Obj(volumeType,"Obj",1,calibration,1);
-        collection.add(obj);
-
-        obj = new Obj(volumeType,"Obj",2,calibration,1);
-        collection.add(obj);
+        Obj obj = collection.createAndAddNewObject(volumeType, 0);
+        obj = collection.createAndAddNewObject(volumeType, 1);
+        obj = collection.createAndAddNewObject(volumeType, 2);
 
         DecimalFormat df = LabelFactory.getDecimalFormat(2,false);
         HashMap<Integer, String> actual = LabelFactory.getIDLabels(collection,df);
@@ -151,29 +133,27 @@ public class LabelFactoryTest {
         // Setting calibration parameters
         double dppXY = 0.02;
         double dppZ = 0.1;
-        String calibratedUnits = "µm";
+        String calibratedUnits = "m*10-6";
 
         SpatCal calibration = new SpatCal(dppXY,dppZ,calibratedUnits,1,1,1);
 
         // Creating the ObjCollection
-        ObjCollection collection = new ObjCollection("Obj",calibration,1);
+        ObjCollection collection = new ObjCollection("Obj", calibration, 1, 0.02, UNITS.SECOND);
+        ObjCollection parents = new ObjCollection("Parents", calibration, 1, 0.02, UNITS.SECOND);
 
         // Adding objects
-        Obj obj = new Obj(volumeType,"Obj",0,calibration,1);
-        Obj parent = new Obj(volumeType,"Parent",6,calibration,1);
+        Obj obj = collection.createAndAddNewObject(volumeType, 0);
+        Obj parent = parents.createAndAddNewObject(volumeType, 6);
         obj.addParent(parent);
-        collection.add(obj);
 
-        obj = new Obj(volumeType,"Obj",1,calibration,1);
-        collection.add(obj);
+        obj = collection.createAndAddNewObject(volumeType, 1);
 
-        obj = new Obj(volumeType,"Obj",2,calibration,1);
-        parent = new Obj(volumeType,"Parent",5,calibration,1);
+        obj = collection.createAndAddNewObject(volumeType, 2);
+        parent = parents.createAndAddNewObject(volumeType, 5);
         obj.addParent(parent);
-        collection.add(obj);
 
         DecimalFormat df = LabelFactory.getDecimalFormat(0,false);
-        HashMap<Integer, String> actual = LabelFactory.getParentIDLabels(collection,"Parent",df);
+        HashMap<Integer, String> actual = LabelFactory.getParentIDLabels(collection,"Parents",df);
 
         assertEquals(3,actual.size());
         assertEquals("6",actual.get(0));
@@ -192,23 +172,20 @@ public class LabelFactoryTest {
         SpatCal calibration = new SpatCal(dppXY,dppZ,calibratedUnits,1,1,1);
 
         // Creating the ObjCollection
-        ObjCollection collection = new ObjCollection("Obj",calibration,1);
+        ObjCollection collection = new ObjCollection("Obj",calibration,1,0.02,UNITS.SECOND);
 
         // Adding objects
-        Obj obj = new Obj(volumeType,"Obj",0,calibration,1);
+        Obj obj = collection.createAndAddNewObject(volumeType, 0);
         Measurement meas = new Measurement("Meas",3.2);
         obj.addMeasurement(meas);
-        collection.add(obj);
 
-        obj = new Obj(volumeType,"Obj",1,calibration,1);
+        obj = collection.createAndAddNewObject(volumeType, 1);
         meas = new Measurement("Meas",-0.1);
         obj.addMeasurement(meas);
-        collection.add(obj);
 
-        obj = new Obj(volumeType,"Obj",2,calibration,1);
+        obj = collection.createAndAddNewObject(volumeType, 2);
         meas = new Measurement("Meas",Double.NaN);
         obj.addMeasurement(meas);
-        collection.add(obj);
 
         DecimalFormat df = LabelFactory.getDecimalFormat(2,false);
         HashMap<Integer, String> actual = LabelFactory.getMeasurementLabels(collection,"Meas",df);
@@ -218,4 +195,4 @@ public class LabelFactoryTest {
         assertEquals("-0.10",actual.get(1));
         assertEquals("NA",actual.get(2));
     }
-}
+} 

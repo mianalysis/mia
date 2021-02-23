@@ -42,9 +42,11 @@ public class MaskObjects <T extends RealType<T> & NativeType<T>> extends Module 
 
     }
 
-    public static <T extends RealType<T> & NativeType<T>> Obj maskObject(Obj inputObject, Image<T> maskImage, String outputName, int outputID) {
+    public static <T extends RealType<T> & NativeType<T>> Obj maskObject(Obj inputObject, Image<T> maskImage) {
+        ObjCollection tempObjects = new ObjCollection("Mask objects", inputObject.getObjectCollection());
+
         // Creating the mask object
-        Obj maskObject = new Obj(outputName, outputID, inputObject);
+        Obj maskObject = tempObjects.createAndAddNewObject(inputObject.getVolumeType());
 
         ImgPlus<T> maskImg = maskImage.getImgPlus();
         RandomAccess<T> randomAccess = maskImg.randomAccess();
@@ -116,12 +118,12 @@ public class MaskObjects <T extends RealType<T> & NativeType<T>> extends Module 
         }
 
         for (Obj inputObject:inputObjects.values()) {
-            int ID = outputObjects.getAndIncrementID();
-            Obj maskedObject = maskObject(inputObject,maskImage,outputObjectsName,ID);
+            Obj maskedObject = maskObject(inputObject,maskImage);
 
             switch (outputMode) {
                 case OutputModes.CREATE_NEW_OBJECT:
                     outputObjects.add(maskedObject);
+                    maskedObject.setObjectCollection(outputObjects);
                     inputObject.addChild(maskedObject);
                     maskedObject.addParent(inputObject);
 

@@ -107,7 +107,8 @@ public class FitEllipsoid extends Module {
                     break;
 
                 case FittingModes.FIT_TO_SURFACE:
-                    Obj edgeObject = GetObjectSurface.getSurface(inputObject, "Edge", 1);
+                    ObjCollection tempObjects = new ObjCollection("Edge", outputObjects);
+                    Obj edgeObject = GetObjectSurface.getSurface(inputObject, tempObjects, false);
                     calculator = new EllipsoidCalculator(edgeObject, maxAxisLength);
                     break;
             }
@@ -141,13 +142,12 @@ public class FitEllipsoid extends Module {
         if (ellipsoid == null)
             return null;
 
-        Obj ellipsoidObject = new Obj(outputObjects.getName(), inputObject.getID(), inputObject);
+        Obj ellipsoidObject = outputObjects.createAndAddNewObject(inputObject.getVolumeType());
         ellipsoidObject.setCoordinateSet(ellipsoid.getCoordinateSet());
         ellipsoidObject.setT(inputObject.getT());
 
         ellipsoidObject.addParent(inputObject);
         inputObject.addChild(ellipsoidObject);
-        outputObjects.add(ellipsoidObject);
 
         return ellipsoidObject;
 

@@ -96,7 +96,8 @@ public class FitEllipse extends Module {
         EllipseCalculator calculator = null;
 
         // Get projected object
-        Obj projObj = ProjectObjects.process(inputObject, "Proj", false);
+        ObjCollection projectedObjects = new ObjCollection("Projected", outputObjects);
+        Obj projObj = ProjectObjects.process(inputObject, projectedObjects, false);
 
         try {
             switch (fittingMode) {
@@ -105,7 +106,8 @@ public class FitEllipse extends Module {
                     break;
 
                 case FittingModes.FIT_TO_SURFACE:
-                    Obj edgeObject = GetObjectSurface.getSurface(projObj, "Edge", 1);
+                    ObjCollection tempObjects = new ObjCollection("Edge", outputObjects);
+                    Obj edgeObject = GetObjectSurface.getSurface(projObj, tempObjects, false);
                     calculator = new EllipseCalculator(edgeObject, maxAxisLength);
                     break;
             }
@@ -137,13 +139,12 @@ public class FitEllipse extends Module {
         if (ellipse == null)
             return null;
 
-        Obj ellipseObject = new Obj(outputObjects.getName(), outputObjects.getAndIncrementID(), inputObject);
+        Obj ellipseObject = outputObjects.createAndAddNewObject(inputObject.getVolumeType());
         ellipseObject.setCoordinateSet(ellipse.getCoordinateSet());
         ellipseObject.setT(inputObject.getT());
 
         ellipseObject.addParent(inputObject);
         inputObject.addChild(ellipseObject);
-        outputObjects.add(ellipseObject);
 
         return ellipseObject;
 

@@ -180,8 +180,9 @@ public class MeasureObjectIntensity extends Module {
         String imageName = parameters.getValue(INPUT_IMAGE);
         String edgeDistanceMode = parameters.getValue(EDGE_DISTANCE_MODE);
 
+        ObjCollection inputCollection = object.getObjectCollection();
         ObjCollection collection = new ObjCollection(object.getName(), object.getSpatialCalibration(),
-                object.getNFrames());
+                inputCollection.getNFrames(), inputCollection.getFrameInterval(), inputCollection.getTemporalUnit());
         collection.add(object);
         CumStat cs = MeasureIntensityDistribution.measureIntensityWeightedProximity(collection, image,
                 edgeDistanceMode);

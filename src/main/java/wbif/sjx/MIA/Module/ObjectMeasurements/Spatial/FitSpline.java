@@ -140,8 +140,9 @@ public class FitSpline extends Module {
     static Image getInitialSkeleton(Obj inputObject) {
         // Converting object to image, then inverting, so we have a black object on a
         // white background
+        ObjCollection inputObjects = inputObject.getObjectCollection();
         ObjCollection tempObjects = new ObjCollection("Backbone", inputObject.getSpatialCalibration(),
-                inputObject.getNFrames());
+                inputObjects.getNFrames(), inputObjects.getFrameInterval(), inputObjects.getTemporalUnit());
         tempObjects.add(inputObject);
 
         HashMap<Integer, Float> hues = ColourFactory.getSingleColourHues(tempObjects,
@@ -361,7 +362,8 @@ public class FitSpline extends Module {
         int pathLength = longestPath.size();
 
         // If the path is too short for the fitting range
-        if (pathLength < nPoints) return;
+        if (pathLength < nPoints)
+            return;
 
         int count = 0;
         for (Vertex vertex : longestPath) {
@@ -488,18 +490,16 @@ public class FitSpline extends Module {
         for (Vertex vertex : spline) {
             try {
                 if (i++ % everyNPoints == 0) {
-                    Obj splineObject = new Obj(outputObjects.getName(), outputObjects.getAndIncrementID(), inputObject);
+                    Obj splineObject = outputObjects.createAndAddNewObject(inputObject.getVolumeType());
                     splineObject.add(vertex.x, vertex.y, vertex.z);
                     splineObject.setT(inputObject.getT());
                     splineObject.addParent(inputObject);
                     inputObject.addChild(splineObject);
-                    outputObjects.add(splineObject);
                 }
             } catch (PointOutOfRangeException e) {
             }
         }
     }
-
 
     @Override
     public Category getCategory() {
@@ -573,7 +573,8 @@ public class FitSpline extends Module {
             boolean isLoop = checkForLoop(longestPath);
 
             // If the object is too small to be fit
-            if (longestPath.size() < 3) continue;
+            if (longestPath.size() < 3)
+                continue;
 
             // If necessary, inverting the longest path so the first point is closest to the
             // reference

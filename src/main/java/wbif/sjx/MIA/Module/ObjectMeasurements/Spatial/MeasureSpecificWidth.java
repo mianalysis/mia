@@ -138,7 +138,8 @@ public class MeasureSpecificWidth extends Module {
         final Line primaryLine = new Line(vector1,vector2,1.0E-10D);
                         
         // Getting surface points
-        Obj surface = GetObjectSurface.getSurface(obj, "Surf", obj.getID());
+        ObjCollection tempCollection = new ObjCollection("Surfaces", obj.getObjectCollection());
+        Obj surface = GetObjectSurface.getSurface(obj, tempCollection, false);
     
         // Storing candidate points
         HashSet<Point<Integer>> candidates = new HashSet<Point<Integer>>();

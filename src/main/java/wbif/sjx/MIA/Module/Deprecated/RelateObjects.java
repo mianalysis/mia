@@ -423,10 +423,9 @@ public class RelateObjects extends Module {
                 continue;
 
             // Creating a new Obj and assigning pixels from the parent and all children
-            Obj relatedObject = new Obj(relatedObjectsName, relatedObjects.getAndIncrementID(), exampleParent);
+            Obj relatedObject = relatedObjects.createAndAddNewObject(exampleParent.getVolumeType());
             relatedObject.setT(parentObj.getT());
-            relatedObjects.add(relatedObject);
-
+            
             for (Obj childObject : currChildObjects.values()) {
                 // Transferring points from the child object to the new object
                 relatedObject.getCoordinateSet().addAll(childObject.getCoordinateSet());

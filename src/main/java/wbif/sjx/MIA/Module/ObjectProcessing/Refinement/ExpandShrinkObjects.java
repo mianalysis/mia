@@ -229,13 +229,11 @@ public class ExpandShrinkObjects extends Module {
                 inputObject.clearROIs();
 
             } else {
-                Obj outputObject = new Obj(outputObjectsName, outputObjects.getAndIncrementID(), firstObj);
+                Obj outputObject = outputObjects.createAndAddNewObject(firstObj.getVolumeType());
                 outputObject.setCoordinateSet(newObject.getCoordinateSet());
                 outputObject.setT(newObject.getT());
                 outputObject.addParent(inputObject);
                 inputObject.addChild(outputObject);
-                outputObjects.add(outputObject);
-
             }
         }
 

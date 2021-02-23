@@ -191,10 +191,9 @@ public class ActiveContourObjectDetection extends Module {
                     inputObject.clearAllCoordinates();
                     inputObject.addPointsFromRoi(newRoi, z);
                 } else {
-                    Obj outputObject = new Obj(outputObjectsName, outputObjects.getAndIncrementID(), inputObject);
+                    Obj outputObject = outputObjects.createAndAddNewObject(inputObject.getVolumeType());
                     outputObject.setT(inputObject.getT());
                     outputObject.addPointsFromRoi(newRoi, z);
-                    outputObjects.add(outputObject);
                 }
             } catch (IntegerOverflowException e) {
                 return Status.FAIL;
