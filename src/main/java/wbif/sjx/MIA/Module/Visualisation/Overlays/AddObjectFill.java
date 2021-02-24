@@ -14,6 +14,7 @@ import ij.plugin.Duplicator;
 import ij.plugin.HyperStackConverter;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.Category;
+import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Categories;
 import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.Obj;
@@ -103,6 +104,7 @@ public class AddObjectFill extends AbstractOverlay {
             pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS); // i.e. never terminate early
 
         } catch (InterruptedException e) {
+            MIA.log.writeDebug(e.getLocalizedMessage());
             return;
         }
     }

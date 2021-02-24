@@ -2,7 +2,6 @@ package wbif.sjx.MIA.Module.ObjectMeasurements.Spatial;
 
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Map;
@@ -15,19 +14,19 @@ import inra.ijpb.binary.ChamferWeights;
 import inra.ijpb.measure.region2d.GeodesicDiameter;
 import inra.ijpb.measure.region2d.GeodesicDiameter.Result;
 import sc.fiji.analyzeSkeleton.AnalyzeSkeleton_;
+import wbif.sjx.MIA.Module.Categories;
+import wbif.sjx.MIA.Module.Category;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
-import wbif.sjx.MIA.Module.Category;
-import wbif.sjx.MIA.Module.Categories;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.ImageCalculator;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.InvertIntensity;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.Binary.BinaryOperations2D;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.Threshold.ManualThreshold;
-import wbif.sjx.MIA.Object.Status;
 import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.Measurement;
 import wbif.sjx.MIA.Object.Obj;
 import wbif.sjx.MIA.Object.ObjCollection;
+import wbif.sjx.MIA.Object.Status;
 import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.MIA.Object.Parameters.BooleanP;
 import wbif.sjx.MIA.Object.Parameters.ChoiceP;
@@ -45,7 +44,6 @@ import wbif.sjx.MIA.Object.References.Collections.MetadataRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.ObjMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.ParentChildRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.PartnerRefCollection;
-import wbif.sjx.MIA.Process.ColourFactory;
 import wbif.sjx.common.Analysis.CurvatureCalculator;
 import wbif.sjx.common.MathFunc.BresenhamLine;
 import wbif.sjx.common.MathFunc.CumStat;
@@ -140,14 +138,7 @@ public class FitSpline extends Module {
     static Image getInitialSkeleton(Obj inputObject) {
         // Converting object to image, then inverting, so we have a black object on a
         // white background
-        ObjCollection inputObjects = inputObject.getObjectCollection();
-        ObjCollection tempObjects = new ObjCollection("Backbone", inputObject.getSpatialCalibration(),
-                inputObjects.getNFrames(), inputObjects.getFrameInterval(), inputObjects.getTemporalUnit());
-        tempObjects.add(inputObject);
-
-        HashMap<Integer, Float> hues = ColourFactory.getSingleColourHues(tempObjects,
-                ColourFactory.SingleColours.WHITE);
-        Image objectImage = tempObjects.convertToImage("Objects", hues, 8, false);
+        Image objectImage = inputObject.getAsImage("Objects",true);
         InvertIntensity.process(objectImage);
 
         // Skeletonise fish to get single backbone
@@ -196,15 +187,13 @@ public class FitSpline extends Module {
         ipl.setCalibration(null);
 
         Map<Integer, Result> results = geodesicDiameter.analyzeRegions(ipl);
-
+        
         // Converting coordinates to expected format
         ArrayList<Vertex> longestPath = new ArrayList<>();
-        for (Result result : results.values()) {
-            for (Point2D point : result.path) {
+        for (Result result : results.values())
+            for (Point2D point : result.path)
                 longestPath.add(new Vertex((int) Math.round(point.getX()), (int) Math.round(point.getY()), 0));
-            }
-        }
-
+            
         return longestPath;
 
     }

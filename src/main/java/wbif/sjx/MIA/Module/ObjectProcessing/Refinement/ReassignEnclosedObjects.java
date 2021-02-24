@@ -36,7 +36,7 @@ public class ReassignEnclosedObjects extends Module {
             if (object.getID() == -1) continue;
 
             // Creating a binary image of the input object
-            Image binaryImage = object.convertObjToImage("Binary");
+            Image binaryImage = object.getAsImage("Binary",false);
             ImagePlus binaryIpl = binaryImage.getImagePlus();
 
             // Filling holes in the binary image

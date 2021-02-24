@@ -350,7 +350,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
             ArrayList<Integer> timepoints = new ArrayList<>();
 
             // Creating a blank image for this track
-            Image binaryImage = trackObj.convertObjToImage("Track");
+            Image binaryImage = trackObj.getAsImage("Track",false);
 
             // Adding each timepoint object (child) to this image
             for (Obj childObj : trackObj.getChildren(inputObjects.getName()).values()) {

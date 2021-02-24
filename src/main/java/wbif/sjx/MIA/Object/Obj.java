@@ -221,7 +221,8 @@ public class Obj extends Volume {
         // Getting the first set of children
         ObjCollection allChildren = children.get(elements[0]);
         if (allChildren == null)
-            return new ObjCollection(elements[0], spatCal, objCollection.getNFrames(), objCollection.getFrameInterval(), objCollection.getTemporalUnit());
+            return new ObjCollection(elements[0], spatCal, objCollection.getNFrames(), objCollection.getFrameInterval(),
+                    objCollection.getTemporalUnit());
 
         // If the first set of children was the only one listed, returning this
         if (elements.length == 1)
@@ -238,7 +239,8 @@ public class Obj extends Volume {
 
         // Going through each child in the current set, then adding all their children
         // to the output set
-        ObjCollection outputChildren = new ObjCollection(name, allChildren.getSpatialCalibration(), objCollection.getNFrames(), objCollection.getFrameInterval(), objCollection.getTemporalUnit());
+        ObjCollection outputChildren = new ObjCollection(name, allChildren.getSpatialCalibration(),
+                objCollection.getNFrames(), objCollection.getFrameInterval(), objCollection.getTemporalUnit());
         for (Obj child : allChildren.values()) {
             ObjCollection currentChildren = child.getChildren(stringBuilder.toString());
             for (Obj currentChild : currentChildren.values())
@@ -264,7 +266,8 @@ public class Obj extends Volume {
     public void addChild(Obj child) {
         String childName = child.getName();
 
-        children.computeIfAbsent(childName, k -> new ObjCollection(childName, child.getSpatialCalibration(), objCollection.getNFrames(), objCollection.getFrameInterval(), objCollection.getTemporalUnit()));
+        children.computeIfAbsent(childName, k -> new ObjCollection(childName, child.getSpatialCalibration(),
+                objCollection.getNFrames(), objCollection.getFrameInterval(), objCollection.getTemporalUnit()));
         children.get(childName).add(child);
 
     }
@@ -298,8 +301,8 @@ public class Obj extends Volume {
     public void addPartner(Obj partner) {
         String partnerName = partner.getName();
 
-        partners.computeIfAbsent(partnerName,
-                k -> new ObjCollection(partnerName, partner.getSpatialCalibration(), objCollection.getNFrames(), objCollection.getFrameInterval(), objCollection.getTemporalUnit()));
+        partners.computeIfAbsent(partnerName, k -> new ObjCollection(partnerName, partner.getSpatialCalibration(),
+                objCollection.getNFrames(), objCollection.getFrameInterval(), objCollection.getTemporalUnit()));
         partners.get(partnerName).add(partner);
     }
 
@@ -367,15 +370,14 @@ public class Obj extends Volume {
 
         // Getting the image corresponding to this slice
         Volume sliceVol = getSlice(slice);
-        
-        ObjCollection objectCollection = new ObjCollection("Slice", sliceVol.getSpatialCalibration(), 1, 1,
-                null);
+
+        ObjCollection objectCollection = new ObjCollection("Slice", sliceVol.getSpatialCalibration(), 1, 1, null);
         Obj sliceObj = objectCollection.createAndAddNewObject(sliceVol.getVolumeType(), ID);
         sliceObj.setCoordinateSet(sliceVol.getCoordinateSet());
-        
+
         // Checking if the object exists in this slice
         if (sliceVol.size() == 0)
-            return null;       
+            return null;
 
         HashMap<Integer, Float> hues = ColourFactory.getSingleColourHues(objectCollection,
                 ColourFactory.SingleColours.WHITE);
@@ -415,13 +417,18 @@ public class Obj extends Volume {
         }
     }
 
-    public Image getAsImage(String imageName) {
-        ImagePlus ipl = IJ.createImage(imageName, spatCal.width, spatCal.height, spatCal.nSlices, 8);
+    public Image getAsImage(String imageName, boolean singleTimepoint) {
+        int nFrames = singleTimepoint ? 1 : objCollection.getNFrames();
+        int t = singleTimepoint ? 0 : T;
+
+        ImagePlus ipl = IJ.createHyperStack(imageName, spatCal.width, spatCal.height, 1, spatCal.nSlices, nFrames, 8);
         spatCal.setImageCalibration(ipl);
 
         for (Point<Integer> point : getCoordinateSet()) {
-            ipl.setPosition(point.getZ() + 1);
-            ipl.getProcessor().putPixel(point.getX(), point.getY(), 255);
+            int idx = ipl.getStackIndex(1, point.getZ() + 1, t + 1);
+            ipl.getStack().getProcessor(idx).set(point.getX(), point.getY(), 255);
+            // ipl.setPosition(point.getZ() + 1);
+            // ipl.getProcessor().putPixel(point.getX(), point.getY(), 255);
         }
 
         return new Image(imageName, ipl);
@@ -505,17 +512,6 @@ public class Obj extends Volume {
         }
 
         return new Image("Tight", ipl);
-
-    }
-
-    public Image convertObjToImage(String outputName) {
-        // Creating an ObjCollection to generate this image
-        ObjCollection tempObj = new ObjCollection(outputName, spatCal, objCollection.getNFrames(), objCollection.getFrameInterval(), objCollection.getTemporalUnit());
-        tempObj.add(this);
-
-        // Getting the image
-        HashMap<Integer, Float> hues = ColourFactory.getSingleColourHues(tempObj, ColourFactory.SingleColours.WHITE);
-        return tempObj.convertToImage(outputName, hues, 8, false);
 
     }
 

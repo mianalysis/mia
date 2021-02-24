@@ -103,7 +103,7 @@ public class AddLabels extends AbstractOverlay {
 
     public static double[] getInsideObjectLocation(Obj obj, boolean renderInAllFrames) {
         // Binarise object and calculate its distance map
-        Image binaryImage = obj.convertObjToImage("Binary");
+        Image binaryImage = obj.getAsImage("Binary",false);
         InvertIntensity.process(binaryImage);
         BinaryOperations2D.process(binaryImage, BinaryOperations2D.OperationModes.ERODE, 1, 1);
         ImagePlus distanceIpl = DistanceMap.process(binaryImage, "Distance", true, false).getImagePlus();

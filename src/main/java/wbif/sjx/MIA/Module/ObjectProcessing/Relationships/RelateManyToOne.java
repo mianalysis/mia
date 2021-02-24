@@ -349,7 +349,7 @@ public class RelateManyToOne extends Module {
         // Calculating the furthest distance to the edge
         if (parentObject.getMeasurement("MAX_DIST") == null) {
             // Creating an image for the parent object
-            Image parentImage = parentObject.convertObjToImage("Parent");
+            Image parentImage = parentObject.getAsImage("Parent",false);
             InvertIntensity.process(parentImage.getImagePlus());
 
             Image distImage = DistanceMap.process(parentImage, "Distance", true, false);

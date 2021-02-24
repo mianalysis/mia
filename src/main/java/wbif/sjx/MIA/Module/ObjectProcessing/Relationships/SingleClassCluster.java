@@ -168,7 +168,7 @@ public class SingleClassCluster extends Module {
         }
 
         // Reducing the size of the cluster area by eps
-        Image objectImage = outputObject.convertObjToImage("Object");
+        Image objectImage = outputObject.getAsImage("Object",false);
         InvertIntensity.process(objectImage);
         objectImage = DistanceMap.process(objectImage, "Distance", true, false);
         ImagePlus objectIpl = objectImage.getImagePlus();
