@@ -390,7 +390,6 @@ public class AddLabels extends AbstractOverlay {
                 break;
 
             case LabelModes.PARENT_MEASUREMENT_VALUE:
-
                 returnedParameters.add(parameters.getParameter(PARENT_OBJECT_FOR_LABEL));
                 ((ParentObjectsP) parameters.getParameter(PARENT_OBJECT_FOR_LABEL))
                         .setChildObjectsName(inputObjectsName);
@@ -400,6 +399,7 @@ public class AddLabels extends AbstractOverlay {
                     ((ObjectMeasurementP) parameters.getParameter(MEASUREMENT_FOR_LABEL))
                             .setObjectName(parentObjectsName);
                 }
+                break;
 
             case LabelModes.PARTNER_COUNT:
                 returnedParameters.add(parameters.getParameter(PARTNER_OBJECTS_FOR_LABEL));

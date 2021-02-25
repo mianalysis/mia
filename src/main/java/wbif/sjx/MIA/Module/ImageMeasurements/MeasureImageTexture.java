@@ -68,8 +68,8 @@ public class MeasureImageTexture extends Module {
         ImagePlus inputImagePlus = inputImage.getImagePlus();
 
         // Running texture measurement
-        TextureCalculator textureCalculator = new TextureCalculator(xOffs,yOffs,zOffs);
-        textureCalculator.calculate(inputImagePlus.getStack());
+        TextureCalculator textureCalculator = new TextureCalculator();
+        textureCalculator.calculate(inputImagePlus.getStack(),xOffs,yOffs,zOffs);
 
         // Acquiring measurements
         Measurement ASMMeasurement = new Measurement(Measurements.ASM, textureCalculator.getASM());

@@ -73,7 +73,7 @@ public class MeasureObjectTexture extends Module {
 
     }
 
-    public static void processObject(Obj object, Obj regionObject, Image image, TextureCalculator textureCalculator, double[] rawOffs, boolean calibratedOffset) {
+    public static void processObject(Obj object, Obj regionObject, Image image, TextureCalculator textureCalculator, double[] offs, boolean calibratedOffset) {
         ImagePlus ipl = image.getImagePlus();
 
         // If the input stack is a single timepoint and channel, there's no need to create a new ImageStack
@@ -86,19 +86,19 @@ public class MeasureObjectTexture extends Module {
             timeStack = SubHyperstackMaker.makeSubhyperstack(ipl, "1-1", "1-" + nSlices, t + "-" + t).getStack();
         }
 
-        textureCalculator.calculate(timeStack,regionObject);
+        textureCalculator.calculate(timeStack,regionObject,(int) offs[0], (int) offs[1], (int) offs[2]);
 
         // Acquiring measurements
-        String name = getFullName(image.getName(), Measurements.ASM,rawOffs,calibratedOffset);
+        String name = getFullName(image.getName(), Measurements.ASM,offs,calibratedOffset);
         object.addMeasurement(new Measurement(name,textureCalculator.getASM()));
 
-        name = getFullName(image.getName(), Measurements.CONTRAST,rawOffs,calibratedOffset);
+        name = getFullName(image.getName(), Measurements.CONTRAST,offs,calibratedOffset);
         object.addMeasurement(new Measurement(name,textureCalculator.getContrast()));
 
-        name = getFullName(image.getName(), Measurements.CORRELATION,rawOffs,calibratedOffset);
+        name = getFullName(image.getName(), Measurements.CORRELATION,offs,calibratedOffset);
         object.addMeasurement(new Measurement(name,textureCalculator.getCorrelation()));
 
-        name = getFullName(image.getName(), Measurements.ENTROPY,rawOffs,calibratedOffset);
+        name = getFullName(image.getName(), Measurements.ENTROPY,offs,calibratedOffset);
         object.addMeasurement(new Measurement(name,textureCalculator.getEntropy()));
 
     }
@@ -153,7 +153,7 @@ public class MeasureObjectTexture extends Module {
         if (calibratedOffset) convertCalibratedOffsets(offs,inputObjects.getFirst());
 
         // Initialising the texture calculator
-        TextureCalculator textureCalculator = new TextureCalculator((int) offs[0], (int) offs[1], (int) offs[2]);
+        TextureCalculator textureCalculator = new TextureCalculator();
 
         ObjCollection tempObjects = new ObjCollection("Temp", inputObjects);
         int nObjects = inputObjects.size();

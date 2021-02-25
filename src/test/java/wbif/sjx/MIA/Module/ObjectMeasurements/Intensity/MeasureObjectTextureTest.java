@@ -69,7 +69,7 @@ public class MeasureObjectTextureTest extends ModuleTest {
         Image image = new Image("Im1",ipl);
 
         // Initialising the TextureCalculator
-        TextureCalculator calculator = new TextureCalculator(1,0,0);
+        TextureCalculator calculator = new TextureCalculator();
 
         // Testing each object
         double[] offs = new double[]{1,0,0};
@@ -110,7 +110,7 @@ public class MeasureObjectTextureTest extends ModuleTest {
         Image image = new Image("Im1",ipl);
 
         // Initialising the TextureCalculator
-        TextureCalculator calculator = new TextureCalculator(3,0,0);
+        TextureCalculator calculator = new TextureCalculator();
 
         // Testing each object
         double[] offs = new double[]{3,0,0};
