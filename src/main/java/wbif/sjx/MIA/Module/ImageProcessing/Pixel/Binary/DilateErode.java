@@ -54,6 +54,8 @@ public class DilateErode extends Module {
     }
 
     public static void process(ImagePlus ipl, String operationMode, int numIterations) {
+        String moduleName = new DilateErode(null).getName();
+        
         int width = ipl.getWidth();
         int height = ipl.getHeight();
         int nChannels = ipl.getNChannels();
@@ -66,6 +68,9 @@ public class DilateErode extends Module {
 
         Strel3D ballStrel = null;
         Strel diskStrel = null;
+
+        int count = 0;
+        int total = nChannels*nFrames;
         switch (operationMode) {
             case OperationModes.DILATE_2D:
             case OperationModes.ERODE_2D:
@@ -111,6 +116,11 @@ public class DilateErode extends Module {
                         }
                     }
                 }
+
+                count++;
+                    writeStatus("Processed " + count + " of " + total + " image ("
+                            + Math.floorDiv(100 * count, total) + "%)", moduleName);
+
             }
         }
 

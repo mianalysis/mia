@@ -103,6 +103,9 @@ public class AddObjectFill extends AbstractOverlay {
             pool.shutdown();
             pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS); // i.e. never terminate early
 
+            ipl.setPosition(1, 1, 1);
+            ipl.updateAndDraw();
+
         } catch (InterruptedException e) {
             MIA.log.writeDebug(e.getLocalizedMessage());
             return;
