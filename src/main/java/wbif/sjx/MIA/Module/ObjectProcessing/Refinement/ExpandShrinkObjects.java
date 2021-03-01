@@ -130,6 +130,7 @@ public class ExpandShrinkObjects extends Module {
         // moving objects to the correct positions
         outputObjects.setSpatialCalibration(inputObject.getSpatialCalibration(), true);
         outputObject.translateCoords(xOffs, yOffs, zOffs);
+        outputObject.setT(inputObject.getT());
 
         return outputObject;
 
