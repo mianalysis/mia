@@ -1,46 +1,55 @@
 package wbif.sjx.MIA.Module.ObjectProcessing.Refinement;
 
+import java.util.HashMap;
+
 import net.imagej.ImgPlus;
 import net.imagej.axis.Axes;
 import net.imglib2.RandomAccess;
 import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
 import net.imglib2.type.numeric.integer.UnsignedByteType;
+import wbif.sjx.MIA.MIA;
+import wbif.sjx.MIA.Module.Categories;
+import wbif.sjx.MIA.Module.Category;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
-import wbif.sjx.MIA.Module.Category;
-import wbif.sjx.MIA.Module.Categories;
-import wbif.sjx.MIA.Object.Status;
+import wbif.sjx.MIA.Module.ImageProcessing.Pixel.InvertIntensity;
 import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.Obj;
 import wbif.sjx.MIA.Object.ObjCollection;
+import wbif.sjx.MIA.Object.Status;
 import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.MIA.Object.Parameters.ChoiceP;
 import wbif.sjx.MIA.Object.Parameters.InputImageP;
 import wbif.sjx.MIA.Object.Parameters.InputObjectsP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
+import wbif.sjx.MIA.Object.Parameters.SeparatorP;
 import wbif.sjx.MIA.Object.Parameters.Objects.OutputObjectsP;
 import wbif.sjx.MIA.Object.References.Collections.ImageMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.MetadataRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.ObjMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.ParentChildRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.PartnerRefCollection;
+import wbif.sjx.MIA.Process.ColourFactory;
 import wbif.sjx.common.Object.Point;
 import wbif.sjx.common.Object.Volume.PointOutOfRangeException;
 
 public class MaskObjects<T extends RealType<T> & NativeType<T>> extends Module {
+    public static final String INPUT_SEPARATOR = "Object input/output";
     public static final String INPUT_OBJECTS = "Input objects";
+    public static final String OBJECT_OUTPUT_MODE = "Output object mode";
+    public static final String OUTPUT_OBJECTS = "Output objects";
+
+    public static final String MASK_SEPARATOR = "Mask options";
     public static final String MASK_MODE = "Mask mode";
     public static final String MASK_OBJECTS = "Mask objects";
     public static final String MASK_IMAGE = "Mask image";
-    public static final String OBJECT_OUTPUT_MODE = "Output object mode";
-    public static final String OUTPUT_OBJECTS = "Output objects";
 
     public interface MaskModes {
         String MASK_FROM_IMAGE = "Mask from image";
         String MASK_FROM_OBJECTS = "Mask from objects";
 
-        String[] ALL = new String[] { MASK_FROM_OBJECTS, MASK_FROM_OBJECTS };
+        String[] ALL = new String[] { MASK_FROM_IMAGE, MASK_FROM_OBJECTS };
 
     }
 
@@ -56,7 +65,8 @@ public class MaskObjects<T extends RealType<T> & NativeType<T>> extends Module {
         ObjCollection tempObjects = new ObjCollection("Mask objects", inputObject.getObjectCollection());
 
         // Creating the mask object
-        Obj maskObject = tempObjects.createAndAddNewObject(inputObject.getVolumeType());
+        Obj maskObject = tempObjects.createAndAddNewObject(inputObject.getVolumeType(), inputObject.getID());
+        maskObject.setT(inputObject.getT());
 
         ImgPlus<T> maskImg = maskImage.getImgPlus();
         RandomAccess<T> randomAccess = maskImg.randomAccess();
@@ -81,7 +91,7 @@ public class MaskObjects<T extends RealType<T> & NativeType<T>> extends Module {
                 location[zAx] = point.getZ();
             if (tAx != -1)
                 location[tAx] = inputObject.getT();
-
+                                    
             randomAccess.setPosition(location);
             int value = ((UnsignedByteType) randomAccess.get()).get();
 
@@ -120,10 +130,26 @@ public class MaskObjects<T extends RealType<T> & NativeType<T>> extends Module {
 
         // Getting mask image/objects
         String maskMode = parameters.getValue(MASK_MODE);
-        String maskObjects = parameters.getValue(MASK_OBJECTS);
+        String maskObjectsName = parameters.getValue(MASK_OBJECTS);
         String maskImageName = parameters.getValue(MASK_IMAGE);
-        
-        Image maskImage = workspace.getImage(maskImageName);
+
+        // If masking by objects, converting mask objects to an image
+        Image maskImage;
+        switch (maskMode) {
+            default:
+                MIA.log.writeWarning("Mask not found");
+                return Status.FAIL;
+            case MaskModes.MASK_FROM_IMAGE:
+                maskImage = workspace.getImage(maskImageName);
+                break;
+            case MaskModes.MASK_FROM_OBJECTS:
+                ObjCollection maskObjects = workspace.getObjectSet(maskObjectsName);
+                HashMap<Integer, Float> hues = ColourFactory.getSingleColourHues(maskObjects,
+                        ColourFactory.SingleColours.WHITE);
+                maskImage = maskObjects.convertToImage("Mask", hues, 8, false);
+                InvertIntensity.process(maskImage);
+                break;
+        }
 
         // Getting other parameters
         String outputMode = parameters.getValue(OBJECT_OUTPUT_MODE);
@@ -137,6 +163,10 @@ public class MaskObjects<T extends RealType<T> & NativeType<T>> extends Module {
                 break;
         }
 
+        // Iterating over all objects
+        int count = 1;
+        int total = inputObjects.size();
+
         for (Obj inputObject : inputObjects.values()) {
             Obj maskedObject = maskObject(inputObject, maskImage);
 
@@ -146,9 +176,7 @@ public class MaskObjects<T extends RealType<T> & NativeType<T>> extends Module {
                     maskedObject.setObjectCollection(outputObjects);
                     inputObject.addChild(maskedObject);
                     maskedObject.addParent(inputObject);
-
                     break;
-
                 case OutputModes.UPDATE_INPUT:
                     inputObject.getCoordinateSet().clear();
                     inputObject.getCoordinateSet().addAll(maskedObject.getCoordinateSet());
@@ -156,10 +184,11 @@ public class MaskObjects<T extends RealType<T> & NativeType<T>> extends Module {
                     inputObject.clearCentroid();
                     inputObject.clearProjected();
                     inputObject.clearROIs();
-
                     break;
-
             }
+
+            writeStatus("Processed " + (count++) + " of " + total + " objects");
+
         }
 
         if (showOutput) {
@@ -179,11 +208,8 @@ public class MaskObjects<T extends RealType<T> & NativeType<T>> extends Module {
 
     @Override
     protected void initialiseParameters() {
+        parameters.add(new SeparatorP(INPUT_SEPARATOR,this));
         parameters.add(new InputObjectsP(INPUT_OBJECTS, this, "", "Objects to be masked."));
-        parameters.add(new ChoiceP(MASK_MODE, this, MaskModes.MASK_FROM_IMAGE, MaskModes.ALL));
-        parameters.add(new InputObjectsP(MASK_OBJECTS, this));
-        parameters.add(new InputImageP(MASK_IMAGE, this, "",
-                "Image to use as mask on input objects.  Object coordinates coincident with black pixels (pixel intensity = 0) are removed."));
         parameters.add(new ChoiceP(OBJECT_OUTPUT_MODE, this, OutputModes.CREATE_NEW_OBJECT, OutputModes.ALL,
                 "Controls how the masked objects will be stored.<br>" + "<br> - \"" + OutputModes.CREATE_NEW_OBJECT
                         + "\" (default) will add the masked objects to a new object set and store this set in the workspace.<br>"
@@ -192,28 +218,36 @@ public class MaskObjects<T extends RealType<T> & NativeType<T>> extends Module {
         parameters.add(new OutputObjectsP(OUTPUT_OBJECTS, this, "",
                 "Name for the output masked objects to be stored in workspace."));
 
+                parameters.add(new SeparatorP(MASK_SEPARATOR,this));
+        parameters.add(new ChoiceP(MASK_MODE, this, MaskModes.MASK_FROM_IMAGE, MaskModes.ALL));
+        parameters.add(new InputObjectsP(MASK_OBJECTS, this));
+        parameters.add(new InputImageP(MASK_IMAGE, this, "",
+                "Image to use as mask on input objects.  Object coordinates coincident with black pixels (pixel intensity = 0) are removed."));
+
     }
 
     @Override
     public ParameterCollection updateAndGetParameters() {
         ParameterCollection returnedParameters = new ParameterCollection();
 
+        returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(INPUT_OBJECTS));
-        returnedParameters.add(parameters.getParameter(MASK_MODE));
 
+        returnedParameters.add(parameters.getParameter(OBJECT_OUTPUT_MODE));
+        switch ((String) parameters.getValue(OBJECT_OUTPUT_MODE)) {
+            case OutputModes.CREATE_NEW_OBJECT:
+                returnedParameters.add(parameters.getParameter(OUTPUT_OBJECTS));
+                break;
+        }
+
+        returnedParameters.add(parameters.getParameter(MASK_SEPARATOR));
+        returnedParameters.add(parameters.getParameter(MASK_MODE));
         switch ((String) parameters.getValue(MASK_MODE)) {
             case MaskModes.MASK_FROM_IMAGE:
                 returnedParameters.add(parameters.getParameter(MASK_IMAGE));
                 break;
             case MaskModes.MASK_FROM_OBJECTS:
                 returnedParameters.add(parameters.getParameter(MASK_OBJECTS));
-                break;
-        }
-
-        returnedParameters.add(parameters.getParameter(OBJECT_OUTPUT_MODE));
-        switch ((String) parameters.getValue(OBJECT_OUTPUT_MODE)) {
-            case OutputModes.CREATE_NEW_OBJECT:
-                returnedParameters.add(parameters.getParameter(OUTPUT_OBJECTS));
                 break;
         }
 

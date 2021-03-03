@@ -7,6 +7,7 @@ import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.Core.InputControl;
 import wbif.sjx.MIA.Module.Category;
+import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Categories;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.InvertIntensity;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.Binary.BinaryOperations2D;
@@ -202,8 +203,6 @@ public class ExpandShrinkObjects extends Module {
         Iterator<Obj> iterator = inputObjects.values().iterator();
         while (iterator.hasNext()) {
             Obj inputObject = iterator.next();
-            writeStatus("Processing object " + (count++) + " of " + total);
-
             Obj newObject = null;
             try {
                 newObject = processObject(inputObject, method, radiusChangePx);
@@ -214,6 +213,7 @@ public class ExpandShrinkObjects extends Module {
             // During object shrinking it's possible the object will disappear entirely
             if (newObject == null) {
                 iterator.remove();
+                count++;
                 continue;
             }
 
@@ -236,6 +236,9 @@ public class ExpandShrinkObjects extends Module {
                 outputObject.addParent(inputObject);
                 inputObject.addChild(outputObject);
             }
+
+            writeStatus("Processed " + (count++) + " of " + total +" objects");
+
         }
 
         // If selected, adding new ObjCollection to the Workspace
