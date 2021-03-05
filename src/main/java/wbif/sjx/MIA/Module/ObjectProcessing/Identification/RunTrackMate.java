@@ -350,8 +350,7 @@ public class RunTrackMate extends Module {
         try {
             if (doTracking) {
                 writeStatus("Running detection and tracking");
-                if (!trackmate.process())
-                    MIA.log.writeError(trackmate.getErrorMessage());
+                trackmate.process();
 
                 ObjCollection[] spotsAndTracks = getSpotsAndTracks(model, calibration, nFrames, frameInterval);
                 spotObjects = spotsAndTracks[0];
