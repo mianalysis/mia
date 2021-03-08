@@ -171,6 +171,10 @@ public class FileListPanel extends JPanel implements MouseListener, TableCellRen
 
     }
 
+    public void resetJobNumbers() {
+        maxJob = 0;
+    }
+
     public static int getMinimumWidth() {
         return minimumWidth;
     }

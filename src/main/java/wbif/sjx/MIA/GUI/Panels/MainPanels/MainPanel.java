@@ -24,6 +24,7 @@ public abstract class MainPanel extends JPanel {
 
     public abstract int getProgress();
     public abstract void setProgress(int progress);
+    public abstract void resetJobNumbers();
 
     public abstract boolean showHelp();
     public abstract void setShowHelp(boolean showHelp);
