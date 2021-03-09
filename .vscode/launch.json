@@ -6,6 +6,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "Launch TextType",
+            "request": "launch",
+            "mainClass": "wbif.sjx.MIA.Object.Parameters.Abstract.TextType",
+            "projectName": "MIA_"
+        },
+        {
+            "type": "java",
             "name": "CodeLens (Launch) - Module",
             "request": "launch",
             "mainClass": "wbif.sjx.MIA.Module.Module",

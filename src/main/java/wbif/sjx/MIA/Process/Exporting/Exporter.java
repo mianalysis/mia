@@ -746,11 +746,6 @@ public class Exporter {
                     "images";
             addComment(cell,text);
 
-            // Adding timepoint header
-            cell = objectHeaderRow.createCell(col++);
-            cell.setCellValue("TIMEPOINT");
-            cell.setCellStyle(cellStyle);
-
             // Running through all the metadata values, adding them as new columns
             MetadataRefCollection metadataRefs = modules.getMetadataRefs(null);
             for (MetadataRef ref : metadataRefs.values()) {
@@ -799,9 +794,6 @@ public class Exporter {
 
                         Cell objectIDValueCell = objectValueRow.createCell(col++);
                         objectIDValueCell.setCellValue(object.getID());
-
-                        Cell timepointValueCell = objectValueRow.createCell(col++);
-                        timepointValueCell.setCellValue(object.getT());
 
                         // Adding metadata (if enabled)
                         Metadata metadata = workspace.getMetadata();

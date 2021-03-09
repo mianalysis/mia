@@ -28,12 +28,6 @@ public class Obj extends Volume {
      */
     private int ID;
 
-    /**
-     * Each instance of an object is only present in XYZ and a single timepoint. Any
-     * other dimensionality (e.g. channel) must be added as a measurement.
-     */
-    private int T = 0;
-
     private ObjCollection objCollection;
 
     private LinkedHashMap<String, Obj> parents = new LinkedHashMap<>();
@@ -50,6 +44,8 @@ public class Obj extends Volume {
         this.objCollection = objCollection;
         this.ID = ID;
 
+        addMeasurement(new Measurement("TIMEPOINT",0));
+
     }
 
     public Obj(ObjCollection objCollection, int ID, Volume exampleVolume) {
@@ -57,6 +53,8 @@ public class Obj extends Volume {
 
         this.objCollection = objCollection;
         this.ID = ID;
+
+        addMeasurement(new Measurement("TIMEPOINT",0));
 
     }
 
@@ -66,6 +64,8 @@ public class Obj extends Volume {
         this.objCollection = objCollection;
         this.ID = ID;
 
+        addMeasurement(new Measurement("TIMEPOINT",0));
+
     }
 
     public Obj(ObjCollection objCollection, VolumeType volumeType, int ID, Volume exampleVolume) {
@@ -74,6 +74,8 @@ public class Obj extends Volume {
         this.objCollection = objCollection;
         this.ID = ID;
 
+        addMeasurement(new Measurement("TIMEPOINT",0));
+
     }
 
     public Obj(ObjCollection objCollection, VolumeType volumeType, int ID, Obj exampleObj) {
@@ -81,6 +83,8 @@ public class Obj extends Volume {
 
         this.objCollection = objCollection;
         this.ID = ID;
+
+        addMeasurement(new Measurement("TIMEPOINT",0));
 
     }
 
@@ -134,11 +138,11 @@ public class Obj extends Volume {
     }
 
     public int getT() {
-        return T;
+        return (int) getMeasurement("TIMEPOINT").getValue();
     }
 
     public Obj setT(int t) {
-        this.T = t;
+        getMeasurement("TIMEPOINT").setValue(t);
         return this;
     }
 
@@ -419,7 +423,7 @@ public class Obj extends Volume {
 
     public Image getAsImage(String imageName, boolean singleTimepoint) {
         int nFrames = singleTimepoint ? 1 : objCollection.getNFrames();
-        int t = singleTimepoint ? 0 : T;
+        int t = singleTimepoint ? 0 : getT();
 
         ImagePlus ipl = IJ.createHyperStack(imageName, spatCal.width, spatCal.height, 1, spatCal.nSlices, nFrames, 8);
         spatCal.setImageCalibration(ipl);
@@ -540,11 +544,13 @@ public class Obj extends Volume {
     public int hashCode() {
         // Updating the hash for time-point. ID, measurements and relationships aren't
         // included; only spatial location.
-        return super.hashCode() * 31 + T;
+        return super.hashCode() * 31 + getT();
     }
 
     @Override
     public boolean equals(Object obj) {
+        int T = getT();
+
         if (!super.equals(obj))
             return false;
 
@@ -553,12 +559,12 @@ public class Obj extends Volume {
         if (!(obj instanceof Obj))
             return false;
 
-        return (T == ((Obj) obj).T);
+        return (T == ((Obj) obj).getT());
 
     }
 
     @Override
     public String toString() {
-        return "Object \"" + getName() + "\", ID = " + ID + ", frame = " + T;
+        return "Object \"" + getName() + "\", ID = " + ID + ", frame = " + getT();
     }
 }
