@@ -12,10 +12,6 @@ public class ObjMeasurementRefCollection extends TreeMap<String,ObjMeasurementRe
      */
     private static final long serialVersionUID = 225316245096553320L;
 
-    public ObjMeasurementRefCollection() {
-        add(new ObjMeasurementRef("TIMEPOINT"));
-    }
-
     public void updateImageObjectName(String measurementName, String objectsName) {
         get(measurementName).setObjectsName(objectsName);
     }

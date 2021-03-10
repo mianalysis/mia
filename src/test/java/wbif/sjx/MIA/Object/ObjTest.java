@@ -24,11 +24,11 @@ public class ObjTest {
         SpatCal calibration = new SpatCal(2.0, 1.0, "PX", 5, 7, 5);
         ObjCollection objects = new ObjCollection("Obj", calibration, 1, 0.02, UNITS.SECOND);
         Obj obj = objects.createAndAddNewObject(volumeType);
-        assertEquals(0, obj.getMeasurements().size());
+        assertEquals(1, obj.getMeasurements().size());
 
         obj.addMeasurement(new Measurement("Meas", -12.4));
 
-        assertEquals(1, obj.getMeasurements().size());
+        assertEquals(2, obj.getMeasurements().size());
         assertNotNull(obj.getMeasurement("Meas"));
         assertNull(obj.getMeasurement("NotMeas"));
         assertEquals(-12.4, obj.getMeasurement("Meas").getValue(), tolerance);
@@ -41,12 +41,12 @@ public class ObjTest {
         SpatCal calibration = new SpatCal(2.0, 1.0, "PX", 5, 7, 5);
         ObjCollection objects = new ObjCollection("Obj", calibration, 1, 0.02, UNITS.SECOND);
         Obj obj = objects.createAndAddNewObject(volumeType);
-        assertEquals(0, obj.getMeasurements().size());
+        assertEquals(1, obj.getMeasurements().size());
 
         obj.addMeasurement(new Measurement("Meas", -12.4));
         obj.addMeasurement(new Measurement("Meas", 3.2));
 
-        assertEquals(1, obj.getMeasurements().size());
+        assertEquals(2, obj.getMeasurements().size());
         assertNotNull(obj.getMeasurement("Meas"));
         assertNull(obj.getMeasurement("NotMeas"));
         assertEquals(3.2, obj.getMeasurement("Meas").getValue(), tolerance);
@@ -59,11 +59,11 @@ public class ObjTest {
         SpatCal calibration = new SpatCal(2.0, 1.0, "PX", 5, 7, 5);
         ObjCollection objects = new ObjCollection("Obj", calibration, 1, 0.02, UNITS.SECOND);
         Obj obj = objects.createAndAddNewObject(volumeType);
-        assertEquals(0, obj.getMeasurements().size());
+        assertEquals(1, obj.getMeasurements().size());
 
         obj.addMeasurement(null);
 
-        assertEquals(0, obj.getMeasurements().size());
+        assertEquals(1, obj.getMeasurements().size());
         assertNull(obj.getMeasurement("Meas"));
         assertNull(obj.getMeasurement("NotMeas"));
 
