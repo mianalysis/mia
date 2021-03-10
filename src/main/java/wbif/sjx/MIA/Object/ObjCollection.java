@@ -1,12 +1,16 @@
 package wbif.sjx.MIA.Object;
 
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.Set;
+
 import ij.IJ;
 import ij.ImagePlus;
 import ij.measure.Calibration;
 import ij.measure.ResultsTable;
 import ome.units.quantity.Time;
 import ome.units.unit.Unit;
-import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Object.References.ObjMeasurementRef;
@@ -16,8 +20,6 @@ import wbif.sjx.common.Object.LUTs;
 import wbif.sjx.common.Object.Point;
 import wbif.sjx.common.Object.Volume.SpatCal;
 import wbif.sjx.common.Object.Volume.VolumeType;
-
-import java.util.*;
 
 /**
  * Created by sc13967 on 12/05/2017.
@@ -124,6 +126,26 @@ public class ObjCollection extends LinkedHashMap<Integer, Obj> {
             return null;
 
         return values().iterator().next();
+
+    }
+
+    public int[][] getSpatialExtents() {
+        if (size() == 0)
+            return null;
+
+        int[][] extents = new int[][]{{Integer.MAX_VALUE,Integer.MIN_VALUE},{Integer.MAX_VALUE,Integer.MIN_VALUE},{Integer.MAX_VALUE,Integer.MIN_VALUE}};
+
+        for (Obj obj : values()) {
+            double[][] currExtents = obj.getExtents(true, false);
+            extents[0][0] = (int) Math.round(Math.min(extents[0][0], currExtents[0][0]));
+            extents[0][1] = (int) Math.round(Math.max(extents[0][1], currExtents[0][1]));
+            extents[1][0] = (int) Math.round(Math.min(extents[1][0], currExtents[1][0]));
+            extents[1][1] = (int) Math.round(Math.max(extents[1][1], currExtents[1][1]));
+            extents[2][0] = (int) Math.round(Math.min(extents[2][0], currExtents[2][0]));
+            extents[2][1] = (int) Math.round(Math.max(extents[2][1], currExtents[2][1]));
+        }
+        
+        return extents;
 
     }
 
