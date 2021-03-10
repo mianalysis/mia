@@ -437,7 +437,6 @@ public class InputControl extends Module {
                 ref.setObjectsName(object.getObjectsName());
 
                 objectMeasurementRefs.put(name, ref);
-                MIA.log.writeDebug("ref "+ref+name);
                 
             }
                             

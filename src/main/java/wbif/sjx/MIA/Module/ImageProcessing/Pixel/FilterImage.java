@@ -3,6 +3,8 @@
 
 package wbif.sjx.MIA.Module.ImageProcessing.Pixel;
 
+import java.util.ArrayList;
+
 import fiji.stacks.Hyperstack_rearranger;
 import ij.ImagePlus;
 import ij.ImageStack;
@@ -15,10 +17,11 @@ import ij.plugin.filter.RankFilters;
 import ij.process.ImageProcessor;
 import inra.ijpb.morphology.Morphology;
 import inra.ijpb.morphology.strel.DiskStrel;
+import wbif.sjx.MIA.MIA;
+import wbif.sjx.MIA.Module.Categories;
+import wbif.sjx.MIA.Module.Category;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
-import wbif.sjx.MIA.Module.Category;
-import wbif.sjx.MIA.Module.Categories;
 import wbif.sjx.MIA.Module.ImageProcessing.Stack.ImageTypeConverter;
 import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.Status;
@@ -30,12 +33,13 @@ import wbif.sjx.MIA.Object.Parameters.OutputImageP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.Parameters.SeparatorP;
 import wbif.sjx.MIA.Object.Parameters.Text.DoubleP;
-import wbif.sjx.MIA.Object.Parameters.Text.IntegerP;
+import wbif.sjx.MIA.Object.Parameters.Text.StringP;
 import wbif.sjx.MIA.Object.References.Collections.ImageMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.MetadataRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.ObjMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.ParentChildRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.PartnerRefCollection;
+import wbif.sjx.MIA.Process.CommaSeparatedStringInterpreter;
 import wbif.sjx.common.Filters.DoG;
 import wbif.sjx.common.Filters.RidgeEnhancement;
 
@@ -52,8 +56,7 @@ public class FilterImage extends Module {
     public static final String FILTER_RADIUS = "Filter radius";
     public static final String CALIBRATED_UNITS = "Calibrated units";
     public static final String ROLLING_METHOD = "Rolling filter method";
-    public static final String WINDOW_MODE = "Window mode";
-    public static final String WINDOW_HALF_WIDTH = "Window half width (frames)";
+    public static final String WINDOW_INDICES = "Window indices";
 
     public FilterImage(ModuleCollection modules) {
         super("Filter image", modules);
@@ -109,21 +112,21 @@ public class FilterImage extends Module {
         // Determining which rank filter ID to use
         int rankFilter = 0;
         switch (filterMode) {
-            case FilterModes.MAXIMUM2D:
-                rankFilter = RankFilters.MAX;
-                break;
-            case FilterModes.MEAN2D:
-                rankFilter = RankFilters.MEAN;
-                break;
-            case FilterModes.MEDIAN2D:
-                rankFilter = RankFilters.MEDIAN;
-                break;
-            case FilterModes.MINIMUM2D:
-                rankFilter = RankFilters.MIN;
-                break;
-            case FilterModes.VARIANCE2D:
-                rankFilter = RankFilters.VARIANCE;
-                break;
+        case FilterModes.MAXIMUM2D:
+            rankFilter = RankFilters.MAX;
+            break;
+        case FilterModes.MEAN2D:
+            rankFilter = RankFilters.MEAN;
+            break;
+        case FilterModes.MEDIAN2D:
+            rankFilter = RankFilters.MEDIAN;
+            break;
+        case FilterModes.MINIMUM2D:
+            rankFilter = RankFilters.MIN;
+            break;
+        case FilterModes.VARIANCE2D:
+            rankFilter = RankFilters.VARIANCE;
+            break;
         }
 
         int count = 0;
@@ -136,9 +139,9 @@ public class FilterImage extends Module {
                     filter.rank(inputImagePlus.getProcessor(), filterRadius, rankFilter);
 
                     count++;
-                    writeStatus("Processed " + count + " of " + total + " image ("
-                            + Math.floorDiv(100 * count, total) + "%)", moduleName);
-                    
+                    writeStatus("Processed " + count + " of " + total + " image (" + Math.floorDiv(100 * count, total)
+                            + "%)", moduleName);
+
                 }
             }
         }
@@ -156,21 +159,21 @@ public class FilterImage extends Module {
 
         int filter = 0;
         switch (filterMode) {
-            case FilterModes.MAXIMUM3D:
-                filter = Filters3D.MAX;
-                break;
-            case FilterModes.MEAN3D:
-                filter = Filters3D.MEAN;
-                break;
-            case FilterModes.MEDIAN3D:
-                filter = Filters3D.MEDIAN;
-                break;
-            case FilterModes.MINIMUM3D:
-                filter = Filters3D.MIN;
-                break;
-            case FilterModes.VARIANCE3D:
-                filter = Filters3D.VAR;
-                break;
+        case FilterModes.MAXIMUM3D:
+            filter = Filters3D.MAX;
+            break;
+        case FilterModes.MEAN3D:
+            filter = Filters3D.MEAN;
+            break;
+        case FilterModes.MEDIAN3D:
+            filter = Filters3D.MEDIAN;
+            break;
+        case FilterModes.MINIMUM3D:
+            filter = Filters3D.MIN;
+            break;
+        case FilterModes.VARIANCE3D:
+            filter = Filters3D.VAR;
+            break;
         }
 
         // Variance 3D will output a 32-bit image
@@ -200,9 +203,10 @@ public class FilterImage extends Module {
                 }
 
                 count++;
-                    writeStatus("Processed " + count + " of " + total + " image ("
-                            + Math.floorDiv(100 * count, total) + "%)", moduleName);
-                            
+                writeStatus(
+                        "Processed " + count + " of " + total + " image (" + Math.floorDiv(100 * count, total) + "%)",
+                        moduleName);
+
             }
         }
 
@@ -237,65 +241,57 @@ public class FilterImage extends Module {
         imagePlus.updateAndDraw();
     }
 
-    public static void runRollingFrameFilter(ImagePlus inputImagePlus, int windowHalfWidth, String rollingMethod,
-            String windowMode) {
+    public static void runRollingFrameFilter(ImagePlus inputImagePlus, String windowIndices, String rollingMethod) {
         int nChannels = inputImagePlus.getNChannels();
         int nSlices = inputImagePlus.getNSlices();
         int nFrames = inputImagePlus.getNFrames();
+        ArrayList<Integer> channels = new ArrayList<>();
+        ArrayList<Integer> slices = new ArrayList<>();
+        for (int channel = 1; channel <= nChannels; channel++)
+            channels.add(channel);
+        for (int slice = 1; slice <= nSlices; slice++)
+            slices.add(slice);
 
         ImagePlus tempImagePlus = new Duplicator().run(inputImagePlus);
 
+        // Getting list of frames
+        int[] offsets = CommaSeparatedStringInterpreter.interpretIntegers(windowIndices, true);
+
         // Running through each frame, calculating the local average
         for (int f = 1; f <= inputImagePlus.getNFrames(); f++) {
-            int firstFrame = 0;
-            int lastFrame = 0;
-
-            switch (windowMode) {
-                case WindowModes.BOTH_SIDES:
-                    firstFrame = Math.max(1, f - windowHalfWidth);
-                    lastFrame = Math.min(nFrames, f + windowHalfWidth);
-                    break;
-
-                case WindowModes.PREVIOUS:
-                    firstFrame = Math.max(1, f - windowHalfWidth);
-                    lastFrame = Math.min(nFrames, f);
-                    break;
-
-                case WindowModes.FUTURE:
-                    firstFrame = Math.max(1, f);
-                    lastFrame = Math.min(nFrames, f + windowHalfWidth);
-                    break;
+            ArrayList<Integer> frames = new ArrayList<>();
+            for (int offset : offsets) {
+                int frame = f + offset;
+                if (frame > 0 && frame <= nFrames)
+                    frames.add(frame);
             }
 
-            // Creating a local substack
-            ImagePlus currentSubstack = SubHyperstackMaker.makeSubhyperstack(tempImagePlus, "1-" + nChannels,
-                    "1-" + nSlices, firstFrame + "-" + lastFrame);
-
-            // Switching T and Z, so time (not Z) is averaged
+            // Creating a local substack and switching T and Z, so time (not Z) is averaged
+            ImagePlus currentSubstack = SubHyperstackMaker.makeSubhyperstack(tempImagePlus, channels, slices, frames);
             currentSubstack = Hyperstack_rearranger.reorderHyperstack(currentSubstack, "CTZ", true, false);
 
             // Applying average filter
             ZProjector zProjector = new ZProjector(currentSubstack);
             switch (rollingMethod) {
-                case RollingMethods.AVERAGE:
-                    zProjector.setMethod(ZProjector.AVG_METHOD);
-                    break;
-                case RollingMethods.MEDIAN:
-                    zProjector.setMethod(ZProjector.MEDIAN_METHOD);
-                    break;
-                case RollingMethods.MINIMUM:
-                    zProjector.setMethod(ZProjector.MIN_METHOD);
-                    break;
-                case RollingMethods.MAXIMUM:
-                    zProjector.setMethod(ZProjector.MAX_METHOD);
-                    break;
-                case RollingMethods.STDEV:
-                    zProjector.setMethod(ZProjector.SD_METHOD);
-                    ImageTypeConverter.process(inputImagePlus, 32, ImageTypeConverter.ScalingModes.CLIP);
-                    break;
-                case RollingMethods.SUM:
-                    zProjector.setMethod(ZProjector.SUM_METHOD);
-                    break;
+            case RollingMethods.AVERAGE:
+                zProjector.setMethod(ZProjector.AVG_METHOD);
+                break;
+            case RollingMethods.MEDIAN:
+                zProjector.setMethod(ZProjector.MEDIAN_METHOD);
+                break;
+            case RollingMethods.MINIMUM:
+                zProjector.setMethod(ZProjector.MIN_METHOD);
+                break;
+            case RollingMethods.MAXIMUM:
+                zProjector.setMethod(ZProjector.MAX_METHOD);
+                break;
+            case RollingMethods.STDEV:
+                zProjector.setMethod(ZProjector.SD_METHOD);
+                ImageTypeConverter.process(inputImagePlus, 32, ImageTypeConverter.ScalingModes.CLIP);
+                break;
+            case RollingMethods.SUM:
+                zProjector.setMethod(ZProjector.SUM_METHOD);
+                break;
             }
 
             zProjector.setStartSlice(1);
@@ -323,6 +319,91 @@ public class FilterImage extends Module {
 
     }
 
+    public static void runRollingFrameFilter(ImagePlus inputImagePlus, int windowHalfWidth, String rollingMethod,
+            String windowMode) {
+        int nChannels = inputImagePlus.getNChannels();
+        int nSlices = inputImagePlus.getNSlices();
+        int nFrames = inputImagePlus.getNFrames();
+
+        ImagePlus tempImagePlus = new Duplicator().run(inputImagePlus);
+
+        // Running through each frame, calculating the local average
+        for (int f = 1; f <= inputImagePlus.getNFrames(); f++) {
+            int firstFrame = 0;
+            int lastFrame = 0;
+
+            switch (windowMode) {
+            case WindowModes.BOTH_SIDES:
+                firstFrame = Math.max(1, f - windowHalfWidth);
+                lastFrame = Math.min(nFrames, f + windowHalfWidth);
+                break;
+
+            case WindowModes.PREVIOUS:
+                firstFrame = Math.max(1, f - windowHalfWidth);
+                lastFrame = Math.min(nFrames, f);
+                break;
+
+            case WindowModes.FUTURE:
+                firstFrame = Math.max(1, f);
+                lastFrame = Math.min(nFrames, f + windowHalfWidth);
+                break;
+            }
+
+            // Creating a local substack
+            ImagePlus currentSubstack = SubHyperstackMaker.makeSubhyperstack(tempImagePlus, "1-" + nChannels,
+                    "1-" + nSlices, firstFrame + "-" + lastFrame);
+
+            // Switching T and Z, so time (not Z) is averaged
+            currentSubstack = Hyperstack_rearranger.reorderHyperstack(currentSubstack, "CTZ", true, false);
+
+            // Applying average filter
+            ZProjector zProjector = new ZProjector(currentSubstack);
+            switch (rollingMethod) {
+            case RollingMethods.AVERAGE:
+                zProjector.setMethod(ZProjector.AVG_METHOD);
+                break;
+            case RollingMethods.MEDIAN:
+                zProjector.setMethod(ZProjector.MEDIAN_METHOD);
+                break;
+            case RollingMethods.MINIMUM:
+                zProjector.setMethod(ZProjector.MIN_METHOD);
+                break;
+            case RollingMethods.MAXIMUM:
+                zProjector.setMethod(ZProjector.MAX_METHOD);
+                break;
+            case RollingMethods.STDEV:
+                zProjector.setMethod(ZProjector.SD_METHOD);
+                ImageTypeConverter.process(inputImagePlus, 32, ImageTypeConverter.ScalingModes.CLIP);
+                break;
+            case RollingMethods.SUM:
+                zProjector.setMethod(ZProjector.SUM_METHOD);
+                break;
+            }
+
+            zProjector.setStartSlice(1);
+            zProjector.setStopSlice(currentSubstack.getNSlices());
+            zProjector.doHyperStackProjection(true);
+            ImagePlus iplOut = zProjector.getProjection();
+
+            // Switching T and Z back
+            iplOut = Hyperstack_rearranger.reorderHyperstack(iplOut, "CTZ", true, false);
+
+            // Adding the new image into outputImagePlus
+            for (int z = 1; z <= iplOut.getNSlices(); z++) {
+                for (int c = 1; c <= iplOut.getNChannels(); c++) {
+                    inputImagePlus.setPosition(c, z, f);
+                    iplOut.setPosition(c, z, 1);
+
+                    inputImagePlus.setProcessor(iplOut.getProcessor());
+
+                }
+            }
+        }
+
+        inputImagePlus.setPosition(1, 1, 1);
+        inputImagePlus.updateAndDraw();
+
+    }
 
     @Override
     public Category getCategory() {
@@ -349,8 +430,7 @@ public class FilterImage extends Module {
         double filterRadius = parameters.getValue(FILTER_RADIUS);
         boolean calibratedUnits = parameters.getValue(CALIBRATED_UNITS);
         String rollingMethod = parameters.getValue(ROLLING_METHOD);
-        int windowHalfWidth = parameters.getValue(WINDOW_HALF_WIDTH);
-        String windowMode = parameters.getValue(WINDOW_MODE);
+        String windowIndices = parameters.getValue(WINDOW_INDICES);
 
         if (calibratedUnits)
             filterRadius = inputImagePlus.getCalibration().getRawX(filterRadius);
@@ -362,53 +442,53 @@ public class FilterImage extends Module {
 
         // Applying smoothing filter
         switch (filterMode) {
-            case FilterModes.MAXIMUM2D:
-            case FilterModes.MEAN2D:
-            case FilterModes.MEDIAN2D:
-            case FilterModes.MINIMUM2D:
-            case FilterModes.VARIANCE2D:
-                writeStatus("Applying " + filterMode + " filter");
-                apply2DFilter(inputImagePlus, filterMode, filterRadius);
-                break;
+        case FilterModes.MAXIMUM2D:
+        case FilterModes.MEAN2D:
+        case FilterModes.MEDIAN2D:
+        case FilterModes.MINIMUM2D:
+        case FilterModes.VARIANCE2D:
+            writeStatus("Applying " + filterMode + " filter");
+            apply2DFilter(inputImagePlus, filterMode, filterRadius);
+            break;
 
-            case FilterModes.MAXIMUM3D:
-            case FilterModes.MEAN3D:
-            case FilterModes.MEDIAN3D:
-            case FilterModes.MINIMUM3D:
-            case FilterModes.VARIANCE3D:
-                writeStatus("Applying " + filterMode + " filter");
-                apply3DFilter(inputImagePlus, filterMode, (float) filterRadius);
-                break;
+        case FilterModes.MAXIMUM3D:
+        case FilterModes.MEAN3D:
+        case FilterModes.MEDIAN3D:
+        case FilterModes.MINIMUM3D:
+        case FilterModes.VARIANCE3D:
+            writeStatus("Applying " + filterMode + " filter");
+            apply3DFilter(inputImagePlus, filterMode, (float) filterRadius);
+            break;
 
-            case FilterModes.DOG2D:
-                writeStatus("Applying " + filterMode + " filter");
-                DoG.run(inputImagePlus, filterRadius, true);
-                break;
+        case FilterModes.DOG2D:
+            writeStatus("Applying " + filterMode + " filter");
+            DoG.run(inputImagePlus, filterRadius, true);
+            break;
 
-            case FilterModes.GAUSSIAN2D:
-                writeStatus("Applying " + filterMode + " filter");
-                runGaussian2DFilter(inputImagePlus, filterRadius);
-                break;
+        case FilterModes.GAUSSIAN2D:
+            writeStatus("Applying " + filterMode + " filter");
+            runGaussian2DFilter(inputImagePlus, filterRadius);
+            break;
 
-            case FilterModes.GAUSSIAN3D:
-                writeStatus("Applying " + filterMode + " filter");
-                GaussianBlur3D.blur(inputImagePlus, filterRadius, filterRadius, filterRadius);
-                break;
+        case FilterModes.GAUSSIAN3D:
+            writeStatus("Applying " + filterMode + " filter");
+            GaussianBlur3D.blur(inputImagePlus, filterRadius, filterRadius, filterRadius);
+            break;
 
-            case FilterModes.GRADIENT2D:
-                writeStatus("Applying " + filterMode + " filter");
-                runGradient2DFilter(inputImagePlus, filterRadius);
-                break;
+        case FilterModes.GRADIENT2D:
+            writeStatus("Applying " + filterMode + " filter");
+            runGradient2DFilter(inputImagePlus, filterRadius);
+            break;
 
-            case FilterModes.RIDGE_ENHANCEMENT:
-                writeStatus("Applying 3D median filter");
-                RidgeEnhancement.run(inputImagePlus, (float) filterRadius, true);
-                break;
+        case FilterModes.RIDGE_ENHANCEMENT:
+            writeStatus("Applying 3D median filter");
+            RidgeEnhancement.run(inputImagePlus, (float) filterRadius, true);
+            break;
 
-            case FilterModes.ROLLING_FRAME:
-                writeStatus("Applying rolling frame filter");
-                runRollingFrameFilter(inputImagePlus, windowHalfWidth, rollingMethod, windowMode);
-                break;
+        case FilterModes.ROLLING_FRAME:
+            writeStatus("Applying rolling frame filter");
+            runRollingFrameFilter(inputImagePlus, windowIndices, rollingMethod);
+            break;
 
         }
 
@@ -455,10 +535,7 @@ public class FilterImage extends Module {
                 "Choose if filter radius is specified in pixel (set to \"false\") or calibrated (set to \"true\") units.  What units are used are controlled from \"Input control\"."));
         parameters.add(new ChoiceP(ROLLING_METHOD, this, RollingMethods.AVERAGE, RollingMethods.ALL,
                 "Statistic to apply for rolling frame filtering."));
-        parameters.add(new IntegerP(WINDOW_HALF_WIDTH, this, 1,
-                "Number of frames before/after target frame to be used for rolling frame filtering.  For example, averaging over a half window width of 3 will use 3 frames before the target frame, 3 frames after and the target frame itself."));
-        parameters.add(new ChoiceP(WINDOW_MODE, this, WindowModes.BOTH_SIDES, WindowModes.ALL,
-                "Controls which frames are used in the rolling frame filter calculation"));
+        parameters.add(new StringP(WINDOW_INDICES, this, "-1-1"));
 
     }
 
@@ -481,8 +558,7 @@ public class FilterImage extends Module {
 
         } else {
             returnedParameters.add(parameters.getParameter(ROLLING_METHOD));
-            returnedParameters.add(parameters.getParameter(WINDOW_HALF_WIDTH));
-            returnedParameters.add(parameters.getParameter(WINDOW_MODE));
+            returnedParameters.add(parameters.getParameter(WINDOW_INDICES));
 
         }
 

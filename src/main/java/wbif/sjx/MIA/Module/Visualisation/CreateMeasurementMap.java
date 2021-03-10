@@ -50,8 +50,8 @@ public class CreateMeasurementMap extends Module {
     public static final String MEASUREMENT = "Measurement";
     public static final String STATISTIC = "Statistic";
     public static final String RANGE = "Range";
-    public static final String AVERAGE_SLICES = "Average slices";
-    public static final String AVERAGE_TIME = "Average time";
+    public static final String MERGE_SLICES = "Merge slices";
+    public static final String MERGE_TIME = "Merge time";
 
     public CreateMeasurementMap(ModuleCollection modules) {
         super("Create measurement map",modules);
@@ -77,24 +77,24 @@ public class CreateMeasurementMap extends Module {
 
     }
 
-    public static Indexer initialiseIndexer(SpatCal calibration, int nFrames, boolean averageZ, boolean averageT) {
+    public static Indexer initialiseIndexer(SpatCal calibration, int nFrames, boolean mergeZ, boolean mergeT) {
         // Get final CumStat[] dimensions
         int width = calibration.getWidth();
         int height = calibration.getHeight();
-        int nSlices = averageZ ? 1 : calibration.getNSlices();
-        nFrames = averageT ? 1 : nFrames;
+        int nSlices = mergeZ ? 1 : calibration.getNSlices();
+        nFrames = mergeT ? 1 : nFrames;
 
         // Create Indexer
         return new Indexer(new int[]{width,height,nSlices,nFrames});
 
     }
 
-    public static CumStat[] initialiseCumStats(SpatCal calibration, int nFrames, boolean averageZ, boolean averageT) {
+    public static CumStat[] initialiseCumStats(SpatCal calibration, int nFrames, boolean mergeZ, boolean mergeT) {
         // Get final CumStat[] dimensions
         int width = calibration.getWidth();
         int height = calibration.getHeight();
-        int nSlices = averageZ ? 1 : calibration.getNSlices();
-         nFrames = averageT ? 1 : nFrames;
+        int nSlices = mergeZ ? 1 : calibration.getNSlices();
+         nFrames = mergeT ? 1 : nFrames;
 
         // Create CumStat[]
         CumStat[] cumStats =  new CumStat[width*height*nSlices*nFrames];
@@ -305,14 +305,14 @@ public class CreateMeasurementMap extends Module {
         String measurementName = parameters.getValue(MEASUREMENT);
         String statistic = parameters.getValue(STATISTIC);
         int range = parameters.getValue(RANGE);
-        boolean averageZ = parameters.getValue(AVERAGE_SLICES);
-        boolean averageT = parameters.getValue(AVERAGE_TIME);
+        boolean mergeZ = parameters.getValue(MERGE_SLICES);
+        boolean mergeT = parameters.getValue(MERGE_TIME);
 
         // Initialising stores
         SpatCal calibration = inputObjects.getSpatialCalibration();
         int nFrames = inputObjects.getNFrames();
-        CumStat[] cumStats = initialiseCumStats(calibration,nFrames,averageZ,averageT);
-        Indexer indexer = initialiseIndexer(calibration,nFrames,averageZ,averageT);
+        CumStat[] cumStats = initialiseCumStats(calibration,nFrames,mergeZ,mergeT);
+        Indexer indexer = initialiseIndexer(calibration,nFrames,mergeZ,mergeT);
 
         // Compressing relevant measures
         switch (measurementMode) {
@@ -348,8 +348,8 @@ public class CreateMeasurementMap extends Module {
         parameters.add(new ParentObjectsP(PARENT_OBJECT,this));
         parameters.add(new ObjectMeasurementP(MEASUREMENT,this));
         parameters.add(new IntegerP(RANGE,this,3));
-        parameters.add(new BooleanP(AVERAGE_SLICES,this,true));
-        parameters.add(new BooleanP(AVERAGE_TIME,this,true));
+        parameters.add(new BooleanP(MERGE_SLICES,this,true));
+        parameters.add(new BooleanP(MERGE_TIME,this,true));
 
     }
 
@@ -382,8 +382,8 @@ public class CreateMeasurementMap extends Module {
         }
 
         returnedParameters.add(parameters.getParameter(RANGE));
-        returnedParameters.add(parameters.getParameter(AVERAGE_SLICES));
-        returnedParameters.add(parameters.getParameter(AVERAGE_TIME));
+        returnedParameters.add(parameters.getParameter(MERGE_SLICES));
+        returnedParameters.add(parameters.getParameter(MERGE_TIME));
 
         return returnedParameters;
 
