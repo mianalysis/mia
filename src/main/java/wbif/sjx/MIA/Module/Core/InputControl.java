@@ -3,6 +3,7 @@ package wbif.sjx.MIA.Module.Core;
 import java.io.File;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.TreeMap;
 
 import org.apache.commons.io.FilenameUtils;
@@ -18,6 +19,7 @@ import loci.formats.services.OMEXMLService;
 import loci.plugins.util.ImageProcessorReader;
 import loci.plugins.util.LociPrefs;
 import ome.xml.meta.IMetadata;
+import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.GUI.Colours;
 import wbif.sjx.MIA.Module.Categories;
 import wbif.sjx.MIA.Module.Category;
@@ -33,10 +35,12 @@ import wbif.sjx.MIA.Object.Parameters.FileFolderPathP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.Parameters.ParameterGroup;
 import wbif.sjx.MIA.Object.Parameters.SeparatorP;
+import wbif.sjx.MIA.Object.Parameters.Objects.OutputObjectsP;
 import wbif.sjx.MIA.Object.Parameters.Text.IntegerP;
 import wbif.sjx.MIA.Object.Parameters.Text.MessageP;
 import wbif.sjx.MIA.Object.Parameters.Text.SeriesListSelectorP;
 import wbif.sjx.MIA.Object.Parameters.Text.StringP;
+import wbif.sjx.MIA.Object.References.ObjMeasurementRef;
 import wbif.sjx.MIA.Object.References.Collections.ImageMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.MetadataRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.ObjMeasurementRefCollection;
@@ -420,7 +424,29 @@ public class InputControl extends Module {
 
     @Override
     public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
-        return null;
+        ObjMeasurementRefCollection returnedRefs = new ObjMeasurementRefCollection();
+
+        // As a special case, adding timepoint measurements to all objects.
+        LinkedHashSet<OutputObjectsP> objects = modules.getAvailableObjects(null);
+        for (OutputObjectsP object : objects) {
+            // Each measurement for a module must have a unique name, so we append the object name, but set the nickname to "TIMEPOINT"
+            String name = object.getObjectsName() + "_TIMEPOINT";
+            if (!objectMeasurementRefs.containsKey(name)) {
+                ObjMeasurementRef ref = new ObjMeasurementRef(name);
+                ref.setNickname("TIMEPOINT");
+                ref.setObjectsName(object.getObjectsName());
+
+                objectMeasurementRefs.put(name, ref);
+                MIA.log.writeDebug("ref "+ref+name);
+                
+            }
+                            
+            returnedRefs.add(objectMeasurementRefs.get(name));
+
+        }
+
+        return returnedRefs;
+        
     }
 
     @Override

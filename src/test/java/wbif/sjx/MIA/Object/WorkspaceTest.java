@@ -6,7 +6,6 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.HashMap;
-import java.util.Iterator;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -161,10 +160,10 @@ public class WorkspaceTest {
 
         // Checking current state of the workspace
         assertEquals(2,workspace.getObjects().size());
-        assertEquals(1,workspace.getObjectSet("Obj").getFirst().getMeasurements().size());
+        assertEquals(2,workspace.getObjectSet("Obj").getFirst().getMeasurements().size());
         assertEquals(3,workspace.getObjectSet("Obj").getFirst().size());
         assertTrue(workspace.getObjectSet("Obj").getFirst().getSurfaceXCoords().size() != 0);
-        assertEquals(1,workspace.getObjectSet("Other obj").getFirst().getMeasurements().size());
+        assertEquals(2,workspace.getObjectSet("Other obj").getFirst().getMeasurements().size());
         assertEquals(3,workspace.getObjectSet("Other obj").getFirst().size());
         assertTrue(workspace.getObjectSet("Other obj").getFirst().getSurfaceXCoords().size() != 0);
 
@@ -173,10 +172,10 @@ public class WorkspaceTest {
 
         // Checking post-clear state of the workspace
         assertEquals(2,workspace.getObjects().size());
-        assertEquals(1,workspace.getObjectSet("Obj").getFirst().getMeasurements().size());
+        assertEquals(2,workspace.getObjectSet("Obj").getFirst().getMeasurements().size());
         assertEquals(0,workspace.getObjectSet("Obj").getFirst().size());
         assertTrue(workspace.getObjectSet("Obj").getFirst().getSurfaceXCoords().size() == 0);
-        assertEquals(1,workspace.getObjectSet("Other obj").getFirst().getMeasurements().size());
+        assertEquals(2,workspace.getObjectSet("Other obj").getFirst().getMeasurements().size());
         assertEquals(0,workspace.getObjectSet("Other obj").getFirst().size());
         assertTrue(workspace.getObjectSet("Other obj").getFirst().getSurfaceXCoords().size() == 0);
 
@@ -226,10 +225,10 @@ public class WorkspaceTest {
 
         // Checking current state of the workspace
         assertEquals(2,workspace.getObjects().size());
-        assertEquals(1,workspace.getObjectSet("Obj").getFirst().getMeasurements().size());
+        assertEquals(2,workspace.getObjectSet("Obj").getFirst().getMeasurements().size());
         assertEquals(3,workspace.getObjectSet("Obj").getFirst().size());
         assertTrue(workspace.getObjectSet("Obj").getFirst().getSurface().size() != 0);
-        assertEquals(1,workspace.getObjectSet("Other obj").getFirst().getMeasurements().size());
+        assertEquals(2,workspace.getObjectSet("Other obj").getFirst().getMeasurements().size());
         assertEquals(3,workspace.getObjectSet("Other obj").getFirst().size());
         assertTrue(workspace.getObjectSet("Other obj").getFirst().getSurface().size() != 0);
 
