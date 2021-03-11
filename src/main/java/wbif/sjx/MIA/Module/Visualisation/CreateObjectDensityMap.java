@@ -11,7 +11,6 @@ import wbif.sjx.MIA.Module.Categories;
 import wbif.sjx.MIA.Module.Category;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
-import wbif.sjx.MIA.Module.ImageMeasurements.MeasureImageIntensity;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.FilterImage;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.ImageMath;
 import wbif.sjx.MIA.Object.Image;
@@ -135,11 +134,8 @@ public class CreateObjectDensityMap extends Module {
     public int getFilterArea(int radius) {
         ImagePlus kernelIpl = IJ.createImage("Kernel", radius * 2 + 3, radius * 2 + 3, 1, 8);
         ImageMath.process(kernelIpl, ImageMath.CalculationTypes.ADD, 255);
-        kernelIpl.duplicate().show();
         kernelIpl.getProcessor().putPixel(radius + 1, radius + 1, 0);
-        kernelIpl.duplicate().show();
         FilterImage.apply2DFilter(kernelIpl, FilterImage.FilterModes.MINIMUM2D, radius);
-        kernelIpl.duplicate().show();
 
         int nVoxels = 0;
         ImageProcessor ipr = kernelIpl.getProcessor();
