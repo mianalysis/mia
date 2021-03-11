@@ -24,14 +24,6 @@ public class FilterWithWithoutParentTest extends ModuleTest {
         assertNotNull(new FilterWithWithoutParent(null).getDescription());
     }
 
-    public static void main(String[] args) {
-        try {
-            new FilterWithWithoutParentTest().testRunPresentParentDoNothing(VolumeType.POINTLIST);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
     @ParameterizedTest
     @EnumSource(VolumeType.class)
     public void testRunPresentParentDoNothing(VolumeType volumeType) throws Exception {
@@ -116,7 +108,8 @@ public class FilterWithWithoutParentTest extends ModuleTest {
         ObjCollection expectedFailObjects = new ObjCollection("FailOutput",calibration,1,0.02,UNITS.SECOND);
 
         int counter = 0;
-        for (Obj testObject:testObjects.values()) {
+        for (Obj testObject : testObjects.values()) {
+            System.out.println("INPUT "+testObject.getID());
             if (parents[counter++]) {
                 Obj parentObject = parentObjects.createAndAddNewObject(volumeType);
 
@@ -141,14 +134,24 @@ public class FilterWithWithoutParentTest extends ModuleTest {
         // Running the module
         filterWithWithoutParent.execute(workspace);
 
-        // Checking basic facts
+        // Checking basic facts                
         assertNotNull(workspace.getObjectSet("TestObj"));
-        assertEquals(5,workspace.getObjectSet("TestObj").values().size());
-        assertEquals(expectedPassObjects,workspace.getObjectSet("TestObj"));
+        assertEquals(5, workspace.getObjectSet("TestObj").values().size());
+        ObjCollection actualPassObjects = workspace.getObjectSet("TestObj");
+        for (Obj expectedPassObject : expectedPassObjects.values()) {
+            Obj actualPassObject = actualPassObjects.get(expectedPassObject.getID());
+            assertEquals(expectedPassObject, actualPassObject);
+        }
+        // assertEquals(expectedPassObjects,workspace.getObjectSet("TestObj"));
 
         assertNotNull(workspace.getObjectSet("Output"));
-        assertEquals(3,workspace.getObjectSet("Output").values().size());
-        assertEquals(expectedFailObjects,workspace.getObjectSet("Output"));
+        assertEquals(3, workspace.getObjectSet("Output").values().size());
+        ObjCollection actualFailObjects = workspace.getObjectSet("Output");
+        for (Obj expectedFailObject : expectedFailObjects.values()) {
+            Obj actualFailObject = actualFailObjects.get(expectedFailObject.getID());
+            assertEquals(expectedFailObject, actualFailObject);
+        }
+        // assertEquals(expectedFailObjects,workspace.getObjectSet("Output"));
 
     }
 

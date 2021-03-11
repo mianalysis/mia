@@ -93,14 +93,14 @@ public class AnalysisReader {
             return AnalysisReader_0p10p0_0p15p0.loadAnalysis(xml);
 
         Analysis analysis = new Analysis();
-        ModuleCollection modules = loadModules(doc);
+        ModuleCollection modules = loadModules(doc,loadedVersion);
         analysis.setModules(modules);
 
         return analysis;
 
     }
 
-    public static ModuleCollection loadModules(Document doc)
+    public static ModuleCollection loadModules(Document doc, Version loadedVersion)
             throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
         ModuleCollection modules = new ModuleCollection();
 
@@ -130,6 +130,10 @@ public class AnalysisReader {
                 modules.add(module);
             }
         }
+
+        // Adding timepoint measurements for all objects
+        if (new Version("0.18.0").compareTo(loadedVersion) > 0)
+            AnalysisReader_0p10p0_0p15p0.addTimepointMeasurements(modules);
 
         return modules;
 
@@ -173,25 +177,25 @@ public class AnalysisReader {
         NodeList moduleChildNodes = moduleNode.getChildNodes();
         for (int i = 0; i < moduleChildNodes.getLength(); i++) {
             switch (moduleChildNodes.item(i).getNodeName()) {
-                case "PARAMETERS":
-                    populateParameters(moduleChildNodes.item(i), module);
-                    break;
+            case "PARAMETERS":
+                populateParameters(moduleChildNodes.item(i), module);
+                break;
 
-                case "MEASUREMENTS":
-                    populateLegacyMeasurementRefs(moduleChildNodes.item(i), module);
-                    break;
+            case "MEASUREMENTS":
+                populateLegacyMeasurementRefs(moduleChildNodes.item(i), module);
+                break;
 
-                case "IMAGE_MEASUREMENTS":
-                    populateImageMeasurementRefs(moduleChildNodes.item(i), module);
-                    break;
+            case "IMAGE_MEASUREMENTS":
+                populateImageMeasurementRefs(moduleChildNodes.item(i), module);
+                break;
 
-                case "OBJECT_MEASUREMENTS":
-                    populateObjMeasurementRefs(moduleChildNodes.item(i), module);
-                    break;
+            case "OBJECT_MEASUREMENTS":
+                populateObjMeasurementRefs(moduleChildNodes.item(i), module);
+                break;
 
-                case "METADATA":
-                    populateModuleMetadataRefs(moduleChildNodes.item(i), module);
-                    break;
+            case "METADATA":
+                populateModuleMetadataRefs(moduleChildNodes.item(i), module);
+                break;
             }
         }
 
@@ -243,15 +247,15 @@ public class AnalysisReader {
 
             // Acquiring the relevant reference
             switch (type) {
-                case "IMAGE":
-                    ImageMeasurementRef imageMeasurementRef = new ImageMeasurementRef(referenceNode);
-                    module.addImageMeasurementRef(imageMeasurementRef);
-                    break;
+            case "IMAGE":
+                ImageMeasurementRef imageMeasurementRef = new ImageMeasurementRef(referenceNode);
+                module.addImageMeasurementRef(imageMeasurementRef);
+                break;
 
-                case "OBJECTS":
-                    ObjMeasurementRef objMeasurementRef = new ObjMeasurementRef(referenceNode);
-                    module.addObjectMeasurementRef(objMeasurementRef);
-                    break;
+            case "OBJECTS":
+                ObjMeasurementRef objMeasurementRef = new ObjMeasurementRef(referenceNode);
+                module.addObjectMeasurementRef(objMeasurementRef);
+                break;
             }
         }
     }

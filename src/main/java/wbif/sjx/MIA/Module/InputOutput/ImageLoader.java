@@ -933,7 +933,6 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
         double minIntensity = parameters.getValue(MIN_INPUT_INTENSITY);
         double maxIntensity = parameters.getValue(MAX_INPUT_INTENSITY);
         String reader = parameters.getValue(READER);
-        // String threeDMode = parameters.getValue(THREE_D_MODE);
 
         // Series number comes from the Workspace
         int seriesNumber = 1;
@@ -970,6 +969,10 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
             break;
         }
 
+        if (scaleMode.equals(ScaleModes.NONE)) {
+            scaleFactorX = 1;
+            scaleFactorY = 1;
+        }
         double[] scaleFactors = new double[] { scaleFactorX, scaleFactorY };
 
         double[] intRange = (forceBitDepth)
@@ -1106,8 +1109,8 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
             writeStatus("Setting spatial calibration (XY = " + xyCal + ", Z = " + zCal + ")");
             Calibration calibration = ipl.getCalibration();
 
-            calibration.pixelHeight = xyCal;
-            calibration.pixelWidth = xyCal;
+            calibration.pixelHeight = xyCal/scaleFactorX;
+            calibration.pixelWidth = xyCal/scaleFactorY;
             calibration.pixelDepth = zCal;
             calibration.setUnit(SpatialUnit.getOMEUnit().getSymbol());
 
@@ -1133,22 +1136,6 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
         // Converting RGB to 3-channel
         if (ipl.getBitDepth() == 24)
             ipl = CompositeConverter.makeComposite(ipl);
-
-        // // If either number of slices or timepoints is 1 check it's the right
-        // dimension.
-        // // This should only be wrong if a Stack rather than Hyperstack was loaded, so
-        // if
-        // // there are multiple channels it shouldn't be an issue.
-        // if (reader.equals(Readers.IMAGEJ) && ipl.getNChannels() == 1) {
-        // if (threeDMode.equals(ThreeDModes.TIMESERIES) && ipl.getNFrames() == 1 &&
-        // ipl.getNSlices() > 1) {
-        // Convert3DStack.process(ipl, Convert3DStack.Modes.OUTPUT_TIMESERIES);
-        // ipl.getCalibration().pixelDepth = 1;
-        // } else if (threeDMode.equals(ThreeDModes.ZSTACK) && ipl.getNSlices() == 1 &&
-        // ipl.getNFrames() > 1) {
-        // Convert3DStack.process(ipl, Convert3DStack.Modes.OUTPUT_Z_STACK);
-        // }
-        // }
 
         // Adding image to workspace
         writeStatus("Adding image (" + outputImageName + ") to workspace");

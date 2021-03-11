@@ -28,6 +28,8 @@ public class Obj extends Volume {
      */
     private int ID;
 
+    private int T;
+
     private ObjCollection objCollection;
 
     private LinkedHashMap<String, Obj> parents = new LinkedHashMap<>();
@@ -43,8 +45,6 @@ public class Obj extends Volume {
 
         this.objCollection = objCollection;
         this.ID = ID;
-
-        addMeasurement(new Measurement(objCollection.getName()+"_TIMEPOINT", 0));
         
     }
 
@@ -54,8 +54,6 @@ public class Obj extends Volume {
         this.objCollection = objCollection;
         this.ID = ID;
 
-        addMeasurement(new Measurement(objCollection.getName()+"_TIMEPOINT",0));
-
     }
 
     public Obj(ObjCollection objCollection, int ID, Obj exampleObj) {
@@ -63,8 +61,6 @@ public class Obj extends Volume {
 
         this.objCollection = objCollection;
         this.ID = ID;
-
-        addMeasurement(new Measurement(objCollection.getName()+"_TIMEPOINT",0));
 
     }
 
@@ -74,8 +70,6 @@ public class Obj extends Volume {
         this.objCollection = objCollection;
         this.ID = ID;
 
-        addMeasurement(new Measurement(objCollection.getName()+"_TIMEPOINT",0));
-
     }
 
     public Obj(ObjCollection objCollection, VolumeType volumeType, int ID, Obj exampleObj) {
@@ -83,8 +77,6 @@ public class Obj extends Volume {
 
         this.objCollection = objCollection;
         this.ID = ID;
-
-        addMeasurement(new Measurement(objCollection.getName()+"_TIMEPOINT",0));
 
     }
 
@@ -138,11 +130,11 @@ public class Obj extends Volume {
     }
 
     public int getT() {
-        return (int) getMeasurement(objCollection.getName()+"_TIMEPOINT").getValue();
+        return T;
     }
 
     public Obj setT(int t) {
-        getMeasurement(objCollection.getName()+"_TIMEPOINT").setValue(t);
+        this.T = t;
         return this;
     }
 

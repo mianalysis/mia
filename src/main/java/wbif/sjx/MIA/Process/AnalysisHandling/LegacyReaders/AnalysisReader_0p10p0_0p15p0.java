@@ -7,11 +7,9 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -34,6 +32,7 @@ import wbif.sjx.MIA.Module.Core.InputControl;
 import wbif.sjx.MIA.Module.Core.OutputControl;
 import wbif.sjx.MIA.Module.Miscellaneous.GUISeparator;
 import wbif.sjx.MIA.Module.ObjectMeasurements.Miscellaneous.ChildObjectCount;
+import wbif.sjx.MIA.Module.ObjectMeasurements.Miscellaneous.ObjectTimepoint;
 import wbif.sjx.MIA.Module.ObjectMeasurements.Miscellaneous.ParentObjectID;
 import wbif.sjx.MIA.Module.ObjectMeasurements.Miscellaneous.PartnerObjectCount;
 import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
@@ -138,6 +137,9 @@ public class AnalysisReader_0p10p0_0p15p0 {
         // Adding relationships
         convertRelationshipRefs(modules, relationshipsToCovert);
 
+        // Adding timepoint measurements for all objects
+        addTimepointMeasurements(modules);
+
         return modules;
 
     }
@@ -182,30 +184,30 @@ public class AnalysisReader_0p10p0_0p15p0 {
         NodeList moduleChildNodes = moduleNode.getChildNodes();
         for (int i = 0; i < moduleChildNodes.getLength(); i++) {
             switch (moduleChildNodes.item(i).getNodeName()) {
-                case "PARAMETERS":
-                    populateParameters(moduleChildNodes.item(i), module);
-                    break;
+            case "PARAMETERS":
+                populateParameters(moduleChildNodes.item(i), module);
+                break;
 
-                case "MEASUREMENTS":
-                    populateLegacyMeasurementRefs(moduleChildNodes.item(i), module);
-                    break;
+            case "MEASUREMENTS":
+                populateLegacyMeasurementRefs(moduleChildNodes.item(i), module);
+                break;
 
-                case "IMAGE_MEASUREMENTS":
-                    populateImageMeasurementRefs(moduleChildNodes.item(i), module);
-                    break;
+            case "IMAGE_MEASUREMENTS":
+                populateImageMeasurementRefs(moduleChildNodes.item(i), module);
+                break;
 
-                case "OBJECT_MEASUREMENTS":
-                    populateObjMeasurementRefs(moduleChildNodes.item(i), module);
-                    break;
+            case "OBJECT_MEASUREMENTS":
+                populateObjMeasurementRefs(moduleChildNodes.item(i), module);
+                break;
 
-                case "METADATA":
-                    populateModuleMetadataRefs(moduleChildNodes.item(i), module);
-                    break;
+            case "METADATA":
+                populateModuleMetadataRefs(moduleChildNodes.item(i), module);
+                break;
 
-                case "RELATIONSHIPS":
-                case "PARENT_CHILD":
-                    relationshipsToCovert.add(moduleChildNodes.item(i));
-                    break;
+            case "RELATIONSHIPS":
+            case "PARENT_CHILD":
+                relationshipsToCovert.add(moduleChildNodes.item(i));
+                break;
             }
         }
 
@@ -257,15 +259,15 @@ public class AnalysisReader_0p10p0_0p15p0 {
 
             // Acquiring the relevant reference
             switch (type) {
-                case "IMAGE":
-                    ImageMeasurementRef imageMeasurementRef = new ImageMeasurementRef(referenceNode);
-                    module.addImageMeasurementRef(imageMeasurementRef);
-                    break;
+            case "IMAGE":
+                ImageMeasurementRef imageMeasurementRef = new ImageMeasurementRef(referenceNode);
+                module.addImageMeasurementRef(imageMeasurementRef);
+                break;
 
-                case "OBJECTS":
-                    ObjMeasurementRef objMeasurementRef = new ObjMeasurementRef(referenceNode);
-                    module.addObjectMeasurementRef(objMeasurementRef);
-                    break;
+            case "OBJECTS":
+                ObjMeasurementRef objMeasurementRef = new ObjMeasurementRef(referenceNode);
+                module.addObjectMeasurementRef(objMeasurementRef);
+                break;
             }
         }
     }
@@ -340,61 +342,62 @@ public class AnalysisReader_0p10p0_0p15p0 {
                     separator = addRefSeparatorModule(modules);
 
                 switch (node.getNodeName()) {
-                    case "RELATIONSHIP":
-                    case "PARENT_CHILD":
-                        // Getting relationship properties and modules
-                        ParentChildRef pcRef = new ParentChildRef(node);
-                        String parentName = pcRef.getParentName();
-                        String childName = pcRef.getChildName();
+                case "RELATIONSHIP":
+                case "PARENT_CHILD":
+                    // Getting relationship properties and modules
+                    ParentChildRef pcRef = new ParentChildRef(node);
+                    String parentName = pcRef.getParentName();
+                    String childName = pcRef.getChildName();
 
-                        // Checking if this pair has already been added
-                        if (parentChildRefs.contains(parentName, childName))
-                            continue;
-                        else
-                            parentChildRefs.addPair(parentName, childName);
+                    // Checking if this pair has already been added
+                    if (parentChildRefs.contains(parentName, childName))
+                        continue;
+                    else
+                        parentChildRefs.addPair(parentName, childName);
 
-                        // Checking objects still exist (i.e. haven't been removed)
-                        if (!availableObjectNames.contains(parentName))
-                            continue;
+                    // Checking objects still exist (i.e. haven't been removed)
+                    if (!availableObjectNames.contains(parentName))
+                        continue;
 
-                        if (!availableObjectNames.contains(childName))
-                            continue;
+                    if (!availableObjectNames.contains(childName))
+                        continue;
 
-                        addChildCountModule(modules, lRef, parentName, childName);
-                        addParentIDModule(modules, lRef, parentName, childName);
+                    addChildCountModule(modules, lRef, parentName, childName);
+                    addParentIDModule(modules, lRef, parentName, childName);
 
-                        nAdded += 2;
+                    nAdded += 2;
 
-                        break;
+                    break;
 
-                    case "PARTNER":
-                        // Getting relationship properties and module
-                        PartnerRef pRef = new PartnerRef(node);
-                        String object1Name = pRef.getObject1Name();
-                        String object2Name = pRef.getObject2Name();
+                case "PARTNER":
+                    // Getting relationship properties and module
+                    PartnerRef pRef = new PartnerRef(node);
+                    String object1Name = pRef.getObject1Name();
+                    String object2Name = pRef.getObject2Name();
 
-                        // Checking if this pair has already been added
-                        if (partnerRefs.contains(object1Name, object2Name))
-                            continue;
-                        else
-                            partnerRefs.addPair(object1Name, object2Name);
+                    // Checking if this pair has already been added
+                    if (partnerRefs.contains(object1Name, object2Name))
+                        continue;
+                    else
+                        partnerRefs.addPair(object1Name, object2Name);
 
-                        // Checking objects still exist (i.e. haven't been removed)
-                        if (!availableObjectNames.contains(object1Name))
-                            continue;
+                    // Checking objects still exist (i.e. haven't been removed)
+                    if (!availableObjectNames.contains(object1Name))
+                        continue;
 
-                        if (!availableObjectNames.contains(object2Name))
-                            continue;
+                    if (!availableObjectNames.contains(object2Name))
+                        continue;
 
-                        addPartnerCountModule(modules, lRef, object1Name, object2Name);
-                        addPartnerCountModule(modules, lRef, object2Name, object1Name);
+                    addPartnerCountModule(modules, lRef, object1Name, object2Name);
+                    addPartnerCountModule(modules, lRef, object2Name, object1Name);
 
-                        nAdded += 2;
+                    nAdded += 2;
 
-                        break;
+                    break;
                 }
 
-                // Display a message if any relationship modules were added, otherwise remove the redundant separator
+                // Display a message if any relationship modules were added, otherwise remove
+                // the redundant separator
                 if (nAdded > 0)
                     MIA.log.writeMessage(
                             "Pre-v0.15.0 analysis loaded.  Analysis has been automatically updated to store exported child/partner counts and parent IDs as measurements.");
@@ -402,6 +405,42 @@ public class AnalysisReader_0p10p0_0p15p0 {
                     modules.remove(separator);
 
             }
+        }
+    }
+
+    public static void addTimepointMeasurements(ModuleCollection modules) {
+        LinkedHashSet<OutputObjectsP> availableObjects = modules.getAvailableObjects(null);
+
+        if (availableObjects.size() == 0)
+            return;
+
+        GUISeparator guiSeparator = new GUISeparator(modules);
+        modules.add(guiSeparator);
+
+        guiSeparator.updateParameterValue(GUISeparator.SHOW_BASIC, false);
+        guiSeparator.setNickname("[AUTOGEN] Timepoint measurements");
+        guiSeparator.setNotes(
+                "The following modules were automatically added to aid compatibility with MIA v0.18.0 and above.  Object timepoints are now exported as measurements.");
+
+        for (OutputObjectsP availableObject : availableObjects) {
+            // Creating the object count module
+            ObjectTimepoint timepointModule = new ObjectTimepoint(modules);
+            modules.add(timepointModule);
+            timepointModule.updateParameterValue(PartnerObjectCount.INPUT_OBJECTS, availableObject.getObjectsName());
+
+            // Getting relevant measurement
+            ObjMeasurementRefCollection measRefs = timepointModule.updateAndGetObjectMeasurementRefs();
+            ObjMeasurementRef measRef = measRefs.get("TIMEPOINT");
+
+            // Setting measurement export states
+            measRef.setExportGlobal(true);
+            measRef.setExportIndividual(true);
+            measRef.setExportMax(false);
+            measRef.setExportMean(false);
+            measRef.setExportMin(false);
+            measRef.setExportStd(false);
+            measRef.setExportSum(false);
+            
         }
     }
 
