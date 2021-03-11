@@ -5,9 +5,11 @@ import wbif.sjx.common.Object.Volume.VolumeType;
 import java.util.HashMap;
 import java.util.List;
 
+import ome.units.UNITS;
+
 public class MergedObjects3D extends ExpectedObjects {
     public MergedObjects3D(VolumeType volumeType) {
-        super(volumeType, 64, 76, 12, 1);
+        super(volumeType, 64, 76, 12, 1, 0.02, UNITS.SECOND);
     }
 
     @Override

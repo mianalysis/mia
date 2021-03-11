@@ -5,9 +5,11 @@ import wbif.sjx.common.Object.Volume.VolumeType;
 import java.util.HashMap;
 import java.util.List;
 
+import ome.units.UNITS;
+
 public class HorizontalCylinderR22 extends ExpectedObjects {
     public HorizontalCylinderR22(VolumeType volumeType) {
-        super(volumeType, 60, 80, 10, 1);
+        super(volumeType, 60, 80, 10, 1, 0.02, UNITS.SECOND);
     }
 
     public enum Measures {ID_8BIT,LC_LENGTH_PX,LC_LENGTH_CAL,LC_X1_PX,LC_Y1_PX,LC_Z1_SLICE,LC_X2_PX,LC_Y2_PX,

@@ -61,11 +61,11 @@ public class ExtractObjectEdges extends Module {
 
     }
 
-    public static Obj getRegion(Obj inputObject, String outputName, int outputID, Image distImage, double edgeDistance, Mode mode) {
+    public static Obj getRegion(Obj inputObject, ObjCollection outputObjects, Image distImage, double edgeDistance, Mode mode) {
         ImagePlus distIpl = distImage.getImagePlus();
 
         // Creating new edge object
-        Obj edgeObject = new Obj(outputName,outputID,inputObject);
+        Obj edgeObject = outputObjects.createAndAddNewObject(inputObject.getVolumeType());
         edgeObject.setT(inputObject.getT());
 
         double[][] range = inputObject.getExtents(true,false);
@@ -197,19 +197,13 @@ public class ExtractObjectEdges extends Module {
                 edgeDistance = convertEdgePercentageToDistance(distImage,edgePercentage);
             }
 
-            // Extracting edge objects
-            if (createEdgeObjects) {
-                int ID = edgeObjects.getAndIncrementID();
-                Obj outputEdgeObject = getRegion(inputObject,edgeObjectName,ID,distImage,edgeDistance,Mode.EDGE);
-                if (outputEdgeObject != null) edgeObjects.add(outputEdgeObject);
-            }
-
-            // Extracting interior objects
-            if (createInteriorObjects) {
-                int ID = interiorObjects.getAndIncrementID();
-                Obj interiorObject = getRegion(inputObject,interiorObjectName,ID,distImage,edgeDistance,Mode.INTERIOR);
-                if (interiorObject != null) interiorObjects.add(interiorObject);
-            }
+            // Extracting interior and edge objects
+            if (createEdgeObjects)
+                getRegion(inputObject,edgeObjects,distImage,edgeDistance,Mode.EDGE);
+                
+            if (createInteriorObjects) 
+                getRegion(inputObject,interiorObjects,distImage,edgeDistance,Mode.INTERIOR);
+            
         }
 
         LUT randomLUT = LUTs.Random(true);

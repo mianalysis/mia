@@ -128,6 +128,7 @@ public class MeasureSpotIntensity extends Module {
 
         }
 
+        ObjCollection tempObjects = new ObjCollection("Temp",inputObjects);
         for (Obj inputObject : inputObjects.values()) {
             switch (radiusSource) {
                 case RadiusSources.MEASUREMENT:
@@ -142,8 +143,7 @@ public class MeasureSpotIntensity extends Module {
                     break;
             }
 
-            Obj spotObject = GetLocalObjectRegion.getLocalRegion(inputObject, inputObjectsName, radius, calibrated,
-                    false);
+            Obj spotObject = GetLocalObjectRegion.getLocalRegion(inputObject, tempObjects, radius, calibrated, false);
 
             CumStat cs = new CumStat();
 

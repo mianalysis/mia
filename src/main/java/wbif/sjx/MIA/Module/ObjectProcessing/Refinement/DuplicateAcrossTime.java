@@ -24,6 +24,7 @@ import wbif.sjx.MIA.Object.References.Collections.MetadataRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.ObjMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.ParentChildRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.PartnerRefCollection;
+import wbif.sjx.MIA.Object.Units.TemporalUnit;
 import wbif.sjx.common.Object.Point;
 import wbif.sjx.common.Object.Volume.PointOutOfRangeException;
 
@@ -72,7 +73,7 @@ public class DuplicateAcrossTime extends Module {
         // Creating output object collection
         int nFrames = endFrame - startFrame + 1;
         ObjCollection outputObjects = new ObjCollection(outputObjectsName, inputObjects.getSpatialCalibration(),
-                nFrames);
+                nFrames,inputObjects.getFrameInterval(),inputObjects.getTemporalUnit());
 
         String name = new DuplicateAcrossTime(null).getName();
 

@@ -7,6 +7,7 @@ import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.Core.InputControl;
 import wbif.sjx.MIA.Module.Category;
+import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Categories;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.InvertIntensity;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.Binary.BinaryOperations2D;
@@ -130,6 +131,7 @@ public class ExpandShrinkObjects extends Module {
         // moving objects to the correct positions
         outputObjects.setSpatialCalibration(inputObject.getSpatialCalibration(), true);
         outputObject.translateCoords(xOffs, yOffs, zOffs);
+        outputObject.setT(inputObject.getT());
 
         return outputObject;
 
@@ -201,8 +203,6 @@ public class ExpandShrinkObjects extends Module {
         Iterator<Obj> iterator = inputObjects.values().iterator();
         while (iterator.hasNext()) {
             Obj inputObject = iterator.next();
-            writeStatus("Processing object " + (count++) + " of " + total);
-
             Obj newObject = null;
             try {
                 newObject = processObject(inputObject, method, radiusChangePx);
@@ -213,6 +213,7 @@ public class ExpandShrinkObjects extends Module {
             // During object shrinking it's possible the object will disappear entirely
             if (newObject == null) {
                 iterator.remove();
+                count++;
                 continue;
             }
 
@@ -229,14 +230,15 @@ public class ExpandShrinkObjects extends Module {
                 inputObject.clearROIs();
 
             } else {
-                Obj outputObject = new Obj(outputObjectsName, outputObjects.getAndIncrementID(), firstObj);
+                Obj outputObject = outputObjects.createAndAddNewObject(firstObj.getVolumeType());
                 outputObject.setCoordinateSet(newObject.getCoordinateSet());
                 outputObject.setT(newObject.getT());
                 outputObject.addParent(inputObject);
                 inputObject.addChild(outputObject);
-                outputObjects.add(outputObject);
-
             }
+
+            writeStatus("Processed " + (count++) + " of " + total +" objects");
+
         }
 
         // If selected, adding new ObjCollection to the Workspace

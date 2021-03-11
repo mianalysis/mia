@@ -94,11 +94,11 @@ public class ModuleCollection extends ArrayList<Module> implements RefCollection
 
     public ObjMeasurementRefCollection getObjectMeasurementRefs(String objectName, Module cutoffModule) {
         ObjMeasurementRefCollection measurementRefs = new ObjMeasurementRefCollection();
-
+        
         // If this is a distant relative there will be "//" in the name that need to be
         // removed
         if (objectName.contains("//"))
-            objectName = objectName.substring(objectName.indexOf("//") + 3);
+            objectName = objectName.substring(objectName.lastIndexOf("//") + 3);
 
         addObjectMeasurementRefs(inputControl, measurementRefs, objectName);
         addObjectMeasurementRefs(outputControl, measurementRefs, objectName);

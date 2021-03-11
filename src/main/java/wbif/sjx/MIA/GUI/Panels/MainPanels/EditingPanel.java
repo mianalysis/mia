@@ -243,6 +243,11 @@ public class EditingPanel extends MainPanel {
     }
 
     @Override
+    public void resetJobNumbers() {
+        fileListPanel.resetJobNumbers();
+    }
+
+    @Override
     public void updateModules() {
         Analysis analysis = GUI.getAnalysis();
         InputControl inputControl = analysis.getModules().getInputControl();

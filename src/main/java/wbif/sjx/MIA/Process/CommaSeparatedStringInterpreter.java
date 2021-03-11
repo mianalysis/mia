@@ -15,11 +15,12 @@ public class CommaSeparatedStringInterpreter {
         range = range.replaceAll("\\s","");
 
         // Setting patterns for ranges and values
-        Pattern singleRangePattern = Pattern.compile("^([-]?[\\d]+)-([-]?[\\d]+)$");
-        Pattern singleRangeEndPattern = Pattern.compile("^([-]?[\\d]+)-end$");
-        Pattern intervalRangePattern = Pattern.compile("^([-]?[\\d]+)-([-]?[\\d]+)-([-]?[\\d]+)$");
-        Pattern intervalRangeEndPattern = Pattern.compile("^([-]?[\\d]+)-end-([-]?[\\d]+)$");
-        Pattern singleValuePattern = Pattern.compile("^[-]?[\\d]+$");
+        String num = "\\d(?:\\.\\d+)";
+        Pattern singleRangePattern = Pattern.compile("^([-]?["+num+"]+)-([-]?["+num+"]+)$");
+        Pattern singleRangeEndPattern = Pattern.compile("^([-]?["+num+"]+)-end$");
+        Pattern intervalRangePattern = Pattern.compile("^([-]?["+num+"]+)-([-]?["+num+"]+)-([-]?["+num+"]+)$");
+        Pattern intervalRangeEndPattern = Pattern.compile("^([-]?["+num+"]+)-end-([-]?["+num+"]+)$");
+        Pattern singleValuePattern = Pattern.compile("^[-]?["+num+"]+$");
         Pattern endOnlyPattern = Pattern.compile("end");
 
         // First, splitting comma-delimited sections
@@ -36,8 +37,8 @@ public class CommaSeparatedStringInterpreter {
             Matcher endOnlyMatcher = endOnlyPattern.matcher(token);
 
             if (singleRangeMatcher.matches()) {
-                int start = Integer.parseInt(singleRangeMatcher.group(1));
-                int end = Integer.parseInt(singleRangeMatcher.group(2));
+                int start = (int) Double.parseDouble(singleRangeMatcher.group(1));
+                int end = (int) Double.parseDouble(singleRangeMatcher.group(2));
                 int interval = (end >= start) ? 1 : -1;
                 int nValues = (end-start)/interval + 1;
 
@@ -49,16 +50,16 @@ public class CommaSeparatedStringInterpreter {
             } else if (singleRangeEndMatcher.matches()) {
                 // If the numbers should proceed to the end, the last three added are the starting number, the starting
                 // number plus one and the maximum value
-                int start = Integer.parseInt(singleRangeEndMatcher.group(1));
+                int start = (int) Double.parseDouble(singleRangeEndMatcher.group(1));
 
                 values.add(start);
                 values.add(start+1);
                 values.add(Integer.MAX_VALUE);
 
             } else if (intervalRangeMatcher.matches()) {
-                int start = Integer.parseInt(intervalRangeMatcher.group(1));
-                int end = Integer.parseInt(intervalRangeMatcher.group(2));
-                int interval = Integer.parseInt(intervalRangeMatcher.group(3));
+                int start = (int) Double.parseDouble(intervalRangeMatcher.group(1));
+                int end = (int) Double.parseDouble(intervalRangeMatcher.group(2));
+                int interval = (int) Double.parseDouble(intervalRangeMatcher.group(3));
                 int nValues = (end-start)/interval + 1;
 
                 for (int i=0;i<nValues;i++) {
@@ -69,15 +70,15 @@ public class CommaSeparatedStringInterpreter {
             } else if (intervalRangeEndMatcher.matches()) {
                 // If the numbers should proceed to the end, the last three added are the starting number, the starting
                 // number plus the interval and the maximum value
-                int start = Integer.parseInt(intervalRangeEndMatcher.group(1));
-                int interval = Integer.parseInt(intervalRangeEndMatcher.group(2));
+                int start = (int) Double.parseDouble(intervalRangeEndMatcher.group(1));
+                int interval = (int) Double.parseDouble(intervalRangeEndMatcher.group(2));
 
                 values.add(start);
                 values.add(start+interval);
                 values.add(Integer.MAX_VALUE);
 
             } else if (singleValueMatcher.matches()) {
-                values.add(Integer.parseInt(token));
+                values.add((int) Double.parseDouble(token));
 
             } else if (endOnlyMatcher.matches()) {
                 values.add(Integer.MAX_VALUE);

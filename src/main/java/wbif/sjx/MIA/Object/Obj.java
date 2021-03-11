@@ -16,7 +16,6 @@ import wbif.sjx.MIA.Process.ColourFactory;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.Object.Point;
 import wbif.sjx.common.Object.Volume.PointOutOfRangeException;
-import wbif.sjx.common.Object.Volume.SpatCal;
 import wbif.sjx.common.Object.Volume.Volume;
 import wbif.sjx.common.Object.Volume.VolumeType;
 
@@ -24,20 +23,15 @@ import wbif.sjx.common.Object.Volume.VolumeType;
  * Created by Stephen on 30/04/2017.
  */
 public class Obj extends Volume {
-    private String name;
-
     /**
      * Unique instance ID for this object
      */
     private int ID;
 
-    /**
-     * Each instance of an object is only present in XYZ and a single timepoint. Any
-     * other dimensionality (e.g. channel) must be added as a measurement.
-     */
-    private int T = 0;
+    private int T;
 
-    private final int nFrames;
+    private ObjCollection objCollection;
+
     private LinkedHashMap<String, Obj> parents = new LinkedHashMap<>();
     private LinkedHashMap<String, ObjCollection> children = new LinkedHashMap<>();
     private LinkedHashMap<String, ObjCollection> partners = new LinkedHashMap<>();
@@ -46,58 +40,43 @@ public class Obj extends Volume {
 
     // CONSTRUCTORS
 
-    public Obj(VolumeType volumeType, String name, int ID, int width, int height, int nSlices, int nFrames,
-            double dppXY, double dppZ, String units) {
-        super(volumeType, width, height, nSlices, dppXY, dppZ, units);
+    public Obj(ObjCollection objCollection, VolumeType volumeType, int ID) {
+        super(volumeType, objCollection.getSpatialCalibration());
 
-        this.name = name;
+        this.objCollection = objCollection;
         this.ID = ID;
-        this.nFrames = nFrames;
-
+        
     }
 
-    public Obj(VolumeType volumeType, String name, int ID, SpatCal calibration, int nFrames) {
-        super(volumeType, calibration);
-
-        this.name = name;
-        this.ID = ID;
-        this.nFrames = nFrames;
-
-    }
-
-    public Obj(String name, int ID, Volume exampleVolume, int nFrames) {
+    public Obj(ObjCollection objCollection, int ID, Volume exampleVolume) {
         super(exampleVolume.getVolumeType(), exampleVolume.getSpatialCalibration());
 
-        this.name = name;
+        this.objCollection = objCollection;
         this.ID = ID;
-        this.nFrames = nFrames;
 
     }
 
-    public Obj(String name, int ID, Obj exampleObj) {
+    public Obj(ObjCollection objCollection, int ID, Obj exampleObj) {
         super(exampleObj.getVolumeType(), exampleObj.getSpatialCalibration());
 
-        this.name = name;
+        this.objCollection = objCollection;
         this.ID = ID;
-        this.nFrames = exampleObj.getNFrames();
 
     }
 
-    public Obj(VolumeType volumeType, String name, int ID, Volume exampleVolume, int nFrames) {
+    public Obj(ObjCollection objCollection, VolumeType volumeType, int ID, Volume exampleVolume) {
         super(volumeType, exampleVolume.getSpatialCalibration());
 
-        this.name = name;
+        this.objCollection = objCollection;
         this.ID = ID;
-        this.nFrames = nFrames;
 
     }
 
-    public Obj(VolumeType volumeType, String name, int ID, Obj exampleObj) {
+    public Obj(ObjCollection objCollection, VolumeType volumeType, int ID, Obj exampleObj) {
         super(volumeType, exampleObj.getSpatialCalibration());
 
-        this.name = name;
+        this.objCollection = objCollection;
         this.ID = ID;
-        this.nFrames = exampleObj.getNFrames();
 
     }
 
@@ -129,13 +108,16 @@ public class Obj extends Volume {
 
     }
 
-    public String getName() {
-        return name;
+    public ObjCollection getObjectCollection() {
+        return objCollection;
     }
 
-    public Obj setName(String name) {
-        this.name = name;
-        return this;
+    public void setObjectCollection(ObjCollection objCollection) {
+        this.objCollection = objCollection;
+    }
+
+    public String getName() {
+        return objCollection.getName();
     }
 
     public int getID() {
@@ -154,10 +136,6 @@ public class Obj extends Volume {
     public Obj setT(int t) {
         this.T = t;
         return this;
-    }
-
-    public int getNFrames() {
-        return nFrames;
     }
 
     public LinkedHashMap<String, Obj> getParents(boolean useFullHierarchy) {
@@ -239,7 +217,8 @@ public class Obj extends Volume {
         // Getting the first set of children
         ObjCollection allChildren = children.get(elements[0]);
         if (allChildren == null)
-            return new ObjCollection(elements[0], spatCal, nFrames);
+            return new ObjCollection(elements[0], spatCal, objCollection.getNFrames(), objCollection.getFrameInterval(),
+                    objCollection.getTemporalUnit());
 
         // If the first set of children was the only one listed, returning this
         if (elements.length == 1)
@@ -256,7 +235,8 @@ public class Obj extends Volume {
 
         // Going through each child in the current set, then adding all their children
         // to the output set
-        ObjCollection outputChildren = new ObjCollection(name, allChildren.getSpatialCalibration(), nFrames);
+        ObjCollection outputChildren = new ObjCollection(name, allChildren.getSpatialCalibration(),
+                objCollection.getNFrames(), objCollection.getFrameInterval(), objCollection.getTemporalUnit());
         for (Obj child : allChildren.values()) {
             ObjCollection currentChildren = child.getChildren(stringBuilder.toString());
             for (Obj currentChild : currentChildren.values())
@@ -282,7 +262,8 @@ public class Obj extends Volume {
     public void addChild(Obj child) {
         String childName = child.getName();
 
-        children.computeIfAbsent(childName, k -> new ObjCollection(childName, child.getSpatialCalibration(), nFrames));
+        children.computeIfAbsent(childName, k -> new ObjCollection(childName, child.getSpatialCalibration(),
+                objCollection.getNFrames(), objCollection.getFrameInterval(), objCollection.getTemporalUnit()));
         children.get(childName).add(child);
 
     }
@@ -316,8 +297,8 @@ public class Obj extends Volume {
     public void addPartner(Obj partner) {
         String partnerName = partner.getName();
 
-        partners.computeIfAbsent(partnerName,
-                k -> new ObjCollection(partnerName, partner.getSpatialCalibration(), nFrames));
+        partners.computeIfAbsent(partnerName, k -> new ObjCollection(partnerName, partner.getSpatialCalibration(),
+                objCollection.getNFrames(), objCollection.getFrameInterval(), objCollection.getTemporalUnit()));
         partners.get(partnerName).add(partner);
     }
 
@@ -347,8 +328,8 @@ public class Obj extends Volume {
         if (children != null) {
             for (ObjCollection childSet : children.values()) {
                 for (Obj child : childSet.values()) {
-                    if (child.getParent(name) == this) {
-                        child.removeParent(name);
+                    if (child.getParent(getName()) == this) {
+                        child.removeParent(getName());
                     }
                 }
             }
@@ -385,15 +366,14 @@ public class Obj extends Volume {
 
         // Getting the image corresponding to this slice
         Volume sliceVol = getSlice(slice);
-        Obj sliceObj = new Obj(sliceVol.getVolumeType(), "Slice", ID, sliceVol.getSpatialCalibration(), nFrames);
+
+        ObjCollection objectCollection = new ObjCollection("Slice", sliceVol.getSpatialCalibration(), 1, 1, null);
+        Obj sliceObj = objectCollection.createAndAddNewObject(sliceVol.getVolumeType(), ID);
         sliceObj.setCoordinateSet(sliceVol.getCoordinateSet());
 
         // Checking if the object exists in this slice
         if (sliceVol.size() == 0)
             return null;
-
-        ObjCollection objectCollection = new ObjCollection("SliceObjects", sliceVol.getSpatialCalibration(), nFrames);
-        objectCollection.add(sliceObj);
 
         HashMap<Integer, Float> hues = ColourFactory.getSingleColourHues(objectCollection,
                 ColourFactory.SingleColours.WHITE);
@@ -433,13 +413,18 @@ public class Obj extends Volume {
         }
     }
 
-    public Image getAsImage(String imageName) {
-        ImagePlus ipl = IJ.createImage(imageName, spatCal.width, spatCal.height, spatCal.nSlices, 8);
+    public Image getAsImage(String imageName, boolean singleTimepoint) {
+        int nFrames = singleTimepoint ? 1 : objCollection.getNFrames();
+        int t = singleTimepoint ? 0 : getT();
+
+        ImagePlus ipl = IJ.createHyperStack(imageName, spatCal.width, spatCal.height, 1, spatCal.nSlices, nFrames, 8);
         spatCal.setImageCalibration(ipl);
 
         for (Point<Integer> point : getCoordinateSet()) {
-            ipl.setPosition(point.getZ() + 1);
-            ipl.getProcessor().putPixel(point.getX(), point.getY(), 255);
+            int idx = ipl.getStackIndex(1, point.getZ() + 1, t + 1);
+            ipl.getStack().getProcessor(idx).set(point.getX(), point.getY(), 255);
+            // ipl.setPosition(point.getZ() + 1);
+            // ipl.getProcessor().putPixel(point.getX(), point.getY(), 255);
         }
 
         return new Image(imageName, ipl);
@@ -526,17 +511,6 @@ public class Obj extends Volume {
 
     }
 
-    public Image convertObjToImage(String outputName) {
-        // Creating an ObjCollection to generate this image
-        ObjCollection tempObj = new ObjCollection(outputName, spatCal, nFrames);
-        tempObj.add(this);
-
-        // Getting the image
-        HashMap<Integer, Float> hues = ColourFactory.getSingleColourHues(tempObj, ColourFactory.SingleColours.WHITE);
-        return tempObj.convertToImage(outputName, hues, 8, false);
-
-    }
-
     public void removeOutOfBoundsCoords() {
         int width = spatCal.getWidth();
         int height = spatCal.getHeight();
@@ -562,11 +536,13 @@ public class Obj extends Volume {
     public int hashCode() {
         // Updating the hash for time-point. ID, measurements and relationships aren't
         // included; only spatial location.
-        return super.hashCode() * 31 + T;
+        return super.hashCode() * 31 + getT();
     }
 
     @Override
     public boolean equals(Object obj) {
+        int T = getT();
+
         if (!super.equals(obj))
             return false;
 
@@ -575,12 +551,12 @@ public class Obj extends Volume {
         if (!(obj instanceof Obj))
             return false;
 
-        return (T == ((Obj) obj).T);
+        return (T == ((Obj) obj).getT());
 
     }
 
     @Override
     public String toString() {
-        return "Object " + name + ", ID = " + ID + ", frame = " + T;
+        return "Object \"" + getName() + "\", ID = " + ID + ", frame = " + getT();
     }
 }

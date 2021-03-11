@@ -100,11 +100,10 @@ public class MeasureSkeleton extends Module {
 
         // The Skeleton object doesn't contain any coordinate data, it just links
         // branches, junctions and loops.
-        Obj skeletonObject = new Obj(VolumeType.POINTLIST, skeletonObjects.getName(), inputObject.getID(), inputObject);
+        Obj skeletonObject = skeletonObjects.createAndAddNewObject(VolumeType.POINTLIST);
         skeletonObject.setT(inputObject.getT());
         inputObject.addChild(skeletonObject);
         skeletonObject.addParent(inputObject);
-        skeletonObjects.add(skeletonObject);
 
         // For the purpose of linking edges and junctions, these are stored in a
         // HashMap.
@@ -145,7 +144,8 @@ public class MeasureSkeleton extends Module {
             String loopObjectsName, Obj skeletonObject) {
 
         // Creating an object for the entire skeleton
-        Obj tempObject = new Obj("Temp", 1, skeletonObject);
+        ObjCollection tempCollection = new ObjCollection("Skeleton", loopObjects);
+        Obj tempObject = tempCollection.createAndAddNewObject(VolumeType.POINTLIST);
         CoordinateSet coords = tempObject.getCoordinateSet();
 
         // Adding all points from edges and junctions

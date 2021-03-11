@@ -147,6 +147,9 @@ public class AnalysisReader_Pre_0p10p0 {
         // Adding relationships
         AnalysisReader_0p10p0_0p15p0.convertRelationshipRefs(modules, relationshipsToCovert);
 
+        // Adding timepoint measurements for all objects
+        AnalysisReader_0p10p0_0p15p0.addTimepointMeasurements(modules);
+
         return analysis;
 
     }

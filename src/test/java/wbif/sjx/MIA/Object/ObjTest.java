@@ -4,6 +4,8 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
+
+import ome.units.UNITS;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.Object.Volume.PointOutOfRangeException;
 import wbif.sjx.common.Object.Volume.SpatCal;
@@ -19,43 +21,49 @@ public class ObjTest {
     @ParameterizedTest
     @EnumSource(VolumeType.class)
     public void testAddMeasurementNormal(VolumeType volumeType) {
-        Obj obj = new Obj(volumeType,"Test object",1,1,1,1,1,0.02,0.1,"µm");
-        assertEquals(0,obj.getMeasurements().size());
+        SpatCal calibration = new SpatCal(2.0, 1.0, "PX", 5, 7, 5);
+        ObjCollection objects = new ObjCollection("Obj", calibration, 1, 0.02, UNITS.SECOND);
+        Obj obj = objects.createAndAddNewObject(volumeType);
+        assertEquals(0, obj.getMeasurements().size());
 
-        obj.addMeasurement(new Measurement("Meas",-12.4));
+        obj.addMeasurement(new Measurement("Meas", -12.4));
 
-        assertEquals(1,obj.getMeasurements().size());
+        assertEquals(1, obj.getMeasurements().size());
         assertNotNull(obj.getMeasurement("Meas"));
         assertNull(obj.getMeasurement("NotMeas"));
-        assertEquals(-12.4,obj.getMeasurement("Meas").getValue(),tolerance);
+        assertEquals(-12.4, obj.getMeasurement("Meas").getValue(), tolerance);
 
     }
 
     @ParameterizedTest
     @EnumSource(VolumeType.class)
     public void testAddMeasurementOverwrite(VolumeType volumeType) {
-        Obj obj = new Obj(volumeType,"Test object",1,1,1,1,1,0.02,0.1,"µm");
-        assertEquals(0,obj.getMeasurements().size());
+        SpatCal calibration = new SpatCal(2.0, 1.0, "PX", 5, 7, 5);
+        ObjCollection objects = new ObjCollection("Obj", calibration, 1, 0.02, UNITS.SECOND);
+        Obj obj = objects.createAndAddNewObject(volumeType);
+        assertEquals(0, obj.getMeasurements().size());
 
-        obj.addMeasurement(new Measurement("Meas",-12.4));
-        obj.addMeasurement(new Measurement("Meas",3.2));
+        obj.addMeasurement(new Measurement("Meas", -12.4));
+        obj.addMeasurement(new Measurement("Meas", 3.2));
 
-        assertEquals(1,obj.getMeasurements().size());
+        assertEquals(1, obj.getMeasurements().size());
         assertNotNull(obj.getMeasurement("Meas"));
         assertNull(obj.getMeasurement("NotMeas"));
-        assertEquals(3.2,obj.getMeasurement("Meas").getValue(),tolerance);
+        assertEquals(3.2, obj.getMeasurement("Meas").getValue(), tolerance);
 
     }
 
     @ParameterizedTest
     @EnumSource(VolumeType.class)
     public void testAddMeasurementNull(VolumeType volumeType) {
-        Obj obj = new Obj(volumeType,"Test object",1,1,1,1,1,0.02,0.1,"µm");
-        assertEquals(0,obj.getMeasurements().size());
+        SpatCal calibration = new SpatCal(2.0, 1.0, "PX", 5, 7, 5);
+        ObjCollection objects = new ObjCollection("Obj", calibration, 1, 0.02, UNITS.SECOND);
+        Obj obj = objects.createAndAddNewObject(volumeType);
+        assertEquals(0, obj.getMeasurements().size());
 
         obj.addMeasurement(null);
 
-        assertEquals(0,obj.getMeasurements().size());
+        assertEquals(0, obj.getMeasurements().size());
         assertNull(obj.getMeasurement("Meas"));
         assertNull(obj.getMeasurement("NotMeas"));
 
@@ -64,13 +72,15 @@ public class ObjTest {
     @ParameterizedTest
     @EnumSource(VolumeType.class)
     public void testToString(VolumeType volumeType) {
-        Obj obj = new Obj(volumeType,"Test object",1,1,1,1,1,0.02,0.1,"µm");
+        SpatCal calibration = new SpatCal(2.0, 1.0, "PX", 5, 7, 5);
+        ObjCollection objects = new ObjCollection("Obj", calibration, 1, 0.02, UNITS.SECOND);
+        Obj obj = objects.createAndAddNewObject(volumeType);
         obj.setT(12);
 
-        String expected = "Object Test object, ID = 1, frame = 12";
+        String expected = "Object \"Obj\", ID = 1, frame = 12";
         String actual = obj.toString();
 
-        assertEquals(expected,actual);
+        assertEquals(expected, actual);
 
     }
 
@@ -81,12 +91,17 @@ public class ObjTest {
         String parentObjectsName1 = "Parents1";
         String parentObjectsName2 = "Parents2";
 
-        Obj obj1 = new Obj(volumeType,childObjectsName,1,1,1,1,1,0.02,0.1,"µm");
-        Obj obj2 = new Obj(volumeType,parentObjectsName1,12,1,1,1,1,0.02,0.1,"µm");
-        Obj obj3 = new Obj(volumeType,parentObjectsName2,3,1,1,1,1,0.02,0.1,"µm");
+        SpatCal calibration = new SpatCal(0.02, 0.1, "µm", 1, 1, 1);
 
-        LinkedHashMap<String,Obj> parents = obj1.getParents(false);
-        assertEquals(0,parents.size());
+        ObjCollection children = new ObjCollection(childObjectsName, calibration, 1, 0.02, UNITS.SECOND);
+        Obj obj1 = children.createAndAddNewObject(volumeType, 1);
+        ObjCollection parents1 = new ObjCollection(parentObjectsName1, calibration, 1, 0.02, UNITS.SECOND);
+        Obj obj2 = parents1.createAndAddNewObject(volumeType, 12);
+        ObjCollection parents2 = new ObjCollection(parentObjectsName2, calibration, 3, 0.02, UNITS.SECOND);
+        Obj obj3 = parents2.createAndAddNewObject(volumeType, 3);
+
+        LinkedHashMap<String, Obj> parents = obj1.getParents(false);
+        assertEquals(0, parents.size());
 
     }
 
@@ -97,17 +112,22 @@ public class ObjTest {
         String parentObjectsName1 = "Parents1";
         String parentObjectsName2 = "Parents2";
 
-        Obj obj1 = new Obj(volumeType,childObjectsName,1,1,1,1,1,0.02,0.1,"µm");
-        Obj obj2 = new Obj(volumeType,parentObjectsName1,12,1,1,1,1,0.02,0.1,"µm");
-        Obj obj3 = new Obj(volumeType,parentObjectsName2,3,1,1,1,1,0.02,0.1,"µm");
+        SpatCal calibration = new SpatCal(0.02, 0.1, "µm", 1, 1, 1);
+
+        ObjCollection children = new ObjCollection(childObjectsName, calibration, 1, 0.02, UNITS.SECOND);
+        Obj obj1 = children.createAndAddNewObject(volumeType, 1);
+        ObjCollection parents1 = new ObjCollection(parentObjectsName1, calibration, 1, 0.02, UNITS.SECOND);
+        Obj obj2 = parents1.createAndAddNewObject(volumeType, 12);
+        ObjCollection parents2 = new ObjCollection(parentObjectsName2, calibration, 3, 0.02, UNITS.SECOND);
+        Obj obj3 = parents2.createAndAddNewObject(volumeType, 3);
 
         obj1.addParent(obj2);
         obj2.addChild(obj1);
         obj1.addParent(obj3);
         obj3.addChild(obj1);
 
-        LinkedHashMap<String,Obj> parents = obj1.getParents(false);
-        assertEquals(2,parents.size());
+        LinkedHashMap<String, Obj> parents = obj1.getParents(false);
+        assertEquals(2, parents.size());
         assertNotNull(parents.get(parentObjectsName1));
         assertNotNull(parents.get(parentObjectsName2));
 
@@ -120,24 +140,29 @@ public class ObjTest {
         String parentObjectsName1 = "Parents1";
         String parentObjectsName2 = "Parents1";
 
-        Obj obj1 = new Obj(volumeType,childObjectsName,1,1,1,1,1,0.02,0.1,"µm");
-        Obj obj2 = new Obj(volumeType,parentObjectsName1,12,1,1,1,1,0.02,0.1,"µm");
-        Obj obj3 = new Obj(volumeType,parentObjectsName2,3,1,1,1,1,0.02,0.1,"µm");
+        SpatCal calibration = new SpatCal(0.02, 0.1, "µm", 1, 1, 1);
+
+        ObjCollection children = new ObjCollection(childObjectsName, calibration, 1, 0.02, UNITS.SECOND);
+        Obj obj1 = children.createAndAddNewObject(volumeType, 1);
+        ObjCollection parents1 = new ObjCollection(parentObjectsName1, calibration, 1, 0.02, UNITS.SECOND);
+        Obj obj2 = parents1.createAndAddNewObject(volumeType, 12);
+        ObjCollection parents2 = new ObjCollection(parentObjectsName2, calibration, 3, 0.02, UNITS.SECOND);
+        Obj obj3 = parents2.createAndAddNewObject(volumeType, 3);
 
         obj1.addParent(obj2);
         obj2.addChild(obj1);
         obj1.addParent(obj3);
         obj3.addChild(obj1);
 
-        LinkedHashMap<String,Obj> parents = obj1.getParents(false);
-        assertEquals(1,parents.size());
+        LinkedHashMap<String, Obj> parents = obj1.getParents(false);
+        assertEquals(1, parents.size());
         assertNotNull(parents.get(parentObjectsName1));
 
     }
 
     /**
-     * Testing getting multiple parents from the relationship hierarchy.  In this case the relationships further away
-     * are added last.
+     * Testing getting multiple parents from the relationship hierarchy. In this
+     * case the relationships further away are added last.
      */
     @ParameterizedTest
     @EnumSource(VolumeType.class)
@@ -147,10 +172,17 @@ public class ObjTest {
         String parentObjectsName2 = "Parents2";
         String parentObjectsName3 = "Parents3";
 
-        Obj obj1 = new Obj(volumeType,childObjectsName,1,1,1,1,1,0.02,0.1,"µm");
-        Obj obj2 = new Obj(volumeType,parentObjectsName1,12,1,1,1,1,0.02,0.1,"µm");
-        Obj obj3 = new Obj(volumeType,parentObjectsName2,3,1,1,1,1,0.02,0.1,"µm");
-        Obj obj4 = new Obj(volumeType,parentObjectsName3,42,1,1,1,1,0.02,0.1,"µm");
+        SpatCal calibration = new SpatCal(0.02, 0.1, "µm", 1, 1, 1);
+
+        ObjCollection children = new ObjCollection(childObjectsName, calibration, 1, 0.02, UNITS.SECOND);
+        Obj obj1 = children.createAndAddNewObject(volumeType, 1);
+
+        ObjCollection parents1 = new ObjCollection(parentObjectsName1, calibration, 1, 0.02, UNITS.SECOND);
+        Obj obj2 = parents1.createAndAddNewObject(volumeType, 12);
+        ObjCollection parents2 = new ObjCollection(parentObjectsName2, calibration, 3, 0.02, UNITS.SECOND);
+        Obj obj3 = parents2.createAndAddNewObject(volumeType, 3);
+        ObjCollection parents3 = new ObjCollection(parentObjectsName3, calibration, 1, 0.02, UNITS.SECOND);
+        Obj obj4 = parents3.createAndAddNewObject(volumeType, 42);
 
         obj1.addParent(obj2);
         obj2.addChild(obj1);
@@ -161,8 +193,8 @@ public class ObjTest {
         obj3.addParent(obj4);
         obj4.addChild(obj3);
 
-        LinkedHashMap<String,Obj> parents = obj1.getParents(true);
-        assertEquals(3,parents.size());
+        LinkedHashMap<String, Obj> parents = obj1.getParents(true);
+        assertEquals(3, parents.size());
         assertNotNull(parents.get(parentObjectsName1));
         assertNotNull(parents.get(parentObjectsName2));
         assertNotNull(parents.get(parentObjectsName3));
@@ -170,8 +202,8 @@ public class ObjTest {
     }
 
     /**
-     * Testing getting multiple parents from the relationship hierarchy.  In this case the relationships further away
-     * are added first.
+     * Testing getting multiple parents from the relationship hierarchy. In this
+     * case the relationships further away are added first.
      */
     @ParameterizedTest
     @EnumSource(VolumeType.class)
@@ -181,10 +213,16 @@ public class ObjTest {
         String parentObjectsName2 = "Parents2";
         String parentObjectsName3 = "Parents3";
 
-        Obj obj1 = new Obj(volumeType,childObjectsName,1,1,1,1,1,0.02,0.1,"µm");
-        Obj obj2 = new Obj(volumeType,parentObjectsName1,12,1,1,1,1,0.02,0.1,"µm");
-        Obj obj3 = new Obj(volumeType,parentObjectsName2,3,1,1,1,1,0.02,0.1,"µm");
-        Obj obj4 = new Obj(volumeType,parentObjectsName3,42,1,1,1,1,0.02,0.1,"µm");
+        SpatCal calibration = new SpatCal(0.02, 0.1, "µm", 1, 1, 1);
+
+        ObjCollection children = new ObjCollection(childObjectsName, calibration, 1, 0.02, UNITS.SECOND);
+        Obj obj1 = children.createAndAddNewObject(volumeType, 1);
+        ObjCollection parents1 = new ObjCollection(parentObjectsName1, calibration, 1, 0.02, UNITS.SECOND);
+        Obj obj2 = parents1.createAndAddNewObject(volumeType, 12);
+        ObjCollection parents2 = new ObjCollection(parentObjectsName2, calibration, 3, 0.02, UNITS.SECOND);
+        Obj obj3 = parents2.createAndAddNewObject(volumeType, 3);
+        ObjCollection parents3 = new ObjCollection(parentObjectsName3, calibration, 1, 0.02, UNITS.SECOND);
+        Obj obj4 = parents3.createAndAddNewObject(volumeType, 42);
 
         obj3.addParent(obj4);
         obj4.addChild(obj3);
@@ -195,8 +233,8 @@ public class ObjTest {
         obj1.addParent(obj2);
         obj2.addChild(obj1);
 
-        LinkedHashMap<String,Obj> parents = obj1.getParents(true);
-        assertEquals(3,parents.size());
+        LinkedHashMap<String, Obj> parents = obj1.getParents(true);
+        assertEquals(3, parents.size());
         assertNotNull(parents.get(parentObjectsName1));
         assertNotNull(parents.get(parentObjectsName2));
         assertNotNull(parents.get(parentObjectsName3));
@@ -204,9 +242,11 @@ public class ObjTest {
     }
 
     /**
-     * Here, the target object has a parent from the same collection as one of its parents; however, the parent objects
-     * are different.  As parents are returned as a LinkedHashMap with String key it's not possible to have more than
-     * one parent from a single collection.  This should preferentially return the direct parent of the target object.
+     * Here, the target object has a parent from the same collection as one of its
+     * parents; however, the parent objects are different. As parents are returned
+     * as a LinkedHashMap with String key it's not possible to have more than one
+     * parent from a single collection. This should preferentially return the direct
+     * parent of the target object.
      */
     @ParameterizedTest
     @EnumSource(VolumeType.class)
@@ -216,11 +256,17 @@ public class ObjTest {
         String parentObjectsName2 = "Parents2";
         String parentObjectsName3 = "Parents3";
 
-        Obj obj1 = new Obj(volumeType,childObjectsName,1,1,1,1,1,0.02,0.1,"µm");
-        Obj obj2 = new Obj(volumeType,parentObjectsName1,12,1,1,1,1,0.02,0.1,"µm");
-        Obj obj3 = new Obj(volumeType,parentObjectsName2,3,1,1,1,1,0.02,0.1,"µm");
-        Obj obj4 = new Obj(volumeType,parentObjectsName3,42,1,1,1,1,0.02,0.1,"µm");
-        Obj obj5 = new Obj(volumeType,parentObjectsName1,14,1,1,1,1,0.02,0.1,"µm");
+        SpatCal calibration = new SpatCal(0.02, 0.1, "µm", 1, 1, 1);
+
+        ObjCollection children = new ObjCollection(childObjectsName, calibration, 1, 0.02, UNITS.SECOND);
+        Obj obj1 = children.createAndAddNewObject(volumeType, 1);
+        ObjCollection parents1 = new ObjCollection(parentObjectsName1, calibration, 1, 0.02, UNITS.SECOND);
+        Obj obj2 = parents1.createAndAddNewObject(volumeType, 12);
+        ObjCollection parents2 = new ObjCollection(parentObjectsName2, calibration, 3, 0.02, UNITS.SECOND);
+        Obj obj3 = parents2.createAndAddNewObject(volumeType, 3);
+        ObjCollection parents3 = new ObjCollection(parentObjectsName3, calibration, 1, 0.02, UNITS.SECOND);
+        Obj obj4 = parents3.createAndAddNewObject(volumeType, 42);
+        Obj obj5 = parents1.createAndAddNewObject(volumeType, 14);
 
         obj1.addParent(obj2);
         obj2.addChild(obj1);
@@ -234,12 +280,12 @@ public class ObjTest {
         obj3.addParent(obj5);
         obj5.addChild(obj3);
 
-        LinkedHashMap<String,Obj> parents = obj1.getParents(true);
-        assertEquals(3,parents.size());
+        LinkedHashMap<String, Obj> parents = obj1.getParents(true);
+        assertEquals(3, parents.size());
         assertNotNull(parents.get(parentObjectsName1));
         assertNotNull(parents.get(parentObjectsName2));
         assertNotNull(parents.get(parentObjectsName3));
-        assertEquals(12,obj1.getParent(parentObjectsName1).getID());
+        assertEquals(12, obj1.getParent(parentObjectsName1).getID());
 
     }
 
@@ -249,16 +295,17 @@ public class ObjTest {
         String parentObjectsName = "Parent";
         String childObjectsName = "Children";
 
-        SpatCal calibration = new SpatCal(0.02,0.1,"µm",1,1,1);
-        Obj obj1 = new Obj(volumeType,parentObjectsName,1,calibration,1);
-        Obj obj2 = new Obj(volumeType,childObjectsName,12,calibration,1);
-        Obj obj3 = new Obj(volumeType,childObjectsName,2,calibration,1);
-        Obj obj4 = new Obj(volumeType,childObjectsName,32,calibration,1);
+        SpatCal calibration = new SpatCal(0.02, 0.1, "µm", 1, 1, 1);
+        ObjCollection parents = new ObjCollection(parentObjectsName, calibration, 1, 0.02, UNITS.SECOND);
+        Obj obj1 = parents.createAndAddNewObject(volumeType, 1);
+        Obj obj2 = parents.createAndAddNewObject(volumeType, 12);
+        Obj obj3 = parents.createAndAddNewObject(volumeType, 2);
+        Obj obj4 = parents.createAndAddNewObject(volumeType, 32);
 
-        assertEquals(0,obj1.getChildren().size());
+        assertEquals(0, obj1.getChildren().size());
 
         // Creating a new collection of child objects
-        ObjCollection children = new ObjCollection(childObjectsName,calibration,1);
+        ObjCollection children = new ObjCollection(childObjectsName, calibration, 1, 0.02, UNITS.SECOND);
         children.add(obj2);
         children.add(obj3);
         children.add(obj4);
@@ -267,166 +314,195 @@ public class ObjTest {
         obj1.addChildren(children);
 
         // Checking the children of the object
-        assertEquals(1,obj1.getChildren().size());
+        assertEquals(1, obj1.getChildren().size());
         assertNotNull(obj1.getChildren(childObjectsName));
-        assertEquals(0,obj1.getChildren("not children").size());
-        assertEquals(3,obj1.getChildren(childObjectsName).size());
+        assertEquals(0, obj1.getChildren("not children").size());
+        assertEquals(3, obj1.getChildren(childObjectsName).size());
 
     }
 
-    @Test @Disabled
+    @Test
+    @Disabled
     public void testAddChild() {
 
     }
 
-    @Test @Disabled
+    @Test
+    @Disabled
     public void testRemoveChild() {
 
     }
 
-    @Test @Disabled
+    @Test
+    @Disabled
     public void testRemoveRelationships() {
 
     }
 
-    @Test @Disabled
+    @Test
+    @Disabled
     public void testGetRoi() {
 
     }
 
-    @Test @Disabled
+    @Test
+    @Disabled
     public void testAddPointsFromRoi() {
 
     }
 
-    @Test @Disabled
+    @Test
+    @Disabled
     public void testGetAsImage() {
 
     }
 
-    @Test @Disabled
+    @Test
+    @Disabled
     public void testConvertObjToImage() {
 
     }
 
-    @Test @Disabled
+    @Test
+    @Disabled
     public void testCropToImageSize() {
 
     }
 
     @ParameterizedTest
     @EnumSource(VolumeType.class)
-    public void testHashCodeSameObject(VolumeType volumeType) throws IntegerOverflowException, PointOutOfRangeException {
-        Obj obj1 = new Obj(volumeType,"Obj1",1,5,7,5,10,2.0,1.0,"PX");
+    public void testHashCodeSameObject(VolumeType volumeType)
+            throws IntegerOverflowException, PointOutOfRangeException {
+
+        SpatCal calibration = new SpatCal(2.0, 1.0, "PX", 5, 7, 5);
+        ObjCollection objects = new ObjCollection("Obj", calibration, 1, 0.02, UNITS.SECOND);
+        Obj obj1 = objects.createAndAddNewObject(volumeType);
         obj1.setT(1);
-        obj1.add(1,3,4);
-        obj1.add(3,5,1);
+        obj1.add(1, 3, 4);
+        obj1.add(3, 5, 1);
 
-        Obj obj2 = new Obj(volumeType,"Obj2",1,5,7,5,10,2.0,1.0,"PX");
+        Obj obj2 = objects.createAndAddNewObject(volumeType);
         obj2.setT(1);
-        obj2.add(1,3,4);
-        obj2.add(3,5,1);
+        obj2.add(1, 3, 4);
+        obj2.add(3, 5, 1);
 
-        assertEquals(obj1.hashCode(),obj2.hashCode());
+        assertEquals(obj1.hashCode(), obj2.hashCode());
 
     }
 
     @ParameterizedTest
     @EnumSource(VolumeType.class)
-    public void testHashCodeDifferentOrder(VolumeType volumeType) throws IntegerOverflowException, PointOutOfRangeException {
-        Obj obj1 = new Obj(volumeType,"Obj1",1,5,7,5,10,2.0,1.0,"PX");
+    public void testHashCodeDifferentOrder(VolumeType volumeType)
+            throws IntegerOverflowException, PointOutOfRangeException {
+        SpatCal calibration = new SpatCal(2.0, 1.0, "PX", 5, 7, 5);
+        ObjCollection objects = new ObjCollection("Obj", calibration, 1, 0.02, UNITS.SECOND);
+        Obj obj1 = objects.createAndAddNewObject(volumeType);
         obj1.setT(1);
-        obj1.add(1,3,4);
-        obj1.add(3,5,1);
+        obj1.add(1, 3, 4);
+        obj1.add(3, 5, 1);
 
-        Obj obj2 = new Obj(volumeType,"Obj2",1,5,7,5,10,2.0,1.0,"PX");
+        Obj obj2 = objects.createAndAddNewObject(volumeType);
         obj2.setT(1);
-        obj2.add(3,5,1);
-        obj2.add(1,3,4);
+        obj2.add(3, 5, 1);
+        obj2.add(1, 3, 4);
 
-        assertEquals(obj1.hashCode(),obj2.hashCode());
+        assertEquals(obj1.hashCode(), obj2.hashCode());
 
     }
 
     @ParameterizedTest
     @EnumSource(VolumeType.class)
-    public void testHashCodeDifferentNames(VolumeType volumeType) throws IntegerOverflowException, PointOutOfRangeException {
-        Obj obj1 = new Obj(volumeType,"Obj1",1,5,7,5,10,2.0,1.0,"PX");
+    public void testHashCodeDifferentNames(VolumeType volumeType)
+            throws IntegerOverflowException, PointOutOfRangeException {
+        SpatCal calibration = new SpatCal(2.0, 1.0, "PX", 5, 7, 5);
+        ObjCollection objects = new ObjCollection("Obj", calibration, 1, 0.02, UNITS.SECOND);
+        Obj obj1 = objects.createAndAddNewObject(volumeType);
         obj1.setT(1);
-        obj1.add(1,3,4);
-        obj1.add(3,5,1);
+        obj1.add(1, 3, 4);
+        obj1.add(3, 5, 1);
 
-        Obj obj2 = new Obj(volumeType,"Obj2",1,5,7,5,10,2.0,1.0,"PX");
+        Obj obj2 = objects.createAndAddNewObject(volumeType);
         obj2.setT(1);
-        obj2.add(1,3,4);
-        obj2.add(3,5,1);
+        obj2.add(1, 3, 4);
+        obj2.add(3, 5, 1);
 
-        assertEquals(obj1.hashCode(),obj2.hashCode());
+        assertEquals(obj1.hashCode(), obj2.hashCode());
 
     }
 
     @ParameterizedTest
     @EnumSource(VolumeType.class)
-    public void testHashCodeDifferentTimepoint(VolumeType volumeType) throws IntegerOverflowException, PointOutOfRangeException {
-        Obj obj1 = new Obj(volumeType,"Obj1",1,5,7,5,10,2.0,1.0,"PX");
+    public void testHashCodeDifferentTimepoint(VolumeType volumeType)
+            throws IntegerOverflowException, PointOutOfRangeException {
+        SpatCal calibration = new SpatCal(2.0, 1.0, "PX", 5, 7, 5);
+        ObjCollection objects = new ObjCollection("Obj", calibration, 1, 0.02, UNITS.SECOND);
+        Obj obj1 = objects.createAndAddNewObject(volumeType);
         obj1.setT(1);
-        obj1.add(1,1,1);
-        obj1.add(2,1,1);
+        obj1.add(1, 1, 1);
+        obj1.add(2, 1, 1);
 
-        Obj obj2 = new Obj(volumeType,"Obj2",1,5,7,5,10,2.0,1.0,"PX");
+        Obj obj2 = objects.createAndAddNewObject(volumeType);
         obj2.setT(2);
-        obj2.add(1,1,1);
-        obj2.add(1,2,1);
+        obj2.add(1, 1, 1);
+        obj2.add(1, 2, 1);
 
-        assertNotEquals(obj1.hashCode(),obj2.hashCode());
-
-    }
-
-    @ParameterizedTest
-    @EnumSource(VolumeType.class)
-    public void testHashCodeDifferentCoordinates(VolumeType volumeType) throws IntegerOverflowException, PointOutOfRangeException {
-        Obj obj1 = new Obj(volumeType,"Obj1",1,5,7,5,10,2.0,1.0,"PX");
-        obj1.setT(1);
-        obj1.add(1,3,4);
-        obj1.add(3,5,1);
-
-        Obj obj2 = new Obj(volumeType,"Obj2",1,5,7,5,10,2.0,1.0,"PX");
-        obj2.setT(1);
-        obj2.add(1,3,3);
-        obj2.add(3,5,1);
-
-        assertNotEquals(obj1.hashCode(),obj2.hashCode());
+        assertNotEquals(obj1.hashCode(), obj2.hashCode());
 
     }
 
     @ParameterizedTest
     @EnumSource(VolumeType.class)
-    public void testHashCodeMissingCoordinates(VolumeType volumeType) throws IntegerOverflowException, PointOutOfRangeException {
-        Obj obj1 = new Obj(volumeType,"Obj1",1,5,7,5,10,2.0,1.0,"PX");
+    public void testHashCodeDifferentCoordinates(VolumeType volumeType)
+            throws IntegerOverflowException, PointOutOfRangeException {
+        SpatCal calibration = new SpatCal(2.0, 1.0, "PX", 5, 7, 5);
+        ObjCollection objects = new ObjCollection("Obj", calibration, 1, 0.02, UNITS.SECOND);
+        Obj obj1 = objects.createAndAddNewObject(volumeType);
         obj1.setT(1);
-        obj1.add(1,3,4);
-        obj1.add(3,5,1);
+        obj1.add(1, 3, 4);
+        obj1.add(3, 5, 1);
 
-        Obj obj2 = new Obj(volumeType,"Obj2",1,5,7,5,10,2.0,1.0,"PX");
+        Obj obj2 = objects.createAndAddNewObject(volumeType);
         obj2.setT(1);
-        obj2.add(1,3,4);
+        obj2.add(1, 3, 3);
+        obj2.add(3, 5, 1);
 
-        assertNotEquals(obj1.hashCode(),obj2.hashCode());
+        assertNotEquals(obj1.hashCode(), obj2.hashCode());
+
+    }
+
+    @ParameterizedTest
+    @EnumSource(VolumeType.class)
+    public void testHashCodeMissingCoordinates(VolumeType volumeType)
+            throws IntegerOverflowException, PointOutOfRangeException {
+        SpatCal calibration = new SpatCal(2.0, 1.0, "PX", 5, 7, 5);
+        ObjCollection objects = new ObjCollection("Obj", calibration, 1, 0.02, UNITS.SECOND);
+        Obj obj1 = objects.createAndAddNewObject(volumeType);
+        obj1.setT(1);
+        obj1.add(1, 3, 4);
+        obj1.add(3, 5, 1);
+
+        Obj obj2 = objects.createAndAddNewObject(volumeType);
+        obj2.setT(1);
+        obj2.add(1, 3, 4);
+
+        assertNotEquals(obj1.hashCode(), obj2.hashCode());
 
     }
 
     @ParameterizedTest
     @EnumSource(VolumeType.class)
     public void testEqualsSameObject(VolumeType volumeType) throws IntegerOverflowException, PointOutOfRangeException {
-        Obj obj1 = new Obj(volumeType,"Obj1",1,5,7,5,10,2.0,1.0,"PX");
+        SpatCal calibration = new SpatCal(2.0, 1.0, "PX", 5, 7, 5);
+        ObjCollection objects = new ObjCollection("Obj", calibration, 1, 0.02, UNITS.SECOND);
+        Obj obj1 = objects.createAndAddNewObject(volumeType);
         obj1.setT(1);
-        obj1.add(1,3,4);
-        obj1.add(3,5,1);
+        obj1.add(1, 3, 4);
+        obj1.add(3, 5, 1);
 
-        Obj obj2 = new Obj(volumeType,"Obj2",1,5,7,5,10,2.0,1.0,"PX");
+        Obj obj2 = objects.createAndAddNewObject(volumeType);
         obj2.setT(1);
-        obj2.add(1,3,4);
-        obj2.add(3,5,1);
+        obj2.add(1, 3, 4);
+        obj2.add(3, 5, 1);
 
         assertTrue(obj1.equals(obj2));
         assertTrue(obj2.equals(obj1));
@@ -435,16 +511,19 @@ public class ObjTest {
 
     @ParameterizedTest
     @EnumSource(VolumeType.class)
-    public void testEqualsDifferentOrder(VolumeType volumeType) throws IntegerOverflowException, PointOutOfRangeException {
-        Obj obj1 = new Obj(volumeType,"Obj1",1,5,7,5,10,2.0,1.0,"PX");
+    public void testEqualsDifferentOrder(VolumeType volumeType)
+            throws IntegerOverflowException, PointOutOfRangeException {
+        SpatCal calibration = new SpatCal(2.0, 1.0, "PX", 5, 7, 5);
+        ObjCollection objects = new ObjCollection("Obj", calibration, 1, 0.02, UNITS.SECOND);
+        Obj obj1 = objects.createAndAddNewObject(volumeType);
         obj1.setT(1);
-        obj1.add(1,3,4);
-        obj1.add(3,5,1);
+        obj1.add(1, 3, 4);
+        obj1.add(3, 5, 1);
 
-        Obj obj2 = new Obj(volumeType,"Obj2",1,5,7,5,10,2.0,1.0,"PX");
+        Obj obj2 = objects.createAndAddNewObject(volumeType);
         obj2.setT(1);
-        obj2.add(3,5,1);
-        obj2.add(1,3,4);
+        obj2.add(3, 5, 1);
+        obj2.add(1, 3, 4);
 
         assertTrue(obj1.equals(obj2));
         assertTrue(obj2.equals(obj1));
@@ -453,16 +532,19 @@ public class ObjTest {
 
     @ParameterizedTest
     @EnumSource(VolumeType.class)
-    public void testEqualsDifferentNames(VolumeType volumeType) throws IntegerOverflowException, PointOutOfRangeException {
-        Obj obj1 = new Obj(volumeType,"Obj1",1,5,7,5,10,2.0,1.0,"PX");
+    public void testEqualsDifferentNames(VolumeType volumeType)
+            throws IntegerOverflowException, PointOutOfRangeException {
+        SpatCal calibration = new SpatCal(2.0, 1.0, "PX", 5, 7, 5);
+        ObjCollection objects = new ObjCollection("Obj", calibration, 1, 0.02, UNITS.SECOND);
+        Obj obj1 = objects.createAndAddNewObject(volumeType);
         obj1.setT(1);
-        obj1.add(1,3,4);
-        obj1.add(3,5,1);
+        obj1.add(1, 3, 4);
+        obj1.add(3, 5, 1);
 
-        Obj obj2 = new Obj(volumeType,"Obj2",1,5,7,5,10,2.0,1.0,"PX");
+        Obj obj2 = objects.createAndAddNewObject(volumeType);
         obj2.setT(1);
-        obj2.add(1,3,4);
-        obj2.add(3,5,1);
+        obj2.add(1, 3, 4);
+        obj2.add(3, 5, 1);
 
         assertTrue(obj1.equals(obj2));
         assertTrue(obj2.equals(obj1));
@@ -471,16 +553,19 @@ public class ObjTest {
 
     @ParameterizedTest
     @EnumSource(VolumeType.class)
-    public void testEqualsDifferentTimepoint(VolumeType volumeType) throws IntegerOverflowException, PointOutOfRangeException {
-        Obj obj1 = new Obj(volumeType,"Obj1",1,5,7,5,10,2.0,1.0,"PX");
+    public void testEqualsDifferentTimepoint(VolumeType volumeType)
+            throws IntegerOverflowException, PointOutOfRangeException {
+        SpatCal calibration = new SpatCal(2.0, 1.0, "PX", 5, 7, 5);
+        ObjCollection objects = new ObjCollection("Obj", calibration, 1, 0.02, UNITS.SECOND);
+        Obj obj1 = objects.createAndAddNewObject(volumeType);
         obj1.setT(1);
-        obj1.add(1,1,1);
-        obj1.add(2,1,1);
+        obj1.add(1, 1, 1);
+        obj1.add(2, 1, 1);
 
-        Obj obj2 = new Obj(volumeType,"Obj2",1,5,7,5,10,2.0,1.0,"PX");
+        Obj obj2 = objects.createAndAddNewObject(volumeType);
         obj2.setT(2);
-        obj2.add(1,1,1);
-        obj2.add(1,2,1);
+        obj2.add(1, 1, 1);
+        obj2.add(1, 2, 1);
 
         assertFalse(obj1.equals(obj2));
         assertFalse(obj2.equals(obj1));
@@ -489,16 +574,19 @@ public class ObjTest {
 
     @ParameterizedTest
     @EnumSource(VolumeType.class)
-    public void testEqualsDifferentCoordinates(VolumeType volumeType) throws IntegerOverflowException, PointOutOfRangeException {
-        Obj obj1 = new Obj(volumeType,"Obj1",1,5,7,5,10,2.0,1.0,"PX");
+    public void testEqualsDifferentCoordinates(VolumeType volumeType)
+            throws IntegerOverflowException, PointOutOfRangeException {
+        SpatCal calibration = new SpatCal(2.0, 1.0, "PX", 5, 7, 5);
+        ObjCollection objects = new ObjCollection("Obj", calibration, 1, 0.02, UNITS.SECOND);
+        Obj obj1 = objects.createAndAddNewObject(volumeType);
         obj1.setT(1);
-        obj1.add(1,3,4);
-        obj1.add(3,5,1);
+        obj1.add(1, 3, 4);
+        obj1.add(3, 5, 1);
 
-        Obj obj2 = new Obj(volumeType,"Obj2",1,5,7,5,10,2.0,1.0,"PX");
+        Obj obj2 = objects.createAndAddNewObject(volumeType);
         obj2.setT(1);
-        obj2.add(1,3,3);
-        obj2.add(3,5,1);
+        obj2.add(1, 3, 3);
+        obj2.add(3, 5, 1);
 
         assertFalse(obj1.equals(obj2));
         assertFalse(obj2.equals(obj1));
@@ -507,15 +595,18 @@ public class ObjTest {
 
     @ParameterizedTest
     @EnumSource(VolumeType.class)
-    public void testEqualsMissingCoordinates(VolumeType volumeType) throws IntegerOverflowException, PointOutOfRangeException {
-        Obj obj1 = new Obj(volumeType,"Obj1",1,5,7,5,10,2.0,1.0,"PX");
+    public void testEqualsMissingCoordinates(VolumeType volumeType)
+            throws IntegerOverflowException, PointOutOfRangeException {
+        SpatCal calibration = new SpatCal(2.0, 1.0, "PX", 5, 7, 5);
+        ObjCollection objects = new ObjCollection("Obj", calibration, 1, 0.02, UNITS.SECOND);
+        Obj obj1 = objects.createAndAddNewObject(volumeType);
         obj1.setT(1);
-        obj1.add(1,3,4);
-        obj1.add(3,5,1);
+        obj1.add(1, 3, 4);
+        obj1.add(3, 5, 1);
 
-        Obj obj2 = new Obj(volumeType,"Obj2",1,5,7,5,10,2.0,1.0,"PX");
+        Obj obj2 = objects.createAndAddNewObject(volumeType);
         obj2.setT(1);
-        obj2.add(1,3,4);
+        obj2.add(1, 3, 4);
 
         assertFalse(obj1.equals(obj2));
         assertFalse(obj2.equals(obj1));

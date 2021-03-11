@@ -11,6 +11,7 @@ import javax.swing.JFileChooser;
 
 import org.apache.commons.io.FilenameUtils;
 
+import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.GUI.GUI;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.Core.InputControl;
@@ -79,7 +80,9 @@ public class FileParameter extends ParameterControl implements ActionListener {
         }
 
         if (((FileFolderType) parameter).getPath() != null) {
-            fileChooser.setCurrentDirectory(new File((String) ((FileFolderType) parameter).getPath()));
+            String path = (String) ((FileFolderType) parameter).getPath();
+            path = checkPath(path);
+            fileChooser.setCurrentDirectory(new File(path));
         }
         fileChooser.showDialog(null, "Open");
 
@@ -102,6 +105,24 @@ public class FileParameter extends ParameterControl implements ActionListener {
         GUI.updateParameters();
 
         updateControl();
+
+    }
+
+    private String checkPath(String path) {
+        File file = new File(path);
+
+        // Check if the full path exists
+        if (file.exists())
+            return path;
+            
+        // If this file doesn't exist, test to see if its parent does
+        String parentPath = file.getParent();
+
+        // If there's no parent (i.e. we're at the path root) return an empty string
+        if (parentPath == null)
+            return "";
+
+        return checkPath(parentPath);
 
     }
 }

@@ -1,8 +1,10 @@
 package wbif.sjx.MIA.Module.Core;
 
 import java.io.File;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.TreeMap;
 
 import org.apache.commons.io.FilenameUtils;
@@ -33,10 +35,12 @@ import wbif.sjx.MIA.Object.Parameters.FileFolderPathP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.Parameters.ParameterGroup;
 import wbif.sjx.MIA.Object.Parameters.SeparatorP;
+import wbif.sjx.MIA.Object.Parameters.Objects.OutputObjectsP;
 import wbif.sjx.MIA.Object.Parameters.Text.IntegerP;
 import wbif.sjx.MIA.Object.Parameters.Text.MessageP;
 import wbif.sjx.MIA.Object.Parameters.Text.SeriesListSelectorP;
 import wbif.sjx.MIA.Object.Parameters.Text.StringP;
+import wbif.sjx.MIA.Object.References.ObjMeasurementRef;
 import wbif.sjx.MIA.Object.References.Collections.ImageMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.MetadataRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.ObjMeasurementRefCollection;
@@ -72,6 +76,9 @@ public class InputControl extends Module {
     public static final String FILTER_VALUE = "Filter value";
     public static final String FILTER_TYPE = "Filter type";
     public static final String NO_LOAD_MESSAGE = "No load message";
+
+    // A special store for timepoint references for all objects
+    private HashMap<String, ObjMeasurementRef> objectTimepointRefs = new HashMap<>();
 
     public InputControl(ModuleCollection modules) {
         super("Input control", modules);
@@ -136,11 +143,11 @@ public class InputControl extends Module {
             String filterType = collection.getValue(FILTER_TYPE);
 
             switch (filterSource) {
-                case FilterSources.EXTENSION:
-                case FilterSources.FILENAME:
-                case FilterSources.FILEPATH:
-                    fileCrawler.addFileCondition(getFilenameFilter(filterType, filterValue, filterSource));
-                    break;
+            case FilterSources.EXTENSION:
+            case FilterSources.FILENAME:
+            case FilterSources.FILEPATH:
+                fileCrawler.addFileCondition(getFilenameFilter(filterType, filterValue, filterSource));
+                break;
             }
         }
 
@@ -153,40 +160,40 @@ public class InputControl extends Module {
     private static FileCondition getFilenameFilter(String filterType, String filterValue, String filterSource) {
         FileCondition.Mode fileCondition;
         switch (filterType) {
-            case FilterTypes.INCLUDE_MATCHES_PARTIALLY:
-            default:
-                fileCondition = FileCondition.Mode.INC_PARTIAL;
-                break;
-            case FilterTypes.INCLUDE_MATCHES_COMPLETELY:
-                fileCondition = FileCondition.Mode.INC_COMPLETE;
-                break;
-            case FilterTypes.EXCLUDE_MATCHES_PARTIALLY:
-                fileCondition = FileCondition.Mode.EXC_PARTIAL;
-                break;
-            case FilterTypes.EXCLUDE_MATCHES_COMPLETELY:
-                fileCondition = FileCondition.Mode.EXC_COMPLETE;
-                break;
+        case FilterTypes.INCLUDE_MATCHES_PARTIALLY:
+        default:
+            fileCondition = FileCondition.Mode.INC_PARTIAL;
+            break;
+        case FilterTypes.INCLUDE_MATCHES_COMPLETELY:
+            fileCondition = FileCondition.Mode.INC_COMPLETE;
+            break;
+        case FilterTypes.EXCLUDE_MATCHES_PARTIALLY:
+            fileCondition = FileCondition.Mode.EXC_PARTIAL;
+            break;
+        case FilterTypes.EXCLUDE_MATCHES_COMPLETELY:
+            fileCondition = FileCondition.Mode.EXC_COMPLETE;
+            break;
         }
 
         switch (filterSource) {
-            case FilterSources.EXTENSION:
-                return new ExtensionMatchesString(filterValue, fileCondition);
-            case FilterSources.FILENAME:
-            default:
-                return new NameContainsString(filterValue, fileCondition);
-            case FilterSources.FILEPATH:
-                return new ParentContainsString(filterValue, fileCondition);
+        case FilterSources.EXTENSION:
+            return new ExtensionMatchesString(filterValue, fileCondition);
+        case FilterSources.FILENAME:
+        default:
+            return new NameContainsString(filterValue, fileCondition);
+        case FilterSources.FILEPATH:
+            return new ParentContainsString(filterValue, fileCondition);
         }
     }
 
     public TreeMap<Integer, String> getSeriesNumbers(File inputFile) {
         try {
             switch ((String) parameters.getValue(SERIES_MODE)) {
-                case SeriesModes.ALL_SERIES:
-                    return getAllSeriesNumbers(inputFile);
+            case SeriesModes.ALL_SERIES:
+                return getAllSeriesNumbers(inputFile);
 
-                case InputControl.SeriesModes.SERIES_LIST:
-                    return getSeriesListNumbers(inputFile);
+            case InputControl.SeriesModes.SERIES_LIST:
+                return getSeriesListNumbers(inputFile);
 
             }
         } catch (Exception e) {
@@ -242,9 +249,9 @@ public class InputControl extends Module {
             String filterType = collection.getValue(FILTER_TYPE);
 
             switch (filterSource) {
-                case FilterSources.SERIESNAME:
-                    filters.add(getFilenameFilter(filterType, filterValue, filterSource));
-                    break;
+            case FilterSources.SERIESNAME:
+                filters.add(getFilenameFilter(filterType, filterValue, filterSource));
+                break;
             }
         }
 
@@ -365,7 +372,8 @@ public class InputControl extends Module {
         parameters.add(new ParameterGroup(ADD_FILTER, this, collection, 0));
 
         parameters.add(new ChoiceP(SPATIAL_UNIT, this, AvailableSpatialUnits.MICROMETRE, AvailableSpatialUnits.ALL));
-        parameters.add(new ChoiceP(TEMPORAL_UNIT, this, AvailableTemporalUnits.MILLISECOND, AvailableTemporalUnits.ALL));
+        parameters
+                .add(new ChoiceP(TEMPORAL_UNIT, this, AvailableTemporalUnits.MILLISECOND, AvailableTemporalUnits.ALL));
         parameters.add(new MessageP(NO_LOAD_MESSAGE, this,
                 "\"Input control\" only specifies the path to the root image; no image is loaded into the active workspace at this point.  To load images, add a \"Load Image\" module (multiple copies of this can be added to a single workflow).",
                 Colours.RED));
@@ -385,9 +393,9 @@ public class InputControl extends Module {
         ChoiceP seriesMode = (ChoiceP) parameters.getParameter(SERIES_MODE);
         returnedParameters.add(seriesMode);
         switch (seriesMode.getChoice()) {
-            case SeriesModes.SERIES_LIST:
-                returnedParameters.add(parameters.getParameter(SERIES_LIST));
-                break;
+        case SeriesModes.SERIES_LIST:
+            returnedParameters.add(parameters.getParameter(SERIES_LIST));
+            break;
         }
         returnedParameters.add(parameters.getParameter(LOAD_FIRST_PER_FOLDER));
         returnedParameters.add(parameters.getParameter(SPATIAL_UNIT));
@@ -421,6 +429,7 @@ public class InputControl extends Module {
     @Override
     public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return null;
+
     }
 
     @Override

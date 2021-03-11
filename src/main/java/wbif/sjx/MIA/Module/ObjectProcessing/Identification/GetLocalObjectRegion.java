@@ -1,15 +1,13 @@
 package wbif.sjx.MIA.Module.ObjectProcessing.Identification;
 
-import com.drew.lang.annotations.Nullable;
-
+import wbif.sjx.MIA.Module.Categories;
+import wbif.sjx.MIA.Module.Category;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.Core.InputControl;
-import wbif.sjx.MIA.Module.Category;
-import wbif.sjx.MIA.Module.Categories;
-import wbif.sjx.MIA.Object.Status;
 import wbif.sjx.MIA.Object.Obj;
 import wbif.sjx.MIA.Object.ObjCollection;
+import wbif.sjx.MIA.Object.Status;
 import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.MIA.Object.Parameters.BooleanP;
 import wbif.sjx.MIA.Object.Parameters.ChoiceP;
@@ -49,8 +47,9 @@ public class GetLocalObjectRegion extends Module {
         String FIXED_VALUE = "Fixed value";
         String MEASUREMENT = "Measurement";
         String PARENT_MEASUREMENT = "Parent measurement";
+        String SINGLE_POINT = "Single point";
 
-        String[] ALL = new String[] { FIXED_VALUE, MEASUREMENT, PARENT_MEASUREMENT };
+        String[] ALL = new String[] { FIXED_VALUE, MEASUREMENT, PARENT_MEASUREMENT, SINGLE_POINT };
 
     }
 
@@ -58,7 +57,7 @@ public class GetLocalObjectRegion extends Module {
         super("Get local object region", modules);
     }
 
-    public static Obj getLocalRegion(Obj inputObject, String outputObjectsName, double radius, boolean calibrated,
+    public static Obj getLocalRegion(Obj inputObject, ObjCollection outputObjects, double radius, boolean calibrated,
             boolean addRelationship) throws IntegerOverflowException {
         // Getting spatial calibration
         double dppXY = inputObject.getDppXY();
@@ -66,76 +65,84 @@ public class GetLocalObjectRegion extends Module {
         double xy_z_ratio = dppXY / dppZ;
 
         // Creating new object and assigning relationship to input objects
-        Obj outputObject = new Obj(outputObjectsName, inputObject.getID(), inputObject);
+        Obj outputObject = outputObjects.createAndAddNewObject(inputObject.getVolumeType(), inputObject.getID());
 
         // Getting centroid coordinates
         double xCent = inputObject.getXMean(true);
         double yCent = inputObject.getYMean(true);
         double zCent = inputObject.getZMean(true, false);
 
-        if (calibrated) {
-            int xMin = Math.max((int) Math.floor(xCent - radius / dppXY), 0);
-            int xMax = Math.min((int) Math.ceil(xCent + radius / dppXY), inputObject.getWidth() - 1);
-            int yMin = Math.max((int) Math.floor(yCent - radius / dppXY), 0);
-            int yMax = Math.min((int) Math.ceil(yCent + radius / dppXY), inputObject.getHeight() - 1);
-            int zMin = Math.max((int) Math.floor(zCent - radius / dppZ), 0);
-            int zMax = Math.min((int) Math.ceil(zCent + radius / dppZ), inputObject.getNSlices() - 1);
+        if (radius == 0) {
+            // The output object is a single point
+            try {
+                outputObject.add((int) Math.round(xCent), (int) Math.round(yCent), (int) Math.round(zCent));
+            } catch (PointOutOfRangeException e) {
+            }
+        } else {
+            if (calibrated) {
+                int xMin = Math.max((int) Math.floor(xCent - radius / dppXY), 0);
+                int xMax = Math.min((int) Math.ceil(xCent + radius / dppXY), inputObject.getWidth() - 1);
+                int yMin = Math.max((int) Math.floor(yCent - radius / dppXY), 0);
+                int yMax = Math.min((int) Math.ceil(yCent + radius / dppXY), inputObject.getHeight() - 1);
+                int zMin = Math.max((int) Math.floor(zCent - radius / dppZ), 0);
+                int zMax = Math.min((int) Math.ceil(zCent + radius / dppZ), inputObject.getNSlices() - 1);
 
-            for (int x = xMin; x < xMax; x++) {
-                double xx = (xCent - x) * dppXY;
+                for (int x = xMin; x < xMax; x++) {
+                    double xx = (xCent - x) * dppXY;
 
-                for (int y = yMin; y < yMax; y++) {
-                    double yy = (yCent - y) * dppXY;
+                    for (int y = yMin; y < yMax; y++) {
+                        double yy = (yCent - y) * dppXY;
 
-                    if (inputObject.is2D()) {
-                        if (Math.sqrt(xx * xx + yy * yy) < radius) {
-                            try {
-                                outputObject.add(x, y, 0);
-                            } catch (PointOutOfRangeException e) {
-                            }
-                        }
-                    } else {
-                        for (int z = zMin; z < zMax; z++) {
-                            double zz = (zCent - z) * dppZ;
-                            if (Math.sqrt(xx * xx + yy * yy + zz * zz) < radius) {
+                        if (inputObject.is2D()) {
+                            if (Math.sqrt(xx * xx + yy * yy) < radius) {
                                 try {
-                                    outputObject.add(x, y, z);
+                                    outputObject.add(x, y, 0);
                                 } catch (PointOutOfRangeException e) {
+                                }
+                            }
+                        } else {
+                            for (int z = zMin; z < zMax; z++) {
+                                double zz = (zCent - z) * dppZ;
+                                if (Math.sqrt(xx * xx + yy * yy + zz * zz) < radius) {
+                                    try {
+                                        outputObject.add(x, y, z);
+                                    } catch (PointOutOfRangeException e) {
+                                    }
                                 }
                             }
                         }
                     }
                 }
-            }
 
-        } else {
-            int xMin = Math.max((int) Math.floor(xCent - radius), 0);
-            int xMax = Math.min((int) Math.ceil(xCent + radius), inputObject.getWidth() - 1);
-            int yMin = Math.max((int) Math.floor(yCent - radius), 0);
-            int yMax = Math.min((int) Math.ceil(yCent + radius), inputObject.getHeight() - 1);
-            int zMin = Math.max((int) Math.floor(zCent - radius * xy_z_ratio), 0);
-            int zMax = Math.min((int) Math.ceil(zCent + radius * xy_z_ratio), inputObject.getNSlices() - 1);
+            } else {
+                int xMin = Math.max((int) Math.floor(xCent - radius), 0);
+                int xMax = Math.min((int) Math.ceil(xCent + radius), inputObject.getWidth() - 1);
+                int yMin = Math.max((int) Math.floor(yCent - radius), 0);
+                int yMax = Math.min((int) Math.ceil(yCent + radius), inputObject.getHeight() - 1);
+                int zMin = Math.max((int) Math.floor(zCent - radius * xy_z_ratio), 0);
+                int zMax = Math.min((int) Math.ceil(zCent + radius * xy_z_ratio), inputObject.getNSlices() - 1);
 
-            for (int x = xMin; x < xMax; x++) {
-                double xx = xCent - x;
+                for (int x = xMin; x < xMax; x++) {
+                    double xx = xCent - x;
 
-                for (int y = yMin; y < yMax; y++) {
-                    double yy = yCent - y;
+                    for (int y = yMin; y < yMax; y++) {
+                        double yy = yCent - y;
 
-                    if (inputObject.is2D()) {
-                        if (Math.sqrt(xx * xx + yy * yy) < radius) {
-                            try {
-                                outputObject.add(x, y, 0);
-                            } catch (PointOutOfRangeException e) {
-                            }
-                        }
-                    } else {
-                        for (int z = zMin; z < zMax; z++) {
-                            double zz = (zCent - z) / xy_z_ratio;
-                            if (Math.sqrt(xx * xx + yy * yy + zz * zz) < radius) {
+                        if (inputObject.is2D()) {
+                            if (Math.sqrt(xx * xx + yy * yy) < radius) {
                                 try {
-                                    outputObject.add(x, y, z);
+                                    outputObject.add(x, y, 0);
                                 } catch (PointOutOfRangeException e) {
+                                }
+                            }
+                        } else {
+                            for (int z = zMin; z < zMax; z++) {
+                                double zz = (zCent - z) / xy_z_ratio;
+                                if (Math.sqrt(xx * xx + yy * yy + zz * zz) < radius) {
+                                    try {
+                                        outputObject.add(x, y, z);
+                                    } catch (PointOutOfRangeException e) {
+                                    }
                                 }
                             }
                         }
@@ -156,7 +163,6 @@ public class GetLocalObjectRegion extends Module {
         return outputObject;
 
     }
-
 
     @Override
     public Category getCategory() {
@@ -190,23 +196,23 @@ public class GetLocalObjectRegion extends Module {
         for (Obj inputObject : inputObjects.values()) {
             // Getting radius
             switch (radiusSource) {
-                case RadiusSources.MEASUREMENT:
-                    radius = inputObject.getMeasurement(radiusMeasurement).getValue();
-                    break;
-                case RadiusSources.PARENT_MEASUREMENT:
-                    Obj parentObject = inputObject.getParent(parentObjectsName);
-                    if (parentObject == null)
-                        radius = Double.NaN;
-                    else
-                        radius = parentObject.getMeasurement(parentRadiusMeasurement).getValue();
-                    break;
+            case RadiusSources.MEASUREMENT:
+                radius = inputObject.getMeasurement(radiusMeasurement).getValue();
+                break;
+            case RadiusSources.PARENT_MEASUREMENT:
+                Obj parentObject = inputObject.getParent(parentObjectsName);
+                if (parentObject == null)
+                    radius = Double.NaN;
+                else
+                    radius = parentObject.getMeasurement(parentRadiusMeasurement).getValue();
+                break;
+            case RadiusSources.SINGLE_POINT:
+                radius = 0;
+                break;
             }
 
             // Getting local region object
-            Obj outputObject = getLocalRegion(inputObject, outputObjectsName, radius, calibrated, true);
-
-            // Adding local region object to output collection
-            outputObjects.add(outputObject);
+            getLocalRegion(inputObject, outputObjects, radius, calibrated, true);
 
         }
 
@@ -249,22 +255,21 @@ public class GetLocalObjectRegion extends Module {
         returnedParameters.add(parameters.getParameter(REGION_SEPARATOR));
         returnedParameters.add(parameters.getParameter(RADIUS_SOURCE));
         switch ((String) parameters.getValue(RADIUS_SOURCE)) {
-            case RadiusSources.FIXED_VALUE:
-                returnedParameters.add(parameters.getParameter(FIXED_VALUE));
-                break;
+        case RadiusSources.FIXED_VALUE:
+            returnedParameters.add(parameters.getParameter(FIXED_VALUE));
+            break;
 
-            case RadiusSources.MEASUREMENT:
-                returnedParameters.add(parameters.getParameter(RADIUS_MEASUREMENT));
-                ((ObjectMeasurementP) parameters.getParameter(RADIUS_MEASUREMENT)).setObjectName(inputObjectsName);
-                break;
+        case RadiusSources.MEASUREMENT:
+            returnedParameters.add(parameters.getParameter(RADIUS_MEASUREMENT));
+            ((ObjectMeasurementP) parameters.getParameter(RADIUS_MEASUREMENT)).setObjectName(inputObjectsName);
+            break;
 
-            case RadiusSources.PARENT_MEASUREMENT:
-                returnedParameters.add(parameters.getParameter(PARENT_OBJECT));
-                ((ParentObjectsP) parameters.getParameter(PARENT_OBJECT)).setChildObjectsName(inputObjectsName);
-                returnedParameters.add(parameters.getParameter(PARENT_RADIUS_MEASUREMENT));
-                ((ObjectMeasurementP) parameters.getParameter(PARENT_RADIUS_MEASUREMENT))
-                        .setObjectName(parentObjectsName);
-                break;
+        case RadiusSources.PARENT_MEASUREMENT:
+            returnedParameters.add(parameters.getParameter(PARENT_OBJECT));
+            ((ParentObjectsP) parameters.getParameter(PARENT_OBJECT)).setChildObjectsName(inputObjectsName);
+            returnedParameters.add(parameters.getParameter(PARENT_RADIUS_MEASUREMENT));
+            ((ObjectMeasurementP) parameters.getParameter(PARENT_RADIUS_MEASUREMENT)).setObjectName(parentObjectsName);
+            break;
         }
         returnedParameters.add(parameters.getParameter(CALIBRATED_UNITS));
 
@@ -327,10 +332,14 @@ public class GetLocalObjectRegion extends Module {
                 + "<li>\"" + RadiusSources.PARENT_MEASUREMENT
                 + "\" The radius will be equal to the value of a measurement (specified by \""
                 + PARENT_RADIUS_MEASUREMENT + "\") associated a parent of the object being measured (specified by \""
-                + PARENT_OBJECT + "\").  Radii will potentially be different for each object..</li></ul>");
+                + PARENT_OBJECT + "\").  Radii will potentially be different for each object.</li>"
 
-        parameters.get(FIXED_VALUE).setDescription("Fixed spot radius to use for generating all local object regions when \""
-                + RADIUS_SOURCE + "\" is in \"" + RadiusSources.FIXED_VALUE + "\" mode.");
+                + "<li>\"" + RadiusSources.SINGLE_POINT
+                + "\" The output objects will all be a single point corresponding to the centroid of the input object.</li></ul>");
+
+        parameters.get(FIXED_VALUE)
+                .setDescription("Fixed spot radius to use for generating all local object regions when \""
+                        + RADIUS_SOURCE + "\" is in \"" + RadiusSources.FIXED_VALUE + "\" mode.");
 
         parameters.get(RADIUS_MEASUREMENT).setDescription(
                 "Measurement associated with the input object.  This will be used as spot the radius for generating the local object region when \""
@@ -339,8 +348,8 @@ public class GetLocalObjectRegion extends Module {
         parameters.get(PARENT_OBJECT).setDescription(
                 "Parent object of the input object being processed.  This parent will provide the measurement (specified by \""
                         + PARENT_RADIUS_MEASUREMENT
-                        + "\") to be used as the spot radius for generating the local object region when \"" + RADIUS_SOURCE
-                        + "\" is in \"" + RadiusSources.PARENT_MEASUREMENT + "\" mode.");
+                        + "\") to be used as the spot radius for generating the local object region when \""
+                        + RADIUS_SOURCE + "\" is in \"" + RadiusSources.PARENT_MEASUREMENT + "\" mode.");
 
         parameters.get(PARENT_RADIUS_MEASUREMENT).setDescription(
                 "Measurement associated with a parent of the input object.  This will be used as the spot radius for generating the local object region when \""

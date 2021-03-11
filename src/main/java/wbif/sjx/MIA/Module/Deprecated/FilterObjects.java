@@ -380,7 +380,7 @@ public class FilterObjects extends Module implements ActionListener {
             if (remove) {
                 obj.removeRelationships();
                 if (outputObjects != null) {
-                    obj.setName(outputObjects.getName());
+                    obj.setObjectCollection(outputObjects);
                     outputObjects.add(obj);
                 }
                 inputObjects.remove(id);
@@ -391,7 +391,7 @@ public class FilterObjects extends Module implements ActionListener {
     void processRemoval(Obj inputObject, ObjCollection outputObjects, Iterator<Obj> iterator) {
         inputObject.removeRelationships();
         if (outputObjects != null) {
-            inputObject.setName(outputObjects.getName());
+            inputObject.setObjectCollection(outputObjects);
             outputObjects.add(inputObject);
         }
         iterator.remove();

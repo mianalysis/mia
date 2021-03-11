@@ -38,6 +38,7 @@ import wbif.sjx.MIA.Object.References.Collections.MetadataRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.ObjMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.ParentChildRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.PartnerRefCollection;
+import wbif.sjx.MIA.Object.Units.TemporalUnit;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.Object.Volume.SpatCal;
 
@@ -253,7 +254,9 @@ public class IdentifyObjects extends Module {
 
         SpatCal cal = SpatCal.getFromImage(inputImagePlus);
         int nFrames = inputImagePlus.getNFrames();
-        ObjCollection outputObjects = new ObjCollection(outputObjectsName, cal, nFrames);
+        double frameInterval = inputImagePlus.getCalibration().frameInterval;
+        ObjCollection outputObjects = new ObjCollection(outputObjectsName, cal, nFrames, frameInterval,
+                TemporalUnit.getOMEUnit());
 
         for (int t = 1; t <= inputImagePlus.getNFrames(); t++) {
             if (verbose)

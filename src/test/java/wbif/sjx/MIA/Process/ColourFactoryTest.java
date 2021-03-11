@@ -2,6 +2,8 @@ package wbif.sjx.MIA.Process;
 
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
+
+import ome.units.UNITS;
 import wbif.sjx.MIA.Object.Measurement;
 import wbif.sjx.MIA.Object.Obj;
 import wbif.sjx.MIA.Object.ObjCollection;
@@ -26,16 +28,16 @@ public class ColourFactoryTest {
         SpatCal calibration = new SpatCal(dppXY,dppZ,calibratedUnits,1,1,1);
 
         // Creating the ObjCollection
-        ObjCollection collection = new ObjCollection("Obj",calibration,1);
+        ObjCollection collection = new ObjCollection("Obj",calibration,1,0.02,UNITS.SECOND);
 
         // Adding objects
-        Obj obj = new Obj(volumeType,"Obj",0,calibration,1);
+        Obj obj = collection.createAndAddNewObject(volumeType, 0);
         collection.add(obj);
 
-        obj = new Obj(volumeType,"Obj",1,calibration,1);
+        obj = collection.createAndAddNewObject(volumeType, 1);
         collection.add(obj);
 
-        obj = new Obj(volumeType,"Obj",2,calibration,1);
+        obj = collection.createAndAddNewObject(volumeType, 2);
         collection.add(obj);
 
         HashMap<Integer, Float> actual = ColourFactory.getSingleColourHues(collection,ColourFactory.SingleColours.WHITE);
@@ -57,16 +59,16 @@ public class ColourFactoryTest {
         SpatCal calibration = new SpatCal(dppXY,dppZ,calibratedUnits,1,1,1);
 
         // Creating the ObjCollection
-        ObjCollection collection = new ObjCollection("Obj",calibration,1);
+        ObjCollection collection = new ObjCollection("Obj",calibration,1,0.02,UNITS.SECOND);
 
         // Adding objects
-        Obj obj = new Obj(volumeType,"Obj",0,calibration,1);
+        Obj obj = collection.createAndAddNewObject(volumeType, 0);
         collection.add(obj);
 
-        obj = new Obj(volumeType,"Obj",1,calibration,1);
+        obj = collection.createAndAddNewObject(volumeType, 1);
         collection.add(obj);
 
-        obj = new Obj(volumeType,"Obj",2,calibration,1);
+        obj = collection.createAndAddNewObject(volumeType, 2);
         collection.add(obj);
 
         HashMap<Integer, Float> actual = ColourFactory.getRandomHues(collection);
@@ -89,20 +91,20 @@ public class ColourFactoryTest {
         SpatCal calibration = new SpatCal(dppXY,dppZ,calibratedUnits,1,1,1);
 
         // Creating the ObjCollection
-        ObjCollection collection = new ObjCollection("Obj",calibration,1);
+        ObjCollection collection = new ObjCollection("Obj",calibration,1,0.02,UNITS.SECOND);
 
         // Adding objects
-        Obj obj = new Obj(volumeType,"Obj",0,calibration,1);
+        Obj obj = collection.createAndAddNewObject(volumeType, 0);
         Measurement meas = new Measurement("Meas",3.2);
         obj.addMeasurement(meas);
         collection.add(obj);
 
-        obj = new Obj(volumeType,"Obj",1,calibration,1);
+        obj = collection.createAndAddNewObject(volumeType, 1);
         meas = new Measurement("Meas",-0.1);
         obj.addMeasurement(meas);
         collection.add(obj);
 
-        obj = new Obj(volumeType,"Obj",2,calibration,1);
+        obj = collection.createAndAddNewObject(volumeType, 2);
         meas = new Measurement("Meas",Double.NaN);
         obj.addMeasurement(meas);
         collection.add(obj);
@@ -127,20 +129,20 @@ public class ColourFactoryTest {
         SpatCal calibration = new SpatCal(dppXY,dppZ,calibratedUnits,1,1,1);
 
         // Creating the ObjCollection
-        ObjCollection collection = new ObjCollection("Obj",calibration,1);
+        ObjCollection collection = new ObjCollection("Obj",calibration,1,0.02,UNITS.SECOND);
 
         // Adding objects
-        Obj obj = new Obj(volumeType,"Obj",0,calibration,1);
+        Obj obj = collection.createAndAddNewObject(volumeType, 0);
         Measurement meas = new Measurement("Meas",3.2);
         obj.addMeasurement(meas);
         collection.add(obj);
 
-        obj = new Obj(volumeType,"Obj",1,calibration,1);
+        obj = collection.createAndAddNewObject(volumeType, 1);
         meas = new Measurement("Meas",-0.1);
         obj.addMeasurement(meas);
         collection.add(obj);
 
-        obj = new Obj(volumeType,"Obj",2,calibration,1);
+        obj = collection.createAndAddNewObject(volumeType, 2);
         meas = new Measurement("Meas",Double.NaN);
         obj.addMeasurement(meas);
         collection.add(obj);
@@ -165,20 +167,20 @@ public class ColourFactoryTest {
         SpatCal calibration = new SpatCal(dppXY,dppZ,calibratedUnits,1,1,1);
 
         // Creating the ObjCollection
-        ObjCollection collection = new ObjCollection("Obj",calibration,1);
+        ObjCollection collection = new ObjCollection("Obj",calibration,1,0.02,UNITS.SECOND);
 
         // Adding objects
-        Obj obj = new Obj(volumeType,"Obj",0,calibration,1);
+        Obj obj = collection.createAndAddNewObject(volumeType, 0);
         Measurement meas = new Measurement("Meas",3.2);
         obj.addMeasurement(meas);
         collection.add(obj);
 
-        obj = new Obj(volumeType,"Obj",1,calibration,1);
+        obj = collection.createAndAddNewObject(volumeType, 1);
         meas = new Measurement("Meas",-0.1);
         obj.addMeasurement(meas);
         collection.add(obj);
 
-        obj = new Obj(volumeType,"Obj",2,calibration,1);
+        obj = collection.createAndAddNewObject(volumeType, 2);
         meas = new Measurement("Meas",Double.NaN);
         obj.addMeasurement(meas);
         collection.add(obj);
@@ -203,20 +205,20 @@ public class ColourFactoryTest {
         SpatCal calibration = new SpatCal(dppXY,dppZ,calibratedUnits,1,1,1);
 
         // Creating the ObjCollection
-        ObjCollection collection = new ObjCollection("Obj",calibration,1);
+        ObjCollection collection = new ObjCollection("Obj",calibration,1,0.02,UNITS.SECOND);
 
         // Adding objects
-        Obj obj = new Obj(volumeType,"Obj",0,calibration,1);
+        Obj obj = collection.createAndAddNewObject(volumeType, 0);
         Measurement meas = new Measurement("Meas",3.2);
         obj.addMeasurement(meas);
         collection.add(obj);
 
-        obj = new Obj(volumeType,"Obj",1,calibration,1);
+        obj = collection.createAndAddNewObject(volumeType, 1);
         meas = new Measurement("Meas",-0.1);
         obj.addMeasurement(meas);
         collection.add(obj);
 
-        obj = new Obj(volumeType,"Obj",2,calibration,1);
+        obj = collection.createAndAddNewObject(volumeType, 2);
         meas = new Measurement("Meas",Double.NaN);
         obj.addMeasurement(meas);
         collection.add(obj);
@@ -241,23 +243,24 @@ public class ColourFactoryTest {
         SpatCal calibration = new SpatCal(dppXY,dppZ,calibratedUnits,1,1,1);
 
         // Creating the ObjCollection
-        ObjCollection collection = new ObjCollection("Obj",calibration,1);
+        ObjCollection collection = new ObjCollection("Obj", calibration, 1, 0.02, UNITS.SECOND);
+        ObjCollection parents = new ObjCollection("Parents", calibration, 1, 0.02, UNITS.SECOND);
 
         // Adding objects
-        Obj obj = new Obj(volumeType,"Obj",0,calibration,1);
-        Obj parent = new Obj(volumeType,"Parent",6,calibration,1);
+        Obj obj = collection.createAndAddNewObject(volumeType, 0);
+        Obj parent = parents.createAndAddNewObject(volumeType, 6);
         obj.addParent(parent);
         collection.add(obj);
 
-        obj = new Obj(volumeType,"Obj",1,calibration,1);
+        obj = collection.createAndAddNewObject(volumeType, 1);
         collection.add(obj);
 
-        obj = new Obj(volumeType,"Obj",2,calibration,1);
-        parent = new Obj(volumeType,"Parent",5,calibration,1);
+        obj = collection.createAndAddNewObject(volumeType, 2);
+        parent = parents.createAndAddNewObject(volumeType,5);
         obj.addParent(parent);
         collection.add(obj);
 
-        HashMap<Integer, Float> actual = ColourFactory.getParentIDHues(collection,"Parent",false);
+        HashMap<Integer, Float> actual = ColourFactory.getParentIDHues(collection,"Parents",false);
 
         // For random numbers we don't know what value they will have
         assertEquals(3,actual.size());
@@ -277,23 +280,24 @@ public class ColourFactoryTest {
         SpatCal calibration = new SpatCal(dppXY,dppZ,calibratedUnits,1,1,1);
 
         // Creating the ObjCollection
-        ObjCollection collection = new ObjCollection("Obj",calibration,1);
+        ObjCollection collection = new ObjCollection("Obj",calibration,1,0.02,UNITS.SECOND);
+        ObjCollection parents = new ObjCollection("Parents", calibration, 1, 0.02, UNITS.SECOND);
 
         // Adding objects
-        Obj obj = new Obj(volumeType,"Obj",0,calibration,1);
-        Obj parent = new Obj(volumeType,"Parent",6,calibration,1);
+        Obj obj = collection.createAndAddNewObject(volumeType, 0);
+        Obj parent = parents.createAndAddNewObject(volumeType, 6);
         obj.addParent(parent);
         collection.add(obj);
 
-        obj = new Obj(volumeType,"Obj",1,calibration,1);
+        obj = collection.createAndAddNewObject(volumeType, 1);
         collection.add(obj);
 
-        obj = new Obj(volumeType,"Obj",2,calibration,1);
-        parent = new Obj(volumeType,"Parent",5,calibration,1);
+        obj = collection.createAndAddNewObject(volumeType, 2);
+        parent = parents.createAndAddNewObject(volumeType, 5);
         obj.addParent(parent);
         collection.add(obj);
 
-        HashMap<Integer, Float> actual = ColourFactory.getParentIDHues(collection,"Parent",true);
+        HashMap<Integer, Float> actual = ColourFactory.getParentIDHues(collection,"Parents",true);
 
         // For random numbers we don't know what value they will have
         assertEquals(3,actual.size());
@@ -313,16 +317,16 @@ public class ColourFactoryTest {
         SpatCal calibration = new SpatCal(dppXY,dppZ,calibratedUnits,1,1,1);
 
         // Creating the ObjCollection
-        ObjCollection collection = new ObjCollection("Obj",calibration,1);
+        ObjCollection collection = new ObjCollection("Obj",calibration,1,0.02,UNITS.SECOND);
 
         // Adding objects
-        Obj obj = new Obj(volumeType,"Obj",0,calibration,1);
+        Obj obj = collection.createAndAddNewObject(volumeType, 0);
         collection.add(obj);
 
-        obj = new Obj(volumeType,"Obj",1,calibration,1);
+        obj = collection.createAndAddNewObject(volumeType, 1);
         collection.add(obj);
 
-        obj = new Obj(volumeType,"Obj",2,calibration,1);
+        obj = collection.createAndAddNewObject(volumeType, 2);
         collection.add(obj);
 
         HashMap<Integer, Float> hues = ColourFactory.getSingleColourHues(collection,ColourFactory.SingleColours.WHITE);
@@ -345,16 +349,16 @@ public class ColourFactoryTest {
         SpatCal calibration = new SpatCal(dppXY,dppZ,calibratedUnits,1,1,1);
 
         // Creating the ObjCollection
-        ObjCollection collection = new ObjCollection("Obj",calibration,1);
+        ObjCollection collection = new ObjCollection("Obj",calibration,1,0.02,UNITS.SECOND);
 
         // Adding objects
-        Obj obj = new Obj(volumeType,"Obj",0,calibration,1);
+        Obj obj = collection.createAndAddNewObject(volumeType, 0);
         collection.add(obj);
 
-        obj = new Obj(volumeType,"Obj",1,calibration,1);
+        obj = collection.createAndAddNewObject(volumeType, 1);
         collection.add(obj);
 
-        obj = new Obj(volumeType,"Obj",2,calibration,1);
+        obj = collection.createAndAddNewObject(volumeType, 2);
         collection.add(obj);
 
         HashMap<Integer, Float> hues = ColourFactory.getRandomHues(collection);
@@ -378,20 +382,20 @@ public class ColourFactoryTest {
         SpatCal calibration = new SpatCal(dppXY,dppZ,calibratedUnits,1,1,1);
 
         // Creating the ObjCollection
-        ObjCollection collection = new ObjCollection("Obj",calibration,1);
+        ObjCollection collection = new ObjCollection("Obj",calibration,1,0.02,UNITS.SECOND);
 
         // Adding objects
-        Obj obj = new Obj(volumeType,"Obj",0,calibration,1);
+        Obj obj = collection.createAndAddNewObject(volumeType, 0);
         Measurement meas = new Measurement("Meas",3.2);
         obj.addMeasurement(meas);
         collection.add(obj);
 
-        obj = new Obj(volumeType,"Obj",1,calibration,1);
+        obj = collection.createAndAddNewObject(volumeType, 1);
         meas = new Measurement("Meas",-0.1);
         obj.addMeasurement(meas);
         collection.add(obj);
 
-        obj = new Obj(volumeType,"Obj",2,calibration,1);
+        obj = collection.createAndAddNewObject(volumeType, 2);
         meas = new Measurement("Meas",Double.NaN);
         obj.addMeasurement(meas);
         collection.add(obj);
@@ -417,20 +421,20 @@ public class ColourFactoryTest {
         SpatCal calibration = new SpatCal(dppXY,dppZ,calibratedUnits,1,1,1);
 
         // Creating the ObjCollection
-        ObjCollection collection = new ObjCollection("Obj",calibration,1);
+        ObjCollection collection = new ObjCollection("Obj",calibration,1,0.02,UNITS.SECOND);
 
         // Adding objects
-        Obj obj = new Obj(volumeType,"Obj",0,calibration,1);
+        Obj obj = collection.createAndAddNewObject(volumeType, 0);
         Measurement meas = new Measurement("Meas",3.2);
         obj.addMeasurement(meas);
         collection.add(obj);
 
-        obj = new Obj(volumeType,"Obj",1,calibration,1);
+        obj = collection.createAndAddNewObject(volumeType, 1);
         meas = new Measurement("Meas",-0.1);
         obj.addMeasurement(meas);
         collection.add(obj);
 
-        obj = new Obj(volumeType,"Obj",2,calibration,1);
+        obj = collection.createAndAddNewObject(volumeType, 2);
         meas = new Measurement("Meas",Double.NaN);
         obj.addMeasurement(meas);
         collection.add(obj);
@@ -456,20 +460,20 @@ public class ColourFactoryTest {
         SpatCal calibration = new SpatCal(dppXY,dppZ,calibratedUnits,1,1,1);
 
         // Creating the ObjCollection
-        ObjCollection collection = new ObjCollection("Obj",calibration,1);
+        ObjCollection collection = new ObjCollection("Obj",calibration,1,0.02,UNITS.SECOND);
 
         // Adding objects
-        Obj obj = new Obj(volumeType,"Obj",0,calibration,1);
+        Obj obj = collection.createAndAddNewObject(volumeType, 0);
         Measurement meas = new Measurement("Meas",3.2);
         obj.addMeasurement(meas);
         collection.add(obj);
 
-        obj = new Obj(volumeType,"Obj",1,calibration,1);
+        obj = collection.createAndAddNewObject(volumeType, 1);
         meas = new Measurement("Meas",-0.1);
         obj.addMeasurement(meas);
         collection.add(obj);
 
-        obj = new Obj(volumeType,"Obj",2,calibration,1);
+        obj = collection.createAndAddNewObject(volumeType, 2);
         meas = new Measurement("Meas",Double.NaN);
         obj.addMeasurement(meas);
         collection.add(obj);
@@ -495,16 +499,16 @@ public class ColourFactoryTest {
         SpatCal calibration = new SpatCal(dppXY,dppZ,calibratedUnits,1,1,1);
 
         // Creating the ObjCollection
-        ObjCollection collection = new ObjCollection("Obj",calibration,1);
+        ObjCollection collection = new ObjCollection("Obj",calibration,1,0.02,UNITS.SECOND);
 
         // Adding objects
-        Obj obj = new Obj(volumeType,"Obj",0,calibration,1);
+        Obj obj = collection.createAndAddNewObject(volumeType, 0);
         collection.add(obj);
 
-        obj = new Obj(volumeType,"Obj",1,calibration,1);
+        obj = collection.createAndAddNewObject(volumeType, 1);
         collection.add(obj);
 
-        obj = new Obj(volumeType,"Obj",2,calibration,1);
+        obj = collection.createAndAddNewObject(volumeType, 2);
         collection.add(obj);
 
         HashMap<Integer, Float> hues = ColourFactory.getIDHues(collection,true);
@@ -528,23 +532,24 @@ public class ColourFactoryTest {
         SpatCal calibration = new SpatCal(dppXY,dppZ,calibratedUnits,1,1,1);
 
         // Creating the ObjCollection
-        ObjCollection collection = new ObjCollection("Obj",calibration,1);
+        ObjCollection collection = new ObjCollection("Obj", calibration, 1, 0.02, UNITS.SECOND);
+        ObjCollection parents = new ObjCollection("Parents", calibration, 1, 0.02, UNITS.SECOND);
 
         // Adding objects
-        Obj obj = new Obj(volumeType,"Obj",0,calibration,1);
-        Obj parent = new Obj(volumeType,"Parent",6,calibration,1);
+        Obj obj = collection.createAndAddNewObject(volumeType, 0);
+        Obj parent = parents.createAndAddNewObject(volumeType, 6);
         obj.addParent(parent);
         collection.add(obj);
 
-        obj = new Obj(volumeType,"Obj",1,calibration,1);
+        obj = collection.createAndAddNewObject(volumeType, 1);
         collection.add(obj);
 
-        obj = new Obj(volumeType,"Obj",2,calibration,1);
-        parent = new Obj(volumeType,"Parent",5,calibration,1);
+        obj = collection.createAndAddNewObject(volumeType, 2);
+        parent = parents.createAndAddNewObject(volumeType, 5);
         obj.addParent(parent);
         collection.add(obj);
 
-        HashMap<Integer, Float> hues = ColourFactory.getParentIDHues(collection,"Parent",false);
+        HashMap<Integer, Float> hues = ColourFactory.getParentIDHues(collection,"Parents",false);
         HashMap<Integer, Color> actual = ColourFactory.getColours(hues,100);
 
         // For random numbers we don't know what value they will have
@@ -565,23 +570,24 @@ public class ColourFactoryTest {
         SpatCal calibration = new SpatCal(dppXY,dppZ,calibratedUnits,1,1,1);
 
         // Creating the ObjCollection
-        ObjCollection collection = new ObjCollection("Obj",calibration,1);
+        ObjCollection collection = new ObjCollection("Obj", calibration, 1, 0.02, UNITS.SECOND);
+        ObjCollection parents = new ObjCollection("Parents", calibration, 1, 0.02, UNITS.SECOND);
 
         // Adding objects
-        Obj obj = new Obj(volumeType,"Obj",0,calibration,1);
-        Obj parent = new Obj(volumeType,"Parent",6,calibration,1);
+        Obj obj = collection.createAndAddNewObject(volumeType, 0);
+        Obj parent = parents.createAndAddNewObject(volumeType, 6);
         obj.addParent(parent);
         collection.add(obj);
 
-        obj = new Obj(volumeType,"Obj",1,calibration,1);
+        obj = collection.createAndAddNewObject(volumeType, 1);
         collection.add(obj);
 
-        obj = new Obj(volumeType,"Obj",2,calibration,1);
-        parent = new Obj(volumeType,"Parent",5,calibration,1);
+        obj = collection.createAndAddNewObject(volumeType, 2);
+        parent = parents.createAndAddNewObject(volumeType, 5);
         obj.addParent(parent);
         collection.add(obj);
 
-        HashMap<Integer, Float> hues = ColourFactory.getParentIDHues(collection,"Parent",true);
+        HashMap<Integer, Float> hues = ColourFactory.getParentIDHues(collection,"Parents",true);
         HashMap<Integer, Color> actual = ColourFactory.getColours(hues,100);
 
         // For random numbers we don't know what value they will have

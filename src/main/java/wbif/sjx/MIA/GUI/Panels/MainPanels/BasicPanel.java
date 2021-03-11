@@ -291,6 +291,11 @@ public class BasicPanel extends MainPanel {
     }
 
     @Override
+    public void resetJobNumbers() {
+        fileListPanel.resetJobNumbers();
+    }
+
+    @Override
     public boolean showHelp() {
         return showHelp;
     }

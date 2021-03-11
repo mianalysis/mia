@@ -5,12 +5,14 @@ import wbif.sjx.common.Object.Volume.VolumeType;
 import java.util.HashMap;
 import java.util.List;
 
+import ome.units.UNITS;
+
 /**
  * Created by Stephen Cross on 10/09/2017.
  */
 public class Spots3D extends ExpectedObjects {
     public Spots3D(VolumeType volumeType) {
-        super(volumeType, 64,76,12,1);
+        super(volumeType, 64,76,12,1, 0.02, UNITS.SECOND);
     }
 
     @Override

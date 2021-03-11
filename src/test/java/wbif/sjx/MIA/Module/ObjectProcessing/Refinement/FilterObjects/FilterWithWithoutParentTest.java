@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 
+import ome.units.UNITS;
 import wbif.sjx.MIA.ExpectedObjects.ExpectedObjects;
 import wbif.sjx.MIA.ExpectedObjects.Objects3D;
 import wbif.sjx.MIA.Module.ModuleTest;
@@ -21,14 +22,6 @@ public class FilterWithWithoutParentTest extends ModuleTest {
     @Override
     public void testGetHelp() {
         assertNotNull(new FilterWithWithoutParent(null).getDescription());
-    }
-
-    public static void main(String[] args) {
-        try {
-            new FilterWithWithoutParentTest().testRunPresentParentDoNothing(VolumeType.POINTLIST);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
     @ParameterizedTest
@@ -51,22 +44,18 @@ public class FilterWithWithoutParentTest extends ModuleTest {
 
         // Creating a second set of objects and relate these to the test objects.
         boolean[] parents = new boolean[] { true, true, false, true, false, false, false, false };
-        ObjCollection parentObjects = new ObjCollection("Parents", calibration, 1);
-        ObjCollection expectedPassObjects = new ObjCollection("PassOutput", calibration, 1);
+        ObjCollection parentObjects = new ObjCollection("Parents", calibration, 1, 0.02, UNITS.SECOND);
+        ObjCollection expectedPassObjects = new ObjCollection("PassOutput", calibration, 1, 0.02, UNITS.SECOND);
 
         int counter = 0;
         for (Obj testObject : testObjects.values()) {
             if (parents[counter++]) {
-                Obj parentObject = new Obj(volumeType, "Parents", parentObjects.getAndIncrementID(), calibration, 1);
-                parentObjects.add(parentObject);
-
+                Obj parentObject = parentObjects.createAndAddNewObject(volumeType);                
                 testObject.addParent(parentObject);
                 parentObject.addChild(testObject);
 
             }
-
             expectedPassObjects.add(testObject);
-
         }
 
         // Initialising FilterObjects module
@@ -114,15 +103,15 @@ public class FilterWithWithoutParentTest extends ModuleTest {
 
         // Creating a second set of objects and relate these to the test objects.
         boolean[] parents = new boolean[]{true,true,false,true,false,false,false,false};
-        ObjCollection parentObjects = new ObjCollection("Parents",calibration,1);
-        ObjCollection expectedPassObjects = new ObjCollection("PassOutput",calibration,1);
-        ObjCollection expectedFailObjects = new ObjCollection("FailOutput",calibration,1);
+        ObjCollection parentObjects = new ObjCollection("Parents",calibration,1,0.02,UNITS.SECOND);
+        ObjCollection expectedPassObjects = new ObjCollection("PassOutput",calibration,1,0.02,UNITS.SECOND);
+        ObjCollection expectedFailObjects = new ObjCollection("FailOutput",calibration,1,0.02,UNITS.SECOND);
 
         int counter = 0;
-        for (Obj testObject:testObjects.values()) {
+        for (Obj testObject : testObjects.values()) {
+            System.out.println("INPUT "+testObject.getID());
             if (parents[counter++]) {
-                Obj parentObject = new Obj(volumeType,"Parents",parentObjects.getAndIncrementID(),calibration,1);
-                parentObjects.add(parentObject);
+                Obj parentObject = parentObjects.createAndAddNewObject(volumeType);
 
                 testObject.addParent(parentObject);
                 parentObject.addChild(testObject);
@@ -145,14 +134,24 @@ public class FilterWithWithoutParentTest extends ModuleTest {
         // Running the module
         filterWithWithoutParent.execute(workspace);
 
-        // Checking basic facts
+        // Checking basic facts                
         assertNotNull(workspace.getObjectSet("TestObj"));
-        assertEquals(5,workspace.getObjectSet("TestObj").values().size());
-        assertEquals(expectedPassObjects,workspace.getObjectSet("TestObj"));
+        assertEquals(5, workspace.getObjectSet("TestObj").values().size());
+        ObjCollection actualPassObjects = workspace.getObjectSet("TestObj");
+        for (Obj expectedPassObject : expectedPassObjects.values()) {
+            Obj actualPassObject = actualPassObjects.get(expectedPassObject.getID());
+            assertEquals(expectedPassObject, actualPassObject);
+        }
+        // assertEquals(expectedPassObjects,workspace.getObjectSet("TestObj"));
 
         assertNotNull(workspace.getObjectSet("Output"));
-        assertEquals(3,workspace.getObjectSet("Output").values().size());
-        assertEquals(expectedFailObjects,workspace.getObjectSet("Output"));
+        assertEquals(3, workspace.getObjectSet("Output").values().size());
+        ObjCollection actualFailObjects = workspace.getObjectSet("Output");
+        for (Obj expectedFailObject : expectedFailObjects.values()) {
+            Obj actualFailObject = actualFailObjects.get(expectedFailObject.getID());
+            assertEquals(expectedFailObject, actualFailObject);
+        }
+        // assertEquals(expectedFailObjects,workspace.getObjectSet("Output"));
 
     }
 
@@ -175,14 +174,13 @@ public class FilterWithWithoutParentTest extends ModuleTest {
 
         // Creating a second set of objects and relate these to the test objects.
         boolean[] parents = new boolean[]{true,true,false,true,false,false,false,false};
-        ObjCollection parentObjects = new ObjCollection("Parents",calibration,1);
-        ObjCollection expectedPassObjects = new ObjCollection("PassOutput",calibration,1);
+        ObjCollection parentObjects = new ObjCollection("Parents",calibration,1,0.02,UNITS.SECOND);
+        ObjCollection expectedPassObjects = new ObjCollection("PassOutput",calibration,1,0.02,UNITS.SECOND);
 
         int counter = 0;
         for (Obj testObject:testObjects.values()) {
             if (parents[counter++]) {
-                Obj parentObject = new Obj(volumeType,"Parents",parentObjects.getAndIncrementID(),calibration,1);
-                parentObjects.add(parentObject);
+                Obj parentObject = parentObjects.createAndAddNewObject(volumeType);
 
                 testObject.addParent(parentObject);
                 parentObject.addChild(testObject);
@@ -229,14 +227,13 @@ public class FilterWithWithoutParentTest extends ModuleTest {
 
         // Creating a second set of objects and relate these to the test objects.
         boolean[] parents = new boolean[]{true,true,false,true,false,false,false,false};
-        ObjCollection parentObjects = new ObjCollection("Parents",calibration,1);
-        ObjCollection expectedPassObjects = new ObjCollection("PassOutput",calibration,1);
+        ObjCollection parentObjects = new ObjCollection("Parents",calibration,1,0.02,UNITS.SECOND);
+        ObjCollection expectedPassObjects = new ObjCollection("PassOutput",calibration,1,0.02,UNITS.SECOND);
 
         int counter = 0;
         for (Obj testObject:testObjects.values()) {
             if (parents[counter++]) {
-                Obj parentObject = new Obj(volumeType,"Parents",parentObjects.getAndIncrementID(),calibration,1);
-                parentObjects.add(parentObject);
+                Obj parentObject = parentObjects.createAndAddNewObject(volumeType);
 
                 testObject.addParent(parentObject);
                 parentObject.addChild(testObject);
@@ -283,15 +280,14 @@ public class FilterWithWithoutParentTest extends ModuleTest {
 
         // Creating a second set of objects and relate these to the test objects.
         boolean[] parents = new boolean[]{true,true,false,true,false,false,false,false};
-        ObjCollection parentObjects = new ObjCollection("Parents",calibration,1);
-        ObjCollection expectedPassObjects = new ObjCollection("PassOutput",calibration,1);
-        ObjCollection expectedFailObjects = new ObjCollection("FailOutput",calibration,1);
+        ObjCollection parentObjects = new ObjCollection("Parents",calibration,1,0.02,UNITS.SECOND);
+        ObjCollection expectedPassObjects = new ObjCollection("PassOutput",calibration,1,0.02,UNITS.SECOND);
+        ObjCollection expectedFailObjects = new ObjCollection("FailOutput",calibration,1,0.02,UNITS.SECOND);
 
         int counter = 0;
         for (Obj testObject:testObjects.values()) {
             if (parents[counter++]) {
-                Obj parentObject = new Obj(volumeType,"Parents",parentObjects.getAndIncrementID(),calibration,1);
-                parentObjects.add(parentObject);
+                Obj parentObject = parentObjects.createAndAddNewObject(volumeType);
 
                 testObject.addParent(parentObject);
                 parentObject.addChild(testObject);
@@ -344,14 +340,13 @@ public class FilterWithWithoutParentTest extends ModuleTest {
 
         // Creating a second set of objects and relate these to the test objects.
         boolean[] parents = new boolean[]{true,true,false,true,false,false,false,false};
-        ObjCollection parentObjects = new ObjCollection("Parents",calibration,1);
-        ObjCollection expectedPassObjects = new ObjCollection("PassOutput",calibration,1);
+        ObjCollection parentObjects = new ObjCollection("Parents",calibration,1,0.02,UNITS.SECOND);
+        ObjCollection expectedPassObjects = new ObjCollection("PassOutput",calibration,1,0.02,UNITS.SECOND);
 
         int counter = 0;
         for (Obj testObject:testObjects.values()) {
             if (parents[counter++]) {
-                Obj parentObject = new Obj(volumeType,"Parents",parentObjects.getAndIncrementID(),calibration,1);
-                parentObjects.add(parentObject);
+                Obj parentObject = parentObjects.createAndAddNewObject(volumeType);
 
                 testObject.addParent(parentObject);
                 parentObject.addChild(testObject);
@@ -397,13 +392,12 @@ public class FilterWithWithoutParentTest extends ModuleTest {
 
         // Creating a second set of objects and relate these to the test objects.
         boolean[] parents = new boolean[]{true,true,false,true,false,false,true,true};
-        ObjCollection parentObjects = new ObjCollection("Parents",calibration,1);
+        ObjCollection parentObjects = new ObjCollection("Parents",calibration,1,0.02,UNITS.SECOND);
 
         int counter = 0;
         for (Obj testObject:testObjects.values()) {
             if (parents[counter++]) {
-                Obj parentObject = new Obj(volumeType,"Parents",parentObjects.getAndIncrementID(),calibration,1);
-                parentObjects.add(parentObject);
+                Obj parentObject = parentObjects.createAndAddNewObject(volumeType);
 
                 testObject.addParent(parentObject);
                 parentObject.addChild(testObject);

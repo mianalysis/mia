@@ -245,9 +245,8 @@ public class FilterObjectsTest extends ModuleTest {
         int counter = 0;
         for (Obj testObject:testObjects.values()) {
             for (int i=0;i<kids[counter];i++) {
-                Obj childObject = new Obj(volumeType,"Children", childObjects.getAndIncrementID(),testObjects.getSpatialCalibration(),testObjects.getNFrames());
-                childObjects.add(childObject);
-
+                Obj childObject = childObjects.createAndAddNewObject(volumeType);
+                
                 testObject.addChild(childObject);
                 childObject.addParent(testObject);
             }
@@ -296,8 +295,7 @@ public class FilterObjectsTest extends ModuleTest {
         int counter = 0;
         for (Obj testObject:testObjects.values()) {
             for (int i=0;i<kids[counter];i++) {
-                Obj childObject = new Obj(volumeType,"Children", childObjects.getAndIncrementID(),testObjects.getSpatialCalibration(),testObjects.getNFrames());
-                childObjects.add(childObject);
+                Obj childObject = childObjects.createAndAddNewObject(volumeType);
 
                 testObject.addChild(childObject);
                 childObject.addParent(testObject);
@@ -346,8 +344,7 @@ public class FilterObjectsTest extends ModuleTest {
         int counter = 0;
         for (Obj testObject:testObjects.values()) {
             if (parents[counter++]) {
-                Obj parentObject = new Obj(volumeType,"Parents", parentObjects.getAndIncrementID(),testObjects.getSpatialCalibration(),testObjects.getNFrames());
-                parentObjects.add(parentObject);
+                Obj parentObject = parentObjects.createAndAddNewObject(volumeType);
 
                 testObject.addParent(parentObject);
                 parentObject.addChild(testObject);
@@ -393,7 +390,7 @@ public class FilterObjectsTest extends ModuleTest {
         int counter = 0;
         for (Obj testObject:testObjects.values()) {
             if (parents[counter++]) {
-                Obj parentObject = new Obj(volumeType,"Parents", parentObjects.getAndIncrementID(),testObjects.getSpatialCalibration(),testObjects.getNFrames());
+                Obj parentObject = parentObjects.createAndAddNewObject(volumeType);
                 parentObjects.add(parentObject);
 
                 testObject.addParent(parentObject);

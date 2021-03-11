@@ -459,6 +459,10 @@ public class GUI {
         return mainPanel.showFileList();
     }
 
+    public static void resetJobNumbers() {
+        mainPanel.resetJobNumbers();
+    }
+
     public static ModuleCollection getAvailableModules() {
         return availableModules;
     }

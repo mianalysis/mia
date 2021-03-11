@@ -34,6 +34,7 @@ import wbif.sjx.MIA.Object.References.Collections.MetadataRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.ObjMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.ParentChildRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.PartnerRefCollection;
+import wbif.sjx.MIA.Object.Units.TemporalUnit;
 import wbif.sjx.MIA.Process.ColourFactory;
 import wbif.sjx.MIA.Process.LabelFactory;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
@@ -121,7 +122,8 @@ public class HoughObjectDetection extends Module {
         // Storing the image calibration
         SpatCal cal = SpatCal.getFromImage(ipl);
         int nFrames = ipl.getNFrames();
-        ObjCollection outputObjects = new ObjCollection(outputObjectsName,cal,nFrames);
+        double frameInterval = ipl.getCalibration().frameInterval;
+        ObjCollection outputObjects = new ObjCollection(outputObjectsName,cal,nFrames,frameInterval,TemporalUnit.getOMEUnit());
 
         int nThreads = multithread ? Prefs.getThreads() : 1;
 
@@ -175,8 +177,7 @@ public class HoughObjectDetection extends Module {
                     Indexer indexer = new Indexer(ipl.getWidth(), ipl.getHeight());
                     for (double[] circle : circles) {
                         // Initialising the object
-                        int ID = outputObjects.getAndIncrementID();
-                        Obj outputObject = new Obj(VolumeType.QUADTREE,outputObjectsName,ID,cal,nFrames);
+                        Obj outputObject = outputObjects.createAndAddNewObject(VolumeType.QUADTREE);
 
                         // Getting circle parameters
                         int x = (int) Math.round(circle[0])*samplingRate;
@@ -205,9 +206,6 @@ public class HoughObjectDetection extends Module {
                         // Adding measurements
                         outputObject.setT(t);
                         outputObject.addMeasurement(new Measurement(Measurements.SCORE, score));
-
-                        // Adding object to object set
-                        outputObjects.add(outputObject);
 
                     }
 

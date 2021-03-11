@@ -21,7 +21,7 @@ public abstract class TextType extends Parameter {
     public abstract void setValueFromString(String value);
 
     public static boolean containsCalculation(String string) {
-        Pattern pattern = Pattern.compile("C\\{(.+)}");
+        Pattern pattern = Pattern.compile("C\\{([^}]+)}");
         Matcher matcher = pattern.matcher(string);
 
         return matcher.find();
@@ -29,7 +29,7 @@ public abstract class TextType extends Parameter {
     }
 
     public static String applyCalculation(String string) {
-        Pattern pattern = Pattern.compile("C\\{(.+)}");
+        Pattern pattern = Pattern.compile("C\\{([^}]+)}");
         Matcher matcher = pattern.matcher(string);
 
         while (matcher.find()) {
@@ -40,7 +40,7 @@ public abstract class TextType extends Parameter {
             string = string.replace(fullName, String.valueOf(valueDouble));
 
         }
-
+        
         return string;
 
     }

@@ -18,6 +18,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.TreeMap;
 
+import ome.units.UNITS;
+
 
 /**
  * Created by Stephen Cross on 09/08/2018.
@@ -42,7 +44,8 @@ public class Tracks3D {
         SpatCal calibration = new SpatCal(dppXY,dppZ,calibratedUnits,127,90,13);
 
         // Initialising object store
-        ObjCollection trackObjects = new ObjCollection(tracksName,calibration,10);
+        ObjCollection spotObjects = new ObjCollection("Spots",calibration,10, 0.02, UNITS.SECOND);
+        ObjCollection trackObjects = new ObjCollection(tracksName,calibration,10, 0.02, UNITS.SECOND);
 
         // Adding all provided coordinates to each object
         List<Integer[]> coordinates = getCoordinates5D();
@@ -55,13 +58,13 @@ public class Tracks3D {
             int t = coordinate[6];
 
             spotID = spotID+(t*65536);
-            Obj spotObject = new Obj(volumeType,spotsName,spotID,calibration,10);
+            Obj spotObject = spotObjects.createAndAddNewObject(volumeType, spotID);
             try {
                 spotObject.add(x,y,z);
             } catch (PointOutOfRangeException e) {}
             spotObject.setT(t);
 
-            trackObjects.putIfAbsent(trackID,new Obj(volumeType,tracksName,trackID,calibration,10));
+            trackObjects.putIfAbsent(trackID,new Obj(trackObjects,volumeType,trackID));
             Obj track = trackObjects.get(trackID);
             track.addChild(spotObject);
             spotObject.addParent(track);

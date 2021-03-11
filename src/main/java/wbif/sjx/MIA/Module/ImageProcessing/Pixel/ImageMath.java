@@ -37,6 +37,7 @@ public class ImageMath extends Module {
     public static final String CALCULATION_SEPARATOR = "Image calculation";
     public static final String CALCULATION_TYPE = "Calculation";
     public static final String VALUE_SOURCE = "Value source";
+    public static final String IMAGE_FOR_MEASUREMENT = "Image for measurement";
     public static final String MEASUREMENT = "Measurement";
     public static final String MATH_VALUE = "Value";
 
@@ -59,7 +60,7 @@ public class ImageMath extends Module {
 
     public interface ValueSources {
         String FIXED = "Fixed value";
-        String MEASUREMENT = "Measurement value";
+        String MEASUREMENT = "Image measurement value";
 
         String[] ALL = new String[] { FIXED, MEASUREMENT };
 
@@ -74,37 +75,37 @@ public class ImageMath extends Module {
         ImageStack ist = inputImagePlus.getStack();
 
         for (int i = 0; i < ist.size(); i++) {
-            ImageProcessor ipr = ist.getProcessor(i+1);
+            ImageProcessor ipr = ist.getProcessor(i + 1);
             switch (calculationType) {
-                case CalculationTypes.ABSOLUTE:
-                    ipr.abs();
-                    break;
+            case CalculationTypes.ABSOLUTE:
+                ipr.abs();
+                break;
 
-                case CalculationTypes.ADD:
-                    ipr.add(mathValue);
-                    break;
+            case CalculationTypes.ADD:
+                ipr.add(mathValue);
+                break;
 
-                case CalculationTypes.DIVIDE:
-                    ipr.multiply(1 / mathValue);
-                    break;
+            case CalculationTypes.DIVIDE:
+                ipr.multiply(1 / mathValue);
+                break;
 
-                case CalculationTypes.MULTIPLY:
-                    ipr.multiply(mathValue);
-                    break;
+            case CalculationTypes.MULTIPLY:
+                ipr.multiply(mathValue);
+                break;
 
-                case CalculationTypes.SQUARE:
-                    ipr.sqr();
-                    break;
+            case CalculationTypes.SQUARE:
+                ipr.sqr();
+                break;
 
-                case CalculationTypes.SQUAREROOT:
-                    ipr.sqrt();
-                    break;
+            case CalculationTypes.SQUAREROOT:
+                ipr.sqrt();
+                break;
 
-                case CalculationTypes.SUBTRACT:
-                    ipr.subtract(mathValue);
-                    break;
+            case CalculationTypes.SUBTRACT:
+                ipr.subtract(mathValue);
+                break;
             }
-        }        
+        }
     }
 
     @Override
@@ -130,6 +131,7 @@ public class ImageMath extends Module {
         String outputImageName = parameters.getValue(OUTPUT_IMAGE);
         String calculationType = parameters.getValue(CALCULATION_TYPE);
         String valueSource = parameters.getValue(VALUE_SOURCE);
+        String imageForMeasurementName = parameters.getValue(IMAGE_FOR_MEASUREMENT);
         String measurement = parameters.getValue(MEASUREMENT);
         double mathValue = parameters.getValue(MATH_VALUE);
 
@@ -140,9 +142,10 @@ public class ImageMath extends Module {
 
         // Updating value if taken from a measurement
         switch (valueSource) {
-            case ValueSources.MEASUREMENT:
-                mathValue = inputImage.getMeasurement(measurement).getValue();
-                break;
+        case ValueSources.MEASUREMENT:
+            Image imageForMeasurement = workspace.getImage(imageForMeasurementName);
+            mathValue = imageForMeasurement.getMeasurement(measurement).getValue();
+            break;
         }
 
         process(inputImagePlus, calculationType, mathValue);
@@ -175,6 +178,7 @@ public class ImageMath extends Module {
         parameters.add(new SeparatorP(CALCULATION_SEPARATOR, this));
         parameters.add(new ChoiceP(CALCULATION_TYPE, this, CalculationTypes.ADD, CalculationTypes.ALL));
         parameters.add(new ChoiceP(VALUE_SOURCE, this, ValueSources.FIXED, ValueSources.ALL));
+        parameters.add(new InputImageP(IMAGE_FOR_MEASUREMENT, this));
         parameters.add(new ImageMeasurementP(MEASUREMENT, this));
         parameters.add(new DoubleP(MATH_VALUE, this, 1.0));
 
@@ -197,28 +201,29 @@ public class ImageMath extends Module {
         returnedParameters.add(parameters.getParameter(CALCULATION_SEPARATOR));
         returnedParameters.add(parameters.getParameter(CALCULATION_TYPE));
         switch ((String) parameters.getValue(CALCULATION_TYPE)) {
-            case CalculationTypes.ADD:
-            case CalculationTypes.DIVIDE:
-            case CalculationTypes.MULTIPLY:
-            case CalculationTypes.SUBTRACT:
-                returnedParameters.add(parameters.getParameter(VALUE_SOURCE));
-                switch ((String) parameters.getValue(VALUE_SOURCE)) {
-                    case ValueSources.FIXED:
+        case CalculationTypes.ADD:
+        case CalculationTypes.DIVIDE:
+        case CalculationTypes.MULTIPLY:
+        case CalculationTypes.SUBTRACT:
+            returnedParameters.add(parameters.getParameter(VALUE_SOURCE));
+            switch ((String) parameters.getValue(VALUE_SOURCE)) {
+            case ValueSources.FIXED:
 
-                        returnedParameters.add(parameters.getParameter(MATH_VALUE));
+                returnedParameters.add(parameters.getParameter(MATH_VALUE));
 
-                        break;
+                break;
 
-                    case ValueSources.MEASUREMENT:
-                        returnedParameters.add(parameters.getParameter(MEASUREMENT));
+            case ValueSources.MEASUREMENT:
+                returnedParameters.add(parameters.getParameter(IMAGE_FOR_MEASUREMENT));
+                returnedParameters.add(parameters.getParameter(MEASUREMENT));
 
-                        if (parameters.getValue(INPUT_IMAGE) != null) {
-                            ImageMeasurementP measurement = parameters.getParameter(MEASUREMENT);
-                            measurement.setImageName(parameters.getValue(INPUT_IMAGE));
-                        }
-                        break;
+                if (parameters.getValue(INPUT_IMAGE) != null) {
+                    ImageMeasurementP measurement = parameters.getParameter(MEASUREMENT);
+                    measurement.setImageName(parameters.getValue(IMAGE_FOR_MEASUREMENT));
                 }
                 break;
+            }
+            break;
         }
 
         return returnedParameters;

@@ -3,6 +3,8 @@ package wbif.sjx.MIA.Module.ObjectProcessing.Identification;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.Category;
+import ome.units.quantity.Time;
+import ome.units.unit.Unit;
 import wbif.sjx.MIA.Module.Categories;
 import wbif.sjx.MIA.Object.Status;
 import wbif.sjx.MIA.Object.Obj;
@@ -17,6 +19,7 @@ import wbif.sjx.MIA.Object.References.Collections.MetadataRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.ObjMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.ParentChildRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.PartnerRefCollection;
+import wbif.sjx.MIA.Object.Units.TemporalUnit;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.Object.Volume.SpatCal;
 import wbif.sjx.common.Object.Volume.Volume;
@@ -33,10 +36,10 @@ public class ProjectObjects extends Module {
         super("Project objects",modules);
     }
 
-    public static Obj process(Obj inputObject, String outputObjectsName, boolean addRelationship) throws IntegerOverflowException {
+    public static Obj process(Obj inputObject, ObjCollection outputObjects, boolean addRelationship) throws IntegerOverflowException {
         Volume projected = inputObject.getProjected();
 
-        Obj outputObject = new Obj(outputObjectsName,inputObject.getID(),inputObject);
+        Obj outputObject = outputObjects.createAndAddNewObject(inputObject.getVolumeType(), inputObject.getID());
         outputObject.setCoordinateSet(projected.getCoordinateSet());
         outputObject.setT(inputObject.getT());
 
@@ -72,17 +75,19 @@ public class ProjectObjects extends Module {
 
         ObjCollection inputObjects = workspace.getObjects().get(inputObjectsName);
         SpatCal calIn = inputObjects.getSpatialCalibration();
-        SpatCal calOut = new SpatCal(calIn.getDppXY(),calIn.getDppZ(),calIn.getUnits(),calIn.getWidth(),calIn.getHeight(),1);
-        ObjCollection outputObjects = new ObjCollection(outputObjectsName,calOut,inputObjects.getNFrames());
+        SpatCal calOut = new SpatCal(calIn.getDppXY(), calIn.getDppZ(), calIn.getUnits(), calIn.getWidth(),
+                calIn.getHeight(), 1);
+        double frameInterval = inputObjects.getFrameInterval();
+        Unit<Time> temporalUnit = inputObjects.getTemporalUnit();
+        ObjCollection outputObjects = new ObjCollection(outputObjectsName, calOut, inputObjects.getNFrames(),
+                frameInterval, temporalUnit);
 
         for (Obj inputObject:inputObjects.values()) {
-            Obj outputObject = null;
             try {
-                outputObject = process(inputObject,outputObjectsName, true);
+                process(inputObject,outputObjects, true);
             } catch (IntegerOverflowException e) {
                 return Status.FAIL;
             }
-            outputObjects.put(outputObject.getID(),outputObject);
         }
 
         workspace.addObjects(outputObjects);

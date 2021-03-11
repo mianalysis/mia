@@ -116,12 +116,9 @@ public class AddObjectOutline extends AbstractOverlay {
 
                     for (int t = t1; t <= t2; t++) {
                         for (int z = minZ; z <= maxZ; z++) {
-                            final int finalT = t;
-                            final int finalZ = z;
-
                             float hue = hues.get(object.getID());
                             addOverlay(object, finalIpl, ColourFactory.getColour(hue, opacity), lineInterpolation,
-                                    lineWidth, renderInAllFrames, finalT, finalZ);
+                                    lineWidth, t, z);
                             writeStatus("Rendered " + count + " of " + total + " ("
                                     + Math.floorDiv(100 * count.getAndIncrement(), total) + "%)", name);
 
@@ -139,8 +136,8 @@ public class AddObjectOutline extends AbstractOverlay {
         }
     }
 
-    static void addOverlay(Obj object, ImagePlus ipl, Color colour, double lineInterpolation, double lineWidth,
-            boolean renderInAllFrames, int t, int z) {
+    static void addOverlay(Obj object, ImagePlus ipl, Color colour, double lineInterpolation, double lineWidth, int t,
+            int z) {
         if (ipl.getOverlay() == null)
             ipl.setOverlay(new ij.gui.Overlay());
 
@@ -191,7 +188,6 @@ public class AddObjectOutline extends AbstractOverlay {
 
         }
     }
-
 
     @Override
     public Category getCategory() {
@@ -261,14 +257,14 @@ public class AddObjectOutline extends AbstractOverlay {
 
         parameters.add(new SeparatorP(OUTPUT_SEPARATOR, this));
         parameters.add(new BooleanP(APPLY_TO_INPUT, this, false));
-        parameters.add(new BooleanP(ADD_OUTPUT_TO_WORKSPACE, this,false));
+        parameters.add(new BooleanP(ADD_OUTPUT_TO_WORKSPACE, this, false));
         parameters.add(new OutputImageP(OUTPUT_IMAGE, this));
 
         parameters.add(new SeparatorP(RENDERING_SEPARATOR, this));
         parameters.add(new BooleanP(REDUCE_LINE_COMPLEXITY, this, false));
         parameters.add(new DoubleP(LINE_INTERPOLATION, this, 1));
         parameters.add(new DoubleP(LINE_WIDTH, this, 1));
-        parameters.add(new BooleanP(RENDER_IN_ALL_FRAMES,this,false));
+        parameters.add(new BooleanP(RENDER_IN_ALL_FRAMES, this, false));
 
         parameters.add(new SeparatorP(EXECUTION_SEPARATOR, this));
         parameters.add(new BooleanP(ENABLE_MULTITHREADING, this, true));
@@ -345,35 +341,37 @@ public class AddObjectOutline extends AbstractOverlay {
     @Override
     protected void addParameterDescriptions() {
         super.addParameterDescriptions();
-        
+
         parameters.getParameter(INPUT_IMAGE)
                 .setDescription("Image onto which overlay will be rendered.  Input image will only be updated if \""
                         + APPLY_TO_INPUT
                         + "\" is enabled, otherwise the image containing the overlay will be stored as a new image with name specified by \""
                         + OUTPUT_IMAGE + "\".");
-        
+
         parameters.getParameter(INPUT_OBJECTS).setDescription("Objects to represent as overlays.");
-        
+
         parameters.getParameter(APPLY_TO_INPUT).setDescription(
                 "Determines if the modifications made to the input image (added overlay elements) will be applied to that image or directed to a new image.  When selected, the input image will be updated.");
-        
-        parameters.getParameter(ADD_OUTPUT_TO_WORKSPACE).setDescription("If the modifications (overlay) aren't being applied directly to the input image, this control will determine if a separate image containing the overlay should be saved to the workspace.");
-        
+
+        parameters.getParameter(ADD_OUTPUT_TO_WORKSPACE).setDescription(
+                "If the modifications (overlay) aren't being applied directly to the input image, this control will determine if a separate image containing the overlay should be saved to the workspace.");
+
         parameters.getParameter(OUTPUT_IMAGE).setDescription(
                 "The name of the new image to be saved to the workspace (if not applying the changes directly to the input image).");
-        
+
         parameters.getParameter(REDUCE_LINE_COMPLEXITY).setDescription(
                 "When enabled the contour can be plotted using a reduced number of points.  This is useful for simplifying outlines for large objects, where a reduction in line precision isn't problematic.  Higher interpolation values will reduce the memory required to store/display overlays.");
-        
+
         parameters.getParameter(LINE_INTERPOLATION)
                 .setDescription("Specifies the interval between plotted points on the contour line.");
-        
+
         parameters.getParameter(LINE_WIDTH).setDescription("Width of the rendered lines.  Specified in pixel units.");
-        
+
         parameters.getParameter(RENDER_IN_ALL_FRAMES).setDescription(
                 "Display the overlay elements in all frames (time axis) of the input image stack, irrespective of whether the object was present in that frame.");
-        
-        parameters.getParameter(ENABLE_MULTITHREADING).setDescription("Process multiple overlay elements simultaneously.  This can provide a speed improvement when working on a computer with a multi-core CPU.");
+
+        parameters.getParameter(ENABLE_MULTITHREADING).setDescription(
+                "Process multiple overlay elements simultaneously.  This can provide a speed improvement when working on a computer with a multi-core CPU.");
 
     }
 }

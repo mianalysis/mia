@@ -16,6 +16,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import ome.units.quantity.Time;
+import ome.units.unit.Unit;
+
 import static wbif.sjx.MIA.ExpectedObjects.ExpectedObjects.Mode.BINARY;
 import static wbif.sjx.MIA.ExpectedObjects.ExpectedObjects.Mode.SIXTEEN_BIT;
 
@@ -29,15 +32,19 @@ public abstract class ExpectedObjects {
     private final int height;
     private final int nSlices;
     private final int nFrames;
+    private final double frameInterval;
+    private Unit<Time> temporalUnit;
 
     public enum Mode {EIGHT_BIT,SIXTEEN_BIT,BINARY};
 
-    public ExpectedObjects(VolumeType volumeType, int width, int height, int nSlices, int nFrames) {
+    public ExpectedObjects(VolumeType volumeType, int width, int height, int nSlices, int nFrames, double frameInterval, Unit<Time> temporalUnit) {
         this.volumeType = volumeType;
         this.width = width;
         this.height = height;
         this.nSlices = nSlices;
         this.nFrames = nFrames;
+        this.frameInterval = frameInterval;
+        this.temporalUnit = temporalUnit;
     }
 
     public abstract HashMap<Integer,HashMap<String,Double>> getMeasurements();
@@ -46,7 +53,7 @@ public abstract class ExpectedObjects {
         SpatCal calibration = new SpatCal(dppXY,dppZ,calibratedUnits,width,height,nSlices);
 
         // Initialising object store
-        ObjCollection testObjects = new ObjCollection(objectName,calibration,nFrames);
+        ObjCollection testObjects = new ObjCollection(objectName,calibration,nFrames,frameInterval,temporalUnit);
 
         // Adding all provided coordinates to each object
         List<Integer[]> coordinates = getCoordinates5D();
@@ -72,7 +79,7 @@ public abstract class ExpectedObjects {
             int t = coordinate[6];
 
             ID = ID+(t*65536);
-            testObjects.putIfAbsent(ID,new Obj(volumeType,objectName,ID,calibration,nFrames));
+            testObjects.putIfAbsent(ID,new Obj(testObjects,volumeType,ID));
 
             Obj testObject = testObjects.get(ID);
 

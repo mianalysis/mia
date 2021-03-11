@@ -10,6 +10,7 @@ import ij.measure.Calibration;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.Core.InputControl;
+import wbif.sjx.MIA.Module.Visualisation.Overlays.AddObjectFill;
 import wbif.sjx.MIA.Module.Category;
 import wbif.sjx.MIA.Module.Categories;
 import wbif.sjx.MIA.Object.*;
@@ -24,6 +25,8 @@ import wbif.sjx.MIA.Object.References.Collections.ObjMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.ParentChildRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.PartnerRefCollection;
 import wbif.sjx.MIA.Object.Units.SpatialUnit;
+import wbif.sjx.MIA.Object.Units.TemporalUnit;
+import wbif.sjx.MIA.Process.ColourFactory;
 import wbif.sjx.common.MathFunc.CumStat;
 import wbif.sjx.common.Object.Volume.PointOutOfRangeException;
 import wbif.sjx.common.Object.Volume.SpatCal;
@@ -311,7 +314,8 @@ public class RidgeDetection extends Module {
         LineDetector lineDetector = new LineDetector();
         SpatCal calibration = getCalibration(inputImage);
         int nFrames = inputIpl.getNFrames();
-        ObjCollection outputObjects = new ObjCollection(outputObjectsName,calibration,nFrames);
+        double frameInterval = inputIpl.getCalibration().frameInterval;
+        ObjCollection outputObjects = new ObjCollection(outputObjectsName,calibration,nFrames,frameInterval,TemporalUnit.getOMEUnit());
         workspace.addObjects(outputObjects);
 
         // Iterating over each image in the stack
@@ -376,7 +380,10 @@ public class RidgeDetection extends Module {
             IntensityMinMax.run(dispIpl, true);
 
             // Creating the overlay
-            outputObjects.convertToImageRandomColours().showImage();
+            HashMap<Integer, Float> hues = ColourFactory.getIDHues(outputObjects, true);
+            AddObjectFill.addOverlay(dispIpl, outputObjects, hues, 100, false, true);
+            
+            dispIpl.show();
 
         }
 

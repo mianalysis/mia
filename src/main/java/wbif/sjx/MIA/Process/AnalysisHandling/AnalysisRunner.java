@@ -42,6 +42,7 @@ public class AnalysisRunner {
     public void run(Analysis analysis) throws InterruptedException, IOException {
         // Resetting progress display
         GUI.updateProgressBar(0);
+        GUI.resetJobNumbers();
         MIA.clearLogHistory();
         counter = 0;
 

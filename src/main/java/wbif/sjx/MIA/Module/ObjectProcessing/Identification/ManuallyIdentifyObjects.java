@@ -71,6 +71,7 @@ import wbif.sjx.MIA.Object.References.Collections.MetadataRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.ObjMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.ParentChildRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.PartnerRefCollection;
+import wbif.sjx.MIA.Object.Units.TemporalUnit;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.Object.Volume.PointOutOfRangeException;
 import wbif.sjx.common.Object.Volume.SpatCal;
@@ -95,8 +96,6 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
     private ObjCollection outputObjects;
     private ObjCollection outputTrackObjects;
 
-    private SpatCal calibration;
-    private int nFrames;
     private boolean overflow = false;
 
     private static final String ADD_NEW = "Add new";
@@ -351,7 +350,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
             ArrayList<Integer> timepoints = new ArrayList<>();
 
             // Creating a blank image for this track
-            Image binaryImage = trackObj.convertObjToImage("Track");
+            Image binaryImage = trackObj.getAsImage("Track",false);
 
             // Adding each timepoint object (child) to this image
             for (Obj childObj : trackObj.getChildren(inputObjects.getName()).values()) {
@@ -421,7 +420,6 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
 
     }
 
-
     @Override
     public Category getCategory() {
         return Categories.OBJECT_PROCESSING_IDENTIFICATION;
@@ -455,8 +453,9 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
         // Getting input image
         Image inputImage = workspace.getImage(inputImageName);
         ImagePlus inputImagePlus = inputImage.getImagePlus();
-        calibration = SpatCal.getFromImage(inputImagePlus);
-        nFrames = inputImagePlus.getNFrames();
+        SpatCal calibration = SpatCal.getFromImage(inputImagePlus);
+        int nFrames = inputImagePlus.getNFrames();
+        double frameInterval = inputImagePlus.getCalibration().frameInterval;
 
         setSelector(selectorType);
 
@@ -475,9 +474,11 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
         updateOverlay();
 
         // Initialising output objects
-        outputObjects = new ObjCollection(outputObjectsName, calibration, nFrames);
+        outputObjects = new ObjCollection(outputObjectsName, calibration, nFrames, frameInterval,
+                TemporalUnit.getOMEUnit());
         if (outputTracks) {
-            outputTrackObjects = new ObjCollection(outputTrackObjectsName, calibration, nFrames);
+            outputTrackObjects = new ObjCollection(outputTrackObjectsName, calibration, nFrames, frameInterval,
+                    TemporalUnit.getOMEUnit());
         }
 
         // Displaying the image and showing the control
@@ -646,25 +647,25 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
     }
 
     @Override
-        public void actionPerformed(ActionEvent e) {
-            switch (e.getActionCommand()) {
-                case (ADD_NEW):
-                    addNewObject();
-                    break;
+    public void actionPerformed(ActionEvent e) {
+        switch (e.getActionCommand()) {
+            case (ADD_NEW):
+                addNewObject();
+                break;
 
-                case (ADD_EXISTING):
-                    addToExistingObject();
-                    break;
+            case (ADD_EXISTING):
+                addToExistingObject();
+                break;
 
-                case (REMOVE):
-                    removeObjects();
-                    break;
+            case (REMOVE):
+                removeObjects();
+                break;
 
-                case (FINISH):
-                    processObjectsAndFinish();
-                    break;
-            }
+            case (FINISH):
+                processObjectsAndFinish();
+                break;
         }
+    }
 
     public void addNewObject() {
         // Getting the ROI
@@ -775,9 +776,8 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
             // Creating the new object
             String type = parameters.getValue(VOLUME_TYPE);
             VolumeType volumeType = VolumeTypesInterface.getVolumeType(type);
-            Obj outputObject = new Obj(volumeType, outputObjects.getName(), ID, calibration, nFrames);
-            outputObjects.add(outputObject);
-
+            Obj outputObject = outputObjects.createAndAddNewObject(volumeType, ID);
+            
             for (ObjRoi objRoi : currentRois) {
                 Roi roi = objRoi.getRoi();
                 Point[] points = roi.getContainedPoints();
@@ -809,9 +809,8 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
                 continue;
 
             // Creating current track object
-            Obj outputTrack = new Obj(VolumeType.POINTLIST, outputTrackObjects.getName(), ID, calibration, nFrames);
-            outputTrackObjects.add(outputTrack);
-
+            Obj outputTrack = outputTrackObjects.createAndAddNewObject(VolumeType.POINTLIST, ID);
+            
             // Creating the new object
             String type = parameters.getValue(VOLUME_TYPE);
             VolumeType volumeType = VolumeTypesInterface.getVolumeType(type);
@@ -826,13 +825,11 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
                     outputObject = objectsByT.get(t);
                 } else {
                     // Creating a new object
-                    outputObject = new Obj(volumeType, outputObjects.getName(), outputObjects.getAndIncrementID(),
-                            calibration, nFrames);
+                    outputObject = outputObjects.createAndAddNewObject(volumeType);
                     outputObject.setT(t);
                     outputObject.addParent(outputTrack);
                     outputTrack.addChild(outputObject);
 
-                    outputObjects.add(outputObject);
                     objectsByT.put(t, outputObject);
                 }
 
@@ -866,7 +863,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
     public void updateOverlay() {
         overlay.clear();
 
-        // Adding existing overlay components        
+        // Adding existing overlay components
         if (origOverlay != null)
             for (Roi roi : origOverlay)
                 overlay.add(roi);

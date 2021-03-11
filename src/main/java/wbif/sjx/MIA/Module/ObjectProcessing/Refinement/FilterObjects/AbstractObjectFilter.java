@@ -50,8 +50,8 @@ public abstract class AbstractObjectFilter extends Module {
         inputObject.removeRelationships();
 
         if (outputObjects != null) {
-            inputObject.setName(outputObjects.getName());
             outputObjects.add(inputObject);
+            inputObject.setObjectCollection(outputObjects);
 
             // Adding new child relationships
             for (ObjCollection childCollection : children.values()) {

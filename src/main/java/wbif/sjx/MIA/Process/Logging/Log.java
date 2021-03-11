@@ -1,6 +1,5 @@
 package wbif.sjx.MIA.Process.Logging;
 
-import java.util.HashMap;
 import java.util.HashSet;
 
 import wbif.sjx.MIA.Process.Logging.LogRenderer.Level;

@@ -216,7 +216,7 @@ public class RelateObjects extends Module {
         // Calculating the furthest distance to the edge
         if (parentObject.getMeasurement("MAX_DIST") == null) {
             // Creating an image for the parent object
-            Image parentImage = parentObject.convertObjToImage("Parent");
+            Image parentImage = parentObject.getAsImage("Parent",false);
             InvertIntensity.process(parentImage.getImagePlus());
             Image distImage = DistanceMap.process(parentImage, "Distance", true, false);
             Image projectedImage = ProjectImage.projectImageInZ(distImage, "Projected", ProjectImage.ProjectionModes.MAX);
@@ -423,10 +423,9 @@ public class RelateObjects extends Module {
                 continue;
 
             // Creating a new Obj and assigning pixels from the parent and all children
-            Obj relatedObject = new Obj(relatedObjectsName, relatedObjects.getAndIncrementID(), exampleParent);
+            Obj relatedObject = relatedObjects.createAndAddNewObject(exampleParent.getVolumeType());
             relatedObject.setT(parentObj.getT());
-            relatedObjects.add(relatedObject);
-
+            
             for (Obj childObject : currChildObjects.values()) {
                 // Transferring points from the child object to the new object
                 relatedObject.getCoordinateSet().addAll(childObject.getCoordinateSet());
