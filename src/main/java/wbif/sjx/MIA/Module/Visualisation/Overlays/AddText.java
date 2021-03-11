@@ -63,8 +63,8 @@ public class AddText extends AbstractOverlay {
         for (int z:zRange) {
             for (int f : frameRange) {
                 String finalText = replaceDynamicValues(text,f,z);
-                double[] location = new double[]{xPosition,yPosition,z,f};
-                AddLabels.addOverlay(ipl,finalText,location,color,labelSize,false);
+                double[] location = new double[]{xPosition,yPosition,z};
+                AddLabels.addOverlay(ipl,finalText,location,f,color,labelSize,false);
             }
         }
     }
