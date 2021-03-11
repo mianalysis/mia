@@ -322,7 +322,8 @@ public class ImageMathTest extends ModuleTest {
         imageMath.updateParameterValue(ImageMath.OUTPUT_IMAGE,"Test_output");
         imageMath.updateParameterValue(ImageMath.APPLY_TO_INPUT,false);
         imageMath.updateParameterValue(ImageMath.CALCULATION_TYPE,ImageMath.CalculationTypes.ADD);
-        imageMath.updateParameterValue(ImageMath.VALUE_SOURCE,ImageMath.ValueSources.MEASUREMENT);
+        imageMath.updateParameterValue(ImageMath.VALUE_SOURCE, ImageMath.ValueSources.MEASUREMENT);
+        imageMath.updateParameterValue(ImageMath.IMAGE_FOR_MEASUREMENT,"Test_image");
         imageMath.updateParameterValue(ImageMath.MEASUREMENT,"Test meas");
 
         // Running Module

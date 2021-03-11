@@ -782,17 +782,14 @@ public class Exporter {
                 if (!modules.objectsExportMeasurements(objectName)) continue;
 
                 if (objects.values().iterator().hasNext()) {
-                    for (Obj object : objects.values()) {
-                        // Adding the measurements from this image
-                        int col = 0;
-                        
+                    for (Obj object : objects.values()) {                        
                         if (objectSheets.get(objectName) == null || objectRows.get(objectName) == null)
                             continue;
                             
                         Row objectValueRow = objectSheets.get(objectName).createRow(objectRows.get(objectName));
                         objectRows.compute(objectName, (k, v) -> v = v + 1);
 
-                        Cell objectIDValueCell = objectValueRow.createCell(col++);
+                        Cell objectIDValueCell = objectValueRow.createCell(0);
                         objectIDValueCell.setCellValue(object.getID());
 
                         // Adding metadata (if enabled)
@@ -809,7 +806,6 @@ public class Exporter {
                             Cell measValueCell = objectValueRow.createCell(column);
                             String measurementName = measurementNames.get(objectName).get(column);
                             Measurement measurement = object.getMeasurement(measurementName);
-
                             // If there isn't a corresponding value for this object, set a blank cell
                             if (measurement == null) {
                                 measValueCell.setCellValue("");

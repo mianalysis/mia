@@ -211,7 +211,7 @@ public class ObjectLoader extends Module {
         try {
             reader = new BufferedReader(new FileReader(inputFile));
         } catch (FileNotFoundException e) {
-            MIA.log.writeDebug("File not found: \""+inputFile.getName()+"\"");
+            MIA.log.writeWarning("File not found: \""+inputFile.getName()+"\"");
             return null;
         }
 
@@ -288,7 +288,7 @@ public class ObjectLoader extends Module {
         try {
             reader = new BufferedReader(new FileReader(inputFile));
         } catch (FileNotFoundException e) {
-            MIA.log.writeDebug("File not found: \""+inputFile.getName()+"\"");
+            MIA.log.writeWarning("File not found: \""+inputFile.getName()+"\"");
             return;
         }
 

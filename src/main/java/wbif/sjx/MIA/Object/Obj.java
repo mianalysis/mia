@@ -44,8 +44,8 @@ public class Obj extends Volume {
         this.objCollection = objCollection;
         this.ID = ID;
 
-        addMeasurement(new Measurement("TIMEPOINT",0));
-
+        addMeasurement(new Measurement(objCollection.getName()+"_TIMEPOINT", 0));
+        
     }
 
     public Obj(ObjCollection objCollection, int ID, Volume exampleVolume) {
@@ -54,7 +54,7 @@ public class Obj extends Volume {
         this.objCollection = objCollection;
         this.ID = ID;
 
-        addMeasurement(new Measurement("TIMEPOINT",0));
+        addMeasurement(new Measurement(objCollection.getName()+"_TIMEPOINT",0));
 
     }
 
@@ -64,7 +64,7 @@ public class Obj extends Volume {
         this.objCollection = objCollection;
         this.ID = ID;
 
-        addMeasurement(new Measurement("TIMEPOINT",0));
+        addMeasurement(new Measurement(objCollection.getName()+"_TIMEPOINT",0));
 
     }
 
@@ -74,7 +74,7 @@ public class Obj extends Volume {
         this.objCollection = objCollection;
         this.ID = ID;
 
-        addMeasurement(new Measurement("TIMEPOINT",0));
+        addMeasurement(new Measurement(objCollection.getName()+"_TIMEPOINT",0));
 
     }
 
@@ -84,7 +84,7 @@ public class Obj extends Volume {
         this.objCollection = objCollection;
         this.ID = ID;
 
-        addMeasurement(new Measurement("TIMEPOINT",0));
+        addMeasurement(new Measurement(objCollection.getName()+"_TIMEPOINT",0));
 
     }
 
@@ -138,11 +138,11 @@ public class Obj extends Volume {
     }
 
     public int getT() {
-        return (int) getMeasurement("TIMEPOINT").getValue();
+        return (int) getMeasurement(objCollection.getName()+"_TIMEPOINT").getValue();
     }
 
     public Obj setT(int t) {
-        getMeasurement("TIMEPOINT").setValue(t);
+        getMeasurement(objCollection.getName()+"_TIMEPOINT").setValue(t);
         return this;
     }
 

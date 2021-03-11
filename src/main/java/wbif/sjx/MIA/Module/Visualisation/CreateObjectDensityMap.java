@@ -212,7 +212,6 @@ public class CreateObjectDensityMap extends Module {
         if (mergeZ) {
             FilterImage.apply2DFilter(outputImage.getImagePlus(), FilterImage.FilterModes.MEAN2D, range);
             int nPixels = getFilterArea(range);
-            MIA.log.writeDebug(nPixels);
             ImageMath.process(outputImage, ImageMath.CalculationTypes.MULTIPLY, nPixels);
         } else {
             FilterImage.apply3DFilter(outputImage.getImagePlus(), FilterImage.FilterModes.MEAN3D, range);
