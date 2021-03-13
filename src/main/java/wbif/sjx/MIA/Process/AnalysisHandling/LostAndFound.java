@@ -40,6 +40,7 @@ public class LostAndFound {
         // CreateDistanceMap
         currentParameterNames = new HashMap<>();
         currentParameterNames.put("Spatial units", CreateDistanceMap.SPATIAL_UNITS_MODE);
+        currentParameterNames.put("Input image", "");
         moduleName = new CreateDistanceMap(null).getClass().getSimpleName();
         lostParameterNames.put(moduleName, currentParameterNames);
 

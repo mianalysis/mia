@@ -1,5 +1,6 @@
 package wbif.sjx.MIA.Module.Visualisation.Overlays;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.util.HashMap;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -182,7 +183,7 @@ public class AddObjectOutline extends AbstractOverlay {
             }
 
             roi.setStrokeColor(colour);
-            roi.setStrokeWidth(lineWidth);
+            roi.setStrokeWidth(lineWidth);   
 
             ipl.getOverlay().addElement(roi);
 

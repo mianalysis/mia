@@ -761,6 +761,7 @@ public class Exporter {
             // Running through all the object measurement values, adding them as new columns
             ObjMeasurementRefCollection objectMeasurementRefs = modules.getObjectMeasurementRefs(objectName);
             for (ObjMeasurementRef objectMeasurement : objectMeasurementRefs.values()) {
+                MIA.log.writeDebug(objectMeasurement.getName()+"_"+objectMeasurement.isExportIndividual()+"_"+objectMeasurement.isExportGlobal());
                 if (!objectMeasurement.isExportIndividual()) continue;
                 if (!objectMeasurement.isExportGlobal()) continue;
 

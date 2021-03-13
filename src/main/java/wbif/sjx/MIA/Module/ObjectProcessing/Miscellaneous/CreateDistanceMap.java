@@ -22,10 +22,10 @@ import wbif.sjx.MIA.Object.Status;
 import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.MIA.Object.Parameters.BooleanP;
 import wbif.sjx.MIA.Object.Parameters.ChoiceP;
-import wbif.sjx.MIA.Object.Parameters.InputImageP;
 import wbif.sjx.MIA.Object.Parameters.InputObjectsP;
 import wbif.sjx.MIA.Object.Parameters.OutputImageP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
+import wbif.sjx.MIA.Object.Parameters.SeparatorP;
 import wbif.sjx.MIA.Object.References.Collections.ImageMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.MetadataRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.ObjMeasurementRefCollection;
@@ -35,9 +35,11 @@ import wbif.sjx.MIA.Process.ColourFactory;
 import wbif.sjx.common.Object.Point;
 
 public class CreateDistanceMap extends Module {
+    public static final String INPUT_SEPARATOR = "Objects input / image output";
     public static final String INPUT_OBJECTS = "Input objects";
-    public static final String INPUT_IMAGE = "Input image";
     public static final String OUTPUT_IMAGE = "Output image";
+
+    public static final String DISTANCE_MAP_SEPARATOR = "Distance map controls";
     public static final String REFERENCE_MODE = "Reference mode";
     public static final String INVERT_MAP_WITHIN_OBJECTS = "Invert map within objects";
     public static final String MASKING_MODE = "Masking mode";
@@ -73,16 +75,17 @@ public class CreateDistanceMap extends Module {
 
     }
 
-    public static Image getCentroidDistanceMap(Image inputImage, ObjCollection inputObjects, String outputImageName) {
+    public static Image getCentroidDistanceMap(ObjCollection inputObjects, String outputImageName) {
         // Getting image parameters
-        int width = inputImage.getImagePlus().getWidth();
-        int height = inputImage.getImagePlus().getHeight();
-        int nZ = inputImage.getImagePlus().getNSlices();
-        int nT = inputImage.getImagePlus().getNFrames();
+        int width = inputObjects.getWidth();
+        int height = inputObjects.getHeight();
+        int nZ = inputObjects.getNSlices();
+        int nT = inputObjects.getNFrames();
 
         // Creating a blank image (8-bit, so binary operations work)
-        ImagePlus distanceMap = IJ.createHyperStack(outputImageName, width, height, 1, nZ, nT, 8);
-        distanceMap.setCalibration(inputImage.getImagePlus().getCalibration());
+        ImagePlus distanceMapIpl = IJ.createHyperStack(outputImageName, width, height, 1, nZ, nT, 8);
+        Image distanceMap = new Image(outputImageName, distanceMapIpl);
+        inputObjects.applyCalibration(distanceMap);
 
         // Adding a spot to the centre of each object
         for (Obj inputObj : inputObjects.values()) {
@@ -91,14 +94,14 @@ public class CreateDistanceMap extends Module {
             int z = (int) Math.round(inputObj.getZMean(true, false));
             int t = inputObj.getT();
 
-            distanceMap.setPosition(1, z + 1, t + 1);
-            distanceMap.getProcessor().set(x, y, 255);
+            distanceMapIpl.setPosition(1, z + 1, t + 1);
+            distanceMapIpl.getProcessor().set(x, y, 255);
         }
 
         // Calculating the distance map
-        distanceMap = DistanceMap.process(distanceMap, outputImageName, true, false);
+        distanceMapIpl = DistanceMap.process(distanceMapIpl, outputImageName, true, false);
 
-        return new Image(outputImageName, distanceMap);
+        return distanceMap;
 
     }
 
@@ -216,10 +219,6 @@ public class CreateDistanceMap extends Module {
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
         ObjCollection inputObjects = workspace.getObjectSet(inputObjectsName);
 
-        // Getting input image
-        String inputImageName = parameters.getValue(INPUT_IMAGE);
-        Image inputImage = workspace.getImage(inputImageName);
-
         // Getting other parameters
         String outputImageName = parameters.getValue(OUTPUT_IMAGE);
         String referenceMode = parameters.getValue(REFERENCE_MODE);
@@ -232,7 +231,7 @@ public class CreateDistanceMap extends Module {
         Image distanceMap = null;
         switch (referenceMode) {
             case ReferenceModes.DISTANCE_FROM_CENTROID:
-                distanceMap = getCentroidDistanceMap(inputImage, inputObjects, outputImageName);
+                distanceMap = getCentroidDistanceMap(inputObjects, outputImageName);
                 break;
 
             case ReferenceModes.DISTANCE_FROM_EDGE:
@@ -253,7 +252,7 @@ public class CreateDistanceMap extends Module {
         // Applying spatial calibration (as long as we're not normalising the map)
         if (!maskingMode.equals(MaskingModes.INSIDE_ONLY) && !normaliseMap
                 && spatialUnits.equals(SpatialUnitsModes.CALIBRATED)) {
-            double dppXY = inputImage.getImagePlus().getCalibration().pixelWidth;
+            double dppXY = inputObjects.getDppXY();
             DistanceMap.applyCalibratedUnits(distanceMap, dppXY);
         }
 
@@ -268,9 +267,11 @@ public class CreateDistanceMap extends Module {
 
     @Override
     protected void initialiseParameters() {
+        parameters.add(new SeparatorP(INPUT_SEPARATOR, this));
         parameters.add(new InputObjectsP(INPUT_OBJECTS, this));
-        parameters.add(new InputImageP(INPUT_IMAGE, this));
         parameters.add(new OutputImageP(OUTPUT_IMAGE, this));
+
+        parameters.add(new SeparatorP(DISTANCE_MAP_SEPARATOR, this));
         parameters.add(new ChoiceP(REFERENCE_MODE, this, ReferenceModes.DISTANCE_FROM_CENTROID, ReferenceModes.ALL));
         parameters.add(new BooleanP(INVERT_MAP_WITHIN_OBJECTS, this, true));
         parameters.add(new ChoiceP(MASKING_MODE, this, MaskingModes.INSIDE_AND_OUTSIDE, MaskingModes.ALL));
@@ -283,10 +284,11 @@ public class CreateDistanceMap extends Module {
     public ParameterCollection updateAndGetParameters() {
         ParameterCollection returnedParameters = new ParameterCollection();
 
+        returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(INPUT_OBJECTS));
-        returnedParameters.add(parameters.getParameter(INPUT_IMAGE));
         returnedParameters.add(parameters.getParameter(OUTPUT_IMAGE));
 
+        returnedParameters.add(parameters.getParameter(DISTANCE_MAP_SEPARATOR));
         returnedParameters.add(parameters.getParameter(REFERENCE_MODE));
         switch ((String) parameters.getValue(REFERENCE_MODE)) {
             case ReferenceModes.DISTANCE_FROM_EDGE:

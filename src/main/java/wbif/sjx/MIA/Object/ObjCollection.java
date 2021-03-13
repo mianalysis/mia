@@ -9,12 +9,14 @@ import ij.IJ;
 import ij.ImagePlus;
 import ij.measure.Calibration;
 import ij.measure.ResultsTable;
+import ome.units.UNITS;
 import ome.units.quantity.Time;
 import ome.units.unit.Unit;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Object.References.ObjMeasurementRef;
 import wbif.sjx.MIA.Object.References.Collections.ObjMeasurementRefCollection;
+import wbif.sjx.MIA.Object.Units.TemporalUnit;
 import wbif.sjx.MIA.Process.ColourFactory;
 import wbif.sjx.common.Object.LUTs;
 import wbif.sjx.common.Object.Point;
@@ -255,6 +257,7 @@ public class ObjCollection extends LinkedHashMap<Integer, Obj> {
         calibration.setUnit(obj.getUnits());
 
         calibration.frameInterval = frameInterval;
+        calibration.fps = 1 / TemporalUnit.getOMEUnit().convertValue(frameInterval, UNITS.SECOND);
 
     }
 
