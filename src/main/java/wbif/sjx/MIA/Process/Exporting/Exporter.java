@@ -396,7 +396,6 @@ public class Exporter {
                 // Running through all the metadata values, adding them as new columns
                 for (MetadataRef ref:metadataRefs.values()) {
                     if (!ref.isExportGlobal()) continue;
-                    if (!ref.isExportIndividual()) continue;
 
                     summaryDataName = getMetadataString(ref.getName());
                     cell = summaryHeaderRow.createCell(headerCol.get());
@@ -454,7 +453,6 @@ public class Exporter {
 
                 // Running through all the image measurement values, adding them as new columns
                 for (ImageMeasurementRef imageMeasurement:availableMeasurements.values()) {
-                    if (!imageMeasurement.isExportIndividual()) continue;
                     if (!imageMeasurement.isExportGlobal()) continue;
 
                     String measurementName = imageMeasurement.getNickname();
@@ -504,7 +502,6 @@ public class Exporter {
 
                 // Running through all the object measurement values, adding them as new columns
                 for (ObjMeasurementRef objectMeasurement : objectMeasurementRefs.values()) {
-                    if (!objectMeasurement.isExportIndividual()) continue;
                     if (!objectMeasurement.isExportGlobal()) continue;
 
                     if (objectMeasurement.isExportMean()) {
@@ -599,7 +596,6 @@ public class Exporter {
 
             // Running through all the object measurement values, adding them as new columns
             for (ImageMeasurementRef imageMeasurement : imageMeasurementRefs.values()) {
-                if (!imageMeasurement.isExportIndividual()) continue;
                 if (!imageMeasurement.isExportGlobal()) continue;
 
                 Measurement measurement = image.getMeasurement(imageMeasurement.getName());
@@ -638,7 +634,6 @@ public class Exporter {
 
             // Running through all the object measurement values, adding them as new columns
             for (ObjMeasurementRef objectMeasurement : objectMeasurementRefs.values()) {
-                if (!objectMeasurement.isExportIndividual()) continue;
                 if (!objectMeasurement.isExportGlobal()) continue;
 
                 // Running through all objects in this set, adding measurements to a CumStat object
@@ -761,7 +756,6 @@ public class Exporter {
             // Running through all the object measurement values, adding them as new columns
             ObjMeasurementRefCollection objectMeasurementRefs = modules.getObjectMeasurementRefs(objectName);
             for (ObjMeasurementRef objectMeasurement : objectMeasurementRefs.values()) {
-                MIA.log.writeDebug(objectMeasurement.getName()+"_"+objectMeasurement.isExportIndividual()+"_"+objectMeasurement.isExportGlobal());
                 if (!objectMeasurement.isExportIndividual()) continue;
                 if (!objectMeasurement.isExportGlobal()) continue;
 
