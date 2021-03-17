@@ -449,8 +449,12 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
         // Adding temporal calibration
         if (!manualCal[1]) {
             if (!setTemporalCalibrationBF(ipl, meta, seriesNumber)) {
+                // Only display a warning if there's more than 1 frame.  Otherwise this should't be a problem.
+                if (ipl.getNFrames() != 1)
                 MIA.log.writeWarning("Can't apply temporal units for file \"" + new File(path).getName()
                         + "\".  Temporally calibrated values will be unavailable.");
+                
+                // Either way, remove the temporal calibration
                 setDummyTemporalCalibration(ipl);
             }
         }
@@ -617,7 +621,7 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
             currUnitOME = UNITS.SECOND;
         }
 
-        if (currUnitOME == null) {
+        if (currUnitOME == null && ipl.getNFrames() != 1) {
             if (path == null) {
                 MIA.log.writeWarning(
                         "Can't apply temporal units for image loaded from ImageJ.  Temporally calibrated values will be unavailable.");
