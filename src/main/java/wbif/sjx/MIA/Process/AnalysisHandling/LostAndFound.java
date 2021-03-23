@@ -5,6 +5,7 @@ import java.util.HashMap;
 import wbif.sjx.MIA.Module.Core.InputControl;
 import wbif.sjx.MIA.Module.Deprecated.ThresholdImage;
 import wbif.sjx.MIA.Module.ImageMeasurements.MeasureIntensityDistribution;
+import wbif.sjx.MIA.Module.ImageProcessing.Pixel.WekaProbabilityMaps;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.Binary.DistanceMap;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.Threshold.LocalAutoThreshold;
 import wbif.sjx.MIA.Module.ImageProcessing.Stack.Registration.SIFTRegistration;
@@ -29,7 +30,6 @@ public class LostAndFound {
         lostModules.put("ConditionalAnalysisTermination", new WorkflowHandling(null).getClass().getSimpleName());
         lostModules.put("AutomaticRegistration", new SIFTRegistration(null).getClass().getSimpleName());
 
-        
         //// Populating hard-coded parameter reassignments ////
         // CalculateNearestNeighbour
         HashMap<String, String> currentParameterNames = new HashMap<>();
@@ -48,6 +48,12 @@ public class LostAndFound {
         currentParameterNames = new HashMap<>();
         currentParameterNames.put("Spatial units", DistanceMap.SPATIAL_UNITS_MODE);
         moduleName = new DistanceMap(null).getClass().getSimpleName();
+        lostParameterNames.put(moduleName, currentParameterNames);
+
+        // DistanceMap
+        currentParameterNames = new HashMap<>();
+        currentParameterNames.put("Block size (simultaneous slices)", WekaProbabilityMaps.SIMULTANEOUS_SLICES);
+        moduleName = new WekaProbabilityMaps(null).getClass().getSimpleName();
         lostParameterNames.put(moduleName, currentParameterNames);
 
         // ExpandShrinkObjects
@@ -120,18 +126,17 @@ public class LostAndFound {
         moduleName = new WorkflowHandling(null).getClass().getSimpleName();
         lostParameterNames.put(moduleName, currentParameterNames);
 
-
         //// Populating hard-coded parameter value reassignments ////
         // InputControl
         HashMap<String, String> currentValues = new HashMap<>();
-        currentValues.put("METRE",SpatialUnit.AvailableUnits.METRE);
-        currentValues.put("CENTIMETRE",SpatialUnit.AvailableUnits.CENTIMETRE);
+        currentValues.put("METRE", SpatialUnit.AvailableUnits.METRE);
+        currentValues.put("CENTIMETRE", SpatialUnit.AvailableUnits.CENTIMETRE);
         currentValues.put("MILLIMETRE", SpatialUnit.AvailableUnits.MILLIMETRE);
-        currentValues.put("MICROMETRE",SpatialUnit.AvailableUnits.MICROMETRE);
-        currentValues.put("NANOMETRE",SpatialUnit.AvailableUnits.NANOMETRE);
-        currentValues.put("ANGSTROM",SpatialUnit.AvailableUnits.ANGSTROM);
+        currentValues.put("MICROMETRE", SpatialUnit.AvailableUnits.MICROMETRE);
+        currentValues.put("NANOMETRE", SpatialUnit.AvailableUnits.NANOMETRE);
+        currentValues.put("ANGSTROM", SpatialUnit.AvailableUnits.ANGSTROM);
         HashMap<String, HashMap<String, String>> currentParameterValues = new HashMap<>();
-        currentParameterValues.put(InputControl.SPATIAL_UNIT,currentValues);
+        currentParameterValues.put(InputControl.SPATIAL_UNIT, currentValues);
         moduleName = new InputControl(null).getClass().getSimpleName();
         lostParameterValues.put(moduleName, currentParameterValues);
 

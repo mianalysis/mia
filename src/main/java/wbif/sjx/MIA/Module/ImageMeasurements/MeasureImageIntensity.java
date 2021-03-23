@@ -1,22 +1,24 @@
 package wbif.sjx.MIA.Module.ImageMeasurements;
 
 import ij.ImagePlus;
+import ij.process.StackStatistics;
+import wbif.sjx.MIA.Module.Categories;
+import wbif.sjx.MIA.Module.Category;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
-import wbif.sjx.MIA.Module.Category;
-import wbif.sjx.MIA.Module.Categories;
-import wbif.sjx.MIA.Object.*;
+import wbif.sjx.MIA.Object.Image;
+import wbif.sjx.MIA.Object.Measurement;
+import wbif.sjx.MIA.Object.Status;
+import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.MIA.Object.Parameters.InputImageP;
-import wbif.sjx.MIA.Object.Parameters.SeparatorP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
-import wbif.sjx.MIA.Object.References.*;
+import wbif.sjx.MIA.Object.Parameters.SeparatorP;
+import wbif.sjx.MIA.Object.References.ImageMeasurementRef;
 import wbif.sjx.MIA.Object.References.Collections.ImageMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.MetadataRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.ObjMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.ParentChildRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.PartnerRefCollection;
-import wbif.sjx.common.Analysis.IntensityCalculator;
-import wbif.sjx.common.MathFunc.CumStat;
 
 /**
  * Created by sc13967 on 12/05/2017.
@@ -32,6 +34,8 @@ public class MeasureImageIntensity extends Module {
 
     public interface Measurements {
         String MEAN = "INTENSITY // MEAN";
+        String MEDIAN = "INTENSITY // MEDIAN";
+        String MODE = "INTENSITY // MODE";
         String MIN = "INTENSITY // MIN";
         String MAX = "INTENSITY // MAX";
         String SUM = "INTENSITY // SUM";
@@ -48,7 +52,7 @@ public class MeasureImageIntensity extends Module {
 
     @Override
     public String getDescription() {
-        return "Measure intensity statistics (mean, minimum, maximum, sum and standard deviation) for an image in the workspace.  Measurements are associated with the input image, so can be used later on or exported to the results spreadsheet.";
+        return "Measure intensity statistics (mean, median, mode, minimum, maximum, sum and standard deviation) for an image in the workspace.  Measurements are associated with the input image, so can be used later on or exported to the results spreadsheet.";
     }
 
     @Override
@@ -60,14 +64,16 @@ public class MeasureImageIntensity extends Module {
         ImagePlus inputImagePlus = inputImage.getImagePlus();
 
         // Running measurement
-        CumStat cs = IntensityCalculator.calculate(inputImagePlus.getImageStack());
-
+        StackStatistics statistics = new StackStatistics(inputImagePlus);
+        
         // Adding measurements to image
-        inputImage.addMeasurement(new Measurement(Measurements.MEAN, cs.getMean()));
-        inputImage.addMeasurement(new Measurement(Measurements.MIN, cs.getMin()));
-        inputImage.addMeasurement(new Measurement(Measurements.MAX, cs.getMax()));
-        inputImage.addMeasurement(new Measurement(Measurements.STDEV, cs.getStd(CumStat.SAMPLE)));
-        inputImage.addMeasurement(new Measurement(Measurements.SUM, cs.getSum()));
+        inputImage.addMeasurement(new Measurement(Measurements.MEAN, statistics.mean));
+        inputImage.addMeasurement(new Measurement(Measurements.MEDIAN, statistics.median));
+        inputImage.addMeasurement(new Measurement(Measurements.MODE, statistics.mode));
+        inputImage.addMeasurement(new Measurement(Measurements.MIN, statistics.min));
+        inputImage.addMeasurement(new Measurement(Measurements.MAX, statistics.max));
+        inputImage.addMeasurement(new Measurement(Measurements.STDEV, statistics.stdDev));
+        inputImage.addMeasurement(new Measurement(Measurements.SUM, statistics.mean * statistics.longPixelCount));
 
         if (showOutput) inputImage.showMeasurements(this);
 
@@ -99,6 +105,16 @@ public class MeasureImageIntensity extends Module {
         mean.setImageName(inputImageName);
         mean.setDescription("Mean intensity of all pixels in the image \""+parameters.getValue(INPUT_IMAGE)+"\".");
         returnedRefs.add(mean);
+
+        ImageMeasurementRef median = imageMeasurementRefs.getOrPut(Measurements.MEDIAN);
+        median.setImageName(inputImageName);
+        median.setDescription("Median intensity of all pixels in the image \""+parameters.getValue(INPUT_IMAGE)+"\".");
+        returnedRefs.add(median);
+
+        ImageMeasurementRef mode = imageMeasurementRefs.getOrPut(Measurements.MODE);
+        mode.setImageName(inputImageName);
+        mode.setDescription("Mode intensity of all pixels in the image \""+parameters.getValue(INPUT_IMAGE)+"\".");
+        returnedRefs.add(mode);
 
         ImageMeasurementRef min = imageMeasurementRefs.getOrPut(Measurements.MIN);
         min.setImageName(inputImageName);
