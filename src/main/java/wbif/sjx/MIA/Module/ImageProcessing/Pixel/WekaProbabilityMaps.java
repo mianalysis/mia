@@ -8,6 +8,7 @@ import java.io.IOException;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.ImageStack;
+import ij.Prefs;
 import ij.plugin.RGBStackConverter;
 import ij.plugin.SubstackMaker;
 import ij.process.ImageProcessor;
@@ -59,7 +60,8 @@ public class WekaProbabilityMaps extends Module {
     public static final String GENERIC_FORMAT = "Generic format";
     public static final String AVAILABLE_METADATA_FIELDS = "Available metadata fields";
     public static final String CLASSIFIER_FILE = "Classifier file path";
-    public static final String BLOCK_SIZE = "Block size (simultaneous slices)";
+    public static final String SIMULTANEOUS_SLICES = "Simultaneous slices";
+    public static final String TILE_FACTOR = "Tile factor";
 
     public WekaProbabilityMaps(ModuleCollection modules) {
         super("Weka probability maps", modules);
@@ -83,12 +85,12 @@ public class WekaProbabilityMaps extends Module {
     }
 
     public ImagePlus calculateProbabilityMaps(ImagePlus inputImagePlus, String outputImageName,
-            String classifierFilePath, int blockSize, int bitDepth) {
-        return calculateProbabilityMaps(inputImagePlus, outputImageName, classifierFilePath, blockSize, bitDepth, -1);
+            String classifierFilePath, int nSimSlices, int tileFactor, int bitDepth) {
+        return calculateProbabilityMaps(inputImagePlus, outputImageName, classifierFilePath, nSimSlices, tileFactor, bitDepth, -1);
     }
 
     public ImagePlus calculateProbabilityMaps(ImagePlus inputImagePlus, String outputImageName,
-            String classifierFilePath, int blockSize, int bitDepth, int outputClass) {
+            String classifierFilePath, int nSimSlices, int tileFactor, int bitDepth, int outputClass) {
         WekaSegmentation wekaSegmentation = new WekaSegmentation();
 
         // Checking classifier can be loaded
@@ -114,7 +116,7 @@ public class WekaProbabilityMaps extends Module {
         int nClasses = wekaSegmentation.getNumOfClasses();
         int nOutputClasses = outputClass == -1 ? wekaSegmentation.getNumOfClasses() : 1;
 
-        int nBlocks = (int) Math.ceil((double) (nChannels * nSlices * nFrames) / (double) blockSize);
+        int nBlocks = (int) Math.ceil((double) (nChannels * nSlices * nFrames) / (double) nSimSlices);
 
         // Creating the new image
         ImagePlus probabilityMaps = IJ.createHyperStack(outputImageName, width, height, nChannels * nOutputClasses,
@@ -124,17 +126,23 @@ public class WekaProbabilityMaps extends Module {
         ImageStack inputStack = inputImagePlus.getStack();
         int slices = inputStack.getSize();
 
+        int nThreads = Prefs.getThreads();
+
         int count = 0;
         for (int b = 1; b <= nBlocks; b++) {
-            int startingBlock = (b - 1) * blockSize + 1;
-            int endingBlock = Math.min((b - 1) * blockSize + blockSize, slices);
+            int startingBlock = (b - 1) * nSimSlices + 1;
+            int endingBlock = Math.min((b - 1) * nSimSlices + nSimSlices, slices);
 
             ImagePlus iplSingle = new SubstackMaker().makeSubstack(new ImagePlus("Tempstack", inputStack),
                     startingBlock + "-" + endingBlock);
 
-            wekaSegmentation.setTrainingImage(iplSingle);
-            wekaSegmentation.applyClassifier(true);
-            iplSingle = wekaSegmentation.getClassifiedImage();
+            if (tileFactor == 1) {
+                wekaSegmentation.setTrainingImage(iplSingle);
+                wekaSegmentation.applyClassifier(true);
+                iplSingle = wekaSegmentation.getClassifiedImage();
+            } else {
+                iplSingle = wekaSegmentation.applyClassifier(iplSingle, new int[] { tileFactor, tileFactor }, nThreads, true);
+            }            
 
             // Converting probability image to specified bit depth (it will be 32-bit by
             // default)
@@ -162,7 +170,7 @@ public class WekaProbabilityMaps extends Module {
                     }
                 }
             }
-            
+
             count = count + endingBlock - startingBlock + 1;
             writeStatus("Processed " + count + " of " + slices + " images");
 
@@ -174,7 +182,6 @@ public class WekaProbabilityMaps extends Module {
         return probabilityMaps;
 
     }
-
 
     @Override
     public Category getCategory() {
@@ -204,7 +211,8 @@ public class WekaProbabilityMaps extends Module {
         String pathType = parameters.getValue(PATH_TYPE);
         String genericFormat = parameters.getValue(GENERIC_FORMAT);
         String classifierFilePath = parameters.getValue(CLASSIFIER_FILE);
-        int blockSize = parameters.getValue(BLOCK_SIZE);
+        int nSimSlices = parameters.getValue(SIMULTANEOUS_SLICES);
+        int tileFactor = parameters.getValue(TILE_FACTOR);
 
         // Converting to RGB if requested
         if (convertToRGB) {
@@ -220,19 +228,19 @@ public class WekaProbabilityMaps extends Module {
             outputClass = -1;
 
         switch (pathType) {
-            case PathTypes.MATCHING_FORMAT:
-                Metadata metadata = (Metadata) workspace.getMetadata().clone();
-                try {
-                    classifierFilePath = ImageLoader.getGenericName(metadata, genericFormat);
-                } catch (ServiceException | DependencyException | FormatException | IOException e) {
-                    e.printStackTrace();
-                }
-                break;
+        case PathTypes.MATCHING_FORMAT:
+            Metadata metadata = (Metadata) workspace.getMetadata().clone();
+            try {
+                classifierFilePath = ImageLoader.getGenericName(metadata, genericFormat);
+            } catch (ServiceException | DependencyException | FormatException | IOException e) {
+                e.printStackTrace();
+            }
+            break;
         }
 
         // Running the classifier on each individual stack
         ImagePlus probabilityMaps = calculateProbabilityMaps(inputImagePlus, outputImageName, classifierFilePath,
-                blockSize, bitDepth, outputClass);
+                nSimSlices, tileFactor, bitDepth, outputClass);
 
         // If the classification failed, a null object is returned
         if (probabilityMaps == null)
@@ -266,18 +274,21 @@ public class WekaProbabilityMaps extends Module {
                 "Class (image channel) to be output.  Channel numbering starts at 1."));
         parameters.add(new SeparatorP(CLASSIFIER_SEPARATOR, this));
         parameters.add(new ChoiceP(PATH_TYPE, this, PathTypes.SPECIFIC_FILE, PathTypes.ALL,
-                "Method to use for generation of the classifier filename:<br><ul>"
-                + "<li>\"" + PathTypes.MATCHING_FORMAT + "\" Will generate a name from metadata values stored in the current workspace.  This is useful if the classifier varies from input file to input file.</li>"
-                + "<li>\"" + PathTypes.SPECIFIC_FILE + "\" Will load the classifier file at a specific location.  This is useful if the same file is to be used for all input files.</li></ul>"));
+                "Method to use for generation of the classifier filename:<br><ul>" + "<li>\""
+                        + PathTypes.MATCHING_FORMAT
+                        + "\" Will generate a name from metadata values stored in the current workspace.  This is useful if the classifier varies from input file to input file.</li>"
+                        + "<li>\"" + PathTypes.SPECIFIC_FILE
+                        + "\" Will load the classifier file at a specific location.  This is useful if the same file is to be used for all input files.</li></ul>"));
         parameters.add(new StringP(GENERIC_FORMAT, this, "",
                 "Format for a generic filename.  Plain text can be mixed with global variables or metadata values currently stored in the workspace.  Global variables are specified using the \"V{name}\" notation, where \"name\" is the name of the variable to insert.  Similarly, metadata values are specified with the \"M{name}\" notation."));
         parameters.add(new TextAreaP(AVAILABLE_METADATA_FIELDS, this, false,
                 "List of the currently-available metadata values for this workspace.  These can be used when compiling a generic filename."));
         parameters.add(new FilePathP(CLASSIFIER_FILE, this, "",
                 "Path to the classifier file (.model extension).  This file needs to be created manually using the WEKA Trainable Segmentation plugin included with Fiji."));
-        parameters.add(new IntegerP(BLOCK_SIZE, this, 1,
+        parameters.add(new IntegerP(SIMULTANEOUS_SLICES, this, 1,
                 "Number of image slices to process at any given time.  This reduces the memory footprint of the module, but can slow down processing."));
-
+        parameters.add(new IntegerP(TILE_FACTOR, this, 1,
+                "Number of tiles per dimension each image will be subdivided into for processing.  For example, a tile factor of 2 will divide the image into a 2x2 grid of tiles.  This reduces the memory footprint of the module."));
     }
 
     @Override
@@ -300,17 +311,18 @@ public class WekaProbabilityMaps extends Module {
         returnedParameters.add(parameters.getParameter(CLASSIFIER_SEPARATOR));
         returnedParameters.add(parameters.getParameter(PATH_TYPE));
         switch ((String) parameters.getValue(PATH_TYPE)) {
-            case PathTypes.MATCHING_FORMAT:
-                returnedParameters.add(parameters.getParameter(GENERIC_FORMAT));
-                returnedParameters.add(parameters.getParameter(AVAILABLE_METADATA_FIELDS));
-                MetadataRefCollection metadataRefs = modules.getMetadataRefs(this);
-                parameters.getParameter(AVAILABLE_METADATA_FIELDS).setValue(metadataRefs.getMetadataValues());
-                break;
-            case PathTypes.SPECIFIC_FILE:
-                returnedParameters.add(parameters.getParameter(CLASSIFIER_FILE));
-                break;
+        case PathTypes.MATCHING_FORMAT:
+            returnedParameters.add(parameters.getParameter(GENERIC_FORMAT));
+            returnedParameters.add(parameters.getParameter(AVAILABLE_METADATA_FIELDS));
+            MetadataRefCollection metadataRefs = modules.getMetadataRefs(this);
+            parameters.getParameter(AVAILABLE_METADATA_FIELDS).setValue(metadataRefs.getMetadataValues());
+            break;
+        case PathTypes.SPECIFIC_FILE:
+            returnedParameters.add(parameters.getParameter(CLASSIFIER_FILE));
+            break;
         }
-        returnedParameters.add(parameters.getParameter(BLOCK_SIZE));
+        returnedParameters.add(parameters.getParameter(SIMULTANEOUS_SLICES));
+        returnedParameters.add(parameters.getParameter(TILE_FACTOR));
 
         return returnedParameters;
 

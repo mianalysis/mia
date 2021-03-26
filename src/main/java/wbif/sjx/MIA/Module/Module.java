@@ -53,6 +53,8 @@ public abstract class Module extends Ref implements Comparable {
     private boolean runnable = true;
     protected boolean showOutput = false;
     protected Module redirectModule = null; // After this module, can redirect to another module
+    private boolean showBasicTitle = true;
+
     // CONSTRUCTOR
 
     public Module(String name, ModuleCollection modules) {
@@ -302,6 +304,14 @@ public abstract class Module extends Ref implements Comparable {
         this.canBeDisabled = canBeDisabled;
     }
 
+    public boolean canShowBasicTitle() {
+        return showBasicTitle;
+    }
+
+    public void setShowBasicTitle(boolean showBasicTitle) {
+        this.showBasicTitle = showBasicTitle;
+    }
+
     public static boolean isVerbose() {
         return verbose;
     }
@@ -439,6 +449,7 @@ public abstract class Module extends Ref implements Comparable {
         element.setAttribute("CLASSNAME", getClass().getName());
         element.setAttribute("ENABLED", String.valueOf(enabled));
         element.setAttribute("DISABLEABLE", String.valueOf(canBeDisabled));
+        element.setAttribute("SHOW_BASIC_TITLE", String.valueOf(showBasicTitle));
         element.setAttribute("SHOW_OUTPUT", String.valueOf(showOutput));
         element.setAttribute("NOTES", notes);
 
@@ -461,6 +472,9 @@ public abstract class Module extends Ref implements Comparable {
         }
         this.enabled = Boolean.parseBoolean(map.getNamedItem("ENABLED").getNodeValue());
         this.canBeDisabled = Boolean.parseBoolean(map.getNamedItem("DISABLEABLE").getNodeValue());
+        if (map.getNamedItem("SHOW_BASIC_TITLE") != null) {
+            this.showBasicTitle = Boolean.parseBoolean(map.getNamedItem("SHOW_BASIC_TITLE").getNodeValue());
+        }
         this.showOutput = Boolean.parseBoolean(map.getNamedItem("SHOW_OUTPUT").getNodeValue());
         this.notes = map.getNamedItem("NOTES").getNodeValue();
 

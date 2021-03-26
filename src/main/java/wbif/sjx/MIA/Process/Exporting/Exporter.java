@@ -279,6 +279,7 @@ public class Exporter {
             row.createCell(1).setCellValue(module.getNickname());
             row.createCell(2).setCellValue(module.isEnabled());
             row.createCell(3).setCellValue(module.canBeDisabled());
+            row.createCell(4).setCellValue(module.canShowBasicTitle());
         }
 
         for (Parameter currParam : parameters.values()) {

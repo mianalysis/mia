@@ -27,6 +27,7 @@ import wbif.sjx.MIA.GUI.ControlObjects.ParameterList.EnableRefsButton;
 import wbif.sjx.MIA.GUI.ControlObjects.ParameterList.ExportEnableButton;
 import wbif.sjx.MIA.GUI.ControlObjects.ParameterList.ExportName;
 import wbif.sjx.MIA.GUI.ControlObjects.ParameterList.ResetExport;
+import wbif.sjx.MIA.GUI.ControlObjects.ParameterList.ShowBasicTitleCheck;
 import wbif.sjx.MIA.GUI.ControlObjects.ParameterList.VisibleCheck;
 import wbif.sjx.MIA.GUI.ParameterControls.ParameterControl;
 import wbif.sjx.MIA.Module.Module;
@@ -58,8 +59,8 @@ public class ComponentFactory {
             ComponentFactory.class.getResource("/Icons/rightarrow_darkblue_12px.png"), "");
     private static final ImageIcon leftArrow = new ImageIcon(
             ComponentFactory.class.getResource("/Icons/leftarrow_darkblue_12px.png"), "");
-    private static final ImageIcon circle = new ImageIcon(
-            ComponentFactory.class.getResource("/Icons/dot_blue_12px.png"), "");
+    // private static final ImageIcon circle = new ImageIcon(
+    // ComponentFactory.class.getResource("/Icons/dot_blue_12px.png"), "");
 
     public ComponentFactory(int elementHeight) {
         this.elementHeight = elementHeight;
@@ -165,15 +166,31 @@ public class ComponentFactory {
         c.weightx = 0;
         paramPanel.add(separator, c);
 
+        ShowBasicTitleCheck showBasicTitleCheck = new ShowBasicTitleCheck(activeModule);
+        showBasicTitleCheck.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
+        if (activeModule.getClass() == GUISeparator.class) {
+            showBasicTitleCheck.setEnabled(false);
+            showBasicTitleCheck.setOpaque(false);
+        }
+        c.gridx++;
+        c.anchor = GridBagConstraints.EAST;
+        paramPanel.add(showBasicTitleCheck, c);
+
+        separator = new JSeparator();
+        separator.setOrientation(JSeparator.VERTICAL);
+        separator.setPreferredSize(new Dimension(5, 25));
+        c.gridx++;
+        c.weightx = 0;
+        paramPanel.add(separator, c);
+
         DisableableCheck disableableCheck = new DisableableCheck(activeModule);
         disableableCheck.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
-        if (activeModule.getClass() == InputControl.class) {
+        if (activeModule.getClass() == InputControl.class || activeModule.getClass() == GUISeparator.class) {
             disableableCheck.setEnabled(false);
             disableableCheck.setOpaque(false);
         }
         c.gridx++;
         c.anchor = GridBagConstraints.EAST;
-
         paramPanel.add(disableableCheck, c);
 
         return paramPanel;
@@ -225,29 +242,30 @@ public class ComponentFactory {
         c.fill = GridBagConstraints.HORIZONTAL;
         c.anchor = GridBagConstraints.WEST;
 
-        ModuleEnabledButton moduleEnabledButton = new ModuleEnabledButton(module);
-        moduleEnabledButton.setPreferredSize(new Dimension(elementHeight, elementHeight));
-        moduleEnabledButton.setMinimumSize(new Dimension(elementHeight, elementHeight));
-        moduleEnabledButton.setEnabled(module.canBeDisabled());
-        moduleEnabledButton.setBorderPainted(false);
-        moduleEnabledButton.setOpaque(false);
-        moduleEnabledButton.setContentAreaFilled(false);
-        panel.add(moduleEnabledButton, c);
+        // ModuleEnabledButton moduleEnabledButton = new ModuleEnabledButton(module);
+        // moduleEnabledButton.setPreferredSize(new Dimension(elementHeight, elementHeight));
+        // moduleEnabledButton.setMinimumSize(new Dimension(elementHeight, elementHeight));
+        // moduleEnabledButton.setEnabled(module.canBeDisabled());
+        // moduleEnabledButton.setBorderPainted(false);
+        // moduleEnabledButton.setOpaque(false);
+        // moduleEnabledButton.setContentAreaFilled(false);
+        // panel.add(moduleEnabledButton, c);
 
         BooleanP expandedBasic = (BooleanP) module.getParameter(GUISeparator.EXPANDED_BASIC);
         JLabel leftArrowLabel = new JLabel();
 
-        if (((GUISeparator) module).getBasicModules().size() == 0 & !module.getNickname().equals("File selection")) {
-            leftArrowLabel.setIcon(circle);
+        // if (((GUISeparator) module).getBasicModules().size() == 0 &
+        // !module.getNickname().equals("File selection")) {
+        // leftArrowLabel.setIcon(circle);
+        // } else {
+        if (expandedBasic.isSelected()) {
+            leftArrowLabel.setIcon(downArrow);
         } else {
-            if (expandedBasic.isSelected()) {
-                leftArrowLabel.setIcon(downArrow);
-            } else {
-                leftArrowLabel.setIcon(rightArrow);
-            }
+            leftArrowLabel.setIcon(rightArrow);
         }
-        c.insets = new Insets(0, 0, 0, 5);
-        c.gridx++;
+        // }
+        c.insets = new Insets(0, 5, 0, 0);
+        // c.gridx++;
         panel.add(leftArrowLabel, c);
 
         JSeparator separatorLeft = new JSeparator();
@@ -274,15 +292,16 @@ public class ComponentFactory {
         panel.add(separatorRight, c);
 
         JLabel rightArrowLabel = new JLabel();
-        if (((GUISeparator) module).getBasicModules().size() == 0 & !module.getNickname().equals("File selection")) {
-            rightArrowLabel.setIcon(circle);
+        // if (((GUISeparator) module).getBasicModules().size() == 0 &
+        // !module.getNickname().equals("File selection")) {
+        // rightArrowLabel.setIcon(circle);
+        // } else {
+        if (expandedBasic.isSelected()) {
+            rightArrowLabel.setIcon(downArrow);
         } else {
-            if (expandedBasic.isSelected()) {
-                rightArrowLabel.setIcon(downArrow);
-            } else {
-                rightArrowLabel.setIcon(leftArrow);
-            }
+            rightArrowLabel.setIcon(leftArrow);
         }
+        // }
 
         c.weightx = 0;
         c.gridx++;
@@ -341,7 +360,6 @@ public class ComponentFactory {
             return null;
 
         JPanel modulePanel = new JPanel(new GridBagLayout());
-        JPanel titlePanel = createBasicModuleHeading(module);
 
         GridBagConstraints c = new GridBagConstraints();
         c.gridx = 0;
@@ -350,7 +368,11 @@ public class ComponentFactory {
         c.weighty = 0;
         c.fill = GridBagConstraints.HORIZONTAL;
         c.anchor = GridBagConstraints.NORTHWEST;
-        modulePanel.add(titlePanel, c);
+
+        if (module.canBeDisabled() || module.canShowBasicTitle()) {
+            JPanel titlePanel = createBasicModuleHeading(module);
+            modulePanel.add(titlePanel, c);
+        }
 
         // If there are visible parameters, but the module isn't enabled only return the
         // heading
