@@ -10,6 +10,7 @@ import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.Category;
 import wbif.sjx.MIA.Module.Categories;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.InvertIntensity;
+import wbif.sjx.MIA.Module.ImageProcessing.Stack.ImageTypeConverter;
 import wbif.sjx.MIA.Object.Status;
 import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.Workspace;
@@ -20,6 +21,7 @@ import wbif.sjx.MIA.Object.Parameters.InputImageP;
 import wbif.sjx.MIA.Object.Parameters.OutputImageP;
 import wbif.sjx.MIA.Object.Parameters.SeparatorP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
+import wbif.sjx.MIA.Object.Parameters.Text.DoubleP;
 import wbif.sjx.MIA.Object.Parameters.Text.IntegerP;
 import wbif.sjx.MIA.Object.References.Collections.ImageMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.MetadataRefCollection;
@@ -54,18 +56,35 @@ public class ManualThreshold extends Module {
         super("Manual threshold", modules);
     }
 
-    public static void applyThreshold(ImagePlus inputImagePlus, int threshold) {
+    public static void applyThreshold(ImagePlus inputImagePlus, double threshold) {
+        // Creating an integer threshold in case image is 8 or 16 bit
+        int intThreshold = (int) Math.round(threshold);
+
         // Applying threshold
         for (int z = 1; z <= inputImagePlus.getNSlices(); z++) {
             for (int c = 1; c <= inputImagePlus.getNChannels(); c++) {
                 for (int t = 1; t <= inputImagePlus.getNFrames(); t++) {
                     inputImagePlus.setPosition(c, z, t);
-                    inputImagePlus.getProcessor().threshold(threshold);
+                    if (inputImagePlus.getBitDepth() == 32) {                        
+                        for (int x = 0; x < inputImagePlus.getWidth(); x++) {
+                            for (int y = 0; y < inputImagePlus.getHeight(); y++) {
+                                float val = inputImagePlus.getProcessor().getf(x, y);
+                                val = val <= threshold ? 0 : 255;
+                                inputImagePlus.getProcessor().setf(x, y, val);
+                            }
+                        }
+                    } else {
+                        inputImagePlus.getProcessor().threshold(intThreshold);
+                    }
                 }
             }
         }
 
         inputImagePlus.setPosition(1, 1, 1);
+
+        // If the input was 32-bit we can now convert it to 8-bit
+        if (inputImagePlus.getBitDepth() == 32)
+            ImageTypeConverter.process(inputImagePlus, 8, ImageTypeConverter.ScalingModes.CLIP);
 
     }
 
@@ -92,7 +111,7 @@ public class ManualThreshold extends Module {
         boolean applyToInput = parameters.getValue(APPLY_TO_INPUT);
         boolean whiteBackground = parameters.getValue(WHITE_BACKGROUND);
         String thresholdSource = parameters.getValue(THRESHOLD_SOURCE);
-        int thresholdValue = parameters.getValue(THRESHOLD_VALUE);
+        double thresholdValue = parameters.getValue(THRESHOLD_VALUE);
         String measurementName = parameters.getValue(MEASUREMENT);
 
         if (thresholdSource.equals(ThresholdSources.IMAGE_MEASUREMENT)) {
@@ -138,7 +157,7 @@ public class ManualThreshold extends Module {
 
         parameters.add(new SeparatorP(THRESHOLD_SEPARATOR, this));
         parameters.add(new ChoiceP(THRESHOLD_SOURCE, this, ThresholdSources.FIXED_VALUE, ThresholdSources.ALL));
-        parameters.add(new IntegerP(THRESHOLD_VALUE, this, 1));
+        parameters.add(new DoubleP(THRESHOLD_VALUE, this, 1d));
         parameters.add(new ImageMeasurementP(MEASUREMENT, this));
         parameters.add(new BooleanP(WHITE_BACKGROUND, this, true));
 

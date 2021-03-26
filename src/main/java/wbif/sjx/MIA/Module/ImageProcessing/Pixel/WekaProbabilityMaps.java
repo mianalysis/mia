@@ -136,7 +136,13 @@ public class WekaProbabilityMaps extends Module {
             ImagePlus iplSingle = new SubstackMaker().makeSubstack(new ImagePlus("Tempstack", inputStack),
                     startingBlock + "-" + endingBlock);
 
-            iplSingle = wekaSegmentation.applyClassifier(iplSingle, new int[] { tileFactor, tileFactor }, nThreads, true);
+            if (tileFactor == 1) {
+                wekaSegmentation.setTrainingImage(iplSingle);
+                wekaSegmentation.applyClassifier(true);
+                iplSingle = wekaSegmentation.getClassifiedImage();
+            } else {
+                iplSingle = wekaSegmentation.applyClassifier(iplSingle, new int[] { tileFactor, tileFactor }, nThreads, true);
+            }            
 
             // Converting probability image to specified bit depth (it will be 32-bit by
             // default)

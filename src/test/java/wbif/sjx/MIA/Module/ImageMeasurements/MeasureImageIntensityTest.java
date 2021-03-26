@@ -51,7 +51,7 @@ public class MeasureImageIntensityTest extends ModuleTest {
         measureImageIntensity.execute(workspace);
 
         // Verifying results
-        assertEquals(6,image.getMeasurements().size());
+        assertEquals(7,image.getMeasurements().size());
         assertEquals(126.1, image.getMeasurement(MeasureImageIntensity.Measurements.MEAN).getValue(),tolerance);
         assertEquals(0, image.getMeasurement(MeasureImageIntensity.Measurements.MIN).getValue(),tolerance);
         assertEquals(255, image.getMeasurement(MeasureImageIntensity.Measurements.MAX).getValue(),tolerance);
@@ -81,7 +81,7 @@ public class MeasureImageIntensityTest extends ModuleTest {
         measureImageIntensity.execute(workspace);
 
         // Verifying results
-        assertEquals(6,image.getMeasurements().size());
+        assertEquals(7,image.getMeasurements().size());
         assertEquals(25209.9, image.getMeasurement(MeasureImageIntensity.Measurements.MEAN).getValue(),tolerance);
         assertEquals(20, image.getMeasurement(MeasureImageIntensity.Measurements.MIN).getValue(),tolerance);
         assertEquals(52287, image.getMeasurement(MeasureImageIntensity.Measurements.MAX).getValue(),tolerance);
@@ -111,7 +111,7 @@ public class MeasureImageIntensityTest extends ModuleTest {
         measureImageIntensity.execute(workspace);
 
         // Verifying results
-        assertEquals(6,image.getMeasurements().size());
+        assertEquals(7,image.getMeasurements().size());
         assertEquals(126.03, image.getMeasurement(MeasureImageIntensity.Measurements.MEAN).getValue(),tolerance);
         assertEquals(0, image.getMeasurement(MeasureImageIntensity.Measurements.MIN).getValue(),tolerance);
         assertEquals(255, image.getMeasurement(MeasureImageIntensity.Measurements.MAX).getValue(),tolerance);
@@ -141,7 +141,7 @@ public class MeasureImageIntensityTest extends ModuleTest {
         measureImageIntensity.execute(workspace);
 
         // Verifying results
-        assertEquals(6,image.getMeasurements().size());
+        assertEquals(7,image.getMeasurements().size());
         assertEquals(126.10, image.getMeasurement(MeasureImageIntensity.Measurements.MEAN).getValue(),tolerance);
         assertEquals(0, image.getMeasurement(MeasureImageIntensity.Measurements.MIN).getValue(),tolerance);
         assertEquals(255, image.getMeasurement(MeasureImageIntensity.Measurements.MAX).getValue(),tolerance);
@@ -171,7 +171,7 @@ public class MeasureImageIntensityTest extends ModuleTest {
         measureImageIntensity.execute(workspace);
 
         // Verifying results
-        assertEquals(6,image.getMeasurements().size());
+        assertEquals(7,image.getMeasurements().size());
         assertEquals(126.10, image.getMeasurement(MeasureImageIntensity.Measurements.MEAN).getValue(),tolerance);
         assertEquals(0, image.getMeasurement(MeasureImageIntensity.Measurements.MIN).getValue(),tolerance);
         assertEquals(255, image.getMeasurement(MeasureImageIntensity.Measurements.MAX).getValue(),tolerance);

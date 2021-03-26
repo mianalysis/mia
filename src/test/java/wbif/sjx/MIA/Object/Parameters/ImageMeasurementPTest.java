@@ -147,9 +147,11 @@ public class ImageMeasurementPTest {
         imageMeasurementP.setImageName("Demo im");
 
         String[] actual = imageMeasurementP.getChoices();
-        String[] expected = new String[]{"INTENSITY // MEAN",
+        String[] expected = new String[] { "INTENSITY // MEAN",
+                "INTENSITY // MEDIAN",
                 "INTENSITY // MIN",
                 "INTENSITY // MAX",
+                "INTENSITY // MODE",
                 "INTENSITY // SUM",
                 "INTENSITY // STDEV",
                 "TEXTURE // ASM",

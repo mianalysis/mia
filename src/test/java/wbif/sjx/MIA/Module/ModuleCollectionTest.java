@@ -1,32 +1,33 @@
-package wbif.sjx.MIA.Object;
+package wbif.sjx.MIA.Module;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.util.LinkedHashSet;
+
+import org.junit.jupiter.api.Test;
 
 import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
-import org.junit.jupiter.api.Test;
 import wbif.sjx.MIA.Module.ImageMeasurements.MeasureImageIntensity;
 import wbif.sjx.MIA.Module.ImageMeasurements.MeasureImageTexture;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.FilterImage;
 import wbif.sjx.MIA.Module.ImageProcessing.Stack.RemoveImage;
 import wbif.sjx.MIA.Module.InputOutput.ImageLoader;
-import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.ObjectMeasurements.Intensity.MeasureObjectTexture;
 import wbif.sjx.MIA.Module.ObjectMeasurements.Spatial.MeasureObjectCentroid;
 import wbif.sjx.MIA.Module.ObjectMeasurements.Spatial.MeasureObjectShape;
-import wbif.sjx.MIA.Module.ObjectProcessing.Relationships.TrackObjects;
 import wbif.sjx.MIA.Module.ObjectProcessing.Relationships.SingleClassCluster;
-import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
+import wbif.sjx.MIA.Module.ObjectProcessing.Relationships.TrackObjects;
 import wbif.sjx.MIA.Object.Parameters.BooleanP;
 import wbif.sjx.MIA.Object.Parameters.OutputImageP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.Parameters.ParameterGroup;
+import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
 import wbif.sjx.MIA.Object.References.Collections.ImageMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.ObjMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.ParentChildRefCollection;
 import wbif.sjx.MIA.Object.Units.SpatialUnit;
-
-import java.util.LinkedHashSet;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 public class ModuleCollectionTest<T extends RealType<T> & NativeType<T>> {
     @Test
@@ -85,7 +86,7 @@ public class ModuleCollectionTest<T extends RealType<T> & NativeType<T>> {
 
         // Checking the values for "Im1"
         ImageMeasurementRefCollection references1 = modules.getImageMeasurementRefs(im1Name);
-        assertEquals(5, references1.size());
+        assertEquals(7, references1.size());
 
         String[] expectedNames1 = new String[] { MeasureImageIntensity.Measurements.MEAN,
                 MeasureImageIntensity.Measurements.STDEV, MeasureImageIntensity.Measurements.MIN,
@@ -97,7 +98,7 @@ public class ModuleCollectionTest<T extends RealType<T> & NativeType<T>> {
 
         // Checking the values for "New_image"
         ImageMeasurementRefCollection references2 = modules.getImageMeasurementRefs(im2Name);
-        assertEquals(9, references2.size());
+        assertEquals(11, references2.size());
 
         String[] expectedNames2 = new String[] { MeasureImageIntensity.Measurements.MEAN,
                 MeasureImageIntensity.Measurements.STDEV, MeasureImageIntensity.Measurements.MIN,
@@ -134,7 +135,7 @@ public class ModuleCollectionTest<T extends RealType<T> & NativeType<T>> {
 
         // Checking the values for "Im1"
         ImageMeasurementRefCollection references1 = modules.getImageMeasurementRefs(im1Name, measureImageIntensity2);
-        assertEquals(5, references1.size());
+        assertEquals(7, references1.size());
 
         String[] expectedNames1 = new String[] { MeasureImageIntensity.Measurements.MEAN,
                 MeasureImageIntensity.Measurements.STDEV, MeasureImageIntensity.Measurements.MIN,
