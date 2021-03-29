@@ -63,14 +63,21 @@ public class RidgeDetection extends Module {
     public static final String ALIGNMENT_RANGE = "Alignment range (px)";
     public static final String MAXIMUM_END_MISALIGNMENT = "Maximum end misalignment (degs)";
 
+    public interface ContourContrast {
+        String DARK_LINE = "Dark line";
+        String LIGHT_LINE = "Light line";
+
+        String[] ALL = new String[] { DARK_LINE, LIGHT_LINE };
+
+    }
+    
     public interface OverlapModes {
         String NONE = "None";
         String SLOPE = "Slope";
 
         String[] ALL = new String[] { NONE, SLOPE };
-        
-    }
 
+    }
 
     public RidgeDetection(ModuleCollection modules) {
         super("Ridge detection",modules);
@@ -83,14 +90,6 @@ public class RidgeDetection extends Module {
         String STDEV_HALFWIDTH_PX = "RIDGE_DETECT // STDEV_HALFWIDTH_(PX)";
         String MEAN_HALFWIDTH_CAL = "RIDGE_DETECT // MEAN_HALFWIDTH_(${SCAL})";
         String STDEV_HALFWIDTH_CAL = "RIDGE_DETECT // STDEV_HALFWIDTH_(${SCAL})";
-    }
-
-    private interface ContourContrast {
-        String DARK_LINE = "Dark line";
-        String LIGHT_LINE = "Light line";
-
-        String[] ALL = new String[]{DARK_LINE,LIGHT_LINE};
-
     }
 
     public static void linkJunctions(HashMap<Line, HashSet<Line>> groups, Junctions junctions, boolean limitMisalignment, int endRange, double maxMisalignment) {
