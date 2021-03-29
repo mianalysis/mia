@@ -5,6 +5,9 @@ package wbif.sjx.MIA.Module.ImageProcessing.Pixel;
 
 import java.util.ArrayList;
 
+import de.biomedical_imaging.ij.steger.Convol;
+import de.biomedical_imaging.ij.steger.LinesUtil;
+import de.biomedical_imaging.ij.steger.Position;
 import fiji.stacks.Hyperstack_rearranger;
 import ij.ImagePlus;
 import ij.ImageStack;
@@ -14,6 +17,7 @@ import ij.plugin.GaussianBlur3D;
 import ij.plugin.SubHyperstackMaker;
 import ij.plugin.ZProjector;
 import ij.plugin.filter.RankFilters;
+import ij.process.FloatProcessor;
 import ij.process.ImageProcessor;
 import inra.ijpb.morphology.Morphology;
 import inra.ijpb.morphology.strel.DiskStrel;
@@ -41,7 +45,6 @@ import wbif.sjx.MIA.Object.References.Collections.ParentChildRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.PartnerRefCollection;
 import wbif.sjx.MIA.Process.CommaSeparatedStringInterpreter;
 import wbif.sjx.common.Filters.DoG;
-import wbif.sjx.common.Filters.RidgeEnhancement;
 
 /**
  * Created by Stephen on 30/05/2017.
@@ -57,6 +60,7 @@ public class FilterImage extends Module {
     public static final String CALIBRATED_UNITS = "Calibrated units";
     public static final String ROLLING_METHOD = "Rolling filter method";
     public static final String WINDOW_INDICES = "Window indices";
+    public static final String CONTOUR_CONTRAST = "Contour contrast";
 
     public FilterImage(ModuleCollection modules) {
         super("Filter image", modules);
@@ -103,6 +107,14 @@ public class FilterImage extends Module {
         String FUTURE = "Future only";
 
         String[] ALL = new String[] { BOTH_SIDES, PREVIOUS, FUTURE };
+
+    }
+
+    public interface ContourContrast {
+        String DARK_LINE = "Dark line";
+        String LIGHT_LINE = "Light line";
+
+        String[] ALL = new String[] { DARK_LINE, LIGHT_LINE };
 
     }
 
@@ -227,18 +239,71 @@ public class FilterImage extends Module {
         imagePlus.setPosition(1, 1, 1);
     }
 
-    public static void runGradient2DFilter(ImagePlus imagePlus, double sigma) {
+    public static void runGradient2DFilter(ImagePlus ipl, double sigma) {
         DiskStrel strel = DiskStrel.fromRadius((int) Math.round(sigma));
-        for (int z = 1; z <= imagePlus.getNSlices(); z++) {
-            for (int c = 1; c <= imagePlus.getNChannels(); c++) {
-                for (int t = 1; t <= imagePlus.getNFrames(); t++) {
-                    imagePlus.setPosition(c, z, t);
-                    imagePlus.setProcessor(Morphology.gradient(imagePlus.getProcessor(), strel));
+        for (int z = 1; z <= ipl.getNSlices(); z++) {
+            for (int c = 1; c <= ipl.getNChannels(); c++) {
+                for (int t = 1; t <= ipl.getNFrames(); t++) {
+                    ipl.setPosition(c, z, t);
+                    ipl.setProcessor(Morphology.gradient(ipl.getProcessor(), strel));
                 }
             }
         }
-        imagePlus.setPosition(1, 1, 1);
-        imagePlus.updateAndDraw();
+        ipl.setPosition(1, 1, 1);
+        ipl.updateAndDraw();
+    }
+
+    public static void runRidgeEnhancement2DFilter(ImagePlus ipl, double sigma, String contourContrast) {
+        int width = ipl.getWidth();
+        int height = ipl.getWidth();
+
+        Convol convol = new Convol();
+        Position position = new Position();
+
+        int mult = contourContrast.equals(ContourContrast.LIGHT_LINE) ? -1 : 1;
+
+        ImageTypeConverter.process(ipl, 32, ImageTypeConverter.ScalingModes.CLIP);
+
+        for (int z = 1; z <= ipl.getNSlices(); z++) {
+            for (int c = 1; c <= ipl.getNChannels(); c++) {
+                for (int t = 1; t <= ipl.getNFrames(); t++) {
+                    int idx = ipl.getStackIndex(c, z, t);
+                    float[] image = (float[]) ipl.getStack().getProcessor(idx).getPixels();
+
+                    float[] kRR = new float[width * height];
+                    float[] kRC = new float[width * height];
+                    float[] kCC = new float[width * height];
+                    float[] ev = new float[width * height];
+                    for (int i = 0; i < ev.length; i++)
+                        ev[i] = 0;
+
+                    double[] eigval = new double[2];
+                    double[][] eigvec = new double[2][2];
+
+                    convol.convolve_gauss(image, kRR, width, height, sigma, LinesUtil.DERIV_RR);
+                    convol.convolve_gauss(image, kRC, width, height, sigma, LinesUtil.DERIV_RC);
+                    convol.convolve_gauss(image, kCC, width, height, sigma, LinesUtil.DERIV_CC);
+
+                    for (int y = 0; y < height; y++) {
+                        for (int x = 0; x < width; x++) {
+                            int l = LinesUtil.LINCOOR(y, x, width);
+
+                            position.compute_eigenvals(kRR[l], kRC[l], kCC[l], eigval, eigvec);
+
+                            double val = eigval[0] * mult;
+                            if (val > 0.0)
+                                ev[l] = (float) val;
+                        }
+                    }
+
+                    FloatProcessor fp = new FloatProcessor(width, height);
+                    fp.setPixels(ev);
+                    ipl.getStack().setProcessor(fp, idx);
+
+                }
+            }
+        }
+        ipl.updateAndDraw();
     }
 
     public static void runRollingFrameFilter(ImagePlus inputImagePlus, String windowIndices, String rollingMethod) {
@@ -431,7 +496,8 @@ public class FilterImage extends Module {
         boolean calibratedUnits = parameters.getValue(CALIBRATED_UNITS);
         String rollingMethod = parameters.getValue(ROLLING_METHOD);
         String windowIndices = parameters.getValue(WINDOW_INDICES);
-
+        String contourContrast = parameters.getValue(CONTOUR_CONTRAST);
+        
         if (calibratedUnits)
             filterRadius = inputImagePlus.getCalibration().getRawX(filterRadius);
 
@@ -481,8 +547,8 @@ public class FilterImage extends Module {
             break;
 
         case FilterModes.RIDGE_ENHANCEMENT:
-            writeStatus("Applying 3D median filter");
-            RidgeEnhancement.run(inputImagePlus, (float) filterRadius, true);
+            writeStatus("Applying 2D ridge enhancement filter");
+            runRidgeEnhancement2DFilter(inputImagePlus, filterRadius, contourContrast);
             break;
 
         case FilterModes.ROLLING_FRAME:
@@ -536,6 +602,7 @@ public class FilterImage extends Module {
         parameters.add(new ChoiceP(ROLLING_METHOD, this, RollingMethods.AVERAGE, RollingMethods.ALL,
                 "Statistic to apply for rolling frame filtering."));
         parameters.add(new StringP(WINDOW_INDICES, this, "-1-1"));
+        parameters.add(new ChoiceP(CONTOUR_CONTRAST,this,ContourContrast.DARK_LINE,ContourContrast.ALL));
 
     }
 
@@ -561,6 +628,9 @@ public class FilterImage extends Module {
             returnedParameters.add(parameters.getParameter(WINDOW_INDICES));
 
         }
+
+        if (parameters.getValue(FILTER_MODE).equals(FilterModes.RIDGE_ENHANCEMENT))
+            returnedParameters.add(parameters.getParameter(CONTOUR_CONTRAST));
 
         return returnedParameters;
 
