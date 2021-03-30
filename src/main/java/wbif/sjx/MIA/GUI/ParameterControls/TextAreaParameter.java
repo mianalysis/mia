@@ -29,6 +29,19 @@ public class TextAreaParameter extends ParameterControl implements FocusListener
         super(parameter);
         this.prevString = parameter.getRawStringValue();
 
+        createControl(250);
+        
+    }
+
+    public TextAreaParameter(TextAreaP parameter, int height) {
+        super(parameter);
+        this.prevString = parameter.getRawStringValue();
+
+        createControl(height);
+
+    }
+    
+    void createControl(int height) {
         control = new JPanel();
 
         control.setLayout(new GridBagLayout());
@@ -40,25 +53,24 @@ public class TextAreaParameter extends ParameterControl implements FocusListener
         textArea = new JTextArea();
         Document document = textArea.getDocument();
         if (document instanceof PlainDocument) {
-            document.putProperty(PlainDocument.tabSizeAttribute,4);
+            document.putProperty(PlainDocument.tabSizeAttribute, 4);
         }
-        textArea.setEditable(parameter.isEditable());
+        textArea.setEditable(((TextAreaP) parameter).isEditable());
         textArea.putClientProperty(JEditorPane.HONOR_DISPLAY_PROPERTIES, Boolean.TRUE);
         textArea.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 12));
         textArea.setText(parameter.getRawStringValue());
         textArea.addFocusListener(this);
         textArea.setCaretPosition(0);
         textArea.setLineWrap(true);
-        textArea.setWrapStyleWord(true);            
+        textArea.setWrapStyleWord(true);
 
         objectsScrollPane = new JScrollPane(textArea);
-        control.setPreferredSize(new Dimension(0,250));
+        control.setPreferredSize(new Dimension(0, height));
         objectsScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         objectsScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         objectsScrollPane.getVerticalScrollBar().setUnitIncrement(10);
         objectsScrollPane.getVerticalScrollBar().setValue(0);
-        control.add(objectsScrollPane,c);
-
+        control.add(objectsScrollPane, c);
     }
 
     @Override

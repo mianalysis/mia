@@ -106,7 +106,6 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
     public static final String SLICES = "Slices";
     public static final String FRAMES = "Frames";
     public static final String CHANNEL = "Channel";
-    // public static final String THREE_D_MODE = "Load 3D stacks as";
     public static final String CROP_MODE = "Crop mode";
     public static final String REFERENCE_IMAGE = "Reference image";
     public static final String LEFT = "Left coordinate";
@@ -161,14 +160,6 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
         String[] ALL = new String[] { CURRENT_SERIES, SPECIFIC_SERIES };
 
     }
-
-    // public interface ThreeDModes {
-    // String TIMESERIES = "Timeseries";
-    // String ZSTACK = "Z-Stack";
-
-    // String[] ALL = new String[] { TIMESERIES, ZSTACK };
-
-    // }
 
     public interface NameFormats {
         String GENERIC = "Generic (from metadata)";
@@ -1182,8 +1173,6 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
         parameters.add(new StringP(SLICES, this, "1-end"));
         parameters.add(new StringP(FRAMES, this, "1-end"));
         parameters.add(new IntegerP(CHANNEL, this, 1));
-        // parameters.add(new ChoiceP(THREE_D_MODE, this, ThreeDModes.ZSTACK,
-        // ThreeDModes.ALL));
         parameters.add(new ChoiceP(CROP_MODE, this, CropModes.NONE, CropModes.ALL));
         parameters.add(new InputImageP(REFERENCE_IMAGE, this));
         parameters.add(new IntegerP(LEFT, this, 0));
@@ -1261,7 +1250,7 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
             returnedParameters.add(parameters.getParameter(READER));
         }
 
-        if (parameters.getValue(READER).equals(Readers.BIOFORMATS)) {
+        if (parameters.getValue(READER).equals(Readers.BIOFORMATS) &! parameters.getValue(IMPORT_MODE).equals(ImportModes.IMAGEJ)) {
             returnedParameters.add(parameters.getParameter(SERIES_MODE));
             if (parameters.getValue(SERIES_MODE).equals(SeriesModes.SPECIFIC_SERIES))
                 returnedParameters.add(parameters.getParameter(SERIES_NUMBER));
@@ -1282,9 +1271,7 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
             returnedParameters.add(parameters.getParameter(FRAMES));
         }
 
-        // returnedParameters.add(parameters.getParameter(THREE_D_MODE));
-
-        if (parameters.getValue(READER).equals(Readers.BIOFORMATS)) {
+        if (parameters.getValue(READER).equals(Readers.BIOFORMATS) &! parameters.getValue(IMPORT_MODE).equals(ImportModes.IMAGEJ)) {
             returnedParameters.add(parameters.getParameter(CROP_MODE));
             switch ((String) parameters.getValue(CROP_MODE)) {
             case CropModes.FIXED:

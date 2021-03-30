@@ -66,6 +66,7 @@ import wbif.sjx.MIA.Object.Parameters.SeparatorP;
 import wbif.sjx.MIA.Object.Parameters.Objects.OutputObjectsP;
 import wbif.sjx.MIA.Object.Parameters.Objects.OutputTrackObjectsP;
 import wbif.sjx.MIA.Object.Parameters.Text.StringP;
+import wbif.sjx.MIA.Object.Parameters.Text.TextAreaP;
 import wbif.sjx.MIA.Object.References.Collections.ImageMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.MetadataRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.ObjMeasurementRefCollection;
@@ -115,6 +116,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
     public static final String TEMPORAL_INTERPOLATION = "Temporal interpolation";
 
     public static final String SELECTION_SEPARATOR = "Object selection controls";
+    public static final String INSTRUCTION_TEXT = "Instruction text";
     public static final String SELECTOR_TYPE = "Default selector type";
     public static final String MESSAGE_ON_IMAGE = "Message on image";
 
@@ -191,12 +193,12 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
         }
     }
 
-    private void showOptionsPanel() {
+    private void showOptionsPanel(String instructionText) {
         rois = new HashMap<>();
         maxID = 0;
         frame = new JFrame();
         frame.setAlwaysOnTop(true);
-
+        
         frame.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
@@ -223,9 +225,8 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
         c.anchor = GridBagConstraints.WEST;
         c.insets = new Insets(5, 5, 5, 5);
 
-        JLabel headerLabel = new JLabel("<html>Draw round an object, then select one of the following"
-                + "<br>(or click \"Finish adding objects\" at any time)."
-                + "<br>Different timepoints must be added as new objects.</html>");
+        instructionText = instructionText.replace("\n", "<br>");
+        JLabel headerLabel = new JLabel("<html>"+instructionText+"</html>");
         headerLabel.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 14));
 
         frame.add(headerLabel, c);
@@ -447,6 +448,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
         String outputTrackObjectsName = parameters.getValue(OUTPUT_TRACK_OBJECTS);
         boolean spatialInterpolation = parameters.getValue(SPATIAL_INTERPOLATION);
         boolean temporalInterpolation = parameters.getValue(TEMPORAL_INTERPOLATION);
+        String instructionText = parameters.getValue(INSTRUCTION_TEXT);
         String selectorType = parameters.getValue(SELECTOR_TYPE);
         String messageOnImage = parameters.getValue(MESSAGE_ON_IMAGE);
 
@@ -484,7 +486,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
         // Displaying the image and showing the control
         displayImagePlus.setLut(LUT.createLutFromColor(Color.WHITE));
         displayImagePlus.show();
-        showOptionsPanel();
+        showOptionsPanel(instructionText);
 
         // All the while the control is open, do nothing
         while (frame != null) {
@@ -539,6 +541,9 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
         parameters.add(new BooleanP(TEMPORAL_INTERPOLATION, this, false));
 
         parameters.add(new SeparatorP(SELECTION_SEPARATOR, this));
+        parameters.add(new TextAreaP(INSTRUCTION_TEXT, this, "Draw round an object, then select one of the following"
+        + "\n(or click \"Finish adding objects\" at any time)."
+        + "\nDifferent timepoints must be added as new objects.", true, 100));
         parameters.add(new ChoiceP(SELECTOR_TYPE, this, SelectorTypes.FREEHAND_REGION, SelectorTypes.ALL));
         parameters.add(new StringP(MESSAGE_ON_IMAGE, this, "Draw objects on this image"));
 
@@ -567,6 +572,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
         }
 
         returnedParameters.add(parameters.get(SELECTION_SEPARATOR));
+        returnedParameters.add(parameters.get(INSTRUCTION_TEXT));
         returnedParameters.add(parameters.get(SELECTOR_TYPE));
         returnedParameters.add(parameters.get(MESSAGE_ON_IMAGE));
 
