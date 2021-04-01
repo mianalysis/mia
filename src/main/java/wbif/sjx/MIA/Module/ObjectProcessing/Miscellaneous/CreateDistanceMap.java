@@ -99,7 +99,7 @@ public class CreateDistanceMap extends Module {
         }
 
         // Calculating the distance map
-        distanceMapIpl = DistanceMap.process(distanceMapIpl, outputImageName, true, false);
+        distanceMapIpl = DistanceMap.process(distanceMapIpl, outputImageName, DistanceMap.WeightModes.WEIGHTS_3_4_5_7, true, false);
 
         return distanceMap;
 
@@ -112,10 +112,11 @@ public class CreateDistanceMap extends Module {
         Image objImage = inputObjects.convertToImage(outputImageName, hues, 8, false);
 
         // Calculating the distance maps. The inside map is set to negative
-        Image outsideDistImage = DistanceMap.process(objImage, "DistanceOutside", true, false);
+        String weightMode = DistanceMap.WeightModes.WEIGHTS_3_4_5_7;
+        Image outsideDistImage = DistanceMap.process(objImage, "DistanceOutside", weightMode, true, false);
         InvertIntensity.process(objImage);
         BinaryOperations2D.process(objImage, BinaryOperations2D.OperationModes.ERODE, 1, 1);
-        Image insideDistImage = DistanceMap.process(objImage, "DistanceInside", true, false);
+        Image insideDistImage = DistanceMap.process(objImage, "DistanceInside", weightMode, true, false);
 
         // If selected, inverting the inside of the object, so values here are negative
         if (invertInside)

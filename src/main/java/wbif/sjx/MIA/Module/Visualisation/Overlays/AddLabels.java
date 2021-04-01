@@ -111,7 +111,7 @@ public class AddLabels extends AbstractOverlay {
         Image binaryImage = obj.getAsImage("Binary", false);
         InvertIntensity.process(binaryImage);
         BinaryOperations2D.process(binaryImage, BinaryOperations2D.OperationModes.ERODE, 1, 1);
-        ImagePlus distanceIpl = DistanceMap.process(binaryImage, "Distance", true, false).getImagePlus();
+        ImagePlus distanceIpl = DistanceMap.process(binaryImage, "Distance", DistanceMap.WeightModes.WEIGHTS_3_4_5_7, true, false).getImagePlus();
         ImageStack distanceIst = distanceIpl.getStack();
 
         // Get location of largest value

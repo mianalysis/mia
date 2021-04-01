@@ -170,7 +170,7 @@ public class SingleClassCluster extends Module {
         // Reducing the size of the cluster area by eps
         Image objectImage = outputObject.getAsImage("Object",false);
         InvertIntensity.process(objectImage);
-        objectImage = DistanceMap.process(objectImage, "Distance", true, false);
+        objectImage = DistanceMap.process(objectImage, "Distance", DistanceMap.WeightModes.WEIGHTS_3_4_5_7, true, false);
         ImagePlus objectIpl = objectImage.getImagePlus();
 
         // Iterating over each coordinate in the object, removing it if its distance to the edge is less than eps

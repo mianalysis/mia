@@ -83,6 +83,7 @@ public class RunSingleMacroCommand extends Module {
         }
 
         inputImagePlus.updateChannelAndDraw();
+        
     }
 
     @Override

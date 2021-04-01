@@ -177,7 +177,7 @@ public class MeasureIntensityDistribution extends Module {
         Image objectsImage = inputObjects.convertToImage("Objects", hues, 8,false);
 
         // Calculaing the distance map
-        Image distanceImage = DistanceMap.process(objectsImage,"Distance",true, false);
+        Image distanceImage = DistanceMap.process(objectsImage,"Distance",DistanceMap.WeightModes.WEIGHTS_3_4_5_7, true, false);
          
         // Iterating over all pixels in the input image, adding intensity measurements to CumStat objects (one
         // for pixels in the proximity range, one for pixels outside it).
@@ -230,18 +230,19 @@ public class MeasureIntensityDistribution extends Module {
     public static CumStat measureIntensityWeightedProximity(ObjCollection inputObjects, Image inputImage, String edgeMode) {
         // Get binary image showing the objects
         HashMap<Integer,Float> hues = ColourFactory.getSingleColourHues(inputObjects,ColourFactory.SingleColours.WHITE);
-        Image objectsImage = inputObjects.convertToImage("Objects", hues, 8,false);
+        Image objectsImage = inputObjects.convertToImage("Objects", hues, 8, false);
 
+        String weightMode = DistanceMap.WeightModes.WEIGHTS_3_4_5_7;
         ImagePlus distIpl = null;
         switch (edgeMode) {
             case EdgeDistanceModes.INSIDE_AND_OUTSIDE:
                 ImagePlus dist1 = new Duplicator().run(objectsImage.getImagePlus());
                 distIpl = new Duplicator().run(objectsImage.getImagePlus());
 
-                dist1 = DistanceMap.process(dist1,"Distance1",true, false);
+                dist1 = DistanceMap.process(dist1,"Distance1", weightMode, true, false);
                 InvertIntensity.process(distIpl);
                 BinaryOperations2D.process(distIpl,BinaryOperations2D.OperationModes.ERODE,1,1);
-                distIpl = DistanceMap.process(distIpl,"Distance2",true, false);
+                distIpl = DistanceMap.process(distIpl,"Distance2",weightMode, true, false);
 
                 ImageCalculator.process(dist1,distIpl,ImageCalculator.CalculationMethods.ADD,ImageCalculator.OverwriteModes.OVERWRITE_IMAGE2,null,false,true);
 
@@ -251,12 +252,12 @@ public class MeasureIntensityDistribution extends Module {
                 distIpl = new Duplicator().run(objectsImage.getImagePlus());
                 InvertIntensity.process(distIpl);
                 BinaryOperations2D.process(distIpl,BinaryOperations2D.OperationModes.ERODE,1,1);
-                distIpl = DistanceMap.process(distIpl,"Distance1",true, false);
+                distIpl = DistanceMap.process(distIpl,"Distance1",weightMode, true, false);
                 break;
 
             case EdgeDistanceModes.OUTSIDE_ONLY:
                 distIpl = new Duplicator().run(objectsImage.getImagePlus());
-                distIpl = DistanceMap.process(distIpl,"Distance2",true, false);
+                distIpl = DistanceMap.process(distIpl,"Distance2",weightMode, true, false);
                 break;
         }
 
