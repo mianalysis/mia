@@ -246,11 +246,16 @@ public class ObjCollection extends LinkedHashMap<Integer, Obj> {
     }
 
     public void applyCalibration(Image image) {
+        applyCalibration(image.getImagePlus());
+    }
+
+
+    public void applyCalibration(ImagePlus ipl) {
         Obj obj = getFirst();
         if (obj == null)
             return;
 
-        Calibration calibration = image.getImagePlus().getCalibration();
+        Calibration calibration = ipl.getCalibration();
         calibration.pixelWidth = obj.getDppXY();
         calibration.pixelHeight = obj.getDppXY();
         calibration.pixelDepth = obj.getDppZ();

@@ -4,23 +4,26 @@ import java.util.HashMap;
 
 import ij.IJ;
 import ij.ImagePlus;
+import ij.plugin.Resizer;
 import ij.process.LUT;
 import ij.process.StackStatistics;
 import inra.ijpb.binary.ChamferWeights3D;
 import inra.ijpb.binary.distmap.DistanceTransform3DShort;
+import wbif.sjx.MIA.Module.Categories;
+import wbif.sjx.MIA.Module.Category;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
-import wbif.sjx.MIA.Module.Category;
-import wbif.sjx.MIA.Module.Categories;
-import wbif.sjx.MIA.Object.Status;
+import wbif.sjx.MIA.Module.ImageProcessing.Stack.InterpolateZAxis;
 import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.Obj;
 import wbif.sjx.MIA.Object.ObjCollection;
+import wbif.sjx.MIA.Object.Status;
 import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.MIA.Object.Parameters.BooleanP;
 import wbif.sjx.MIA.Object.Parameters.ChoiceP;
 import wbif.sjx.MIA.Object.Parameters.InputObjectsP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
+import wbif.sjx.MIA.Object.Parameters.SeparatorP;
 import wbif.sjx.MIA.Object.Parameters.Objects.OutputObjectsP;
 import wbif.sjx.MIA.Object.Parameters.Text.DoubleP;
 import wbif.sjx.MIA.Object.References.Collections.ImageMeasurementRefCollection;
@@ -37,11 +40,13 @@ import wbif.sjx.common.Object.Volume.PointOutOfRangeException;
  * Created by sc13967 on 01/08/2017.
  */
 public class ExtractObjectEdges extends Module {
+    public static final String INPUT_SEPARATOR = "Object input/output";
     public static final String INPUT_OBJECTS = "Input objects";
     public static final String CREATE_EDGE_OBJECTS = "Create edge objects";
     public static final String OUTPUT_EDGE_OBJECTS = "Output edge objects";
     public static final String CREATE_INTERIOR_OBJECTS = "Create interior objects";
     public static final String OUTPUT_INTERIOR_OBJECTS = "Output interior objects";
+    public static final String DISTANCE_SEPARATOR = "Distance controls";
     public static final String EDGE_MODE = "Edge determination";
     public static final String EDGE_DISTANCE = "Distance";
     public static final String CALIBRATED_DISTANCES = "Calibrated distances";
@@ -103,18 +108,31 @@ public class ExtractObjectEdges extends Module {
         int zPad = inputObject.is2D() ? 0 : 1;
 
         ImagePlus distIpl = IJ.createHyperStack("Objects", (int) (range[0][1] - range[0][0] + 3),
-                (int) (range[1][1] - range[1][0] + 3), 1, (int) (range[2][1] - range[2][0] + 1 + 2*zPad), 1, 8);
+                (int) (range[1][1] - range[1][0] + 3), 1, (int) (range[2][1] - range[2][0] + 1 + 2 * zPad), 1, 8);
+        inputObject.getObjectCollection().applyCalibration(distIpl);
 
         // Setting pixels corresponding to the parent object to 1
-        for (Point<Integer> point:inputObject.getCoordinateSet()) {
+        for (Point<Integer> point : inputObject.getCoordinateSet()) {
             distIpl.setPosition(1, (int) (point.getZ() - range[2][0] + 1 + zPad), 1);
-            distIpl.getProcessor().set((int) (point.getX() - range[0][0] + 1), (int) (point.getY() - range[1][0] + 1), 255);
+            distIpl.getProcessor().set((int) (point.getX() - range[0][0] + 1), (int) (point.getY() - range[1][0] + 1),
+                    255);
         }
+        
+        int nSlices = distIpl.getNSlices();
+        if (!inputObject.is2D())
+            distIpl = InterpolateZAxis.matchZToXY(distIpl);
 
         // Creating distance map using MorphoLibJ
         short[] weights = ChamferWeights3D.BORGEFORS.getShortWeights();
         DistanceTransform3DShort distTransform = new DistanceTransform3DShort(weights, true);
+        
         distIpl.setStack(distTransform.distanceMap(distIpl.getStack()));
+
+        if (!inputObject.is2D()) {
+            Resizer resizer = new Resizer();
+            resizer.setAverageWhenDownsizing(true);
+            distIpl = resizer.zScale(distIpl, nSlices, Resizer.IN_PLACE);
+        }
 
         return new Image("Distance",distIpl);
 
@@ -216,11 +234,14 @@ public class ExtractObjectEdges extends Module {
 
     @Override
     protected void initialiseParameters() {
+        parameters.add(new SeparatorP(INPUT_SEPARATOR, this));
         parameters.add(new InputObjectsP(INPUT_OBJECTS, this));
         parameters.add(new BooleanP(CREATE_EDGE_OBJECTS, this, true));
         parameters.add(new OutputObjectsP(OUTPUT_EDGE_OBJECTS, this));
         parameters.add(new BooleanP(CREATE_INTERIOR_OBJECTS, this, true));
         parameters.add(new OutputObjectsP(OUTPUT_INTERIOR_OBJECTS, this));
+
+        parameters.add(new SeparatorP(DISTANCE_SEPARATOR, this));
         parameters.add(new ChoiceP(EDGE_MODE, this, EdgeModes.DISTANCE_FROM_EDGE, EdgeModes.ALL));
         parameters.add(new DoubleP(EDGE_DISTANCE, this, 1.0));
         parameters.add(new BooleanP(CALIBRATED_DISTANCES,this,false));
@@ -231,6 +252,7 @@ public class ExtractObjectEdges extends Module {
     @Override
     public ParameterCollection updateAndGetParameters() {
         ParameterCollection returnedParameters = new ParameterCollection();
+        returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(INPUT_OBJECTS));
 
         returnedParameters.add(parameters.getParameter(CREATE_EDGE_OBJECTS));
@@ -243,6 +265,7 @@ public class ExtractObjectEdges extends Module {
             returnedParameters.add(parameters.getParameter(OUTPUT_INTERIOR_OBJECTS));
         }
 
+        returnedParameters.add(parameters.getParameter(DISTANCE_SEPARATOR));
         returnedParameters.add(parameters.getParameter(EDGE_MODE));
 
         if (parameters.getValue(EDGE_MODE).equals(EdgeModes.DISTANCE_FROM_EDGE)) {

@@ -188,7 +188,7 @@ public class Watershed extends Module {
         switch (intensityMode) {
             case IntensityModes.DISTANCE:
                 intensityIpl = new Duplicator().run(inputImagePlus);
-                intensityIpl = DistanceMap.process(intensityIpl,"Distance",matchZToXY, false);
+                intensityIpl = DistanceMap.process(intensityIpl,"Distance", DistanceMap.WeightModes.WEIGHTS_3_4_5_7, matchZToXY, false);
                 IJ.run(intensityIpl,"Invert","stack");
                 break;
 

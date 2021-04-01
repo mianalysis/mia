@@ -13,6 +13,7 @@ public class TextAreaP extends TextType {
     private String value = "";
     private boolean editable = false;
     private ParameterControl control = null;
+    private int controlHeight = 250;
 
     public TextAreaP(String name, Module module, boolean editable) {
         super(name, module);
@@ -34,6 +35,32 @@ public class TextAreaP extends TextType {
         super(name, module, description);
         this.value = value;
         this.editable = editable;
+    }
+
+    public TextAreaP(String name, Module module, boolean editable, int controlHeight) {
+        super(name, module);
+        this.editable = editable;
+        this.controlHeight = controlHeight;
+    }
+
+    public TextAreaP(String name, Module module, boolean editable, String description, int controlHeight) {
+        super(name, module, description);
+        this.editable = editable;
+        this.controlHeight = controlHeight;
+    }
+
+    public TextAreaP(String name, Module module, @NotNull String value, boolean editable, int controlHeight) {
+        super(name, module);
+        this.value = value;
+        this.editable = editable;
+        this.controlHeight = controlHeight;
+    }
+
+    public TextAreaP(String name, Module module, @NotNull String value, boolean editable, String description, int controlHeight) {
+        super(name, module, description);
+        this.value = value;
+        this.editable = editable;
+        this.controlHeight = controlHeight;
     }
 
     public String getStringValue() {
@@ -68,7 +95,8 @@ public class TextAreaP extends TextType {
 
     @Override
     public ParameterControl getControl() {
-        if (control == null) control = new TextAreaParameter(this);
+        if (control == null)
+            control = new TextAreaParameter(this,controlHeight);
         return control;
     }
 

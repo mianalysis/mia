@@ -219,10 +219,11 @@ public class MeasureObjectIntensity extends Module {
         Image objImage = object.getAsImage("Inside dist",false);
 
         // Calculating the distance maps. The inside map is set to negative
-        Image outsideDistImage = DistanceMap.process(objImage, "DistanceOutside", true, false);
+        String weightMode = DistanceMap.WeightModes.WEIGHTS_3_4_5_7;
+        Image outsideDistImage = DistanceMap.process(objImage, "DistanceOutside", weightMode, true, false);
         InvertIntensity.process(objImage);
         BinaryOperations2D.process(objImage, BinaryOperations2D.OperationModes.ERODE, 1, 1);
-        Image insideDistImage = DistanceMap.process(objImage, "DistanceInside", true, false);
+        Image insideDistImage = DistanceMap.process(objImage, "DistanceInside", weightMode, true, false);
         ImageMath.process(insideDistImage, ImageMath.CalculationTypes.MULTIPLY, -1.0);
         Image distImage = ImageCalculator
                 .process(insideDistImage, outsideDistImage, ImageCalculator.CalculationMethods.ADD,
