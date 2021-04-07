@@ -1,12 +1,15 @@
 package wbif.sjx.MIA.Object.References.Collections;
 
-import wbif.sjx.MIA.Object.Units.SpatialUnit;
-import wbif.sjx.MIA.Object.Units.TemporalUnit;
-import wbif.sjx.MIA.Object.References.ObjMeasurementRef;
-
 import java.util.TreeMap;
 
-public class ObjMeasurementRefCollection extends TreeMap<String,ObjMeasurementRef> implements RefCollection<ObjMeasurementRef> {
+import wbif.sjx.MIA.Object.Measurement;
+import wbif.sjx.MIA.Object.Obj;
+import wbif.sjx.MIA.Object.References.ObjMeasurementRef;
+import wbif.sjx.MIA.Object.Units.SpatialUnit;
+import wbif.sjx.MIA.Object.Units.TemporalUnit;
+
+public class ObjMeasurementRefCollection extends TreeMap<String, ObjMeasurementRef>
+        implements RefCollection<ObjMeasurementRef> {
     /**
      *
      */
@@ -25,7 +28,7 @@ public class ObjMeasurementRefCollection extends TreeMap<String,ObjMeasurementRe
         key = SpatialUnit.replace(key);
         key = TemporalUnit.replace(key);
 
-        putIfAbsent((String) key,new ObjMeasurementRef((String) key));
+        putIfAbsent((String) key, new ObjMeasurementRef((String) key));
 
         return get(key);
 
@@ -37,7 +40,12 @@ public class ObjMeasurementRefCollection extends TreeMap<String,ObjMeasurementRe
     }
 
     public boolean add(ObjMeasurementRef ref) {
-        put(ref.getName(),ref);
+        put(ref.getName(), ref);
         return true;
+    }
+
+    public void addBlankMeasurements(Obj obj) {
+        for (ObjMeasurementRef ref : values())
+            obj.addMeasurement(new Measurement(ref.getName(), Double.NaN));
     }
 }

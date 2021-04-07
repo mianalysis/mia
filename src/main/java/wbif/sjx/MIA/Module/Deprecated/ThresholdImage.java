@@ -31,7 +31,6 @@ import wbif.sjx.common.Filters.AutoLocalThreshold3D;
 public class ThresholdImage extends Module {
     public static final String INPUT_SEPARATOR = "Image input/output";
     public static final String INPUT_IMAGE = "Input image";
-    public static final String OUTPUT_MODE = "Output mode";
     public static final String APPLY_TO_INPUT = "Apply to input image";
     public static final String OUTPUT_IMAGE = "Output image";
     
@@ -51,12 +50,6 @@ public class ThresholdImage extends Module {
 
     public ThresholdImage(ModuleCollection modules) {
         super("Threshold image",modules);
-    }
-
-    public interface OutputModes {
-        String CALCULATE_ONLY = "Calculate only";
-        String CALCULATE_AND_APPLY = "Calculate and apply";
-
     }
 
     public interface ThresholdTypes {

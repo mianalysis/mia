@@ -85,6 +85,7 @@ public class BestFocusSubstack<T extends RealType<T> & NativeType<T>> extends Mo
 
     public static final String INPUT_SEPARATOR = "Image input/output";
     public static final String INPUT_IMAGE = "Input image";
+    public static final String OUTPUT_MODE = "Output mode";
     public static final String OUTPUT_IMAGE = "Output image";
 
     public static final String CALCULATION_SEPARATOR = "Best focus calculation";
@@ -103,6 +104,14 @@ public class BestFocusSubstack<T extends RealType<T> & NativeType<T>> extends Mo
 
     public BestFocusSubstack(ModuleCollection modules) {
         super("Best focus stack", modules);
+    }
+
+    public interface OutputModes {
+        String CALCULATE_ONLY = "Calculate only";
+        String CALCULATE_AND_APPLY = "Calculate and apply";
+
+        String[] ALL = new String[] { CALCULATE_ONLY, CALCULATE_AND_APPLY };
+
     }
 
     public interface BestFocusCalculations {
@@ -520,7 +529,7 @@ public class BestFocusSubstack<T extends RealType<T> & NativeType<T>> extends Mo
         image.addMeasurement(new Measurement(Measurements.MIN_SLICE, cs.getMin()));
         image.addMeasurement(new Measurement(Measurements.MAX_SLICE, cs.getMax()));
         image.addMeasurement(new Measurement(Measurements.STDEV_SLICE, cs.getStd()));
-        
+
     }
 
     @Override
@@ -543,6 +552,7 @@ public class BestFocusSubstack<T extends RealType<T> & NativeType<T>> extends Mo
         Image inputImage = workspace.getImage(inputImageName);
 
         // Getting other parameters
+        String outputMode = parameters.getValue(OUTPUT_MODE);
         String outputImageName = parameters.getValue(OUTPUT_IMAGE);
         String bestFocusCalculation = parameters.getValue(BEST_FOCUS_CALCULATION);
         int relativeStart = parameters.getValue(RELATIVE_START_SLICE);
@@ -557,11 +567,16 @@ public class BestFocusSubstack<T extends RealType<T> & NativeType<T>> extends Mo
 
         // Checking if there is only a single slice to start with
         if (isSingleSlice(inputImage)) {
-            Image outputImage = new Image(outputImageName, inputImage.getImagePlus().duplicate());
-            workspace.addImage(outputImage);
+            // Adding blank measurements
+            updateAndGetImageMeasurementRefs().addBlankMeasurements(inputImage);
+            
+            if (outputMode.equals(OutputModes.CALCULATE_AND_APPLY)) {
+                Image outputImage = new Image(outputImageName, inputImage.getImagePlus().duplicate());
+                workspace.addImage(outputImage);
 
-            if (showOutput)
-                outputImage.showImage();
+                if (showOutput)
+                    outputImage.showImage();
+            }
 
             return Status.PASS;
 
@@ -632,12 +647,16 @@ public class BestFocusSubstack<T extends RealType<T> & NativeType<T>> extends Mo
 
         // Adding measurements
         addMeasurements(inputImage, bestSlices);
-
-        Image outputImage = extract(inputImage, relativeStart, relativeEnd, bestSlices, outputImageName);
-        workspace.addImage(outputImage);
-
         if (showOutput)
-            outputImage.showImage();
+            inputImage.showMeasurements(this);
+
+        if (outputMode.equals(OutputModes.CALCULATE_AND_APPLY)) {
+            Image outputImage = extract(inputImage, relativeStart, relativeEnd, bestSlices, outputImageName);
+            workspace.addImage(outputImage);
+
+            if (showOutput)
+                outputImage.showImage();
+        }
 
         return Status.PASS;
 
@@ -647,6 +666,7 @@ public class BestFocusSubstack<T extends RealType<T> & NativeType<T>> extends Mo
     protected void initialiseParameters() {
         parameters.add(new SeparatorP(INPUT_SEPARATOR, this));
         parameters.add(new InputImageP(INPUT_IMAGE, this));
+        parameters.add(new ChoiceP(OUTPUT_MODE, this, OutputModes.CALCULATE_AND_APPLY, OutputModes.ALL));
         parameters.add(new OutputImageP(OUTPUT_IMAGE, this));
 
         parameters.add(new SeparatorP(CALCULATION_SEPARATOR, this));
@@ -674,7 +694,10 @@ public class BestFocusSubstack<T extends RealType<T> & NativeType<T>> extends Mo
 
         returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(INPUT_IMAGE));
-        returnedParameters.add(parameters.getParameter(OUTPUT_IMAGE));
+        returnedParameters.add(parameters.getParameter(OUTPUT_MODE));
+
+        if (parameters.getValue(OUTPUT_MODE).equals(OutputModes.CALCULATE_AND_APPLY))
+            returnedParameters.add(parameters.getParameter(OUTPUT_IMAGE));
 
         returnedParameters.add(parameters.getParameter(CALCULATION_SEPARATOR));
         returnedParameters.add(parameters.getParameter(BEST_FOCUS_CALCULATION));

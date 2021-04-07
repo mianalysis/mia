@@ -1,5 +1,6 @@
 package wbif.sjx.MIA.Module.ObjectProcessing.Identification;
 
+import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Categories;
 import wbif.sjx.MIA.Module.Category;
 import wbif.sjx.MIA.Module.Module;
@@ -27,7 +28,6 @@ import wbif.sjx.MIA.Object.References.Collections.ParentChildRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.PartnerRefCollection;
 import wbif.sjx.MIA.Process.CommaSeparatedStringInterpreter;
 import wbif.sjx.common.Object.Point;
-import wbif.sjx.common.Object.QuadTree.OcTree;
 import wbif.sjx.common.Object.Volume.PointOutOfRangeException;
 import wbif.sjx.common.Object.Volume.VolumeType;
 
@@ -88,6 +88,9 @@ public class ExtractObjectCrossSection extends Module {
         Obj outputObject = outputObjects.createAndAddNewObject(inputObject.getVolumeType(), inputObject.getID());
 
         for (int idx : indices) {
+            if (idx < 0 || idx >= inputObject.getNSlices())
+                continue;
+
             for (Point<Integer> point : inputObject.getSlice(idx).getCoordinateSet()) {
                 point.setZ(point.getZ()+idx);
                 try {
@@ -120,6 +123,8 @@ public class ExtractObjectCrossSection extends Module {
         workspace.addObjects(outputObjects);
 
         int[] indices = CommaSeparatedStringInterpreter.interpretIntegers(indicesString, true);
+        if (indicesString.contains("end"))
+            indices = CommaSeparatedStringInterpreter.extendRangeToEnd(indices, inputObjects.getNSlices());
 
         // If using an image measurement, updating the indices here, as they will be the
         // same for all objects

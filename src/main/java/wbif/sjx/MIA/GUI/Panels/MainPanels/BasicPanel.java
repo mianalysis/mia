@@ -225,7 +225,8 @@ public class BasicPanel extends MainPanel {
 
     @Override
     public void updateModuleStates() {
-        controlPanel.updatePanel();
+        controlPanel.updateButtonStates();
+        // controlPanel.updatePanel();
     }
 
     @Override
