@@ -6,6 +6,8 @@ import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import wbif.sjx.MIA.MIA;
+
 public class CommaSeparatedStringInterpreter {
     public static int[] interpretIntegers(String range, boolean ascendingOrder) {
         // Creating a TreeSet to store the indices we've collected.  This will order numerically and remove duplicates.
@@ -110,6 +112,8 @@ public class CommaSeparatedStringInterpreter {
         // Checking for the special case where the only value is Integer.MAX_VALUE (i.e. the range was only "end")
         if (inputRange.length == 1 && inputRange[0] == Integer.MAX_VALUE) {
             values.add(end);
+        } else if (inputRange.length == 1) {
+            values.add(inputRange[0]);
         } else {
             // Adding the explicitly-named values
             for (int i = 0; i < inputRange.length - 3; i++)

@@ -1,28 +1,16 @@
 package wbif.sjx.MIA.Module.ObjectProcessing.Identification;
 
-import java.util.HashMap;
-
-import javax.annotation.Nullable;
-
-import ij.IJ;
-import ij.ImagePlus;
-import ij.plugin.Resizer;
-import ij.process.LUT;
-import ij.process.StackStatistics;
-import inra.ijpb.binary.ChamferWeights3D;
-import inra.ijpb.binary.distmap.DistanceTransform3DShort;
+import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Categories;
 import wbif.sjx.MIA.Module.Category;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
-import wbif.sjx.MIA.Module.ImageProcessing.Stack.InterpolateZAxis;
 import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.Measurement;
 import wbif.sjx.MIA.Object.Obj;
 import wbif.sjx.MIA.Object.ObjCollection;
 import wbif.sjx.MIA.Object.Status;
 import wbif.sjx.MIA.Object.Workspace;
-import wbif.sjx.MIA.Object.Parameters.BooleanP;
 import wbif.sjx.MIA.Object.Parameters.ChoiceP;
 import wbif.sjx.MIA.Object.Parameters.ImageMeasurementP;
 import wbif.sjx.MIA.Object.Parameters.InputImageP;
@@ -31,7 +19,6 @@ import wbif.sjx.MIA.Object.Parameters.ObjectMeasurementP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.Parameters.SeparatorP;
 import wbif.sjx.MIA.Object.Parameters.Objects.OutputObjectsP;
-import wbif.sjx.MIA.Object.Parameters.Text.DoubleP;
 import wbif.sjx.MIA.Object.Parameters.Text.StringP;
 import wbif.sjx.MIA.Object.References.ParentChildRef;
 import wbif.sjx.MIA.Object.References.Collections.ImageMeasurementRefCollection;
@@ -39,11 +26,10 @@ import wbif.sjx.MIA.Object.References.Collections.MetadataRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.ObjMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.ParentChildRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.PartnerRefCollection;
-import wbif.sjx.MIA.Process.ColourFactory;
 import wbif.sjx.MIA.Process.CommaSeparatedStringInterpreter;
-import wbif.sjx.common.Object.LUTs;
 import wbif.sjx.common.Object.Point;
 import wbif.sjx.common.Object.Volume.PointOutOfRangeException;
+import wbif.sjx.common.Object.Volume.VolumeType;
 
 /**
  * Created by sc13967 on 01/08/2017.
@@ -95,9 +81,16 @@ public class ExtractObjectCrossSection extends Module {
     }
 
     static void process(Obj inputObject, ObjCollection outputObjects, int[] indices) {
+        VolumeType volumeType = inputObject.getVolumeType();
+        if (volumeType == VolumeType.OCTREE) 
+            volumeType = VolumeType.QUADTREE;
+
         Obj outputObject = outputObjects.createAndAddNewObject(inputObject.getVolumeType(), inputObject.getID());
 
         for (int idx : indices) {
+            if (idx < 0 || idx >= inputObject.getNSlices())
+                continue;
+
             for (Point<Integer> point : inputObject.getSlice(idx).getCoordinateSet()) {
                 point.setZ(point.getZ()+idx);
                 try {
@@ -130,6 +123,8 @@ public class ExtractObjectCrossSection extends Module {
         workspace.addObjects(outputObjects);
 
         int[] indices = CommaSeparatedStringInterpreter.interpretIntegers(indicesString, true);
+        if (indicesString.contains("end"))
+            indices = CommaSeparatedStringInterpreter.extendRangeToEnd(indices, inputObjects.getNSlices());
 
         // If using an image measurement, updating the indices here, as they will be the
         // same for all objects

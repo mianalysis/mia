@@ -2,6 +2,7 @@ package wbif.sjx.MIA.GUI.Panels;
 
 import wbif.sjx.MIA.GUI.ComponentFactory;
 import wbif.sjx.MIA.GUI.GUI;
+import wbif.sjx.MIA.GUI.ControlObjects.ModuleList.ModuleEnabledButton;
 import wbif.sjx.MIA.Module.Miscellaneous.GUISeparator;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
@@ -196,5 +197,12 @@ public class BasicControlPanel extends JScrollPane {
 
     public static int getPreferredWidth() {
         return preferredWidth;
+    }
+
+    public void updateButtonStates() {
+        for (Component component : panel.getComponents()) {
+            if (component.getClass() == ModuleEnabledButton.class)
+                ((ModuleEnabledButton) component).updateState();
+        }
     }
 }

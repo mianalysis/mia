@@ -1,8 +1,11 @@
 package wbif.sjx.MIA.Object.Parameters.Objects;
 
+import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
 import wbif.sjx.MIA.Object.Parameters.Abstract.TextType;
+
+import java.util.LinkedHashSet;
 
 import com.drew.lang.annotations.NotNull;
 
@@ -53,7 +56,7 @@ public class OutputObjectsP extends TextType {
 
     @Override
     public <T extends Parameter> T duplicate(Module newModule) {
-        OutputObjectsP newParameter = new OutputObjectsP(name,newModule,objectsName,getDescription());
+        OutputObjectsP newParameter = new OutputObjectsP(name, newModule, objectsName, getDescription());
 
         newParameter.setNickname(getNickname());
         newParameter.setVisible(isVisible());
@@ -61,5 +64,20 @@ public class OutputObjectsP extends TextType {
 
         return (T) newParameter;
 
+    }
+    
+    @Override
+    public boolean verify() {
+        if (!super.verify())
+            return false;
+
+        LinkedHashSet<OutputObjectsP> availableObjects = module.getModules().getAvailableObjects(null);
+        for (OutputObjectsP availableObject : availableObjects)
+            if (availableObject.getObjectsName().equals(objectsName)) {
+                MIA.log.writeWarning("Object names must be unique.  This name has already been assigned.");
+                return false;
+            }
+        
+        return true;
     }
 }

@@ -2,11 +2,14 @@ package wbif.sjx.MIA.Object.References.Collections;
 
 import wbif.sjx.MIA.Object.Units.SpatialUnit;
 import wbif.sjx.MIA.Object.Units.TemporalUnit;
+import wbif.sjx.MIA.Object.Image;
+import wbif.sjx.MIA.Object.Measurement;
 import wbif.sjx.MIA.Object.References.ImageMeasurementRef;
 
 import java.util.TreeMap;
 
-public class ImageMeasurementRefCollection extends TreeMap<String,ImageMeasurementRef> implements RefCollection<ImageMeasurementRef> {
+public class ImageMeasurementRefCollection extends TreeMap<String, ImageMeasurementRef>
+        implements RefCollection<ImageMeasurementRef> {
     /**
      *
      */
@@ -25,7 +28,7 @@ public class ImageMeasurementRefCollection extends TreeMap<String,ImageMeasureme
         key = SpatialUnit.replace(key);
         key = TemporalUnit.replace(key);
 
-        putIfAbsent((String) key,new ImageMeasurementRef((String) key));
+        putIfAbsent((String) key, new ImageMeasurementRef((String) key));
 
         return get(key);
 
@@ -37,7 +40,12 @@ public class ImageMeasurementRefCollection extends TreeMap<String,ImageMeasureme
     }
 
     public boolean add(ImageMeasurementRef ref) {
-        put(ref.getName(),ref);
+        put(ref.getName(), ref);
         return true;
+    }
+
+    public void addBlankMeasurements(Image image) {
+        for (ImageMeasurementRef ref : values())
+            image.addMeasurement(new Measurement(ref.getName(), Double.NaN));
     }
 }
