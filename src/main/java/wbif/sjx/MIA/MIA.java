@@ -69,7 +69,7 @@ public class MIA implements Command {
             }
 
         } catch (Exception e) {
-            MIA.log.writeError(e.getMessage());
+            e.printStackTrace();
         }
     }
 
