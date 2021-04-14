@@ -105,7 +105,7 @@ public class RunMacroOnObjects extends AbstractMacroRunner {
 
     @Override
     public String getDescription() {
-        return "Run a specific ImageJ macro once per object from a specified input object collection (as opposed to the \"" + new RunMacroOnImage(null).getName()
+        return "Run a specific ImageJ macro once per object from a specified input object collection (as opposed to the \"" + new RunMacro(null).getName()
         + "\" module, which runs once per analysis run).  This module can optionally open an image into ImageJ for the macro to run on.  Variables assigned during the macro can be extracted and stored as measurements associated with the current object.<br><br>"
 
         + "Note: ImageJ can only run one macro at a time, so by using this module the \""
@@ -135,7 +135,7 @@ public class RunMacroOnObjects extends AbstractMacroRunner {
         LinkedHashSet<String> expectedMeasurements = expectedMeasurements(group, VARIABLE);
 
         // If the macro is stored as a file, load this to the macroText string
-        if (macroMode.equals(RunMacroOnImage.MacroModes.MACRO_FILE)) macroText = IJ.openAsString(macroFile);
+        if (macroMode.equals(RunMacro.MacroModes.MACRO_FILE)) macroText = IJ.openAsString(macroFile);
 
         // Appending variables to the front of the macro
         ParameterGroup variableGroup = parameters.getParameter(ADD_VARIABLE);

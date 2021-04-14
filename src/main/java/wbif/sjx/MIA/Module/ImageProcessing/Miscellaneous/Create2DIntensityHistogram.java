@@ -3,16 +3,12 @@ package wbif.sjx.MIA.Module.ImageProcessing.Miscellaneous;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.imagej.ImgPlus;
-import net.imagej.axis.Axes;
-import net.imglib2.Interval;
 import net.imglib2.histogram.HistogramNd;
-import net.imglib2.histogram.Integer1dBinMapper;
+import net.imglib2.histogram.Real1dBinMapper;
 import net.imglib2.img.display.imagej.ImageJFunctions;
 import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
-import net.imglib2.type.numeric.integer.UnsignedByteType;
-import net.imglib2.view.Views;
+import net.imglib2.type.numeric.integer.UnsignedShortType;
 import wbif.sjx.MIA.Module.Categories;
 import wbif.sjx.MIA.Module.Category;
 import wbif.sjx.MIA.Module.Module;
@@ -20,10 +16,13 @@ import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.Status;
 import wbif.sjx.MIA.Object.Workspace;
+import wbif.sjx.MIA.Object.Parameters.BooleanP;
 import wbif.sjx.MIA.Object.Parameters.InputImageP;
 import wbif.sjx.MIA.Object.Parameters.OutputImageP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.Parameters.SeparatorP;
+import wbif.sjx.MIA.Object.Parameters.Text.DoubleP;
+import wbif.sjx.MIA.Object.Parameters.Text.IntegerP;
 import wbif.sjx.MIA.Object.References.Collections.ImageMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.MetadataRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.ObjMeasurementRefCollection;
@@ -32,9 +31,21 @@ import wbif.sjx.MIA.Object.References.Collections.PartnerRefCollection;
 
 public class Create2DIntensityHistogram <T extends RealType<T> & NativeType<T>> extends Module {
     public static final String INPUT_SEPARATOR = "Image input/output";
-    public final static String INPUT_IMAGE1 = "Input image 1";
-    public final static String INPUT_IMAGE2 = "Input image 2";
+    public final static String INPUT_IMAGE1 = "Input image 1 (x-axis)";
+    public final static String INPUT_IMAGE2 = "Input image 2 (y-axis)";
     public final static String OUTPUT_IMAGE = "Output image";
+
+    public static final String HISTOGRAM_SEPARATOR_1 = "Histogram controls (image 1)";
+    public static final String MIN_BIN_1 = "Minimum bin (image 1)";
+    public static final String MAX_BIN_1 = "Maximum bin (image 1)";
+    public static final String N_BINS_1 = "Number of bins (image 1)";
+    public static final String INCLUDE_TAIL_BIN_1 = "Include tail bin (image 1)";
+
+    public static final String HISTOGRAM_SEPARATOR_2 = "Histogram controls (image 2)";
+    public static final String MIN_BIN_2 = "Minimum bin (image 2)";
+    public static final String MAX_BIN_2 = "Maximum bin (image 2)";
+    public static final String N_BINS_2 = "Number of bins (image 2)";
+    public static final String INCLUDE_TAIL_BIN_2 = "Include tail bin (image 2)";
 
     public Create2DIntensityHistogram(ModuleCollection modules) {
         super("Create 2D intensity histogram",modules);
@@ -61,18 +72,24 @@ public class Create2DIntensityHistogram <T extends RealType<T> & NativeType<T>> 
         Image inputImage2 = workspace.getImage(inputImageName2);
 
         String outputImageName = parameters.getValue(OUTPUT_IMAGE);
-
-        ImgPlus imgPlus1 = inputImage1.getImgPlus();
-        ImgPlus imgPlus2 = inputImage2.getImgPlus();
-
-        long[] minVals = new long[] { 0, 0 };
-		long[] numBins = new long[] { 256, 256 };
-		boolean[] tailBins = new boolean[] { false, false };
-        HistogramNd<UnsignedByteType> hist = Integer1dBinMapper.histogramNd(minVals, numBins, tailBins);
-                        
-        List<Iterable<UnsignedByteType>> intervals = new ArrayList<>();
-        intervals.add(imgPlus1);
-        intervals.add(imgPlus2);
+        double minBin1 = parameters.getValue(MIN_BIN_1);
+        double maxBin1 = parameters.getValue(MAX_BIN_1);
+        int nBins1 = parameters.getValue(N_BINS_1);
+        boolean includeTailBin1 = parameters.getValue(INCLUDE_TAIL_BIN_1);
+        double minBin2 = parameters.getValue(MIN_BIN_2);
+        double maxBin2 = parameters.getValue(MAX_BIN_2);
+        int nBins2 = parameters.getValue(N_BINS_2);
+        boolean includeTailBin2 = parameters.getValue(INCLUDE_TAIL_BIN_2);
+        
+        double[] minVals = new double[] { minBin1, minBin2 };
+        double[] maxVals = new double[] { maxBin1, maxBin2 };
+		long[] numBins = new long[] { nBins1, nBins2 };
+		boolean[] tailBins = new boolean[] { includeTailBin1, includeTailBin2 };
+        HistogramNd<UnsignedShortType> hist = Real1dBinMapper.histogramNd(minVals, maxVals, numBins, tailBins);
+        
+        List<Iterable<UnsignedShortType>> intervals = new ArrayList<>();
+        intervals.add(inputImage1.getImgPlus());
+        intervals.add(inputImage2.getImgPlus());
         
         hist.addData(intervals);
 
@@ -91,7 +108,19 @@ public class Create2DIntensityHistogram <T extends RealType<T> & NativeType<T>> 
         parameters.add(new InputImageP(INPUT_IMAGE1,this));
         parameters.add(new InputImageP(INPUT_IMAGE2,this));
         parameters.add(new OutputImageP(OUTPUT_IMAGE, this));
-        
+
+        parameters.add(new SeparatorP(HISTOGRAM_SEPARATOR_1, this));
+        parameters.add(new DoubleP(MIN_BIN_1, this, 0d));
+        parameters.add(new DoubleP(MAX_BIN_1, this, 255d));
+        parameters.add(new IntegerP(N_BINS_1, this, 256));
+        parameters.add(new BooleanP(INCLUDE_TAIL_BIN_1, this, false));
+
+        parameters.add(new SeparatorP(HISTOGRAM_SEPARATOR_2, this));
+        parameters.add(new DoubleP(MIN_BIN_2, this, 0d));
+        parameters.add(new DoubleP(MAX_BIN_2, this, 255d));
+        parameters.add(new IntegerP(N_BINS_2, this, 256));
+        parameters.add(new BooleanP(INCLUDE_TAIL_BIN_2, this, false));
+
     }
 
     @Override

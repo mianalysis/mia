@@ -11,6 +11,7 @@ import wbif.sjx.MIA.Module.ImageProcessing.Pixel.Threshold.LocalAutoThreshold;
 import wbif.sjx.MIA.Module.ImageProcessing.Stack.Registration.SIFTRegistration;
 import wbif.sjx.MIA.Module.InputOutput.ObjectLoader;
 import wbif.sjx.MIA.Module.Miscellaneous.GlobalVariables;
+import wbif.sjx.MIA.Module.Miscellaneous.Macros.RunSingleCommand;
 import wbif.sjx.MIA.Module.ObjectMeasurements.Miscellaneous.ReplaceMeasurementValue;
 import wbif.sjx.MIA.Module.ObjectMeasurements.Spatial.CalculateNearestNeighbour;
 import wbif.sjx.MIA.Module.ObjectProcessing.Identification.GetLocalObjectRegion;
@@ -27,8 +28,10 @@ public class LostAndFound {
 
     public LostAndFound() {
         //// Populating hard-coded module reassignments ////
-        lostModules.put("ConditionalAnalysisTermination", new WorkflowHandling(null).getClass().getSimpleName());
         lostModules.put("AutomaticRegistration", new SIFTRegistration(null).getClass().getSimpleName());
+        lostModules.put("ConditionalAnalysisTermination", new WorkflowHandling(null).getClass().getSimpleName());
+        lostModules.put("RunSingleMacroCommand", new RunSingleCommand(null).getClass().getSimpleName());
+        
 
         //// Populating hard-coded parameter reassignments ////
         // CalculateNearestNeighbour
@@ -111,6 +114,12 @@ public class LostAndFound {
         currentParameterNames = new HashMap<>();
         currentParameterNames.put("Value to replace", ReplaceMeasurementValue.REFERENCE_VALUE);
         moduleName = new ReplaceMeasurementValue(null).getClass().getSimpleName();
+        lostParameterNames.put(moduleName, currentParameterNames);
+
+        // RunMacroCommand
+        currentParameterNames = new HashMap<>();
+        currentParameterNames.put("Macro title", RunSingleCommand.COMMAND);
+        moduleName = new RunSingleCommand(null).getClass().getSimpleName();
         lostParameterNames.put(moduleName, currentParameterNames);
 
         // ThresholdImage

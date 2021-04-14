@@ -4,7 +4,6 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
 import java.util.TreeMap;
 
 import org.apache.commons.io.FilenameUtils;
@@ -25,7 +24,7 @@ import wbif.sjx.MIA.Module.Categories;
 import wbif.sjx.MIA.Module.Category;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
-import wbif.sjx.MIA.Module.Miscellaneous.Macros.RunMacroOnImage;
+import wbif.sjx.MIA.Module.Miscellaneous.Macros.RunMacro;
 import wbif.sjx.MIA.Module.Miscellaneous.Macros.RunMacroOnObjects;
 import wbif.sjx.MIA.Object.Status;
 import wbif.sjx.MIA.Object.Workspace;
@@ -35,7 +34,6 @@ import wbif.sjx.MIA.Object.Parameters.FileFolderPathP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.Parameters.ParameterGroup;
 import wbif.sjx.MIA.Object.Parameters.SeparatorP;
-import wbif.sjx.MIA.Object.Parameters.Objects.OutputObjectsP;
 import wbif.sjx.MIA.Object.Parameters.Text.IntegerP;
 import wbif.sjx.MIA.Object.Parameters.Text.MessageP;
 import wbif.sjx.MIA.Object.Parameters.Text.SeriesListSelectorP;
@@ -406,7 +404,7 @@ public class InputControl extends Module {
         // job
         if ((int) parameters.getValue(SIMULTANEOUS_JOBS) > 1) {
             for (Module module : modules) {
-                if (module instanceof RunMacroOnImage || module instanceof RunMacroOnObjects) {
+                if (module instanceof RunMacro || module instanceof RunMacroOnObjects) {
                     returnedParameters.add(parameters.getParameter(MACRO_WARNING));
                     parameters.getParameter(SIMULTANEOUS_JOBS).setValid(false);
                 }
