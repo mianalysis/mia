@@ -14,7 +14,7 @@ import wbif.sjx.MIA.Module.Categories;
 import wbif.sjx.MIA.Module.Category;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.Miscellaneous.Macros.AbstractMacroRunner;
-import wbif.sjx.MIA.Module.Miscellaneous.Macros.RunMacroOnImage.MacroModes;
+import wbif.sjx.MIA.Module.Miscellaneous.Macros.RunMacro.MacroModes;
 import wbif.sjx.MIA.Object.Status;
 import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.MIA.Object.Parameters.BooleanP;

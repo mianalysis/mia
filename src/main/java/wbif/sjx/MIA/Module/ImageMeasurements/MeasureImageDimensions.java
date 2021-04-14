@@ -1,19 +1,18 @@
 package wbif.sjx.MIA.Module.ImageMeasurements;
 
 import ij.ImagePlus;
+import wbif.sjx.MIA.Module.Categories;
+import wbif.sjx.MIA.Module.Category;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.Core.InputControl;
-import wbif.sjx.MIA.Module.Category;
-import wbif.sjx.MIA.MIA;
-import wbif.sjx.MIA.Module.Categories;
 import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.Measurement;
 import wbif.sjx.MIA.Object.Status;
 import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.MIA.Object.Parameters.InputImageP;
-import wbif.sjx.MIA.Object.Parameters.SeparatorP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
+import wbif.sjx.MIA.Object.Parameters.SeparatorP;
 import wbif.sjx.MIA.Object.References.ImageMeasurementRef;
 import wbif.sjx.MIA.Object.References.Collections.ImageMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.MetadataRefCollection;
