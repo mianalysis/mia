@@ -167,8 +167,13 @@ public class DocumentationCoverageChecker {
                 ParameterCollection collection = ((ParameterGroup) parameter).getTemplateParameters();
                 nParams = nParams + collection.size();
                 for (Parameter collectionParam : collection.values()) {
+                    if (collectionParam instanceof SeparatorP || collectionParam instanceof MessageP) {
+                        nParams--;
+                        continue;
+                    }
                     if (collectionParam.getDescription().length() > 1)
                         nCoveredParams++;
+                        
                 }
             }
         }
