@@ -25,7 +25,6 @@ import wbif.sjx.MIA.Object.References.Collections.PartnerRefCollection;
 public class ObjectTimepoint extends Module {
     public static final String INPUT_SEPARATOR = "Object and image input";
     public static final String INPUT_OBJECTS = "Input objects";
-    public static final String CHILD_OBJECTS = "Child objects";
 
     public ObjectTimepoint(ModuleCollection modules) {
         super("Object timepoint", modules);
@@ -39,7 +38,7 @@ public class ObjectTimepoint extends Module {
 
     @Override
     public String getDescription() {
-        return "";
+        return "Store object timepoint as a measurement.  Timepoint counting starts at 0 (e.g. the third frame will have a timepoint of 2).";
     }
 
     @Override
@@ -66,6 +65,8 @@ public class ObjectTimepoint extends Module {
         parameters.add(new SeparatorP(INPUT_SEPARATOR, this));
         parameters.add(new InputObjectsP(INPUT_OBJECTS, this));
         
+        addParameterDescriptions();
+
     }
 
     @Override
@@ -111,5 +112,9 @@ public class ObjectTimepoint extends Module {
     @Override
     public boolean verify() {
         return true;
+    }
+
+    void addParameterDescriptions() {
+        parameters.get(INPUT_OBJECTS).setDescription("Objects from the workspace.  Each object in this collection will have the index of timepoint it's present in stored as a measurement.  Note: Timepoint indexing starts at 0.");
     }
 }

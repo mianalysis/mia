@@ -284,8 +284,11 @@ public class ImageMath extends Module {
                         + "<li>\"" + ValueSources.MEASUREMENT
                         + "\" The value is taken from a measurement associated with the input image.  Values obtained in this way can be different from image to image.</li></ul>");
 
+        parameters.get(IMAGE_FOR_MEASUREMENT).setDescription("If \"" + VALUE_SOURCE + "\" is set to \""
+                + ValueSources.MEASUREMENT + "\", this is the image that the measurement will be taken from.  It can be any image in the workspace, not necessarily the image to which the math operation is being applied.");
+
         parameters.get(MEASUREMENT).setDescription("If \"" + VALUE_SOURCE + "\" is set to \"" + ValueSources.MEASUREMENT
-                + "\", this is the measurement associated with the input image that will be used in the calculation.");
+                + "\", this is the measurement associated with the image specified by \""+IMAGE_FOR_MEASUREMENT+"\" that will be used in the calculation.");
 
         parameters.get(MATH_VALUE).setDescription("If \"" + VALUE_SOURCE + "\" is set to \"" + ValueSources.FIXED
                 + "\", this is the value that will be used in the calculation.");
