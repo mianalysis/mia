@@ -101,6 +101,8 @@ public class LostAndFound {
         currentParameterNames = new HashMap<>();
         currentParameterNames.put("Output parent clusters name", ObjectLoader.PARENT_OBJECTS_NAME);
         currentParameterNames.put("Output tracks clusters name", ObjectLoader.PARENT_OBJECTS_NAME);
+        currentParameterNames.put("Calibration source", ObjectLoader.PARENT_OBJECTS_NAME);
+        currentParameterNames.put("Calibration reference image", ObjectLoader.PARENT_OBJECTS_NAME);
         moduleName = new ObjectLoader(null).getClass().getSimpleName();
         lostParameterNames.put(moduleName, currentParameterNames);
 

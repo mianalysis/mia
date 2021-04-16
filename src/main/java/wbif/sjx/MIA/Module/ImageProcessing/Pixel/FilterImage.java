@@ -497,7 +497,7 @@ public class FilterImage extends Module {
         String rollingMethod = parameters.getValue(ROLLING_METHOD);
         String windowIndices = parameters.getValue(WINDOW_INDICES);
         String contourContrast = parameters.getValue(CONTOUR_CONTRAST);
-        
+
         if (calibratedUnits)
             filterRadius = inputImagePlus.getCalibration().getRawX(filterRadius);
 
@@ -576,33 +576,18 @@ public class FilterImage extends Module {
     @Override
     protected void initialiseParameters() {
         parameters.add(new SeparatorP(INPUT_SEPARATOR, this));
-        parameters.add(new InputImageP(INPUT_IMAGE, this, "", "Image to apply filter to."));
-        parameters.add(new BooleanP(APPLY_TO_INPUT, this, true,
-                "Select if the filter should be applied directly to the input image, or if it should be applied to a duplicate, then stored as a different image in the workspace."));
-        parameters.add(new OutputImageP(OUTPUT_IMAGE, this, "",
-                "Name of the output image created during the filtering process.  This image will be added to the workspace."));
+        parameters.add(new InputImageP(INPUT_IMAGE, this));
+        parameters.add(new BooleanP(APPLY_TO_INPUT, this, true));
+        parameters.add(new OutputImageP(OUTPUT_IMAGE, this));
         parameters.add(new SeparatorP(FILTER_SEPARATOR, this));
-        parameters.add(new ChoiceP(FILTER_MODE, this, FilterModes.DOG2D, FilterModes.ALL,
-                "Filter to be applied to the image.<br>" + "<br>- " + FilterModes.DOG2D
-                        + " Difference of Gaussian filter (2D)  Used to enhance spot-like features of sizes similar to the setting for \""
-                        + FILTER_RADIUS + "\".<br>" + "<br>- " + FilterModes.GAUSSIAN2D + ".<br>" + "<br>- "
-                        + FilterModes.GAUSSIAN3D + ".<br>" + "<br>- " + FilterModes.GRADIENT2D + ".<br>" + "<br>- "
-                        + FilterModes.MAXIMUM2D + ".<br>" + "<br>- " + FilterModes.MAXIMUM3D + ".<br>" + "<br>- "
-                        + FilterModes.MEAN2D + ".<br>" + "<br>- " + FilterModes.MEAN3D + ".<br>" + "<br>- "
-                        + FilterModes.MEDIAN2D + ".<br>" + "<br>- " + FilterModes.MEDIAN3D + ".<br>" + "<br>- "
-                        + FilterModes.MINIMUM2D + ".<br>" + "<br>- " + FilterModes.MINIMUM3D + ".<br>" + "<br>- "
-                        + FilterModes.RIDGE_ENHANCEMENT + " enhances ridge-like structures in the image.<br>" + "<br>- "
-                        + FilterModes.ROLLING_FRAME
-                        + " filters the image at each frame based on frames before and/after.  The frame window over which the statistics are calculated is user-controllable..<br>"
-                        + "<br>- " + FilterModes.VARIANCE2D + ".<br>" + "<br>- " + FilterModes.VARIANCE3D + ".<br>"));
-        parameters.add(new DoubleP(FILTER_RADIUS, this, 2d,
-                "Range the filter is calculated over.  Often also referred to as \"sigma\".  Value specified in pixel units, unless \"calibrated units\" is enabled."));
-        parameters.add(new BooleanP(CALIBRATED_UNITS, this, false,
-                "Choose if filter radius is specified in pixel (set to \"false\") or calibrated (set to \"true\") units.  What units are used are controlled from \"Input control\"."));
-        parameters.add(new ChoiceP(ROLLING_METHOD, this, RollingMethods.AVERAGE, RollingMethods.ALL,
-                "Statistic to apply for rolling frame filtering."));
+        parameters.add(new ChoiceP(FILTER_MODE, this, FilterModes.DOG2D, FilterModes.ALL));
+        parameters.add(new DoubleP(FILTER_RADIUS, this, 2d));
+        parameters.add(new BooleanP(CALIBRATED_UNITS, this, false));
+        parameters.add(new ChoiceP(ROLLING_METHOD, this, RollingMethods.AVERAGE, RollingMethods.ALL));
         parameters.add(new StringP(WINDOW_INDICES, this, "-1-1"));
-        parameters.add(new ChoiceP(CONTOUR_CONTRAST,this,ContourContrast.DARK_LINE,ContourContrast.ALL));
+        parameters.add(new ChoiceP(CONTOUR_CONTRAST, this, ContourContrast.DARK_LINE, ContourContrast.ALL));
+
+        addParameterDescriptions();
 
     }
 
@@ -664,5 +649,66 @@ public class FilterImage extends Module {
     @Override
     public boolean verify() {
         return true;
+    }
+
+    protected void addParameterDescriptions() {
+        parameters.get(INPUT_IMAGE).setDescription("Image to apply filter to.");
+
+        parameters.get(APPLY_TO_INPUT).setDescription(
+                "Select if the filter should be applied directly to the input image, or if it should be applied to a duplicate, then stored as a different image in the workspace.");
+
+        parameters.get(OUTPUT_IMAGE).setDescription(
+                "Name of the output image created during the filtering process.  This image will be added to the workspace.");
+
+        parameters.get(FILTER_MODE).setDescription("Filter to be applied to the image.<br><ul>"
+
+                + "<li>\"" + FilterModes.DOG2D
+                + "\" Difference of Gaussian filter (2D)  Used to enhance spot-like features of sizes similar to the setting for \""
+                + FILTER_RADIUS + "\".</li>"
+
+                + "<li>\"" + FilterModes.GAUSSIAN2D + "\" </li>"
+
+                + "<li>\"" + FilterModes.GAUSSIAN3D + "\" </li>"
+
+                + "<li>\"" + FilterModes.GRADIENT2D + "\" </li>"
+
+                + "<li>\"" + FilterModes.MAXIMUM2D + "\" </li>"
+
+                + "<li>\"" + FilterModes.MAXIMUM3D + "\" </li>"
+
+                + "<li>\"" + FilterModes.MEAN2D + "\" </li>"
+
+                + "<li>\"" + FilterModes.MEAN3D + "\" </li>"
+
+                + "<li>\"" + FilterModes.MEDIAN2D + "\" </li>"
+
+                + "<li>\"" + FilterModes.MEDIAN3D + "\" </li>"
+
+                + "<li>\"" + FilterModes.MINIMUM2D + "\" </li>"
+
+                + "<li>\"" + FilterModes.MINIMUM3D + "\" </li>"
+
+                + "<li>\"" + FilterModes.RIDGE_ENHANCEMENT
+                + "\" Uses initial image processing steps from \"Ridge Detection\" plugin to enhance ridge-like structures.</li>"
+
+                + "<li>\"" + FilterModes.ROLLING_FRAME
+                + "\" Filters the image at each frame based on frames before and/after.  The frame window over which the statistics are calculated is user-controllable</li>"
+
+                + "<li>\"" + FilterModes.VARIANCE2D + "\" </li>"
+
+                + "<li>\"" + FilterModes.VARIANCE3D + "\" </li></ul>");
+
+        parameters.get(FILTER_RADIUS).setDescription(
+                "Range the filter is calculated over.  Often also referred to as \"sigma\".  Value specified in pixel units, unless \"calibrated units\" is enabled.");
+
+        parameters.get(CALIBRATED_UNITS).setDescription(
+                "Choose if filter radius is specified in pixel (set to \"false\") or calibrated (set to \"true\") units.  What units are used are controlled from \"Input control\".");
+
+        parameters.get(ROLLING_METHOD).setDescription("Statistic to apply for rolling frame filtering.");
+
+        parameters.get(WINDOW_INDICES).setDescription("When \""+FILTER_MODE+"\" is set to \""+FilterModes.ROLLING_FRAME+"\", the rolling frame statistic will be calculated for each frame using these relative frames (i.e. with indices set to \"-1,1\" the statistic would be calculated based on the frames immediately before and after).");
+
+        parameters.get(CONTOUR_CONTRAST).setDescription("When \""+FILTER_MODE+"\" is set to \""+FilterModes.RIDGE_ENHANCEMENT+"\", this parameter controls whether the ridges to be enhanced are bright (brighter than the background) or dark (darker than the background).");
+
     }
 }

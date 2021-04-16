@@ -12,6 +12,7 @@ import wbif.sjx.MIA.Module.Categories;
 import wbif.sjx.MIA.Module.Category;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
+import wbif.sjx.MIA.Module.Core.InputControl;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.ImageMath;
 import wbif.sjx.MIA.Module.ImageProcessing.Stack.ImageTypeConverter;
 import wbif.sjx.MIA.Module.ImageProcessing.Stack.InterpolateZAxis;
@@ -253,5 +254,8 @@ public class DistanceMap extends Module {
         parameters.get(MATCH_Z_TO_X).setDescription(
                 "When selected, an image is interpolated in Z (so that all pixels are isotropic) prior to calculation of the distance map.  This prevents warping of the distance map along the Z-axis if XY and Z sampling aren't equal.");
 
+        parameters.get(SPATIAL_UNITS_MODE).setDescription(
+                "Controls whether the output distance map will have distances specified in pixel or calibrated units (units set in \""+new InputControl(null).getName()+"\" module) .");
+                
     }
 }
