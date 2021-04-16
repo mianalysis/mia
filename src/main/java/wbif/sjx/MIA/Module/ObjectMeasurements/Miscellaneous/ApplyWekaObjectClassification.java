@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.util.ArrayList;
 
+import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Categories;
 import wbif.sjx.MIA.Module.Category;
 import wbif.sjx.MIA.Module.Module;
@@ -112,10 +113,20 @@ public class ApplyWekaObjectClassification extends Module {
         }
 
         // Adding object instances
+        ArrayList<Obj> processedObjects = new ArrayList<>();
         for (Obj inputObject : inputObjects.values()) {
             double[] objAttr = new double[measurementNames.size() - 1];
-            for (int i = 0; i < measurementNames.size() - 1; i++)
-                objAttr[i] = inputObject.getMeasurement(measurementNames.get(i)).getValue();
+            for (int i = 0; i < measurementNames.size() - 1; i++) {
+                Measurement measurement = inputObject.getMeasurement(measurementNames.get(i));
+
+                // Objects with missing measurements will cause problems for normalisation
+                if (measurement == null || Double.isNaN(measurement.getValue()))
+                    continue;
+
+                objAttr[i] = measurement.getValue();
+            }
+        
+            processedObjects.add(inputObject);
             instances.add(new SparseInstance(1, objAttr));
         }
 
@@ -131,16 +142,14 @@ public class ApplyWekaObjectClassification extends Module {
             double[][] classifications = abstractClassifier.distributionsForInstances(instances);
             
             String classMeasName = getClassMeasurementName(instances);
-            int i = 0;
-            for (Obj inputObject : inputObjects.values()) {
+            for (int i = 0; i < processedObjects.size(); i++) {
+                Obj inputObject = processedObjects.get(i);
                 double[] classification = classifications[i];
                 addProbabilityMeasurements(inputObject, instances, classification);
 
                 int classIndex = (int) abstractClassifier.classifyInstance(instances.get(i));
                 inputObject.addMeasurement(new Measurement(classMeasName, classIndex));
                 
-                i++;
-
             }
         } catch (Exception e) {
             e.printStackTrace();

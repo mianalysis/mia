@@ -372,6 +372,9 @@ public class ImageSaver extends AbstractImageSaver {
         parameters.get(SAVE_FILE_NAME).setDescription(
                 "Filename for saved image.  Care should be taken with this when working in batch mode as it's easy to continuously write over output images.");
 
+        parameters.get(AVAILABLE_METADATA_FIELDS).setDescription(
+                "List of the currently-available metadata values for this workspace.  These can be used when compiling a generic filename.");
+            
         parameters.get(APPEND_SERIES_MODE).setDescription(
                 "Controls if any series information should be appended to the end of the filename.  This is useful when working with multi-series files, as it should help prevent writing files from multiple runs with the same filename.  Series numbers are prepended by \"S\".  Choices are: "
                         + String.join(", ", AppendSeriesModes.ALL) + ".");

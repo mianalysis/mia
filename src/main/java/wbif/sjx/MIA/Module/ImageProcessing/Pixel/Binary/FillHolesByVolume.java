@@ -53,6 +53,7 @@ public class FillHolesByVolume extends Module {
     public static final String USE_MAXIMUM_VOLUME = "Use maximum volume";
     public static final String MAXIMUM_VOLUME = "Maximum size";
     public static final String CALIBRATED_UNITS = "Calibrated units";
+    public static final String CONNECTIVITY = "Connectivity";
 
     public static final String EXECUTION_SEPARATOR = "Execution controls";
     public static final String ENABLE_MULTITHREADING = "Enable multithreading";
@@ -66,11 +67,19 @@ public class FillHolesByVolume extends Module {
 
     }
 
+    public interface Connectivity {
+        String SIX = "6";
+        String TWENTYSIX = "26";
+
+        String[] ALL = new String[]{SIX,TWENTYSIX};
+
+    }
+
     public FillHolesByVolume(ModuleCollection modules) {
         super("Fill holes by volume", modules);
     }
 
-    public static void process(ImagePlus ipl, double minVolume, double maxVolume, boolean multithread,
+    public static void process(ImagePlus ipl, double minVolume, double maxVolume, int connectivity, boolean multithread,
             int minStripWidth) throws LongOverflowException {
         String name = new FillHolesByVolume(null).getName();
 
@@ -94,13 +103,13 @@ public class FillHolesByVolume extends Module {
                 int nThreads = multithread ? Prefs.getThreads() : 1;
                 if (multithread && nThreads > 1 && minStripWidth < ipl.getWidth()) {
                     currStack.setStack(
-                            IdentifyObjects.connectedComponentsLabellingMT(currStack.getStack(), 26, minStripWidth));
+                            IdentifyObjects.connectedComponentsLabellingMT(currStack.getStack(), connectivity, minStripWidth));
                 } else {
                     try {
-                        FloodFillComponentsLabeling3D ffcl3D = new FloodFillComponentsLabeling3D(26, 16);
+                        FloodFillComponentsLabeling3D ffcl3D = new FloodFillComponentsLabeling3D(connectivity, 16);
                         currStack.setStack(ffcl3D.computeLabels(currStack.getStack()));
                     } catch (RuntimeException e2) {
-                        FloodFillComponentsLabeling3D ffcl3D = new FloodFillComponentsLabeling3D(26, 32);
+                        FloodFillComponentsLabeling3D ffcl3D = new FloodFillComponentsLabeling3D(connectivity, 32);
                         currStack.setStack(ffcl3D.computeLabels(currStack.getStack()));
                     }
                 }
@@ -223,6 +232,7 @@ public class FillHolesByVolume extends Module {
         double minVolume = parameters.getValue(MINIMUM_VOLUME);
         double maxVolume = parameters.getValue(MAXIMUM_VOLUME);
         boolean calibratedUnits = parameters.getValue(CALIBRATED_UNITS);
+        int connectivity = Integer.parseInt(parameters.getValue(CONNECTIVITY));
         boolean multithread = parameters.getValue(ENABLE_MULTITHREADING);
         int minStripWidth = parameters.getValue(MIN_STRIP_WIDTH);
 
@@ -250,7 +260,7 @@ public class FillHolesByVolume extends Module {
         }
 
         try {
-            process(inputImagePlus, minVolume, maxVolume, multithread, minStripWidth);
+            process(inputImagePlus, minVolume, maxVolume, connectivity, multithread, minStripWidth);
 
         } catch (LongOverflowException e) {
             return Status.FAIL;
@@ -292,6 +302,7 @@ public class FillHolesByVolume extends Module {
         parameters.add(new BooleanP(USE_MAXIMUM_VOLUME, this, true));
         parameters.add(new DoubleP(MAXIMUM_VOLUME, this, 1000d));
         parameters.add(new BooleanP(CALIBRATED_UNITS, this, false));
+        parameters.add(new ChoiceP(CONNECTIVITY, this,Connectivity.TWENTYSIX,Connectivity.ALL));
 
         parameters.add(new SeparatorP(EXECUTION_SEPARATOR, this));
         parameters.add(new BooleanP(ENABLE_MULTITHREADING, this, true));
@@ -325,6 +336,7 @@ public class FillHolesByVolume extends Module {
         }
 
         returnedParameters.add(parameters.getParameter(CALIBRATED_UNITS));
+        returnedParameters.add(parameters.getParameter(CONNECTIVITY));
 
         returnedParameters.add(parameters.getParameter(EXECUTION_SEPARATOR));
         returnedParameters.add(parameters.getParameter(ENABLE_MULTITHREADING));
