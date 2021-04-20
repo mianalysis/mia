@@ -20,9 +20,9 @@ public class Categories {
         public final static Category IMAGE_PROCESSING = new Category("Image processing",
                         "Modules applying operations to images from the workspace.  For example, image filtering, thresholding or intensity normalisation.",
                         ROOT);
-        public final static Category IMAGE_PROCESSING_MISCELLANEOUS = new Category("Miscellaneous",
-                        "General image processing operations, such as creating intensity histograms.",
-                        IMAGE_PROCESSING);
+        // public final static Category IMAGE_PROCESSING_MISCELLANEOUS = new Category("Miscellaneous",
+        //                 "General image processing operations, such as creating intensity histograms.",
+        //                 IMAGE_PROCESSING);
         public final static Category IMAGE_PROCESSING_PIXEL = new Category("Pixel",
                         "Image processing operations which act on a pixel level, such as image filtering or thresholding.",
                         IMAGE_PROCESSING);
