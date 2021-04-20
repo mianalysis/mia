@@ -2,18 +2,17 @@ package wbif.sjx.MIA.Module.WorkflowHandling;
 
 import java.util.LinkedHashMap;
 
-import wbif.sjx.MIA.MIA;
+import wbif.sjx.MIA.Module.Categories;
+import wbif.sjx.MIA.Module.Category;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
-import wbif.sjx.MIA.Module.Category;
-import wbif.sjx.MIA.Module.Categories;
 import wbif.sjx.MIA.Module.Miscellaneous.GlobalVariables;
 import wbif.sjx.MIA.Object.Status;
 import wbif.sjx.MIA.Object.Workspace;
-import wbif.sjx.MIA.Object.Parameters.SeparatorP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.Parameters.ParameterGroup;
 import wbif.sjx.MIA.Object.Parameters.ParameterGroup.ParameterUpdaterAndGetter;
+import wbif.sjx.MIA.Object.Parameters.SeparatorP;
 import wbif.sjx.MIA.Object.Parameters.Text.StringP;
 import wbif.sjx.MIA.Object.References.Collections.ImageMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.MetadataRefCollection;

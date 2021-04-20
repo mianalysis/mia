@@ -127,7 +127,7 @@ public class GUICondition extends AbstractWorkspaceHandler {
         parameters.add(new SeparatorP(CONDITION_SEPARATOR, this));
         parameters.add(new ChoiceP(CHOICE, this, "", new String[0]));
         parameters.add(new BooleanP(STORE_AS_METADATA_ITEM, this, false));
-        parameters.add(new StringP(METADATA_NAME, this, ""));
+        parameters.add(new StringP(METADATA_NAME, this));
         parameters.getParameter(CHOICE).setVisible(true);
 
         ParameterCollection collection = new ParameterCollection();
@@ -147,9 +147,8 @@ public class GUICondition extends AbstractWorkspaceHandler {
         returnedParameters.add(parameters.getParameter(CONDITION_SEPARATOR));
         returnedParameters.add(parameters.getParameter(CHOICE));
         returnedParameters.add(parameters.getParameter(STORE_AS_METADATA_ITEM));
-        if ((boolean) parameters.getValue(STORE_AS_METADATA_ITEM)) {
+        if ((boolean) parameters.getValue(STORE_AS_METADATA_ITEM))
             returnedParameters.add(parameters.getParameter(METADATA_NAME));
-        }
         returnedParameters.add(parameters.getParameter(ADD_CHOICE));
 
         // Updating options in choice menu
@@ -209,6 +208,9 @@ public class GUICondition extends AbstractWorkspaceHandler {
         parameters.get(STORE_AS_METADATA_ITEM).setDescription(
                 "When selected, the selected choice will be stored as a metadata item.  This allows it to be exported to the final spreadsheet.");
 
+        parameters.get(METADATA_NAME).setDescription(
+                "Name for selected choice to be stored as metadata using.  The choice will be accessible via this metadata name in subsequent modules and can be exported to the final spreadsheet.");
+                
         parameters.get(ADD_CHOICE).setDescription("Add another condition that \"" + CHOICE
                 + "\" can select from.  Each choice can have its own handling outcome (e.g. termination/redirection).");
 

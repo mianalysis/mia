@@ -804,6 +804,8 @@ public class BestFocusSubstack<T extends RealType<T> & NativeType<T>> extends Mo
     void addParameterDescriptions() {
         parameters.get(INPUT_IMAGE).setDescription("Image to extract substack from.");
 
+        parameters.get(OUTPUT_MODE).setDescription("Controls whether the best focus positions are calculated and applied (creating a new image) or simply calculated.  In both cases, statistics for the best focus position (mean, median, minimum, maximum and standard deviation of slices) are stored as measurements associated with the input image.");
+
         parameters.get(OUTPUT_IMAGE).setDescription("Substack image to be added to the current workspace.");
 
         parameters.get(BEST_FOCUS_CALCULATION).setDescription("Method for determining the best-focus slice.<br><ul>"
