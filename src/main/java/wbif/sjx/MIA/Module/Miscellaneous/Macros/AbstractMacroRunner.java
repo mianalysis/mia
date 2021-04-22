@@ -15,7 +15,7 @@ import wbif.sjx.MIA.Object.Parameters.ParameterGroup.ParameterUpdaterAndGetter;
 import wbif.sjx.MIA.Object.Parameters.Text.DoubleP;
 import wbif.sjx.MIA.Object.Parameters.Text.StringP;
 
-public abstract class AbstractMacroRunner extends Module {    
+public abstract class AbstractMacroRunner extends Module {
     public static final String VARIABLE_NAME = "Variable name";
     public static final String VARIABLE_TYPE = "Variable type";
     public static final String VARIABLE_CHECKBOX = "Variable checkbox";
@@ -51,15 +51,15 @@ public abstract class AbstractMacroRunner extends Module {
             String value = "";
 
             switch (type) {
-                case VariableTypes.BOOLEAN:
-                    value = (boolean) collection.getValue(VARIABLE_CHECKBOX) ? "true" : "false";
-                    break;
-                case VariableTypes.NUMBER:
-                    value = collection.getValue(VARIABLE_NUMERIC_VALUE).toString();
-                    break;
-                case VariableTypes.TEXT:
-                    value = "\"" + collection.getValue(VARIABLE_TEXT_VALUE) + "\"";
-                    break;
+            case VariableTypes.BOOLEAN:
+                value = (boolean) collection.getValue(VARIABLE_CHECKBOX) ? "true" : "false";
+                break;
+            case VariableTypes.NUMBER:
+                value = collection.getValue(VARIABLE_NUMERIC_VALUE).toString();
+                break;
+            case VariableTypes.TEXT:
+                value = "\"" + collection.getValue(VARIABLE_TEXT_VALUE) + "\"";
+                break;
             }
 
             // Adding this variable into the code
@@ -70,9 +70,9 @@ public abstract class AbstractMacroRunner extends Module {
 
         }
 
-    sb.append(macroString);
+        sb.append(macroString);
 
-    return sb.toString();
+        return sb.toString();
 
     }
 
@@ -101,7 +101,7 @@ public abstract class AbstractMacroRunner extends Module {
     }
 
     @Override
-    protected void initialiseParameters() {        
+    protected void initialiseParameters() {
         ParameterCollection variableCollection = new ParameterCollection();
         variableCollection.add(new ChoiceP(VARIABLE_TYPE, this, VariableTypes.TEXT, VariableTypes.ALL));
         variableCollection.add(new StringP(VARIABLE_NAME, this));
@@ -134,7 +134,26 @@ public abstract class AbstractMacroRunner extends Module {
         collection.get(VARIABLE_NAME).setDescription(
                 "The variable value can be accessed from within the macro by using this variable name.");
 
-        collection.get(VARIABLE_TEXT_VALUE).setDescription("Text value assigned to this variable.");
+        collection.get(VARIABLE_TYPE)
+                .setDescription("Controls the data type of the variable that will be assigned within the macro:<br><ul>"
+
+                        + "\"" + VariableTypes.BOOLEAN
+                        + "\" Variable will be assigned a true/false value depending on whether the checkbox was selected/deselected (respectively).</li>."
+
+                        + "\"" + VariableTypes.NUMBER
+                        + "\" Variable will be assigned a numeric value to which mathematical operations can be applied.</li>."
+
+                        + "\"" + VariableTypes.TEXT
+                        + "\" Variable will be assigned a text value.  Irrespective of whether the value contains only numeric characters this will be interpreted as text.</li></ul>.");
+
+        collection.get(VARIABLE_CHECKBOX).setDescription("Boolean (true/false) value assigned to this variable if \""
+                + VARIABLE_TYPE + "\" is set to \"" + VariableTypes.BOOLEAN + "\".");
+
+        collection.get(VARIABLE_NUMERIC_VALUE).setDescription("Numeric value assigned to this variable if \""
+                + VARIABLE_TYPE + "\" is set to \"" + VariableTypes.NUMBER + "\".");
+
+        collection.get(VARIABLE_TEXT_VALUE).setDescription("Text value assigned to this variable if \"" + VARIABLE_TYPE
+                + "\" is set to \"" + VariableTypes.TEXT + "\".");
 
         parameters.get(ADD_VARIABLE).setDescription(
                 "Pre-define variables, which will be immediately accessible within the macro.  These can be used to provide user-controllable values to file-based macros or to prevent the need for editing macro code via the \""
@@ -152,15 +171,15 @@ public abstract class AbstractMacroRunner extends Module {
                 returnedParameters.add(params.getParameter(VARIABLE_NAME));
                 returnedParameters.add(params.getParameter(VARIABLE_TYPE));
                 switch ((String) params.getValue(VARIABLE_TYPE)) {
-                    case VariableTypes.BOOLEAN:
-                        returnedParameters.add(params.getParameter(VARIABLE_CHECKBOX));
-                        break;
-                    case VariableTypes.NUMBER:
-                        returnedParameters.add(params.getParameter(VARIABLE_NUMERIC_VALUE));
-                        break;
-                    case VariableTypes.TEXT:
-                        returnedParameters.add(params.getParameter(VARIABLE_TEXT_VALUE));
-                        break;
+                case VariableTypes.BOOLEAN:
+                    returnedParameters.add(params.getParameter(VARIABLE_CHECKBOX));
+                    break;
+                case VariableTypes.NUMBER:
+                    returnedParameters.add(params.getParameter(VARIABLE_NUMERIC_VALUE));
+                    break;
+                case VariableTypes.TEXT:
+                    returnedParameters.add(params.getParameter(VARIABLE_TEXT_VALUE));
+                    break;
                 }
 
                 return returnedParameters;
