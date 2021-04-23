@@ -1,4 +1,4 @@
-package wbif.sjx.MIA.Module.ImageProcessing.Stack;
+package wbif.sjx.MIA.Module.ImageProcessing.Stack.Registration;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -17,11 +17,14 @@ import ij.ImagePlus;
 import ij.Prefs;
 import ij.plugin.SubHyperstackMaker;
 import ij.process.ImageProcessor;
+import wbif.sjx.MIA.Module.Categories;
+import wbif.sjx.MIA.Module.Category;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
-import wbif.sjx.MIA.Module.Category;
-import wbif.sjx.MIA.Module.Categories;
+import wbif.sjx.MIA.Module.ImageProcessing.Pixel.InvertIntensity;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.ProjectImage;
+import wbif.sjx.MIA.Module.ImageProcessing.Stack.ExtractSubstack;
+import wbif.sjx.MIA.Module.ImageProcessing.Stack.ImageTypeConverter;
 import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.Status;
 import wbif.sjx.MIA.Object.Workspace;
@@ -30,6 +33,7 @@ import wbif.sjx.MIA.Object.Parameters.ChoiceP;
 import wbif.sjx.MIA.Object.Parameters.InputImageP;
 import wbif.sjx.MIA.Object.Parameters.OutputImageP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
+import wbif.sjx.MIA.Object.Parameters.SeparatorP;
 import wbif.sjx.MIA.Object.Parameters.Text.DoubleP;
 import wbif.sjx.MIA.Object.Parameters.Text.IntegerP;
 import wbif.sjx.MIA.Object.References.Collections.ImageMeasurementRefCollection;
@@ -39,9 +43,12 @@ import wbif.sjx.MIA.Object.References.Collections.ParentChildRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.PartnerRefCollection;
 
 public class UnwarpImages extends Module {
+    public static final String INPUT_SEPARATOR = "Image input/output";
     public static final String INPUT_IMAGE = "Input image";
     public static final String APPLY_TO_INPUT = "Apply to input image";
     public static final String OUTPUT_IMAGE = "Output image";
+
+    public static final String REFERENCE_SEPARATOR = "Reference image source";
     public static final String RELATIVE_MODE = "Relative mode";
     public static final String ROLLING_CORRECTION = "Rolling correction";
     public static final String CORRECTION_INTERVAL = "Correction interval";
@@ -49,6 +56,8 @@ public class UnwarpImages extends Module {
     public static final String CALCULATION_SOURCE = "Calculation source";
     public static final String EXTERNAL_SOURCE = "External source";
     public static final String CALCULATION_CHANNEL = "Calculation channel";
+
+    public static final String REGISTRATION_SEPARATOR = "Registration controls";
     public static final String REGISTRATION_MODE = "Registration mode";
     public static final String SUBSAMPLE_FACTOR = "Subsample factor";
     public static final String INITIAL_DEFORMATION_MODE = "Initial deformation mode";
@@ -59,19 +68,21 @@ public class UnwarpImages extends Module {
     public static final String IMAGE_WEIGHT = "Image weight";
     public static final String CONSISTENCY_WEIGHT = "Consistency weight";
     public static final String STOP_THRESHOLD = "Stop threshold";
+    public static final String FILL_MODE = "Fill mode";
+
+    public static final String EXECUTION_SEPARATOR = "Execution controls";
     public static final String ENABLE_MULTITHREADING = "Enable multithreading";
 
     public UnwarpImages(ModuleCollection modules) {
-        super("Unwarp images",modules);
+        super("Unwarp images", modules);
     }
-
 
     public interface RelativeModes {
         final String FIRST_FRAME = "First frame";
         final String PREVIOUS_FRAME = "Previous frame";
         final String SPECIFIC_IMAGE = "Specific image";
 
-        final String[] ALL = new String[]{FIRST_FRAME,PREVIOUS_FRAME,SPECIFIC_IMAGE};
+        final String[] ALL = new String[] { FIRST_FRAME, PREVIOUS_FRAME, SPECIFIC_IMAGE };
 
     }
 
@@ -79,7 +90,7 @@ public class UnwarpImages extends Module {
         final String NONE = "None";
         final String EVERY_NTH_FRAME = "Every nth frame";
 
-        final String[] ALL = new String[]{NONE,EVERY_NTH_FRAME};
+        final String[] ALL = new String[] { NONE, EVERY_NTH_FRAME };
 
     }
 
@@ -87,7 +98,7 @@ public class UnwarpImages extends Module {
         String INTERNAL = "Internal";
         String EXTERNAL = "External";
 
-        String[] ALL = new String[]{INTERNAL,EXTERNAL};
+        String[] ALL = new String[] { INTERNAL, EXTERNAL };
 
     }
 
@@ -96,7 +107,7 @@ public class UnwarpImages extends Module {
         final String ACCURATE = "Accurate";
         final String MONO = "Mono";
 
-        final String[] ALL = new String[]{FAST,ACCURATE,MONO};
+        final String[] ALL = new String[] { FAST, ACCURATE, MONO };
 
     }
 
@@ -106,7 +117,7 @@ public class UnwarpImages extends Module {
         final String FINE = "Fine";
         final String VERY_FINE = "Very Fine";
 
-        final String[] ALL = new String[]{VERY_COARSE,COARSE,FINE,VERY_FINE};
+        final String[] ALL = new String[] { VERY_COARSE, COARSE, FINE, VERY_FINE };
 
     }
 
@@ -117,50 +128,57 @@ public class UnwarpImages extends Module {
         final String VERY_FINE = "Very Fine";
         final String SUPER_FINE = "Super Fine";
 
-        final String[] ALL = new String[]{VERY_COARSE,COARSE,FINE,VERY_FINE,SUPER_FINE};
+        final String[] ALL = new String[] { VERY_COARSE, COARSE, FINE, VERY_FINE, SUPER_FINE };
 
     }
 
+    public interface FillModes {
+        String BLACK = "Black";
+        String WHITE = "White";
+
+        String[] ALL = new String[] { BLACK, WHITE };
+
+    }
 
     private int getRegistrationMode(String registrationMode) {
         switch (registrationMode) {
-            case RegistrationModes.FAST:
-            default:
-                return 0;
-            case RegistrationModes.ACCURATE:
-                return 1;
-            case RegistrationModes.MONO:
-                return 2;
+        case RegistrationModes.FAST:
+        default:
+            return 0;
+        case RegistrationModes.ACCURATE:
+            return 1;
+        case RegistrationModes.MONO:
+            return 2;
         }
     }
 
     private int getInitialDeformationMode(String initialDeformationMode) {
         switch (initialDeformationMode) {
-            case InitialDeformationModes.VERY_COARSE:
-            default:
-                return 0;
-            case InitialDeformationModes.COARSE:
-                return 1;
-            case InitialDeformationModes.FINE:
-                return 2;
-            case InitialDeformationModes.VERY_FINE:
-                return 3;
+        case InitialDeformationModes.VERY_COARSE:
+        default:
+            return 0;
+        case InitialDeformationModes.COARSE:
+            return 1;
+        case InitialDeformationModes.FINE:
+            return 2;
+        case InitialDeformationModes.VERY_FINE:
+            return 3;
         }
     }
 
     private int getFinalDeformationMode(String finalDeformationMode) {
         switch (finalDeformationMode) {
-            case FinalDeformationModes.VERY_COARSE:
-            default:
-                return 0;
-            case FinalDeformationModes.COARSE:
-                return 1;
-            case FinalDeformationModes.FINE:
-                return 2;
-            case FinalDeformationModes.VERY_FINE:
-                return 3;
-            case FinalDeformationModes.SUPER_FINE:
-                return 4;
+        case FinalDeformationModes.VERY_COARSE:
+        default:
+            return 0;
+        case FinalDeformationModes.COARSE:
+            return 1;
+        case FinalDeformationModes.FINE:
+            return 2;
+        case FinalDeformationModes.VERY_FINE:
+            return 3;
+        case FinalDeformationModes.SUPER_FINE:
+            return 4;
         }
     }
 
@@ -172,10 +190,11 @@ public class UnwarpImages extends Module {
 
     }
 
-    public void applyTransformation(Image inputImage, Transformation transformation, boolean multithread) throws InterruptedException {
+    public void applyTransformation(Image inputImage, Transformation transformation, String fillMode, boolean multithread)
+            throws InterruptedException {
         final String tempPath;
         try {
-            File tempFile = File.createTempFile("unwarp",".tmp");
+            File tempFile = File.createTempFile("unwarp", ".tmp");
             BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(tempFile));
             bufferedWriter.close();
 
@@ -189,16 +208,22 @@ public class UnwarpImages extends Module {
 
         // Iterate over all images in the stack
         ImagePlus inputIpl = inputImage.getImagePlus();
+
+        // Invert the intensity before applying transformation if using white fill
+        if (fillMode.equals(FillModes.WHITE))
+            InvertIntensity.process(inputIpl);
+            
         int nChannels = inputIpl.getNChannels();
         int nSlices = inputIpl.getNSlices();
         int nFrames = inputIpl.getNFrames();
 
         int nThreads = multithread ? Prefs.getThreads() : 1;
-        ThreadPoolExecutor pool = new ThreadPoolExecutor(nThreads,nThreads,0L, TimeUnit.MILLISECONDS,new LinkedBlockingQueue<>());
+        ThreadPoolExecutor pool = new ThreadPoolExecutor(nThreads, nThreads, 0L, TimeUnit.MILLISECONDS,
+                new LinkedBlockingQueue<>());
 
-        for (int c=1;c<=nChannels;c++) {
-            for (int z=1;z<=nSlices;z++) {
-                for (int t=1;t<=nFrames;t++) {
+        for (int c = 1; c <= nChannels; c++) {
+            for (int z = 1; z <= nSlices; z++) {
+                for (int t = 1; t <= nFrames; t++) {
                     int finalC = c;
                     int finalZ = z;
                     int finalT = t;
@@ -219,14 +244,19 @@ public class UnwarpImages extends Module {
         pool.shutdown();
         pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS); // i.e. never terminate early
 
+        if (fillMode.equals(FillModes.WHITE))
+            InvertIntensity.process(inputImage);
+        
     }
 
-    synchronized private static ImagePlus getSetStack(ImagePlus inputImagePlus, int timepoint, int channel, int slice, @Nullable ImageProcessor toPut) {
+    synchronized private static ImagePlus getSetStack(ImagePlus inputImagePlus, int timepoint, int channel, int slice,
+            @Nullable ImageProcessor toPut) {
         if (toPut == null) {
             // Get mode
-            return SubHyperstackMaker.makeSubhyperstack(inputImagePlus, channel + "-" + channel, slice + "-" + slice, timepoint + "-" + timepoint);
+            return SubHyperstackMaker.makeSubhyperstack(inputImagePlus, channel + "-" + channel, slice + "-" + slice,
+                    timepoint + "-" + timepoint);
         } else {
-            inputImagePlus.setPosition(channel,slice,timepoint);
+            inputImagePlus.setPosition(channel, slice, timepoint);
             inputImagePlus.setProcessor(toPut);
             inputImagePlus.updateAndDraw();
             return null;
@@ -245,7 +275,9 @@ public class UnwarpImages extends Module {
         inputImagePlus.updateAndDraw();
     }
 
-    public void process(Image inputImage, int calculationChannel, String relativeMode, Param param, int correctionInterval, boolean multithread, @Nullable Image reference, @Nullable Image externalSource) throws InterruptedException {
+    public void process(Image inputImage, int calculationChannel, String relativeMode, Param param,
+            int correctionInterval, String fillMode, boolean multithread, @Nullable Image reference, @Nullable Image externalSource)
+            throws InterruptedException {
         // Creating a reference image
         Image projectedReference = null;
 
@@ -254,58 +286,72 @@ public class UnwarpImages extends Module {
 
         // Assigning fixed reference images
         switch (relativeMode) {
-            case RelativeModes.FIRST_FRAME:
-                reference = ExtractSubstack.extractSubstack(source, "ExportableRef", String.valueOf(calculationChannel), "1-end", "1");
-                projectedReference = ProjectImage.projectImageInZ(reference, "ProjectedReference", ProjectImage.ProjectionModes.MAX);
-                break;
+        case RelativeModes.FIRST_FRAME:
+            reference = ExtractSubstack.extractSubstack(source, "ExportableRef", String.valueOf(calculationChannel),
+                    "1-end", "1");
+            projectedReference = ProjectImage.projectImageInZ(reference, "ProjectedReference",
+                    ProjectImage.ProjectionModes.MAX);
+            break;
 
-            case RelativeModes.SPECIFIC_IMAGE:
-                if (reference == null) return;
-                projectedReference = ProjectImage.projectImageInZ(reference, "ProjectedReference", ProjectImage.ProjectionModes.MAX);
-                break;
+        case RelativeModes.SPECIFIC_IMAGE:
+            if (reference == null)
+                return;
+            projectedReference = ProjectImage.projectImageInZ(reference, "ProjectedReference",
+                    ProjectImage.ProjectionModes.MAX);
+            break;
         }
 
         // Iterate over each time-step
         int count = 0;
         int total = source.getImagePlus().getNFrames();
         for (int t = 1; t <= source.getImagePlus().getNFrames(); t++) {
-            writeStatus("Processing timepoint "+(++count)+" of "+total);
+            writeStatus("Processing timepoint " + (++count) + " of " + total);
 
             // If the reference image is the previous frame, calculate this now
             if (relativeMode.equals(RelativeModes.PREVIOUS_FRAME)) {
                 // Can't processAutomatic if this is the first frame
-                if (t == 1) continue;
+                if (t == 1)
+                    continue;
 
-                reference = ExtractSubstack.extractSubstack(source, "ExportableRef", String.valueOf(calculationChannel), "1-end", String.valueOf(t - 1));
-                projectedReference = ProjectImage.projectImageInZ(reference, "ProjectedReference", ProjectImage.ProjectionModes.MAX);
+                reference = ExtractSubstack.extractSubstack(source, "ExportableRef", String.valueOf(calculationChannel),
+                        "1-end", String.valueOf(t - 1));
+                projectedReference = ProjectImage.projectImageInZ(reference, "ProjectedReference",
+                        ProjectImage.ProjectionModes.MAX);
 
             }
 
             // Getting the projected image at this time-point
-            Image warped = ExtractSubstack.extractSubstack(source, "Warped", String.valueOf(calculationChannel), "1-end", String.valueOf(t));
-            Image projectedWarped = ProjectImage.projectImageInZ(warped, "ProjectedWarped", ProjectImage.ProjectionModes.MAX);
+            Image warped = ExtractSubstack.extractSubstack(source, "Warped", String.valueOf(calculationChannel),
+                    "1-end", String.valueOf(t));
+            Image projectedWarped = ProjectImage.projectImageInZ(warped, "ProjectedWarped",
+                    ProjectImage.ProjectionModes.MAX);
 
             // Calculating the transformation for this image pair
-            if (projectedReference == null) return;
+            if (projectedReference == null)
+                return;
             Transformation transformation = getTransformation(projectedReference, projectedWarped, param);
 
-            // Setting the time range for the correction.  This is only the case if a correction interval for "previous-
-            // frame" correction is used and the current frame number is an integer multiple of the interval.
+            // Setting the time range for the correction. This is only the case if a
+            // correction interval for "previous-
+            // frame" correction is used and the current frame number is an integer multiple
+            // of the interval.
             int t2 = t;
             switch (relativeMode) {
-                case RelativeModes.PREVIOUS_FRAME:
-                    if (correctionInterval != -1 && t%correctionInterval == 0) {
-                        t2 = source.getImagePlus().getNFrames();
-                    }
-                    break;
+            case RelativeModes.PREVIOUS_FRAME:
+                if (correctionInterval != -1 && t % correctionInterval == 0) {
+                    t2 = source.getImagePlus().getNFrames();
+                }
+                break;
             }
 
             // Applying the transformation to the whole stack.
-            // All channels should move in the same way, so are processed with the same transformation.
+            // All channels should move in the same way, so are processed with the same
+            // transformation.
             for (int tt = t; tt <= t2; tt++) {
                 for (int c = 1; c <= inputImage.getImagePlus().getNChannels(); c++) {
-                    warped = ExtractSubstack.extractSubstack(inputImage, "Warped", String.valueOf(c), "1-end", String.valueOf(tt));
-                    applyTransformation(warped, transformation, multithread);
+                    warped = ExtractSubstack.extractSubstack(inputImage, "Warped", String.valueOf(c), "1-end",
+                            String.valueOf(tt));
+                    applyTransformation(warped, transformation, fillMode, multithread);
                     replaceStack(inputImage, warped, c, tt);
                 }
             }
@@ -314,8 +360,9 @@ public class UnwarpImages extends Module {
             if (relativeMode.equals(RelativeModes.PREVIOUS_FRAME) && externalSource != null) {
                 for (int tt = t; tt <= t2; tt++) {
                     for (int c = 1; c <= source.getImagePlus().getNChannels(); c++) {
-                        warped = ExtractSubstack.extractSubstack(source, "Warped", String.valueOf(c), "1-end", String.valueOf(tt));
-                        applyTransformation(warped, transformation, multithread);
+                        warped = ExtractSubstack.extractSubstack(source, "Warped", String.valueOf(c), "1-end",
+                                String.valueOf(tt));
+                        applyTransformation(warped, transformation, fillMode, multithread);
                         replaceStack(source, warped, c, tt);
                     }
                 }
@@ -323,11 +370,9 @@ public class UnwarpImages extends Module {
         }
     }
 
-
-
     @Override
     public Category getCategory() {
-        return Categories.IMAGE_PROCESSING_STACK;
+        return Categories.IMAGE_PROCESSING_STACK_REGISTRATION;
     }
 
     @Override
@@ -352,12 +397,15 @@ public class UnwarpImages extends Module {
         String externalSourceName = parameters.getValue(EXTERNAL_SOURCE);
         int calculationChannel = parameters.getValue(CALCULATION_CHANNEL);
         String registrationMode = parameters.getValue(REGISTRATION_MODE);
+        String fillMode = parameters.getValue(FILL_MODE);
         boolean multithread = parameters.getValue(ENABLE_MULTITHREADING);
 
-        if (!applyToInput) inputImage = new Image(outputImageName,inputImage.getImagePlus().duplicate());
+        if (!applyToInput)
+            inputImage = new Image(outputImageName, inputImage.getImagePlus().duplicate());
 
         // If the rolling correction mode is off, set the interval to -1
-        if (rollingCorrectionMode.equals(RollingCorrectionModes.NONE)) correctionInterval = -1;
+        if (rollingCorrectionMode.equals(RollingCorrectionModes.NONE))
+            correctionInterval = -1;
 
         // Setting up the parameters
         Param param = new Param();
@@ -376,19 +424,25 @@ public class UnwarpImages extends Module {
         }
         param.stopThreshold = parameters.getValue(STOP_THRESHOLD);
 
-        Image reference = relativeMode.equals(RelativeModes.SPECIFIC_IMAGE) ? workspace.getImage(referenceImageName) : null;
-        Image externalSource = calculationSource.equals(CalculationSources.EXTERNAL) ? workspace.getImage(externalSourceName) : null;
+        Image reference = relativeMode.equals(RelativeModes.SPECIFIC_IMAGE) ? workspace.getImage(referenceImageName)
+                : null;
+        Image externalSource = calculationSource.equals(CalculationSources.EXTERNAL)
+                ? workspace.getImage(externalSourceName)
+                : null;
 
         try {
-            process(inputImage, calculationChannel, relativeMode, param, correctionInterval, multithread, reference, externalSource);
+            process(inputImage, calculationChannel, relativeMode, param, correctionInterval, fillMode, multithread, reference,
+                    externalSource);
         } catch (InterruptedException e) {
             e.printStackTrace();
             return Status.FAIL;
         }
 
         // Dealing with module outputs
-        if (!applyToInput) workspace.addImage(inputImage);
-        if (showOutput) inputImage.showImage();
+        if (!applyToInput)
+            workspace.addImage(inputImage);
+        if (showOutput)
+            inputImage.showImage();
 
         return Status.PASS;
 
@@ -396,63 +450,78 @@ public class UnwarpImages extends Module {
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new InputImageP(INPUT_IMAGE,this));
-        parameters.add(new BooleanP(APPLY_TO_INPUT,this,true));
-        parameters.add(new OutputImageP(OUTPUT_IMAGE,this));
-        parameters.add(new ChoiceP(RELATIVE_MODE,this,RelativeModes.FIRST_FRAME,RelativeModes.ALL));
-        parameters.add(new ChoiceP(ROLLING_CORRECTION,this,RollingCorrectionModes.NONE,RollingCorrectionModes.ALL));
-        parameters.add(new IntegerP(CORRECTION_INTERVAL,this,1));
-        parameters.add(new InputImageP(REFERENCE_IMAGE,this));
-        parameters.add(new ChoiceP(CALCULATION_SOURCE,this,CalculationSources.INTERNAL,CalculationSources.ALL));
-        parameters.add(new InputImageP(EXTERNAL_SOURCE,this));
-        parameters.add(new IntegerP(CALCULATION_CHANNEL,this,1));
-        parameters.add(new ChoiceP(REGISTRATION_MODE,this,RegistrationModes.FAST,RegistrationModes.ALL));
-        parameters.add(new IntegerP(SUBSAMPLE_FACTOR,this,0));
-        parameters.add(new ChoiceP(INITIAL_DEFORMATION_MODE,this,InitialDeformationModes.VERY_COARSE,InitialDeformationModes.ALL));
-        parameters.add(new ChoiceP(FINAL_DEFORMATION_MODE,this,FinalDeformationModes.FINE,FinalDeformationModes.ALL));
-        parameters.add(new DoubleP(DIVERGENCE_WEIGHT,this,0d));
-        parameters.add(new DoubleP(CURL_WEIGHT,this,0d));
-        parameters.add(new DoubleP(LANDMARK_WEIGHT,this,0d));
-        parameters.add(new DoubleP(IMAGE_WEIGHT,this,1d));
-        parameters.add(new DoubleP(CONSISTENCY_WEIGHT,this,10d));
-        parameters.add(new DoubleP(STOP_THRESHOLD,this,0.01));
-        parameters.add(new BooleanP(ENABLE_MULTITHREADING,this,true));
+        parameters.add(new SeparatorP(INPUT_SEPARATOR, this));
+        parameters.add(new InputImageP(INPUT_IMAGE, this));
+        parameters.add(new BooleanP(APPLY_TO_INPUT, this, true));
+        parameters.add(new OutputImageP(OUTPUT_IMAGE, this));
+        
+        parameters.add(new SeparatorP(REFERENCE_SEPARATOR, this));
+        parameters.add(new ChoiceP(RELATIVE_MODE, this, RelativeModes.FIRST_FRAME, RelativeModes.ALL));
+        parameters.add(new ChoiceP(ROLLING_CORRECTION, this, RollingCorrectionModes.NONE, RollingCorrectionModes.ALL));
+        parameters.add(new IntegerP(CORRECTION_INTERVAL, this, 1));
+        parameters.add(new InputImageP(REFERENCE_IMAGE, this));
+        parameters.add(new ChoiceP(CALCULATION_SOURCE, this, CalculationSources.INTERNAL, CalculationSources.ALL));
+        parameters.add(new InputImageP(EXTERNAL_SOURCE, this));
+        parameters.add(new IntegerP(CALCULATION_CHANNEL, this, 1));
+
+        parameters.add(new SeparatorP(REGISTRATION_SEPARATOR, this));
+        parameters.add(new ChoiceP(REGISTRATION_MODE, this, RegistrationModes.FAST, RegistrationModes.ALL));
+        parameters.add(new IntegerP(SUBSAMPLE_FACTOR, this, 0));
+        parameters.add(new ChoiceP(INITIAL_DEFORMATION_MODE, this, InitialDeformationModes.VERY_COARSE,
+                InitialDeformationModes.ALL));
+        parameters
+                .add(new ChoiceP(FINAL_DEFORMATION_MODE, this, FinalDeformationModes.FINE, FinalDeformationModes.ALL));
+        parameters.add(new DoubleP(DIVERGENCE_WEIGHT, this, 0d));
+        parameters.add(new DoubleP(CURL_WEIGHT, this, 0d));
+        parameters.add(new DoubleP(LANDMARK_WEIGHT, this, 0d));
+        parameters.add(new DoubleP(IMAGE_WEIGHT, this, 1d));
+        parameters.add(new DoubleP(CONSISTENCY_WEIGHT, this, 10d));
+        parameters.add(new DoubleP(STOP_THRESHOLD, this, 0.01));
+        parameters.add(new ChoiceP(FILL_MODE, this, FillModes.BLACK, FillModes.ALL));
+
+        parameters.add(new SeparatorP(EXECUTION_SEPARATOR, this));
+        parameters.add(new BooleanP(ENABLE_MULTITHREADING, this, true));
 
     }
 
     @Override
     public ParameterCollection updateAndGetParameters() {
         ParameterCollection returnedParameters = new ParameterCollection();
+
+        returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(INPUT_IMAGE));
         returnedParameters.add(parameters.getParameter(APPLY_TO_INPUT));
         if (!(boolean) parameters.getValue(APPLY_TO_INPUT)) {
             returnedParameters.add(parameters.getParameter(OUTPUT_IMAGE));
         }
 
+        returnedParameters.add(parameters.getParameter(REFERENCE_SEPARATOR));
         returnedParameters.add(parameters.getParameter(RELATIVE_MODE));
         switch ((String) parameters.getValue(RELATIVE_MODE)) {
-            case RelativeModes.PREVIOUS_FRAME:
-                returnedParameters.add(parameters.getParameter(ROLLING_CORRECTION));
-                switch ((String) parameters.getValue(ROLLING_CORRECTION)) {
-                    case RollingCorrectionModes.EVERY_NTH_FRAME:
-                        returnedParameters.add(parameters.getParameter(CORRECTION_INTERVAL));
-                        break;
-                }
+        case RelativeModes.PREVIOUS_FRAME:
+            returnedParameters.add(parameters.getParameter(ROLLING_CORRECTION));
+            switch ((String) parameters.getValue(ROLLING_CORRECTION)) {
+            case RollingCorrectionModes.EVERY_NTH_FRAME:
+                returnedParameters.add(parameters.getParameter(CORRECTION_INTERVAL));
                 break;
+            }
+            break;
 
-            case RelativeModes.SPECIFIC_IMAGE:
-                returnedParameters.add(parameters.getParameter(REFERENCE_IMAGE));
-                break;
+        case RelativeModes.SPECIFIC_IMAGE:
+            returnedParameters.add(parameters.getParameter(REFERENCE_IMAGE));
+            break;
         }
 
         returnedParameters.add(parameters.getParameter(CALCULATION_SOURCE));
         switch ((String) parameters.getValue(CALCULATION_SOURCE)) {
-            case CalculationSources.EXTERNAL:
-                returnedParameters.add(parameters.getParameter(EXTERNAL_SOURCE));
-                break;
+        case CalculationSources.EXTERNAL:
+            returnedParameters.add(parameters.getParameter(EXTERNAL_SOURCE));
+            break;
         }
 
         returnedParameters.add(parameters.getParameter(CALCULATION_CHANNEL));
+
+        returnedParameters.add(parameters.getParameter(REGISTRATION_SEPARATOR));
         returnedParameters.add(parameters.getParameter(REGISTRATION_MODE));
         returnedParameters.add(parameters.getParameter(SUBSAMPLE_FACTOR));
         returnedParameters.add(parameters.getParameter(INITIAL_DEFORMATION_MODE));
@@ -463,13 +532,16 @@ public class UnwarpImages extends Module {
         returnedParameters.add(parameters.getParameter(IMAGE_WEIGHT));
 
         switch ((String) parameters.getValue(REGISTRATION_MODE)) {
-            case RegistrationModes.ACCURATE:
-            case RegistrationModes.FAST:
-                returnedParameters.add(parameters.getParameter(CONSISTENCY_WEIGHT));
-                break;
+        case RegistrationModes.ACCURATE:
+        case RegistrationModes.FAST:
+            returnedParameters.add(parameters.getParameter(CONSISTENCY_WEIGHT));
+            break;
         }
 
         returnedParameters.add(parameters.getParameter(STOP_THRESHOLD));
+        returnedParameters.add(parameters.getParameter(FILL_MODE));
+        
+        returnedParameters.add(parameters.getParameter(EXECUTION_SEPARATOR));
         returnedParameters.add(parameters.getParameter(ENABLE_MULTITHREADING));
 
         return returnedParameters;

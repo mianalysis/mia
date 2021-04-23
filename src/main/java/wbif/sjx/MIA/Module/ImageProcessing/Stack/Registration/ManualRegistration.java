@@ -6,6 +6,7 @@ import java.util.List;
 
 import ij.IJ;
 import ij.ImagePlus;
+import ij.gui.Roi;
 import ij.plugin.Duplicator;
 import mpicbg.ij.InverseTransformMapping;
 import mpicbg.ij.util.Util;
@@ -25,6 +26,7 @@ import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.Measurement;
 import wbif.sjx.MIA.Object.Status;
 import wbif.sjx.MIA.Object.Workspace;
+import wbif.sjx.MIA.Object.Parameters.ChoiceP;
 import wbif.sjx.MIA.Object.Parameters.InputImageP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.Parameters.SeparatorP;
@@ -41,6 +43,15 @@ public class ManualRegistration<T extends RealType<T> & NativeType<T>> extends A
         implements Interactable {
     public static final String REFERENCE_SEPARATOR = "Reference image source";
     public static final String REFERENCE_IMAGE = "Reference image";
+    public static final String POINT_SELECTION_MODE = "Point selection mode";
+
+    public interface PointSelectionModes {
+        String PRESELECTED = "Pre-selected points";
+        String RUNTIME = "Select at runtime";
+
+        String[] ALL = new String[] { PRESELECTED, RUNTIME };
+
+    }
 
     private Image inputImage;
     private Image reference;
@@ -59,8 +70,8 @@ public class ManualRegistration<T extends RealType<T> & NativeType<T>> extends A
 
     }
 
-    public void process(Image inputImage, String transformationMode, boolean multithread, String fillMode,
-            Image reference) {
+    public void process(Image inputImage, String transformationMode, String pointSelectionMode, boolean multithread,
+            String fillMode, Image reference) {
         // Creating a reference image
         Image projectedReference = ProjectImage.projectImageInZ(reference, "ProjectedReference",
                 ProjectImage.ProjectionModes.MAX);
@@ -71,7 +82,21 @@ public class ManualRegistration<T extends RealType<T> & NativeType<T>> extends A
 
         ImagePlus ipl1 = new Duplicator().run(projectedWarped.getImagePlus());
         ImagePlus ipl2 = new Duplicator().run(projectedReference.getImagePlus());
-        ArrayList<PointPair> pairs = new PointPairSelector(this, true).getPointPairs(ipl1, ipl2);
+
+        // Adding any ROIs that may have been pre-selected on the images
+        ipl1.setRoi(inputImage.getImagePlus().getRoi());
+        ipl2.setRoi(reference.getImagePlus().getRoi());
+
+        ArrayList<PointPair> pairs = null;
+        switch (pointSelectionMode) {
+        case PointSelectionModes.PRESELECTED:
+            pairs = PointPairSelector.getPreselectedPoints(inputImage, reference);
+            break;
+        case PointSelectionModes.RUNTIME:
+        default:
+            pairs = new PointPairSelector(this, true).getPointPairs(ipl1, ipl2);
+            break;
+        }
 
         // Getting transform
         Object[] output = getLandmarkTransformation(pairs, transformationMode);
@@ -149,10 +174,6 @@ public class ManualRegistration<T extends RealType<T> & NativeType<T>> extends A
 
         ArrayList<PointPair> pairs = (ArrayList<PointPair>) objects[0];
 
-        // Creating a reference image
-        Image projectedReference = ProjectImage.projectImageInZ(reference, "ProjectedReference",
-                ProjectImage.ProjectionModes.MAX);
-
         // Duplicating image
         ImagePlus dupIpl = inputImage.getImagePlus().duplicate();
         Image<T> dupImage = new Image<T>("Registered", dupIpl);
@@ -193,7 +214,6 @@ public class ManualRegistration<T extends RealType<T> & NativeType<T>> extends A
 
     }
 
-
     @Override
     public Category getCategory() {
         return Categories.IMAGE_PROCESSING_STACK_REGISTRATION;
@@ -223,13 +243,18 @@ public class ManualRegistration<T extends RealType<T> & NativeType<T>> extends A
         String fillMode = parameters.getValue(FILL_MODE);
         boolean multithread = parameters.getValue(ENABLE_MULTITHREADING);
         String referenceImageName = parameters.getValue(REFERENCE_IMAGE);
+        String pointSelectionMode = parameters.getValue(POINT_SELECTION_MODE);
 
         inputImage = workspace.getImage(inputImageName);
-        if (!applyToInput)
+        if (!applyToInput) {
+            Roi roi = inputImage.getImagePlus().getRoi();
             inputImage = new Image(outputImageName, inputImage.getImagePlus().duplicate());
+            inputImage.getImagePlus().setRoi(roi);
+        }
+
 
         reference = workspace.getImage(referenceImageName);
-        process(inputImage, transformationMode, multithread, fillMode, reference);
+        process(inputImage, transformationMode, pointSelectionMode, multithread, fillMode, reference);
 
         if (showOutput)
             inputImage.showImage();
@@ -248,6 +273,7 @@ public class ManualRegistration<T extends RealType<T> & NativeType<T>> extends A
 
         parameters.add(new SeparatorP(REFERENCE_SEPARATOR, this));
         parameters.add(new InputImageP(REFERENCE_IMAGE, this));
+        parameters.add(new ChoiceP(POINT_SELECTION_MODE, this, PointSelectionModes.RUNTIME, PointSelectionModes.ALL));
 
         addParameterDescriptions();
 
@@ -261,6 +287,7 @@ public class ManualRegistration<T extends RealType<T> & NativeType<T>> extends A
 
         returnedParameters.add(parameters.getParameter(REFERENCE_SEPARATOR));
         returnedParameters.add(parameters.getParameter(REFERENCE_IMAGE));
+        returnedParameters.add(parameters.getParameter(POINT_SELECTION_MODE));
 
         return returnedParameters;
 

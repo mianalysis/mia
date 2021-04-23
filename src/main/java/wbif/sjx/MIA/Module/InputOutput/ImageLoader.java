@@ -49,8 +49,6 @@ import wbif.sjx.MIA.Module.Category;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.Core.InputControl;
-import wbif.sjx.MIA.Module.Core.InputControl.AvailableSpatialUnits;
-import wbif.sjx.MIA.Module.Core.InputControl.AvailableTemporalUnits;
 import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.Measurement;
 import wbif.sjx.MIA.Object.ObjCollection;
@@ -440,11 +438,12 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
         // Adding temporal calibration
         if (!manualCal[1]) {
             if (!setTemporalCalibrationBF(ipl, meta, seriesNumber)) {
-                // Only display a warning if there's more than 1 frame.  Otherwise this should't be a problem.
+                // Only display a warning if there's more than 1 frame. Otherwise this should't
+                // be a problem.
                 if (ipl.getNFrames() != 1)
-                MIA.log.writeWarning("Can't apply temporal units for file \"" + new File(path).getName()
-                        + "\".  Temporally calibrated values will be unavailable.");
-                
+                    MIA.log.writeWarning("Can't apply temporal units for file \"" + new File(path).getName()
+                            + "\".  Temporally calibrated values will be unavailable.");
+
                 // Either way, remove the temporal calibration
                 setDummyTemporalCalibration(ipl);
             }
@@ -1002,8 +1001,10 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
                     break;
                 case Readers.IMAGEJ:
                     ipl = IJ.openImage(file.getAbsolutePath());
-                    parseImageJSpatialCalibration(ipl, file.getAbsolutePath());
-                    parseImageJTemporalCalibration(ipl, file.getAbsolutePath());
+                    if (!setSpatialCalibration)
+                        parseImageJSpatialCalibration(ipl, file.getAbsolutePath());
+                    if (!setTemporalCalibration)
+                        parseImageJTemporalCalibration(ipl, file.getAbsolutePath());
                     break;
                 }
                 break;
@@ -1014,8 +1015,10 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
                     MIA.log.writeWarning("No image open in ImageJ.  Skipping.");
                     return Status.FAIL;
                 }
-                parseImageJSpatialCalibration(ipl, null);
-                parseImageJTemporalCalibration(ipl, null);
+                if (!setSpatialCalibration)
+                    parseImageJSpatialCalibration(ipl, null);
+                if (!setTemporalCalibration)
+                    parseImageJTemporalCalibration(ipl, null);
                 break;
 
             case ImportModes.IMAGE_SEQUENCE:
@@ -1065,8 +1068,10 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
                     break;
                 case Readers.IMAGEJ:
                     ipl = IJ.openImage(file.getAbsolutePath());
-                    parseImageJSpatialCalibration(ipl, file.getAbsolutePath());
-                    parseImageJTemporalCalibration(ipl, file.getAbsolutePath());
+                    if (!setSpatialCalibration)
+                        parseImageJSpatialCalibration(ipl, file.getAbsolutePath());
+                    if (!setTemporalCalibration)
+                        parseImageJTemporalCalibration(ipl, file.getAbsolutePath());
                     break;
                 }
 
@@ -1085,8 +1090,10 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
                     break;
                 case Readers.IMAGEJ:
                     ipl = IJ.openImage(filePath);
-                    parseImageJSpatialCalibration(ipl, filePath);
-                    parseImageJTemporalCalibration(ipl, filePath);
+                    if (!setSpatialCalibration)
+                        parseImageJSpatialCalibration(ipl, filePath);
+                    if (!setTemporalCalibration)
+                        parseImageJTemporalCalibration(ipl, filePath);
                     break;
                 }
                 break;
@@ -1104,8 +1111,8 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
             writeStatus("Setting spatial calibration (XY = " + xyCal + ", Z = " + zCal + ")");
             Calibration calibration = ipl.getCalibration();
 
-            calibration.pixelHeight = xyCal/scaleFactorX;
-            calibration.pixelWidth = xyCal/scaleFactorY;
+            calibration.pixelHeight = xyCal / scaleFactorX;
+            calibration.pixelWidth = xyCal / scaleFactorY;
             calibration.pixelDepth = zCal;
             calibration.setUnit(SpatialUnit.getOMEUnit().getSymbol());
 
@@ -1250,7 +1257,8 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
             returnedParameters.add(parameters.getParameter(READER));
         }
 
-        if (parameters.getValue(READER).equals(Readers.BIOFORMATS) &! parameters.getValue(IMPORT_MODE).equals(ImportModes.IMAGEJ)) {
+        if (parameters.getValue(READER).equals(Readers.BIOFORMATS)
+                & !parameters.getValue(IMPORT_MODE).equals(ImportModes.IMAGEJ)) {
             returnedParameters.add(parameters.getParameter(SERIES_MODE));
             if (parameters.getValue(SERIES_MODE).equals(SeriesModes.SPECIFIC_SERIES))
                 returnedParameters.add(parameters.getParameter(SERIES_NUMBER));
@@ -1271,7 +1279,8 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
             returnedParameters.add(parameters.getParameter(FRAMES));
         }
 
-        if (parameters.getValue(READER).equals(Readers.BIOFORMATS) &! parameters.getValue(IMPORT_MODE).equals(ImportModes.IMAGEJ)) {
+        if (parameters.getValue(READER).equals(Readers.BIOFORMATS)
+                & !parameters.getValue(IMPORT_MODE).equals(ImportModes.IMAGEJ)) {
             returnedParameters.add(parameters.getParameter(CROP_MODE));
             switch ((String) parameters.getValue(CROP_MODE)) {
             case CropModes.FIXED:

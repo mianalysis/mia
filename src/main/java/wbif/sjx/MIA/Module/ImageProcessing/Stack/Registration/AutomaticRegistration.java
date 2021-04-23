@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 import com.drew.lang.annotations.Nullable;
 
-import ij.IJ;
 import ij.ImagePlus;
 import ij.process.ImageProcessor;
 import mpicbg.ij.InverseTransformMapping;
@@ -12,14 +11,13 @@ import mpicbg.models.AbstractAffineModel2D;
 import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
 import wbif.sjx.MIA.MIA;
-import wbif.sjx.MIA.Module.ModuleCollection;
-import wbif.sjx.MIA.Module.Category;
 import wbif.sjx.MIA.Module.Categories;
+import wbif.sjx.MIA.Module.Category;
+import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.ProjectImage;
 import wbif.sjx.MIA.Module.ImageProcessing.Stack.ConcatenateStacks;
 import wbif.sjx.MIA.Module.ImageProcessing.Stack.Convert3DStack;
 import wbif.sjx.MIA.Module.ImageProcessing.Stack.ExtractSubstack;
-import wbif.sjx.MIA.Module.ImageProcessing.Stack.UnwarpImages;
 import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.Parameters.ChoiceP;
 import wbif.sjx.MIA.Object.Parameters.InputImageP;
