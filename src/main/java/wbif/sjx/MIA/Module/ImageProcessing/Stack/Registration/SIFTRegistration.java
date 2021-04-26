@@ -43,7 +43,7 @@ public class SIFTRegistration extends AutomaticRegistration {
     public String getDescription() {
         return "Apply slice-by-slice (2D) affine-based image registration to a multi-dimensional stack.  Images can be aligned relative to the first frame in the stack, the previous frame or a separate image in the workspace.  The registration transform can also be calculated from a separate stack to the one that it will be applied to.  Registration can be performed along either the time or Z axes.  The non-registered axis (e.g. time axis when registering in Z) can be \"linked\" (all frames given the same registration) or \"independent\" (each stack registered separately)."
 
-        + "<br><br>This module uses the <a href=\"https://imagej.net/Feature_Extraction\">Feature Extraction</a> plugin and associated MPICBG tools to detect SIFT (\"Scale Invariant Feature Transform\") features from the input images and calculate and apply the necessary 2D affine transforms."
+                + "<br><br>This module uses the <a href=\"https://imagej.net/Feature_Extraction\">Feature Extraction</a> plugin and associated MPICBG tools to detect SIFT (\"Scale Invariant Feature Transform\") features from the input images and calculate and apply the necessary 2D affine transforms."
 
                 + "<br><br>Note: The SIFT-algorithm is protected by U.S. Patent 6,711,293: Method and apparatus for identifying scale invariant features in an image and use of same for locating an object in an image by the University of British Columbia. That is, for commercial applications the permission of the author is required. Anything else is published under the terms of the GPL, so feel free to use it for academic or personal purposes."
 
@@ -55,10 +55,11 @@ public class SIFTRegistration extends AutomaticRegistration {
     }
 
     @Override
-    public AbstractAffineModel2D getAffineModel2D(ImageProcessor referenceIpr, ImageProcessor warpedIpr, Param param) {
+    public AbstractAffineModel2D getAffineModel2D(ImageProcessor referenceIpr, ImageProcessor warpedIpr, Param param,
+            boolean showDetectedPoints) {
 
         SIFTParam p = (SIFTParam) param;
-        
+
         // Creating SIFT parameter structure
         FloatArray2DSIFT.Param siftParam = new FloatArray2DSIFT.Param();
         siftParam.fdBins = p.fdBins;
@@ -81,7 +82,10 @@ public class SIFTRegistration extends AutomaticRegistration {
         AbstractAffineModel2D model = getModel(p.transformationMode);
         Vector<PointMatch> candidates = FloatArray2DSIFT.createMatches(featureList2, featureList1, 1.5f, null,
                 Float.MAX_VALUE, p.rod);
-        Vector<PointMatch> inliers = new Vector<PointMatch>();
+        ArrayList<PointMatch> inliers = new ArrayList<PointMatch>();
+
+        if (showDetectedPoints)
+            showDetectedPoints(referenceIpr, warpedIpr, candidates);
 
         try {
             model.filterRansac(candidates, inliers, 1000, p.maxEpsilon, p.minInlierRatio);
@@ -112,6 +116,7 @@ public class SIFTRegistration extends AutomaticRegistration {
         String externalSourceName = parameters.getValue(EXTERNAL_SOURCE);
         int calculationChannel = parameters.getValue(CALCULATION_CHANNEL);
         String fillMode = parameters.getValue(FILL_MODE);
+        boolean showDetectedPoints = parameters.getValue(SHOW_DETECTED_POINTS);
 
         // Getting the input image and duplicating if the output will be stored
         // separately
@@ -127,23 +132,23 @@ public class SIFTRegistration extends AutomaticRegistration {
         String calcC = String.valueOf(calculationChannel);
         Image calculationImage = null;
         switch (calculationSource) {
-            case CalculationSources.EXTERNAL:
-                Image externalImage = workspace.getImage(externalSourceName);
-                calculationImage = ExtractSubstack.extractSubstack(externalImage, "CalcIm", calcC, "1-end", "1-end");
-                break;
+        case CalculationSources.EXTERNAL:
+            Image externalImage = workspace.getImage(externalSourceName);
+            calculationImage = ExtractSubstack.extractSubstack(externalImage, "CalcIm", calcC, "1-end", "1-end");
+            break;
 
-            case CalculationSources.INTERNAL:
-                calculationImage = ExtractSubstack.extractSubstack(inputImage, "CalcIm", calcC, "1-end", "1-end");
-                break;
+        case CalculationSources.INTERNAL:
+            calculationImage = ExtractSubstack.extractSubstack(inputImage, "CalcIm", calcC, "1-end", "1-end");
+            break;
         }
 
         // Registration will be performed in time, so ensure actual axis to be
         // registered is reordered to be in time axis
         switch (regAxis) {
-            case RegistrationAxes.Z:
-                changeStackOrder(inputImage);
-                changeStackOrder(calculationImage);
-                break;
+        case RegistrationAxes.Z:
+            changeStackOrder(inputImage);
+            changeStackOrder(calculationImage);
+            break;
         }
 
         // If non-registration dimension is "linked", calculation image potentially
@@ -153,10 +158,10 @@ public class SIFTRegistration extends AutomaticRegistration {
         // at least one Z-slice.
         if (calculationImage.getImagePlus().getNSlices() > 1) {
             switch (otherAxisMode) {
-                case OtherAxisModes.LINKED:
-                    calculationImage = ProjectImage.projectImageInZ(calculationImage, "CalcIm",
-                            ProjectImage.ProjectionModes.MAX);
-                    break;
+            case OtherAxisModes.LINKED:
+                calculationImage = ProjectImage.projectImageInZ(calculationImage, "CalcIm",
+                        ProjectImage.ProjectionModes.MAX);
+                break;
             }
         }
 
@@ -176,22 +181,23 @@ public class SIFTRegistration extends AutomaticRegistration {
             param.minInlierRatio = (float) (double) parameters.getValue(MIN_INLIER_RATIO);
 
             switch (otherAxisMode) {
-                case OtherAxisModes.INDEPENDENT:
-                    processIndependent(inputImage, calculationImage, relativeMode, numPrevFrames, prevFramesStatMode, param, fillMode, multithread,
-                            reference);
-                    break;
+            case OtherAxisModes.INDEPENDENT:
+                processIndependent(inputImage, calculationImage, relativeMode, numPrevFrames, prevFramesStatMode, param,
+                        fillMode, showDetectedPoints, multithread, reference);
+                break;
 
-                case OtherAxisModes.LINKED:
-                    processLinked(inputImage, calculationImage, relativeMode, numPrevFrames, prevFramesStatMode, param, fillMode, multithread, reference);
-                    break;
+            case OtherAxisModes.LINKED:
+                processLinked(inputImage, calculationImage, relativeMode, numPrevFrames, prevFramesStatMode, param,
+                        fillMode, showDetectedPoints, multithread, reference);
+                break;
             }
 
             // If stack order was adjusted, now swap it back
             switch (regAxis) {
-                case RegistrationAxes.Z:
-                    changeStackOrder(inputImage);
-                    changeStackOrder(calculationImage);
-                    break;
+            case RegistrationAxes.Z:
+                changeStackOrder(inputImage);
+                changeStackOrder(calculationImage);
+                break;
             }
 
         } else {
@@ -253,11 +259,11 @@ public class SIFTRegistration extends AutomaticRegistration {
         return returnedParameters;
 
     }
-    
+
     @Override
     protected void addParameterDescriptions() {
         super.addParameterDescriptions();
-        
+
         String siteRef = "Description taken from <a href=\"https://imagej.net/Feature_Extraction\">https://imagej.net/Feature_Extraction</a>";
 
         parameters.get(INITIAL_SIGMA).setDescription(

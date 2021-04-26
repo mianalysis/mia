@@ -53,7 +53,7 @@ public class MOPSRegistration extends AutomaticRegistration {
     }
 
     @Override
-    public AbstractAffineModel2D getAffineModel2D(ImageProcessor referenceIpr, ImageProcessor warpedIpr, Param param) {
+    public AbstractAffineModel2D getAffineModel2D(ImageProcessor referenceIpr, ImageProcessor warpedIpr, Param param, boolean showDetectedPoints) {
         MOPSParam p = (MOPSParam) param;
 
         // Creating SIFT parameter structure
@@ -78,6 +78,9 @@ public class MOPSRegistration extends AutomaticRegistration {
         List<PointMatch> candidates = FloatArray2DMOPS.createMatches(featureList1, featureList2, 1.5f, null,
                 Double.MAX_VALUE, p.rod);
         Vector<PointMatch> inliers = new Vector<PointMatch>();
+
+        if (showDetectedPoints)
+            showDetectedPoints(referenceIpr, warpedIpr, candidates);
 
         try {
             model.filterRansac(candidates, inliers, 1000, p.maxEpsilon, p.minInlierRatio);
@@ -108,6 +111,7 @@ public class MOPSRegistration extends AutomaticRegistration {
         String externalSourceName = parameters.getValue(EXTERNAL_SOURCE);
         int calculationChannel = parameters.getValue(CALCULATION_CHANNEL);
         String fillMode = parameters.getValue(FILL_MODE);
+        boolean showDetectedPoints = parameters.getValue(SHOW_DETECTED_POINTS);
 
         // Getting the input image and duplicating if the output will be stored
         // separately
@@ -172,12 +176,12 @@ public class MOPSRegistration extends AutomaticRegistration {
 
             switch (otherAxisMode) {
                 case OtherAxisModes.INDEPENDENT:
-                    processIndependent(inputImage, calculationImage, relativeMode, numPrevFrames, prevFramesStatMode, param, fillMode, multithread,
+                    processIndependent(inputImage, calculationImage, relativeMode, numPrevFrames, prevFramesStatMode, param, fillMode, showDetectedPoints, multithread,
                             reference);
                     break;
 
                 case OtherAxisModes.LINKED:
-                    processLinked(inputImage, calculationImage, relativeMode, numPrevFrames, prevFramesStatMode, param, fillMode, multithread, reference);
+                    processLinked(inputImage, calculationImage, relativeMode, numPrevFrames, prevFramesStatMode, param, fillMode, showDetectedPoints, multithread, reference);
                     break;
             }
 
