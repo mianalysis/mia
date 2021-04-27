@@ -1,4 +1,4 @@
-package wbif.sjx.MIA.Module.ImageProcessing.Stack;
+package wbif.sjx.MIA.Module.ImageProcessing.Stack.Registration;
 
 import java.awt.Point;
 import java.io.BufferedWriter;
@@ -25,19 +25,22 @@ import ij.plugin.SubHyperstackMaker;
 import ij.process.ImageProcessor;
 import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
+import wbif.sjx.MIA.Module.Categories;
+import wbif.sjx.MIA.Module.Category;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
-import wbif.sjx.MIA.Module.Category;
-import wbif.sjx.MIA.Module.Categories;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.InvertIntensity;
-import wbif.sjx.MIA.Object.Status;
+import wbif.sjx.MIA.Module.ImageProcessing.Stack.ConcatenateStacks;
+import wbif.sjx.MIA.Module.ImageProcessing.Stack.ImageTypeConverter;
 import wbif.sjx.MIA.Object.Image;
+import wbif.sjx.MIA.Object.Status;
 import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.MIA.Object.Parameters.BooleanP;
 import wbif.sjx.MIA.Object.Parameters.ChoiceP;
 import wbif.sjx.MIA.Object.Parameters.InputImageP;
 import wbif.sjx.MIA.Object.Parameters.OutputImageP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
+import wbif.sjx.MIA.Object.Parameters.SeparatorP;
 import wbif.sjx.MIA.Object.Parameters.Text.DoubleP;
 import wbif.sjx.MIA.Object.Parameters.Text.IntegerP;
 import wbif.sjx.MIA.Object.References.Collections.ImageMeasurementRefCollection;
@@ -50,11 +53,16 @@ import wbif.sjx.MIA.Process.Interactable.PointPairSelector;
 import wbif.sjx.MIA.Process.Interactable.PointPairSelector.PointPair;
 import wbif.sjx.MIA.ThirdParty.bUnwarpJ_Mod;
 
-public class ManualUnwarp <T extends RealType<T> & NativeType<T>> extends Module implements Interactable {
+public class ManualUnwarp<T extends RealType<T> & NativeType<T>> extends Module implements Interactable {
+    public static final String INPUT_SEPARATOR = "Image input/output";
     public static final String INPUT_IMAGE = "Input image";
     public static final String OUTPUT_IMAGE = "Output image";
+
+    public static final String REFERENCE_SEPARATOR = "Reference image source";
     public static final String REFERENCE_IMAGE = "Reference image";
     public static final String POINT_SELECTION_MODE = "Point selection mode";
+
+    public static final String REGISTRATION_SEPARATOR = "Registration controls";
     public static final String REGISTRATION_MODE = "Registration mode";
     public static final String SUBSAMPLE_FACTOR = "Subsample factor";
     public static final String INITIAL_DEFORMATION_MODE = "Initial deformation mode";
@@ -66,6 +74,8 @@ public class ManualUnwarp <T extends RealType<T> & NativeType<T>> extends Module
     public static final String CONSISTENCY_WEIGHT = "Consistency weight";
     public static final String STOP_THRESHOLD = "Stop threshold";
     public static final String FILL_MODE = "Fill mode";
+
+    public static final String EXECUTION_SEPARATOR = "Execution controls";
     public static final String ENABLE_MULTITHREADING = "Enable multithreading";
 
     private Param param;
@@ -73,15 +83,14 @@ public class ManualUnwarp <T extends RealType<T> & NativeType<T>> extends Module
     private Image reference;
 
     public ManualUnwarp(ModuleCollection modules) {
-        super("Unwarp images (manual)",modules);
+        super("Unwarp images (manual)", modules);
     }
-
 
     public interface PointSelectionModes {
         String PRESELECTED = "Pre-selected points";
         String RUNTIME = "Select at runtime";
 
-        String[] ALL = new String[]{PRESELECTED,RUNTIME};
+        String[] ALL = new String[] { PRESELECTED, RUNTIME };
 
     }
 
@@ -90,7 +99,7 @@ public class ManualUnwarp <T extends RealType<T> & NativeType<T>> extends Module
         final String ACCURATE = "Accurate";
         final String MONO = "Mono";
 
-        final String[] ALL = new String[]{FAST, ACCURATE, MONO};
+        final String[] ALL = new String[] { FAST, ACCURATE, MONO };
 
     }
 
@@ -100,7 +109,7 @@ public class ManualUnwarp <T extends RealType<T> & NativeType<T>> extends Module
         final String FINE = "Fine";
         final String VERY_FINE = "Very Fine";
 
-        final String[] ALL = new String[]{VERY_COARSE, COARSE, FINE, VERY_FINE};
+        final String[] ALL = new String[] { VERY_COARSE, COARSE, FINE, VERY_FINE };
 
     }
 
@@ -111,7 +120,7 @@ public class ManualUnwarp <T extends RealType<T> & NativeType<T>> extends Module
         final String VERY_FINE = "Very Fine";
         final String SUPER_FINE = "Super Fine";
 
-        final String[] ALL = new String[]{VERY_COARSE, COARSE, FINE, VERY_FINE, SUPER_FINE};
+        final String[] ALL = new String[] { VERY_COARSE, COARSE, FINE, VERY_FINE, SUPER_FINE };
 
     }
 
@@ -119,50 +128,49 @@ public class ManualUnwarp <T extends RealType<T> & NativeType<T>> extends Module
         String BLACK = "Black";
         String WHITE = "White";
 
-        String[] ALL = new String[]{BLACK,WHITE};
+        String[] ALL = new String[] { BLACK, WHITE };
 
     }
 
-
     private int getRegistrationMode(String registrationMode) {
         switch (registrationMode) {
-            case RegistrationModes.FAST:
-            default:
-                return 0;
-            case RegistrationModes.ACCURATE:
-                return 1;
-            case RegistrationModes.MONO:
-                return 2;
+        case RegistrationModes.FAST:
+        default:
+            return 0;
+        case RegistrationModes.ACCURATE:
+            return 1;
+        case RegistrationModes.MONO:
+            return 2;
         }
     }
 
     private int getInitialDeformationMode(String initialDeformationMode) {
         switch (initialDeformationMode) {
-            case InitialDeformationModes.VERY_COARSE:
-            default:
-                return 0;
-            case InitialDeformationModes.COARSE:
-                return 1;
-            case InitialDeformationModes.FINE:
-                return 2;
-            case InitialDeformationModes.VERY_FINE:
-                return 3;
+        case InitialDeformationModes.VERY_COARSE:
+        default:
+            return 0;
+        case InitialDeformationModes.COARSE:
+            return 1;
+        case InitialDeformationModes.FINE:
+            return 2;
+        case InitialDeformationModes.VERY_FINE:
+            return 3;
         }
     }
 
     private int getFinalDeformationMode(String finalDeformationMode) {
         switch (finalDeformationMode) {
-            case FinalDeformationModes.VERY_COARSE:
-            default:
-                return 0;
-            case FinalDeformationModes.COARSE:
-                return 1;
-            case FinalDeformationModes.FINE:
-                return 2;
-            case FinalDeformationModes.VERY_FINE:
-                return 3;
-            case FinalDeformationModes.SUPER_FINE:
-                return 4;
+        case FinalDeformationModes.VERY_COARSE:
+        default:
+            return 0;
+        case FinalDeformationModes.COARSE:
+            return 1;
+        case FinalDeformationModes.FINE:
+            return 2;
+        case FinalDeformationModes.VERY_FINE:
+            return 3;
+        case FinalDeformationModes.SUPER_FINE:
+            return 4;
         }
     }
 
@@ -174,7 +182,8 @@ public class ManualUnwarp <T extends RealType<T> & NativeType<T>> extends Module
 
     }
 
-    public void applyTransformation(Image inputImage, Image outputImage, Transformation transformation, String fillMode, boolean multithread) throws InterruptedException {
+    public void applyTransformation(Image inputImage, Image outputImage, Transformation transformation, String fillMode,
+            boolean multithread) throws InterruptedException {
         final String tempPath;
         try {
             File tempFile = File.createTempFile("unwarp", ".tmp");
@@ -194,13 +203,15 @@ public class ManualUnwarp <T extends RealType<T> & NativeType<T>> extends Module
         ImagePlus outputIpl = outputImage.getImagePlus();
 
         // Invert the intensity before applying transformation if using white fill
-        if (fillMode.equals(FillModes.WHITE)) InvertIntensity.process(inputIpl);
+        if (fillMode.equals(FillModes.WHITE))
+            InvertIntensity.process(inputIpl);
 
         int nChannels = inputIpl.getNChannels();
         int nSlices = inputIpl.getNSlices();
         int nFrames = inputIpl.getNFrames();
         int nThreads = multithread ? Prefs.getThreads() : 1;
-        ThreadPoolExecutor pool = new ThreadPoolExecutor(nThreads, nThreads, 0L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<>());
+        ThreadPoolExecutor pool = new ThreadPoolExecutor(nThreads, nThreads, 0L, TimeUnit.MILLISECONDS,
+                new LinkedBlockingQueue<>());
 
         for (int c = 1; c <= nChannels; c++) {
             for (int z = 1; z <= nSlices; z++) {
@@ -225,14 +236,17 @@ public class ManualUnwarp <T extends RealType<T> & NativeType<T>> extends Module
         pool.shutdown();
         pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS); // i.e. never terminate early
 
-        if (fillMode.equals(FillModes.WHITE)) InvertIntensity.process(outputIpl);
+        if (fillMode.equals(FillModes.WHITE))
+            InvertIntensity.process(outputIpl);
 
     }
 
-    synchronized private static ImagePlus getSetStack(ImagePlus inputImagePlus, int timepoint, int channel, int slice, @Nullable ImageProcessor toPut) {
+    synchronized private static ImagePlus getSetStack(ImagePlus inputImagePlus, int timepoint, int channel, int slice,
+            @Nullable ImageProcessor toPut) {
         if (toPut == null) {
             // Get mode
-            return SubHyperstackMaker.makeSubhyperstack(inputImagePlus, channel + "-" + channel, slice + "-" + slice, timepoint + "-" + timepoint);
+            return SubHyperstackMaker.makeSubhyperstack(inputImagePlus, channel + "-" + channel, slice + "-" + slice,
+                    timepoint + "-" + timepoint);
         } else {
             inputImagePlus.setPosition(channel, slice, timepoint);
             inputImagePlus.setProcessor(toPut);
@@ -264,11 +278,13 @@ public class ManualUnwarp <T extends RealType<T> & NativeType<T>> extends Module
         int height = referenceImage.getImagePlus().getHeight();
 
         // Creating output image
-        return new Image<T>(outputImageName,IJ.createHyperStack("Output", width, height, nChannels, nSlices, nFrames, bitDepth));
+        return new Image<T>(outputImageName,
+                IJ.createHyperStack("Output", width, height, nChannels, nSlices, nFrames, bitDepth));
 
     }
 
-    public Image<T> process(Image<T> inputImage, String outputImageName, Image<T> reference, ArrayList<PointPair> pairs, Param param, String fillMode, boolean multithread) throws InterruptedException {
+    public Image<T> process(Image<T> inputImage, String outputImageName, Image<T> reference, ArrayList<PointPair> pairs,
+            Param param, String fillMode, boolean multithread) throws InterruptedException {
         // Converting point pairs into format for bUnwarpJ
         Stack<Point> points1 = new Stack<>();
         Stack<Point> points2 = new Stack<>();
@@ -287,17 +303,17 @@ public class ManualUnwarp <T extends RealType<T> & NativeType<T>> extends Module
         Transformation transformation = bUnwarpJ_Mod.computeTransformationBatch(ipr1, ipr2, points1, points2, param);
 
         // Creating an output image
-        Image<T> outputImage = createEmptyTarget(inputImage,reference,outputImageName);
+        Image<T> outputImage = createEmptyTarget(inputImage, reference, outputImageName);
 
         // Applying transformation to entire stack
         // Applying the transformation to the whole stack.
-        // All channels should move in the same way, so are processed with the same transformation.
+        // All channels should move in the same way, so are processed with the same
+        // transformation.
         applyTransformation(inputImage, outputImage, transformation, fillMode, multithread);
 
         return outputImage;
 
     }
-
 
     @Override
     public void doAction(Object[] objects) {
@@ -326,14 +342,15 @@ public class ManualUnwarp <T extends RealType<T> & NativeType<T>> extends Module
         Transformation transformation = bUnwarpJ_Mod.computeTransformationBatch(ipr1, ipr2, points1, points2, param);
 
         // Creating an output image
-        Image<T> outputImage = createEmptyTarget(inputImage,reference,"Test");
+        Image<T> outputImage = createEmptyTarget(inputImage, reference, "Test");
 
         String fillMode = parameters.getValue(FILL_MODE);
         boolean multithread = parameters.getValue(ENABLE_MULTITHREADING);
 
         // Applying transformation to entire stack
         // Applying the transformation to the whole stack.
-        // All channels should move in the same way, so are processed with the same transformation.
+        // All channels should move in the same way, so are processed with the same
+        // transformation.
         try {
             applyTransformation(inputImage, outputImage, transformation, fillMode, multithread);
         } catch (InterruptedException e) {
@@ -343,14 +360,14 @@ public class ManualUnwarp <T extends RealType<T> & NativeType<T>> extends Module
         ArrayList<Image<T>> images = new ArrayList<>();
         images.add(reference);
         images.add(outputImage);
-        ConcatenateStacks.concatenateImages(images,ConcatenateStacks.AxisModes.CHANNEL,"Unwarp comparison").showImage();
+        ConcatenateStacks.concatenateImages(images, ConcatenateStacks.AxisModes.CHANNEL, "Unwarp comparison")
+                .showImage();
 
     }
 
-
     @Override
     public Category getCategory() {
-        return Categories.IMAGE_PROCESSING_STACK;
+        return Categories.IMAGE_PROCESSING_STACK_REGISTRATION;
     }
 
     @Override
@@ -360,7 +377,7 @@ public class ManualUnwarp <T extends RealType<T> & NativeType<T>> extends Module
 
     @Override
     protected Status process(Workspace workspace) {
-        IJ.setBackgroundColor(255,255,255);
+        IJ.setBackgroundColor(255, 255, 255);
 
         // Getting input image
         String inputImageName = parameters.getValue(INPUT_IMAGE);
@@ -403,30 +420,31 @@ public class ManualUnwarp <T extends RealType<T> & NativeType<T>> extends Module
 
         ArrayList<PointPair> pairs = null;
         switch (pointSelectionMode) {
-            case PointSelectionModes.PRESELECTED:
-                pairs = PointPairSelector.getPreselectedPoints(inputImage,reference);
-                break;
-            case PointSelectionModes.RUNTIME:
-            default:
-                pairs = new PointPairSelector(this,true).getPointPairs(ipl1, ipl2);
-                break;
+        case PointSelectionModes.PRESELECTED:
+            pairs = PointPairSelector.getPreselectedPoints(inputImage, reference);
+            break;
+        case PointSelectionModes.RUNTIME:
+        default:
+            pairs = new PointPairSelector(this, true).getPointPairs(ipl1, ipl2);
+            break;
         }
 
         Image outputImage = null;
         try {
             outputImage = process(inputImage, outputImageName, reference, pairs, param, fillMode, multithread);
-
         } catch (InterruptedException e) {
             e.printStackTrace();
             return Status.FAIL;
         }
 
         // Failure to unwarp the image will result in a null
-        if (outputImage == null) return Status.FAIL;
+        if (outputImage == null)
+            return Status.FAIL;
 
         // Dealing with module outputs
         workspace.addImage(outputImage);
-        if (showOutput) outputImage.showImage();
+        if (showOutput)
+            outputImage.showImage();
 
         return Status.PASS;
 
@@ -434,32 +452,46 @@ public class ManualUnwarp <T extends RealType<T> & NativeType<T>> extends Module
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new InputImageP(INPUT_IMAGE,this));
-        parameters.add(new OutputImageP(OUTPUT_IMAGE,this));
-        parameters.add(new InputImageP(REFERENCE_IMAGE,this));
-        parameters.add(new ChoiceP(POINT_SELECTION_MODE,this,PointSelectionModes.RUNTIME,PointSelectionModes.ALL));
-        parameters.add(new ChoiceP(REGISTRATION_MODE,this,RegistrationModes.FAST,RegistrationModes.ALL));
-        parameters.add(new IntegerP(SUBSAMPLE_FACTOR,this,0));
-        parameters.add(new ChoiceP(INITIAL_DEFORMATION_MODE,this,InitialDeformationModes.VERY_COARSE,InitialDeformationModes.ALL));
-        parameters.add(new ChoiceP(FINAL_DEFORMATION_MODE,this,FinalDeformationModes.FINE,FinalDeformationModes.ALL));
-        parameters.add(new DoubleP(DIVERGENCE_WEIGHT,this,0d));
-        parameters.add(new DoubleP(CURL_WEIGHT,this,0d));
-        parameters.add(new DoubleP(LANDMARK_WEIGHT,this,0d));
-        parameters.add(new DoubleP(IMAGE_WEIGHT,this,1d));
-        parameters.add(new DoubleP(CONSISTENCY_WEIGHT,this,10d));
-        parameters.add(new DoubleP(STOP_THRESHOLD,this,0.01));
-        parameters.add(new ChoiceP(FILL_MODE,this,FillModes.BLACK,FillModes.ALL));
-        parameters.add(new BooleanP(ENABLE_MULTITHREADING,this,true));
+        parameters.add(new SeparatorP(INPUT_SEPARATOR, this));
+        parameters.add(new InputImageP(INPUT_IMAGE, this));
+        parameters.add(new OutputImageP(OUTPUT_IMAGE, this));
+
+        parameters.add(new SeparatorP(REFERENCE_SEPARATOR, this));
+        parameters.add(new InputImageP(REFERENCE_IMAGE, this));
+        parameters.add(new ChoiceP(POINT_SELECTION_MODE, this, PointSelectionModes.RUNTIME, PointSelectionModes.ALL));
+
+        parameters.add(new SeparatorP(REGISTRATION_SEPARATOR, this));
+        parameters.add(new ChoiceP(REGISTRATION_MODE, this, RegistrationModes.FAST, RegistrationModes.ALL));
+        parameters.add(new IntegerP(SUBSAMPLE_FACTOR, this, 0));
+        parameters.add(new ChoiceP(INITIAL_DEFORMATION_MODE, this, InitialDeformationModes.VERY_COARSE,
+                InitialDeformationModes.ALL));
+        parameters
+                .add(new ChoiceP(FINAL_DEFORMATION_MODE, this, FinalDeformationModes.FINE, FinalDeformationModes.ALL));
+        parameters.add(new DoubleP(DIVERGENCE_WEIGHT, this, 0d));
+        parameters.add(new DoubleP(CURL_WEIGHT, this, 0d));
+        parameters.add(new DoubleP(LANDMARK_WEIGHT, this, 0d));
+        parameters.add(new DoubleP(IMAGE_WEIGHT, this, 1d));
+        parameters.add(new DoubleP(CONSISTENCY_WEIGHT, this, 10d));
+        parameters.add(new DoubleP(STOP_THRESHOLD, this, 0.01));
+        parameters.add(new ChoiceP(FILL_MODE, this, FillModes.BLACK, FillModes.ALL));
+
+        parameters.add(new SeparatorP(EXECUTION_SEPARATOR, this));
+        parameters.add(new BooleanP(ENABLE_MULTITHREADING, this, true));
 
     }
 
     @Override
     public ParameterCollection updateAndGetParameters() {
         ParameterCollection returnedParameters = new ParameterCollection();
+        returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(INPUT_IMAGE));
         returnedParameters.add(parameters.getParameter(OUTPUT_IMAGE));
+
+        returnedParameters.add(parameters.getParameter(REFERENCE_SEPARATOR));
         returnedParameters.add(parameters.getParameter(REFERENCE_IMAGE));
         returnedParameters.add(parameters.getParameter(POINT_SELECTION_MODE));
+
+        returnedParameters.add(parameters.getParameter(REGISTRATION_SEPARATOR));
         returnedParameters.add(parameters.getParameter(REGISTRATION_MODE));
         returnedParameters.add(parameters.getParameter(SUBSAMPLE_FACTOR));
         returnedParameters.add(parameters.getParameter(INITIAL_DEFORMATION_MODE));
@@ -470,14 +502,16 @@ public class ManualUnwarp <T extends RealType<T> & NativeType<T>> extends Module
         returnedParameters.add(parameters.getParameter(IMAGE_WEIGHT));
 
         switch ((String) parameters.getValue(REGISTRATION_MODE)) {
-            case RegistrationModes.ACCURATE:
-            case RegistrationModes.FAST:
-                returnedParameters.add(parameters.getParameter(CONSISTENCY_WEIGHT));
-                break;
+        case RegistrationModes.ACCURATE:
+        case RegistrationModes.FAST:
+            returnedParameters.add(parameters.getParameter(CONSISTENCY_WEIGHT));
+            break;
         }
 
-        returnedParameters.add(parameters.getParameter(FILL_MODE));
         returnedParameters.add(parameters.getParameter(STOP_THRESHOLD));
+        returnedParameters.add(parameters.getParameter(FILL_MODE));
+
+        returnedParameters.add(parameters.getParameter(EXECUTION_SEPARATOR));
         returnedParameters.add(parameters.getParameter(ENABLE_MULTITHREADING));
 
         return returnedParameters;

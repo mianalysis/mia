@@ -11,6 +11,7 @@ import wbif.sjx.MIA.Module.ImageProcessing.Pixel.Threshold.LocalAutoThreshold;
 import wbif.sjx.MIA.Module.ImageProcessing.Stack.Registration.SIFTRegistration;
 import wbif.sjx.MIA.Module.InputOutput.ObjectLoader;
 import wbif.sjx.MIA.Module.Miscellaneous.GlobalVariables;
+import wbif.sjx.MIA.Module.Miscellaneous.Macros.RunMacro;
 import wbif.sjx.MIA.Module.Miscellaneous.Macros.RunSingleCommand;
 import wbif.sjx.MIA.Module.ObjectMeasurements.Miscellaneous.ReplaceMeasurementValue;
 import wbif.sjx.MIA.Module.ObjectMeasurements.Spatial.CalculateNearestNeighbour;
@@ -30,8 +31,8 @@ public class LostAndFound {
         //// Populating hard-coded module reassignments ////
         lostModules.put("AutomaticRegistration", new SIFTRegistration(null).getClass().getSimpleName());
         lostModules.put("ConditionalAnalysisTermination", new WorkflowHandling(null).getClass().getSimpleName());
-        lostModules.put("RunSingleMacroCommand", new RunSingleCommand(null).getClass().getSimpleName());
-        
+        lostModules.put("RunMacroOnImage", new RunMacro(null).getClass().getSimpleName());
+        lostModules.put("RunSingleMacroCommand", new RunSingleCommand(null).getClass().getSimpleName());       
 
         //// Populating hard-coded parameter reassignments ////
         // CalculateNearestNeighbour

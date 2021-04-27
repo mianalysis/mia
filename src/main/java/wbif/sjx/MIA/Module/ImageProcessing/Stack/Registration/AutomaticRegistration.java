@@ -1,6 +1,9 @@
 package wbif.sjx.MIA.Module.ImageProcessing.Stack.Registration;
 
+import java.awt.Color;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Vector;
 
 import com.drew.lang.annotations.Nullable;
 
@@ -9,18 +12,22 @@ import ij.ImagePlus;
 import ij.process.ImageProcessor;
 import mpicbg.ij.InverseTransformMapping;
 import mpicbg.models.AbstractAffineModel2D;
+import mpicbg.models.PointMatch;
 import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
 import wbif.sjx.MIA.MIA;
-import wbif.sjx.MIA.Module.ModuleCollection;
-import wbif.sjx.MIA.Module.Category;
 import wbif.sjx.MIA.Module.Categories;
+import wbif.sjx.MIA.Module.Category;
+import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.ProjectImage;
 import wbif.sjx.MIA.Module.ImageProcessing.Stack.ConcatenateStacks;
 import wbif.sjx.MIA.Module.ImageProcessing.Stack.Convert3DStack;
 import wbif.sjx.MIA.Module.ImageProcessing.Stack.ExtractSubstack;
-import wbif.sjx.MIA.Module.ImageProcessing.Stack.UnwarpImages;
+import wbif.sjx.MIA.Module.Visualisation.Overlays.AddObjectCentroid;
 import wbif.sjx.MIA.Object.Image;
+import wbif.sjx.MIA.Object.Obj;
+import wbif.sjx.MIA.Object.ObjCollection;
+import wbif.sjx.MIA.Object.Parameters.BooleanP;
 import wbif.sjx.MIA.Object.Parameters.ChoiceP;
 import wbif.sjx.MIA.Object.Parameters.InputImageP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
@@ -31,8 +38,13 @@ import wbif.sjx.MIA.Object.References.Collections.MetadataRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.ObjMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.ParentChildRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.PartnerRefCollection;
+import wbif.sjx.MIA.Object.Units.TemporalUnit;
+import wbif.sjx.common.Object.Volume.PointOutOfRangeException;
+import wbif.sjx.common.Object.Volume.SpatCal;
+import wbif.sjx.common.Object.Volume.VolumeType;
 
-public abstract class AutomaticRegistration<T extends RealType<T> & NativeType<T>> extends AbstractRegistrationHandler<T> {
+public abstract class AutomaticRegistration<T extends RealType<T> & NativeType<T>>
+        extends AbstractRegistrationHandler<T> {
     public static final String INPUT_SEPARATOR = "Image input/output";
     public static final String INPUT_IMAGE = "Input image";
     public static final String APPLY_TO_INPUT = "Apply to input image";
@@ -53,7 +65,7 @@ public abstract class AutomaticRegistration<T extends RealType<T> & NativeType<T
     public static final String CALCULATION_SOURCE = "Calculation source";
     public static final String EXTERNAL_SOURCE = "External source";
     public static final String CALCULATION_CHANNEL = "Calculation channel";
-
+    public static final String SHOW_DETECTED_POINTS = "Show detected points";
 
     public AutomaticRegistration(String name, ModuleCollection modules) {
         super(name, modules);
@@ -84,7 +96,8 @@ public abstract class AutomaticRegistration<T extends RealType<T> & NativeType<T
 
     }
 
-    public interface PrevFramesStatModes extends ProjectImage.ProjectionModes {}
+    public interface PrevFramesStatModes extends ProjectImage.ProjectionModes {
+    }
 
     public interface CalculationSources {
         String INTERNAL = "Internal";
@@ -112,7 +125,6 @@ public abstract class AutomaticRegistration<T extends RealType<T> & NativeType<T
 
     }
 
-
     boolean testReferenceValidity(Image inputImage, Image calculationImage, String otherAxisMode) {
         ImagePlus inputIpl = inputImage.getImagePlus();
         ImagePlus calculationIpl = calculationImage.getImagePlus();
@@ -122,25 +134,25 @@ public abstract class AutomaticRegistration<T extends RealType<T> & NativeType<T
         // Also, if "slices" are linked, it should only have one slice. If "slices" are
         // independent, it should have the same number of slices as the input.
         switch (otherAxisMode) {
-            case OtherAxisModes.INDEPENDENT:
-                if (calculationIpl.getNSlices() != inputIpl.getNSlices()) {
-                    MIA.log.writeWarning(
-                            "Non-registration axis of calculation image stack is different length to input image stack.  Calculation stack has "
-                                    + calculationIpl.getNSlices() + " images, input stack has " + inputIpl.getNSlices()
-                                    + " images.  In \"" + OtherAxisModes.INDEPENDENT
-                                    + "\" mode, calculation and input stacks should be the same length along non-registration axis.");
-                    return false;
-                }
-                break;
+        case OtherAxisModes.INDEPENDENT:
+            if (calculationIpl.getNSlices() != inputIpl.getNSlices()) {
+                MIA.log.writeWarning(
+                        "Non-registration axis of calculation image stack is different length to input image stack.  Calculation stack has "
+                                + calculationIpl.getNSlices() + " images, input stack has " + inputIpl.getNSlices()
+                                + " images.  In \"" + OtherAxisModes.INDEPENDENT
+                                + "\" mode, calculation and input stacks should be the same length along non-registration axis.");
+                return false;
+            }
+            break;
 
-            case OtherAxisModes.LINKED:
-                if (calculationIpl.getNSlices() > 1) {
-                    MIA.log.writeWarning("Non-registration axis of calculation image stack is too large ("
-                            + calculationIpl.getNSlices() + ").  In \"" + OtherAxisModes.LINKED
-                            + "\" mode, calculation stack should have a single image along non-registration axis.");
-                    return false;
-                }
-                break;
+        case OtherAxisModes.LINKED:
+            if (calculationIpl.getNSlices() > 1) {
+                MIA.log.writeWarning("Non-registration axis of calculation image stack is too large ("
+                        + calculationIpl.getNSlices() + ").  In \"" + OtherAxisModes.LINKED
+                        + "\" mode, calculation stack should have a single image along non-registration axis.");
+                return false;
+            }
+            break;
         }
 
         // Irrespective of other axis mode, "time" axis should be the same length
@@ -156,7 +168,8 @@ public abstract class AutomaticRegistration<T extends RealType<T> & NativeType<T
 
     }
 
-    public void processIndependent(Image inputImage, Image calculationImage, String relativeMode, int numPrevFrames, String prevFrameStatMode, Param param, String fillMode, boolean multithread, @Nullable Image reference) {
+    public void processIndependent(Image inputImage, Image calculationImage, String relativeMode, int numPrevFrames,
+            String prevFrameStatMode, Param param, String fillMode, boolean showDetectedPoints, boolean multithread, @Nullable Image reference) {
         // This works in a very similar manner to processLinked, except it's performed
         // one slice at a time
         for (int z = 0; z < inputImage.getImagePlus().getNSlices(); z++) {
@@ -167,7 +180,8 @@ public abstract class AutomaticRegistration<T extends RealType<T> & NativeType<T
                     String.valueOf(z + 1), "1-end");
 
             // Performing the registration on this slice
-            processLinked(currInputImage, currCalcImage, relativeMode, numPrevFrames, prevFrameStatMode, param, fillMode, multithread, reference);
+            processLinked(currInputImage, currCalcImage, relativeMode, numPrevFrames, prevFrameStatMode, param,
+                    fillMode, showDetectedPoints, multithread, reference);
 
             // Replacing all images in this slice of the input with the registered images
             replaceSlice(inputImage, currInputImage, z);
@@ -175,18 +189,18 @@ public abstract class AutomaticRegistration<T extends RealType<T> & NativeType<T
         }
     }
 
-    public void processLinked(Image inputImage, Image calculationImage, String relativeMode, int numPrevFrames, String prevFrameStatMode,  Param param,
-            String fillMode, boolean multithread, @Nullable Image reference) {
+    public void processLinked(Image inputImage, Image calculationImage, String relativeMode, int numPrevFrames,
+            String prevFrameStatMode, Param param, String fillMode, boolean showDetectedPoints, boolean multithread, @Nullable Image reference) {
         // Assigning fixed reference images
         switch (relativeMode) {
-            case RelativeModes.FIRST_FRAME:
-                reference = ExtractSubstack.extractSubstack(calculationImage, "Reference", "1", "1", "1");
-                break;
+        case RelativeModes.FIRST_FRAME:
+            reference = ExtractSubstack.extractSubstack(calculationImage, "Reference", "1", "1", "1");
+            break;
 
-            case RelativeModes.SPECIFIC_IMAGE:
-                if (reference == null)
-                    return;
-                break;
+        case RelativeModes.SPECIFIC_IMAGE:
+            if (reference == null)
+                return;
+            break;
         }
 
         // Iterate over each time-step
@@ -198,11 +212,11 @@ public abstract class AutomaticRegistration<T extends RealType<T> & NativeType<T
 
             // If the reference image is the previous frame, get this now
             switch (relativeMode) {
-                case RelativeModes.PREVIOUS_N_FRAMES:
-                 if (t == 0)
+            case RelativeModes.PREVIOUS_N_FRAMES:
+                if (t == 0)
                     continue;
 
-                int minT = Math.max(1, t - numPrevFrames+1);
+                int minT = Math.max(1, t - numPrevFrames + 1);
                 Image referenceStack = ExtractSubstack.extractSubstack(calculationImage, "Reference", "1", "1",
                         minT + "-" + t);
                 Convert3DStack.process(referenceStack.getImagePlus(), Convert3DStack.Modes.OUTPUT_Z_STACK);
@@ -216,10 +230,10 @@ public abstract class AutomaticRegistration<T extends RealType<T> & NativeType<T
 
             // Calculating the transformation for this image pair
             AbstractAffineModel2D model = getAffineModel2D(reference.getImagePlus().getProcessor(),
-                    warped.getImagePlus().getProcessor(), param);
+                    warped.getImagePlus().getProcessor(), param, showDetectedPoints);
 
             InverseTransformMapping mapping = new InverseTransformMapping<AbstractAffineModel2D<?>>(model);
-            
+
             // Applying the transformation to the whole stack.
             // All channels should move in the same way, so are processed with the same
             // transformation.
@@ -253,7 +267,41 @@ public abstract class AutomaticRegistration<T extends RealType<T> & NativeType<T
         }
     }
 
-    public abstract AbstractAffineModel2D getAffineModel2D(ImageProcessor referenceIpr, ImageProcessor warpedIpr, Param param);
+    public abstract AbstractAffineModel2D getAffineModel2D(ImageProcessor referenceIpr, ImageProcessor warpedIpr,
+            Param param, boolean showDetectedPoints);
+
+    public static void showDetectedPoints(ImageProcessor referenceIpr, ImageProcessor warpedIpr,
+            Collection<PointMatch> candidates) {
+        SpatCal sc = new SpatCal(1, 1, "um", referenceIpr.getWidth(), referenceIpr.getHeight(), 2);
+        ObjCollection oc = new ObjCollection("Im", sc, 1, 1d, TemporalUnit.getOMEUnit());
+        ImagePlus showIpl = IJ.createImage("Detected points", referenceIpr.getWidth(), referenceIpr.getHeight(), 2,
+                referenceIpr.getBitDepth());
+
+        showIpl.getStack().setProcessor(referenceIpr, 1);
+        for (PointMatch pm : candidates) {
+            Obj obj = oc.createAndAddNewObject(VolumeType.POINTLIST);
+            try {
+                obj.add((int) Math.round(pm.getP2().getL()[0]), (int) Math.round(pm.getP2().getL()[1]), 0);
+            } catch (PointOutOfRangeException e) {
+            }
+            AddObjectCentroid.addOverlay(obj, showIpl, Color.RED, AddObjectCentroid.PointSizes.MEDIUM,
+                    AddObjectCentroid.PointTypes.DOT, false);
+        }
+        
+        showIpl.getStack().setProcessor(warpedIpr, 2);
+        for (PointMatch pm : candidates) {
+            Obj obj = oc.createAndAddNewObject(VolumeType.POINTLIST);
+            try {
+                obj.add((int) Math.round(pm.getP1().getL()[0]), (int) Math.round(pm.getP1().getL()[1]), 1);
+            } catch (PointOutOfRangeException e) {
+            }
+            AddObjectCentroid.addOverlay(obj, showIpl, Color.BLUE, AddObjectCentroid.PointSizes.MEDIUM,
+                    AddObjectCentroid.PointTypes.DOT, false);
+        }
+        
+        showIpl.duplicate().show();
+
+    }
 
     static <T extends RealType<T> & NativeType<T>> Image createOverlay(Image<T> inputImage, Image<T> referenceImage) {
         // Only create the overlay if the two images have matching dimensions
@@ -272,7 +320,6 @@ public abstract class AutomaticRegistration<T extends RealType<T> & NativeType<T
 
     }
 
-
     @Override
     public Category getCategory() {
         return Categories.IMAGE_PROCESSING_STACK_REGISTRATION;
@@ -290,6 +337,7 @@ public abstract class AutomaticRegistration<T extends RealType<T> & NativeType<T
         parameters.add(new ChoiceP(CALCULATION_SOURCE, this, CalculationSources.INTERNAL, CalculationSources.ALL));
         parameters.add(new InputImageP(EXTERNAL_SOURCE, this));
         parameters.add(new IntegerP(CALCULATION_CHANNEL, this, 1));
+        parameters.add(new BooleanP(SHOW_DETECTED_POINTS, this, false));
 
     }
 
@@ -302,23 +350,24 @@ public abstract class AutomaticRegistration<T extends RealType<T> & NativeType<T
         returnedParameters.add(parameters.getParameter(REFERENCE_SEPARATOR));
         returnedParameters.add(parameters.getParameter(RELATIVE_MODE));
         switch ((String) parameters.getValue(RELATIVE_MODE)) {
-            case RelativeModes.PREVIOUS_N_FRAMES:
-                returnedParameters.add(parameters.getParameter(NUM_PREV_FRAMES));
-                returnedParameters.add(parameters.getParameter(PREV_FRAMES_STAT_MODE));
-                break;
-            case RelativeModes.SPECIFIC_IMAGE:
-                returnedParameters.add(parameters.getParameter(REFERENCE_IMAGE));
-                break;
+        case RelativeModes.PREVIOUS_N_FRAMES:
+            returnedParameters.add(parameters.getParameter(NUM_PREV_FRAMES));
+            returnedParameters.add(parameters.getParameter(PREV_FRAMES_STAT_MODE));
+            break;
+        case RelativeModes.SPECIFIC_IMAGE:
+            returnedParameters.add(parameters.getParameter(REFERENCE_IMAGE));
+            break;
         }
 
         returnedParameters.add(parameters.getParameter(CALCULATION_SOURCE));
         switch ((String) parameters.getValue(CALCULATION_SOURCE)) {
-            case CalculationSources.EXTERNAL:
-                returnedParameters.add(parameters.getParameter(EXTERNAL_SOURCE));
-                break;
+        case CalculationSources.EXTERNAL:
+            returnedParameters.add(parameters.getParameter(EXTERNAL_SOURCE));
+            break;
         }
 
         returnedParameters.add(parameters.getParameter(CALCULATION_CHANNEL));
+        returnedParameters.add(parameters.getParameter(SHOW_DETECTED_POINTS));
 
         return returnedParameters;
 
@@ -365,7 +414,11 @@ public abstract class AutomaticRegistration<T extends RealType<T> & NativeType<T
                         + "\" All images will be compared to the first frame (or slice when in Z-axis mode).  For image sequences which continuously evolve over time (e.g. cells dividing) this can lead to reduced likelihood of successfully calculating the transform over time.</li>"
 
                         + "<li>\"" + RelativeModes.PREVIOUS_N_FRAMES
-                        + "\" Each image will be compared to the N frames (or slice when in Z-axis mode) immediately before it (number of frames specified by \""+NUM_PREV_FRAMES+"\").  These reference frames are consolidated into a single reference image using a projection based on the statistic specified by \""+PREV_FRAMES_STAT_MODE+"\".  This mode copes better with image sequences which continuously evolve over time, but can also lead to compounding errors over time (errors in registration get propagated to all remaining slices).</li>"
+                        + "\" Each image will be compared to the N frames (or slice when in Z-axis mode) immediately before it (number of frames specified by \""
+                        + NUM_PREV_FRAMES
+                        + "\").  These reference frames are consolidated into a single reference image using a projection based on the statistic specified by \""
+                        + PREV_FRAMES_STAT_MODE
+                        + "\".  This mode copes better with image sequences which continuously evolve over time, but can also lead to compounding errors over time (errors in registration get propagated to all remaining slices).</li>"
 
                         + "<li>\"" + RelativeModes.SPECIFIC_IMAGE
                         + "\" All images will be compared to a separate 2D image from the workspace.  The image to compare to is selected using the \""
@@ -375,9 +428,15 @@ public abstract class AutomaticRegistration<T extends RealType<T> & NativeType<T
                 + RelativeModes.SPECIFIC_IMAGE
                 + "\" mode, all input images will be registered relative to this image.  This image must only have a single channel, slice and timepoint.");
 
-        parameters.get(NUM_PREV_FRAMES).setDescription("Number of previous frames (or slices) to use as reference image when \""+RELATIVE_MODE+"\" is set to \""+RelativeModes.PREVIOUS_N_FRAMES+"\".  If there are insufficient previous frames (e.g. towards the beginning of the stack) the maximum available frames will be used.  Irrespective of the number of frames used, the images will be projected into a single reference image using the statistic specified by \""+PREV_FRAMES_STAT_MODE+"\".");
+        parameters.get(NUM_PREV_FRAMES)
+                .setDescription("Number of previous frames (or slices) to use as reference image when \""
+                        + RELATIVE_MODE + "\" is set to \"" + RelativeModes.PREVIOUS_N_FRAMES
+                        + "\".  If there are insufficient previous frames (e.g. towards the beginning of the stack) the maximum available frames will be used.  Irrespective of the number of frames used, the images will be projected into a single reference image using the statistic specified by \""
+                        + PREV_FRAMES_STAT_MODE + "\".");
 
-        parameters.get(PREV_FRAMES_STAT_MODE).setDescription("Statistic to use when combining multiple previous frames as a reference (\""+RELATIVE_MODE+"\" set to \""+RelativeModes.PREVIOUS_N_FRAMES+"\").");
+        parameters.get(PREV_FRAMES_STAT_MODE)
+                .setDescription("Statistic to use when combining multiple previous frames as a reference (\""
+                        + RELATIVE_MODE + "\" set to \"" + RelativeModes.PREVIOUS_N_FRAMES + "\").");
 
         parameters.get(CALCULATION_SOURCE).setDescription(
                 "Controls whether the input image will be used to calculate the registration transform or whether it will be determined from a separate image:<br><ul>"

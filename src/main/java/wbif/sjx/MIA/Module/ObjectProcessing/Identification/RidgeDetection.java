@@ -550,8 +550,18 @@ public class RidgeDetection extends Module {
 
         parameters.get(EXTEND_LINE).setDescription("Lines are extended in an attempt to locate more junction points.");
 
-        parameters.get(ESTIMATE_WIDTH).setDescription("When this is selected, the width of each line is estimated.  All points within the width extents of each line are included in the output objects (i.e. output objects are broad).  When not selected, the output objects have single pixel width.  If estimating width, width-based measurements will be associated with each output object.");
+        parameters.get(ESTIMATE_WIDTH).setDescription(
+                "When this is selected, the width of each line is estimated.  All points within the width extents of each line are included in the output objects (i.e. output objects are broad).  When not selected, the output objects have single pixel width.  If estimating width, width-based measurements will be associated with each output object.");
 
+        parameters.get(OVERLAP_MODE).setDescription(
+                "Controls how intersecting lines should be handled.  For more information see <a href=\"https://imagej.net/Ridge_Detection.html#Overlap_resolution\"/>.<br><ul>"
+                
+                        + "<li>\"" + OverlapModes.NONE
+                        + "\" Ridges are terminated at line intersections, so two overlapping ridges will likely be identified as at least four separate ridge objects.</li>"
+                
+                        + "<li>\"" + OverlapModes.SLOPE + "\" When selected, this will attempt to resolve ridge overlaps such that two overlapping ridges would be identified as two separate objects.  Ridges output in this manner can have common, shared paths (i.e. during the overlap region).</li></ul>");
+                
+                
         parameters.get(MIN_LENGTH).setDescription("Minimum length of a detected line for it to be retained and output.  Specified in pixel units, unless \""+CALIBRATED_UNITS+"\" is selected.");
 
         parameters.get(MAX_LENGTH).setDescription("Maximum length of a detected line for it to be retained and output.  Specified in pixel units, unless \""+CALIBRATED_UNITS+"\" is selected.");

@@ -13,16 +13,16 @@ public class OutputObjectsP extends TextType {
     private String objectsName = "";
 
     public OutputObjectsP(String name, Module module) {
-        super(name,module);
+        super(name, module);
     }
 
     public OutputObjectsP(String name, Module module, @NotNull String objectsName) {
-        super(name,module);
+        super(name, module);
         this.objectsName = objectsName;
     }
 
     public OutputObjectsP(String name, Module module, @NotNull String objectsName, String description) {
-        super(name,module,description);
+        super(name, module, description);
         this.objectsName = objectsName;
     }
 
@@ -65,18 +65,20 @@ public class OutputObjectsP extends TextType {
         return (T) newParameter;
 
     }
-    
+
     @Override
     public boolean verify() {
         if (!super.verify())
             return false;
 
-        LinkedHashSet<OutputObjectsP> availableObjects = module.getModules().getAvailableObjects(null);
-        for (OutputObjectsP availableObject : availableObjects)
-            if (availableObject.getObjectsName().equals(objectsName)) {
-                MIA.log.writeWarning("Object names must be unique.  This name has already been assigned.");
-                return false;
-            }
+        if (module.isEnabled()) {
+            LinkedHashSet<OutputObjectsP> availableObjects = module.getModules().getAvailableObjects(module);
+            for (OutputObjectsP availableObject : availableObjects)
+                if (availableObject.getObjectsName().equals(objectsName)) {
+                    MIA.log.writeWarning("Object names must be unique.  This name has already been assigned.");
+                    return false;
+                }
+        }
         
         return true;
     }

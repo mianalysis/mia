@@ -48,6 +48,7 @@ import net.imglib2.type.numeric.RealType;
 import net.imglib2.view.Views;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
+import wbif.sjx.MIA.Module.ImageProcessing.Stack.Registration.UnwarpImages;
 import wbif.sjx.MIA.Module.Category;
 import wbif.sjx.MIA.Module.Categories;
 import wbif.sjx.MIA.Object.Image;
@@ -803,6 +804,8 @@ public class BestFocusSubstack<T extends RealType<T> & NativeType<T>> extends Mo
 
     void addParameterDescriptions() {
         parameters.get(INPUT_IMAGE).setDescription("Image to extract substack from.");
+
+        parameters.get(OUTPUT_MODE).setDescription("Controls whether the best focus positions are calculated and applied (creating a new image) or simply calculated.  In both cases, statistics for the best focus position (mean, median, minimum, maximum and standard deviation of slices) are stored as measurements associated with the input image.");
 
         parameters.get(OUTPUT_IMAGE).setDescription("Substack image to be added to the current workspace.");
 

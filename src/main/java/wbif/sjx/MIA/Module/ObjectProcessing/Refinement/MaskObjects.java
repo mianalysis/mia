@@ -47,9 +47,10 @@ public class MaskObjects<T extends RealType<T> & NativeType<T>> extends Module {
 
     public interface MaskModes {
         String MASK_FROM_IMAGE = "Mask from image";
-        String MASK_FROM_OBJECTS = "Mask from objects";
+        String MASK_FROM_OBJECTS_REMOVE_OVERLAP = "Mask from objects (remove overlap)";
+        String MASK_FROM_OBJECTS_RETAIN_OVERLAP = "Mask from objects (retain overlap)";
 
-        String[] ALL = new String[] { MASK_FROM_IMAGE, MASK_FROM_OBJECTS };
+        String[] ALL = new String[] { MASK_FROM_IMAGE, MASK_FROM_OBJECTS_REMOVE_OVERLAP, MASK_FROM_OBJECTS_RETAIN_OVERLAP };
 
     }
 
@@ -91,7 +92,7 @@ public class MaskObjects<T extends RealType<T> & NativeType<T>> extends Module {
                 location[zAx] = point.getZ();
             if (tAx != -1)
                 location[tAx] = inputObject.getT();
-                                    
+
             randomAccess.setPosition(location);
             int value = ((UnsignedByteType) randomAccess.get()).get();
 
@@ -136,19 +137,23 @@ public class MaskObjects<T extends RealType<T> & NativeType<T>> extends Module {
         // If masking by objects, converting mask objects to an image
         Image maskImage;
         switch (maskMode) {
-            default:
-                MIA.log.writeWarning("Mask not found");
-                return Status.FAIL;
-            case MaskModes.MASK_FROM_IMAGE:
-                maskImage = workspace.getImage(maskImageName);
-                break;
-            case MaskModes.MASK_FROM_OBJECTS:
-                ObjCollection maskObjects = workspace.getObjectSet(maskObjectsName);
-                HashMap<Integer, Float> hues = ColourFactory.getSingleColourHues(maskObjects,
-                        ColourFactory.SingleColours.WHITE);
-                maskImage = maskObjects.convertToImage("Mask", hues, 8, false);
+        default:
+            MIA.log.writeWarning("Mask not found");
+            return Status.FAIL;
+        case MaskModes.MASK_FROM_IMAGE:
+            maskImage = workspace.getImage(maskImageName);
+            break;
+        case MaskModes.MASK_FROM_OBJECTS_REMOVE_OVERLAP:
+        case MaskModes.MASK_FROM_OBJECTS_RETAIN_OVERLAP:
+            ObjCollection maskObjects = workspace.getObjectSet(maskObjectsName);
+            HashMap<Integer, Float> hues = ColourFactory.getSingleColourHues(maskObjects,
+                    ColourFactory.SingleColours.WHITE);
+            maskImage = maskObjects.convertToImage("Mask", hues, 8, false);
+
+            if (maskMode.equals(MaskModes.MASK_FROM_OBJECTS_REMOVE_OVERLAP))
                 InvertIntensity.process(maskImage);
-                break;
+
+            break;
         }
 
         // Getting other parameters
@@ -158,9 +163,9 @@ public class MaskObjects<T extends RealType<T> & NativeType<T>> extends Module {
         // If necessary, creating an output object collection
         ObjCollection outputObjects = new ObjCollection(outputObjectsName, inputObjects);
         switch (outputMode) {
-            case OutputModes.CREATE_NEW_OBJECT:
-                workspace.addObjects(outputObjects);
-                break;
+        case OutputModes.CREATE_NEW_OBJECT:
+            workspace.addObjects(outputObjects);
+            break;
         }
 
         // Iterating over all objects
@@ -171,20 +176,20 @@ public class MaskObjects<T extends RealType<T> & NativeType<T>> extends Module {
             Obj maskedObject = maskObject(inputObject, maskImage);
 
             switch (outputMode) {
-                case OutputModes.CREATE_NEW_OBJECT:
-                    outputObjects.add(maskedObject);
-                    maskedObject.setObjectCollection(outputObjects);
-                    inputObject.addChild(maskedObject);
-                    maskedObject.addParent(inputObject);
-                    break;
-                case OutputModes.UPDATE_INPUT:
-                    inputObject.getCoordinateSet().clear();
-                    inputObject.getCoordinateSet().addAll(maskedObject.getCoordinateSet());
-                    inputObject.clearSurface();
-                    inputObject.clearCentroid();
-                    inputObject.clearProjected();
-                    inputObject.clearROIs();
-                    break;
+            case OutputModes.CREATE_NEW_OBJECT:
+                outputObjects.add(maskedObject);
+                maskedObject.setObjectCollection(outputObjects);
+                inputObject.addChild(maskedObject);
+                maskedObject.addParent(inputObject);
+                break;
+            case OutputModes.UPDATE_INPUT:
+                inputObject.getCoordinateSet().clear();
+                inputObject.getCoordinateSet().addAll(maskedObject.getCoordinateSet());
+                inputObject.clearSurface();
+                inputObject.clearCentroid();
+                inputObject.clearProjected();
+                inputObject.clearROIs();
+                break;
             }
 
             writeStatus("Processed " + (count++) + " of " + total + " objects");
@@ -193,12 +198,12 @@ public class MaskObjects<T extends RealType<T> & NativeType<T>> extends Module {
 
         if (showOutput) {
             switch (outputMode) {
-                case OutputModes.CREATE_NEW_OBJECT:
-                    outputObjects.convertToImageRandomColours().showImage();
-                    break;
-                case OutputModes.UPDATE_INPUT:
-                    inputObjects.convertToImageRandomColours().showImage();
-                    break;
+            case OutputModes.CREATE_NEW_OBJECT:
+                outputObjects.convertToImageRandomColours().showImage();
+                break;
+            case OutputModes.UPDATE_INPUT:
+                inputObjects.convertToImageRandomColours().showImage();
+                break;
             }
         }
 
@@ -208,21 +213,17 @@ public class MaskObjects<T extends RealType<T> & NativeType<T>> extends Module {
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new SeparatorP(INPUT_SEPARATOR,this));
-        parameters.add(new InputObjectsP(INPUT_OBJECTS, this, "", "Objects to be masked."));
-        parameters.add(new ChoiceP(OBJECT_OUTPUT_MODE, this, OutputModes.CREATE_NEW_OBJECT, OutputModes.ALL,
-                "Controls how the masked objects will be stored.<br>" + "<br> - \"" + OutputModes.CREATE_NEW_OBJECT
-                        + "\" (default) will add the masked objects to a new object set and store this set in the workspace.<br>"
-                        + "<br> - \"" + OutputModes.UPDATE_INPUT
-                        + "\" will replace the coordinates of the input object with the masked coordinates.  All measurements associated with input objects will be transferred to the masked objects."));
-        parameters.add(new OutputObjectsP(OUTPUT_OBJECTS, this, "",
-                "Name for the output masked objects to be stored in workspace."));
+        parameters.add(new SeparatorP(INPUT_SEPARATOR, this));
+        parameters.add(new InputObjectsP(INPUT_OBJECTS, this));
+        parameters.add(new ChoiceP(OBJECT_OUTPUT_MODE, this, OutputModes.CREATE_NEW_OBJECT, OutputModes.ALL));
+        parameters.add(new OutputObjectsP(OUTPUT_OBJECTS, this));
 
-                parameters.add(new SeparatorP(MASK_SEPARATOR,this));
+        parameters.add(new SeparatorP(MASK_SEPARATOR, this));
         parameters.add(new ChoiceP(MASK_MODE, this, MaskModes.MASK_FROM_IMAGE, MaskModes.ALL));
         parameters.add(new InputObjectsP(MASK_OBJECTS, this));
-        parameters.add(new InputImageP(MASK_IMAGE, this, "",
-                "Image to use as mask on input objects.  Object coordinates coincident with black pixels (pixel intensity = 0) are removed."));
+        parameters.add(new InputImageP(MASK_IMAGE, this));
+
+        addParameterDescriptions();
 
     }
 
@@ -235,20 +236,21 @@ public class MaskObjects<T extends RealType<T> & NativeType<T>> extends Module {
 
         returnedParameters.add(parameters.getParameter(OBJECT_OUTPUT_MODE));
         switch ((String) parameters.getValue(OBJECT_OUTPUT_MODE)) {
-            case OutputModes.CREATE_NEW_OBJECT:
-                returnedParameters.add(parameters.getParameter(OUTPUT_OBJECTS));
-                break;
+        case OutputModes.CREATE_NEW_OBJECT:
+            returnedParameters.add(parameters.getParameter(OUTPUT_OBJECTS));
+            break;
         }
 
         returnedParameters.add(parameters.getParameter(MASK_SEPARATOR));
         returnedParameters.add(parameters.getParameter(MASK_MODE));
         switch ((String) parameters.getValue(MASK_MODE)) {
-            case MaskModes.MASK_FROM_IMAGE:
-                returnedParameters.add(parameters.getParameter(MASK_IMAGE));
-                break;
-            case MaskModes.MASK_FROM_OBJECTS:
-                returnedParameters.add(parameters.getParameter(MASK_OBJECTS));
-                break;
+        case MaskModes.MASK_FROM_IMAGE:
+            returnedParameters.add(parameters.getParameter(MASK_IMAGE));
+            break;
+        case MaskModes.MASK_FROM_OBJECTS_REMOVE_OVERLAP:
+        case MaskModes.MASK_FROM_OBJECTS_RETAIN_OVERLAP:
+            returnedParameters.add(parameters.getParameter(MASK_OBJECTS));
+            break;
         }
 
         return returnedParameters;
@@ -275,12 +277,12 @@ public class MaskObjects<T extends RealType<T> & NativeType<T>> extends Module {
         ParentChildRefCollection returnedRelationships = new ParentChildRefCollection();
 
         switch ((String) parameters.getValue(OBJECT_OUTPUT_MODE)) {
-            case OutputModes.CREATE_NEW_OBJECT:
-                String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
-                String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);
-                returnedRelationships.add(parentChildRefs.getOrPut(inputObjectsName, outputObjectsName));
+        case OutputModes.CREATE_NEW_OBJECT:
+            String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+            String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);
+            returnedRelationships.add(parentChildRefs.getOrPut(inputObjectsName, outputObjectsName));
 
-                break;
+            break;
         }
 
         return returnedRelationships;
@@ -295,5 +297,40 @@ public class MaskObjects<T extends RealType<T> & NativeType<T>> extends Module {
     @Override
     public boolean verify() {
         return true;
+    }
+
+    void addParameterDescriptions() {
+        parameters.get(INPUT_OBJECTS).setDescription("Objects to be masked.");
+
+        parameters.get(OBJECT_OUTPUT_MODE).setDescription("Controls how the masked objects will be stored:<br><ul>"
+
+                + "<li>\"" + OutputModes.CREATE_NEW_OBJECT
+                + "\" (Default) Will add the masked objects to a new object set and store this set in the workspace.</li>"
+
+                + "<li>\"" + OutputModes.UPDATE_INPUT
+                + "\" Will replace the coordinates of the input object with the masked coordinates.  All measurements associated with input objects will be transferred to the masked objects.</li></ul>");
+
+        parameters.get(OUTPUT_OBJECTS).setDescription("Name for the output masked objects to be stored in workspace.");
+
+        parameters.get(MASK_MODE).setDescription(
+                "Controls whether the input objects will be masked by an image or an object collection:<br><ul>"
+
+                        + "\"" + MaskModes.MASK_FROM_IMAGE
+                        + "\" (Default) Input objects will be masked based on the image specified by \"" + MASK_IMAGE
+                        + "\".  Any object regions coincident with black pixels (0 pixel intensity) will be removed.<li>"
+
+                        + "\"" + MaskModes.MASK_FROM_OBJECTS_REMOVE_OVERLAP
+                        + "\" Input objects will be masked based on all objects of the collection specified by \""
+                        + MASK_OBJECTS + "\".  Any object regions coincident with any objects in the masking collection will be removed.  The masking objects will be unaffected by this process.<li>"
+                        
+                        + "\"" + MaskModes.MASK_FROM_OBJECTS_RETAIN_OVERLAP
+                        + "\" Input objects will be masked based on all objects of the collection specified by \""
+                        + MASK_OBJECTS + "\".  Any object regions not coincident with any objects in the masking collection will be removed.  The masking objects will be unaffected by this process.<li></ul>");
+
+        parameters.get(MASK_IMAGE).setDescription(
+                "Image to use as mask on input objects.  Object coordinates coincident with black pixels (pixel intensity = 0) are removed.");
+
+        parameters.get(MASK_OBJECTS).setDescription("Object collection to use as mask on input objects.  Depending on which object-masking mode is selected, the input objects will either have coordinates coincident with these objects removed or retained.");
+
     }
 }

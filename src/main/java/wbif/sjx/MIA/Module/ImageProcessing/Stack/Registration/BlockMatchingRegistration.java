@@ -1,10 +1,13 @@
 package wbif.sjx.MIA.Module.ImageProcessing.Stack.Registration;
 
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Vector;
 import java.util.concurrent.ExecutionException;
 
 import ij.IJ;
+import ij.ImagePlus;
 import ij.process.FloatProcessor;
 import ij.process.ImageProcessor;
 import mpicbg.ij.blockmatching.BlockMatching;
@@ -18,13 +21,20 @@ import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.ProjectImage;
 import wbif.sjx.MIA.Module.ImageProcessing.Stack.ExtractSubstack;
+import wbif.sjx.MIA.Module.Visualisation.Overlays.AddObjectCentroid;
 import wbif.sjx.MIA.Object.Image;
+import wbif.sjx.MIA.Object.Obj;
+import wbif.sjx.MIA.Object.ObjCollection;
 import wbif.sjx.MIA.Object.Status;
 import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.Parameters.SeparatorP;
 import wbif.sjx.MIA.Object.Parameters.Text.DoubleP;
 import wbif.sjx.MIA.Object.Parameters.Text.IntegerP;
+import wbif.sjx.MIA.Object.Units.TemporalUnit;
+import wbif.sjx.common.Object.Volume.PointOutOfRangeException;
+import wbif.sjx.common.Object.Volume.SpatCal;
+import wbif.sjx.common.Object.Volume.VolumeType;
 
 public class BlockMatchingRegistration extends AutomaticRegistration {
     public static final String FEATURE_SEPARATOR = "Feature detection";
@@ -51,7 +61,8 @@ public class BlockMatchingRegistration extends AutomaticRegistration {
     }
 
     @Override
-    public AbstractAffineModel2D getAffineModel2D(ImageProcessor referenceIpr, ImageProcessor warpedIpr, Param param) {
+    public AbstractAffineModel2D getAffineModel2D(ImageProcessor referenceIpr, ImageProcessor warpedIpr, Param param,
+            boolean showDetectedPoints) {
         BMParam p = (BMParam) param;
 
         // Converting to FloatProcessors and padding
@@ -61,14 +72,17 @@ public class BlockMatchingRegistration extends AutomaticRegistration {
         TranslationModel2D transform = new TranslationModel2D();
         SpringMesh mesh = new SpringMesh(p.resolution, ipr1.getWidth(), ipr2.getHeight(), 1, 1000, 0.9f);
         Collection<Vertex> vertices = mesh.getVertices();
-        ArrayList<PointMatch> pointMatch = new ArrayList<PointMatch>();
+        Vector<PointMatch> candidates = new Vector<PointMatch>();
 
         try {
             BlockMatching.matchByMaximalPMCC(ipr1, ipr2, null, null, p.scale, transform, p.blockR, p.blockR, p.searchR,
-                    p.searchR, p.minR, p.rod, p.maxCurvature, vertices, pointMatch, new ErrorStatistic(1));
+                    p.searchR, p.minR, p.rod, p.maxCurvature, vertices, candidates, new ErrorStatistic(1));
+
+            if (showDetectedPoints)
+                showDetectedPoints(referenceIpr, warpedIpr, candidates);
 
             AbstractAffineModel2D model = getModel(p.transformationMode);
-            model.localSmoothnessFilter(pointMatch, pointMatch, p.sigma, p.maxAbsDisp, p.maxRelDisp);
+            model.localSmoothnessFilter(candidates, candidates, p.sigma, p.maxAbsDisp, p.maxRelDisp);
 
             return model.createInverse();
 
@@ -121,6 +135,7 @@ public class BlockMatchingRegistration extends AutomaticRegistration {
         String externalSourceName = parameters.getValue(EXTERNAL_SOURCE);
         int calculationChannel = parameters.getValue(CALCULATION_CHANNEL);
         String fillMode = parameters.getValue(FILL_MODE);
+        boolean showDetectedPoints = parameters.getValue(SHOW_DETECTED_POINTS);
 
         // Getting the input image and duplicating if the output will be stored
         // separately
@@ -136,23 +151,23 @@ public class BlockMatchingRegistration extends AutomaticRegistration {
         String calcC = String.valueOf(calculationChannel);
         Image calculationImage = null;
         switch (calculationSource) {
-            case CalculationSources.EXTERNAL:
-                Image externalImage = workspace.getImage(externalSourceName);
-                calculationImage = ExtractSubstack.extractSubstack(externalImage, "CalcIm", calcC, "1-end", "1-end");
-                break;
+        case CalculationSources.EXTERNAL:
+            Image externalImage = workspace.getImage(externalSourceName);
+            calculationImage = ExtractSubstack.extractSubstack(externalImage, "CalcIm", calcC, "1-end", "1-end");
+            break;
 
-            case CalculationSources.INTERNAL:
-                calculationImage = ExtractSubstack.extractSubstack(inputImage, "CalcIm", calcC, "1-end", "1-end");
-                break;
+        case CalculationSources.INTERNAL:
+            calculationImage = ExtractSubstack.extractSubstack(inputImage, "CalcIm", calcC, "1-end", "1-end");
+            break;
         }
 
         // Registration will be performed in time, so ensure actual axis to be
         // registered is reordered to be in time axis
         switch (regAxis) {
-            case RegistrationAxes.Z:
-                changeStackOrder(inputImage);
-                changeStackOrder(calculationImage);
-                break;
+        case RegistrationAxes.Z:
+            changeStackOrder(inputImage);
+            changeStackOrder(calculationImage);
+            break;
         }
 
         // If non-registration dimension is "linked", calculation image potentially
@@ -162,10 +177,10 @@ public class BlockMatchingRegistration extends AutomaticRegistration {
         // at least one Z-slice.
         if (calculationImage.getImagePlus().getNSlices() > 1) {
             switch (otherAxisMode) {
-                case OtherAxisModes.LINKED:
-                    calculationImage = ProjectImage.projectImageInZ(calculationImage, "CalcIm",
-                            ProjectImage.ProjectionModes.MAX);
-                    break;
+            case OtherAxisModes.LINKED:
+                calculationImage = ProjectImage.projectImageInZ(calculationImage, "CalcIm",
+                        ProjectImage.ProjectionModes.MAX);
+                break;
             }
         }
 
@@ -186,22 +201,23 @@ public class BlockMatchingRegistration extends AutomaticRegistration {
             param.maxRelDisp = (float) (double) parameters.getValue(MAX_REL_LOCAL_DISPLACEMENT);
 
             switch (otherAxisMode) {
-                case OtherAxisModes.INDEPENDENT:
-                    processIndependent(inputImage, calculationImage, relativeMode, numPrevFrames, prevFramesStatMode, param, fillMode, multithread,
-                            reference);
-                    break;
+            case OtherAxisModes.INDEPENDENT:
+                processIndependent(inputImage, calculationImage, relativeMode, numPrevFrames, prevFramesStatMode, param,
+                        fillMode, showDetectedPoints, multithread, reference);
+                break;
 
-                case OtherAxisModes.LINKED:
-                    processLinked(inputImage, calculationImage, relativeMode, numPrevFrames, prevFramesStatMode, param, fillMode, multithread, reference);
-                    break;
+            case OtherAxisModes.LINKED:
+                processLinked(inputImage, calculationImage, relativeMode, numPrevFrames, prevFramesStatMode, param,
+                        fillMode, showDetectedPoints, multithread, reference);
+                break;
             }
 
             // If stack order was adjusted, now swap it back
             switch (regAxis) {
-                case RegistrationAxes.Z:
-                    changeStackOrder(inputImage);
-                    changeStackOrder(calculationImage);
-                    break;
+            case RegistrationAxes.Z:
+                changeStackOrder(inputImage);
+                changeStackOrder(calculationImage);
+                break;
             }
 
         } else {
@@ -269,7 +285,7 @@ public class BlockMatchingRegistration extends AutomaticRegistration {
     @Override
     protected void addParameterDescriptions() {
         super.addParameterDescriptions();
-        
+
         String siteRef1 = "Description taken from <a href=\"https://imagej.net/Feature_Extraction\">https://imagej.net/Feature_Extraction</a>";
 
         parameters.get(LAYER_SCALE).setDescription("");

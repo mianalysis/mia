@@ -1,0 +1,30 @@
+---
+layout: default
+---
+
+<head>
+    <link rel="stylesheet" href="../../css/index.css">
+</head>
+
+<body>
+<!-- Side navigation -->
+<div class="sidenav">
+    <a href="../../index.html" class="nav1">Introduction</a>
+    <a href="../gettingstarted.html" class="nav1">Getting started</a>
+    <a href="../modulelist.html" class="nav1">Modules</a>
+    <a href="../macrolist.html" class="nav1">Macros</a>
+    <!-- <a href="../extendingmia.html" class="nav1">Extending MIA</a> -->
+</div>
+
+<!-- Page content -->
+<div class="main">
+    <!--The following is replaced automatically by the generated module list-->
+    <a href="../modulelist.html">Back to module list</a>
+<h1>Create 2D intensity histogram</h1>
+<h2>Description</h2>
+Creates a 2D intensity histogram for a pair of specified images.  Intensities along the x-axis correspond to the first input image and those along the y-axis to the second input image.  Output histogram is saved to the workspace as an image.  Works for N-dimensional image stacks (must have the same dimensions).  Uses the ImgLib2 implementation ND intensity histograms.
+<h2>Parameters</h2>
+<ul><li><b>Input image 1 (x-axis)</b> (default = "") First image from the workspace used in 2D intensity histogram plotting.  Intensities from this image are represented along te output histogram x-axis (columns).  For multidimensional stacks, all pixel values are compiled into a single intensity histogram.</li><br><li><b>Input image 2 (y-axis)</b> (default = "") Second image from the workspace used in 2D intensity histogram plotting.  Intensities from this image are represented along te output histogram y-axis (rows).  For multidimensional stacks, all pixel values are compiled into a single intensity histogram.</li><br><li><b>Output image</b> (default = "") Output 2D intensity histogram, which will be saved to the workspace.</li><br><li><b>Minimum bin (image 1)</b> (default = "0.0") Minimum intenisty bin for the image specified by "Input image 1 (x-axis)".</li><br><li><b>Maximum bin (image 1)</b> (default = "255.0") Maximum intenisty bin for the image specified by "Input image 1 (x-axis)".</li><br><li><b>Number of bins (image 1)</b> (default = "256") Number of intensity bins to use for the image specified by "Input image 1 (x-axis)".</li><br><li><b>Include tail bin (image 1)</b> (default = "false") When selected, additional bins at the extremes of the histogram x-axis will be used for intensity values that fall outside the specified intensity range.</li><br><li><b>Minimum bin (image 2)</b> (default = "0.0") Minimum intenisty bin for the image specified by "Input image 2 (y-axis)".</li><br><li><b>Maximum bin (image 2)</b> (default = "255.0") Maximum intenisty bin for the image specified by "Input image 2 (y-axis)".</li><br><li><b>Number of bins (image 2)</b> (default = "256") Number of intensity bins to use for the image specified by "Input image 2 (y-axis)".</li><br><li><b>Include tail bin (image 2)</b> (default = "false") When selected, additional bins at the extremes of the histogram y-axis will be used for intensity values that fall outside the specified intensity range.</li><br></ul>
+
+</div>
+</body>
