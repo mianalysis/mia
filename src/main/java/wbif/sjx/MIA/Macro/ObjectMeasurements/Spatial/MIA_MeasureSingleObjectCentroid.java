@@ -36,6 +36,7 @@ public class MIA_MeasureSingleObjectCentroid extends MacroOperation {
         resultsTable.setValue("Z-mean ("+units+")",0,inputObject.getZMean(false,false));
 
         resultsTable.show("Results");
+        
         return null;
 
     }

@@ -58,24 +58,31 @@ import wbif.sjx.common.System.FileCrawler;
  * Created by Stephen on 29/07/2017.
  */
 public class InputControl extends Module {
+    public static final String MESSAGE_SEPARATOR = "Message";
+    public static final String NO_LOAD_MESSAGE = "No load message";
+
     public static final String IMPORT_SEPARATOR = "Core import controls";
     public static final String INPUT_PATH = "Input path";
     // public static final String FILE_LIST = "File list";
-    public static final String SPATIAL_UNIT = "Spatial unit";
-    public static final String TEMPORAL_UNIT = "Temporal unit";
-    public static final String SIMULTANEOUS_JOBS = "Simultaneous jobs";
-    public static final String MACRO_WARNING = "Macro warning";
     public static final String SERIES_MODE = "Series mode";
     public static final String SERIES_LIST = "Series list";
     public static final String LOAD_FIRST_PER_FOLDER = "Only load first file per folder";
     public static final String LOAD_FIRST_MATCHING_GROUP = "Only load first matching group";
     public static final String PATTERN = "Pattern";
+
+    public static final String CALIBRATION_SEPARATOR = "Calibration controls";
+    public static final String SPATIAL_UNIT = "Spatial unit";
+    public static final String TEMPORAL_UNIT = "Temporal unit";
+
     public static final String FILTER_SEPARATOR = "File/folder filters";
     public static final String ADD_FILTER = "Add filter";
     public static final String FILTER_SOURCE = "Filter source";
     public static final String FILTER_VALUE = "Filter value";
     public static final String FILTER_TYPE = "Filter type";
-    public static final String NO_LOAD_MESSAGE = "No load message";
+
+    public static final String EXECUTION_SEPARATOR = "Execution controls";
+    public static final String SIMULTANEOUS_JOBS = "Simultaneous jobs";
+    public static final String MACRO_WARNING = "Macro warning";
 
     // A special store for timepoint references for all objects
     private HashMap<String, ObjMeasurementRef> objectTimepointRefs = new HashMap<>();
@@ -353,18 +360,24 @@ public class InputControl extends Module {
 
     @Override
     protected void initialiseParameters() {
+        parameters.add(new SeparatorP(MESSAGE_SEPARATOR, this));
+        parameters.add(new MessageP(NO_LOAD_MESSAGE, this,
+                "\"Input control\" only specifies the path to the root image; no image is loaded into the workspace at this point.  To load images, add one or more \"Load Image\" modules.",
+                Colours.ORANGE));
+
         parameters.add(new SeparatorP(IMPORT_SEPARATOR, this));
         parameters.add(new FileFolderPathP(INPUT_PATH, this));
         // parameters.add(new FileListP(FILE_LIST,this));
-        parameters.add(new IntegerP(SIMULTANEOUS_JOBS, this, 1));
-        parameters.add(new MessageP(MACRO_WARNING, this,
-                "Analysis can only be run as a single simultaneous job when ImageJ macro module is present.",
-                Colours.RED));
         parameters.add(new ChoiceP(SERIES_MODE, this, SeriesModes.ALL_SERIES, SeriesModes.ALL));
         parameters.add(new SeriesListSelectorP(SERIES_LIST, this, "1"));
         parameters.add(new BooleanP(LOAD_FIRST_PER_FOLDER, this, false));
         parameters.add(new BooleanP(LOAD_FIRST_MATCHING_GROUP, this, false));
         parameters.add(new StringP(PATTERN, this));
+
+        parameters.add(new SeparatorP(CALIBRATION_SEPARATOR, this));
+        parameters.add(new ChoiceP(SPATIAL_UNIT, this, AvailableSpatialUnits.MICROMETRE, AvailableSpatialUnits.ALL));
+        parameters
+                .add(new ChoiceP(TEMPORAL_UNIT, this, AvailableTemporalUnits.MILLISECOND, AvailableTemporalUnits.ALL));
 
         parameters.add(new SeparatorP(FILTER_SEPARATOR, this));
         ParameterCollection collection = new ParameterCollection();
@@ -373,11 +386,10 @@ public class InputControl extends Module {
         collection.add(new ChoiceP(FILTER_TYPE, this, FilterTypes.INCLUDE_MATCHES_PARTIALLY, FilterTypes.ALL));
         parameters.add(new ParameterGroup(ADD_FILTER, this, collection, 0));
 
-        parameters.add(new ChoiceP(SPATIAL_UNIT, this, AvailableSpatialUnits.MICROMETRE, AvailableSpatialUnits.ALL));
-        parameters
-                .add(new ChoiceP(TEMPORAL_UNIT, this, AvailableTemporalUnits.MILLISECOND, AvailableTemporalUnits.ALL));
-        parameters.add(new MessageP(NO_LOAD_MESSAGE, this,
-                "\"Input control\" only specifies the path to the root image; no image is loaded into the active workspace at this point.  To load images, add a \"Load Image\" module (multiple copies of this can be added to a single workflow).",
+        parameters.add(new SeparatorP(EXECUTION_SEPARATOR, this));
+        parameters.add(new IntegerP(SIMULTANEOUS_JOBS, this, 1));
+        parameters.add(new MessageP(MACRO_WARNING, this,
+                "Analysis can only be run as a single simultaneous job when ImageJ macro module is present.",
                 Colours.RED));
 
         addParameterDescriptions();
@@ -387,6 +399,9 @@ public class InputControl extends Module {
     @Override
     public ParameterCollection updateAndGetParameters() {
         ParameterCollection returnedParameters = new ParameterCollection();
+
+        returnedParameters.add(parameters.getParameter(MESSAGE_SEPARATOR));
+        returnedParameters.add(parameters.getParameter(NO_LOAD_MESSAGE));
 
         returnedParameters.add(parameters.getParameter(IMPORT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(INPUT_PATH));
@@ -404,11 +419,15 @@ public class InputControl extends Module {
         if ((boolean) parameters.getValue(LOAD_FIRST_MATCHING_GROUP))
             returnedParameters.add(parameters.getParameter(PATTERN));
 
-        returnedParameters.add(parameters.getParameter(LOAD_FIRST_PER_FOLDER));
+        returnedParameters.add(parameters.getParameter(CALIBRATION_SEPARATOR));
         returnedParameters.add(parameters.getParameter(SPATIAL_UNIT));
         returnedParameters.add(parameters.getParameter(TEMPORAL_UNIT));
-        returnedParameters.add(parameters.getParameter(SIMULTANEOUS_JOBS));
 
+        returnedParameters.add(parameters.getParameter(FILTER_SEPARATOR));
+        returnedParameters.add(parameters.getParameter(ADD_FILTER));
+
+        returnedParameters.add(parameters.getParameter(EXECUTION_SEPARATOR));
+        returnedParameters.add(parameters.getParameter(SIMULTANEOUS_JOBS));
         // If a the RunMacro module is present, this analysis must be run as a single
         // job
         if ((int) parameters.getValue(SIMULTANEOUS_JOBS) > 1) {
@@ -419,10 +438,6 @@ public class InputControl extends Module {
                 }
             }
         }
-
-        returnedParameters.add(parameters.getParameter(FILTER_SEPARATOR));
-        returnedParameters.add(parameters.getParameter(ADD_FILTER));
-        returnedParameters.add(parameters.getParameter(NO_LOAD_MESSAGE));
 
         return returnedParameters;
 
@@ -496,7 +511,8 @@ public class InputControl extends Module {
                         + PATTERN
                         + "\" and retained for analysis if the selected group hasn't been seen before.  Only one group (specified using standard regex parenthesis notation) can be used.");
 
-        parameters.get(PATTERN).setDescription("Regular expression pattern to use when \""+LOAD_FIRST_MATCHING_GROUP+"\" is enabled.  This pattern must contain at least one group (specified using standard regex parenthesis notation).");
+        parameters.get(PATTERN).setDescription("Regular expression pattern to use when \"" + LOAD_FIRST_MATCHING_GROUP
+                + "\" is enabled.  This pattern must contain at least one group (specified using standard regex parenthesis notation).");
 
         ParameterCollection templateParameters = ((ParameterGroup) parameters.get(ADD_FILTER)).getTemplateParameters();
         templateParameters.get(FILTER_SOURCE).setDescription("Type of filter to add.");
