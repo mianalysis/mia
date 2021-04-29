@@ -6,6 +6,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "Launch Test",
+            "request": "launch",
+            "mainClass": "wbif.sjx.MIA.Test",
+            "projectName": "MIA_"
+        },
+        {
+            "type": "java",
             "name": "Launch TextType",
             "request": "launch",
             "mainClass": "wbif.sjx.MIA.Object.Parameters.Abstract.TextType",

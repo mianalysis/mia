@@ -10,6 +10,8 @@ import java.util.TreeMap;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import ij.Prefs;
 import wbif.sjx.MIA.MIA;
@@ -136,29 +138,50 @@ public class AnalysisRunner {
         inputControl.addFilenameFilters(fileCrawler);
 
         boolean firstPerFolder = inputControl.getParameterValue(InputControl.LOAD_FIRST_PER_FOLDER);
+        boolean firstMatchingGroup = inputControl.getParameterValue(InputControl.LOAD_FIRST_MATCHING_GROUP);
+        String patternString = inputControl.getParameterValue(InputControl.PATTERN);
+        Pattern pattern = firstMatchingGroup ? Pattern.compile(patternString) : null;
+        HashSet<String> groups = new HashSet<>();
+
+        if (firstMatchingGroup && pattern.matcher("").groupCount() == 0) {
+            MIA.log.writeWarning("No groups found in pattern.  Groups won't be used to filter input files.");
+            firstMatchingGroup = false;
+        }
 
         File rootFolder = fileCrawler.getRootFolderAsFile();
         if (rootFolder.isFile()) {
             TreeMap<Integer, String> seriesNumbers = inputControl.getSeriesNumbers(rootFolder);
-            for (int seriesNumber : seriesNumbers.keySet()) {
+            for (int seriesNumber : seriesNumbers.keySet())
                 jobs.add(new Job(rootFolder, seriesNumber, seriesNumbers.get(seriesNumber), 0));
-            }
+
         } else {
             File next = fileCrawler.getNextValidFileInStructure();
             int loadTotal = 0;
             while (next != null && fileCrawler.getCurrentFolderAsFolder() != null) {
-                TreeMap<Integer, String> seriesNumbers = inputControl.getSeriesNumbers(next);
-                for (int seriesNumber : seriesNumbers.keySet()) {
-                    jobs.add(new Job(next, seriesNumber, seriesNumbers.get(seriesNumber),
-                            fileCrawler.getCurrentDepth()));
+                boolean load = true;
+                if (firstMatchingGroup) {
+                    Matcher matcher = pattern.matcher(next.getName());
+                    if (matcher.matches()) {
+                        String group = matcher.group(1);
+                        load = !groups.contains(group);
+                        groups.add(group);
+                    } else {
+                        load = false;
+                    }
+                }
 
-                    // Displaying the current progress
-                    MIA.log.writeStatus("Initialising " + dfInt.format(++loadTotal) + " jobs");
-
+                if (load) {
+                    TreeMap<Integer, String> seriesNumbers = inputControl.getSeriesNumbers(next);
+                    for (int seriesNumber : seriesNumbers.keySet()) {
+                        MIA.log.writeStatus("Initialising " + dfInt.format(++loadTotal) + " jobs");
+                        jobs.add(new Job(next, seriesNumber, seriesNumbers.get(seriesNumber),
+                                fileCrawler.getCurrentDepth()));
+                    }
                 }
 
                 if (firstPerFolder)
                     fileCrawler.goToNextValidFolder();
+
                 next = fileCrawler.getNextValidFileInStructure();
 
             }
@@ -213,47 +236,47 @@ public class AnalysisRunner {
             exporter.setExportIndividualObjects(exportIndividualObjects);
 
             switch (exportMode) {
-                case OutputControl.ExportModes.ALL_TOGETHER:
-                    exporter.setExportMode(Exporter.ExportMode.ALL_TOGETHER);
-                    break;
+            case OutputControl.ExportModes.ALL_TOGETHER:
+                exporter.setExportMode(Exporter.ExportMode.ALL_TOGETHER);
+                break;
 
-                case OutputControl.ExportModes.GROUP_BY_METADATA:
-                    exporter.setExportMode(Exporter.ExportMode.GROUP_BY_METADATA);
-                    break;
+            case OutputControl.ExportModes.GROUP_BY_METADATA:
+                exporter.setExportMode(Exporter.ExportMode.GROUP_BY_METADATA);
+                break;
 
-                case OutputControl.ExportModes.INDIVIDUAL_FILES:
-                    exporter.setExportMode(Exporter.ExportMode.INDIVIDUAL_FILES);
-                    break;
+            case OutputControl.ExportModes.INDIVIDUAL_FILES:
+                exporter.setExportMode(Exporter.ExportMode.INDIVIDUAL_FILES);
+                break;
             }
 
             switch (summaryType) {
-                case OutputControl.SummaryModes.ONE_AVERAGE_PER_FILE:
-                    exporter.setSummaryMode(Exporter.SummaryMode.PER_FILE);
-                    break;
+            case OutputControl.SummaryModes.ONE_AVERAGE_PER_FILE:
+                exporter.setSummaryMode(Exporter.SummaryMode.PER_FILE);
+                break;
 
-                case OutputControl.SummaryModes.AVERAGE_PER_TIMEPOINT:
-                    exporter.setSummaryMode(Exporter.SummaryMode.PER_TIMEPOINT_PER_FILE);
-                    break;
+            case OutputControl.SummaryModes.AVERAGE_PER_TIMEPOINT:
+                exporter.setSummaryMode(Exporter.SummaryMode.PER_TIMEPOINT_PER_FILE);
+                break;
 
-                case OutputControl.SummaryModes.GROUP_BY_METADATA:
-                    exporter.setSummaryMode(Exporter.SummaryMode.GROUP_BY_METADATA);
-                    exporter.setMetadataItemForSummary(
-                            outputControl.getParameterValue(OutputControl.METADATA_ITEM_FOR_SUMMARY));
-                    break;
+            case OutputControl.SummaryModes.GROUP_BY_METADATA:
+                exporter.setSummaryMode(Exporter.SummaryMode.GROUP_BY_METADATA);
+                exporter.setMetadataItemForSummary(
+                        outputControl.getParameterValue(OutputControl.METADATA_ITEM_FOR_SUMMARY));
+                break;
             }
 
             switch (appendDateTimeMode) {
-                case OutputControl.AppendDateTimeModes.ALWAYS:
-                    exporter.setAppendDateTimeMode(Exporter.AppendDateTimeMode.ALWAYS);
-                    break;
+            case OutputControl.AppendDateTimeModes.ALWAYS:
+                exporter.setAppendDateTimeMode(Exporter.AppendDateTimeMode.ALWAYS);
+                break;
 
-                case OutputControl.AppendDateTimeModes.IF_FILE_EXISTS:
-                    exporter.setAppendDateTimeMode(Exporter.AppendDateTimeMode.IF_FILE_EXISTS);
-                    break;
+            case OutputControl.AppendDateTimeModes.IF_FILE_EXISTS:
+                exporter.setAppendDateTimeMode(Exporter.AppendDateTimeMode.IF_FILE_EXISTS);
+                break;
 
-                case OutputControl.AppendDateTimeModes.NEVER:
-                    exporter.setAppendDateTimeMode(Exporter.AppendDateTimeMode.NEVER);
-                    break;
+            case OutputControl.AppendDateTimeModes.NEVER:
+                exporter.setAppendDateTimeMode(Exporter.AppendDateTimeMode.NEVER);
+                break;
             }
         }
 

@@ -68,6 +68,8 @@ public class InputControl extends Module {
     public static final String SERIES_MODE = "Series mode";
     public static final String SERIES_LIST = "Series list";
     public static final String LOAD_FIRST_PER_FOLDER = "Only load first file per folder";
+    public static final String LOAD_FIRST_MATCHING_GROUP = "Only load first matching group";
+    public static final String PATTERN = "Pattern";
     public static final String FILTER_SEPARATOR = "File/folder filters";
     public static final String ADD_FILTER = "Add filter";
     public static final String FILTER_SOURCE = "Filter source";
@@ -135,7 +137,7 @@ public class InputControl extends Module {
 
         // Iterating over each filter
         for (ParameterCollection collection : collections.values()) {
-            // If this filter is a filename filter type, addRef it to the AnalysisRunner
+            // If this filter is a filename filter type, add it to the AnalysisRunner
             String filterSource = collection.getValue(FILTER_SOURCE);
             String filterValue = collection.getValue(FILTER_VALUE);
             String filterType = collection.getValue(FILTER_TYPE);
@@ -361,6 +363,8 @@ public class InputControl extends Module {
         parameters.add(new ChoiceP(SERIES_MODE, this, SeriesModes.ALL_SERIES, SeriesModes.ALL));
         parameters.add(new SeriesListSelectorP(SERIES_LIST, this, "1"));
         parameters.add(new BooleanP(LOAD_FIRST_PER_FOLDER, this, false));
+        parameters.add(new BooleanP(LOAD_FIRST_MATCHING_GROUP, this, false));
+        parameters.add(new StringP(PATTERN, this));
 
         parameters.add(new SeparatorP(FILTER_SEPARATOR, this));
         ParameterCollection collection = new ParameterCollection();
@@ -395,6 +399,11 @@ public class InputControl extends Module {
             returnedParameters.add(parameters.getParameter(SERIES_LIST));
             break;
         }
+        returnedParameters.add(parameters.getParameter(LOAD_FIRST_PER_FOLDER));
+        returnedParameters.add(parameters.getParameter(LOAD_FIRST_MATCHING_GROUP));
+        if ((boolean) parameters.getValue(LOAD_FIRST_MATCHING_GROUP))
+            returnedParameters.add(parameters.getParameter(PATTERN));
+
         returnedParameters.add(parameters.getParameter(LOAD_FIRST_PER_FOLDER));
         returnedParameters.add(parameters.getParameter(SPATIAL_UNIT));
         returnedParameters.add(parameters.getParameter(TEMPORAL_UNIT));
@@ -479,6 +488,15 @@ public class InputControl extends Module {
 
         parameters.get(LOAD_FIRST_PER_FOLDER)
                 .setDescription("Only load the (alphabetically) first file in each folder.");
+
+        parameters.get(LOAD_FIRST_MATCHING_GROUP).setDescription(
+                "Only load the (alphabetically) first file matching the group specified by the regular expression \""
+                        + PATTERN
+                        + "\" parameter.  Each candidate filename will be matched against the regular expression in \""
+                        + PATTERN
+                        + "\" and retained for analysis if the selected group hasn't been seen before.  Only one group (specified using standard regex parenthesis notation) can be used.");
+
+        parameters.get(PATTERN).setDescription("Regular expression pattern to use when \""+LOAD_FIRST_MATCHING_GROUP+"\" is enabled.  This pattern must contain at least one group (specified using standard regex parenthesis notation).");
 
         ParameterCollection templateParameters = ((ParameterGroup) parameters.get(ADD_FILTER)).getTemplateParameters();
         templateParameters.get(FILTER_SOURCE).setDescription("Type of filter to add.");
