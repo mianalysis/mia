@@ -943,7 +943,7 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
             String[] filenames = new File(filepath).list(new WildcardFileFilter(filename));
 
             // Appending the filepath to the start of each name
-            return Arrays.stream(filenames).map(v -> filepath + v).toArray(s -> new String[s]);
+            return Arrays.stream(filenames).map(v -> filepath + v).sorted().toArray(s -> new String[s]);
         }
 
         return new String[] { filepath + filename };
