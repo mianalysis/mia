@@ -164,7 +164,7 @@ public class FilterByChildren extends AbstractNumericObjectFilter {
             String childObjectsName = parameters.getValue(CHILD_OBJECTS);
             String metadataName = getSummaryMeasurementName(childObjectsName);
 
-            returnedRefs.add(metadataRefs.getOrPut(metadataName));
+            returnedRefs.add(metadataRefs.getOrPut("META // "+metadataName));
 
         }
 

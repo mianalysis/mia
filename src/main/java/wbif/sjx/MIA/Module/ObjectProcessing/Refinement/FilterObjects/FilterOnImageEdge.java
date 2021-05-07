@@ -219,7 +219,7 @@ public class FilterOnImageEdge extends AbstractObjectFilter {
 
             String metadataName = getMetadataName(inputObjectsName, includeZ);
 
-            returnedRefs.add(metadataRefs.getOrPut(metadataName));
+            returnedRefs.add(metadataRefs.getOrPut("META // "+metadataName));
 
         }
 

@@ -32,7 +32,7 @@ public class MetadataRef extends ExportableRef implements SpreadsheetWriter {
 
         // Adding the heading to the title row
         Cell cell = titleRow.createCell(col);
-        cell.setCellValue("META // "+getNickname());
+        cell.setCellValue(getNickname());
 
         // Adding to each row
         for (int rowN:workspaces.keySet()) {

@@ -780,7 +780,7 @@ public class BestFocusSubstack<T extends RealType<T> & NativeType<T>> extends Mo
         MetadataRefCollection returnedRefs = new MetadataRefCollection();
 
         if (parameters.getValue(BEST_FOCUS_CALCULATION).equals(BestFocusCalculations.MANUAL)) {
-            returnedRefs.add(metadataRefs.getOrPut(MetadataNames.SLICES));
+            returnedRefs.add(metadataRefs.getOrPut("META // "+MetadataNames.SLICES));
         }
 
         return returnedRefs;

@@ -243,7 +243,7 @@ public class GlobalVariables extends Module {
 
         for (ParameterCollection collection : collections.values()) {
             if ((boolean) collection.getValue(STORE_AS_METADATA_ITEM))
-                returnedRefs.add(metadataRefs.getOrPut(collection.getValue(VARIABLE_NAME)));
+                returnedRefs.add(metadataRefs.getOrPut("META // "+collection.getValue(VARIABLE_NAME)));
         }
 
         return returnedRefs;

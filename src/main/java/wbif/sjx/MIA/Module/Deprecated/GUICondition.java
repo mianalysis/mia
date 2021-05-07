@@ -175,7 +175,7 @@ public class GUICondition extends AbstractWorkspaceHandler {
         MetadataRefCollection returnedRefs = new MetadataRefCollection();
 
         if ((boolean) parameters.getValue(STORE_AS_METADATA_ITEM))
-            returnedRefs.add(metadataRefs.getOrPut(parameters.getValue(METADATA_NAME)));
+            returnedRefs.add(metadataRefs.getOrPut("META // "+parameters.getValue(METADATA_NAME)));
 
         return returnedRefs;
 
