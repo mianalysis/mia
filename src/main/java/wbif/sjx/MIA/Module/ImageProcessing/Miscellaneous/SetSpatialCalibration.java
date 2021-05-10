@@ -1,0 +1,391 @@
+package wbif.sjx.MIA.Module.ImageProcessing.Miscellaneous;
+
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+
+import ij.ImagePlus;
+import ij.measure.Calibration;
+import wbif.sjx.MIA.MIA;
+import wbif.sjx.MIA.Module.Categories;
+import wbif.sjx.MIA.Module.Category;
+import wbif.sjx.MIA.Module.Module;
+import wbif.sjx.MIA.Module.ModuleCollection;
+import wbif.sjx.MIA.Object.Image;
+import wbif.sjx.MIA.Object.Measurement;
+import wbif.sjx.MIA.Object.Obj;
+import wbif.sjx.MIA.Object.Status;
+import wbif.sjx.MIA.Object.Workspace;
+import wbif.sjx.MIA.Object.Parameters.BooleanP;
+import wbif.sjx.MIA.Object.Parameters.ChoiceP;
+import wbif.sjx.MIA.Object.Parameters.ImageMeasurementP;
+import wbif.sjx.MIA.Object.Parameters.InputImageP;
+import wbif.sjx.MIA.Object.Parameters.InputObjectsP;
+import wbif.sjx.MIA.Object.Parameters.ObjectMeasurementP;
+import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
+import wbif.sjx.MIA.Object.Parameters.SeparatorP;
+import wbif.sjx.MIA.Object.Parameters.Text.DoubleP;
+import wbif.sjx.MIA.Object.References.ImageMeasurementRef;
+import wbif.sjx.MIA.Object.References.Collections.ImageMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.Collections.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.Collections.ObjMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.Collections.ParentChildRefCollection;
+import wbif.sjx.MIA.Object.References.Collections.PartnerRefCollection;
+import wbif.sjx.MIA.Object.Units.SpatialUnit;
+
+public class SetSpatialCalibration extends Module {
+    public static final String INPUT_SEPARATOR = "Image input";
+    public static final String INPUT_IMAGE = "Input image";
+
+    public static final String CALIBRATION_SEPARATOR = "Calibration controls";
+    public static final String AXIS_MODE = "Axis mode";
+
+    public static final String PD_SEPARATOR = "Physical distance controls";
+    public static final String PD_SOURCE = "Physical distance (PD) source";
+    public static final String OBJECTS_FOR_PD = "Objects for measurement (PD)";
+    public static final String OBJECTS_MEASURUREMENT_FOR_PD = "Objects measurement (PD)";
+    public static final String FIXED_VALUE_FOR_PD = "Fixed value (PD)";
+    public static final String DISPLAY_IMAGE_PD = "Display image (PD)";
+    public static final String STORE_DISTANCE_AS_MEASUREMENT_PD = "Store distance as measurement (PD)";
+    public static final String IMAGE_FOR_PD = "Image for measurement (PD)";
+    public static final String IMAGE_MEASUREMENT_FOR_PD = "Image measurement (PD)";
+
+    public static final String ID_SEPARATOR = "Image distance controls";
+    public static final String ID_SOURCE = "Image distance (ID) source";
+    public static final String OBJECTS_FOR_ID = "Objects for measurement (ID)";
+    public static final String OBJECTS_MEASURUREMENT_FOR_ID = "Objects measurement (ID)";
+    public static final String FIXED_VALUE_FOR_ID = "Fixed value (ID)";
+    public static final String DISPLAY_IMAGE_ID = "Display image (ID)";
+    public static final String STORE_DISTANCE_AS_MEASUREMENT_ID = "Store distance as measurement (ID)";
+    public static final String IMAGE_FOR_ID = "Image for measurement (ID)";
+    public static final String IMAGE_MEASUREMENT_FOR_ID = "Image measurement (ID)";
+
+    public interface AxisModes {
+        String XY = "XY";
+        String XYZ = "XY and Z";
+        String Z = "Z";
+
+        String[] ALL = new String[] { XY, XYZ, Z };
+
+    }
+
+    public interface DistanceSources {
+        String FIRST_OBJECT_MEASUREMENT = "First object measurement";
+        String FIXED_VALUE = "Fixed value";
+        String GUI_SELECTION_TEXT = "GUI selection (text box)";
+        // String GUI_SELECTION_DRAW = "GUI selection (drawing)";
+        String IMAGE_MEASUREMENT = "Image measurement";
+
+        String[] ALL = new String[] { FIRST_OBJECT_MEASUREMENT, GUI_SELECTION_TEXT, FIXED_VALUE, IMAGE_MEASUREMENT };
+
+    }
+
+    public interface Measurements {
+        String PD_DISTANCE = "SPATIAL_CALIBRATION // PHYSICAL_DISTANCE_{$CAL}";
+        String ID_DISTANCE = "SPATIAL_CALIBRATION // IMAGE_DISTANCE_{$CAL}";
+
+    }
+
+    public SetSpatialCalibration(ModuleCollection modules) {
+        super("Set spatial calibration", modules);
+    }
+
+    @Override
+    public Category getCategory() {
+        return Categories.IMAGE_PROCESSING_MISCELLANEOUS;
+    }
+
+    @Override
+    public String getDescription() {
+        return "";
+    }
+
+    public static double getFirstObjectMeasurement(Workspace workspace, String objectsName, String measurementName) {
+        Obj firstObj = workspace.getObjectSet(objectsName).getFirst();
+        if (firstObj == null) {
+            MIA.log.writeWarning("No object to provide distance.  Setting calibration to NaN.");
+            return Double.NaN;
+        }
+
+        Measurement meas = firstObj.getMeasurement(measurementName);
+        if (meas == null) {
+            MIA.log.writeWarning("No object measurement to provide distance.  Setting calibration to NaN.");
+            return Double.NaN;
+        }
+
+        return meas.getValue();
+
+    }
+
+    public static double getGUITextValue(Image image, boolean showImage, boolean storeMeasurement, String message) {
+        ImagePlus dispIpl = null;
+        if (showImage) {
+            dispIpl = image.getImagePlus().duplicate();
+            dispIpl.show();
+        }
+
+        JFrame frame = new JFrame();
+        frame.setAlwaysOnTop(false);
+        String valueString = (String) JOptionPane.showInputDialog(frame, message, "", JOptionPane.PLAIN_MESSAGE, null,
+                null, 1d);
+
+        if (showImage && dispIpl != null)
+            dispIpl.close();
+
+        return Double.parseDouble(valueString);
+
+    }
+
+    public static double getImageMeasurement(Workspace workspace, String imageName, String measurementName) {
+        Image image = workspace.getImage(imageName);
+        if (image == null) {
+            MIA.log.writeWarning("No image to provide distance.  Setting calibration to NaN.");
+            return Double.NaN;
+        }
+
+        Measurement meas = image.getMeasurement(measurementName);
+        if (meas == null) {
+            MIA.log.writeWarning("No image measurement to provide distance.  Setting calibration to NaN.");
+            return Double.NaN;
+        }
+
+        return meas.getValue();
+
+    }
+
+    @Override
+    protected Status process(Workspace workspace) {
+        String inputImageName = parameters.getValue(INPUT_IMAGE);
+
+        String pdSource = parameters.getValue(PD_SOURCE);
+        String axisMode = parameters.getValue(AXIS_MODE);
+        String pdObjectsName = parameters.getValue(OBJECTS_FOR_PD);
+        String pdObjectsMeasName = parameters.getValue(OBJECTS_MEASURUREMENT_FOR_PD);
+        double pdFixedValue = parameters.getValue(FIXED_VALUE_FOR_PD);
+        boolean pdShowImage = parameters.getValue(DISPLAY_IMAGE_PD);
+        boolean pdStoreMeasurement = parameters.getValue(STORE_DISTANCE_AS_MEASUREMENT_PD);
+        String pdImageName = parameters.getValue(IMAGE_FOR_PD);
+        String pdImageMeasName = parameters.getValue(IMAGE_MEASUREMENT_FOR_PD);
+
+        String idSource = parameters.getValue(ID_SOURCE);
+        String idObjectsName = parameters.getValue(OBJECTS_FOR_ID);
+        String idObjectsMeasName = parameters.getValue(OBJECTS_MEASURUREMENT_FOR_ID);
+        double idFixedValue = parameters.getValue(FIXED_VALUE_FOR_ID);
+        boolean idShowImage = parameters.getValue(DISPLAY_IMAGE_ID);
+        boolean idStoreMeasurement = parameters.getValue(STORE_DISTANCE_AS_MEASUREMENT_ID);
+        String idImageName = parameters.getValue(IMAGE_FOR_ID);
+        String idImageMeasName = parameters.getValue(IMAGE_MEASUREMENT_FOR_ID);
+
+        Image image = workspace.getImage(inputImageName);
+
+        // If not using a fixed value, updating the fixed value with the correct value
+        switch (pdSource) {
+            case DistanceSources.FIRST_OBJECT_MEASUREMENT:
+                pdFixedValue = getFirstObjectMeasurement(workspace, pdObjectsName, pdObjectsMeasName);
+                break;
+            case DistanceSources.GUI_SELECTION_TEXT:
+                pdFixedValue = getGUITextValue(image, pdShowImage, pdStoreMeasurement,
+                        "Enter physical distance value (" + SpatialUnit.getOMEUnit().getSymbol() + ")");
+                break;
+            case DistanceSources.IMAGE_MEASUREMENT:
+                pdFixedValue = getImageMeasurement(workspace, pdImageName, pdImageMeasName);
+                break;
+        }
+
+        switch (idSource) {
+            case DistanceSources.FIRST_OBJECT_MEASUREMENT:
+                idFixedValue = getFirstObjectMeasurement(workspace, idObjectsName, idObjectsMeasName);
+                break;
+            case DistanceSources.GUI_SELECTION_TEXT:
+                idFixedValue = getGUITextValue(image, idShowImage, idStoreMeasurement,
+                        "Enter image distance value (" + SpatialUnit.getOMEUnit().getSymbol() + ")");
+                break;
+            case DistanceSources.IMAGE_MEASUREMENT:
+                idFixedValue = getImageMeasurement(workspace, idImageName, idImageMeasName);
+                break;
+        }
+
+        // Setting image spatial calibration
+        double distPerPx = pdFixedValue / idFixedValue;
+        ImagePlus ipl = image.getImagePlus();
+        Calibration cal = ipl.getCalibration();
+
+        switch (axisMode) {
+            case AxisModes.XY:
+                cal.pixelHeight = distPerPx;
+                cal.pixelWidth = distPerPx;
+                break;
+            case AxisModes.XYZ:
+                cal.pixelHeight = distPerPx;
+                cal.pixelWidth = distPerPx;
+                cal.pixelDepth = distPerPx;
+                break;
+            case AxisModes.Z:
+                cal.pixelDepth = distPerPx;
+                break;
+        }
+
+        if (showOutput)
+            image.showImage();
+
+        return Status.PASS;
+
+    }
+
+    @Override
+    protected void initialiseParameters() {
+        parameters.add(new SeparatorP(INPUT_SEPARATOR, this));
+        parameters.add(new InputImageP(INPUT_IMAGE, this));
+
+        parameters.add(new SeparatorP(CALIBRATION_SEPARATOR, this));
+        parameters.add(new ChoiceP(AXIS_MODE, this, AxisModes.XY, AxisModes.ALL));
+
+        parameters.add(new SeparatorP(PD_SEPARATOR, this));
+        parameters.add(new ChoiceP(PD_SOURCE, this, DistanceSources.FIXED_VALUE, DistanceSources.ALL));
+        parameters.add(new InputObjectsP(OBJECTS_FOR_PD, this));
+        parameters.add(new ObjectMeasurementP(OBJECTS_MEASURUREMENT_FOR_PD, this));
+        parameters.add(new DoubleP(FIXED_VALUE_FOR_PD, this, 1d));
+        parameters.add(new BooleanP(DISPLAY_IMAGE_PD, this, true));
+        parameters.add(new BooleanP(STORE_DISTANCE_AS_MEASUREMENT_PD, this, true));
+        parameters.add(new InputImageP(IMAGE_FOR_PD, this));
+        parameters.add(new ImageMeasurementP(IMAGE_MEASUREMENT_FOR_PD, this));
+
+        parameters.add(new SeparatorP(ID_SEPARATOR, this));
+        parameters.add(new ChoiceP(ID_SOURCE, this, DistanceSources.FIXED_VALUE, DistanceSources.ALL));
+        parameters.add(new InputObjectsP(OBJECTS_FOR_ID, this));
+        parameters.add(new ObjectMeasurementP(OBJECTS_MEASURUREMENT_FOR_ID, this));
+        parameters.add(new DoubleP(FIXED_VALUE_FOR_ID, this, 1d));
+        parameters.add(new BooleanP(DISPLAY_IMAGE_ID, this, true));
+        parameters.add(new BooleanP(STORE_DISTANCE_AS_MEASUREMENT_ID, this, true));
+        parameters.add(new InputImageP(IMAGE_FOR_ID, this));
+        parameters.add(new ImageMeasurementP(IMAGE_MEASUREMENT_FOR_ID, this));
+
+        addParameterDescriptions();
+
+    }
+
+    @Override
+    public ParameterCollection updateAndGetParameters() {
+        ParameterCollection returnedParams = new ParameterCollection();
+
+        returnedParams.add(parameters.get(INPUT_SEPARATOR));
+        returnedParams.add(parameters.get(INPUT_IMAGE));
+
+        returnedParams.add(parameters.get(CALIBRATION_SEPARATOR));
+        returnedParams.add(parameters.get(AXIS_MODE));
+
+        returnedParams.add(parameters.get(PD_SEPARATOR));
+        returnedParams.add(parameters.get(PD_SOURCE));
+        switch ((String) parameters.getValue(PD_SOURCE)) {
+            case DistanceSources.FIRST_OBJECT_MEASUREMENT:
+                returnedParams.add(parameters.get(OBJECTS_FOR_PD));
+                returnedParams.add(parameters.get(OBJECTS_MEASURUREMENT_FOR_PD));
+                String objectsName = parameters.getValue(OBJECTS_FOR_PD);
+                ObjectMeasurementP objectMeasurement = (ObjectMeasurementP) parameters
+                        .get(OBJECTS_MEASURUREMENT_FOR_PD);
+                objectMeasurement.setObjectName(objectsName);
+
+                break;
+
+            case DistanceSources.FIXED_VALUE:
+                returnedParams.add(parameters.get(FIXED_VALUE_FOR_PD));
+                break;
+
+            case DistanceSources.GUI_SELECTION_TEXT:
+                returnedParams.add(parameters.get(DISPLAY_IMAGE_PD));
+                returnedParams.add(parameters.get(STORE_DISTANCE_AS_MEASUREMENT_PD));
+                break;
+
+            case DistanceSources.IMAGE_MEASUREMENT:
+                returnedParams.add(parameters.get(IMAGE_FOR_PD));
+                returnedParams.add(parameters.get(IMAGE_MEASUREMENT_FOR_PD));
+                String imageName = parameters.getValue(IMAGE_FOR_PD);
+                ImageMeasurementP imageMeasurement = (ImageMeasurementP) parameters.get(IMAGE_MEASUREMENT_FOR_PD);
+                imageMeasurement.setImageName(imageName);
+                break;
+        }
+
+        returnedParams.add(parameters.get(ID_SEPARATOR));
+        returnedParams.add(parameters.get(ID_SOURCE));
+        switch ((String) parameters.getValue(ID_SOURCE)) {
+            case DistanceSources.FIRST_OBJECT_MEASUREMENT:
+                returnedParams.add(parameters.get(OBJECTS_FOR_ID));
+                returnedParams.add(parameters.get(OBJECTS_MEASURUREMENT_FOR_ID));
+                String objectsName = parameters.getValue(OBJECTS_FOR_ID);
+                ObjectMeasurementP objectMeasurement = (ObjectMeasurementP) parameters
+                        .get(OBJECTS_MEASURUREMENT_FOR_ID);
+                objectMeasurement.setObjectName(objectsName);
+                break;
+
+            case DistanceSources.FIXED_VALUE:
+                returnedParams.add(parameters.get(FIXED_VALUE_FOR_ID));
+                break;
+
+            case DistanceSources.GUI_SELECTION_TEXT:
+                returnedParams.add(parameters.get(DISPLAY_IMAGE_ID));
+                returnedParams.add(parameters.get(STORE_DISTANCE_AS_MEASUREMENT_ID));
+                break;
+
+            case DistanceSources.IMAGE_MEASUREMENT:
+                returnedParams.add(parameters.get(IMAGE_FOR_ID));
+                returnedParams.add(parameters.get(IMAGE_MEASUREMENT_FOR_ID));
+                String imageName = parameters.getValue(IMAGE_FOR_ID);
+                ImageMeasurementP imageMeasurement = (ImageMeasurementP) parameters.get(IMAGE_MEASUREMENT_FOR_ID);
+                imageMeasurement.setImageName(imageName);
+                break;
+        }
+
+        return returnedParams;
+
+    }
+
+    @Override
+    public ImageMeasurementRefCollection updateAndGetImageMeasurementRefs() {
+        ImageMeasurementRefCollection returnedRefs = new ImageMeasurementRefCollection();
+
+        if (parameters.getValue(PD_SOURCE).equals(DistanceSources.GUI_SELECTION_TEXT)
+                && (boolean) parameters.getValue(STORE_DISTANCE_AS_MEASUREMENT_PD)) {
+            ImageMeasurementRef ref = imageMeasurementRefs.getOrPut(Measurements.PD_DISTANCE);
+            ref.setImageName(parameters.getValue(INPUT_IMAGE));
+            returnedRefs.add(ref);
+        }
+
+        if (parameters.getValue(ID_SOURCE).equals(DistanceSources.GUI_SELECTION_TEXT)
+                && (boolean) parameters.getValue(STORE_DISTANCE_AS_MEASUREMENT_ID)) {
+            ImageMeasurementRef ref = imageMeasurementRefs.getOrPut(Measurements.ID_DISTANCE);
+            ref.setImageName(parameters.getValue(INPUT_IMAGE));
+            returnedRefs.add(ref);
+        }
+
+        return returnedRefs;
+
+    }
+
+    @Override
+    public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+        return null;
+    }
+
+    @Override
+    public MetadataRefCollection updateAndGetMetadataReferences() {
+        return null;
+    }
+
+    @Override
+    public ParentChildRefCollection updateAndGetParentChildRefs() {
+        return null;
+    }
+
+    @Override
+    public PartnerRefCollection updateAndGetPartnerRefs() {
+        return null;
+    }
+
+    @Override
+    public boolean verify() {
+        return true;
+    }
+
+    void addParameterDescriptions() {
+
+    }
+}

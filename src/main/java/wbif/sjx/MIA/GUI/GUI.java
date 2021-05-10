@@ -200,6 +200,7 @@ public class GUI {
     }
 
     public static void updateModuleStates(boolean verbose) {
+        AnalysisTester.testModules(getModules());
         mainPanel.updateModuleStates();
     }
 

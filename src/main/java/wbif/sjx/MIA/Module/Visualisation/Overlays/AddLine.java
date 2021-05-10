@@ -83,7 +83,6 @@ public class AddLine extends AbstractOverlay {
         super("Add line", modules);
     }
 
-
     @Override
     public Category getCategory() {
         return Categories.VISUALISATION_OVERLAYS;
@@ -310,6 +309,10 @@ public class AddLine extends AbstractOverlay {
             }
         }
 
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+        String referenceImageName1 = parameters.getValue(REFERENCE_IMAGE_1);
+        String referenceImageName2 = parameters.getValue(REFERENCE_IMAGE_2);
+
         returnedParameters.add(parameters.getParameter(REFERENCE_SEPARATOR));
         returnedParameters.add(parameters.getParameter(REFERENCE_MODE_1));
         switch ((String) parameters.getValue(REFERENCE_MODE_1)) {
@@ -317,12 +320,22 @@ public class AddLine extends AbstractOverlay {
                 returnedParameters.add(parameters.getParameter(REFERENCE_IMAGE_1));
                 returnedParameters.add(parameters.getParameter(X_POSITION_MEASUREMENT_IM_1));
                 returnedParameters.add(parameters.getParameter(Y_POSITION_MEASUREMENT_IM_1));
-                // returnedParameters.add(parameters.getParameter(Z_POSITION_MEASUREMENT_IM_1));
+
+                ((ImageMeasurementP) parameters.getParameter(X_POSITION_MEASUREMENT_IM_1))
+                        .setImageName(referenceImageName1);
+                ((ImageMeasurementP) parameters.getParameter(Y_POSITION_MEASUREMENT_IM_1))
+                        .setImageName(referenceImageName1);
+
                 break;
             case ReferenceModes.OBJECT_MEASUREMENT:
                 returnedParameters.add(parameters.getParameter(X_POSITION_MEASUREMENT_OBJ_1));
                 returnedParameters.add(parameters.getParameter(Y_POSITION_MEASUREMENT_OBJ_1));
-                // returnedParameters.add(parameters.getParameter(Z_POSITION_MEASUREMENT_OBJ_1));
+
+                ((ObjectMeasurementP) parameters.getParameter(X_POSITION_MEASUREMENT_OBJ_1))
+                        .setObjectName(inputObjectsName);
+                ((ObjectMeasurementP) parameters.getParameter(Y_POSITION_MEASUREMENT_OBJ_1))
+                        .setObjectName(inputObjectsName);
+
                 break;
         }
 
@@ -332,34 +345,28 @@ public class AddLine extends AbstractOverlay {
                 returnedParameters.add(parameters.getParameter(REFERENCE_IMAGE_2));
                 returnedParameters.add(parameters.getParameter(X_POSITION_MEASUREMENT_IM_2));
                 returnedParameters.add(parameters.getParameter(Y_POSITION_MEASUREMENT_IM_2));
-                // returnedParameters.add(parameters.getParameter(Z_POSITION_MEASUREMENT_IM_2));
+
+                ((ImageMeasurementP) parameters.getParameter(X_POSITION_MEASUREMENT_IM_2))
+                        .setImageName(referenceImageName2);
+                ((ImageMeasurementP) parameters.getParameter(Y_POSITION_MEASUREMENT_IM_2))
+                        .setImageName(referenceImageName2);
+
                 break;
             case ReferenceModes.OBJECT_MEASUREMENT:
                 returnedParameters.add(parameters.getParameter(X_POSITION_MEASUREMENT_OBJ_2));
                 returnedParameters.add(parameters.getParameter(Y_POSITION_MEASUREMENT_OBJ_2));
-                // returnedParameters.add(parameters.getParameter(Z_POSITION_MEASUREMENT_OBJ_2));
+
+                ((ObjectMeasurementP) parameters.getParameter(X_POSITION_MEASUREMENT_OBJ_2))
+                        .setObjectName(inputObjectsName);
+                ((ObjectMeasurementP) parameters.getParameter(Y_POSITION_MEASUREMENT_OBJ_2))
+                        .setObjectName(inputObjectsName);
+
                 break;
         }
 
-        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
-        ((ObjectMeasurementP) parameters.getParameter(X_POSITION_MEASUREMENT_OBJ_1)).setObjectName(inputObjectsName);
-        ((ObjectMeasurementP) parameters.getParameter(Y_POSITION_MEASUREMENT_OBJ_1)).setObjectName(inputObjectsName);
-        // ((ObjectMeasurementP)
-        // parameters.getParameter(Z_POSITION_MEASUREMENT_OBJ_1)).setObjectName(inputObjectsName);
-        ((ObjectMeasurementP) parameters.getParameter(X_POSITION_MEASUREMENT_OBJ_2)).setObjectName(inputObjectsName);
-        ((ObjectMeasurementP) parameters.getParameter(Y_POSITION_MEASUREMENT_OBJ_2)).setObjectName(inputObjectsName);
-        // ((ObjectMeasurementP)
-        // parameters.getParameter(Z_POSITION_MEASUREMENT_OBJ_2)).setObjectName(inputObjectsName);
-
-        final String referenceImageName1 = parameters.getValue(REFERENCE_IMAGE_1);
-        ((ImageMeasurementP) parameters.getParameter(X_POSITION_MEASUREMENT_IM_1)).setImageName(referenceImageName1);
-        ((ImageMeasurementP) parameters.getParameter(Y_POSITION_MEASUREMENT_IM_1)).setImageName(referenceImageName1);
         // ((ImageMeasurementP)
         // parameters.getParameter(Z_POSITION_MEASUREMENT_IM_1)).setImageName(referenceImageName1);
 
-        final String referenceImageName2 = parameters.getValue(REFERENCE_IMAGE_2);
-        ((ImageMeasurementP) parameters.getParameter(X_POSITION_MEASUREMENT_IM_2)).setImageName(referenceImageName2);
-        ((ImageMeasurementP) parameters.getParameter(Y_POSITION_MEASUREMENT_IM_2)).setImageName(referenceImageName2);
         // ((ImageMeasurementP)
         // parameters.getParameter(Z_POSITION_MEASUREMENT_IM_2)).setImageName(referenceImageName2);
 
