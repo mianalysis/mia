@@ -383,10 +383,11 @@ public class Exporter {
 
         switch (summaryType) {
             case GROUP_BY_METADATA:
+                String summaryDataName = getMetadataString("Count");
                 Cell cell = summaryHeaderRow.createCell(headerCol.get());
-                cell.setCellValue("COUNT");
+                cell.setCellValue(summaryDataName);
                 cell.setCellStyle(cellStyle);
-                colNumbers.put("COUNT", headerCol.getAndIncrement());
+                colNumbers.put(summaryDataName, headerCol.getAndIncrement());
                 break;
 
             case PER_FILE:
@@ -397,10 +398,11 @@ public class Exporter {
                 for (MetadataRef ref:metadataRefs.values()) {
                     if (!ref.isExportGlobal()) continue;
 
+                    summaryDataName = getMetadataString(ref.getName());
                     cell = summaryHeaderRow.createCell(headerCol.get());
-                    cell.setCellValue(ref.getName());
+                    cell.setCellValue(summaryDataName);
                     cell.setCellStyle(cellStyle);
-                    colNumbers.put(ref.getName(), headerCol.getAndIncrement());
+                    colNumbers.put(summaryDataName, headerCol.getAndIncrement());
                 }
                 break;
         }
@@ -418,16 +420,18 @@ public class Exporter {
         // Add a column to record the timepoint
         switch (summaryType) {
             case PER_TIMEPOINT_PER_FILE:
+                String timepointDataName = getMetadataString("TIMEPOINT");
                 Cell cell = summaryHeaderRow.createCell(headerCol.get());
-                cell.setCellValue("TIMEPOINT");
+                cell.setCellValue(timepointDataName);
                 cell.setCellStyle(cellStyle);
-                colNumbers.put("TIMEPOINT",headerCol.getAndIncrement());
+                colNumbers.put(timepointDataName,headerCol.getAndIncrement());
                 break;
             case GROUP_BY_METADATA:
+                String metadataDataName = getMetadataString(metadataItemForSummary);
                 cell = summaryHeaderRow.createCell(headerCol.get());
-                cell.setCellValue(metadataItemForSummary);
+                cell.setCellValue(metadataDataName);
                 cell.setCellStyle(cellStyle);
-                colNumbers.put(metadataItemForSummary,headerCol.getAndIncrement());
+                colNumbers.put(metadataDataName,headerCol.getAndIncrement());
                 break;
         }
     }
@@ -569,13 +573,15 @@ public class Exporter {
         // Adding metadata values
         Metadata metadata = workspace.getMetadata();
         for (String name : metadata.keySet()) {
-            if (!colNumbers.containsKey(name)) continue;
-            int colNumber = colNumbers.get(name);
+            String headerName = getMetadataString(name);
+            if (!colNumbers.containsKey(headerName)) continue;
+            int colNumber = colNumbers.get(headerName);
             summaryValueRow.createCell(colNumber).setCellValue(metadata.getAsString(name));
         }
 
         if (groupTitle != null) {
-            int colNumber = colNumbers.get(groupTitle);
+            String timepointName = getMetadataString(groupTitle);
+            int colNumber = colNumbers.get(timepointName);
             summaryValueRow.createCell(colNumber).setCellValue(groupValue);
         }
 
@@ -744,7 +750,7 @@ public class Exporter {
 
                 metadataNames.put(col,ref.getName());
                 cell = objectHeaderRow.createCell(col++);
-                cell.setCellValue(ref.getName());
+                cell.setCellValue(getMetadataString(ref.getName()));
                 cell.setCellStyle(cellStyle);
             }
             
@@ -818,15 +824,26 @@ public class Exporter {
         }
     }
 
+    private String getMetadataString(String metadataName) {
+        return "META // "+metadataName;//.replaceAll(" ", "_");
+
+    }
+
     private String getImageString(String imageName, String measurementName) {
-        return imageName+"_(IM) // "+measurementName;
+//        imageName = imageName.replaceAll(" ", "_");
+
+        return imageName+"_(IM) // "+measurementName;//.replaceAll(" ", "_");
+
     }
 
     private String getObjectString(String objectName, String mode, String measurementName) {
-        if (mode.equals(""))
-            return objectName+"_(OBJ) // "+measurementName;
-        else
-            return objectName+"_(OBJ_"+mode+") // "+measurementName;
+//        objectName = objectName.replaceAll(" ", "_");
+
+        if (mode.equals("")) {
+            return objectName+"_(OBJ) // "+measurementName;//.replaceAll(" ", "_");
+        } else {
+            return objectName+"_(OBJ_"+mode+") // "+measurementName;//.replaceAll(" ", "_");
+        }
     }
 
     private void addComment(Cell cell, String text) {

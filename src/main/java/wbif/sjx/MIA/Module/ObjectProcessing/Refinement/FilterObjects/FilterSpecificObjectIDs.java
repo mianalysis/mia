@@ -239,7 +239,7 @@ public class FilterSpecificObjectIDs extends AbstractObjectFilter implements Act
 
             String metadataName = getMetadataName(inputObjectsName);
 
-            returnedRefs.add(metadataRefs.getOrPut("META // "+metadataName));
+            returnedRefs.add(metadataRefs.getOrPut(metadataName));
 
         }
 

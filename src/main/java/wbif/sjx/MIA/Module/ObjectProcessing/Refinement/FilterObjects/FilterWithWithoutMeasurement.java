@@ -164,7 +164,7 @@ public class FilterWithWithoutMeasurement extends AbstractObjectFilter {
 
             String metadataName = getMetadataName(inputObjectsName, filterMethod, measName);
 
-            returnedRefs.add(metadataRefs.getOrPut("META // "+metadataName));
+            returnedRefs.add(metadataRefs.getOrPut(metadataName));
 
         }
 

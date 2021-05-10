@@ -165,7 +165,7 @@ public class FilterByPartners extends AbstractNumericObjectFilter {
             String partnerObjectsName = parameters.getValue(PARTNER_OBJECTS);
             String metadataName = getSummaryMeasurementName(partnerObjectsName);
 
-            returnedRefs.add(metadataRefs.getOrPut("META // "+metadataName));
+            returnedRefs.add(metadataRefs.getOrPut(metadataName));
 
         }
 

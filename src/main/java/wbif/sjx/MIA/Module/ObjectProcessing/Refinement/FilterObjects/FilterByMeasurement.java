@@ -161,7 +161,7 @@ public class FilterByMeasurement extends AbstractNumericObjectFilter {
             String measName = parameters.getValue(MEASUREMENT);
             String metadataName = getSummaryMeasurementName(measName);
 
-            returnedRefs.add(metadataRefs.getOrPut("META // "+metadataName));
+            returnedRefs.add(metadataRefs.getOrPut(metadataName));
 
         }
 

@@ -81,7 +81,7 @@ public class AddCustomMetadataItem extends Module {
     public MetadataRefCollection updateAndGetMetadataReferences() {
         MetadataRefCollection returnedRefs = new MetadataRefCollection();
 
-        returnedRefs.add(metadataRefs.getOrPut("META // "+parameters.getValue(METADATA_NAME)));
+        returnedRefs.add(metadataRefs.getOrPut(parameters.getValue(METADATA_NAME)));
 
         return returnedRefs;
 

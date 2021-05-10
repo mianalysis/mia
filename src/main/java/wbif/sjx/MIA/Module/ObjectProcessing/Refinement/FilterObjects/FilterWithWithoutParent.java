@@ -172,7 +172,7 @@ public class FilterWithWithoutParent extends AbstractObjectFilter {
 
             String metadataName = getMetadataName(inputObjectsName,filterMethod,parentObjectsName);
 
-            returnedRefs.add(metadataRefs.getOrPut("META // "+metadataName));
+            returnedRefs.add(metadataRefs.getOrPut(metadataName));
 
         }
 
