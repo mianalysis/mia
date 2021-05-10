@@ -825,7 +825,7 @@ public class Exporter {
     }
 
     private String getMetadataString(String metadataName) {
-        return "META // "+metadataName;//.replaceAll(" ", "_");
+        return metadataName;//.replaceAll(" ", "_");
 
     }
 

@@ -164,7 +164,7 @@ public class MetadataExtractor extends Module {
         Metadata tempMetadata = new Metadata();
         filenameExtractor.extract(tempMetadata, metadata.getFile().getName());
         for (String name : tempMetadata.keySet())
-            metadata.put("META // " + name, tempMetadata.get(name));
+            metadata.put(name, tempMetadata.get(name));
 
     }
 
@@ -176,7 +176,7 @@ public class MetadataExtractor extends Module {
         Metadata tempMetadata = new Metadata();
         extractor.extract(tempMetadata, input);
         for (String name : tempMetadata.keySet())
-            metadata.put("META // " + name, tempMetadata.get(name));
+            metadata.put(name, tempMetadata.get(name));
 
     }
 
@@ -193,7 +193,7 @@ public class MetadataExtractor extends Module {
                 break;
 
             case FoldernameExtractors.OPERA_BARCODE_EXTRACTOR:
-                metadata.put("META // Barcode", metadata.getFile().getParentFile().getParentFile().getName());
+                metadata.put("Barcode", metadata.getFile().getParentFile().getParentFile().getName());
                 return;
         }
 
@@ -201,7 +201,7 @@ public class MetadataExtractor extends Module {
             Metadata tempMetadata = new Metadata();
             foldernameExtractor.extract(tempMetadata, metadata.getFile().getParent());
             for (String name : tempMetadata.keySet())
-                metadata.put("META // " + name, tempMetadata.get(name));
+                metadata.put(name, tempMetadata.get(name));
         }
     }
 
@@ -219,7 +219,7 @@ public class MetadataExtractor extends Module {
         }
 
         for (String name : tempMetadata.keySet())
-            metadata.put("META // " + name, tempMetadata.get(name));
+            metadata.put(name, tempMetadata.get(name));
     }
 
     private void extractMetadataFile(Metadata metadata, String metadataFileExtractorName) {
@@ -237,7 +237,7 @@ public class MetadataExtractor extends Module {
         Metadata tempMetadata = new Metadata();
         metadataFileExtractor.extract(tempMetadata, metadata.getFile());
         for (String name : tempMetadata.keySet())
-            metadata.put("META // " + name, tempMetadata.get(name));
+            metadata.put(name, tempMetadata.get(name));
 
     }
 
@@ -274,7 +274,7 @@ public class MetadataExtractor extends Module {
         int i = 0;
         String[] groups = new String[nTokens];
         while (tokenizer.hasMoreTokens())
-            groups[i++] = "META // " + tokenizer.nextToken();
+            groups[i++] = tokenizer.nextToken();
 
         return groups;
 

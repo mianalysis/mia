@@ -170,12 +170,25 @@ public class CalculateNearestNeighbour extends Module {
 
     }
 
-    public void addMeasurements(Obj inputObject, Obj nearestNeighbour, String nearestNeighbourName) {
-        // Adding details of the nearest neighbour to the input object's measurements
+    public void addMeasurements(Obj inputObject, Obj nearestNeighbour, String referenceMode,
+            String nearestNeighbourName) {
+
+        // Adding details of the nearest neighbour to the input object's measurements        
         if (nearestNeighbour != null) {
             double dppXY = inputObject.getDppXY();
-            double minDist = inputObject.getCentroidSeparation(nearestNeighbour, true);
+            double minDist = 0;
 
+            switch (referenceMode) {
+                default:
+                case ReferenceModes.CENTROID:
+                    minDist = inputObject.getCentroidSeparation(nearestNeighbour, true);
+                    break;
+
+                case ReferenceModes.SURFACE:
+                    minDist = inputObject.getSurfaceSeparation(nearestNeighbour, true);
+                    break;
+            }
+            
             String name = getFullName(Measurements.NN_ID, nearestNeighbourName);
             inputObject.addMeasurement(new Measurement(name, nearestNeighbour.getID()));
 
@@ -349,7 +362,6 @@ public class CalculateNearestNeighbour extends Module {
         }
     }
 
-
     @Override
     public Category getCategory() {
         return Categories.OBJECT_MEASUREMENTS_SPATIAL;
@@ -436,19 +448,19 @@ public class CalculateNearestNeighbour extends Module {
             if (calculateWithinParent) {
                 Obj parentObject = inputObject.getParent(parentObjectsName);
                 if (parentObject == null) {
-                    addMeasurements(inputObject, null, nearestNeighbourName);
+                    addMeasurements(inputObject, null, referenceMode, nearestNeighbourName);
                     continue;
                 }
 
                 ObjCollection childObjects = parentObject.getChildren(nearestNeighbourName);
                 Obj nearestNeighbour = getNearestNeighbour(inputObject, childObjects, referenceMode, maxLinkingDist,
                         linkInSameFrame, currDistances);
-                addMeasurements(inputObject, nearestNeighbour, nearestNeighbourName);
+                addMeasurements(inputObject, nearestNeighbour, referenceMode, nearestNeighbourName);
 
             } else {
                 Obj nearestNeighbour = getNearestNeighbour(inputObject, neighbourObjects, referenceMode, maxLinkingDist,
                         linkInSameFrame, currDistances);
-                addMeasurements(inputObject, nearestNeighbour, nearestNeighbourName);
+                addMeasurements(inputObject, nearestNeighbour, referenceMode, nearestNeighbourName);
             }
         }
 
