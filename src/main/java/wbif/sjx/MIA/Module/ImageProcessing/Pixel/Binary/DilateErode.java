@@ -49,11 +49,15 @@ public class DilateErode extends Module {
         String ERODE_2D = "Erode 2D";
         String ERODE_3D = "Erode 3D";
 
-        String[] ALL = new String[]{DILATE_2D,DILATE_3D,ERODE_2D,ERODE_3D};
+        String[] ALL = new String[] { DILATE_2D, DILATE_3D, ERODE_2D, ERODE_3D };
 
     }
 
     public static void process(ImagePlus ipl, String operationMode, int numIterations) {
+        process(ipl, operationMode, numIterations, false);
+    }
+
+    public static void process(ImagePlus ipl, String operationMode, int numIterations, boolean verbose) {
         String moduleName = new DilateErode(null).getName();
         
         int width = ipl.getWidth();

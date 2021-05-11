@@ -116,7 +116,7 @@ public class FitEllipsoid extends Module {
 
         addMeasurements(inputObject, calculator);
 
-        if (calculator == null || calculator.getRadii() == null)
+        if (calculator == null || calculator.getRadii() == null  || objectOutputMode.equals(OutputModes.DO_NOT_STORE))
             return;
 
         Volume ellipsoid = calculator.getContainedPoints();

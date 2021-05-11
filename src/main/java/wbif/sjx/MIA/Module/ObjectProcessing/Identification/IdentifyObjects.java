@@ -343,7 +343,7 @@ public class IdentifyObjects extends Module {
     public Status process(Workspace workspace) {
         // Getting input image
         String inputImageName = parameters.getValue(INPUT_IMAGE);
-        Image inputImage = workspace.getImages().get(inputImageName);
+        Image inputImage = workspace.getImage(inputImageName);
 
         // Getting parameters
         String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);

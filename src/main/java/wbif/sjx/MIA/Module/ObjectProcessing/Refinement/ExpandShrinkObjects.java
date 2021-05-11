@@ -3,12 +3,11 @@ package wbif.sjx.MIA.Module.ObjectProcessing.Refinement;
 import java.util.Iterator;
 
 import ij.Prefs;
+import wbif.sjx.MIA.Module.Categories;
+import wbif.sjx.MIA.Module.Category;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.Core.InputControl;
-import wbif.sjx.MIA.Module.Category;
-import wbif.sjx.MIA.MIA;
-import wbif.sjx.MIA.Module.Categories;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.InvertIntensity;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.Binary.BinaryOperations2D;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.Binary.DilateErode;
@@ -20,8 +19,8 @@ import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.MIA.Object.Parameters.BooleanP;
 import wbif.sjx.MIA.Object.Parameters.ChoiceP;
 import wbif.sjx.MIA.Object.Parameters.InputObjectsP;
-import wbif.sjx.MIA.Object.Parameters.SeparatorP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
+import wbif.sjx.MIA.Object.Parameters.SeparatorP;
 import wbif.sjx.MIA.Object.Parameters.Objects.OutputObjectsP;
 import wbif.sjx.MIA.Object.Parameters.Text.DoubleP;
 import wbif.sjx.MIA.Object.References.Collections.ImageMeasurementRefCollection;
@@ -98,7 +97,7 @@ public class ExpandShrinkObjects extends Module {
                 break;
 
             case Methods.EXPAND_3D:
-                DilateErode.process(objectImage.getImagePlus(), DilateErode.OperationModes.DILATE_3D, radiusChangePx);
+                DilateErode.process(objectImage.getImagePlus(), DilateErode.OperationModes.DILATE_3D, radiusChangePx, false);
                 break;
 
             case Methods.SHRINK_2D:
@@ -106,7 +105,7 @@ public class ExpandShrinkObjects extends Module {
                 break;
 
             case Methods.SHRINK_3D:
-                DilateErode.process(objectImage.getImagePlus(), DilateErode.OperationModes.ERODE_3D, radiusChangePx);
+                DilateErode.process(objectImage.getImagePlus(), DilateErode.OperationModes.ERODE_3D, radiusChangePx, false);
                 break;
         }
 

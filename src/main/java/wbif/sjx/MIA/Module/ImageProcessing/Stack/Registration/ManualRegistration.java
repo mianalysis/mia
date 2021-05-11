@@ -16,9 +16,10 @@ import mpicbg.models.NotEnoughDataPointsException;
 import mpicbg.models.PointMatch;
 import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
-import wbif.sjx.MIA.Module.ModuleCollection;
-import wbif.sjx.MIA.Module.Category;
+import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Categories;
+import wbif.sjx.MIA.Module.Category;
+import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.ProjectImage;
 import wbif.sjx.MIA.Module.ImageProcessing.Stack.ConcatenateStacks;
 import wbif.sjx.MIA.Module.ImageProcessing.Stack.ExtractSubstack;
@@ -70,7 +71,7 @@ public class ManualRegistration<T extends RealType<T> & NativeType<T>> extends A
 
     }
 
-    public void process(Image inputImage, String transformationMode, String pointSelectionMode, boolean multithread,
+    public boolean process(Image inputImage, String transformationMode, String pointSelectionMode, boolean multithread,
             String fillMode, Image reference) {
         // Creating a reference image
         Image projectedReference = ProjectImage.projectImageInZ(reference, "ProjectedReference",
@@ -98,6 +99,11 @@ public class ManualRegistration<T extends RealType<T> & NativeType<T>> extends A
             break;
         }
 
+        if (pairs == null) {
+            MIA.log.writeWarning("No points selected");
+            return false;
+        }
+
         // Getting transform
         Object[] output = getLandmarkTransformation(pairs, transformationMode);
         InverseTransformMapping mapping = (InverseTransformMapping) output[0];
@@ -118,7 +124,7 @@ public class ManualRegistration<T extends RealType<T> & NativeType<T>> extends A
                 try {
                     applyTransformation(warped, mapping, fillMode, multithread);
                 } catch (InterruptedException e) {
-                    return;
+                    return false;
                 }
                 replaceStack(inputImage, warped, c, t);
             }
@@ -128,6 +134,8 @@ public class ManualRegistration<T extends RealType<T> & NativeType<T>> extends A
         }
 
         addManualMeasurements(inputImage, model);
+
+        return true;
 
     }
 
@@ -254,7 +262,9 @@ public class ManualRegistration<T extends RealType<T> & NativeType<T>> extends A
 
 
         reference = workspace.getImage(referenceImageName);
-        process(inputImage, transformationMode, pointSelectionMode, multithread, fillMode, reference);
+        boolean status = process(inputImage, transformationMode, pointSelectionMode, multithread, fillMode, reference);
+        if (!status)
+            return Status.FAIL;
 
         if (showOutput)
             inputImage.showImage();

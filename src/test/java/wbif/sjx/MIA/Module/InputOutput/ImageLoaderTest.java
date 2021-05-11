@@ -1082,7 +1082,7 @@ public class ImageLoaderTest extends ModuleTest {
         ImageLoader imageFileLoader = new ImageLoader(new ModuleCollection());
         imageFileLoader.initialiseParameters();
         // Setting parameters
-        imageFileLoader.updateParameterValue(ImageLoader.IMPORT_MODE, ImageLoader.ImportModes.IMAGE_SEQUENCE);
+        imageFileLoader.updateParameterValue(ImageLoader.IMPORT_MODE, ImageLoader.ImportModes.IMAGE_SEQUENCE_ZEROS);
         imageFileLoader.updateParameterValue(ImageLoader.SEQUENCE_ROOT_NAME, new File(pathToImage).getParent()+File.separator+"SeqZ{0000}.tif");
         imageFileLoader.updateParameterValue(ImageLoader.OUTPUT_IMAGE, "Test_Output_Image");
         imageFileLoader.updateParameterValue(ImageLoader.FRAMES,"0-end");
@@ -1118,7 +1118,7 @@ public class ImageLoaderTest extends ModuleTest {
         imageFileLoader.initialiseParameters();
 
         // Setting parameters
-        imageFileLoader.updateParameterValue(ImageLoader.IMPORT_MODE, ImageLoader.ImportModes.IMAGE_SEQUENCE);
+        imageFileLoader.updateParameterValue(ImageLoader.IMPORT_MODE, ImageLoader.ImportModes.IMAGE_SEQUENCE_ZEROS);
         imageFileLoader.updateParameterValue(ImageLoader.SEQUENCE_ROOT_NAME, new File(pathToImage).getParent()+File.separator+"SeqZ{0000}.tif");
         imageFileLoader.updateParameterValue(ImageLoader.OUTPUT_IMAGE, "Test_Output_Image");
         imageFileLoader.updateParameterValue(ImageLoader.FRAMES,"3-end-2");
@@ -1154,7 +1154,7 @@ public class ImageLoaderTest extends ModuleTest {
         imageFileLoader.initialiseParameters();
 
         // Setting parameters
-        imageFileLoader.updateParameterValue(ImageLoader.IMPORT_MODE, ImageLoader.ImportModes.IMAGE_SEQUENCE);
+        imageFileLoader.updateParameterValue(ImageLoader.IMPORT_MODE, ImageLoader.ImportModes.IMAGE_SEQUENCE_ZEROS);
         imageFileLoader.updateParameterValue(ImageLoader.SEQUENCE_ROOT_NAME, new File(pathToImage).getParent()+File.separator+"SeqZ{0000}.tif");
         imageFileLoader.updateParameterValue(ImageLoader.OUTPUT_IMAGE, "Test_Output_Image");
         imageFileLoader.updateParameterValue(ImageLoader.FRAMES,"4-8-2");

@@ -94,11 +94,11 @@ public class FitEllipse extends Module {
     public void processObject(Obj inputObject, ObjCollection outputObjects, String objectOutputMode,
             double maxAxisLength, String fittingMode) throws IntegerOverflowException {
         EllipseCalculator calculator = null;
-
+        
         // Get projected object
-        ObjCollection projectedObjects = new ObjCollection("Projected", outputObjects);
+        ObjCollection projectedObjects = new ObjCollection("Projected", inputObject.getObjectCollection());
         Obj projObj = ProjectObjects.process(inputObject, projectedObjects, false);
-
+        
         try {
             switch (fittingMode) {
                 case FittingModes.FIT_TO_WHOLE:
@@ -106,16 +106,18 @@ public class FitEllipse extends Module {
                     break;
 
                 case FittingModes.FIT_TO_SURFACE:
-                    ObjCollection tempObjects = new ObjCollection("Edge", outputObjects);
+                    ObjCollection tempObjects = new ObjCollection("Edge", inputObject.getObjectCollection());
                     Obj edgeObject = GetObjectSurface.getSurface(projObj, tempObjects, false);
                     calculator = new EllipseCalculator(edgeObject, maxAxisLength);
                     break;
             }
-        } catch (RuntimeException e) {}
-
+        } catch (RuntimeException e) {
+            e.printStackTrace();
+        }
+        
         addMeasurements(inputObject, calculator);
 
-        if (calculator == null || Double.isNaN(calculator.getXCentre()))
+        if (calculator == null || Double.isNaN(calculator.getXCentre()) || objectOutputMode.equals(OutputModes.DO_NOT_STORE))
             return;
 
         Volume ellipse = calculator.getContainedPoints();
@@ -243,6 +245,7 @@ public class FitEllipse extends Module {
         AtomicInteger count = new AtomicInteger(1);
         int total = inputObjects.size();
         ObjCollection finalOutputObjects = outputObjects;
+        
         for (Obj inputObject : inputObjects.values()) {
             Runnable task = () -> {
                 try {
@@ -251,7 +254,7 @@ public class FitEllipse extends Module {
                     MIA.log.writeWarning("Integer overflow exception for object " + inputObject.getID()
                             + " during ellipse fitting.");
                 }
-                writeStatus("Rendered " + count + " of " + total + " ("
+                writeStatus("Processed " + count + " of " + total + " ("
                                     + Math.floorDiv(100 * count.getAndIncrement(), total) + "%)", name);
             };
             pool.submit(task);

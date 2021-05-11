@@ -25,6 +25,7 @@ import ij.plugin.SubHyperstackMaker;
 import ij.process.ImageProcessor;
 import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
+import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Categories;
 import wbif.sjx.MIA.Module.Category;
 import wbif.sjx.MIA.Module.Module;
@@ -427,6 +428,11 @@ public class ManualUnwarp<T extends RealType<T> & NativeType<T>> extends Module 
         default:
             pairs = new PointPairSelector(this, true).getPointPairs(ipl1, ipl2);
             break;
+        }
+
+        if (pairs == null) {
+            MIA.log.writeDebug("No points selected");
+            return Status.FAIL;
         }
 
         Image outputImage = null;

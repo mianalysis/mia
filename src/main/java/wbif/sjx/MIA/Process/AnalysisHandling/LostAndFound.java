@@ -9,6 +9,7 @@ import wbif.sjx.MIA.Module.ImageProcessing.Pixel.WekaProbabilityMaps;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.Binary.DistanceMap;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.Threshold.LocalAutoThreshold;
 import wbif.sjx.MIA.Module.ImageProcessing.Stack.Registration.SIFTRegistration;
+import wbif.sjx.MIA.Module.InputOutput.ImageLoader;
 import wbif.sjx.MIA.Module.InputOutput.ObjectLoader;
 import wbif.sjx.MIA.Module.Miscellaneous.GlobalVariables;
 import wbif.sjx.MIA.Module.Miscellaneous.Macros.RunMacro;
@@ -152,6 +153,14 @@ public class LostAndFound {
         moduleName = new InputControl(null).getClass().getSimpleName();
         lostParameterValues.put(moduleName, currentParameterValues);
 
+        // ImageLoader
+        currentValues = new HashMap<>();
+        currentValues.put("Image sequence", ImageLoader.ImportModes.IMAGE_SEQUENCE_ZEROS);
+        currentParameterValues = new HashMap<>();
+        currentParameterValues.put(ImageLoader.IMPORT_MODE, currentValues);
+        moduleName = new ImageLoader(null).getClass().getSimpleName();
+        lostParameterValues.put(moduleName, currentParameterValues);
+       
     }
 
     public String findModule(String oldName) {

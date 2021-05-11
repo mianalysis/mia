@@ -4,7 +4,9 @@ import java.awt.Rectangle;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.text.DecimalFormat;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -134,12 +136,13 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
         String ALL_IN_FOLDER = "All in current folder";
         String CURRENT_FILE = "Current file";
         String IMAGEJ = "From ImageJ";
-        String IMAGE_SEQUENCE = "Image sequence";
+        String IMAGE_SEQUENCE_ALPHABETICAL = "Image sequence (alphabetical)";
+        String IMAGE_SEQUENCE_ZEROS = "Image sequence (zero-based)";
         String MATCHING_FORMAT = "Matching format";
         String SPECIFIC_FILE = "Specific file";
 
-        String[] ALL = new String[] { ALL_IN_FOLDER, CURRENT_FILE, IMAGEJ, IMAGE_SEQUENCE, MATCHING_FORMAT,
-                SPECIFIC_FILE };
+        String[] ALL = new String[] { ALL_IN_FOLDER, CURRENT_FILE, IMAGEJ, IMAGE_SEQUENCE_ALPHABETICAL,
+                IMAGE_SEQUENCE_ZEROS, MATCHING_FORMAT, SPECIFIC_FILE };
 
     }
 
@@ -628,7 +631,72 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
         }
     }
 
-    public ImagePlus getImageSequence(String absolutePath, int seriesNumber, String channels, String slices,
+    public ImagePlus getAlphabeticalImageSequence(String absolutePath, int seriesNumber, String channels, String slices,
+            String frames, int[] crop, double[] scaleFactors, String scaleMode, @Nullable double[] intRange,
+            boolean[] manualCal, Metadata metadata)
+            throws ServiceException, DependencyException, FormatException, IOException {
+
+        // Getting list of all matching filenames
+        String[] filenames = getGenericNames(metadata, absolutePath);
+
+        int[] framesList = CommaSeparatedStringInterpreter.interpretIntegers(frames, true);
+        if (framesList[framesList.length - 1] == Integer.MAX_VALUE)
+            framesList = CommaSeparatedStringInterpreter.extendRangeToEnd(framesList, filenames.length);
+
+        // Determining the dimensions of the input image
+        String[] dimRanges = new String[] { channels, slices, "1" };
+
+        if (filenames.length == 0)
+            return null;
+
+        ImagePlus rootIpl = getBFImage(filenames[0], seriesNumber, dimRanges, crop, scaleFactors, scaleMode, intRange,
+                manualCal, false);
+        int width = rootIpl.getWidth();
+        int height = rootIpl.getHeight();
+        int bitDepth = rootIpl.getBitDepth();
+        int nChannels = rootIpl.getNChannels();
+        int nSlices = rootIpl.getNSlices();
+
+        if (crop != null) {
+            width = crop[2];
+            height = crop[3];
+        }
+
+        // Creating the new image
+        int i = 0;
+        int count = framesList.length;
+        ImagePlus outputIpl = IJ.createHyperStack("Image", width, height, nChannels, nSlices, count, bitDepth);
+        ImageStack outputIst = outputIpl.getStack();
+
+        for (int frame : framesList) {
+            writeStatus("Loading image " + (i + 1) + " of " + count);
+
+            ImagePlus tempIpl = getBFImage(filenames[frame - 1], 1, dimRanges, crop, scaleFactors, scaleMode, intRange,
+                    manualCal, false);
+            ImageStack tempIst = tempIpl.getStack();
+
+            for (int c = 0; c < nChannels; c++) {
+                for (int z = 0; z < nSlices; z++) {
+                    int tempIdx = tempIpl.getStackIndex(c + 1, z + 1, 1);
+                    int outputIdx = outputIpl.getStackIndex(c + 1, z + 1, i + 1);
+
+                    outputIst.setProcessor(tempIst.getProcessor(tempIdx), outputIdx);
+
+                }
+            }
+
+            i++;
+        }
+
+        outputIpl.setPosition(1, 1, 1);
+        outputIpl.setCalibration(rootIpl.getCalibration());
+        outputIpl.updateAndDraw();
+
+        return outputIpl;
+
+    }
+
+    public ImagePlus getZeroBasedImageSequence(String absolutePath, int seriesNumber, String channels, String slices,
             String frames, int[] crop, double[] scaleFactors, String scaleMode, @Nullable double[] intRange,
             boolean[] manualCal) throws ServiceException, DependencyException, FormatException, IOException {
 
@@ -667,6 +735,9 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
 
         // Determining the dimensions of the input image
         String[] dimRanges = new String[] { channels, slices, "1" };
+
+        if (framesList.length == 0)
+            return null;
 
         ImagePlus rootIpl = getBFImage(nameBefore + df.format(framesList[0]) + nameAfter, seriesNumber, dimRanges, crop,
                 scaleFactors, scaleMode, intRange, manualCal, false);
@@ -856,6 +927,13 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
 
     public static String getGenericName(Metadata metadata, String genericFormat)
             throws ServiceException, DependencyException, FormatException, IOException {
+        // Returns the first generic name matching the specified format
+        return getGenericNames(metadata, genericFormat)[0];
+
+    }
+
+    public static String[] getGenericNames(Metadata metadata, String genericFormat)
+            throws ServiceException, DependencyException, FormatException, IOException {
         String absolutePath = metadata.insertMetadataValues(genericFormat);
         String filepath = FilenameUtils.getFullPath(absolutePath);
         String filename = FilenameUtils.getName(absolutePath);
@@ -864,15 +942,11 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
         if (filename.contains("*")) {
             String[] filenames = new File(filepath).list(new WildcardFileFilter(filename));
 
-            // Checking if any filenames were found
-            if (filenames == null)
-                return null;
-
-            if (filenames.length > 0)
-                filename = filenames[0];
+            // Appending the filepath to the start of each name
+            return Arrays.stream(filenames).map(v -> filepath + v).sorted().toArray(s -> new String[s]);
         }
 
-        return filepath + filename;
+        return new String[] { filepath + filename };
 
     }
 
@@ -1021,11 +1095,17 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
                     parseImageJTemporalCalibration(ipl, null);
                 break;
 
-            case ImportModes.IMAGE_SEQUENCE:
+            case ImportModes.IMAGE_SEQUENCE_ALPHABETICAL:
                 Metadata metadata = (Metadata) workspace.getMetadata().clone();
+                ipl = getAlphabeticalImageSequence(sequenceRootName, seriesNumber, channels, slices, frames, crop,
+                        scaleFactors, scaleMode, intRange, manualCalibration, metadata);
+                break;
+
+            case ImportModes.IMAGE_SEQUENCE_ZEROS:
+                metadata = (Metadata) workspace.getMetadata().clone();
                 String absolutePath = metadata.insertMetadataValues(sequenceRootName);
-                ipl = getImageSequence(absolutePath, seriesNumber, channels, slices, frames, crop, scaleFactors,
-                        scaleMode, intRange, manualCalibration);
+                ipl = getZeroBasedImageSequence(absolutePath, seriesNumber, channels, slices, frames, crop,
+                        scaleFactors, scaleMode, intRange, manualCalibration);
 
                 break;
 
@@ -1219,7 +1299,8 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
         case ImportModes.IMAGEJ:
             break;
 
-        case ImportModes.IMAGE_SEQUENCE:
+        case ImportModes.IMAGE_SEQUENCE_ALPHABETICAL:
+        case ImportModes.IMAGE_SEQUENCE_ZEROS:
             returnedParameters.add(parameters.getParameter(SEQUENCE_ROOT_NAME));
             returnedParameters.add(parameters.getParameter(AVAILABLE_METADATA_FIELDS));
             MetadataRefCollection metadataRefs = modules.getMetadataRefs(this);
@@ -1251,7 +1332,8 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
         }
 
         if (parameters.getValue(IMPORT_MODE).equals(ImportModes.CURRENT_FILE)
-                || parameters.getValue(IMPORT_MODE).equals(ImportModes.IMAGE_SEQUENCE)
+                || parameters.getValue(IMPORT_MODE).equals(ImportModes.IMAGE_SEQUENCE_ALPHABETICAL)
+                || parameters.getValue(IMPORT_MODE).equals(ImportModes.IMAGE_SEQUENCE_ZEROS)
                 || parameters.getValue(IMPORT_MODE).equals(ImportModes.SPECIFIC_FILE)
                 || parameters.getValue(IMPORT_MODE).equals(ImportModes.MATCHING_FORMAT)) {
             returnedParameters.add(parameters.getParameter(READER));
@@ -1264,7 +1346,8 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
                 returnedParameters.add(parameters.getParameter(SERIES_NUMBER));
 
             returnedParameters.add(parameters.getParameter(RANGE_SEPARATOR));
-            if (!parameters.getValue(IMPORT_MODE).equals(ImportModes.IMAGE_SEQUENCE)
+            if (!(parameters.getValue(IMPORT_MODE).equals(ImportModes.IMAGE_SEQUENCE_ALPHABETICAL)
+                    || parameters.getValue(IMPORT_MODE).equals(ImportModes.IMAGE_SEQUENCE_ZEROS))
                     && !(parameters.getValue(IMPORT_MODE).equals(ImportModes.MATCHING_FORMAT)
                             && parameters.getValue(NAME_FORMAT).equals(NameFormats.YOKOGAWA))) {
                 returnedParameters.add(parameters.getParameter(CHANNELS));
@@ -1273,7 +1356,8 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
             }
         }
 
-        if (parameters.getValue(IMPORT_MODE).equals(ImportModes.IMAGE_SEQUENCE)) {
+        if (parameters.getValue(IMPORT_MODE).equals(ImportModes.IMAGE_SEQUENCE_ALPHABETICAL)
+                || parameters.getValue(IMPORT_MODE).equals(ImportModes.IMAGE_SEQUENCE_ZEROS)) {
             returnedParameters.add(parameters.getParameter(CHANNELS));
             returnedParameters.add(parameters.getParameter(SLICES));
             returnedParameters.add(parameters.getParameter(FRAMES));
@@ -1406,8 +1490,13 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
 
                 + "<li>\"" + ImportModes.IMAGEJ + "\" will load the active image fromm ImageJ.</li>"
 
-                + "<li>\"" + ImportModes.IMAGE_SEQUENCE
-                + "\" will use the root-file for the workspace as the basis for loading a series of images with numbered suffixes.</li>"
+                + "<li>\"" + ImportModes.IMAGE_SEQUENCE_ALPHABETICAL
+                + "\" will load a series of images matching a specified name format in alphabetical order.  The format of the names to be loaded is specified by the \""
+                + SEQUENCE_ROOT_NAME + "\" parameter.</li>"
+
+                + "<li>\"" + ImportModes.IMAGE_SEQUENCE_ZEROS
+                + "\" will load a series of images with numbered elements.  The format of the names to be loaded is specified by the \""
+                + SEQUENCE_ROOT_NAME + "\" parameter.</li>"
 
                 + "<li>\"" + ImportModes.MATCHING_FORMAT
                 + "\" will load the image matching a filename based on the root-file for the workspace and a series of rules.</li>"

@@ -200,17 +200,8 @@ public class GUI {
     }
 
     public static void updateModuleStates(boolean verbose) {
-        int nRunnable = AnalysisTester.testModules(getModules());
-        int nActive = 0;
-        for (Module module : getModules())
-            if (module.isEnabled())
-                nActive++;
-        int nModules = getModules().size();
-        if (verbose && nModules > 0)
-            MIA.log.writeStatus(nRunnable + " of " + nActive + " active modules are runnable");
-
+        AnalysisTester.testModules(getModules());
         mainPanel.updateModuleStates();
-
     }
 
     public static ComponentFactory getComponentFactory() {

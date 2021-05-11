@@ -161,7 +161,10 @@ public class MetadataExtractor extends Module {
 
         }
 
-        filenameExtractor.extract(metadata, metadata.getFile().getName());
+        Metadata tempMetadata = new Metadata();
+        filenameExtractor.extract(tempMetadata, metadata.getFile().getName());
+        for (String name : tempMetadata.keySet())
+            metadata.put(name, tempMetadata.get(name));
 
     }
 
@@ -169,7 +172,11 @@ public class MetadataExtractor extends Module {
         String[] groups = getGroups(groupString);
 
         NameExtractor extractor = new GenericExtractor(pattern, groups);
-        extractor.extract(metadata, input);
+
+        Metadata tempMetadata = new Metadata();
+        extractor.extract(tempMetadata, input);
+        for (String name : tempMetadata.keySet())
+            metadata.put(name, tempMetadata.get(name));
 
     }
 
@@ -190,33 +197,48 @@ public class MetadataExtractor extends Module {
                 return;
         }
 
-        if (foldernameExtractor != null)
-            foldernameExtractor.extract(metadata, metadata.getFile().getParent());
+        if (foldernameExtractor != null) {
+            Metadata tempMetadata = new Metadata();
+            foldernameExtractor.extract(tempMetadata, metadata.getFile().getParent());
+            for (String name : tempMetadata.keySet())
+                metadata.put(name, tempMetadata.get(name));
+        }
     }
 
     private void extractKeyword(Metadata metadata, String keywordList, String keywordSource) {
         KeywordExtractor keywordExtractor = new KeywordExtractor(keywordList);
 
+        Metadata tempMetadata = new Metadata();
         switch (keywordSource) {
             case KeywordSources.FILENAME:
-                keywordExtractor.extract(metadata, metadata.getFile().getName());
+                keywordExtractor.extract(tempMetadata, metadata.getFile().getName());
                 break;
             case KeywordSources.SERIESNAME:
-                keywordExtractor.extract(metadata, metadata.getSeriesName());
+                keywordExtractor.extract(tempMetadata, metadata.getSeriesName());
                 break;
         }
+
+        for (String name : tempMetadata.keySet())
+            metadata.put(name, tempMetadata.get(name));
     }
 
     private void extractMetadataFile(Metadata metadata, String metadataFileExtractorName) {
         FileExtractor metadataFileExtractor = null;
+
         switch (metadataFileExtractorName) {
             case MetadataFileExtractors.OPERA_METADATA_FILE_EXTRACTOR:
                 metadataFileExtractor = new OperaFileExtractor();
                 break;
         }
 
-        if (metadataFileExtractor != null)
-            metadataFileExtractor.extract(metadata, metadata.getFile());
+        if (metadataFileExtractor == null)
+            return;
+
+        Metadata tempMetadata = new Metadata();
+        metadataFileExtractor.extract(tempMetadata, metadata.getFile());
+        for (String name : tempMetadata.keySet())
+            metadata.put(name, tempMetadata.get(name));
+
     }
 
     private String getExternalMetadataRegex(Metadata metadata, String inputFilePath, String metadataItemToMatch) {
