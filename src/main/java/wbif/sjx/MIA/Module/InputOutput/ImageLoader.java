@@ -4,7 +4,6 @@ import java.awt.Rectangle;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.text.DecimalFormat;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -24,6 +23,7 @@ import ij.ImagePlus;
 import ij.ImageStack;
 import ij.gui.Roi;
 import ij.measure.Calibration;
+import ij.plugin.CanvasResizer;
 import ij.plugin.CompositeConverter;
 import ij.process.ImageProcessor;
 import ij.process.LUT;
@@ -116,6 +116,7 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
     public static final String SCALE_MODE = "Scale mode";
     public static final String SCALE_FACTOR_X = "X scale factor";
     public static final String SCALE_FACTOR_Y = "Y scale factor";
+    public static final String DIMENSION_MISMATCH_MODE = "Dimension mismatch mode";
 
     public static final String CALIBRATION_SEPARATOR = "Spatial and intensity calibration";
     public static final String SET_SPATIAL_CAL = "Set manual spatial calibration";
@@ -189,6 +190,15 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
         String BICUBIC = "Scaling (bicubic)";
 
         String[] ALL = new String[] { NONE, NO_INTERPOLATION, BILINEAR, BICUBIC };
+
+    }
+
+    public interface DimensionMismatchModes {
+        String DISALLOW = "Disallow (fail upon mismatch)";
+        String CENTRE_CROP = "Crop (centred)";
+        String CENTRE_PAD = "Pad (centred)";        
+
+        String[] ALL = new String[] { DISALLOW, CENTRE_CROP, CENTRE_PAD };
 
     }
 
@@ -331,16 +341,16 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
 
         // Applying scaling
         switch (scaleMode) {
-        case ScaleModes.NONE:
-            scaleFactors[0] = 1;
-            scaleFactors[1] = 1;
-            break;
-        case ScaleModes.NO_INTERPOLATION:
-        case ScaleModes.BILINEAR:
-        case ScaleModes.BICUBIC:
-            widthOut = (int) Math.round(width * scaleFactors[0]);
-            heightOut = (int) Math.round(height * scaleFactors[1]);
-            break;
+            case ScaleModes.NONE:
+                scaleFactors[0] = 1;
+                scaleFactors[1] = 1;
+                break;
+            case ScaleModes.NO_INTERPOLATION:
+            case ScaleModes.BILINEAR:
+            case ScaleModes.BICUBIC:
+                widthOut = (int) Math.round(width * scaleFactors[0]);
+                heightOut = (int) Math.round(height * scaleFactors[1]);
+                break;
         }
 
         // Creating the new ImagePlus
@@ -371,32 +381,32 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
                     if (intRange != null) {
                         ip.setMinAndMax(intRange[1], intRange[2]);
                         switch (bitDepth) {
-                        case 8:
-                            ip = ip.convertToByte(true);
-                            break;
-                        case 16:
-                            ip = ip.convertToShort(true);
-                            break;
-                        case 32:
-                            ip = ip.convertToFloat();
-                            break;
+                            case 8:
+                                ip = ip.convertToByte(true);
+                                break;
+                            case 16:
+                                ip = ip.convertToShort(true);
+                                break;
+                            case 32:
+                                ip = ip.convertToFloat();
+                                break;
                         }
                     }
 
                     // Applying scaling
                     switch (scaleMode) {
-                    case ScaleModes.NO_INTERPOLATION:
-                        ip.setInterpolationMethod(ImageProcessor.NONE);
-                        ip = ip.resize(widthOut, heightOut);
-                        break;
-                    case ScaleModes.BILINEAR:
-                        ip.setInterpolationMethod(ImageProcessor.BILINEAR);
-                        ip = ip.resize(widthOut, heightOut);
-                        break;
-                    case ScaleModes.BICUBIC:
-                        ip.setInterpolationMethod(ImageProcessor.BICUBIC);
-                        ip = ip.resize(widthOut, heightOut);
-                        break;
+                        case ScaleModes.NO_INTERPOLATION:
+                            ip.setInterpolationMethod(ImageProcessor.NONE);
+                            ip = ip.resize(widthOut, heightOut);
+                            break;
+                        case ScaleModes.BILINEAR:
+                            ip.setInterpolationMethod(ImageProcessor.BILINEAR);
+                            ip = ip.resize(widthOut, heightOut);
+                            break;
+                        case ScaleModes.BICUBIC:
+                            ip.setInterpolationMethod(ImageProcessor.BICUBIC);
+                            ip = ip.resize(widthOut, heightOut);
+                            break;
                     }
 
                     ipl.setPosition(countC, countZ, countT);
@@ -632,8 +642,8 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
     }
 
     public ImagePlus getAlphabeticalImageSequence(String absolutePath, int seriesNumber, String channels, String slices,
-            String frames, int[] crop, double[] scaleFactors, String scaleMode, @Nullable double[] intRange,
-            boolean[] manualCal, Metadata metadata)
+            String frames, int[] crop, double[] scaleFactors, String scaleMode, String dimensionMismatchMode,
+            @Nullable double[] intRange, boolean[] manualCal, Metadata metadata)
             throws ServiceException, DependencyException, FormatException, IOException {
 
         // Getting list of all matching filenames
@@ -666,21 +676,22 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
         int i = 0;
         int count = framesList.length;
         ImagePlus outputIpl = IJ.createHyperStack("Image", width, height, nChannels, nSlices, count, bitDepth);
-        ImageStack outputIst = outputIpl.getStack();
 
         for (int frame : framesList) {
             writeStatus("Loading image " + (i + 1) + " of " + count);
 
             ImagePlus tempIpl = getBFImage(filenames[frame - 1], 1, dimRanges, crop, scaleFactors, scaleMode, intRange,
                     manualCal, false);
-            ImageStack tempIst = tempIpl.getStack();
+
+            // Checking and handling any XY dimension mismatches between the two stacks
+            applyDimensionMatchingXY(outputIpl, tempIpl, dimensionMismatchMode);
 
             for (int c = 0; c < nChannels; c++) {
                 for (int z = 0; z < nSlices; z++) {
                     int tempIdx = tempIpl.getStackIndex(c + 1, z + 1, 1);
                     int outputIdx = outputIpl.getStackIndex(c + 1, z + 1, i + 1);
 
-                    outputIst.setProcessor(tempIst.getProcessor(tempIdx), outputIdx);
+                    outputIpl.getStack().setProcessor(tempIpl.getStack().getProcessor(tempIdx), outputIdx);
 
                 }
             }
@@ -697,8 +708,9 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
     }
 
     public ImagePlus getZeroBasedImageSequence(String absolutePath, int seriesNumber, String channels, String slices,
-            String frames, int[] crop, double[] scaleFactors, String scaleMode, @Nullable double[] intRange,
-            boolean[] manualCal) throws ServiceException, DependencyException, FormatException, IOException {
+            String frames, int[] crop, double[] scaleFactors, String scaleMode, String dimensionMismatchMode,
+            @Nullable double[] intRange, boolean[] manualCal)
+            throws ServiceException, DependencyException, FormatException, IOException {
 
         // Number format
         Pattern pattern = Pattern.compile("Z\\{0+}");
@@ -756,7 +768,6 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
         int i = 0;
         int count = framesList.length;
         ImagePlus outputIpl = IJ.createHyperStack("Image", width, height, nChannels, nSlices, count, bitDepth);
-        ImageStack outputIst = outputIpl.getStack();
 
         for (int frame : framesList) {
             writeStatus("Loading image " + (i + 1) + " of " + count);
@@ -764,14 +775,16 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
 
             ImagePlus tempIpl = getBFImage(currentPath, 1, dimRanges, crop, scaleFactors, scaleMode, intRange,
                     manualCal, false);
-            ImageStack tempIst = tempIpl.getStack();
+
+            // Checking and handling any XY dimension mismatches between the two stacks
+            applyDimensionMatchingXY(outputIpl, tempIpl, dimensionMismatchMode);
 
             for (int c = 0; c < nChannels; c++) {
                 for (int z = 0; z < nSlices; z++) {
                     int tempIdx = tempIpl.getStackIndex(c + 1, z + 1, 1);
                     int outputIdx = outputIpl.getStackIndex(c + 1, z + 1, i + 1);
 
-                    outputIst.setProcessor(tempIst.getProcessor(tempIdx), outputIdx);
+                    outputIpl.getStack().setProcessor(tempIpl.getStack().getProcessor(tempIdx), outputIdx);
 
                 }
             }
@@ -784,6 +797,52 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
         outputIpl.updateAndDraw();
 
         return outputIpl;
+
+    }
+
+    public static void applyDimensionMatchingXY(ImagePlus outputIpl, ImagePlus inputIpl, String dimensionMismatchMode) {
+        // Checking if dimensions are mismatches
+        int widthIn = inputIpl.getWidth();
+        int heightIn = inputIpl.getHeight();
+        int widthOut = outputIpl.getWidth();
+        int heightOut = outputIpl.getHeight();
+
+        if (widthIn == widthOut && heightIn == heightOut)
+            return;
+
+        switch (dimensionMismatchMode) {
+            case DimensionMismatchModes.CENTRE_PAD:
+                int widthExpanded = Math.max(widthIn, widthOut);
+                int heightExpanded = Math.max(heightIn, heightOut);
+
+                if (widthIn < widthExpanded || heightIn < heightExpanded)
+                    inputIpl.setStack(centreResizeStack(inputIpl.getStack(), widthExpanded, heightExpanded));
+
+                if (widthOut < widthExpanded || heightOut < heightExpanded)
+                    outputIpl.setStack(centreResizeStack(outputIpl.getStack(), widthExpanded, heightExpanded));
+
+                break;
+
+            case DimensionMismatchModes.CENTRE_CROP:
+                widthExpanded = Math.min(widthIn, widthOut);
+                heightExpanded = Math.min(heightIn, heightOut);
+
+                if (widthIn > widthExpanded || heightIn > heightExpanded)
+                    inputIpl.setStack(centreResizeStack(inputIpl.getStack(), widthExpanded, heightExpanded));
+
+                if (widthOut > widthExpanded || heightOut > heightExpanded)
+                    outputIpl.setStack(centreResizeStack(outputIpl.getStack(), widthExpanded, heightExpanded));
+
+                break;
+        }
+    }
+
+    public static ImageStack centreResizeStack(ImageStack imageStack, int widthExpanded, int heightExpanded) {
+        IJ.setBackgroundColor(0, 0, 0);
+        int xOff = (widthExpanded - imageStack.getWidth()) / 2;
+        int yOff = (heightExpanded - imageStack.getHeight()) / 2;
+
+        return new CanvasResizer().expandStack(imageStack, widthExpanded, heightExpanded, xOff, yOff);
 
     }
 
@@ -991,6 +1050,7 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
         String scaleMode = parameters.getValue(SCALE_MODE);
         double scaleFactorX = parameters.getValue(SCALE_FACTOR_X);
         double scaleFactorY = parameters.getValue(SCALE_FACTOR_Y);
+        String dimensionMismatchMode = parameters.getValue(DIMENSION_MISMATCH_MODE);
         boolean setSpatialCalibration = parameters.getValue(SET_SPATIAL_CAL);
         double xyCal = parameters.getValue(XY_CAL);
         double zCal = parameters.getValue(Z_CAL);
@@ -1006,12 +1066,12 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
         int seriesNumber = 1;
         if (reader.equals(Readers.BIOFORMATS))
             switch (seriesMode) {
-            case SeriesModes.CURRENT_SERIES:
-                seriesNumber = workspace.getMetadata().getSeriesNumber();
-                break;
-            case SeriesModes.SPECIFIC_SERIES:
-                seriesNumber = parameters.getValue(SERIES_NUMBER);
-                break;
+                case SeriesModes.CURRENT_SERIES:
+                    seriesNumber = workspace.getMetadata().getSeriesNumber();
+                    break;
+                case SeriesModes.SPECIFIC_SERIES:
+                    seriesNumber = parameters.getValue(SERIES_NUMBER);
+                    break;
             }
 
         // ImageJ reader can't use crop
@@ -1022,19 +1082,20 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
 
         int[] crop = null;
         switch (cropMode) {
-        case CropModes.FIXED:
-            crop = new int[] { left, top, width, height };
-            break;
-        case CropModes.FROM_REFERENCE:
-            // Displaying the image
-            Image referenceImage = workspace.getImage(referenceImageName);
-            crop = getCropROI(referenceImage);
-            break;
-        case CropModes.OBJECT_COLLECTION_LIMITS:
-            ObjCollection objectsForLimits = workspace.getObjectSet(objectsForLimitsName);
-            int[][] limits = objectsForLimits.getSpatialExtents();
-            crop = new int[] { limits[0][0], limits[1][0], limits[0][1] - limits[0][0], limits[1][1] - limits[1][0] };
-            break;
+            case CropModes.FIXED:
+                crop = new int[] { left, top, width, height };
+                break;
+            case CropModes.FROM_REFERENCE:
+                // Displaying the image
+                Image referenceImage = workspace.getImage(referenceImageName);
+                crop = getCropROI(referenceImage);
+                break;
+            case CropModes.OBJECT_COLLECTION_LIMITS:
+                ObjCollection objectsForLimits = workspace.getObjectSet(objectsForLimitsName);
+                int[][] limits = objectsForLimits.getSpatialExtents();
+                crop = new int[] { limits[0][0], limits[1][0], limits[0][1] - limits[0][0],
+                        limits[1][1] - limits[1][0] };
+                break;
         }
 
         if (scaleMode.equals(ScaleModes.NONE)) {
@@ -1052,131 +1113,131 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
         ImagePlus ipl = null;
         try {
             switch (importMode) {
-            case ImportModes.ALL_IN_FOLDER:
-                File file = workspace.getMetadata().getFile();
-                ipl = getAllInFolder(file, crop, scaleFactors, scaleMode, intRange, manualCalibration);
-                break;
-            case ImportModes.CURRENT_FILE:
-                file = workspace.getMetadata().getFile();
-                if (file == null) {
-                    MIA.log.writeWarning("No input file/folder selected.");
-                    return Status.FAIL;
-                }
-
-                if (!file.exists()) {
-                    MIA.log.writeWarning("File \"" + file.getAbsolutePath() + "\" not found.  Skipping file.");
-                    return Status.FAIL;
-                }
-
-                switch (reader) {
-                case Readers.BIOFORMATS:
-                    ipl = getBFImage(file.getAbsolutePath(), seriesNumber, dimRanges, crop, scaleFactors, scaleMode,
-                            intRange, manualCalibration, true);
+                case ImportModes.ALL_IN_FOLDER:
+                    File file = workspace.getMetadata().getFile();
+                    ipl = getAllInFolder(file, crop, scaleFactors, scaleMode, intRange, manualCalibration);
                     break;
-                case Readers.IMAGEJ:
-                    ipl = IJ.openImage(file.getAbsolutePath());
+                case ImportModes.CURRENT_FILE:
+                    file = workspace.getMetadata().getFile();
+                    if (file == null) {
+                        MIA.log.writeWarning("No input file/folder selected.");
+                        return Status.FAIL;
+                    }
+
+                    if (!file.exists()) {
+                        MIA.log.writeWarning("File \"" + file.getAbsolutePath() + "\" not found.  Skipping file.");
+                        return Status.FAIL;
+                    }
+
+                    switch (reader) {
+                        case Readers.BIOFORMATS:
+                            ipl = getBFImage(file.getAbsolutePath(), seriesNumber, dimRanges, crop, scaleFactors,
+                                    scaleMode, intRange, manualCalibration, true);
+                            break;
+                        case Readers.IMAGEJ:
+                            ipl = IJ.openImage(file.getAbsolutePath());
+                            if (!setSpatialCalibration)
+                                parseImageJSpatialCalibration(ipl, file.getAbsolutePath());
+                            if (!setTemporalCalibration)
+                                parseImageJTemporalCalibration(ipl, file.getAbsolutePath());
+                            break;
+                    }
+                    break;
+
+                case ImportModes.IMAGEJ:
+                    ipl = IJ.getImage().duplicate();
+                    if (ipl == null) {
+                        MIA.log.writeWarning("No image open in ImageJ.  Skipping.");
+                        return Status.FAIL;
+                    }
                     if (!setSpatialCalibration)
-                        parseImageJSpatialCalibration(ipl, file.getAbsolutePath());
+                        parseImageJSpatialCalibration(ipl, null);
                     if (!setTemporalCalibration)
-                        parseImageJTemporalCalibration(ipl, file.getAbsolutePath());
+                        parseImageJTemporalCalibration(ipl, null);
                     break;
-                }
-                break;
 
-            case ImportModes.IMAGEJ:
-                ipl = IJ.getImage().duplicate();
-                if (ipl == null) {
-                    MIA.log.writeWarning("No image open in ImageJ.  Skipping.");
-                    return Status.FAIL;
-                }
-                if (!setSpatialCalibration)
-                    parseImageJSpatialCalibration(ipl, null);
-                if (!setTemporalCalibration)
-                    parseImageJTemporalCalibration(ipl, null);
-                break;
+                case ImportModes.IMAGE_SEQUENCE_ALPHABETICAL:
+                    Metadata metadata = (Metadata) workspace.getMetadata().clone();
+                    ipl = getAlphabeticalImageSequence(sequenceRootName, seriesNumber, channels, slices, frames, crop,
+                            scaleFactors, scaleMode, dimensionMismatchMode, intRange, manualCalibration, metadata);
+                    break;
 
-            case ImportModes.IMAGE_SEQUENCE_ALPHABETICAL:
-                Metadata metadata = (Metadata) workspace.getMetadata().clone();
-                ipl = getAlphabeticalImageSequence(sequenceRootName, seriesNumber, channels, slices, frames, crop,
-                        scaleFactors, scaleMode, intRange, manualCalibration, metadata);
-                break;
-
-            case ImportModes.IMAGE_SEQUENCE_ZEROS:
-                metadata = (Metadata) workspace.getMetadata().clone();
-                String absolutePath = metadata.insertMetadataValues(sequenceRootName);
-                ipl = getZeroBasedImageSequence(absolutePath, seriesNumber, channels, slices, frames, crop,
-                        scaleFactors, scaleMode, intRange, manualCalibration);
-
-                break;
-
-            case ImportModes.MATCHING_FORMAT:
-                String path = null;
-                switch (nameFormat) {
-                case NameFormats.HUYGENS:
+                case ImportModes.IMAGE_SEQUENCE_ZEROS:
                     metadata = (Metadata) workspace.getMetadata().clone();
-                    metadata.setComment(comment);
-                    path = getHuygensPath(metadata);
+                    String absolutePath = metadata.insertMetadataValues(sequenceRootName);
+                    ipl = getZeroBasedImageSequence(absolutePath, seriesNumber, channels, slices, frames, crop,
+                            scaleFactors, scaleMode, dimensionMismatchMode, intRange, manualCalibration);
+
                     break;
 
-                case NameFormats.INCUCYTE_SHORT:
-                    metadata = (Metadata) workspace.getMetadata().clone();
-                    metadata.setComment(comment);
-                    path = getIncucyteShortName(metadata);
+                case ImportModes.MATCHING_FORMAT:
+                    String path = null;
+                    switch (nameFormat) {
+                        case NameFormats.HUYGENS:
+                            metadata = (Metadata) workspace.getMetadata().clone();
+                            metadata.setComment(comment);
+                            path = getHuygensPath(metadata);
+                            break;
+
+                        case NameFormats.INCUCYTE_SHORT:
+                            metadata = (Metadata) workspace.getMetadata().clone();
+                            metadata.setComment(comment);
+                            path = getIncucyteShortName(metadata);
+                            break;
+
+                        case NameFormats.YOKOGAWA:
+                            path = getYokogawaName(workspace.getMetadata());
+                            break;
+
+                        case NameFormats.GENERIC:
+                            metadata = (Metadata) workspace.getMetadata().clone();
+                            path = getGenericName(metadata, genericFormat);
+                            break;
+                    }
+
+                    file = new File(path);
+
+                    if (!file.exists()) {
+                        MIA.log.writeWarning("File \"" + file.getAbsolutePath() + "\" not found.  Skipping file.");
+                        return Status.FAIL;
+                    }
+
+                    switch (reader) {
+                        case Readers.BIOFORMATS:
+                            ipl = getBFImage(file.getAbsolutePath(), seriesNumber, dimRanges, crop, scaleFactors,
+                                    scaleMode, intRange, manualCalibration, true);
+                            break;
+                        case Readers.IMAGEJ:
+                            ipl = IJ.openImage(file.getAbsolutePath());
+                            if (!setSpatialCalibration)
+                                parseImageJSpatialCalibration(ipl, file.getAbsolutePath());
+                            if (!setTemporalCalibration)
+                                parseImageJTemporalCalibration(ipl, file.getAbsolutePath());
+                            break;
+                    }
+
                     break;
 
-                case NameFormats.YOKOGAWA:
-                    path = getYokogawaName(workspace.getMetadata());
+                case ImportModes.SPECIFIC_FILE:
+                    if (!(new File(filePath)).exists()) {
+                        MIA.log.writeWarning("File \"" + filePath + "\" not found.  Skipping file.");
+                        return Status.FAIL;
+                    }
+
+                    switch (reader) {
+                        case Readers.BIOFORMATS:
+                            ipl = getBFImage(filePath, seriesNumber, dimRanges, crop, scaleFactors, scaleMode, intRange,
+                                    manualCalibration, true);
+                            break;
+                        case Readers.IMAGEJ:
+                            ipl = IJ.openImage(filePath);
+                            if (!setSpatialCalibration)
+                                parseImageJSpatialCalibration(ipl, filePath);
+                            if (!setTemporalCalibration)
+                                parseImageJTemporalCalibration(ipl, filePath);
+                            break;
+                    }
                     break;
-
-                case NameFormats.GENERIC:
-                    metadata = (Metadata) workspace.getMetadata().clone();
-                    path = getGenericName(metadata, genericFormat);
-                    break;
-                }
-
-                file = new File(path);
-
-                if (!file.exists()) {
-                    MIA.log.writeWarning("File \"" + file.getAbsolutePath() + "\" not found.  Skipping file.");
-                    return Status.FAIL;
-                }
-
-                switch (reader) {
-                case Readers.BIOFORMATS:
-                    ipl = getBFImage(file.getAbsolutePath(), seriesNumber, dimRanges, crop, scaleFactors, scaleMode,
-                            intRange, manualCalibration, true);
-                    break;
-                case Readers.IMAGEJ:
-                    ipl = IJ.openImage(file.getAbsolutePath());
-                    if (!setSpatialCalibration)
-                        parseImageJSpatialCalibration(ipl, file.getAbsolutePath());
-                    if (!setTemporalCalibration)
-                        parseImageJTemporalCalibration(ipl, file.getAbsolutePath());
-                    break;
-                }
-
-                break;
-
-            case ImportModes.SPECIFIC_FILE:
-                if (!(new File(filePath)).exists()) {
-                    MIA.log.writeWarning("File \"" + filePath + "\" not found.  Skipping file.");
-                    return Status.FAIL;
-                }
-
-                switch (reader) {
-                case Readers.BIOFORMATS:
-                    ipl = getBFImage(filePath, seriesNumber, dimRanges, crop, scaleFactors, scaleMode, intRange,
-                            manualCalibration, true);
-                    break;
-                case Readers.IMAGEJ:
-                    ipl = IJ.openImage(filePath);
-                    if (!setSpatialCalibration)
-                        parseImageJSpatialCalibration(ipl, filePath);
-                    if (!setTemporalCalibration)
-                        parseImageJTemporalCalibration(ipl, filePath);
-                    break;
-                }
-                break;
             }
         } catch (SecurityException | DependencyException | IOException | FormatException | ServiceException e) {
             MIA.log.writeWarning(e);
@@ -1229,9 +1290,9 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
 
         // If a crop was drawn, recording these coordinates as an image measurement
         switch (cropMode) {
-        case CropModes.FROM_REFERENCE:
-            addCropMeasurements(outputImage, crop);
-            break;
+            case CropModes.FROM_REFERENCE:
+                addCropMeasurements(outputImage, crop);
+                break;
         }
 
         return Status.PASS;
@@ -1270,6 +1331,8 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
         parameters.add(new ChoiceP(SCALE_MODE, this, ScaleModes.NONE, ScaleModes.ALL));
         parameters.add(new DoubleP(SCALE_FACTOR_X, this, 1));
         parameters.add(new DoubleP(SCALE_FACTOR_Y, this, 1));
+        parameters.add(new ChoiceP(DIMENSION_MISMATCH_MODE, this, DimensionMismatchModes.DISALLOW,
+                DimensionMismatchModes.ALL));
 
         parameters.add(new SeparatorP(CALIBRATION_SEPARATOR, this));
         parameters.add(new BooleanP(SET_SPATIAL_CAL, this, false));
@@ -1294,41 +1357,41 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
         returnedParameters.add(parameters.getParameter(OUTPUT_IMAGE));
         returnedParameters.add(parameters.getParameter(IMPORT_MODE));
         switch ((String) parameters.getValue(IMPORT_MODE)) {
-        case ImportModes.ALL_IN_FOLDER:
-        case ImportModes.CURRENT_FILE:
-        case ImportModes.IMAGEJ:
-            break;
-
-        case ImportModes.IMAGE_SEQUENCE_ALPHABETICAL:
-        case ImportModes.IMAGE_SEQUENCE_ZEROS:
-            returnedParameters.add(parameters.getParameter(SEQUENCE_ROOT_NAME));
-            returnedParameters.add(parameters.getParameter(AVAILABLE_METADATA_FIELDS));
-            MetadataRefCollection metadataRefs = modules.getMetadataRefs(this);
-            parameters.getParameter(AVAILABLE_METADATA_FIELDS).setValue(metadataRefs.getMetadataValues());
-            break;
-
-        case ImportModes.MATCHING_FORMAT:
-            returnedParameters.add(parameters.getParameter(NAME_FORMAT));
-            switch ((String) parameters.getValue(NAME_FORMAT)) {
-            case NameFormats.HUYGENS:
-            case NameFormats.INCUCYTE_SHORT:
-                returnedParameters.add(parameters.getParameter(COMMENT));
+            case ImportModes.ALL_IN_FOLDER:
+            case ImportModes.CURRENT_FILE:
+            case ImportModes.IMAGEJ:
                 break;
-            case NameFormats.YOKOGAWA:
-                returnedParameters.add(parameters.getParameter(CHANNEL));
-                break;
-            case NameFormats.GENERIC:
-                returnedParameters.add(parameters.getParameter(GENERIC_FORMAT));
+
+            case ImportModes.IMAGE_SEQUENCE_ALPHABETICAL:
+            case ImportModes.IMAGE_SEQUENCE_ZEROS:
+                returnedParameters.add(parameters.getParameter(SEQUENCE_ROOT_NAME));
                 returnedParameters.add(parameters.getParameter(AVAILABLE_METADATA_FIELDS));
-                metadataRefs = modules.getMetadataRefs(this);
+                MetadataRefCollection metadataRefs = modules.getMetadataRefs(this);
                 parameters.getParameter(AVAILABLE_METADATA_FIELDS).setValue(metadataRefs.getMetadataValues());
                 break;
-            }
-            break;
 
-        case ImportModes.SPECIFIC_FILE:
-            returnedParameters.add(parameters.getParameter(FILE_PATH));
-            break;
+            case ImportModes.MATCHING_FORMAT:
+                returnedParameters.add(parameters.getParameter(NAME_FORMAT));
+                switch ((String) parameters.getValue(NAME_FORMAT)) {
+                    case NameFormats.HUYGENS:
+                    case NameFormats.INCUCYTE_SHORT:
+                        returnedParameters.add(parameters.getParameter(COMMENT));
+                        break;
+                    case NameFormats.YOKOGAWA:
+                        returnedParameters.add(parameters.getParameter(CHANNEL));
+                        break;
+                    case NameFormats.GENERIC:
+                        returnedParameters.add(parameters.getParameter(GENERIC_FORMAT));
+                        returnedParameters.add(parameters.getParameter(AVAILABLE_METADATA_FIELDS));
+                        metadataRefs = modules.getMetadataRefs(this);
+                        parameters.getParameter(AVAILABLE_METADATA_FIELDS).setValue(metadataRefs.getMetadataValues());
+                        break;
+                }
+                break;
+
+            case ImportModes.SPECIFIC_FILE:
+                returnedParameters.add(parameters.getParameter(FILE_PATH));
+                break;
         }
 
         if (parameters.getValue(IMPORT_MODE).equals(ImportModes.CURRENT_FILE)
@@ -1367,29 +1430,34 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
                 & !parameters.getValue(IMPORT_MODE).equals(ImportModes.IMAGEJ)) {
             returnedParameters.add(parameters.getParameter(CROP_MODE));
             switch ((String) parameters.getValue(CROP_MODE)) {
-            case CropModes.FIXED:
-                returnedParameters.add(parameters.getParameter(LEFT));
-                returnedParameters.add(parameters.getParameter(TOP));
-                returnedParameters.add(parameters.getParameter(WIDTH));
-                returnedParameters.add(parameters.getParameter(HEIGHT));
-                break;
-            case CropModes.FROM_REFERENCE:
-                returnedParameters.add(parameters.getParameter(REFERENCE_IMAGE));
-                break;
-            case CropModes.OBJECT_COLLECTION_LIMITS:
-                returnedParameters.add(parameters.getParameter(OBJECTS_FOR_LIMITS));
-                break;
+                case CropModes.FIXED:
+                    returnedParameters.add(parameters.getParameter(LEFT));
+                    returnedParameters.add(parameters.getParameter(TOP));
+                    returnedParameters.add(parameters.getParameter(WIDTH));
+                    returnedParameters.add(parameters.getParameter(HEIGHT));
+                    break;
+                case CropModes.FROM_REFERENCE:
+                    returnedParameters.add(parameters.getParameter(REFERENCE_IMAGE));
+                    break;
+                case CropModes.OBJECT_COLLECTION_LIMITS:
+                    returnedParameters.add(parameters.getParameter(OBJECTS_FOR_LIMITS));
+                    break;
             }
 
             returnedParameters.add(parameters.getParameter(SCALE_MODE));
             switch ((String) parameters.getValue(SCALE_MODE)) {
-            case ScaleModes.NO_INTERPOLATION:
-            case ScaleModes.BILINEAR:
-            case ScaleModes.BICUBIC:
-                returnedParameters.add(parameters.getParameter(SCALE_FACTOR_X));
-                returnedParameters.add(parameters.getParameter(SCALE_FACTOR_Y));
-                break;
+                case ScaleModes.NO_INTERPOLATION:
+                case ScaleModes.BILINEAR:
+                case ScaleModes.BICUBIC:
+                    returnedParameters.add(parameters.getParameter(SCALE_FACTOR_X));
+                    returnedParameters.add(parameters.getParameter(SCALE_FACTOR_Y));
+                    break;
             }
+        }
+
+        if (parameters.getValue(IMPORT_MODE).equals(ImportModes.IMAGE_SEQUENCE_ALPHABETICAL)
+                || parameters.getValue(IMPORT_MODE).equals(ImportModes.IMAGE_SEQUENCE_ZEROS)) {
+            returnedParameters.add(parameters.getParameter(DIMENSION_MISMATCH_MODE));
         }
 
         returnedParameters.add(parameters.getParameter(CALIBRATION_SEPARATOR));
@@ -1424,13 +1492,13 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
         String outputImageName = parameters.getValue(OUTPUT_IMAGE);
 
         switch ((String) parameters.getValue(CROP_MODE)) {
-        case CropModes.FROM_REFERENCE:
-            returnedRefs.add(imageMeasurementRefs.getOrPut(Measurements.ROI_LEFT).setImageName(outputImageName));
-            returnedRefs.add(imageMeasurementRefs.getOrPut(Measurements.ROI_TOP).setImageName(outputImageName));
-            returnedRefs.add(imageMeasurementRefs.getOrPut(Measurements.ROI_WIDTH).setImageName(outputImageName));
-            returnedRefs.add(imageMeasurementRefs.getOrPut(Measurements.ROI_HEIGHT).setImageName(outputImageName));
+            case CropModes.FROM_REFERENCE:
+                returnedRefs.add(imageMeasurementRefs.getOrPut(Measurements.ROI_LEFT).setImageName(outputImageName));
+                returnedRefs.add(imageMeasurementRefs.getOrPut(Measurements.ROI_TOP).setImageName(outputImageName));
+                returnedRefs.add(imageMeasurementRefs.getOrPut(Measurements.ROI_WIDTH).setImageName(outputImageName));
+                returnedRefs.add(imageMeasurementRefs.getOrPut(Measurements.ROI_HEIGHT).setImageName(outputImageName));
 
-            break;
+                break;
         }
 
         return returnedRefs;
@@ -1467,11 +1535,11 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
             MetadataRefCollection metadataRefs = modules.getMetadataRefs(this);
 
             switch ((String) parameters.getValue(NAME_FORMAT)) {
-            case NameFormats.GENERIC:
-                String genericFormat = parameters.getValue(GENERIC_FORMAT);
-                valid = metadataRefs.hasRef(genericFormat);
-                parameters.getParameter(GENERIC_FORMAT).setValid(valid);
-                break;
+                case NameFormats.GENERIC:
+                    String genericFormat = parameters.getValue(GENERIC_FORMAT);
+                    valid = metadataRefs.hasRef(genericFormat);
+                    parameters.getParameter(GENERIC_FORMAT).setValid(valid);
+                    break;
             }
         }
 
