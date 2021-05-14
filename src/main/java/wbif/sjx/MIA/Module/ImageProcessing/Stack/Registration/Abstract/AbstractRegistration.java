@@ -1,29 +1,22 @@
-package wbif.sjx.MIA.Module.ImageProcessing.Stack.Registration;
+package wbif.sjx.MIA.Module.ImageProcessing.Stack.Registration.Abstract;
 
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
+import java.util.ArrayList;
 
 import com.drew.lang.annotations.Nullable;
 
 import fiji.stacks.Hyperstack_rearranger;
 import ij.ImagePlus;
 import ij.ImageStack;
-import ij.Prefs;
 import ij.plugin.HyperStackConverter;
 import ij.plugin.SubHyperstackMaker;
 import ij.process.ImageProcessor;
-import mpicbg.ij.Mapping;
-import mpicbg.models.AbstractAffineModel2D;
-import mpicbg.models.AffineModel2D;
-import mpicbg.models.RigidModel2D;
-import mpicbg.models.SimilarityModel2D;
-import mpicbg.models.TranslationModel2D;
 import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
+import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
-import wbif.sjx.MIA.Module.ImageProcessing.Pixel.InvertIntensity;
+import wbif.sjx.MIA.Module.ImageProcessing.Pixel.ProjectImage;
+import wbif.sjx.MIA.Module.ImageProcessing.Stack.ConcatenateStacks;
 import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.Parameters.BooleanP;
 import wbif.sjx.MIA.Object.Parameters.ChoiceP;
@@ -31,8 +24,9 @@ import wbif.sjx.MIA.Object.Parameters.InputImageP;
 import wbif.sjx.MIA.Object.Parameters.OutputImageP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.Parameters.SeparatorP;
+import wbif.sjx.MIA.Object.Parameters.Text.IntegerP;
 
-public abstract class AbstractRegistrationHandler<T extends RealType<T> & NativeType<T>> extends Module {
+public abstract class AbstractRegistration<T extends RealType<T> & NativeType<T>> extends Module {
     public static final String INPUT_SEPARATOR = "Image input/output";
     public static final String INPUT_IMAGE = "Input image";
     public static final String APPLY_TO_INPUT = "Apply to input image";
@@ -41,11 +35,19 @@ public abstract class AbstractRegistrationHandler<T extends RealType<T> & Native
     public static final String REGISTRATION_SEPARATOR = "Registration controls";
     public static final String REGISTRATION_AXIS = "Registration axis";
     public static final String OTHER_AXIS_MODE = "Other axis mode";
-    public static final String TRANSFORMATION_MODE = "Transformation mode";
     public static final String ENABLE_MULTITHREADING = "Enable multithreading";
     public static final String FILL_MODE = "Fill mode";
 
-    public AbstractRegistrationHandler(String name, ModuleCollection modules) {
+    public static final String REFERENCE_SEPARATOR = "Reference image source";
+    public static final String REFERENCE_MODE = "Reference mode";
+    public static final String NUM_PREV_FRAMES = "Number of previous frames";
+    public static final String PREV_FRAMES_STAT_MODE = "Previous frames statistic";
+    public static final String REFERENCE_IMAGE = "Reference image";
+    public static final String CALCULATION_SOURCE = "Calculation source";
+    public static final String EXTERNAL_SOURCE = "External source";
+    public static final String CALCULATION_CHANNEL = "Calculation channel";
+    
+    public AbstractRegistration(String name, ModuleCollection modules) {
         super(name, modules);
     }
 
@@ -65,21 +67,31 @@ public abstract class AbstractRegistrationHandler<T extends RealType<T> & Native
 
     }
 
-    public interface TransformationModes {
-        String AFFINE = "Affine";
-        String RIGID = "Rigid";
-        String SIMILARITY = "Similarity";
-        String TRANSLATION = "Translation";
-
-        String[] ALL = new String[] { AFFINE, RIGID, SIMILARITY, TRANSLATION };
-
-    }
-
     public interface FillModes {
         String BLACK = "Black";
         String WHITE = "White";
 
         String[] ALL = new String[] { BLACK, WHITE };
+
+    }
+
+    public interface ReferenceModes {
+        String FIRST_FRAME = "First frame";
+        String PREVIOUS_N_FRAMES = "Previous N frames";
+        String SPECIFIC_IMAGE = "Specific image";
+
+        String[] ALL = new String[] { FIRST_FRAME, PREVIOUS_N_FRAMES, SPECIFIC_IMAGE };
+
+    }
+
+    public interface PrevFramesStatModes extends ProjectImage.ProjectionModes {
+    }
+
+    public interface CalculationSources {
+        String INTERNAL = "Internal";
+        String EXTERNAL = "External";
+
+        String[] ALL = new String[] { INTERNAL, EXTERNAL };
 
     }
 
@@ -105,66 +117,67 @@ public abstract class AbstractRegistrationHandler<T extends RealType<T> & Native
 
     }
 
-    public static void applyTransformation(Image inputImage, Mapping mapping, String fillMode, boolean multithread)
-            throws InterruptedException {
-        // Iterate over all images in the stack
+    public static boolean testReferenceValidity(Image inputImage, Image calculationImage, String otherAxisMode) {
         ImagePlus inputIpl = inputImage.getImagePlus();
-        int nChannels = inputIpl.getNChannels();
-        int nSlices = inputIpl.getNSlices();
-        int nFrames = inputIpl.getNFrames();
+        ImagePlus calculationIpl = calculationImage.getImagePlus();
 
-        int nThreads = multithread ? Prefs.getThreads() : 1;
-        ThreadPoolExecutor pool = new ThreadPoolExecutor(nThreads, nThreads, 0L, TimeUnit.MILLISECONDS,
-                new LinkedBlockingQueue<>());
-
-        if (fillMode.equals(FillModes.WHITE))
-            InvertIntensity.process(inputImage);
-
-        for (int c = 1; c <= nChannels; c++) {
-            for (int z = 1; z <= nSlices; z++) {
-                for (int t = 1; t <= nFrames; t++) {
-                    int finalC = c;
-                    int finalZ = z;
-                    int finalT = t;
-
-                    Runnable task = () -> {
-                        ImageProcessor slice = getSetStack(inputIpl, finalT, finalC, finalZ, null).getProcessor();
-                        slice.setInterpolationMethod(ImageProcessor.BILINEAR);
-                        ImageProcessor alignedSlice = slice.createProcessor(slice.getWidth(), slice.getHeight());
-                        alignedSlice.setMinAndMax(slice.getMin(), slice.getMax());
-                        mapping.mapInterpolated(slice, alignedSlice);
-
-                        getSetStack(inputIpl, finalT, finalC, finalZ, alignedSlice);
-
-                    };
-                    pool.submit(task);
-                }
+        // Stacks should already be ordered such that the registration axis is along the
+        // time axis. Calculation image should have equal number of frames as the input.
+        // Also, if "slices" are linked, it should only have one slice. If "slices" are
+        // independent, it should have the same number of slices as the input.
+        switch (otherAxisMode) {
+        case OtherAxisModes.INDEPENDENT:
+            if (calculationIpl.getNSlices() != inputIpl.getNSlices()) {
+                MIA.log.writeWarning(
+                        "Non-registration axis of calculation image stack is different length to input image stack.  Calculation stack has "
+                                + calculationIpl.getNSlices() + " images, input stack has " + inputIpl.getNSlices()
+                                + " images.  In \"" + OtherAxisModes.INDEPENDENT
+                                + "\" mode, calculation and input stacks should be the same length along non-registration axis.");
+                return false;
             }
+            break;
+
+        case OtherAxisModes.LINKED:
+            if (calculationIpl.getNSlices() > 1) {
+                MIA.log.writeWarning("Non-registration axis of calculation image stack is too large ("
+                        + calculationIpl.getNSlices() + ").  In \"" + OtherAxisModes.LINKED
+                        + "\" mode, calculation stack should have a single image along non-registration axis.");
+                return false;
+            }
+            break;
         }
 
-        pool.shutdown();
-        pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS); // i.e. never terminate early
+        // Irrespective of other axis mode, "time" axis should be the same length
+        if (calculationIpl.getNFrames() != inputIpl.getNFrames()) {
+            MIA.log.writeWarning("Calculation image stack has different length to input image.  Calculation stack has "
+                    + calculationIpl.getNFrames() + " images and, input stack has " + inputIpl.getNFrames()
+                    + " images.");
+            return false;
+        }
 
-        if (fillMode.equals(FillModes.WHITE))
-            InvertIntensity.process(inputImage);
+        // Reference stack is valid
+        return true;
 
     }
 
-    protected static AbstractAffineModel2D getModel(String transformationMode) {
-        switch (transformationMode) {
-            case TransformationModes.AFFINE:
-                return new AffineModel2D();
-            case TransformationModes.RIGID:
-            default:
-                return new RigidModel2D();
-            case TransformationModes.SIMILARITY:
-                return new SimilarityModel2D();
-            case TransformationModes.TRANSLATION:
-                return new TranslationModel2D();
+    public static <T extends RealType<T> & NativeType<T>> Image createOverlay(Image<T> inputImage, Image<T> referenceImage) {
+        // Only create the overlay if the two images have matching dimensions
+        ImagePlus ipl1 = inputImage.getImagePlus();
+        ImagePlus ipl2 = referenceImage.getImagePlus();
+
+        if (ipl1.getNSlices() == ipl2.getNSlices() && ipl1.getNFrames() == ipl2.getNFrames()) {
+            String axis = ConcatenateStacks.AxisModes.CHANNEL;
+            ArrayList<Image<T>> images = new ArrayList<>();
+            images.add(inputImage);
+            images.add(referenceImage);
+            return ConcatenateStacks.concatenateImages(images, axis, "Overlay");
         }
+
+        return inputImage;
+
     }
 
-    synchronized private static ImagePlus getSetStack(ImagePlus inputImagePlus, int timepoint, int channel, int slice,
+    synchronized public static ImagePlus getSetStack(ImagePlus inputImagePlus, int timepoint, int channel, int slice,
             @Nullable ImageProcessor toPut) {
         if (toPut == null) {
             // Get mode
@@ -221,11 +234,19 @@ public abstract class AbstractRegistrationHandler<T extends RealType<T> & Native
 
         parameters.add(new SeparatorP(REGISTRATION_SEPARATOR, this));
         parameters.add(new ChoiceP(REGISTRATION_AXIS, this, RegistrationAxes.TIME, RegistrationAxes.ALL));
-        parameters.add(new ChoiceP(OTHER_AXIS_MODE, this, OtherAxisModes.INDEPENDENT, OtherAxisModes.ALL));
-        parameters.add(new ChoiceP(TRANSFORMATION_MODE, this, TransformationModes.RIGID, TransformationModes.ALL));
+        parameters.add(new ChoiceP(OTHER_AXIS_MODE, this, OtherAxisModes.INDEPENDENT, OtherAxisModes.ALL));        
         parameters.add(new ChoiceP(FILL_MODE, this, FillModes.BLACK, FillModes.ALL));
         parameters.add(new BooleanP(ENABLE_MULTITHREADING, this, true));
 
+        parameters.add(new SeparatorP(REFERENCE_SEPARATOR, this));
+        parameters.add(new ChoiceP(REFERENCE_MODE, this, ReferenceModes.FIRST_FRAME, ReferenceModes.ALL));
+        parameters.add(new IntegerP(NUM_PREV_FRAMES, this, 1));
+        parameters.add(new ChoiceP(PREV_FRAMES_STAT_MODE, this, PrevFramesStatModes.MAX, PrevFramesStatModes.ALL));
+        parameters.add(new InputImageP(REFERENCE_IMAGE, this));
+        parameters.add(new ChoiceP(CALCULATION_SOURCE, this, CalculationSources.INTERNAL, CalculationSources.ALL));
+        parameters.add(new InputImageP(EXTERNAL_SOURCE, this));
+        parameters.add(new IntegerP(CALCULATION_CHANNEL, this, 1));
+        
     }
 
     @Override
@@ -241,11 +262,31 @@ public abstract class AbstractRegistrationHandler<T extends RealType<T> & Native
 
         returnedParameters.add(parameters.getParameter(REGISTRATION_SEPARATOR));
         returnedParameters.add(parameters.getParameter(REGISTRATION_AXIS));
-        returnedParameters.add(parameters.getParameter(OTHER_AXIS_MODE));
-        returnedParameters.add(parameters.getParameter(TRANSFORMATION_MODE));
+        returnedParameters.add(parameters.getParameter(OTHER_AXIS_MODE));        
         returnedParameters.add(parameters.getParameter(FILL_MODE));
         returnedParameters.add(parameters.getParameter(ENABLE_MULTITHREADING));
 
+        returnedParameters.add(parameters.getParameter(REFERENCE_SEPARATOR));
+        returnedParameters.add(parameters.getParameter(REFERENCE_MODE));
+        switch ((String) parameters.getValue(REFERENCE_MODE)) {
+            case ReferenceModes.PREVIOUS_N_FRAMES:
+                returnedParameters.add(parameters.getParameter(NUM_PREV_FRAMES));
+                returnedParameters.add(parameters.getParameter(PREV_FRAMES_STAT_MODE));
+                break;
+            case ReferenceModes.SPECIFIC_IMAGE:
+                returnedParameters.add(parameters.getParameter(REFERENCE_IMAGE));
+                break;
+        }
+
+        returnedParameters.add(parameters.getParameter(CALCULATION_SOURCE));
+        switch ((String) parameters.getValue(CALCULATION_SOURCE)) {
+            case CalculationSources.EXTERNAL:
+                returnedParameters.add(parameters.getParameter(EXTERNAL_SOURCE));
+                break;
+        }
+
+        returnedParameters.add(parameters.getParameter(CALCULATION_CHANNEL));
+        
         return returnedParameters;
 
     }
@@ -265,16 +306,6 @@ public abstract class AbstractRegistrationHandler<T extends RealType<T> & Native
         +"<li>\""+OtherAxisModes.INDEPENDENT+"\" Each non-registration axis is registered independently.  For example, applying separate Z-registrations for each timepoint of a 4D stack.</li>"
 
         +"<li>\""+OtherAxisModes.LINKED+"\" All elements of the non-registration axis are registered with a single transform.  For example, applying the same registration at a timepoint to all slices of a 4D stack.</li></ul>");
-
-        parameters.get(TRANSFORMATION_MODE).setDescription("Controls the type of registration being applied:<br><ul>"
-
-                + "<li>\"" + TransformationModes.AFFINE + "\" Applies the full affine transformation, whereby the input image can undergo translation, rotation, reflection, scaling and shear.</li>"
-
-                + "<li>\"" + TransformationModes.RIGID + "\" Applies only translation and rotation to the input image.  As such, all features should remain the same size.</li>"
-
-                + "<li>\"" + TransformationModes.SIMILARITY +"\" Applies translation, rotating and linear scaling to the input image.</li>"
-
-                +"<li>\""+TransformationModes.TRANSLATION+"\" Applies only translation (motion within the 2D plane) to the input image.</li></ul>");
 
         parameters.get(FILL_MODE).setDescription("Controls what intensity any border pixels will have.  \"Borders\" in this case correspond to strips/wedges at the image edge corresponding to regions outside the initial image (e.g. the right-side of an output image when the input was translated to the left).   Choices are: "+String.join(", ",FillModes.ALL)+".");
 

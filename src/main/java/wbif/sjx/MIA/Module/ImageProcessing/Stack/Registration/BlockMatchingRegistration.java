@@ -1,13 +1,10 @@
 package wbif.sjx.MIA.Module.ImageProcessing.Stack.Registration;
 
-import java.awt.Color;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Vector;
 import java.util.concurrent.ExecutionException;
 
 import ij.IJ;
-import ij.ImagePlus;
 import ij.process.FloatProcessor;
 import ij.process.ImageProcessor;
 import mpicbg.ij.blockmatching.BlockMatching;
@@ -17,26 +14,15 @@ import mpicbg.models.PointMatch;
 import mpicbg.models.SpringMesh;
 import mpicbg.models.TranslationModel2D;
 import mpicbg.models.Vertex;
-import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.ModuleCollection;
-import wbif.sjx.MIA.Module.ImageProcessing.Pixel.ProjectImage;
-import wbif.sjx.MIA.Module.ImageProcessing.Stack.ExtractSubstack;
-import wbif.sjx.MIA.Module.Visualisation.Overlays.AddObjectCentroid;
-import wbif.sjx.MIA.Object.Image;
-import wbif.sjx.MIA.Object.Obj;
-import wbif.sjx.MIA.Object.ObjCollection;
-import wbif.sjx.MIA.Object.Status;
+import wbif.sjx.MIA.Module.ImageProcessing.Stack.Registration.Abstract.AbstractAffineRegistration;
 import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.Parameters.SeparatorP;
 import wbif.sjx.MIA.Object.Parameters.Text.DoubleP;
 import wbif.sjx.MIA.Object.Parameters.Text.IntegerP;
-import wbif.sjx.MIA.Object.Units.TemporalUnit;
-import wbif.sjx.common.Object.Volume.PointOutOfRangeException;
-import wbif.sjx.common.Object.Volume.SpatCal;
-import wbif.sjx.common.Object.Volume.VolumeType;
 
-public class BlockMatchingRegistration extends AutomaticRegistration {
+public class BlockMatchingRegistration extends AbstractAffineRegistration {
     public static final String FEATURE_SEPARATOR = "Feature detection";
     public static final String LAYER_SCALE = "Layer scale";
     public static final String SEARCH_RADIUS = "Search radius (px)";
@@ -60,6 +46,27 @@ public class BlockMatchingRegistration extends AutomaticRegistration {
                 + "<br><br>This module uses the <a href=\"https://github.com/fiji/blockmatching\">Block Matching</a> plugin and associated MPICBG tools to detect matching regions from the input images and calculate and apply the necessary 2D affine transforms.";
     }
 
+    
+    @Override
+    public Param getParameters(Workspace workspace) {
+        // Setting up the parameters
+        BMParam param = new BMParam();
+        param.transformationMode = parameters.getValue(TRANSFORMATION_MODE);
+        param.scale = (float) (double) parameters.getValue(LAYER_SCALE);
+        param.searchR = parameters.getValue(SEARCH_RADIUS);
+        param.blockR = parameters.getValue(BLOCK_RADIUS);
+        param.resolution = parameters.getValue(RESOLUTION);
+        param.minR = (float) (double) parameters.getValue(MIN_PMCC_R);
+        param.maxCurvature = (float) (double) parameters.getValue(MAX_CURVATURE);
+        param.rod = (float) (double) parameters.getValue(ROD);
+        param.sigma = (float) (double) parameters.getValue(LOCAL_REGION_SIGMA);
+        param.maxAbsDisp = (float) (double) parameters.getValue(MAX_ABS_LOCAL_DISPLACEMENT);
+        param.maxRelDisp = (float) (double) parameters.getValue(MAX_REL_LOCAL_DISPLACEMENT);
+
+        return param;
+
+    }
+    
     @Override
     public AbstractAffineModel2D getAffineModel2D(ImageProcessor referenceIpr, ImageProcessor warpedIpr, Param param,
             boolean showDetectedPoints) {
@@ -113,130 +120,6 @@ public class BlockMatchingRegistration extends AutomaticRegistration {
         }
 
         return iprOut;
-
-    }
-
-    @Override
-    public Status process(Workspace workspace) {
-        IJ.setBackgroundColor(255, 255, 255);
-
-        // Getting parameters
-        String inputImageName = parameters.getValue(INPUT_IMAGE);
-        boolean applyToInput = parameters.getValue(APPLY_TO_INPUT);
-        String outputImageName = parameters.getValue(OUTPUT_IMAGE);
-        String regAxis = parameters.getValue(REGISTRATION_AXIS);
-        String otherAxisMode = parameters.getValue(OTHER_AXIS_MODE);
-        boolean multithread = parameters.getValue(ENABLE_MULTITHREADING);
-        String relativeMode = parameters.getValue(RELATIVE_MODE);
-        int numPrevFrames = parameters.getValue(NUM_PREV_FRAMES);
-        String prevFramesStatMode = parameters.getValue(PREV_FRAMES_STAT_MODE);
-        String referenceImageName = parameters.getValue(REFERENCE_IMAGE);
-        String calculationSource = parameters.getValue(CALCULATION_SOURCE);
-        String externalSourceName = parameters.getValue(EXTERNAL_SOURCE);
-        int calculationChannel = parameters.getValue(CALCULATION_CHANNEL);
-        String fillMode = parameters.getValue(FILL_MODE);
-        boolean showDetectedPoints = parameters.getValue(SHOW_DETECTED_POINTS);
-
-        // Getting the input image and duplicating if the output will be stored
-        // separately
-        Image inputImage = workspace.getImage(inputImageName);
-        if (!applyToInput)
-            inputImage = new Image(outputImageName, inputImage.getImagePlus().duplicate());
-
-        // If comparing to a fixed image, get this now
-        Image reference = relativeMode.equals(RelativeModes.SPECIFIC_IMAGE) ? workspace.getImage(referenceImageName)
-                : null;
-
-        // Getting the image the registration will be calculated from.
-        String calcC = String.valueOf(calculationChannel);
-        Image calculationImage = null;
-        switch (calculationSource) {
-        case CalculationSources.EXTERNAL:
-            Image externalImage = workspace.getImage(externalSourceName);
-            calculationImage = ExtractSubstack.extractSubstack(externalImage, "CalcIm", calcC, "1-end", "1-end");
-            break;
-
-        case CalculationSources.INTERNAL:
-            calculationImage = ExtractSubstack.extractSubstack(inputImage, "CalcIm", calcC, "1-end", "1-end");
-            break;
-        }
-
-        // Registration will be performed in time, so ensure actual axis to be
-        // registered is reordered to be in time axis
-        switch (regAxis) {
-        case RegistrationAxes.Z:
-            changeStackOrder(inputImage);
-            changeStackOrder(calculationImage);
-            break;
-        }
-
-        // If non-registration dimension is "linked", calculation image potentially
-        // needs to be projected. Since the images have been transformed such that the
-        // registration dimension is always "Time", then this is a Z projection. A
-        // maximum intensity projection is used. It only needs be performed if there is
-        // at least one Z-slice.
-        if (calculationImage.getImagePlus().getNSlices() > 1) {
-            switch (otherAxisMode) {
-            case OtherAxisModes.LINKED:
-                calculationImage = ProjectImage.projectImageInZ(calculationImage, "CalcIm",
-                        ProjectImage.ProjectionModes.MAX);
-                break;
-            }
-        }
-
-        // Ensuring calculation image has the correct dimensions
-        if (testReferenceValidity(inputImage, calculationImage, otherAxisMode)) {
-            // Setting up the parameters
-            BMParam param = new BMParam();
-            param.transformationMode = parameters.getValue(TRANSFORMATION_MODE);
-            param.scale = (float) (double) parameters.getValue(LAYER_SCALE);
-            param.searchR = parameters.getValue(SEARCH_RADIUS);
-            param.blockR = parameters.getValue(BLOCK_RADIUS);
-            param.resolution = parameters.getValue(RESOLUTION);
-            param.minR = (float) (double) parameters.getValue(MIN_PMCC_R);
-            param.maxCurvature = (float) (double) parameters.getValue(MAX_CURVATURE);
-            param.rod = (float) (double) parameters.getValue(ROD);
-            param.sigma = (float) (double) parameters.getValue(LOCAL_REGION_SIGMA);
-            param.maxAbsDisp = (float) (double) parameters.getValue(MAX_ABS_LOCAL_DISPLACEMENT);
-            param.maxRelDisp = (float) (double) parameters.getValue(MAX_REL_LOCAL_DISPLACEMENT);
-
-            switch (otherAxisMode) {
-            case OtherAxisModes.INDEPENDENT:
-                processIndependent(inputImage, calculationImage, relativeMode, numPrevFrames, prevFramesStatMode, param,
-                        fillMode, showDetectedPoints, multithread, reference);
-                break;
-
-            case OtherAxisModes.LINKED:
-                processLinked(inputImage, calculationImage, relativeMode, numPrevFrames, prevFramesStatMode, param,
-                        fillMode, showDetectedPoints, multithread, reference);
-                break;
-            }
-
-            // If stack order was adjusted, now swap it back
-            switch (regAxis) {
-            case RegistrationAxes.Z:
-                changeStackOrder(inputImage);
-                changeStackOrder(calculationImage);
-                break;
-            }
-
-        } else {
-            MIA.log.writeWarning("Input stack has not been registered");
-        }
-
-        if (showOutput) {
-            if (relativeMode.equals(RelativeModes.SPECIFIC_IMAGE)) {
-                createOverlay(inputImage, reference).showImage();
-            } else {
-                inputImage.showImage();
-            }
-        }
-
-        // Dealing with module outputs
-        if (!applyToInput)
-            workspace.addImage(inputImage);
-
-        return Status.PASS;
 
     }
 

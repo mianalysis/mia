@@ -3,7 +3,6 @@ package wbif.sjx.MIA.Module.ImageProcessing.Stack.Registration;
 import java.util.ArrayList;
 import java.util.Vector;
 
-import ij.IJ;
 import ij.process.ImageProcessor;
 import mpicbg.ij.SIFT;
 import mpicbg.imagefeatures.Feature;
@@ -11,19 +10,15 @@ import mpicbg.imagefeatures.FloatArray2DSIFT;
 import mpicbg.models.AbstractAffineModel2D;
 import mpicbg.models.NotEnoughDataPointsException;
 import mpicbg.models.PointMatch;
-import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.ModuleCollection;
-import wbif.sjx.MIA.Module.ImageProcessing.Pixel.ProjectImage;
-import wbif.sjx.MIA.Module.ImageProcessing.Stack.ExtractSubstack;
-import wbif.sjx.MIA.Object.Image;
-import wbif.sjx.MIA.Object.Status;
+import wbif.sjx.MIA.Module.ImageProcessing.Stack.Registration.Abstract.AbstractAffineRegistration;
 import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.Parameters.SeparatorP;
 import wbif.sjx.MIA.Object.Parameters.Text.DoubleP;
 import wbif.sjx.MIA.Object.Parameters.Text.IntegerP;
 
-public class SIFTRegistration extends AutomaticRegistration {
+public class SIFTRegistration extends AbstractAffineRegistration {
     public static final String FEATURE_SEPARATOR = "Feature detection";
     public static final String INITIAL_SIGMA = "Initial Gaussian blur (px)";
     public static final String STEPS = "Steps per scale";
@@ -52,6 +47,25 @@ public class SIFTRegistration extends AutomaticRegistration {
                 + "<li>Lowe, David G. \"Object recognition from local scale-invariant features\". <i>Proceedings of the International Conference on Computer Vision</i> <b>2</b> (1999) 1150–1157.</li>"
 
                 + "<li>Lowe, David G. \"Distinctive Image Features from Scale-Invariant Keypoints\". <i>International Journal of Computer Vision</i> <b>60</b> (2004) 91–110.</li></ul>";
+    }
+
+    @Override
+    public Param getParameters(Workspace workspace) {
+        // Setting up the parameters
+        SIFTParam param = new SIFTParam();
+        param.transformationMode = parameters.getValue(TRANSFORMATION_MODE);
+        param.initialSigma = (float) (double) parameters.getValue(INITIAL_SIGMA);
+        param.steps = parameters.getValue(STEPS);
+        param.minOctaveSize = parameters.getValue(MINIMUM_IMAGE_SIZE);
+        param.maxOctaveSize = parameters.getValue(MAXIMUM_IMAGE_SIZE);
+        param.fdSize = parameters.getValue(FD_SIZE);
+        param.fdBins = parameters.getValue(FD_ORIENTATION_BINS);
+        param.rod = (float) (double) parameters.getValue(ROD);
+        param.maxEpsilon = (float) (double) parameters.getValue(MAX_EPSILON);
+        param.minInlierRatio = (float) (double) parameters.getValue(MIN_INLIER_RATIO);
+
+        return param;
+
     }
 
     @Override
@@ -94,129 +108,6 @@ public class SIFTRegistration extends AutomaticRegistration {
         }
 
         return model;
-
-    }
-
-    @Override
-    public Status process(Workspace workspace) {
-        IJ.setBackgroundColor(255, 255, 255);
-
-        // Getting parameters
-        String inputImageName = parameters.getValue(INPUT_IMAGE);
-        boolean applyToInput = parameters.getValue(APPLY_TO_INPUT);
-        String outputImageName = parameters.getValue(OUTPUT_IMAGE);
-        String regAxis = parameters.getValue(REGISTRATION_AXIS);
-        String otherAxisMode = parameters.getValue(OTHER_AXIS_MODE);
-        boolean multithread = parameters.getValue(ENABLE_MULTITHREADING);
-        String relativeMode = parameters.getValue(RELATIVE_MODE);
-        int numPrevFrames = parameters.getValue(NUM_PREV_FRAMES);
-        String prevFramesStatMode = parameters.getValue(PREV_FRAMES_STAT_MODE);
-        String referenceImageName = parameters.getValue(REFERENCE_IMAGE);
-        String calculationSource = parameters.getValue(CALCULATION_SOURCE);
-        String externalSourceName = parameters.getValue(EXTERNAL_SOURCE);
-        int calculationChannel = parameters.getValue(CALCULATION_CHANNEL);
-        String fillMode = parameters.getValue(FILL_MODE);
-        boolean showDetectedPoints = parameters.getValue(SHOW_DETECTED_POINTS);
-
-        // Getting the input image and duplicating if the output will be stored
-        // separately
-        Image inputImage = workspace.getImage(inputImageName);
-        if (!applyToInput)
-            inputImage = new Image(outputImageName, inputImage.getImagePlus().duplicate());
-
-        // If comparing to a fixed image, get this now
-        Image reference = relativeMode.equals(RelativeModes.SPECIFIC_IMAGE) ? workspace.getImage(referenceImageName)
-                : null;
-
-        // Getting the image the registration will be calculated from.
-        String calcC = String.valueOf(calculationChannel);
-        Image calculationImage = null;
-        switch (calculationSource) {
-        case CalculationSources.EXTERNAL:
-            Image externalImage = workspace.getImage(externalSourceName);
-            calculationImage = ExtractSubstack.extractSubstack(externalImage, "CalcIm", calcC, "1-end", "1-end");
-            break;
-
-        case CalculationSources.INTERNAL:
-            calculationImage = ExtractSubstack.extractSubstack(inputImage, "CalcIm", calcC, "1-end", "1-end");
-            break;
-        }
-
-        // Registration will be performed in time, so ensure actual axis to be
-        // registered is reordered to be in time axis
-        switch (regAxis) {
-        case RegistrationAxes.Z:
-            changeStackOrder(inputImage);
-            changeStackOrder(calculationImage);
-            break;
-        }
-
-        // If non-registration dimension is "linked", calculation image potentially
-        // needs to be projected. Since the images have been transformed such that the
-        // registration dimension is always "Time", then this is a Z projection. A
-        // maximum intensity projection is used. It only needs be performed if there is
-        // at least one Z-slice.
-        if (calculationImage.getImagePlus().getNSlices() > 1) {
-            switch (otherAxisMode) {
-            case OtherAxisModes.LINKED:
-                calculationImage = ProjectImage.projectImageInZ(calculationImage, "CalcIm",
-                        ProjectImage.ProjectionModes.MAX);
-                break;
-            }
-        }
-
-        // Ensuring calculation image has the correct dimensions
-        if (testReferenceValidity(inputImage, calculationImage, otherAxisMode)) {
-            // Setting up the parameters
-            SIFTParam param = new SIFTParam();
-            param.transformationMode = parameters.getValue(TRANSFORMATION_MODE);
-            param.initialSigma = (float) (double) parameters.getValue(INITIAL_SIGMA);
-            param.steps = parameters.getValue(STEPS);
-            param.minOctaveSize = parameters.getValue(MINIMUM_IMAGE_SIZE);
-            param.maxOctaveSize = parameters.getValue(MAXIMUM_IMAGE_SIZE);
-            param.fdSize = parameters.getValue(FD_SIZE);
-            param.fdBins = parameters.getValue(FD_ORIENTATION_BINS);
-            param.rod = (float) (double) parameters.getValue(ROD);
-            param.maxEpsilon = (float) (double) parameters.getValue(MAX_EPSILON);
-            param.minInlierRatio = (float) (double) parameters.getValue(MIN_INLIER_RATIO);
-
-            switch (otherAxisMode) {
-            case OtherAxisModes.INDEPENDENT:
-                processIndependent(inputImage, calculationImage, relativeMode, numPrevFrames, prevFramesStatMode, param,
-                        fillMode, showDetectedPoints, multithread, reference);
-                break;
-
-            case OtherAxisModes.LINKED:
-                processLinked(inputImage, calculationImage, relativeMode, numPrevFrames, prevFramesStatMode, param,
-                        fillMode, showDetectedPoints, multithread, reference);
-                break;
-            }
-
-            // If stack order was adjusted, now swap it back
-            switch (regAxis) {
-            case RegistrationAxes.Z:
-                changeStackOrder(inputImage);
-                changeStackOrder(calculationImage);
-                break;
-            }
-
-        } else {
-            MIA.log.writeWarning("Input stack has not been registered");
-        }
-
-        if (showOutput) {
-            if (relativeMode.equals(RelativeModes.SPECIFIC_IMAGE)) {
-                createOverlay(inputImage, reference).showImage();
-            } else {
-                inputImage.showImage();
-            }
-        }
-
-        // Dealing with module outputs
-        if (!applyToInput)
-            workspace.addImage(inputImage);
-
-        return Status.PASS;
 
     }
 

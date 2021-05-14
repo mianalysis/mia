@@ -8,6 +8,8 @@ import wbif.sjx.MIA.Module.ImageMeasurements.MeasureIntensityDistribution;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.WekaProbabilityMaps;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.Binary.DistanceMap;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.Threshold.LocalAutoThreshold;
+import wbif.sjx.MIA.Module.ImageProcessing.Stack.Registration.BlockMatchingRegistration;
+import wbif.sjx.MIA.Module.ImageProcessing.Stack.Registration.MOPSRegistration;
 import wbif.sjx.MIA.Module.ImageProcessing.Stack.Registration.SIFTRegistration;
 import wbif.sjx.MIA.Module.InputOutput.ImageLoader;
 import wbif.sjx.MIA.Module.InputOutput.ObjectLoader;
@@ -33,13 +35,19 @@ public class LostAndFound {
         lostModules.put("AutomaticRegistration", new SIFTRegistration(null).getClass().getSimpleName());
         lostModules.put("ConditionalAnalysisTermination", new WorkflowHandling(null).getClass().getSimpleName());
         lostModules.put("RunMacroOnImage", new RunMacro(null).getClass().getSimpleName());
-        lostModules.put("RunSingleMacroCommand", new RunSingleCommand(null).getClass().getSimpleName());       
+        lostModules.put("RunSingleMacroCommand", new RunSingleCommand(null).getClass().getSimpleName());
 
         //// Populating hard-coded parameter reassignments ////
-        // CalculateNearestNeighbour
+        // BlockMatchingRegistration
         HashMap<String, String> currentParameterNames = new HashMap<>();
+        currentParameterNames.put("Relative mode", BlockMatchingRegistration.REFERENCE_MODE);
+        String moduleName = new BlockMatchingRegistration(null).getClass().getSimpleName();
+        lostParameterNames.put(moduleName, currentParameterNames);
+
+        // CalculateNearestNeighbour
+        currentParameterNames = new HashMap<>();
         currentParameterNames.put("ParentChildRef mode", CalculateNearestNeighbour.RELATIONSHIP_MODE);
-        String moduleName = new CalculateNearestNeighbour(null).getClass().getSimpleName();
+        moduleName = new CalculateNearestNeighbour(null).getClass().getSimpleName();
         lostParameterNames.put(moduleName, currentParameterNames);
 
         // CreateDistanceMap
@@ -99,6 +107,12 @@ public class LostAndFound {
         moduleName = new MeasureIntensityDistribution(null).getClass().getSimpleName();
         lostParameterNames.put(moduleName, currentParameterNames);
 
+        // MOPSRegistration
+        currentParameterNames = new HashMap<>();
+        currentParameterNames.put("Relative mode", MOPSRegistration.REFERENCE_MODE);
+        moduleName = new MOPSRegistration(null).getClass().getSimpleName();
+        lostParameterNames.put(moduleName, currentParameterNames);
+
         // ObjectLoader
         currentParameterNames = new HashMap<>();
         currentParameterNames.put("Output parent clusters name", ObjectLoader.PARENT_OBJECTS_NAME);
@@ -124,6 +138,12 @@ public class LostAndFound {
         currentParameterNames = new HashMap<>();
         currentParameterNames.put("Macro title", RunSingleCommand.COMMAND);
         moduleName = new RunSingleCommand(null).getClass().getSimpleName();
+        lostParameterNames.put(moduleName, currentParameterNames);
+
+        // SIFTRegistration
+        currentParameterNames = new HashMap<>();
+        currentParameterNames.put("Relative mode", SIFTRegistration.REFERENCE_MODE);
+        moduleName = new SIFTRegistration(null).getClass().getSimpleName();
         lostParameterNames.put(moduleName, currentParameterNames);
 
         // ThresholdImage
@@ -160,7 +180,7 @@ public class LostAndFound {
         currentParameterValues.put(ImageLoader.IMPORT_MODE, currentValues);
         moduleName = new ImageLoader(null).getClass().getSimpleName();
         lostParameterValues.put(moduleName, currentParameterValues);
-       
+
     }
 
     public String findModule(String oldName) {
