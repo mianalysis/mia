@@ -8,9 +8,12 @@ import wbif.sjx.MIA.Module.ImageMeasurements.MeasureIntensityDistribution;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.WekaProbabilityMaps;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.Binary.DistanceMap;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.Threshold.LocalAutoThreshold;
-import wbif.sjx.MIA.Module.ImageProcessing.Stack.Registration.BlockMatchingRegistration;
-import wbif.sjx.MIA.Module.ImageProcessing.Stack.Registration.MOPSRegistration;
-import wbif.sjx.MIA.Module.ImageProcessing.Stack.Registration.SIFTRegistration;
+import wbif.sjx.MIA.Module.ImageProcessing.Stack.Registration.AffineBlockMatching;
+import wbif.sjx.MIA.Module.ImageProcessing.Stack.Registration.AffineManual;
+import wbif.sjx.MIA.Module.ImageProcessing.Stack.Registration.AffineMOPS;
+import wbif.sjx.MIA.Module.ImageProcessing.Stack.Registration.AffineSIFT;
+import wbif.sjx.MIA.Module.ImageProcessing.Stack.Registration.UnwarpAutomatic;
+import wbif.sjx.MIA.Module.ImageProcessing.Stack.Registration.UnwarpManual;
 import wbif.sjx.MIA.Module.InputOutput.ImageLoader;
 import wbif.sjx.MIA.Module.InputOutput.ObjectLoader;
 import wbif.sjx.MIA.Module.Miscellaneous.GlobalVariables;
@@ -32,16 +35,23 @@ public class LostAndFound {
 
     public LostAndFound() {
         //// Populating hard-coded module reassignments ////
-        lostModules.put("AutomaticRegistration", new SIFTRegistration(null).getClass().getSimpleName());
+        lostModules.put("AutomaticRegistration", new AffineSIFT(null).getClass().getSimpleName());
         lostModules.put("ConditionalAnalysisTermination", new WorkflowHandling(null).getClass().getSimpleName());
         lostModules.put("RunMacroOnImage", new RunMacro(null).getClass().getSimpleName());
         lostModules.put("RunSingleMacroCommand", new RunSingleCommand(null).getClass().getSimpleName());
-
+        lostModules.put("Manual unwarp", new UnwarpManual(null).getClass().getSimpleName());
+        lostModules.put("Unwarp images", new UnwarpAutomatic(null).getClass().getSimpleName());
+        lostModules.put("Automatic block-matching registration",
+                new AffineBlockMatching(null).getClass().getSimpleName());
+        lostModules.put("Manual registration", new AffineManual(null).getClass().getSimpleName());
+        lostModules.put("Automatic MOPS-based registration", new AffineMOPS(null).getClass().getSimpleName());
+        lostModules.put("Automatic SIFT-based registration", new AffineSIFT(null).getClass().getSimpleName());
+        
         //// Populating hard-coded parameter reassignments ////
         // BlockMatchingRegistration
         HashMap<String, String> currentParameterNames = new HashMap<>();
-        currentParameterNames.put("Relative mode", BlockMatchingRegistration.REFERENCE_MODE);
-        String moduleName = new BlockMatchingRegistration(null).getClass().getSimpleName();
+        currentParameterNames.put("Relative mode", AffineBlockMatching.REFERENCE_MODE);
+        String moduleName = new AffineBlockMatching(null).getClass().getSimpleName();
         lostParameterNames.put(moduleName, currentParameterNames);
 
         // CalculateNearestNeighbour
@@ -109,8 +119,8 @@ public class LostAndFound {
 
         // MOPSRegistration
         currentParameterNames = new HashMap<>();
-        currentParameterNames.put("Relative mode", MOPSRegistration.REFERENCE_MODE);
-        moduleName = new MOPSRegistration(null).getClass().getSimpleName();
+        currentParameterNames.put("Relative mode", AffineMOPS.REFERENCE_MODE);
+        moduleName = new AffineMOPS(null).getClass().getSimpleName();
         lostParameterNames.put(moduleName, currentParameterNames);
 
         // ObjectLoader
@@ -142,8 +152,8 @@ public class LostAndFound {
 
         // SIFTRegistration
         currentParameterNames = new HashMap<>();
-        currentParameterNames.put("Relative mode", SIFTRegistration.REFERENCE_MODE);
-        moduleName = new SIFTRegistration(null).getClass().getSimpleName();
+        currentParameterNames.put("Relative mode", AffineSIFT.REFERENCE_MODE);
+        moduleName = new AffineSIFT(null).getClass().getSimpleName();
         lostParameterNames.put(moduleName, currentParameterNames);
 
         // ThresholdImage

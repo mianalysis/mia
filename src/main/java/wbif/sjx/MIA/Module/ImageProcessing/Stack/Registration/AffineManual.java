@@ -6,6 +6,7 @@ import ij.ImagePlus;
 import ij.gui.PointRoi;
 import ij.gui.Roi;
 import ij.process.ImageProcessor;
+import mpicbg.ij.InverseTransformMapping;
 import mpicbg.ij.util.Util;
 import mpicbg.models.AbstractAffineModel2D;
 import mpicbg.models.IllDefinedDataPointsException;
@@ -23,7 +24,7 @@ import wbif.sjx.MIA.Process.Interactable.Interactable;
 import wbif.sjx.MIA.Process.Interactable.PointPairSelector;
 import wbif.sjx.MIA.Process.Interactable.PointPairSelector.PointPair;
 
-public class ManualRegistration extends AbstractAffineRegistration implements Interactable {
+public class AffineManual extends AbstractAffineRegistration implements Interactable {
     public static final String FEATURE_SEPARATOR = "Feature detection";
     public static final String POINT_SELECTION_MODE = "Point selection mode";
 
@@ -35,8 +36,8 @@ public class ManualRegistration extends AbstractAffineRegistration implements In
 
     }
 
-    public ManualRegistration(ModuleCollection modules) {
-        super("Manual registration", modules);
+    public AffineManual(ModuleCollection modules) {
+        super("Affine (manual)", modules);
     }
 
     @Override
@@ -65,20 +66,27 @@ public class ManualRegistration extends AbstractAffineRegistration implements In
     }
 
     @Override
-    public Param getParameters(Workspace workspace) {
+    public ManualParam createParameterSet() {
+        return new ManualParam();
+    }
+
+    @Override
+    public void getParameters(Param param, Workspace workspace) {
+        super.getParameters(param, workspace);
+
         // Setting up the parameters
-        ManualParam param = new ManualParam();
-        param.pointSelectionMode = parameters.getValue(POINT_SELECTION_MODE);
+        ManualParam manualParam = (ManualParam) param;
+        manualParam.pointSelectionMode = parameters.getValue(POINT_SELECTION_MODE);
 
         // Getting any ROI attached to the warped image
         switch ((String) parameters.getValue(CALCULATION_SOURCE)) {
             case CalculationSources.EXTERNAL:
                 String externalSourceName = parameters.getValue(EXTERNAL_SOURCE);
-                param.warpedRoi = workspace.getImage(externalSourceName).getImagePlus().getRoi();
+                manualParam.warpedRoi = workspace.getImage(externalSourceName).getImagePlus().getRoi();
                 break;
             case CalculationSources.INTERNAL:
                 String inputImageName = parameters.getValue(INPUT_IMAGE);
-                param.warpedRoi = workspace.getImage(inputImageName).getImagePlus().getRoi();
+                manualParam.warpedRoi = workspace.getImage(inputImageName).getImagePlus().getRoi();
                 break;
         }
 
@@ -87,20 +95,17 @@ public class ManualRegistration extends AbstractAffineRegistration implements In
             case ReferenceModes.FIRST_FRAME:
             case ReferenceModes.PREVIOUS_N_FRAMES:
                 String inputImageName = parameters.getValue(INPUT_IMAGE);
-                param.referenceRoi = workspace.getImage(inputImageName).getImagePlus().getRoi();
+                manualParam.referenceRoi = workspace.getImage(inputImageName).getImagePlus().getRoi();
                 break;
             case ReferenceModes.SPECIFIC_IMAGE:
                 String referenceImageName = parameters.getValue(REFERENCE_IMAGE);
-                param.referenceRoi = workspace.getImage(referenceImageName).getImagePlus().getRoi();
+                manualParam.referenceRoi = workspace.getImage(referenceImageName).getImagePlus().getRoi();
                 break;
         }
-
-        return param;
-
     }
 
     @Override
-    public AbstractAffineModel2D getAffineModel2D(ImageProcessor referenceIpr, ImageProcessor warpedIpr, Param param,
+    public Transform getTransform(ImageProcessor referenceIpr, ImageProcessor warpedIpr, Param param,
             boolean showDetectedPoints) {
 
         ManualParam p = (ManualParam) param;
@@ -149,7 +154,10 @@ public class ManualRegistration extends AbstractAffineRegistration implements In
             return null;
         }
 
-        return model;
+        AffineTransform transform = new AffineTransform();
+        transform.mapping = new InverseTransformMapping<AbstractAffineModel2D<?>>(model); 
+
+        return transform;
 
     }
 
@@ -248,7 +256,7 @@ public class ManualRegistration extends AbstractAffineRegistration implements In
 
     }
 
-    public class ManualParam extends Param {
+    public class ManualParam extends AffineParam {
         String pointSelectionMode = PointSelectionModes.RUNTIME;
         Roi warpedRoi = null;
         Roi referenceRoi = null;

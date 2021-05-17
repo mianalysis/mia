@@ -1,23 +1,35 @@
 package wbif.sjx.MIA.Module.ImageProcessing.Stack.Registration.Abstract;
 
 import java.util.ArrayList;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 import com.drew.lang.annotations.Nullable;
 
 import fiji.stacks.Hyperstack_rearranger;
+import ij.IJ;
 import ij.ImagePlus;
 import ij.ImageStack;
+import ij.Prefs;
 import ij.plugin.HyperStackConverter;
 import ij.plugin.SubHyperstackMaker;
 import ij.process.ImageProcessor;
 import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
 import wbif.sjx.MIA.MIA;
+import wbif.sjx.MIA.Module.Category;
+import wbif.sjx.MIA.Module.Categories;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
+import wbif.sjx.MIA.Module.ImageProcessing.Pixel.InvertIntensity;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.ProjectImage;
 import wbif.sjx.MIA.Module.ImageProcessing.Stack.ConcatenateStacks;
+import wbif.sjx.MIA.Module.ImageProcessing.Stack.Convert3DStack;
+import wbif.sjx.MIA.Module.ImageProcessing.Stack.ExtractSubstack;
 import wbif.sjx.MIA.Object.Image;
+import wbif.sjx.MIA.Object.Status;
+import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.MIA.Object.Parameters.BooleanP;
 import wbif.sjx.MIA.Object.Parameters.ChoiceP;
 import wbif.sjx.MIA.Object.Parameters.InputImageP;
@@ -25,6 +37,11 @@ import wbif.sjx.MIA.Object.Parameters.OutputImageP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.Parameters.SeparatorP;
 import wbif.sjx.MIA.Object.Parameters.Text.IntegerP;
+import wbif.sjx.MIA.Object.References.Collections.ImageMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.Collections.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.Collections.ObjMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.Collections.ParentChildRefCollection;
+import wbif.sjx.MIA.Object.References.Collections.PartnerRefCollection;
 
 public abstract class AbstractRegistration<T extends RealType<T> & NativeType<T>> extends Module {
     public static final String INPUT_SEPARATOR = "Image input/output";
@@ -46,7 +63,8 @@ public abstract class AbstractRegistration<T extends RealType<T> & NativeType<T>
     public static final String CALCULATION_SOURCE = "Calculation source";
     public static final String EXTERNAL_SOURCE = "External source";
     public static final String CALCULATION_CHANNEL = "Calculation channel";
-    
+    public static final String SHOW_DETECTED_POINTS = "Show detected points";
+
     public AbstractRegistration(String name, ModuleCollection modules) {
         super(name, modules);
     }
@@ -95,6 +113,264 @@ public abstract class AbstractRegistration<T extends RealType<T> & NativeType<T>
 
     }
 
+    public abstract Param createParameterSet();
+
+    public abstract void getParameters(Param param, Workspace workspace);
+
+    public abstract Transform getTransform(ImageProcessor referenceIpr, ImageProcessor warpedIpr, Param param,
+            boolean showDetectedPoints);
+
+    public abstract ImageProcessor applyTransform(ImageProcessor inputIpl, Transform transform);
+
+
+    public void processIndependent(Image inputImage, Image calculationImage, String referenceMode, int numPrevFrames,
+            String prevFrameStatMode, Param param, String fillMode, boolean showDetectedPoints, boolean multithread,
+            @Nullable Image reference) {
+        // This works in a very similar manner to processLinked, except it's performed
+        // one slice at a time
+        for (int z = 0; z < inputImage.getImagePlus().getNSlices(); z++) {
+            // Getting the current slices (input and calculation)
+            Image currInputImage = ExtractSubstack.extractSubstack(inputImage, inputImage.getName(), "1-end",
+                    String.valueOf(z + 1), "1-end");
+            Image currCalcImage = ExtractSubstack.extractSubstack(calculationImage, calculationImage.getName(), "1-end",
+                    String.valueOf(z + 1), "1-end");
+
+            // Performing the registration on this slice
+            processLinked(currInputImage, currCalcImage, referenceMode, numPrevFrames, prevFrameStatMode, param,
+                    fillMode, showDetectedPoints, multithread, reference);
+
+            // Replacing all images in this slice of the input with the registered images
+            replaceSlice(inputImage, currInputImage, z);
+
+        }
+    }
+
+    public void processLinked(Image inputImage, Image calculationImage, String referenceMode, int numPrevFrames,
+            String prevFrameStatMode, Param param, String fillMode, boolean showDetectedPoints, boolean multithread,
+            @Nullable Image reference) {
+        // Assigning fixed reference images
+        switch (referenceMode) {
+            case ReferenceModes.FIRST_FRAME:
+                reference = ExtractSubstack.extractSubstack(calculationImage, "Reference", "1", "1", "1");
+                break;
+
+            case ReferenceModes.SPECIFIC_IMAGE:
+                if (reference == null)
+                    return;
+                break;
+        }
+
+        // Iterate over each time-step
+        int count = 0;
+        int nFrames = calculationImage.getImagePlus().getNFrames();
+
+        for (int t = 0; t < nFrames; t++) {
+            writeStatus("Processing frame " + (++count) + " of " + nFrames);
+
+            // If the reference image is the previous frame, get this now
+            switch (referenceMode) {
+                case ReferenceModes.FIRST_FRAME:
+                    // We don't need to align the first image if comparing to the first image
+                    if (t == 0)
+                        continue;
+                    break;
+
+                case ReferenceModes.PREVIOUS_N_FRAMES:
+                    if (t == 0)
+                        continue;
+
+                    int minT = Math.max(1, t - numPrevFrames + 1);
+                    Image referenceStack = ExtractSubstack.extractSubstack(calculationImage, "Reference", "1", "1",
+                            minT + "-" + t);
+                    Convert3DStack.process(referenceStack.getImagePlus(), Convert3DStack.Modes.OUTPUT_Z_STACK);
+                    reference = ProjectImage.projectImageInZ(referenceStack, "Reference", prevFrameStatMode);
+
+                    break;
+            }
+
+            // Getting the calculation image at this time-point
+            Image warped = ExtractSubstack.extractSubstack(calculationImage, "Warped", "1", "1", String.valueOf(t + 1));
+
+            // Calculating the transformation for this image pair
+            Transform transform = getTransform(reference.getImagePlus().getProcessor(),
+                    warped.getImagePlus().getProcessor(), param, showDetectedPoints);
+
+            // Applying the transformation to the whole stack.
+            // All channels should move in the same way, so are processed with the same
+            // transformation.
+            for (int c = 0; c < inputImage.getImagePlus().getNChannels(); c++) {
+                Image warpedChannel = ExtractSubstack.extractSubstack(inputImage, "Warped", String.valueOf(c + 1), "1-end",
+                        String.valueOf(t + 1));
+                try {
+                    applyTransformation(warpedChannel, transform, fillMode, multithread);
+                } catch (InterruptedException e) {}
+
+                replaceStack(inputImage, warpedChannel, c, t);
+
+            }
+
+            // Need to apply the warp to an external image
+            if (referenceMode.equals(ReferenceModes.PREVIOUS_N_FRAMES)) {
+                warped = ExtractSubstack.extractSubstack(calculationImage, "Warped", "1", "1", String.valueOf(t + 1));
+                try {
+                    applyTransformation(warped, transform, fillMode, multithread);
+                } catch (InterruptedException e) {
+                    return;
+                }
+                replaceStack(calculationImage, warped, 0, t);
+            }
+
+            transform = null;
+
+        }
+    }
+
+    // public static void showDetectedPoints(ImageProcessor referenceIpr,
+    // ImageProcessor warpedIpr,
+    // Collection<PointMatch> candidates) {
+    // SpatCal sc = new SpatCal(1, 1, "um", referenceIpr.getWidth(),
+    // referenceIpr.getHeight(), 2);
+    // ObjCollection oc = new ObjCollection("Im", sc, 1, 1d,
+    // TemporalUnit.getOMEUnit());
+    // ImagePlus showIpl = IJ.createImage("Detected points",
+    // referenceIpr.getWidth(), referenceIpr.getHeight(), 2,
+    // referenceIpr.getBitDepth());
+
+    // showIpl.getStack().setProcessor(referenceIpr, 1);
+    // for (PointMatch pm : candidates) {
+    // Obj obj = oc.createAndAddNewObject(VolumeType.POINTLIST);
+    // try {
+    // obj.add((int) Math.round(pm.getP2().getL()[0]), (int)
+    // Math.round(pm.getP2().getL()[1]), 0);
+    // } catch (PointOutOfRangeException e) {
+    // }
+    // AddObjectCentroid.addOverlay(obj, showIpl, Color.RED,
+    // AddObjectCentroid.PointSizes.MEDIUM,
+    // AddObjectCentroid.PointTypes.DOT, false);
+    // }
+
+    // showIpl.getStack().setProcessor(warpedIpr, 2);
+    // for (PointMatch pm : candidates) {
+    // Obj obj = oc.createAndAddNewObject(VolumeType.POINTLIST);
+    // try {
+    // obj.add((int) Math.round(pm.getP1().getL()[0]), (int)
+    // Math.round(pm.getP1().getL()[1]), 1);
+    // } catch (PointOutOfRangeException e) {
+    // }
+    // AddObjectCentroid.addOverlay(obj, showIpl, Color.BLUE,
+    // AddObjectCentroid.PointSizes.MEDIUM,
+    // AddObjectCentroid.PointTypes.DOT, false);
+    // }
+
+    // showIpl.duplicate().show();
+
+    // }
+
+    public void applyTransformation(Image inputImage, Transform transform, String fillMode, boolean multithread)
+            throws InterruptedException {
+        // Iterate over all images in the stack
+        ImagePlus inputIpl = inputImage.getImagePlus();
+        int nChannels = inputIpl.getNChannels();
+        int nSlices = inputIpl.getNSlices();
+        int nFrames = inputIpl.getNFrames();
+
+        int nThreads = multithread ? Prefs.getThreads() : 1;
+        ThreadPoolExecutor pool = new ThreadPoolExecutor(nThreads, nThreads, 0L, TimeUnit.MILLISECONDS,
+                new LinkedBlockingQueue<>());
+
+        if (fillMode.equals(FillModes.WHITE))
+            InvertIntensity.process(inputImage);
+
+        for (int c = 1; c <= nChannels; c++) {
+            for (int z = 1; z <= nSlices; z++) {
+                for (int t = 1; t <= nFrames; t++) {
+                    int finalC = c;
+                    int finalZ = z;
+                    int finalT = t;
+
+                    Runnable task = () -> {
+                        ImageProcessor slice = getSetStack(inputIpl, finalT, finalC, finalZ, null).getProcessor();                        
+                        
+                        ImageProcessor alignedSlice = applyTransform(slice, transform);
+                        alignedSlice.setMinAndMax(slice.getMin(), slice.getMax());
+
+                        getSetStack(inputIpl, finalT, finalC, finalZ, alignedSlice);
+
+                    };
+                    pool.submit(task);
+                }
+            }
+        }
+
+        pool.shutdown();
+        pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS); // i.e. never terminate early
+
+        if (fillMode.equals(FillModes.WHITE))
+            InvertIntensity.process(inputImage);
+
+    }
+
+    public static boolean testReferenceValidity(Image inputImage, Image calculationImage, String otherAxisMode) {
+        ImagePlus inputIpl = inputImage.getImagePlus();
+        ImagePlus calculationIpl = calculationImage.getImagePlus();
+
+        // Stacks should already be ordered such that the registration axis is along the
+        // time axis. Calculation image should have equal number of frames as the input.
+        // Also, if "slices" are linked, it should only have one slice. If "slices" are
+        // independent, it should have the same number of slices as the input.
+        switch (otherAxisMode) {
+            case OtherAxisModes.INDEPENDENT:
+                if (calculationIpl.getNSlices() != inputIpl.getNSlices()) {
+                    MIA.log.writeWarning(
+                            "Non-registration axis of calculation image stack is different length to input image stack.  Calculation stack has "
+                                    + calculationIpl.getNSlices() + " images, input stack has " + inputIpl.getNSlices()
+                                    + " images.  In \"" + OtherAxisModes.INDEPENDENT
+                                    + "\" mode, calculation and input stacks should be the same length along non-registration axis.");
+                    return false;
+                }
+                break;
+
+            case OtherAxisModes.LINKED:
+                if (calculationIpl.getNSlices() > 1) {
+                    MIA.log.writeWarning("Non-registration axis of calculation image stack is too large ("
+                            + calculationIpl.getNSlices() + ").  In \"" + OtherAxisModes.LINKED
+                            + "\" mode, calculation stack should have a single image along non-registration axis.");
+                    return false;
+                }
+                break;
+        }
+
+        // Irrespective of other axis mode, "time" axis should be the same length
+        if (calculationIpl.getNFrames() != inputIpl.getNFrames()) {
+            MIA.log.writeWarning("Calculation image stack has different length to input image.  Calculation stack has "
+                    + calculationIpl.getNFrames() + " images and, input stack has " + inputIpl.getNFrames()
+                    + " images.");
+            return false;
+        }
+
+        // Reference stack is valid
+        return true;
+
+    }
+
+    public static <T extends RealType<T> & NativeType<T>> Image createOverlay(Image<T> inputImage,
+            Image<T> referenceImage) {
+        // Only create the overlay if the two images have matching dimensions
+        ImagePlus ipl1 = inputImage.getImagePlus();
+        ImagePlus ipl2 = referenceImage.getImagePlus();
+
+        if (ipl1.getNSlices() == ipl2.getNSlices() && ipl1.getNFrames() == ipl2.getNFrames()) {
+            String axis = ConcatenateStacks.AxisModes.CHANNEL;
+            ArrayList<Image<T>> images = new ArrayList<>();
+            images.add(inputImage);
+            images.add(referenceImage);
+            return ConcatenateStacks.concatenateImages(images, axis, "Overlay");
+        }
+
+        return inputImage;
+
+    }
+
     public static void changeStackOrder(Image image) {
         ImagePlus inputIpl = image.getImagePlus();
 
@@ -116,67 +392,7 @@ public abstract class AbstractRegistration<T extends RealType<T> & NativeType<T>
         image.setImagePlus(inputIpl);
 
     }
-
-    public static boolean testReferenceValidity(Image inputImage, Image calculationImage, String otherAxisMode) {
-        ImagePlus inputIpl = inputImage.getImagePlus();
-        ImagePlus calculationIpl = calculationImage.getImagePlus();
-
-        // Stacks should already be ordered such that the registration axis is along the
-        // time axis. Calculation image should have equal number of frames as the input.
-        // Also, if "slices" are linked, it should only have one slice. If "slices" are
-        // independent, it should have the same number of slices as the input.
-        switch (otherAxisMode) {
-        case OtherAxisModes.INDEPENDENT:
-            if (calculationIpl.getNSlices() != inputIpl.getNSlices()) {
-                MIA.log.writeWarning(
-                        "Non-registration axis of calculation image stack is different length to input image stack.  Calculation stack has "
-                                + calculationIpl.getNSlices() + " images, input stack has " + inputIpl.getNSlices()
-                                + " images.  In \"" + OtherAxisModes.INDEPENDENT
-                                + "\" mode, calculation and input stacks should be the same length along non-registration axis.");
-                return false;
-            }
-            break;
-
-        case OtherAxisModes.LINKED:
-            if (calculationIpl.getNSlices() > 1) {
-                MIA.log.writeWarning("Non-registration axis of calculation image stack is too large ("
-                        + calculationIpl.getNSlices() + ").  In \"" + OtherAxisModes.LINKED
-                        + "\" mode, calculation stack should have a single image along non-registration axis.");
-                return false;
-            }
-            break;
-        }
-
-        // Irrespective of other axis mode, "time" axis should be the same length
-        if (calculationIpl.getNFrames() != inputIpl.getNFrames()) {
-            MIA.log.writeWarning("Calculation image stack has different length to input image.  Calculation stack has "
-                    + calculationIpl.getNFrames() + " images and, input stack has " + inputIpl.getNFrames()
-                    + " images.");
-            return false;
-        }
-
-        // Reference stack is valid
-        return true;
-
-    }
-
-    public static <T extends RealType<T> & NativeType<T>> Image createOverlay(Image<T> inputImage, Image<T> referenceImage) {
-        // Only create the overlay if the two images have matching dimensions
-        ImagePlus ipl1 = inputImage.getImagePlus();
-        ImagePlus ipl2 = referenceImage.getImagePlus();
-
-        if (ipl1.getNSlices() == ipl2.getNSlices() && ipl1.getNFrames() == ipl2.getNFrames()) {
-            String axis = ConcatenateStacks.AxisModes.CHANNEL;
-            ArrayList<Image<T>> images = new ArrayList<>();
-            images.add(inputImage);
-            images.add(referenceImage);
-            return ConcatenateStacks.concatenateImages(images, axis, "Overlay");
-        }
-
-        return inputImage;
-
-    }
-
+    
     synchronized public static ImagePlus getSetStack(ImagePlus inputImagePlus, int timepoint, int channel, int slice,
             @Nullable ImageProcessor toPut) {
         if (toPut == null) {
@@ -226,6 +442,125 @@ public abstract class AbstractRegistration<T extends RealType<T> & NativeType<T>
     }
 
     @Override
+    public Category getCategory() {
+        return Categories.IMAGE_PROCESSING_STACK_REGISTRATION;
+    }
+
+    @Override
+    public Status process(Workspace workspace) {
+        IJ.setBackgroundColor(255, 255, 255);
+
+        // Getting parameters
+        String inputImageName = parameters.getValue(INPUT_IMAGE);
+        boolean applyToInput = parameters.getValue(APPLY_TO_INPUT);
+        String outputImageName = parameters.getValue(OUTPUT_IMAGE);
+        String regAxis = parameters.getValue(REGISTRATION_AXIS);
+        String otherAxisMode = parameters.getValue(OTHER_AXIS_MODE);
+        boolean multithread = parameters.getValue(ENABLE_MULTITHREADING);
+        String referenceMode = parameters.getValue(REFERENCE_MODE);
+        int numPrevFrames = parameters.getValue(NUM_PREV_FRAMES);
+        String prevFramesStatMode = parameters.getValue(PREV_FRAMES_STAT_MODE);
+        String referenceImageName = parameters.getValue(REFERENCE_IMAGE);
+        String calculationSource = parameters.getValue(CALCULATION_SOURCE);
+        String externalSourceName = parameters.getValue(EXTERNAL_SOURCE);
+        int calculationChannel = parameters.getValue(CALCULATION_CHANNEL);
+        String fillMode = parameters.getValue(FILL_MODE);
+        boolean showDetectedPoints = parameters.getValue(SHOW_DETECTED_POINTS);
+
+        // Getting the input image and duplicating if the output will be stored
+        // separately
+        Image inputImage = workspace.getImage(inputImageName);
+        if (!applyToInput)
+            inputImage = new Image(outputImageName, inputImage.getImagePlus().duplicate());
+
+        // If comparing to a fixed image, get this now
+        Image reference = referenceMode.equals(ReferenceModes.SPECIFIC_IMAGE) ? workspace.getImage(referenceImageName)
+                : null;
+
+        // Getting the image the registration will be calculated from.
+        String calcC = String.valueOf(calculationChannel);
+        Image calculationImage = null;
+        switch (calculationSource) {
+            case CalculationSources.EXTERNAL:
+                Image externalImage = workspace.getImage(externalSourceName);
+                calculationImage = ExtractSubstack.extractSubstack(externalImage, "CalcIm", calcC, "1-end", "1-end");
+                break;
+
+            case CalculationSources.INTERNAL:
+                calculationImage = ExtractSubstack.extractSubstack(inputImage, "CalcIm", calcC, "1-end", "1-end");
+                break;
+        }
+
+        // Registration will be performed in time, so ensure actual axis to be
+        // registered is reordered to be in time axis
+        switch (regAxis) {
+            case RegistrationAxes.Z:
+                changeStackOrder(inputImage);
+                changeStackOrder(calculationImage);
+                break;
+        }
+
+        // If non-registration dimension is "linked", calculation image potentially
+        // needs to be projected. Since the images have been transformed such that the
+        // registration dimension is always "Time", then this is a Z projection. A
+        // maximum intensity projection is used. It only needs be performed if there is
+        // at least one Z-slice.
+        if (calculationImage.getImagePlus().getNSlices() > 1) {
+            switch (otherAxisMode) {
+                case OtherAxisModes.LINKED:
+                    calculationImage = ProjectImage.projectImageInZ(calculationImage, "CalcIm",
+                            ProjectImage.ProjectionModes.MAX);
+                    break;
+            }
+        }
+
+        // Ensuring calculation image has the correct dimensions
+        if (testReferenceValidity(inputImage, calculationImage, otherAxisMode)) {
+            // Setting up the parameters specific to this module
+            Param param = createParameterSet();
+            getParameters(param, workspace);
+
+            switch (otherAxisMode) {
+                case OtherAxisModes.INDEPENDENT:
+                    processIndependent(inputImage, calculationImage, referenceMode, numPrevFrames, prevFramesStatMode,
+                            param, fillMode, showDetectedPoints, multithread, reference);
+                    break;
+
+                case OtherAxisModes.LINKED:
+                    processLinked(inputImage, calculationImage, referenceMode, numPrevFrames, prevFramesStatMode, param,
+                            fillMode, showDetectedPoints, multithread, reference);
+                    break;
+            }
+
+            // If stack order was adjusted, now swap it back
+            switch (regAxis) {
+                case RegistrationAxes.Z:
+                    changeStackOrder(inputImage);
+                    changeStackOrder(calculationImage);
+                    break;
+            }
+
+        } else {
+            MIA.log.writeWarning("Input stack has not been registered");
+        }
+
+        if (showOutput) {
+            if (referenceMode.equals(ReferenceModes.SPECIFIC_IMAGE)) {
+                createOverlay(inputImage, reference).showImage();
+            } else {
+                inputImage.showImage();
+            }
+        }
+
+        // Dealing with module outputs
+        if (!applyToInput)
+            workspace.addImage(inputImage);
+
+        return Status.PASS;
+
+    }
+
+    @Override
     protected void initialiseParameters() {
         parameters.add(new SeparatorP(INPUT_SEPARATOR, this));
         parameters.add(new InputImageP(INPUT_IMAGE, this));
@@ -234,7 +569,7 @@ public abstract class AbstractRegistration<T extends RealType<T> & NativeType<T>
 
         parameters.add(new SeparatorP(REGISTRATION_SEPARATOR, this));
         parameters.add(new ChoiceP(REGISTRATION_AXIS, this, RegistrationAxes.TIME, RegistrationAxes.ALL));
-        parameters.add(new ChoiceP(OTHER_AXIS_MODE, this, OtherAxisModes.INDEPENDENT, OtherAxisModes.ALL));        
+        parameters.add(new ChoiceP(OTHER_AXIS_MODE, this, OtherAxisModes.INDEPENDENT, OtherAxisModes.ALL));
         parameters.add(new ChoiceP(FILL_MODE, this, FillModes.BLACK, FillModes.ALL));
         parameters.add(new BooleanP(ENABLE_MULTITHREADING, this, true));
 
@@ -246,7 +581,8 @@ public abstract class AbstractRegistration<T extends RealType<T> & NativeType<T>
         parameters.add(new ChoiceP(CALCULATION_SOURCE, this, CalculationSources.INTERNAL, CalculationSources.ALL));
         parameters.add(new InputImageP(EXTERNAL_SOURCE, this));
         parameters.add(new IntegerP(CALCULATION_CHANNEL, this, 1));
-        
+        parameters.add(new BooleanP(SHOW_DETECTED_POINTS, this, false));
+
     }
 
     @Override
@@ -262,7 +598,7 @@ public abstract class AbstractRegistration<T extends RealType<T> & NativeType<T>
 
         returnedParameters.add(parameters.getParameter(REGISTRATION_SEPARATOR));
         returnedParameters.add(parameters.getParameter(REGISTRATION_AXIS));
-        returnedParameters.add(parameters.getParameter(OTHER_AXIS_MODE));        
+        returnedParameters.add(parameters.getParameter(OTHER_AXIS_MODE));
         returnedParameters.add(parameters.getParameter(FILL_MODE));
         returnedParameters.add(parameters.getParameter(ENABLE_MULTITHREADING));
 
@@ -286,30 +622,81 @@ public abstract class AbstractRegistration<T extends RealType<T> & NativeType<T>
         }
 
         returnedParameters.add(parameters.getParameter(CALCULATION_CHANNEL));
-        
+        returnedParameters.add(parameters.getParameter(SHOW_DETECTED_POINTS));
+
         return returnedParameters;
 
     }
 
-    protected void addParameterDescriptions() {        
+    @Override
+    public ImageMeasurementRefCollection updateAndGetImageMeasurementRefs() {
+        return null;
+    }
+
+    @Override
+    public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+        return null;
+    }
+
+    @Override
+    public MetadataRefCollection updateAndGetMetadataReferences() {
+        return null;
+    }
+
+    @Override
+    public ParentChildRefCollection updateAndGetParentChildRefs() {
+        return null;
+    }
+
+    @Override
+    public PartnerRefCollection updateAndGetPartnerRefs() {
+        return null;
+    }
+
+    @Override
+    public boolean verify() {
+        return true;
+    }
+
+    protected void addParameterDescriptions() {
         parameters.get(INPUT_IMAGE).setDescription("Image from workspace to apply registration to.");
 
-        parameters.get(APPLY_TO_INPUT).setDescription("When selected, the post-operation image will overwrite the input image in the workspace.  Otherwise, the image will be saved to the workspace with the name specified by the \"" + OUTPUT_IMAGE + "\" parameter.");
+        parameters.get(APPLY_TO_INPUT).setDescription(
+                "When selected, the post-operation image will overwrite the input image in the workspace.  Otherwise, the image will be saved to the workspace with the name specified by the \""
+                        + OUTPUT_IMAGE + "\" parameter.");
 
         parameters.get(OUTPUT_IMAGE).setDescription("If \"" + APPLY_TO_INPUT
-        + "\" is not selected, the post-operation image will be saved to the workspace with this name.");
+                + "\" is not selected, the post-operation image will be saved to the workspace with this name.");
 
-        parameters.get(REGISTRATION_AXIS).setDescription("Controls which stack axis the registration will be applied in.  For example, when \""+RegistrationAxes.TIME+"\" is selected, all images along the time axis will be aligned.  Choices are: " + String.join(", ", RegistrationAxes.ALL) + ".");
+        parameters.get(REGISTRATION_AXIS)
+                .setDescription("Controls which stack axis the registration will be applied in.  For example, when \""
+                        + RegistrationAxes.TIME
+                        + "\" is selected, all images along the time axis will be aligned.  Choices are: "
+                        + String.join(", ", RegistrationAxes.ALL) + ".");
 
-        parameters.get(OTHER_AXIS_MODE).setDescription("For stacks with non-registration axis lengths longer than 1 (e.g. the \"Z\" axis when registering in time) the behaviour of this other axis is controlled by this parameter:<br><ul>"
+        parameters.get(OTHER_AXIS_MODE).setDescription(
+                "For stacks with non-registration axis lengths longer than 1 (e.g. the \"Z\" axis when registering in time) the behaviour of this other axis is controlled by this parameter:<br><ul>"
 
-        +"<li>\""+OtherAxisModes.INDEPENDENT+"\" Each non-registration axis is registered independently.  For example, applying separate Z-registrations for each timepoint of a 4D stack.</li>"
+                        + "<li>\"" + OtherAxisModes.INDEPENDENT
+                        + "\" Each non-registration axis is registered independently.  For example, applying separate Z-registrations for each timepoint of a 4D stack.</li>"
 
-        +"<li>\""+OtherAxisModes.LINKED+"\" All elements of the non-registration axis are registered with a single transform.  For example, applying the same registration at a timepoint to all slices of a 4D stack.</li></ul>");
+                        + "<li>\"" + OtherAxisModes.LINKED
+                        + "\" All elements of the non-registration axis are registered with a single transform.  For example, applying the same registration at a timepoint to all slices of a 4D stack.</li></ul>");
 
-        parameters.get(FILL_MODE).setDescription("Controls what intensity any border pixels will have.  \"Borders\" in this case correspond to strips/wedges at the image edge corresponding to regions outside the initial image (e.g. the right-side of an output image when the input was translated to the left).   Choices are: "+String.join(", ",FillModes.ALL)+".");
+        parameters.get(FILL_MODE).setDescription(
+                "Controls what intensity any border pixels will have.  \"Borders\" in this case correspond to strips/wedges at the image edge corresponding to regions outside the initial image (e.g. the right-side of an output image when the input was translated to the left).   Choices are: "
+                        + String.join(", ", FillModes.ALL) + ".");
 
-        parameters.get(ENABLE_MULTITHREADING).setDescription("When selected, certain parts of the registration process will be run on multiple threads of the CPU.  This can provide a speed improvement when working on a computer with a multi-core CPU.");
+        parameters.get(ENABLE_MULTITHREADING).setDescription(
+                "When selected, certain parts of the registration process will be run on multiple threads of the CPU.  This can provide a speed improvement when working on a computer with a multi-core CPU.");
+
+    }
+
+    public interface Param {
+
+    }
+
+    public interface Transform {
 
     }
 }

@@ -7,6 +7,7 @@ import java.util.concurrent.ExecutionException;
 import ij.IJ;
 import ij.process.FloatProcessor;
 import ij.process.ImageProcessor;
+import mpicbg.ij.InverseTransformMapping;
 import mpicbg.ij.blockmatching.BlockMatching;
 import mpicbg.models.AbstractAffineModel2D;
 import mpicbg.models.ErrorStatistic;
@@ -22,7 +23,7 @@ import wbif.sjx.MIA.Object.Parameters.SeparatorP;
 import wbif.sjx.MIA.Object.Parameters.Text.DoubleP;
 import wbif.sjx.MIA.Object.Parameters.Text.IntegerP;
 
-public class BlockMatchingRegistration extends AbstractAffineRegistration {
+public class AffineBlockMatching extends AbstractAffineRegistration {
     public static final String FEATURE_SEPARATOR = "Feature detection";
     public static final String LAYER_SCALE = "Layer scale";
     public static final String SEARCH_RADIUS = "Search radius (px)";
@@ -35,8 +36,8 @@ public class BlockMatchingRegistration extends AbstractAffineRegistration {
     public static final String MAX_ABS_LOCAL_DISPLACEMENT = "Maximal absolute local displacement (px)";
     public static final String MAX_REL_LOCAL_DISPLACEMENT = "Maximal relative local displacement (px)";
 
-    public BlockMatchingRegistration(ModuleCollection modules) {
-        super("Automatic block-matching registration", modules);
+    public AffineBlockMatching(ModuleCollection modules) {
+        super("Affine (block matching)", modules);
     }
 
     @Override
@@ -46,29 +47,32 @@ public class BlockMatchingRegistration extends AbstractAffineRegistration {
                 + "<br><br>This module uses the <a href=\"https://github.com/fiji/blockmatching\">Block Matching</a> plugin and associated MPICBG tools to detect matching regions from the input images and calculate and apply the necessary 2D affine transforms.";
     }
 
-    
     @Override
-    public Param getParameters(Workspace workspace) {
-        // Setting up the parameters
-        BMParam param = new BMParam();
-        param.transformationMode = parameters.getValue(TRANSFORMATION_MODE);
-        param.scale = (float) (double) parameters.getValue(LAYER_SCALE);
-        param.searchR = parameters.getValue(SEARCH_RADIUS);
-        param.blockR = parameters.getValue(BLOCK_RADIUS);
-        param.resolution = parameters.getValue(RESOLUTION);
-        param.minR = (float) (double) parameters.getValue(MIN_PMCC_R);
-        param.maxCurvature = (float) (double) parameters.getValue(MAX_CURVATURE);
-        param.rod = (float) (double) parameters.getValue(ROD);
-        param.sigma = (float) (double) parameters.getValue(LOCAL_REGION_SIGMA);
-        param.maxAbsDisp = (float) (double) parameters.getValue(MAX_ABS_LOCAL_DISPLACEMENT);
-        param.maxRelDisp = (float) (double) parameters.getValue(MAX_REL_LOCAL_DISPLACEMENT);
-
-        return param;
-
+    public BMParam createParameterSet() {
+        return new BMParam();
     }
     
     @Override
-    public AbstractAffineModel2D getAffineModel2D(ImageProcessor referenceIpr, ImageProcessor warpedIpr, Param param,
+    public void getParameters(Param param, Workspace workspace) {
+        super.getParameters(param, workspace);
+
+        // Setting up the parameters
+        BMParam bmParam = (BMParam) param;
+        bmParam.scale = (float) (double) parameters.getValue(LAYER_SCALE);
+        bmParam.searchR = parameters.getValue(SEARCH_RADIUS);
+        bmParam.blockR = parameters.getValue(BLOCK_RADIUS);
+        bmParam.resolution = parameters.getValue(RESOLUTION);
+        bmParam.minR = (float) (double) parameters.getValue(MIN_PMCC_R);
+        bmParam.maxCurvature = (float) (double) parameters.getValue(MAX_CURVATURE);
+        bmParam.rod = (float) (double) parameters.getValue(ROD);
+        bmParam.sigma = (float) (double) parameters.getValue(LOCAL_REGION_SIGMA);
+        bmParam.maxAbsDisp = (float) (double) parameters.getValue(MAX_ABS_LOCAL_DISPLACEMENT);
+        bmParam.maxRelDisp = (float) (double) parameters.getValue(MAX_REL_LOCAL_DISPLACEMENT);
+
+    }
+
+    @Override
+    public Transform getTransform(ImageProcessor referenceIpr, ImageProcessor warpedIpr, Param param,
             boolean showDetectedPoints) {
         BMParam p = (BMParam) param;
 
@@ -76,22 +80,25 @@ public class BlockMatchingRegistration extends AbstractAffineRegistration {
         FloatProcessor ipr1 = padImage(referenceIpr, p).convertToFloatProcessor();
         FloatProcessor ipr2 = padImage(warpedIpr, p).convertToFloatProcessor();
 
-        TranslationModel2D transform = new TranslationModel2D();
+        TranslationModel2D translationModel = new TranslationModel2D();
         SpringMesh mesh = new SpringMesh(p.resolution, ipr1.getWidth(), ipr2.getHeight(), 1, 1000, 0.9f);
         Collection<Vertex> vertices = mesh.getVertices();
         Vector<PointMatch> candidates = new Vector<PointMatch>();
 
         try {
-            BlockMatching.matchByMaximalPMCC(ipr1, ipr2, null, null, p.scale, transform, p.blockR, p.blockR, p.searchR,
+            BlockMatching.matchByMaximalPMCC(ipr1, ipr2, null, null, p.scale, translationModel, p.blockR, p.blockR, p.searchR,
                     p.searchR, p.minR, p.rod, p.maxCurvature, vertices, candidates, new ErrorStatistic(1));
 
-            if (showDetectedPoints)
-                showDetectedPoints(referenceIpr, warpedIpr, candidates);
+            // if (showDetectedPoints)
+            //     showDetectedPoints(referenceIpr, warpedIpr, candidates);
 
             AbstractAffineModel2D model = getModel(p.transformationMode);
             model.localSmoothnessFilter(candidates, candidates, p.sigma, p.maxAbsDisp, p.maxRelDisp);
 
-            return model.createInverse();
+            AffineTransform transform = new AffineTransform();
+            transform.mapping = new InverseTransformMapping<AbstractAffineModel2D<?>>(model); 
+    
+            return transform;
 
         } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
@@ -195,7 +202,7 @@ public class BlockMatchingRegistration extends AbstractAffineRegistration {
 
     }
 
-    public class BMParam extends Param {
+    public class BMParam extends AffineParam {
         float scale = 1.0f;
         int searchR = 50;
         int blockR = 50;

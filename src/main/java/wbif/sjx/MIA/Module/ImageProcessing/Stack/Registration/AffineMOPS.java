@@ -1,12 +1,14 @@
 package wbif.sjx.MIA.Module.ImageProcessing.Stack.Registration;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Vector;
 
 import ij.process.ImageProcessor;
-import mpicbg.ij.SIFT;
+import mpicbg.ij.InverseTransformMapping;
+import mpicbg.ij.MOPS;
 import mpicbg.imagefeatures.Feature;
-import mpicbg.imagefeatures.FloatArray2DSIFT;
+import mpicbg.imagefeatures.FloatArray2DMOPS;
 import mpicbg.models.AbstractAffineModel2D;
 import mpicbg.models.NotEnoughDataPointsException;
 import mpicbg.models.PointMatch;
@@ -18,7 +20,7 @@ import wbif.sjx.MIA.Object.Parameters.SeparatorP;
 import wbif.sjx.MIA.Object.Parameters.Text.DoubleP;
 import wbif.sjx.MIA.Object.Parameters.Text.IntegerP;
 
-public class SIFTRegistration extends AbstractAffineRegistration {
+public class AffineMOPS extends AbstractAffineRegistration {
     public static final String FEATURE_SEPARATOR = "Feature detection";
     public static final String INITIAL_SIGMA = "Initial Gaussian blur (px)";
     public static final String STEPS = "Steps per scale";
@@ -30,76 +32,74 @@ public class SIFTRegistration extends AbstractAffineRegistration {
     public static final String MAX_EPSILON = "Maximal alignment error (px)";
     public static final String MIN_INLIER_RATIO = "Inlier ratio";
 
-    public SIFTRegistration(ModuleCollection modules) {
-        super("Automatic SIFT-based registration", modules);
+    public AffineMOPS(ModuleCollection modules) {
+        super("Affine (MOPS)", modules);
     }
 
     @Override
     public String getDescription() {
-        return "Apply slice-by-slice (2D) affine-based image registration to a multi-dimensional stack.  Images can be aligned relative to the first frame in the stack, the previous frame or a separate image in the workspace.  The registration transform can also be calculated from a separate stack to the one that it will be applied to.  Registration can be performed along either the time or Z axes.  The non-registered axis (e.g. time axis when registering in Z) can be \"linked\" (all frames given the same registration) or \"independent\" (each stack registered separately)."
+            return "Apply slice-by-slice (2D) affine-based image registration to a multi-dimensional stack.  Images can be aligned relative to the first frame in the stack, the previous frame or a separate image in the workspace.  The registration transform can also be calculated from a separate stack to the one that it will be applied to.  Registration can be performed along either the time or Z axes.  The non-registered axis (e.g. time axis when registering in Z) can be \"linked\" (all frames given the same registration) or \"independent\" (each stack registered separately)."
 
-                + "<br><br>This module uses the <a href=\"https://imagej.net/Feature_Extraction\">Feature Extraction</a> plugin and associated MPICBG tools to detect SIFT (\"Scale Invariant Feature Transform\") features from the input images and calculate and apply the necessary 2D affine transforms."
+                            + "<br><br>This module uses the <a href=\"https://imagej.net/Feature_Extraction\">Feature Extraction</a> plugin and associated MPICBG tools to detect MOPS (\"Multi-Scale Oriented Patches\") features from the input images and calculate and apply the necessary 2D affine transforms."
 
-                + "<br><br>Note: The SIFT-algorithm is protected by U.S. Patent 6,711,293: Method and apparatus for identifying scale invariant features in an image and use of same for locating an object in an image by the University of British Columbia. That is, for commercial applications the permission of the author is required. Anything else is published under the terms of the GPL, so feel free to use it for academic or personal purposes."
+                            + "<br><br>References:<ul>"
 
-                + "<br><br>References:<ul>"
+                            + "<li>Brown, Matthew & Szeliski, Richard \"Multi-image feature matching using multi-scale oriented patches\". US Patent 7,382,897 (June 3, 2008). Asignee: Microsoft Corporation.</li></ul>";
 
-                + "<li>Lowe, David G. \"Object recognition from local scale-invariant features\". <i>Proceedings of the International Conference on Computer Vision</i> <b>2</b> (1999) 1150–1157.</li>"
-
-                + "<li>Lowe, David G. \"Distinctive Image Features from Scale-Invariant Keypoints\". <i>International Journal of Computer Vision</i> <b>60</b> (2004) 91–110.</li></ul>";
+    }
+    
+    @Override
+    public MOPSParam createParameterSet() {
+        return new MOPSParam();
     }
 
     @Override
-    public Param getParameters(Workspace workspace) {
+    public void getParameters(Param param, Workspace workspace) {
+            super.getParameters(param, workspace);
+        
         // Setting up the parameters
-        SIFTParam param = new SIFTParam();
-        param.transformationMode = parameters.getValue(TRANSFORMATION_MODE);
-        param.initialSigma = (float) (double) parameters.getValue(INITIAL_SIGMA);
-        param.steps = parameters.getValue(STEPS);
-        param.minOctaveSize = parameters.getValue(MINIMUM_IMAGE_SIZE);
-        param.maxOctaveSize = parameters.getValue(MAXIMUM_IMAGE_SIZE);
-        param.fdSize = parameters.getValue(FD_SIZE);
-        param.fdBins = parameters.getValue(FD_ORIENTATION_BINS);
-        param.rod = (float) (double) parameters.getValue(ROD);
-        param.maxEpsilon = (float) (double) parameters.getValue(MAX_EPSILON);
-        param.minInlierRatio = (float) (double) parameters.getValue(MIN_INLIER_RATIO);
-
-        return param;
-
+        MOPSParam mopsParam = (MOPSParam) param;
+        mopsParam.initialSigma = (float) (double) parameters.getValue(INITIAL_SIGMA);
+        mopsParam.steps = parameters.getValue(STEPS);
+        mopsParam.minOctaveSize = parameters.getValue(MINIMUM_IMAGE_SIZE);
+        mopsParam.maxOctaveSize = parameters.getValue(MAXIMUM_IMAGE_SIZE);
+        mopsParam.fdSize = parameters.getValue(FD_SIZE);
+        mopsParam.rod = (float) (double) parameters.getValue(ROD);
+        mopsParam.maxEpsilon = (float) (double) parameters.getValue(MAX_EPSILON);
+        mopsParam.minInlierRatio = (float) (double) parameters.getValue(MIN_INLIER_RATIO);
+        
     }
 
     @Override
-    public AbstractAffineModel2D getAffineModel2D(ImageProcessor referenceIpr, ImageProcessor warpedIpr, Param param,
+    public Transform getTransform(ImageProcessor referenceIpr, ImageProcessor warpedIpr, Param param,
             boolean showDetectedPoints) {
-
-        SIFTParam p = (SIFTParam) param;
+        MOPSParam p = (MOPSParam) param;
 
         // Creating SIFT parameter structure
-        FloatArray2DSIFT.Param siftParam = new FloatArray2DSIFT.Param();
-        siftParam.fdBins = p.fdBins;
-        siftParam.fdSize = p.fdSize;
-        siftParam.initialSigma = p.initialSigma;
-        siftParam.maxOctaveSize = p.maxOctaveSize;
-        siftParam.minOctaveSize = p.minOctaveSize;
-        siftParam.steps = p.steps;
+        FloatArray2DMOPS.Param mopsParam = new FloatArray2DMOPS.Param();
+        mopsParam.fdSize = p.fdSize;
+        mopsParam.initialSigma = p.initialSigma;
+        mopsParam.maxOctaveSize = p.maxOctaveSize;
+        mopsParam.minOctaveSize = p.minOctaveSize;
+        mopsParam.steps = p.steps;
 
         // Initialising SIFT feature extractor
-        SIFT sift = new SIFT(new FloatArray2DSIFT(siftParam));
+        MOPS mops = new MOPS(new FloatArray2DMOPS(mopsParam));
 
         // Extracting features
         ArrayList<Feature> featureList1 = new ArrayList<Feature>();
-        sift.extractFeatures(referenceIpr, featureList1);
+        mops.extractFeatures(referenceIpr, featureList1);
         ArrayList<Feature> featureList2 = new ArrayList<Feature>();
-        sift.extractFeatures(warpedIpr, featureList2);
+        mops.extractFeatures(warpedIpr, featureList2);
 
         // Running registration
         AbstractAffineModel2D model = getModel(p.transformationMode);
-        Vector<PointMatch> candidates = FloatArray2DSIFT.createMatches(featureList2, featureList1, 1.5f, null,
-                Float.MAX_VALUE, p.rod);
-        ArrayList<PointMatch> inliers = new ArrayList<PointMatch>();
+        List<PointMatch> candidates = FloatArray2DMOPS.createMatches(featureList1, featureList2, 1.5f, null,
+                Double.MAX_VALUE, p.rod);
+        Vector<PointMatch> inliers = new Vector<PointMatch>();
 
-        if (showDetectedPoints)
-            showDetectedPoints(referenceIpr, warpedIpr, candidates);
+        // if (showDetectedPoints)
+        //     showDetectedPoints(referenceIpr, warpedIpr, candidates);
 
         try {
             model.filterRansac(candidates, inliers, 1000, p.maxEpsilon, p.minInlierRatio);
@@ -107,7 +107,10 @@ public class SIFTRegistration extends AbstractAffineRegistration {
             return null;
         }
 
-        return model;
+        AffineTransform transform = new AffineTransform();
+        transform.mapping = new InverseTransformMapping<AbstractAffineModel2D<?>>(model); 
+
+        return transform;
 
     }
 
@@ -174,7 +177,7 @@ public class SIFTRegistration extends AbstractAffineRegistration {
                         + siteRef);
 
         parameters.get(FD_SIZE).setDescription(
-                "\"The SIFT-descriptor consists of n×n gradient histograms, each from a 4×4px block. n is this value. Lowe (2004) uses n=4. We found larger descriptors with n=8 perform better for Transmission Electron Micrographs from serial sections.\".  "
+                "\"The MOPS-descriptor is simply a nxn intensity patch with normalized intensities. Brown (2005) suggests n=8.  We found larger descriptors with n>16 perform better for Transmission Electron Micrographs from serial sections.\".  "
                         + siteRef);
 
         parameters.get(FD_ORIENTATION_BINS).setDescription(
@@ -195,7 +198,7 @@ public class SIFTRegistration extends AbstractAffineRegistration {
 
     }
 
-    public class SIFTParam extends Param {
+    public class MOPSParam extends AffineParam {
         // Fitting parameters
         float rod = 0.92f;
         float maxEpsilon = 25.0f;
@@ -203,12 +206,10 @@ public class SIFTRegistration extends AbstractAffineRegistration {
 
         // General parameters
         float initialSigma = 1.6f;
-        int fdSize = 4;
+        int fdSize = 16;
         int maxOctaveSize = 1024;
         int minOctaveSize = 64;
         int steps = 3;
-        int fdBins = 8;
 
     }
-
 }

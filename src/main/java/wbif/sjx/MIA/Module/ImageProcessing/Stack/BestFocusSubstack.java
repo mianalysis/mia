@@ -48,7 +48,7 @@ import net.imglib2.type.numeric.RealType;
 import net.imglib2.view.Views;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
-import wbif.sjx.MIA.Module.ImageProcessing.Stack.Registration.UnwarpImages;
+import wbif.sjx.MIA.Module.ImageProcessing.Stack.Registration.UnwarpAutomatic;
 import wbif.sjx.MIA.Module.Category;
 import wbif.sjx.MIA.Module.Categories;
 import wbif.sjx.MIA.Object.Image;
@@ -717,7 +717,7 @@ public class BestFocusSubstack<T extends RealType<T> & NativeType<T>> extends Mo
         case BestFocusCalculations.MAX_STDEV:
             returnedParameters.add(parameters.getParameter(CALCULATION_SOURCE));
             switch ((String) parameters.getValue(CALCULATION_SOURCE)) {
-            case UnwarpImages.CalculationSources.EXTERNAL:
+            case CalculationSources.EXTERNAL:
                 returnedParameters.add(parameters.getParameter(EXTERNAL_SOURCE));
                 break;
             }
