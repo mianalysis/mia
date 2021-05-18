@@ -19,6 +19,7 @@ import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.Parameters.SeparatorP;
 import wbif.sjx.MIA.Object.Parameters.Text.DoubleP;
 import wbif.sjx.MIA.Object.Parameters.Text.IntegerP;
+import wbif.sjx.MIA.Process.Interactable.PointPairSelector.PointPair;
 
 public class AffineMOPS extends AbstractAffineRegistration {
     public static final String FEATURE_SEPARATOR = "Feature detection";
@@ -98,8 +99,10 @@ public class AffineMOPS extends AbstractAffineRegistration {
                 Double.MAX_VALUE, p.rod);
         Vector<PointMatch> inliers = new Vector<PointMatch>();
 
-        // if (showDetectedPoints)
-        //     showDetectedPoints(referenceIpr, warpedIpr, candidates);
+        if (showDetectedPoints) {
+                ArrayList<PointPair> pairs = convertPointMatchToPointPair(candidates);
+                showDetectedPoints(referenceIpr, warpedIpr, pairs);
+        }
 
         try {
             model.filterRansac(candidates, inliers, 1000, p.maxEpsilon, p.minInlierRatio);

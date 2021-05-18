@@ -1,9 +1,15 @@
 package wbif.sjx.MIA.Module.ImageProcessing.Stack.Registration.Abstract;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Vector;
+
+import ij.gui.PointRoi;
 import ij.process.ImageProcessor;
 import mpicbg.ij.InverseTransformMapping;
 import mpicbg.models.AbstractAffineModel2D;
 import mpicbg.models.AffineModel2D;
+import mpicbg.models.PointMatch;
 import mpicbg.models.RigidModel2D;
 import mpicbg.models.SimilarityModel2D;
 import mpicbg.models.TranslationModel2D;
@@ -13,6 +19,7 @@ import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.MIA.Object.Parameters.ChoiceP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
+import wbif.sjx.MIA.Process.Interactable.PointPairSelector.PointPair;
 
 public abstract class AbstractAffineRegistration<T extends RealType<T> & NativeType<T>>
         extends AbstractRegistration<T> {    
@@ -44,6 +51,20 @@ public abstract class AbstractAffineRegistration<T extends RealType<T> & NativeT
             case TransformationModes.TRANSLATION:
                 return new TranslationModel2D();
         }
+    }
+
+    public static ArrayList<PointPair> convertPointMatchToPointPair(Collection<PointMatch> matches) {
+        ArrayList<PointPair> pairs = new ArrayList<>();
+
+        int count = 1;
+        for (PointMatch match : matches) {
+            PointRoi point1 = new PointRoi(match.getP1().getL()[0], match.getP1().getL()[1]);
+            PointRoi point2 = new PointRoi(match.getP2().getL()[0], match.getP2().getL()[1]);
+            pairs.add(new PointPair(point1,point2,count++));
+        }            
+
+        return pairs;
+
     }
 
     @Override

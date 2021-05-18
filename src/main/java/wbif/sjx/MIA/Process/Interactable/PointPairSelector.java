@@ -3,6 +3,7 @@ package wbif.sjx.MIA.Process.Interactable;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.gui.*;
+import ij.plugin.WindowOrganizer;
 import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Object.Image;
 
@@ -67,6 +68,8 @@ public class PointPairSelector implements ActionListener {
             overlay2 = new Overlay();
             ipl2.setOverlay(overlay2);
         }
+
+        IJ.run("Tile");
 
         showOptionsPanel();
         while (frame != null) {
@@ -173,7 +176,7 @@ public class PointPairSelector implements ActionListener {
                 break;
 
             case (TEST):
-                interactable.doAction(new Object[]{pairs});
+                interactable.doAction(new Object[]{pairs,ipl1,ipl2});
                 break;
 
             case (FINISH):

@@ -12,8 +12,11 @@ import mpicbg.models.AbstractAffineModel2D;
 import mpicbg.models.IllDefinedDataPointsException;
 import mpicbg.models.NotEnoughDataPointsException;
 import mpicbg.models.PointMatch;
+import net.imglib2.type.NativeType;
+import net.imglib2.type.numeric.RealType;
 import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.ModuleCollection;
+import wbif.sjx.MIA.Module.ImageProcessing.Stack.ConcatenateStacks;
 import wbif.sjx.MIA.Module.ImageProcessing.Stack.Registration.Abstract.AbstractAffineRegistration;
 import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.Workspace;
@@ -24,7 +27,7 @@ import wbif.sjx.MIA.Process.Interactable.Interactable;
 import wbif.sjx.MIA.Process.Interactable.PointPairSelector;
 import wbif.sjx.MIA.Process.Interactable.PointPairSelector.PointPair;
 
-public class AffineManual extends AbstractAffineRegistration implements Interactable {
+public class AffineManual <T extends RealType<T> & NativeType<T>> extends AbstractAffineRegistration implements Interactable {
     public static final String FEATURE_SEPARATOR = "Feature detection";
     public static final String POINT_SELECTION_MODE = "Point selection mode";
 
@@ -140,10 +143,12 @@ public class AffineManual extends AbstractAffineRegistration implements Interact
             return null;
         }
 
+        if (showDetectedPoints)
+            showDetectedPoints(referenceIpr, warpedIpr, pairs);
+
         // Getting transform
         AbstractAffineModel2D model = getModel(p.transformationMode);
         final ArrayList<PointMatch> candidates = new ArrayList<PointMatch>();
-
         for (PointPair pair : pairs)
             candidates.addAll(Util.pointRoisToPointMatches(pair.getPoint1(), pair.getPoint2()));
 
@@ -155,7 +160,7 @@ public class AffineManual extends AbstractAffineRegistration implements Interact
         }
 
         AffineTransform transform = new AffineTransform();
-        transform.mapping = new InverseTransformMapping<AbstractAffineModel2D<?>>(model); 
+        transform.mapping = new InverseTransformMapping<AbstractAffineModel2D<?>>(model);
 
         return transform;
 
@@ -164,7 +169,7 @@ public class AffineManual extends AbstractAffineRegistration implements Interact
     public static PointRoi[] createRoiFromPointPairs(ArrayList<PointPair> pairs) {
         PointRoi warpedRoi = new PointRoi();
         PointRoi referenceRoi = new PointRoi();
-        
+
         for (PointPair pair : pairs) {
             warpedRoi.addPoint(pair.getPoint1().getXBase(), pair.getPoint1().getYBase());
             referenceRoi.addPoint(pair.getPoint2().getXBase(), pair.getPoint2().getYBase());
@@ -176,53 +181,44 @@ public class AffineManual extends AbstractAffineRegistration implements Interact
 
     @Override
     public void doAction(Object[] objects) {
-        writeStatus("Running test registration");
+        String transformationMode = parameters.getValue(TRANSFORMATION_MODE);
+        String fillMode = parameters.getValue(FILL_MODE);
+        boolean multithread = parameters.getValue(ENABLE_MULTITHREADING);
 
-        // String transformationMode = parameters.getValue(TRANSFORMATION_MODE);
-        // String fillMode = parameters.getValue(FILL_MODE);
-        // boolean multithread = parameters.getValue(ENABLE_MULTITHREADING);
+        ArrayList<PointPair> pairs = (ArrayList<PointPair>) objects[0];
+        ImagePlus ipl1 = ((ImagePlus) objects[1]).duplicate();
+        ImagePlus ipl2 = ((ImagePlus) objects[2]).duplicate();
 
-        // ArrayList<PointPair> pairs = (ArrayList<PointPair>) objects[0];
+        // Duplicating image
+        Image image1 = new Image("Registered", ipl1);
+        Image image2 = new Image("Reference", ipl2);
 
-        // // Duplicating image
-        // ImagePlus dupIpl = inputImage.getImagePlus().duplicate();
-        // Image<T> dupImage = new Image<T>("Registered", dupIpl);
+        AbstractAffineModel2D model = getModel(transformationMode);
+        final ArrayList<PointMatch> candidates = new ArrayList<PointMatch>();
+        for (PointPair pair : pairs)
+            candidates.addAll(Util.pointRoisToPointMatches(pair.getPoint1(), pair.getPoint2()));
 
-        // // Getting transform
-        // Object[] output = getLandmarkTransformation(pairs, transformationMode);
-        // InverseTransformMapping mapping = (InverseTransformMapping) output[0];
+        try {
+            model.fit(candidates);
+        } catch (NotEnoughDataPointsException | IllDefinedDataPointsException e) {
+            e.printStackTrace();
+            return;
+        }
 
-        // // Iterate over each time-step
-        // int count = 0;
-        // int total = dupImage.getImagePlus().getNFrames();
-        // for (int t = 1; t <= dupImage.getImagePlus().getNFrames(); t++) {
-        // writeStatus("Processing timepoint " + (++count) + " of " + total);
+        AffineTransform transform = new AffineTransform();
+        transform.mapping = new InverseTransformMapping<AbstractAffineModel2D<?>>(model);
 
-        // // Applying the transformation to the whole stack.
-        // // All channels should move in the same way, so are processed with the same
-        // // transformation.
-        // for (int c = 1; c <= dupImage.getImagePlus().getNChannels(); c++) {
-        // Image warped = ExtractSubstack.extractSubstack(dupImage, "Warped",
-        // String.valueOf(c), "1-end",
-        // String.valueOf(t));
-        // try {
-        // applyTransformation(warped, mapping, fillMode, multithread);
-        // } catch (InterruptedException e) {
-        // return;
-        // }
-        // replaceStack(dupImage, warped, c, t);
-        // }
+        try {
+            applyTransformation(image1, transform, fillMode, multithread);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
 
-        // mapping = null;
-
-        // }
-
-        // ArrayList<Image<T>> images = new ArrayList<>();
-        // images.add(reference);
-        // images.add(dupImage);
-        // ConcatenateStacks.concatenateImages(images,
-        // ConcatenateStacks.AxisModes.CHANNEL, "Registration comparison")
-        // .showImage();
+        ArrayList<Image<T>> images = new ArrayList<>();        
+        images.add(image1);
+        images.add(image2);
+        ConcatenateStacks.concatenateImages(images, ConcatenateStacks.AxisModes.CHANNEL, "Registration comparison")
+                .showImage();
 
     }
 

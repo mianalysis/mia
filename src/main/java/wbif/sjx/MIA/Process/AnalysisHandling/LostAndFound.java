@@ -39,14 +39,13 @@ public class LostAndFound {
         lostModules.put("ConditionalAnalysisTermination", new WorkflowHandling(null).getClass().getSimpleName());
         lostModules.put("RunMacroOnImage", new RunMacro(null).getClass().getSimpleName());
         lostModules.put("RunSingleMacroCommand", new RunSingleCommand(null).getClass().getSimpleName());
-        lostModules.put("Manual unwarp", new UnwarpManual(null).getClass().getSimpleName());
-        lostModules.put("Unwarp images", new UnwarpAutomatic(null).getClass().getSimpleName());
-        lostModules.put("Automatic block-matching registration",
-                new AffineBlockMatching(null).getClass().getSimpleName());
-        lostModules.put("Manual registration", new AffineManual(null).getClass().getSimpleName());
-        lostModules.put("Automatic MOPS-based registration", new AffineMOPS(null).getClass().getSimpleName());
-        lostModules.put("Automatic SIFT-based registration", new AffineSIFT(null).getClass().getSimpleName());
-        
+        lostModules.put("ManualUnwarp", new UnwarpManual(null).getClass().getSimpleName());
+        lostModules.put("UnwarpImages", new UnwarpAutomatic(null).getClass().getSimpleName());
+        lostModules.put("BlockMatchingRegistration", new AffineBlockMatching(null).getClass().getSimpleName());
+        lostModules.put("ManualRegistration", new AffineManual(null).getClass().getSimpleName());
+        lostModules.put("MOPSRegistration", new AffineMOPS(null).getClass().getSimpleName());
+        lostModules.put("SIFTRegistration", new AffineSIFT(null).getClass().getSimpleName());
+
         //// Populating hard-coded parameter reassignments ////
         // BlockMatchingRegistration
         HashMap<String, String> currentParameterNames = new HashMap<>();

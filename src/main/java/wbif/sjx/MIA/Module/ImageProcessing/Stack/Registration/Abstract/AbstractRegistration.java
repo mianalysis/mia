@@ -1,5 +1,6 @@
 package wbif.sjx.MIA.Module.ImageProcessing.Stack.Registration.Abstract;
 
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -15,11 +16,12 @@ import ij.Prefs;
 import ij.plugin.HyperStackConverter;
 import ij.plugin.SubHyperstackMaker;
 import ij.process.ImageProcessor;
+import mpicbg.models.PointMatch;
 import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
 import wbif.sjx.MIA.MIA;
-import wbif.sjx.MIA.Module.Category;
 import wbif.sjx.MIA.Module.Categories;
+import wbif.sjx.MIA.Module.Category;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.InvertIntensity;
@@ -27,7 +29,10 @@ import wbif.sjx.MIA.Module.ImageProcessing.Pixel.ProjectImage;
 import wbif.sjx.MIA.Module.ImageProcessing.Stack.ConcatenateStacks;
 import wbif.sjx.MIA.Module.ImageProcessing.Stack.Convert3DStack;
 import wbif.sjx.MIA.Module.ImageProcessing.Stack.ExtractSubstack;
+import wbif.sjx.MIA.Module.Visualisation.Overlays.AddObjectCentroid;
 import wbif.sjx.MIA.Object.Image;
+import wbif.sjx.MIA.Object.Obj;
+import wbif.sjx.MIA.Object.ObjCollection;
 import wbif.sjx.MIA.Object.Status;
 import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.MIA.Object.Parameters.BooleanP;
@@ -42,6 +47,11 @@ import wbif.sjx.MIA.Object.References.Collections.MetadataRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.ObjMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.ParentChildRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.PartnerRefCollection;
+import wbif.sjx.MIA.Object.Units.TemporalUnit;
+import wbif.sjx.MIA.Process.Interactable.PointPairSelector.PointPair;
+import wbif.sjx.common.Object.Volume.PointOutOfRangeException;
+import wbif.sjx.common.Object.Volume.SpatCal;
+import wbif.sjx.common.Object.Volume.VolumeType;
 
 public abstract class AbstractRegistration<T extends RealType<T> & NativeType<T>> extends Module {
     public static final String INPUT_SEPARATOR = "Image input/output";
@@ -122,7 +132,6 @@ public abstract class AbstractRegistration<T extends RealType<T> & NativeType<T>
 
     public abstract ImageProcessor applyTransform(ImageProcessor inputIpl, Transform transform);
 
-
     public void processIndependent(Image inputImage, Image calculationImage, String referenceMode, int numPrevFrames,
             String prevFrameStatMode, Param param, String fillMode, boolean showDetectedPoints, boolean multithread,
             @Nullable Image reference) {
@@ -199,11 +208,12 @@ public abstract class AbstractRegistration<T extends RealType<T> & NativeType<T>
             // All channels should move in the same way, so are processed with the same
             // transformation.
             for (int c = 0; c < inputImage.getImagePlus().getNChannels(); c++) {
-                Image warpedChannel = ExtractSubstack.extractSubstack(inputImage, "Warped", String.valueOf(c + 1), "1-end",
-                        String.valueOf(t + 1));
+                Image warpedChannel = ExtractSubstack.extractSubstack(inputImage, "Warped", String.valueOf(c + 1),
+                        "1-end", String.valueOf(t + 1));
                 try {
                     applyTransformation(warpedChannel, transform, fillMode, multithread);
-                } catch (InterruptedException e) {}
+                } catch (InterruptedException e) {
+                }
 
                 replaceStack(inputImage, warpedChannel, c, t);
 
@@ -225,46 +235,36 @@ public abstract class AbstractRegistration<T extends RealType<T> & NativeType<T>
         }
     }
 
-    // public static void showDetectedPoints(ImageProcessor referenceIpr,
-    // ImageProcessor warpedIpr,
-    // Collection<PointMatch> candidates) {
-    // SpatCal sc = new SpatCal(1, 1, "um", referenceIpr.getWidth(),
-    // referenceIpr.getHeight(), 2);
-    // ObjCollection oc = new ObjCollection("Im", sc, 1, 1d,
-    // TemporalUnit.getOMEUnit());
-    // ImagePlus showIpl = IJ.createImage("Detected points",
-    // referenceIpr.getWidth(), referenceIpr.getHeight(), 2,
-    // referenceIpr.getBitDepth());
+    public static void showDetectedPoints(ImageProcessor referenceIpr, ImageProcessor warpedIpr,
+     ArrayList<PointPair> pairs) {
+        SpatCal sc = new SpatCal(1, 1, "um", referenceIpr.getWidth(), referenceIpr.getHeight(), 2);
+        ObjCollection oc = new ObjCollection("Im", sc, 1, 1d, TemporalUnit.getOMEUnit());
+        ImagePlus showIpl = IJ.createImage("Detected points", referenceIpr.getWidth(), referenceIpr.getHeight(), 2,
+                referenceIpr.getBitDepth());
 
-    // showIpl.getStack().setProcessor(referenceIpr, 1);
-    // for (PointMatch pm : candidates) {
-    // Obj obj = oc.createAndAddNewObject(VolumeType.POINTLIST);
-    // try {
-    // obj.add((int) Math.round(pm.getP2().getL()[0]), (int)
-    // Math.round(pm.getP2().getL()[1]), 0);
-    // } catch (PointOutOfRangeException e) {
-    // }
-    // AddObjectCentroid.addOverlay(obj, showIpl, Color.RED,
-    // AddObjectCentroid.PointSizes.MEDIUM,
-    // AddObjectCentroid.PointTypes.DOT, false);
-    // }
+        showIpl.getStack().setProcessor(referenceIpr, 1);
+        for (PointPair pair : pairs) {
+            Obj obj = oc.createAndAddNewObject(VolumeType.POINTLIST);
+            try {
+                obj.add((int) Math.round(pair.getPoint2().getXBase()), (int) Math.round(pair.getPoint2().getYBase()), 0);
+            } catch (PointOutOfRangeException e) {}
+            AddObjectCentroid.addOverlay(obj, showIpl, Color.RED, AddObjectCentroid.PointSizes.MEDIUM,
+                    AddObjectCentroid.PointTypes.DOT, false);
+        }
 
-    // showIpl.getStack().setProcessor(warpedIpr, 2);
-    // for (PointMatch pm : candidates) {
-    // Obj obj = oc.createAndAddNewObject(VolumeType.POINTLIST);
-    // try {
-    // obj.add((int) Math.round(pm.getP1().getL()[0]), (int)
-    // Math.round(pm.getP1().getL()[1]), 1);
-    // } catch (PointOutOfRangeException e) {
-    // }
-    // AddObjectCentroid.addOverlay(obj, showIpl, Color.BLUE,
-    // AddObjectCentroid.PointSizes.MEDIUM,
-    // AddObjectCentroid.PointTypes.DOT, false);
-    // }
+        showIpl.getStack().setProcessor(warpedIpr, 2);
+        for (PointPair pair : pairs) {
+            Obj obj = oc.createAndAddNewObject(VolumeType.POINTLIST);
+            try {
+                obj.add((int) Math.round(pair.getPoint1().getXBase()), (int) Math.round(pair.getPoint1().getYBase()), 1);
+            } catch (PointOutOfRangeException e) {}
+            AddObjectCentroid.addOverlay(obj, showIpl, Color.BLUE, AddObjectCentroid.PointSizes.MEDIUM,
+                    AddObjectCentroid.PointTypes.DOT, false);
+        }
 
-    // showIpl.duplicate().show();
+        showIpl.duplicate().show();
 
-    // }
+    }
 
     public void applyTransformation(Image inputImage, Transform transform, String fillMode, boolean multithread)
             throws InterruptedException {
@@ -289,8 +289,8 @@ public abstract class AbstractRegistration<T extends RealType<T> & NativeType<T>
                     int finalT = t;
 
                     Runnable task = () -> {
-                        ImageProcessor slice = getSetStack(inputIpl, finalT, finalC, finalZ, null).getProcessor();                        
-                        
+                        ImageProcessor slice = getSetStack(inputIpl, finalT, finalC, finalZ, null).getProcessor();
+
                         ImageProcessor alignedSlice = applyTransform(slice, transform);
                         alignedSlice.setMinAndMax(slice.getMin(), slice.getMax());
 
@@ -392,7 +392,7 @@ public abstract class AbstractRegistration<T extends RealType<T> & NativeType<T>
         image.setImagePlus(inputIpl);
 
     }
-    
+
     synchronized public static ImagePlus getSetStack(ImagePlus inputImagePlus, int timepoint, int channel, int slice,
             @Nullable ImageProcessor toPut) {
         if (toPut == null) {

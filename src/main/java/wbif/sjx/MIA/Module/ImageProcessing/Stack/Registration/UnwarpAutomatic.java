@@ -4,19 +4,16 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
 
 import bunwarpj.Transformation;
 import bunwarpj.bUnwarpJ_;
 import ij.ImagePlus;
-import ij.gui.PointRoi;
 import ij.process.ImageProcessor;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.ImageProcessing.Stack.Registration.Abstract.AbstractBUnwarpJRegistration;
 import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Process.Interactable.Interactable;
-import wbif.sjx.MIA.Process.Interactable.PointPairSelector.PointPair;
 
 public class UnwarpAutomatic extends AbstractBUnwarpJRegistration implements Interactable {
     public UnwarpAutomatic(ModuleCollection modules) {
@@ -48,7 +45,8 @@ public class UnwarpAutomatic extends AbstractBUnwarpJRegistration implements Int
         ImagePlus referenceIpl = new ImagePlus("Reference", referenceIpr.duplicate());
         ImagePlus warpedIpl = new ImagePlus("Warped", warpedIpr.duplicate());
 
-        Transformation transformation = bUnwarpJ_.computeTransformationBatch(referenceIpl, warpedIpl, null, null, p.bParam);
+        Transformation transformation = bUnwarpJ_.computeTransformationBatch(referenceIpl, warpedIpl, null, null,
+                p.bParam);
 
         try {
             File tempFile = File.createTempFile("unwarp", ".tmp");
@@ -69,19 +67,6 @@ public class UnwarpAutomatic extends AbstractBUnwarpJRegistration implements Int
         }
     }
 
-    public static PointRoi[] createRoiFromPointPairs(ArrayList<PointPair> pairs) {
-        PointRoi warpedRoi = new PointRoi();
-        PointRoi referenceRoi = new PointRoi();
-
-        for (PointPair pair : pairs) {
-            warpedRoi.addPoint(pair.getPoint1().getXBase(), pair.getPoint1().getYBase());
-            referenceRoi.addPoint(pair.getPoint2().getXBase(), pair.getPoint2().getYBase());
-        }
-
-        return new PointRoi[] { warpedRoi, referenceRoi };
-
-    }
-
     @Override
     public void doAction(Object[] objects) {
         writeStatus("Running test registration");
@@ -98,6 +83,9 @@ public class UnwarpAutomatic extends AbstractBUnwarpJRegistration implements Int
         ParameterCollection returnedParameters = new ParameterCollection();
 
         returnedParameters.addAll(super.updateAndGetParameters());
+
+        // This approach can't show any points
+        returnedParameters.remove(SHOW_DETECTED_POINTS);
 
         return returnedParameters;
 

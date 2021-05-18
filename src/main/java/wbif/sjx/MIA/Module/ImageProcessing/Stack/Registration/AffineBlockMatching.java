@@ -1,5 +1,6 @@
 package wbif.sjx.MIA.Module.ImageProcessing.Stack.Registration;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Vector;
 import java.util.concurrent.ExecutionException;
@@ -22,6 +23,7 @@ import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.Parameters.SeparatorP;
 import wbif.sjx.MIA.Object.Parameters.Text.DoubleP;
 import wbif.sjx.MIA.Object.Parameters.Text.IntegerP;
+import wbif.sjx.MIA.Process.Interactable.PointPairSelector.PointPair;
 
 public class AffineBlockMatching extends AbstractAffineRegistration {
     public static final String FEATURE_SEPARATOR = "Feature detection";
@@ -51,7 +53,7 @@ public class AffineBlockMatching extends AbstractAffineRegistration {
     public BMParam createParameterSet() {
         return new BMParam();
     }
-    
+
     @Override
     public void getParameters(Param param, Workspace workspace) {
         super.getParameters(param, workspace);
@@ -86,18 +88,20 @@ public class AffineBlockMatching extends AbstractAffineRegistration {
         Vector<PointMatch> candidates = new Vector<PointMatch>();
 
         try {
-            BlockMatching.matchByMaximalPMCC(ipr1, ipr2, null, null, p.scale, translationModel, p.blockR, p.blockR, p.searchR,
-                    p.searchR, p.minR, p.rod, p.maxCurvature, vertices, candidates, new ErrorStatistic(1));
+            BlockMatching.matchByMaximalPMCC(ipr1, ipr2, null, null, p.scale, translationModel, p.blockR, p.blockR,
+                    p.searchR, p.searchR, p.minR, p.rod, p.maxCurvature, vertices, candidates, new ErrorStatistic(1));
 
-            // if (showDetectedPoints)
-            //     showDetectedPoints(referenceIpr, warpedIpr, candidates);
+            if (showDetectedPoints) {
+                ArrayList<PointPair> pairs = convertPointMatchToPointPair(candidates);
+                showDetectedPoints(referenceIpr, warpedIpr, pairs);
+            }
 
             AbstractAffineModel2D model = getModel(p.transformationMode);
             model.localSmoothnessFilter(candidates, candidates, p.sigma, p.maxAbsDisp, p.maxRelDisp);
 
             AffineTransform transform = new AffineTransform();
-            transform.mapping = new InverseTransformMapping<AbstractAffineModel2D<?>>(model); 
-    
+            transform.mapping = new InverseTransformMapping<AbstractAffineModel2D<?>>(model);
+
             return transform;
 
         } catch (InterruptedException | ExecutionException e) {

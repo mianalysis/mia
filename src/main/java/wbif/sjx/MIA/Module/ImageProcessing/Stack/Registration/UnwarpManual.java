@@ -9,13 +9,15 @@ import java.util.ArrayList;
 import java.util.Stack;
 
 import bunwarpj.Transformation;
-import bunwarpj.bUnwarpJ_;
 import ij.ImagePlus;
 import ij.gui.PointRoi;
 import ij.gui.Roi;
 import ij.process.ImageProcessor;
+import net.imglib2.type.NativeType;
+import net.imglib2.type.numeric.RealType;
 import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.ModuleCollection;
+import wbif.sjx.MIA.Module.ImageProcessing.Stack.ConcatenateStacks;
 import wbif.sjx.MIA.Module.ImageProcessing.Stack.Registration.Abstract.AbstractBUnwarpJRegistration;
 import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.Workspace;
@@ -26,7 +28,8 @@ import wbif.sjx.MIA.Process.Interactable.PointPairSelector;
 import wbif.sjx.MIA.Process.Interactable.PointPairSelector.PointPair;
 import wbif.sjx.MIA.ThirdParty.bUnwarpJ_Mod;
 
-public class UnwarpManual extends AbstractBUnwarpJRegistration implements Interactable {
+public class UnwarpManual<T extends RealType<T> & NativeType<T>> extends AbstractBUnwarpJRegistration
+        implements Interactable {
     public static final String POINT_SELECTION_MODE = "Point selection mode";
 
     public interface PointSelectionModes {
@@ -59,6 +62,10 @@ public class UnwarpManual extends AbstractBUnwarpJRegistration implements Intera
         // Setting up the parameters
         ManualBUnwarpJParam manualParam = (ManualBUnwarpJParam) param;
         manualParam.pointSelectionMode = parameters.getValue(POINT_SELECTION_MODE);
+
+        // In test points mode we don't want to update the ROIs, so the workspace is set to null
+        if (workspace == null)
+            return;
 
         // Getting any ROI attached to the warped image
         switch ((String) parameters.getValue(CALCULATION_SOURCE)) {
@@ -110,7 +117,7 @@ public class UnwarpManual extends AbstractBUnwarpJRegistration implements Intera
                 pairs = new PointPairSelector(this, true).getPointPairs(warpedIpl, referenceIpl);
 
                 // Updating ROIs in memory
-                PointRoi[] rois = createRoiFromPointPairs(pairs);
+                PointRoi[] rois = convertPointPairsToRoi(pairs);
                 p.warpedRoi = rois[0];
                 p.referenceRoi = rois[1];
 
@@ -122,20 +129,11 @@ public class UnwarpManual extends AbstractBUnwarpJRegistration implements Intera
             return null;
         }
 
-        // Converting point pairs into format for bUnwarpJ
-        Stack<Point> points1 = new Stack<>();
-        Stack<Point> points2 = new Stack<>();
-        for (PointPair pair : pairs) {
-            PointRoi pointRoi1 = pair.getPoint1();
-            PointRoi pointRoi2 = pair.getPoint2();
+        if (showDetectedPoints)
+            showDetectedPoints(referenceIpr, warpedIpr, pairs);
 
-            points1.push(new Point((int) pointRoi1.getXBase(), (int) pointRoi1.getYBase()));
-            points2.push(new Point((int) pointRoi2.getXBase(), (int) pointRoi2.getYBase()));
-
-        }
-
-        Transformation transformation = bUnwarpJ_Mod.computeTransformationBatch(warpedIpr, referenceIpr, points1,
-                points2, p.bParam);
+        ArrayList<Stack<Point>> points = convertPointPairsToPointStacks(pairs);
+        Transformation transformation = bUnwarpJ_Mod.computeTransformationBatch(warpedIpr, referenceIpr, points.get(0), points.get(1), p.bParam);
 
         try {
             File tempFile = File.createTempFile("unwarp", ".tmp");
@@ -156,7 +154,7 @@ public class UnwarpManual extends AbstractBUnwarpJRegistration implements Intera
         }
     }
 
-    public static PointRoi[] createRoiFromPointPairs(ArrayList<PointPair> pairs) {
+    public static PointRoi[] convertPointPairsToRoi(ArrayList<PointPair> pairs) {
         PointRoi warpedRoi = new PointRoi();
         PointRoi referenceRoi = new PointRoi();
 
@@ -169,9 +167,69 @@ public class UnwarpManual extends AbstractBUnwarpJRegistration implements Intera
 
     }
 
+    public static ArrayList<Stack<Point>> convertPointPairsToPointStacks(ArrayList<PointPair> pairs) {
+        // Converting point pairs into format for bUnwarpJ
+        Stack<Point> points1 = new Stack<>();
+        Stack<Point> points2 = new Stack<>();
+        for (PointPair pair : pairs) {
+            PointRoi pointRoi1 = pair.getPoint1();
+            PointRoi pointRoi2 = pair.getPoint2();
+
+            points1.push(new Point((int) pointRoi1.getXBase(), (int) pointRoi1.getYBase()));
+            points2.push(new Point((int) pointRoi2.getXBase(), (int) pointRoi2.getYBase()));
+
+        }
+
+        ArrayList<Stack<Point>> stacks = new ArrayList<Stack<Point>>();
+        stacks.add(points1);
+        stacks.add(points2);
+
+        return stacks;
+
+    }
+
     @Override
     public void doAction(Object[] objects) {
-        writeStatus("Running test registration");
+        ManualBUnwarpJParam params = new ManualBUnwarpJParam();
+        getParameters(params, null);
+
+        String fillMode = parameters.getValue(FILL_MODE);
+        boolean multithread = parameters.getValue(ENABLE_MULTITHREADING);
+
+        ArrayList<PointPair> pairs = (ArrayList<PointPair>) objects[0];
+        ImagePlus ipl1 = ((ImagePlus) objects[1]).duplicate();
+        ImagePlus ipl2 = ((ImagePlus) objects[2]).duplicate();
+
+        // Duplicating image
+        Image image1 = new Image("Registered", ipl1);
+        Image image2 = new Image("Reference", ipl2);
+
+        ArrayList<Stack<Point>> points = convertPointPairsToPointStacks(pairs);
+        Transformation transformation = bUnwarpJ_Mod.computeTransformationBatch(ipl1.getProcessor(),
+                ipl2.getProcessor(), points.get(0), points.get(1), params.bParam);
+
+        BUnwarpJTransform transform = new BUnwarpJTransform();
+        try {
+            File tempFile = File.createTempFile("unwarp", ".tmp");
+            BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(tempFile));
+            bufferedWriter.close();
+
+            String tempPath = tempFile.getAbsolutePath();
+            transformation.saveDirectTransformation(tempPath);
+            transform.transformPath = tempPath;
+
+            applyTransformation(image1, transform, fillMode, multithread);
+
+        } catch (InterruptedException | IOException e) {
+            e.printStackTrace();
+            return;
+        }
+
+        ArrayList<Image<T>> images = new ArrayList<>();
+        images.add(image1);
+        images.add(image2);
+        ConcatenateStacks.concatenateImages(images, ConcatenateStacks.AxisModes.CHANNEL, "Registration comparison")
+                .showImage();
 
     }
 

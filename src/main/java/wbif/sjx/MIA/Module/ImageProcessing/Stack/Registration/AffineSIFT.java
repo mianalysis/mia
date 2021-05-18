@@ -19,6 +19,7 @@ import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.Parameters.SeparatorP;
 import wbif.sjx.MIA.Object.Parameters.Text.DoubleP;
 import wbif.sjx.MIA.Object.Parameters.Text.IntegerP;
+import wbif.sjx.MIA.Process.Interactable.PointPairSelector.PointPair;
 
 public class AffineSIFT extends AbstractAffineRegistration {
         public static final String FEATURE_SEPARATOR = "Feature detection";
@@ -55,7 +56,7 @@ public class AffineSIFT extends AbstractAffineRegistration {
         public SIFTParam createParameterSet() {
                 return new SIFTParam();
         }
-    
+
         @Override
         public void getParameters(Param param, Workspace workspace) {
                 super.getParameters(param, workspace);
@@ -103,8 +104,10 @@ public class AffineSIFT extends AbstractAffineRegistration {
                                 Float.MAX_VALUE, p.rod);
                 ArrayList<PointMatch> inliers = new ArrayList<PointMatch>();
 
-                // if (showDetectedPoints)
-                // showDetectedPoints(referenceIpr, warpedIpr, candidates);
+                if (showDetectedPoints) {
+                        ArrayList<PointPair> pairs = convertPointMatchToPointPair(candidates);
+                        showDetectedPoints(referenceIpr, warpedIpr, pairs);
+                }
 
                 try {
                         model.filterRansac(candidates, inliers, 1000, p.maxEpsilon, p.minInlierRatio);
