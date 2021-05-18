@@ -117,6 +117,7 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
     public static final String SCALE_FACTOR_X = "X scale factor";
     public static final String SCALE_FACTOR_Y = "Y scale factor";
     public static final String DIMENSION_MISMATCH_MODE = "Dimension mismatch mode";
+    public static final String PAD_INTENSITY_MODE = "Pad intensity mode";
 
     public static final String CALIBRATION_SEPARATOR = "Spatial and intensity calibration";
     public static final String SET_SPATIAL_CAL = "Set manual spatial calibration";
@@ -196,9 +197,17 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
     public interface DimensionMismatchModes {
         String DISALLOW = "Disallow (fail upon mismatch)";
         String CENTRE_CROP = "Crop (centred)";
-        String CENTRE_PAD = "Pad (centred)";        
+        String CENTRE_PAD = "Pad (centred)";
 
         String[] ALL = new String[] { DISALLOW, CENTRE_CROP, CENTRE_PAD };
+
+    }
+
+    public interface PadIntensityModes {
+        String BLACK = "Black (0)";
+        String WHITE = "White (bit-depth max)";
+
+        String[] ALL = new String[] { BLACK, WHITE };
 
     }
 
@@ -643,7 +652,7 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
 
     public ImagePlus getAlphabeticalImageSequence(String absolutePath, int seriesNumber, String channels, String slices,
             String frames, int[] crop, double[] scaleFactors, String scaleMode, String dimensionMismatchMode,
-            @Nullable double[] intRange, boolean[] manualCal, Metadata metadata)
+            String padIntensityMode, @Nullable double[] intRange, boolean[] manualCal, Metadata metadata)
             throws ServiceException, DependencyException, FormatException, IOException {
 
         // Getting list of all matching filenames
@@ -682,9 +691,9 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
 
             ImagePlus tempIpl = getBFImage(filenames[frame - 1], 1, dimRanges, crop, scaleFactors, scaleMode, intRange,
                     manualCal, false);
-
+            
             // Checking and handling any XY dimension mismatches between the two stacks
-            applyDimensionMatchingXY(outputIpl, tempIpl, dimensionMismatchMode);
+            applyDimensionMatchingXY(outputIpl, tempIpl, dimensionMismatchMode, padIntensityMode);
 
             for (int c = 0; c < nChannels; c++) {
                 for (int z = 0; z < nSlices; z++) {
@@ -709,7 +718,7 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
 
     public ImagePlus getZeroBasedImageSequence(String absolutePath, int seriesNumber, String channels, String slices,
             String frames, int[] crop, double[] scaleFactors, String scaleMode, String dimensionMismatchMode,
-            @Nullable double[] intRange, boolean[] manualCal)
+            String padIntensityMode, @Nullable double[] intRange, boolean[] manualCal)
             throws ServiceException, DependencyException, FormatException, IOException {
 
         // Number format
@@ -777,7 +786,7 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
                     manualCal, false);
 
             // Checking and handling any XY dimension mismatches between the two stacks
-            applyDimensionMatchingXY(outputIpl, tempIpl, dimensionMismatchMode);
+            applyDimensionMatchingXY(outputIpl, tempIpl, dimensionMismatchMode, padIntensityMode);
 
             for (int c = 0; c < nChannels; c++) {
                 for (int z = 0; z < nSlices; z++) {
@@ -800,7 +809,8 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
 
     }
 
-    public static void applyDimensionMatchingXY(ImagePlus outputIpl, ImagePlus inputIpl, String dimensionMismatchMode) {
+    public static void applyDimensionMatchingXY(ImagePlus outputIpl, ImagePlus inputIpl, String dimensionMismatchMode,
+            String padIntensityMode) {
         // Checking if dimensions are mismatches
         int widthIn = inputIpl.getWidth();
         int heightIn = inputIpl.getHeight();
@@ -809,6 +819,9 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
 
         if (widthIn == widthOut && heightIn == heightOut)
             return;
+
+        int padIntensity = getPadIntensity(inputIpl, padIntensityMode);
+        IJ.setBackgroundColor(padIntensity, padIntensity, padIntensity);
 
         switch (dimensionMismatchMode) {
             case DimensionMismatchModes.CENTRE_PAD:
@@ -837,8 +850,17 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
         }
     }
 
+    public static int getPadIntensity(ImagePlus imagePlus, String padIntensityMode) {
+        switch (padIntensityMode) {
+            default:
+            case PadIntensityModes.BLACK:
+                return 0;
+            case PadIntensityModes.WHITE:
+                return (int) Math.round(Math.pow(imagePlus.getBitDepth(), 2) - 1);
+        }
+    }
+
     public static ImageStack centreResizeStack(ImageStack imageStack, int widthExpanded, int heightExpanded) {
-        IJ.setBackgroundColor(0, 0, 0);
         int xOff = (widthExpanded - imageStack.getWidth()) / 2;
         int yOff = (heightExpanded - imageStack.getHeight()) / 2;
 
@@ -1051,6 +1073,7 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
         double scaleFactorX = parameters.getValue(SCALE_FACTOR_X);
         double scaleFactorY = parameters.getValue(SCALE_FACTOR_Y);
         String dimensionMismatchMode = parameters.getValue(DIMENSION_MISMATCH_MODE);
+        String padIntensityMode = parameters.getValue(PAD_INTENSITY_MODE);
         boolean setSpatialCalibration = parameters.getValue(SET_SPATIAL_CAL);
         double xyCal = parameters.getValue(XY_CAL);
         double zCal = parameters.getValue(Z_CAL);
@@ -1159,14 +1182,16 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
                 case ImportModes.IMAGE_SEQUENCE_ALPHABETICAL:
                     Metadata metadata = (Metadata) workspace.getMetadata().clone();
                     ipl = getAlphabeticalImageSequence(sequenceRootName, seriesNumber, channels, slices, frames, crop,
-                            scaleFactors, scaleMode, dimensionMismatchMode, intRange, manualCalibration, metadata);
+                            scaleFactors, scaleMode, dimensionMismatchMode, padIntensityMode, intRange,
+                            manualCalibration, metadata);
                     break;
 
                 case ImportModes.IMAGE_SEQUENCE_ZEROS:
                     metadata = (Metadata) workspace.getMetadata().clone();
                     String absolutePath = metadata.insertMetadataValues(sequenceRootName);
                     ipl = getZeroBasedImageSequence(absolutePath, seriesNumber, channels, slices, frames, crop,
-                            scaleFactors, scaleMode, dimensionMismatchMode, intRange, manualCalibration);
+                            scaleFactors, scaleMode, dimensionMismatchMode, padIntensityMode, intRange,
+                            manualCalibration);
 
                     break;
 
@@ -1333,6 +1358,7 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
         parameters.add(new DoubleP(SCALE_FACTOR_Y, this, 1));
         parameters.add(new ChoiceP(DIMENSION_MISMATCH_MODE, this, DimensionMismatchModes.DISALLOW,
                 DimensionMismatchModes.ALL));
+        parameters.add(new ChoiceP(PAD_INTENSITY_MODE, this, PadIntensityModes.BLACK, PadIntensityModes.ALL));
 
         parameters.add(new SeparatorP(CALIBRATION_SEPARATOR, this));
         parameters.add(new BooleanP(SET_SPATIAL_CAL, this, false));
@@ -1458,6 +1484,9 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
         if (parameters.getValue(IMPORT_MODE).equals(ImportModes.IMAGE_SEQUENCE_ALPHABETICAL)
                 || parameters.getValue(IMPORT_MODE).equals(ImportModes.IMAGE_SEQUENCE_ZEROS)) {
             returnedParameters.add(parameters.getParameter(DIMENSION_MISMATCH_MODE));
+
+            if (parameters.getValue(DIMENSION_MISMATCH_MODE).equals(DimensionMismatchModes.CENTRE_PAD))
+                returnedParameters.add(parameters.getParameter(PAD_INTENSITY_MODE));
         }
 
         returnedParameters.add(parameters.getParameter(CALIBRATION_SEPARATOR));

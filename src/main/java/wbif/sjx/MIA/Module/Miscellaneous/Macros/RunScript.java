@@ -201,7 +201,7 @@ public class RunScript extends Module {
         parameters.add(new SeparatorP(SCRIPT_SEPARATOR, this));
         parameters.add(new ChoiceP(SCRIPT_MODE, this, ScriptModes.SCRIPT_TEXT, ScriptModes.ALL));
         parameters.add(new ChoiceP(SCRIPT_LANGUAGE, this, ScriptLanguages.IMAGEJ1, ScriptLanguages.ALL));
-        parameters.add(new TextAreaP(SCRIPT_TEXT, this, "#@ wbif.sjx.MIA.Object.Workspace Workspace", true));
+        parameters.add(new TextAreaP(SCRIPT_TEXT, this, "#@ wbif.sjx.MIA.Object.Workspace workspace", true));
         parameters.add(new FilePathP(SCRIPT_FILE, this));
         parameters.add(new GenericButtonP(REFRESH_BUTTON, this, "Refresh", GenericButtonP.DefaultModes.REFRESH));
 
