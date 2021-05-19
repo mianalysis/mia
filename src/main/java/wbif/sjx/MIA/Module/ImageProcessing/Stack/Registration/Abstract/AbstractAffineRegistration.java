@@ -30,12 +30,12 @@ public abstract class AbstractAffineRegistration<T extends RealType<T> & NativeT
     }
 
     public interface TransformationModes {
-        String AFFINE = "Affine";
-        String RIGID = "Rigid";
-        String SIMILARITY = "Similarity";
+        String AFFINE = "Affine (trans., rot., scale, shear)";
+        String SIMILARITY = "Similarity (trans., rot., iso-scale)";
+        String RIGID = "Rigid (trans., rot.)";        
         String TRANSLATION = "Translation";
 
-        String[] ALL = new String[] { AFFINE, RIGID, SIMILARITY, TRANSLATION };
+        String[] ALL = new String[] { AFFINE, SIMILARITY, RIGID, TRANSLATION };
 
     }
 

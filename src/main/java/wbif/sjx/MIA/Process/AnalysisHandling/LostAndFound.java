@@ -9,11 +9,12 @@ import wbif.sjx.MIA.Module.ImageProcessing.Pixel.WekaProbabilityMaps;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.Binary.DistanceMap;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.Threshold.LocalAutoThreshold;
 import wbif.sjx.MIA.Module.ImageProcessing.Stack.Registration.AffineBlockMatching;
-import wbif.sjx.MIA.Module.ImageProcessing.Stack.Registration.AffineManual;
 import wbif.sjx.MIA.Module.ImageProcessing.Stack.Registration.AffineMOPS;
+import wbif.sjx.MIA.Module.ImageProcessing.Stack.Registration.AffineManual;
 import wbif.sjx.MIA.Module.ImageProcessing.Stack.Registration.AffineSIFT;
 import wbif.sjx.MIA.Module.ImageProcessing.Stack.Registration.UnwarpAutomatic;
 import wbif.sjx.MIA.Module.ImageProcessing.Stack.Registration.UnwarpManual;
+import wbif.sjx.MIA.Module.ImageProcessing.Stack.Registration.Abstract.AbstractAffineRegistration;
 import wbif.sjx.MIA.Module.InputOutput.ImageLoader;
 import wbif.sjx.MIA.Module.InputOutput.ObjectLoader;
 import wbif.sjx.MIA.Module.Miscellaneous.GlobalVariables;
@@ -46,11 +47,15 @@ public class LostAndFound {
         lostModules.put("MOPSRegistration", new AffineMOPS(null).getClass().getSimpleName());
         lostModules.put("SIFTRegistration", new AffineSIFT(null).getClass().getSimpleName());
 
+        
         //// Populating hard-coded parameter reassignments ////
+        HashMap<String, String> currentParameterNames = null;
+        String moduleName = null;
+
         // BlockMatchingRegistration
-        HashMap<String, String> currentParameterNames = new HashMap<>();
+        currentParameterNames = new HashMap<>();
         currentParameterNames.put("Relative mode", AffineBlockMatching.REFERENCE_MODE);
-        String moduleName = new AffineBlockMatching(null).getClass().getSimpleName();
+        moduleName = new AffineBlockMatching(null).getClass().getSimpleName();
         lostParameterNames.put(moduleName, currentParameterNames);
 
         // CalculateNearestNeighbour
@@ -168,16 +173,37 @@ public class LostAndFound {
         moduleName = new WorkflowHandling(null).getClass().getSimpleName();
         lostParameterNames.put(moduleName, currentParameterNames);
 
+
         //// Populating hard-coded parameter value reassignments ////
+        HashMap<String, String> currentValues = null;
+        HashMap<String, HashMap<String, String>> currentParameterValues = null;
+
+        // AbstractAffineRegistration
+        currentValues = new HashMap<>();
+        currentValues.put("Affine", AbstractAffineRegistration.TransformationModes.AFFINE);
+        currentValues.put("Rigid", AbstractAffineRegistration.TransformationModes.RIGID);
+        currentValues.put("Similarity", AbstractAffineRegistration.TransformationModes.SIMILARITY);
+        currentValues.put("Translation", AbstractAffineRegistration.TransformationModes.TRANSLATION);
+        currentParameterValues = new HashMap<>();
+        currentParameterValues.put(AbstractAffineRegistration.TRANSFORMATION_MODE, currentValues);
+        moduleName = new AffineBlockMatching(null).getClass().getSimpleName();
+        lostParameterValues.put(moduleName, currentParameterValues);
+        moduleName = new AffineManual(null).getClass().getSimpleName();
+        lostParameterValues.put(moduleName, currentParameterValues);
+        moduleName = new AffineMOPS(null).getClass().getSimpleName();
+        lostParameterValues.put(moduleName, currentParameterValues);
+        moduleName = new AffineSIFT(null).getClass().getSimpleName();
+        lostParameterValues.put(moduleName, currentParameterValues);
+
         // InputControl
-        HashMap<String, String> currentValues = new HashMap<>();
+        currentValues = new HashMap<>();
         currentValues.put("METRE", SpatialUnit.AvailableUnits.METRE);
         currentValues.put("CENTIMETRE", SpatialUnit.AvailableUnits.CENTIMETRE);
         currentValues.put("MILLIMETRE", SpatialUnit.AvailableUnits.MILLIMETRE);
         currentValues.put("MICROMETRE", SpatialUnit.AvailableUnits.MICROMETRE);
         currentValues.put("NANOMETRE", SpatialUnit.AvailableUnits.NANOMETRE);
         currentValues.put("ANGSTROM", SpatialUnit.AvailableUnits.ANGSTROM);
-        HashMap<String, HashMap<String, String>> currentParameterValues = new HashMap<>();
+        currentParameterValues = new HashMap<>();
         currentParameterValues.put(InputControl.SPATIAL_UNIT, currentValues);
         moduleName = new InputControl(null).getClass().getSimpleName();
         lostParameterValues.put(moduleName, currentParameterValues);
