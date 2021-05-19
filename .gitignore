@@ -10,6 +10,7 @@ target/site/*
 \.idea/libraries/
 \.idea/
 
+*.log
 ModularImageAnalysis\.iml
 
 MIA_\.iml

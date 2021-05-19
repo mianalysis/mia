@@ -2,7 +2,7 @@ package wbif.sjx.MIA.Module.ImageProcessing.Pixel;
 
 import java.awt.Color;
 
-import com.drew.lang.annotations.Nullable;
+import org.eclipse.sisu.Nullable;
 
 import ij.ImagePlus;
 import ij.plugin.Duplicator;

@@ -3,7 +3,7 @@ package wbif.sjx.MIA.Module.ObjectProcessing.Refinement.FilterObjects;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import com.drew.lang.annotations.Nullable;
+import org.eclipse.sisu.Nullable;
 
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.Category;
