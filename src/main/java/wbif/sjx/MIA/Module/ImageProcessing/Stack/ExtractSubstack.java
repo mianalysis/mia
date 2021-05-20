@@ -11,7 +11,7 @@ import java.awt.event.ActionListener;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.drew.lang.annotations.Nullable;
+import org.eclipse.sisu.Nullable;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -229,6 +229,8 @@ public class ExtractSubstack extends Module implements ActionListener {
         String inputImageName = parameters.getValue(INPUT_IMAGE);
         Image inputImage = workspace.getImages().get(inputImageName);
 
+        MIA.log.writeDebug(inputImage.getImagePlus().getRoi());
+
         // Getting parameters
         String selectionMode = parameters.getValue(SELECTION_MODE);
         String outputImageName = parameters.getValue(OUTPUT_IMAGE);
@@ -275,7 +277,7 @@ public class ExtractSubstack extends Module implements ActionListener {
         if (outputImage == null) return Status.FAIL;
 
         workspace.addImage(outputImage);
-
+        MIA.log.writeDebug(outputImage.getImagePlus().getRoi());
         // If selected, displaying the image
         if (showOutput)
             outputImage.showImage();

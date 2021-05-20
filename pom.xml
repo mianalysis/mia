@@ -10,7 +10,7 @@
 
     <groupId>wbif.sjx</groupId>
     <artifactId>MIA_</artifactId>
-    <version>0.18.7</version>
+    <version>0.18.8</version>
     <packaging>jar</packaging>
     <name>MIA_</name>
     <url>https://github.com/SJCross/MIA</url>
@@ -177,7 +177,7 @@
             <groupId>org.apache.maven</groupId>
             <artifactId>maven-model</artifactId>
             <version>3.0.4</version>
-            <scope>compile</scope>
+            <scope>provided</scope>
         </dependency>
 
         <dependency>
@@ -202,6 +202,18 @@
             <groupId>net.objecthunter</groupId>
             <artifactId>exp4j</artifactId>
             <version>0.4.8</version>
+        </dependency>
+
+        <dependency>
+            <groupId>ome</groupId>
+            <artifactId>bio-formats_plugins</artifactId>
+            <scope>${scp}</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>ch.systems.cisd</groupId>
+                    <artifactId>jhdf5</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>
@@ -257,6 +269,11 @@
         </dependency>
         <dependency>
             <groupId>sc.fiji</groupId>
+            <artifactId>Fiji_Plugins</artifactId>
+            <scope>${scp}</scope>
+        </dependency>
+        <dependency>
+            <groupId>sc.fiji</groupId>
             <artifactId>TrackMate_</artifactId>
             <scope>${scp}</scope>
         </dependency>
@@ -302,10 +319,10 @@
         <dependency>
             <groupId>com.github.SJCross</groupId>
             <artifactId>Common</artifactId>
-            <version>v1.6.22</version>
+            <version>v1.6.23</version>
             <!-- <groupId>wbif.sjx</groupId>
             <artifactId>Common</artifactId>
-            <version>1.6.22</version> -->
+            <version>1.6.23</version> -->
         </dependency>
     </dependencies>
 
@@ -383,6 +400,11 @@
                                         <include>org/apache/poi/*Exception*</include>
                                         <include>org/openxmlformats/schemas/spreadsheetml/x2006/**</include> -->
                                     </includes>
+                                    <excludes>
+                                        <exclude>org/openxmlformats/schemas/drawingml/x2006/**</exclude>
+                                        <exclude>org/openxmlformats/schemas/presentationml/x2006/**</exclude>
+                                        <exclude>org/openxmlformats/schemas/wordprocessingml/x2006/**</exclude>
+                                    </excludes>
                                 </filter>
                                 <filter>
                                     <artifact>*:*</artifact>
@@ -390,6 +412,7 @@
                                         <exclude>META-INF/*.SF</exclude>
                                         <exclude>META-INF/*.DSA</exclude>
                                         <exclude>META-INF/*.RSA</exclude>
+                                        <exclude>ij/**</exclude>
                                     </excludes>
                                 </filter>
                             </filters>

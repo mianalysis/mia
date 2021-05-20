@@ -4,7 +4,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 
-import com.drew.lang.annotations.Nullable;
+import org.eclipse.sisu.Nullable;
 
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;

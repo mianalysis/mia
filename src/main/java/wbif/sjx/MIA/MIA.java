@@ -11,9 +11,11 @@ import org.apache.maven.model.Model;
 import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
+import org.scijava.Context;
 import org.scijava.command.Command;
 import org.scijava.plugin.Parameter;
 import org.scijava.plugin.Plugin;
+import org.scijava.script.ScriptService;
 import org.scijava.ui.UIService;
 
 import net.imagej.ImageJ;
@@ -51,7 +53,13 @@ public class MIA implements Command {
     private static final boolean imagePlusMode = true;
 
     @Parameter
-    private UIService uiService;
+    public static UIService uiService;
+
+    @Parameter
+    public static ScriptService scriptService;
+
+    @Parameter
+    public static Context context;
 
 
     public static void main(String[] args) throws Exception {
@@ -59,9 +67,9 @@ public class MIA implements Command {
 
         try {
             if (args.length == 0) {
-                ImageJ ij = new ImageJ();
+                ImageJ ij = new ImageJ();                
                 ij.ui().showUI();
-                ij.command().run("wbif.sjx.MIA.MIA",false);
+                ij.command().run("wbif.sjx.MIA.MIA", false);
 
             } else {
                 Analysis analysis = AnalysisReader.loadAnalysis(args[0]);

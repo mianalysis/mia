@@ -8,7 +8,13 @@ import wbif.sjx.MIA.Module.ImageMeasurements.MeasureIntensityDistribution;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.WekaProbabilityMaps;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.Binary.DistanceMap;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.Threshold.LocalAutoThreshold;
-import wbif.sjx.MIA.Module.ImageProcessing.Stack.Registration.SIFTRegistration;
+import wbif.sjx.MIA.Module.ImageProcessing.Stack.Registration.AffineBlockMatching;
+import wbif.sjx.MIA.Module.ImageProcessing.Stack.Registration.AffineMOPS;
+import wbif.sjx.MIA.Module.ImageProcessing.Stack.Registration.AffineManual;
+import wbif.sjx.MIA.Module.ImageProcessing.Stack.Registration.AffineSIFT;
+import wbif.sjx.MIA.Module.ImageProcessing.Stack.Registration.UnwarpAutomatic;
+import wbif.sjx.MIA.Module.ImageProcessing.Stack.Registration.UnwarpManual;
+import wbif.sjx.MIA.Module.ImageProcessing.Stack.Registration.Abstract.AbstractAffineRegistration;
 import wbif.sjx.MIA.Module.InputOutput.ImageLoader;
 import wbif.sjx.MIA.Module.InputOutput.ObjectLoader;
 import wbif.sjx.MIA.Module.Miscellaneous.GlobalVariables;
@@ -30,16 +36,32 @@ public class LostAndFound {
 
     public LostAndFound() {
         //// Populating hard-coded module reassignments ////
-        lostModules.put("AutomaticRegistration", new SIFTRegistration(null).getClass().getSimpleName());
+        lostModules.put("AutomaticRegistration", new AffineSIFT(null).getClass().getSimpleName());
         lostModules.put("ConditionalAnalysisTermination", new WorkflowHandling(null).getClass().getSimpleName());
         lostModules.put("RunMacroOnImage", new RunMacro(null).getClass().getSimpleName());
-        lostModules.put("RunSingleMacroCommand", new RunSingleCommand(null).getClass().getSimpleName());       
+        lostModules.put("RunSingleMacroCommand", new RunSingleCommand(null).getClass().getSimpleName());
+        lostModules.put("ManualUnwarp", new UnwarpManual(null).getClass().getSimpleName());
+        lostModules.put("UnwarpImages", new UnwarpAutomatic(null).getClass().getSimpleName());
+        lostModules.put("BlockMatchingRegistration", new AffineBlockMatching(null).getClass().getSimpleName());
+        lostModules.put("ManualRegistration", new AffineManual(null).getClass().getSimpleName());
+        lostModules.put("MOPSRegistration", new AffineMOPS(null).getClass().getSimpleName());
+        lostModules.put("SIFTRegistration", new AffineSIFT(null).getClass().getSimpleName());
 
+        
         //// Populating hard-coded parameter reassignments ////
+        HashMap<String, String> currentParameterNames = null;
+        String moduleName = null;
+
+        // BlockMatchingRegistration
+        currentParameterNames = new HashMap<>();
+        currentParameterNames.put("Relative mode", AffineBlockMatching.REFERENCE_MODE);
+        moduleName = new AffineBlockMatching(null).getClass().getSimpleName();
+        lostParameterNames.put(moduleName, currentParameterNames);
+
         // CalculateNearestNeighbour
-        HashMap<String, String> currentParameterNames = new HashMap<>();
+        currentParameterNames = new HashMap<>();
         currentParameterNames.put("ParentChildRef mode", CalculateNearestNeighbour.RELATIONSHIP_MODE);
-        String moduleName = new CalculateNearestNeighbour(null).getClass().getSimpleName();
+        moduleName = new CalculateNearestNeighbour(null).getClass().getSimpleName();
         lostParameterNames.put(moduleName, currentParameterNames);
 
         // CreateDistanceMap
@@ -99,6 +121,12 @@ public class LostAndFound {
         moduleName = new MeasureIntensityDistribution(null).getClass().getSimpleName();
         lostParameterNames.put(moduleName, currentParameterNames);
 
+        // MOPSRegistration
+        currentParameterNames = new HashMap<>();
+        currentParameterNames.put("Relative mode", AffineMOPS.REFERENCE_MODE);
+        moduleName = new AffineMOPS(null).getClass().getSimpleName();
+        lostParameterNames.put(moduleName, currentParameterNames);
+
         // ObjectLoader
         currentParameterNames = new HashMap<>();
         currentParameterNames.put("Output parent clusters name", ObjectLoader.PARENT_OBJECTS_NAME);
@@ -126,6 +154,12 @@ public class LostAndFound {
         moduleName = new RunSingleCommand(null).getClass().getSimpleName();
         lostParameterNames.put(moduleName, currentParameterNames);
 
+        // SIFTRegistration
+        currentParameterNames = new HashMap<>();
+        currentParameterNames.put("Relative mode", AffineSIFT.REFERENCE_MODE);
+        moduleName = new AffineSIFT(null).getClass().getSimpleName();
+        lostParameterNames.put(moduleName, currentParameterNames);
+
         // ThresholdImage
         currentParameterNames = new HashMap<>();
         currentParameterNames.put("Spatial units", ThresholdImage.SPATIAL_UNITS_MODE);
@@ -139,16 +173,37 @@ public class LostAndFound {
         moduleName = new WorkflowHandling(null).getClass().getSimpleName();
         lostParameterNames.put(moduleName, currentParameterNames);
 
+
         //// Populating hard-coded parameter value reassignments ////
+        HashMap<String, String> currentValues = null;
+        HashMap<String, HashMap<String, String>> currentParameterValues = null;
+
+        // AbstractAffineRegistration
+        currentValues = new HashMap<>();
+        currentValues.put("Affine", AbstractAffineRegistration.TransformationModes.AFFINE);
+        currentValues.put("Rigid", AbstractAffineRegistration.TransformationModes.RIGID);
+        currentValues.put("Similarity", AbstractAffineRegistration.TransformationModes.SIMILARITY);
+        currentValues.put("Translation", AbstractAffineRegistration.TransformationModes.TRANSLATION);
+        currentParameterValues = new HashMap<>();
+        currentParameterValues.put(AbstractAffineRegistration.TRANSFORMATION_MODE, currentValues);
+        moduleName = new AffineBlockMatching(null).getClass().getSimpleName();
+        lostParameterValues.put(moduleName, currentParameterValues);
+        moduleName = new AffineManual(null).getClass().getSimpleName();
+        lostParameterValues.put(moduleName, currentParameterValues);
+        moduleName = new AffineMOPS(null).getClass().getSimpleName();
+        lostParameterValues.put(moduleName, currentParameterValues);
+        moduleName = new AffineSIFT(null).getClass().getSimpleName();
+        lostParameterValues.put(moduleName, currentParameterValues);
+
         // InputControl
-        HashMap<String, String> currentValues = new HashMap<>();
+        currentValues = new HashMap<>();
         currentValues.put("METRE", SpatialUnit.AvailableUnits.METRE);
         currentValues.put("CENTIMETRE", SpatialUnit.AvailableUnits.CENTIMETRE);
         currentValues.put("MILLIMETRE", SpatialUnit.AvailableUnits.MILLIMETRE);
         currentValues.put("MICROMETRE", SpatialUnit.AvailableUnits.MICROMETRE);
         currentValues.put("NANOMETRE", SpatialUnit.AvailableUnits.NANOMETRE);
         currentValues.put("ANGSTROM", SpatialUnit.AvailableUnits.ANGSTROM);
-        HashMap<String, HashMap<String, String>> currentParameterValues = new HashMap<>();
+        currentParameterValues = new HashMap<>();
         currentParameterValues.put(InputControl.SPATIAL_UNIT, currentValues);
         moduleName = new InputControl(null).getClass().getSimpleName();
         lostParameterValues.put(moduleName, currentParameterValues);
@@ -160,7 +215,7 @@ public class LostAndFound {
         currentParameterValues.put(ImageLoader.IMPORT_MODE, currentValues);
         moduleName = new ImageLoader(null).getClass().getSimpleName();
         lostParameterValues.put(moduleName, currentParameterValues);
-       
+
     }
 
     public String findModule(String oldName) {

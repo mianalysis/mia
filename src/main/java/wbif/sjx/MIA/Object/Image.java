@@ -6,7 +6,7 @@ import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-import com.drew.lang.annotations.Nullable;
+import org.eclipse.sisu.Nullable;
 
 import ij.CompositeImage;
 import ij.ImagePlus;

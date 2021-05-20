@@ -4,7 +4,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-import com.drew.lang.annotations.Nullable;
+import org.eclipse.sisu.Nullable;
 
 import ij.ImagePlus;
 import ij.ImageStack;

@@ -6,7 +6,7 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 
-import com.drew.lang.annotations.Nullable;
+import org.eclipse.sisu.Nullable;
 
 import ij.ImagePlus;
 import ij.ImageStack;

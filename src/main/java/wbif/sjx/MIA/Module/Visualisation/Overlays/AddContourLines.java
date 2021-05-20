@@ -7,7 +7,7 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import com.drew.lang.annotations.Nullable;
+import org.eclipse.sisu.Nullable;
 
 import org.scijava.vecmath.Point2d;
 

@@ -3,6 +3,7 @@ package wbif.sjx.MIA.Process.Interactable;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.gui.*;
+import ij.plugin.WindowOrganizer;
 import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Object.Image;
 
@@ -25,6 +26,8 @@ public class PointPairSelector implements ActionListener {
     private boolean showTest;
 
     private JFrame frame;
+    private static int xPos = -1;
+    private static int yPos = -1;
     private final JPanel objectsPanel = new JPanel();
     DefaultListModel<PointPair> listModel = new DefaultListModel<>();
     JList<PointPair> list = new JList<>(listModel);
@@ -40,6 +43,7 @@ public class PointPairSelector implements ActionListener {
     public PointPairSelector(Interactable interactable, boolean showTest) {
         this.interactable = interactable;
         this.showTest = showTest;
+
     }
 
     public ArrayList<PointPair> getPointPairs(ImagePlus ipl1, ImagePlus ipl2) {
@@ -64,6 +68,8 @@ public class PointPairSelector implements ActionListener {
             overlay2 = new Overlay();
             ipl2.setOverlay(overlay2);
         }
+
+        IJ.run("Tile");
 
         showOptionsPanel();
         while (frame != null) {
@@ -148,8 +154,12 @@ public class PointPairSelector implements ActionListener {
         frame.add(objectsScrollPane,c);
 
         frame.pack();
-        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        frame.setLocation((screenSize.width - frame.getWidth()) / 2, (screenSize.height - frame.getHeight()) / 2);
+        if (xPos == -1) {
+            Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+            xPos = (screenSize.width - frame.getWidth()) / 2;
+            yPos = (screenSize.height - frame.getHeight()) / 2;
+        }
+        frame.setLocation(xPos, yPos);
         frame.setVisible(true);
 
     }
@@ -166,7 +176,7 @@ public class PointPairSelector implements ActionListener {
                 break;
 
             case (TEST):
-                interactable.doAction(new Object[]{pairs});
+                interactable.doAction(new Object[]{pairs,ipl1,ipl2});
                 break;
 
             case (FINISH):
@@ -232,8 +242,11 @@ public class PointPairSelector implements ActionListener {
         }
 
         // Closing the image, so the analysis can proceed
+        xPos = frame.getX();
+        yPos = frame.getY();
         frame.dispose();
         frame = null;
+
         ipl1.close();
         ipl2.close();
 
@@ -291,7 +304,7 @@ public class PointPairSelector implements ActionListener {
 
     }
 
-    public static ArrayList<PointPair> getPreselectedPoints(wbif.sjx.MIA.Object.Image inputImage, Image reference) {
+    public static ArrayList<PointPair> getPreselectedPoints(Image inputImage, Image reference) {
         ArrayList<PointPair> pairs = new ArrayList<>();
         Roi roi1 = inputImage.getImagePlus().getRoi();
         Roi roi2 = reference.getImagePlus().getRoi();

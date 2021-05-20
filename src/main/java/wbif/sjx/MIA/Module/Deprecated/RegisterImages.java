@@ -8,7 +8,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-import com.drew.lang.annotations.Nullable;
+import org.eclipse.sisu.Nullable;
 
 import ij.IJ;
 import ij.ImagePlus;
@@ -40,8 +40,7 @@ import wbif.sjx.MIA.Module.ImageProcessing.Pixel.InvertIntensity;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.ProjectImage;
 import wbif.sjx.MIA.Module.ImageProcessing.Stack.ConcatenateStacks;
 import wbif.sjx.MIA.Module.ImageProcessing.Stack.ExtractSubstack;
-import wbif.sjx.MIA.Module.ImageProcessing.Stack.Registration.ManualUnwarp;
-import wbif.sjx.MIA.Module.ImageProcessing.Stack.Registration.UnwarpImages;
+import wbif.sjx.MIA.Module.ImageProcessing.Stack.Registration.UnwarpAutomatic;
 import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.Measurement;
 import wbif.sjx.MIA.Object.Status;
@@ -222,7 +221,7 @@ public class RegisterImages<T extends RealType<T> & NativeType<T>> extends Modul
 
             int t2 = t;
             switch (relativeMode) {
-                case UnwarpImages.RelativeModes.PREVIOUS_FRAME:
+                case RelativeModes.PREVIOUS_FRAME:
                     if (correctionInterval != -1 && t % correctionInterval == 0) {
                         t2 = source.getImagePlus().getNFrames();
                     }
@@ -393,7 +392,7 @@ public class RegisterImages<T extends RealType<T> & NativeType<T>> extends Modul
         ThreadPoolExecutor pool = new ThreadPoolExecutor(nThreads, nThreads, 0L, TimeUnit.MILLISECONDS,
                 new LinkedBlockingQueue<>());
 
-        if (fillMode.equals(ManualUnwarp.FillModes.WHITE))
+        if (fillMode.equals(FillModes.WHITE))
             InvertIntensity.process(inputImage);
 
         for (int c = 1; c <= nChannels; c++) {
@@ -422,7 +421,7 @@ public class RegisterImages<T extends RealType<T> & NativeType<T>> extends Modul
         pool.shutdown();
         pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS); // i.e. never terminate early
 
-        if (fillMode.equals(ManualUnwarp.FillModes.WHITE))
+        if (fillMode.equals(FillModes.WHITE))
             InvertIntensity.process(inputImage);
 
     }
@@ -709,23 +708,23 @@ public class RegisterImages<T extends RealType<T> & NativeType<T>> extends Modul
                 returnedParameters.add(parameters.getParameter(REFERENCE_SEPARATOR));
                 returnedParameters.add(parameters.getParameter(RELATIVE_MODE));
                 switch ((String) parameters.getValue(RELATIVE_MODE)) {
-                    case UnwarpImages.RelativeModes.PREVIOUS_FRAME:
+                    case RelativeModes.PREVIOUS_FRAME:
                         returnedParameters.add(parameters.getParameter(ROLLING_CORRECTION));
                         switch ((String) parameters.getValue(ROLLING_CORRECTION)) {
-                            case UnwarpImages.RollingCorrectionModes.EVERY_NTH_FRAME:
+                            case RollingCorrectionModes.EVERY_NTH_FRAME:
                                 returnedParameters.add(parameters.getParameter(CORRECTION_INTERVAL));
                                 break;
                         }
                         break;
 
-                    case UnwarpImages.RelativeModes.SPECIFIC_IMAGE:
+                    case RelativeModes.SPECIFIC_IMAGE:
                         returnedParameters.add(parameters.getParameter(REFERENCE_IMAGE));
                         break;
                 }
 
                 returnedParameters.add(parameters.getParameter(CALCULATION_SOURCE));
                 switch ((String) parameters.getValue(CALCULATION_SOURCE)) {
-                    case UnwarpImages.CalculationSources.EXTERNAL:
+                    case CalculationSources.EXTERNAL:
                         returnedParameters.add(parameters.getParameter(EXTERNAL_SOURCE));
                         break;
                 }
