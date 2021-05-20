@@ -161,11 +161,14 @@ public class RunScript extends Module {
             if (scriptText.contains("@ wbif.sjx.MIA.Object.Workspace workspace"))
                 scriptParameters.put("workspace", workspace);
 
+            if (scriptText.contains("@ wbif.sjx.MIA.Module.Module thisModule"))
+                scriptParameters.put("thisModule", this);
+
             // Running script
             MIA.scriptService.setContext(MIA.context);
             ScriptModule scriptModule = MIA.scriptService
                     .run("script." + extension, scriptText, false, scriptParameters).get();
-            
+
             // Adding output images/objects to the workspace
             LinkedHashMap<Integer, ParameterCollection> parameterCollections = parameters.getValue(ADD_OUTPUT);
             for (ParameterCollection parameterCollection : parameterCollections.values()) {
@@ -201,7 +204,8 @@ public class RunScript extends Module {
         parameters.add(new SeparatorP(SCRIPT_SEPARATOR, this));
         parameters.add(new ChoiceP(SCRIPT_MODE, this, ScriptModes.SCRIPT_TEXT, ScriptModes.ALL));
         parameters.add(new ChoiceP(SCRIPT_LANGUAGE, this, ScriptLanguages.IMAGEJ1, ScriptLanguages.ALL));
-        parameters.add(new TextAreaP(SCRIPT_TEXT, this, "#@ wbif.sjx.MIA.Object.Workspace workspace", true));
+        parameters.add(new TextAreaP(SCRIPT_TEXT, this,
+                "// The following two parameters will provide references to the workspace and current module.\n#@ wbif.sjx.MIA.Object.Workspace workspace\n#@ wbif.sjx.MIA.Module.Module thisModule", true));
         parameters.add(new FilePathP(SCRIPT_FILE, this));
         parameters.add(new GenericButtonP(REFRESH_BUTTON, this, "Refresh", GenericButtonP.DefaultModes.REFRESH));
 
