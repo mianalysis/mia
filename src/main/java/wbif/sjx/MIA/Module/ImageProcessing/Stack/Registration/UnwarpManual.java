@@ -63,7 +63,8 @@ public class UnwarpManual<T extends RealType<T> & NativeType<T>> extends Abstrac
         ManualBUnwarpJParam manualParam = (ManualBUnwarpJParam) param;
         manualParam.pointSelectionMode = parameters.getValue(POINT_SELECTION_MODE);
 
-        // In test points mode we don't want to update the ROIs, so the workspace is set to null
+        // In test points mode we don't want to update the ROIs, so the workspace is set
+        // to null
         if (workspace == null)
             return;
 
@@ -133,7 +134,8 @@ public class UnwarpManual<T extends RealType<T> & NativeType<T>> extends Abstrac
             showDetectedPoints(referenceIpr, warpedIpr, pairs);
 
         ArrayList<Stack<Point>> points = convertPointPairsToPointStacks(pairs);
-        Transformation transformation = bUnwarpJ_Mod.computeTransformationBatch(warpedIpr, referenceIpr, points.get(0), points.get(1), p.bParam);
+        Transformation transformation = bUnwarpJ_Mod.computeTransformationBatch(warpedIpr, referenceIpr, points.get(0),
+                points.get(1), p.bParam);
 
         try {
             File tempFile = File.createTempFile("unwarp", ".tmp");
@@ -238,6 +240,9 @@ public class UnwarpManual<T extends RealType<T> & NativeType<T>> extends Abstrac
         super.initialiseParameters();
 
         parameters.add(new ChoiceP(POINT_SELECTION_MODE, this, PointSelectionModes.RUNTIME, PointSelectionModes.ALL));
+
+        addParameterDescriptions();
+
     }
 
     @Override
@@ -256,6 +261,15 @@ public class UnwarpManual<T extends RealType<T> & NativeType<T>> extends Abstrac
     @Override
     protected void addParameterDescriptions() {
         super.addParameterDescriptions();
+
+        parameters.get(POINT_SELECTION_MODE)
+                .setDescription("The source for points to be used in calculation of image registration:<br><ul>"
+
+                        + "<li>\"" + PointSelectionModes.PRESELECTED
+                        + "\" Points have been previously-selected on the input images as multi-point ROIs.  These points are passed directly into the registration calculation.  This negates the need for user-interaction at runtime.</li>"
+
+                        + "<li>\"" + PointSelectionModes.RUNTIME
+                        + "\" Points must be manually-selected by the user at analysis runtime.  The two images to be aligned are displayed and a dialog box opens to allow selection of point pairs.  Point pairs must be added in the same order on each image.  For images where multiple slices/timepoints need to be registered, image pairs will be opened sequentially, with the point selections from the previous slice/timepoint being pre-selected for convenience.</li></ul>");
 
     }
 

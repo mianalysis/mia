@@ -250,6 +250,15 @@ public class AffineManual <T extends RealType<T> & NativeType<T>> extends Abstra
     protected void addParameterDescriptions() {
         super.addParameterDescriptions();
 
+        parameters.get(POINT_SELECTION_MODE)
+                .setDescription("The source for points to be used in calculation of image registration:<br><ul>"
+
+                        + "<li>\"" + PointSelectionModes.PRESELECTED
+                        + "\" Points have been previously-selected on the input images as multi-point ROIs.  These points are passed directly into the registration calculation.  This negates the need for user-interaction at runtime.</li>"
+
+                        + "<li>\"" + PointSelectionModes.RUNTIME
+                        + "\" Points must be manually-selected by the user at analysis runtime.  The two images to be aligned are displayed and a dialog box opens to allow selection of point pairs.  Point pairs must be added in the same order on each image.  For images where multiple slices/timepoints need to be registered, image pairs will be opened sequentially, with the point selections from the previous slice/timepoint being pre-selected for convenience.</li></ul>");
+
     }
 
     public class ManualParam extends AffineParam {

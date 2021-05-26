@@ -156,8 +156,6 @@ public abstract class AbstractBUnwarpJRegistration<T extends RealType<T> & Nativ
         parameters.add(new DoubleP(CONSISTENCY_WEIGHT, this, 10d));
         parameters.add(new DoubleP(STOP_THRESHOLD, this, 0.01));
 
-        addParameterDescriptions();
-
     }
 
     @Override
@@ -193,6 +191,38 @@ public abstract class AbstractBUnwarpJRegistration<T extends RealType<T> & Nativ
     protected void addParameterDescriptions() {
         super.addParameterDescriptions();
 
+        String siteRef = "Description taken from <a href=\"https://imagej.net/BUnwarpJ\">https://imagej.net/BUnwarpJ</a>";
+
+        parameters.get(REGISTRATION_MODE).setDescription("\"The registration mode can be \"Accurate\", \"Fast\" and \"Mono\". The registration mode \"Mono\" makes the program to perform only unidirectional registration, i.e. from source to target. The two registration modes \"Accurate\" and \"Fast\" involve performing bidirectional registration and affect the stopping criteria internally used by the program.\"  "
+            + siteRef);
+
+        parameters.get(SUBSAMPLE_FACTOR).setDescription("\"The registration will be calculated using subsampled versions of the images but the results will be applied to the original ones. The image subsampling parameter can be chosen between 0 and 7, i.e. the image dimensions can be reduced by a factor of 2^0 = 1 to 2^7 = 128. This is very useful when registering large images.\"  "
+            + siteRef);
+
+        parameters.get(INITIAL_DEFORMATION_MODE).setDescription(
+                "\"Determines the level of detail of the initial deformation. In bUnwarpJ this is defined by the number of B-splines used to represent the deformations:<br><br><table style=\"font:sans-serif;font-size:12\"><tr><th>Deformation</th><th>Num. intervals in grid</th></tr><tr><td>Very coarse</td><td>1x1</td></tr><tr><td>Coarse</td><td>2x2</td></tr><tr><td>Fine</td><td>3x3</td></tr><tr><td>Very fine</td><td>8x8</td></tr><tr><td>Super fine</td><td>16x16</td></tr></table><font face=\"sans-serif\" size=\"3\"><br>If images start very far away from the right alignment, it is usually a good idea to go from \"Very Coarse\" to \"Very Fine\". If they start close to the right alignment, using a very coarse initial deformation could cause the algorithm to fail. So, in that case, it would be enough to set initial deformation to \"Fine\" and final deformation to \"Very Fine\". Use \"Super Fine\" only when you need a very high level of accuracy, because it makes the algorithm quite slower depending on the image sizes.  "
+        + siteRef);
+
+        parameters.get(FINAL_DEFORMATION_MODE).setDescription("See description for \""+INITIAL_DEFORMATION_MODE+"\"");
+
+        parameters.get(DIVERGENCE_WEIGHT).setDescription("Regularizes the deformation by penalizing the divergence of the deformation vector field.  If you see that your transformations get too rough, it is a good idea to use this parameter.  A value of 0.1 is usually good if there's no prior knowledge about the deformation shape.  "
+        + siteRef);
+
+        parameters.get(CURL_WEIGHT).setDescription("Regularizes the deformation by penalizing the curl of the deformation vector field.  If you see that your transformations get too rough, it is a good idea to use this parameter.  A value of 0.1 is usually good if there's no prior knowledge about the deformation shape.  "
+        + siteRef);
+
+        parameters.get(LANDMARK_WEIGHT).setDescription("Forces the deformations to fit the landmark points.  Set it to 1.0 unless you're not using landmarks.  "
+        + siteRef);
+
+        parameters.get(IMAGE_WEIGHT).setDescription("The weight to control the pixel values difference.  Leave it at 1.0 unless you want to do, for instance, landmark-only registration.  "
+        + siteRef);
+
+        parameters.get(CONSISTENCY_WEIGHT).setDescription("Forces the resulting deformations to be one (source to target) as close as possible to the inverse of the other one (target to source). Values between 10.0 and 30.0 usually work fine. It is only taken into account for registration modes \"Fast\" or \"Accurate\".  "
+        + siteRef);
+
+        parameters.get(STOP_THRESHOLD).setDescription("Stops the optimization process at each multiresolution level when the error relative change is not larger than this threshold.  "
+        + siteRef);
+        
     }
 
     public abstract class BUnwarpJParam implements Param {

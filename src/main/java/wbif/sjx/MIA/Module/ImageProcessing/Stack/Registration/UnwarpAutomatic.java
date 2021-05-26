@@ -76,6 +76,9 @@ public class UnwarpAutomatic extends AbstractBUnwarpJRegistration implements Int
     @Override
     protected void initialiseParameters() {
         super.initialiseParameters();
+
+        addParameterDescriptions();
+        
     }
 
     @Override

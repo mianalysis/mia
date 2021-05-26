@@ -69,19 +69,6 @@ public abstract class Module extends Ref implements Comparable {
 
     protected abstract Status process(Workspace workspace);
 
-    ////// WILL BE ABSTRACT EVENTUALLY //////
-    public String getShortDescription() {
-        String des = getDescription();
-        if (des.length() == 0)
-            return "";
-
-        if (!des.contains("."))
-            return des;
-
-        return des.substring(0, des.indexOf("."))+".";
-
-    }
-
     /*
      * Get a ParameterCollection of all the possible parameters this class requires
      * (not all may be used). This returns the ParameterCollection, rather than just
@@ -276,6 +263,18 @@ public abstract class Module extends Ref implements Comparable {
 
     public void setModuleID(String moduleID) {
         this.moduleID = moduleID;
+    }
+
+    public String getShortDescription() {
+        String des = getDescription();
+        if (des.length() == 0)
+            return "";
+
+        if (!des.contains("."))
+            return des;
+
+        return des.substring(0, des.indexOf("."))+".";
+
     }
 
     public String getNotes() {
