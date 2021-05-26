@@ -340,10 +340,10 @@ public class RunMacroOnObjects extends AbstractMacroRunner {
                 "Macro code to be executed.  MIA macro commands are enabled using the \"run(\"Enable MIA Extensions\");\" command which is included by default.  This should always be the first line of a macro if these commands are needed.");
 
         parameters.get(MACRO_FILE)
-                .setDescription("Select a macro file (.ijm) to run once, after all analysis runs have completed.");
+                .setDescription("Select a macro file (.ijm) to be run by this module.  As with the \""+MACRO_TEXT+"\" parameter, this macro should start with the \"run(\"Enable MIA Extensions\");\" command.");
 
         parameters.get(REFRESH_BUTTON).setDescription(
-                "This button refreshes the macro code as stored within MIA.  Clicking this will create an \"undo\" checkpoint.");
+                "This button refreshes the macro code as stored within MIA.  Clicking this will create an \"undo\" checkpoint and validate any global variables that have been used.");
 
         parameters.get(ADD_INTERCEPTED_VARIABLE).setDescription(
                 "This allows variables assigned in the macro to be stored as measurements associated with the current object.");

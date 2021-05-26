@@ -96,7 +96,7 @@ public class SetSpatialCalibration extends Module {
 
     @Override
     public String getDescription() {
-        return "";
+        return "Update spatial calibration for XY and Z axes based on defined physical and corresponding image (pixel) distances.  Both physical and image distances can be drawn from a variety of sources including image and object measurements, fixed values and user-defined values (specified at runtime).  Calibration can be applied to XY and Z axes simultaneously or independently.";
     }
 
     public static double getFirstObjectMeasurement(Workspace workspace, String objectsName, String measurementName) {
@@ -386,6 +386,116 @@ public class SetSpatialCalibration extends Module {
     }
 
     void addParameterDescriptions() {
+        parameters.get(INPUT_IMAGE)
+                .setDescription("Image to which spatial calibration specified in this module will be applied.");
+
+        parameters.get(AXIS_MODE).setDescription(
+                "Controls to which image axes the spatial calibration specified in this module will applied:<br><ul>" +
+
+                        "<li>\"" + AxisModes.XY
+                        + "\" Calibration will be applied to X and Y axes only.  Z axis will retain its existing calibration.</li>"
+                        +
+
+                        "<li>\"" + AxisModes.XYZ + "\" Calibration will be applied equally to XY and Z axes.</li>" +
+
+                        "<li>\"" + AxisModes.Z
+                        + "\" Calibration will be applied to Z axis only.  X and Y axes will retain their existing calibrations.</li></ul>");
+
+        parameters.get(PD_SOURCE).setDescription("Source for physical distance measurement:<br><ul>" +
+
+                "<li>\"" + DistanceSources.FIRST_OBJECT_MEASUREMENT
+                + "\" Distance is taken as the measurement (specified by \"" + OBJECTS_MEASURUREMENT_FOR_PD
+                + "\") for the first object in the collection \"" + OBJECTS_FOR_PD
+                + "\".  The first object is taken since only one value can be used.</li>" +
+
+                "<li>\"" + DistanceSources.FIXED_VALUE + "\" Distance is the fixed value specified by the \""
+                + FIXED_VALUE_FOR_PD + "\" parameter.</li>" +
+
+                "<li>\"" + DistanceSources.GUI_SELECTION_TEXT
+                + "\" At runtime, the user is presented with a text entry dialog box, into which they can type the physical distance measurement.</li>"
+                +
+
+                "<li>\"" + DistanceSources.IMAGE_MEASUREMENT
+                + "\" Distance is taken as the measurement (specified by \"" + IMAGE_MEASUREMENT_FOR_PD
+                + "\") for the image \"" + IMAGE_FOR_PD + "\".</li></ul>");
+
+        parameters.get(OBJECTS_FOR_PD).setDescription("If \"" + PD_SOURCE + "\" is set to \""
+                + DistanceSources.FIRST_OBJECT_MEASUREMENT
+                + "\", this is the object collection from which the first measurement will be taken as the physical distance.");
+
+        parameters.get(OBJECTS_MEASURUREMENT_FOR_PD)
+                .setDescription("If \"" + PD_SOURCE + "\" is set to \"" + DistanceSources.FIRST_OBJECT_MEASUREMENT
+                        + "\", this is the measurement for the first object in the collection, \"" + OBJECTS_FOR_PD
+                        + "\", that willbe used as the physical distance.");
+
+        parameters.get(FIXED_VALUE_FOR_PD)
+                .setDescription("If \"" + PD_SOURCE + "\" is set to \"" + DistanceSources.FIXED_VALUE
+                        + "\", this is the fixed value that will be used as the physical distance.");
+
+        parameters.get(DISPLAY_IMAGE_PD).setDescription("If \"" + PD_SOURCE + "\" is set to \""
+                + DistanceSources.GUI_SELECTION_TEXT
+                + "\", this image will be displayed to the user at the same time as the dialog box allowing the physical distance to be specified.");
+
+        parameters.get(STORE_DISTANCE_AS_MEASUREMENT_PD).setDescription("When selected (and if \"" + PD_SOURCE
+                + "\" is set to \"" + DistanceSources.GUI_SELECTION_TEXT
+                + "\"), the user-specified physical distance value will be added to the input image as a measurement.  This only applies for GUI-based distance specifications as the distance isn't recorded elsewhere (e.g. as an existing image or object measurement, or as a hard-coded parameter).");
+
+        parameters.get(IMAGE_FOR_PD)
+                .setDescription("If \"" + PD_SOURCE + "\" is set to \"" + DistanceSources.IMAGE_MEASUREMENT
+                        + "\", this is the image from which the measurement will be taken as the physical distance.");
+
+        parameters.get(IMAGE_MEASUREMENT_FOR_PD)
+                .setDescription("If \"" + PD_SOURCE + "\" is set to \"" + DistanceSources.IMAGE_MEASUREMENT
+                        + "\", this is the measurement for the image, \"" + IMAGE_FOR_PD
+                        + "\", that willbe used as the physical distance.");
+
+        parameters.get(ID_SOURCE).setDescription("Source for image (pixel) distance measurement:<br><ul>" +
+
+                "<li>\"" + DistanceSources.FIRST_OBJECT_MEASUREMENT
+                + "\" Distance is taken as the measurement (specified by \"" + OBJECTS_MEASURUREMENT_FOR_ID
+                + "\") for the first object in the collection \"" + OBJECTS_FOR_ID
+                + "\".  The first object is taken since only one value can be used.</li>" +
+
+                "<li>\"" + DistanceSources.FIXED_VALUE + "\" Distance is the fixed value specified by the \""
+                + FIXED_VALUE_FOR_ID + "\" parameter.</li>" +
+
+                "<li>\"" + DistanceSources.GUI_SELECTION_TEXT
+                + "\" At runtime, the user is presented with a text entry dialog box, into which they can type the image (pixel) distance measurement.</li>"
+                +
+
+                "<li>\"" + DistanceSources.IMAGE_MEASUREMENT
+                + "\" Distance is taken as the measurement (specified by \"" + IMAGE_MEASUREMENT_FOR_ID
+                + "\") for the image \"" + IMAGE_FOR_ID + "\".</li></ul>");
+
+        parameters.get(OBJECTS_FOR_ID).setDescription("If \"" + ID_SOURCE + "\" is set to \""
+                + DistanceSources.FIRST_OBJECT_MEASUREMENT
+                + "\", this is the object collection from which the first measurement will be taken as the image (pixel) distance.");
+
+        parameters.get(OBJECTS_MEASURUREMENT_FOR_ID)
+                .setDescription("If \"" + ID_SOURCE + "\" is set to \"" + DistanceSources.FIRST_OBJECT_MEASUREMENT
+                        + "\", this is the measurement for the first object in the collection, \"" + OBJECTS_FOR_ID
+                        + "\", that willbe used as the image (pixel) distance.");
+
+        parameters.get(FIXED_VALUE_FOR_ID)
+                .setDescription("If \"" + ID_SOURCE + "\" is set to \"" + DistanceSources.FIXED_VALUE
+                        + "\", this is the fixed value that will be used as the image (pixel) distance.");
+
+        parameters.get(DISPLAY_IMAGE_ID).setDescription("If \"" + ID_SOURCE + "\" is set to \""
+                + DistanceSources.GUI_SELECTION_TEXT
+                + "\", this image will be displayed to the user at the same time as the dialog box allowing the image (pixel) distance to be specified.");
+
+        parameters.get(STORE_DISTANCE_AS_MEASUREMENT_ID).setDescription("When selected (and if \"" + ID_SOURCE
+                + "\" is set to \"" + DistanceSources.GUI_SELECTION_TEXT
+                + "\"), the user-specified image (pixel) distance value will be added to the input image as a measurement.  This only applies for GUI-based distance specifications as the distance isn't recorded elsewhere (e.g. as an existing image or object measurement, or as a hard-coded parameter).");
+
+        parameters.get(IMAGE_FOR_ID).setDescription("If \"" + ID_SOURCE + "\" is set to \""
+                + DistanceSources.IMAGE_MEASUREMENT
+                + "\", this is the image from which the measurement will be taken as the image (pixel) distance.");
+
+        parameters.get(IMAGE_MEASUREMENT_FOR_ID)
+                .setDescription("If \"" + ID_SOURCE + "\" is set to \"" + DistanceSources.IMAGE_MEASUREMENT
+                        + "\", this is the measurement for the image, \"" + IMAGE_FOR_ID
+                        + "\", that willbe used as the image (pixel) distance.");
 
     }
 }

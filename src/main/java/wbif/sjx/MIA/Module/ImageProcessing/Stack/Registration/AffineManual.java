@@ -27,7 +27,8 @@ import wbif.sjx.MIA.Process.Interactable.Interactable;
 import wbif.sjx.MIA.Process.Interactable.PointPairSelector;
 import wbif.sjx.MIA.Process.Interactable.PointPairSelector.PointPair;
 
-public class AffineManual <T extends RealType<T> & NativeType<T>> extends AbstractAffineRegistration implements Interactable {
+public class AffineManual<T extends RealType<T> & NativeType<T>> extends AbstractAffineRegistration
+        implements Interactable {
     public static final String FEATURE_SEPARATOR = "Feature detection";
     public static final String POINT_SELECTION_MODE = "Point selection mode";
 
@@ -45,26 +46,9 @@ public class AffineManual <T extends RealType<T> & NativeType<T>> extends Abstra
 
     @Override
     public String getDescription() {
-        // return "Align an image from the workspace to another image from the workspace
-        // using manually-selected reference points. When the image runs, the input and
-        // reference images are displayed. The user then selects matching points on each
-        // image and clicks \"Add pair(s)\". Points must be added in the same order on
-        // each image (ID numbers next to each point provide a reference). Points are
-        // shown in the control window and can be deleted by highlighting the relevant
-        // entry and clicking \"Remove pair\". The alignment can be tested by clicking
-        // \"Test process\". Finally, the alignment is accepted by clicking \"Finish
-        // adding pairs\", at which point the images are closed and the transform is
-        // applied. The transformed input image can either overwrite the input image in
-        // the workspace, or be saved to the workspace with a new name."
+        return "Apply 2D affine transforms to align images from the workspace to other images from the workspace using manually-selected reference points.  When the module runs, the input and reference images are displayed. The user then selects matching points on each image and clicks \"Add pair(s)\". Points must be added in the same order on each image (ID numbers next to each point provide a reference). Points are shown in the control window and can be deleted by highlighting the relevant entry and clicking \"Remove pair\". Finally, the alignment is accepted by clicking \"Finish adding pairs\", at which point the images are closed and the transform is applied.  If multiple slices/timepoints are to be aligned, the next image pair will immediately be displayed and the processes is repeated.  The transformed input image can either overwrite the input image in the workspace, or be saved to the workspace with a new name."
 
-        // + "Alignments are calculated using the <a
-        // href=\"https://github.com/axtimwalde/mpicbg\">MPICBG</a> image transformation
-        // library."
-
-        // + "<br><br>Note: This module currently only aligns single slice images;
-        // however, a future update will add multi-slice processing.";
-
-        return "";
+                + "Alignments are calculated using the <a href=\"https://github.com/axtimwalde/mpicbg\">MPICBG</a> image transformation library.";
 
     }
 
@@ -214,7 +198,7 @@ public class AffineManual <T extends RealType<T> & NativeType<T>> extends Abstra
             e.printStackTrace();
         }
 
-        ArrayList<Image<T>> images = new ArrayList<>();        
+        ArrayList<Image<T>> images = new ArrayList<>();
         images.add(image1);
         images.add(image2);
         ConcatenateStacks.concatenateImages(images, ConcatenateStacks.AxisModes.CHANNEL, "Registration comparison")
