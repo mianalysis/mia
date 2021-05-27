@@ -229,8 +229,6 @@ public class ExtractSubstack extends Module implements ActionListener {
         String inputImageName = parameters.getValue(INPUT_IMAGE);
         Image inputImage = workspace.getImages().get(inputImageName);
 
-        MIA.log.writeDebug(inputImage.getImagePlus().getRoi());
-
         // Getting parameters
         String selectionMode = parameters.getValue(SELECTION_MODE);
         String outputImageName = parameters.getValue(OUTPUT_IMAGE);
