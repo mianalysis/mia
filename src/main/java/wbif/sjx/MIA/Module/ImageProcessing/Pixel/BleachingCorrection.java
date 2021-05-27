@@ -99,11 +99,11 @@ public class BleachingCorrection extends Module {
 
         switch (correctionMode) {
             case CorrectionModes.EXPONENTIAL_FIT:
-            try {
-                new BleachCorrection_ExpoFit(inputImagePlus, roi).core();
-            } catch (NullPointerException e) {
-                MIA.log.writeWarning("Bleach correction failed (possible lack of exponential decay in signal)");
-            }
+                try {
+                    new BleachCorrection_ExpoFit(inputImagePlus, roi).core();
+                } catch (NullPointerException e) {
+                    MIA.log.writeWarning("Bleach correction failed (possible lack of exponential decay in signal)");
+                }
                 break;
             case CorrectionModes.HISTOGRAM_MATCHING:
                 new BleachCorrection_MH(inputImagePlus).doCorrection();
@@ -212,5 +212,25 @@ public class BleachingCorrection extends Module {
         parameters.get(OUTPUT_IMAGE).setDescription("If \"" + APPLY_TO_INPUT
                 + "\" is not selected, the post-operation image will be saved to the workspace with this name.");
 
+        parameters.get(CORRECTION_MODE).setDescription("Controls the bleach correction algorithm to use:<br><ul>" +
+
+                "<li>\"" + CorrectionModes.EXPONENTIAL_FIT
+                + "\" Assumes the bleaching process is controlled by a mono-exponential decay.  Will fail if the signal does not decay over time.  Calculation can be performed using a single ROI for all frames.</li>"
+                +
+
+                "<li>\"" + CorrectionModes.HISTOGRAM_MATCHING
+                + "\" Adjusts image intensities so that the histograms match that from the first frame.</li>" +
+
+                "<li>\"" + CorrectionModes.SIMPLE_RATIO
+                + "\" Normalises images to have the same mean intensity.  Calculation can be performed using a single ROI for all frames.</li></ul>");
+
+        parameters.get(USE_ROI_OBJECTS).setDescription(
+                "When selected, the bleaching and associated intensity correction will be calculated based on the pixels within a region of interest (specified as the objects of collection \""
+                        + ROI_OBJECTS
+                        + "\").  A single ROI is used for all frames (i.e. the region can't be different from frame to frame).");
+                
+        parameters.get(ROI_OBJECTS).setDescription(
+                "If \""+USE_ROI_OBJECTS+"\" is selected, this is the object collection which will act as the region of interest for calculating the bleaching.  Since only a single ROI can be used, all objects in this collection are reduced down into a single frame and timepoint.");
+                        
     }
 }
