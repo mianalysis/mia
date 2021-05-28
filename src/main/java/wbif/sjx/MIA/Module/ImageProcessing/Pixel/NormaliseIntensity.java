@@ -59,10 +59,11 @@ public class NormaliseIntensity extends Module {
 
 
     public interface RegionModes {
-        String ENTIRE_IMAGE = "Entire image";
+        String ENTIRE_IMAGE = "Entire image";        
         String PER_OBJECT = "Per object";
+        String PER_SLICE = "Per slice";
 
-        String[] ALL = new String[]{ENTIRE_IMAGE,PER_OBJECT};
+        String[] ALL = new String[]{ENTIRE_IMAGE,PER_OBJECT,PER_SLICE};
 
     }
 
@@ -208,6 +209,18 @@ public class NormaliseIntensity extends Module {
                         for (Obj inputObject:inputObjects.values()) {
                             writeStatus("Processing "+(++count)+" of "+total+" objects");
                             applyNormalisation(inputImagePlus,calculationMode,clipFraction,intRange,inputObject);
+                        }
+                        break;
+
+                    case RegionModes.PER_SLICE:
+                        count = 0;
+                        total = inputImagePlus.getStack().size();                        
+                        for (int z = 0; z < total;z++) {
+                            writeStatus("Processing " + (++count) + " of " + total + " slices");
+                            ImageProcessor ipr = inputImagePlus.getStack().getProcessor(z+1);
+                            ImagePlus tempIpl = new ImagePlus("Temp", ipr);
+                            applyNormalisation(tempIpl,calculationMode,clipFraction,intRange);
+                            inputImagePlus.getStack().setProcessor(tempIpl.getProcessor(), z+1);
                         }
                         break;
                 }

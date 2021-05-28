@@ -8,7 +8,7 @@ About MIA
 ------------
 MIA is a Fiji plugin which provides a modular framework for assembling image and object analysis pipelines.  Detected objects can be transformed, filtered, measured and related.  Analysis pipelines are batch-enabled by default, allowing easy processing of high-content datasets.
 
-MIA is developed at the [Wolfson Bioimaging Facility](http://www.bristol.ac.uk/wolfson-bioimaging/) (University of Bristol, UK).
+MIA is developed in the [Wolfson Bioimaging Facility](http://www.bristol.ac.uk/wolfson-bioimaging/) at the University of Bristol.
 
 Installation
 ------------

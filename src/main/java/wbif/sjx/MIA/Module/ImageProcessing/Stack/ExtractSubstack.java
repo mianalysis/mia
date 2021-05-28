@@ -275,7 +275,7 @@ public class ExtractSubstack extends Module implements ActionListener {
         if (outputImage == null) return Status.FAIL;
 
         workspace.addImage(outputImage);
-        MIA.log.writeDebug(outputImage.getImagePlus().getRoi());
+        
         // If selected, displaying the image
         if (showOutput)
             outputImage.showImage();
