@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.util.ArrayList;
 
-import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Categories;
 import wbif.sjx.MIA.Module.Category;
 import wbif.sjx.MIA.Module.Module;
@@ -52,7 +51,9 @@ public class ApplyWekaObjectClassification extends Module {
 
     @Override
     public String getDescription() {
-        return "";
+        return "Apply a previously-prepared WEKA object classifier to a specified object collection from the workspace.  Classification can be based on a range of measurements associated with the input objects.  All measurements used to create this model should be present in the input objects and have the same names (i.e. measurement names shouldn't be changed during preparation of training data).<br><br>" +
+        
+        "The probability of each input object belonging to each class is output as a measurement associated with that object.  Each object also has a class index (based on the order the classes are listed in the .model file) indicating the most probable class that object belongs to.";
     }
 
     public static String getProbabilityMeasurementName(String className) {
@@ -172,6 +173,8 @@ public class ApplyWekaObjectClassification extends Module {
         parameters.add(new FilePathP(CLASSIFIER_PATH, this));
         parameters.add(new BooleanP(APPLY_NORMALISATION, this, true));
 
+        addParameterDescriptions();
+        
     }
 
     @Override
@@ -238,5 +241,14 @@ public class ApplyWekaObjectClassification extends Module {
     @Override
     public boolean verify() {
         return true;
+    }
+
+    void addParameterDescriptions() {
+        parameters.get(INPUT_OBJECTS).setDescription("Input objects from workspace which will be classified based on model specified by \""+CLASSIFIER_PATH+"\" parameter.");
+
+        parameters.get(CLASSIFIER_PATH).setDescription("WEKA model (.model extension) that will be used to classify input objects based on a variety of measurements.  This model must be created in the <a href=\"https://www.cs.waikato.ac.nz/ml/index.html\">WEKA software</a>.  All measurements used to create this model should be present in the input objects and have the same names (i.e. measurement names shouldn't be changed during preparation of training data).");
+
+        parameters.get(APPLY_NORMALISATION).setDescription("When selected, measurements will be normalised (set to the range 0-1) within their respective classes.");
+
     }
 }

@@ -61,7 +61,7 @@ public class HoughObjectDetection extends Module {
     public static final String MAX_RADIUS = "Maximum radius (px)";
     public static final String DETECTION_THRESHOLD = "Detection threshold";
     public static final String EXCLUSION_RADIUS = "Exclusion radius (px)";
-    public static final String SAMPLING_RATE = "Sampling rate";
+    public static final String DOWNSAMPLE_FACTOR = "Downsample factor";
     public static final String ENABLE_MULTITHREADING = "Enable multithreading";
 
     public static final String POST_PROCESSING_SEPARATOR = "Object post processing";
@@ -91,7 +91,8 @@ public class HoughObjectDetection extends Module {
 
     @Override
     public String getDescription() {
-        return "";
+        return "Detects circles within grayscale images using the Hough transform.  Input images can be of binary or grayscale format, but the circle features must be brighter than their surrounding background and have dark centres (i.e. be rings).  For solid circles, a gradient filter or equivalent should be applied to the image first.  Detected circles are output to the workspace as solid objects.  Circles are detected within a user-defined radius range and must exceed a user-defined threshold score (based on the intensity of the circle feartures in the input image and the feature circularity.";
+
     }
 
     @Override
@@ -109,7 +110,7 @@ public class HoughObjectDetection extends Module {
         // Getting parameters
         int minR = parameters.getValue(MIN_RADIUS);
         int maxR = parameters.getValue(MAX_RADIUS);
-        int samplingRate = parameters.getValue(SAMPLING_RATE);
+        int samplingRate = parameters.getValue(DOWNSAMPLE_FACTOR);
         boolean multithread = parameters.getValue(ENABLE_MULTITHREADING);
         double detectionThreshold = parameters.getValue(DETECTION_THRESHOLD);
         int exclusionRadius = parameters.getValue(EXCLUSION_RADIUS);
@@ -249,19 +250,21 @@ public class HoughObjectDetection extends Module {
         parameters.add(new SeparatorP(DETECTION_SEPARATOR,this));
         parameters.add(new IntegerP(MIN_RADIUS,this,10));
         parameters.add(new IntegerP(MAX_RADIUS,this,20));
-        parameters.add(new IntegerP(SAMPLING_RATE,this,1));
+        parameters.add(new IntegerP(DOWNSAMPLE_FACTOR,this,1));
         parameters.add(new DoubleP(DETECTION_THRESHOLD,this,1.0));
         parameters.add(new IntegerP(EXCLUSION_RADIUS,this,10));
         parameters.add(new BooleanP(ENABLE_MULTITHREADING, this, true));
 
         parameters.add(new SeparatorP(POST_PROCESSING_SEPARATOR,this));
-        parameters.add(new IntegerP(RADIUS_RESIZE,this,0,"Radius of output objects will be adjusted by this value.  For example, a detected circle of radius 5 with a \"radius resize\" of 2 will have an output of 7.  Similarly, setting \"radius resize\" to -3 would produce a circle of radius 2."));
+        parameters.add(new IntegerP(RADIUS_RESIZE,this,0));
 
         parameters.add(new SeparatorP(VISUALISATION_SEPARATOR,this));
         parameters.add(new BooleanP(SHOW_TRANSFORM_IMAGE,this,true));
         parameters.add(new BooleanP(SHOW_DETECTION_IMAGE,this,true));
         parameters.add(new BooleanP(SHOW_HOUGH_SCORE,this,false));
         parameters.add(new IntegerP(LABEL_SIZE,this,12));
+
+        addParameterDescriptions();
 
     }
 
@@ -282,7 +285,7 @@ public class HoughObjectDetection extends Module {
         returnedParameters.add(parameters.getParameter(MAX_RADIUS));
         returnedParameters.add(parameters.getParameter(DETECTION_THRESHOLD));
         returnedParameters.add(parameters.getParameter(EXCLUSION_RADIUS));
-        returnedParameters.add(parameters.getParameter(SAMPLING_RATE));
+        returnedParameters.add(parameters.getParameter(DOWNSAMPLE_FACTOR));
         returnedParameters.add(parameters.getParameter(ENABLE_MULTITHREADING));
 
         returnedParameters.add(parameters.getParameter(POST_PROCESSING_SEPARATOR));
@@ -337,5 +340,38 @@ public class HoughObjectDetection extends Module {
     @Override
     public boolean verify() {
         return true;
+    }
+
+    void addParameterDescriptions() {
+        parameters.get(INPUT_IMAGE).setDescription("Input image from which circles will be detected.");
+
+        parameters.get(OUTPUT_OBJECTS).setDescription("Output circle objects to be added to the workspace.  Irrespective of the form of the input circle features, output circles are always solid.");
+
+        parameters.get(OUTPUT_TRANSFORM_IMAGE).setDescription("When selected, the Hough-transform image will be output to the workspace with the name specified by \""+OUTPUT_IMAGE+"\".");
+
+        parameters.get(OUTPUT_IMAGE).setDescription("If \""+OUTPUT_TRANSFORM_IMAGE+"\" is selected, this will be the name assigned to the transform image added to the workspace.  The transform image has XY dimensions equal to the input image and an equal number of Z-slices to the number of radii tested.  Circluar features in the input image appear as bright points, where the XYZ location of the point corresponds to the XYR (i.e. X, Y, radius) parameters for the circle.");
+
+        parameters.get(MIN_RADIUS).setDescription("The minimum radius to detect circles for.  Specified in pixel units.");
+
+        parameters.get(MAX_RADIUS).setDescription("The maximum radius to detect circles for.  Specified in pixel units.");
+
+        parameters.get(DETECTION_THRESHOLD).setDescription("The minimum score a detected circle must have to be stored.  Scores are the sum of all pixel intensities lying on the perimeter of the circle.  As such, higher scores correspond to brighter circles, circles with high circularity (where all points lie on the perimeter of the detected circle) and circles with continuous intensity along their perimeter (no gaps).");
+
+        parameters.get(EXCLUSION_RADIUS).setDescription("The minimum distance between adjacent circles.  For multiple candidate points within this range, the circle with the highest score will be retained.  Specified in pixel units.");
+
+        parameters.get(DOWNSAMPLE_FACTOR).setDescription("To speed up the detection process, the image can be downsampled.  For example, a downsample factor of 2 will downsize the image in X and Y by a factor of 2 prior to detection of circles.");
+
+        parameters.get(ENABLE_MULTITHREADING).setDescription("Process multiple radii simultaneously.  This can provide a speed improvement when working on a computer with a multi-core CPU.");
+
+        parameters.get(RADIUS_RESIZE).setDescription("Radius of output objects will be adjusted by this value.  For example, a detected circle of radius 5 with a \"radius resize\" of 2 will have an output radius of 7.  Similarly, setting \"radius resize\" to -3 would produce a circle of radius 2.");
+
+        parameters.get(SHOW_TRANSFORM_IMAGE).setDescription("When selected, the transform image will be displayed (as long as the module is currently set to show its output).");
+
+        parameters.get(SHOW_DETECTION_IMAGE).setDescription("When selected, the detection image will be displayed (as long as the module is currently set to show its output).");
+
+        parameters.get(SHOW_HOUGH_SCORE).setDescription("When selected, the detection image will also show the score associated with each detected circle.");
+
+        parameters.get(LABEL_SIZE).setDescription("Font size of the detection score text label.");
+        
     }
 }

@@ -1,4 +1,4 @@
-package wbif.sjx.MIA.Module.ObjectProcessing.Refinement;
+package wbif.sjx.MIA.Module.ObjectProcessing.Miscellaneous;
 
 import wbif.sjx.MIA.GUI.Colours;
 import wbif.sjx.MIA.Module.Categories;
@@ -72,7 +72,7 @@ public class DuplicateAcrossTime extends Module {
         // Creating output object collection
         int nFrames = endFrame - startFrame + 1;
         ObjCollection outputObjects = new ObjCollection(outputObjectsName, inputObjects.getSpatialCalibration(),
-                nFrames,inputObjects.getFrameInterval(),inputObjects.getTemporalUnit());
+                nFrames, inputObjects.getFrameInterval(), inputObjects.getTemporalUnit());
 
         String name = new DuplicateAcrossTime(null).getName();
 
@@ -80,7 +80,7 @@ public class DuplicateAcrossTime extends Module {
         int count = 0;
         for (Obj inputObject : inputObjects.values()) {
             writeStatus("Duplicating object " + (++count) + " of " + inputObjects.size(), name);
-            
+
             for (int t = startFrame; t <= endFrame; t++) {
                 // Creating object for this timepoint
                 Obj outputObject = outputObjects.createAndAddNewObject(inputObject.getVolumeType());
@@ -116,15 +116,14 @@ public class DuplicateAcrossTime extends Module {
         super("Duplicate objects across time", modules);
     }
 
-
     @Override
     public Category getCategory() {
-        return Categories.OBJECT_PROCESSING_REFINEMENT;
+        return Categories.OBJECT_PROCESSING_MISCELLANEOUS;
     }
 
     @Override
     public String getDescription() {
-        return "Creates a copy of objects across all frames in the specified image stack.";
+        return "Creates a copy of objects across all frames in the specified image stack.  Duplicated objects can either have their own set of coordinates or all share the set from the input object.  While sharing coordinates across all timepoints can be much more memory efficient (no redundant duplication of data is required), any change to the coordinates in one frame will result in the change being mirrored across all timepoints, so this mode should be used with care.";
     }
 
     @Override
@@ -198,6 +197,8 @@ public class DuplicateAcrossTime extends Module {
         parameters.add(new InputImageP(END_FRAME_IMAGE, this));
         parameters.add(new ImageMeasurementP(END_FRAME_IMAGE_MEASUREMENT, this));
         parameters.add(new IntegerP(END_OFFSET, this, 0));
+
+        addParameterDescriptions();
 
     }
 
@@ -289,5 +290,72 @@ public class DuplicateAcrossTime extends Module {
     @Override
     public boolean verify() {
         return true;
+    }
+
+    void addParameterDescriptions() {
+        parameters.get(INPUT_OBJECTS).setDescription("Input objects to duplicate across multiple timepoints.");
+
+        parameters.get(OUTPUT_OBJECTS)
+                .setDescription("Output duplicated objects which will be added to the workspace.");
+
+        parameters.get(STORAGE_MODE).setDescription(
+                "Controls whether the duplicated objects share the same common coordinate set or each have their own.  A duplicated coordinate set will use a lot less memory (as no redundant duplication of data is required), but should be used with caution, as any change to the coordinates in one frame will result in the change being mirrored across all timepoints.");
+
+        parameters.get(START_FRAME_MODE).setDescription(
+                "Specifies the source for the first timepoint the objects will be created for:<br><ul>" +
+
+                        "<li>\"" + FrameModes.FIXED_VALUE
+                        + "\" The first timepoint will be controlled by the value specified in the \""
+                        + START_FRAME_FIXED_VALUE + "\" parameter.</li>" +
+
+                        "<li>\"" + FrameModes.IMAGE_MEASUREMENT
+                        + "\" The first timepoint will be taken from a measurement (\"" + START_FRAME_IMAGE_MEASUREMENT
+                        + "\" parameter) assigned to the image specified by \"" + START_FRAME_IMAGE + "\".</li></ul>");
+
+        parameters.get(START_FRAME_FIXED_VALUE).setDescription("If \"" + START_FRAME_MODE + "\" is set to \""
+                + FrameModes.FIXED_VALUE
+                + "\", this is the fixed value that will be used as the first timepoint for the output duplicated objects.");
+
+        parameters.get(START_FRAME_IMAGE)
+                .setDescription("If \"" + START_FRAME_MODE + "\" is set to \"" + FrameModes.IMAGE_MEASUREMENT
+                        + "\", this is the image from which the measurerment \"" + START_FRAME_IMAGE_MEASUREMENT
+                        + "\" will be taken.");
+
+        parameters.get(START_FRAME_IMAGE_MEASUREMENT).setDescription("If \"" + START_FRAME_MODE + "\" is set to \""
+                + FrameModes.IMAGE_MEASUREMENT
+                + "\", this is the measurement that will be used as the first timepoint for the duplicated objects.");
+
+        parameters.get(START_OFFSET).setDescription("If \"" + START_FRAME_MODE + "\" is set to \""
+                + FrameModes.IMAGE_MEASUREMENT
+                + "\", the first frame can be offset relative to the specified measurement by this number of frames.  For example, if the provided measurement is 5 and an offset of -1 is used, the first frame in the duplicated set will be 4.");
+
+        parameters.get(END_FRAME_MODE)
+                .setDescription("Specifies the source for the last timepoint the objects will be created for:<br><ul>" +
+
+                        "<li>\"" + FrameModes.FIXED_VALUE
+                        + "\" The last timepoint will be controlled by the value specified in the \""
+                        + END_FRAME_FIXED_VALUE + "\" parameter.</li>" +
+
+                        "<li>\"" + FrameModes.IMAGE_MEASUREMENT
+                        + "\" The last timepoint will be taken from a measurement (\"" + END_FRAME_IMAGE_MEASUREMENT
+                        + "\" parameter) assigned to the image specified by \"" + END_FRAME_IMAGE + "\".</li></ul>");
+
+        parameters.get(END_FRAME_FIXED_VALUE).setDescription("If \"" + END_FRAME_MODE + "\" is set to \""
+                + FrameModes.FIXED_VALUE
+                + "\", this is the fixed value that will be used as the last timepoint for the output duplicated objects.");
+
+        parameters.get(END_FRAME_IMAGE)
+                .setDescription("If \"" + END_FRAME_MODE + "\" is set to \"" + FrameModes.IMAGE_MEASUREMENT
+                        + "\", this is the image from which the measurerment \"" + END_FRAME_IMAGE_MEASUREMENT
+                        + "\" will be taken.");
+
+        parameters.get(END_FRAME_IMAGE_MEASUREMENT).setDescription("If \"" + END_FRAME_MODE + "\" is set to \""
+                + FrameModes.IMAGE_MEASUREMENT
+                + "\", this is the measurement that will be used as the last timepoint for the duplicated objects.");
+
+        parameters.get(END_OFFSET).setDescription("If \"" + END_FRAME_MODE + "\" is set to \""
+                + FrameModes.IMAGE_MEASUREMENT
+                + "\", the end frame can be offset relative to the specified measurement by this number of frames.  For example, if the provided measurement is 5 and an offset of -1 is used, the last frame in the duplicated set will be 4.");
+
     }
 }

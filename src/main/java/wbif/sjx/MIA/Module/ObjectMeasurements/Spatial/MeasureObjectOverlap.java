@@ -12,6 +12,7 @@ import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.MIA.Object.Parameters.BooleanP;
 import wbif.sjx.MIA.Object.Parameters.InputObjectsP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
+import wbif.sjx.MIA.Object.Parameters.SeparatorP;
 import wbif.sjx.MIA.Object.References.ObjMeasurementRef;
 import wbif.sjx.MIA.Object.References.Collections.ImageMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.MetadataRefCollection;
@@ -24,6 +25,7 @@ import wbif.sjx.common.Object.Volume.Volume;
  * Created by sc13967 on 07/02/2018.
  */
 public class MeasureObjectOverlap extends Module {
+    public final static String INPUT_SEPARATOR = "Object input";
     public final static String OBJECT_SET_1 = "Object set 1";
     public final static String OBJECT_SET_2 = "Object set 2";
     public final static String LINK_IN_SAME_FRAME = "Only link objects in same frame";
@@ -50,7 +52,7 @@ public class MeasureObjectOverlap extends Module {
 
     }
 
-    public static int getNOverlappingPoints(Obj inputObject1, ObjCollection inputObjects1, ObjCollection inputObjects2, boolean linkInSameFrame) {
+    public static int getNOverlappingPoints(Obj inputObject1, ObjCollection inputObjects2, boolean linkInSameFrame) {
         Volume overlap = new Volume(inputObject1.getVolumeType(),inputObject1.getSpatialCalibration());
 
         // Running through each object, getting a list of overlapping pixels
@@ -77,7 +79,7 @@ public class MeasureObjectOverlap extends Module {
 
     @Override
     public String getDescription() {
-        return "";
+        return "Calculates the overlap of each object in an object collection with any object from another collection.  Overlaps are calculated for both specified object collections and are stored as measurements associated with the relevant object.  Overlap can occur for multiple objects; however, doubly-overlapped regions will only be counted once (i.e. an object can have no more than 100% overlap).  For example, an object in the first collection with 20% overlap with one object and 12% overlap with another would receive an overlap measurement of 32% (assuming the two overlapping objects weren't themselves overlapped in the overlapping region).";
     }
 
     @Override
@@ -101,7 +103,7 @@ public class MeasureObjectOverlap extends Module {
 
             // Calculating volume
             double objVolume = (double) obj1.size();
-            double overlap = (double) getNOverlappingPoints(obj1,inputObjects1,inputObjects2,linkInSameFrame);
+            double overlap = (double) getNOverlappingPoints(obj1,inputObjects2,linkInSameFrame);
             double overlapVolPx = overlap*dppZ/dppXY;
             double overlapVolCal = overlap*dppXY*dppXY*dppZ;
             double overlapPC = 100*overlap/objVolume;
@@ -123,7 +125,7 @@ public class MeasureObjectOverlap extends Module {
 
             // Calculating volume
             double objVolume = (double) obj2.size();
-            double overlap = (double) getNOverlappingPoints(obj2,inputObjects2,inputObjects1,linkInSameFrame);
+            double overlap = (double) getNOverlappingPoints(obj2,inputObjects1,linkInSameFrame);
             double overlapVolPx = overlap*dppZ/dppXY;
             double overlapVolCal = overlap*dppXY*dppXY*dppZ;
             double overlapPC = 100*overlap/objVolume;
@@ -147,9 +149,12 @@ public class MeasureObjectOverlap extends Module {
 
     @Override
     protected void initialiseParameters() {
+        parameters.add(new SeparatorP(INPUT_SEPARATOR, this));
         parameters.add(new InputObjectsP(OBJECT_SET_1,this));
         parameters.add(new InputObjectsP(OBJECT_SET_2,this));
-        parameters.add(new BooleanP(LINK_IN_SAME_FRAME,this,true));
+        parameters.add(new BooleanP(LINK_IN_SAME_FRAME, this, true));
+
+        addParameterDescriptions();
 
     }
 
@@ -232,5 +237,13 @@ public class MeasureObjectOverlap extends Module {
     @Override
     public boolean verify() {
         return true;
+    }
+
+    void addParameterDescriptions() {
+        parameters.get(OBJECT_SET_1).setDescription("Object collection for which, the overlap of each object with any object from a separate object collection (specified by the \""+OBJECT_SET_2+"\" parameter) will be calculated.");
+
+        parameters.get(OBJECT_SET_2).setDescription("Object collection for which, the overlap of each object with any object from a separate object collection (specified by the \""+OBJECT_SET_1+"\" parameter) will be calculated.");
+
+        parameters.get(LINK_IN_SAME_FRAME).setDescription("When selected, objects will only be considered to have any overlap if they're present in the same frame (timepoint).");
     }
 }

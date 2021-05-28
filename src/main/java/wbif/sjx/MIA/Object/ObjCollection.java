@@ -20,6 +20,7 @@ import wbif.sjx.MIA.Object.Units.TemporalUnit;
 import wbif.sjx.MIA.Process.ColourFactory;
 import wbif.sjx.common.Object.LUTs;
 import wbif.sjx.common.Object.Point;
+import wbif.sjx.common.Object.Volume.PointOutOfRangeException;
 import wbif.sjx.common.Object.Volume.SpatCal;
 import wbif.sjx.common.Object.Volume.VolumeType;
 
@@ -187,6 +188,28 @@ public class ObjCollection extends LinkedHashMap<Integer, Obj> {
         }
 
         return largestID;
+
+    }
+
+    public Obj getAsSingleObject() {
+        ObjCollection newCollection = new ObjCollection("Single",this);
+
+        VolumeType volumeType = VolumeType.POINTLIST;
+        Obj firstObj = getFirst();
+        if (firstObj != null)
+            volumeType = firstObj.getVolumeType();
+
+        Obj newObj = newCollection.createAndAddNewObject(volumeType);
+        for (Obj obj : values())
+            for (Point<Integer> point : obj.getCoordinateSet())
+                try {
+                    newObj.add(point.duplicate());
+                } catch (PointOutOfRangeException e) {
+                    // This shouldn't occur, as the points are from a collection with the same dimensions
+                    e.printStackTrace();
+                }
+
+        return newObj;
 
     }
 

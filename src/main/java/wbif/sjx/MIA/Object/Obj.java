@@ -1,6 +1,7 @@
 package wbif.sjx.MIA.Object;
 
 import java.awt.Polygon;
+import java.awt.Rectangle;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -399,10 +400,16 @@ public class Obj extends Volume {
 
     public void addPointsFromPolygon(Polygon polygon, int z) throws PointOutOfRangeException {
         // Determining xy limits
-        int minX = Arrays.stream(polygon.xpoints).min().getAsInt();
-        int maxX = Arrays.stream(polygon.xpoints).max().getAsInt();
-        int minY = Arrays.stream(polygon.ypoints).min().getAsInt();
-        int maxY = Arrays.stream(polygon.ypoints).max().getAsInt();
+        // int minX = Arrays.stream(polygon.xpoints).min().getAsInt();
+        // int maxX = Arrays.stream(polygon.xpoints).max().getAsInt();
+        // int minY = Arrays.stream(polygon.ypoints).min().getAsInt();
+        // int maxY = Arrays.stream(polygon.ypoints).max().getAsInt();
+
+        Rectangle bounds = polygon.getBounds();
+        int minX = bounds.x;
+        int maxX = minX + bounds.width;
+        int minY = bounds.y;
+        int maxY = minY + bounds.height;
 
         // Iterating over all possible points, checking if they're inside the polygon
         for (int x = minX; x <= maxX; x++) {

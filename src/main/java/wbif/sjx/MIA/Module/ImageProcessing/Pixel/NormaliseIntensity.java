@@ -42,7 +42,7 @@ public class NormaliseIntensity extends Module {
     public static final String APPLY_TO_INPUT = "Apply to input image";
     public static final String OUTPUT_IMAGE = "Output image";
 
-    public static final String OUTPUT_SEPARATOR = "Output controls";
+    public static final String REGION_SEPARATOR = "Region controls";
     public static final String REGION_MODE = "Region mode";
     public static final String INPUT_OBJECTS = "Input objects";
 
@@ -59,10 +59,11 @@ public class NormaliseIntensity extends Module {
 
 
     public interface RegionModes {
-        String ENTIRE_IMAGE = "Entire image";
+        String ENTIRE_IMAGE = "Entire image";        
         String PER_OBJECT = "Per object";
+        String PER_SLICE = "Per slice";
 
-        String[] ALL = new String[]{ENTIRE_IMAGE,PER_OBJECT};
+        String[] ALL = new String[]{ENTIRE_IMAGE,PER_OBJECT,PER_SLICE};
 
     }
 
@@ -210,6 +211,18 @@ public class NormaliseIntensity extends Module {
                             applyNormalisation(inputImagePlus,calculationMode,clipFraction,intRange,inputObject);
                         }
                         break;
+
+                    case RegionModes.PER_SLICE:
+                        count = 0;
+                        total = inputImagePlus.getStack().size();                        
+                        for (int z = 0; z < total;z++) {
+                            writeStatus("Processing " + (++count) + " of " + total + " slices");
+                            ImageProcessor ipr = inputImagePlus.getStack().getProcessor(z+1);
+                            ImagePlus tempIpl = new ImagePlus("Temp", ipr);
+                            applyNormalisation(tempIpl,calculationMode,clipFraction,intRange);
+                            inputImagePlus.getStack().setProcessor(tempIpl.getProcessor(), z+1);
+                        }
+                        break;
                 }
 
         // If the image is being saved as a new image, adding it to the workspace
@@ -235,7 +248,7 @@ public class NormaliseIntensity extends Module {
         parameters.add(new BooleanP(APPLY_TO_INPUT, this,true));
         parameters.add(new OutputImageP(OUTPUT_IMAGE, this));
 
-        parameters.add(new SeparatorP(OUTPUT_SEPARATOR,this));
+        parameters.add(new SeparatorP(REGION_SEPARATOR,this));
         parameters.add(new ChoiceP(REGION_MODE,this,RegionModes.ENTIRE_IMAGE,RegionModes.ALL));
         parameters.add(new InputObjectsP(INPUT_OBJECTS,this));
 
@@ -260,7 +273,7 @@ public class NormaliseIntensity extends Module {
             returnedParameters.add(parameters.getParameter(OUTPUT_IMAGE));
         }
 
-        returnedParameters.add(parameters.getParameter(OUTPUT_SEPARATOR));
+        returnedParameters.add(parameters.getParameter(REGION_SEPARATOR));
             returnedParameters.add(parameters.getParameter(REGION_MODE));
             switch ((String) parameters.getValue(REGION_MODE)) {
                 case RegionModes.PER_OBJECT:

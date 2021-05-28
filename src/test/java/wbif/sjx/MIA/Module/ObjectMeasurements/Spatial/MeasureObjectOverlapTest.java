@@ -78,7 +78,7 @@ public class MeasureObjectOverlapTest extends ModuleTest {
         object2_3.add(10,22,33);
         object2_3.add(9,22,32);
 
-        int actual = MeasureObjectOverlap.getNOverlappingPoints(object1_1,objects1,objects2,false);
+        int actual = MeasureObjectOverlap.getNOverlappingPoints(object1_1,objects2,false);
         int expected = 0;
 
         assertEquals(expected,actual);
@@ -134,7 +134,7 @@ public class MeasureObjectOverlapTest extends ModuleTest {
         object2_3.add(10,22,33);
         object2_3.add(9,22,32);
 
-        int actual = MeasureObjectOverlap.getNOverlappingPoints(object1_1,objects1,objects2,false);
+        int actual = MeasureObjectOverlap.getNOverlappingPoints(object1_1,objects2,false);
         int expected = 4;
 
         assertEquals(expected,actual);
@@ -191,7 +191,7 @@ public class MeasureObjectOverlapTest extends ModuleTest {
         object2_3.add(10,12,34);
         object2_3.add(10,12,35);
 
-        int actual = MeasureObjectOverlap.getNOverlappingPoints(object1_1,objects1,objects2,false);
+        int actual = MeasureObjectOverlap.getNOverlappingPoints(object1_1,objects2,false);
         int expected = 7;
 
         assertEquals(expected,actual);
@@ -254,7 +254,7 @@ public class MeasureObjectOverlapTest extends ModuleTest {
         object2_3.add(10,12,34);
         object2_3.add(10,12,35);
 
-        int actual = MeasureObjectOverlap.getNOverlappingPoints(object1_1,objects1,objects2,false);
+        int actual = MeasureObjectOverlap.getNOverlappingPoints(object1_1,objects2,false);
         int expected = 7;
 
         assertEquals(expected,actual);
@@ -315,7 +315,7 @@ public class MeasureObjectOverlapTest extends ModuleTest {
         object2_3.add(10,12,34);
         object2_3.add(10,12,35);
 
-        int actual = MeasureObjectOverlap.getNOverlappingPoints(object1_1,objects1,objects2,false);
+        int actual = MeasureObjectOverlap.getNOverlappingPoints(object1_1,objects2,false);
         int expected = 10;
 
         assertEquals(expected,actual);

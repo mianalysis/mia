@@ -111,7 +111,7 @@ public class RunScript extends Module {
 
     @Override
     public String getDescription() {
-        return "";
+        return "Run Fiji-compatible scripts directly within a MIA workflow.  These can be used to perform advanced actions, such as making measurements that aren't explicitly supported in MIA or running additional plugins.  Each script has access to the current workspace, thus providing a route to interact with and specify new images and objects.  Scripts also have access to this module, which in turn can be used to access all modules in the current workflow.  Scripts are run once per workflow execution.";
 
     }
 
@@ -205,7 +205,8 @@ public class RunScript extends Module {
         parameters.add(new ChoiceP(SCRIPT_MODE, this, ScriptModes.SCRIPT_TEXT, ScriptModes.ALL));
         parameters.add(new ChoiceP(SCRIPT_LANGUAGE, this, ScriptLanguages.IMAGEJ1, ScriptLanguages.ALL));
         parameters.add(new TextAreaP(SCRIPT_TEXT, this,
-                "// The following two parameters will provide references to the workspace and current module.\n#@ wbif.sjx.MIA.Object.Workspace workspace\n#@ wbif.sjx.MIA.Module.Module thisModule", true));
+                "// The following two parameters will provide references to the workspace and current module.\n#@ wbif.sjx.MIA.Object.Workspace workspace\n#@ wbif.sjx.MIA.Module.Module thisModule",
+                true));
         parameters.add(new FilePathP(SCRIPT_FILE, this));
         parameters.add(new GenericButtonP(REFRESH_BUTTON, this, "Refresh", GenericButtonP.DefaultModes.REFRESH));
 
@@ -215,6 +216,8 @@ public class RunScript extends Module {
         parameterCollection.add(new OutputImageP(OUTPUT_IMAGE, this));
         parameterCollection.add(new OutputObjectsP(OUTPUT_OBJECTS, this));
         parameters.add(new ParameterGroup(ADD_OUTPUT, this, parameterCollection, getUpdaterAndGetter()));
+
+        addParameterDescriptions();
 
     }
 
@@ -271,6 +274,44 @@ public class RunScript extends Module {
     @Override
     public boolean verify() {
         return true;
+    }
+
+    protected void addParameterDescriptions() {
+        parameters.get(SCRIPT_MODE)
+                .setDescription("Select the source for the script code:<br><ul>" + "<li>\"" + ScriptModes.SCRIPT_FILE
+                        + "\" Load the macro from the file specified by the \"" + SCRIPT_FILE + "\" parameter.</li>"
+
+                        + "<li>\"" + ScriptModes.SCRIPT_TEXT + "\" Script code is written directly into the \""
+                        + SCRIPT_TEXT + "\" box.</li></ul>");
+
+        parameters.get(SCRIPT_LANGUAGE).setDescription("Specify the language of the script written in the \""
+                + SCRIPT_TEXT
+                + "\" box.  This parameter is not necessary when loading a script from file, since the file extension provides the language information.");
+
+        parameters.get(SCRIPT_TEXT).setDescription(
+                "Script code to be executed.  Access to the active MIA workspace and module are provided by the first two lines of code (\"#@ wbif.sjx.MIA.Object.Workspace workspace\" and \"#@ wbif.sjx.MIA.Module.Module thisModule\"), which are included by default.  With these lines present in the script, the workspace can be accessed via the \"workspace\" variable and the current module (i.e. this script module) via the \"thisModule\" variable.");
+
+        parameters.get(SCRIPT_FILE).setDescription("Select a script file to be run by this module.  As with the \""
+                + SCRIPT_TEXT
+                + "\" parameter, this script can start with the lines \"#@ wbif.sjx.MIA.Object.Workspace workspace\" and \"#@ wbif.sjx.MIA.Module.Module thisModule\", which provide access to the active workspace and this module.");
+
+        parameters.get(REFRESH_BUTTON).setDescription(
+                "This button refreshes the script code as stored within MIA.  Clicking this will create an \"undo\" checkpoint and validate any global variables that have been used.");
+
+        ParameterGroup group = (ParameterGroup) parameters.get(ADD_OUTPUT);
+        ParameterCollection collection = group.getTemplateParameters();
+        collection.get(OUTPUT_TYPE).setDescription(
+                "Specifies the type of variable that has been added to the workspace during the script.  These can either be images or new object collections.");
+
+        collection.get(OUTPUT_IMAGE).setDescription(
+                "Name of the image that has been added to the workspace during script execution.  This name must match that assigned to the image.");
+
+        collection.get(OUTPUT_OBJECTS).setDescription(
+                "Name of the object collection that has been added to the workspace during script execution.  This name must match that assigned to the object collection.");
+
+        parameters.get(ADD_OUTPUT).setDescription(
+                "If images or new object collections have been added to the workspace during script execution they must be added here, so subsequent modules are aware of their presence.  The act of adding an output via this method simply tells subsequent MIA modules the relevant images/object collections were added to the workspace; the image/object collection must be added to the workspace during script execution using the \"workspace.addImage([image])\" or \"workspace.addObjects([object collection])\" commands.");
+
     }
 
     private ParameterUpdaterAndGetter getUpdaterAndGetter() {

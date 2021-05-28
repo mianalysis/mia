@@ -49,11 +49,10 @@ public class DocumentationCoverageChecker {
                 Constructor constructor = clazz.getDeclaredConstructor(ModuleCollection.class);
                 Module module = (Module) constructor.newInstance(new ModuleCollection());
 
-                if (module.getDescription() != null) {
-                    if (module.getDescription().length() > 1)
+                boolean hasDescription = module.getDescription() != null && module.getDescription().length() > 1;
+                if (hasDescription)
                         completedModuleDescriptions++;
-                }
-
+            
                 int[] parameterCounts = getModuleParameterCoverage(module);
                 totalParameters = totalParameters + parameterCounts[0];
                 completedParameters = completedParameters + parameterCounts[1];
@@ -80,7 +79,7 @@ public class DocumentationCoverageChecker {
                 double objRefCoverage = measurementCounts[2] == 0 ? 1
                         : (double) measurementCounts[3] / (double) measurementCounts[2];
 
-                System.out.println("Module \"" + module.getName() + "\", parameters = "
+                System.out.println("Module \"" + module.getName() + "\", description = "+hasDescription+", parameters = "
                         + df.format(100 * parameterCoverage) + "%, incomplete parameters = " + incompleteParameters
                         + ", image refs = " + df.format(100 * imageRefCoverage) + "%, obj refs = "
                         + df.format(100 * objRefCoverage));

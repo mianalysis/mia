@@ -23,6 +23,7 @@ import wbif.sjx.MIA.Module.Miscellaneous.Macros.RunSingleCommand;
 import wbif.sjx.MIA.Module.ObjectMeasurements.Miscellaneous.ReplaceMeasurementValue;
 import wbif.sjx.MIA.Module.ObjectMeasurements.Spatial.CalculateNearestNeighbour;
 import wbif.sjx.MIA.Module.ObjectProcessing.Identification.GetLocalObjectRegion;
+import wbif.sjx.MIA.Module.ObjectProcessing.Identification.HoughObjectDetection;
 import wbif.sjx.MIA.Module.ObjectProcessing.Miscellaneous.CreateDistanceMap;
 import wbif.sjx.MIA.Module.ObjectProcessing.Refinement.ExpandShrinkObjects;
 import wbif.sjx.MIA.Module.ObjectProcessing.Relationships.RelateManyToOne;
@@ -101,6 +102,12 @@ public class LostAndFound {
         currentParameterNames = new HashMap<>();
         currentParameterNames.put("Control type", GlobalVariables.VARIABLE_TYPE);
         moduleName = new GlobalVariables(null).getClass().getSimpleName();
+        lostParameterNames.put(moduleName, currentParameterNames);
+
+        // HoughObjectDetection
+        currentParameterNames = new HashMap<>();
+        currentParameterNames.put("Sampling rate", HoughObjectDetection.DOWNSAMPLE_FACTOR);
+        moduleName = new HoughObjectDetection(null).getClass().getSimpleName();
         lostParameterNames.put(moduleName, currentParameterNames);
 
         // InputControl

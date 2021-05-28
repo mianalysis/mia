@@ -236,7 +236,7 @@ public abstract class AbstractRegistration<T extends RealType<T> & NativeType<T>
     }
 
     public static void showDetectedPoints(ImageProcessor referenceIpr, ImageProcessor warpedIpr,
-     ArrayList<PointPair> pairs) {
+            ArrayList<PointPair> pairs) {
         SpatCal sc = new SpatCal(1, 1, "um", referenceIpr.getWidth(), referenceIpr.getHeight(), 2);
         ObjCollection oc = new ObjCollection("Im", sc, 1, 1d, TemporalUnit.getOMEUnit());
         ImagePlus showIpl = IJ.createImage("Detected points", referenceIpr.getWidth(), referenceIpr.getHeight(), 2,
@@ -246,8 +246,10 @@ public abstract class AbstractRegistration<T extends RealType<T> & NativeType<T>
         for (PointPair pair : pairs) {
             Obj obj = oc.createAndAddNewObject(VolumeType.POINTLIST);
             try {
-                obj.add((int) Math.round(pair.getPoint2().getXBase()), (int) Math.round(pair.getPoint2().getYBase()), 0);
-            } catch (PointOutOfRangeException e) {}
+                obj.add((int) Math.round(pair.getPoint2().getXBase()), (int) Math.round(pair.getPoint2().getYBase()),
+                        0);
+            } catch (PointOutOfRangeException e) {
+            }
             AddObjectCentroid.addOverlay(obj, showIpl, Color.RED, AddObjectCentroid.PointSizes.MEDIUM,
                     AddObjectCentroid.PointTypes.DOT, false);
         }
@@ -256,8 +258,10 @@ public abstract class AbstractRegistration<T extends RealType<T> & NativeType<T>
         for (PointPair pair : pairs) {
             Obj obj = oc.createAndAddNewObject(VolumeType.POINTLIST);
             try {
-                obj.add((int) Math.round(pair.getPoint1().getXBase()), (int) Math.round(pair.getPoint1().getYBase()), 1);
-            } catch (PointOutOfRangeException e) {}
+                obj.add((int) Math.round(pair.getPoint1().getXBase()), (int) Math.round(pair.getPoint1().getYBase()),
+                        1);
+            } catch (PointOutOfRangeException e) {
+            }
             AddObjectCentroid.addOverlay(obj, showIpl, Color.BLUE, AddObjectCentroid.PointSizes.MEDIUM,
                     AddObjectCentroid.PointTypes.DOT, false);
         }
@@ -689,6 +693,62 @@ public abstract class AbstractRegistration<T extends RealType<T> & NativeType<T>
 
         parameters.get(ENABLE_MULTITHREADING).setDescription(
                 "When selected, certain parts of the registration process will be run on multiple threads of the CPU.  This can provide a speed improvement when working on a computer with a multi-core CPU.");
+
+        parameters.get(REFERENCE_MODE)
+                .setDescription("Controls what reference image each image will be compared to:<br><ul>"
+
+                        + "<li>\"" + ReferenceModes.FIRST_FRAME
+                        + "\" All images will be compared to the first frame (or slice when in Z-axis mode).  For image sequences which continuously evolve over time (e.g. cells dividing) this can lead to reduced likelihood of successfully calculating the transform over time.</li>"
+
+                        + "<li>\"" + ReferenceModes.PREVIOUS_N_FRAMES
+                        + "\" Each image will be compared to the N frames (or slice when in Z-axis mode) immediately before it (number of frames specified by \""
+                        + NUM_PREV_FRAMES
+                        + "\").  These reference frames are consolidated into a single reference image using a projection based on the statistic specified by \""
+                        + PREV_FRAMES_STAT_MODE
+                        + "\".  This mode copes better with image sequences which continuously evolve over time, but can also lead to compounding errors over time (errors in registration get propagated to all remaining slices).</li>"
+
+                        + "<li>\"" + ReferenceModes.SPECIFIC_IMAGE
+                        + "\" All images will be compared to a separate 2D image from the workspace.  The image to compare to is selected using the \""
+                        + REFERENCE_IMAGE + "\" parameter.</li></ul>");
+
+        parameters.get(REFERENCE_IMAGE).setDescription("If \"" + REFERENCE_MODE + "\" is set to \""
+                + ReferenceModes.SPECIFIC_IMAGE
+                + "\" mode, all input images will be registered relative to this image.  This image must only have a single channel, slice and timepoint.");
+
+        parameters.get(NUM_PREV_FRAMES)
+                .setDescription("Number of previous frames (or slices) to use as reference image when \""
+                        + REFERENCE_MODE + "\" is set to \"" + ReferenceModes.PREVIOUS_N_FRAMES
+                        + "\".  If there are insufficient previous frames (e.g. towards the beginning of the stack) the maximum available frames will be used.  Irrespective of the number of frames used, the images will be projected into a single reference image using the statistic specified by \""
+                        + PREV_FRAMES_STAT_MODE + "\".");
+
+        parameters.get(PREV_FRAMES_STAT_MODE)
+                .setDescription("Statistic to use when combining multiple previous frames as a reference (\""
+                        + REFERENCE_MODE + "\" set to \"" + ReferenceModes.PREVIOUS_N_FRAMES + "\").");
+
+        parameters.get(CALCULATION_SOURCE).setDescription(
+                "Controls whether the input image will be used to calculate the registration transform or whether it will be determined from a separate image:<br><ul>"
+
+                        + "<li>\"" + CalculationSources.EXTERNAL
+                        + "\" The transform is calculated from a separate image from the workspace (specified using \""
+                        + EXTERNAL_SOURCE
+                        + "\").  This could be an image with enhanced contrast (to enable better feature extraction), but where the enhancements are not desired in the output registered image.  When \""
+                        + OTHER_AXIS_MODE + "\" is set to \"" + OtherAxisModes.LINKED
+                        + "\", the external image must be the same length along the registration axis and have single-valued length along the non-registration axis.  However, when set to \""
+                        + OtherAxisModes.INDEPENDENT
+                        + "\", the external image must have the same axis lengths for both the registration and non-registration axes.</li>"
+
+                        + "<li>\"" + CalculationSources.INTERNAL
+                        + "\" The transform is calculated from the input image.</li></ul>");
+
+        parameters.get(EXTERNAL_SOURCE).setDescription("If \"" + CALCULATION_SOURCE + "\" is set to \""
+                + CalculationSources.EXTERNAL
+                + "\", registration transforms will be calculated using this image from the workspace.  This image will be unaffected by the process.");
+
+        parameters.get(CALCULATION_CHANNEL).setDescription(
+                "If calculating the registration transform from a multi-channel image stack, the transform will be determined from this channel only.  Irrespectively, for multi-channel image stacks, the calculated transform will be applied equally to all channels.");
+
+        parameters.get(SHOW_DETECTED_POINTS).setDescription(
+                "When enabled, the points used for calculation of the registration will be added as an overlay to the input image and displayed.");
 
     }
 
