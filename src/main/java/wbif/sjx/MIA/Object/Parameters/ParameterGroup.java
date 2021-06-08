@@ -3,7 +3,6 @@ package wbif.sjx.MIA.Object.Parameters;
 import static wbif.sjx.MIA.Process.AnalysisHandling.AnalysisWriter.prepareRefsXML;
 
 import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;

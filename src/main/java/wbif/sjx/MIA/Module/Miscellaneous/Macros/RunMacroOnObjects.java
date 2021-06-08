@@ -6,7 +6,7 @@ import java.util.LinkedHashSet;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.WindowManager;
-import ij.macro.CustomInterpreter;
+import ij.macro.Interpreter;
 import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Categories;
 import wbif.sjx.MIA.Module.Category;
@@ -163,10 +163,11 @@ public class RunMacroOnObjects extends AbstractMacroRunner {
             ImagePlus inputImagePlus = (inputImage != null) ? inputImage.getImagePlus().duplicate() : null;
 
             // Running the macro
-            CustomInterpreter interpreter = new CustomInterpreter();
+            Interpreter interpreter = new Interpreter();
+            interpreter.setIgnoreErrors(true);
             try {
                 inputImagePlus = interpreter.runBatchMacro(finalMacroText, inputImagePlus);
-                if (interpreter.wasError())
+                if (interpreter.getErrorMessage() != null)
                     throw new RuntimeException();
             } catch (RuntimeException e) {
                 String errorMessage = interpreter.getErrorMessage();

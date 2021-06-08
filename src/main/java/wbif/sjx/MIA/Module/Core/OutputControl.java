@@ -5,7 +5,7 @@ import java.io.File;
 import org.apache.commons.io.FilenameUtils;
 
 import ij.IJ;
-import ij.macro.CustomInterpreter;
+import ij.macro.Interpreter;
 import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Macro.MacroHandler;
 import wbif.sjx.MIA.Macro.General.MIA_GetListOfWorkspaceIDs;
@@ -274,10 +274,11 @@ public class OutputControl extends AbstractMacroRunner {
         String finalMacroText = AbstractMacroRunner.addVariables(macroText, variableGroup);
 
         // Running the macro
-        CustomInterpreter interpreter = new CustomInterpreter();
+        Interpreter interpreter = new Interpreter();
+        interpreter.setIgnoreErrors(true);
         try {
             interpreter.runBatchMacro(finalMacroText, null);
-            if (interpreter.wasError())
+            if (interpreter.getErrorMessage() != null)
                 throw new RuntimeException();
         } catch (RuntimeException e) {
             IJ.runMacro("setBatchMode(false)");

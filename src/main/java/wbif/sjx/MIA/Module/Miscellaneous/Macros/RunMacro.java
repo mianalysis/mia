@@ -3,19 +3,18 @@
 package wbif.sjx.MIA.Module.Miscellaneous.Macros;
 
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 
 import ij.IJ;
 import ij.ImagePlus;
 import ij.WindowManager;
-import ij.macro.CustomInterpreter;
+import ij.macro.Interpreter;
 import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Macro.MacroHandler;
+import wbif.sjx.MIA.Module.Categories;
+import wbif.sjx.MIA.Module.Category;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.Core.InputControl;
-import wbif.sjx.MIA.Module.Category;
-import wbif.sjx.MIA.Module.Categories;
 import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.Measurement;
 import wbif.sjx.MIA.Object.Status;
@@ -26,9 +25,9 @@ import wbif.sjx.MIA.Object.Parameters.FilePathP;
 import wbif.sjx.MIA.Object.Parameters.GenericButtonP;
 import wbif.sjx.MIA.Object.Parameters.InputImageP;
 import wbif.sjx.MIA.Object.Parameters.OutputImageP;
-import wbif.sjx.MIA.Object.Parameters.SeparatorP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.Parameters.ParameterGroup;
+import wbif.sjx.MIA.Object.Parameters.SeparatorP;
 import wbif.sjx.MIA.Object.Parameters.Text.StringP;
 import wbif.sjx.MIA.Object.Parameters.Text.TextAreaP;
 import wbif.sjx.MIA.Object.References.ImageMeasurementRef;
@@ -143,10 +142,11 @@ public class RunMacro extends AbstractMacroRunner {
             openImages = hideImages();
 
         // Running the macro
-        CustomInterpreter interpreter = new CustomInterpreter();
+        Interpreter interpreter = new Interpreter();
+        interpreter.setIgnoreErrors(true);
         try {
             inputImagePlus = interpreter.runBatchMacro(finalMacroText, inputImagePlus);
-            if (interpreter.wasError())
+            if (interpreter.getErrorMessage() != null)
                 throw new RuntimeException();
         } catch (RuntimeException e) {
             IJ.runMacro("setBatchMode(false)");
@@ -156,6 +156,7 @@ public class RunMacro extends AbstractMacroRunner {
             MIA.log.writeError("Macro failed with error \"" + interpreter.getErrorMessage() + "\".  Skipping file.");
             return Status.FAIL;
         }
+
 
         // If providing the input image direct from the workspace, re-opening all open
         // windows
