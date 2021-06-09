@@ -44,13 +44,13 @@ import wbif.sjx.MIA.Object.References.Collections.PartnerRefCollection;
 import wbif.sjx.common.Process.ImgPlusTools;
 
 public class ConcatenateStacks <T extends RealType<T> & NativeType<T>> extends Module {
-    public static final String INPUT_SEPARATOR = "Image input/output";
+    public static final String INPUT_SEPARATOR = "Image input";
     public static final String ADD_INPUT_IMAGE = "Add image";
     public static final String INPUT_IMAGE = "Input image";
     public static final String ALLOW_MISSING_IMAGES = "Allow missing images";
-    public static final String OUTPUT_IMAGE = "Output image";
 
-    public static final String CONCAT_SEPARATOR = "Stack concatenation";
+    public static final String OUTPUT_SEPARATOR = "Image output";
+    public static final String OUTPUT_IMAGE = "Output image";
     public static final String AXIS_MODE = "Axis mode";
 
 
@@ -337,10 +337,11 @@ public class ConcatenateStacks <T extends RealType<T> & NativeType<T>> extends M
         ParameterCollection collection = new ParameterCollection();
         collection.add(new CustomInputImageP(INPUT_IMAGE,this,"","Image for concatenation."));
         parameters.add(new ParameterGroup(ADD_INPUT_IMAGE,this,collection,2,"Add another image for concatenation."));
-        parameters.add(new BooleanP(ALLOW_MISSING_IMAGES,this,false,"If enabled, the moduule can ignore any images specified for inclusion that aren't present in the workspace.  This is useful if an image's existence is dependent on optional modules."));
+        parameters.add(new BooleanP(ALLOW_MISSING_IMAGES, this, false,
+                "If enabled, the moduule can ignore any images specified for inclusion that aren't present in the workspace.  This is useful if an image's existence is dependent on optional modules."));
+                
+        parameters.add(new SeparatorP(OUTPUT_SEPARATOR,this));
         parameters.add(new OutputImageP(OUTPUT_IMAGE,this,"","The resultant image of concatenation to be added to the workspace."));
-
-        parameters.add(new SeparatorP(CONCAT_SEPARATOR,this));
         parameters.add(new ChoiceP(AXIS_MODE,this,AxisModes.X,AxisModes.ALL,"Axis along which to concatenate input images."));
 
     }
