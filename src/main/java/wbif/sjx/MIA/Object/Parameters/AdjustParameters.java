@@ -1,18 +1,18 @@
 package wbif.sjx.MIA.Object.Parameters;
 
 import wbif.sjx.MIA.GUI.ParameterControls.ParameterControl;
-import wbif.sjx.MIA.GUI.ParameterControls.RemoveParametersButton;
+import wbif.sjx.MIA.GUI.ParameterControls.AdjustParameterGroupButton;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
 
 /**
  * Created by Stephen Cross on 01/02/2019.
  */
-public class RemoveParameters extends Parameter {
+public class AdjustParameters extends Parameter {
     private ParameterGroup group;
     private int collectionIndex;
 
-    public RemoveParameters(String name, Module module, ParameterGroup group, int collectionIndex) {
+    public AdjustParameters(String name, Module module, ParameterGroup group, int collectionIndex) {
         super(name, module);
         this.group = group;
         this.collectionIndex = collectionIndex;
@@ -20,7 +20,7 @@ public class RemoveParameters extends Parameter {
 
     @Override
     protected ParameterControl initialiseControl() {
-        return new RemoveParametersButton(this);
+        return new AdjustParameterGroupButton(this);
     }
 
     @Override

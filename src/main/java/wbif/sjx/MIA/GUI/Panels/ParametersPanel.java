@@ -24,7 +24,7 @@ import wbif.sjx.MIA.Module.Core.OutputControl;
 import wbif.sjx.MIA.Object.Parameters.OutputImageP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.Parameters.ParameterGroup;
-import wbif.sjx.MIA.Object.Parameters.RemoveParameters;
+import wbif.sjx.MIA.Object.Parameters.AdjustParameters;
 import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
 import wbif.sjx.MIA.Object.Parameters.Objects.OutputObjectsP;
 import wbif.sjx.MIA.Object.References.Abstract.ExportableRef;
@@ -32,8 +32,6 @@ import wbif.sjx.MIA.Object.References.Abstract.SummaryRef;
 import wbif.sjx.MIA.Object.References.Collections.ImageMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.MetadataRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.ObjMeasurementRefCollection;
-import wbif.sjx.MIA.Object.References.Collections.ParentChildRefCollection;
-import wbif.sjx.MIA.Object.References.Collections.PartnerRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.RefCollection;
 import wbif.sjx.MIA.Process.AnalysisHandling.Analysis;
 
@@ -107,7 +105,7 @@ public class ParametersPanel extends JScrollPane {
         if (module.updateAndGetParameters() != null) {
             for (Parameter parameter : module.updateAndGetParameters().values()) {
                 if (parameter.getClass() == ParameterGroup.class) {
-                    addAdvancedParameterGroup((ParameterGroup) parameter,module,c);
+                    addAdvancedParameterGroupControl((ParameterGroup) parameter,module,c);
                 } else {
                     addAdvancedParameterControl(parameter,c);
                 }
@@ -207,7 +205,7 @@ public class ParametersPanel extends JScrollPane {
 
     }
 
-    public void addAdvancedParameterGroup(ParameterGroup group, Module module, GridBagConstraints c) {
+    public void addAdvancedParameterGroupControl(ParameterGroup group, Module module, GridBagConstraints c) {
         // Iterating over each collection of Parameters.  After adding each one, a remove button is included
         LinkedHashMap<Integer, ParameterCollection> collections = group.getCollections(true);
 
@@ -217,7 +215,7 @@ public class ParametersPanel extends JScrollPane {
             for (Parameter parameter:collection.values()) addAdvancedParameterControl(parameter,c);
 
             c.gridy++;
-            RemoveParameters removeParameters = new RemoveParameters("Remove",module,group,collectionIdx);
+            AdjustParameters removeParameters = new AdjustParameters("",module,group,collectionIdx);
             addAdvancedParameterControl(removeParameters,c);
 
             c.gridy++;

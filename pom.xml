@@ -10,7 +10,7 @@
 
     <groupId>wbif.sjx</groupId>
     <artifactId>MIA_</artifactId>
-    <version>0.18.9</version>
+    <version>0.18.10</version>
     <packaging>jar</packaging>
     <name>MIA_</name>
     <url>https://github.com/SJCross/MIA</url>
@@ -401,7 +401,7 @@
                                         <include>org/openxmlformats/schemas/spreadsheetml/x2006/**</include> -->
                                     </includes>
                                     <excludes>
-                                        <exclude>org/openxmlformats/schemas/drawingml/x2006/**</exclude>
+                                        <!-- <exclude>org/openxmlformats/schemas/drawingml/x2006/**</exclude> -->
                                         <exclude>org/openxmlformats/schemas/presentationml/x2006/**</exclude>
                                         <exclude>org/openxmlformats/schemas/wordprocessingml/x2006/**</exclude>
                                     </excludes>
