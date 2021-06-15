@@ -148,8 +148,6 @@ public class FillHolesInObjects extends Module {
         Iterator<Obj> iterator = inputObjects.values().iterator();
         while (iterator.hasNext()) {
             Obj inputObject = iterator.next();
-            writeStatus("Processing object " + (count++) + " of " + total);
-
             Obj newObject = null;
             try {
                 newObject = processObject(inputObject, method);
@@ -177,6 +175,9 @@ public class FillHolesInObjects extends Module {
                 inputObject.addChild(outputObject);
 
             }
+
+            writeProgressStatus(count++, total, "objects");
+            
         }
 
         // If selected, adding new ObjCollection to the Workspace

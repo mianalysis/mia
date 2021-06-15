@@ -174,7 +174,8 @@ public abstract class AbstractRegistration<T extends RealType<T> & NativeType<T>
         int nFrames = calculationImage.getImagePlus().getNFrames();
 
         for (int t = 0; t < nFrames; t++) {
-            writeStatus("Processing frame " + (++count) + " of " + nFrames);
+            // Setting the current timepoint
+            param.t = t;
 
             // If the reference image is the previous frame, get this now
             switch (referenceMode) {
@@ -232,6 +233,8 @@ public abstract class AbstractRegistration<T extends RealType<T> & NativeType<T>
 
             transform = null;
 
+            writeProgressStatus(++count, nFrames, "frames");
+            
         }
     }
 
@@ -752,8 +755,8 @@ public abstract class AbstractRegistration<T extends RealType<T> & NativeType<T>
 
     }
 
-    public interface Param {
-
+    public class Param {
+        public int t = 0;
     }
 
     public interface Transform {

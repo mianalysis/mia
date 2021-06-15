@@ -259,9 +259,6 @@ public class IdentifyObjects extends Module {
                 TemporalUnit.getOMEUnit());
 
         for (int t = 1; t <= inputImagePlus.getNFrames(); t++) {
-            if (verbose)
-                writeStatus("Processing image " + t + " of " + inputImagePlus.getNFrames(), name);
-
             // Creating a copy of the input image
             ImagePlus currStack;
             if (inputImagePlus.getNFrames() == 1) {
@@ -309,6 +306,9 @@ public class IdentifyObjects extends Module {
                 object.setT(t - 1);
                 outputObjects.put(object.getID(), object);
             }
+
+            writeProgressStatus(t, inputImagePlus.getNFrames(), "images", name);
+            
         }
 
         return outputObjects;

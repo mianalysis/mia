@@ -236,7 +236,7 @@ public class ExpandShrinkObjects extends Module {
                 inputObject.addChild(outputObject);
             }
 
-            writeStatus("Processed " + (count++) + " of " + total +" objects");
+            writeProgressStatus(count++, total, "objects");
 
         }
 

@@ -207,7 +207,7 @@ public class RelateObjects extends Module {
             // Adding measurements to the input object
             applyMeasurements(childObject, parentObjects, minDist, minLink);
 
-            writeStatus("Processed " + (iter++) + " of " + numberOfChildren + " objects");
+            writeProgressStatus(iter++, numberOfChildren, "objects");
 
         }
     }

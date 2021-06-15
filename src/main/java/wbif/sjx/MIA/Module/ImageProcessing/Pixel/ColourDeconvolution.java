@@ -113,7 +113,7 @@ public class ColourDeconvolution extends Module {
                 }
             }
 
-            writeStatus("Processed "+(++count)+" of "+nFrames+" stacks");
+            writeProgressStatus(++count, nFrames, "stacks");
 
         }
 

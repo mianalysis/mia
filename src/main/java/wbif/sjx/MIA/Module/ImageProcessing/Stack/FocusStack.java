@@ -97,7 +97,7 @@ public class FocusStack extends Module {
                     heightIpl.setProcessor(heightIpr);
                 }
 
-                writeStatus("Processed "+(++count)+" of "+nStacks+" stacks");
+                writeProgressStatus(++count, nStacks, "stacks");
 
             }
         }

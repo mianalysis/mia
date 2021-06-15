@@ -63,11 +63,14 @@ public class DistanceMap extends Module {
         super("Calculate distance map", modules);
     }
 
-    public static ImagePlus process(ImagePlus inputIpl, String outputImageName, String weightMode, boolean matchZToXY, boolean verbose) {
-        return process(new Image(inputIpl.getTitle(), inputIpl), outputImageName, weightMode, matchZToXY, verbose).getImagePlus();
+    public static ImagePlus process(ImagePlus inputIpl, String outputImageName, String weightMode, boolean matchZToXY,
+            boolean verbose) {
+        return process(new Image(inputIpl.getTitle(), inputIpl), outputImageName, weightMode, matchZToXY, verbose)
+                .getImagePlus();
     }
 
-    public static Image process(Image inputImage, String outputImageName, String weightMode, boolean matchZToXY, boolean verbose) {
+    public static Image process(Image inputImage, String outputImageName, String weightMode, boolean matchZToXY,
+            boolean verbose) {
         String name = new DistanceMap(null).getName();
 
         ImagePlus inputIpl = inputImage.getImagePlus();
@@ -87,9 +90,6 @@ public class DistanceMap extends Module {
         ImageStack outputIst = outputIpl.getStack();
 
         for (int t = 0; t < nFrames; t++) {
-            if (verbose)
-                writeStatus("Processing frame " + (++count) + " of " + nFrames, name);
-
             // Getting the mask image at this timepoint
             ImagePlus currentIpl = SubHyperstackMaker
                     .makeSubhyperstack(inputIpl, "1", "1-" + nSlices, String.valueOf(t + 1)).duplicate();
@@ -121,6 +121,8 @@ public class DistanceMap extends Module {
                 outputIst.setProcessor(currentIst.getProcessor(currentIdx), outputIdx);
             }
             outputIpl.updateAndDraw();
+
+            writeProgressStatus(++count, nFrames, "timepoints", name);
         }
 
         return new Image(outputImageName, outputIpl);
@@ -129,17 +131,17 @@ public class DistanceMap extends Module {
 
     static float[] getFloatWeights(String weightMode) {
         switch (weightMode) {
-        case WeightModes.BORGEFORS:
-            return ChamferWeights3D.BORGEFORS.getFloatWeights();
-        case WeightModes.CHESSBOARD:
-            return ChamferWeights3D.CHESSBOARD.getFloatWeights();
-        case WeightModes.CITY_BLOCK:
-            return ChamferWeights3D.CITY_BLOCK.getFloatWeights();
-        case WeightModes.QUASI_EUCLIDEAN:
-            return ChamferWeights3D.QUASI_EUCLIDEAN.getFloatWeights();
-        case WeightModes.WEIGHTS_3_4_5_7:
-        default:
-            return ChamferWeights3D.WEIGHTS_3_4_5_7.getFloatWeights();
+            case WeightModes.BORGEFORS:
+                return ChamferWeights3D.BORGEFORS.getFloatWeights();
+            case WeightModes.CHESSBOARD:
+                return ChamferWeights3D.CHESSBOARD.getFloatWeights();
+            case WeightModes.CITY_BLOCK:
+                return ChamferWeights3D.CITY_BLOCK.getFloatWeights();
+            case WeightModes.QUASI_EUCLIDEAN:
+                return ChamferWeights3D.QUASI_EUCLIDEAN.getFloatWeights();
+            case WeightModes.WEIGHTS_3_4_5_7:
+            default:
+                return ChamferWeights3D.WEIGHTS_3_4_5_7.getFloatWeights();
         }
     }
 
@@ -200,7 +202,8 @@ public class DistanceMap extends Module {
         parameters.add(new OutputImageP(OUTPUT_IMAGE, this));
 
         parameters.add(new SeparatorP(DISTANCE_MAP_SEPARATOR, this));
-        // parameters.add(new ChoiceP(WEIGHT_MODE, this, WeightModes.WEIGHTS_3_4_5_7, WeightModes.ALL));
+        // parameters.add(new ChoiceP(WEIGHT_MODE, this, WeightModes.WEIGHTS_3_4_5_7,
+        // WeightModes.ALL));
         parameters.add(new BooleanP(MATCH_Z_TO_X, this, true));
         parameters.add(new ChoiceP(SPATIAL_UNITS_MODE, this, SpatialUnitsModes.PIXELS, SpatialUnitsModes.ALL));
 
@@ -255,7 +258,8 @@ public class DistanceMap extends Module {
                 "When selected, an image is interpolated in Z (so that all pixels are isotropic) prior to calculation of the distance map.  This prevents warping of the distance map along the Z-axis if XY and Z sampling aren't equal.");
 
         parameters.get(SPATIAL_UNITS_MODE).setDescription(
-                "Controls whether the output distance map will have distances specified in pixel or calibrated units (units set in \""+new InputControl(null).getName()+"\" module) .");
-                
+                "Controls whether the output distance map will have distances specified in pixel or calibrated units (units set in \""
+                        + new InputControl(null).getName() + "\" module) .");
+
     }
 }

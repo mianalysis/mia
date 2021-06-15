@@ -238,7 +238,6 @@ public class SingleClassCluster extends Module {
             int count = 1;
             int total = temporalLimits[1]-temporalLimits[0]+1;
             for (int f=temporalLimits[0];f<=temporalLimits[1];f++) {
-                writeStatus("Processing frame "+(count++)+" of "+total);
                 // Getting locations in current frame
                 List<LocationWrapper> locations = new ArrayList<>(inputObjects.size());
                 for (Obj inputObject:inputObjects.values()) {
@@ -256,6 +255,9 @@ public class SingleClassCluster extends Module {
                         runDBSCAN(outputObjects,locations,width,height,nSlices,dppXY,dppZ,calibratedUnits);
                         break;
                 }
+
+                writeProgressStatus(count++, total, "frames");
+
             }
         } else {
             // Adding points to collection

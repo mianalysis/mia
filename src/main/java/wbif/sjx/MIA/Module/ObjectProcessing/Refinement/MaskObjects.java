@@ -192,7 +192,7 @@ public class MaskObjects<T extends RealType<T> & NativeType<T>> extends Module {
                 break;
             }
 
-            writeStatus("Processed " + (count++) + " of " + total + " objects");
+            writeProgressStatus(count++, total, "objects");
 
         }
 

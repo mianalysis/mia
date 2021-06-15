@@ -63,9 +63,6 @@ public class CreateObjectDensityMap extends Module {
         int count = 0;
         int nTotal = objects.size();
         for (Obj object : objects.values()) {
-            if (message != null)
-                writeStatus("Processing object " + (++count) + " of " + nTotal, message);
-
             switch (objectMode) {
             case ObjectModes.OBJECT_CENTROID:
                 Point<Double> centroid = object.getMeanCentroid(true, false);
@@ -94,6 +91,9 @@ public class CreateObjectDensityMap extends Module {
                 }
                 break;
             }
+
+            if (message != null)
+                writeProgressStatus(++count, nTotal, "objects",message);
         }
     }
 

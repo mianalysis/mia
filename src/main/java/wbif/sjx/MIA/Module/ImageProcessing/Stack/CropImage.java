@@ -10,18 +10,22 @@ import net.imglib2.img.display.imagej.ImageJFunctions;
 import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
 import net.imglib2.view.Views;
+import wbif.sjx.MIA.MIA;
+import wbif.sjx.MIA.Module.Categories;
+import wbif.sjx.MIA.Module.Category;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
-import wbif.sjx.MIA.Module.Category;
-import wbif.sjx.MIA.Module.Categories;
 import wbif.sjx.MIA.Object.Image;
+import wbif.sjx.MIA.Object.ObjCollection;
 import wbif.sjx.MIA.Object.Status;
 import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.MIA.Object.Parameters.BooleanP;
+import wbif.sjx.MIA.Object.Parameters.ChoiceP;
 import wbif.sjx.MIA.Object.Parameters.InputImageP;
+import wbif.sjx.MIA.Object.Parameters.InputObjectsP;
 import wbif.sjx.MIA.Object.Parameters.OutputImageP;
-import wbif.sjx.MIA.Object.Parameters.SeparatorP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
+import wbif.sjx.MIA.Object.Parameters.SeparatorP;
 import wbif.sjx.MIA.Object.Parameters.Text.IntegerP;
 import wbif.sjx.MIA.Object.References.Collections.ImageMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.MetadataRefCollection;
@@ -36,10 +40,20 @@ public class CropImage<T extends RealType<T> & NativeType<T>> extends Module {
     public static final String APPLY_TO_INPUT = "Apply to input image";
     public static final String OUTPUT_IMAGE = "Output image";
     public static final String CROP_SEPARATOR = "Crop selection";
+    public static final String LIMITS_MODE = "Limits mode";
     public static final String LEFT = "Left coordinate";
     public static final String TOP = "Top coordinate";
     public static final String WIDTH = "Width";
     public static final String HEIGHT = "Height";
+    public static final String INPUT_OBJECTS = "Input objects";
+
+    public interface LimitsModes {
+        String FIXED_VALUES = "Fixed values";
+        String FROM_OBJECTS = "Object collection limits";
+
+        String[] ALL = new String[] { FIXED_VALUES, FROM_OBJECTS };
+
+    }
 
     public CropImage(ModuleCollection modules) {
         super("Crop image", modules);
@@ -93,7 +107,6 @@ public class CropImage<T extends RealType<T> & NativeType<T>> extends Module {
 
     }
 
-
     @Override
     public Category getCategory() {
         return Categories.IMAGE_PROCESSING_STACK;
@@ -101,7 +114,7 @@ public class CropImage<T extends RealType<T> & NativeType<T>> extends Module {
 
     @Override
     public String getDescription() {
-        return "Crop an input image in X and Y using pre-defined limits.  Any pixels outside the specified limits are discarded.<br><br>Note: The x-min, y-min, width and height limits used here are in the same order and format as those output by ImageJ's default rectangle region of interest tool (i.e. displayed in the status bar of the ImageJ control panel).";
+        return "Crop an image in X and Y using pre-defined limits or limits based on the extents of objects in a collection.  Any pixels outside the specified limits are discarded.<br><br>Note: The x-min, y-min, width and height limits used here are in the same order and format as those output by ImageJ's default rectangle region of interest tool (i.e. displayed in the status bar of the ImageJ control panel).";
     }
 
     @Override
@@ -113,11 +126,30 @@ public class CropImage<T extends RealType<T> & NativeType<T>> extends Module {
         // Getting parameters
         boolean applyToInput = parameters.getValue(APPLY_TO_INPUT);
         String outputImageName = parameters.getValue(OUTPUT_IMAGE);
+        String limitsMode = parameters.getValue(LIMITS_MODE);
         int left = parameters.getValue(LEFT);
         int top = parameters.getValue(TOP);
         int width = parameters.getValue(WIDTH);
         int height = parameters.getValue(HEIGHT);
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
 
+        switch (limitsMode) {
+            case LimitsModes.FROM_OBJECTS:
+                ObjCollection inputObjects = workspace.getObjectSet(inputObjectsName);
+                int[][] extents = inputObjects.getSpatialExtents();
+
+                if (extents == null) {
+                    MIA.log.writeWarning("No objects to crop image from");
+                    return Status.PASS;
+                }
+                left = extents[0][0];
+                top = extents[1][0];
+                width = extents[0][1] - extents[0][0] + 1;
+                height = extents[1][1] - extents[1][0] + 1;
+                break;
+        }
+        
+        // Applying crop
         Image outputImage = cropImage(inputImage, outputImageName, top, left, width, height);
 
         // If the image is being saved as a new image, adding it to the workspace
@@ -144,10 +176,12 @@ public class CropImage<T extends RealType<T> & NativeType<T>> extends Module {
         parameters.add(new BooleanP(APPLY_TO_INPUT, this, false));
         parameters.add(new OutputImageP(OUTPUT_IMAGE, this));
         parameters.add(new SeparatorP(CROP_SEPARATOR, this));
+        parameters.add(new ChoiceP(LIMITS_MODE, this, LimitsModes.FIXED_VALUES, LimitsModes.ALL));
         parameters.add(new IntegerP(LEFT, this, 0));
         parameters.add(new IntegerP(TOP, this, 0));
         parameters.add(new IntegerP(WIDTH, this, 512));
         parameters.add(new IntegerP(HEIGHT, this, 512));
+        parameters.add(new InputObjectsP(INPUT_OBJECTS, this));
 
         addParameterDescriptions();
 
@@ -166,10 +200,18 @@ public class CropImage<T extends RealType<T> & NativeType<T>> extends Module {
         }
 
         returnedParameters.add(parameters.getParameter(CROP_SEPARATOR));
-        returnedParameters.add(parameters.getParameter(LEFT));
-        returnedParameters.add(parameters.getParameter(TOP));
-        returnedParameters.add(parameters.getParameter(WIDTH));
-        returnedParameters.add(parameters.getParameter(HEIGHT));
+        returnedParameters.add(parameters.getParameter(LIMITS_MODE));
+        switch ((String) parameters.getValue(LIMITS_MODE)) {
+            case LimitsModes.FIXED_VALUES:
+                returnedParameters.add(parameters.getParameter(LEFT));
+                returnedParameters.add(parameters.getParameter(TOP));
+                returnedParameters.add(parameters.getParameter(WIDTH));
+                returnedParameters.add(parameters.getParameter(HEIGHT));
+                break;
+            case LimitsModes.FROM_OBJECTS:
+                returnedParameters.add(parameters.getParameter(INPUT_OBJECTS));
+                break;
+        }
 
         return returnedParameters;
 

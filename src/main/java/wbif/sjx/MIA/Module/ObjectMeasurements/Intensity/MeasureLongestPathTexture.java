@@ -163,7 +163,7 @@ public class MeasureLongestPathTexture extends Module {
             Obj regionObject = object;
             textureCalculator.resetConfusionMatrix();
             processObject(object, regionObject, inputImage, textureCalculator, offs);
-            writeStatus("Processed " + (iter.incrementAndGet()) + " of " + nObjects);
+            writeProgressStatus(iter.incrementAndGet(), nObjects, "objects");
         }
 
         if (showOutput)

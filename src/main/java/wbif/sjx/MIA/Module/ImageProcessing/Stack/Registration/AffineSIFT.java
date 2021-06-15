@@ -11,6 +11,7 @@ import mpicbg.imagefeatures.FloatArray2DSIFT;
 import mpicbg.models.AbstractAffineModel2D;
 import mpicbg.models.NotEnoughDataPointsException;
 import mpicbg.models.PointMatch;
+import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.ImageProcessing.Stack.Registration.Abstract.AbstractAffineRegistration;
 import wbif.sjx.MIA.Object.Workspace;
@@ -94,6 +95,17 @@ public class AffineSIFT extends AbstractAffineRegistration {
                 // Extracting features
                 ArrayList<Feature> featureList1 = new ArrayList<Feature>();
                 sift.extractFeatures(referenceIpr, featureList1);
+                for (Feature f : featureList1) {
+                        MIA.log.writeDebug("FEATURE");
+                        for (float ff : f.descriptor)
+                                MIA.log.writeDebug("    Descriptor = " + ff);
+                        for (double l : f.location)
+                                MIA.log.writeDebug("    Location = " + l);
+
+                        MIA.log.writeDebug("    Scale = " + f.scale);
+                        MIA.log.writeDebug("    Orientation = " + f.orientation);
+                }
+                
                 ArrayList<Feature> featureList2 = new ArrayList<Feature>();
                 sift.extractFeatures(warpedIpr, featureList2);
 

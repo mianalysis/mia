@@ -192,8 +192,6 @@ public class RegisterImages<T extends RealType<T> & NativeType<T>> extends Modul
         int count = 0;
         int total = source.getImagePlus().getNFrames();
         for (int t = 1; t <= source.getImagePlus().getNFrames(); t++) {
-            writeStatus("Processing timepoint " + (++count) + " of " + total);
-
             // If the reference image is the previous frame, calculate this now
             if (relativeMode.equals(RelativeModes.PREVIOUS_FRAME)) {
                 // Can't processAutomatic if this is the first frame
@@ -262,6 +260,8 @@ public class RegisterImages<T extends RealType<T> & NativeType<T>> extends Modul
             }
 
             mapping = null;
+            
+            writeProgressStatus(++count, total, "timepoints");
 
         }
     }
@@ -289,8 +289,6 @@ public class RegisterImages<T extends RealType<T> & NativeType<T>> extends Modul
         int count = 0;
         int total = inputImage.getImagePlus().getNFrames();
         for (int t = 1; t <= inputImage.getImagePlus().getNFrames(); t++) {
-            writeStatus("Processing timepoint " + (++count) + " of " + total);
-
             // Applying the transformation to the whole stack.
             // All channels should move in the same way, so are processed with the same
             // transformation.
@@ -306,6 +304,8 @@ public class RegisterImages<T extends RealType<T> & NativeType<T>> extends Modul
             }
 
             mapping = null;
+
+            writeProgressStatus(++count, total, "timepoints");
 
         }
 
@@ -512,8 +512,6 @@ public class RegisterImages<T extends RealType<T> & NativeType<T>> extends Modul
         int count = 0;
         int total = dupImage.getImagePlus().getNFrames();
         for (int t = 1; t <= dupImage.getImagePlus().getNFrames(); t++) {
-            writeStatus("Processing timepoint " + (++count) + " of " + total);
-
             // Applying the transformation to the whole stack.
             // All channels should move in the same way, so are processed with the same
             // transformation.
@@ -529,6 +527,8 @@ public class RegisterImages<T extends RealType<T> & NativeType<T>> extends Modul
             }
 
             mapping = null;
+
+            writeProgressStatus(++count, total, "timepoints");
 
         }
 

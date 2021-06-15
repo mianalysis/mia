@@ -136,7 +136,8 @@ public class ObjCollection extends LinkedHashMap<Integer, Obj> {
         if (size() == 0)
             return null;
 
-        int[][] extents = new int[][]{{Integer.MAX_VALUE,Integer.MIN_VALUE},{Integer.MAX_VALUE,Integer.MIN_VALUE},{Integer.MAX_VALUE,Integer.MIN_VALUE}};
+        int[][] extents = new int[][] { { Integer.MAX_VALUE, Integer.MIN_VALUE },
+                { Integer.MAX_VALUE, Integer.MIN_VALUE }, { Integer.MAX_VALUE, Integer.MIN_VALUE } };
 
         for (Obj obj : values()) {
             double[][] currExtents = obj.getExtents(true, false);
@@ -147,7 +148,7 @@ public class ObjCollection extends LinkedHashMap<Integer, Obj> {
             extents[2][0] = (int) Math.round(Math.min(extents[2][0], currExtents[2][0]));
             extents[2][1] = (int) Math.round(Math.max(extents[2][1], currExtents[2][1]));
         }
-        
+
         return extents;
 
     }

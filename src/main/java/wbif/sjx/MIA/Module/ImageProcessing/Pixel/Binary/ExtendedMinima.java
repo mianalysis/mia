@@ -96,7 +96,7 @@ public class ExtendedMinima extends Module {
                     //  Replacing the maskIpl intensity
                     getSetStack(outputIpl, finalT, finalC, timepoint);
 
-                    writeStatus("Processed " + (count.incrementAndGet()) + " of " + nTotal + " stacks");
+                    writeProgressStatus(count.incrementAndGet(), nTotal, "stacks");
 
                 };
                 pool.submit(task);

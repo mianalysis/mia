@@ -195,21 +195,22 @@ public class CalculateMeasurementPeriodogram extends Module {
         int count = 1;
         int nTracks = trackObjects.size();
         for (Obj trackObject:trackObjects.values()) {
-            writeStatus("Processing object "+(count++)+" of "+nTracks);
-
             ObjCollection spotObjects = trackObject.getChildren(spotObjectsName);
             double[] signal = getSignal(spotObjects,measurement,missingMode);
             TreeMap<Double,Double> psd = PeriodogramCalculator.calculate(signal,1);
 
             switch (reportingMode) {
                 case ReportingModes.KEY_FREQUENCIES:
-                    addKeyFrequencyMeasures(trackObject,psd,measurement,nPeaks);
+                    addKeyFrequencyMeasures(trackObject, psd, measurement, nPeaks);
                     break;
 
                 case ReportingModes.WHOLE_SPECTRUM:
-                    addWholeSpectrumMeasures(trackObject,psd,measurement,nBins);
+                    addWholeSpectrumMeasures(trackObject, psd, measurement, nBins);
                     break;
             }
+
+            writeProgressStatus(count++, nTracks, "objects");
+
         }
 
         if (showOutput) trackObjects.showMeasurements(this,modules);

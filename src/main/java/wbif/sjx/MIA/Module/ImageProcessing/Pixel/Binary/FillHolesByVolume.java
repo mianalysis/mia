@@ -88,8 +88,6 @@ public class FillHolesByVolume extends Module {
         int nSlices = ipl.getNSlices();
         for (int c = 1; c <= ipl.getNChannels(); c++) {
             for (int t = 1; t <= ipl.getNFrames(); t++) {
-                writeStatus("Processing stack " + (++count) + " of " + total, name);
-
                 // Creating the current sub-stack
                 ImagePlus currStack;
                 if (ipl.getNFrames() == 1) {
@@ -196,6 +194,9 @@ public class FillHolesByVolume extends Module {
                 } catch (InterruptedException e) {
                     e.printStackTrace(System.err);
                 }
+
+                writeProgressStatus(++count, total, "stacks", name);
+                
             }
         }
 

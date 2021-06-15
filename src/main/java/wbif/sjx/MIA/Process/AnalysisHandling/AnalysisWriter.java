@@ -1,21 +1,10 @@
 package wbif.sjx.MIA.Process.AnalysisHandling;
 
-import org.apache.commons.io.FilenameUtils;
-import org.w3c.dom.Attr;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import wbif.sjx.MIA.MIA;
-import wbif.sjx.MIA.Module.Module;
-import wbif.sjx.MIA.Module.ModuleCollection;
-import wbif.sjx.MIA.Object.Parameters.*;
-import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
-import wbif.sjx.MIA.Object.References.Abstract.Ref;
-import wbif.sjx.MIA.Object.References.Collections.ImageMeasurementRefCollection;
-import wbif.sjx.MIA.Object.References.Collections.MetadataRefCollection;
-import wbif.sjx.MIA.Object.References.Collections.ObjMeasurementRefCollection;
-import wbif.sjx.MIA.Object.References.Collections.ParentChildRefCollection;
-import wbif.sjx.MIA.Object.References.Collections.PartnerRefCollection;
-import wbif.sjx.MIA.Object.References.Collections.RefCollection;
+import java.awt.FileDialog;
+import java.awt.Frame;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -24,10 +13,22 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-import java.awt.*;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
+
+import org.apache.commons.io.FilenameUtils;
+import org.w3c.dom.Attr;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+
+import wbif.sjx.MIA.MIA;
+import wbif.sjx.MIA.Module.Module;
+import wbif.sjx.MIA.Module.ModuleCollection;
+import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
+import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
+import wbif.sjx.MIA.Object.References.Abstract.Ref;
+import wbif.sjx.MIA.Object.References.Collections.ImageMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.Collections.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.Collections.ObjMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.Collections.RefCollection;
 
 /**
  * Created by Stephen on 22/06/2018.

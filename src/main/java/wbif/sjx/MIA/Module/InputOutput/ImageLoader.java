@@ -422,7 +422,7 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
                     ipl.setProcessor(ip);
 
                     if (localVerbose)
-                        writeStatus("Loaded image " + (++count) + " of " + nTotal);
+                        writeProgressStatus(++count, nTotal, "images");
 
                     countT++;
                 }

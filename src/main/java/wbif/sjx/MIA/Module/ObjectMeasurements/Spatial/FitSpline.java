@@ -553,8 +553,7 @@ public class FitSpline extends Module {
 
         int count = 1;
         int total = inputObjects.size();
-        for (Obj inputObject : inputObjects.values()) {
-            writeStatus("Processing object " + (count++) + " of " + total);
+        for (Obj inputObject : inputObjects.values()) {            
             initialiseObjectMeasurements(inputObject, absoluteCurvature, signedCurvature, useReference);
 
             // Getting the backbone of the object
@@ -613,6 +612,9 @@ public class FitSpline extends Module {
                     createControlPointObjects(inputObject, outputObjects, calculator.getSpline(), exportEveryNPoints);
                     break;
             }
+
+            writeProgressStatus(count++, total, "objects");
+            
         }
 
         if (drawSpline & !applyToImage)

@@ -225,7 +225,7 @@ public abstract class AbstractBUnwarpJRegistration<T extends RealType<T> & Nativ
         
     }
 
-    public abstract class BUnwarpJParam implements Param {
+    public abstract class BUnwarpJParam extends Param {
         public bunwarpj.Param bParam = null;
     }
 
