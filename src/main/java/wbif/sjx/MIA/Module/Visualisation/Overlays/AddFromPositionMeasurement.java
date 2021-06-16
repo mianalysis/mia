@@ -190,7 +190,7 @@ public class AddFromPositionMeasurement extends AbstractOverlay {
                 
                     addOverlay(object, finalIpl, colour, pointSize, pointType, lineWidth, posMeasurements, radiusMeasurement, renderInAllFrames);
 
-                    writeStatus("Rendered " + (count.incrementAndGet()) + " objects of " + inputObjects.size());
+                    writeProgressStatus(count.incrementAndGet(), inputObjects.size(), "objects");
                     
                 };
                 pool.submit(task);

@@ -1,6 +1,7 @@
 package wbif.sjx.MIA.Module.ImageProcessing.Stack;
 
 import ij.ImagePlus;
+import ij.measure.Calibration;
 import net.imagej.ImgPlus;
 import net.imagej.axis.Axes;
 import net.imglib2.Cursor;
@@ -61,7 +62,7 @@ public class CropImage<T extends RealType<T> & NativeType<T>> extends Module {
 
     public static <T extends RealType<T> & NativeType<T>> Image cropImage(Image<T> inputImage, String outputImageName,
             int top, int left, int width, int height) {
-        ImagePlus inputImagePlus = inputImage.getImagePlus();
+        Calibration calibration = inputImage.getImagePlus().getCalibration();
         ImgPlus<T> inputImg = inputImage.getImgPlus();
 
         int xIdx = inputImg.dimensionIndex(Axes.X);
@@ -97,10 +98,9 @@ public class CropImage<T extends RealType<T> & NativeType<T>> extends Module {
         }
 
         // For some reason the ImagePlus produced by ImageJFunctions.wrap() behaves
-        // strangely, but this can be remedied
-        // by duplicating it
-        ImagePlus outputImagePlus = ImageJFunctions.wrap(outputImg, outputImageName);
-        outputImagePlus.setCalibration(inputImagePlus.getCalibration());
+        // strangely, but this can be remedied by duplicating it
+        ImagePlus outputImagePlus = ImageJFunctions.wrap(outputImg, outputImageName).duplicate();
+        outputImagePlus.setCalibration(calibration);
         ImgPlusTools.applyAxes(outputImg, outputImagePlus);
 
         return new Image(outputImageName, outputImagePlus);

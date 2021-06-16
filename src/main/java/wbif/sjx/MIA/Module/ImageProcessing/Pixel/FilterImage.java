@@ -497,10 +497,9 @@ public class FilterImage extends Module {
             filterRadius = inputImagePlus.getCalibration().getRawX(filterRadius);
 
         // If applying to a new image, the input image is duplicated
-        if (!applyToInput) {
+        if (!applyToInput)
             inputImagePlus = inputImagePlus.duplicate();
-        }
-
+        
         // Applying smoothing filter
         switch (filterMode) {
             case FilterModes.MAXIMUM2D:

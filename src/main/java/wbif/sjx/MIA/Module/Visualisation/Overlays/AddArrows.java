@@ -219,7 +219,7 @@ public class AddArrows extends AbstractOverlay {
 
                     addOverlay(object, finalIpl, colour, lineWidth, orientation, length, headSize);
 
-                    writeStatus("Rendered " + (count.incrementAndGet()) + " objects of " + inputObjects.size());
+                    writeProgressStatus(count.incrementAndGet(), inputObjects.size(), "objects");
 
                 };
                 pool.submit(task);

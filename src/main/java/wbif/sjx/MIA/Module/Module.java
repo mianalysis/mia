@@ -431,7 +431,7 @@ public abstract class Module extends Ref implements Comparable {
             MIA.log.writeStatus("[" + moduleName + "] " + message);
     }
 
-    protected void writeProgressStatus(int count, int total, String featureBeingProcessed) {
+    public void writeProgressStatus(int count, int total, String featureBeingProcessed) {
         writeProgressStatus(count, total, featureBeingProcessed, name);
     }
 

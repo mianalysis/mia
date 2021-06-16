@@ -31,6 +31,7 @@ import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.MIA.Object.Parameters.BooleanP;
 import wbif.sjx.MIA.Object.Parameters.ChoiceP;
 import wbif.sjx.MIA.Object.Parameters.FileFolderPathP;
+import wbif.sjx.MIA.Object.Parameters.GenericButtonP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.Parameters.ParameterGroup;
 import wbif.sjx.MIA.Object.Parameters.SeparatorP;
@@ -69,6 +70,7 @@ public class InputControl extends Module {
     public static final String LOAD_FIRST_PER_FOLDER = "Only load first file per folder";
     public static final String LOAD_FIRST_MATCHING_GROUP = "Only load first matching group";
     public static final String PATTERN = "Pattern";
+    public static final String REFRESH_FILE = "Refresh test file";
 
     public static final String CALIBRATION_SEPARATOR = "Calibration controls";
     public static final String SPATIAL_UNIT = "Spatial unit";
@@ -373,6 +375,7 @@ public class InputControl extends Module {
         parameters.add(new BooleanP(LOAD_FIRST_PER_FOLDER, this, false));
         parameters.add(new BooleanP(LOAD_FIRST_MATCHING_GROUP, this, false));
         parameters.add(new StringP(PATTERN, this));
+        parameters.add(new GenericButtonP(REFRESH_FILE, this, REFRESH_FILE, GenericButtonP.DefaultModes.REFRESH_FILE));
 
         parameters.add(new SeparatorP(CALIBRATION_SEPARATOR, this));
         parameters.add(new ChoiceP(SPATIAL_UNIT, this, AvailableSpatialUnits.MICROMETRE, AvailableSpatialUnits.ALL));
@@ -418,6 +421,7 @@ public class InputControl extends Module {
         returnedParameters.add(parameters.getParameter(LOAD_FIRST_MATCHING_GROUP));
         if ((boolean) parameters.getValue(LOAD_FIRST_MATCHING_GROUP))
             returnedParameters.add(parameters.getParameter(PATTERN));
+        returnedParameters.add(parameters.getParameter(REFRESH_FILE));
 
         returnedParameters.add(parameters.getParameter(CALIBRATION_SEPARATOR));
         returnedParameters.add(parameters.getParameter(SPATIAL_UNIT));

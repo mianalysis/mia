@@ -267,8 +267,7 @@ public class RelateManyToOne extends Module {
             if (!parent.hasCalculatedSurface()) {
                 Runnable task = () -> {
                     parent.getCoordinateSet().calculateSurface(parent.is2D());
-                    writeStatus("Initialised " + count.getAndIncrement() + " of " + numberOfParents + " objects",
-                            moduleName);
+                    writeProgressStatus(count.getAndIncrement(), numberOfParents, "objects", moduleName);
                 };
                 pool.submit(task);
             }

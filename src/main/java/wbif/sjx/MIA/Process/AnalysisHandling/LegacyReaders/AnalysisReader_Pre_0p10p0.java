@@ -139,9 +139,8 @@ public class AnalysisReader_Pre_0p10p0 {
                 modules.add(module);
             }
 
-            MIA.log.writeStatus("Loaded " + i + " of " + moduleNodes.getLength() + " modules ("
+            MIA.log.writeStatus("Processed " + i + " of " + moduleNodes.getLength() + " modules ("
                     + Math.floorDiv(100 * i, moduleNodes.getLength()) + "%)");
-
             GUI.updateProgressBar(100 * Math.floorDiv(i, moduleNodes.getLength()));
 
         }

@@ -120,8 +120,7 @@ public class AddObjectOutline extends AbstractOverlay {
                             float hue = hues.get(object.getID());
                             addOverlay(object, finalIpl, ColourFactory.getColour(hue, opacity), lineInterpolation,
                                     lineWidth, t, z);
-                            writeStatus("Rendered " + count + " of " + total + " ("
-                                    + Math.floorDiv(100 * count.getAndIncrement(), total) + "%)", name);
+                            writeProgressStatus(count.getAndIncrement(), total, "objects", name);                            
 
                         }
                     }
@@ -183,7 +182,7 @@ public class AddObjectOutline extends AbstractOverlay {
             }
 
             roi.setStrokeColor(colour);
-            roi.setStrokeWidth(lineWidth);   
+            roi.setStrokeWidth(lineWidth);
 
             ipl.getOverlay().addElement(roi);
 

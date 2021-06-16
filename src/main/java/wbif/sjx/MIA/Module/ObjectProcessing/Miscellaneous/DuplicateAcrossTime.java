@@ -79,8 +79,6 @@ public class DuplicateAcrossTime extends Module {
         // Duplicating objects
         int count = 0;
         for (Obj inputObject : inputObjects.values()) {
-            writeStatus("Duplicating object " + (++count) + " of " + inputObjects.size(), name);
-
             for (int t = startFrame; t <= endFrame; t++) {
                 // Creating object for this timepoint
                 Obj outputObject = outputObjects.createAndAddNewObject(inputObject.getVolumeType());
@@ -106,6 +104,9 @@ public class DuplicateAcrossTime extends Module {
                         break;
                 }
             }
+
+            writeProgressStatus(++count, inputObjects.size(), "objects", name);
+
         }
 
         return outputObjects;

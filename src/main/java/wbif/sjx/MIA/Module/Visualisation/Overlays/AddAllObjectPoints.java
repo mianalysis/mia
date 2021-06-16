@@ -145,7 +145,7 @@ public class AddAllObjectPoints extends AbstractOverlay {
 
                     addAllPointsOverlay(object, finalIpl, colour, renderInAllFrames);
 
-                    writeStatus("Rendered " + (count.incrementAndGet()) + " objects of " + inputObjects.size());
+                    writeProgressStatus(count.incrementAndGet(), inputObjects.size(), "objects");
                 };
                 pool.submit(task);
             }

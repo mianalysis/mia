@@ -682,13 +682,11 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
         }
 
         // Creating the new image
-        int i = 0;
-        int count = framesList.length;
-        ImagePlus outputIpl = IJ.createHyperStack("Image", width, height, nChannels, nSlices, count, bitDepth);
+        int count = 0;
+        int total = framesList.length;
+        ImagePlus outputIpl = IJ.createHyperStack("Image", width, height, nChannels, nSlices, total, bitDepth);
 
         for (int frame : framesList) {
-            writeStatus("Loading image " + (i + 1) + " of " + count);
-
             ImagePlus tempIpl = getBFImage(filenames[frame - 1], 1, dimRanges, crop, scaleFactors, scaleMode, intRange,
                     manualCal, false);
             
@@ -698,14 +696,15 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
             for (int c = 0; c < nChannels; c++) {
                 for (int z = 0; z < nSlices; z++) {
                     int tempIdx = tempIpl.getStackIndex(c + 1, z + 1, 1);
-                    int outputIdx = outputIpl.getStackIndex(c + 1, z + 1, i + 1);
+                    int outputIdx = outputIpl.getStackIndex(c + 1, z + 1, count + 1);
 
                     outputIpl.getStack().setProcessor(tempIpl.getStack().getProcessor(tempIdx), outputIdx);
 
                 }
             }
 
-            i++;
+            writeProgressStatus(++count,total,"images");
+
         }
 
         outputIpl.setPosition(1, 1, 1);
@@ -774,12 +773,11 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
         }
 
         // Creating the new image
-        int i = 0;
-        int count = framesList.length;
-        ImagePlus outputIpl = IJ.createHyperStack("Image", width, height, nChannels, nSlices, count, bitDepth);
+        int count = 0;
+        int total = framesList.length;
+        ImagePlus outputIpl = IJ.createHyperStack("Image", width, height, nChannels, nSlices, total, bitDepth);
 
         for (int frame : framesList) {
-            writeStatus("Loading image " + (i + 1) + " of " + count);
             String currentPath = nameBefore + df.format(frame) + nameAfter;
 
             ImagePlus tempIpl = getBFImage(currentPath, 1, dimRanges, crop, scaleFactors, scaleMode, intRange,
@@ -791,14 +789,15 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
             for (int c = 0; c < nChannels; c++) {
                 for (int z = 0; z < nSlices; z++) {
                     int tempIdx = tempIpl.getStackIndex(c + 1, z + 1, 1);
-                    int outputIdx = outputIpl.getStackIndex(c + 1, z + 1, i + 1);
+                    int outputIdx = outputIpl.getStackIndex(c + 1, z + 1, count + 1);
 
                     outputIpl.getStack().setProcessor(tempIpl.getStack().getProcessor(tempIdx), outputIdx);
 
                 }
             }
 
-            i++;
+            writeProgressStatus(++count, total, "images");
+            
         }
 
         outputIpl.setPosition(1, 1, 1);

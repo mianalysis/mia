@@ -21,6 +21,7 @@ import ij.process.ImageProcessor;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.Category;
+import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Categories;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.InvertIntensity;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.Binary.DistanceMap;
@@ -155,10 +156,10 @@ public class SingleClassCluster extends Module {
         ObjCollection children = outputObject.getChildren(childObjects.getName());
 
         CoordinateSet coordinateSet = outputObject.getCoordinateSet();
-
+        
         // Initial pass, adding all coordinates to cluster object
         ObjCollection tempObjects = new ObjCollection("Cluster", childObjects);
-        for (Obj child:children.values()) {
+        for (Obj child : children.values()) {
             // Getting local region around children (local region with radius equal to epsilon)
             Obj region = GetLocalObjectRegion.getLocalRegion(child, tempObjects, eps, false, false);
 
@@ -172,7 +173,7 @@ public class SingleClassCluster extends Module {
         InvertIntensity.process(objectImage);
         objectImage = DistanceMap.process(objectImage, "Distance", DistanceMap.WeightModes.WEIGHTS_3_4_5_7, true, false);
         ImagePlus objectIpl = objectImage.getImagePlus();
-
+        
         // Iterating over each coordinate in the object, removing it if its distance to the edge is less than eps
         Iterator<Point<Integer>> iterator = outputObject.getCoordinateSet().iterator();
         double conv = outputObject.getDppZ()/outputObject.getDppXY();
@@ -180,11 +181,12 @@ public class SingleClassCluster extends Module {
             Point<Integer> point = iterator.next();
 
             // Checking value
-            objectIpl.setPosition(1,point.getZ()+1,outputObject.getT()+1);
+            objectIpl.setPosition(1, point.getZ() + 1, outputObject.getT() + 1);
             ImageProcessor ipr = objectIpl.getProcessor();
             double value = ipr.getPixelValue(point.getX(), point.getY());
 
-            if (value < (eps-Math.ceil(conv))) iterator.remove();
+            if (value < (eps - Math.ceil(conv)))
+                iterator.remove();
 
         }
     }
@@ -281,6 +283,8 @@ public class SingleClassCluster extends Module {
         }
 
         // Adding measurement to each cluster and adding coordinates to clusters
+        int count = 0;
+        int total = outputObjects.size();
         if (applyVolume) {
             for (Obj outputObject : outputObjects.values()) {
                 try {
@@ -288,10 +292,10 @@ public class SingleClassCluster extends Module {
                 } catch (IntegerOverflowException e) {
                     return Status.FAIL;
                 }
+                writeProgressStatus(++count, total, "clusters");
             }
         }
 
-        writeStatus("Adding objects ("+outputObjectsName+") to workspace");
         workspace.addObjects(outputObjects);
 
         // Showing clustered objects colour coded by parent
