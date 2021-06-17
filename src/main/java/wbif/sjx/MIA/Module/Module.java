@@ -273,7 +273,7 @@ public abstract class Module extends Ref implements Comparable {
         if (!des.contains("."))
             return des;
 
-        return des.substring(0, des.indexOf("."))+".";
+        return des.substring(0, des.indexOf(".")) + ".";
 
     }
 
@@ -423,14 +423,24 @@ public abstract class Module extends Ref implements Comparable {
     // PROTECTED METHODS
 
     public void writeStatus(String message) {
-        if (verbose)
-            MIA.log.writeStatus("[" + name + "] " + message);
+        writeStatus(message, name);
     }
 
-    protected static void writeStatus(String message, String name) {
+    protected static void writeStatus(String message, String moduleName) {
         if (verbose)
-            MIA.log.writeStatus("[" + name + "] " + message);
+            MIA.log.writeStatus("[" + moduleName + "] " + message);
     }
+
+    public void writeProgressStatus(int count, int total, String featureBeingProcessed) {
+        writeProgressStatus(count, total, featureBeingProcessed, name);
+    }
+
+    protected static void writeProgressStatus(int count, int total, String featureBeingProcessed, String moduleName) {
+        if (verbose)
+            writeStatus("Processed " + count + " of " + total + " " + featureBeingProcessed + " ("
+                    + Math.floorDiv(100 * count, total) + "%)", moduleName);
+    }
+    
 
     // OVER-RIDDEN METHODS
 

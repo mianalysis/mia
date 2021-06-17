@@ -176,7 +176,6 @@ public class BasicPanel extends MainPanel {
         statusPanel.add(GUI.getTextField(),c);
         helpNotesPanel.setVisible(showHelp || showNotes);
 
-        GUI.updateTestFile(false);
         updateModules();
         updateParameters();
 

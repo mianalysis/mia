@@ -170,8 +170,7 @@ public class RelateManyToOne extends Module {
                     childObject.addMeasurement(new Measurement(measurementNameCal, Double.NaN));
                 }
 
-                writeStatus("Processed " + (count.getAndIncrement()) + " of " + numberOfChildren + " objects",
-                        moduleName);
+                writeProgressStatus(count.getAndIncrement(), numberOfChildren, "objects", moduleName);
 
             };
             pool.submit(task);
@@ -238,8 +237,7 @@ public class RelateManyToOne extends Module {
                     childObject.addMeasurement(new Measurement(measurementNamePx, Double.NaN));
                     childObject.addMeasurement(new Measurement(measurementNameCal, Double.NaN));
                 }
-                writeStatus("Processed " + count + " of " + numberOfChildren + " ("
-                        + Math.floorDiv(100 * count.getAndIncrement(), numberOfChildren) + "%)", moduleName);
+                writeProgressStatus(count.getAndIncrement(), numberOfChildren, "objects", moduleName);
             };
             pool.submit(task);
         }
@@ -269,8 +267,7 @@ public class RelateManyToOne extends Module {
             if (!parent.hasCalculatedSurface()) {
                 Runnable task = () -> {
                     parent.getCoordinateSet().calculateSurface(parent.is2D());
-                    writeStatus("Initialised " + count.getAndIncrement() + " of " + numberOfParents + " objects",
-                            moduleName);
+                    writeProgressStatus(count.getAndIncrement(), numberOfParents, "objects", moduleName);
                 };
                 pool.submit(task);
             }
@@ -332,8 +329,8 @@ public class RelateManyToOne extends Module {
 
                 }
 
-                writeStatus("Processed " + (count.getAndIncrement()) + " of " + numberOfChildren + " objects",
-                        moduleName);
+                writeProgressStatus(count.getAndIncrement(), numberOfChildren, "objects", moduleName);
+                
             };
             pool.submit(task);
         }
@@ -349,12 +346,14 @@ public class RelateManyToOne extends Module {
         // Calculating the furthest distance to the edge
         if (parentObject.getMeasurement("MAX_DIST") == null) {
             // Creating an image for the parent object
-            Image parentImage = parentObject.getAsImage("Parent",false);
+            Image parentImage = parentObject.getAsImage("Parent", false);
             InvertIntensity.process(parentImage.getImagePlus());
 
-            Image distImage = DistanceMap.process(parentImage, "Distance", DistanceMap.WeightModes.WEIGHTS_3_4_5_7, true, false);
+            Image distImage = DistanceMap.process(parentImage, "Distance", DistanceMap.WeightModes.WEIGHTS_3_4_5_7,
+                    true, false);
 
-            Image projectedImage = ProjectImage.projectImageInZ(distImage, "Projected", ProjectImage.ProjectionModes.MAX);
+            Image projectedImage = ProjectImage.projectImageInZ(distImage, "Projected",
+                    ProjectImage.ProjectionModes.MAX);
             double maxDist = projectedImage.getImagePlus().getStatistics().max;
 
             parentObject.addMeasurement(new Measurement("MAX_DIST", maxDist));
@@ -496,7 +495,6 @@ public class RelateManyToOne extends Module {
         }
     }
 
-
     @Override
     public Category getCategory() {
         return Categories.OBJECT_PROCESSING_RELATIONSHIPS;
@@ -504,7 +502,9 @@ public class RelateManyToOne extends Module {
 
     @Override
     public String getDescription() {
-        return "Relate objects of two classes based on a variety of metrics (e.g. spatial overlap or proximity).  The assigned relationships are of the form many-to-one, where many input \"child\" objects can be related to at most, one \"parent\" object (see \""+ new RelateManyToMany(null).getName() +"\" and \""+ new RelateOneToOne(null).getName() +"\" modules for alternatives).  Measurements associated with this relationship (e.g. distance from child to parent surface) are stored as measurements of the relevant child object.";
+        return "Relate objects of two classes based on a variety of metrics (e.g. spatial overlap or proximity).  The assigned relationships are of the form many-to-one, where many input \"child\" objects can be related to at most, one \"parent\" object (see \""
+                + new RelateManyToMany(null).getName() + "\" and \"" + new RelateOneToOne(null).getName()
+                + "\" modules for alternatives).  Measurements associated with this relationship (e.g. distance from child to parent surface) are stored as measurements of the relevant child object.";
     }
 
     @Override

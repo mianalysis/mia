@@ -237,7 +237,8 @@ public class FitGaussian2D extends Module {
             // Adding current object's Gaussian
             addGaussianProfile(iterator.next(),image,true);
 
-            if (module != null) module.writeStatus("Rendered object "+(++count)+" of "+total);
+            if (module != null)
+                module.writeProgressStatus(++count, total, "objects");
 
         }
 
@@ -336,8 +337,7 @@ public class FitGaussian2D extends Module {
         Iterator<Obj> iterator = inputObjects.values().iterator();
         while (iterator.hasNext()) {
             Obj inputObject = iterator.next();
-            writeStatus("Fitting object " + (count++ + 1) + " of " + startingNumber);
-
+            
             // Getting the centroid of the current object (should be single points anyway)
             int x = (int) Math.round(inputObject.getXMean(true));
             int y = (int) Math.round(inputObject.getYMean(true));
@@ -396,6 +396,9 @@ public class FitGaussian2D extends Module {
                 inputObject.removeRelationships();
                 iterator.remove();
             }
+
+            writeProgressStatus(++count, startingNumber, "objects");
+            
         }
 
         // Adding explicit volume to spots

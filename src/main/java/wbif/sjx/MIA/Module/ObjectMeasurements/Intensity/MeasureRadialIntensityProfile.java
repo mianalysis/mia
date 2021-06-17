@@ -194,13 +194,15 @@ public class MeasureRadialIntensityProfile extends Module {
         int count = 0;
         int total = inputObjects.size();
         for (Obj inputObject : inputObjects.values()) {
-            writeStatus("Processing object " + (++count) + " of " + total);
             CumStat[] cumStats = processObject(inputObject, inputImage, distanceMap, distanceBins);
 
             for (int i = 0; i < distanceBins.length; i++) {
                 resultsTable.setValue(("Object " + count + " mean"), i, cumStats[i].getMean());
                 resultsTable.setValue(("Object " + count + " N"), i, cumStats[i].getN());
             }
+
+            writeProgressStatus(++count, total, "objects");
+            
         }
 
         resultsTable.show("Radial intensity profile");

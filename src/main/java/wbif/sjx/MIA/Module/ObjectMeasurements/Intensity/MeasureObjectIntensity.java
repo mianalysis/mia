@@ -9,7 +9,6 @@ import java.util.LinkedHashMap;
 import org.eclipse.sisu.Nullable;
 
 import ij.ImagePlus;
-import ij.ImageStack;
 import ij.process.ImageProcessor;
 import wbif.sjx.MIA.Module.Categories;
 import wbif.sjx.MIA.Module.Category;
@@ -132,10 +131,9 @@ public class MeasureObjectIntensity extends Module {
         CumStat cs = new CumStat();
 
         ImagePlus ipl = image.getImagePlus();
-        ImageStack ist = ipl.getStack();
         for (Point<Integer> point : object.getCoordinateSet()) {
-            int idx = ipl.getStackIndex(1, point.getZ() + 1, t + 1);
-            float value = ist.getProcessor(idx).getf(point.getX(), point.getY());            
+            ipl.setPosition(1, point.getZ() + 1, t + 1);
+            float value = ipl.getProcessor().getf(point.getX(), point.getY());
             cs.addMeasure(value);
         }
 
@@ -226,7 +224,7 @@ public class MeasureObjectIntensity extends Module {
             cumStats.put(bins[i], new CumStat());
 
         // Creating an object image
-        Image objImage = object.getAsImage("Inside dist",false);
+        Image objImage = object.getAsImage("Inside dist", false);
 
         // Calculating the distance maps. The inside map is set to negative
         String weightMode = DistanceMap.WeightModes.WEIGHTS_3_4_5_7;
@@ -235,47 +233,59 @@ public class MeasureObjectIntensity extends Module {
         BinaryOperations2D.process(objImage, BinaryOperations2D.OperationModes.ERODE, 1, 1);
         Image insideDistImage = DistanceMap.process(objImage, "DistanceInside", weightMode, true, false);
         ImageMath.process(insideDistImage, ImageMath.CalculationTypes.MULTIPLY, -1.0);
-        Image distImage = ImageCalculator
-                .process(insideDistImage, outsideDistImage, ImageCalculator.CalculationMethods.ADD,
-                        ImageCalculator.OverwriteModes.CREATE_NEW, "Distance", true, true);
+        Image distImage = ImageCalculator.process(insideDistImage, outsideDistImage,
+                ImageCalculator.CalculationMethods.ADD, ImageCalculator.OverwriteModes.CREATE_NEW, "Distance", true,
+                true);
 
-        ImageStack distIst = distImage.getImagePlus().getStack();
-        ImageStack intensityIst = intensityImage.getImagePlus().getStack();
-        ImageStack maskIst = maskImage == null ? null : maskImage.getImagePlus().getStack();
+        // Iterating over each pixel in the image, adding that intensity value to the
+        // corresponding bin
+        ImagePlus distIpl = distImage.getImagePlus();
+        ImagePlus intensityIpl = intensityImage.getImagePlus();
+        int nChannels = distIpl.getNChannels();
+        int nSlices = distIpl.getNSlices();
+        int nFrames = distIpl.getNFrames();
 
         // Checking the number of dimensions. If a dimension of image2 is 1 this
         // dimension is used for all images.
-        for (int i = 0; i < distIst.size(); i++) {
-            ImageProcessor distIpr = distIst.getProcessor(i + 1);
-            ImageProcessor intensityIpr = intensityIst.getProcessor(i + 1);
+        for (int z = 1; z <= nSlices; z++) {
+            for (int c = 1; c <= nChannels; c++) {
+                for (int t = 1; t <= nFrames; t++) {
+                    distIpl.setPosition(c, z, t);
+                    intensityIpl.setPosition(c, z, t);
 
-            for (int x = 0; x < distIst.getWidth(); x++) {
-                for (int y = 0; y < distIst.getHeight(); y++) {
-                    // If only considering points on mask objects
-                    if (maskIst != null)
-                        if (maskIst.getProcessor(i + 1).get(x, y) == 255)
-                            continue;
+                    ImageProcessor distIpr = distIpl.getProcessor();
+                    ImageProcessor intensityIpr = intensityIpl.getProcessor();
 
-                    // Determining which bin to use
-                    double dist = distIpr.getf(x, y);
+                    for (int x = 0; x < distIpl.getWidth(); x++) {
+                        for (int y = 0; y < distIpl.getHeight(); y++) {
+                            // If only considering points on mask objects
+                            if (maskImage != null) {
+                                maskImage.getImagePlus().setPosition(c, z, t);
+                                if (maskImage.getImagePlus().getProcessor().get(x, y) == 255)
+                                    continue;
+                            }
 
-                    // If using calibrated distances, this must be converted back to calibrated
-                    // units from px
-                    if (calibratedDistances)
-                        dist = dist * distPerPxXY;
-                    double bin = Math.round((dist - minDist) / binWidth) * binWidth + minDist;
+                            // Determining which bin to use
+                            double dist = distIpr.getf(x, y);
 
-                    // Ensuring the bin is within the specified range
-                    bin = Math.min(bin, maxDist);
-                    bin = Math.max(bin, minDist);
+                            // If using calibrated distances, this must be converted back to calibrated
+                            // units from px
+                            if (calibratedDistances)
+                                dist = dist * distPerPxXY;
+                            double bin = Math.round((dist - minDist) / binWidth) * binWidth + minDist;
 
-                    // Adding the measurement to the relevant bin
-                    double intensity = intensityIpr.getf(x, y);
-                    cumStats.get(bin).addMeasure(intensity);
+                            // Ensuring the bin is within the specified range
+                            bin = Math.min(bin, maxDist);
+                            bin = Math.max(bin, minDist);
 
+                            // Adding the measurement to the relevant bin
+                            double intensity = intensityIpr.getf(x, y);
+                            cumStats.get(bin).addMeasure(intensity);
+
+                        }
+                    }
                 }
             }
-
         }
 
         int nDigits = (int) Math.log10(bins.length) + 1;
@@ -283,7 +293,8 @@ public class MeasureObjectIntensity extends Module {
         for (int i = 0; i < nDigits; i++)
             stringBuilder.append("0");
         DecimalFormat intFormat = new DecimalFormat(stringBuilder.toString());
-        String units = (boolean) parameters.getValue(CALIBRATED_DISTANCES) ? SpatialUnit.getOMEUnit().getSymbol() : "PX";
+        String units = (boolean) parameters.getValue(CALIBRATED_DISTANCES) ? SpatialUnit.getOMEUnit().getSymbol()
+                : "PX";
 
         DecimalFormat decFormat = new DecimalFormat(getBinNameFormat(calibratedDistances));
 
@@ -314,31 +325,33 @@ public class MeasureObjectIntensity extends Module {
         // Getting input image
         String imageName = parameters.getValue(INPUT_IMAGE);
         Image inputImage = workspace.getImages().get(imageName);
-        
+
+        Image maskImage = null;
+        if ((boolean) parameters.getValue(MEASURE_EDGE_INTENSITY_PROFILE)
+                && (boolean) parameters.getValue(ONLY_MEASURE_ON_MASK)) {
+            maskImage = workspace.getImage(parameters.getValue(MASK_IMAGE));
+        }
+
         // Measuring intensity for each object and adding the measurement to that object
-        for (Obj object : objects.values())
+        int count = 0;
+        int total = objects.size();
+        for (Obj object : objects.values()) {
             measureIntensity(object, inputImage);
 
-        // If specified, measuring weighted centre for intensity
-        if ((boolean) parameters.getValue(MEASURE_WEIGHTED_CENTRE)) {
-            for (Obj object : objects.values())
+            // If specified, measuring weighted centre for intensity
+            if ((boolean) parameters.getValue(MEASURE_WEIGHTED_CENTRE))
                 measureWeightedCentre(object, inputImage);
-        }
 
-        // If specified, measuring weighted distance to the object edge
-        if ((boolean) parameters.getValue(MEASURE_WEIGHTED_EDGE_DISTANCE)) {
-            for (Obj object : objects.values())
+            // If specified, measuring weighted distance to the object edge
+            if ((boolean) parameters.getValue(MEASURE_WEIGHTED_EDGE_DISTANCE))
                 measureWeightedEdgeDistance(object, inputImage);
-        }
 
-        // If specified, measuring intensity profiles relative to the object edge
-        if ((boolean) parameters.getValue(MEASURE_EDGE_INTENSITY_PROFILE)) {
-            Image maskImage = null;
-            if ((boolean) parameters.getValue(ONLY_MEASURE_ON_MASK)) {
-                maskImage = workspace.getImage(parameters.getValue(MASK_IMAGE));
-            }
-            for (Obj object : objects.values())
+            // If specified, measuring intensity profiles relative to the object edge
+            if ((boolean) parameters.getValue(MEASURE_EDGE_INTENSITY_PROFILE))
                 measureEdgeIntensityProfile(object, inputImage, maskImage);
+
+            writeProgressStatus(++count, total, "objects");
+
         }
 
         if (showOutput)
@@ -546,7 +559,8 @@ public class MeasureObjectIntensity extends Module {
             double maxDist = parameters.getValue(MAXIMUM_DISTANCE);
             int nMeasurements = parameters.getValue(NUMBER_OF_MEASUREMENTS);
             double[] bins = getProfileBins(minDist, maxDist, nMeasurements);
-            String units = (boolean) parameters.getValue(CALIBRATED_DISTANCES) ? SpatialUnit.getOMEUnit().getSymbol() : "PX";
+            String units = (boolean) parameters.getValue(CALIBRATED_DISTANCES) ? SpatialUnit.getOMEUnit().getSymbol()
+                    : "PX";
 
             // Bin names must be in alphabetical order (for the ObjMeasurementRefCollection
             // TreeMap)

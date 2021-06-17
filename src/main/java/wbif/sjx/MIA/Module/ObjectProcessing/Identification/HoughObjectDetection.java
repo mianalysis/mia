@@ -138,7 +138,6 @@ public class HoughObjectDetection extends Module {
         for (int c=0;c<ipl.getNChannels();c++) {
             for (int z = 0; z < ipl.getNSlices(); z++) {
                 for (int t = 0; t < ipl.getNFrames(); t++) {
-                    writeStatus("Processing image " + (count) + " of " + total);
                     ipl.setPosition(c + 1, z + 1, t + 1);
 
                     // Applying scaling
@@ -207,6 +206,9 @@ public class HoughObjectDetection extends Module {
                         outputObject.addMeasurement(new Measurement(Measurements.SCORE, score));
 
                     }
+
+                    writeProgressStatus(count++, total, "images");
+                    
                 }
             }
         }

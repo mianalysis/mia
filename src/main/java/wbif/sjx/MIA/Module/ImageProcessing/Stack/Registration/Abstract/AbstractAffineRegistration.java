@@ -125,7 +125,7 @@ public abstract class AbstractAffineRegistration<T extends RealType<T> & NativeT
 
     }
 
-    public abstract class AffineParam implements Param {
+    public abstract class AffineParam extends Param {
         public String transformationMode = TransformationModes.RIGID;
 
     }

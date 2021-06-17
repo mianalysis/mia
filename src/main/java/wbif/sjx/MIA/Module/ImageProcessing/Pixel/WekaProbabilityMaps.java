@@ -172,8 +172,8 @@ public class WekaProbabilityMaps extends Module {
             }
 
             count = count + endingBlock - startingBlock + 1;
-            writeStatus("Processed " + count + " of " + slices + " images");
-
+            writeProgressStatus(count, slices, "images");
+            
         }
 
         // Clearing the segmentation model from memory

@@ -124,21 +124,21 @@ public class FilterImage extends Module {
         // Determining which rank filter ID to use
         int rankFilter = 0;
         switch (filterMode) {
-        case FilterModes.MAXIMUM2D:
-            rankFilter = RankFilters.MAX;
-            break;
-        case FilterModes.MEAN2D:
-            rankFilter = RankFilters.MEAN;
-            break;
-        case FilterModes.MEDIAN2D:
-            rankFilter = RankFilters.MEDIAN;
-            break;
-        case FilterModes.MINIMUM2D:
-            rankFilter = RankFilters.MIN;
-            break;
-        case FilterModes.VARIANCE2D:
-            rankFilter = RankFilters.VARIANCE;
-            break;
+            case FilterModes.MAXIMUM2D:
+                rankFilter = RankFilters.MAX;
+                break;
+            case FilterModes.MEAN2D:
+                rankFilter = RankFilters.MEAN;
+                break;
+            case FilterModes.MEDIAN2D:
+                rankFilter = RankFilters.MEDIAN;
+                break;
+            case FilterModes.MINIMUM2D:
+                rankFilter = RankFilters.MIN;
+                break;
+            case FilterModes.VARIANCE2D:
+                rankFilter = RankFilters.VARIANCE;
+                break;
         }
 
         int count = 0;
@@ -150,9 +150,7 @@ public class FilterImage extends Module {
                     inputImagePlus.setPosition(c, z, t);
                     filter.rank(inputImagePlus.getProcessor(), filterRadius, rankFilter);
 
-                    count++;
-                    writeStatus("Processed " + count + " of " + total + " image (" + Math.floorDiv(100 * count, total)
-                            + "%)", moduleName);
+                    writeProgressStatus(count++, total, "images", moduleName);
 
                 }
             }
@@ -171,21 +169,21 @@ public class FilterImage extends Module {
 
         int filter = 0;
         switch (filterMode) {
-        case FilterModes.MAXIMUM3D:
-            filter = Filters3D.MAX;
-            break;
-        case FilterModes.MEAN3D:
-            filter = Filters3D.MEAN;
-            break;
-        case FilterModes.MEDIAN3D:
-            filter = Filters3D.MEDIAN;
-            break;
-        case FilterModes.MINIMUM3D:
-            filter = Filters3D.MIN;
-            break;
-        case FilterModes.VARIANCE3D:
-            filter = Filters3D.VAR;
-            break;
+            case FilterModes.MAXIMUM3D:
+                filter = Filters3D.MAX;
+                break;
+            case FilterModes.MEAN3D:
+                filter = Filters3D.MEAN;
+                break;
+            case FilterModes.MEDIAN3D:
+                filter = Filters3D.MEDIAN;
+                break;
+            case FilterModes.MINIMUM3D:
+                filter = Filters3D.MIN;
+                break;
+            case FilterModes.VARIANCE3D:
+                filter = Filters3D.VAR;
+                break;
         }
 
         // Variance 3D will output a 32-bit image
@@ -214,10 +212,7 @@ public class FilterImage extends Module {
                     }
                 }
 
-                count++;
-                writeStatus(
-                        "Processed " + count + " of " + total + " image (" + Math.floorDiv(100 * count, total) + "%)",
-                        moduleName);
+                writeProgressStatus(count++, total, "images", moduleName);
 
             }
         }
@@ -338,25 +333,25 @@ public class FilterImage extends Module {
             // Applying average filter
             ZProjector zProjector = new ZProjector(currentSubstack);
             switch (rollingMethod) {
-            case RollingMethods.AVERAGE:
-                zProjector.setMethod(ZProjector.AVG_METHOD);
-                break;
-            case RollingMethods.MEDIAN:
-                zProjector.setMethod(ZProjector.MEDIAN_METHOD);
-                break;
-            case RollingMethods.MINIMUM:
-                zProjector.setMethod(ZProjector.MIN_METHOD);
-                break;
-            case RollingMethods.MAXIMUM:
-                zProjector.setMethod(ZProjector.MAX_METHOD);
-                break;
-            case RollingMethods.STDEV:
-                zProjector.setMethod(ZProjector.SD_METHOD);
-                ImageTypeConverter.process(inputImagePlus, 32, ImageTypeConverter.ScalingModes.CLIP);
-                break;
-            case RollingMethods.SUM:
-                zProjector.setMethod(ZProjector.SUM_METHOD);
-                break;
+                case RollingMethods.AVERAGE:
+                    zProjector.setMethod(ZProjector.AVG_METHOD);
+                    break;
+                case RollingMethods.MEDIAN:
+                    zProjector.setMethod(ZProjector.MEDIAN_METHOD);
+                    break;
+                case RollingMethods.MINIMUM:
+                    zProjector.setMethod(ZProjector.MIN_METHOD);
+                    break;
+                case RollingMethods.MAXIMUM:
+                    zProjector.setMethod(ZProjector.MAX_METHOD);
+                    break;
+                case RollingMethods.STDEV:
+                    zProjector.setMethod(ZProjector.SD_METHOD);
+                    ImageTypeConverter.process(inputImagePlus, 32, ImageTypeConverter.ScalingModes.CLIP);
+                    break;
+                case RollingMethods.SUM:
+                    zProjector.setMethod(ZProjector.SUM_METHOD);
+                    break;
             }
 
             zProjector.setStartSlice(1);
@@ -398,20 +393,20 @@ public class FilterImage extends Module {
             int lastFrame = 0;
 
             switch (windowMode) {
-            case WindowModes.BOTH_SIDES:
-                firstFrame = Math.max(1, f - windowHalfWidth);
-                lastFrame = Math.min(nFrames, f + windowHalfWidth);
-                break;
+                case WindowModes.BOTH_SIDES:
+                    firstFrame = Math.max(1, f - windowHalfWidth);
+                    lastFrame = Math.min(nFrames, f + windowHalfWidth);
+                    break;
 
-            case WindowModes.PREVIOUS:
-                firstFrame = Math.max(1, f - windowHalfWidth);
-                lastFrame = Math.min(nFrames, f);
-                break;
+                case WindowModes.PREVIOUS:
+                    firstFrame = Math.max(1, f - windowHalfWidth);
+                    lastFrame = Math.min(nFrames, f);
+                    break;
 
-            case WindowModes.FUTURE:
-                firstFrame = Math.max(1, f);
-                lastFrame = Math.min(nFrames, f + windowHalfWidth);
-                break;
+                case WindowModes.FUTURE:
+                    firstFrame = Math.max(1, f);
+                    lastFrame = Math.min(nFrames, f + windowHalfWidth);
+                    break;
             }
 
             // Creating a local substack
@@ -424,25 +419,25 @@ public class FilterImage extends Module {
             // Applying average filter
             ZProjector zProjector = new ZProjector(currentSubstack);
             switch (rollingMethod) {
-            case RollingMethods.AVERAGE:
-                zProjector.setMethod(ZProjector.AVG_METHOD);
-                break;
-            case RollingMethods.MEDIAN:
-                zProjector.setMethod(ZProjector.MEDIAN_METHOD);
-                break;
-            case RollingMethods.MINIMUM:
-                zProjector.setMethod(ZProjector.MIN_METHOD);
-                break;
-            case RollingMethods.MAXIMUM:
-                zProjector.setMethod(ZProjector.MAX_METHOD);
-                break;
-            case RollingMethods.STDEV:
-                zProjector.setMethod(ZProjector.SD_METHOD);
-                ImageTypeConverter.process(inputImagePlus, 32, ImageTypeConverter.ScalingModes.CLIP);
-                break;
-            case RollingMethods.SUM:
-                zProjector.setMethod(ZProjector.SUM_METHOD);
-                break;
+                case RollingMethods.AVERAGE:
+                    zProjector.setMethod(ZProjector.AVG_METHOD);
+                    break;
+                case RollingMethods.MEDIAN:
+                    zProjector.setMethod(ZProjector.MEDIAN_METHOD);
+                    break;
+                case RollingMethods.MINIMUM:
+                    zProjector.setMethod(ZProjector.MIN_METHOD);
+                    break;
+                case RollingMethods.MAXIMUM:
+                    zProjector.setMethod(ZProjector.MAX_METHOD);
+                    break;
+                case RollingMethods.STDEV:
+                    zProjector.setMethod(ZProjector.SD_METHOD);
+                    ImageTypeConverter.process(inputImagePlus, 32, ImageTypeConverter.ScalingModes.CLIP);
+                    break;
+                case RollingMethods.SUM:
+                    zProjector.setMethod(ZProjector.SUM_METHOD);
+                    break;
             }
 
             zProjector.setStartSlice(1);
@@ -502,59 +497,58 @@ public class FilterImage extends Module {
             filterRadius = inputImagePlus.getCalibration().getRawX(filterRadius);
 
         // If applying to a new image, the input image is duplicated
-        if (!applyToInput) {
+        if (!applyToInput)
             inputImagePlus = inputImagePlus.duplicate();
-        }
-
+        
         // Applying smoothing filter
         switch (filterMode) {
-        case FilterModes.MAXIMUM2D:
-        case FilterModes.MEAN2D:
-        case FilterModes.MEDIAN2D:
-        case FilterModes.MINIMUM2D:
-        case FilterModes.VARIANCE2D:
-            writeStatus("Applying " + filterMode + " filter");
-            apply2DFilter(inputImagePlus, filterMode, filterRadius);
-            break;
+            case FilterModes.MAXIMUM2D:
+            case FilterModes.MEAN2D:
+            case FilterModes.MEDIAN2D:
+            case FilterModes.MINIMUM2D:
+            case FilterModes.VARIANCE2D:
+                writeStatus("Applying " + filterMode + " filter");
+                apply2DFilter(inputImagePlus, filterMode, filterRadius);
+                break;
 
-        case FilterModes.MAXIMUM3D:
-        case FilterModes.MEAN3D:
-        case FilterModes.MEDIAN3D:
-        case FilterModes.MINIMUM3D:
-        case FilterModes.VARIANCE3D:
-            writeStatus("Applying " + filterMode + " filter");
-            apply3DFilter(inputImagePlus, filterMode, (float) filterRadius);
-            break;
+            case FilterModes.MAXIMUM3D:
+            case FilterModes.MEAN3D:
+            case FilterModes.MEDIAN3D:
+            case FilterModes.MINIMUM3D:
+            case FilterModes.VARIANCE3D:
+                writeStatus("Applying " + filterMode + " filter");
+                apply3DFilter(inputImagePlus, filterMode, (float) filterRadius);
+                break;
 
-        case FilterModes.DOG2D:
-            writeStatus("Applying " + filterMode + " filter");
-            DoG.run(inputImagePlus, filterRadius, true);
-            break;
+            case FilterModes.DOG2D:
+                writeStatus("Applying " + filterMode + " filter");
+                DoG.run(inputImagePlus, filterRadius, true);
+                break;
 
-        case FilterModes.GAUSSIAN2D:
-            writeStatus("Applying " + filterMode + " filter");
-            runGaussian2DFilter(inputImagePlus, filterRadius);
-            break;
+            case FilterModes.GAUSSIAN2D:
+                writeStatus("Applying " + filterMode + " filter");
+                runGaussian2DFilter(inputImagePlus, filterRadius);
+                break;
 
-        case FilterModes.GAUSSIAN3D:
-            writeStatus("Applying " + filterMode + " filter");
-            GaussianBlur3D.blur(inputImagePlus, filterRadius, filterRadius, filterRadius);
-            break;
+            case FilterModes.GAUSSIAN3D:
+                writeStatus("Applying " + filterMode + " filter");
+                GaussianBlur3D.blur(inputImagePlus, filterRadius, filterRadius, filterRadius);
+                break;
 
-        case FilterModes.GRADIENT2D:
-            writeStatus("Applying " + filterMode + " filter");
-            runGradient2DFilter(inputImagePlus, filterRadius);
-            break;
+            case FilterModes.GRADIENT2D:
+                writeStatus("Applying " + filterMode + " filter");
+                runGradient2DFilter(inputImagePlus, filterRadius);
+                break;
 
-        case FilterModes.RIDGE_ENHANCEMENT:
-            writeStatus("Applying 2D ridge enhancement filter");
-            runRidgeEnhancement2DFilter(inputImagePlus, filterRadius, contourContrast);
-            break;
+            case FilterModes.RIDGE_ENHANCEMENT:
+                writeStatus("Applying 2D ridge enhancement filter");
+                runRidgeEnhancement2DFilter(inputImagePlus, filterRadius, contourContrast);
+                break;
 
-        case FilterModes.ROLLING_FRAME:
-            writeStatus("Applying rolling frame filter");
-            runRollingFrameFilter(inputImagePlus, windowIndices, rollingMethod);
-            break;
+            case FilterModes.ROLLING_FRAME:
+                writeStatus("Applying rolling frame filter");
+                runRollingFrameFilter(inputImagePlus, windowIndices, rollingMethod);
+                break;
 
         }
 
@@ -706,9 +700,13 @@ public class FilterImage extends Module {
 
         parameters.get(ROLLING_METHOD).setDescription("Statistic to apply for rolling frame filtering.");
 
-        parameters.get(WINDOW_INDICES).setDescription("When \""+FILTER_MODE+"\" is set to \""+FilterModes.ROLLING_FRAME+"\", the rolling frame statistic will be calculated for each frame using these relative frames (i.e. with indices set to \"-1,1\" the statistic would be calculated based on the frames immediately before and after).");
+        parameters.get(WINDOW_INDICES).setDescription("When \"" + FILTER_MODE + "\" is set to \""
+                + FilterModes.ROLLING_FRAME
+                + "\", the rolling frame statistic will be calculated for each frame using these relative frames (i.e. with indices set to \"-1,1\" the statistic would be calculated based on the frames immediately before and after).");
 
-        parameters.get(CONTOUR_CONTRAST).setDescription("When \""+FILTER_MODE+"\" is set to \""+FilterModes.RIDGE_ENHANCEMENT+"\", this parameter controls whether the ridges to be enhanced are bright (brighter than the background) or dark (darker than the background).");
+        parameters.get(CONTOUR_CONTRAST).setDescription("When \"" + FILTER_MODE + "\" is set to \""
+                + FilterModes.RIDGE_ENHANCEMENT
+                + "\", this parameter controls whether the ridges to be enhanced are bright (brighter than the background) or dark (darker than the background).");
 
     }
 }

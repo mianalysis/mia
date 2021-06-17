@@ -94,11 +94,11 @@ public class FitEllipse extends Module {
     public void processObject(Obj inputObject, ObjCollection outputObjects, String objectOutputMode,
             double maxAxisLength, String fittingMode) throws IntegerOverflowException {
         EllipseCalculator calculator = null;
-        
+
         // Get projected object
         ObjCollection projectedObjects = new ObjCollection("Projected", inputObject.getObjectCollection());
         Obj projObj = ProjectObjects.process(inputObject, projectedObjects, false);
-        
+
         try {
             switch (fittingMode) {
                 case FittingModes.FIT_TO_WHOLE:
@@ -114,10 +114,11 @@ public class FitEllipse extends Module {
         } catch (RuntimeException e) {
             e.printStackTrace();
         }
-        
+
         addMeasurements(inputObject, calculator);
 
-        if (calculator == null || Double.isNaN(calculator.getXCentre()) || objectOutputMode.equals(OutputModes.DO_NOT_STORE))
+        if (calculator == null || Double.isNaN(calculator.getXCentre())
+                || objectOutputMode.equals(OutputModes.DO_NOT_STORE))
             return;
 
         Volume ellipse = calculator.getContainedPoints();
@@ -203,7 +204,6 @@ public class FitEllipse extends Module {
 
     }
 
-
     @Override
     public Category getCategory() {
         return Categories.OBJECT_MEASUREMENTS_SPATIAL;
@@ -245,7 +245,7 @@ public class FitEllipse extends Module {
         AtomicInteger count = new AtomicInteger(1);
         int total = inputObjects.size();
         ObjCollection finalOutputObjects = outputObjects;
-        
+
         for (Obj inputObject : inputObjects.values()) {
             Runnable task = () -> {
                 try {
@@ -254,8 +254,8 @@ public class FitEllipse extends Module {
                     MIA.log.writeWarning("Integer overflow exception for object " + inputObject.getID()
                             + " during ellipse fitting.");
                 }
-                writeStatus("Processed " + count + " of " + total + " ("
-                                    + Math.floorDiv(100 * count.getAndIncrement(), total) + "%)", name);
+
+                writeProgressStatus(count.getAndIncrement(), total, "objects");
             };
             pool.submit(task);
 
@@ -347,8 +347,8 @@ public class FitEllipse extends Module {
         reference = objectMeasurementRefs.getOrPut(Measurements.X_CENTRE_CAL);
         reference.setObjectsName(inputObjectsName);
         reference.setDescription("X-coordinate for the centre of the ellipse fit to the 2D Z-projection of the "
-                + "object, \"" + inputObjectsName + "\".  Measured in calibrated (" + SpatialUnit.getOMEUnit().getSymbol()
-                + ") " + "units.");
+                + "object, \"" + inputObjectsName + "\".  Measured in calibrated ("
+                + SpatialUnit.getOMEUnit().getSymbol() + ") " + "units.");
         returnedRefs.add(reference);
 
         reference = objectMeasurementRefs.getOrPut(Measurements.Y_CENTRE_PX);
@@ -360,8 +360,8 @@ public class FitEllipse extends Module {
         reference = objectMeasurementRefs.getOrPut(Measurements.Y_CENTRE_CAL);
         reference.setObjectsName(inputObjectsName);
         reference.setDescription("Y-coordinate for the centre of the ellipse fit to the 2D Z-projection of the "
-                + "object, \"" + inputObjectsName + "\".  Measured in calibrated (" + SpatialUnit.getOMEUnit().getSymbol()
-                + ") " + "units.");
+                + "object, \"" + inputObjectsName + "\".  Measured in calibrated ("
+                + SpatialUnit.getOMEUnit().getSymbol() + ") " + "units.");
         returnedRefs.add(reference);
 
         reference = objectMeasurementRefs.getOrPut(Measurements.SEMI_MAJOR_PX);
@@ -375,7 +375,8 @@ public class FitEllipse extends Module {
         reference.setObjectsName(inputObjectsName);
         reference.setDescription("Semi-major axis length of ellipse fit to 2D Z-projection of the object, \""
                 + inputObjectsName + "\".  The semi-major axis passes from the centre of the ellipse to the furthest "
-                + "point on its perimeter.  Measured in calibrated (" + SpatialUnit.getOMEUnit().getSymbol() + ") units.");
+                + "point on its perimeter.  Measured in calibrated (" + SpatialUnit.getOMEUnit().getSymbol()
+                + ") units.");
         returnedRefs.add(reference);
 
         reference = objectMeasurementRefs.getOrPut(Measurements.SEMI_MINOR_PX);
@@ -389,8 +390,8 @@ public class FitEllipse extends Module {
         reference.setObjectsName(inputObjectsName);
         reference.setDescription("Semi-major axis length of ellipse fit to 2D Z-projection of the object, \""
                 + inputObjectsName + "\".  The semi-minor axis passes from the centre of the ellipse in the direction"
-                + "perpendiculart to the semi-major axis.  Measured in calibrated (" + SpatialUnit.getOMEUnit().getSymbol()
-                + ") " + "units.");
+                + "perpendiculart to the semi-major axis.  Measured in calibrated ("
+                + SpatialUnit.getOMEUnit().getSymbol() + ") " + "units.");
         returnedRefs.add(reference);
 
         reference = objectMeasurementRefs.getOrPut(Measurements.ECCENTRICITY);
@@ -452,29 +453,48 @@ public class FitEllipse extends Module {
     }
 
     void addParameterDescriptions() {
-      parameters.get(INPUT_OBJECTS).setDescription("Objects from workspace to which ellipses will be fit.  Objects stored in 3D will be projected into the XY 2D plane (using the \"" +  new ProjectObjects(null).getName() + "\" module) prior to fitting.  If a projected object is used, any output measurements and relationships are still applied to the input object (the projected object is discarded after use).  Measurements made by this module are associated with these input objects, irrespective of whether the fit ellipses are also stored as objects.");
+        parameters.get(INPUT_OBJECTS).setDescription(
+                "Objects from workspace to which ellipses will be fit.  Objects stored in 3D will be projected into the XY 2D plane (using the \""
+                        + new ProjectObjects(null).getName()
+                        + "\" module) prior to fitting.  If a projected object is used, any output measurements and relationships are still applied to the input object (the projected object is discarded after use).  Measurements made by this module are associated with these input objects, irrespective of whether the fit ellipses are also stored as objects.");
 
-      parameters.get(FITTING_MODE).setDescription("Controls which object coordinates are used for ellipse fitting:<br><ul>"
+        parameters.get(FITTING_MODE)
+                .setDescription("Controls which object coordinates are used for ellipse fitting:<br><ul>"
 
-      +"<li>\""+FittingModes.FIT_TO_WHOLE+"\" All coordinates for the input object are passed to the ellipse fitter.<.li>"
+                        + "<li>\"" + FittingModes.FIT_TO_WHOLE
+                        + "\" All coordinates for the input object are passed to the ellipse fitter.<.li>"
 
-      +"<li>\""+FittingModes.FIT_TO_SURFACE+"\" (default) Only surface coordinates of the input object are passed to the ellipse fitter.  Surface coordinates are calculated using 4-way connectivity.</li></ul>");
+                        + "<li>\"" + FittingModes.FIT_TO_SURFACE
+                        + "\" (default) Only surface coordinates of the input object are passed to the ellipse fitter.  Surface coordinates are calculated using 4-way connectivity.</li></ul>");
 
-      parameters.get(LIMIT_AXIS_LENGTH).setDescription("When selected, all axes of the the fit ellipses must be shorter than the length specified by \""+MAXIMUM_AXIS_LENGTH+"\".  This helps filter out mis-fit ellipses and prevents unnecessary, massive memory use when storing ellipses.");
+        parameters.get(LIMIT_AXIS_LENGTH).setDescription(
+                "When selected, all axes of the the fit ellipses must be shorter than the length specified by \""
+                        + MAXIMUM_AXIS_LENGTH
+                        + "\".  This helps filter out mis-fit ellipses and prevents unnecessary, massive memory use when storing ellipses.");
 
-      parameters.get(MAXIMUM_AXIS_LENGTH).setDescription("Maximum length of any fit ellipse axis as measured in pixel units.  This is onyl used if \""+LIMIT_AXIS_LENGTH+"\" is selected.");
+        parameters.get(MAXIMUM_AXIS_LENGTH).setDescription(
+                "Maximum length of any fit ellipse axis as measured in pixel units.  This is onyl used if \""
+                        + LIMIT_AXIS_LENGTH + "\" is selected.");
 
-      parameters.get(OBJECT_OUTPUT_MODE).setDescription("Controls whether the fit ellipse is stored as an object in the workspace:<br><ul>"
+        parameters.get(OBJECT_OUTPUT_MODE)
+                .setDescription("Controls whether the fit ellipse is stored as an object in the workspace:<br><ul>"
 
-      +"<li>\""+OutputModes.CREATE_NEW_OBJECT+"\" Fit ellipses are stored as new objects in the workspace (name specified by \""+OUTPUT_OBJECTS+"\").  Ellipses are \"solid\" objects, irrespective of whether they were only fit to input object surface coordinates.  Ellipse objects are children of the input objects to which they were fit.  If outputting ellipse objects, any measurements are still only applied to the corresponding input objects.</li>"
+                        + "<li>\"" + OutputModes.CREATE_NEW_OBJECT
+                        + "\" Fit ellipses are stored as new objects in the workspace (name specified by \""
+                        + OUTPUT_OBJECTS
+                        + "\").  Ellipses are \"solid\" objects, irrespective of whether they were only fit to input object surface coordinates.  Ellipse objects are children of the input objects to which they were fit.  If outputting ellipse objects, any measurements are still only applied to the corresponding input objects.</li>"
 
-      +"<li>\""+OutputModes.DO_NOT_STORE+"\" (default) The ellipse coordinates are not stored.</li>"
+                        + "<li>\"" + OutputModes.DO_NOT_STORE
+                        + "\" (default) The ellipse coordinates are not stored.</li>"
 
-      +"<li>\""+OutputModes.UPDATE_INPUT+"\" The coordinates of the input object are removed and replaced with the fit ellipse coordinates.  Note: Measurements associated with the input object (e.g. spatial measurements) will still be available, but may no longer be valid.</li></ul>");
+                        + "<li>\"" + OutputModes.UPDATE_INPUT
+                        + "\" The coordinates of the input object are removed and replaced with the fit ellipse coordinates.  Note: Measurements associated with the input object (e.g. spatial measurements) will still be available, but may no longer be valid.</li></ul>");
 
-      parameters.get(OUTPUT_OBJECTS).setDescription("Name assigned to output ellipse objects if \""+OBJECT_OUTPUT_MODE+"\" is in \""+OutputModes.CREATE_NEW_OBJECT+"\" mode.");
+        parameters.get(OUTPUT_OBJECTS).setDescription("Name assigned to output ellipse objects if \""
+                + OBJECT_OUTPUT_MODE + "\" is in \"" + OutputModes.CREATE_NEW_OBJECT + "\" mode.");
 
-      parameters.get(ENABLE_MULTITHREADING).setDescription("Process multiple input objects simultaneously.  This can provide a speed improvement when working on a computer with a multi-core CPU.");
+        parameters.get(ENABLE_MULTITHREADING).setDescription(
+                "Process multiple input objects simultaneously.  This can provide a speed improvement when working on a computer with a multi-core CPU.");
 
     }
 }

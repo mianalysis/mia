@@ -207,8 +207,8 @@ public class NormaliseIntensity extends Module {
                         int count = 0;
                         int total = inputObjects.size();
                         for (Obj inputObject:inputObjects.values()) {
-                            writeStatus("Processing "+(++count)+" of "+total+" objects");
                             applyNormalisation(inputImagePlus,calculationMode,clipFraction,intRange,inputObject);
+                            writeProgressStatus(++count, total, "objects");
                         }
                         break;
 
@@ -216,11 +216,11 @@ public class NormaliseIntensity extends Module {
                         count = 0;
                         total = inputImagePlus.getStack().size();                        
                         for (int z = 0; z < total;z++) {
-                            writeStatus("Processing " + (++count) + " of " + total + " slices");
                             ImageProcessor ipr = inputImagePlus.getStack().getProcessor(z+1);
                             ImagePlus tempIpl = new ImagePlus("Temp", ipr);
                             applyNormalisation(tempIpl,calculationMode,clipFraction,intRange);
-                            inputImagePlus.getStack().setProcessor(tempIpl.getProcessor(), z+1);
+                            inputImagePlus.getStack().setProcessor(tempIpl.getProcessor(), z + 1);
+                            writeProgressStatus(++count, total, "slices");
                         }
                         break;
                 }

@@ -275,8 +275,7 @@ public class FitEllipsoid extends Module {
                     MIA.log.writeWarning("Integer overflow exception for object " + inputObject.getID()
                             + " during ellipsoid fitting.");
                 }
-                writeStatus("Processed object " + count + " of " + total + " ("
-                        + Math.floorDiv(100 * count.getAndIncrement(), total) + "%)");
+                writeProgressStatus(count.getAndIncrement(), total, "objects");
             };
             pool.submit(task);
 

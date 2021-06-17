@@ -153,7 +153,6 @@ public class EditingPanel extends MainPanel {
 
         statusPanel.add(GUI.getTextField(),c);
 
-        GUI.updateTestFile(false);
         updateModules();
         updateParameters();
 

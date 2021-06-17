@@ -463,7 +463,7 @@ public class AddObjectsOverlay extends Module {
 
                 addAllPointsOverlay(object, finalIpl, colour, lineWidth, renderInAllFrames);
 
-                writeStatus("Rendered " + (count.incrementAndGet()) + " objects of " + inputObjects.size());
+                writeProgressStatus(count.incrementAndGet(), inputObjects.size(), "objects");
 
             };
             pool.submit(task);
@@ -525,7 +525,7 @@ public class AddObjectsOverlay extends Module {
 
                 addArrowsOverlay(object, finalIpl, colour, lineWidth, orientation, length, headSize);
 
-                writeStatus("Rendered " + (count.incrementAndGet()) + " objects of " + inputObjects.size());
+                writeProgressStatus(count.incrementAndGet(), inputObjects.size(), "objects");
 
             };
             pool.submit(task);
@@ -558,7 +558,7 @@ public class AddObjectsOverlay extends Module {
                 Color colour = ColourFactory.getColour(hue, 100);
                 addCentroidOverlay(object, finalIpl, colour, lineWidth, renderInAllFrames);
 
-                writeStatus("Rendered " + (count.incrementAndGet()) + " objects of " + inputObjects.size());
+                writeProgressStatus(count.incrementAndGet(), inputObjects.size(), "objects");
             };
             pool.submit(task);
         }
@@ -602,7 +602,7 @@ public class AddObjectsOverlay extends Module {
 
                 addLabelsOverlay(finalIpl, label, new double[] { xMean, yMean, z, t }, colour, labelSize);
 
-                writeStatus("Rendered " + (count.incrementAndGet()) + " objects of " + inputObjects.size());
+                writeProgressStatus(count.incrementAndGet(), inputObjects.size(), "objects");
             };
             pool.submit(task);
         }
@@ -635,7 +635,7 @@ public class AddObjectsOverlay extends Module {
 
                 addOutlineOverlay(object, finalIpl, colour, lineWidth, renderInAllFrames);
 
-                writeStatus("Rendered " + (count.incrementAndGet()) + " objects of " + inputObjects.size());
+                writeProgressStatus(count.incrementAndGet(), inputObjects.size(), "objects");
             };
             pool.submit(task);
         }
@@ -669,7 +669,7 @@ public class AddObjectsOverlay extends Module {
 
                 addPositionMeasurementsOverlay(object, finalIpl, colour, lineWidth, posMeasurements, renderInAllFrames);
 
-                writeStatus("Rendered " + (count.incrementAndGet()) + " objects of " + inputObjects.size());
+                writeProgressStatus(count.incrementAndGet(), inputObjects.size(), "objects");
             };
             pool.submit(task);
         }
@@ -703,7 +703,7 @@ public class AddObjectsOverlay extends Module {
 
             addTrackOverlay(object, spotObjectsName, finalIpl, colour, lineWidth, history);
 
-            writeStatus("Rendered " + (count.incrementAndGet()) + " objects of " + inputObjects.size());
+            writeProgressStatus(count.incrementAndGet(), inputObjects.size(), "objects");
             // };
             // pool.submit(task);
         }

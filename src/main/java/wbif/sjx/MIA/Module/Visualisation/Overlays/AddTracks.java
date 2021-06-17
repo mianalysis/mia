@@ -174,7 +174,7 @@ public class AddTracks extends AbstractOverlay {
 
             addOverlay(object, spotObjectsName, ipl, colour, lineWidth, history);
 
-            writeStatus("Rendered " + (count.incrementAndGet()) + " objects of " + inputObjects.size());
+            writeProgressStatus(count.getAndIncrement(), inputObjects.size(), "objects");
 
         }
 

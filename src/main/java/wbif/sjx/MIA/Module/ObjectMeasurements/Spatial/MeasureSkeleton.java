@@ -360,8 +360,7 @@ public class MeasureSkeleton extends Module {
                     }
                 }
 
-                writeStatus("Processed " + count + " of " + total + " ("
-                        + Math.floorDiv(100 * count.getAndIncrement(), total) + "%)");
+                        writeProgressStatus(count.getAndIncrement(), total, "objects");
 
             };
             pool.submit(task);

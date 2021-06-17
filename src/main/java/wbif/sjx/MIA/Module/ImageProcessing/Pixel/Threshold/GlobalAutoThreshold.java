@@ -91,7 +91,6 @@ public class GlobalAutoThreshold extends Module {
         for (int z = 1; z <= inputImagePlus.getNSlices(); z++) {
             for (int c = 1; c <= inputImagePlus.getNChannels(); c++) {
                 for (int t = 1; t <= inputImagePlus.getNFrames(); t++) {
-                    writeStatus("Processing image " + (++count) + " of " + total);
                     inputImagePlus.setPosition(c, z, t);
 
                     int[] tempHist = inputImagePlus.getProcessor().getHistogram();
@@ -101,6 +100,8 @@ public class GlobalAutoThreshold extends Module {
                     for (int i = 0; i < histogram.length; i++)
                         histogram[i] = histogram[i] + tempHist[i];
 
+                    writeProgressStatus(++count, total, "images");
+                        
                 }
             }
         }

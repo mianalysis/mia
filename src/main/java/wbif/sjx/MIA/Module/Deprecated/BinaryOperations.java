@@ -265,7 +265,7 @@ public class BinaryOperations extends Module {
             //  Replacing the maskIpl intensity
             overwriteTimepoint(maskIpl,timepointMaskIpl,t);
 
-            writeStatus("Processed "+t+" of "+nFrames+" frames");
+            writeProgressStatus(t, nFrames, "frames");
 
         }
     }

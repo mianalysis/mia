@@ -142,10 +142,7 @@ public class FitLongestChord extends Module {
         int total = inputObjects.size();
         for (Obj inputObject : inputObjects.values()) {
             processObject(inputObject, measureWidth, measureOrientation, storeEndPoints);
-
-            ++count;
-            writeStatus("Processed object " + count + " of " + total + " (" + Math.floorDiv(100 * count, total) + "%)");
-
+            writeProgressStatus(++count, total, "objects");
         }
 
         if (showOutput)

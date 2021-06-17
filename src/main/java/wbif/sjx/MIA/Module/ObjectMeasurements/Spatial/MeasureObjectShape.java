@@ -119,7 +119,6 @@ public class MeasureObjectShape extends Module {
 
     }
 
-
     @Override
     public Category getCategory() {
         return Categories.OBJECT_MEASUREMENTS_SPATIAL;
@@ -233,8 +232,7 @@ public class MeasureObjectShape extends Module {
                 if (projectedObject != null & !inputObject.is2D())
                     inputObject.clearProjected();
 
-                writeStatus("Processed " + count + " of " + total + " ("
-                        + Math.floorDiv(100 * count.getAndIncrement(), total) + "%)");
+                writeProgressStatus(count.getAndIncrement(), total, "objects");
 
             };
             pool.submit(task);
@@ -310,7 +308,8 @@ public class MeasureObjectShape extends Module {
             reference.setDescription("Volume of the object, \"" + inputObjectsName
                     + "\".  Takes spatial scaling of XY vs "
                     + "Z into account (i.e. converts object height from slice units to pixel units prior to conversion"
-                    + " to calibrated units.  Measured in calibrated (" + SpatialUnit.getOMEUnit().getSymbol() + ") units.");
+                    + " to calibrated units.  Measured in calibrated (" + SpatialUnit.getOMEUnit().getSymbol()
+                    + ") units.");
 
             reference = objectMeasurementRefs.getOrPut(Measurements.BASE_AREA_PX);
             returnedRefs.add(reference);
@@ -412,18 +411,23 @@ public class MeasureObjectShape extends Module {
     }
 
     void addParameterDescriptions() {
-      parameters.get(INPUT_OBJECTS).setDescription("Input objects from workspace.  Shape metrics will be calculated for each object and stored as measurements associated with that object.");
+        parameters.get(INPUT_OBJECTS).setDescription(
+                "Input objects from workspace.  Shape metrics will be calculated for each object and stored as measurements associated with that object.");
 
-      parameters.get(MEASURE_VOLUME).setDescription("When selected, 3D volume metrics will be calculated for each input object.  Metrics are: volume (px³), volume (calibrated_units³), number of voxels, base area (px²), base area (calibrated_units²), height (n_slices) and height (calibrated_units).");
+        parameters.get(MEASURE_VOLUME).setDescription(
+                "When selected, 3D volume metrics will be calculated for each input object.  Metrics are: volume (px³), volume (calibrated_units³), number of voxels, base area (px²), base area (calibrated_units²), height (n_slices) and height (calibrated_units).");
 
-      parameters.get(MEASURE_PROJECTED_AREA).setDescription("When selected, 2D area metrics will be calculated for each input object.  For 3D objects, a 2D projection in the XY plane is used for measurements.  This projection includes all XY coordinates present in any Z-slice.  Metrics are: area (px²) and area (calibrated_units²).");
+        parameters.get(MEASURE_PROJECTED_AREA).setDescription(
+                "When selected, 2D area metrics will be calculated for each input object.  For 3D objects, a 2D projection in the XY plane is used for measurements.  This projection includes all XY coordinates present in any Z-slice.  Metrics are: area (px²) and area (calibrated_units²).");
 
-      parameters.get(MEASURE_PROJECTED_DIA).setDescription("When selected, the diameter of 2D objects will be calculated for each input object.  For 3D objects, a 2D projection in the XY plane is used for measurements.  This projection includes all XY coordinates present in any Z-slice.  Metrics are: diameter (px) and diameter (calibrated_units).");
+        parameters.get(MEASURE_PROJECTED_DIA).setDescription(
+                "When selected, the diameter of 2D objects will be calculated for each input object.  For 3D objects, a 2D projection in the XY plane is used for measurements.  This projection includes all XY coordinates present in any Z-slice.  Metrics are: diameter (px) and diameter (calibrated_units).");
 
-      parameters.get(MEASURE_PROJECTED_PERIM).setDescription("When selected, the perimeter and circularity of 2D objects will be calculated for each input object.  For 3D objects, a 2D projection in the XY plane is used for measurements.  This projection includes all XY coordinates present in any Z-slice.  Metrics are: perimeter (px), perimeter (calibrated_units) and circularity.");
+        parameters.get(MEASURE_PROJECTED_PERIM).setDescription(
+                "When selected, the perimeter and circularity of 2D objects will be calculated for each input object.  For 3D objects, a 2D projection in the XY plane is used for measurements.  This projection includes all XY coordinates present in any Z-slice.  Metrics are: perimeter (px), perimeter (calibrated_units) and circularity.");
 
-      parameters.get(ENABLE_MULTITHREADING).setDescription("Process multiple input objects simultaneously.  This can provide a speed improvement when working on a computer with a multi-core CPU.");
-
+        parameters.get(ENABLE_MULTITHREADING).setDescription(
+                "Process multiple input objects simultaneously.  This can provide a speed improvement when working on a computer with a multi-core CPU.");
 
     }
 }

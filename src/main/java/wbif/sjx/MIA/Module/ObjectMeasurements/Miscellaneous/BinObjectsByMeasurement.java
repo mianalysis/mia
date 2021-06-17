@@ -66,16 +66,26 @@ public class BinObjectsByMeasurement extends Module {
 
         double binWidth = (largestBin-smallestBin)/(numberOfBins-1);
 
-        for (Obj inputObject:inputObjects.values()) {
-            double measurement = inputObject.getMeasurement(measurementName).getValue();
-            double bin = Math.round((measurement-smallestBin)/binWidth)*binWidth+smallestBin;
+        int count = 0;
+        int total = inputObjects.size();
+        for (Obj inputObject : inputObjects.values()) {
+            Measurement measurement = inputObject.getMeasurement(measurementName);
+            if (measurement == null) {
+                inputObject.addMeasurement(new Measurement(getFullName(measurementName), Double.NaN));
+                continue;
+            }
+            
+            double value = measurement.getValue();
+            double bin = Math.round((value-smallestBin)/binWidth)*binWidth+smallestBin;
 
             // Ensuring the bin is within the specified range
             bin = Math.min(bin,largestBin);
             bin = Math.max(bin,smallestBin);
 
-            inputObject.addMeasurement(new Measurement(getFullName(measurementName),bin));
+            inputObject.addMeasurement(new Measurement(getFullName(measurementName), bin));
 
+            writeProgressStatus(++count, total, "objects");
+            
         }
 
         if (showOutput) inputObjects.showMeasurements(this,modules);

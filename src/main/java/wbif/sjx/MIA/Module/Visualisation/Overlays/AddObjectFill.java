@@ -93,8 +93,7 @@ public class AddObjectFill extends AbstractOverlay {
                 Runnable task = () -> {
                     float hue = hues.get(object.getID());
                     addOverlay(object, finalIpl, ColourFactory.getColour(hue, opacity), renderInAllFrames);
-                    writeStatus("Rendered " + count + " of " + total + " ("
-                            + Math.floorDiv(100 * count.getAndIncrement(), total) + "%)", name);
+                    writeProgressStatus(count.getAndIncrement(), total, "objects", name);
 
                 };
                 pool.submit(task);

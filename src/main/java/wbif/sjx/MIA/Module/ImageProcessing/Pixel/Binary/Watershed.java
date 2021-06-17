@@ -120,7 +120,8 @@ public class Watershed extends Module {
 
                     //  Replacing the maskIpl intensity
                     getSetStack(maskIpl, finalT, finalC, timepointMaskIpl.getStack());
-                    writeStatus("Processed " + (count.incrementAndGet()) + " of " + nTotal + " stacks", name);
+                    
+                    writeProgressStatus(count.incrementAndGet(), nTotal, "stacks", name);
 
                 };
                 pool.submit(task);

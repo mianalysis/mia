@@ -54,7 +54,6 @@ public class ModuleChoiceParameter extends ParameterControl implements ActionLis
         if (idx <= GUI.getLastModuleEval() & !(parameter.getModule() instanceof OutputControl))
             GUI.setLastModuleEval(idx - 1);
 
-        GUI.updateTestFile(true);
         GUI.updateModuleStates(true);
         GUI.updateModules();
         GUI.updateParameters();

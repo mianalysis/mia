@@ -325,7 +325,6 @@ public class RidgeDetection extends Module {
         for (int c=0;c<inputIpl.getNChannels();c++) {
             for (int z=0;z<inputIpl.getNSlices();z++) {
                 for (int t = 0; t < inputIpl.getNFrames(); t++) {
-                    writeStatus("Processing image "+(count++)+" of "+total);
                     inputIpl.setPosition(c+1,z+1,t+1);
 
                     // Running the ridge detection
@@ -364,6 +363,9 @@ public class RidgeDetection extends Module {
                         addMeasurements(outputObject,estimatedLength,width);
 
                     }
+
+                    writeProgressStatus(count++, total, "images");
+                    
                 }
             }
         }

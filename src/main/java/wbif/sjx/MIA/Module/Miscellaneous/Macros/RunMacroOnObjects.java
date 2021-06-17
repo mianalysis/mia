@@ -153,8 +153,6 @@ public class RunMacroOnObjects extends AbstractMacroRunner {
         int count = 1;
         int nTotal = inputObjects.size();
         for (Obj inputObject : inputObjects.values()) {
-            writeStatus("Running macro on object " + (count++) + " of " + nTotal);
-
             // Appending object name and ID number onto macro
             String finalMacroText = addObjectToMacroText(macroText, inputObjectsName, inputObject.getID(), count - 1);
 
@@ -188,6 +186,8 @@ public class RunMacroOnObjects extends AbstractMacroRunner {
             // If necessary, updating the input image
             if (updateInputImage)
                 inputImage.setImagePlus(inputImagePlus);
+
+            writeProgressStatus(count++, nTotal, "objects");
 
         }
 

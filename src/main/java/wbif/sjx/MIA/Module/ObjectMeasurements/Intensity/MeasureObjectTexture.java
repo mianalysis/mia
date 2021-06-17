@@ -164,7 +164,7 @@ public class MeasureObjectTexture extends Module {
                     regionObject = GetLocalObjectRegion.getLocalRegion(object, tempObjects, radius, calibrated, false);
                 }
                 processObject(object, regionObject, inputImage, textureCalculator, offs, calibratedOffset);
-                writeStatus("Processed " + (iter.incrementAndGet()) + " of " + nObjects);
+                writeProgressStatus(iter.incrementAndGet(), nObjects, "objects");
             }
 
         if (showOutput) inputObjects.showMeasurements(this,modules);

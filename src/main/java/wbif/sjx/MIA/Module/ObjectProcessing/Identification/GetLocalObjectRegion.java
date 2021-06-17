@@ -81,11 +81,11 @@ public class GetLocalObjectRegion extends Module {
         } else {
             if (calibrated) {
                 int xMin = Math.max((int) Math.floor(xCent - radius / dppXY), 0);
-                int xMax = Math.min((int) Math.ceil(xCent + radius / dppXY), inputObject.getWidth() - 1);
+                int xMax = Math.min((int) Math.ceil(xCent + radius / dppXY), inputObject.getWidth());
                 int yMin = Math.max((int) Math.floor(yCent - radius / dppXY), 0);
-                int yMax = Math.min((int) Math.ceil(yCent + radius / dppXY), inputObject.getHeight() - 1);
+                int yMax = Math.min((int) Math.ceil(yCent + radius / dppXY), inputObject.getHeight());
                 int zMin = Math.max((int) Math.floor(zCent - radius / dppZ), 0);
-                int zMax = Math.min((int) Math.ceil(zCent + radius / dppZ), inputObject.getNSlices() - 1);
+                int zMax = Math.min((int) Math.ceil(zCent + radius / dppZ), inputObject.getNSlices());
 
                 for (int x = xMin; x < xMax; x++) {
                     double xx = (xCent - x) * dppXY;
@@ -116,11 +116,11 @@ public class GetLocalObjectRegion extends Module {
 
             } else {
                 int xMin = Math.max((int) Math.floor(xCent - radius), 0);
-                int xMax = Math.min((int) Math.ceil(xCent + radius), inputObject.getWidth() - 1);
+                int xMax = Math.min((int) Math.ceil(xCent + radius), inputObject.getWidth());
                 int yMin = Math.max((int) Math.floor(yCent - radius), 0);
-                int yMax = Math.min((int) Math.ceil(yCent + radius), inputObject.getHeight() - 1);
+                int yMax = Math.min((int) Math.ceil(yCent + radius), inputObject.getHeight());
                 int zMin = Math.max((int) Math.floor(zCent - radius * xy_z_ratio), 0);
-                int zMax = Math.min((int) Math.ceil(zCent + radius * xy_z_ratio), inputObject.getNSlices() - 1);
+                int zMax = Math.min((int) Math.ceil(zCent + radius * xy_z_ratio), inputObject.getNSlices());
 
                 for (int x = xMin; x < xMax; x++) {
                     double xx = xCent - x;
@@ -218,6 +218,10 @@ public class GetLocalObjectRegion extends Module {
 
         // Adding output objects to workspace
         workspace.addObjects(outputObjects);
+
+        // Showing objects
+        if (showOutput)
+            outputObjects.convertToImageRandomColours().showImage();
 
         return Status.PASS;
 

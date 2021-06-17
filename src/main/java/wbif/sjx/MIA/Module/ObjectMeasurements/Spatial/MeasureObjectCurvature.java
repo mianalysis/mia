@@ -357,8 +357,7 @@ public class MeasureObjectCurvature extends Module {
 
         int count = 1;
         int total = inputObjects.size();
-        for (Obj inputObject:inputObjects.values()) {
-            writeStatus("Processing object " + (count++) + " of " + total);
+        for (Obj inputObject:inputObjects.values()) {            
             initialiseObjectMeasurements(inputObject,fitSpline,absoluteCurvature,signedCurvature,useReference);
 
             // Getting the backbone of the object
@@ -403,6 +402,8 @@ public class MeasureObjectCurvature extends Module {
             }
 
             if (calculateEndEndAngle) measureHeadTailAngle(inputObject, longestPath, fittingRange);
+            
+            writeProgressStatus(count++, total, "objects");
             
         }
 

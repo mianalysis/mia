@@ -19,6 +19,7 @@ import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.Category;
 import wbif.sjx.MIA.Module.Categories;
 import wbif.sjx.MIA.Module.Visualisation.Overlays.AddObjectCentroid;
+import wbif.sjx.MIA.Module.Visualisation.Overlays.AddObjectOutline;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
 import wbif.sjx.MIA.Object.Parameters.Objects.OutputObjectsP;
@@ -279,7 +280,7 @@ public class RunTrackMate extends Module {
         }
     }
 
-    public void showObjects(ImagePlus ipl, ObjCollection spotObjects) {
+    public void showObjects(ImagePlus ipl, ObjCollection spotObjects, boolean estimateSize) {
         String trackObjectsName = parameters.getValue(OUTPUT_TRACK_OBJECTS);
         boolean doTracking = parameters.getValue(DO_TRACKING);
 
@@ -299,7 +300,11 @@ public class RunTrackMate extends Module {
         IntensityMinMax.run(ipl, true);
 
         // Adding the overlay
-        AddObjectCentroid.addOverlay(ipl, spotObjects, hues, 100, pointSize, pointType, false, true);
+        if (estimateSize)
+            AddObjectOutline.addOverlay(ipl, spotObjects, 1, 1, hues, 100, false, true);
+        else
+            AddObjectCentroid.addOverlay(ipl, spotObjects, hues, 100, pointSize, pointType, false, true);
+
         ipl.setPosition(1, 1, 1);
         ipl.updateChannelAndDraw();
 
@@ -386,7 +391,7 @@ public class RunTrackMate extends Module {
 
         // Displaying objects (if selected)
         if (showOutput)
-            showObjects(ipl, spotObjects);
+            showObjects(ipl, spotObjects, estimateSize);
 
         // Reapplying calibration to input image
         inputImage.getImagePlus().setCalibration(cal);

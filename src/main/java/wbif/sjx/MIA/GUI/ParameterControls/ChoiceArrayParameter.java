@@ -8,6 +8,7 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComponent;
 
 import wbif.sjx.MIA.GUI.GUI;
+import wbif.sjx.MIA.Module.Core.InputControl;
 import wbif.sjx.MIA.Module.Core.OutputControl;
 import wbif.sjx.MIA.Object.Parameters.Abstract.ChoiceType;
 
@@ -39,9 +40,9 @@ public class ChoiceArrayParameter extends ParameterControl implements ActionList
         ((ChoiceType) parameter).setChoice((String) control.getSelectedItem());
 
         int idx = GUI.getModules().indexOf(parameter.getModule());
-        if (idx <= GUI.getLastModuleEval() & !(parameter.getModule() instanceof OutputControl)) GUI.setLastModuleEval(idx-1);
+        if (idx <= GUI.getLastModuleEval() & !(parameter.getModule() instanceof OutputControl))
+            GUI.setLastModuleEval(idx - 1);
 
-        GUI.updateTestFile(true);
         GUI.updateModuleStates(true);
         GUI.updateModules();
         GUI.updateParameters();
