@@ -166,14 +166,20 @@ public class SingleClassCluster extends Module {
             // Adding coordinates from region to the cluster object
             coordinateSet.addAll(region.getCoordinateSet());
             outputObject.setT(0);
-        }
+        }       
 
         // Reducing the size of the cluster area by eps
-        Image objectImage = outputObject.getAsImage("Object",false);
+        Image objectImage = outputObject.getAsTightImage("Object");
         InvertIntensity.process(objectImage);
         objectImage = DistanceMap.process(objectImage, "Distance", DistanceMap.WeightModes.WEIGHTS_3_4_5_7, true, false);
         ImagePlus objectIpl = objectImage.getImagePlus();
         
+        // We're using a tight image, so the coordinates are offset
+        double[][] extents = outputObject.getExtents(true, false);
+        int xOffs = (int) Math.round(extents[0][0]);
+        int yOffs = (int) Math.round(extents[1][0]);
+        int zOffs = (int) Math.round(extents[2][0]);
+
         // Iterating over each coordinate in the object, removing it if its distance to the edge is less than eps
         Iterator<Point<Integer>> iterator = outputObject.getCoordinateSet().iterator();
         double conv = outputObject.getDppZ()/outputObject.getDppXY();
@@ -181,14 +187,15 @@ public class SingleClassCluster extends Module {
             Point<Integer> point = iterator.next();
 
             // Checking value
-            objectIpl.setPosition(1, point.getZ() + 1, outputObject.getT() + 1);
+            objectIpl.setPosition(1, point.getZ() - zOffs + 1, outputObject.getT() + 1);
             ImageProcessor ipr = objectIpl.getProcessor();
-            double value = ipr.getPixelValue(point.getX(), point.getY());
+            double value = ipr.getPixelValue(point.getX()-xOffs, point.getY()-yOffs);
 
             if (value < (eps - Math.ceil(conv)))
                 iterator.remove();
 
         }
+
     }
 
 

@@ -437,9 +437,10 @@ public abstract class Module extends Ref implements Comparable {
 
     protected static void writeProgressStatus(int count, int total, String featureBeingProcessed, String moduleName) {
         if (verbose)
-            writeStatus("Processed " + count + " of " + total + " "+featureBeingProcessed+" ("
+            writeStatus("Processed " + count + " of " + total + " " + featureBeingProcessed + " ("
                     + Math.floorDiv(100 * count, total) + "%)", moduleName);
     }
+    
 
     // OVER-RIDDEN METHODS
 

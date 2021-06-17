@@ -123,7 +123,9 @@ public class DistanceMap extends Module {
             }
             outputIpl.updateAndDraw();
 
-            writeProgressStatus(++count, nFrames, "timepoints", name);
+            if (verbose)
+                writeProgressStatus(++count, nFrames, "timepoints", name);
+                
         }
 
         Calibration inputCalibration = inputIpl.getCalibration();
