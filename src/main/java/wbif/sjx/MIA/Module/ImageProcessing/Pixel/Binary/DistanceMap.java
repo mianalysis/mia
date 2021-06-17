@@ -3,6 +3,7 @@ package wbif.sjx.MIA.Module.ImageProcessing.Pixel.Binary;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.ImageStack;
+import ij.measure.Calibration;
 import ij.plugin.Duplicator;
 import ij.plugin.Resizer;
 import ij.plugin.SubHyperstackMaker;
@@ -124,6 +125,17 @@ public class DistanceMap extends Module {
 
             writeProgressStatus(++count, nFrames, "timepoints", name);
         }
+
+        Calibration inputCalibration = inputIpl.getCalibration();
+        Calibration outputCalibration = new Calibration();
+        outputCalibration.fps = inputCalibration.fps;
+        outputCalibration.frameInterval = inputCalibration.frameInterval;
+        outputCalibration.pixelDepth = inputCalibration.pixelDepth;
+        outputCalibration.pixelWidth = inputCalibration.pixelWidth;
+        outputCalibration.pixelHeight = inputCalibration.pixelHeight;
+        outputCalibration.setUnit(inputCalibration.getUnit());
+        
+        outputIpl.setCalibration(outputCalibration);
 
         return new Image(outputImageName, outputIpl);
 
