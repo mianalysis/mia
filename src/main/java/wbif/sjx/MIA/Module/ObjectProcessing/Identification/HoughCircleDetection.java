@@ -49,7 +49,7 @@ import wbif.sjx.common.Process.HoughTransform.Transforms.CircleHoughTransform;
 /**
  * Created by sc13967 on 15/01/2018.
  */
-public class HoughObjectDetection extends Module {
+public class HoughCircleDetection extends Module {
     public static final String INPUT_SEPARATOR = "Image input, object output";
     public static final String INPUT_IMAGE = "Input image";
     public static final String OUTPUT_OBJECTS = "Output objects";
@@ -73,8 +73,8 @@ public class HoughObjectDetection extends Module {
     public static final String SHOW_HOUGH_SCORE = "Show detection score";
     public static final String LABEL_SIZE = "Label size";
 
-    public HoughObjectDetection(ModuleCollection modules) {
-        super("Hough-based detection",modules);
+    public HoughCircleDetection(ModuleCollection modules) {
+        super("Circle detection",modules);
     }
 
 
@@ -146,18 +146,18 @@ public class HoughObjectDetection extends Module {
 
                     // Initialising the Hough transform
                     int[][] paramRanges = new int[][]{{0,ipr.getWidth() - 1}, {0,ipr.getHeight() - 1}, {minR,maxR}};
-                    CircleHoughTransform circleHoughTransform = new CircleHoughTransform(ipr,paramRanges);
-                    circleHoughTransform.setnThreads(nThreads);
+                    CircleHoughTransform transform = new CircleHoughTransform(ipr,paramRanges);
+                    transform.setnThreads(nThreads);
 
                     // Running the transforms
-                    circleHoughTransform.run();
+                    transform.run();
 
                     // Normalising scores based on the number of points in that circle
-                    circleHoughTransform.normaliseScores();
+                    transform.normaliseScores();
 
                     // Getting the accumulator as an image
                     if (outputTransformImage || (showOutput && showTransformImage)) {
-                        ImagePlus showIpl = new Duplicator().run(circleHoughTransform.getAccumulatorAsImage());
+                        ImagePlus showIpl = new Duplicator().run(transform.getAccumulatorAsImage());
 
                         if (outputTransformImage) {
                             Image outputImage = new Image(outputImageName,showIpl);
@@ -171,7 +171,7 @@ public class HoughObjectDetection extends Module {
                     }
 
                     // Getting circle objects and adding to workspace
-                    ArrayList<double[]> circles = circleHoughTransform.getObjects(detectionThreshold, exclusionRadius);
+                    ArrayList<double[]> circles = transform.getObjects(detectionThreshold, exclusionRadius);
                     Indexer indexer = new Indexer(ipl.getWidth(), ipl.getHeight());
                     for (double[] circle : circles) {
                         // Initialising the object

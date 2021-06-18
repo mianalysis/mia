@@ -23,7 +23,7 @@ import wbif.sjx.MIA.Module.Miscellaneous.Macros.RunSingleCommand;
 import wbif.sjx.MIA.Module.ObjectMeasurements.Miscellaneous.ReplaceMeasurementValue;
 import wbif.sjx.MIA.Module.ObjectMeasurements.Spatial.CalculateNearestNeighbour;
 import wbif.sjx.MIA.Module.ObjectProcessing.Identification.GetLocalObjectRegion;
-import wbif.sjx.MIA.Module.ObjectProcessing.Identification.HoughObjectDetection;
+import wbif.sjx.MIA.Module.ObjectProcessing.Identification.HoughCircleDetection;
 import wbif.sjx.MIA.Module.ObjectProcessing.Miscellaneous.CreateDistanceMap;
 import wbif.sjx.MIA.Module.ObjectProcessing.Refinement.ExpandShrinkObjects;
 import wbif.sjx.MIA.Module.ObjectProcessing.Relationships.RelateManyToOne;
@@ -47,6 +47,7 @@ public class LostAndFound {
         lostModules.put("ManualRegistration", new AffineManual(null).getClass().getSimpleName());
         lostModules.put("MOPSRegistration", new AffineMOPS(null).getClass().getSimpleName());
         lostModules.put("SIFTRegistration", new AffineSIFT(null).getClass().getSimpleName());
+        lostModules.put("Hough-based detection", new HoughCircleDetection(null).getClass().getSimpleName());
 
         
         //// Populating hard-coded parameter reassignments ////
@@ -106,8 +107,8 @@ public class LostAndFound {
 
         // HoughObjectDetection
         currentParameterNames = new HashMap<>();
-        currentParameterNames.put("Sampling rate", HoughObjectDetection.DOWNSAMPLE_FACTOR);
-        moduleName = new HoughObjectDetection(null).getClass().getSimpleName();
+        currentParameterNames.put("Sampling rate", HoughCircleDetection.DOWNSAMPLE_FACTOR);
+        moduleName = new HoughCircleDetection(null).getClass().getSimpleName();
         lostParameterNames.put(moduleName, currentParameterNames);
 
         // InputControl

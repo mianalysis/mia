@@ -1,13 +1,14 @@
 package wbif.sjx.MIA.Module.ImageProcessing.Stack;
 
 import ij.ImagePlus;
+import ij.ImageStack;
 import ij.plugin.Resizer;
+import wbif.sjx.MIA.Module.Categories;
+import wbif.sjx.MIA.Module.Category;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
-import wbif.sjx.MIA.Module.Category;
-import wbif.sjx.MIA.Module.Categories;
-import wbif.sjx.MIA.Object.Status;
 import wbif.sjx.MIA.Object.Image;
+import wbif.sjx.MIA.Object.Status;
 import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.MIA.Object.Parameters.InputImageP;
 import wbif.sjx.MIA.Object.Parameters.OutputImageP;
@@ -48,8 +49,6 @@ public class InterpolateZAxis extends Module {
         return resized;
 
     }
-
-
 
     @Override
     public Category getCategory() {
