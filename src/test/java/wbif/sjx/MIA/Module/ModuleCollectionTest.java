@@ -175,9 +175,6 @@ public class ModuleCollectionTest<T extends RealType<T> & NativeType<T>> {
         MeasureObjectTexture measureObjectTexture = new MeasureObjectTexture(new ModuleCollection());
         measureObjectTexture.updateParameterValue(MeasureObjectTexture.INPUT_OBJECTS, obj1Name);
         measureObjectTexture.updateParameterValue(MeasureObjectTexture.INPUT_IMAGE, "");
-        measureObjectTexture.updateParameterValue(MeasureObjectTexture.POINT_MEASUREMENT, true);
-        measureObjectTexture.updateParameterValue(MeasureObjectTexture.CALIBRATED_RADIUS, false);
-        measureObjectTexture.updateParameterValue(MeasureObjectTexture.MEASUREMENT_RADIUS, 1d);
         measureObjectTexture.updateParameterValue(MeasureObjectTexture.X_OFFSET, 1d);
         measureObjectTexture.updateParameterValue(MeasureObjectTexture.Y_OFFSET, 0d);
         measureObjectTexture.updateParameterValue(MeasureObjectTexture.Z_OFFSET, 0d);
@@ -242,9 +239,6 @@ public class ModuleCollectionTest<T extends RealType<T> & NativeType<T>> {
         MeasureObjectTexture measureObjectTexture = new MeasureObjectTexture(new ModuleCollection());
         measureObjectTexture.updateParameterValue(MeasureObjectTexture.INPUT_OBJECTS, obj1Name);
         measureObjectTexture.updateParameterValue(MeasureObjectTexture.INPUT_IMAGE, "");
-        measureObjectTexture.updateParameterValue(MeasureObjectTexture.POINT_MEASUREMENT, true);
-        measureObjectTexture.updateParameterValue(MeasureObjectTexture.CALIBRATED_RADIUS, false);
-        measureObjectTexture.updateParameterValue(MeasureObjectTexture.MEASUREMENT_RADIUS, 1d);
         measureObjectTexture.updateParameterValue(MeasureObjectTexture.X_OFFSET, 1d);
         measureObjectTexture.updateParameterValue(MeasureObjectTexture.Y_OFFSET, 0d);
         measureObjectTexture.updateParameterValue(MeasureObjectTexture.Z_OFFSET, 0d);
@@ -295,9 +289,6 @@ public class ModuleCollectionTest<T extends RealType<T> & NativeType<T>> {
         MeasureObjectTexture measureObjectTexture = new MeasureObjectTexture(new ModuleCollection());
         measureObjectTexture.updateParameterValue(MeasureObjectTexture.INPUT_OBJECTS, obj1Name);
         measureObjectTexture.updateParameterValue(MeasureObjectTexture.INPUT_IMAGE, "");
-        measureObjectTexture.updateParameterValue(MeasureObjectTexture.POINT_MEASUREMENT, true);
-        measureObjectTexture.updateParameterValue(MeasureObjectTexture.CALIBRATED_RADIUS, false);
-        measureObjectTexture.updateParameterValue(MeasureObjectTexture.MEASUREMENT_RADIUS, 1d);
         measureObjectTexture.updateParameterValue(MeasureObjectTexture.X_OFFSET, 1d);
         measureObjectTexture.updateParameterValue(MeasureObjectTexture.Y_OFFSET, 0d);
         measureObjectTexture.updateParameterValue(MeasureObjectTexture.Z_OFFSET, 0d);
@@ -314,12 +305,10 @@ public class ModuleCollectionTest<T extends RealType<T> & NativeType<T>> {
         expectedParams.add(new BooleanP(MeasureObjectShape.MEASURE_PROJECTED_AREA, measureObjectShape, false));
         expectedParams.add(new BooleanP(MeasureObjectShape.MEASURE_PROJECTED_PERIM, measureObjectShape, false));
         expectedParams.add(new BooleanP(MeasureObjectShape.ENABLE_MULTITHREADING, measureObjectShape, true));
-        expectedParams.add(new BooleanP(MeasureObjectTexture.POINT_MEASUREMENT, measureObjectShape, true));
-        expectedParams.add(new BooleanP(MeasureObjectTexture.CALIBRATED_RADIUS, measureObjectShape, false));
         expectedParams.add(new BooleanP(MeasureObjectTexture.CALIBRATED_OFFSET, measureObjectShape, false));
 
         // Checking the parameters are what are expected
-        assertEquals(8, actualParams.size());
+        assertEquals(6, actualParams.size());
 
         for (Parameter actualParam : actualParams) {
             boolean found = false;
@@ -359,9 +348,6 @@ public class ModuleCollectionTest<T extends RealType<T> & NativeType<T>> {
         MeasureObjectTexture measureObjectTexture = new MeasureObjectTexture(new ModuleCollection());
         measureObjectTexture.updateParameterValue(MeasureObjectTexture.INPUT_OBJECTS, obj1Name);
         measureObjectTexture.updateParameterValue(MeasureObjectTexture.INPUT_IMAGE, "");
-        measureObjectTexture.updateParameterValue(MeasureObjectTexture.POINT_MEASUREMENT, true);
-        measureObjectTexture.updateParameterValue(MeasureObjectTexture.CALIBRATED_RADIUS, false);
-        measureObjectTexture.updateParameterValue(MeasureObjectTexture.MEASUREMENT_RADIUS, 1d);
         measureObjectTexture.updateParameterValue(MeasureObjectTexture.X_OFFSET, 1d);
         measureObjectTexture.updateParameterValue(MeasureObjectTexture.Y_OFFSET, 0d);
         measureObjectTexture.updateParameterValue(MeasureObjectTexture.Z_OFFSET, 0d);

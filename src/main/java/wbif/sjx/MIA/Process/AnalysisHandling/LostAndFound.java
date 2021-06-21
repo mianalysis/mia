@@ -92,9 +92,11 @@ public class LostAndFound {
 
         // GetObjectLocalRegion
         currentParameterNames = new HashMap<>();
-        currentParameterNames.put("Local radius", GetLocalObjectRegion.FIXED_VALUE);
+        currentParameterNames.put("Local radius", GetLocalObjectRegion.FIXED_VALUE_FOR_RADIUS);
+        currentParameterNames.put("Fixed value", GetLocalObjectRegion.FIXED_VALUE_FOR_RADIUS);
         currentParameterNames.put("Measurement name", GetLocalObjectRegion.RADIUS_MEASUREMENT);
-        currentParameterNames.put("Calibrated radius", GetLocalObjectRegion.CALIBRATED_UNITS);
+        currentParameterNames.put("Parent object", GetLocalObjectRegion.PARENT_OBJECT_FOR_RADIUS);
+        
         moduleName = new GetLocalObjectRegion(null).getClass().getSimpleName();
         lostParameterNames.put(moduleName, currentParameterNames);
 

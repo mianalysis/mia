@@ -161,7 +161,9 @@ public class SingleClassCluster extends Module {
         ObjCollection tempObjects = new ObjCollection("Cluster", childObjects);
         for (Obj child : children.values()) {
             // Getting local region around children (local region with radius equal to epsilon)
-            Obj region = GetLocalObjectRegion.getLocalRegion(child, tempObjects, eps, false, false);
+            Point<Double> cent = child.getMeanCentroid(true,false);
+            int[] centroid = new int[] {(int) Math.round(cent.getX()),(int) Math.round(cent.getY()),(int) Math.round(cent.getZ())};
+            Obj region = GetLocalObjectRegion.getLocalRegion(child, tempObjects, centroid, (int) Math.round(eps), false);
 
             // Adding coordinates from region to the cluster object
             coordinateSet.addAll(region.getCoordinateSet());
