@@ -37,19 +37,20 @@ public class DistanceMap extends Module {
     public static final String INPUT_IMAGE = "Input image";
     public static final String OUTPUT_IMAGE = "Output image";
     public static final String DISTANCE_MAP_SEPARATOR = "Distance map controls";
-    // public static final String WEIGHT_MODE = "Weight modes";
+    public static final String WEIGHT_MODE = "Weight modes";
     public static final String MATCH_Z_TO_X = "Match Z to XY";
     public static final String SPATIAL_UNITS_MODE = "Spatial units mode";
 
     public interface WeightModes {
         String CHESSBOARD = "Chessboard (1,1,1)";
         String CITY_BLOCK = "City-Block (1,2,3)";
-        String QUASI_EUCLIDEAN = "Quasi-Euclidean (1,1.41,1.73)";
+        // String QUASI_EUCLIDEAN = "Quasi-Euclidean (1,1.41,1.73)";
         String BORGEFORS = "Borgefors (3,4,5)";
         String WEIGHTS_3_4_5_7 = "Svensson (3,4,5,7)";
 
-        String[] ALL = new String[] { CHESSBOARD, CITY_BLOCK, QUASI_EUCLIDEAN, BORGEFORS, WEIGHTS_3_4_5_7 };
-
+        // String[] ALL = new String[] { CHESSBOARD, CITY_BLOCK, QUASI_EUCLIDEAN, BORGEFORS, WEIGHTS_3_4_5_7 };
+        String[] ALL = new String[] { CHESSBOARD, CITY_BLOCK, BORGEFORS, WEIGHTS_3_4_5_7 };
+        
     }
 
     public interface SpatialUnitsModes {
@@ -98,7 +99,7 @@ public class DistanceMap extends Module {
 
             // If necessary, interpolating the image in Z to match the XY spacing
             if (matchZToXY && nSlices > 1)
-                currentIpl = InterpolateZAxis.matchZToXY(currentIpl);
+                currentIpl = InterpolateZAxis.matchZToXY(currentIpl,InterpolateZAxis.InterpolationModes.NONE);
 
             // Creating a duplicate of the input image to act as a mask
             ImagePlus maskIpl = new Duplicator().run(currentIpl);
@@ -151,8 +152,8 @@ public class DistanceMap extends Module {
                 return ChamferWeights3D.CHESSBOARD.getFloatWeights();
             case WeightModes.CITY_BLOCK:
                 return ChamferWeights3D.CITY_BLOCK.getFloatWeights();
-            case WeightModes.QUASI_EUCLIDEAN:
-                return ChamferWeights3D.QUASI_EUCLIDEAN.getFloatWeights();
+            // case WeightModes.QUASI_EUCLIDEAN:
+            //     return ChamferWeights3D.QUASI_EUCLIDEAN.getFloatWeights();
             case WeightModes.WEIGHTS_3_4_5_7:
             default:
                 return ChamferWeights3D.WEIGHTS_3_4_5_7.getFloatWeights();
@@ -184,11 +185,11 @@ public class DistanceMap extends Module {
 
         // Getting parameters
         String outputImageName = parameters.getValue(OUTPUT_IMAGE);
-        // String weightMode = parameters.getValue(WEIGHT_MODE);
+        String weightMode = parameters.getValue(WEIGHT_MODE);
         boolean matchZToXY = parameters.getValue(MATCH_Z_TO_X);
         String spatialUnits = parameters.getValue(SPATIAL_UNITS_MODE);
 
-        String weightMode = WeightModes.WEIGHTS_3_4_5_7;
+        // String weightMode = WeightModes.WEIGHTS_3_4_5_7;
 
         // Running distance map
         Image distanceMap = process(inputImage, outputImageName, weightMode, matchZToXY, true);
@@ -216,8 +217,8 @@ public class DistanceMap extends Module {
         parameters.add(new OutputImageP(OUTPUT_IMAGE, this));
 
         parameters.add(new SeparatorP(DISTANCE_MAP_SEPARATOR, this));
-        // parameters.add(new ChoiceP(WEIGHT_MODE, this, WeightModes.WEIGHTS_3_4_5_7,
-        // WeightModes.ALL));
+        parameters.add(new ChoiceP(WEIGHT_MODE, this, WeightModes.WEIGHTS_3_4_5_7,
+        WeightModes.ALL));
         parameters.add(new BooleanP(MATCH_Z_TO_X, this, true));
         parameters.add(new ChoiceP(SPATIAL_UNITS_MODE, this, SpatialUnitsModes.PIXELS, SpatialUnitsModes.ALL));
 

@@ -32,7 +32,7 @@ import wbif.sjx.MIA.Object.References.Collections.ObjMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.ParentChildRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.PartnerRefCollection;
 import wbif.sjx.MIA.Process.ColourFactory;
-import wbif.sjx.common.Object.LUTs;
+import wbif.sjx.common.ImageJ.LUTs;
 import wbif.sjx.common.Object.Point;
 import wbif.sjx.common.Object.Volume.PointOutOfRangeException;
 
@@ -120,7 +120,7 @@ public class ExtractObjectEdges extends Module {
         
         int nSlices = distIpl.getNSlices();
         if (!inputObject.is2D())
-            distIpl = InterpolateZAxis.matchZToXY(distIpl);
+            distIpl = InterpolateZAxis.matchZToXY(distIpl,InterpolateZAxis.InterpolationModes.NONE);
 
         // Creating distance map using MorphoLibJ
         short[] weights = ChamferWeights3D.BORGEFORS.getShortWeights();
@@ -206,7 +206,7 @@ public class ExtractObjectEdges extends Module {
         if (inputObjects.size() == 0) return Status.PASS;
 
         // If necessary, converting calibrated edge distance to pixels
-        if (calibratedDistances) edgeDistance = edgeDistance/inputObjects.getFirst().getDppXY();
+        if (calibratedDistances) edgeDistance = edgeDistance/inputObjects.getDppXY();
 
         for (Obj inputObject : inputObjects.values()) {
             // Creating distance map

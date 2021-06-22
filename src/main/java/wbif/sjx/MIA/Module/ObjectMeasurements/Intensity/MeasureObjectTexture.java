@@ -33,6 +33,9 @@ public class MeasureObjectTexture extends Module {
     public static final String INPUT_IMAGE = "Input image";
     
     public static final String MEASUREMENT_SEPARATOR = "Measurement selection";
+    public static final String POINT_MEASUREMENT = "Measurements based on centroid point";
+    public static final String MEASUREMENT_RADIUS = "Measurement radius";
+    public static final String CALIBRATED_RADIUS = "Calibrated radius";
     public static final String X_OFFSET = "X-offset";
     public static final String Y_OFFSET = "Y-offset";
     public static final String Z_OFFSET = "Z-offset";
@@ -70,7 +73,7 @@ public class MeasureObjectTexture extends Module {
 
     }
 
-    public static void processObject(Obj object, Image image, TextureCalculator textureCalculator, double[] offs, boolean calibratedOffset) {
+    public static void processObject(Obj object, Obj regionObject, Image image, TextureCalculator textureCalculator, double[] offs, boolean calibratedOffset) {
         ImagePlus ipl = image.getImagePlus();
 
         // If the input stack is a single timepoint and channel, there's no need to create a new ImageStack
@@ -83,7 +86,7 @@ public class MeasureObjectTexture extends Module {
             timeStack = SubHyperstackMaker.makeSubhyperstack(ipl, "1-1", "1-" + nSlices, t + "-" + t).getStack();
         }
 
-        textureCalculator.calculate(timeStack,object,(int) offs[0], (int) offs[1], (int) offs[2]);
+        textureCalculator.calculate(timeStack,regionObject,(int) offs[0], (int) offs[1], (int) offs[2]);
 
         // Acquiring measurements
         String name = getFullName(image.getName(), Measurements.ASM,offs,calibratedOffset);
@@ -140,6 +143,9 @@ public class MeasureObjectTexture extends Module {
         double yOffsIn = parameters.getValue(Y_OFFSET);
         double zOffsIn = parameters.getValue(Z_OFFSET);
         boolean calibratedOffset = parameters.getValue(CALIBRATED_OFFSET);
+        boolean centroidMeasurement = parameters.getValue(POINT_MEASUREMENT);
+        double radius = parameters.getValue(MEASUREMENT_RADIUS);
+        boolean calibrated = parameters.getValue(CALIBRATED_RADIUS);
 
         double[] offs = new double[]{xOffsIn,yOffsIn,zOffsIn};
 
@@ -149,10 +155,15 @@ public class MeasureObjectTexture extends Module {
         // Initialising the texture calculator
         TextureCalculator textureCalculator = new TextureCalculator();
 
+        ObjCollection tempObjects = new ObjCollection("Temp", inputObjects);
         int nObjects = inputObjects.size();
         AtomicInteger iter = new AtomicInteger(0);
         for (Obj object:inputObjects.values()) {
-                processObject(object, inputImage, textureCalculator, offs, calibratedOffset);
+                Obj regionObject = object;
+                if (centroidMeasurement) {
+                    regionObject = GetLocalObjectRegion.getLocalRegion(object, tempObjects, radius, calibrated, false);
+                }
+                processObject(object, regionObject, inputImage, textureCalculator, offs, calibratedOffset);
                 writeProgressStatus(iter.incrementAndGet(), nObjects, "objects");
             }
 
@@ -169,6 +180,9 @@ public class MeasureObjectTexture extends Module {
         parameters.add(new InputImageP(INPUT_IMAGE, this));        
 
         parameters.add(new SeparatorP(MEASUREMENT_SEPARATOR,this));
+        parameters.add(new BooleanP(POINT_MEASUREMENT, this,false));
+        parameters.add(new BooleanP(CALIBRATED_RADIUS, this,false));
+        parameters.add(new DoubleP(MEASUREMENT_RADIUS, this,10.0));
         parameters.add(new DoubleP(X_OFFSET, this,1d));
         parameters.add(new DoubleP(Y_OFFSET, this,0d));
         parameters.add(new DoubleP(Z_OFFSET, this,0d));
@@ -178,7 +192,26 @@ public class MeasureObjectTexture extends Module {
 
     @Override
     public ParameterCollection updateAndGetParameters() {
-        return parameters;
+        ParameterCollection returnedParameters = new ParameterCollection();
+
+        returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
+        returnedParameters.add(parameters.getParameter(INPUT_OBJECTS));
+        returnedParameters.add(parameters.getParameter(INPUT_IMAGE));
+        
+        returnedParameters.add(parameters.getParameter(MEASUREMENT_SEPARATOR));
+        returnedParameters.add(parameters.getParameter(POINT_MEASUREMENT));
+
+        if ((boolean) parameters.getValue(POINT_MEASUREMENT)) {
+            returnedParameters.add(parameters.getParameter(CALIBRATED_RADIUS));
+            returnedParameters.add(parameters.getParameter(MEASUREMENT_RADIUS));
+        }
+
+        returnedParameters.add(parameters.getParameter(X_OFFSET));
+        returnedParameters.add(parameters.getParameter(Y_OFFSET));
+        returnedParameters.add(parameters.getParameter(Z_OFFSET));
+        returnedParameters.add(parameters.getParameter(CALIBRATED_OFFSET));
+
+        return returnedParameters;
 
     }
 

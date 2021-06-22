@@ -55,7 +55,7 @@ import wbif.sjx.MIA.Process.AnalysisHandling.Analysis;
 import wbif.sjx.MIA.Process.Logging.LogRenderer;
 import wbif.sjx.MIA.Process.Logging.LogRenderer.Level;
 import wbif.sjx.common.MathFunc.CumStat;
-import wbif.sjx.common.Object.Metadata;
+import wbif.sjx.common.MetadataExtractors.Metadata;
 
 /**
  * Created by sc13967 on 12/05/2017.

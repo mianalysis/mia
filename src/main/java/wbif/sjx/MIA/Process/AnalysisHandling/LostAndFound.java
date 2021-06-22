@@ -23,7 +23,7 @@ import wbif.sjx.MIA.Module.Miscellaneous.Macros.RunSingleCommand;
 import wbif.sjx.MIA.Module.ObjectMeasurements.Miscellaneous.ReplaceMeasurementValue;
 import wbif.sjx.MIA.Module.ObjectMeasurements.Spatial.CalculateNearestNeighbour;
 import wbif.sjx.MIA.Module.ObjectProcessing.Identification.GetLocalObjectRegion;
-import wbif.sjx.MIA.Module.ObjectProcessing.Identification.HoughObjectDetection;
+import wbif.sjx.MIA.Module.ObjectProcessing.Identification.HoughCircleDetection;
 import wbif.sjx.MIA.Module.ObjectProcessing.Miscellaneous.CreateDistanceMap;
 import wbif.sjx.MIA.Module.ObjectProcessing.Refinement.ExpandShrinkObjects;
 import wbif.sjx.MIA.Module.ObjectProcessing.Relationships.RelateManyToOne;
@@ -47,8 +47,8 @@ public class LostAndFound {
         lostModules.put("ManualRegistration", new AffineManual(null).getClass().getSimpleName());
         lostModules.put("MOPSRegistration", new AffineMOPS(null).getClass().getSimpleName());
         lostModules.put("SIFTRegistration", new AffineSIFT(null).getClass().getSimpleName());
+        lostModules.put("Hough-based detection", new HoughCircleDetection(null).getClass().getSimpleName());
 
-        
         //// Populating hard-coded parameter reassignments ////
         HashMap<String, String> currentParameterNames = null;
         String moduleName = null;
@@ -92,11 +92,9 @@ public class LostAndFound {
 
         // GetObjectLocalRegion
         currentParameterNames = new HashMap<>();
-        currentParameterNames.put("Local radius", GetLocalObjectRegion.FIXED_VALUE_FOR_RADIUS);
-        currentParameterNames.put("Fixed value", GetLocalObjectRegion.FIXED_VALUE_FOR_RADIUS);
+        currentParameterNames.put("Local radius", GetLocalObjectRegion.FIXED_VALUE);
         currentParameterNames.put("Measurement name", GetLocalObjectRegion.RADIUS_MEASUREMENT);
-        currentParameterNames.put("Parent object", GetLocalObjectRegion.PARENT_OBJECT_FOR_RADIUS);
-        
+        currentParameterNames.put("Calibrated radius", GetLocalObjectRegion.CALIBRATED_UNITS);
         moduleName = new GetLocalObjectRegion(null).getClass().getSimpleName();
         lostParameterNames.put(moduleName, currentParameterNames);
 
@@ -108,8 +106,8 @@ public class LostAndFound {
 
         // HoughObjectDetection
         currentParameterNames = new HashMap<>();
-        currentParameterNames.put("Sampling rate", HoughObjectDetection.DOWNSAMPLE_FACTOR);
-        moduleName = new HoughObjectDetection(null).getClass().getSimpleName();
+        currentParameterNames.put("Sampling rate", HoughCircleDetection.DOWNSAMPLE_FACTOR);
+        moduleName = new HoughCircleDetection(null).getClass().getSimpleName();
         lostParameterNames.put(moduleName, currentParameterNames);
 
         // InputControl
@@ -182,7 +180,6 @@ public class LostAndFound {
         moduleName = new WorkflowHandling(null).getClass().getSimpleName();
         lostParameterNames.put(moduleName, currentParameterNames);
 
-
         //// Populating hard-coded parameter value reassignments ////
         HashMap<String, String> currentValues = null;
         HashMap<String, HashMap<String, String>> currentParameterValues = null;
@@ -202,6 +199,15 @@ public class LostAndFound {
         moduleName = new AffineMOPS(null).getClass().getSimpleName();
         lostParameterValues.put(moduleName, currentParameterValues);
         moduleName = new AffineSIFT(null).getClass().getSimpleName();
+        lostParameterValues.put(moduleName, currentParameterValues);
+
+        // CalculateNearestNeighbour
+        currentValues = new HashMap<>();
+        currentValues.put("Centroid", CalculateNearestNeighbour.ReferenceModes.CENTROID_3D);
+        currentValues.put("Surface", CalculateNearestNeighbour.ReferenceModes.SURFACE_3D);
+        currentParameterValues = new HashMap<>();
+        currentParameterValues.put(CalculateNearestNeighbour.REFERENCE_MODE, currentValues);
+        moduleName = new CalculateNearestNeighbour(null).getClass().getSimpleName();
         lostParameterValues.put(moduleName, currentParameterValues);
 
         // InputControl

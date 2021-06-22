@@ -24,7 +24,7 @@ import wbif.sjx.MIA.Object.References.Collections.MetadataRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.ObjMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.ParentChildRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.PartnerRefCollection;
-import wbif.sjx.common.Object.LUTs;
+import wbif.sjx.common.ImageJ.LUTs;
 
 public class SetLookupTable extends Module {
     public static final String INPUT_SEPARATOR = "Image input";

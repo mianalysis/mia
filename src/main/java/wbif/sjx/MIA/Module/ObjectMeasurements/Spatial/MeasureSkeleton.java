@@ -300,7 +300,7 @@ public class MeasureSkeleton extends Module {
         // If necessary, converting to calibrated units (Skeletonise takes calibrated
         // measurements, so unlike most modules, we want to convert to calibrated units)
         if (!calibratedUnits)
-            minLength = minLength * inputObjects.getFirst().getDppXY();
+            minLength = minLength * inputObjects.getDppXY();
 
         // Creating empty output object collections
         final ObjCollection skeletonObjects = addToWorkspace ? new ObjCollection(skeletonObjectsName, inputObjects)

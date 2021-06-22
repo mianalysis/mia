@@ -18,7 +18,7 @@ import wbif.sjx.MIA.Object.References.ObjMeasurementRef;
 import wbif.sjx.MIA.Object.References.Collections.ObjMeasurementRefCollection;
 import wbif.sjx.MIA.Object.Units.TemporalUnit;
 import wbif.sjx.MIA.Process.ColourFactory;
-import wbif.sjx.common.Object.LUTs;
+import wbif.sjx.common.ImageJ.LUTs;
 import wbif.sjx.common.Object.Point;
 import wbif.sjx.common.Object.Volume.PointOutOfRangeException;
 import wbif.sjx.common.Object.Volume.SpatCal;
@@ -158,8 +158,8 @@ public class ObjCollection extends LinkedHashMap<Integer, Obj> {
         if (size() == 0)
             return null;
 
-        return new int[][] { { 0, getFirst().getWidth() - 1 }, { 0, getFirst().getHeight() - 1 },
-                { 0, getFirst().getNSlices() - 1 } };
+        return new int[][] { { 0, getWidth() - 1 }, { 0, getHeight() - 1 },
+                { 0, getNSlices() - 1 } };
 
     }
 

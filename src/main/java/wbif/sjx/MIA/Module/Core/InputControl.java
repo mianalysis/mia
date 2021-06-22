@@ -52,7 +52,7 @@ import wbif.sjx.common.FileConditions.ExtensionMatchesString;
 import wbif.sjx.common.FileConditions.FileCondition;
 import wbif.sjx.common.FileConditions.NameContainsString;
 import wbif.sjx.common.FileConditions.ParentContainsString;
-import wbif.sjx.common.Object.Metadata;
+import wbif.sjx.common.MetadataExtractors.Metadata;
 import wbif.sjx.common.System.FileCrawler;
 
 /**

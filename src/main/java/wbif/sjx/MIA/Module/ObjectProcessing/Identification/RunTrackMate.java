@@ -2,17 +2,7 @@
 
 package wbif.sjx.MIA.Module.ObjectProcessing.Identification;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Set;
-
-import fiji.plugin.trackmate.Logger;
-import fiji.plugin.trackmate.Model;
-import fiji.plugin.trackmate.Settings;
-import fiji.plugin.trackmate.Spot;
-import fiji.plugin.trackmate.SpotCollection;
-import fiji.plugin.trackmate.TrackMate;
-import fiji.plugin.trackmate.TrackModel;
+import fiji.plugin.trackmate.*;
 import fiji.plugin.trackmate.detection.DetectorKeys;
 import fiji.plugin.trackmate.detection.LogDetectorFactory;
 import fiji.plugin.trackmate.features.spot.SpotRadiusEstimatorFactory;
@@ -24,28 +14,19 @@ import ij.ImagePlus;
 import ij.measure.Calibration;
 import ij.plugin.Duplicator;
 import wbif.sjx.MIA.MIA;
-import wbif.sjx.MIA.Module.Categories;
-import wbif.sjx.MIA.Module.Category;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
+import wbif.sjx.MIA.Module.Category;
+import wbif.sjx.MIA.Module.Categories;
 import wbif.sjx.MIA.Module.Visualisation.Overlays.AddObjectCentroid;
 import wbif.sjx.MIA.Module.Visualisation.Overlays.AddObjectOutline;
-import wbif.sjx.MIA.Object.Image;
-import wbif.sjx.MIA.Object.Measurement;
-import wbif.sjx.MIA.Object.Obj;
-import wbif.sjx.MIA.Object.ObjCollection;
-import wbif.sjx.MIA.Object.Status;
-import wbif.sjx.MIA.Object.Workspace;
-import wbif.sjx.MIA.Object.Parameters.BooleanP;
-import wbif.sjx.MIA.Object.Parameters.ChoiceP;
-import wbif.sjx.MIA.Object.Parameters.InputImageP;
-import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
-import wbif.sjx.MIA.Object.Parameters.SeparatorP;
+import wbif.sjx.MIA.Object.*;
+import wbif.sjx.MIA.Object.Parameters.*;
 import wbif.sjx.MIA.Object.Parameters.Objects.OutputObjectsP;
 import wbif.sjx.MIA.Object.Parameters.Objects.OutputTrackObjectsP;
 import wbif.sjx.MIA.Object.Parameters.Text.DoubleP;
 import wbif.sjx.MIA.Object.Parameters.Text.IntegerP;
-import wbif.sjx.MIA.Object.References.ObjMeasurementRef;
+import wbif.sjx.MIA.Object.References.*;
 import wbif.sjx.MIA.Object.References.Collections.ImageMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.MetadataRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.ObjMeasurementRefCollection;
@@ -55,11 +36,14 @@ import wbif.sjx.MIA.Object.Units.SpatialUnit;
 import wbif.sjx.MIA.Object.Units.TemporalUnit;
 import wbif.sjx.MIA.Process.ColourFactory;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
-import wbif.sjx.common.Object.Point;
 import wbif.sjx.common.Object.Volume.PointOutOfRangeException;
 import wbif.sjx.common.Object.Volume.SpatCal;
 import wbif.sjx.common.Object.Volume.VolumeType;
 import wbif.sjx.common.Process.IntensityMinMax;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Set;
 
 /**
  * Created by sc13967 on 15/05/2017.
@@ -284,10 +268,8 @@ public class RunTrackMate extends Module {
         ObjCollection tempObjects = new ObjCollection("SpotVolume", spotObjects);
         // Replacing spot volumes with explicit volume
         for (Obj spotObject : spotObjects.values()) {
-            int radius = (int) Math.round(spotObject.getMeasurement(Measurements.RADIUS_PX).getValue());
-            Point<Double> cent = spotObject.getMeanCentroid(true,false);
-            int[] centroid = new int[] {(int) Math.round(cent.getX()),(int) Math.round(cent.getY()),(int) Math.round(cent.getZ())};
-            Obj volumeObject = GetLocalObjectRegion.getLocalRegion(spotObject, tempObjects, centroid, radius, false);
+            double radius = spotObject.getMeasurement(Measurements.RADIUS_PX).getValue();
+            Obj volumeObject = GetLocalObjectRegion.getLocalRegion(spotObject, tempObjects, radius, false, false);
             spotObject.getCoordinateSet().clear();
             spotObject.getCoordinateSet().addAll(volumeObject.getCoordinateSet());
             spotObject.clearSurface();

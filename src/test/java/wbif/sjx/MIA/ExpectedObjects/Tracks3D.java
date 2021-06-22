@@ -1,15 +1,5 @@
 package wbif.sjx.MIA.ExpectedObjects;
 
-import util.opencsv.CSVReader;
-import wbif.sjx.MIA.MIA;
-import wbif.sjx.MIA.Object.Obj;
-import wbif.sjx.MIA.Object.ObjCollection;
-import wbif.sjx.common.Exceptions.IntegerOverflowException;
-import wbif.sjx.common.Object.Track;
-import wbif.sjx.common.Object.Volume.PointOutOfRangeException;
-import wbif.sjx.common.Object.Volume.SpatCal;
-import wbif.sjx.common.Object.Volume.VolumeType;
-
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -19,6 +9,15 @@ import java.util.List;
 import java.util.TreeMap;
 
 import ome.units.UNITS;
+import util.opencsv.CSVReader;
+import wbif.sjx.MIA.MIA;
+import wbif.sjx.MIA.Object.Obj;
+import wbif.sjx.MIA.Object.ObjCollection;
+import wbif.sjx.common.Exceptions.IntegerOverflowException;
+import wbif.sjx.common.Object.Tracks.Track;
+import wbif.sjx.common.Object.Volume.PointOutOfRangeException;
+import wbif.sjx.common.Object.Volume.SpatCal;
+import wbif.sjx.common.Object.Volume.VolumeType;
 
 
 /**

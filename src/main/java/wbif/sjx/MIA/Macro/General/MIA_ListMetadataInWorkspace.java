@@ -5,7 +5,7 @@ import ij.measure.ResultsTable;
 import wbif.sjx.MIA.Macro.MacroOperation;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Object.Workspace;
-import wbif.sjx.common.Object.Metadata;
+import wbif.sjx.common.MetadataExtractors.Metadata;
 
 public class MIA_ListMetadataInWorkspace extends MacroOperation {
     public MIA_ListMetadataInWorkspace(MacroExtension theHandler) {

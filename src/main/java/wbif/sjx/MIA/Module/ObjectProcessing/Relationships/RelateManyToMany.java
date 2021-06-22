@@ -123,8 +123,7 @@ import wbif.sjx.MIA.Object.References.Collections.ObjMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.ParentChildRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.PartnerRefCollection;
 import wbif.sjx.MIA.Process.ColourFactory;
-import wbif.sjx.common.Object.LUTs;
-import wbif.sjx.common.Object.Volume.SpatCal;
+import wbif.sjx.common.ImageJ.LUTs;
 import wbif.sjx.common.Object.Volume.VolumeType;
 
 public class RelateManyToMany extends Module {
@@ -380,6 +379,7 @@ public class RelateManyToMany extends Module {
 
         String inputObjects2Name = parameters.getValue(INPUT_OBJECTS_2);
         ObjCollection inputObjects2;
+        
         switch (objectSourceMode) {
             default:
                 MIA.log.writeError("Unknown object source mode");

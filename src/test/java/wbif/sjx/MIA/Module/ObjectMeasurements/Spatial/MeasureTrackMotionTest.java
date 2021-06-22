@@ -14,7 +14,7 @@ import wbif.sjx.MIA.Module.ModuleTest;
 import wbif.sjx.MIA.Object.Obj;
 import wbif.sjx.MIA.Object.ObjCollection;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
-import wbif.sjx.common.Object.Track;
+import wbif.sjx.common.Object.Tracks.Track;
 import wbif.sjx.common.Object.Volume.VolumeType;
 
 /**

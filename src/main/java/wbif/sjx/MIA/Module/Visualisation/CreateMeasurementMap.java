@@ -4,19 +4,18 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-import org.eclipse.sisu.Nullable;
-
 import org.apache.commons.math3.analysis.function.Gaussian;
+import org.eclipse.sisu.Nullable;
 
 import ij.IJ;
 import ij.ImagePlus;
 import ij.Prefs;
 import ij.measure.Calibration;
 import ij.process.ImageProcessor;
+import wbif.sjx.MIA.Module.Categories;
+import wbif.sjx.MIA.Module.Category;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
-import wbif.sjx.MIA.Module.Category;
-import wbif.sjx.MIA.Module.Categories;
 import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.Measurement;
 import wbif.sjx.MIA.Object.Obj;
@@ -38,9 +37,9 @@ import wbif.sjx.MIA.Object.References.Collections.ParentChildRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.PartnerRefCollection;
 import wbif.sjx.common.MathFunc.CumStat;
 import wbif.sjx.common.MathFunc.Indexer;
-import wbif.sjx.common.MathFunc.MidpointCircle;
 import wbif.sjx.common.Object.Point;
 import wbif.sjx.common.Object.Volume.SpatCal;
+import wbif.sjx.common.Object.Voxels.MidpointCircle;
 
 public class CreateMeasurementMap extends Module {
     public static final String INPUT_OBJECTS = "Input objects";

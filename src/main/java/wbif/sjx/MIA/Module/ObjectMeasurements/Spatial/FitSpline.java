@@ -45,12 +45,12 @@ import wbif.sjx.MIA.Object.References.Collections.ObjMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.ParentChildRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.PartnerRefCollection;
 import wbif.sjx.common.Analysis.CurvatureCalculator;
-import wbif.sjx.common.MathFunc.BresenhamLine;
 import wbif.sjx.common.MathFunc.CumStat;
 import wbif.sjx.common.Object.Point;
 import wbif.sjx.common.Object.Vertex;
 import wbif.sjx.common.Object.Volume.PointOutOfRangeException;
 import wbif.sjx.common.Object.Volume.VolumeType;
+import wbif.sjx.common.Object.Voxels.BresenhamLine;
 
 /**
  * Created by sc13967 on 24/01/2018.

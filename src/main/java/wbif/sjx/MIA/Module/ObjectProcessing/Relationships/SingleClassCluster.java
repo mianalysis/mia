@@ -46,7 +46,7 @@ import wbif.sjx.MIA.Object.References.Collections.ParentChildRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.PartnerRefCollection;
 import wbif.sjx.MIA.Process.ColourFactory;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
-import wbif.sjx.common.Object.LUTs;
+import wbif.sjx.common.ImageJ.LUTs;
 import wbif.sjx.common.Object.Point;
 import wbif.sjx.common.Object.Volume.CoordinateSet;
 import wbif.sjx.common.Object.Volume.VolumeType;
@@ -161,9 +161,7 @@ public class SingleClassCluster extends Module {
         ObjCollection tempObjects = new ObjCollection("Cluster", childObjects);
         for (Obj child : children.values()) {
             // Getting local region around children (local region with radius equal to epsilon)
-            Point<Double> cent = child.getMeanCentroid(true,false);
-            int[] centroid = new int[] {(int) Math.round(cent.getX()),(int) Math.round(cent.getY()),(int) Math.round(cent.getZ())};
-            Obj region = GetLocalObjectRegion.getLocalRegion(child, tempObjects, centroid, (int) Math.round(eps), false);
+            Obj region = GetLocalObjectRegion.getLocalRegion(child, tempObjects, eps, false, false);
 
             // Adding coordinates from region to the cluster object
             coordinateSet.addAll(region.getCoordinateSet());
@@ -430,7 +428,7 @@ public class SingleClassCluster extends Module {
 //import wbif.sjx.MIA.Object.References.ParentChildRefCollection;
 //import wbif.sjx.MIA.Process.ColourFactory;
 //import wbif.sjx.common.Exceptions.IntegerOverflowException;
-//import wbif.sjx.common.Object.LUTs;
+//import wbif.sjx.common.ImageJ.LUTs;
 //import wbif.sjx.common.Object.Point;
 //import wbif.sjx.common.Object.Volume.CoordinateSet;
 //import wbif.sjx.common.Object.Volume.VolumeType;
