@@ -49,7 +49,7 @@ import wbif.sjx.common.Process.HoughTransform.Transforms.CircleHoughTransform;
 /**
  * Created by sc13967 on 15/01/2018.
  */
-public class HoughCircleDetection extends Module {
+public class CircleHoughDetection extends Module {
     public static final String INPUT_SEPARATOR = "Image input, object output";
     public static final String INPUT_IMAGE = "Input image";
     public static final String OUTPUT_OBJECTS = "Output objects";
@@ -73,7 +73,7 @@ public class HoughCircleDetection extends Module {
     public static final String SHOW_HOUGH_SCORE = "Show detection score";
     public static final String LABEL_SIZE = "Label size";
 
-    public HoughCircleDetection(ModuleCollection modules) {
+    public CircleHoughDetection(ModuleCollection modules) {
         super("Circle detection",modules);
     }
 

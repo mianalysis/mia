@@ -46,7 +46,8 @@ public class MeasureSpotIntensity extends Module {
     public static final String MEASURE_MAX = "Measure maximum";
     public static final String MEASURE_SUM = "Measure sum";
 
-    public interface RadiusSources extends GetLocalObjectRegion.RadiusSources {}
+    public interface RadiusSources extends GetLocalObjectRegion.RadiusSources {
+    }
 
     public interface Measurements {
         String MEAN = "MEAN";
@@ -65,7 +66,6 @@ public class MeasureSpotIntensity extends Module {
         super("Measure spot intensity", modules);
     }
 
-
     @Override
     public Category getCategory() {
         return Categories.DEPRECATED;
@@ -73,8 +73,9 @@ public class MeasureSpotIntensity extends Module {
 
     @Override
     public String getDescription() {
-        return "DEPRECATED: Please use separate \""+ new GetLocalObjectRegion(null).getName() +"\" and \""+ new MeasureObjectIntensity(null).getName() +"\" modules."
-        
+        return "DEPRECATED: Please use separate \"" + new GetLocalObjectRegion(null).getName() + "\" and \""
+                + new MeasureObjectIntensity(null).getName() + "\" modules."
+
                 + "<br><br>Measures the intensity of an image for a circular (2D object*) or spherical (3D object*) region coincident with the mean centroid of each object in a specified object collection.  Measurements are associated with the corresponding input objects.  The radius of the measurement region can be specified as a fixed value or determined on an object-by-object basis from associated object (or parent) measurements."
 
                 + "<br><br>Note: This module differs from the \"" + new MeasureObjectIntensity(null).getName()
@@ -128,7 +129,7 @@ public class MeasureSpotIntensity extends Module {
 
         }
 
-        ObjCollection tempObjects = new ObjCollection("Temp",inputObjects);
+        ObjCollection tempObjects = new ObjCollection("Temp", inputObjects);
         for (Obj inputObject : inputObjects.values()) {
             switch (radiusSource) {
                 case RadiusSources.MEASUREMENT:
@@ -143,7 +144,12 @@ public class MeasureSpotIntensity extends Module {
                     break;
             }
 
-            Obj spotObject = GetLocalObjectRegion.getLocalRegion(inputObject, tempObjects, radius, calibrated, false);
+            double xPosition = inputObject.getXMean(true);
+            double yPosition = inputObject.getYMean(true);
+            double zPosition = inputObject.getZMean(true, false);
+            int[] centroid = new int[] { (int) Math.round(xPosition), (int) Math.round(yPosition),
+                    (int) Math.round(zPosition) };
+            Obj spotObject = GetLocalObjectRegion.getLocalRegion(inputObject, tempObjects, centroid, (int) Math.round(radius), false);
 
             CumStat cs = new CumStat();
 

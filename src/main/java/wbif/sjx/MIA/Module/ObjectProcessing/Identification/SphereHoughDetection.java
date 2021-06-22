@@ -52,7 +52,7 @@ import wbif.sjx.common.Process.HoughTransform.Transforms.SphereHoughTransform;
 /**
  * Created by sc13967 on 15/01/2018.
  */
-public class HoughSphereDetection extends Module {
+public class SphereHoughDetection extends Module {
     public static final String INPUT_SEPARATOR = "Image input, object output";
     public static final String INPUT_IMAGE = "Input image";
     public static final String OUTPUT_OBJECTS = "Output objects";
@@ -76,7 +76,7 @@ public class HoughSphereDetection extends Module {
     public static final String SHOW_HOUGH_SCORE = "Show detection score";
     public static final String LABEL_SIZE = "Label size";
 
-    public HoughSphereDetection(ModuleCollection modules) {
+    public SphereHoughDetection(ModuleCollection modules) {
         super("Sphere detection", modules);
     }
 

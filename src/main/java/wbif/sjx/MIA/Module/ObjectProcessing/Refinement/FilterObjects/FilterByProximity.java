@@ -5,8 +5,6 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 
-import org.eclipse.sisu.Nullable;
-
 import wbif.sjx.MIA.Module.Categories;
 import wbif.sjx.MIA.Module.Category;
 import wbif.sjx.MIA.Module.ModuleCollection;
