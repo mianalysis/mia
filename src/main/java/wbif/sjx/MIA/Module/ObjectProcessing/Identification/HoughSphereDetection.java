@@ -10,7 +10,6 @@ import ij.Prefs;
 import ij.measure.Calibration;
 import ij.plugin.Duplicator;
 import ij.plugin.Scaler;
-import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Categories;
 import wbif.sjx.MIA.Module.Category;
 import wbif.sjx.MIA.Module.Module;
@@ -43,7 +42,6 @@ import wbif.sjx.MIA.Object.Units.TemporalUnit;
 import wbif.sjx.MIA.Process.ColourFactory;
 import wbif.sjx.MIA.Process.LabelFactory;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
-import wbif.sjx.common.MathFunc.Indexer;
 import wbif.sjx.common.Object.Volume.PointOutOfRangeException;
 import wbif.sjx.common.Object.Volume.SpatCal;
 import wbif.sjx.common.Object.Volume.VolumeType;
@@ -155,7 +153,7 @@ public class HoughSphereDetection extends Module {
                     int rescaleH = substackIpl.getHeight() / samplingRate;
                     int rescaleD = substackIpl.getNSlices() / samplingRate;
 
-                    substackIpl = Scaler.resize(substackIpl, rescaleW, rescaleH, rescaleD, "bicubic");
+                    substackIpl = Scaler.resize(substackIpl, rescaleW, rescaleH, rescaleD, "bilinear");
 
                     Calibration inputCal = inputImage.getImagePlus().getCalibration();
                     Calibration outputCal = substackIpl.getCalibration();

@@ -1,6 +1,7 @@
 package wbif.sjx.MIA.Module.ImageProcessing.Stack;
 
 import ij.ImagePlus;
+import ij.ImageStack;
 import ij.plugin.Resizer;
 import ij.process.ImageProcessor;
 import wbif.sjx.MIA.Module.Categories;
