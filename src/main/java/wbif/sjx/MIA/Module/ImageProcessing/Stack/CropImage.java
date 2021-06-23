@@ -148,7 +148,7 @@ public class CropImage<T extends RealType<T> & NativeType<T>> extends Module {
                 height = extents[1][1] - extents[1][0] + 1;
                 break;
         }
-        
+
         // Applying crop
         Image outputImage = cropImage(inputImage, outputImageName, top, left, width, height);
 
@@ -257,6 +257,17 @@ public class CropImage<T extends RealType<T> & NativeType<T>> extends Module {
                 "Name of the output image created during the cropping process if storing the cropped image as a new image in the workspace (\""
                         + APPLY_TO_INPUT + "\" parameter).");
 
+        parameters.get(LIMITS_MODE)
+                .setDescription("Controls how the limits for the cropped region are specified:<br><ul>"
+
+                        + "<li>\"" + LimitsModes.FIXED_VALUES
+                        + "\" The input image will be cropped to the region specified by the fixed values, \"" + LEFT
+                        + "\", \"" + TOP + "\", \"" + WIDTH + "\" and \"" + HEIGHT + "\".</li>"
+
+                        + "<li>\"" + LimitsModes.FROM_OBJECTS
+                        + "\" The input image will be cropped to the region corresponding to the limits of the object collection specified by \""
+                        + INPUT_OBJECTS + "\"</li></ul>");
+
         parameters.get(LEFT).setDescription(
                 "Left crop coordinate.  All pixels with x-coordinates lower than this will be removed.  Specified in pixel units with indexing starting at 0.");
 
@@ -269,5 +280,8 @@ public class CropImage<T extends RealType<T> & NativeType<T>> extends Module {
         parameters.get(HEIGHT)
                 .setDescription("Height (number of rows) of the output cropped region.  Specified in pixel units.");
 
+        parameters.get(INPUT_OBJECTS)
+                .setDescription("When \"" + LIMITS_MODE + "\" is set to \"" + LimitsModes.FROM_OBJECTS
+                        + "\", these are the objects that will be used to define the cropped region.");
     }
 }

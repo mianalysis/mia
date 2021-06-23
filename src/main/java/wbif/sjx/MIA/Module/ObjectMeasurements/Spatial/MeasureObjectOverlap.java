@@ -301,6 +301,9 @@ public class MeasureObjectOverlap extends Module {
     }
 
     void addParameterDescriptions() {
+        parameters.get(OBJECT_SOURCE_MODE).setDescription(
+                "Controls whether overlap of objects from the same class should be calculated, or whether objects from two different classes should be compared.");
+                
         parameters.get(OBJECT_SET_1).setDescription(
                 "Object collection for which, the overlap of each object with any object from a separate object collection (specified by the \""
                         + OBJECT_SET_2 + "\" parameter) will be calculated.");

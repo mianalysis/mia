@@ -1,9 +1,9 @@
 package wbif.sjx.MIA.Module.ImageProcessing.Stack;
 
 import ij.ImagePlus;
-import ij.ImageStack;
 import ij.plugin.Resizer;
 import ij.process.ImageProcessor;
+import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Categories;
 import wbif.sjx.MIA.Module.Category;
 import wbif.sjx.MIA.Module.Module;
@@ -43,7 +43,7 @@ public class InterpolateZAxis extends Module {
     }
 
     public InterpolateZAxis(ModuleCollection modules) {
-        super("Interpolate Z axis",modules);
+        super("Interpolate Z axis", modules);
     }
 
     public static ImagePlus matchZToXY(ImagePlus inputImagePlus, String interpolationMode) {
@@ -51,10 +51,16 @@ public class InterpolateZAxis extends Module {
         int nSlices = inputImagePlus.getNSlices();
         double distPerPxXY = inputImagePlus.getCalibration().pixelWidth;
         double distPerPxZ = inputImagePlus.getCalibration().pixelDepth;
-        int finalNSlices = (int) Math.round(nSlices*distPerPxZ/distPerPxXY);
+        if (Double.isNaN(distPerPxXY) || Double.isNaN(distPerPxZ)) {
+            MIA.log.writeWarning("XY or Z spatial calibration missing.  Interpolation not applied");
+            return inputImagePlus.duplicate();
+        }
+
+        int finalNSlices = (int) Math.round(nSlices * distPerPxZ / distPerPxXY);
 
         // Checking if interpolation is necessary
-        if (finalNSlices == nSlices) return inputImagePlus;
+        if (finalNSlices == nSlices)
+            return inputImagePlus;
 
         Resizer resizer = new Resizer();
         resizer.setAverageWhenDownsizing(true);
@@ -68,8 +74,8 @@ public class InterpolateZAxis extends Module {
                 interpolation = ImageProcessor.BILINEAR;
                 break;
         }
-        ImagePlus resized = resizer.zScale(inputImagePlus,finalNSlices,interpolation+Resizer.IN_PLACE);
-        resized.setDimensions(inputImagePlus.getNChannels(),finalNSlices,inputImagePlus.getNFrames());
+        ImagePlus resized = resizer.zScale(inputImagePlus, finalNSlices, interpolation + Resizer.IN_PLACE);
+        resized.setDimensions(inputImagePlus.getNChannels(), finalNSlices, inputImagePlus.getNFrames());
 
         return resized;
 
@@ -98,10 +104,11 @@ public class InterpolateZAxis extends Module {
 
         ImagePlus outputImagePlus = matchZToXY(inputImagePlus, interpolationMode);
 
-        Image outputImage = new Image(outputImageName,outputImagePlus);
+        Image outputImage = new Image(outputImageName, outputImagePlus);
         workspace.addImage(outputImage);
 
-        if (showOutput) outputImage.showImage();
+        if (showOutput)
+            outputImage.showImage();
 
         return Status.PASS;
 
@@ -109,11 +116,11 @@ public class InterpolateZAxis extends Module {
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new SeparatorP(INPUT_SEPARATOR,this));
-        parameters.add(new InputImageP(INPUT_IMAGE,this));
+        parameters.add(new SeparatorP(INPUT_SEPARATOR, this));
+        parameters.add(new InputImageP(INPUT_IMAGE, this));
         parameters.add(new OutputImageP(OUTPUT_IMAGE, this));
 
-        parameters.add(new SeparatorP(INTERPOLATION_SEPARATOR,this));
+        parameters.add(new SeparatorP(INTERPOLATION_SEPARATOR, this));
         parameters.add(new ChoiceP(INTERPOLATION_MODE, this, InterpolationModes.NONE, InterpolationModes.ALL));
 
         addParameterDescriptions();
@@ -158,7 +165,9 @@ public class InterpolateZAxis extends Module {
     void addParameterDescriptions() {
         parameters.get(INPUT_IMAGE).setDescription("Input image to which the Z-axis interpolation will be applied.");
 
-        parameters.get(OUTPUT_IMAGE).setDescription("Output image with Z-axis interpolation applied.  This image will be stored in the workspace and be accessible using this name.");
+        parameters.get(OUTPUT_IMAGE).setDescription(
+                "Output image with Z-axis interpolation applied.  This image will be stored in the workspace and be accessible using this name.");
 
+        parameters.get(INTERPOLATION_MODE).setDescription("Controls how interpolated pixel values are calculated");
     }
 }
