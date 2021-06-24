@@ -58,8 +58,7 @@ public class AffineCentroids extends AbstractAffineRegistration {
     }
 
     @Override
-    public Transform getTransform(ImageProcessor referenceIpr, ImageProcessor warpedIpr, Param param,
-            boolean showDetectedPoints) {
+    protected Object[] fitModel(ImageProcessor referenceIpr, ImageProcessor warpedIpr, Param param) {
         CentroidParam p = (CentroidParam) param;
 
         String referenceMode = parameters.getValue(REFERENCE_MODE);
@@ -92,21 +91,13 @@ public class AffineCentroids extends AbstractAffineRegistration {
         Vector<PointMatch> candidates = FloatArray2DSIFT.createMatches(featureList2, featureList1, p.rod);
         ArrayList<PointMatch> inliers = new ArrayList<PointMatch>();
 
-        if (showDetectedPoints) {
-            ArrayList<PointPair> pairs = convertPointMatchToPointPair(candidates);
-            showDetectedPoints(referenceIpr, warpedIpr, pairs);
-        }
-
         try {
             model.filterRansac(candidates, inliers, 1000, p.maxEpsilon, p.minInlierRatio);
         } catch (NotEnoughDataPointsException e) {
             return null;
         }
 
-        AffineTransform transform = new AffineTransform();
-        transform.mapping = new InverseTransformMapping<AbstractAffineModel2D<?>>(model);
-
-        return transform;
+        return new Object[] { model, candidates };
 
     }
 

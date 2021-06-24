@@ -17,13 +17,16 @@ import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Object.Workspace;
+import wbif.sjx.MIA.Object.Parameters.BooleanP;
 import wbif.sjx.MIA.Object.Parameters.ChoiceP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
+import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
 import wbif.sjx.MIA.Process.Interactable.PointPairSelector.PointPair;
 
 public abstract class AbstractAffineRegistration<T extends RealType<T> & NativeType<T>>
-        extends AbstractRegistration<T> {    
+        extends AbstractRegistration<T> {
     public static final String TRANSFORMATION_MODE = "Transformation mode";
+    public static final String TEST_FLIP = "Test flip (mirror image)";
 
     public AbstractAffineRegistration(String name, ModuleCollection modules) {
         super(name, modules);
@@ -32,7 +35,7 @@ public abstract class AbstractAffineRegistration<T extends RealType<T> & NativeT
     public interface TransformationModes {
         String AFFINE = "Affine (trans., rot., scale, shear)";
         String SIMILARITY = "Similarity (trans., rot., iso-scale)";
-        String RIGID = "Rigid (trans., rot.)";        
+        String RIGID = "Rigid (trans., rot.)";
         String TRANSLATION = "Translation";
 
         String[] ALL = new String[] { AFFINE, SIMILARITY, RIGID, TRANSLATION };
@@ -53,6 +56,8 @@ public abstract class AbstractAffineRegistration<T extends RealType<T> & NativeT
         }
     }
 
+    protected abstract Object[] fitModel(ImageProcessor referenceIpr, ImageProcessor warpedIpr, Param param);
+
     public static ArrayList<PointPair> convertPointMatchToPointPair(Collection<PointMatch> matches) {
         ArrayList<PointPair> pairs = new ArrayList<>();
 
@@ -60,29 +65,68 @@ public abstract class AbstractAffineRegistration<T extends RealType<T> & NativeT
         for (PointMatch match : matches) {
             PointRoi point1 = new PointRoi(match.getP1().getL()[0], match.getP1().getL()[1]);
             PointRoi point2 = new PointRoi(match.getP2().getL()[0], match.getP2().getL()[1]);
-            pairs.add(new PointPair(point1,point2,count++));
-        }            
+            pairs.add(new PointPair(point1, point2, count++));
+        }
 
         return pairs;
 
     }
 
     @Override
-    public void getParameters(Param param, Workspace workspace) {       
-        AffineParam affineParam = (AffineParam) param;
-        affineParam.transformationMode = parameters.getValue(TRANSFORMATION_MODE);
+    public Transform getTransform(ImageProcessor referenceIpr, ImageProcessor warpedIpr, Param param,
+            boolean showDetectedPoints) {
+        AffineTransform transform = new AffineTransform();
+
+        // Test normal
+        Object[] res1 = fitModel(referenceIpr, warpedIpr, param);
+        if (res1 == null)
+            return null;
+
+        if (((AffineParam) param).testFlip) {
+            warpedIpr.flipHorizontal();
+            Object[] res2 = fitModel(referenceIpr, warpedIpr, param);
+            if (res2 == null)
+                return null;
+
+            if (((AbstractAffineModel2D) res2[0]).getCost() < ((AbstractAffineModel2D) res1[0]).getCost()) {
+                res1 = res2;
+                transform.flip = true;
+            } else {
+                warpedIpr.flipHorizontal(); // Returning warpedIpr to its correct state
+            }
+        }
+
+        if (showDetectedPoints) {
+            ArrayList<PointPair> pairs = convertPointMatchToPointPair((Vector<PointMatch>) res1[1]);
+            showDetectedPoints(referenceIpr, warpedIpr, pairs);
+        }
+
+        transform.mapping = new InverseTransformMapping<AbstractAffineModel2D<?>>((AbstractAffineModel2D) res1[0]);
+
+        return transform;
 
     }
-    
+
+    @Override
+    public void getParameters(Param param, Workspace workspace) {
+        AffineParam affineParam = (AffineParam) param;
+        affineParam.transformationMode = parameters.getValue(TRANSFORMATION_MODE);
+        affineParam.testFlip = parameters.getValue(TEST_FLIP);
+
+    }
+
     @Override
     public ImageProcessor applyTransform(ImageProcessor inputIpr, Transform transform) {
-        inputIpr.setInterpolationMethod(ImageProcessor.BILINEAR);        
+        if (((AffineTransform) transform).flip)
+            inputIpr.flipHorizontal();
+
+        inputIpr.setInterpolationMethod(ImageProcessor.BILINEAR);
         ImageProcessor outputIpr = inputIpr.createProcessor(inputIpr.getWidth(), inputIpr.getHeight());
-        
+
         ((AffineTransform) transform).mapping.mapInterpolated(inputIpr, outputIpr);
 
         return outputIpr;
-        
+
     }
 
     @Override
@@ -90,6 +134,7 @@ public abstract class AbstractAffineRegistration<T extends RealType<T> & NativeT
         super.initialiseParameters();
 
         parameters.add(new ChoiceP(TRANSFORMATION_MODE, this, TransformationModes.RIGID, TransformationModes.ALL));
+        parameters.add(new BooleanP(TEST_FLIP, this, false));
 
     }
 
@@ -97,9 +142,17 @@ public abstract class AbstractAffineRegistration<T extends RealType<T> & NativeT
     public ParameterCollection updateAndGetParameters() {
         ParameterCollection returnedParameters = new ParameterCollection();
 
-        returnedParameters.addAll(super.updateAndGetParameters());
+        // Adding all default parameters and adding transformation mode just after
+        // registration separator
+        ParameterCollection defaultParameters = super.updateAndGetParameters();
+        for (Parameter parameter : defaultParameters.values()) {
+            returnedParameters.add(parameter);
+            if (parameter.getName().equals(REGISTRATION_SEPARATOR))
+                returnedParameters.add(parameters.getParameter(TRANSFORMATION_MODE));
 
-        returnedParameters.add(parameters.getParameter(TRANSFORMATION_MODE));
+            if (parameter.getName().equals(FILL_MODE))
+                returnedParameters.add(parameters.getParameter(TEST_FLIP));
+        }
 
         return returnedParameters;
 
@@ -123,14 +176,19 @@ public abstract class AbstractAffineRegistration<T extends RealType<T> & NativeT
                 + "<li>\"" + TransformationModes.TRANSLATION
                 + "\" Applies only translation (motion within the 2D plane) to the input image.</li></ul>");
 
+                parameters.get(TEST_FLIP).setDescription(
+                        "When selected, alignment will be tested for both the \"normal\" and \"flipped\" (mirror) states of the image.  The state yielding the lower cost to alignment will be retained.");
+                
     }
 
     public abstract class AffineParam extends Param {
         public String transformationMode = TransformationModes.RIGID;
+        public boolean testFlip = false;
 
     }
 
-    public class AffineTransform implements Transform {
+    public class AffineTransform extends Transform {
+        public boolean flip = false;
         public InverseTransformMapping mapping = null;
     }
 }

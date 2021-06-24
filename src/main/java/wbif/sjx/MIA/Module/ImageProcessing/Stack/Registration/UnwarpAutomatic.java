@@ -39,7 +39,7 @@ public class UnwarpAutomatic extends AbstractBUnwarpJRegistration implements Int
 
     @Override
     public Transform getTransform(ImageProcessor referenceIpr, ImageProcessor warpedIpr, Param param,
-            boolean showDetectedPoints) {
+    boolean showDetectedPoints) {
 
         AutomaticBUnwarpJParam p = (AutomaticBUnwarpJParam) param;
 

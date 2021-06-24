@@ -205,6 +205,11 @@ public abstract class AbstractRegistration<T extends RealType<T> & NativeType<T>
             Transform transform = getTransform(reference.getImagePlus().getProcessor(),
                     warped.getImagePlus().getProcessor(), param, showDetectedPoints);
 
+            if (transform == null) {
+                MIA.log.writeWarning("Unable to align images at position " + t);
+                continue;
+            }
+
             // Applying the transformation to the whole stack.
             // All channels should move in the same way, so are processed with the same
             // transformation.
@@ -234,7 +239,7 @@ public abstract class AbstractRegistration<T extends RealType<T> & NativeType<T>
             transform = null;
 
             writeProgressStatus(++count, nFrames, "frames");
-            
+
         }
     }
 
@@ -463,6 +468,7 @@ public abstract class AbstractRegistration<T extends RealType<T> & NativeType<T>
         String outputImageName = parameters.getValue(OUTPUT_IMAGE);
         String regAxis = parameters.getValue(REGISTRATION_AXIS);
         String otherAxisMode = parameters.getValue(OTHER_AXIS_MODE);
+        String fillMode = parameters.getValue(FILL_MODE);
         boolean multithread = parameters.getValue(ENABLE_MULTITHREADING);
         String referenceMode = parameters.getValue(REFERENCE_MODE);
         int numPrevFrames = parameters.getValue(NUM_PREV_FRAMES);
@@ -471,7 +477,6 @@ public abstract class AbstractRegistration<T extends RealType<T> & NativeType<T>
         String calculationSource = parameters.getValue(CALCULATION_SOURCE);
         String externalSourceName = parameters.getValue(EXTERNAL_SOURCE);
         int calculationChannel = parameters.getValue(CALCULATION_CHANNEL);
-        String fillMode = parameters.getValue(FILL_MODE);
         boolean showDetectedPoints = parameters.getValue(SHOW_DETECTED_POINTS);
 
         // Getting the input image and duplicating if the output will be stored
@@ -607,6 +612,7 @@ public abstract class AbstractRegistration<T extends RealType<T> & NativeType<T>
         returnedParameters.add(parameters.getParameter(REGISTRATION_AXIS));
         returnedParameters.add(parameters.getParameter(OTHER_AXIS_MODE));
         returnedParameters.add(parameters.getParameter(FILL_MODE));
+        returnedParameters.add(parameters.getParameter(SHOW_DETECTED_POINTS));
         returnedParameters.add(parameters.getParameter(ENABLE_MULTITHREADING));
 
         returnedParameters.add(parameters.getParameter(REFERENCE_SEPARATOR));
@@ -620,16 +626,13 @@ public abstract class AbstractRegistration<T extends RealType<T> & NativeType<T>
                 returnedParameters.add(parameters.getParameter(REFERENCE_IMAGE));
                 break;
         }
-
         returnedParameters.add(parameters.getParameter(CALCULATION_SOURCE));
         switch ((String) parameters.getValue(CALCULATION_SOURCE)) {
             case CalculationSources.EXTERNAL:
                 returnedParameters.add(parameters.getParameter(EXTERNAL_SOURCE));
                 break;
         }
-
         returnedParameters.add(parameters.getParameter(CALCULATION_CHANNEL));
-        returnedParameters.add(parameters.getParameter(SHOW_DETECTED_POINTS));
 
         return returnedParameters;
 
@@ -759,7 +762,6 @@ public abstract class AbstractRegistration<T extends RealType<T> & NativeType<T>
         public int t = 0;
     }
 
-    public interface Transform {
-
+    public class Transform {
     }
 }

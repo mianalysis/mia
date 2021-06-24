@@ -92,9 +92,7 @@ public class AffineManual<T extends RealType<T> & NativeType<T>> extends Abstrac
     }
 
     @Override
-    public Transform getTransform(ImageProcessor referenceIpr, ImageProcessor warpedIpr, Param param,
-            boolean showDetectedPoints) {
-
+    protected Object[] fitModel(ImageProcessor referenceIpr, ImageProcessor warpedIpr, Param param) {
         ManualParam p = (ManualParam) param;
 
         ImagePlus referenceIpl = new ImagePlus("Reference", referenceIpr.duplicate());
@@ -127,9 +125,6 @@ public class AffineManual<T extends RealType<T> & NativeType<T>> extends Abstrac
             return null;
         }
 
-        if (showDetectedPoints)
-            showDetectedPoints(referenceIpr, warpedIpr, pairs);
-
         // Getting transform
         AbstractAffineModel2D model = getModel(p.transformationMode);
         final ArrayList<PointMatch> candidates = new ArrayList<PointMatch>();
@@ -143,11 +138,8 @@ public class AffineManual<T extends RealType<T> & NativeType<T>> extends Abstrac
             return null;
         }
 
-        AffineTransform transform = new AffineTransform();
-        transform.mapping = new InverseTransformMapping<AbstractAffineModel2D<?>>(model);
-
-        return transform;
-
+        return new Object[] { model, candidates };
+        
     }
 
     public static PointRoi[] createRoiFromPointPairs(ArrayList<PointPair> pairs) {
@@ -225,7 +217,7 @@ public class AffineManual<T extends RealType<T> & NativeType<T>> extends Abstrac
 
         returnedParameters.add(parameters.getParameter(FEATURE_SEPARATOR));
         returnedParameters.add(parameters.getParameter(POINT_SELECTION_MODE));
-
+        
         return returnedParameters;
 
     }
