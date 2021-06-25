@@ -16,7 +16,6 @@ import ij.Prefs;
 import ij.plugin.HyperStackConverter;
 import ij.plugin.SubHyperstackMaker;
 import ij.process.ImageProcessor;
-import mpicbg.models.PointMatch;
 import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
 import wbif.sjx.MIA.MIA;
@@ -206,7 +205,7 @@ public abstract class AbstractRegistration<T extends RealType<T> & NativeType<T>
                     warped.getImagePlus().getProcessor(), param, showDetectedPoints);
 
             if (transform == null) {
-                MIA.log.writeWarning("Unable to align images at position " + t);
+                MIA.log.writeWarning("Unable to align images at position " + (t+1));
                 continue;
             }
 
