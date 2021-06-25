@@ -109,7 +109,6 @@ public class FilterWithWithoutParentTest extends ModuleTest {
 
         int counter = 0;
         for (Obj testObject : testObjects.values()) {
-            System.out.println("INPUT "+testObject.getID());
             if (parents[counter++]) {
                 Obj parentObject = parentObjects.createAndAddNewObject(volumeType);
 

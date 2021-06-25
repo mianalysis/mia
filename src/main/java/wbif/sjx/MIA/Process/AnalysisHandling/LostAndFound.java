@@ -48,7 +48,7 @@ public class LostAndFound {
         lostModules.put("MOPSRegistration", new AffineMOPS(null).getClass().getSimpleName());
         lostModules.put("SIFTRegistration", new AffineSIFT(null).getClass().getSimpleName());
         lostModules.put("UnwarpImages", new UnwarpAutomatic(null).getClass().getSimpleName());
-        lostModules.put("Hough-based detection", new CircleHoughDetection(null).getClass().getSimpleName());
+        lostModules.put("HoughObjectDetection", new CircleHoughDetection(null).getClass().getSimpleName());
 
         
         //// Populating hard-coded parameter reassignments ////
