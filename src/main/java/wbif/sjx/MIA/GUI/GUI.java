@@ -260,9 +260,11 @@ public class GUI {
             if (new File(inputPath).isFile()) {
                 nextFile = new File(inputPath);
             } else {
-                FileCrawler fileCrawler = new FileCrawler(new File(inputPath));
-                inputControl.addFilenameFilters(fileCrawler);
-                nextFile = fileCrawler.getNextValidFileInStructure();
+                if (inputPath != null && !inputPath.equals("")) {
+                    FileCrawler fileCrawler = new FileCrawler(new File(inputPath));
+                    inputControl.addFilenameFilters(fileCrawler);
+                    nextFile = fileCrawler.getNextValidFileInStructure();
+                }                
             }
         }
 
