@@ -50,7 +50,6 @@ public class UnwarpManual<T extends RealType<T> & NativeType<T>> extends Abstrac
 
                 + "Alignments are calculated using the <a href=\"https://imagej.net/BUnwarpJ\">BUnwarpJ</a> image transformation library.";
 
-
     }
 
     @Override
@@ -98,9 +97,7 @@ public class UnwarpManual<T extends RealType<T> & NativeType<T>> extends Abstrac
     }
 
     @Override
-    public Transform getTransform(ImageProcessor referenceIpr, ImageProcessor warpedIpr, Param param,
-            boolean showDetectedPoints) {
-
+    public Transform getTransform(ImageProcessor referenceIpr, ImageProcessor warpedIpr, Param param, boolean showDetectedPoints) {
         ManualBUnwarpJParam p = (ManualBUnwarpJParam) param;
 
         ImagePlus referenceIpl = new ImagePlus("Reference", referenceIpr.duplicate());

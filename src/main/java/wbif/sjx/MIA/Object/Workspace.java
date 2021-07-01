@@ -10,7 +10,7 @@ import ij.measure.ResultsTable;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Object.References.MetadataRef;
 import wbif.sjx.MIA.Object.References.Collections.MetadataRefCollection;
-import wbif.sjx.common.Object.Metadata;
+import wbif.sjx.common.MetadataExtractors.Metadata;
 
 /**
  * Created by sc13967 on 02/05/2017.

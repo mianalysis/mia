@@ -10,7 +10,6 @@ import mpicbg.imagefeatures.FloatArray2DSIFT;
 import mpicbg.models.AbstractAffineModel2D;
 import mpicbg.models.NotEnoughDataPointsException;
 import mpicbg.models.PointMatch;
-import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.ImageProcessing.Stack.Registration.Abstract.AbstractAffineRegistration;
 import wbif.sjx.MIA.Object.Obj;
@@ -59,8 +58,7 @@ public class AffineCentroids extends AbstractAffineRegistration {
     }
 
     @Override
-    public Transform getTransform(ImageProcessor referenceIpr, ImageProcessor warpedIpr, Param param,
-            boolean showDetectedPoints) {
+    protected Object[] fitModel(ImageProcessor referenceIpr, ImageProcessor warpedIpr, Param param) {
         CentroidParam p = (CentroidParam) param;
 
         String referenceMode = parameters.getValue(REFERENCE_MODE);
@@ -93,21 +91,13 @@ public class AffineCentroids extends AbstractAffineRegistration {
         Vector<PointMatch> candidates = FloatArray2DSIFT.createMatches(featureList2, featureList1, p.rod);
         ArrayList<PointMatch> inliers = new ArrayList<PointMatch>();
 
-        if (showDetectedPoints) {
-            ArrayList<PointPair> pairs = convertPointMatchToPointPair(candidates);
-            showDetectedPoints(referenceIpr, warpedIpr, pairs);
-        }
-
         try {
             model.filterRansac(candidates, inliers, 1000, p.maxEpsilon, p.minInlierRatio);
         } catch (NotEnoughDataPointsException e) {
             return null;
         }
 
-        AffineTransform transform = new AffineTransform();
-        transform.mapping = new InverseTransformMapping<AbstractAffineModel2D<?>>(model);
-
-        return transform;
+        return new Object[] { model, candidates };
 
     }
 
@@ -146,6 +136,9 @@ public class AffineCentroids extends AbstractAffineRegistration {
         super.addParameterDescriptions();
 
         String siteRef = "Description taken from <a href=\"https://imagej.net/Feature_Extraction\">https://imagej.net/Feature_Extraction</a>";
+
+        parameters.get(INPUT_OBJECTS).setDescription(
+                "Centroids for these objects will be used as the references for image alignment.");
 
         parameters.get(ROD).setDescription(
                 "\"Correspondence candidates from local descriptor matching are accepted only if the Euclidean distance to the nearest neighbour is significantly smaller than that to the next nearest neighbour. Lowe (2004) suggests a ratio of r=0.8 which requires some increase when matching things that appear significantly distorted.\".  "

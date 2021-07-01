@@ -10,7 +10,7 @@
 
     <groupId>wbif.sjx</groupId>
     <artifactId>MIA_</artifactId>
-    <version>0.18.11</version>
+    <version>0.18.12</version>
     <packaging>jar</packaging>
     <name>MIA_</name>
     <url>https://github.com/SJCross/MIA</url>
@@ -115,11 +115,11 @@
             <url>https://jitpack.io</url>
         </repository>
 
-        <repository>
+        <!-- <repository>
             <id>ome-web-prod.lifesci.dundee.ac.uk</id>
             <name>ome-web-prod.lifesci.dundee.ac.uk-releases</name>
             <url>http://artifacts.openmicroscopy.org/artifactory/ome.releases</url>
-        </repository>
+        </repository> -->
     </repositories>
 
     <dependencies>
@@ -322,7 +322,7 @@
             <version>v1.6.23</version> -->
             <groupId>wbif.sjx</groupId>
             <artifactId>Common</artifactId>
-            <version>1.6.24-SNAPSHOT</version>
+            <version>1.7.0</version>
         </dependency>
     </dependencies>
 

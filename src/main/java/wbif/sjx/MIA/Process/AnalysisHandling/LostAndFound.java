@@ -22,8 +22,8 @@ import wbif.sjx.MIA.Module.Miscellaneous.Macros.RunMacro;
 import wbif.sjx.MIA.Module.Miscellaneous.Macros.RunSingleCommand;
 import wbif.sjx.MIA.Module.ObjectMeasurements.Miscellaneous.ReplaceMeasurementValue;
 import wbif.sjx.MIA.Module.ObjectMeasurements.Spatial.CalculateNearestNeighbour;
+import wbif.sjx.MIA.Module.ObjectProcessing.Identification.CircleHoughDetection;
 import wbif.sjx.MIA.Module.ObjectProcessing.Identification.GetLocalObjectRegion;
-import wbif.sjx.MIA.Module.ObjectProcessing.Identification.HoughCircleDetection;
 import wbif.sjx.MIA.Module.ObjectProcessing.Miscellaneous.CreateDistanceMap;
 import wbif.sjx.MIA.Module.ObjectProcessing.Refinement.ExpandShrinkObjects;
 import wbif.sjx.MIA.Module.ObjectProcessing.Relationships.RelateManyToOne;
@@ -47,7 +47,8 @@ public class LostAndFound {
         lostModules.put("ManualRegistration", new AffineManual(null).getClass().getSimpleName());
         lostModules.put("MOPSRegistration", new AffineMOPS(null).getClass().getSimpleName());
         lostModules.put("SIFTRegistration", new AffineSIFT(null).getClass().getSimpleName());
-        lostModules.put("Hough-based detection", new HoughCircleDetection(null).getClass().getSimpleName());
+        lostModules.put("UnwarpImages", new UnwarpAutomatic(null).getClass().getSimpleName());
+        lostModules.put("HoughObjectDetection", new CircleHoughDetection(null).getClass().getSimpleName());
 
         
         //// Populating hard-coded parameter reassignments ////
@@ -93,9 +94,11 @@ public class LostAndFound {
 
         // GetObjectLocalRegion
         currentParameterNames = new HashMap<>();
-        currentParameterNames.put("Local radius", GetLocalObjectRegion.FIXED_VALUE);
+        currentParameterNames.put("Local radius", GetLocalObjectRegion.FIXED_VALUE_FOR_RADIUS);
+        currentParameterNames.put("Fixed value", GetLocalObjectRegion.FIXED_VALUE_FOR_RADIUS);
         currentParameterNames.put("Measurement name", GetLocalObjectRegion.RADIUS_MEASUREMENT);
-        currentParameterNames.put("Calibrated radius", GetLocalObjectRegion.CALIBRATED_UNITS);
+        currentParameterNames.put("Parent object", GetLocalObjectRegion.PARENT_OBJECT_FOR_RADIUS);
+        
         moduleName = new GetLocalObjectRegion(null).getClass().getSimpleName();
         lostParameterNames.put(moduleName, currentParameterNames);
 
@@ -107,8 +110,8 @@ public class LostAndFound {
 
         // HoughObjectDetection
         currentParameterNames = new HashMap<>();
-        currentParameterNames.put("Sampling rate", HoughCircleDetection.DOWNSAMPLE_FACTOR);
-        moduleName = new HoughCircleDetection(null).getClass().getSimpleName();
+        currentParameterNames.put("Sampling rate", CircleHoughDetection.DOWNSAMPLE_FACTOR);
+        moduleName = new CircleHoughDetection(null).getClass().getSimpleName();
         lostParameterNames.put(moduleName, currentParameterNames);
 
         // InputControl
@@ -201,6 +204,15 @@ public class LostAndFound {
         moduleName = new AffineMOPS(null).getClass().getSimpleName();
         lostParameterValues.put(moduleName, currentParameterValues);
         moduleName = new AffineSIFT(null).getClass().getSimpleName();
+        lostParameterValues.put(moduleName, currentParameterValues);
+
+        // CalculateNearestNeighbour
+        currentValues = new HashMap<>();
+        currentValues.put("Centroid", CalculateNearestNeighbour.ReferenceModes.CENTROID_3D);
+        currentValues.put("Surface", CalculateNearestNeighbour.ReferenceModes.SURFACE_3D);
+        currentParameterValues = new HashMap<>();
+        currentParameterValues.put(CalculateNearestNeighbour.REFERENCE_MODE, currentValues);
+        moduleName = new CalculateNearestNeighbour(null).getClass().getSimpleName();
         lostParameterValues.put(moduleName, currentParameterValues);
 
         // InputControl

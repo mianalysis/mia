@@ -89,10 +89,12 @@ public class CalculateNearestNeighbour extends Module {
     }
 
     public interface ReferenceModes {
-        String CENTROID = "Centroid";
-        String SURFACE = "Surface";
+        String CENTROID_2D = "Centroid (2D)";
+        String CENTROID_3D = "Centroid (3D)";
+        String SURFACE_2D = "Surface (2D)";
+        String SURFACE_3D = "Surface (3D)";
 
-        String[] ALL = new String[] { CENTROID, SURFACE };
+        String[] ALL = new String[] { CENTROID_2D, CENTROID_3D, SURFACE_2D, SURFACE_3D };
 
     }
 
@@ -122,7 +124,7 @@ public class CalculateNearestNeighbour extends Module {
         return "NEAREST_NEIGHBOUR // " + measurement.replace("${NEIGHBOUR}", neighbourObjectsName);
     }
 
-    public Obj getNearestNeighbour(Obj inputObject, ObjCollection testObjects, String referenceMode,
+    public static Obj getNearestNeighbour(Obj inputObject, ObjCollection testObjects, String referenceMode,
             double maximumLinkingDistance, boolean linkInSameFrame,
             @Nullable LinkedHashMap<Obj, Double> currDistances) {
         double minDist = Double.MAX_VALUE;
@@ -142,13 +144,18 @@ public class CalculateNearestNeighbour extends Module {
 
             double dist;
             switch (referenceMode) {
-                default:
-                case ReferenceModes.CENTROID:
-                    dist = inputObject.getCentroidSeparation(testObject, true);
+                case ReferenceModes.CENTROID_2D:
+                    dist = inputObject.getCentroidSeparation(testObject, true, true);
                     break;
-
-                case ReferenceModes.SURFACE:
-                    dist = inputObject.getSurfaceSeparation(testObject, true);
+                default:
+                case ReferenceModes.CENTROID_3D:
+                    dist = inputObject.getCentroidSeparation(testObject, true, false);
+                    break;
+                case ReferenceModes.SURFACE_2D:
+                    dist = inputObject.getSurfaceSeparation(testObject, true, true);
+                    break;
+                case ReferenceModes.SURFACE_3D:
+                    dist = inputObject.getSurfaceSeparation(testObject, true, false);
                     break;
             }
 
@@ -173,22 +180,22 @@ public class CalculateNearestNeighbour extends Module {
     public void addMeasurements(Obj inputObject, Obj nearestNeighbour, String referenceMode,
             String nearestNeighbourName) {
 
-        // Adding details of the nearest neighbour to the input object's measurements        
+        // Adding details of the nearest neighbour to the input object's measurements
         if (nearestNeighbour != null) {
             double dppXY = inputObject.getDppXY();
             double minDist = 0;
 
             switch (referenceMode) {
                 default:
-                case ReferenceModes.CENTROID:
+                case ReferenceModes.CENTROID_3D:
                     minDist = inputObject.getCentroidSeparation(nearestNeighbour, true);
                     break;
 
-                case ReferenceModes.SURFACE:
+                case ReferenceModes.SURFACE_3D:
                     minDist = inputObject.getSurfaceSeparation(nearestNeighbour, true);
                     break;
             }
-            
+
             String name = getFullName(Measurements.NN_ID, nearestNeighbourName);
             inputObject.addMeasurement(new Measurement(name, nearestNeighbour.getID()));
 
@@ -523,7 +530,7 @@ public class CalculateNearestNeighbour extends Module {
         parameters.add(new InputObjectsP(NEIGHBOUR_OBJECTS, this));
 
         parameters.add(new SeparatorP(RELATIONSHIP_SEPARATOR, this));
-        parameters.add(new ChoiceP(REFERENCE_MODE, this, ReferenceModes.CENTROID, ReferenceModes.ALL));
+        parameters.add(new ChoiceP(REFERENCE_MODE, this, ReferenceModes.CENTROID_3D, ReferenceModes.ALL));
         parameters.add(new BooleanP(CALCULATE_WITHIN_PARENT, this, false));
         parameters.add(new ParentObjectsP(PARENT_OBJECTS, this));
         parameters.add(new BooleanP(LIMIT_LINKING_DISTANCE, this, false));
@@ -592,7 +599,7 @@ public class CalculateNearestNeighbour extends Module {
         returnedParameters.add(parameters.getParameter(OUTPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(EXPORT_ALL_DISTANCES));
         String referenceMode = parameters.getValue(REFERENCE_MODE);
-        if (referenceMode.equals(ReferenceModes.SURFACE))
+        if (referenceMode.equals(ReferenceModes.SURFACE_3D))
             returnedParameters.add(parameters.getParameter(INSIDE_OUTSIDE_MODE));
 
         if ((boolean) parameters.getValue(EXPORT_ALL_DISTANCES)) {
@@ -703,10 +710,16 @@ public class CalculateNearestNeighbour extends Module {
         parameters.get(REFERENCE_MODE)
                 .setDescription("Controls the method used for determining the nearest neighbour distances:<br><ul>"
 
-                        + "<li>\"" + ReferenceModes.CENTROID
+                        + "<li>\"" + ReferenceModes.CENTROID_2D
+                        + "\" Distances are between the input and neighbour object centroids, but only in the XY plane.  These distances are always positive; increasing as the distance between centroids increases.</li>"
+
+                        + "<li>\"" + ReferenceModes.CENTROID_3D
                         + "\" Distances are between the input and neighbour object centroids.  These distances are always positive; increasing as the distance between centroids increases.</li>"
 
-                        + "<li>\"" + ReferenceModes.SURFACE
+                        + "<li>\"" + ReferenceModes.SURFACE_2D
+                        + "\" Distances are between the closest points on the input and neighbour surfaces, but only in the XY plane.  These distances increase in magnitude the greater the minimum input-neighbour object surface distance is; however, they are assigned a positive value if the closest input object surface point is outside the neighbour and a negative value if the closest input object surface point is inside the neighbour.  For example, a closest input object surface point 5px outside the neighbour will be simply \"5px\", whereas a closest input object surface point 5px from the surface, but contained within the neighbour object will be recorded as \"-5px\".  Note: Any instances where the input and neighbour object surfaces overlap will be recorded as \"0px\" distance.</li>"
+
+                        + "<li>\"" + ReferenceModes.SURFACE_3D
                         + "\" Distances are between the closest points on the input and neighbour surfaces.  These distances increase in magnitude the greater the minimum input-neighbour object surface distance is; however, they are assigned a positive value if the closest input object surface point is outside the neighbour and a negative value if the closest input object surface point is inside the neighbour.  For example, a closest input object surface point 5px outside the neighbour will be simply \"5px\", whereas a closest input object surface point 5px from the surface, but contained within the neighbour object will be recorded as \"-5px\".  Note: Any instances where the input and neighbour object surfaces overlap will be recorded as \"0px\" distance.</li></ul>");
 
         parameters.get(CALCULATE_WITHIN_PARENT)

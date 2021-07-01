@@ -2,10 +2,10 @@ package wbif.sjx.MIA.Module.ObjectMeasurements.Spatial;
 
 import java.util.TreeMap;
 
+import wbif.sjx.MIA.Module.Categories;
+import wbif.sjx.MIA.Module.Category;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
-import wbif.sjx.MIA.Module.Category;
-import wbif.sjx.MIA.Module.Categories;
 import wbif.sjx.MIA.Module.ObjectProcessing.Relationships.TrackObjects;
 import wbif.sjx.MIA.Object.Measurement;
 import wbif.sjx.MIA.Object.Obj;
@@ -25,8 +25,8 @@ import wbif.sjx.MIA.Object.References.Collections.ParentChildRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.PartnerRefCollection;
 import wbif.sjx.common.MathFunc.CumStat;
 import wbif.sjx.common.Object.Point;
-import wbif.sjx.common.Object.Timepoint;
-import wbif.sjx.common.Object.Track;
+import wbif.sjx.common.Object.Tracks.Timepoint;
+import wbif.sjx.common.Object.Tracks.Track;
 
 /**
  * Created by steph on 24/05/2017.

@@ -12,18 +12,18 @@ import ij.IJ;
 import ij.ImagePlus;
 import ij.plugin.Duplicator;
 import ij.process.ImageProcessor;
+import wbif.sjx.MIA.Module.Categories;
+import wbif.sjx.MIA.Module.Category;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
-import wbif.sjx.MIA.Module.Category;
-import wbif.sjx.MIA.Module.Categories;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.ImageMath;
 import wbif.sjx.MIA.Module.ImageProcessing.Stack.CropImage;
 import wbif.sjx.MIA.Module.ObjectProcessing.Identification.GetLocalObjectRegion;
-import wbif.sjx.MIA.Object.Status;
 import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.Measurement;
 import wbif.sjx.MIA.Object.Obj;
 import wbif.sjx.MIA.Object.ObjCollection;
+import wbif.sjx.MIA.Object.Status;
 import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.MIA.Object.Parameters.BooleanP;
 import wbif.sjx.MIA.Object.Parameters.ChoiceP;
@@ -42,6 +42,7 @@ import wbif.sjx.MIA.Object.References.Collections.ParentChildRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.PartnerRefCollection;
 import wbif.sjx.common.MathFunc.CumStat;
 import wbif.sjx.common.MathFunc.GaussianDistribution2D;
+import wbif.sjx.common.Object.Point;
 
 /**
  * Created by sc13967 on 05/06/2017.
@@ -148,8 +149,10 @@ public class FitGaussian2D extends Module {
         // Replacing spot volumes with explicit volume
         ObjCollection tempObjects = new ObjCollection("SpotVolume",objects);
         for (Obj spotObject:objects.values()) {
-            double radius = spotObject.getMeasurement(Measurements.SIGMA_X_PX).getValue();
-            Obj volumeObject = GetLocalObjectRegion.getLocalRegion(spotObject, tempObjects, radius, false, false);
+            int radius = (int) Math.round(spotObject.getMeasurement(Measurements.SIGMA_X_PX).getValue());
+            Point<Double> cent = spotObject.getMeanCentroid(true,false);
+            int[] centroid = new int[] {(int) Math.round(cent.getX()),(int) Math.round(cent.getY()),(int) Math.round(cent.getZ())};
+            Obj volumeObject = GetLocalObjectRegion.getLocalRegion(spotObject, tempObjects, centroid, radius, false);
             spotObject.getCoordinateSet().clear();
             spotObject.getCoordinateSet().addAll(volumeObject.getCoordinateSet());
             spotObject.clearSurface();

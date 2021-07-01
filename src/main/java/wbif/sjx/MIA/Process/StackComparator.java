@@ -1,8 +1,10 @@
 package wbif.sjx.MIA.Process;
 
-import wbif.sjx.common.Object.Metadata;
+
 
 import java.util.Comparator;
+
+import wbif.sjx.common.MetadataExtractors.Metadata;
 
 /**
  * Created by Stephen on 01/05/2017.

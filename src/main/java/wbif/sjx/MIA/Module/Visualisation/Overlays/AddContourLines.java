@@ -44,7 +44,7 @@ import wbif.sjx.MIA.Object.References.Collections.PartnerRefCollection;
 import wbif.sjx.MIA.Process.ColourFactory;
 import wbif.sjx.MIA.Process.LabelFactory;
 import wbif.sjx.common.MathFunc.CumStat;
-import wbif.sjx.common.Object.LUTs;
+import wbif.sjx.common.ImageJ.LUTs;
 
 public class AddContourLines extends Module {
     public static final String INPUT_SEPARATOR = "Image input/output";

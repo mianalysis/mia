@@ -8,6 +8,6 @@ public class HoughCircleDetectionTest extends ModuleTest {
 
     @Override
     public void testGetHelp() {
-        assertNotNull(new HoughCircleDetection(null).getDescription());
+        assertNotNull(new CircleHoughDetection(null).getDescription());
     }
 }

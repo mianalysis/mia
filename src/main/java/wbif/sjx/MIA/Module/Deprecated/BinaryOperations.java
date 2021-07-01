@@ -178,7 +178,7 @@ public class BinaryOperations extends Module {
         int nSlices = ipl.getNSlices();
 
         // If necessary, interpolating the image in Z to match the XY spacing
-        if (matchZToXY && nSlices > 1) ipl = InterpolateZAxis.matchZToXY(ipl);
+        if (matchZToXY && nSlices > 1) ipl = InterpolateZAxis.matchZToXY(ipl,InterpolateZAxis.InterpolationModes.NONE);
 
         // Calculating the distance map using MorphoLibJ
         float[] weights = ChamferWeights3D.WEIGHTS_3_4_5_7.getFloatWeights();

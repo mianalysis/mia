@@ -30,7 +30,7 @@ import wbif.sjx.MIA.GUI.ControlObjects.FileListColumnSelectorMenu;
 import wbif.sjx.MIA.Object.Status;
 import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.MIA.Object.WorkspaceCollection;
-import wbif.sjx.common.Object.Metadata;
+import wbif.sjx.common.MetadataExtractors.Metadata;
 
 public class FileListPanel extends JPanel implements MouseListener, TableCellRenderer {
     /**

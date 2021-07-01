@@ -39,7 +39,7 @@ import wbif.sjx.common.MetadataExtractors.NameExtractor;
 import wbif.sjx.common.MetadataExtractors.OperaFileExtractor;
 import wbif.sjx.common.MetadataExtractors.OperaFilenameExtractor;
 import wbif.sjx.common.MetadataExtractors.OperaFoldernameExtractor;
-import wbif.sjx.common.Object.Metadata;
+import wbif.sjx.common.MetadataExtractors.Metadata;
 
 /**
  * Created by sc13967 on 05/05/2017.

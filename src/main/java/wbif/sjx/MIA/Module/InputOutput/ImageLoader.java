@@ -51,6 +51,7 @@ import wbif.sjx.MIA.Module.Category;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.Core.InputControl;
+import wbif.sjx.MIA.Module.Miscellaneous.GlobalVariables;
 import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.Measurement;
 import wbif.sjx.MIA.Object.ObjCollection;
@@ -79,7 +80,7 @@ import wbif.sjx.MIA.Process.CommaSeparatedStringInterpreter;
 import wbif.sjx.common.MetadataExtractors.CV7000FilenameExtractor;
 import wbif.sjx.common.MetadataExtractors.IncuCyteShortFilenameExtractor;
 import wbif.sjx.common.MetadataExtractors.NameExtractor;
-import wbif.sjx.common.Object.Metadata;
+import wbif.sjx.common.MetadataExtractors.Metadata;
 import wbif.sjx.common.System.FileCrawler;
 
 /**
@@ -435,12 +436,13 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
 
         // Applying LUTs
         HashMap<Integer, LUT> luts = getLUTs(meta, seriesNumber - 1);
-        for (int c : channelsList) {
+        for (int i = 0; i < channelsList.length;i++) {
+            int c = channelsList[i];
             LUT lut = luts.get(c - 1);
             if (lut == null)
                 continue;
             if (ipl.isComposite()) {
-                ((CompositeImage) ipl).setChannelLut(lut, c);
+                ((CompositeImage) ipl).setChannelLut(lut, i+1);
             } else {
                 ipl.setLut(lut);
             }

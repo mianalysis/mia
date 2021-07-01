@@ -55,7 +55,7 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         obj4.add(50, 20, 10);
 
         // Testing against first object in set
-        String referenceMode = CalculateNearestNeighbour.ReferenceModes.CENTROID;
+        String referenceMode = CalculateNearestNeighbour.ReferenceModes.CENTROID_3D;
         CalculateNearestNeighbour calculateNearestNeighbour = new CalculateNearestNeighbour(new ModuleCollection());
         Obj nearestNeighour = calculateNearestNeighbour.getNearestNeighbour(obj1, objects1, referenceMode,
                 Double.MAX_VALUE, false, null);
@@ -94,7 +94,7 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         obj5.add(10, 20, 40);
 
         // Testing against first object in set
-        String referenceMode = CalculateNearestNeighbour.ReferenceModes.CENTROID;
+        String referenceMode = CalculateNearestNeighbour.ReferenceModes.CENTROID_3D;
         CalculateNearestNeighbour calculateNearestNeighbour = new CalculateNearestNeighbour(new ModuleCollection());
         Obj nearestNeighour = calculateNearestNeighbour.getNearestNeighbour(obj1, objects1, referenceMode,
                 Double.MAX_VALUE, false, null);
@@ -130,7 +130,7 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         obj4.add(50, 20, 10);
 
         // Testing against first object in set
-        String referenceMode = CalculateNearestNeighbour.ReferenceModes.CENTROID;
+        String referenceMode = CalculateNearestNeighbour.ReferenceModes.CENTROID_3D;
         CalculateNearestNeighbour calculateNearestNeighbour = new CalculateNearestNeighbour(new ModuleCollection());
         Obj nearestNeighour = calculateNearestNeighbour.getNearestNeighbour(obj1, objects1, referenceMode, 100d, false,
                 null);
@@ -166,7 +166,7 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         obj4.add(50, 20, 10);
 
         // Testing against first object in set
-        String referenceMode = CalculateNearestNeighbour.ReferenceModes.CENTROID;
+        String referenceMode = CalculateNearestNeighbour.ReferenceModes.CENTROID_3D;
         CalculateNearestNeighbour calculateNearestNeighbour = new CalculateNearestNeighbour(new ModuleCollection());
         Obj nearestNeighour = calculateNearestNeighbour.getNearestNeighbour(obj1, objects1, referenceMode, 50d, false,
                 null);

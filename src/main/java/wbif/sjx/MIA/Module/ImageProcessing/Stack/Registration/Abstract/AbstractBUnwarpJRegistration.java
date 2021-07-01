@@ -229,7 +229,7 @@ public abstract class AbstractBUnwarpJRegistration<T extends RealType<T> & Nativ
         public bunwarpj.Param bParam = null;
     }
 
-    public class BUnwarpJTransform implements Transform {
+    public class BUnwarpJTransform extends Transform {
         public String transformPath = "";
     }
 }

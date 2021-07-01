@@ -176,17 +176,18 @@ public class RunScript extends Module {
                 switch (outputType) {
                     case OutputTypes.IMAGE:
                         String outputImageName = parameterCollection.getValue(OUTPUT_IMAGE);
-                        Image outputImage = (Image) scriptModule.getOutput(outputImageName);
-                        workspace.addImage(outputImage);
+                        // Image outputImage = (Image) scriptModule.getOutput(outputImageName);
+                        // workspace.addImage(outputImage);
                         if (showOutput)
-                            outputImage.showImage();
+                            workspace.getImage(outputImageName).showImage();
                         break;
                     case OutputTypes.OBJECTS:
                         String outputObjectsName = parameterCollection.getValue(OUTPUT_OBJECTS);
-                        ObjCollection outputObjects = (ObjCollection) scriptModule.getOutput(outputObjectsName);
-                        workspace.addObjects(outputObjects);
+                        // ObjCollection outputObjects = (ObjCollection)
+                        // scriptModule.getOutput(outputObjectsName);
+                        // workspace.addObjects(outputObjects);
                         if (showOutput)
-                            outputObjects.convertToImageRandomColours().showImage();
+                            workspace.getObjectSet(outputObjectsName).convertToImageRandomColours().showImage();
                         break;
                 }
             }

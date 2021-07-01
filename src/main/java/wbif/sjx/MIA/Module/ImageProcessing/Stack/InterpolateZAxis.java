@@ -1,8 +1,9 @@
 package wbif.sjx.MIA.Module.ImageProcessing.Stack;
 
 import ij.ImagePlus;
-import ij.ImageStack;
 import ij.plugin.Resizer;
+import ij.process.ImageProcessor;
+import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Categories;
 import wbif.sjx.MIA.Module.Category;
 import wbif.sjx.MIA.Module.Module;
@@ -10,9 +11,11 @@ import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.Status;
 import wbif.sjx.MIA.Object.Workspace;
+import wbif.sjx.MIA.Object.Parameters.ChoiceP;
 import wbif.sjx.MIA.Object.Parameters.InputImageP;
 import wbif.sjx.MIA.Object.Parameters.OutputImageP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
+import wbif.sjx.MIA.Object.Parameters.SeparatorP;
 import wbif.sjx.MIA.Object.References.Collections.ImageMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.MetadataRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.ObjMeasurementRefCollection;
@@ -23,28 +26,56 @@ import wbif.sjx.MIA.Object.References.Collections.PartnerRefCollection;
  * Created by sc13967 on 23/03/2018.
  */
 public class InterpolateZAxis extends Module {
+    public static final String INPUT_SEPARATOR = "Image input/output";
     public static final String INPUT_IMAGE = "Input image";
     public static final String OUTPUT_IMAGE = "Output image";
 
-    public InterpolateZAxis(ModuleCollection modules) {
-        super("Interpolate Z axis",modules);
+    public static final String INTERPOLATION_SEPARATOR = "Interpolation options";
+    public static final String INTERPOLATION_MODE = "Interpolation mode";
+
+    public interface InterpolationModes {
+        String NONE = "None";
+        String BICUBIC = "Bicubic";
+        String BILINEAR = "Bilinear";
+
+        String[] ALL = new String[] { NONE, BICUBIC, BILINEAR };
+
     }
 
-    public static ImagePlus matchZToXY(ImagePlus inputImagePlus) {
+    public InterpolateZAxis(ModuleCollection modules) {
+        super("Interpolate Z axis", modules);
+    }
+
+    public static ImagePlus matchZToXY(ImagePlus inputImagePlus, String interpolationMode) {
         // Calculating scaling
         int nSlices = inputImagePlus.getNSlices();
         double distPerPxXY = inputImagePlus.getCalibration().pixelWidth;
         double distPerPxZ = inputImagePlus.getCalibration().pixelDepth;
-        int finalNSlices = (int) Math.round(nSlices*distPerPxZ/distPerPxXY);
+        if (Double.isNaN(distPerPxXY) || Double.isNaN(distPerPxZ)) {
+            MIA.log.writeWarning("XY or Z spatial calibration missing.  Interpolation not applied");
+            return inputImagePlus.duplicate();
+        }
+
+        int finalNSlices = (int) Math.round(nSlices * distPerPxZ / distPerPxXY);
 
         // Checking if interpolation is necessary
-        if (finalNSlices == nSlices) return inputImagePlus;
+        if (finalNSlices == nSlices)
+            return inputImagePlus;
 
         Resizer resizer = new Resizer();
         resizer.setAverageWhenDownsizing(true);
 
-        ImagePlus resized = resizer.zScale(inputImagePlus,finalNSlices,Resizer.IN_PLACE);
-        resized.setDimensions(inputImagePlus.getNChannels(),finalNSlices,inputImagePlus.getNFrames());
+        int interpolation = ImageProcessor.NONE;
+        switch (interpolationMode) {
+            case InterpolationModes.BICUBIC:
+                interpolation = ImageProcessor.BICUBIC;
+                break;
+            case InterpolationModes.BILINEAR:
+                interpolation = ImageProcessor.BILINEAR;
+                break;
+        }
+        ImagePlus resized = resizer.zScale(inputImagePlus, finalNSlices, interpolation + Resizer.IN_PLACE);
+        resized.setDimensions(inputImagePlus.getNChannels(), finalNSlices, inputImagePlus.getNFrames());
 
         return resized;
 
@@ -69,13 +100,15 @@ public class InterpolateZAxis extends Module {
 
         // Getting parameters
         String outputImageName = parameters.getValue(OUTPUT_IMAGE);
+        String interpolationMode = parameters.getValue(INTERPOLATION_MODE);
 
-        ImagePlus outputImagePlus = matchZToXY(inputImagePlus);
+        ImagePlus outputImagePlus = matchZToXY(inputImagePlus, interpolationMode);
 
-        Image outputImage = new Image(outputImageName,outputImagePlus);
+        Image outputImage = new Image(outputImageName, outputImagePlus);
         workspace.addImage(outputImage);
 
-        if (showOutput) outputImage.showImage();
+        if (showOutput)
+            outputImage.showImage();
 
         return Status.PASS;
 
@@ -83,9 +116,13 @@ public class InterpolateZAxis extends Module {
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new InputImageP(INPUT_IMAGE,this));
+        parameters.add(new SeparatorP(INPUT_SEPARATOR, this));
+        parameters.add(new InputImageP(INPUT_IMAGE, this));
         parameters.add(new OutputImageP(OUTPUT_IMAGE, this));
-        
+
+        parameters.add(new SeparatorP(INTERPOLATION_SEPARATOR, this));
+        parameters.add(new ChoiceP(INTERPOLATION_MODE, this, InterpolationModes.NONE, InterpolationModes.ALL));
+
         addParameterDescriptions();
 
     }
@@ -128,7 +165,9 @@ public class InterpolateZAxis extends Module {
     void addParameterDescriptions() {
         parameters.get(INPUT_IMAGE).setDescription("Input image to which the Z-axis interpolation will be applied.");
 
-        parameters.get(OUTPUT_IMAGE).setDescription("Output image with Z-axis interpolation applied.  This image will be stored in the workspace and be accessible using this name.");
+        parameters.get(OUTPUT_IMAGE).setDescription(
+                "Output image with Z-axis interpolation applied.  This image will be stored in the workspace and be accessible using this name.");
 
+        parameters.get(INTERPOLATION_MODE).setDescription("Controls how interpolated pixel values are calculated");
     }
 }

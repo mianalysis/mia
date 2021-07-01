@@ -1,15 +1,15 @@
 package wbif.sjx.MIA.Module.ObjectProcessing.Identification;
 
+import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Categories;
 import wbif.sjx.MIA.Module.Category;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
-import wbif.sjx.MIA.Module.Core.InputControl;
+import wbif.sjx.MIA.Object.Measurement;
 import wbif.sjx.MIA.Object.Obj;
 import wbif.sjx.MIA.Object.ObjCollection;
 import wbif.sjx.MIA.Object.Status;
 import wbif.sjx.MIA.Object.Workspace;
-import wbif.sjx.MIA.Object.Parameters.BooleanP;
 import wbif.sjx.MIA.Object.Parameters.ChoiceP;
 import wbif.sjx.MIA.Object.Parameters.InputObjectsP;
 import wbif.sjx.MIA.Object.Parameters.ObjectMeasurementP;
@@ -35,13 +35,33 @@ public class GetLocalObjectRegion extends Module {
     public static final String INPUT_OBJECTS = "Input objects";
     public static final String OUTPUT_OBJECTS = "Output objects";
 
-    public static final String REGION_SEPARATOR = "Local region controls";
+    public static final String CENTROID_SEPARATOR = "Centroid controls";
+    public static final String CENTROID_SOURCE = "Centoid value source";
+    public static final String X_POSITION = "X position";
+    public static final String Y_POSITION = "Y position";
+    public static final String Z_POSITION = "Z position";
+    public static final String X_MEASUREMENT = "X-measurement";
+    public static final String Y_MEASUREMENT = "Y-measurement";
+    public static final String Z_MEASUREMENT = "Z-measurement";
+    public static final String PARENT_OBJECT_FOR_CENTROID = "Parent object for centroid";
+    public static final String CENTROID_SPATIAL_UNITS = "Centroid spatial units";
+
+    public static final String RADIUS_SEPARATOR = "Radius controls";
     public static final String RADIUS_SOURCE = "Radius value source";
-    public static final String FIXED_VALUE = "Fixed value";
+    public static final String FIXED_VALUE_FOR_RADIUS = "Radius (px)";
     public static final String RADIUS_MEASUREMENT = "Radius measurement";
-    public static final String PARENT_OBJECT = "Parent object";
-    public static final String PARENT_RADIUS_MEASUREMENT = "Parent radius measurement";
-    public static final String CALIBRATED_UNITS = "Calibrated units";
+    public static final String PARENT_OBJECT_FOR_RADIUS = "Parent object for radius";
+    public static final String RADIUS_SPATIAL_UNITS = "Radius spatial units";
+
+    public interface CentroidSources {
+        String FIXED_VALUE = "Fixed value";
+        String MEASUREMENT = "Measurement";
+        String OBJECT_CENTROID = "Object centroid";
+        String PARENT_MEASUREMENT = "Parent measurement";
+
+        String[] ALL = new String[] { FIXED_VALUE, MEASUREMENT, OBJECT_CENTROID, PARENT_MEASUREMENT };
+
+    }
 
     public interface RadiusSources {
         String FIXED_VALUE = "Fixed value";
@@ -53,98 +73,59 @@ public class GetLocalObjectRegion extends Module {
 
     }
 
+    public interface SpatialUnits {
+        String CALIBRATED = "Calibrated";
+        String PIXELS = "Pixel/slice";
+
+        String[] ALL = new String[] { CALIBRATED, PIXELS };
+
+    }
+
     public GetLocalObjectRegion(ModuleCollection modules) {
         super("Get local object region", modules);
     }
 
-    public static Obj getLocalRegion(Obj inputObject, ObjCollection outputObjects, double radius, boolean calibrated,
+    public static Obj getLocalRegion(Obj inputObject, ObjCollection outputObjects, int[] centroid, int radius,
             boolean addRelationship) throws IntegerOverflowException {
-        // Getting spatial calibration
-        double dppXY = inputObject.getDppXY();
-        double dppZ = inputObject.getDppZ();
-        double xy_z_ratio = dppXY / dppZ;
+        double xy_z_ratio = inputObject.getDppXY() / inputObject.getDppZ();
 
         // Creating new object and assigning relationship to input objects
         Obj outputObject = outputObjects.createAndAddNewObject(inputObject.getVolumeType(), inputObject.getID());
 
-        // Getting centroid coordinates
-        double xCent = inputObject.getXMean(true);
-        double yCent = inputObject.getYMean(true);
-        double zCent = inputObject.getZMean(true, false);
-
         if (radius == 0) {
             // The output object is a single point
             try {
-                outputObject.add((int) Math.round(xCent), (int) Math.round(yCent), (int) Math.round(zCent));
+                outputObject.add(centroid[0], centroid[1], centroid[2]);
             } catch (PointOutOfRangeException e) {
             }
         } else {
-            if (calibrated) {
-                int xMin = Math.max((int) Math.floor(xCent - radius / dppXY), 0);
-                int xMax = Math.min((int) Math.ceil(xCent + radius / dppXY), inputObject.getWidth());
-                int yMin = Math.max((int) Math.floor(yCent - radius / dppXY), 0);
-                int yMax = Math.min((int) Math.ceil(yCent + radius / dppXY), inputObject.getHeight());
-                int zMin = Math.max((int) Math.floor(zCent - radius / dppZ), 0);
-                int zMax = Math.min((int) Math.ceil(zCent + radius / dppZ), inputObject.getNSlices());
+            int xMin = Math.max((int) Math.floor(centroid[0] - radius), 0);
+            int xMax = Math.min((int) Math.ceil(centroid[0] + radius), inputObject.getWidth());
+            int yMin = Math.max((int) Math.floor(centroid[1] - radius), 0);
+            int yMax = Math.min((int) Math.ceil(centroid[1] + radius), inputObject.getHeight());
+            int zMin = Math.max((int) Math.floor(centroid[2] - radius * xy_z_ratio), 0);
+            int zMax = Math.min((int) Math.ceil(centroid[2] + radius * xy_z_ratio), inputObject.getNSlices());
 
-                for (int x = xMin; x < xMax; x++) {
-                    double xx = (xCent - x) * dppXY;
+            for (int x = xMin; x <= xMax; x++) {
+                double xx = centroid[0] - x;
 
-                    for (int y = yMin; y < yMax; y++) {
-                        double yy = (yCent - y) * dppXY;
+                for (int y = yMin; y <= yMax; y++) {
+                    double yy = centroid[1] - y;
 
-                        if (inputObject.is2D()) {
-                            if (Math.sqrt(xx * xx + yy * yy) < radius) {
+                    if (inputObject.is2D()) {
+                        if (Math.sqrt(xx * xx + yy * yy) < radius)
+                            try {
+                                outputObject.add(x, y, 0);
+                            } catch (PointOutOfRangeException e) {
+                            }
+                    } else {
+                        for (int z = zMin; z <= zMax; z++) {
+                            double zz = (centroid[2] - z) / xy_z_ratio;
+                            if (Math.sqrt(xx * xx + yy * yy + zz * zz) < radius)
                                 try {
-                                    outputObject.add(x, y, 0);
+                                    outputObject.add(x, y, z);
                                 } catch (PointOutOfRangeException e) {
                                 }
-                            }
-                        } else {
-                            for (int z = zMin; z < zMax; z++) {
-                                double zz = (zCent - z) * dppZ;
-                                if (Math.sqrt(xx * xx + yy * yy + zz * zz) < radius) {
-                                    try {
-                                        outputObject.add(x, y, z);
-                                    } catch (PointOutOfRangeException e) {
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-
-            } else {
-                int xMin = Math.max((int) Math.floor(xCent - radius), 0);
-                int xMax = Math.min((int) Math.ceil(xCent + radius), inputObject.getWidth());
-                int yMin = Math.max((int) Math.floor(yCent - radius), 0);
-                int yMax = Math.min((int) Math.ceil(yCent + radius), inputObject.getHeight());
-                int zMin = Math.max((int) Math.floor(zCent - radius * xy_z_ratio), 0);
-                int zMax = Math.min((int) Math.ceil(zCent + radius * xy_z_ratio), inputObject.getNSlices());
-
-                for (int x = xMin; x < xMax; x++) {
-                    double xx = xCent - x;
-
-                    for (int y = yMin; y < yMax; y++) {
-                        double yy = yCent - y;
-
-                        if (inputObject.is2D()) {
-                            if (Math.sqrt(xx * xx + yy * yy) < radius) {
-                                try {
-                                    outputObject.add(x, y, 0);
-                                } catch (PointOutOfRangeException e) {
-                                }
-                            }
-                        } else {
-                            for (int z = zMin; z < zMax; z++) {
-                                double zz = (zCent - z) / xy_z_ratio;
-                                if (Math.sqrt(xx * xx + yy * yy + zz * zz) < radius) {
-                                    try {
-                                        outputObject.add(x, y, z);
-                                    } catch (PointOutOfRangeException e) {
-                                    }
-                                }
-                            }
                         }
                     }
                 }
@@ -164,6 +145,110 @@ public class GetLocalObjectRegion extends Module {
 
     }
 
+    protected int getRadius(Obj inputObject) {
+        String radiusSource = parameters.getValue(RADIUS_SOURCE);
+        double radius = parameters.getValue(FIXED_VALUE_FOR_RADIUS);
+        String radiusMeasurement = parameters.getValue(RADIUS_MEASUREMENT);
+        String radiusParentObjectsName = parameters.getValue(PARENT_OBJECT_FOR_RADIUS);
+        String radiusUnits = parameters.getValue(RADIUS_SPATIAL_UNITS);
+
+        switch (radiusSource) {
+            case RadiusSources.MEASUREMENT:
+                radius = inputObject.getMeasurement(radiusMeasurement).getValue();
+                break;
+            case RadiusSources.PARENT_MEASUREMENT:
+                Obj parentObject = inputObject.getParent(radiusParentObjectsName);
+                if (parentObject == null)
+                    return -1;
+                else {
+                    Measurement measurement = parentObject.getMeasurement(radiusMeasurement);
+                    if (measurement == null)
+                        return -1;
+                    radius = measurement.getValue();
+                }
+                break;
+            case RadiusSources.SINGLE_POINT:
+                return 0;
+        }
+
+        switch (radiusUnits) {
+            case SpatialUnits.CALIBRATED:
+                return (int) Math.round(radius / inputObject.getDppXY());
+            case SpatialUnits.PIXELS:
+            default:
+                return (int) Math.round(radius);
+        }
+    }
+
+    protected int[] getCentroid(Obj inputObject) {
+        String centroidSource = parameters.getValue(CENTROID_SOURCE);
+        double xPosition = parameters.getValue(X_POSITION);
+        double yPosition = parameters.getValue(Y_POSITION);
+        double zPosition = parameters.getValue(Z_POSITION);
+        String xMeasurementName = parameters.getValue(X_MEASUREMENT);
+        String yMeasurementName = parameters.getValue(Y_MEASUREMENT);
+        String zMeasurementName = parameters.getValue(Z_MEASUREMENT);
+        String centroidParentObjectsName = parameters.getValue(PARENT_OBJECT_FOR_CENTROID);
+        String centroidUnits = parameters.getValue(CENTROID_SPATIAL_UNITS);
+
+        if (inputObject.is2D())
+            zPosition = 0;
+
+        switch (centroidSource) {
+            case CentroidSources.MEASUREMENT:
+                Measurement xMeasurement = inputObject.getMeasurement(xMeasurementName);
+                Measurement yMeasurement = inputObject.getMeasurement(yMeasurementName);
+                Measurement zMeasurement = inputObject.getMeasurement(zMeasurementName);
+
+                if (xMeasurement == null || yMeasurement == null || (!inputObject.is2D() && zMeasurement == null))
+                    return null;
+
+                xPosition = xMeasurement.getValue();
+                yPosition = yMeasurement.getValue();
+                if (!inputObject.is2D())
+                    zPosition = zMeasurement.getValue();
+                break;
+
+            case CentroidSources.OBJECT_CENTROID:
+                xPosition = inputObject.getXMean(true);
+                yPosition = inputObject.getYMean(true);
+                if (!inputObject.is2D())
+                    zPosition = inputObject.getZMean(true, false);
+                break;
+
+            case CentroidSources.PARENT_MEASUREMENT:
+                Obj parentObject = inputObject.getParent(centroidParentObjectsName);
+                if (parentObject == null)
+                    return null;
+                else {
+                    xMeasurement = parentObject.getMeasurement(xMeasurementName);
+                    yMeasurement = parentObject.getMeasurement(yMeasurementName);
+                    zMeasurement = parentObject.getMeasurement(zMeasurementName);
+
+                    if (xMeasurement == null || yMeasurement == null || (!inputObject.is2D() && zMeasurement == null))
+                        return null;
+
+                    xPosition = xMeasurement.getValue();
+                    yPosition = yMeasurement.getValue();
+                    if (!inputObject.is2D())
+                        zPosition = zMeasurement.getValue();
+                }
+                break;
+        }
+
+        switch (centroidUnits) {
+            case SpatialUnits.CALIBRATED:
+                xPosition = xPosition / inputObject.getDppXY();
+                yPosition = yPosition / inputObject.getDppXY();
+                if (!inputObject.is2D())
+                    zPosition = zPosition / inputObject.getDppXY();
+                break;
+        }
+
+        return new int[] { (int) Math.round(xPosition), (int) Math.round(yPosition), (int) Math.round(zPosition) };
+
+    }
+
     @Override
     public Category getCategory() {
         return Categories.OBJECT_PROCESSING_IDENTIFICATION;
@@ -179,12 +264,6 @@ public class GetLocalObjectRegion extends Module {
         // Getting parameters
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
         String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);
-        String radiusSource = parameters.getValue(RADIUS_SOURCE);
-        double radius = parameters.getValue(FIXED_VALUE);
-        String radiusMeasurement = parameters.getValue(RADIUS_MEASUREMENT);
-        String parentObjectsName = parameters.getValue(PARENT_OBJECT);
-        String parentRadiusMeasurement = parameters.getValue(PARENT_RADIUS_MEASUREMENT);
-        boolean calibrated = parameters.getValue(CALIBRATED_UNITS);
 
         // Getting input objects
         ObjCollection inputObjects = workspace.getObjects().get(inputObjectsName);
@@ -194,25 +273,20 @@ public class GetLocalObjectRegion extends Module {
 
         // Iterating over each input object, creating an output object
         for (Obj inputObject : inputObjects.values()) {
-            // Getting radius
-            switch (radiusSource) {
-            case RadiusSources.MEASUREMENT:
-                radius = inputObject.getMeasurement(radiusMeasurement).getValue();
-                break;
-            case RadiusSources.PARENT_MEASUREMENT:
-                Obj parentObject = inputObject.getParent(parentObjectsName);
-                if (parentObject == null)
-                    radius = Double.NaN;
-                else
-                    radius = parentObject.getMeasurement(parentRadiusMeasurement).getValue();
-                break;
-            case RadiusSources.SINGLE_POINT:
-                radius = 0;
-                break;
+            int radius = getRadius(inputObject);
+            if (radius == -1) {
+                MIA.log.writeWarning("Could not get radius for object " + inputObject.getID());
+                continue;
             }
+                
+            int[] centroid = getCentroid(inputObject);
+            if (centroid == null) {
+                MIA.log.writeWarning("Could not get centroid for object " + inputObject.getID());
+                continue;
+            }                
 
             // Getting local region object
-            getLocalRegion(inputObject, outputObjects, radius, calibrated, true);
+            getLocalRegion(inputObject, outputObjects, centroid, radius, true);
 
         }
 
@@ -233,13 +307,23 @@ public class GetLocalObjectRegion extends Module {
         parameters.add(new InputObjectsP(INPUT_OBJECTS, this));
         parameters.add(new OutputObjectsP(OUTPUT_OBJECTS, this));
 
-        parameters.add(new SeparatorP(REGION_SEPARATOR, this));
+        parameters.add(new SeparatorP(CENTROID_SEPARATOR, this));
+        parameters.add(new ChoiceP(CENTROID_SOURCE, this, CentroidSources.OBJECT_CENTROID, CentroidSources.ALL));
+        parameters.add(new DoubleP(X_POSITION, this, 0.0));
+        parameters.add(new DoubleP(Y_POSITION, this, 0.0));
+        parameters.add(new DoubleP(Z_POSITION, this, 0.0));
+        parameters.add(new ObjectMeasurementP(X_MEASUREMENT, this));
+        parameters.add(new ObjectMeasurementP(Y_MEASUREMENT, this));
+        parameters.add(new ObjectMeasurementP(Z_MEASUREMENT, this));
+        parameters.add(new ParentObjectsP(PARENT_OBJECT_FOR_CENTROID, this));
+        parameters.add(new ChoiceP(CENTROID_SPATIAL_UNITS, this, SpatialUnits.PIXELS, SpatialUnits.ALL));
+
+        parameters.add(new SeparatorP(RADIUS_SEPARATOR, this));
         parameters.add(new ChoiceP(RADIUS_SOURCE, this, RadiusSources.FIXED_VALUE, RadiusSources.ALL));
-        parameters.add(new DoubleP(FIXED_VALUE, this, 2.0));
+        parameters.add(new DoubleP(FIXED_VALUE_FOR_RADIUS, this, 2.0));
         parameters.add(new ObjectMeasurementP(RADIUS_MEASUREMENT, this));
-        parameters.add(new ParentObjectsP(PARENT_OBJECT, this));
-        parameters.add(new ObjectMeasurementP(PARENT_RADIUS_MEASUREMENT, this));
-        parameters.add(new BooleanP(CALIBRATED_UNITS, this, false));
+        parameters.add(new ParentObjectsP(PARENT_OBJECT_FOR_RADIUS, this));
+        parameters.add(new ChoiceP(RADIUS_SPATIAL_UNITS, this, SpatialUnits.PIXELS, SpatialUnits.ALL));
 
         addParameterDescriptions();
 
@@ -248,7 +332,8 @@ public class GetLocalObjectRegion extends Module {
     @Override
     public ParameterCollection updateAndGetParameters() {
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
-        String parentObjectsName = parameters.getValue(PARENT_OBJECT);
+        String parentObjectsForCentroidName = parameters.getValue(PARENT_OBJECT_FOR_CENTROID);
+        String parentObjectsForRadiusName = parameters.getValue(PARENT_OBJECT_FOR_RADIUS);
 
         ParameterCollection returnedParameters = new ParameterCollection();
 
@@ -256,26 +341,74 @@ public class GetLocalObjectRegion extends Module {
         returnedParameters.add(parameters.getParameter(INPUT_OBJECTS));
         returnedParameters.add(parameters.getParameter(OUTPUT_OBJECTS));
 
-        returnedParameters.add(parameters.getParameter(REGION_SEPARATOR));
+        returnedParameters.add(parameters.getParameter(CENTROID_SEPARATOR));
+        returnedParameters.add(parameters.getParameter(CENTROID_SOURCE));
+        switch ((String) parameters.getValue(CENTROID_SOURCE)) {
+            case CentroidSources.FIXED_VALUE:
+                returnedParameters.add(parameters.getParameter(X_POSITION));
+                returnedParameters.add(parameters.getParameter(Y_POSITION));
+                returnedParameters.add(parameters.getParameter(Z_POSITION));
+
+                break;
+
+            case CentroidSources.MEASUREMENT:
+                returnedParameters.add(parameters.getParameter(X_MEASUREMENT));
+                ((ObjectMeasurementP) parameters.getParameter(X_MEASUREMENT)).setObjectName(inputObjectsName);
+
+                returnedParameters.add(parameters.getParameter(Y_MEASUREMENT));
+                ((ObjectMeasurementP) parameters.getParameter(Y_MEASUREMENT)).setObjectName(inputObjectsName);
+
+                returnedParameters.add(parameters.getParameter(Z_MEASUREMENT));
+                ((ObjectMeasurementP) parameters.getParameter(Z_MEASUREMENT)).setObjectName(inputObjectsName);
+
+                break;
+
+            case CentroidSources.PARENT_MEASUREMENT:
+                returnedParameters.add(parameters.getParameter(PARENT_OBJECT_FOR_CENTROID));
+                ((ParentObjectsP) parameters.getParameter(PARENT_OBJECT_FOR_CENTROID))
+                        .setChildObjectsName(inputObjectsName);
+
+                returnedParameters.add(parameters.getParameter(X_MEASUREMENT));
+                ((ObjectMeasurementP) parameters.getParameter(X_MEASUREMENT))
+                        .setObjectName(parentObjectsForCentroidName);
+
+                returnedParameters.add(parameters.getParameter(Y_MEASUREMENT));
+                ((ObjectMeasurementP) parameters.getParameter(Y_MEASUREMENT))
+                        .setObjectName(parentObjectsForCentroidName);
+
+                returnedParameters.add(parameters.getParameter(Z_MEASUREMENT));
+                ((ObjectMeasurementP) parameters.getParameter(Z_MEASUREMENT))
+                        .setObjectName(parentObjectsForCentroidName);
+
+                break;
+
+        }
+
+        returnedParameters.add(parameters.getParameter(CENTROID_SPATIAL_UNITS));
+
+        returnedParameters.add(parameters.getParameter(RADIUS_SEPARATOR));
         returnedParameters.add(parameters.getParameter(RADIUS_SOURCE));
         switch ((String) parameters.getValue(RADIUS_SOURCE)) {
-        case RadiusSources.FIXED_VALUE:
-            returnedParameters.add(parameters.getParameter(FIXED_VALUE));
-            break;
+            case RadiusSources.FIXED_VALUE:
+                returnedParameters.add(parameters.getParameter(FIXED_VALUE_FOR_RADIUS));
+                break;
 
-        case RadiusSources.MEASUREMENT:
-            returnedParameters.add(parameters.getParameter(RADIUS_MEASUREMENT));
-            ((ObjectMeasurementP) parameters.getParameter(RADIUS_MEASUREMENT)).setObjectName(inputObjectsName);
-            break;
+            case RadiusSources.MEASUREMENT:
+                returnedParameters.add(parameters.getParameter(RADIUS_MEASUREMENT));
+                ((ObjectMeasurementP) parameters.getParameter(RADIUS_MEASUREMENT)).setObjectName(inputObjectsName);
+                break;
 
-        case RadiusSources.PARENT_MEASUREMENT:
-            returnedParameters.add(parameters.getParameter(PARENT_OBJECT));
-            ((ParentObjectsP) parameters.getParameter(PARENT_OBJECT)).setChildObjectsName(inputObjectsName);
-            returnedParameters.add(parameters.getParameter(PARENT_RADIUS_MEASUREMENT));
-            ((ObjectMeasurementP) parameters.getParameter(PARENT_RADIUS_MEASUREMENT)).setObjectName(parentObjectsName);
-            break;
+            case RadiusSources.PARENT_MEASUREMENT:
+                returnedParameters.add(parameters.getParameter(PARENT_OBJECT_FOR_RADIUS));
+                ((ParentObjectsP) parameters.getParameter(PARENT_OBJECT_FOR_RADIUS))
+                        .setChildObjectsName(inputObjectsName);
+                returnedParameters.add(parameters.getParameter(RADIUS_MEASUREMENT));
+                ((ObjectMeasurementP) parameters.getParameter(RADIUS_MEASUREMENT))
+                        .setObjectName(parentObjectsForRadiusName);
+                break;
         }
-        returnedParameters.add(parameters.getParameter(CALIBRATED_UNITS));
+
+        returnedParameters.add(parameters.getParameter(RADIUS_SPATIAL_UNITS));
 
         return returnedParameters;
 
@@ -326,7 +459,7 @@ public class GetLocalObjectRegion extends Module {
 
         parameters.get(RADIUS_SOURCE).setDescription("Controls how the radius of the spot is defined:<br><ul>"
 
-                + "<li>\"" + RadiusSources.FIXED_VALUE + "\" A single radius, defined by \"" + FIXED_VALUE
+                + "<li>\"" + RadiusSources.FIXED_VALUE + "\" A single radius, defined by \"" + FIXED_VALUE_FOR_RADIUS
                 + "\" will be used for all objects.</li>"
 
                 + "<li>\"" + RadiusSources.MEASUREMENT
@@ -334,35 +467,35 @@ public class GetLocalObjectRegion extends Module {
                 + "\") associated with the object being measured.  Radii will potentially be different for each object.</li>"
 
                 + "<li>\"" + RadiusSources.PARENT_MEASUREMENT
-                + "\" The radius will be equal to the value of a measurement (specified by \""
-                + PARENT_RADIUS_MEASUREMENT + "\") associated a parent of the object being measured (specified by \""
-                + PARENT_OBJECT + "\").  Radii will potentially be different for each object.</li>"
+                + "\" The radius will be equal to the value of a measurement (specified by \"" + RADIUS_MEASUREMENT
+                + "\") associated a parent of the object being measured (specified by \"" + PARENT_OBJECT_FOR_RADIUS
+                + "\").  Radii will potentially be different for each object.</li>"
 
                 + "<li>\"" + RadiusSources.SINGLE_POINT
                 + "\" The output objects will all be a single point corresponding to the centroid of the input object.</li></ul>");
 
-        parameters.get(FIXED_VALUE)
+        parameters.get(FIXED_VALUE_FOR_RADIUS)
                 .setDescription("Fixed spot radius to use for generating all local object regions when \""
                         + RADIUS_SOURCE + "\" is in \"" + RadiusSources.FIXED_VALUE + "\" mode.");
 
         parameters.get(RADIUS_MEASUREMENT).setDescription(
-                "Measurement associated with the input object.  This will be used as spot the radius for generating the local object region when \""
-                        + RADIUS_SOURCE + "\" is in \"" + RadiusSources.MEASUREMENT + "\" mode.");
+                "Measurement associated with the input or specified parent object.  This will be used as spot the radius for generating the local object region when \""
+                        + RADIUS_SOURCE + "\" is in \"" + RadiusSources.MEASUREMENT + "\" or \""
+                        + RadiusSources.PARENT_MEASUREMENT + "\" mode.");
 
-        parameters.get(PARENT_OBJECT).setDescription(
+        parameters.get(PARENT_OBJECT_FOR_RADIUS).setDescription(
                 "Parent object of the input object being processed.  This parent will provide the measurement (specified by \""
-                        + PARENT_RADIUS_MEASUREMENT
+                        + RADIUS_MEASUREMENT
                         + "\") to be used as the spot radius for generating the local object region when \""
                         + RADIUS_SOURCE + "\" is in \"" + RadiusSources.PARENT_MEASUREMENT + "\" mode.");
 
-        parameters.get(PARENT_RADIUS_MEASUREMENT).setDescription(
-                "Measurement associated with a parent of the input object.  This will be used as the spot radius for generating the local object region when \""
-                        + RADIUS_SOURCE + "\" is in \"" + RadiusSources.PARENT_MEASUREMENT + "\" mode.");
-
-        parameters.get(CALIBRATED_UNITS).setDescription(
-                "When selected, spot radius values (irrespective of whether they are fixed values, measurements or parent measurements) are assumed to be specified in calibrated units (as defined by the \""
-                        + new InputControl(null).getName() + "\" parameter \"" + InputControl.SPATIAL_UNIT
-                        + "\").  Otherwise, pixel units are assumed.");
+        // parameters.get(CALIBRATED_UNITS).setDescription(
+        // "When selected, spot radius values (irrespective of whether they are fixed
+        // values, measurements or parent measurements) are assumed to be specified in
+        // calibrated units (as defined by the \""
+        // + new InputControl(null).getName() + "\" parameter \"" +
+        // InputControl.SPATIAL_UNIT
+        // + "\"). Otherwise, pixel units are assumed.");
 
     }
 }

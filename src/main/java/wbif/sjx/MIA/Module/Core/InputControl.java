@@ -52,7 +52,7 @@ import wbif.sjx.common.FileConditions.ExtensionMatchesString;
 import wbif.sjx.common.FileConditions.FileCondition;
 import wbif.sjx.common.FileConditions.NameContainsString;
 import wbif.sjx.common.FileConditions.ParentContainsString;
-import wbif.sjx.common.Object.Metadata;
+import wbif.sjx.common.MetadataExtractors.Metadata;
 import wbif.sjx.common.System.FileCrawler;
 
 /**
@@ -152,11 +152,11 @@ public class InputControl extends Module {
             String filterType = collection.getValue(FILTER_TYPE);
 
             switch (filterSource) {
-            case FilterSources.EXTENSION:
-            case FilterSources.FILENAME:
-            case FilterSources.FILEPATH:
-                fileCrawler.addFileCondition(getFilenameFilter(filterType, filterValue, filterSource));
-                break;
+                case FilterSources.EXTENSION:
+                case FilterSources.FILENAME:
+                case FilterSources.FILEPATH:
+                    fileCrawler.addFileCondition(getFilenameFilter(filterType, filterValue, filterSource));
+                    break;
             }
         }
 
@@ -169,40 +169,40 @@ public class InputControl extends Module {
     private static FileCondition getFilenameFilter(String filterType, String filterValue, String filterSource) {
         FileCondition.Mode fileCondition;
         switch (filterType) {
-        case FilterTypes.INCLUDE_MATCHES_PARTIALLY:
-        default:
-            fileCondition = FileCondition.Mode.INC_PARTIAL;
-            break;
-        case FilterTypes.INCLUDE_MATCHES_COMPLETELY:
-            fileCondition = FileCondition.Mode.INC_COMPLETE;
-            break;
-        case FilterTypes.EXCLUDE_MATCHES_PARTIALLY:
-            fileCondition = FileCondition.Mode.EXC_PARTIAL;
-            break;
-        case FilterTypes.EXCLUDE_MATCHES_COMPLETELY:
-            fileCondition = FileCondition.Mode.EXC_COMPLETE;
-            break;
+            case FilterTypes.INCLUDE_MATCHES_PARTIALLY:
+            default:
+                fileCondition = FileCondition.Mode.INC_PARTIAL;
+                break;
+            case FilterTypes.INCLUDE_MATCHES_COMPLETELY:
+                fileCondition = FileCondition.Mode.INC_COMPLETE;
+                break;
+            case FilterTypes.EXCLUDE_MATCHES_PARTIALLY:
+                fileCondition = FileCondition.Mode.EXC_PARTIAL;
+                break;
+            case FilterTypes.EXCLUDE_MATCHES_COMPLETELY:
+                fileCondition = FileCondition.Mode.EXC_COMPLETE;
+                break;
         }
 
         switch (filterSource) {
-        case FilterSources.EXTENSION:
-            return new ExtensionMatchesString(filterValue, fileCondition);
-        case FilterSources.FILENAME:
-        default:
-            return new NameContainsString(filterValue, fileCondition);
-        case FilterSources.FILEPATH:
-            return new ParentContainsString(filterValue, fileCondition);
+            case FilterSources.EXTENSION:
+                return new ExtensionMatchesString(filterValue, fileCondition);
+            case FilterSources.FILENAME:
+            default:
+                return new NameContainsString(filterValue, fileCondition);
+            case FilterSources.FILEPATH:
+                return new ParentContainsString(filterValue, fileCondition);
         }
     }
 
     public TreeMap<Integer, String> getSeriesNumbers(File inputFile) {
         try {
             switch ((String) parameters.getValue(SERIES_MODE)) {
-            case SeriesModes.ALL_SERIES:
-                return getAllSeriesNumbers(inputFile);
+                case SeriesModes.ALL_SERIES:
+                    return getAllSeriesNumbers(inputFile);
 
-            case InputControl.SeriesModes.SERIES_LIST:
-                return getSeriesListNumbers(inputFile);
+                case InputControl.SeriesModes.SERIES_LIST:
+                    return getSeriesListNumbers(inputFile);
 
             }
         } catch (Exception e) {
@@ -258,9 +258,9 @@ public class InputControl extends Module {
             String filterType = collection.getValue(FILTER_TYPE);
 
             switch (filterSource) {
-            case FilterSources.SERIESNAME:
-                filters.add(getFilenameFilter(filterType, filterValue, filterSource));
-                break;
+                case FilterSources.SERIESNAME:
+                    filters.add(getFilenameFilter(filterType, filterValue, filterSource));
+                    break;
             }
         }
 
@@ -413,9 +413,9 @@ public class InputControl extends Module {
         ChoiceP seriesMode = (ChoiceP) parameters.getParameter(SERIES_MODE);
         returnedParameters.add(seriesMode);
         switch (seriesMode.getChoice()) {
-        case SeriesModes.SERIES_LIST:
-            returnedParameters.add(parameters.getParameter(SERIES_LIST));
-            break;
+            case SeriesModes.SERIES_LIST:
+                returnedParameters.add(parameters.getParameter(SERIES_LIST));
+                break;
         }
         returnedParameters.add(parameters.getParameter(LOAD_FIRST_PER_FOLDER));
         returnedParameters.add(parameters.getParameter(LOAD_FIRST_MATCHING_GROUP));
@@ -517,6 +517,9 @@ public class InputControl extends Module {
 
         parameters.get(PATTERN).setDescription("Regular expression pattern to use when \"" + LOAD_FIRST_MATCHING_GROUP
                 + "\" is enabled.  This pattern must contain at least one group (specified using standard regex parenthesis notation).");
+
+        parameters.get(REFRESH_FILE).setDescription(
+                "When pressed, MIA will update the active file used in test mode (i.e. when executing individual modules from editing mode) based on the currently-selected input file/folder and series settings.");
 
         ParameterCollection templateParameters = ((ParameterGroup) parameters.get(ADD_FILTER)).getTemplateParameters();
         templateParameters.get(FILTER_SOURCE).setDescription("Type of filter to add.");

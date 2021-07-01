@@ -8,6 +8,7 @@ import ij.plugin.Duplicator;
 import ij.plugin.Resizer;
 import ij.plugin.SubHyperstackMaker;
 import inra.ijpb.binary.ChamferWeights3D;
+import inra.ijpb.binary.geodesic.GeodesicDistanceTransform3DFloat;
 import inra.ijpb.plugins.GeodesicDistanceMap3D;
 import wbif.sjx.MIA.Module.Categories;
 import wbif.sjx.MIA.Module.Category;
@@ -37,18 +38,20 @@ public class DistanceMap extends Module {
     public static final String INPUT_IMAGE = "Input image";
     public static final String OUTPUT_IMAGE = "Output image";
     public static final String DISTANCE_MAP_SEPARATOR = "Distance map controls";
-    // public static final String WEIGHT_MODE = "Weight modes";
+    public static final String WEIGHT_MODE = "Weight modes";
     public static final String MATCH_Z_TO_X = "Match Z to XY";
     public static final String SPATIAL_UNITS_MODE = "Spatial units mode";
 
     public interface WeightModes {
         String CHESSBOARD = "Chessboard (1,1,1)";
         String CITY_BLOCK = "City-Block (1,2,3)";
-        String QUASI_EUCLIDEAN = "Quasi-Euclidean (1,1.41,1.73)";
+        // String QUASI_EUCLIDEAN = "Quasi-Euclidean (1,1.41,1.73)";
         String BORGEFORS = "Borgefors (3,4,5)";
         String WEIGHTS_3_4_5_7 = "Svensson (3,4,5,7)";
 
-        String[] ALL = new String[] { CHESSBOARD, CITY_BLOCK, QUASI_EUCLIDEAN, BORGEFORS, WEIGHTS_3_4_5_7 };
+        // String[] ALL = new String[] { CHESSBOARD, CITY_BLOCK, QUASI_EUCLIDEAN,
+        // BORGEFORS, WEIGHTS_3_4_5_7 };
+        String[] ALL = new String[] { CHESSBOARD, CITY_BLOCK, BORGEFORS, WEIGHTS_3_4_5_7 };
 
     }
 
@@ -98,7 +101,7 @@ public class DistanceMap extends Module {
 
             // If necessary, interpolating the image in Z to match the XY spacing
             if (matchZToXY && nSlices > 1)
-                currentIpl = InterpolateZAxis.matchZToXY(currentIpl);
+                currentIpl = InterpolateZAxis.matchZToXY(currentIpl, InterpolateZAxis.InterpolationModes.NONE);
 
             // Creating a duplicate of the input image to act as a mask
             ImagePlus maskIpl = new Duplicator().run(currentIpl);
@@ -125,7 +128,7 @@ public class DistanceMap extends Module {
 
             if (verbose)
                 writeProgressStatus(++count, nFrames, "timepoints", name);
-                
+
         }
 
         Calibration inputCalibration = inputIpl.getCalibration();
@@ -136,7 +139,7 @@ public class DistanceMap extends Module {
         outputCalibration.pixelWidth = inputCalibration.pixelWidth;
         outputCalibration.pixelHeight = inputCalibration.pixelHeight;
         outputCalibration.setUnit(inputCalibration.getUnit());
-        
+
         outputIpl.setCalibration(outputCalibration);
 
         return new Image(outputImageName, outputIpl);
@@ -151,8 +154,8 @@ public class DistanceMap extends Module {
                 return ChamferWeights3D.CHESSBOARD.getFloatWeights();
             case WeightModes.CITY_BLOCK:
                 return ChamferWeights3D.CITY_BLOCK.getFloatWeights();
-            case WeightModes.QUASI_EUCLIDEAN:
-                return ChamferWeights3D.QUASI_EUCLIDEAN.getFloatWeights();
+            // case WeightModes.QUASI_EUCLIDEAN:
+            // return ChamferWeights3D.QUASI_EUCLIDEAN.getFloatWeights();
             case WeightModes.WEIGHTS_3_4_5_7:
             default:
                 return ChamferWeights3D.WEIGHTS_3_4_5_7.getFloatWeights();
@@ -184,11 +187,9 @@ public class DistanceMap extends Module {
 
         // Getting parameters
         String outputImageName = parameters.getValue(OUTPUT_IMAGE);
-        // String weightMode = parameters.getValue(WEIGHT_MODE);
+        String weightMode = parameters.getValue(WEIGHT_MODE);
         boolean matchZToXY = parameters.getValue(MATCH_Z_TO_X);
         String spatialUnits = parameters.getValue(SPATIAL_UNITS_MODE);
-
-        String weightMode = WeightModes.WEIGHTS_3_4_5_7;
 
         // Running distance map
         Image distanceMap = process(inputImage, outputImageName, weightMode, matchZToXY, true);
@@ -216,8 +217,7 @@ public class DistanceMap extends Module {
         parameters.add(new OutputImageP(OUTPUT_IMAGE, this));
 
         parameters.add(new SeparatorP(DISTANCE_MAP_SEPARATOR, this));
-        // parameters.add(new ChoiceP(WEIGHT_MODE, this, WeightModes.WEIGHTS_3_4_5_7,
-        // WeightModes.ALL));
+        parameters.add(new ChoiceP(WEIGHT_MODE, this, WeightModes.WEIGHTS_3_4_5_7, WeightModes.ALL));
         parameters.add(new BooleanP(MATCH_Z_TO_X, this, true));
         parameters.add(new ChoiceP(SPATIAL_UNITS_MODE, this, SpatialUnitsModes.PIXELS, SpatialUnitsModes.ALL));
 
@@ -267,6 +267,19 @@ public class DistanceMap extends Module {
 
         parameters.get(OUTPUT_IMAGE).setDescription(
                 "The output distance map will be saved to the workspace with this name.  This image will be 32-bit format.");
+
+        parameters.get(WEIGHT_MODE).setDescription(
+                "The pre-defined set of weights that are used to compute the 3D distance transform using chamfer approximations of the euclidean metric (descriptions taken from <a href=\"http://ijpb.github.io/MorphoLibJ/javadoc/\">http://ijpb.github.io/MorphoLibJ/javadoc/</a>):<br><ul>"
+                        + "<li>\"" + WeightModes.BORGEFORS
+                        + "\" Use weight values of 3 for orthogonal neighbors, 4 for diagonal neighbors and 5 for cube-diagonals (best approximation for 3-by-3-by-3 masks).</li>"
+
+                        + "<li>\"" + WeightModes.CHESSBOARD + "\" Use weight values of 1 for all neighbours.</li>"
+
+                        + "<li>\"" + WeightModes.CITY_BLOCK
+                        + "\" Use weight values of 1 for orthogonal neighbors, 2 for diagonal neighbors and 3 for cube-diagonals.</li>"
+
+                        + "<li>\"" + WeightModes.WEIGHTS_3_4_5_7
+                        + "\" Use weight values of 3 for orthogonal neighbors, 4 for diagonal neighbors, 5 for cube-diagonals and 7 for (2,1,1) shifts. Good approximation using only four weights, and keeping low value of orthogonal weight.</li></ul>");
 
         parameters.get(MATCH_Z_TO_X).setDescription(
                 "When selected, an image is interpolated in Z (so that all pixels are isotropic) prior to calculation of the distance map.  This prevents warping of the distance map along the Z-axis if XY and Z sampling aren't equal.");

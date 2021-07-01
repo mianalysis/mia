@@ -4,14 +4,12 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import ij.IJ;
 import ij.ImagePlus;
 import ij.ImageStack;
 import ij.Prefs;
 import ij.measure.Calibration;
 import ij.plugin.Duplicator;
 import ij.plugin.Scaler;
-import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Categories;
 import wbif.sjx.MIA.Module.Category;
 import wbif.sjx.MIA.Module.Module;
@@ -44,18 +42,17 @@ import wbif.sjx.MIA.Object.Units.TemporalUnit;
 import wbif.sjx.MIA.Process.ColourFactory;
 import wbif.sjx.MIA.Process.LabelFactory;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
-import wbif.sjx.common.MathFunc.Indexer;
-import wbif.sjx.common.MathFunc.VoxelSphere;
 import wbif.sjx.common.Object.Volume.PointOutOfRangeException;
 import wbif.sjx.common.Object.Volume.SpatCal;
 import wbif.sjx.common.Object.Volume.VolumeType;
+import wbif.sjx.common.Object.Voxels.SphereSolid;
 import wbif.sjx.common.Process.IntensityMinMax;
 import wbif.sjx.common.Process.HoughTransform.Transforms.SphereHoughTransform;
 
 /**
  * Created by sc13967 on 15/01/2018.
  */
-public class HoughSphereDetection extends Module {
+public class SphereHoughDetection extends Module {
     public static final String INPUT_SEPARATOR = "Image input, object output";
     public static final String INPUT_IMAGE = "Input image";
     public static final String OUTPUT_OBJECTS = "Output objects";
@@ -79,7 +76,7 @@ public class HoughSphereDetection extends Module {
     public static final String SHOW_HOUGH_SCORE = "Show detection score";
     public static final String LABEL_SIZE = "Label size";
 
-    public HoughSphereDetection(ModuleCollection modules) {
+    public SphereHoughDetection(ModuleCollection modules) {
         super("Sphere detection", modules);
     }
 
@@ -148,7 +145,7 @@ public class HoughSphereDetection extends Module {
                 ImagePlus substackIpl = substack.getImagePlus();
 
                 // Interpolating Z axis, so the image is equal in all dimensions
-                substackIpl = InterpolateZAxis.matchZToXY(substackIpl);
+                substackIpl = InterpolateZAxis.matchZToXY(substackIpl,InterpolateZAxis.InterpolationModes.BILINEAR);
 
                 // Applying downsample
                 if (samplingRate != 1) {
@@ -170,7 +167,7 @@ public class HoughSphereDetection extends Module {
 
                 // Initialising the Hough transform
                 int[][] paramRanges = new int[][] { { 0, ist.getWidth() - 1 }, { 0, ist.getHeight() - 1 },
-                        { 0, ipl.getNSlices() - 1 }, { minR, maxR } };
+                        { 0, ist.size() - 1 }, { minR, maxR } };
                 SphereHoughTransform transform = new SphereHoughTransform(ist, paramRanges);
                 transform.setnThreads(nThreads);
 
@@ -195,36 +192,29 @@ public class HoughSphereDetection extends Module {
                     }
                 }
 
-                // Getting circle objects and adding to workspace
+                // Getting sphere objects and adding to workspace
                 ArrayList<double[]> spheres = transform.getObjects(detectionThreshold, exclusionRadius);
-                Indexer indexer = new Indexer(ist.getWidth(), ist.getHeight(), ist.size());
                 for (double[] sphere : spheres) {
                     // Initialising the object
                     Obj outputObject = outputObjects.createAndAddNewObject(VolumeType.QUADTREE);
 
                     // Getting circle parameters
-                    double conv = inputImage.getImagePlus().getCalibration().pixelWidth
-                            / inputImage.getImagePlus().getCalibration().pixelDepth;
                     int x = (int) Math.round(sphere[0]) * samplingRate;
                     int y = (int) Math.round(sphere[1]) * samplingRate;
-                    int z = (int) Math.round(sphere[2] * samplingRate * conv);
+                    int z = (int) Math.round(sphere[2] * samplingRate * cal.dppXY / cal.dppZ);
                     int r = (int) Math.round(sphere[3]) * samplingRate + radiusResize;
                     double score = sphere[4];
 
                     // Getting coordinates corresponding to circle
-                    VoxelSphere voxelSphere = new VoxelSphere(r);
-                    int[] xx = voxelSphere.getXSphereFill();
-                    int[] yy = voxelSphere.getYSphereFill();
-                    int[] zz = voxelSphere.getZSphereFill();
+                    SphereSolid voxelSphere = new SphereSolid(r);
+                    int[] xx = voxelSphere.getX();
+                    int[] yy = voxelSphere.getY();
+                    int[] zz = voxelSphere.getZ();
 
                     for (int i = 0; i < xx.length; i++) {
-                        int idx = indexer.getIndex(new int[] { xx[i] + x, yy[i] + y, zz[i] + z });
-                        if (idx == -1)
-                            continue;
-
                         try {
                             try {
-                                outputObject.add(xx[i] + x, yy[i] + y, zz[i] + z);
+                                outputObject.add(xx[i] + x, yy[i] + y, (int) Math.round(zz[i]* cal.dppXY / cal.dppZ + z));
                             } catch (PointOutOfRangeException e) {
                             }
                         } catch (IntegerOverflowException e) {
