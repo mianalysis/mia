@@ -33,13 +33,17 @@ import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.Miscellaneous.GUISeparator;
 
 public class ModuleTable extends JTable implements ActionListener, MouseListener, TableCellRenderer {
-    /**
-     *
-     */
+    private static final String BACKSPACE = "backspace";
+    private static final String COPY = "copy";
+    private static final String PASTE = "paste";
+    private static final String DELETE = "delete";
+    private static final String OUTPUT = "output";
+    private static final String ENABLE = "enable";
+
     private static final long serialVersionUID = 3722736203899254351L;
     private ModuleCollection modules;
 
-    public ModuleTable(TableModel tableModel, ModuleCollection modules, HashMap<Module,Boolean> expandedStatus) {
+    public ModuleTable(TableModel tableModel, ModuleCollection modules, HashMap<Module, Boolean> expandedStatus) {
         super(tableModel);
 
         this.modules = modules;
@@ -50,8 +54,8 @@ public class ModuleTable extends JTable implements ActionListener, MouseListener
             public void valueChanged(ListSelectionEvent e) {
                 int[] rows = getSelectedRows();
                 Module[] selectedModules = new Module[rows.length];
-                for (int i=0;i<rows.length;i++) {
-                    selectedModules[i] = (Module) getValueAt(rows[i],0);
+                for (int i = 0; i < rows.length; i++) {
+                    selectedModules[i] = (Module) getValueAt(rows[i], 0);
                 }
 
                 GUI.setSelectedModules(selectedModules);
@@ -62,7 +66,7 @@ public class ModuleTable extends JTable implements ActionListener, MouseListener
         });
 
         addMouseListener(this);
-        setDefaultEditor(Object.class,null);
+        setDefaultEditor(Object.class, null);
         getColumnModel().getColumn(0).setCellRenderer(this);
         setTableHeader(null);
         setDragEnabled(true);
@@ -75,27 +79,33 @@ public class ModuleTable extends JTable implements ActionListener, MouseListener
         setOpaque(false);
         setBackground(new Color(0, 0, 0, 0));
 
-        KeyStroke backspace = KeyStroke.getKeyStroke(KeyEvent.VK_BACK_SPACE,0);
-        registerKeyboardAction(this,"Backspace",backspace,JComponent.WHEN_FOCUSED);
+        KeyStroke backspace = KeyStroke.getKeyStroke(KeyEvent.VK_BACK_SPACE, 0);
+        registerKeyboardAction(this, BACKSPACE, backspace, JComponent.WHEN_FOCUSED);
 
-        KeyStroke delete = KeyStroke.getKeyStroke(KeyEvent.VK_DELETE,0);
-        registerKeyboardAction(this,"Delete",delete,JComponent.WHEN_FOCUSED);
+        KeyStroke delete = KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0);
+        registerKeyboardAction(this, DELETE, delete, JComponent.WHEN_FOCUSED);
 
-        KeyStroke copy = KeyStroke.getKeyStroke(KeyEvent.VK_C,InputEvent.CTRL_DOWN_MASK,false);
-        registerKeyboardAction(this,"Copy",copy,JComponent.WHEN_FOCUSED);
+        KeyStroke copy = KeyStroke.getKeyStroke(KeyEvent.VK_C, InputEvent.CTRL_DOWN_MASK, false);
+        registerKeyboardAction(this, COPY, copy, JComponent.WHEN_FOCUSED);
 
-        KeyStroke paste = KeyStroke.getKeyStroke(KeyEvent.VK_V,InputEvent.CTRL_DOWN_MASK,false);
-        registerKeyboardAction(this,"Paste",paste,JComponent.WHEN_FOCUSED);
+        KeyStroke paste = KeyStroke.getKeyStroke(KeyEvent.VK_V, InputEvent.CTRL_DOWN_MASK, false);
+        registerKeyboardAction(this, PASTE, paste, JComponent.WHEN_FOCUSED);
+
+        KeyStroke output = KeyStroke.getKeyStroke(KeyEvent.VK_O, 0);
+        registerKeyboardAction(this, OUTPUT, output, JComponent.WHEN_FOCUSED);
+
+        KeyStroke enable = KeyStroke.getKeyStroke(KeyEvent.VK_E, 0);
+        registerKeyboardAction(this, ENABLE, enable, JComponent.WHEN_FOCUSED);
 
         // Adding selection(s)
         Module[] selectedModules = GUI.getSelectedModules();
         clearSelection();
         if (selectedModules != null) {
-            for (Module selectedModule:selectedModules) {
+            for (Module selectedModule : selectedModules) {
                 // Getting index in table
-                for (int row=0;row<getRowCount();row++) {
-                    if (getValueAt(row,0) == selectedModule) {
-                        addRowSelectionInterval(row,row);
+                for (int row = 0; row < getRowCount(); row++) {
+                    if (getValueAt(row, 0) == selectedModule) {
+                        addRowSelectionInterval(row, row);
                         break;
                     }
                 }
@@ -106,15 +116,21 @@ public class ModuleTable extends JTable implements ActionListener, MouseListener
     @Override
     public void actionPerformed(ActionEvent e) {
         switch (e.getActionCommand()) {
-            case "Backspace":
-            case "Delete":
+            case BACKSPACE:
+            case DELETE:
                 GUIAnalysisHandler.removeModules();
                 break;
-            case "Copy":
+            case COPY:
                 GUIAnalysisHandler.copyModules();
                 break;
-            case "Paste":
+            case PASTE:
                 GUIAnalysisHandler.pasteModules();
+                break;
+            case OUTPUT:
+                GUIAnalysisHandler.toggleOutput();
+                break;
+            case ENABLE:
+                GUIAnalysisHandler.toggleEnableDisable();
                 break;
         }
 
@@ -123,21 +139,27 @@ public class ModuleTable extends JTable implements ActionListener, MouseListener
     }
 
     @Override
-    public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+    public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
+            int row, int column) {
         JLabel label = new JLabel();
 
-        label.setBorder(new EmptyBorder(2,5,0,0));
+        label.setBorder(new EmptyBorder(2, 5, 0, 0));
         label.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
         label.setOpaque(true);
 
-        if (isSelected) label.setBackground(Colours.LIGHT_BLUE);
-        else label.setBackground(table.getBackground());
+        if (isSelected)
+            label.setBackground(Colours.LIGHT_BLUE);
+        else
+            label.setBackground(table.getBackground());
 
         if (value instanceof Module) {
             Module module = (Module) value;
-            if (module instanceof GUISeparator) label.setForeground(Colours.DARK_BLUE);
-            else if (!module.isEnabled()) label.setForeground(Color.GRAY);
-            else label.setForeground(Color.BLACK);
+            if (module instanceof GUISeparator)
+                label.setForeground(Colours.DARK_BLUE);
+            else if (!module.isEnabled())
+                label.setForeground(Color.GRAY);
+            else
+                label.setForeground(Color.BLACK);
             label.setText(module.getNickname());
 
         } else if (value instanceof String) {
@@ -154,7 +176,7 @@ public class ModuleTable extends JTable implements ActionListener, MouseListener
     public void mouseClicked(MouseEvent e) {
         switch (e.getButton()) {
             case MouseEvent.BUTTON3:
-                Module module = (Module) getValueAt(rowAtPoint(e.getPoint()),0);
+                Module module = (Module) getValueAt(rowAtPoint(e.getPoint()), 0);
                 RenameListMenu renameListMenu = new RenameListMenu(module);
                 renameListMenu.show(GUI.getFrame(), 0, 0);
                 renameListMenu.setLocation(MouseInfo.getPointerInfo().getLocation());
