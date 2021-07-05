@@ -5,14 +5,12 @@ import java.util.List;
 import java.util.Vector;
 
 import ij.process.ImageProcessor;
-import mpicbg.ij.InverseTransformMapping;
 import mpicbg.ij.MOPS;
 import mpicbg.imagefeatures.Feature;
 import mpicbg.imagefeatures.FloatArray2DMOPS;
 import mpicbg.models.AbstractAffineModel2D;
 import mpicbg.models.NotEnoughDataPointsException;
 import mpicbg.models.PointMatch;
-import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.ImageProcessing.Stack.Registration.Abstract.AbstractAffineRegistration;
 import wbif.sjx.MIA.Object.Workspace;
@@ -20,7 +18,6 @@ import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.Parameters.SeparatorP;
 import wbif.sjx.MIA.Object.Parameters.Text.DoubleP;
 import wbif.sjx.MIA.Object.Parameters.Text.IntegerP;
-import wbif.sjx.MIA.Process.Interactable.PointPairSelector.PointPair;
 
 public class AffineMOPS extends AbstractAffineRegistration {
         public static final String FEATURE_SEPARATOR = "Feature detection";

@@ -1,6 +1,7 @@
 package wbif.sjx.MIA.Module.ImageProcessing.Stack.Registration;
 
 import java.util.ArrayList;
+import java.util.Vector;
 
 import ij.ImagePlus;
 import ij.gui.PointRoi;
@@ -101,12 +102,12 @@ public class AffineManual<T extends RealType<T> & NativeType<T>> extends Abstrac
         // Appling any ROIs stored in the parameters
         warpedIpl.setRoi(p.warpedRoi);
         referenceIpl.setRoi(p.referenceRoi);
-
+        
         ArrayList<PointPair> pairs = null;
         switch (p.pointSelectionMode) {
             case PointSelectionModes.PRESELECTED:
                 pairs = PointPairSelector.getPreselectedPoints(new Image("Warped", warpedIpl),
-                        new Image("Reference", referenceIpl));
+                        new Image("Reference", referenceIpl));                                
                 break;
             case PointSelectionModes.RUNTIME:
             default:
@@ -127,7 +128,7 @@ public class AffineManual<T extends RealType<T> & NativeType<T>> extends Abstrac
 
         // Getting transform
         AbstractAffineModel2D model = getModel(p.transformationMode);
-        final ArrayList<PointMatch> candidates = new ArrayList<PointMatch>();
+        final Vector<PointMatch> candidates = new Vector<PointMatch>();
         for (PointPair pair : pairs)
             candidates.addAll(Util.pointRoisToPointMatches(pair.getPoint1(), pair.getPoint2()));
 

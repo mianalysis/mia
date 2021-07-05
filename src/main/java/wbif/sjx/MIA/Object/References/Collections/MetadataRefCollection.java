@@ -55,17 +55,19 @@ public class MetadataRefCollection extends TreeMap<String,MetadataRef> implement
         StringBuilder sb = new StringBuilder();
 
         sb.append("The following metadata values are available to use for generation of a filename string.  "
-                + "Each metadata reference should include the \"M{\" and \"}\".\r\n\r\n");
+                + "Each metadata reference should include the \"M{\" and \"}\":\r\n\r\n");
 
+        int count = 0;
         for (MetadataRef ref : values()) {
             sb.append("M{");
             sb.append(ref.getName());
             sb.append("}");
-            sb.append("\r\n");
+            if (++count < size())
+                sb.append(", ");
         }
 
         sb.append(
-                "\r\nWildcard character \"*\" is also available to match variable content (first matching instance will be loaded).\r\n");
+                "\r\n\r\nWildcard character \"*\" is also available to match variable content (first matching instance will be loaded).\r\n");
 
         return sb.toString();
 

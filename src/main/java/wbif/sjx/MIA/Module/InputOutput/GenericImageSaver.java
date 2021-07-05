@@ -5,15 +5,16 @@ import java.io.File;
 import ij.CompositeImage;
 import ij.ImagePlus;
 import ij.process.ImageConverter;
-import wbif.sjx.MIA.Module.ModuleCollection;
-import wbif.sjx.MIA.Module.Category;
+import wbif.sjx.MIA.GUI.Colours;
 import wbif.sjx.MIA.Module.Categories;
+import wbif.sjx.MIA.Module.Category;
+import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.Status;
 import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
+import wbif.sjx.MIA.Object.Parameters.Text.MessageP;
 import wbif.sjx.MIA.Object.Parameters.Text.StringP;
-import wbif.sjx.MIA.Object.Parameters.Text.TextAreaP;
 import wbif.sjx.MIA.Object.References.Collections.ImageMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.MetadataRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.ObjMeasurementRefCollection;
@@ -128,7 +129,7 @@ public class GenericImageSaver extends AbstractImageSaver {
         super.initialiseParameters();
         
         parameters.add(new StringP(GENERIC_FORMAT, this));
-        parameters.add(new TextAreaP(AVAILABLE_METADATA_FIELDS, this, false));
+        parameters.add(new MessageP(AVAILABLE_METADATA_FIELDS, this, Colours.ORANGE, 170));
 
         addParameterDescriptions();
 

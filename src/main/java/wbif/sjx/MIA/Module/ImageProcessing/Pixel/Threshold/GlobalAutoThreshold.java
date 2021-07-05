@@ -83,6 +83,13 @@ public class GlobalAutoThreshold extends Module {
 
     public int calculateThreshold(ImagePlus inputImagePlus, String algorithm, double thrMult, boolean useLowerLim,
             double lowerLim) {
+
+        // Image must be 8-bit
+        if (inputImagePlus.getBitDepth() != 8) {
+            inputImagePlus = inputImagePlus.duplicate();
+            ImageTypeConverter.process(inputImagePlus, 8, ImageTypeConverter.ScalingModes.FILL);
+        }
+
         // Compiling stack histogram. This is stored as long to prevent the Integer
         // overflowing.
         long[] histogram = null;
@@ -101,7 +108,7 @@ public class GlobalAutoThreshold extends Module {
                         histogram[i] = histogram[i] + tempHist[i];
 
                     writeProgressStatus(++count, total, "images");
-                        
+
                 }
             }
         }
@@ -143,7 +150,6 @@ public class GlobalAutoThreshold extends Module {
 
     }
 
-
     @Override
     public Category getCategory() {
         return Categories.IMAGE_PROCESSING_PIXEL_THRESHOLD;
@@ -152,7 +158,8 @@ public class GlobalAutoThreshold extends Module {
     @Override
     public String getDescription() {
         return "Binarise an image in the workspace such that the output only has pixel values of 0 and 255.  Uses the "
-                + "built-in ImageJ global <a href=\"https://imagej.net/Auto_Threshold\">auto-thresholding algorithms</a>." + "<br>"
+                + "built-in ImageJ global <a href=\"https://imagej.net/Auto_Threshold\">auto-thresholding algorithms</a>."
+                + "<br>"
                 + "<br>Note: Currently only works on 8-bit images.  Images with other bit depths will be automatically "
                 + "converted to 8-bit based on the \"" + ImageTypeConverter.ScalingModes.FILL
                 + "\" scaling method from the " + "\"" + new ImageTypeConverter(null).getName() + "\" module.";
@@ -178,11 +185,6 @@ public class GlobalAutoThreshold extends Module {
 
         Prefs.blackBackground = !whiteBackground;
 
-        // Image must be 8-bit
-        if (inputImagePlus.getBitDepth() != 8) {
-            ImageTypeConverter.process(inputImagePlus, 8, ImageTypeConverter.ScalingModes.FILL);
-        }
-
         // Calculating the threshold based on the selected algorithm
         writeStatus("Applying " + algorithm + " threshold (multiplier = " + thrMult + " x)");
         threshold = calculateThreshold(inputImagePlus, algorithm, thrMult, useLowerLim, lowerLim);
@@ -191,6 +193,12 @@ public class GlobalAutoThreshold extends Module {
             // If applying to a new image, the input image is duplicated
             if (!applyToInput)
                 inputImagePlus = new Duplicator().run(inputImagePlus);
+
+            // Image must be 8-bit
+            if (inputImagePlus.getBitDepth() != 8) {
+                inputImagePlus = inputImagePlus.duplicate();
+                ImageTypeConverter.process(inputImagePlus, 8, ImageTypeConverter.ScalingModes.FILL);
+            }
 
             // Applying threshold
             ManualThreshold.applyThreshold(inputImagePlus, threshold);

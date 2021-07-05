@@ -232,7 +232,7 @@ public abstract class Module extends Ref implements Comparable {
 
     public static <T extends Parameter> void addParameterGroupParameters(ParameterGroup parameterGroup, Class<T> type,
             LinkedHashSet<T> parameters) {
-        LinkedHashMap<Integer, ParameterCollection> collections = parameterGroup.getCollections(false);
+        LinkedHashMap<Integer, ParameterCollection> collections = parameterGroup.getCollections(true);
         for (ParameterCollection collection : collections.values()) {
             for (Parameter currParameter : collection.values()) {
                 if (type.isInstance(currParameter)) {

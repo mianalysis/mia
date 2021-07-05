@@ -93,7 +93,7 @@ public class AnalysisReader {
             return AnalysisReader_0p10p0_0p15p0.loadAnalysis(xml);
 
         Analysis analysis = new Analysis();
-        ModuleCollection modules = loadModules(doc,loadedVersion);
+        ModuleCollection modules = loadModules(doc, loadedVersion);
         analysis.setModules(modules);
 
         return analysis;
@@ -177,25 +177,25 @@ public class AnalysisReader {
         NodeList moduleChildNodes = moduleNode.getChildNodes();
         for (int i = 0; i < moduleChildNodes.getLength(); i++) {
             switch (moduleChildNodes.item(i).getNodeName()) {
-            case "PARAMETERS":
-                populateParameters(moduleChildNodes.item(i), module);
-                break;
+                case "PARAMETERS":
+                    populateParameters(moduleChildNodes.item(i), module);
+                    break;
 
-            case "MEASUREMENTS":
-                populateLegacyMeasurementRefs(moduleChildNodes.item(i), module);
-                break;
+                case "MEASUREMENTS":
+                    populateLegacyMeasurementRefs(moduleChildNodes.item(i), module);
+                    break;
 
-            case "IMAGE_MEASUREMENTS":
-                populateImageMeasurementRefs(moduleChildNodes.item(i), module);
-                break;
+                case "IMAGE_MEASUREMENTS":
+                    populateImageMeasurementRefs(moduleChildNodes.item(i), module);
+                    break;
 
-            case "OBJECT_MEASUREMENTS":
-                populateObjMeasurementRefs(moduleChildNodes.item(i), module);
-                break;
+                case "OBJECT_MEASUREMENTS":
+                    populateObjMeasurementRefs(moduleChildNodes.item(i), module);
+                    break;
 
-            case "METADATA":
-                populateModuleMetadataRefs(moduleChildNodes.item(i), module);
-                break;
+                case "METADATA":
+                    populateModuleMetadataRefs(moduleChildNodes.item(i), module);
+                    break;
             }
         }
 
@@ -212,7 +212,12 @@ public class AnalysisReader {
 
             // Getting measurement properties
             NamedNodeMap attributes = referenceNode.getAttributes();
-            String parameterName = attributes.getNamedItem("NAME").getNodeValue();
+            if (attributes == null)
+                return;
+            Node name = attributes.getNamedItem("NAME");
+            if (name == null)
+                return;
+            String parameterName = name.getNodeValue();
             Parameter parameter = module.getParameter(parameterName);
 
             // If parameter isn't found, try the lost and found
@@ -249,15 +254,15 @@ public class AnalysisReader {
 
             // Acquiring the relevant reference
             switch (type) {
-            case "IMAGE":
-                ImageMeasurementRef imageMeasurementRef = new ImageMeasurementRef(referenceNode);
-                module.addImageMeasurementRef(imageMeasurementRef);
-                break;
+                case "IMAGE":
+                    ImageMeasurementRef imageMeasurementRef = new ImageMeasurementRef(referenceNode);
+                    module.addImageMeasurementRef(imageMeasurementRef);
+                    break;
 
-            case "OBJECTS":
-                ObjMeasurementRef objMeasurementRef = new ObjMeasurementRef(referenceNode);
-                module.addObjectMeasurementRef(objMeasurementRef);
-                break;
+                case "OBJECTS":
+                    ObjMeasurementRef objMeasurementRef = new ObjMeasurementRef(referenceNode);
+                    module.addObjectMeasurementRef(objMeasurementRef);
+                    break;
             }
         }
     }

@@ -4,20 +4,20 @@ import java.awt.Color;
 
 import ij.CompositeImage;
 import ij.ImagePlus;
-import ij.ImageStack;
+import ij.plugin.CompositeConverter;
 import ij.process.LUT;
-import wbif.sjx.MIA.Module.Module;
-import wbif.sjx.MIA.Module.ModuleCollection;
-import wbif.sjx.MIA.Module.Category;
 import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Categories;
-import wbif.sjx.MIA.Object.Status;
+import wbif.sjx.MIA.Module.Category;
+import wbif.sjx.MIA.Module.Module;
+import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Object.Image;
+import wbif.sjx.MIA.Object.Status;
 import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.MIA.Object.Parameters.ChoiceP;
 import wbif.sjx.MIA.Object.Parameters.InputImageP;
-import wbif.sjx.MIA.Object.Parameters.SeparatorP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
+import wbif.sjx.MIA.Object.Parameters.SeparatorP;
 import wbif.sjx.MIA.Object.Parameters.Text.IntegerP;
 import wbif.sjx.MIA.Object.References.Collections.ImageMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.MetadataRefCollection;
@@ -132,19 +132,25 @@ public class SetLookupTable extends Module {
         ImagePlus ipl = inputImage.getImagePlus();
 
         // Single channel images shouldn't be set to composite
-        if (ipl.getNChannels() == 1 &! ipl.isComposite()) {
+        if (ipl.getNChannels() == 1 & !ipl.isComposite()) {
             ipl.setLut(lut);
             return;
         }
-        
+
+        // If necessary, making composite
+        if (!ipl.isComposite()) {
+            ipl = new CompositeImage(ipl, CompositeImage.COLOR);
+            inputImage.setImagePlus(ipl);
+        }
+
         switch (channelMode) {
             case ChannelModes.ALL_CHANNELS:
-                for (int c = 1; c <= inputImage.getImagePlus().getNChannels(); c++)
-                    ((CompositeImage) inputImage.getImagePlus()).setChannelLut(lut, c);
+                for (int c = 1; c <= ipl.getNChannels(); c++)
+                    ((CompositeImage) ipl).setChannelLut(lut, c);
                 break;
 
             case ChannelModes.SPECIFIC_CHANNELS:
-                ((CompositeImage) inputImage.getImagePlus()).setChannelLut(lut, channel);
+                ((CompositeImage) ipl).setChannelLut(lut, channel);
                 break;
         }
         

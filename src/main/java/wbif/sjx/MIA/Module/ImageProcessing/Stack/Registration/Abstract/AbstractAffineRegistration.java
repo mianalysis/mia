@@ -15,6 +15,7 @@ import mpicbg.models.SimilarityModel2D;
 import mpicbg.models.TranslationModel2D;
 import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
+import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.MIA.Object.Parameters.BooleanP;
@@ -81,7 +82,7 @@ public abstract class AbstractAffineRegistration<T extends RealType<T> & NativeT
         Object[] res1 = fitModel(referenceIpr, warpedIpr, param);
         if (res1 == null)
             return null;
-
+            
         if (((AffineParam) param).testFlip) {
             warpedIpr.flipHorizontal();
             Object[] res2 = fitModel(referenceIpr, warpedIpr, param);
@@ -102,7 +103,7 @@ public abstract class AbstractAffineRegistration<T extends RealType<T> & NativeT
         }
 
         transform.mapping = new InverseTransformMapping<AbstractAffineModel2D<?>>((AbstractAffineModel2D) res1[0]);
-
+        
         return transform;
 
     }
