@@ -10,14 +10,13 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
-import wbif.sjx.MIA.Object.Parameters.Abstract.TextType;
 import wbif.sjx.MIA.Object.Parameters.Text.MessageP;
 
 public class MessageArea extends ParameterControl {
     protected JPanel control;
     protected JTextArea textArea;
 
-    public MessageArea(MessageP parameter) {
+    public MessageArea(MessageP parameter, int controlHeight) {
         super(parameter);
 
         control = new JPanel();
@@ -40,7 +39,7 @@ public class MessageArea extends ParameterControl {
         textArea.setBorder(null);
 
         JScrollPane objectsScrollPane = new JScrollPane(textArea);
-        objectsScrollPane.setPreferredSize(new Dimension(0,50));
+        objectsScrollPane.setPreferredSize(new Dimension(0,controlHeight));
         objectsScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         objectsScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         objectsScrollPane.getVerticalScrollBar().setUnitIncrement(10);

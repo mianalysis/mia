@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Vector;
 
 import ij.process.ImageProcessor;
-import mpicbg.ij.InverseTransformMapping;
 import mpicbg.imagefeatures.Feature;
 import mpicbg.imagefeatures.FloatArray2DSIFT;
 import mpicbg.models.AbstractAffineModel2D;
@@ -19,7 +18,6 @@ import wbif.sjx.MIA.Object.Parameters.InputObjectsP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.Parameters.SeparatorP;
 import wbif.sjx.MIA.Object.Parameters.Text.DoubleP;
-import wbif.sjx.MIA.Process.Interactable.PointPairSelector.PointPair;
 
 public class AffineCentroids extends AbstractAffineRegistration {
     public static final String FEATURE_SEPARATOR = "Feature detection";

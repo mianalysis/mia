@@ -51,7 +51,8 @@
             "name": "Debug (Launch)-MIA<MIA_>",
             "request": "launch",
             "mainClass": "wbif.sjx.MIA.MIA",
-            "projectName": "MIA_"
+            "projectName": "MIA_",
+            "vmArgs": "-Xmx20000m"
         },
         {
             "type": "java",

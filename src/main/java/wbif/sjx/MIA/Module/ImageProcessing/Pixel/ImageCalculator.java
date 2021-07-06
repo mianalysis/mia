@@ -103,7 +103,8 @@ public class ImageCalculator extends Module {
             @Nullable String outputImageName, boolean output32Bit, boolean setNaNToZero) {
         ImagePlus ipl1 = inputImage1.getImagePlus();
         ImagePlus ipl2 = inputImage2.getImagePlus();
-        ImagePlus iplOut = process(ipl1, ipl2, calculationMethod, overwriteMode, outputImageName, output32Bit, setNaNToZero);
+        ImagePlus iplOut = process(ipl1, ipl2, calculationMethod, overwriteMode, outputImageName, output32Bit,
+                setNaNToZero);
 
         switch (overwriteMode) {
             case OverwriteModes.CREATE_NEW:
@@ -248,7 +249,6 @@ public class ImageCalculator extends Module {
 
     }
 
-
     @Override
     public Category getCategory() {
         return Categories.IMAGE_PROCESSING_PIXEL;
@@ -278,12 +278,13 @@ public class ImageCalculator extends Module {
         String calculationMethod = parameters.getValue(CALCULATION_METHOD);
         boolean setNaNToZero = parameters.getValue(SET_NAN_TO_ZERO);
 
-        ImagePlus newIpl = process(inputImagePlus1, inputImagePlus2, calculationMethod, overwriteMode, outputImageName, output32Bit,
-                setNaNToZero);
+        ImagePlus newIpl = process(inputImagePlus1, inputImagePlus2, calculationMethod, overwriteMode, outputImageName,
+                output32Bit, setNaNToZero);
 
         // If the image is being saved as a new image, adding it to the workspace
         switch (overwriteMode) {
             case OverwriteModes.CREATE_NEW:
+                newIpl.updateChannelAndDraw();
                 Image outputImage = new Image(outputImageName, newIpl);
                 workspace.addImage(outputImage);
                 if (showOutput)
@@ -291,11 +292,13 @@ public class ImageCalculator extends Module {
                 break;
 
             case OverwriteModes.OVERWRITE_IMAGE1:
+                inputImage1.getImagePlus().updateChannelAndDraw();
                 if (showOutput)
                     inputImage1.showImage();
                 break;
 
             case OverwriteModes.OVERWRITE_IMAGE2:
+            inputImage2.getImagePlus().updateChannelAndDraw();
                 if (showOutput)
                     inputImage2.showImage();
                 break;

@@ -6,8 +6,6 @@ import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import wbif.sjx.MIA.MIA;
-
 public class CommaSeparatedStringInterpreter {
     public static int[] interpretIntegers(String range, boolean ascendingOrder) {
         // Creating a TreeSet to store the indices we've collected.  This will order numerically and remove duplicates.
