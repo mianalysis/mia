@@ -4,8 +4,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Vector;
 
+import ij.ImagePlus;
 import ij.gui.PointRoi;
+import ij.process.ByteProcessor;
+import ij.process.FloatProcessor;
 import ij.process.ImageProcessor;
+import ij.process.ShortProcessor;
 import mpicbg.ij.InverseTransformMapping;
 import mpicbg.models.AbstractAffineModel2D;
 import mpicbg.models.AffineModel2D;
@@ -15,7 +19,6 @@ import mpicbg.models.SimilarityModel2D;
 import mpicbg.models.TranslationModel2D;
 import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
-import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.MIA.Object.Parameters.BooleanP;
@@ -73,6 +76,30 @@ public abstract class AbstractAffineRegistration<T extends RealType<T> & NativeT
 
     }
 
+    public static ImageProcessor flip(ImageProcessor iprIn) {
+        ImageProcessor iprOut;
+
+        switch (iprIn.getBitDepth()) {
+            case 8:
+            default:
+                iprOut = new ByteProcessor(iprIn.getWidth(), iprIn.getHeight());
+                break;
+            case 16:
+                iprOut = new ShortProcessor(iprIn.getWidth(), iprIn.getHeight());
+                break;
+            case 32:
+                iprOut = new FloatProcessor(iprIn.getWidth(), iprIn.getHeight());
+                break;
+        }
+
+        for (int x = 0; x < iprIn.getWidth(); x++)
+            for (int y = 0; y < iprIn.getHeight(); y++)
+                iprOut.putPixel(iprIn.getWidth() - x, y, iprIn.getPixel(x, y));
+            
+        return iprOut;
+
+    }
+
     @Override
     public Transform getTransform(ImageProcessor referenceIpr, ImageProcessor warpedIpr, Param param,
             boolean showDetectedPoints) {
@@ -84,7 +111,7 @@ public abstract class AbstractAffineRegistration<T extends RealType<T> & NativeT
             return null;
             
         if (((AffineParam) param).testFlip) {
-            warpedIpr.flipHorizontal();
+            warpedIpr = flip(warpedIpr);
             Object[] res2 = fitModel(referenceIpr, warpedIpr, param);
             if (res2 == null)
                 return null;
@@ -93,7 +120,7 @@ public abstract class AbstractAffineRegistration<T extends RealType<T> & NativeT
                 res1 = res2;
                 transform.flip = true;
             } else {
-                warpedIpr.flipHorizontal(); // Returning warpedIpr to its correct state
+                transform.flip = false;
             }
         }
 
