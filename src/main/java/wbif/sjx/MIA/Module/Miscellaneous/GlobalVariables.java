@@ -31,6 +31,7 @@ public class GlobalVariables extends Module {
     public static final String ADD_NEW_VARIABLE = "Add new variable";
     public static final String VARIABLE_NAME = "Variable name";
     public static final String VARIABLE_TYPE = "Variable type";
+    public static final String VARIABLE_BOOLEAN = "Variable Boolean";
     public static final String VARIABLE_VALUE = "Variable value";
     public static final String VARIABLE_FILE = "Variable file";
     public static final String VARIABLE_FOLDER = "Variable folder";
@@ -41,12 +42,13 @@ public class GlobalVariables extends Module {
     private static final HashMap<StringP, String> globalVariables = new HashMap<>();
 
     public interface VariableTypes {
+        String BOOLEAN = "Boolean";
         String CHOICE = "Choice";
         String FILE = "File";
         String FOLDER = "Folder";
         String TEXT = "Text";
 
-        String[] ALL = new String[] { CHOICE, FILE, FOLDER, TEXT };
+        String[] ALL = new String[] { BOOLEAN, CHOICE, FILE, FOLDER, TEXT };
 
     }
 
@@ -123,7 +125,6 @@ public class GlobalVariables extends Module {
         return globalVariables.size();
     }
 
-
     @Override
     public Category getCategory() {
         return Categories.MISCELLANEOUS;
@@ -144,6 +145,9 @@ public class GlobalVariables extends Module {
                 String variableType = collection.getValue(VARIABLE_TYPE);
 
                 switch (variableType) {
+                    case VariableTypes.BOOLEAN:
+                        workspace.getMetadata().put(variableName, collection.getValue(VARIABLE_BOOLEAN).toString());
+                        break;
                     case VariableTypes.CHOICE:
                         workspace.getMetadata().put(variableName, collection.getValue(VARIABLE_CHOICE));
                         break;
@@ -174,6 +178,7 @@ public class GlobalVariables extends Module {
         parameterCollection.add(new SeparatorP(VARIABLE_SEPARATOR, this));
         parameterCollection.add(new StringP(VARIABLE_NAME, this));
         parameterCollection.add(new ChoiceP(VARIABLE_TYPE, this, VariableTypes.TEXT, VariableTypes.ALL));
+        parameterCollection.add(new BooleanP(VARIABLE_BOOLEAN, this, false));
         parameterCollection.add(new StringP(VARIABLE_VALUE, this));
         parameterCollection.add(new FilePathP(VARIABLE_FILE, this));
         parameterCollection.add(new FolderPathP(VARIABLE_FOLDER, this));
@@ -198,6 +203,9 @@ public class GlobalVariables extends Module {
             StringP variableName = (StringP) collection.get(VARIABLE_NAME);
             if (isEnabled()) {
                 switch ((String) collection.getValue(VARIABLE_TYPE)) {
+                    case VariableTypes.BOOLEAN:
+                        globalVariables.put(variableName, collection.getValue(VARIABLE_BOOLEAN).toString());
+                        break;
                     case VariableTypes.CHOICE:
                         globalVariables.put(variableName, collection.getValue(VARIABLE_CHOICE));
                         break;
@@ -292,7 +300,7 @@ public class GlobalVariables extends Module {
                 + "<li>\"" + VariableTypes.FOLDER
                 + "\" Select a specific folder on the computer for this variable using the \"" + VARIABLE_FOLDER
                 + "\" parameter.  The variable will be set to the full path to this folder.  Note: backslash characters will be escaped (i.e. \"\\\" will appear as \"\\\\\").</li>"
-                
+
                 + "<li>\"" + VariableTypes.TEXT + "\" Specify a fixed text value for this variable using the \""
                 + VARIABLE_VALUE + "\" parameter.</li></ul>");
 
@@ -300,8 +308,8 @@ public class GlobalVariables extends Module {
                 + VARIABLE_TYPE + "\" is in \"" + VariableTypes.TEXT + "\" mode.");
 
         collection.get(VARIABLE_FILE)
-                .setDescription("Fixed value file location for the corresponding global variable when \"" + VARIABLE_TYPE
-                        + "\" is in \"" + VariableTypes.FILE + "\" mode.");
+                .setDescription("Fixed value file location for the corresponding global variable when \""
+                        + VARIABLE_TYPE + "\" is in \"" + VariableTypes.FILE + "\" mode.");
 
         collection.get(VARIABLE_FOLDER)
                 .setDescription("Fixed value folder location for the corresponding global variable when \""
@@ -327,6 +335,9 @@ public class GlobalVariables extends Module {
                 returnedParameters.add(params.getParameter(VARIABLE_NAME));
                 returnedParameters.add(params.getParameter(VARIABLE_TYPE));
                 switch ((String) params.getValue(VARIABLE_TYPE)) {
+                    case VariableTypes.BOOLEAN:
+                        returnedParameters.add(params.getParameter(VARIABLE_BOOLEAN));
+                        break;
                     case VariableTypes.CHOICE:
                         returnedParameters.add(params.getParameter(VARIABLE_CHOICES));
                         returnedParameters.add(params.getParameter(VARIABLE_CHOICE));

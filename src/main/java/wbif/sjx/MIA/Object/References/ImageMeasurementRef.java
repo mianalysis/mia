@@ -52,6 +52,11 @@ public class ImageMeasurementRef extends SummaryRef implements SpreadsheetWriter
     }
 
     public String getFinalName() {
+        if (name.length() == 0)
+            return name;
+        if (!name.contains("//"))
+            return name;
+            
         int idx = name.lastIndexOf("//");
 
         return name.substring(idx+2);

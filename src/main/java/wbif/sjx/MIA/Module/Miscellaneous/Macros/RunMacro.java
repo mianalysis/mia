@@ -2,6 +2,7 @@
 
 package wbif.sjx.MIA.Module.Miscellaneous.Macros;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 
@@ -15,6 +16,7 @@ import wbif.sjx.MIA.Module.Categories;
 import wbif.sjx.MIA.Module.Category;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.Core.InputControl;
+import wbif.sjx.MIA.Module.Miscellaneous.GlobalVariables;
 import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.Measurement;
 import wbif.sjx.MIA.Object.Status;
@@ -28,6 +30,7 @@ import wbif.sjx.MIA.Object.Parameters.OutputImageP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.Parameters.ParameterGroup;
 import wbif.sjx.MIA.Object.Parameters.SeparatorP;
+import wbif.sjx.MIA.Object.Parameters.Abstract.TextType;
 import wbif.sjx.MIA.Object.Parameters.Text.StringP;
 import wbif.sjx.MIA.Object.Parameters.Text.TextAreaP;
 import wbif.sjx.MIA.Object.References.ImageMeasurementRef;
@@ -71,6 +74,8 @@ public class RunMacro extends AbstractMacroRunner {
     }
 
     static ArrayList<ImagePlus> hideImages() {
+        
+        
         ArrayList<ImagePlus> openImages = new ArrayList<>();
         String[] imageTitles = WindowManager.getImageTitles();
         for (String imageTitle : imageTitles) {
@@ -128,8 +133,11 @@ public class RunMacro extends AbstractMacroRunner {
         ImagePlus inputImagePlus = (inputImage != null) ? inputImage.getImagePlus().duplicate() : null;
 
         // If the macro is stored as a file, load this to the macroText string
-        if (macroMode.equals(MacroModes.MACRO_FILE))
+        if (macroMode.equals(MacroModes.MACRO_FILE)) {
             macroText = IJ.openAsString(macroFile);
+            macroText = GlobalVariables.convertString(macroText, modules);
+            macroText = TextType.applyCalculation(macroText);
+        }
 
         // Appending variables to the front of the macro
         ParameterGroup variableGroup = parameters.getParameter(ADD_VARIABLE);

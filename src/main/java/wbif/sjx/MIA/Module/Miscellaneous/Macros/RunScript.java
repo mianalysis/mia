@@ -1,7 +1,6 @@
 // // Example Groovy script taking an image "ExampleInputImage" from the workspace,
 // // cropping it and returning it as "ExampleOutputImage"
 // #@ wbif.sjx.MIA.Object.Workspace workspace
-// #@output wbif.sjx.MIA.Object.Image ExampleOutputImage
 
 // import wbif.sjx.MIA.MIA
 // import wbif.sjx.MIA.Module.ImageProcessing.Stack.CropImage
@@ -28,19 +27,25 @@ import wbif.sjx.MIA.Module.Categories;
 import wbif.sjx.MIA.Module.Category;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
+import wbif.sjx.MIA.Module.Miscellaneous.GlobalVariables;
 import wbif.sjx.MIA.Object.Status;
 import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.MIA.Object.Parameters.ChoiceP;
 import wbif.sjx.MIA.Object.Parameters.FilePathP;
 import wbif.sjx.MIA.Object.Parameters.GenericButtonP;
+import wbif.sjx.MIA.Object.Parameters.InputImageP;
+import wbif.sjx.MIA.Object.Parameters.InputObjectsP;
 import wbif.sjx.MIA.Object.Parameters.OutputImageP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.Parameters.ParameterGroup;
 import wbif.sjx.MIA.Object.Parameters.ParameterGroup.ParameterUpdaterAndGetter;
 import wbif.sjx.MIA.Object.Parameters.SeparatorP;
-import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
+import wbif.sjx.MIA.Object.Parameters.Abstract.TextType;
 import wbif.sjx.MIA.Object.Parameters.Objects.OutputObjectsP;
+import wbif.sjx.MIA.Object.Parameters.Text.StringP;
 import wbif.sjx.MIA.Object.Parameters.Text.TextAreaP;
+import wbif.sjx.MIA.Object.References.ImageMeasurementRef;
+import wbif.sjx.MIA.Object.References.ObjMeasurementRef;
 import wbif.sjx.MIA.Object.References.Collections.ImageMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.MetadataRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.ObjMeasurementRefCollection;
@@ -63,6 +68,9 @@ public class RunScript extends Module {
     public static final String OUTPUT_TYPE = "Output type";
     public static final String OUTPUT_IMAGE = "Output image";
     public static final String OUTPUT_OBJECTS = "Output objects";
+    public static final String ASSOCIATED_IMAGE = "Associated image";
+    public static final String ASSOCIATED_OBJECTS = "Associated objects";
+    public static final String MEASUREMENT_NAME = "Measurement name";
 
     public interface ScriptModes {
         String SCRIPT_FILE = "Script file";
@@ -87,9 +95,11 @@ public class RunScript extends Module {
 
     public interface OutputTypes {
         String IMAGE = "Image";
+        String IMAGE_MEASUREMENT = "Image measurement";
         String OBJECTS = "Objects";
+        String OBJECT_MEASUREMENT = "Object measurement";
 
-        String[] ALL = new String[] { IMAGE, OBJECTS };
+        String[] ALL = new String[] { IMAGE, IMAGE_MEASUREMENT, OBJECTS, OBJECT_MEASUREMENT };
 
     }
 
@@ -145,6 +155,8 @@ public class RunScript extends Module {
                 case ScriptModes.SCRIPT_FILE:
                     extension = FilenameUtils.getExtension(scriptFile);
                     scriptText = new String(Files.readAllBytes(Paths.get(scriptFile)), StandardCharsets.UTF_8);
+                    scriptText = GlobalVariables.convertString(scriptText, modules);
+                    scriptText = TextType.applyCalculation(scriptText);
                     break;
                 case ScriptModes.SCRIPT_TEXT:
                     extension = getLanguageExtension(scriptLanguage);
@@ -168,19 +180,13 @@ public class RunScript extends Module {
                 String outputType = parameterCollection.getValue(OUTPUT_TYPE);
                 switch (outputType) {
                     case OutputTypes.IMAGE:
-                        String outputImageName = parameterCollection.getValue(OUTPUT_IMAGE);
-                        // Image outputImage = (Image) scriptModule.getOutput(outputImageName);
-                        // workspace.addImage(outputImage);
                         if (showOutput)
-                            workspace.getImage(outputImageName).showImage();
+                            workspace.getImage(parameterCollection.getValue(OUTPUT_IMAGE)).showImage();
                         break;
                     case OutputTypes.OBJECTS:
-                        String outputObjectsName = parameterCollection.getValue(OUTPUT_OBJECTS);
-                        // ObjCollection outputObjects = (ObjCollection)
-                        // scriptModule.getOutput(outputObjectsName);
-                        // workspace.addObjects(outputObjects);
                         if (showOutput)
-                            workspace.getObjectSet(outputObjectsName).convertToImageRandomColours().showImage();
+                            workspace.getObjectSet(parameterCollection.getValue(OUTPUT_OBJECTS))
+                                    .convertToImageRandomColours().showImage();
                         break;
                 }
             }
@@ -209,6 +215,9 @@ public class RunScript extends Module {
         parameterCollection.add(new ChoiceP(OUTPUT_TYPE, this, OutputTypes.IMAGE, OutputTypes.ALL));
         parameterCollection.add(new OutputImageP(OUTPUT_IMAGE, this));
         parameterCollection.add(new OutputObjectsP(OUTPUT_OBJECTS, this));
+        parameterCollection.add(new InputImageP(ASSOCIATED_IMAGE, this));
+        parameterCollection.add(new InputObjectsP(ASSOCIATED_OBJECTS, this));
+        parameterCollection.add(new StringP(MEASUREMENT_NAME, this));
         parameters.add(new ParameterGroup(ADD_OUTPUT, this, parameterCollection, getUpdaterAndGetter()));
 
         addParameterDescriptions();
@@ -241,13 +250,44 @@ public class RunScript extends Module {
 
     @Override
     public ImageMeasurementRefCollection updateAndGetImageMeasurementRefs() {
-        return null;
+        ImageMeasurementRefCollection returnedRefs = new ImageMeasurementRefCollection();
+
+        ParameterGroup group = parameters.getParameter(ADD_OUTPUT);
+        LinkedHashMap<Integer, ParameterCollection> collections = group.getCollections(true);
+
+        for (ParameterCollection collection : collections.values()) {
+            if (collection.getValue(OUTPUT_TYPE).equals(OutputTypes.IMAGE_MEASUREMENT)) {
+                String imageName = collection.getValue(ASSOCIATED_IMAGE);
+                String measurementName = collection.getValue(MEASUREMENT_NAME);
+                ImageMeasurementRef ref = imageMeasurementRefs.getOrPut(measurementName);
+                ref.setImageName(imageName);
+                returnedRefs.add(ref);
+            }
+        }
+
+        return returnedRefs;
 
     }
 
     @Override
     public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
-        return null;
+        ObjMeasurementRefCollection returnedRefs = new ObjMeasurementRefCollection();
+
+        ParameterGroup group = parameters.getParameter(ADD_OUTPUT);
+        LinkedHashMap<Integer, ParameterCollection> collections = group.getCollections(true);
+
+        for (ParameterCollection collection : collections.values()) {
+            if (collection.getValue(OUTPUT_TYPE).equals(OutputTypes.OBJECT_MEASUREMENT)) {
+                String objectsName = collection.getValue(ASSOCIATED_OBJECTS);
+                String measurementName = collection.getValue(MEASUREMENT_NAME);
+                ObjMeasurementRef ref = objectMeasurementRefs.getOrPut(measurementName);
+                ref.setObjectsName(objectsName);
+                returnedRefs.add(ref);
+            }
+        }
+
+        return returnedRefs;
+
     }
 
     @Override
@@ -320,8 +360,16 @@ public class RunScript extends Module {
                     case OutputTypes.IMAGE:
                         returnedParameters.add(params.getParameter(OUTPUT_IMAGE));
                         break;
+                    case OutputTypes.IMAGE_MEASUREMENT:
+                        returnedParameters.add(params.getParameter(ASSOCIATED_IMAGE));
+                        returnedParameters.add(params.getParameter(MEASUREMENT_NAME));
+                        break;
                     case OutputTypes.OBJECTS:
                         returnedParameters.add(params.getParameter(OUTPUT_OBJECTS));
+                        break;
+                    case OutputTypes.OBJECT_MEASUREMENT:
+                        returnedParameters.add(params.getParameter(ASSOCIATED_OBJECTS));
+                        returnedParameters.add(params.getParameter(MEASUREMENT_NAME));
                         break;
                 }
 

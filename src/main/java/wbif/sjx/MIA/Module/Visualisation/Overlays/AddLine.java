@@ -113,29 +113,32 @@ public class AddLine extends AbstractOverlay {
 
     }
 
+    public static void addOverlay(ImagePlus ipl, Color colour, double lineWidth, Point<Double> pos1,
+            Point<Double> pos2, int t) {
+                if (ipl.getOverlay() == null)
+                ipl.setOverlay(new ij.gui.Overlay());
+            ij.gui.Overlay ovl = ipl.getOverlay();
+    
+            // Creating the line
+            Line line = new Line(pos1.x, pos1.y, pos2.x, pos2.y);
+    
+            if (ipl.isHyperStack()) {
+                ipl.setPosition(1, 1, t);
+                line.setPosition(1, 1, t);
+            } else {
+                int pos = Math.max(1, t);
+                ipl.setPosition(pos);
+                line.setPosition(pos);
+            }
+    
+            line.setStrokeWidth(lineWidth);
+            line.setStrokeColor(colour);
+            ovl.addElement(line);
+    }
+
     public static void addOverlay(Obj object, ImagePlus ipl, Color colour, double lineWidth, Point<Double> pos1,
             Point<Double> pos2) {
-        if (ipl.getOverlay() == null)
-            ipl.setOverlay(new ij.gui.Overlay());
-        ij.gui.Overlay ovl = ipl.getOverlay();
-
-        // Creating the line
-        Line line = new Line(pos1.x, pos1.y, pos2.x, pos2.y);
-
-        int t = object.getT() + 1;
-        if (ipl.isHyperStack()) {
-            ipl.setPosition(1, 1, t);
-            line.setPosition(1, 1, t);
-        } else {
-            int pos = Math.max(1, t);
-            ipl.setPosition(pos);
-            line.setPosition(pos);
-        }
-
-        line.setStrokeWidth(lineWidth);
-        line.setStrokeColor(colour);
-        ovl.addElement(line);
-
+        addOverlay(ipl, colour, lineWidth, pos1, pos2, object.getT()+1);
     }
 
     @Override
