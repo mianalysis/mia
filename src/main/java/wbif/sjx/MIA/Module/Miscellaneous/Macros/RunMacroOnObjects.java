@@ -12,6 +12,7 @@ import wbif.sjx.MIA.Module.Categories;
 import wbif.sjx.MIA.Module.Category;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.Core.InputControl;
+import wbif.sjx.MIA.Module.Miscellaneous.GlobalVariables;
 import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.Measurement;
 import wbif.sjx.MIA.Object.Obj;
@@ -27,6 +28,7 @@ import wbif.sjx.MIA.Object.Parameters.InputObjectsP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.Parameters.ParameterGroup;
 import wbif.sjx.MIA.Object.Parameters.SeparatorP;
+import wbif.sjx.MIA.Object.Parameters.Abstract.TextType;
 import wbif.sjx.MIA.Object.Parameters.Text.StringP;
 import wbif.sjx.MIA.Object.Parameters.Text.TextAreaP;
 import wbif.sjx.MIA.Object.References.ObjMeasurementRef;
@@ -130,8 +132,11 @@ public class RunMacroOnObjects extends AbstractMacroRunner {
         LinkedHashSet<String> expectedMeasurements = expectedMeasurements(group, VARIABLE);
 
         // If the macro is stored as a file, load this to the macroText string
-        if (macroMode.equals(RunMacro.MacroModes.MACRO_FILE))
+        if (macroMode.equals(RunMacro.MacroModes.MACRO_FILE)) {
             macroText = IJ.openAsString(macroFile);
+            macroText = GlobalVariables.convertString(macroText, modules);
+            macroText = TextType.applyCalculation(macroText);
+        }
 
         // Appending variables to the front of the macro
         ParameterGroup variableGroup = parameters.getParameter(ADD_VARIABLE);
@@ -254,13 +259,13 @@ public class RunMacroOnObjects extends AbstractMacroRunner {
         returnedParameters.add(parameters.getParameter(MACRO_SEPARATOR));
         returnedParameters.add(parameters.getParameter(MACRO_MODE));
         switch ((String) parameters.getValue(MACRO_MODE)) {
-        case MacroModes.MACRO_FILE:
-            returnedParameters.add(parameters.getParameter(MACRO_FILE));
-            break;
-        case MacroModes.MACRO_TEXT:
-            returnedParameters.add(parameters.getParameter(MACRO_TEXT));
-            returnedParameters.add(parameters.getParameter(REFRESH_BUTTON));
-            break;
+            case MacroModes.MACRO_FILE:
+                returnedParameters.add(parameters.getParameter(MACRO_FILE));
+                break;
+            case MacroModes.MACRO_TEXT:
+                returnedParameters.add(parameters.getParameter(MACRO_TEXT));
+                returnedParameters.add(parameters.getParameter(REFRESH_BUTTON));
+                break;
         }
 
         returnedParameters.add(parameters.getParameter(OUTPUT_SEPARATOR));
@@ -340,8 +345,9 @@ public class RunMacroOnObjects extends AbstractMacroRunner {
         parameters.get(MACRO_TEXT).setDescription(
                 "Macro code to be executed.  MIA macro commands are enabled using the \"run(\"Enable MIA Extensions\");\" command which is included by default.  This should always be the first line of a macro if these commands are needed.");
 
-        parameters.get(MACRO_FILE)
-                .setDescription("Select a macro file (.ijm) to be run by this module.  As with the \""+MACRO_TEXT+"\" parameter, this macro should start with the \"run(\"Enable MIA Extensions\");\" command.");
+        parameters.get(MACRO_FILE).setDescription("Select a macro file (.ijm) to be run by this module.  As with the \""
+                + MACRO_TEXT
+                + "\" parameter, this macro should start with the \"run(\"Enable MIA Extensions\");\" command.");
 
         parameters.get(REFRESH_BUTTON).setDescription(
                 "This button refreshes the macro code as stored within MIA.  Clicking this will create an \"undo\" checkpoint and validate any global variables that have been used.");

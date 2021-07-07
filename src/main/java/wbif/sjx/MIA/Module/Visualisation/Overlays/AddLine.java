@@ -6,13 +6,13 @@ import java.util.HashMap;
 import ij.ImagePlus;
 import ij.gui.Line;
 import ij.plugin.Duplicator;
-import wbif.sjx.MIA.Module.ModuleCollection;
-import wbif.sjx.MIA.Module.Category;
 import wbif.sjx.MIA.Module.Categories;
-import wbif.sjx.MIA.Object.Status;
+import wbif.sjx.MIA.Module.Category;
+import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.Obj;
 import wbif.sjx.MIA.Object.ObjCollection;
+import wbif.sjx.MIA.Object.Status;
 import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.MIA.Object.Parameters.BooleanP;
 import wbif.sjx.MIA.Object.Parameters.ChoiceP;
@@ -21,8 +21,8 @@ import wbif.sjx.MIA.Object.Parameters.InputImageP;
 import wbif.sjx.MIA.Object.Parameters.InputObjectsP;
 import wbif.sjx.MIA.Object.Parameters.ObjectMeasurementP;
 import wbif.sjx.MIA.Object.Parameters.OutputImageP;
-import wbif.sjx.MIA.Object.Parameters.SeparatorP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
+import wbif.sjx.MIA.Object.Parameters.SeparatorP;
 import wbif.sjx.MIA.Object.Parameters.Text.DoubleP;
 import wbif.sjx.MIA.Object.References.Collections.ImageMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.MetadataRefCollection;
@@ -113,29 +113,32 @@ public class AddLine extends AbstractOverlay {
 
     }
 
+    public static void addOverlay(ImagePlus ipl, Color colour, double lineWidth, Point<Double> pos1,
+            Point<Double> pos2, int t) {
+                if (ipl.getOverlay() == null)
+                ipl.setOverlay(new ij.gui.Overlay());
+            ij.gui.Overlay ovl = ipl.getOverlay();
+    
+            // Creating the line
+            Line line = new Line(pos1.x, pos1.y, pos2.x, pos2.y);
+    
+            if (ipl.isHyperStack()) {
+                ipl.setPosition(1, 1, t);
+                line.setPosition(1, 1, t);
+            } else {
+                int pos = Math.max(1, t);
+                ipl.setPosition(pos);
+                line.setPosition(pos);
+            }
+    
+            line.setStrokeWidth(lineWidth);
+            line.setStrokeColor(colour);
+            ovl.addElement(line);
+    }
+
     public static void addOverlay(Obj object, ImagePlus ipl, Color colour, double lineWidth, Point<Double> pos1,
             Point<Double> pos2) {
-        if (ipl.getOverlay() == null)
-            ipl.setOverlay(new ij.gui.Overlay());
-        ij.gui.Overlay ovl = ipl.getOverlay();
-
-        // Creating the line
-        Line line = new Line(pos1.x, pos1.y, pos2.x, pos2.y);
-
-        int t = object.getT() + 1;
-        if (ipl.isHyperStack()) {
-            ipl.setPosition(1, 1, t);
-            line.setPosition(1, 1, t);
-        } else {
-            int pos = Math.max(1, t);
-            ipl.setPosition(pos);
-            line.setPosition(pos);
-        }
-
-        line.setStrokeWidth(lineWidth);
-        line.setStrokeColor(colour);
-        ovl.addElement(line);
-
+        addOverlay(ipl, colour, lineWidth, pos1, pos2, object.getT()+1);
     }
 
     @Override
