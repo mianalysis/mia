@@ -59,7 +59,7 @@ public class SphereHoughDetection extends Module {
     public static final String OUTPUT_TRANSFORM_IMAGE = "Output transform image";
     public static final String OUTPUT_IMAGE = "Output image";
 
-    public static final String DETECTION_SEPARATOR = "Hough-based circle detection";
+    public static final String DETECTION_SEPARATOR = "Hough-based sphere detection";
     public static final String MIN_RADIUS = "Minimum radius (px)";
     public static final String MAX_RADIUS = "Maximum radius (px)";
     public static final String DETECTION_THRESHOLD = "Detection threshold";
@@ -92,7 +92,7 @@ public class SphereHoughDetection extends Module {
 
     @Override
     public String getDescription() {
-        return "Detects spheres within grayscale images using the Hough transform.  Input images can be of binary or grayscale format, but the circle features must be brighter than their surrounding background and have dark centres (i.e. be shells).  For solid spheres, a gradient filter or equivalent should be applied to the image first.  Detected spheres are output to the workspace as solid objects.  Spheres are detected within a user-defined radius range and must exceed a user-defined threshold score (based on the intensity of the spherical feartures in the input image and the feature sphericity.";
+        return "Detects spheres within grayscale images using the Hough transform.  Input images can be of binary or grayscale format, but the sphere features must be brighter than their surrounding background and have dark centres (i.e. be shells).  For solid spheres, a gradient filter or equivalent should be applied to the image first.  Detected spheres are output to the workspace as solid objects.  Spheres are detected within a user-defined radius range and must exceed a user-defined threshold score (based on the intensity of the spherical feartures in the input image and the feature sphericity.";
 
     }
 
@@ -174,7 +174,7 @@ public class SphereHoughDetection extends Module {
                 // Running the transforms
                 transform.run();
 
-                // Normalising scores based on the number of points in that circle
+                // Normalising scores based on the number of points in that sphere
                 transform.normaliseScores();
 
                 // Getting the accumulator as an image
@@ -198,14 +198,14 @@ public class SphereHoughDetection extends Module {
                     // Initialising the object
                     Obj outputObject = outputObjects.createAndAddNewObject(VolumeType.QUADTREE);
 
-                    // Getting circle parameters
+                    // Getting sphere parameters
                     int x = (int) Math.round(sphere[0]) * samplingRate;
                     int y = (int) Math.round(sphere[1]) * samplingRate;
                     int z = (int) Math.round(sphere[2] * samplingRate * cal.dppXY / cal.dppZ);
                     int r = (int) Math.round(sphere[3]) * samplingRate + radiusResize;
                     double score = sphere[4];
 
-                    // Getting coordinates corresponding to circle
+                    // Getting coordinates corresponding to sphere
                     SphereSolid voxelSphere = new SphereSolid(r);
                     int[] xx = voxelSphere.getX();
                     int[] yy = voxelSphere.getY();
@@ -366,38 +366,38 @@ public class SphereHoughDetection extends Module {
     }
 
     void addParameterDescriptions() {
-        parameters.get(INPUT_IMAGE).setDescription("Input image from which circles will be detected.");
+        parameters.get(INPUT_IMAGE).setDescription("Input image from which spheres will be detected.");
 
         parameters.get(OUTPUT_OBJECTS).setDescription(
-                "Output circle objects to be added to the workspace.  Irrespective of the form of the input circle features, output circles are always solid.");
+                "Output sphere objects to be added to the workspace.  Irrespective of the form of the input sphere features, output spheres are always solid.");
 
         parameters.get(OUTPUT_TRANSFORM_IMAGE).setDescription(
                 "When selected, the Hough-transform image will be output to the workspace with the name specified by \""
                         + OUTPUT_IMAGE + "\".");
 
         parameters.get(OUTPUT_IMAGE).setDescription("If \"" + OUTPUT_TRANSFORM_IMAGE
-                + "\" is selected, this will be the name assigned to the transform image added to the workspace.  The transform image has XY dimensions equal to the input image and an equal number of Z-slices to the number of radii tested.  Circluar features in the input image appear as bright points, where the XYZ location of the point corresponds to the XYR (i.e. X, Y, radius) parameters for the circle.");
+                + "\" is selected, this will be the name assigned to the transform image added to the workspace.  The transform image has XY dimensions equal to the input image and an equal number of Z-slices to the number of radii tested.  Circluar features in the input image appear as bright points, where the XYZ location of the point corresponds to the XYR (i.e. X, Y, radius) parameters for the sphere.");
 
         parameters.get(MIN_RADIUS)
-                .setDescription("The minimum radius to detect circles for.  Specified in pixel units.");
+                .setDescription("The minimum radius to detect spheres for.  Specified in pixel units.");
 
         parameters.get(MAX_RADIUS)
-                .setDescription("The maximum radius to detect circles for.  Specified in pixel units.");
+                .setDescription("The maximum radius to detect spheres for.  Specified in pixel units.");
 
         parameters.get(DETECTION_THRESHOLD).setDescription(
-                "The minimum score a detected circle must have to be stored.  Scores are the sum of all pixel intensities lying on the perimeter of the circle.  As such, higher scores correspond to brighter circles, circles with high circularity (where all points lie on the perimeter of the detected circle) and circles with continuous intensity along their perimeter (no gaps).");
+                "The minimum score a detected sphere must have to be stored.  Scores are the sum of all pixel intensities lying on the perimeter of the sphere.  As such, higher scores correspond to brighter spheres, spheres with high circularity (where all points lie on the perimeter of the detected sphere) and spheres with continuous intensity along their perimeter (no gaps).");
 
         parameters.get(EXCLUSION_RADIUS).setDescription(
-                "The minimum distance between adjacent circles.  For multiple candidate points within this range, the circle with the highest score will be retained.  Specified in pixel units.");
+                "The minimum distance between adjacent spheres.  For multiple candidate points within this range, the sphere with the highest score will be retained.  Specified in pixel units.");
 
         parameters.get(DOWNSAMPLE_FACTOR).setDescription(
-                "To speed up the detection process, the image can be downsampled.  For example, a downsample factor of 2 will downsize the image in X and Y by a factor of 2 prior to detection of circles.");
+                "To speed up the detection process, the image can be downsampled.  For example, a downsample factor of 2 will downsize the image in X and Y by a factor of 2 prior to detection of spheres.");
 
         parameters.get(ENABLE_MULTITHREADING).setDescription(
                 "Process multiple radii simultaneously.  This can provide a speed improvement when working on a computer with a multi-core CPU.");
 
         parameters.get(RADIUS_RESIZE).setDescription(
-                "Radius of output objects will be adjusted by this value.  For example, a detected circle of radius 5 with a \"radius resize\" of 2 will have an output radius of 7.  Similarly, setting \"radius resize\" to -3 would produce a circle of radius 2.");
+                "Radius of output objects will be adjusted by this value.  For example, a detected sphere of radius 5 with a \"radius resize\" of 2 will have an output radius of 7.  Similarly, setting \"radius resize\" to -3 would produce a sphere of radius 2.");
 
         parameters.get(SHOW_TRANSFORM_IMAGE).setDescription(
                 "When selected, the transform image will be displayed (as long as the module is currently set to show its output).");
@@ -406,7 +406,7 @@ public class SphereHoughDetection extends Module {
                 "When selected, the detection image will be displayed (as long as the module is currently set to show its output).");
 
         parameters.get(SHOW_HOUGH_SCORE).setDescription(
-                "When selected, the detection image will also show the score associated with each detected circle.");
+                "When selected, the detection image will also show the score associated with each detected sphere.");
 
         parameters.get(LABEL_SIZE).setDescription("Font size of the detection score text label.");
 

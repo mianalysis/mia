@@ -1,6 +1,5 @@
 package wbif.sjx.MIA.Module.ObjectProcessing.Identification;
 
-import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Categories;
 import wbif.sjx.MIA.Module.Category;
 import wbif.sjx.MIA.Module.Module;
@@ -29,6 +28,7 @@ import wbif.sjx.MIA.Object.References.Collections.PartnerRefCollection;
 import wbif.sjx.MIA.Process.CommaSeparatedStringInterpreter;
 import wbif.sjx.common.Object.Point;
 import wbif.sjx.common.Object.Volume.PointOutOfRangeException;
+import wbif.sjx.common.Object.Volume.Volume;
 import wbif.sjx.common.Object.Volume.VolumeType;
 
 /**
@@ -82,7 +82,7 @@ public class ExtractObjectCrossSection extends Module {
 
     static void process(Obj inputObject, ObjCollection outputObjects, int[] indices) {
         VolumeType volumeType = inputObject.getVolumeType();
-        if (volumeType == VolumeType.OCTREE) 
+        if (volumeType == VolumeType.OCTREE)
             volumeType = VolumeType.QUADTREE;
 
         Obj outputObject = outputObjects.createAndAddNewObject(inputObject.getVolumeType(), inputObject.getID());
@@ -91,8 +91,15 @@ public class ExtractObjectCrossSection extends Module {
             if (idx < 0 || idx >= inputObject.getNSlices())
                 continue;
 
-            for (Point<Integer> point : inputObject.getSlice(idx).getCoordinateSet()) {
-                point.setZ(point.getZ()+idx);
+            Volume slice = inputObject.getSlice(idx);
+            if (slice == null)
+                continue;
+
+            if (slice.getCoordinateSet() == null)
+                continue;
+
+            for (Point<Integer> point : slice.getCoordinateSet()) {
+                point.setZ(point.getZ() + idx);
                 try {
                     outputObject.add(point);
                 } catch (PointOutOfRangeException e) {
@@ -129,20 +136,20 @@ public class ExtractObjectCrossSection extends Module {
         // If using an image measurement, updating the indices here, as they will be the
         // same for all objects
         switch (referenceMode) {
-        case ReferenceModes.IMAGE_MEASUREMENT:
-            Image imageForMeasurement = workspace.getImage(imageForMeasurementName);
-            Measurement imageMeasurement = imageForMeasurement.getMeasurement(imageMeasurementName);
-            indices = applyIndexOffset(indices, imageMeasurement);
-            break;
+            case ReferenceModes.IMAGE_MEASUREMENT:
+                Image imageForMeasurement = workspace.getImage(imageForMeasurementName);
+                Measurement imageMeasurement = imageForMeasurement.getMeasurement(imageMeasurementName);
+                indices = applyIndexOffset(indices, imageMeasurement);
+                break;
         }
 
         for (Obj inputObject : inputObjects.values()) {
             int[] finalIndices = indices;
             switch (referenceMode) {
-            case ReferenceModes.OBJECT_MEASUREMENT:
-                Measurement objectMeasurement = inputObject.getMeasurement(objectMeasurementName);
-                finalIndices = applyIndexOffset(indices, objectMeasurement);
-                break;
+                case ReferenceModes.OBJECT_MEASUREMENT:
+                    Measurement objectMeasurement = inputObject.getMeasurement(objectMeasurementName);
+                    finalIndices = applyIndexOffset(indices, objectMeasurement);
+                    break;
             }
 
             process(inputObject, outputObjects, finalIndices);
@@ -182,18 +189,18 @@ public class ExtractObjectCrossSection extends Module {
         returnedParameters.add(parameters.getParameter(REFERENCE_MODE));
 
         switch ((String) parameters.getValue(REFERENCE_MODE)) {
-        case ReferenceModes.IMAGE_MEASUREMENT:
-            returnedParameters.add(parameters.getParameter(IMAGE_FOR_MEASUREMENT));
-            returnedParameters.add(parameters.getParameter(IMAGE_MEASUREMENT));
-            String imageName = parameters.getValue(IMAGE_FOR_MEASUREMENT);
-            ((ImageMeasurementP) parameters.getParameter(IMAGE_MEASUREMENT)).setImageName(imageName);
+            case ReferenceModes.IMAGE_MEASUREMENT:
+                returnedParameters.add(parameters.getParameter(IMAGE_FOR_MEASUREMENT));
+                returnedParameters.add(parameters.getParameter(IMAGE_MEASUREMENT));
+                String imageName = parameters.getValue(IMAGE_FOR_MEASUREMENT);
+                ((ImageMeasurementP) parameters.getParameter(IMAGE_MEASUREMENT)).setImageName(imageName);
 
-            break;
-        case ReferenceModes.OBJECT_MEASUREMENT:
-            returnedParameters.add(parameters.getParameter(OBJECT_MEASUREMENT));
-            String objectsName = parameters.getValue(INPUT_OBJECTS);
-            ((ObjectMeasurementP) parameters.getParameter(OBJECT_MEASUREMENT)).setObjectName(objectsName);
-            break;
+                break;
+            case ReferenceModes.OBJECT_MEASUREMENT:
+                returnedParameters.add(parameters.getParameter(OBJECT_MEASUREMENT));
+                String objectsName = parameters.getValue(INPUT_OBJECTS);
+                ((ObjectMeasurementP) parameters.getParameter(OBJECT_MEASUREMENT)).setObjectName(objectsName);
+                break;
         }
 
         returnedParameters.add(parameters.getParameter(RELATIVE_SLICE_INDICES));
