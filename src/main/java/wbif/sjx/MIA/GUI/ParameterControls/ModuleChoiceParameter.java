@@ -14,11 +14,11 @@ import javax.swing.JList;
 import javax.swing.ListCellRenderer;
 
 import wbif.sjx.MIA.MIA;
-import wbif.sjx.MIA.GUI.Colours;
 import wbif.sjx.MIA.GUI.GUI;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.Core.OutputControl;
 import wbif.sjx.MIA.Module.Miscellaneous.GUISeparator;
+import wbif.sjx.MIA.Object.Colours;
 import wbif.sjx.MIA.Object.Parameters.ModuleP;
 
 /**

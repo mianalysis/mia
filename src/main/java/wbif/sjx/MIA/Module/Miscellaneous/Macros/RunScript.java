@@ -335,13 +335,22 @@ public class RunScript extends Module {
         ParameterGroup group = (ParameterGroup) parameters.get(ADD_OUTPUT);
         ParameterCollection collection = group.getTemplateParameters();
         collection.get(OUTPUT_TYPE).setDescription(
-                "Specifies the type of variable that has been added to the workspace during the script.  These can either be images or new object collections.");
+                "Specifies the type of variable that has been added to the workspace during the script.  These can either be images, new object collections or measurements associated with existing images or object collections.");
 
         collection.get(OUTPUT_IMAGE).setDescription(
                 "Name of the image that has been added to the workspace during script execution.  This name must match that assigned to the image.");
 
         collection.get(OUTPUT_OBJECTS).setDescription(
                 "Name of the object collection that has been added to the workspace during script execution.  This name must match that assigned to the object collection.");
+
+        collection.get(ASSOCIATED_IMAGE).setDescription(
+                "Image from the workspace (i.e. one already present before running this module) to which a measurement has been added during execution of the script.");
+
+        collection.get(ASSOCIATED_OBJECTS).setDescription(
+                "Object collection from the workspace (i.e. one already present before running this module) to which a measurement has been added during execution of the script.");
+
+        collection.get(MEASUREMENT_NAME).setDescription(
+                "Name of the measurement that has been added to either an image or objects of an object collection.  This name must exactly match that assigned in the script.");
 
         parameters.get(ADD_OUTPUT).setDescription(
                 "If images or new object collections have been added to the workspace during script execution they must be added here, so subsequent modules are aware of their presence.  The act of adding an output via this method simply tells subsequent MIA modules the relevant images/object collections were added to the workspace; the image/object collection must be added to the workspace during script execution using the \"workspace.addImage([image])\" or \"workspace.addObjects([object collection])\" commands.");

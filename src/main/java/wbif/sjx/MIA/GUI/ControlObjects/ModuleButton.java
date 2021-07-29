@@ -7,10 +7,10 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JToggleButton;
 
-import wbif.sjx.MIA.GUI.Colours;
 import wbif.sjx.MIA.GUI.GUI;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.Miscellaneous.GUISeparator;
+import wbif.sjx.MIA.Object.Colours;
 
 /**
  * Created by Stephen on 20/05/2017.

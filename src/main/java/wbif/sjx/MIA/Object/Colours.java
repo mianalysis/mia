@@ -1,4 +1,4 @@
-package wbif.sjx.MIA.GUI;
+package wbif.sjx.MIA.Object;
 
 import java.awt.*;
 

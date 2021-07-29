@@ -289,6 +289,10 @@ public class GlobalVariables extends Module {
 
         collection.get(VARIABLE_TYPE).setDescription("Controls how the variable is specified:<br><ul>"
 
+                + "<li>\"" + VariableTypes.BOOLEAN
+                + "\" The output variable is assigned either \"True\" or \"False\" depending on whether the switch (specified with the \""
+                + VARIABLE_BOOLEAN + "\" parameter) is enabled or disabled, respectively.</li>"
+
                 + "<li>\"" + VariableTypes.CHOICE
                 + "\" Select the output variable from a pre-determined list of options (specified with the \""
                 + VARIABLE_CHOICES + "\" parameter).</li>"
@@ -303,6 +307,9 @@ public class GlobalVariables extends Module {
 
                 + "<li>\"" + VariableTypes.TEXT + "\" Specify a fixed text value for this variable using the \""
                 + VARIABLE_VALUE + "\" parameter.</li></ul>");
+
+        collection.get(VARIABLE_BOOLEAN).setDescription("Boolean value for the corresponding global variable when \""
+                + VARIABLE_TYPE + "\" is in \"" + VariableTypes.BOOLEAN + "\" mode.");
 
         collection.get(VARIABLE_VALUE).setDescription("Fixed value for the corresponding global variable when \""
                 + VARIABLE_TYPE + "\" is in \"" + VariableTypes.TEXT + "\" mode.");

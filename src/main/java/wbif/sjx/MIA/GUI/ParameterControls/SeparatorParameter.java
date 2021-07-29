@@ -1,6 +1,6 @@
 package wbif.sjx.MIA.GUI.ParameterControls;
 
-import wbif.sjx.MIA.GUI.Colours;
+import wbif.sjx.MIA.Object.Colours;
 import wbif.sjx.MIA.Object.Parameters.SeparatorP;
 
 import javax.swing.*;

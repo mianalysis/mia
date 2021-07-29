@@ -18,12 +18,12 @@ import javax.swing.JTextField;
 
 import ij.IJ;
 import ij.ImagePlus;
-import wbif.sjx.MIA.GUI.Colours;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.Category;
 import wbif.sjx.MIA.Module.Categories;
 import wbif.sjx.MIA.Object.Status;
+import wbif.sjx.MIA.Object.Colours;
 import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.Obj;
 import wbif.sjx.MIA.Object.ObjCollection;
