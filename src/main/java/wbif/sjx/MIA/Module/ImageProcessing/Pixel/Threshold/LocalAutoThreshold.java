@@ -2,12 +2,11 @@ package wbif.sjx.MIA.Module.ImageProcessing.Pixel.Threshold;
 
 import fiji.threshold.Auto_Local_Threshold;
 import ij.ImagePlus;
-import ij.Prefs;
 import ij.plugin.Duplicator;
+import wbif.sjx.MIA.Module.Categories;
+import wbif.sjx.MIA.Module.Category;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
-import wbif.sjx.MIA.Module.Category;
-import wbif.sjx.MIA.Module.Categories;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.InvertIntensity;
 import wbif.sjx.MIA.Module.ImageProcessing.Stack.ImageTypeConverter;
 import wbif.sjx.MIA.Object.Image;
@@ -19,6 +18,7 @@ import wbif.sjx.MIA.Object.Parameters.InputImageP;
 import wbif.sjx.MIA.Object.Parameters.OutputImageP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.Parameters.SeparatorP;
+import wbif.sjx.MIA.Object.Parameters.ChoiceInterfaces.BinaryLogicInterface;
 import wbif.sjx.MIA.Object.Parameters.Text.DoubleP;
 import wbif.sjx.MIA.Object.References.Collections.ImageMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.MetadataRefCollection;
@@ -43,7 +43,7 @@ public class LocalAutoThreshold extends Module {
     public static final String LOCAL_RADIUS = "Local radius";
     public static final String SPATIAL_UNITS_MODE = "Spatial units mode";
     public static final String USE_GLOBAL_Z = "Use full Z-range (\"Global Z\")";
-    public static final String WHITE_BACKGROUND = "Black objects/white background";
+    public static final String BINARY_LOGIC = "Binary logic";
 
 
     public LocalAutoThreshold(ModuleCollection modules) {
@@ -89,9 +89,11 @@ public class LocalAutoThreshold extends Module {
         String CALIBRATED = "Calibrated";
         String PIXELS = "Pixel";
 
-        String[] ALL = new String[]{CALIBRATED,PIXELS};
+        String[] ALL = new String[] { CALIBRATED, PIXELS };
 
     }
+    
+    public interface BinaryLogic extends BinaryLogicInterface {}
 
 
     public static String getFullName(String measurement, String method) {
@@ -162,7 +164,7 @@ public class LocalAutoThreshold extends Module {
         String algorithm3D = parameters.getValue(ALGORITHM_3D);
         String algorithmSlice = parameters.getValue(ALGORITHM_SLICE);
         double thrMult = parameters.getValue(THRESHOLD_MULTIPLIER);
-        boolean whiteBackground = parameters.getValue(WHITE_BACKGROUND);
+        String binaryLogic = parameters.getValue(BINARY_LOGIC);
         boolean useLowerLim = parameters.getValue(USE_LOWER_THRESHOLD_LIMIT);
         double lowerLim = parameters.getValue(LOWER_THRESHOLD_LIMIT);
         double localRadius = parameters.getValue(LOCAL_RADIUS);
@@ -172,8 +174,6 @@ public class LocalAutoThreshold extends Module {
         if (spatialUnits.equals(SpatialUnitsModes.CALIBRATED)) {
             localRadius = inputImagePlus.getCalibration().getRawX(localRadius);
         }
-
-        Prefs.blackBackground = !whiteBackground;
 
         // If applying to a new image, the input image is duplicated
         if (!applyToInput) {inputImagePlus = new Duplicator().run(inputImagePlus);}
@@ -195,7 +195,8 @@ public class LocalAutoThreshold extends Module {
                 break;
         }
 
-        if (whiteBackground) InvertIntensity.process(inputImagePlus);
+        if (binaryLogic.equals(BinaryLogic.WHITE_BACKGROUND))
+                InvertIntensity.process(inputImagePlus);
 
         // If the image is being saved as a new image, adding it to the workspace
         if (applyToInput) {
@@ -228,7 +229,7 @@ public class LocalAutoThreshold extends Module {
         parameters.add(new DoubleP(LOCAL_RADIUS, this, 1.0));
         parameters.add(new ChoiceP(SPATIAL_UNITS_MODE, this, SpatialUnitsModes.PIXELS, SpatialUnitsModes.ALL));
         parameters.add(new BooleanP(USE_GLOBAL_Z,this,false));
-        parameters.add(new BooleanP(WHITE_BACKGROUND, this, true));
+        parameters.add(new ChoiceP(BINARY_LOGIC, this, BinaryLogic.BLACK_BACKGROUND, BinaryLogic.ALL));
 
         addParameterDescriptions();
 
@@ -270,7 +271,7 @@ public class LocalAutoThreshold extends Module {
                 break;
         }
 
-        returnedParameters.add(parameters.getParameter(WHITE_BACKGROUND));
+        returnedParameters.add(parameters.getParameter(BINARY_LOGIC));
 
         return returnedParameters;
 
@@ -336,7 +337,7 @@ public class LocalAutoThreshold extends Module {
 
         parameters.get(USE_GLOBAL_Z).setDescription("When performing 3D local thresholding, this takes all z-values at a location into account.  If disabled, pixels will be sampled in z according to the \""+LOCAL_RADIUS+"\" setting.");
 
-        parameters.get(WHITE_BACKGROUND).setDescription("Controls the logic of the output image in terms of what is considered foreground and background.");
+        // parameters.get(WHITE_BACKGROUND).setDescription("Controls the logic of the output image in terms of what is considered foreground and background.");
 
     }
 }

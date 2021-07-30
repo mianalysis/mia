@@ -349,7 +349,7 @@ public class RelateManyToOne extends Module {
             Image parentImage = parentObject.getAsImage("Parent", false);
             InvertIntensity.process(parentImage.getImagePlus());
 
-            Image distImage = DistanceMap.process(parentImage, "Distance", DistanceMap.WeightModes.WEIGHTS_3_4_5_7,
+            Image distImage = DistanceMap.process(parentImage, "Distance", false, DistanceMap.WeightModes.WEIGHTS_3_4_5_7,
                     true, false);
 
             Image projectedImage = ProjectImage.projectImageInZ(distImage, "Projected",

@@ -136,14 +136,11 @@ public class FitSpline extends Module {
     }
 
     static Image getInitialSkeleton(Obj inputObject) {
-        // Converting object to image, then inverting, so we have a black object on a
-        // white background
-        Image objectImage = inputObject.getAsImage("Objects",true);
-        InvertIntensity.process(objectImage);
+        // Converting object to image
+        Image objectImage = inputObject.getAsImage("Objects", true);
 
         // Skeletonise fish to get single backbone
-        BinaryOperations2D.process(objectImage, BinaryOperations2D.OperationModes.SKELETONISE, 1, 1);
-        InvertIntensity.process(objectImage);
+        BinaryOperations2D.process(objectImage, BinaryOperations2D.OperationModes.SKELETONISE, 1, 1, true);
 
         return objectImage;
 

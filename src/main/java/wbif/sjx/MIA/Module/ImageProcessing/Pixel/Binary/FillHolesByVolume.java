@@ -14,11 +14,11 @@ import ij.plugin.Duplicator;
 import ij.plugin.SubHyperstackMaker;
 import ij.process.ImageProcessor;
 import inra.ijpb.binary.conncomp.FloodFillComponentsLabeling3D;
+import wbif.sjx.MIA.Module.Categories;
+import wbif.sjx.MIA.Module.Category;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.Core.InputControl;
-import wbif.sjx.MIA.Module.Category;
-import wbif.sjx.MIA.Module.Categories;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.InvertIntensity;
 import wbif.sjx.MIA.Module.ImageProcessing.Stack.ImageTypeConverter;
 import wbif.sjx.MIA.Module.ObjectProcessing.Identification.IdentifyObjects;
@@ -29,8 +29,9 @@ import wbif.sjx.MIA.Object.Parameters.BooleanP;
 import wbif.sjx.MIA.Object.Parameters.ChoiceP;
 import wbif.sjx.MIA.Object.Parameters.InputImageP;
 import wbif.sjx.MIA.Object.Parameters.OutputImageP;
-import wbif.sjx.MIA.Object.Parameters.SeparatorP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
+import wbif.sjx.MIA.Object.Parameters.SeparatorP;
+import wbif.sjx.MIA.Object.Parameters.ChoiceInterfaces.BinaryLogicInterface;
 import wbif.sjx.MIA.Object.Parameters.Text.DoubleP;
 import wbif.sjx.MIA.Object.Parameters.Text.IntegerP;
 import wbif.sjx.MIA.Object.References.Collections.ImageMeasurementRefCollection;
@@ -47,41 +48,41 @@ public class FillHolesByVolume extends Module {
     public static final String OUTPUT_IMAGE = "Output image";
 
     public static final String HOLE_FILLING_SEPARATOR = "Hole filling controls";
-    public static final String BLACK_WHITE_MODE = "Black-white mode";
     public static final String USE_MINIMUM_VOLUME = "Use minimum volume";
     public static final String MINIMUM_VOLUME = "Minimum size";
     public static final String USE_MAXIMUM_VOLUME = "Use maximum volume";
     public static final String MAXIMUM_VOLUME = "Maximum size";
     public static final String CALIBRATED_UNITS = "Calibrated units";
     public static final String CONNECTIVITY = "Connectivity";
+    public static final String BINARY_LOGIC = "Binary logic";
 
     public static final String EXECUTION_SEPARATOR = "Execution controls";
     public static final String ENABLE_MULTITHREADING = "Enable multithreading";
     public static final String MIN_STRIP_WIDTH = "Minimum strip width (px)";
 
-    public interface BlackWhiteModes {
-        String FILL_BLACK_HOLES = "Fill black holes";
-        String FILL_WHITE_HOLES = "Fill white holes";
-
-        String[] ALL = new String[] { FILL_BLACK_HOLES, FILL_WHITE_HOLES };
-
-    }
-
     public interface Connectivity {
         String SIX = "6";
         String TWENTYSIX = "26";
 
-        String[] ALL = new String[]{SIX,TWENTYSIX};
+        String[] ALL = new String[] { SIX, TWENTYSIX };
 
     }
+    
+    public interface BinaryLogic extends BinaryLogicInterface {
+    }
+
 
     public FillHolesByVolume(ModuleCollection modules) {
         super("Fill holes by volume", modules);
     }
 
-    public static void process(ImagePlus ipl, double minVolume, double maxVolume, int connectivity, boolean multithread,
+    public static void process(ImagePlus ipl, double minVolume, double maxVolume, boolean blackBackground, int connectivity, boolean multithread,
             int minStripWidth) throws LongOverflowException {
         String name = new FillHolesByVolume(null).getName();
+
+        // MorphoLibJ takes objects as being white
+        if (blackBackground)
+            InvertIntensity.process(ipl);
 
         int count = 0;
         int total = ipl.getNFrames() * ipl.getNChannels();
@@ -204,6 +205,11 @@ public class FillHolesByVolume extends Module {
         if (ipl.getBitDepth() > 8) {
             ImageTypeConverter.process(ipl, 8, ImageTypeConverter.ScalingModes.CLIP);
         }
+
+        // MorphoLibJ takes objects as being white
+        if (blackBackground)
+            InvertIntensity.process(ipl);
+
     }
 
 
@@ -227,23 +233,20 @@ public class FillHolesByVolume extends Module {
         // Getting parameters
         boolean applyToInput = parameters.getValue(APPLY_TO_INPUT);
         String outputImageName = parameters.getValue(OUTPUT_IMAGE);
-        String blackWhiteMode = parameters.getValue(BLACK_WHITE_MODE);
         boolean useMinVolume = parameters.getValue(USE_MINIMUM_VOLUME);
         boolean useMaxVolume = parameters.getValue(USE_MAXIMUM_VOLUME);
         double minVolume = parameters.getValue(MINIMUM_VOLUME);
         double maxVolume = parameters.getValue(MAXIMUM_VOLUME);
         boolean calibratedUnits = parameters.getValue(CALIBRATED_UNITS);
         int connectivity = Integer.parseInt(parameters.getValue(CONNECTIVITY));
+        String binaryLogic = parameters.getValue(BINARY_LOGIC);
+        boolean blackBackground = binaryLogic.equals(BinaryLogic.BLACK_BACKGROUND);
         boolean multithread = parameters.getValue(ENABLE_MULTITHREADING);
         int minStripWidth = parameters.getValue(MIN_STRIP_WIDTH);
 
         // If applying to a new image, the input image is duplicated
         if (!applyToInput)
             inputImagePlus = new Duplicator().run(inputImagePlus);
-
-        // If filling black holes, need to invert image
-        if (blackWhiteMode.equals(BlackWhiteModes.FILL_BLACK_HOLES))
-            InvertIntensity.process(inputImagePlus);
 
         if (!useMinVolume)
             minVolume = -Float.MAX_VALUE;
@@ -261,15 +264,10 @@ public class FillHolesByVolume extends Module {
         }
 
         try {
-            process(inputImagePlus, minVolume, maxVolume, connectivity, multithread, minStripWidth);
-
+            process(inputImagePlus, minVolume, maxVolume, blackBackground, connectivity, multithread, minStripWidth);
         } catch (LongOverflowException e) {
             return Status.FAIL;
         }
-
-        // If filling black holes, need to invert image back to original
-        if (blackWhiteMode.equals(BlackWhiteModes.FILL_BLACK_HOLES))
-            InvertIntensity.process(inputImagePlus);
 
         // If the image is being saved as a new image, adding it to the workspace
         if (!applyToInput) {
@@ -297,13 +295,13 @@ public class FillHolesByVolume extends Module {
         parameters.add(new OutputImageP(OUTPUT_IMAGE, this));
 
         parameters.add(new SeparatorP(HOLE_FILLING_SEPARATOR, this));
-        parameters.add(new ChoiceP(BLACK_WHITE_MODE, this, BlackWhiteModes.FILL_WHITE_HOLES, BlackWhiteModes.ALL));
         parameters.add(new BooleanP(USE_MINIMUM_VOLUME, this, true));
         parameters.add(new DoubleP(MINIMUM_VOLUME, this, 0d));
         parameters.add(new BooleanP(USE_MAXIMUM_VOLUME, this, true));
         parameters.add(new DoubleP(MAXIMUM_VOLUME, this, 1000d));
         parameters.add(new BooleanP(CALIBRATED_UNITS, this, false));
         parameters.add(new ChoiceP(CONNECTIVITY, this,Connectivity.TWENTYSIX,Connectivity.ALL));
+        parameters.add(new ChoiceP(BINARY_LOGIC, this, BinaryLogic.BLACK_BACKGROUND, BinaryLogic.ALL));
 
         parameters.add(new SeparatorP(EXECUTION_SEPARATOR, this));
         parameters.add(new BooleanP(ENABLE_MULTITHREADING, this, true));
@@ -326,7 +324,6 @@ public class FillHolesByVolume extends Module {
         }
 
         returnedParameters.add(parameters.getParameter(HOLE_FILLING_SEPARATOR));
-        returnedParameters.add(parameters.getParameter(BLACK_WHITE_MODE));
         returnedParameters.add(parameters.getParameter(USE_MINIMUM_VOLUME));
         if ((boolean) parameters.getValue(USE_MINIMUM_VOLUME)) {
             returnedParameters.add(parameters.getParameter(MINIMUM_VOLUME));
@@ -338,6 +335,7 @@ public class FillHolesByVolume extends Module {
 
         returnedParameters.add(parameters.getParameter(CALIBRATED_UNITS));
         returnedParameters.add(parameters.getParameter(CONNECTIVITY));
+        returnedParameters.add(parameters.getParameter(BINARY_LOGIC));
 
         returnedParameters.add(parameters.getParameter(EXECUTION_SEPARATOR));
         returnedParameters.add(parameters.getParameter(ENABLE_MULTITHREADING));
@@ -388,12 +386,6 @@ public class FillHolesByVolume extends Module {
 
       parameters.get(OUTPUT_IMAGE).setDescription("If \"" + APPLY_TO_INPUT
               + "\" is not selected, the post-operation image will be saved to the workspace with this name.");
-
-      parameters.get(BLACK_WHITE_MODE).setDescription("Controls which contiguous, enclosed regions of pixels will be removed:<br><ul>"
-
-              +"<li>\""+BlackWhiteModes.FILL_BLACK_HOLES+"\" Fully enclosed regions of black pixels (0 intensity) matching the size criteria will be removed.</li>"
-
-              +"<li>\""+BlackWhiteModes.FILL_WHITE_HOLES+"\" Fully enclosed regions of white pixels (255 intensity) matching the size criteria will be removed.</li></ul>");
 
       parameters.get(USE_MINIMUM_VOLUME).setDescription("");
 

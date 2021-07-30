@@ -8,7 +8,6 @@ import ij.plugin.Duplicator;
 import ij.plugin.Resizer;
 import ij.plugin.SubHyperstackMaker;
 import inra.ijpb.binary.ChamferWeights3D;
-import inra.ijpb.binary.geodesic.GeodesicDistanceTransform3DFloat;
 import inra.ijpb.plugins.GeodesicDistanceMap3D;
 import wbif.sjx.MIA.Module.Categories;
 import wbif.sjx.MIA.Module.Category;
@@ -16,6 +15,7 @@ import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.Core.InputControl;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.ImageMath;
+import wbif.sjx.MIA.Module.ImageProcessing.Pixel.InvertIntensity;
 import wbif.sjx.MIA.Module.ImageProcessing.Stack.ImageTypeConverter;
 import wbif.sjx.MIA.Module.ImageProcessing.Stack.InterpolateZAxis;
 import wbif.sjx.MIA.Object.Image;
@@ -27,6 +27,7 @@ import wbif.sjx.MIA.Object.Parameters.InputImageP;
 import wbif.sjx.MIA.Object.Parameters.OutputImageP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.Parameters.SeparatorP;
+import wbif.sjx.MIA.Object.Parameters.ChoiceInterfaces.BinaryLogicInterface;
 import wbif.sjx.MIA.Object.References.Collections.ImageMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.MetadataRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.ObjMeasurementRefCollection;
@@ -37,10 +38,12 @@ public class DistanceMap extends Module {
     public static final String INPUT_SEPARATOR = "Image input/output";
     public static final String INPUT_IMAGE = "Input image";
     public static final String OUTPUT_IMAGE = "Output image";
+
     public static final String DISTANCE_MAP_SEPARATOR = "Distance map controls";
     public static final String WEIGHT_MODE = "Weight modes";
     public static final String MATCH_Z_TO_X = "Match Z to XY";
     public static final String SPATIAL_UNITS_MODE = "Spatial units mode";
+    public static final String BINARY_LOGIC = "Binary logic";
 
     public interface WeightModes {
         String CHESSBOARD = "Chessboard (1,1,1)";
@@ -63,24 +66,26 @@ public class DistanceMap extends Module {
 
     }
 
+    public interface BinaryLogic extends BinaryLogicInterface {
+    }
+
     public DistanceMap(ModuleCollection modules) {
         super("Calculate distance map", modules);
     }
 
-    public static ImagePlus process(ImagePlus inputIpl, String outputImageName, String weightMode, boolean matchZToXY,
-            boolean verbose) {
-        return process(new Image(inputIpl.getTitle(), inputIpl), outputImageName, weightMode, matchZToXY, verbose)
-                .getImagePlus();
+    public static ImagePlus process(ImagePlus inputIpl, String outputImageName, boolean blackBackground,
+            String weightMode, boolean matchZToXY, boolean verbose) {
+        return process(new Image(inputIpl.getTitle(), inputIpl), outputImageName, blackBackground, weightMode,
+                matchZToXY, verbose).getImagePlus();
     }
 
-    public static Image process(Image inputImage, String outputImageName, String weightMode, boolean matchZToXY,
-            boolean verbose) {
+    public static Image process(Image inputImage, String outputImageName, boolean blackBackground, String weightMode,
+            boolean matchZToXY, boolean verbose) {
         String name = new DistanceMap(null).getName();
 
         ImagePlus inputIpl = inputImage.getImagePlus();
 
         // Calculating the distance map using MorphoLibJ
-
         float[] weights = getFloatWeights(weightMode);
 
         // Calculating the distance map, one frame at a time
@@ -98,6 +103,9 @@ public class DistanceMap extends Module {
             ImagePlus currentIpl = SubHyperstackMaker
                     .makeSubhyperstack(inputIpl, "1", "1-" + nSlices, String.valueOf(t + 1)).duplicate();
             currentIpl.setCalibration(inputIpl.getCalibration());
+
+            if (blackBackground)
+                InvertIntensity.process(currentIpl);
 
             // If necessary, interpolating the image in Z to match the XY spacing
             if (matchZToXY && nSlices > 1)
@@ -190,9 +198,11 @@ public class DistanceMap extends Module {
         String weightMode = parameters.getValue(WEIGHT_MODE);
         boolean matchZToXY = parameters.getValue(MATCH_Z_TO_X);
         String spatialUnits = parameters.getValue(SPATIAL_UNITS_MODE);
+        String binaryLogic = parameters.getValue(BINARY_LOGIC);
+        boolean blackBackground = binaryLogic.equals(BinaryLogic.BLACK_BACKGROUND);
 
         // Running distance map
-        Image distanceMap = process(inputImage, outputImageName, weightMode, matchZToXY, true);
+        Image distanceMap = process(inputImage, outputImageName, blackBackground, weightMode, matchZToXY, true);
 
         // Applying spatial calibration
         if (spatialUnits.equals(SpatialUnitsModes.CALIBRATED)) {
@@ -220,6 +230,7 @@ public class DistanceMap extends Module {
         parameters.add(new ChoiceP(WEIGHT_MODE, this, WeightModes.WEIGHTS_3_4_5_7, WeightModes.ALL));
         parameters.add(new BooleanP(MATCH_Z_TO_X, this, true));
         parameters.add(new ChoiceP(SPATIAL_UNITS_MODE, this, SpatialUnitsModes.PIXELS, SpatialUnitsModes.ALL));
+        parameters.add(new ChoiceP(BINARY_LOGIC, this, BinaryLogic.BLACK_BACKGROUND, BinaryLogic.ALL));
 
         addParameterDescriptions();
 

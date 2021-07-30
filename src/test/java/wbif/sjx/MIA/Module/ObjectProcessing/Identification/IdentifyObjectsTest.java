@@ -74,7 +74,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.initialiseParameters();
         identifyObjects.updateParameterValue(IdentifyObjects.INPUT_IMAGE, "Test_image");
         identifyObjects.updateParameterValue(IdentifyObjects.OUTPUT_OBJECTS, "Test_output_objects");
-        identifyObjects.updateParameterValue(IdentifyObjects.WHITE_BACKGROUND, false);
+        identifyObjects.updateParameterValue(IdentifyObjects.BINARY_LOGIC, IdentifyObjects.BinaryLogic.BLACK_BACKGROUND);
         identifyObjects.updateParameterValue(IdentifyObjects.ENABLE_MULTITHREADING, false);
         identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, IdentifyObjects.VolumeTypes.POINTLIST);
 
@@ -128,7 +128,8 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.initialiseParameters();
         identifyObjects.updateParameterValue(IdentifyObjects.INPUT_IMAGE, "Test_image");
         identifyObjects.updateParameterValue(IdentifyObjects.OUTPUT_OBJECTS, "Test_output_objects");
-        identifyObjects.updateParameterValue(IdentifyObjects.WHITE_BACKGROUND, false);
+        identifyObjects.updateParameterValue(IdentifyObjects.BINARY_LOGIC,
+                IdentifyObjects.BinaryLogic.BLACK_BACKGROUND);
         identifyObjects.updateParameterValue(IdentifyObjects.ENABLE_MULTITHREADING, false);
         identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, IdentifyObjects.VolumeTypes.QUADTREE);
 
@@ -182,7 +183,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.initialiseParameters();
         identifyObjects.updateParameterValue(IdentifyObjects.INPUT_IMAGE, "Test_image");
         identifyObjects.updateParameterValue(IdentifyObjects.OUTPUT_OBJECTS, "Test_output_objects");
-        identifyObjects.updateParameterValue(IdentifyObjects.WHITE_BACKGROUND, false);
+        identifyObjects.updateParameterValue(IdentifyObjects.BINARY_LOGIC, IdentifyObjects.BinaryLogic.BLACK_BACKGROUND);
         identifyObjects.updateParameterValue(IdentifyObjects.ENABLE_MULTITHREADING, false);
         identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, IdentifyObjects.VolumeTypes.OCTREE);
 
@@ -236,7 +237,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.initialiseParameters();
         identifyObjects.updateParameterValue(IdentifyObjects.INPUT_IMAGE, "Test_image");
         identifyObjects.updateParameterValue(IdentifyObjects.OUTPUT_OBJECTS, "Test_output_objects");
-        identifyObjects.updateParameterValue(IdentifyObjects.WHITE_BACKGROUND, false);
+        identifyObjects.updateParameterValue(IdentifyObjects.BINARY_LOGIC, IdentifyObjects.BinaryLogic.BLACK_BACKGROUND);
         identifyObjects.updateParameterValue(IdentifyObjects.ENABLE_MULTITHREADING, false);
         identifyObjects.updateParameterValue(IdentifyObjects.ENABLE_MULTITHREADING, false);
         identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, IdentifyObjects.VolumeTypes.POINTLIST);
@@ -291,7 +292,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.initialiseParameters();
         identifyObjects.updateParameterValue(IdentifyObjects.INPUT_IMAGE, "Test_image");
         identifyObjects.updateParameterValue(IdentifyObjects.OUTPUT_OBJECTS, "Test_output_objects");
-        identifyObjects.updateParameterValue(IdentifyObjects.WHITE_BACKGROUND, false);
+        identifyObjects.updateParameterValue(IdentifyObjects.BINARY_LOGIC, IdentifyObjects.BinaryLogic.BLACK_BACKGROUND);
         identifyObjects.updateParameterValue(IdentifyObjects.ENABLE_MULTITHREADING, false);
         identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, IdentifyObjects.VolumeTypes.QUADTREE);
 
@@ -345,7 +346,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.initialiseParameters();
         identifyObjects.updateParameterValue(IdentifyObjects.INPUT_IMAGE, "Test_image");
         identifyObjects.updateParameterValue(IdentifyObjects.OUTPUT_OBJECTS, "Test_output_objects");
-        identifyObjects.updateParameterValue(IdentifyObjects.WHITE_BACKGROUND, false);
+        identifyObjects.updateParameterValue(IdentifyObjects.BINARY_LOGIC, IdentifyObjects.BinaryLogic.BLACK_BACKGROUND);
         identifyObjects.updateParameterValue(IdentifyObjects.ENABLE_MULTITHREADING, false);
         identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, IdentifyObjects.VolumeTypes.OCTREE);
 
@@ -399,7 +400,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.initialiseParameters();
         identifyObjects.updateParameterValue(IdentifyObjects.INPUT_IMAGE, "Test_image");
         identifyObjects.updateParameterValue(IdentifyObjects.OUTPUT_OBJECTS, "Test_output_objects");
-        identifyObjects.updateParameterValue(IdentifyObjects.WHITE_BACKGROUND, false);
+        identifyObjects.updateParameterValue(IdentifyObjects.BINARY_LOGIC, IdentifyObjects.BinaryLogic.BLACK_BACKGROUND);
         identifyObjects.updateParameterValue(IdentifyObjects.ENABLE_MULTITHREADING, false);
         identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, IdentifyObjects.VolumeTypes.POINTLIST);
 
@@ -454,7 +455,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.initialiseParameters();
         identifyObjects.updateParameterValue(IdentifyObjects.INPUT_IMAGE, "Test_image");
         identifyObjects.updateParameterValue(IdentifyObjects.OUTPUT_OBJECTS, "Test_output_objects");
-        identifyObjects.updateParameterValue(IdentifyObjects.WHITE_BACKGROUND, false);
+        identifyObjects.updateParameterValue(IdentifyObjects.BINARY_LOGIC, IdentifyObjects.BinaryLogic.BLACK_BACKGROUND);
         identifyObjects.updateParameterValue(IdentifyObjects.ENABLE_MULTITHREADING, false);
         identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, IdentifyObjects.VolumeTypes.QUADTREE);
 
@@ -509,7 +510,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.initialiseParameters();
         identifyObjects.updateParameterValue(IdentifyObjects.INPUT_IMAGE, "Test_image");
         identifyObjects.updateParameterValue(IdentifyObjects.OUTPUT_OBJECTS, "Test_output_objects");
-        identifyObjects.updateParameterValue(IdentifyObjects.WHITE_BACKGROUND, false);
+        identifyObjects.updateParameterValue(IdentifyObjects.BINARY_LOGIC, IdentifyObjects.BinaryLogic.BLACK_BACKGROUND);
         identifyObjects.updateParameterValue(IdentifyObjects.ENABLE_MULTITHREADING, false);
         identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, IdentifyObjects.VolumeTypes.OCTREE);
 
@@ -575,7 +576,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.initialiseParameters();
         identifyObjects.updateParameterValue(IdentifyObjects.INPUT_IMAGE, "Test_image");
         identifyObjects.updateParameterValue(IdentifyObjects.OUTPUT_OBJECTS, "Test_output_objects");
-        identifyObjects.updateParameterValue(IdentifyObjects.WHITE_BACKGROUND, false);
+        identifyObjects.updateParameterValue(IdentifyObjects.BINARY_LOGIC, IdentifyObjects.BinaryLogic.BLACK_BACKGROUND);
         identifyObjects.updateParameterValue(IdentifyObjects.ENABLE_MULTITHREADING, false);
         identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, IdentifyObjects.VolumeTypes.POINTLIST);
 
@@ -628,7 +629,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.initialiseParameters();
         identifyObjects.updateParameterValue(IdentifyObjects.INPUT_IMAGE, "Test_image");
         identifyObjects.updateParameterValue(IdentifyObjects.OUTPUT_OBJECTS, "Test_output_objects");
-        identifyObjects.updateParameterValue(IdentifyObjects.WHITE_BACKGROUND, false);
+        identifyObjects.updateParameterValue(IdentifyObjects.BINARY_LOGIC, IdentifyObjects.BinaryLogic.BLACK_BACKGROUND);
         identifyObjects.updateParameterValue(IdentifyObjects.ENABLE_MULTITHREADING, false);
         identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, IdentifyObjects.VolumeTypes.QUADTREE);
 
@@ -681,7 +682,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.initialiseParameters();
         identifyObjects.updateParameterValue(IdentifyObjects.INPUT_IMAGE, "Test_image");
         identifyObjects.updateParameterValue(IdentifyObjects.OUTPUT_OBJECTS, "Test_output_objects");
-        identifyObjects.updateParameterValue(IdentifyObjects.WHITE_BACKGROUND, false);
+        identifyObjects.updateParameterValue(IdentifyObjects.BINARY_LOGIC, IdentifyObjects.BinaryLogic.BLACK_BACKGROUND);
         identifyObjects.updateParameterValue(IdentifyObjects.ENABLE_MULTITHREADING, false);
         identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, IdentifyObjects.VolumeTypes.OCTREE);
 
@@ -735,7 +736,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.initialiseParameters();
         identifyObjects.updateParameterValue(IdentifyObjects.INPUT_IMAGE, "Test_image");
         identifyObjects.updateParameterValue(IdentifyObjects.OUTPUT_OBJECTS, "Test_output_objects");
-        identifyObjects.updateParameterValue(IdentifyObjects.WHITE_BACKGROUND, true);
+        identifyObjects.updateParameterValue(IdentifyObjects.BINARY_LOGIC, IdentifyObjects.BinaryLogic.WHITE_BACKGROUND);
         identifyObjects.updateParameterValue(IdentifyObjects.ENABLE_MULTITHREADING, false);
         identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, IdentifyObjects.VolumeTypes.POINTLIST);
 
@@ -789,7 +790,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.initialiseParameters();
         identifyObjects.updateParameterValue(IdentifyObjects.INPUT_IMAGE, "Test_image");
         identifyObjects.updateParameterValue(IdentifyObjects.OUTPUT_OBJECTS, "Test_output_objects");
-        identifyObjects.updateParameterValue(IdentifyObjects.WHITE_BACKGROUND, true);
+        identifyObjects.updateParameterValue(IdentifyObjects.BINARY_LOGIC, IdentifyObjects.BinaryLogic.WHITE_BACKGROUND);
         identifyObjects.updateParameterValue(IdentifyObjects.ENABLE_MULTITHREADING, false);
         identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, IdentifyObjects.VolumeTypes.QUADTREE);
 
@@ -843,7 +844,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.initialiseParameters();
         identifyObjects.updateParameterValue(IdentifyObjects.INPUT_IMAGE, "Test_image");
         identifyObjects.updateParameterValue(IdentifyObjects.OUTPUT_OBJECTS, "Test_output_objects");
-        identifyObjects.updateParameterValue(IdentifyObjects.WHITE_BACKGROUND, true);
+        identifyObjects.updateParameterValue(IdentifyObjects.BINARY_LOGIC, IdentifyObjects.BinaryLogic.WHITE_BACKGROUND);
         identifyObjects.updateParameterValue(IdentifyObjects.ENABLE_MULTITHREADING, false);
         identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, IdentifyObjects.VolumeTypes.OCTREE);
 
@@ -897,7 +898,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.initialiseParameters();
         identifyObjects.updateParameterValue(IdentifyObjects.INPUT_IMAGE, "Test_image");
         identifyObjects.updateParameterValue(IdentifyObjects.OUTPUT_OBJECTS, "Test_output_objects");
-        identifyObjects.updateParameterValue(IdentifyObjects.WHITE_BACKGROUND, false);
+        identifyObjects.updateParameterValue(IdentifyObjects.BINARY_LOGIC, IdentifyObjects.BinaryLogic.BLACK_BACKGROUND);
         identifyObjects.updateParameterValue(IdentifyObjects.ENABLE_MULTITHREADING, false);
         identifyObjects.updateParameterValue(IdentifyObjects.SINGLE_OBJECT, true);
         identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, IdentifyObjects.VolumeTypes.POINTLIST);
@@ -952,7 +953,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.initialiseParameters();
         identifyObjects.updateParameterValue(IdentifyObjects.INPUT_IMAGE, "Test_image");
         identifyObjects.updateParameterValue(IdentifyObjects.OUTPUT_OBJECTS, "Test_output_objects");
-        identifyObjects.updateParameterValue(IdentifyObjects.WHITE_BACKGROUND, false);
+        identifyObjects.updateParameterValue(IdentifyObjects.BINARY_LOGIC, IdentifyObjects.BinaryLogic.BLACK_BACKGROUND);
         identifyObjects.updateParameterValue(IdentifyObjects.ENABLE_MULTITHREADING, false);
         identifyObjects.updateParameterValue(IdentifyObjects.SINGLE_OBJECT, true);
         identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, IdentifyObjects.VolumeTypes.QUADTREE);
@@ -1007,7 +1008,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.initialiseParameters();
         identifyObjects.updateParameterValue(IdentifyObjects.INPUT_IMAGE, "Test_image");
         identifyObjects.updateParameterValue(IdentifyObjects.OUTPUT_OBJECTS, "Test_output_objects");
-        identifyObjects.updateParameterValue(IdentifyObjects.WHITE_BACKGROUND, false);
+        identifyObjects.updateParameterValue(IdentifyObjects.BINARY_LOGIC, IdentifyObjects.BinaryLogic.BLACK_BACKGROUND);
         identifyObjects.updateParameterValue(IdentifyObjects.ENABLE_MULTITHREADING, false);
         identifyObjects.updateParameterValue(IdentifyObjects.SINGLE_OBJECT, true);
         identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, IdentifyObjects.VolumeTypes.OCTREE);
@@ -1062,7 +1063,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.initialiseParameters();
         identifyObjects.updateParameterValue(IdentifyObjects.INPUT_IMAGE, "Test_image");
         identifyObjects.updateParameterValue(IdentifyObjects.OUTPUT_OBJECTS, "Test_output_objects");
-        identifyObjects.updateParameterValue(IdentifyObjects.WHITE_BACKGROUND, false);
+        identifyObjects.updateParameterValue(IdentifyObjects.BINARY_LOGIC, IdentifyObjects.BinaryLogic.BLACK_BACKGROUND);
         identifyObjects.updateParameterValue(IdentifyObjects.ENABLE_MULTITHREADING, false);
         identifyObjects.updateParameterValue(IdentifyObjects.SINGLE_OBJECT, true);
         identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, IdentifyObjects.VolumeTypes.POINTLIST);
@@ -1117,7 +1118,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.initialiseParameters();
         identifyObjects.updateParameterValue(IdentifyObjects.INPUT_IMAGE, "Test_image");
         identifyObjects.updateParameterValue(IdentifyObjects.OUTPUT_OBJECTS, "Test_output_objects");
-        identifyObjects.updateParameterValue(IdentifyObjects.WHITE_BACKGROUND, false);
+        identifyObjects.updateParameterValue(IdentifyObjects.BINARY_LOGIC, IdentifyObjects.BinaryLogic.BLACK_BACKGROUND);
         identifyObjects.updateParameterValue(IdentifyObjects.ENABLE_MULTITHREADING, false);
         identifyObjects.updateParameterValue(IdentifyObjects.SINGLE_OBJECT, true);
         identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, IdentifyObjects.VolumeTypes.QUADTREE);
@@ -1172,7 +1173,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.initialiseParameters();
         identifyObjects.updateParameterValue(IdentifyObjects.INPUT_IMAGE, "Test_image");
         identifyObjects.updateParameterValue(IdentifyObjects.OUTPUT_OBJECTS, "Test_output_objects");
-        identifyObjects.updateParameterValue(IdentifyObjects.WHITE_BACKGROUND, false);
+        identifyObjects.updateParameterValue(IdentifyObjects.BINARY_LOGIC, IdentifyObjects.BinaryLogic.BLACK_BACKGROUND);
         identifyObjects.updateParameterValue(IdentifyObjects.ENABLE_MULTITHREADING, false);
         identifyObjects.updateParameterValue(IdentifyObjects.SINGLE_OBJECT, true);
         identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, IdentifyObjects.VolumeTypes.OCTREE);
@@ -1227,7 +1228,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.initialiseParameters();
         identifyObjects.updateParameterValue(IdentifyObjects.INPUT_IMAGE, "Test_image");
         identifyObjects.updateParameterValue(IdentifyObjects.OUTPUT_OBJECTS, "Test_output_objects");
-        identifyObjects.updateParameterValue(IdentifyObjects.WHITE_BACKGROUND, false);
+        identifyObjects.updateParameterValue(IdentifyObjects.BINARY_LOGIC, IdentifyObjects.BinaryLogic.BLACK_BACKGROUND);
         identifyObjects.updateParameterValue(IdentifyObjects.ENABLE_MULTITHREADING, false);
         identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, IdentifyObjects.VolumeTypes.POINTLIST);
 
@@ -1281,7 +1282,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.initialiseParameters();
         identifyObjects.updateParameterValue(IdentifyObjects.INPUT_IMAGE, "Test_image");
         identifyObjects.updateParameterValue(IdentifyObjects.OUTPUT_OBJECTS, "Test_output_objects");
-        identifyObjects.updateParameterValue(IdentifyObjects.WHITE_BACKGROUND, false);
+        identifyObjects.updateParameterValue(IdentifyObjects.BINARY_LOGIC, IdentifyObjects.BinaryLogic.BLACK_BACKGROUND);
         identifyObjects.updateParameterValue(IdentifyObjects.ENABLE_MULTITHREADING, false);
         identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, IdentifyObjects.VolumeTypes.QUADTREE);
 
@@ -1335,7 +1336,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.initialiseParameters();
         identifyObjects.updateParameterValue(IdentifyObjects.INPUT_IMAGE, "Test_image");
         identifyObjects.updateParameterValue(IdentifyObjects.OUTPUT_OBJECTS, "Test_output_objects");
-        identifyObjects.updateParameterValue(IdentifyObjects.WHITE_BACKGROUND, false);
+        identifyObjects.updateParameterValue(IdentifyObjects.BINARY_LOGIC, IdentifyObjects.BinaryLogic.BLACK_BACKGROUND);
         identifyObjects.updateParameterValue(IdentifyObjects.ENABLE_MULTITHREADING, false);
         identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, IdentifyObjects.VolumeTypes.OCTREE);
 
@@ -1389,7 +1390,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.initialiseParameters();
         identifyObjects.updateParameterValue(IdentifyObjects.INPUT_IMAGE, "Test_image");
         identifyObjects.updateParameterValue(IdentifyObjects.OUTPUT_OBJECTS, "Test_output_objects");
-        identifyObjects.updateParameterValue(IdentifyObjects.WHITE_BACKGROUND, false);
+        identifyObjects.updateParameterValue(IdentifyObjects.BINARY_LOGIC, IdentifyObjects.BinaryLogic.BLACK_BACKGROUND);
         identifyObjects.updateParameterValue(IdentifyObjects.ENABLE_MULTITHREADING, false);
         identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, IdentifyObjects.VolumeTypes.POINTLIST);
 
@@ -1446,7 +1447,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.initialiseParameters();
         identifyObjects.updateParameterValue(IdentifyObjects.INPUT_IMAGE, "Test_image");
         identifyObjects.updateParameterValue(IdentifyObjects.OUTPUT_OBJECTS, "Test_output_objects");
-        identifyObjects.updateParameterValue(IdentifyObjects.WHITE_BACKGROUND, false);
+        identifyObjects.updateParameterValue(IdentifyObjects.BINARY_LOGIC, IdentifyObjects.BinaryLogic.BLACK_BACKGROUND);
         identifyObjects.updateParameterValue(IdentifyObjects.ENABLE_MULTITHREADING, false);
         identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, IdentifyObjects.VolumeTypes.QUADTREE);
 
@@ -1503,7 +1504,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.initialiseParameters();
         identifyObjects.updateParameterValue(IdentifyObjects.INPUT_IMAGE, "Test_image");
         identifyObjects.updateParameterValue(IdentifyObjects.OUTPUT_OBJECTS, "Test_output_objects");
-        identifyObjects.updateParameterValue(IdentifyObjects.WHITE_BACKGROUND, false);
+        identifyObjects.updateParameterValue(IdentifyObjects.BINARY_LOGIC, IdentifyObjects.BinaryLogic.BLACK_BACKGROUND);
         identifyObjects.updateParameterValue(IdentifyObjects.ENABLE_MULTITHREADING, false);
         identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, IdentifyObjects.VolumeTypes.OCTREE);
 
@@ -1560,7 +1561,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.initialiseParameters();
         identifyObjects.updateParameterValue(IdentifyObjects.INPUT_IMAGE, "Test_image");
         identifyObjects.updateParameterValue(IdentifyObjects.OUTPUT_OBJECTS, "Test_output_objects");
-        identifyObjects.updateParameterValue(IdentifyObjects.WHITE_BACKGROUND, false);
+        identifyObjects.updateParameterValue(IdentifyObjects.BINARY_LOGIC, IdentifyObjects.BinaryLogic.BLACK_BACKGROUND);
         identifyObjects.updateParameterValue(IdentifyObjects.ENABLE_MULTITHREADING, false);
         identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, IdentifyObjects.VolumeTypes.POINTLIST);
 
@@ -1614,7 +1615,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.initialiseParameters();
         identifyObjects.updateParameterValue(IdentifyObjects.INPUT_IMAGE, "Test_image");
         identifyObjects.updateParameterValue(IdentifyObjects.OUTPUT_OBJECTS, "Test_output_objects");
-        identifyObjects.updateParameterValue(IdentifyObjects.WHITE_BACKGROUND, false);
+        identifyObjects.updateParameterValue(IdentifyObjects.BINARY_LOGIC, IdentifyObjects.BinaryLogic.BLACK_BACKGROUND);
         identifyObjects.updateParameterValue(IdentifyObjects.ENABLE_MULTITHREADING, false);
         identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, IdentifyObjects.VolumeTypes.QUADTREE);
 
@@ -1668,7 +1669,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.initialiseParameters();
         identifyObjects.updateParameterValue(IdentifyObjects.INPUT_IMAGE, "Test_image");
         identifyObjects.updateParameterValue(IdentifyObjects.OUTPUT_OBJECTS, "Test_output_objects");
-        identifyObjects.updateParameterValue(IdentifyObjects.WHITE_BACKGROUND, false);
+        identifyObjects.updateParameterValue(IdentifyObjects.BINARY_LOGIC, IdentifyObjects.BinaryLogic.BLACK_BACKGROUND);
         identifyObjects.updateParameterValue(IdentifyObjects.ENABLE_MULTITHREADING, false);
         identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, IdentifyObjects.VolumeTypes.OCTREE);
 
@@ -1722,7 +1723,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.initialiseParameters();
         identifyObjects.updateParameterValue(IdentifyObjects.INPUT_IMAGE, "Test_image");
         identifyObjects.updateParameterValue(IdentifyObjects.OUTPUT_OBJECTS, "Test_output_objects");
-        identifyObjects.updateParameterValue(IdentifyObjects.WHITE_BACKGROUND, false);
+        identifyObjects.updateParameterValue(IdentifyObjects.BINARY_LOGIC, IdentifyObjects.BinaryLogic.BLACK_BACKGROUND);
         identifyObjects.updateParameterValue(IdentifyObjects.ENABLE_MULTITHREADING, false);
         identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, IdentifyObjects.VolumeTypes.POINTLIST);
 
@@ -1776,7 +1777,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.initialiseParameters();
         identifyObjects.updateParameterValue(IdentifyObjects.INPUT_IMAGE, "Test_image");
         identifyObjects.updateParameterValue(IdentifyObjects.OUTPUT_OBJECTS, "Test_output_objects");
-        identifyObjects.updateParameterValue(IdentifyObjects.WHITE_BACKGROUND, false);
+        identifyObjects.updateParameterValue(IdentifyObjects.BINARY_LOGIC, IdentifyObjects.BinaryLogic.BLACK_BACKGROUND);
         identifyObjects.updateParameterValue(IdentifyObjects.ENABLE_MULTITHREADING, false);
         identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, IdentifyObjects.VolumeTypes.QUADTREE);
 
@@ -1830,7 +1831,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.initialiseParameters();
         identifyObjects.updateParameterValue(IdentifyObjects.INPUT_IMAGE, "Test_image");
         identifyObjects.updateParameterValue(IdentifyObjects.OUTPUT_OBJECTS, "Test_output_objects");
-        identifyObjects.updateParameterValue(IdentifyObjects.WHITE_BACKGROUND, false);
+        identifyObjects.updateParameterValue(IdentifyObjects.BINARY_LOGIC, IdentifyObjects.BinaryLogic.BLACK_BACKGROUND);
         identifyObjects.updateParameterValue(IdentifyObjects.ENABLE_MULTITHREADING, false);
         identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, IdentifyObjects.VolumeTypes.OCTREE);
 
@@ -1884,7 +1885,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.initialiseParameters();
         identifyObjects.updateParameterValue(IdentifyObjects.INPUT_IMAGE, "Test_image");
         identifyObjects.updateParameterValue(IdentifyObjects.OUTPUT_OBJECTS, "Test_output_objects");
-        identifyObjects.updateParameterValue(IdentifyObjects.WHITE_BACKGROUND, false);
+        identifyObjects.updateParameterValue(IdentifyObjects.BINARY_LOGIC, IdentifyObjects.BinaryLogic.BLACK_BACKGROUND);
         identifyObjects.updateParameterValue(IdentifyObjects.ENABLE_MULTITHREADING, false);
         identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, IdentifyObjects.VolumeTypes.POINTLIST);
 
@@ -1941,7 +1942,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.initialiseParameters();
         identifyObjects.updateParameterValue(IdentifyObjects.INPUT_IMAGE, "Test_image");
         identifyObjects.updateParameterValue(IdentifyObjects.OUTPUT_OBJECTS, "Test_output_objects");
-        identifyObjects.updateParameterValue(IdentifyObjects.WHITE_BACKGROUND, false);
+        identifyObjects.updateParameterValue(IdentifyObjects.BINARY_LOGIC, IdentifyObjects.BinaryLogic.BLACK_BACKGROUND);
         identifyObjects.updateParameterValue(IdentifyObjects.ENABLE_MULTITHREADING, false);
         identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, IdentifyObjects.VolumeTypes.QUADTREE);
 
@@ -1998,7 +1999,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.initialiseParameters();
         identifyObjects.updateParameterValue(IdentifyObjects.INPUT_IMAGE, "Test_image");
         identifyObjects.updateParameterValue(IdentifyObjects.OUTPUT_OBJECTS, "Test_output_objects");
-        identifyObjects.updateParameterValue(IdentifyObjects.WHITE_BACKGROUND, false);
+        identifyObjects.updateParameterValue(IdentifyObjects.BINARY_LOGIC, IdentifyObjects.BinaryLogic.BLACK_BACKGROUND);
         identifyObjects.updateParameterValue(IdentifyObjects.ENABLE_MULTITHREADING, false);
         identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, IdentifyObjects.VolumeTypes.OCTREE);
 
@@ -2055,7 +2056,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.initialiseParameters();
         identifyObjects.updateParameterValue(IdentifyObjects.INPUT_IMAGE, "Test_image");
         identifyObjects.updateParameterValue(IdentifyObjects.OUTPUT_OBJECTS, "Test_output_objects");
-        identifyObjects.updateParameterValue(IdentifyObjects.WHITE_BACKGROUND, false);
+        identifyObjects.updateParameterValue(IdentifyObjects.BINARY_LOGIC, IdentifyObjects.BinaryLogic.BLACK_BACKGROUND);
         identifyObjects.updateParameterValue(IdentifyObjects.ENABLE_MULTITHREADING, true);
         identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, IdentifyObjects.VolumeTypes.POINTLIST);
 
@@ -2109,7 +2110,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.initialiseParameters();
         identifyObjects.updateParameterValue(IdentifyObjects.INPUT_IMAGE, "Test_image");
         identifyObjects.updateParameterValue(IdentifyObjects.OUTPUT_OBJECTS, "Test_output_objects");
-        identifyObjects.updateParameterValue(IdentifyObjects.WHITE_BACKGROUND, false);
+        identifyObjects.updateParameterValue(IdentifyObjects.BINARY_LOGIC, IdentifyObjects.BinaryLogic.BLACK_BACKGROUND);
         identifyObjects.updateParameterValue(IdentifyObjects.ENABLE_MULTITHREADING, true);
         identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, IdentifyObjects.VolumeTypes.QUADTREE);
 
@@ -2163,7 +2164,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.initialiseParameters();
         identifyObjects.updateParameterValue(IdentifyObjects.INPUT_IMAGE, "Test_image");
         identifyObjects.updateParameterValue(IdentifyObjects.OUTPUT_OBJECTS, "Test_output_objects");
-        identifyObjects.updateParameterValue(IdentifyObjects.WHITE_BACKGROUND, false);
+        identifyObjects.updateParameterValue(IdentifyObjects.BINARY_LOGIC, IdentifyObjects.BinaryLogic.BLACK_BACKGROUND);
         identifyObjects.updateParameterValue(IdentifyObjects.ENABLE_MULTITHREADING, true);
         identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, IdentifyObjects.VolumeTypes.OCTREE);
 
@@ -2217,7 +2218,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.initialiseParameters();
         identifyObjects.updateParameterValue(IdentifyObjects.INPUT_IMAGE, "Test_image");
         identifyObjects.updateParameterValue(IdentifyObjects.OUTPUT_OBJECTS, "Test_output_objects");
-        identifyObjects.updateParameterValue(IdentifyObjects.WHITE_BACKGROUND, false);
+        identifyObjects.updateParameterValue(IdentifyObjects.BINARY_LOGIC, IdentifyObjects.BinaryLogic.BLACK_BACKGROUND);
         identifyObjects.updateParameterValue(IdentifyObjects.ENABLE_MULTITHREADING, true);
         identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, IdentifyObjects.VolumeTypes.POINTLIST);
 
@@ -2271,7 +2272,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.initialiseParameters();
         identifyObjects.updateParameterValue(IdentifyObjects.INPUT_IMAGE, "Test_image");
         identifyObjects.updateParameterValue(IdentifyObjects.OUTPUT_OBJECTS, "Test_output_objects");
-        identifyObjects.updateParameterValue(IdentifyObjects.WHITE_BACKGROUND, false);
+        identifyObjects.updateParameterValue(IdentifyObjects.BINARY_LOGIC, IdentifyObjects.BinaryLogic.BLACK_BACKGROUND);
         identifyObjects.updateParameterValue(IdentifyObjects.ENABLE_MULTITHREADING, true);
         identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, IdentifyObjects.VolumeTypes.QUADTREE);
 
@@ -2325,7 +2326,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.initialiseParameters();
         identifyObjects.updateParameterValue(IdentifyObjects.INPUT_IMAGE, "Test_image");
         identifyObjects.updateParameterValue(IdentifyObjects.OUTPUT_OBJECTS, "Test_output_objects");
-        identifyObjects.updateParameterValue(IdentifyObjects.WHITE_BACKGROUND, false);
+        identifyObjects.updateParameterValue(IdentifyObjects.BINARY_LOGIC, IdentifyObjects.BinaryLogic.BLACK_BACKGROUND);
         identifyObjects.updateParameterValue(IdentifyObjects.ENABLE_MULTITHREADING, true);
         identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, IdentifyObjects.VolumeTypes.OCTREE);
 
@@ -2379,7 +2380,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.initialiseParameters();
         identifyObjects.updateParameterValue(IdentifyObjects.INPUT_IMAGE, "Test_image");
         identifyObjects.updateParameterValue(IdentifyObjects.OUTPUT_OBJECTS, "Test_output_objects");
-        identifyObjects.updateParameterValue(IdentifyObjects.WHITE_BACKGROUND, false);
+        identifyObjects.updateParameterValue(IdentifyObjects.BINARY_LOGIC, IdentifyObjects.BinaryLogic.BLACK_BACKGROUND);
         identifyObjects.updateParameterValue(IdentifyObjects.ENABLE_MULTITHREADING, true);
         identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, IdentifyObjects.VolumeTypes.POINTLIST);
 
@@ -2434,7 +2435,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.initialiseParameters();
         identifyObjects.updateParameterValue(IdentifyObjects.INPUT_IMAGE, "Test_image");
         identifyObjects.updateParameterValue(IdentifyObjects.OUTPUT_OBJECTS, "Test_output_objects");
-        identifyObjects.updateParameterValue(IdentifyObjects.WHITE_BACKGROUND, false);
+        identifyObjects.updateParameterValue(IdentifyObjects.BINARY_LOGIC, IdentifyObjects.BinaryLogic.BLACK_BACKGROUND);
         identifyObjects.updateParameterValue(IdentifyObjects.ENABLE_MULTITHREADING, true);
         identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, IdentifyObjects.VolumeTypes.QUADTREE);
 
@@ -2489,7 +2490,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.initialiseParameters();
         identifyObjects.updateParameterValue(IdentifyObjects.INPUT_IMAGE, "Test_image");
         identifyObjects.updateParameterValue(IdentifyObjects.OUTPUT_OBJECTS, "Test_output_objects");
-        identifyObjects.updateParameterValue(IdentifyObjects.WHITE_BACKGROUND, false);
+        identifyObjects.updateParameterValue(IdentifyObjects.BINARY_LOGIC, IdentifyObjects.BinaryLogic.BLACK_BACKGROUND);
         identifyObjects.updateParameterValue(IdentifyObjects.ENABLE_MULTITHREADING, true);
         identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, IdentifyObjects.VolumeTypes.OCTREE);
 
@@ -2549,7 +2550,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.initialiseParameters();
         identifyObjects.updateParameterValue(IdentifyObjects.INPUT_IMAGE, "Test_image");
         identifyObjects.updateParameterValue(IdentifyObjects.OUTPUT_OBJECTS, "Test_output_objects");
-        identifyObjects.updateParameterValue(IdentifyObjects.WHITE_BACKGROUND, false);
+        identifyObjects.updateParameterValue(IdentifyObjects.BINARY_LOGIC, IdentifyObjects.BinaryLogic.BLACK_BACKGROUND);
         identifyObjects.updateParameterValue(IdentifyObjects.ENABLE_MULTITHREADING, true);
         identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, IdentifyObjects.VolumeTypes.POINTLIST);
 
@@ -2602,7 +2603,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.initialiseParameters();
         identifyObjects.updateParameterValue(IdentifyObjects.INPUT_IMAGE, "Test_image");
         identifyObjects.updateParameterValue(IdentifyObjects.OUTPUT_OBJECTS, "Test_output_objects");
-        identifyObjects.updateParameterValue(IdentifyObjects.WHITE_BACKGROUND, false);
+        identifyObjects.updateParameterValue(IdentifyObjects.BINARY_LOGIC, IdentifyObjects.BinaryLogic.BLACK_BACKGROUND);
         identifyObjects.updateParameterValue(IdentifyObjects.ENABLE_MULTITHREADING, true);
         identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, IdentifyObjects.VolumeTypes.QUADTREE);
 
@@ -2655,7 +2656,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.initialiseParameters();
         identifyObjects.updateParameterValue(IdentifyObjects.INPUT_IMAGE, "Test_image");
         identifyObjects.updateParameterValue(IdentifyObjects.OUTPUT_OBJECTS, "Test_output_objects");
-        identifyObjects.updateParameterValue(IdentifyObjects.WHITE_BACKGROUND, false);
+        identifyObjects.updateParameterValue(IdentifyObjects.BINARY_LOGIC, IdentifyObjects.BinaryLogic.BLACK_BACKGROUND);
         identifyObjects.updateParameterValue(IdentifyObjects.ENABLE_MULTITHREADING, true);
         identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, IdentifyObjects.VolumeTypes.OCTREE);
 
@@ -2709,7 +2710,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.initialiseParameters();
         identifyObjects.updateParameterValue(IdentifyObjects.INPUT_IMAGE, "Test_image");
         identifyObjects.updateParameterValue(IdentifyObjects.OUTPUT_OBJECTS, "Test_output_objects");
-        identifyObjects.updateParameterValue(IdentifyObjects.WHITE_BACKGROUND, true);
+        identifyObjects.updateParameterValue(IdentifyObjects.BINARY_LOGIC, IdentifyObjects.BinaryLogic.WHITE_BACKGROUND);
         identifyObjects.updateParameterValue(IdentifyObjects.ENABLE_MULTITHREADING, true);
         identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, IdentifyObjects.VolumeTypes.POINTLIST);
 
@@ -2763,7 +2764,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.initialiseParameters();
         identifyObjects.updateParameterValue(IdentifyObjects.INPUT_IMAGE, "Test_image");
         identifyObjects.updateParameterValue(IdentifyObjects.OUTPUT_OBJECTS, "Test_output_objects");
-        identifyObjects.updateParameterValue(IdentifyObjects.WHITE_BACKGROUND, true);
+        identifyObjects.updateParameterValue(IdentifyObjects.BINARY_LOGIC, IdentifyObjects.BinaryLogic.WHITE_BACKGROUND);
         identifyObjects.updateParameterValue(IdentifyObjects.ENABLE_MULTITHREADING, true);
         identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, IdentifyObjects.VolumeTypes.QUADTREE);
 
@@ -2817,7 +2818,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.initialiseParameters();
         identifyObjects.updateParameterValue(IdentifyObjects.INPUT_IMAGE, "Test_image");
         identifyObjects.updateParameterValue(IdentifyObjects.OUTPUT_OBJECTS, "Test_output_objects");
-        identifyObjects.updateParameterValue(IdentifyObjects.WHITE_BACKGROUND, true);
+        identifyObjects.updateParameterValue(IdentifyObjects.BINARY_LOGIC, IdentifyObjects.BinaryLogic.WHITE_BACKGROUND);
         identifyObjects.updateParameterValue(IdentifyObjects.ENABLE_MULTITHREADING, true);
         identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, IdentifyObjects.VolumeTypes.OCTREE);
 
@@ -2871,7 +2872,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.initialiseParameters();
         identifyObjects.updateParameterValue(IdentifyObjects.INPUT_IMAGE, "Test_image");
         identifyObjects.updateParameterValue(IdentifyObjects.OUTPUT_OBJECTS, "Test_output_objects");
-        identifyObjects.updateParameterValue(IdentifyObjects.WHITE_BACKGROUND, false);
+        identifyObjects.updateParameterValue(IdentifyObjects.BINARY_LOGIC, IdentifyObjects.BinaryLogic.BLACK_BACKGROUND);
         identifyObjects.updateParameterValue(IdentifyObjects.ENABLE_MULTITHREADING, true);
         identifyObjects.updateParameterValue(IdentifyObjects.SINGLE_OBJECT, true);
         identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, IdentifyObjects.VolumeTypes.POINTLIST);
@@ -2926,7 +2927,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.initialiseParameters();
         identifyObjects.updateParameterValue(IdentifyObjects.INPUT_IMAGE, "Test_image");
         identifyObjects.updateParameterValue(IdentifyObjects.OUTPUT_OBJECTS, "Test_output_objects");
-        identifyObjects.updateParameterValue(IdentifyObjects.WHITE_BACKGROUND, false);
+        identifyObjects.updateParameterValue(IdentifyObjects.BINARY_LOGIC, IdentifyObjects.BinaryLogic.BLACK_BACKGROUND);
         identifyObjects.updateParameterValue(IdentifyObjects.ENABLE_MULTITHREADING, true);
         identifyObjects.updateParameterValue(IdentifyObjects.SINGLE_OBJECT, true);
         identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, IdentifyObjects.VolumeTypes.QUADTREE);
@@ -2981,7 +2982,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.initialiseParameters();
         identifyObjects.updateParameterValue(IdentifyObjects.INPUT_IMAGE, "Test_image");
         identifyObjects.updateParameterValue(IdentifyObjects.OUTPUT_OBJECTS, "Test_output_objects");
-        identifyObjects.updateParameterValue(IdentifyObjects.WHITE_BACKGROUND, false);
+        identifyObjects.updateParameterValue(IdentifyObjects.BINARY_LOGIC, IdentifyObjects.BinaryLogic.BLACK_BACKGROUND);
         identifyObjects.updateParameterValue(IdentifyObjects.ENABLE_MULTITHREADING, true);
         identifyObjects.updateParameterValue(IdentifyObjects.SINGLE_OBJECT, true);
         identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, IdentifyObjects.VolumeTypes.OCTREE);
@@ -3036,7 +3037,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.initialiseParameters();
         identifyObjects.updateParameterValue(IdentifyObjects.INPUT_IMAGE, "Test_image");
         identifyObjects.updateParameterValue(IdentifyObjects.OUTPUT_OBJECTS, "Test_output_objects");
-        identifyObjects.updateParameterValue(IdentifyObjects.WHITE_BACKGROUND, false);
+        identifyObjects.updateParameterValue(IdentifyObjects.BINARY_LOGIC, IdentifyObjects.BinaryLogic.BLACK_BACKGROUND);
         identifyObjects.updateParameterValue(IdentifyObjects.ENABLE_MULTITHREADING, true);
         identifyObjects.updateParameterValue(IdentifyObjects.SINGLE_OBJECT, true);
         identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, IdentifyObjects.VolumeTypes.POINTLIST);
@@ -3090,7 +3091,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.initialiseParameters();
         identifyObjects.updateParameterValue(IdentifyObjects.INPUT_IMAGE, "Test_image");
         identifyObjects.updateParameterValue(IdentifyObjects.OUTPUT_OBJECTS, "Test_output_objects");
-        identifyObjects.updateParameterValue(IdentifyObjects.WHITE_BACKGROUND, false);
+        identifyObjects.updateParameterValue(IdentifyObjects.BINARY_LOGIC, IdentifyObjects.BinaryLogic.BLACK_BACKGROUND);
         identifyObjects.updateParameterValue(IdentifyObjects.ENABLE_MULTITHREADING, true);
         identifyObjects.updateParameterValue(IdentifyObjects.SINGLE_OBJECT, true);
         identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, IdentifyObjects.VolumeTypes.QUADTREE);
@@ -3144,7 +3145,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.initialiseParameters();
         identifyObjects.updateParameterValue(IdentifyObjects.INPUT_IMAGE, "Test_image");
         identifyObjects.updateParameterValue(IdentifyObjects.OUTPUT_OBJECTS, "Test_output_objects");
-        identifyObjects.updateParameterValue(IdentifyObjects.WHITE_BACKGROUND, false);
+        identifyObjects.updateParameterValue(IdentifyObjects.BINARY_LOGIC, IdentifyObjects.BinaryLogic.BLACK_BACKGROUND);
         identifyObjects.updateParameterValue(IdentifyObjects.ENABLE_MULTITHREADING, true);
         identifyObjects.updateParameterValue(IdentifyObjects.SINGLE_OBJECT, true);
         identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, IdentifyObjects.VolumeTypes.OCTREE);
@@ -3199,7 +3200,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.initialiseParameters();
         identifyObjects.updateParameterValue(IdentifyObjects.INPUT_IMAGE, "Test_image");
         identifyObjects.updateParameterValue(IdentifyObjects.OUTPUT_OBJECTS, "Test_output_objects");
-        identifyObjects.updateParameterValue(IdentifyObjects.WHITE_BACKGROUND, false);
+        identifyObjects.updateParameterValue(IdentifyObjects.BINARY_LOGIC, IdentifyObjects.BinaryLogic.BLACK_BACKGROUND);
         identifyObjects.updateParameterValue(IdentifyObjects.ENABLE_MULTITHREADING, true);
         identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, IdentifyObjects.VolumeTypes.POINTLIST);
 
@@ -3253,7 +3254,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.initialiseParameters();
         identifyObjects.updateParameterValue(IdentifyObjects.INPUT_IMAGE, "Test_image");
         identifyObjects.updateParameterValue(IdentifyObjects.OUTPUT_OBJECTS, "Test_output_objects");
-        identifyObjects.updateParameterValue(IdentifyObjects.WHITE_BACKGROUND, false);
+        identifyObjects.updateParameterValue(IdentifyObjects.BINARY_LOGIC, IdentifyObjects.BinaryLogic.BLACK_BACKGROUND);
         identifyObjects.updateParameterValue(IdentifyObjects.ENABLE_MULTITHREADING, true);
         identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, IdentifyObjects.VolumeTypes.QUADTREE);
 
@@ -3307,7 +3308,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.initialiseParameters();
         identifyObjects.updateParameterValue(IdentifyObjects.INPUT_IMAGE, "Test_image");
         identifyObjects.updateParameterValue(IdentifyObjects.OUTPUT_OBJECTS, "Test_output_objects");
-        identifyObjects.updateParameterValue(IdentifyObjects.WHITE_BACKGROUND, false);
+        identifyObjects.updateParameterValue(IdentifyObjects.BINARY_LOGIC, IdentifyObjects.BinaryLogic.BLACK_BACKGROUND);
         identifyObjects.updateParameterValue(IdentifyObjects.ENABLE_MULTITHREADING, true);
         identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, IdentifyObjects.VolumeTypes.OCTREE);
 
@@ -3361,7 +3362,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.initialiseParameters();
         identifyObjects.updateParameterValue(IdentifyObjects.INPUT_IMAGE, "Test_image");
         identifyObjects.updateParameterValue(IdentifyObjects.OUTPUT_OBJECTS, "Test_output_objects");
-        identifyObjects.updateParameterValue(IdentifyObjects.WHITE_BACKGROUND, false);
+        identifyObjects.updateParameterValue(IdentifyObjects.BINARY_LOGIC, IdentifyObjects.BinaryLogic.BLACK_BACKGROUND);
         identifyObjects.updateParameterValue(IdentifyObjects.ENABLE_MULTITHREADING, true);
         identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, IdentifyObjects.VolumeTypes.POINTLIST);
 
@@ -3418,7 +3419,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.initialiseParameters();
         identifyObjects.updateParameterValue(IdentifyObjects.INPUT_IMAGE, "Test_image");
         identifyObjects.updateParameterValue(IdentifyObjects.OUTPUT_OBJECTS, "Test_output_objects");
-        identifyObjects.updateParameterValue(IdentifyObjects.WHITE_BACKGROUND, false);
+        identifyObjects.updateParameterValue(IdentifyObjects.BINARY_LOGIC, IdentifyObjects.BinaryLogic.BLACK_BACKGROUND);
         identifyObjects.updateParameterValue(IdentifyObjects.ENABLE_MULTITHREADING, true);
         identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, IdentifyObjects.VolumeTypes.QUADTREE);
 
@@ -3475,7 +3476,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.initialiseParameters();
         identifyObjects.updateParameterValue(IdentifyObjects.INPUT_IMAGE, "Test_image");
         identifyObjects.updateParameterValue(IdentifyObjects.OUTPUT_OBJECTS, "Test_output_objects");
-        identifyObjects.updateParameterValue(IdentifyObjects.WHITE_BACKGROUND, false);
+        identifyObjects.updateParameterValue(IdentifyObjects.BINARY_LOGIC, IdentifyObjects.BinaryLogic.BLACK_BACKGROUND);
         identifyObjects.updateParameterValue(IdentifyObjects.ENABLE_MULTITHREADING, true);
         identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, IdentifyObjects.VolumeTypes.OCTREE);
 
@@ -3532,7 +3533,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.initialiseParameters();
         identifyObjects.updateParameterValue(IdentifyObjects.INPUT_IMAGE, "Test_image");
         identifyObjects.updateParameterValue(IdentifyObjects.OUTPUT_OBJECTS, "Test_output_objects");
-        identifyObjects.updateParameterValue(IdentifyObjects.WHITE_BACKGROUND, false);
+        identifyObjects.updateParameterValue(IdentifyObjects.BINARY_LOGIC, IdentifyObjects.BinaryLogic.BLACK_BACKGROUND);
         identifyObjects.updateParameterValue(IdentifyObjects.ENABLE_MULTITHREADING, true);
         identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, IdentifyObjects.VolumeTypes.POINTLIST);
 
@@ -3586,7 +3587,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.initialiseParameters();
         identifyObjects.updateParameterValue(IdentifyObjects.INPUT_IMAGE, "Test_image");
         identifyObjects.updateParameterValue(IdentifyObjects.OUTPUT_OBJECTS, "Test_output_objects");
-        identifyObjects.updateParameterValue(IdentifyObjects.WHITE_BACKGROUND, false);
+        identifyObjects.updateParameterValue(IdentifyObjects.BINARY_LOGIC, IdentifyObjects.BinaryLogic.BLACK_BACKGROUND);
         identifyObjects.updateParameterValue(IdentifyObjects.ENABLE_MULTITHREADING, true);
         identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, IdentifyObjects.VolumeTypes.QUADTREE);
 
@@ -3640,7 +3641,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.initialiseParameters();
         identifyObjects.updateParameterValue(IdentifyObjects.INPUT_IMAGE, "Test_image");
         identifyObjects.updateParameterValue(IdentifyObjects.OUTPUT_OBJECTS, "Test_output_objects");
-        identifyObjects.updateParameterValue(IdentifyObjects.WHITE_BACKGROUND, false);
+        identifyObjects.updateParameterValue(IdentifyObjects.BINARY_LOGIC, IdentifyObjects.BinaryLogic.BLACK_BACKGROUND);
         identifyObjects.updateParameterValue(IdentifyObjects.ENABLE_MULTITHREADING, true);
         identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, IdentifyObjects.VolumeTypes.OCTREE);
 
@@ -3694,7 +3695,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.initialiseParameters();
         identifyObjects.updateParameterValue(IdentifyObjects.INPUT_IMAGE, "Test_image");
         identifyObjects.updateParameterValue(IdentifyObjects.OUTPUT_OBJECTS, "Test_output_objects");
-        identifyObjects.updateParameterValue(IdentifyObjects.WHITE_BACKGROUND, false);
+        identifyObjects.updateParameterValue(IdentifyObjects.BINARY_LOGIC, IdentifyObjects.BinaryLogic.BLACK_BACKGROUND);
         identifyObjects.updateParameterValue(IdentifyObjects.ENABLE_MULTITHREADING, true);
         identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, IdentifyObjects.VolumeTypes.POINTLIST);
 
@@ -3748,7 +3749,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.initialiseParameters();
         identifyObjects.updateParameterValue(IdentifyObjects.INPUT_IMAGE, "Test_image");
         identifyObjects.updateParameterValue(IdentifyObjects.OUTPUT_OBJECTS, "Test_output_objects");
-        identifyObjects.updateParameterValue(IdentifyObjects.WHITE_BACKGROUND, false);
+        identifyObjects.updateParameterValue(IdentifyObjects.BINARY_LOGIC, IdentifyObjects.BinaryLogic.BLACK_BACKGROUND);
         identifyObjects.updateParameterValue(IdentifyObjects.ENABLE_MULTITHREADING, true);
         identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, IdentifyObjects.VolumeTypes.QUADTREE);
 
@@ -3802,7 +3803,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.initialiseParameters();
         identifyObjects.updateParameterValue(IdentifyObjects.INPUT_IMAGE, "Test_image");
         identifyObjects.updateParameterValue(IdentifyObjects.OUTPUT_OBJECTS, "Test_output_objects");
-        identifyObjects.updateParameterValue(IdentifyObjects.WHITE_BACKGROUND, false);
+        identifyObjects.updateParameterValue(IdentifyObjects.BINARY_LOGIC, IdentifyObjects.BinaryLogic.BLACK_BACKGROUND);
         identifyObjects.updateParameterValue(IdentifyObjects.ENABLE_MULTITHREADING, true);
         identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, IdentifyObjects.VolumeTypes.OCTREE);
 
@@ -3856,7 +3857,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.initialiseParameters();
         identifyObjects.updateParameterValue(IdentifyObjects.INPUT_IMAGE, "Test_image");
         identifyObjects.updateParameterValue(IdentifyObjects.OUTPUT_OBJECTS, "Test_output_objects");
-        identifyObjects.updateParameterValue(IdentifyObjects.WHITE_BACKGROUND, false);
+        identifyObjects.updateParameterValue(IdentifyObjects.BINARY_LOGIC, IdentifyObjects.BinaryLogic.BLACK_BACKGROUND);
         identifyObjects.updateParameterValue(IdentifyObjects.ENABLE_MULTITHREADING, true);
         identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, IdentifyObjects.VolumeTypes.POINTLIST);
 
@@ -3913,7 +3914,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.initialiseParameters();
         identifyObjects.updateParameterValue(IdentifyObjects.INPUT_IMAGE, "Test_image");
         identifyObjects.updateParameterValue(IdentifyObjects.OUTPUT_OBJECTS, "Test_output_objects");
-        identifyObjects.updateParameterValue(IdentifyObjects.WHITE_BACKGROUND, false);
+        identifyObjects.updateParameterValue(IdentifyObjects.BINARY_LOGIC, IdentifyObjects.BinaryLogic.BLACK_BACKGROUND);
         identifyObjects.updateParameterValue(IdentifyObjects.ENABLE_MULTITHREADING, true);
         identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, IdentifyObjects.VolumeTypes.QUADTREE);
 
@@ -3970,7 +3971,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.initialiseParameters();
         identifyObjects.updateParameterValue(IdentifyObjects.INPUT_IMAGE, "Test_image");
         identifyObjects.updateParameterValue(IdentifyObjects.OUTPUT_OBJECTS, "Test_output_objects");
-        identifyObjects.updateParameterValue(IdentifyObjects.WHITE_BACKGROUND, false);
+        identifyObjects.updateParameterValue(IdentifyObjects.BINARY_LOGIC, IdentifyObjects.BinaryLogic.BLACK_BACKGROUND);
         identifyObjects.updateParameterValue(IdentifyObjects.ENABLE_MULTITHREADING, true);
         identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, IdentifyObjects.VolumeTypes.OCTREE);
 

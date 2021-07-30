@@ -8,10 +8,10 @@ import ij.process.ImageProcessor;
 import inra.ijpb.morphology.Morphology;
 import inra.ijpb.morphology.Strel;
 import inra.ijpb.morphology.Strel3D;
+import wbif.sjx.MIA.Module.Categories;
+import wbif.sjx.MIA.Module.Category;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
-import wbif.sjx.MIA.Module.Category;
-import wbif.sjx.MIA.Module.Categories;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.InvertIntensity;
 import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.Status;
@@ -22,6 +22,7 @@ import wbif.sjx.MIA.Object.Parameters.InputImageP;
 import wbif.sjx.MIA.Object.Parameters.OutputImageP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.Parameters.SeparatorP;
+import wbif.sjx.MIA.Object.Parameters.ChoiceInterfaces.BinaryLogicInterface;
 import wbif.sjx.MIA.Object.Parameters.Text.IntegerP;
 import wbif.sjx.MIA.Object.References.Collections.ImageMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.MetadataRefCollection;
@@ -38,6 +39,7 @@ public class DilateErode extends Module {
     public static final String OPERATION_SEPARATOR = "Operation controls";
     public static final String OPERATION_MODE = "Filter mode";
     public static final String NUM_ITERATIONS = "Number of iterations";
+    public static final String BINARY_LOGIC = "Binary logic";
 
     public DilateErode(ModuleCollection modules) {
         super("Dilate and erode", modules);
@@ -53,12 +55,19 @@ public class DilateErode extends Module {
 
     }
 
-    public static void process(ImagePlus ipl, String operationMode, int numIterations) {
-        process(ipl, operationMode, numIterations, false);
+    public interface BinaryLogic extends BinaryLogicInterface {
     }
 
-    public static void process(ImagePlus ipl, String operationMode, int numIterations, boolean verbose) {
+    public static void process(ImagePlus ipl, String operationMode, boolean blackBackground, int numIterations) {
+        process(ipl, operationMode, blackBackground, numIterations, false);
+    }
+
+    public static void process(ImagePlus ipl, String operationMode, boolean blackBackground, int numIterations,
+            boolean verbose) {
         String moduleName = new DilateErode(null).getName();
+
+        if (!blackBackground)
+            InvertIntensity.process(ipl);
 
         int width = ipl.getWidth();
         int height = ipl.getHeight();
@@ -86,9 +95,6 @@ public class DilateErode extends Module {
                         (int) (numIterations * ratio));
                 break;
         }
-
-        // MorphoLibJ takes objects as being white
-        InvertIntensity.process(ipl);
 
         for (int c = 1; c <= nChannels; c++) {
             for (int t = 1; t <= nFrames; t++) {
@@ -122,13 +128,14 @@ public class DilateErode extends Module {
                     }
                 }
 
-                writeProgressStatus(count++, total, "images", moduleName);
+                if (verbose)
+                    writeProgressStatus(count++, total, "images", moduleName);
 
             }
         }
 
-        // Flipping the intensities back
-        InvertIntensity.process(ipl);
+        if (!blackBackground)
+            InvertIntensity.process(ipl);
 
     }
 
@@ -157,12 +164,14 @@ public class DilateErode extends Module {
         String outputImageName = parameters.getValue(OUTPUT_IMAGE);
         String operationMode = parameters.getValue(OPERATION_MODE);
         int numIterations = parameters.getValue(NUM_ITERATIONS);
+        String binaryLogic = parameters.getValue(BINARY_LOGIC);
+        boolean blackBackground = binaryLogic.equals(BinaryLogic.BLACK_BACKGROUND);
 
         // If applying to a new image, the input image is duplicated
         if (!applyToInput)
             inputImagePlus = new Duplicator().run(inputImagePlus);
 
-        process(inputImagePlus, operationMode, numIterations);
+        process(inputImagePlus, operationMode, blackBackground, numIterations);
 
         // If the image is being saved as a new image, adding it to the workspace
         if (!applyToInput) {
@@ -192,6 +201,7 @@ public class DilateErode extends Module {
         parameters.add(new SeparatorP(OPERATION_SEPARATOR, this));
         parameters.add(new ChoiceP(OPERATION_MODE, this, OperationModes.DILATE_3D, OperationModes.ALL));
         parameters.add(new IntegerP(NUM_ITERATIONS, this, 1));
+        parameters.add(new ChoiceP(BINARY_LOGIC, this, BinaryLogic.BLACK_BACKGROUND, BinaryLogic.ALL));
 
         addParameterDescriptions();
 
@@ -211,6 +221,7 @@ public class DilateErode extends Module {
         returnedParameters.add(parameters.getParameter(OPERATION_SEPARATOR));
         returnedParameters.add(parameters.getParameter(OPERATION_MODE));
         returnedParameters.add(parameters.getParameter(NUM_ITERATIONS));
+        returnedParameters.add(parameters.getParameter(BINARY_LOGIC));
 
         return returnedParameters;
 

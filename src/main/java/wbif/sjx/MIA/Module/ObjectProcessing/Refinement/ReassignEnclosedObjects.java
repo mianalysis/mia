@@ -41,7 +41,7 @@ public class ReassignEnclosedObjects extends Module {
 
             // Filling holes in the binary image
             InvertIntensity.process(binaryIpl);
-            BinaryOperations2D.process(binaryIpl,BinaryOperations2D.OperationModes.FILL_HOLES,1,1);
+            BinaryOperations2D.process(binaryIpl,BinaryOperations2D.OperationModes.FILL_HOLES,1,1, false);
 
             // Iterating over each object in the collection, testing if the centroid is present in the filled object
             for (Obj testObject : objects.values()) {

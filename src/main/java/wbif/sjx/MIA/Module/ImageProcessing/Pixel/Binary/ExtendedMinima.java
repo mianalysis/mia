@@ -12,11 +12,12 @@ import ij.ImagePlus;
 import ij.ImageStack;
 import ij.Prefs;
 import ij.plugin.SubHyperstackMaker;
+import ij.process.StackProcessor;
 import inra.ijpb.morphology.MinimaAndMaxima3D;
+import wbif.sjx.MIA.Module.Categories;
+import wbif.sjx.MIA.Module.Category;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
-import wbif.sjx.MIA.Module.Category;
-import wbif.sjx.MIA.Module.Categories;
 import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.Status;
 import wbif.sjx.MIA.Object.Workspace;
@@ -26,6 +27,7 @@ import wbif.sjx.MIA.Object.Parameters.InputImageP;
 import wbif.sjx.MIA.Object.Parameters.OutputImageP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.Parameters.SeparatorP;
+import wbif.sjx.MIA.Object.Parameters.ChoiceInterfaces.BinaryLogicInterface;
 import wbif.sjx.MIA.Object.Parameters.Text.IntegerP;
 import wbif.sjx.MIA.Object.References.Collections.ImageMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.MetadataRefCollection;
@@ -43,26 +45,39 @@ public class ExtendedMinima extends Module {
     public static final String OUTPUT_IMAGE = "Output image";
 
     public static final String EXTENDED_MINIMA_SEPARATOR = "Extended minima controls";
+    public static final String MINIMA_MAXIMA_MODE = "Minima/maxima";
     public static final String DYNAMIC = "Dynamic";
     public static final String CONNECTIVITY_3D = "Connectivity (3D)";
+    public static final String BINARY_LOGIC = "Binary logic";
 
     public static final String EXECUTION_SEPARATOR = "Execution controls";
     public static final String ENABLE_MULTITHREADING = "Enable multithreading";
 
     public ExtendedMinima(ModuleCollection modules) {
-        super("Extended minima",modules);
+        super("Extended minima/maxima", modules);
     }
 
+    public interface MinimaMaximaModes {
+        String MAXIMA = "Maxima";
+        String MINIMA = "Minima";
+
+        String[] ALL = new String[] { MAXIMA, MINIMA };
+
+    }
 
     public interface Connectivity {
         String SIX = "6";
         String TWENTYSIX = "26";
 
-        String[] ALL = new String[]{SIX,TWENTYSIX};
+        String[] ALL = new String[] { SIX, TWENTYSIX };
 
     }
 
-    public Image process(Image inputImage, String outputImageName, int dynamic, int connectivity, boolean multithread) throws InterruptedException {
+    public interface BinaryLogic extends BinaryLogicInterface {
+    }
+
+    public static Image process(Image inputImage, String outputImageName, String minimaMaxima, boolean blackBackground,
+            int dynamic, int connectivity, boolean multithread) throws InterruptedException {
         ImagePlus inputIpl = inputImage.getImagePlus();
         int width = inputIpl.getWidth();
         int height = inputIpl.getHeight();
@@ -70,16 +85,19 @@ public class ExtendedMinima extends Module {
         int nSlices = inputIpl.getNSlices();
         int nFrames = inputIpl.getNFrames();
 
+        String moduleName = new ExtendedMinima(null).getName();
+
         // Creating output image
-        ImagePlus outputIpl = IJ.createHyperStack(outputImageName,width,height,nChannels,nSlices,nFrames,8);
+        ImagePlus outputIpl = IJ.createHyperStack(outputImageName, width, height, nChannels, nSlices, nFrames, 8);
 
         // Setting the calibration from the input image
         outputIpl.setCalibration(inputImage.getImagePlus().getCalibration());
 
         int nThreads = multithread ? Prefs.getThreads() : 1;
-        ThreadPoolExecutor pool = new ThreadPoolExecutor(nThreads,nThreads,0L, TimeUnit.MILLISECONDS,new LinkedBlockingQueue<>());
+        ThreadPoolExecutor pool = new ThreadPoolExecutor(nThreads, nThreads, 0L, TimeUnit.MILLISECONDS,
+                new LinkedBlockingQueue<>());
 
-        int nTotal = nChannels*nFrames;
+        int nTotal = nChannels * nFrames;
         AtomicInteger count = new AtomicInteger();
 
         for (int c = 1; c <= nChannels; c++) {
@@ -90,13 +108,27 @@ public class ExtendedMinima extends Module {
                 Runnable task = () -> {
                     // Getting maskIpl for this timepoint
                     ImageStack timepoint = getSetStack(inputIpl, finalT, finalC, null);
-                    if (timepoint == null) return;
-                    timepoint = MinimaAndMaxima3D.extendedMinima(timepoint, dynamic, connectivity);
 
-                    //  Replacing the maskIpl intensity
+                    if (timepoint == null)
+                        return;
+
+                    switch (minimaMaxima) {
+                        case MinimaMaximaModes.MAXIMA:
+                            timepoint = MinimaAndMaxima3D.extendedMaxima(timepoint, dynamic, connectivity);
+                            break;
+                        case MinimaMaximaModes.MINIMA:
+                            timepoint = MinimaAndMaxima3D.extendedMinima(timepoint, dynamic, connectivity);
+                            break;
+                    }
+
+                    // Setting the binary logic of the output extended minima
+                    if (blackBackground)
+                        new StackProcessor(timepoint).invert();
+
+                    // Replacing the maskIpl intensity
                     getSetStack(outputIpl, finalT, finalC, timepoint);
 
-                    writeProgressStatus(count.incrementAndGet(), nTotal, "stacks");
+                    writeProgressStatus(count.incrementAndGet(), nTotal, "stacks", moduleName);
 
                 };
                 pool.submit(task);
@@ -106,18 +138,21 @@ public class ExtendedMinima extends Module {
         pool.shutdown();
         pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS); // i.e. never terminate early
 
-        // MorphoLibJ gives white objects on a black background.  Inverting this to match the logic of ImageJ
-        IJ.run(outputIpl,"Invert","stack");
+        // MorphoLibJ gives white objects on a black background. Inverting this to match
+        // the logic of ImageJ
+        IJ.run(outputIpl, "Invert", "stack");
 
-        return new Image(outputImageName,outputIpl);
+        return new Image(outputImageName, outputIpl);
 
     }
 
-    synchronized private static ImageStack getSetStack(ImagePlus inputImagePlus, int timepoint, int channel, @Nullable ImageStack toPut) {
+    synchronized private static ImageStack getSetStack(ImagePlus inputImagePlus, int timepoint, int channel,
+            @Nullable ImageStack toPut) {
         int nSlices = inputImagePlus.getNSlices();
         if (toPut == null) {
             // Get mode
-            return SubHyperstackMaker.makeSubhyperstack(inputImagePlus, channel + "-" + channel, "1-" + nSlices, timepoint + "-" + timepoint).getStack();
+            return SubHyperstackMaker.makeSubhyperstack(inputImagePlus, channel + "-" + channel, "1-" + nSlices,
+                    timepoint + "-" + timepoint).getStack();
         } else {
             for (int z = 1; z <= inputImagePlus.getNSlices(); z++) {
                 inputImagePlus.setPosition(channel, z, timepoint);
@@ -125,11 +160,10 @@ public class ExtendedMinima extends Module {
             }
 
             inputImagePlus.updateAndDraw();
-            
+
             return null;
         }
     }
-
 
     @Override
     public Category getCategory() {
@@ -150,14 +184,18 @@ public class ExtendedMinima extends Module {
         // Getting parameters
         boolean applyToInput = parameters.getValue(APPLY_TO_INPUT);
         String outputImageName = parameters.getValue(OUTPUT_IMAGE);
+        String minimaMaximaMode = parameters.getValue(MINIMA_MAXIMA_MODE);
         int dynamic = parameters.getValue(DYNAMIC);
         int connectivity = Integer.parseInt(parameters.getValue(CONNECTIVITY_3D));
-        boolean multithread = parameters.getValue(ENABLE_MULTITHREADING);
+        String binaryLogic = parameters.getValue(BINARY_LOGIC);
+        boolean blackBackground = binaryLogic.equals(BinaryLogic.BLACK_BACKGROUND);
+        boolean multithread = parameters.getValue(ENABLE_MULTITHREADING);        
 
         // Getting region minima
         Image outputImage;
         try {
-            outputImage = process(inputImage,outputImageName,dynamic,connectivity, multithread);
+            outputImage = process(inputImage, outputImageName, minimaMaximaMode, blackBackground, dynamic, connectivity,
+                    multithread);
         } catch (InterruptedException e) {
             e.printStackTrace();
             return Status.FAIL;
@@ -165,13 +203,14 @@ public class ExtendedMinima extends Module {
 
         // If the image is being saved as a new image, adding it to the workspace
         if (!applyToInput) {
-            writeStatus("Adding image ("+outputImageName+") to workspace");
+            writeStatus("Adding image (" + outputImageName + ") to workspace");
             workspace.addImage(outputImage);
         } else {
             inputImage.setImagePlus(outputImage.getImagePlus());
         }
 
-        if (showOutput) outputImage.showImage();
+        if (showOutput)
+            outputImage.showImage();
 
         return Status.PASS;
 
@@ -179,16 +218,18 @@ public class ExtendedMinima extends Module {
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new SeparatorP(INPUT_SEPARATOR,this));
+        parameters.add(new SeparatorP(INPUT_SEPARATOR, this));
         parameters.add(new InputImageP(INPUT_IMAGE, this));
-        parameters.add(new BooleanP(APPLY_TO_INPUT, this,true));
+        parameters.add(new BooleanP(APPLY_TO_INPUT, this, true));
         parameters.add(new OutputImageP(OUTPUT_IMAGE, this));
 
-        parameters.add(new SeparatorP(EXTENDED_MINIMA_SEPARATOR,this));
-        parameters.add(new IntegerP(DYNAMIC, this,1));
+        parameters.add(new SeparatorP(EXTENDED_MINIMA_SEPARATOR, this));
+        parameters.add(new ChoiceP(MINIMA_MAXIMA_MODE, this, MinimaMaximaModes.MINIMA, MinimaMaximaModes.ALL));
+        parameters.add(new IntegerP(DYNAMIC, this, 1));
         parameters.add(new ChoiceP(CONNECTIVITY_3D, this, Connectivity.TWENTYSIX, Connectivity.ALL));
+        parameters.add(new ChoiceP(BINARY_LOGIC, this, BinaryLogic.BLACK_BACKGROUND, BinaryLogic.ALL));
 
-        parameters.add(new SeparatorP(EXECUTION_SEPARATOR,this));
+        parameters.add(new SeparatorP(EXECUTION_SEPARATOR, this));
         parameters.add(new BooleanP(ENABLE_MULTITHREADING, this, true));
 
         addParameterDescriptions();
@@ -207,9 +248,11 @@ public class ExtendedMinima extends Module {
             returnedParameters.add(parameters.getParameter(OUTPUT_IMAGE));
         }
 
-returnedParameters.add(parameters.getParameter(EXTENDED_MINIMA_SEPARATOR));
+        returnedParameters.add(parameters.getParameter(EXTENDED_MINIMA_SEPARATOR));
+        returnedParameters.add(parameters.getParameter(MINIMA_MAXIMA_MODE));
         returnedParameters.add(parameters.getParameter(DYNAMIC));
         returnedParameters.add(parameters.getParameter(CONNECTIVITY_3D));
+        returnedParameters.add(parameters.getParameter(BINARY_LOGIC));
 
         returnedParameters.add(parameters.getParameter(EXECUTION_SEPARATOR));
         returnedParameters.add(parameters.getParameter(ENABLE_MULTITHREADING));
@@ -249,24 +292,28 @@ returnedParameters.add(parameters.getParameter(EXTENDED_MINIMA_SEPARATOR));
     }
 
     void addParameterDescriptions() {
-        parameters.get(INPUT_IMAGE).setDescription(
-                "Image from workspace to apply extended minima operation to.");
+        parameters.get(INPUT_IMAGE).setDescription("Image from workspace to apply extended minima operation to.");
 
         parameters.get(APPLY_TO_INPUT).setDescription(
-                "When selected, the post-operation image will overwrite the input image in the workspace.  Otherwise, the image will be saved to the workspace with the name specified by the \"" + OUTPUT_IMAGE + "\" parameter.");
+                "When selected, the post-operation image will overwrite the input image in the workspace.  Otherwise, the image will be saved to the workspace with the name specified by the \""
+                        + OUTPUT_IMAGE + "\" parameter.");
 
         parameters.get(OUTPUT_IMAGE).setDescription("If \"" + APPLY_TO_INPUT
                 + "\" is not selected, the post-operation image will be saved to the workspace with this name.  This image will be 8-bit with black minima (intensity 0) on a white background (intensity 255).");
 
-        parameters.get(DYNAMIC).setDescription("This parameter specifies the maximum permitted pixel intensity difference for a single minima.  Local intensity differences greater than this will result in creation of more minima.  The smaller the dynamic value is, the more minima will be created.  As the dynamic value increases, minima will increase in size.");
+        parameters.get(DYNAMIC).setDescription(
+                "This parameter specifies the maximum permitted pixel intensity difference for a single minima.  Local intensity differences greater than this will result in creation of more minima.  The smaller the dynamic value is, the more minima will be created.  As the dynamic value increases, minima will increase in size.");
 
         parameters.get(CONNECTIVITY_3D).setDescription("Controls which adjacent pixels are considered:<br><ul>"
 
-        +"<li>\""+Connectivity.SIX+"\" Only pixels immediately next to the active pixel are considered.  These are the pixels on the four \"cardinal\" directions plus the pixels immediately above and below the current pixel.  If working in 2D, 4-way connectivity is used.</li>"
+                + "<li>\"" + Connectivity.SIX
+                + "\" Only pixels immediately next to the active pixel are considered.  These are the pixels on the four \"cardinal\" directions plus the pixels immediately above and below the current pixel.  If working in 2D, 4-way connectivity is used.</li>"
 
-        +"<li>\""+Connectivity.TWENTYSIX+"\" In addition to the core 6-pixels, all immediately diagonal pixels are used.  If working in 2D, 8-way connectivity is used.</li>");
+                + "<li>\"" + Connectivity.TWENTYSIX
+                + "\" In addition to the core 6-pixels, all immediately diagonal pixels are used.  If working in 2D, 8-way connectivity is used.</li>");
 
-        parameters.get(ENABLE_MULTITHREADING).setDescription("Process multiple 3D stacks simultaneously.  Since the extended minima operation is applied on a single 3D stack at a time, multithreading only works for images with multiple channels or timepoints (other stacks will still work, but won't see a speed improvement).  This can provide a speed improvement when working on a computer with a multi-core CPU.");
+        parameters.get(ENABLE_MULTITHREADING).setDescription(
+                "Process multiple 3D stacks simultaneously.  Since the extended minima operation is applied on a single 3D stack at a time, multithreading only works for images with multiple channels or timepoints (other stacks will still work, but won't see a speed improvement).  This can provide a speed improvement when working on a computer with a multi-core CPU.");
 
     }
 }

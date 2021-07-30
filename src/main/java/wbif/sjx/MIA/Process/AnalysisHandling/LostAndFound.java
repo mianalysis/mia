@@ -4,7 +4,7 @@ import java.util.HashMap;
 
 import wbif.sjx.MIA.Module.Core.InputControl;
 import wbif.sjx.MIA.Module.Deprecated.ThresholdImage;
-import wbif.sjx.MIA.Module.ImageMeasurements.MeasureIntensityDistribution;
+// import wbif.sjx.MIA.Module.ImageMeasurements.MeasureIntensityDistribution;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.WekaProbabilityMaps;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.Binary.DistanceMap;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.Threshold.LocalAutoThreshold;
@@ -48,7 +48,7 @@ public class LostAndFound {
         lostModules.put("MOPSRegistration", new AffineMOPS(null).getClass().getSimpleName());
         lostModules.put("SIFTRegistration", new AffineSIFT(null).getClass().getSimpleName());
         lostModules.put("UnwarpImages", new UnwarpAutomatic(null).getClass().getSimpleName());
-        lostModules.put("HoughObjectDetection", new CircleHoughDetection(null).getClass().getSimpleName());
+        lostModules.put("HoughObjectDetection", new CircleHoughDetection(null).getClass().getSimpleName());        
 
         
         //// Populating hard-coded parameter reassignments ////
@@ -126,11 +126,11 @@ public class LostAndFound {
         moduleName = new LocalAutoThreshold(null).getClass().getSimpleName();
         lostParameterNames.put(moduleName, currentParameterNames);
 
-        // MeasureIntensityDistribution
-        currentParameterNames = new HashMap<>();
-        currentParameterNames.put("Spatial units", MeasureIntensityDistribution.SPATIAL_UNITS_MODE);
-        moduleName = new MeasureIntensityDistribution(null).getClass().getSimpleName();
-        lostParameterNames.put(moduleName, currentParameterNames);
+        // // MeasureIntensityDistribution
+        // currentParameterNames = new HashMap<>();
+        // currentParameterNames.put("Spatial units", MeasureIntensityDistribution.SPATIAL_UNITS_MODE);
+        // moduleName = new MeasureIntensityDistribution(null).getClass().getSimpleName();
+        // lostParameterNames.put(moduleName, currentParameterNames);
 
         // MOPSRegistration
         currentParameterNames = new HashMap<>();

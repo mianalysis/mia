@@ -23,7 +23,7 @@ public class MIA_IdentifyObjects extends MacroOperation {
 
         identifyObjects.updateParameterValue(IdentifyObjects.INPUT_IMAGE,objects[0]);
         identifyObjects.updateParameterValue(IdentifyObjects.OUTPUT_OBJECTS,objects[1]);
-        identifyObjects.updateParameterValue(IdentifyObjects.WHITE_BACKGROUND,((double) objects[2] == 1));
+        identifyObjects.updateParameterValue(IdentifyObjects.BINARY_LOGIC,((double) objects[2] == 1) ? IdentifyObjects.BinaryLogic.BLACK_BACKGROUND : IdentifyObjects.BinaryLogic.WHITE_BACKGROUND);
         identifyObjects.updateParameterValue(IdentifyObjects.SINGLE_OBJECT,((double) objects[3] == 1));
 
         if ((double) objects[4] == 6) {

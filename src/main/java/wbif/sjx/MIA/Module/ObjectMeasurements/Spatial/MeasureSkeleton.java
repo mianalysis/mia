@@ -77,14 +77,9 @@ public class MeasureSkeleton extends Module {
     static Image getSkeletonImage(Obj inputObject) {
         // Getting tight image of object
         Image skeletonImage = inputObject.getAsTightImage("Skeleton");
-        // Inverting, so the objects are black on white
-        InvertIntensity.process(skeletonImage);
-
+        
         // Running 3D skeletonisation
-        Skeletonise.process(skeletonImage);
-
-        // Inverting, so the objects are white on black
-        InvertIntensity.process(skeletonImage);
+        Skeletonise.process(skeletonImage,true);
 
         return skeletonImage;
 
@@ -161,7 +156,7 @@ public class MeasureSkeleton extends Module {
         Image binaryImage = tempObject.getAsTightImage("outputName", borders);
 
         // Converting binary image to loop objects
-        ObjCollection tempLoopObjects = IdentifyObjects.process(binaryImage, loopObjectsName, true, false, 6,
+        ObjCollection tempLoopObjects = IdentifyObjects.process(binaryImage, loopObjectsName, false, false, 6,
                 VolumeTypesInterface.QUADTREE, false, 0, false);
 
         // Removing any objects on the image edge, as these aren't loops
