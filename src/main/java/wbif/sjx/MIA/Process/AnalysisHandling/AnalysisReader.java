@@ -224,7 +224,7 @@ public class AnalysisReader {
             if (parameter == null) {
                 String moduleName = module.getClass().getSimpleName();
                 parameterName = MIA.lostAndFound.findParameter(moduleName, parameterName);
-                if (parameterName.equals("")) // null parameter names mean that parameter has been removed
+                if (parameterName.equals("")) // blank parameter names mean that parameter has been removed, but shouldn't show a warning
                     continue;
                 parameter = module.getParameter(parameterName);
             }

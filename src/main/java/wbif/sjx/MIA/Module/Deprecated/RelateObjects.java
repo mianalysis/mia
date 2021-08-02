@@ -217,8 +217,7 @@ public class RelateObjects extends Module {
         if (parentObject.getMeasurement("MAX_DIST") == null) {
             // Creating an image for the parent object
             Image parentImage = parentObject.getAsImage("Parent",false);
-            InvertIntensity.process(parentImage.getImagePlus());
-            Image distImage = DistanceMap.process(parentImage, "Distance", false, DistanceMap.WeightModes.WEIGHTS_3_4_5_7, true, false);
+            Image distImage = DistanceMap.process(parentImage, "Distance", true, DistanceMap.WeightModes.WEIGHTS_3_4_5_7, true, false);
             Image projectedImage = ProjectImage.projectImageInZ(distImage, "Projected", ProjectImage.ProjectionModes.MAX);
             double maxDist = projectedImage.getImagePlus().getStatistics().max;
 

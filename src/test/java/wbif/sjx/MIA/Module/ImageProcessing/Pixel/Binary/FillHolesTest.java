@@ -48,7 +48,8 @@ public class FillHolesTest extends ModuleTest {
         FillHoles binaryOperations = new FillHoles(new ModuleCollection());
         binaryOperations.updateParameterValue(FillHoles.INPUT_IMAGE,"Test_image");
         binaryOperations.updateParameterValue(FillHoles.APPLY_TO_INPUT,false);
-        binaryOperations.updateParameterValue(FillHoles.OUTPUT_IMAGE,"Test_output");
+        binaryOperations.updateParameterValue(FillHoles.OUTPUT_IMAGE, "Test_output");
+        binaryOperations.updateParameterValue(FillHoles.BINARY_LOGIC, FillHoles.BinaryLogic.WHITE_BACKGROUND);
 
         // Running Module
         binaryOperations.execute(workspace);

@@ -22,7 +22,6 @@ import wbif.sjx.MIA.Module.Categories;
 import wbif.sjx.MIA.Module.Category;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
-import wbif.sjx.MIA.Module.ImageProcessing.Pixel.InvertIntensity;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.Binary.DistanceMap;
 import wbif.sjx.MIA.Module.ObjectProcessing.Identification.GetLocalObjectRegion;
 import wbif.sjx.MIA.Object.Image;
@@ -35,6 +34,7 @@ import wbif.sjx.MIA.Object.Parameters.BooleanP;
 import wbif.sjx.MIA.Object.Parameters.ChoiceP;
 import wbif.sjx.MIA.Object.Parameters.InputObjectsP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
+import wbif.sjx.MIA.Object.Parameters.SeparatorP;
 import wbif.sjx.MIA.Object.Parameters.Objects.OutputClusterObjectsP;
 import wbif.sjx.MIA.Object.Parameters.Text.DoubleP;
 import wbif.sjx.MIA.Object.Parameters.Text.IntegerP;
@@ -54,9 +54,12 @@ import wbif.sjx.common.Object.Volume.VolumeType;
  * Created by sc13967 on 21/06/2017.
  */
 public class SingleClassCluster extends Module {
+    public static final String INPUT_SEPARATOR = "Object input/output";
     public static final String INPUT_OBJECTS = "Input objects";
     public static final String CLUSTER_OBJECTS = "Cluster (parent) objects";
     public static final String APPLY_VOLUME = "Apply volume";
+
+    public static final String CLUSTER_SEPARATOR = "Cluster controls";
     public static final String CLUSTERING_ALGORITHM = "Clustering algorithm";
     public static final String K_CLUSTERS = "Number of clusters";
     public static final String MAX_ITERATIONS = "Maximum number of iterations";
@@ -171,8 +174,7 @@ public class SingleClassCluster extends Module {
 
         // Reducing the size of the cluster area by eps
         Image objectImage = outputObject.getAsTightImage("Object");
-        InvertIntensity.process(objectImage);
-        objectImage = DistanceMap.process(objectImage, "Distance", false, DistanceMap.WeightModes.WEIGHTS_3_4_5_7, true, false);
+        objectImage = DistanceMap.process(objectImage, "Distance", true, DistanceMap.WeightModes.WEIGHTS_3_4_5_7, true, false);
         ImagePlus objectIpl = objectImage.getImagePlus();
         
         // We're using a tight image, so the coordinates are offset
@@ -323,9 +325,12 @@ public class SingleClassCluster extends Module {
 
     @Override
     protected void initialiseParameters() {
+        parameters.add(new SeparatorP(INPUT_SEPARATOR, this));
         parameters.add(new InputObjectsP(INPUT_OBJECTS, this));
         parameters.add(new OutputClusterObjectsP(CLUSTER_OBJECTS, this));
         parameters.add(new BooleanP(APPLY_VOLUME, this, false));
+
+        parameters.add(new SeparatorP(CLUSTER_SEPARATOR, this));
         parameters.add(new ChoiceP(CLUSTERING_ALGORITHM, this,ClusteringAlgorithms.DBSCAN,ClusteringAlgorithms.ALL));
         parameters.add(new IntegerP(K_CLUSTERS, this,100));
         parameters.add(new IntegerP(MAX_ITERATIONS, this,10000));
@@ -338,10 +343,13 @@ public class SingleClassCluster extends Module {
     @Override
     public ParameterCollection updateAndGetParameters() {
         ParameterCollection returnedParameters = new ParameterCollection();
+
+        returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(INPUT_OBJECTS));
         returnedParameters.add(parameters.getParameter(CLUSTER_OBJECTS));
         returnedParameters.add(parameters.getParameter(APPLY_VOLUME));
 
+        returnedParameters.add(parameters.getParameter(CLUSTER_SEPARATOR));
         returnedParameters.add(parameters.getParameter(CLUSTERING_ALGORITHM));
         if (parameters.getValue(CLUSTERING_ALGORITHM).equals(ClusteringAlgorithms.KMEANSPLUSPLUS)) {
             // Running KMeans++ clustering

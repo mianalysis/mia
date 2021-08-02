@@ -20,6 +20,7 @@ import wbif.sjx.MIA.Module.InputOutput.ObjectLoader;
 import wbif.sjx.MIA.Module.Miscellaneous.GlobalVariables;
 import wbif.sjx.MIA.Module.Miscellaneous.Macros.RunMacro;
 import wbif.sjx.MIA.Module.Miscellaneous.Macros.RunSingleCommand;
+import wbif.sjx.MIA.Module.ObjectMeasurements.Intensity.MeasureObjectIntensity;
 import wbif.sjx.MIA.Module.ObjectMeasurements.Miscellaneous.ReplaceMeasurementValue;
 import wbif.sjx.MIA.Module.ObjectMeasurements.Spatial.CalculateNearestNeighbour;
 import wbif.sjx.MIA.Module.ObjectProcessing.Identification.CircleHoughDetection;
@@ -126,11 +127,20 @@ public class LostAndFound {
         moduleName = new LocalAutoThreshold(null).getClass().getSimpleName();
         lostParameterNames.put(moduleName, currentParameterNames);
 
-        // // MeasureIntensityDistribution
-        // currentParameterNames = new HashMap<>();
-        // currentParameterNames.put("Spatial units", MeasureIntensityDistribution.SPATIAL_UNITS_MODE);
-        // moduleName = new MeasureIntensityDistribution(null).getClass().getSimpleName();
-        // lostParameterNames.put(moduleName, currentParameterNames);
+
+        // MeasureObjectIntensity
+        currentParameterNames = new HashMap<>();
+        currentParameterNames.put("Measure weighted distance to edge", "");
+        currentParameterNames.put("Edge distance mode", "");
+        currentParameterNames.put("Measure intensity profile from edge", "");
+        currentParameterNames.put("Minimum distance", "");
+        currentParameterNames.put("Maximum distance", "");
+        currentParameterNames.put("Calibrated distances", "");
+        currentParameterNames.put("Number of measurements", "");
+        currentParameterNames.put("Only measure on masked regions", "");
+        currentParameterNames.put("Mask image", "");        
+        moduleName = new MeasureObjectIntensity(null).getClass().getSimpleName();
+        lostParameterNames.put(moduleName, currentParameterNames);
 
         // MOPSRegistration
         currentParameterNames = new HashMap<>();

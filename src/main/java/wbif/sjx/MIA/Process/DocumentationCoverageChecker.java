@@ -79,10 +79,12 @@ public class DocumentationCoverageChecker {
                 double objRefCoverage = measurementCounts[2] == 0 ? 1
                         : (double) measurementCounts[3] / (double) measurementCounts[2];
 
+                boolean hasSeparators = moduleHasSeparators(module);
+                
                 System.out.println("Module \"" + module.getName() + "\", description = "+hasDescription+", parameters = "
                         + df.format(100 * parameterCoverage) + "%, incomplete parameters = " + incompleteParameters
                         + ", image refs = " + df.format(100 * imageRefCoverage) + "%, obj refs = "
-                        + df.format(100 * objRefCoverage));
+                        + df.format(100 * objRefCoverage) +", separators = "+hasSeparators);
 
             } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | NoSuchMethodException
                     | InvocationTargetException e) {
@@ -172,12 +174,27 @@ public class DocumentationCoverageChecker {
                     }
                     if (collectionParam.getDescription().length() > 1)
                         nCoveredParams++;
-                        
+
                 }
             }
         }
 
         return new int[] { nParams, nCoveredParams };
+
+    }
+    
+    static boolean moduleHasSeparators(Module module) {
+        ParameterCollection parameters = module.getAllParameters();
+
+        if (parameters == null)
+            return true;
+            
+        for (Parameter parameter : parameters.values()) {
+            if (parameter instanceof SeparatorP)
+                return true;
+        }
+
+        return false;
 
     }
 }

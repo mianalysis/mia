@@ -70,7 +70,7 @@ public class MeasureObjectIntensityTest extends ModuleTest {
         measureObjectIntensity.updateParameterValue(MeasureObjectIntensity.INPUT_IMAGE,"Test_image");
         measureObjectIntensity.updateParameterValue(MeasureObjectIntensity.INPUT_OBJECTS,"Test_objects");
         measureObjectIntensity.updateParameterValue(MeasureObjectIntensity.MEASURE_WEIGHTED_CENTRE,false);
-        measureObjectIntensity.updateParameterValue(MeasureObjectIntensity.MEASURE_WEIGHTED_EDGE_DISTANCE,false);
+        // measureObjectIntensity.updateParameterValue(MeasureObjectIntensity.MEASURE_WEIGHTED_EDGE_DISTANCE,false);
 
         // Running MeasureObjectIntensity
         measureObjectIntensity.execute(workspace);
@@ -136,7 +136,7 @@ public class MeasureObjectIntensityTest extends ModuleTest {
         measureObjectIntensity.updateParameterValue(MeasureObjectIntensity.INPUT_IMAGE,"Test_image");
         measureObjectIntensity.updateParameterValue(MeasureObjectIntensity.INPUT_OBJECTS,"Test_objects");
         measureObjectIntensity.updateParameterValue(MeasureObjectIntensity.MEASURE_WEIGHTED_CENTRE,false);
-        measureObjectIntensity.updateParameterValue(MeasureObjectIntensity.MEASURE_WEIGHTED_EDGE_DISTANCE,false);
+        // measureObjectIntensity.updateParameterValue(MeasureObjectIntensity.MEASURE_WEIGHTED_EDGE_DISTANCE,false);
 
         // Running MeasureObjectIntensity
         measureObjectIntensity.execute(workspace);
@@ -202,7 +202,7 @@ public class MeasureObjectIntensityTest extends ModuleTest {
         measureObjectIntensity.updateParameterValue(MeasureObjectIntensity.INPUT_IMAGE,"Test_image");
         measureObjectIntensity.updateParameterValue(MeasureObjectIntensity.INPUT_OBJECTS,"Test_objects");
         measureObjectIntensity.updateParameterValue(MeasureObjectIntensity.MEASURE_WEIGHTED_CENTRE,false);
-        measureObjectIntensity.updateParameterValue(MeasureObjectIntensity.MEASURE_WEIGHTED_EDGE_DISTANCE,false);
+        // measureObjectIntensity.updateParameterValue(MeasureObjectIntensity.MEASURE_WEIGHTED_EDGE_DISTANCE,false);
 
         // Running MeasureObjectIntensity
         measureObjectIntensity.execute(workspace);
