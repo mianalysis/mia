@@ -357,6 +357,10 @@ public class TrackObjects extends Module {
         track.addChild(currObj);
         currObj.addParent(track);
 
+        // Adding partner relationships between adjacent points in the track
+        prevObj.addPartner(currObj);
+        currObj.addPartner(prevObj);
+
         // Adding references to each other
         prevObj.addMeasurement(new Measurement(Measurements.TRACK_NEXT_ID, currObj.getID()));
         currObj.addMeasurement(new Measurement(Measurements.TRACK_PREV_ID, prevObj.getID()));
@@ -739,7 +743,14 @@ public class TrackObjects extends Module {
 
     @Override
     public PartnerRefCollection updateAndGetPartnerRefs() {
-        return null;
+        PartnerRefCollection returnedRelationships = new PartnerRefCollection();
+
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+        
+        returnedRelationships.add(partnerRefs.getOrPut(inputObjectsName, inputObjectsName));
+
+        return returnedRelationships;
+
     }
 
     @Override

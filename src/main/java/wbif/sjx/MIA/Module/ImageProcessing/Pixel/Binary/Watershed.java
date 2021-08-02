@@ -15,6 +15,7 @@ import ij.plugin.Duplicator;
 import ij.plugin.SubHyperstackMaker;
 import inra.ijpb.binary.BinaryImages;
 import inra.ijpb.watershed.ExtendedMinimaWatershed;
+import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Categories;
 import wbif.sjx.MIA.Module.Category;
 import wbif.sjx.MIA.Module.Module;
@@ -131,7 +132,7 @@ public class Watershed extends Module {
                     IJ.setRawThreshold(timepointMaskIpl, 0, 0, null);
                     IJ.run(timepointMaskIpl, "Convert to Mask", "method=Default background=Light");
                     if (blackBackground)
-                        IJ.run(timepointMaskIpl, "Invert LUT", "");
+                        IJ.run(timepointMaskIpl, "Invert", "stack");                        
                     IJ.run(timepointMaskIpl, "8-bit", null);
 
                     // Replacing the maskIpl intensity

@@ -513,7 +513,7 @@ public class AddRelationshipConnection extends AbstractOverlay {
 
     @Override
     public ParameterCollection updateAndGetParameters() {
-        String inputObjectsName = parameters.getValue(PARENT_OBJECTS);
+        String refObjectsName = "";
 
         ParameterCollection returnedParameters = new ParameterCollection();
 
@@ -532,6 +532,9 @@ public class AddRelationshipConnection extends AbstractOverlay {
                 childObjectsP = parameters.getParameter(CHILD_OBJECTS_2);
                 childObjectsP.setParentObjectsName(parameters.getValue(PARENT_OBJECTS));
                 returnedParameters.add(childObjectsP);
+
+                refObjectsName = parameters.getValue(CHILD_OBJECTS_1);
+
                 break;
 
             case LineModes.BETWEEN_PARTNERS:
@@ -540,6 +543,9 @@ public class AddRelationshipConnection extends AbstractOverlay {
                 PartnerObjectsP partnerObjectsP = parameters.getParameter(PARTNER_OBJECTS_2);
                 partnerObjectsP.setPartnerObjectsName(parameters.getValue(PARTNER_OBJECTS_1));
                 returnedParameters.add(partnerObjectsP);
+
+                refObjectsName = parameters.getValue(PARTNER_OBJECTS_1);
+
                 break;
 
             case LineModes.PARENT_TO_CHILD:
@@ -548,6 +554,9 @@ public class AddRelationshipConnection extends AbstractOverlay {
                 childObjectsP = parameters.getParameter(CHILD_OBJECTS_1);
                 childObjectsP.setParentObjectsName(parameters.getValue(PARENT_OBJECTS));
                 returnedParameters.add(childObjectsP);
+
+                refObjectsName = parameters.getValue(PARENT_OBJECTS);
+
                 break;
         }
 
@@ -561,7 +570,7 @@ public class AddRelationshipConnection extends AbstractOverlay {
         }
 
         returnedParameters.add(parameters.getParameter(RENDERING_SEPARATOR));
-        returnedParameters.addAll(super.updateAndGetParameters(inputObjectsName));
+        returnedParameters.addAll(super.updateAndGetParameters(refObjectsName));
 
         returnedParameters.add(parameters.getParameter(RENDER_MODE));
         switch ((String) parameters.getValue(RENDER_MODE)) {
