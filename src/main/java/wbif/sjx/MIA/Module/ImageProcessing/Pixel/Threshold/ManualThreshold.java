@@ -252,8 +252,7 @@ public class ManualThreshold extends Module {
         parameters.get(MEASUREMENT).setDescription(
                 "Measurement to act as threshold value when in \"" + ThresholdSources.IMAGE_MEASUREMENT + "\" mode.");
 
-        // parameters.get(WHITE_BACKGROUND).setDescription(
-        //         "Controls the logic of the output image in terms of what is considered foreground and background.");
+                parameters.get(BINARY_LOGIC).setDescription(BinaryLogicInterface.getDescription());
 
     }
 }

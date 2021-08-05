@@ -26,6 +26,7 @@ import wbif.sjx.MIA.Object.Parameters.InputObjectsP;
 import wbif.sjx.MIA.Object.Parameters.OutputImageP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.Parameters.SeparatorP;
+import wbif.sjx.MIA.Object.Parameters.ChoiceInterfaces.SpatialUnitsInterface;
 import wbif.sjx.MIA.Object.References.Collections.ImageMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.MetadataRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.ObjMeasurementRefCollection;
@@ -67,14 +68,10 @@ public class CreateDistanceMap extends Module {
 
     }
 
-    public interface SpatialUnitsModes {
-        String CALIBRATED = "Calibrated";
-        String PIXELS = "Pixel";
-
-        String[] ALL = new String[] { CALIBRATED, PIXELS };
-
+    public interface SpatialUnitsModes extends SpatialUnitsInterface {
     }
 
+    
     public static Image getCentroidDistanceMap(ObjCollection inputObjects, String outputImageName) {
         // Getting image parameters
         int width = inputObjects.getWidth();
@@ -278,6 +275,8 @@ public class CreateDistanceMap extends Module {
         parameters.add(new BooleanP(NORMALISE_MAP_PER_OBJECT, this, false));
         parameters.add(new ChoiceP(SPATIAL_UNITS_MODE, this, SpatialUnitsModes.PIXELS, SpatialUnitsModes.ALL));
 
+        addParameterDescriptions();
+
     }
 
     @Override
@@ -342,5 +341,9 @@ public class CreateDistanceMap extends Module {
     @Override
     public boolean verify() {
         return true;
+    }
+
+    void addParameterDescriptions() {
+        parameters.get(SPATIAL_UNITS_MODE).setDescription(SpatialUnitsInterface.getDescription());
     }
 }

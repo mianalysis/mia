@@ -19,6 +19,7 @@ import wbif.sjx.MIA.Object.Parameters.OutputImageP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.Parameters.SeparatorP;
 import wbif.sjx.MIA.Object.Parameters.ChoiceInterfaces.BinaryLogicInterface;
+import wbif.sjx.MIA.Object.Parameters.ChoiceInterfaces.SpatialUnitsInterface;
 import wbif.sjx.MIA.Object.Parameters.Text.DoubleP;
 import wbif.sjx.MIA.Object.References.Collections.ImageMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.MetadataRefCollection;
@@ -85,13 +86,7 @@ public class LocalAutoThreshold extends Module {
 
     }
 
-    public interface SpatialUnitsModes {
-        String CALIBRATED = "Calibrated";
-        String PIXELS = "Pixel";
-
-        String[] ALL = new String[] { CALIBRATED, PIXELS };
-
-    }
+    public interface SpatialUnitsModes extends SpatialUnitsInterface {}
     
     public interface BinaryLogic extends BinaryLogicInterface {}
 
@@ -333,11 +328,11 @@ public class LocalAutoThreshold extends Module {
 
         parameters.get(LOCAL_RADIUS).setDescription("Radius of region to be used when calculating local intensity thresholds.  Units controlled by \""+SPATIAL_UNITS_MODE+"\" control.");
 
-        parameters.get(SPATIAL_UNITS_MODE).setDescription("Units that the local radius is specified using.");
+        parameters.get(SPATIAL_UNITS_MODE).setDescription(SpatialUnitsInterface.getDescription());
 
         parameters.get(USE_GLOBAL_Z).setDescription("When performing 3D local thresholding, this takes all z-values at a location into account.  If disabled, pixels will be sampled in z according to the \""+LOCAL_RADIUS+"\" setting.");
 
-        // parameters.get(WHITE_BACKGROUND).setDescription("Controls the logic of the output image in terms of what is considered foreground and background.");
+        parameters.get(BINARY_LOGIC).setDescription(BinaryLogicInterface.getDescription());
 
     }
 }

@@ -132,7 +132,7 @@ public class Watershed extends Module {
                     IJ.setRawThreshold(timepointMaskIpl, 0, 0, null);
                     IJ.run(timepointMaskIpl, "Convert to Mask", "method=Default background=Light");
                     if (blackBackground)
-                        IJ.run(timepointMaskIpl, "Invert", "stack");                        
+                        IJ.run(timepointMaskIpl, "Invert", "stack");
                     IJ.run(timepointMaskIpl, "8-bit", null);
 
                     // Replacing the maskIpl intensity
@@ -340,7 +340,7 @@ public class Watershed extends Module {
 
     void addParameterDescriptions() {
         parameters.get(INPUT_IMAGE).setDescription(
-                "Image from workspace to apply watershed transform to.  This must be an 8-bit binary image (255 = background, 0 = foreground).");
+                "Image from workspace to apply watershed transform to.  This image will be 8-bit with binary logic determined by the \"" + BINARY_LOGIC + "\" parameter.");
 
         parameters.get(APPLY_TO_INPUT).setDescription(
                 "When selected, the post-operation image will overwrite the input image in the workspace.  Otherwise, the image will be saved to the workspace with the name specified by the \""
@@ -356,7 +356,7 @@ public class Watershed extends Module {
                         + DYNAMIC + "\".");
 
         parameters.get(MARKER_IMAGE).setDescription("Marker image to be used if \"" + USE_MARKERS
-                + "\" is selected.  This image must be of equal dimensions to the input image (to which the transform will be applied).  The image must be 8-bit binary with markers in black (intensity 0) on a white background (intensity 255).");
+                + "\" is selected.  This image must be of equal dimensions to the input image (to which the transform will be applied).  This image will be 8-bit with binary logic determined by the \"" + BINARY_LOGIC + "\" parameter.");
 
         parameters.get(INTENSITY_MODE).setDescription(
                 "Controls the source for the intensity image against which the watershed transform will be computed.  Irrespective of mode, the image (raw image or object distance map) will act as a surface that the starting points will evolve up until adjacent regions come into contact (at which point creating a dividing line between the two):<br><ul>"
@@ -384,6 +384,8 @@ public class Watershed extends Module {
 
         parameters.get(MATCH_Z_TO_X).setDescription(
                 "When selected, an image is interpolated in Z (so that all pixels are isotropic) prior to calculation of a distance map.  This prevents warping of the distance map along the Z-axis if XY and Z sampling aren't equal.");
+
+        parameters.get(BINARY_LOGIC).setDescription(BinaryLogicInterface.getDescription());
 
         parameters.get(ENABLE_MULTITHREADING).setDescription(
                 "Process multiple 3D stacks simultaneously.  Since the watershed transform is applied on a single 3D stack at a time, multithreading only works for images with multiple channels or timepoints (other stacks will still work, but won't see a speed improvement).  This can provide a speed improvement when working on a computer with a multi-core CPU.");

@@ -83,7 +83,7 @@ public class Skeletonise extends Module {
 
     @Override
     public String getDescription() {
-        return "Creates an skeletonised representation of a specific binary image in the workspace.  The output 8-bit image will show black minima (intensity 0) on a white background (intensity 255).  Each minima will show the lowest local intensity region within a specific dynamic range.  Local variation greater than this dynamic will result in the creation of more minima.  Uses the plugin \"<a href=\"https://github.com/ijpb/MorphoLibJ\">MorphoLibJ</a>\".";
+        return "Creates an skeletonised representation of a specific binary image in the workspace.  The input and output images will be 8-bit with binary logic determined by the \"" + BINARY_LOGIC + "\" parameter.  Each minima will show the lowest local intensity region within a specific dynamic range.  Local variation greater than this dynamic will result in the creation of more minima.  Uses the plugin \"<a href=\"https://github.com/ijpb/MorphoLibJ\">MorphoLibJ</a>\".";
     }
 
     @Override
@@ -182,7 +182,7 @@ public class Skeletonise extends Module {
 
     void addParameterDescriptions() {
       parameters.get(INPUT_IMAGE).setDescription(
-              "Image from workspace to apply 3D skeletonisation operation to.  This must be an 8-bit binary image (255 = background, 0 = foreground).");
+              "Image from workspace to apply 3D skeletonisation operation to.  This image will be 8-bit with binary logic determined by the \"" + BINARY_LOGIC + "\" parameter.");
 
       parameters.get(APPLY_TO_INPUT).setDescription(
               "When selected, the post-operation image will overwrite the input image in the workspace.  Otherwise, the image will be saved to the workspace with the name specified by the \"" + OUTPUT_IMAGE + "\" parameter.");
@@ -190,5 +190,7 @@ public class Skeletonise extends Module {
       parameters.get(OUTPUT_IMAGE).setDescription("If \"" + APPLY_TO_INPUT
               + "\" is not selected, the post-operation image will be saved to the workspace with this name.");
 
+              parameters.get(BINARY_LOGIC).setDescription(BinaryLogicInterface.getDescription());
+              
     }
 }

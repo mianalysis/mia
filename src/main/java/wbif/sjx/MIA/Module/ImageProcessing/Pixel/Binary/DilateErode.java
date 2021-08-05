@@ -148,7 +148,8 @@ public class DilateErode extends Module {
     public String getDescription() {
         return "Applies binary dilate or erode operations to an image in the workspace.  Dilate will expand all foreground-labelled regions by a specified number of pixels, while erode will shrink all foreground-labelled regions by the same ammount."
 
-                + "<br><br>This image must be 8-bit and have the logic black foreground (intensity 0) and white background (intensity 255).  If 2D operations are applied on higher dimensionality images the operations will be performed in a slice-by-slice manner.  All operations (both 2D and 3D) use the plugin \"<a href=\"https://github.com/ijpb/MorphoLibJ\">MorphoLibJ</a>\".";
+                + "<br><br>This image will be 8-bit with binary logic determined by the \""
+                + BINARY_LOGIC + "\" parameter.  If 2D operations are applied on higher dimensionality images the operations will be performed in a slice-by-slice manner.  All operations (both 2D and 3D) use the plugin \"<a href=\"https://github.com/ijpb/MorphoLibJ\">MorphoLibJ</a>\".";
 
     }
 
@@ -259,14 +260,15 @@ public class DilateErode extends Module {
 
     void addParameterDescriptions() {
         parameters.get(INPUT_IMAGE).setDescription(
-                "Image from workspace to apply dilate or erode operation to.  This must be an 8-bit binary image (255 = background, 0 = foreground).");
+                "Image from workspace to apply dilate or erode operation to.");
 
         parameters.get(APPLY_TO_INPUT).setDescription(
                 "When selected, the post-operation image will overwrite the input image in the workspace.  Otherwise, the image will be saved to the workspace with the name specified by the \""
                         + OUTPUT_IMAGE + "\" parameter.");
 
         parameters.get(OUTPUT_IMAGE).setDescription("If \"" + APPLY_TO_INPUT
-                + "\" is not selected, the post-operation image will be saved to the workspace with this name.  This image will be 8-bit with black minima (intensity 0) on a white background (intensity 255).");
+                + "\" is not selected, the post-operation image will be saved to the workspace with this name.  This image will be 8-bit with binary logic determined by the \""
+                + BINARY_LOGIC + "\" parameter.");
 
         parameters.get(OPERATION_MODE).setDescription(
                 "Controls what sort of dilate or erode operation is performed on the input image:<br><ul>"
@@ -285,6 +287,8 @@ public class DilateErode extends Module {
 
         parameters.get(NUM_ITERATIONS).setDescription(
                 "Number of times the operation will be run on a single image.  Effectively, this allows objects to be dilated or eroded by a specific number of pixels.");
+
+        parameters.get(BINARY_LOGIC).setDescription(BinaryLogicInterface.getDescription());
 
     }
 }

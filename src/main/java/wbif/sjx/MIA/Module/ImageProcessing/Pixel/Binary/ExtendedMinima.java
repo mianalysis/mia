@@ -172,7 +172,7 @@ public class ExtendedMinima extends Module {
 
     @Override
     public String getDescription() {
-        return "";
+        return "Detects extended minima or maxima in a specified input image.<br><br>As described in the <a href=\"https://imagej.net/imagej-wiki-static/MorphoLibJ\">MorphoLibJ documentation</a>: \"Extended maxima are defined as a connected region containing elements such that the difference of the value of each element within the region with the maximal value within the region is lower than the tolerance, and such that the neighbors of the regions all have values smaller than the maximum within the region minus the tolerance. This definition allows the identification of larger extrema, that better takes into account the noise within the image. The extended minima are defined in a similar way, and are efficiently used as pre-processing step for watershed segmentation.\".<br><br>This module uses the plugin \"<a href=\"https://github.com/ijpb/MorphoLibJ\">MorphoLibJ</a>\".";
     }
 
     @Override
@@ -189,7 +189,7 @@ public class ExtendedMinima extends Module {
         int connectivity = Integer.parseInt(parameters.getValue(CONNECTIVITY_3D));
         String binaryLogic = parameters.getValue(BINARY_LOGIC);
         boolean blackBackground = binaryLogic.equals(BinaryLogic.BLACK_BACKGROUND);
-        boolean multithread = parameters.getValue(ENABLE_MULTITHREADING);        
+        boolean multithread = parameters.getValue(ENABLE_MULTITHREADING);
 
         // Getting region minima
         Image outputImage;
@@ -299,7 +299,10 @@ public class ExtendedMinima extends Module {
                         + OUTPUT_IMAGE + "\" parameter.");
 
         parameters.get(OUTPUT_IMAGE).setDescription("If \"" + APPLY_TO_INPUT
-                + "\" is not selected, the post-operation image will be saved to the workspace with this name.  This image will be 8-bit with black minima (intensity 0) on a white background (intensity 255).");
+                + "\" is not selected, the post-operation image will be saved to the workspace with this name.  This image will be 8-bit with binary logic determined by the \"" + BINARY_LOGIC + "\" parameter.");
+
+        parameters.get(MINIMA_MAXIMA_MODE).setDescription(
+                "Controls whether the module will detect minima or maxima in the input intensity image");
 
         parameters.get(DYNAMIC).setDescription(
                 "This parameter specifies the maximum permitted pixel intensity difference for a single minima.  Local intensity differences greater than this will result in creation of more minima.  The smaller the dynamic value is, the more minima will be created.  As the dynamic value increases, minima will increase in size.");
@@ -311,6 +314,8 @@ public class ExtendedMinima extends Module {
 
                 + "<li>\"" + Connectivity.TWENTYSIX
                 + "\" In addition to the core 6-pixels, all immediately diagonal pixels are used.  If working in 2D, 8-way connectivity is used.</li>");
+
+        parameters.get(BINARY_LOGIC).setDescription(BinaryLogicInterface.getDescription());
 
         parameters.get(ENABLE_MULTITHREADING).setDescription(
                 "Process multiple 3D stacks simultaneously.  Since the extended minima operation is applied on a single 3D stack at a time, multithreading only works for images with multiple channels or timepoints (other stacks will still work, but won't see a speed improvement).  This can provide a speed improvement when working on a computer with a multi-core CPU.");

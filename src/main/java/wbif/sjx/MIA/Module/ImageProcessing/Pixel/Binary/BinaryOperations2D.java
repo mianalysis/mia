@@ -133,7 +133,7 @@ public class BinaryOperations2D extends Module {
 
     @Override
     public String getDescription() {
-        return "Applies stock ImageJ binary operations to an image in the workspace.  This image must be 8-bit and have the logic black foreground (intensity 0) and white background (intensity 255).  All operations are performed in 2D, with higher dimensionality stacks being processed slice-by-slice.";
+        return "Applies stock ImageJ binary operations to an image in the workspace.  This image will be 8-bit with binary logic determined by the \"" + BINARY_LOGIC + "\" parameter.  All operations are performed in 2D, with higher dimensionality stacks being processed slice-by-slice.";
 
     }
 
@@ -255,7 +255,8 @@ public class BinaryOperations2D extends Module {
 
     void addParameterDescriptions() {
         parameters.get(INPUT_IMAGE).setDescription(
-                "Image from workspace to apply binary operation to.  This must be an 8-bit binary image (255 = background, 0 = foreground).");
+                "Image from workspace to apply binary operation to.  This image will be 8-bit with binary logic determined by the \""
+                + BINARY_LOGIC + "\" parameter.");
 
         parameters.get(APPLY_TO_INPUT).setDescription(
                 "When selected, the post-operation image will overwrite the input image in the workspace.  Otherwise, the image will be saved to the workspace with the name specified by the \""
@@ -265,7 +266,7 @@ public class BinaryOperations2D extends Module {
                 + "\" is not selected, the post-operation image will be saved to the workspace with this name.");
 
         parameters.get(OPERATION_MODE).setDescription(
-                "Controls which binary operation will be applied.  All operations assume the default ImageJ logic of black objects on a white background.  The operations are described in full at [WEBSITE]:<br><ul>"
+                "Controls which binary operation will be applied.  The operations are described in full <a href=\"https://imagej.nih.gov/ij/docs/guide/146-29.html#toc-Subsection-29.8\">here</a>:<br><ul>"
 
                         + "<li>\"" + OperationModes.DILATE
                         + "\" Change any foreground-connected background pixels to foreground.  This effectively expands objects by one pixel.</li>"
@@ -300,5 +301,7 @@ public class BinaryOperations2D extends Module {
         parameters.get(COUNT).setDescription(
                 "The minimum number of connected background or foreground for an erosion or dilation process to occur, respectively.");
 
+        parameters.get(BINARY_LOGIC).setDescription(BinaryLogicInterface.getDescription());
+        
     }
 }

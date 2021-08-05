@@ -382,9 +382,7 @@ public class GlobalAutoThreshold extends Module {
 
         parameters.get(LOWER_THRESHOLD_LIMIT).setDescription("Lowest absolute threshold value that can be applied.");
 
-        // parameters.get(WHITE_BACKGROUND).setDescription(
-        // "Controls the logic of the output image in terms of what is considered
-        // foreground and background.");
+        parameters.get(BINARY_LOGIC).setDescription(BinaryLogicInterface.getDescription());
 
     }
 }

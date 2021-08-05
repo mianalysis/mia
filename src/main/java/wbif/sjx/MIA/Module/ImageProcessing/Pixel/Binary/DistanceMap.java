@@ -28,6 +28,7 @@ import wbif.sjx.MIA.Object.Parameters.OutputImageP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.Parameters.SeparatorP;
 import wbif.sjx.MIA.Object.Parameters.ChoiceInterfaces.BinaryLogicInterface;
+import wbif.sjx.MIA.Object.Parameters.ChoiceInterfaces.SpatialUnitsInterface;
 import wbif.sjx.MIA.Object.References.Collections.ImageMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.MetadataRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.ObjMeasurementRefCollection;
@@ -58,12 +59,7 @@ public class DistanceMap extends Module {
 
     }
 
-    public interface SpatialUnitsModes {
-        String CALIBRATED = "Calibrated";
-        String PIXELS = "Pixel";
-
-        String[] ALL = new String[] { CALIBRATED, PIXELS };
-
+    public interface SpatialUnitsModes extends SpatialUnitsInterface {
     }
 
     public interface BinaryLogic extends BinaryLogicInterface {
@@ -183,7 +179,9 @@ public class DistanceMap extends Module {
 
     @Override
     public String getDescription() {
-        return "Creates a 32-bit greyscale image from an input binary image, where the value of each foreground pixel in the input image is equal to its Euclidean distance to the nearest background pixel.  The input image must be 8-bit and have the logic black foreground (intensity 0) and white background (intensity 255).  The output image will have pixel values of 0 coincident with background pixels in the input image and values greater than zero coincident with foreground pixels.  Uses the plugin \"<a href=\"https://github.com/ijpb/MorphoLibJ\">MorphoLibJ</a>\".";
+        return "Creates a 32-bit greyscale image from an input binary image, where the value of each foreground pixel in the input image is equal to its Euclidean distance to the nearest background pixel.  This image will be 8-bit with binary logic determined by the \""
+                + BINARY_LOGIC
+                + "\" parameter.  The output image will have pixel values of 0 coincident with background pixels in the input image and values greater than zero coincident with foreground pixels.  Uses the plugin \"<a href=\"https://github.com/ijpb/MorphoLibJ\">MorphoLibJ</a>\".";
 
     }
 
@@ -274,7 +272,8 @@ public class DistanceMap extends Module {
 
     void addParameterDescriptions() {
         parameters.get(INPUT_IMAGE).setDescription(
-                "Image from workspace to calculate distance map for.  This must be an 8-bit binary image (255 = background, 0 = foreground).");
+                "Image from workspace to calculate distance map for.  This image will be 8-bit with binary logic determined by the \""
+                        + BINARY_LOGIC + "\" parameter.");
 
         parameters.get(OUTPUT_IMAGE).setDescription(
                 "The output distance map will be saved to the workspace with this name.  This image will be 32-bit format.");
@@ -295,9 +294,9 @@ public class DistanceMap extends Module {
         parameters.get(MATCH_Z_TO_X).setDescription(
                 "When selected, an image is interpolated in Z (so that all pixels are isotropic) prior to calculation of the distance map.  This prevents warping of the distance map along the Z-axis if XY and Z sampling aren't equal.");
 
-        parameters.get(SPATIAL_UNITS_MODE).setDescription(
-                "Controls whether the output distance map will have distances specified in pixel or calibrated units (units set in \""
-                        + new InputControl(null).getName() + "\" module) .");
+        parameters.get(SPATIAL_UNITS_MODE).setDescription(SpatialUnitsInterface.getDescription());
+
+        parameters.get(BINARY_LOGIC).setDescription(BinaryLogicInterface.getDescription());
 
     }
 }

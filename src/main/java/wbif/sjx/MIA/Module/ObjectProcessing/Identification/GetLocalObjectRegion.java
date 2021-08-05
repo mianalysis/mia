@@ -5,6 +5,7 @@ import wbif.sjx.MIA.Module.Categories;
 import wbif.sjx.MIA.Module.Category;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
+import wbif.sjx.MIA.Module.Core.InputControl;
 import wbif.sjx.MIA.Object.Measurement;
 import wbif.sjx.MIA.Object.Obj;
 import wbif.sjx.MIA.Object.ObjCollection;
@@ -16,6 +17,7 @@ import wbif.sjx.MIA.Object.Parameters.ObjectMeasurementP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.Parameters.ParentObjectsP;
 import wbif.sjx.MIA.Object.Parameters.SeparatorP;
+import wbif.sjx.MIA.Object.Parameters.ChoiceInterfaces.SpatialUnitsInterface;
 import wbif.sjx.MIA.Object.Parameters.Objects.OutputObjectsP;
 import wbif.sjx.MIA.Object.Parameters.Text.DoubleP;
 import wbif.sjx.MIA.Object.References.Collections.ImageMeasurementRefCollection;
@@ -73,12 +75,7 @@ public class GetLocalObjectRegion extends Module {
 
     }
 
-    public interface SpatialUnits {
-        String CALIBRATED = "Calibrated";
-        String PIXELS = "Pixel/slice";
-
-        String[] ALL = new String[] { CALIBRATED, PIXELS };
-
+    public interface SpatialUnits extends SpatialUnitsInterface {
     }
 
     public GetLocalObjectRegion(ModuleCollection modules) {
@@ -256,7 +253,7 @@ public class GetLocalObjectRegion extends Module {
 
     @Override
     public String getDescription() {
-        return "Creates a local object region (sphere centred on the centroid of the input object) for each object in a specified object collection.  The radius of each local region can be based on a fixed value, or taken from an object measurement.  Local object regions are stored as children of their respective input object.";
+        return "Creates a local object region (sphere or circle) for each object in a specified object collection.  The radius of each local region can be based on a fixed value, or taken from an object measurement.  Similarly, the output sphere or circle can either be centred on the input object centroid or a location specified by XYZ measurements.  Local object regions are stored as children of their respective input object.";
     }
 
     @Override
@@ -278,12 +275,12 @@ public class GetLocalObjectRegion extends Module {
                 MIA.log.writeWarning("Could not get radius for object " + inputObject.getID());
                 continue;
             }
-                
+
             int[] centroid = getCentroid(inputObject);
             if (centroid == null) {
                 MIA.log.writeWarning("Could not get centroid for object " + inputObject.getID());
                 continue;
-            }                
+            }
 
             // Getting local region object
             getLocalRegion(inputObject, outputObjects, centroid, radius, true);
@@ -457,22 +454,84 @@ public class GetLocalObjectRegion extends Module {
         parameters.get(OUTPUT_OBJECTS).setDescription(
                 "Output local region objects to add to the workspace.  Each local object region is a sphere with centroid coincident with the centroid of the corresponding input object.  These objects are assigned as a child of their respective input object.");
 
-        parameters.get(RADIUS_SOURCE).setDescription("Controls how the radius of the spot is defined:<br><ul>"
+        parameters.get(CENTROID_SOURCE)
+                .setDescription("Controls how the centroid location of the output sphere/circle is defined:<br><ul>"
 
-                + "<li>\"" + RadiusSources.FIXED_VALUE + "\" A single radius, defined by \"" + FIXED_VALUE_FOR_RADIUS
-                + "\" will be used for all objects.</li>"
+                        + "<li>\"" + CentroidSources.FIXED_VALUE + "\" A specific centroid location, defined by \""
+                        + X_POSITION + "\", \"" + Y_POSITION + "\" and \"" + Z_POSITION
+                        + "\", will be used for all objects.</li>"
 
-                + "<li>\"" + RadiusSources.MEASUREMENT
-                + "\" The radius will be equal to the value of a measurement (specified by \"" + RADIUS_MEASUREMENT
-                + "\") associated with the object being measured.  Radii will potentially be different for each object.</li>"
+                        + "<li>\"" + CentroidSources.MEASUREMENT
+                        + "\" The centroid will be equal to the values of specific measurements (specified by \""
+                        + X_MEASUREMENT + "\", \"" + Y_MEASUREMENT + "\" and \"" + Z_MEASUREMENT
+                        + "\") associated with the object being measured.  Centroids will potentially be different for each object.</li>"
 
-                + "<li>\"" + RadiusSources.PARENT_MEASUREMENT
-                + "\" The radius will be equal to the value of a measurement (specified by \"" + RADIUS_MEASUREMENT
-                + "\") associated a parent of the object being measured (specified by \"" + PARENT_OBJECT_FOR_RADIUS
-                + "\").  Radii will potentially be different for each object.</li>"
+                        + "<li>\"" + CentroidSources.OBJECT_CENTROID
+                        + "\" The output objects will be centred on the centroid of the corresponding input object.</li>"
 
-                + "<li>\"" + RadiusSources.SINGLE_POINT
-                + "\" The output objects will all be a single point corresponding to the centroid of the input object.</li></ul>");
+                        + "<li>\"" + CentroidSources.PARENT_MEASUREMENT
+                        + "\" The centroid will be equal to the values of specific measurements (specified by \""
+                        + X_MEASUREMENT + "\", \"" + Y_MEASUREMENT + "\" and \"" + Z_MEASUREMENT
+                        + "\") associated a parent of the object being measured (specified by \""
+                        + PARENT_OBJECT_FOR_CENTROID
+                        + "\").  Centroids will potentially be different for each object.</li></ul>");
+
+        parameters.get(X_POSITION).setDescription(
+                "Fixed X-coordinate of the centroid to use for generating all local object regions when \""
+                        + CENTROID_SOURCE + "\" is in \"" + CentroidSources.FIXED_VALUE + "\" mode.");
+
+        parameters.get(Y_POSITION).setDescription(
+                "Fixed Y-coordinate of the centroid to use for generating all local object regions when \""
+                        + CENTROID_SOURCE + "\" is in \"" + CentroidSources.FIXED_VALUE + "\" mode.");
+
+        parameters.get(Z_POSITION).setDescription(
+                "Fixed Z-coordinate of the centroid to use for generating all local object regions when \""
+                        + CENTROID_SOURCE + "\" is in \"" + CentroidSources.FIXED_VALUE + "\" mode.");
+
+        parameters.get(X_MEASUREMENT).setDescription(
+                "Measurement associated with the input or specified parent object.  This will be used as X-centroid for generating the local object region when \""
+                        + CENTROID_SOURCE + "\" is in \"" + CentroidSources.MEASUREMENT + "\" or \""
+                        + CentroidSources.PARENT_MEASUREMENT + "\" mode.");
+
+        parameters.get(Y_MEASUREMENT).setDescription(
+                "Measurement associated with the input or specified parent object.  This will be used as Y-centroid for generating the local object region when \""
+                        + CENTROID_SOURCE + "\" is in \"" + CentroidSources.MEASUREMENT + "\" or \""
+                        + CentroidSources.PARENT_MEASUREMENT + "\" mode.");
+
+        parameters.get(Z_MEASUREMENT).setDescription(
+                "Measurement associated with the input or specified parent object.  This will be used as Z-centroid for generating the local object region when \""
+                        + CENTROID_SOURCE + "\" is in \"" + CentroidSources.MEASUREMENT + "\" or \""
+                        + CentroidSources.PARENT_MEASUREMENT + "\" mode.");
+
+        parameters.get(PARENT_OBJECT_FOR_CENTROID).setDescription(
+                "Parent object of the input object being processed.  This parent will provide the measurements (specified by \""
+                        + X_MEASUREMENT + "\", \"" + Y_MEASUREMENT + "\" and \"" + Z_MEASUREMENT
+                        + "\") to be used as the spot centroid location for generating the local object region when \""
+                        + CENTROID_SOURCE + "\" is in \"" + CentroidSources.PARENT_MEASUREMENT + "\" mode.");
+
+        parameters.get(CENTROID_SPATIAL_UNITS).setDescription(
+                "Controls whether spot centroid values (irrespective of whether they are fixed values, measurements or parent measurements) are assumed to be specified in calibrated units (as defined by the \""
+                        + new InputControl(null).getName() + "\" parameter \"" + InputControl.SPATIAL_UNIT
+                        + "\") or pixel units.");
+
+        parameters.get(RADIUS_SOURCE)
+                .setDescription("Controls how the radius of the output sphere/circle is defined:<br><ul>"
+
+                        + "<li>\"" + RadiusSources.FIXED_VALUE + "\" A single radius, defined by \""
+                        + FIXED_VALUE_FOR_RADIUS + "\", will be used for all objects.</li>"
+
+                        + "<li>\"" + RadiusSources.MEASUREMENT
+                        + "\" The radius will be equal to the value of a measurement (specified by \""
+                        + RADIUS_MEASUREMENT
+                        + "\") associated with the object being measured.  Radii will potentially be different for each object.</li>"
+
+                        + "<li>\"" + RadiusSources.PARENT_MEASUREMENT
+                        + "\" The radius will be equal to the value of a measurement (specified by \""
+                        + RADIUS_MEASUREMENT + "\") associated a parent of the object being measured (specified by \""
+                        + PARENT_OBJECT_FOR_RADIUS + "\").  Radii will potentially be different for each object.</li>"
+
+                        + "<li>\"" + RadiusSources.SINGLE_POINT
+                        + "\" The output objects will all be a single point corresponding to the centroid of the input object.</li></ul>");
 
         parameters.get(FIXED_VALUE_FOR_RADIUS)
                 .setDescription("Fixed spot radius to use for generating all local object regions when \""
@@ -489,13 +548,10 @@ public class GetLocalObjectRegion extends Module {
                         + "\") to be used as the spot radius for generating the local object region when \""
                         + RADIUS_SOURCE + "\" is in \"" + RadiusSources.PARENT_MEASUREMENT + "\" mode.");
 
-        // parameters.get(CALIBRATED_UNITS).setDescription(
-        // "When selected, spot radius values (irrespective of whether they are fixed
-        // values, measurements or parent measurements) are assumed to be specified in
-        // calibrated units (as defined by the \""
-        // + new InputControl(null).getName() + "\" parameter \"" +
-        // InputControl.SPATIAL_UNIT
-        // + "\"). Otherwise, pixel units are assumed.");
+        parameters.get(RADIUS_SPATIAL_UNITS).setDescription(
+                "Controls whether spot radius values (irrespective of whether they are fixed values, measurements or parent measurements) are assumed to be specified in calibrated units (as defined by the \""
+                        + new InputControl(null).getName() + "\" parameter \"" + InputControl.SPATIAL_UNIT
+                        + "\") or pixel units.");
 
     }
 }

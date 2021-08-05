@@ -476,6 +476,8 @@ public class IdentifyObjects extends Module {
                         + "<li>\"" + VolumeTypes.QUADTREE
                         + "\" stores objects in a quadtree format.  Here, each Z-plane of the object is broken down into squares of different sizes, each of which is marked as foreground (i.e. an object) or background.  Quadtrees are most efficient when there are lots of large square regions of the same label, as the space can be represented by larger (and thus fewer) squares.  This is best used when there are large, completely solid objects.</li></ul>");
 
+        parameters.get(BINARY_LOGIC).setDescription(BinaryLogicInterface.getDescription());
+                        
         parameters.get(ENABLE_MULTITHREADING).setDescription(
                 "Break the image down into strips, each one processed on a separate CPU thread.  The overhead required to do this means it's best for large multi-core CPUs, but should be left disabled for small images or on CPUs with few cores.");
 

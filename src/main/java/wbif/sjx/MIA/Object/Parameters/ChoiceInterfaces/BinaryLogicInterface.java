@@ -18,4 +18,8 @@ public interface BinaryLogicInterface {
                 break;
         }
     }
+
+    public static String getDescription() {
+        return "Controls whether objects are considered to be white (255 intensity) on a black (0 intensity) background, or black on a white background.";
+    }
 }

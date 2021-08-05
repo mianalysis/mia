@@ -88,7 +88,7 @@ public class FillHoles extends Module {
 
     @Override
     public String getDescription() {
-        return "Performs a 3D fill holes operation on an input binary image.  This operation will change all background pixels in a region which is fully enclosed by foreground pixels to foreground.  The input image must be 8-bit and have the logic black foreground (intensity 0) and white background (intensity 255).  Uses the plugin \"<a href=\"https://github.com/ijpb/MorphoLibJ\">MorphoLibJ</a>\".";
+        return "Performs a 3D fill holes operation on an input binary image.  This operation will change all background pixels in a region which is fully enclosed by foreground pixels to foreground.  This image will be 8-bit with binary logic determined by the \"" + BINARY_LOGIC + "\" parameter.  Uses the plugin \"<a href=\"https://github.com/ijpb/MorphoLibJ\">MorphoLibJ</a>\".";
     }
 
     @Override
@@ -190,7 +190,7 @@ public class FillHoles extends Module {
 
     void addParameterDescriptions() {
       parameters.get(INPUT_IMAGE).setDescription(
-              "Image from workspace to apply fill holes operation to.  This must be an 8-bit binary image (255 = background, 0 = foreground).");
+              "Image from workspace to apply fill holes operation to.  This image will be 8-bit with binary logic determined by the \"" + BINARY_LOGIC + "\" parameter.");
 
       parameters.get(APPLY_TO_INPUT).setDescription(
               "When selected, the post-operation image will overwrite the input image in the workspace.  Otherwise, the image will be saved to the workspace with the name specified by the \"" + OUTPUT_IMAGE + "\" parameter.");
@@ -198,5 +198,7 @@ public class FillHoles extends Module {
       parameters.get(OUTPUT_IMAGE).setDescription("If \"" + APPLY_TO_INPUT
               + "\" is not selected, the post-operation image will be saved to the workspace with this name.");
 
+      parameters.get(BINARY_LOGIC).setDescription(BinaryLogicInterface.getDescription());
+              
     }
 }
