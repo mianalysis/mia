@@ -16,6 +16,7 @@ import wbif.sjx.MIA.Module.ImageProcessing.Stack.Registration.UnwarpAutomatic;
 import wbif.sjx.MIA.Module.ImageProcessing.Stack.Registration.UnwarpManual;
 import wbif.sjx.MIA.Module.ImageProcessing.Stack.Registration.Abstract.AbstractAffineRegistration;
 import wbif.sjx.MIA.Module.InputOutput.ImageLoader;
+import wbif.sjx.MIA.Module.InputOutput.MetadataExtractor;
 import wbif.sjx.MIA.Module.InputOutput.ObjectLoader;
 import wbif.sjx.MIA.Module.Miscellaneous.GlobalVariables;
 import wbif.sjx.MIA.Module.Miscellaneous.Macros.RunMacro;
@@ -28,6 +29,7 @@ import wbif.sjx.MIA.Module.ObjectProcessing.Identification.GetLocalObjectRegion;
 import wbif.sjx.MIA.Module.ObjectProcessing.Miscellaneous.CreateDistanceMap;
 import wbif.sjx.MIA.Module.ObjectProcessing.Refinement.ExpandShrinkObjects;
 import wbif.sjx.MIA.Module.ObjectProcessing.Relationships.RelateManyToOne;
+import wbif.sjx.MIA.Module.Visualisation.PlotMeasurementsScatter;
 import wbif.sjx.MIA.Module.WorkflowHandling.WorkflowHandling;
 import wbif.sjx.MIA.Object.Units.SpatialUnit;
 
@@ -37,7 +39,7 @@ public class LostAndFound {
     private HashMap<String, HashMap<String, HashMap<String, String>>> lostParameterValues = new HashMap<>();
 
     public LostAndFound() {
-        //// Populating hard-coded module reassignments ////
+        /// Populating hard-coded module reassignments ///
         lostModules.put("AutomaticRegistration", new AffineSIFT(null).getClass().getSimpleName());
         lostModules.put("ConditionalAnalysisTermination", new WorkflowHandling(null).getClass().getSimpleName());
         lostModules.put("RunMacroOnImage", new RunMacro(null).getClass().getSimpleName());
@@ -49,10 +51,9 @@ public class LostAndFound {
         lostModules.put("MOPSRegistration", new AffineMOPS(null).getClass().getSimpleName());
         lostModules.put("SIFTRegistration", new AffineSIFT(null).getClass().getSimpleName());
         lostModules.put("UnwarpImages", new UnwarpAutomatic(null).getClass().getSimpleName());
-        lostModules.put("HoughObjectDetection", new CircleHoughDetection(null).getClass().getSimpleName());        
+        lostModules.put("HoughObjectDetection", new CircleHoughDetection(null).getClass().getSimpleName());
 
-        
-        //// Populating hard-coded parameter reassignments ////
+        /// Populating hard-coded parameter reassignments ///
         HashMap<String, String> currentParameterNames = null;
         String moduleName = null;
 
@@ -99,7 +100,7 @@ public class LostAndFound {
         currentParameterNames.put("Fixed value", GetLocalObjectRegion.FIXED_VALUE_FOR_RADIUS);
         currentParameterNames.put("Measurement name", GetLocalObjectRegion.RADIUS_MEASUREMENT);
         currentParameterNames.put("Parent object", GetLocalObjectRegion.PARENT_OBJECT_FOR_RADIUS);
-        
+
         moduleName = new GetLocalObjectRegion(null).getClass().getSimpleName();
         lostParameterNames.put(moduleName, currentParameterNames);
 
@@ -127,7 +128,6 @@ public class LostAndFound {
         moduleName = new LocalAutoThreshold(null).getClass().getSimpleName();
         lostParameterNames.put(moduleName, currentParameterNames);
 
-
         // MeasureObjectIntensity
         currentParameterNames = new HashMap<>();
         currentParameterNames.put("Measure weighted distance to edge", "");
@@ -138,8 +138,15 @@ public class LostAndFound {
         currentParameterNames.put("Calibrated distances", "");
         currentParameterNames.put("Number of measurements", "");
         currentParameterNames.put("Only measure on masked regions", "");
-        currentParameterNames.put("Mask image", "");        
+        currentParameterNames.put("Mask image", "");
         moduleName = new MeasureObjectIntensity(null).getClass().getSimpleName();
+        lostParameterNames.put(moduleName, currentParameterNames);
+
+        // MetadataExtractor
+        currentParameterNames = new HashMap<>();
+        currentParameterNames.put("Keyword list", "");
+        currentParameterNames.put("Keyword source", "");
+        moduleName = new MetadataExtractor(null).getClass().getSimpleName();
         lostParameterNames.put(moduleName, currentParameterNames);
 
         // MOPSRegistration
@@ -155,6 +162,12 @@ public class LostAndFound {
         currentParameterNames.put("Calibration source", ObjectLoader.PARENT_OBJECTS_NAME);
         currentParameterNames.put("Calibration reference image", ObjectLoader.PARENT_OBJECTS_NAME);
         moduleName = new ObjectLoader(null).getClass().getSimpleName();
+        lostParameterNames.put(moduleName, currentParameterNames);
+
+        // PlotMeasurementsScatter
+        currentParameterNames = new HashMap<>();
+        currentParameterNames.put("Exclude NaN measurements", "");
+        moduleName = new PlotMeasurementsScatter(null).getClass().getSimpleName();
         lostParameterNames.put(moduleName, currentParameterNames);
 
         // RelateManyToOne
@@ -191,11 +204,13 @@ public class LostAndFound {
         currentParameterNames = new HashMap<>();
         currentParameterNames.put("Reference image measurement mode", WorkflowHandling.NUMERIC_FILTER_MODE);
         currentParameterNames.put("Reference value", WorkflowHandling.REFERENCE_NUMERIC_VALUE);
+        currentParameterNames.put("Reference metadata value", WorkflowHandling.METADATA_VALUE);
+        currentParameterNames.put("Reference image measurement", WorkflowHandling.IMAGE_MEASUREMENT);
         moduleName = new WorkflowHandling(null).getClass().getSimpleName();
         lostParameterNames.put(moduleName, currentParameterNames);
 
 
-        //// Populating hard-coded parameter value reassignments ////
+        /// Populating hard-coded parameter value reassignments ///
         HashMap<String, String> currentValues = null;
         HashMap<String, HashMap<String, String>> currentParameterValues = null;
 
@@ -244,6 +259,20 @@ public class LostAndFound {
         currentParameterValues = new HashMap<>();
         currentParameterValues.put(ImageLoader.IMPORT_MODE, currentValues);
         moduleName = new ImageLoader(null).getClass().getSimpleName();
+        lostParameterValues.put(moduleName, currentParameterValues);
+
+        // MetadataExtractor
+        currentValues = new HashMap<>();
+        currentValues.put("Cell Voyager filename", MetadataExtractor.FilenameExtractors.CV1000_FILENAME_EXTRACTOR);
+        currentValues.put("Yokogawa filename", MetadataExtractor.FilenameExtractors.CV1000_FILENAME_EXTRACTOR);
+        currentParameterValues = new HashMap<>();
+        currentParameterValues.put(MetadataExtractor.FILENAME_EXTRACTOR, currentValues);
+
+        currentValues = new HashMap<>();
+        currentValues.put("Cell Voyager foldername", MetadataExtractor.FoldernameExtractors.CV1000_FOLDERNAME_EXTRACTOR);
+        currentParameterValues.put(MetadataExtractor.FILENAME_EXTRACTOR, currentValues);
+
+        moduleName = new MetadataExtractor(null).getClass().getSimpleName();
         lostParameterValues.put(moduleName, currentParameterValues);
 
     }

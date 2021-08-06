@@ -317,12 +317,12 @@
         </dependency>
 
         <dependency>
-            <groupId>com.github.SJCross</groupId>
+            <!-- <groupId>com.github.SJCross</groupId>
             <artifactId>Common</artifactId>
-            <version>v1.7.2</version>
-            <!-- <groupId>wbif.sjx</groupId>
+            <version>v1.7.2</version> -->
+            <groupId>wbif.sjx</groupId>
             <artifactId>Common</artifactId>
-            <version>1.7.2</version> -->
+            <version>1.7.3</version>
         </dependency>
     </dependencies>
 

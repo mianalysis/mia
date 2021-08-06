@@ -37,7 +37,6 @@ public class PlotMeasurementsScatter extends Module {
     public static final String OUTPUT_IMAGE = "Output image";
 
     public static final String PLOTTING_SEPARATOR = "Plotting controls";
-    public static final String EXCLUDE_NAN = "Exclude NaN measurements";
     public static final String MEASUREMENT1 = "First measurement (X)";
     public static final String MEASUREMENT2 = "Second measurement (Y)";
     public static final String INCLUDE_COLOUR = "Add third measurement as colour";
@@ -96,7 +95,6 @@ public class PlotMeasurementsScatter extends Module {
 
         // Getting parameters
         String outputImageName = parameters.getValue(OUTPUT_IMAGE);
-        boolean excludeNaN = parameters.getValue(EXCLUDE_NAN);
         boolean useColour = parameters.getValue(INCLUDE_COLOUR);
         String measurement1 = parameters.getValue(MEASUREMENT1);
         String measurement2 = parameters.getValue(MEASUREMENT2);
@@ -145,15 +143,11 @@ public class PlotMeasurementsScatter extends Module {
                 // Adding the current point (with its assigned colour)
                 plot.setColor(colors[i], colors[i]);
 
-                if (excludeNaN) {
-                    if (measurementValues1[i] != Double.NaN & measurementValues2[i] != Double.NaN
-                            & measurementValues3[i] != Double.NaN)
-                        plot.addPoints(new double[] { measurementValues1[i] }, new double[] { measurementValues2[i] },
-                                Plot.CIRCLE);
-                } else {
+                if (measurementValues1[i] != Double.NaN & measurementValues2[i] != Double.NaN
+                        & measurementValues3[i] != Double.NaN)
                     plot.addPoints(new double[] { measurementValues1[i] }, new double[] { measurementValues2[i] },
                             Plot.CIRCLE);
-                }
+
             }
         } else {
             String title = "Scatter plot of " + measurement1 + " and " + measurement2;
@@ -183,7 +177,6 @@ public class PlotMeasurementsScatter extends Module {
         parameters.add(new OutputImageP(OUTPUT_IMAGE, this));
 
         parameters.add(new SeparatorP(PLOTTING_SEPARATOR, this));
-        parameters.add(new BooleanP(EXCLUDE_NAN, this, true));
         parameters.add(new ObjectMeasurementP(MEASUREMENT1, this));
         parameters.add(new ObjectMeasurementP(MEASUREMENT2, this));
         parameters.add(new BooleanP(INCLUDE_COLOUR, this, false));
@@ -192,6 +185,8 @@ public class PlotMeasurementsScatter extends Module {
 
         parameters.add(new SeparatorP(MISC_SEPARATOR, this));
         parameters.add(new BooleanP(SHOW_AS_INTERACTIVE_PLOT, this, true));
+
+        addParameterDescriptions();
 
     }
 
@@ -204,7 +199,6 @@ public class PlotMeasurementsScatter extends Module {
         returnedParameters.add(parameters.getParameter(OUTPUT_IMAGE));
 
         returnedParameters.add(parameters.getParameter(PLOTTING_SEPARATOR));
-        returnedParameters.add(parameters.getParameter(EXCLUDE_NAN));
         returnedParameters.add(parameters.getParameter(MEASUREMENT1));
         returnedParameters.add(parameters.getParameter(MEASUREMENT2));
 
@@ -255,5 +249,33 @@ public class PlotMeasurementsScatter extends Module {
     @Override
     public boolean verify() {
         return true;
+    }
+
+    void addParameterDescriptions() {
+        parameters.get(INPUT_OBJECTS)
+                .setDescription("Input object collection for which object-associated measurements will be plotted.");
+
+        parameters.get(OUTPUT_IMAGE)
+                .setDescription("Output plot image which will be saved to the workspace with this name.");
+
+        parameters.get(MEASUREMENT1).setDescription(
+                "Measurement associated with the input objects which will be plotted along the x-axis.");
+
+        parameters.get(MEASUREMENT2).setDescription(
+                "Measurement associated with the input objects which will be plotted along the y-axis.");
+
+        parameters.get(INCLUDE_COLOUR).setDescription(
+                "When selected, a third measurement can be represented as the plot marker colour.  This colour will vary according to the colourmap set with the \""
+                        + COLOURMAP + "\" parameter");
+
+        parameters.get(MEASUREMENT3).setDescription("If \"" + INCLUDE_COLOUR
+                + "\" is selected, this measurement associated with the input objects will determine the plot marker colour.");
+
+        parameters.get(COLOURMAP).setDescription("If \"" + INCLUDE_COLOUR
+                + "\" is selected, this is the colourmap that will control how marker colours vary in response to the magnitude of their values.");
+
+        parameters.get(SHOW_AS_INTERACTIVE_PLOT).setDescription(
+                "When selected, and if displaying module output in realtime (\"Show output\" button selected), the plot will be displayed as an interactive ImageJ plot (editable rendering).  Otherwise, the standard image output will be displayed (i.e. the same image added to the workspace).");
+
     }
 }
