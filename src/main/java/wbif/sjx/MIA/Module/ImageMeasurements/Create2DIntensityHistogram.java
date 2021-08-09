@@ -9,7 +9,6 @@ import net.imglib2.img.display.imagej.ImageJFunctions;
 import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
 import net.imglib2.type.numeric.real.FloatType;
-import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Categories;
 import wbif.sjx.MIA.Module.Category;
 import wbif.sjx.MIA.Module.Module;
@@ -166,17 +165,17 @@ public class Create2DIntensityHistogram<T extends RealType<T> & NativeType<T>> e
 
         parameters.get(OUTPUT_IMAGE).setDescription("Output 2D intensity histogram, which will be saved to the workspace.");
 
-        parameters.get(MIN_BIN_1).setDescription("Minimum intenisty bin for the image specified by \""+INPUT_IMAGE1+"\".");
+        parameters.get(MIN_BIN_1).setDescription("Minimum intensity bin for the image specified by \""+INPUT_IMAGE1+"\".");
 
-        parameters.get(MAX_BIN_1).setDescription("Maximum intenisty bin for the image specified by \""+INPUT_IMAGE1+"\".");
+        parameters.get(MAX_BIN_1).setDescription("Maximum intensity bin for the image specified by \""+INPUT_IMAGE1+"\".");
 
         parameters.get(N_BINS_1).setDescription("Number of intensity bins to use for the image specified by \""+INPUT_IMAGE1+"\".");
 
         parameters.get(INCLUDE_TAIL_BIN_1).setDescription("When selected, additional bins at the extremes of the histogram x-axis will be used for intensity values that fall outside the specified intensity range.");
 
-        parameters.get(MIN_BIN_2).setDescription("Minimum intenisty bin for the image specified by \""+INPUT_IMAGE2+"\".");
+        parameters.get(MIN_BIN_2).setDescription("Minimum intensity bin for the image specified by \""+INPUT_IMAGE2+"\".");
 
-        parameters.get(MAX_BIN_2).setDescription("Maximum intenisty bin for the image specified by \""+INPUT_IMAGE2+"\".");
+        parameters.get(MAX_BIN_2).setDescription("Maximum intensity bin for the image specified by \""+INPUT_IMAGE2+"\".");
 
         parameters.get(N_BINS_2).setDescription("Number of intensity bins to use for the image specified by \""+INPUT_IMAGE2+"\".");
 

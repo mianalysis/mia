@@ -47,11 +47,10 @@ public class ExtractObjectCrossSection extends Module {
     public static final String OBJECT_MEASUREMENT = "Object measurement";
 
     public interface ReferenceModes {
-        // String ABSOLUTE = "Absolute";
+        String ABSOLUTE = "Absolute";
         String IMAGE_MEASUREMENT = "Image measurement";
         String OBJECT_MEASUREMENT = "Object measurement";
 
-        // String[] ALL = new String[] { ABSOLUTE, IMAGE_MEASUREMENT, OBJECT_MEASUREMENT };
         String[] ALL = new String[] { ABSOLUTE, IMAGE_MEASUREMENT, OBJECT_MEASUREMENT };
 
     }
@@ -255,15 +254,15 @@ public class ExtractObjectCrossSection extends Module {
 
         parameters.get(OUTPUT_OBJECTS).setDescription("Output cross-section objects.  These will be stored in the workspace with this name.");
 
-        parameters.get(REFERENCE_MODE).setDescription("<li>");
+        // parameters.get(REFERENCE_MODE).setDescription("<li>");
 
-        parameters.get(RELATIVE_SLICE_INDICES).setDescription();
+        // parameters.get(RELATIVE_SLICE_INDICES).setDescription();
 
-        parameters.get(IMAGE_MEASUREMENT).setDescription();
+        // parameters.get(IMAGE_MEASUREMENT).setDescription();
 
-        parameters.get(IMAGE_FOR_MEASUREMENT).setDescription();
+        // parameters.get(IMAGE_FOR_MEASUREMENT).setDescription();
 
-        parameters.get(OBJECT_MEASUREMENT).setDescription();
+        // parameters.get(OBJECT_MEASUREMENT).setDescription();
 
     }
 }

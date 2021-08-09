@@ -1,6 +1,5 @@
 package wbif.sjx.MIA.Module.ImageProcessing.Stack.Registration;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Vector;
 import java.util.concurrent.ExecutionException;
@@ -8,7 +7,6 @@ import java.util.concurrent.ExecutionException;
 import ij.IJ;
 import ij.process.FloatProcessor;
 import ij.process.ImageProcessor;
-import mpicbg.ij.InverseTransformMapping;
 import mpicbg.ij.blockmatching.BlockMatching;
 import mpicbg.models.AbstractAffineModel2D;
 import mpicbg.models.ErrorStatistic;
@@ -23,7 +21,6 @@ import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.Parameters.SeparatorP;
 import wbif.sjx.MIA.Object.Parameters.Text.DoubleP;
 import wbif.sjx.MIA.Object.Parameters.Text.IntegerP;
-import wbif.sjx.MIA.Process.Interactable.PointPairSelector.PointPair;
 
 public class AffineBlockMatching extends AbstractAffineRegistration {
     public static final String FEATURE_SEPARATOR = "Feature detection";

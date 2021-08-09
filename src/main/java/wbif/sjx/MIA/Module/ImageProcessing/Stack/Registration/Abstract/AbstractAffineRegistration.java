@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Vector;
 
-import ij.ImagePlus;
 import ij.gui.PointRoi;
 import ij.process.ByteProcessor;
 import ij.process.FloatProcessor;

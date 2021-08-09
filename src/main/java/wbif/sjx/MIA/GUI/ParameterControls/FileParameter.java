@@ -11,7 +11,6 @@ import javax.swing.JFileChooser;
 
 import org.apache.commons.io.FilenameUtils;
 
-import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.GUI.GUI;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.Core.InputControl;

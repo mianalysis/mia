@@ -162,6 +162,7 @@ public class AnalysisReader_Pre_0p10p0 {
         NamedNodeMap moduleAttributes = moduleNode.getAttributes();
         String className = moduleAttributes.getNamedItem("NAME").getNodeValue();
         String moduleName = FilenameUtils.getExtension(className);
+        moduleName = MIA.lostAndFound.findModule(moduleName);
 
         for (String availableModule : availableModules) {
             if (moduleName.equals(FilenameUtils.getExtension(availableModule))) {
@@ -187,7 +188,7 @@ public class AnalysisReader_Pre_0p10p0 {
                 for (int j = 0; j < moduleChildNodes.getLength(); j++) {
                     switch (moduleChildNodes.item(j).getNodeName()) {
                         case "PARAMETERS":
-                            populateModuleParameters(moduleChildNodes.item(j), module.getAllParameters(), moduleName);
+                            populateModuleParameters(moduleChildNodes.item(j), module.getAllParameters(), module);
                             foundParameters = true;
                             break;
 
@@ -216,7 +217,7 @@ public class AnalysisReader_Pre_0p10p0 {
 
                 // Old file formats had parameters loose within MODULE
                 if (!foundParameters)
-                    populateModuleParameters(moduleNode, module.getAllParameters(), moduleName);
+                    populateModuleParameters(moduleNode, module.getAllParameters(), module);
 
                 return module;
 
@@ -280,13 +281,15 @@ public class AnalysisReader_Pre_0p10p0 {
         }
     }
 
-    public static void populateModuleParameters(Node moduleNode, ParameterCollection parameters, String moduleName) {
+    public static void populateModuleParameters(Node moduleNode, ParameterCollection parameters, Module module) {
+        String moduleName = module.getName();
+
         NodeList parameterNodes = moduleNode.getChildNodes();
         for (int j = 0; j < parameterNodes.getLength(); j++) {
             Node parameterNode = parameterNodes.item(j);
 
             if (parameterNode.getNodeName().equals("COLLECTIONS")) {
-                populateModuleParameterGroups(parameterNode, parameters, moduleName);
+                populateModuleParameterGroups(parameterNode, parameters, module);
                 continue;
             }
 
@@ -295,21 +298,30 @@ public class AnalysisReader_Pre_0p10p0 {
             String parameterName = parameterAttributes.getNamedItem("NAME").getNodeValue();
             String parameterValue = parameterAttributes.getNamedItem("VALUE").getNodeValue();
             String parameterValueSource = "";
-            if (parameterAttributes.getNamedItem("VALUESOURCE") != null) {
+
+            // Updating parameter names
+            parameterName = MIA.lostAndFound.findParameter(module.getClass().getSimpleName(), parameterName);
+
+            if (parameterAttributes.getNamedItem("VALUESOURCE") != null)
                 parameterValueSource = parameterAttributes.getNamedItem("VALUESOURCE").getNodeValue();
-            }
 
             try {
                 Parameter parameter = parameters.getParameter(parameterName);
                 if (parameter instanceof InputImageP) {
+                    parameterValue = MIA.lostAndFound.findParameterValue(module.getClass().getSimpleName(),
+                            parameterName, parameterValue);
                     ((InputImageP) parameters.getParameter(parameterName)).setImageName(parameterValue);
                 } else if (parameter instanceof OutputImageP) {
                     ((OutputImageP) parameters.getParameter(parameterName)).setImageName(parameterValue);
                 } else if (parameter instanceof InputObjectsP) {
+                    parameterValue = MIA.lostAndFound.findParameterValue(module.getClass().getSimpleName(),
+                            parameterName, parameterValue);
                     ((InputObjectsP) parameters.getParameter(parameterName)).setChoice(parameterValue);
                 } else if (parameter instanceof OutputObjectsP) {
                     ((OutputObjectsP) parameters.getParameter(parameterName)).setObjectsName(parameterValue);
                 } else if (parameter instanceof RemovedImageP) {
+                    parameterValue = MIA.lostAndFound.findParameterValue(module.getClass().getSimpleName(),
+                            parameterName, parameterValue);
                     ((RemovedImageP) parameters.getParameter(parameterName)).setChoice(parameterValue);
                 } else if (parameter instanceof RemovedObjectsP) {
                     ((RemovedObjectsP) parameters.getParameter(parameterName)).setChoice(parameterValue);
@@ -322,17 +334,27 @@ public class AnalysisReader_Pre_0p10p0 {
                 } else if (parameter instanceof BooleanP) {
                     ((BooleanP) parameters.getParameter(parameterName)).setValueFromString(parameterValue);
                 } else if (parameter instanceof ChoiceP) {
+                    parameterValue = MIA.lostAndFound.findParameterValue(module.getClass().getSimpleName(),
+                            parameterName, parameterValue);                            
                     ((ChoiceP) parameters.getParameter(parameterName)).setChoice(parameterValue);
                 } else if (parameter instanceof ChildObjectsP) {
+                    parameterValue = MIA.lostAndFound.findParameterValue(module.getClass().getSimpleName(),
+                            parameterName, parameterValue);
                     ((ChildObjectsP) parameters.getParameter(parameterName)).setChoice(parameterValue);
                     ((ChildObjectsP) parameters.getParameter(parameterName)).setParentObjectsName(parameterValueSource);
                 } else if (parameter instanceof ParentObjectsP) {
+                    parameterValue = MIA.lostAndFound.findParameterValue(module.getClass().getSimpleName(),
+                            parameterName, parameterValue);
                     ((ParentObjectsP) parameters.getParameter(parameterName)).setChoice(parameterValue);
                     ((ParentObjectsP) parameters.getParameter(parameterName)).setChildObjectsName(parameterValueSource);
                 } else if (parameter instanceof ImageMeasurementP) {
+                    parameterValue = MIA.lostAndFound.findParameterValue(module.getClass().getSimpleName(),
+                            parameterName, parameterValue);
                     ((ImageMeasurementP) parameters.getParameter(parameterName)).setChoice(parameterValue);
                     ((ImageMeasurementP) parameters.getParameter(parameterName)).setImageName(parameterValueSource);
                 } else if (parameter instanceof ObjectMeasurementP) {
+                    parameterValue = MIA.lostAndFound.findParameterValue(module.getClass().getSimpleName(),
+                            parameterName, parameterValue);
                     ((ObjectMeasurementP) parameters.getParameter(parameterName)).setChoice(parameterValue);
                     ((ObjectMeasurementP) parameters.getParameter(parameterName)).setObjectName(parameterValueSource);
                 } else if (parameter instanceof FilePathP) {
@@ -342,6 +364,8 @@ public class AnalysisReader_Pre_0p10p0 {
                 } else if (parameter instanceof FileFolderPathP) {
                     ((FileFolderPathP) parameters.getParameter(parameterName)).setPath(parameterValue);
                 } else if (parameter instanceof MetadataItemP) {
+                    parameterValue = MIA.lostAndFound.findParameterValue(module.getClass().getSimpleName(),
+                            parameterName, parameterValue);
                     ((MetadataItemP) parameters.getParameter(parameterName)).setChoice(parameterValue);
                 } else if (parameter instanceof TextAreaP) {
                     ((TextAreaP) parameters.getParameter(parameterName)).setValue(parameterValue);
@@ -426,7 +450,7 @@ public class AnalysisReader_Pre_0p10p0 {
     }
 
     public static void populateModuleParameterGroups(Node parameterNode, ParameterCollection parameters,
-            String moduleName) {
+            Module module) {
         NodeList collectionNodes = parameterNode.getChildNodes();
         String groupName = parameterNode.getAttributes().getNamedItem("NAME").getNodeValue();
 
@@ -440,7 +464,7 @@ public class AnalysisReader_Pre_0p10p0 {
 
             Node collectionNode = collectionNodes.item(j);
             Node newParametersNode = collectionNode.getChildNodes().item(0);
-            populateModuleParameters(newParametersNode, newParameters, moduleName);
+            populateModuleParameters(newParametersNode, newParameters, module);
 
         }
     }

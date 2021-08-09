@@ -16,7 +16,6 @@ import ij.IJ;
 import ij.ImagePlus;
 import wbif.sjx.MIA.ExpectedObjects.ExpectedObjects;
 import wbif.sjx.MIA.ExpectedObjects.Objects3D;
-import wbif.sjx.MIA.ExpectedObjects.Sphere3D;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleTest;
 import wbif.sjx.MIA.Object.Image;

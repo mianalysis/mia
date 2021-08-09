@@ -8,10 +8,11 @@ import ij.ImagePlus;
 import ij.plugin.Duplicator;
 import ij.process.ImageProcessor;
 import ij.process.LUT;
+import wbif.sjx.MIA.Module.Categories;
+import wbif.sjx.MIA.Module.Category;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
-import wbif.sjx.MIA.Module.Category;
-import wbif.sjx.MIA.Module.Categories;
+import wbif.sjx.MIA.Module.Visualisation.ImageRendering.SetDisplayRange;
 import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.Obj;
 import wbif.sjx.MIA.Object.ObjCollection;
@@ -22,8 +23,8 @@ import wbif.sjx.MIA.Object.Parameters.ChoiceP;
 import wbif.sjx.MIA.Object.Parameters.InputImageP;
 import wbif.sjx.MIA.Object.Parameters.InputObjectsP;
 import wbif.sjx.MIA.Object.Parameters.OutputImageP;
-import wbif.sjx.MIA.Object.Parameters.SeparatorP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
+import wbif.sjx.MIA.Object.Parameters.SeparatorP;
 import wbif.sjx.MIA.Object.Parameters.Text.DoubleP;
 import wbif.sjx.MIA.Object.References.Collections.ImageMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.MetadataRefCollection;
@@ -342,7 +343,7 @@ public class NormaliseIntensity extends Module {
         return true;
     }
 
-    void setParameterDescriptions() {
+    void addParameterDescriptions() {
         parameters.get(INPUT_IMAGE)
                 .setDescription("Image from the workspace for which intensity normalisation will be calculated.");
 

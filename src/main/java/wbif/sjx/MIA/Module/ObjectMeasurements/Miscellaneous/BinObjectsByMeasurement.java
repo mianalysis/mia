@@ -1,17 +1,18 @@
 package wbif.sjx.MIA.Module.ObjectMeasurements.Miscellaneous;
 
+import wbif.sjx.MIA.Module.Categories;
+import wbif.sjx.MIA.Module.Category;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
-import wbif.sjx.MIA.Module.Category;
-import wbif.sjx.MIA.Module.Categories;
-import wbif.sjx.MIA.Object.Status;
 import wbif.sjx.MIA.Object.Measurement;
 import wbif.sjx.MIA.Object.Obj;
 import wbif.sjx.MIA.Object.ObjCollection;
+import wbif.sjx.MIA.Object.Status;
 import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.MIA.Object.Parameters.InputObjectsP;
 import wbif.sjx.MIA.Object.Parameters.ObjectMeasurementP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
+import wbif.sjx.MIA.Object.Parameters.SeparatorP;
 import wbif.sjx.MIA.Object.Parameters.Text.DoubleP;
 import wbif.sjx.MIA.Object.Parameters.Text.IntegerP;
 import wbif.sjx.MIA.Object.References.ObjMeasurementRef;
@@ -22,14 +23,17 @@ import wbif.sjx.MIA.Object.References.Collections.ParentChildRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.PartnerRefCollection;
 
 public class BinObjectsByMeasurement extends Module {
+    public static final String INPUT_SEPARATOR = "Object input";
     public static final String INPUT_OBJECTS = "Input objects";
+
+    public static final String BIN_SEPARATOR = "Binning controls";
     public static final String MEASUREMENT = "Measurement";
     public static final String SMALLEST_BIN_CENTRE = "Smallest bin centre";
     public static final String LARGEST_BIN_CENTRE = "Largest bin centre";
     public static final String NUMBER_OF_BINS = "Number of bins";
 
     public BinObjectsByMeasurement(ModuleCollection modules) {
-        super("Bin objects by measurement",modules);
+        super("Bin objects by measurement", modules);
     }
 
     interface Measurements {
@@ -37,10 +41,8 @@ public class BinObjectsByMeasurement extends Module {
     }
 
     public static String getFullName(String measurement) {
-        return "BIN // "+measurement;
+        return "BIN // " + measurement;
     }
-
-
 
     @Override
     public Category getCategory() {
@@ -49,7 +51,7 @@ public class BinObjectsByMeasurement extends Module {
 
     @Override
     public String getDescription() {
-        return "";
+        return "Distribute objects into a set of \"bins\" based on a measurement associated with each object.  Bins are evenly distributed between manually-specified smallest and largest bin centres.  The assigned bin for each object is stored as a new measurement associated with that object.";
     }
 
     @Override
@@ -64,7 +66,7 @@ public class BinObjectsByMeasurement extends Module {
         double largestBin = parameters.getValue(LARGEST_BIN_CENTRE);
         int numberOfBins = parameters.getValue(NUMBER_OF_BINS);
 
-        double binWidth = (largestBin-smallestBin)/(numberOfBins-1);
+        double binWidth = (largestBin - smallestBin) / (numberOfBins - 1);
 
         int count = 0;
         int total = inputObjects.size();
@@ -74,21 +76,22 @@ public class BinObjectsByMeasurement extends Module {
                 inputObject.addMeasurement(new Measurement(getFullName(measurementName), Double.NaN));
                 continue;
             }
-            
+
             double value = measurement.getValue();
-            double bin = Math.round((value-smallestBin)/binWidth)*binWidth+smallestBin;
+            double bin = Math.round((value - smallestBin) / binWidth) * binWidth + smallestBin;
 
             // Ensuring the bin is within the specified range
-            bin = Math.min(bin,largestBin);
-            bin = Math.max(bin,smallestBin);
+            bin = Math.min(bin, largestBin);
+            bin = Math.max(bin, smallestBin);
 
             inputObject.addMeasurement(new Measurement(getFullName(measurementName), bin));
 
             writeProgressStatus(++count, total, "objects");
-            
+
         }
 
-        if (showOutput) inputObjects.showMeasurements(this,modules);
+        if (showOutput)
+            inputObjects.showMeasurements(this, modules);
 
         return Status.PASS;
 
@@ -96,11 +99,16 @@ public class BinObjectsByMeasurement extends Module {
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new InputObjectsP(INPUT_OBJECTS,this));
-        parameters.add(new ObjectMeasurementP(MEASUREMENT,this));
-        parameters.add(new DoubleP(SMALLEST_BIN_CENTRE,this,0d));
-        parameters.add(new DoubleP(LARGEST_BIN_CENTRE,this,1d));
-        parameters.add(new IntegerP(NUMBER_OF_BINS,this,1));
+        parameters.add(new SeparatorP(INPUT_SEPARATOR, this));
+        parameters.add(new InputObjectsP(INPUT_OBJECTS, this));
+
+        parameters.add(new SeparatorP(BIN_SEPARATOR, this));
+        parameters.add(new ObjectMeasurementP(MEASUREMENT, this));
+        parameters.add(new DoubleP(SMALLEST_BIN_CENTRE, this, 0d));
+        parameters.add(new DoubleP(LARGEST_BIN_CENTRE, this, 1d));
+        parameters.add(new IntegerP(NUMBER_OF_BINS, this, 1));
+
+        addParameterDescriptions();
 
     }
 
@@ -151,5 +159,26 @@ public class BinObjectsByMeasurement extends Module {
     @Override
     public boolean verify() {
         return true;
+    }
+
+    void addParameterDescriptions() {
+        parameters.get(INPUT_OBJECTS).setDescription(
+                "Objects from the workspace.  The specified measurement for each of these will be binned according to various parameters.  The assigned bin will be stored as a new measurement associated with this object.");
+
+        parameters.get(MEASUREMENT).setDescription(
+                "Measurement associated with the input objects that will be binned according to the other parameters.");
+
+        parameters.get(SMALLEST_BIN_CENTRE).setDescription(
+                "Centre value associated with the smallest bin.  Bins will be evenly distributed in bins between this value and the upper bin centre (specified by \""
+                        + LARGEST_BIN_CENTRE + "\".");
+
+        parameters.get(LARGEST_BIN_CENTRE).setDescription(
+                "Centre value associated with the largest bin.  Bins will be evenly distributed in bins between this value and the lower bin centre (specified by \""
+                        + SMALLEST_BIN_CENTRE + "\".");
+
+        parameters.get(NUMBER_OF_BINS).setDescription(
+                "Number of bins to divide measurements into.  These will be evenly distributed in the range between \""
+                        + SMALLEST_BIN_CENTRE + "\" and \"" + LARGEST_BIN_CENTRE + "\".");
+
     }
 }

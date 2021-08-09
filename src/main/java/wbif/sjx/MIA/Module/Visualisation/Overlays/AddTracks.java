@@ -3,7 +3,6 @@
 
 package wbif.sjx.MIA.Module.Visualisation.Overlays;
 
-import java.awt.Color;
 import java.util.HashMap;
 import java.util.TreeMap;
 import java.util.concurrent.atomic.AtomicInteger;

@@ -12,18 +12,18 @@ import ij.Prefs;
 import ij.process.ByteProcessor;
 import ij.process.ImageProcessor;
 import mpicbg.ij.clahe.Flat;
+import wbif.sjx.MIA.Module.Categories;
+import wbif.sjx.MIA.Module.Category;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
-import wbif.sjx.MIA.Module.Category;
-import wbif.sjx.MIA.Module.Categories;
 import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.Status;
 import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.MIA.Object.Parameters.BooleanP;
 import wbif.sjx.MIA.Object.Parameters.InputImageP;
 import wbif.sjx.MIA.Object.Parameters.OutputImageP;
-import wbif.sjx.MIA.Object.Parameters.SeparatorP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
+import wbif.sjx.MIA.Object.Parameters.SeparatorP;
 import wbif.sjx.MIA.Object.Parameters.Text.DoubleP;
 import wbif.sjx.MIA.Object.Parameters.Text.IntegerP;
 import wbif.sjx.MIA.Object.References.Collections.ImageMeasurementRefCollection;
@@ -157,16 +157,13 @@ public class ApplyCLAHE extends Module {
     @Override
     protected void initialiseParameters() {
         parameters.add(new SeparatorP(INPUT_SEPARATOR, this));
-        parameters.add(new InputImageP(INPUT_IMAGE, this, "", "Image to apply CLAHE to."));
-        parameters.add(new BooleanP(APPLY_TO_INPUT, this, true,
-                "Select if CLAHE should be applied directly to the input image, or if it should be applied to a duplicate, then stored as a different image in the workspace."));
-        parameters.add(new OutputImageP(OUTPUT_IMAGE, this, "",
-                "Name of the output image created during the CLAHE process.  This image will be added to the workspace."));
+        parameters.add(new InputImageP(INPUT_IMAGE, this));
+        parameters.add(new BooleanP(APPLY_TO_INPUT, this, true));
+        parameters.add(new OutputImageP(OUTPUT_IMAGE, this));
 
         parameters.add(new SeparatorP(CLAHE_SEPARATOR, this));
         parameters.add(new DoubleP(BLOCK_SIZE, this, 127));
-        parameters.add(new BooleanP(CALIBRATED_UNITS, this, false,
-                "Choose if block size is specified in pixel (set to \"false\") or calibrated (set to \"true\") units.  What units are used are controlled from \"Input control\"."));
+        parameters.add(new BooleanP(CALIBRATED_UNITS, this, false));
         parameters.add(new IntegerP(HISTOGRAM_BINS, this, 256));
         parameters.add(new DoubleP(MAXIMUM_SLOPE, this, 3d));
         parameters.add(new BooleanP(USE_MASK, this, false));
@@ -175,6 +172,8 @@ public class ApplyCLAHE extends Module {
 
         parameters.add(new SeparatorP(EXECUTION_SEPARATOR, this));
         parameters.add(new BooleanP(ENABLE_MULTITHREADING, this, true));
+
+        addParameterDescriptions();
 
     }
 
@@ -210,36 +209,58 @@ public class ApplyCLAHE extends Module {
 
     @Override
     public ImageMeasurementRefCollection updateAndGetImageMeasurementRefs() {
-        // TODO Auto-generated method stub
         return null;
     }
 
     @Override
     public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
-        // TODO Auto-generated method stub
         return null;
     }
 
     @Override
     public MetadataRefCollection updateAndGetMetadataReferences() {
-        // TODO Auto-generated method stub
         return null;
     }
 
     @Override
     public ParentChildRefCollection updateAndGetParentChildRefs() {
-        // TODO Auto-generated method stub
         return null;
     }
 
     @Override
     public PartnerRefCollection updateAndGetPartnerRefs() {
-        // TODO Auto-generated method stub
         return null;
     }
 
     @Override
     public boolean verify() {
         return true;
+    }
+
+    void addParameterDescriptions() {
+        String siteRef = "Description taken from <a href=\"https://imagej.net/plugins/clahe\">https://imagej.net/plugins/clahe</a>";
+
+        parameters.get(INPUT_IMAGE).setDescription("Image to apply CLAHE to.");
+
+        parameters.get(APPLY_TO_INPUT).setDescription("Select if CLAHE should be applied directly to the input image, or if it should be applied to a duplicate, then stored as a different image in the workspace.");
+
+        parameters.get(OUTPUT_IMAGE).setDescription("Name of the output image created during the CLAHE process.  This image will be added to the workspace.");
+
+        parameters.get(BLOCK_SIZE).setDescription("\"The size of the local region around a pixel for which the histogram is equalized. This size should be larger than the size of features to be preserved\".  "+siteRef);
+
+        parameters.get(CALIBRATED_UNITS).setDescription("Choose if block size is specified in pixel (set to \"false\") or calibrated (set to \"true\") units.  What units are used are controlled from \"Input control\".");
+
+        parameters.get(HISTOGRAM_BINS).setDescription("\"The number of histogram bins used for histogram equalization. The implementation internally works with byte resolution, so values larger than 256 are not meaningful. This value also limits the quantification of the output when processing 8bit gray or 24bit RGB images. The number of histogram bins should be smaller than the number of pixels in a block\".  "+siteRef);
+
+        parameters.get(MAXIMUM_SLOPE).setDescription("\"Limits the contrast stretch in the intensity transfer function. Very large values will let the histogram equalization do whatever it wants to do, that is result in maximal local contrast. The value 1 will result in the original image\".  "+siteRef);
+
+        parameters.get(USE_MASK).setDescription("When selected, only pixels coincident with the white (255 intensity) part of the mask image (specified by the \""+MASK_IMAGE+"\" parameter) are processed.  All other pixels will retain their initial value");
+
+        parameters.get(MASK_IMAGE).setDescription("Image to use for masking when \""+USE_MASK+"\" is selected.  Only pixels in the input image coincident with white (255 intensity) pixels in this mask will be processed.");
+
+        parameters.get(FAST_MODE).setDescription("\"Use the fast but less accurate version of the filter. The fast version does not evaluate the intensity transfer function for each pixel independently but for a grid of adjacent boxes of the given block size only and interpolates for locations in between\".  "+siteRef);
+
+        parameters.get(ENABLE_MULTITHREADING).setDescription("Process multiple slices independently.  This can provide a speed improvement when working on a computer with a multi-core CPU.");
+
     }
 }

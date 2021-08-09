@@ -3,7 +3,6 @@ package wbif.sjx.MIA.Macro.ImageProcessing;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import wbif.sjx.MIA.Macro.MacroOperationTest;
-import wbif.sjx.MIA.Macro.ImageProcessing.MIA_ListImagesInWorkspace;
 
 public class MIA_ListImagesInWorkspaceTest extends MacroOperationTest {
 

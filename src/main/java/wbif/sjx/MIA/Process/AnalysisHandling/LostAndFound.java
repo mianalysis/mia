@@ -293,8 +293,10 @@ public class LostAndFound {
     }
 
     public String findParameter(String moduleSimpleName, String oldName) {
+        String finalModuleName = findModule(moduleSimpleName);
+        
         // If no name is found, return the old name
-        HashMap<String, String> currentParameters = lostParameterNames.get(moduleSimpleName);
+        HashMap<String, String> currentParameters = lostParameterNames.get(finalModuleName);
         if (currentParameters == null)
             return oldName;
 
@@ -307,11 +309,14 @@ public class LostAndFound {
     }
 
     public String findParameterValue(String moduleSimpleName, String parameterName, String oldValue) {
-        HashMap<String, HashMap<String, String>> currentParameters = lostParameterValues.get(moduleSimpleName);
+        String finalModuleName = findModule(moduleSimpleName);
+        String finalParameterName = findParameter(finalModuleName, parameterName);
+
+        HashMap<String, HashMap<String, String>> currentParameters = lostParameterValues.get(finalModuleName);
         if (currentParameters == null)
             return oldValue;
 
-        HashMap<String, String> currentValues = currentParameters.get(parameterName);
+        HashMap<String, String> currentValues = currentParameters.get(finalParameterName);
         if (currentValues == null)
             return oldValue;
 
