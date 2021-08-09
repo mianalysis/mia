@@ -1,6 +1,3 @@
-// TODO: Could move rolling frame filter to Common library's filters package
-// TODO: MedianFilter3D isn't currently working for multiple channels
-
 package wbif.sjx.MIA.Module.ImageProcessing.Pixel;
 
 import java.util.ArrayList;
