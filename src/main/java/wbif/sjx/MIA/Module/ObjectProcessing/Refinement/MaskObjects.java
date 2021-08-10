@@ -6,6 +6,7 @@ import net.imagej.ImgPlus;
 import net.imagej.axis.Axes;
 import net.imglib2.RandomAccess;
 import net.imglib2.type.NativeType;
+import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
 import net.imglib2.type.numeric.integer.UnsignedByteType;
 import wbif.sjx.MIA.MIA;
@@ -119,7 +120,7 @@ public class MaskObjects<T extends RealType<T> & NativeType<T>> extends Module {
 
     @Override
     public String getDescription() {
-        return "Applies the mask image to the specified object collection.  Only object pixels coincident with black "
+        return "Applies the mask image to the specified object collection.  Any object coordinates coincident with black "
                 + "pixels (intensity 0) will be removed.";
     }
 

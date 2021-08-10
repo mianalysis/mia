@@ -70,7 +70,7 @@ import wbif.sjx.MIA.Object.References.Collections.PartnerRefCollection;
 import wbif.sjx.common.MathFunc.CumStat;
 import wbif.sjx.common.Process.ImgPlusTools;
 
-public class BestFocusSubstack<T extends RealType<T> & NativeType<T>> extends Module implements ActionListener {
+public class BestFocusSubstack <T extends RealType<T> & NativeType<T>> extends Module implements ActionListener {
     private JFrame frame;
     private DefaultListModel<Ref> listModel = new DefaultListModel<>();
     private JList<Ref> list = new JList<>(listModel);
