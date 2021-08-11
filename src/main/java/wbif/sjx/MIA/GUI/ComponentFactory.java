@@ -37,9 +37,9 @@ import wbif.sjx.MIA.Module.Core.OutputControl;
 import wbif.sjx.MIA.Module.Miscellaneous.GUISeparator;
 import wbif.sjx.MIA.Object.Parameters.BooleanP;
 import wbif.sjx.MIA.Object.Parameters.ObjMeasurementSelectorP;
-import wbif.sjx.MIA.Object.Parameters.SeparatorP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.Parameters.ParameterGroup;
+import wbif.sjx.MIA.Object.Parameters.SeparatorP;
 import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
 import wbif.sjx.MIA.Object.Parameters.Text.MessageP;
 import wbif.sjx.MIA.Object.Parameters.Text.TextAreaP;
@@ -185,7 +185,7 @@ public class ComponentFactory {
 
         DisableableCheck disableableCheck = new DisableableCheck(activeModule);
         disableableCheck.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
-        if (activeModule.getClass() == InputControl.class || activeModule.getClass() == GUISeparator.class) {
+        if (activeModule.getClass() == InputControl.class) {
             disableableCheck.setEnabled(false);
             disableableCheck.setOpaque(false);
         }
@@ -242,14 +242,14 @@ public class ComponentFactory {
         c.fill = GridBagConstraints.HORIZONTAL;
         c.anchor = GridBagConstraints.WEST;
 
-        // ModuleEnabledButton moduleEnabledButton = new ModuleEnabledButton(module);
-        // moduleEnabledButton.setPreferredSize(new Dimension(elementHeight, elementHeight));
-        // moduleEnabledButton.setMinimumSize(new Dimension(elementHeight, elementHeight));
-        // moduleEnabledButton.setEnabled(module.canBeDisabled());
-        // moduleEnabledButton.setBorderPainted(false);
-        // moduleEnabledButton.setOpaque(false);
-        // moduleEnabledButton.setContentAreaFilled(false);
-        // panel.add(moduleEnabledButton, c);
+        ModuleEnabledButton moduleEnabledButton = new ModuleEnabledButton(module);
+        moduleEnabledButton.setPreferredSize(new Dimension(elementHeight, elementHeight));
+        moduleEnabledButton.setMinimumSize(new Dimension(elementHeight, elementHeight));
+        moduleEnabledButton.setEnabled(module.canBeDisabled());
+        moduleEnabledButton.setBorderPainted(false);
+        moduleEnabledButton.setOpaque(false);
+        moduleEnabledButton.setContentAreaFilled(false);
+        panel.add(moduleEnabledButton, c);
 
         BooleanP expandedBasic = (BooleanP) module.getParameter(GUISeparator.EXPANDED_BASIC);
         JLabel leftArrowLabel = new JLabel();
@@ -264,8 +264,8 @@ public class ComponentFactory {
             leftArrowLabel.setIcon(rightArrow);
         }
         // }
-        c.insets = new Insets(0, 5, 0, 0);
-        // c.gridx++;
+        c.insets = new Insets(0, 0, 0, 5);
+        c.gridx++;
         panel.add(leftArrowLabel, c);
 
         JSeparator separatorLeft = new JSeparator();
