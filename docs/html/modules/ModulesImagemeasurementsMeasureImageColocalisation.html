@@ -22,9 +22,9 @@ layout: default
     <a href="../modulelist.html">Back to module list</a>
 <h1>Measure image colocalisation</h1>
 <h2>Description</h2>
-Calculates PCC, averaged across all timepoints and channels.
+Calculates colocalisation of two input images.  All measurements are associated with the first input image.  Measurements can be restricted to specific region using image or object-based masking.  To measure colocalisation on an object-by-object basis please use the "Measure object colocalisation" module.<br><br>All calculations are performed using the <a href="https://imagej.net/plugins/coloc-2">Coloc2 plugin</a>.
 <h2>Parameters</h2>
-<ul><li><b>Input image 1</b> (default = "") </li><br><li><b>Input image 2</b> (default = "") </li><br><li><b>Masking mode</b> (default = "None") </li><br><li><b>Input objects</b> (default = "") </li><br></ul>
+<ul><li><b>Input image 1</b> (default = "") </li><br><li><b>Input image 2</b> (default = "") </li><br><li><b>Masking mode</b> (default = "None") </li><br><li><b>Mask image</b> (default = "") </li><br><li><b>Image mask logic</b> (default = "Measure on white (255 intensity)") </li><br><li><b>Input objects</b> (default = "") </li><br><li><b>Object mask logic</b> (default = "Measure inside objects") </li><br><li><b>Thresholding mode</b> (default = "Bisection (correlation)") </li><br><li><b>Threshold (C1)</b> (default = "1.0") </li><br><li><b>Threshold (C2)</b> (default = "1.0") </li><br><li><b>PCC implementation</b> (default = "Fast") </li><br><li><b>Measure Kendall's Rank Correlation</b> (default = "true") </li><br><li><b>Measure Li's ICQ</b> (default = "true") </li><br><li><b>Measure Manders' Correlation</b> (default = "true") </li><br><li><b>Measure PCC</b> (default = "true") </li><br><li><b>Measure Spearman's Rank Correlation</b> (default = "true") </li><br></ul>
 
 </div>
 </body>

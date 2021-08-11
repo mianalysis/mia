@@ -247,7 +247,7 @@ public class CreateDistanceMap extends Module {
             applyNormalisation(distanceMap, inputObjects);
 
         // Applying spatial calibration (as long as we're not normalising the map)
-        if (!maskingMode.equals(MaskingModes.INSIDE_ONLY) && !normaliseMap
+        if (!(maskingMode.equals(MaskingModes.INSIDE_ONLY) && normaliseMap)
                 && spatialUnits.equals(SpatialUnitsModes.CALIBRATED)) {
             double dppXY = inputObjects.getDppXY();
             DistanceMap.applyCalibratedUnits(distanceMap, dppXY);
@@ -304,8 +304,8 @@ public class CreateDistanceMap extends Module {
 
         // If we're not using the inside-only masking with normalisation, allow the
         // units to be specified.
-        if (!parameters.getValue(MASKING_MODE).equals(MaskingModes.INSIDE_ONLY)
-                && !(boolean) parameters.getValue(NORMALISE_MAP_PER_OBJECT)) {
+        if (!(((String) parameters.getValue(MASKING_MODE)).equals(MaskingModes.INSIDE_ONLY)
+                && (boolean) parameters.getValue(NORMALISE_MAP_PER_OBJECT))) {
             returnedParameters.add(parameters.getParameter(SPATIAL_UNITS_MODE));
         }
 

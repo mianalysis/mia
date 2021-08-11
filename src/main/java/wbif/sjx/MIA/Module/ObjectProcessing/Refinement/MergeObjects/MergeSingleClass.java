@@ -2,17 +2,17 @@ package wbif.sjx.MIA.Module.ObjectProcessing.Refinement.MergeObjects;
 
 import java.util.HashMap;
 
+import wbif.sjx.MIA.Module.Categories;
+import wbif.sjx.MIA.Module.Category;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
-import wbif.sjx.MIA.Module.Category;
-import wbif.sjx.MIA.Module.Categories;
 import wbif.sjx.MIA.Object.Obj;
 import wbif.sjx.MIA.Object.ObjCollection;
 import wbif.sjx.MIA.Object.Status;
 import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.MIA.Object.Parameters.InputObjectsP;
-import wbif.sjx.MIA.Object.Parameters.SeparatorP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
+import wbif.sjx.MIA.Object.Parameters.SeparatorP;
 import wbif.sjx.MIA.Object.Parameters.Objects.OutputObjectsP;
 import wbif.sjx.MIA.Object.References.Collections.ImageMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.MetadataRefCollection;
@@ -52,7 +52,7 @@ public class MergeSingleClass extends Module {
             int t = inputObject.getT();
 
             // If it doesn't already exist, creating a new object for this timepoint.  The ID of this object is the timepoint index (numbering starting at 1).
-            objects.putIfAbsent((t+1), outputObjects.createAndAddNewObject(inputObject.getVolumeType()).setT(t));
+            objects.putIfAbsent(t, outputObjects.createAndAddNewObject(inputObject.getVolumeType()).setT(t));
 
             // Adding coordinates to this object
             Obj outputObject = objects.get(t);
