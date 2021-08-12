@@ -40,7 +40,7 @@ public class MeasureObjectColocalisation<T extends RealType<T> & NativeType<T>> 
     public static final String THRESHOLDING_MODE = "Thresholding mode";
     public static final String FIXED_THRESHOLD_1 = "Threshold (C1)";
     public static final String FIXED_THRESHOLD_2 = "Threshold (C2)";
-    
+
     public static final String MEASUREMENT_SEPARATOR = "Measurement controls";
     public static final String PCC_IMPLEMENTATION = "PCC implementation";
     public static final String MEASURE_KENDALLS_RANK = "Measure Kendall's Rank Correlation";
@@ -76,14 +76,14 @@ public class MeasureObjectColocalisation<T extends RealType<T> & NativeType<T>> 
 
     @Override
     public Category getCategory() {
-        return Categories.IMAGE_MEASUREMENTS;
+        return Categories.OBJECT_MEASUREMENTS_INTENSITY;
     }
 
     @Override
     public String getDescription() {
         return "Calculates colocalisation of two input images individually for each object.  Measurements for each object only consider pixels within that object.  All measurements are associated with the relevant object."
-        
-        +"<br><br>All calculations are performed using the <a href=\"https://imagej.net/plugins/coloc-2\">Coloc2 plugin</a>.";
+
+                + "<br><br>All calculations are performed using the <a href=\"https://imagej.net/plugins/coloc-2\">Coloc2 plugin</a>.";
     }
 
     @Override
@@ -112,9 +112,10 @@ public class MeasureObjectColocalisation<T extends RealType<T> & NativeType<T>> 
         // null is returned
 
         for (Obj inputObject : objects.values()) {
-            Image maskImage = inputObject.getAsImage("Mask", false);
-            // Image maskImage = MeasureImageColocalisation.getObjectMask(objects,
-            // MeasureImageColocalisation.ObjectMaskLogic.MEASURE_INSIDE_OBJECTS);
+            Image maskImage = null;
+
+            if (inputObject.size() > 0)
+                maskImage = inputObject.getAsImage("Mask", false);
 
             // Creating data container against which all algorithms will be run
             DataContainer<T> data = MeasureImageColocalisation.prepareDataContainer(image1, image2, maskImage);
@@ -179,7 +180,7 @@ public class MeasureObjectColocalisation<T extends RealType<T> & NativeType<T>> 
         parameters.add(new DoubleP(FIXED_THRESHOLD_2, this, 1.0));
 
         parameters.add(new SeparatorP(MEASUREMENT_SEPARATOR, this));
-        parameters.add(new ChoiceP(PCC_IMPLEMENTATION, this, PCCImplementations.FAST, PCCImplementations.ALL));                
+        parameters.add(new ChoiceP(PCC_IMPLEMENTATION, this, PCCImplementations.FAST, PCCImplementations.ALL));
         parameters.add(new BooleanP(MEASURE_KENDALLS_RANK, this, true));
         parameters.add(new BooleanP(MEASURE_LI_ICQ, this, true));
         parameters.add(new BooleanP(MEASURE_MANDERS, this, true));
@@ -365,22 +366,30 @@ public class MeasureObjectColocalisation<T extends RealType<T> & NativeType<T>> 
 
         parameters.get(INPUT_IMAGE_2).setDescription("Second image for which colocalisation will be calculated.");
 
-        parameters.get(INPUT_OBJECTS).setDescription("Objects for which colocalisation will be measured.  For each object, colocalisation will be independently measured for the pixels coincident with the object's coordinates.  Measurements will be associated with the corresponding object.");
+        parameters.get(INPUT_OBJECTS).setDescription(
+                "Objects for which colocalisation will be measured.  For each object, colocalisation will be independently measured for the pixels coincident with the object's coordinates.  Measurements will be associated with the corresponding object.");
 
         parameters.get(THRESHOLDING_MODE)
                 .setDescription("Controls how the thresholds for measurements such as Manders' are set:<br><ul>"
 
-                        + "<li>\"" + ThresholdingModes.BISECTION + "\" A faster method to calculate thresholds than the Costes approach.</li>"
+                        + "<li>\"" + ThresholdingModes.BISECTION
+                        + "\" A faster method to calculate thresholds than the Costes approach.</li>"
 
-                        + "<li>\"" + ThresholdingModes.COSTES + "\" The \"standard\" method to calculate thresholds for Manders' colocalisation measures.  This approach sets the thresholds for the two input images such that the pixels with intensities lower than their respective thresholds don't have any statistical correlation (i.e. have PCC values less than or equal to 0).  This is based on Costes' 2004 paper (Costes et al., <i>Biophys. J.</i> <b>86</b> (2004) 3993–4003.</li>"
+                        + "<li>\"" + ThresholdingModes.COSTES
+                        + "\" The \"standard\" method to calculate thresholds for Manders' colocalisation measures.  This approach sets the thresholds for the two input images such that the pixels with intensities lower than their respective thresholds don't have any statistical correlation (i.e. have PCC values less than or equal to 0).  This is based on Costes' 2004 paper (Costes et al., <i>Biophys. J.</i> <b>86</b> (2004) 3993–4003.</li>"
 
-                        + "<li>\"" + ThresholdingModes.MANUAL + "\" Threshold values are manually set from user-defined values (\""+FIXED_THRESHOLD_1+"\" and \""+FIXED_THRESHOLD_2+"\" parameters).</li>"
+                        + "<li>\"" + ThresholdingModes.MANUAL
+                        + "\" Threshold values are manually set from user-defined values (\"" + FIXED_THRESHOLD_1
+                        + "\" and \"" + FIXED_THRESHOLD_2 + "\" parameters).</li>"
 
-                        + "<li>\"" + ThresholdingModes.NONE + "\" No threshold is set.  In this instance, Manders' metrics will only be calculated above zero intensity rather than both above zero and above the thresholds.  Similarly, Pearson's correlation coefficients will only be calculated for the entire region (after masking) rather than also for above and below the thresholds.</li></ul>");
+                        + "<li>\"" + ThresholdingModes.NONE
+                        + "\" No threshold is set.  In this instance, Manders' metrics will only be calculated above zero intensity rather than both above zero and above the thresholds.  Similarly, Pearson's correlation coefficients will only be calculated for the entire region (after masking) rather than also for above and below the thresholds.</li></ul>");
 
-        parameters.get(FIXED_THRESHOLD_1).setDescription("If \""+THRESHOLDING_MODE+"\" is set to \""+ThresholdingModes.MANUAL+"\", this is the threshold that will be applied to the first image.");
+        parameters.get(FIXED_THRESHOLD_1).setDescription("If \"" + THRESHOLDING_MODE + "\" is set to \""
+                + ThresholdingModes.MANUAL + "\", this is the threshold that will be applied to the first image.");
 
-        parameters.get(FIXED_THRESHOLD_2).setDescription("If \""+THRESHOLDING_MODE+"\" is set to \""+ThresholdingModes.MANUAL+"\", this is the threshold that will be applied to the second image.");
+        parameters.get(FIXED_THRESHOLD_2).setDescription("If \"" + THRESHOLDING_MODE + "\" is set to \""
+                + ThresholdingModes.MANUAL + "\", this is the threshold that will be applied to the second image.");
 
         parameters.get(PCC_IMPLEMENTATION).setDescription("");
 
