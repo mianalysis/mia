@@ -186,6 +186,8 @@ public class MeasureObjectColocalisation<T extends RealType<T> & NativeType<T>> 
         parameters.add(new BooleanP(MEASURE_PCC, this, true));
         parameters.add(new BooleanP(MEASURE_SPEARMANS_RANK, this, true));
 
+        addParameterDescriptions();
+
     }
 
     @Override
@@ -356,5 +358,41 @@ public class MeasureObjectColocalisation<T extends RealType<T> & NativeType<T>> 
     @Override
     public boolean verify() {
         return true;
+    }
+
+    void addParameterDescriptions() {
+        parameters.get(INPUT_IMAGE_1).setDescription("First image for which colocalisation will be calculated.");
+
+        parameters.get(INPUT_IMAGE_2).setDescription("Second image for which colocalisation will be calculated.");
+
+        parameters.get(INPUT_OBJECTS).setDescription("Objects for which colocalisation will be measured.  For each object, colocalisation will be independently measured for the pixels coincident with the object's coordinates.  Measurements will be associated with the corresponding object.");
+
+        parameters.get(THRESHOLDING_MODE)
+                .setDescription("Controls how the thresholds for measurements such as Manders' are set:<br><ul>"
+
+                        + "<li>\"" + ThresholdingModes.BISECTION + "\" A faster method to calculate thresholds than the Costes approach.</li>"
+
+                        + "<li>\"" + ThresholdingModes.COSTES + "\" The \"standard\" method to calculate thresholds for Manders' colocalisation measures.  This approach sets the thresholds for the two input images such that the pixels with intensities lower than their respective thresholds don't have any statistical correlation (i.e. have PCC values less than or equal to 0).  This is based on Costes' 2004 paper (Costes et al., <i>Biophys. J.</i> <b>86</b> (2004) 3993–4003.</li>"
+
+                        + "<li>\"" + ThresholdingModes.MANUAL + "\" Threshold values are manually set from user-defined values (\""+FIXED_THRESHOLD_1+"\" and \""+FIXED_THRESHOLD_2+"\" parameters).</li>"
+
+                        + "<li>\"" + ThresholdingModes.NONE + "\" No threshold is set.  In this instance, Manders' metrics will only be calculated above zero intensity rather than both above zero and above the thresholds.  Similarly, Pearson's correlation coefficients will only be calculated for the entire region (after masking) rather than also for above and below the thresholds.</li></ul>");
+
+        parameters.get(FIXED_THRESHOLD_1).setDescription("If \""+THRESHOLDING_MODE+"\" is set to \""+ThresholdingModes.MANUAL+"\", this is the threshold that will be applied to the first image.");
+
+        parameters.get(FIXED_THRESHOLD_2).setDescription("If \""+THRESHOLDING_MODE+"\" is set to \""+ThresholdingModes.MANUAL+"\", this is the threshold that will be applied to the second image.");
+
+        parameters.get(PCC_IMPLEMENTATION).setDescription("");
+
+        parameters.get(MEASURE_KENDALLS_RANK).setDescription("");
+
+        parameters.get(MEASURE_LI_ICQ).setDescription("");
+
+        parameters.get(MEASURE_MANDERS).setDescription("");
+
+        parameters.get(MEASURE_PCC).setDescription("");
+
+        parameters.get(MEASURE_SPEARMANS_RANK).setDescription("");
+
     }
 }

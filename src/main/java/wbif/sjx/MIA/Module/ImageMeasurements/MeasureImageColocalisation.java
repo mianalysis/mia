@@ -64,7 +64,7 @@ public class MeasureImageColocalisation<T extends RealType<T> & NativeType<T>> e
     public static final String THRESHOLDING_MODE = "Thresholding mode";
     public static final String FIXED_THRESHOLD_1 = "Threshold (C1)";
     public static final String FIXED_THRESHOLD_2 = "Threshold (C2)";
-    
+
     public static final String MEASUREMENT_SEPARATOR = "Measurement controls";
     public static final String PCC_IMPLEMENTATION = "PCC implementation";
     public static final String MEASURE_KENDALLS_RANK = "Measure Kendall's Rank Correlation";
@@ -72,7 +72,6 @@ public class MeasureImageColocalisation<T extends RealType<T> & NativeType<T>> e
     public static final String MEASURE_MANDERS = "Measure Manders' Correlation";
     public static final String MEASURE_PCC = "Measure PCC";
     public static final String MEASURE_SPEARMANS_RANK = "Measure Spearman's Rank Correlation";
-
 
     public MeasureImageColocalisation(ModuleCollection modules) {
         super("Measure image colocalisation", modules);
@@ -247,26 +246,27 @@ public class MeasureImageColocalisation<T extends RealType<T> & NativeType<T>> e
         data.setAutoThreshold(manualThreshold);
     }
 
-    public static <T extends RealType<T> & NativeType<T>> HashMap<String, Double> measureKendalls(DataContainer<T> data) {
+    public static <T extends RealType<T> & NativeType<T>> HashMap<String, Double> measureKendalls(
+            DataContainer<T> data) {
         // Based on code from
         // https://github.com/fiji/Colocalisation_Analysis/blob/master/src/main/java/sc/fiji/coloc/algorithms/KendallTauRankCorrelation.java
         // (Accessed 2021-08-11)
         HashMap<String, Double> measurements = new HashMap<>();
 
         RandomAccessible<T> img1 = data.getSourceImage1();
-		RandomAccessible<T> img2 = data.getSourceImage2();
-		RandomAccessibleInterval<BitType> mask = data.getMask();
+        RandomAccessible<T> img2 = data.getSourceImage2();
+        RandomAccessibleInterval<BitType> mask = data.getMask();
 
-		TwinCursor<T> cursor = new TwinCursor<T>(img1.randomAccess(),
-				img2.randomAccess(), Views.iterable(mask).localizingCursor());
+        TwinCursor<T> cursor = new TwinCursor<T>(img1.randomAccess(), img2.randomAccess(),
+                Views.iterable(mask).localizingCursor());
 
-		double tau = KendallTauRankCorrelation.calculateMergeSort(cursor);
+        double tau = KendallTauRankCorrelation.calculateMergeSort(cursor);
         measurements.put(Measurements.KENDALLS_TAU, tau);
 
         return measurements;
 
     }
-    
+
     public static <T extends RealType<T> & NativeType<T>> HashMap<String, Double> measureLiICQ(DataContainer<T> data) {
         // Based on code from
         // https://github.com/fiji/Colocalisation_Analysis/blob/master/src/main/java/sc/fiji/coloc/algorithms/LiICQ.java
@@ -405,9 +405,10 @@ public class MeasureImageColocalisation<T extends RealType<T> & NativeType<T>> e
 
     @Override
     public String getDescription() {
-        return "Calculates colocalisation of two input images.  All measurements are associated with the first input image.  Measurements can be restricted to specific region using image or object-based masking.  To measure colocalisation on an object-by-object basis please use the \""+new MeasureObjectColocalisation<>(null).getName()+"\" module.<br><br>"
-        
-        +"All calculations are performed using the <a href=\"https://imagej.net/plugins/coloc-2\">Coloc2 plugin</a>.";
+        return "Calculates colocalisation of two input images.  All measurements are associated with the first input image.  Measurements can be restricted to specific region using image or object-based masking.  To measure colocalisation on an object-by-object basis please use the \""
+                + new MeasureObjectColocalisation<>(null).getName() + "\" module.<br><br>"
+
+                + "All calculations are performed using the <a href=\"https://imagej.net/plugins/coloc-2\">Coloc2 plugin</a>.";
     }
 
     @Override
@@ -429,7 +430,7 @@ public class MeasureImageColocalisation<T extends RealType<T> & NativeType<T>> e
         String objectMaskLogic = parameters.getValue(OBJECT_MASK_LOGIC);
         String thresholdingMode = parameters.getValue(THRESHOLDING_MODE);
         double fixedThreshold1 = parameters.getValue(FIXED_THRESHOLD_1);
-        double fixedThreshold2 = parameters.getValue(FIXED_THRESHOLD_2);        
+        double fixedThreshold2 = parameters.getValue(FIXED_THRESHOLD_2);
         String pccImplementationName = parameters.getValue(PCC_IMPLEMENTATION);
         boolean measureKendalls = parameters.getValue(MEASURE_KENDALLS_RANK);
         boolean measureLiICQ = parameters.getValue(MEASURE_LI_ICQ);
@@ -521,12 +522,14 @@ public class MeasureImageColocalisation<T extends RealType<T> & NativeType<T>> e
         parameters.add(new DoubleP(FIXED_THRESHOLD_2, this, 1.0));
 
         parameters.add(new SeparatorP(MEASUREMENT_SEPARATOR, this));
-        parameters.add(new ChoiceP(PCC_IMPLEMENTATION, this, PCCImplementations.FAST, PCCImplementations.ALL));                
+        parameters.add(new ChoiceP(PCC_IMPLEMENTATION, this, PCCImplementations.FAST, PCCImplementations.ALL));
         parameters.add(new BooleanP(MEASURE_KENDALLS_RANK, this, true));
         parameters.add(new BooleanP(MEASURE_LI_ICQ, this, true));
         parameters.add(new BooleanP(MEASURE_MANDERS, this, true));
         parameters.add(new BooleanP(MEASURE_PCC, this, true));
         parameters.add(new BooleanP(MEASURE_SPEARMANS_RANK, this, true));
+
+        addParameterDescriptions();
 
     }
 
@@ -710,6 +713,72 @@ public class MeasureImageColocalisation<T extends RealType<T> & NativeType<T>> e
     @Override
     public boolean verify() {
         return true;
+    }
+
+    void addParameterDescriptions() {
+        parameters.get(INPUT_IMAGE_1).setDescription("First image for which colocalisation will be calculated.  Measurements will be associated with this image.");
+
+        parameters.get(INPUT_IMAGE_2).setDescription("Second image for which colocalisation will be calculated.");
+
+        parameters.get(MASKING_MODE)
+                .setDescription("Controls which regions of the image will be evaluated for colocalisation:<br><ul>"
+
+                        + "<li>\"" + MaskingModes.MASK_IMAGE + "\" A binary image (specified using \"" + MASK_IMAGE
+                        + "\") determines which pixels are evaluated for colocalisation.  The \"" + IMAGE_MASK_LOGIC
+                        + "\" parameter controls whether the pixels to be evaluated are black (0 intensity) or white (255 intensity).</li>"
+
+                        + "<li>\"" + MaskingModes.MASK_OBJECTS + "\" An object collection (specified using \""
+                        + INPUT_OBJECTS + "\") determines which pixels are evaluated for colocalisation.  The \""
+                        + OBJECT_MASK_LOGIC
+                        + "\" parameter controls whether the pixels to be evaluated are inside or outside the objects.</li>"
+
+                        + "<li>\"" + MaskingModes.NONE
+                        + "\" No mask will be applied.  All pixels in the image will be evaluated for colocalisation.</li></ul>");
+
+        parameters.get(MASK_IMAGE).setDescription("If \"" + MASKING_MODE + "\" is set to \"" + MaskingModes.MASK_IMAGE
+                + "\", this is the binary image which will control the pixels to be evaluated for colocalisation.  The \""
+                + IMAGE_MASK_LOGIC
+                + "\" parameter controls whether the pixels to be evaluated are black (0 intensity) or white (255 intensity).");
+
+        parameters.get(IMAGE_MASK_LOGIC).setDescription(
+                "Controls whether colocalisation is measured for pixels coincident with black (0 intensity) or white (255 intensity) pixels in the mask image.");
+
+        parameters.get(INPUT_OBJECTS).setDescription("If \"" + MASKING_MODE + "\" is set to \""
+                + MaskingModes.MASK_OBJECTS
+                + "\", this is the object collection which will control the pixels to be evaluated for colocalisation.  The \""
+                + OBJECT_MASK_LOGIC
+                + "\" parameter controls whether the pixels to be evaluated are inside or outside the objects.");
+
+        parameters.get(OBJECT_MASK_LOGIC).setDescription(
+                "Controls whether colocalisation is measured for pixels inside or outside objects in the masking object collection.");
+
+        parameters.get(THRESHOLDING_MODE)
+                .setDescription("Controls how the thresholds for measurements such as Manders' are set:<br><ul>"
+
+                        + "<li>\"" + ThresholdingModes.BISECTION + "\" A faster method to calculate thresholds than the Costes approach.</li>"
+
+                        + "<li>\"" + ThresholdingModes.COSTES + "\" The \"standard\" method to calculate thresholds for Manders' colocalisation measures.  This approach sets the thresholds for the two input images such that the pixels with intensities lower than their respective thresholds don't have any statistical correlation (i.e. have PCC values less than or equal to 0).  This is based on Costes' 2004 paper (Costes et al., <i>Biophys. J.</i> <b>86</b> (2004) 3993–4003.</li>"
+
+                        + "<li>\"" + ThresholdingModes.MANUAL + "\" Threshold values are manually set from user-defined values (\""+FIXED_THRESHOLD_1+"\" and \""+FIXED_THRESHOLD_2+"\" parameters).</li>"
+
+                        + "<li>\"" + ThresholdingModes.NONE + "\" No threshold is set.  In this instance, Manders' metrics will only be calculated above zero intensity rather than both above zero and above the thresholds.  Similarly, Pearson's correlation coefficients will only be calculated for the entire region (after masking) rather than also for above and below the thresholds.</li></ul>");
+
+        parameters.get(FIXED_THRESHOLD_1).setDescription("If \""+THRESHOLDING_MODE+"\" is set to \""+ThresholdingModes.MANUAL+"\", this is the threshold that will be applied to the first image.");
+
+        parameters.get(FIXED_THRESHOLD_2).setDescription("If \""+THRESHOLDING_MODE+"\" is set to \""+ThresholdingModes.MANUAL+"\", this is the threshold that will be applied to the second image.");
+
+        parameters.get(PCC_IMPLEMENTATION).setDescription("");
+
+        parameters.get(MEASURE_KENDALLS_RANK).setDescription("");
+
+        parameters.get(MEASURE_LI_ICQ).setDescription("");
+
+        parameters.get(MEASURE_MANDERS).setDescription("");
+
+        parameters.get(MEASURE_PCC).setDescription("");
+
+        parameters.get(MEASURE_SPEARMANS_RANK).setDescription("");
+
     }
 }
 
