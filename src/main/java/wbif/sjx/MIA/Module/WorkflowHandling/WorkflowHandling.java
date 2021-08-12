@@ -479,7 +479,7 @@ public class WorkflowHandling extends Module {
                         + "\" parameter.  Any modules between the present module and the target module will not be evaluated.</li>"
 
                         + "<li>\"" + ContinuationModes.TERMINATE
-                        + "\"The analysis will stop evaluating any further modules.</li></ul>");
+                        + "\" The analysis will stop evaluating any further modules.</li></ul>");
 
         parameters.get(REDIRECT_MODULE).setDescription(
                 "If the condition is met, the workflow will redirect to this module.  In doing so, it will skip evaluation of any modules between the present module and this module.");
