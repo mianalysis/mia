@@ -1,10 +1,11 @@
 package wbif.sjx.MIA.Process;
 
-import wbif.sjx.MIA.Object.Obj;
-import wbif.sjx.MIA.Object.ObjCollection;
-
 import java.text.DecimalFormat;
 import java.util.HashMap;
+
+import wbif.sjx.MIA.Object.Measurement;
+import wbif.sjx.MIA.Object.Obj;
+import wbif.sjx.MIA.Object.ObjCollection;
 
 public class LabelFactory {
     public interface LabelModes {
@@ -15,7 +16,8 @@ public class LabelFactory {
         String PARENT_MEASUREMENT_VALUE = "Parent measurement value";
         String PARTNER_COUNT = "Partner count";
 
-        String[] ALL = new String[]{CHILD_COUNT,ID,MEASUREMENT_VALUE,PARENT_ID,PARENT_MEASUREMENT_VALUE,PARTNER_COUNT};
+        String[] ALL = new String[] { CHILD_COUNT, ID, MEASUREMENT_VALUE, PARENT_ID, PARENT_MEASUREMENT_VALUE,
+                PARTNER_COUNT };
 
     }
 
@@ -34,8 +36,9 @@ public class LabelFactory {
                 df = new DecimalFormat(zeros.toString());
             } else {
                 StringBuilder zeros = new StringBuilder("0");
-                if (nDecimalPlaces != 0) zeros.append(".");
-                for (int i = 0;i <nDecimalPlaces; i++) {
+                if (nDecimalPlaces != 0)
+                    zeros.append(".");
+                for (int i = 0; i < nDecimalPlaces; i++) {
                     zeros.append("0");
                 }
                 df = new DecimalFormat(zeros.toString());
@@ -46,11 +49,13 @@ public class LabelFactory {
 
     }
 
-    public static HashMap<Integer,String> getChildCountLabels(ObjCollection objects, String childObjectsName, DecimalFormat df) {
-        HashMap<Integer,String> IDs = new HashMap<>();
-        if (objects == null) return IDs;
+    public static HashMap<Integer, String> getChildCountLabels(ObjCollection objects, String childObjectsName,
+            DecimalFormat df) {
+        HashMap<Integer, String> IDs = new HashMap<>();
+        if (objects == null)
+            return IDs;
 
-        for (Obj object:objects.values()) {
+        for (Obj object : objects.values()) {
             if (object.getChildren(childObjectsName) == null) {
                 IDs.put(object.getID(), "NA");
             } else {
@@ -62,21 +67,25 @@ public class LabelFactory {
 
     }
 
-    public static HashMap<Integer,String> getIDLabels(ObjCollection objects, DecimalFormat df) {
-        HashMap<Integer,String> IDs = new HashMap<>();
-        if (objects == null) return IDs;
+    public static HashMap<Integer, String> getIDLabels(ObjCollection objects, DecimalFormat df) {
+        HashMap<Integer, String> IDs = new HashMap<>();
+        if (objects == null)
+            return IDs;
 
-        for (Obj object:objects.values()) IDs.put(object.getID(),df.format(object.getID()));
+        for (Obj object : objects.values())
+            IDs.put(object.getID(), df.format(object.getID()));
 
         return IDs;
 
     }
 
-    public static HashMap<Integer,String> getParentIDLabels(ObjCollection objects, String parentObjectsName, DecimalFormat df) {
-        HashMap<Integer,String> IDs = new HashMap<>();
-        if (objects == null) return IDs;
+    public static HashMap<Integer, String> getParentIDLabels(ObjCollection objects, String parentObjectsName,
+            DecimalFormat df) {
+        HashMap<Integer, String> IDs = new HashMap<>();
+        if (objects == null)
+            return IDs;
 
-        for (Obj object:objects.values()) {
+        for (Obj object : objects.values()) {
             if (object.getParent(parentObjectsName) == null) {
                 IDs.put(object.getID(), "NA");
             } else {
@@ -88,16 +97,18 @@ public class LabelFactory {
 
     }
 
-    public static HashMap<Integer,String> getMeasurementLabels(ObjCollection objects, String measurementName, DecimalFormat df) {
-        HashMap<Integer,String> IDs = new HashMap<>();
-        if (objects == null) return IDs;
+    public static HashMap<Integer, String> getMeasurementLabels(ObjCollection objects, String measurementName,
+            DecimalFormat df) {
+        HashMap<Integer, String> IDs = new HashMap<>();
+        if (objects == null)
+            return IDs;
 
-        for (Obj object:objects.values()) {
-            if (Double.isNaN(object.getMeasurement(measurementName).getValue())) {
+        for (Obj object : objects.values()) {
+            Measurement measurement = object.getMeasurement(measurementName);
+            if (measurement == null || Double.isNaN(measurement.getValue()))
                 IDs.put(object.getID(), "NA");
-            } else {
+            else
                 IDs.put(object.getID(), df.format(object.getMeasurement(measurementName).getValue()));
-            }
         }
 
         return IDs;
@@ -125,12 +136,14 @@ public class LabelFactory {
         return IDs;
 
     }
-    
-    public static HashMap<Integer,String> getPartnerCountLabels(ObjCollection objects, String partnerObjectsName, DecimalFormat df) {
-        HashMap<Integer,String> IDs = new HashMap<>();
-        if (objects == null) return IDs;
 
-        for (Obj object:objects.values()) {
+    public static HashMap<Integer, String> getPartnerCountLabels(ObjCollection objects, String partnerObjectsName,
+            DecimalFormat df) {
+        HashMap<Integer, String> IDs = new HashMap<>();
+        if (objects == null)
+            return IDs;
+
+        for (Obj object : objects.values()) {
             if (object.getPartners(partnerObjectsName) == null) {
                 IDs.put(object.getID(), "NA");
             } else {

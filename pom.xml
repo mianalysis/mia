@@ -4,7 +4,7 @@
     <parent>
         <groupId>org.scijava</groupId>
         <artifactId>pom-scijava</artifactId>
-        <version>29.2.1</version>
+        <version>30.0.0</version>
         <relativePath />
     </parent>
 
@@ -183,13 +183,13 @@
         <dependency>
             <groupId>org.apache.poi</groupId>
             <artifactId>poi</artifactId>
-            <version>3.17</version>
+            <version>5.0.0</version>
         </dependency>
 
         <dependency>
             <groupId>org.apache.poi</groupId>
             <artifactId>poi-ooxml</artifactId>
-            <version>3.17</version>
+            <version>5.0.0</version>
         </dependency>
 
         <dependency>
@@ -317,12 +317,12 @@
         </dependency>
 
         <dependency>
-            <groupId>com.github.SJCross</groupId>
+            <!-- <groupId>com.github.SJCross</groupId>
+            <artifactId>Common</artifactId> -->
+            <!-- <version>v1.7.3</version> -->
+            <groupId>wbif.sjx</groupId>
             <artifactId>Common</artifactId>
-            <version>v1.7.3</version>
-            <!-- <groupId>wbif.sjx</groupId>
-            <artifactId>Common</artifactId>
-            <version>1.7.3</version> -->
+            <version>1.8.0</version>
         </dependency>
     </dependencies>
 
