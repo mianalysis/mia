@@ -25,6 +25,7 @@ import wbif.sjx.MIA.Module.Categories;
 import wbif.sjx.MIA.Module.Category;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
+import wbif.sjx.MIA.Module.ImageProcessing.Pixel.ProjectImage;
 import wbif.sjx.MIA.Module.ObjectProcessing.Relationships.TrackObjects.Measurements;
 import wbif.sjx.MIA.Object.Colours;
 import wbif.sjx.MIA.Object.Image;
@@ -33,6 +34,7 @@ import wbif.sjx.MIA.Object.Obj;
 import wbif.sjx.MIA.Object.ObjCollection;
 import wbif.sjx.MIA.Object.Status;
 import wbif.sjx.MIA.Object.Workspace;
+import wbif.sjx.MIA.Object.Parameters.BooleanP;
 import wbif.sjx.MIA.Object.Parameters.ChildObjectsP;
 import wbif.sjx.MIA.Object.Parameters.InputImageP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
@@ -56,6 +58,7 @@ public class TrackEditor extends Module {
 
     public static final String DISPLAY_SEPARATOR = "Display controls";
     public static final String DISPLAY_IMAGE = "Display image";
+    public static final String SHOW_PROJECTED = "Show projected (3D only)";
     public static final String MEASUREMENT_WARNING = "Measurement warning";
 
     public TrackEditor(ModuleCollection modules) {
@@ -146,7 +149,7 @@ public class TrackEditor extends Module {
         }
     }
 
-    public static void displayTrackScheme(Model model, Image image) {
+    public static void displayTrackScheme(Model model, Image image, boolean showProjected) {
         // Colouring tracks by index
         TrackIndexAnalyzer indexAnalyzer = new TrackIndexAnalyzer();
         indexAnalyzer.process(model.getTrackModel().trackIDs(true), model);
@@ -161,9 +164,24 @@ public class TrackEditor extends Module {
         inputIpl.getCalibration().pixelHeight = 1;
         inputIpl.getCalibration().pixelDepth = 1;
 
-        HyperStackDisplayer displayer = new HyperStackDisplayer(model, selectionModel);
-        displayer.setDisplaySettings(TrackMateModelView.KEY_TRACK_COLORING, colGen);
-        displayer.render();
+        HyperStackDisplayer stackDisplayer = new HyperStackDisplayer(model, selectionModel, inputIpl);
+        stackDisplayer.setDisplaySettings(TrackMateModelView.KEY_TRACK_COLORING, colGen);
+        stackDisplayer.render();
+
+        ImagePlus projectedIpl = null;
+        HyperStackDisplayer projectedDisplayer = null;
+        if (showProjected && inputIpl.getNSlices() > 1) {
+            projectedIpl = ProjectImage.projectImageInZ(image, "Projected", ProjectImage.ProjectionModes.MAX)
+                    .getImagePlus();
+            projectedIpl.getCalibration().pixelWidth = 1;
+            projectedIpl.getCalibration().pixelHeight = 1;
+            projectedIpl.getCalibration().pixelDepth = 1;
+
+            projectedDisplayer = new HyperStackDisplayer(model, selectionModel, projectedIpl);
+            projectedDisplayer.setDisplaySettings(TrackMateModelView.KEY_TRACK_COLORING, colGen);
+            projectedDisplayer.setDisplaySettings(TrackMateModelView.KEY_LIMIT_DRAWING_DEPTH, false);
+            projectedDisplayer.render();
+        }
 
         TrackScheme trackScheme = new TrackScheme(model, selectionModel);
         trackScheme.setDisplaySettings(TrackScheme.KEY_TRACK_COLORING, colGen);
@@ -176,9 +194,16 @@ public class TrackEditor extends Module {
                 e.printStackTrace();
             }
 
-        // Closing the image
+        // Closing the images
         if (inputIpl.isVisible())
             inputIpl.close();
+
+        if (projectedIpl != null && projectedIpl.isVisible())
+            projectedIpl.close();
+
+        stackDisplayer.clear();
+        if (projectedDisplayer != null)
+            projectedDisplayer.clear();
 
     }
 
@@ -195,12 +220,13 @@ public class TrackEditor extends Module {
         // Getting input image
         String inputImageName = parameters.getValue(DISPLAY_IMAGE);
         Image inputImage = workspace.getImage(inputImageName);
+        boolean showProjected = parameters.getValue(SHOW_PROJECTED);
 
         // Converting MIA objects and tracks into TrackMate Model format
         Model model = initialiseModel(trackObjects, inputSpotObjectsName);
 
         // Displaying the TrackScheme tool
-        displayTrackScheme(model, inputImage);
+        displayTrackScheme(model, inputImage, showProjected);
 
         // Removing deleted spots
         removeDeletedSpots(spotObjects, model);
@@ -257,10 +283,13 @@ public class TrackEditor extends Module {
         parameters.add(new SeparatorP(INPUT_SEPARATOR, this));
         parameters.add(new InputTrackObjectsP(INPUT_TRACK_OBJECTS, this));
         parameters.add(new ChildObjectsP(INPUT_SPOT_OBJECTS, this));
-        parameters.add(new InputImageP(DISPLAY_IMAGE, this));
 
-        parameters.add(new SeparatorP(DISPLAY_SEPARATOR,this));
-        parameters.add(new MessageP(MEASUREMENT_WARNING,this,"Previously-acquired measurements for spot and track objects may become invalid.  Please reacquire using the relevant measurement modules.", Colours.ORANGE));
+        parameters.add(new SeparatorP(DISPLAY_SEPARATOR, this));
+        parameters.add(new InputImageP(DISPLAY_IMAGE, this));
+        parameters.add(new BooleanP(SHOW_PROJECTED, this, false));
+        parameters.add(new MessageP(MEASUREMENT_WARNING, this,
+                "Previously-acquired measurements for spot and track objects may become invalid.  Please reacquire using the relevant measurement modules.",
+                Colours.ORANGE));
 
         addParameterDescriptions();
 
@@ -272,10 +301,12 @@ public class TrackEditor extends Module {
 
         returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(INPUT_TRACK_OBJECTS));
-        returnedParameters.add(parameters.getParameter(INPUT_SPOT_OBJECTS));        
+        returnedParameters.add(parameters.getParameter(INPUT_SPOT_OBJECTS));
 
         returnedParameters.add(parameters.getParameter(DISPLAY_SEPARATOR));
         returnedParameters.add(parameters.getParameter(DISPLAY_IMAGE));
+        returnedParameters.add(parameters.getParameter(SHOW_PROJECTED));
+
         returnedParameters.add(parameters.getParameter(MEASUREMENT_WARNING));
 
         String objectName = parameters.getValue(INPUT_TRACK_OBJECTS);
@@ -324,6 +355,9 @@ public class TrackEditor extends Module {
 
         parameters.get(DISPLAY_IMAGE).setDescription(
                 "In addition to the graph-based TrackScheme editor, tracks and spots will be displayed as an overlay on this image.");
+
+        parameters.get(SHOW_PROJECTED).setDescription("When selected (and when \"" + DISPLAY_IMAGE
+                + "\" has more than one Z-slice), a separate projected image will be displayed.  This can assist understanding track connectivity in 3D.");
 
     }
 }

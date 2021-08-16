@@ -1,0 +1,30 @@
+---
+layout: default
+---
+
+<head>
+    <link rel="stylesheet" href="../../css/index.css">
+</head>
+
+<body>
+<!-- Side navigation -->
+<div class="sidenav">
+    <a href="../../index.html" class="nav1">Introduction</a>
+    <a href="../gettingstarted.html" class="nav1">Getting started</a>
+    <a href="../modulelist.html" class="nav1">Modules</a>
+    <a href="../macrolist.html" class="nav1">Macros</a>
+    <!-- <a href="../extendingmia.html" class="nav1">Extending MIA</a> -->
+</div>
+
+<!-- Page content -->
+<div class="main">
+    <!--The following is replaced automatically by the generated module list-->
+    <a href="../modulelist.html">Back to module list</a>
+<h1>Track editor</h1>
+<h2>Description</h2>
+Display <a href="https://imagej.net/plugins/trackmate/">TrackMate's</a> <a href="https://imagej.net/plugins/trackmate/trackscheme">"TrackScheme"</a> track editor to allow tracks to be re-linked between detected objects.  TrackScheme also allows individual timepoint objects to be deleted.  TrackScheme represents the connectivity within a track (i.e. between instances in different timepoints) as a graph, which can be adjusted by deleting and drawing lines between each timepoint instance.  Interaction with the TrackScheme window can be directly visualised on the accompanying overlay image.<br><br>Full details on using TrackScheme can be found at <a href="https://imagej.net/plugins/trackmate/trackscheme">https://imagej.net/plugins/trackmate/trackscheme</a>.<br><br>Note: This module will update the existing spot (individual timepoint instances) and track objects.  As such, any track-related measurements will still be available, but may no longer be valid.  They can be re-calculated by re-running the relevant measurement modules.
+<h2>Parameters</h2>
+<ul><li><b>Input track objects</b> (default = "") Track objects that will be edited.  This same object collection will be updated by this module; however, all track objects will effectively be new, so any previous measurements and relationships will be lost.</li><br><li><b>Input spot objects</b> (default = "") Spot objects for the selected tracks that will be edited.  These "spot" objects are the individual timepoint instances of the tracks.  This same object collection will be updated by this module and all spot objects (unless deleted during editing) will be retained; however, as their associated tracks may be different, any track-related measurements may become invalid.  Track measurements should be re-calculated using the relevant modules.</li><br><li><b>Display image</b> (default = "") In addition to the graph-based TrackScheme editor, tracks and spots will be displayed as an overlay on this image.</li><br><li><b>Show projected (3D only)</b> (default = "false") When selected (and when "Display image" has more than one Z-slice), a separate projected image will be displayed.  This can assist understanding track connectivity in 3D.</li><br></ul>
+
+</div>
+</body>

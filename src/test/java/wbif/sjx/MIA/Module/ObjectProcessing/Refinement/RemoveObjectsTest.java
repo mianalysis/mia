@@ -15,6 +15,8 @@ import wbif.sjx.MIA.Module.ModuleTest;
 import wbif.sjx.MIA.Object.ObjCollection;
 import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.MIA.Object.WorkspaceCollection;
+import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
+import wbif.sjx.MIA.Object.Parameters.ParameterGroup;
 import wbif.sjx.common.Object.Volume.VolumeType;
 
 public class RemoveObjectsTest extends ModuleTest {
@@ -47,8 +49,10 @@ public class RemoveObjectsTest extends ModuleTest {
         // Initialising the module
         RemoveObjects removeObjects = new RemoveObjects(null);
         removeObjects.initialiseParameters();
-        removeObjects.updateParameterValue(RemoveObjects.INPUT_OBJECTS,"TestObj");
-
+        ParameterGroup group = removeObjects.getParameter(RemoveObjects.REMOVE_ANOTHER_OBJECT_SET);
+        ParameterCollection collection = group.addParameters();
+        collection.updateValue(RemoveObjects.INPUT_OBJECTS, "TestObj");
+        
         // Running the module
         removeObjects.execute(workspace);
 
@@ -79,7 +83,9 @@ public class RemoveObjectsTest extends ModuleTest {
         // Initialising the module
         RemoveObjects removeObjects = new RemoveObjects(null);
         removeObjects.initialiseParameters();
-        removeObjects.updateParameterValue(RemoveObjects.INPUT_OBJECTS,"TestObj");
+        ParameterGroup group = removeObjects.getParameter(RemoveObjects.REMOVE_ANOTHER_OBJECT_SET);
+        ParameterCollection collection = group.addParameters();
+        collection.updateValue(RemoveObjects.INPUT_OBJECTS, "TestObj");
 
         // Running the module
         removeObjects.execute(workspace);

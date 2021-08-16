@@ -13,6 +13,7 @@ import ij.ImagePlus;
 import ij.gui.Line;
 import ij.plugin.Duplicator;
 import ij.plugin.HyperStackConverter;
+import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Categories;
 import wbif.sjx.MIA.Module.Category;
 import wbif.sjx.MIA.Module.ModuleCollection;
@@ -171,10 +172,11 @@ public class AddTracks extends AbstractOverlay {
 
         // Generating colours for each object
         HashMap<Integer, Float> hues = getHues(inputObjects);
-
+        
         HashMap<Integer, Float> instantaneousHues = null;
         if (colourMode.equals(ColourModes.INSTANTANEOUS_MEASUREMENT_VALUE)) {
-            ObjCollection spotObjects = workspace.getObjectSet(spotObjectsName);
+            String[] elements = spotObjectsName.split(" // ");
+            ObjCollection spotObjects = workspace.getObjectSet(elements[elements.length-1]);
             instantaneousHues = ColourFactory.getMeasurementValueHues(spotObjects, measurementForColour, true);
         }
 
