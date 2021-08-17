@@ -7,19 +7,19 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.StringTokenizer;
 
+import wbif.sjx.MIA.Module.Categories;
+import wbif.sjx.MIA.Module.Category;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
-import wbif.sjx.MIA.Module.Category;
-import wbif.sjx.MIA.Module.Categories;
 import wbif.sjx.MIA.Object.Status;
 import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.MIA.Object.Parameters.BooleanP;
 import wbif.sjx.MIA.Object.Parameters.ChoiceP;
 import wbif.sjx.MIA.Object.Parameters.FilePathP;
-import wbif.sjx.MIA.Object.Parameters.MetadataItemP;
-import wbif.sjx.MIA.Object.Parameters.SeparatorP;
-import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.Parameters.GenericButtonP;
+import wbif.sjx.MIA.Object.Parameters.MetadataItemP;
+import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
+import wbif.sjx.MIA.Object.Parameters.SeparatorP;
 import wbif.sjx.MIA.Object.Parameters.Text.StringP;
 import wbif.sjx.MIA.Object.Parameters.Text.TextAreaP;
 import wbif.sjx.MIA.Object.References.Collections.ImageMeasurementRefCollection;
@@ -27,19 +27,18 @@ import wbif.sjx.MIA.Object.References.Collections.MetadataRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.ObjMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.ParentChildRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.PartnerRefCollection;
+import wbif.sjx.common.MetadataExtractors.CV1000FilenameExtractor;
+import wbif.sjx.common.MetadataExtractors.CV1000FoldernameExtractor;
 import wbif.sjx.common.MetadataExtractors.CV7000FilenameExtractor;
-import wbif.sjx.common.MetadataExtractors.CellVoyagerFilenameExtractor;
-import wbif.sjx.common.MetadataExtractors.CellVoyagerFoldernameExtractor;
 import wbif.sjx.common.MetadataExtractors.FileExtractor;
 import wbif.sjx.common.MetadataExtractors.GenericExtractor;
 import wbif.sjx.common.MetadataExtractors.IncuCyteLongFilenameExtractor;
 import wbif.sjx.common.MetadataExtractors.IncuCyteShortFilenameExtractor;
-import wbif.sjx.common.MetadataExtractors.KeywordExtractor;
+import wbif.sjx.common.MetadataExtractors.Metadata;
 import wbif.sjx.common.MetadataExtractors.NameExtractor;
 import wbif.sjx.common.MetadataExtractors.OperaFileExtractor;
 import wbif.sjx.common.MetadataExtractors.OperaFilenameExtractor;
 import wbif.sjx.common.MetadataExtractors.OperaFoldernameExtractor;
-import wbif.sjx.common.MetadataExtractors.Metadata;
 
 /**
  * Created by sc13967 on 05/05/2017.
@@ -50,11 +49,8 @@ public class MetadataExtractor extends Module {
     public static final String FILENAME_EXTRACTOR = "Filename extractor";
     public static final String FOLDERNAME_EXTRACTOR = "Foldername extractor";
 
-    public static final String KEYWORD_LIST = "Keyword list";
-    public static final String KEYWORD_SOURCE = "Keyword source";
-    public static final String METADATA_FILE_EXTRACTOR = "Metadata file extractor";
-
     public static final String SOURCE_SEPARATOR = "Metadata source";
+    public static final String METADATA_FILE_EXTRACTOR = "Metadata file extractor";
     public static final String INPUT_SOURCE = "Input source";
     public static final String METADATA_FILE = "Metadata file";
     public static final String METADATA_FILE_NAME = "Metadata file name";
@@ -77,35 +73,32 @@ public class MetadataExtractor extends Module {
     public interface ExtractorModes {
         String FILENAME_MODE = "Filename";
         String FOLDERNAME_MODE = "Foldername";
-        String KEYWORD_MODE = "Keyword";
         String METADATA_FILE_MODE = "Metadata file";
         String SERIES_NAME = "Series name";
 
-        String[] ALL = new String[] { FILENAME_MODE, FOLDERNAME_MODE, KEYWORD_MODE, METADATA_FILE_MODE, SERIES_NAME };
+        String[] ALL = new String[] { FILENAME_MODE, FOLDERNAME_MODE, METADATA_FILE_MODE, SERIES_NAME };
 
     }
 
     public interface FilenameExtractors {
         String GENERIC = "Generic";
-        String CELLVOYAGER_FILENAME_EXTRACTOR = "Cell Voyager filename";
+        String CV1000_FILENAME_EXTRACTOR = "CV1000 filename";
+        String CV7000_FILENAME_EXTRACTOR = "CV7000 filename";
         String INCUCYTE_LONG_FILENAME_EXTRACTOR = "IncuCyte long filename";
         String INCUCYTE_SHORT_FILENAME_EXTRACTOR = "IncuCyte short filename";
         String OPERA_FILENAME_EXTRACTOR = "Opera filename";
-        String YOKOGAWA_FILENAME_EXTRACTOR = "Yokogawa filename";
 
-        String[] ALL = new String[] { GENERIC, CELLVOYAGER_FILENAME_EXTRACTOR, INCUCYTE_LONG_FILENAME_EXTRACTOR,
-                INCUCYTE_SHORT_FILENAME_EXTRACTOR, OPERA_FILENAME_EXTRACTOR, YOKOGAWA_FILENAME_EXTRACTOR };
+        String[] ALL = new String[] { GENERIC, CV1000_FILENAME_EXTRACTOR, CV7000_FILENAME_EXTRACTOR,
+                INCUCYTE_LONG_FILENAME_EXTRACTOR, INCUCYTE_SHORT_FILENAME_EXTRACTOR, OPERA_FILENAME_EXTRACTOR };
 
     }
 
     public interface FoldernameExtractors {
         String GENERIC = "Generic";
-        String CELLVOYAGER_FOLDERNAME_EXTRACTOR = "Cell Voyager foldername";
+        String CV1000_FOLDERNAME_EXTRACTOR = "CV1000 foldername";
         String OPERA_FOLDERNAME_EXTRACTOR = "Opera measurement foldername";
-        String OPERA_BARCODE_EXTRACTOR = "Opera barcode";
 
-        String[] ALL = new String[] { GENERIC, CELLVOYAGER_FOLDERNAME_EXTRACTOR, OPERA_FOLDERNAME_EXTRACTOR,
-                OPERA_BARCODE_EXTRACTOR };
+        String[] ALL = new String[] { GENERIC, CV1000_FOLDERNAME_EXTRACTOR, OPERA_FOLDERNAME_EXTRACTOR };
     }
 
     public interface MetadataFileExtractors {
@@ -113,14 +106,6 @@ public class MetadataExtractor extends Module {
         String OPERA_METADATA_FILE_EXTRACTOR = "Opera file (.flex)";
 
         String[] ALL = new String[] { CSV_FILE, OPERA_METADATA_FILE_EXTRACTOR };
-
-    }
-
-    public interface KeywordSources {
-        String FILENAME = "File name";
-        String SERIESNAME = "Series name";
-
-        String[] ALL = new String[] { FILENAME, SERIESNAME };
 
     }
 
@@ -136,8 +121,12 @@ public class MetadataExtractor extends Module {
         NameExtractor filenameExtractor = null;
 
         switch (filenameExtractorName) {
-            case FilenameExtractors.CELLVOYAGER_FILENAME_EXTRACTOR:
-                filenameExtractor = new CellVoyagerFilenameExtractor();
+            case FilenameExtractors.CV1000_FILENAME_EXTRACTOR:
+                filenameExtractor = new CV1000FilenameExtractor();
+                break;
+
+            case FilenameExtractors.CV7000_FILENAME_EXTRACTOR:
+                filenameExtractor = new CV7000FilenameExtractor();
                 break;
 
             case FilenameExtractors.INCUCYTE_LONG_FILENAME_EXTRACTOR:
@@ -150,10 +139,6 @@ public class MetadataExtractor extends Module {
 
             case FilenameExtractors.OPERA_FILENAME_EXTRACTOR:
                 filenameExtractor = new OperaFilenameExtractor();
-                break;
-
-            case FilenameExtractors.YOKOGAWA_FILENAME_EXTRACTOR:
-                filenameExtractor = new CV7000FilenameExtractor();
                 break;
 
             default:
@@ -184,17 +169,13 @@ public class MetadataExtractor extends Module {
         // Getting folder name extractor
         NameExtractor foldernameExtractor = null;
         switch (foldernameExtractorName) {
-            case FoldernameExtractors.CELLVOYAGER_FOLDERNAME_EXTRACTOR:
-                foldernameExtractor = new CellVoyagerFoldernameExtractor();
+            case FoldernameExtractors.CV1000_FOLDERNAME_EXTRACTOR:
+                foldernameExtractor = new CV1000FoldernameExtractor();
                 break;
 
             case FoldernameExtractors.OPERA_FOLDERNAME_EXTRACTOR:
                 foldernameExtractor = new OperaFoldernameExtractor();
                 break;
-
-            case FoldernameExtractors.OPERA_BARCODE_EXTRACTOR:
-                metadata.put("Barcode", metadata.getFile().getParentFile().getParentFile().getName());
-                return;
         }
 
         if (foldernameExtractor != null) {
@@ -203,23 +184,6 @@ public class MetadataExtractor extends Module {
             for (String name : tempMetadata.keySet())
                 metadata.put(name, tempMetadata.get(name));
         }
-    }
-
-    private void extractKeyword(Metadata metadata, String keywordList, String keywordSource) {
-        KeywordExtractor keywordExtractor = new KeywordExtractor(keywordList);
-
-        Metadata tempMetadata = new Metadata();
-        switch (keywordSource) {
-            case KeywordSources.FILENAME:
-                keywordExtractor.extract(tempMetadata, metadata.getFile().getName());
-                break;
-            case KeywordSources.SERIESNAME:
-                keywordExtractor.extract(tempMetadata, metadata.getSeriesName());
-                break;
-        }
-
-        for (String name : tempMetadata.keySet())
-            metadata.put(name, tempMetadata.get(name));
     }
 
     private void extractMetadataFile(Metadata metadata, String metadataFileExtractorName) {
@@ -309,7 +273,7 @@ public class MetadataExtractor extends Module {
 
     @Override
     public String getDescription() {
-        return "";
+        return "Metadata values can be extracted from a variety of sources and assigned to the current workspace.  These metadata values can subsequently be accessed in the form M{[NAME]}, where [NAME] is the metadata name.  Some common file and foldername formats are included as pre-defined metadata extraction methods, while other forms can be constructed using regular expressions.";
     }
 
     @Override
@@ -325,8 +289,6 @@ public class MetadataExtractor extends Module {
         String metadataItemToMatch = parameters.getValue(METADATA_ITEM_TO_MATCH);
         String pattern = parameters.getValue(PATTERN);
         String groups = parameters.getValue(GROUPS);
-        String keywordList = parameters.getValue(KEYWORD_LIST);
-        String keywordSource = parameters.getValue(KEYWORD_SOURCE);
         boolean regexSplitting = parameters.getValue(REGEX_SPLITTING);
         String metadataValueName = parameters.getValue(METADATA_VALUE_NAME);
 
@@ -349,10 +311,6 @@ public class MetadataExtractor extends Module {
                 } else {
                     extractFoldername(metadata, foldernameExtractorName);
                 }
-                break;
-
-            case ExtractorModes.KEYWORD_MODE:
-                extractKeyword(metadata, keywordList, keywordSource);
                 break;
 
             case ExtractorModes.METADATA_FILE_MODE:
@@ -403,13 +361,10 @@ public class MetadataExtractor extends Module {
     protected void initialiseParameters() {
         parameters.add(new SeparatorP(EXTRACTOR_SEPARATOR, this));
         parameters.add(new ChoiceP(EXTRACTOR_MODE, this, ExtractorModes.FILENAME_MODE, ExtractorModes.ALL));
-
         parameters.add(new ChoiceP(FILENAME_EXTRACTOR, this, FilenameExtractors.GENERIC, FilenameExtractors.ALL));
         parameters.add(new ChoiceP(FOLDERNAME_EXTRACTOR, this, FoldernameExtractors.GENERIC, FoldernameExtractors.ALL));
-        parameters.add(new StringP(KEYWORD_LIST, this));
 
         parameters.add(new SeparatorP(SOURCE_SEPARATOR, this));
-        parameters.add(new ChoiceP(KEYWORD_SOURCE, this, KeywordSources.FILENAME, KeywordSources.ALL));
         parameters.add(new ChoiceP(METADATA_FILE_EXTRACTOR, this, MetadataFileExtractors.CSV_FILE,
                 MetadataFileExtractors.ALL));
         parameters.add(new ChoiceP(INPUT_SOURCE, this, InputSources.FILE_IN_INPUT_FOLDER, InputSources.ALL));
@@ -454,11 +409,6 @@ public class MetadataExtractor extends Module {
                         returnedParameters.addAll(getGenericExtractorParameters());
                         break;
                 }
-                break;
-
-            case ExtractorModes.KEYWORD_MODE:
-                returnedParameters.add(parameters.getParameter(KEYWORD_LIST));
-                returnedParameters.add(parameters.getParameter(KEYWORD_SOURCE));
                 break;
 
             case ExtractorModes.METADATA_FILE_MODE:
@@ -550,7 +500,7 @@ public class MetadataExtractor extends Module {
                             returnedRefs.add(metadataRefs.getOrPut((group)));
                         break;
 
-                    case FilenameExtractors.CELLVOYAGER_FILENAME_EXTRACTOR:
+                    case FilenameExtractors.CV1000_FILENAME_EXTRACTOR:
                         returnedRefs.add(metadataRefs.getOrPut((Metadata.CHANNEL)));
                         returnedRefs.add(metadataRefs.getOrPut((Metadata.EXTENSION)));
                         returnedRefs.add(metadataRefs.getOrPut((Metadata.FIELD)));
@@ -585,7 +535,7 @@ public class MetadataExtractor extends Module {
                         returnedRefs.add(metadataRefs.getOrPut((Metadata.WELL)));
                         break;
 
-                    case FilenameExtractors.YOKOGAWA_FILENAME_EXTRACTOR:
+                    case FilenameExtractors.CV7000_FILENAME_EXTRACTOR:
                         returnedRefs.add(metadataRefs.getOrPut((Metadata.EXTENSION)));
                         returnedRefs.add(metadataRefs.getOrPut((Metadata.PLATE_NAME)));
                         returnedRefs.add(metadataRefs.getOrPut((Metadata.PLATE_MANUFACTURER)));
@@ -611,7 +561,7 @@ public class MetadataExtractor extends Module {
                             returnedRefs.add(metadataRefs.getOrPut((group)));
                         break;
 
-                    case FoldernameExtractors.CELLVOYAGER_FOLDERNAME_EXTRACTOR:
+                    case FoldernameExtractors.CV1000_FOLDERNAME_EXTRACTOR:
                         returnedRefs.add(metadataRefs.getOrPut((Metadata.YEAR)));
                         returnedRefs.add(metadataRefs.getOrPut((Metadata.MONTH)));
                         returnedRefs.add(metadataRefs.getOrPut((Metadata.DAY)));
@@ -631,21 +581,13 @@ public class MetadataExtractor extends Module {
                         returnedRefs.add(metadataRefs.getOrPut((Metadata.MINUTE)));
                         returnedRefs.add(metadataRefs.getOrPut((Metadata.SECOND)));
                         break;
-
-                    case FoldernameExtractors.OPERA_BARCODE_EXTRACTOR:
-                        returnedRefs.add(metadataRefs.getOrPut(("Barcode")));
-                        break;
                 }
-                break;
-
-            case ExtractorModes.KEYWORD_MODE:
-                returnedRefs.add(metadataRefs.getOrPut((Metadata.KEYWORD)));
                 break;
 
             case ExtractorModes.METADATA_FILE_MODE:
                 switch ((String) parameters.getValue(METADATA_FILE_EXTRACTOR)) {
                     case MetadataFileExtractors.OPERA_METADATA_FILE_EXTRACTOR:
-                        returnedRefs.add(metadataRefs.getOrPut(("AreaName")));
+                        returnedRefs.add(metadataRefs.getOrPut((Metadata.AREA_NAME)));
                         break;
 
                     case MetadataFileExtractors.CSV_FILE:
@@ -690,41 +632,107 @@ public class MetadataExtractor extends Module {
     }
 
     void addParameterDescriptions() {
-        parameters.get(EXTRACTOR_MODE).setDescription("");
+        // +"<li>\""++"\"</li>"
 
-        parameters.get(FILENAME_EXTRACTOR).setDescription("");
+        parameters.get(EXTRACTOR_MODE).setDescription("Data source for metadata extraction:<br><ul>"
 
-        parameters.get(FOLDERNAME_EXTRACTOR).setDescription("");
+                + "<li>\"" + ExtractorModes.FILENAME_MODE
+                + "\" Metadata taken from filename (not including folder path)</li>"
 
-        parameters.get(KEYWORD_LIST).setDescription("");
+                + "<li>\"" + ExtractorModes.FOLDERNAME_MODE
+                + "\" Metadata taken from parent foldername (incuding full system path to that folder)</li>"
 
-        parameters.get(KEYWORD_SOURCE).setDescription("");
+                + "<li>\"" + ExtractorModes.METADATA_FILE_MODE
+                + "\" Metadata taken from a separate file, specified by the \"" + METADATA_FILE + "\" parameter</li>"
 
-        parameters.get(METADATA_FILE_EXTRACTOR).setDescription("");
+                + "<li>\"" + ExtractorModes.SERIES_NAME
+                + "\" Metadata taken from seriesname (if not from a multi-series file, this is just the filename)</li></ul>");
 
-        parameters.get(INPUT_SOURCE).setDescription("");
+        parameters.get(FILENAME_EXTRACTOR)
+                .setDescription("The format of the filename to be converted to metadata values:<br><ul>"
 
-        parameters.get(METADATA_FILE).setDescription("");
+                        + "<li>\"" + FilenameExtractors.GENERIC
+                        + "\" Name format is compiled using regular expressions defined in the \"" + PATTERN
+                        + "\" parameter.  Each group (pattern enclosed in parenthesis) specified in the pattern is assigned to a metadata value.  Metadata value names are defined by the comma-separated list defined in \""
+                        + GROUPS + "\".</li>"
 
-        parameters.get(METADATA_FILE_NAME).setDescription("");
+                        + "<li>\"" + FilenameExtractors.CV1000_FILENAME_EXTRACTOR
+                        + "\" The Yokogawa CellVoyager CV1000 format (e.g. W1F001T0001Z00C1.tif)</li>"
 
-        parameters.get(METADATA_ITEM_TO_MATCH).setDescription("");
+                        + "<li>\"" + FilenameExtractors.CV7000_FILENAME_EXTRACTOR
+                        + "\" The Yokogawa CellVoyager CV7000 format (e.g. AssayPlate_Greiner_#655090_C02_T0001F001L01A01Z01C01.tif)</li>"
 
-        parameters.get(PATTERN).setDescription("");
+                        + "<li>\"" + FilenameExtractors.INCUCYTE_LONG_FILENAME_EXTRACTOR
+                        + "\" The Incucyte long format, where each timepoint is stored as a separate image file and accordingly the filename records the time of acquisition (e.g. MySample1_A1_1_2021y08m06d_11h39m.tif)</li>"
 
-        parameters.get(GROUPS).setDescription("");
+                        + "<li>\"" + FilenameExtractors.INCUCYTE_SHORT_FILENAME_EXTRACTOR
+                        + "\" The Incucyte short format, where all timepoints are stored in a single file and the filename only records the well and field (e.g. MySample1_A1_1.tif)</li>"
 
-        parameters.get(SHOW_TEST).setDescription("");
+                        + "<li>\"" + FilenameExtractors.OPERA_FILENAME_EXTRACTOR
+                        + "\" The Perkin Elmer Opera LX name format, which specifies row, column and field (e.g. 001001001.flex)</li></ul>");
 
-        parameters.get(EXAMPLE_STRING).setDescription("");
+        parameters.get(FOLDERNAME_EXTRACTOR)
+                .setDescription("The format of the foldername to be converted to metadata values:<br><ul>" + "<li>\""
 
-        parameters.get(IDENTIFIED_GROUPS).setDescription("");
+                        + "<li>\"" + FoldernameExtractors.GENERIC
+                        + "\" Name format is compiled using regular expressions defined in the \"" + PATTERN
+                        + "\" parameter.  Each group (pattern enclosed in parenthesis) specified in the pattern is assigned to a metadata value.  Metadata value names are defined by the comma-separated list defined in \""
+                        + GROUPS + "\".</li>"
 
-        parameters.get(REGEX_SPLITTING).setDescription("");
+                        + "<li>\"" + FoldernameExtractors.CV1000_FOLDERNAME_EXTRACTOR
+                        + "\" The Yokogawa CV1000 format (e.g. 20210806T113905_10x_K01_MySample1)</li>"
 
-        parameters.get(METADATA_VALUE_NAME).setDescription("");
+                        + "<li>\"" + FoldernameExtractors.OPERA_FOLDERNAME_EXTRACTOR
+                        + "\" The Perkin Elmer Opera LX foldername format (e.g. Meas_01(2021-08-06_11-39-05))</li></ul>"
 
-        parameters.get(REFRESH_BUTTON).setDescription("");
+                );
+
+        parameters.get(METADATA_FILE_EXTRACTOR)
+                .setDescription("The format of the metadata file to be converted to metadata values:<br><ul>"
+
+                        + "<li>\"" + MetadataFileExtractors.CSV_FILE
+                        + "\" Metadata values stored in a two-column CSV file, where the first column defines an identifier to the current file being processed (e.g. filename, or series name) and the second column defines a value that will be assigned as metadata.  Optionally, this value can be split into multiple metadata values using a regular expression.</li>"
+
+                        + "<li>\"" + MetadataFileExtractors.OPERA_METADATA_FILE_EXTRACTOR
+                        + "\" Specifically extracts the \"Area name\" property from the current .flex file.</li></ul>");
+
+        parameters.get(INPUT_SOURCE).setDescription(
+                "If extracting metadata from a CSV file, this controls whether a single, static CSV file is used or whether there is one provided (with a fixed name) in the current folder (i.e where the current image file is loaded from).");
+
+        parameters.get(METADATA_FILE).setDescription(
+                "If extracting metadata from a static CSV file (i.e. the same file for all processed images), this is the path to that metadata CSV file.");
+
+        parameters.get(METADATA_FILE_NAME).setDescription(
+                "If extracting metadata from a dynamic CSV file (i.e. the file is in the current image folder), this is the name of that metadata CSV file (it must be the same name in all folders).");
+
+        parameters.get(METADATA_ITEM_TO_MATCH).setDescription(
+                "For CSV-based metadata extraction, the first column of the CSV file identifies which row to read.  This parameter defines the source (e.g. filename, series name, etc.).  Choices are: "
+                        + String.join(",", InputSources.ALL));
+
+        parameters.get(REGEX_SPLITTING).setDescription(
+                "When selected, the metadata value taken from a CSV file will itself be broken down into multiple metadata values using a regular expressions");
+
+        parameters.get(METADATA_VALUE_NAME).setDescription(
+                "If a metadata value loaded from CSV is not to be sub-divided into multiple metadata values, the entire value loaded will be stored as a metadata item with this name.");
+
+        parameters.get(PATTERN).setDescription(
+                "Regular expression pattern to use when interpreting generic metadata formats.  This pattern must contain at least one group (specified using standard regex parenthesis notation).");
+
+        parameters.get(GROUPS).setDescription(
+                "When interpreting generic metadata formats, these group names will be assigned to each group matched using regular expressions.  The metadata values will subsequently be accessed via these names in the form M{[NAME]}, where [NAME] is the group name.");
+
+        parameters.get(SHOW_TEST).setDescription(
+                "When selected (and constructing a regular expression extractor), an example string can be provided and the identified groups displayed.  This allows for regular expression forms to be tested during workflow assembly.");
+
+        parameters.get(EXAMPLE_STRING).setDescription("If testing a regular expression form (\"" + SHOW_TEST
+                + "\" selected), this is the example string which will be processed and broken down into its individual metadata values.");
+
+        parameters.get(IDENTIFIED_GROUPS).setDescription("If testing a regular expression form (\"" + SHOW_TEST
+                + "\" selected), the extracted metadata values will be displayed here.");
+
+        parameters.get(REFRESH_BUTTON).setDescription(
+                "When testing regular expression forms, clicking this button will test the extraction and display any detected metadata values in the \""
+                        + IDENTIFIED_GROUPS + "\" window.");
 
     }
 }

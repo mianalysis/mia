@@ -1,6 +1,5 @@
 package wbif.sjx.MIA.Module.Visualisation.Overlays;
 
-import java.awt.BasicStroke;
 import java.awt.Color;
 import java.util.HashMap;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -15,9 +14,9 @@ import ij.gui.Roi;
 import ij.gui.ShapeRoi;
 import ij.plugin.Duplicator;
 import ij.plugin.HyperStackConverter;
-import wbif.sjx.MIA.Module.ModuleCollection;
-import wbif.sjx.MIA.Module.Category;
 import wbif.sjx.MIA.Module.Categories;
+import wbif.sjx.MIA.Module.Category;
+import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.Obj;
 import wbif.sjx.MIA.Object.ObjCollection;
@@ -27,8 +26,8 @@ import wbif.sjx.MIA.Object.Parameters.BooleanP;
 import wbif.sjx.MIA.Object.Parameters.InputImageP;
 import wbif.sjx.MIA.Object.Parameters.InputObjectsP;
 import wbif.sjx.MIA.Object.Parameters.OutputImageP;
-import wbif.sjx.MIA.Object.Parameters.SeparatorP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
+import wbif.sjx.MIA.Object.Parameters.SeparatorP;
 import wbif.sjx.MIA.Object.Parameters.Text.DoubleP;
 import wbif.sjx.MIA.Object.References.Collections.ImageMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.MetadataRefCollection;

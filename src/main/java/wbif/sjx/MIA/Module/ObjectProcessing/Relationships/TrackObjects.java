@@ -3,38 +3,52 @@
 
 package wbif.sjx.MIA.Module.ObjectProcessing.Relationships;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.TreeSet;
+
+import org.apache.commons.math3.exception.MathArithmeticException;
+import org.apache.commons.math3.geometry.euclidean.twod.Line;
+import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 import org.eclipse.sisu.Nullable;
 
 import fiji.plugin.trackmate.tracking.sparselap.costmatrix.DefaultCostMatrixCreator;
 import fiji.plugin.trackmate.tracking.sparselap.linker.JaqamanLinker;
 import ij.ImagePlus;
-import org.apache.commons.math3.exception.MathArithmeticException;
-import org.apache.commons.math3.geometry.euclidean.twod.Line;
-import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 import wbif.sjx.MIA.MIA;
+import wbif.sjx.MIA.Module.Categories;
+import wbif.sjx.MIA.Module.Category;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
-import wbif.sjx.MIA.Module.Category;
-import wbif.sjx.MIA.Module.Categories;
 import wbif.sjx.MIA.Module.Visualisation.Overlays.AbstractOverlay;
-import wbif.sjx.MIA.Object.*;
-import wbif.sjx.MIA.Object.Parameters.*;
+import wbif.sjx.MIA.Object.Image;
+import wbif.sjx.MIA.Object.Measurement;
+import wbif.sjx.MIA.Object.Obj;
+import wbif.sjx.MIA.Object.ObjCollection;
+import wbif.sjx.MIA.Object.Status;
+import wbif.sjx.MIA.Object.Workspace;
+import wbif.sjx.MIA.Object.Parameters.BooleanP;
+import wbif.sjx.MIA.Object.Parameters.ChoiceP;
+import wbif.sjx.MIA.Object.Parameters.InputObjectsP;
+import wbif.sjx.MIA.Object.Parameters.ObjectMeasurementP;
+import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
+import wbif.sjx.MIA.Object.Parameters.SeparatorP;
 import wbif.sjx.MIA.Object.Parameters.Objects.OutputTrackObjectsP;
 import wbif.sjx.MIA.Object.Parameters.Text.DoubleP;
 import wbif.sjx.MIA.Object.Parameters.Text.IntegerP;
-import wbif.sjx.MIA.Object.References.*;
+import wbif.sjx.MIA.Object.References.ObjMeasurementRef;
 import wbif.sjx.MIA.Object.References.Collections.ImageMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.MetadataRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.ObjMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.ParentChildRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.PartnerRefCollection;
 import wbif.sjx.MIA.Process.ColourFactory;
-import wbif.sjx.common.MathFunc.Indexer;
 import wbif.sjx.common.ImageJ.LUTs;
+import wbif.sjx.common.MathFunc.Indexer;
 import wbif.sjx.common.Object.Point;
 import wbif.sjx.common.Object.Volume.VolumeType;
-
-import java.util.*;
 
 /**
  * Created by sc13967 on 20/09/2017.
@@ -357,6 +371,10 @@ public class TrackObjects extends Module {
         track.addChild(currObj);
         currObj.addParent(track);
 
+        // Adding partner relationships between adjacent points in the track
+        prevObj.addPartner(currObj);
+        currObj.addPartner(prevObj);
+
         // Adding references to each other
         prevObj.addMeasurement(new Measurement(Measurements.TRACK_NEXT_ID, currObj.getID()));
         currObj.addMeasurement(new Measurement(Measurements.TRACK_PREV_ID, prevObj.getID()));
@@ -521,16 +539,16 @@ public class TrackObjects extends Module {
             }
         }
 
-        for (int t2=frameLimits[0]+1;t2<=frameLimits[1];t2++) {
-            writeStatus("Tracking to frame "+(t2+1)+" of "+(frameLimits[1]+1));
+        for (int t2 = frameLimits[0] + 1; t2 <= frameLimits[1]; t2++) {
+            writeStatus("Tracking to frame " + (t2 + 1) + " of " + (frameLimits[1] + 1));
 
             // Testing the previous permitted frames for links
-            for (int t1 = t2-1;t1>=t2-1-maxMissingFrames;t1--) {
-                ArrayList<Obj>[] nPObjects = getCandidateObjects(inputObjects,t1,t2);
+            for (int t1 = t2 - 1; t1 >= t2 - 1 - maxMissingFrames; t1--) {
+                ArrayList<Obj>[] nPObjects = getCandidateObjects(inputObjects, t1, t2);
 
                 // If no previous or current objects were found no linking takes place
                 if (nPObjects[0].size() == 0 || nPObjects[1].size() == 0) {
-                    if (t1==t2-1-maxMissingFrames || t1 == 0) {
+                    if (t1 == t2 - 1 - maxMissingFrames || t1 == 0) {
                         //Creating new tracks for current objects that have no chance of being linked in other frames
                         for (int curr = 0; curr < nPObjects[1].size(); curr++) {
                             createNewTrack(nPObjects[1].get(curr), trackObjects);
@@ -541,7 +559,8 @@ public class TrackObjects extends Module {
                 }
 
                 // Calculating distances between objects and populating the cost matrix
-                ArrayList<Linkable> linkables = calculateCostMatrix(nPObjects[0],nPObjects[1],inputObjects,spatialLimits);
+                ArrayList<Linkable> linkables = calculateCostMatrix(nPObjects[0], nPObjects[1], inputObjects,
+                        spatialLimits);
                 // Check if there are potential links, if not, skip to the next frame
                 if (linkables.size() > 0) {
                     DefaultCostMatrixCreator<Integer, Integer> creator = RelateOneToOne.getCostMatrixCreator(linkables);
@@ -566,8 +585,9 @@ public class TrackObjects extends Module {
                 }
 
                 // Assigning any objects in the current frame without a track as new tracks
-                for (Obj currObj:nPObjects[1]) {
-                    if (currObj.getParent(trackObjectsName) == null) createNewTrack(currObj, trackObjects);
+                for (Obj currObj : nPObjects[1]) {
+                    if (currObj.getParent(trackObjectsName) == null)
+                        createNewTrack(currObj, trackObjects);
                 }
             }
         }
@@ -739,7 +759,14 @@ public class TrackObjects extends Module {
 
     @Override
     public PartnerRefCollection updateAndGetPartnerRefs() {
-        return null;
+        PartnerRefCollection returnedRelationships = new PartnerRefCollection();
+
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+        
+        returnedRelationships.add(partnerRefs.getOrPut(inputObjectsName, inputObjectsName));
+
+        return returnedRelationships;
+
     }
 
     @Override

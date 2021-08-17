@@ -35,6 +35,7 @@ import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.Core.InputControl;
 import wbif.sjx.MIA.Module.Core.OutputControl;
 import wbif.sjx.MIA.Module.Miscellaneous.GUISeparator;
+import wbif.sjx.MIA.Object.Colours;
 import wbif.sjx.MIA.Object.Parameters.BooleanP;
 import wbif.sjx.MIA.Object.Parameters.ObjMeasurementSelectorP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;

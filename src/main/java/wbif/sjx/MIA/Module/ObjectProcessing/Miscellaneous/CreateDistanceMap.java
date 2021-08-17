@@ -26,6 +26,7 @@ import wbif.sjx.MIA.Object.Parameters.InputObjectsP;
 import wbif.sjx.MIA.Object.Parameters.OutputImageP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.Parameters.SeparatorP;
+import wbif.sjx.MIA.Object.Parameters.ChoiceInterfaces.SpatialUnitsInterface;
 import wbif.sjx.MIA.Object.References.Collections.ImageMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.MetadataRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.ObjMeasurementRefCollection;
@@ -67,14 +68,10 @@ public class CreateDistanceMap extends Module {
 
     }
 
-    public interface SpatialUnitsModes {
-        String CALIBRATED = "Calibrated";
-        String PIXELS = "Pixel";
-
-        String[] ALL = new String[] { CALIBRATED, PIXELS };
-
+    public interface SpatialUnitsModes extends SpatialUnitsInterface {
     }
 
+    
     public static Image getCentroidDistanceMap(ObjCollection inputObjects, String outputImageName) {
         // Getting image parameters
         int width = inputObjects.getWidth();
@@ -99,9 +96,8 @@ public class CreateDistanceMap extends Module {
         }
 
         // Calculating the distance map
-        distanceMapIpl = DistanceMap.process(distanceMapIpl, outputImageName, DistanceMap.WeightModes.WEIGHTS_3_4_5_7, true, false);
-
-        return distanceMap;
+        return DistanceMap.process(distanceMap, outputImageName, false,
+                DistanceMap.WeightModes.WEIGHTS_3_4_5_7, true, false);
 
     }
 
@@ -113,10 +109,10 @@ public class CreateDistanceMap extends Module {
 
         // Calculating the distance maps. The inside map is set to negative
         String weightMode = DistanceMap.WeightModes.WEIGHTS_3_4_5_7;
-        Image outsideDistImage = DistanceMap.process(objImage, "DistanceOutside", weightMode, true, false);
+        Image outsideDistImage = DistanceMap.process(objImage, "DistanceOutside", false, weightMode, true, false);
         InvertIntensity.process(objImage);
-        BinaryOperations2D.process(objImage, BinaryOperations2D.OperationModes.ERODE, 1, 1);
-        Image insideDistImage = DistanceMap.process(objImage, "DistanceInside", weightMode, true, false);
+        BinaryOperations2D.process(objImage, BinaryOperations2D.OperationModes.ERODE, 1, 1, false);
+        Image insideDistImage = DistanceMap.process(objImage, "DistanceInside", false, weightMode, true, false);
 
         // If selected, inverting the inside of the object, so values here are negative
         if (invertInside)
@@ -251,7 +247,7 @@ public class CreateDistanceMap extends Module {
             applyNormalisation(distanceMap, inputObjects);
 
         // Applying spatial calibration (as long as we're not normalising the map)
-        if (!maskingMode.equals(MaskingModes.INSIDE_ONLY) && !normaliseMap
+        if (!(maskingMode.equals(MaskingModes.INSIDE_ONLY) && normaliseMap)
                 && spatialUnits.equals(SpatialUnitsModes.CALIBRATED)) {
             double dppXY = inputObjects.getDppXY();
             DistanceMap.applyCalibratedUnits(distanceMap, dppXY);
@@ -278,6 +274,8 @@ public class CreateDistanceMap extends Module {
         parameters.add(new ChoiceP(MASKING_MODE, this, MaskingModes.INSIDE_AND_OUTSIDE, MaskingModes.ALL));
         parameters.add(new BooleanP(NORMALISE_MAP_PER_OBJECT, this, false));
         parameters.add(new ChoiceP(SPATIAL_UNITS_MODE, this, SpatialUnitsModes.PIXELS, SpatialUnitsModes.ALL));
+
+        addParameterDescriptions();
 
     }
 
@@ -306,8 +304,8 @@ public class CreateDistanceMap extends Module {
 
         // If we're not using the inside-only masking with normalisation, allow the
         // units to be specified.
-        if (!parameters.getValue(MASKING_MODE).equals(MaskingModes.INSIDE_ONLY)
-                && !(boolean) parameters.getValue(NORMALISE_MAP_PER_OBJECT)) {
+        if (!(((String) parameters.getValue(MASKING_MODE)).equals(MaskingModes.INSIDE_ONLY)
+                && (boolean) parameters.getValue(NORMALISE_MAP_PER_OBJECT))) {
             returnedParameters.add(parameters.getParameter(SPATIAL_UNITS_MODE));
         }
 
@@ -343,5 +341,9 @@ public class CreateDistanceMap extends Module {
     @Override
     public boolean verify() {
         return true;
+    }
+
+    void addParameterDescriptions() {
+        parameters.get(SPATIAL_UNITS_MODE).setDescription(SpatialUnitsInterface.getDescription());
     }
 }

@@ -3,26 +3,25 @@
 package wbif.sjx.MIA.Module.ImageProcessing.Pixel.Threshold;
 
 import ij.ImagePlus;
-import ij.Prefs;
 import ij.plugin.Duplicator;
+import wbif.sjx.MIA.Module.Categories;
+import wbif.sjx.MIA.Module.Category;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
-import wbif.sjx.MIA.Module.Category;
-import wbif.sjx.MIA.Module.Categories;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.InvertIntensity;
 import wbif.sjx.MIA.Module.ImageProcessing.Stack.ImageTypeConverter;
-import wbif.sjx.MIA.Object.Status;
 import wbif.sjx.MIA.Object.Image;
+import wbif.sjx.MIA.Object.Status;
 import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.MIA.Object.Parameters.BooleanP;
 import wbif.sjx.MIA.Object.Parameters.ChoiceP;
 import wbif.sjx.MIA.Object.Parameters.ImageMeasurementP;
 import wbif.sjx.MIA.Object.Parameters.InputImageP;
 import wbif.sjx.MIA.Object.Parameters.OutputImageP;
-import wbif.sjx.MIA.Object.Parameters.SeparatorP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
+import wbif.sjx.MIA.Object.Parameters.SeparatorP;
+import wbif.sjx.MIA.Object.Parameters.ChoiceInterfaces.BinaryLogicInterface;
 import wbif.sjx.MIA.Object.Parameters.Text.DoubleP;
-import wbif.sjx.MIA.Object.Parameters.Text.IntegerP;
 import wbif.sjx.MIA.Object.References.Collections.ImageMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.MetadataRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.ObjMeasurementRefCollection;
@@ -42,7 +41,7 @@ public class ManualThreshold extends Module {
     public static final String THRESHOLD_SOURCE = "Threshold source";
     public static final String THRESHOLD_VALUE = "Threshold value";
     public static final String MEASUREMENT = "Measurement";
-    public static final String WHITE_BACKGROUND = "Black objects/white background";
+    public static final String BINARY_LOGIC = "Binary logic";
 
     public interface ThresholdSources {
         String FIXED_VALUE = "Fixed value";
@@ -51,6 +50,8 @@ public class ManualThreshold extends Module {
         String[] ALL = new String[] { FIXED_VALUE, IMAGE_MEASUREMENT };
 
     }
+
+    public interface BinaryLogic extends BinaryLogicInterface {}
 
     public ManualThreshold(ModuleCollection modules) {
         super("Manual threshold", modules);
@@ -109,7 +110,7 @@ public class ManualThreshold extends Module {
 
         // Getting parameters
         boolean applyToInput = parameters.getValue(APPLY_TO_INPUT);
-        boolean whiteBackground = parameters.getValue(WHITE_BACKGROUND);
+        String binaryLogic = parameters.getValue(BINARY_LOGIC);
         String thresholdSource = parameters.getValue(THRESHOLD_SOURCE);
         double thresholdValue = parameters.getValue(THRESHOLD_VALUE);
         String measurementName = parameters.getValue(MEASUREMENT);
@@ -117,8 +118,6 @@ public class ManualThreshold extends Module {
         if (thresholdSource.equals(ThresholdSources.IMAGE_MEASUREMENT)) {
             thresholdValue = (int) Math.round(inputImage.getMeasurement(measurementName).getValue());
         }
-
-        Prefs.blackBackground = !whiteBackground;
 
         // If applying to a new image, the input image is duplicated
         if (!applyToInput) {
@@ -128,8 +127,8 @@ public class ManualThreshold extends Module {
         // Calculating the threshold based on the selected algorithm
         applyThreshold(inputImagePlus, thresholdValue);
 
-        if (whiteBackground)
-            InvertIntensity.process(inputImagePlus);
+        if (binaryLogic.equals(BinaryLogic.WHITE_BACKGROUND))
+                InvertIntensity.process(inputImagePlus);
 
         // If the image is being saved as a new image, adding it to the workspace
         if (applyToInput) {
@@ -159,7 +158,7 @@ public class ManualThreshold extends Module {
         parameters.add(new ChoiceP(THRESHOLD_SOURCE, this, ThresholdSources.FIXED_VALUE, ThresholdSources.ALL));
         parameters.add(new DoubleP(THRESHOLD_VALUE, this, 1d));
         parameters.add(new ImageMeasurementP(MEASUREMENT, this));
-        parameters.add(new BooleanP(WHITE_BACKGROUND, this, true));
+        parameters.add(new ChoiceP(BINARY_LOGIC, this, BinaryLogic.BLACK_BACKGROUND, BinaryLogic.ALL));
 
         addParameterDescriptions();
 
@@ -190,7 +189,7 @@ public class ManualThreshold extends Module {
                 break;
         }
 
-        returnedParameters.add(parameters.getParameter(WHITE_BACKGROUND));
+        returnedParameters.add(parameters.getParameter(BINARY_LOGIC));
 
         return returnedParameters;
 
@@ -253,8 +252,7 @@ public class ManualThreshold extends Module {
         parameters.get(MEASUREMENT).setDescription(
                 "Measurement to act as threshold value when in \"" + ThresholdSources.IMAGE_MEASUREMENT + "\" mode.");
 
-        parameters.get(WHITE_BACKGROUND).setDescription(
-                "Controls the logic of the output image in terms of what is considered foreground and background.");
+                parameters.get(BINARY_LOGIC).setDescription(BinaryLogicInterface.getDescription());
 
     }
 }

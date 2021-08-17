@@ -15,6 +15,7 @@ import wbif.sjx.MIA.Module.Category;
 import wbif.sjx.MIA.Module.Categories;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
+import wbif.sjx.MIA.Object.Parameters.ChoiceInterfaces.SpatialUnitsInterface;
 import wbif.sjx.MIA.Object.Parameters.Text.DoubleP;
 import wbif.sjx.MIA.Object.Parameters.Text.IntegerP;
 import wbif.sjx.MIA.Object.References.*;
@@ -94,13 +95,7 @@ public class ThresholdImage extends Module {
 
     }
 
-    public interface SpatialUnitModes {
-        String CALIBRATED = "Calibrated";
-        String PIXELS = "Pixel";
-
-        String[] ALL = new String[]{CALIBRATED,PIXELS};
-
-    }
+    public interface SpatialUnitModes extends SpatialUnitsInterface {}
 
     public interface Measurements{
         String GLOBAL_VALUE = "GLOBAL";
@@ -361,7 +356,7 @@ public class ThresholdImage extends Module {
         parameters.add(new BooleanP(USE_LOWER_THRESHOLD_LIMIT, this, false,"Limit the lowest threshold that can be applied to the image.  This is used to prevent unintentional segmentation of an image containing only background (i.e. no features present)."));
         parameters.add(new DoubleP(LOWER_THRESHOLD_LIMIT, this, 0.0, "Lowest absolute threshold value that can be applied."));
         parameters.add(new DoubleP(LOCAL_RADIUS, this, 1.0, "Radius of region to be used when calculating local intensity thresholds.  Units controlled by \""+SPATIAL_UNITS_MODE+"\" control."));
-        parameters.add(new ChoiceP(SPATIAL_UNITS_MODE, this, SpatialUnitModes.PIXELS, SpatialUnitModes.ALL, "Units that the local radius is specified using."));
+        parameters.add(new ChoiceP(SPATIAL_UNITS_MODE, this, SpatialUnitModes.PIXELS, SpatialUnitModes.ALL, SpatialUnitsInterface.getDescription()));
         parameters.add(new IntegerP(THRESHOLD_VALUE, this, 1, "Absolute manual threshold value that will be applied to all pixels."));
         parameters.add(new BooleanP(USE_GLOBAL_Z,this,false, "When performing 3D local thresholding, this takes all z-values at a location into account.  If disabled, pixels will be sampled in z according to the \""+LOCAL_RADIUS+"\" setting."));
         parameters.add(new BooleanP(WHITE_BACKGROUND, this,true, "Controls the logic of the output image in terms of what is considered foreground and background."));

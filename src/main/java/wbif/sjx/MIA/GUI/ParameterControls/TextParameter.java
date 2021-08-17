@@ -7,9 +7,7 @@ import java.awt.event.FocusListener;
 import javax.swing.JComponent;
 import javax.swing.JTextField;
 
-import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.GUI.GUI;
-import wbif.sjx.MIA.Module.Core.InputControl;
 import wbif.sjx.MIA.Module.Core.OutputControl;
 import wbif.sjx.MIA.Object.Parameters.Abstract.TextType;
 

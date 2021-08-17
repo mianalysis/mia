@@ -5,6 +5,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 import java.text.DecimalFormat;
 import java.util.List;
+import java.util.StringTokenizer;
 
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
@@ -32,6 +33,8 @@ public class DocumentationCoverageChecker {
         int completedObjRefs = 0;
         int totalObjRefs = 0;
 
+        StringBuilder sb = new StringBuilder();
+
         DecimalFormat df = new DecimalFormat("0.00");
 
         // classNames = new ArrayList<>();
@@ -51,9 +54,9 @@ public class DocumentationCoverageChecker {
 
                 boolean hasDescription = module.getDescription() != null && module.getDescription().length() > 1;
                 if (hasDescription)
-                        completedModuleDescriptions++;
-            
-                int[] parameterCounts = getModuleParameterCoverage(module);
+                    completedModuleDescriptions++;
+
+                int[] parameterCounts = getModuleParameterCoverage(module,sb);
                 totalParameters = totalParameters + parameterCounts[0];
                 completedParameters = completedParameters + parameterCounts[1];
 
@@ -79,10 +82,12 @@ public class DocumentationCoverageChecker {
                 double objRefCoverage = measurementCounts[2] == 0 ? 1
                         : (double) measurementCounts[3] / (double) measurementCounts[2];
 
-                System.out.println("Module \"" + module.getName() + "\", description = "+hasDescription+", parameters = "
-                        + df.format(100 * parameterCoverage) + "%, incomplete parameters = " + incompleteParameters
-                        + ", image refs = " + df.format(100 * imageRefCoverage) + "%, obj refs = "
-                        + df.format(100 * objRefCoverage));
+                boolean hasSeparators = moduleHasSeparators(module);
+
+                System.out.println("Module \"" + module.getName() + "\", description = " + hasDescription
+                        + ", parameters = " + df.format(100 * parameterCoverage) + "%, incomplete parameters = "
+                        + incompleteParameters + ", image refs = " + df.format(100 * imageRefCoverage)
+                        + "%, obj refs = " + df.format(100 * objRefCoverage) + ", separators = " + hasSeparators);
 
             } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | NoSuchMethodException
                     | InvocationTargetException e) {
@@ -111,6 +116,8 @@ public class DocumentationCoverageChecker {
         System.out.println("_" + classNames.size() + "_" + completedModuleDescriptions + "_" + totalParameters + "_"
                 + completedParameters + "_" + completedParameterSets + "_" + totalImageRefs + "_" + completedImageRefs
                 + "_" + totalObjRefs + "_" + completedObjRefs);
+
+        System.out.println(new StringTokenizer(sb.toString()).countTokens()+" words");
 
     }
 
@@ -146,7 +153,7 @@ public class DocumentationCoverageChecker {
 
     }
 
-    public static int[] getModuleParameterCoverage(Module module) {
+    public static int[] getModuleParameterCoverage(Module module, StringBuilder sb) {
         int nParams = module.getAllParameters().size();
         int nCoveredParams = 0;
 
@@ -159,8 +166,11 @@ public class DocumentationCoverageChecker {
             if (parameter.getDescription() == null)
                 continue;
 
-            if (parameter.getDescription().length() > 1)
+            if (parameter.getDescription().length() > 1) {
+                sb.append(" ");
+                sb.append(parameter.getDescription());
                 nCoveredParams++;
+            }
 
             if (parameter instanceof ParameterGroup) {
                 ParameterCollection collection = ((ParameterGroup) parameter).getTemplateParameters();
@@ -170,14 +180,31 @@ public class DocumentationCoverageChecker {
                         nParams--;
                         continue;
                     }
-                    if (collectionParam.getDescription().length() > 1)
+                    if (collectionParam.getDescription().length() > 1) {
+                        sb.append(" ");
+                        sb.append(parameter.getDescription());
                         nCoveredParams++;
-                        
+                    }
                 }
             }
         }
 
         return new int[] { nParams, nCoveredParams };
+
+    }
+
+    static boolean moduleHasSeparators(Module module) {
+        ParameterCollection parameters = module.getAllParameters();
+
+        if (parameters == null)
+            return true;
+
+        for (Parameter parameter : parameters.values()) {
+            if (parameter instanceof SeparatorP)
+                return true;
+        }
+
+        return false;
 
     }
 }

@@ -3,19 +3,27 @@
 package wbif.sjx.MIA.Module.ImageProcessing.Pixel.Threshold;
 
 import ij.ImagePlus;
-import ij.Prefs;
 import ij.plugin.Duplicator;
 import ij.process.AutoThresholder;
-import wbif.sjx.MIA.Module.ImageProcessing.Pixel.InvertIntensity;
-import wbif.sjx.MIA.Module.ImageProcessing.Stack.ImageTypeConverter;
+import wbif.sjx.MIA.Module.Categories;
+import wbif.sjx.MIA.Module.Category;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
-import wbif.sjx.MIA.Module.Category;
-import wbif.sjx.MIA.Module.Categories;
-import wbif.sjx.MIA.Object.*;
-import wbif.sjx.MIA.Object.Parameters.*;
+import wbif.sjx.MIA.Module.ImageProcessing.Pixel.InvertIntensity;
+import wbif.sjx.MIA.Module.ImageProcessing.Stack.ImageTypeConverter;
+import wbif.sjx.MIA.Object.Image;
+import wbif.sjx.MIA.Object.Measurement;
+import wbif.sjx.MIA.Object.Status;
+import wbif.sjx.MIA.Object.Workspace;
+import wbif.sjx.MIA.Object.Parameters.BooleanP;
+import wbif.sjx.MIA.Object.Parameters.ChoiceP;
+import wbif.sjx.MIA.Object.Parameters.InputImageP;
+import wbif.sjx.MIA.Object.Parameters.OutputImageP;
+import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
+import wbif.sjx.MIA.Object.Parameters.SeparatorP;
+import wbif.sjx.MIA.Object.Parameters.ChoiceInterfaces.BinaryLogicInterface;
 import wbif.sjx.MIA.Object.Parameters.Text.DoubleP;
-import wbif.sjx.MIA.Object.References.*;
+import wbif.sjx.MIA.Object.References.ImageMeasurementRef;
 import wbif.sjx.MIA.Object.References.Collections.ImageMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.MetadataRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.ObjMeasurementRefCollection;
@@ -37,7 +45,7 @@ public class GlobalAutoThreshold extends Module {
     public static final String THRESHOLD_MULTIPLIER = "Threshold multiplier";
     public static final String USE_LOWER_THRESHOLD_LIMIT = "Use lower threshold limit";
     public static final String LOWER_THRESHOLD_LIMIT = "Lower threshold limit";
-    public static final String WHITE_BACKGROUND = "Black objects/white background";
+    public static final String BINARY_LOGIC = "Binary logic";
 
     public GlobalAutoThreshold(ModuleCollection modules) {
         super("Global auto-threshold", modules);
@@ -49,6 +57,9 @@ public class GlobalAutoThreshold extends Module {
 
         String[] ALL = new String[] { CALCULATE_AND_APPLY, CALCULATE_ONLY };
 
+    }
+
+    public interface BinaryLogic extends BinaryLogicInterface {
     }
 
     public interface Algorithms {
@@ -177,13 +188,11 @@ public class GlobalAutoThreshold extends Module {
         boolean applyToInput = parameters.getValue(APPLY_TO_INPUT);
         String algorithm = parameters.getValue(ALGORITHM);
         double thrMult = parameters.getValue(THRESHOLD_MULTIPLIER);
-        boolean whiteBackground = parameters.getValue(WHITE_BACKGROUND);
+        String binaryLogic = parameters.getValue(BINARY_LOGIC);
         boolean useLowerLim = parameters.getValue(USE_LOWER_THRESHOLD_LIMIT);
         double lowerLim = parameters.getValue(LOWER_THRESHOLD_LIMIT);
 
         int threshold = 0;
-
-        Prefs.blackBackground = !whiteBackground;
 
         // Calculating the threshold based on the selected algorithm
         writeStatus("Applying " + algorithm + " threshold (multiplier = " + thrMult + " x)");
@@ -203,7 +212,7 @@ public class GlobalAutoThreshold extends Module {
             // Applying threshold
             ManualThreshold.applyThreshold(inputImagePlus, threshold);
 
-            if (whiteBackground)
+            if (binaryLogic.equals(BinaryLogic.WHITE_BACKGROUND))
                 InvertIntensity.process(inputImagePlus);
 
             // If the image is being saved as a new image, adding it to the workspace
@@ -248,7 +257,7 @@ public class GlobalAutoThreshold extends Module {
         parameters.add(new DoubleP(THRESHOLD_MULTIPLIER, this, 1.0));
         parameters.add(new BooleanP(USE_LOWER_THRESHOLD_LIMIT, this, false));
         parameters.add(new DoubleP(LOWER_THRESHOLD_LIMIT, this, 0.0));
-        parameters.add(new BooleanP(WHITE_BACKGROUND, this, true));
+        parameters.add(new ChoiceP(BINARY_LOGIC, this, BinaryLogic.BLACK_BACKGROUND, BinaryLogic.ALL));
 
         addParameterDescriptions();
 
@@ -278,7 +287,7 @@ public class GlobalAutoThreshold extends Module {
             returnedParameters.add(parameters.getParameter(LOWER_THRESHOLD_LIMIT));
         }
 
-        returnedParameters.add(parameters.getParameter(WHITE_BACKGROUND));
+        returnedParameters.add(parameters.getParameter(BINARY_LOGIC));
 
         return returnedParameters;
 
@@ -373,8 +382,7 @@ public class GlobalAutoThreshold extends Module {
 
         parameters.get(LOWER_THRESHOLD_LIMIT).setDescription("Lowest absolute threshold value that can be applied.");
 
-        parameters.get(WHITE_BACKGROUND).setDescription(
-                "Controls the logic of the output image in terms of what is considered foreground and background.");
+        parameters.get(BINARY_LOGIC).setDescription(BinaryLogicInterface.getDescription());
 
     }
 }

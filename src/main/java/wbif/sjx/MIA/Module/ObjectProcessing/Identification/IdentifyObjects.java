@@ -14,10 +14,10 @@ import ij.Prefs;
 import ij.plugin.SubHyperstackMaker;
 import ij.process.ImageProcessor;
 import inra.ijpb.binary.conncomp.FloodFillComponentsLabeling3D;
+import wbif.sjx.MIA.Module.Categories;
+import wbif.sjx.MIA.Module.Category;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
-import wbif.sjx.MIA.Module.Category;
-import wbif.sjx.MIA.Module.Categories;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.InvertIntensity;
 import wbif.sjx.MIA.Module.ImageProcessing.Stack.ImageTypeConverter;
 import wbif.sjx.MIA.Object.Image;
@@ -29,8 +29,9 @@ import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.MIA.Object.Parameters.BooleanP;
 import wbif.sjx.MIA.Object.Parameters.ChoiceP;
 import wbif.sjx.MIA.Object.Parameters.InputImageP;
-import wbif.sjx.MIA.Object.Parameters.SeparatorP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
+import wbif.sjx.MIA.Object.Parameters.SeparatorP;
+import wbif.sjx.MIA.Object.Parameters.ChoiceInterfaces.BinaryLogicInterface;
 import wbif.sjx.MIA.Object.Parameters.Objects.OutputObjectsP;
 import wbif.sjx.MIA.Object.Parameters.Text.IntegerP;
 import wbif.sjx.MIA.Object.References.Collections.ImageMeasurementRefCollection;
@@ -51,7 +52,7 @@ public class IdentifyObjects extends Module {
     public static final String OUTPUT_OBJECTS = "Output objects";
 
     public static final String IDENTIFICATION_SEPARATOR = "Object identification";
-    public static final String WHITE_BACKGROUND = "Black objects/white background";
+    public static final String BINARY_LOGIC = "Binary logic";
     public static final String SINGLE_OBJECT = "Identify as single object";
     public static final String CONNECTIVITY = "Connectivity";
     public static final String VOLUME_TYPE = "Volume type";
@@ -62,6 +63,9 @@ public class IdentifyObjects extends Module {
 
     public IdentifyObjects(ModuleCollection modules) {
         super("Identify objects", modules);
+    }
+
+    public interface BinaryLogic extends BinaryLogicInterface {
     }
 
     public interface Connectivity {
@@ -245,7 +249,7 @@ public class IdentifyObjects extends Module {
 
     }
 
-    public static ObjCollection process(Image inputImage, String outputObjectsName, boolean whiteBackground,
+    public static ObjCollection process(Image inputImage, String outputObjectsName, boolean blackBackground,
             boolean singleObject, int connectivity, String type, boolean multithread, int minStripWidth,
             boolean verbose) throws IntegerOverflowException, RuntimeException {
         String name = new IdentifyObjects(null).getName();
@@ -270,7 +274,7 @@ public class IdentifyObjects extends Module {
             }
             currStack.updateChannelAndDraw();
 
-            if (whiteBackground)
+            if (!blackBackground)
                 InvertIntensity.process(currStack);
 
             // Applying connected components labelling
@@ -308,7 +312,7 @@ public class IdentifyObjects extends Module {
             }
 
             writeProgressStatus(t, inputImagePlus.getNFrames(), "images", name);
-            
+
         }
 
         return outputObjects;
@@ -324,7 +328,6 @@ public class IdentifyObjects extends Module {
                 return 26;
         }
     }
-
 
     @Override
     public Category getCategory() {
@@ -347,7 +350,8 @@ public class IdentifyObjects extends Module {
 
         // Getting parameters
         String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);
-        boolean whiteBackground = parameters.getValue(WHITE_BACKGROUND);
+        String binaryLogic = parameters.getValue(BINARY_LOGIC);
+        boolean blackBackground = binaryLogic.equals(BinaryLogic.BLACK_BACKGROUND);
         boolean singleObject = parameters.getValue(SINGLE_OBJECT);
         String connectivityName = parameters.getValue(CONNECTIVITY);
         String type = parameters.getValue(VOLUME_TYPE);
@@ -358,7 +362,7 @@ public class IdentifyObjects extends Module {
         // Getting options
         int connectivity = getConnectivity(connectivityName);
 
-        ObjCollection outputObjects = process(inputImage, outputObjectsName, whiteBackground, singleObject,
+        ObjCollection outputObjects = process(inputImage, outputObjectsName, blackBackground, singleObject,
                 connectivity, type, multithread, minStripWidth, true);
 
         // Adding objects to workspace
@@ -380,7 +384,7 @@ public class IdentifyObjects extends Module {
         parameters.add(new OutputObjectsP(OUTPUT_OBJECTS, this));
 
         parameters.add(new SeparatorP(IDENTIFICATION_SEPARATOR, this));
-        parameters.add(new BooleanP(WHITE_BACKGROUND, this, true));
+        parameters.add(new ChoiceP(BINARY_LOGIC, this, BinaryLogic.BLACK_BACKGROUND, BinaryLogic.ALL));
         parameters.add(new BooleanP(SINGLE_OBJECT, this, false));
         parameters.add(new ChoiceP(CONNECTIVITY, this, Connectivity.TWENTYSIX, Connectivity.ALL));
         parameters.add(new ChoiceP(VOLUME_TYPE, this, VolumeTypes.POINTLIST, VolumeTypes.ALL));
@@ -402,7 +406,7 @@ public class IdentifyObjects extends Module {
         returnedParameters.add(parameters.get(OUTPUT_OBJECTS));
 
         returnedParameters.add(parameters.get(IDENTIFICATION_SEPARATOR));
-        returnedParameters.add(parameters.get(WHITE_BACKGROUND));
+        returnedParameters.add(parameters.get(BINARY_LOGIC));
         returnedParameters.add(parameters.get(SINGLE_OBJECT));
         returnedParameters.add(parameters.get(CONNECTIVITY));
         returnedParameters.add(parameters.get(VOLUME_TYPE));
@@ -448,31 +452,37 @@ public class IdentifyObjects extends Module {
     }
 
     void addParameterDescriptions() {
-      parameters.get(INPUT_IMAGE).setDescription("Input binary image from which objects will be identified.  This image must be 8-bit and only contain values 0 and 255.");
+        parameters.get(INPUT_IMAGE).setDescription(
+                "Input binary image from which objects will be identified.  This image must be 8-bit and only contain values 0 and 255.");
 
-      parameters.get(OUTPUT_OBJECTS).setDescription("Name of output objects to be stored in workspace.");
+        parameters.get(OUTPUT_OBJECTS).setDescription("Name of output objects to be stored in workspace.");
 
-      parameters.get(WHITE_BACKGROUND).setDescription("When selected, \"foreground\" pixels are considered to have intensities of 0 and background 255 (i.e. black objects on a white background).  When not selected, the inverse is true.");
+        parameters.get(SINGLE_OBJECT).setDescription(
+                "Add all pixels to a single output object.  Enabling this skips the connected-components step.");
 
-      parameters.get(SINGLE_OBJECT).setDescription("Add all pixels to a single output object.  Enabling this skips the connected-components step.");
+        parameters.get(CONNECTIVITY).setDescription(
+                "When performing connected components labelling, the connectivity determines which neighbouring pixels are considered to be in contact.<br><ul>"
+                        + "<li>\"" + Connectivity.SIX
+                        + "\" considers immediate neighbours to lie in the cardinal directions (i.e. left, right, in-front, behind, above and below).  In 2D this is actually 4-way connectivity.</li>"
+                        + "<li> - \"" + Connectivity.TWENTYSIX
+                        + "\" (default) considers neighbours to include the cardinal directions as well as diagonal to the pixel in question.  In 2D this is actually 8-way connectivity.</li></ul>");
 
-      parameters.get(CONNECTIVITY).setDescription("When performing connected components labelling, the connectivity determines which neighbouring pixels are considered to be in contact.<br><ul>"
-              + "<li>\"" + Connectivity.SIX
-              + "\" considers immediate neighbours to lie in the cardinal directions (i.e. left, right, in-front, behind, above and below).  In 2D this is actually 4-way connectivity.</li>"
-              + "<li> - \"" + Connectivity.TWENTYSIX
-              + "\" (default) considers neighbours to include the cardinal directions as well as diagonal to the pixel in question.  In 2D this is actually 8-way connectivity.</li></ul>");
+        parameters.get(VOLUME_TYPE).setDescription(
+                "The method used to store pixel coordinates.  This only affects performance and memory usage, there is no difference in results obtained using difference storage methods.<br><ul>"
+                        + "<li>\"" + VolumeTypes.POINTLIST
+                        + "\" (default) stores object coordinates as a list of XYZ coordinates.  This is most efficient for small objects, very thin objects or objects with lots of holes.</li>"
+                        + "<li>\"" + VolumeTypes.OCTREE
+                        + "\" stores objects in an octree format.  Here, the coordinate space is broken down into cubes of different sizes, each of which is marked as foreground (i.e. an object) or background.  Octrees are most efficient when there are lots of large cubic regions of the same label, as the space can be represented by larger (and thus fewer) cubes.  This is best used when there are large, completely solid objects.  If z-axis sampling is much larger than xy-axis sampling, it's typically best to opt for the quadtree method.</li>"
+                        + "<li>\"" + VolumeTypes.QUADTREE
+                        + "\" stores objects in a quadtree format.  Here, each Z-plane of the object is broken down into squares of different sizes, each of which is marked as foreground (i.e. an object) or background.  Quadtrees are most efficient when there are lots of large square regions of the same label, as the space can be represented by larger (and thus fewer) squares.  This is best used when there are large, completely solid objects.</li></ul>");
 
-      parameters.get(VOLUME_TYPE).setDescription("The method used to store pixel coordinates.  This only affects performance and memory usage, there is no difference in results obtained using difference storage methods.<br><ul>"
-              + "<li>\"" + VolumeTypes.POINTLIST
-              + "\" (default) stores object coordinates as a list of XYZ coordinates.  This is most efficient for small objects, very thin objects or objects with lots of holes.</li>"
-              + "<li>\"" + VolumeTypes.OCTREE
-              + "\" stores objects in an octree format.  Here, the coordinate space is broken down into cubes of different sizes, each of which is marked as foreground (i.e. an object) or background.  Octrees are most efficient when there are lots of large cubic regions of the same label, as the space can be represented by larger (and thus fewer) cubes.  This is best used when there are large, completely solid objects.  If z-axis sampling is much larger than xy-axis sampling, it's typically best to opt for the quadtree method.</li>"
-              + "<li>\"" + VolumeTypes.QUADTREE
-              + "\" stores objects in a quadtree format.  Here, each Z-plane of the object is broken down into squares of different sizes, each of which is marked as foreground (i.e. an object) or background.  Quadtrees are most efficient when there are lots of large square regions of the same label, as the space can be represented by larger (and thus fewer) squares.  This is best used when there are large, completely solid objects.</li></ul>");
+        parameters.get(BINARY_LOGIC).setDescription(BinaryLogicInterface.getDescription());
+                        
+        parameters.get(ENABLE_MULTITHREADING).setDescription(
+                "Break the image down into strips, each one processed on a separate CPU thread.  The overhead required to do this means it's best for large multi-core CPUs, but should be left disabled for small images or on CPUs with few cores.");
 
-      parameters.get(ENABLE_MULTITHREADING).setDescription("Break the image down into strips, each one processed on a separate CPU thread.  The overhead required to do this means it's best for large multi-core CPUs, but should be left disabled for small images or on CPUs with few cores.");
-
-      parameters.get(MIN_STRIP_WIDTH).setDescription("Minimum width of each strip to be processed on a separate CPU thread.  Measured in pixel units.");
+        parameters.get(MIN_STRIP_WIDTH).setDescription(
+                "Minimum width of each strip to be processed on a separate CPU thread.  Measured in pixel units.");
 
     }
 }

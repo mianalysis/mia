@@ -2,24 +2,14 @@
 
 package wbif.sjx.MIA.Module.ObjectMeasurements.Intensity;
 
-import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
-
-import org.eclipse.sisu.Nullable;
 
 import ij.ImagePlus;
-import ij.process.ImageProcessor;
 import wbif.sjx.MIA.Module.Categories;
 import wbif.sjx.MIA.Module.Category;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
-import wbif.sjx.MIA.Module.ImageMeasurements.MeasureIntensityDistribution;
-import wbif.sjx.MIA.Module.ImageProcessing.Pixel.ImageCalculator;
-import wbif.sjx.MIA.Module.ImageProcessing.Pixel.ImageMath;
-import wbif.sjx.MIA.Module.ImageProcessing.Pixel.InvertIntensity;
-import wbif.sjx.MIA.Module.ImageProcessing.Pixel.Binary.BinaryOperations2D;
-import wbif.sjx.MIA.Module.ImageProcessing.Pixel.Binary.DistanceMap;
+import wbif.sjx.MIA.Module.ImageProcessing.Stack.ExtractSubstack;
 import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.Measurement;
 import wbif.sjx.MIA.Object.Obj;
@@ -27,20 +17,16 @@ import wbif.sjx.MIA.Object.ObjCollection;
 import wbif.sjx.MIA.Object.Status;
 import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.MIA.Object.Parameters.BooleanP;
-import wbif.sjx.MIA.Object.Parameters.ChoiceP;
 import wbif.sjx.MIA.Object.Parameters.InputImageP;
 import wbif.sjx.MIA.Object.Parameters.InputObjectsP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.Parameters.SeparatorP;
-import wbif.sjx.MIA.Object.Parameters.Text.DoubleP;
-import wbif.sjx.MIA.Object.Parameters.Text.IntegerP;
 import wbif.sjx.MIA.Object.References.ObjMeasurementRef;
 import wbif.sjx.MIA.Object.References.Collections.ImageMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.MetadataRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.ObjMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.ParentChildRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.PartnerRefCollection;
-import wbif.sjx.MIA.Object.Units.SpatialUnit;
 import wbif.sjx.common.MathFunc.CumStat;
 import wbif.sjx.common.Object.Point;
 
@@ -55,18 +41,23 @@ public class MeasureObjectIntensity extends Module {
     public static final String WEIGHTED_CENTRE_SEPARATOR = "Weighted centre";
     public static final String MEASURE_WEIGHTED_CENTRE = "Measure weighted centre";
 
-    public static final String WEIGHTED_DISTANCE_TO_EDGE_SEPARATOR = "Weighted distance to edge";
-    public static final String MEASURE_WEIGHTED_EDGE_DISTANCE = "Measure weighted distance to edge";
-    public static final String EDGE_DISTANCE_MODE = "Edge distance mode";
+    // public static final String WEIGHTED_DISTANCE_TO_EDGE_SEPARATOR = "Weighted
+    // distance to edge";
+    // public static final String MEASURE_WEIGHTED_EDGE_DISTANCE = "Measure weighted
+    // distance to edge";
+    // public static final String EDGE_DISTANCE_MODE = "Edge distance mode";
 
-    public static final String INTENSITY_PROFILE_SEPARATOR = "Intensity profile from edge";
-    public static final String MEASURE_EDGE_INTENSITY_PROFILE = "Measure intensity profile from edge";
-    public static final String MINIMUM_DISTANCE = "Minimum distance";
-    public static final String MAXIMUM_DISTANCE = "Maximum distance";
-    public static final String CALIBRATED_DISTANCES = "Calibrated distances";
-    public static final String NUMBER_OF_MEASUREMENTS = "Number of measurements";
-    public static final String ONLY_MEASURE_ON_MASK = "Only measure on masked regions";
-    public static final String MASK_IMAGE = "Mask image";
+    // public static final String INTENSITY_PROFILE_SEPARATOR = "Intensity profile
+    // from edge";
+    // public static final String MEASURE_EDGE_INTENSITY_PROFILE = "Measure
+    // intensity profile from edge";
+    // public static final String MINIMUM_DISTANCE = "Minimum distance";
+    // public static final String MAXIMUM_DISTANCE = "Maximum distance";
+    // public static final String CALIBRATED_DISTANCES = "Calibrated distances";
+    // public static final String NUMBER_OF_MEASUREMENTS = "Number of measurements";
+    // public static final String ONLY_MEASURE_ON_MASK = "Only measure on masked
+    // regions";
+    // public static final String MASK_IMAGE = "Mask image";
 
     public MeasureObjectIntensity(ModuleCollection modules) {
         super("Measure object intensity", modules);
@@ -95,31 +86,33 @@ public class MeasureObjectIntensity extends Module {
 
     }
 
-    public interface EdgeDistanceModes extends MeasureIntensityDistribution.EdgeDistanceModes {
-    }
+    // public interface EdgeDistanceModes extends
+    // MeasureIntensityDistribution.EdgeDistanceModes {
+    // }
 
     public static String getFullName(String imageName, String measurement) {
         return "INTENSITY // " + imageName + "_" + measurement;
     }
 
-    private double[] getProfileBins(double minDist, double maxDist, int nMeasurements) {
-        double[] binNames = new double[nMeasurements];
+    // private double[] getProfileBins(double minDist, double maxDist, int
+    // nMeasurements) {
+    // double[] binNames = new double[nMeasurements];
 
-        double binWidth = (maxDist - minDist) / (nMeasurements - 1);
-        for (int i = 0; i < nMeasurements; i++)
-            binNames[i] = (i * binWidth) + minDist;
+    // double binWidth = (maxDist - minDist) / (nMeasurements - 1);
+    // for (int i = 0; i < nMeasurements; i++)
+    // binNames[i] = (i * binWidth) + minDist;
 
-        return binNames;
+    // return binNames;
 
-    }
+    // }
 
-    private String getBinNameFormat(boolean calibratedDistances) {
-        if (calibratedDistances) {
-            return "0.00E0";
-        } else {
-            return "#.00";
-        }
-    }
+    // private String getBinNameFormat(boolean calibratedDistances) {
+    // if (calibratedDistances) {
+    // return "0.00E0";
+    // } else {
+    // return "#.00";
+    // }
+    // }
 
     private void measureIntensity(Obj object, Image image) {
         // Getting parameters
@@ -183,128 +176,146 @@ public class MeasureObjectIntensity extends Module {
 
     }
 
-    private void measureWeightedEdgeDistance(Obj object, Image image) {
-        // Getting parameters
-        String imageName = parameters.getValue(INPUT_IMAGE);
-        String edgeDistanceMode = parameters.getValue(EDGE_DISTANCE_MODE);
+    // private void measureWeightedEdgeDistance(Obj object, Image image) {
+    // // Getting parameters
+    // String imageName = parameters.getValue(INPUT_IMAGE);
+    // String edgeDistanceMode = parameters.getValue(EDGE_DISTANCE_MODE);
 
-        ObjCollection inputCollection = object.getObjectCollection();
-        ObjCollection collection = new ObjCollection(object.getName(), object.getSpatialCalibration(),
-                inputCollection.getNFrames(), inputCollection.getFrameInterval(), inputCollection.getTemporalUnit());
-        collection.add(object);
-        CumStat cs = MeasureIntensityDistribution.measureIntensityWeightedProximity(collection, image,
-                edgeDistanceMode);
+    // ObjCollection inputCollection = object.getObjectCollection();
+    // ObjCollection collection = new ObjCollection(object.getName(),
+    // object.getSpatialCalibration(),
+    // inputCollection.getNFrames(), inputCollection.getFrameInterval(),
+    // inputCollection.getTemporalUnit());
+    // collection.add(object);
+    // CumStat cs =
+    // MeasureIntensityDistribution.measureIntensityWeightedProximity(collection,
+    // image,
+    // edgeDistanceMode);
 
-        double distPerPxXY = object.getDppXY();
+    // double distPerPxXY = object.getDppXY();
 
-        object.addMeasurement(
-                new Measurement(getFullName(imageName, Measurements.MEAN_EDGE_DISTANCE_PX), cs.getMean()));
-        object.addMeasurement(new Measurement(getFullName(imageName, Measurements.MEAN_EDGE_DISTANCE_CAL),
-                cs.getMean() * distPerPxXY));
-        object.addMeasurement(new Measurement(getFullName(imageName, Measurements.STD_EDGE_DISTANCE_PX), cs.getStd()));
-        object.addMeasurement(
-                new Measurement(getFullName(imageName, Measurements.STD_EDGE_DISTANCE_CAL), cs.getStd() * distPerPxXY));
+    // object.addMeasurement(
+    // new Measurement(getFullName(imageName, Measurements.MEAN_EDGE_DISTANCE_PX),
+    // cs.getMean()));
+    // object.addMeasurement(new Measurement(getFullName(imageName,
+    // Measurements.MEAN_EDGE_DISTANCE_CAL),
+    // cs.getMean() * distPerPxXY));
+    // object.addMeasurement(new Measurement(getFullName(imageName,
+    // Measurements.STD_EDGE_DISTANCE_PX), cs.getStd()));
+    // object.addMeasurement(
+    // new Measurement(getFullName(imageName, Measurements.STD_EDGE_DISTANCE_CAL),
+    // cs.getStd() * distPerPxXY));
 
-    }
+    // }
 
-    private void measureEdgeIntensityProfile(Obj object, Image intensityImage, @Nullable Image maskImage) {
-        // Getting parameters
-        String imageName = parameters.getValue(INPUT_IMAGE);
-        double minDist = parameters.getValue(MINIMUM_DISTANCE);
-        double maxDist = parameters.getValue(MAXIMUM_DISTANCE);
-        boolean calibratedDistances = parameters.getValue(CALIBRATED_DISTANCES);
-        int nMeasurements = parameters.getValue(NUMBER_OF_MEASUREMENTS);
-        double distPerPxXY = object.getDppXY();
+    // private void measureEdgeIntensityProfile(Obj object, Image intensityImage,
+    // @Nullable Image maskImage) {
+    // // Getting parameters
+    // String imageName = parameters.getValue(INPUT_IMAGE);
+    // double minDist = parameters.getValue(MINIMUM_DISTANCE);
+    // double maxDist = parameters.getValue(MAXIMUM_DISTANCE);
+    // boolean calibratedDistances = parameters.getValue(CALIBRATED_DISTANCES);
+    // int nMeasurements = parameters.getValue(NUMBER_OF_MEASUREMENTS);
+    // double distPerPxXY = object.getDppXY();
 
-        // Setting up CumStats to hold results
-        LinkedHashMap<Double, CumStat> cumStats = new LinkedHashMap<>();
-        double binWidth = (maxDist - minDist) / (nMeasurements - 1);
-        double[] bins = getProfileBins(minDist, maxDist, nMeasurements);
-        for (int i = 0; i < nMeasurements; i++)
-            cumStats.put(bins[i], new CumStat());
+    // // Setting up CumStats to hold results
+    // LinkedHashMap<Double, CumStat> cumStats = new LinkedHashMap<>();
+    // double binWidth = (maxDist - minDist) / (nMeasurements - 1);
+    // double[] bins = getProfileBins(minDist, maxDist, nMeasurements);
+    // for (int i = 0; i < nMeasurements; i++)
+    // cumStats.put(bins[i], new CumStat());
 
-        // Creating an object image
-        Image objImage = object.getAsImage("Inside dist", false);
+    // // Creating an object image
+    // Image objImage = object.getAsImage("Inside dist", false);
 
-        // Calculating the distance maps. The inside map is set to negative
-        String weightMode = DistanceMap.WeightModes.WEIGHTS_3_4_5_7;
-        Image outsideDistImage = DistanceMap.process(objImage, "DistanceOutside", weightMode, true, false);
-        InvertIntensity.process(objImage);
-        BinaryOperations2D.process(objImage, BinaryOperations2D.OperationModes.ERODE, 1, 1);
-        Image insideDistImage = DistanceMap.process(objImage, "DistanceInside", weightMode, true, false);
-        ImageMath.process(insideDistImage, ImageMath.CalculationTypes.MULTIPLY, -1.0);
-        Image distImage = ImageCalculator.process(insideDistImage, outsideDistImage,
-                ImageCalculator.CalculationMethods.ADD, ImageCalculator.OverwriteModes.CREATE_NEW, "Distance", true,
-                true);
+    // // Calculating the distance maps. The inside map is set to negative
+    // String weightMode = DistanceMap.WeightModes.WEIGHTS_3_4_5_7;
+    // Image outsideDistImage = DistanceMap.process(objImage, "DistanceOutside",
+    // false, weightMode, true, false);
+    // InvertIntensity.process(objImage);
+    // BinaryOperations2D.process(objImage, BinaryOperations2D.OperationModes.ERODE,
+    // 1, 1, false);
+    // Image insideDistImage = DistanceMap.process(objImage, "DistanceInside",
+    // false, weightMode, true, false);
+    // ImageMath.process(insideDistImage, ImageMath.CalculationTypes.MULTIPLY,
+    // -1.0);
+    // Image distImage = ImageCalculator.process(insideDistImage, outsideDistImage,
+    // ImageCalculator.CalculationMethods.ADD,
+    // ImageCalculator.OverwriteModes.CREATE_NEW, "Distance", true,
+    // true);
 
-        // Iterating over each pixel in the image, adding that intensity value to the
-        // corresponding bin
-        ImagePlus distIpl = distImage.getImagePlus();
-        ImagePlus intensityIpl = intensityImage.getImagePlus();
-        int nChannels = distIpl.getNChannels();
-        int nSlices = distIpl.getNSlices();
-        int nFrames = distIpl.getNFrames();
+    // // Iterating over each pixel in the image, adding that intensity value to the
+    // // corresponding bin
+    // ImagePlus distIpl = distImage.getImagePlus();
+    // ImagePlus intensityIpl = intensityImage.getImagePlus();
+    // int nChannels = distIpl.getNChannels();
+    // int nSlices = distIpl.getNSlices();
+    // int nFrames = distIpl.getNFrames();
 
-        // Checking the number of dimensions. If a dimension of image2 is 1 this
-        // dimension is used for all images.
-        for (int z = 1; z <= nSlices; z++) {
-            for (int c = 1; c <= nChannels; c++) {
-                for (int t = 1; t <= nFrames; t++) {
-                    distIpl.setPosition(c, z, t);
-                    intensityIpl.setPosition(c, z, t);
+    // // Checking the number of dimensions. If a dimension of image2 is 1 this
+    // // dimension is used for all images.
+    // for (int z = 1; z <= nSlices; z++) {
+    // for (int c = 1; c <= nChannels; c++) {
+    // for (int t = 1; t <= nFrames; t++) {
+    // distIpl.setPosition(c, z, t);
+    // intensityIpl.setPosition(c, z, t);
 
-                    ImageProcessor distIpr = distIpl.getProcessor();
-                    ImageProcessor intensityIpr = intensityIpl.getProcessor();
+    // ImageProcessor distIpr = distIpl.getProcessor();
+    // ImageProcessor intensityIpr = intensityIpl.getProcessor();
 
-                    for (int x = 0; x < distIpl.getWidth(); x++) {
-                        for (int y = 0; y < distIpl.getHeight(); y++) {
-                            // If only considering points on mask objects
-                            if (maskImage != null) {
-                                maskImage.getImagePlus().setPosition(c, z, t);
-                                if (maskImage.getImagePlus().getProcessor().get(x, y) == 255)
-                                    continue;
-                            }
+    // for (int x = 0; x < distIpl.getWidth(); x++) {
+    // for (int y = 0; y < distIpl.getHeight(); y++) {
+    // // If only considering points on mask objects
+    // if (maskImage != null) {
+    // maskImage.getImagePlus().setPosition(c, z, t);
+    // if (maskImage.getImagePlus().getProcessor().get(x, y) == 255)
+    // continue;
+    // }
 
-                            // Determining which bin to use
-                            double dist = distIpr.getf(x, y);
+    // // Determining which bin to use
+    // double dist = distIpr.getf(x, y);
 
-                            // If using calibrated distances, this must be converted back to calibrated
-                            // units from px
-                            if (calibratedDistances)
-                                dist = dist * distPerPxXY;
-                            double bin = Math.round((dist - minDist) / binWidth) * binWidth + minDist;
+    // // If using calibrated distances, this must be converted back to calibrated
+    // // units from px
+    // if (calibratedDistances)
+    // dist = dist * distPerPxXY;
+    // double bin = Math.round((dist - minDist) / binWidth) * binWidth + minDist;
 
-                            // Ensuring the bin is within the specified range
-                            bin = Math.min(bin, maxDist);
-                            bin = Math.max(bin, minDist);
+    // // Ensuring the bin is within the specified range
+    // bin = Math.min(bin, maxDist);
+    // bin = Math.max(bin, minDist);
 
-                            // Adding the measurement to the relevant bin
-                            double intensity = intensityIpr.getf(x, y);
-                            cumStats.get(bin).addMeasure(intensity);
+    // // Adding the measurement to the relevant bin
+    // double intensity = intensityIpr.getf(x, y);
+    // cumStats.get(bin).addMeasure(intensity);
 
-                        }
-                    }
-                }
-            }
-        }
+    // }
+    // }
+    // }
+    // }
+    // }
 
-        int nDigits = (int) Math.log10(bins.length) + 1;
-        StringBuilder stringBuilder = new StringBuilder();
-        for (int i = 0; i < nDigits; i++)
-            stringBuilder.append("0");
-        DecimalFormat intFormat = new DecimalFormat(stringBuilder.toString());
-        String units = (boolean) parameters.getValue(CALIBRATED_DISTANCES) ? SpatialUnit.getOMEUnit().getSymbol()
-                : "PX";
+    // int nDigits = (int) Math.log10(bins.length) + 1;
+    // StringBuilder stringBuilder = new StringBuilder();
+    // for (int i = 0; i < nDigits; i++)
+    // stringBuilder.append("0");
+    // DecimalFormat intFormat = new DecimalFormat(stringBuilder.toString());
+    // String units = (boolean) parameters.getValue(CALIBRATED_DISTANCES) ?
+    // SpatialUnit.getOMEUnit().getSymbol()
+    // : "PX";
 
-        DecimalFormat decFormat = new DecimalFormat(getBinNameFormat(calibratedDistances));
+    // DecimalFormat decFormat = new
+    // DecimalFormat(getBinNameFormat(calibratedDistances));
 
-        int count = 0;
-        for (CumStat cumStat : cumStats.values()) {
-            String profileMeasName = Measurements.EDGE_PROFILE + "_BIN" + intFormat.format(count + 1) + "_("
-                    + decFormat.format(bins[count++]) + units + ")";
-            object.addMeasurement(new Measurement(getFullName(imageName, profileMeasName), cumStat.getMean()));
-        }
-    }
+    // int count = 0;
+    // for (CumStat cumStat : cumStats.values()) {
+    // String profileMeasName = Measurements.EDGE_PROFILE + "_BIN" +
+    // intFormat.format(count + 1) + "_("
+    // + decFormat.format(bins[count++]) + units + ")";
+    // object.addMeasurement(new Measurement(getFullName(imageName,
+    // profileMeasName), cumStat.getMean()));
+    // }
+    // }
 
     @Override
     public Category getCategory() {
@@ -313,7 +324,7 @@ public class MeasureObjectIntensity extends Module {
 
     @Override
     public String getDescription() {
-        return "Measure intensity of each object in a specified image.  Measurements of intensity are taken at all pixel coordinates corresponding to each object.";
+        return "Measure intensity of each object in a specified image.  Measurements of intensity are taken at all pixel coordinates corresponding to each object.  By default, basic measurements such as mean, minimum and maximum will be calculated.  Additional measurements can optionally be enabled.";
     }
 
     @Override
@@ -326,11 +337,11 @@ public class MeasureObjectIntensity extends Module {
         String imageName = parameters.getValue(INPUT_IMAGE);
         Image inputImage = workspace.getImages().get(imageName);
 
-        Image maskImage = null;
-        if ((boolean) parameters.getValue(MEASURE_EDGE_INTENSITY_PROFILE)
-                && (boolean) parameters.getValue(ONLY_MEASURE_ON_MASK)) {
-            maskImage = workspace.getImage(parameters.getValue(MASK_IMAGE));
-        }
+        // Image maskImage = null;
+        // if ((boolean) parameters.getValue(MEASURE_EDGE_INTENSITY_PROFILE)
+        // && (boolean) parameters.getValue(ONLY_MEASURE_ON_MASK)) {
+        // maskImage = workspace.getImage(parameters.getValue(MASK_IMAGE));
+        // }
 
         // Measuring intensity for each object and adding the measurement to that object
         int count = 0;
@@ -342,13 +353,13 @@ public class MeasureObjectIntensity extends Module {
             if ((boolean) parameters.getValue(MEASURE_WEIGHTED_CENTRE))
                 measureWeightedCentre(object, inputImage);
 
-            // If specified, measuring weighted distance to the object edge
-            if ((boolean) parameters.getValue(MEASURE_WEIGHTED_EDGE_DISTANCE))
-                measureWeightedEdgeDistance(object, inputImage);
+            // // If specified, measuring weighted distance to the object edge
+            // if ((boolean) parameters.getValue(MEASURE_WEIGHTED_EDGE_DISTANCE))
+            // measureWeightedEdgeDistance(object, inputImage);
 
-            // If specified, measuring intensity profiles relative to the object edge
-            if ((boolean) parameters.getValue(MEASURE_EDGE_INTENSITY_PROFILE))
-                measureEdgeIntensityProfile(object, inputImage, maskImage);
+            // // If specified, measuring intensity profiles relative to the object edge
+            // if ((boolean) parameters.getValue(MEASURE_EDGE_INTENSITY_PROFILE))
+            // measureEdgeIntensityProfile(object, inputImage, maskImage);
 
             writeProgressStatus(++count, total, "objects");
 
@@ -370,19 +381,22 @@ public class MeasureObjectIntensity extends Module {
         parameters.add(new SeparatorP(WEIGHTED_CENTRE_SEPARATOR, this));
         parameters.add(new BooleanP(MEASURE_WEIGHTED_CENTRE, this, false));
 
-        parameters.add(new SeparatorP(WEIGHTED_DISTANCE_TO_EDGE_SEPARATOR, this));
-        parameters.add(new BooleanP(MEASURE_WEIGHTED_EDGE_DISTANCE, this, false));
-        parameters.add(
-                new ChoiceP(EDGE_DISTANCE_MODE, this, EdgeDistanceModes.INSIDE_AND_OUTSIDE, EdgeDistanceModes.ALL));
+        // parameters.add(new SeparatorP(WEIGHTED_DISTANCE_TO_EDGE_SEPARATOR, this));
+        // parameters.add(new BooleanP(MEASURE_WEIGHTED_EDGE_DISTANCE, this, false));
+        // parameters.add(
+        // new ChoiceP(EDGE_DISTANCE_MODE, this, EdgeDistanceModes.INSIDE_AND_OUTSIDE,
+        // EdgeDistanceModes.ALL));
 
-        parameters.add(new SeparatorP(INTENSITY_PROFILE_SEPARATOR, this));
-        parameters.add(new BooleanP(MEASURE_EDGE_INTENSITY_PROFILE, this, false));
-        parameters.add(new DoubleP(MINIMUM_DISTANCE, this, 0d));
-        parameters.add(new DoubleP(MAXIMUM_DISTANCE, this, 1d));
-        parameters.add(new BooleanP(CALIBRATED_DISTANCES, this, false));
-        parameters.add(new IntegerP(NUMBER_OF_MEASUREMENTS, this, 10));
-        parameters.add(new BooleanP(ONLY_MEASURE_ON_MASK, this, false));
-        parameters.add(new InputImageP(MASK_IMAGE, this));
+        // parameters.add(new SeparatorP(INTENSITY_PROFILE_SEPARATOR, this));
+        // parameters.add(new BooleanP(MEASURE_EDGE_INTENSITY_PROFILE, this, false));
+        // parameters.add(new DoubleP(MINIMUM_DISTANCE, this, 0d));
+        // parameters.add(new DoubleP(MAXIMUM_DISTANCE, this, 1d));
+        // parameters.add(new BooleanP(CALIBRATED_DISTANCES, this, false));
+        // parameters.add(new IntegerP(NUMBER_OF_MEASUREMENTS, this, 10));
+        // parameters.add(new BooleanP(ONLY_MEASURE_ON_MASK, this, false));
+        // parameters.add(new InputImageP(MASK_IMAGE, this));
+
+        addParameterDescriptions();
 
     }
 
@@ -397,24 +411,24 @@ public class MeasureObjectIntensity extends Module {
         returnedParameters.add(parameters.getParameter(WEIGHTED_CENTRE_SEPARATOR));
         returnedParameters.add(parameters.getParameter(MEASURE_WEIGHTED_CENTRE));
 
-        returnedParameters.add(parameters.getParameter(WEIGHTED_DISTANCE_TO_EDGE_SEPARATOR));
-        returnedParameters.add(parameters.getParameter(MEASURE_WEIGHTED_EDGE_DISTANCE));
-        if ((boolean) parameters.getValue(MEASURE_WEIGHTED_EDGE_DISTANCE)) {
-            returnedParameters.add(parameters.getParameter(EDGE_DISTANCE_MODE));
-        }
+        // returnedParameters.add(parameters.getParameter(WEIGHTED_DISTANCE_TO_EDGE_SEPARATOR));
+        // returnedParameters.add(parameters.getParameter(MEASURE_WEIGHTED_EDGE_DISTANCE));
+        // if ((boolean) parameters.getValue(MEASURE_WEIGHTED_EDGE_DISTANCE)) {
+        // returnedParameters.add(parameters.getParameter(EDGE_DISTANCE_MODE));
+        // }
 
-        returnedParameters.add(parameters.getParameter(INTENSITY_PROFILE_SEPARATOR));
-        returnedParameters.add(parameters.getParameter(MEASURE_EDGE_INTENSITY_PROFILE));
-        if ((boolean) parameters.getValue(MEASURE_EDGE_INTENSITY_PROFILE)) {
-            returnedParameters.add(parameters.getParameter(MINIMUM_DISTANCE));
-            returnedParameters.add(parameters.getParameter(MAXIMUM_DISTANCE));
-            returnedParameters.add(parameters.getParameter(CALIBRATED_DISTANCES));
-            returnedParameters.add(parameters.getParameter(NUMBER_OF_MEASUREMENTS));
-            returnedParameters.add(parameters.getParameter(ONLY_MEASURE_ON_MASK));
-            if ((boolean) parameters.getValue(ONLY_MEASURE_ON_MASK)) {
-                returnedParameters.add(parameters.getParameter(MASK_IMAGE));
-            }
-        }
+        // returnedParameters.add(parameters.getParameter(INTENSITY_PROFILE_SEPARATOR));
+        // returnedParameters.add(parameters.getParameter(MEASURE_EDGE_INTENSITY_PROFILE));
+        // if ((boolean) parameters.getValue(MEASURE_EDGE_INTENSITY_PROFILE)) {
+        // returnedParameters.add(parameters.getParameter(MINIMUM_DISTANCE));
+        // returnedParameters.add(parameters.getParameter(MAXIMUM_DISTANCE));
+        // returnedParameters.add(parameters.getParameter(CALIBRATED_DISTANCES));
+        // returnedParameters.add(parameters.getParameter(NUMBER_OF_MEASUREMENTS));
+        // returnedParameters.add(parameters.getParameter(ONLY_MEASURE_ON_MASK));
+        // if ((boolean) parameters.getValue(ONLY_MEASURE_ON_MASK)) {
+        // returnedParameters.add(parameters.getParameter(MASK_IMAGE));
+        // }
+        // }
 
         return returnedParameters;
 
@@ -515,81 +529,98 @@ public class MeasureObjectIntensity extends Module {
 
         }
 
-        if ((boolean) parameters.getValue(MEASURE_WEIGHTED_EDGE_DISTANCE)) {
-            name = getFullName(inputImageName, Measurements.MEAN_EDGE_DISTANCE_PX);
-            ObjMeasurementRef reference = objectMeasurementRefs.getOrPut(name);
-            reference.setObjectsName(inputObjectsName);
-            reference.setDescription("Mean intensity-weighted distance of all signal in the image, \"" + inputImageName
-                    + "\", to each object, \"" + inputObjectsName + "\".  This value will get smaller as the brightest "
-                    + "regions of the image get closer to the input objects.  Measured in pixel units.");
-            returnedRefs.add(reference);
+        // if ((boolean) parameters.getValue(MEASURE_WEIGHTED_EDGE_DISTANCE)) {
+        // name = getFullName(inputImageName, Measurements.MEAN_EDGE_DISTANCE_PX);
+        // ObjMeasurementRef reference = objectMeasurementRefs.getOrPut(name);
+        // reference.setObjectsName(inputObjectsName);
+        // reference.setDescription("Mean intensity-weighted distance of all signal in
+        // the image, \"" + inputImageName
+        // + "\", to each object, \"" + inputObjectsName + "\". This value will get
+        // smaller as the brightest "
+        // + "regions of the image get closer to the input objects. Measured in pixel
+        // units.");
+        // returnedRefs.add(reference);
 
-            name = getFullName(inputImageName, Measurements.MEAN_EDGE_DISTANCE_CAL);
-            reference = objectMeasurementRefs.getOrPut(name);
-            reference.setObjectsName(inputObjectsName);
-            reference.setDescription("Mean intensity-weighted distance of all signal in the image, \"" + inputImageName
-                    + "\", to each object, \"" + inputObjectsName + "\".  This value will get smaller as the brightest "
-                    + "regions of the image get closer to the input objects.  Measured in calibrated ("
-                    + SpatialUnit.getOMEUnit().getSymbol() + ") units.");
-            returnedRefs.add(reference);
+        // name = getFullName(inputImageName, Measurements.MEAN_EDGE_DISTANCE_CAL);
+        // reference = objectMeasurementRefs.getOrPut(name);
+        // reference.setObjectsName(inputObjectsName);
+        // reference.setDescription("Mean intensity-weighted distance of all signal in
+        // the image, \"" + inputImageName
+        // + "\", to each object, \"" + inputObjectsName + "\". This value will get
+        // smaller as the brightest "
+        // + "regions of the image get closer to the input objects. Measured in
+        // calibrated ("
+        // + SpatialUnit.getOMEUnit().getSymbol() + ") units.");
+        // returnedRefs.add(reference);
 
-            name = getFullName(inputImageName, Measurements.STD_EDGE_DISTANCE_PX);
-            reference = objectMeasurementRefs.getOrPut(name);
-            reference.setObjectsName(inputObjectsName);
-            reference.setDescription("Standard deviation intensity-weighted distance of all signal in the image, \""
-                    + inputImageName + "\", to each object, \"" + inputObjectsName
-                    + "\".  This value will get smaller as "
-                    + "the brightest regions of the image get closer to the input objects.  Measured in pixel units.");
-            returnedRefs.add(reference);
+        // name = getFullName(inputImageName, Measurements.STD_EDGE_DISTANCE_PX);
+        // reference = objectMeasurementRefs.getOrPut(name);
+        // reference.setObjectsName(inputObjectsName);
+        // reference.setDescription("Standard deviation intensity-weighted distance of
+        // all signal in the image, \""
+        // + inputImageName + "\", to each object, \"" + inputObjectsName
+        // + "\". This value will get smaller as "
+        // + "the brightest regions of the image get closer to the input objects.
+        // Measured in pixel units.");
+        // returnedRefs.add(reference);
 
-            name = getFullName(inputImageName, Measurements.STD_EDGE_DISTANCE_CAL);
-            reference = objectMeasurementRefs.getOrPut(name);
-            reference.setObjectsName(inputObjectsName);
-            reference.setDescription("Standard deviation intensity-weighted distance of all signal in the image, \""
-                    + inputImageName + "\", to each object, \"" + inputObjectsName
-                    + "\".  This value will get smaller as "
-                    + "the brightest regions of the image get closer to the input objects.  Measured in calibrated ("
-                    + SpatialUnit.getOMEUnit().getSymbol() + ") units.");
-            returnedRefs.add(reference);
+        // name = getFullName(inputImageName, Measurements.STD_EDGE_DISTANCE_CAL);
+        // reference = objectMeasurementRefs.getOrPut(name);
+        // reference.setObjectsName(inputObjectsName);
+        // reference.setDescription("Standard deviation intensity-weighted distance of
+        // all signal in the image, \""
+        // + inputImageName + "\", to each object, \"" + inputObjectsName
+        // + "\". This value will get smaller as "
+        // + "the brightest regions of the image get closer to the input objects.
+        // Measured in calibrated ("
+        // + SpatialUnit.getOMEUnit().getSymbol() + ") units.");
+        // returnedRefs.add(reference);
 
-        }
+        // }
 
-        if ((boolean) parameters.getValue(MEASURE_EDGE_INTENSITY_PROFILE)) {
-            double minDist = parameters.getValue(MINIMUM_DISTANCE);
-            double maxDist = parameters.getValue(MAXIMUM_DISTANCE);
-            int nMeasurements = parameters.getValue(NUMBER_OF_MEASUREMENTS);
-            double[] bins = getProfileBins(minDist, maxDist, nMeasurements);
-            String units = (boolean) parameters.getValue(CALIBRATED_DISTANCES) ? SpatialUnit.getOMEUnit().getSymbol()
-                    : "PX";
+        // if ((boolean) parameters.getValue(MEASURE_EDGE_INTENSITY_PROFILE)) {
+        // double minDist = parameters.getValue(MINIMUM_DISTANCE);
+        // double maxDist = parameters.getValue(MAXIMUM_DISTANCE);
+        // int nMeasurements = parameters.getValue(NUMBER_OF_MEASUREMENTS);
+        // double[] bins = getProfileBins(minDist, maxDist, nMeasurements);
+        // String units = (boolean) parameters.getValue(CALIBRATED_DISTANCES) ?
+        // SpatialUnit.getOMEUnit().getSymbol()
+        // : "PX";
 
-            // Bin names must be in alphabetical order (for the ObjMeasurementRefCollection
-            // TreeMap)
-            int nDigits = (int) Math.log10(bins.length) + 1;
-            StringBuilder stringBuilder = new StringBuilder();
-            for (int i = 0; i < nDigits; i++)
-                stringBuilder.append("0");
-            DecimalFormat intFormat = new DecimalFormat(stringBuilder.toString());
+        // // Bin names must be in alphabetical order (for the
+        // ObjMeasurementRefCollection
+        // // TreeMap)
+        // int nDigits = (int) Math.log10(bins.length) + 1;
+        // StringBuilder stringBuilder = new StringBuilder();
+        // for (int i = 0; i < nDigits; i++)
+        // stringBuilder.append("0");
+        // DecimalFormat intFormat = new DecimalFormat(stringBuilder.toString());
 
-            String nameFormat = getBinNameFormat(parameters.getValue(CALIBRATED_DISTANCES));
-            DecimalFormat decFormat = new DecimalFormat(nameFormat);
+        // String nameFormat =
+        // getBinNameFormat(parameters.getValue(CALIBRATED_DISTANCES));
+        // DecimalFormat decFormat = new DecimalFormat(nameFormat);
 
-            for (int i = 0; i < nMeasurements; i++) {
-                String profileMeasName = Measurements.EDGE_PROFILE + "_BIN" + intFormat.format(i + 1) + "_("
-                        + decFormat.format(bins[i]) + units + ")";
+        // for (int i = 0; i < nMeasurements; i++) {
+        // String profileMeasName = Measurements.EDGE_PROFILE + "_BIN" +
+        // intFormat.format(i + 1) + "_("
+        // + decFormat.format(bins[i]) + units + ")";
 
-                name = getFullName(inputImageName, profileMeasName);
-                ObjMeasurementRef reference = objectMeasurementRefs.getOrPut(name);
-                reference.setObjectsName(inputObjectsName);
+        // name = getFullName(inputImageName, profileMeasName);
+        // ObjMeasurementRef reference = objectMeasurementRefs.getOrPut(name);
+        // reference.setObjectsName(inputObjectsName);
 
-                String minBin = i == 0 ? "0" : decFormat.format(bins[i - 1]);
-                String maxBin = i == nMeasurements - 1 ? "Inf." : decFormat.format(bins[i] + 1);
+        // String minBin = i == 0 ? "0" : decFormat.format(bins[i - 1]);
+        // String maxBin = i == nMeasurements - 1 ? "Inf." : decFormat.format(bins[i] +
+        // 1);
 
-                reference.setDescription("Mean intensity of the image, \"" + inputImageName + "\" between " + minBin
-                        + " " + units + " and " + maxBin + " " + units + " from each \"" + inputObjectsName
-                        + "\" object.  This is the " + intFormat.format(i + 1) + " bin.");
-                returnedRefs.add(reference);
-            }
-        }
+        // reference.setDescription("Mean intensity of the image, \"" + inputImageName +
+        // "\" between " + minBin
+        // + " " + units + " and " + maxBin + " " + units + " from each \"" +
+        // inputObjectsName
+        // + "\" object. This is the " + intFormat.format(i + 1) + " bin.");
+        // returnedRefs.add(reference);
+        // }
+        // }
 
         return returnedRefs;
 
@@ -613,5 +644,18 @@ public class MeasureObjectIntensity extends Module {
     @Override
     public boolean verify() {
         return true;
+    }
+
+    void addParameterDescriptions() {
+        parameters.get(INPUT_OBJECTS)
+                .setDescription("Objects from the workspace for which intensities will be measured.");
+
+        parameters.get(INPUT_IMAGE).setDescription(
+                "Image from which pixel intensities will be measured.  This image can be 8-bit, 16-bit or 32-bit.  Measurements are always taken from the first channel if more than one channel is present (to measure additional channels, please first use the \""
+                        + new ExtractSubstack(null).getName() + "\" module).");
+
+        parameters.get(MEASURE_WEIGHTED_CENTRE).setDescription(
+                "When selected, the intensity-weighted centroid of each input object will be calculated.  With this, the greater the intensity in a particular region of an object, the more the \"centre of mass\" will be drawn towards it.");
+
     }
 }

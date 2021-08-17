@@ -8,7 +8,6 @@ import wbif.sjx.MIA.Module.Category;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.Core.InputControl;
-import wbif.sjx.MIA.Module.ImageProcessing.Pixel.InvertIntensity;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.Binary.BinaryOperations2D;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.Binary.DilateErode;
 import wbif.sjx.MIA.Object.Image;
@@ -84,7 +83,6 @@ public class ExpandShrinkObjects extends Module {
         }
 
         Image objectImage = inputObject.getAsTightImage("Temp", borderWidths);
-        InvertIntensity.process(objectImage);
 
         Prefs.blackBackground = false;
 
@@ -93,23 +91,25 @@ public class ExpandShrinkObjects extends Module {
         // from the converter has white objects on a black background.
         switch (method) {
             case Methods.EXPAND_2D:
-                BinaryOperations2D.process(objectImage, BinaryOperations2D.OperationModes.DILATE, radiusChangePx, 1);
+                BinaryOperations2D.process(objectImage, BinaryOperations2D.OperationModes.DILATE, radiusChangePx,
+                        1, true);
                 break;
 
             case Methods.EXPAND_3D:
-                DilateErode.process(objectImage.getImagePlus(), DilateErode.OperationModes.DILATE_3D, radiusChangePx, false);
+                DilateErode.process(objectImage.getImagePlus(), DilateErode.OperationModes.DILATE_3D, true,
+                        radiusChangePx, false);
                 break;
 
             case Methods.SHRINK_2D:
-                BinaryOperations2D.process(objectImage, BinaryOperations2D.OperationModes.ERODE, radiusChangePx, 1);
+                BinaryOperations2D.process(objectImage, BinaryOperations2D.OperationModes.ERODE, radiusChangePx,
+                        1, true);
                 break;
 
             case Methods.SHRINK_3D:
-                DilateErode.process(objectImage.getImagePlus(), DilateErode.OperationModes.ERODE_3D, radiusChangePx, false);
+                DilateErode.process(objectImage.getImagePlus(), DilateErode.OperationModes.ERODE_3D, true,
+                        radiusChangePx, false);
                 break;
         }
-
-        InvertIntensity.process(objectImage);
 
         // Creating a new object collection (only contains one image) from the
         // transformed image
@@ -151,7 +151,6 @@ public class ExpandShrinkObjects extends Module {
 
     }
 
-
     @Override
     public Category getCategory() {
         return Categories.OBJECT_PROCESSING_REFINEMENT;
@@ -161,7 +160,7 @@ public class ExpandShrinkObjects extends Module {
     public String getDescription() {
         return "Expands or shrinks all objects in a specified object collection from the workspace.  Expand and shrink operations can be performed in 2D or 3D.  These are effectively binary dilate and erode operations, respectively.  Input objects can be updated with the post-hole filling coordinates, or all output objects can be stored in the workspace as a new collection."
 
-        +"<br><br>Note: MIA permits object overlap, so objects may share coordinates.  This is important to consider if subsequently converting objects to an image, where it's not possible to represent both objects in shared pixels.";
+                + "<br><br>Note: MIA permits object overlap, so objects may share coordinates.  This is important to consider if subsequently converting objects to an image, where it's not possible to represent both objects in shared pixels.";
     }
 
     @Override
@@ -187,9 +186,9 @@ public class ExpandShrinkObjects extends Module {
                 workspace.addObjects(outputObjects);
 
             return Status.PASS;
-            
+
         }
-            
+
         if (calibratedUnits)
             radiusChange = radiusChange / firstObj.getDppXY();
 
@@ -332,33 +331,41 @@ public class ExpandShrinkObjects extends Module {
     }
 
     void addParameterDescriptions() {
-      parameters.get(INPUT_OBJECTS)
-              .setDescription("Object collection from the workspace to apply the expand or shrink operation to.");
+        parameters.get(INPUT_OBJECTS)
+                .setDescription("Object collection from the workspace to apply the expand or shrink operation to.");
 
-      parameters.get(UPDATE_INPUT_OBJECTS).setDescription(
-              "When selected, the post-operation objects will update the input objects in the workspace (all measurements and relationships will be retained).  Otherwise, the objects will be saved to the workspace in a new collection with the name specified by the \""
-                      + OUTPUT_OBJECTS + "\" parameter.  Note: If updating the objects, any previously-measured object properties (e.g. object volume) may become invalid.  To update such measurements it's necessary to re-run the relevant measurement modules.");
+        parameters.get(UPDATE_INPUT_OBJECTS).setDescription(
+                "When selected, the post-operation objects will update the input objects in the workspace (all measurements and relationships will be retained).  Otherwise, the objects will be saved to the workspace in a new collection with the name specified by the \""
+                        + OUTPUT_OBJECTS
+                        + "\" parameter.  Note: If updating the objects, any previously-measured object properties (e.g. object volume) may become invalid.  To update such measurements it's necessary to re-run the relevant measurement modules.");
 
-      parameters.get(OUTPUT_OBJECTS).setDescription("If \"" + UPDATE_INPUT_OBJECTS
-              + "\" is not selected, the post-operation objects will be saved to the workspace in a new collection with this name.");
+        parameters.get(OUTPUT_OBJECTS).setDescription("If \"" + UPDATE_INPUT_OBJECTS
+                + "\" is not selected, the post-operation objects will be saved to the workspace in a new collection with this name.");
 
-        parameters.get(METHOD).setDescription("Controls which expand or shrink operation is applied to the input objects:<br><ul>"
+        parameters.get(METHOD)
+                .setDescription("Controls which expand or shrink operation is applied to the input objects:<br><ul>"
 
-        + "<li>\"" + Methods.EXPAND_2D
-        + "\" Adds any non-object coordinates within \""+RADIUS_CHANGE+"\" of the object to the object.  This operates in a slice-by-slice manner, irrespective of whether a 2D or 3D object is provided.  This effectively runs a 2D binary dilation operation on each object. Uses ImageJ implementation.</li>"
+                        + "<li>\"" + Methods.EXPAND_2D + "\" Adds any non-object coordinates within \"" + RADIUS_CHANGE
+                        + "\" of the object to the object.  This operates in a slice-by-slice manner, irrespective of whether a 2D or 3D object is provided.  This effectively runs a 2D binary dilation operation on each object. Uses ImageJ implementation.</li>"
 
-        + "<li>\"" + Methods.EXPAND_3D
-        + "\" Adds any non-object coordinates within \""+RADIUS_CHANGE+"\" of the object to the object.  This effectively runs a 3D binary dilation operation on each object.  Uses MorphoLibJ implementation.</li>"
+                        + "<li>\"" + Methods.EXPAND_3D + "\" Adds any non-object coordinates within \"" + RADIUS_CHANGE
+                        + "\" of the object to the object.  This effectively runs a 3D binary dilation operation on each object.  Uses MorphoLibJ implementation.</li>"
 
-        + "<li>\"" + Methods.SHRINK_2D
-        + "\" Removes any object coordinates within \""+RADIUS_CHANGE+"\" of the object boundary from the object.  This operates in a slice-by-slice manner, irrespective of whether a 2D or 3D object is provided.  This effectively runs a 2D binary erosion operation on each object.  Uses ImageJ implementation.</li>"
+                        + "<li>\"" + Methods.SHRINK_2D + "\" Removes any object coordinates within \"" + RADIUS_CHANGE
+                        + "\" of the object boundary from the object.  This operates in a slice-by-slice manner, irrespective of whether a 2D or 3D object is provided.  This effectively runs a 2D binary erosion operation on each object.  Uses ImageJ implementation.</li>"
 
-        + "<li>\"" + Methods.SHRINK_3D
-        + "\" Removes any object coordinates within \""+RADIUS_CHANGE+"\" of the object boundary from the object.  This effectively runs a 3D binary erosion operation on each object.  Uses MorphoLibJ implementation.</li></ul>");
+                        + "<li>\"" + Methods.SHRINK_3D + "\" Removes any object coordinates within \"" + RADIUS_CHANGE
+                        + "\" of the object boundary from the object.  This effectively runs a 3D binary erosion operation on each object.  Uses MorphoLibJ implementation.</li></ul>");
 
-        parameters.get(RADIUS_CHANGE).setDescription("Distance from the object boundary to test for potential inclusion or removal of coordinates.  When expanding, any non-object coordinates within this distance of the object are included in the object.  While shrinking, any object coordinates within this distance of the object boundary are removed from the object.  This value is assumed specified in pixel coordinates unless \""+CALIBRATED_UNITS+"\" is selected.");
+        parameters.get(RADIUS_CHANGE).setDescription(
+                "Distance from the object boundary to test for potential inclusion or removal of coordinates.  When expanding, any non-object coordinates within this distance of the object are included in the object.  While shrinking, any object coordinates within this distance of the object boundary are removed from the object.  This value is assumed specified in pixel coordinates unless \""
+                        + CALIBRATED_UNITS + "\" is selected.");
 
-        parameters.get(CALIBRATED_UNITS).setDescription("When selected, \""+RADIUS_CHANGE+"\" is assumed to be specified in calibrated units (as defined by the \""+new InputControl(null).getName()+"\" parameter \""+InputControl.SPATIAL_UNIT+"\").  Otherwise, pixel units are assumed.");
+        parameters.get(CALIBRATED_UNITS)
+                .setDescription("When selected, \"" + RADIUS_CHANGE
+                        + "\" is assumed to be specified in calibrated units (as defined by the \""
+                        + new InputControl(null).getName() + "\" parameter \"" + InputControl.SPATIAL_UNIT
+                        + "\").  Otherwise, pixel units are assumed.");
 
     }
 }

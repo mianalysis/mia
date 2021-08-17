@@ -17,7 +17,6 @@ import ij.plugin.HyperStackConverter;
 import wbif.sjx.MIA.Module.Categories;
 import wbif.sjx.MIA.Module.Category;
 import wbif.sjx.MIA.Module.ModuleCollection;
-import wbif.sjx.MIA.Module.ImageProcessing.Pixel.InvertIntensity;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.Binary.BinaryOperations2D;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.Binary.DistanceMap;
 import wbif.sjx.MIA.Object.Image;
@@ -108,9 +107,8 @@ public class AddLabels extends AbstractOverlay {
     public static double[] getInsideObjectLocation(Obj obj) {
         // Binarise object and calculate its distance map
         Image binaryImage = obj.getAsImage("Binary", false);
-        InvertIntensity.process(binaryImage);
-        BinaryOperations2D.process(binaryImage, BinaryOperations2D.OperationModes.ERODE, 1, 1);
-        ImagePlus distanceIpl = DistanceMap.process(binaryImage, "Distance", DistanceMap.WeightModes.WEIGHTS_3_4_5_7, true, false).getImagePlus();
+        BinaryOperations2D.process(binaryImage, BinaryOperations2D.OperationModes.ERODE, 1, 1, true);
+        ImagePlus distanceIpl = DistanceMap.process(binaryImage, "Distance", true, DistanceMap.WeightModes.WEIGHTS_3_4_5_7, true, false).getImagePlus();
         ImageStack distanceIst = distanceIpl.getStack();
 
         // Get location of largest value

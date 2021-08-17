@@ -4,6 +4,7 @@ import bunwarpj.bUnwarpJ_;
 import ij.ImagePlus;
 import ij.process.ImageProcessor;
 import net.imglib2.type.NativeType;
+import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.ImageProcessing.Stack.ImageTypeConverter;

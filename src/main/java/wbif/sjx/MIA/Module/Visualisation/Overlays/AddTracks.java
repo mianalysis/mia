@@ -3,29 +3,33 @@
 
 package wbif.sjx.MIA.Module.Visualisation.Overlays;
 
-import java.awt.Color;
 import java.util.HashMap;
 import java.util.TreeMap;
 import java.util.concurrent.atomic.AtomicInteger;
+
+import com.drew.lang.annotations.Nullable;
 
 import ij.ImagePlus;
 import ij.gui.Line;
 import ij.plugin.Duplicator;
 import ij.plugin.HyperStackConverter;
-import wbif.sjx.MIA.Module.ModuleCollection;
-import wbif.sjx.MIA.Module.Category;
+import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Categories;
-import wbif.sjx.MIA.Object.Status;
+import wbif.sjx.MIA.Module.Category;
+import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.Obj;
 import wbif.sjx.MIA.Object.ObjCollection;
+import wbif.sjx.MIA.Object.Status;
 import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.MIA.Object.Parameters.BooleanP;
 import wbif.sjx.MIA.Object.Parameters.ChildObjectsP;
+import wbif.sjx.MIA.Object.Parameters.ChoiceP;
 import wbif.sjx.MIA.Object.Parameters.InputImageP;
+import wbif.sjx.MIA.Object.Parameters.ObjectMeasurementP;
 import wbif.sjx.MIA.Object.Parameters.OutputImageP;
-import wbif.sjx.MIA.Object.Parameters.SeparatorP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
+import wbif.sjx.MIA.Object.Parameters.SeparatorP;
 import wbif.sjx.MIA.Object.Parameters.Objects.InputTrackObjectsP;
 import wbif.sjx.MIA.Object.Parameters.Text.DoubleP;
 import wbif.sjx.MIA.Object.Parameters.Text.IntegerP;
@@ -62,8 +66,16 @@ public class AddTracks extends AbstractOverlay {
         super("Add tracks", modules);
     }
 
-    public static void addOverlay(Obj object, String spotObjectsName, ImagePlus ipl, Color colour, double lineWidth,
-            int history) {
+    public interface ColourModes extends AbstractOverlay.ColourModes {
+        String INSTANTANEOUS_MEASUREMENT_VALUE = "Instantaneous measurement value";
+
+        String[] ALL = new String[] { CHILD_COUNT, ID, INSTANTANEOUS_MEASUREMENT_VALUE, MEASUREMENT_VALUE, PARENT_ID,
+                PARENT_MEASUREMENT_VALUE, PARTNER_COUNT, RANDOM_COLOUR, SINGLE_COLOUR };
+
+    }
+
+    public static void addOverlay(Obj object, String spotObjectsName, ImagePlus ipl, float hue, double opacity, double lineWidth,
+            int history, @Nullable HashMap<Integer, Float> instantaneousHues) {
         ObjCollection pointObjects = object.getChildren(spotObjectsName);
 
         if (ipl.getOverlay() == null)
@@ -100,7 +112,11 @@ public class AddTracks extends AbstractOverlay {
                     }
 
                     line.setStrokeWidth(lineWidth);
-                    line.setStrokeColor(colour);
+                    if (instantaneousHues != null)
+                        // Special case of instantaneous colour
+                        hue = instantaneousHues.get(p2.getID());
+
+                    line.setStrokeColor(ColourFactory.getColour(hue,opacity));
                     ovl.addElement(line);
 
                 }
@@ -110,7 +126,6 @@ public class AddTracks extends AbstractOverlay {
 
         }
     }
-
 
     @Override
     public Category getCategory() {
@@ -139,6 +154,8 @@ public class AddTracks extends AbstractOverlay {
         Image inputImage = workspace.getImages().get(inputImageName);
         ImagePlus ipl = inputImage.getImagePlus();
 
+        String colourMode = parameters.getValue(COLOUR_MODE);
+        String measurementForColour = parameters.getValue(MEASUREMENT_FOR_COLOUR);
         boolean limitHistory = parameters.getValue(LIMIT_TRACK_HISTORY);
         int history = parameters.getValue(TRACK_HISTORY);
 
@@ -155,6 +172,13 @@ public class AddTracks extends AbstractOverlay {
 
         // Generating colours for each object
         HashMap<Integer, Float> hues = getHues(inputObjects);
+        
+        HashMap<Integer, Float> instantaneousHues = null;
+        if (colourMode.equals(ColourModes.INSTANTANEOUS_MEASUREMENT_VALUE)) {
+            String[] elements = spotObjectsName.split(" // ");
+            ObjCollection spotObjects = workspace.getObjectSet(elements[elements.length-1]);
+            instantaneousHues = ColourFactory.getMeasurementValueHues(spotObjects, measurementForColour, true);
+        }
 
         // Adding the overlay element
         if (!limitHistory)
@@ -169,10 +193,12 @@ public class AddTracks extends AbstractOverlay {
         // Running through each object, adding it to the overlay along with an ID label
         AtomicInteger count = new AtomicInteger();
         for (Obj object : inputObjects.values()) {
-            float hue = hues.get(object.getID());
-            Color colour = ColourFactory.getColour(hue, opacity);
+            // If using an instantaneous measurement, hues will be null            
+            float hue = -1;
+            if (hues != null)
+                hue = hues.get(object.getID());
 
-            addOverlay(object, spotObjectsName, ipl, colour, lineWidth, history);
+            addOverlay(object, spotObjectsName, ipl, hue, opacity, lineWidth, history, instantaneousHues);
 
             writeProgressStatus(count.getAndIncrement(), inputObjects.size(), "objects");
 
@@ -195,6 +221,10 @@ public class AddTracks extends AbstractOverlay {
     protected void initialiseParameters() {
         super.initialiseParameters();
 
+        // Updating colour modes to the custom version, which includes the option to
+        // have a different colour at each timepoint
+        ((ChoiceP) parameters.getParameter(COLOUR_MODE)).setChoices(ColourModes.ALL);
+
         parameters.add(new SeparatorP(INPUT_SEPARATOR, this));
         parameters.add(new InputImageP(INPUT_IMAGE, this));
         parameters.add(new InputImageP(INPUT_IMAGE, this));
@@ -215,7 +245,7 @@ public class AddTracks extends AbstractOverlay {
         parameters.add(new BooleanP(ENABLE_MULTITHREADING, this, true));
 
         addParameterDescriptions();
-                
+
     }
 
     @Override
@@ -247,6 +277,12 @@ public class AddTracks extends AbstractOverlay {
         ((ChildObjectsP) parameters.getParameter(SPOT_OBJECTS)).setParentObjectsName(inputObjectsName);
 
         returnedParameters.addAll(super.updateAndGetParameters(inputObjectsName));
+
+        if (((String) parameters.getValue(COLOUR_MODE)).equals(ColourModes.INSTANTANEOUS_MEASUREMENT_VALUE)) {
+            returnedParameters.add(parameters.getParameter(LINE_WIDTH));
+            returnedParameters.add(parameters.getParameter(MEASUREMENT_FOR_COLOUR));
+            ((ObjectMeasurementP) parameters.getParameter(MEASUREMENT_FOR_COLOUR)).setObjectName(parameters.getValue(SPOT_OBJECTS));
+        }
         returnedParameters.add(parameters.getParameter(LINE_WIDTH));
 
         returnedParameters.add(parameters.getParameter(EXECUTION_SEPARATOR));
@@ -289,26 +325,41 @@ public class AddTracks extends AbstractOverlay {
     @Override
     protected void addParameterDescriptions() {
         super.addParameterDescriptions();
-        
-        parameters.getParameter(INPUT_IMAGE).setDescription("Image onto which overlay will be rendered.  Input image will only be updated if \""+APPLY_TO_INPUT+"\" is enabled, otherwise the image containing the overlay will be stored as a new image with name specified by \""+OUTPUT_IMAGE+"\".");
-        
-        parameters.getParameter(INPUT_OBJECTS).setDescription("Track objects to render in the overlay.  Track objects themselves don't contain any coordinate information, they simply act as links between the different \""+SPOT_OBJECTS+"\" children in each frame of the track.");
-        
-        parameters.getParameter(SPOT_OBJECTS).setDescription("Objects present in each frame of this track.  These are children of the \""+INPUT_OBJECTS+"\" and provide the coordinate information for each frame.");
-        
-        parameters.getParameter(APPLY_TO_INPUT).setDescription("Determines if the modifications made to the input image (added overlay elements) will be applied to that image or directed to a new image.  When selected, the input image will be updated.");
-        
-        parameters.getParameter(ADD_OUTPUT_TO_WORKSPACE).setDescription("If the modifications (overlay) aren't being applied directly to the input image, this control will determine if a separate image containing the overlay should be saved to the workspace.");
-        
-        parameters.getParameter(OUTPUT_IMAGE).setDescription("The name of the new image to be saved to the workspace (if not applying the changes directly to the input image).");
-        
-        parameters.getParameter(LIMIT_TRACK_HISTORY).setDescription("When enabled, segments of a track will only be displayed for a finite number of frames after the timepoint they correspond to.  This gives the effect of a moving tail behind the object and can be use to prevent the overlay image becoming too cluttered for long/dense videos.  The duration of the track history is specified by the \""+TRACK_HISTORY+"\" parameter.");
-        
-        parameters.getParameter(TRACK_HISTORY).setDescription("Number of frames a track segment will be displayed for after the timepoint to which it corresponds.");
-        
+
+        parameters.getParameter(INPUT_IMAGE)
+                .setDescription("Image onto which overlay will be rendered.  Input image will only be updated if \""
+                        + APPLY_TO_INPUT
+                        + "\" is enabled, otherwise the image containing the overlay will be stored as a new image with name specified by \""
+                        + OUTPUT_IMAGE + "\".");
+
+        parameters.getParameter(INPUT_OBJECTS).setDescription(
+                "Track objects to render in the overlay.  Track objects themselves don't contain any coordinate information, they simply act as links between the different \""
+                        + SPOT_OBJECTS + "\" children in each frame of the track.");
+
+        parameters.getParameter(SPOT_OBJECTS)
+                .setDescription("Objects present in each frame of this track.  These are children of the \""
+                        + INPUT_OBJECTS + "\" and provide the coordinate information for each frame.");
+
+        parameters.getParameter(APPLY_TO_INPUT).setDescription(
+                "Determines if the modifications made to the input image (added overlay elements) will be applied to that image or directed to a new image.  When selected, the input image will be updated.");
+
+        parameters.getParameter(ADD_OUTPUT_TO_WORKSPACE).setDescription(
+                "If the modifications (overlay) aren't being applied directly to the input image, this control will determine if a separate image containing the overlay should be saved to the workspace.");
+
+        parameters.getParameter(OUTPUT_IMAGE).setDescription(
+                "The name of the new image to be saved to the workspace (if not applying the changes directly to the input image).");
+
+        parameters.getParameter(LIMIT_TRACK_HISTORY).setDescription(
+                "When enabled, segments of a track will only be displayed for a finite number of frames after the timepoint they correspond to.  This gives the effect of a moving tail behind the object and can be use to prevent the overlay image becoming too cluttered for long/dense videos.  The duration of the track history is specified by the \""
+                        + TRACK_HISTORY + "\" parameter.");
+
+        parameters.getParameter(TRACK_HISTORY).setDescription(
+                "Number of frames a track segment will be displayed for after the timepoint to which it corresponds.");
+
         parameters.getParameter(LINE_WIDTH).setDescription("Width of the rendered lines.  Specified in pixel units.");
 
-        parameters.getParameter(ENABLE_MULTITHREADING).setDescription("Process multiple overlay elements simultaneously.  This can provide a speed improvement when working on a computer with a multi-core CPU.");
-        
+        parameters.getParameter(ENABLE_MULTITHREADING).setDescription(
+                "Process multiple overlay elements simultaneously.  This can provide a speed improvement when working on a computer with a multi-core CPU.");
+
     }
 }

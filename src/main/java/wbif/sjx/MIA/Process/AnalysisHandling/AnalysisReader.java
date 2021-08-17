@@ -28,6 +28,7 @@ import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.Core.InputControl;
 import wbif.sjx.MIA.Module.Core.OutputControl;
+import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
 import wbif.sjx.MIA.Object.References.ImageMeasurementRef;
 import wbif.sjx.MIA.Object.References.MetadataRef;
@@ -207,39 +208,42 @@ public class AnalysisReader {
         NodeList referenceNodes = moduleNode.getChildNodes();
 
         // Iterating over all references of this type
-        for (int i = 0; i < referenceNodes.getLength(); i++) {
-            Node referenceNode = referenceNodes.item(i);
+        for (int i = 0; i < referenceNodes.getLength(); i++)
+            initialiseParameter(referenceNodes.item(i), module, module.getAllParameters());
 
-            // Getting measurement properties
-            NamedNodeMap attributes = referenceNode.getAttributes();
-            if (attributes == null)
+    }
+
+    public static void initialiseParameter(Node referenceNode, Module module, ParameterCollection parameters) {
+        // Getting measurement properties
+        NamedNodeMap attributes = referenceNode.getAttributes();
+        if (attributes == null)
+            return;
+        Node name = attributes.getNamedItem("NAME");
+        if (name == null)
+            return;
+        String parameterName = name.getNodeValue();
+        Parameter parameter = parameters.getParameter(parameterName);
+
+        // If parameter isn't found, try the lost and found
+        if (parameter == null) {
+            String moduleName = module.getClass().getSimpleName();
+            parameterName = MIA.lostAndFound.findParameter(moduleName, parameterName);
+            if (parameterName.equals("")) // blank parameter names mean that parameter has been removed, but shouldn't
+                                          // show a warning
                 return;
-            Node name = attributes.getNamedItem("NAME");
-            if (name == null)
-                return;
-            String parameterName = name.getNodeValue();
-            Parameter parameter = module.getParameter(parameterName);
-
-            // If parameter isn't found, try the lost and found
-            if (parameter == null) {
-                String moduleName = module.getClass().getSimpleName();
-                parameterName = MIA.lostAndFound.findParameter(moduleName, parameterName);
-                if (parameterName.equals("")) // null parameter names mean that parameter has been removed
-                    continue;
-                parameter = module.getParameter(parameterName);
-            }
-
-            // If the parameter still isn't found, display a warning
-            if (parameter == null) {
-                String parameterValue = attributes.getNamedItem("VALUE").getNodeValue();
-                MIA.log.writeWarning("Parameter \"" + parameterName + "\" (value = \"" + parameterValue
-                        + "\") not found for module \"" + module.getName() + "\", skipping.");
-                continue;
-            }
-
-            parameter.setAttributesFromXML(referenceNode);
-
+            parameter = parameters.getParameter(parameterName);
         }
+
+        // If the parameter still isn't found, display a warning
+        if (parameter == null) {
+            String parameterValue = attributes.getNamedItem("VALUE").getNodeValue();
+            MIA.log.writeWarning("Parameter not found.  Module: " + module.getName() + ".  Parameter: " + parameterName
+                    + ".  Value: " + parameterValue+".");
+            return;
+        }
+
+        parameter.setAttributesFromXML(referenceNode);
+
     }
 
     public static void populateLegacyMeasurementRefs(Node moduleNode, Module module) {

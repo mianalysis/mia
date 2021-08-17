@@ -13,12 +13,11 @@ import sc.fiji.analyzeSkeleton.Graph;
 import sc.fiji.analyzeSkeleton.Point;
 import sc.fiji.analyzeSkeleton.SkeletonResult;
 import sc.fiji.analyzeSkeleton.Vertex;
+import wbif.sjx.MIA.Module.Categories;
+import wbif.sjx.MIA.Module.Category;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.Core.InputControl;
-import wbif.sjx.MIA.Module.Category;
-import wbif.sjx.MIA.Module.Categories;
-import wbif.sjx.MIA.Module.ImageProcessing.Pixel.InvertIntensity;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.Binary.Skeletonise;
 import wbif.sjx.MIA.Module.ObjectProcessing.Identification.IdentifyObjects;
 import wbif.sjx.MIA.Module.ObjectProcessing.Refinement.FilterObjects.FilterOnImageEdge;
@@ -27,7 +26,6 @@ import wbif.sjx.MIA.Object.Measurement;
 import wbif.sjx.MIA.Object.Obj;
 import wbif.sjx.MIA.Object.ObjCollection;
 import wbif.sjx.MIA.Object.Status;
-import wbif.sjx.MIA.Object.Units.SpatialUnit;
 import wbif.sjx.MIA.Object.VolumeTypesInterface;
 import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.MIA.Object.Parameters.BooleanP;
@@ -77,14 +75,9 @@ public class MeasureSkeleton extends Module {
     static Image getSkeletonImage(Obj inputObject) {
         // Getting tight image of object
         Image skeletonImage = inputObject.getAsTightImage("Skeleton");
-        // Inverting, so the objects are black on white
-        InvertIntensity.process(skeletonImage);
-
+        
         // Running 3D skeletonisation
-        Skeletonise.process(skeletonImage);
-
-        // Inverting, so the objects are white on black
-        InvertIntensity.process(skeletonImage);
+        Skeletonise.process(skeletonImage,true);
 
         return skeletonImage;
 
@@ -161,7 +154,7 @@ public class MeasureSkeleton extends Module {
         Image binaryImage = tempObject.getAsTightImage("outputName", borders);
 
         // Converting binary image to loop objects
-        ObjCollection tempLoopObjects = IdentifyObjects.process(binaryImage, loopObjectsName, true, false, 6,
+        ObjCollection tempLoopObjects = IdentifyObjects.process(binaryImage, loopObjectsName, false, false, 6,
                 VolumeTypesInterface.QUADTREE, false, 0, false);
 
         // Removing any objects on the image edge, as these aren't loops

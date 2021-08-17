@@ -107,7 +107,7 @@ public class AffineManual<T extends RealType<T> & NativeType<T>> extends Abstrac
         switch (p.pointSelectionMode) {
             case PointSelectionModes.PRESELECTED:
                 pairs = PointPairSelector.getPreselectedPoints(new Image("Warped", warpedIpl),
-                        new Image("Reference", referenceIpl));                                
+                        new Image("Reference", referenceIpl));                   
                 break;
             case PointSelectionModes.RUNTIME:
             default:

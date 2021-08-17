@@ -176,6 +176,8 @@ public class ExtractObjectCrossSection extends Module {
         parameters.add(new ObjectMeasurementP(OBJECT_MEASUREMENT, this));
         parameters.add(new StringP(RELATIVE_SLICE_INDICES, this, "0"));
 
+        addParameterDescriptions();
+
     }
 
     @Override
@@ -245,5 +247,22 @@ public class ExtractObjectCrossSection extends Module {
     @Override
     public boolean verify() {
         return true;
+    }
+
+    void addParameterDescriptions() {
+        parameters.get(INPUT_OBJECTS).setDescription("Input objects from workspace for which cross-sections will be extracted.");
+
+        parameters.get(OUTPUT_OBJECTS).setDescription("Output cross-section objects.  These will be stored in the workspace with this name.");
+
+        // parameters.get(REFERENCE_MODE).setDescription("<li>");
+
+        // parameters.get(RELATIVE_SLICE_INDICES).setDescription();
+
+        // parameters.get(IMAGE_MEASUREMENT).setDescription();
+
+        // parameters.get(IMAGE_FOR_MEASUREMENT).setDescription();
+
+        // parameters.get(OBJECT_MEASUREMENT).setDescription();
+
     }
 }

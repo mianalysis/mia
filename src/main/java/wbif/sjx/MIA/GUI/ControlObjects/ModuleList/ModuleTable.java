@@ -24,13 +24,13 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableModel;
 
-import wbif.sjx.MIA.GUI.Colours;
 import wbif.sjx.MIA.GUI.GUI;
 import wbif.sjx.MIA.GUI.GUIAnalysisHandler;
 import wbif.sjx.MIA.GUI.ControlObjects.RenameListMenu;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.Miscellaneous.GUISeparator;
+import wbif.sjx.MIA.Object.Colours;
 
 public class ModuleTable extends JTable implements ActionListener, MouseListener, TableCellRenderer {
     private static final String BACKSPACE = "backspace";

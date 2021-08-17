@@ -24,9 +24,9 @@ import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
 
-import wbif.sjx.MIA.GUI.Colours;
 import wbif.sjx.MIA.GUI.GUI;
 import wbif.sjx.MIA.GUI.ControlObjects.FileListColumnSelectorMenu;
+import wbif.sjx.MIA.Object.Colours;
 import wbif.sjx.MIA.Object.Status;
 import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.MIA.Object.WorkspaceCollection;

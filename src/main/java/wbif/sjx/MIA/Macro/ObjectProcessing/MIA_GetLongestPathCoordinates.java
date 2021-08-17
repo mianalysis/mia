@@ -9,7 +9,6 @@ import wbif.sjx.MIA.Module.ObjectMeasurements.Spatial.FitSpline;
 import wbif.sjx.MIA.Object.Obj;
 import wbif.sjx.MIA.Object.ObjCollection;
 import wbif.sjx.MIA.Object.Workspace;
-import wbif.sjx.common.Object.Point;
 import wbif.sjx.common.Object.Vertex;
 
 public class MIA_GetLongestPathCoordinates extends MacroOperation {

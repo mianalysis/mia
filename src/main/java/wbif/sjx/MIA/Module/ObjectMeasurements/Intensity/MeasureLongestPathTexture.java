@@ -3,7 +3,6 @@ package wbif.sjx.MIA.Module.ObjectMeasurements.Intensity;
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import ij.IJ;
 import ij.ImagePlus;
 import ij.ImageStack;
 import ij.plugin.SubHyperstackMaker;

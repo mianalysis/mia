@@ -1,18 +1,16 @@
 package wbif.sjx.MIA.Module.ObjectProcessing.Refinement.MergeObjects;
 
-import java.util.HashMap;
-
+import wbif.sjx.MIA.Module.Categories;
+import wbif.sjx.MIA.Module.Category;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
-import wbif.sjx.MIA.Module.Category;
-import wbif.sjx.MIA.Module.Categories;
 import wbif.sjx.MIA.Object.Obj;
 import wbif.sjx.MIA.Object.ObjCollection;
 import wbif.sjx.MIA.Object.Status;
 import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.MIA.Object.Parameters.InputObjectsP;
-import wbif.sjx.MIA.Object.Parameters.SeparatorP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
+import wbif.sjx.MIA.Object.Parameters.SeparatorP;
 import wbif.sjx.MIA.Object.Parameters.Objects.OutputObjectsP;
 import wbif.sjx.MIA.Object.References.Collections.ImageMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.MetadataRefCollection;
@@ -29,7 +27,6 @@ public class MergeSingleClass extends Module {
         super("Merge single class", modules);
     }
 
-
     @Override
     public Category getCategory() {
         return Categories.OBJECT_PROCESSING_REFINEMENT_MERGE_OBJECTS;
@@ -41,22 +38,23 @@ public class MergeSingleClass extends Module {
     }
 
     public static ObjCollection mergeSingleClass(ObjCollection inputObjects, String outputObjectsName) {
-        // Creating a HashMap to store each timepoint object instance
-        HashMap<Integer,Obj> objects = new HashMap<>();
-
-        ObjCollection outputObjects = new ObjCollection(outputObjectsName,inputObjects);
-
-        // Iterating over all input objects, adding their coordinates to the relevant object
-        for (Obj inputObject:inputObjects.values()) {
+        ObjCollection outputObjects = new ObjCollection(outputObjectsName, inputObjects);
+        
+        // Iterating over all input objects, adding their coordinates to the relevant
+        // object
+        for (Obj inputObject : inputObjects.values()) {
             // Getting the current timepoint instance
             int t = inputObject.getT();
-
-            // If it doesn't already exist, creating a new object for this timepoint.  The ID of this object is the timepoint index (numbering starting at 1).
-            objects.putIfAbsent((t+1), outputObjects.createAndAddNewObject(inputObject.getVolumeType()).setT(t));
-
+            
+            // If it doesn't already exist, creating a new object for this timepoint. The ID
+            // of this object is the timepoint index (numbering starting at 1).
+            if (!outputObjects.containsKey(t+1))
+                outputObjects.add(new Obj(outputObjects, t + 1, inputObject));
+            
             // Adding coordinates to this object
-            Obj outputObject = objects.get(t);
+            Obj outputObject = outputObjects.get(t + 1);
             outputObject.getCoordinateSet().addAll(inputObject.getCoordinateSet());
+            
 
         }
 
@@ -71,14 +69,14 @@ public class MergeSingleClass extends Module {
         String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);
 
         // Merging objects
-        ObjCollection outputObjects = mergeSingleClass(inputObjects,outputObjectsName);
+        ObjCollection outputObjects = mergeSingleClass(inputObjects, outputObjectsName);
 
         // Adding objects to workspace
-        writeStatus("Adding objects ("+outputObjectsName+") to workspace");
         workspace.addObjects(outputObjects);
 
         // Showing objects
-        if (showOutput) outputObjects.convertToImageRandomColours().showImage();
+        if (showOutput)
+            outputObjects.convertToImageRandomColours().showImage();
 
         return Status.PASS;
 
@@ -86,10 +84,10 @@ public class MergeSingleClass extends Module {
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new SeparatorP(INPUT_SEPARATOR,this));
-        parameters.add(new InputObjectsP(INPUT_OBJECTS,this));
+        parameters.add(new SeparatorP(INPUT_SEPARATOR, this));
+        parameters.add(new InputObjectsP(INPUT_OBJECTS, this));
         parameters.add(new OutputObjectsP(OUTPUT_OBJECTS, this));
-        
+
         addParameterDescriptions();
 
     }
@@ -130,9 +128,11 @@ public class MergeSingleClass extends Module {
     }
 
     void addParameterDescriptions() {
-        parameters.get(INPUT_OBJECTS).setDescription("Input object collection that will have all objects from each timepoint merged into a single object.");
+        parameters.get(INPUT_OBJECTS).setDescription(
+                "Input object collection that will have all objects from each timepoint merged into a single object.");
 
-        parameters.get(OUTPUT_OBJECTS).setDescription("Output merged objects (one per input timepoint).  These objects will be stored in the workspace and accessible via this name.");
+        parameters.get(OUTPUT_OBJECTS).setDescription(
+                "Output merged objects (one per input timepoint).  These objects will be stored in the workspace and accessible via this name.");
 
     }
 }

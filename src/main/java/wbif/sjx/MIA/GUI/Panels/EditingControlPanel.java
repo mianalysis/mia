@@ -6,8 +6,6 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.util.ArrayList;
-import java.util.TreeMap;
-import java.util.TreeSet;
 
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
@@ -21,7 +19,6 @@ import wbif.sjx.MIA.GUI.ControlObjects.ModuleListMenu;
 import wbif.sjx.MIA.Module.Categories;
 import wbif.sjx.MIA.Module.Category;
 import wbif.sjx.MIA.Module.Module;
-import wbif.sjx.MIA.Module.ModuleCollection;
 
 public class EditingControlPanel extends JPanel {
     /**

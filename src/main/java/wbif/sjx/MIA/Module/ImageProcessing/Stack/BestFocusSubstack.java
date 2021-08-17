@@ -46,11 +46,10 @@ import net.imglib2.img.display.imagej.ImageJFunctions;
 import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
 import net.imglib2.view.Views;
+import wbif.sjx.MIA.Module.Categories;
+import wbif.sjx.MIA.Module.Category;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
-import wbif.sjx.MIA.Module.ImageProcessing.Stack.Registration.UnwarpAutomatic;
-import wbif.sjx.MIA.Module.Category;
-import wbif.sjx.MIA.Module.Categories;
 import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.Measurement;
 import wbif.sjx.MIA.Object.Status;
@@ -71,7 +70,7 @@ import wbif.sjx.MIA.Object.References.Collections.PartnerRefCollection;
 import wbif.sjx.common.MathFunc.CumStat;
 import wbif.sjx.common.Process.ImgPlusTools;
 
-public class BestFocusSubstack<T extends RealType<T> & NativeType<T>> extends Module implements ActionListener {
+public class BestFocusSubstack <T extends RealType<T> & NativeType<T>> extends Module implements ActionListener {
     private JFrame frame;
     private DefaultListModel<Ref> listModel = new DefaultListModel<>();
     private JList<Ref> list = new JList<>(listModel);

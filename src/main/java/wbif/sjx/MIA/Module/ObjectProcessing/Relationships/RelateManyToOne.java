@@ -5,17 +5,13 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import ij.ImagePlus;
 import ij.Prefs;
 import wbif.sjx.MIA.MIA;
+import wbif.sjx.MIA.Module.Categories;
+import wbif.sjx.MIA.Module.Category;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
-import wbif.sjx.MIA.Module.Category;
-import wbif.sjx.MIA.Module.Categories;
-import wbif.sjx.MIA.Module.ObjectProcessing.Relationships.RelateManyToMany;
-import wbif.sjx.MIA.Module.ObjectProcessing.Relationships.RelateOneToOne;
 import wbif.sjx.MIA.Module.Deprecated.RelateObjects;
-import wbif.sjx.MIA.Module.ImageProcessing.Pixel.InvertIntensity;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.ProjectImage;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.Binary.DistanceMap;
 import wbif.sjx.MIA.Object.Image;
@@ -23,7 +19,6 @@ import wbif.sjx.MIA.Object.Measurement;
 import wbif.sjx.MIA.Object.Obj;
 import wbif.sjx.MIA.Object.ObjCollection;
 import wbif.sjx.MIA.Object.Status;
-import wbif.sjx.MIA.Object.Units.SpatialUnit;
 import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.MIA.Object.Parameters.BooleanP;
 import wbif.sjx.MIA.Object.Parameters.ChoiceP;
@@ -37,6 +32,7 @@ import wbif.sjx.MIA.Object.References.Collections.MetadataRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.ObjMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.ParentChildRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.PartnerRefCollection;
+import wbif.sjx.MIA.Object.Units.SpatialUnit;
 import wbif.sjx.common.Object.Point;
 
 public class RelateManyToOne extends Module {
@@ -330,7 +326,7 @@ public class RelateManyToOne extends Module {
                 }
 
                 writeProgressStatus(count.getAndIncrement(), numberOfChildren, "objects", moduleName);
-                
+
             };
             pool.submit(task);
         }
@@ -347,10 +343,8 @@ public class RelateManyToOne extends Module {
         if (parentObject.getMeasurement("MAX_DIST") == null) {
             // Creating an image for the parent object
             Image parentImage = parentObject.getAsImage("Parent", false);
-            InvertIntensity.process(parentImage.getImagePlus());
-
-            Image distImage = DistanceMap.process(parentImage, "Distance", DistanceMap.WeightModes.WEIGHTS_3_4_5_7,
-                    true, false);
+            Image distImage = DistanceMap.process(parentImage, "Distance", true,
+                    DistanceMap.WeightModes.WEIGHTS_3_4_5_7, true, false);
 
             Image projectedImage = ProjectImage.projectImageInZ(distImage, "Projected",
                     ProjectImage.ProjectionModes.MAX);
@@ -620,12 +614,10 @@ public class RelateManyToOne extends Module {
             case RelateModes.PROXIMITY:
                 returnedParameters.add(parameters.getParameter(REFERENCE_MODE));
                 returnedParameters.add(parameters.getParameter(LIMIT_LINKING_BY_DISTANCE));
-                if ((boolean) parameters.getValue(LIMIT_LINKING_BY_DISTANCE)) {
+                if ((boolean) parameters.getValue(LIMIT_LINKING_BY_DISTANCE))
                     returnedParameters.add(parameters.getParameter(LINKING_DISTANCE));
-                }
-
-                if (referenceMode.equals(ReferenceModes.CENTROID_TO_SURFACE)
-                        || referenceMode.equals(ReferenceModes.SURFACE)) {
+                
+                if (referenceMode.equals(ReferenceModes.CENTROID_TO_SURFACE)) {
                     returnedParameters.add(parameters.getParameter(INSIDE_OUTSIDE_MODE));
                     returnedParameters.add(parameters.getParameter(CALCULATE_FRACTIONAL_DISTANCE));
                 }
@@ -729,8 +721,7 @@ public class RelateManyToOne extends Module {
                         distCentSurfCal.setObjectsName(childObjectsName);
                         returnedRefs.add(distCentSurfCal);
 
-                        if (parameters.getValue(INSIDE_OUTSIDE_MODE).equals(InsideOutsideModes.INSIDE_ONLY)
-                                && (boolean) parameters.getValue(CALCULATE_FRACTIONAL_DISTANCE)) {
+                        if ((boolean) parameters.getValue(CALCULATE_FRACTIONAL_DISTANCE)) {
                             measurementName = getFullName(Measurements.DIST_CENT_SURF_FRAC, parentObjectName);
                             ObjMeasurementRef distCentSurfFrac = objectMeasurementRefs.getOrPut(measurementName);
                             distCentSurfFrac.setDescription(

@@ -46,12 +46,12 @@ import ome.units.unit.Unit;
 import ome.xml.meta.IMetadata;
 import ome.xml.model.primitives.Color;
 import wbif.sjx.MIA.MIA;
-import wbif.sjx.MIA.GUI.Colours;
 import wbif.sjx.MIA.Module.Categories;
 import wbif.sjx.MIA.Module.Category;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.Core.InputControl;
+import wbif.sjx.MIA.Object.Colours;
 import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.Measurement;
 import wbif.sjx.MIA.Object.ObjCollection;
@@ -436,13 +436,13 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
 
         // Applying LUTs
         HashMap<Integer, LUT> luts = getLUTs(meta, seriesNumber - 1);
-        for (int i = 0; i < channelsList.length;i++) {
+        for (int i = 0; i < channelsList.length; i++) {
             int c = channelsList[i];
             LUT lut = luts.get(c - 1);
             if (lut == null)
                 continue;
             if (ipl.isComposite()) {
-                ((CompositeImage) ipl).setChannelLut(lut, i+1);
+                ((CompositeImage) ipl).setChannelLut(lut, i + 1);
             } else {
                 ipl.setLut(lut);
             }
@@ -691,7 +691,7 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
         for (int frame : framesList) {
             ImagePlus tempIpl = getBFImage(filenames[frame - 1], 1, dimRanges, crop, scaleFactors, scaleMode, intRange,
                     manualCal, false);
-            
+
             // Checking and handling any XY dimension mismatches between the two stacks
             applyDimensionMatchingXY(outputIpl, tempIpl, dimensionMismatchMode, padIntensityMode);
 
@@ -705,7 +705,7 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
                 }
             }
 
-            writeProgressStatus(++count,total,"images");
+            writeProgressStatus(++count, total, "images");
 
         }
 
@@ -799,7 +799,7 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
             }
 
             writeProgressStatus(++count, total, "images");
-            
+
         }
 
         outputIpl.setPosition(1, 1, 1);
@@ -1609,6 +1609,19 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
 
                 + "<li>\"" + Readers.IMAGEJ + "\" will use the stock ImageJ file reader.</li></ul>");
 
+        parameters.get(SERIES_MODE).setDescription(
+                "Controls which series should be loaded for multiseries files (e.g. Leica LIF files):<br><ul>"
+
+                        + "<li>\"" + SeriesModes.CURRENT_SERIES
+                        + "\" will load the same series as the current root file (i.e. that selected via \""
+                        + new InputControl(null).getName() + "\").</li>"
+
+                        + "<li>\"" + SeriesModes.SPECIFIC_SERIES + "\" will load a specific series specified by the \""
+                        + SERIES_NUMBER + "\"parameter.</li></ul>");
+
+        parameters.get(SERIES_NUMBER).setDescription("If a specific series is being loaded (\"" + SERIES_MODE
+                + "\" set to \"" + SeriesModes.SPECIFIC_SERIES + "\"), this is the series that will be used.");
+
         parameters.get(SEQUENCE_ROOT_NAME).setDescription(
                 "Template filename for loading multiple image sequence files (those with names in the format \"image0001.tif\", \"image0002.tif\", \"image0003.tif\",etc.).  Template filenames are constructed in a generic manner, whereby metadata values stored in the workspace can be inserted into the name using the notation  \"M{name}\".  This allows names to be created dynamically for each analysis run.  The location in the filenam of the variable image number is specified using the \"Z{0000}\" notation, where the number of \"0\" characters specifies the number of digits.  It is also necessary to specify the filepath (input file filepath stored as metadata value \"M{Filepath}\".   <br><br>For example, loading the sequence \"image0001.tif\", etc. from the same folder as the input file would require the format \"M{Filepath}\\\\imageZ{0000}.tif\".  Note: Backslash characters specifying the folder path need to be double typed (standard Java formatting).");
 
@@ -1653,10 +1666,6 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
 
         parameters.get(CHANNEL).setDescription("Channel to load when constructing a \"Yokogawa\" format name.");
 
-        // parameters.get(THREE_D_MODE).setDescription(
-        // "ImageJ will load 3D tifs as Z-stacks by default. This control provides a
-        // choice between loading as a Z-stack or timeseries.");
-
         parameters.get(CROP_MODE).setDescription("Choice of loading the entire image, or cropping in XY:<br><ul>"
 
                 + "<li>\"" + CropModes.NONE + "\" (default) will load the entire image in XY.</li>"
@@ -1665,7 +1674,11 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
                 + "\" will apply a pre-defined crop to the input image based on the parameters \"Left\", \"Top\",\"Width\" and \"Height\".</li>"
 
                 + "<li>\"" + CropModes.FROM_REFERENCE
-                + "\" will display a specified image and ask the user to select a region to crop the input image to.</li></ul>");
+                + "\" will display a specified image and ask the user to select a region to crop the input image to.</li>"
+
+                + "<li>\"" + CropModes.OBJECT_COLLECTION_LIMITS
+                + "\" will crop to the limits of the objects in the collection specified by \"" + OBJECTS_FOR_LIMITS
+                + "\".</li></ul>");
 
         parameters.get(REFERENCE_IMAGE).setDescription(
                 "The image to be displayed for selection of the cropping region if the cropping mode is set to \""
@@ -1678,6 +1691,10 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
         parameters.get(WIDTH).setDescription("Width of the final cropped region (specified in pixel units).");
 
         parameters.get(HEIGHT).setDescription("Height of the final cropped region (specified in pixel units).");
+
+        parameters.get(OBJECTS_FOR_LIMITS)
+                .setDescription("If \"" + CROP_MODE + "\" is set to \"" + CropModes.OBJECT_COLLECTION_LIMITS
+                        + "\", this is the object collection that will define the limits of the cropped region.");
 
         parameters.get(SCALE_MODE).setDescription(
                 "Controls if the input image is scaled upon importing.  This only works for scaling in X and Y (magnitudes determined by the \""
@@ -1703,6 +1720,22 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
                 + SCALE_MODE
                 + "\" is in an image scaling mode).  Values <1 will reduce image height, while values >1 will increase it.");
 
+        parameters.get(DIMENSION_MISMATCH_MODE).setDescription(
+                "If loading an image sequence from separate files, this parameter controls how dimensions mismatches between images are handled:<br><ul>"
+
+                        + "<li>\"" + DimensionMismatchModes.CENTRE_CROP
+                        + "\" The images will be centred-aligned and cropped to the smallest image dimensions.  This prevents empty borders around some images, but means information is lost from larger images.</li>"
+
+                        + "<li>\"" + DimensionMismatchModes.CENTRE_PAD
+                        + "\" The images will be centre-aligned and padded to the largest image dimensions.  This prevents any image infomation being lost at edges, but means smaller images will have borders.</li>"
+
+                        + "<li>\"" + DimensionMismatchModes.DISALLOW
+                        + "\" All images must have exactly the same dimensions.  If a dimension mismatch is detected, the image loading process will fail.</li></ul>");
+
+        parameters.get(PAD_INTENSITY_MODE).setDescription("If loading an image series from separate files and \""
+                + DIMENSION_MISMATCH_MODE + "\" is set to \"" + DimensionMismatchModes.CENTRE_PAD
+                + "\" this parameter will control the intensity of the padding border around images smaller than the largest loaded image.");
+
         parameters.get(SET_SPATIAL_CAL).setDescription(
                 "Option to use the automatically-applied spatial calibration or manually specify these values.");
 
@@ -1711,6 +1744,12 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
 
         parameters.get(Z_CAL).setDescription(
                 "Distance per slice (Z-axis).  Units for this are specified in the main \"Input control\" module.");
+
+        parameters.get(SET_TEMPORAL_CAL).setDescription(
+                "Option to use the automatically-applied temporal calibration or manually specify this value.");
+
+        parameters.get(FRAME_INTERVAL).setDescription(
+                "Time duration between the start of consecutive frames.  Units for this are specified in the main \"Input control\" module.");
 
         parameters.get(FORCE_BIT_DEPTH)
                 .setDescription("Enable to force the output image to adopt a specific bit-depth.");

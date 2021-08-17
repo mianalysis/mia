@@ -2,10 +2,11 @@ package wbif.sjx.MIA.Module.Visualisation.ImageRendering;
 
 import ij.ImagePlus;
 import ij.plugin.Duplicator;
+import wbif.sjx.MIA.Module.Categories;
+import wbif.sjx.MIA.Module.Category;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
-import wbif.sjx.MIA.Module.Category;
-import wbif.sjx.MIA.Module.Categories;
+import wbif.sjx.MIA.Module.ImageProcessing.Pixel.NormaliseIntensity;
 import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.Status;
 import wbif.sjx.MIA.Object.Workspace;
@@ -42,65 +43,68 @@ public class SetDisplayRange extends Module {
     public static final String MAX_RANGE = "Maximum range value";
 
     public SetDisplayRange(ModuleCollection modules) {
-        super("Set intensity display range",modules);
+        super("Set intensity display range", modules);
     }
-
 
     public interface CalculationModes {
         String FAST = "Fast";
         String MANUAL = "Manual";
         String PRECISE = "Precise";
 
-        String[] ALL = new String[]{FAST,MANUAL,PRECISE};
+        String[] ALL = new String[] { FAST, MANUAL, PRECISE };
 
     }
-
 
     public static void setDisplayRangeManual(ImagePlus ipl, String calculationMode, double[] intRange) {
         // Get min max values for whole stack
         for (int c = 1; c <= ipl.getNChannels(); c++) {
-            if (ipl.isHyperStack()) ipl.setPosition(c, 1, 1);
-            else ipl.setPosition(c);
+            if (ipl.isHyperStack())
+                ipl.setPosition(c, 1, 1);
+            else
+                ipl.setPosition(c);
 
-            ipl.setDisplayRange(intRange[0],intRange[1]);
+            ipl.setDisplayRange(intRange[0], intRange[1]);
 
         }
 
         // Resetting location of the image
-        ipl.setPosition(1,1,1);
+        ipl.setPosition(1, 1, 1);
 
     }
 
-    public static void setDisplayRangeAuto(ImagePlus ipl, String calculationMode, double[] clipFraction, boolean[] setRange) {
+    public static void setDisplayRangeAuto(ImagePlus ipl, String calculationMode, double[] clipFraction,
+            boolean[] setRange) {
         for (int c = 1; c <= ipl.getNChannels(); c++) {
             // Get min max values for whole stack
-            double[] intRange = new double[]{ipl.getDisplayRangeMin(),ipl.getDisplayRangeMax()};
+            double[] intRange = new double[] { ipl.getDisplayRangeMin(), ipl.getDisplayRangeMax() };
             double[] newIntRange;
 
             switch (calculationMode) {
                 case CalculationModes.FAST:
                 default:
-                    newIntRange = IntensityMinMax.getWeightedChannelRangeFast(ipl,c-1,clipFraction[0],clipFraction[1]);
+                    newIntRange = IntensityMinMax.getWeightedChannelRangeFast(ipl, c - 1, clipFraction[0],
+                            clipFraction[1]);
                     break;
 
                 case CalculationModes.PRECISE:
-                    newIntRange = IntensityMinMax.getWeightedChannelRangePrecise(ipl,c-1,clipFraction[0],clipFraction[1]);
+                    newIntRange = IntensityMinMax.getWeightedChannelRangePrecise(ipl, c - 1, clipFraction[0],
+                            clipFraction[1]);
                     break;
             }
 
-            if (setRange[0]) intRange[0] = newIntRange[0];
-            if (setRange[1]) intRange[1] = newIntRange[1];
+            if (setRange[0])
+                intRange[0] = newIntRange[0];
+            if (setRange[1])
+                intRange[1] = newIntRange[1];
 
-            ipl.setDisplayRange(intRange[0],intRange[1]);
+            ipl.setDisplayRange(intRange[0], intRange[1]);
 
         }
 
         // Resetting location of the image
-        ipl.setPosition(1,1,1);
+        ipl.setPosition(1, 1, 1);
 
     }
-
-
 
     @Override
     public Category getCategory() {
@@ -109,7 +113,10 @@ public class SetDisplayRange extends Module {
 
     @Override
     public String getDescription() {
-        return "";
+        return "Set the minimum and maximum displayed intensities for a specified image from the workspace.  Any pixels with intensities outside the set displayed range will be rendered with the corresponding extreme value (i.e. any pixels with intensities less than the minimum display value will be shown with the same as the value at the minimum display value).  Display ranges can be calculated automatically or specified manually.  One or both extrema can be set at a time.<br><br>"
+        
+                + "Note: Unlike the \"" + new NormaliseIntensity(null).getName() + "\" module, pixel values are unchanged by this module.  The only change is to the way ImageJ/Fiji renders the image.";
+
     }
 
     @Override
@@ -128,40 +135,45 @@ public class SetDisplayRange extends Module {
         double minRange = parameters.getValue(MIN_RANGE);
         double maxRange = parameters.getValue(MAX_RANGE);
 
-        // If this image doesn't exist, skip this module.  This returns true, because this isn't terminal for the analysis.
-        if (inputImage == null) return Status.PASS;
+        // If this image doesn't exist, skip this module. This returns true, because
+        // this isn't terminal for the analysis.
+        if (inputImage == null)
+            return Status.PASS;
 
         ImagePlus inputImagePlus = inputImage.getImagePlus();
 
         // If applying to a new image, the input image is duplicated
-        if (!applyToInput) inputImagePlus = new Duplicator().run(inputImagePlus);
+        if (!applyToInput)
+            inputImagePlus = new Duplicator().run(inputImagePlus);
 
         // Setting ranges
-        double[] clipFraction = new double[]{clipFractionMin,clipFractionMax};
-        boolean[] setRange = new boolean[]{setMinimumValue,setMaximumValue};
-        double[] manualRange = new double[]{minRange,maxRange};
+        double[] clipFraction = new double[] { clipFractionMin, clipFractionMax };
+        boolean[] setRange = new boolean[] { setMinimumValue, setMaximumValue };
+        double[] manualRange = new double[] { minRange, maxRange };
 
         // Adjusting display range
         writeStatus("Adjusting display range");
         switch (calculationMode) {
             case CalculationModes.FAST:
             case CalculationModes.PRECISE:
-                setDisplayRangeAuto(inputImagePlus,calculationMode,clipFraction,setRange);
+                setDisplayRangeAuto(inputImagePlus, calculationMode, clipFraction, setRange);
                 break;
             case CalculationModes.MANUAL:
-                setDisplayRangeManual(inputImagePlus,calculationMode,manualRange);
+                setDisplayRangeManual(inputImagePlus, calculationMode, manualRange);
                 break;
         }
 
         // If the image is being saved as a new image, adding it to the workspace
         if (!applyToInput) {
             String outputImageName = parameters.getValue(OUTPUT_IMAGE);
-            Image outputImage = new Image(outputImageName,inputImagePlus);
+            Image outputImage = new Image(outputImageName, inputImagePlus);
             workspace.addImage(outputImage);
-            if (showOutput) outputImage.showImage(outputImageName,null,false,true);
+            if (showOutput)
+                outputImage.showImage(outputImageName, null, false, true);
 
         } else {
-            if (showOutput) inputImage.showImage(inputImageName,null,false,true);
+            if (showOutput)
+                inputImage.showImage(inputImageName, null, false, true);
 
         }
 
@@ -171,19 +183,21 @@ public class SetDisplayRange extends Module {
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new SeparatorP(INPUT_SEPARATOR,this));
+        parameters.add(new SeparatorP(INPUT_SEPARATOR, this));
         parameters.add(new InputImageP(INPUT_IMAGE, this));
-        parameters.add(new BooleanP(APPLY_TO_INPUT, this,true));
+        parameters.add(new BooleanP(APPLY_TO_INPUT, this, true));
         parameters.add(new OutputImageP(OUTPUT_IMAGE, this));
 
-        parameters.add(new SeparatorP(RANGE_SEPARATOR,this));
-        parameters.add(new ChoiceP(CALCULATION_MODE,this,CalculationModes.FAST,CalculationModes.ALL));
-        parameters.add(new DoubleP(CLIP_FRACTION_MIN,this,0d));
-        parameters.add(new DoubleP(CLIP_FRACTION_MAX,this,0d));
-        parameters.add(new BooleanP(SET_MINIMUM_VALUE,this,true));
-        parameters.add(new BooleanP(SET_MAXIMUM_VALUE,this,true));
-        parameters.add(new DoubleP(MIN_RANGE,this,0));
-        parameters.add(new DoubleP(MAX_RANGE,this,255));
+        parameters.add(new SeparatorP(RANGE_SEPARATOR, this));
+        parameters.add(new ChoiceP(CALCULATION_MODE, this, CalculationModes.FAST, CalculationModes.ALL));
+        parameters.add(new DoubleP(CLIP_FRACTION_MIN, this, 0d));
+        parameters.add(new DoubleP(CLIP_FRACTION_MAX, this, 0d));
+        parameters.add(new BooleanP(SET_MINIMUM_VALUE, this, true));
+        parameters.add(new BooleanP(SET_MAXIMUM_VALUE, this, true));
+        parameters.add(new DoubleP(MIN_RANGE, this, 0));
+        parameters.add(new DoubleP(MAX_RANGE, this, 255));
+
+        addParameterDescriptions();
 
     }
 
@@ -248,5 +262,43 @@ public class SetDisplayRange extends Module {
     @Override
     public boolean verify() {
         return true;
+    }
+
+    void addParameterDescriptions() {
+        parameters.get(INPUT_IMAGE).setDescription(
+                "Image from the workspace for which the updated intensity display range will be calculated.");
+
+        parameters.get(APPLY_TO_INPUT).setDescription(
+                "Select if the new intensity display range should be applied directly to the input image, or if it should be applied to a duplicate image, then stored as a different image in the workspace.");
+
+        parameters.get(OUTPUT_IMAGE).setDescription(
+                "If storing the processed image separately in the workspace, this is the name of the output image.");
+
+        parameters.get(CALCULATION_MODE).setDescription("Controls how the display range is calculated:<br><ul>"
+
+                + "<li>\"" + CalculationModes.FAST
+                + "\" All intensity values in the image are collected in a histogram.  As such, for 8 and 16-bit this is fast to calculate as there are a limited number of bins.  In this instance, the clip fraction corresponds to the fraction of bins.</li>"
+
+                + "<li>\"" + CalculationModes.MANUAL
+                + "\" The minimum and maximum displayed intensities are manually specified with the \"" + MIN_RANGE
+                + "\" and \"" + MAX_RANGE + "\" parameters.</li>"
+
+                + "<li>\"" + CalculationModes.PRECISE
+                + "\" All intensity values are ordered by their intensity and the clip fraction corresponds to the fraction of pixels (rather than the fraction of unique intensities as with \""
+                + CalculationModes.FAST
+                + "\" mode.  As such, this method is more precise; however, can take a much longer time (especially for large images).</li></ul>");
+
+        parameters.get(CLIP_FRACTION_MIN).setDescription("Fraction of unique intensities (\""+CalculationModes.PRECISE+"\") or pixels (\""+CalculationModes.FAST+"\") that are clipped when setting the minimum displayed intensity.  Any values below this will be displayed equally with the minimum value of the LUT.");
+
+        parameters.get(CLIP_FRACTION_MAX).setDescription("Fraction of unique intensities (\""+CalculationModes.PRECISE+"\") or pixels (\""+CalculationModes.FAST+"\") that are clipped when setting the maximum displayed intensity.  Any values above this will be displayed equally with the maximum value of the LUT.");
+
+        parameters.get(SET_MINIMUM_VALUE).setDescription("When selected, the minimum displayed intensity will be updated.  Otherwise, the value will be unchanged.");
+
+        parameters.get(SET_MAXIMUM_VALUE).setDescription("When selected, the maximum displayed intensity will be updated.  Otherwise, the value will be unchanged.");
+
+        parameters.get(MIN_RANGE).setDescription("If manually setting the minimum displayed intensity, this is the value that will be applied.");
+
+        parameters.get(MAX_RANGE).setDescription("If manually setting the maximum displayed intensity, this is the value that will be applied.");
+
     }
 }

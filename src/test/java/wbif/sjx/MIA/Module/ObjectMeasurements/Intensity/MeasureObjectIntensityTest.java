@@ -16,7 +16,6 @@ import ij.IJ;
 import ij.ImagePlus;
 import wbif.sjx.MIA.ExpectedObjects.ExpectedObjects;
 import wbif.sjx.MIA.ExpectedObjects.Objects3D;
-import wbif.sjx.MIA.ExpectedObjects.Sphere3D;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleTest;
 import wbif.sjx.MIA.Object.Image;
@@ -70,7 +69,7 @@ public class MeasureObjectIntensityTest extends ModuleTest {
         measureObjectIntensity.updateParameterValue(MeasureObjectIntensity.INPUT_IMAGE,"Test_image");
         measureObjectIntensity.updateParameterValue(MeasureObjectIntensity.INPUT_OBJECTS,"Test_objects");
         measureObjectIntensity.updateParameterValue(MeasureObjectIntensity.MEASURE_WEIGHTED_CENTRE,false);
-        measureObjectIntensity.updateParameterValue(MeasureObjectIntensity.MEASURE_WEIGHTED_EDGE_DISTANCE,false);
+        // measureObjectIntensity.updateParameterValue(MeasureObjectIntensity.MEASURE_WEIGHTED_EDGE_DISTANCE,false);
 
         // Running MeasureObjectIntensity
         measureObjectIntensity.execute(workspace);
@@ -136,7 +135,7 @@ public class MeasureObjectIntensityTest extends ModuleTest {
         measureObjectIntensity.updateParameterValue(MeasureObjectIntensity.INPUT_IMAGE,"Test_image");
         measureObjectIntensity.updateParameterValue(MeasureObjectIntensity.INPUT_OBJECTS,"Test_objects");
         measureObjectIntensity.updateParameterValue(MeasureObjectIntensity.MEASURE_WEIGHTED_CENTRE,false);
-        measureObjectIntensity.updateParameterValue(MeasureObjectIntensity.MEASURE_WEIGHTED_EDGE_DISTANCE,false);
+        // measureObjectIntensity.updateParameterValue(MeasureObjectIntensity.MEASURE_WEIGHTED_EDGE_DISTANCE,false);
 
         // Running MeasureObjectIntensity
         measureObjectIntensity.execute(workspace);
@@ -202,7 +201,7 @@ public class MeasureObjectIntensityTest extends ModuleTest {
         measureObjectIntensity.updateParameterValue(MeasureObjectIntensity.INPUT_IMAGE,"Test_image");
         measureObjectIntensity.updateParameterValue(MeasureObjectIntensity.INPUT_OBJECTS,"Test_objects");
         measureObjectIntensity.updateParameterValue(MeasureObjectIntensity.MEASURE_WEIGHTED_CENTRE,false);
-        measureObjectIntensity.updateParameterValue(MeasureObjectIntensity.MEASURE_WEIGHTED_EDGE_DISTANCE,false);
+        // measureObjectIntensity.updateParameterValue(MeasureObjectIntensity.MEASURE_WEIGHTED_EDGE_DISTANCE,false);
 
         // Running MeasureObjectIntensity
         measureObjectIntensity.execute(workspace);
@@ -239,98 +238,98 @@ public class MeasureObjectIntensityTest extends ModuleTest {
         }
     }
 
-    /**
-     * This tests the mean and stdev intensity distance on a single object (approximately spherical) against a shell
-     * of intensity 2px inside the object.  This test doesn't take differences in XY and Z scaling into account.
-     * @throws Exception
-     */
-    @ParameterizedTest
-    @EnumSource(VolumeType.class)
-    public void testMeasureWeightedEdgeDistance2pxShellInside(VolumeType volumeType) throws Exception {
-        // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
-        Workspace workspace = workspaces.getNewWorkspace(null,1);
+    // /**
+    //  * This tests the mean and stdev intensity distance on a single object (approximately spherical) against a shell
+    //  * of intensity 2px inside the object.  This test doesn't take differences in XY and Z scaling into account.
+    //  * @throws Exception
+    //  */
+    // @ParameterizedTest
+    // @EnumSource(VolumeType.class)
+    // public void testMeasureWeightedEdgeDistance2pxShellInside(VolumeType volumeType) throws Exception {
+    //     // Creating a new workspace
+    //     WorkspaceCollection workspaces = new WorkspaceCollection();
+    //     Workspace workspace = workspaces.getNewWorkspace(null,1);
 
-        // Setting object parameters
-        String inputObjectsName = "Test_objects";
-        double dppXY = 0.02;
-        double dppZ = 0.1;
-        String calibratedUnits = "um";
+    //     // Setting object parameters
+    //     String inputObjectsName = "Test_objects";
+    //     double dppXY = 0.02;
+    //     double dppZ = 0.1;
+    //     String calibratedUnits = "um";
 
-        // Creating objects and adding to workspace
-        ObjCollection testObjects = new Sphere3D(volumeType).getObjects(inputObjectsName,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
-        workspace.addObjects(testObjects);
+    //     // Creating objects and adding to workspace
+    //     ObjCollection testObjects = new Sphere3D(volumeType).getObjects(inputObjectsName,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+    //     workspace.addObjects(testObjects);
 
-        // Loading the test image and adding to workspace
-        String imageName = "Test_image";
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/MeasureObjectIntensity/BinarySphere3D_1pxInside10pxOutsideShell_8bit.tif").getPath(),"UTF-8");
-        ImagePlus ipl = IJ.openImage(pathToImage);
-        Image intensityImage = new Image(imageName,ipl);
-        workspace.addImage(intensityImage);
+    //     // Loading the test image and adding to workspace
+    //     String imageName = "Test_image";
+    //     String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/MeasureObjectIntensity/BinarySphere3D_1pxInside10pxOutsideShell_8bit.tif").getPath(),"UTF-8");
+    //     ImagePlus ipl = IJ.openImage(pathToImage);
+    //     Image intensityImage = new Image(imageName,ipl);
+    //     workspace.addImage(intensityImage);
 
-        MeasureObjectIntensity measureObjectIntensity = new MeasureObjectIntensity(null);
-        measureObjectIntensity.initialiseParameters();
-        measureObjectIntensity.updateParameterValue(MeasureObjectIntensity.INPUT_IMAGE,imageName);
-        measureObjectIntensity.updateParameterValue(MeasureObjectIntensity.INPUT_OBJECTS,inputObjectsName);
-        measureObjectIntensity.updateParameterValue(MeasureObjectIntensity.MEASURE_WEIGHTED_CENTRE,false);
-        measureObjectIntensity.updateParameterValue(MeasureObjectIntensity.MEASURE_WEIGHTED_EDGE_DISTANCE,true);
-        measureObjectIntensity.updateParameterValue(MeasureObjectIntensity.EDGE_DISTANCE_MODE,MeasureObjectIntensity.EdgeDistanceModes.INSIDE_ONLY);
+    //     MeasureObjectIntensity measureObjectIntensity = new MeasureObjectIntensity(null);
+    //     measureObjectIntensity.initialiseParameters();
+    //     measureObjectIntensity.updateParameterValue(MeasureObjectIntensity.INPUT_IMAGE,imageName);
+    //     measureObjectIntensity.updateParameterValue(MeasureObjectIntensity.INPUT_OBJECTS,inputObjectsName);
+    //     measureObjectIntensity.updateParameterValue(MeasureObjectIntensity.MEASURE_WEIGHTED_CENTRE,false);
+    //     measureObjectIntensity.updateParameterValue(MeasureObjectIntensity.MEASURE_WEIGHTED_EDGE_DISTANCE,true);
+    //     measureObjectIntensity.updateParameterValue(MeasureObjectIntensity.EDGE_DISTANCE_MODE,MeasureObjectIntensity.EdgeDistanceModes.INSIDE_ONLY);
 
-        // Running MeasureObjectIntensity
-        measureObjectIntensity.execute(workspace);
+    //     // Running MeasureObjectIntensity
+    //     measureObjectIntensity.execute(workspace);
 
-        // Getting object (there is only one)
-        Obj object = testObjects.values().iterator().next();
-        String meanMeasName = MeasureObjectIntensity.getFullName(imageName,MeasureObjectIntensity.Measurements.MEAN_EDGE_DISTANCE_PX);
-        String stdevMeasName = MeasureObjectIntensity.getFullName(imageName,MeasureObjectIntensity.Measurements.STD_EDGE_DISTANCE_PX);
+    //     // Getting object (there is only one)
+    //     Obj object = testObjects.values().iterator().next();
+    //     String meanMeasName = MeasureObjectIntensity.getFullName(imageName,MeasureObjectIntensity.Measurements.MEAN_EDGE_DISTANCE_PX);
+    //     String stdevMeasName = MeasureObjectIntensity.getFullName(imageName,MeasureObjectIntensity.Measurements.STD_EDGE_DISTANCE_PX);
 
-        assertEquals(1,object.getMeasurement(meanMeasName).getValue(),0.5);
-        assertEquals(0,object.getMeasurement(stdevMeasName).getValue(),0.5);
+    //     assertEquals(1,object.getMeasurement(meanMeasName).getValue(),0.5);
+    //     assertEquals(0,object.getMeasurement(stdevMeasName).getValue(),0.5);
 
-    }
+    // }
 
-    @ParameterizedTest
-    @EnumSource(VolumeType.class)
-    public void testMeasureWeightedEdgeDistance10pxShellOutside(VolumeType volumeType) throws Exception {
-        // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
-        Workspace workspace = workspaces.getNewWorkspace(null,1);
+    // @ParameterizedTest
+    // @EnumSource(VolumeType.class)
+    // public void testMeasureWeightedEdgeDistance10pxShellOutside(VolumeType volumeType) throws Exception {
+    //     // Creating a new workspace
+    //     WorkspaceCollection workspaces = new WorkspaceCollection();
+    //     Workspace workspace = workspaces.getNewWorkspace(null,1);
 
-        // Setting object parameters
-        String inputObjectsName = "Test_objects";
-        double dppXY = 0.02;
-        double dppZ = 0.1;
-        String calibratedUnits = "um";
+    //     // Setting object parameters
+    //     String inputObjectsName = "Test_objects";
+    //     double dppXY = 0.02;
+    //     double dppZ = 0.1;
+    //     String calibratedUnits = "um";
 
-        // Creating objects and adding to workspace
-        ObjCollection testObjects = new Sphere3D(volumeType).getObjects(inputObjectsName,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
-        workspace.addObjects(testObjects);
+    //     // Creating objects and adding to workspace
+    //     ObjCollection testObjects = new Sphere3D(volumeType).getObjects(inputObjectsName,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+    //     workspace.addObjects(testObjects);
 
-        // Loading the test image and adding to workspace
-        String imageName = "Test_image";
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/MeasureObjectIntensity/BinarySphere3D_1pxInside10pxOutsideShell_8bit.tif").getPath(),"UTF-8");
-        ImagePlus ipl = IJ.openImage(pathToImage);
-        Image intensityImage = new Image(imageName,ipl);
-        workspace.addImage(intensityImage);
+    //     // Loading the test image and adding to workspace
+    //     String imageName = "Test_image";
+    //     String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/MeasureObjectIntensity/BinarySphere3D_1pxInside10pxOutsideShell_8bit.tif").getPath(),"UTF-8");
+    //     ImagePlus ipl = IJ.openImage(pathToImage);
+    //     Image intensityImage = new Image(imageName,ipl);
+    //     workspace.addImage(intensityImage);
 
-        MeasureObjectIntensity measureObjectIntensity = new MeasureObjectIntensity(null);
-        measureObjectIntensity.initialiseParameters();
-        measureObjectIntensity.updateParameterValue(MeasureObjectIntensity.INPUT_IMAGE,imageName);
-        measureObjectIntensity.updateParameterValue(MeasureObjectIntensity.INPUT_OBJECTS,inputObjectsName);
-        measureObjectIntensity.updateParameterValue(MeasureObjectIntensity.MEASURE_WEIGHTED_CENTRE,false);
-        measureObjectIntensity.updateParameterValue(MeasureObjectIntensity.MEASURE_WEIGHTED_EDGE_DISTANCE,true);
-        measureObjectIntensity.updateParameterValue(MeasureObjectIntensity.EDGE_DISTANCE_MODE,MeasureObjectIntensity.EdgeDistanceModes.OUTSIDE_ONLY);
+    //     MeasureObjectIntensity measureObjectIntensity = new MeasureObjectIntensity(null);
+    //     measureObjectIntensity.initialiseParameters();
+    //     measureObjectIntensity.updateParameterValue(MeasureObjectIntensity.INPUT_IMAGE,imageName);
+    //     measureObjectIntensity.updateParameterValue(MeasureObjectIntensity.INPUT_OBJECTS,inputObjectsName);
+    //     measureObjectIntensity.updateParameterValue(MeasureObjectIntensity.MEASURE_WEIGHTED_CENTRE,false);
+    //     measureObjectIntensity.updateParameterValue(MeasureObjectIntensity.MEASURE_WEIGHTED_EDGE_DISTANCE,true);
+    //     measureObjectIntensity.updateParameterValue(MeasureObjectIntensity.EDGE_DISTANCE_MODE,MeasureObjectIntensity.EdgeDistanceModes.OUTSIDE_ONLY);
 
-        // Running MeasureObjectIntensity
-        measureObjectIntensity.execute(workspace);
+    //     // Running MeasureObjectIntensity
+    //     measureObjectIntensity.execute(workspace);
 
-        // Getting object (there is only one)
-        Obj object = testObjects.values().iterator().next();
-        String meanMeasName = MeasureObjectIntensity.getFullName(imageName,MeasureObjectIntensity.Measurements.MEAN_EDGE_DISTANCE_PX);
-        String stdevMeasName = MeasureObjectIntensity.getFullName(imageName,MeasureObjectIntensity.Measurements.STD_EDGE_DISTANCE_PX);
+    //     // Getting object (there is only one)
+    //     Obj object = testObjects.values().iterator().next();
+    //     String meanMeasName = MeasureObjectIntensity.getFullName(imageName,MeasureObjectIntensity.Measurements.MEAN_EDGE_DISTANCE_PX);
+    //     String stdevMeasName = MeasureObjectIntensity.getFullName(imageName,MeasureObjectIntensity.Measurements.STD_EDGE_DISTANCE_PX);
 
-        assertEquals(10,object.getMeasurement(meanMeasName).getValue(),0.5);
-        assertEquals(0,object.getMeasurement(stdevMeasName).getValue(),0.5);
+    //     assertEquals(10,object.getMeasurement(meanMeasName).getValue(),0.5);
+    //     assertEquals(0,object.getMeasurement(stdevMeasName).getValue(),0.5);
 
-    }
+    // }
 }

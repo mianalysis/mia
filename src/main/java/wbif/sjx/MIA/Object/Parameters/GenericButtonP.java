@@ -3,7 +3,6 @@ package wbif.sjx.MIA.Object.Parameters;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.GUI.GUI;
 import wbif.sjx.MIA.GUI.ParameterControls.GenericButton;
 import wbif.sjx.MIA.GUI.ParameterControls.ParameterControl;

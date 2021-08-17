@@ -2,12 +2,10 @@ package wbif.sjx.MIA.Module.ObjectProcessing.Refinement;
 
 import java.util.Iterator;
 
-import ij.Prefs;
+import wbif.sjx.MIA.Module.Categories;
+import wbif.sjx.MIA.Module.Category;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
-import wbif.sjx.MIA.Module.Category;
-import wbif.sjx.MIA.Module.Categories;
-import wbif.sjx.MIA.Module.ImageProcessing.Pixel.InvertIntensity;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.Binary.BinaryOperations2D;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.Binary.FillHoles;
 import wbif.sjx.MIA.Object.Image;
@@ -58,24 +56,19 @@ public class FillHolesInObjects extends Module {
         // Convert each object to an image, do the hole filling, then convert back to an
         // object
         Image objectImage = inputObject.getAsTightImage("Temp");
-        InvertIntensity.process(objectImage);
-
-        Prefs.blackBackground = false;
 
         // Applying morphological transform. Erode and dilate are used "backwards", as
         // the image that comes
         // from the converter has white objects on a black background.
         switch (method) {
             case Methods.FILL_HOLES_2D:
-                BinaryOperations2D.process(objectImage, BinaryOperations2D.OperationModes.FILL_HOLES, 1, 1);
+                BinaryOperations2D.process(objectImage, BinaryOperations2D.OperationModes.FILL_HOLES, 1, 1, true);
                 break;
 
             case Methods.FILL_HOLES_3D:
-                FillHoles.process(objectImage.getImagePlus());
+                FillHoles.process(objectImage.getImagePlus(),true);
                 break;
         }
-
-        InvertIntensity.process(objectImage);
 
         // Creating a new object collection (only contains one image) from the
         // transformed image

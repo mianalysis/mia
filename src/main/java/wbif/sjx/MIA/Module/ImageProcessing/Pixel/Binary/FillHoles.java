@@ -6,19 +6,21 @@ import ij.plugin.Duplicator;
 import ij.plugin.SubHyperstackMaker;
 import ij.process.ImageProcessor;
 import inra.ijpb.morphology.Reconstruction3D;
+import wbif.sjx.MIA.Module.Categories;
+import wbif.sjx.MIA.Module.Category;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
-import wbif.sjx.MIA.Module.Category;
-import wbif.sjx.MIA.Module.Categories;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.InvertIntensity;
 import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.Status;
 import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.MIA.Object.Parameters.BooleanP;
+import wbif.sjx.MIA.Object.Parameters.ChoiceP;
 import wbif.sjx.MIA.Object.Parameters.InputImageP;
 import wbif.sjx.MIA.Object.Parameters.OutputImageP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.Parameters.SeparatorP;
+import wbif.sjx.MIA.Object.Parameters.ChoiceInterfaces.BinaryLogicInterface;
 import wbif.sjx.MIA.Object.References.Collections.ImageMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.MetadataRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.ObjMeasurementRefCollection;
@@ -31,12 +33,18 @@ public class FillHoles extends Module {
     public static final String APPLY_TO_INPUT = "Apply to input image";
     public static final String OUTPUT_IMAGE = "Output image";
 
-    public FillHoles(ModuleCollection modules) {
-        super("Fill holes",modules);
+    public static final String FILL_HOLES_SEPARATOR = "Fill holes controls";
+    public static final String BINARY_LOGIC = "Binary logic";
+
+    public interface BinaryLogic extends BinaryLogicInterface {
     }
+    
 
+    public FillHoles(ModuleCollection modules) {
+        super("Fill holes", modules);
+    }   
 
-    public static void process(ImagePlus ipl) {
+    public static void process(ImagePlus ipl, boolean blackBackground) {
         int width = ipl.getWidth();
         int height = ipl.getHeight();
         int nChannels = ipl.getNChannels();
@@ -44,7 +52,8 @@ public class FillHoles extends Module {
         int nFrames = ipl.getNFrames();
 
         // MorphoLibJ takes objects as being white
-        InvertIntensity.process(ipl);
+        if (!blackBackground)
+            InvertIntensity.process(ipl);
 
         for (int c=1;c<=nChannels;c++) {
             for (int t = 1; t <= nFrames; t++) {
@@ -65,7 +74,8 @@ public class FillHoles extends Module {
             }
         }
 
-        InvertIntensity.process(ipl);
+        if (!blackBackground)
+            InvertIntensity.process(ipl);
 
     }
 
@@ -78,7 +88,7 @@ public class FillHoles extends Module {
 
     @Override
     public String getDescription() {
-        return "Performs a 3D fill holes operation on an input binary image.  This operation will change all background pixels in a region which is fully enclosed by foreground pixels to foreground.  The input image must be 8-bit and have the logic black foreground (intensity 0) and white background (intensity 255).  Uses the plugin \"<a href=\"https://github.com/ijpb/MorphoLibJ\">MorphoLibJ</a>\".";
+        return "Performs a 3D fill holes operation on an input binary image.  This operation will change all background pixels in a region which is fully enclosed by foreground pixels to foreground.  This image will be 8-bit with binary logic determined by the \"" + BINARY_LOGIC + "\" parameter.  Uses the plugin \"<a href=\"https://github.com/ijpb/MorphoLibJ\">MorphoLibJ</a>\".";
     }
 
     @Override
@@ -91,11 +101,14 @@ public class FillHoles extends Module {
         // Getting parameters
         boolean applyToInput = parameters.getValue(APPLY_TO_INPUT);
         String outputImageName = parameters.getValue(OUTPUT_IMAGE);
+        String binaryLogic = parameters.getValue(BINARY_LOGIC);
+        boolean blackBackground = binaryLogic.equals(BinaryLogic.BLACK_BACKGROUND);
 
         // If applying to a new image, the input image is duplicated
-        if (!applyToInput) inputImagePlus = new Duplicator().run(inputImagePlus);
+        if (!applyToInput)
+            inputImagePlus = new Duplicator().run(inputImagePlus);
 
-        process(inputImagePlus);
+        process(inputImagePlus, blackBackground);
 
         // If the image is being saved as a new image, adding it to the workspace
         if (!applyToInput) {
@@ -120,6 +133,9 @@ public class FillHoles extends Module {
         parameters.add(new BooleanP(APPLY_TO_INPUT, this,true));
         parameters.add(new OutputImageP(OUTPUT_IMAGE, this));
 
+        parameters.add(new SeparatorP(FILL_HOLES_SEPARATOR, this));
+        parameters.add(new ChoiceP(BINARY_LOGIC, this, BinaryLogic.BLACK_BACKGROUND, BinaryLogic.ALL));
+
         addParameterDescriptions();
 
     }
@@ -132,9 +148,11 @@ public class FillHoles extends Module {
         returnedParameters.add(parameters.getParameter(INPUT_IMAGE));
         returnedParameters.add(parameters.getParameter(APPLY_TO_INPUT));
 
-        if (!(boolean) parameters.getValue(APPLY_TO_INPUT)) {
+        if (!(boolean) parameters.getValue(APPLY_TO_INPUT))
             returnedParameters.add(parameters.getParameter(OUTPUT_IMAGE));
-        }
+        
+        returnedParameters.add(parameters.getParameter(FILL_HOLES_SEPARATOR));
+        returnedParameters.add(parameters.getParameter(BINARY_LOGIC));
 
         return returnedParameters;
 
@@ -172,7 +190,7 @@ public class FillHoles extends Module {
 
     void addParameterDescriptions() {
       parameters.get(INPUT_IMAGE).setDescription(
-              "Image from workspace to apply fill holes operation to.  This must be an 8-bit binary image (255 = background, 0 = foreground).");
+              "Image from workspace to apply fill holes operation to.  This image will be 8-bit with binary logic determined by the \"" + BINARY_LOGIC + "\" parameter.");
 
       parameters.get(APPLY_TO_INPUT).setDescription(
               "When selected, the post-operation image will overwrite the input image in the workspace.  Otherwise, the image will be saved to the workspace with the name specified by the \"" + OUTPUT_IMAGE + "\" parameter.");
@@ -180,5 +198,7 @@ public class FillHoles extends Module {
       parameters.get(OUTPUT_IMAGE).setDescription("If \"" + APPLY_TO_INPUT
               + "\" is not selected, the post-operation image will be saved to the workspace with this name.");
 
+      parameters.get(BINARY_LOGIC).setDescription(BinaryLogicInterface.getDescription());
+              
     }
 }

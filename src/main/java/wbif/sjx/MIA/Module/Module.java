@@ -105,7 +105,7 @@ public abstract class Module extends Ref implements Comparable {
         writeStatus("Processing");
 
         // By default all modules should use this format
-        Prefs.blackBackground = false;
+        Prefs.blackBackground = true;
 
         // Running the main module code
         Status status = process(workspace);

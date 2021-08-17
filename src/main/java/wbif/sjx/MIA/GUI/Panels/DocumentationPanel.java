@@ -1,15 +1,18 @@
 package wbif.sjx.MIA.GUI.Panels;
 
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.Insets;
+import java.awt.Toolkit;
+
+import javax.swing.ImageIcon;
+import javax.swing.JEditorPane;
+import javax.swing.JFrame;
+import javax.swing.JScrollPane;
+
 import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.GUI.HyperlinkOpener;
 import wbif.sjx.MIA.Process.DocumentationGenerator;
-
-import javax.swing.*;
-import javax.swing.event.HyperlinkEvent;
-import javax.swing.event.HyperlinkListener;
-import java.awt.*;
-import java.io.IOException;
-import java.net.URISyntaxException;
 
 public class DocumentationPanel {
     public static void showAbout() {

@@ -4,9 +4,7 @@ import java.awt.Color;
 
 import ij.CompositeImage;
 import ij.ImagePlus;
-import ij.plugin.CompositeConverter;
 import ij.process.LUT;
-import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Categories;
 import wbif.sjx.MIA.Module.Category;
 import wbif.sjx.MIA.Module.Module;

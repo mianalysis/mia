@@ -56,8 +56,9 @@ public abstract class AbstractOverlay extends Module {
 
         // Generating colours for each object
         switch (colourMode) {
-            case ColourModes.SINGLE_COLOUR:
             default:
+                return null;
+            case ColourModes.SINGLE_COLOUR:            
                 return ColourFactory.getSingleColourHues(inputObjects, singleColour);
             case ColourModes.CHILD_COUNT:
                 return ColourFactory.getChildCountHues(inputObjects, childObjectsForColourName, true);

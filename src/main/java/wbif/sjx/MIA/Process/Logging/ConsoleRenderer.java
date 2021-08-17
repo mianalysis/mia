@@ -15,7 +15,7 @@ import org.scijava.ui.UIService;
 import org.scijava.ui.console.ConsolePane;
 import org.scijava.ui.swing.console.ConsolePanel;
 
-import wbif.sjx.MIA.GUI.Colours;
+import wbif.sjx.MIA.Object.Colours;
 
 /**
  * Created by Stephen Cross on 14/06/2019.

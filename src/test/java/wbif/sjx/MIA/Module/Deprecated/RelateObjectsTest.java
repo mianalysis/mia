@@ -1,27 +1,36 @@
 package wbif.sjx.MIA.Module.Deprecated;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 
-import ij.IJ;
-import ij.ImageJ;
-import wbif.sjx.MIA.ExpectedObjects.*;
+import wbif.sjx.MIA.ExpectedObjects.ExpectedObjects;
+import wbif.sjx.MIA.ExpectedObjects.Objects3D;
+import wbif.sjx.MIA.ExpectedObjects.ProxCubes1;
+import wbif.sjx.MIA.ExpectedObjects.ProxCubes2;
+import wbif.sjx.MIA.ExpectedObjects.ProxSquares1;
+import wbif.sjx.MIA.ExpectedObjects.ProxSquares2;
+import wbif.sjx.MIA.ExpectedObjects.Spots3D;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.ModuleTest;
-import wbif.sjx.MIA.Object.*;
+import wbif.sjx.MIA.Object.Obj;
+import wbif.sjx.MIA.Object.ObjCollection;
+import wbif.sjx.MIA.Object.Workspace;
+import wbif.sjx.MIA.Object.WorkspaceCollection;
 import wbif.sjx.MIA.Object.Units.SpatialUnit;
-import wbif.sjx.MIA.Process.ColourFactory;
 import wbif.sjx.common.Object.Volume.VolumeType;
-
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Created by Stephen Cross on 10/09/2017.
