@@ -2,8 +2,10 @@ package wbif.sjx.MIA.Process.AnalysisHandling;
 
 import java.util.HashMap;
 
+import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Core.InputControl;
 import wbif.sjx.MIA.Module.Deprecated.ThresholdImage;
+import wbif.sjx.MIA.Module.ImageProcessing.Pixel.ImageMath;
 // import wbif.sjx.MIA.Module.ImageMeasurements.MeasureIntensityDistribution;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.WekaProbabilityMaps;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.Binary.DistanceMap;
@@ -107,6 +109,7 @@ public class LostAndFound {
         // GlobalVariables
         currentParameterNames = new HashMap<>();
         currentParameterNames.put("Control type", GlobalVariables.VARIABLE_TYPE);
+        currentParameterNames.put("Variable choice", GlobalVariables.VARIABLE_CHOICE);
         moduleName = new GlobalVariables(null).getClass().getSimpleName();
         lostParameterNames.put(moduleName, currentParameterNames);
 
@@ -209,7 +212,6 @@ public class LostAndFound {
         moduleName = new WorkflowHandling(null).getClass().getSimpleName();
         lostParameterNames.put(moduleName, currentParameterNames);
 
-
         /// Populating hard-coded parameter value reassignments ///
         HashMap<String, String> currentValues = null;
         HashMap<String, HashMap<String, String>> currentParameterValues = null;
@@ -240,6 +242,22 @@ public class LostAndFound {
         moduleName = new CalculateNearestNeighbour(null).getClass().getSimpleName();
         lostParameterValues.put(moduleName, currentParameterValues);
 
+        // ImageLoader
+        currentValues = new HashMap<>();
+        currentValues.put("Image sequence", ImageLoader.ImportModes.IMAGE_SEQUENCE_ZEROS);
+        currentParameterValues = new HashMap<>();
+        currentParameterValues.put(ImageLoader.IMPORT_MODE, currentValues);
+        moduleName = new ImageLoader(null).getClass().getSimpleName();
+        lostParameterValues.put(moduleName, currentParameterValues);
+
+        // ImageMath
+        currentValues = new HashMap<>();
+        currentValues.put("Measurement value", ImageMath.ValueSources.MEASUREMENT);
+        currentParameterValues = new HashMap<>();
+        currentParameterValues.put(ImageMath.VALUE_SOURCE, currentValues);
+        moduleName = new ImageMath(null).getClass().getSimpleName();
+        lostParameterValues.put(moduleName, currentParameterValues);
+
         // InputControl
         currentValues = new HashMap<>();
         currentValues.put("METRE", SpatialUnit.AvailableUnits.METRE);
@@ -253,14 +271,6 @@ public class LostAndFound {
         moduleName = new InputControl(null).getClass().getSimpleName();
         lostParameterValues.put(moduleName, currentParameterValues);
 
-        // ImageLoader
-        currentValues = new HashMap<>();
-        currentValues.put("Image sequence", ImageLoader.ImportModes.IMAGE_SEQUENCE_ZEROS);
-        currentParameterValues = new HashMap<>();
-        currentParameterValues.put(ImageLoader.IMPORT_MODE, currentValues);
-        moduleName = new ImageLoader(null).getClass().getSimpleName();
-        lostParameterValues.put(moduleName, currentParameterValues);
-
         // MetadataExtractor
         currentValues = new HashMap<>();
         currentValues.put("Cell Voyager filename", MetadataExtractor.FilenameExtractors.CV1000_FILENAME_EXTRACTOR);
@@ -269,7 +279,8 @@ public class LostAndFound {
         currentParameterValues.put(MetadataExtractor.FILENAME_EXTRACTOR, currentValues);
 
         currentValues = new HashMap<>();
-        currentValues.put("Cell Voyager foldername", MetadataExtractor.FoldernameExtractors.CV1000_FOLDERNAME_EXTRACTOR);
+        currentValues.put("Cell Voyager foldername",
+                MetadataExtractor.FoldernameExtractors.CV1000_FOLDERNAME_EXTRACTOR);
         currentParameterValues.put(MetadataExtractor.FILENAME_EXTRACTOR, currentValues);
 
         moduleName = new MetadataExtractor(null).getClass().getSimpleName();
@@ -294,7 +305,7 @@ public class LostAndFound {
 
     public String findParameter(String moduleSimpleName, String oldName) {
         String finalModuleName = findModule(moduleSimpleName);
-        
+
         // If no name is found, return the old name
         HashMap<String, String> currentParameters = lostParameterNames.get(finalModuleName);
         if (currentParameters == null)

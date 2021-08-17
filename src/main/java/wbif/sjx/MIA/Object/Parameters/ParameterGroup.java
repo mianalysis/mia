@@ -15,6 +15,7 @@ import wbif.sjx.MIA.GUI.ParameterControls.AddParametersButton;
 import wbif.sjx.MIA.GUI.ParameterControls.ParameterControl;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
+import wbif.sjx.MIA.Process.AnalysisHandling.AnalysisReader;
 
 /**
  * The value for this parameter is the number of collections that have been created.  The value source is a comma,
@@ -286,23 +287,9 @@ public class ParameterGroup extends Parameter {
             NodeList newParametersNodes = collectionNodes.item(i).getChildNodes();
 
             // Iterating over each parameter in this parameter collection
-            for (int j = 0; j < newParametersNodes.getLength(); j++) {
-                Node newParametersNode = newParametersNodes.item(j);
+            for (int j = 0; j < newParametersNodes.getLength(); j++)
+                AnalysisReader.initialiseParameter(newParametersNodes.item(j), module, newParameters);
 
-                NamedNodeMap attributes = newParametersNode.getAttributes();
-                String parameterName = attributes.getNamedItem("NAME").getNodeValue();
-                String parameterValue = attributes.getNamedItem("VALUE").getNodeValue();
-                Parameter parameter = newParameters.getParameter(parameterName);
-
-                if (parameter == null) {
-                    MIA.log.writeWarning("Parameter \"" + parameterName + "\" (value = \"" + parameterValue
-                            + "\") not found for module \"" + module.getName() + "\", skipping.");
-                    continue;
-                }
-
-                parameter.setAttributesFromXML(newParametersNode);
-
-            }
         }
     }
 
