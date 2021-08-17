@@ -1,4 +1,8 @@
 .factorypath
+.classpath
+.project
+.settings/
+
 *~
 target/*
 !target/site
@@ -6,11 +10,4 @@ target/site/*
 !target/site/dependencies.html
 !target/site/images/
 
-\.idea/workspace\.xml
-\.idea/libraries/
-\.idea/
-
 *.log
-ModularImageAnalysis\.iml
-
-MIA_\.iml
