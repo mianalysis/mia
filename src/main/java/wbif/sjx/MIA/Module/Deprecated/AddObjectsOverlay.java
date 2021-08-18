@@ -413,12 +413,12 @@ public class AddObjectsOverlay extends Module {
             case ColourModes.RANDOM_COLOUR:
                 return ColourFactory.getRandomHues(inputObjects);
             case ColourModes.MEASUREMENT_VALUE:
-                return ColourFactory.getMeasurementValueHues(inputObjects, measurementForColour, true);
+                return ColourFactory.getMeasurementValueHues(inputObjects, measurementForColour, true, new double[]{Double.NaN,Double.NaN});
             case ColourModes.PARENT_ID:
                 return ColourFactory.getParentIDHues(inputObjects, parentObjectsForColourName, true);
             case ColourModes.PARENT_MEASUREMENT_VALUE:
                 return ColourFactory.getParentMeasurementValueHues(inputObjects, parentObjectsForColourName,
-                        measurementForColour, true);
+                        measurementForColour, true, new double[]{Double.NaN,Double.NaN});
         }
     }
 

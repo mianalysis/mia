@@ -22,6 +22,10 @@ public abstract class AbstractOverlay extends Module {
     public static final String PARENT_OBJECT_FOR_COLOUR = "Parent object for colour";
     public static final String PARTNER_OBJECTS_FOR_COLOUR = "Partner objects for colour";
     public static final String OPACITY = "Opacity (%)";
+    public static final String RANGE_MINIMUM_MODE = "Range minimum mode";
+    public static final String MINIMUM_VALUE = "Minimum value";
+    public static final String RANGE_MAXIMUM_MODE = "Range maximum mode";
+    public static final String MAXIMUM_VALUE = "Maximum value";
 
     public AbstractOverlay(String name, ModuleCollection modules) {
         super(name, modules);
@@ -45,6 +49,14 @@ public abstract class AbstractOverlay extends Module {
     public interface SingleColours extends ColourFactory.SingleColours {
     }
 
+    public interface RangeModes {
+        String AUTOMATIC = "Automatic";
+        String MANUAL = "Manual";
+
+        String[] ALL = new String[] { AUTOMATIC, MANUAL };
+
+    }
+
     public HashMap<Integer, Float> getHues(ObjCollection inputObjects) {
         // Getting colour settings
         String colourMode = parameters.getValue(COLOUR_MODE);
@@ -53,28 +65,38 @@ public abstract class AbstractOverlay extends Module {
         String parentObjectsForColourName = parameters.getValue(PARENT_OBJECT_FOR_COLOUR);
         String partnerObjectsForColourName = parameters.getValue(PARTNER_OBJECTS_FOR_COLOUR);
         String measurementForColour = parameters.getValue(MEASUREMENT_FOR_COLOUR);
+        String rangeMinMode = parameters.getValue(RANGE_MINIMUM_MODE);
+        double minValue = parameters.getValue(MINIMUM_VALUE);
+        String rangeMaxMode = parameters.getValue(RANGE_MAXIMUM_MODE);
+        double maxValue = parameters.getValue(MAXIMUM_VALUE);
+
+        double[] range = new double[] { Double.NaN, Double.NaN };
+        if (rangeMinMode.equals(RangeModes.MANUAL))
+            range[0] = minValue;
+        if (rangeMaxMode.equals(RangeModes.MANUAL))
+            range[1] = maxValue;
 
         // Generating colours for each object
         switch (colourMode) {
             default:
                 return null;
-            case ColourModes.SINGLE_COLOUR:            
+            case ColourModes.SINGLE_COLOUR:
                 return ColourFactory.getSingleColourHues(inputObjects, singleColour);
             case ColourModes.CHILD_COUNT:
-                return ColourFactory.getChildCountHues(inputObjects, childObjectsForColourName, true);
+                return ColourFactory.getChildCountHues(inputObjects, childObjectsForColourName, true, range);
             case ColourModes.ID:
                 return ColourFactory.getIDHues(inputObjects, true);
             case ColourModes.RANDOM_COLOUR:
                 return ColourFactory.getRandomHues(inputObjects);
             case ColourModes.MEASUREMENT_VALUE:
-                return ColourFactory.getMeasurementValueHues(inputObjects, measurementForColour, true);
+                return ColourFactory.getMeasurementValueHues(inputObjects, measurementForColour, true, range);
             case ColourModes.PARENT_ID:
                 return ColourFactory.getParentIDHues(inputObjects, parentObjectsForColourName, true);
             case ColourModes.PARENT_MEASUREMENT_VALUE:
                 return ColourFactory.getParentMeasurementValueHues(inputObjects, parentObjectsForColourName,
-                        measurementForColour, true);
+                        measurementForColour, true, range);
             case ColourModes.PARTNER_COUNT:
-                return ColourFactory.getPartnerCountHues(inputObjects, partnerObjectsForColourName, true);
+                return ColourFactory.getPartnerCountHues(inputObjects, partnerObjectsForColourName, true, range);
         }
     }
 
@@ -87,6 +109,10 @@ public abstract class AbstractOverlay extends Module {
         parameters.add(new ParentObjectsP(PARENT_OBJECT_FOR_COLOUR, this));
         parameters.add(new PartnerObjectsP(PARTNER_OBJECTS_FOR_COLOUR, this));
         parameters.add(new DoubleP(OPACITY, this, 100));
+        parameters.add(new ChoiceP(RANGE_MINIMUM_MODE, this, RangeModes.AUTOMATIC, RangeModes.ALL));
+        parameters.add(new DoubleP(MINIMUM_VALUE, this, 0d));
+        parameters.add(new ChoiceP(RANGE_MAXIMUM_MODE, this, RangeModes.AUTOMATIC, RangeModes.ALL));
+        parameters.add(new DoubleP(MAXIMUM_VALUE, this, 1d));
 
     }
 
@@ -137,6 +163,20 @@ public abstract class AbstractOverlay extends Module {
                 break;
         }
 
+        switch ((String) parameters.getValue(COLOUR_MODE)) {
+            case ColourModes.CHILD_COUNT:
+            case ColourModes.MEASUREMENT_VALUE:
+            case ColourModes.PARENT_MEASUREMENT_VALUE:
+            case ColourModes.PARTNER_COUNT:
+                returnedParameters.add(parameters.getParameter(RANGE_MINIMUM_MODE));
+                if (((String) parameters.getValue(RANGE_MINIMUM_MODE)).equals(RangeModes.MANUAL))
+                    returnedParameters.add(parameters.getParameter(MINIMUM_VALUE));
+                returnedParameters.add(parameters.getParameter(RANGE_MAXIMUM_MODE));
+                if (((String) parameters.getValue(RANGE_MAXIMUM_MODE)).equals(RangeModes.MANUAL))
+                    returnedParameters.add(parameters.getParameter(MAXIMUM_VALUE));
+                break;
+        }
+
         returnedParameters.add(parameters.getParameter(OPACITY));
 
         return returnedParameters;
@@ -144,55 +184,53 @@ public abstract class AbstractOverlay extends Module {
     }
 
     protected void addParameterDescriptions() {
-        parameters.get(COLOUR_MODE)
-                .setDescription("Method for assigning colour of each object:<br><ul>"
+        parameters.get(COLOUR_MODE).setDescription("Method for assigning colour of each object:<br><ul>"
 
-                        + "<li>\"" + ColourModes.CHILD_COUNT
-                        + "\" Colour is determined by the number of children each object has.  "
-                        + "Colour range runs across the first half of the visible spectrum (i.e. red to cyan) and is maximised, so the object "
-                        + "with the fewest children is shown in red and the object with the most, in cyan.  Objects without any children are always shown in red.  "
-                        + "Child objects used for counting are selected with the \"" + CHILD_OBJECTS_FOR_COLOUR
-                        + "\" parameter.</li>"
+                + "<li>\"" + ColourModes.CHILD_COUNT
+                + "\" Colour is determined by the number of children each object has.  "
+                + "Colour range runs across the first half of the visible spectrum (i.e. red to cyan) and is maximised, so the object "
+                + "with the fewest children is shown in red and the object with the most, in cyan.  Objects without any children are always shown in red.  "
+                + "Child objects used for counting are selected with the \"" + CHILD_OBJECTS_FOR_COLOUR
+                + "\" parameter.</li>"
 
-                        + "<li>\"" + ColourModes.ID
-                        + "\" Colour is quasi-randomly selected based on the ID number of the object.  The colour used for a specific "
-                        + "ID number will always be the same and is calculated using the equation <i>hue = (ID * 1048576 % 255) / 255</i>.</li>"
+                + "<li>\"" + ColourModes.ID
+                + "\" Colour is quasi-randomly selected based on the ID number of the object.  The colour used for a specific "
+                + "ID number will always be the same and is calculated using the equation <i>hue = (ID * 1048576 % 255) / 255</i>.</li>"
 
-                        + "<li>\"" + ColourModes.MEASUREMENT_VALUE
-                        + "\" Colour is determined by a measurement value.  "
-                        + "Colour range runs across the first half of the visible spectrum (i.e. red to cyan) and is maximised, so the object "
-                        + "with the smallest measurement is shown in red and the object with the largest, in cyan.  Objects missing the relevant measurement "
-                        + " are always shown in red.  The measurement value is selected with the \""
-                        + MEASUREMENT_FOR_COLOUR + "\" parameter.</li>"
+                + "<li>\"" + ColourModes.MEASUREMENT_VALUE + "\" Colour is determined by a measurement value.  "
+                + "Colour range runs across the first half of the visible spectrum (i.e. red to cyan) and is maximised, so the object "
+                + "with the smallest measurement is shown in red and the object with the largest, in cyan.  Objects missing the relevant measurement "
+                + " are always shown in red.  The measurement value is selected with the \"" + MEASUREMENT_FOR_COLOUR
+                + "\" parameter.</li>"
 
-                        + "<li>\"" + ColourModes.PARENT_ID
-                        + "\" Colour is quasi-randomly selected based on the ID number of a parent of this object.  "
-                        + "The colour used for a specific ID number will always be the same and is calculated using the equation <i>hue = (ID * 1048576 % 255) / 255</i>.  "
-                        + "The parent object is selected with the \"" + PARENT_OBJECT_FOR_COLOUR + "\" parameter.</li>"
+                + "<li>\"" + ColourModes.PARENT_ID
+                + "\" Colour is quasi-randomly selected based on the ID number of a parent of this object.  "
+                + "The colour used for a specific ID number will always be the same and is calculated using the equation <i>hue = (ID * 1048576 % 255) / 255</i>.  "
+                + "The parent object is selected with the \"" + PARENT_OBJECT_FOR_COLOUR + "\" parameter.</li>"
 
-                        + "<li>\"" + ColourModes.PARENT_MEASUREMENT_VALUE
-                        + "\" Colour is determined by a measurement value of a parent of this object.  "
-                        + "Colour range runs across the first half of the visible spectrum (i.e. red to cyan) and is maximised, so the object "
-                        + "with the smallest measurement is shown in red and the object with the largest, in cyan.  Objects either missing the relevant measurement or without "
-                        + "the relevant parent are always shown in red.  The parent object is selected with the \""
-                        + PARENT_OBJECT_FOR_COLOUR + "\" parameter and the measurement "
-                        + "value is selected with the \"" + MEASUREMENT_FOR_COLOUR + "\" parameter.</li>"
+                + "<li>\"" + ColourModes.PARENT_MEASUREMENT_VALUE
+                + "\" Colour is determined by a measurement value of a parent of this object.  "
+                + "Colour range runs across the first half of the visible spectrum (i.e. red to cyan) and is maximised, so the object "
+                + "with the smallest measurement is shown in red and the object with the largest, in cyan.  Objects either missing the relevant measurement or without "
+                + "the relevant parent are always shown in red.  The parent object is selected with the \""
+                + PARENT_OBJECT_FOR_COLOUR + "\" parameter and the measurement " + "value is selected with the \""
+                + MEASUREMENT_FOR_COLOUR + "\" parameter.</li>"
 
-                        + "<li>\"" + ColourModes.PARTNER_COUNT
-                        + "\"  Colour is determined by the number of partners each object has.  "
-                        + "Colour range runs across the first half of the visible spectrum (i.e. red to cyan) and is maximised, so the object "
-                        + "with the fewest partners is shown in red and the object with the most, in cyan.  Objects without any partners are always shown in red.  "
-                        + "Partner objects used for counting are selected with the \"" + PARTNER_OBJECTS_FOR_COLOUR
-                        + "\" parameter.</li>"
+                + "<li>\"" + ColourModes.PARTNER_COUNT
+                + "\"  Colour is determined by the number of partners each object has.  "
+                + "Colour range runs across the first half of the visible spectrum (i.e. red to cyan) and is maximised, so the object "
+                + "with the fewest partners is shown in red and the object with the most, in cyan.  Objects without any partners are always shown in red.  "
+                + "Partner objects used for counting are selected with the \"" + PARTNER_OBJECTS_FOR_COLOUR
+                + "\" parameter.</li>"
 
-                        + "<li>\"" + ColourModes.RANDOM_COLOUR
-                        + "\" Colour is randomly selected for each object.  " + "Unlike the \"" + ColourModes.ID
-                        + "\" option, the colours generated here will be different for each evaluation of the module.</li>"
+                + "<li>\"" + ColourModes.RANDOM_COLOUR + "\" Colour is randomly selected for each object.  "
+                + "Unlike the \"" + ColourModes.ID
+                + "\" option, the colours generated here will be different for each evaluation of the module.</li>"
 
-                        + "<li>\"" + ColourModes.SINGLE_COLOUR
-                        + "\" (default option) Colour is fixed to one of a predetermined list of colours.  All objects "
-                        + " will be assigned the same overlay colour.  The colour is chosen using the \""
-                        + SINGLE_COLOUR + "\" parameter.</li></ul>");
+                + "<li>\"" + ColourModes.SINGLE_COLOUR
+                + "\" (default option) Colour is fixed to one of a predetermined list of colours.  All objects "
+                + " will be assigned the same overlay colour.  The colour is chosen using the \"" + SINGLE_COLOUR
+                + "\" parameter.</li></ul>");
 
         parameters.get(SINGLE_COLOUR)
                 .setDescription("Colour for all object overlays to be rendered using.  This parameter is used if \""
