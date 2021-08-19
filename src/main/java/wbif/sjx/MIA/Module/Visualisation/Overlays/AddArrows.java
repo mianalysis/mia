@@ -301,8 +301,9 @@ public class AddArrows extends AbstractOverlay {
             }
         }
 
-        returnedParameters.add(parameters.getParameter(RENDERING_SEPARATOR));
         returnedParameters.addAll(super.updateAndGetParameters(inputObjectsName));
+        
+        returnedParameters.add(parameters.getParameter(RENDERING_SEPARATOR));
         returnedParameters.add(parameters.getParameter(ORIENTATION_MODE));
         switch ((String) parameters.getValue(ORIENTATION_MODE)) {
             case OrientationModes.MEASUREMENT:

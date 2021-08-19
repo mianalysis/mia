@@ -569,9 +569,9 @@ public class AddRelationshipConnection extends AbstractOverlay {
             }
         }
 
-        returnedParameters.add(parameters.getParameter(RENDERING_SEPARATOR));
         returnedParameters.addAll(super.updateAndGetParameters(refObjectsName));
 
+        returnedParameters.add(parameters.getParameter(RENDERING_SEPARATOR));
         returnedParameters.add(parameters.getParameter(RENDER_MODE));
         switch ((String) parameters.getValue(RENDER_MODE)) {
             case RenderModes.FULL_LINE:

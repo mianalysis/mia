@@ -373,8 +373,9 @@ public class AddLine extends AbstractOverlay {
         // ((ImageMeasurementP)
         // parameters.getParameter(Z_POSITION_MEASUREMENT_IM_2)).setImageName(referenceImageName2);
 
-        returnedParameters.add(parameters.getParameter(RENDERING_SEPARATOR));
         returnedParameters.addAll(super.updateAndGetParameters(inputObjectsName));
+        
+        returnedParameters.add(parameters.getParameter(RENDERING_SEPARATOR));
         returnedParameters.add(parameters.getParameter(LINE_WIDTH));
 
         returnedParameters.add(parameters.getParameter(EXECUTION_SEPARATOR));

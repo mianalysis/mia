@@ -74,8 +74,8 @@ public class AddTracks extends AbstractOverlay {
 
     }
 
-    public static void addOverlay(Obj object, String spotObjectsName, ImagePlus ipl, float hue, double opacity, double lineWidth,
-            int history, @Nullable HashMap<Integer, Float> instantaneousHues) {
+    public static void addOverlay(Obj object, String spotObjectsName, ImagePlus ipl, float hue, double opacity,
+            double lineWidth, int history, @Nullable HashMap<Integer, Float> instantaneousHues) {
         ObjCollection pointObjects = object.getChildren(spotObjectsName);
 
         if (ipl.getOverlay() == null)
@@ -116,7 +116,7 @@ public class AddTracks extends AbstractOverlay {
                         // Special case of instantaneous colour
                         hue = instantaneousHues.get(p2.getID());
 
-                    line.setStrokeColor(ColourFactory.getColour(hue,opacity));
+                    line.setStrokeColor(ColourFactory.getColour(hue, opacity));
                     ovl.addElement(line);
 
                 }
@@ -155,6 +155,10 @@ public class AddTracks extends AbstractOverlay {
         ImagePlus ipl = inputImage.getImagePlus();
 
         String colourMode = parameters.getValue(COLOUR_MODE);
+        String rangeMinMode = parameters.getValue(RANGE_MINIMUM_MODE);
+        double minValue = parameters.getValue(MINIMUM_VALUE);
+        String rangeMaxMode = parameters.getValue(RANGE_MAXIMUM_MODE);
+        double maxValue = parameters.getValue(MAXIMUM_VALUE);
         String measurementForColour = parameters.getValue(MEASUREMENT_FOR_COLOUR);
         boolean limitHistory = parameters.getValue(LIMIT_TRACK_HISTORY);
         int history = parameters.getValue(TRACK_HISTORY);
@@ -172,12 +176,17 @@ public class AddTracks extends AbstractOverlay {
 
         // Generating colours for each object
         HashMap<Integer, Float> hues = getHues(inputObjects);
-        
+
         HashMap<Integer, Float> instantaneousHues = null;
         if (colourMode.equals(ColourModes.INSTANTANEOUS_MEASUREMENT_VALUE)) {
             String[] elements = spotObjectsName.split(" // ");
-            ObjCollection spotObjects = workspace.getObjectSet(elements[elements.length-1]);
-            instantaneousHues = ColourFactory.getMeasurementValueHues(spotObjects, measurementForColour, true);
+            ObjCollection spotObjects = workspace.getObjectSet(elements[elements.length - 1]);
+            double[] range = new double[] { Double.NaN, Double.NaN };
+            if (rangeMinMode.equals(RangeModes.MANUAL))
+                range[0] = minValue;
+            if (rangeMaxMode.equals(RangeModes.MANUAL))
+                range[1] = maxValue;
+            instantaneousHues = ColourFactory.getMeasurementValueHues(spotObjects, measurementForColour, true, range);
         }
 
         // Adding the overlay element
@@ -193,7 +202,7 @@ public class AddTracks extends AbstractOverlay {
         // Running through each object, adding it to the overlay along with an ID label
         AtomicInteger count = new AtomicInteger();
         for (Obj object : inputObjects.values()) {
-            // If using an instantaneous measurement, hues will be null            
+            // If using an instantaneous measurement, hues will be null
             float hue = -1;
             if (hues != null)
                 hue = hues.get(object.getID());
@@ -269,20 +278,26 @@ public class AddTracks extends AbstractOverlay {
             }
         }
 
+        returnedParameters.addAll(super.updateAndGetParameters(inputObjectsName));
+        if (((String) parameters.getValue(COLOUR_MODE)).equals(ColourModes.INSTANTANEOUS_MEASUREMENT_VALUE)) {
+            returnedParameters.add(parameters.getParameter(LINE_WIDTH));
+            returnedParameters.add(parameters.getParameter(MEASUREMENT_FOR_COLOUR));
+            ((ObjectMeasurementP) parameters.getParameter(MEASUREMENT_FOR_COLOUR))
+                    .setObjectName(parameters.getValue(SPOT_OBJECTS));
+            returnedParameters.add(parameters.getParameter(RANGE_MINIMUM_MODE));
+            if (((String) parameters.getValue(RANGE_MINIMUM_MODE)).equals(RangeModes.MANUAL))
+                returnedParameters.add(parameters.getParameter(MINIMUM_VALUE));
+            returnedParameters.add(parameters.getParameter(RANGE_MAXIMUM_MODE));
+            if (((String) parameters.getValue(RANGE_MAXIMUM_MODE)).equals(RangeModes.MANUAL))
+                returnedParameters.add(parameters.getParameter(MAXIMUM_VALUE));
+        }
+        
         returnedParameters.add(parameters.getParameter(RENDERING_SEPARATOR));
         returnedParameters.add(parameters.getParameter(LIMIT_TRACK_HISTORY));
 
         if ((boolean) parameters.getValue(LIMIT_TRACK_HISTORY))
             returnedParameters.add(parameters.getParameter(TRACK_HISTORY));
         ((ChildObjectsP) parameters.getParameter(SPOT_OBJECTS)).setParentObjectsName(inputObjectsName);
-
-        returnedParameters.addAll(super.updateAndGetParameters(inputObjectsName));
-
-        if (((String) parameters.getValue(COLOUR_MODE)).equals(ColourModes.INSTANTANEOUS_MEASUREMENT_VALUE)) {
-            returnedParameters.add(parameters.getParameter(LINE_WIDTH));
-            returnedParameters.add(parameters.getParameter(MEASUREMENT_FOR_COLOUR));
-            ((ObjectMeasurementP) parameters.getParameter(MEASUREMENT_FOR_COLOUR)).setObjectName(parameters.getValue(SPOT_OBJECTS));
-        }
         returnedParameters.add(parameters.getParameter(LINE_WIDTH));
 
         returnedParameters.add(parameters.getParameter(EXECUTION_SEPARATOR));

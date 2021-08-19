@@ -4,6 +4,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
+import wbif.sjx.MIA.Object.Obj;
 import wbif.sjx.MIA.Object.References.Abstract.SummaryRef;
 
 public class ObjMeasurementRef extends SummaryRef {
@@ -20,7 +21,7 @@ public class ObjMeasurementRef extends SummaryRef {
 
     public ObjMeasurementRef(String name, String objectsName) {
         super(name);
-        this.objectsName = objectsName;
+        this.objectsName = Obj.getNameWithoutRelationship(objectsName);
     }
 
     @Override
@@ -79,7 +80,7 @@ public class ObjMeasurementRef extends SummaryRef {
     }
 
     public ObjMeasurementRef setObjectsName(String objectsName) {
-        this.objectsName = objectsName;
+        this.objectsName = Obj.getNameWithoutRelationship(objectsName);
         return this;
     }
 }

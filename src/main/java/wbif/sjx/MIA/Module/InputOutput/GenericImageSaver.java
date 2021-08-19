@@ -129,7 +129,7 @@ public class GenericImageSaver extends AbstractImageSaver {
         super.initialiseParameters();
         
         parameters.add(new StringP(GENERIC_FORMAT, this));
-        parameters.add(new MessageP(AVAILABLE_METADATA_FIELDS, this, Colours.ORANGE, 170));
+        parameters.add(new MessageP(AVAILABLE_METADATA_FIELDS, this, Colours.DARK_BLUE, 170));
 
         addParameterDescriptions();
 

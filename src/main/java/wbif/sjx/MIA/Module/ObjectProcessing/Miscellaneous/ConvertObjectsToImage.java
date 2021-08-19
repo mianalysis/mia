@@ -108,7 +108,7 @@ public class ConvertObjectsToImage extends Module {
     int bitDepth = 8;
     switch (colourMode) {
       case ColourModes.CHILD_COUNT:
-        hues = ColourFactory.getChildCountHues(inputObjects, childObjectsForColour, false);
+        hues = ColourFactory.getChildCountHues(inputObjects, childObjectsForColour, false, new double[]{Double.NaN,Double.NaN});
         bitDepth = 32;
         break;
       case ColourModes.ID:
@@ -120,7 +120,7 @@ public class ConvertObjectsToImage extends Module {
         break;
       case ColourModes.MEASUREMENT_VALUE:
         nanBackground = true;
-        hues = ColourFactory.getMeasurementValueHues(inputObjects, measurementForColour, false);
+        hues = ColourFactory.getMeasurementValueHues(inputObjects, measurementForColour, false, new double[]{Double.NaN,Double.NaN});
         bitDepth = 32;
         break;
       case ColourModes.PARENT_ID:
@@ -128,11 +128,11 @@ public class ConvertObjectsToImage extends Module {
         bitDepth = 32;
         break;
       case ColourModes.PARENT_MEASUREMENT_VALUE:
-        hues = ColourFactory.getParentMeasurementValueHues(inputObjects, parentForColour, measurementForColour, false);
+        hues = ColourFactory.getParentMeasurementValueHues(inputObjects, parentForColour, measurementForColour, false, new double[]{Double.NaN,Double.NaN});
         bitDepth = 32;
         break;
       case ColourModes.PARTNER_COUNT:
-        hues = ColourFactory.getPartnerCountHues(inputObjects, partnerForColour, false);
+        hues = ColourFactory.getPartnerCountHues(inputObjects, partnerForColour, false, new double[]{Double.NaN,Double.NaN});
         bitDepth = 32;
         break;
       case ColourModes.SINGLE_COLOUR:

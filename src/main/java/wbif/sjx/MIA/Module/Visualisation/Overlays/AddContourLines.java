@@ -53,12 +53,14 @@ public class AddContourLines extends Module {
     public static final String ADD_OUTPUT_TO_WORKSPACE = "Add output image to workspace";
     public static final String OUTPUT_IMAGE = "Output image";
 
-    public static final String CONTOUR_SEPARATOR = "Contour rendering";
+    public static final String COLOUR_SEPARATOR = "Contour colours";
     public static final String MINIMUM_INTENSITY = "Minimum intensity";
     public static final String MAXIMUM_INTENSITY = "Maximum intensity";
     public static final String NUMBER_OF_CONTOURS = "Number of contours";
     public static final String CONTOUR_COLOUR_MODE = "Contour colour mode";
     public static final String CONTOUR_COLOUR = "Contour colour";
+
+    public static final String RENDERING_SEPARATOR = "Contour rendering";
     public static final String LINE_WIDTH = "Line width";
     public static final String DRAW_EVERY_N_POINTS = "Draw every N points";
 
@@ -577,12 +579,14 @@ public class AddContourLines extends Module {
         parameters.add(new BooleanP(ADD_OUTPUT_TO_WORKSPACE, this, false));
         parameters.add(new OutputImageP(OUTPUT_IMAGE, this));
 
-        parameters.add(new SeparatorP(CONTOUR_SEPARATOR, this));
+        parameters.add(new SeparatorP(COLOUR_SEPARATOR, this));
         parameters.add(new DoubleP(MINIMUM_INTENSITY, this, 0));
         parameters.add(new DoubleP(MAXIMUM_INTENSITY, this, 255));
         parameters.add(new IntegerP(NUMBER_OF_CONTOURS, this, 9));
         parameters.add(new ChoiceP(CONTOUR_COLOUR_MODE, this, ColourModes.PHYSICS, ColourModes.ALL));
         parameters.add(new ChoiceP(CONTOUR_COLOUR, this, SingleColours.WHITE, SingleColours.ALL));
+
+        parameters.add(new SeparatorP(RENDERING_SEPARATOR, this));
         parameters.add(new DoubleP(LINE_WIDTH, this, 1));
         parameters.add(new IntegerP(DRAW_EVERY_N_POINTS, this, 1));
 
@@ -614,7 +618,7 @@ public class AddContourLines extends Module {
             }
         }
 
-        returnedParameters.add(parameters.getParameter(CONTOUR_SEPARATOR));
+        returnedParameters.add(parameters.getParameter(COLOUR_SEPARATOR));
         returnedParameters.add(parameters.getParameter(MINIMUM_INTENSITY));
         returnedParameters.add(parameters.getParameter(MAXIMUM_INTENSITY));
         returnedParameters.add(parameters.getParameter(NUMBER_OF_CONTOURS));
@@ -625,6 +629,8 @@ public class AddContourLines extends Module {
                 returnedParameters.add(parameters.getParameter(CONTOUR_COLOUR));
                 break;
         }
+
+        returnedParameters.add(parameters.getParameter(RENDERING_SEPARATOR));
         returnedParameters.add(parameters.getParameter(LINE_WIDTH));
         returnedParameters.add(parameters.getParameter(DRAW_EVERY_N_POINTS));
 

@@ -109,7 +109,7 @@ public class ColourFactoryTest {
         obj.addMeasurement(meas);
         collection.add(obj);
 
-        HashMap<Integer, Float> actual = ColourFactory.getMeasurementValueHues(collection,"Meas",false);
+        HashMap<Integer, Float> actual = ColourFactory.getMeasurementValueHues(collection,"Meas",false, new double[]{Double.NaN,Double.NaN});
 
         // For random numbers we don't know what value they will have
         assertEquals(3,actual.size());
@@ -147,7 +147,7 @@ public class ColourFactoryTest {
         obj.addMeasurement(meas);
         collection.add(obj);
 
-        HashMap<Integer, Float> actual = ColourFactory.getMeasurementValueHues(collection,"Meas",true);
+        HashMap<Integer, Float> actual = ColourFactory.getMeasurementValueHues(collection,"Meas",true, new double[]{Double.NaN,Double.NaN});
 
         // For random numbers we don't know what value they will have
         assertEquals(3,actual.size());
@@ -400,7 +400,7 @@ public class ColourFactoryTest {
         obj.addMeasurement(meas);
         collection.add(obj);
 
-        HashMap<Integer, Float> hues = ColourFactory.getMeasurementValueHues(collection,"Meas",false);
+        HashMap<Integer, Float> hues = ColourFactory.getMeasurementValueHues(collection,"Meas",false, new double[]{Double.NaN,Double.NaN});
         HashMap<Integer, Color> actual = ColourFactory.getColours(hues,100);
 
         // For random numbers we don't know what value they will have
@@ -439,7 +439,7 @@ public class ColourFactoryTest {
         obj.addMeasurement(meas);
         collection.add(obj);
 
-        HashMap<Integer, Float> hues = ColourFactory.getMeasurementValueHues(collection,"Meas",true);
+        HashMap<Integer, Float> hues = ColourFactory.getMeasurementValueHues(collection,"Meas",true, new double[]{Double.NaN,Double.NaN});
         HashMap<Integer, Color> actual = ColourFactory.getColours(hues,100);
 
         // For random numbers we don't know what value they will have

@@ -1,13 +1,13 @@
 package wbif.sjx.MIA.Process;
 
+import java.awt.Color;
+import java.util.HashMap;
+import java.util.Random;
+
 import wbif.sjx.MIA.Object.Measurement;
 import wbif.sjx.MIA.Object.Obj;
 import wbif.sjx.MIA.Object.ObjCollection;
 import wbif.sjx.common.MathFunc.CumStat;
-
-import java.awt.*;
-import java.util.HashMap;
-import java.util.Random;
 
 public class ColourFactory {
 
@@ -150,17 +150,25 @@ public class ColourFactory {
     }
 
     public static HashMap<Integer, Float> getChildCountHues(ObjCollection objects, String childObjectsName,
-            boolean normalised) {
+            boolean normalised, double[] range) {
         HashMap<Integer, Float> hues = new HashMap<>();
         if (objects == null)
             return hues;
 
         // Getting minimum and maximum values from measurement (if required)
-        CumStat cs = new CumStat();
-        for (Obj obj : objects.values()) {
-            if (obj.getChildren(childObjectsName) == null)
-                continue;
-            cs.addMeasure(obj.getChildren(childObjectsName).size());
+        double min = range[0];
+        double max = range[1];
+        if (Double.isNaN(min) || Double.isNaN(max)) {
+            CumStat cs = new CumStat();
+            for (Obj obj : objects.values()) {
+                if (obj.getChildren(childObjectsName) == null)
+                    continue;
+                cs.addMeasure(obj.getChildren(childObjectsName).size());
+            }
+            if (Double.isNaN(min))
+                min = cs.getMin();
+            if (Double.isNaN(max))
+                max = cs.getMax();
         }
 
         for (Obj object : objects.values()) {
@@ -178,7 +186,8 @@ public class ColourFactory {
             if (normalised) {
                 double startH = 0;
                 double endH = 128d / 255d;
-                H = (float) ((H - cs.getMin()) * (endH - startH) / (cs.getMax() - cs.getMin()) + startH);
+                double tempH = (H - min) * (endH - startH) / (max - min) + startH;
+                H = (float) Math.min(endH, Math.max(startH, tempH));
             }
 
             hues.put(ID, H);
@@ -190,17 +199,25 @@ public class ColourFactory {
     }
 
     public static HashMap<Integer, Float> getPartnerCountHues(ObjCollection objects, String partnerObjectsName,
-            boolean normalised) {
+            boolean normalised, double[] range) {
         HashMap<Integer, Float> hues = new HashMap<>();
         if (objects == null)
             return hues;
 
         // Getting minimum and maximum values from measurement (if required)
-        CumStat cs = new CumStat();
-        for (Obj obj : objects.values()) {
-            if (obj.getPartners(partnerObjectsName) == null)
-                continue;
-            cs.addMeasure(obj.getPartners(partnerObjectsName).size());
+        double min = range[0];
+        double max = range[1];
+        if (Double.isNaN(min) || Double.isNaN(max)) {
+            CumStat cs = new CumStat();
+            for (Obj obj : objects.values()) {
+                if (obj.getPartners(partnerObjectsName) == null)
+                    continue;
+                cs.addMeasure(obj.getPartners(partnerObjectsName).size());
+            }
+            if (Double.isNaN(min))
+                min = cs.getMin();
+            if (Double.isNaN(max))
+                max = cs.getMax();
         }
 
         for (Obj object : objects.values()) {
@@ -218,7 +235,8 @@ public class ColourFactory {
             if (normalised) {
                 double startH = 0;
                 double endH = 120d / 255d;
-                H = (float) ((H - cs.getMin()) * (endH - startH) / (cs.getMax() - cs.getMin()) + startH);
+                double tempH = (H - min) * (endH - startH) / (max - min) + startH;
+                H = (float) Math.min(endH, Math.max(startH, tempH));
             }
 
             hues.put(ID, H);
@@ -230,17 +248,25 @@ public class ColourFactory {
     }
 
     public static HashMap<Integer, Float> getMeasurementValueHues(ObjCollection objects, String measurementName,
-            boolean normalised) {
+            boolean normalised, double[] range) {
         HashMap<Integer, Float> hues = new HashMap<>();
         if (objects == null)
             return hues;
 
         // Getting minimum and maximum values from measurement (if required)
-        CumStat cs = new CumStat();
-        for (Obj obj : objects.values()) {
-            if (obj.getMeasurement(measurementName) == null)
-                continue;
-            cs.addMeasure(obj.getMeasurement(measurementName).getValue());
+        double min = range[0];
+        double max = range[1];
+        if (Double.isNaN(min) || Double.isNaN(max)) {
+            CumStat cs = new CumStat();
+            for (Obj obj : objects.values()) {
+                if (obj.getMeasurement(measurementName) == null)
+                    continue;
+                cs.addMeasure(obj.getMeasurement(measurementName).getValue());
+            }
+            if (Double.isNaN(min))
+                min = cs.getMin();
+            if (Double.isNaN(max))
+                max = cs.getMax();
         }
 
         for (Obj object : objects.values()) {
@@ -258,7 +284,8 @@ public class ColourFactory {
             if (normalised) {
                 double startH = 0;
                 double endH = 120d / 255d;
-                H = (float) ((H - cs.getMin()) * (endH - startH) / (cs.getMax() - cs.getMin()) + startH);
+                double tempH = (H - min) * (endH - startH) / (max - min) + startH;
+                H = (float) Math.min(endH, Math.max(startH, tempH));
             }
 
             hues.put(ID, H);
@@ -270,20 +297,28 @@ public class ColourFactory {
     }
 
     public static HashMap<Integer, Float> getParentMeasurementValueHues(ObjCollection objects, String parentObjectsName,
-            String measurementName, boolean normalised) {
+            String measurementName, boolean normalised, double[] range) {
         HashMap<Integer, Float> hues = new HashMap<>();
         if (objects == null)
             return hues;
 
         // Getting minimum and maximum values from measurement (if required)
-        CumStat cs = new CumStat();
-        for (Obj obj : objects.values()) {
-            Obj parentObj = obj.getParent(parentObjectsName);
-            if (parentObj == null)
-                continue;
-            if (parentObj.getMeasurement(measurementName) == null)
-                continue;
-            cs.addMeasure(parentObj.getMeasurement(measurementName).getValue());
+        double min = range[0];
+        double max = range[1];
+        if (Double.isNaN(min) || Double.isNaN(max)) {
+            CumStat cs = new CumStat();
+            for (Obj obj : objects.values()) {
+                Obj parentObj = obj.getParent(parentObjectsName);
+                if (parentObj == null)
+                    continue;
+                if (parentObj.getMeasurement(measurementName) == null)
+                    continue;
+                cs.addMeasure(parentObj.getMeasurement(measurementName).getValue());
+            }
+            if (Double.isNaN(min))
+                min = cs.getMin();
+            if (Double.isNaN(max))
+                max = cs.getMax();
         }
 
         for (Obj object : objects.values()) {
@@ -306,7 +341,8 @@ public class ColourFactory {
             if (normalised) {
                 double startH = 0;
                 double endH = 120d / 255d;
-                H = (float) ((H - cs.getMin()) * (endH - startH) / (cs.getMax() - cs.getMin()) + startH);
+                double tempH = (H - min) * (endH - startH) / (max - min) + startH;
+                H = (float) Math.min(endH, Math.max(startH, tempH));
             }
 
             hues.put(ID, H);

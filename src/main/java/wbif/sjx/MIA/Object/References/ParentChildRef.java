@@ -4,6 +4,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
+import wbif.sjx.MIA.Object.Obj;
 import wbif.sjx.MIA.Object.References.Abstract.Ref;
 
 public class ParentChildRef extends Ref {
@@ -22,7 +23,8 @@ public class ParentChildRef extends Ref {
     }
 
     public ParentChildRef(String parentName, String childName) {
-        super(createName(parentName, childName));
+        super(createName(Obj.getNameWithoutRelationship(parentName), Obj.getNameWithoutRelationship(childName)));
+        
         this.parentName = parentName;
         this.childName = childName;
 

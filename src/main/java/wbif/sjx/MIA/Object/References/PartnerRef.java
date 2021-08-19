@@ -4,6 +4,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
+import wbif.sjx.MIA.Object.Obj;
 import wbif.sjx.MIA.Object.References.Abstract.Ref;
 
 public class PartnerRef extends Ref implements Comparable {
@@ -23,7 +24,8 @@ public class PartnerRef extends Ref implements Comparable {
     }
 
     public PartnerRef(String object1Name, String object2Name) {
-        super(createName(object1Name,object2Name));
+        super(createName(Obj.getNameWithoutRelationship(object1Name), Obj.getNameWithoutRelationship(object2Name)));
+        
         this.object1Name = object1Name;
         this.object2Name = object2Name;
 

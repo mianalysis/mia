@@ -49,7 +49,7 @@ public class DocumentationCoverageChecker {
                 if (Modifier.isAbstract(clazz.getModifiers()))
                     continue;
 
-                Constructor constructor = clazz.getDeclaredConstructor(ModuleCollection.class);
+                Constructor<Module> constructor = clazz.getDeclaredConstructor(ModuleCollection.class);
                 Module module = (Module) constructor.newInstance(new ModuleCollection());
 
                 boolean hasDescription = module.getDescription() != null && module.getDescription().length() > 1;
