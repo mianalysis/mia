@@ -165,8 +165,10 @@ public class ColourFactory {
                     continue;
                 cs.addMeasure(obj.getChildren(childObjectsName).size());
             }
-            if (Double.isNaN(min)) min = cs.getMin();
-            if (Double.isNaN(max)) max = cs.getMax();
+            if (Double.isNaN(min))
+                min = cs.getMin();
+            if (Double.isNaN(max))
+                max = cs.getMax();
         }
 
         for (Obj object : objects.values()) {
@@ -184,7 +186,8 @@ public class ColourFactory {
             if (normalised) {
                 double startH = 0;
                 double endH = 128d / 255d;
-                H = (float) ((H - min) * (endH - startH) / (max - min) + startH);
+                double tempH = (H - min) * (endH - startH) / (max - min) + startH;
+                H = (float) Math.min(endH, Math.max(startH, tempH));
             }
 
             hues.put(ID, H);
@@ -211,8 +214,10 @@ public class ColourFactory {
                     continue;
                 cs.addMeasure(obj.getPartners(partnerObjectsName).size());
             }
-            if (Double.isNaN(min)) min = cs.getMin();
-            if (Double.isNaN(max)) max = cs.getMax();
+            if (Double.isNaN(min))
+                min = cs.getMin();
+            if (Double.isNaN(max))
+                max = cs.getMax();
         }
 
         for (Obj object : objects.values()) {
@@ -230,7 +235,8 @@ public class ColourFactory {
             if (normalised) {
                 double startH = 0;
                 double endH = 120d / 255d;
-                H = (float) ((H - min) * (endH - startH) / (max - min) + startH);
+                double tempH = (H - min) * (endH - startH) / (max - min) + startH;
+                H = (float) Math.min(endH, Math.max(startH, tempH));
             }
 
             hues.put(ID, H);
@@ -257,8 +263,10 @@ public class ColourFactory {
                     continue;
                 cs.addMeasure(obj.getMeasurement(measurementName).getValue());
             }
-            if (Double.isNaN(min)) min = cs.getMin();
-            if (Double.isNaN(max)) max = cs.getMax();
+            if (Double.isNaN(min))
+                min = cs.getMin();
+            if (Double.isNaN(max))
+                max = cs.getMax();
         }
 
         for (Obj object : objects.values()) {
@@ -276,7 +284,8 @@ public class ColourFactory {
             if (normalised) {
                 double startH = 0;
                 double endH = 120d / 255d;
-                H = (float) ((H - min) * (endH - startH) / (max - min) + startH);
+                double tempH = (H - min) * (endH - startH) / (max - min) + startH;
+                H = (float) Math.min(endH, Math.max(startH, tempH));
             }
 
             hues.put(ID, H);
@@ -311,7 +320,7 @@ public class ColourFactory {
             if (Double.isNaN(max))
                 max = cs.getMax();
         }
-        
+
         for (Obj object : objects.values()) {
             int ID = object.getID();
 
@@ -332,7 +341,8 @@ public class ColourFactory {
             if (normalised) {
                 double startH = 0;
                 double endH = 120d / 255d;
-                H = (float) ((H - min) * (endH - startH) / (max - min) + startH);
+                double tempH = (H - min) * (endH - startH) / (max - min) + startH;
+                H = (float) Math.min(endH, Math.max(startH, tempH));
             }
 
             hues.put(ID, H);

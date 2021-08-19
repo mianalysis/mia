@@ -278,15 +278,7 @@ public class AddTracks extends AbstractOverlay {
             }
         }
 
-        returnedParameters.add(parameters.getParameter(RENDERING_SEPARATOR));
-        returnedParameters.add(parameters.getParameter(LIMIT_TRACK_HISTORY));
-
-        if ((boolean) parameters.getValue(LIMIT_TRACK_HISTORY))
-            returnedParameters.add(parameters.getParameter(TRACK_HISTORY));
-        ((ChildObjectsP) parameters.getParameter(SPOT_OBJECTS)).setParentObjectsName(inputObjectsName);
-
         returnedParameters.addAll(super.updateAndGetParameters(inputObjectsName));
-
         if (((String) parameters.getValue(COLOUR_MODE)).equals(ColourModes.INSTANTANEOUS_MEASUREMENT_VALUE)) {
             returnedParameters.add(parameters.getParameter(LINE_WIDTH));
             returnedParameters.add(parameters.getParameter(MEASUREMENT_FOR_COLOUR));
@@ -299,7 +291,13 @@ public class AddTracks extends AbstractOverlay {
             if (((String) parameters.getValue(RANGE_MAXIMUM_MODE)).equals(RangeModes.MANUAL))
                 returnedParameters.add(parameters.getParameter(MAXIMUM_VALUE));
         }
+        
+        returnedParameters.add(parameters.getParameter(RENDERING_SEPARATOR));
+        returnedParameters.add(parameters.getParameter(LIMIT_TRACK_HISTORY));
 
+        if ((boolean) parameters.getValue(LIMIT_TRACK_HISTORY))
+            returnedParameters.add(parameters.getParameter(TRACK_HISTORY));
+        ((ChildObjectsP) parameters.getParameter(SPOT_OBJECTS)).setParentObjectsName(inputObjectsName);
         returnedParameters.add(parameters.getParameter(LINE_WIDTH));
 
         returnedParameters.add(parameters.getParameter(EXECUTION_SEPARATOR));

@@ -1336,7 +1336,7 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
         parameters.add(new StringP(COMMENT, this));
         parameters.add(new StringP(EXTENSION, this));
         parameters.add(new StringP(GENERIC_FORMAT, this));
-        parameters.add(new MessageP(AVAILABLE_METADATA_FIELDS, this, Colours.ORANGE, 170));
+        parameters.add(new MessageP(AVAILABLE_METADATA_FIELDS, this, Colours.DARK_BLUE, 170));
         parameters.add(new BooleanP(INCLUDE_SERIES_NUMBER, this, true));
         parameters.add(new FilePathP(FILE_PATH, this));
         parameters.add(new ChoiceP(SERIES_MODE, this, SeriesModes.CURRENT_SERIES, SeriesModes.ALL));

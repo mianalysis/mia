@@ -432,10 +432,11 @@ public class AddLabels extends AbstractOverlay {
         returnedParameters.add(parameters.getParameter(USE_SCIENTIFIC));
         returnedParameters.add(parameters.getParameter(LABEL_SIZE));
         returnedParameters.add(parameters.getParameter(X_OFFSET));
-        returnedParameters.add(parameters.getParameter(Y_OFFSET));
-        returnedParameters.addAll(super.updateAndGetParameters(inputObjectsName));
+        returnedParameters.add(parameters.getParameter(Y_OFFSET));        
         returnedParameters.add(parameters.getParameter(PREFIX));
         returnedParameters.add(parameters.getParameter(SUFFIX));
+
+        returnedParameters.addAll(super.updateAndGetParameters(inputObjectsName));
 
         returnedParameters.add(parameters.getParameter(LOCATION_SEPARATOR));
         returnedParameters.add(parameters.getParameter(LABEL_POSITION));

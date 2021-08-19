@@ -291,8 +291,9 @@ public class AddObjectOutline extends AbstractOverlay {
             }
         }
 
-        returnedParameters.add(parameters.getParameter(RENDERING_SEPARATOR));
         returnedParameters.addAll(super.updateAndGetParameters(inputObjectsName));
+        
+        returnedParameters.add(parameters.getParameter(RENDERING_SEPARATOR));
         returnedParameters.add(parameters.getParameter(REDUCE_LINE_COMPLEXITY));
         if ((boolean) parameters.getValue(REDUCE_LINE_COMPLEXITY)) {
             returnedParameters.add(parameters.getParameter(LINE_INTERPOLATION));

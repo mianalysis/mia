@@ -260,7 +260,7 @@ public class ImageSaver extends AbstractImageSaver {
 
         parameters.add(new ChoiceP(SAVE_NAME_MODE, this, SaveNameModes.MATCH_INPUT, SaveNameModes.ALL));
         parameters.add(new StringP(SAVE_FILE_NAME, this));
-        parameters.add(new MessageP(AVAILABLE_METADATA_FIELDS, this, Colours.ORANGE, 170));
+        parameters.add(new MessageP(AVAILABLE_METADATA_FIELDS, this, Colours.DARK_BLUE, 170));
         parameters.add(new ChoiceP(APPEND_SERIES_MODE, this, AppendSeriesModes.SERIES_NUMBER, AppendSeriesModes.ALL));
         parameters.add(new StringP(SAVE_SUFFIX, this));
 

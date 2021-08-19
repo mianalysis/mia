@@ -210,8 +210,9 @@ public class AddAllObjectPoints extends AbstractOverlay {
             }
         }
 
-        returnedParameters.add(parameters.getParameter(RENDERING_SEPARATOR));
         returnedParameters.addAll(super.updateAndGetParameters(inputObjectsName));
+        
+        returnedParameters.add(parameters.getParameter(RENDERING_SEPARATOR));        
         returnedParameters.add(parameters.getParameter(RENDER_IN_ALL_FRAMES));
 
         returnedParameters.add(parameters.getParameter(EXECUTION_SEPARATOR));

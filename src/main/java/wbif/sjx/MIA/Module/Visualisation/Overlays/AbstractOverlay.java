@@ -11,10 +11,12 @@ import wbif.sjx.MIA.Object.Parameters.ObjectMeasurementP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.Parameters.ParentObjectsP;
 import wbif.sjx.MIA.Object.Parameters.PartnerObjectsP;
+import wbif.sjx.MIA.Object.Parameters.SeparatorP;
 import wbif.sjx.MIA.Object.Parameters.Text.DoubleP;
 import wbif.sjx.MIA.Process.ColourFactory;
 
 public abstract class AbstractOverlay extends Module {
+    public static final String COLOUR_SEPARATOR = "Overlay colour";
     public static final String COLOUR_MODE = "Colour mode";
     public static final String SINGLE_COLOUR = "Single colour";
     public static final String CHILD_OBJECTS_FOR_COLOUR = "Child objects for colour";
@@ -102,6 +104,7 @@ public abstract class AbstractOverlay extends Module {
 
     @Override
     protected void initialiseParameters() {
+        parameters.add(new SeparatorP(COLOUR_SEPARATOR, this));
         parameters.add(new ChoiceP(COLOUR_MODE, this, ColourModes.SINGLE_COLOUR, ColourModes.ALL));
         parameters.add(new ChoiceP(SINGLE_COLOUR, this, SingleColours.WHITE, SingleColours.ALL));
         parameters.add(new ChildObjectsP(CHILD_OBJECTS_FOR_COLOUR, this));
@@ -119,6 +122,7 @@ public abstract class AbstractOverlay extends Module {
     public ParameterCollection updateAndGetParameters(String inputObjectsName) {
         ParameterCollection returnedParameters = new ParameterCollection();
 
+        returnedParameters.add(parameters.getParameter(COLOUR_SEPARATOR));
         returnedParameters.add(parameters.getParameter(COLOUR_MODE));
         switch ((String) parameters.getValue(COLOUR_MODE)) {
             case ColourModes.CHILD_COUNT:
@@ -260,6 +264,22 @@ public abstract class AbstractOverlay extends Module {
 
         parameters.get(OPACITY).setDescription(
                 "Opacity of the overlay to be rendered.  This is a value between 0 (totally transparent) and 100 (totally opaque).");
+
+        parameters.get(RANGE_MINIMUM_MODE).setDescription(
+                "Controls whether the minimum range for displayed colours is set automatically to the minimum available value (e.g. the smallest measurement being rendered), or whether it is defined manually by the \""
+                        + MINIMUM_VALUE + "\" parameter.");
+
+        parameters.get(MINIMUM_VALUE).setDescription("When \"" + RANGE_MINIMUM_MODE + "\" is set to \""
+                + RangeModes.MANUAL
+                + "\", this is the minimum value that will be displayed as a unique colour.  All values smaller than this will be displayed with the same colour.");
+
+        parameters.get(RANGE_MAXIMUM_MODE).setDescription(
+                "Controls whether the maximum range for displayed colours is set automatically to the maximum available value (e.g. the largest measurement being rendered), or whether it is defined manually by the \""
+                        + MAXIMUM_VALUE + "\" parameter.");
+
+        parameters.get(MAXIMUM_VALUE).setDescription("When \"" + RANGE_MAXIMUM_MODE + "\" is set to \""
+                + RangeModes.MANUAL
+                + "\", this is the maximum value that will be displayed as a unique colour.  All values larger than this will be displayed with the same colour.");
 
     }
 }

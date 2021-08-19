@@ -45,7 +45,7 @@ public class Obj extends Volume {
 
         this.objCollection = objCollection;
         this.ID = ID;
-        
+
     }
 
     public Obj(ObjCollection objCollection, int ID, Volume exampleVolume) {
@@ -564,5 +564,13 @@ public class Obj extends Volume {
     @Override
     public String toString() {
         return "Object \"" + getName() + "\", ID = " + ID + ", frame = " + getT();
+    }
+
+    public static String getNameWithoutRelationship(String name) {
+        if (name.contains("//"))
+            name = name.substring(name.lastIndexOf("//") + 3);
+
+        return name;
+        
     }
 }

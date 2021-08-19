@@ -280,15 +280,17 @@ public class AddFromPositionMeasurement extends AbstractOverlay {
         if ((boolean) parameters.getValue(USE_RADIUS)) {
             returnedParameters.add(parameters.getParameter(MEASUREMENT_FOR_RADIUS));
             ((ObjectMeasurementP) parameters.getParameter(MEASUREMENT_FOR_RADIUS)).setObjectName(inputObjectsName);
-            returnedParameters.add(parameters.getParameter(RENDERING_SEPARATOR));
+        }
+        
+        returnedParameters.addAll(super.updateAndGetParameters(inputObjectsName));
+
+        returnedParameters.add(parameters.getParameter(RENDERING_SEPARATOR));
+        if ((boolean) parameters.getValue(USE_RADIUS)) {            
             returnedParameters.add(parameters.getParameter(LINE_WIDTH));
         } else {
-            returnedParameters.add(parameters.getParameter(RENDERING_SEPARATOR));
             returnedParameters.add(parameters.getParameter(POINT_SIZE));
             returnedParameters.add(parameters.getParameter(POINT_TYPE));
         }
-
-        returnedParameters.addAll(super.updateAndGetParameters(inputObjectsName));
         returnedParameters.add(parameters.getParameter(RENDER_IN_ALL_FRAMES));
 
         returnedParameters.add(parameters.getParameter(EXECUTION_SEPARATOR));
