@@ -467,14 +467,14 @@ public class RegisterImages<T extends RealType<T> & NativeType<T>> extends Modul
 
     }
 
-    static <T extends RealType<T> & NativeType<T>> Image createOverlay(Image<T> inputImage, Image<T> referenceImage) {
+    static <T extends RealType<T> & NativeType<T>> Image createOverlay(Image inputImage, Image referenceImage) {
         // Only create the overlay if the two images have matching dimensions
         ImagePlus ipl1 = inputImage.getImagePlus();
         ImagePlus ipl2 = referenceImage.getImagePlus();
 
         if (ipl1.getNSlices() == ipl2.getNSlices() && ipl1.getNFrames() == ipl2.getNFrames()) {
             String axis = ConcatenateStacks.AxisModes.CHANNEL;
-            ArrayList<Image<T>> images = new ArrayList<>();
+            ArrayList<Image> images = new ArrayList<>();
             images.add(inputImage);
             images.add(referenceImage);
             return ConcatenateStacks.concatenateImages(images, axis, "Overlay");
@@ -500,7 +500,7 @@ public class RegisterImages<T extends RealType<T> & NativeType<T>> extends Modul
 
         // Duplicating image
         ImagePlus dupIpl = inputImage.getImagePlus().duplicate();
-        Image<T> dupImage = new Image<T>("Registered", dupIpl);
+        Image dupImage = new Image("Registered", dupIpl);
 
         // Getting transform
         Object[] output = getLandmarkTransformation(pairs, transformationMode);
@@ -531,7 +531,7 @@ public class RegisterImages<T extends RealType<T> & NativeType<T>> extends Modul
 
         }
 
-        ArrayList<Image<T>> images = new ArrayList<>();
+        ArrayList<Image> images = new ArrayList<>();
         images.add(reference);
         images.add(dupImage);
         ConcatenateStacks.concatenateImages(images, ConcatenateStacks.AxisModes.CHANNEL, "Registration comparison")

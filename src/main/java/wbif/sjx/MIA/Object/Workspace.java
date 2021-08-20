@@ -18,7 +18,7 @@ import wbif.sjx.common.MetadataExtractors.Metadata;
 public class Workspace {
     private WorkspaceCollection workspaces;
     private LinkedHashMap<String, ObjCollection> objects = new LinkedHashMap<>();
-    private LinkedHashMap<String, Image<?>> images = new LinkedHashMap<>();
+    private LinkedHashMap<String, Image> images = new LinkedHashMap<>();
     private Metadata metadata = new Metadata();
     private int ID;
     private double progress = 0;
@@ -64,7 +64,7 @@ public class Workspace {
         }
     }
 
-    public void addImage(Image<?> image) {
+    public void addImage(Image image) {
         images.put(image.getName(), image);
     }
 
@@ -153,7 +153,7 @@ public class Workspace {
 
     }
 
-    public Image<?> getImage(String name) {
+    public Image getImage(String name) {
         return images.get(name);
 
     }
@@ -208,11 +208,11 @@ public class Workspace {
         this.objects = objects;
     }
 
-    public LinkedHashMap<String, Image<?>> getImages() {
+    public LinkedHashMap<String, Image> getImages() {
         return images;
     }
 
-    public void setImages(LinkedHashMap<String, Image<?>> images) {
+    public void setImages(LinkedHashMap<String, Image> images) {
         this.images = images;
     }
 

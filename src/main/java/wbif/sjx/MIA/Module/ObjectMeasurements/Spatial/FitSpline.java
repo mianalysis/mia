@@ -7,6 +7,7 @@ import java.util.LinkedList;
 import java.util.Map;
 import java.util.TreeMap;
 
+import ij.IJ;
 import ij.ImagePlus;
 import ij.plugin.Duplicator;
 import ij.plugin.filter.Convolver;
@@ -14,6 +15,7 @@ import inra.ijpb.binary.ChamferWeights;
 import inra.ijpb.measure.region2d.GeodesicDiameter;
 import inra.ijpb.measure.region2d.GeodesicDiameter.Result;
 import sc.fiji.analyzeSkeleton.AnalyzeSkeleton_;
+import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Categories;
 import wbif.sjx.MIA.Module.Category;
 import wbif.sjx.MIA.Module.Module;
@@ -141,7 +143,7 @@ public class FitSpline extends Module {
 
         // Skeletonise fish to get single backbone
         BinaryOperations2D.process(objectImage, BinaryOperations2D.OperationModes.SKELETONISE, 1, 1, true);
-
+        
         return objectImage;
 
     }
@@ -182,20 +184,24 @@ public class FitSpline extends Module {
         // Removing calibration, as GeodesicDiameter will output calibrated units
         ImagePlus ipl = image.getImagePlus();
         ipl.setCalibration(null);
-
+        
         Map<Integer, Result> results = geodesicDiameter.analyzeRegions(ipl);
         
         // Converting coordinates to expected format
         ArrayList<Vertex> longestPath = new ArrayList<>();
         for (Result result : results.values())
-            for (Point2D point : result.path)
+            for (Point2D point : result.path) {
                 longestPath.add(new Vertex((int) Math.round(point.getX()), (int) Math.round(point.getY()), 0));
+            }
             
         return longestPath;
 
     }
 
     static boolean checkForLoop(ArrayList<Vertex> longestPath) {
+        if (longestPath.size() < 2)
+            return false;
+            
         // Determining if it was a loop based on the proximity of the longest path ends
         Vertex firstPoint = longestPath.get(0);
         Vertex finalPoint = longestPath.get(longestPath.size() - 1);

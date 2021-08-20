@@ -63,7 +63,7 @@ public class MaskObjects<T extends RealType<T> & NativeType<T>> extends Module {
 
     }
 
-    public static <T extends RealType<T> & NativeType<T>> Obj maskObject(Obj inputObject, Image<T> maskImage) {
+    public static <T extends RealType<T> & NativeType<T>> Obj maskObject(Obj inputObject, Image maskImage) {
         ObjCollection tempObjects = new ObjCollection("Mask objects", inputObject.getObjectCollection());
 
         // Creating the mask object

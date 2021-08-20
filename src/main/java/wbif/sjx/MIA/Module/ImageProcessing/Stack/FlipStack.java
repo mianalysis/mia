@@ -73,7 +73,7 @@ public class FlipStack<T extends RealType<T> & NativeType<T>> extends Module {
         }
     }
 
-    public Image<T> applyFlip(Image<T> inputImage, String axis, String outputImageName) {
+    public Image applyFlip(Image inputImage, String axis, String outputImageName) {
         ImgPlus<T> inputImg = inputImage.getImgPlus();
 
         // Creating the new Img

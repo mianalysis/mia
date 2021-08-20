@@ -71,8 +71,8 @@ public class ConcatenateStacks <T extends RealType<T> & NativeType<T>> extends M
     }
 
 
-    static <T extends RealType<T> & NativeType<T>> ArrayList<Image<T>> getAvailableImages(Workspace workspace, LinkedHashMap<Integer,ParameterCollection> collections) {
-        ArrayList<Image<T>> available = new ArrayList<>();
+    static <T extends RealType<T> & NativeType<T>> ArrayList<Image> getAvailableImages(Workspace workspace, LinkedHashMap<Integer,ParameterCollection> collections) {
+        ArrayList<Image> available = new ArrayList<>();
 
         for (ParameterCollection collection:collections.values()) {
             Image image = workspace.getImage(collection.getValue(INPUT_IMAGE));
@@ -143,70 +143,70 @@ public class ConcatenateStacks <T extends RealType<T> & NativeType<T>> extends M
         }
     }
 
-    public static <T extends RealType<T> & NativeType<T>> ImgPlus<T> concatenateImages(ImgPlus<T> img1, ImgPlus<T> img2, String axis) {
+    public static <T extends RealType<T> & NativeType<T>> ImgPlus<T> concatenateImages(ImgPlus<T> imgPlus, ImgPlus<T> imgPlus2, String axis) {
         long[] dimsOutCombined = new long[5];
         long[] offsetOut1 = new long[5];
         long[] offsetOut2 = new long[5];
-        long[] dimsOut1 = ImgPlusTools.getDimensionsXYCZT(img1);
-        long[] dimsOut2 = ImgPlusTools.getDimensionsXYCZT(img2);
+        long[] dimsOut1 = ImgPlusTools.getDimensionsXYCZT(imgPlus);
+        long[] dimsOut2 = ImgPlusTools.getDimensionsXYCZT(imgPlus2);
 
         if (axis.equals(AxisModes.X)) {
-            dimsOutCombined[0] = getCombinedAxisLength(img1, img2, Axes.X);
-            offsetOut2[0] = getAxisLength(img1, Axes.X);
+            dimsOutCombined[0] = getCombinedAxisLength(imgPlus, imgPlus2, Axes.X);
+            offsetOut2[0] = getAxisLength(imgPlus, Axes.X);
         } else {
-            if (!checkAxisEquality(img1,img2,Axes.X)) {
+            if (!checkAxisEquality(imgPlus,imgPlus2,Axes.X)) {
                 MIA.log.writeWarning("Axes not equal along X axis");
                 return null;
             }
-            dimsOutCombined[0] = getAxisLength(img1, Axes.X);
+            dimsOutCombined[0] = getAxisLength(imgPlus, Axes.X);
         }
 
         if (axis.equals(AxisModes.Y)) {
-            dimsOutCombined[1] = getCombinedAxisLength(img1, img2, Axes.Y);
-            offsetOut2[1] = getAxisLength(img1, Axes.Y);
+            dimsOutCombined[1] = getCombinedAxisLength(imgPlus, imgPlus2, Axes.Y);
+            offsetOut2[1] = getAxisLength(imgPlus, Axes.Y);
         } else {
-            if (!checkAxisEquality(img1,img2,Axes.Y)) {
+            if (!checkAxisEquality(imgPlus,imgPlus2,Axes.Y)) {
                 MIA.log.writeWarning("Axes not equal along Y axis");
                 return null;
             }
-            dimsOutCombined[1] = getAxisLength(img1, Axes.Y);
+            dimsOutCombined[1] = getAxisLength(imgPlus, Axes.Y);
         }
 
         if (axis.equals(AxisModes.CHANNEL)) {
-            dimsOutCombined[2] = getCombinedAxisLength(img1, img2, Axes.CHANNEL);
-            offsetOut2[2] = getAxisLength(img1, Axes.CHANNEL);
+            dimsOutCombined[2] = getCombinedAxisLength(imgPlus, imgPlus2, Axes.CHANNEL);
+            offsetOut2[2] = getAxisLength(imgPlus, Axes.CHANNEL);
         } else {
-            if (!checkAxisEquality(img1,img2,Axes.CHANNEL)) {
+            if (!checkAxisEquality(imgPlus,imgPlus2,Axes.CHANNEL)) {
                 MIA.log.writeWarning("Axes not equal along channel axis");
                 return null;
             }
-            dimsOutCombined[2] = getAxisLength(img1, Axes.CHANNEL);
+            dimsOutCombined[2] = getAxisLength(imgPlus, Axes.CHANNEL);
         }
 
         if (axis.equals(AxisModes.Z)) {
-            dimsOutCombined[3] = getCombinedAxisLength(img1, img2, Axes.Z);
-            offsetOut2[3] = getAxisLength(img1, Axes.Z);
+            dimsOutCombined[3] = getCombinedAxisLength(imgPlus, imgPlus2, Axes.Z);
+            offsetOut2[3] = getAxisLength(imgPlus, Axes.Z);
         } else {
-            if (!checkAxisEquality(img1,img2,Axes.Z)) {
+            if (!checkAxisEquality(imgPlus,imgPlus2,Axes.Z)) {
                 MIA.log.writeWarning("Axes not equal along Z axis");
                 return null;
             }
-            dimsOutCombined[3] = getAxisLength(img1, Axes.Z);
+            dimsOutCombined[3] = getAxisLength(imgPlus, Axes.Z);
         }
 
         if (axis.equals(AxisModes.TIME)) {
-            dimsOutCombined[4] = getCombinedAxisLength(img1, img2, Axes.TIME);
-            offsetOut2[4] = getAxisLength(img1, Axes.TIME);
+            dimsOutCombined[4] = getCombinedAxisLength(imgPlus, imgPlus2, Axes.TIME);
+            offsetOut2[4] = getAxisLength(imgPlus, Axes.TIME);
         } else {
-            if (!checkAxisEquality(img1,img2,Axes.TIME)) {
+            if (!checkAxisEquality(imgPlus,imgPlus2,Axes.TIME)) {
                 MIA.log.writeWarning("Axes not equal along time axis");
                 return null;
             }
-            dimsOutCombined[4] = getAxisLength(img1, Axes.TIME);
+            dimsOutCombined[4] = getAxisLength(imgPlus, Axes.TIME);
         }
 
         // Creating the new Img
-        CellImgFactory<T> factory = new CellImgFactory<>((T) img1.firstElement());
+        CellImgFactory<T> factory = new CellImgFactory<>((T) imgPlus.firstElement());
         ImgPlus<T> imgOut = new ImgPlus<T>(factory.create(dimsOutCombined));
         imgOut.setAxis(new DefaultLinearAxis(Axes.X,1),0);
         imgOut.setAxis(new DefaultLinearAxis(Axes.Y,1),1);
@@ -214,16 +214,18 @@ public class ConcatenateStacks <T extends RealType<T> & NativeType<T>> extends M
         imgOut.setAxis(new DefaultLinearAxis(Axes.Z,1),3);
         imgOut.setAxis(new DefaultLinearAxis(Axes.TIME,1),4);
 
-        copyPixels(img1,imgOut,offsetOut1,dimsOut1);
-        copyPixels(img2,imgOut,offsetOut2,dimsOut2);
+        copyPixels(imgPlus,imgOut,offsetOut1,dimsOut1);
+        copyPixels(imgPlus2,imgOut,offsetOut2,dimsOut2);
 
         return imgOut;
 
     }
 
-    public static <T extends RealType<T> & NativeType<T>> Image<T> concatenateImages(ArrayList<Image<T>> inputImages, String axis, String outputImageName) {
+    public static <T extends RealType<T> & NativeType<T>> Image concatenateImages(ArrayList<Image> inputImages, String axis, String outputImageName) {
         // Processing first two images
-        ImgPlus<T> imgOut = concatenateImages(inputImages.get(0).getImgPlus(),inputImages.get(1).getImgPlus(),axis);
+        ImgPlus<T> im1 = inputImages.get(0).getImgPlus();
+        ImgPlus<T> im2 = inputImages.get(1).getImgPlus();
+        ImgPlus<T> imgOut = concatenateImages(im1,im2,axis);
 
         // Appending any additional images
         for (int i=2;i<inputImages.size();i++) {
@@ -239,7 +241,7 @@ public class ConcatenateStacks <T extends RealType<T> & NativeType<T>> extends M
         outputImagePlus.setCalibration(inputImages.get(0).getImagePlus().getCalibration());
         ImgPlusTools.applyAxes(imgOut,outputImagePlus);
 
-        return new Image<T>(outputImageName,outputImagePlus);
+        return new Image(outputImageName,outputImagePlus);
 
     }
 
@@ -263,7 +265,7 @@ public class ConcatenateStacks <T extends RealType<T> & NativeType<T>> extends M
 
     }
 
-    public static <T extends RealType<T> & NativeType<T>> void convertToColour(Image image, ArrayList<Image<T>> inputImages) {
+    public static <T extends RealType<T> & NativeType<T>> void convertToColour(Image image, ArrayList<Image> inputImages) {
         ImagePlus ipl = image.getImagePlus();
 
         int nChannels = ipl.getNChannels();
@@ -307,7 +309,7 @@ public class ConcatenateStacks <T extends RealType<T> & NativeType<T>> extends M
 
         // Creating a collection of images
         LinkedHashMap<Integer,ParameterCollection> collections = parameters.getValue(ADD_INPUT_IMAGE);
-        ArrayList<Image<T>> inputImages = getAvailableImages(workspace,collections);
+        ArrayList<Image> inputImages = getAvailableImages(workspace,collections);
 
         if (!allowMissingImages && collections.size() != inputImages.size()) {
             MIA.log.writeError("Input images missing.");

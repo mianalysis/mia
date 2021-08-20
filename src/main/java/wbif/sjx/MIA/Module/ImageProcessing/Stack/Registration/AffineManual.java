@@ -191,7 +191,7 @@ public class AffineManual<T extends RealType<T> & NativeType<T>> extends Abstrac
             e.printStackTrace();
         }
 
-        ArrayList<Image<T>> images = new ArrayList<>();
+        ArrayList<Image> images = new ArrayList<>();
         images.add(image1);
         images.add(image2);
         ConcatenateStacks.concatenateImages(images, ConcatenateStacks.AxisModes.CHANNEL, "Registration comparison")

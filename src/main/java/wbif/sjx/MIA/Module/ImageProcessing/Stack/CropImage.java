@@ -60,7 +60,7 @@ public class CropImage<T extends RealType<T> & NativeType<T>> extends Module {
         super("Crop image", modules);
     }
 
-    public static <T extends RealType<T> & NativeType<T>> Image cropImage(Image<T> inputImage, String outputImageName,
+    public static <T extends RealType<T> & NativeType<T>> Image cropImage(Image inputImage, String outputImageName,
             int top, int left, int width, int height) {
         Calibration calibration = inputImage.getImagePlus().getCalibration();
         ImgPlus<T> inputImg = inputImage.getImgPlus();

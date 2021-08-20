@@ -26,6 +26,7 @@ import wbif.sjx.MIA.Module.Miscellaneous.Macros.RunSingleCommand;
 import wbif.sjx.MIA.Module.ObjectMeasurements.Intensity.MeasureObjectIntensity;
 import wbif.sjx.MIA.Module.ObjectMeasurements.Miscellaneous.ReplaceMeasurementValue;
 import wbif.sjx.MIA.Module.ObjectMeasurements.Spatial.CalculateNearestNeighbour;
+import wbif.sjx.MIA.Module.ObjectMeasurements.Spatial.FitSpline;
 import wbif.sjx.MIA.Module.ObjectProcessing.Identification.CircleHoughDetection;
 import wbif.sjx.MIA.Module.ObjectProcessing.Identification.GetLocalObjectRegion;
 import wbif.sjx.MIA.Module.ObjectProcessing.Miscellaneous.CreateDistanceMap;
@@ -42,6 +43,7 @@ public class LostAndFound {
 
     public LostAndFound() {
         /// Populating hard-coded module reassignments ///
+        lostModules.put("Fit spline", new FitSpline(null).getClass().getSimpleName());
         lostModules.put("AutomaticRegistration", new AffineSIFT(null).getClass().getSimpleName());
         lostModules.put("ConditionalAnalysisTermination", new WorkflowHandling(null).getClass().getSimpleName());
         lostModules.put("RunMacroOnImage", new RunMacro(null).getClass().getSimpleName());

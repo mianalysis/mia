@@ -90,10 +90,10 @@ public class MeasureObjectColocalisation<T extends RealType<T> & NativeType<T>> 
     public Status process(Workspace workspace) {
         // Getting input images
         String imageName1 = parameters.getValue(INPUT_IMAGE_1);
-        Image<T> image1 = (Image<T>) workspace.getImage(imageName1);
+        Image image1 = (Image) workspace.getImage(imageName1);
 
         String imageName2 = parameters.getValue(INPUT_IMAGE_2);
-        Image<T> image2 = (Image<T>) workspace.getImages().get(imageName2);
+        Image image2 = (Image) workspace.getImages().get(imageName2);
 
         // Getting parameters
         String objectName = parameters.getValue(INPUT_OBJECTS);

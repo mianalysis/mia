@@ -323,11 +323,11 @@ public class ProjectImage < T extends RealType< T > & NativeType< T >> extends M
 //        }
 //    }
 //
-//    public static <T extends RealType<T> & NativeType<T>> Image<T> projectImageInZ(Image<T> inputImage, String outputImageName, String projectionMode) {
+//    public static <T extends RealType<T> & NativeType<T>> Image projectImageInZ(Image inputImage, String outputImageName, String projectionMode) {
 //        return project(inputImage,outputImageName,AxisModes.X,AxisModes.Y,AxisModes.Z,projectionMode);
 //    }
 //
-//    public static <T extends RealType<T> & NativeType<T>> Image<T> project(Image<T> inputImage, String outputImageName, String outputXAxis, String outputYAxis, String projectionAxis, String projectionMode) {
+//    public static <T extends RealType<T> & NativeType<T>> Image project(Image inputImage, String outputImageName, String outputXAxis, String outputYAxis, String projectionAxis, String projectionMode) {
 //        ImageJ ij = new ImageJ();
 //
 //        ImgPlus<T> img = inputImage.getImgPlus();
@@ -378,11 +378,11 @@ public class ProjectImage < T extends RealType< T > & NativeType< T >> extends M
 //        ImgPlusTools.applyAxes(proj,outputImagePlus);
 //        outputImagePlus.setCalibration(inputImage.getImagePlus().getCal());
 //
-//        return new Image<T>(outputImageName,outputImagePlus);
+//        return new Image(outputImageName,outputImagePlus);
 //
 //    }
 //
-//    static <T extends RealType<T> & NativeType<T>> Image<T> getNonProjectedImage(ImgPlus<T> img, String outputImageName, AxisType xType, AxisType yType) {
+//    static <T extends RealType<T> & NativeType<T>> Image getNonProjectedImage(ImgPlus<T> img, String outputImageName, AxisType xType, AxisType yType) {
 //        ImageJ ij = new ImageJ();
 //
 //        HashMap<Integer,AxisType> axisAssignments = getAxisAssignments(img);
@@ -416,7 +416,7 @@ public class ProjectImage < T extends RealType< T > & NativeType< T >> extends M
 //        ImagePlus outputImagePlus = ImageJFunctions.wrap(outImg,outputImageName);
 //        ImgPlusTools.applyAxes(outImg,outputImagePlus);
 //
-//        return new Image<T>(outputImageName,outputImagePlus);
+//        return new Image(outputImageName,outputImagePlus);
 //
 //    }
 //

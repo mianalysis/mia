@@ -36,7 +36,7 @@ import wbif.sjx.common.Process.IntensityMinMax;
 /**
  * Created by stephen on 30/04/2017.
  */
-public class Image<T extends RealType<T> & NativeType<T>> {
+public class Image {
     private String name;
     private ImagePlus imagePlus;
     private LinkedHashMap<String, Measurement> measurements = new LinkedHashMap<>();
@@ -49,7 +49,7 @@ public class Image<T extends RealType<T> & NativeType<T>> {
 
     }
 
-    public Image(String name, ImgPlus<T> img) {
+    public <T extends RealType<T> & NativeType<T>> Image(String name, ImgPlus<T> img) {
         this.name = name;
         this.imagePlus = ImageJFunctions.wrap(img, name);
 
@@ -334,11 +334,11 @@ public class Image<T extends RealType<T> & NativeType<T>> {
         this.imagePlus = imagePlus;
     }
 
-    public ImgPlus<T> getImgPlus() {
+    public <T extends RealType<T> & NativeType<T>> ImgPlus<T> getImgPlus() {
         return ImagePlusAdapter.wrapImgPlus(new Duplicator().run(imagePlus));
     }
 
-    public void setImgPlus(ImgPlus<T> img) {
+    public <T extends RealType<T> & NativeType<T>> void setImgPlus(ImgPlus<T> img) {
         imagePlus = ImageJFunctions.wrap(img, name);
     }
 

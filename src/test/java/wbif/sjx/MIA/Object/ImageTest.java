@@ -49,7 +49,7 @@ public class ImageTest < T extends RealType< T > & NativeType< T >> {
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/LabelledObjects/LabelledObjects5D_8bit.tif").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         ImgPlus<T> img = ImagePlusAdapter.wrapImgPlus(ipl);
-        Image<T> image = new Image<>("Test_image",img);
+        Image image = new Image("Test_image",img);
 
         // Checking the image has the right name
         assertEquals("Test_image",image.getName());

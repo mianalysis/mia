@@ -237,12 +237,12 @@ public class BestFocusSubstack <T extends RealType<T> & NativeType<T>> extends M
         });
     }
 
-    boolean isSingleSlice(Image<T> image) {
+    boolean isSingleSlice(Image image) {
         return image.getImagePlus().getNSlices() == 1;
 
     }
 
-    int[] getBestFocusAuto(Image<T> inputImage, Image calculationImage, Stat stat, MinMaxMode minMax, int channel) {
+    int[] getBestFocusAuto(Image inputImage, Image calculationImage, Stat stat, MinMaxMode minMax, int channel) {
         ImgPlus<T> inputImg = inputImage.getImgPlus();
 
         // Iterating over frame, extracting the relevant substack, then appending it to
@@ -258,7 +258,7 @@ public class BestFocusSubstack <T extends RealType<T> & NativeType<T>> extends M
 
     }
 
-    int[] getBestFocusManual(Image<T> refImage) {
+    int[] getBestFocusManual(Image refImage) {
         if (refImage != null) {
             displayImagePlus = refImage.getImagePlus().duplicate();
             displayImagePlus.setLut(LUT.createLutFromColor(Color.WHITE));
@@ -366,7 +366,7 @@ public class BestFocusSubstack <T extends RealType<T> & NativeType<T>> extends M
 
     }
 
-    Image<T> extract(Image<T> inputImage, int relativeStart, int relativeEnd, int[] bestSlices,
+    Image extract(Image inputImage, int relativeStart, int relativeEnd, int[] bestSlices,
             String outputImageName) {
         // Creating the empty container image
         ImgPlus<T> inputImg = inputImage.getImgPlus();
@@ -385,7 +385,7 @@ public class BestFocusSubstack <T extends RealType<T> & NativeType<T>> extends M
         ImgPlusTools.applyAxes(outputImg, outputImagePlus);
 
         // Adding the new image to the Workspace
-        return new Image<T>(outputImageName, outputImagePlus);
+        return new Image(outputImageName, outputImagePlus);
 
     }
 
@@ -515,7 +515,7 @@ public class BestFocusSubstack <T extends RealType<T> & NativeType<T>> extends M
 
     }
 
-    static <T extends RealType<T> & NativeType<T>> void addMeasurements(Image<T> image, int[] slices) {
+    static <T extends RealType<T> & NativeType<T>> void addMeasurements(Image image, int[] slices) {
         CumStat cs = new CumStat();
         for (int slice : slices)
             cs.addMeasure(slice);

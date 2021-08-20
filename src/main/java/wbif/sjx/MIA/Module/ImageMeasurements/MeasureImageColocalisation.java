@@ -159,10 +159,10 @@ public class MeasureImageColocalisation<T extends RealType<T> & NativeType<T>> e
         }
     }
 
-    public static <T extends RealType<T> & NativeType<T>> Image<T> getObjectMask(ObjCollection objects,
+    public static  Image getObjectMask(ObjCollection objects,
             String maskLogic) {
         HashMap<Integer, Float> hues = ColourFactory.getSingleColourHues(objects, ColourFactory.SingleColours.WHITE);
-        Image<T> mask = objects.convertToImage("Mask", hues, 8, false);
+        Image mask = objects.convertToImage("Mask", hues, 8, false);
 
         if (maskLogic.equals(ObjectMaskLogic.MEASURE_OUTSIDE_OBJECTS))
             InvertIntensity.process(mask);
@@ -171,8 +171,8 @@ public class MeasureImageColocalisation<T extends RealType<T> & NativeType<T>> e
 
     }
 
-    public static <T extends RealType<T> & NativeType<T>> DataContainer<T> prepareDataContainer(Image<T> image1,
-            Image<T> image2, @Nullable Image<T> mask) {
+    public static <T extends RealType<T> & NativeType<T>> DataContainer<T> prepareDataContainer(Image image1,
+            Image image2, @Nullable Image mask) {
         DataContainer<T> data;
 
         try {
@@ -190,7 +190,7 @@ public class MeasureImageColocalisation<T extends RealType<T> & NativeType<T>> e
         }
     }
 
-    public void setImageMeasurements(Image<T> image, HashMap<String, Double> measurements, String imageName1,
+    public void setImageMeasurements(Image image, HashMap<String, Double> measurements, String imageName1,
             String imageName2) {
         for (String measurementName : measurements.keySet()) {
             String fullName = getFullName(imageName1, imageName2, measurementName);
@@ -241,7 +241,7 @@ public class MeasureImageColocalisation<T extends RealType<T> & NativeType<T>> e
     }
 
     public static <T extends RealType<T> & NativeType<T>> void setManualThresholds(DataContainer<T> data,
-            Image<T> image1, double fixedThreshold1, double fixedThreshold2) {
+            Image image1, double fixedThreshold1, double fixedThreshold2) {
         ManualThreshold<T> manualThreshold = new ManualThreshold<T>(image1, fixedThreshold1, fixedThreshold2);
         data.setAutoThreshold(manualThreshold);
     }
@@ -415,15 +415,15 @@ public class MeasureImageColocalisation<T extends RealType<T> & NativeType<T>> e
     public Status process(Workspace workspace) {
         // Getting input images
         String imageName1 = parameters.getValue(INPUT_IMAGE_1);
-        Image<T> image1 = (Image<T>) workspace.getImage(imageName1);
+        Image image1 = (Image) workspace.getImage(imageName1);
 
         String imageName2 = parameters.getValue(INPUT_IMAGE_2);
-        Image<T> image2 = (Image<T>) workspace.getImages().get(imageName2);
+        Image image2 = (Image) workspace.getImages().get(imageName2);
 
         // Getting parameters
         String maskingMode = parameters.getValue(MASKING_MODE);
         String maskImageName = parameters.getValue(MASK_IMAGE);
-        Image<T> maskImage = (Image<T>) workspace.getImage(maskImageName);
+        Image maskImage = (Image) workspace.getImage(maskImageName);
         String imageMaskLogic = parameters.getValue(IMAGE_MASK_LOGIC);
         String objectName = parameters.getValue(INPUT_OBJECTS);
         ObjCollection objects = workspace.getObjects().get(objectName);
