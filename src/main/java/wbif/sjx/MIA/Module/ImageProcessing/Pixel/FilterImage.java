@@ -18,6 +18,7 @@ import ij.process.FloatProcessor;
 import ij.process.ImageProcessor;
 import inra.ijpb.morphology.Morphology;
 import inra.ijpb.morphology.strel.DiskStrel;
+import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Categories;
 import wbif.sjx.MIA.Module.Category;
 import wbif.sjx.MIA.Module.Module;
@@ -246,7 +247,7 @@ public class FilterImage extends Module {
 
     public static void runRidgeEnhancement2DFilter(ImagePlus ipl, double sigma, String contourContrast) {
         int width = ipl.getWidth();
-        int height = ipl.getWidth();
+        int height = ipl.getHeight();
 
         Convol convol = new Convol();
         Position position = new Position();

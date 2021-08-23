@@ -241,11 +241,11 @@ public class CalculateNearestNeighbour extends Module {
 
         if (includeTimepoints) {
             cell = row.createCell(colCount++);
-            if (linkInSameFrame) {
+            if (linkInSameFrame)
                 cell.setCellValue("TIMEPOINT");
-            } else {
+            else
                 cell.setCellValue(inputObjectsName + "\" TIMEPOINT");
-            }
+
             cell.setCellStyle(cellStyle);
         }
 

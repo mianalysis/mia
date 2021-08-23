@@ -716,6 +716,8 @@ public class MeasureImageColocalisation<T extends RealType<T> & NativeType<T>> e
     }
 
     void addParameterDescriptions() {
+        String siteRef = "Description taken from <a href=\"https://imagej.net/imaging/colocalization-analysis\">https://imagej.net/imaging/colocalization-analysis</a>";
+        
         parameters.get(INPUT_IMAGE_1).setDescription("First image for which colocalisation will be calculated.  Measurements will be associated with this image.");
 
         parameters.get(INPUT_IMAGE_2).setDescription("Second image for which colocalisation will be calculated.");
@@ -767,17 +769,17 @@ public class MeasureImageColocalisation<T extends RealType<T> & NativeType<T>> e
 
         parameters.get(FIXED_THRESHOLD_2).setDescription("If \""+THRESHOLDING_MODE+"\" is set to \""+ThresholdingModes.MANUAL+"\", this is the threshold that will be applied to the second image.");
 
-        parameters.get(PCC_IMPLEMENTATION).setDescription("");
+        parameters.get(PCC_IMPLEMENTATION).setDescription("Controls whether PCC should be calculated using the classic algorithm or using the Coloc2-default \"fast\" method.");
 
-        parameters.get(MEASURE_KENDALLS_RANK).setDescription("");
+        parameters.get(MEASURE_KENDALLS_RANK).setDescription("When selected, Kendall's rank correlation will be calculated.  This works in a similar manner to Pearson's PCC, except it's calculated on ranked data rather than raw pixel intensities.");
 
-        parameters.get(MEASURE_LI_ICQ).setDescription("");
+        parameters.get(MEASURE_LI_ICQ).setDescription("When selected, Li's ICQ (intensity correlation quotient) will be calculated.  This measure reports the frequency with which both corresponding pixels for both channels are either both above or both below their respective means.  Values are scaled into the range -0.5 to +0.5, with values below 0 corresponding to anti-correlation and values above 0 indicating correlation.");
 
-        parameters.get(MEASURE_MANDERS).setDescription("");
+        parameters.get(MEASURE_MANDERS).setDescription("When selected, Manders' M1 and M2 coefficients will be calculated.  \"Proportional to the amount of fluorescence of the colocalizing pixels or voxels in each colour channel. You can get more details in Manders et al. Values range from 0 to 1, expressing the fraction of intensity in a channel that is located in pixels where there is above zero (or threshold) intensity in the other colour channel.\" "+siteRef);
 
-        parameters.get(MEASURE_PCC).setDescription("");
+        parameters.get(MEASURE_PCC).setDescription("When selected, Pearson's Correlation Coefficient (PCC) will be calculated.  \"It is not sensitive to differences in mean signal intensities or range, or a zero offset between the two components. The result is +1 for perfect correlation, 0 for no correlation, and -1 for perfect anti-correlation. Noise makes the value closer to 0 than it should be.\" "+siteRef);
 
-        parameters.get(MEASURE_SPEARMANS_RANK).setDescription("");
+        parameters.get(MEASURE_SPEARMANS_RANK).setDescription("When selected, Spearman's rank correlation will be calculated.  Spearman's rho is calculated in a similar manner to Pearson's PCC, except the image intensities are replaced by their respective rank.  Spearman's correlation works with monotonic relationships.  As with PCC, values are in the range -1 to +1.");
 
     }
 }

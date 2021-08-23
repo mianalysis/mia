@@ -633,8 +633,10 @@ public class TrackObjects extends Module {
 
         parameters.add(new SeparatorP(ORIENTATION_SEPARATOR,this));
         parameters.add(new BooleanP(IDENTIFY_LEADING_POINT,this,false));
-        parameters.add(new ChoiceP(ORIENTATION_MODE,this,OrientationModes.RELATIVE_TO_BOTH,OrientationModes.ALL));
-
+        parameters.add(new ChoiceP(ORIENTATION_MODE, this, OrientationModes.RELATIVE_TO_BOTH, OrientationModes.ALL));
+        
+        addParameterDescriptions();
+        
     }
 
     @Override
@@ -772,5 +774,46 @@ public class TrackObjects extends Module {
     @Override
     public boolean verify() {
         return true;
+    }
+
+    void addParameterDescriptions() {
+        parameters.get(INPUT_OBJECTS).setDescription("Objects present in individual timepoints which will be tracked across multiple frames.  These objects will become children of their assigned \"track\" parent.");
+
+        parameters.get(TRACK_OBJECTS).setDescription("Output track objects to be stored in the workspace.  These objects will contain no spatial information, rather they act as (parent) linking  objects for the individual timepoint instances of the tracked object.");
+
+        parameters.get(MAXIMUM_MISSING_FRAMES).setDescription("");
+
+        parameters.get(LINKING_METHOD).setDescription("");
+
+        parameters.get(MINIMUM_OVERLAP).setDescription("");
+
+        parameters.get(MAXIMUM_LINKING_DISTANCE).setDescription("");
+        
+        parameters.get(USE_VOLUME).setDescription("");
+
+        parameters.get(VOLUME_WEIGHTING).setDescription("");
+
+        parameters.get(MAXIMUM_VOLUME_CHANGE).setDescription("");
+
+        parameters.get(DIRECTION_WEIGHTING_MODE).setDescription("");
+
+        parameters.get(PREFERRED_DIRECTION).setDescription("");
+
+        parameters.get(DIRECTION_TOLERANCE).setDescription("");
+
+        parameters.get(DIRECTION_WEIGHTING).setDescription("");
+
+        parameters.get(USE_MEASUREMENT).setDescription("");
+
+        parameters.get(MEASUREMENT).setDescription("");
+
+        parameters.get(MEASUREMENT_WEIGHTING).setDescription("");
+
+        parameters.get(MAXIMUM_MEASUREMENT_CHANGE).setDescription("");
+
+        parameters.get(IDENTIFY_LEADING_POINT).setDescription("");
+
+        parameters.get(ORIENTATION_MODE).setDescription("");
+
     }
 }
