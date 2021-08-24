@@ -1,0 +1,13 @@
+.factorypath
+.classpath
+.project
+.settings/
+
+*~
+target/*
+!target/site
+target/site/*
+!target/site/dependencies.html
+!target/site/images/
+
+*.log

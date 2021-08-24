@@ -1,0 +1,30 @@
+---
+layout: default
+---
+
+<head>
+    <link rel="stylesheet" href="../../css/index.css">
+</head>
+
+<body>
+<!-- Side navigation -->
+<div class="sidenav">
+    <a href="../../index.html" class="nav1">Introduction</a>
+    <a href="../gettingstarted.html" class="nav1">Getting started</a>
+    <a href="../modulelist.html" class="nav1">Modules</a>
+    <a href="../macrolist.html" class="nav1">Macros</a>
+    <!-- <a href="../extendingmia.html" class="nav1">Extending MIA</a> -->
+</div>
+
+<!-- Page content -->
+<div class="main">
+    <!--The following is replaced automatically by the generated module list-->
+    <a href="../modulelist.html">Back to module list</a>
+<h1>Apply CLAHE</h1>
+<h2>Description</h2>
+Applies the MPICBG implementation of CLAHE (Contrast Limited Adaptive Histogram Equalization).  This module runs the Image "<a href="https://imagej.net/Enhance_Local_Contrast_(CLAHE)">CLAHE</a>" plugin.
+<h2>Parameters</h2>
+<ul><li><b>Input image</b> (default = "") Image to apply CLAHE to.</li><br><li><b>Apply to input image</b> (default = "true") Select if CLAHE should be applied directly to the input image, or if it should be applied to a duplicate, then stored as a different image in the workspace.</li><br><li><b>Output image</b> (default = "") Name of the output image created during the CLAHE process.  This image will be added to the workspace.</li><br><li><b>Blocksize</b> (default = "127.0") "The size of the local region around a pixel for which the histogram is equalized. This size should be larger than the size of features to be preserved".  Description taken from <a href="https://imagej.net/plugins/clahe">https://imagej.net/plugins/clahe</a></li><br><li><b>Calibrated units</b> (default = "false") Choose if block size is specified in pixel (set to "false") or calibrated (set to "true") units.  What units are used are controlled from "Input control".</li><br><li><b>Histogram bins</b> (default = "256") "The number of histogram bins used for histogram equalization. The implementation internally works with byte resolution, so values larger than 256 are not meaningful. This value also limits the quantification of the output when processing 8bit gray or 24bit RGB images. The number of histogram bins should be smaller than the number of pixels in a block".  Description taken from <a href="https://imagej.net/plugins/clahe">https://imagej.net/plugins/clahe</a></li><br><li><b>Maximum slope</b> (default = "3.0") "Limits the contrast stretch in the intensity transfer function. Very large values will let the histogram equalization do whatever it wants to do, that is result in maximal local contrast. The value 1 will result in the original image".  Description taken from <a href="https://imagej.net/plugins/clahe">https://imagej.net/plugins/clahe</a></li><br><li><b>Use mask</b> (default = "false") When selected, only pixels coincident with the white (255 intensity) part of the mask image (specified by the "Mask image" parameter) are processed.  All other pixels will retain their initial value</li><br><li><b>Mask image</b> (default = "") Image to use for masking when "Use mask" is selected.  Only pixels in the input image coincident with white (255 intensity) pixels in this mask will be processed.</li><br><li><b>Fast (less accurate)</b> (default = "true") "Use the fast but less accurate version of the filter. The fast version does not evaluate the intensity transfer function for each pixel independently but for a grid of adjacent boxes of the given block size only and interpolates for locations in between".  Description taken from <a href="https://imagej.net/plugins/clahe">https://imagej.net/plugins/clahe</a></li><br><li><b>Enable multithreading</b> (default = "true") Process multiple slices independently.  This can provide a speed improvement when working on a computer with a multi-core CPU.</li><br></ul>
+
+</div>
+</body>

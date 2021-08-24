@@ -1,0 +1,34 @@
+---
+layout: default
+---
+
+<head>
+    <link rel="stylesheet" href="../../css/index.css">
+</head>
+
+<body>
+<!-- Side navigation -->
+<div class="sidenav">
+    <a href="../../index.html" class="nav1">Introduction</a>
+    <a href="../gettingstarted.html" class="nav1">Getting started</a>
+    <a href="../modulelist.html" class="nav1">Modules</a>
+    <a href="../macrolist.html" class="nav1">Macros</a>
+    <!-- <a href="../extendingmia.html" class="nav1">Extending MIA</a> -->
+</div>
+
+<!-- Page content -->
+<div class="main">
+    <!--The following is replaced automatically by the generated module list-->
+    <a href="../modulelist.html">Back to module list</a>
+<h1>Run macro</h1>
+<h2>Description</h2>
+Run a specific ImageJ macro once (as opposed to the "Run macro on objects" module, which runs once per object).  This module can optionally open an image into ImageJ for the macro to run on.  It can also intercept the output image and store it in the MIA workspace.  Variables assigned during the macro can be extracted and stored as measurements associated with the input image.<br><br>Note: ImageJ can only run one macro at a time, so by using this module the "Simultaneous jobs" parameter of the "Input control" module must be set to 1.<br><br>Note: When this module runs, all windows currently open in ImageJ will be automatically hidden, then re-opened upon macro completion.  This is to prevent accidental interference while the macro is running.  It also allows the macro to run much faster (batch mode).  To keep images open while the macro is running (for example, during debugging) start the macro with the command "setBatchMode(false)".
+<h2>Parameters</h2>
+<ul><li><b>Add variable</b> (default = "") Pre-define variables, which will be immediately accessible within the macro.  These can be used to provide user-controllable values to file-based macros or to prevent the need for editing macro code via the "Run macro" panel.</li><br><li><b>Variable type</b> (default = "Text") Controls the data type of the variable that will be assigned within the macro:<br><ul>"Boolean" Variable will be assigned a true/false value depending on whether the checkbox was selected/deselected (respectively).</li>."Number" Variable will be assigned a numeric value to which mathematical operations can be applied.</li>."Text" Variable will be assigned a text value.  Irrespective of whether the value contains only numeric characters this will be interpreted as text.</li></ul>.</li><br><li><b>Variable name</b> (default = "") The variable value can be accessed from within the macro by using this variable name.</li><br><li><b>Variable checkbox</b> (default = "true") Boolean (true/false) value assigned to this variable if "Variable type" is set to "Boolean".</li><br><li><b>Variable numeric value</b> (default = "0.0") Numeric value assigned to this variable if "Variable type" is set to "Number".</li><br><li><b>Variable text value</b> (default = "") Text value assigned to this variable if "Variable type" is set to "Text".</li><br><li><b>Provide input image</b> (default = "true") When selected, a specified image from the workspace will be opened prior to running the macro.  This image will be the "active" image the macro runs on.</li><br><li><b>Input image</b> (default = "") If "Provide input image" is selected, this is the image that will be loaded into the macro.  A duplicate of this image is made, so the image stored in the workspace will not be affected by any processing in the macro.  The final active image once the macro has completed can be stored in the workspace using the "Intercept output image" parameter.</li><br><li><b>Macro mode</b> (default = "Macro text") Select the source for the macro code:<br><ul><li>"Macro file" Load the macro from the file specified by the "Macro file" parameter.</li><li>"Macro text" Macro code is written directly into the "Macro text" box.</li></ul></li><br><li><b>Macro text</b> (default = "// A variable has been pre-defined for the input image name.
+
+run("Enable MIA Extensions");
+
+") Macro code to be executed.  MIA macro commands are enabled using the "run("Enable MIA Extensions");" command which is included by default.  This should always be the first line of a macro if these commands are needed.</li><br><li><b>Macro file</b> (default = "") Select a macro file (.ijm) to run once, after all analysis runs have completed.</li><br><li><b>Intercept output image</b> (default = "true") When selected, the image currently active in ImageJ at completion of the macro can be stored into the workspace.  This can either overwrite the input image in the workspace or be stored as a new image (controlled by "Apply to input image").</li><br><li><b>Apply to input image</b> (default = "true") When this and "Intercept output image" are selected, the image active in ImageJ at completion of the macro will update the input image in the MIA workspace.  Otherwise, the actie image will be stored as a new image in the workspace with the name specified by "Output image".</li><br><li><b>Output image</b> (default = "") When "Intercept output image" is selected, but not updating the input image, the image active in ImageJ at completion of the macro will be stored in the MIA workspace with this name.  This image will be accessible to other modules using this name.</li><br><li><b>Intercept variable as measurement</b> (default = "") This allows variables assigned in the macro to be stored as measurements associated with the input image.</li><br><li><b>Variable</b> (default = "") Variable assigned in the macro to be stored as a measurement associated with the input image.  This name must exactly match (including case) the name as written in the macro.</li><br></ul>
+
+</div>
+</body>

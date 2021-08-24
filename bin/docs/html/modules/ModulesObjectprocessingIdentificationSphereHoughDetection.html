@@ -1,0 +1,30 @@
+---
+layout: default
+---
+
+<head>
+    <link rel="stylesheet" href="../../css/index.css">
+</head>
+
+<body>
+<!-- Side navigation -->
+<div class="sidenav">
+    <a href="../../index.html" class="nav1">Introduction</a>
+    <a href="../gettingstarted.html" class="nav1">Getting started</a>
+    <a href="../modulelist.html" class="nav1">Modules</a>
+    <a href="../macrolist.html" class="nav1">Macros</a>
+    <!-- <a href="../extendingmia.html" class="nav1">Extending MIA</a> -->
+</div>
+
+<!-- Page content -->
+<div class="main">
+    <!--The following is replaced automatically by the generated module list-->
+    <a href="../modulelist.html">Back to module list</a>
+<h1>Sphere detection</h1>
+<h2>Description</h2>
+Detects spheres within grayscale images using the Hough transform.  Input images can be of binary or grayscale format, but the sphere features must be brighter than their surrounding background and have dark centres (i.e. be shells).  For solid spheres, a gradient filter or equivalent should be applied to the image first.  Detected spheres are output to the workspace as solid objects.  Spheres are detected within a user-defined radius range and must exceed a user-defined threshold score (based on the intensity of the spherical feartures in the input image and the feature sphericity.
+<h2>Parameters</h2>
+<ul><li><b>Input image</b> (default = "") Input image from which spheres will be detected.</li><br><li><b>Output objects</b> (default = "") Output sphere objects to be added to the workspace.  Irrespective of the form of the input sphere features, output spheres are always solid.</li><br><li><b>Output transform image</b> (default = "false") When selected, the Hough-transform image will be output to the workspace with the name specified by "Output image".</li><br><li><b>Output image</b> (default = "") If "Output transform image" is selected, this will be the name assigned to the transform image added to the workspace.  The transform image has XY dimensions equal to the input image and an equal number of Z-slices to the number of radii tested.  Circluar features in the input image appear as bright points, where the XYZ location of the point corresponds to the XYR (i.e. X, Y, radius) parameters for the sphere.</li><br><li><b>Minimum radius (px)</b> (default = "10") The minimum radius to detect spheres for.  Specified in pixel units.</li><br><li><b>Maximum radius (px)</b> (default = "20") The maximum radius to detect spheres for.  Specified in pixel units.</li><br><li><b>Downsample factor</b> (default = "1") To speed up the detection process, the image can be downsampled.  For example, a downsample factor of 2 will downsize the image in X and Y by a factor of 2 prior to detection of spheres.</li><br><li><b>Detection threshold</b> (default = "1.0") The minimum score a detected sphere must have to be stored.  Scores are the sum of all pixel intensities lying on the perimeter of the sphere.  As such, higher scores correspond to brighter spheres, spheres with high circularity (where all points lie on the perimeter of the detected sphere) and spheres with continuous intensity along their perimeter (no gaps).</li><br><li><b>Exclusion radius (px)</b> (default = "10") The minimum distance between adjacent spheres.  For multiple candidate points within this range, the sphere with the highest score will be retained.  Specified in pixel units.</li><br><li><b>Enable multithreading</b> (default = "true") Process multiple radii simultaneously.  This can provide a speed improvement when working on a computer with a multi-core CPU.</li><br><li><b>Output radius resize (px)</b> (default = "0") Radius of output objects will be adjusted by this value.  For example, a detected sphere of radius 5 with a "radius resize" of 2 will have an output radius of 7.  Similarly, setting "radius resize" to -3 would produce a sphere of radius 2.</li><br><li><b>Show transform image</b> (default = "true") When selected, the transform image will be displayed (as long as the module is currently set to show its output).</li><br><li><b>Show detection image</b> (default = "true") When selected, the detection image will be displayed (as long as the module is currently set to show its output).</li><br><li><b>Show detection score</b> (default = "false") When selected, the detection image will also show the score associated with each detected sphere.</li><br><li><b>Label size</b> (default = "12") Font size of the detection score text label.</li><br></ul>
+
+</div>
+</body>

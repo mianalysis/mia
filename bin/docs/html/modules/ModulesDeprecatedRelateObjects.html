@@ -1,0 +1,30 @@
+---
+layout: default
+---
+
+<head>
+    <link rel="stylesheet" href="../../css/index.css">
+</head>
+
+<body>
+<!-- Side navigation -->
+<div class="sidenav">
+    <a href="../../index.html" class="nav1">Introduction</a>
+    <a href="../gettingstarted.html" class="nav1">Getting started</a>
+    <a href="../modulelist.html" class="nav1">Modules</a>
+    <a href="../macrolist.html" class="nav1">Macros</a>
+    <!-- <a href="../extendingmia.html" class="nav1">Extending MIA</a> -->
+</div>
+
+<!-- Page content -->
+<div class="main">
+    <!--The following is replaced automatically by the generated module list-->
+    <a href="../modulelist.html">Back to module list</a>
+<h1>Relate objects</h1>
+<h2>Description</h2>
+Relate objects of two classes based on a variety of metrics (e.g. spatial overlap or proximity).  The assigned relationships are of the form many-to-one, where many input "child" objects can be related to at most, one "parent" object.  Measurements associated with this relationship (e.g. distance from child to parent surface) are stored as measurements of the relevant child object.
+<h2>Parameters</h2>
+<ul><li><b>Parent (larger) objects</b> (default = "") Input reference objects.  The "Child (smaller) objects" will be related to these, with children assigned one parent based on, for example, closest proximity or maximum spatial overlap.  There's no guarantee of each parent object being assigned at least one child.</li><br><li><b>Child (smaller) objects</b> (default = "") Objects to relate to the parents.  Each child will be assigned at most one parent.  There's no guarantee a child will be assigned any parent, especially when using options such as "Limit linking by distance".</li><br><li><b>Method to relate objects</b> (default = "Matching IDs") The metric by which parent and child objects will be related:<br><ul><li>"Matching IDs" Parents and children will be related if they have the same ID number.  Since object ID numbers are unique within an object collection there will always be no more than one parent to a child.</li><li>"Proximity" Children are related to the spatially-closest object from the parent collection.  The exact distances used (e.g. centroid to centroid or surface to surface) are controlled by the "Reference point" parameter.</li><li>"Spatial overlap" Children are related to the object from the parent collection they have the greatest spatial overlap with.  Spatial overlap is defined as the number of coincident object coordinates.</li></ul></li><br><li><b>Reference point</b> (default = "Centroid") Controls the method used for determining proximity-based relationships:<br><ul><li>"Centroid" Distances are from child object centroids to parent object centroids.  These distances are always positive; increasing as the distance between centroids increases.</li><li>"Child centroid to parent surface" Distances are from child object centroids to the closest point on parent object surfaces.  These distances increase in magnitude the further from the parent surface a child centroid is; however, they are assigned a positive value if the child is outside the parent and a negative value if the child is inside the parent.  For example, a centroid 5px outside the object will be simply "5px", whereas a centroid 5px from the surface, but contained within the parent object will be recorded as "-5px".</li><li>"Surface" Distances are between the closest points on the child and parent surfaces.  These distances increase in magnitude the greater the minimum parent-child surface distance is; however, they are assigned a positive value if the closest child surface point is outside the parent and a negative value if the closest child surface point is inside the parent.  For example, a closest child surface point 5px outside the object will be simply "5px", whereas a closest child surface point 5px from the surface, but contained within the parent object will be recorded as "-5px".  Note: Any instances where the child and parent surfaces overlap will be recorded as "0px" distance.</li></ul></li><br><li><b>Limit linking by distance</b> (default = "false") When selected, objects will only be related if the distance between them (as calculated by the "Reference point" metric) is less than or equal to the distance defined by "Maximum linking distance (px)".</li><br><li><b>Maximum linking distance (px)</b> (default = "1.0") If "Limit linking by distance" is selected, this is the maximum permitted distance between objects for them to be assigned a relationship.</li><br><li><b>Inside/outside mode</b> (default = "Inside and outside (all distances)") When relating children to parent surfaces it's possible to only include children inside, outside or on the edge of the parent.This parameter controls which children are allowed to be related to the parents.  Choices are: Inside and outside (all distances), Inside only (distances < 0), Inside and on surface (distances <= 0), On surface only (distances = 0), Outside and on surface (distances >= 0), Outside only (distances > 0).</li><br><li><b>Minimum percentage overlap</b> (default = "0.0") Percentage of total child volume overlapping with the parent object.</li><br><li><b>Require centroid overlap</b> (default = "true") When selected, child objects are only related to a parent if their centroid is inside the parent object (i.e. the child object centroid is coincident with a parent object coordinate).</li><br><li><b>Only link objects in same frame</b> (default = "true") When selected, child and parent objects must be in the same time frame for them to be linked.</li><br><li><b>Merge related objects</b> (default = "false") When selected, any merged children and parents will be removed from their respective object collections, combined into a single object (one merged object per parent and associated children) and stored in a new object collection.</li><br><li><b>Output overlapping objects</b> (default = "") If "Merge related objects" is selected, this is the name of the output related objects collection that will be stored in the workspace.</li><br></ul>
+
+</div>
+</body>

@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: sc.fiji:Trainable_Segmentation:3.2.29">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/sc/fiji/Trainable_Segmentation/3.2.29/Trainable_Segmentation-3.2.29.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/sc/fiji/Trainable_Segmentation/3.2.29/Trainable_Segmentation-3.2.29-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/sc/fiji/Trainable_Segmentation/3.2.29/Trainable_Segmentation-3.2.29-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

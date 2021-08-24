@@ -1,0 +1,30 @@
+---
+layout: default
+---
+
+<head>
+    <link rel="stylesheet" href="../../css/index.css">
+</head>
+
+<body>
+<!-- Side navigation -->
+<div class="sidenav">
+    <a href="../../index.html" class="nav1">Introduction</a>
+    <a href="../gettingstarted.html" class="nav1">Getting started</a>
+    <a href="../modulelist.html" class="nav1">Modules</a>
+    <a href="../macrolist.html" class="nav1">Macros</a>
+    <!-- <a href="../extendingmia.html" class="nav1">Extending MIA</a> -->
+</div>
+
+<!-- Page content -->
+<div class="main">
+    <!--The following is replaced automatically by the generated module list-->
+    <a href="../modulelist.html">Back to module list</a>
+<h1>Bin objects by measurement</h1>
+<h2>Description</h2>
+Distribute objects into a set of "bins" based on a measurement associated with each object.  Bins are evenly distributed between manually-specified smallest and largest bin centres.  The assigned bin for each object is stored as a new measurement associated with that object.
+<h2>Parameters</h2>
+<ul><li><b>Input objects</b> (default = "") Objects from the workspace.  The specified measurement for each of these will be binned according to various parameters.  The assigned bin will be stored as a new measurement associated with this object.</li><br><li><b>Measurement</b> (default = "") Measurement associated with the input objects that will be binned according to the other parameters.</li><br><li><b>Smallest bin centre</b> (default = "0.0") Centre value associated with the smallest bin.  Bins will be evenly distributed in bins between this value and the upper bin centre (specified by "Largest bin centre".</li><br><li><b>Largest bin centre</b> (default = "1.0") Centre value associated with the largest bin.  Bins will be evenly distributed in bins between this value and the lower bin centre (specified by "Smallest bin centre".</li><br><li><b>Number of bins</b> (default = "1") Number of bins to divide measurements into.  These will be evenly distributed in the range between "Smallest bin centre" and "Largest bin centre".</li><br></ul>
+
+</div>
+</body>

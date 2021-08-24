@@ -1,0 +1,78 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Launch Test",
+            "request": "launch",
+            "mainClass": "wbif.sjx.MIA.Test",
+            "projectName": "MIA_"
+        },
+        {
+            "type": "java",
+            "name": "Launch TextType",
+            "request": "launch",
+            "mainClass": "wbif.sjx.MIA.Object.Parameters.Abstract.TextType",
+            "projectName": "MIA_"
+        },
+        {
+            "type": "java",
+            "name": "CodeLens (Launch) - Module",
+            "request": "launch",
+            "mainClass": "wbif.sjx.MIA.Module.Module",
+            "projectName": "MIA_"
+        },
+        {
+            "type": "java",
+            "name": "CodeLens (Launch) - DocumentationGenerator2",
+            "request": "launch",
+            "mainClass": "wbif.sjx.MIA.Process.DocumentationGenerator2",
+            "projectName": "MIA_"
+        },
+        {
+            "type": "java",
+            "name": "CodeLens (Launch) - FilterWithWithoutParentTest",
+            "request": "launch",
+            "mainClass": "wbif.sjx.MIA.Module.ObjectProcessing.Refinement.FilterObjects.FilterWithWithoutParentTest",
+            "projectName": "MIA_"
+        },
+        {
+            "type": "java",
+            "name": "CodeLens (Launch) - LostAndFound",
+            "request": "launch",
+            "mainClass": "wbif.sjx.MIA.Process.AnalysisHandling.LostAndFound",
+            "projectName": "MIA_"
+        },
+        {
+            "type": "java",
+            "name": "Debug (Launch)-MIA<MIA_>",
+            "request": "launch",
+            "mainClass": "wbif.sjx.MIA.MIA",
+            "projectName": "MIA_",
+            "vmArgs": "-Xmx20000m"
+        },
+        {
+            "type": "java",
+            "name": "Debug (Launch) - Current File",
+            "request": "launch",
+            "mainClass": "${file}"
+        },
+        {
+            "type": "java",
+            "name": "Debug (Launch)-DocumentationCoverageChecker<MIA_>",
+            "request": "launch",
+            "mainClass": "wbif.sjx.MIA.Process.DocumentationCoverageChecker",
+            "projectName": "MIA_"
+        },
+        {
+            "type": "java",
+            "name": "Debug (Launch)-DocumentationGenerator<MIA_>",
+            "request": "launch",
+            "mainClass": "wbif.sjx.MIA.Process.DocumentationGenerator",
+            "projectName": "MIA_"
+        }
+    ]
+}

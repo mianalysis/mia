@@ -1,0 +1,30 @@
+---
+layout: default
+---
+
+<head>
+    <link rel="stylesheet" href="../../css/index.css">
+</head>
+
+<body>
+<!-- Side navigation -->
+<div class="sidenav">
+    <a href="../../index.html" class="nav1">Introduction</a>
+    <a href="../gettingstarted.html" class="nav1">Getting started</a>
+    <a href="../modulelist.html" class="nav1">Modules</a>
+    <a href="../macrolist.html" class="nav1">Macros</a>
+    <!-- <a href="../extendingmia.html" class="nav1">Extending MIA</a> -->
+</div>
+
+<!-- Page content -->
+<div class="main">
+    <!--The following is replaced automatically by the generated module list-->
+    <a href="../modulelist.html">Back to module list</a>
+<h1>Fill holes by volume</h1>
+<h2>Description</h2>
+
+<h2>Parameters</h2>
+<ul><li><b>Input image</b> (default = "") Image from workspace to apply fill holes operation to.  This image will be 8-bit with binary logic determined by the "Binary logic" parameter.</li><br><li><b>Apply to input image</b> (default = "true") When selected, the post-operation image will overwrite the input image in the workspace.  Otherwise, the image will be saved to the workspace with the name specified by the "Output image" parameter.</li><br><li><b>Output image</b> (default = "") If "Apply to input image" is not selected, the post-operation image will be saved to the workspace with this name.</li><br><li><b>Use minimum volume</b> (default = "true") </li><br><li><b>Minimum size</b> (default = "0.0") </li><br><li><b>Use maximum volume</b> (default = "true") </li><br><li><b>Maximum size</b> (default = "1000.0") </li><br><li><b>Calibrated units</b> (default = "false") When selected, hole size limits are assumed to be specified in calibrated units (as defined by the "Input control" parameter "Spatial unit").  Otherwise, pixel units are assumed.</li><br><li><b>Connectivity</b> (default = "26") </li><br><li><b>Binary logic</b> (default = "Black (0) background") Controls whether objects are considered to be white (255 intensity) on a black (0 intensity) background, or black on a white background.</li><br><li><b>Enable multithreading</b> (default = "true") Break the image down into strips, each one processed on a separate CPU thread.  The overhead required to do this means it's best for large multi-core CPUs, but should be left disabled for small images or on CPUs with few cores.</li><br><li><b>Minimum strip width (px)</b> (default = "60") Minimum width of each strip to be processed on a separate CPU thread.  Measured in pixel units.</li><br></ul>
+
+</div>
+</body>

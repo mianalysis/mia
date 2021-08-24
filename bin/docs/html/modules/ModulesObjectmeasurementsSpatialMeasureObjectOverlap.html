@@ -1,0 +1,30 @@
+---
+layout: default
+---
+
+<head>
+    <link rel="stylesheet" href="../../css/index.css">
+</head>
+
+<body>
+<!-- Side navigation -->
+<div class="sidenav">
+    <a href="../../index.html" class="nav1">Introduction</a>
+    <a href="../gettingstarted.html" class="nav1">Getting started</a>
+    <a href="../modulelist.html" class="nav1">Modules</a>
+    <a href="../macrolist.html" class="nav1">Macros</a>
+    <!-- <a href="../extendingmia.html" class="nav1">Extending MIA</a> -->
+</div>
+
+<!-- Page content -->
+<div class="main">
+    <!--The following is replaced automatically by the generated module list-->
+    <a href="../modulelist.html">Back to module list</a>
+<h1>Measure object overlap</h1>
+<h2>Description</h2>
+Calculates the overlap of each object in an object collection with any object from another collection.  Overlaps are calculated for both specified object collections and are stored as measurements associated with the relevant object.  Overlap can occur for multiple objects; however, doubly-overlapped regions will only be counted once (i.e. an object can have no more than 100% overlap).  For example, an object in the first collection with 20% overlap with one object and 12% overlap with another would receive an overlap measurement of 32% (assuming the two overlapping objects weren't themselves overlapped in the overlapping region).
+<h2>Parameters</h2>
+<ul><li><b>Object source mode</b> (default = "Different classes") Controls whether overlap of objects from the same class should be calculated, or whether objects from two different classes should be compared.</li><br><li><b>Object set 1</b> (default = "") Object collection for which, the overlap of each object with any object from a separate object collection (specified by the "Object set 2" parameter) will be calculated.</li><br><li><b>Object set 2</b> (default = "") Object collection for which, the overlap of each object with any object from a separate object collection (specified by the "Object set 1" parameter) will be calculated.</li><br><li><b>Only link objects in same frame</b> (default = "true") When selected, objects will only be considered to have any overlap if they're present in the same frame (timepoint).</li><br></ul>
+
+</div>
+</body>

@@ -1,0 +1,30 @@
+---
+layout: default
+---
+
+<head>
+    <link rel="stylesheet" href="../../css/index.css">
+</head>
+
+<body>
+<!-- Side navigation -->
+<div class="sidenav">
+    <a href="../../index.html" class="nav1">Introduction</a>
+    <a href="../gettingstarted.html" class="nav1">Getting started</a>
+    <a href="../modulelist.html" class="nav1">Modules</a>
+    <a href="../macrolist.html" class="nav1">Macros</a>
+    <!-- <a href="../extendingmia.html" class="nav1">Extending MIA</a> -->
+</div>
+
+<!-- Page content -->
+<div class="main">
+    <!--The following is replaced automatically by the generated module list-->
+    <a href="../modulelist.html">Back to module list</a>
+<h1>Track objects</h1>
+<h2>Description</h2>
+Track objects between frames.  Tracks are produced as separate "parent" objects to the "child" spots.  Track objects only serve to link different timepoint instances of objects together.  As such, track objects store no coordinate information.<br><br>Uses the TrackMate implementation of the Jaqaman linear assignment problem solving algorithm (Jaqaman, et al., Nature Methods, 2008).  The implementation utilises sparse matrices for calculating costs in order to minimise memory overhead.<br><br>Note: Leading point determination currently only works in 2D
+<h2>Parameters</h2>
+<ul><li><b>Input objects</b> (default = "") </li><br><li><b>Output track objects</b> (default = "") </li><br><li><b>Maximum number of missing frames</b> (default = "0") </li><br><li><b>Linking method</b> (default = "Centroid") </li><br><li><b>Minimum overlap</b> (default = "1.0") </li><br><li><b>Maximum linking distance (px)</b> (default = "20.0") </li><br><li><b>Use volume (minimise volume change)</b> (default = "false") </li><br><li><b>Volume weighting</b> (default = "1.0") </li><br><li><b>Maximum volume change (px^3)</b> (default = "1.0") </li><br><li><b>Direction weighting mode</b> (default = "None") </li><br><li><b>Preferred direction (-180 to 180 degs)</b> (default = "0.0") </li><br><li><b>Direction tolerance</b> (default = "180.0") </li><br><li><b>Direction weighting</b> (default = "1.0") </li><br><li><b>Use measurement (minimise change)</b> (default = "false") </li><br><li><b>Measurement</b> (default = "") </li><br><li><b>Measurement weighting</b> (default = "1.0") </li><br><li><b>Maximum measurement change</b> (default = "1.0") </li><br><li><b>Identify leading point</b> (default = "false") </li><br><li><b>Orientation mode</b> (default = "Relative to both points") </li><br></ul>
+
+</div>
+</body>

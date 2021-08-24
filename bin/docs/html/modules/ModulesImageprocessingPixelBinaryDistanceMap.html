@@ -1,0 +1,30 @@
+---
+layout: default
+---
+
+<head>
+    <link rel="stylesheet" href="../../css/index.css">
+</head>
+
+<body>
+<!-- Side navigation -->
+<div class="sidenav">
+    <a href="../../index.html" class="nav1">Introduction</a>
+    <a href="../gettingstarted.html" class="nav1">Getting started</a>
+    <a href="../modulelist.html" class="nav1">Modules</a>
+    <a href="../macrolist.html" class="nav1">Macros</a>
+    <!-- <a href="../extendingmia.html" class="nav1">Extending MIA</a> -->
+</div>
+
+<!-- Page content -->
+<div class="main">
+    <!--The following is replaced automatically by the generated module list-->
+    <a href="../modulelist.html">Back to module list</a>
+<h1>Calculate distance map</h1>
+<h2>Description</h2>
+Creates a 32-bit greyscale image from an input binary image, where the value of each foreground pixel in the input image is equal to its Euclidean distance to the nearest background pixel.  This image will be 8-bit with binary logic determined by the "Binary logic" parameter.  The output image will have pixel values of 0 coincident with background pixels in the input image and values greater than zero coincident with foreground pixels.  Uses the plugin "<a href="https://github.com/ijpb/MorphoLibJ">MorphoLibJ</a>".
+<h2>Parameters</h2>
+<ul><li><b>Input image</b> (default = "") Image from workspace to calculate distance map for.  This image will be 8-bit with binary logic determined by the "Binary logic" parameter.</li><br><li><b>Output image</b> (default = "") The output distance map will be saved to the workspace with this name.  This image will be 32-bit format.</li><br><li><b>Weight modes</b> (default = "Svensson (3,4,5,7)") The pre-defined set of weights that are used to compute the 3D distance transform using chamfer approximations of the euclidean metric (descriptions taken from <a href="http://ijpb.github.io/MorphoLibJ/javadoc/">http://ijpb.github.io/MorphoLibJ/javadoc/</a>):<br><ul><li>"Borgefors (3,4,5)" Use weight values of 3 for orthogonal neighbors, 4 for diagonal neighbors and 5 for cube-diagonals (best approximation for 3-by-3-by-3 masks).</li><li>"Chessboard (1,1,1)" Use weight values of 1 for all neighbours.</li><li>"City-Block (1,2,3)" Use weight values of 1 for orthogonal neighbors, 2 for diagonal neighbors and 3 for cube-diagonals.</li><li>"Svensson (3,4,5,7)" Use weight values of 3 for orthogonal neighbors, 4 for diagonal neighbors, 5 for cube-diagonals and 7 for (2,1,1) shifts. Good approximation using only four weights, and keeping low value of orthogonal weight.</li></ul></li><br><li><b>Match Z to XY</b> (default = "true") When selected, an image is interpolated in Z (so that all pixels are isotropic) prior to calculation of the distance map.  This prevents warping of the distance map along the Z-axis if XY and Z sampling aren't equal.</li><br><li><b>Spatial units mode</b> (default = "Pixel/slice") Controls whether spatial values are assumed to be specified in calibrated units (as defined by the "Input control" parameter "Spatial unit") or pixel units.</li><br><li><b>Binary logic</b> (default = "Black (0) background") Controls whether objects are considered to be white (255 intensity) on a black (0 intensity) background, or black on a white background.</li><br></ul>
+
+</div>
+</body>

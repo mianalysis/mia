@@ -1,0 +1,30 @@
+---
+layout: default
+---
+
+<head>
+    <link rel="stylesheet" href="../../css/index.css">
+</head>
+
+<body>
+<!-- Side navigation -->
+<div class="sidenav">
+    <a href="../../index.html" class="nav1">Introduction</a>
+    <a href="../gettingstarted.html" class="nav1">Getting started</a>
+    <a href="../modulelist.html" class="nav1">Modules</a>
+    <a href="../macrolist.html" class="nav1">Macros</a>
+    <!-- <a href="../extendingmia.html" class="nav1">Extending MIA</a> -->
+</div>
+
+<!-- Page content -->
+<div class="main">
+    <!--The following is replaced automatically by the generated module list-->
+    <a href="../modulelist.html">Back to module list</a>
+<h1>Colour deconvolution</h1>
+<h2>Description</h2>
+Applies the <a href="https://imagej.net/plugins/colour-deconvolution">Colour Deconvolution</a> plugin to unmix an RGB image (stored in the workspace) into up to three separate channels, which are output as separate images.  The input image can be stored as either an RGB or composite image.  This process is only applicable to images created via subtractive mixing (e.g. histological staining), not to additive methods (e.g. fluorescence).
+<h2>Parameters</h2>
+<ul><li><b>Input image</b> (default = "") Image from the workspace to apply unmixing to.  This can be stored as either an RGB or composite image.</li><br><li><b>Output image 1</b> (default = "true") When selected, the first stain in the stain matrix will be output to the workspace with the name specified by "Output image 1 name"</li><br><li><b>Output image 1 name</b> (default = "") Name to assign to first stain image, if output to the workspace.</li><br><li><b>Output image 2</b> (default = "true") When selected, the second stain in the stain matrix will be output to the workspace with the name specified by "Output image 2 name"</li><br><li><b>Output image 2 name</b> (default = "") Name to assign to second stain image, if output to the workspace.</li><br><li><b>Output image 3</b> (default = "true") When selected, the third stain in the stain matrix will be output to the workspace with the name specified by "Output image 3 name"</li><br><li><b>Output image 3 name</b> (default = "") Name to assign to third stain image, if output to the workspace.</li><br><li><b>Stain model</b> (default = "H&E") Stain models to apply to input image.  If set to "Custom (user values)" the individual RGB components for each channel can be specified.  Model choices are: Alcian blue & H,Azan-Mallory,Brilliant_Blue,CMY,FastRed FastBlue DAB,Feulgen Light Green,Giemsa,H AEC,H&E,H&E 2,H&E DAB,H DAB,H PAS,Masson Trichrome,Methyl Green DAB,RGB,Custom (user values)</li><br><li><b>Stain 1 (red)</b> (default = "0.0") Red component of stain 1.  Value specified in range 0-1.</li><br><li><b>Stain 1 (green)</b> (default = "0.0") Green component of stain 1.  Value specified in range 0-1.</li><br><li><b>Stain 1 (blue)</b> (default = "0.0") Blue component of stain 1.  Value specified in range 0-1.</li><br><li><b>Stain 2 (red)</b> (default = "0.0") Red component of stain 2.  Value specified in range 0-1.</li><br><li><b>Stain 2 (green)</b> (default = "0.0") Green component of stain 2.  Value specified in range 0-1.</li><br><li><b>Stain 2 (blue)</b> (default = "0.0") Blue component of stain 2.  Value specified in range 0-1.</li><br><li><b>Stain 3 (red)</b> (default = "0.0") Red component of stain 3.  Value specified in range 0-1.</li><br><li><b>Stain 3 (green)</b> (default = "0.0") Green component of stain 3.  Value specified in range 0-1.</li><br><li><b>Stain 3 (blue)</b> (default = "0.0") Blue component of stain 3.  Value specified in range 0-1.</li><br></ul>
+
+</div>
+</body>

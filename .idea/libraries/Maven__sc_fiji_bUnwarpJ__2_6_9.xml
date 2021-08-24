@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: sc.fiji:bUnwarpJ_:2.6.9">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/sc/fiji/bUnwarpJ_/2.6.9/bUnwarpJ_-2.6.9.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/sc/fiji/bUnwarpJ_/2.6.9/bUnwarpJ_-2.6.9-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/sc/fiji/bUnwarpJ_/2.6.9/bUnwarpJ_-2.6.9-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

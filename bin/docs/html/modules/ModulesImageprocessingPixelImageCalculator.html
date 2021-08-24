@@ -1,0 +1,30 @@
+---
+layout: default
+---
+
+<head>
+    <link rel="stylesheet" href="../../css/index.css">
+</head>
+
+<body>
+<!-- Side navigation -->
+<div class="sidenav">
+    <a href="../../index.html" class="nav1">Introduction</a>
+    <a href="../gettingstarted.html" class="nav1">Getting started</a>
+    <a href="../modulelist.html" class="nav1">Modules</a>
+    <a href="../macrolist.html" class="nav1">Macros</a>
+    <!-- <a href="../extendingmia.html" class="nav1">Extending MIA</a> -->
+</div>
+
+<!-- Page content -->
+<div class="main">
+    <!--The following is replaced automatically by the generated module list-->
+    <a href="../modulelist.html">Back to module list</a>
+<h1>Image calculator</h1>
+<h2>Description</h2>
+Apply pixel-wise intensity calculations for two images of matching dimensions.<br><br>Note: Images to be processed must have matching spatial dimensions and intensity bit-depths.
+<h2>Parameters</h2>
+<ul><li><b>Input image 1</b> (default = "") First image to be processed as part of calculation.</li><br><li><b>Input image 2</b> (default = "") Second image to be processed as part of calculation.</li><br><li><b>Overwrite mode</b> (default = "Create new image") Controls how the resultant image should be output:<br><ul><li>"Create new image" (default) will create a new image and save it to the workspace.</li><li>"Overwrite image 1" will overwrite the first input image with the output image.  The output image will retain all measurements from the first input image.</li><li>"Overwrite image 2" will overwrite the second input image with the output image.  The output image will retain all measurements from the second input image.</li></ul></li><br><li><b>Output image</b> (default = "") Name of the output image created during the image calculation.  This image will be added to the workspace.</li><br><li><b>Output 32-bit image</b> (default = "false") When enabled, the calculation will be performed on 32-bit float values.  This is useful if the calculation is likely to create negative or decimal values.  The output image will also be stored in the workspace as a 32-bit float image.</li><br><li><b>Calculation method</b> (default = "Add image 1 and image 2") The calculation to apply to the two input images.</li><br><li><b>Set NaN values to zero</b> (default = "false") If input images are 32-bit (or are being converted to 32-bit via "Output 32-bit image" option) the output image can contain NaN (not a number) values in place of any zeros.</li><br></ul>
+
+</div>
+</body>

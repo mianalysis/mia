@@ -1,0 +1,30 @@
+---
+layout: default
+---
+
+<head>
+    <link rel="stylesheet" href="../../css/index.css">
+</head>
+
+<body>
+<!-- Side navigation -->
+<div class="sidenav">
+    <a href="../../index.html" class="nav1">Introduction</a>
+    <a href="../gettingstarted.html" class="nav1">Getting started</a>
+    <a href="../modulelist.html" class="nav1">Modules</a>
+    <a href="../macrolist.html" class="nav1">Macros</a>
+    <!-- <a href="../extendingmia.html" class="nav1">Extending MIA</a> -->
+</div>
+
+<!-- Page content -->
+<div class="main">
+    <!--The following is replaced automatically by the generated module list-->
+    <a href="../modulelist.html">Back to module list</a>
+<h1>Workflow handling</h1>
+<h2>Description</h2>
+Implement workflow handling outcome based on a variety of metrics (e.g. object counts, image measurements, metadata values).  Outcomes can include termination of the analysis and redirection of the active module to another part of the workflow.  Redirection allows parts of the analysis to skipped.
+<h2>Parameters</h2>
+<ul><li><b>Test mode</b> (default = "Image measurement") Controls what condition is being tested:<br><ul><li>"Image measurement" Numeric filter against a measurement (specified by "Image measurement") associated with an image from the workspace (specified by "Input image").</li><li>"Metadata numeric value" Numeric filter against a metadata value (specified by "Metadata value") associated with the workspace.  Metadata values are stored as text, but this filter will attempt to parse any numeric values as numbers.  Text comparison can be done using "Metadata text value" mode.</li><li>"Metadata text value" Text filter against a metadata value (specified by "Metadata value") associated with the workspace.  This filter compares for exact text matches to a reference, specified by "Reference text value"</li><li>"File exists" Checks if a specified file exists on the accessible computer filesystem.</li><li>"File doesn't exist" Checks if a specified file doesn't exist on the accessible computer filesystem.</li><li>"Fixed value" Numeric filter against a fixed value.</li><li>"Object count" Numeric filter against the number of objects contained in an object collection stored in the workspace (specified by "Input objects").</li></ul></li><br><li><b>Input image</b> (default = "") If testing against an image measurement ("Test mode" set to "Image measurement"), this is the image from which that measurement will be taken.</li><br><li><b>Input objects</b> (default = "") If testing against an object count ("Test mode" set to "Object count"), this is the object collection which will be counted.</li><br><li><b>Numeric filter mode</b> (default = "Less than") Numeric comparison used to determine whether the test passes or fails.  Choices are: Less than, Less than or equal to, Equal to, Greater than or equal to, Greater than, Not equal to.</li><br><li><b>Text filter mode</b> (default = "Equal to") Text comparison used to determine whether the test passes or fails.  Choices are: Equal to, Not equal to.</li><br><li><b>Image measurement</b> (default = "") If testing against an image measurement ("Test mode" set to "Image measurement"), this is the measurement from the image (specified by "Input image") that will be tested.</li><br><li><b>Metadata value</b> (default = "") If testing against a metadata value (either text or numeric) associated with the active workspace ("Test mode" set to "Metadata text value"), this is the value that will be tested.</li><br><li><b>Reference numeric value</b> (default = "0.0") If testing against a numeric value, this is the reference value against which it will be tested.  What classes as a pass or fail is determined by the parameter "Numeric filter mode".</li><br><li><b>Reference text value</b> (default = "") If testing against a text value, this is the reference value against which it will be tested.  What classes as a pass or fail is determined by the parameter "Text filter mode".</li><br><li><b>Fixed value</b> (default = "0.0") If testing against a fixed numeric value ("Test mode" set to "Fixed value"), this is the value that will be tested.</li><br><li><b>Generic format</b> (default = "") Format for a generic filename.  Plain text can be mixed with global variables or metadata values currently stored in the workspace.  Global variables are specified using the "V{name}" notation, where "name" is the name of the variable to insert.  Similarly, metadata values are specified with the "M{name}" notation.</li><br><li><b>Continuation mode</b> (default = "Terminate") Controls what happens if the termination/redirection condition is met:<br><ul><li>"Redirect to module" The analysis workflow will skip to the module specified by the "Redirect module" parameter.  Any modules between the present module and the target module will not be evaluated.</li><li>"Terminate" The analysis will stop evaluating any further modules.</li></ul></li><br><li><b>Redirect module</b> (default = "") If the condition is met, the workflow will redirect to this module.  In doing so, it will skip evaluation of any modules between the present module and this module.</li><br><li><b>Show redirect message</b> (default = "false") Controls if a message should be displayed in the log if redirection occurs.</li><br><li><b>Redirect message</b> (default = "") Message to display if redirection occurs.</li><br><li><b>Export terminated workspaces</b> (default = "true") Controls if the workspace should still be exported to the output Excel spreadsheet if termination occurs.</li><br><li><b>Remove images from workspace</b> (default = "false") Controls if images should be completely removed from the workspace along with any associated measurements if termination occurs.</li><br><li><b>Remove objects from workspace</b> (default = "false") Controls if objects should be completely removed from the workspace along with any associated measurements if termination occurs.</li><br></ul>
+
+</div>
+</body>
