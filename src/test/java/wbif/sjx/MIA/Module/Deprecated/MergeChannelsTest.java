@@ -6,6 +6,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleTest;
+import wbif.sjx.MIA.Module.ImageProcessing.Stack.MergeChannels;
 import wbif.sjx.MIA.Object.Image;
 
 import java.net.URLDecoder;

@@ -1,6 +1,6 @@
 // TODO: Add true 3D local thresholds (local auto thresholding works slice-by-slice)
 
-package wbif.sjx.MIA.Module.Deprecated;
+package wbif.sjx.MIA.Module.ImageProcessing.Pixel.Threshold;
 
 import fiji.threshold.Auto_Local_Threshold;
 import ij.ImagePlus;
@@ -51,6 +51,7 @@ public class ThresholdImage extends Module {
 
     public ThresholdImage(ModuleCollection modules) {
         super("Threshold image",modules);
+        deprecated = true;
     }
 
     public interface ThresholdTypes {
@@ -213,7 +214,7 @@ public class ThresholdImage extends Module {
 
     @Override
     public Category getCategory() {
-        return Categories.DEPRECATED;
+        return Categories.IMAGE_PROCESSING_PIXEL_THRESHOLD;
     }
 
     @Override

@@ -84,9 +84,6 @@ public class TrackObjects extends Module {
     public static final String MEASUREMENT_WEIGHTING = "Measurement weighting";
     public static final String MAXIMUM_MEASUREMENT_CHANGE = "Maximum measurement change";
 
-    public static final String ORIENTATION_SEPARATOR = "Orientation calculation";
-    public static final String IDENTIFY_LEADING_POINT = "Identify leading point";
-    public static final String ORIENTATION_MODE = "Orientation mode";
 
     public TrackObjects(ModuleCollection modules) {
         super("Track objects", modules);
@@ -108,21 +105,9 @@ public class TrackObjects extends Module {
 
     }
 
-    public interface OrientationModes {
-        String RELATIVE_TO_BOTH = "Relative to both points";
-        String RELATIVE_TO_PREV = "Relative to previous point";
-        String RELATIVE_TO_NEXT = "Relative to next point";
-
-        String[] ALL = new String[] { RELATIVE_TO_BOTH, RELATIVE_TO_PREV, RELATIVE_TO_NEXT };
-    }
-
     public interface Measurements {
         String TRACK_PREV_ID = "TRACKING // PREVIOUS_OBJECT_IN_TRACK_ID";
         String TRACK_NEXT_ID = "TRACKING // NEXT_OBJECT_IN_TRACK_ID";
-        String ORIENTATION = "TRACKING // ORIENTATION";
-        String LEADING_X_PX = "TRACKING // LEADING_POINT_X_(PX)";
-        String LEADING_Y_PX = "TRACKING // LEADING_POINT_Y_(PX)";
-        String LEADING_Z_PX = "TRACKING // LEADING_POINT_Z_(PX)";
 
     }
 
@@ -418,90 +403,6 @@ public class TrackObjects extends Module {
 
     }
 
-    public static double getInstantaneousOrientationRads(Obj object, ObjCollection objects, String orientationMode) {
-        double prevAngle = Double.NaN;
-        double nextAngle = Double.NaN;
-
-        if ((orientationMode.equals(OrientationModes.RELATIVE_TO_PREV)
-                || orientationMode.equals(OrientationModes.RELATIVE_TO_BOTH))
-                && object.getMeasurement(Measurements.TRACK_PREV_ID) != null) {
-            Obj prevObj = objects.get((int) object.getMeasurement(Measurements.TRACK_PREV_ID).getValue());
-            prevAngle = prevObj.calculateAngle2D(object);
-        }
-
-        if ((orientationMode.equals(OrientationModes.RELATIVE_TO_NEXT)
-                || orientationMode.equals(OrientationModes.RELATIVE_TO_BOTH))
-                && object.getMeasurement(Measurements.TRACK_NEXT_ID) != null) {
-            Obj nextObj = objects.get((int) object.getMeasurement(Measurements.TRACK_NEXT_ID).getValue());
-            nextAngle = object.calculateAngle2D(nextObj);
-        }
-
-        if (Double.isNaN(prevAngle) && Double.isNaN(nextAngle))
-            return Double.NaN;
-        else if (!Double.isNaN(prevAngle) && Double.isNaN(nextAngle))
-            return prevAngle;
-        else if (Double.isNaN(prevAngle) && !Double.isNaN(nextAngle))
-            return nextAngle;
-        else if (!Double.isNaN(prevAngle) && !Double.isNaN(nextAngle))
-            return (prevAngle + nextAngle) / 2;
-
-        return Double.NaN;
-
-    }
-
-    public static void identifyLeading(ObjCollection objects, String orientationMode) {
-        for (Obj obj : objects.values()) {
-            double angle = getInstantaneousOrientationRads(obj, objects, orientationMode);
-
-            if (Double.isNaN(angle)) {
-                // Adding furthest point coordinates to measurements
-                obj.addMeasurement(new Measurement(Measurements.ORIENTATION, Double.NaN));
-                obj.addMeasurement(new Measurement(Measurements.LEADING_X_PX, Double.NaN));
-                obj.addMeasurement(new Measurement(Measurements.LEADING_Y_PX, Double.NaN));
-                obj.addMeasurement(new Measurement(Measurements.LEADING_Z_PX, Double.NaN));
-
-            } else {
-                double xCent = obj.getXMean(true);
-                double yCent = obj.getYMean(true);
-
-                // Calculate line perpendicular to the direction of motion, passing through the
-                // origin.
-                Vector2D p = new Vector2D(xCent, yCent);
-                Line midLine = new Line(p, angle + Math.PI / 2, 1E-2);
-
-                // Calculating second line perpendicular to the direction of motion, but shifted
-                // one pixel in the
-                // direction of motion
-                p = new Vector2D(xCent + Math.cos(angle), yCent + Math.sin(angle));
-                Line refLine = new Line(p, angle + Math.PI / 2, 1E-2);
-
-                // Iterating over all points, measuring their distance from the midLine
-                Point<Integer> furthestPoint = null;
-                double largestOffset = Double.NEGATIVE_INFINITY;
-                for (Point<Integer> point : obj.getCoordinateSet()) {
-                    double offset = midLine.getOffset(new Vector2D(point.getX(), point.getY()));
-
-                    // Determining if the offset is positive or negative
-                    double refOffset = refLine.getOffset(new Vector2D(point.getX(), point.getY()));
-                    if (refOffset > offset)
-                        offset = -offset;
-
-                    if (offset > largestOffset) {
-                        largestOffset = offset;
-                        furthestPoint = point;
-                    }
-                }
-
-                // Adding furthest point coordinates to measurements
-                obj.addMeasurement(new Measurement(Measurements.ORIENTATION, Math.toDegrees(angle)));
-                obj.addMeasurement(new Measurement(Measurements.LEADING_X_PX, furthestPoint.getX()));
-                obj.addMeasurement(new Measurement(Measurements.LEADING_Y_PX, furthestPoint.getY()));
-                obj.addMeasurement(new Measurement(Measurements.LEADING_Z_PX, 0));
-
-            }
-        }
-    }
-
     public static void showObjects(ObjCollection spotObjects, String trackObjectsName, String colourMode) {
         HashMap<Integer, Float> hues = ColourFactory.getParentIDHues(spotObjects, trackObjectsName, true);
 
@@ -539,8 +440,6 @@ public class TrackObjects extends Module {
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
         String trackObjectsName = parameters.getValue(TRACK_OBJECTS);
         int maxMissingFrames = parameters.getValue(MAXIMUM_MISSING_FRAMES);
-        boolean identifyLeading = parameters.getValue(IDENTIFY_LEADING_POINT);
-        String orientationMode = parameters.getValue(ORIENTATION_MODE);
 
         // Getting objects
         ObjCollection inputObjects = workspace.getObjects().get(inputObjectsName);
@@ -627,10 +526,6 @@ public class TrackObjects extends Module {
             }
         }
 
-        // Determining the leading point in the object (to next object)
-        if (identifyLeading)
-            identifyLeading(inputObjects, orientationMode);
-
         // If selected, showing an overlay of the tracked objects
         String colourMode = AbstractOverlay.ColourModes.PARENT_ID;
         if (showOutput)
@@ -675,10 +570,6 @@ public class TrackObjects extends Module {
         parameters.add(new ObjectMeasurementP(MEASUREMENT, this));
         parameters.add(new DoubleP(MEASUREMENT_WEIGHTING, this, 1.0));
         parameters.add(new DoubleP(MAXIMUM_MEASUREMENT_CHANGE, this, 1.0));
-
-        parameters.add(new SeparatorP(ORIENTATION_SEPARATOR, this));
-        parameters.add(new BooleanP(IDENTIFY_LEADING_POINT, this, false));
-        parameters.add(new ChoiceP(ORIENTATION_MODE, this, OrientationModes.RELATIVE_TO_BOTH, OrientationModes.ALL));
 
         addParameterDescriptions();
 
@@ -741,12 +632,6 @@ public class TrackObjects extends Module {
             ((ObjectMeasurementP) parameters.getParameter(MEASUREMENT)).setObjectName(inputObjectsName);
         }
 
-        returnedParameters.add(parameters.getParameter(ORIENTATION_SEPARATOR));
-        returnedParameters.add(parameters.getParameter(IDENTIFY_LEADING_POINT));
-        if ((boolean) parameters.getValue(IDENTIFY_LEADING_POINT)) {
-            returnedParameters.add(parameters.getParameter(ORIENTATION_MODE));
-        }
-
         return returnedParameters;
 
     }
@@ -763,29 +648,12 @@ public class TrackObjects extends Module {
 
         ObjMeasurementRef trackPrevID = objectMeasurementRefs.getOrPut(Measurements.TRACK_PREV_ID);
         ObjMeasurementRef trackNextID = objectMeasurementRefs.getOrPut(Measurements.TRACK_NEXT_ID);
-        ObjMeasurementRef angleMeasurement = objectMeasurementRefs.getOrPut(Measurements.ORIENTATION);
-        ObjMeasurementRef leadingXPx = objectMeasurementRefs.getOrPut(Measurements.LEADING_X_PX);
-        ObjMeasurementRef leadingYPx = objectMeasurementRefs.getOrPut(Measurements.LEADING_Y_PX);
-        ObjMeasurementRef leadingZPx = objectMeasurementRefs.getOrPut(Measurements.LEADING_Z_PX);
 
         trackPrevID.setObjectsName(inputObjectsName);
         trackNextID.setObjectsName(inputObjectsName);
 
         returnedRefs.add(trackPrevID);
         returnedRefs.add(trackNextID);
-
-        if ((boolean) parameters.getValue(IDENTIFY_LEADING_POINT)) {
-            returnedRefs.add(angleMeasurement);
-            returnedRefs.add(leadingXPx);
-            returnedRefs.add(leadingYPx);
-            returnedRefs.add(leadingZPx);
-
-            angleMeasurement.setObjectsName(inputObjectsName);
-            leadingXPx.setObjectsName(inputObjectsName);
-            leadingYPx.setObjectsName(inputObjectsName);
-            leadingZPx.setObjectsName(inputObjectsName);
-
-        }
 
         return returnedRefs;
 
@@ -853,13 +721,13 @@ public class TrackObjects extends Module {
                 + "\", this is the minimum spatial separation (pixel units) two objects must have for them to be considered as candidates for linking.");
 
         parameters.get(FRAME_GAP_WEIGHTING).setDescription(
-                "When non-zero, an additional cost will be included that penalises linking objects with large temporal separations.  The frame gap between candidate objects will be multiplied by this weight.  For example, if calculating spatial costs using centroid spatial separation, a frame gap weight of 1 will equally weight 1 frame of temporal separation to 1 pixel of spatial separation.");
+                "When non-zero, an additional cost will be included that penalises linking objects with large temporal separations.  The frame gap between candidate objects will be multiplied by this weight.  For example, if calculating spatial costs using centroid spatial separation, a frame gap weight of 1 will equally weight 1 frame of temporal separation to 1 pixel of spatial separation.  The larger the weight, the more this frame gap will contribute towards the total linking cost.");
 
         parameters.get(USE_VOLUME).setDescription(
                 "When enabled, the 3D volume of the objects being linked will contribute towards linking costs.");
 
         parameters.get(VOLUME_WEIGHTING).setDescription("If \"" + USE_VOLUME
-                + "\" is enabled, this is the weight assigned to the difference in volume of the candidate objects for linking.  The difference in volume between candidate objects is multiplied by this weight.");
+                + "\" is enabled, this is the weight assigned to the difference in volume of the candidate objects for linking.  The difference in volume between candidate objects is multiplied by this weight.  The larger the weight, the more this difference in volume will contribute towards the total linking cost.");
 
         parameters.get(MAXIMUM_VOLUME_CHANGE).setDescription("If \"" + USE_VOLUME
                 + "\" is enabled, the maximum difference in volume between candidate objects can be specified.  This maximum volume change is specified in pixel units.");
@@ -884,19 +752,17 @@ public class TrackObjects extends Module {
                 + DIRECTION_WEIGHTING_MODE + "\" not set to \"" + DirectionWeightingModes.NONE
                 + "\"), this is the maximum deviation in direction from the preferred direction that a candidate object can have.  For absolute linking, this is relative to the preferred direction and for relative linking, this is relative to the previous frame.");
 
-        parameters.get(DIRECTION_WEIGHTING).setDescription("");
+        parameters.get(DIRECTION_WEIGHTING).setDescription("If using directional weighting (\""
+        + DIRECTION_WEIGHTING_MODE + "\" not set to \"" + DirectionWeightingModes.NONE
+        + "\"), the angular difference (in degrees) between the candidate track direction and the reference direction will be muliplied by this weight.  The larger the weight, the more this angular difference will contribute towards the total linking cost.");
 
-        parameters.get(USE_MEASUREMENT).setDescription("");
+        parameters.get(USE_MEASUREMENT).setDescription("When selected, an additional cost can be included based on a measurement assigned to each object.  This allows for tracking to favour minimising variation in this measurement.");
 
-        parameters.get(MEASUREMENT).setDescription("");
+        parameters.get(MEASUREMENT).setDescription("If \""+USE_MEASUREMENT+"\" is selected, this is the measurement (associated with the input objects) for which variation within a track will be minimised.");
 
-        parameters.get(MEASUREMENT_WEIGHTING).setDescription("");
+        parameters.get(MEASUREMENT_WEIGHTING).setDescription("If \""+USE_MEASUREMENT+"\" is selected, the difference in measurement associated with a candidate object and the previous instance in a target track will be multiplied by this value.  The larger the weight, the more this difference in measurement will contribute towards the total linking cost.");
 
-        parameters.get(MAXIMUM_MEASUREMENT_CHANGE).setDescription("");
-
-        parameters.get(IDENTIFY_LEADING_POINT).setDescription("");
-
-        parameters.get(ORIENTATION_MODE).setDescription("");
+        parameters.get(MAXIMUM_MEASUREMENT_CHANGE).setDescription("If \""+USE_MEASUREMENT+"\" is selected, this is the maximum amount the measurement can change between consecutive instances in a track.  Variations greater than this will result in the track being split into two.");
 
     }
 }

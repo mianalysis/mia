@@ -1,4 +1,4 @@
-package wbif.sjx.MIA.Module.Deprecated;
+package wbif.sjx.MIA.Module.WorkflowHandling;
 
 import java.util.LinkedHashMap;
 
@@ -8,8 +8,6 @@ import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.Category;
 import wbif.sjx.MIA.Module.Categories;
 import wbif.sjx.MIA.Module.Miscellaneous.GlobalVariables;
-import wbif.sjx.MIA.Module.WorkflowHandling.AbstractWorkspaceHandler;
-import wbif.sjx.MIA.Module.WorkflowHandling.FixedTextCondition;
 import wbif.sjx.MIA.Object.Status;
 import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.MIA.Object.Parameters.BooleanP;
@@ -40,6 +38,7 @@ public class GUICondition extends AbstractWorkspaceHandler {
 
     public GUICondition(ModuleCollection modules) {
         super("GUI condition", modules);
+        deprecated = true;
     }
 
     @Override
@@ -73,7 +72,7 @@ public class GUICondition extends AbstractWorkspaceHandler {
 
     @Override
     public Category getCategory() {
-        return Categories.DEPRECATED;
+        return Categories.WORKFLOW_HANDLING;
     }
 
     @Override

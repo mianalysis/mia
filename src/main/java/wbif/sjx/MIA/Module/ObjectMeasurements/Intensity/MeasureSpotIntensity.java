@@ -1,4 +1,4 @@
-package wbif.sjx.MIA.Module.Deprecated;
+package wbif.sjx.MIA.Module.ObjectMeasurements.Intensity;
 
 import ij.ImagePlus;
 import wbif.sjx.MIA.Module.Module;
@@ -7,7 +7,6 @@ import wbif.sjx.MIA.Module.Core.InputControl;
 import wbif.sjx.MIA.Module.ObjectProcessing.Identification.GetLocalObjectRegion;
 import wbif.sjx.MIA.Module.Category;
 import wbif.sjx.MIA.Module.Categories;
-import wbif.sjx.MIA.Module.ObjectMeasurements.Intensity.MeasureObjectIntensity;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
 import wbif.sjx.MIA.Object.Parameters.Text.DoubleP;
@@ -64,11 +63,12 @@ public class MeasureSpotIntensity extends Module {
 
     public MeasureSpotIntensity(ModuleCollection modules) {
         super("Measure spot intensity", modules);
+        deprecated = true;
     }
 
     @Override
     public Category getCategory() {
-        return Categories.DEPRECATED;
+        return Categories.OBJECT_MEASUREMENTS_INTENSITY;
     }
 
     @Override

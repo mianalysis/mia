@@ -23,7 +23,7 @@ import wbif.sjx.MIA.GUI.Panels.ProgressBarPanel;
 import wbif.sjx.MIA.GUI.Panels.StatusPanel;
 import wbif.sjx.MIA.Module.Module;
 
-public class BasicPanel extends MainPanel {
+public class BasicPanel extends AbstractPanel {
     /**
      *
      */
@@ -196,25 +196,32 @@ public class BasicPanel extends MainPanel {
         if ((showHelp || showNotes) && showFileList) {
             splitPane1.setDividerSize(5);
             splitPane1.setDividerLocation(0.5);
-            pane1MinWidth = HelpNotesPanel.getMinimumWidth()+FileListPanel.getMinimumWidth();
+            pane1MinWidth = HelpNotesPanel.getMinimumWidth() + FileListPanel.getMinimumWidth();
         } else {
             splitPane1.setDividerSize(0);
-            if (showHelp || showNotes) pane1MinWidth = HelpNotesPanel.getMinimumWidth();
-            else pane1MinWidth = FileListPanel.getMinimumWidth();
+            if (showHelp || showNotes)
+                pane1MinWidth = HelpNotesPanel.getMinimumWidth();
+            else
+                pane1MinWidth = FileListPanel.getMinimumWidth();
         }
-        splitPane1.setMinimumSize(new Dimension(pane1MinWidth,1));
+        splitPane1.setMinimumSize(new Dimension(pane1MinWidth, 1));
 
         // If either the helpnotes or filelist is visible, show the separator for splitPane2
         if (showHelp || showNotes || showFileList) {
             splitPane2.setDividerSize(5);
             splitPane2.getRightComponent().setVisible(true);
             splitPane2.setDividerLocation(0.5);
-            splitPane2.setMinimumSize(new Dimension(ParametersPanel.getMinimumWidth()+pane1MinWidth,1));
+            splitPane2.setMinimumSize(new Dimension(ParametersPanel.getMinimumWidth() + pane1MinWidth, 1));
         } else {
             splitPane2.setDividerSize(0);
             splitPane2.getRightComponent().setVisible(false);
-            splitPane2.setMinimumSize(new Dimension(ParametersPanel.getMinimumWidth(),1));
+            splitPane2.setMinimumSize(new Dimension(ParametersPanel.getMinimumWidth(), 1));
         }
+    }
+
+    @Override
+    public void updateAvailableModules() {
+        
     }
 
     @Override

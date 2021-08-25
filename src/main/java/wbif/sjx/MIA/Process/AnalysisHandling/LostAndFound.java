@@ -4,12 +4,12 @@ import java.util.HashMap;
 
 import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Core.InputControl;
-import wbif.sjx.MIA.Module.Deprecated.ThresholdImage;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.ImageMath;
 // import wbif.sjx.MIA.Module.ImageMeasurements.MeasureIntensityDistribution;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.WekaProbabilityMaps;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.Binary.DistanceMap;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.Threshold.LocalAutoThreshold;
+import wbif.sjx.MIA.Module.ImageProcessing.Pixel.Threshold.ThresholdImage;
 import wbif.sjx.MIA.Module.ImageProcessing.Stack.Registration.AffineBlockMatching;
 import wbif.sjx.MIA.Module.ImageProcessing.Stack.Registration.AffineMOPS;
 import wbif.sjx.MIA.Module.ImageProcessing.Stack.Registration.AffineManual;

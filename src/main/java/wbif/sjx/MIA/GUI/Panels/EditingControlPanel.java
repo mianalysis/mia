@@ -12,6 +12,7 @@ import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.border.EtchedBorder;
 
+import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.GUI.GUI;
 import wbif.sjx.MIA.GUI.ControlObjects.AnalysisControlButton;
 import wbif.sjx.MIA.GUI.ControlObjects.ModuleControlButton;
@@ -138,15 +139,10 @@ public class EditingControlPanel extends JPanel {
 
     }
 
-    private void listAvailableModules() {
-        addModuleButton.setEnabled(false);
-        addModuleButton.setToolTipText("Loading modules");
-
+    public void listAvailableModules() {
         Category root = Categories.getRootCategory();
+        moduleListMenu.removeAll();
         addCategoryModules(moduleListMenu, null, root);
-
-        addModuleButton.setToolTipText("Add module");
-        addModuleButton.setEnabled(true);
 
     }
 }

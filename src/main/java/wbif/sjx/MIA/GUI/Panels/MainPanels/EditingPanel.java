@@ -25,7 +25,7 @@ import wbif.sjx.MIA.Module.Core.OutputControl;
 import wbif.sjx.MIA.Process.AnalysisHandling.Analysis;
 import wbif.sjx.MIA.Process.AnalysisHandling.AnalysisTester;
 
-public class EditingPanel extends MainPanel {
+public class EditingPanel extends AbstractPanel {
     /**
      *
      */
@@ -246,6 +246,11 @@ public class EditingPanel extends MainPanel {
         fileListPanel.resetJobNumbers();
     }
 
+    @Override
+    public void updateAvailableModules() {
+        editingControlPanel.listAvailableModules();
+    }
+    
     @Override
     public void updateModules() {
         Analysis analysis = GUI.getAnalysis();

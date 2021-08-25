@@ -45,6 +45,8 @@ public class CustomMenuBar extends JMenuBar implements ActionListener {
         menu.addSeparator();
         menu.add(new MenuItem(MenuItem.COPY));
         menu.add(new MenuItem(MenuItem.PASTE));
+        menu.addSeparator();
+        menu.add(new MenuItem(MenuItem.PREFERENCES));
 
         // Creating the analysis menu
         menu = new JMenu("Analysis");

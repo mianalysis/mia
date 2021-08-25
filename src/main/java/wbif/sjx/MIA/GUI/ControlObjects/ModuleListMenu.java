@@ -7,6 +7,7 @@ import java.util.TreeSet;
 import javax.swing.JMenu;
 import javax.swing.JPopupMenu;
 
+import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Module;
 
 /**
@@ -24,16 +25,17 @@ public class ModuleListMenu extends JMenu implements Comparable {
         this.topLevelMenu = topLevelMenu;
 
         setText(name);
+        
+        for (Module module : modules)
+            add(new PopupMenuItem(module, topLevelMenu));
 
-        for (Module module : modules) {
-            add(new PopupMenuItem(module,topLevelMenu));
-        }
         setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
 
     }
 
     public void addMenuItem(Module module) {
-        add(new PopupMenuItem(module,topLevelMenu));
+        if (!module.isDeprecated() || MIA.preferences.showDeprecated())
+            add(new PopupMenuItem(module, topLevelMenu));
     }
 
     public TreeSet<ModuleListMenu> getChildren() {

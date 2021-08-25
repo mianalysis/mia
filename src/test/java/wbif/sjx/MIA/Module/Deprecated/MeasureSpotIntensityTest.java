@@ -1,6 +1,7 @@
 package wbif.sjx.MIA.Module.Deprecated;
 
 import wbif.sjx.MIA.Module.ModuleTest;
+import wbif.sjx.MIA.Module.ObjectMeasurements.Intensity.MeasureSpotIntensity;
 
 import static org.junit.jupiter.api.Assertions.*;
 

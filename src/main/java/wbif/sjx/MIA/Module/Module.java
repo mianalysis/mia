@@ -54,6 +54,8 @@ public abstract class Module extends Ref implements Comparable {
     protected boolean showOutput = false;
     protected Module redirectModule = null; // After this module, can redirect to another module
     private boolean showBasicTitle = true;
+    protected boolean deprecated = false; // When set to true, this module is marked for future removal
+
 
     // CONSTRUCTOR
 
@@ -333,6 +335,14 @@ public abstract class Module extends Ref implements Comparable {
 
     public void setRunnable(boolean runnable) {
         this.runnable = runnable;
+    }
+
+    public boolean isDeprecated() {
+        return deprecated;
+    }
+
+    public void setDeprecated(boolean deprecated) {
+        this.deprecated = deprecated;
     }
 
     public Module getRedirectModule() {

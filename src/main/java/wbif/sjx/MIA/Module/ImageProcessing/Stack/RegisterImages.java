@@ -1,4 +1,4 @@
-package wbif.sjx.MIA.Module.Deprecated;
+package wbif.sjx.MIA.Module.ImageProcessing.Stack;
 
 import java.awt.geom.AffineTransform;
 import java.util.ArrayList;
@@ -38,8 +38,6 @@ import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.InvertIntensity;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.ProjectImage;
-import wbif.sjx.MIA.Module.ImageProcessing.Stack.ConcatenateStacks;
-import wbif.sjx.MIA.Module.ImageProcessing.Stack.ExtractSubstack;
 import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.Measurement;
 import wbif.sjx.MIA.Object.Status;
@@ -98,6 +96,7 @@ public class RegisterImages<T extends RealType<T> & NativeType<T>> extends Modul
 
     public RegisterImages(ModuleCollection modules) {
         super("Register images", modules);
+        deprecated = true;
     }
 
     public interface AlignmentModes {
@@ -542,7 +541,7 @@ public class RegisterImages<T extends RealType<T> & NativeType<T>> extends Modul
 
     @Override
     public Category getCategory() {
-        return Categories.DEPRECATED;
+        return Categories.IMAGE_PROCESSING_STACK;
     }
 
     @Override

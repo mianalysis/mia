@@ -9,10 +9,6 @@ public class Categories {
                         "Required modules for input and output control.  Each workflow contains one copy of each module.",
                         ROOT, false);
 
-        public final static Category DEPRECATED = new Category("Deprecated",
-                        "Modules which will be removed in future releases of MIA.  In all cases, functionality is provided by alternative modules.  See individual module documentation for details.",
-                        ROOT);
-
         public final static Category IMAGE_MEASUREMENTS = new Category("Image measurements",
                         "Operations making measurements on images in the workspace.  Measurements are associated with the input images for later use.",
                         ROOT);

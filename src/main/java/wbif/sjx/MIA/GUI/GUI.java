@@ -18,7 +18,7 @@ import wbif.sjx.MIA.GUI.ControlObjects.CustomMenuBar;
 import wbif.sjx.MIA.GUI.ControlObjects.StatusTextField;
 import wbif.sjx.MIA.GUI.Panels.MainPanels.BasicPanel;
 import wbif.sjx.MIA.GUI.Panels.MainPanels.EditingPanel;
-import wbif.sjx.MIA.GUI.Panels.MainPanels.MainPanel;
+import wbif.sjx.MIA.GUI.Panels.MainPanels.AbstractPanel;
 import wbif.sjx.MIA.Macro.MacroHandler;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
@@ -65,7 +65,7 @@ public class GUI {
     private static StatusTextField textField = new StatusTextField();
     private static BasicPanel basicPan = new BasicPanel();
     private static EditingPanel editingPan;
-    private static MainPanel mainPanel;
+    private static AbstractPanel mainPanel;
     private static ModuleCollection availableModules = new ModuleCollection();
 
     public GUI() throws InstantiationException, IllegalAccessException {
@@ -185,6 +185,10 @@ public class GUI {
         StatusPanelRenderer statusPanelRenderer = new StatusPanelRenderer(textField);
         MIA.log.addRenderer(statusPanelRenderer);
 
+    }
+
+    public static void updateAvailableModules() {
+        mainPanel.updateAvailableModules();
     }
 
     public static void updateModuleList() {

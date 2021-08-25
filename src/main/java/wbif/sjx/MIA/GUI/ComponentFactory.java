@@ -3,12 +3,14 @@ package wbif.sjx.MIA.GUI;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.font.TextAttribute;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.LinkedHashMap;
+import java.util.Map;
 
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
@@ -155,7 +157,13 @@ public class ComponentFactory {
 
         // Adding the nickname control to the top of the panel
         ExportName moduleName = new ExportName(activeModule);
-        moduleName.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 12));
+        Font font = new Font(Font.SANS_SERIF, Font.BOLD, 12);
+        if (activeModule.isDeprecated()) {
+            Map attributes = font.getAttributes();
+            attributes.put(TextAttribute.STRIKETHROUGH, TextAttribute.STRIKETHROUGH_ON);
+            font = new Font(attributes);            
+        }
+        moduleName.setFont(font);
         moduleName.setForeground(Color.BLACK);
         moduleName.setToolTipText("<html><div style=\"width:500;\">" + activeModule.getDescription() + "</div></html>");
         paramPanel.add(moduleName, c);

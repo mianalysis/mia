@@ -1,6 +1,6 @@
 // TODO: Each local threshold algorithm should really be tested with different dimension images, limits and multipliers
 
-package wbif.sjx.MIA.Module.Deprecated;
+package wbif.sjx.MIA.Module.ImageProcessing.Pixel.Threshold;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;

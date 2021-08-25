@@ -6,9 +6,11 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JMenuItem;
 
+import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.GUI.GUI;
 import wbif.sjx.MIA.GUI.GUIAnalysisHandler;
 import wbif.sjx.MIA.GUI.Panels.DocumentationPanel;
+import wbif.sjx.MIA.Module.Module;
 
 /**
  * Created by stephen on 28/07/2017.
@@ -26,6 +28,7 @@ public class MenuItem extends JMenuItem implements ActionListener {
     public static final String REDO = "Redo";
     public static final String COPY = "Copy";
     public static final String PASTE = "Paste";
+    public static final String PREFERENCES = "Preferences";
     public static final String RUN_ANALYSIS = "Run analysis";
     public static final String STOP_ANALYSIS = "Stop analysis";
     public static final String RESET_ANALYSIS = "Reset analysis";
@@ -92,6 +95,12 @@ public class MenuItem extends JMenuItem implements ActionListener {
                 GUIAnalysisHandler.pasteModules();
                 GUI.updateModules();
                 GUI.updateParameters();
+                break;
+
+            case PREFERENCES:
+                GUI.setSelectedModules(new Module[] { MIA.preferences });
+                GUI.updateModules();
+                GUI.updateParameters();                
                 break;
 
             case RUN_ANALYSIS:

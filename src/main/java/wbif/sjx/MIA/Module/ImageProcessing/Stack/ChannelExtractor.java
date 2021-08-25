@@ -1,4 +1,4 @@
-package wbif.sjx.MIA.Module.Deprecated;
+package wbif.sjx.MIA.Module.ImageProcessing.Stack;
 
 import ij.ImagePlus;
 import ij.plugin.ChannelSplitter;
@@ -30,12 +30,13 @@ public class ChannelExtractor extends Module {
 
     public ChannelExtractor(ModuleCollection modules) {
         super("Channel extractor",modules);
+        deprecated = true;
     }
 
 
     @Override
     public Category getCategory() {
-        return Categories.DEPRECATED;
+        return Categories.IMAGE_PROCESSING_STACK;
     }
 
     @Override

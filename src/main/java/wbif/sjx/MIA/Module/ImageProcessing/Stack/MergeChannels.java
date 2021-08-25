@@ -1,4 +1,4 @@
-package wbif.sjx.MIA.Module.Deprecated;
+package wbif.sjx.MIA.Module.ImageProcessing.Stack;
 
 import java.util.Arrays;
 import java.util.LinkedHashMap;
@@ -48,6 +48,7 @@ public class MergeChannels<T extends RealType<T> & NativeType<T>> extends Module
 
     public MergeChannels(ModuleCollection modules) {
         super("Merge channels", modules);
+        deprecated = true;
     }
 
     public interface OverwriteModes {
@@ -162,7 +163,7 @@ public class MergeChannels<T extends RealType<T> & NativeType<T>> extends Module
 
     @Override
     public Category getCategory() {
-        return Categories.DEPRECATED;
+        return Categories.IMAGE_PROCESSING_STACK;
     }
 
     @Override

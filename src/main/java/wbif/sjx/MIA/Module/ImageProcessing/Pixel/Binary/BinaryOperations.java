@@ -1,6 +1,6 @@
 // TODO: What happens when 3D distance map is generateModuleList on 4D or 5D image hyperstack?
 
-package wbif.sjx.MIA.Module.Deprecated;
+package wbif.sjx.MIA.Module.ImageProcessing.Pixel.Binary;
 
 import ij.IJ;
 import ij.ImagePlus;
@@ -57,7 +57,8 @@ public class BinaryOperations extends Module {
     public static final String MATCH_Z_TO_X= "Match Z to XY";
 
     public BinaryOperations(ModuleCollection modules) {
-        super("Binary operations (legacy)",modules);
+        super("Binary operations (legacy)", modules);
+        deprecated = true;
     }
 
     public interface OperationModes {
@@ -319,7 +320,7 @@ public class BinaryOperations extends Module {
 
     @Override
     public Category getCategory() {
-        return Categories.DEPRECATED;
+        return Categories.IMAGE_PROCESSING_PIXEL_BINARY;
     }
 
     @Override

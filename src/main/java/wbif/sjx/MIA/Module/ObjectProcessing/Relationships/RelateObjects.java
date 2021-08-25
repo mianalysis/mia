@@ -1,4 +1,4 @@
-package wbif.sjx.MIA.Module.Deprecated;
+package wbif.sjx.MIA.Module.ObjectProcessing.Relationships;
 
 import java.util.Iterator;
 
@@ -54,6 +54,7 @@ public class RelateObjects extends Module {
 
     public RelateObjects(ModuleCollection modules) {
         super("Relate objects", modules);
+        deprecated = true;
     }
 
     public interface RelateModes {
@@ -447,7 +448,7 @@ public class RelateObjects extends Module {
 
     @Override
     public Category getCategory() {
-        return Categories.DEPRECATED;
+        return Categories.OBJECT_PROCESSING_RELATIONSHIPS;
     }
 
     @Override

@@ -4,13 +4,14 @@ import wbif.sjx.MIA.Module.Module;
 
 import javax.swing.*;
 
-public abstract class MainPanel extends JPanel {
+public abstract class AbstractPanel extends JPanel {
     /**
      *
      */
     private static final long serialVersionUID = 7906763411967111269L;
 
     public abstract void updatePanel();
+    public abstract void updateAvailableModules();
     public abstract void updateModules();
     public abstract void updateModuleStates();
     public abstract void updateParameters();

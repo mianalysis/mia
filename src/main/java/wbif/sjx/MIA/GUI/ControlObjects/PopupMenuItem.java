@@ -8,9 +8,11 @@ import wbif.sjx.MIA.Module.Core.OutputControl;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.font.TextAttribute;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Map;
 
 /**
  * Created by Stephen on 20/05/2017.
@@ -28,7 +30,13 @@ public class PopupMenuItem extends JMenuItem implements ActionListener {
         this.moduleListMenu = moduleListMenu;
 
         setText(module.getName());
-        setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
+        Font font = new Font(Font.SANS_SERIF, Font.PLAIN, 12);
+        if (module.isDeprecated()) {
+            Map attributes = font.getAttributes();
+            attributes.put(TextAttribute.STRIKETHROUGH, TextAttribute.STRIKETHROUGH_ON);
+            font = new Font(attributes);            
+        }
+        setFont(font);
         setToolTipText("<html><div style=\"width:500px;\">" + module.getDescription() + "</div></html>");
         addActionListener(this);
 

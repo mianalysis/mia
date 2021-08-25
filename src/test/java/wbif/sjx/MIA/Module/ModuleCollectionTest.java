@@ -392,7 +392,6 @@ public class ModuleCollectionTest<T extends RealType<T> & NativeType<T>> {
         TrackObjects trackObjects = new TrackObjects(new ModuleCollection());
         trackObjects.updateParameterValue(TrackObjects.INPUT_OBJECTS, spotsName);
         trackObjects.updateParameterValue(TrackObjects.TRACK_OBJECTS, tracksName);
-        trackObjects.updateParameterValue(TrackObjects.IDENTIFY_LEADING_POINT, false);
         trackObjects.updateParameterValue(TrackObjects.LINKING_METHOD, TrackObjects.LinkingMethods.CENTROID);
         modules.add(trackObjects);
 
@@ -521,7 +520,6 @@ public class ModuleCollectionTest<T extends RealType<T> & NativeType<T>> {
         TrackObjects trackObjects = new TrackObjects(new ModuleCollection());
         trackObjects.updateParameterValue(TrackObjects.INPUT_OBJECTS, spotsName);
         trackObjects.updateParameterValue(TrackObjects.TRACK_OBJECTS, tracksName);
-        trackObjects.updateParameterValue(TrackObjects.IDENTIFY_LEADING_POINT, false);
         trackObjects.updateParameterValue(TrackObjects.LINKING_METHOD, TrackObjects.LinkingMethods.CENTROID);
         modules.add(trackObjects);
 

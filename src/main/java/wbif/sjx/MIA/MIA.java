@@ -44,6 +44,7 @@ public class MIA implements Command {
     private static LogHistory logHistory = new LogHistory();
     private final static boolean headless = false; // Determines if there is a GUI
 
+    public static Preferences preferences;
     public static Log log = new Log(mainRenderer); // This is for testing and headless modes
     public final static LostAndFound lostAndFound = new LostAndFound(); // Maps missing modules and parameters to replacements (e.g. if a module was renamed)
 
@@ -70,8 +71,8 @@ public class MIA implements Command {
                 ImageJ ij = new ImageJ();                
                 ij.ui().showUI();
                 ij.command().run("wbif.sjx.MIA.MIA", false);
-
             } else {
+                preferences = new Preferences(null);
                 Analysis analysis = AnalysisReader.loadAnalysis(args[0]);
                 new AnalysisRunner().run(analysis);
             }
@@ -83,6 +84,8 @@ public class MIA implements Command {
 
     @Override
     public void run() {
+        preferences = new Preferences(null);
+        
         setLookAndFeel();
 
         // Waiting for UIService to become available

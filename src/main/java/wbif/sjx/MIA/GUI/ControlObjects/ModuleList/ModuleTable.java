@@ -10,7 +10,9 @@ import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.font.TextAttribute;
 import java.util.HashMap;
+import java.util.Map;
 
 import javax.swing.DropMode;
 import javax.swing.JComponent;
@@ -143,8 +145,8 @@ public class ModuleTable extends JTable implements ActionListener, MouseListener
             int row, int column) {
         JLabel label = new JLabel();
 
-        label.setBorder(new EmptyBorder(2, 5, 0, 0));
-        label.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
+        label.setBorder(new EmptyBorder(2, 5, 0, 0));        
+        Font font = new Font(Font.SANS_SERIF, Font.PLAIN, 12);
         label.setOpaque(true);
 
         if (isSelected)
@@ -160,6 +162,12 @@ public class ModuleTable extends JTable implements ActionListener, MouseListener
                 label.setForeground(Color.GRAY);
             else
                 label.setForeground(Color.BLACK);
+                if (module.isDeprecated()) {
+                    Map attributes = font.getAttributes();
+                    attributes.put(TextAttribute.STRIKETHROUGH, TextAttribute.STRIKETHROUGH_ON);
+                    font = new Font(attributes);            
+                }
+                label.setFont(font);
             label.setText(module.getNickname());
 
         } else if (value instanceof String) {

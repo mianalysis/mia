@@ -105,7 +105,6 @@ import wbif.sjx.MIA.Module.Category;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.Core.InputControl;
-import wbif.sjx.MIA.Module.Deprecated.ResolveCoOccurrence;
 import wbif.sjx.MIA.Object.Measurement;
 import wbif.sjx.MIA.Object.Obj;
 import wbif.sjx.MIA.Object.ObjCollection;
@@ -139,6 +138,7 @@ public class RelateOneToOne extends Module {
     public static final String MINIMUM_OVERLAP_PC_1 = "Minimum overlap of object 1 (%)";
     public static final String MINIMUM_OVERLAP_PC_2 = "Minimum overlap of object 2 (%)";
 
+    
     public interface RelationshipModes {
         String CENTROID_SEPARATION = "Centroid separation";
         String SPATIAL_OVERLAP = "Spatial overlap";
@@ -367,12 +367,12 @@ public class RelateOneToOne extends Module {
         // Calculating linking costs
         ArrayList<Linkable> linkables = null;
         switch (relationshipMode) {
-            case ResolveCoOccurrence.OverlapModes.CENTROID_SEPARATION:
+            case RelationshipModes.CENTROID_SEPARATION:
             default:
                 linkables = getCentroidSeparationLinkables(inputObjects1, inputObjects2, maximumSeparation);
                 break;
 
-            case ResolveCoOccurrence.OverlapModes.SPATIAL_OVERLAP:
+            case RelationshipModes.SPATIAL_OVERLAP:
                 linkables = getSpatialOverlapLinkables(inputObjects1, inputObjects2, minOverlap1, minOverlap2);
                 break;
         }

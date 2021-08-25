@@ -1,7 +1,7 @@
 // TODO: Add option to leave overlay as objects (i.e. don't flatten)
 // TODO: Add option to plot tracks (will need to import track and spot objects as parent/child relationship)
 
-package wbif.sjx.MIA.Module.Deprecated;
+package wbif.sjx.MIA.Module.Visualisation.Overlays;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -30,8 +30,6 @@ import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.Category;
 import wbif.sjx.MIA.Module.Categories;
-import wbif.sjx.MIA.Module.Visualisation.Overlays.AddLabels;
-import wbif.sjx.MIA.Module.Visualisation.Overlays.AddObjectOutline;
 import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.Obj;
 import wbif.sjx.MIA.Object.ObjCollection;
@@ -99,6 +97,7 @@ public class AddObjectsOverlay extends Module {
 
     public AddObjectsOverlay(ModuleCollection modules) {
         super("Add overlay", modules);
+        deprecated = true;
     }
 
     public interface OrientationModes {
@@ -717,7 +716,7 @@ public class AddObjectsOverlay extends Module {
 
     @Override
     public Category getCategory() {
-        return Categories.DEPRECATED;
+        return Categories.VISUALISATION_OVERLAYS;
     }
 
     @Override

@@ -48,6 +48,7 @@ import wbif.sjx.common.Object.Volume.VolumeType;
 public class MeasureSkeleton extends Module {
     public static final String INPUT_SEPARATOR = "Object input";
     public static final String INPUT_OBJECTS = "Input objects";
+
     public static final String OUTPUT_SEPARATOR = "Object output";
     public static final String ADD_SKELETONS_TO_WORKSPACE = "Add skeletons to workspace";
     public static final String OUTPUT_SKELETON_OBJECTS = "Output skeleton objects";
@@ -55,7 +56,8 @@ public class MeasureSkeleton extends Module {
     public static final String OUTPUT_JUNCTION_OBJECTS = "Output junction objects";
     public static final String EXPORT_LOOP_OBJECTS = "Export loop objects";
     public static final String OUTPUT_LOOP_OBJECTS = "Output loop objects";
-    public static final String ANALYSIS_SEPARATOR = "Analysis settings";
+
+    public static final String SKELETONISATION_SEPARATOR = "Skeletonisation settings";
     public static final String MINIMUM_BRANCH_LENGTH = "Minimum branch length";
     public static final String CALIBRATED_UNITS = "Calibrated units";
 
@@ -386,12 +388,13 @@ public class MeasureSkeleton extends Module {
         parameters.add(new OutputSkeletonObjectsP(OUTPUT_JUNCTION_OBJECTS, this));
         parameters.add(new BooleanP(EXPORT_LOOP_OBJECTS, this, true));
         parameters.add(new OutputSkeletonObjectsP(OUTPUT_LOOP_OBJECTS, this));
-        parameters.add(new SeparatorP(ANALYSIS_SEPARATOR, this));
+        parameters.add(new SeparatorP(SKELETONISATION_SEPARATOR, this));
         parameters.add(new DoubleP(MINIMUM_BRANCH_LENGTH, this, 0d));
-        parameters.add(new BooleanP(CALIBRATED_UNITS, this, false,"When selected, spatial values are assumed to be specified in calibrated units (as defined by the \"" + new InputControl(null).getName() + "\" parameter \"" + InputControl.SPATIAL_UNIT + "\").  Otherwise, pixel units are assumed."
-));
+        parameters.add(new BooleanP(CALIBRATED_UNITS, this, false));
         parameters.add(new SeparatorP(EXECUTION_SEPARATOR, this));
         parameters.add(new BooleanP(ENABLE_MULTITHREADING, this, true));
+
+        addParameterDescriptions();
 
     }
 
@@ -415,7 +418,7 @@ public class MeasureSkeleton extends Module {
             }
         }
 
-        returnedParameters.add(parameters.getParameter(ANALYSIS_SEPARATOR));
+        returnedParameters.add(parameters.getParameter(SKELETONISATION_SEPARATOR));
         returnedParameters.add(parameters.getParameter(MINIMUM_BRANCH_LENGTH));
         returnedParameters.add(parameters.getParameter(CALIBRATED_UNITS));
 
@@ -509,5 +512,28 @@ public class MeasureSkeleton extends Module {
     @Override
     public boolean verify() {
         return true;
+    }
+
+    void addParameterDescriptions() {
+        parameters.get(INPUT_OBJECTS).setDescription("Input objects from the workspace to be skeletonised.  These can be either 2D or 3D objects.  Skeleton measurements will be added to this object.");
+
+        parameters.get(ADD_SKELETONS_TO_WORKSPACE).setDescription("When selected, the coordinates for the various skeleton components (edges, junctions and loops) will be stored as new objects.  These objects will all be children of a parent \"Skeleton\" object, which itself will be a child of the corresponding input object.");
+
+        parameters.get(OUTPUT_SKELETON_OBJECTS).setDescription("If \""+ADD_SKELETONS_TO_WORKSPACE+"\" is selected, a single \"Skeleton\" object will be created per input object.  This skeleton object will act as a linking object (parent) for the edges, junctions and loops that comprise that skeleton.  As such, the skeleton object itself doesn't store any coordinate information.");
+
+        parameters.get(OUTPUT_EDGE_OBJECTS).setDescription("If \""+ADD_SKELETONS_TO_WORKSPACE+"\" is selected, the edges of each skeleton will be stored in these objects.  An \"Edge\" is comprised of a continuous run of points each with one (end points) or two neighbours.  These edge objects are children of a \"Skeleton\" object (specified by the \""+OUTPUT_SKELETON_OBJECTS+"\" parameter), which itself is the child of the corresponding input object.  Each edge object has a partner relationship with its adjacent \"Junction\" and (optionally) \"Loop\" objects (specified by the \""+OUTPUT_JUNCTION_OBJECTS+"\" and \""+OUTPUT_LOOP_OBJECTS+"\" parameters, respectively).");
+
+        parameters.get(OUTPUT_JUNCTION_OBJECTS).setDescription("If \""+ADD_SKELETONS_TO_WORKSPACE+"\" is selected, the junctions of each skeleton will be stored in these objects.  A \"Junction\" is comprised of a contiguous regions of points each with three or neighbours.  These junction objects are children of a \"Skeleton\" object (specified by the \""+OUTPUT_SKELETON_OBJECTS+"\" parameter), which itself is the child of the corresponding input object.  Each junction object has a partner relationship with its adjacent \"Edge\" and (optionally) \"Loop\" objects (specified by the \""+OUTPUT_EDGE_OBJECTS+"\" and \""+OUTPUT_LOOP_OBJECTS+"\" parameters, respectively).");
+
+        parameters.get(EXPORT_LOOP_OBJECTS).setDescription("When selected (and if \""+ADD_SKELETONS_TO_WORKSPACE+"\" is also selected), the loops of each skeleton will be stored in the workspace as new objects.  The name for the output loop objects is determined by the \""+OUTPUT_LOOP_OBJECTS+"\" parameter.");
+
+        parameters.get(OUTPUT_LOOP_OBJECTS).setDescription("If both \""+ADD_SKELETONS_TO_WORKSPACE+"\" and \""+EXPORT_LOOP_OBJECTS+"\" are selected, the loops of each skeleton will be stored in these objects.  A \"Loop\" is comprised of a continuous region of points bounded on all sides by either \"Edge\" or \"Junction\" points.  These loop objects are children of a \"Skeleton\" object (specified by the \""+OUTPUT_SKELETON_OBJECTS+"\" parameter), which itself is the child of the corresponding input object.  Each loop object has a partner relationship with its adjacent \"Edge\" and \"Junction\" objects (specified by the \""+OUTPUT_EDGE_OBJECTS+"\" and \""+OUTPUT_JUNCTION_OBJECTS+"\" parameters, respectively).");
+
+        parameters.get(MINIMUM_BRANCH_LENGTH).setDescription("The minimum length of a branch (edge terminating in point with just one neighbour) for it to be included in skeleton measurements and (optionally) exported as an object.");
+
+        parameters.get(CALIBRATED_UNITS).setDescription("When selected, spatial values are assumed to be specified in calibrated units (as defined by the \"" + new InputControl(null).getName() + "\" parameter \"" + InputControl.SPATIAL_UNIT + "\").  Otherwise, pixel units are assumed.");
+
+        parameters.get(ENABLE_MULTITHREADING).setDescription("Break the image down into strips, each one processed on a separate CPU thread.  The overhead required to do this means it's best for large multi-core CPUs, but should be left disabled for small images or on CPUs with few cores.");
+
     }
 }

@@ -1,12 +1,14 @@
 package wbif.sjx.MIA.GUI.ControlObjects;
 
-import wbif.sjx.MIA.GUI.GUI;
-import wbif.sjx.MIA.Module.Module;
-
-import javax.swing.*;
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Font;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+
+import javax.swing.JTextField;
+
+import wbif.sjx.MIA.GUI.GUI;
+import wbif.sjx.MIA.Module.Module;
 
 public class ModuleTitle extends JTextField implements MouseListener {
     /**
@@ -22,7 +24,8 @@ public class ModuleTitle extends JTextField implements MouseListener {
         addMouseListener(this);
         setEditable(false);
         setBorder(null);
-        setFont(new Font(Font.SANS_SERIF,Font.BOLD,12));
+        Font font = new Font(Font.SANS_SERIF, Font.BOLD, 12);
+        setFont(font);
         setOpaque(false);
         setForeground(Color.BLACK);
 
@@ -30,7 +33,7 @@ public class ModuleTitle extends JTextField implements MouseListener {
 
     @Override
     public void mouseClicked(MouseEvent e) {
-        GUI.setSelectedModules(new Module[]{module});
+        GUI.setSelectedModules(new Module[] { module });
         GUI.updateHelpNotes();
 
     }
