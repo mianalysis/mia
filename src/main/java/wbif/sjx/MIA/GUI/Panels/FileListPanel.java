@@ -2,8 +2,10 @@ package wbif.sjx.MIA.GUI.Panels;
 
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.MouseInfo;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -15,6 +17,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
+import javax.swing.JSeparator;
 import javax.swing.JTable;
 import javax.swing.border.EtchedBorder;
 import javax.swing.table.DefaultTableModel;
@@ -25,6 +28,7 @@ import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
 
 import wbif.sjx.MIA.GUI.GUI;
+import wbif.sjx.MIA.GUI.ControlObjects.ClosePanelButton;
 import wbif.sjx.MIA.GUI.ControlObjects.FileListColumnSelectorMenu;
 import wbif.sjx.MIA.Object.Colours;
 import wbif.sjx.MIA.Object.Status;
@@ -67,6 +71,38 @@ public class FileListPanel extends JPanel implements MouseListener, TableCellRen
         setMinimumSize(new Dimension(minimumWidth, 1));
         setPreferredSize(new Dimension(preferredWidth, 1));
 
+        GridBagConstraints c = new GridBagConstraints();
+        c.gridx = 0;
+        c.gridy = 0;
+        c.gridwidth = 1;
+        c.weightx = 1;
+        c.insets = new Insets(5, 5, 0, 5);
+        c.anchor = GridBagConstraints.WEST;
+        c.fill = GridBagConstraints.HORIZONTAL;
+
+        // Adding title to help window
+        JLabel notesLabel = new JLabel();
+        notesLabel.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 12));
+        notesLabel.setText("File list");
+        add(notesLabel, c);
+
+        // Adding close button
+        ClosePanelButton closeButton = new ClosePanelButton(this);        
+        c.anchor = GridBagConstraints.EAST;
+        c.weightx = 0;
+        c.gridx++;
+        add(closeButton, c);
+
+        // Adding separator
+        JSeparator separator = new JSeparator();
+        c.anchor = GridBagConstraints.WEST;
+        c.fill = GridBagConstraints.BOTH;
+        c.weightx = 1;
+        c.gridx = 0;
+        c.gridwidth = 2;
+        c.gridy++;
+        add(separator,c);
+
         model.setColumnCount(5);
         model.setColumnIdentifiers(new String[] { "#", "Filename", "Ser. name", "Ser. #", "Progress" });
 
@@ -101,8 +137,7 @@ public class FileListPanel extends JPanel implements MouseListener, TableCellRen
         scrollPane.getVerticalScrollBar().setUnitIncrement(10);
         scrollPane.setBorder(BorderFactory.createEmptyBorder());
 
-        GridBagConstraints c = new GridBagConstraints();
-        c.gridy = 0;
+        c.gridy++;
         c.weightx = 1;
         c.weighty = 1;
         c.fill = GridBagConstraints.BOTH;
