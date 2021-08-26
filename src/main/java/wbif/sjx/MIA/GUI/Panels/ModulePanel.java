@@ -5,7 +5,9 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 
+import javax.swing.BorderFactory;
 import javax.swing.JPanel;
+import javax.swing.border.EtchedBorder;
 
 import wbif.sjx.MIA.GUI.GUI;
 import wbif.sjx.MIA.Module.Core.InputControl;
@@ -26,16 +28,18 @@ public class ModulePanel extends JPanel {
 
     public ModulePanel() {
         setLayout(new GridBagLayout());
-
-        setMaximumSize(new Dimension(minimumWidth, Integer.MAX_VALUE));
-        setMinimumSize(new Dimension(minimumWidth, 1));
-        setPreferredSize(new Dimension(minimumWidth, Integer.MAX_VALUE));
+        setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
+        
+        // setMaximumSize(new Dimension(minimumWidth, Integer.MAX_VALUE));
+        setMinimumSize(new Dimension(minimumWidth, 400));
+        // setPreferredSize(new Dimension(minimumWidth, Integer.MAX_VALUE));
         
         GridBagConstraints c = new GridBagConstraints();
 
         // Initialising the input control panel
         c.gridx = 0;
         c.gridy = 0;
+        c.weightx = 1;
         c.weighty = 0;
         c.fill = GridBagConstraints.HORIZONTAL;
         c.insets = new Insets(0, 0, 0, 0);
@@ -44,7 +48,6 @@ public class ModulePanel extends JPanel {
         // Initialising the module list panel
         c.gridy++;
         c.weighty = 1;
-        c.insets = new Insets(5, 0, 0, 0);
         c.fill = GridBagConstraints.BOTH;
         add(moduleListPanel, c);
 

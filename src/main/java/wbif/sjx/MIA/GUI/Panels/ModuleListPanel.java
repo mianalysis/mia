@@ -8,12 +8,11 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.util.HashMap;
 
-import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JTable;
-import javax.swing.border.EtchedBorder;
+import javax.swing.border.EmptyBorder;
 
 import wbif.sjx.MIA.GUI.GUI;
 import wbif.sjx.MIA.GUI.ControlObjects.ModuleButton;
@@ -34,16 +33,17 @@ public class ModuleListPanel extends JScrollPane {
 
     public ModuleListPanel() {
         moduleListPanel = new JPanel();
-
+        
         setViewportView(moduleListPanel);
+        setBorder(new EmptyBorder(0, 0, 0, 0));
 
         // Initialising the scroll panel
-        setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
         setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         getVerticalScrollBar().setUnitIncrement(10);
 
         // Initialising the panel for module buttons
+        moduleListPanel.setBorder(new EmptyBorder(0, 0, 0, 0));
         moduleListPanel.setLayout(new GridBagLayout());
         moduleListPanel.validate();
         moduleListPanel.repaint();

@@ -1,12 +1,14 @@
 package wbif.sjx.MIA.GUI.Panels;
 
-import wbif.sjx.MIA.GUI.ControlObjects.ModuleButton;
-import wbif.sjx.MIA.GUI.GUI;
-import wbif.sjx.MIA.Module.Module;
+import java.awt.Color;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 
-import javax.swing.*;
-import javax.swing.border.EtchedBorder;
-import java.awt.*;
+import javax.swing.JPanel;
+
+import wbif.sjx.MIA.GUI.ControlObjects.ModuleButton;
+import wbif.sjx.MIA.Module.Module;
 
 public class InputOutputPanel extends JPanel {
     /**
@@ -16,14 +18,8 @@ public class InputOutputPanel extends JPanel {
 
     private ModuleButton button;
 
-    private static final int minimumWidth = 310;
-
     public InputOutputPanel() {
-        int bigButtonSize = GUI.getBigButtonSize();
-
         // Initialising the panel
-        setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
-        setPreferredSize(new Dimension(minimumWidth, bigButtonSize+15));
         setLayout(new GridBagLayout());
 
         validate();
@@ -42,8 +38,8 @@ public class InputOutputPanel extends JPanel {
         c.insets = new Insets(5, 5, 5, 5);
         c.anchor = GridBagConstraints.PAGE_START;
         c.fill = GridBagConstraints.BOTH;
-
-        button = new ModuleButton(module);
+        
+        button = new ModuleButton(module);        
         add(button, c);
 
         revalidate();

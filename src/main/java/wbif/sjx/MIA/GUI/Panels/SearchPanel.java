@@ -24,9 +24,9 @@ public class SearchPanel extends JPanel {
         setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
         setLayout(new GridBagLayout());
 
-        setMaximumSize(new Dimension(minimumWidth, Integer.MAX_VALUE));
-        setMinimumSize(new Dimension(minimumWidth, 1));
-        setPreferredSize(new Dimension(minimumWidth, Integer.MAX_VALUE));
+        // setMaximumSize(new Dimension(minimumWidth, Integer.MAX_VALUE));
+        // setMinimumSize(new Dimension(minimumWidth, 1));
+        // setPreferredSize(new Dimension(minimumWidth, Integer.MAX_VALUE));
 
         updatePanel();
 

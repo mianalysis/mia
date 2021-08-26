@@ -1,6 +1,7 @@
 package wbif.sjx.MIA.GUI.ControlObjects;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -32,6 +33,8 @@ public class ModuleButton extends JToggleButton implements ActionListener {
         addActionListener(this);
         setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
         setText(module.getNickname());
+        setMinimumSize(new Dimension(1,30));
+        setPreferredSize(new Dimension(1,30));
         updateState();
     }
 

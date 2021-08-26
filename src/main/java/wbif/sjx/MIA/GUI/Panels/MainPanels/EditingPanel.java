@@ -36,6 +36,7 @@ public class EditingPanel extends AbstractPanel {
     private final SearchPanel searchPanel = new SearchPanel();
     private final JSplitPane splitPane1;
     private final JSplitPane splitPane2;
+    private final JSplitPane splitPane3;
 
     private boolean showHelp = Prefs.get("MIA.showEditingHelp", false);
     private boolean showNotes = Prefs.get("MIA.showEditingNotes", false);
@@ -71,17 +72,32 @@ public class EditingPanel extends AbstractPanel {
         c.insets = new Insets(0, 5, 5, 5);
         add(progressBarPanel, c);
 
-        // Initialising the modules panel
+        splitPane3 = new JSplitPane(JSplitPane.VERTICAL_SPLIT, modulesPanel, searchPanel);
+        splitPane3.setPreferredSize(new Dimension(ModulePanel.getMinimumWidth(), Integer.MAX_VALUE));
+        splitPane3.setBorder(null);
+        splitPane3.setDividerSize(5);
+        splitPane3.setDividerLocation(0.5);
+        BasicSplitPaneUI splitPaneUI = (BasicSplitPaneUI) splitPane3.getUI();
+        splitPaneUI.getDivider().setBorder(new EmptyBorder(0, 0, 0, 0));
+
         c.gridx++;
         c.gridy = 0;
         c.weightx = 0;
         c.gridwidth = 1;
         c.insets = new Insets(5, 5, 5, 0);
-        add(searchPanel, c);
+        add(splitPane3, c);
 
-        // Initialising the modules panel
-        c.gridx++;
-        add(modulesPanel, c);
+        // // Initialising the modules panel
+        // c.gridx++;
+        // c.gridy = 0;
+        // c.weightx = 0;
+        // c.gridwidth = 1;
+        // c.insets = new Insets(5, 5, 5, 0);
+        // add(searchPanel, c);
+
+        // // Initialising the modules panel
+        // c.gridx++;
+        // add(modulesPanel, c);
 
         // Initialising the parameters panel
         updateFileList();
@@ -93,7 +109,7 @@ public class EditingPanel extends AbstractPanel {
         splitPane1.setBorder(null);
         splitPane1.setDividerSize(5);
         splitPane1.setDividerLocation(0.5);
-        BasicSplitPaneUI splitPaneUI = (BasicSplitPaneUI) splitPane1.getUI();
+        splitPaneUI = (BasicSplitPaneUI) splitPane1.getUI();
         splitPaneUI.getDivider().setBorder(new EmptyBorder(0, 0, 0, 0));
 
         splitPane2 = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, parametersPanel, splitPane1);
@@ -144,6 +160,16 @@ public class EditingPanel extends AbstractPanel {
     }
 
     void updateSeparators() {
+        if (showSearch) {
+            splitPane3.setDividerSize(5);
+            splitPane3.getTopComponent().setVisible(true);
+            splitPane3.getBottomComponent().setVisible(true);
+            splitPane3.setDividerLocation(0.5);
+        } else {
+            splitPane3.setDividerSize(0);
+            splitPane3.getBottomComponent().setVisible(false);
+        }
+
         splitPane1.getLeftComponent().setVisible(showFileList);
         splitPane1.getRightComponent().setVisible(showHelp || showNotes);
 
@@ -181,8 +207,8 @@ public class EditingPanel extends AbstractPanel {
         int currentWidth = EditingControlPanel.getMinimumWidth() + ModulePanel.getMinimumWidth()
                 + ParametersPanel.getPreferredWidth();
 
-        if (showSearch)
-            currentWidth = currentWidth + SearchPanel.getMinimumWidth(); // Fixed width
+        // if (showSearch)
+        //     currentWidth = currentWidth + SearchPanel.getMinimumWidth(); // Fixed width
         if (showHelp || showNotes)
             currentWidth = currentWidth + HelpNotesPanel.getPreferredWidth();
         if (showFileList)
@@ -197,8 +223,8 @@ public class EditingPanel extends AbstractPanel {
         int currentWidth = EditingControlPanel.getMinimumWidth() + ModulePanel.getMinimumWidth()
                 + ParametersPanel.getMinimumWidth();
 
-        if (showSearch)
-            currentWidth = currentWidth + SearchPanel.getMinimumWidth();
+        // if (showSearch)
+        //     currentWidth = currentWidth + SearchPanel.getMinimumWidth();
         if (showHelp || showNotes)
             currentWidth = currentWidth + HelpNotesPanel.getMinimumWidth();
         if (showFileList)
