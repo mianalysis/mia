@@ -1,6 +1,5 @@
 package wbif.sjx.MIA.GUI.Panels;
 
-import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;

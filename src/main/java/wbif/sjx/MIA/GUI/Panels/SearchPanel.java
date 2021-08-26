@@ -7,10 +7,14 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 
 import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
+import javax.swing.JTextField;
 import javax.swing.JTextPane;
 import javax.swing.border.EtchedBorder;
 
@@ -51,7 +55,7 @@ public class SearchPanel extends JPanel {
         add(helpLabel, c);
 
         // Adding close button
-        ClosePanelButton closeButton = new ClosePanelButton(this);        
+        ClosePanelButton closeButton = new ClosePanelButton(this);
         c.anchor = GridBagConstraints.EAST;
         c.weightx = 0;
         c.gridx++;
@@ -67,7 +71,58 @@ public class SearchPanel extends JPanel {
         c.gridy++;
         add(separator, c);
 
-        JScrollPane jsp = new JScrollPane(new JPanel());
+        GridBagConstraints c2 = new GridBagConstraints();
+        JPanel sPanel = new JPanel(new GridBagLayout());
+
+        JTextField queryEntry = new JTextField();
+        queryEntry.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
+        queryEntry.setPreferredSize(new Dimension(0, 26));
+        queryEntry.setMinimumSize(new Dimension(0, 26));
+        queryEntry.setMaximumSize(new Dimension(Integer.MAX_VALUE, 26));
+        // queryEntry.addFocusListener(this);
+        c2.gridx = 0;
+        c2.gridy = 0;
+        c2.weightx = 1;
+        c2.insets = new Insets(5, 0, 0, 0);
+        c2.fill = GridBagConstraints.HORIZONTAL;
+        c2.anchor = GridBagConstraints.NORTH;
+        sPanel.add(queryEntry, c2);
+
+        JButton searchButton = new JButton();
+        searchButton.setIcon(new ImageIcon(SearchPanel.class.getResource("/Icons/arrowopen_black_12px.png"), ""));
+        searchButton.setPreferredSize(new Dimension(26, 26));
+        searchButton.setMinimumSize(new Dimension(26, 26));
+        searchButton.setMaximumSize(new Dimension(26, 26));
+        // searchButton.addFocusListener(this);
+        c2.gridx++;
+        c2.weightx = 0;
+        c2.insets = new Insets(5, 5, 0, 5);
+        sPanel.add(searchButton, c2);
+
+        JCheckBox moduleDescriptionCheckBox = new JCheckBox();
+        moduleDescriptionCheckBox.setText("Include module descriptions");
+        moduleDescriptionCheckBox.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
+        moduleDescriptionCheckBox.setPreferredSize(new Dimension(0, 26));
+        moduleDescriptionCheckBox.setMinimumSize(new Dimension(0, 26));
+        moduleDescriptionCheckBox.setMaximumSize(new Dimension(Integer.MAX_VALUE, 26));
+        c2.gridx = 0;
+        c2.gridy++;
+        c2.weightx = 1;
+        c2.insets = new Insets(5, 0, 0, 5);
+        sPanel.add(moduleDescriptionCheckBox, c2);
+
+        JCheckBox parameterDescriptionCheckBox = new JCheckBox();
+        parameterDescriptionCheckBox.setText("Include parameter descriptions");
+        parameterDescriptionCheckBox.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
+        parameterDescriptionCheckBox.setPreferredSize(new Dimension(0, 26));
+        parameterDescriptionCheckBox.setMinimumSize(new Dimension(0, 26));
+        parameterDescriptionCheckBox.setMaximumSize(new Dimension(Integer.MAX_VALUE, 26));
+        c2.gridy++;
+        c2.weightx = 1;
+        c2.weighty = 1;
+        sPanel.add(parameterDescriptionCheckBox, c2);
+
+        JScrollPane jsp = new JScrollPane(sPanel);
         jsp.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         jsp.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         jsp.getVerticalScrollBar().setUnitIncrement(10);
@@ -135,7 +190,7 @@ public class SearchPanel extends JPanel {
         repaint();
 
     }
-    
+
     public static int getMinimumWidth() {
         return minimumWidth;
     }
