@@ -17,6 +17,7 @@ public abstract class AbstractPanel extends JPanel {
     public abstract void updateParameters();
     public abstract void updateHelpNotes();
     public abstract void updateFileList();
+    public abstract void updateSearch();
 
     public abstract int getPreferredWidth();
     public abstract int getMinimumWidth();

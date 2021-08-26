@@ -255,6 +255,11 @@ public class BasicPanel extends AbstractPanel {
     }
 
     @Override
+    public void updateSearch() {
+        
+    }
+
+    @Override
     public int getPreferredWidth() {
         int currentWidth = BasicControlPanel.getPreferredWidth();
 

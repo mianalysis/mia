@@ -12,6 +12,7 @@ import wbif.sjx.MIA.GUI.GUI;
 import wbif.sjx.MIA.GUI.Panels.FileListPanel;
 import wbif.sjx.MIA.GUI.Panels.HelpPanel;
 import wbif.sjx.MIA.GUI.Panels.NotesPanel;
+import wbif.sjx.MIA.GUI.Panels.SearchPanel;
 
 public class ClosePanelButton extends JButton implements ActionListener {
     private final JPanel panel;
@@ -20,7 +21,7 @@ public class ClosePanelButton extends JButton implements ActionListener {
         this.panel = panel;
 
         final ImageIcon blackIcon = new ImageIcon(
-                ClosePanelButton.class.getResource("/Icons/close_window_black_12px.png"), "");
+                ClosePanelButton.class.getResource("/Icons/close_window_darkgrey_12px.png"), "");
         setIcon(blackIcon);
         setPreferredSize(new Dimension(26, 26));
         setMinimumSize(new Dimension(26, 26));
@@ -38,5 +39,7 @@ public class ClosePanelButton extends JButton implements ActionListener {
             GUI.setShowNotes(false);
         else if (panel instanceof FileListPanel)
             GUI.setShowFileList(false);
+        else if (panel instanceof SearchPanel)
+            GUI.setShowSearch(false);
     }
 }

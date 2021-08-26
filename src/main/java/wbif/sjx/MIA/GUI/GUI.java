@@ -167,6 +167,7 @@ public class GUI {
         menuBar.setHelpSelected(showHelp());
         menuBar.setNotesSelected(showNotes());
         menuBar.setFileListSelected(showFileList());
+        menuBar.setSearchSelected(showSearch());
 
         frame.pack();
         frame.revalidate();

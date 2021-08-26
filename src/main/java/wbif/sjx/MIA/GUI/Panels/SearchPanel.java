@@ -1,10 +1,10 @@
 package wbif.sjx.MIA.GUI.Panels;
 
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.awt.Dimension;
 
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
@@ -14,11 +14,7 @@ import javax.swing.JSeparator;
 import javax.swing.JTextPane;
 import javax.swing.border.EtchedBorder;
 
-import wbif.sjx.MIA.GUI.GUI;
 import wbif.sjx.MIA.GUI.ControlObjects.ClosePanelButton;
-import wbif.sjx.MIA.GUI.ControlObjects.HelpArea;
-import wbif.sjx.MIA.Module.Module;
-import wbif.sjx.MIA.Module.ModuleCollection;
 
 public class SearchPanel extends JPanel {
     private final static int minimumWidth = 300;
@@ -28,19 +24,15 @@ public class SearchPanel extends JPanel {
         setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
         setLayout(new GridBagLayout());
 
-        int frameHeight = GUI.getFrameHeight();
-        int statusHeight = GUI.getStatusHeight();
-
         setMaximumSize(new Dimension(minimumWidth, Integer.MAX_VALUE));
-        setMinimumSize(new Dimension(minimumWidth, frameHeight - statusHeight));
-        setPreferredSize(new Dimension(minimumWidth, frameHeight - statusHeight));
+        setMinimumSize(new Dimension(minimumWidth, 1));
+        setPreferredSize(new Dimension(minimumWidth, Integer.MAX_VALUE));
+
+        updatePanel();
 
     }
 
     public void updatePanel() {
-        Module activeModule = GUI.getFirstSelectedModule();
-        ModuleCollection modules = GUI.getModules();
-
         removeAll();
 
         GridBagConstraints c = new GridBagConstraints();
@@ -55,7 +47,7 @@ public class SearchPanel extends JPanel {
         // Adding title to help window
         JLabel helpLabel = new JLabel();
         helpLabel.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 12));
-        helpLabel.setText("Moduule search");
+        helpLabel.setText("Module search");
         add(helpLabel, c);
 
         // Adding close button
@@ -75,10 +67,7 @@ public class SearchPanel extends JPanel {
         c.gridy++;
         add(separator, c);
 
-        // If no Module is selected, also skip
-        HelpArea helpArea = new HelpArea(activeModule, modules);
-
-        JScrollPane jsp = new JScrollPane(helpArea);
+        JScrollPane jsp = new JScrollPane(new JPanel());
         jsp.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         jsp.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         jsp.getVerticalScrollBar().setUnitIncrement(10);

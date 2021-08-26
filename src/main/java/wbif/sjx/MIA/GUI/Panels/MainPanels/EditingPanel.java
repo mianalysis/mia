@@ -14,17 +14,12 @@ import wbif.sjx.MIA.GUI.GUI;
 import wbif.sjx.MIA.GUI.Panels.EditingControlPanel;
 import wbif.sjx.MIA.GUI.Panels.FileListPanel;
 import wbif.sjx.MIA.GUI.Panels.HelpNotesPanel;
-import wbif.sjx.MIA.GUI.Panels.ModuleListPanel;
 import wbif.sjx.MIA.GUI.Panels.ModulePanel;
 import wbif.sjx.MIA.GUI.Panels.ParametersPanel;
 import wbif.sjx.MIA.GUI.Panels.ProgressBarPanel;
 import wbif.sjx.MIA.GUI.Panels.SearchPanel;
 import wbif.sjx.MIA.GUI.Panels.StatusPanel;
 import wbif.sjx.MIA.Module.Module;
-import wbif.sjx.MIA.Module.Core.InputControl;
-import wbif.sjx.MIA.Module.Core.OutputControl;
-import wbif.sjx.MIA.Process.AnalysisHandling.Analysis;
-import wbif.sjx.MIA.Process.AnalysisHandling.AnalysisTester;
 
 public class EditingPanel extends AbstractPanel {
     private static final long serialVersionUID = -6063268799004206526L;
@@ -91,6 +86,7 @@ public class EditingPanel extends AbstractPanel {
         // Initialising the parameters panel
         updateFileList();
         updateHelpNotes();
+        updateSearch();
 
         splitPane1 = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, fileListPanel, helpNotesPanel);
         splitPane1.setPreferredSize(new Dimension(1, 1));
@@ -138,10 +134,9 @@ public class EditingPanel extends AbstractPanel {
         updateModules();
         updateParameters();
 
-        if (showHelp || showNotes)
-            updateHelpNotes();
-        if (showFileList)
-            updateFileList();
+        updateHelpNotes();
+        updateFileList();
+        updateSearch();
 
         revalidate();
         repaint();
@@ -274,6 +269,12 @@ public class EditingPanel extends AbstractPanel {
     public void updateFileList() {
         fileListPanel.setVisible(showFileList);
         fileListPanel.updatePanel();
+    }
+
+    @Override
+    public void updateSearch() {
+        searchPanel.setVisible(showSearch);
+        searchPanel.updatePanel();
     }
 
     @Override

@@ -27,12 +27,9 @@ public class ModulePanel extends JPanel {
     public ModulePanel() {
         setLayout(new GridBagLayout());
 
-        int frameHeight = GUI.getFrameHeight();
-        int statusHeight = GUI.getStatusHeight();
-
         setMaximumSize(new Dimension(minimumWidth, Integer.MAX_VALUE));
-        setMinimumSize(new Dimension(minimumWidth, frameHeight - statusHeight));
-        setPreferredSize(new Dimension(minimumWidth, frameHeight - statusHeight));
+        setMinimumSize(new Dimension(minimumWidth, 1));
+        setPreferredSize(new Dimension(minimumWidth, Integer.MAX_VALUE));
         
         GridBagConstraints c = new GridBagConstraints();
 

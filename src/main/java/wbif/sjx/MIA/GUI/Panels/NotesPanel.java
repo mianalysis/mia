@@ -93,13 +93,23 @@ public class NotesPanel extends JPanel {
         GridBagConstraints c = new GridBagConstraints();
         c.gridx = 0;
         c.gridy = 0;
-        c.weighty = 0;
-        c.weightx = 0;
+        c.gridwidth = 1;
+        c.weightx = 1;
         c.insets = new Insets(5, 5, 0, 5);
-        c.anchor = GridBagConstraints.EAST;
+        c.anchor = GridBagConstraints.WEST;
+        c.fill = GridBagConstraints.HORIZONTAL;
+
+        // Adding title to help window
+        JLabel notesLabel = new JLabel();
+        notesLabel.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 12));
+        notesLabel.setText("Notes");
+        add(notesLabel, c);
 
         // Adding close button
-        ClosePanelButton closeButton = new ClosePanelButton(this);
+        ClosePanelButton closeButton = new ClosePanelButton(this);        
+        c.anchor = GridBagConstraints.EAST;
+        c.weightx = 0;
+        c.gridx++;
         add(closeButton, c);
 
         // Adding separator
@@ -107,8 +117,10 @@ public class NotesPanel extends JPanel {
         c.anchor = GridBagConstraints.WEST;
         c.fill = GridBagConstraints.BOTH;
         c.weightx = 1;
+        c.gridx = 0;
+        c.gridwidth = 2;
         c.gridy++;
-        add(separator, c);
+        add(separator,c);
 
         // Adding title to help window
         JTextPane usageMessage = new JTextPane();
