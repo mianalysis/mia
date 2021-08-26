@@ -17,6 +17,7 @@ public class MenuCheckbox extends JCheckBoxMenuItem implements ActionListener {
     public static final String TOGGLE_HELP = "Show help panel";
     public static final String TOGGLE_NOTES = "Show notes panel";
     public static final String TOGGLE_FILE_LIST = "Show file list";
+    public static final String TOGGLE_SEARCH = "Show module search";
 
     public MenuCheckbox(String command) {
         setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
@@ -44,6 +45,11 @@ public class MenuCheckbox extends JCheckBoxMenuItem implements ActionListener {
                     GUI.setShowFileList(isSelected());
                     GUI.updatePanel();
                     GUI.updateFileList();
+                    break;
+
+                case TOGGLE_SEARCH:
+                    GUI.setShowSearch(isSelected());
+                    GUI.updatePanel();
                     break;
             }
         } catch (Exception ex) {

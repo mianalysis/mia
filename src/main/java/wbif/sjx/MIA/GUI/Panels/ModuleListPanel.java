@@ -27,37 +27,26 @@ import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.Miscellaneous.GUISeparator;
 
-public class ModulesPanel extends JScrollPane {
-    /**
-     *
-     */
+public class ModuleListPanel extends JScrollPane {
     private static final long serialVersionUID = -8916783536735299254L;
 
-    private JPanel panel;
+    private JPanel moduleListPanel;
 
-    private static final int minimumWidth = 310;
+    public ModuleListPanel() {
+        moduleListPanel = new JPanel();
 
-    public static int getMinimumWidth() {
-        return minimumWidth;
-    }
-
-    public ModulesPanel() {
-        panel = new JPanel();
-
-        setViewportView(panel);
+        setViewportView(moduleListPanel);
 
         // Initialising the scroll panel
-        setPreferredSize(new Dimension(minimumWidth, -1));
-        setMinimumSize(new Dimension(minimumWidth, -1));
         setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
         setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         getVerticalScrollBar().setUnitIncrement(10);
 
         // Initialising the panel for module buttons
-        panel.setLayout(new GridBagLayout());
-        panel.validate();
-        panel.repaint();
+        moduleListPanel.setLayout(new GridBagLayout());
+        moduleListPanel.validate();
+        moduleListPanel.repaint();
 
         validate();
         repaint();
@@ -65,7 +54,7 @@ public class ModulesPanel extends JScrollPane {
     }
 
     public void updatePanel() {
-        panel.removeAll();
+        moduleListPanel.removeAll();
 
         GridBagConstraints c = new GridBagConstraints();
         c.gridx = 0;
@@ -104,7 +93,7 @@ public class ModulesPanel extends JScrollPane {
 
             ModuleEnabledButton enabledButton = new ModuleEnabledButton(module);
             enabledButton.setPreferredSize(new Dimension(26,26));
-            panel.add(enabledButton,c);
+            moduleListPanel.add(enabledButton,c);
             c.gridx++;
             c.insets = new Insets(top, 0, 0, 0);
 
@@ -112,24 +101,24 @@ public class ModulesPanel extends JScrollPane {
             if (module instanceof GUISeparator) {
                 SeparatorButton separatorButton = new SeparatorButton(module,true);
                 separatorButton.setPreferredSize(new Dimension(26, 26));
-                panel.add(separatorButton, c);
+                moduleListPanel.add(separatorButton, c);
                 c.gridx++;
                 c.gridx++;
 
                 separatorButton = new SeparatorButton(module,false);
                 separatorButton.setPreferredSize(new Dimension(26, 26));
-                panel.add(separatorButton, c);
+                moduleListPanel.add(separatorButton, c);
 
             } else {
                 ShowOutputButton showOutputButton = new ShowOutputButton(module);
                 showOutputButton.setPreferredSize(new Dimension(26, 26));
-                panel.add(showOutputButton, c);
+                moduleListPanel.add(showOutputButton, c);
                 c.gridx++;
                 c.gridx++;
 
                 EvalButton evalButton = new EvalButton(module);
                 evalButton.setPreferredSize(new Dimension(26, 26));
-                panel.add(evalButton, c);
+                moduleListPanel.add(evalButton, c);
 
             }
 
@@ -142,7 +131,7 @@ public class ModulesPanel extends JScrollPane {
         c.gridy = 0;
         c.gridheight = modules.size();
         c.insets = new Insets(6,1,0,0);
-        panel.add(moduleNameTable,c);
+        moduleListPanel.add(moduleNameTable,c);
 
         c.gridwidth = 4;
         c.gridy = modules.size();
@@ -151,10 +140,10 @@ public class ModulesPanel extends JScrollPane {
         c.fill = GridBagConstraints.VERTICAL;
         JSeparator separator = new JSeparator();
         separator.setPreferredSize(new Dimension(-1,1));
-        panel.add(separator, c);
+        moduleListPanel.add(separator, c);
 
-        panel.revalidate();
-        panel.repaint();
+        moduleListPanel.revalidate();
+        moduleListPanel.repaint();
 
         revalidate();
         repaint();
@@ -184,7 +173,7 @@ public class ModulesPanel extends JScrollPane {
     }
 
     public void updateButtonStates() {
-        for (Component component : panel.getComponents()) {
+        for (Component component : moduleListPanel.getComponents()) {
             if (component.getClass() == ModuleEnabledButton.class) {
                 ((ModuleEnabledButton) component).updateState();
             } else if (component.getClass() == ShowOutputButton.class) {

@@ -456,6 +456,16 @@ public class GUI {
         return mainPanel.showFileList();
     }
 
+    public static void setShowSearch(boolean showSearch) {
+        mainPanel.setShowSearch(showSearch);
+    }
+
+    public static boolean showSearch() {
+        if (mainPanel == null)
+            return false;
+        return mainPanel.showSearch();
+    }
+
     public static void resetJobNumbers() {
         mainPanel.resetJobNumbers();
     }

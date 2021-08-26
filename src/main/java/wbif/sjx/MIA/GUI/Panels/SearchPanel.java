@@ -4,6 +4,7 @@ import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.Dimension;
 
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
@@ -19,13 +20,20 @@ import wbif.sjx.MIA.GUI.ControlObjects.HelpArea;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 
-public class HelpPanel extends JPanel {
-    private static final long serialVersionUID = 3704479016316750858L;
+public class SearchPanel extends JPanel {
+    private final static int minimumWidth = 300;
 
-    public HelpPanel() {
+    public SearchPanel() {
         // Initialising the panel
         setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
         setLayout(new GridBagLayout());
+
+        int frameHeight = GUI.getFrameHeight();
+        int statusHeight = GUI.getStatusHeight();
+
+        setMaximumSize(new Dimension(minimumWidth, Integer.MAX_VALUE));
+        setMinimumSize(new Dimension(minimumWidth, frameHeight - statusHeight));
+        setPreferredSize(new Dimension(minimumWidth, frameHeight - statusHeight));
 
     }
 
@@ -47,8 +55,7 @@ public class HelpPanel extends JPanel {
         // Adding title to help window
         JLabel helpLabel = new JLabel();
         helpLabel.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 12));
-        if (activeModule != null)
-            helpLabel.setText("About \"" + activeModule.getName() + "\"");
+        helpLabel.setText("Moduule search");
         add(helpLabel, c);
 
         // Adding close button
@@ -92,13 +99,23 @@ public class HelpPanel extends JPanel {
         GridBagConstraints c = new GridBagConstraints();
         c.gridx = 0;
         c.gridy = 0;
-        c.weighty = 0;
-        c.weightx = 0;
+        c.gridwidth = 1;
+        c.weightx = 1;
         c.insets = new Insets(5, 5, 0, 5);
-        c.anchor = GridBagConstraints.EAST;
+        c.anchor = GridBagConstraints.WEST;
+        c.fill = GridBagConstraints.HORIZONTAL;
+
+        // Adding title to help window
+        JLabel fileListLabel = new JLabel();
+        fileListLabel.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 12));
+        fileListLabel.setText("Module search");
+        add(fileListLabel, c);
 
         // Adding close button
         ClosePanelButton closeButton = new ClosePanelButton(this);
+        c.anchor = GridBagConstraints.EAST;
+        c.weightx = 0;
+        c.gridx++;
         add(closeButton, c);
 
         // Adding separator
@@ -113,9 +130,9 @@ public class HelpPanel extends JPanel {
         JTextPane usageMessage = new JTextPane();
         usageMessage.setContentType("text/html");
         usageMessage.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
-        usageMessage.setText(
-                "<html><center><font face=\"sans-serif\" size=\"3\">" + "Click a module title to<br>see help about it"
-                        + "<br><br>" + "To hide this, click the X button or<br>go to View > Show help panel" + "</font></center></html>");
+        usageMessage.setText("<html><center><font face=\"sans-serif\" size=\"3\">"
+                + "Click a module title to<br>see help about it" + "<br><br>"
+                + "To hide this, click the X button or<br>go to View > Show help panel" + "</font></center></html>");
         usageMessage.setEditable(false);
         usageMessage.setBackground(null);
         usageMessage.setOpaque(false);
@@ -128,5 +145,9 @@ public class HelpPanel extends JPanel {
         revalidate();
         repaint();
 
+    }
+    
+    public static int getMinimumWidth() {
+        return minimumWidth;
     }
 }

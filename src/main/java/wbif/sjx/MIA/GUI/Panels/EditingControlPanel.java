@@ -12,7 +12,6 @@ import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.border.EtchedBorder;
 
-import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.GUI.GUI;
 import wbif.sjx.MIA.GUI.ControlObjects.AnalysisControlButton;
 import wbif.sjx.MIA.GUI.ControlObjects.ModuleControlButton;

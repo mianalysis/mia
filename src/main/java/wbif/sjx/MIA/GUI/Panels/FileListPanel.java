@@ -81,10 +81,10 @@ public class FileListPanel extends JPanel implements MouseListener, TableCellRen
         c.fill = GridBagConstraints.HORIZONTAL;
 
         // Adding title to help window
-        JLabel notesLabel = new JLabel();
-        notesLabel.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 12));
-        notesLabel.setText("File list");
-        add(notesLabel, c);
+        JLabel fileListLabel = new JLabel();
+        fileListLabel.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 12));
+        fileListLabel.setText("File list");
+        add(fileListLabel, c);
 
         // Adding close button
         ClosePanelButton closeButton = new ClosePanelButton(this);        

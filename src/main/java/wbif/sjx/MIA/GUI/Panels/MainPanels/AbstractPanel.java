@@ -33,7 +33,9 @@ public abstract class AbstractPanel extends JPanel {
     public abstract void setShowNotes(boolean showNotes);
     public abstract boolean showFileList();
     public abstract void setShowFileList(boolean showFileList);
-
+    public abstract boolean showSearch();
+    public abstract void setShowSearch(boolean showSearch);
+    
     public abstract Module getLastHelpNotesModule();
     public abstract void setLastHelpNotesModule(Module module);
 

@@ -36,9 +36,6 @@ import wbif.sjx.MIA.Object.References.Collections.RefCollection;
 import wbif.sjx.MIA.Process.AnalysisHandling.Analysis;
 
 public class ParametersPanel extends JScrollPane {
-    /**
-     *
-     */
     private static final long serialVersionUID = 1455273666893303846L;
     private static final int minimumWidth = 400;
     private static final int preferredWidth = 600;

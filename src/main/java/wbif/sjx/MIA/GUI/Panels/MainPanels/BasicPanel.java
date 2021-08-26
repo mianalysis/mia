@@ -344,7 +344,7 @@ public class BasicPanel extends AbstractPanel {
     @Override
     public void setShowFileList(boolean showFileList) {
         this.showFileList = showFileList;
-        Prefs.set("MIA.showBasicFileList",showFileList);
+        Prefs.set("MIA.showBasicFileList", showFileList);
 
         fileListPanel.setVisible(showFileList);
         GUI.updatePanel();
@@ -352,6 +352,16 @@ public class BasicPanel extends AbstractPanel {
         updateSeparators();
     }
 
+    @Override
+    public boolean showSearch() {
+        return false;
+    }
+
+    @Override
+    public void setShowSearch(boolean showSearch) {
+        
+    }
+    
     @Override
     public Module getLastHelpNotesModule() {
         return lastHelpNotesModule;

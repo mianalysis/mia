@@ -24,6 +24,7 @@ public class CustomMenuBar extends JMenuBar implements ActionListener {
     private static MenuCheckbox helpCheckbox = new MenuCheckbox(MenuCheckbox.TOGGLE_HELP);
     private static MenuCheckbox notesCheckbox = new MenuCheckbox(MenuCheckbox.TOGGLE_NOTES);
     private static MenuCheckbox fileListCheckbox = new MenuCheckbox(MenuCheckbox.TOGGLE_FILE_LIST);
+    private static MenuCheckbox searchCheckbox = new MenuCheckbox(MenuCheckbox.TOGGLE_SEARCH);
 
 
     public CustomMenuBar() {
@@ -76,6 +77,8 @@ public class CustomMenuBar extends JMenuBar implements ActionListener {
         menu.add(notesCheckbox);
         fileListCheckbox.setSelected(GUI.showFileList());
         menu.add(fileListCheckbox);
+        // searchCheckbox.setSelected(GUI.showSearch());
+        // menu.add(searchCheckbox);       
 
         // Creating the help menu
         menu = new JMenu("Help");
