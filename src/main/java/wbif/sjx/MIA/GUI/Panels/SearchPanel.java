@@ -118,9 +118,15 @@ public class SearchPanel extends JPanel {
         parameterDescriptionCheckBox.setMinimumSize(new Dimension(0, 26));
         parameterDescriptionCheckBox.setMaximumSize(new Dimension(Integer.MAX_VALUE, 26));
         c2.gridy++;
-        c2.weightx = 1;
-        c2.weighty = 1;
+        c2.weightx = 1;        
         sPanel.add(parameterDescriptionCheckBox, c2);
+
+        JSeparator separator2 = new JSeparator();
+        c.anchor = GridBagConstraints.WEST;
+        c.fill = GridBagConstraints.BOTH;
+        c.gridy++;
+        c2.weighty = 1;
+        sPanel.add(separator2, c2);       
 
         JScrollPane jsp = new JScrollPane(sPanel);
         jsp.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
