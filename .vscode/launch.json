@@ -6,6 +6,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "Launch ModuleSearcher",
+            "request": "launch",
+            "mainClass": "wbif.sjx.MIA.Process.ModuleSearcher",
+            "projectName": "MIA_"
+        },
+        {
+            "type": "java",
             "name": "Launch Test",
             "request": "launch",
             "mainClass": "wbif.sjx.MIA.Test",
