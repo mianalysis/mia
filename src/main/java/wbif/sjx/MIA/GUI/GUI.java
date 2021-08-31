@@ -132,7 +132,7 @@ public class GUI {
     void initialiseAvailableModules(List<String> detectedModuleNames) {
         // Creating an alphabetically-ordered list of all modules
         // ModuleCollection moduleCollection = new ModuleCollection();
-        
+
         for (String detectedModuleName : detectedModuleNames) {
             try {
                 Class<? extends Module> clazz = (Class<? extends Module>) Class.forName(detectedModuleName);
@@ -144,7 +144,7 @@ public class GUI {
                     Constructor constructor = clazz.getDeclaredConstructor(ModuleCollection.class);
                     Module module = (Module) constructor.newInstance(availableModules);
                     availableModules.add(module);
-                    
+
                 }
             } catch (ClassNotFoundException | NoSuchMethodException | IllegalAccessException | InstantiationException
                     | InvocationTargetException | NoClassDefFoundError e) {
@@ -269,7 +269,7 @@ public class GUI {
                     FileCrawler fileCrawler = new FileCrawler(new File(inputPath));
                     inputControl.addFilenameFilters(fileCrawler);
                     nextFile = fileCrawler.getNextValidFileInStructure();
-                }                
+                }
             }
         }
 
@@ -296,7 +296,7 @@ public class GUI {
         testWorkspace.getMetadata().setSeriesName(nextSeriesName);
 
         // Setting macro
-        MacroHandler.setWorkspace(testWorkspace);        
+        MacroHandler.setWorkspace(testWorkspace);
 
     }
 

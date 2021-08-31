@@ -31,7 +31,7 @@ public class ModulePanel extends JPanel {
         setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
         
         // setMaximumSize(new Dimension(minimumWidth, Integer.MAX_VALUE));
-        setMinimumSize(new Dimension(minimumWidth, 400));
+        setMinimumSize(new Dimension(minimumWidth, 300));
         // setPreferredSize(new Dimension(minimumWidth, Integer.MAX_VALUE));
         
         GridBagConstraints c = new GridBagConstraints();

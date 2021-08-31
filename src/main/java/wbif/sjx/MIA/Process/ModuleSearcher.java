@@ -1,18 +1,15 @@
 package wbif.sjx.MIA.Process;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import wbif.sjx.MIA.MIA;
+import wbif.sjx.MIA.GUI.GUI;
 import wbif.sjx.MIA.Module.Module;
-import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
 
@@ -20,52 +17,20 @@ public class ModuleSearcher {
     HashMap<String, String> moduleDescriptions = new HashMap<>();
     HashMap<String, String[]> parameterDescriptions = new HashMap<>();
 
-    public static void main(String[] args) {
-        String target = "measure \"skeleton\" length";
-
-        ModuleSearcher searcher = new ModuleSearcher();
-        ArrayList<SearchMatch> matches = searcher.getMatches(target, true, true);
-        for (SearchMatch match : matches) {
-            System.out.println(match.getModuleName());
-            System.out.println("    Score: " + match.getScore());
-            for (String names : match.getNameMatches())
-                System.out.println("    Names: " + names);
-            for (String descriptions : match.getDescriptionMatches())
-                System.out.println("    Descriptions: " + descriptions);
-            for (String parameters : match.getParameterMatches())
-                System.out.println("    Parameters: " + parameters);
-        }
-    }
 
     public ModuleSearcher() {
-        List<String> classNames = ClassHunter.getModules(false);
-
         // Converting the list of classes to a list of Modules
-        for (String className : classNames) {
-            try {
-                Class<Module> clazz = (Class<Module>) Class.forName(className);
+        for (Module module : GUI.getAvailableModules()) {
+            moduleDescriptions.put(module.getName().toLowerCase(), module.getDescription().toLowerCase());
 
-                // Skip any abstract Modules
-                if (Modifier.isAbstract(clazz.getModifiers()))
-                    continue;
+            ParameterCollection parameters = module.getAllParameters();
+            String[] descriptions = new String[parameters.size()];
+            int i = 0;
+            for (Parameter parameter : parameters.values())
+                descriptions[i++] = parameter.getDescription().toLowerCase();
 
-                Constructor<Module> constructor = clazz.getDeclaredConstructor(ModuleCollection.class);
-                Module module = (Module) constructor.newInstance(new ModuleCollection());
+            parameterDescriptions.put(module.getName().toLowerCase(), descriptions);
 
-                moduleDescriptions.put(module.getName().toLowerCase(), module.getDescription().toLowerCase());
-
-                ParameterCollection parameters = module.getAllParameters();
-                String[] descriptions = new String[parameters.size()];
-                int i = 0;
-                for (Parameter parameter : parameters.values())
-                    descriptions[i++] = parameter.getDescription().toLowerCase();
-
-                parameterDescriptions.put(module.getName().toLowerCase(), descriptions);
-
-            } catch (InvocationTargetException | InstantiationException | IllegalAccessException
-                    | IllegalArgumentException | NoSuchMethodException | SecurityException | ClassNotFoundException e) {
-                System.err.println(e.getMessage());
-            }
         }
     }
 
@@ -106,7 +71,6 @@ public class ModuleSearcher {
                 for (String tempTarget : tempTargets)
                     targets.put(tempTarget, false);
             }
-
         }
 
         // Adding anything after the first quotation mark
@@ -123,6 +87,8 @@ public class ModuleSearcher {
 
     public ArrayList<SearchMatch> getMatches(String target, boolean includeModuleDescriptions,
             boolean includeParameterDescriptions) {
+        target = target.toLowerCase();
+
         // Getting individual target words and phrases
         HashMap<String, Boolean> targets = splitTargets(target);
 
@@ -212,6 +178,15 @@ public class ModuleSearcher {
     }
 
     protected static void enforcingFixedTargets(ArrayList<SearchMatch> matches, HashMap<String, Boolean> targets) {
+        // Check if there are any queries being forced, if not all are fine
+        boolean enforcerOn = false;
+        for (boolean enforce : targets.values())
+            if (enforce)
+                enforcerOn = true;
+        
+        if (!enforcerOn)
+            return;
+
         ArrayList<String> fixedTargets = new ArrayList<>();
         for (String target : targets.keySet())
             if (targets.get(target))
@@ -270,8 +245,8 @@ public class ModuleSearcher {
     }
 
     public class SearchMatch {
-        private final int NAME_SCORE = 3;
-        private final int DESCRIPTION_SCORE = 2;
+        private final int NAME_SCORE = 10;
+        private final int DESCRIPTION_SCORE = 3;
         private final int PARAMETER_SCORE = 1;
 
         private final String moduleName;
