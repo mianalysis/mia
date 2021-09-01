@@ -1,6 +1,6 @@
-<!-- [![TravisCI](https://travis-ci.org/mianalysis/MIA.svg?branch=master)](https://travis-ci.org/mianalysis/MIA) -->
+<!-- [![TravisCI](https://travis-ci.org/SJCross/MIA.svg?branch=master)](https://travis-ci.org/SJCross/MIA) -->
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.1201372.svg)](https://doi.org/10.5281/zenodo.1201320)
-[![JitPack](https://jitpack.io/v/mianalysis/ModularImageAnalysis.svg)](https://jitpack.io/#mianalysis/ModularImageAnalysis/)
+[![JitPack](https://jitpack.io/v/SJCross/ModularImageAnalysis.svg)](https://jitpack.io/#SJCross/ModularImageAnalysis/)
 
 [![Wolfson Bioimaging](./src/main/resources/Images/Logo_text_UoB_128.png)](http://www.bristol.ac.uk/wolfson-bioimaging/)
 
@@ -12,7 +12,7 @@ MIA is developed in the [Wolfson Bioimaging Facility](http://www.bristol.ac.uk/w
 
 Installation
 ------------
-- The latest version of the plugin can be downloaded from the [Releases](https://github.com/mianalysis/ModularImageAnalysis/releases) page.
+- The latest version of the plugin can be downloaded from the [Releases](https://github.com/SJCross/ModularImageAnalysis/releases) page.
 - Place this .jar file into the /plugins directory of the your Fiji installation.
 - MIA requires the "Biomedgroup" and "MorphoLibJ" plugins to be installed.
 > - For MIA versions before 0.11.0: Launch Fiji's [Updater](https://imagej.net/Updater) tool and add the "Biomedgroup" and "IJPB-plugins" (possibly listed as "MorphoLibJ") update sites, then restart Fiji.
@@ -48,7 +48,7 @@ Required plugins that need installing via the Fiji updater: [Ridge Detection](ht
 
 Plugins bundled with MIA: [BoneJ legacy plugins](https://github.com/mdoube/BoneJ), [Stack Focuser](https://imagej.nih.gov/ij/plugins/stack-focuser.html).
 
-A list of bundled dependencies along with their respective licenses can be found [here](https://htmlpreview.github.io/?https://github.com/mianalysis/MIA/blob/master/target/site/dependencies.html).
+A list of bundled dependencies along with their respective licenses can be found [here](https://htmlpreview.github.io/?https://github.com/SJCross/MIA/blob/master/target/site/dependencies.html).
 
 
 Citing MIA
@@ -57,5 +57,5 @@ We hope you find MIA useful.  If you've used MIA in your research, please cite i
 
 Ongoing development
 ------------
-This plugin is still in development and test coverage is currently incomplete.  Please keep an eye on results and add an [issue](https://github.com/mianalysis/ModularImageAnalysis/issues) if any problems are encountered.
+This plugin is still in development and test coverage is currently incomplete.  Please keep an eye on results and add an [issue](https://github.com/SJCross/ModularImageAnalysis/issues) if any problems are encountered.
 

@@ -1,0 +1,268 @@
+package io.github.mianalysis.MIA.Module.ObjectProcessing.Identification;
+
+import io.github.mianalysis.MIA.Module.Categories;
+import io.github.mianalysis.MIA.Module.Category;
+import io.github.mianalysis.MIA.Module.Module;
+import io.github.mianalysis.MIA.Module.ModuleCollection;
+import io.github.mianalysis.MIA.Object.Image;
+import io.github.mianalysis.MIA.Object.Measurement;
+import io.github.mianalysis.MIA.Object.Obj;
+import io.github.mianalysis.MIA.Object.ObjCollection;
+import io.github.mianalysis.MIA.Object.Status;
+import io.github.mianalysis.MIA.Object.Workspace;
+import io.github.mianalysis.MIA.Object.Parameters.ChoiceP;
+import io.github.mianalysis.MIA.Object.Parameters.ImageMeasurementP;
+import io.github.mianalysis.MIA.Object.Parameters.InputImageP;
+import io.github.mianalysis.MIA.Object.Parameters.InputObjectsP;
+import io.github.mianalysis.MIA.Object.Parameters.ObjectMeasurementP;
+import io.github.mianalysis.MIA.Object.Parameters.ParameterCollection;
+import io.github.mianalysis.MIA.Object.Parameters.SeparatorP;
+import io.github.mianalysis.MIA.Object.Parameters.Objects.OutputObjectsP;
+import io.github.mianalysis.MIA.Object.Parameters.Text.StringP;
+import io.github.mianalysis.MIA.Object.References.ParentChildRef;
+import io.github.mianalysis.MIA.Object.References.Collections.ImageMeasurementRefCollection;
+import io.github.mianalysis.MIA.Object.References.Collections.MetadataRefCollection;
+import io.github.mianalysis.MIA.Object.References.Collections.ObjMeasurementRefCollection;
+import io.github.mianalysis.MIA.Object.References.Collections.ParentChildRefCollection;
+import io.github.mianalysis.MIA.Object.References.Collections.PartnerRefCollection;
+import io.github.mianalysis.MIA.Process.CommaSeparatedStringInterpreter;
+import io.github.sjcross.common.Object.Point;
+import io.github.sjcross.common.Object.Volume.PointOutOfRangeException;
+import io.github.sjcross.common.Object.Volume.Volume;
+import io.github.sjcross.common.Object.Volume.VolumeType;
+
+/**
+ * Created by sc13967 on 01/08/2017.
+ */
+public class ExtractObjectCrossSection extends Module {
+    public static final String INPUT_SEPARATOR = "Object input/output";
+    public static final String INPUT_OBJECTS = "Input objects";
+    public static final String OUTPUT_OBJECTS = "Output objects";
+
+    public static final String CROSS_SECTION_SEPARATOR = "Cross-section controls";
+    public static final String REFERENCE_MODE = "Reference mode";
+    public static final String RELATIVE_SLICE_INDICES = "Relative slice indices";
+    public static final String IMAGE_MEASUREMENT = "Image measurement";
+    public static final String IMAGE_FOR_MEASUREMENT = "Image for measurement";
+    public static final String OBJECT_MEASUREMENT = "Object measurement";
+
+    public interface ReferenceModes {
+        String ABSOLUTE = "Absolute";
+        String IMAGE_MEASUREMENT = "Image measurement";
+        String OBJECT_MEASUREMENT = "Object measurement";
+
+        String[] ALL = new String[] { ABSOLUTE, IMAGE_MEASUREMENT, OBJECT_MEASUREMENT };
+
+    }
+
+    public ExtractObjectCrossSection(ModuleCollection modules) {
+        super("Extract object cross section", modules);
+    }
+
+    @Override
+    public Category getCategory() {
+        return Categories.OBJECT_PROCESSING_IDENTIFICATION;
+    }
+
+    @Override
+    public String getDescription() {
+        return "";
+    }
+
+    static int[] applyIndexOffset(int[] inputIndices, Measurement measurement) {
+        int[] outputIndices = new int[inputIndices.length];
+
+        int referencePoint = (int) Math.round(measurement.getValue());
+        for (int i = 0; i < inputIndices.length; i++)
+            outputIndices[i] = inputIndices[i] + referencePoint;
+
+        return outputIndices;
+
+    }
+
+    static void process(Obj inputObject, ObjCollection outputObjects, int[] indices) {
+        VolumeType volumeType = inputObject.getVolumeType();
+        if (volumeType == VolumeType.OCTREE)
+            volumeType = VolumeType.QUADTREE;
+
+        Obj outputObject = outputObjects.createAndAddNewObject(inputObject.getVolumeType(), inputObject.getID());
+
+        for (int idx : indices) {
+            if (idx < 0 || idx >= inputObject.getNSlices())
+                continue;
+
+            Volume slice = inputObject.getSlice(idx);
+            if (slice == null)
+                continue;
+
+            if (slice.getCoordinateSet() == null)
+                continue;
+
+            for (Point<Integer> point : slice.getCoordinateSet()) {
+                point.setZ(point.getZ() + idx);
+                try {
+                    outputObject.add(point);
+                } catch (PointOutOfRangeException e) {
+                }
+            }
+        }
+
+        inputObject.addChild(outputObject);
+        outputObject.addParent(inputObject);
+
+    }
+
+    @Override
+    public Status process(Workspace workspace) {
+        // Getting input objects
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+        ObjCollection inputObjects = workspace.getObjects().get(inputObjectsName);
+
+        // Getting parameters
+        String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);
+        String referenceMode = parameters.getValue(REFERENCE_MODE);
+        String imageForMeasurementName = parameters.getValue(IMAGE_FOR_MEASUREMENT);
+        String imageMeasurementName = parameters.getValue(IMAGE_MEASUREMENT);
+        String objectMeasurementName = parameters.getValue(OBJECT_MEASUREMENT);
+        String indicesString = parameters.getValue(RELATIVE_SLICE_INDICES);
+
+        ObjCollection outputObjects = new ObjCollection(outputObjectsName, inputObjects);
+        workspace.addObjects(outputObjects);
+
+        int[] indices = CommaSeparatedStringInterpreter.interpretIntegers(indicesString, true);
+        if (indicesString.contains("end"))
+            indices = CommaSeparatedStringInterpreter.extendRangeToEnd(indices, inputObjects.getNSlices());
+
+        // If using an image measurement, updating the indices here, as they will be the
+        // same for all objects
+        switch (referenceMode) {
+            case ReferenceModes.IMAGE_MEASUREMENT:
+                Image imageForMeasurement = workspace.getImage(imageForMeasurementName);
+                Measurement imageMeasurement = imageForMeasurement.getMeasurement(imageMeasurementName);
+                indices = applyIndexOffset(indices, imageMeasurement);
+                break;
+        }
+
+        for (Obj inputObject : inputObjects.values()) {
+            int[] finalIndices = indices;
+            switch (referenceMode) {
+                case ReferenceModes.OBJECT_MEASUREMENT:
+                    Measurement objectMeasurement = inputObject.getMeasurement(objectMeasurementName);
+                    finalIndices = applyIndexOffset(indices, objectMeasurement);
+                    break;
+            }
+
+            process(inputObject, outputObjects, finalIndices);
+
+        }
+
+        if (showOutput)
+            outputObjects.convertToImageRandomColours().showImage();
+
+        return Status.PASS;
+
+    }
+
+    @Override
+    protected void initialiseParameters() {
+        parameters.add(new SeparatorP(INPUT_SEPARATOR, this));
+        parameters.add(new InputObjectsP(INPUT_OBJECTS, this));
+        parameters.add(new OutputObjectsP(OUTPUT_OBJECTS, this));
+
+        parameters.add(new SeparatorP(CROSS_SECTION_SEPARATOR, this));
+        parameters.add(new ChoiceP(REFERENCE_MODE, this, ReferenceModes.ABSOLUTE, ReferenceModes.ALL));
+        parameters.add(new InputImageP(IMAGE_FOR_MEASUREMENT, this));
+        parameters.add(new ImageMeasurementP(IMAGE_MEASUREMENT, this));
+        parameters.add(new ObjectMeasurementP(OBJECT_MEASUREMENT, this));
+        parameters.add(new StringP(RELATIVE_SLICE_INDICES, this, "0"));
+
+        addParameterDescriptions();
+
+    }
+
+    @Override
+    public ParameterCollection updateAndGetParameters() {
+        ParameterCollection returnedParameters = new ParameterCollection();
+        returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
+        returnedParameters.add(parameters.getParameter(INPUT_OBJECTS));
+        returnedParameters.add(parameters.getParameter(OUTPUT_OBJECTS));
+
+        returnedParameters.add(parameters.getParameter(CROSS_SECTION_SEPARATOR));
+        returnedParameters.add(parameters.getParameter(REFERENCE_MODE));
+
+        switch ((String) parameters.getValue(REFERENCE_MODE)) {
+            case ReferenceModes.IMAGE_MEASUREMENT:
+                returnedParameters.add(parameters.getParameter(IMAGE_FOR_MEASUREMENT));
+                returnedParameters.add(parameters.getParameter(IMAGE_MEASUREMENT));
+                String imageName = parameters.getValue(IMAGE_FOR_MEASUREMENT);
+                ((ImageMeasurementP) parameters.getParameter(IMAGE_MEASUREMENT)).setImageName(imageName);
+
+                break;
+            case ReferenceModes.OBJECT_MEASUREMENT:
+                returnedParameters.add(parameters.getParameter(OBJECT_MEASUREMENT));
+                String objectsName = parameters.getValue(INPUT_OBJECTS);
+                ((ObjectMeasurementP) parameters.getParameter(OBJECT_MEASUREMENT)).setObjectName(objectsName);
+                break;
+        }
+
+        returnedParameters.add(parameters.getParameter(RELATIVE_SLICE_INDICES));
+
+        return returnedParameters;
+
+    }
+
+    @Override
+    public ImageMeasurementRefCollection updateAndGetImageMeasurementRefs() {
+        return null;
+    }
+
+    @Override
+    public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+        return null;
+    }
+
+    @Override
+    public MetadataRefCollection updateAndGetMetadataReferences() {
+        return null;
+    }
+
+    @Override
+    public ParentChildRefCollection updateAndGetParentChildRefs() {
+        ParentChildRefCollection returnedRelationships = new ParentChildRefCollection();
+
+        String inputObjects = parameters.getValue(INPUT_OBJECTS);
+        String outputObjects = parameters.getValue(OUTPUT_OBJECTS);
+
+        returnedRelationships.add(new ParentChildRef(inputObjects, outputObjects));
+
+        return returnedRelationships;
+
+    }
+
+    @Override
+    public PartnerRefCollection updateAndGetPartnerRefs() {
+        return null;
+    }
+
+    @Override
+    public boolean verify() {
+        return true;
+    }
+
+    void addParameterDescriptions() {
+        parameters.get(INPUT_OBJECTS).setDescription("Input objects from workspace for which cross-sections will be extracted.");
+
+        parameters.get(OUTPUT_OBJECTS).setDescription("Output cross-section objects.  These will be stored in the workspace with this name.");
+
+        // parameters.get(REFERENCE_MODE).setDescription("<li>");
+
+        // parameters.get(RELATIVE_SLICE_INDICES).setDescription();
+
+        // parameters.get(IMAGE_MEASUREMENT).setDescription();
+
+        // parameters.get(IMAGE_FOR_MEASUREMENT).setDescription();
+
+        // parameters.get(OBJECT_MEASUREMENT).setDescription();
+
+    }
+}
