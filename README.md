@@ -2,7 +2,7 @@
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.1201372.svg)](https://doi.org/10.5281/zenodo.1201320)
 [![JitPack](https://jitpack.io/v/SJCross/ModularImageAnalysis.svg)](https://jitpack.io/#SJCross/ModularImageAnalysis/)
 
-[![Wolfson Bioimaging](./src/main/resources/Images/Logo_text_UoB_128.png)](http://www.bristol.ac.uk/wolfson-bioimaging/)
+[![Wolfson Bioimaging](src/main/resources/images/Logo_text_UoB_128.png)](http://www.bristol.ac.uk/wolfson-bioimaging/)
 
 About MIA
 ------------
@@ -20,7 +20,7 @@ Installation
 
 Create new workflow
 ------------
-- In Fiji, run the plugin from Plugins > Bristol WBIF > Modular Image Analysis
+- In Fiji, run the plugin from Plugins > MIA > MIA (Modular Image Analysis)
 > - Select View > "Switch to editing view" from the menu bar
 > - Modules are added and removed from the workflow using the "+" and "-" buttons
 > - Module order can be shifted with the arrow buttons
@@ -30,7 +30,7 @@ Create new workflow
 
 Use existing workflow
 ------------
-- In Fiji, run the plugin from Plugins > Bristol WBIF > Modular Image Analysis
+- In Fiji, run the plugin from Plugins > MIA > MIA (Modular Image Analysis)
 - To run an existing analysis workflow
 > - Click "Load" and select the .mia workflow file
 > - Depending on workflow configuration, a number of controls may be visible

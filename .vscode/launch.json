@@ -8,6 +8,13 @@
             "type": "java",
             "name": "Launch MIA",
             "request": "launch",
+            "mainClass": "io.github.mianalysis.mia.MIA",
+            "projectName": "MIA"
+        },
+        {
+            "type": "java",
+            "name": "Launch MIA",
+            "request": "launch",
             "mainClass": "io.github.mianalysis.MIA.MIA",
             "projectName": "MIA_"
         },
