@@ -163,10 +163,10 @@ public class RunScript extends Module {
                     break;
             }
 
-            if (scriptText.contains("@ io.github.mianalysis.MIA.Object.Workspace workspace"))
+            if (scriptText.contains("@ io.github.mianalysis.mia.object.Workspace workspace"))
                 scriptParameters.put("workspace", workspace);
 
-            if (scriptText.contains("@ io.github.mianalysis.MIA.Module.Module thisModule"))
+            if (scriptText.contains("@ io.github.mianalysis.mia.module.Module thisModule"))
                 scriptParameters.put("thisModule", this);
 
             // Running script
@@ -205,7 +205,7 @@ public class RunScript extends Module {
         parameters.add(new ChoiceP(SCRIPT_MODE, this, ScriptModes.SCRIPT_TEXT, ScriptModes.ALL));
         parameters.add(new ChoiceP(SCRIPT_LANGUAGE, this, ScriptLanguages.IMAGEJ1, ScriptLanguages.ALL));
         parameters.add(new TextAreaP(SCRIPT_TEXT, this,
-                "// The following two parameters will provide references to the workspace and current module.\n#@ io.github.mianalysis.MIA.Object.Workspace workspace\n#@ io.github.mianalysis.MIA.Module.Module thisModule",
+                "// The following two parameters will provide references to the workspace and current module.\n#@ io.github.mianalysis.mia.object.Workspace workspace\n#@ io.github.mianalysis.mia.module.Module thisModule",
                 true));
         parameters.add(new FilePathP(SCRIPT_FILE, this));
         parameters.add(new GenericButtonP(REFRESH_BUTTON, this, "Refresh", GenericButtonP.DefaultModes.REFRESH));
@@ -323,11 +323,11 @@ public class RunScript extends Module {
                 + "\" box.  This parameter is not necessary when loading a script from file, since the file extension provides the language information.");
 
         parameters.get(SCRIPT_TEXT).setDescription(
-                "Script code to be executed.  Access to the active MIA workspace and module are provided by the first two lines of code (\"#@ io.github.mianalysis.MIA.Object.Workspace workspace\" and \"#@ io.github.mianalysis.MIA.Module.Module thisModule\"), which are included by default.  With these lines present in the script, the workspace can be accessed via the \"workspace\" variable and the current module (i.e. this script module) via the \"thisModule\" variable.");
+                "Script code to be executed.  Access to the active MIA workspace and module are provided by the first two lines of code (\"#@ io.github.mianalysis.mia.object.Workspace workspace\" and \"#@ io.github.mianalysis.mia.module.Module thisModule\"), which are included by default.  With these lines present in the script, the workspace can be accessed via the \"workspace\" variable and the current module (i.e. this script module) via the \"thisModule\" variable.");
 
         parameters.get(SCRIPT_FILE).setDescription("Select a script file to be run by this module.  As with the \""
                 + SCRIPT_TEXT
-                + "\" parameter, this script can start with the lines \"#@ io.github.mianalysis.MIA.Object.Workspace workspace\" and \"#@ io.github.mianalysis.MIA.Module.Module thisModule\", which provide access to the active workspace and this module.");
+                + "\" parameter, this script can start with the lines \"#@ io.github.mianalysis.mia.object.Workspace workspace\" and \"#@ io.github.mianalysis.mia.module.Module thisModule\", which provide access to the active workspace and this module.");
 
         parameters.get(REFRESH_BUTTON).setDescription(
                 "This button refreshes the script code as stored within MIA.  Clicking this will create an \"undo\" checkpoint and validate any global variables that have been used.");

@@ -13,7 +13,7 @@
     <version>0.20.0</version>
     <packaging>jar</packaging>
     <name>MIA</name>
-    <url>https://github.com/mianalysis/MIA</url>
+    <url>https://github.com/mianalysis/mia</url>
     <inceptionYear>2017</inceptionYear>
     <description>Image/object analysis using modularised components</description>
     <organization>
@@ -72,7 +72,7 @@
 
     <issueManagement>
         <system>GitHub Issues</system>
-        <url>https://github.com/SJCross/ModularImageAnalysis/issues</url>
+        <url>https://github.com/mianalysis/mia/issues</url>
     </issueManagement>
 
     <properties>
@@ -93,10 +93,10 @@
     </mailingLists>
 
     <scm>
-        <connection>scm:git:git://github.com/SJCross/ModularImageAnalysis</connection>
-        <developerConnection>scm:git:git@github.com:SJCross/ModularImageAnalysis</developerConnection>
+        <connection>scm:git:git://github.com/mianalysis/mia</connection>
+        <developerConnection>scm:git:git@github.com:mianalysis/mia</developerConnection>
         <tag>HEAD</tag>
-        <url>https://github.com/SJCross/ModularImageAnalysis</url>
+        <url>https://github.com/mianalysis/mia</url>
     </scm>
 
     <ciManagement>

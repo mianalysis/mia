@@ -6,4 +6,4 @@ Required plugins that need installing via the Fiji updater: [Ridge Detection](ht
 
 Plugins bundled with MIA: [BoneJ legacy plugins](https://github.com/mdoube/BoneJ), [Stack Focuser](https://imagej.nih.gov/ij/plugins/stack-focuser.html).
 
-A list of bundled dependencies along with their respective licenses can be found [here](https://htmlpreview.github.io/?https://github.com/SJCross/MIA/blob/master/target/site/dependencies.html).
+A list of bundled dependencies along with their respective licenses can be found [here](https://htmlpreview.github.io/?https://github.com/mianalysis/mia/blob/master/target/site/dependencies.html).
