@@ -1,8 +1,8 @@
 package io.github.mianalysis.mia.module.Visualisation.overlays;
 
-import io.github.mianalysis.mia.module.ModuleTest;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import static org.junit.jupiter.api.Assertions.*;
+import io.github.mianalysis.mia.module.ModuleTest;
 
 /**
  * Created by Stephen Cross on 29/03/2019.

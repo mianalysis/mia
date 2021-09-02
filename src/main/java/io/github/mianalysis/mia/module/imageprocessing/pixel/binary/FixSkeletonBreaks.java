@@ -1,4 +1,4 @@
-package io.github.mianalysis.mia.module.imageprocessing.pixel.Binary;
+package io.github.mianalysis.mia.module.imageprocessing.pixel.binary;
 
 import ij.ImagePlus;
 import io.github.mianalysis.mia.module.Categories;

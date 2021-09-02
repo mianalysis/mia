@@ -1,4 +1,3 @@
-package io.github.mianalysis.mia.module.imagemeasurements;
 // package io.github.mianalysis.MIA.Module.ImageMeasurements;
 
 // import static org.junit.jupiter.api.Assertions.assertEquals;

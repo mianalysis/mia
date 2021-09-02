@@ -20,7 +20,7 @@ import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.imageprocessing.pixel.ImageCalculator;
 import io.github.mianalysis.mia.module.imageprocessing.pixel.InvertIntensity;
-import io.github.mianalysis.mia.module.imageprocessing.pixel.Binary.BinaryOperations2D;
+import io.github.mianalysis.mia.module.imageprocessing.pixel.binary.BinaryOperations2D;
 import io.github.mianalysis.mia.module.imageprocessing.pixel.Threshold.ManualThreshold;
 import io.github.mianalysis.mia.Object.Image;
 import io.github.mianalysis.mia.Object.Measurement;

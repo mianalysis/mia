@@ -1,6 +1,6 @@
 // TODO: What happens when 3D distance map is generateModuleList on 4D or 5D image hyperstack?
 
-package io.github.mianalysis.mia.module.imageprocessing.pixel.Binary;
+package io.github.mianalysis.mia.module.imageprocessing.pixel.binary;
 
 import ij.IJ;
 import ij.ImagePlus;

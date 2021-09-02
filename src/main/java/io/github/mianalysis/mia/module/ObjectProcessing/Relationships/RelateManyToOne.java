@@ -12,7 +12,7 @@ import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.imageprocessing.pixel.ProjectImage;
-import io.github.mianalysis.mia.module.imageprocessing.pixel.Binary.DistanceMap;
+import io.github.mianalysis.mia.module.imageprocessing.pixel.binary.DistanceMap;
 import io.github.mianalysis.mia.Object.Image;
 import io.github.mianalysis.mia.Object.Measurement;
 import io.github.mianalysis.mia.Object.Obj;

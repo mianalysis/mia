@@ -1,4 +1,4 @@
-package io.github.mianalysis.mia.module.imageprocessing.pixel.Binary;
+package io.github.mianalysis.mia.module.imageprocessing.pixel.binary;
 
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;

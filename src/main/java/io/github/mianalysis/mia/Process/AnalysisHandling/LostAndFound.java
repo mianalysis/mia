@@ -6,7 +6,7 @@ import io.github.mianalysis.mia.module.core.InputControl;
 import io.github.mianalysis.mia.module.imageprocessing.pixel.ImageMath;
 // import io.github.mianalysis.MIA.Module.ImageMeasurements.MeasureIntensityDistribution;
 import io.github.mianalysis.mia.module.imageprocessing.pixel.WekaProbabilityMaps;
-import io.github.mianalysis.mia.module.imageprocessing.pixel.Binary.DistanceMap;
+import io.github.mianalysis.mia.module.imageprocessing.pixel.binary.DistanceMap;
 import io.github.mianalysis.mia.module.imageprocessing.pixel.Threshold.LocalAutoThreshold;
 import io.github.mianalysis.mia.module.imageprocessing.pixel.Threshold.ThresholdImage;
 import io.github.mianalysis.mia.module.imageprocessing.Stack.Registration.AffineBlockMatching;

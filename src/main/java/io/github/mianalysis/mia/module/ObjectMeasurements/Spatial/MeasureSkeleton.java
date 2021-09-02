@@ -18,7 +18,7 @@ import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.core.InputControl;
-import io.github.mianalysis.mia.module.imageprocessing.pixel.Binary.Skeletonise;
+import io.github.mianalysis.mia.module.imageprocessing.pixel.binary.Skeletonise;
 import io.github.mianalysis.mia.module.ObjectProcessing.Identification.IdentifyObjects;
 import io.github.mianalysis.mia.module.ObjectProcessing.Refinement.FilterObjects.FilterOnImageEdge;
 import io.github.mianalysis.mia.Object.Image;

@@ -22,7 +22,7 @@ import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.module.imageprocessing.pixel.Binary.DistanceMap;
+import io.github.mianalysis.mia.module.imageprocessing.pixel.binary.DistanceMap;
 import io.github.mianalysis.mia.module.ObjectProcessing.Identification.GetLocalObjectRegion;
 import io.github.mianalysis.mia.Object.Image;
 import io.github.mianalysis.mia.Object.LocationWrapper;

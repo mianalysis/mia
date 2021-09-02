@@ -1,4 +1,4 @@
-package io.github.mianalysis.mia.module.imageprocessing.pixel.Binary;
+package io.github.mianalysis.mia.module.imageprocessing.pixel.binary;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;

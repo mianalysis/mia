@@ -30,7 +30,7 @@ import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.module.imageprocessing.pixel.Binary.Skeletonise;
+import io.github.mianalysis.mia.module.imageprocessing.pixel.binary.Skeletonise;
 import io.github.mianalysis.mia.module.InputOutput.ImageSaver;
 import io.github.mianalysis.mia.Object.Image;
 import io.github.mianalysis.mia.Object.Obj;

@@ -6,7 +6,7 @@ import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.imageprocessing.pixel.InvertIntensity;
-import io.github.mianalysis.mia.module.imageprocessing.pixel.Binary.BinaryOperations2D;
+import io.github.mianalysis.mia.module.imageprocessing.pixel.binary.BinaryOperations2D;
 import io.github.mianalysis.mia.Object.Image;
 import io.github.mianalysis.mia.Object.Obj;
 import io.github.mianalysis.mia.Object.Objs;
