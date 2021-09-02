@@ -1,10 +1,10 @@
-package io.github.mianalysis.MIA.Object;
+package io.github.mianalysis.mia.Object;
 
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class WorkspacesTest {
 

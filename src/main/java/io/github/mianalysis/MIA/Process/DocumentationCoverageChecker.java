@@ -1,4 +1,4 @@
-package io.github.mianalysis.MIA.Process;
+package io.github.mianalysis.mia.Process;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -7,17 +7,17 @@ import java.text.DecimalFormat;
 import java.util.List;
 import java.util.StringTokenizer;
 
-import io.github.mianalysis.MIA.Module.Module;
-import io.github.mianalysis.MIA.Module.Modules;
-import io.github.mianalysis.MIA.Object.Parameters.Parameters;
-import io.github.mianalysis.MIA.Object.Parameters.ParameterGroup;
-import io.github.mianalysis.MIA.Object.Parameters.SeparatorP;
-import io.github.mianalysis.MIA.Object.Parameters.Abstract.Parameter;
-import io.github.mianalysis.MIA.Object.Parameters.Text.MessageP;
-import io.github.mianalysis.MIA.Object.Refs.ImageMeasurementRef;
-import io.github.mianalysis.MIA.Object.Refs.ObjMeasurementRef;
-import io.github.mianalysis.MIA.Object.Refs.Collections.ImageMeasurementRefs;
-import io.github.mianalysis.MIA.Object.Refs.Collections.ObjMeasurementRefs;
+import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.Object.Parameters.Parameters;
+import io.github.mianalysis.mia.Object.Parameters.ParameterGroup;
+import io.github.mianalysis.mia.Object.Parameters.SeparatorP;
+import io.github.mianalysis.mia.Object.Parameters.Abstract.Parameter;
+import io.github.mianalysis.mia.Object.Parameters.Text.MessageP;
+import io.github.mianalysis.mia.Object.Refs.ImageMeasurementRef;
+import io.github.mianalysis.mia.Object.Refs.ObjMeasurementRef;
+import io.github.mianalysis.mia.Object.Refs.Collections.ImageMeasurementRefs;
+import io.github.mianalysis.mia.Object.Refs.Collections.ObjMeasurementRefs;
 
 public class DocumentationCoverageChecker {
     public static void main(String[] args) {

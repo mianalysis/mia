@@ -1,4 +1,4 @@
-package io.github.mianalysis.MIA.Module.ImageProcessing.Stack.Registration;
+package io.github.mianalysis.mia.module.imageprocessing.Stack.Registration;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,13 +11,13 @@ import mpicbg.imagefeatures.FloatArray2DMOPS;
 import mpicbg.models.AbstractAffineModel2D;
 import mpicbg.models.NotEnoughDataPointsException;
 import mpicbg.models.PointMatch;
-import io.github.mianalysis.MIA.Module.Modules;
-import io.github.mianalysis.MIA.Module.ImageProcessing.Stack.Registration.Abstract.AbstractAffineRegistration;
-import io.github.mianalysis.MIA.Object.Workspace;
-import io.github.mianalysis.MIA.Object.Parameters.Parameters;
-import io.github.mianalysis.MIA.Object.Parameters.SeparatorP;
-import io.github.mianalysis.MIA.Object.Parameters.Text.DoubleP;
-import io.github.mianalysis.MIA.Object.Parameters.Text.IntegerP;
+import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.imageprocessing.Stack.Registration.Abstract.AbstractAffineRegistration;
+import io.github.mianalysis.mia.Object.Workspace;
+import io.github.mianalysis.mia.Object.Parameters.Parameters;
+import io.github.mianalysis.mia.Object.Parameters.SeparatorP;
+import io.github.mianalysis.mia.Object.Parameters.Text.DoubleP;
+import io.github.mianalysis.mia.Object.Parameters.Text.IntegerP;
 
 public class AffineMOPS extends AbstractAffineRegistration {
         public static final String FEATURE_SEPARATOR = "Feature detection";

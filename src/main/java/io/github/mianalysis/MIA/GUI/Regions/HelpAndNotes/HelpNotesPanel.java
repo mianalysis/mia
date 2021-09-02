@@ -1,4 +1,4 @@
-package io.github.mianalysis.MIA.GUI.Regions.HelpAndNotes;
+package io.github.mianalysis.mia.gui.regions.helpandnotes;
 
 import java.awt.Dimension;
 
@@ -6,7 +6,7 @@ import javax.swing.JSplitPane;
 import javax.swing.border.EmptyBorder;
 import javax.swing.plaf.basic.BasicSplitPaneUI;
 
-import io.github.mianalysis.MIA.Module.Module;
+import io.github.mianalysis.mia.module.Module;
 
 public class HelpNotesPanel extends JSplitPane {
     /**

@@ -1,8 +1,8 @@
-package io.github.mianalysis.MIA.Macro.ImageProcessing;
+package io.github.mianalysis.mia.macro.imageprocessing;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import io.github.mianalysis.MIA.Macro.MacroOperationTest;
+import io.github.mianalysis.mia.macro.MacroOperationTest;
 
 public class MIA_ListImagesInWorkspaceTest extends MacroOperationTest {
 

@@ -1,19 +1,19 @@
-package io.github.mianalysis.MIA.GUI.Regions.ParameterList;
+package io.github.mianalysis.mia.gui.regions.parameterlist;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JCheckBox;
 
-import io.github.mianalysis.MIA.GUI.GUI;
-import io.github.mianalysis.MIA.Module.Modules;
-import io.github.mianalysis.MIA.Object.Parameters.OutputImageP;
-import io.github.mianalysis.MIA.Object.Parameters.Objects.OutputObjectsP;
-import io.github.mianalysis.MIA.Object.Refs.Abstract.ExportableRef;
-import io.github.mianalysis.MIA.Object.Refs.Abstract.SummaryRef;
-import io.github.mianalysis.MIA.Object.Refs.Collections.ImageMeasurementRefs;
-import io.github.mianalysis.MIA.Object.Refs.Collections.MetadataRefs;
-import io.github.mianalysis.MIA.Object.Refs.Collections.ObjMeasurementRefs;
+import io.github.mianalysis.mia.gui.GUI;
+import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.Object.Parameters.OutputImageP;
+import io.github.mianalysis.mia.Object.Parameters.Objects.OutputObjectsP;
+import io.github.mianalysis.mia.Object.Refs.Abstract.ExportableRef;
+import io.github.mianalysis.mia.Object.Refs.Abstract.SummaryRef;
+import io.github.mianalysis.mia.Object.Refs.Collections.ImageMeasurementRefs;
+import io.github.mianalysis.mia.Object.Refs.Collections.MetadataRefs;
+import io.github.mianalysis.mia.Object.Refs.Collections.ObjMeasurementRefs;
 
 /**
  * Created by Stephen Cross on 02/12/2017.

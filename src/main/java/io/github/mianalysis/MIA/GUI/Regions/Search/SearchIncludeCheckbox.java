@@ -1,4 +1,4 @@
-package io.github.mianalysis.MIA.GUI.Regions.Search;
+package io.github.mianalysis.mia.gui.regions.search;
 
 import java.awt.Dimension;
 import java.awt.Font;

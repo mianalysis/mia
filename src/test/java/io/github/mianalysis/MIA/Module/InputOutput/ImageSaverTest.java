@@ -1,4 +1,4 @@
-package io.github.mianalysis.MIA.Module.InputOutput;
+package io.github.mianalysis.mia.module.InputOutput;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -14,12 +14,12 @@ import org.junit.jupiter.api.io.TempDir;
 
 import ij.IJ;
 import ij.ImagePlus;
-import io.github.mianalysis.MIA.Module.Module;
-import io.github.mianalysis.MIA.Module.Modules;
-import io.github.mianalysis.MIA.Module.ModuleTest;
-import io.github.mianalysis.MIA.Object.Image;
-import io.github.mianalysis.MIA.Object.Workspace;
-import io.github.mianalysis.MIA.Object.Workspaces;
+import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModuleTest;
+import io.github.mianalysis.mia.Object.Image;
+import io.github.mianalysis.mia.Object.Workspace;
+import io.github.mianalysis.mia.Object.Workspaces;
 
 /**
  * Created by sc13967 on 13/11/2017.

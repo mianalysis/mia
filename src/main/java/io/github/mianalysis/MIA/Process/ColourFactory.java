@@ -1,12 +1,12 @@
-package io.github.mianalysis.MIA.Process;
+package io.github.mianalysis.mia.Process;
 
 import java.awt.Color;
 import java.util.HashMap;
 import java.util.Random;
 
-import io.github.mianalysis.MIA.Object.Measurement;
-import io.github.mianalysis.MIA.Object.Obj;
-import io.github.mianalysis.MIA.Object.Objs;
+import io.github.mianalysis.mia.Object.Measurement;
+import io.github.mianalysis.mia.Object.Obj;
+import io.github.mianalysis.mia.Object.Objs;
 import io.github.sjcross.common.MathFunc.CumStat;
 
 public class ColourFactory {

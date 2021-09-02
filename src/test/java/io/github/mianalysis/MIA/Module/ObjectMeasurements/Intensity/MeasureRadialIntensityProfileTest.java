@@ -1,4 +1,4 @@
-package io.github.mianalysis.MIA.Module.ObjectMeasurements.Intensity;
+package io.github.mianalysis.mia.module.ObjectMeasurements.Intensity;
 // package io.github.mianalysis.MIA.Module.ObjectMeasurements.Intensity;
 
 // import io.github.mianalysis.MIA.Module.ModuleTest;

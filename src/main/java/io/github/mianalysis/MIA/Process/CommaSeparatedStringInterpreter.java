@@ -1,4 +1,4 @@
-package io.github.mianalysis.MIA.Process;
+package io.github.mianalysis.mia.Process;
 
 import java.util.LinkedHashSet;
 import java.util.StringTokenizer;

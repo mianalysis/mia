@@ -1,4 +1,4 @@
-package io.github.mianalysis.MIA.Process.Logging;
+package io.github.mianalysis.mia.Process.Logging;
 
 import java.awt.Color;
 import java.util.HashMap;
@@ -15,7 +15,7 @@ import org.scijava.ui.UIService;
 import org.scijava.ui.console.ConsolePane;
 import org.scijava.ui.swing.console.ConsolePanel;
 
-import io.github.mianalysis.MIA.Object.Colours;
+import io.github.mianalysis.mia.Object.Colours;
 
 /**
  * Created by Stephen Cross on 14/06/2019.

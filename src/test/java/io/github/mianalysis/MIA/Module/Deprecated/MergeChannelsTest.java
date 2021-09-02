@@ -1,13 +1,13 @@
-package io.github.mianalysis.MIA.Module.Deprecated;
+package io.github.mianalysis.mia.module.Deprecated;
 
 import ij.IJ;
 import ij.ImagePlus;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import io.github.mianalysis.MIA.Module.Module;
-import io.github.mianalysis.MIA.Module.ModuleTest;
-import io.github.mianalysis.MIA.Module.ImageProcessing.Stack.MergeChannels;
-import io.github.mianalysis.MIA.Object.Image;
+import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.module.ModuleTest;
+import io.github.mianalysis.mia.module.imageprocessing.Stack.MergeChannels;
+import io.github.mianalysis.mia.Object.Image;
 
 import java.net.URLDecoder;
 

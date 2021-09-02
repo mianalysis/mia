@@ -1,4 +1,4 @@
-package io.github.mianalysis.MIA.GUI.Regions.Search;
+package io.github.mianalysis.mia.gui.regions.search;
 
 import java.awt.Dimension;
 import java.awt.Font;
@@ -15,9 +15,9 @@ import javax.swing.JSeparator;
 import javax.swing.JTextArea;
 import javax.swing.JTextPane;
 
-import io.github.mianalysis.MIA.MIA;
-import io.github.mianalysis.MIA.Module.Module;
-import io.github.mianalysis.MIA.Process.ModuleSearcher.SearchMatch;
+import io.github.mianalysis.mia.MIA;
+import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.Process.ModuleSearcher.SearchMatch;
 
 public class ResultsPanel extends JPanel {
     public ResultsPanel() {

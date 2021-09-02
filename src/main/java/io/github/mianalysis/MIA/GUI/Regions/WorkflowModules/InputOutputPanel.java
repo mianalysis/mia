@@ -1,4 +1,4 @@
-package io.github.mianalysis.MIA.GUI.Regions.WorkflowModules;
+package io.github.mianalysis.mia.gui.regions.workflowmodules;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -6,7 +6,7 @@ import java.awt.Insets;
 
 import javax.swing.JPanel;
 
-import io.github.mianalysis.MIA.Module.Module;
+import io.github.mianalysis.mia.module.Module;
 
 public class InputOutputPanel extends JPanel {
     /**

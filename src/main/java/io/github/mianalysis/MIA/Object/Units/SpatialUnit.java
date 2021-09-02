@@ -1,4 +1,4 @@
-package io.github.mianalysis.MIA.Object.Units;
+package io.github.mianalysis.mia.Object.Units;
 
 import ome.units.UNITS;
 import ome.units.quantity.Length;

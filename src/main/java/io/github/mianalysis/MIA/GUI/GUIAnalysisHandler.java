@@ -1,15 +1,15 @@
-package io.github.mianalysis.MIA.GUI;
+package io.github.mianalysis.mia.gui;
 
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
-import io.github.mianalysis.MIA.MIA;
-import io.github.mianalysis.MIA.Module.InputOutput.ImageLoader;
-import io.github.mianalysis.MIA.Module.Module;
-import io.github.mianalysis.MIA.Module.Modules;
-import io.github.mianalysis.MIA.Process.AnalysisHandling.Analysis;
-import io.github.mianalysis.MIA.Process.AnalysisHandling.AnalysisReader;
-import io.github.mianalysis.MIA.Process.AnalysisHandling.AnalysisRunner;
-import io.github.mianalysis.MIA.Process.AnalysisHandling.AnalysisWriter;
+import io.github.mianalysis.mia.MIA;
+import io.github.mianalysis.mia.module.InputOutput.ImageLoader;
+import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.Process.AnalysisHandling.Analysis;
+import io.github.mianalysis.mia.Process.AnalysisHandling.AnalysisReader;
+import io.github.mianalysis.mia.Process.AnalysisHandling.AnalysisRunner;
+import io.github.mianalysis.mia.Process.AnalysisHandling.AnalysisWriter;
 
 import javax.swing.*;
 import javax.xml.parsers.ParserConfigurationException;

@@ -1,4 +1,4 @@
-package io.github.mianalysis.MIA.Module;
+package io.github.mianalysis.mia.module;
 
 public class Categories {
         public final static Category ROOT = new Category("Modules",

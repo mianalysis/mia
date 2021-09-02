@@ -1,8 +1,8 @@
-package io.github.mianalysis.MIA.GUI.ParameterControls;
+package io.github.mianalysis.mia.gui.parametercontrols;
 
 import javax.swing.JComponent;
 
-import io.github.mianalysis.MIA.Object.Parameters.Abstract.Parameter;
+import io.github.mianalysis.mia.Object.Parameters.Abstract.Parameter;
 
 public abstract class ParameterControl {
     protected Parameter parameter;

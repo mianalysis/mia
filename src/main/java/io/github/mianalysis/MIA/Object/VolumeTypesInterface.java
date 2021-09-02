@@ -1,4 +1,4 @@
-package io.github.mianalysis.MIA.Object;
+package io.github.mianalysis.mia.Object;
 
 import io.github.sjcross.common.Object.Volume.VolumeType;
 

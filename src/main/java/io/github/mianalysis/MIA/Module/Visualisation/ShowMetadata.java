@@ -1,20 +1,20 @@
-package io.github.mianalysis.MIA.Module.Visualisation;
+package io.github.mianalysis.mia.module.Visualisation;
 
 import java.awt.Color;
 
-import io.github.mianalysis.MIA.Module.Module;
-import io.github.mianalysis.MIA.Module.Modules;
-import io.github.mianalysis.MIA.Module.Category;
-import io.github.mianalysis.MIA.Module.Categories;
-import io.github.mianalysis.MIA.Object.Status;
-import io.github.mianalysis.MIA.Object.Workspace;
-import io.github.mianalysis.MIA.Object.Parameters.Parameters;
-import io.github.mianalysis.MIA.Object.Parameters.Text.MessageP;
-import io.github.mianalysis.MIA.Object.Refs.Collections.ImageMeasurementRefs;
-import io.github.mianalysis.MIA.Object.Refs.Collections.MetadataRefs;
-import io.github.mianalysis.MIA.Object.Refs.Collections.ObjMeasurementRefs;
-import io.github.mianalysis.MIA.Object.Refs.Collections.ParentChildRefs;
-import io.github.mianalysis.MIA.Object.Refs.Collections.PartnerRefs;
+import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.Category;
+import io.github.mianalysis.mia.module.Categories;
+import io.github.mianalysis.mia.Object.Status;
+import io.github.mianalysis.mia.Object.Workspace;
+import io.github.mianalysis.mia.Object.Parameters.Parameters;
+import io.github.mianalysis.mia.Object.Parameters.Text.MessageP;
+import io.github.mianalysis.mia.Object.Refs.Collections.ImageMeasurementRefs;
+import io.github.mianalysis.mia.Object.Refs.Collections.MetadataRefs;
+import io.github.mianalysis.mia.Object.Refs.Collections.ObjMeasurementRefs;
+import io.github.mianalysis.mia.Object.Refs.Collections.ParentChildRefs;
+import io.github.mianalysis.mia.Object.Refs.Collections.PartnerRefs;
 
 /**
  * Created by Stephen Cross on 14/10/2019.

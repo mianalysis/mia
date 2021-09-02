@@ -1,4 +1,4 @@
-package io.github.mianalysis.MIA.Process;
+package io.github.mianalysis.mia.Process;
 
 import java.io.File;
 import java.io.FileReader;
@@ -26,15 +26,15 @@ import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.commonmark.parser.Parser;
 import org.commonmark.renderer.html.HtmlRenderer;
 
-import io.github.mianalysis.MIA.MIA;
-import io.github.mianalysis.MIA.Macro.MacroHandler;
-import io.github.mianalysis.MIA.Macro.MacroOperation;
-import io.github.mianalysis.MIA.Module.Categories;
-import io.github.mianalysis.MIA.Module.Category;
-import io.github.mianalysis.MIA.Module.Module;
-import io.github.mianalysis.MIA.Module.Modules;
-import io.github.mianalysis.MIA.Object.Parameters.ParameterGroup;
-import io.github.mianalysis.MIA.Object.Parameters.Abstract.Parameter;
+import io.github.mianalysis.mia.MIA;
+import io.github.mianalysis.mia.macro.MacroHandler;
+import io.github.mianalysis.mia.macro.MacroOperation;
+import io.github.mianalysis.mia.module.Categories;
+import io.github.mianalysis.mia.module.Category;
+import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.Object.Parameters.ParameterGroup;
+import io.github.mianalysis.mia.Object.Parameters.Abstract.Parameter;
 
 public class DocumentationGenerator {
     public static void main(String[] args) {
@@ -476,7 +476,7 @@ public class DocumentationGenerator {
             sb.append("<html><body><div align=\"justify\">");
 
             sb.append("<img src=\"");
-            sb.append(MIA.class.getResource("/Images/Logo_text_UoB_64.png").toString());
+            sb.append(MIA.class.getResource("/images/Logo_text_UoB_64.png").toString());
             sb.append("\" align=\"middle\">");
             sb.append("<br><br>");
 
@@ -520,7 +520,7 @@ public class DocumentationGenerator {
             sb.append("<html><body><div align=\"justify\">");
 
             sb.append("<img src=\"");
-            sb.append(MIA.class.getResource("/Images/Logo_text_UoB_64.png").toString());
+            sb.append(MIA.class.getResource("/images/Logo_text_UoB_64.png").toString());
             sb.append("\" align=\"middle\">");
             sb.append("<br><br>");
 

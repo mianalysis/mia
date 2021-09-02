@@ -1,10 +1,10 @@
-package io.github.mianalysis.MIA.Macro.ObjectMeasurements.Spatial;
+package io.github.mianalysis.mia.macro.objectmeasurements.spatial;
 
 import ij.macro.MacroExtension;
-import io.github.mianalysis.MIA.Macro.MacroOperation;
-import io.github.mianalysis.MIA.Module.Modules;
-import io.github.mianalysis.MIA.Module.ObjectMeasurements.Spatial.MeasureObjectCentroid;
-import io.github.mianalysis.MIA.Object.Workspace;
+import io.github.mianalysis.mia.macro.MacroOperation;
+import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ObjectMeasurements.Spatial.MeasureObjectCentroid;
+import io.github.mianalysis.mia.Object.Workspace;
 
 public class MIA_MeasureObjectCentroid extends MacroOperation {
     public MIA_MeasureObjectCentroid(MacroExtension theHandler) {

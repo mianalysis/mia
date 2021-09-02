@@ -1,8 +1,8 @@
-package io.github.mianalysis.MIA.Process.Logging;
+package io.github.mianalysis.mia.Process.Logging;
 
 import java.util.HashSet;
 
-import io.github.mianalysis.MIA.Process.Logging.LogRenderer.Level;
+import io.github.mianalysis.mia.Process.Logging.LogRenderer.Level;
 
 /**
  * Created by Stephen Cross on 14/06/2019.

@@ -1,12 +1,12 @@
-package io.github.mianalysis.MIA.Process.AnalysisHandling;
+package io.github.mianalysis.mia.Process.AnalysisHandling;
 
-import io.github.mianalysis.MIA.Module.Module;
-import io.github.mianalysis.MIA.Module.Modules;
-import io.github.mianalysis.MIA.Module.Miscellaneous.GlobalVariables;
-import io.github.mianalysis.MIA.Module.WorkflowHandling.FixedTextCondition;
-import io.github.mianalysis.MIA.Module.WorkflowHandling.GUICondition;
-import io.github.mianalysis.MIA.Module.WorkflowHandling.ModuleIsEnabled;
-import io.github.mianalysis.MIA.Object.Parameters.Abstract.Parameter;
+import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.Miscellaneous.GlobalVariables;
+import io.github.mianalysis.mia.module.workflowhandling.FixedTextCondition;
+import io.github.mianalysis.mia.module.workflowhandling.GUICondition;
+import io.github.mianalysis.mia.module.workflowhandling.ModuleIsEnabled;
+import io.github.mianalysis.mia.Object.Parameters.Abstract.Parameter;
 
 public class AnalysisTester {
     public static int testModules(Modules modules) {

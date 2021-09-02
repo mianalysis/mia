@@ -1,4 +1,4 @@
-package io.github.mianalysis.MIA.Macro;
+package io.github.mianalysis.mia.macro;
 
 import java.io.File;
 import java.io.IOException;
@@ -8,11 +8,11 @@ import java.util.List;
 
 import ij.macro.ExtensionDescriptor;
 import ij.macro.MacroExtension;
-import io.github.mianalysis.MIA.MIA;
-import io.github.mianalysis.MIA.Module.Modules;
-import io.github.mianalysis.MIA.Object.Workspace;
-import io.github.mianalysis.MIA.Object.Workspaces;
-import io.github.mianalysis.MIA.Process.ClassHunter;
+import io.github.mianalysis.mia.MIA;
+import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.Object.Workspace;
+import io.github.mianalysis.mia.Object.Workspaces;
+import io.github.mianalysis.mia.Process.ClassHunter;
 
 public class MacroHandler implements MacroExtension {
     private static MacroHandler macroHandler = null;

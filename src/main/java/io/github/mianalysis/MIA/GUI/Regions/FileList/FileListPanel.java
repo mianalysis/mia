@@ -1,4 +1,4 @@
-package io.github.mianalysis.MIA.GUI.Regions.FileList;
+package io.github.mianalysis.mia.gui.regions.filelist;
 
 import java.awt.Component;
 import java.awt.Dimension;
@@ -27,12 +27,12 @@ import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
 
-import io.github.mianalysis.MIA.GUI.GUI;
-import io.github.mianalysis.MIA.GUI.Regions.ClosePanelButton;
-import io.github.mianalysis.MIA.Object.Colours;
-import io.github.mianalysis.MIA.Object.Status;
-import io.github.mianalysis.MIA.Object.Workspace;
-import io.github.mianalysis.MIA.Object.Workspaces;
+import io.github.mianalysis.mia.gui.GUI;
+import io.github.mianalysis.mia.gui.regions.ClosePanelButton;
+import io.github.mianalysis.mia.Object.Colours;
+import io.github.mianalysis.mia.Object.Status;
+import io.github.mianalysis.mia.Object.Workspace;
+import io.github.mianalysis.mia.Object.Workspaces;
 import io.github.sjcross.common.MetadataExtractors.Metadata;
 
 public class FileListPanel extends JPanel implements MouseListener, TableCellRenderer {

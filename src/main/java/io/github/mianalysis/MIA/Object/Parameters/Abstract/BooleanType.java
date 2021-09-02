@@ -1,8 +1,8 @@
-package io.github.mianalysis.MIA.Object.Parameters.Abstract;
+package io.github.mianalysis.mia.Object.Parameters.Abstract;
 
-import io.github.mianalysis.MIA.GUI.ParameterControls.BooleanParameter;
-import io.github.mianalysis.MIA.GUI.ParameterControls.ParameterControl;
-import io.github.mianalysis.MIA.Module.Module;
+import io.github.mianalysis.mia.gui.parametercontrols.BooleanParameter;
+import io.github.mianalysis.mia.gui.parametercontrols.ParameterControl;
+import io.github.mianalysis.mia.module.Module;
 
 public abstract class BooleanType extends Parameter {
     protected boolean selected = false;

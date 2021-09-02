@@ -1,4 +1,4 @@
-package io.github.mianalysis.MIA.ThirdParty;
+package io.github.mianalysis.mia.ThirdParty;
 
 import bunwarpj.*;
 import ij.IJ;

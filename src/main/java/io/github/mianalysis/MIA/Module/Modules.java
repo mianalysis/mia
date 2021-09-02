@@ -2,28 +2,28 @@
 // to the list, but if it matches type 2 remove the same parameter from the list.  Would need to compare Parameters for
 // value.
 
-package io.github.mianalysis.MIA.Module;
+package io.github.mianalysis.mia.module;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 
-import io.github.mianalysis.MIA.Module.Core.InputControl;
-import io.github.mianalysis.MIA.Module.Core.OutputControl;
-import io.github.mianalysis.MIA.Object.Parameters.OutputImageP;
-import io.github.mianalysis.MIA.Object.Parameters.Parameters;
-import io.github.mianalysis.MIA.Object.Parameters.RemovedImageP;
-import io.github.mianalysis.MIA.Object.Parameters.Abstract.Parameter;
-import io.github.mianalysis.MIA.Object.Parameters.Objects.OutputObjectsP;
-import io.github.mianalysis.MIA.Object.Parameters.Objects.RemovedObjectsP;
-import io.github.mianalysis.MIA.Object.Refs.ImageMeasurementRef;
-import io.github.mianalysis.MIA.Object.Refs.ObjMeasurementRef;
-import io.github.mianalysis.MIA.Object.Refs.Collections.ImageMeasurementRefs;
-import io.github.mianalysis.MIA.Object.Refs.Collections.MetadataRefs;
-import io.github.mianalysis.MIA.Object.Refs.Collections.ObjMeasurementRefs;
-import io.github.mianalysis.MIA.Object.Refs.Collections.ParentChildRefs;
-import io.github.mianalysis.MIA.Object.Refs.Collections.PartnerRefs;
-import io.github.mianalysis.MIA.Object.Refs.Collections.Refs;
+import io.github.mianalysis.mia.module.core.InputControl;
+import io.github.mianalysis.mia.module.core.OutputControl;
+import io.github.mianalysis.mia.Object.Parameters.OutputImageP;
+import io.github.mianalysis.mia.Object.Parameters.Parameters;
+import io.github.mianalysis.mia.Object.Parameters.RemovedImageP;
+import io.github.mianalysis.mia.Object.Parameters.Abstract.Parameter;
+import io.github.mianalysis.mia.Object.Parameters.Objects.OutputObjectsP;
+import io.github.mianalysis.mia.Object.Parameters.Objects.RemovedObjectsP;
+import io.github.mianalysis.mia.Object.Refs.ImageMeasurementRef;
+import io.github.mianalysis.mia.Object.Refs.ObjMeasurementRef;
+import io.github.mianalysis.mia.Object.Refs.Collections.ImageMeasurementRefs;
+import io.github.mianalysis.mia.Object.Refs.Collections.MetadataRefs;
+import io.github.mianalysis.mia.Object.Refs.Collections.ObjMeasurementRefs;
+import io.github.mianalysis.mia.Object.Refs.Collections.ParentChildRefs;
+import io.github.mianalysis.mia.Object.Refs.Collections.PartnerRefs;
+import io.github.mianalysis.mia.Object.Refs.Collections.Refs;
 
 /**
  * Created by sc13967 on 03/05/2017.

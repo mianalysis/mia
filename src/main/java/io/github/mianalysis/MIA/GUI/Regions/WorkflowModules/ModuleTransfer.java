@@ -1,11 +1,11 @@
-package io.github.mianalysis.MIA.GUI.Regions.WorkflowModules;
+package io.github.mianalysis.mia.gui.regions.workflowmodules;
 
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.ClipboardOwner;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 
-import io.github.mianalysis.MIA.Module.Modules;
+import io.github.mianalysis.mia.module.Modules;
 
 public class ModuleTransfer implements Transferable, ClipboardOwner {
     private Modules modules;

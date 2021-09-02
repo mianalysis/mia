@@ -1,4 +1,4 @@
-package io.github.mianalysis.MIA.Object;
+package io.github.mianalysis.mia.Object;
 
 import java.awt.Color;
 import java.util.HashMap;
@@ -22,11 +22,11 @@ import net.imglib2.img.ImagePlusAdapter;
 import net.imglib2.img.display.imagej.ImageJFunctions;
 import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
-import io.github.mianalysis.MIA.MIA;
-import io.github.mianalysis.MIA.Module.Module;
-import io.github.mianalysis.MIA.Object.Refs.ImageMeasurementRef;
-import io.github.mianalysis.MIA.Object.Refs.Collections.ImageMeasurementRefs;
-import io.github.mianalysis.MIA.Object.Units.TemporalUnit;
+import io.github.mianalysis.mia.MIA;
+import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.Object.Refs.ImageMeasurementRef;
+import io.github.mianalysis.mia.Object.Refs.Collections.ImageMeasurementRefs;
+import io.github.mianalysis.mia.Object.Units.TemporalUnit;
 import io.github.sjcross.common.MathFunc.CumStat;
 import io.github.sjcross.common.Object.Volume.PointOutOfRangeException;
 import io.github.sjcross.common.Object.Volume.SpatCal;

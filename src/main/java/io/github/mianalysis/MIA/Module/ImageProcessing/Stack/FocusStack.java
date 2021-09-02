@@ -1,4 +1,4 @@
-package io.github.mianalysis.MIA.Module.ImageProcessing.Stack;
+package io.github.mianalysis.mia.module.imageprocessing.Stack;
 
 import org.eclipse.sisu.Nullable;
 
@@ -9,24 +9,24 @@ import ij.process.ByteProcessor;
 import ij.process.FloatProcessor;
 import ij.process.ImageProcessor;
 import ij.process.ShortProcessor;
-import io.github.mianalysis.MIA.Module.Module;
-import io.github.mianalysis.MIA.Module.Modules;
-import io.github.mianalysis.MIA.Module.Category;
-import io.github.mianalysis.MIA.Module.Categories;
-import io.github.mianalysis.MIA.Object.Image;
-import io.github.mianalysis.MIA.Object.Status;
-import io.github.mianalysis.MIA.Object.Workspace;
-import io.github.mianalysis.MIA.Object.Parameters.BooleanP;
-import io.github.mianalysis.MIA.Object.Parameters.InputImageP;
-import io.github.mianalysis.MIA.Object.Parameters.OutputImageP;
-import io.github.mianalysis.MIA.Object.Parameters.Parameters;
-import io.github.mianalysis.MIA.Object.Parameters.Text.IntegerP;
-import io.github.mianalysis.MIA.Object.Refs.Collections.ImageMeasurementRefs;
-import io.github.mianalysis.MIA.Object.Refs.Collections.MetadataRefs;
-import io.github.mianalysis.MIA.Object.Refs.Collections.ObjMeasurementRefs;
-import io.github.mianalysis.MIA.Object.Refs.Collections.ParentChildRefs;
-import io.github.mianalysis.MIA.Object.Refs.Collections.PartnerRefs;
-import io.github.mianalysis.MIA.ThirdParty.Stack_Focuser_;
+import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.Category;
+import io.github.mianalysis.mia.module.Categories;
+import io.github.mianalysis.mia.Object.Image;
+import io.github.mianalysis.mia.Object.Status;
+import io.github.mianalysis.mia.Object.Workspace;
+import io.github.mianalysis.mia.Object.Parameters.BooleanP;
+import io.github.mianalysis.mia.Object.Parameters.InputImageP;
+import io.github.mianalysis.mia.Object.Parameters.OutputImageP;
+import io.github.mianalysis.mia.Object.Parameters.Parameters;
+import io.github.mianalysis.mia.Object.Parameters.Text.IntegerP;
+import io.github.mianalysis.mia.Object.Refs.Collections.ImageMeasurementRefs;
+import io.github.mianalysis.mia.Object.Refs.Collections.MetadataRefs;
+import io.github.mianalysis.mia.Object.Refs.Collections.ObjMeasurementRefs;
+import io.github.mianalysis.mia.Object.Refs.Collections.ParentChildRefs;
+import io.github.mianalysis.mia.Object.Refs.Collections.PartnerRefs;
+import io.github.mianalysis.mia.ThirdParty.Stack_Focuser_;
 
 public class FocusStack extends Module {
     public static final String INPUT_IMAGE = "Input image";

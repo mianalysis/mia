@@ -1,4 +1,4 @@
-package io.github.mianalysis.MIA.Object;
+package io.github.mianalysis.mia.Object;
 
 import java.io.File;
 import java.util.HashMap;

@@ -1,4 +1,4 @@
-package io.github.mianalysis.MIA.Object.Parameters.Abstract;
+package io.github.mianalysis.mia.Object.Parameters.Abstract;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -7,9 +7,9 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
-import io.github.mianalysis.MIA.GUI.ParameterControls.ParameterControl;
-import io.github.mianalysis.MIA.Module.Module;
-import io.github.mianalysis.MIA.Object.Refs.Abstract.Ref;
+import io.github.mianalysis.mia.gui.parametercontrols.ParameterControl;
+import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.Object.Refs.Abstract.Ref;
 
 public abstract class Parameter extends Ref {
     protected Module module;

@@ -1,4 +1,4 @@
-package io.github.mianalysis.MIA.Process.AnalysisHandling;
+package io.github.mianalysis.mia.Process.AnalysisHandling;
 
 import java.awt.FileDialog;
 import java.awt.Frame;
@@ -19,16 +19,16 @@ import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import io.github.mianalysis.MIA.MIA;
-import io.github.mianalysis.MIA.Module.Module;
-import io.github.mianalysis.MIA.Module.Modules;
-import io.github.mianalysis.MIA.Object.Parameters.Parameters;
-import io.github.mianalysis.MIA.Object.Parameters.Abstract.Parameter;
-import io.github.mianalysis.MIA.Object.Refs.Abstract.Ref;
-import io.github.mianalysis.MIA.Object.Refs.Collections.ImageMeasurementRefs;
-import io.github.mianalysis.MIA.Object.Refs.Collections.MetadataRefs;
-import io.github.mianalysis.MIA.Object.Refs.Collections.ObjMeasurementRefs;
-import io.github.mianalysis.MIA.Object.Refs.Collections.Refs;
+import io.github.mianalysis.mia.MIA;
+import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.Object.Parameters.Parameters;
+import io.github.mianalysis.mia.Object.Parameters.Abstract.Parameter;
+import io.github.mianalysis.mia.Object.Refs.Abstract.Ref;
+import io.github.mianalysis.mia.Object.Refs.Collections.ImageMeasurementRefs;
+import io.github.mianalysis.mia.Object.Refs.Collections.MetadataRefs;
+import io.github.mianalysis.mia.Object.Refs.Collections.ObjMeasurementRefs;
+import io.github.mianalysis.mia.Object.Refs.Collections.Refs;
 
 /**
  * Created by Stephen on 22/06/2018.

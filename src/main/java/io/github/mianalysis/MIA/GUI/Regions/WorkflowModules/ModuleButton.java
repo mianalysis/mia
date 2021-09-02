@@ -1,4 +1,4 @@
-package io.github.mianalysis.MIA.GUI.Regions.WorkflowModules;
+package io.github.mianalysis.mia.gui.regions.workflowmodules;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -8,10 +8,10 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JToggleButton;
 
-import io.github.mianalysis.MIA.GUI.GUI;
-import io.github.mianalysis.MIA.Module.Module;
-import io.github.mianalysis.MIA.Module.Miscellaneous.GUISeparator;
-import io.github.mianalysis.MIA.Object.Colours;
+import io.github.mianalysis.mia.gui.GUI;
+import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.module.Miscellaneous.GUISeparator;
+import io.github.mianalysis.mia.Object.Colours;
 
 /**
  * Created by Stephen on 20/05/2017.

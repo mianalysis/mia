@@ -1,4 +1,4 @@
-package io.github.mianalysis.MIA.Process.Logging;
+package io.github.mianalysis.mia.Process.Logging;
 
 public interface LogRenderer {
     public enum Level {

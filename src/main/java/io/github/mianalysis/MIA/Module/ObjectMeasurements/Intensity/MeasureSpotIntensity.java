@@ -1,21 +1,21 @@
-package io.github.mianalysis.MIA.Module.ObjectMeasurements.Intensity;
+package io.github.mianalysis.mia.module.ObjectMeasurements.Intensity;
 
 import ij.ImagePlus;
-import io.github.mianalysis.MIA.Module.Module;
-import io.github.mianalysis.MIA.Module.Modules;
-import io.github.mianalysis.MIA.Module.Core.InputControl;
-import io.github.mianalysis.MIA.Module.ObjectProcessing.Identification.GetLocalObjectRegion;
-import io.github.mianalysis.MIA.Module.Category;
-import io.github.mianalysis.MIA.Module.Categories;
-import io.github.mianalysis.MIA.Object.*;
-import io.github.mianalysis.MIA.Object.Parameters.*;
-import io.github.mianalysis.MIA.Object.Parameters.Text.DoubleP;
-import io.github.mianalysis.MIA.Object.Refs.*;
-import io.github.mianalysis.MIA.Object.Refs.Collections.ImageMeasurementRefs;
-import io.github.mianalysis.MIA.Object.Refs.Collections.MetadataRefs;
-import io.github.mianalysis.MIA.Object.Refs.Collections.ObjMeasurementRefs;
-import io.github.mianalysis.MIA.Object.Refs.Collections.ParentChildRefs;
-import io.github.mianalysis.MIA.Object.Refs.Collections.PartnerRefs;
+import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.core.InputControl;
+import io.github.mianalysis.mia.module.ObjectProcessing.Identification.GetLocalObjectRegion;
+import io.github.mianalysis.mia.module.Category;
+import io.github.mianalysis.mia.module.Categories;
+import io.github.mianalysis.mia.Object.*;
+import io.github.mianalysis.mia.Object.Parameters.*;
+import io.github.mianalysis.mia.Object.Parameters.Text.DoubleP;
+import io.github.mianalysis.mia.Object.Refs.*;
+import io.github.mianalysis.mia.Object.Refs.Collections.ImageMeasurementRefs;
+import io.github.mianalysis.mia.Object.Refs.Collections.MetadataRefs;
+import io.github.mianalysis.mia.Object.Refs.Collections.ObjMeasurementRefs;
+import io.github.mianalysis.mia.Object.Refs.Collections.ParentChildRefs;
+import io.github.mianalysis.mia.Object.Refs.Collections.PartnerRefs;
 import io.github.sjcross.common.MathFunc.CumStat;
 import io.github.sjcross.common.Object.Point;
 

@@ -1,4 +1,4 @@
-package io.github.mianalysis.MIA.GUI.Regions.MenuBar;
+package io.github.mianalysis.mia.gui.regions.menubar;
 
 import java.awt.Font;
 import java.awt.event.ActionEvent;
@@ -6,11 +6,11 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JMenuItem;
 
-import io.github.mianalysis.MIA.MIA;
-import io.github.mianalysis.MIA.GUI.GUI;
-import io.github.mianalysis.MIA.GUI.GUIAnalysisHandler;
-import io.github.mianalysis.MIA.GUI.Regions.Documentation.DocumentationPanel;
-import io.github.mianalysis.MIA.Module.Module;
+import io.github.mianalysis.mia.MIA;
+import io.github.mianalysis.mia.gui.GUI;
+import io.github.mianalysis.mia.gui.GUIAnalysisHandler;
+import io.github.mianalysis.mia.gui.regions.documentation.DocumentationPanel;
+import io.github.mianalysis.mia.module.Module;
 
 /**
  * Created by stephen on 28/07/2017.

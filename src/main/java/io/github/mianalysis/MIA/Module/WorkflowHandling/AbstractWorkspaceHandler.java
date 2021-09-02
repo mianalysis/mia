@@ -1,15 +1,15 @@
-package io.github.mianalysis.MIA.Module.WorkflowHandling;
+package io.github.mianalysis.mia.module.workflowhandling;
 
-import io.github.mianalysis.MIA.MIA;
-import io.github.mianalysis.MIA.Module.Module;
-import io.github.mianalysis.MIA.Module.Modules;
-import io.github.mianalysis.MIA.Object.Status;
-import io.github.mianalysis.MIA.Object.Workspace;
-import io.github.mianalysis.MIA.Object.Parameters.BooleanP;
-import io.github.mianalysis.MIA.Object.Parameters.ChoiceP;
-import io.github.mianalysis.MIA.Object.Parameters.ModuleP;
-import io.github.mianalysis.MIA.Object.Parameters.Parameters;
-import io.github.mianalysis.MIA.Object.Parameters.Text.StringP;
+import io.github.mianalysis.mia.MIA;
+import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.Object.Status;
+import io.github.mianalysis.mia.Object.Workspace;
+import io.github.mianalysis.mia.Object.Parameters.BooleanP;
+import io.github.mianalysis.mia.Object.Parameters.ChoiceP;
+import io.github.mianalysis.mia.Object.Parameters.ModuleP;
+import io.github.mianalysis.mia.Object.Parameters.Parameters;
+import io.github.mianalysis.mia.Object.Parameters.Text.StringP;
 
 public abstract class AbstractWorkspaceHandler extends Module {
     public static final String CONTINUATION_MODE = "Continuation mode";

@@ -1,4 +1,4 @@
-package io.github.mianalysis.MIA.Module;
+package io.github.mianalysis.mia.module;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -13,24 +13,24 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
 import ij.Prefs;
-import io.github.mianalysis.MIA.MIA;
-import io.github.mianalysis.MIA.Object.Status;
-import io.github.mianalysis.MIA.Object.Workspace;
-import io.github.mianalysis.MIA.Object.Parameters.Parameters;
-import io.github.mianalysis.MIA.Object.Parameters.ParameterGroup;
-import io.github.mianalysis.MIA.Object.Parameters.Abstract.Parameter;
-import io.github.mianalysis.MIA.Object.Refs.ImageMeasurementRef;
-import io.github.mianalysis.MIA.Object.Refs.MetadataRef;
-import io.github.mianalysis.MIA.Object.Refs.ObjMeasurementRef;
-import io.github.mianalysis.MIA.Object.Refs.ParentChildRef;
-import io.github.mianalysis.MIA.Object.Refs.PartnerRef;
-import io.github.mianalysis.MIA.Object.Refs.Abstract.Ref;
-import io.github.mianalysis.MIA.Object.Refs.Collections.ImageMeasurementRefs;
-import io.github.mianalysis.MIA.Object.Refs.Collections.MetadataRefs;
-import io.github.mianalysis.MIA.Object.Refs.Collections.ObjMeasurementRefs;
-import io.github.mianalysis.MIA.Object.Refs.Collections.ParentChildRefs;
-import io.github.mianalysis.MIA.Object.Refs.Collections.PartnerRefs;
-import io.github.mianalysis.MIA.Process.Logging.LogRenderer;
+import io.github.mianalysis.mia.MIA;
+import io.github.mianalysis.mia.Object.Status;
+import io.github.mianalysis.mia.Object.Workspace;
+import io.github.mianalysis.mia.Object.Parameters.Parameters;
+import io.github.mianalysis.mia.Object.Parameters.ParameterGroup;
+import io.github.mianalysis.mia.Object.Parameters.Abstract.Parameter;
+import io.github.mianalysis.mia.Object.Refs.ImageMeasurementRef;
+import io.github.mianalysis.mia.Object.Refs.MetadataRef;
+import io.github.mianalysis.mia.Object.Refs.ObjMeasurementRef;
+import io.github.mianalysis.mia.Object.Refs.ParentChildRef;
+import io.github.mianalysis.mia.Object.Refs.PartnerRef;
+import io.github.mianalysis.mia.Object.Refs.Abstract.Ref;
+import io.github.mianalysis.mia.Object.Refs.Collections.ImageMeasurementRefs;
+import io.github.mianalysis.mia.Object.Refs.Collections.MetadataRefs;
+import io.github.mianalysis.mia.Object.Refs.Collections.ObjMeasurementRefs;
+import io.github.mianalysis.mia.Object.Refs.Collections.ParentChildRefs;
+import io.github.mianalysis.mia.Object.Refs.Collections.PartnerRefs;
+import io.github.mianalysis.mia.Process.Logging.LogRenderer;
 
 /**
  * Created by sc13967 on 02/05/2017.

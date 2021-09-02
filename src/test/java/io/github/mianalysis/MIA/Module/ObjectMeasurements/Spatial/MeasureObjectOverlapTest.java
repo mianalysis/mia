@@ -1,4 +1,4 @@
-package io.github.mianalysis.MIA.Module.ObjectMeasurements.Spatial;
+package io.github.mianalysis.mia.module.ObjectMeasurements.Spatial;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -8,12 +8,12 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 
 import ome.units.UNITS;
-import io.github.mianalysis.MIA.Module.Module;
-import io.github.mianalysis.MIA.Module.ModuleTest;
-import io.github.mianalysis.MIA.Object.Obj;
-import io.github.mianalysis.MIA.Object.Objs;
-import io.github.mianalysis.MIA.Object.Workspace;
-import io.github.mianalysis.MIA.Object.Workspaces;
+import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.module.ModuleTest;
+import io.github.mianalysis.mia.Object.Obj;
+import io.github.mianalysis.mia.Object.Objs;
+import io.github.mianalysis.mia.Object.Workspace;
+import io.github.mianalysis.mia.Object.Workspaces;
 import io.github.sjcross.common.Object.Volume.PointOutOfRangeException;
 import io.github.sjcross.common.Object.Volume.SpatCal;
 import io.github.sjcross.common.Object.Volume.VolumeType;

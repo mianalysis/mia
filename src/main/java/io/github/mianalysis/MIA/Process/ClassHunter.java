@@ -1,10 +1,10 @@
-package io.github.mianalysis.MIA.Process;
+package io.github.mianalysis.mia.Process;
 
 import io.github.classgraph.ClassGraph;
 import io.github.classgraph.ClassInfoList;
 import io.github.classgraph.ScanResult;
-import io.github.mianalysis.MIA.MIA;
-import io.github.mianalysis.MIA.Module.Module;
+import io.github.mianalysis.mia.MIA;
+import io.github.mianalysis.mia.module.Module;
 
 import java.util.List;
 

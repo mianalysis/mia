@@ -1,6 +1,6 @@
 // TODO: Add methods for XLS and JSON data export
 
-package io.github.mianalysis.MIA.Process.AnalysisHandling;
+package io.github.mianalysis.mia.Process.AnalysisHandling;
 
 import java.io.File;
 import java.io.IOException;
@@ -14,16 +14,16 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import ij.Prefs;
-import io.github.mianalysis.MIA.MIA;
-import io.github.mianalysis.MIA.GUI.GUI;
-import io.github.mianalysis.MIA.Module.Module;
-import io.github.mianalysis.MIA.Module.Core.InputControl;
-import io.github.mianalysis.MIA.Module.Core.OutputControl;
-import io.github.mianalysis.MIA.Module.Miscellaneous.Macros.AbstractMacroRunner;
-import io.github.mianalysis.MIA.Object.Workspace;
-import io.github.mianalysis.MIA.Object.Workspaces;
-import io.github.mianalysis.MIA.Object.Parameters.FileFolderPathP;
-import io.github.mianalysis.MIA.Process.Exporting.Exporter;
+import io.github.mianalysis.mia.MIA;
+import io.github.mianalysis.mia.gui.GUI;
+import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.module.core.InputControl;
+import io.github.mianalysis.mia.module.core.OutputControl;
+import io.github.mianalysis.mia.module.Miscellaneous.Macros.AbstractMacroRunner;
+import io.github.mianalysis.mia.Object.Workspace;
+import io.github.mianalysis.mia.Object.Workspaces;
+import io.github.mianalysis.mia.Object.Parameters.FileFolderPathP;
+import io.github.mianalysis.mia.Process.Exporting.Exporter;
 import io.github.sjcross.common.System.FileCrawler;
 
 /**

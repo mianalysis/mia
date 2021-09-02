@@ -1,4 +1,4 @@
-package io.github.mianalysis.MIA.GUI;
+package io.github.mianalysis.mia.gui;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -19,11 +19,11 @@ public class Splash extends JFrame {
     private int width = 231;
     private JLabel image;
 
-    private final static String DETECTING_MODULES = "/Images/Logo_splash_detecting-modules";
-    private final static String INITIALISING_MODULES = "/Images/Logo_splash_initialising-modules";
-    private final static String CREATING_INTERFACE = "/Images/Logo_splash_creating-interface";
+    private final static String DETECTING_MODULES = "/images/Logo_splash_detecting-modules";
+    private final static String INITIALISING_MODULES = "/images/Logo_splash_initialising-modules";
+    private final static String CREATING_INTERFACE = "/images/Logo_splash_creating-interface";
 
-    private ImageIcon blankLogo = new ImageIcon(Splash.class.getResource("/Images/Logo_splash.png"));
+    private ImageIcon blankLogo = new ImageIcon(Splash.class.getResource("/images/Logo_splash.png"));
     private final ImageIcon detectingModulesLogo;
     private final ImageIcon initialisingModulesLogo;
     private final ImageIcon creatingInterfaceLogo;

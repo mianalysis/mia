@@ -1,4 +1,4 @@
-package io.github.mianalysis.MIA.Module.ImageProcessing.Stack;
+package io.github.mianalysis.mia.module.imageprocessing.Stack;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -12,11 +12,11 @@ import org.junit.jupiter.api.Test;
 
 import ij.IJ;
 import ij.ImagePlus;
-import io.github.mianalysis.MIA.Module.ModuleTest;
-import io.github.mianalysis.MIA.Object.Image;
-import io.github.mianalysis.MIA.Object.Workspace;
-import io.github.mianalysis.MIA.Object.Workspaces;
-import io.github.mianalysis.MIA.Object.Parameters.Parameters;
+import io.github.mianalysis.mia.module.ModuleTest;
+import io.github.mianalysis.mia.Object.Image;
+import io.github.mianalysis.mia.Object.Workspace;
+import io.github.mianalysis.mia.Object.Workspaces;
+import io.github.mianalysis.mia.Object.Parameters.Parameters;
 
 public class ConcatenateStacksTest extends ModuleTest {
 

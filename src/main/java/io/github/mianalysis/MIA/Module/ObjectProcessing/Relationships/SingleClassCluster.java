@@ -4,7 +4,7 @@
 // require the number of clusters to be known in advance.  Ricci, et al. (Cell, 2015) calculate a density map for the
 // image, then use the local maxima as starting points for the cluster centroids.
 
-package io.github.mianalysis.MIA.Module.ObjectProcessing.Relationships;
+package io.github.mianalysis.mia.module.ObjectProcessing.Relationships;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -18,32 +18,32 @@ import org.apache.commons.math3.ml.clustering.KMeansPlusPlusClusterer;
 
 import ij.ImagePlus;
 import ij.process.ImageProcessor;
-import io.github.mianalysis.MIA.Module.Categories;
-import io.github.mianalysis.MIA.Module.Category;
-import io.github.mianalysis.MIA.Module.Module;
-import io.github.mianalysis.MIA.Module.Modules;
-import io.github.mianalysis.MIA.Module.ImageProcessing.Pixel.Binary.DistanceMap;
-import io.github.mianalysis.MIA.Module.ObjectProcessing.Identification.GetLocalObjectRegion;
-import io.github.mianalysis.MIA.Object.Image;
-import io.github.mianalysis.MIA.Object.LocationWrapper;
-import io.github.mianalysis.MIA.Object.Obj;
-import io.github.mianalysis.MIA.Object.Objs;
-import io.github.mianalysis.MIA.Object.Status;
-import io.github.mianalysis.MIA.Object.Workspace;
-import io.github.mianalysis.MIA.Object.Parameters.BooleanP;
-import io.github.mianalysis.MIA.Object.Parameters.ChoiceP;
-import io.github.mianalysis.MIA.Object.Parameters.InputObjectsP;
-import io.github.mianalysis.MIA.Object.Parameters.Parameters;
-import io.github.mianalysis.MIA.Object.Parameters.SeparatorP;
-import io.github.mianalysis.MIA.Object.Parameters.Objects.OutputClusterObjectsP;
-import io.github.mianalysis.MIA.Object.Parameters.Text.DoubleP;
-import io.github.mianalysis.MIA.Object.Parameters.Text.IntegerP;
-import io.github.mianalysis.MIA.Object.Refs.Collections.ImageMeasurementRefs;
-import io.github.mianalysis.MIA.Object.Refs.Collections.MetadataRefs;
-import io.github.mianalysis.MIA.Object.Refs.Collections.ObjMeasurementRefs;
-import io.github.mianalysis.MIA.Object.Refs.Collections.ParentChildRefs;
-import io.github.mianalysis.MIA.Object.Refs.Collections.PartnerRefs;
-import io.github.mianalysis.MIA.Process.ColourFactory;
+import io.github.mianalysis.mia.module.Categories;
+import io.github.mianalysis.mia.module.Category;
+import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.imageprocessing.pixel.Binary.DistanceMap;
+import io.github.mianalysis.mia.module.ObjectProcessing.Identification.GetLocalObjectRegion;
+import io.github.mianalysis.mia.Object.Image;
+import io.github.mianalysis.mia.Object.LocationWrapper;
+import io.github.mianalysis.mia.Object.Obj;
+import io.github.mianalysis.mia.Object.Objs;
+import io.github.mianalysis.mia.Object.Status;
+import io.github.mianalysis.mia.Object.Workspace;
+import io.github.mianalysis.mia.Object.Parameters.BooleanP;
+import io.github.mianalysis.mia.Object.Parameters.ChoiceP;
+import io.github.mianalysis.mia.Object.Parameters.InputObjectsP;
+import io.github.mianalysis.mia.Object.Parameters.Parameters;
+import io.github.mianalysis.mia.Object.Parameters.SeparatorP;
+import io.github.mianalysis.mia.Object.Parameters.Objects.OutputClusterObjectsP;
+import io.github.mianalysis.mia.Object.Parameters.Text.DoubleP;
+import io.github.mianalysis.mia.Object.Parameters.Text.IntegerP;
+import io.github.mianalysis.mia.Object.Refs.Collections.ImageMeasurementRefs;
+import io.github.mianalysis.mia.Object.Refs.Collections.MetadataRefs;
+import io.github.mianalysis.mia.Object.Refs.Collections.ObjMeasurementRefs;
+import io.github.mianalysis.mia.Object.Refs.Collections.ParentChildRefs;
+import io.github.mianalysis.mia.Object.Refs.Collections.PartnerRefs;
+import io.github.mianalysis.mia.Process.ColourFactory;
 import io.github.sjcross.common.Exceptions.IntegerOverflowException;
 import io.github.sjcross.common.ImageJ.LUTs;
 import io.github.sjcross.common.Object.Point;

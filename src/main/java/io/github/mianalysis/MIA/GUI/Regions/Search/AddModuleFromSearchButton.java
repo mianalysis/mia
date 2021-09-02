@@ -1,4 +1,4 @@
-package io.github.mianalysis.MIA.GUI.Regions.Search;
+package io.github.mianalysis.mia.gui.regions.search;
 
 import java.awt.Dimension;
 import java.awt.Font;
@@ -9,11 +9,11 @@ import java.lang.reflect.InvocationTargetException;
 
 import javax.swing.JButton;
 
-import io.github.mianalysis.MIA.GUI.GUI;
-import io.github.mianalysis.MIA.Module.Module;
-import io.github.mianalysis.MIA.Module.Modules;
-import io.github.mianalysis.MIA.Module.Core.InputControl;
-import io.github.mianalysis.MIA.Module.Core.OutputControl;
+import io.github.mianalysis.mia.gui.GUI;
+import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.core.InputControl;
+import io.github.mianalysis.mia.module.core.OutputControl;
 
 public class AddModuleFromSearchButton extends JButton implements ActionListener {
     private Module module;

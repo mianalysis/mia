@@ -1,4 +1,4 @@
-package io.github.mianalysis.MIA.GUI.Regions.ParameterList;
+package io.github.mianalysis.mia.gui.regions.parameterlist;
 
 import java.awt.MouseInfo;
 import java.awt.event.MouseEvent;
@@ -6,9 +6,9 @@ import java.awt.event.MouseListener;
 
 import javax.swing.JLabel;
 
-import io.github.mianalysis.MIA.GUI.GUI;
-import io.github.mianalysis.MIA.GUI.Regions.RenameListMenu;
-import io.github.mianalysis.MIA.Object.Refs.Abstract.Ref;
+import io.github.mianalysis.mia.gui.GUI;
+import io.github.mianalysis.mia.gui.regions.RenameListMenu;
+import io.github.mianalysis.mia.Object.Refs.Abstract.Ref;
 
 /**
  * Created by Stephen on 06/09/2017.

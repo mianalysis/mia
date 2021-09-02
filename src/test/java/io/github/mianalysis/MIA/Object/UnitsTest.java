@@ -1,9 +1,9 @@
-package io.github.mianalysis.MIA.Object;
+package io.github.mianalysis.mia.Object;
 
 import org.junit.jupiter.api.Test;
 
-import io.github.mianalysis.MIA.Object.Units.SpatialUnit;
-import io.github.mianalysis.MIA.Object.Units.TemporalUnit;
+import io.github.mianalysis.mia.Object.Units.SpatialUnit;
+import io.github.mianalysis.mia.Object.Units.TemporalUnit;
 
 import static org.junit.jupiter.api.Assertions.*;
 

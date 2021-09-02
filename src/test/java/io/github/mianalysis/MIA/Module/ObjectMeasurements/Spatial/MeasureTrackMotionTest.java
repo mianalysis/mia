@@ -1,4 +1,4 @@
-package io.github.mianalysis.MIA.Module.ObjectMeasurements.Spatial;
+package io.github.mianalysis.mia.module.ObjectMeasurements.Spatial;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -9,10 +9,10 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 
-import io.github.mianalysis.MIA.ExpectedObjects.Tracks3D;
-import io.github.mianalysis.MIA.Module.ModuleTest;
-import io.github.mianalysis.MIA.Object.Obj;
-import io.github.mianalysis.MIA.Object.Objs;
+import io.github.mianalysis.mia.ExpectedObjects.Tracks3D;
+import io.github.mianalysis.mia.module.ModuleTest;
+import io.github.mianalysis.mia.Object.Obj;
+import io.github.mianalysis.mia.Object.Objs;
 import io.github.sjcross.common.Exceptions.IntegerOverflowException;
 import io.github.sjcross.common.Object.Tracks.Track;
 import io.github.sjcross.common.Object.Volume.VolumeType;

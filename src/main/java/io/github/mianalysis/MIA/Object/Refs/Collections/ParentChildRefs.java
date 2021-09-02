@@ -1,9 +1,9 @@
-package io.github.mianalysis.MIA.Object.Refs.Collections;
+package io.github.mianalysis.mia.Object.Refs.Collections;
 
 
 import org.eclipse.sisu.Nullable;
 
-import io.github.mianalysis.MIA.Object.Refs.ParentChildRef;
+import io.github.mianalysis.mia.Object.Refs.ParentChildRef;
 
 import java.util.LinkedHashSet;
 import java.util.TreeMap;

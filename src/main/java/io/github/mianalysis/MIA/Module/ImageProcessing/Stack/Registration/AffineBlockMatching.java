@@ -1,4 +1,4 @@
-package io.github.mianalysis.MIA.Module.ImageProcessing.Stack.Registration;
+package io.github.mianalysis.mia.module.imageprocessing.Stack.Registration;
 
 import java.util.Collection;
 import java.util.Vector;
@@ -14,13 +14,13 @@ import mpicbg.models.PointMatch;
 import mpicbg.models.SpringMesh;
 import mpicbg.models.TranslationModel2D;
 import mpicbg.models.Vertex;
-import io.github.mianalysis.MIA.Module.Modules;
-import io.github.mianalysis.MIA.Module.ImageProcessing.Stack.Registration.Abstract.AbstractAffineRegistration;
-import io.github.mianalysis.MIA.Object.Workspace;
-import io.github.mianalysis.MIA.Object.Parameters.Parameters;
-import io.github.mianalysis.MIA.Object.Parameters.SeparatorP;
-import io.github.mianalysis.MIA.Object.Parameters.Text.DoubleP;
-import io.github.mianalysis.MIA.Object.Parameters.Text.IntegerP;
+import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.imageprocessing.Stack.Registration.Abstract.AbstractAffineRegistration;
+import io.github.mianalysis.mia.Object.Workspace;
+import io.github.mianalysis.mia.Object.Parameters.Parameters;
+import io.github.mianalysis.mia.Object.Parameters.SeparatorP;
+import io.github.mianalysis.mia.Object.Parameters.Text.DoubleP;
+import io.github.mianalysis.mia.Object.Parameters.Text.IntegerP;
 
 public class AffineBlockMatching extends AbstractAffineRegistration {
     public static final String FEATURE_SEPARATOR = "Feature detection";

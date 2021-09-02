@@ -1,4 +1,4 @@
-package io.github.mianalysis.MIA.GUI.Regions.WorkflowModules;
+package io.github.mianalysis.mia.gui.regions.workflowmodules;
 
 import java.awt.Color;
 import java.awt.Component;
@@ -26,13 +26,13 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableModel;
 
-import io.github.mianalysis.MIA.GUI.GUI;
-import io.github.mianalysis.MIA.GUI.GUIAnalysisHandler;
-import io.github.mianalysis.MIA.GUI.Regions.RenameListMenu;
-import io.github.mianalysis.MIA.Module.Module;
-import io.github.mianalysis.MIA.Module.Modules;
-import io.github.mianalysis.MIA.Module.Miscellaneous.GUISeparator;
-import io.github.mianalysis.MIA.Object.Colours;
+import io.github.mianalysis.mia.gui.GUI;
+import io.github.mianalysis.mia.gui.GUIAnalysisHandler;
+import io.github.mianalysis.mia.gui.regions.RenameListMenu;
+import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.Miscellaneous.GUISeparator;
+import io.github.mianalysis.mia.Object.Colours;
 
 public class ModuleTable extends JTable implements ActionListener, MouseListener, TableCellRenderer {
     private static final String BACKSPACE = "backspace";

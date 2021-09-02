@@ -1,4 +1,4 @@
-package io.github.mianalysis.MIA.Process.Interactable;
+package io.github.mianalysis.mia.Process.Interactable;
 
 public interface Interactable {
     public void doAction(Object[] objects);

@@ -1,7 +1,7 @@
-package io.github.mianalysis.MIA.Object.Measurements;
+package io.github.mianalysis.mia.Object.Measurements;
 
-import io.github.mianalysis.MIA.Object.Measurement;
-import io.github.mianalysis.MIA.Object.Obj;
+import io.github.mianalysis.mia.Object.Measurement;
+import io.github.mianalysis.mia.Object.Obj;
 
 public class ParentIDMeasurement extends Measurement {
     private Obj obj;

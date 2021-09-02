@@ -1,8 +1,8 @@
-package io.github.mianalysis.MIA.GUI;
+package io.github.mianalysis.mia.gui;
 
 import java.util.LinkedList;
 
-import io.github.mianalysis.MIA.Module.Modules;
+import io.github.mianalysis.mia.module.Modules;
 
 public class UndoRedoStore {
     private int limit = 100;

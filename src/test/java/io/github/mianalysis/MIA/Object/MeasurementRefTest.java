@@ -1,8 +1,8 @@
-package io.github.mianalysis.MIA.Object;
+package io.github.mianalysis.mia.Object;
 
 import org.junit.jupiter.api.Test;
 
-import io.github.mianalysis.MIA.Object.Refs.ImageMeasurementRef;
+import io.github.mianalysis.mia.Object.Refs.ImageMeasurementRef;
 
 import static org.junit.jupiter.api.Assertions.*;
 

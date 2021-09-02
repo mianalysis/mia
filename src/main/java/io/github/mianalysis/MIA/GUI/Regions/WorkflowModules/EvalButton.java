@@ -1,4 +1,4 @@
-package io.github.mianalysis.MIA.GUI.Regions.WorkflowModules;
+package io.github.mianalysis.mia.gui.regions.workflowmodules;
 
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
@@ -7,13 +7,13 @@ import java.awt.event.ActionListener;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 
-import io.github.mianalysis.MIA.MIA;
-import io.github.mianalysis.MIA.GUI.GUI;
-import io.github.mianalysis.MIA.Module.Module;
-import io.github.mianalysis.MIA.Module.Modules;
-import io.github.mianalysis.MIA.Module.Miscellaneous.GUISeparator;
-import io.github.mianalysis.MIA.Object.Status;
-import io.github.mianalysis.MIA.Object.Workspace;
+import io.github.mianalysis.mia.MIA;
+import io.github.mianalysis.mia.gui.GUI;
+import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.Miscellaneous.GUISeparator;
+import io.github.mianalysis.mia.Object.Status;
+import io.github.mianalysis.mia.Object.Workspace;
 
 /**
  * Created by Stephen on 08/06/2017.
@@ -28,16 +28,16 @@ public class EvalButton extends JButton implements ActionListener {
 
     private Module module;
     private static final ImageIcon blackIcon = new ImageIcon(
-            EvalButton.class.getResource("/Icons/arrowopen_black_12px.png"), "");
+            EvalButton.class.getResource("/icons/arrowopen_black_12px.png"), "");
     private static final ImageIcon amberIcon = new ImageIcon(
-            EvalButton.class.getResource("/Icons/Dual Ring-1s-12px.gif"), "");
+            EvalButton.class.getResource("/icons/Dual Ring-1s-12px.gif"), "");
     private static final ImageIcon greenIcon = new ImageIcon(
-            EvalButton.class.getResource("/Icons/arrowclosed_green_12px.png"), "");
+            EvalButton.class.getResource("/icons/arrowclosed_green_12px.png"), "");
     private static final ImageIcon redOpenIcon = new ImageIcon(
-            EvalButton.class.getResource("/Icons/arrowopen_red_12px.png"), "");
+            EvalButton.class.getResource("/icons/arrowopen_red_12px.png"), "");
     private static final ImageIcon redClosedIcon = new ImageIcon(
-            EvalButton.class.getResource("/Icons/arrowclosed_red_12px.png"), "");
-    private static final ImageIcon redStopIcon = new ImageIcon(EvalButton.class.getResource("/Icons/x-mark-3-12.png"),
+            EvalButton.class.getResource("/icons/arrowclosed_red_12px.png"), "");
+    private static final ImageIcon redStopIcon = new ImageIcon(EvalButton.class.getResource("/icons/x-mark-3-12.png"),
             "");
 
     // CONSTRUCTOR

@@ -1,6 +1,6 @@
-package io.github.mianalysis.MIA.Macro.ObjectProcessing;
+package io.github.mianalysis.mia.macro.objectprocessing;
 
-import io.github.mianalysis.MIA.Macro.MacroOperationTest;
+import io.github.mianalysis.mia.macro.MacroOperationTest;
 
 import static org.junit.jupiter.api.Assertions.*;
 

@@ -1,4 +1,4 @@
-package io.github.mianalysis.MIA.GUI.ParameterControls;
+package io.github.mianalysis.mia.gui.parametercontrols;
 
 import java.awt.Component;
 import java.awt.Font;
@@ -12,12 +12,12 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.ListCellRenderer;
 
-import io.github.mianalysis.MIA.GUI.GUI;
-import io.github.mianalysis.MIA.Module.Module;
-import io.github.mianalysis.MIA.Module.Core.OutputControl;
-import io.github.mianalysis.MIA.Module.Miscellaneous.GUISeparator;
-import io.github.mianalysis.MIA.Object.Colours;
-import io.github.mianalysis.MIA.Object.Parameters.ModuleP;
+import io.github.mianalysis.mia.gui.GUI;
+import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.module.core.OutputControl;
+import io.github.mianalysis.mia.module.Miscellaneous.GUISeparator;
+import io.github.mianalysis.mia.Object.Colours;
+import io.github.mianalysis.mia.Object.Parameters.ModuleP;
 
 /**
  * Created by sc13967 on 22/05/2017.

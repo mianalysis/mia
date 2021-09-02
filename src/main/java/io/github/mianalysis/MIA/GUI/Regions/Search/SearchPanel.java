@@ -1,4 +1,4 @@
-package io.github.mianalysis.MIA.GUI.Regions.Search;
+package io.github.mianalysis.mia.gui.regions.search;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -19,10 +19,10 @@ import javax.swing.JTextField;
 import javax.swing.JTextPane;
 import javax.swing.border.EtchedBorder;
 
-import io.github.mianalysis.MIA.GUI.GUI;
-import io.github.mianalysis.MIA.GUI.Regions.ClosePanelButton;
-import io.github.mianalysis.MIA.Process.ModuleSearcher;
-import io.github.mianalysis.MIA.Process.ModuleSearcher.SearchMatch;
+import io.github.mianalysis.mia.gui.GUI;
+import io.github.mianalysis.mia.gui.regions.ClosePanelButton;
+import io.github.mianalysis.mia.Process.ModuleSearcher;
+import io.github.mianalysis.mia.Process.ModuleSearcher.SearchMatch;
 
 public class SearchPanel extends JPanel {
     private final static int minimumWidth = 300;

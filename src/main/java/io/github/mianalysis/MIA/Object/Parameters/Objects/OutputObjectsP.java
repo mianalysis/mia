@@ -1,9 +1,9 @@
-package io.github.mianalysis.MIA.Object.Parameters.Objects;
+package io.github.mianalysis.mia.Object.Parameters.Objects;
 
-import io.github.mianalysis.MIA.MIA;
-import io.github.mianalysis.MIA.Module.Module;
-import io.github.mianalysis.MIA.Object.Parameters.Abstract.Parameter;
-import io.github.mianalysis.MIA.Object.Parameters.Abstract.TextType;
+import io.github.mianalysis.mia.MIA;
+import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.Object.Parameters.Abstract.Parameter;
+import io.github.mianalysis.mia.Object.Parameters.Abstract.TextType;
 
 import java.util.LinkedHashSet;
 

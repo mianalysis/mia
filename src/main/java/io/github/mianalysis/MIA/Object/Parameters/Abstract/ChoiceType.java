@@ -1,12 +1,12 @@
-package io.github.mianalysis.MIA.Object.Parameters.Abstract;
+package io.github.mianalysis.mia.Object.Parameters.Abstract;
 
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
-import io.github.mianalysis.MIA.MIA;
-import io.github.mianalysis.MIA.GUI.ParameterControls.ChoiceArrayParameter;
-import io.github.mianalysis.MIA.GUI.ParameterControls.ParameterControl;
-import io.github.mianalysis.MIA.Module.Module;
+import io.github.mianalysis.mia.MIA;
+import io.github.mianalysis.mia.gui.parametercontrols.ChoiceArrayParameter;
+import io.github.mianalysis.mia.gui.parametercontrols.ParameterControl;
+import io.github.mianalysis.mia.module.Module;
 
 public abstract class ChoiceType extends Parameter {
     protected String choice = "";

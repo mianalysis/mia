@@ -89,7 +89,7 @@
 //    }
 //}
 
-package io.github.mianalysis.MIA.Module.ObjectProcessing.Relationships;
+package io.github.mianalysis.mia.module.ObjectProcessing.Relationships;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -100,29 +100,29 @@ import org.eclipse.sisu.Nullable;
 
 import fiji.plugin.trackmate.tracking.sparselap.costmatrix.DefaultCostMatrixCreator;
 import fiji.plugin.trackmate.tracking.sparselap.linker.JaqamanLinker;
-import io.github.mianalysis.MIA.Module.Categories;
-import io.github.mianalysis.MIA.Module.Category;
-import io.github.mianalysis.MIA.Module.Module;
-import io.github.mianalysis.MIA.Module.Modules;
-import io.github.mianalysis.MIA.Module.Core.InputControl;
-import io.github.mianalysis.MIA.Object.Measurement;
-import io.github.mianalysis.MIA.Object.Obj;
-import io.github.mianalysis.MIA.Object.Objs;
-import io.github.mianalysis.MIA.Object.Status;
-import io.github.mianalysis.MIA.Object.Workspace;
-import io.github.mianalysis.MIA.Object.Parameters.BooleanP;
-import io.github.mianalysis.MIA.Object.Parameters.ChoiceP;
-import io.github.mianalysis.MIA.Object.Parameters.InputObjectsP;
-import io.github.mianalysis.MIA.Object.Parameters.Parameters;
-import io.github.mianalysis.MIA.Object.Parameters.SeparatorP;
-import io.github.mianalysis.MIA.Object.Parameters.Objects.OutputClusterObjectsP;
-import io.github.mianalysis.MIA.Object.Parameters.Text.DoubleP;
-import io.github.mianalysis.MIA.Object.Refs.ObjMeasurementRef;
-import io.github.mianalysis.MIA.Object.Refs.Collections.ImageMeasurementRefs;
-import io.github.mianalysis.MIA.Object.Refs.Collections.MetadataRefs;
-import io.github.mianalysis.MIA.Object.Refs.Collections.ObjMeasurementRefs;
-import io.github.mianalysis.MIA.Object.Refs.Collections.ParentChildRefs;
-import io.github.mianalysis.MIA.Object.Refs.Collections.PartnerRefs;
+import io.github.mianalysis.mia.module.Categories;
+import io.github.mianalysis.mia.module.Category;
+import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.core.InputControl;
+import io.github.mianalysis.mia.Object.Measurement;
+import io.github.mianalysis.mia.Object.Obj;
+import io.github.mianalysis.mia.Object.Objs;
+import io.github.mianalysis.mia.Object.Status;
+import io.github.mianalysis.mia.Object.Workspace;
+import io.github.mianalysis.mia.Object.Parameters.BooleanP;
+import io.github.mianalysis.mia.Object.Parameters.ChoiceP;
+import io.github.mianalysis.mia.Object.Parameters.InputObjectsP;
+import io.github.mianalysis.mia.Object.Parameters.Parameters;
+import io.github.mianalysis.mia.Object.Parameters.SeparatorP;
+import io.github.mianalysis.mia.Object.Parameters.Objects.OutputClusterObjectsP;
+import io.github.mianalysis.mia.Object.Parameters.Text.DoubleP;
+import io.github.mianalysis.mia.Object.Refs.ObjMeasurementRef;
+import io.github.mianalysis.mia.Object.Refs.Collections.ImageMeasurementRefs;
+import io.github.mianalysis.mia.Object.Refs.Collections.MetadataRefs;
+import io.github.mianalysis.mia.Object.Refs.Collections.ObjMeasurementRefs;
+import io.github.mianalysis.mia.Object.Refs.Collections.ParentChildRefs;
+import io.github.mianalysis.mia.Object.Refs.Collections.PartnerRefs;
 
 public class RelateOneToOne extends Module {
     public static final String INPUT_SEPARATOR = "Objects input/output";

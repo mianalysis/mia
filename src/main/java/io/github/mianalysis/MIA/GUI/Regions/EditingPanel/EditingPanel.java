@@ -1,4 +1,4 @@
-package io.github.mianalysis.MIA.GUI.Regions.EditingPanel;
+package io.github.mianalysis.mia.gui.regions.editingpanel;
 
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
@@ -10,16 +10,16 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.plaf.basic.BasicSplitPaneUI;
 
 import ij.Prefs;
-import io.github.mianalysis.MIA.GUI.GUI;
-import io.github.mianalysis.MIA.GUI.Regions.Abstract.AbstractPanel;
-import io.github.mianalysis.MIA.GUI.Regions.FileList.FileListPanel;
-import io.github.mianalysis.MIA.GUI.Regions.HelpAndNotes.HelpNotesPanel;
-import io.github.mianalysis.MIA.GUI.Regions.ParameterList.ParametersPanel;
-import io.github.mianalysis.MIA.GUI.Regions.ProgressAndStatus.ProgressBarPanel;
-import io.github.mianalysis.MIA.GUI.Regions.ProgressAndStatus.StatusPanel;
-import io.github.mianalysis.MIA.GUI.Regions.Search.SearchPanel;
-import io.github.mianalysis.MIA.GUI.Regions.WorkflowModules.ModulePanel;
-import io.github.mianalysis.MIA.Module.Module;
+import io.github.mianalysis.mia.gui.GUI;
+import io.github.mianalysis.mia.gui.regions.abstrac.AbstractPanel;
+import io.github.mianalysis.mia.gui.regions.filelist.FileListPanel;
+import io.github.mianalysis.mia.gui.regions.helpandnotes.HelpNotesPanel;
+import io.github.mianalysis.mia.gui.regions.parameterlist.ParametersPanel;
+import io.github.mianalysis.mia.gui.regions.progressandstatus.ProgressBarPanel;
+import io.github.mianalysis.mia.gui.regions.progressandstatus.StatusPanel;
+import io.github.mianalysis.mia.gui.regions.search.SearchPanel;
+import io.github.mianalysis.mia.gui.regions.workflowmodules.ModulePanel;
+import io.github.mianalysis.mia.module.Module;
 
 public class EditingPanel extends AbstractPanel {
     private static final long serialVersionUID = -6063268799004206526L;

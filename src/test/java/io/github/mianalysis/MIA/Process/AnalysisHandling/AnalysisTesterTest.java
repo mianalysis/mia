@@ -1,4 +1,4 @@
-package io.github.mianalysis.MIA.Process.AnalysisHandling;
+package io.github.mianalysis.mia.Process.AnalysisHandling;
 //package io.github.mianalysis.MIA.Process.AnalysisHandling;
 //
 //import org.junit.jupiter.api.Test;

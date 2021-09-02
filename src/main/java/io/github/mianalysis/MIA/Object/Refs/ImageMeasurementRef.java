@@ -1,4 +1,4 @@
-package io.github.mianalysis.MIA.Object.Refs;
+package io.github.mianalysis.mia.Object.Refs;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
@@ -7,9 +7,9 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
-import io.github.mianalysis.MIA.Object.Workspace;
-import io.github.mianalysis.MIA.Object.Refs.Abstract.SpreadsheetWriter;
-import io.github.mianalysis.MIA.Object.Refs.Abstract.SummaryRef;
+import io.github.mianalysis.mia.Object.Workspace;
+import io.github.mianalysis.mia.Object.Refs.Abstract.SpreadsheetWriter;
+import io.github.mianalysis.mia.Object.Refs.Abstract.SummaryRef;
 
 import java.util.LinkedHashMap;
 

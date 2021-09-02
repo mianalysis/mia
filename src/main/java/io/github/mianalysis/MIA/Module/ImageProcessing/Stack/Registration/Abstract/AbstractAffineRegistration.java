@@ -1,4 +1,4 @@
-package io.github.mianalysis.MIA.Module.ImageProcessing.Stack.Registration.Abstract;
+package io.github.mianalysis.mia.module.imageprocessing.Stack.Registration.Abstract;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -18,13 +18,13 @@ import mpicbg.models.SimilarityModel2D;
 import mpicbg.models.TranslationModel2D;
 import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
-import io.github.mianalysis.MIA.Module.Modules;
-import io.github.mianalysis.MIA.Object.Workspace;
-import io.github.mianalysis.MIA.Object.Parameters.BooleanP;
-import io.github.mianalysis.MIA.Object.Parameters.ChoiceP;
-import io.github.mianalysis.MIA.Object.Parameters.Parameters;
-import io.github.mianalysis.MIA.Object.Parameters.Abstract.Parameter;
-import io.github.mianalysis.MIA.Process.Interactable.PointPairSelector.PointPair;
+import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.Object.Workspace;
+import io.github.mianalysis.mia.Object.Parameters.BooleanP;
+import io.github.mianalysis.mia.Object.Parameters.ChoiceP;
+import io.github.mianalysis.mia.Object.Parameters.Parameters;
+import io.github.mianalysis.mia.Object.Parameters.Abstract.Parameter;
+import io.github.mianalysis.mia.Process.Interactable.PointPairSelector.PointPair;
 
 public abstract class AbstractAffineRegistration<T extends RealType<T> & NativeType<T>>
         extends AbstractRegistration<T> {

@@ -1,4 +1,4 @@
-package io.github.mianalysis.MIA.GUI.ParameterControls;
+package io.github.mianalysis.mia.gui.parametercontrols;
 
 import java.awt.Font;
 import java.awt.GridBagConstraints;
@@ -12,10 +12,10 @@ import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 
-import io.github.mianalysis.MIA.GUI.GUI;
-import io.github.mianalysis.MIA.Module.Core.OutputControl;
-import io.github.mianalysis.MIA.Object.Parameters.AdjustParameters;
-import io.github.mianalysis.MIA.Object.Parameters.Parameters;
+import io.github.mianalysis.mia.gui.GUI;
+import io.github.mianalysis.mia.module.core.OutputControl;
+import io.github.mianalysis.mia.Object.Parameters.AdjustParameters;
+import io.github.mianalysis.mia.Object.Parameters.Parameters;
 
 /**
  * Created by Stephen Cross on 01/02/2019.

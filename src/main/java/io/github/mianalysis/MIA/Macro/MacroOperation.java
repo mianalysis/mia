@@ -1,9 +1,9 @@
-package io.github.mianalysis.MIA.Macro;
+package io.github.mianalysis.mia.macro;
 
 import ij.macro.ExtensionDescriptor;
 import ij.macro.MacroExtension;
-import io.github.mianalysis.MIA.Module.Modules;
-import io.github.mianalysis.MIA.Object.Workspace;
+import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.Object.Workspace;
 
 public abstract class MacroOperation extends ExtensionDescriptor {
     // Using the same numbering as MacroExtension

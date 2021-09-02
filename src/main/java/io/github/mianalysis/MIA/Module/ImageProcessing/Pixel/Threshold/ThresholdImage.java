@@ -1,29 +1,29 @@
 // TODO: Add true 3D local thresholds (local auto thresholding works slice-by-slice)
 
-package io.github.mianalysis.MIA.Module.ImageProcessing.Pixel.Threshold;
+package io.github.mianalysis.mia.module.imageprocessing.pixel.Threshold;
 
 import fiji.threshold.Auto_Local_Threshold;
 import ij.ImagePlus;
 import ij.Prefs;
 import ij.plugin.Duplicator;
 import ij.process.AutoThresholder;
-import io.github.mianalysis.MIA.Module.ImageProcessing.Pixel.InvertIntensity;
-import io.github.mianalysis.MIA.Module.ImageProcessing.Stack.ImageTypeConverter;
-import io.github.mianalysis.MIA.Module.Module;
-import io.github.mianalysis.MIA.Module.Modules;
-import io.github.mianalysis.MIA.Module.Category;
-import io.github.mianalysis.MIA.Module.Categories;
-import io.github.mianalysis.MIA.Object.*;
-import io.github.mianalysis.MIA.Object.Parameters.*;
-import io.github.mianalysis.MIA.Object.Parameters.ChoiceInterfaces.SpatialUnitsInterface;
-import io.github.mianalysis.MIA.Object.Parameters.Text.DoubleP;
-import io.github.mianalysis.MIA.Object.Parameters.Text.IntegerP;
-import io.github.mianalysis.MIA.Object.Refs.*;
-import io.github.mianalysis.MIA.Object.Refs.Collections.ImageMeasurementRefs;
-import io.github.mianalysis.MIA.Object.Refs.Collections.MetadataRefs;
-import io.github.mianalysis.MIA.Object.Refs.Collections.ObjMeasurementRefs;
-import io.github.mianalysis.MIA.Object.Refs.Collections.ParentChildRefs;
-import io.github.mianalysis.MIA.Object.Refs.Collections.PartnerRefs;
+import io.github.mianalysis.mia.module.imageprocessing.pixel.InvertIntensity;
+import io.github.mianalysis.mia.module.imageprocessing.Stack.ImageTypeConverter;
+import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.Category;
+import io.github.mianalysis.mia.module.Categories;
+import io.github.mianalysis.mia.Object.*;
+import io.github.mianalysis.mia.Object.Parameters.*;
+import io.github.mianalysis.mia.Object.Parameters.ChoiceInterfaces.SpatialUnitsInterface;
+import io.github.mianalysis.mia.Object.Parameters.Text.DoubleP;
+import io.github.mianalysis.mia.Object.Parameters.Text.IntegerP;
+import io.github.mianalysis.mia.Object.Refs.*;
+import io.github.mianalysis.mia.Object.Refs.Collections.ImageMeasurementRefs;
+import io.github.mianalysis.mia.Object.Refs.Collections.MetadataRefs;
+import io.github.mianalysis.mia.Object.Refs.Collections.ObjMeasurementRefs;
+import io.github.mianalysis.mia.Object.Refs.Collections.ParentChildRefs;
+import io.github.mianalysis.mia.Object.Refs.Collections.PartnerRefs;
 import io.github.sjcross.common.Filters.AutoLocalThreshold3D;
 
 /**

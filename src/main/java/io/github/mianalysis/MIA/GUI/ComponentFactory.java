@@ -1,4 +1,4 @@
-package io.github.mianalysis.MIA.GUI;
+package io.github.mianalysis.mia.gui;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -20,35 +20,35 @@ import javax.swing.JSeparator;
 
 import org.apache.batik.ext.swing.GridBagConstants;
 
-import io.github.mianalysis.MIA.GUI.ParameterControls.ParameterControl;
-import io.github.mianalysis.MIA.GUI.Regions.BasicPanel.ModuleTitle;
-import io.github.mianalysis.MIA.GUI.Regions.ParameterList.DisableRefsButton;
-import io.github.mianalysis.MIA.GUI.Regions.ParameterList.DisableableCheck;
-import io.github.mianalysis.MIA.GUI.Regions.ParameterList.EnableRefsButton;
-import io.github.mianalysis.MIA.GUI.Regions.ParameterList.ExportCheck;
-import io.github.mianalysis.MIA.GUI.Regions.ParameterList.ExportEnableButton;
-import io.github.mianalysis.MIA.GUI.Regions.ParameterList.ExportName;
-import io.github.mianalysis.MIA.GUI.Regions.ParameterList.ResetExport;
-import io.github.mianalysis.MIA.GUI.Regions.ParameterList.ShowBasicTitleCheck;
-import io.github.mianalysis.MIA.GUI.Regions.ParameterList.VisibleCheck;
-import io.github.mianalysis.MIA.GUI.Regions.WorkflowModules.ModuleEnabledButton;
-import io.github.mianalysis.MIA.Module.Module;
-import io.github.mianalysis.MIA.Module.Modules;
-import io.github.mianalysis.MIA.Module.Core.InputControl;
-import io.github.mianalysis.MIA.Module.Core.OutputControl;
-import io.github.mianalysis.MIA.Module.Miscellaneous.GUISeparator;
-import io.github.mianalysis.MIA.Object.Colours;
-import io.github.mianalysis.MIA.Object.Parameters.BooleanP;
-import io.github.mianalysis.MIA.Object.Parameters.ObjMeasurementSelectorP;
-import io.github.mianalysis.MIA.Object.Parameters.Parameters;
-import io.github.mianalysis.MIA.Object.Parameters.ParameterGroup;
-import io.github.mianalysis.MIA.Object.Parameters.SeparatorP;
-import io.github.mianalysis.MIA.Object.Parameters.Abstract.Parameter;
-import io.github.mianalysis.MIA.Object.Parameters.Text.MessageP;
-import io.github.mianalysis.MIA.Object.Parameters.Text.TextAreaP;
-import io.github.mianalysis.MIA.Object.Refs.Abstract.ExportableRef;
-import io.github.mianalysis.MIA.Object.Refs.Abstract.SummaryRef;
-import io.github.mianalysis.MIA.Object.Refs.Collections.Refs;
+import io.github.mianalysis.mia.gui.parametercontrols.ParameterControl;
+import io.github.mianalysis.mia.gui.regions.basicpanel.ModuleTitle;
+import io.github.mianalysis.mia.gui.regions.parameterlist.DisableRefsButton;
+import io.github.mianalysis.mia.gui.regions.parameterlist.DisableableCheck;
+import io.github.mianalysis.mia.gui.regions.parameterlist.EnableRefsButton;
+import io.github.mianalysis.mia.gui.regions.parameterlist.ExportCheck;
+import io.github.mianalysis.mia.gui.regions.parameterlist.ExportEnableButton;
+import io.github.mianalysis.mia.gui.regions.parameterlist.ExportName;
+import io.github.mianalysis.mia.gui.regions.parameterlist.ResetExport;
+import io.github.mianalysis.mia.gui.regions.parameterlist.ShowBasicTitleCheck;
+import io.github.mianalysis.mia.gui.regions.parameterlist.VisibleCheck;
+import io.github.mianalysis.mia.gui.regions.workflowmodules.ModuleEnabledButton;
+import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.core.InputControl;
+import io.github.mianalysis.mia.module.core.OutputControl;
+import io.github.mianalysis.mia.module.Miscellaneous.GUISeparator;
+import io.github.mianalysis.mia.Object.Colours;
+import io.github.mianalysis.mia.Object.Parameters.BooleanP;
+import io.github.mianalysis.mia.Object.Parameters.ObjMeasurementSelectorP;
+import io.github.mianalysis.mia.Object.Parameters.Parameters;
+import io.github.mianalysis.mia.Object.Parameters.ParameterGroup;
+import io.github.mianalysis.mia.Object.Parameters.SeparatorP;
+import io.github.mianalysis.mia.Object.Parameters.Abstract.Parameter;
+import io.github.mianalysis.mia.Object.Parameters.Text.MessageP;
+import io.github.mianalysis.mia.Object.Parameters.Text.TextAreaP;
+import io.github.mianalysis.mia.Object.Refs.Abstract.ExportableRef;
+import io.github.mianalysis.mia.Object.Refs.Abstract.SummaryRef;
+import io.github.mianalysis.mia.Object.Refs.Collections.Refs;
 
 /**
  * Created by Stephen on 23/06/2017.
@@ -57,11 +57,11 @@ public class ComponentFactory {
     private int elementHeight;
 
     private static final ImageIcon downArrow = new ImageIcon(
-            ComponentFactory.class.getResource("/Icons/downarrow_darkblue_12px.png"), "");
+            ComponentFactory.class.getResource("/icons/downarrow_darkblue_12px.png"), "");
     private static final ImageIcon rightArrow = new ImageIcon(
-            ComponentFactory.class.getResource("/Icons/rightarrow_darkblue_12px.png"), "");
+            ComponentFactory.class.getResource("/icons/rightarrow_darkblue_12px.png"), "");
     private static final ImageIcon leftArrow = new ImageIcon(
-            ComponentFactory.class.getResource("/Icons/leftarrow_darkblue_12px.png"), "");
+            ComponentFactory.class.getResource("/icons/leftarrow_darkblue_12px.png"), "");
     // private static final ImageIcon circle = new ImageIcon(
     // ComponentFactory.class.getResource("/Icons/dot_blue_12px.png"), "");
 

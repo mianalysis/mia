@@ -1,4 +1,4 @@
-package io.github.mianalysis.MIA.GUI.Regions.Documentation;
+package io.github.mianalysis.mia.gui.regions.documentation;
 
 import java.awt.Dimension;
 import java.awt.Font;
@@ -10,9 +10,9 @@ import javax.swing.JEditorPane;
 import javax.swing.JFrame;
 import javax.swing.JScrollPane;
 
-import io.github.mianalysis.MIA.MIA;
-import io.github.mianalysis.MIA.GUI.HyperlinkOpener;
-import io.github.mianalysis.MIA.Process.DocumentationGenerator;
+import io.github.mianalysis.mia.MIA;
+import io.github.mianalysis.mia.gui.HyperlinkOpener;
+import io.github.mianalysis.mia.Process.DocumentationGenerator;
 
 public class DocumentationPanel {
     public static void showAbout() {
@@ -29,7 +29,7 @@ public class DocumentationPanel {
 
     public static void showPony() {
         String pony = "<html><body><div style=\"text-align: center;\">" +
-                "<img src=\""+MIA.class.getResource("/Images/Pony.gif").toString()+"\" align=\"middle\">" +
+                "<img src=\""+MIA.class.getResource("/images/Pony.gif").toString()+"\" align=\"middle\">" +
                 "</div></body></html>";
 
         JFrame frame = showDocumentation(pony);
@@ -59,7 +59,7 @@ public class DocumentationPanel {
 
             JFrame frame = new JFrame();
             frame.add(scrollPane);
-            frame.setIconImage(new ImageIcon(MIA.class.getResource("/Icons/Logo_wide_32.png"),"").getImage());
+            frame.setIconImage(new ImageIcon(MIA.class.getResource("/icons/Logo_wide_32.png"),"").getImage());
 
             Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
             frame.setPreferredSize(new Dimension(700,700));

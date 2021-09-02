@@ -1,7 +1,7 @@
-package io.github.mianalysis.MIA.GUI.ParameterControls;
+package io.github.mianalysis.mia.gui.parametercontrols;
 
-import io.github.mianalysis.MIA.GUI.GUI;
-import io.github.mianalysis.MIA.Object.Parameters.Abstract.TextType;
+import io.github.mianalysis.mia.gui.GUI;
+import io.github.mianalysis.mia.Object.Parameters.Abstract.TextType;
 
 import java.awt.event.FocusEvent;
 

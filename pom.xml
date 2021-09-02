@@ -341,7 +341,7 @@
                 </executions>
                 <configuration>
                     <classpathScope>compile</classpathScope>
-                    <mainClass>io.github.mianalysis.MIA.Process.DocumentationGenerator</mainClass>
+                    <mainClass>io.github.mianalysis.mia.Process.DocumentationGenerator</mainClass>
                 </configuration>
             </plugin>
 
@@ -355,7 +355,7 @@
                         <manifest>
                             <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
                             <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
-                            <mainClass>io.github.mianalysis.MIA.MIA</mainClass>
+                            <mainClass>io.github.mianalysis.mia.MIA</mainClass>
                         </manifest>
                     </archive>
                 </configuration>

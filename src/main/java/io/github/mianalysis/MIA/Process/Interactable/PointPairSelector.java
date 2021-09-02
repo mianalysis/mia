@@ -1,4 +1,4 @@
-package io.github.mianalysis.MIA.Process.Interactable;
+package io.github.mianalysis.mia.Process.Interactable;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -30,8 +30,8 @@ import ij.gui.PointRoi;
 import ij.gui.Roi;
 import ij.gui.TextRoi;
 import ij.gui.Toolbar;
-import io.github.mianalysis.MIA.MIA;
-import io.github.mianalysis.MIA.Object.Image;
+import io.github.mianalysis.mia.MIA;
+import io.github.mianalysis.mia.Object.Image;
 
 public class PointPairSelector implements ActionListener {
     private static final String ADD_PAIRS = "Add pair(s)";

@@ -1,8 +1,8 @@
-package io.github.mianalysis.MIA.GUI.Regions.MenuBar;
+package io.github.mianalysis.mia.gui.regions.menubar;
 
 import org.apache.commons.lang.WordUtils;
-import io.github.mianalysis.MIA.MIA;
-import io.github.mianalysis.MIA.Process.Logging.LogRenderer;
+import io.github.mianalysis.mia.MIA;
+import io.github.mianalysis.mia.Process.Logging.LogRenderer;
 
 import javax.swing.*;
 import java.awt.*;

@@ -1,8 +1,8 @@
-package io.github.mianalysis.MIA.Object.Parameters;
+package io.github.mianalysis.mia.Object.Parameters;
 
-import io.github.mianalysis.MIA.Module.Module;
-import io.github.mianalysis.MIA.Object.Parameters.Abstract.ChoiceType;
-import io.github.mianalysis.MIA.Object.Parameters.Abstract.Parameter;
+import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.Object.Parameters.Abstract.ChoiceType;
+import io.github.mianalysis.mia.Object.Parameters.Abstract.Parameter;
 
 import com.drew.lang.annotations.NotNull;
 

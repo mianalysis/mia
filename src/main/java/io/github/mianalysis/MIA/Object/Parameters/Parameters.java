@@ -1,9 +1,9 @@
-package io.github.mianalysis.MIA.Object.Parameters;
+package io.github.mianalysis.mia.Object.Parameters;
 
 import java.util.LinkedHashMap;
 
-import io.github.mianalysis.MIA.Object.Parameters.Abstract.Parameter;
-import io.github.mianalysis.MIA.Object.Refs.Collections.Refs;
+import io.github.mianalysis.mia.Object.Parameters.Abstract.Parameter;
+import io.github.mianalysis.mia.Object.Refs.Collections.Refs;
 
 /**
  * Created by sc13967 on 02/05/2017.

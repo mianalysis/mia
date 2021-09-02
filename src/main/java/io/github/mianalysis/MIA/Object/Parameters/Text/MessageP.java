@@ -1,13 +1,13 @@
-package io.github.mianalysis.MIA.Object.Parameters.Text;
+package io.github.mianalysis.mia.Object.Parameters.Text;
 
 import java.awt.Color;
 
 import com.drew.lang.annotations.NotNull;
 
-import io.github.mianalysis.MIA.GUI.ParameterControls.MessageArea;
-import io.github.mianalysis.MIA.GUI.ParameterControls.ParameterControl;
-import io.github.mianalysis.MIA.Module.Module;
-import io.github.mianalysis.MIA.Object.Parameters.Abstract.Parameter;
+import io.github.mianalysis.mia.gui.parametercontrols.MessageArea;
+import io.github.mianalysis.mia.gui.parametercontrols.ParameterControl;
+import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.Object.Parameters.Abstract.Parameter;
 
 public class MessageP extends TextAreaP {
     private Color color = Color.BLACK;

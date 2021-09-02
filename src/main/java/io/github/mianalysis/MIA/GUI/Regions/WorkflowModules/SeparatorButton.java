@@ -1,4 +1,4 @@
-package io.github.mianalysis.MIA.GUI.Regions.WorkflowModules;
+package io.github.mianalysis.mia.gui.regions.workflowmodules;
 
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
@@ -7,10 +7,10 @@ import java.awt.event.ActionListener;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 
-import io.github.mianalysis.MIA.GUI.GUI;
-import io.github.mianalysis.MIA.Module.Module;
-import io.github.mianalysis.MIA.Module.Miscellaneous.GUISeparator;
-import io.github.mianalysis.MIA.Object.Parameters.BooleanP;
+import io.github.mianalysis.mia.gui.GUI;
+import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.module.Miscellaneous.GUISeparator;
+import io.github.mianalysis.mia.Object.Parameters.BooleanP;
 
 /**
  * Created by sc13967 on 07/06/2017.
@@ -22,9 +22,9 @@ public class SeparatorButton extends JButton implements ActionListener {
     private static final long serialVersionUID = -4790928465048201014L;
     private Module module;
     private boolean left;
-    private static final ImageIcon expandedIcon = new ImageIcon(SeparatorButton.class.getResource("/Icons/downarrow_darkblue_12px.png"), "");
-    private static final ImageIcon collapsedLeftIcon = new ImageIcon(SeparatorButton.class.getResource("/Icons/rightarrow_darkblue_12px.png"), "");
-    private static final ImageIcon collapsedRightIcon = new ImageIcon(SeparatorButton.class.getResource("/Icons/leftarrow_darkblue_12px.png"), "");
+    private static final ImageIcon expandedIcon = new ImageIcon(SeparatorButton.class.getResource("/icons/downarrow_darkblue_12px.png"), "");
+    private static final ImageIcon collapsedLeftIcon = new ImageIcon(SeparatorButton.class.getResource("/icons/rightarrow_darkblue_12px.png"), "");
+    private static final ImageIcon collapsedRightIcon = new ImageIcon(SeparatorButton.class.getResource("/icons/leftarrow_darkblue_12px.png"), "");
 
 
     public SeparatorButton(Module module, boolean left) {

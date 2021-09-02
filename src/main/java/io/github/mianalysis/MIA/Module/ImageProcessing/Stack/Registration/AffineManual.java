@@ -1,4 +1,4 @@
-package io.github.mianalysis.MIA.Module.ImageProcessing.Stack.Registration;
+package io.github.mianalysis.mia.module.imageprocessing.Stack.Registration;
 
 import java.util.ArrayList;
 import java.util.Vector;
@@ -15,18 +15,18 @@ import mpicbg.models.NotEnoughDataPointsException;
 import mpicbg.models.PointMatch;
 import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
-import io.github.mianalysis.MIA.MIA;
-import io.github.mianalysis.MIA.Module.Modules;
-import io.github.mianalysis.MIA.Module.ImageProcessing.Stack.ConcatenateStacks;
-import io.github.mianalysis.MIA.Module.ImageProcessing.Stack.Registration.Abstract.AbstractAffineRegistration;
-import io.github.mianalysis.MIA.Object.Image;
-import io.github.mianalysis.MIA.Object.Workspace;
-import io.github.mianalysis.MIA.Object.Parameters.ChoiceP;
-import io.github.mianalysis.MIA.Object.Parameters.Parameters;
-import io.github.mianalysis.MIA.Object.Parameters.SeparatorP;
-import io.github.mianalysis.MIA.Process.Interactable.Interactable;
-import io.github.mianalysis.MIA.Process.Interactable.PointPairSelector;
-import io.github.mianalysis.MIA.Process.Interactable.PointPairSelector.PointPair;
+import io.github.mianalysis.mia.MIA;
+import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.imageprocessing.Stack.ConcatenateStacks;
+import io.github.mianalysis.mia.module.imageprocessing.Stack.Registration.Abstract.AbstractAffineRegistration;
+import io.github.mianalysis.mia.Object.Image;
+import io.github.mianalysis.mia.Object.Workspace;
+import io.github.mianalysis.mia.Object.Parameters.ChoiceP;
+import io.github.mianalysis.mia.Object.Parameters.Parameters;
+import io.github.mianalysis.mia.Object.Parameters.SeparatorP;
+import io.github.mianalysis.mia.Process.Interactable.Interactable;
+import io.github.mianalysis.mia.Process.Interactable.PointPairSelector;
+import io.github.mianalysis.mia.Process.Interactable.PointPairSelector.PointPair;
 
 public class AffineManual<T extends RealType<T> & NativeType<T>> extends AbstractAffineRegistration
         implements Interactable {

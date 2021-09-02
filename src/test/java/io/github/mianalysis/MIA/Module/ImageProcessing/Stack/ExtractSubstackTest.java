@@ -1,4 +1,4 @@
-package io.github.mianalysis.MIA.Module.ImageProcessing.Stack;
+package io.github.mianalysis.mia.module.imageprocessing.Stack;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -6,9 +6,9 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import io.github.mianalysis.MIA.Module.Module;
-import io.github.mianalysis.MIA.Module.ModuleTest;
-import io.github.mianalysis.MIA.Process.CommaSeparatedStringInterpreter;
+import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.module.ModuleTest;
+import io.github.mianalysis.mia.Process.CommaSeparatedStringInterpreter;
 
 public class ExtractSubstackTest extends ModuleTest {
 

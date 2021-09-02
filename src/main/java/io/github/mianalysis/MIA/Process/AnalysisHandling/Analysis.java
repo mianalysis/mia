@@ -1,18 +1,18 @@
-package io.github.mianalysis.MIA.Process.AnalysisHandling;
+package io.github.mianalysis.mia.Process.AnalysisHandling;
 
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import io.github.mianalysis.MIA.MIA;
-import io.github.mianalysis.MIA.GUI.GUI;
-import io.github.mianalysis.MIA.Macro.MacroHandler;
-import io.github.mianalysis.MIA.Module.Module;
-import io.github.mianalysis.MIA.Module.Modules;
-import io.github.mianalysis.MIA.Module.Miscellaneous.Macros.AbstractMacroRunner;
-import io.github.mianalysis.MIA.Object.Status;
-import io.github.mianalysis.MIA.Object.Workspace;
-import io.github.mianalysis.MIA.Process.Logging.LogRenderer;
+import io.github.mianalysis.mia.MIA;
+import io.github.mianalysis.mia.gui.GUI;
+import io.github.mianalysis.mia.macro.MacroHandler;
+import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.Miscellaneous.Macros.AbstractMacroRunner;
+import io.github.mianalysis.mia.Object.Status;
+import io.github.mianalysis.mia.Object.Workspace;
+import io.github.mianalysis.mia.Process.Logging.LogRenderer;
 
 /**
  * Created by sc13967 on 21/10/2016.

@@ -1,13 +1,13 @@
-package io.github.mianalysis.MIA.Object.Parameters;
+package io.github.mianalysis.mia.Object.Parameters;
 
 import org.junit.jupiter.api.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
-import io.github.mianalysis.MIA.Module.ImageMeasurements.MeasureImageIntensity;
-import io.github.mianalysis.MIA.Module.ImageMeasurements.MeasureImageTexture;
-import io.github.mianalysis.MIA.Module.InputOutput.ImageLoader;
-import io.github.mianalysis.MIA.Module.Modules;
+import io.github.mianalysis.mia.module.imagemeasurements.MeasureImageIntensity;
+import io.github.mianalysis.mia.module.imagemeasurements.MeasureImageTexture;
+import io.github.mianalysis.mia.module.InputOutput.ImageLoader;
+import io.github.mianalysis.mia.module.Modules;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;

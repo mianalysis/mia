@@ -1,4 +1,4 @@
-package io.github.mianalysis.MIA.GUI.Regions.WorkflowModules;
+package io.github.mianalysis.mia.gui.regions.workflowmodules;
 
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
@@ -7,10 +7,10 @@ import java.awt.event.ActionListener;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 
-import io.github.mianalysis.MIA.GUI.GUI;
-import io.github.mianalysis.MIA.Module.Module;
-import io.github.mianalysis.MIA.Module.Modules;
-import io.github.mianalysis.MIA.Module.Miscellaneous.GUISeparator;
+import io.github.mianalysis.mia.gui.GUI;
+import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.Miscellaneous.GUISeparator;
 
 /**
  * Created by sc13967 on 07/06/2017.
@@ -21,9 +21,9 @@ public class ModuleEnabledButton extends JButton implements ActionListener {
      */
     private static final long serialVersionUID = 6135822183769524507L;
     private Module module;
-    private static final ImageIcon blackIcon = new ImageIcon(ModuleEnabledButton.class.getResource("/Icons/power_black_strike_12px.png"), "");
-    private static final ImageIcon redIcon = new ImageIcon(ModuleEnabledButton.class.getResource("/Icons/power_red_12px.png"), "");
-    private static final ImageIcon greenIcon = new ImageIcon(ModuleEnabledButton.class.getResource("/Icons/power_brightgreen_12px.png"), "");
+    private static final ImageIcon blackIcon = new ImageIcon(ModuleEnabledButton.class.getResource("/icons/power_black_strike_12px.png"), "");
+    private static final ImageIcon redIcon = new ImageIcon(ModuleEnabledButton.class.getResource("/icons/power_red_12px.png"), "");
+    private static final ImageIcon greenIcon = new ImageIcon(ModuleEnabledButton.class.getResource("/icons/power_brightgreen_12px.png"), "");
 
     public ModuleEnabledButton(Module module) {
         this.module = module;

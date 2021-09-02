@@ -1,10 +1,10 @@
-package io.github.mianalysis.MIA.Object.Parameters;
+package io.github.mianalysis.mia.Object.Parameters;
 
 import com.drew.lang.annotations.NotNull;
 
-import io.github.mianalysis.MIA.Module.Module;
-import io.github.mianalysis.MIA.Object.Parameters.Abstract.Parameter;
-import io.github.mianalysis.MIA.Object.Parameters.Text.StringP;
+import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.Object.Parameters.Abstract.Parameter;
+import io.github.mianalysis.mia.Object.Parameters.Text.StringP;
 
 public class OutputImageP extends StringP {
     public OutputImageP(String name, Module module) {

@@ -1,6 +1,6 @@
 // Taken from https://stackoverflow.com/questions/11278209/how-can-i-make-comboboxs-list-wider (Accessed 29-06-2017)
 
-package io.github.mianalysis.MIA.GUI.ParameterControls;
+package io.github.mianalysis.mia.gui.parametercontrols;
 
 import javax.swing.*;
 import java.awt.*;

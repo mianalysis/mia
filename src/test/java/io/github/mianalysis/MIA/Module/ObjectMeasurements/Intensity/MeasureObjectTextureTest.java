@@ -1,4 +1,4 @@
-package io.github.mianalysis.MIA.Module.ObjectMeasurements.Intensity;
+package io.github.mianalysis.mia.module.ObjectMeasurements.Intensity;
 
 import ij.IJ;
 import ij.ImagePlus;
@@ -6,12 +6,12 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
-import io.github.mianalysis.MIA.ExpectedObjects.ExpectedObjects;
-import io.github.mianalysis.MIA.ExpectedObjects.Objects2D;
-import io.github.mianalysis.MIA.Module.ModuleTest;
-import io.github.mianalysis.MIA.Object.Image;
-import io.github.mianalysis.MIA.Object.Obj;
-import io.github.mianalysis.MIA.Object.Objs;
+import io.github.mianalysis.mia.ExpectedObjects.ExpectedObjects;
+import io.github.mianalysis.mia.ExpectedObjects.Objects2D;
+import io.github.mianalysis.mia.module.ModuleTest;
+import io.github.mianalysis.mia.Object.Image;
+import io.github.mianalysis.mia.Object.Obj;
+import io.github.mianalysis.mia.Object.Objs;
 import io.github.sjcross.common.Analysis.TextureCalculator;
 import io.github.sjcross.common.Object.Volume.VolumeType;
 

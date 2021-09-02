@@ -1,4 +1,4 @@
-package io.github.mianalysis.MIA.Module;
+package io.github.mianalysis.mia.module;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -9,25 +9,25 @@ import org.junit.jupiter.api.Test;
 
 import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
-import io.github.mianalysis.MIA.Module.ImageMeasurements.MeasureImageIntensity;
-import io.github.mianalysis.MIA.Module.ImageMeasurements.MeasureImageTexture;
-import io.github.mianalysis.MIA.Module.ImageProcessing.Pixel.FilterImage;
-import io.github.mianalysis.MIA.Module.ImageProcessing.Stack.RemoveImage;
-import io.github.mianalysis.MIA.Module.InputOutput.ImageLoader;
-import io.github.mianalysis.MIA.Module.ObjectMeasurements.Intensity.MeasureObjectTexture;
-import io.github.mianalysis.MIA.Module.ObjectMeasurements.Spatial.MeasureObjectCentroid;
-import io.github.mianalysis.MIA.Module.ObjectMeasurements.Spatial.MeasureObjectShape;
-import io.github.mianalysis.MIA.Module.ObjectProcessing.Relationships.SingleClassCluster;
-import io.github.mianalysis.MIA.Module.ObjectProcessing.Relationships.TrackObjects;
-import io.github.mianalysis.MIA.Object.Parameters.BooleanP;
-import io.github.mianalysis.MIA.Object.Parameters.OutputImageP;
-import io.github.mianalysis.MIA.Object.Parameters.Parameters;
-import io.github.mianalysis.MIA.Object.Parameters.ParameterGroup;
-import io.github.mianalysis.MIA.Object.Parameters.Abstract.Parameter;
-import io.github.mianalysis.MIA.Object.Refs.Collections.ImageMeasurementRefs;
-import io.github.mianalysis.MIA.Object.Refs.Collections.ObjMeasurementRefs;
-import io.github.mianalysis.MIA.Object.Refs.Collections.ParentChildRefs;
-import io.github.mianalysis.MIA.Object.Units.SpatialUnit;
+import io.github.mianalysis.mia.module.imagemeasurements.MeasureImageIntensity;
+import io.github.mianalysis.mia.module.imagemeasurements.MeasureImageTexture;
+import io.github.mianalysis.mia.module.imageprocessing.pixel.FilterImage;
+import io.github.mianalysis.mia.module.imageprocessing.Stack.RemoveImage;
+import io.github.mianalysis.mia.module.InputOutput.ImageLoader;
+import io.github.mianalysis.mia.module.ObjectMeasurements.Intensity.MeasureObjectTexture;
+import io.github.mianalysis.mia.module.ObjectMeasurements.Spatial.MeasureObjectCentroid;
+import io.github.mianalysis.mia.module.ObjectMeasurements.Spatial.MeasureObjectShape;
+import io.github.mianalysis.mia.module.ObjectProcessing.Relationships.SingleClassCluster;
+import io.github.mianalysis.mia.module.ObjectProcessing.Relationships.TrackObjects;
+import io.github.mianalysis.mia.Object.Parameters.BooleanP;
+import io.github.mianalysis.mia.Object.Parameters.OutputImageP;
+import io.github.mianalysis.mia.Object.Parameters.Parameters;
+import io.github.mianalysis.mia.Object.Parameters.ParameterGroup;
+import io.github.mianalysis.mia.Object.Parameters.Abstract.Parameter;
+import io.github.mianalysis.mia.Object.Refs.Collections.ImageMeasurementRefs;
+import io.github.mianalysis.mia.Object.Refs.Collections.ObjMeasurementRefs;
+import io.github.mianalysis.mia.Object.Refs.Collections.ParentChildRefs;
+import io.github.mianalysis.mia.Object.Units.SpatialUnit;
 
 public class ModulesTest<T extends RealType<T> & NativeType<T>> {
     @Test

@@ -1,10 +1,10 @@
-package io.github.mianalysis.MIA.Object.Refs.Collections;
+package io.github.mianalysis.mia.Object.Refs.Collections;
 
 import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import io.github.mianalysis.MIA.Object.Refs.MetadataRef;
+import io.github.mianalysis.mia.Object.Refs.MetadataRef;
 
 public class MetadataRefs extends TreeMap<String,MetadataRef> implements Refs<MetadataRef> {
     /**

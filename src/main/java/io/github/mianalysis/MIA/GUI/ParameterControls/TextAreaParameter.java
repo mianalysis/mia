@@ -1,4 +1,4 @@
-package io.github.mianalysis.MIA.GUI.ParameterControls;
+package io.github.mianalysis.mia.gui.parametercontrols;
 
 import java.awt.Dimension;
 import java.awt.Font;
@@ -15,9 +15,9 @@ import javax.swing.JTextArea;
 import javax.swing.text.Document;
 import javax.swing.text.PlainDocument;
 
-import io.github.mianalysis.MIA.GUI.GUI;
-import io.github.mianalysis.MIA.Module.Core.OutputControl;
-import io.github.mianalysis.MIA.Object.Parameters.Text.TextAreaP;
+import io.github.mianalysis.mia.gui.GUI;
+import io.github.mianalysis.mia.module.core.OutputControl;
+import io.github.mianalysis.mia.Object.Parameters.Text.TextAreaP;
 
 public class TextAreaParameter extends ParameterControl implements FocusListener {
     protected JPanel control;

@@ -1,6 +1,6 @@
-package io.github.mianalysis.MIA.Module.Visualisation.ImageRendering;
+package io.github.mianalysis.mia.module.Visualisation.ImageRendering;
 
-import io.github.mianalysis.MIA.Module.ModuleTest;
+import io.github.mianalysis.mia.module.ModuleTest;
 
 import static org.junit.jupiter.api.Assertions.*;
 

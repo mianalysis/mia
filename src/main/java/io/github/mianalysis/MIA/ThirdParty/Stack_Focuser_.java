@@ -1,4 +1,4 @@
-package io.github.mianalysis.MIA.ThirdParty;
+package io.github.mianalysis.mia.ThirdParty;
 
 import org.eclipse.sisu.Nullable;import ij.IJ;
 import ij.ImagePlus;

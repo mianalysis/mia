@@ -1,10 +1,10 @@
-package io.github.mianalysis.MIA.ExpectedObjects;
+package io.github.mianalysis.mia.ExpectedObjects;
 
 import util.opencsv.CSVReader;
-import io.github.mianalysis.MIA.MIA;
-import io.github.mianalysis.MIA.Object.Measurement;
-import io.github.mianalysis.MIA.Object.Obj;
-import io.github.mianalysis.MIA.Object.Objs;
+import io.github.mianalysis.mia.MIA;
+import io.github.mianalysis.mia.Object.Measurement;
+import io.github.mianalysis.mia.Object.Obj;
+import io.github.mianalysis.mia.Object.Objs;
 import io.github.sjcross.common.Exceptions.IntegerOverflowException;
 import io.github.sjcross.common.Object.Volume.PointOutOfRangeException;
 import io.github.sjcross.common.Object.Volume.SpatCal;
@@ -19,8 +19,8 @@ import java.util.List;
 import ome.units.quantity.Time;
 import ome.units.unit.Unit;
 
-import static io.github.mianalysis.MIA.ExpectedObjects.ExpectedObjects.Mode.BINARY;
-import static io.github.mianalysis.MIA.ExpectedObjects.ExpectedObjects.Mode.SIXTEEN_BIT;
+import static io.github.mianalysis.mia.ExpectedObjects.ExpectedObjects.Mode.BINARY;
+import static io.github.mianalysis.mia.ExpectedObjects.ExpectedObjects.Mode.SIXTEEN_BIT;
 
 /**
  * Created by sc13967 on 12/02/2018.

@@ -1,7 +1,7 @@
-package io.github.mianalysis.MIA.Object;
+package io.github.mianalysis.mia.Object;
 
-import io.github.mianalysis.MIA.Object.Units.SpatialUnit;
-import io.github.mianalysis.MIA.Object.Units.TemporalUnit;
+import io.github.mianalysis.mia.Object.Units.SpatialUnit;
+import io.github.mianalysis.mia.Object.Units.TemporalUnit;
 
 /**
  * Measurement that holds a single value for an object

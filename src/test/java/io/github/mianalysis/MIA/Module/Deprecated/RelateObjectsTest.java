@@ -1,4 +1,4 @@
-package io.github.mianalysis.MIA.Module.Deprecated;
+package io.github.mianalysis.mia.module.Deprecated;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -15,22 +15,22 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 
-import io.github.mianalysis.MIA.ExpectedObjects.ExpectedObjects;
-import io.github.mianalysis.MIA.ExpectedObjects.Objects3D;
-import io.github.mianalysis.MIA.ExpectedObjects.ProxCubes1;
-import io.github.mianalysis.MIA.ExpectedObjects.ProxCubes2;
-import io.github.mianalysis.MIA.ExpectedObjects.ProxSquares1;
-import io.github.mianalysis.MIA.ExpectedObjects.ProxSquares2;
-import io.github.mianalysis.MIA.ExpectedObjects.Spots3D;
-import io.github.mianalysis.MIA.Module.Module;
-import io.github.mianalysis.MIA.Module.Modules;
-import io.github.mianalysis.MIA.Module.ModuleTest;
-import io.github.mianalysis.MIA.Module.ObjectProcessing.Relationships.RelateObjects;
-import io.github.mianalysis.MIA.Object.Obj;
-import io.github.mianalysis.MIA.Object.Objs;
-import io.github.mianalysis.MIA.Object.Workspace;
-import io.github.mianalysis.MIA.Object.Workspaces;
-import io.github.mianalysis.MIA.Object.Units.SpatialUnit;
+import io.github.mianalysis.mia.ExpectedObjects.ExpectedObjects;
+import io.github.mianalysis.mia.ExpectedObjects.Objects3D;
+import io.github.mianalysis.mia.ExpectedObjects.ProxCubes1;
+import io.github.mianalysis.mia.ExpectedObjects.ProxCubes2;
+import io.github.mianalysis.mia.ExpectedObjects.ProxSquares1;
+import io.github.mianalysis.mia.ExpectedObjects.ProxSquares2;
+import io.github.mianalysis.mia.ExpectedObjects.Spots3D;
+import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModuleTest;
+import io.github.mianalysis.mia.module.ObjectProcessing.Relationships.RelateObjects;
+import io.github.mianalysis.mia.Object.Obj;
+import io.github.mianalysis.mia.Object.Objs;
+import io.github.mianalysis.mia.Object.Workspace;
+import io.github.mianalysis.mia.Object.Workspaces;
+import io.github.mianalysis.mia.Object.Units.SpatialUnit;
 import io.github.sjcross.common.Object.Volume.VolumeType;
 
 /**

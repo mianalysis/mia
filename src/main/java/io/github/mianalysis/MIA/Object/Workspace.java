@@ -1,4 +1,4 @@
-package io.github.mianalysis.MIA.Object;
+package io.github.mianalysis.mia.Object;
 
 import java.io.File;
 import java.util.HashMap;
@@ -7,9 +7,9 @@ import java.util.LinkedHashMap;
 import org.apache.commons.io.FilenameUtils;
 
 import ij.measure.ResultsTable;
-import io.github.mianalysis.MIA.Module.Module;
-import io.github.mianalysis.MIA.Object.Refs.MetadataRef;
-import io.github.mianalysis.MIA.Object.Refs.Collections.MetadataRefs;
+import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.Object.Refs.MetadataRef;
+import io.github.mianalysis.mia.Object.Refs.Collections.MetadataRefs;
 import io.github.sjcross.common.MetadataExtractors.Metadata;
 
 /**

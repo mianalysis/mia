@@ -1,16 +1,16 @@
-package io.github.mianalysis.MIA.GUI.Regions.BasicPanel;
+package io.github.mianalysis.mia.gui.regions.basicpanel;
 
-import io.github.mianalysis.MIA.GUI.ComponentFactory;
-import io.github.mianalysis.MIA.GUI.GUI;
-import io.github.mianalysis.MIA.GUI.Regions.WorkflowModules.ModuleEnabledButton;
-import io.github.mianalysis.MIA.Module.Miscellaneous.GUISeparator;
-import io.github.mianalysis.MIA.Module.Module;
-import io.github.mianalysis.MIA.Module.Modules;
-import io.github.mianalysis.MIA.Module.Core.InputControl;
-import io.github.mianalysis.MIA.Module.Core.OutputControl;
-import io.github.mianalysis.MIA.Object.Parameters.BooleanP;
-import io.github.mianalysis.MIA.Process.AnalysisHandling.Analysis;
-import io.github.mianalysis.MIA.Process.AnalysisHandling.AnalysisTester;
+import io.github.mianalysis.mia.gui.ComponentFactory;
+import io.github.mianalysis.mia.gui.GUI;
+import io.github.mianalysis.mia.gui.regions.workflowmodules.ModuleEnabledButton;
+import io.github.mianalysis.mia.module.Miscellaneous.GUISeparator;
+import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.core.InputControl;
+import io.github.mianalysis.mia.module.core.OutputControl;
+import io.github.mianalysis.mia.Object.Parameters.BooleanP;
+import io.github.mianalysis.mia.Process.AnalysisHandling.Analysis;
+import io.github.mianalysis.mia.Process.AnalysisHandling.AnalysisTester;
 
 import javax.swing.*;
 import javax.swing.border.EtchedBorder;

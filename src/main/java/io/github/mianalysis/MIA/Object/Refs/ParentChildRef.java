@@ -1,11 +1,11 @@
-package io.github.mianalysis.MIA.Object.Refs;
+package io.github.mianalysis.mia.Object.Refs;
 
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
-import io.github.mianalysis.MIA.Object.Obj;
-import io.github.mianalysis.MIA.Object.Refs.Abstract.Ref;
+import io.github.mianalysis.mia.Object.Obj;
+import io.github.mianalysis.mia.Object.Refs.Abstract.Ref;
 
 public class ParentChildRef extends Ref {
     private final String parentName;

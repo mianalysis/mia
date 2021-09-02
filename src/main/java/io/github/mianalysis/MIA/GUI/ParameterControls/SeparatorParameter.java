@@ -1,7 +1,7 @@
-package io.github.mianalysis.MIA.GUI.ParameterControls;
+package io.github.mianalysis.mia.gui.parametercontrols;
 
-import io.github.mianalysis.MIA.Object.Colours;
-import io.github.mianalysis.MIA.Object.Parameters.SeparatorP;
+import io.github.mianalysis.mia.Object.Colours;
+import io.github.mianalysis.mia.Object.Parameters.SeparatorP;
 
 import javax.swing.*;
 import java.awt.*;

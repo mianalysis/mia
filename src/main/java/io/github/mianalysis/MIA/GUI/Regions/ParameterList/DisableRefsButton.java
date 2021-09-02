@@ -1,4 +1,4 @@
-package io.github.mianalysis.MIA.GUI.Regions.ParameterList;
+package io.github.mianalysis.mia.gui.regions.parameterlist;
 
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
@@ -7,10 +7,10 @@ import java.awt.event.ActionListener;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 
-import io.github.mianalysis.MIA.GUI.GUI;
-import io.github.mianalysis.MIA.Object.Refs.Abstract.ExportableRef;
-import io.github.mianalysis.MIA.Object.Refs.Abstract.SummaryRef;
-import io.github.mianalysis.MIA.Object.Refs.Collections.Refs;
+import io.github.mianalysis.mia.gui.GUI;
+import io.github.mianalysis.mia.Object.Refs.Abstract.ExportableRef;
+import io.github.mianalysis.mia.Object.Refs.Abstract.SummaryRef;
+import io.github.mianalysis.mia.Object.Refs.Collections.Refs;
 
 public class DisableRefsButton extends JButton implements ActionListener {
     /**
@@ -19,7 +19,7 @@ public class DisableRefsButton extends JButton implements ActionListener {
     private static final long serialVersionUID = -93923037075226123L;
 
     private static final ImageIcon icon = new ImageIcon(
-        DisableRefsButton.class.getResource("/Icons/delete-2_black_12px.png"), "");
+        DisableRefsButton.class.getResource("/icons/delete-2_black_12px.png"), "");
 
     private Refs<SummaryRef> refs;
 

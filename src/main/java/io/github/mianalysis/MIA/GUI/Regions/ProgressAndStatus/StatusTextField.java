@@ -1,4 +1,4 @@
-package io.github.mianalysis.MIA.GUI.Regions.ProgressAndStatus;
+package io.github.mianalysis.mia.gui.regions.progressandstatus;
 
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -6,9 +6,9 @@ import java.util.concurrent.TimeUnit;
 
 import javax.swing.JLabel;
 
-import io.github.mianalysis.MIA.MIA;
-import io.github.mianalysis.MIA.GUI.GUI;
-import io.github.mianalysis.MIA.Module.Module;
+import io.github.mianalysis.mia.MIA;
+import io.github.mianalysis.mia.gui.GUI;
+import io.github.mianalysis.mia.module.Module;
 
 /**
  * Created by sc13967 on 19/01/2018.

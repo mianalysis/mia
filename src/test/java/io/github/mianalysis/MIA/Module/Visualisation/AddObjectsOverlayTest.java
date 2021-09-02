@@ -1,4 +1,4 @@
-package io.github.mianalysis.MIA.Module.Visualisation;
+package io.github.mianalysis.mia.module.Visualisation;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -13,17 +13,17 @@ import org.junit.jupiter.params.provider.EnumSource;
 import ij.IJ;
 import ij.ImageJ;
 import ij.ImagePlus;
-import io.github.mianalysis.MIA.ExpectedObjects.DenseTracks2D;
-import io.github.mianalysis.MIA.ExpectedObjects.ExpectedObjects;
-import io.github.mianalysis.MIA.Module.Module;
-import io.github.mianalysis.MIA.Module.ModuleTest;
-import io.github.mianalysis.MIA.Module.ImageProcessing.Stack.Convert3DStack;
-import io.github.mianalysis.MIA.Module.ObjectProcessing.Relationships.TrackObjects;
-import io.github.mianalysis.MIA.Module.Visualisation.Overlays.AddObjectsOverlay;
-import io.github.mianalysis.MIA.Object.Image;
-import io.github.mianalysis.MIA.Object.Objs;
-import io.github.mianalysis.MIA.Object.Workspace;
-import io.github.mianalysis.MIA.Object.Workspaces;
+import io.github.mianalysis.mia.ExpectedObjects.DenseTracks2D;
+import io.github.mianalysis.mia.ExpectedObjects.ExpectedObjects;
+import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.module.ModuleTest;
+import io.github.mianalysis.mia.module.imageprocessing.Stack.Convert3DStack;
+import io.github.mianalysis.mia.module.ObjectProcessing.Relationships.TrackObjects;
+import io.github.mianalysis.mia.module.Visualisation.overlays.AddObjectsOverlay;
+import io.github.mianalysis.mia.Object.Image;
+import io.github.mianalysis.mia.Object.Objs;
+import io.github.mianalysis.mia.Object.Workspace;
+import io.github.mianalysis.mia.Object.Workspaces;
 import io.github.sjcross.common.Object.Volume.VolumeType;
 
 public class AddObjectsOverlayTest extends ModuleTest {

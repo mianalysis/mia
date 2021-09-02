@@ -1,4 +1,4 @@
-package io.github.mianalysis.MIA;
+package io.github.mianalysis.mia;
 
 import java.io.FileReader;
 import java.io.IOException;
@@ -19,18 +19,18 @@ import org.scijava.script.ScriptService;
 import org.scijava.ui.UIService;
 
 import net.imagej.ImageJ;
-import io.github.mianalysis.MIA.GUI.GUI;
-import io.github.mianalysis.MIA.Object.Preferences;
-import io.github.mianalysis.MIA.Process.DependencyValidator;
-import io.github.mianalysis.MIA.Process.AnalysisHandling.Analysis;
-import io.github.mianalysis.MIA.Process.AnalysisHandling.AnalysisReader;
-import io.github.mianalysis.MIA.Process.AnalysisHandling.AnalysisRunner;
-import io.github.mianalysis.MIA.Process.AnalysisHandling.LostAndFound;
-import io.github.mianalysis.MIA.Process.Logging.BasicLogRenderer;
-import io.github.mianalysis.MIA.Process.Logging.ConsoleRenderer;
-import io.github.mianalysis.MIA.Process.Logging.Log;
-import io.github.mianalysis.MIA.Process.Logging.LogHistory;
-import io.github.mianalysis.MIA.Process.Logging.LogRenderer;
+import io.github.mianalysis.mia.gui.GUI;
+import io.github.mianalysis.mia.Object.Preferences;
+import io.github.mianalysis.mia.Process.DependencyValidator;
+import io.github.mianalysis.mia.Process.AnalysisHandling.Analysis;
+import io.github.mianalysis.mia.Process.AnalysisHandling.AnalysisReader;
+import io.github.mianalysis.mia.Process.AnalysisHandling.AnalysisRunner;
+import io.github.mianalysis.mia.Process.AnalysisHandling.LostAndFound;
+import io.github.mianalysis.mia.Process.Logging.BasicLogRenderer;
+import io.github.mianalysis.mia.Process.Logging.ConsoleRenderer;
+import io.github.mianalysis.mia.Process.Logging.Log;
+import io.github.mianalysis.mia.Process.Logging.LogHistory;
+import io.github.mianalysis.mia.Process.Logging.LogRenderer;
 
 
 /**
@@ -71,7 +71,7 @@ public class MIA implements Command {
             if (args.length == 0) {
                 ImageJ ij = new ImageJ();                
                 ij.ui().showUI();
-                ij.command().run("io.github.mianalysis.MIA.MIA", false);
+                ij.command().run("io.github.mianalysis.mia.MIA", false);
             } else {
                 preferences = new Preferences(null);
                 Analysis analysis = AnalysisReader.loadAnalysis(args[0]);

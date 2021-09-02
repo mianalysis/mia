@@ -1,6 +1,6 @@
-package io.github.mianalysis.MIA.Module.ObjectProcessing.Refinement;
+package io.github.mianalysis.mia.module.ObjectProcessing.Refinement;
 
-import io.github.mianalysis.MIA.Module.ModuleTest;
+import io.github.mianalysis.mia.module.ModuleTest;
 
 import static org.junit.jupiter.api.Assertions.*;
 

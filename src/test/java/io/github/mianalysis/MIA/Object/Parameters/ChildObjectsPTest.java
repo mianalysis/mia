@@ -1,14 +1,14 @@
-package io.github.mianalysis.MIA.Object.Parameters;
+package io.github.mianalysis.mia.Object.Parameters;
 
 import org.junit.jupiter.api.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
-import io.github.mianalysis.MIA.Module.InputOutput.ImageLoader;
-import io.github.mianalysis.MIA.Module.ObjectProcessing.Identification.ExtractObjectEdges;
-import io.github.mianalysis.MIA.Module.ObjectProcessing.Identification.IdentifyObjects;
-import io.github.mianalysis.MIA.Module.ObjectProcessing.Identification.ProjectObjects;
-import io.github.mianalysis.MIA.Module.Modules;
+import io.github.mianalysis.mia.module.InputOutput.ImageLoader;
+import io.github.mianalysis.mia.module.ObjectProcessing.Identification.ExtractObjectEdges;
+import io.github.mianalysis.mia.module.ObjectProcessing.Identification.IdentifyObjects;
+import io.github.mianalysis.mia.module.ObjectProcessing.Identification.ProjectObjects;
+import io.github.mianalysis.mia.module.Modules;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;

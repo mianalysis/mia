@@ -1,4 +1,4 @@
-package io.github.mianalysis.MIA.Process.Logging;
+package io.github.mianalysis.mia.Process.Logging;
 
 import javax.swing.*;
 import java.util.HashMap;

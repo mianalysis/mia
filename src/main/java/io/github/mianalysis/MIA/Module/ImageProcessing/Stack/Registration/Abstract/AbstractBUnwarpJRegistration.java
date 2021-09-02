@@ -1,19 +1,18 @@
-package io.github.mianalysis.MIA.Module.ImageProcessing.Stack.Registration.Abstract;
+package io.github.mianalysis.mia.module.imageprocessing.Stack.Registration.Abstract;
 
 import bunwarpj.bUnwarpJ_;
 import ij.ImagePlus;
 import ij.process.ImageProcessor;
 import net.imglib2.type.NativeType;
-import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
-import io.github.mianalysis.MIA.Module.Modules;
-import io.github.mianalysis.MIA.Module.ImageProcessing.Stack.ImageTypeConverter;
-import io.github.mianalysis.MIA.Object.Workspace;
-import io.github.mianalysis.MIA.Object.Parameters.ChoiceP;
-import io.github.mianalysis.MIA.Object.Parameters.Parameters;
-import io.github.mianalysis.MIA.Object.Parameters.SeparatorP;
-import io.github.mianalysis.MIA.Object.Parameters.Text.DoubleP;
-import io.github.mianalysis.MIA.Object.Parameters.Text.IntegerP;
+import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.imageprocessing.Stack.ImageTypeConverter;
+import io.github.mianalysis.mia.Object.Workspace;
+import io.github.mianalysis.mia.Object.Parameters.ChoiceP;
+import io.github.mianalysis.mia.Object.Parameters.Parameters;
+import io.github.mianalysis.mia.Object.Parameters.SeparatorP;
+import io.github.mianalysis.mia.Object.Parameters.Text.DoubleP;
+import io.github.mianalysis.mia.Object.Parameters.Text.IntegerP;
 
 public abstract class AbstractBUnwarpJRegistration<T extends RealType<T> & NativeType<T>>
         extends AbstractRegistration<T> {

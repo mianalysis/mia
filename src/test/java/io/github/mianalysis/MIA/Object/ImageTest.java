@@ -1,4 +1,4 @@
-package io.github.mianalysis.MIA.Object;
+package io.github.mianalysis.mia.Object;
 
 import ij.IJ;
 import ij.ImagePlus;
@@ -8,8 +8,8 @@ import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
-import io.github.mianalysis.MIA.ExpectedObjects.ExpectedObjects;
-import io.github.mianalysis.MIA.ExpectedObjects.Objects3D;
+import io.github.mianalysis.mia.ExpectedObjects.ExpectedObjects;
+import io.github.mianalysis.mia.ExpectedObjects.Objects3D;
 
 import java.net.URLDecoder;
 

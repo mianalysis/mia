@@ -1,6 +1,6 @@
-package io.github.mianalysis.MIA.ExpectedObjects;
+package io.github.mianalysis.mia.ExpectedObjects;
 
-import io.github.mianalysis.MIA.Object.Objs;
+import io.github.mianalysis.mia.Object.Objs;
 import io.github.sjcross.common.Exceptions.IntegerOverflowException;
 import io.github.sjcross.common.Object.Volume.VolumeType;
 

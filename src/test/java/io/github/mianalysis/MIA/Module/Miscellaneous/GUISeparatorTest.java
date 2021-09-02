@@ -1,8 +1,8 @@
-package io.github.mianalysis.MIA.Module.Miscellaneous;
+package io.github.mianalysis.mia.module.Miscellaneous;
 
 import org.junit.jupiter.api.BeforeAll;
-import io.github.mianalysis.MIA.Module.Module;
-import io.github.mianalysis.MIA.Module.ModuleTest;
+import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.module.ModuleTest;
 
 import static org.junit.jupiter.api.Assertions.*;
 

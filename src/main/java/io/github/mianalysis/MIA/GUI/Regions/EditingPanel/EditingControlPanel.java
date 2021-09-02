@@ -1,4 +1,4 @@
-package io.github.mianalysis.MIA.GUI.Regions.EditingPanel;
+package io.github.mianalysis.mia.gui.regions.editingpanel;
 
 import java.awt.Dimension;
 import java.awt.Font;
@@ -12,14 +12,14 @@ import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.border.EtchedBorder;
 
-import io.github.mianalysis.MIA.GUI.GUI;
-import io.github.mianalysis.MIA.GUI.Regions.Abstract.AnalysisControlButton;
-import io.github.mianalysis.MIA.GUI.Regions.Abstract.ModuleControlButton;
-import io.github.mianalysis.MIA.GUI.Regions.AvailableModuleList.ModuleListMenu;
-import io.github.mianalysis.MIA.GUI.Regions.AvailableModuleList.SearchForModuleItem;
-import io.github.mianalysis.MIA.Module.Categories;
-import io.github.mianalysis.MIA.Module.Category;
-import io.github.mianalysis.MIA.Module.Module;
+import io.github.mianalysis.mia.gui.GUI;
+import io.github.mianalysis.mia.gui.regions.abstrac.AnalysisControlButton;
+import io.github.mianalysis.mia.gui.regions.abstrac.ModuleControlButton;
+import io.github.mianalysis.mia.gui.regions.availablemodulelist.ModuleListMenu;
+import io.github.mianalysis.mia.gui.regions.availablemodulelist.SearchForModuleItem;
+import io.github.mianalysis.mia.module.Categories;
+import io.github.mianalysis.mia.module.Category;
+import io.github.mianalysis.mia.module.Module;
 
 public class EditingControlPanel extends JPanel {
     /**

@@ -1,11 +1,11 @@
-package io.github.mianalysis.MIA.GUI.Regions.MenuBar;
+package io.github.mianalysis.mia.gui.regions.menubar;
 
-import io.github.mianalysis.MIA.GUI.GUIAnalysisHandler;
-import io.github.mianalysis.MIA.GUI.GUI;
-import io.github.mianalysis.MIA.GUI.UndoRedoStore;
-import io.github.mianalysis.MIA.MIA;
-import io.github.mianalysis.MIA.Process.Logging.LogRenderer;
-import io.github.mianalysis.MIA.Process.Logging.LogRenderer.Level;
+import io.github.mianalysis.mia.gui.GUIAnalysisHandler;
+import io.github.mianalysis.mia.gui.GUI;
+import io.github.mianalysis.mia.gui.UndoRedoStore;
+import io.github.mianalysis.mia.MIA;
+import io.github.mianalysis.mia.Process.Logging.LogRenderer;
+import io.github.mianalysis.mia.Process.Logging.LogRenderer.Level;
 
 import javax.swing.*;
 import java.awt.*;

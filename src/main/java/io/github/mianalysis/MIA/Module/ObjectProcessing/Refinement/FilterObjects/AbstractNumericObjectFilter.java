@@ -1,17 +1,17 @@
-package io.github.mianalysis.MIA.Module.ObjectProcessing.Refinement.FilterObjects;
+package io.github.mianalysis.mia.module.ObjectProcessing.Refinement.FilterObjects;
 
-import io.github.mianalysis.MIA.Module.Modules;
-import io.github.mianalysis.MIA.Object.Obj;
-import io.github.mianalysis.MIA.Object.Workspace;
-import io.github.mianalysis.MIA.Object.Parameters.BooleanP;
-import io.github.mianalysis.MIA.Object.Parameters.ChoiceP;
-import io.github.mianalysis.MIA.Object.Parameters.SeparatorP;
-import io.github.mianalysis.MIA.Object.Parameters.Parameters;
-import io.github.mianalysis.MIA.Object.Parameters.ParentObjectsP;
-import io.github.mianalysis.MIA.Object.Parameters.Text.DoubleP;
-import io.github.mianalysis.MIA.Object.Parameters.ImageMeasurementP;
-import io.github.mianalysis.MIA.Object.Parameters.InputImageP;
-import io.github.mianalysis.MIA.Object.Parameters.ObjectMeasurementP;
+import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.Object.Obj;
+import io.github.mianalysis.mia.Object.Workspace;
+import io.github.mianalysis.mia.Object.Parameters.BooleanP;
+import io.github.mianalysis.mia.Object.Parameters.ChoiceP;
+import io.github.mianalysis.mia.Object.Parameters.SeparatorP;
+import io.github.mianalysis.mia.Object.Parameters.Parameters;
+import io.github.mianalysis.mia.Object.Parameters.ParentObjectsP;
+import io.github.mianalysis.mia.Object.Parameters.Text.DoubleP;
+import io.github.mianalysis.mia.Object.Parameters.ImageMeasurementP;
+import io.github.mianalysis.mia.Object.Parameters.InputImageP;
+import io.github.mianalysis.mia.Object.Parameters.ObjectMeasurementP;
 
 public abstract class AbstractNumericObjectFilter extends AbstractObjectFilter {
     public static final String FILTER_SEPARATOR = "Object filtering";

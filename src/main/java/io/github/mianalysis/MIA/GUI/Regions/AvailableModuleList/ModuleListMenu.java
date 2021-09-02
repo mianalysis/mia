@@ -1,4 +1,4 @@
-package io.github.mianalysis.MIA.GUI.Regions.AvailableModuleList;
+package io.github.mianalysis.mia.gui.regions.availablemodulelist;
 
 import java.awt.Font;
 import java.util.ArrayList;
@@ -7,8 +7,8 @@ import java.util.TreeSet;
 import javax.swing.JMenu;
 import javax.swing.JPopupMenu;
 
-import io.github.mianalysis.MIA.MIA;
-import io.github.mianalysis.MIA.Module.Module;
+import io.github.mianalysis.mia.MIA;
+import io.github.mianalysis.mia.module.Module;
 
 /**
  * Created by Stephen on 28/07/2017.

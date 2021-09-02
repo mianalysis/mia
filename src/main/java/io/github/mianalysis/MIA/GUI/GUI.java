@@ -1,4 +1,4 @@
-package io.github.mianalysis.MIA.GUI;
+package io.github.mianalysis.mia.gui;
 
 import java.awt.Dimension;
 import java.awt.Font;
@@ -14,29 +14,29 @@ import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.ToolTipManager;
 
-import io.github.mianalysis.MIA.MIA;
-import io.github.mianalysis.MIA.GUI.Regions.Abstract.AbstractPanel;
-import io.github.mianalysis.MIA.GUI.Regions.BasicPanel.BasicPanel;
-import io.github.mianalysis.MIA.GUI.Regions.EditingPanel.EditingPanel;
-import io.github.mianalysis.MIA.GUI.Regions.MenuBar.CustomMenuBar;
-import io.github.mianalysis.MIA.GUI.Regions.ProgressAndStatus.StatusTextField;
-import io.github.mianalysis.MIA.Macro.MacroHandler;
-import io.github.mianalysis.MIA.Module.Module;
-import io.github.mianalysis.MIA.Module.Modules;
-import io.github.mianalysis.MIA.Module.Core.InputControl;
-import io.github.mianalysis.MIA.Module.Core.OutputControl;
-import io.github.mianalysis.MIA.Module.InputOutput.ImageLoader;
-import io.github.mianalysis.MIA.Object.Workspace;
-import io.github.mianalysis.MIA.Object.Workspaces;
-import io.github.mianalysis.MIA.Object.Parameters.ChoiceP;
-import io.github.mianalysis.MIA.Object.Parameters.FileFolderPathP;
-import io.github.mianalysis.MIA.Object.Units.SpatialUnit;
-import io.github.mianalysis.MIA.Object.Units.TemporalUnit;
-import io.github.mianalysis.MIA.Process.ClassHunter;
-import io.github.mianalysis.MIA.Process.AnalysisHandling.Analysis;
-import io.github.mianalysis.MIA.Process.AnalysisHandling.AnalysisRunner;
-import io.github.mianalysis.MIA.Process.AnalysisHandling.AnalysisTester;
-import io.github.mianalysis.MIA.Process.Logging.StatusPanelRenderer;
+import io.github.mianalysis.mia.MIA;
+import io.github.mianalysis.mia.gui.regions.abstrac.AbstractPanel;
+import io.github.mianalysis.mia.gui.regions.basicpanel.BasicPanel;
+import io.github.mianalysis.mia.gui.regions.editingpanel.EditingPanel;
+import io.github.mianalysis.mia.gui.regions.menubar.CustomMenuBar;
+import io.github.mianalysis.mia.gui.regions.progressandstatus.StatusTextField;
+import io.github.mianalysis.mia.macro.MacroHandler;
+import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.core.InputControl;
+import io.github.mianalysis.mia.module.core.OutputControl;
+import io.github.mianalysis.mia.module.InputOutput.ImageLoader;
+import io.github.mianalysis.mia.Object.Workspace;
+import io.github.mianalysis.mia.Object.Workspaces;
+import io.github.mianalysis.mia.Object.Parameters.ChoiceP;
+import io.github.mianalysis.mia.Object.Parameters.FileFolderPathP;
+import io.github.mianalysis.mia.Object.Units.SpatialUnit;
+import io.github.mianalysis.mia.Object.Units.TemporalUnit;
+import io.github.mianalysis.mia.Process.ClassHunter;
+import io.github.mianalysis.mia.Process.AnalysisHandling.Analysis;
+import io.github.mianalysis.mia.Process.AnalysisHandling.AnalysisRunner;
+import io.github.mianalysis.mia.Process.AnalysisHandling.AnalysisTester;
+import io.github.mianalysis.mia.Process.Logging.StatusPanelRenderer;
 import io.github.sjcross.common.System.FileCrawler;
 
 /**
@@ -110,7 +110,7 @@ public class GUI {
         frame.setJMenuBar(menuBar);
         frame.add(mainPanel);
         frame.setPreferredSize(new Dimension(mainPanel.getPreferredWidth(), mainPanel.getPreferredHeight()));
-        frame.setIconImage(new ImageIcon(this.getClass().getResource("/Icons/Logo_wide_32.png"), "").getImage());
+        frame.setIconImage(new ImageIcon(this.getClass().getResource("/icons/Logo_wide_32.png"), "").getImage());
 
         mainPanel.updatePanel();
         menuBar.setUndoRedoStatus(undoRedoStore);

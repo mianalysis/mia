@@ -1,7 +1,7 @@
-package io.github.mianalysis.MIA.Module.ObjectProcessing.Identification;
+package io.github.mianalysis.mia.module.ObjectProcessing.Identification;
 
-import io.github.mianalysis.MIA.Module.ModuleTest;
-import io.github.mianalysis.MIA.Module.ObjectProcessing.Relationships.TrackObjects;
+import io.github.mianalysis.mia.module.ModuleTest;
+import io.github.mianalysis.mia.module.ObjectProcessing.Relationships.TrackObjects;
 
 import static org.junit.jupiter.api.Assertions.*;
 

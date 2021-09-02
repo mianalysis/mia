@@ -1,4 +1,4 @@
-package io.github.mianalysis.MIA.Object.Parameters.ChoiceInterfaces;
+package io.github.mianalysis.mia.Object.Parameters.ChoiceInterfaces;
 
 import ij.Prefs;
 

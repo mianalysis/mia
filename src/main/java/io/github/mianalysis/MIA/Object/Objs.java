@@ -1,4 +1,4 @@
-package io.github.mianalysis.MIA.Object;
+package io.github.mianalysis.mia.Object;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -12,12 +12,12 @@ import ij.measure.ResultsTable;
 import ome.units.UNITS;
 import ome.units.quantity.Time;
 import ome.units.unit.Unit;
-import io.github.mianalysis.MIA.Module.Module;
-import io.github.mianalysis.MIA.Module.Modules;
-import io.github.mianalysis.MIA.Object.Refs.ObjMeasurementRef;
-import io.github.mianalysis.MIA.Object.Refs.Collections.ObjMeasurementRefs;
-import io.github.mianalysis.MIA.Object.Units.TemporalUnit;
-import io.github.mianalysis.MIA.Process.ColourFactory;
+import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.Object.Refs.ObjMeasurementRef;
+import io.github.mianalysis.mia.Object.Refs.Collections.ObjMeasurementRefs;
+import io.github.mianalysis.mia.Object.Units.TemporalUnit;
+import io.github.mianalysis.mia.Process.ColourFactory;
 import io.github.sjcross.common.ImageJ.LUTs;
 import io.github.sjcross.common.Object.Point;
 import io.github.sjcross.common.Object.Volume.PointOutOfRangeException;

@@ -1,4 +1,4 @@
-package io.github.mianalysis.MIA.Process.AnalysisHandling;
+package io.github.mianalysis.mia.Process.AnalysisHandling;
 
 import java.io.File;
 

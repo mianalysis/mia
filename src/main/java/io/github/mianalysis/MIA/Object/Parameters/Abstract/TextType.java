@@ -1,13 +1,13 @@
-package io.github.mianalysis.MIA.Object.Parameters.Abstract;
+package io.github.mianalysis.mia.Object.Parameters.Abstract;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import net.objecthunter.exp4j.ExpressionBuilder;
-import io.github.mianalysis.MIA.GUI.ParameterControls.ParameterControl;
-import io.github.mianalysis.MIA.GUI.ParameterControls.TextParameter;
-import io.github.mianalysis.MIA.Module.Module;
-import io.github.mianalysis.MIA.Module.Miscellaneous.GlobalVariables;
+import io.github.mianalysis.mia.gui.parametercontrols.ParameterControl;
+import io.github.mianalysis.mia.gui.parametercontrols.TextParameter;
+import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.module.Miscellaneous.GlobalVariables;
 
 public abstract class TextType extends Parameter {
     public TextType(String name, Module module) {

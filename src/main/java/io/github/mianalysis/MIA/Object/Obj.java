@@ -1,4 +1,4 @@
-package io.github.mianalysis.MIA.Object;
+package io.github.mianalysis.mia.Object;
 
 import java.awt.Polygon;
 import java.awt.Rectangle;
@@ -10,9 +10,9 @@ import ij.ImagePlus;
 import ij.gui.Roi;
 import ij.plugin.filter.ThresholdToSelection;
 import ij.process.ImageProcessor;
-import io.github.mianalysis.MIA.Object.Units.SpatialUnit;
-import io.github.mianalysis.MIA.Object.Units.TemporalUnit;
-import io.github.mianalysis.MIA.Process.ColourFactory;
+import io.github.mianalysis.mia.Object.Units.SpatialUnit;
+import io.github.mianalysis.mia.Object.Units.TemporalUnit;
+import io.github.mianalysis.mia.Process.ColourFactory;
 import io.github.sjcross.common.Exceptions.IntegerOverflowException;
 import io.github.sjcross.common.Object.Point;
 import io.github.sjcross.common.Object.Volume.PointOutOfRangeException;

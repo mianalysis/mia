@@ -1,9 +1,9 @@
-package io.github.mianalysis.MIA.Module.Deprecated;
+package io.github.mianalysis.mia.module.Deprecated;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import io.github.mianalysis.MIA.Module.ModuleTest;
-import io.github.mianalysis.MIA.Module.ImageProcessing.Stack.RegisterImages;
+import io.github.mianalysis.mia.module.ModuleTest;
+import io.github.mianalysis.mia.module.imageprocessing.Stack.RegisterImages;
 
 public class RegisterImagesTest extends ModuleTest {
 

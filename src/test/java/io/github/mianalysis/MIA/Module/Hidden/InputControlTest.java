@@ -1,9 +1,9 @@
-package io.github.mianalysis.MIA.Module.Hidden;
+package io.github.mianalysis.mia.module.Hidden;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import io.github.mianalysis.MIA.Module.ModuleTest;
-import io.github.mianalysis.MIA.Module.Core.InputControl;
+import io.github.mianalysis.mia.module.ModuleTest;
+import io.github.mianalysis.mia.module.core.InputControl;
 
 public class InputControlTest extends ModuleTest {
 

@@ -1,7 +1,7 @@
-package io.github.mianalysis.MIA.GUI.Regions.ParameterList;
+package io.github.mianalysis.mia.gui.regions.parameterlist;
 
-import io.github.mianalysis.MIA.GUI.GUI;
-import io.github.mianalysis.MIA.Module.Module;
+import io.github.mianalysis.mia.gui.GUI;
+import io.github.mianalysis.mia.module.Module;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;

@@ -1,4 +1,4 @@
-package io.github.mianalysis.MIA.Object.Parameters;
+package io.github.mianalysis.mia.Object.Parameters;
 
 import java.util.TreeMap;
 import java.util.regex.Matcher;
@@ -6,12 +6,12 @@ import java.util.regex.Pattern;
 
 import com.drew.lang.annotations.NotNull;
 
-import io.github.mianalysis.MIA.GUI.ParameterControls.ParameterControl;
-import io.github.mianalysis.MIA.GUI.ParameterControls.RefSelectorParameter;
-import io.github.mianalysis.MIA.Module.Module;
-import io.github.mianalysis.MIA.Object.Parameters.Abstract.Parameter;
-import io.github.mianalysis.MIA.Object.Refs.ObjMeasurementRef;
-import io.github.mianalysis.MIA.Object.Refs.Collections.ObjMeasurementRefs;
+import io.github.mianalysis.mia.gui.parametercontrols.ParameterControl;
+import io.github.mianalysis.mia.gui.parametercontrols.RefSelectorParameter;
+import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.Object.Parameters.Abstract.Parameter;
+import io.github.mianalysis.mia.Object.Refs.ObjMeasurementRef;
+import io.github.mianalysis.mia.Object.Refs.Collections.ObjMeasurementRefs;
 
 /**
  * Created by Stephen Cross on 18/02/2020.

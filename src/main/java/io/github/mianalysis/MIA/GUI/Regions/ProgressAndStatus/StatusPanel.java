@@ -1,6 +1,6 @@
-package io.github.mianalysis.MIA.GUI.Regions.ProgressAndStatus;
+package io.github.mianalysis.mia.gui.regions.progressandstatus;
 
-import io.github.mianalysis.MIA.GUI.GUI;
+import io.github.mianalysis.mia.gui.GUI;
 
 import javax.swing.*;
 import javax.swing.border.EtchedBorder;

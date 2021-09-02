@@ -1,4 +1,4 @@
-package io.github.mianalysis.MIA.GUI.ParameterControls;
+package io.github.mianalysis.mia.gui.parametercontrols;
 
 import java.awt.Dimension;
 import java.awt.Font;
@@ -10,7 +10,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
-import io.github.mianalysis.MIA.Object.Parameters.Text.MessageP;
+import io.github.mianalysis.mia.Object.Parameters.Text.MessageP;
 
 public class MessageArea extends ParameterControl {
     protected JPanel control;

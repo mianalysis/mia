@@ -1,4 +1,4 @@
-package io.github.mianalysis.MIA.Process.Exporting;
+package io.github.mianalysis.mia.Process.Exporting;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -7,12 +7,12 @@ import java.util.LinkedHashMap;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 
-import io.github.mianalysis.MIA.Module.Modules;
-import io.github.mianalysis.MIA.Object.Workspace;
-import io.github.mianalysis.MIA.Object.Workspaces;
-import io.github.mianalysis.MIA.Object.Refs.Abstract.SpreadsheetWriter;
-import io.github.mianalysis.MIA.Object.Refs.Collections.MetadataRefs;
-import io.github.mianalysis.MIA.Process.AnalysisHandling.Analysis;
+import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.Object.Workspace;
+import io.github.mianalysis.mia.Object.Workspaces;
+import io.github.mianalysis.mia.Object.Refs.Abstract.SpreadsheetWriter;
+import io.github.mianalysis.mia.Object.Refs.Collections.MetadataRefs;
+import io.github.mianalysis.mia.Process.AnalysisHandling.Analysis;
 
 public class XLSXExporter {
 

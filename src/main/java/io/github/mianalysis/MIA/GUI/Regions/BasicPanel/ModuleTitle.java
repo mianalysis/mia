@@ -1,4 +1,4 @@
-package io.github.mianalysis.MIA.GUI.Regions.BasicPanel;
+package io.github.mianalysis.mia.gui.regions.basicpanel;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -7,8 +7,8 @@ import java.awt.event.MouseListener;
 
 import javax.swing.JTextField;
 
-import io.github.mianalysis.MIA.GUI.GUI;
-import io.github.mianalysis.MIA.Module.Module;
+import io.github.mianalysis.mia.gui.GUI;
+import io.github.mianalysis.mia.module.Module;
 
 public class ModuleTitle extends JTextField implements MouseListener {
     /**

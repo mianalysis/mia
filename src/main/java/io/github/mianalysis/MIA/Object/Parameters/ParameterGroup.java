@@ -1,21 +1,19 @@
-package io.github.mianalysis.MIA.Object.Parameters;
+package io.github.mianalysis.mia.Object.Parameters;
 
-import static io.github.mianalysis.MIA.Process.AnalysisHandling.AnalysisWriter.prepareRefsXML;
+import static io.github.mianalysis.mia.Process.AnalysisHandling.AnalysisWriter.prepareRefsXML;
 
 import java.util.LinkedHashMap;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import io.github.mianalysis.MIA.MIA;
-import io.github.mianalysis.MIA.GUI.ParameterControls.AddParametersButton;
-import io.github.mianalysis.MIA.GUI.ParameterControls.ParameterControl;
-import io.github.mianalysis.MIA.Module.Module;
-import io.github.mianalysis.MIA.Object.Parameters.Abstract.Parameter;
-import io.github.mianalysis.MIA.Process.AnalysisHandling.AnalysisReader;
+import io.github.mianalysis.mia.gui.parametercontrols.AddParametersButton;
+import io.github.mianalysis.mia.gui.parametercontrols.ParameterControl;
+import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.Object.Parameters.Abstract.Parameter;
+import io.github.mianalysis.mia.Process.AnalysisHandling.AnalysisReader;
 
 /**
  * The value for this parameter is the number of collections that have been created.  The value source is a comma,

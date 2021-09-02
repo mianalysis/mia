@@ -1,7 +1,7 @@
-package io.github.mianalysis.MIA.Module.Deprecated;
+package io.github.mianalysis.mia.module.Deprecated;
 
-import io.github.mianalysis.MIA.Module.ModuleTest;
-import io.github.mianalysis.MIA.Module.ObjectMeasurements.Intensity.MeasureSpotIntensity;
+import io.github.mianalysis.mia.module.ModuleTest;
+import io.github.mianalysis.mia.module.ObjectMeasurements.Intensity.MeasureSpotIntensity;
 
 import static org.junit.jupiter.api.Assertions.*;
 

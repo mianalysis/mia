@@ -1,4 +1,4 @@
-package io.github.mianalysis.MIA.GUI.Regions.MenuBar;
+package io.github.mianalysis.mia.gui.regions.menubar;
 
 import java.awt.Font;
 import java.awt.event.ActionEvent;
@@ -6,7 +6,7 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JCheckBoxMenuItem;
 
-import io.github.mianalysis.MIA.GUI.GUI;
+import io.github.mianalysis.mia.gui.GUI;
 
 public class MenuCheckbox extends JCheckBoxMenuItem implements ActionListener {
     /**

@@ -1,4 +1,4 @@
-package io.github.mianalysis.MIA.GUI.Regions.ParameterList;
+package io.github.mianalysis.mia.gui.regions.parameterlist;
 
 import java.awt.Dimension;
 import java.awt.Font;
@@ -15,25 +15,25 @@ import javax.swing.JSeparator;
 import javax.swing.JTextPane;
 import javax.swing.border.EtchedBorder;
 
-import io.github.mianalysis.MIA.GUI.ComponentFactory;
-import io.github.mianalysis.MIA.GUI.GUI;
-import io.github.mianalysis.MIA.Module.Module;
-import io.github.mianalysis.MIA.Module.Modules;
-import io.github.mianalysis.MIA.Module.Core.InputControl;
-import io.github.mianalysis.MIA.Module.Core.OutputControl;
-import io.github.mianalysis.MIA.Object.Parameters.OutputImageP;
-import io.github.mianalysis.MIA.Object.Parameters.Parameters;
-import io.github.mianalysis.MIA.Object.Parameters.ParameterGroup;
-import io.github.mianalysis.MIA.Object.Parameters.AdjustParameters;
-import io.github.mianalysis.MIA.Object.Parameters.Abstract.Parameter;
-import io.github.mianalysis.MIA.Object.Parameters.Objects.OutputObjectsP;
-import io.github.mianalysis.MIA.Object.Refs.Abstract.ExportableRef;
-import io.github.mianalysis.MIA.Object.Refs.Abstract.SummaryRef;
-import io.github.mianalysis.MIA.Object.Refs.Collections.ImageMeasurementRefs;
-import io.github.mianalysis.MIA.Object.Refs.Collections.MetadataRefs;
-import io.github.mianalysis.MIA.Object.Refs.Collections.ObjMeasurementRefs;
-import io.github.mianalysis.MIA.Object.Refs.Collections.Refs;
-import io.github.mianalysis.MIA.Process.AnalysisHandling.Analysis;
+import io.github.mianalysis.mia.gui.ComponentFactory;
+import io.github.mianalysis.mia.gui.GUI;
+import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.core.InputControl;
+import io.github.mianalysis.mia.module.core.OutputControl;
+import io.github.mianalysis.mia.Object.Parameters.OutputImageP;
+import io.github.mianalysis.mia.Object.Parameters.Parameters;
+import io.github.mianalysis.mia.Object.Parameters.ParameterGroup;
+import io.github.mianalysis.mia.Object.Parameters.AdjustParameters;
+import io.github.mianalysis.mia.Object.Parameters.Abstract.Parameter;
+import io.github.mianalysis.mia.Object.Parameters.Objects.OutputObjectsP;
+import io.github.mianalysis.mia.Object.Refs.Abstract.ExportableRef;
+import io.github.mianalysis.mia.Object.Refs.Abstract.SummaryRef;
+import io.github.mianalysis.mia.Object.Refs.Collections.ImageMeasurementRefs;
+import io.github.mianalysis.mia.Object.Refs.Collections.MetadataRefs;
+import io.github.mianalysis.mia.Object.Refs.Collections.ObjMeasurementRefs;
+import io.github.mianalysis.mia.Object.Refs.Collections.Refs;
+import io.github.mianalysis.mia.Process.AnalysisHandling.Analysis;
 
 public class ParametersPanel extends JScrollPane {
     private static final long serialVersionUID = 1455273666893303846L;

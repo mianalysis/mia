@@ -1,11 +1,11 @@
-package io.github.mianalysis.MIA.Object.Parameters.Text;
+package io.github.mianalysis.mia.Object.Parameters.Text;
 
 import com.drew.lang.annotations.NotNull;
 
-import io.github.mianalysis.MIA.Module.Module;
-import io.github.mianalysis.MIA.Module.Miscellaneous.GlobalVariables;
-import io.github.mianalysis.MIA.Object.Parameters.Abstract.Parameter;
-import io.github.mianalysis.MIA.Object.Parameters.Abstract.TextType;
+import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.module.Miscellaneous.GlobalVariables;
+import io.github.mianalysis.mia.Object.Parameters.Abstract.Parameter;
+import io.github.mianalysis.mia.Object.Parameters.Abstract.TextType;
 
 public class StringP extends TextType {
     protected String value = "";

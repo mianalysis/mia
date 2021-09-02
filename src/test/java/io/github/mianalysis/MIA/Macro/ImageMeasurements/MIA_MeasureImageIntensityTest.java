@@ -1,6 +1,6 @@
-package io.github.mianalysis.MIA.Macro.ImageMeasurements;
+package io.github.mianalysis.mia.macro.imagemeasurements;
 
-import io.github.mianalysis.MIA.Macro.MacroOperationTest;
+import io.github.mianalysis.mia.macro.MacroOperationTest;
 
 import static org.junit.jupiter.api.Assertions.*;
 

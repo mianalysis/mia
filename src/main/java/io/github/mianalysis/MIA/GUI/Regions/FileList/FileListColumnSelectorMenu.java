@@ -1,4 +1,4 @@
-package io.github.mianalysis.MIA.GUI.Regions.FileList;
+package io.github.mianalysis.mia.gui.regions.filelist;
 
 import javax.swing.*;
 

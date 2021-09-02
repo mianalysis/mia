@@ -1,4 +1,4 @@
-package io.github.mianalysis.MIA.GUI.Regions.HelpAndNotes;
+package io.github.mianalysis.mia.gui.regions.helpandnotes;
 
 import java.awt.Font;
 import java.awt.event.FocusEvent;
@@ -7,8 +7,8 @@ import java.awt.event.FocusListener;
 import javax.swing.JTextArea;
 import javax.swing.border.EmptyBorder;
 
-import io.github.mianalysis.MIA.GUI.GUI;
-import io.github.mianalysis.MIA.Module.Module;
+import io.github.mianalysis.mia.gui.GUI;
+import io.github.mianalysis.mia.module.Module;
 
 /**
  * Created by Stephen on 28/07/2017.

@@ -1,4 +1,4 @@
-package io.github.mianalysis.MIA.Process;
+package io.github.mianalysis.mia.Process;
 
 import java.io.File;
 import java.io.IOException;
@@ -17,7 +17,7 @@ import net.imagej.updater.FilesCollection;
 import net.imagej.updater.Installer;
 import net.imagej.updater.UpdateSite;
 import net.imagej.updater.util.AvailableSites;
-import io.github.mianalysis.MIA.MIA;
+import io.github.mianalysis.mia.MIA;
 
 public class DependencyValidator {
     public static boolean run() {

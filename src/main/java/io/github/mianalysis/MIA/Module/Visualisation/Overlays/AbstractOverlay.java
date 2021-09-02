@@ -1,19 +1,19 @@
-package io.github.mianalysis.MIA.Module.Visualisation.Overlays;
+package io.github.mianalysis.mia.module.Visualisation.overlays;
 
 import java.util.HashMap;
 
-import io.github.mianalysis.MIA.Module.Module;
-import io.github.mianalysis.MIA.Module.Modules;
-import io.github.mianalysis.MIA.Object.Objs;
-import io.github.mianalysis.MIA.Object.Parameters.ChildObjectsP;
-import io.github.mianalysis.MIA.Object.Parameters.ChoiceP;
-import io.github.mianalysis.MIA.Object.Parameters.ObjectMeasurementP;
-import io.github.mianalysis.MIA.Object.Parameters.Parameters;
-import io.github.mianalysis.MIA.Object.Parameters.ParentObjectsP;
-import io.github.mianalysis.MIA.Object.Parameters.PartnerObjectsP;
-import io.github.mianalysis.MIA.Object.Parameters.SeparatorP;
-import io.github.mianalysis.MIA.Object.Parameters.Text.DoubleP;
-import io.github.mianalysis.MIA.Process.ColourFactory;
+import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.Object.Objs;
+import io.github.mianalysis.mia.Object.Parameters.ChildObjectsP;
+import io.github.mianalysis.mia.Object.Parameters.ChoiceP;
+import io.github.mianalysis.mia.Object.Parameters.ObjectMeasurementP;
+import io.github.mianalysis.mia.Object.Parameters.Parameters;
+import io.github.mianalysis.mia.Object.Parameters.ParentObjectsP;
+import io.github.mianalysis.mia.Object.Parameters.PartnerObjectsP;
+import io.github.mianalysis.mia.Object.Parameters.SeparatorP;
+import io.github.mianalysis.mia.Object.Parameters.Text.DoubleP;
+import io.github.mianalysis.mia.Process.ColourFactory;
 
 public abstract class AbstractOverlay extends Module {
     public static final String COLOUR_SEPARATOR = "Overlay colour";

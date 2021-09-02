@@ -1,10 +1,10 @@
-package io.github.mianalysis.MIA.Object.Refs.Collections;
+package io.github.mianalysis.mia.Object.Refs.Collections;
 
-import io.github.mianalysis.MIA.Object.Units.SpatialUnit;
-import io.github.mianalysis.MIA.Object.Units.TemporalUnit;
-import io.github.mianalysis.MIA.Object.Image;
-import io.github.mianalysis.MIA.Object.Measurement;
-import io.github.mianalysis.MIA.Object.Refs.ImageMeasurementRef;
+import io.github.mianalysis.mia.Object.Units.SpatialUnit;
+import io.github.mianalysis.mia.Object.Units.TemporalUnit;
+import io.github.mianalysis.mia.Object.Image;
+import io.github.mianalysis.mia.Object.Measurement;
+import io.github.mianalysis.mia.Object.Refs.ImageMeasurementRef;
 
 import java.util.TreeMap;
 

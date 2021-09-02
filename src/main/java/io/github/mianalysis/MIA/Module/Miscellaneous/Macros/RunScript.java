@@ -8,7 +8,7 @@
 // im = workspace.getImage("ExampleInputImage")
 // ExampleOutputImage=CropImage.cropImage(im,"ExampleOutputImage",100,200,400,300)
 
-package io.github.mianalysis.MIA.Module.Miscellaneous.Macros;
+package io.github.mianalysis.mia.module.Miscellaneous.Macros;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -22,35 +22,35 @@ import java.util.concurrent.ExecutionException;
 import org.apache.commons.io.FilenameUtils;
 import org.scijava.script.ScriptModule;
 
-import io.github.mianalysis.MIA.MIA;
-import io.github.mianalysis.MIA.Module.Categories;
-import io.github.mianalysis.MIA.Module.Category;
-import io.github.mianalysis.MIA.Module.Module;
-import io.github.mianalysis.MIA.Module.Modules;
-import io.github.mianalysis.MIA.Module.Miscellaneous.GlobalVariables;
-import io.github.mianalysis.MIA.Object.Status;
-import io.github.mianalysis.MIA.Object.Workspace;
-import io.github.mianalysis.MIA.Object.Parameters.ChoiceP;
-import io.github.mianalysis.MIA.Object.Parameters.FilePathP;
-import io.github.mianalysis.MIA.Object.Parameters.GenericButtonP;
-import io.github.mianalysis.MIA.Object.Parameters.InputImageP;
-import io.github.mianalysis.MIA.Object.Parameters.InputObjectsP;
-import io.github.mianalysis.MIA.Object.Parameters.OutputImageP;
-import io.github.mianalysis.MIA.Object.Parameters.Parameters;
-import io.github.mianalysis.MIA.Object.Parameters.ParameterGroup;
-import io.github.mianalysis.MIA.Object.Parameters.ParameterGroup.ParameterUpdaterAndGetter;
-import io.github.mianalysis.MIA.Object.Parameters.SeparatorP;
-import io.github.mianalysis.MIA.Object.Parameters.Abstract.TextType;
-import io.github.mianalysis.MIA.Object.Parameters.Objects.OutputObjectsP;
-import io.github.mianalysis.MIA.Object.Parameters.Text.StringP;
-import io.github.mianalysis.MIA.Object.Parameters.Text.TextAreaP;
-import io.github.mianalysis.MIA.Object.Refs.ImageMeasurementRef;
-import io.github.mianalysis.MIA.Object.Refs.ObjMeasurementRef;
-import io.github.mianalysis.MIA.Object.Refs.Collections.ImageMeasurementRefs;
-import io.github.mianalysis.MIA.Object.Refs.Collections.MetadataRefs;
-import io.github.mianalysis.MIA.Object.Refs.Collections.ObjMeasurementRefs;
-import io.github.mianalysis.MIA.Object.Refs.Collections.ParentChildRefs;
-import io.github.mianalysis.MIA.Object.Refs.Collections.PartnerRefs;
+import io.github.mianalysis.mia.MIA;
+import io.github.mianalysis.mia.module.Categories;
+import io.github.mianalysis.mia.module.Category;
+import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.Miscellaneous.GlobalVariables;
+import io.github.mianalysis.mia.Object.Status;
+import io.github.mianalysis.mia.Object.Workspace;
+import io.github.mianalysis.mia.Object.Parameters.ChoiceP;
+import io.github.mianalysis.mia.Object.Parameters.FilePathP;
+import io.github.mianalysis.mia.Object.Parameters.GenericButtonP;
+import io.github.mianalysis.mia.Object.Parameters.InputImageP;
+import io.github.mianalysis.mia.Object.Parameters.InputObjectsP;
+import io.github.mianalysis.mia.Object.Parameters.OutputImageP;
+import io.github.mianalysis.mia.Object.Parameters.Parameters;
+import io.github.mianalysis.mia.Object.Parameters.ParameterGroup;
+import io.github.mianalysis.mia.Object.Parameters.ParameterGroup.ParameterUpdaterAndGetter;
+import io.github.mianalysis.mia.Object.Parameters.SeparatorP;
+import io.github.mianalysis.mia.Object.Parameters.Abstract.TextType;
+import io.github.mianalysis.mia.Object.Parameters.Objects.OutputObjectsP;
+import io.github.mianalysis.mia.Object.Parameters.Text.StringP;
+import io.github.mianalysis.mia.Object.Parameters.Text.TextAreaP;
+import io.github.mianalysis.mia.Object.Refs.ImageMeasurementRef;
+import io.github.mianalysis.mia.Object.Refs.ObjMeasurementRef;
+import io.github.mianalysis.mia.Object.Refs.Collections.ImageMeasurementRefs;
+import io.github.mianalysis.mia.Object.Refs.Collections.MetadataRefs;
+import io.github.mianalysis.mia.Object.Refs.Collections.ObjMeasurementRefs;
+import io.github.mianalysis.mia.Object.Refs.Collections.ParentChildRefs;
+import io.github.mianalysis.mia.Object.Refs.Collections.PartnerRefs;
 
 /**
  * Created by Stephen on 12/05/2021.

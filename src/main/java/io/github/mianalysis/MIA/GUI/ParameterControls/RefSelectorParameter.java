@@ -1,4 +1,4 @@
-package io.github.mianalysis.MIA.GUI.ParameterControls;
+package io.github.mianalysis.mia.gui.parametercontrols;
 
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
@@ -14,8 +14,8 @@ import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 
-import io.github.mianalysis.MIA.GUI.GUI;
-import io.github.mianalysis.MIA.Object.Parameters.ObjMeasurementSelectorP;
+import io.github.mianalysis.mia.gui.GUI;
+import io.github.mianalysis.mia.Object.Parameters.ObjMeasurementSelectorP;
 
 /**
  * Created by Stephen Cross on 18/02/2020.

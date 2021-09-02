@@ -1,4 +1,4 @@
-package io.github.mianalysis.MIA.Module.ObjectMeasurements.Miscellaneous;
+package io.github.mianalysis.mia.module.ObjectMeasurements.Miscellaneous;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -7,15 +7,15 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 
-import io.github.mianalysis.MIA.ExpectedObjects.ExpectedObjects;
-import io.github.mianalysis.MIA.ExpectedObjects.Objects3D;
-import io.github.mianalysis.MIA.Module.Module;
-import io.github.mianalysis.MIA.Module.Modules;
-import io.github.mianalysis.MIA.Module.ModuleTest;
-import io.github.mianalysis.MIA.Object.Obj;
-import io.github.mianalysis.MIA.Object.Objs;
-import io.github.mianalysis.MIA.Object.Workspace;
-import io.github.mianalysis.MIA.Object.Workspaces;
+import io.github.mianalysis.mia.ExpectedObjects.ExpectedObjects;
+import io.github.mianalysis.mia.ExpectedObjects.Objects3D;
+import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.ModuleTest;
+import io.github.mianalysis.mia.Object.Obj;
+import io.github.mianalysis.mia.Object.Objs;
+import io.github.mianalysis.mia.Object.Workspace;
+import io.github.mianalysis.mia.Object.Workspaces;
 import io.github.sjcross.common.Object.Volume.VolumeType;
 
 public class BinObjectsByMeasurementTest extends ModuleTest {

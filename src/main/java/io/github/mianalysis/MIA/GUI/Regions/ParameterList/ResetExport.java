@@ -1,4 +1,4 @@
-package io.github.mianalysis.MIA.GUI.Regions.ParameterList;
+package io.github.mianalysis.mia.gui.regions.parameterlist;
 
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
@@ -7,8 +7,8 @@ import java.awt.event.ActionListener;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 
-import io.github.mianalysis.MIA.GUI.GUI;
-import io.github.mianalysis.MIA.Object.Refs.Abstract.ExportableRef;
+import io.github.mianalysis.mia.gui.GUI;
+import io.github.mianalysis.mia.Object.Refs.Abstract.ExportableRef;
 
 public class ResetExport extends JButton implements ActionListener {
     /**
@@ -18,7 +18,7 @@ public class ResetExport extends JButton implements ActionListener {
 
     private ExportableRef ref;
 
-    private static final ImageIcon refreshIcon = new ImageIcon(ResetExport.class.getResource("/Icons/refresh_black_12px.png"), "");
+    private static final ImageIcon refreshIcon = new ImageIcon(ResetExport.class.getResource("/icons/refresh_black_12px.png"), "");
 
     public ResetExport(ExportableRef ref) {
         this.ref = ref;

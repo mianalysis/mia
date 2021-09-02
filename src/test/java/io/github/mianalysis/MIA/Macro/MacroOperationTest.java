@@ -1,4 +1,4 @@
-package io.github.mianalysis.MIA.Macro;
+package io.github.mianalysis.mia.macro;
 
 import org.junit.jupiter.api.Test;
 

@@ -1,7 +1,7 @@
-package io.github.mianalysis.MIA.Object.Parameters.Objects;
+package io.github.mianalysis.mia.Object.Parameters.Objects;
 
-import io.github.mianalysis.MIA.Module.Module;
-import io.github.mianalysis.MIA.Object.Parameters.InputObjectsP;
+import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.Object.Parameters.InputObjectsP;
 
 import com.drew.lang.annotations.NotNull;
 import java.util.LinkedHashSet;

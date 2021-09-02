@@ -1,4 +1,4 @@
-package io.github.mianalysis.MIA.GUI.ParameterControls;
+package io.github.mianalysis.mia.gui.parametercontrols;
 
 import java.awt.Font;
 import java.awt.event.FocusEvent;
@@ -7,9 +7,9 @@ import java.awt.event.FocusListener;
 import javax.swing.JComponent;
 import javax.swing.JTextField;
 
-import io.github.mianalysis.MIA.GUI.GUI;
-import io.github.mianalysis.MIA.Module.Core.OutputControl;
-import io.github.mianalysis.MIA.Object.Parameters.Abstract.TextType;
+import io.github.mianalysis.mia.gui.GUI;
+import io.github.mianalysis.mia.module.core.OutputControl;
+import io.github.mianalysis.mia.Object.Parameters.Abstract.TextType;
 
 /**
  * Created by Stephen on 20/05/2017.

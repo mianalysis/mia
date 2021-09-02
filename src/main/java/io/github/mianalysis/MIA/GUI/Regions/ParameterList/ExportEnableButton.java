@@ -1,4 +1,4 @@
-package io.github.mianalysis.MIA.GUI.Regions.ParameterList;
+package io.github.mianalysis.mia.gui.regions.parameterlist;
 
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
@@ -7,8 +7,8 @@ import java.awt.event.ActionListener;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 
-import io.github.mianalysis.MIA.GUI.GUI;
-import io.github.mianalysis.MIA.Object.Refs.Abstract.ExportableRef;
+import io.github.mianalysis.mia.gui.GUI;
+import io.github.mianalysis.mia.Object.Refs.Abstract.ExportableRef;
 
 /**
  * Created by sc13967 on 07/06/2017.
@@ -19,8 +19,8 @@ public class ExportEnableButton extends JButton implements ActionListener {
      */
     private static final long serialVersionUID = 6348882867766257110L;
     private ExportableRef ref;
-    private static final ImageIcon blackIcon = new ImageIcon(ExportEnableButton.class.getResource("/Icons/power_black_strike_12px.png"), "");
-    private static final ImageIcon greenIcon = new ImageIcon(ExportEnableButton.class.getResource("/Icons/power_brightgreen_12px.png"), "");
+    private static final ImageIcon blackIcon = new ImageIcon(ExportEnableButton.class.getResource("/icons/power_black_strike_12px.png"), "");
+    private static final ImageIcon greenIcon = new ImageIcon(ExportEnableButton.class.getResource("/icons/power_brightgreen_12px.png"), "");
 
     public ExportEnableButton(ExportableRef ref) {
         this.ref = ref;

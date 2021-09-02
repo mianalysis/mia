@@ -1,4 +1,4 @@
-package io.github.mianalysis.MIA.Module.ObjectProcessing.Relationships;
+package io.github.mianalysis.mia.module.ObjectProcessing.Relationships;
 
 public class Linkable {
     final double cost;

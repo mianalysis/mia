@@ -1,7 +1,7 @@
 // TODO: Add intensity distribution (centre of mass) test values
 // TODO: Test 4D image stacks and objects
 
-package io.github.mianalysis.MIA.Module.ObjectMeasurements.Intensity;
+package io.github.mianalysis.mia.module.ObjectMeasurements.Intensity;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -14,15 +14,15 @@ import org.junit.jupiter.params.provider.EnumSource;
 
 import ij.IJ;
 import ij.ImagePlus;
-import io.github.mianalysis.MIA.ExpectedObjects.ExpectedObjects;
-import io.github.mianalysis.MIA.ExpectedObjects.Objects3D;
-import io.github.mianalysis.MIA.Module.Module;
-import io.github.mianalysis.MIA.Module.ModuleTest;
-import io.github.mianalysis.MIA.Object.Image;
-import io.github.mianalysis.MIA.Object.Obj;
-import io.github.mianalysis.MIA.Object.Objs;
-import io.github.mianalysis.MIA.Object.Workspace;
-import io.github.mianalysis.MIA.Object.Workspaces;
+import io.github.mianalysis.mia.ExpectedObjects.ExpectedObjects;
+import io.github.mianalysis.mia.ExpectedObjects.Objects3D;
+import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.module.ModuleTest;
+import io.github.mianalysis.mia.Object.Image;
+import io.github.mianalysis.mia.Object.Obj;
+import io.github.mianalysis.mia.Object.Objs;
+import io.github.mianalysis.mia.Object.Workspace;
+import io.github.mianalysis.mia.Object.Workspaces;
 import io.github.sjcross.common.Object.Volume.VolumeType;
 
 /**

@@ -1,4 +1,4 @@
-package io.github.mianalysis.MIA.Module.ObjectMeasurements.Miscellaneous;
+package io.github.mianalysis.mia.module.ObjectMeasurements.Miscellaneous;
 //package io.github.mianalysis.MIA.Module.ObjectMeasurements.Miscellaneous;
 //
 //import io.github.mianalysis.MIA.Module.ModuleTest;

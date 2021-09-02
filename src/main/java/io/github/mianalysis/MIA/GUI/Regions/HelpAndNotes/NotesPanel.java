@@ -1,4 +1,4 @@
-package io.github.mianalysis.MIA.GUI.Regions.HelpAndNotes;
+package io.github.mianalysis.mia.gui.regions.helpandnotes;
 
 import java.awt.Font;
 import java.awt.GridBagConstraints;
@@ -15,9 +15,9 @@ import javax.swing.border.EtchedBorder;
 
 import org.apache.batik.ext.swing.GridBagConstants;
 
-import io.github.mianalysis.MIA.GUI.GUI;
-import io.github.mianalysis.MIA.GUI.Regions.ClosePanelButton;
-import io.github.mianalysis.MIA.Module.Module;
+import io.github.mianalysis.mia.gui.GUI;
+import io.github.mianalysis.mia.gui.regions.ClosePanelButton;
+import io.github.mianalysis.mia.module.Module;
 
 public class NotesPanel extends JPanel {
     /**

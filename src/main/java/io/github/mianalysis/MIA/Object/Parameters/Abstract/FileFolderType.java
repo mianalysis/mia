@@ -1,6 +1,6 @@
-package io.github.mianalysis.MIA.Object.Parameters.Abstract;
+package io.github.mianalysis.mia.Object.Parameters.Abstract;
 
-import io.github.mianalysis.MIA.Module.Module;
+import io.github.mianalysis.mia.module.Module;
 
 import com.drew.lang.annotations.NotNull;
 import java.io.File;

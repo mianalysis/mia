@@ -1,4 +1,4 @@
-package io.github.mianalysis.MIA.GUI.Regions;
+package io.github.mianalysis.mia.gui.regions;
 
 import java.awt.Font;
 import java.awt.event.ActionEvent;
@@ -9,8 +9,8 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 
-import io.github.mianalysis.MIA.GUI.GUI;
-import io.github.mianalysis.MIA.Object.Refs.Abstract.Ref;
+import io.github.mianalysis.mia.gui.GUI;
+import io.github.mianalysis.mia.Object.Refs.Abstract.Ref;
 
 public class RenameListMenu extends JPopupMenu implements ActionListener {
     /**

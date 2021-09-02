@@ -1,4 +1,4 @@
-package io.github.mianalysis.MIA.ExpectedObjects;
+package io.github.mianalysis.mia.ExpectedObjects;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -10,9 +10,9 @@ import java.util.TreeMap;
 
 import ome.units.UNITS;
 import util.opencsv.CSVReader;
-import io.github.mianalysis.MIA.MIA;
-import io.github.mianalysis.MIA.Object.Obj;
-import io.github.mianalysis.MIA.Object.Objs;
+import io.github.mianalysis.mia.MIA;
+import io.github.mianalysis.mia.Object.Obj;
+import io.github.mianalysis.mia.Object.Objs;
 import io.github.sjcross.common.Exceptions.IntegerOverflowException;
 import io.github.sjcross.common.Object.Tracks.Track;
 import io.github.sjcross.common.Object.Volume.PointOutOfRangeException;

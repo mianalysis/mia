@@ -1,7 +1,7 @@
-package io.github.mianalysis.MIA.Module.ImageProcessing.Stack;
+package io.github.mianalysis.mia.module.imageprocessing.Stack;
 
-import io.github.mianalysis.MIA.Module.ModuleTest;
-import io.github.mianalysis.MIA.Module.ImageProcessing.Stack.Registration.UnwarpAutomatic;
+import io.github.mianalysis.mia.module.ModuleTest;
+import io.github.mianalysis.mia.module.imageprocessing.Stack.Registration.UnwarpAutomatic;
 
 import static org.junit.jupiter.api.Assertions.*;
 

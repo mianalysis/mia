@@ -1,9 +1,9 @@
-package io.github.mianalysis.MIA.Module.Hidden;
+package io.github.mianalysis.mia.module.Hidden;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import io.github.mianalysis.MIA.Module.ModuleTest;
-import io.github.mianalysis.MIA.Module.Core.OutputControl;
+import io.github.mianalysis.mia.module.ModuleTest;
+import io.github.mianalysis.mia.module.core.OutputControl;
 
 /**
  * Created by sc13967 on 26/06/2018.

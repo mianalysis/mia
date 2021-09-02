@@ -1,10 +1,10 @@
-package io.github.mianalysis.MIA.Object.Parameters.Text;
+package io.github.mianalysis.mia.Object.Parameters.Text;
 
-import io.github.mianalysis.MIA.GUI.ParameterControls.ParameterControl;
-import io.github.mianalysis.MIA.GUI.ParameterControls.SeriesSelector;
-import io.github.mianalysis.MIA.Module.Module;
-import io.github.mianalysis.MIA.Object.Parameters.Abstract.Parameter;
-import io.github.mianalysis.MIA.Process.CommaSeparatedStringInterpreter;
+import io.github.mianalysis.mia.gui.parametercontrols.ParameterControl;
+import io.github.mianalysis.mia.gui.parametercontrols.SeriesSelector;
+import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.Object.Parameters.Abstract.Parameter;
+import io.github.mianalysis.mia.Process.CommaSeparatedStringInterpreter;
 
 import com.drew.lang.annotations.NotNull;
 

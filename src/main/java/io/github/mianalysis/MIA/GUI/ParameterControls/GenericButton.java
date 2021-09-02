@@ -1,9 +1,9 @@
-package io.github.mianalysis.MIA.GUI.ParameterControls;
+package io.github.mianalysis.mia.gui.parametercontrols;
 
 import javax.swing.JButton;
 import javax.swing.JComponent;
 
-import io.github.mianalysis.MIA.Object.Parameters.GenericButtonP;
+import io.github.mianalysis.mia.Object.Parameters.GenericButtonP;
 
 /**
  * Created by Stephen Cross on 01/02/2019.

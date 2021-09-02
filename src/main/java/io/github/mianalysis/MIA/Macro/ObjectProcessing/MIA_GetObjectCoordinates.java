@@ -1,11 +1,11 @@
-package io.github.mianalysis.MIA.Macro.ObjectProcessing;
+package io.github.mianalysis.mia.macro.objectprocessing;
 
 import ij.macro.MacroExtension;
-import io.github.mianalysis.MIA.Macro.MacroOperation;
-import io.github.mianalysis.MIA.Module.Modules;
-import io.github.mianalysis.MIA.Object.Obj;
-import io.github.mianalysis.MIA.Object.Objs;
-import io.github.mianalysis.MIA.Object.Workspace;
+import io.github.mianalysis.mia.macro.MacroOperation;
+import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.Object.Obj;
+import io.github.mianalysis.mia.Object.Objs;
+import io.github.mianalysis.mia.Object.Workspace;
 import io.github.sjcross.common.Object.Point;
 
 public class MIA_GetObjectCoordinates extends MacroOperation {

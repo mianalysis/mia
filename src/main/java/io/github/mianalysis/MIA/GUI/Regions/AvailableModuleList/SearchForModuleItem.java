@@ -1,4 +1,4 @@
-package io.github.mianalysis.MIA.GUI.Regions.AvailableModuleList;
+package io.github.mianalysis.mia.gui.regions.availablemodulelist;
 
 import java.awt.Font;
 import java.awt.event.ActionEvent;
@@ -7,12 +7,12 @@ import java.awt.event.ActionListener;
 import javax.swing.ImageIcon;
 import javax.swing.JMenuItem;
 
-import io.github.mianalysis.MIA.GUI.GUI;
+import io.github.mianalysis.mia.gui.GUI;
 
 public class SearchForModuleItem extends JMenuItem implements ActionListener {
     public SearchForModuleItem() {
         setText("Search for module");
-        setIcon(new ImageIcon(SearchForModuleItem.class.getResource("/Icons/search_black_12px.png"), ""));
+        setIcon(new ImageIcon(SearchForModuleItem.class.getResource("/icons/search_black_12px.png"), ""));
         setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
         addActionListener(this);
     }

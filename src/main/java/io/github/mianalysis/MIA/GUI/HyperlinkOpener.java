@@ -1,4 +1,4 @@
-package io.github.mianalysis.MIA.GUI;
+package io.github.mianalysis.mia.gui;
 
 import java.awt.Desktop;
 import java.io.IOException;

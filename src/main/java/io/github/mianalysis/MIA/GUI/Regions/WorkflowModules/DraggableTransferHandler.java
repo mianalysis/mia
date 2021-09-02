@@ -1,6 +1,6 @@
 // From https://stackoverflow.com/questions/638807/how-do-i-drag-and-drop-a-row-in-a-jtable (Accessed 2019-04-03)
 
-package io.github.mianalysis.MIA.GUI.Regions.WorkflowModules;
+package io.github.mianalysis.mia.gui.regions.workflowmodules;
 
 import java.awt.Cursor;
 import java.awt.datatransfer.DataFlavor;

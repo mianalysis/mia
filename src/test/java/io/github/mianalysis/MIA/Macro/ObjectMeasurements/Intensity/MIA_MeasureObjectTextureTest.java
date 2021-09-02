@@ -1,6 +1,6 @@
-package io.github.mianalysis.MIA.Macro.ObjectMeasurements.Intensity;
+package io.github.mianalysis.mia.macro.objectmeasurements.intensity;
 
-import io.github.mianalysis.MIA.Macro.MacroOperationTest;
+import io.github.mianalysis.mia.macro.MacroOperationTest;
 
 import static org.junit.jupiter.api.Assertions.*;
 

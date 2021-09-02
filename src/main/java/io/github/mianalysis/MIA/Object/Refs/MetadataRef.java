@@ -1,4 +1,4 @@
-package io.github.mianalysis.MIA.Object.Refs;
+package io.github.mianalysis.mia.Object.Refs;
 
 import java.util.LinkedHashMap;
 
@@ -7,9 +7,9 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.w3c.dom.Node;
 
-import io.github.mianalysis.MIA.Object.Workspace;
-import io.github.mianalysis.MIA.Object.Refs.Abstract.ExportableRef;
-import io.github.mianalysis.MIA.Object.Refs.Abstract.SpreadsheetWriter;
+import io.github.mianalysis.mia.Object.Workspace;
+import io.github.mianalysis.mia.Object.Refs.Abstract.ExportableRef;
+import io.github.mianalysis.mia.Object.Refs.Abstract.SpreadsheetWriter;
 
 public class MetadataRef extends ExportableRef implements SpreadsheetWriter {
     public MetadataRef(Node node) {

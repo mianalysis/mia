@@ -1,4 +1,4 @@
-package io.github.mianalysis.MIA.Macro;
+package io.github.mianalysis.mia.macro;
 
 import net.imagej.legacy.plugin.MacroExtensionAutoCompletionPlugin;
 import org.fife.ui.autocomplete.BasicCompletion;

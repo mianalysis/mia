@@ -1,6 +1,6 @@
-package io.github.mianalysis.MIA.Object.Parameters.ChoiceInterfaces;
+package io.github.mianalysis.mia.Object.Parameters.ChoiceInterfaces;
 
-import io.github.mianalysis.MIA.Module.Core.InputControl;
+import io.github.mianalysis.mia.module.core.InputControl;
 
 public interface SpatialUnitsInterface {
     String CALIBRATED = "Calibrated";

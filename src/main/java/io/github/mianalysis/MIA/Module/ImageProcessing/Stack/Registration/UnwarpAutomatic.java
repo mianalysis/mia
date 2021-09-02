@@ -1,4 +1,4 @@
-package io.github.mianalysis.MIA.Module.ImageProcessing.Stack.Registration;
+package io.github.mianalysis.mia.module.imageprocessing.Stack.Registration;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -9,11 +9,11 @@ import bunwarpj.Transformation;
 import bunwarpj.bUnwarpJ_;
 import ij.ImagePlus;
 import ij.process.ImageProcessor;
-import io.github.mianalysis.MIA.Module.Modules;
-import io.github.mianalysis.MIA.Module.ImageProcessing.Stack.Registration.Abstract.AbstractBUnwarpJRegistration;
-import io.github.mianalysis.MIA.Object.Workspace;
-import io.github.mianalysis.MIA.Object.Parameters.Parameters;
-import io.github.mianalysis.MIA.Process.Interactable.Interactable;
+import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.imageprocessing.Stack.Registration.Abstract.AbstractBUnwarpJRegistration;
+import io.github.mianalysis.mia.Object.Workspace;
+import io.github.mianalysis.mia.Object.Parameters.Parameters;
+import io.github.mianalysis.mia.Process.Interactable.Interactable;
 
 public class UnwarpAutomatic extends AbstractBUnwarpJRegistration implements Interactable {
     public UnwarpAutomatic(Modules modules) {

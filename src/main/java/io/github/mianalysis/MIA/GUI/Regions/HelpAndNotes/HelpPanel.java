@@ -1,4 +1,4 @@
-package io.github.mianalysis.MIA.GUI.Regions.HelpAndNotes;
+package io.github.mianalysis.mia.gui.regions.helpandnotes;
 
 import java.awt.Font;
 import java.awt.GridBagConstraints;
@@ -13,10 +13,10 @@ import javax.swing.JSeparator;
 import javax.swing.JTextPane;
 import javax.swing.border.EtchedBorder;
 
-import io.github.mianalysis.MIA.GUI.GUI;
-import io.github.mianalysis.MIA.GUI.Regions.ClosePanelButton;
-import io.github.mianalysis.MIA.Module.Module;
-import io.github.mianalysis.MIA.Module.Modules;
+import io.github.mianalysis.mia.gui.GUI;
+import io.github.mianalysis.mia.gui.regions.ClosePanelButton;
+import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.module.Modules;
 
 public class HelpPanel extends JPanel {
     private static final long serialVersionUID = 3704479016316750858L;

@@ -1,11 +1,11 @@
-package io.github.mianalysis.MIA.Macro;
+package io.github.mianalysis.mia.macro;
 
 import org.scijava.command.Command;
 import org.scijava.plugin.Plugin;
 
 import ij.IJ;
 import ij.macro.Functions;
-import io.github.mianalysis.MIA.Process.DependencyValidator;
+import io.github.mianalysis.mia.Process.DependencyValidator;
 
 
 @Plugin(type = Command.class, menuPath = "Plugins>MIA>Enable MIA Extensions")

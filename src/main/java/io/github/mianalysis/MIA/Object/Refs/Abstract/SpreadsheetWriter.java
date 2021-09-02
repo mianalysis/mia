@@ -1,7 +1,7 @@
-package io.github.mianalysis.MIA.Object.Refs.Abstract;
+package io.github.mianalysis.mia.Object.Refs.Abstract;
 
 import org.apache.poi.ss.usermodel.Sheet;
-import io.github.mianalysis.MIA.Object.Workspace;
+import io.github.mianalysis.mia.Object.Workspace;
 
 import java.util.LinkedHashMap;
 

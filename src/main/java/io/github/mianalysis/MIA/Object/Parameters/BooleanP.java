@@ -1,8 +1,8 @@
-package io.github.mianalysis.MIA.Object.Parameters;
+package io.github.mianalysis.mia.Object.Parameters;
 
-import io.github.mianalysis.MIA.Module.Module;
-import io.github.mianalysis.MIA.Object.Parameters.Abstract.BooleanType;
-import io.github.mianalysis.MIA.Object.Parameters.Abstract.Parameter;
+import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.Object.Parameters.Abstract.BooleanType;
+import io.github.mianalysis.mia.Object.Parameters.Abstract.Parameter;
 
 public class BooleanP extends BooleanType {
     public BooleanP(String name, Module module, boolean enabled) {
