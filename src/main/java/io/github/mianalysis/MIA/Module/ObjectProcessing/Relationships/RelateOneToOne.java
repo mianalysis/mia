@@ -103,26 +103,26 @@ import fiji.plugin.trackmate.tracking.sparselap.linker.JaqamanLinker;
 import io.github.mianalysis.MIA.Module.Categories;
 import io.github.mianalysis.MIA.Module.Category;
 import io.github.mianalysis.MIA.Module.Module;
-import io.github.mianalysis.MIA.Module.ModuleCollection;
+import io.github.mianalysis.MIA.Module.Modules;
 import io.github.mianalysis.MIA.Module.Core.InputControl;
 import io.github.mianalysis.MIA.Object.Measurement;
 import io.github.mianalysis.MIA.Object.Obj;
-import io.github.mianalysis.MIA.Object.ObjCollection;
+import io.github.mianalysis.MIA.Object.Objs;
 import io.github.mianalysis.MIA.Object.Status;
 import io.github.mianalysis.MIA.Object.Workspace;
 import io.github.mianalysis.MIA.Object.Parameters.BooleanP;
 import io.github.mianalysis.MIA.Object.Parameters.ChoiceP;
 import io.github.mianalysis.MIA.Object.Parameters.InputObjectsP;
-import io.github.mianalysis.MIA.Object.Parameters.ParameterCollection;
+import io.github.mianalysis.MIA.Object.Parameters.Parameters;
 import io.github.mianalysis.MIA.Object.Parameters.SeparatorP;
 import io.github.mianalysis.MIA.Object.Parameters.Objects.OutputClusterObjectsP;
 import io.github.mianalysis.MIA.Object.Parameters.Text.DoubleP;
-import io.github.mianalysis.MIA.Object.References.ObjMeasurementRef;
-import io.github.mianalysis.MIA.Object.References.Collections.ImageMeasurementRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.MetadataRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.ObjMeasurementRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.ParentChildRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.PartnerRefCollection;
+import io.github.mianalysis.MIA.Object.Refs.ObjMeasurementRef;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ImageMeasurementRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.MetadataRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ObjMeasurementRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ParentChildRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.PartnerRefs;
 
 public class RelateOneToOne extends Module {
     public static final String INPUT_SEPARATOR = "Objects input/output";
@@ -161,7 +161,7 @@ public class RelateOneToOne extends Module {
 
     }
 
-    static ArrayList<Linkable> getCentroidSeparationLinkables(ObjCollection inputObjects1, ObjCollection inputObjects2,
+    static ArrayList<Linkable> getCentroidSeparationLinkables(Objs inputObjects1, Objs inputObjects2,
             double maxSeparation) {
         ArrayList<Linkable> linkables = new ArrayList<>();
 
@@ -182,7 +182,7 @@ public class RelateOneToOne extends Module {
 
     }
 
-    static ArrayList<Linkable> getSpatialOverlapLinkables(ObjCollection inputObjects1, ObjCollection inputObjects2,
+    static ArrayList<Linkable> getSpatialOverlapLinkables(Objs inputObjects1, Objs inputObjects2,
             double minOverlap1, double minOverlap2) {
         ArrayList<Linkable> linkables = new ArrayList<>();
 
@@ -235,11 +235,11 @@ public class RelateOneToOne extends Module {
 
     }
 
-    static ObjCollection assignLinks(ObjCollection inputObjects1, ObjCollection inputObjects2,
+    static Objs assignLinks(Objs inputObjects1, Objs inputObjects2,
             DefaultCostMatrixCreator<Integer, Integer> creator, @Nullable String outputObjectsName) {
-        ObjCollection outputObjects = null;
+        Objs outputObjects = null;
         if (outputObjectsName != null)
-            outputObjects = new ObjCollection(outputObjectsName, inputObjects1);
+            outputObjects = new Objs(outputObjectsName, inputObjects1);
 
         JaqamanLinker<Integer, Integer> linker = new JaqamanLinker<>(creator);
         if (!linker.checkInput() || !linker.process())
@@ -269,7 +269,7 @@ public class RelateOneToOne extends Module {
 
     }
 
-    static void addMissingLinks(ObjCollection inputObjects1, ObjCollection inputObjects2) {
+    static void addMissingLinks(Objs inputObjects1, Objs inputObjects2) {
         // Ensuring input objects have "WAS_LINKED" measurements
         String name = getFullName(inputObjects2.getName(), Measurements.WAS_LINKED1);
         for (Obj object1 : inputObjects1.values()) {
@@ -284,7 +284,7 @@ public class RelateOneToOne extends Module {
         }
     }
 
-    static Obj createClusterObject(Obj object1, Obj object2, ObjCollection outputObjects) {
+    static Obj createClusterObject(Obj object1, Obj object2, Objs outputObjects) {
         Obj outputObject = outputObjects.createAndAddNewObject(object1.getVolumeType());
         outputObject.setT(object1.getT());
 
@@ -314,7 +314,7 @@ public class RelateOneToOne extends Module {
 
     }
 
-    public RelateOneToOne(ModuleCollection modules) {
+    public RelateOneToOne(Modules modules) {
         super("Relate one-to-one", modules);
     }
 
@@ -336,10 +336,10 @@ public class RelateOneToOne extends Module {
     protected Status process(Workspace workspace) {
         // Getting input objects
         String inputObjects1Name = parameters.getValue(INPUT_OBJECTS_1);
-        ObjCollection inputObjects1 = workspace.getObjects().get(inputObjects1Name);
+        Objs inputObjects1 = workspace.getObjects().get(inputObjects1Name);
 
         String inputObjects2Name = parameters.getValue(INPUT_OBJECTS_2);
-        ObjCollection inputObjects2 = workspace.getObjects().get(inputObjects2Name);
+        Objs inputObjects2 = workspace.getObjects().get(inputObjects2Name);
 
         // Getting parameters
         boolean createClusterObjects = parameters.getValue(CREATE_CLUSTER_OBJECTS);
@@ -353,7 +353,7 @@ public class RelateOneToOne extends Module {
         // Skipping the module if no objects are present in one collection
         if (inputObjects1.size() == 0 || inputObjects2.size() == 0) {
             addMissingLinks(inputObjects1, inputObjects2);
-            workspace.addObjects(new ObjCollection(outputObjectsName, inputObjects1));
+            workspace.addObjects(new Objs(outputObjectsName, inputObjects1));
             return Status.PASS;
         }
 
@@ -377,7 +377,7 @@ public class RelateOneToOne extends Module {
                 break;
         }
 
-        ObjCollection outputObjects = null;
+        Objs outputObjects = null;
         if (linkables.size() != 0) {
             // Creating cost matrix and checking creator was created
             DefaultCostMatrixCreator<Integer, Integer> creator = getCostMatrixCreator(linkables);
@@ -415,8 +415,8 @@ public class RelateOneToOne extends Module {
     }
 
     @Override
-    public ParameterCollection updateAndGetParameters() {
-        ParameterCollection returnedParameters = new ParameterCollection();
+    public Parameters updateAndGetParameters() {
+        Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(INPUT_OBJECTS_1));
@@ -444,17 +444,17 @@ public class RelateOneToOne extends Module {
     }
 
     @Override
-    public ImageMeasurementRefCollection updateAndGetImageMeasurementRefs() {
+    public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
         String inputObjectsName1 = parameters.getValue(INPUT_OBJECTS_1);
         String inputObjectsName2 = parameters.getValue(INPUT_OBJECTS_2);
         String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS_NAME);
 
-        ObjMeasurementRefCollection returnedRefs = new ObjMeasurementRefCollection();
+        ObjMeasurementRefs returnedRefs = new ObjMeasurementRefs();
 
         String name = getFullName(inputObjectsName1, Measurements.FRACTION_1);
         ObjMeasurementRef reference = objectMeasurementRefs.getOrPut(name);
@@ -503,13 +503,13 @@ public class RelateOneToOne extends Module {
     }
 
     @Override
-    public MetadataRefCollection updateAndGetMetadataReferences() {
+    public MetadataRefs updateAndGetMetadataReferences() {
         return null;
     }
 
     @Override
-    public ParentChildRefCollection updateAndGetParentChildRefs() {
-        ParentChildRefCollection returnedRefs = new ParentChildRefCollection();
+    public ParentChildRefs updateAndGetParentChildRefs() {
+        ParentChildRefs returnedRefs = new ParentChildRefs();
 
         if ((boolean) parameters.getValue(CREATE_CLUSTER_OBJECTS)) {
             // Getting input objects
@@ -527,8 +527,8 @@ public class RelateOneToOne extends Module {
     }
 
     @Override
-    public PartnerRefCollection updateAndGetPartnerRefs() {
-        PartnerRefCollection returnedRefs = new PartnerRefCollection();
+    public PartnerRefs updateAndGetPartnerRefs() {
+        PartnerRefs returnedRefs = new PartnerRefs();
 
         String inputObjects1Name = parameters.getValue(INPUT_OBJECTS_1);
         String inputObjects2Name = parameters.getValue(INPUT_OBJECTS_2);

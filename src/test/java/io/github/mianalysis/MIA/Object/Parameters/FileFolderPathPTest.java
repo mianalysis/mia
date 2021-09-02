@@ -5,7 +5,7 @@ import org.junit.jupiter.api.io.TempDir;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
-import io.github.mianalysis.MIA.Module.ModuleCollection;
+import io.github.mianalysis.MIA.Module.Modules;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -22,7 +22,7 @@ public class FileFolderPathPTest {
         File testFile = new File(tempPath+File.separator+"TestFile.tif");
         testFile.createNewFile();
 
-        ModuleCollection modules = new ModuleCollection();
+        Modules modules = new Modules();
         ParamTest paramTest = new ParamTest(modules);
 
         FileFolderPathP fileFolderPathP = new FileFolderPathP("Demo path",paramTest);
@@ -36,7 +36,7 @@ public class FileFolderPathPTest {
     public void isDirectoryDirectory(@TempDir Path tempPath) throws IOException {
         File temporaryFolder = tempPath.toFile();
 
-        ModuleCollection modules = new ModuleCollection();
+        Modules modules = new Modules();
         ParamTest paramTest = new ParamTest(modules);
 
         FileFolderPathP fileFolderPathP = new FileFolderPathP("Demo path",paramTest);
@@ -48,7 +48,7 @@ public class FileFolderPathPTest {
 
     @Test
     public void isDirectoryMissing() throws IOException {
-        ModuleCollection modules = new ModuleCollection();
+        Modules modules = new Modules();
         ParamTest paramTest = new ParamTest(modules);
 
         FileFolderPathP fileFolderPathP = new FileFolderPathP("Demo path",paramTest);
@@ -60,7 +60,7 @@ public class FileFolderPathPTest {
 
     @Test
     public void isDirectoryNull() throws IOException {
-        ModuleCollection modules = new ModuleCollection();
+        Modules modules = new Modules();
         ParamTest paramTest = new ParamTest(modules);
 
         FileFolderPathP fileFolderPathP = new FileFolderPathP("Demo path",paramTest);
@@ -75,7 +75,7 @@ public class FileFolderPathPTest {
         File testFile = new File(tempPath+File.separator+"TestFile.tif");
         testFile.createNewFile();
 
-        ModuleCollection modules = new ModuleCollection();
+        Modules modules = new Modules();
         ParamTest paramTest = new ParamTest(modules);
 
         FileFolderPathP fileFolderPathP = new FileFolderPathP("Demo path",paramTest);
@@ -89,7 +89,7 @@ public class FileFolderPathPTest {
     public void getRawStringValueDirectory(@TempDir Path tempPath) throws IOException {
         File temporaryFolder = tempPath.toFile();
 
-        ModuleCollection modules = new ModuleCollection();
+        Modules modules = new Modules();
         ParamTest paramTest = new ParamTest(modules);
 
         FileFolderPathP fileFolderPathP = new FileFolderPathP("Demo path",paramTest);
@@ -104,7 +104,7 @@ public class FileFolderPathPTest {
         File testFile = new File(tempPath+File.separator+"TestFile.tif");
         testFile.createNewFile();
 
-        ModuleCollection modules = new ModuleCollection();
+        Modules modules = new Modules();
         ParamTest paramTest = new ParamTest(modules);
 
         FileFolderPathP fileFolderPathP = new FileFolderPathP("Demo path",paramTest);
@@ -118,7 +118,7 @@ public class FileFolderPathPTest {
     public void setValueFromStringDirectory(@TempDir Path tempPath) throws IOException {
         File temporaryFolder = tempPath.toFile();
 
-        ModuleCollection modules = new ModuleCollection();
+        Modules modules = new Modules();
         ParamTest paramTest = new ParamTest(modules);
 
         FileFolderPathP fileFolderPathP = new FileFolderPathP("Demo path",paramTest);
@@ -133,7 +133,7 @@ public class FileFolderPathPTest {
         File testFile = new File(tempPath+File.separator+"TestFile.tif");
         testFile.createNewFile();
 
-        ModuleCollection modules = new ModuleCollection();
+        Modules modules = new Modules();
         ParamTest paramTest = new ParamTest(modules);
 
         FileFolderPathP fileFolderPathP = new FileFolderPathP("Demo path",paramTest);
@@ -147,7 +147,7 @@ public class FileFolderPathPTest {
     public void verifyDirectory(@TempDir Path tempPath) throws IOException {
         File temporaryFolder = tempPath.toFile();
 
-        ModuleCollection modules = new ModuleCollection();
+        Modules modules = new Modules();
         ParamTest paramTest = new ParamTest(modules);
 
         FileFolderPathP fileFolderPathP = new FileFolderPathP("Demo path",paramTest);
@@ -162,7 +162,7 @@ public class FileFolderPathPTest {
         File testFile = new File(tempPath+File.separator+"TestFile.tif");
         testFile.createNewFile();
 
-        ModuleCollection modules = new ModuleCollection();
+        Modules modules = new Modules();
         ParamTest paramTest = new ParamTest(modules);
 
         FileFolderPathP fileFolderPathP = new FileFolderPathP("Demo path",paramTest);
@@ -178,7 +178,7 @@ public class FileFolderPathPTest {
     public void verifyMissingDirectory(@TempDir Path tempPath) throws IOException {
         File temporaryFolder = tempPath.toFile();
 
-        ModuleCollection modules = new ModuleCollection();
+        Modules modules = new Modules();
         ParamTest paramTest = new ParamTest(modules);
 
         FileFolderPathP fileFolderPathP = new FileFolderPathP("Demo path",paramTest);
@@ -192,7 +192,7 @@ public class FileFolderPathPTest {
 
     @Test
     public void verifyMissing() throws IOException {
-        ModuleCollection modules = new ModuleCollection();
+        Modules modules = new Modules();
         ParamTest paramTest = new ParamTest(modules);
 
         FileFolderPathP fileFolderPathP = new FileFolderPathP("Demo path",paramTest);
@@ -204,7 +204,7 @@ public class FileFolderPathPTest {
 
     @Test
     public void verifyNull() throws IOException {
-        ModuleCollection modules = new ModuleCollection();
+        Modules modules = new Modules();
         ParamTest paramTest = new ParamTest(modules);
 
         FileFolderPathP fileFolderPathP = new FileFolderPathP("Demo path",paramTest);
@@ -219,7 +219,7 @@ public class FileFolderPathPTest {
         File testFile = new File(tempPath+File.separator+"TestFile.tif");
         testFile.createNewFile();
 
-        ModuleCollection modules = new ModuleCollection();
+        Modules modules = new Modules();
         ParamTest paramTest = new ParamTest(modules);
 
         FileFolderPathP fileFolderPathP = new FileFolderPathP("Demo path",paramTest);
@@ -246,7 +246,7 @@ public class FileFolderPathPTest {
 
     @Test
     public void setAttributesFromXML() throws ParserConfigurationException {
-        ModuleCollection modules = new ModuleCollection();
+        Modules modules = new Modules();
         ParamTest paramTest = new ParamTest(modules);
 
         FileFolderPathP fileFolderPathP = new FileFolderPathP("Demo path",paramTest);

@@ -10,13 +10,13 @@ import io.github.mianalysis.MIA.MIA;
 import io.github.mianalysis.MIA.Module.Categories;
 import io.github.mianalysis.MIA.Module.Category;
 import io.github.mianalysis.MIA.Module.Module;
-import io.github.mianalysis.MIA.Module.ModuleCollection;
+import io.github.mianalysis.MIA.Module.Modules;
 import io.github.mianalysis.MIA.Module.InputOutput.ImageLoader;
 import io.github.mianalysis.MIA.Module.ObjectProcessing.Refinement.FilterObjects.AbstractNumericObjectFilter;
 import io.github.mianalysis.MIA.Object.Colours;
 import io.github.mianalysis.MIA.Object.Image;
 import io.github.mianalysis.MIA.Object.Measurement;
-import io.github.mianalysis.MIA.Object.ObjCollection;
+import io.github.mianalysis.MIA.Object.Objs;
 import io.github.mianalysis.MIA.Object.Status;
 import io.github.mianalysis.MIA.Object.Workspace;
 import io.github.mianalysis.MIA.Object.Parameters.BooleanP;
@@ -26,16 +26,16 @@ import io.github.mianalysis.MIA.Object.Parameters.InputImageP;
 import io.github.mianalysis.MIA.Object.Parameters.InputObjectsP;
 import io.github.mianalysis.MIA.Object.Parameters.MetadataItemP;
 import io.github.mianalysis.MIA.Object.Parameters.ModuleP;
-import io.github.mianalysis.MIA.Object.Parameters.ParameterCollection;
+import io.github.mianalysis.MIA.Object.Parameters.Parameters;
 import io.github.mianalysis.MIA.Object.Parameters.SeparatorP;
 import io.github.mianalysis.MIA.Object.Parameters.Text.DoubleP;
 import io.github.mianalysis.MIA.Object.Parameters.Text.MessageP;
 import io.github.mianalysis.MIA.Object.Parameters.Text.StringP;
-import io.github.mianalysis.MIA.Object.References.Collections.ImageMeasurementRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.MetadataRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.ObjMeasurementRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.ParentChildRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.PartnerRefCollection;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ImageMeasurementRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.MetadataRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ObjMeasurementRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ParentChildRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.PartnerRefs;
 import io.github.sjcross.common.MetadataExtractors.Metadata;
 
 /**
@@ -65,7 +65,7 @@ public class WorkflowHandling extends Module {
     public static final String REMOVE_OBJECTS = "Remove objects from workspace";
     public static final String REMOVE_IMAGES = "Remove images from workspace";
 
-    public WorkflowHandling(ModuleCollection modules) {
+    public WorkflowHandling(Modules modules) {
         super("Workflow handling", modules);
     }
 
@@ -102,12 +102,12 @@ public class WorkflowHandling extends Module {
 
     }
 
-    Status processTermination(ParameterCollection params) {
+    Status processTermination(Parameters params) {
         return processTermination(params, null, false);
 
     }
 
-    Status processTermination(ParameterCollection parameters, Workspace workspace, boolean showRedirectMessage) {
+    Status processTermination(Parameters parameters, Workspace workspace, boolean showRedirectMessage) {
         String continuationMode = parameters.getValue(CONTINUATION_MODE);
         String redirectMessage = parameters.getValue(REDIRECT_MESSAGE);
         boolean exportWorkspace = parameters.getValue(EXPORT_WORKSPACE);
@@ -191,7 +191,7 @@ public class WorkflowHandling extends Module {
 
     }
 
-    public static boolean testObjectCount(ObjCollection inputObjects, String referenceMode, double referenceValue) {
+    public static boolean testObjectCount(Objs inputObjects, String referenceMode, double referenceValue) {
         int testValue = 0;
         if (inputObjects != null)
             testValue = inputObjects.size();
@@ -252,7 +252,7 @@ public class WorkflowHandling extends Module {
                 terminate = testTextMetadata(metadataValue, textFilterMode, referenceValueText);
                 break;
             case TestModes.OBJECT_COUNT:
-                ObjCollection inputObjects = workspace.getObjectSet(inputObjectsName);
+                Objs inputObjects = workspace.getObjectSet(inputObjectsName);
                 terminate = testObjectCount(inputObjects, numericFilterMode, referenceValueNumber);
                 break;
         }
@@ -295,8 +295,8 @@ public class WorkflowHandling extends Module {
     }
 
     @Override
-    public ParameterCollection updateAndGetParameters() {
-        ParameterCollection returnedParameters = new ParameterCollection();
+    public Parameters updateAndGetParameters() {
+        Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(CONDITION_SEPARATOR));
         returnedParameters.add(parameters.getParameter(TEST_MODE));
@@ -305,7 +305,7 @@ public class WorkflowHandling extends Module {
             case TestModes.FILE_DOES_NOT_EXIST:
                 returnedParameters.add(parameters.getParameter(GENERIC_FORMAT));
                 returnedParameters.add(parameters.getParameter(AVAILABLE_METADATA_FIELDS));
-                MetadataRefCollection metadataRefs = modules.getMetadataRefs(this);
+                MetadataRefs metadataRefs = modules.getMetadataRefs(this);
                 parameters.getParameter(AVAILABLE_METADATA_FIELDS).setValue(metadataRefs.getMetadataValues());
                 break;
 
@@ -368,27 +368,27 @@ public class WorkflowHandling extends Module {
     }
 
     @Override
-    public ImageMeasurementRefCollection updateAndGetImageMeasurementRefs() {
+    public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MetadataRefCollection updateAndGetMetadataReferences() {
+    public MetadataRefs updateAndGetMetadataReferences() {
         return null;
     }
 
     @Override
-    public ParentChildRefCollection updateAndGetParentChildRefs() {
+    public ParentChildRefs updateAndGetParentChildRefs() {
         return null;
     }
 
     @Override
-    public PartnerRefCollection updateAndGetPartnerRefs() {
+    public PartnerRefs updateAndGetPartnerRefs() {
         return null;
     }
 

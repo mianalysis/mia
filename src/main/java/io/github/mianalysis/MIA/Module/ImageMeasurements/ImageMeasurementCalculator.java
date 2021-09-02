@@ -1,7 +1,7 @@
 package io.github.mianalysis.MIA.Module.ImageMeasurements;
 
 import io.github.mianalysis.MIA.Module.Module;
-import io.github.mianalysis.MIA.Module.ModuleCollection;
+import io.github.mianalysis.MIA.Module.Modules;
 import io.github.mianalysis.MIA.Module.Category;
 import io.github.mianalysis.MIA.Module.Categories;
 import io.github.mianalysis.MIA.Object.Status;
@@ -12,14 +12,14 @@ import io.github.mianalysis.MIA.Object.Parameters.ChoiceP;
 import io.github.mianalysis.MIA.Object.Parameters.ImageMeasurementP;
 import io.github.mianalysis.MIA.Object.Parameters.InputImageP;
 import io.github.mianalysis.MIA.Object.Parameters.SeparatorP;
-import io.github.mianalysis.MIA.Object.Parameters.ParameterCollection;
+import io.github.mianalysis.MIA.Object.Parameters.Parameters;
 import io.github.mianalysis.MIA.Object.Parameters.Text.DoubleP;
 import io.github.mianalysis.MIA.Object.Parameters.Text.StringP;
-import io.github.mianalysis.MIA.Object.References.Collections.ImageMeasurementRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.MetadataRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.ObjMeasurementRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.ParentChildRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.PartnerRefCollection;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ImageMeasurementRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.MetadataRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ObjMeasurementRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ParentChildRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.PartnerRefs;
 
 /**
  * Created by Stephen Cross on 19/03/2019.
@@ -60,7 +60,7 @@ public class ImageMeasurementCalculator extends Module {
 
     }
 
-    public ImageMeasurementCalculator(ModuleCollection modules) {
+    public ImageMeasurementCalculator(Modules modules) {
         super("Image measurement calculator", modules);
     }
 
@@ -171,8 +171,8 @@ public class ImageMeasurementCalculator extends Module {
     }
 
     @Override
-    public ParameterCollection updateAndGetParameters() {
-        ParameterCollection returnedParams = new ParameterCollection();
+    public Parameters updateAndGetParameters() {
+        Parameters returnedParams = new Parameters();
 
         String inputImageName = parameters.getValue(INPUT_IMAGE);
 
@@ -214,8 +214,8 @@ public class ImageMeasurementCalculator extends Module {
     }
 
     @Override
-    public ImageMeasurementRefCollection updateAndGetImageMeasurementRefs() {
-        ImageMeasurementRefCollection returnedRefs = new ImageMeasurementRefCollection();
+    public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
+        ImageMeasurementRefs returnedRefs = new ImageMeasurementRefs();
 
         // Creating new MeasurementRef
         String inputImageName = parameters.getValue(INPUT_IMAGE);
@@ -228,22 +228,22 @@ public class ImageMeasurementCalculator extends Module {
     }
 
     @Override
-    public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MetadataRefCollection updateAndGetMetadataReferences() {
+    public MetadataRefs updateAndGetMetadataReferences() {
         return null;
     }
 
     @Override
-    public ParentChildRefCollection updateAndGetParentChildRefs() {
+    public ParentChildRefs updateAndGetParentChildRefs() {
         return null;
     }
 
     @Override
-    public PartnerRefCollection updateAndGetPartnerRefs() {
+    public PartnerRefs updateAndGetPartnerRefs() {
         return null;
     }
 

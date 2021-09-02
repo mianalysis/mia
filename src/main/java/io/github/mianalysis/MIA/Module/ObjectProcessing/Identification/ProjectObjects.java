@@ -5,20 +5,20 @@ import ome.units.unit.Unit;
 import io.github.mianalysis.MIA.Module.Categories;
 import io.github.mianalysis.MIA.Module.Category;
 import io.github.mianalysis.MIA.Module.Module;
-import io.github.mianalysis.MIA.Module.ModuleCollection;
+import io.github.mianalysis.MIA.Module.Modules;
 import io.github.mianalysis.MIA.Object.Obj;
-import io.github.mianalysis.MIA.Object.ObjCollection;
+import io.github.mianalysis.MIA.Object.Objs;
 import io.github.mianalysis.MIA.Object.Status;
 import io.github.mianalysis.MIA.Object.Workspace;
 import io.github.mianalysis.MIA.Object.Parameters.InputObjectsP;
-import io.github.mianalysis.MIA.Object.Parameters.ParameterCollection;
+import io.github.mianalysis.MIA.Object.Parameters.Parameters;
 import io.github.mianalysis.MIA.Object.Parameters.SeparatorP;
 import io.github.mianalysis.MIA.Object.Parameters.Objects.OutputObjectsP;
-import io.github.mianalysis.MIA.Object.References.Collections.ImageMeasurementRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.MetadataRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.ObjMeasurementRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.ParentChildRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.PartnerRefCollection;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ImageMeasurementRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.MetadataRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ObjMeasurementRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ParentChildRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.PartnerRefs;
 import io.github.sjcross.common.Exceptions.IntegerOverflowException;
 import io.github.sjcross.common.Object.Volume.SpatCal;
 import io.github.sjcross.common.Object.Volume.Volume;
@@ -31,11 +31,11 @@ public class ProjectObjects extends Module {
     public static final String INPUT_OBJECTS = "Input objects";
     public static final String OUTPUT_OBJECTS = "Output objects";
 
-    public ProjectObjects(ModuleCollection modules) {
+    public ProjectObjects(Modules modules) {
         super("Project objects",modules);
     }
 
-    public static Obj process(Obj inputObject, ObjCollection outputObjects, boolean addRelationship) throws IntegerOverflowException {
+    public static Obj process(Obj inputObject, Objs outputObjects, boolean addRelationship) throws IntegerOverflowException {
         Volume projected = inputObject.getProjected();
 
         Obj outputObject = outputObjects.createAndAddNewObject(inputObject.getVolumeType(), inputObject.getID());
@@ -72,13 +72,13 @@ public class ProjectObjects extends Module {
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
         String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);
 
-        ObjCollection inputObjects = workspace.getObjects().get(inputObjectsName);
+        Objs inputObjects = workspace.getObjects().get(inputObjectsName);
         SpatCal calIn = inputObjects.getSpatialCalibration();
         SpatCal calOut = new SpatCal(calIn.getDppXY(), calIn.getDppZ(), calIn.getUnits(), calIn.getWidth(),
                 calIn.getHeight(), 1);
         double frameInterval = inputObjects.getFrameInterval();
         Unit<Time> temporalUnit = inputObjects.getTemporalUnit();
-        ObjCollection outputObjects = new ObjCollection(outputObjectsName, calOut, inputObjects.getNFrames(),
+        Objs outputObjects = new Objs(outputObjectsName, calOut, inputObjects.getNFrames(),
                 frameInterval, temporalUnit);
 
         for (Obj inputObject:inputObjects.values()) {
@@ -109,28 +109,28 @@ public class ProjectObjects extends Module {
     }
 
     @Override
-    public ParameterCollection updateAndGetParameters() {
+    public Parameters updateAndGetParameters() {
         return parameters;
     }
 
     @Override
-    public ImageMeasurementRefCollection updateAndGetImageMeasurementRefs() {
+    public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MetadataRefCollection updateAndGetMetadataReferences() {
+    public MetadataRefs updateAndGetMetadataReferences() {
         return null;
     }
 
     @Override
-    public ParentChildRefCollection updateAndGetParentChildRefs() {
-        ParentChildRefCollection returnedRelationships = new ParentChildRefCollection();
+    public ParentChildRefs updateAndGetParentChildRefs() {
+        ParentChildRefs returnedRelationships = new ParentChildRefs();
 
         returnedRelationships.add(parentChildRefs.getOrPut(parameters.getValue(INPUT_OBJECTS),parameters.getValue(OUTPUT_OBJECTS)));
 
@@ -139,7 +139,7 @@ public class ProjectObjects extends Module {
     }
 
     @Override
-    public PartnerRefCollection updateAndGetPartnerRefs() {
+    public PartnerRefs updateAndGetPartnerRefs() {
         return null;
     }
 

@@ -11,12 +11,12 @@ import org.junit.jupiter.api.Test;
 import ij.IJ;
 import ij.ImagePlus;
 import io.github.mianalysis.MIA.Module.Module;
-import io.github.mianalysis.MIA.Module.ModuleCollection;
+import io.github.mianalysis.MIA.Module.Modules;
 import io.github.mianalysis.MIA.Module.ModuleTest;
 import io.github.mianalysis.MIA.Object.Image;
 import io.github.mianalysis.MIA.Object.Measurement;
 import io.github.mianalysis.MIA.Object.Workspace;
-import io.github.mianalysis.MIA.Object.WorkspaceCollection;
+import io.github.mianalysis.MIA.Object.Workspaces;
 
 public class ImageMathTest extends ModuleTest {
     @BeforeAll
@@ -32,7 +32,7 @@ public class ImageMathTest extends ModuleTest {
     @Test
     public void testRunAddPositive2D() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
@@ -45,7 +45,7 @@ public class ImageMathTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
-        ImageMath imageMath = new ImageMath(new ModuleCollection());
+        ImageMath imageMath = new ImageMath(new Modules());
         imageMath.initialiseParameters();
         imageMath.updateParameterValue(ImageMath.INPUT_IMAGE,"Test_image");
         imageMath.updateParameterValue(ImageMath.OUTPUT_IMAGE,"Test_output");
@@ -71,7 +71,7 @@ public class ImageMathTest extends ModuleTest {
     @Test
     public void testRunAddPositive3D8bit() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
@@ -84,7 +84,7 @@ public class ImageMathTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
-        ImageMath imageMath = new ImageMath(new ModuleCollection());
+        ImageMath imageMath = new ImageMath(new Modules());
         imageMath.initialiseParameters();
         imageMath.updateParameterValue(ImageMath.INPUT_IMAGE,"Test_image");
         imageMath.updateParameterValue(ImageMath.OUTPUT_IMAGE,"Test_output");
@@ -110,7 +110,7 @@ public class ImageMathTest extends ModuleTest {
     @Test
     public void testRunAddPositive3D16bit() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
@@ -123,7 +123,7 @@ public class ImageMathTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
-        ImageMath imageMath = new ImageMath(new ModuleCollection());
+        ImageMath imageMath = new ImageMath(new Modules());
         imageMath.initialiseParameters();
         imageMath.updateParameterValue(ImageMath.INPUT_IMAGE,"Test_image");
         imageMath.updateParameterValue(ImageMath.OUTPUT_IMAGE,"Test_output");
@@ -149,7 +149,7 @@ public class ImageMathTest extends ModuleTest {
     @Test
     public void testRunAddPositive3D32bit() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
@@ -162,7 +162,7 @@ public class ImageMathTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
-        ImageMath imageMath = new ImageMath(new ModuleCollection());
+        ImageMath imageMath = new ImageMath(new Modules());
         imageMath.initialiseParameters();
         imageMath.updateParameterValue(ImageMath.INPUT_IMAGE,"Test_image");
         imageMath.updateParameterValue(ImageMath.OUTPUT_IMAGE,"Test_output");
@@ -188,7 +188,7 @@ public class ImageMathTest extends ModuleTest {
     @Test
     public void testRunAddPositive4D() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
@@ -201,7 +201,7 @@ public class ImageMathTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
-        ImageMath imageMath = new ImageMath(new ModuleCollection());
+        ImageMath imageMath = new ImageMath(new Modules());
         imageMath.initialiseParameters();
         imageMath.updateParameterValue(ImageMath.INPUT_IMAGE,"Test_image");
         imageMath.updateParameterValue(ImageMath.OUTPUT_IMAGE,"Test_output");
@@ -226,7 +226,7 @@ public class ImageMathTest extends ModuleTest {
 
     @Test
     public void testRunAddPositive5D() throws Exception {
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
@@ -239,7 +239,7 @@ public class ImageMathTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
-        ImageMath imageMath = new ImageMath(new ModuleCollection());
+        ImageMath imageMath = new ImageMath(new Modules());
         imageMath.initialiseParameters();
         imageMath.updateParameterValue(ImageMath.INPUT_IMAGE,"Test_image");
         imageMath.updateParameterValue(ImageMath.OUTPUT_IMAGE,"Test_output");
@@ -264,7 +264,7 @@ public class ImageMathTest extends ModuleTest {
 
     @Test
     public void testRunAddPositiveToInput5D() throws Exception {
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
@@ -277,7 +277,7 @@ public class ImageMathTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
-        ImageMath imageMath = new ImageMath(new ModuleCollection());
+        ImageMath imageMath = new ImageMath(new Modules());
         imageMath.initialiseParameters();
         imageMath.updateParameterValue(ImageMath.INPUT_IMAGE,"Test_image");
         imageMath.updateParameterValue(ImageMath.APPLY_TO_INPUT,true);
@@ -300,7 +300,7 @@ public class ImageMathTest extends ModuleTest {
 
     @Test
     public void testRunAddMeasurement5D() throws Exception {
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
@@ -316,7 +316,7 @@ public class ImageMathTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
-        ImageMath imageMath = new ImageMath(new ModuleCollection());
+        ImageMath imageMath = new ImageMath(new Modules());
         imageMath.initialiseParameters();
         imageMath.updateParameterValue(ImageMath.INPUT_IMAGE,"Test_image");
         imageMath.updateParameterValue(ImageMath.OUTPUT_IMAGE,"Test_output");
@@ -343,7 +343,7 @@ public class ImageMathTest extends ModuleTest {
     @Test
     public void testRunAddNegative3D() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
@@ -356,7 +356,7 @@ public class ImageMathTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
-        ImageMath imageMath = new ImageMath(new ModuleCollection());
+        ImageMath imageMath = new ImageMath(new Modules());
         imageMath.initialiseParameters();
         imageMath.updateParameterValue(ImageMath.INPUT_IMAGE,"Test_image");
         imageMath.updateParameterValue(ImageMath.OUTPUT_IMAGE,"Test_output");
@@ -382,7 +382,7 @@ public class ImageMathTest extends ModuleTest {
     @Test
     public void testRunSubtractPositive3D() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
@@ -395,7 +395,7 @@ public class ImageMathTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
-        ImageMath imageMath = new ImageMath(new ModuleCollection());
+        ImageMath imageMath = new ImageMath(new Modules());
         imageMath.initialiseParameters();
         imageMath.updateParameterValue(ImageMath.INPUT_IMAGE,"Test_image");
         imageMath.updateParameterValue(ImageMath.OUTPUT_IMAGE,"Test_output");
@@ -421,7 +421,7 @@ public class ImageMathTest extends ModuleTest {
     @Test
     public void testRunSubtractNegative3D() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
@@ -434,7 +434,7 @@ public class ImageMathTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
-        ImageMath imageMath = new ImageMath(new ModuleCollection());
+        ImageMath imageMath = new ImageMath(new Modules());
         imageMath.initialiseParameters();
         imageMath.updateParameterValue(ImageMath.INPUT_IMAGE,"Test_image");
         imageMath.updateParameterValue(ImageMath.OUTPUT_IMAGE,"Test_output");
@@ -460,7 +460,7 @@ public class ImageMathTest extends ModuleTest {
     @Test
     public void testRunMultiplyPositive3D() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
@@ -473,7 +473,7 @@ public class ImageMathTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
-        ImageMath imageMath = new ImageMath(new ModuleCollection());
+        ImageMath imageMath = new ImageMath(new Modules());
         imageMath.initialiseParameters();
         imageMath.updateParameterValue(ImageMath.INPUT_IMAGE,"Test_image");
         imageMath.updateParameterValue(ImageMath.OUTPUT_IMAGE,"Test_output");
@@ -499,7 +499,7 @@ public class ImageMathTest extends ModuleTest {
     @Test
     public void testRunMultiplyNegative3D() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
@@ -512,7 +512,7 @@ public class ImageMathTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
-        ImageMath imageMath = new ImageMath(new ModuleCollection());
+        ImageMath imageMath = new ImageMath(new Modules());
         imageMath.initialiseParameters();
         imageMath.updateParameterValue(ImageMath.INPUT_IMAGE,"Test_image");
         imageMath.updateParameterValue(ImageMath.OUTPUT_IMAGE,"Test_output");
@@ -538,7 +538,7 @@ public class ImageMathTest extends ModuleTest {
     @Test
     public void testRunMultiplyNegative3D32bit() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
@@ -551,7 +551,7 @@ public class ImageMathTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
-        ImageMath imageMath = new ImageMath(new ModuleCollection());
+        ImageMath imageMath = new ImageMath(new Modules());
         imageMath.initialiseParameters();
         imageMath.updateParameterValue(ImageMath.INPUT_IMAGE,"Test_image");
         imageMath.updateParameterValue(ImageMath.OUTPUT_IMAGE,"Test_output");
@@ -577,7 +577,7 @@ public class ImageMathTest extends ModuleTest {
     @Test
     public void testRunDividePositive3D() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
@@ -590,7 +590,7 @@ public class ImageMathTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
-        ImageMath imageMath = new ImageMath(new ModuleCollection());
+        ImageMath imageMath = new ImageMath(new Modules());
         imageMath.initialiseParameters();
         imageMath.updateParameterValue(ImageMath.INPUT_IMAGE,"Test_image");
         imageMath.updateParameterValue(ImageMath.OUTPUT_IMAGE,"Test_output");
@@ -616,7 +616,7 @@ public class ImageMathTest extends ModuleTest {
     @Test
     public void testRuDivideNegative3D() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
@@ -629,7 +629,7 @@ public class ImageMathTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
-        ImageMath imageMath = new ImageMath(new ModuleCollection());
+        ImageMath imageMath = new ImageMath(new Modules());
         imageMath.initialiseParameters();
         imageMath.updateParameterValue(ImageMath.INPUT_IMAGE,"Test_image");
         imageMath.updateParameterValue(ImageMath.OUTPUT_IMAGE,"Test_output");
@@ -655,7 +655,7 @@ public class ImageMathTest extends ModuleTest {
     @Test
     public void testRuDivideNegative3D32bit() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
@@ -668,7 +668,7 @@ public class ImageMathTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
-        ImageMath imageMath = new ImageMath(new ModuleCollection());
+        ImageMath imageMath = new ImageMath(new Modules());
         imageMath.initialiseParameters();
         imageMath.updateParameterValue(ImageMath.INPUT_IMAGE,"Test_image");
         imageMath.updateParameterValue(ImageMath.OUTPUT_IMAGE,"Test_output");

@@ -3,7 +3,7 @@ package io.github.mianalysis.MIA.Object.Parameters;
 import io.github.mianalysis.MIA.GUI.ParameterControls.ModuleChoiceParameter;
 import io.github.mianalysis.MIA.GUI.ParameterControls.ParameterControl;
 import io.github.mianalysis.MIA.Module.Module;
-import io.github.mianalysis.MIA.Module.ModuleCollection;
+import io.github.mianalysis.MIA.Module.Modules;
 import io.github.mianalysis.MIA.Object.Parameters.Abstract.Parameter;
 
 public class ModuleP extends Parameter {
@@ -36,7 +36,7 @@ public class ModuleP extends Parameter {
     }
 
     public Module[] getModules() {
-        ModuleCollection modules = module.getModules();
+        Modules modules = module.getModules();
         int nAvailable = 0;
         for (Module module : modules) {
             if (module.isEnabled() && (module.isRunnable() || showNonRunnable))

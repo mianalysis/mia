@@ -2,7 +2,7 @@ package io.github.mianalysis.MIA.Object.Measurements;
 
 import io.github.mianalysis.MIA.Object.Measurement;
 import io.github.mianalysis.MIA.Object.Obj;
-import io.github.mianalysis.MIA.Object.ObjCollection;
+import io.github.mianalysis.MIA.Object.Objs;
 
 public class ChildCountMeasurement extends Measurement {
     private Obj obj;
@@ -15,7 +15,7 @@ public class ChildCountMeasurement extends Measurement {
     }
     
     public double getValue() {
-        ObjCollection children = obj.getChildren(childName);
+        Objs children = obj.getChildren(childName);
 
         if (children == null)
             return 0;

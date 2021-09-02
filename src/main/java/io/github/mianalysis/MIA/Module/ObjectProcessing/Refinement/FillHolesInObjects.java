@@ -5,25 +5,25 @@ import java.util.Iterator;
 import io.github.mianalysis.MIA.Module.Categories;
 import io.github.mianalysis.MIA.Module.Category;
 import io.github.mianalysis.MIA.Module.Module;
-import io.github.mianalysis.MIA.Module.ModuleCollection;
+import io.github.mianalysis.MIA.Module.Modules;
 import io.github.mianalysis.MIA.Module.ImageProcessing.Pixel.Binary.BinaryOperations2D;
 import io.github.mianalysis.MIA.Module.ImageProcessing.Pixel.Binary.FillHoles;
 import io.github.mianalysis.MIA.Object.Image;
 import io.github.mianalysis.MIA.Object.Obj;
-import io.github.mianalysis.MIA.Object.ObjCollection;
+import io.github.mianalysis.MIA.Object.Objs;
 import io.github.mianalysis.MIA.Object.Status;
 import io.github.mianalysis.MIA.Object.Workspace;
 import io.github.mianalysis.MIA.Object.Parameters.BooleanP;
 import io.github.mianalysis.MIA.Object.Parameters.ChoiceP;
 import io.github.mianalysis.MIA.Object.Parameters.InputObjectsP;
-import io.github.mianalysis.MIA.Object.Parameters.ParameterCollection;
+import io.github.mianalysis.MIA.Object.Parameters.Parameters;
 import io.github.mianalysis.MIA.Object.Parameters.SeparatorP;
 import io.github.mianalysis.MIA.Object.Parameters.Objects.OutputObjectsP;
-import io.github.mianalysis.MIA.Object.References.Collections.ImageMeasurementRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.MetadataRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.ObjMeasurementRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.ParentChildRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.PartnerRefCollection;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ImageMeasurementRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.MetadataRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ObjMeasurementRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ParentChildRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.PartnerRefs;
 import io.github.sjcross.common.Exceptions.IntegerOverflowException;
 import io.github.sjcross.common.Object.Point;
 import io.github.sjcross.common.Object.Volume.PointOutOfRangeException;
@@ -40,7 +40,7 @@ public class FillHolesInObjects extends Module {
     public static final String PROCESSING_SEPARATOR = "Processing options";
     public static final String METHOD = "Method";
 
-    public FillHolesInObjects(ModuleCollection modules) {
+    public FillHolesInObjects(Modules modules) {
         super("Fill holes in objects", modules);
     }
 
@@ -72,7 +72,7 @@ public class FillHolesInObjects extends Module {
 
         // Creating a new object collection (only contains one image) from the
         // transformed image
-        ObjCollection outputObjects = objectImage.convertImageToObjects(inputObject.getVolumeType(), "NewObjects");
+        Objs outputObjects = objectImage.convertImageToObjects(inputObject.getVolumeType(), "NewObjects");
         Obj outputObject = outputObjects.getFirst();
 
         double[][] extents = inputObject.getExtents(true, false);
@@ -119,11 +119,11 @@ public class FillHolesInObjects extends Module {
     public Status process(Workspace workspace) {
         // Getting input objects
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
-        ObjCollection inputObjects = workspace.getObjectSet(inputObjectsName);
+        Objs inputObjects = workspace.getObjectSet(inputObjectsName);
 
         // Getting output image name
         String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);
-        ObjCollection outputObjects = new ObjCollection(outputObjectsName, inputObjects);
+        Objs outputObjects = new Objs(outputObjectsName, inputObjects);
 
         // Getting parameters
         boolean updateInputObjects = parameters.getValue(UPDATE_INPUT_OBJECTS);
@@ -151,7 +151,7 @@ public class FillHolesInObjects extends Module {
             // If the input objects are to be transformed, taking the new pixel coordinates
             // and applying them to
             // the input object. Otherwise, the new object is added to the nascent
-            // ObjCollection.
+            // Objs.
             if (updateInputObjects) {
                 inputObject.getCoordinateSet().clear();
                 inputObject.getCoordinateSet().addAll(newObject.getCoordinateSet());
@@ -173,7 +173,7 @@ public class FillHolesInObjects extends Module {
             
         }
 
-        // If selected, adding new ObjCollection to the Workspace
+        // If selected, adding new Objs to the Workspace
         if (!updateInputObjects)
             workspace.addObjects(outputObjects);
 
@@ -204,8 +204,8 @@ public class FillHolesInObjects extends Module {
     }
 
     @Override
-    public ParameterCollection updateAndGetParameters() {
-        ParameterCollection returnedParameters = new ParameterCollection();
+    public Parameters updateAndGetParameters() {
+        Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(INPUT_OBJECTS));
@@ -223,23 +223,23 @@ public class FillHolesInObjects extends Module {
     }
 
     @Override
-    public ImageMeasurementRefCollection updateAndGetImageMeasurementRefs() {
+    public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MetadataRefCollection updateAndGetMetadataReferences() {
+    public MetadataRefs updateAndGetMetadataReferences() {
         return null;
     }
 
     @Override
-    public ParentChildRefCollection updateAndGetParentChildRefs() {
-        ParentChildRefCollection returnedRelationships = new ParentChildRefCollection();
+    public ParentChildRefs updateAndGetParentChildRefs() {
+        ParentChildRefs returnedRelationships = new ParentChildRefs();
 
         if (!(boolean) parameters.getValue(UPDATE_INPUT_OBJECTS)) {
             returnedRelationships.add(
@@ -251,7 +251,7 @@ public class FillHolesInObjects extends Module {
     }
 
     @Override
-    public PartnerRefCollection updateAndGetPartnerRefs() {
+    public PartnerRefs updateAndGetPartnerRefs() {
         return null;
     }
 

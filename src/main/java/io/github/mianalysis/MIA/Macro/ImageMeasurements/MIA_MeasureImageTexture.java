@@ -3,7 +3,7 @@ package io.github.mianalysis.MIA.Macro.ImageMeasurements;
 import ij.macro.MacroExtension;
 import io.github.mianalysis.MIA.Macro.MacroOperation;
 import io.github.mianalysis.MIA.Module.ImageMeasurements.MeasureImageTexture;
-import io.github.mianalysis.MIA.Module.ModuleCollection;
+import io.github.mianalysis.MIA.Module.Modules;
 import io.github.mianalysis.MIA.Object.Workspace;
 
 public class MIA_MeasureImageTexture extends MacroOperation {
@@ -17,7 +17,7 @@ public class MIA_MeasureImageTexture extends MacroOperation {
     }
 
     @Override
-    public String action(Object[] objects, Workspace workspace, ModuleCollection modules) {
+    public String action(Object[] objects, Workspace workspace, Modules modules) {
         MeasureImageTexture measureImageTexture = new MeasureImageTexture(modules);
 
         measureImageTexture.updateParameterValue(MeasureImageTexture.INPUT_IMAGE,objects[0]);

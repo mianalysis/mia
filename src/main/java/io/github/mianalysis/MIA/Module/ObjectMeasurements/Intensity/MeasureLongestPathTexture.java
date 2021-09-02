@@ -11,26 +11,26 @@
 // import io.github.mianalysis.MIA.Module.Categories;
 // import io.github.mianalysis.MIA.Module.Category;
 // import io.github.mianalysis.MIA.Module.Module;
-// import io.github.mianalysis.MIA.Module.ModuleCollection;
+// import io.github.mianalysis.MIA.Module.Modules;
 // import io.github.mianalysis.MIA.Module.ImageProcessing.Stack.ImageTypeConverter;
 // import io.github.mianalysis.MIA.Module.ObjectMeasurements.Spatial.FitSpline;
 // import io.github.mianalysis.MIA.Object.Image;
 // import io.github.mianalysis.MIA.Object.Measurement;
 // import io.github.mianalysis.MIA.Object.Obj;
-// import io.github.mianalysis.MIA.Object.ObjCollection;
+// import io.github.mianalysis.MIA.Object.Objs;
 // import io.github.mianalysis.MIA.Object.Status;
 // import io.github.mianalysis.MIA.Object.Workspace;
 // import io.github.mianalysis.MIA.Object.Parameters.InputImageP;
 // import io.github.mianalysis.MIA.Object.Parameters.InputObjectsP;
-// import io.github.mianalysis.MIA.Object.Parameters.ParameterCollection;
+// import io.github.mianalysis.MIA.Object.Parameters.Parameters;
 // import io.github.mianalysis.MIA.Object.Parameters.SeparatorP;
 // import io.github.mianalysis.MIA.Object.Parameters.Text.IntegerP;
 // import io.github.mianalysis.MIA.Object.References.ObjMeasurementRef;
-// import io.github.mianalysis.MIA.Object.References.Collections.ImageMeasurementRefCollection;
-// import io.github.mianalysis.MIA.Object.References.Collections.MetadataRefCollection;
-// import io.github.mianalysis.MIA.Object.References.Collections.ObjMeasurementRefCollection;
-// import io.github.mianalysis.MIA.Object.References.Collections.ParentChildRefCollection;
-// import io.github.mianalysis.MIA.Object.References.Collections.PartnerRefCollection;
+// import io.github.mianalysis.MIA.Object.References.Collections.ImageMeasurementRefs;
+// import io.github.mianalysis.MIA.Object.References.Collections.MetadataRefs;
+// import io.github.mianalysis.MIA.Object.References.Collections.ObjMeasurementRefs;
+// import io.github.mianalysis.MIA.Object.References.Collections.ParentChildRefs;
+// import io.github.mianalysis.MIA.Object.References.Collections.PartnerRefs;
 // import io.github.sjcross.common.Analysis.TextureCalculator;
 // import io.github.sjcross.common.Object.Vertex;
 
@@ -46,7 +46,7 @@
 //     public static final String MEASUREMENT_SEPARATOR = "Measurement selection";
 //     public static final String OFFSET = "Offset (px)";
 
-//     public MeasureLongestPathTexture(ModuleCollection modules) {
+//     public MeasureLongestPathTexture(Modules modules) {
 //         super("Measure longest path texture", modules);
 //     }
 
@@ -145,7 +145,7 @@
 
 //         // Getting input objects
 //         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
-//         ObjCollection inputObjects = workspace.getObjects().get(inputObjectsName);
+//         Objs inputObjects = workspace.getObjects().get(inputObjectsName);
 
 //         // If no objects were detected, skipping this module
 //         if (inputObjects.size() == 0)
@@ -184,8 +184,8 @@
 //     }
 
 //     @Override
-//     public ParameterCollection updateAndGetParameters() {
-//         ParameterCollection returnedParameters = new ParameterCollection();
+//     public Parameters updateAndGetParameters() {
+//         Parameters returnedParameters = new Parameters();
 
 //         returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
 //         returnedParameters.add(parameters.getParameter(INPUT_OBJECTS));
@@ -199,13 +199,13 @@
 //     }
 
 //     @Override
-//     public ImageMeasurementRefCollection updateAndGetImageMeasurementRefs() {
+//     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
 //         return null;
 //     }
 
 //     @Override
-//     public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
-//         ObjMeasurementRefCollection returnedRefs = new ObjMeasurementRefCollection();
+//     public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+//         ObjMeasurementRefs returnedRefs = new ObjMeasurementRefs();
 
 //         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
 //         String inputImageName = parameters.getValue(INPUT_IMAGE);
@@ -237,17 +237,17 @@
 //     }
 
 //     @Override
-//     public MetadataRefCollection updateAndGetMetadataReferences() {
+//     public MetadataRefs updateAndGetMetadataReferences() {
 //         return null;
 //     }
 
 //     @Override
-//     public ParentChildRefCollection updateAndGetParentChildRefs() {
+//     public ParentChildRefs updateAndGetParentChildRefs() {
 //         return null;
 //     }
 
 //     @Override
-//     public PartnerRefCollection updateAndGetPartnerRefs() {
+//     public PartnerRefs updateAndGetPartnerRefs() {
 //         return null;
 //     }
 

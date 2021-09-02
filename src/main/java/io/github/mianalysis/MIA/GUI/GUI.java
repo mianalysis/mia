@@ -22,12 +22,12 @@ import io.github.mianalysis.MIA.GUI.Regions.MenuBar.CustomMenuBar;
 import io.github.mianalysis.MIA.GUI.Regions.ProgressAndStatus.StatusTextField;
 import io.github.mianalysis.MIA.Macro.MacroHandler;
 import io.github.mianalysis.MIA.Module.Module;
-import io.github.mianalysis.MIA.Module.ModuleCollection;
+import io.github.mianalysis.MIA.Module.Modules;
 import io.github.mianalysis.MIA.Module.Core.InputControl;
 import io.github.mianalysis.MIA.Module.Core.OutputControl;
 import io.github.mianalysis.MIA.Module.InputOutput.ImageLoader;
 import io.github.mianalysis.MIA.Object.Workspace;
-import io.github.mianalysis.MIA.Object.WorkspaceCollection;
+import io.github.mianalysis.MIA.Object.Workspaces;
 import io.github.mianalysis.MIA.Object.Parameters.ChoiceP;
 import io.github.mianalysis.MIA.Object.Parameters.FileFolderPathP;
 import io.github.mianalysis.MIA.Object.Units.SpatialUnit;
@@ -50,7 +50,7 @@ public class GUI {
     private static Module[] selectedModules = null;
     private static int lastModuleEval = -1;
     private static int moduleBeingEval = -1;
-    private static Workspace testWorkspace = new WorkspaceCollection().getNewWorkspace(null, 1);
+    private static Workspace testWorkspace = new Workspaces().getNewWorkspace(null, 1);
     private static UndoRedoStore undoRedoStore = new UndoRedoStore();
 
     private static int minimumFrameHeight = 600;
@@ -67,7 +67,7 @@ public class GUI {
     private static BasicPanel basicPan = new BasicPanel();
     private static EditingPanel editingPan;
     private static AbstractPanel mainPanel;
-    private static ModuleCollection availableModules = new ModuleCollection();
+    private static Modules availableModules = new Modules();
 
     public GUI() throws InstantiationException, IllegalAccessException {
         // Only create a GUI if one hasn't already been created
@@ -134,8 +134,6 @@ public class GUI {
 
     void initialiseAvailableModules(List<String> detectedModuleNames) {
         // Creating an alphabetically-ordered list of all modules
-        // ModuleCollection moduleCollection = new ModuleCollection();
-
         for (String detectedModuleName : detectedModuleNames) {
             try {
                 Class<? extends Module> clazz = (Class<? extends Module>) Class.forName(detectedModuleName);
@@ -144,7 +142,7 @@ public class GUI {
                     if (Modifier.isAbstract(clazz.getModifiers()))
                         continue;
 
-                    Constructor constructor = clazz.getDeclaredConstructor(ModuleCollection.class);
+                    Constructor constructor = clazz.getDeclaredConstructor(Modules.class);
                     Module module = (Module) constructor.newInstance(availableModules);
                     availableModules.add(module);
 
@@ -229,7 +227,7 @@ public class GUI {
         MacroHandler.setModules(analysis.getModules());
     }
 
-    public static ModuleCollection getModules() {
+    public static Modules getModules() {
         return analysis.getModules();
     }
 
@@ -238,7 +236,7 @@ public class GUI {
     }
 
     public synchronized static void updateProgressBar() {
-        WorkspaceCollection workspaces = analysisRunner.getWorkspaces();
+        Workspaces workspaces = analysisRunner.getWorkspaces();
 
         updateProgressBar((int) Math.round(workspaces.getOverallProgress() * 100));
 
@@ -295,7 +293,7 @@ public class GUI {
             return;
 
         lastModuleEval = -1;
-        testWorkspace = new WorkspaceCollection().getNewWorkspace(nextFile, nextSeriesNumber);
+        testWorkspace = new Workspaces().getNewWorkspace(nextFile, nextSeriesNumber);
         testWorkspace.getMetadata().setSeriesName(nextSeriesName);
 
         // Setting macro
@@ -342,7 +340,7 @@ public class GUI {
             return new int[0];
 
         int[] selectedIndices = new int[selectedModules.length];
-        ModuleCollection modules = getModules();
+        Modules modules = getModules();
 
         for (int i = 0; i < selectedModules.length; i++) {
             Module selectedModule = selectedModules[i];
@@ -474,7 +472,7 @@ public class GUI {
         mainPanel.resetJobNumbers();
     }
 
-    public static ModuleCollection getAvailableModules() {
+    public static Modules getAvailableModules() {
         return availableModules;
     }
 
@@ -490,7 +488,7 @@ public class GUI {
     public static void undo() {
         int[] selectedIndices = getSelectedModuleIndices();
 
-        ModuleCollection newModules = undoRedoStore.getNextUndo(analysis.getModules());
+        Modules newModules = undoRedoStore.getNextUndo(analysis.getModules());
 
         if (newModules == null)
             return;
@@ -510,7 +508,7 @@ public class GUI {
     public static void redo() {
         int[] selectedIndices = getSelectedModuleIndices();
 
-        ModuleCollection newModules = undoRedoStore.getNextRedo(analysis.getModules());
+        Modules newModules = undoRedoStore.getNextRedo(analysis.getModules());
         if (newModules == null)
             return;
         analysis.setModules(newModules);

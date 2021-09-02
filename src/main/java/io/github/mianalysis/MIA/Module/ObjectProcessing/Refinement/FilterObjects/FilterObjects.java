@@ -23,12 +23,12 @@ import ij.ImagePlus;
 import io.github.mianalysis.MIA.Module.Categories;
 import io.github.mianalysis.MIA.Module.Category;
 import io.github.mianalysis.MIA.Module.Module;
-import io.github.mianalysis.MIA.Module.ModuleCollection;
+import io.github.mianalysis.MIA.Module.Modules;
 import io.github.mianalysis.MIA.Module.Visualisation.Overlays.AddLabels;
 import io.github.mianalysis.MIA.Object.Image;
 import io.github.mianalysis.MIA.Object.Measurement;
 import io.github.mianalysis.MIA.Object.Obj;
-import io.github.mianalysis.MIA.Object.ObjCollection;
+import io.github.mianalysis.MIA.Object.Objs;
 import io.github.mianalysis.MIA.Object.Status;
 import io.github.mianalysis.MIA.Object.Workspace;
 import io.github.mianalysis.MIA.Object.Parameters.BooleanP;
@@ -38,17 +38,17 @@ import io.github.mianalysis.MIA.Object.Parameters.ImageMeasurementP;
 import io.github.mianalysis.MIA.Object.Parameters.InputImageP;
 import io.github.mianalysis.MIA.Object.Parameters.InputObjectsP;
 import io.github.mianalysis.MIA.Object.Parameters.ObjectMeasurementP;
-import io.github.mianalysis.MIA.Object.Parameters.ParameterCollection;
+import io.github.mianalysis.MIA.Object.Parameters.Parameters;
 import io.github.mianalysis.MIA.Object.Parameters.ParentObjectsP;
 import io.github.mianalysis.MIA.Object.Parameters.SeparatorP;
 import io.github.mianalysis.MIA.Object.Parameters.Objects.OutputObjectsP;
 import io.github.mianalysis.MIA.Object.Parameters.Text.DoubleP;
-import io.github.mianalysis.MIA.Object.References.ObjMeasurementRef;
-import io.github.mianalysis.MIA.Object.References.Collections.ImageMeasurementRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.MetadataRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.ObjMeasurementRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.ParentChildRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.PartnerRefCollection;
+import io.github.mianalysis.MIA.Object.Refs.ObjMeasurementRef;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ImageMeasurementRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.MetadataRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ObjMeasurementRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ParentChildRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.PartnerRefs;
 import io.github.mianalysis.MIA.Process.CommaSeparatedStringInterpreter;
 
 /**
@@ -83,7 +83,7 @@ public class FilterObjects extends Module implements ActionListener {
     private int elementHeight = 30;
     private boolean active = false;
 
-    public FilterObjects(ModuleCollection modules) {
+    public FilterObjects(Modules modules) {
         super("Filter objects", modules);
         deprecated = true;
     }
@@ -197,7 +197,7 @@ public class FilterObjects extends Module implements ActionListener {
 
     }
 
-    public void filterObjectsOnImageEdge(ObjCollection inputObjects, @Nullable ObjCollection outputObjects,
+    public void filterObjectsOnImageEdge(Objs inputObjects, @Nullable Objs outputObjects,
             boolean remove, boolean includeZ) {
         int minX = 0;
         int minY = 0;
@@ -231,7 +231,7 @@ public class FilterObjects extends Module implements ActionListener {
         }
     }
 
-    public void filterObjectsWithMissingMeasurement(ObjCollection inputObjects, @Nullable ObjCollection outputObjects,
+    public void filterObjectsWithMissingMeasurement(Objs inputObjects, @Nullable Objs outputObjects,
             boolean remove, String measurement) {
         Iterator<Obj> iterator = inputObjects.values().iterator();
         while (iterator.hasNext()) {
@@ -244,7 +244,7 @@ public class FilterObjects extends Module implements ActionListener {
         }
     }
 
-    public void filterObjectsWithoutAParent(ObjCollection inputObjects, @Nullable ObjCollection outputObjects,
+    public void filterObjectsWithoutAParent(Objs inputObjects, @Nullable Objs outputObjects,
             boolean remove, String parentObjectName) {
         Iterator<Obj> iterator = inputObjects.values().iterator();
         while (iterator.hasNext()) {
@@ -258,7 +258,7 @@ public class FilterObjects extends Module implements ActionListener {
         }
     }
 
-    public void filterObjectsWithAParent(ObjCollection inputObjects, @Nullable ObjCollection outputObjects,
+    public void filterObjectsWithAParent(Objs inputObjects, @Nullable Objs outputObjects,
             boolean remove, String parentObjectName) {
         Iterator<Obj> iterator = inputObjects.values().iterator();
         while (iterator.hasNext()) {
@@ -272,12 +272,12 @@ public class FilterObjects extends Module implements ActionListener {
         }
     }
 
-    public void filterObjectsWithMinNumOfChildren(ObjCollection inputObjects, @Nullable ObjCollection outputObjects,
+    public void filterObjectsWithMinNumOfChildren(Objs inputObjects, @Nullable Objs outputObjects,
             boolean remove, String childObjectsName, double minChildN) {
         Iterator<Obj> iterator = inputObjects.values().iterator();
         while (iterator.hasNext()) {
             Obj inputObject = iterator.next();
-            ObjCollection childObjects = inputObject.getChildren(childObjectsName);
+            Objs childObjects = inputObject.getChildren(childObjectsName);
 
             // Removing the object if it has no children
             if (childObjects == null) {
@@ -294,12 +294,12 @@ public class FilterObjects extends Module implements ActionListener {
         }
     }
 
-    public void filterObjectsWithMaxNumOfChildren(ObjCollection inputObjects, @Nullable ObjCollection outputObjects,
+    public void filterObjectsWithMaxNumOfChildren(Objs inputObjects, @Nullable Objs outputObjects,
             boolean remove, String childObjectsName, double maxChildN) {
         Iterator<Obj> iterator = inputObjects.values().iterator();
         while (iterator.hasNext()) {
             Obj inputObject = iterator.next();
-            ObjCollection childObjects = inputObject.getChildren(childObjectsName);
+            Objs childObjects = inputObject.getChildren(childObjectsName);
 
             if (childObjects == null)
                 continue;
@@ -312,7 +312,7 @@ public class FilterObjects extends Module implements ActionListener {
         }
     }
 
-    public void filterObjectsWithMeasSmallerThan(ObjCollection inputObjects, @Nullable ObjCollection outputObjects,
+    public void filterObjectsWithMeasSmallerThan(Objs inputObjects, @Nullable Objs outputObjects,
             boolean remove, String measurementName, MeasRef measurementReference) {
         Iterator<Obj> iterator = inputObjects.values().iterator();
         while (iterator.hasNext()) {
@@ -341,7 +341,7 @@ public class FilterObjects extends Module implements ActionListener {
         }
     }
 
-    public void filterObjectsWithMeasLargerThan(ObjCollection inputObjects, @Nullable ObjCollection outputObjects,
+    public void filterObjectsWithMeasLargerThan(Objs inputObjects, @Nullable Objs outputObjects,
             boolean remove, String measurementName, MeasRef measurementReference) {
         Iterator<Obj> iterator = inputObjects.values().iterator();
         while (iterator.hasNext()) {
@@ -370,7 +370,7 @@ public class FilterObjects extends Module implements ActionListener {
         }
     }
 
-    public void filterObjectsByID(ObjCollection inputObjects, @Nullable ObjCollection outputObjects, boolean remove,
+    public void filterObjectsByID(Objs inputObjects, @Nullable Objs outputObjects, boolean remove,
             @Nullable Image image) {
         ImagePlus ipl = null;
         if (image != null) {
@@ -409,7 +409,7 @@ public class FilterObjects extends Module implements ActionListener {
         }
     }
 
-    void processRemoval(Obj inputObject, ObjCollection outputObjects, Iterator<Obj> iterator) {
+    void processRemoval(Obj inputObject, Objs outputObjects, Iterator<Obj> iterator) {
         inputObject.removeRelationships();
         if (outputObjects != null) {
             inputObject.setObjectCollection(outputObjects);
@@ -435,7 +435,7 @@ public class FilterObjects extends Module implements ActionListener {
     public Status process(Workspace workspace) {
         // Getting input objects
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
-        ObjCollection inputObjects = workspace.getObjects().get(inputObjectsName);
+        Objs inputObjects = workspace.getObjects().get(inputObjectsName);
 
         // Getting parameters
         String filterMode = parameters.getValue(FILTER_MODE);
@@ -455,8 +455,8 @@ public class FilterObjects extends Module implements ActionListener {
         boolean showImage = parameters.getValue(SHOW_IMAGE);
         String displayImageName = parameters.getValue(DISPLAY_IMAGE_NAME);
 
-        ObjCollection outputObjects = filterMode.equals(FilterModes.MOVE_FILTERED_OBJECTS)
-                ? new ObjCollection(outputObjectsName, inputObjects)
+        Objs outputObjects = filterMode.equals(FilterModes.MOVE_FILTERED_OBJECTS)
+                ? new Objs(outputObjectsName, inputObjects)
                 : null;
 
         boolean remove = !filterMode.equals(FilterModes.DO_NOTHING);
@@ -577,10 +577,10 @@ public class FilterObjects extends Module implements ActionListener {
     }
 
     @Override
-    public ParameterCollection updateAndGetParameters() {
+    public Parameters updateAndGetParameters() {
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
 
-        ParameterCollection returnedParameters = new ParameterCollection();
+        Parameters returnedParameters = new Parameters();
         returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(INPUT_OBJECTS));
         returnedParameters.add(parameters.getParameter(FILTER_MODE));
@@ -661,13 +661,13 @@ public class FilterObjects extends Module implements ActionListener {
     }
 
     @Override
-    public ImageMeasurementRefCollection updateAndGetImageMeasurementRefs() {
+    public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
-        ObjMeasurementRefCollection returnedRefs = new ObjMeasurementRefCollection();
+    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+        ObjMeasurementRefs returnedRefs = new ObjMeasurementRefs();
 
         // If the filtered objects are to be moved to a new class, assign them the
         // measurements they've lost
@@ -676,7 +676,7 @@ public class FilterObjects extends Module implements ActionListener {
             String filteredObjectsName = parameters.getValue(OUTPUT_FILTERED_OBJECTS);
 
             // Getting object measurement references associated with this object set
-            ObjMeasurementRefCollection references = modules.getObjectMeasurementRefs(inputObjectsName, this);
+            ObjMeasurementRefs references = modules.getObjectMeasurementRefs(inputObjectsName, this);
 
             for (ObjMeasurementRef reference : references.values()) {
                 returnedRefs
@@ -692,17 +692,17 @@ public class FilterObjects extends Module implements ActionListener {
     }
 
     @Override
-    public MetadataRefCollection updateAndGetMetadataReferences() {
+    public MetadataRefs updateAndGetMetadataReferences() {
         return null;
     }
 
     @Override
-    public ParentChildRefCollection updateAndGetParentChildRefs() {
+    public ParentChildRefs updateAndGetParentChildRefs() {
         return null;
     }
 
     @Override
-    public PartnerRefCollection updateAndGetPartnerRefs() {
+    public PartnerRefs updateAndGetPartnerRefs() {
         return null;
     }
 

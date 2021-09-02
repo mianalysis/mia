@@ -27,7 +27,7 @@ import org.xml.sax.SAXException;
 import io.github.mianalysis.MIA.MIA;
 import io.github.mianalysis.MIA.GUI.GUI;
 import io.github.mianalysis.MIA.Module.Module;
-import io.github.mianalysis.MIA.Module.ModuleCollection;
+import io.github.mianalysis.MIA.Module.Modules;
 import io.github.mianalysis.MIA.Module.Core.InputControl;
 import io.github.mianalysis.MIA.Module.Core.OutputControl;
 import io.github.mianalysis.MIA.Module.Miscellaneous.GUISeparator;
@@ -37,13 +37,13 @@ import io.github.mianalysis.MIA.Module.ObjectMeasurements.Miscellaneous.ParentOb
 import io.github.mianalysis.MIA.Module.ObjectMeasurements.Miscellaneous.PartnerObjectCount;
 import io.github.mianalysis.MIA.Object.Parameters.Abstract.Parameter;
 import io.github.mianalysis.MIA.Object.Parameters.Objects.OutputObjectsP;
-import io.github.mianalysis.MIA.Object.References.ImageMeasurementRef;
-import io.github.mianalysis.MIA.Object.References.MetadataRef;
-import io.github.mianalysis.MIA.Object.References.ObjMeasurementRef;
-import io.github.mianalysis.MIA.Object.References.ParentChildRef;
-import io.github.mianalysis.MIA.Object.References.PartnerRef;
-import io.github.mianalysis.MIA.Object.References.Abstract.SummaryRef;
-import io.github.mianalysis.MIA.Object.References.Collections.ObjMeasurementRefCollection;
+import io.github.mianalysis.MIA.Object.Refs.ImageMeasurementRef;
+import io.github.mianalysis.MIA.Object.Refs.MetadataRef;
+import io.github.mianalysis.MIA.Object.Refs.ObjMeasurementRef;
+import io.github.mianalysis.MIA.Object.Refs.ParentChildRef;
+import io.github.mianalysis.MIA.Object.Refs.PartnerRef;
+import io.github.mianalysis.MIA.Object.Refs.Abstract.SummaryRef;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ObjMeasurementRefs;
 import io.github.mianalysis.MIA.Process.ClassHunter;
 import io.github.mianalysis.MIA.Process.AnalysisHandling.Analysis;
 
@@ -95,16 +95,16 @@ public class AnalysisReader_0p10p0_0p15p0 {
         doc.getDocumentElement().normalize();
 
         Analysis analysis = new Analysis();
-        ModuleCollection modules = loadModules(doc);
+        Modules modules = loadModules(doc);
         analysis.setModules(modules);
 
         return analysis;
 
     }
 
-    public static ModuleCollection loadModules(Document doc)
+    public static Modules loadModules(Document doc)
             throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
-        ModuleCollection modules = new ModuleCollection();
+        Modules modules = new Modules();
         ArrayList<Node> relationshipsToCovert = new ArrayList<>();
 
         // Creating a list of all available modules (rather than reading their full
@@ -144,7 +144,7 @@ public class AnalysisReader_0p10p0_0p15p0 {
 
     }
 
-    public static Module initialiseModule(Node moduleNode, ModuleCollection modules, List<String> availableModuleNames,
+    public static Module initialiseModule(Node moduleNode, Modules modules, List<String> availableModuleNames,
             ArrayList<Node> relationshipsToCovert)
             throws IllegalAccessException, InstantiationException, NoSuchMethodException, InvocationTargetException {
 
@@ -169,7 +169,7 @@ public class AnalysisReader_0p10p0_0p15p0 {
 
     }
 
-    public static Module initialiseModule(Node moduleNode, ModuleCollection modules, String availableModuleName,
+    public static Module initialiseModule(Node moduleNode, Modules modules, String availableModuleName,
             ArrayList<Node> relationshipsToCovert)
             throws IllegalAccessException, InstantiationException, NoSuchMethodException, InvocationTargetException {
         Class<Module> clazz = null;
@@ -178,7 +178,7 @@ public class AnalysisReader_0p10p0_0p15p0 {
         } catch (ClassNotFoundException e) {
             MIA.log.writeError(e);
         }
-        Module module = (Module) clazz.getDeclaredConstructor(ModuleCollection.class).newInstance(modules);
+        Module module = (Module) clazz.getDeclaredConstructor(Modules.class).newInstance(modules);
 
         // Populating parameters
         NodeList moduleChildNodes = moduleNode.getChildNodes();
@@ -305,7 +305,7 @@ public class AnalysisReader_0p10p0_0p15p0 {
         }
     }
 
-    public static void convertRelationshipRefs(ModuleCollection modules, ArrayList<Node> relationshipsToCovert) {
+    public static void convertRelationshipRefs(Modules modules, ArrayList<Node> relationshipsToCovert) {
         Module separator = null;
         int nAdded = 0;
 
@@ -408,7 +408,7 @@ public class AnalysisReader_0p10p0_0p15p0 {
         }
     }
 
-    public static void addTimepointMeasurements(ModuleCollection modules) {
+    public static void addTimepointMeasurements(Modules modules) {
         LinkedHashSet<OutputObjectsP> availableObjects = modules.getAvailableObjects(null);
 
         if (availableObjects.size() == 0)
@@ -429,7 +429,7 @@ public class AnalysisReader_0p10p0_0p15p0 {
             timepointModule.updateParameterValue(PartnerObjectCount.INPUT_OBJECTS, availableObject.getObjectsName());
 
             // Getting relevant measurement
-            ObjMeasurementRefCollection measRefs = timepointModule.updateAndGetObjectMeasurementRefs();
+            ObjMeasurementRefs measRefs = timepointModule.updateAndGetObjectMeasurementRefs();
             ObjMeasurementRef measRef = measRefs.get("TIMEPOINT");
 
             // Setting measurement export states
@@ -444,7 +444,7 @@ public class AnalysisReader_0p10p0_0p15p0 {
         }
     }
 
-    static GUISeparator addRefSeparatorModule(ModuleCollection modules) {
+    static GUISeparator addRefSeparatorModule(Modules modules) {
         GUISeparator guiSeparator = new GUISeparator(modules);
         modules.add(guiSeparator);
 
@@ -457,7 +457,7 @@ public class AnalysisReader_0p10p0_0p15p0 {
 
     }
 
-    static void addChildCountModule(ModuleCollection modules, LegacySummaryRef lRef, String parentName,
+    static void addChildCountModule(Modules modules, LegacySummaryRef lRef, String parentName,
             String childName) {
         // Creating the object count module
         ChildObjectCount countModule = new ChildObjectCount(modules);
@@ -467,7 +467,7 @@ public class AnalysisReader_0p10p0_0p15p0 {
 
         // Getting relevant measurement
         String measurementName = ChildObjectCount.getFullName(childName);
-        ObjMeasurementRefCollection measRefs = countModule.updateAndGetObjectMeasurementRefs();
+        ObjMeasurementRefs measRefs = countModule.updateAndGetObjectMeasurementRefs();
         ObjMeasurementRef measRef = measRefs.get(measurementName);
 
         // Setting measurement export states
@@ -481,7 +481,7 @@ public class AnalysisReader_0p10p0_0p15p0 {
 
     }
 
-    static void addParentIDModule(ModuleCollection modules, LegacySummaryRef lRef, String parentName,
+    static void addParentIDModule(Modules modules, LegacySummaryRef lRef, String parentName,
             String childName) {
         // Creating the object count module
         ParentObjectID idModule = new ParentObjectID(modules);
@@ -494,7 +494,7 @@ public class AnalysisReader_0p10p0_0p15p0 {
 
     }
 
-    static void addPartnerCountModule(ModuleCollection modules, LegacySummaryRef lRef, String object1Name,
+    static void addPartnerCountModule(Modules modules, LegacySummaryRef lRef, String object1Name,
             String object2Name) {
         // Creating the object count module
         PartnerObjectCount countModule = new PartnerObjectCount(modules);
@@ -504,7 +504,7 @@ public class AnalysisReader_0p10p0_0p15p0 {
 
         // Getting relevant measurement
         String measurementName = PartnerObjectCount.getFullName(object2Name);
-        ObjMeasurementRefCollection measRefs = countModule.updateAndGetObjectMeasurementRefs();
+        ObjMeasurementRefs measRefs = countModule.updateAndGetObjectMeasurementRefs();
         ObjMeasurementRef measRef = measRefs.get(measurementName);
 
         // Setting measurement export states

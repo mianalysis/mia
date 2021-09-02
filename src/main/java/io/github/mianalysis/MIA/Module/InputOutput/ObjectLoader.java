@@ -18,30 +18,30 @@ import io.github.mianalysis.MIA.MIA;
 import io.github.mianalysis.MIA.Module.Categories;
 import io.github.mianalysis.MIA.Module.Category;
 import io.github.mianalysis.MIA.Module.Module;
-import io.github.mianalysis.MIA.Module.ModuleCollection;
+import io.github.mianalysis.MIA.Module.Modules;
 import io.github.mianalysis.MIA.Module.Core.InputControl;
 import io.github.mianalysis.MIA.Object.Colours;
 import io.github.mianalysis.MIA.Object.Image;
 import io.github.mianalysis.MIA.Object.Obj;
-import io.github.mianalysis.MIA.Object.ObjCollection;
+import io.github.mianalysis.MIA.Object.Objs;
 import io.github.mianalysis.MIA.Object.Status;
 import io.github.mianalysis.MIA.Object.Workspace;
 import io.github.mianalysis.MIA.Object.Parameters.BooleanP;
 import io.github.mianalysis.MIA.Object.Parameters.ChoiceP;
 import io.github.mianalysis.MIA.Object.Parameters.FilePathP;
 import io.github.mianalysis.MIA.Object.Parameters.InputImageP;
-import io.github.mianalysis.MIA.Object.Parameters.ParameterCollection;
+import io.github.mianalysis.MIA.Object.Parameters.Parameters;
 import io.github.mianalysis.MIA.Object.Parameters.SeparatorP;
 import io.github.mianalysis.MIA.Object.Parameters.Objects.OutputObjectsP;
 import io.github.mianalysis.MIA.Object.Parameters.Text.DoubleP;
 import io.github.mianalysis.MIA.Object.Parameters.Text.IntegerP;
 import io.github.mianalysis.MIA.Object.Parameters.Text.MessageP;
 import io.github.mianalysis.MIA.Object.Parameters.Text.StringP;
-import io.github.mianalysis.MIA.Object.References.Collections.ImageMeasurementRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.MetadataRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.ObjMeasurementRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.ParentChildRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.PartnerRefCollection;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ImageMeasurementRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.MetadataRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ObjMeasurementRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ParentChildRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.PartnerRefs;
 import io.github.mianalysis.MIA.Object.Units.SpatialUnit;
 import io.github.mianalysis.MIA.Object.Units.TemporalUnit;
 import io.github.sjcross.common.MetadataExtractors.Metadata;
@@ -94,7 +94,7 @@ public class ObjectLoader extends Module {
     public static final String PARENT_OBJECTS_NAME = "Output parent objects name";
     public static final String PARENTS_COLUMN_INDEX = "Parent object ID index";
 
-    public ObjectLoader(ModuleCollection modules) {
+    public ObjectLoader(Modules modules) {
         super("Load objects", modules);
     }
 
@@ -296,7 +296,7 @@ public class ObjectLoader extends Module {
 
     double frameInterval = parameters.getValue(FRAME_INTERVAL);
 
-    void loadObjects(ObjCollection outputObjects, File inputFile, @Nullable ObjCollection parentObjects) {
+    void loadObjects(Objs outputObjects, File inputFile, @Nullable Objs parentObjects) {
         int xIdx = parameters.getValue(X_COLUMN_INDEX);
         int yIdx = parameters.getValue(Y_COLUMN_INDEX);
         int zIdx = parameters.getValue(Z_COLUMN_INDEX);
@@ -445,14 +445,14 @@ public class ObjectLoader extends Module {
         SpatCal calibration = new SpatCal(spatialCal[0], spatialCal[1], units, limits[0], limits[1], limits[2]);
 
         // Creating output objects
-        ObjCollection outputObjects = new ObjCollection(outputObjectsName, calibration, limits[3], temporalCal,
+        Objs outputObjects = new Objs(outputObjectsName, calibration, limits[3], temporalCal,
                 TemporalUnit.getOMEUnit());
         workspace.addObjects(outputObjects);
 
         // Creating parent objects
-        ObjCollection parentObjects = null;
+        Objs parentObjects = null;
         if (createParents) {
-            parentObjects = new ObjCollection(parentObjectsName, calibration, limits[3], frameInterval,
+            parentObjects = new Objs(parentObjectsName, calibration, limits[3], frameInterval,
                     TemporalUnit.getOMEUnit());
             workspace.addObjects(parentObjects);
         }
@@ -517,8 +517,8 @@ public class ObjectLoader extends Module {
     }
 
     @Override
-    public ParameterCollection updateAndGetParameters() {
-        ParameterCollection returnedParameters = new ParameterCollection();
+    public Parameters updateAndGetParameters() {
+        Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.get(OUTPUT_SEPARATOR));
         returnedParameters.add(parameters.get(OUTPUT_OBJECTS));
@@ -532,7 +532,7 @@ public class ObjectLoader extends Module {
             case NameFormats.GENERIC:
                 returnedParameters.add(parameters.getParameter(GENERIC_FORMAT));
                 returnedParameters.add(parameters.getParameter(AVAILABLE_METADATA_FIELDS));
-                MetadataRefCollection metadataRefs = modules.getMetadataRefs(this);
+                MetadataRefs metadataRefs = modules.getMetadataRefs(this);
                 parameters.getParameter(AVAILABLE_METADATA_FIELDS).setValue(metadataRefs.getMetadataValues());
                 break;
             case NameFormats.INPUT_FILE_PREFIX:
@@ -606,23 +606,23 @@ public class ObjectLoader extends Module {
     }
 
     @Override
-    public ImageMeasurementRefCollection updateAndGetImageMeasurementRefs() {
+    public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MetadataRefCollection updateAndGetMetadataReferences() {
+    public MetadataRefs updateAndGetMetadataReferences() {
         return null;
     }
 
     @Override
-    public ParentChildRefCollection updateAndGetParentChildRefs() {
-        ParentChildRefCollection returnedRelationships = new ParentChildRefCollection();
+    public ParentChildRefs updateAndGetParentChildRefs() {
+        ParentChildRefs returnedRelationships = new ParentChildRefs();
 
         if ((boolean) parameters.getValue(CREATE_PARENTS)) {
             String childObjectsName = parameters.getValue(OUTPUT_OBJECTS);
@@ -636,7 +636,7 @@ public class ObjectLoader extends Module {
     }
 
     @Override
-    public PartnerRefCollection updateAndGetPartnerRefs() {
+    public PartnerRefs updateAndGetPartnerRefs() {
         return null;
     }
 

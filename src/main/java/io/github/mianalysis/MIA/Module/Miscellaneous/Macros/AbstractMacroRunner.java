@@ -5,11 +5,11 @@ import java.util.LinkedHashSet;
 
 import ij.measure.ResultsTable;
 import io.github.mianalysis.MIA.Module.Module;
-import io.github.mianalysis.MIA.Module.ModuleCollection;
+import io.github.mianalysis.MIA.Module.Modules;
 import io.github.mianalysis.MIA.Object.Measurement;
 import io.github.mianalysis.MIA.Object.Parameters.BooleanP;
 import io.github.mianalysis.MIA.Object.Parameters.ChoiceP;
-import io.github.mianalysis.MIA.Object.Parameters.ParameterCollection;
+import io.github.mianalysis.MIA.Object.Parameters.Parameters;
 import io.github.mianalysis.MIA.Object.Parameters.ParameterGroup;
 import io.github.mianalysis.MIA.Object.Parameters.ParameterGroup.ParameterUpdaterAndGetter;
 import io.github.mianalysis.MIA.Object.Parameters.Text.DoubleP;
@@ -33,7 +33,7 @@ public abstract class AbstractMacroRunner extends Module {
 
     }
 
-    protected AbstractMacroRunner(String name, ModuleCollection modules) {
+    protected AbstractMacroRunner(String name, Modules modules) {
         super(name, modules);
     }
 
@@ -44,8 +44,8 @@ public abstract class AbstractMacroRunner extends Module {
     public static String addVariables(String macroString, ParameterGroup group) {
         StringBuilder sb = new StringBuilder();
 
-        LinkedHashMap<Integer, ParameterCollection> collections = group.getCollections(false);
-        for (ParameterCollection collection : collections.values()) {
+        LinkedHashMap<Integer, Parameters> collections = group.getCollections(false);
+        for (Parameters collection : collections.values()) {
             String name = collection.getValue(VARIABLE_NAME);
             String type = collection.getValue(VARIABLE_TYPE);
             String value = "";
@@ -79,8 +79,8 @@ public abstract class AbstractMacroRunner extends Module {
     public static LinkedHashSet<String> expectedMeasurements(ParameterGroup group, String measurementHeading) {
         LinkedHashSet<String> addedMeasurements = new LinkedHashSet<>();
 
-        LinkedHashMap<Integer, ParameterCollection> collections = group.getCollections(false);
-        for (ParameterCollection collection : collections.values()) {
+        LinkedHashMap<Integer, Parameters> collections = group.getCollections(false);
+        for (Parameters collection : collections.values()) {
             String heading = collection.getValue(measurementHeading);
             addedMeasurements.add(heading);
         }
@@ -102,7 +102,7 @@ public abstract class AbstractMacroRunner extends Module {
 
     @Override
     protected void initialiseParameters() {
-        ParameterCollection variableCollection = new ParameterCollection();
+        Parameters variableCollection = new Parameters();
         variableCollection.add(new ChoiceP(VARIABLE_TYPE, this, VariableTypes.TEXT, VariableTypes.ALL));
         variableCollection.add(new StringP(VARIABLE_NAME, this));
         variableCollection.add(new BooleanP(VARIABLE_CHECKBOX, this, true));
@@ -114,8 +114,8 @@ public abstract class AbstractMacroRunner extends Module {
     }
 
     @Override
-    public ParameterCollection updateAndGetParameters() {
-        ParameterCollection returnedParameters = new ParameterCollection();
+    public Parameters updateAndGetParameters() {
+        Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(ADD_VARIABLE));
 
@@ -130,7 +130,7 @@ public abstract class AbstractMacroRunner extends Module {
 
     protected void addParameterDescriptions() {
         ParameterGroup group = (ParameterGroup) parameters.get(ADD_VARIABLE);
-        ParameterCollection collection = group.getTemplateParameters();
+        Parameters collection = group.getTemplateParameters();
         collection.get(VARIABLE_NAME).setDescription(
                 "The variable value can be accessed from within the macro by using this variable name.");
 
@@ -165,8 +165,8 @@ public abstract class AbstractMacroRunner extends Module {
         return new ParameterUpdaterAndGetter() {
 
             @Override
-            public ParameterCollection updateAndGet(ParameterCollection params) {
-                ParameterCollection returnedParameters = new ParameterCollection();
+            public Parameters updateAndGet(Parameters params) {
+                Parameters returnedParameters = new Parameters();
 
                 returnedParameters.add(params.getParameter(VARIABLE_NAME));
                 returnedParameters.add(params.getParameter(VARIABLE_TYPE));

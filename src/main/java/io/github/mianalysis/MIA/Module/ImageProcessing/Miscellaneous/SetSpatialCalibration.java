@@ -9,7 +9,7 @@ import io.github.mianalysis.MIA.MIA;
 import io.github.mianalysis.MIA.Module.Categories;
 import io.github.mianalysis.MIA.Module.Category;
 import io.github.mianalysis.MIA.Module.Module;
-import io.github.mianalysis.MIA.Module.ModuleCollection;
+import io.github.mianalysis.MIA.Module.Modules;
 import io.github.mianalysis.MIA.Object.Image;
 import io.github.mianalysis.MIA.Object.Measurement;
 import io.github.mianalysis.MIA.Object.Obj;
@@ -21,15 +21,15 @@ import io.github.mianalysis.MIA.Object.Parameters.ImageMeasurementP;
 import io.github.mianalysis.MIA.Object.Parameters.InputImageP;
 import io.github.mianalysis.MIA.Object.Parameters.InputObjectsP;
 import io.github.mianalysis.MIA.Object.Parameters.ObjectMeasurementP;
-import io.github.mianalysis.MIA.Object.Parameters.ParameterCollection;
+import io.github.mianalysis.MIA.Object.Parameters.Parameters;
 import io.github.mianalysis.MIA.Object.Parameters.SeparatorP;
 import io.github.mianalysis.MIA.Object.Parameters.Text.DoubleP;
-import io.github.mianalysis.MIA.Object.References.ImageMeasurementRef;
-import io.github.mianalysis.MIA.Object.References.Collections.ImageMeasurementRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.MetadataRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.ObjMeasurementRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.ParentChildRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.PartnerRefCollection;
+import io.github.mianalysis.MIA.Object.Refs.ImageMeasurementRef;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ImageMeasurementRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.MetadataRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ObjMeasurementRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ParentChildRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.PartnerRefs;
 import io.github.mianalysis.MIA.Object.Units.SpatialUnit;
 
 public class SetSpatialCalibration extends Module {
@@ -85,7 +85,7 @@ public class SetSpatialCalibration extends Module {
 
     }
 
-    public SetSpatialCalibration(ModuleCollection modules) {
+    public SetSpatialCalibration(Modules modules) {
         super("Set spatial calibration", modules);
     }
 
@@ -264,8 +264,8 @@ public class SetSpatialCalibration extends Module {
     }
 
     @Override
-    public ParameterCollection updateAndGetParameters() {
-        ParameterCollection returnedParams = new ParameterCollection();
+    public Parameters updateAndGetParameters() {
+        Parameters returnedParams = new Parameters();
 
         returnedParams.add(parameters.get(INPUT_SEPARATOR));
         returnedParams.add(parameters.get(INPUT_IMAGE));
@@ -339,8 +339,8 @@ public class SetSpatialCalibration extends Module {
     }
 
     @Override
-    public ImageMeasurementRefCollection updateAndGetImageMeasurementRefs() {
-        ImageMeasurementRefCollection returnedRefs = new ImageMeasurementRefCollection();
+    public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
+        ImageMeasurementRefs returnedRefs = new ImageMeasurementRefs();
 
         if (parameters.getValue(PD_SOURCE).equals(DistanceSources.GUI_SELECTION_TEXT)
                 && (boolean) parameters.getValue(STORE_DISTANCE_AS_MEASUREMENT_PD)) {
@@ -361,22 +361,22 @@ public class SetSpatialCalibration extends Module {
     }
 
     @Override
-    public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MetadataRefCollection updateAndGetMetadataReferences() {
+    public MetadataRefs updateAndGetMetadataReferences() {
         return null;
     }
 
     @Override
-    public ParentChildRefCollection updateAndGetParentChildRefs() {
+    public ParentChildRefs updateAndGetParentChildRefs() {
         return null;
     }
 
     @Override
-    public PartnerRefCollection updateAndGetPartnerRefs() {
+    public PartnerRefs updateAndGetPartnerRefs() {
         return null;
     }
 

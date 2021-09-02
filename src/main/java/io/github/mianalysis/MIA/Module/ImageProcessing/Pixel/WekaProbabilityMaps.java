@@ -18,7 +18,7 @@ import loci.formats.FormatException;
 import trainableSegmentation.WekaSegmentation;
 import io.github.mianalysis.MIA.MIA;
 import io.github.mianalysis.MIA.Module.Module;
-import io.github.mianalysis.MIA.Module.ModuleCollection;
+import io.github.mianalysis.MIA.Module.Modules;
 import io.github.mianalysis.MIA.Module.Category;
 import io.github.mianalysis.MIA.Module.Categories;
 import io.github.mianalysis.MIA.Module.ImageProcessing.Stack.ImageTypeConverter;
@@ -32,15 +32,15 @@ import io.github.mianalysis.MIA.Object.Parameters.FilePathP;
 import io.github.mianalysis.MIA.Object.Parameters.InputImageP;
 import io.github.mianalysis.MIA.Object.Parameters.OutputImageP;
 import io.github.mianalysis.MIA.Object.Parameters.SeparatorP;
-import io.github.mianalysis.MIA.Object.Parameters.ParameterCollection;
+import io.github.mianalysis.MIA.Object.Parameters.Parameters;
 import io.github.mianalysis.MIA.Object.Parameters.Text.IntegerP;
 import io.github.mianalysis.MIA.Object.Parameters.Text.StringP;
 import io.github.mianalysis.MIA.Object.Parameters.Text.TextAreaP;
-import io.github.mianalysis.MIA.Object.References.Collections.ImageMeasurementRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.MetadataRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.ObjMeasurementRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.ParentChildRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.PartnerRefCollection;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ImageMeasurementRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.MetadataRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ObjMeasurementRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ParentChildRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.PartnerRefs;
 import io.github.sjcross.common.MetadataExtractors.Metadata;
 
 /**
@@ -63,7 +63,7 @@ public class WekaProbabilityMaps extends Module {
     public static final String SIMULTANEOUS_SLICES = "Simultaneous slices";
     public static final String TILE_FACTOR = "Tile factor";
 
-    public WekaProbabilityMaps(ModuleCollection modules) {
+    public WekaProbabilityMaps(Modules modules) {
         super("Weka probability maps", modules);
     }
 
@@ -292,8 +292,8 @@ public class WekaProbabilityMaps extends Module {
     }
 
     @Override
-    public ParameterCollection updateAndGetParameters() {
-        ParameterCollection returnedParameters = new ParameterCollection();
+    public Parameters updateAndGetParameters() {
+        Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(INPUT_IMAGE));
@@ -314,7 +314,7 @@ public class WekaProbabilityMaps extends Module {
         case PathTypes.MATCHING_FORMAT:
             returnedParameters.add(parameters.getParameter(GENERIC_FORMAT));
             returnedParameters.add(parameters.getParameter(AVAILABLE_METADATA_FIELDS));
-            MetadataRefCollection metadataRefs = modules.getMetadataRefs(this);
+            MetadataRefs metadataRefs = modules.getMetadataRefs(this);
             parameters.getParameter(AVAILABLE_METADATA_FIELDS).setValue(metadataRefs.getMetadataValues());
             break;
         case PathTypes.SPECIFIC_FILE:
@@ -329,27 +329,27 @@ public class WekaProbabilityMaps extends Module {
     }
 
     @Override
-    public ImageMeasurementRefCollection updateAndGetImageMeasurementRefs() {
+    public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MetadataRefCollection updateAndGetMetadataReferences() {
+    public MetadataRefs updateAndGetMetadataReferences() {
         return null;
     }
 
     @Override
-    public ParentChildRefCollection updateAndGetParentChildRefs() {
+    public ParentChildRefs updateAndGetParentChildRefs() {
         return null;
     }
 
     @Override
-    public PartnerRefCollection updateAndGetPartnerRefs() {
+    public PartnerRefs updateAndGetPartnerRefs() {
         return null;
     }
 

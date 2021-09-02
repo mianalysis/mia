@@ -4,26 +4,47 @@
 
 package io.github.mianalysis.MIA.Module.ObjectProcessing.Identification;
 
-import de.biomedical_imaging.ij.steger.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
+
+import org.eclipse.sisu.Nullable;
+
+import de.biomedical_imaging.ij.steger.Junction;
+import de.biomedical_imaging.ij.steger.Junctions;
+import de.biomedical_imaging.ij.steger.Line;
+import de.biomedical_imaging.ij.steger.LineDetector;
+import de.biomedical_imaging.ij.steger.Lines;
+import de.biomedical_imaging.ij.steger.OverlapOption;
 import ij.ImagePlus;
 import ij.measure.Calibration;
+import io.github.mianalysis.MIA.Module.Categories;
+import io.github.mianalysis.MIA.Module.Category;
 import io.github.mianalysis.MIA.Module.Module;
-import io.github.mianalysis.MIA.Module.ModuleCollection;
+import io.github.mianalysis.MIA.Module.Modules;
 import io.github.mianalysis.MIA.Module.Core.InputControl;
 import io.github.mianalysis.MIA.Module.Visualisation.Overlays.AddObjectFill;
-import io.github.mianalysis.MIA.Module.Category;
-import io.github.mianalysis.MIA.Module.Categories;
-import io.github.mianalysis.MIA.Object.*;
-import io.github.mianalysis.MIA.Object.Parameters.*;
+import io.github.mianalysis.MIA.Object.Image;
+import io.github.mianalysis.MIA.Object.Measurement;
+import io.github.mianalysis.MIA.Object.Obj;
+import io.github.mianalysis.MIA.Object.Objs;
+import io.github.mianalysis.MIA.Object.Status;
+import io.github.mianalysis.MIA.Object.Workspace;
+import io.github.mianalysis.MIA.Object.Parameters.BooleanP;
+import io.github.mianalysis.MIA.Object.Parameters.ChoiceP;
+import io.github.mianalysis.MIA.Object.Parameters.InputImageP;
+import io.github.mianalysis.MIA.Object.Parameters.Parameters;
+import io.github.mianalysis.MIA.Object.Parameters.SeparatorP;
 import io.github.mianalysis.MIA.Object.Parameters.Objects.OutputObjectsP;
 import io.github.mianalysis.MIA.Object.Parameters.Text.DoubleP;
 import io.github.mianalysis.MIA.Object.Parameters.Text.IntegerP;
-import io.github.mianalysis.MIA.Object.References.*;
-import io.github.mianalysis.MIA.Object.References.Collections.ImageMeasurementRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.MetadataRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.ObjMeasurementRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.ParentChildRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.PartnerRefCollection;
+import io.github.mianalysis.MIA.Object.Refs.ObjMeasurementRef;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ImageMeasurementRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.MetadataRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ObjMeasurementRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ParentChildRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.PartnerRefs;
 import io.github.mianalysis.MIA.Object.Units.SpatialUnit;
 import io.github.mianalysis.MIA.Object.Units.TemporalUnit;
 import io.github.mianalysis.MIA.Process.ColourFactory;
@@ -33,9 +54,6 @@ import io.github.sjcross.common.Object.Volume.SpatCal;
 import io.github.sjcross.common.Object.Volume.VolumeType;
 import io.github.sjcross.common.Process.IntensityMinMax;
 import io.github.sjcross.common.Process.SkeletonTools.BreakFixer;
-
-import org.eclipse.sisu.Nullable;
-import java.util.*;
 
 /**
  * Created by sc13967 on 30/05/2017.
@@ -79,7 +97,7 @@ public class RidgeDetection extends Module {
 
     }
 
-    public RidgeDetection(ModuleCollection modules) {
+    public RidgeDetection(Modules modules) {
         super("Ridge detection",modules);
     }
 
@@ -185,7 +203,7 @@ public class RidgeDetection extends Module {
 
     }
 
-    public static Obj initialiseObject(ObjCollection outputObjects, int t) {
+    public static Obj initialiseObject(Objs outputObjects, int t) {
         Obj outputObject = outputObjects.createAndAddNewObject(VolumeType.POINTLIST);
         outputObject.setT(t);
 
@@ -314,7 +332,7 @@ public class RidgeDetection extends Module {
         SpatCal calibration = getCalibration(inputImage);
         int nFrames = inputIpl.getNFrames();
         double frameInterval = inputIpl.getCalibration().frameInterval;
-        ObjCollection outputObjects = new ObjCollection(outputObjectsName,calibration,nFrames,frameInterval,TemporalUnit.getOMEUnit());
+        Objs outputObjects = new Objs(outputObjectsName,calibration,nFrames,frameInterval,TemporalUnit.getOMEUnit());
         workspace.addObjects(outputObjects);
 
         // Iterating over each image in the stack
@@ -344,7 +362,7 @@ public class RidgeDetection extends Module {
                         groups.put(line, lineGroup);
                     }
 
-                    // Iterating over each object, adding it to the nascent ObjCollection
+                    // Iterating over each object, adding it to the nascent Objs
                     if (linkContours) linkJunctions(groups,lineDetector.getJunctions(),limitEndMisalignment,alignmentRange,maxEndMisalignment);
 
                     // Getting the unique LineGroups and converting them to Obj
@@ -421,8 +439,8 @@ public class RidgeDetection extends Module {
     }
 
     @Override
-    public ParameterCollection updateAndGetParameters() {
-        ParameterCollection returnedParameters = new ParameterCollection();
+    public Parameters updateAndGetParameters() {
+        Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(INPUT_IMAGE));
@@ -457,13 +475,13 @@ public class RidgeDetection extends Module {
     }
 
     @Override
-    public ImageMeasurementRefCollection updateAndGetImageMeasurementRefs() {
+    public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
-        ObjMeasurementRefCollection returnedRefs = new ObjMeasurementRefCollection();
+    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+        ObjMeasurementRefs returnedRefs = new ObjMeasurementRefs();
 
         String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);
 
@@ -514,17 +532,17 @@ public class RidgeDetection extends Module {
     }
 
     @Override
-    public MetadataRefCollection updateAndGetMetadataReferences() {
+    public MetadataRefs updateAndGetMetadataReferences() {
         return null;
     }
 
     @Override
-    public ParentChildRefCollection updateAndGetParentChildRefs() {
+    public ParentChildRefs updateAndGetParentChildRefs() {
         return null;
     }
 
     @Override
-    public PartnerRefCollection updateAndGetPartnerRefs() {
+    public PartnerRefs updateAndGetPartnerRefs() {
         return null;
     }
 

@@ -24,8 +24,8 @@ import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
 import io.github.mianalysis.MIA.MIA;
 import io.github.mianalysis.MIA.Module.Module;
-import io.github.mianalysis.MIA.Object.References.ImageMeasurementRef;
-import io.github.mianalysis.MIA.Object.References.Collections.ImageMeasurementRefCollection;
+import io.github.mianalysis.MIA.Object.Refs.ImageMeasurementRef;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ImageMeasurementRefs;
 import io.github.mianalysis.MIA.Object.Units.TemporalUnit;
 import io.github.sjcross.common.MathFunc.CumStat;
 import io.github.sjcross.common.Object.Volume.PointOutOfRangeException;
@@ -60,27 +60,27 @@ public class Image {
         }
     }
 
-    public ObjCollection convertImageToObjects(String outputObjectsName) {
+    public Objs convertImageToObjects(String outputObjectsName) {
         String type = getVolumeType(VolumeType.POINTLIST);
         return convertImageToObjects(type, outputObjectsName);
     }
 
-    public ObjCollection convertImageToObjects(VolumeType volumeType, String outputObjectsName) {
+    public Objs convertImageToObjects(VolumeType volumeType, String outputObjectsName) {
         String type = getVolumeType(volumeType);
         return convertImageToObjects(type, outputObjectsName);
     }
 
-    public ObjCollection convertImageToObjects(VolumeType volumeType, String outputObjectsName, boolean singleObject) {
+    public Objs convertImageToObjects(VolumeType volumeType, String outputObjectsName, boolean singleObject) {
         String type = getVolumeType(volumeType);
         return convertImageToObjects(type, outputObjectsName, singleObject);
     }
 
-    public ObjCollection convertImageToObjects(String type, String outputObjectsName) {
+    public Objs convertImageToObjects(String type, String outputObjectsName) {
         return convertImageToObjects(type, outputObjectsName, false);
 
     }
 
-    public ObjCollection convertImageToObjects(String type, String outputObjectsName, boolean singleObject) {
+    public Objs convertImageToObjects(String type, String outputObjectsName, boolean singleObject) {
         // Getting spatial calibration
         double dppXY = imagePlus.getCalibration().pixelWidth;
         double dppZ = imagePlus.getCalibration().pixelDepth;
@@ -97,7 +97,7 @@ public class Image {
 
         // Need to get coordinates and convert to a HCObject
         SpatCal calibration = new SpatCal(dppXY, dppZ, units, w, h, nSlices);
-        ObjCollection outputObjects = new ObjCollection(outputObjectsName, calibration, nFrames, frameInterval,
+        Objs outputObjects = new Objs(outputObjectsName, calibration, nFrames, frameInterval,
                 TemporalUnit.getOMEUnit());
 
         // Will return null if optimised
@@ -158,7 +158,7 @@ public class Image {
 
     }
 
-    HashMap<Integer, IDLink> getOptimisedLinks(int c, int t, ObjCollection outputObjects, boolean singleObject) {
+    HashMap<Integer, IDLink> getOptimisedLinks(int c, int t, Objs outputObjects, boolean singleObject) {
         int h = imagePlus.getHeight();
         int w = imagePlus.getWidth();
         int nSlices = imagePlus.getNSlices();
@@ -242,7 +242,7 @@ public class Image {
      */
     public void showMeasurements(Module module) {
         // Getting MeasurementReferences
-        ImageMeasurementRefCollection measRefs = module.updateAndGetImageMeasurementRefs();
+        ImageMeasurementRefs measRefs = module.updateAndGetImageMeasurementRefs();
 
         // Creating a new ResultsTable for these values
         ResultsTable rt = new ResultsTable();

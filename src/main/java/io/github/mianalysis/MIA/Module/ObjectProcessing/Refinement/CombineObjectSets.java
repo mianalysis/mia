@@ -1,23 +1,23 @@
 package io.github.mianalysis.MIA.Module.ObjectProcessing.Refinement;
 
 import io.github.mianalysis.MIA.Module.Module;
-import io.github.mianalysis.MIA.Module.ModuleCollection;
+import io.github.mianalysis.MIA.Module.Modules;
 import io.github.mianalysis.MIA.Module.Category;
 import io.github.mianalysis.MIA.Module.Categories;
 import io.github.mianalysis.MIA.Object.Obj;
-import io.github.mianalysis.MIA.Object.ObjCollection;
+import io.github.mianalysis.MIA.Object.Objs;
 import io.github.mianalysis.MIA.Object.Status;
 import io.github.mianalysis.MIA.Object.Workspace;
 import io.github.mianalysis.MIA.Object.Parameters.ChoiceP;
 import io.github.mianalysis.MIA.Object.Parameters.InputObjectsP;
-import io.github.mianalysis.MIA.Object.Parameters.ParameterCollection;
+import io.github.mianalysis.MIA.Object.Parameters.Parameters;
 import io.github.mianalysis.MIA.Object.Parameters.SeparatorP;
 import io.github.mianalysis.MIA.Object.Parameters.Objects.OutputObjectsP;
-import io.github.mianalysis.MIA.Object.References.Collections.ImageMeasurementRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.MetadataRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.ObjMeasurementRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.ParentChildRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.PartnerRefCollection;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ImageMeasurementRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.MetadataRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ObjMeasurementRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ParentChildRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.PartnerRefs;
 
 /**
  * Created by sc13967 on 31/01/2018.
@@ -40,11 +40,11 @@ public class CombineObjectSets extends Module {
 
     }
 
-    public CombineObjectSets(ModuleCollection modules) {
+    public CombineObjectSets(Modules modules) {
         super("Combine object sets", modules);
     }
 
-    public static void combineAndCreate(ObjCollection inputObjects, ObjCollection outputObjects) {
+    public static void combineAndCreate(Objs inputObjects, Objs outputObjects) {
         for (Obj obj : inputObjects.values()) {
             Obj newObj = outputObjects.createAndAddNewObject(obj.getVolumeType());
             newObj.setCoordinateSet(obj.getCoordinateSet().duplicate());
@@ -52,7 +52,7 @@ public class CombineObjectSets extends Module {
         }
     }
 
-    static void combineAndAdd(ObjCollection targetObjects, ObjCollection sourceObjects) {
+    static void combineAndAdd(Objs targetObjects, Objs sourceObjects) {
         for (Obj obj : sourceObjects.values()) {
             Obj newObj = targetObjects.createAndAddNewObject(obj.getVolumeType());
             newObj.setCoordinateSet(obj.getCoordinateSet().duplicate());
@@ -76,9 +76,9 @@ public class CombineObjectSets extends Module {
     public Status process(Workspace workspace) {
         // Getting input objects
         String inputObjects1Name = parameters.getValue(INPUT_OBJECTS_1);
-        ObjCollection inputObjects1 = workspace.getObjectSet(inputObjects1Name);
+        Objs inputObjects1 = workspace.getObjectSet(inputObjects1Name);
         String inputObjects2Name = parameters.getValue(INPUT_OBJECTS_2);
-        ObjCollection inputObjects2 = workspace.getObjectSet(inputObjects2Name);
+        Objs inputObjects2 = workspace.getObjectSet(inputObjects2Name);
         String outputMode = parameters.getValue(OUTPUT_MODE);
         String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);
 
@@ -101,7 +101,7 @@ public class CombineObjectSets extends Module {
                 break;
 
             case OutputModes.CREATE_NEW:
-                ObjCollection outputObjects = new ObjCollection(outputObjectsName, inputObjects1);
+                Objs outputObjects = new Objs(outputObjectsName, inputObjects1);
                 combineAndCreate(inputObjects1, outputObjects);
                 combineAndCreate(inputObjects2, outputObjects);
 
@@ -133,8 +133,8 @@ public class CombineObjectSets extends Module {
     }
 
     @Override
-    public ParameterCollection updateAndGetParameters() {
-        ParameterCollection returnedParameters = new ParameterCollection();
+    public Parameters updateAndGetParameters() {
+        Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.get(INPUT_SEPARATOR));
         returnedParameters.add(parameters.get(INPUT_OBJECTS_1));
@@ -153,27 +153,27 @@ public class CombineObjectSets extends Module {
     }
 
     @Override
-    public ImageMeasurementRefCollection updateAndGetImageMeasurementRefs() {
+    public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MetadataRefCollection updateAndGetMetadataReferences() {
+    public MetadataRefs updateAndGetMetadataReferences() {
         return null;
     }
 
     @Override
-    public ParentChildRefCollection updateAndGetParentChildRefs() {
+    public ParentChildRefs updateAndGetParentChildRefs() {
         return null;
     }
 
     @Override
-    public PartnerRefCollection updateAndGetPartnerRefs() {
+    public PartnerRefs updateAndGetPartnerRefs() {
         return null;
     }
 

@@ -10,27 +10,27 @@ import io.github.mianalysis.MIA.MIA;
 import io.github.mianalysis.MIA.Module.Categories;
 import io.github.mianalysis.MIA.Module.Category;
 import io.github.mianalysis.MIA.Module.Module;
-import io.github.mianalysis.MIA.Module.ModuleCollection;
+import io.github.mianalysis.MIA.Module.Modules;
 import io.github.mianalysis.MIA.Module.ImageProcessing.Pixel.ProjectImage;
 import io.github.mianalysis.MIA.Module.ImageProcessing.Pixel.Binary.DistanceMap;
 import io.github.mianalysis.MIA.Object.Image;
 import io.github.mianalysis.MIA.Object.Measurement;
 import io.github.mianalysis.MIA.Object.Obj;
-import io.github.mianalysis.MIA.Object.ObjCollection;
+import io.github.mianalysis.MIA.Object.Objs;
 import io.github.mianalysis.MIA.Object.Status;
 import io.github.mianalysis.MIA.Object.Workspace;
 import io.github.mianalysis.MIA.Object.Parameters.BooleanP;
 import io.github.mianalysis.MIA.Object.Parameters.ChoiceP;
 import io.github.mianalysis.MIA.Object.Parameters.InputObjectsP;
-import io.github.mianalysis.MIA.Object.Parameters.ParameterCollection;
+import io.github.mianalysis.MIA.Object.Parameters.Parameters;
 import io.github.mianalysis.MIA.Object.Parameters.SeparatorP;
 import io.github.mianalysis.MIA.Object.Parameters.Text.DoubleP;
-import io.github.mianalysis.MIA.Object.References.ObjMeasurementRef;
-import io.github.mianalysis.MIA.Object.References.Collections.ImageMeasurementRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.MetadataRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.ObjMeasurementRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.ParentChildRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.PartnerRefCollection;
+import io.github.mianalysis.MIA.Object.Refs.ObjMeasurementRef;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ImageMeasurementRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.MetadataRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ObjMeasurementRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ParentChildRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.PartnerRefs;
 import io.github.mianalysis.MIA.Object.Units.SpatialUnit;
 import io.github.sjcross.common.Object.Point;
 
@@ -97,7 +97,7 @@ public class RelateManyToOne extends Module {
 
     }
 
-    public RelateManyToOne(ModuleCollection modules) {
+    public RelateManyToOne(Modules modules) {
         super("Relate many-to-one", modules);
     }
 
@@ -105,7 +105,7 @@ public class RelateManyToOne extends Module {
         return "RELATE_MANY_TO_ONE // " + measurement.replace("${PARENT}", parentName);
     }
 
-    public static void linkMatchingIDs(ObjCollection parentObjects, ObjCollection childObjects) {
+    public static void linkMatchingIDs(Objs parentObjects, Objs childObjects) {
         for (Obj parentObject : parentObjects.values()) {
             int ID = parentObject.getID();
 
@@ -119,7 +119,7 @@ public class RelateManyToOne extends Module {
         }
     }
 
-    public static void linkByCentroidProximity(ObjCollection parentObjects, ObjCollection childObjects,
+    public static void linkByCentroidProximity(Objs parentObjects, Objs childObjects,
             boolean linkInSameFrame, double linkingDistance, int nThreads) {
         String moduleName = RelateObjects.class.getSimpleName();
         String measurementNamePx = getFullName(Measurements.DIST_CENTROID_PX, parentObjects.getName());
@@ -180,7 +180,7 @@ public class RelateManyToOne extends Module {
         }
     }
 
-    public static void linkBySurfaceProximity(ObjCollection parentObjects, ObjCollection childObjects,
+    public static void linkBySurfaceProximity(Objs parentObjects, Objs childObjects,
             boolean linkInSameFrame, double linkingDistance, String insideOutsideMode, int nThreads) {
         String moduleName = RelateObjects.class.getSimpleName();
         String measurementNamePx = getFullName(Measurements.DIST_SURFACE_PX, parentObjects.getName());
@@ -244,7 +244,7 @@ public class RelateManyToOne extends Module {
         }
     }
 
-    public static void linkByCentroidToSurfaceProximity(ObjCollection parentObjects, ObjCollection childObjects,
+    public static void linkByCentroidToSurfaceProximity(Objs parentObjects, Objs childObjects,
             boolean linkInSameFrame, double linkingDistance, String insideOutsideMode, boolean calcFrac, int nThreads) {
         String moduleName = new RelateManyToOne(null).getName();
         String measurementNamePx = getFullName(Measurements.DIST_CENT_SURF_PX, parentObjects.getName());
@@ -361,7 +361,7 @@ public class RelateManyToOne extends Module {
 
     }
 
-    public void spatialOverlap(ObjCollection parentObjects, ObjCollection childObjects, double minOverlap,
+    public void spatialOverlap(Objs parentObjects, Objs childObjects, double minOverlap,
             boolean centroidOverlap, boolean linkInSameFrame) {
 
         long nCombined = parentObjects.size() * childObjects.size();
@@ -467,7 +467,7 @@ public class RelateManyToOne extends Module {
 
     }
 
-    static void applyLinkMeasurements(ObjCollection parentObjects, ObjCollection childObjects) {
+    static void applyLinkMeasurements(Objs parentObjects, Objs childObjects) {
         String parentMeasurementName = getFullName(Measurements.WAS_LINKED, childObjects.getName());
         String childMeasurementName = getFullName(Measurements.WAS_LINKED, parentObjects.getName());
 
@@ -504,10 +504,10 @@ public class RelateManyToOne extends Module {
     protected Status process(Workspace workspace) {
         // Getting input objects
         String parentObjectName = parameters.getValue(PARENT_OBJECTS);
-        ObjCollection parentObjects = workspace.getObjects().get(parentObjectName);
+        Objs parentObjects = workspace.getObjects().get(parentObjectName);
 
         String childObjectName = parameters.getValue(CHILD_OBJECTS);
-        ObjCollection childObjects = workspace.getObjects().get(childObjectName);
+        Objs childObjects = workspace.getObjects().get(childObjectName);
 
         // Getting parameters
         String relateMode = parameters.getValue(RELATE_MODE);
@@ -598,8 +598,8 @@ public class RelateManyToOne extends Module {
     }
 
     @Override
-    public ParameterCollection updateAndGetParameters() {
-        ParameterCollection returnedParameters = new ParameterCollection();
+    public Parameters updateAndGetParameters() {
+        Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(PARENT_OBJECTS));
@@ -639,13 +639,13 @@ public class RelateManyToOne extends Module {
     }
 
     @Override
-    public ImageMeasurementRefCollection updateAndGetImageMeasurementRefs() {
+    public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
-        ObjMeasurementRefCollection returnedRefs = new ObjMeasurementRefCollection();
+    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+        ObjMeasurementRefs returnedRefs = new ObjMeasurementRefs();
 
         String childObjectsName = parameters.getValue(CHILD_OBJECTS);
         String parentObjectName = parameters.getValue(PARENT_OBJECTS);
@@ -765,13 +765,13 @@ public class RelateManyToOne extends Module {
     }
 
     @Override
-    public MetadataRefCollection updateAndGetMetadataReferences() {
+    public MetadataRefs updateAndGetMetadataReferences() {
         return null;
     }
 
     @Override
-    public ParentChildRefCollection updateAndGetParentChildRefs() {
-        ParentChildRefCollection returnedRelationships = new ParentChildRefCollection();
+    public ParentChildRefs updateAndGetParentChildRefs() {
+        ParentChildRefs returnedRelationships = new ParentChildRefs();
 
         returnedRelationships
                 .add(parentChildRefs.getOrPut(parameters.getValue(PARENT_OBJECTS), parameters.getValue(CHILD_OBJECTS)));
@@ -781,7 +781,7 @@ public class RelateManyToOne extends Module {
     }
 
     @Override
-    public PartnerRefCollection updateAndGetPartnerRefs() {
+    public PartnerRefs updateAndGetPartnerRefs() {
         return null;
     }
 

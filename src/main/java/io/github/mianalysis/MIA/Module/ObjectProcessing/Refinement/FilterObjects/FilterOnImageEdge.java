@@ -5,20 +5,20 @@ import java.util.Iterator;
 
 import org.eclipse.sisu.Nullable;
 
-import io.github.mianalysis.MIA.Module.ModuleCollection;
+import io.github.mianalysis.MIA.Module.Modules;
 import io.github.mianalysis.MIA.Module.Category;
 import io.github.mianalysis.MIA.Module.Categories;
 import io.github.mianalysis.MIA.Object.Obj;
-import io.github.mianalysis.MIA.Object.ObjCollection;
+import io.github.mianalysis.MIA.Object.Objs;
 import io.github.mianalysis.MIA.Object.Status;
 import io.github.mianalysis.MIA.Object.Workspace;
 import io.github.mianalysis.MIA.Object.Parameters.BooleanP;
 import io.github.mianalysis.MIA.Object.Parameters.SeparatorP;
-import io.github.mianalysis.MIA.Object.Parameters.ParameterCollection;
+import io.github.mianalysis.MIA.Object.Parameters.Parameters;
 import io.github.mianalysis.MIA.Object.Parameters.Text.IntegerP;
-import io.github.mianalysis.MIA.Object.References.Collections.ImageMeasurementRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.MetadataRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.ObjMeasurementRefCollection;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ImageMeasurementRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.MetadataRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ObjMeasurementRefs;
 
 public class FilterOnImageEdge extends AbstractObjectFilter {
     public static final String FILTER_SEPARATOR = "Object filtering";
@@ -30,7 +30,7 @@ public class FilterOnImageEdge extends AbstractObjectFilter {
     public static final String INCLUDE_Z_POSITION = "Include Z-position";
     public static final String STORE_RESULTS = "Store filter results";
 
-    public FilterOnImageEdge(ModuleCollection modules) {
+    public FilterOnImageEdge(Modules modules) {
         super("Remove on image edge", modules);
     }
 
@@ -42,8 +42,8 @@ public class FilterOnImageEdge extends AbstractObjectFilter {
         }
     }
 
-    public static int process(ObjCollection inputObjects, int maxContact, @Nullable boolean[] removalEdges,
-            boolean includeZ, boolean remove, @Nullable ObjCollection outputObjects) {
+    public static int process(Objs inputObjects, int maxContact, @Nullable boolean[] removalEdges,
+            boolean includeZ, boolean remove, @Nullable Objs outputObjects) {
         if (removalEdges == null)
             removalEdges = new boolean[] { true, true, true, true };
 
@@ -124,7 +124,7 @@ public class FilterOnImageEdge extends AbstractObjectFilter {
     protected Status process(Workspace workspace) {
         // Getting input objects
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
-        ObjCollection inputObjects = workspace.getObjects().get(inputObjectsName);
+        Objs inputObjects = workspace.getObjects().get(inputObjectsName);
 
         // Getting parameters
         String filterMode = parameters.getValue(FILTER_MODE);
@@ -141,7 +141,7 @@ public class FilterOnImageEdge extends AbstractObjectFilter {
 
         boolean[] removalEdges = new boolean[] { removeTop, removeLeft, removeBottom, removeRight };
 
-        ObjCollection outputObjects = moveObjects ? new ObjCollection(outputObjectsName, inputObjects) : null;
+        Objs outputObjects = moveObjects ? new Objs(outputObjectsName, inputObjects) : null;
 
         int count = process(inputObjects, maxContact, removalEdges, includeZ, remove, outputObjects);
 
@@ -179,8 +179,8 @@ public class FilterOnImageEdge extends AbstractObjectFilter {
     }
 
     @Override
-    public ParameterCollection updateAndGetParameters() {
-        ParameterCollection returnedParameters = new ParameterCollection();
+    public Parameters updateAndGetParameters() {
+        Parameters returnedParameters = new Parameters();
         returnedParameters.addAll(super.updateAndGetParameters());
 
         returnedParameters.add(parameters.getParameter(FILTER_SEPARATOR));
@@ -197,19 +197,19 @@ public class FilterOnImageEdge extends AbstractObjectFilter {
     }
 
     @Override
-    public ImageMeasurementRefCollection updateAndGetImageMeasurementRefs() {
+    public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
         return super.updateAndGetObjectMeasurementRefs();
 
     }
 
     @Override
-    public MetadataRefCollection updateAndGetMetadataReferences() {
-        MetadataRefCollection returnedRefs = new MetadataRefCollection();
+    public MetadataRefs updateAndGetMetadataReferences() {
+        MetadataRefs returnedRefs = new MetadataRefs();
 
         // Filter results are stored as a metadata item since they apply to the whole
         // set

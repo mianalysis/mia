@@ -18,9 +18,9 @@ package io.github.mianalysis.MIA.Module.ImageMeasurements;
 // import io.github.mianalysis.MIA.ExpectedObjects.Objects2D;
 // import io.github.mianalysis.MIA.Module.ModuleTest;
 // import io.github.mianalysis.MIA.Object.Image;
-// import io.github.mianalysis.MIA.Object.ObjCollection;
+// import io.github.mianalysis.MIA.Object.Objs;
 // import io.github.mianalysis.MIA.Object.Workspace;
-// import io.github.mianalysis.MIA.Object.WorkspaceCollection;
+// import io.github.mianalysis.MIA.Object.Workspaces;
 // import io.github.sjcross.common.Object.Volume.VolumeType;
 
 // public class MeasureImageColocalisationTest extends ModuleTest {
@@ -44,7 +44,7 @@ package io.github.mianalysis.MIA.Module.ImageMeasurements;
 //         double dppXY = 0.02;
 //         double dppZ = 0.1;
 //         String calibratedUnits = "µm";
-//         ObjCollection expectedObjects = new Objects2D(volumeType).getObjects("Expected",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+//         Objs expectedObjects = new Objects2D(volumeType).getObjects("Expected",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
 
 //         // Loading images
 //         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BinaryObjects/BinaryObjects2D_8bit_whiteBG.tif").getPath(),"UTF-8");
@@ -64,7 +64,7 @@ package io.github.mianalysis.MIA.Module.ImageMeasurements;
 //         double dppXY = 0.02;
 //         double dppZ = 0.1;
 //         String calibratedUnits = "µm";
-//         ObjCollection expectedObjects = new Objects2D(volumeType).getObjects("Expected",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+//         Objs expectedObjects = new Objects2D(volumeType).getObjects("Expected",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
 
 //         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BinaryObjects/BinaryObjects2D_8bit_blackBG.tif").getPath(),"UTF-8");
 //         ImagePlus expectedIpl = IJ.openImage(pathToImage);
@@ -79,7 +79,7 @@ package io.github.mianalysis.MIA.Module.ImageMeasurements;
 //     @Test
 //     public void testMeasurePCCWholeImage() throws Exception {
 //         // Creating a new workspace
-//         WorkspaceCollection workspaces = new WorkspaceCollection();
+//         Workspaces workspaces = new Workspaces();
 //         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
 //         // Loading images
@@ -108,7 +108,7 @@ package io.github.mianalysis.MIA.Module.ImageMeasurements;
 //     @Test
 //     public void testMeasurePCCMaskImage() throws Exception {
 //         // Creating a new workspace
-//         WorkspaceCollection workspaces = new WorkspaceCollection();
+//         Workspaces workspaces = new Workspaces();
 //         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
 //         // Loading images
@@ -159,7 +159,7 @@ package io.github.mianalysis.MIA.Module.ImageMeasurements;
 // //import io.github.mianalysis.MIA.ExpectedObjects.Objects2D;
 // //import io.github.mianalysis.MIA.Module.ModuleTest;
 // //import io.github.mianalysis.MIA.Object.Image;
-// //import io.github.mianalysis.MIA.Object.ObjCollection;
+// //import io.github.mianalysis.MIA.Object.Objs;
 // //import io.github.mianalysis.MIA.Object.Workspace;
 // //import io.github.sjcross.common.Object.Volume.VolumeType;
 // //
@@ -188,7 +188,7 @@ package io.github.mianalysis.MIA.Module.ImageMeasurements;
 // //        double dppXY = 0.02;
 // //        double dppZ = 0.1;
 // //        String calibratedUnits = "µm";
-// //        ObjCollection expectedObjects = new Objects2D(volumeType).getObjects("Expected",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+// //        Objs expectedObjects = new Objects2D(volumeType).getObjects("Expected",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
 // //
 // //        // Loading images
 // //        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/MeasureColocalisation/ColocalisationChannel1_2D_8bit.tif").getPath(),"UTF-8");
@@ -208,7 +208,7 @@ package io.github.mianalysis.MIA.Module.ImageMeasurements;
 // //        double dppXY = 0.02;
 // //        double dppZ = 0.1;
 // //        String calibratedUnits = "µm";
-// //        ObjCollection expectedObjects = new Objects2D(volumeType).getObjects("Expected",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+// //        Objs expectedObjects = new Objects2D(volumeType).getObjects("Expected",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
 // //
 // //        // Loading images
 // //        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/MeasureColocalisation/ColocalisationChannel1_2D_8bit.tif").getPath(),"UTF-8");
@@ -232,7 +232,7 @@ package io.github.mianalysis.MIA.Module.ImageMeasurements;
 // //        double dppXY = 0.02;
 // //        double dppZ = 0.1;
 // //        String calibratedUnits = "µm";
-// //        ObjCollection expectedObjects = new Objects2D(volumeType).getObjects("Expected",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+// //        Objs expectedObjects = new Objects2D(volumeType).getObjects("Expected",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
 // //
 // //        // Loading images
 // //        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/MeasureColocalisation/ColocalisationChannel1_2D_8bit.tif").getPath(),"UTF-8");
@@ -252,7 +252,7 @@ package io.github.mianalysis.MIA.Module.ImageMeasurements;
 // //    @Test
 // //    public void testMeasurePCCWholeImage() throws Exception {
 // //        // Creating a new workspace
-// //        WorkspaceCollection workspaces = new WorkspaceCollection();
+// //        Workspaces workspaces = new Workspaces();
 // //        Workspace workspace = workspaces.getNewWorkspace(null,1);
 // //
 // //        // Loading images
@@ -281,7 +281,7 @@ package io.github.mianalysis.MIA.Module.ImageMeasurements;
 // //    @Test
 // //    public void testMeasurePCCMaskImage() throws Exception {
 // //        // Creating a new workspace
-// //        WorkspaceCollection workspaces = new WorkspaceCollection();
+// //        Workspaces workspaces = new Workspaces();
 // //        Workspace workspace = workspaces.getNewWorkspace(null,1);
 // //
 // //        // Loading images

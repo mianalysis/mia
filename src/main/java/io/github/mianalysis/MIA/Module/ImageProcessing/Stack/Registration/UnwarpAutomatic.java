@@ -9,14 +9,14 @@ import bunwarpj.Transformation;
 import bunwarpj.bUnwarpJ_;
 import ij.ImagePlus;
 import ij.process.ImageProcessor;
-import io.github.mianalysis.MIA.Module.ModuleCollection;
+import io.github.mianalysis.MIA.Module.Modules;
 import io.github.mianalysis.MIA.Module.ImageProcessing.Stack.Registration.Abstract.AbstractBUnwarpJRegistration;
 import io.github.mianalysis.MIA.Object.Workspace;
-import io.github.mianalysis.MIA.Object.Parameters.ParameterCollection;
+import io.github.mianalysis.MIA.Object.Parameters.Parameters;
 import io.github.mianalysis.MIA.Process.Interactable.Interactable;
 
 public class UnwarpAutomatic extends AbstractBUnwarpJRegistration implements Interactable {
-    public UnwarpAutomatic(ModuleCollection modules) {
+    public UnwarpAutomatic(Modules modules) {
         super("Unwarp (automatic)", modules);
     }
 
@@ -83,8 +83,8 @@ public class UnwarpAutomatic extends AbstractBUnwarpJRegistration implements Int
     }
 
     @Override
-    public ParameterCollection updateAndGetParameters() {
-        ParameterCollection returnedParameters = new ParameterCollection();
+    public Parameters updateAndGetParameters() {
+        Parameters returnedParameters = new Parameters();
 
         returnedParameters.addAll(super.updateAndGetParameters());
 

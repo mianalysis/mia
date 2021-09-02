@@ -13,24 +13,24 @@ import io.github.mianalysis.MIA.MIA;
 import io.github.mianalysis.MIA.Module.Categories;
 import io.github.mianalysis.MIA.Module.Category;
 import io.github.mianalysis.MIA.Module.Module;
-import io.github.mianalysis.MIA.Module.ModuleCollection;
+import io.github.mianalysis.MIA.Module.Modules;
 import io.github.mianalysis.MIA.Module.ImageProcessing.Pixel.InvertIntensity;
 import io.github.mianalysis.MIA.Object.Image;
 import io.github.mianalysis.MIA.Object.Obj;
-import io.github.mianalysis.MIA.Object.ObjCollection;
+import io.github.mianalysis.MIA.Object.Objs;
 import io.github.mianalysis.MIA.Object.Status;
 import io.github.mianalysis.MIA.Object.Workspace;
 import io.github.mianalysis.MIA.Object.Parameters.ChoiceP;
 import io.github.mianalysis.MIA.Object.Parameters.InputImageP;
 import io.github.mianalysis.MIA.Object.Parameters.InputObjectsP;
-import io.github.mianalysis.MIA.Object.Parameters.ParameterCollection;
+import io.github.mianalysis.MIA.Object.Parameters.Parameters;
 import io.github.mianalysis.MIA.Object.Parameters.SeparatorP;
 import io.github.mianalysis.MIA.Object.Parameters.Objects.OutputObjectsP;
-import io.github.mianalysis.MIA.Object.References.Collections.ImageMeasurementRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.MetadataRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.ObjMeasurementRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.ParentChildRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.PartnerRefCollection;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ImageMeasurementRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.MetadataRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ObjMeasurementRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ParentChildRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.PartnerRefs;
 import io.github.mianalysis.MIA.Process.ColourFactory;
 import io.github.sjcross.common.Object.Point;
 import io.github.sjcross.common.Object.Volume.PointOutOfRangeException;
@@ -64,7 +64,7 @@ public class MaskObjects<T extends RealType<T> & NativeType<T>> extends Module {
     }
 
     public static <T extends RealType<T> & NativeType<T>> Obj maskObject(Obj inputObject, Image maskImage) {
-        ObjCollection tempObjects = new ObjCollection("Mask objects", inputObject.getObjectCollection());
+        Objs tempObjects = new Objs("Mask objects", inputObject.getObjectCollection());
 
         // Creating the mask object
         Obj maskObject = tempObjects.createAndAddNewObject(inputObject.getVolumeType(), inputObject.getID());
@@ -109,7 +109,7 @@ public class MaskObjects<T extends RealType<T> & NativeType<T>> extends Module {
 
     }
 
-    public MaskObjects(ModuleCollection modules) {
+    public MaskObjects(Modules modules) {
         super("Mask objects", modules);
     }
 
@@ -128,7 +128,7 @@ public class MaskObjects<T extends RealType<T> & NativeType<T>> extends Module {
     protected Status process(Workspace workspace) {
         // Getting input objects
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
-        ObjCollection inputObjects = workspace.getObjectSet(inputObjectsName);
+        Objs inputObjects = workspace.getObjectSet(inputObjectsName);
 
         // Getting mask image/objects
         String maskMode = parameters.getValue(MASK_MODE);
@@ -146,7 +146,7 @@ public class MaskObjects<T extends RealType<T> & NativeType<T>> extends Module {
             break;
         case MaskModes.MASK_FROM_OBJECTS_REMOVE_OVERLAP:
         case MaskModes.MASK_FROM_OBJECTS_RETAIN_OVERLAP:
-            ObjCollection maskObjects = workspace.getObjectSet(maskObjectsName);
+            Objs maskObjects = workspace.getObjectSet(maskObjectsName);
             HashMap<Integer, Float> hues = ColourFactory.getSingleColourHues(maskObjects,
                     ColourFactory.SingleColours.WHITE);
             maskImage = maskObjects.convertToImage("Mask", hues, 8, false);
@@ -162,7 +162,7 @@ public class MaskObjects<T extends RealType<T> & NativeType<T>> extends Module {
         String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);
 
         // If necessary, creating an output object collection
-        ObjCollection outputObjects = new ObjCollection(outputObjectsName, inputObjects);
+        Objs outputObjects = new Objs(outputObjectsName, inputObjects);
         switch (outputMode) {
         case OutputModes.CREATE_NEW_OBJECT:
             workspace.addObjects(outputObjects);
@@ -229,8 +229,8 @@ public class MaskObjects<T extends RealType<T> & NativeType<T>> extends Module {
     }
 
     @Override
-    public ParameterCollection updateAndGetParameters() {
-        ParameterCollection returnedParameters = new ParameterCollection();
+    public Parameters updateAndGetParameters() {
+        Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(INPUT_OBJECTS));
@@ -259,23 +259,23 @@ public class MaskObjects<T extends RealType<T> & NativeType<T>> extends Module {
     }
 
     @Override
-    public ImageMeasurementRefCollection updateAndGetImageMeasurementRefs() {
+    public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MetadataRefCollection updateAndGetMetadataReferences() {
+    public MetadataRefs updateAndGetMetadataReferences() {
         return null;
     }
 
     @Override
-    public ParentChildRefCollection updateAndGetParentChildRefs() {
-        ParentChildRefCollection returnedRelationships = new ParentChildRefCollection();
+    public ParentChildRefs updateAndGetParentChildRefs() {
+        ParentChildRefs returnedRelationships = new ParentChildRefs();
 
         switch ((String) parameters.getValue(OBJECT_OUTPUT_MODE)) {
         case OutputModes.CREATE_NEW_OBJECT:
@@ -291,7 +291,7 @@ public class MaskObjects<T extends RealType<T> & NativeType<T>> extends Module {
     }
 
     @Override
-    public PartnerRefCollection updateAndGetPartnerRefs() {
+    public PartnerRefs updateAndGetPartnerRefs() {
         return null;
     }
 

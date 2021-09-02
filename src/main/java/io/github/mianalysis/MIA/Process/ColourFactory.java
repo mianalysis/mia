@@ -6,7 +6,7 @@ import java.util.Random;
 
 import io.github.mianalysis.MIA.Object.Measurement;
 import io.github.mianalysis.MIA.Object.Obj;
-import io.github.mianalysis.MIA.Object.ObjCollection;
+import io.github.mianalysis.MIA.Object.Objs;
 import io.github.sjcross.common.MathFunc.CumStat;
 
 public class ColourFactory {
@@ -27,7 +27,7 @@ public class ColourFactory {
 
     }
 
-    public static HashMap<Integer, Float> getRandomHues(ObjCollection objects) {
+    public static HashMap<Integer, Float> getRandomHues(Objs objects) {
         HashMap<Integer, Float> hues = new HashMap<>();
         if (objects == null)
             return hues;
@@ -46,7 +46,7 @@ public class ColourFactory {
 
     }
 
-    public static HashMap<Integer, Float> getIDHues(ObjCollection objects, boolean normalised) {
+    public static HashMap<Integer, Float> getIDHues(Objs objects, boolean normalised) {
         HashMap<Integer, Float> hues = new HashMap<>();
         if (objects == null)
             return hues;
@@ -67,7 +67,7 @@ public class ColourFactory {
 
     }
 
-    public static HashMap<Integer, Float> getParentIDHues(ObjCollection objects, String parentObjectsName,
+    public static HashMap<Integer, Float> getParentIDHues(Objs objects, String parentObjectsName,
             boolean normalised) {
         HashMap<Integer, Float> hues = new HashMap<>();
         if (objects == null)
@@ -96,7 +96,7 @@ public class ColourFactory {
 
     }
 
-    public static HashMap<Integer, Float> getSingleColourHues(ObjCollection objects, String colour) {
+    public static HashMap<Integer, Float> getSingleColourHues(Objs objects, String colour) {
         HashMap<Integer, Float> hues = new HashMap<>();
         if (objects == null)
             return hues;
@@ -149,7 +149,7 @@ public class ColourFactory {
 
     }
 
-    public static HashMap<Integer, Float> getChildCountHues(ObjCollection objects, String childObjectsName,
+    public static HashMap<Integer, Float> getChildCountHues(Objs objects, String childObjectsName,
             boolean normalised, double[] range) {
         HashMap<Integer, Float> hues = new HashMap<>();
         if (objects == null)
@@ -177,7 +177,7 @@ public class ColourFactory {
             // Default hue value in case none is assigned
             float H = 0f;
 
-            ObjCollection childObjects = object.getChildren(childObjectsName);
+            Objs childObjects = object.getChildren(childObjectsName);
             if (childObjects == null) {
                 hues.put(ID, H);
                 continue;
@@ -198,7 +198,7 @@ public class ColourFactory {
 
     }
 
-    public static HashMap<Integer, Float> getPartnerCountHues(ObjCollection objects, String partnerObjectsName,
+    public static HashMap<Integer, Float> getPartnerCountHues(Objs objects, String partnerObjectsName,
             boolean normalised, double[] range) {
         HashMap<Integer, Float> hues = new HashMap<>();
         if (objects == null)
@@ -226,7 +226,7 @@ public class ColourFactory {
             // Default hue value in case none is assigned
             float H = 0f;
 
-            ObjCollection partnerObjects = object.getPartners(partnerObjectsName);
+            Objs partnerObjects = object.getPartners(partnerObjectsName);
             if (partnerObjects == null) {
                 hues.put(ID, H);
                 continue;
@@ -247,7 +247,7 @@ public class ColourFactory {
 
     }
 
-    public static HashMap<Integer, Float> getMeasurementValueHues(ObjCollection objects, String measurementName,
+    public static HashMap<Integer, Float> getMeasurementValueHues(Objs objects, String measurementName,
             boolean normalised, double[] range) {
         HashMap<Integer, Float> hues = new HashMap<>();
         if (objects == null)
@@ -296,7 +296,7 @@ public class ColourFactory {
 
     }
 
-    public static HashMap<Integer, Float> getParentMeasurementValueHues(ObjCollection objects, String parentObjectsName,
+    public static HashMap<Integer, Float> getParentMeasurementValueHues(Objs objects, String parentObjectsName,
             String measurementName, boolean normalised, double[] range) {
         HashMap<Integer, Float> hues = new HashMap<>();
         if (objects == null)

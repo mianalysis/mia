@@ -1,13 +1,14 @@
 package io.github.mianalysis.MIA.Module.ObjectProcessing.Identification;
 
+import io.github.mianalysis.MIA.MIA;
 import io.github.mianalysis.MIA.Module.Categories;
 import io.github.mianalysis.MIA.Module.Category;
 import io.github.mianalysis.MIA.Module.Module;
-import io.github.mianalysis.MIA.Module.ModuleCollection;
+import io.github.mianalysis.MIA.Module.Modules;
 import io.github.mianalysis.MIA.Object.Image;
 import io.github.mianalysis.MIA.Object.Measurement;
 import io.github.mianalysis.MIA.Object.Obj;
-import io.github.mianalysis.MIA.Object.ObjCollection;
+import io.github.mianalysis.MIA.Object.Objs;
 import io.github.mianalysis.MIA.Object.Status;
 import io.github.mianalysis.MIA.Object.Workspace;
 import io.github.mianalysis.MIA.Object.Parameters.ChoiceP;
@@ -15,16 +16,16 @@ import io.github.mianalysis.MIA.Object.Parameters.ImageMeasurementP;
 import io.github.mianalysis.MIA.Object.Parameters.InputImageP;
 import io.github.mianalysis.MIA.Object.Parameters.InputObjectsP;
 import io.github.mianalysis.MIA.Object.Parameters.ObjectMeasurementP;
-import io.github.mianalysis.MIA.Object.Parameters.ParameterCollection;
+import io.github.mianalysis.MIA.Object.Parameters.Parameters;
 import io.github.mianalysis.MIA.Object.Parameters.SeparatorP;
 import io.github.mianalysis.MIA.Object.Parameters.Objects.OutputObjectsP;
 import io.github.mianalysis.MIA.Object.Parameters.Text.StringP;
-import io.github.mianalysis.MIA.Object.References.ParentChildRef;
-import io.github.mianalysis.MIA.Object.References.Collections.ImageMeasurementRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.MetadataRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.ObjMeasurementRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.ParentChildRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.PartnerRefCollection;
+import io.github.mianalysis.MIA.Object.Refs.ParentChildRef;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ImageMeasurementRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.MetadataRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ObjMeasurementRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ParentChildRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.PartnerRefs;
 import io.github.mianalysis.MIA.Process.CommaSeparatedStringInterpreter;
 import io.github.sjcross.common.Object.Point;
 import io.github.sjcross.common.Object.Volume.PointOutOfRangeException;
@@ -55,7 +56,7 @@ public class ExtractObjectCrossSection extends Module {
 
     }
 
-    public ExtractObjectCrossSection(ModuleCollection modules) {
+    public ExtractObjectCrossSection(Modules modules) {
         super("Extract object cross section", modules);
     }
 
@@ -80,7 +81,7 @@ public class ExtractObjectCrossSection extends Module {
 
     }
 
-    static void process(Obj inputObject, ObjCollection outputObjects, int[] indices) {
+    static void process(Obj inputObject, Objs outputObjects, int[] indices) {
         VolumeType volumeType = inputObject.getVolumeType();
         if (volumeType == VolumeType.OCTREE)
             volumeType = VolumeType.QUADTREE;
@@ -99,7 +100,7 @@ public class ExtractObjectCrossSection extends Module {
                 continue;
 
             for (Point<Integer> point : slice.getCoordinateSet()) {
-                point.setZ(point.getZ() + idx);
+                point.setZ(idx);
                 try {
                     outputObject.add(point);
                 } catch (PointOutOfRangeException e) {
@@ -116,7 +117,7 @@ public class ExtractObjectCrossSection extends Module {
     public Status process(Workspace workspace) {
         // Getting input objects
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
-        ObjCollection inputObjects = workspace.getObjects().get(inputObjectsName);
+        Objs inputObjects = workspace.getObjects().get(inputObjectsName);
 
         // Getting parameters
         String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);
@@ -126,7 +127,7 @@ public class ExtractObjectCrossSection extends Module {
         String objectMeasurementName = parameters.getValue(OBJECT_MEASUREMENT);
         String indicesString = parameters.getValue(RELATIVE_SLICE_INDICES);
 
-        ObjCollection outputObjects = new ObjCollection(outputObjectsName, inputObjects);
+        Objs outputObjects = new Objs(outputObjectsName, inputObjects);
         workspace.addObjects(outputObjects);
 
         int[] indices = CommaSeparatedStringInterpreter.interpretIntegers(indicesString, true);
@@ -181,8 +182,8 @@ public class ExtractObjectCrossSection extends Module {
     }
 
     @Override
-    public ParameterCollection updateAndGetParameters() {
-        ParameterCollection returnedParameters = new ParameterCollection();
+    public Parameters updateAndGetParameters() {
+        Parameters returnedParameters = new Parameters();
         returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(INPUT_OBJECTS));
         returnedParameters.add(parameters.getParameter(OUTPUT_OBJECTS));
@@ -212,23 +213,23 @@ public class ExtractObjectCrossSection extends Module {
     }
 
     @Override
-    public ImageMeasurementRefCollection updateAndGetImageMeasurementRefs() {
+    public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MetadataRefCollection updateAndGetMetadataReferences() {
+    public MetadataRefs updateAndGetMetadataReferences() {
         return null;
     }
 
     @Override
-    public ParentChildRefCollection updateAndGetParentChildRefs() {
-        ParentChildRefCollection returnedRelationships = new ParentChildRefCollection();
+    public ParentChildRefs updateAndGetParentChildRefs() {
+        ParentChildRefs returnedRelationships = new ParentChildRefs();
 
         String inputObjects = parameters.getValue(INPUT_OBJECTS);
         String outputObjects = parameters.getValue(OUTPUT_OBJECTS);
@@ -240,7 +241,7 @@ public class ExtractObjectCrossSection extends Module {
     }
 
     @Override
-    public PartnerRefCollection updateAndGetPartnerRefs() {
+    public PartnerRefs updateAndGetPartnerRefs() {
         return null;
     }
 
@@ -250,19 +251,36 @@ public class ExtractObjectCrossSection extends Module {
     }
 
     void addParameterDescriptions() {
-        parameters.get(INPUT_OBJECTS).setDescription("Input objects from workspace for which cross-sections will be extracted.");
+        parameters.get(INPUT_OBJECTS).setDescription(
+                "Input objects from workspace for which cross-sections will be extracted.  Output cross-section objects will be stored as children associated with the relevant input object.");
 
-        parameters.get(OUTPUT_OBJECTS).setDescription("Output cross-section objects.  These will be stored in the workspace with this name.");
+        parameters.get(OUTPUT_OBJECTS).setDescription(
+                "Output cross-section objects.  These will be stored in the workspace with this name.  These objects will be children of their respective input object.");
 
-        // parameters.get(REFERENCE_MODE).setDescription("<li>");
+        parameters.get(REFERENCE_MODE).setDescription("The source for the reference Z-position for each object:<br><ul>"
 
-        // parameters.get(RELATIVE_SLICE_INDICES).setDescription();
+                + "<li>\"" + ReferenceModes.ABSOLUTE + "\" The slice indices specified by \"" + RELATIVE_SLICE_INDICES
+                + "\" correspond to the absolute slice index of the coordinates.  For example, an index of 0 will extract the first slice and indices of \"3-5\" will load the 4th, 5th and 6th slices (note the use of zero-based indexing).</li>"
 
-        // parameters.get(IMAGE_MEASUREMENT).setDescription();
+                + "<li>\"" + ReferenceModes.IMAGE_MEASUREMENT
+                + "\" The reference slice index will be taken from a measurement (specified by \"" + IMAGE_MEASUREMENT
+                + "\") associated with an image from the workspace (specified by \"" + IMAGE_FOR_MEASUREMENT
+                + "\").  The slices indices specified by \"" + RELATIVE_SLICE_INDICES
+                + "\" will be relative to this measurement value.  For example, with an image measurement of 4 and specified index of \"-2\", the 3rd slice will be extracted (i.e. 2 below 4 using zero-based indexing).</li>"
 
-        // parameters.get(IMAGE_FOR_MEASUREMENT).setDescription();
+                + "<li>\"" + ReferenceModes.OBJECT_MEASUREMENT
+                + "\" The reference slice index will be taken from a measurement (specified by \"" + OBJECT_MEASUREMENT
+                + "\") associated with the object being processed.  The slices indices specified by \""
+                + RELATIVE_SLICE_INDICES
+                + "\" will be relative to this measurement value.  For example, for an object with measurement value of 2 and specified index of \"3\", the 6th slice will be extracted (i.e. 3 above 2 using zero-based indexing).</li></ul>");
 
-        // parameters.get(OBJECT_MEASUREMENT).setDescription();
+        parameters.get(RELATIVE_SLICE_INDICES).setDescription("Slices from the input objects will be extracted at these relative indices (relative to the position specified the \""+REFERENCE_MODE+"\" and associated parameters).  Indices can be specified as a comma-separated list, using a range (e.g. \"4-7\" will extract relative indices 4,5,6 and 7) or as a range extracting every nth slice (e.g. \"4-10-2\" will extract slices 4,6,8 and 10).  The \"end\" keyword will be converted to the maximum slice index at runtime.");
+
+        parameters.get(IMAGE_MEASUREMENT).setDescription("If \""+REFERENCE_MODE+"\" is set to \""+ReferenceModes.IMAGE_MEASUREMENT+"\", this is the measurement (associated with the image specified by \""+IMAGE_FOR_MEASUREMENT+"\") which will act as the reference slice index against which the relative slice indices are calculated.");
+
+        parameters.get(IMAGE_FOR_MEASUREMENT).setDescription("If \""+REFERENCE_MODE+"\" is set to \""+ReferenceModes.IMAGE_MEASUREMENT+"\", this is the image from which the reference measurement (specified by \""+IMAGE_MEASUREMENT+"\") will be taken.");
+
+        parameters.get(OBJECT_MEASUREMENT).setDescription("If \""+REFERENCE_MODE+"\" is set to \""+ReferenceModes.OBJECT_MEASUREMENT+"\", this is the measurement (associated with the relevant input object) which will act as the reference slice index against which the relative slice indices are calculated.");
 
     }
 }

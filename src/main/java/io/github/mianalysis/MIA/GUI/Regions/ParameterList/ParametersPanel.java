@@ -18,21 +18,21 @@ import javax.swing.border.EtchedBorder;
 import io.github.mianalysis.MIA.GUI.ComponentFactory;
 import io.github.mianalysis.MIA.GUI.GUI;
 import io.github.mianalysis.MIA.Module.Module;
-import io.github.mianalysis.MIA.Module.ModuleCollection;
+import io.github.mianalysis.MIA.Module.Modules;
 import io.github.mianalysis.MIA.Module.Core.InputControl;
 import io.github.mianalysis.MIA.Module.Core.OutputControl;
 import io.github.mianalysis.MIA.Object.Parameters.OutputImageP;
-import io.github.mianalysis.MIA.Object.Parameters.ParameterCollection;
+import io.github.mianalysis.MIA.Object.Parameters.Parameters;
 import io.github.mianalysis.MIA.Object.Parameters.ParameterGroup;
 import io.github.mianalysis.MIA.Object.Parameters.AdjustParameters;
 import io.github.mianalysis.MIA.Object.Parameters.Abstract.Parameter;
 import io.github.mianalysis.MIA.Object.Parameters.Objects.OutputObjectsP;
-import io.github.mianalysis.MIA.Object.References.Abstract.ExportableRef;
-import io.github.mianalysis.MIA.Object.References.Abstract.SummaryRef;
-import io.github.mianalysis.MIA.Object.References.Collections.ImageMeasurementRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.MetadataRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.ObjMeasurementRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.RefCollection;
+import io.github.mianalysis.MIA.Object.Refs.Abstract.ExportableRef;
+import io.github.mianalysis.MIA.Object.Refs.Abstract.SummaryRef;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ImageMeasurementRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.MetadataRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ObjMeasurementRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.Refs;
 import io.github.mianalysis.MIA.Process.AnalysisHandling.Analysis;
 
 public class ParametersPanel extends JScrollPane {
@@ -65,7 +65,7 @@ public class ParametersPanel extends JScrollPane {
 
     public void updatePanel(Module module) {
         Analysis analysis = GUI.getAnalysis();
-        ModuleCollection modules = GUI.getModules();
+        Modules modules = GUI.getModules();
 
         ComponentFactory componentFactory = GUI.getComponentFactory();
         InputControl inputControl = analysis.getModules().getInputControl();
@@ -112,20 +112,20 @@ public class ParametersPanel extends JScrollPane {
         // If selected, adding the measurement selector for output control
         String exportMode = outputControl.getParameterValue(OutputControl.EXPORT_MODE);
         if (module.getClass().isInstance(new OutputControl(modules)) && outputControl.isEnabled() &! exportMode.equals(OutputControl.ExportModes.NONE)) {
-            MetadataRefCollection metadataRefs = modules.getMetadataRefs();
+            MetadataRefs metadataRefs = modules.getMetadataRefs();
             addRefExportControls(metadataRefs,"Metadata",componentFactory,c);
 
             LinkedHashSet<OutputImageP> imageNameParameters = modules.getAvailableImages(null);
             for (OutputImageP imageNameParameter:imageNameParameters) {
                 String imageName = imageNameParameter.getImageName();
-                ImageMeasurementRefCollection measurementReferences = modules.getImageMeasurementRefs(imageName);
+                ImageMeasurementRefs measurementReferences = modules.getImageMeasurementRefs(imageName);
                 addRefExportControls(measurementReferences,imageName+" (Image)",componentFactory,c);
             }
 
             LinkedHashSet<OutputObjectsP> objectNameParameters = modules.getAvailableObjects(null);
             for (OutputObjectsP objectNameParameter:objectNameParameters) {
                 String objectName = objectNameParameter.getObjectsName();
-                ObjMeasurementRefCollection measurementReferences = modules.getObjectMeasurementRefs(objectName);
+                ObjMeasurementRefs measurementReferences = modules.getObjectMeasurementRefs(objectName);
                 addSummaryRefExportControls(measurementReferences,objectName+" (Object)",componentFactory,c);
             }            
         }
@@ -147,7 +147,7 @@ public class ParametersPanel extends JScrollPane {
 
     }
 
-    void addRefExportControls(RefCollection<? extends ExportableRef> refs, String header, ComponentFactory componentFactory, GridBagConstraints c) {
+    void addRefExportControls(Refs<? extends ExportableRef> refs, String header, ComponentFactory componentFactory, GridBagConstraints c) {
         if (refs.values().size() == 0) return;
 
         JPanel  measurementHeader = componentFactory.createRefExportHeader(header,refs,false);
@@ -167,7 +167,7 @@ public class ParametersPanel extends JScrollPane {
         }
     }
 
-    void addSummaryRefExportControls(RefCollection<? extends SummaryRef> refs, String header, ComponentFactory componentFactory, GridBagConstraints c) {
+    void addSummaryRefExportControls(Refs<? extends SummaryRef> refs, String header, ComponentFactory componentFactory, GridBagConstraints c) {
         if (refs.values().size() == 0) return;
 
         JPanel  measurementHeader = componentFactory.createRefExportHeader(header,refs,true);
@@ -204,10 +204,10 @@ public class ParametersPanel extends JScrollPane {
 
     public void addAdvancedParameterGroupControl(ParameterGroup group, Module module, GridBagConstraints c) {
         // Iterating over each collection of Parameters.  After adding each one, a remove button is included
-        LinkedHashMap<Integer, ParameterCollection> collections = group.getCollections(true);
+        LinkedHashMap<Integer, Parameters> collections = group.getCollections(true);
 
         for (int collectionIdx : collections.keySet()) {
-            ParameterCollection collection = collections.get(collectionIdx);
+            Parameters collection = collections.get(collectionIdx);
             // Adding the individual parameters
             for (Parameter parameter:collection.values()) addAdvancedParameterControl(parameter,c);
 

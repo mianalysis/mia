@@ -48,7 +48,7 @@
 //    public Status process(Workspace workspace) {
 //        // Getting input objects
 //        String inputObjectsName = parameters.getValue(TRACK_OBJECTS);
-//        ObjCollection inputObjects = workspace.getObjects().get(inputObjectsName);
+//        Objs inputObjects = workspace.getObjects().get(inputObjectsName);
 //
 //        // Getting classification file and storing classifications as HashMap that can be easily read later on
 //        String classificationFilePath = parameters.getValue(CLASSIFICATION_FILE);
@@ -116,7 +116,7 @@
 //        parameters.addRef(new InputObjectsP(TRACK_OBJECTS,this));
 //        parameters.addRef(new FilePathP(CLASSIFICATION_FILE, this));
 //
-//        ParameterCollection collection = new ParameterCollection();
+//        Parameters collection = new Parameters();
 //        collection.addRef(new ObjectMeasurementP(MEASUREMENT,this));
 //        parameters.addRef(new ParameterGroup(ADD_MEASUREMENT,this,collection));
 //        parameters.addRef(new BooleanP(REMOVE_MISSING, this,false));
@@ -124,12 +124,12 @@
 //    }
 //
 //    @Override
-//    public ParameterCollection updateAndGetParameters() {
+//    public Parameters updateAndGetParameters() {
 //        String inputObjectsName = parameters.getValue(TRACK_OBJECTS);
 //
 //        ParameterGroup parameterGroup = parameters.getParameter(ADD_MEASUREMENT);
-//        LinkedHashMap<Integer,ParameterCollection> collections = parameterGroup.getCollections();
-//        for (ParameterCollection collection:collections.values()) {
+//        LinkedHashMap<Integer,Parameters> collections = parameterGroup.getCollections();
+//        for (Parameters collection:collections.values()) {
 //            ((ObjectMeasurementP) collection.getParameter(MEASUREMENT)).setObjectName(inputObjectsName);
 //        }
 //
@@ -138,12 +138,12 @@
 //    }
 //
 //    @Override
-//    public ObjMeasurementRefCollection updateAndGetImageMeasurementRefs() {
+//    public ObjMeasurementRefs updateAndGetImageMeasurementRefs() {
 //        return null;
 //    }
 //
 //    @Override
-//    public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+//    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
 //        objectMeasurementRefs.setAllAvailable(false);
 //
 //        MeasurementRef classMeas = objectMeasurementRefs.getOrPut(Measurements.CLASS);
@@ -155,12 +155,12 @@
 //    }
 //
 //    @Override
-//    public MetadataRefCollection updateAndGetMetadataReferences() {
+//    public MetadataRefs updateAndGetMetadataReferences() {
 //        return null;
 //    }
 //
 //    @Override
-//    public ParentChildRefCollection updateAndGetParentChildRefs() {
+//    public ParentChildRefs updateAndGetParentChildRefs() {
 //        return null;
 //    }
 //

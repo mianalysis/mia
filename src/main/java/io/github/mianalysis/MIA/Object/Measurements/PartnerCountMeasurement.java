@@ -2,7 +2,7 @@ package io.github.mianalysis.MIA.Object.Measurements;
 
 import io.github.mianalysis.MIA.Object.Measurement;
 import io.github.mianalysis.MIA.Object.Obj;
-import io.github.mianalysis.MIA.Object.ObjCollection;
+import io.github.mianalysis.MIA.Object.Objs;
 
 public class PartnerCountMeasurement extends Measurement {
     private Obj obj;
@@ -15,7 +15,7 @@ public class PartnerCountMeasurement extends Measurement {
     }
     
     public double getValue() {
-        ObjCollection partners = obj.getPartners(partnerName);
+        Objs partners = obj.getPartners(partnerName);
 
         if (partners == null)
             return 0;

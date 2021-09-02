@@ -5,7 +5,7 @@ import org.xml.sax.SAXException;
 import io.github.mianalysis.MIA.MIA;
 import io.github.mianalysis.MIA.Module.InputOutput.ImageLoader;
 import io.github.mianalysis.MIA.Module.Module;
-import io.github.mianalysis.MIA.Module.ModuleCollection;
+import io.github.mianalysis.MIA.Module.Modules;
 import io.github.mianalysis.MIA.Process.AnalysisHandling.Analysis;
 import io.github.mianalysis.MIA.Process.AnalysisHandling.AnalysisReader;
 import io.github.mianalysis.MIA.Process.AnalysisHandling.AnalysisRunner;
@@ -39,7 +39,7 @@ public class GUIAnalysisHandler {
         }
 
         Analysis analysis = new Analysis();
-        ModuleCollection modules = analysis.getModules();
+        Modules modules = analysis.getModules();
         modules.add(new ImageLoader<>(modules));
 
         GUI.setAnalysis(analysis);
@@ -144,7 +144,7 @@ public class GUIAnalysisHandler {
             return;
 
         // Getting lowest index
-        ModuleCollection modules = GUI.getAnalysis().getModules();
+        Modules modules = GUI.getAnalysis().getModules();
         int lowestIdx = modules.indexOf(activeModules[0]);
         if (lowestIdx <= lastModuleEval)
             GUI.setLastModuleEval(lowestIdx - 1);
@@ -165,7 +165,7 @@ public class GUIAnalysisHandler {
     public static void moveModuleUp() {
         GUI.addUndo();
 
-        ModuleCollection modules = GUI.getAnalysis().getModules();
+        Modules modules = GUI.getAnalysis().getModules();
         Module[] selectedModules = GUI.getSelectedModules();
         if (selectedModules == null)
             return;
@@ -189,7 +189,7 @@ public class GUIAnalysisHandler {
     public static void moveModuleDown() {
         GUI.addUndo();
 
-        ModuleCollection modules = GUI.getAnalysis().getModules();
+        Modules modules = GUI.getAnalysis().getModules();
         Module[] selectedModules = GUI.getSelectedModules();
         if (selectedModules == null)
             return;
@@ -217,7 +217,7 @@ public class GUIAnalysisHandler {
         if (selectedModules.length == 0)
             return;
 
-        ModuleCollection copyModules = new ModuleCollection();
+        Modules copyModules = new Modules();
         copyModules.addAll(Arrays.asList(selectedModules));
 
         try {
@@ -247,16 +247,16 @@ public class GUIAnalysisHandler {
 
             GUI.addUndo();
             Module toModule = selectedModules[selectedModules.length - 1];
-            ModuleCollection modules = GUI.getModules();
+            Modules modules = GUI.getModules();
             int toIdx = modules.indexOf(toModule);
 
             Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-            // DataFlavor dataFlavor = new ModuleCollectionDataFlavor();
+            // DataFlavor dataFlavor = new ModulesDataFlavor();
             Transferable contents = clipboard.getContents(null);
             String copyString = (String) contents.getTransferData(DataFlavor.stringFlavor);
-            ModuleCollection pasteModules = AnalysisReader.loadAnalysis(copyString).getModules();
+            Modules pasteModules = AnalysisReader.loadAnalysis(copyString).getModules();
 
-            // Ensuring the copied modules are linked to the present ModuleCollection and
+            // Ensuring the copied modules are linked to the present Modules and
             // have a unique ID
             for (Module module : pasteModules.values()) {
                 module.setModules(modules);

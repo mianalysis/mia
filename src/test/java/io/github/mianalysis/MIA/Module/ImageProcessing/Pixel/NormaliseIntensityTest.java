@@ -11,11 +11,11 @@ import org.junit.jupiter.api.Test;
 import ij.IJ;
 import ij.ImagePlus;
 import io.github.mianalysis.MIA.Module.Module;
-import io.github.mianalysis.MIA.Module.ModuleCollection;
+import io.github.mianalysis.MIA.Module.Modules;
 import io.github.mianalysis.MIA.Module.ModuleTest;
 import io.github.mianalysis.MIA.Object.Image;
 import io.github.mianalysis.MIA.Object.Workspace;
-import io.github.mianalysis.MIA.Object.WorkspaceCollection;
+import io.github.mianalysis.MIA.Object.Workspaces;
 
 public class NormaliseIntensityTest extends ModuleTest {
     @BeforeAll
@@ -31,7 +31,7 @@ public class NormaliseIntensityTest extends ModuleTest {
     @Test
     public void testNormaliseIntensity8bit2D() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
@@ -44,7 +44,7 @@ public class NormaliseIntensityTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
-        NormaliseIntensity normaliseIntensity = new NormaliseIntensity(new ModuleCollection());
+        NormaliseIntensity normaliseIntensity = new NormaliseIntensity(new Modules());
         normaliseIntensity.updateParameterValue(NormaliseIntensity.INPUT_IMAGE,"Test_image");
         normaliseIntensity.updateParameterValue(NormaliseIntensity.APPLY_TO_INPUT,false);
         normaliseIntensity.updateParameterValue(NormaliseIntensity.OUTPUT_IMAGE,"Test_output");
@@ -66,7 +66,7 @@ public class NormaliseIntensityTest extends ModuleTest {
     @Test
     public void testNormaliseIntensity8bit3D() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
@@ -79,7 +79,7 @@ public class NormaliseIntensityTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
-        NormaliseIntensity normaliseIntensity = new NormaliseIntensity(new ModuleCollection());
+        NormaliseIntensity normaliseIntensity = new NormaliseIntensity(new Modules());
         normaliseIntensity.updateParameterValue(NormaliseIntensity.INPUT_IMAGE,"Test_image");
         normaliseIntensity.updateParameterValue(NormaliseIntensity.APPLY_TO_INPUT,false);
         normaliseIntensity.updateParameterValue(NormaliseIntensity.OUTPUT_IMAGE,"Test_output");
@@ -101,7 +101,7 @@ public class NormaliseIntensityTest extends ModuleTest {
     @Test
     public void testNormaliseIntensity8bit4D() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
@@ -114,7 +114,7 @@ public class NormaliseIntensityTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
-        NormaliseIntensity normaliseIntensity = new NormaliseIntensity(new ModuleCollection());
+        NormaliseIntensity normaliseIntensity = new NormaliseIntensity(new Modules());
         normaliseIntensity.updateParameterValue(NormaliseIntensity.INPUT_IMAGE,"Test_image");
         normaliseIntensity.updateParameterValue(NormaliseIntensity.APPLY_TO_INPUT,false);
         normaliseIntensity.updateParameterValue(NormaliseIntensity.OUTPUT_IMAGE,"Test_output");
@@ -136,7 +136,7 @@ public class NormaliseIntensityTest extends ModuleTest {
     @Test
     public void testNormaliseIntensity8bit5D() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
@@ -149,7 +149,7 @@ public class NormaliseIntensityTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
-        NormaliseIntensity normaliseIntensity = new NormaliseIntensity(new ModuleCollection());
+        NormaliseIntensity normaliseIntensity = new NormaliseIntensity(new Modules());
         normaliseIntensity.updateParameterValue(NormaliseIntensity.INPUT_IMAGE,"Test_image");
         normaliseIntensity.updateParameterValue(NormaliseIntensity.APPLY_TO_INPUT,false);
         normaliseIntensity.updateParameterValue(NormaliseIntensity.OUTPUT_IMAGE,"Test_output");
@@ -171,7 +171,7 @@ public class NormaliseIntensityTest extends ModuleTest {
     @Test
     public void testNormaliseIntensity16bit3D() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
@@ -184,7 +184,7 @@ public class NormaliseIntensityTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
-        NormaliseIntensity normaliseIntensity = new NormaliseIntensity(new ModuleCollection());
+        NormaliseIntensity normaliseIntensity = new NormaliseIntensity(new Modules());
         normaliseIntensity.updateParameterValue(NormaliseIntensity.INPUT_IMAGE,"Test_image");
         normaliseIntensity.updateParameterValue(NormaliseIntensity.APPLY_TO_INPUT,false);
         normaliseIntensity.updateParameterValue(NormaliseIntensity.OUTPUT_IMAGE,"Test_output");
@@ -206,7 +206,7 @@ public class NormaliseIntensityTest extends ModuleTest {
     @Test
     public void testNormaliseIntensity32bitOverOne3D() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
@@ -219,7 +219,7 @@ public class NormaliseIntensityTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
-        NormaliseIntensity normaliseIntensity = new NormaliseIntensity(new ModuleCollection());
+        NormaliseIntensity normaliseIntensity = new NormaliseIntensity(new Modules());
         normaliseIntensity.updateParameterValue(NormaliseIntensity.INPUT_IMAGE,"Test_image");
         normaliseIntensity.updateParameterValue(NormaliseIntensity.APPLY_TO_INPUT,false);
         normaliseIntensity.updateParameterValue(NormaliseIntensity.OUTPUT_IMAGE,"Test_output");
@@ -241,7 +241,7 @@ public class NormaliseIntensityTest extends ModuleTest {
     @Test
     public void testNormaliseIntensity32bitUnderOne3D() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
@@ -254,7 +254,7 @@ public class NormaliseIntensityTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
-        NormaliseIntensity normaliseIntensity = new NormaliseIntensity(new ModuleCollection());
+        NormaliseIntensity normaliseIntensity = new NormaliseIntensity(new Modules());
         normaliseIntensity.updateParameterValue(NormaliseIntensity.INPUT_IMAGE,"Test_image");
         normaliseIntensity.updateParameterValue(NormaliseIntensity.APPLY_TO_INPUT,false);
         normaliseIntensity.updateParameterValue(NormaliseIntensity.OUTPUT_IMAGE,"Test_output");
@@ -276,7 +276,7 @@ public class NormaliseIntensityTest extends ModuleTest {
     @Test
     public void testRunDoApply8bit3D() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
@@ -289,7 +289,7 @@ public class NormaliseIntensityTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
-        NormaliseIntensity normaliseIntensity = new NormaliseIntensity(new ModuleCollection());
+        NormaliseIntensity normaliseIntensity = new NormaliseIntensity(new Modules());
         normaliseIntensity.updateParameterValue(NormaliseIntensity.INPUT_IMAGE,"Test_image");
         normaliseIntensity.updateParameterValue(NormaliseIntensity.APPLY_TO_INPUT,true);
 
@@ -309,7 +309,7 @@ public class NormaliseIntensityTest extends ModuleTest {
     @Test
     public void testNormaliseIntensity8bit2DClipPrecise() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
@@ -322,7 +322,7 @@ public class NormaliseIntensityTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
-        NormaliseIntensity normaliseIntensity = new NormaliseIntensity(new ModuleCollection());
+        NormaliseIntensity normaliseIntensity = new NormaliseIntensity(new Modules());
         normaliseIntensity.updateParameterValue(NormaliseIntensity.INPUT_IMAGE,"Test_image");
         normaliseIntensity.updateParameterValue(NormaliseIntensity.APPLY_TO_INPUT,false);
         normaliseIntensity.updateParameterValue(NormaliseIntensity.OUTPUT_IMAGE,"Test_output");

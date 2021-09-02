@@ -3,12 +3,12 @@ package io.github.mianalysis.MIA.Object.Parameters;
 import java.util.LinkedHashMap;
 
 import io.github.mianalysis.MIA.Object.Parameters.Abstract.Parameter;
-import io.github.mianalysis.MIA.Object.References.Collections.RefCollection;
+import io.github.mianalysis.MIA.Object.Refs.Collections.Refs;
 
 /**
  * Created by sc13967 on 02/05/2017.
  */
-public class ParameterCollection extends LinkedHashMap<String, Parameter> implements RefCollection<Parameter> {
+public class Parameters extends LinkedHashMap<String, Parameter> implements Refs<Parameter> {
 
     // PUBLIC METHODS
 
@@ -22,13 +22,13 @@ public class ParameterCollection extends LinkedHashMap<String, Parameter> implem
         return true;
     }
 
-    public void addAll(ParameterCollection parameterCollection) {
+    public void addAll(Parameters parameterCollection) {
         for (Parameter parameter : parameterCollection.values())
             add(parameter);
 
     }
 
-    public void removeAll(ParameterCollection parameterCollection) {
+    public void removeAll(Parameters parameterCollection) {
         for (Parameter parameter : parameterCollection.values())
             remove(parameter);
     }
@@ -61,7 +61,7 @@ public class ParameterCollection extends LinkedHashMap<String, Parameter> implem
                 return true;
 
             if (parameter instanceof ParameterGroup) {
-                for (ParameterCollection collection : ((ParameterGroup) parameter).getCollections(true).values()) {
+                for (Parameters collection : ((ParameterGroup) parameter).getCollections(true).values()) {
                     if (collection.invalidParameterIsVisible())
                         return true;
                 }
@@ -78,7 +78,7 @@ public class ParameterCollection extends LinkedHashMap<String, Parameter> implem
                 return true;
 
             if (parameter instanceof ParameterGroup) {
-                for (ParameterCollection collection : ((ParameterGroup) parameter).getCollections(true).values()) {
+                for (Parameters collection : ((ParameterGroup) parameter).getCollections(true).values()) {
                     if (collection.hasVisibleParameters())
                         return true;
                 }
@@ -89,8 +89,8 @@ public class ParameterCollection extends LinkedHashMap<String, Parameter> implem
 
     }
 
-    public ParameterCollection duplicate() {
-        ParameterCollection copyParameters = new ParameterCollection();
+    public Parameters duplicate() {
+        Parameters copyParameters = new Parameters();
 
         for (Parameter parameter : values())
             copyParameters.add(parameter.duplicate(parameter.getModule()));

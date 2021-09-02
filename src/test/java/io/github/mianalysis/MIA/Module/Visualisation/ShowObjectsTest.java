@@ -11,7 +11,7 @@ import io.github.mianalysis.MIA.Module.Module;
 import io.github.mianalysis.MIA.Module.ModuleTest;
 import io.github.mianalysis.MIA.Module.ObjectProcessing.Miscellaneous.ConvertObjectsToImage;
 import io.github.mianalysis.MIA.Object.Image;
-import io.github.mianalysis.MIA.Object.ObjCollection;
+import io.github.mianalysis.MIA.Object.Objs;
 import io.github.mianalysis.MIA.Process.ColourFactory;
 import io.github.sjcross.common.Object.Volume.VolumeType;
 
@@ -54,7 +54,7 @@ public class ShowObjectsTest extends ModuleTest {
         String calibratedUnits = "µm";
 
         // Initialising object store
-        ObjCollection testObjects = new Objects3D(volumeType).getObjects(objectName, ExpectedObjects.Mode.SIXTEEN_BIT,dppXY,dppZ,calibratedUnits,false);
+        Objs testObjects = new Objects3D(volumeType).getObjects(objectName, ExpectedObjects.Mode.SIXTEEN_BIT,dppXY,dppZ,calibratedUnits,false);
 
         // Loading a reference image
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/LabelledObjects/LabelledObjects3D_32bit.tif").getPath(),"UTF-8");

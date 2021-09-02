@@ -5,7 +5,7 @@ import java.util.HashMap;
 
 import io.github.mianalysis.MIA.Object.Measurement;
 import io.github.mianalysis.MIA.Object.Obj;
-import io.github.mianalysis.MIA.Object.ObjCollection;
+import io.github.mianalysis.MIA.Object.Objs;
 
 public class LabelFactory {
     public interface LabelModes {
@@ -49,7 +49,7 @@ public class LabelFactory {
 
     }
 
-    public static HashMap<Integer, String> getChildCountLabels(ObjCollection objects, String childObjectsName,
+    public static HashMap<Integer, String> getChildCountLabels(Objs objects, String childObjectsName,
             DecimalFormat df) {
         HashMap<Integer, String> IDs = new HashMap<>();
         if (objects == null)
@@ -67,7 +67,7 @@ public class LabelFactory {
 
     }
 
-    public static HashMap<Integer, String> getIDLabels(ObjCollection objects, DecimalFormat df) {
+    public static HashMap<Integer, String> getIDLabels(Objs objects, DecimalFormat df) {
         HashMap<Integer, String> IDs = new HashMap<>();
         if (objects == null)
             return IDs;
@@ -79,7 +79,7 @@ public class LabelFactory {
 
     }
 
-    public static HashMap<Integer, String> getParentIDLabels(ObjCollection objects, String parentObjectsName,
+    public static HashMap<Integer, String> getParentIDLabels(Objs objects, String parentObjectsName,
             DecimalFormat df) {
         HashMap<Integer, String> IDs = new HashMap<>();
         if (objects == null)
@@ -97,7 +97,7 @@ public class LabelFactory {
 
     }
 
-    public static HashMap<Integer, String> getMeasurementLabels(ObjCollection objects, String measurementName,
+    public static HashMap<Integer, String> getMeasurementLabels(Objs objects, String measurementName,
             DecimalFormat df) {
         HashMap<Integer, String> IDs = new HashMap<>();
         if (objects == null)
@@ -115,7 +115,7 @@ public class LabelFactory {
 
     }
 
-    public static HashMap<Integer, String> getParentMeasurementLabels(ObjCollection objects, String parentObjectsName,
+    public static HashMap<Integer, String> getParentMeasurementLabels(Objs objects, String parentObjectsName,
             String measurementName, DecimalFormat df) {
         HashMap<Integer, String> IDs = new HashMap<>();
         if (objects == null)
@@ -137,7 +137,7 @@ public class LabelFactory {
 
     }
 
-    public static HashMap<Integer, String> getPartnerCountLabels(ObjCollection objects, String partnerObjectsName,
+    public static HashMap<Integer, String> getPartnerCountLabels(Objs objects, String partnerObjectsName,
             DecimalFormat df) {
         HashMap<Integer, String> IDs = new HashMap<>();
         if (objects == null)

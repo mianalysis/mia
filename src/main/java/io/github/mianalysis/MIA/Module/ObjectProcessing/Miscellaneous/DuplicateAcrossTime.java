@@ -3,27 +3,27 @@ package io.github.mianalysis.MIA.Module.ObjectProcessing.Miscellaneous;
 import io.github.mianalysis.MIA.Module.Categories;
 import io.github.mianalysis.MIA.Module.Category;
 import io.github.mianalysis.MIA.Module.Module;
-import io.github.mianalysis.MIA.Module.ModuleCollection;
+import io.github.mianalysis.MIA.Module.Modules;
 import io.github.mianalysis.MIA.Object.Colours;
 import io.github.mianalysis.MIA.Object.Measurement;
 import io.github.mianalysis.MIA.Object.Obj;
-import io.github.mianalysis.MIA.Object.ObjCollection;
+import io.github.mianalysis.MIA.Object.Objs;
 import io.github.mianalysis.MIA.Object.Status;
 import io.github.mianalysis.MIA.Object.Workspace;
 import io.github.mianalysis.MIA.Object.Parameters.ChoiceP;
 import io.github.mianalysis.MIA.Object.Parameters.ImageMeasurementP;
 import io.github.mianalysis.MIA.Object.Parameters.InputImageP;
 import io.github.mianalysis.MIA.Object.Parameters.InputObjectsP;
-import io.github.mianalysis.MIA.Object.Parameters.ParameterCollection;
+import io.github.mianalysis.MIA.Object.Parameters.Parameters;
 import io.github.mianalysis.MIA.Object.Parameters.SeparatorP;
 import io.github.mianalysis.MIA.Object.Parameters.Objects.OutputObjectsP;
 import io.github.mianalysis.MIA.Object.Parameters.Text.IntegerP;
 import io.github.mianalysis.MIA.Object.Parameters.Text.MessageP;
-import io.github.mianalysis.MIA.Object.References.Collections.ImageMeasurementRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.MetadataRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.ObjMeasurementRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.ParentChildRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.PartnerRefCollection;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ImageMeasurementRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.MetadataRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ObjMeasurementRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ParentChildRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.PartnerRefs;
 import io.github.sjcross.common.Object.Point;
 import io.github.sjcross.common.Object.Volume.PointOutOfRangeException;
 
@@ -67,11 +67,11 @@ public class DuplicateAcrossTime extends Module {
 
     }
 
-    public static ObjCollection duplicate(ObjCollection inputObjects, String outputObjectsName, String storageMode,
+    public static Objs duplicate(Objs inputObjects, String outputObjectsName, String storageMode,
             int startFrame, int endFrame) {
         // Creating output object collection
         int nFrames = endFrame - startFrame + 1;
-        ObjCollection outputObjects = new ObjCollection(outputObjectsName, inputObjects.getSpatialCalibration(),
+        Objs outputObjects = new Objs(outputObjectsName, inputObjects.getSpatialCalibration(),
                 nFrames, inputObjects.getFrameInterval(), inputObjects.getTemporalUnit());
 
         String name = new DuplicateAcrossTime(null).getName();
@@ -113,7 +113,7 @@ public class DuplicateAcrossTime extends Module {
 
     }
 
-    public DuplicateAcrossTime(ModuleCollection modules) {
+    public DuplicateAcrossTime(Modules modules) {
         super("Duplicate objects across time", modules);
     }
 
@@ -131,7 +131,7 @@ public class DuplicateAcrossTime extends Module {
     public Status process(Workspace workspace) {
         // Getting input objects
         String inputObjectName = parameters.getValue(INPUT_OBJECTS);
-        ObjCollection inputObjects = workspace.getObjects().get(inputObjectName);
+        Objs inputObjects = workspace.getObjects().get(inputObjectName);
 
         // Getting parameters
         String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);
@@ -165,7 +165,7 @@ public class DuplicateAcrossTime extends Module {
         }
 
         // Duplicating objects
-        ObjCollection outputObjects = duplicate(inputObjects, outputObjectsName, storageMode, startFrame, endFrame);
+        Objs outputObjects = duplicate(inputObjects, outputObjectsName, storageMode, startFrame, endFrame);
         workspace.addObjects(outputObjects);
 
         if (showOutput)
@@ -204,8 +204,8 @@ public class DuplicateAcrossTime extends Module {
     }
 
     @Override
-    public ParameterCollection updateAndGetParameters() {
-        ParameterCollection returnedParams = new ParameterCollection();
+    public Parameters updateAndGetParameters() {
+        Parameters returnedParams = new Parameters();
 
         returnedParams.add(parameters.get(INPUT_SEPARATOR));
         returnedParams.add(parameters.get(INPUT_OBJECTS));
@@ -256,23 +256,23 @@ public class DuplicateAcrossTime extends Module {
     }
 
     @Override
-    public ImageMeasurementRefCollection updateAndGetImageMeasurementRefs() {
+    public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MetadataRefCollection updateAndGetMetadataReferences() {
+    public MetadataRefs updateAndGetMetadataReferences() {
         return null;
     }
 
     @Override
-    public ParentChildRefCollection updateAndGetParentChildRefs() {
-        ParentChildRefCollection returnedRefs = new ParentChildRefCollection();
+    public ParentChildRefs updateAndGetParentChildRefs() {
+        ParentChildRefs returnedRefs = new ParentChildRefs();
 
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
         String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);
@@ -284,7 +284,7 @@ public class DuplicateAcrossTime extends Module {
     }
 
     @Override
-    public PartnerRefCollection updateAndGetPartnerRefs() {
+    public PartnerRefs updateAndGetPartnerRefs() {
         return null;
     }
 

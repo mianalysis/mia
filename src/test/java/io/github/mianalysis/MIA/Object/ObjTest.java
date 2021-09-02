@@ -22,7 +22,7 @@ public class ObjTest {
     @EnumSource(VolumeType.class)
     public void testAddMeasurementNormal(VolumeType volumeType) {
         SpatCal calibration = new SpatCal(2.0, 1.0, "PX", 5, 7, 5);
-        ObjCollection objects = new ObjCollection("Obj", calibration, 1, 0.02, UNITS.SECOND);
+        Objs objects = new Objs("Obj", calibration, 1, 0.02, UNITS.SECOND);
         Obj obj = objects.createAndAddNewObject(volumeType);
         assertEquals(0, obj.getMeasurements().size());
 
@@ -39,7 +39,7 @@ public class ObjTest {
     @EnumSource(VolumeType.class)
     public void testAddMeasurementOverwrite(VolumeType volumeType) {
         SpatCal calibration = new SpatCal(2.0, 1.0, "PX", 5, 7, 5);
-        ObjCollection objects = new ObjCollection("Obj", calibration, 1, 0.02, UNITS.SECOND);
+        Objs objects = new Objs("Obj", calibration, 1, 0.02, UNITS.SECOND);
         Obj obj = objects.createAndAddNewObject(volumeType);
         assertEquals(0, obj.getMeasurements().size());
 
@@ -57,7 +57,7 @@ public class ObjTest {
     @EnumSource(VolumeType.class)
     public void testAddMeasurementNull(VolumeType volumeType) {
         SpatCal calibration = new SpatCal(2.0, 1.0, "PX", 5, 7, 5);
-        ObjCollection objects = new ObjCollection("Obj", calibration, 1, 0.02, UNITS.SECOND);
+        Objs objects = new Objs("Obj", calibration, 1, 0.02, UNITS.SECOND);
         Obj obj = objects.createAndAddNewObject(volumeType);
         assertEquals(0, obj.getMeasurements().size());
 
@@ -73,7 +73,7 @@ public class ObjTest {
     @EnumSource(VolumeType.class)
     public void testToString(VolumeType volumeType) {
         SpatCal calibration = new SpatCal(2.0, 1.0, "PX", 5, 7, 5);
-        ObjCollection objects = new ObjCollection("Obj", calibration, 1, 0.02, UNITS.SECOND);
+        Objs objects = new Objs("Obj", calibration, 1, 0.02, UNITS.SECOND);
         Obj obj = objects.createAndAddNewObject(volumeType);
         obj.setT(12);
 
@@ -93,11 +93,11 @@ public class ObjTest {
 
         SpatCal calibration = new SpatCal(0.02, 0.1, "µm", 1, 1, 1);
 
-        ObjCollection children = new ObjCollection(childObjectsName, calibration, 1, 0.02, UNITS.SECOND);
+        Objs children = new Objs(childObjectsName, calibration, 1, 0.02, UNITS.SECOND);
         Obj obj1 = children.createAndAddNewObject(volumeType, 1);
-        ObjCollection parents1 = new ObjCollection(parentObjectsName1, calibration, 1, 0.02, UNITS.SECOND);
+        Objs parents1 = new Objs(parentObjectsName1, calibration, 1, 0.02, UNITS.SECOND);
         Obj obj2 = parents1.createAndAddNewObject(volumeType, 12);
-        ObjCollection parents2 = new ObjCollection(parentObjectsName2, calibration, 3, 0.02, UNITS.SECOND);
+        Objs parents2 = new Objs(parentObjectsName2, calibration, 3, 0.02, UNITS.SECOND);
         Obj obj3 = parents2.createAndAddNewObject(volumeType, 3);
 
         LinkedHashMap<String, Obj> parents = obj1.getParents(false);
@@ -114,11 +114,11 @@ public class ObjTest {
 
         SpatCal calibration = new SpatCal(0.02, 0.1, "µm", 1, 1, 1);
 
-        ObjCollection children = new ObjCollection(childObjectsName, calibration, 1, 0.02, UNITS.SECOND);
+        Objs children = new Objs(childObjectsName, calibration, 1, 0.02, UNITS.SECOND);
         Obj obj1 = children.createAndAddNewObject(volumeType, 1);
-        ObjCollection parents1 = new ObjCollection(parentObjectsName1, calibration, 1, 0.02, UNITS.SECOND);
+        Objs parents1 = new Objs(parentObjectsName1, calibration, 1, 0.02, UNITS.SECOND);
         Obj obj2 = parents1.createAndAddNewObject(volumeType, 12);
-        ObjCollection parents2 = new ObjCollection(parentObjectsName2, calibration, 3, 0.02, UNITS.SECOND);
+        Objs parents2 = new Objs(parentObjectsName2, calibration, 3, 0.02, UNITS.SECOND);
         Obj obj3 = parents2.createAndAddNewObject(volumeType, 3);
 
         obj1.addParent(obj2);
@@ -142,11 +142,11 @@ public class ObjTest {
 
         SpatCal calibration = new SpatCal(0.02, 0.1, "µm", 1, 1, 1);
 
-        ObjCollection children = new ObjCollection(childObjectsName, calibration, 1, 0.02, UNITS.SECOND);
+        Objs children = new Objs(childObjectsName, calibration, 1, 0.02, UNITS.SECOND);
         Obj obj1 = children.createAndAddNewObject(volumeType, 1);
-        ObjCollection parents1 = new ObjCollection(parentObjectsName1, calibration, 1, 0.02, UNITS.SECOND);
+        Objs parents1 = new Objs(parentObjectsName1, calibration, 1, 0.02, UNITS.SECOND);
         Obj obj2 = parents1.createAndAddNewObject(volumeType, 12);
-        ObjCollection parents2 = new ObjCollection(parentObjectsName2, calibration, 3, 0.02, UNITS.SECOND);
+        Objs parents2 = new Objs(parentObjectsName2, calibration, 3, 0.02, UNITS.SECOND);
         Obj obj3 = parents2.createAndAddNewObject(volumeType, 3);
 
         obj1.addParent(obj2);
@@ -174,14 +174,14 @@ public class ObjTest {
 
         SpatCal calibration = new SpatCal(0.02, 0.1, "µm", 1, 1, 1);
 
-        ObjCollection children = new ObjCollection(childObjectsName, calibration, 1, 0.02, UNITS.SECOND);
+        Objs children = new Objs(childObjectsName, calibration, 1, 0.02, UNITS.SECOND);
         Obj obj1 = children.createAndAddNewObject(volumeType, 1);
 
-        ObjCollection parents1 = new ObjCollection(parentObjectsName1, calibration, 1, 0.02, UNITS.SECOND);
+        Objs parents1 = new Objs(parentObjectsName1, calibration, 1, 0.02, UNITS.SECOND);
         Obj obj2 = parents1.createAndAddNewObject(volumeType, 12);
-        ObjCollection parents2 = new ObjCollection(parentObjectsName2, calibration, 3, 0.02, UNITS.SECOND);
+        Objs parents2 = new Objs(parentObjectsName2, calibration, 3, 0.02, UNITS.SECOND);
         Obj obj3 = parents2.createAndAddNewObject(volumeType, 3);
-        ObjCollection parents3 = new ObjCollection(parentObjectsName3, calibration, 1, 0.02, UNITS.SECOND);
+        Objs parents3 = new Objs(parentObjectsName3, calibration, 1, 0.02, UNITS.SECOND);
         Obj obj4 = parents3.createAndAddNewObject(volumeType, 42);
 
         obj1.addParent(obj2);
@@ -215,13 +215,13 @@ public class ObjTest {
 
         SpatCal calibration = new SpatCal(0.02, 0.1, "µm", 1, 1, 1);
 
-        ObjCollection children = new ObjCollection(childObjectsName, calibration, 1, 0.02, UNITS.SECOND);
+        Objs children = new Objs(childObjectsName, calibration, 1, 0.02, UNITS.SECOND);
         Obj obj1 = children.createAndAddNewObject(volumeType, 1);
-        ObjCollection parents1 = new ObjCollection(parentObjectsName1, calibration, 1, 0.02, UNITS.SECOND);
+        Objs parents1 = new Objs(parentObjectsName1, calibration, 1, 0.02, UNITS.SECOND);
         Obj obj2 = parents1.createAndAddNewObject(volumeType, 12);
-        ObjCollection parents2 = new ObjCollection(parentObjectsName2, calibration, 3, 0.02, UNITS.SECOND);
+        Objs parents2 = new Objs(parentObjectsName2, calibration, 3, 0.02, UNITS.SECOND);
         Obj obj3 = parents2.createAndAddNewObject(volumeType, 3);
-        ObjCollection parents3 = new ObjCollection(parentObjectsName3, calibration, 1, 0.02, UNITS.SECOND);
+        Objs parents3 = new Objs(parentObjectsName3, calibration, 1, 0.02, UNITS.SECOND);
         Obj obj4 = parents3.createAndAddNewObject(volumeType, 42);
 
         obj3.addParent(obj4);
@@ -258,13 +258,13 @@ public class ObjTest {
 
         SpatCal calibration = new SpatCal(0.02, 0.1, "µm", 1, 1, 1);
 
-        ObjCollection children = new ObjCollection(childObjectsName, calibration, 1, 0.02, UNITS.SECOND);
+        Objs children = new Objs(childObjectsName, calibration, 1, 0.02, UNITS.SECOND);
         Obj obj1 = children.createAndAddNewObject(volumeType, 1);
-        ObjCollection parents1 = new ObjCollection(parentObjectsName1, calibration, 1, 0.02, UNITS.SECOND);
+        Objs parents1 = new Objs(parentObjectsName1, calibration, 1, 0.02, UNITS.SECOND);
         Obj obj2 = parents1.createAndAddNewObject(volumeType, 12);
-        ObjCollection parents2 = new ObjCollection(parentObjectsName2, calibration, 3, 0.02, UNITS.SECOND);
+        Objs parents2 = new Objs(parentObjectsName2, calibration, 3, 0.02, UNITS.SECOND);
         Obj obj3 = parents2.createAndAddNewObject(volumeType, 3);
-        ObjCollection parents3 = new ObjCollection(parentObjectsName3, calibration, 1, 0.02, UNITS.SECOND);
+        Objs parents3 = new Objs(parentObjectsName3, calibration, 1, 0.02, UNITS.SECOND);
         Obj obj4 = parents3.createAndAddNewObject(volumeType, 42);
         Obj obj5 = parents1.createAndAddNewObject(volumeType, 14);
 
@@ -296,7 +296,7 @@ public class ObjTest {
         String childObjectsName = "Children";
 
         SpatCal calibration = new SpatCal(0.02, 0.1, "µm", 1, 1, 1);
-        ObjCollection parents = new ObjCollection(parentObjectsName, calibration, 1, 0.02, UNITS.SECOND);
+        Objs parents = new Objs(parentObjectsName, calibration, 1, 0.02, UNITS.SECOND);
         Obj obj1 = parents.createAndAddNewObject(volumeType, 1);
         Obj obj2 = parents.createAndAddNewObject(volumeType, 12);
         Obj obj3 = parents.createAndAddNewObject(volumeType, 2);
@@ -305,7 +305,7 @@ public class ObjTest {
         assertEquals(0, obj1.getChildren().size());
 
         // Creating a new collection of child objects
-        ObjCollection children = new ObjCollection(childObjectsName, calibration, 1, 0.02, UNITS.SECOND);
+        Objs children = new Objs(childObjectsName, calibration, 1, 0.02, UNITS.SECOND);
         children.add(obj2);
         children.add(obj3);
         children.add(obj4);
@@ -375,7 +375,7 @@ public class ObjTest {
             throws IntegerOverflowException, PointOutOfRangeException {
 
         SpatCal calibration = new SpatCal(2.0, 1.0, "PX", 5, 7, 5);
-        ObjCollection objects = new ObjCollection("Obj", calibration, 1, 0.02, UNITS.SECOND);
+        Objs objects = new Objs("Obj", calibration, 1, 0.02, UNITS.SECOND);
         Obj obj1 = objects.createAndAddNewObject(volumeType);
         obj1.setT(1);
         obj1.add(1, 3, 4);
@@ -395,7 +395,7 @@ public class ObjTest {
     public void testHashCodeDifferentOrder(VolumeType volumeType)
             throws IntegerOverflowException, PointOutOfRangeException {
         SpatCal calibration = new SpatCal(2.0, 1.0, "PX", 5, 7, 5);
-        ObjCollection objects = new ObjCollection("Obj", calibration, 1, 0.02, UNITS.SECOND);
+        Objs objects = new Objs("Obj", calibration, 1, 0.02, UNITS.SECOND);
         Obj obj1 = objects.createAndAddNewObject(volumeType);
         obj1.setT(1);
         obj1.add(1, 3, 4);
@@ -415,7 +415,7 @@ public class ObjTest {
     public void testHashCodeDifferentNames(VolumeType volumeType)
             throws IntegerOverflowException, PointOutOfRangeException {
         SpatCal calibration = new SpatCal(2.0, 1.0, "PX", 5, 7, 5);
-        ObjCollection objects = new ObjCollection("Obj", calibration, 1, 0.02, UNITS.SECOND);
+        Objs objects = new Objs("Obj", calibration, 1, 0.02, UNITS.SECOND);
         Obj obj1 = objects.createAndAddNewObject(volumeType);
         obj1.setT(1);
         obj1.add(1, 3, 4);
@@ -435,7 +435,7 @@ public class ObjTest {
     public void testHashCodeDifferentTimepoint(VolumeType volumeType)
             throws IntegerOverflowException, PointOutOfRangeException {
         SpatCal calibration = new SpatCal(2.0, 1.0, "PX", 5, 7, 5);
-        ObjCollection objects = new ObjCollection("Obj", calibration, 1, 0.02, UNITS.SECOND);
+        Objs objects = new Objs("Obj", calibration, 1, 0.02, UNITS.SECOND);
         Obj obj1 = objects.createAndAddNewObject(volumeType);
         obj1.setT(1);
         obj1.add(1, 1, 1);
@@ -455,7 +455,7 @@ public class ObjTest {
     public void testHashCodeDifferentCoordinates(VolumeType volumeType)
             throws IntegerOverflowException, PointOutOfRangeException {
         SpatCal calibration = new SpatCal(2.0, 1.0, "PX", 5, 7, 5);
-        ObjCollection objects = new ObjCollection("Obj", calibration, 1, 0.02, UNITS.SECOND);
+        Objs objects = new Objs("Obj", calibration, 1, 0.02, UNITS.SECOND);
         Obj obj1 = objects.createAndAddNewObject(volumeType);
         obj1.setT(1);
         obj1.add(1, 3, 4);
@@ -475,7 +475,7 @@ public class ObjTest {
     public void testHashCodeMissingCoordinates(VolumeType volumeType)
             throws IntegerOverflowException, PointOutOfRangeException {
         SpatCal calibration = new SpatCal(2.0, 1.0, "PX", 5, 7, 5);
-        ObjCollection objects = new ObjCollection("Obj", calibration, 1, 0.02, UNITS.SECOND);
+        Objs objects = new Objs("Obj", calibration, 1, 0.02, UNITS.SECOND);
         Obj obj1 = objects.createAndAddNewObject(volumeType);
         obj1.setT(1);
         obj1.add(1, 3, 4);
@@ -493,7 +493,7 @@ public class ObjTest {
     @EnumSource(VolumeType.class)
     public void testEqualsSameObject(VolumeType volumeType) throws IntegerOverflowException, PointOutOfRangeException {
         SpatCal calibration = new SpatCal(2.0, 1.0, "PX", 5, 7, 5);
-        ObjCollection objects = new ObjCollection("Obj", calibration, 1, 0.02, UNITS.SECOND);
+        Objs objects = new Objs("Obj", calibration, 1, 0.02, UNITS.SECOND);
         Obj obj1 = objects.createAndAddNewObject(volumeType);
         obj1.setT(1);
         obj1.add(1, 3, 4);
@@ -514,7 +514,7 @@ public class ObjTest {
     public void testEqualsDifferentOrder(VolumeType volumeType)
             throws IntegerOverflowException, PointOutOfRangeException {
         SpatCal calibration = new SpatCal(2.0, 1.0, "PX", 5, 7, 5);
-        ObjCollection objects = new ObjCollection("Obj", calibration, 1, 0.02, UNITS.SECOND);
+        Objs objects = new Objs("Obj", calibration, 1, 0.02, UNITS.SECOND);
         Obj obj1 = objects.createAndAddNewObject(volumeType);
         obj1.setT(1);
         obj1.add(1, 3, 4);
@@ -535,7 +535,7 @@ public class ObjTest {
     public void testEqualsDifferentNames(VolumeType volumeType)
             throws IntegerOverflowException, PointOutOfRangeException {
         SpatCal calibration = new SpatCal(2.0, 1.0, "PX", 5, 7, 5);
-        ObjCollection objects = new ObjCollection("Obj", calibration, 1, 0.02, UNITS.SECOND);
+        Objs objects = new Objs("Obj", calibration, 1, 0.02, UNITS.SECOND);
         Obj obj1 = objects.createAndAddNewObject(volumeType);
         obj1.setT(1);
         obj1.add(1, 3, 4);
@@ -556,7 +556,7 @@ public class ObjTest {
     public void testEqualsDifferentTimepoint(VolumeType volumeType)
             throws IntegerOverflowException, PointOutOfRangeException {
         SpatCal calibration = new SpatCal(2.0, 1.0, "PX", 5, 7, 5);
-        ObjCollection objects = new ObjCollection("Obj", calibration, 1, 0.02, UNITS.SECOND);
+        Objs objects = new Objs("Obj", calibration, 1, 0.02, UNITS.SECOND);
         Obj obj1 = objects.createAndAddNewObject(volumeType);
         obj1.setT(1);
         obj1.add(1, 1, 1);
@@ -577,7 +577,7 @@ public class ObjTest {
     public void testEqualsDifferentCoordinates(VolumeType volumeType)
             throws IntegerOverflowException, PointOutOfRangeException {
         SpatCal calibration = new SpatCal(2.0, 1.0, "PX", 5, 7, 5);
-        ObjCollection objects = new ObjCollection("Obj", calibration, 1, 0.02, UNITS.SECOND);
+        Objs objects = new Objs("Obj", calibration, 1, 0.02, UNITS.SECOND);
         Obj obj1 = objects.createAndAddNewObject(volumeType);
         obj1.setT(1);
         obj1.add(1, 3, 4);
@@ -598,7 +598,7 @@ public class ObjTest {
     public void testEqualsMissingCoordinates(VolumeType volumeType)
             throws IntegerOverflowException, PointOutOfRangeException {
         SpatCal calibration = new SpatCal(2.0, 1.0, "PX", 5, 7, 5);
-        ObjCollection objects = new ObjCollection("Obj", calibration, 1, 0.02, UNITS.SECOND);
+        Objs objects = new Objs("Obj", calibration, 1, 0.02, UNITS.SECOND);
         Obj obj1 = objects.createAndAddNewObject(volumeType);
         obj1.setT(1);
         obj1.add(1, 3, 4);

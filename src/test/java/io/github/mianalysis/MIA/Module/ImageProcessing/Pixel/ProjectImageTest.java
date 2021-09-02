@@ -14,7 +14,7 @@ import io.github.mianalysis.MIA.Module.Module;
 import io.github.mianalysis.MIA.Module.ModuleTest;
 import io.github.mianalysis.MIA.Object.Image;
 import io.github.mianalysis.MIA.Object.Workspace;
-import io.github.mianalysis.MIA.Object.WorkspaceCollection;
+import io.github.mianalysis.MIA.Object.Workspaces;
 
 public class ProjectImageTest extends ModuleTest {
     @BeforeAll
@@ -30,7 +30,7 @@ public class ProjectImageTest extends ModuleTest {
     @Test
     public void testRunMaxZ2D() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
@@ -66,7 +66,7 @@ public class ProjectImageTest extends ModuleTest {
     @Test
     public void testRunMaxZ3D() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
@@ -105,7 +105,7 @@ public class ProjectImageTest extends ModuleTest {
     @Test
     public void testRunMaxZ4D() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
@@ -141,7 +141,7 @@ public class ProjectImageTest extends ModuleTest {
     @Test
     public void testRunMaxZ5D() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
@@ -177,7 +177,7 @@ public class ProjectImageTest extends ModuleTest {
     @Test
     public void testRunMaxZ3D16bit() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
@@ -216,7 +216,7 @@ public class ProjectImageTest extends ModuleTest {
     @Test
     public void testRunMaxZ3D32bit() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
@@ -255,7 +255,7 @@ public class ProjectImageTest extends ModuleTest {
     @Test
     public void testRunMinZ3D() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
@@ -291,7 +291,7 @@ public class ProjectImageTest extends ModuleTest {
     @Test
     public void testRunAverageZ3D() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
@@ -327,7 +327,7 @@ public class ProjectImageTest extends ModuleTest {
     @Test
     public void testRunMedianZ3D() throws Exception  {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
@@ -363,7 +363,7 @@ public class ProjectImageTest extends ModuleTest {
     @Test
     public void testRunStdevZ3D() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
@@ -399,7 +399,7 @@ public class ProjectImageTest extends ModuleTest {
     @Test
     public void testRunSumZ3D() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace

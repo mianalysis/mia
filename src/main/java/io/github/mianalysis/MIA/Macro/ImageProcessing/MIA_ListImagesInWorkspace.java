@@ -5,7 +5,7 @@ import java.util.HashMap;
 import ij.macro.MacroExtension;
 import ij.measure.ResultsTable;
 import io.github.mianalysis.MIA.Macro.MacroOperation;
-import io.github.mianalysis.MIA.Module.ModuleCollection;
+import io.github.mianalysis.MIA.Module.Modules;
 import io.github.mianalysis.MIA.Object.Image;
 import io.github.mianalysis.MIA.Object.Workspace;
 
@@ -20,7 +20,7 @@ public class MIA_ListImagesInWorkspace extends MacroOperation {
     }
 
     @Override
-    public String action(Object[] objects, Workspace workspace, ModuleCollection modules) {
+    public String action(Object[] objects, Workspace workspace, Modules modules) {
         // Creating a new ResultsTable to hold the Image names
         ResultsTable rt = new ResultsTable();
         int row = 0;

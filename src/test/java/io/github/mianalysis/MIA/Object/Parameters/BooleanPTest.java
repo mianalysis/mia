@@ -4,7 +4,7 @@ import org.junit.jupiter.api.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
-import io.github.mianalysis.MIA.Module.ModuleCollection;
+import io.github.mianalysis.MIA.Module.Modules;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -15,7 +15,7 @@ public class BooleanPTest {
 
     @Test
     public void testDuplicate() {
-        ModuleCollection modules = new ModuleCollection();
+        Modules modules = new Modules();
         ParamTest paramTest = new ParamTest(modules);
 
         BooleanP booleanP = new BooleanP("TestBoo",paramTest,true);
@@ -29,7 +29,7 @@ public class BooleanPTest {
 
     @Test
     public void testFlipBoolean() {
-        ModuleCollection modules = new ModuleCollection();
+        Modules modules = new Modules();
         ParamTest paramTest = new ParamTest(modules);
 
         BooleanP booleanP = new BooleanP("TestBoo",paramTest,true);
@@ -45,7 +45,7 @@ public class BooleanPTest {
 
     @Test
     public void testGetRawStringValueTrue() {
-        ModuleCollection modules = new ModuleCollection();
+        Modules modules = new Modules();
         ParamTest paramTest = new ParamTest(modules);
 
         BooleanP booleanP = new BooleanP("TestBoo",paramTest,true);
@@ -56,7 +56,7 @@ public class BooleanPTest {
 
     @Test
     public void testGetRawStringValueFalse() {
-        ModuleCollection modules = new ModuleCollection();
+        Modules modules = new Modules();
         ParamTest paramTest = new ParamTest(modules);
 
         BooleanP booleanP = new BooleanP("TestBoo",paramTest,false);
@@ -67,7 +67,7 @@ public class BooleanPTest {
 
     @Test
     public void testSetValueFromStringTrue() {
-        ModuleCollection modules = new ModuleCollection();
+        Modules modules = new Modules();
         ParamTest paramTest = new ParamTest(modules);
 
         BooleanP booleanP = new BooleanP("TestBoo",paramTest,false);
@@ -80,7 +80,7 @@ public class BooleanPTest {
 
     @Test
     public void testSetValueFromStringFalse() {
-        ModuleCollection modules = new ModuleCollection();
+        Modules modules = new Modules();
         ParamTest paramTest = new ParamTest(modules);
 
         BooleanP booleanP = new BooleanP("TestBoo",paramTest,true);
@@ -93,7 +93,7 @@ public class BooleanPTest {
 
     @Test
     public void testVerifyTrue() {
-        ModuleCollection modules = new ModuleCollection();
+        Modules modules = new Modules();
         ParamTest paramTest = new ParamTest(modules);
 
         BooleanP booleanP = new BooleanP("TestBoo",paramTest,true);
@@ -104,7 +104,7 @@ public class BooleanPTest {
 
     @Test
     public void testVerifyFalse() {
-        ModuleCollection modules = new ModuleCollection();
+        Modules modules = new Modules();
         ParamTest paramTest = new ParamTest(modules);
 
         BooleanP booleanP = new BooleanP("TestBoo",paramTest,false);
@@ -115,7 +115,7 @@ public class BooleanPTest {
 
     @Test
     public void testAppendXMLAttributes() throws ParserConfigurationException {
-        ModuleCollection modules = new ModuleCollection();
+        Modules modules = new Modules();
         ParamTest paramTest = new ParamTest(modules);
 
         BooleanP booleanP = new BooleanP("TestBoo",paramTest,true);
@@ -141,7 +141,7 @@ public class BooleanPTest {
 
     @Test
     public void testSetAttributesFromXML() throws ParserConfigurationException {
-        ModuleCollection modules = new ModuleCollection();
+        Modules modules = new Modules();
         ParamTest paramTest = new ParamTest(modules);
 
         BooleanP booleanP = new BooleanP("TestBoo",paramTest,true);

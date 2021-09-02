@@ -6,7 +6,7 @@ import org.junit.jupiter.params.provider.EnumSource;
 import ome.units.UNITS;
 import io.github.mianalysis.MIA.Object.Measurement;
 import io.github.mianalysis.MIA.Object.Obj;
-import io.github.mianalysis.MIA.Object.ObjCollection;
+import io.github.mianalysis.MIA.Object.Objs;
 import io.github.sjcross.common.Object.Volume.SpatCal;
 import io.github.sjcross.common.Object.Volume.VolumeType;
 
@@ -26,8 +26,8 @@ public class LabelFactoryTest {
 
         SpatCal calibration = new SpatCal(dppXY,dppZ,calibratedUnits,1,1,1);
 
-        // Creating the ObjCollection
-        ObjCollection collection = new ObjCollection("Obj",calibration,1,0.02,UNITS.SECOND);
+        // Creating the Objs
+        Objs collection = new Objs("Obj",calibration,1,0.02,UNITS.SECOND);
 
         // Adding objects
         Obj obj = collection.createAndAddNewObject(volumeType, 0);
@@ -54,8 +54,8 @@ public class LabelFactoryTest {
 
         SpatCal calibration = new SpatCal(dppXY,dppZ,calibratedUnits,1,1,1);
 
-        // Creating the ObjCollection
-        ObjCollection collection = new ObjCollection("Obj",calibration,1,0.02,UNITS.SECOND);
+        // Creating the Objs
+        Objs collection = new Objs("Obj",calibration,1,0.02,UNITS.SECOND);
 
         // Adding objects
         Obj obj = collection.createAndAddNewObject(volumeType, 0);
@@ -81,8 +81,8 @@ public class LabelFactoryTest {
 
         SpatCal calibration = new SpatCal(dppXY,dppZ,calibratedUnits,1,1,1);
 
-        // Creating the ObjCollection
-        ObjCollection collection = new ObjCollection("Obj",calibration,1,0.02,UNITS.SECOND);
+        // Creating the Objs
+        Objs collection = new Objs("Obj",calibration,1,0.02,UNITS.SECOND);
 
         // Adding objects
         Obj obj = collection.createAndAddNewObject(volumeType, 0);
@@ -109,8 +109,8 @@ public class LabelFactoryTest {
 
         SpatCal calibration = new SpatCal(dppXY,dppZ,calibratedUnits,1,1,1);
 
-        // Creating the ObjCollection
-        ObjCollection collection = new ObjCollection("Obj",calibration,1,0.02,UNITS.SECOND);
+        // Creating the Objs
+        Objs collection = new Objs("Obj",calibration,1,0.02,UNITS.SECOND);
 
         // Adding objects
         Obj obj = collection.createAndAddNewObject(volumeType, 0);
@@ -137,9 +137,9 @@ public class LabelFactoryTest {
 
         SpatCal calibration = new SpatCal(dppXY,dppZ,calibratedUnits,1,1,1);
 
-        // Creating the ObjCollection
-        ObjCollection collection = new ObjCollection("Obj", calibration, 1, 0.02, UNITS.SECOND);
-        ObjCollection parents = new ObjCollection("Parents", calibration, 1, 0.02, UNITS.SECOND);
+        // Creating the Objs
+        Objs collection = new Objs("Obj", calibration, 1, 0.02, UNITS.SECOND);
+        Objs parents = new Objs("Parents", calibration, 1, 0.02, UNITS.SECOND);
 
         // Adding objects
         Obj obj = collection.createAndAddNewObject(volumeType, 0);
@@ -171,8 +171,8 @@ public class LabelFactoryTest {
 
         SpatCal calibration = new SpatCal(dppXY,dppZ,calibratedUnits,1,1,1);
 
-        // Creating the ObjCollection
-        ObjCollection collection = new ObjCollection("Obj",calibration,1,0.02,UNITS.SECOND);
+        // Creating the Objs
+        Objs collection = new Objs("Obj",calibration,1,0.02,UNITS.SECOND);
 
         // Adding objects
         Obj obj = collection.createAndAddNewObject(volumeType, 0);

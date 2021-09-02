@@ -8,26 +8,26 @@ import java.util.concurrent.atomic.AtomicInteger;
 import ij.Prefs;
 import io.github.mianalysis.MIA.MIA;
 import io.github.mianalysis.MIA.Module.Module;
-import io.github.mianalysis.MIA.Module.ModuleCollection;
+import io.github.mianalysis.MIA.Module.Modules;
 import io.github.mianalysis.MIA.Module.Category;
 import io.github.mianalysis.MIA.Module.Categories;
 import io.github.mianalysis.MIA.Module.ObjectProcessing.Identification.ProjectObjects;
 import io.github.mianalysis.MIA.Object.Measurement;
 import io.github.mianalysis.MIA.Object.Obj;
-import io.github.mianalysis.MIA.Object.ObjCollection;
+import io.github.mianalysis.MIA.Object.Objs;
 import io.github.mianalysis.MIA.Object.Status;
 import io.github.mianalysis.MIA.Object.Units.SpatialUnit;
 import io.github.mianalysis.MIA.Object.Workspace;
 import io.github.mianalysis.MIA.Object.Parameters.BooleanP;
 import io.github.mianalysis.MIA.Object.Parameters.InputObjectsP;
 import io.github.mianalysis.MIA.Object.Parameters.SeparatorP;
-import io.github.mianalysis.MIA.Object.Parameters.ParameterCollection;
-import io.github.mianalysis.MIA.Object.References.ObjMeasurementRef;
-import io.github.mianalysis.MIA.Object.References.Collections.ImageMeasurementRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.MetadataRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.ObjMeasurementRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.ParentChildRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.PartnerRefCollection;
+import io.github.mianalysis.MIA.Object.Refs.ObjMeasurementRef;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ImageMeasurementRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.MetadataRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ObjMeasurementRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ParentChildRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.PartnerRefs;
+import io.github.mianalysis.MIA.Object.Parameters.Parameters;
 import io.github.sjcross.common.Exceptions.IntegerOverflowException;
 import io.github.sjcross.common.Object.Point;
 
@@ -47,7 +47,7 @@ public class MeasureObjectShape extends Module {
     public static final String EXECUTION_SEPARATOR = "Execution controls";
     public static final String ENABLE_MULTITHREADING = "Enable multithreading";
 
-    public MeasureObjectShape(ModuleCollection modules) {
+    public MeasureObjectShape(Modules modules) {
         super("Measure object shape", modules);
     }
 
@@ -133,7 +133,7 @@ public class MeasureObjectShape extends Module {
     public Status process(Workspace workspace) {
         // Getting input objects
         String inputObjectName = parameters.getValue(INPUT_OBJECTS);
-        ObjCollection inputObjects = workspace.getObjects().get(inputObjectName);
+        Objs inputObjects = workspace.getObjects().get(inputObjectName);
 
         // Getting parameters
         boolean measureVolume = parameters.getValue(MEASURE_VOLUME);
@@ -179,7 +179,7 @@ public class MeasureObjectShape extends Module {
                 }
 
                 // If necessary analyses are included
-                ObjCollection projectedObjects = new ObjCollection("Projected", inputObjects);
+                Objs projectedObjects = new Objs("Projected", inputObjects);
                 Obj projectedObject = null;
                 if (measureProjectedArea || measureProjectedDiameter || measureProjectedPerimeter) {
                     if (inputObject.is2D()) {
@@ -272,18 +272,18 @@ public class MeasureObjectShape extends Module {
     }
 
     @Override
-    public ParameterCollection updateAndGetParameters() {
+    public Parameters updateAndGetParameters() {
         return parameters;
     }
 
     @Override
-    public ImageMeasurementRefCollection updateAndGetImageMeasurementRefs() {
+    public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
-        ObjMeasurementRefCollection returnedRefs = new ObjMeasurementRefCollection();
+    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+        ObjMeasurementRefs returnedRefs = new ObjMeasurementRefs();
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
 
         if ((boolean) parameters.getValue(MEASURE_VOLUME)) {
@@ -391,17 +391,17 @@ public class MeasureObjectShape extends Module {
     }
 
     @Override
-    public MetadataRefCollection updateAndGetMetadataReferences() {
+    public MetadataRefs updateAndGetMetadataReferences() {
         return null;
     }
 
     @Override
-    public ParentChildRefCollection updateAndGetParentChildRefs() {
+    public ParentChildRefs updateAndGetParentChildRefs() {
         return null;
     }
 
     @Override
-    public PartnerRefCollection updateAndGetPartnerRefs() {
+    public PartnerRefs updateAndGetPartnerRefs() {
         return null;
     }
 

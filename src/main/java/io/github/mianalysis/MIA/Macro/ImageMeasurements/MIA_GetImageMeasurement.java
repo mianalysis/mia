@@ -2,7 +2,7 @@ package io.github.mianalysis.MIA.Macro.ImageMeasurements;
 
 import ij.macro.MacroExtension;
 import io.github.mianalysis.MIA.Macro.MacroOperation;
-import io.github.mianalysis.MIA.Module.ModuleCollection;
+import io.github.mianalysis.MIA.Module.Modules;
 import io.github.mianalysis.MIA.Object.Image;
 import io.github.mianalysis.MIA.Object.Measurement;
 import io.github.mianalysis.MIA.Object.Workspace;
@@ -18,7 +18,7 @@ public class MIA_GetImageMeasurement extends MacroOperation {
     }
 
     @Override
-    public String action(Object[] objects, Workspace workspace, ModuleCollection modules) {
+    public String action(Object[] objects, Workspace workspace, Modules modules) {
         String imageName = (String) objects[0];
         String measurementName = (String) objects[1];
 

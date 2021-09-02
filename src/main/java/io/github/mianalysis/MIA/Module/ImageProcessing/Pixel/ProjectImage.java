@@ -10,20 +10,20 @@ import net.imglib2.type.numeric.RealType;
 import io.github.mianalysis.MIA.Module.Categories;
 import io.github.mianalysis.MIA.Module.Category;
 import io.github.mianalysis.MIA.Module.Module;
-import io.github.mianalysis.MIA.Module.ModuleCollection;
+import io.github.mianalysis.MIA.Module.Modules;
 import io.github.mianalysis.MIA.Object.Image;
 import io.github.mianalysis.MIA.Object.Status;
 import io.github.mianalysis.MIA.Object.Workspace;
 import io.github.mianalysis.MIA.Object.Parameters.ChoiceP;
 import io.github.mianalysis.MIA.Object.Parameters.InputImageP;
 import io.github.mianalysis.MIA.Object.Parameters.OutputImageP;
-import io.github.mianalysis.MIA.Object.Parameters.ParameterCollection;
+import io.github.mianalysis.MIA.Object.Parameters.Parameters;
 import io.github.mianalysis.MIA.Object.Parameters.SeparatorP;
-import io.github.mianalysis.MIA.Object.References.Collections.ImageMeasurementRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.MetadataRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.ObjMeasurementRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.ParentChildRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.PartnerRefCollection;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ImageMeasurementRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.MetadataRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ObjMeasurementRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ParentChildRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.PartnerRefs;
 
 //import ij.plugin.ZProjector;
 
@@ -37,7 +37,7 @@ public class ProjectImage < T extends RealType< T > & NativeType< T >> extends M
     public static final String PROJECTION_SEPARATOR = "Image projection";
     public static final String PROJECTION_MODE = "Projection mode";
 
-    public ProjectImage(ModuleCollection modules) {
+    public ProjectImage(Modules modules) {
         super("Project image",modules);
     }
 
@@ -175,32 +175,32 @@ public class ProjectImage < T extends RealType< T > & NativeType< T >> extends M
     }
 
     @Override
-    public ParameterCollection updateAndGetParameters() {
+    public Parameters updateAndGetParameters() {
         return parameters;
     }
 
     @Override
-    public ImageMeasurementRefCollection updateAndGetImageMeasurementRefs() {
+    public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MetadataRefCollection updateAndGetMetadataReferences() {
+    public MetadataRefs updateAndGetMetadataReferences() {
         return null;
     }
 
     @Override
-    public ParentChildRefCollection updateAndGetParentChildRefs() {
+    public ParentChildRefs updateAndGetParentChildRefs() {
         return null;
     }
 
     @Override
-    public PartnerRefCollection updateAndGetPartnerRefs() {
+    public PartnerRefs updateAndGetPartnerRefs() {
         return null;
     }
 
@@ -234,15 +234,15 @@ public class ProjectImage < T extends RealType< T > & NativeType< T >> extends M
 //import net.imglib2.view.Views;
 //import io.github.mianalysis.MIA.MIA;
 //import io.github.mianalysis.MIA.Module.Module;
-//import io.github.mianalysis.MIA.Module.ModuleCollection;
+//import io.github.mianalysis.MIA.Module.Modules;
 //import io.github.mianalysis.MIA.Module.PackageNames;
 //import io.github.mianalysis.MIA.Module.Category;
 //import io.github.mianalysis.MIA.Object.*;
 //import io.github.mianalysis.MIA.Object.Parameters.*;
-//import io.github.mianalysis.MIA.Object.References.ImageMeasurementRefCollection;
-//import io.github.mianalysis.MIA.Object.References.ObjMeasurementRefCollection;
-//import io.github.mianalysis.MIA.Object.References.MetadataRefCollection;
-//import io.github.mianalysis.MIA.Object.References.ParentChildRefCollection;
+//import io.github.mianalysis.MIA.Object.References.ImageMeasurementRefs;
+//import io.github.mianalysis.MIA.Object.References.ObjMeasurementRefs;
+//import io.github.mianalysis.MIA.Object.References.MetadataRefs;
+//import io.github.mianalysis.MIA.Object.References.ParentChildRefs;
 //import io.github.sjcross.common.Process.ImgPlusTools;
 //
 //import java.io.IOException;
@@ -262,7 +262,7 @@ public class ProjectImage < T extends RealType< T > & NativeType< T >> extends M
 //    public static final String PROJECTION_MODE = "Projection mode";
 //
 //
-//    public ProjectImage(ModuleCollection modules) {
+//    public ProjectImage(Modules modules) {
 //        super("Project image",modules);
 //    }
 //
@@ -524,27 +524,27 @@ public class ProjectImage < T extends RealType< T > & NativeType< T >> extends M
 //    }
 //
 //    @Override
-//    public ParameterCollection updateAndGetParameters() {
+//    public Parameters updateAndGetParameters() {
 //        return parameters;
 //    }
 //
 //    @Override
-//    public ImageMeasurementRefCollection updateAndGetImageMeasurementRefs() {
+//    public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
 //        return null;
 //    }
 //
 //    @Override
-//    public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+//    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
 //        return null;
 //    }
 //
 //    @Override
-//    public MetadataRefCollection updateAndGetMetadataReferences() {
+//    public MetadataRefs updateAndGetMetadataReferences() {
 //        return null;
 //    }
 //
 //    @Override
-//    public ParentChildRefCollection updateAndGetParentChildRefs() {
+//    public ParentChildRefs updateAndGetParentChildRefs() {
 //        return null;
 //    }
 //

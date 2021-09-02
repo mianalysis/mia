@@ -2,7 +2,7 @@ package io.github.mianalysis.MIA.Module;
 
 import java.util.TreeSet;
 
-import io.github.mianalysis.MIA.Object.References.Abstract.Ref;
+import io.github.mianalysis.MIA.Object.Refs.Abstract.Ref;
 
 public class Category extends Ref implements Comparable {
     private final Category parent;

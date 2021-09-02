@@ -1,26 +1,26 @@
 package io.github.mianalysis.MIA.Module.ObjectMeasurements.Miscellaneous;
 
 import io.github.mianalysis.MIA.Module.Module;
-import io.github.mianalysis.MIA.Module.ModuleCollection;
+import io.github.mianalysis.MIA.Module.Modules;
 import io.github.mianalysis.MIA.Module.Category;
 import io.github.mianalysis.MIA.Module.Categories;
 import io.github.mianalysis.MIA.Object.Status;
 import io.github.mianalysis.MIA.Object.Measurement;
 import io.github.mianalysis.MIA.Object.Obj;
-import io.github.mianalysis.MIA.Object.ObjCollection;
+import io.github.mianalysis.MIA.Object.Objs;
 import io.github.mianalysis.MIA.Object.Workspace;
 import io.github.mianalysis.MIA.Object.Parameters.BooleanP;
 import io.github.mianalysis.MIA.Object.Parameters.ChildObjectsP;
 import io.github.mianalysis.MIA.Object.Parameters.InputObjectsP;
 import io.github.mianalysis.MIA.Object.Parameters.ObjectMeasurementP;
-import io.github.mianalysis.MIA.Object.Parameters.ParameterCollection;
+import io.github.mianalysis.MIA.Object.Parameters.Parameters;
 import io.github.mianalysis.MIA.Object.Parameters.SeparatorP;
-import io.github.mianalysis.MIA.Object.References.ObjMeasurementRef;
-import io.github.mianalysis.MIA.Object.References.Collections.ImageMeasurementRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.MetadataRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.ObjMeasurementRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.ParentChildRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.PartnerRefCollection;
+import io.github.mianalysis.MIA.Object.Refs.ObjMeasurementRef;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ImageMeasurementRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.MetadataRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ObjMeasurementRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ParentChildRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.PartnerRefs;
 import io.github.sjcross.common.MathFunc.CumStat;
 
 public class CalculateStatsForChildren extends Module {
@@ -36,7 +36,7 @@ public class CalculateStatsForChildren extends Module {
     public static final String CALCULATE_MAX = "Calculate maximum";
     public static final String CALCULATE_SUM = "Calculate sum";
 
-    public CalculateStatsForChildren(ModuleCollection modules) {
+    public CalculateStatsForChildren(Modules modules) {
         super("Calculate statistics for children",modules);
     }
 
@@ -54,7 +54,7 @@ public class CalculateStatsForChildren extends Module {
     }
 
     public static void processObject(Obj parentObject, String childObjectsName, String measurement, boolean[] statsToCalculate) {
-        ObjCollection childObjects = parentObject.getChildren(childObjectsName);
+        Objs childObjects = parentObject.getChildren(childObjectsName);
 
         // Calculating statistics for measurement
         CumStat cs = new CumStat();
@@ -111,7 +111,7 @@ public class CalculateStatsForChildren extends Module {
     public Status process(Workspace workspace) {
         // Getting input objects
         String parentObjectsName = parameters.getValue(PARENT_OBJECTS);
-        ObjCollection parentObjects = workspace.getObjects().get(parentObjectsName);
+        Objs parentObjects = workspace.getObjects().get(parentObjectsName);
 
         // Getting other parameters
         String childObjectsName = parameters.getValue(CHILD_OBJECTS);
@@ -152,7 +152,7 @@ public class CalculateStatsForChildren extends Module {
     }
 
     @Override
-    public ParameterCollection updateAndGetParameters() {
+    public Parameters updateAndGetParameters() {
         String objectName = parameters.getValue(PARENT_OBJECTS);
         ((ChildObjectsP) parameters.getParameter(CHILD_OBJECTS)).setParentObjectsName(objectName);
 
@@ -164,13 +164,13 @@ public class CalculateStatsForChildren extends Module {
     }
 
     @Override
-    public ImageMeasurementRefCollection updateAndGetImageMeasurementRefs() {
+    public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
-        ObjMeasurementRefCollection returnedRefs = new ObjMeasurementRefCollection();
+    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+        ObjMeasurementRefs returnedRefs = new ObjMeasurementRefs();
 
         String parentObjectsName = parameters.getValue(PARENT_OBJECTS);
         String childObjectsName = parameters.getValue(CHILD_OBJECTS);
@@ -226,17 +226,17 @@ public class CalculateStatsForChildren extends Module {
     }
 
     @Override
-    public MetadataRefCollection updateAndGetMetadataReferences() {
+    public MetadataRefs updateAndGetMetadataReferences() {
         return null;
     }
 
     @Override
-    public ParentChildRefCollection updateAndGetParentChildRefs() {
+    public ParentChildRefs updateAndGetParentChildRefs() {
         return null;
     }
 
     @Override
-    public PartnerRefCollection updateAndGetPartnerRefs() {
+    public PartnerRefs updateAndGetPartnerRefs() {
         return null;
     }
 

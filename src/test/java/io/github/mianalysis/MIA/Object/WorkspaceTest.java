@@ -28,12 +28,12 @@ public class WorkspaceTest {
         String calibratedUnits = "µm";
 
         // Creating a new workspace and checking it is empty
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
         assertEquals(0, workspace.getObjects().size());
         
         SpatCal calibration = new SpatCal(dppXY,dppZ,calibratedUnits,20,10,5);
-        ObjCollection objects = new ObjCollection("Obj", calibration, 1, 0.02, UNITS.SECOND);
+        Objs objects = new Objs("Obj", calibration, 1, 0.02, UNITS.SECOND);
 
         // Creating and adding the new object
         objects.createAndAddNewObject(volumeType,0);
@@ -49,7 +49,7 @@ public class WorkspaceTest {
 
     @Test
     public void testClearAllImagesDoRetainMeasurements() {
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Adding images
@@ -85,7 +85,7 @@ public class WorkspaceTest {
 
     @Test
     public void testClearAllImagesDontRetainMeasurements() {
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
         
         // Adding images
@@ -125,12 +125,12 @@ public class WorkspaceTest {
         String calibratedUnits = "µm";
 
         // Creating a new workspace and populating it with a set of objects
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null, 1);
         
         SpatCal calibration = new SpatCal(dppXY, dppZ, calibratedUnits, 20, 10, 5);
         
-        ObjCollection objects = new ObjCollection("Obj", calibration, 1, 0.02, UNITS.SECOND);
+        Objs objects = new Objs("Obj", calibration, 1, 0.02, UNITS.SECOND);
         Obj obj = objects.createAndAddNewObject(volumeType,0);
         obj.add(12,5,2);
         obj.add(12,5,3);
@@ -144,7 +144,7 @@ public class WorkspaceTest {
         obj.addMeasurement(new Measurement("Test meas",1.5));
         workspace.addObjects(objects);
 
-        ObjCollection otherObjects = new ObjCollection("Other obj", calibration, 1, 0.02, UNITS.SECOND);
+        Objs otherObjects = new Objs("Other obj", calibration, 1, 0.02, UNITS.SECOND);
         obj = otherObjects.createAndAddNewObject(volumeType,0);
         obj.add(12,5,2);
         obj.add(12,5,3);
@@ -190,12 +190,12 @@ public class WorkspaceTest {
         String calibratedUnits = "µm";
 
         // Creating a new workspace and populating it with a set of objects
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null, 1);
 
         SpatCal calibration = new SpatCal(dppXY, dppZ, calibratedUnits, 20, 10, 5);
         
-        ObjCollection objects = new ObjCollection("Obj", calibration, 1, 0.02, UNITS.SECOND);
+        Objs objects = new Objs("Obj", calibration, 1, 0.02, UNITS.SECOND);
         Obj obj = objects.createAndAddNewObject(volumeType,0);
         obj.add(12,5,2);
         obj.add(12,5,3);
@@ -209,7 +209,7 @@ public class WorkspaceTest {
         obj.addMeasurement(new Measurement("Test meas",1.5));
         workspace.addObjects(objects);
 
-        ObjCollection otherObjects = new ObjCollection("Other obj", calibration, 1, 0.02, UNITS.SECOND);
+        Objs otherObjects = new Objs("Other obj", calibration, 1, 0.02, UNITS.SECOND);
         obj = otherObjects.createAndAddNewObject(volumeType,0);
         obj.add(12,5,2);
         obj.add(12,5,3);
@@ -251,18 +251,18 @@ public class WorkspaceTest {
         String calibratedUnits = "µm";
 
         // Creating a new workspace and populating it with a set of objects
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null, 1);
         
         SpatCal calibration = new SpatCal(dppXY,dppZ,calibratedUnits,20,10,5);
-        ObjCollection objects = new ObjCollection("Obj", calibration, 1, 0.02, UNITS.SECOND);
+        Objs objects = new Objs("Obj", calibration, 1, 0.02, UNITS.SECOND);
         Obj obj = objects.createAndAddNewObject(volumeType,0);
         obj.setT(0);
         obj = objects.createAndAddNewObject(volumeType,1);
         obj.setT(1);
         workspace.addObjects(objects);
 
-        ObjCollection otherObjects = new ObjCollection("Other obj", calibration, 1, 0.02, UNITS.SECOND);
+        Objs otherObjects = new Objs("Other obj", calibration, 1, 0.02, UNITS.SECOND);
         obj = otherObjects.createAndAddNewObject(volumeType,0);
         obj.setT(0);
         obj = otherObjects.createAndAddNewObject(volumeType,1);

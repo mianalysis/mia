@@ -14,11 +14,11 @@ import org.junit.jupiter.api.Test;
 import ij.IJ;
 import ij.ImagePlus;
 import io.github.mianalysis.MIA.Module.Module;
-import io.github.mianalysis.MIA.Module.ModuleCollection;
+import io.github.mianalysis.MIA.Module.Modules;
 import io.github.mianalysis.MIA.Module.ModuleTest;
 import io.github.mianalysis.MIA.Object.Image;
 import io.github.mianalysis.MIA.Object.Workspace;
-import io.github.mianalysis.MIA.Object.WorkspaceCollection;
+import io.github.mianalysis.MIA.Object.Workspaces;
 
 public class ThresholdImageTest extends ModuleTest {
     private double tolerance = 1E-2;
@@ -36,7 +36,7 @@ public class ThresholdImageTest extends ModuleTest {
     @Test
     public void testRunGlobalHuangNoLimsNoMultWhiteBG2D8bit() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
@@ -49,7 +49,7 @@ public class ThresholdImageTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising ThresholdImage
-        ThresholdImage thresholdImage = new ThresholdImage(new ModuleCollection());
+        ThresholdImage thresholdImage = new ThresholdImage(new Modules());
         thresholdImage.initialiseParameters();
         thresholdImage.updateParameterValue(ThresholdImage.INPUT_IMAGE,"Test_image");
         thresholdImage.updateParameterValue(ThresholdImage.APPLY_TO_INPUT,false);
@@ -77,7 +77,7 @@ public class ThresholdImageTest extends ModuleTest {
     @Test
     public void testRunGlobalHuangNoLimsNoMultWhiteBG3D8bit() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
@@ -90,7 +90,7 @@ public class ThresholdImageTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising ThresholdImage
-        ThresholdImage thresholdImage = new ThresholdImage(new ModuleCollection());
+        ThresholdImage thresholdImage = new ThresholdImage(new Modules());
         thresholdImage.initialiseParameters();
         thresholdImage.updateParameterValue(ThresholdImage.INPUT_IMAGE,"Test_image");
         thresholdImage.updateParameterValue(ThresholdImage.APPLY_TO_INPUT,false);
@@ -118,7 +118,7 @@ public class ThresholdImageTest extends ModuleTest {
     @Test
     public void testRunGlobalHuangNoLimsNoMultWhiteBG4D8bit() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
@@ -131,7 +131,7 @@ public class ThresholdImageTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising ThresholdImage
-        ThresholdImage thresholdImage = new ThresholdImage(new ModuleCollection());
+        ThresholdImage thresholdImage = new ThresholdImage(new Modules());
         thresholdImage.initialiseParameters();
         thresholdImage.updateParameterValue(ThresholdImage.INPUT_IMAGE,"Test_image");
         thresholdImage.updateParameterValue(ThresholdImage.APPLY_TO_INPUT,false);
@@ -159,7 +159,7 @@ public class ThresholdImageTest extends ModuleTest {
     @Test
     public void testRunGlobalHuangNoLimsNoMultWhiteBG5D8bit() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
@@ -172,7 +172,7 @@ public class ThresholdImageTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising ThresholdImage
-        ThresholdImage thresholdImage = new ThresholdImage(new ModuleCollection());
+        ThresholdImage thresholdImage = new ThresholdImage(new Modules());
         thresholdImage.initialiseParameters();
         thresholdImage.updateParameterValue(ThresholdImage.INPUT_IMAGE,"Test_image");
         thresholdImage.updateParameterValue(ThresholdImage.APPLY_TO_INPUT,false);
@@ -200,7 +200,7 @@ public class ThresholdImageTest extends ModuleTest {
     @Test
     public void testRunGlobalHuangNoLimsNoMultWhiteBG3D16bit() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
@@ -213,7 +213,7 @@ public class ThresholdImageTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising ThresholdImage
-        ThresholdImage thresholdImage = new ThresholdImage(new ModuleCollection());
+        ThresholdImage thresholdImage = new ThresholdImage(new Modules());
         thresholdImage.initialiseParameters();
         thresholdImage.updateParameterValue(ThresholdImage.INPUT_IMAGE,"Test_image");
         thresholdImage.updateParameterValue(ThresholdImage.APPLY_TO_INPUT,false);
@@ -243,7 +243,7 @@ public class ThresholdImageTest extends ModuleTest {
     @Test @Disabled
     public void testRunGlobalHuangNoLimsNoMultWhiteBG3D32bit() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
@@ -256,7 +256,7 @@ public class ThresholdImageTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising ThresholdImage
-        ThresholdImage thresholdImage = new ThresholdImage(new ModuleCollection());
+        ThresholdImage thresholdImage = new ThresholdImage(new Modules());
         thresholdImage.initialiseParameters();
         thresholdImage.updateParameterValue(ThresholdImage.INPUT_IMAGE,"Test_image");
         thresholdImage.updateParameterValue(ThresholdImage.APPLY_TO_INPUT,false);
@@ -284,7 +284,7 @@ public class ThresholdImageTest extends ModuleTest {
     @Test
     public void testRunGlobalHuangNoLimsNoMultBlackBG3D8bit() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
@@ -297,7 +297,7 @@ public class ThresholdImageTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising ThresholdImage
-        ThresholdImage thresholdImage = new ThresholdImage(new ModuleCollection());
+        ThresholdImage thresholdImage = new ThresholdImage(new Modules());
         thresholdImage.initialiseParameters();
         thresholdImage.updateParameterValue(ThresholdImage.INPUT_IMAGE,"Test_image");
         thresholdImage.updateParameterValue(ThresholdImage.APPLY_TO_INPUT,false);
@@ -325,7 +325,7 @@ public class ThresholdImageTest extends ModuleTest {
     @Test
     public void testRunGlobalHuangNoLims2xMultWhiteBG3D8bit() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
@@ -338,7 +338,7 @@ public class ThresholdImageTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising ThresholdImage
-        ThresholdImage thresholdImage = new ThresholdImage(new ModuleCollection());
+        ThresholdImage thresholdImage = new ThresholdImage(new Modules());
         thresholdImage.initialiseParameters();
         thresholdImage.updateParameterValue(ThresholdImage.INPUT_IMAGE,"Test_image");
         thresholdImage.updateParameterValue(ThresholdImage.APPLY_TO_INPUT,false);
@@ -366,7 +366,7 @@ public class ThresholdImageTest extends ModuleTest {
     @Test
     public void testRunGlobalHuangNoLims0p5xMultWhiteBG3D8bit() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
@@ -379,7 +379,7 @@ public class ThresholdImageTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising ThresholdImage
-        ThresholdImage thresholdImage = new ThresholdImage(new ModuleCollection());
+        ThresholdImage thresholdImage = new ThresholdImage(new Modules());
         thresholdImage.initialiseParameters();
         thresholdImage.updateParameterValue(ThresholdImage.INPUT_IMAGE,"Test_image");
         thresholdImage.updateParameterValue(ThresholdImage.APPLY_TO_INPUT,false);
@@ -407,7 +407,7 @@ public class ThresholdImageTest extends ModuleTest {
     @Test
     public void testRunGlobalHuangMinLimPassNoMultWhiteBG3D8bit() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
@@ -420,7 +420,7 @@ public class ThresholdImageTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising ThresholdImage
-        ThresholdImage thresholdImage = new ThresholdImage(new ModuleCollection());
+        ThresholdImage thresholdImage = new ThresholdImage(new Modules());
         thresholdImage.initialiseParameters();
         thresholdImage.updateParameterValue(ThresholdImage.INPUT_IMAGE,"Test_image");
         thresholdImage.updateParameterValue(ThresholdImage.APPLY_TO_INPUT,false);
@@ -449,7 +449,7 @@ public class ThresholdImageTest extends ModuleTest {
     @Test
     public void testRunGlobalHuangMinLimFailNoMultWhiteBG3D8bit() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
@@ -462,7 +462,7 @@ public class ThresholdImageTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising ThresholdImage
-        ThresholdImage thresholdImage = new ThresholdImage(new ModuleCollection());
+        ThresholdImage thresholdImage = new ThresholdImage(new Modules());
         thresholdImage.initialiseParameters();
         thresholdImage.updateParameterValue(ThresholdImage.INPUT_IMAGE,"Test_image");
         thresholdImage.updateParameterValue(ThresholdImage.APPLY_TO_INPUT,false);
@@ -516,7 +516,7 @@ public class ThresholdImageTest extends ModuleTest {
     @Test
     public void testRunLocalSlicePhansalkarNoLimsNoMultWhiteBG3D8bit() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
@@ -529,7 +529,7 @@ public class ThresholdImageTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising ThresholdImage
-        ThresholdImage thresholdImage = new ThresholdImage(new ModuleCollection());
+        ThresholdImage thresholdImage = new ThresholdImage(new Modules());
         thresholdImage.initialiseParameters();
         thresholdImage.updateParameterValue(ThresholdImage.INPUT_IMAGE,"Test_image");
         thresholdImage.updateParameterValue(ThresholdImage.APPLY_TO_INPUT,false);
@@ -558,7 +558,7 @@ public class ThresholdImageTest extends ModuleTest {
     @Test
     public void testRunLocalSlicePhansalkarNoLimsNoMultBlackBG3D8bit() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
@@ -571,7 +571,7 @@ public class ThresholdImageTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising ThresholdImage
-        ThresholdImage thresholdImage = new ThresholdImage(new ModuleCollection());
+        ThresholdImage thresholdImage = new ThresholdImage(new Modules());
         thresholdImage.initialiseParameters();
         thresholdImage.updateParameterValue(ThresholdImage.INPUT_IMAGE,"Test_image");
         thresholdImage.updateParameterValue(ThresholdImage.APPLY_TO_INPUT,false);
@@ -600,7 +600,7 @@ public class ThresholdImageTest extends ModuleTest {
     @Test
     public void testRunManual8bit() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
@@ -613,7 +613,7 @@ public class ThresholdImageTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising ThresholdImage
-        ThresholdImage thresholdImage = new ThresholdImage(new ModuleCollection());
+        ThresholdImage thresholdImage = new ThresholdImage(new Modules());
         thresholdImage.initialiseParameters();
         thresholdImage.updateParameterValue(ThresholdImage.INPUT_IMAGE,"Test_image");
         thresholdImage.updateParameterValue(ThresholdImage.APPLY_TO_INPUT,false);
@@ -642,7 +642,7 @@ public class ThresholdImageTest extends ModuleTest {
     @Test
     public void testRunGlobalIntermodesNoLimsNoMultWhiteBG3D8bit() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
@@ -656,7 +656,7 @@ public class ThresholdImageTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising ThresholdImage
-        ThresholdImage thresholdImage = new ThresholdImage(new ModuleCollection());
+        ThresholdImage thresholdImage = new ThresholdImage(new Modules());
         thresholdImage.initialiseParameters();
         thresholdImage.updateParameterValue(ThresholdImage.INPUT_IMAGE,"Test_image");
         thresholdImage.updateParameterValue(ThresholdImage.APPLY_TO_INPUT,false);
@@ -684,7 +684,7 @@ public class ThresholdImageTest extends ModuleTest {
     @Test
     public void testRunGlobalIsodataNoLimsNoMultWhiteBG3D8bit() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
@@ -697,7 +697,7 @@ public class ThresholdImageTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising ThresholdImage
-        ThresholdImage thresholdImage = new ThresholdImage(new ModuleCollection());
+        ThresholdImage thresholdImage = new ThresholdImage(new Modules());
         thresholdImage.initialiseParameters();
         thresholdImage.updateParameterValue(ThresholdImage.INPUT_IMAGE,"Test_image");
         thresholdImage.updateParameterValue(ThresholdImage.APPLY_TO_INPUT,false);
@@ -725,7 +725,7 @@ public class ThresholdImageTest extends ModuleTest {
     @Test
     public void testRunGlobalMaxEntropyNoLimsNoMultWhiteBG3D8bit() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
@@ -738,7 +738,7 @@ public class ThresholdImageTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising ThresholdImage
-        ThresholdImage thresholdImage = new ThresholdImage(new ModuleCollection());
+        ThresholdImage thresholdImage = new ThresholdImage(new Modules());
         thresholdImage.initialiseParameters();
         thresholdImage.updateParameterValue(ThresholdImage.INPUT_IMAGE,"Test_image");
         thresholdImage.updateParameterValue(ThresholdImage.APPLY_TO_INPUT,false);
@@ -766,7 +766,7 @@ public class ThresholdImageTest extends ModuleTest {
     @Test
     public void testRunGlobalOtsuNoLimsNoMultWhiteBG3D8bit() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
@@ -779,7 +779,7 @@ public class ThresholdImageTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising ThresholdImage
-        ThresholdImage thresholdImage = new ThresholdImage(new ModuleCollection());
+        ThresholdImage thresholdImage = new ThresholdImage(new Modules());
         thresholdImage.initialiseParameters();
         thresholdImage.updateParameterValue(ThresholdImage.INPUT_IMAGE,"Test_image");
         thresholdImage.updateParameterValue(ThresholdImage.APPLY_TO_INPUT,false);
@@ -807,7 +807,7 @@ public class ThresholdImageTest extends ModuleTest {
     @Test
     public void testRunGlobalTriangleNoLimsNoMultWhiteBG3D8bit() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
@@ -820,7 +820,7 @@ public class ThresholdImageTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising ThresholdImage
-        ThresholdImage thresholdImage = new ThresholdImage(new ModuleCollection());
+        ThresholdImage thresholdImage = new ThresholdImage(new Modules());
         thresholdImage.initialiseParameters();
         thresholdImage.updateParameterValue(ThresholdImage.INPUT_IMAGE,"Test_image");
         thresholdImage.updateParameterValue(ThresholdImage.APPLY_TO_INPUT,false);
@@ -851,7 +851,7 @@ public class ThresholdImageTest extends ModuleTest {
     @Test
     public void testRunStoreThresholdGlobalHuangNoLimsNoMultWhiteBG3D8bit() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
@@ -861,7 +861,7 @@ public class ThresholdImageTest extends ModuleTest {
         workspace.addImage(image);
 
         // Initialising ThresholdImage
-        ThresholdImage thresholdImage = new ThresholdImage(new ModuleCollection());
+        ThresholdImage thresholdImage = new ThresholdImage(new Modules());
         thresholdImage.initialiseParameters();
         thresholdImage.updateParameterValue(ThresholdImage.INPUT_IMAGE,"Test_image");
         thresholdImage.updateParameterValue(ThresholdImage.APPLY_TO_INPUT,false);
@@ -889,7 +889,7 @@ public class ThresholdImageTest extends ModuleTest {
     @Test
     public void testRunStoreThresholdGlobalHuangApplyNoLimsNoMultWhiteBG3D8bit() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
@@ -899,7 +899,7 @@ public class ThresholdImageTest extends ModuleTest {
         workspace.addImage(image);
 
         // Initialising ThresholdImage
-        ThresholdImage thresholdImage = new ThresholdImage(new ModuleCollection());
+        ThresholdImage thresholdImage = new ThresholdImage(new Modules());
         thresholdImage.initialiseParameters();
         thresholdImage.updateParameterValue(ThresholdImage.INPUT_IMAGE,"Test_image");
         thresholdImage.updateParameterValue(ThresholdImage.APPLY_TO_INPUT,true);
@@ -923,7 +923,7 @@ public class ThresholdImageTest extends ModuleTest {
     @Test
     public void testRunStoreThresholdGlobalHuangApplyMinLimNoMultWhiteBG3D8bit() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
@@ -933,7 +933,7 @@ public class ThresholdImageTest extends ModuleTest {
         workspace.addImage(image);
 
         // Initialising ThresholdImage
-        ThresholdImage thresholdImage = new ThresholdImage(new ModuleCollection());
+        ThresholdImage thresholdImage = new ThresholdImage(new Modules());
         thresholdImage.initialiseParameters();
         thresholdImage.updateParameterValue(ThresholdImage.INPUT_IMAGE,"Test_image");
         thresholdImage.updateParameterValue(ThresholdImage.APPLY_TO_INPUT,true);
@@ -957,7 +957,7 @@ public class ThresholdImageTest extends ModuleTest {
     @Test
     public void testRunStoreThresholdLocal() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
@@ -967,7 +967,7 @@ public class ThresholdImageTest extends ModuleTest {
         workspace.addImage(image);
 
         // Initialising ThresholdImage
-        ThresholdImage thresholdImage = new ThresholdImage(new ModuleCollection());
+        ThresholdImage thresholdImage = new ThresholdImage(new Modules());
         thresholdImage.initialiseParameters();
         thresholdImage.updateParameterValue(ThresholdImage.INPUT_IMAGE,"Test_image");
         thresholdImage.updateParameterValue(ThresholdImage.APPLY_TO_INPUT,true);
@@ -988,7 +988,7 @@ public class ThresholdImageTest extends ModuleTest {
     @Test
     public void testRunStoreThresholdManual() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
@@ -998,7 +998,7 @@ public class ThresholdImageTest extends ModuleTest {
         workspace.addImage(image);
 
         // Initialising ThresholdImage
-        ThresholdImage thresholdImage = new ThresholdImage(new ModuleCollection());
+        ThresholdImage thresholdImage = new ThresholdImage(new Modules());
         thresholdImage.initialiseParameters();
         thresholdImage.updateParameterValue(ThresholdImage.INPUT_IMAGE,"Test_image");
         thresholdImage.updateParameterValue(ThresholdImage.APPLY_TO_INPUT,true);

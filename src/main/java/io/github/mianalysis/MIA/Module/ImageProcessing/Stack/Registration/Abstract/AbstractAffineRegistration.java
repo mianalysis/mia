@@ -18,11 +18,11 @@ import mpicbg.models.SimilarityModel2D;
 import mpicbg.models.TranslationModel2D;
 import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
-import io.github.mianalysis.MIA.Module.ModuleCollection;
+import io.github.mianalysis.MIA.Module.Modules;
 import io.github.mianalysis.MIA.Object.Workspace;
 import io.github.mianalysis.MIA.Object.Parameters.BooleanP;
 import io.github.mianalysis.MIA.Object.Parameters.ChoiceP;
-import io.github.mianalysis.MIA.Object.Parameters.ParameterCollection;
+import io.github.mianalysis.MIA.Object.Parameters.Parameters;
 import io.github.mianalysis.MIA.Object.Parameters.Abstract.Parameter;
 import io.github.mianalysis.MIA.Process.Interactable.PointPairSelector.PointPair;
 
@@ -31,7 +31,7 @@ public abstract class AbstractAffineRegistration<T extends RealType<T> & NativeT
     public static final String TRANSFORMATION_MODE = "Transformation mode";
     public static final String TEST_FLIP = "Test flip (mirror image)";
 
-    public AbstractAffineRegistration(String name, ModuleCollection modules) {
+    public AbstractAffineRegistration(String name, Modules modules) {
         super(name, modules);
     }
 
@@ -166,12 +166,12 @@ public abstract class AbstractAffineRegistration<T extends RealType<T> & NativeT
     }
 
     @Override
-    public ParameterCollection updateAndGetParameters() {
-        ParameterCollection returnedParameters = new ParameterCollection();
+    public Parameters updateAndGetParameters() {
+        Parameters returnedParameters = new Parameters();
 
         // Adding all default parameters and adding transformation mode just after
         // registration separator
-        ParameterCollection defaultParameters = super.updateAndGetParameters();
+        Parameters defaultParameters = super.updateAndGetParameters();
         for (Parameter parameter : defaultParameters.values()) {
             returnedParameters.add(parameter);
             if (parameter.getName().equals(REGISTRATION_SEPARATOR))

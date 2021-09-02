@@ -12,10 +12,10 @@ import io.github.mianalysis.MIA.ExpectedObjects.Objects3D;
 import io.github.mianalysis.MIA.ExpectedObjects.Spots3D;
 import io.github.mianalysis.MIA.Module.Module;
 import io.github.mianalysis.MIA.Module.ModuleTest;
-import io.github.mianalysis.MIA.Object.ObjCollection;
+import io.github.mianalysis.MIA.Object.Objs;
 import io.github.mianalysis.MIA.Object.Workspace;
-import io.github.mianalysis.MIA.Object.WorkspaceCollection;
-import io.github.mianalysis.MIA.Object.Parameters.ParameterCollection;
+import io.github.mianalysis.MIA.Object.Workspaces;
+import io.github.mianalysis.MIA.Object.Parameters.Parameters;
 import io.github.mianalysis.MIA.Object.Parameters.ParameterGroup;
 import io.github.sjcross.common.Object.Volume.VolumeType;
 
@@ -32,9 +32,9 @@ public class RemoveObjectsTest extends ModuleTest {
 
     @ParameterizedTest
     @EnumSource(VolumeType.class)
-    public void testRunSingleObjCollection(VolumeType volumeType) throws Exception{
+    public void testRunSingleObjs(VolumeType volumeType) throws Exception{
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Setting calibration parameters
@@ -43,14 +43,14 @@ public class RemoveObjectsTest extends ModuleTest {
         String calibratedUnits = "µm";
 
         // Getting test objects
-        ObjCollection testObjects = new Objects3D(volumeType).getObjects("TestObj", ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        Objs testObjects = new Objects3D(volumeType).getObjects("TestObj", ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(testObjects);
 
         // Initialising the module
         RemoveObjects removeObjects = new RemoveObjects(null);
         removeObjects.initialiseParameters();
         ParameterGroup group = removeObjects.getParameter(RemoveObjects.REMOVE_ANOTHER_OBJECT_SET);
-        ParameterCollection collection = group.addParameters();
+        Parameters collection = group.addParameters();
         collection.updateValue(RemoveObjects.INPUT_OBJECTS, "TestObj");
         
         // Running the module
@@ -63,9 +63,9 @@ public class RemoveObjectsTest extends ModuleTest {
 
     @ParameterizedTest
     @EnumSource(VolumeType.class)
-    public void testRunMultipleObjCollections(VolumeType volumeType) throws Exception{
+    public void testRunMultipleObjss(VolumeType volumeType) throws Exception{
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Setting calibration parameters
@@ -74,17 +74,17 @@ public class RemoveObjectsTest extends ModuleTest {
         String calibratedUnits = "µm";
 
         // Getting test objects
-        ObjCollection testObjects = new Objects3D(volumeType).getObjects("TestObj",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        Objs testObjects = new Objects3D(volumeType).getObjects("TestObj",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(testObjects);
 
-        ObjCollection spotObjects = new Spots3D(volumeType).getObjects("SpotObj",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        Objs spotObjects = new Spots3D(volumeType).getObjects("SpotObj",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(spotObjects);
 
         // Initialising the module
         RemoveObjects removeObjects = new RemoveObjects(null);
         removeObjects.initialiseParameters();
         ParameterGroup group = removeObjects.getParameter(RemoveObjects.REMOVE_ANOTHER_OBJECT_SET);
-        ParameterCollection collection = group.addParameters();
+        Parameters collection = group.addParameters();
         collection.updateValue(RemoveObjects.INPUT_OBJECTS, "TestObj");
 
         // Running the module

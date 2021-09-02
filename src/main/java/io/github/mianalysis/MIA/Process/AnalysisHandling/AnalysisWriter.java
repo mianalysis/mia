@@ -21,14 +21,14 @@ import org.w3c.dom.Element;
 
 import io.github.mianalysis.MIA.MIA;
 import io.github.mianalysis.MIA.Module.Module;
-import io.github.mianalysis.MIA.Module.ModuleCollection;
-import io.github.mianalysis.MIA.Object.Parameters.ParameterCollection;
+import io.github.mianalysis.MIA.Module.Modules;
+import io.github.mianalysis.MIA.Object.Parameters.Parameters;
 import io.github.mianalysis.MIA.Object.Parameters.Abstract.Parameter;
-import io.github.mianalysis.MIA.Object.References.Abstract.Ref;
-import io.github.mianalysis.MIA.Object.References.Collections.ImageMeasurementRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.MetadataRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.ObjMeasurementRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.RefCollection;
+import io.github.mianalysis.MIA.Object.Refs.Abstract.Ref;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ImageMeasurementRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.MetadataRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ObjMeasurementRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.Refs;
 
 /**
  * Created by Stephen on 22/06/2018.
@@ -87,7 +87,7 @@ public class AnalysisWriter {
         root.setAttributeNode(version);
 
         // Creating a module collection holding the single-instance modules (input, output and global variables)
-        ModuleCollection singleModules = new ModuleCollection();
+        Modules singleModules = new Modules();
         singleModules.add(analysis.getModules().getInputControl());
         singleModules.add(analysis.getModules().getOutputControl());
 
@@ -100,7 +100,7 @@ public class AnalysisWriter {
 
     }
 
-    public static Element prepareModulesXML(Document doc, ModuleCollection modules) {
+    public static Element prepareModulesXML(Document doc, Modules modules) {
         Element modulesElement = doc.createElement("MODULES");
 
         // Running through each parameter set (one for each module)
@@ -112,24 +112,24 @@ public class AnalysisWriter {
 
             // Adding parameters from this module
             Element paramElement = doc.createElement("PARAMETERS");
-            ParameterCollection paraRefs = module.getAllParameters();
+            Parameters paraRefs = module.getAllParameters();
             paramElement = prepareRefsXML(doc, paramElement,paraRefs,"PARAMETER");
             moduleElement.appendChild(paramElement);
 
             // Adding measurement references from this module
             Element imageMeasurementsElement = doc.createElement("IMAGE_MEASUREMENTS");
-            ImageMeasurementRefCollection imageReferences = module.updateAndGetImageMeasurementRefs();
+            ImageMeasurementRefs imageReferences = module.updateAndGetImageMeasurementRefs();
             imageMeasurementsElement = prepareRefsXML(doc, imageMeasurementsElement,imageReferences,"MEASUREMENT");
             moduleElement.appendChild(imageMeasurementsElement);
 
             Element objectMeasurementsElement = doc.createElement("OBJECT_MEASUREMENTS");
-            ObjMeasurementRefCollection objectReferences = module.updateAndGetObjectMeasurementRefs();
+            ObjMeasurementRefs objectReferences = module.updateAndGetObjectMeasurementRefs();
             objectMeasurementsElement = prepareRefsXML(doc, objectMeasurementsElement,objectReferences,"MEASUREMENT");
             moduleElement.appendChild(objectMeasurementsElement);
 
             // Adding metadata references from this module
             Element metadataElement = doc.createElement("METADATA");
-            MetadataRefCollection metadataRefs = module.updateAndGetMetadataReferences();
+            MetadataRefs metadataRefs = module.updateAndGetMetadataReferences();
             metadataElement = prepareRefsXML(doc, metadataElement,metadataRefs,"METADATUM");
             moduleElement.appendChild(metadataElement);
 
@@ -142,7 +142,7 @@ public class AnalysisWriter {
 
     }
 
-    public static Element prepareRefsXML(Document doc, Element refsElement, RefCollection<? extends Ref> refs, String groupName) {
+    public static Element prepareRefsXML(Document doc, Element refsElement, Refs<? extends Ref> refs, String groupName) {
         if (refs == null) return refsElement;
 
         for (Ref ref:refs.values()) {

@@ -15,14 +15,14 @@ import ij.process.ImageProcessor;
 import io.github.mianalysis.MIA.Module.Categories;
 import io.github.mianalysis.MIA.Module.Category;
 import io.github.mianalysis.MIA.Module.Module;
-import io.github.mianalysis.MIA.Module.ModuleCollection;
+import io.github.mianalysis.MIA.Module.Modules;
 import io.github.mianalysis.MIA.Module.ImageProcessing.Pixel.ImageMath;
 import io.github.mianalysis.MIA.Module.ImageProcessing.Stack.CropImage;
 import io.github.mianalysis.MIA.Module.ObjectProcessing.Identification.GetLocalObjectRegion;
 import io.github.mianalysis.MIA.Object.Image;
 import io.github.mianalysis.MIA.Object.Measurement;
 import io.github.mianalysis.MIA.Object.Obj;
-import io.github.mianalysis.MIA.Object.ObjCollection;
+import io.github.mianalysis.MIA.Object.Objs;
 import io.github.mianalysis.MIA.Object.Status;
 import io.github.mianalysis.MIA.Object.Workspace;
 import io.github.mianalysis.MIA.Object.Parameters.BooleanP;
@@ -31,15 +31,15 @@ import io.github.mianalysis.MIA.Object.Parameters.InputImageP;
 import io.github.mianalysis.MIA.Object.Parameters.InputObjectsP;
 import io.github.mianalysis.MIA.Object.Parameters.ObjectMeasurementP;
 import io.github.mianalysis.MIA.Object.Parameters.OutputImageP;
-import io.github.mianalysis.MIA.Object.Parameters.ParameterCollection;
+import io.github.mianalysis.MIA.Object.Parameters.Parameters;
 import io.github.mianalysis.MIA.Object.Parameters.Text.DoubleP;
 import io.github.mianalysis.MIA.Object.Parameters.Text.IntegerP;
-import io.github.mianalysis.MIA.Object.References.ObjMeasurementRef;
-import io.github.mianalysis.MIA.Object.References.Collections.ImageMeasurementRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.MetadataRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.ObjMeasurementRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.ParentChildRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.PartnerRefCollection;
+import io.github.mianalysis.MIA.Object.Refs.ObjMeasurementRef;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ImageMeasurementRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.MetadataRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ObjMeasurementRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ParentChildRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.PartnerRefs;
 import io.github.sjcross.common.MathFunc.CumStat;
 import io.github.sjcross.common.MathFunc.GaussianDistribution2D;
 import io.github.sjcross.common.Object.Point;
@@ -66,7 +66,7 @@ public class FitGaussian2D extends Module {
     public static final String GAUSSIAN_IMAGE = "Gaussian image name";
 
 
-    public FitGaussian2D(ModuleCollection modules) {
+    public FitGaussian2D(Modules modules) {
         super("Fit Gaussian 2D",modules);
     }
 
@@ -145,9 +145,9 @@ public class FitGaussian2D extends Module {
 
     }
 
-    static void assignVolume(ObjCollection objects) {
+    static void assignVolume(Objs objects) {
         // Replacing spot volumes with explicit volume
-        ObjCollection tempObjects = new ObjCollection("SpotVolume",objects);
+        Objs tempObjects = new Objs("SpotVolume",objects);
         for (Obj spotObject:objects.values()) {
             int radius = (int) Math.round(spotObject.getMeasurement(Measurements.SIGMA_X_PX).getValue());
             Point<Double> cent = spotObject.getMeanCentroid(true,false);
@@ -221,7 +221,7 @@ public class FitGaussian2D extends Module {
 
     }
 
-    static Image createGaussianImage(ObjCollection objects, String outputImageName, @Nullable Module module) {
+    static Image createGaussianImage(Objs objects, String outputImageName, @Nullable Module module) {
         if (objects.size() == 0) return null;
 
         // Create blank image
@@ -253,7 +253,7 @@ public class FitGaussian2D extends Module {
 
     }
 
-    static double getMeanBackground(ObjCollection objects) {
+    static double getMeanBackground(Objs objects) {
         CumStat cs = new CumStat();
 
         for (Obj obj:objects.values()) cs.addMeasure(obj.getMeasurement(Measurements.A_BG).getValue());
@@ -313,7 +313,7 @@ public class FitGaussian2D extends Module {
 
         // Getting input objects to refine (if selected by used)
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
-        ObjCollection inputObjects = workspace.getObjectSet(inputObjectsName);
+        Objs inputObjects = workspace.getObjectSet(inputObjectsName);
 
         // Getting parameters
         String radiusMode = parameters.getValue(RADIUS_MODE);
@@ -450,8 +450,8 @@ public class FitGaussian2D extends Module {
     }
 
     @Override
-    public ParameterCollection updateAndGetParameters() {
-        ParameterCollection returnedParameters = new ParameterCollection();
+    public Parameters updateAndGetParameters() {
+        Parameters returnedParameters = new Parameters();
         returnedParameters.add(parameters.getParameter(INPUT_IMAGE));
         returnedParameters.add(parameters.getParameter(INPUT_OBJECTS));
         returnedParameters.add(parameters.getParameter(RADIUS_MODE));
@@ -492,13 +492,13 @@ public class FitGaussian2D extends Module {
     }
 
     @Override
-    public ImageMeasurementRefCollection updateAndGetImageMeasurementRefs() {
+    public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
-        ObjMeasurementRefCollection returnedRefs = new ObjMeasurementRefCollection();
+    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+        ObjMeasurementRefs returnedRefs = new ObjMeasurementRefs();
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
 
         ObjMeasurementRef reference = objectMeasurementRefs.getOrPut(Measurements.X0_PX);
@@ -574,17 +574,17 @@ public class FitGaussian2D extends Module {
     }
 
     @Override
-    public MetadataRefCollection updateAndGetMetadataReferences() {
+    public MetadataRefs updateAndGetMetadataReferences() {
         return null;
     }
 
     @Override
-    public ParentChildRefCollection updateAndGetParentChildRefs() {
+    public ParentChildRefs updateAndGetParentChildRefs() {
         return null;
     }
 
     @Override
-    public PartnerRefCollection updateAndGetPartnerRefs() {
+    public PartnerRefs updateAndGetPartnerRefs() {
         return null;
     }
 

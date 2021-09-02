@@ -4,7 +4,7 @@ import java.util.LinkedHashMap;
 
 import io.github.mianalysis.MIA.MIA;
 import io.github.mianalysis.MIA.Module.Module;
-import io.github.mianalysis.MIA.Module.ModuleCollection;
+import io.github.mianalysis.MIA.Module.Modules;
 import io.github.mianalysis.MIA.Module.Category;
 import io.github.mianalysis.MIA.Module.Categories;
 import io.github.mianalysis.MIA.Module.Miscellaneous.GlobalVariables;
@@ -12,16 +12,16 @@ import io.github.mianalysis.MIA.Object.Status;
 import io.github.mianalysis.MIA.Object.Workspace;
 import io.github.mianalysis.MIA.Object.Parameters.BooleanP;
 import io.github.mianalysis.MIA.Object.Parameters.ChoiceP;
-import io.github.mianalysis.MIA.Object.Parameters.ParameterCollection;
+import io.github.mianalysis.MIA.Object.Parameters.Parameters;
 import io.github.mianalysis.MIA.Object.Parameters.ParameterGroup;
 import io.github.mianalysis.MIA.Object.Parameters.ParameterGroup.ParameterUpdaterAndGetter;
 import io.github.mianalysis.MIA.Object.Parameters.SeparatorP;
 import io.github.mianalysis.MIA.Object.Parameters.Text.StringP;
-import io.github.mianalysis.MIA.Object.References.Collections.ImageMeasurementRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.MetadataRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.ObjMeasurementRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.ParentChildRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.PartnerRefCollection;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ImageMeasurementRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.MetadataRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ObjMeasurementRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ParentChildRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.PartnerRefs;
 
 /**
  * Created by Stephen Cross on 23/11/2018.
@@ -36,7 +36,7 @@ public class GUICondition extends AbstractWorkspaceHandler {
     public static final String ADD_CHOICE = "Add choice";
     public static final String CHOICE_NAME = "Choice name";
 
-    public GUICondition(ModuleCollection modules) {
+    public GUICondition(Modules modules) {
         super("GUI condition", modules);
         deprecated = true;
     }
@@ -51,8 +51,8 @@ public class GUICondition extends AbstractWorkspaceHandler {
             redirectModule = modules.get(idx);
 
         String choice = parameters.getValue(CHOICE);
-        LinkedHashMap<Integer, ParameterCollection> collections = parameters.getValue(ADD_CHOICE);
-        for (ParameterCollection collection : collections.values()) {
+        LinkedHashMap<Integer, Parameters> collections = parameters.getValue(ADD_CHOICE);
+        for (Parameters collection : collections.values()) {
             if (collection.getValue(CHOICE_NAME).equals(choice)) {
                 switch ((String) collection.getValue(CONTINUATION_MODE)) {
                 case ContinuationModes.REDIRECT_TO_MODULE:
@@ -93,12 +93,12 @@ public class GUICondition extends AbstractWorkspaceHandler {
         String choice = parameters.getValue(CHOICE);
         boolean storeAsMetadata = parameters.getValue(STORE_AS_METADATA_ITEM);
         String metadataName = parameters.getValue(METADATA_NAME);
-        LinkedHashMap<Integer, ParameterCollection> collections = parameters.getValue(ADD_CHOICE);
+        LinkedHashMap<Integer, Parameters> collections = parameters.getValue(ADD_CHOICE);
         boolean showRedirectMessage = parameters.getValue(SHOW_REDIRECT_MESSAGE);
 
         // Getting choice parameters
         Status status = Status.FAIL;
-        for (ParameterCollection collection : collections.values()) {
+        for (Parameters collection : collections.values()) {
             if (collection.getValue(CHOICE_NAME).equals(choice)) {
                 status = processTermination(collection, workspace, showRedirectMessage);
             }
@@ -129,7 +129,7 @@ public class GUICondition extends AbstractWorkspaceHandler {
         parameters.add(new StringP(METADATA_NAME, this));
         parameters.getParameter(CHOICE).setVisible(true);
 
-        ParameterCollection collection = new ParameterCollection();
+        Parameters collection = new Parameters();
         collection.add(new SeparatorP(CHOICE_SEPARATOR, this));
         collection.add(new StringP(CHOICE_NAME, this, ""));
         collection.addAll(super.updateAndGetParameters());
@@ -140,8 +140,8 @@ public class GUICondition extends AbstractWorkspaceHandler {
     }
 
     @Override
-    public ParameterCollection updateAndGetParameters() {
-        ParameterCollection returnedParameters = new ParameterCollection();
+    public Parameters updateAndGetParameters() {
+        Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(CONDITION_SEPARATOR));
         returnedParameters.add(parameters.getParameter(CHOICE));
@@ -160,18 +160,18 @@ public class GUICondition extends AbstractWorkspaceHandler {
     }
 
     @Override
-    public ImageMeasurementRefCollection updateAndGetImageMeasurementRefs() {
+    public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MetadataRefCollection updateAndGetMetadataReferences() {
-        MetadataRefCollection returnedRefs = new MetadataRefCollection();
+    public MetadataRefs updateAndGetMetadataReferences() {
+        MetadataRefs returnedRefs = new MetadataRefs();
 
         if ((boolean) parameters.getValue(STORE_AS_METADATA_ITEM))
             returnedRefs.add(metadataRefs.getOrPut(parameters.getValue(METADATA_NAME)));
@@ -181,12 +181,12 @@ public class GUICondition extends AbstractWorkspaceHandler {
     }
 
     @Override
-    public ParentChildRefCollection updateAndGetParentChildRefs() {
+    public ParentChildRefs updateAndGetParentChildRefs() {
         return null;
     }
 
     @Override
-    public PartnerRefCollection updateAndGetPartnerRefs() {
+    public PartnerRefs updateAndGetPartnerRefs() {
         return null;
     }
 
@@ -222,8 +222,8 @@ public class GUICondition extends AbstractWorkspaceHandler {
         return new ParameterUpdaterAndGetter() {
 
             @Override
-            public ParameterCollection updateAndGet(ParameterCollection params) {
-                ParameterCollection returnedParameters = new ParameterCollection();
+            public Parameters updateAndGet(Parameters params) {
+                Parameters returnedParameters = new Parameters();
 
                 returnedParameters.add(params.getParameter(CHOICE_SEPARATOR));
                 returnedParameters.add(params.getParameter(CHOICE_NAME));
@@ -252,11 +252,11 @@ public class GUICondition extends AbstractWorkspaceHandler {
         };
     }
 
-    String[] getGUIChoices(LinkedHashMap<Integer, ParameterCollection> collections) {
+    String[] getGUIChoices(LinkedHashMap<Integer, Parameters> collections) {
         String[] choices = new String[collections.size()];
 
         int i = 0;
-        for (ParameterCollection collection : collections.values()) {
+        for (Parameters collection : collections.values()) {
             choices[i++] = collection.getValue(CHOICE_NAME);
         }
 

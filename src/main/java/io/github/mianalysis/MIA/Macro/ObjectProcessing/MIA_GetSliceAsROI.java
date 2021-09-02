@@ -4,9 +4,9 @@ import ij.gui.Roi;
 import ij.macro.MacroExtension;
 import ij.plugin.frame.RoiManager;
 import io.github.mianalysis.MIA.Macro.MacroOperation;
-import io.github.mianalysis.MIA.Module.ModuleCollection;
+import io.github.mianalysis.MIA.Module.Modules;
 import io.github.mianalysis.MIA.Object.Obj;
-import io.github.mianalysis.MIA.Object.ObjCollection;
+import io.github.mianalysis.MIA.Object.Objs;
 import io.github.mianalysis.MIA.Object.Workspace;
 
 public class MIA_GetSliceAsROI extends MacroOperation {
@@ -20,13 +20,13 @@ public class MIA_GetSliceAsROI extends MacroOperation {
     }
 
     @Override
-    public String action(Object[] objects, Workspace workspace, ModuleCollection modules) {
+    public String action(Object[] objects, Workspace workspace, Modules modules) {
         String inputObjectsName = (String) objects[0];
         int inputObjectsID = (int) Math.round((Double) objects[1]);
         int slice = (int) Math.round((Double) objects[2]);        
 
         // Getting the input objects
-        ObjCollection inputObjects = workspace.getObjectSet(inputObjectsName);
+        Objs inputObjects = workspace.getObjectSet(inputObjectsName);
         if (inputObjects == null)
             return "";
         

@@ -25,7 +25,7 @@ import org.xml.sax.SAXException;
 import io.github.mianalysis.MIA.MIA;
 import io.github.mianalysis.MIA.GUI.GUI;
 import io.github.mianalysis.MIA.Module.Module;
-import io.github.mianalysis.MIA.Module.ModuleCollection;
+import io.github.mianalysis.MIA.Module.Modules;
 import io.github.mianalysis.MIA.Module.Core.InputControl;
 import io.github.mianalysis.MIA.Module.Core.OutputControl;
 import io.github.mianalysis.MIA.Module.Miscellaneous.GlobalVariables;
@@ -41,7 +41,7 @@ import io.github.mianalysis.MIA.Object.Parameters.InputObjectsP;
 import io.github.mianalysis.MIA.Object.Parameters.MetadataItemP;
 import io.github.mianalysis.MIA.Object.Parameters.ObjectMeasurementP;
 import io.github.mianalysis.MIA.Object.Parameters.OutputImageP;
-import io.github.mianalysis.MIA.Object.Parameters.ParameterCollection;
+import io.github.mianalysis.MIA.Object.Parameters.Parameters;
 import io.github.mianalysis.MIA.Object.Parameters.ParameterGroup;
 import io.github.mianalysis.MIA.Object.Parameters.ParentObjectsP;
 import io.github.mianalysis.MIA.Object.Parameters.RemovedImageP;
@@ -52,9 +52,9 @@ import io.github.mianalysis.MIA.Object.Parameters.Text.DoubleP;
 import io.github.mianalysis.MIA.Object.Parameters.Text.IntegerP;
 import io.github.mianalysis.MIA.Object.Parameters.Text.StringP;
 import io.github.mianalysis.MIA.Object.Parameters.Text.TextAreaP;
-import io.github.mianalysis.MIA.Object.References.ImageMeasurementRef;
-import io.github.mianalysis.MIA.Object.References.MetadataRef;
-import io.github.mianalysis.MIA.Object.References.ObjMeasurementRef;
+import io.github.mianalysis.MIA.Object.Refs.ImageMeasurementRef;
+import io.github.mianalysis.MIA.Object.Refs.MetadataRef;
+import io.github.mianalysis.MIA.Object.Refs.ObjMeasurementRef;
 import io.github.mianalysis.MIA.Process.ClassHunter;
 import io.github.mianalysis.MIA.Process.AnalysisHandling.Analysis;
 
@@ -107,7 +107,7 @@ public class AnalysisReader_Pre_0p10p0 {
         doc.getDocumentElement().normalize();
 
         Analysis analysis = new Analysis();
-        ModuleCollection modules = analysis.getModules();
+        Modules modules = analysis.getModules();
         ArrayList<Node> relationshipsToCovert = new ArrayList<>();
 
         // Creating a list of all available modules (rather than reading their full
@@ -155,7 +155,7 @@ public class AnalysisReader_Pre_0p10p0 {
 
     }
 
-    public static Module initialiseModule(Node moduleNode, ModuleCollection modules, List<String> availableModules,
+    public static Module initialiseModule(Node moduleNode, Modules modules, List<String> availableModules,
             ArrayList<Node> relationshipsToCovert)
             throws IllegalAccessException, InstantiationException, NoSuchMethodException, InvocationTargetException {
 
@@ -168,7 +168,7 @@ public class AnalysisReader_Pre_0p10p0 {
             if (moduleName.equals(FilenameUtils.getExtension(availableModule))) {
                 Module module;
                 try {
-                    module = (Module) Class.forName(availableModule).getDeclaredConstructor(ModuleCollection.class)
+                    module = (Module) Class.forName(availableModule).getDeclaredConstructor(Modules.class)
                             .newInstance(modules);
                 } catch (ClassNotFoundException e) {
                     MIA.log.writeError(e);
@@ -281,7 +281,7 @@ public class AnalysisReader_Pre_0p10p0 {
         }
     }
 
-    public static void populateModuleParameters(Node moduleNode, ParameterCollection parameters, Module module) {
+    public static void populateModuleParameters(Node moduleNode, Parameters parameters, Module module) {
         String moduleName = module.getName();
 
         NodeList parameterNodes = moduleNode.getChildNodes();
@@ -449,7 +449,7 @@ public class AnalysisReader_Pre_0p10p0 {
         }
     }
 
-    public static void populateModuleParameterGroups(Node parameterNode, ParameterCollection parameters,
+    public static void populateModuleParameterGroups(Node parameterNode, Parameters parameters,
             Module module) {
         NodeList collectionNodes = parameterNode.getChildNodes();
         String groupName = parameterNode.getAttributes().getNamedItem("NAME").getNodeValue();
@@ -460,7 +460,7 @@ public class AnalysisReader_Pre_0p10p0 {
             group.removeAllParameters();
 
         for (int j = 0; j < collectionNodes.getLength(); j++) {
-            ParameterCollection newParameters = group.addParameters();
+            Parameters newParameters = group.addParameters();
 
             Node collectionNode = collectionNodes.item(j);
             Node newParametersNode = collectionNode.getChildNodes().item(0);

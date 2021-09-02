@@ -3,12 +3,12 @@ package io.github.mianalysis.MIA.Module.Visualisation.Overlays;
 import java.util.HashMap;
 
 import io.github.mianalysis.MIA.Module.Module;
-import io.github.mianalysis.MIA.Module.ModuleCollection;
-import io.github.mianalysis.MIA.Object.ObjCollection;
+import io.github.mianalysis.MIA.Module.Modules;
+import io.github.mianalysis.MIA.Object.Objs;
 import io.github.mianalysis.MIA.Object.Parameters.ChildObjectsP;
 import io.github.mianalysis.MIA.Object.Parameters.ChoiceP;
 import io.github.mianalysis.MIA.Object.Parameters.ObjectMeasurementP;
-import io.github.mianalysis.MIA.Object.Parameters.ParameterCollection;
+import io.github.mianalysis.MIA.Object.Parameters.Parameters;
 import io.github.mianalysis.MIA.Object.Parameters.ParentObjectsP;
 import io.github.mianalysis.MIA.Object.Parameters.PartnerObjectsP;
 import io.github.mianalysis.MIA.Object.Parameters.SeparatorP;
@@ -29,7 +29,7 @@ public abstract class AbstractOverlay extends Module {
     public static final String RANGE_MAXIMUM_MODE = "Range maximum mode";
     public static final String MAXIMUM_VALUE = "Maximum value";
 
-    public AbstractOverlay(String name, ModuleCollection modules) {
+    public AbstractOverlay(String name, Modules modules) {
         super(name, modules);
     }
 
@@ -59,7 +59,7 @@ public abstract class AbstractOverlay extends Module {
 
     }
 
-    public HashMap<Integer, Float> getHues(ObjCollection inputObjects) {
+    public HashMap<Integer, Float> getHues(Objs inputObjects) {
         // Getting colour settings
         String colourMode = parameters.getValue(COLOUR_MODE);
         String singleColour = parameters.getValue(SINGLE_COLOUR);
@@ -119,8 +119,8 @@ public abstract class AbstractOverlay extends Module {
 
     }
 
-    public ParameterCollection updateAndGetParameters(String inputObjectsName) {
-        ParameterCollection returnedParameters = new ParameterCollection();
+    public Parameters updateAndGetParameters(String inputObjectsName) {
+        Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(COLOUR_SEPARATOR));
         returnedParameters.add(parameters.getParameter(COLOUR_MODE));

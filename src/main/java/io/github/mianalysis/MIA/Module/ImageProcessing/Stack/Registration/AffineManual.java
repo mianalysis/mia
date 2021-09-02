@@ -16,13 +16,13 @@ import mpicbg.models.PointMatch;
 import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
 import io.github.mianalysis.MIA.MIA;
-import io.github.mianalysis.MIA.Module.ModuleCollection;
+import io.github.mianalysis.MIA.Module.Modules;
 import io.github.mianalysis.MIA.Module.ImageProcessing.Stack.ConcatenateStacks;
 import io.github.mianalysis.MIA.Module.ImageProcessing.Stack.Registration.Abstract.AbstractAffineRegistration;
 import io.github.mianalysis.MIA.Object.Image;
 import io.github.mianalysis.MIA.Object.Workspace;
 import io.github.mianalysis.MIA.Object.Parameters.ChoiceP;
-import io.github.mianalysis.MIA.Object.Parameters.ParameterCollection;
+import io.github.mianalysis.MIA.Object.Parameters.Parameters;
 import io.github.mianalysis.MIA.Object.Parameters.SeparatorP;
 import io.github.mianalysis.MIA.Process.Interactable.Interactable;
 import io.github.mianalysis.MIA.Process.Interactable.PointPairSelector;
@@ -41,7 +41,7 @@ public class AffineManual<T extends RealType<T> & NativeType<T>> extends Abstrac
 
     }
 
-    public AffineManual(ModuleCollection modules) {
+    public AffineManual(Modules modules) {
         super("Affine (manual)", modules);
     }
 
@@ -211,8 +211,8 @@ public class AffineManual<T extends RealType<T> & NativeType<T>> extends Abstrac
     }
 
     @Override
-    public ParameterCollection updateAndGetParameters() {
-        ParameterCollection returnedParameters = new ParameterCollection();
+    public Parameters updateAndGetParameters() {
+        Parameters returnedParameters = new Parameters();
 
         returnedParameters.addAll(super.updateAndGetParameters());
 

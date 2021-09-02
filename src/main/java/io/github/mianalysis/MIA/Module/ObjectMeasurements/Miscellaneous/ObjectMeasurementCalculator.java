@@ -1,12 +1,12 @@
 package io.github.mianalysis.MIA.Module.ObjectMeasurements.Miscellaneous;
 
 import io.github.mianalysis.MIA.Module.Module;
-import io.github.mianalysis.MIA.Module.ModuleCollection;
+import io.github.mianalysis.MIA.Module.Modules;
 import io.github.mianalysis.MIA.Module.Category;
 import io.github.mianalysis.MIA.Module.Categories;
 import io.github.mianalysis.MIA.Object.Measurement;
 import io.github.mianalysis.MIA.Object.Obj;
-import io.github.mianalysis.MIA.Object.ObjCollection;
+import io.github.mianalysis.MIA.Object.Objs;
 import io.github.mianalysis.MIA.Object.Status;
 import io.github.mianalysis.MIA.Object.Workspace;
 import io.github.mianalysis.MIA.Object.Parameters.ChoiceP;
@@ -15,14 +15,14 @@ import io.github.mianalysis.MIA.Object.Parameters.InputImageP;
 import io.github.mianalysis.MIA.Object.Parameters.InputObjectsP;
 import io.github.mianalysis.MIA.Object.Parameters.ObjectMeasurementP;
 import io.github.mianalysis.MIA.Object.Parameters.SeparatorP;
-import io.github.mianalysis.MIA.Object.Parameters.ParameterCollection;
+import io.github.mianalysis.MIA.Object.Parameters.Parameters;
 import io.github.mianalysis.MIA.Object.Parameters.Text.DoubleP;
 import io.github.mianalysis.MIA.Object.Parameters.Text.StringP;
-import io.github.mianalysis.MIA.Object.References.Collections.ImageMeasurementRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.MetadataRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.ObjMeasurementRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.ParentChildRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.PartnerRefCollection;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ImageMeasurementRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.MetadataRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ObjMeasurementRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ParentChildRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.PartnerRefs;
 import io.github.sjcross.common.MathFunc.CumStat;
 
 /**
@@ -90,7 +90,7 @@ public class ObjectMeasurementCalculator extends Module {
 
     }
 
-    public ObjectMeasurementCalculator(ModuleCollection modules) {
+    public ObjectMeasurementCalculator(Modules modules) {
         super("Object measurement calculator", modules);
     }
 
@@ -98,7 +98,7 @@ public class ObjectMeasurementCalculator extends Module {
         return "MEASUREMENT_CALCULATOR // " + measurementName;
     }
 
-    public static double getObjectCollectionStatistic(ObjCollection objects, String measurementName, String statistic) {
+    public static double getObjectCollectionStatistic(Objs objects, String measurementName, String statistic) {
         // The first and last values are calculated slightly differently
         switch (statistic) {
             case StatisticModes.FIRST:
@@ -137,7 +137,7 @@ public class ObjectMeasurementCalculator extends Module {
         }
     }
 
-    static double getFirstValue(ObjCollection objects, String measurementName) {
+    static double getFirstValue(Objs objects, String measurementName) {
         CumStat cs = new CumStat();
 
         int minFrame = Integer.MAX_VALUE;
@@ -160,7 +160,7 @@ public class ObjectMeasurementCalculator extends Module {
 
     }
 
-    static double getLastValue(ObjCollection objects, String measurementName) {
+    static double getLastValue(Objs objects, String measurementName) {
         CumStat cs = new CumStat();
 
         int maxFrame = -Integer.MAX_VALUE;
@@ -212,7 +212,7 @@ public class ObjectMeasurementCalculator extends Module {
     @Override
     protected Status process(Workspace workspace) {
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
-        ObjCollection inputObjects = workspace.getObjectSet(inputObjectsName);
+        Objs inputObjects = workspace.getObjectSet(inputObjectsName);
 
         String valueMode1 = parameters.getValue(VALUE_MODE_1);
         double fixedValue1 = parameters.getValue(FIXED_VALUE_1);
@@ -239,11 +239,11 @@ public class ObjectMeasurementCalculator extends Module {
         double refValue1 = Double.NaN;
         double refValue2 = Double.NaN;
         if (valueMode1.equals(ValueModes.OBJECT_COLLECTION_STATISTIC)) {
-            ObjCollection refObjects1 = workspace.getObjectSet(refObjectsName1);
+            Objs refObjects1 = workspace.getObjectSet(refObjectsName1);
             refValue1 = getObjectCollectionStatistic(refObjects1, refMeasurementName1, statisticMode1);
         }
         if (valueMode2.equals(ValueModes.OBJECT_COLLECTION_STATISTIC)) {
-            ObjCollection refObjects2 = workspace.getObjectSet(refObjectsName2);
+            Objs refObjects2 = workspace.getObjectSet(refObjectsName2);
             refValue2 = getObjectCollectionStatistic(refObjects2, refMeasurementName2, statisticMode2);
         }
 
@@ -333,10 +333,10 @@ public class ObjectMeasurementCalculator extends Module {
     }
 
     @Override
-    public ParameterCollection updateAndGetParameters() {
+    public Parameters updateAndGetParameters() {
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
 
-        ParameterCollection returnedParams = new ParameterCollection();
+        Parameters returnedParams = new Parameters();
 
         returnedParams.add(parameters.getParameter(INPUT_SEPARATOR));
         returnedParams.add(parameters.getParameter(INPUT_OBJECTS));
@@ -408,13 +408,13 @@ public class ObjectMeasurementCalculator extends Module {
     }
 
     @Override
-    public ImageMeasurementRefCollection updateAndGetImageMeasurementRefs() {
+    public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
-        ObjMeasurementRefCollection returnedRefs = new ObjMeasurementRefCollection();
+    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+        ObjMeasurementRefs returnedRefs = new ObjMeasurementRefs();
 
         // Creating new MeasurementRef
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
@@ -427,17 +427,17 @@ public class ObjectMeasurementCalculator extends Module {
     }
 
     @Override
-    public MetadataRefCollection updateAndGetMetadataReferences() {
+    public MetadataRefs updateAndGetMetadataReferences() {
         return null;
     }
 
     @Override
-    public ParentChildRefCollection updateAndGetParentChildRefs() {
+    public ParentChildRefs updateAndGetParentChildRefs() {
         return null;
     }
 
     @Override
-    public PartnerRefCollection updateAndGetPartnerRefs() {
+    public PartnerRefs updateAndGetPartnerRefs() {
         return null;
     }
 

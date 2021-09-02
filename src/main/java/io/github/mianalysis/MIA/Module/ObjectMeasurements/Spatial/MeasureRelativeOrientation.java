@@ -5,23 +5,23 @@ import java.util.HashMap;
 import io.github.mianalysis.MIA.Module.Categories;
 import io.github.mianalysis.MIA.Module.Category;
 import io.github.mianalysis.MIA.Module.Module;
-import io.github.mianalysis.MIA.Module.ModuleCollection;
+import io.github.mianalysis.MIA.Module.Modules;
 import io.github.mianalysis.MIA.Object.Measurement;
 import io.github.mianalysis.MIA.Object.Obj;
-import io.github.mianalysis.MIA.Object.ObjCollection;
+import io.github.mianalysis.MIA.Object.Objs;
 import io.github.mianalysis.MIA.Object.Status;
 import io.github.mianalysis.MIA.Object.Workspace;
 import io.github.mianalysis.MIA.Object.Parameters.BooleanP;
 import io.github.mianalysis.MIA.Object.Parameters.ChoiceP;
 import io.github.mianalysis.MIA.Object.Parameters.InputObjectsP;
 import io.github.mianalysis.MIA.Object.Parameters.ObjectMeasurementP;
-import io.github.mianalysis.MIA.Object.Parameters.ParameterCollection;
-import io.github.mianalysis.MIA.Object.References.ObjMeasurementRef;
-import io.github.mianalysis.MIA.Object.References.Collections.ImageMeasurementRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.MetadataRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.ObjMeasurementRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.ParentChildRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.PartnerRefCollection;
+import io.github.mianalysis.MIA.Object.Parameters.Parameters;
+import io.github.mianalysis.MIA.Object.Refs.ObjMeasurementRef;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ImageMeasurementRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.MetadataRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ObjMeasurementRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ParentChildRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.PartnerRefs;
 import io.github.sjcross.common.Analysis.Volume.SurfaceSeparationCalculator;
 import io.github.sjcross.common.Exceptions.IntegerOverflowException;
 import io.github.sjcross.common.Object.Point;
@@ -41,7 +41,7 @@ public class MeasureRelativeOrientation extends Module {
     public static final String OBJECT_CHOICE_MODE = "Object choice mode";
     public static final String MUST_BE_SAME_FRAME = "Reference must be in same frame";
 
-    public MeasureRelativeOrientation(ModuleCollection modules) {
+    public MeasureRelativeOrientation(Modules modules) {
         super("Measure relative orientation", modules);
     }
 
@@ -134,7 +134,7 @@ public class MeasureRelativeOrientation extends Module {
 
     }
 
-    static Obj getReferenceObject(ObjCollection objects, int t, String choiceMode) {
+    static Obj getReferenceObject(Objs objects, int t, String choiceMode) {
         switch (choiceMode) {
             default:
                 return null;
@@ -145,7 +145,7 @@ public class MeasureRelativeOrientation extends Module {
         }
     }
 
-    static HashMap<Integer, Point<Double>> getObjectCentroidRefs(ObjCollection objects, String choiceMode,
+    static HashMap<Integer, Point<Double>> getObjectCentroidRefs(Objs objects, String choiceMode,
             String orientationMode, int nFrames, boolean mustBeSameFrame) {
         HashMap<Integer, Point<Double>> centres = new HashMap<>();
 
@@ -213,8 +213,8 @@ public class MeasureRelativeOrientation extends Module {
 
     }
 
-    static HashMap<Integer, Point<Double>> getObjectCentroidSurfaceRefs(ObjCollection inputObjects,
-            ObjCollection referenceObjects, String choiceMode, String orientationMode, int nFrames,
+    static HashMap<Integer, Point<Double>> getObjectCentroidSurfaceRefs(Objs inputObjects,
+            Objs referenceObjects, String choiceMode, String orientationMode, int nFrames,
             boolean mustBeSameFrame) {
         HashMap<Integer, Point<Double>> centres = new HashMap<>();
 
@@ -331,7 +331,7 @@ public class MeasureRelativeOrientation extends Module {
     public Status process(Workspace workspace) {
         // Getting input objects
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
-        ObjCollection inputObjects = workspace.getObjectSet(inputObjectsName);
+        Objs inputObjects = workspace.getObjectSet(inputObjectsName);
 
         // Getting other parameters
         String orientationMode = parameters.getValue(ORIENTATION_MODE);
@@ -357,7 +357,7 @@ public class MeasureRelativeOrientation extends Module {
 
             case ReferenceModes.OBJECT_CENTROID:
                 int nFrames = inputObjects.getTemporalLimits()[1] + 1;
-                ObjCollection referenceObjects = workspace.getObjectSet(referenceObjectsName);
+                Objs referenceObjects = workspace.getObjectSet(referenceObjectsName);
                 referencePoints = getObjectCentroidRefs(referenceObjects, objectChoiceMode, orientationMode, nFrames,
                         mustBeSameFrame);
                 break;
@@ -420,8 +420,8 @@ public class MeasureRelativeOrientation extends Module {
     }
 
     @Override
-    public ParameterCollection updateAndGetParameters() {
-        ParameterCollection returnedParameters = new ParameterCollection();
+    public Parameters updateAndGetParameters() {
+        Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(INPUT_OBJECTS));
 
@@ -463,13 +463,13 @@ public class MeasureRelativeOrientation extends Module {
     }
 
     @Override
-    public ImageMeasurementRefCollection updateAndGetImageMeasurementRefs() {
+    public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
-        ObjMeasurementRefCollection returnedRefs = new ObjMeasurementRefCollection();
+    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+        ObjMeasurementRefs returnedRefs = new ObjMeasurementRefs();
 
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
 
@@ -518,17 +518,17 @@ public class MeasureRelativeOrientation extends Module {
     }
 
     @Override
-    public MetadataRefCollection updateAndGetMetadataReferences() {
+    public MetadataRefs updateAndGetMetadataReferences() {
         return null;
     }
 
     @Override
-    public ParentChildRefCollection updateAndGetParentChildRefs() {
+    public ParentChildRefs updateAndGetParentChildRefs() {
         return null;
     }
 
     @Override
-    public PartnerRefCollection updateAndGetPartnerRefs() {
+    public PartnerRefs updateAndGetPartnerRefs() {
         return null;
     }
 

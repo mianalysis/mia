@@ -15,8 +15,8 @@ import ij.ImagePlus;
 import io.github.mianalysis.MIA.Module.ModuleTest;
 import io.github.mianalysis.MIA.Object.Image;
 import io.github.mianalysis.MIA.Object.Workspace;
-import io.github.mianalysis.MIA.Object.WorkspaceCollection;
-import io.github.mianalysis.MIA.Object.Parameters.ParameterCollection;
+import io.github.mianalysis.MIA.Object.Workspaces;
+import io.github.mianalysis.MIA.Object.Parameters.Parameters;
 
 public class ConcatenateStacksTest extends ModuleTest {
 
@@ -31,7 +31,7 @@ public class ConcatenateStacksTest extends ModuleTest {
     @Test
     public void testRunApplyConcatenate2D8bitX() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
@@ -52,8 +52,8 @@ public class ConcatenateStacksTest extends ModuleTest {
         concatenateStacks.updateParameterValue(ConcatenateStacks.OUTPUT_IMAGE,"Test_output");
         concatenateStacks.updateParameterValue(ConcatenateStacks.AXIS_MODE, ConcatenateStacks.AxisModes.X);
 
-        LinkedHashMap<Integer,ParameterCollection> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks.ADD_INPUT_IMAGE);
-        Iterator<ParameterCollection> iterator = parameterCollections.values().iterator();
+        LinkedHashMap<Integer,Parameters> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks.ADD_INPUT_IMAGE);
+        Iterator<Parameters> iterator = parameterCollections.values().iterator();
         iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image1");
         iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image2");
 
@@ -75,7 +75,7 @@ public class ConcatenateStacksTest extends ModuleTest {
     @Test
     public void testRunApplyConcatenate2D8bitY() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
@@ -96,8 +96,8 @@ public class ConcatenateStacksTest extends ModuleTest {
         concatenateStacks.updateParameterValue(ConcatenateStacks.OUTPUT_IMAGE,"Test_output");
         concatenateStacks.updateParameterValue(ConcatenateStacks.AXIS_MODE, ConcatenateStacks.AxisModes.Y);
 
-        LinkedHashMap<Integer,ParameterCollection> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks.ADD_INPUT_IMAGE);
-        Iterator<ParameterCollection> iterator = parameterCollections.values().iterator();
+        LinkedHashMap<Integer,Parameters> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks.ADD_INPUT_IMAGE);
+        Iterator<Parameters> iterator = parameterCollections.values().iterator();
         iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image1");
         iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image2");
 
@@ -119,7 +119,7 @@ public class ConcatenateStacksTest extends ModuleTest {
     @Test
     public void testRunApplyConcatenate2D8bitC() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
@@ -140,8 +140,8 @@ public class ConcatenateStacksTest extends ModuleTest {
         concatenateStacks.updateParameterValue(ConcatenateStacks.OUTPUT_IMAGE,"Test_output");
         concatenateStacks.updateParameterValue(ConcatenateStacks.AXIS_MODE, ConcatenateStacks.AxisModes.CHANNEL);
 
-        LinkedHashMap<Integer,ParameterCollection> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks.ADD_INPUT_IMAGE);
-        Iterator<ParameterCollection> iterator = parameterCollections.values().iterator();
+        LinkedHashMap<Integer,Parameters> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks.ADD_INPUT_IMAGE);
+        Iterator<Parameters> iterator = parameterCollections.values().iterator();
         iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image1");
         iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image2");
 
@@ -163,7 +163,7 @@ public class ConcatenateStacksTest extends ModuleTest {
     @Test
     public void testRunApplyConcatenate2D8bitZ() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
@@ -184,8 +184,8 @@ public class ConcatenateStacksTest extends ModuleTest {
         concatenateStacks.updateParameterValue(ConcatenateStacks.OUTPUT_IMAGE,"Test_output");
         concatenateStacks.updateParameterValue(ConcatenateStacks.AXIS_MODE, ConcatenateStacks.AxisModes.Z);
 
-        LinkedHashMap<Integer,ParameterCollection> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks.ADD_INPUT_IMAGE);
-        Iterator<ParameterCollection> iterator = parameterCollections.values().iterator();
+        LinkedHashMap<Integer,Parameters> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks.ADD_INPUT_IMAGE);
+        Iterator<Parameters> iterator = parameterCollections.values().iterator();
         iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image1");
         iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image2");
 
@@ -207,7 +207,7 @@ public class ConcatenateStacksTest extends ModuleTest {
     @Test
     public void testRunApplyConcatenate2D8bitT() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
@@ -228,8 +228,8 @@ public class ConcatenateStacksTest extends ModuleTest {
         concatenateStacks.updateParameterValue(ConcatenateStacks.OUTPUT_IMAGE,"Test_output");
         concatenateStacks.updateParameterValue(ConcatenateStacks.AXIS_MODE, ConcatenateStacks.AxisModes.TIME);
 
-        LinkedHashMap<Integer,ParameterCollection> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks.ADD_INPUT_IMAGE);
-        Iterator<ParameterCollection> iterator = parameterCollections.values().iterator();
+        LinkedHashMap<Integer,Parameters> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks.ADD_INPUT_IMAGE);
+        Iterator<Parameters> iterator = parameterCollections.values().iterator();
         iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image1");
         iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image2");
 
@@ -254,7 +254,7 @@ public class ConcatenateStacksTest extends ModuleTest {
     @Test @Disabled
     public void testRunApplyConcatenate3D8bitX() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
@@ -275,8 +275,8 @@ public class ConcatenateStacksTest extends ModuleTest {
         concatenateStacks.updateParameterValue(ConcatenateStacks.OUTPUT_IMAGE,"Test_output");
         concatenateStacks.updateParameterValue(ConcatenateStacks.AXIS_MODE, ConcatenateStacks.AxisModes.X);
 
-        LinkedHashMap<Integer,ParameterCollection> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks.ADD_INPUT_IMAGE);
-        Iterator<ParameterCollection> iterator = parameterCollections.values().iterator();
+        LinkedHashMap<Integer,Parameters> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks.ADD_INPUT_IMAGE);
+        Iterator<Parameters> iterator = parameterCollections.values().iterator();
         iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image1");
         iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image2");
 
@@ -298,7 +298,7 @@ public class ConcatenateStacksTest extends ModuleTest {
     @Test @Disabled
     public void testRunApplyConcatenate3D8bitY() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
@@ -319,8 +319,8 @@ public class ConcatenateStacksTest extends ModuleTest {
         concatenateStacks.updateParameterValue(ConcatenateStacks.OUTPUT_IMAGE,"Test_output");
         concatenateStacks.updateParameterValue(ConcatenateStacks.AXIS_MODE, ConcatenateStacks.AxisModes.Y);
 
-        LinkedHashMap<Integer,ParameterCollection> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks.ADD_INPUT_IMAGE);
-        Iterator<ParameterCollection> iterator = parameterCollections.values().iterator();
+        LinkedHashMap<Integer,Parameters> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks.ADD_INPUT_IMAGE);
+        Iterator<Parameters> iterator = parameterCollections.values().iterator();
         iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image1");
         iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image2");
 
@@ -342,7 +342,7 @@ public class ConcatenateStacksTest extends ModuleTest {
     @Test
     public void testRunApplyConcatenate3D8bitC() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
@@ -363,8 +363,8 @@ public class ConcatenateStacksTest extends ModuleTest {
         concatenateStacks.updateParameterValue(ConcatenateStacks.OUTPUT_IMAGE,"Test_output");
         concatenateStacks.updateParameterValue(ConcatenateStacks.AXIS_MODE, ConcatenateStacks.AxisModes.CHANNEL);
 
-        LinkedHashMap<Integer,ParameterCollection> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks.ADD_INPUT_IMAGE);
-        Iterator<ParameterCollection> iterator = parameterCollections.values().iterator();
+        LinkedHashMap<Integer,Parameters> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks.ADD_INPUT_IMAGE);
+        Iterator<Parameters> iterator = parameterCollections.values().iterator();
         iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image1");
         iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image2");
 
@@ -386,7 +386,7 @@ public class ConcatenateStacksTest extends ModuleTest {
     @Test
     public void testRunApplyConcatenate3D8bitZ() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
@@ -407,8 +407,8 @@ public class ConcatenateStacksTest extends ModuleTest {
         concatenateStacks.updateParameterValue(ConcatenateStacks.OUTPUT_IMAGE,"Test_output");
         concatenateStacks.updateParameterValue(ConcatenateStacks.AXIS_MODE, ConcatenateStacks.AxisModes.Z);
 
-        LinkedHashMap<Integer,ParameterCollection> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks.ADD_INPUT_IMAGE);
-        Iterator<ParameterCollection> iterator = parameterCollections.values().iterator();
+        LinkedHashMap<Integer,Parameters> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks.ADD_INPUT_IMAGE);
+        Iterator<Parameters> iterator = parameterCollections.values().iterator();
         iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image1");
         iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image2");
 
@@ -430,7 +430,7 @@ public class ConcatenateStacksTest extends ModuleTest {
     @Test
     public void testRunApplyConcatenate3D8bitT() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
@@ -451,8 +451,8 @@ public class ConcatenateStacksTest extends ModuleTest {
         concatenateStacks.updateParameterValue(ConcatenateStacks.OUTPUT_IMAGE,"Test_output");
         concatenateStacks.updateParameterValue(ConcatenateStacks.AXIS_MODE, ConcatenateStacks.AxisModes.TIME);
 
-        LinkedHashMap<Integer,ParameterCollection> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks.ADD_INPUT_IMAGE);
-        Iterator<ParameterCollection> iterator = parameterCollections.values().iterator();
+        LinkedHashMap<Integer,Parameters> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks.ADD_INPUT_IMAGE);
+        Iterator<Parameters> iterator = parameterCollections.values().iterator();
         iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image1");
         iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image2");
 
@@ -477,7 +477,7 @@ public class ConcatenateStacksTest extends ModuleTest {
     @Test @Disabled
     public void testRunApplyConcatenate4D8bitX() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
@@ -498,8 +498,8 @@ public class ConcatenateStacksTest extends ModuleTest {
         concatenateStacks.updateParameterValue(ConcatenateStacks.OUTPUT_IMAGE,"Test_output");
         concatenateStacks.updateParameterValue(ConcatenateStacks.AXIS_MODE, ConcatenateStacks.AxisModes.X);
 
-        LinkedHashMap<Integer,ParameterCollection> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks.ADD_INPUT_IMAGE);
-        Iterator<ParameterCollection> iterator = parameterCollections.values().iterator();
+        LinkedHashMap<Integer,Parameters> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks.ADD_INPUT_IMAGE);
+        Iterator<Parameters> iterator = parameterCollections.values().iterator();
         iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image1");
         iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image2");
 
@@ -521,7 +521,7 @@ public class ConcatenateStacksTest extends ModuleTest {
     @Test @Disabled
     public void testRunApplyConcatenate4D8bitY() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
@@ -542,8 +542,8 @@ public class ConcatenateStacksTest extends ModuleTest {
         concatenateStacks.updateParameterValue(ConcatenateStacks.OUTPUT_IMAGE,"Test_output");
         concatenateStacks.updateParameterValue(ConcatenateStacks.AXIS_MODE, ConcatenateStacks.AxisModes.Y);
 
-        LinkedHashMap<Integer,ParameterCollection> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks.ADD_INPUT_IMAGE);
-        Iterator<ParameterCollection> iterator = parameterCollections.values().iterator();
+        LinkedHashMap<Integer,Parameters> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks.ADD_INPUT_IMAGE);
+        Iterator<Parameters> iterator = parameterCollections.values().iterator();
         iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image1");
         iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image2");
 
@@ -565,7 +565,7 @@ public class ConcatenateStacksTest extends ModuleTest {
     @Test
     public void testRunApplyConcatenate4DCT8bitC() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
@@ -586,8 +586,8 @@ public class ConcatenateStacksTest extends ModuleTest {
         concatenateStacks.updateParameterValue(ConcatenateStacks.OUTPUT_IMAGE,"Test_output");
         concatenateStacks.updateParameterValue(ConcatenateStacks.AXIS_MODE, ConcatenateStacks.AxisModes.CHANNEL);
 
-        LinkedHashMap<Integer,ParameterCollection> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks.ADD_INPUT_IMAGE);
-        Iterator<ParameterCollection> iterator = parameterCollections.values().iterator();
+        LinkedHashMap<Integer,Parameters> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks.ADD_INPUT_IMAGE);
+        Iterator<Parameters> iterator = parameterCollections.values().iterator();
         iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image1");
         iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image2");
 
@@ -609,7 +609,7 @@ public class ConcatenateStacksTest extends ModuleTest {
     @Test
     public void testRunApplyConcatenate4DCZ8bitC() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
@@ -630,8 +630,8 @@ public class ConcatenateStacksTest extends ModuleTest {
         concatenateStacks.updateParameterValue(ConcatenateStacks.OUTPUT_IMAGE,"Test_output");
         concatenateStacks.updateParameterValue(ConcatenateStacks.AXIS_MODE, ConcatenateStacks.AxisModes.CHANNEL);
 
-        LinkedHashMap<Integer,ParameterCollection> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks.ADD_INPUT_IMAGE);
-        Iterator<ParameterCollection> iterator = parameterCollections.values().iterator();
+        LinkedHashMap<Integer,Parameters> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks.ADD_INPUT_IMAGE);
+        Iterator<Parameters> iterator = parameterCollections.values().iterator();
         iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image1");
         iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image2");
 
@@ -653,7 +653,7 @@ public class ConcatenateStacksTest extends ModuleTest {
     @Test
     public void testRunApplyConcatenate4DZT8bitC() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
@@ -674,8 +674,8 @@ public class ConcatenateStacksTest extends ModuleTest {
         concatenateStacks.updateParameterValue(ConcatenateStacks.OUTPUT_IMAGE,"Test_output");
         concatenateStacks.updateParameterValue(ConcatenateStacks.AXIS_MODE, ConcatenateStacks.AxisModes.CHANNEL);
 
-        LinkedHashMap<Integer,ParameterCollection> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks.ADD_INPUT_IMAGE);
-        Iterator<ParameterCollection> iterator = parameterCollections.values().iterator();
+        LinkedHashMap<Integer,Parameters> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks.ADD_INPUT_IMAGE);
+        Iterator<Parameters> iterator = parameterCollections.values().iterator();
         iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image1");
         iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image2");
 
@@ -697,7 +697,7 @@ public class ConcatenateStacksTest extends ModuleTest {
     @Test
     public void testRunApplyConcatenate4DCT8bitZ() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
@@ -718,8 +718,8 @@ public class ConcatenateStacksTest extends ModuleTest {
         concatenateStacks.updateParameterValue(ConcatenateStacks.OUTPUT_IMAGE,"Test_output");
         concatenateStacks.updateParameterValue(ConcatenateStacks.AXIS_MODE, ConcatenateStacks.AxisModes.Z);
 
-        LinkedHashMap<Integer,ParameterCollection> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks.ADD_INPUT_IMAGE);
-        Iterator<ParameterCollection> iterator = parameterCollections.values().iterator();
+        LinkedHashMap<Integer,Parameters> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks.ADD_INPUT_IMAGE);
+        Iterator<Parameters> iterator = parameterCollections.values().iterator();
         iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image1");
         iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image2");
 
@@ -741,7 +741,7 @@ public class ConcatenateStacksTest extends ModuleTest {
     @Test
     public void testRunApplyConcatenate4DCZ8bitZ() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
@@ -762,8 +762,8 @@ public class ConcatenateStacksTest extends ModuleTest {
         concatenateStacks.updateParameterValue(ConcatenateStacks.OUTPUT_IMAGE,"Test_output");
         concatenateStacks.updateParameterValue(ConcatenateStacks.AXIS_MODE, ConcatenateStacks.AxisModes.Z);
 
-        LinkedHashMap<Integer,ParameterCollection> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks.ADD_INPUT_IMAGE);
-        Iterator<ParameterCollection> iterator = parameterCollections.values().iterator();
+        LinkedHashMap<Integer,Parameters> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks.ADD_INPUT_IMAGE);
+        Iterator<Parameters> iterator = parameterCollections.values().iterator();
         iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image1");
         iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image2");
 
@@ -785,7 +785,7 @@ public class ConcatenateStacksTest extends ModuleTest {
     @Test
     public void testRunApplyConcatenate4DZT8bitZ() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
@@ -806,8 +806,8 @@ public class ConcatenateStacksTest extends ModuleTest {
         concatenateStacks.updateParameterValue(ConcatenateStacks.OUTPUT_IMAGE,"Test_output");
         concatenateStacks.updateParameterValue(ConcatenateStacks.AXIS_MODE, ConcatenateStacks.AxisModes.Z);
 
-        LinkedHashMap<Integer,ParameterCollection> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks.ADD_INPUT_IMAGE);
-        Iterator<ParameterCollection> iterator = parameterCollections.values().iterator();
+        LinkedHashMap<Integer,Parameters> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks.ADD_INPUT_IMAGE);
+        Iterator<Parameters> iterator = parameterCollections.values().iterator();
         iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image1");
         iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image2");
 
@@ -829,7 +829,7 @@ public class ConcatenateStacksTest extends ModuleTest {
     @Test
     public void testRunApplyConcatenate4DCT8bitT() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
@@ -850,8 +850,8 @@ public class ConcatenateStacksTest extends ModuleTest {
         concatenateStacks.updateParameterValue(ConcatenateStacks.OUTPUT_IMAGE,"Test_output");
         concatenateStacks.updateParameterValue(ConcatenateStacks.AXIS_MODE, ConcatenateStacks.AxisModes.TIME);
 
-        LinkedHashMap<Integer,ParameterCollection> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks.ADD_INPUT_IMAGE);
-        Iterator<ParameterCollection> iterator = parameterCollections.values().iterator();
+        LinkedHashMap<Integer,Parameters> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks.ADD_INPUT_IMAGE);
+        Iterator<Parameters> iterator = parameterCollections.values().iterator();
         iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image1");
         iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image2");
 
@@ -873,7 +873,7 @@ public class ConcatenateStacksTest extends ModuleTest {
     @Test
     public void testRunApplyConcatenate4DCZ8bitT() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
@@ -894,8 +894,8 @@ public class ConcatenateStacksTest extends ModuleTest {
         concatenateStacks.updateParameterValue(ConcatenateStacks.OUTPUT_IMAGE,"Test_output");
         concatenateStacks.updateParameterValue(ConcatenateStacks.AXIS_MODE, ConcatenateStacks.AxisModes.TIME);
 
-        LinkedHashMap<Integer,ParameterCollection> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks.ADD_INPUT_IMAGE);
-        Iterator<ParameterCollection> iterator = parameterCollections.values().iterator();
+        LinkedHashMap<Integer,Parameters> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks.ADD_INPUT_IMAGE);
+        Iterator<Parameters> iterator = parameterCollections.values().iterator();
         iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image1");
         iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image2");
 
@@ -917,7 +917,7 @@ public class ConcatenateStacksTest extends ModuleTest {
     @Test
     public void testRunApplyConcatenate4DZT8bitT() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
@@ -938,8 +938,8 @@ public class ConcatenateStacksTest extends ModuleTest {
         concatenateStacks.updateParameterValue(ConcatenateStacks.OUTPUT_IMAGE,"Test_output");
         concatenateStacks.updateParameterValue(ConcatenateStacks.AXIS_MODE, ConcatenateStacks.AxisModes.TIME);
 
-        LinkedHashMap<Integer,ParameterCollection> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks.ADD_INPUT_IMAGE);
-        Iterator<ParameterCollection> iterator = parameterCollections.values().iterator();
+        LinkedHashMap<Integer,Parameters> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks.ADD_INPUT_IMAGE);
+        Iterator<Parameters> iterator = parameterCollections.values().iterator();
         iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image1");
         iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image2");
 
@@ -964,7 +964,7 @@ public class ConcatenateStacksTest extends ModuleTest {
     @Test @Disabled
     public void testRunApplyConcatenate5D8bitX() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
@@ -985,8 +985,8 @@ public class ConcatenateStacksTest extends ModuleTest {
         concatenateStacks.updateParameterValue(ConcatenateStacks.OUTPUT_IMAGE,"Test_output");
         concatenateStacks.updateParameterValue(ConcatenateStacks.AXIS_MODE, ConcatenateStacks.AxisModes.X);
 
-        LinkedHashMap<Integer,ParameterCollection> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks.ADD_INPUT_IMAGE);
-        Iterator<ParameterCollection> iterator = parameterCollections.values().iterator();
+        LinkedHashMap<Integer,Parameters> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks.ADD_INPUT_IMAGE);
+        Iterator<Parameters> iterator = parameterCollections.values().iterator();
         iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image1");
         iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image2");
 
@@ -1008,7 +1008,7 @@ public class ConcatenateStacksTest extends ModuleTest {
     @Test @Disabled
     public void testRunApplyConcatenate5D8bitY() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
@@ -1029,8 +1029,8 @@ public class ConcatenateStacksTest extends ModuleTest {
         concatenateStacks.updateParameterValue(ConcatenateStacks.OUTPUT_IMAGE,"Test_output");
         concatenateStacks.updateParameterValue(ConcatenateStacks.AXIS_MODE, ConcatenateStacks.AxisModes.Y);
 
-        LinkedHashMap<Integer,ParameterCollection> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks.ADD_INPUT_IMAGE);
-        Iterator<ParameterCollection> iterator = parameterCollections.values().iterator();
+        LinkedHashMap<Integer,Parameters> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks.ADD_INPUT_IMAGE);
+        Iterator<Parameters> iterator = parameterCollections.values().iterator();
         iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image1");
         iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image2");
 
@@ -1052,7 +1052,7 @@ public class ConcatenateStacksTest extends ModuleTest {
     @Test
     public void testRunApplyConcatenate5D8bitC() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
@@ -1073,8 +1073,8 @@ public class ConcatenateStacksTest extends ModuleTest {
         concatenateStacks.updateParameterValue(ConcatenateStacks.OUTPUT_IMAGE,"Test_output");
         concatenateStacks.updateParameterValue(ConcatenateStacks.AXIS_MODE, ConcatenateStacks.AxisModes.CHANNEL);
 
-        LinkedHashMap<Integer,ParameterCollection> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks.ADD_INPUT_IMAGE);
-        Iterator<ParameterCollection> iterator = parameterCollections.values().iterator();
+        LinkedHashMap<Integer,Parameters> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks.ADD_INPUT_IMAGE);
+        Iterator<Parameters> iterator = parameterCollections.values().iterator();
         iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image1");
         iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image2");
 
@@ -1096,7 +1096,7 @@ public class ConcatenateStacksTest extends ModuleTest {
     @Test @Disabled
     public void testRunApplyConcatenate5D8bitZ() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
@@ -1117,8 +1117,8 @@ public class ConcatenateStacksTest extends ModuleTest {
         concatenateStacks.updateParameterValue(ConcatenateStacks.OUTPUT_IMAGE,"Test_output");
         concatenateStacks.updateParameterValue(ConcatenateStacks.AXIS_MODE, ConcatenateStacks.AxisModes.Z);
 
-        LinkedHashMap<Integer,ParameterCollection> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks.ADD_INPUT_IMAGE);
-        Iterator<ParameterCollection> iterator = parameterCollections.values().iterator();
+        LinkedHashMap<Integer,Parameters> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks.ADD_INPUT_IMAGE);
+        Iterator<Parameters> iterator = parameterCollections.values().iterator();
         iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image1");
         iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image2");
 
@@ -1140,7 +1140,7 @@ public class ConcatenateStacksTest extends ModuleTest {
     @Test
     public void testRunApplyConcatenate5D8bitT() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
@@ -1161,8 +1161,8 @@ public class ConcatenateStacksTest extends ModuleTest {
         concatenateStacks.updateParameterValue(ConcatenateStacks.OUTPUT_IMAGE,"Test_output");
         concatenateStacks.updateParameterValue(ConcatenateStacks.AXIS_MODE, ConcatenateStacks.AxisModes.TIME);
 
-        LinkedHashMap<Integer,ParameterCollection> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks.ADD_INPUT_IMAGE);
-        Iterator<ParameterCollection> iterator = parameterCollections.values().iterator();
+        LinkedHashMap<Integer,Parameters> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks.ADD_INPUT_IMAGE);
+        Iterator<Parameters> iterator = parameterCollections.values().iterator();
         iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image1");
         iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image2");
 
@@ -1187,7 +1187,7 @@ public class ConcatenateStacksTest extends ModuleTest {
     @Test @Disabled
     public void testRunApplyConcatenate5D8bitXUnequal() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
@@ -1208,8 +1208,8 @@ public class ConcatenateStacksTest extends ModuleTest {
         concatenateStacks.updateParameterValue(ConcatenateStacks.OUTPUT_IMAGE,"Test_output");
         concatenateStacks.updateParameterValue(ConcatenateStacks.AXIS_MODE, ConcatenateStacks.AxisModes.X);
 
-        LinkedHashMap<Integer,ParameterCollection> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks.ADD_INPUT_IMAGE);
-        Iterator<ParameterCollection> iterator = parameterCollections.values().iterator();
+        LinkedHashMap<Integer,Parameters> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks.ADD_INPUT_IMAGE);
+        Iterator<Parameters> iterator = parameterCollections.values().iterator();
         iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image1");
         iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image2");
 
@@ -1231,7 +1231,7 @@ public class ConcatenateStacksTest extends ModuleTest {
     @Test @Disabled
     public void testRunApplyConcatenate5D8bitYUnequal() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
@@ -1252,8 +1252,8 @@ public class ConcatenateStacksTest extends ModuleTest {
         concatenateStacks.updateParameterValue(ConcatenateStacks.OUTPUT_IMAGE,"Test_output");
         concatenateStacks.updateParameterValue(ConcatenateStacks.AXIS_MODE, ConcatenateStacks.AxisModes.Y);
 
-        LinkedHashMap<Integer,ParameterCollection> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks.ADD_INPUT_IMAGE);
-        Iterator<ParameterCollection> iterator = parameterCollections.values().iterator();
+        LinkedHashMap<Integer,Parameters> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks.ADD_INPUT_IMAGE);
+        Iterator<Parameters> iterator = parameterCollections.values().iterator();
         iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image1");
         iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image2");
 
@@ -1275,7 +1275,7 @@ public class ConcatenateStacksTest extends ModuleTest {
     @Test @Disabled
     public void testRunApplyConcatenate5D8bitCUnequal() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
@@ -1296,8 +1296,8 @@ public class ConcatenateStacksTest extends ModuleTest {
         concatenateStacks.updateParameterValue(ConcatenateStacks.OUTPUT_IMAGE,"Test_output");
         concatenateStacks.updateParameterValue(ConcatenateStacks.AXIS_MODE, ConcatenateStacks.AxisModes.CHANNEL);
 
-        LinkedHashMap<Integer,ParameterCollection> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks.ADD_INPUT_IMAGE);
-        Iterator<ParameterCollection> iterator = parameterCollections.values().iterator();
+        LinkedHashMap<Integer,Parameters> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks.ADD_INPUT_IMAGE);
+        Iterator<Parameters> iterator = parameterCollections.values().iterator();
         iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image1");
         iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image2");
 
@@ -1319,7 +1319,7 @@ public class ConcatenateStacksTest extends ModuleTest {
     @Test @Disabled
     public void testRunApplyConcatenate5D8bitZUnequal() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
@@ -1340,8 +1340,8 @@ public class ConcatenateStacksTest extends ModuleTest {
         concatenateStacks.updateParameterValue(ConcatenateStacks.OUTPUT_IMAGE,"Test_output");
         concatenateStacks.updateParameterValue(ConcatenateStacks.AXIS_MODE, ConcatenateStacks.AxisModes.Z);
 
-        LinkedHashMap<Integer,ParameterCollection> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks.ADD_INPUT_IMAGE);
-        Iterator<ParameterCollection> iterator = parameterCollections.values().iterator();
+        LinkedHashMap<Integer,Parameters> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks.ADD_INPUT_IMAGE);
+        Iterator<Parameters> iterator = parameterCollections.values().iterator();
         iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image1");
         iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image2");
 
@@ -1363,7 +1363,7 @@ public class ConcatenateStacksTest extends ModuleTest {
     @Test @Disabled
     public void testRunApplyConcatenate5D8bitTUnequal() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
@@ -1384,8 +1384,8 @@ public class ConcatenateStacksTest extends ModuleTest {
         concatenateStacks.updateParameterValue(ConcatenateStacks.OUTPUT_IMAGE,"Test_output");
         concatenateStacks.updateParameterValue(ConcatenateStacks.AXIS_MODE, ConcatenateStacks.AxisModes.TIME);
 
-        LinkedHashMap<Integer,ParameterCollection> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks.ADD_INPUT_IMAGE);
-        Iterator<ParameterCollection> iterator = parameterCollections.values().iterator();
+        LinkedHashMap<Integer,Parameters> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks.ADD_INPUT_IMAGE);
+        Iterator<Parameters> iterator = parameterCollections.values().iterator();
         iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image1");
         iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image2");
 
@@ -1410,7 +1410,7 @@ public class ConcatenateStacksTest extends ModuleTest {
     @Test @Disabled
     public void testRunApplyConcatenate5D16bitX() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
@@ -1431,8 +1431,8 @@ public class ConcatenateStacksTest extends ModuleTest {
         concatenateStacks.updateParameterValue(ConcatenateStacks.OUTPUT_IMAGE,"Test_output");
         concatenateStacks.updateParameterValue(ConcatenateStacks.AXIS_MODE, ConcatenateStacks.AxisModes.X);
 
-        LinkedHashMap<Integer,ParameterCollection> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks.ADD_INPUT_IMAGE);
-        Iterator<ParameterCollection> iterator = parameterCollections.values().iterator();
+        LinkedHashMap<Integer,Parameters> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks.ADD_INPUT_IMAGE);
+        Iterator<Parameters> iterator = parameterCollections.values().iterator();
         iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image1");
         iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image2");
 
@@ -1454,7 +1454,7 @@ public class ConcatenateStacksTest extends ModuleTest {
     @Test @Disabled
     public void testRunApplyConcatenate5D32bitX() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
@@ -1475,8 +1475,8 @@ public class ConcatenateStacksTest extends ModuleTest {
         concatenateStacks.updateParameterValue(ConcatenateStacks.OUTPUT_IMAGE,"Test_output");
         concatenateStacks.updateParameterValue(ConcatenateStacks.AXIS_MODE, ConcatenateStacks.AxisModes.X);
 
-        LinkedHashMap<Integer,ParameterCollection> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks.ADD_INPUT_IMAGE);
-        Iterator<ParameterCollection> iterator = parameterCollections.values().iterator();
+        LinkedHashMap<Integer,Parameters> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks.ADD_INPUT_IMAGE);
+        Iterator<Parameters> iterator = parameterCollections.values().iterator();
         iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image1");
         iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image2");
 
@@ -1498,7 +1498,7 @@ public class ConcatenateStacksTest extends ModuleTest {
     @Test @Disabled
     public void testRunApplyConcatenate5D8and32bitX() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
@@ -1519,8 +1519,8 @@ public class ConcatenateStacksTest extends ModuleTest {
         concatenateStacks.updateParameterValue(ConcatenateStacks.OUTPUT_IMAGE,"Test_output");
         concatenateStacks.updateParameterValue(ConcatenateStacks.AXIS_MODE, ConcatenateStacks.AxisModes.X);
 
-        LinkedHashMap<Integer,ParameterCollection> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks.ADD_INPUT_IMAGE);
-        Iterator<ParameterCollection> iterator = parameterCollections.values().iterator();
+        LinkedHashMap<Integer,Parameters> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks.ADD_INPUT_IMAGE);
+        Iterator<Parameters> iterator = parameterCollections.values().iterator();
         iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image1");
         iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image2");
 

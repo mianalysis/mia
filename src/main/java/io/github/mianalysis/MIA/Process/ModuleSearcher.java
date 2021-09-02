@@ -8,13 +8,13 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import io.github.mianalysis.MIA.Module.Module;
-import io.github.mianalysis.MIA.Module.ModuleCollection;
+import io.github.mianalysis.MIA.Module.Modules;
 import io.github.mianalysis.MIA.Object.Parameters.Abstract.Parameter;
 
 public class ModuleSearcher { 
-    private ModuleCollection modules;
+    private Modules modules;
 
-    public ModuleSearcher(ModuleCollection modules) {
+    public ModuleSearcher(Modules modules) {
         this.modules = modules;
 
     }

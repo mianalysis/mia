@@ -30,7 +30,7 @@ import io.github.mianalysis.MIA.GUI.GUI;
 import io.github.mianalysis.MIA.GUI.GUIAnalysisHandler;
 import io.github.mianalysis.MIA.GUI.Regions.RenameListMenu;
 import io.github.mianalysis.MIA.Module.Module;
-import io.github.mianalysis.MIA.Module.ModuleCollection;
+import io.github.mianalysis.MIA.Module.Modules;
 import io.github.mianalysis.MIA.Module.Miscellaneous.GUISeparator;
 import io.github.mianalysis.MIA.Object.Colours;
 
@@ -43,9 +43,9 @@ public class ModuleTable extends JTable implements ActionListener, MouseListener
     private static final String ENABLE = "enable";
 
     private static final long serialVersionUID = 3722736203899254351L;
-    private ModuleCollection modules;
+    private Modules modules;
 
-    public ModuleTable(TableModel tableModel, ModuleCollection modules, HashMap<Module, Boolean> expandedStatus) {
+    public ModuleTable(TableModel tableModel, Modules modules, HashMap<Module, Boolean> expandedStatus) {
         super(tableModel);
 
         this.modules = modules;

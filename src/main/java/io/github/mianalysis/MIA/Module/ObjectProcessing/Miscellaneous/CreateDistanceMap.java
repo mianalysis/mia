@@ -9,7 +9,7 @@ import ij.ImagePlus;
 import io.github.mianalysis.MIA.Module.Categories;
 import io.github.mianalysis.MIA.Module.Category;
 import io.github.mianalysis.MIA.Module.Module;
-import io.github.mianalysis.MIA.Module.ModuleCollection;
+import io.github.mianalysis.MIA.Module.Modules;
 import io.github.mianalysis.MIA.Module.ImageProcessing.Pixel.ImageCalculator;
 import io.github.mianalysis.MIA.Module.ImageProcessing.Pixel.ImageMath;
 import io.github.mianalysis.MIA.Module.ImageProcessing.Pixel.InvertIntensity;
@@ -17,21 +17,21 @@ import io.github.mianalysis.MIA.Module.ImageProcessing.Pixel.Binary.BinaryOperat
 import io.github.mianalysis.MIA.Module.ImageProcessing.Pixel.Binary.DistanceMap;
 import io.github.mianalysis.MIA.Object.Image;
 import io.github.mianalysis.MIA.Object.Obj;
-import io.github.mianalysis.MIA.Object.ObjCollection;
+import io.github.mianalysis.MIA.Object.Objs;
 import io.github.mianalysis.MIA.Object.Status;
 import io.github.mianalysis.MIA.Object.Workspace;
 import io.github.mianalysis.MIA.Object.Parameters.BooleanP;
 import io.github.mianalysis.MIA.Object.Parameters.ChoiceP;
 import io.github.mianalysis.MIA.Object.Parameters.InputObjectsP;
 import io.github.mianalysis.MIA.Object.Parameters.OutputImageP;
-import io.github.mianalysis.MIA.Object.Parameters.ParameterCollection;
+import io.github.mianalysis.MIA.Object.Parameters.Parameters;
 import io.github.mianalysis.MIA.Object.Parameters.SeparatorP;
 import io.github.mianalysis.MIA.Object.Parameters.ChoiceInterfaces.SpatialUnitsInterface;
-import io.github.mianalysis.MIA.Object.References.Collections.ImageMeasurementRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.MetadataRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.ObjMeasurementRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.ParentChildRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.PartnerRefCollection;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ImageMeasurementRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.MetadataRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ObjMeasurementRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ParentChildRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.PartnerRefs;
 import io.github.mianalysis.MIA.Process.ColourFactory;
 import io.github.sjcross.common.Object.Point;
 
@@ -47,7 +47,7 @@ public class CreateDistanceMap extends Module {
     public static final String NORMALISE_MAP_PER_OBJECT = "Normalise map per object";
     public static final String SPATIAL_UNITS_MODE = "Spatial units mode";
 
-    public CreateDistanceMap(ModuleCollection modules) {
+    public CreateDistanceMap(Modules modules) {
         super("Create distance map", modules);
     }
 
@@ -72,7 +72,7 @@ public class CreateDistanceMap extends Module {
     }
 
     
-    public static Image getCentroidDistanceMap(ObjCollection inputObjects, String outputImageName) {
+    public static Image getCentroidDistanceMap(Objs inputObjects, String outputImageName) {
         // Getting image parameters
         int width = inputObjects.getWidth();
         int height = inputObjects.getHeight();
@@ -101,7 +101,7 @@ public class CreateDistanceMap extends Module {
 
     }
 
-    public static Image getEdgeDistanceMap(ObjCollection inputObjects, String outputImageName, boolean invertInside) {
+    public static Image getEdgeDistanceMap(Objs inputObjects, String outputImageName, boolean invertInside) {
         // Creating an objects image
         HashMap<Integer, Float> hues = ColourFactory.getSingleColourHues(inputObjects,
                 ColourFactory.SingleColours.WHITE);
@@ -124,7 +124,7 @@ public class CreateDistanceMap extends Module {
 
     }
 
-    public static void applyMasking(Image inputImage, ObjCollection inputObjects, String maskingMode) {
+    public static void applyMasking(Image inputImage, Objs inputObjects, String maskingMode) {
         // If the masking mode is set to INSIDE_AND_OUTSIDE skip this method
         if (maskingMode.equals(MaskingModes.INSIDE_AND_OUTSIDE))
             return;
@@ -151,7 +151,7 @@ public class CreateDistanceMap extends Module {
 
     }
 
-    public static void applyNormalisation(Image inputImage, ObjCollection inputObjects) {
+    public static void applyNormalisation(Image inputImage, Objs inputObjects) {
         // Iterating over each object, calculating the largest distance, then dividing
         // all pixels within that object by
         // this value
@@ -214,7 +214,7 @@ public class CreateDistanceMap extends Module {
     public Status process(Workspace workspace) {
         // Getting input objects
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
-        ObjCollection inputObjects = workspace.getObjectSet(inputObjectsName);
+        Objs inputObjects = workspace.getObjectSet(inputObjectsName);
 
         // Getting other parameters
         String outputImageName = parameters.getValue(OUTPUT_IMAGE);
@@ -280,8 +280,8 @@ public class CreateDistanceMap extends Module {
     }
 
     @Override
-    public ParameterCollection updateAndGetParameters() {
-        ParameterCollection returnedParameters = new ParameterCollection();
+    public Parameters updateAndGetParameters() {
+        Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(INPUT_OBJECTS));
@@ -314,27 +314,27 @@ public class CreateDistanceMap extends Module {
     }
 
     @Override
-    public ImageMeasurementRefCollection updateAndGetImageMeasurementRefs() {
+    public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MetadataRefCollection updateAndGetMetadataReferences() {
+    public MetadataRefs updateAndGetMetadataReferences() {
         return null;
     }
 
     @Override
-    public ParentChildRefCollection updateAndGetParentChildRefs() {
+    public ParentChildRefs updateAndGetParentChildRefs() {
         return null;
     }
 
     @Override
-    public PartnerRefCollection updateAndGetPartnerRefs() {
+    public PartnerRefs updateAndGetPartnerRefs() {
         return null;
     }
 

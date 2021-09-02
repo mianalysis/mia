@@ -23,11 +23,11 @@ import io.github.mianalysis.MIA.MIA;
 import io.github.mianalysis.MIA.Module.Categories;
 import io.github.mianalysis.MIA.Module.Category;
 import io.github.mianalysis.MIA.Module.Module;
-import io.github.mianalysis.MIA.Module.ModuleCollection;
+import io.github.mianalysis.MIA.Module.Modules;
 import io.github.mianalysis.MIA.Object.Parameters.ChoiceP;
 import io.github.mianalysis.MIA.Object.Parameters.ParameterGroup;
 import io.github.mianalysis.MIA.Object.Parameters.Abstract.Parameter;
-import io.github.mianalysis.MIA.Object.References.Abstract.Ref;
+import io.github.mianalysis.MIA.Object.Refs.Abstract.Ref;
 
 public class DocumentationGenerator2 {
     private Parser parser;
@@ -422,7 +422,7 @@ public class DocumentationGenerator2 {
 
         // Converting the list of classes to a list of Modules
         TreeMap<String, Module> modules = new TreeMap<>();
-        ModuleCollection tempCollection = new ModuleCollection();
+        Modules tempCollection = new Modules();
         for (String className : classNames) {
             try {
                 Class<Module> clazz = (Class<Module>) Class.forName(className);
@@ -431,7 +431,7 @@ public class DocumentationGenerator2 {
                 if (Modifier.isAbstract(clazz.getModifiers()))
                     continue;
 
-                Constructor constructor = clazz.getDeclaredConstructor(ModuleCollection.class);
+                Constructor constructor = clazz.getDeclaredConstructor(Modules.class);
                 Module module = (Module) constructor.newInstance(tempCollection);
                 modules.put(module.getName(), module);
             } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | NoSuchMethodException

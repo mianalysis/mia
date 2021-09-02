@@ -10,12 +10,12 @@ import io.github.mianalysis.MIA.MIA;
 import io.github.mianalysis.MIA.Module.Categories;
 import io.github.mianalysis.MIA.Module.Category;
 import io.github.mianalysis.MIA.Module.Module;
-import io.github.mianalysis.MIA.Module.ModuleCollection;
+import io.github.mianalysis.MIA.Module.Modules;
 import io.github.mianalysis.MIA.Module.ObjectProcessing.Identification.GetObjectSurface;
 import io.github.mianalysis.MIA.Object.Image;
 import io.github.mianalysis.MIA.Object.Measurement;
 import io.github.mianalysis.MIA.Object.Obj;
-import io.github.mianalysis.MIA.Object.ObjCollection;
+import io.github.mianalysis.MIA.Object.Objs;
 import io.github.mianalysis.MIA.Object.Status;
 import io.github.mianalysis.MIA.Object.Workspace;
 import io.github.mianalysis.MIA.Object.Parameters.ChoiceP;
@@ -23,15 +23,15 @@ import io.github.mianalysis.MIA.Object.Parameters.ImageMeasurementP;
 import io.github.mianalysis.MIA.Object.Parameters.InputImageP;
 import io.github.mianalysis.MIA.Object.Parameters.InputObjectsP;
 import io.github.mianalysis.MIA.Object.Parameters.ObjectMeasurementP;
-import io.github.mianalysis.MIA.Object.Parameters.ParameterCollection;
+import io.github.mianalysis.MIA.Object.Parameters.Parameters;
 import io.github.mianalysis.MIA.Object.Parameters.SeparatorP;
 import io.github.mianalysis.MIA.Object.Parameters.Text.StringP;
-import io.github.mianalysis.MIA.Object.References.ObjMeasurementRef;
-import io.github.mianalysis.MIA.Object.References.Collections.ImageMeasurementRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.MetadataRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.ObjMeasurementRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.ParentChildRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.PartnerRefCollection;
+import io.github.mianalysis.MIA.Object.Refs.ObjMeasurementRef;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ImageMeasurementRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.MetadataRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ObjMeasurementRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ParentChildRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.PartnerRefs;
 import io.github.sjcross.common.Object.Point;
 import io.github.sjcross.common.Object.Volume.SpatCal;
 
@@ -81,7 +81,7 @@ public class MeasureSpecificWidth extends Module {
         
     }
     
-    public MeasureSpecificWidth(final ModuleCollection modules) {
+    public MeasureSpecificWidth(final Modules modules) {
         super("Measure specific width", modules);
     }
     
@@ -137,7 +137,7 @@ public class MeasureSpecificWidth extends Module {
         final Line primaryLine = new Line(vector1,vector2,1.0E-10D);
                         
         // Getting surface points
-        ObjCollection tempCollection = new ObjCollection("Surfaces", obj.getObjectCollection());
+        Objs tempCollection = new Objs("Surfaces", obj.getObjectCollection());
         Obj surface = GetObjectSurface.getSurface(obj, tempCollection, false);
     
         // Storing candidate points
@@ -213,7 +213,7 @@ public class MeasureSpecificWidth extends Module {
         
         final String prefix = parameters.getValue(MEASUREMENT_PREFIX);
         
-        final ObjCollection inputObjects = workspace.getObjectSet(inputObjectsName);
+        final Objs inputObjects = workspace.getObjectSet(inputObjectsName);
         
         Image referenceImage1 = null;    
         if (refMode1.equals(ReferenceModes.IMAGE_MEASUREMENT)) {
@@ -299,8 +299,8 @@ public class MeasureSpecificWidth extends Module {
     }
     
     @Override
-    public ParameterCollection updateAndGetParameters() {
-        final ParameterCollection returnedParameters = new ParameterCollection();
+    public Parameters updateAndGetParameters() {
+        final Parameters returnedParameters = new Parameters();
         
         returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(INPUT_OBJECTS));
@@ -362,13 +362,13 @@ public class MeasureSpecificWidth extends Module {
     }
     
     @Override
-    public ImageMeasurementRefCollection updateAndGetImageMeasurementRefs() {
+    public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
         return null;
     }
     
     @Override
-    public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
-        final ObjMeasurementRefCollection returnedRefs = new ObjMeasurementRefCollection();
+    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+        final ObjMeasurementRefs returnedRefs = new ObjMeasurementRefs();
         
         final String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
         final String prefix = parameters.getValue(MEASUREMENT_PREFIX);
@@ -410,17 +410,17 @@ public class MeasureSpecificWidth extends Module {
     }
     
     @Override
-    public MetadataRefCollection updateAndGetMetadataReferences() {
+    public MetadataRefs updateAndGetMetadataReferences() {
         return null;
     }
     
     @Override
-    public ParentChildRefCollection updateAndGetParentChildRefs() {
+    public ParentChildRefs updateAndGetParentChildRefs() {
         return null;
     }
 
     @Override
-    public PartnerRefCollection updateAndGetPartnerRefs() {
+    public PartnerRefs updateAndGetPartnerRefs() {
         return null;
     }
 

@@ -3,20 +3,20 @@ package io.github.mianalysis.MIA.Module.ObjectProcessing.Identification;
 import io.github.mianalysis.MIA.Module.Categories;
 import io.github.mianalysis.MIA.Module.Category;
 import io.github.mianalysis.MIA.Module.Module;
-import io.github.mianalysis.MIA.Module.ModuleCollection;
+import io.github.mianalysis.MIA.Module.Modules;
 import io.github.mianalysis.MIA.Object.Obj;
-import io.github.mianalysis.MIA.Object.ObjCollection;
+import io.github.mianalysis.MIA.Object.Objs;
 import io.github.mianalysis.MIA.Object.Status;
 import io.github.mianalysis.MIA.Object.Workspace;
 import io.github.mianalysis.MIA.Object.Parameters.InputObjectsP;
-import io.github.mianalysis.MIA.Object.Parameters.ParameterCollection;
+import io.github.mianalysis.MIA.Object.Parameters.Parameters;
 import io.github.mianalysis.MIA.Object.Parameters.SeparatorP;
 import io.github.mianalysis.MIA.Object.Parameters.Objects.OutputObjectsP;
-import io.github.mianalysis.MIA.Object.References.Collections.ImageMeasurementRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.MetadataRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.ObjMeasurementRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.ParentChildRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.PartnerRefCollection;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ImageMeasurementRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.MetadataRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ObjMeasurementRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ParentChildRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.PartnerRefs;
 import io.github.sjcross.common.Object.Volume.Volume;
 
 public class GetObjectSurface extends Module {
@@ -24,7 +24,7 @@ public class GetObjectSurface extends Module {
     public static final String INPUT_OBJECTS = "Input objects";
     public static final String OUTPUT_OBJECTS = "Output objects";
 
-    public static Obj getSurface(Obj inputObject, ObjCollection outputObjects, boolean assignRelationships) {
+    public static Obj getSurface(Obj inputObject, Objs outputObjects, boolean assignRelationships) {
         Volume outputVolume = inputObject.getSurface();
         Obj outputObject = outputObjects.createAndAddNewObject(inputObject.getVolumeType());
         outputObject.setCoordinateSet(outputVolume.getCoordinateSet());
@@ -38,7 +38,7 @@ public class GetObjectSurface extends Module {
 
     }
 
-    public GetObjectSurface(ModuleCollection modules) {
+    public GetObjectSurface(Modules modules) {
         super("Get object surface", modules);
     }
 
@@ -60,8 +60,8 @@ public class GetObjectSurface extends Module {
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
         String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);
 
-        ObjCollection inputObjects = workspace.getObjectSet(inputObjectsName);
-        ObjCollection outputObjects = new ObjCollection(outputObjectsName, inputObjects);
+        Objs inputObjects = workspace.getObjectSet(inputObjectsName);
+        Objs outputObjects = new Objs(outputObjectsName, inputObjects);
 
         for (Obj inputObject : inputObjects.values())
             getSurface(inputObject, outputObjects, true);
@@ -86,28 +86,28 @@ public class GetObjectSurface extends Module {
     }
 
     @Override
-    public ParameterCollection updateAndGetParameters() {
+    public Parameters updateAndGetParameters() {
         return parameters;
     }
 
     @Override
-    public ImageMeasurementRefCollection updateAndGetImageMeasurementRefs() {
+    public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MetadataRefCollection updateAndGetMetadataReferences() {
+    public MetadataRefs updateAndGetMetadataReferences() {
         return null;
     }
 
     @Override
-    public ParentChildRefCollection updateAndGetParentChildRefs() {
-        ParentChildRefCollection returnedRelationships = new ParentChildRefCollection();
+    public ParentChildRefs updateAndGetParentChildRefs() {
+        ParentChildRefs returnedRelationships = new ParentChildRefs();
 
         returnedRelationships
                 .add(parentChildRefs.getOrPut(parameters.getValue(INPUT_OBJECTS), parameters.getValue(OUTPUT_OBJECTS)));
@@ -117,7 +117,7 @@ public class GetObjectSurface extends Module {
     }
 
     @Override
-    public PartnerRefCollection updateAndGetPartnerRefs() {
+    public PartnerRefs updateAndGetPartnerRefs() {
         return null;
     }
 

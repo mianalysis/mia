@@ -5,26 +5,26 @@ import ij.ImagePlus;
 import ij.gui.Line;
 import ij.process.ImageProcessor;
 import io.github.mianalysis.MIA.Module.Module;
-import io.github.mianalysis.MIA.Module.ModuleCollection;
+import io.github.mianalysis.MIA.Module.Modules;
 import io.github.mianalysis.MIA.Module.Category;
 import io.github.mianalysis.MIA.Module.Categories;
 import io.github.mianalysis.MIA.Object.Image;
 import io.github.mianalysis.MIA.Object.Obj;
-import io.github.mianalysis.MIA.Object.ObjCollection;
+import io.github.mianalysis.MIA.Object.Objs;
 import io.github.mianalysis.MIA.Object.Status;
 import io.github.mianalysis.MIA.Object.Workspace;
 import io.github.mianalysis.MIA.Object.Parameters.ChildObjectsP;
 import io.github.mianalysis.MIA.Object.Parameters.ChoiceP;
 import io.github.mianalysis.MIA.Object.Parameters.InputImageP;
 import io.github.mianalysis.MIA.Object.Parameters.OutputImageP;
-import io.github.mianalysis.MIA.Object.Parameters.ParameterCollection;
+import io.github.mianalysis.MIA.Object.Parameters.Parameters;
 import io.github.mianalysis.MIA.Object.Parameters.Objects.InputTrackObjectsP;
 import io.github.mianalysis.MIA.Object.Parameters.Text.IntegerP;
-import io.github.mianalysis.MIA.Object.References.Collections.ImageMeasurementRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.MetadataRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.ObjMeasurementRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.ParentChildRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.PartnerRefCollection;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ImageMeasurementRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.MetadataRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ObjMeasurementRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ParentChildRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.PartnerRefs;
 
 public class PlotKymograph extends Module {
     public static final String INPUT_IMAGE = "Input image";
@@ -34,7 +34,7 @@ public class PlotKymograph extends Module {
     public static final String INPUT_SPOT_OBJECTS = "Input spot objects";
     public static final String HALF_WIDTH = "Half width (px)";
 
-    public PlotKymograph(ModuleCollection modules) {
+    public PlotKymograph(Modules modules) {
         super("Plot kymograph",modules);
     }
 
@@ -46,7 +46,7 @@ public class PlotKymograph extends Module {
     }
 
 
-    public Image plotObjectLine(Image inputImage, String outputImageName, ObjCollection inputTrackObjects, String inputSpotObjectsName, int halfWidth) {
+    public Image plotObjectLine(Image inputImage, String outputImageName, Objs inputTrackObjects, String inputSpotObjectsName, int halfWidth) {
         ImagePlus inputIpl = inputImage.getImagePlus();
 
         // Getting properties of the output image
@@ -126,7 +126,7 @@ public class PlotKymograph extends Module {
         Image outputImage = null;
         switch (mode) {
             case Modes.LINE_AT_OBJECT_CENTROID:
-                ObjCollection inputTrackObjects = workspace.getObjectSet(inputTrackObjectsName);
+                Objs inputTrackObjects = workspace.getObjectSet(inputTrackObjectsName);
                 outputImage = plotObjectLine(inputImage,outputImageName,inputTrackObjects,inputSpotObjectsName,halfWidth);
                 break;
         }
@@ -150,8 +150,8 @@ public class PlotKymograph extends Module {
     }
 
     @Override
-    public ParameterCollection updateAndGetParameters() {
-        ParameterCollection returnedParameters = new ParameterCollection();
+    public Parameters updateAndGetParameters() {
+        Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(INPUT_IMAGE));
         returnedParameters.add(parameters.getParameter(OUTPUT_IMAGE));
@@ -175,27 +175,27 @@ public class PlotKymograph extends Module {
     }
 
     @Override
-    public ImageMeasurementRefCollection updateAndGetImageMeasurementRefs() {
+    public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MetadataRefCollection updateAndGetMetadataReferences() {
+    public MetadataRefs updateAndGetMetadataReferences() {
         return null;
     }
 
     @Override
-    public ParentChildRefCollection updateAndGetParentChildRefs() {
+    public ParentChildRefs updateAndGetParentChildRefs() {
         return null;
     }
 
     @Override
-    public PartnerRefCollection updateAndGetPartnerRefs() {
+    public PartnerRefs updateAndGetPartnerRefs() {
         return null;
     }
 

@@ -8,9 +8,9 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 
 import io.github.mianalysis.MIA.GUI.GUI;
-import io.github.mianalysis.MIA.Object.References.Abstract.ExportableRef;
-import io.github.mianalysis.MIA.Object.References.Abstract.SummaryRef;
-import io.github.mianalysis.MIA.Object.References.Collections.RefCollection;
+import io.github.mianalysis.MIA.Object.Refs.Abstract.ExportableRef;
+import io.github.mianalysis.MIA.Object.Refs.Abstract.SummaryRef;
+import io.github.mianalysis.MIA.Object.Refs.Collections.Refs;
 
 public class DisableRefsButton extends JButton implements ActionListener {
     /**
@@ -21,11 +21,11 @@ public class DisableRefsButton extends JButton implements ActionListener {
     private static final ImageIcon icon = new ImageIcon(
         DisableRefsButton.class.getResource("/Icons/delete-2_black_12px.png"), "");
 
-    private RefCollection<SummaryRef> refs;
+    private Refs<SummaryRef> refs;
 
     // CONSTRUCTOR
 
-    public DisableRefsButton(RefCollection<SummaryRef> refs) {
+    public DisableRefsButton(Refs<SummaryRef> refs) {
         this.refs = refs;
 
         setMargin(new Insets(0,0,0,0));

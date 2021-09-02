@@ -5,19 +5,19 @@ import java.awt.datatransfer.ClipboardOwner;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 
-import io.github.mianalysis.MIA.Module.ModuleCollection;
+import io.github.mianalysis.MIA.Module.Modules;
 
-public class ModuleCollectionTransfer implements Transferable, ClipboardOwner {
-    private ModuleCollection modules;
+public class ModuleTransfer implements Transferable, ClipboardOwner {
+    private Modules modules;
 
-    public ModuleCollectionTransfer(ModuleCollection modules) {
+    public ModuleTransfer(Modules modules) {
         this.modules = modules;
     }
 
     @Override
     public DataFlavor[] getTransferDataFlavors() {
         try {
-            DataFlavor dataFlavor = new ModuleCollectionDataFlavor();
+            DataFlavor dataFlavor = new ModuleDataFlavor();
             return new DataFlavor[]{dataFlavor};
 
         } catch (ClassNotFoundException e1) {

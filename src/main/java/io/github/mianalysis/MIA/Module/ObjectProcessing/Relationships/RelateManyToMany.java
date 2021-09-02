@@ -99,29 +99,29 @@ import io.github.mianalysis.MIA.MIA;
 import io.github.mianalysis.MIA.Module.Categories;
 import io.github.mianalysis.MIA.Module.Category;
 import io.github.mianalysis.MIA.Module.Module;
-import io.github.mianalysis.MIA.Module.ModuleCollection;
+import io.github.mianalysis.MIA.Module.Modules;
 import io.github.mianalysis.MIA.Module.Core.InputControl;
 import io.github.mianalysis.MIA.Object.Measurement;
 import io.github.mianalysis.MIA.Object.Obj;
-import io.github.mianalysis.MIA.Object.ObjCollection;
+import io.github.mianalysis.MIA.Object.Objs;
 import io.github.mianalysis.MIA.Object.Status;
 import io.github.mianalysis.MIA.Object.Workspace;
 import io.github.mianalysis.MIA.Object.Parameters.BooleanP;
 import io.github.mianalysis.MIA.Object.Parameters.ChoiceP;
 import io.github.mianalysis.MIA.Object.Parameters.InputObjectsP;
 import io.github.mianalysis.MIA.Object.Parameters.ObjectMeasurementP;
-import io.github.mianalysis.MIA.Object.Parameters.ParameterCollection;
+import io.github.mianalysis.MIA.Object.Parameters.Parameters;
 import io.github.mianalysis.MIA.Object.Parameters.ParameterGroup;
 import io.github.mianalysis.MIA.Object.Parameters.ParameterGroup.ParameterUpdaterAndGetter;
 import io.github.mianalysis.MIA.Object.Parameters.SeparatorP;
 import io.github.mianalysis.MIA.Object.Parameters.Objects.OutputClusterObjectsP;
 import io.github.mianalysis.MIA.Object.Parameters.Text.DoubleP;
-import io.github.mianalysis.MIA.Object.References.ObjMeasurementRef;
-import io.github.mianalysis.MIA.Object.References.Collections.ImageMeasurementRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.MetadataRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.ObjMeasurementRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.ParentChildRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.PartnerRefCollection;
+import io.github.mianalysis.MIA.Object.Refs.ObjMeasurementRef;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ImageMeasurementRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.MetadataRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ObjMeasurementRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ParentChildRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.PartnerRefs;
 import io.github.mianalysis.MIA.Process.ColourFactory;
 import io.github.sjcross.common.ImageJ.LUTs;
 import io.github.sjcross.common.Object.Volume.VolumeType;
@@ -321,7 +321,7 @@ public class RelateManyToMany extends Module {
 
     }
 
-    static ObjCollection createClusters(ObjCollection outputObjects, HashMap<Obj, Integer> assignments) {        
+    static Objs createClusters(Objs outputObjects, HashMap<Obj, Integer> assignments) {        
         for (Obj object : assignments.keySet()) {
             int groupID = assignments.get(object);
 
@@ -342,7 +342,7 @@ public class RelateManyToMany extends Module {
 
     }
 
-    static void applyMeasurements(ObjCollection objCollection, HashMap<Obj, Integer> assignments,
+    static void applyMeasurements(Objs objCollection, HashMap<Obj, Integer> assignments,
             String linkedObjectName) {
         for (Obj object : objCollection.values()) {
             if (assignments.containsKey(object)) {
@@ -353,7 +353,7 @@ public class RelateManyToMany extends Module {
         }
     }
 
-    public RelateManyToMany(ModuleCollection modules) {
+    public RelateManyToMany(Modules modules) {
         super("Relate many-to-many", modules);
     }
 
@@ -375,10 +375,10 @@ public class RelateManyToMany extends Module {
 
         // Getting input objects
         String inputObjects1Name = parameters.getValue(INPUT_OBJECTS_1);
-        ObjCollection inputObjects1 = workspace.getObjects().get(inputObjects1Name);
+        Objs inputObjects1 = workspace.getObjects().get(inputObjects1Name);
 
         String inputObjects2Name = parameters.getValue(INPUT_OBJECTS_2);
-        ObjCollection inputObjects2;
+        Objs inputObjects2;
         
         switch (objectSourceMode) {
             default:
@@ -405,12 +405,12 @@ public class RelateManyToMany extends Module {
         double minOverlap1 = parameters.getValue(MINIMUM_OVERLAP_PC_1);
         double minOverlap2 = parameters.getValue(MINIMUM_OVERLAP_PC_2);
         ParameterGroup parameterGroup = parameters.getParameter(ADD_MEASUREMENT);
-        LinkedHashMap<Integer, ParameterCollection> parameterCollections = parameterGroup.getCollections(false);
+        LinkedHashMap<Integer, Parameters> parameterCollections = parameterGroup.getCollections(false);
         boolean linkInSameFrame = parameters.getValue(LINK_IN_SAME_FRAME);
 
         // Skipping the module if no objects are present in one collection
         if (inputObjects1.size() == 0 || inputObjects2.size() == 0) {
-            workspace.addObjects(new ObjCollection(outputObjectsName, inputObjects1));
+            workspace.addObjects(new Objs(outputObjectsName, inputObjects1));
             return Status.PASS;
         }
 
@@ -447,7 +447,7 @@ public class RelateManyToMany extends Module {
                 }
 
                 // Testing additional measurements
-                for (ParameterCollection collection : parameterCollections.values()) {
+                for (Parameters collection : parameterCollections.values()) {
                     String measurement1 = collection.getValue(MEASUREMENT_1);
                     String measurement2 = objectSourceMode.equals(ObjectSourceModes.SAME_CLASS) ? measurement1
                             : collection.getValue(MEASUREMENT_2);
@@ -481,7 +481,7 @@ public class RelateManyToMany extends Module {
                 workspace.removeObjects(outputObjectsName, false);
             }
 
-            ObjCollection outputObjects = new ObjCollection(outputObjectsName, inputObjects1);
+            Objs outputObjects = new Objs(outputObjectsName, inputObjects1);
             createClusters(outputObjects, assignments);
             workspace.addObjects(outputObjects);
 
@@ -531,7 +531,7 @@ public class RelateManyToMany extends Module {
 
         parameters.add(new SeparatorP(ADDITIONAL_MEASUREMENTS_SEPARATOR, this));
 
-        ParameterCollection collection = new ParameterCollection();
+        Parameters collection = new Parameters();
         collection.add(new ObjectMeasurementP(MEASUREMENT_1, this));
         collection.add(new ObjectMeasurementP(MEASUREMENT_2, this));
         collection.add(new ChoiceP(CALCULATION, this, Calculations.DIFFERENCE, Calculations.ALL));
@@ -546,8 +546,8 @@ public class RelateManyToMany extends Module {
     }
 
     @Override
-    public ParameterCollection updateAndGetParameters() {
-        ParameterCollection returnedParameters = new ParameterCollection();
+    public Parameters updateAndGetParameters() {
+        Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(OBJECT_SOURCE_MODE));
@@ -592,16 +592,16 @@ public class RelateManyToMany extends Module {
     }
 
     @Override
-    public ImageMeasurementRefCollection updateAndGetImageMeasurementRefs() {
+    public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
         String inputObjectsName1 = parameters.getValue(INPUT_OBJECTS_1);
         String inputObjectsName2 = parameters.getValue(INPUT_OBJECTS_2);
 
-        ObjMeasurementRefCollection returnedRefs = new ObjMeasurementRefCollection();
+        ObjMeasurementRefs returnedRefs = new ObjMeasurementRefs();
 
         String name = getFullName(inputObjectsName2, Measurements.WAS_LINKED);
         ObjMeasurementRef reference = objectMeasurementRefs.getOrPut(name);
@@ -615,13 +615,13 @@ public class RelateManyToMany extends Module {
     }
 
     @Override
-    public MetadataRefCollection updateAndGetMetadataReferences() {
+    public MetadataRefs updateAndGetMetadataReferences() {
         return null;
     }
 
     @Override
-    public ParentChildRefCollection updateAndGetParentChildRefs() {
-        ParentChildRefCollection returnedRefs = new ParentChildRefCollection();
+    public ParentChildRefs updateAndGetParentChildRefs() {
+        ParentChildRefs returnedRefs = new ParentChildRefs();
 
         // Getting input objects
         String inputObjects1Name = parameters.getValue(INPUT_OBJECTS_1);
@@ -640,8 +640,8 @@ public class RelateManyToMany extends Module {
     }
 
     @Override
-    public PartnerRefCollection updateAndGetPartnerRefs() {
-        PartnerRefCollection returnedRefs = new PartnerRefCollection();
+    public PartnerRefs updateAndGetPartnerRefs() {
+        PartnerRefs returnedRefs = new PartnerRefs();
 
         String inputObjects1Name = parameters.getValue(INPUT_OBJECTS_1);
         String inputObjects2Name = parameters.getValue(INPUT_OBJECTS_2);
@@ -725,7 +725,7 @@ public class RelateManyToMany extends Module {
                 "Add additional measurement criteria the two objects must satisfy in order to be related.");
 
         ParameterGroup group = (ParameterGroup) parameters.get(ADD_MEASUREMENT);
-        ParameterCollection collection = group.getTemplateParameters();
+        Parameters collection = group.getTemplateParameters();
 
         collection.get(MEASUREMENT_1).setDescription(
                 "Measurement associated with objects from the first collection that will be used for this test.");
@@ -748,8 +748,8 @@ public class RelateManyToMany extends Module {
         return new ParameterUpdaterAndGetter() {
 
             @Override
-            public ParameterCollection updateAndGet(ParameterCollection params) {
-                ParameterCollection returnedParameters = new ParameterCollection();
+            public Parameters updateAndGet(Parameters params) {
+                Parameters returnedParameters = new Parameters();
 
                 String objectName1 = parameters.getValue(INPUT_OBJECTS_1);
                 String objectName2 = parameters.getValue(INPUT_OBJECTS_2);

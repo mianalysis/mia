@@ -16,13 +16,13 @@ import ij.process.ImageProcessor;
 import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
 import io.github.mianalysis.MIA.MIA;
-import io.github.mianalysis.MIA.Module.ModuleCollection;
+import io.github.mianalysis.MIA.Module.Modules;
 import io.github.mianalysis.MIA.Module.ImageProcessing.Stack.ConcatenateStacks;
 import io.github.mianalysis.MIA.Module.ImageProcessing.Stack.Registration.Abstract.AbstractBUnwarpJRegistration;
 import io.github.mianalysis.MIA.Object.Image;
 import io.github.mianalysis.MIA.Object.Workspace;
 import io.github.mianalysis.MIA.Object.Parameters.ChoiceP;
-import io.github.mianalysis.MIA.Object.Parameters.ParameterCollection;
+import io.github.mianalysis.MIA.Object.Parameters.Parameters;
 import io.github.mianalysis.MIA.Process.Interactable.Interactable;
 import io.github.mianalysis.MIA.Process.Interactable.PointPairSelector;
 import io.github.mianalysis.MIA.Process.Interactable.PointPairSelector.PointPair;
@@ -40,7 +40,7 @@ public class UnwarpManual<T extends RealType<T> & NativeType<T>> extends Abstrac
 
     }
 
-    public UnwarpManual(ModuleCollection modules) {
+    public UnwarpManual(Modules modules) {
         super("Unwarp (manual)", modules);
     }
 
@@ -246,8 +246,8 @@ public class UnwarpManual<T extends RealType<T> & NativeType<T>> extends Abstrac
     }
 
     @Override
-    public ParameterCollection updateAndGetParameters() {
-        ParameterCollection returnedParameters = new ParameterCollection();
+    public Parameters updateAndGetParameters() {
+        Parameters returnedParameters = new Parameters();
 
         returnedParameters.addAll(super.updateAndGetParameters());
 

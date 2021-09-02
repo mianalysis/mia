@@ -26,7 +26,7 @@ import io.github.mianalysis.MIA.MIA;
 import io.github.mianalysis.MIA.Module.Categories;
 import io.github.mianalysis.MIA.Module.Category;
 import io.github.mianalysis.MIA.Module.Module;
-import io.github.mianalysis.MIA.Module.ModuleCollection;
+import io.github.mianalysis.MIA.Module.Modules;
 import io.github.mianalysis.MIA.Module.Miscellaneous.GlobalVariables;
 import io.github.mianalysis.MIA.Object.Status;
 import io.github.mianalysis.MIA.Object.Workspace;
@@ -36,7 +36,7 @@ import io.github.mianalysis.MIA.Object.Parameters.GenericButtonP;
 import io.github.mianalysis.MIA.Object.Parameters.InputImageP;
 import io.github.mianalysis.MIA.Object.Parameters.InputObjectsP;
 import io.github.mianalysis.MIA.Object.Parameters.OutputImageP;
-import io.github.mianalysis.MIA.Object.Parameters.ParameterCollection;
+import io.github.mianalysis.MIA.Object.Parameters.Parameters;
 import io.github.mianalysis.MIA.Object.Parameters.ParameterGroup;
 import io.github.mianalysis.MIA.Object.Parameters.ParameterGroup.ParameterUpdaterAndGetter;
 import io.github.mianalysis.MIA.Object.Parameters.SeparatorP;
@@ -44,13 +44,13 @@ import io.github.mianalysis.MIA.Object.Parameters.Abstract.TextType;
 import io.github.mianalysis.MIA.Object.Parameters.Objects.OutputObjectsP;
 import io.github.mianalysis.MIA.Object.Parameters.Text.StringP;
 import io.github.mianalysis.MIA.Object.Parameters.Text.TextAreaP;
-import io.github.mianalysis.MIA.Object.References.ImageMeasurementRef;
-import io.github.mianalysis.MIA.Object.References.ObjMeasurementRef;
-import io.github.mianalysis.MIA.Object.References.Collections.ImageMeasurementRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.MetadataRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.ObjMeasurementRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.ParentChildRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.PartnerRefCollection;
+import io.github.mianalysis.MIA.Object.Refs.ImageMeasurementRef;
+import io.github.mianalysis.MIA.Object.Refs.ObjMeasurementRef;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ImageMeasurementRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.MetadataRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ObjMeasurementRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ParentChildRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.PartnerRefs;
 
 /**
  * Created by Stephen on 12/05/2021.
@@ -103,7 +103,7 @@ public class RunScript extends Module {
 
     }
 
-    public RunScript(ModuleCollection modules) {
+    public RunScript(Modules modules) {
         super("Run script", modules);
     }
 
@@ -175,8 +175,8 @@ public class RunScript extends Module {
                     .run("script." + extension, scriptText, false, scriptParameters).get();
 
             // Adding output images/objects to the workspace
-            LinkedHashMap<Integer, ParameterCollection> parameterCollections = parameters.getValue(ADD_OUTPUT);
-            for (ParameterCollection parameterCollection : parameterCollections.values()) {
+            LinkedHashMap<Integer, Parameters> parameterCollections = parameters.getValue(ADD_OUTPUT);
+            for (Parameters parameterCollection : parameterCollections.values()) {
                 String outputType = parameterCollection.getValue(OUTPUT_TYPE);
                 switch (outputType) {
                     case OutputTypes.IMAGE:
@@ -211,7 +211,7 @@ public class RunScript extends Module {
         parameters.add(new GenericButtonP(REFRESH_BUTTON, this, "Refresh", GenericButtonP.DefaultModes.REFRESH));
 
         parameters.add(new SeparatorP(IMAGE_OUTPUT_SEPARATOR, this));
-        ParameterCollection parameterCollection = new ParameterCollection();
+        Parameters parameterCollection = new Parameters();
         parameterCollection.add(new ChoiceP(OUTPUT_TYPE, this, OutputTypes.IMAGE, OutputTypes.ALL));
         parameterCollection.add(new OutputImageP(OUTPUT_IMAGE, this));
         parameterCollection.add(new OutputObjectsP(OUTPUT_OBJECTS, this));
@@ -225,8 +225,8 @@ public class RunScript extends Module {
     }
 
     @Override
-    public ParameterCollection updateAndGetParameters() {
-        ParameterCollection returnedParameters = new ParameterCollection();
+    public Parameters updateAndGetParameters() {
+        Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(SCRIPT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(SCRIPT_MODE));
@@ -249,13 +249,13 @@ public class RunScript extends Module {
     }
 
     @Override
-    public ImageMeasurementRefCollection updateAndGetImageMeasurementRefs() {
-        ImageMeasurementRefCollection returnedRefs = new ImageMeasurementRefCollection();
+    public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
+        ImageMeasurementRefs returnedRefs = new ImageMeasurementRefs();
 
         ParameterGroup group = parameters.getParameter(ADD_OUTPUT);
-        LinkedHashMap<Integer, ParameterCollection> collections = group.getCollections(true);
+        LinkedHashMap<Integer, Parameters> collections = group.getCollections(true);
 
-        for (ParameterCollection collection : collections.values()) {
+        for (Parameters collection : collections.values()) {
             if (collection.getValue(OUTPUT_TYPE).equals(OutputTypes.IMAGE_MEASUREMENT)) {
                 String imageName = collection.getValue(ASSOCIATED_IMAGE);
                 String measurementName = collection.getValue(MEASUREMENT_NAME);
@@ -270,13 +270,13 @@ public class RunScript extends Module {
     }
 
     @Override
-    public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
-        ObjMeasurementRefCollection returnedRefs = new ObjMeasurementRefCollection();
+    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+        ObjMeasurementRefs returnedRefs = new ObjMeasurementRefs();
 
         ParameterGroup group = parameters.getParameter(ADD_OUTPUT);
-        LinkedHashMap<Integer, ParameterCollection> collections = group.getCollections(true);
+        LinkedHashMap<Integer, Parameters> collections = group.getCollections(true);
 
-        for (ParameterCollection collection : collections.values()) {
+        for (Parameters collection : collections.values()) {
             if (collection.getValue(OUTPUT_TYPE).equals(OutputTypes.OBJECT_MEASUREMENT)) {
                 String objectsName = collection.getValue(ASSOCIATED_OBJECTS);
                 String measurementName = collection.getValue(MEASUREMENT_NAME);
@@ -291,17 +291,17 @@ public class RunScript extends Module {
     }
 
     @Override
-    public MetadataRefCollection updateAndGetMetadataReferences() {
+    public MetadataRefs updateAndGetMetadataReferences() {
         return null;
     }
 
     @Override
-    public ParentChildRefCollection updateAndGetParentChildRefs() {
+    public ParentChildRefs updateAndGetParentChildRefs() {
         return null;
     }
 
     @Override
-    public PartnerRefCollection updateAndGetPartnerRefs() {
+    public PartnerRefs updateAndGetPartnerRefs() {
         return null;
     }
 
@@ -333,7 +333,7 @@ public class RunScript extends Module {
                 "This button refreshes the script code as stored within MIA.  Clicking this will create an \"undo\" checkpoint and validate any global variables that have been used.");
 
         ParameterGroup group = (ParameterGroup) parameters.get(ADD_OUTPUT);
-        ParameterCollection collection = group.getTemplateParameters();
+        Parameters collection = group.getTemplateParameters();
         collection.get(OUTPUT_TYPE).setDescription(
                 "Specifies the type of variable that has been added to the workspace during the script.  These can either be images, new object collections or measurements associated with existing images or object collections.");
 
@@ -361,8 +361,8 @@ public class RunScript extends Module {
         return new ParameterUpdaterAndGetter() {
 
             @Override
-            public ParameterCollection updateAndGet(ParameterCollection params) {
-                ParameterCollection returnedParameters = new ParameterCollection();
+            public Parameters updateAndGet(Parameters params) {
+                Parameters returnedParameters = new Parameters();
 
                 returnedParameters.add(params.getParameter(OUTPUT_TYPE));
                 switch ((String) params.getValue(OUTPUT_TYPE)) {

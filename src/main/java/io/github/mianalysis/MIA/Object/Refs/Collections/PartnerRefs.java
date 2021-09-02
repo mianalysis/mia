@@ -1,11 +1,11 @@
-package io.github.mianalysis.MIA.Object.References.Collections;
+package io.github.mianalysis.MIA.Object.Refs.Collections;
 
 import java.util.LinkedHashSet;
 import java.util.TreeSet;
 
-import io.github.mianalysis.MIA.Object.References.PartnerRef;
+import io.github.mianalysis.MIA.Object.Refs.PartnerRef;
 
-public class PartnerRefCollection extends TreeSet<PartnerRef> implements RefCollection<PartnerRef> {
+public class PartnerRefs extends TreeSet<PartnerRef> implements Refs<PartnerRef> {
     /**
      *
      */

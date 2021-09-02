@@ -7,7 +7,7 @@ package io.github.mianalysis.MIA.Process.AnalysisHandling;
 //import io.github.mianalysis.MIA.Module.Hidden.InputControl;
 //import io.github.mianalysis.MIA.Module.Hidden.OutputControl;
 //import io.github.mianalysis.MIA.MIA;
-//import io.github.mianalysis.MIA.Module.ModuleCollection;
+//import io.github.mianalysis.MIA.Module.Modules;
 //import io.github.mianalysis.MIA.Process.AnalysisHandling.AnalysisRunner;
 //
 //import java.io.File;
@@ -139,7 +139,7 @@ package io.github.mianalysis.MIA.Process.AnalysisHandling;
 //
 //    @Test
 //    public void testGetExportNameSingleFileSingleSeries(@TempDir Path tempPath) throws Exception {
-//        ModuleCollection modules = new ModuleCollection();
+//        Modules modules = new Modules();
 //        InputControl inputControl = modules.getInputControl();
 //        OutputControl outputControl = modules.getOutputControl();
 //
@@ -158,7 +158,7 @@ package io.github.mianalysis.MIA.Process.AnalysisHandling;
 //
 //    @Test
 //    public void testGetExportNameSingleFileAllSeries(@TempDir Path tempPath) throws Exception {
-//        ModuleCollection modules = new ModuleCollection();
+//        Modules modules = new Modules();
 //        InputControl inputControl = modules.getInputControl();
 //        OutputControl outputControl = modules.getOutputControl();
 //
@@ -176,7 +176,7 @@ package io.github.mianalysis.MIA.Process.AnalysisHandling;
 //
 //    @Test
 //    public void testGetExportNameBatchSingleSeries(@TempDir Path tempPath) throws Exception {
-//        ModuleCollection modules = new ModuleCollection();
+//        Modules modules = new Modules();
 //        InputControl inputControl = modules.getInputControl();
 //        OutputControl outputControl = modules.getOutputControl();
 //
@@ -197,7 +197,7 @@ package io.github.mianalysis.MIA.Process.AnalysisHandling;
 //
 //    @Test
 //    public void testGetExportNameBatchAllSeries(@TempDir Path tempPath) throws Exception {
-//        ModuleCollection modules = new ModuleCollection();
+//        Modules modules = new Modules();
 //        InputControl inputControl = modules.getInputControl();
 //        OutputControl outputControl = modules.getOutputControl();
 //

@@ -5,28 +5,28 @@ import java.util.Iterator;
 import io.github.mianalysis.MIA.Module.Categories;
 import io.github.mianalysis.MIA.Module.Category;
 import io.github.mianalysis.MIA.Module.Module;
-import io.github.mianalysis.MIA.Module.ModuleCollection;
+import io.github.mianalysis.MIA.Module.Modules;
 import io.github.mianalysis.MIA.Module.ImageProcessing.Pixel.ProjectImage;
 import io.github.mianalysis.MIA.Module.ImageProcessing.Pixel.Binary.DistanceMap;
 import io.github.mianalysis.MIA.Object.Image;
 import io.github.mianalysis.MIA.Object.Measurement;
 import io.github.mianalysis.MIA.Object.Obj;
-import io.github.mianalysis.MIA.Object.ObjCollection;
+import io.github.mianalysis.MIA.Object.Objs;
 import io.github.mianalysis.MIA.Object.Status;
 import io.github.mianalysis.MIA.Object.Workspace;
 import io.github.mianalysis.MIA.Object.Parameters.BooleanP;
 import io.github.mianalysis.MIA.Object.Parameters.ChoiceP;
 import io.github.mianalysis.MIA.Object.Parameters.InputObjectsP;
-import io.github.mianalysis.MIA.Object.Parameters.ParameterCollection;
+import io.github.mianalysis.MIA.Object.Parameters.Parameters;
 import io.github.mianalysis.MIA.Object.Parameters.SeparatorP;
 import io.github.mianalysis.MIA.Object.Parameters.Objects.OutputObjectsP;
 import io.github.mianalysis.MIA.Object.Parameters.Text.DoubleP;
-import io.github.mianalysis.MIA.Object.References.ObjMeasurementRef;
-import io.github.mianalysis.MIA.Object.References.Collections.ImageMeasurementRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.MetadataRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.ObjMeasurementRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.ParentChildRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.PartnerRefCollection;
+import io.github.mianalysis.MIA.Object.Refs.ObjMeasurementRef;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ImageMeasurementRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.MetadataRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ObjMeasurementRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ParentChildRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.PartnerRefs;
 import io.github.mianalysis.MIA.Object.Units.SpatialUnit;
 import io.github.sjcross.common.Object.Point;
 
@@ -52,7 +52,7 @@ public class RelateObjects extends Module {
     public static final String MERGE_RELATED_OBJECTS = "Merge related objects";
     public static final String RELATED_OBJECTS = "Output overlapping objects";
 
-    public RelateObjects(ModuleCollection modules) {
+    public RelateObjects(Modules modules) {
         super("Relate objects", modules);
         deprecated = true;
     }
@@ -104,7 +104,7 @@ public class RelateObjects extends Module {
         return "RELATE_OBJ // " + measurement.replace("${PARENT}", parentName);
     }
 
-    public void linkMatchingIDs(ObjCollection parentObjects, ObjCollection childObjects) {
+    public void linkMatchingIDs(Objs parentObjects, Objs childObjects) {
         for (Obj parentObject : parentObjects.values()) {
             int ID = parentObject.getID();
 
@@ -122,7 +122,7 @@ public class RelateObjects extends Module {
      * Iterates over each testObject, calculating getting the smallest distance to a
      * parentObject. If this is smaller than linkingDistance the link is assigned.
      */
-    public void proximity(ObjCollection parentObjects, ObjCollection childObjects) {
+    public void proximity(Objs parentObjects, Objs childObjects) {
         boolean linkInSameFrame = parameters.getValue(LINK_IN_SAME_FRAME);
         String referenceMode = parameters.getValue(REFERENCE_MODE);
         boolean limitLinking = parameters.getValue(LIMIT_LINKING_BY_DISTANCE);
@@ -232,7 +232,7 @@ public class RelateObjects extends Module {
 
     }
 
-    public void applyMeasurements(Obj childObject, ObjCollection parentObjects, double minDist, Obj minLink) {
+    public void applyMeasurements(Obj childObject, Objs parentObjects, double minDist, Obj minLink) {
         String referenceMode = parameters.getValue(REFERENCE_MODE);
 
         if (minLink != null) {
@@ -297,7 +297,7 @@ public class RelateObjects extends Module {
         }
     }
 
-    public void spatialOverlap(ObjCollection parentObjects, ObjCollection childObjects, double minOverlap,
+    public void spatialOverlap(Objs parentObjects, Objs childObjects, double minOverlap,
             boolean centroidOverlap, boolean linkInSameFrame) {
 
         long nCombined = parentObjects.size() * childObjects.size();
@@ -402,10 +402,10 @@ public class RelateObjects extends Module {
 
     }
 
-    public ObjCollection mergeRelatedObjects(ObjCollection parentObjects, ObjCollection childObjects,
+    public Objs mergeRelatedObjects(Objs parentObjects, Objs childObjects,
             String relatedObjectsName) {
         Obj exampleParent = parentObjects.getFirst();
-        ObjCollection relatedObjects = new ObjCollection(relatedObjectsName, parentObjects);
+        Objs relatedObjects = new Objs(relatedObjectsName, parentObjects);
 
         if (exampleParent == null)
             return relatedObjects;
@@ -416,7 +416,7 @@ public class RelateObjects extends Module {
 
             // Collecting all children for this parent. If none are present, skip to the
             // next parent
-            ObjCollection currChildObjects = parentObj.getChildren(childObjects.getName());
+            Objs currChildObjects = parentObj.getChildren(childObjects.getName());
             if (currChildObjects.size() == 0)
                 continue;
 
@@ -460,10 +460,10 @@ public class RelateObjects extends Module {
     public Status process(Workspace workspace) {
         // Getting input objects
         String parentObjectName = parameters.getValue(PARENT_OBJECTS);
-        ObjCollection parentObjects = workspace.getObjects().get(parentObjectName);
+        Objs parentObjects = workspace.getObjects().get(parentObjectName);
 
         String childObjectName = parameters.getValue(CHILD_OBJECTS);
-        ObjCollection childObjects = workspace.getObjects().get(childObjectName);
+        Objs childObjects = workspace.getObjects().get(childObjectName);
 
         // Getting parameters
         String relateMode = parameters.getValue(RELATE_MODE);
@@ -496,7 +496,7 @@ public class RelateObjects extends Module {
         }
 
         if (mergeRelatedObjects) {
-            ObjCollection relatedObjects = mergeRelatedObjects(parentObjects, childObjects, relatedObjectsName);
+            Objs relatedObjects = mergeRelatedObjects(parentObjects, childObjects, relatedObjectsName);
             if (relatedObjects != null)
                 workspace.addObjects(relatedObjects);
 
@@ -532,8 +532,8 @@ public class RelateObjects extends Module {
     }
 
     @Override
-    public ParameterCollection updateAndGetParameters() {
-        ParameterCollection returnedParameters = new ParameterCollection();
+    public Parameters updateAndGetParameters() {
+        Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(PARENT_OBJECTS));
@@ -577,13 +577,13 @@ public class RelateObjects extends Module {
     }
 
     @Override
-    public ImageMeasurementRefCollection updateAndGetImageMeasurementRefs() {
+    public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
-        ObjMeasurementRefCollection returnedRefs = new ObjMeasurementRefCollection();
+    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+        ObjMeasurementRefs returnedRefs = new ObjMeasurementRefs();
 
         String childObjectsName = parameters.getValue(CHILD_OBJECTS);
         String parentObjectName = parameters.getValue(PARENT_OBJECTS);
@@ -683,13 +683,13 @@ public class RelateObjects extends Module {
     }
 
     @Override
-    public MetadataRefCollection updateAndGetMetadataReferences() {
+    public MetadataRefs updateAndGetMetadataReferences() {
         return null;
     }
 
     @Override
-    public ParentChildRefCollection updateAndGetParentChildRefs() {
-        ParentChildRefCollection returnedRelationships = new ParentChildRefCollection();
+    public ParentChildRefs updateAndGetParentChildRefs() {
+        ParentChildRefs returnedRelationships = new ParentChildRefs();
 
         returnedRelationships
                 .add(parentChildRefs.getOrPut(parameters.getValue(PARENT_OBJECTS), parameters.getValue(CHILD_OBJECTS)));
@@ -699,7 +699,7 @@ public class RelateObjects extends Module {
     }
 
     @Override
-    public PartnerRefCollection updateAndGetPartnerRefs() {
+    public PartnerRefs updateAndGetPartnerRefs() {
         return null;
     }
 

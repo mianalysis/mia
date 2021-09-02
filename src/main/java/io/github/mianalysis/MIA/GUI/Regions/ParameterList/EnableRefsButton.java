@@ -8,9 +8,9 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 
 import io.github.mianalysis.MIA.GUI.GUI;
-import io.github.mianalysis.MIA.Object.References.Abstract.ExportableRef;
-import io.github.mianalysis.MIA.Object.References.Abstract.SummaryRef;
-import io.github.mianalysis.MIA.Object.References.Collections.RefCollection;
+import io.github.mianalysis.MIA.Object.Refs.Abstract.ExportableRef;
+import io.github.mianalysis.MIA.Object.Refs.Abstract.SummaryRef;
+import io.github.mianalysis.MIA.Object.Refs.Collections.Refs;
 
 public class EnableRefsButton extends JButton implements ActionListener {
     /**
@@ -21,11 +21,11 @@ public class EnableRefsButton extends JButton implements ActionListener {
     private static final ImageIcon icon = new ImageIcon(
         EnableRefsButton.class.getResource("/Icons/check-mark_black_12px.png"), "");
 
-    private RefCollection<SummaryRef> refs;
+    private Refs<SummaryRef> refs;
 
     // CONSTRUCTOR
 
-    public EnableRefsButton(RefCollection<SummaryRef> refs) {
+    public EnableRefsButton(Refs<SummaryRef> refs) {
         this.refs = refs;
 
         setMargin(new Insets(0,0,0,0));

@@ -8,16 +8,16 @@ import org.apache.commons.io.FilenameUtils;
 
 import ij.measure.ResultsTable;
 import io.github.mianalysis.MIA.Module.Module;
-import io.github.mianalysis.MIA.Object.References.MetadataRef;
-import io.github.mianalysis.MIA.Object.References.Collections.MetadataRefCollection;
+import io.github.mianalysis.MIA.Object.Refs.MetadataRef;
+import io.github.mianalysis.MIA.Object.Refs.Collections.MetadataRefs;
 import io.github.sjcross.common.MetadataExtractors.Metadata;
 
 /**
  * Created by sc13967 on 02/05/2017.
  */
 public class Workspace {
-    private WorkspaceCollection workspaces;
-    private LinkedHashMap<String, ObjCollection> objects = new LinkedHashMap<>();
+    private Workspaces workspaces;
+    private LinkedHashMap<String, Objs> objects = new LinkedHashMap<>();
     private LinkedHashMap<String, Image> images = new LinkedHashMap<>();
     private Metadata metadata = new Metadata();
     private int ID;
@@ -29,7 +29,7 @@ public class Workspace {
 
     // CONSTRUCTOR
 
-    protected Workspace(int ID, File file, int series, WorkspaceCollection workspaces) {
+    protected Workspace(int ID, File file, int series, Workspaces workspaces) {
         this.ID = ID;
         this.workspaces = workspaces;
 
@@ -50,7 +50,7 @@ public class Workspace {
 
     // PUBLIC METHODS
 
-    public void addObjects(ObjCollection object) {
+    public void addObjects(Objs object) {
         objects.put(object.getName(), object);
     }
 
@@ -95,7 +95,7 @@ public class Workspace {
     public void clearAllObjects(boolean retainMeasurements) {
         if (retainMeasurements) {
             // Sets the ImagePlus to null, but leaves measurements
-            for (ObjCollection objCollection :objects.values()) {
+            for (Objs objCollection :objects.values()) {
                 for (Obj obj: objCollection.values()) {
                     obj.clearAllCoordinates();
                 }
@@ -127,7 +127,7 @@ public class Workspace {
 
     public void showMetadata(Module module) {
         // Getting MeasurementReferences
-        MetadataRefCollection metadataRefs = module.updateAndGetMetadataReferences();
+        MetadataRefs metadataRefs = module.updateAndGetMetadataReferences();
 
         // Creating a new ResultsTable for these values
         ResultsTable rt = new ResultsTable();
@@ -158,7 +158,7 @@ public class Workspace {
 
     }
 
-    public ObjCollection getObjectSet(String name) {
+    public Objs getObjectSet(String name) {
         return objects.get(name);
 
     }
@@ -168,9 +168,9 @@ public class Workspace {
      */
     public HashMap<Integer,Workspace> getSingleTimepointWorkspaces() {
         HashMap<Integer, Workspace> workspaceList = new HashMap<>();
-        WorkspaceCollection workspacesT = new WorkspaceCollection();
+        Workspaces workspacesT = new Workspaces();
 
-        for (ObjCollection collection:objects.values()) {
+        for (Objs collection:objects.values()) {
             for (Obj obj:collection.values()) {
                 int t = obj.getT();
 
@@ -184,7 +184,7 @@ public class Workspace {
 
                 // Adding the current Obj to the new Workspace
                 if (workspaceList.get(t).getObjectSet(obj.getName()) == null) {
-                    ObjCollection currObjects = new ObjCollection(obj.getName(), obj.getObjectCollection());
+                    Objs currObjects = new Objs(obj.getName(), obj.getObjectCollection());
                     workspaceList.get(t).addObjects(currObjects);
                 }
                 
@@ -200,11 +200,11 @@ public class Workspace {
 
     // GETTERS AND SETTERS
 
-    public LinkedHashMap<String, ObjCollection> getObjects() {
+    public LinkedHashMap<String, Objs> getObjects() {
         return objects;
     }
 
-    public void setObjects(LinkedHashMap<String, ObjCollection> objects) {
+    public void setObjects(LinkedHashMap<String, Objs> objects) {
         this.objects = objects;
     }
 
@@ -252,12 +252,12 @@ public class Workspace {
         this.exportWorkspace = exportWorkspace;
     }
 
-    public WorkspaceCollection getWorkspaces() {
+    public Workspaces getWorkspaces() {
         return workspaces;
 
     }
 
-    public void setWorkspaces(WorkspaceCollection workspaces) {
+    public void setWorkspaces(Workspaces workspaces) {
         this.workspaces = workspaces;
         
     }

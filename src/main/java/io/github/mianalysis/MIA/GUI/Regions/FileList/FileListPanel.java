@@ -32,7 +32,7 @@ import io.github.mianalysis.MIA.GUI.Regions.ClosePanelButton;
 import io.github.mianalysis.MIA.Object.Colours;
 import io.github.mianalysis.MIA.Object.Status;
 import io.github.mianalysis.MIA.Object.Workspace;
-import io.github.mianalysis.MIA.Object.WorkspaceCollection;
+import io.github.mianalysis.MIA.Object.Workspaces;
 import io.github.sjcross.common.MetadataExtractors.Metadata;
 
 public class FileListPanel extends JPanel implements MouseListener, TableCellRenderer {
@@ -40,7 +40,7 @@ public class FileListPanel extends JPanel implements MouseListener, TableCellRen
      *
      */
     private static final long serialVersionUID = -2538934848503043479L;
-    private final WorkspaceCollection workspaces;
+    private final Workspaces workspaces;
     private final JTable table;
     private final DefaultTableModel model = new DefaultTableModel();
     private final FileListColumnSelectorMenu columnSelectorMenu = new FileListColumnSelectorMenu(this);
@@ -61,7 +61,7 @@ public class FileListPanel extends JPanel implements MouseListener, TableCellRen
 
     private int maxJob = 0;
 
-    public FileListPanel(WorkspaceCollection workspaces) {
+    public FileListPanel(Workspaces workspaces) {
         this.workspaces = workspaces;
 
         // Initialising the scroll panel

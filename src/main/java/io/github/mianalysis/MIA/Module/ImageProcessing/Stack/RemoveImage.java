@@ -3,21 +3,21 @@ package io.github.mianalysis.MIA.Module.ImageProcessing.Stack;
 import java.util.LinkedHashMap;
 
 import io.github.mianalysis.MIA.Module.Module;
-import io.github.mianalysis.MIA.Module.ModuleCollection;
+import io.github.mianalysis.MIA.Module.Modules;
 import io.github.mianalysis.MIA.Module.Category;
 import io.github.mianalysis.MIA.Module.Categories;
 import io.github.mianalysis.MIA.Object.Status;
 import io.github.mianalysis.MIA.Object.Workspace;
 import io.github.mianalysis.MIA.Object.Parameters.BooleanP;
 import io.github.mianalysis.MIA.Object.Parameters.SeparatorP;
-import io.github.mianalysis.MIA.Object.Parameters.ParameterCollection;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ImageMeasurementRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.MetadataRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ObjMeasurementRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ParentChildRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.PartnerRefs;
+import io.github.mianalysis.MIA.Object.Parameters.Parameters;
 import io.github.mianalysis.MIA.Object.Parameters.ParameterGroup;
 import io.github.mianalysis.MIA.Object.Parameters.RemovedImageP;
-import io.github.mianalysis.MIA.Object.References.Collections.ImageMeasurementRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.MetadataRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.ObjMeasurementRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.ParentChildRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.PartnerRefCollection;
 
 /**
  * Created by sc13967 on 30/06/2017.
@@ -28,7 +28,7 @@ public class RemoveImage extends Module {
     public static final String RETAIN_MEASUREMENTS = "Retain measurements";
     public static final String REMOVE_ANOTHER_IMAGE = "Remove another image";
 
-    public RemoveImage(ModuleCollection modules) {
+    public RemoveImage(Modules modules) {
         super("Remove image",modules);
     }
 
@@ -48,9 +48,9 @@ public class RemoveImage extends Module {
     public Status process(Workspace workspace) {
         // Getting input image
         ParameterGroup parameterGroup = parameters.getParameter(REMOVE_ANOTHER_IMAGE);
-        LinkedHashMap<Integer,ParameterCollection> collections = parameterGroup.getCollections(false);
+        LinkedHashMap<Integer,Parameters> collections = parameterGroup.getCollections(false);
 
-        for (ParameterCollection collection:collections.values()) {
+        for (Parameters collection:collections.values()) {
             String inputImageName = collection.getValue(INPUT_IMAGE);
             boolean retainMeasurements = collection.getValue(RETAIN_MEASUREMENTS);
 
@@ -68,7 +68,7 @@ public class RemoveImage extends Module {
     protected void initialiseParameters() {
         parameters.add(new SeparatorP(REMOVAL_SEPARATOR,this));
 
-        ParameterCollection collection = new ParameterCollection();
+        Parameters collection = new Parameters();
         collection.add(new RemovedImageP(INPUT_IMAGE,this));
         collection.add(new BooleanP(RETAIN_MEASUREMENTS,this,false));
         parameters.add(new ParameterGroup(REMOVE_ANOTHER_IMAGE, this, collection, 1));
@@ -78,33 +78,33 @@ public class RemoveImage extends Module {
     }
 
     @Override
-    public ParameterCollection updateAndGetParameters() {
+    public Parameters updateAndGetParameters() {
         return parameters;
 
     }
 
     @Override
-    public ImageMeasurementRefCollection updateAndGetImageMeasurementRefs() {
+    public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MetadataRefCollection updateAndGetMetadataReferences() {
+    public MetadataRefs updateAndGetMetadataReferences() {
         return null;
     }
 
     @Override
-    public ParentChildRefCollection updateAndGetParentChildRefs() {
+    public ParentChildRefs updateAndGetParentChildRefs() {
         return null;
     }
 
     @Override
-    public PartnerRefCollection updateAndGetPartnerRefs() {
+    public PartnerRefs updateAndGetPartnerRefs() {
         return null;
     }
 
@@ -114,7 +114,7 @@ public class RemoveImage extends Module {
     }
 
     void addParameterDescriptions() {
-        ParameterCollection collection = ((ParameterGroup) parameters.get(REMOVE_ANOTHER_IMAGE))
+        Parameters collection = ((ParameterGroup) parameters.get(REMOVE_ANOTHER_IMAGE))
                 .getTemplateParameters();
 
         collection.get(INPUT_IMAGE).setDescription("Name of the image to be removed from the workspace.");

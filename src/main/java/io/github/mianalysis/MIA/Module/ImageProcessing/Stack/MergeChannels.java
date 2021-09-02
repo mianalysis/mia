@@ -19,21 +19,21 @@ import net.imglib2.view.Views;
 import io.github.mianalysis.MIA.Module.Categories;
 import io.github.mianalysis.MIA.Module.Category;
 import io.github.mianalysis.MIA.Module.Module;
-import io.github.mianalysis.MIA.Module.ModuleCollection;
+import io.github.mianalysis.MIA.Module.Modules;
 import io.github.mianalysis.MIA.Object.Image;
 import io.github.mianalysis.MIA.Object.Status;
 import io.github.mianalysis.MIA.Object.Workspace;
 import io.github.mianalysis.MIA.Object.Parameters.ChoiceP;
 import io.github.mianalysis.MIA.Object.Parameters.InputImageP;
 import io.github.mianalysis.MIA.Object.Parameters.OutputImageP;
-import io.github.mianalysis.MIA.Object.Parameters.ParameterCollection;
+import io.github.mianalysis.MIA.Object.Parameters.Parameters;
 import io.github.mianalysis.MIA.Object.Parameters.ParameterGroup;
 import io.github.mianalysis.MIA.Object.Parameters.Text.IntegerP;
-import io.github.mianalysis.MIA.Object.References.Collections.ImageMeasurementRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.MetadataRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.ObjMeasurementRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.ParentChildRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.PartnerRefCollection;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ImageMeasurementRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.MetadataRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ObjMeasurementRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ParentChildRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.PartnerRefs;
 import io.github.sjcross.common.Process.IntensityMinMax;
 
 /**
@@ -46,7 +46,7 @@ public class MergeChannels<T extends RealType<T> & NativeType<T>> extends Module
     public static final String OUTPUT_IMAGE = "Output image";
     public static final String IMAGE_INDEX_TO_OVERWRITE = "Image index to overwrite (>= 1)";
 
-    public MergeChannels(ModuleCollection modules) {
+    public MergeChannels(Modules modules) {
         super("Merge channels", modules);
         deprecated = true;
     }
@@ -180,10 +180,10 @@ public class MergeChannels<T extends RealType<T> & NativeType<T>> extends Module
         String outputImageName = parameters.getValue(OUTPUT_IMAGE);
 
         // Creating a collection of images
-        LinkedHashMap<Integer, ParameterCollection> collections = parameters.getValue(ADD_INPUT_IMAGE);
+        LinkedHashMap<Integer, Parameters> collections = parameters.getValue(ADD_INPUT_IMAGE);
         Image[] inputImages = new Image[collections.size()];
         int i = 0;
-        for (ParameterCollection collection : collections.values()) {
+        for (Parameters collection : collections.values()) {
             inputImages[i++] = workspace.getImage(collection.getValue(INPUT_IMAGE));
         }
 
@@ -211,7 +211,7 @@ public class MergeChannels<T extends RealType<T> & NativeType<T>> extends Module
 
     @Override
     protected void initialiseParameters() {
-        ParameterCollection collection = new ParameterCollection();
+        Parameters collection = new Parameters();
         collection.add(new InputImageP(INPUT_IMAGE, this));
         parameters.add(new ParameterGroup(ADD_INPUT_IMAGE, this, collection, 2));
 
@@ -224,8 +224,8 @@ public class MergeChannels<T extends RealType<T> & NativeType<T>> extends Module
     }
 
     @Override
-    public ParameterCollection updateAndGetParameters() {
-        ParameterCollection returnedParameters = new ParameterCollection();
+    public Parameters updateAndGetParameters() {
+        Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(ADD_INPUT_IMAGE));
 
@@ -244,27 +244,27 @@ public class MergeChannels<T extends RealType<T> & NativeType<T>> extends Module
     }
 
     @Override
-    public ImageMeasurementRefCollection updateAndGetImageMeasurementRefs() {
+    public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MetadataRefCollection updateAndGetMetadataReferences() {
+    public MetadataRefs updateAndGetMetadataReferences() {
         return null;
     }
 
     @Override
-    public ParentChildRefCollection updateAndGetParentChildRefs() {
+    public ParentChildRefs updateAndGetParentChildRefs() {
         return null;
     }
 
     @Override
-    public PartnerRefCollection updateAndGetPartnerRefs() {
+    public PartnerRefs updateAndGetPartnerRefs() {
         return null;
     }
 
@@ -274,7 +274,7 @@ public class MergeChannels<T extends RealType<T> & NativeType<T>> extends Module
     }
 
     void addParameterDescriptions() {
-        ParameterCollection collection = ((ParameterGroup) parameters.get(ADD_INPUT_IMAGE)).getTemplateParameters();
+        Parameters collection = ((ParameterGroup) parameters.get(ADD_INPUT_IMAGE)).getTemplateParameters();
 
         collection.get(INPUT_IMAGE).setDescription("Image from workspace to add to output merged image.");
 

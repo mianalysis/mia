@@ -2,7 +2,7 @@ package io.github.mianalysis.MIA.GUI.Regions.WorkflowModules;
 
 import io.github.mianalysis.MIA.GUI.GUI;
 import io.github.mianalysis.MIA.Module.Module;
-import io.github.mianalysis.MIA.Module.ModuleCollection;
+import io.github.mianalysis.MIA.Module.Modules;
 
 import javax.swing.table.DefaultTableModel;
 
@@ -11,9 +11,9 @@ public class DraggableTableModel extends DefaultTableModel {
      *
      */
     private static final long serialVersionUID = 3569731151635741445L;
-    private ModuleCollection modules;
+    private Modules modules;
 
-    public DraggableTableModel(Object[][] data, Object[] columnNames, ModuleCollection modules) {
+    public DraggableTableModel(Object[][] data, Object[] columnNames, Modules modules) {
         super(data, columnNames);
         this.modules = modules;
 

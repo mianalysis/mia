@@ -27,12 +27,12 @@ import ij.gui.TextRoi;
 import ij.plugin.Duplicator;
 import ij.plugin.HyperStackConverter;
 import io.github.mianalysis.MIA.Module.Module;
-import io.github.mianalysis.MIA.Module.ModuleCollection;
+import io.github.mianalysis.MIA.Module.Modules;
 import io.github.mianalysis.MIA.Module.Category;
 import io.github.mianalysis.MIA.Module.Categories;
 import io.github.mianalysis.MIA.Object.Image;
 import io.github.mianalysis.MIA.Object.Obj;
-import io.github.mianalysis.MIA.Object.ObjCollection;
+import io.github.mianalysis.MIA.Object.Objs;
 import io.github.mianalysis.MIA.Object.Status;
 import io.github.mianalysis.MIA.Object.Workspace;
 import io.github.mianalysis.MIA.Object.Parameters.BooleanP;
@@ -42,15 +42,15 @@ import io.github.mianalysis.MIA.Object.Parameters.InputImageP;
 import io.github.mianalysis.MIA.Object.Parameters.InputObjectsP;
 import io.github.mianalysis.MIA.Object.Parameters.ObjectMeasurementP;
 import io.github.mianalysis.MIA.Object.Parameters.OutputImageP;
-import io.github.mianalysis.MIA.Object.Parameters.ParameterCollection;
+import io.github.mianalysis.MIA.Object.Parameters.Parameters;
 import io.github.mianalysis.MIA.Object.Parameters.ParentObjectsP;
 import io.github.mianalysis.MIA.Object.Parameters.Text.DoubleP;
 import io.github.mianalysis.MIA.Object.Parameters.Text.IntegerP;
-import io.github.mianalysis.MIA.Object.References.Collections.ImageMeasurementRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.MetadataRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.ObjMeasurementRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.ParentChildRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.PartnerRefCollection;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ImageMeasurementRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.MetadataRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ObjMeasurementRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ParentChildRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.PartnerRefs;
 import io.github.mianalysis.MIA.Process.ColourFactory;
 import io.github.mianalysis.MIA.Process.LabelFactory;
 
@@ -95,7 +95,7 @@ public class AddObjectsOverlay extends Module {
     public static final String RENDER_IN_ALL_FRAMES = "Render in all frames";
     public static final String ENABLE_MULTITHREADING = "Enable multithreading";
 
-    public AddObjectsOverlay(ModuleCollection modules) {
+    public AddObjectsOverlay(Modules modules) {
         super("Add overlay", modules);
         deprecated = true;
     }
@@ -333,7 +333,7 @@ public class AddObjectsOverlay extends Module {
 
     public static void addTrackOverlay(Obj object, String spotObjectsName, ImagePlus ipl, Color colour,
             double lineWidth, int history) {
-        ObjCollection pointObjects = object.getChildren(spotObjectsName);
+        Objs pointObjects = object.getChildren(spotObjectsName);
 
         if (ipl.getOverlay() == null)
             ipl.setOverlay(new ij.gui.Overlay());
@@ -400,7 +400,7 @@ public class AddObjectsOverlay extends Module {
 
     }
 
-    public HashMap<Integer, Float> getHues(ObjCollection inputObjects, String colourMode, String singleColour,
+    public HashMap<Integer, Float> getHues(Objs inputObjects, String colourMode, String singleColour,
             String parentObjectsForColourName, String measurementForColour) {
         // Generating colours for each object
         switch (colourMode) {
@@ -421,7 +421,7 @@ public class AddObjectsOverlay extends Module {
         }
     }
 
-    public HashMap<Integer, String> getLabels(ObjCollection inputObjects, String labelMode, DecimalFormat df,
+    public HashMap<Integer, String> getLabels(Objs inputObjects, String labelMode, DecimalFormat df,
             String parentObjectsForLabelName, String measurementForLabel) {
         switch (labelMode) {
             case LabelModes.ID:
@@ -439,7 +439,7 @@ public class AddObjectsOverlay extends Module {
 
     }
 
-    public void createAllPointsOverlay(ImagePlus ipl, ObjCollection inputObjects, @NotNull HashMap<Integer, Float> hues,
+    public void createAllPointsOverlay(ImagePlus ipl, Objs inputObjects, @NotNull HashMap<Integer, Float> hues,
             boolean multithread, double lineWidth, boolean renderInAllFrames) throws InterruptedException {
         // If necessary, turning the image into a HyperStack (if 2 dimensions=1 it will
         // be a standard ImagePlus)
@@ -473,7 +473,7 @@ public class AddObjectsOverlay extends Module {
 
     }
 
-    public void createArrowsOverlay(ImagePlus ipl, ObjCollection inputObjects, @NotNull HashMap<Integer, Float> hues,
+    public void createArrowsOverlay(ImagePlus ipl, Objs inputObjects, @NotNull HashMap<Integer, Float> hues,
             boolean multithread, double lineWidth, String oriMode, String oriMeasurementName,
             @Nullable String oriParentName, String lengthMode, String lengthMeasurementName,
             @Nullable String lengthParentName, double lengthValue, double lengthScale, int headSize)
@@ -535,7 +535,7 @@ public class AddObjectsOverlay extends Module {
 
     }
 
-    public void createCentroidOverlay(ImagePlus ipl, ObjCollection inputObjects, @NotNull HashMap<Integer, Float> hues,
+    public void createCentroidOverlay(ImagePlus ipl, Objs inputObjects, @NotNull HashMap<Integer, Float> hues,
             boolean multithread, double lineWidth, boolean renderInAllFrames) throws InterruptedException {
         // If necessary, turning the image into a HyperStack (if 2 dimensions=1 it will
         // be a standard ImagePlus)
@@ -567,7 +567,7 @@ public class AddObjectsOverlay extends Module {
 
     }
 
-    public void createLabelOverlay(ImagePlus ipl, ObjCollection inputObjects, @NotNull HashMap<Integer, Float> hues,
+    public void createLabelOverlay(ImagePlus ipl, Objs inputObjects, @NotNull HashMap<Integer, Float> hues,
             @Nullable HashMap<Integer, String> labels, boolean multithread, int labelSize, boolean renderInAllFrames)
             throws InterruptedException {
         // If necessary, turning the image into a HyperStack (if 2 dimensions=1 it will
@@ -611,7 +611,7 @@ public class AddObjectsOverlay extends Module {
 
     }
 
-    public void createOutlineOverlay(ImagePlus ipl, ObjCollection inputObjects, @NotNull HashMap<Integer, Float> hues,
+    public void createOutlineOverlay(ImagePlus ipl, Objs inputObjects, @NotNull HashMap<Integer, Float> hues,
             boolean multithread, double lineWidth, boolean renderInAllFrames) throws InterruptedException {
         // If necessary, turning the image into a HyperStack (if 2 dimensions=1 it will
         // be a standard ImagePlus)
@@ -644,7 +644,7 @@ public class AddObjectsOverlay extends Module {
 
     }
 
-    public void createPositionMeasurementsOverlay(ImagePlus ipl, ObjCollection inputObjects,
+    public void createPositionMeasurementsOverlay(ImagePlus ipl, Objs inputObjects,
             @NotNull HashMap<Integer, Float> hues, String[] posMeasurements, boolean multithread, double lineWidth,
             boolean renderInAllFrames) throws InterruptedException {
         // If necessary, turning the image into a HyperStack (if 2 dimensions=1 it will
@@ -678,7 +678,7 @@ public class AddObjectsOverlay extends Module {
 
     }
 
-    public void createTracksOverlay(ImagePlus ipl, ObjCollection inputObjects, @NotNull HashMap<Integer, Float> hues,
+    public void createTracksOverlay(ImagePlus ipl, Objs inputObjects, @NotNull HashMap<Integer, Float> hues,
             String spotObjectsName, int history, boolean multithread, double lineWidth) throws InterruptedException {
         // If necessary, turning the image into a HyperStack (if 2 dimensions=1 it will
         // be a standard ImagePlus)
@@ -740,7 +740,7 @@ public class AddObjectsOverlay extends Module {
 
         // Getting input objects
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
-        ObjCollection inputObjects = workspace.getObjects().get(inputObjectsName);
+        Objs inputObjects = workspace.getObjects().get(inputObjectsName);
 
         // Getting input image
         String inputImageName = parameters.getValue(INPUT_IMAGE);
@@ -887,11 +887,11 @@ public class AddObjectsOverlay extends Module {
     }
 
     @Override
-    public ParameterCollection updateAndGetParameters() {
+    public Parameters updateAndGetParameters() {
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
         String parentObjectsName = parameters.getValue(PARENT_OBJECT_FOR_COLOUR);
 
-        ParameterCollection returnedParameters = new ParameterCollection();
+        Parameters returnedParameters = new Parameters();
         returnedParameters.add(parameters.getParameter(INPUT_IMAGE));
         returnedParameters.add(parameters.getParameter(INPUT_OBJECTS));
         returnedParameters.add(parameters.getParameter(APPLY_TO_INPUT));
@@ -1063,27 +1063,27 @@ public class AddObjectsOverlay extends Module {
     }
 
     @Override
-    public ImageMeasurementRefCollection updateAndGetImageMeasurementRefs() {
+    public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MetadataRefCollection updateAndGetMetadataReferences() {
+    public MetadataRefs updateAndGetMetadataReferences() {
         return null;
     }
 
     @Override
-    public ParentChildRefCollection updateAndGetParentChildRefs() {
+    public ParentChildRefs updateAndGetParentChildRefs() {
         return null;
     }
 
     @Override
-    public PartnerRefCollection updateAndGetPartnerRefs() {
+    public PartnerRefs updateAndGetPartnerRefs() {
         return null;
     }
 

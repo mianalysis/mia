@@ -9,16 +9,16 @@ import java.util.List;
 import ij.macro.ExtensionDescriptor;
 import ij.macro.MacroExtension;
 import io.github.mianalysis.MIA.MIA;
-import io.github.mianalysis.MIA.Module.ModuleCollection;
+import io.github.mianalysis.MIA.Module.Modules;
 import io.github.mianalysis.MIA.Object.Workspace;
-import io.github.mianalysis.MIA.Object.WorkspaceCollection;
+import io.github.mianalysis.MIA.Object.Workspaces;
 import io.github.mianalysis.MIA.Process.ClassHunter;
 
 public class MacroHandler implements MacroExtension {
     private static MacroHandler macroHandler = null;
     private static ArrayList<MacroOperation> macroOperations = null;
     private static Workspace workspace;
-    private static ModuleCollection modules;
+    private static Modules modules;
 
     // Constructor is private to prevent instantiation
     public MacroHandler(){};
@@ -29,7 +29,7 @@ public class MacroHandler implements MacroExtension {
 
             try {
                 if (workspace == null) {
-                    workspace = new WorkspaceCollection().getNewWorkspace(File.createTempFile("Temp", "File"), 0);
+                    workspace = new Workspaces().getNewWorkspace(File.createTempFile("Temp", "File"), 0);
                 }
             } catch (IOException e) {
                 e.printStackTrace();
@@ -89,11 +89,11 @@ public class MacroHandler implements MacroExtension {
 
     }
 
-    public static ModuleCollection getModules() {
+    public static Modules getModules() {
         return modules;
     }
 
-    public static void setModules(ModuleCollection modules) {
+    public static void setModules(Modules modules) {
         MacroHandler.modules = modules;
     }
 

@@ -5,20 +5,20 @@ import java.util.LinkedHashMap;
 import io.github.mianalysis.MIA.Module.Categories;
 import io.github.mianalysis.MIA.Module.Category;
 import io.github.mianalysis.MIA.Module.Module;
-import io.github.mianalysis.MIA.Module.ModuleCollection;
+import io.github.mianalysis.MIA.Module.Modules;
 import io.github.mianalysis.MIA.Module.Miscellaneous.GlobalVariables;
 import io.github.mianalysis.MIA.Object.Status;
 import io.github.mianalysis.MIA.Object.Workspace;
-import io.github.mianalysis.MIA.Object.Parameters.ParameterCollection;
+import io.github.mianalysis.MIA.Object.Parameters.Parameters;
 import io.github.mianalysis.MIA.Object.Parameters.ParameterGroup;
 import io.github.mianalysis.MIA.Object.Parameters.ParameterGroup.ParameterUpdaterAndGetter;
 import io.github.mianalysis.MIA.Object.Parameters.SeparatorP;
 import io.github.mianalysis.MIA.Object.Parameters.Text.StringP;
-import io.github.mianalysis.MIA.Object.References.Collections.ImageMeasurementRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.MetadataRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.ObjMeasurementRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.ParentChildRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.PartnerRefCollection;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ImageMeasurementRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.MetadataRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ObjMeasurementRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ParentChildRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.PartnerRefs;
 
 /**
  * Created by Stephen Cross on 23/11/2018.
@@ -29,7 +29,7 @@ public class FixedTextCondition extends AbstractWorkspaceHandler {
     public static final String ADD_CONDITION = "Add condition";
     public static final String REFERENCE_VALUE = "Reference value";
 
-    public FixedTextCondition(ModuleCollection modules) {
+    public FixedTextCondition(Modules modules) {
         super("Fixed text condition", modules);
     }
 
@@ -63,9 +63,9 @@ public class FixedTextCondition extends AbstractWorkspaceHandler {
             redirectModule = modules.get(idx);
 
         String testValue = parameters.getValue(TEST_VALUE);
-        LinkedHashMap<Integer, ParameterCollection> collections = parameters.getValue(ADD_CONDITION);
+        LinkedHashMap<Integer, Parameters> collections = parameters.getValue(ADD_CONDITION);
 
-        for (ParameterCollection collection : collections.values()) {
+        for (Parameters collection : collections.values()) {
             if (collection.getValue(REFERENCE_VALUE).equals(testValue)) {
                 switch ((String) collection.getValue(CONTINUATION_MODE)) {
                     case ContinuationModes.REDIRECT_TO_MODULE:
@@ -86,11 +86,11 @@ public class FixedTextCondition extends AbstractWorkspaceHandler {
     protected Status process(Workspace workspace) {
         // Getting parameters
         String testValue = parameters.getValue(TEST_VALUE);
-        LinkedHashMap<Integer, ParameterCollection> collections = parameters.getValue(ADD_CONDITION);
+        LinkedHashMap<Integer, Parameters> collections = parameters.getValue(ADD_CONDITION);
         boolean showRedirectMessage = parameters.getValue(SHOW_REDIRECT_MESSAGE);
 
         // Getting choice parameters
-        for (ParameterCollection collection : collections.values()) {
+        for (Parameters collection : collections.values()) {
             if (collection.getValue(REFERENCE_VALUE).equals(testValue)) {
                 return processTermination(collection, workspace, showRedirectMessage);
             }
@@ -104,7 +104,7 @@ public class FixedTextCondition extends AbstractWorkspaceHandler {
     protected void initialiseParameters() {
         super.initialiseParameters();
 
-        ParameterCollection collection = new ParameterCollection();
+        Parameters collection = new Parameters();
         collection.add(new StringP(REFERENCE_VALUE, this, ""));
         collection.addAll(super.updateAndGetParameters());
 
@@ -117,8 +117,8 @@ public class FixedTextCondition extends AbstractWorkspaceHandler {
     }
 
     @Override
-    public ParameterCollection updateAndGetParameters() {
-        ParameterCollection returnedParameters = new ParameterCollection();
+    public Parameters updateAndGetParameters() {
+        Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(TEST_VALUE));
         returnedParameters.add(parameters.getParameter(CONDITION_SEPARATOR));
@@ -129,27 +129,27 @@ public class FixedTextCondition extends AbstractWorkspaceHandler {
     }
 
     @Override
-    public ImageMeasurementRefCollection updateAndGetImageMeasurementRefs() {
+    public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MetadataRefCollection updateAndGetMetadataReferences() {
+    public MetadataRefs updateAndGetMetadataReferences() {
         return null;
     }
 
     @Override
-    public ParentChildRefCollection updateAndGetParentChildRefs() {
+    public ParentChildRefs updateAndGetParentChildRefs() {
         return null;
     }
 
     @Override
-    public PartnerRefCollection updateAndGetPartnerRefs() {
+    public PartnerRefs updateAndGetPartnerRefs() {
         return null;
     }
 
@@ -178,8 +178,8 @@ public class FixedTextCondition extends AbstractWorkspaceHandler {
         return new ParameterUpdaterAndGetter() {
 
             @Override
-            public ParameterCollection updateAndGet(ParameterCollection params) {
-                ParameterCollection returnedParameters = new ParameterCollection();
+            public Parameters updateAndGet(Parameters params) {
+                Parameters returnedParameters = new Parameters();
 
                 returnedParameters.add(params.getParameter(REFERENCE_VALUE));
                 returnedParameters.add(params.getParameter(CONTINUATION_MODE));

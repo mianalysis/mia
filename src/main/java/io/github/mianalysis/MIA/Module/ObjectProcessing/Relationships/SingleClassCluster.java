@@ -21,28 +21,28 @@ import ij.process.ImageProcessor;
 import io.github.mianalysis.MIA.Module.Categories;
 import io.github.mianalysis.MIA.Module.Category;
 import io.github.mianalysis.MIA.Module.Module;
-import io.github.mianalysis.MIA.Module.ModuleCollection;
+import io.github.mianalysis.MIA.Module.Modules;
 import io.github.mianalysis.MIA.Module.ImageProcessing.Pixel.Binary.DistanceMap;
 import io.github.mianalysis.MIA.Module.ObjectProcessing.Identification.GetLocalObjectRegion;
 import io.github.mianalysis.MIA.Object.Image;
 import io.github.mianalysis.MIA.Object.LocationWrapper;
 import io.github.mianalysis.MIA.Object.Obj;
-import io.github.mianalysis.MIA.Object.ObjCollection;
+import io.github.mianalysis.MIA.Object.Objs;
 import io.github.mianalysis.MIA.Object.Status;
 import io.github.mianalysis.MIA.Object.Workspace;
 import io.github.mianalysis.MIA.Object.Parameters.BooleanP;
 import io.github.mianalysis.MIA.Object.Parameters.ChoiceP;
 import io.github.mianalysis.MIA.Object.Parameters.InputObjectsP;
-import io.github.mianalysis.MIA.Object.Parameters.ParameterCollection;
+import io.github.mianalysis.MIA.Object.Parameters.Parameters;
 import io.github.mianalysis.MIA.Object.Parameters.SeparatorP;
 import io.github.mianalysis.MIA.Object.Parameters.Objects.OutputClusterObjectsP;
 import io.github.mianalysis.MIA.Object.Parameters.Text.DoubleP;
 import io.github.mianalysis.MIA.Object.Parameters.Text.IntegerP;
-import io.github.mianalysis.MIA.Object.References.Collections.ImageMeasurementRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.MetadataRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.ObjMeasurementRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.ParentChildRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.PartnerRefCollection;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ImageMeasurementRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.MetadataRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ObjMeasurementRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ParentChildRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.PartnerRefs;
 import io.github.mianalysis.MIA.Process.ColourFactory;
 import io.github.sjcross.common.Exceptions.IntegerOverflowException;
 import io.github.sjcross.common.ImageJ.LUTs;
@@ -68,7 +68,7 @@ public class SingleClassCluster extends Module {
     public static final String LINK_IN_SAME_FRAME = "Only link objects in same frame";
 
 
-    public SingleClassCluster(ModuleCollection modules) {
+    public SingleClassCluster(Modules modules) {
         super("Single class cluster",modules);
     }
 
@@ -80,7 +80,7 @@ public class SingleClassCluster extends Module {
 
     }
 
-    public ObjCollection runKMeansPlusPlus(ObjCollection outputObjects, List<LocationWrapper> locations, int width, int height, int nSlices, double dppXY, double dppZ, String calibratedUnits) {
+    public Objs runKMeansPlusPlus(Objs outputObjects, List<LocationWrapper> locations, int width, int height, int nSlices, double dppXY, double dppZ, String calibratedUnits) {
         String outputObjectsName = parameters.getValue(CLUSTER_OBJECTS);
         int kClusters = parameters.getValue(K_CLUSTERS);
         int maxIterations = parameters.getValue(MAX_ITERATIONS);
@@ -117,7 +117,7 @@ public class SingleClassCluster extends Module {
 
     }
 
-    public ObjCollection runDBSCAN(ObjCollection outputObjects, List<LocationWrapper> locations, int width, int height, int nSlices, double dppXY, double dppZ, String calibratedUnits) {
+    public Objs runDBSCAN(Objs outputObjects, List<LocationWrapper> locations, int width, int height, int nSlices, double dppXY, double dppZ, String calibratedUnits) {
         String outputObjectsName = parameters.getValue(CLUSTER_OBJECTS);
         double eps = parameters.getValue(EPS);
         int minPoints = parameters.getValue(MIN_POINTS);
@@ -154,13 +154,13 @@ public class SingleClassCluster extends Module {
 
     }
 
-    public void applyClusterVolume(Obj outputObject, ObjCollection childObjects, double eps) throws IntegerOverflowException {
-        ObjCollection children = outputObject.getChildren(childObjects.getName());
+    public void applyClusterVolume(Obj outputObject, Objs childObjects, double eps) throws IntegerOverflowException {
+        Objs children = outputObject.getChildren(childObjects.getName());
 
         CoordinateSet coordinateSet = outputObject.getCoordinateSet();
         
         // Initial pass, adding all coordinates to cluster object
-        ObjCollection tempObjects = new ObjCollection("Cluster", childObjects);
+        Objs tempObjects = new Objs("Cluster", childObjects);
         for (Obj child : children.values()) {
             // Getting local region around children (local region with radius equal to epsilon)
             Point<Double> cent = child.getMeanCentroid(true,false);
@@ -218,11 +218,11 @@ public class SingleClassCluster extends Module {
     public Status process(Workspace workspace) {
         // Getting objects to measure
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
-        ObjCollection inputObjects = workspace.getObjects().get(inputObjectsName);
+        Objs inputObjects = workspace.getObjects().get(inputObjectsName);
 
         // Getting output objects name
         String outputObjectsName = parameters.getValue(CLUSTER_OBJECTS);
-        ObjCollection outputObjects = new ObjCollection(outputObjectsName,inputObjects);
+        Objs outputObjects = new Objs(outputObjectsName,inputObjects);
 
         // Getting parameters
         boolean applyVolume = parameters.getValue(APPLY_VOLUME);
@@ -341,8 +341,8 @@ public class SingleClassCluster extends Module {
     }
 
     @Override
-    public ParameterCollection updateAndGetParameters() {
-        ParameterCollection returnedParameters = new ParameterCollection();
+    public Parameters updateAndGetParameters() {
+        Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(INPUT_OBJECTS));
@@ -370,23 +370,23 @@ public class SingleClassCluster extends Module {
     }
 
     @Override
-    public ImageMeasurementRefCollection updateAndGetImageMeasurementRefs() {
+    public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MetadataRefCollection updateAndGetMetadataReferences() {
+    public MetadataRefs updateAndGetMetadataReferences() {
         return null;
     }
 
     @Override
-    public ParentChildRefCollection updateAndGetParentChildRefs() {
-        ParentChildRefCollection returnedRelationships = new ParentChildRefCollection();
+    public ParentChildRefs updateAndGetParentChildRefs() {
+        ParentChildRefs returnedRelationships = new ParentChildRefs();
 
         String clusterObjectsName = parameters.getValue(CLUSTER_OBJECTS);
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
@@ -398,7 +398,7 @@ public class SingleClassCluster extends Module {
     }
 
     @Override
-    public PartnerRefCollection updateAndGetPartnerRefs() {
+    public PartnerRefs updateAndGetPartnerRefs() {
         return null;
     }
 
@@ -425,16 +425,16 @@ public class SingleClassCluster extends Module {
 //import io.github.mianalysis.MIA.Module.ImageProcessing.Pixel.Binary.DistanceMap;
 //import io.github.mianalysis.MIA.Module.ImageProcessing.Pixel.InvertIntensity;
 //import io.github.mianalysis.MIA.Module.Module;
-//import io.github.mianalysis.MIA.Module.ModuleCollection;
+//import io.github.mianalysis.MIA.Module.Modules;
 //import io.github.mianalysis.MIA.Module.ObjectProcessing.Identification.GetLocalObjectRegion;
 //import io.github.mianalysis.MIA.Module.PackageNames;
 //import io.github.mianalysis.MIA.Module.Category;
 //import io.github.mianalysis.MIA.Object.*;
 //import io.github.mianalysis.MIA.Object.Parameters.*;
-//import io.github.mianalysis.MIA.Object.References.ImageMeasurementRefCollection;
-//import io.github.mianalysis.MIA.Object.References.ObjMeasurementRefCollection;
-//import io.github.mianalysis.MIA.Object.References.MetadataRefCollection;
-//import io.github.mianalysis.MIA.Object.References.ParentChildRefCollection;
+//import io.github.mianalysis.MIA.Object.References.ImageMeasurementRefs;
+//import io.github.mianalysis.MIA.Object.References.ObjMeasurementRefs;
+//import io.github.mianalysis.MIA.Object.References.MetadataRefs;
+//import io.github.mianalysis.MIA.Object.References.ParentChildRefs;
 //import io.github.mianalysis.MIA.Process.ColourFactory;
 //import io.github.sjcross.common.Exceptions.IntegerOverflowException;
 //import io.github.sjcross.common.Object.LUTs;
@@ -469,7 +469,7 @@ public class SingleClassCluster extends Module {
 //    public static final String LINK_IN_SAME_FRAME = "Only link objects in same frame";
 //
 //
-//    public SingleClassCluster(ModuleCollection modules) {
+//    public SingleClassCluster(Modules modules) {
 //        super("Single class cluster",modules);
 //    }
 //
@@ -490,7 +490,7 @@ public class SingleClassCluster extends Module {
 //
 //    }
 //
-//    public ObjCollection runKMeansPlusPlus(ObjCollection outputObjects, List<LocationWrapper> locations, int width, int height, int nSlices, double dppXY, double dppZ, String calibratedUnits) {
+//    public Objs runKMeansPlusPlus(Objs outputObjects, List<LocationWrapper> locations, int width, int height, int nSlices, double dppXY, double dppZ, String calibratedUnits) {
 //        String outputObjectsName = parameters.getValue(CLUSTER_OBJECTS);
 //        int kClusters = parameters.getValue(K_CLUSTERS);
 //        int maxIterations = parameters.getValue(MAX_ITERATIONS);
@@ -534,7 +534,7 @@ public class SingleClassCluster extends Module {
 //
 //    }
 //
-//    public ObjCollection runDBSCAN(ObjCollection outputObjects, List<LocationWrapper> locations, int width, int height, int nSlices, double dppXY, double dppZ, String calibratedUnits) {
+//    public Objs runDBSCAN(Objs outputObjects, List<LocationWrapper> locations, int width, int height, int nSlices, double dppXY, double dppZ, String calibratedUnits) {
 //        String outputObjectsName = parameters.getValue(CLUSTER_OBJECTS);
 //        double eps = parameters.getValue(EPS);
 //        int minPoints = parameters.getValue(MIN_POINTS);
@@ -580,8 +580,8 @@ public class SingleClassCluster extends Module {
 //
 //    }
 //
-//    public void applyClusterVolume(Obj outputObject, ObjCollection childObjects, double eps) throws IntegerOverflowException {
-//        ObjCollection children = outputObject.getChildren(childObjects.getName());
+//    public void applyClusterVolume(Obj outputObject, Objs childObjects, double eps) throws IntegerOverflowException {
+//        Objs children = outputObject.getChildren(childObjects.getName());
 //
 //        CoordinateSet coordinateSet = outputObject.getCoordinateSet();
 //
@@ -632,11 +632,11 @@ public class SingleClassCluster extends Module {
 //    public Status process(Workspace workspace) {
 //        // Getting objects to measure
 //        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
-//        ObjCollection inputObjects = workspace.getObjects().get(inputObjectsName);
+//        Objs inputObjects = workspace.getObjects().get(inputObjectsName);
 //
 //        // Getting output objects name
 //        String outputObjectsName = parameters.getValue(CLUSTER_OBJECTS);
-//        ObjCollection outputObjects = new ObjCollection(outputObjectsName);
+//        Objs outputObjects = new Objs(outputObjectsName);
 //
 //        // Getting parameters
 //        boolean applyVolume = parameters.getValue(APPLY_VOLUME);
@@ -748,7 +748,7 @@ public class SingleClassCluster extends Module {
 //        parameters.add(new DoubleP(EPS, this,10.0));
 //        parameters.add(new IntegerP(MIN_POINTS, this,5));
 //
-//        ParameterCollection collection = new ParameterCollection();
+//        Parameters collection = new Parameters();
 //        collection.add(new ObjectMeasurementP(COST_MEASUREMENT,this));
 //        collection.add(new ChoiceP(COST_CALCULATION,this,CostCalculations.DIFFERENCE,CostCalculations.ALL));
 //        collection.add(new BooleanP(ENFORCE_COST_LIMIT,this,false));
@@ -760,8 +760,8 @@ public class SingleClassCluster extends Module {
 //    }
 //
 //    @Override
-//    public ParameterCollection updateAndGetParameters() {
-//        ParameterCollection returnedParameters = new ParameterCollection();
+//    public Parameters updateAndGetParameters() {
+//        Parameters returnedParameters = new Parameters();
 //        returnedParameters.add(parameters.getParameter(INPUT_OBJECTS));
 //        returnedParameters.add(parameters.getParameter(CLUSTER_OBJECTS));
 //        returnedParameters.add(parameters.getParameter(APPLY_VOLUME));
@@ -788,23 +788,23 @@ public class SingleClassCluster extends Module {
 //    }
 //
 //    @Override
-//    public ImageMeasurementRefCollection updateAndGetImageMeasurementRefs() {
+//    public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
 //        return null;
 //    }
 //
 //    @Override
-//    public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+//    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
 //        return null;
 //    }
 //
 //    @Override
-//    public MetadataRefCollection updateAndGetMetadataReferences() {
+//    public MetadataRefs updateAndGetMetadataReferences() {
 //        return null;
 //    }
 //
 //    @Override
-//    public ParentChildRefCollection updateAndGetParentChildRefs() {
-//        ParentChildRefCollection returnedRelationships = new ParentChildRefCollection();
+//    public ParentChildRefs updateAndGetParentChildRefs() {
+//        ParentChildRefs returnedRelationships = new ParentChildRefs();
 //
 //        String clusterObjectsName = parameters.getValue(CLUSTER_OBJECTS);
 //        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);

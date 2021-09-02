@@ -21,7 +21,7 @@ import io.github.mianalysis.MIA.Module.Core.InputControl;
 import io.github.mianalysis.MIA.Module.Core.OutputControl;
 import io.github.mianalysis.MIA.Module.Miscellaneous.Macros.AbstractMacroRunner;
 import io.github.mianalysis.MIA.Object.Workspace;
-import io.github.mianalysis.MIA.Object.WorkspaceCollection;
+import io.github.mianalysis.MIA.Object.Workspaces;
 import io.github.mianalysis.MIA.Object.Parameters.FileFolderPathP;
 import io.github.mianalysis.MIA.Process.Exporting.Exporter;
 import io.github.sjcross.common.System.FileCrawler;
@@ -34,7 +34,7 @@ public class AnalysisRunner {
     private static int counter = 0;
     private static int origThreads = Prefs.getThreads();
 
-    private final WorkspaceCollection workspaces = new WorkspaceCollection();
+    private final Workspaces workspaces = new Workspaces();
 
     private final static DecimalFormat dfInt = new DecimalFormat("0");
     private final static DecimalFormat dfDec = new DecimalFormat("0.00");
@@ -82,7 +82,7 @@ public class AnalysisRunner {
         pool = new ThreadPoolExecutor(nSimultaneousJobs, nSimultaneousJobs, 0L, TimeUnit.MILLISECONDS,
                 new LinkedBlockingQueue<>());
 
-        // Restarting the WorkspaceCollection
+        // Restarting the Workspaces
         workspaces.clear();
 
         // Runnables are first stored in a HashSet, then loaded all at once to the
@@ -108,7 +108,7 @@ public class AnalysisRunner {
         pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS); // i.e. never terminate early
         Prefs.setThreads(origThreads);
 
-        // Exporting to Excel for WorkspaceCollection
+        // Exporting to Excel for Workspaces
         if ((outputControl.isExportAllTogether() || outputControl.isExportGroupedByMetadata()) && exporter != null) {
             MIA.log.writeStatus("Exporting data");
             File outputFile = new File((String) inputControl.getParameterValue(InputControl.INPUT_PATH));
@@ -358,7 +358,7 @@ public class AnalysisRunner {
 
     }
 
-    public WorkspaceCollection getWorkspaces() {
+    public Workspaces getWorkspaces() {
         return workspaces;
     }
 }

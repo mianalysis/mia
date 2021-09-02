@@ -5,7 +5,7 @@ import io.github.mianalysis.MIA.GUI.GUI;
 import io.github.mianalysis.MIA.GUI.Regions.WorkflowModules.ModuleEnabledButton;
 import io.github.mianalysis.MIA.Module.Miscellaneous.GUISeparator;
 import io.github.mianalysis.MIA.Module.Module;
-import io.github.mianalysis.MIA.Module.ModuleCollection;
+import io.github.mianalysis.MIA.Module.Modules;
 import io.github.mianalysis.MIA.Module.Core.InputControl;
 import io.github.mianalysis.MIA.Module.Core.OutputControl;
 import io.github.mianalysis.MIA.Object.Parameters.BooleanP;
@@ -98,7 +98,7 @@ public class BasicControlPanel extends JScrollPane {
 
         // Adding module buttons
         GUISeparator separator = loadSeparator;
-        ModuleCollection modules = analysis.getModules();
+        Modules modules = analysis.getModules();
         for (Module module : modules) {
             // If the module is the special-case GUISeparator, create this module, then
             // return

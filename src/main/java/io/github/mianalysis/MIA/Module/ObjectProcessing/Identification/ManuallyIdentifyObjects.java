@@ -47,31 +47,31 @@ import ij.process.BinaryInterpolator;
 import ij.process.LUT;
 import io.github.mianalysis.MIA.MIA;
 import io.github.mianalysis.MIA.Module.Module;
-import io.github.mianalysis.MIA.Module.ModuleCollection;
+import io.github.mianalysis.MIA.Module.Modules;
 import io.github.mianalysis.MIA.Module.Category;
 import io.github.mianalysis.MIA.Module.Categories;
 import io.github.mianalysis.MIA.Module.ObjectProcessing.Relationships.TrackObjects;
 import io.github.mianalysis.MIA.Module.Visualisation.Overlays.AbstractOverlay;
 import io.github.mianalysis.MIA.Object.Image;
 import io.github.mianalysis.MIA.Object.Obj;
-import io.github.mianalysis.MIA.Object.ObjCollection;
+import io.github.mianalysis.MIA.Object.Objs;
 import io.github.mianalysis.MIA.Object.Status;
 import io.github.mianalysis.MIA.Object.VolumeTypesInterface;
 import io.github.mianalysis.MIA.Object.Workspace;
 import io.github.mianalysis.MIA.Object.Parameters.BooleanP;
 import io.github.mianalysis.MIA.Object.Parameters.ChoiceP;
 import io.github.mianalysis.MIA.Object.Parameters.InputImageP;
-import io.github.mianalysis.MIA.Object.Parameters.ParameterCollection;
+import io.github.mianalysis.MIA.Object.Parameters.Parameters;
 import io.github.mianalysis.MIA.Object.Parameters.SeparatorP;
 import io.github.mianalysis.MIA.Object.Parameters.Objects.OutputObjectsP;
 import io.github.mianalysis.MIA.Object.Parameters.Objects.OutputTrackObjectsP;
 import io.github.mianalysis.MIA.Object.Parameters.Text.StringP;
 import io.github.mianalysis.MIA.Object.Parameters.Text.TextAreaP;
-import io.github.mianalysis.MIA.Object.References.Collections.ImageMeasurementRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.MetadataRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.ObjMeasurementRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.ParentChildRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.PartnerRefCollection;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ImageMeasurementRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.MetadataRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ObjMeasurementRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ParentChildRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.PartnerRefs;
 import io.github.mianalysis.MIA.Object.Units.TemporalUnit;
 import io.github.sjcross.common.Exceptions.IntegerOverflowException;
 import io.github.sjcross.common.Object.Volume.PointOutOfRangeException;
@@ -94,8 +94,8 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
     private HashMap<Integer, ArrayList<ObjRoi>> rois;
     private int maxID;
 
-    private ObjCollection outputObjects;
-    private ObjCollection outputTrackObjects;
+    private Objs outputObjects;
+    private Objs outputTrackObjects;
 
     private boolean overflow = false;
 
@@ -120,7 +120,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
     public static final String SELECTOR_TYPE = "Default selector type";
     public static final String MESSAGE_ON_IMAGE = "Message on image";
 
-    public ManuallyIdentifyObjects(ModuleCollection modules) {
+    public ManuallyIdentifyObjects(Modules modules) {
         super("Manually identify objects", modules);
     }
 
@@ -303,7 +303,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
 
     }
 
-    public static void applySpatialInterpolation(ObjCollection inputObjects, String type)
+    public static void applySpatialInterpolation(Objs inputObjects, String type)
             throws IntegerOverflowException {
         for (Obj inputObj : inputObjects.values()) {
             Image binaryImage = inputObj.getAsTightImage("BinaryTight");
@@ -343,7 +343,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
         }
     }
 
-    public static void applyTemporalInterpolation(ObjCollection inputObjects, ObjCollection trackObjects, String type)
+    public static void applyTemporalInterpolation(Objs inputObjects, Objs trackObjects, String type)
             throws IntegerOverflowException {
         for (Obj trackObj : trackObjects.values()) {
             // Keeping a record of frames which have an object (these will be unchanged, so
@@ -361,9 +361,9 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
             applyTemporalInterpolation(binaryImage);
 
             // Converting binary image back to objects
-            ObjCollection interpObjs = binaryImage.convertImageToObjects(type, inputObjects.getName(), true);
+            Objs interpObjs = binaryImage.convertImageToObjects(type, inputObjects.getName(), true);
 
-            // Transferring new timepoint objects to inputObjects ObjCollection
+            // Transferring new timepoint objects to inputObjects Objs
             Iterator<Obj> iterator = interpObjs.values().iterator();
             while (iterator.hasNext()) {
                 Obj interpObj = iterator.next();
@@ -476,10 +476,10 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
         updateOverlay();
 
         // Initialising output objects
-        outputObjects = new ObjCollection(outputObjectsName, calibration, nFrames, frameInterval,
+        outputObjects = new Objs(outputObjectsName, calibration, nFrames, frameInterval,
                 TemporalUnit.getOMEUnit());
         if (outputTracks) {
-            outputTrackObjects = new ObjCollection(outputTrackObjectsName, calibration, nFrames, frameInterval,
+            outputTrackObjects = new Objs(outputTrackObjectsName, calibration, nFrames, frameInterval,
                     TemporalUnit.getOMEUnit());
         }
 
@@ -552,8 +552,8 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
     }
 
     @Override
-    public ParameterCollection updateAndGetParameters() {
-        ParameterCollection returnedParameters = new ParameterCollection();
+    public Parameters updateAndGetParameters() {
+        Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.get(INPUT_SEPARATOR));
         returnedParameters.add(parameters.get(INPUT_IMAGE));
@@ -581,23 +581,23 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
     }
 
     @Override
-    public ImageMeasurementRefCollection updateAndGetImageMeasurementRefs() {
+    public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MetadataRefCollection updateAndGetMetadataReferences() {
+    public MetadataRefs updateAndGetMetadataReferences() {
         return null;
     }
 
     @Override
-    public ParentChildRefCollection updateAndGetParentChildRefs() {
-        ParentChildRefCollection returnedRelationships = new ParentChildRefCollection();
+    public ParentChildRefs updateAndGetParentChildRefs() {
+        ParentChildRefs returnedRelationships = new ParentChildRefs();
 
         if ((boolean) parameters.getValue(OUTPUT_TRACKS))
             returnedRelationships.add(parentChildRefs.getOrPut(parameters.getValue(OUTPUT_TRACK_OBJECTS),
@@ -608,7 +608,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
     }
 
     @Override
-    public PartnerRefCollection updateAndGetPartnerRefs() {
+    public PartnerRefs updateAndGetPartnerRefs() {
         return null;
     }
 

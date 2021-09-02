@@ -3,10 +3,10 @@ package io.github.mianalysis.MIA.Object.Parameters;
 import com.drew.lang.annotations.NotNull;
 
 import io.github.mianalysis.MIA.Module.Module;
-import io.github.mianalysis.MIA.Module.ModuleCollection;
+import io.github.mianalysis.MIA.Module.Modules;
 import io.github.mianalysis.MIA.Object.Parameters.Abstract.ChoiceType;
 import io.github.mianalysis.MIA.Object.Parameters.Abstract.Parameter;
-import io.github.mianalysis.MIA.Object.References.Collections.ParentChildRefCollection;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ParentChildRefs;
 
 public class ChildObjectsP extends ChoiceType {
     private String parentObjectsName = "";
@@ -53,8 +53,8 @@ public class ChildObjectsP extends ChoiceType {
     public String[] getChoices() {
         if (parentObjectsName == null) return null;
 
-        ModuleCollection modules = module.getModules();
-        ParentChildRefCollection relationships = modules.getParentChildRefs(module);
+        Modules modules = module.getModules();
+        ParentChildRefs relationships = modules.getParentChildRefs(module);
 
         return relationships.getChildNames(parentObjectsName, true);
 

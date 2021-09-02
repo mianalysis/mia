@@ -1,11 +1,11 @@
-package io.github.mianalysis.MIA.Object.References;
+package io.github.mianalysis.MIA.Object.Refs;
 
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
 import io.github.mianalysis.MIA.Object.Obj;
-import io.github.mianalysis.MIA.Object.References.Abstract.SummaryRef;
+import io.github.mianalysis.MIA.Object.Refs.Abstract.SummaryRef;
 
 public class ObjMeasurementRef extends SummaryRef {
     private String objectsName = "";

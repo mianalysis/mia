@@ -11,13 +11,13 @@ import ij.IJ;
 import ij.ImagePlus;
 import io.github.mianalysis.MIA.MIA;
 import io.github.mianalysis.MIA.Module.Module;
-import io.github.mianalysis.MIA.Module.ModuleCollection;
+import io.github.mianalysis.MIA.Module.Modules;
 import io.github.mianalysis.MIA.Module.Category;
 import io.github.mianalysis.MIA.Module.Categories;
 import io.github.mianalysis.MIA.Object.Status;
 import io.github.mianalysis.MIA.Object.Image;
 import io.github.mianalysis.MIA.Object.Obj;
-import io.github.mianalysis.MIA.Object.ObjCollection;
+import io.github.mianalysis.MIA.Object.Objs;
 import io.github.mianalysis.MIA.Object.Workspace;
 import io.github.mianalysis.MIA.Object.Parameters.BooleanP;
 import io.github.mianalysis.MIA.Object.Parameters.FolderPathP;
@@ -26,13 +26,13 @@ import io.github.mianalysis.MIA.Object.Parameters.InputObjectsP;
 import io.github.mianalysis.MIA.Object.Parameters.MetadataItemP;
 import io.github.mianalysis.MIA.Object.Parameters.ObjMeasurementSelectorP;
 import io.github.mianalysis.MIA.Object.Parameters.SeparatorP;
-import io.github.mianalysis.MIA.Object.Parameters.ParameterCollection;
-import io.github.mianalysis.MIA.Object.References.ObjMeasurementRef;
-import io.github.mianalysis.MIA.Object.References.Collections.ImageMeasurementRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.MetadataRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.ObjMeasurementRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.ParentChildRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.PartnerRefCollection;
+import io.github.mianalysis.MIA.Object.Refs.ObjMeasurementRef;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ImageMeasurementRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.MetadataRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ObjMeasurementRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ParentChildRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.PartnerRefs;
+import io.github.mianalysis.MIA.Object.Parameters.Parameters;
 
 public class ExportACCDataset extends Module {
     public static final String INPUT_SEPARATOR = "Image/objects input";
@@ -48,7 +48,7 @@ public class ExportACCDataset extends Module {
     public static final String SHOW_MEASUREMENTS = "Show measurement selection";
     public static final String MEASUREMENTS = "Measurements";
 
-    public ExportACCDataset(ModuleCollection modules) {
+    public ExportACCDataset(Modules modules) {
         super("Export ACC dataset", modules);
     }
 
@@ -104,7 +104,7 @@ public class ExportACCDataset extends Module {
 
     }
 
-    static boolean saveFeatureNames(ObjMeasurementRefCollection refs, TreeMap<String, Boolean> states,
+    static boolean saveFeatureNames(ObjMeasurementRefs refs, TreeMap<String, Boolean> states,
             String folderName) {
         // Check if featureName file exists
         File featureNamesFile = new File(folderName + "featureNames.acc");
@@ -144,7 +144,7 @@ public class ExportACCDataset extends Module {
 
     }
 
-    static boolean saveFeatures(ObjCollection objects, ObjMeasurementRefCollection refs,
+    static boolean saveFeatures(Objs objects, ObjMeasurementRefs refs,
             TreeMap<String, Boolean> states, String folderName, String fileName) {
         DecimalFormat df = new DecimalFormat("0.0000000E0");
 
@@ -193,7 +193,7 @@ public class ExportACCDataset extends Module {
     @Override
     protected Status process(Workspace workspace) {
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
-        ObjCollection inputObjects = workspace.getObjectSet(inputObjectsName);
+        Objs inputObjects = workspace.getObjectSet(inputObjectsName);
         String inputRawImageName = parameters.getValue(INPUT_RAW_IMAGE);
         Image inputRawImage = workspace.getImage(inputRawImageName);
         String inputOverlayImageName = parameters.getValue(INPUT_OVERLAY_IMAGE);
@@ -232,7 +232,7 @@ public class ExportACCDataset extends Module {
 
         // Getting measurements for input objects
         String folderName2 = getFolderName(rootFolder, "anal2", plateName);
-        ObjMeasurementRefCollection measurementRefs = modules.getObjectMeasurementRefs(inputObjectsName);
+        ObjMeasurementRefs measurementRefs = modules.getObjectMeasurementRefs(inputObjectsName);
         if (!saveFeatureNames(measurementRefs, states, folderName2)) {
             MIA.log.writeWarning("Could not write feature names to file");
             return Status.FAIL;
@@ -266,8 +266,8 @@ public class ExportACCDataset extends Module {
     }
 
     @Override
-    public ParameterCollection updateAndGetParameters() {
-        ParameterCollection returnedParameters = new ParameterCollection();
+    public Parameters updateAndGetParameters() {
+        Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(INPUT_OBJECTS));
@@ -293,27 +293,27 @@ public class ExportACCDataset extends Module {
     }
 
     @Override
-    public ImageMeasurementRefCollection updateAndGetImageMeasurementRefs() {
+    public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MetadataRefCollection updateAndGetMetadataReferences() {
+    public MetadataRefs updateAndGetMetadataReferences() {
         return null;
     }
 
     @Override
-    public ParentChildRefCollection updateAndGetParentChildRefs() {
+    public ParentChildRefs updateAndGetParentChildRefs() {
         return null;
     }
 
     @Override
-    public PartnerRefCollection updateAndGetPartnerRefs() {
+    public PartnerRefs updateAndGetPartnerRefs() {
         return null;
     }
 

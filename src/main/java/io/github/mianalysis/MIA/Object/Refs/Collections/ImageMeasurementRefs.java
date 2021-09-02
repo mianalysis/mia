@@ -1,15 +1,15 @@
-package io.github.mianalysis.MIA.Object.References.Collections;
+package io.github.mianalysis.MIA.Object.Refs.Collections;
 
 import io.github.mianalysis.MIA.Object.Units.SpatialUnit;
 import io.github.mianalysis.MIA.Object.Units.TemporalUnit;
 import io.github.mianalysis.MIA.Object.Image;
 import io.github.mianalysis.MIA.Object.Measurement;
-import io.github.mianalysis.MIA.Object.References.ImageMeasurementRef;
+import io.github.mianalysis.MIA.Object.Refs.ImageMeasurementRef;
 
 import java.util.TreeMap;
 
-public class ImageMeasurementRefCollection extends TreeMap<String, ImageMeasurementRef>
-        implements RefCollection<ImageMeasurementRef> {
+public class ImageMeasurementRefs extends TreeMap<String, ImageMeasurementRef>
+        implements Refs<ImageMeasurementRef> {
     /**
      *
      */

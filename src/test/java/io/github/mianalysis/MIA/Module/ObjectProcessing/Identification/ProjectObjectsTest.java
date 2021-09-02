@@ -13,9 +13,9 @@ import io.github.mianalysis.MIA.ExpectedObjects.Objects3D;
 import io.github.mianalysis.MIA.Module.Module;
 import io.github.mianalysis.MIA.Module.ModuleTest;
 import io.github.mianalysis.MIA.Object.Obj;
-import io.github.mianalysis.MIA.Object.ObjCollection;
+import io.github.mianalysis.MIA.Object.Objs;
 import io.github.mianalysis.MIA.Object.Workspace;
-import io.github.mianalysis.MIA.Object.WorkspaceCollection;
+import io.github.mianalysis.MIA.Object.Workspaces;
 import io.github.sjcross.common.Object.Volume.VolumeType;
 
 /**
@@ -39,7 +39,7 @@ public class ProjectObjectsTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testRun(VolumeType volumeType) throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Setting object parameters
@@ -50,7 +50,7 @@ public class ProjectObjectsTest extends ModuleTest {
         String calibratedUnits = "µm";
 
         // Creating objects and adding to workspace
-        ObjCollection inputObjects = new Objects3D(volumeType).getObjects(inputObjectsName, ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,false);
+        Objs inputObjects = new Objects3D(volumeType).getObjects(inputObjectsName, ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,false);
         workspace.addObjects(inputObjects);
 
         // Initialising ProjectObjects
@@ -71,8 +71,8 @@ public class ProjectObjectsTest extends ModuleTest {
         assertEquals(8,workspace.getObjectSet(outputObjectsName).size());
 
         // Getting expected and actual objects
-        ObjCollection expectedObjects = new Objects2D(volumeType).getObjects("Expected",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
-        ObjCollection actualObjects = workspace.getObjectSet(outputObjectsName);
+        Objs expectedObjects = new Objects2D(volumeType).getObjects("Expected",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        Objs actualObjects = workspace.getObjectSet(outputObjectsName);
 
         for (Obj object:actualObjects.values()) {
             // Identifying the matching object.  If this is null, one isn't found

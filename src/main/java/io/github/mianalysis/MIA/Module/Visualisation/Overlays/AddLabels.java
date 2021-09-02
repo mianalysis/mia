@@ -16,12 +16,12 @@ import ij.plugin.Duplicator;
 import ij.plugin.HyperStackConverter;
 import io.github.mianalysis.MIA.Module.Categories;
 import io.github.mianalysis.MIA.Module.Category;
-import io.github.mianalysis.MIA.Module.ModuleCollection;
+import io.github.mianalysis.MIA.Module.Modules;
 import io.github.mianalysis.MIA.Module.ImageProcessing.Pixel.Binary.BinaryOperations2D;
 import io.github.mianalysis.MIA.Module.ImageProcessing.Pixel.Binary.DistanceMap;
 import io.github.mianalysis.MIA.Object.Image;
 import io.github.mianalysis.MIA.Object.Obj;
-import io.github.mianalysis.MIA.Object.ObjCollection;
+import io.github.mianalysis.MIA.Object.Objs;
 import io.github.mianalysis.MIA.Object.Status;
 import io.github.mianalysis.MIA.Object.Workspace;
 import io.github.mianalysis.MIA.Object.Parameters.BooleanP;
@@ -31,17 +31,17 @@ import io.github.mianalysis.MIA.Object.Parameters.InputImageP;
 import io.github.mianalysis.MIA.Object.Parameters.InputObjectsP;
 import io.github.mianalysis.MIA.Object.Parameters.ObjectMeasurementP;
 import io.github.mianalysis.MIA.Object.Parameters.OutputImageP;
-import io.github.mianalysis.MIA.Object.Parameters.ParameterCollection;
+import io.github.mianalysis.MIA.Object.Parameters.Parameters;
 import io.github.mianalysis.MIA.Object.Parameters.ParentObjectsP;
 import io.github.mianalysis.MIA.Object.Parameters.PartnerObjectsP;
 import io.github.mianalysis.MIA.Object.Parameters.SeparatorP;
 import io.github.mianalysis.MIA.Object.Parameters.Text.IntegerP;
 import io.github.mianalysis.MIA.Object.Parameters.Text.StringP;
-import io.github.mianalysis.MIA.Object.References.Collections.ImageMeasurementRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.MetadataRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.ObjMeasurementRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.ParentChildRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.PartnerRefCollection;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ImageMeasurementRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.MetadataRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ObjMeasurementRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ParentChildRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.PartnerRefs;
 import io.github.mianalysis.MIA.Process.ColourFactory;
 import io.github.mianalysis.MIA.Process.LabelFactory;
 import io.github.sjcross.common.Object.Point;
@@ -79,7 +79,7 @@ public class AddLabels extends AbstractOverlay {
     public static final String EXECUTION_SEPARATOR = "Execution controls";
     public static final String ENABLE_MULTITHREADING = "Enable multithreading";
 
-    public AddLabels(ModuleCollection modules) {
+    public AddLabels(Modules modules) {
         super("Add labels", modules);
     }
 
@@ -129,7 +129,7 @@ public class AddLabels extends AbstractOverlay {
 
     }
 
-    public static void addOverlay(ImagePlus ipl, ObjCollection inputObjects, String labelPosition,
+    public static void addOverlay(ImagePlus ipl, Objs inputObjects, String labelPosition,
             HashMap<Integer, String> labels, int labelSize, int xOffset, int yOffset, HashMap<Integer, Float> hues,
             double opacity, boolean renderInAllSlices, boolean renderInAllFrames, boolean multithread) {
         // If necessary, turning the image into a HyperStack (if 2 dimensions=1 it will
@@ -223,7 +223,7 @@ public class AddLabels extends AbstractOverlay {
 
     }
 
-    public HashMap<Integer, String> getLabels(ObjCollection inputObjects, String labelMode, DecimalFormat df,
+    public HashMap<Integer, String> getLabels(Objs inputObjects, String labelMode, DecimalFormat df,
             String childObjectsForLabelName, String parentObjectsForLabelName, String partnerObjectsForLabelName,
             String measurementForLabel) {
         switch (labelMode) {
@@ -275,7 +275,7 @@ public class AddLabels extends AbstractOverlay {
 
         // Getting input objects
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
-        ObjCollection inputObjects = workspace.getObjects().get(inputObjectsName);
+        Objs inputObjects = workspace.getObjects().get(inputObjectsName);
 
         // Getting input image
         String inputImageName = parameters.getValue(INPUT_IMAGE);
@@ -372,11 +372,11 @@ public class AddLabels extends AbstractOverlay {
     }
 
     @Override
-    public ParameterCollection updateAndGetParameters() {
+    public Parameters updateAndGetParameters() {
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
         String parentObjectsName = parameters.getValue(PARENT_OBJECT_FOR_LABEL);
 
-        ParameterCollection returnedParameters = new ParameterCollection();
+        Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(INPUT_IMAGE));
@@ -451,27 +451,27 @@ public class AddLabels extends AbstractOverlay {
     }
 
     @Override
-    public ImageMeasurementRefCollection updateAndGetImageMeasurementRefs() {
+    public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MetadataRefCollection updateAndGetMetadataReferences() {
+    public MetadataRefs updateAndGetMetadataReferences() {
         return null;
     }
 
     @Override
-    public ParentChildRefCollection updateAndGetParentChildRefs() {
+    public ParentChildRefs updateAndGetParentChildRefs() {
         return null;
     }
 
     @Override
-    public PartnerRefCollection updateAndGetPartnerRefs() {
+    public PartnerRefs updateAndGetPartnerRefs() {
         return null;
     }
 

@@ -6,7 +6,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import io.github.mianalysis.MIA.Module.Module;
-import io.github.mianalysis.MIA.Module.ModuleCollection;
+import io.github.mianalysis.MIA.Module.Modules;
 import io.github.mianalysis.MIA.Module.Category;
 import io.github.mianalysis.MIA.Module.Categories;
 import io.github.mianalysis.MIA.Object.Status;
@@ -15,16 +15,16 @@ import io.github.mianalysis.MIA.Object.Parameters.BooleanP;
 import io.github.mianalysis.MIA.Object.Parameters.ChoiceP;
 import io.github.mianalysis.MIA.Object.Parameters.FilePathP;
 import io.github.mianalysis.MIA.Object.Parameters.FolderPathP;
-import io.github.mianalysis.MIA.Object.Parameters.ParameterCollection;
+import io.github.mianalysis.MIA.Object.Parameters.Parameters;
 import io.github.mianalysis.MIA.Object.Parameters.ParameterGroup;
 import io.github.mianalysis.MIA.Object.Parameters.ParameterGroup.ParameterUpdaterAndGetter;
 import io.github.mianalysis.MIA.Object.Parameters.SeparatorP;
 import io.github.mianalysis.MIA.Object.Parameters.Text.StringP;
-import io.github.mianalysis.MIA.Object.References.Collections.ImageMeasurementRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.MetadataRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.ObjMeasurementRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.ParentChildRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.PartnerRefCollection;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ImageMeasurementRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.MetadataRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ObjMeasurementRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ParentChildRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.PartnerRefs;
 
 public class GlobalVariables extends Module {
     public static final String VARIABLE_SEPARATOR = "Variable settings";
@@ -52,11 +52,11 @@ public class GlobalVariables extends Module {
 
     }
 
-    public GlobalVariables(ModuleCollection modules) {
+    public GlobalVariables(Modules modules) {
         super("Global variables", modules);
     }
 
-    public static String convertString(String string, ModuleCollection modules) {
+    public static String convertString(String string, Modules modules) {
         Pattern pattern = Pattern.compile("V\\{([\\w]+)}");
         Matcher matcher = pattern.matcher(string);
 
@@ -77,7 +77,7 @@ public class GlobalVariables extends Module {
 
     }
 
-    public static boolean variablesPresent(String string, ModuleCollection modules) {
+    public static boolean variablesPresent(String string, Modules modules) {
         Pattern pattern = Pattern.compile("V\\{([\\w]+)}");
         Matcher matcher = pattern.matcher(string);
 
@@ -111,7 +111,7 @@ public class GlobalVariables extends Module {
 
     }
 
-    public static void updateVariables(ModuleCollection modules) {
+    public static void updateVariables(Modules modules) {
         // Reset global variables
         globalVariables.clear();
         for (Module module : modules.values()) {
@@ -137,9 +137,9 @@ public class GlobalVariables extends Module {
 
     @Override
     protected Status process(Workspace workspace) {
-        LinkedHashMap<Integer, ParameterCollection> collections = parameters.getValue(ADD_NEW_VARIABLE);
+        LinkedHashMap<Integer, Parameters> collections = parameters.getValue(ADD_NEW_VARIABLE);
 
-        for (ParameterCollection collection : collections.values()) {
+        for (Parameters collection : collections.values()) {
             if ((boolean) collection.getValue(STORE_AS_METADATA_ITEM)) {
                 String variableName = collection.getValue(VARIABLE_NAME);
                 String variableType = collection.getValue(VARIABLE_TYPE);
@@ -174,7 +174,7 @@ public class GlobalVariables extends Module {
 
     @Override
     protected void initialiseParameters() {
-        ParameterCollection parameterCollection = new ParameterCollection();
+        Parameters parameterCollection = new Parameters();
         parameterCollection.add(new SeparatorP(VARIABLE_SEPARATOR, this));
         parameterCollection.add(new StringP(VARIABLE_NAME, this));
         parameterCollection.add(new ChoiceP(VARIABLE_TYPE, this, VariableTypes.TEXT, VariableTypes.ALL));
@@ -193,13 +193,13 @@ public class GlobalVariables extends Module {
     }
 
     @Override
-    public ParameterCollection updateAndGetParameters() {
+    public Parameters updateAndGetParameters() {
         ParameterGroup group = parameters.getParameter(ADD_NEW_VARIABLE);
         if (group == null)
             return parameters;
 
-        LinkedHashMap<Integer, ParameterCollection> collections = group.getCollections(false);
-        for (ParameterCollection collection : collections.values()) {
+        LinkedHashMap<Integer, Parameters> collections = group.getCollections(false);
+        for (Parameters collection : collections.values()) {
             StringP variableName = (StringP) collection.get(VARIABLE_NAME);
             if (isEnabled()) {
                 switch ((String) collection.getValue(VARIABLE_TYPE)) {
@@ -234,22 +234,22 @@ public class GlobalVariables extends Module {
     }
 
     @Override
-    public ImageMeasurementRefCollection updateAndGetImageMeasurementRefs() {
+    public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MetadataRefCollection updateAndGetMetadataReferences() {
-        MetadataRefCollection returnedRefs = new MetadataRefCollection();
+    public MetadataRefs updateAndGetMetadataReferences() {
+        MetadataRefs returnedRefs = new MetadataRefs();
 
-        LinkedHashMap<Integer, ParameterCollection> collections = parameters.getValue(ADD_NEW_VARIABLE);
+        LinkedHashMap<Integer, Parameters> collections = parameters.getValue(ADD_NEW_VARIABLE);
 
-        for (ParameterCollection collection : collections.values()) {
+        for (Parameters collection : collections.values()) {
             if ((boolean) collection.getValue(STORE_AS_METADATA_ITEM))
                 returnedRefs.add(metadataRefs.getOrPut(collection.getValue(VARIABLE_NAME)));
         }
@@ -259,12 +259,12 @@ public class GlobalVariables extends Module {
     }
 
     @Override
-    public ParentChildRefCollection updateAndGetParentChildRefs() {
+    public ParentChildRefs updateAndGetParentChildRefs() {
         return null;
     }
 
     @Override
-    public PartnerRefCollection updateAndGetPartnerRefs() {
+    public PartnerRefs updateAndGetPartnerRefs() {
         return null;
     }
 
@@ -277,7 +277,7 @@ public class GlobalVariables extends Module {
         parameters.get(ADD_NEW_VARIABLE).setDescription(
                 "Add a new global variable.  Added variables can be removed using the \"Remove\" button.");
 
-        ParameterCollection collection = ((ParameterGroup) parameters.get(ADD_NEW_VARIABLE)).getTemplateParameters();
+        Parameters collection = ((ParameterGroup) parameters.get(ADD_NEW_VARIABLE)).getTemplateParameters();
 
         collection.get(VARIABLE_NAME).setDescription(
                 "Name of this variable.  This is the name that will be used when referring to the variable in place of fixed values.  To refer to variables, use the form \"V{[VARIABLE_NAME]}\", where \"[VARIABLE_NAME]\" is replaced by the variable name.  For example, a variable called \"my_var\" would be referred to using the text \"V{my_var}\".");
@@ -335,8 +335,8 @@ public class GlobalVariables extends Module {
         return new ParameterUpdaterAndGetter() {
 
             @Override
-            public ParameterCollection updateAndGet(ParameterCollection params) {
-                ParameterCollection returnedParameters = new ParameterCollection();
+            public Parameters updateAndGet(Parameters params) {
+                Parameters returnedParameters = new Parameters();
 
                 returnedParameters.add(params.getParameter(VARIABLE_SEPARATOR));
                 returnedParameters.add(params.getParameter(VARIABLE_NAME));

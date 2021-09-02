@@ -14,10 +14,10 @@ import mpicbg.models.PointMatch;
 import mpicbg.models.SpringMesh;
 import mpicbg.models.TranslationModel2D;
 import mpicbg.models.Vertex;
-import io.github.mianalysis.MIA.Module.ModuleCollection;
+import io.github.mianalysis.MIA.Module.Modules;
 import io.github.mianalysis.MIA.Module.ImageProcessing.Stack.Registration.Abstract.AbstractAffineRegistration;
 import io.github.mianalysis.MIA.Object.Workspace;
-import io.github.mianalysis.MIA.Object.Parameters.ParameterCollection;
+import io.github.mianalysis.MIA.Object.Parameters.Parameters;
 import io.github.mianalysis.MIA.Object.Parameters.SeparatorP;
 import io.github.mianalysis.MIA.Object.Parameters.Text.DoubleP;
 import io.github.mianalysis.MIA.Object.Parameters.Text.IntegerP;
@@ -35,7 +35,7 @@ public class AffineBlockMatching extends AbstractAffineRegistration {
     public static final String MAX_ABS_LOCAL_DISPLACEMENT = "Maximal absolute local displacement (px)";
     public static final String MAX_REL_LOCAL_DISPLACEMENT = "Maximal relative local displacement (px)";
 
-    public AffineBlockMatching(ModuleCollection modules) {
+    public AffineBlockMatching(Modules modules) {
         super("Affine (block matching)", modules);
     }
 
@@ -141,8 +141,8 @@ public class AffineBlockMatching extends AbstractAffineRegistration {
     }
 
     @Override
-    public ParameterCollection updateAndGetParameters() {
-        ParameterCollection returnedParameters = new ParameterCollection();
+    public Parameters updateAndGetParameters() {
+        Parameters returnedParameters = new Parameters();
 
         returnedParameters.addAll(super.updateAndGetParameters());
 

@@ -173,27 +173,27 @@
 //    }
 //
 //    @Override
-//    public ParameterCollection updateAndGetParameters() {
+//    public Parameters updateAndGetParameters() {
 //        return parameters;
 //    }
 //
 //    @Override
-//    public ObjMeasurementRefCollection updateAndGetImageMeasurementRefs() {
+//    public ObjMeasurementRefs updateAndGetImageMeasurementRefs() {
 //        return null;
 //    }
 //
 //    @Override
-//    public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+//    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
 //        return null;
 //    }
 //
 //    @Override
-//    public MetadataRefCollection updateAndGetMetadataReferences() {
+//    public MetadataRefs updateAndGetMetadataReferences() {
 //        return null;
 //    }
 //
 //    @Override
-//    public void updateAndGetParentChildRefs(ParentChildRefCollection relationships) {
+//    public void updateAndGetParentChildRefs(ParentChildRefs relationships) {
 //
 //    }
 //

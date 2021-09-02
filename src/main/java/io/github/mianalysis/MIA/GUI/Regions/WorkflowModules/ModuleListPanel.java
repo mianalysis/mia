@@ -16,7 +16,7 @@ import javax.swing.border.EmptyBorder;
 
 import io.github.mianalysis.MIA.GUI.GUI;
 import io.github.mianalysis.MIA.Module.Module;
-import io.github.mianalysis.MIA.Module.ModuleCollection;
+import io.github.mianalysis.MIA.Module.Modules;
 import io.github.mianalysis.MIA.Module.Miscellaneous.GUISeparator;
 
 public class ModuleListPanel extends JScrollPane {
@@ -55,7 +55,7 @@ public class ModuleListPanel extends JScrollPane {
         c.weighty = 1;
         c.fill = GridBagConstraints.BOTH;
 
-        ModuleCollection modules = GUI.getModules();
+        Modules modules = GUI.getModules();
         HashMap<Module,Boolean> expandedStatus = getExpandedModules(modules);
         // Get number of visible modules
         int expandedCount = (int) expandedStatus.values().stream().filter(p -> p).count();
@@ -147,7 +147,7 @@ public class ModuleListPanel extends JScrollPane {
      * Provides a map detailing which modules are expanded (true) and those that are collapsed (false)
      * @return
      */
-    private HashMap<Module,Boolean> getExpandedModules(ModuleCollection modules) {
+    private HashMap<Module,Boolean> getExpandedModules(Modules modules) {
         HashMap<Module,Boolean> expandedStatus = new HashMap<>();
         boolean expanded = true;
 

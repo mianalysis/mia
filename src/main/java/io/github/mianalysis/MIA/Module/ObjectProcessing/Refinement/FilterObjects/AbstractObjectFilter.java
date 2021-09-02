@@ -7,19 +7,19 @@ import java.util.LinkedHashMap;
 import org.eclipse.sisu.Nullable;
 
 import io.github.mianalysis.MIA.Module.Module;
-import io.github.mianalysis.MIA.Module.ModuleCollection;
+import io.github.mianalysis.MIA.Module.Modules;
 import io.github.mianalysis.MIA.Object.Obj;
-import io.github.mianalysis.MIA.Object.ObjCollection;
+import io.github.mianalysis.MIA.Object.Objs;
 import io.github.mianalysis.MIA.Object.Parameters.ChoiceP;
 import io.github.mianalysis.MIA.Object.Parameters.InputObjectsP;
-import io.github.mianalysis.MIA.Object.Parameters.ParameterCollection;
+import io.github.mianalysis.MIA.Object.Parameters.Parameters;
 import io.github.mianalysis.MIA.Object.Parameters.SeparatorP;
 import io.github.mianalysis.MIA.Object.Parameters.Abstract.Parameter;
 import io.github.mianalysis.MIA.Object.Parameters.Objects.OutputObjectsP;
-import io.github.mianalysis.MIA.Object.References.ObjMeasurementRef;
-import io.github.mianalysis.MIA.Object.References.Collections.ObjMeasurementRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.ParentChildRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.PartnerRefCollection;
+import io.github.mianalysis.MIA.Object.Refs.ObjMeasurementRef;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ObjMeasurementRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ParentChildRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.PartnerRefs;
 
 public abstract class AbstractObjectFilter extends Module {
     public static final String INPUT_SEPARATOR = "Object input";
@@ -27,7 +27,7 @@ public abstract class AbstractObjectFilter extends Module {
     public static final String FILTER_MODE = "Filter mode";
     public static final String OUTPUT_FILTERED_OBJECTS = "Output (filtered) objects";
 
-    protected AbstractObjectFilter(String name, ModuleCollection modules) {
+    protected AbstractObjectFilter(String name, Modules modules) {
         super(name, modules);
     }
 
@@ -40,11 +40,11 @@ public abstract class AbstractObjectFilter extends Module {
 
     }
 
-    static void processRemoval(Obj inputObject, @Nullable ObjCollection outputObjects, Iterator<Obj> iterator) {
+    static void processRemoval(Obj inputObject, @Nullable Objs outputObjects, Iterator<Obj> iterator) {
         // Getting existing relationships
-        LinkedHashMap<String, ObjCollection> children = inputObject.getChildren();
+        LinkedHashMap<String, Objs> children = inputObject.getChildren();
         LinkedHashMap<String, Obj> parents = inputObject.getParents(true);
-        LinkedHashMap<String, ObjCollection> partners = inputObject.getPartners();
+        LinkedHashMap<String, Objs> partners = inputObject.getPartners();
 
         // Removing existing relationships
         inputObject.removeRelationships();
@@ -54,7 +54,7 @@ public abstract class AbstractObjectFilter extends Module {
             inputObject.setObjectCollection(outputObjects);
 
             // Adding new child relationships
-            for (ObjCollection childCollection : children.values()) {
+            for (Objs childCollection : children.values()) {
                 for (Obj childObject : childCollection.values()) {
                     inputObject.addChild(childObject);
                     childObject.addParent(inputObject);
@@ -68,7 +68,7 @@ public abstract class AbstractObjectFilter extends Module {
             }
 
             // Adding new partner relationships
-            for (ObjCollection partnerCollection : partners.values()) {
+            for (Objs partnerCollection : partners.values()) {
                 for (Obj partnerObject : partnerCollection.values()) {
                     inputObject.addPartner(partnerObject);
                     partnerObject.addPartner(inputObject);
@@ -91,8 +91,8 @@ public abstract class AbstractObjectFilter extends Module {
     }
 
     @Override
-    public ParameterCollection updateAndGetParameters() {
-        ParameterCollection returnedParameters = new ParameterCollection();
+    public Parameters updateAndGetParameters() {
+        Parameters returnedParameters = new Parameters();
         returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(INPUT_OBJECTS));
 
@@ -130,8 +130,8 @@ public abstract class AbstractObjectFilter extends Module {
     }
 
     @Override
-    public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
-        ObjMeasurementRefCollection returnedRefs = new ObjMeasurementRefCollection();
+    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+        ObjMeasurementRefs returnedRefs = new ObjMeasurementRefs();
         
         // If the filtered objects are to be moved to a new class, assign them the measurements they've lost
         if (parameters.getValue(FILTER_MODE).equals(FilterModes.MOVE_FILTERED)) {
@@ -139,7 +139,7 @@ public abstract class AbstractObjectFilter extends Module {
             String filteredObjectsName = parameters.getValue(OUTPUT_FILTERED_OBJECTS);
 
             // Getting object measurement references associated with this object set
-            ObjMeasurementRefCollection references = modules.getObjectMeasurementRefs(inputObjectsName, this);
+            ObjMeasurementRefs references = modules.getObjectMeasurementRefs(inputObjectsName, this);
 
             for (ObjMeasurementRef reference : references.values()) {
                 returnedRefs
@@ -152,9 +152,9 @@ public abstract class AbstractObjectFilter extends Module {
     }
 
     @Override
-    public ParentChildRefCollection updateAndGetParentChildRefs() {
+    public ParentChildRefs updateAndGetParentChildRefs() {
         // Where necessary, redirect relationships
-        ParentChildRefCollection returnedRefs = new ParentChildRefCollection();
+        ParentChildRefs returnedRefs = new ParentChildRefs();
 
         switch ((String) parameters.getValue(FILTER_MODE)) {
             case FilterModes.MOVE_FILTERED:
@@ -162,7 +162,7 @@ public abstract class AbstractObjectFilter extends Module {
                 String outputObjectsName = parameters.getValue(OUTPUT_FILTERED_OBJECTS);
 
                 // Getting references up to this location
-                ParentChildRefCollection currentRefs = modules.getParentChildRefs(this);
+                ParentChildRefs currentRefs = modules.getParentChildRefs(this);
 
                 // Adding relationships where the input object is the parent
                 String[] childNames = currentRefs.getChildNames(inputObjectsName, true);
@@ -183,15 +183,15 @@ public abstract class AbstractObjectFilter extends Module {
     }
 
     @Override
-    public PartnerRefCollection updateAndGetPartnerRefs() {
-        PartnerRefCollection returnedRefs = new PartnerRefCollection();
+    public PartnerRefs updateAndGetPartnerRefs() {
+        PartnerRefs returnedRefs = new PartnerRefs();
 
         switch ((String) parameters.getValue(FILTER_MODE)) {
             case FilterModes.MOVE_FILTERED:
                 String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
 
                 // Getting references up to this location
-                PartnerRefCollection currentRefs = modules.getPartnerRefs(this);
+                PartnerRefs currentRefs = modules.getPartnerRefs(this);
 
                 // Adding relationships
                 String[] partnerNames = currentRefs.getPartnerNamesArray(inputObjectsName);

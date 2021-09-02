@@ -12,7 +12,7 @@ import org.junit.jupiter.params.provider.EnumSource;
 import io.github.mianalysis.MIA.ExpectedObjects.Tracks3D;
 import io.github.mianalysis.MIA.Module.ModuleTest;
 import io.github.mianalysis.MIA.Object.Obj;
-import io.github.mianalysis.MIA.Object.ObjCollection;
+import io.github.mianalysis.MIA.Object.Objs;
 import io.github.sjcross.common.Exceptions.IntegerOverflowException;
 import io.github.sjcross.common.Object.Tracks.Track;
 import io.github.sjcross.common.Object.Volume.VolumeType;
@@ -44,7 +44,7 @@ public class MeasureTrackMotionTest extends ModuleTest {
         String spotObjectsName = "Spots";
 
         // Getting input objects and expected values
-        ObjCollection trackObjects = new Tracks3D().getObjects(volumeType,trackObjectsName,spotObjectsName,dppXY,dppZ,calibratedUnits);
+        Objs trackObjects = new Tracks3D().getObjects(volumeType,trackObjectsName,spotObjectsName,dppXY,dppZ,calibratedUnits);
         TreeMap<Integer,Track> expectedObjects = new Tracks3D().getRawTracks(zScaling);
 
         // Comparing actual values
@@ -70,7 +70,7 @@ public class MeasureTrackMotionTest extends ModuleTest {
         String spotObjectsName = "Spots";
 
         // Getting input objects and expected values
-        ObjCollection trackObjects = new Tracks3D().getObjects(volumeType,trackObjectsName,spotObjectsName,dppXY,dppZ,calibratedUnits);
+        Objs trackObjects = new Tracks3D().getObjects(volumeType,trackObjectsName,spotObjectsName,dppXY,dppZ,calibratedUnits);
         TreeMap<Integer,Track> expectedObjects = new Tracks3D().getAverageTrack(zScaling);
 
         Track expected = expectedObjects.get(0);

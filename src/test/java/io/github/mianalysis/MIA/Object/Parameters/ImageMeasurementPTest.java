@@ -7,7 +7,7 @@ import org.w3c.dom.NamedNodeMap;
 import io.github.mianalysis.MIA.Module.ImageMeasurements.MeasureImageIntensity;
 import io.github.mianalysis.MIA.Module.ImageMeasurements.MeasureImageTexture;
 import io.github.mianalysis.MIA.Module.InputOutput.ImageLoader;
-import io.github.mianalysis.MIA.Module.ModuleCollection;
+import io.github.mianalysis.MIA.Module.Modules;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -18,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class ImageMeasurementPTest {
     @Test
     public void duplicate() {
-        ModuleCollection modules = new ModuleCollection();
+        Modules modules = new Modules();
         ParamTest paramTest = new ParamTest(modules);
 
         ImageMeasurementP imageMeasurementP = new ImageMeasurementP("Test meas",paramTest);
@@ -33,7 +33,7 @@ public class ImageMeasurementPTest {
 
     @Test
     public void duplicateNoImageSpecified() {
-        ModuleCollection modules = new ModuleCollection();
+        Modules modules = new Modules();
         ParamTest paramTest = new ParamTest(modules);
 
         ImageMeasurementP imageMeasurementP = new ImageMeasurementP("Test meas",paramTest);
@@ -47,7 +47,7 @@ public class ImageMeasurementPTest {
 
     @Test
     public void getRawStringValueBlank() {
-        ModuleCollection modules = new ModuleCollection();
+        Modules modules = new Modules();
         ParamTest paramTest = new ParamTest(modules);
 
         ImageMeasurementP imageMeasurementP = new ImageMeasurementP("Test meas",paramTest);
@@ -59,7 +59,7 @@ public class ImageMeasurementPTest {
 
     @Test
     public void getRawStringValue() {
-        ModuleCollection modules = new ModuleCollection();
+        Modules modules = new Modules();
         ParamTest paramTest = new ParamTest(modules);
 
         ImageMeasurementP imageMeasurementP = new ImageMeasurementP("Test meas",paramTest);
@@ -72,7 +72,7 @@ public class ImageMeasurementPTest {
 
     @Test
     public void getRawStringValueNull() {
-        ModuleCollection modules = new ModuleCollection();
+        Modules modules = new Modules();
         ParamTest paramTest = new ParamTest(modules);
 
         ImageMeasurementP imageMeasurementP = new ImageMeasurementP("Test meas",paramTest);
@@ -84,7 +84,7 @@ public class ImageMeasurementPTest {
 
     @Test
     public void setValueFromString() {
-        ModuleCollection modules = new ModuleCollection();
+        Modules modules = new Modules();
         ParamTest paramTest = new ParamTest(modules);
 
         ImageMeasurementP imageMeasurementP = new ImageMeasurementP("Test meas",paramTest);
@@ -97,7 +97,7 @@ public class ImageMeasurementPTest {
 
     @Test
     public void setValueFromStringBlank() {
-        ModuleCollection modules = new ModuleCollection();
+        Modules modules = new Modules();
         ParamTest paramTest = new ParamTest(modules);
 
         ImageMeasurementP imageMeasurementP = new ImageMeasurementP("Test meas",paramTest);
@@ -110,7 +110,7 @@ public class ImageMeasurementPTest {
 
     @Test
     public void setValueFromStringNull() {
-        ModuleCollection modules = new ModuleCollection();
+        Modules modules = new Modules();
         ParamTest paramTest = new ParamTest(modules);
 
         ImageMeasurementP imageMeasurementP = new ImageMeasurementP("Test meas", paramTest);
@@ -123,7 +123,7 @@ public class ImageMeasurementPTest {
 
     @Test
     public void getChoicesWithChoices() {
-        ModuleCollection modules = new ModuleCollection();
+        Modules modules = new Modules();
 
         ImageLoader imageLoader = new ImageLoader(modules);
         imageLoader.updateParameterValue(ImageLoader.OUTPUT_IMAGE,"Demo im");
@@ -169,7 +169,7 @@ public class ImageMeasurementPTest {
 
     @Test
     public void getChoicesNoChoices() {
-        ModuleCollection modules = new ModuleCollection();
+        Modules modules = new Modules();
 
         ImageLoader imageLoader = new ImageLoader(modules);
         imageLoader.updateParameterValue(ImageLoader.OUTPUT_IMAGE,"Demo im");
@@ -194,7 +194,7 @@ public class ImageMeasurementPTest {
 
     @Test
     public void verifyPresent() {
-        ModuleCollection modules = new ModuleCollection();
+        Modules modules = new Modules();
 
         ImageLoader imageLoader = new ImageLoader(modules);
         imageLoader.updateParameterValue(ImageLoader.OUTPUT_IMAGE,"Demo im");
@@ -217,7 +217,7 @@ public class ImageMeasurementPTest {
 
     @Test
     public void verifyNoMeasurements() {
-        ModuleCollection modules = new ModuleCollection();
+        Modules modules = new Modules();
 
         ImageLoader imageLoader = new ImageLoader(modules);
         imageLoader.updateParameterValue(ImageLoader.OUTPUT_IMAGE,"Demo im");
@@ -235,7 +235,7 @@ public class ImageMeasurementPTest {
 
     @Test
     public void verifyNoImageSpecified() {
-        ModuleCollection modules = new ModuleCollection();
+        Modules modules = new Modules();
 
         ImageLoader imageLoader = new ImageLoader(modules);
         imageLoader.updateParameterValue(ImageLoader.OUTPUT_IMAGE,"Demo im");
@@ -257,7 +257,7 @@ public class ImageMeasurementPTest {
 
     @Test
     public void appendXMLAttributes() throws ParserConfigurationException {
-        ModuleCollection modules = new ModuleCollection();
+        Modules modules = new Modules();
         ParamTest paramTest = new ParamTest(modules);
 
         ImageMeasurementP imageMeasurementP = new ImageMeasurementP("Test meas", paramTest);
@@ -287,7 +287,7 @@ public class ImageMeasurementPTest {
 
     @Test
     public void setAttributesFromXML() throws ParserConfigurationException {
-        ModuleCollection modules = new ModuleCollection();
+        Modules modules = new Modules();
         ParamTest paramTest = new ParamTest(modules);
 
         ImageMeasurementP imageMeasurementP = new ImageMeasurementP("Test meas", paramTest);

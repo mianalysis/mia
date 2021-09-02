@@ -17,22 +17,22 @@ import javax.swing.JTextField;
 import org.eclipse.sisu.Nullable;
 
 import ij.ImagePlus;
-import io.github.mianalysis.MIA.Module.ModuleCollection;
+import io.github.mianalysis.MIA.Module.Modules;
 import io.github.mianalysis.MIA.Module.Category;
 import io.github.mianalysis.MIA.Module.Categories;
 import io.github.mianalysis.MIA.Module.Visualisation.Overlays.AddLabels;
 import io.github.mianalysis.MIA.Object.Image;
 import io.github.mianalysis.MIA.Object.Obj;
-import io.github.mianalysis.MIA.Object.ObjCollection;
+import io.github.mianalysis.MIA.Object.Objs;
 import io.github.mianalysis.MIA.Object.Status;
 import io.github.mianalysis.MIA.Object.Workspace;
 import io.github.mianalysis.MIA.Object.Parameters.BooleanP;
 import io.github.mianalysis.MIA.Object.Parameters.InputImageP;
 import io.github.mianalysis.MIA.Object.Parameters.SeparatorP;
-import io.github.mianalysis.MIA.Object.Parameters.ParameterCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.ImageMeasurementRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.MetadataRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.ObjMeasurementRefCollection;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ImageMeasurementRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.MetadataRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ObjMeasurementRefs;
+import io.github.mianalysis.MIA.Object.Parameters.Parameters;
 import io.github.mianalysis.MIA.Process.CommaSeparatedStringInterpreter;
 
 public class FilterSpecificObjectIDs extends AbstractObjectFilter implements ActionListener {
@@ -48,7 +48,7 @@ public class FilterSpecificObjectIDs extends AbstractObjectFilter implements Act
     private int elementHeight = 30;
     private boolean active = false;
 
-    public FilterSpecificObjectIDs(ModuleCollection modules) {
+    public FilterSpecificObjectIDs(Modules modules) {
         super("Objects with specific IDs", modules);
     }
 
@@ -95,7 +95,7 @@ public class FilterSpecificObjectIDs extends AbstractObjectFilter implements Act
 
     }
 
-    public int filter(ObjCollection inputObjects, @Nullable ObjCollection outputObjects, boolean remove,
+    public int filter(Objs inputObjects, @Nullable Objs outputObjects, boolean remove,
             @Nullable Image image) {
         ImagePlus ipl = null;
         if (image != null) {
@@ -157,7 +157,7 @@ public class FilterSpecificObjectIDs extends AbstractObjectFilter implements Act
     protected Status process(Workspace workspace) {
         // Getting input objects
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
-        ObjCollection inputObjects = workspace.getObjects().get(inputObjectsName);
+        Objs inputObjects = workspace.getObjects().get(inputObjectsName);
 
         // Getting parameters
         String filterMode = parameters.getValue(FILTER_MODE);
@@ -168,7 +168,7 @@ public class FilterSpecificObjectIDs extends AbstractObjectFilter implements Act
         boolean moveObjects = filterMode.equals(FilterModes.MOVE_FILTERED);
         boolean remove = !filterMode.equals(FilterModes.DO_NOTHING);
 
-        ObjCollection outputObjects = moveObjects ? new ObjCollection(outputObjectsName, inputObjects) : null;
+        Objs outputObjects = moveObjects ? new Objs(outputObjectsName, inputObjects) : null;
         Image displayImage = showImage ? workspace.getImage(displayImageName) : null;
 
         int count = filter(inputObjects, outputObjects, remove, displayImage);
@@ -203,8 +203,8 @@ public class FilterSpecificObjectIDs extends AbstractObjectFilter implements Act
     }
 
     @Override
-    public ParameterCollection updateAndGetParameters() {
-        ParameterCollection returnedParameters = new ParameterCollection();
+    public Parameters updateAndGetParameters() {
+        Parameters returnedParameters = new Parameters();
         returnedParameters.addAll(super.updateAndGetParameters());
         returnedParameters.add(parameters.getParameter(FILTER_SEPARATOR));
         returnedParameters.add(parameters.getParameter(SHOW_IMAGE));
@@ -219,18 +219,18 @@ public class FilterSpecificObjectIDs extends AbstractObjectFilter implements Act
     }
 
     @Override
-    public ImageMeasurementRefCollection updateAndGetImageMeasurementRefs() {
+    public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
         return super.updateAndGetObjectMeasurementRefs();
     }
 
     @Override
-    public MetadataRefCollection updateAndGetMetadataReferences() {
-        MetadataRefCollection returnedRefs = new MetadataRefCollection();
+    public MetadataRefs updateAndGetMetadataReferences() {
+        MetadataRefs returnedRefs = new MetadataRefs();
 
         // Filter results are stored as a metadata item since they apply to the whole
         // set

@@ -21,29 +21,29 @@ import io.github.mianalysis.MIA.MIA;
 import io.github.mianalysis.MIA.Module.Categories;
 import io.github.mianalysis.MIA.Module.Category;
 import io.github.mianalysis.MIA.Module.Module;
-import io.github.mianalysis.MIA.Module.ModuleCollection;
+import io.github.mianalysis.MIA.Module.Modules;
 import io.github.mianalysis.MIA.Module.Visualisation.Overlays.AbstractOverlay;
 import io.github.mianalysis.MIA.Object.Image;
 import io.github.mianalysis.MIA.Object.Measurement;
 import io.github.mianalysis.MIA.Object.Obj;
-import io.github.mianalysis.MIA.Object.ObjCollection;
+import io.github.mianalysis.MIA.Object.Objs;
 import io.github.mianalysis.MIA.Object.Status;
 import io.github.mianalysis.MIA.Object.Workspace;
 import io.github.mianalysis.MIA.Object.Parameters.BooleanP;
 import io.github.mianalysis.MIA.Object.Parameters.ChoiceP;
 import io.github.mianalysis.MIA.Object.Parameters.InputObjectsP;
 import io.github.mianalysis.MIA.Object.Parameters.ObjectMeasurementP;
-import io.github.mianalysis.MIA.Object.Parameters.ParameterCollection;
+import io.github.mianalysis.MIA.Object.Parameters.Parameters;
 import io.github.mianalysis.MIA.Object.Parameters.SeparatorP;
 import io.github.mianalysis.MIA.Object.Parameters.Objects.OutputTrackObjectsP;
 import io.github.mianalysis.MIA.Object.Parameters.Text.DoubleP;
 import io.github.mianalysis.MIA.Object.Parameters.Text.IntegerP;
-import io.github.mianalysis.MIA.Object.References.ObjMeasurementRef;
-import io.github.mianalysis.MIA.Object.References.Collections.ImageMeasurementRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.MetadataRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.ObjMeasurementRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.ParentChildRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.PartnerRefCollection;
+import io.github.mianalysis.MIA.Object.Refs.ObjMeasurementRef;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ImageMeasurementRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.MetadataRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ObjMeasurementRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ParentChildRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.PartnerRefs;
 import io.github.mianalysis.MIA.Process.ColourFactory;
 import io.github.sjcross.common.ImageJ.LUTs;
 import io.github.sjcross.common.MathFunc.Indexer;
@@ -85,7 +85,7 @@ public class TrackObjects extends Module {
     public static final String MAXIMUM_MEASUREMENT_CHANGE = "Maximum measurement change";
 
 
-    public TrackObjects(ModuleCollection modules) {
+    public TrackObjects(Modules modules) {
         super("Track objects", modules);
     }
 
@@ -111,7 +111,7 @@ public class TrackObjects extends Module {
 
     }
 
-    public ArrayList<Obj>[] getCandidateObjects(ObjCollection inputObjects, int t1, int t2) {
+    public ArrayList<Obj>[] getCandidateObjects(Objs inputObjects, int t1, int t2) {
         // Creating a pair of ArrayLists to store the current and previous objects
         ArrayList<Obj>[] objects = new ArrayList[2];
         objects[0] = new ArrayList<>(); // Previous objects
@@ -133,7 +133,7 @@ public class TrackObjects extends Module {
     }
 
     public ArrayList<Linkable> calculateCostMatrix(ArrayList<Obj> prevObjects, ArrayList<Obj> currObjects,
-            @Nullable ObjCollection inputObjects, @Nullable int[][] spatialLimits) {
+            @Nullable Objs inputObjects, @Nullable int[][] spatialLimits) {
         boolean useVolume = parameters.getValue(USE_VOLUME);
         double frameGapWeighting = parameters.getValue(FRAME_GAP_WEIGHTING);
         double volumeWeighting = parameters.getValue(VOLUME_WEIGHTING);
@@ -316,7 +316,7 @@ public class TrackObjects extends Module {
         }
     }
 
-    public static double getPreviousStepDirectionCost(Obj prevObj, Obj currObj, ObjCollection inputObjects) {
+    public static double getPreviousStepDirectionCost(Obj prevObj, Obj currObj, Objs inputObjects) {
         // Get direction of previous object
         Measurement prevPrevObjMeas = prevObj.getMeasurement(Measurements.TRACK_PREV_ID);
 
@@ -393,7 +393,7 @@ public class TrackObjects extends Module {
 
     }
 
-    public static void createNewTrack(Obj currObj, ObjCollection trackObjects) {
+    public static void createNewTrack(Obj currObj, Objs trackObjects) {
         // Creating a new track object
         Obj track = trackObjects.createAndAddNewObject(VolumeType.POINTLIST);
 
@@ -403,7 +403,7 @@ public class TrackObjects extends Module {
 
     }
 
-    public static void showObjects(ObjCollection spotObjects, String trackObjectsName, String colourMode) {
+    public static void showObjects(Objs spotObjects, String trackObjectsName, String colourMode) {
         HashMap<Integer, Float> hues = ColourFactory.getParentIDHues(spotObjects, trackObjectsName, true);
 
         // Creating a parent-ID encoded image of the objects
@@ -442,8 +442,8 @@ public class TrackObjects extends Module {
         int maxMissingFrames = parameters.getValue(MAXIMUM_MISSING_FRAMES);
 
         // Getting objects
-        ObjCollection inputObjects = workspace.getObjects().get(inputObjectsName);
-        ObjCollection trackObjects = new ObjCollection(trackObjectsName, inputObjects);
+        Objs inputObjects = workspace.getObjects().get(inputObjectsName);
+        Objs trackObjects = new Objs(trackObjectsName, inputObjects);
         workspace.addObjects(trackObjects);
 
         // If there are no input objects, create a blank track set and skip this module
@@ -576,8 +576,8 @@ public class TrackObjects extends Module {
     }
 
     @Override
-    public ParameterCollection updateAndGetParameters() {
-        ParameterCollection returnedParameters = new ParameterCollection();
+    public Parameters updateAndGetParameters() {
+        Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(INPUT_OBJECTS));
@@ -637,13 +637,13 @@ public class TrackObjects extends Module {
     }
 
     @Override
-    public ImageMeasurementRefCollection updateAndGetImageMeasurementRefs() {
+    public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
-        ObjMeasurementRefCollection returnedRefs = new ObjMeasurementRefCollection();
+    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+        ObjMeasurementRefs returnedRefs = new ObjMeasurementRefs();
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
 
         ObjMeasurementRef trackPrevID = objectMeasurementRefs.getOrPut(Measurements.TRACK_PREV_ID);
@@ -660,13 +660,13 @@ public class TrackObjects extends Module {
     }
 
     @Override
-    public MetadataRefCollection updateAndGetMetadataReferences() {
+    public MetadataRefs updateAndGetMetadataReferences() {
         return null;
     }
 
     @Override
-    public ParentChildRefCollection updateAndGetParentChildRefs() {
-        ParentChildRefCollection returnedRelationships = new ParentChildRefCollection();
+    public ParentChildRefs updateAndGetParentChildRefs() {
+        ParentChildRefs returnedRelationships = new ParentChildRefs();
 
         String trackObjectsName = parameters.getValue(TRACK_OBJECTS);
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
@@ -678,8 +678,8 @@ public class TrackObjects extends Module {
     }
 
     @Override
-    public PartnerRefCollection updateAndGetPartnerRefs() {
-        PartnerRefCollection returnedRelationships = new PartnerRefCollection();
+    public PartnerRefs updateAndGetPartnerRefs() {
+        PartnerRefs returnedRelationships = new PartnerRefs();
 
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
 

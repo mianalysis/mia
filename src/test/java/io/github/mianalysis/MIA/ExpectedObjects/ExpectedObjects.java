@@ -4,7 +4,7 @@ import util.opencsv.CSVReader;
 import io.github.mianalysis.MIA.MIA;
 import io.github.mianalysis.MIA.Object.Measurement;
 import io.github.mianalysis.MIA.Object.Obj;
-import io.github.mianalysis.MIA.Object.ObjCollection;
+import io.github.mianalysis.MIA.Object.Objs;
 import io.github.sjcross.common.Exceptions.IntegerOverflowException;
 import io.github.sjcross.common.Object.Volume.PointOutOfRangeException;
 import io.github.sjcross.common.Object.Volume.SpatCal;
@@ -49,11 +49,11 @@ public abstract class ExpectedObjects {
 
     public abstract HashMap<Integer,HashMap<String,Double>> getMeasurements();
 
-    public ObjCollection getObjects(String objectName, Mode mode, double dppXY, double dppZ, String calibratedUnits, boolean includeMeasurements) throws IntegerOverflowException {
+    public Objs getObjects(String objectName, Mode mode, double dppXY, double dppZ, String calibratedUnits, boolean includeMeasurements) throws IntegerOverflowException {
         SpatCal calibration = new SpatCal(dppXY,dppZ,calibratedUnits,width,height,nSlices);
 
         // Initialising object store
-        ObjCollection testObjects = new ObjCollection(objectName,calibration,nFrames,frameInterval,temporalUnit);
+        Objs testObjects = new Objs(objectName,calibration,nFrames,frameInterval,temporalUnit);
 
         // Adding all provided coordinates to each object
         List<Integer[]> coordinates = getCoordinates5D();

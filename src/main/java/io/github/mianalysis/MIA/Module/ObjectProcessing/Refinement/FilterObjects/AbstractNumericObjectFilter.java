@@ -1,12 +1,12 @@
 package io.github.mianalysis.MIA.Module.ObjectProcessing.Refinement.FilterObjects;
 
-import io.github.mianalysis.MIA.Module.ModuleCollection;
+import io.github.mianalysis.MIA.Module.Modules;
 import io.github.mianalysis.MIA.Object.Obj;
 import io.github.mianalysis.MIA.Object.Workspace;
 import io.github.mianalysis.MIA.Object.Parameters.BooleanP;
 import io.github.mianalysis.MIA.Object.Parameters.ChoiceP;
 import io.github.mianalysis.MIA.Object.Parameters.SeparatorP;
-import io.github.mianalysis.MIA.Object.Parameters.ParameterCollection;
+import io.github.mianalysis.MIA.Object.Parameters.Parameters;
 import io.github.mianalysis.MIA.Object.Parameters.ParentObjectsP;
 import io.github.mianalysis.MIA.Object.Parameters.Text.DoubleP;
 import io.github.mianalysis.MIA.Object.Parameters.ImageMeasurementP;
@@ -51,7 +51,7 @@ public abstract class AbstractNumericObjectFilter extends AbstractObjectFilter {
 
     }
 
-    protected AbstractNumericObjectFilter(String name, ModuleCollection modules) {
+    protected AbstractNumericObjectFilter(String name, Modules modules) {
         super(name, modules);
     }
 
@@ -248,10 +248,10 @@ public abstract class AbstractNumericObjectFilter extends AbstractObjectFilter {
     }
 
     @Override
-    public ParameterCollection updateAndGetParameters() {
+    public Parameters updateAndGetParameters() {
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
 
-        ParameterCollection returnedParameters = new ParameterCollection();
+        Parameters returnedParameters = new Parameters();
         returnedParameters.addAll(super.updateAndGetParameters());
 
         returnedParameters.add(parameters.getParameter(FILTER_SEPARATOR));
@@ -294,8 +294,8 @@ public abstract class AbstractNumericObjectFilter extends AbstractObjectFilter {
 
     }
 
-    public ParameterCollection updateAndGetMeasurementParameters() {
-        ParameterCollection returnedParameters = new ParameterCollection();
+    public Parameters updateAndGetMeasurementParameters() {
+        Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(MEASUREMENT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(STORE_SUMMARY_RESULTS));

@@ -21,9 +21,9 @@ import io.github.mianalysis.MIA.Module.ImageProcessing.Stack.Convert3DStack;
 import io.github.mianalysis.MIA.Module.ObjectProcessing.Relationships.TrackObjects;
 import io.github.mianalysis.MIA.Module.Visualisation.Overlays.AddObjectsOverlay;
 import io.github.mianalysis.MIA.Object.Image;
-import io.github.mianalysis.MIA.Object.ObjCollection;
+import io.github.mianalysis.MIA.Object.Objs;
 import io.github.mianalysis.MIA.Object.Workspace;
-import io.github.mianalysis.MIA.Object.WorkspaceCollection;
+import io.github.mianalysis.MIA.Object.Workspaces;
 import io.github.sjcross.common.Object.Volume.VolumeType;
 
 public class AddObjectsOverlayTest extends ModuleTest {
@@ -68,7 +68,7 @@ public class AddObjectsOverlayTest extends ModuleTest {
         // THE OBJECTS FOR THIS TEST WILL NEED TO BE RE-CREATED - WE DON'T WANT OBJECTS SPANNING A 512 X 512 IMAGE
 
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
         
         // Setting object parameters
@@ -79,7 +79,7 @@ public class AddObjectsOverlayTest extends ModuleTest {
         String calibratedUnits = "um";
 
         // Creating objects and adding to workspace
-        ObjCollection testObjects = new DenseTracks2D(volumeType).getObjects(inputObjectsName, ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        Objs testObjects = new DenseTracks2D(volumeType).getObjects(inputObjectsName, ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(testObjects);
 
         // Tracking objects
@@ -108,8 +108,8 @@ public class AddObjectsOverlayTest extends ModuleTest {
                 .updateParameterValue(AddObjectsOverlay.LINE_WIDTH,1d)
                 .updateParameterValue(AddObjectsOverlay.LIMIT_TRACK_HISTORY,false);
 
-//        HashMap<Integer, Color> colours = testObjects.getHues(ObjCollection.ColourModes.PARENT_ID,trackObjectsName, false);
-//        ObjCollection trackObjects = workspace.getObjectSet(trackObjectsName);
+//        HashMap<Integer, Color> colours = testObjects.getHues(Objs.ColourModes.PARENT_ID,trackObjectsName, false);
+//        Objs trackObjects = workspace.getObjectSet(trackObjectsName);
 //        addObjectsOverlay.createTrackOverlay(ipl,trackObjects,colours);
 
         new ImageJ();

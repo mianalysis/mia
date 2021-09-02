@@ -3,7 +3,7 @@ package io.github.mianalysis.MIA.Macro.InputOutput;
 import ij.macro.MacroExtension;
 import io.github.mianalysis.MIA.Macro.MacroOperation;
 import io.github.mianalysis.MIA.Module.InputOutput.ImageLoader;
-import io.github.mianalysis.MIA.Module.ModuleCollection;
+import io.github.mianalysis.MIA.Module.Modules;
 import io.github.mianalysis.MIA.Object.Workspace;
 
 public class MIA_LoadImageFromImageJ extends MacroOperation {
@@ -17,7 +17,7 @@ public class MIA_LoadImageFromImageJ extends MacroOperation {
     }
 
     @Override
-    public String action(Object[] objects, Workspace workspace, ModuleCollection modules) {
+    public String action(Object[] objects, Workspace workspace, Modules modules) {
         // Create Module
         ImageLoader imageLoader = new ImageLoader(modules);
 

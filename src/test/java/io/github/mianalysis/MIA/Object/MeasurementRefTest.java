@@ -2,7 +2,7 @@ package io.github.mianalysis.MIA.Object;
 
 import org.junit.jupiter.api.Test;
 
-import io.github.mianalysis.MIA.Object.References.ImageMeasurementRef;
+import io.github.mianalysis.MIA.Object.Refs.ImageMeasurementRef;
 
 import static org.junit.jupiter.api.Assertions.*;
 

@@ -20,9 +20,9 @@ import io.github.mianalysis.MIA.Module.Module;
 import io.github.mianalysis.MIA.Module.ModuleTest;
 import io.github.mianalysis.MIA.Object.Image;
 import io.github.mianalysis.MIA.Object.Obj;
-import io.github.mianalysis.MIA.Object.ObjCollection;
+import io.github.mianalysis.MIA.Object.Objs;
 import io.github.mianalysis.MIA.Object.Workspace;
-import io.github.mianalysis.MIA.Object.WorkspaceCollection;
+import io.github.mianalysis.MIA.Object.Workspaces;
 import io.github.sjcross.common.Object.Volume.VolumeType;
 
 /**
@@ -44,7 +44,7 @@ public class MeasureObjectIntensityTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testRun8bit3D(VolumeType volumeType) throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Setting object parameters
@@ -54,7 +54,7 @@ public class MeasureObjectIntensityTest extends ModuleTest {
         String calibratedUnits = "um";
 
         // Creating objects and adding to workspace
-        ObjCollection testObjects = new Objects3D(volumeType).getObjects(inputObjectsName, ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        Objs testObjects = new Objects3D(volumeType).getObjects(inputObjectsName, ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(testObjects);
 
         // Loading the test image and adding to workspace
@@ -110,7 +110,7 @@ public class MeasureObjectIntensityTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testRun16bit3D(VolumeType volumeType) throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Setting object parameters
@@ -120,7 +120,7 @@ public class MeasureObjectIntensityTest extends ModuleTest {
         String calibratedUnits = "um";
 
         // Creating objects and adding to workspace
-        ObjCollection testObjects = new Objects3D(volumeType).getObjects(inputObjectsName,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        Objs testObjects = new Objects3D(volumeType).getObjects(inputObjectsName,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(testObjects);
 
         // Loading the test image and adding to workspace
@@ -176,7 +176,7 @@ public class MeasureObjectIntensityTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testRun32bit3D(VolumeType volumeType) throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Setting object parameters
@@ -186,7 +186,7 @@ public class MeasureObjectIntensityTest extends ModuleTest {
         String calibratedUnits = "um";
 
         // Creating objects and adding to workspace
-        ObjCollection testObjects = new Objects3D(volumeType).getObjects(inputObjectsName,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        Objs testObjects = new Objects3D(volumeType).getObjects(inputObjectsName,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(testObjects);
 
         // Loading the test image and adding to workspace
@@ -247,7 +247,7 @@ public class MeasureObjectIntensityTest extends ModuleTest {
     // @EnumSource(VolumeType.class)
     // public void testMeasureWeightedEdgeDistance2pxShellInside(VolumeType volumeType) throws Exception {
     //     // Creating a new workspace
-    //     WorkspaceCollection workspaces = new WorkspaceCollection();
+    //     Workspaces workspaces = new Workspaces();
     //     Workspace workspace = workspaces.getNewWorkspace(null,1);
 
     //     // Setting object parameters
@@ -257,7 +257,7 @@ public class MeasureObjectIntensityTest extends ModuleTest {
     //     String calibratedUnits = "um";
 
     //     // Creating objects and adding to workspace
-    //     ObjCollection testObjects = new Sphere3D(volumeType).getObjects(inputObjectsName,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+    //     Objs testObjects = new Sphere3D(volumeType).getObjects(inputObjectsName,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
     //     workspace.addObjects(testObjects);
 
     //     // Loading the test image and adding to workspace
@@ -292,7 +292,7 @@ public class MeasureObjectIntensityTest extends ModuleTest {
     // @EnumSource(VolumeType.class)
     // public void testMeasureWeightedEdgeDistance10pxShellOutside(VolumeType volumeType) throws Exception {
     //     // Creating a new workspace
-    //     WorkspaceCollection workspaces = new WorkspaceCollection();
+    //     Workspaces workspaces = new Workspaces();
     //     Workspace workspace = workspaces.getNewWorkspace(null,1);
 
     //     // Setting object parameters
@@ -302,7 +302,7 @@ public class MeasureObjectIntensityTest extends ModuleTest {
     //     String calibratedUnits = "um";
 
     //     // Creating objects and adding to workspace
-    //     ObjCollection testObjects = new Sphere3D(volumeType).getObjects(inputObjectsName,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+    //     Objs testObjects = new Sphere3D(volumeType).getObjects(inputObjectsName,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
     //     workspace.addObjects(testObjects);
 
     //     // Loading the test image and adding to workspace

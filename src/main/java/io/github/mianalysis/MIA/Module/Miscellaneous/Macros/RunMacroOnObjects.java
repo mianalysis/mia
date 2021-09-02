@@ -10,13 +10,13 @@ import ij.macro.Interpreter;
 import io.github.mianalysis.MIA.MIA;
 import io.github.mianalysis.MIA.Module.Categories;
 import io.github.mianalysis.MIA.Module.Category;
-import io.github.mianalysis.MIA.Module.ModuleCollection;
+import io.github.mianalysis.MIA.Module.Modules;
 import io.github.mianalysis.MIA.Module.Core.InputControl;
 import io.github.mianalysis.MIA.Module.Miscellaneous.GlobalVariables;
 import io.github.mianalysis.MIA.Object.Image;
 import io.github.mianalysis.MIA.Object.Measurement;
 import io.github.mianalysis.MIA.Object.Obj;
-import io.github.mianalysis.MIA.Object.ObjCollection;
+import io.github.mianalysis.MIA.Object.Objs;
 import io.github.mianalysis.MIA.Object.Status;
 import io.github.mianalysis.MIA.Object.Workspace;
 import io.github.mianalysis.MIA.Object.Parameters.BooleanP;
@@ -25,18 +25,18 @@ import io.github.mianalysis.MIA.Object.Parameters.FilePathP;
 import io.github.mianalysis.MIA.Object.Parameters.GenericButtonP;
 import io.github.mianalysis.MIA.Object.Parameters.InputImageP;
 import io.github.mianalysis.MIA.Object.Parameters.InputObjectsP;
-import io.github.mianalysis.MIA.Object.Parameters.ParameterCollection;
+import io.github.mianalysis.MIA.Object.Parameters.Parameters;
 import io.github.mianalysis.MIA.Object.Parameters.ParameterGroup;
 import io.github.mianalysis.MIA.Object.Parameters.SeparatorP;
 import io.github.mianalysis.MIA.Object.Parameters.Abstract.TextType;
 import io.github.mianalysis.MIA.Object.Parameters.Text.StringP;
 import io.github.mianalysis.MIA.Object.Parameters.Text.TextAreaP;
-import io.github.mianalysis.MIA.Object.References.ObjMeasurementRef;
-import io.github.mianalysis.MIA.Object.References.Collections.ImageMeasurementRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.MetadataRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.ObjMeasurementRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.ParentChildRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.PartnerRefCollection;
+import io.github.mianalysis.MIA.Object.Refs.ObjMeasurementRef;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ImageMeasurementRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.MetadataRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ObjMeasurementRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ParentChildRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.PartnerRefs;
 
 /**
  * Created by sc13967 on 31/01/2018.
@@ -65,7 +65,7 @@ public class RunMacroOnObjects extends AbstractMacroRunner {
 
     }
 
-    public RunMacroOnObjects(ModuleCollection modules) {
+    public RunMacroOnObjects(Modules modules) {
         super("Run macro on objects", modules);
     }
 
@@ -125,7 +125,7 @@ public class RunMacroOnObjects extends AbstractMacroRunner {
         String macroFile = parameters.getValue(MACRO_FILE);
 
         // Getting the input objects
-        ObjCollection inputObjects = workspace.getObjectSet(inputObjectsName);
+        Objs inputObjects = workspace.getObjectSet(inputObjectsName);
 
         // Getting a list of measurement headings
         ParameterGroup group = parameters.getParameter(ADD_INTERCEPTED_VARIABLE);
@@ -232,7 +232,7 @@ public class RunMacroOnObjects extends AbstractMacroRunner {
         parameters.add(new GenericButtonP(REFRESH_BUTTON, this, "Refresh", GenericButtonP.DefaultModes.REFRESH));
 
         parameters.add(new SeparatorP(OUTPUT_SEPARATOR, this));
-        ParameterCollection collection = new ParameterCollection();
+        Parameters collection = new Parameters();
         collection.add(new StringP(VARIABLE, this));
         parameters.add(new ParameterGroup(ADD_INTERCEPTED_VARIABLE, this, collection));
 
@@ -241,8 +241,8 @@ public class RunMacroOnObjects extends AbstractMacroRunner {
     }
 
     @Override
-    public ParameterCollection updateAndGetParameters() {
-        ParameterCollection returnedParameters = new ParameterCollection();
+    public Parameters updateAndGetParameters() {
+        Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(INPUT_OBJECTS));
@@ -276,13 +276,13 @@ public class RunMacroOnObjects extends AbstractMacroRunner {
     }
 
     @Override
-    public ImageMeasurementRefCollection updateAndGetImageMeasurementRefs() {
+    public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
-        ObjMeasurementRefCollection returnedRefs = new ObjMeasurementRefCollection();
+    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+        ObjMeasurementRefs returnedRefs = new ObjMeasurementRefs();
 
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
 
@@ -301,17 +301,17 @@ public class RunMacroOnObjects extends AbstractMacroRunner {
     }
 
     @Override
-    public MetadataRefCollection updateAndGetMetadataReferences() {
+    public MetadataRefs updateAndGetMetadataReferences() {
         return null;
     }
 
     @Override
-    public ParentChildRefCollection updateAndGetParentChildRefs() {
+    public ParentChildRefs updateAndGetParentChildRefs() {
         return null;
     }
 
     @Override
-    public PartnerRefCollection updateAndGetPartnerRefs() {
+    public PartnerRefs updateAndGetPartnerRefs() {
         return null;
     }
 
@@ -356,7 +356,7 @@ public class RunMacroOnObjects extends AbstractMacroRunner {
                 "This allows variables assigned in the macro to be stored as measurements associated with the current object.");
 
         ParameterGroup group = (ParameterGroup) parameters.get(ADD_INTERCEPTED_VARIABLE);
-        ParameterCollection collection = group.getTemplateParameters();
+        Parameters collection = group.getTemplateParameters();
         collection.get(VARIABLE).setDescription(
                 "Variable assigned in the macro to be stored as a measurement associated with the current object.  This name must exactly match (including case) the name as written in the macro.");
     }

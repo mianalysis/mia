@@ -9,12 +9,12 @@ import ij.plugin.Duplicator;
 import io.github.mianalysis.MIA.Module.Categories;
 import io.github.mianalysis.MIA.Module.Category;
 import io.github.mianalysis.MIA.Module.Module;
-import io.github.mianalysis.MIA.Module.ModuleCollection;
+import io.github.mianalysis.MIA.Module.Modules;
 import io.github.mianalysis.MIA.Module.ImageProcessing.Pixel.InvertIntensity;
 import io.github.mianalysis.MIA.Module.Visualisation.Overlays.AbstractOverlay;
 import io.github.mianalysis.MIA.Module.Visualisation.Overlays.AddAllObjectPoints;
 import io.github.mianalysis.MIA.Object.Image;
-import io.github.mianalysis.MIA.Object.ObjCollection;
+import io.github.mianalysis.MIA.Object.Objs;
 import io.github.mianalysis.MIA.Object.Status;
 import io.github.mianalysis.MIA.Object.Workspace;
 import io.github.mianalysis.MIA.Object.Parameters.ChildObjectsP;
@@ -22,15 +22,15 @@ import io.github.mianalysis.MIA.Object.Parameters.ChoiceP;
 import io.github.mianalysis.MIA.Object.Parameters.InputObjectsP;
 import io.github.mianalysis.MIA.Object.Parameters.ObjectMeasurementP;
 import io.github.mianalysis.MIA.Object.Parameters.OutputImageP;
-import io.github.mianalysis.MIA.Object.Parameters.ParameterCollection;
+import io.github.mianalysis.MIA.Object.Parameters.Parameters;
 import io.github.mianalysis.MIA.Object.Parameters.ParentObjectsP;
 import io.github.mianalysis.MIA.Object.Parameters.PartnerObjectsP;
 import io.github.mianalysis.MIA.Object.Parameters.SeparatorP;
-import io.github.mianalysis.MIA.Object.References.Collections.ImageMeasurementRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.MetadataRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.ObjMeasurementRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.ParentChildRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.PartnerRefCollection;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ImageMeasurementRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.MetadataRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ObjMeasurementRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ParentChildRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.PartnerRefs;
 import io.github.mianalysis.MIA.Process.ColourFactory;
 import io.github.sjcross.common.ImageJ.LUTs;
 import io.github.sjcross.common.Process.IntensityMinMax;
@@ -52,7 +52,7 @@ public class ConvertObjectsToImage extends Module {
   public static final String SINGLE_COLOUR_MODE = "Single colour mode";
   public static final String MEASUREMENT = "Measurement";
 
-  public ConvertObjectsToImage(ModuleCollection modules) {
+  public ConvertObjectsToImage(Modules modules) {
     super("Convert objects to image", modules);
   }
 
@@ -100,7 +100,7 @@ public class ConvertObjectsToImage extends Module {
     String parentForColour = parameters.getValue(PARENT_OBJECT_FOR_COLOUR);
     String partnerForColour = parameters.getValue(PARTNER_OBJECTS_FOR_COLOUR);
 
-    ObjCollection inputObjects = workspace.getObjects().get(objectName);
+    Objs inputObjects = workspace.getObjects().get(objectName);
 
     // Generating colours for each object
     HashMap<Integer, Float> hues = null;
@@ -214,11 +214,11 @@ public class ConvertObjectsToImage extends Module {
   }
 
   @Override
-  public ParameterCollection updateAndGetParameters() {
+  public Parameters updateAndGetParameters() {
     String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
     String parentObjectsName = parameters.getValue(PARENT_OBJECT_FOR_COLOUR);
 
-    ParameterCollection returnedParameters = new ParameterCollection();
+    Parameters returnedParameters = new Parameters();
 
     returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
     returnedParameters.add(parameters.getParameter(INPUT_OBJECTS));
@@ -275,27 +275,27 @@ public class ConvertObjectsToImage extends Module {
   }
 
   @Override
-  public ImageMeasurementRefCollection updateAndGetImageMeasurementRefs() {
+  public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
     return null;
   }
 
   @Override
-  public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+  public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
     return null;
   }
 
   @Override
-  public MetadataRefCollection updateAndGetMetadataReferences() {
+  public MetadataRefs updateAndGetMetadataReferences() {
     return null;
   }
 
   @Override
-  public ParentChildRefCollection updateAndGetParentChildRefs() {
+  public ParentChildRefs updateAndGetParentChildRefs() {
     return null;
   }
 
   @Override
-  public PartnerRefCollection updateAndGetPartnerRefs() {
+  public PartnerRefs updateAndGetPartnerRefs() {
     return null;
   }
 

@@ -2,7 +2,7 @@ package io.github.mianalysis.MIA.Macro;
 
 import ij.macro.ExtensionDescriptor;
 import ij.macro.MacroExtension;
-import io.github.mianalysis.MIA.Module.ModuleCollection;
+import io.github.mianalysis.MIA.Module.Modules;
 import io.github.mianalysis.MIA.Object.Workspace;
 
 public abstract class MacroOperation extends ExtensionDescriptor {
@@ -24,7 +24,7 @@ public abstract class MacroOperation extends ExtensionDescriptor {
     }
     
     public abstract int[] getArgumentTypes();
-    public abstract String action(Object[] objects, Workspace workspace, ModuleCollection modules);
+    public abstract String action(Object[] objects, Workspace workspace, Modules modules);
     public abstract String getArgumentsDescription();
     public abstract String getDescription();
 

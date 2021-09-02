@@ -8,22 +8,23 @@ import java.util.List;
 import java.util.StringTokenizer;
 
 import io.github.mianalysis.MIA.Module.Module;
-import io.github.mianalysis.MIA.Module.ModuleCollection;
-import io.github.mianalysis.MIA.Object.Parameters.ParameterCollection;
+import io.github.mianalysis.MIA.Module.Modules;
+import io.github.mianalysis.MIA.Object.Parameters.Parameters;
 import io.github.mianalysis.MIA.Object.Parameters.ParameterGroup;
 import io.github.mianalysis.MIA.Object.Parameters.SeparatorP;
 import io.github.mianalysis.MIA.Object.Parameters.Abstract.Parameter;
 import io.github.mianalysis.MIA.Object.Parameters.Text.MessageP;
-import io.github.mianalysis.MIA.Object.References.ImageMeasurementRef;
-import io.github.mianalysis.MIA.Object.References.ObjMeasurementRef;
-import io.github.mianalysis.MIA.Object.References.Collections.ImageMeasurementRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.ObjMeasurementRefCollection;
+import io.github.mianalysis.MIA.Object.Refs.ImageMeasurementRef;
+import io.github.mianalysis.MIA.Object.Refs.ObjMeasurementRef;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ImageMeasurementRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ObjMeasurementRefs;
 
 public class DocumentationCoverageChecker {
     public static void main(String[] args) {
         // Get a list of Modules
         List<String> classNames = ClassHunter.getModules(false);
 
+        int nModules = 0;
         int completedModuleDescriptions = 0;
         int completedParameterSets = 0;
         int completedParameters = 0;
@@ -48,9 +49,11 @@ public class DocumentationCoverageChecker {
                 // Skip any abstract Modules
                 if (Modifier.isAbstract(clazz.getModifiers()))
                     continue;
+                
+                nModules++;
 
-                Constructor<Module> constructor = clazz.getDeclaredConstructor(ModuleCollection.class);
-                Module module = (Module) constructor.newInstance(new ModuleCollection());
+                Constructor<Module> constructor = clazz.getDeclaredConstructor(Modules.class);
+                Module module = (Module) constructor.newInstance(new Modules());
 
                 boolean hasDescription = module.getDescription() != null && module.getDescription().length() > 1;
                 if (hasDescription)
@@ -95,16 +98,16 @@ public class DocumentationCoverageChecker {
             }
         }
 
-        double fractionModuleDescriptions = (double) completedModuleDescriptions / (double) classNames.size();
-        double fractionModuleParameters = (double) completedParameterSets / (double) classNames.size();
+        double fractionModuleDescriptions = (double) completedModuleDescriptions / (double) nModules;
+        double fractionModuleParameters = (double) completedParameterSets / (double) nModules;
         double fractionParameters = (double) completedParameters / (double) totalParameters;
         double fractionImageMeasurements = (double) completedImageRefs / (double) totalImageRefs;
         double fractionObjMeasurements = (double) completedObjRefs / (double) totalObjRefs;
 
         System.out.println(" ");
-        System.out.println("Completed module descriptions = " + completedModuleDescriptions + "/" + classNames.size()
+        System.out.println("Completed module descriptions = " + completedModuleDescriptions + "/" + nModules
                 + " (" + df.format(100 * fractionModuleDescriptions) + "%)");
-        System.out.println("Completed parameter set descriptions = " + completedParameterSets + "/" + classNames.size()
+        System.out.println("Completed parameter set descriptions = " + completedParameterSets + "/" + nModules
                 + " (" + df.format(100 * fractionModuleParameters) + "%)");
         System.out.println("Mean parameter coverage = " + completedParameters + "/" + totalParameters + " ("
                 + df.format(100 * fractionParameters) + "%)");
@@ -113,7 +116,7 @@ public class DocumentationCoverageChecker {
         System.out.println("Mean object measurement coverage = " + completedObjRefs + "/" + totalObjRefs + " ("
                 + df.format(100 * fractionObjMeasurements) + "%)");
 
-        System.out.println("_" + classNames.size() + "_" + completedModuleDescriptions + "_" + totalParameters + "_"
+        System.out.println("_" + nModules + "_" + completedModuleDescriptions + "_" + totalParameters + "_"
                 + completedParameters + "_" + completedParameterSets + "_" + totalImageRefs + "_" + completedImageRefs
                 + "_" + totalObjRefs + "_" + completedObjRefs);
 
@@ -122,7 +125,7 @@ public class DocumentationCoverageChecker {
     }
 
     public static int[] getModuleMeasurementCoverage(Module module) {
-        ImageMeasurementRefCollection imageRefs = module.updateAndGetImageMeasurementRefs();
+        ImageMeasurementRefs imageRefs = module.updateAndGetImageMeasurementRefs();
         int nImageRefs = 0;
         int nCoveredImageRefs = 0;
 
@@ -138,7 +141,7 @@ public class DocumentationCoverageChecker {
 
         int nObjRefs = 0;
         int nCoveredObjRefs = 0;
-        ObjMeasurementRefCollection objRefs = module.updateAndGetObjectMeasurementRefs();
+        ObjMeasurementRefs objRefs = module.updateAndGetObjectMeasurementRefs();
         if (objRefs != null) {
             nObjRefs = objRefs.size();
             for (ObjMeasurementRef ref : module.updateAndGetObjectMeasurementRefs().values()) {
@@ -173,7 +176,7 @@ public class DocumentationCoverageChecker {
             }
 
             if (parameter instanceof ParameterGroup) {
-                ParameterCollection collection = ((ParameterGroup) parameter).getTemplateParameters();
+                Parameters collection = ((ParameterGroup) parameter).getTemplateParameters();
                 nParams = nParams + collection.size();
                 for (Parameter collectionParam : collection.values()) {
                     if (collectionParam instanceof SeparatorP || collectionParam instanceof MessageP) {
@@ -194,7 +197,7 @@ public class DocumentationCoverageChecker {
     }
 
     static boolean moduleHasSeparators(Module module) {
-        ParameterCollection parameters = module.getAllParameters();
+        Parameters parameters = module.getAllParameters();
 
         if (parameters == null)
             return true;

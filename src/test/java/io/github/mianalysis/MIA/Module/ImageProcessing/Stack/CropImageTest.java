@@ -11,11 +11,11 @@ import org.junit.jupiter.api.Test;
 import ij.IJ;
 import ij.ImagePlus;
 import io.github.mianalysis.MIA.Module.Module;
-import io.github.mianalysis.MIA.Module.ModuleCollection;
+import io.github.mianalysis.MIA.Module.Modules;
 import io.github.mianalysis.MIA.Module.ModuleTest;
 import io.github.mianalysis.MIA.Object.Image;
 import io.github.mianalysis.MIA.Object.Workspace;
-import io.github.mianalysis.MIA.Object.WorkspaceCollection;
+import io.github.mianalysis.MIA.Object.Workspaces;
 
 public class CropImageTest extends ModuleTest {
     @BeforeAll
@@ -31,7 +31,7 @@ public class CropImageTest extends ModuleTest {
     @Test
     public void testRun8bit2D() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
@@ -44,7 +44,7 @@ public class CropImageTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising CropImage
-        CropImage cropImage = new CropImage(new ModuleCollection());
+        CropImage cropImage = new CropImage(new Modules());
         cropImage.initialiseParameters();
         cropImage.updateParameterValue(CropImage.INPUT_IMAGE,"Test_image");
         cropImage.updateParameterValue(CropImage.OUTPUT_IMAGE,"Test_output");
@@ -70,7 +70,7 @@ public class CropImageTest extends ModuleTest {
     @Test
     public void testRun8bit3D() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
@@ -83,7 +83,7 @@ public class CropImageTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising CropImage
-        CropImage cropImage = new CropImage(new ModuleCollection());
+        CropImage cropImage = new CropImage(new Modules());
         cropImage.initialiseParameters();
         cropImage.updateParameterValue(CropImage.INPUT_IMAGE,"Test_image");
         cropImage.updateParameterValue(CropImage.OUTPUT_IMAGE,"Test_output");
@@ -109,7 +109,7 @@ public class CropImageTest extends ModuleTest {
     @Test
     public void testRun16bit2D() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
@@ -122,7 +122,7 @@ public class CropImageTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising CropImage
-        CropImage cropImage = new CropImage(new ModuleCollection());
+        CropImage cropImage = new CropImage(new Modules());
         cropImage.initialiseParameters();
         cropImage.updateParameterValue(CropImage.INPUT_IMAGE,"Test_image");
         cropImage.updateParameterValue(CropImage.OUTPUT_IMAGE,"Test_output");
@@ -148,7 +148,7 @@ public class CropImageTest extends ModuleTest {
     @Test
     public void testRun32bit2D() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
@@ -161,7 +161,7 @@ public class CropImageTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising CropImage
-        CropImage cropImage = new CropImage(new ModuleCollection());
+        CropImage cropImage = new CropImage(new Modules());
         cropImage.initialiseParameters();
         cropImage.updateParameterValue(CropImage.INPUT_IMAGE,"Test_image");
         cropImage.updateParameterValue(CropImage.OUTPUT_IMAGE,"Test_output");
@@ -186,7 +186,7 @@ public class CropImageTest extends ModuleTest {
     @Test
     public void testRun8bit4D() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
@@ -199,7 +199,7 @@ public class CropImageTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising CropImage
-        CropImage cropImage = new CropImage(new ModuleCollection());
+        CropImage cropImage = new CropImage(new Modules());
         cropImage.initialiseParameters();
         cropImage.updateParameterValue(CropImage.INPUT_IMAGE,"Test_image");
         cropImage.updateParameterValue(CropImage.OUTPUT_IMAGE,"Test_output");
@@ -224,7 +224,7 @@ public class CropImageTest extends ModuleTest {
     @Test
     public void testRun8bit5D() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
@@ -237,7 +237,7 @@ public class CropImageTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising CropImage
-        CropImage cropImage = new CropImage(new ModuleCollection());
+        CropImage cropImage = new CropImage(new Modules());
         cropImage.initialiseParameters();
         cropImage.updateParameterValue(CropImage.INPUT_IMAGE,"Test_image");
         cropImage.updateParameterValue(CropImage.OUTPUT_IMAGE,"Test_output");

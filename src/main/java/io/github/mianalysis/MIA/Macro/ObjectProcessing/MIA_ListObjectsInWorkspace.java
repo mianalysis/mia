@@ -3,9 +3,9 @@ package io.github.mianalysis.MIA.Macro.ObjectProcessing;
 import ij.macro.MacroExtension;
 import ij.measure.ResultsTable;
 import io.github.mianalysis.MIA.Macro.MacroOperation;
-import io.github.mianalysis.MIA.Module.ModuleCollection;
+import io.github.mianalysis.MIA.Module.Modules;
 import io.github.mianalysis.MIA.Object.Obj;
-import io.github.mianalysis.MIA.Object.ObjCollection;
+import io.github.mianalysis.MIA.Object.Objs;
 import io.github.mianalysis.MIA.Object.Workspace;
 
 import java.util.HashMap;
@@ -21,13 +21,13 @@ public class MIA_ListObjectsInWorkspace extends MacroOperation {
     }
 
     @Override
-    public String action(Object[] objects, Workspace workspace, ModuleCollection modules) {
+    public String action(Object[] objects, Workspace workspace, Modules modules) {
         // Creating a new ResultsTable to hold the Image names
         ResultsTable rt = new ResultsTable();
         int row = 0;
 
         // Getting a list of Images in the Workspace
-        HashMap<String,ObjCollection> allObj = workspace.getObjects();
+        HashMap<String,Objs> allObj = workspace.getObjects();
         for (String objName:allObj.keySet()) {
             if (row != 0) rt.incrementCounter();
 

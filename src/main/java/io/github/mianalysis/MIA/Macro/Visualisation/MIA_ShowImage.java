@@ -2,7 +2,7 @@ package io.github.mianalysis.MIA.Macro.Visualisation;
 
 import ij.macro.MacroExtension;
 import io.github.mianalysis.MIA.Macro.MacroOperation;
-import io.github.mianalysis.MIA.Module.ModuleCollection;
+import io.github.mianalysis.MIA.Module.Modules;
 import io.github.mianalysis.MIA.Module.Visualisation.ShowImage;
 import io.github.mianalysis.MIA.Object.Workspace;
 
@@ -22,7 +22,7 @@ public class MIA_ShowImage extends MacroOperation {
     }
 
     @Override
-    public String action(Object[] objects, Workspace workspace, ModuleCollection modules) {
+    public String action(Object[] objects, Workspace workspace, Modules modules) {
         // Create Module
         ShowImage showImage = new ShowImage(modules);
 

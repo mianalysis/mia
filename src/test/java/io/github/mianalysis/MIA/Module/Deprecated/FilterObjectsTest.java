@@ -10,13 +10,13 @@ import org.junit.jupiter.params.provider.EnumSource;
 import io.github.mianalysis.MIA.ExpectedObjects.ExpectedObjects;
 import io.github.mianalysis.MIA.ExpectedObjects.Objects3D;
 import io.github.mianalysis.MIA.Module.Module;
-import io.github.mianalysis.MIA.Module.ModuleCollection;
+import io.github.mianalysis.MIA.Module.Modules;
 import io.github.mianalysis.MIA.Module.ModuleTest;
 import io.github.mianalysis.MIA.Module.ObjectProcessing.Refinement.FilterObjects.FilterObjects;
 import io.github.mianalysis.MIA.Object.Obj;
-import io.github.mianalysis.MIA.Object.ObjCollection;
+import io.github.mianalysis.MIA.Object.Objs;
 import io.github.mianalysis.MIA.Object.Workspace;
-import io.github.mianalysis.MIA.Object.WorkspaceCollection;
+import io.github.mianalysis.MIA.Object.Workspaces;
 import io.github.sjcross.common.Object.Volume.VolumeType;
 
 /**
@@ -37,7 +37,7 @@ public class FilterObjectsTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testRunMeasurementsLargerThan(VolumeType volumeType) throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Setting calibration parameters
@@ -46,11 +46,11 @@ public class FilterObjectsTest extends ModuleTest {
         String calibratedUnits = "µm";
 
         // Getting test objects
-        ObjCollection testObjects = new Objects3D(volumeType).getObjects("TestObj", ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        Objs testObjects = new Objects3D(volumeType).getObjects("TestObj", ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(testObjects);
 
         // Initialising FilterObjects module
-        FilterObjects filterObjects = new FilterObjects(new ModuleCollection());
+        FilterObjects filterObjects = new FilterObjects(new Modules());
         filterObjects.updateParameterValue(FilterObjects.INPUT_OBJECTS,"TestObj");
         filterObjects.updateParameterValue(FilterObjects.FILTER_METHOD,FilterObjects.FilterMethods.MEASUREMENTS_LARGER_THAN);
         filterObjects.updateParameterValue(FilterObjects.MEASUREMENT, Objects3D.Measures.EXP_N_VOXELS.name());
@@ -69,7 +69,7 @@ public class FilterObjectsTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testRunMeasurementsSmallerThan(VolumeType volumeType) throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Setting calibration parameters
@@ -78,11 +78,11 @@ public class FilterObjectsTest extends ModuleTest {
         String calibratedUnits = "µm";
 
         // Getting test objects
-        ObjCollection testObjects = new Objects3D(volumeType).getObjects("TestObj",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        Objs testObjects = new Objects3D(volumeType).getObjects("TestObj",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(testObjects);
 
         // Initialising FilterObjects module
-        FilterObjects filterObjects = new FilterObjects(new ModuleCollection());
+        FilterObjects filterObjects = new FilterObjects(new Modules());
         filterObjects.updateParameterValue(FilterObjects.INPUT_OBJECTS,"TestObj");
         filterObjects.updateParameterValue(FilterObjects.FILTER_METHOD,FilterObjects.FilterMethods.MEASUREMENTS_SMALLER_THAN);
         filterObjects.updateParameterValue(FilterObjects.MEASUREMENT, Objects3D.Measures.EXP_N_VOXELS.name());
@@ -101,7 +101,7 @@ public class FilterObjectsTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testRunMissingMeasurement(VolumeType volumeType) throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Setting calibration parameters
@@ -110,11 +110,11 @@ public class FilterObjectsTest extends ModuleTest {
         String calibratedUnits = "µm";
 
         // Getting test objects
-        ObjCollection testObjects = new Objects3D(volumeType).getObjects("TestObj",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        Objs testObjects = new Objects3D(volumeType).getObjects("TestObj",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(testObjects);
 
         // Initialising FilterObjects module
-        FilterObjects filterObjects = new FilterObjects(new ModuleCollection());
+        FilterObjects filterObjects = new FilterObjects(new Modules());
         filterObjects.updateParameterValue(FilterObjects.INPUT_OBJECTS,"TestObj");
         filterObjects.updateParameterValue(FilterObjects.FILTER_METHOD,FilterObjects.FilterMethods.MISSING_MEASUREMENTS);
         filterObjects.updateParameterValue(FilterObjects.MEASUREMENT, Objects3D.Measures.EXP_I_STD_8BIT.name());
@@ -133,7 +133,7 @@ public class FilterObjectsTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testRunObjectsOnImageEdge(VolumeType volumeType) throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Setting calibration parameters
@@ -142,11 +142,11 @@ public class FilterObjectsTest extends ModuleTest {
         String calibratedUnits = "µm";
 
         // Getting test objects
-        ObjCollection testObjects = new Objects3D(volumeType).getObjects("TestObj",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        Objs testObjects = new Objects3D(volumeType).getObjects("TestObj",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(testObjects);
 
         // Initialising FilterObjects module
-        FilterObjects filterObjects = new FilterObjects(new ModuleCollection());
+        FilterObjects filterObjects = new FilterObjects(new Modules());
         filterObjects.updateParameterValue(FilterObjects.INPUT_OBJECTS,"TestObj");
         filterObjects.updateParameterValue(FilterObjects.FILTER_METHOD,FilterObjects.FilterMethods.REMOVE_ON_IMAGE_EDGE_2D);
 
@@ -163,7 +163,7 @@ public class FilterObjectsTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testRunObjectsOnImageEdgeIgnoreZ(VolumeType volumeType) throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Setting calibration parameters
@@ -172,11 +172,11 @@ public class FilterObjectsTest extends ModuleTest {
         String calibratedUnits = "µm";
 
         // Getting test objects
-        ObjCollection testObjects = new Objects3D(volumeType).getObjects("TestObj",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        Objs testObjects = new Objects3D(volumeType).getObjects("TestObj",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(testObjects);
 
         // Initialising FilterObjects module
-        FilterObjects filterObjects = new FilterObjects(new ModuleCollection());
+        FilterObjects filterObjects = new FilterObjects(new Modules());
         filterObjects.updateParameterValue(FilterObjects.INPUT_OBJECTS,"TestObj");
         filterObjects.updateParameterValue(FilterObjects.FILTER_METHOD,FilterObjects.FilterMethods.REMOVE_ON_IMAGE_EDGE_2D);
         filterObjects.updateParameterValue(FilterObjects.INCLUDE_Z_POSITION,false);
@@ -194,7 +194,7 @@ public class FilterObjectsTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testRunObjectsOnImageEdgeIncludeZ(VolumeType volumeType) throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Setting calibration parameters
@@ -203,11 +203,11 @@ public class FilterObjectsTest extends ModuleTest {
         String calibratedUnits = "µm";
 
         // Getting test objects
-        ObjCollection testObjects = new Objects3D(volumeType).getObjects("TestObj",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        Objs testObjects = new Objects3D(volumeType).getObjects("TestObj",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(testObjects);
 
         // Initialising FilterObjects module
-        FilterObjects filterObjects = new FilterObjects(new ModuleCollection());
+        FilterObjects filterObjects = new FilterObjects(new Modules());
         filterObjects.updateParameterValue(FilterObjects.INPUT_OBJECTS,"TestObj");
         filterObjects.updateParameterValue(FilterObjects.FILTER_METHOD,FilterObjects.FilterMethods.REMOVE_ON_IMAGE_EDGE_2D);
         filterObjects.updateParameterValue(FilterObjects.INCLUDE_Z_POSITION,true);
@@ -225,7 +225,7 @@ public class FilterObjectsTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testRunMinimumNumberOfChildren(VolumeType volumeType) throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Setting calibration parameters
@@ -234,14 +234,14 @@ public class FilterObjectsTest extends ModuleTest {
         String calibratedUnits = "µm";
 
         // Getting test objects
-        ObjCollection testObjects = new Objects3D(volumeType).getObjects("TestObj",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        Objs testObjects = new Objects3D(volumeType).getObjects("TestObj",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(testObjects);
 
         // Creating a second set of objects and relate these to the test objects.  The number of children will be
         // created according to the "kids" table - it doesn't matter which test objects these are assigned to, as we
         // only count the number of remaining objects post-filter.
         int[] kids = new int[]{3,1,4,2,0,6,5,2};
-        ObjCollection childObjects = new ObjCollection("Children",testObjects);
+        Objs childObjects = new Objs("Children",testObjects);
 
         int counter = 0;
         for (Obj testObject:testObjects.values()) {
@@ -256,7 +256,7 @@ public class FilterObjectsTest extends ModuleTest {
         }
 
         // Initialising FilterObjects module
-        FilterObjects filterObjects = new FilterObjects(new ModuleCollection());
+        FilterObjects filterObjects = new FilterObjects(new Modules());
         filterObjects.updateParameterValue(FilterObjects.INPUT_OBJECTS,"TestObj");
         filterObjects.updateParameterValue(FilterObjects.FILTER_METHOD,FilterObjects.FilterMethods.MIN_NUMBER_OF_CHILDREN);
         filterObjects.updateParameterValue(FilterObjects.CHILD_OBJECTS,"Children");
@@ -275,7 +275,7 @@ public class FilterObjectsTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testRunMaximumNumberOfChildren(VolumeType volumeType) throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Setting calibration parameters
@@ -284,14 +284,14 @@ public class FilterObjectsTest extends ModuleTest {
         String calibratedUnits = "µm";
 
         // Getting test objects
-        ObjCollection testObjects = new Objects3D(volumeType).getObjects("TestObj",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        Objs testObjects = new Objects3D(volumeType).getObjects("TestObj",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(testObjects);
 
         // Creating a second set of objects and relate these to the test objects.  The number of children will be
         // created according to the "kids" table - it doesn't matter which test objects these are assigned to, as we
         // only count the number of remaining objects post-filter.
         int[] kids = new int[]{3,1,4,2,0,6,5,2};
-        ObjCollection childObjects = new ObjCollection("Children",testObjects);
+        Objs childObjects = new Objs("Children",testObjects);
 
         int counter = 0;
         for (Obj testObject:testObjects.values()) {
@@ -307,7 +307,7 @@ public class FilterObjectsTest extends ModuleTest {
         }
 
         // Initialising FilterObjects module
-        FilterObjects filterObjects = new FilterObjects(new ModuleCollection());
+        FilterObjects filterObjects = new FilterObjects(new Modules());
         filterObjects.updateParameterValue(FilterObjects.INPUT_OBJECTS,"TestObj");
         filterObjects.updateParameterValue(FilterObjects.FILTER_METHOD,FilterObjects.FilterMethods.MAX_NUMBER_OF_CHILDREN);
         filterObjects.updateParameterValue(FilterObjects.CHILD_OBJECTS,"Children");
@@ -326,7 +326,7 @@ public class FilterObjectsTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testRunMissingParent(VolumeType volumeType) throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Setting calibration parameters
@@ -335,12 +335,12 @@ public class FilterObjectsTest extends ModuleTest {
         String calibratedUnits = "µm";
 
         // Getting test objects
-        ObjCollection testObjects = new Objects3D(volumeType).getObjects("TestObj",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        Objs testObjects = new Objects3D(volumeType).getObjects("TestObj",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(testObjects);
 
         // Creating a second set of objects and relate these to the test objects.
         boolean[] parents = new boolean[]{true,true,false,true,false,false,false,true};
-        ObjCollection parentObjects = new ObjCollection("Parents",testObjects);
+        Objs parentObjects = new Objs("Parents",testObjects);
 
         int counter = 0;
         for (Obj testObject:testObjects.values()) {
@@ -354,7 +354,7 @@ public class FilterObjectsTest extends ModuleTest {
         }
 
         // Initialising FilterObjects module
-        FilterObjects filterObjects = new FilterObjects(new ModuleCollection());
+        FilterObjects filterObjects = new FilterObjects(new Modules());
         filterObjects.updateParameterValue(FilterObjects.INPUT_OBJECTS,"TestObj");
         filterObjects.updateParameterValue(FilterObjects.FILTER_METHOD,FilterObjects.FilterMethods.NO_PARENT);
         filterObjects.updateParameterValue(FilterObjects.PARENT_OBJECT,"Parents");
@@ -372,7 +372,7 @@ public class FilterObjectsTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testRunWithParent(VolumeType volumeType) throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Setting calibration parameters
@@ -381,12 +381,12 @@ public class FilterObjectsTest extends ModuleTest {
         String calibratedUnits = "µm";
 
         // Getting test objects
-        ObjCollection testObjects = new Objects3D(volumeType).getObjects("TestObj",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        Objs testObjects = new Objects3D(volumeType).getObjects("TestObj",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(testObjects);
 
         // Creating a second set of objects and relate these to the test objects.
         boolean[] parents = new boolean[]{true,true,false,true,false,false,true,true};
-        ObjCollection parentObjects = new ObjCollection("Parents",testObjects);
+        Objs parentObjects = new Objs("Parents",testObjects);
 
         int counter = 0;
         for (Obj testObject:testObjects.values()) {
@@ -401,7 +401,7 @@ public class FilterObjectsTest extends ModuleTest {
         }
 
         // Initialising FilterObjects module
-        FilterObjects filterObjects = new FilterObjects(new ModuleCollection());
+        FilterObjects filterObjects = new FilterObjects(new Modules());
         filterObjects.updateParameterValue(FilterObjects.INPUT_OBJECTS,"TestObj");
         filterObjects.updateParameterValue(FilterObjects.FILTER_METHOD,FilterObjects.FilterMethods.WITH_PARENT);
         filterObjects.updateParameterValue(FilterObjects.PARENT_OBJECT,"Parents");

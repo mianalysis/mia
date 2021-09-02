@@ -13,9 +13,9 @@ import ome.units.UNITS;
 import ome.units.quantity.Time;
 import ome.units.unit.Unit;
 import io.github.mianalysis.MIA.Module.Module;
-import io.github.mianalysis.MIA.Module.ModuleCollection;
-import io.github.mianalysis.MIA.Object.References.ObjMeasurementRef;
-import io.github.mianalysis.MIA.Object.References.Collections.ObjMeasurementRefCollection;
+import io.github.mianalysis.MIA.Module.Modules;
+import io.github.mianalysis.MIA.Object.Refs.ObjMeasurementRef;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ObjMeasurementRefs;
 import io.github.mianalysis.MIA.Object.Units.TemporalUnit;
 import io.github.mianalysis.MIA.Process.ColourFactory;
 import io.github.sjcross.common.ImageJ.LUTs;
@@ -27,7 +27,7 @@ import io.github.sjcross.common.Object.Volume.VolumeType;
 /**
  * Created by sc13967 on 12/05/2017.
  */
-public class ObjCollection extends LinkedHashMap<Integer, Obj> {
+public class Objs extends LinkedHashMap<Integer, Obj> {
     /**
      *
      */
@@ -39,7 +39,7 @@ public class ObjCollection extends LinkedHashMap<Integer, Obj> {
     private double frameInterval;
     private Unit<Time> temporalUnit;
 
-    public ObjCollection(String name, SpatCal cal, int nFrames, double frameInterval, Unit<Time> temporalUnit) {
+    public Objs(String name, SpatCal cal, int nFrames, double frameInterval, Unit<Time> temporalUnit) {
         this.name = name;
         this.spatCal = cal;
         this.nFrames = nFrames;
@@ -48,7 +48,7 @@ public class ObjCollection extends LinkedHashMap<Integer, Obj> {
 
     }
 
-    public ObjCollection(String name, ObjCollection exampleCollection) {
+    public Objs(String name, Objs exampleCollection) {
         this.name = name;
         this.spatCal = exampleCollection.getSpatialCalibration();
         this.nFrames = exampleCollection.getNFrames();
@@ -193,7 +193,7 @@ public class ObjCollection extends LinkedHashMap<Integer, Obj> {
     }
 
     public Obj getAsSingleObject() {
-        ObjCollection newCollection = new ObjCollection("Single",this);
+        Objs newCollection = new Objs("Single",this);
 
         VolumeType volumeType = VolumeType.POINTLIST;
         Obj firstObj = getFirst();
@@ -338,9 +338,9 @@ public class ObjCollection extends LinkedHashMap<Integer, Obj> {
      * 
      * @param module
      */
-    public void showMeasurements(Module module, ModuleCollection modules) {
+    public void showMeasurements(Module module, Modules modules) {
         // Getting MeasurementReferences
-        ObjMeasurementRefCollection measRefs = module.updateAndGetObjectMeasurementRefs();
+        ObjMeasurementRefs measRefs = module.updateAndGetObjectMeasurementRefs();
         if (measRefs == null)
             return;
 

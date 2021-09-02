@@ -33,24 +33,24 @@ import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 
 import io.github.mianalysis.MIA.MIA;
 import io.github.mianalysis.MIA.Module.Module;
-import io.github.mianalysis.MIA.Module.ModuleCollection;
+import io.github.mianalysis.MIA.Module.Modules;
 import io.github.mianalysis.MIA.Object.Image;
 import io.github.mianalysis.MIA.Object.Measurement;
 import io.github.mianalysis.MIA.Object.Obj;
-import io.github.mianalysis.MIA.Object.ObjCollection;
+import io.github.mianalysis.MIA.Object.Objs;
 import io.github.mianalysis.MIA.Object.Workspace;
-import io.github.mianalysis.MIA.Object.WorkspaceCollection;
+import io.github.mianalysis.MIA.Object.Workspaces;
 import io.github.mianalysis.MIA.Object.Parameters.OutputImageP;
-import io.github.mianalysis.MIA.Object.Parameters.ParameterCollection;
+import io.github.mianalysis.MIA.Object.Parameters.Parameters;
 import io.github.mianalysis.MIA.Object.Parameters.ParameterGroup;
 import io.github.mianalysis.MIA.Object.Parameters.Abstract.Parameter;
 import io.github.mianalysis.MIA.Object.Parameters.Objects.OutputObjectsP;
-import io.github.mianalysis.MIA.Object.References.ImageMeasurementRef;
-import io.github.mianalysis.MIA.Object.References.MetadataRef;
-import io.github.mianalysis.MIA.Object.References.ObjMeasurementRef;
-import io.github.mianalysis.MIA.Object.References.Collections.ImageMeasurementRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.MetadataRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.ObjMeasurementRefCollection;
+import io.github.mianalysis.MIA.Object.Refs.ImageMeasurementRef;
+import io.github.mianalysis.MIA.Object.Refs.MetadataRef;
+import io.github.mianalysis.MIA.Object.Refs.ObjMeasurementRef;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ImageMeasurementRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.MetadataRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ObjMeasurementRefs;
 import io.github.mianalysis.MIA.Process.AnalysisHandling.Analysis;
 import io.github.mianalysis.MIA.Process.Logging.LogRenderer;
 import io.github.mianalysis.MIA.Process.Logging.LogRenderer.Level;
@@ -86,7 +86,7 @@ public class Exporter {
 
     // PUBLIC METHODS
 
-    public void exportResults(WorkspaceCollection workspaces, Analysis analysis, String exportFilePath) throws IOException {
+    public void exportResults(Workspaces workspaces, Analysis analysis, String exportFilePath) throws IOException {
         switch (exportMode) {
             case ALL_TOGETHER:
                 export(workspaces,analysis,exportFilePath);
@@ -103,7 +103,7 @@ public class Exporter {
                 }
 
                 for (String metadataValue:metadataValues) {
-                    WorkspaceCollection currentWorkspaces = new WorkspaceCollection();
+                    Workspaces currentWorkspaces = new Workspaces();
 
                     // Adding Workspaces matching this metadata value
                     for (Workspace workspace:workspaces) {
@@ -126,16 +126,16 @@ public class Exporter {
     }
 
     public void exportResults(Workspace workspace, Analysis analysis, String name) throws IOException {
-        WorkspaceCollection currentWorkspaces = new WorkspaceCollection();
+        Workspaces currentWorkspaces = new Workspaces();
         currentWorkspaces.add(workspace);
 
         export(currentWorkspaces,analysis,name);
 
     }
 
-    public void export(WorkspaceCollection workspaces, Analysis analysis, String name) throws IOException {
+    public void export(Workspaces workspaces, Analysis analysis, String name) throws IOException {
         // Getting modules
-        ModuleCollection modules = analysis.getModules();
+        Modules modules = analysis.getModules();
 
         // Initialising the workbook
         SXSSFWorkbook workbook = new SXSSFWorkbook();
@@ -225,7 +225,7 @@ public class Exporter {
     }
 
     private void prepareParameters(SXSSFWorkbook workbook, Analysis analysis) {
-        ModuleCollection modules = analysis.getModules();
+        Modules modules = analysis.getModules();
 
         // Creating a sheet for parameters
         Sheet paramSheet = workbook.createSheet("Parameters");
@@ -270,7 +270,7 @@ public class Exporter {
 
     }
 
-    private int appendModuleParameters(Sheet sheet, Module module, ParameterCollection parameters, int rowIdx) {
+    private int appendModuleParameters(Sheet sheet, Module module, Parameters parameters, int rowIdx) {
         // Adding module row.  Module will be null if coming from a ParameterGroup
         Row row = null;
         if (module != null) {
@@ -294,8 +294,8 @@ public class Exporter {
 
             // If this parameter is a ParameterGroup, also list those parameters
             if (currParam instanceof ParameterGroup) {
-                LinkedHashMap<Integer,ParameterCollection> collections = ((ParameterGroup) currParam).getCollections(false);
-                for (ParameterCollection collection:collections.values()) rowIdx = appendModuleParameters(sheet,null,collection,rowIdx);
+                LinkedHashMap<Integer,Parameters> collections = ((ParameterGroup) currParam).getCollections(false);
+                for (Parameters collection:collections.values()) rowIdx = appendModuleParameters(sheet,null,collection,rowIdx);
             }
         }
 
@@ -319,7 +319,7 @@ public class Exporter {
         }
     }
 
-    private void prepareSummary(SXSSFWorkbook workbook, WorkspaceCollection workspaces, ModuleCollection modules,
+    private void prepareSummary(SXSSFWorkbook workbook, Workspaces workspaces, Modules modules,
                                 SummaryMode summaryType) {
         AtomicInteger headerCol = new AtomicInteger(0);
 
@@ -372,7 +372,7 @@ public class Exporter {
         }
     }
 
-    private void addSummaryMetadataHeaders(Row summaryHeaderRow, ModuleCollection modules, HashMap<String,Integer> colNumbers, AtomicInteger headerCol, SummaryMode summaryType) {
+    private void addSummaryMetadataHeaders(Row summaryHeaderRow, Modules modules, HashMap<String,Integer> colNumbers, AtomicInteger headerCol, SummaryMode summaryType) {
         Workbook workbook = summaryHeaderRow.getSheet().getWorkbook();
 
         // Creating bold font
@@ -393,7 +393,7 @@ public class Exporter {
             case PER_FILE:
             case PER_TIMEPOINT_PER_FILE:
                 // Adding metadata headers
-                MetadataRefCollection metadataRefs = modules.getMetadataRefs(null);
+                MetadataRefs metadataRefs = modules.getMetadataRefs(null);
                 // Running through all the metadata values, adding them as new columns
                 for (MetadataRef ref:metadataRefs.values()) {
                     if (!ref.isExportGlobal()) continue;
@@ -436,7 +436,7 @@ public class Exporter {
         }
     }
 
-    private void addSummaryImageHeaders(Row summaryHeaderRow, ModuleCollection modules, HashMap<String,Integer> colNumbers, AtomicInteger headerCol) {
+    private void addSummaryImageHeaders(Row summaryHeaderRow, Modules modules, HashMap<String,Integer> colNumbers, AtomicInteger headerCol) {
         Workbook workbook = summaryHeaderRow.getSheet().getWorkbook();
 
         // Creating bold font
@@ -450,7 +450,7 @@ public class Exporter {
             for (OutputImageP availableImage : availableImages) {
                 String availableImageName = availableImage.getImageName();
 
-                ImageMeasurementRefCollection availableMeasurements = modules.getImageMeasurementRefs(availableImageName);
+                ImageMeasurementRefs availableMeasurements = modules.getImageMeasurementRefs(availableImageName);
 
                 // Running through all the image measurement values, adding them as new columns
                 for (ImageMeasurementRef imageMeasurement:availableMeasurements.values()) {
@@ -468,7 +468,7 @@ public class Exporter {
         }
     }
 
-    private void addSummaryObjectHeaders(Row summaryHeaderRow, ModuleCollection modules, HashMap<String,Integer> colNumbers, AtomicInteger headerCol) {
+    private void addSummaryObjectHeaders(Row summaryHeaderRow, Modules modules, HashMap<String,Integer> colNumbers, AtomicInteger headerCol) {
         Workbook workbook = summaryHeaderRow.getSheet().getWorkbook();
 
         // Creating bold font
@@ -496,7 +496,7 @@ public class Exporter {
                 }
 
 
-                ObjMeasurementRefCollection objectMeasurementRefs = modules.getObjectMeasurementRefs(availableObjectName);
+                ObjMeasurementRefs objectMeasurementRefs = modules.getObjectMeasurementRefs(availableObjectName);
 
                 // If the current object hasn't got any assigned measurements, skip it
                 if (objectMeasurementRefs == null) continue;
@@ -567,7 +567,7 @@ public class Exporter {
 
     }
 
-    private void populateSummaryRow(Row summaryValueRow, Workspace workspace, ModuleCollection modules,
+    private void populateSummaryRow(Row summaryValueRow, Workspace workspace, Modules modules,
                                     HashMap<String,Integer> colNumbers, @Nullable String groupTitle, @Nullable String groupValue) {
 
         // Adding metadata values
@@ -590,7 +590,7 @@ public class Exporter {
         for (Image image:images.values()) {
             String imageName = image.getName();
 
-            ImageMeasurementRefCollection imageMeasurementRefs = modules.getImageMeasurementRefs(imageName);
+            ImageMeasurementRefs imageMeasurementRefs = modules.getImageMeasurementRefs(imageName);
 
             // If the current object hasn't got any assigned measurements, skip it
             if (imageMeasurementRefs == null) continue;
@@ -615,8 +615,8 @@ public class Exporter {
         }
 
         // Adding object measurements
-        HashMap<String, ObjCollection> objSets = workspace.getObjects();
-        for (ObjCollection objCollection :objSets.values()) {
+        HashMap<String, Objs> objSets = workspace.getObjects();
+        for (Objs objCollection :objSets.values()) {
             String objSetName = objCollection.getName();
             double val; String headerName; int colNum; Cell summaryCell;
 
@@ -628,7 +628,7 @@ public class Exporter {
                 summaryCell.setCellValue(objCollection.size());
             }
             
-            ObjMeasurementRefCollection objectMeasurementRefs = modules.getObjectMeasurementRefs(objSetName);
+            ObjMeasurementRefs objectMeasurementRefs = modules.getObjectMeasurementRefs(objSetName);
 
             // If the current object hasn't got any assigned measurements, skip it
             if (objectMeasurementRefs == null) continue;
@@ -697,7 +697,7 @@ public class Exporter {
         }
     }
 
-    private void prepareObjectsXLS(SXSSFWorkbook workbook, WorkspaceCollection workspaces, ModuleCollection modules) {
+    private void prepareObjectsXLS(SXSSFWorkbook workbook, Workspaces workspaces, Modules modules) {
         // Creating bold font
         CellStyle cellStyle = workbook.createCellStyle();
         Font font = workbook.createFont();
@@ -714,7 +714,7 @@ public class Exporter {
 
         LinkedHashMap<Integer, String> metadataNames = new LinkedHashMap<>();
 
-        // Using the first workspace in the WorkspaceCollection to initialise column headers
+        // Using the first workspace in the Workspaces to initialise column headers
         LinkedHashSet<OutputObjectsP> availableObjects = modules.getAvailableObjects(null,true);
         if (availableObjects == null) return;
 
@@ -743,7 +743,7 @@ public class Exporter {
             addComment(cell,text);
 
             // Running through all the metadata values, adding them as new columns
-            MetadataRefCollection metadataRefs = modules.getMetadataRefs(null);
+            MetadataRefs metadataRefs = modules.getMetadataRefs(null);
             for (MetadataRef ref : metadataRefs.values()) {
                 if (!ref.isExportGlobal()) continue;
                 if (!ref.isExportIndividual()) continue;
@@ -755,7 +755,7 @@ public class Exporter {
             }
             
             // Running through all the object measurement values, adding them as new columns
-            ObjMeasurementRefCollection objectMeasurementRefs = modules.getObjectMeasurementRefs(objectName);
+            ObjMeasurementRefs objectMeasurementRefs = modules.getObjectMeasurementRefs(objectName);
             for (ObjMeasurementRef objectMeasurement : objectMeasurementRefs.values()) {
                 if (!objectMeasurement.isExportIndividual()) continue;
                 if (!objectMeasurement.isExportGlobal()) continue;
@@ -773,7 +773,7 @@ public class Exporter {
         // Running through each Workspace, adding rows
         for (Workspace workspace : workspaces) {
             for (String objectName : workspace.getObjects().keySet()) {
-                ObjCollection objects = workspace.getObjects().get(objectName);
+                Objs objects = workspace.getObjects().get(objectName);
 
                 if (!modules.objectsExportMeasurements(objectName)) continue;
 

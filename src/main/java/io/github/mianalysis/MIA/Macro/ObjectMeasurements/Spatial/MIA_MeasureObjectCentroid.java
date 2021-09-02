@@ -2,7 +2,7 @@ package io.github.mianalysis.MIA.Macro.ObjectMeasurements.Spatial;
 
 import ij.macro.MacroExtension;
 import io.github.mianalysis.MIA.Macro.MacroOperation;
-import io.github.mianalysis.MIA.Module.ModuleCollection;
+import io.github.mianalysis.MIA.Module.Modules;
 import io.github.mianalysis.MIA.Module.ObjectMeasurements.Spatial.MeasureObjectCentroid;
 import io.github.mianalysis.MIA.Object.Workspace;
 
@@ -17,7 +17,7 @@ public class MIA_MeasureObjectCentroid extends MacroOperation {
     }
 
     @Override
-    public String action(Object[] objects, Workspace workspace, ModuleCollection modules) {
+    public String action(Object[] objects, Workspace workspace, Modules modules) {
         MeasureObjectCentroid measureObjectCentroid = new MeasureObjectCentroid(modules);
 
         measureObjectCentroid.updateParameterValue(MeasureObjectCentroid.INPUT_OBJECTS,objects[0]);

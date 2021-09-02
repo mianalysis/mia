@@ -25,14 +25,14 @@ import fiji.plugin.trackmate.util.Version;
 import io.github.mianalysis.MIA.MIA;
 import io.github.mianalysis.MIA.GUI.GUI;
 import io.github.mianalysis.MIA.Module.Module;
-import io.github.mianalysis.MIA.Module.ModuleCollection;
+import io.github.mianalysis.MIA.Module.Modules;
 import io.github.mianalysis.MIA.Module.Core.InputControl;
 import io.github.mianalysis.MIA.Module.Core.OutputControl;
-import io.github.mianalysis.MIA.Object.Parameters.ParameterCollection;
+import io.github.mianalysis.MIA.Object.Parameters.Parameters;
 import io.github.mianalysis.MIA.Object.Parameters.Abstract.Parameter;
-import io.github.mianalysis.MIA.Object.References.ImageMeasurementRef;
-import io.github.mianalysis.MIA.Object.References.MetadataRef;
-import io.github.mianalysis.MIA.Object.References.ObjMeasurementRef;
+import io.github.mianalysis.MIA.Object.Refs.ImageMeasurementRef;
+import io.github.mianalysis.MIA.Object.Refs.MetadataRef;
+import io.github.mianalysis.MIA.Object.Refs.ObjMeasurementRef;
 import io.github.mianalysis.MIA.Process.ClassHunter;
 import io.github.mianalysis.MIA.Process.AnalysisHandling.LegacyReaders.AnalysisReader_0p10p0_0p15p0;
 import io.github.mianalysis.MIA.Process.AnalysisHandling.LegacyReaders.AnalysisReader_Pre_0p10p0;
@@ -94,16 +94,16 @@ public class AnalysisReader {
             return AnalysisReader_0p10p0_0p15p0.loadAnalysis(xml);
 
         Analysis analysis = new Analysis();
-        ModuleCollection modules = loadModules(doc, loadedVersion);
+        Modules modules = loadModules(doc, loadedVersion);
         analysis.setModules(modules);
 
         return analysis;
 
     }
 
-    public static ModuleCollection loadModules(Document doc, Version loadedVersion)
+    public static Modules loadModules(Document doc, Version loadedVersion)
             throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
-        ModuleCollection modules = new ModuleCollection();
+        Modules modules = new Modules();
 
         // Creating a list of all available modules (rather than reading their full
         // path, in case they move) using
@@ -140,7 +140,7 @@ public class AnalysisReader {
 
     }
 
-    public static Module initialiseModule(Node moduleNode, ModuleCollection modules, List<String> availableModuleNames)
+    public static Module initialiseModule(Node moduleNode, Modules modules, List<String> availableModuleNames)
             throws IllegalAccessException, InstantiationException, NoSuchMethodException, InvocationTargetException {
 
         NamedNodeMap moduleAttributes = moduleNode.getAttributes();
@@ -164,7 +164,7 @@ public class AnalysisReader {
 
     }
 
-    public static Module initialiseModule(Node moduleNode, ModuleCollection modules, String availableModuleName)
+    public static Module initialiseModule(Node moduleNode, Modules modules, String availableModuleName)
             throws IllegalAccessException, InstantiationException, NoSuchMethodException, InvocationTargetException {
         Class<Module> clazz = null;
         try {
@@ -172,7 +172,7 @@ public class AnalysisReader {
         } catch (ClassNotFoundException e) {
             MIA.log.writeError(e);
         }
-        Module module = (Module) clazz.getDeclaredConstructor(ModuleCollection.class).newInstance(modules);
+        Module module = (Module) clazz.getDeclaredConstructor(Modules.class).newInstance(modules);
 
         // Populating parameters
         NodeList moduleChildNodes = moduleNode.getChildNodes();
@@ -213,7 +213,7 @@ public class AnalysisReader {
 
     }
 
-    public static void initialiseParameter(Node referenceNode, Module module, ParameterCollection parameters) {
+    public static void initialiseParameter(Node referenceNode, Module module, Parameters parameters) {
         // Getting measurement properties
         NamedNodeMap attributes = referenceNode.getAttributes();
         if (attributes == null)

@@ -33,22 +33,22 @@ import io.github.mianalysis.MIA.GUI.Regions.ParameterList.ShowBasicTitleCheck;
 import io.github.mianalysis.MIA.GUI.Regions.ParameterList.VisibleCheck;
 import io.github.mianalysis.MIA.GUI.Regions.WorkflowModules.ModuleEnabledButton;
 import io.github.mianalysis.MIA.Module.Module;
-import io.github.mianalysis.MIA.Module.ModuleCollection;
+import io.github.mianalysis.MIA.Module.Modules;
 import io.github.mianalysis.MIA.Module.Core.InputControl;
 import io.github.mianalysis.MIA.Module.Core.OutputControl;
 import io.github.mianalysis.MIA.Module.Miscellaneous.GUISeparator;
 import io.github.mianalysis.MIA.Object.Colours;
 import io.github.mianalysis.MIA.Object.Parameters.BooleanP;
 import io.github.mianalysis.MIA.Object.Parameters.ObjMeasurementSelectorP;
-import io.github.mianalysis.MIA.Object.Parameters.ParameterCollection;
+import io.github.mianalysis.MIA.Object.Parameters.Parameters;
 import io.github.mianalysis.MIA.Object.Parameters.ParameterGroup;
 import io.github.mianalysis.MIA.Object.Parameters.SeparatorP;
 import io.github.mianalysis.MIA.Object.Parameters.Abstract.Parameter;
 import io.github.mianalysis.MIA.Object.Parameters.Text.MessageP;
 import io.github.mianalysis.MIA.Object.Parameters.Text.TextAreaP;
-import io.github.mianalysis.MIA.Object.References.Abstract.ExportableRef;
-import io.github.mianalysis.MIA.Object.References.Abstract.SummaryRef;
-import io.github.mianalysis.MIA.Object.References.Collections.RefCollection;
+import io.github.mianalysis.MIA.Object.Refs.Abstract.ExportableRef;
+import io.github.mianalysis.MIA.Object.Refs.Abstract.SummaryRef;
+import io.github.mianalysis.MIA.Object.Refs.Collections.Refs;
 
 /**
  * Created by Stephen on 23/06/2017.
@@ -69,7 +69,7 @@ public class ComponentFactory {
         this.elementHeight = elementHeight;
     }
 
-    public JPanel createParameterControl(Parameter parameter, ModuleCollection modules, Module module,
+    public JPanel createParameterControl(Parameter parameter, Modules modules, Module module,
             boolean editable) {
         JPanel paramPanel = new JPanel(new GridBagLayout());
 
@@ -397,13 +397,13 @@ public class ComponentFactory {
 
     }
 
-    private void addParameters(Module module, ParameterCollection parameters, JPanel modulePanel, GridBagConstraints c,
+    private void addParameters(Module module, Parameters parameters, JPanel modulePanel, GridBagConstraints c,
             boolean editable) {
         for (Parameter parameter : parameters.values()) {
             if (parameter.getClass() == ParameterGroup.class) {
-                LinkedHashMap<Integer, ParameterCollection> collections = ((ParameterGroup) parameter)
+                LinkedHashMap<Integer, Parameters> collections = ((ParameterGroup) parameter)
                         .getCollections(true);
-                for (ParameterCollection collection : collections.values())
+                for (Parameters collection : collections.values())
                     addParameters(module, collection, modulePanel, c, editable);
 
             }
@@ -417,7 +417,7 @@ public class ComponentFactory {
     }
 
     private JPanel createSummaryExportLabels(boolean includeSummary) {
-        ParameterCollection outputParameters = GUI.getModules().getOutputControl().updateAndGetParameters();
+        Parameters outputParameters = GUI.getModules().getOutputControl().updateAndGetParameters();
         String exportMode = outputParameters.getValue(OutputControl.EXPORT_MODE);
         BooleanP exportIndividual = outputParameters.getParameter(OutputControl.EXPORT_INDIVIDUAL_OBJECTS);
         BooleanP exportSummary = outputParameters.getParameter(OutputControl.EXPORT_SUMMARY);
@@ -485,7 +485,7 @@ public class ComponentFactory {
     }
 
     private JPanel createExportControls(ExportableRef ref, ExportCheck.Type type) {
-        ParameterCollection outputParameters = GUI.getModules().getOutputControl().updateAndGetParameters();
+        Parameters outputParameters = GUI.getModules().getOutputControl().updateAndGetParameters();
         String exportMode = outputParameters.getValue(OutputControl.EXPORT_MODE);
         BooleanP exportIndividual = (BooleanP) outputParameters.getParameter(OutputControl.EXPORT_INDIVIDUAL_OBJECTS);
 
@@ -515,7 +515,7 @@ public class ComponentFactory {
     }
 
     private JPanel createExportControls(SummaryRef ref, ExportCheck.Type type) {
-        ParameterCollection outputParameters = GUI.getModules().getOutputControl().updateAndGetParameters();
+        Parameters outputParameters = GUI.getModules().getOutputControl().updateAndGetParameters();
         BooleanP exportIndividual = (BooleanP) outputParameters.getParameter(OutputControl.EXPORT_INDIVIDUAL_OBJECTS);
         BooleanP exportSummary = (BooleanP) outputParameters.getParameter(OutputControl.EXPORT_SUMMARY);
 
@@ -610,7 +610,7 @@ public class ComponentFactory {
     // return summaryPanel;
     // }
 
-    public JPanel createRefExportHeader(String name, RefCollection refs, boolean includeSummary) {
+    public JPanel createRefExportHeader(String name, Refs refs, boolean includeSummary) {
         JPanel headerPanel = new JPanel(new GridBagLayout());
 
         GridBagConstraints c = new GridBagConstraints();

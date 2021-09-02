@@ -13,7 +13,7 @@ import io.github.mianalysis.MIA.MIA;
 import io.github.mianalysis.MIA.Macro.MacroHandler;
 import io.github.mianalysis.MIA.Module.Categories;
 import io.github.mianalysis.MIA.Module.Category;
-import io.github.mianalysis.MIA.Module.ModuleCollection;
+import io.github.mianalysis.MIA.Module.Modules;
 import io.github.mianalysis.MIA.Module.Core.InputControl;
 import io.github.mianalysis.MIA.Module.Miscellaneous.GlobalVariables;
 import io.github.mianalysis.MIA.Object.Image;
@@ -26,18 +26,18 @@ import io.github.mianalysis.MIA.Object.Parameters.FilePathP;
 import io.github.mianalysis.MIA.Object.Parameters.GenericButtonP;
 import io.github.mianalysis.MIA.Object.Parameters.InputImageP;
 import io.github.mianalysis.MIA.Object.Parameters.OutputImageP;
-import io.github.mianalysis.MIA.Object.Parameters.ParameterCollection;
+import io.github.mianalysis.MIA.Object.Parameters.Parameters;
 import io.github.mianalysis.MIA.Object.Parameters.ParameterGroup;
 import io.github.mianalysis.MIA.Object.Parameters.SeparatorP;
 import io.github.mianalysis.MIA.Object.Parameters.Abstract.TextType;
 import io.github.mianalysis.MIA.Object.Parameters.Text.StringP;
 import io.github.mianalysis.MIA.Object.Parameters.Text.TextAreaP;
-import io.github.mianalysis.MIA.Object.References.ImageMeasurementRef;
-import io.github.mianalysis.MIA.Object.References.Collections.ImageMeasurementRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.MetadataRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.ObjMeasurementRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.ParentChildRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.PartnerRefCollection;
+import io.github.mianalysis.MIA.Object.Refs.ImageMeasurementRef;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ImageMeasurementRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.MetadataRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ObjMeasurementRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ParentChildRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.PartnerRefs;
 
 /**
  * Created by Stephen on 31/01/2018.
@@ -68,7 +68,7 @@ public class RunMacro extends AbstractMacroRunner {
 
     }
 
-    public RunMacro(ModuleCollection modules) {
+    public RunMacro(Modules modules) {
         super("Run macro", modules);
     }
 
@@ -220,7 +220,7 @@ public class RunMacro extends AbstractMacroRunner {
         parameters.add(new OutputImageP(OUTPUT_IMAGE, this));
 
         parameters.add(new SeparatorP(OUTPUT_SEPARATOR, this));
-        ParameterCollection measurementCollection = new ParameterCollection();
+        Parameters measurementCollection = new Parameters();
         measurementCollection.add(new StringP(VARIABLE, this));
         parameters.add(new ParameterGroup(ADD_INTERCEPTED_VARIABLE, this, measurementCollection));
 
@@ -229,8 +229,8 @@ public class RunMacro extends AbstractMacroRunner {
     }
 
     @Override
-    public ParameterCollection updateAndGetParameters() {
-        ParameterCollection returnedParameters = new ParameterCollection();
+    public Parameters updateAndGetParameters() {
+        Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(PROVIDE_INPUT_IMAGE));
@@ -276,8 +276,8 @@ public class RunMacro extends AbstractMacroRunner {
     }
 
     @Override
-    public ImageMeasurementRefCollection updateAndGetImageMeasurementRefs() {
-        ImageMeasurementRefCollection returnedRefs = new ImageMeasurementRefCollection();
+    public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
+        ImageMeasurementRefs returnedRefs = new ImageMeasurementRefs();
 
         // If no input image is provided, there's nowhere to store the values
         if (!(boolean) parameters.getValue(PROVIDE_INPUT_IMAGE))
@@ -300,22 +300,22 @@ public class RunMacro extends AbstractMacroRunner {
     }
 
     @Override
-    public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MetadataRefCollection updateAndGetMetadataReferences() {
+    public MetadataRefs updateAndGetMetadataReferences() {
         return null;
     }
 
     @Override
-    public ParentChildRefCollection updateAndGetParentChildRefs() {
+    public ParentChildRefs updateAndGetParentChildRefs() {
         return null;
     }
 
     @Override
-    public PartnerRefCollection updateAndGetPartnerRefs() {
+    public PartnerRefs updateAndGetPartnerRefs() {
         return null;
     }
 
@@ -365,7 +365,7 @@ public class RunMacro extends AbstractMacroRunner {
                 "This allows variables assigned in the macro to be stored as measurements associated with the input image.");
 
         ParameterGroup group = (ParameterGroup) parameters.get(ADD_INTERCEPTED_VARIABLE);
-        ParameterCollection collection = group.getTemplateParameters();
+        Parameters collection = group.getTemplateParameters();
         collection.get(VARIABLE).setDescription(
                 "Variable assigned in the macro to be stored as a measurement associated with the input image.  This name must exactly match (including case) the name as written in the macro.");
     }

@@ -1,15 +1,15 @@
-package io.github.mianalysis.MIA.Object.References.Collections;
+package io.github.mianalysis.MIA.Object.Refs.Collections;
 
 import java.util.TreeMap;
 
 import io.github.mianalysis.MIA.Object.Measurement;
 import io.github.mianalysis.MIA.Object.Obj;
-import io.github.mianalysis.MIA.Object.References.ObjMeasurementRef;
+import io.github.mianalysis.MIA.Object.Refs.ObjMeasurementRef;
 import io.github.mianalysis.MIA.Object.Units.SpatialUnit;
 import io.github.mianalysis.MIA.Object.Units.TemporalUnit;
 
-public class ObjMeasurementRefCollection extends TreeMap<String, ObjMeasurementRef>
-        implements RefCollection<ObjMeasurementRef> {
+public class ObjMeasurementRefs extends TreeMap<String, ObjMeasurementRef>
+        implements Refs<ObjMeasurementRef> {
     /**
      *
      */

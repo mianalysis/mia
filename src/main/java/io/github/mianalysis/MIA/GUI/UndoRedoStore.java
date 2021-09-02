@@ -2,14 +2,14 @@ package io.github.mianalysis.MIA.GUI;
 
 import java.util.LinkedList;
 
-import io.github.mianalysis.MIA.Module.ModuleCollection;
+import io.github.mianalysis.MIA.Module.Modules;
 
 public class UndoRedoStore {
     private int limit = 100;
-    private LinkedList<ModuleCollection> undoStore = new LinkedList<>();
-    private LinkedList<ModuleCollection> redoStore = new LinkedList<>();
+    private LinkedList<Modules> undoStore = new LinkedList<>();
+    private LinkedList<Modules> redoStore = new LinkedList<>();
 
-    public void addUndo(ModuleCollection modules) {
+    public void addUndo(Modules modules) {
         undoStore.addFirst(modules.duplicate());
         checkLimit();
 
@@ -18,7 +18,7 @@ public class UndoRedoStore {
 
     }
 
-    public ModuleCollection getNextUndo(ModuleCollection modules) {
+    public Modules getNextUndo(Modules modules) {
         if (undoStore.size() == 0) return null;
 
         if (modules != null) redoStore.addFirst(modules);
@@ -26,7 +26,7 @@ public class UndoRedoStore {
 
     }
 
-    public ModuleCollection getNextRedo(ModuleCollection modules) {
+    public Modules getNextRedo(Modules modules) {
         if (redoStore.size() == 0) return null;
 
         if (modules != null) undoStore.addFirst(modules);

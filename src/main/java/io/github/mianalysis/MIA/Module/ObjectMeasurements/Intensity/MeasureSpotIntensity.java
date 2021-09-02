@@ -2,7 +2,7 @@ package io.github.mianalysis.MIA.Module.ObjectMeasurements.Intensity;
 
 import ij.ImagePlus;
 import io.github.mianalysis.MIA.Module.Module;
-import io.github.mianalysis.MIA.Module.ModuleCollection;
+import io.github.mianalysis.MIA.Module.Modules;
 import io.github.mianalysis.MIA.Module.Core.InputControl;
 import io.github.mianalysis.MIA.Module.ObjectProcessing.Identification.GetLocalObjectRegion;
 import io.github.mianalysis.MIA.Module.Category;
@@ -10,12 +10,12 @@ import io.github.mianalysis.MIA.Module.Categories;
 import io.github.mianalysis.MIA.Object.*;
 import io.github.mianalysis.MIA.Object.Parameters.*;
 import io.github.mianalysis.MIA.Object.Parameters.Text.DoubleP;
-import io.github.mianalysis.MIA.Object.References.*;
-import io.github.mianalysis.MIA.Object.References.Collections.ImageMeasurementRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.MetadataRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.ObjMeasurementRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.ParentChildRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.PartnerRefCollection;
+import io.github.mianalysis.MIA.Object.Refs.*;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ImageMeasurementRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.MetadataRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ObjMeasurementRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ParentChildRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.PartnerRefs;
 import io.github.sjcross.common.MathFunc.CumStat;
 import io.github.sjcross.common.Object.Point;
 
@@ -61,7 +61,7 @@ public class MeasureSpotIntensity extends Module {
         return "SPOT_INTENSITY // " + imageName + "_" + measurement;
     }
 
-    public MeasureSpotIntensity(ModuleCollection modules) {
+    public MeasureSpotIntensity(Modules modules) {
         super("Measure spot intensity", modules);
         deprecated = true;
     }
@@ -94,7 +94,7 @@ public class MeasureSpotIntensity extends Module {
 
         // Getting objects to measure
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
-        ObjCollection inputObjects = workspace.getObjects().get(inputObjectsName);
+        Objs inputObjects = workspace.getObjects().get(inputObjectsName);
 
         // Getting parameters
         double radius = parameters.getValue(FIXED_VALUE);
@@ -129,7 +129,7 @@ public class MeasureSpotIntensity extends Module {
 
         }
 
-        ObjCollection tempObjects = new ObjCollection("Temp", inputObjects);
+        Objs tempObjects = new Objs("Temp", inputObjects);
         for (Obj inputObject : inputObjects.values()) {
             switch (radiusSource) {
                 case RadiusSources.MEASUREMENT:
@@ -210,11 +210,11 @@ public class MeasureSpotIntensity extends Module {
     }
 
     @Override
-    public ParameterCollection updateAndGetParameters() {
+    public Parameters updateAndGetParameters() {
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
         String parentObjectsName = parameters.getValue(PARENT_OBJECT);
 
-        ParameterCollection returnedParameters = new ParameterCollection();
+        Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(INPUT_IMAGE));
@@ -254,13 +254,13 @@ public class MeasureSpotIntensity extends Module {
     }
 
     @Override
-    public ImageMeasurementRefCollection updateAndGetImageMeasurementRefs() {
+    public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
-        ObjMeasurementRefCollection returnedRefs = new ObjMeasurementRefCollection();
+    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+        ObjMeasurementRefs returnedRefs = new ObjMeasurementRefs();
 
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
         String inputImageName = parameters.getValue(INPUT_IMAGE);
@@ -305,17 +305,17 @@ public class MeasureSpotIntensity extends Module {
     }
 
     @Override
-    public MetadataRefCollection updateAndGetMetadataReferences() {
+    public MetadataRefs updateAndGetMetadataReferences() {
         return null;
     }
 
     @Override
-    public ParentChildRefCollection updateAndGetParentChildRefs() {
+    public ParentChildRefs updateAndGetParentChildRefs() {
         return null;
     }
 
     @Override
-    public PartnerRefCollection updateAndGetPartnerRefs() {
+    public PartnerRefs updateAndGetPartnerRefs() {
         return null;
     }
 

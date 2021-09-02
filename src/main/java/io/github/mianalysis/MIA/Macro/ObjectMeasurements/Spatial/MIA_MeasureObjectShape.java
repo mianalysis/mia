@@ -2,7 +2,7 @@ package io.github.mianalysis.MIA.Macro.ObjectMeasurements.Spatial;
 
 import ij.macro.MacroExtension;
 import io.github.mianalysis.MIA.Macro.MacroOperation;
-import io.github.mianalysis.MIA.Module.ModuleCollection;
+import io.github.mianalysis.MIA.Module.Modules;
 import io.github.mianalysis.MIA.Module.ObjectMeasurements.Spatial.MeasureObjectShape;
 import io.github.mianalysis.MIA.Object.Workspace;
 
@@ -17,7 +17,7 @@ public class MIA_MeasureObjectShape extends MacroOperation {
     }
 
     @Override
-    public String action(Object[] objects, Workspace workspace, ModuleCollection modules) {
+    public String action(Object[] objects, Workspace workspace, Modules modules) {
         MeasureObjectShape measureObjectShape = new MeasureObjectShape(modules);
 
         measureObjectShape.updateParameterValue(MeasureObjectShape.INPUT_OBJECTS,objects[0]);

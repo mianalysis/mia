@@ -3,10 +3,10 @@ package io.github.mianalysis.MIA.Macro.ObjectMeasurements;
 import ij.macro.MacroExtension;
 import ij.measure.ResultsTable;
 import io.github.mianalysis.MIA.Macro.MacroOperation;
-import io.github.mianalysis.MIA.Module.ModuleCollection;
+import io.github.mianalysis.MIA.Module.Modules;
 import io.github.mianalysis.MIA.Object.Workspace;
-import io.github.mianalysis.MIA.Object.References.ObjMeasurementRef;
-import io.github.mianalysis.MIA.Object.References.Collections.ObjMeasurementRefCollection;
+import io.github.mianalysis.MIA.Object.Refs.ObjMeasurementRef;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ObjMeasurementRefs;
 
 public class MIA_ListObjectMeasurementNames extends MacroOperation {
     public MIA_ListObjectMeasurementNames(MacroExtension theHandler) {
@@ -19,7 +19,7 @@ public class MIA_ListObjectMeasurementNames extends MacroOperation {
     }
 
     @Override
-    public String action(Object[] objects, Workspace workspace, ModuleCollection modules) {
+    public String action(Object[] objects, Workspace workspace, Modules modules) {
         String objectName = (String) objects[0];
 
         // Creating a new ResultsTable to hold the Image names
@@ -27,7 +27,7 @@ public class MIA_ListObjectMeasurementNames extends MacroOperation {
         int row = 0;
 
         // Getting a list of Images in the Workspace
-        ObjMeasurementRefCollection measurements = modules.getObjectMeasurementRefs(objectName);
+        ObjMeasurementRefs measurements = modules.getObjectMeasurementRefs(objectName);
         for (ObjMeasurementRef measurement:measurements.values()) {
             if (row != 0) rt.incrementCounter();
 

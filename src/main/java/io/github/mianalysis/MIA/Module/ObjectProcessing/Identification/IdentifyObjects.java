@@ -17,28 +17,28 @@ import inra.ijpb.binary.conncomp.FloodFillComponentsLabeling3D;
 import io.github.mianalysis.MIA.Module.Categories;
 import io.github.mianalysis.MIA.Module.Category;
 import io.github.mianalysis.MIA.Module.Module;
-import io.github.mianalysis.MIA.Module.ModuleCollection;
+import io.github.mianalysis.MIA.Module.Modules;
 import io.github.mianalysis.MIA.Module.ImageProcessing.Pixel.InvertIntensity;
 import io.github.mianalysis.MIA.Module.ImageProcessing.Stack.ImageTypeConverter;
 import io.github.mianalysis.MIA.Object.Image;
 import io.github.mianalysis.MIA.Object.Obj;
-import io.github.mianalysis.MIA.Object.ObjCollection;
+import io.github.mianalysis.MIA.Object.Objs;
 import io.github.mianalysis.MIA.Object.Status;
 import io.github.mianalysis.MIA.Object.VolumeTypesInterface;
 import io.github.mianalysis.MIA.Object.Workspace;
 import io.github.mianalysis.MIA.Object.Parameters.BooleanP;
 import io.github.mianalysis.MIA.Object.Parameters.ChoiceP;
 import io.github.mianalysis.MIA.Object.Parameters.InputImageP;
-import io.github.mianalysis.MIA.Object.Parameters.ParameterCollection;
+import io.github.mianalysis.MIA.Object.Parameters.Parameters;
 import io.github.mianalysis.MIA.Object.Parameters.SeparatorP;
 import io.github.mianalysis.MIA.Object.Parameters.ChoiceInterfaces.BinaryLogicInterface;
 import io.github.mianalysis.MIA.Object.Parameters.Objects.OutputObjectsP;
 import io.github.mianalysis.MIA.Object.Parameters.Text.IntegerP;
-import io.github.mianalysis.MIA.Object.References.Collections.ImageMeasurementRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.MetadataRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.ObjMeasurementRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.ParentChildRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.PartnerRefCollection;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ImageMeasurementRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.MetadataRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ObjMeasurementRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ParentChildRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.PartnerRefs;
 import io.github.mianalysis.MIA.Object.Units.TemporalUnit;
 import io.github.sjcross.common.Exceptions.IntegerOverflowException;
 import io.github.sjcross.common.Object.Volume.SpatCal;
@@ -61,7 +61,7 @@ public class IdentifyObjects extends Module {
     public static final String ENABLE_MULTITHREADING = "Enable multithreading";
     public static final String MIN_STRIP_WIDTH = "Minimum strip width (px)";
 
-    public IdentifyObjects(ModuleCollection modules) {
+    public IdentifyObjects(Modules modules) {
         super("Identify objects", modules);
     }
 
@@ -249,7 +249,7 @@ public class IdentifyObjects extends Module {
 
     }
 
-    public static ObjCollection process(Image inputImage, String outputObjectsName, boolean blackBackground,
+    public static Objs process(Image inputImage, String outputObjectsName, boolean blackBackground,
             boolean singleObject, int connectivity, String type, boolean multithread, int minStripWidth,
             boolean verbose) throws IntegerOverflowException, RuntimeException {
         String name = new IdentifyObjects(null).getName();
@@ -259,7 +259,7 @@ public class IdentifyObjects extends Module {
         SpatCal cal = SpatCal.getFromImage(inputImagePlus);
         int nFrames = inputImagePlus.getNFrames();
         double frameInterval = inputImagePlus.getCalibration().frameInterval;
-        ObjCollection outputObjects = new ObjCollection(outputObjectsName, cal, nFrames, frameInterval,
+        Objs outputObjects = new Objs(outputObjectsName, cal, nFrames, frameInterval,
                 TemporalUnit.getOMEUnit());
 
         for (int t = 1; t <= inputImagePlus.getNFrames(); t++) {
@@ -296,7 +296,7 @@ public class IdentifyObjects extends Module {
 
             // Converting image to objects
             Image tempImage = new Image("Temp image", currStack);
-            ObjCollection currOutputObjects = tempImage.convertImageToObjects(type, outputObjectsName, singleObject);
+            Objs currOutputObjects = tempImage.convertImageToObjects(type, outputObjectsName, singleObject);
 
             // Updating the current objects (setting the real frame number and offsetting
             // the ID)
@@ -362,7 +362,7 @@ public class IdentifyObjects extends Module {
         // Getting options
         int connectivity = getConnectivity(connectivityName);
 
-        ObjCollection outputObjects = process(inputImage, outputObjectsName, blackBackground, singleObject,
+        Objs outputObjects = process(inputImage, outputObjectsName, blackBackground, singleObject,
                 connectivity, type, multithread, minStripWidth, true);
 
         // Adding objects to workspace
@@ -398,8 +398,8 @@ public class IdentifyObjects extends Module {
     }
 
     @Override
-    public ParameterCollection updateAndGetParameters() {
-        ParameterCollection returnedParameters = new ParameterCollection();
+    public Parameters updateAndGetParameters() {
+        Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.get(INPUT_SEPARATOR));
         returnedParameters.add(parameters.get(INPUT_IMAGE));
@@ -422,27 +422,27 @@ public class IdentifyObjects extends Module {
     }
 
     @Override
-    public ImageMeasurementRefCollection updateAndGetImageMeasurementRefs() {
+    public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MetadataRefCollection updateAndGetMetadataReferences() {
+    public MetadataRefs updateAndGetMetadataReferences() {
         return null;
     }
 
     @Override
-    public ParentChildRefCollection updateAndGetParentChildRefs() {
+    public ParentChildRefs updateAndGetParentChildRefs() {
         return null;
     }
 
     @Override
-    public PartnerRefCollection updateAndGetPartnerRefs() {
+    public PartnerRefs updateAndGetPartnerRefs() {
         return null;
     }
 

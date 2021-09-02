@@ -3,7 +3,7 @@ package io.github.mianalysis.MIA.Macro.ObjectProcessing;
 import ij.macro.MacroExtension;
 import io.github.mianalysis.MIA.MIA;
 import io.github.mianalysis.MIA.Macro.MacroOperation;
-import io.github.mianalysis.MIA.Module.ModuleCollection;
+import io.github.mianalysis.MIA.Module.Modules;
 import io.github.mianalysis.MIA.Module.ObjectProcessing.Identification.IdentifyObjects;
 import io.github.mianalysis.MIA.Object.Workspace;
 
@@ -18,7 +18,7 @@ public class MIA_IdentifyObjects extends MacroOperation {
     }
 
     @Override
-    public String action(Object[] objects, Workspace workspace, ModuleCollection modules) {
+    public String action(Object[] objects, Workspace workspace, Modules modules) {
         IdentifyObjects identifyObjects = new IdentifyObjects(modules);
 
         identifyObjects.updateParameterValue(IdentifyObjects.INPUT_IMAGE,objects[0]);

@@ -2,13 +2,13 @@ package io.github.mianalysis.MIA.Module.WorkflowHandling;
 
 import io.github.mianalysis.MIA.MIA;
 import io.github.mianalysis.MIA.Module.Module;
-import io.github.mianalysis.MIA.Module.ModuleCollection;
+import io.github.mianalysis.MIA.Module.Modules;
 import io.github.mianalysis.MIA.Object.Status;
 import io.github.mianalysis.MIA.Object.Workspace;
 import io.github.mianalysis.MIA.Object.Parameters.BooleanP;
 import io.github.mianalysis.MIA.Object.Parameters.ChoiceP;
 import io.github.mianalysis.MIA.Object.Parameters.ModuleP;
-import io.github.mianalysis.MIA.Object.Parameters.ParameterCollection;
+import io.github.mianalysis.MIA.Object.Parameters.Parameters;
 import io.github.mianalysis.MIA.Object.Parameters.Text.StringP;
 
 public abstract class AbstractWorkspaceHandler extends Module {
@@ -28,16 +28,16 @@ public abstract class AbstractWorkspaceHandler extends Module {
 
     }
 
-    public AbstractWorkspaceHandler(String name, ModuleCollection modules) {
+    public AbstractWorkspaceHandler(String name, Modules modules) {
         super(name, modules);
     }
 
-    Status processTermination(ParameterCollection params) {
+    Status processTermination(Parameters params) {
         return processTermination(params, null, false);
 
     }
 
-    protected Status processTermination(ParameterCollection parameters, Workspace workspace, boolean showRedirectMessage) {
+    protected Status processTermination(Parameters parameters, Workspace workspace, boolean showRedirectMessage) {
         String continuationMode = parameters.getValue(CONTINUATION_MODE);
         String redirectMessage = parameters.getValue(REDIRECT_MESSAGE);
         boolean exportWorkspace = parameters.getValue(EXPORT_WORKSPACE);
@@ -76,7 +76,7 @@ public abstract class AbstractWorkspaceHandler extends Module {
     }
 
     @Override
-    public ParameterCollection updateAndGetParameters() {
+    public Parameters updateAndGetParameters() {
         return parameters;
     }
 

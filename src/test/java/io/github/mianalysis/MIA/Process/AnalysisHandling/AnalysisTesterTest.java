@@ -8,7 +8,7 @@ package io.github.mianalysis.MIA.Process.AnalysisHandling;
 //import io.github.mianalysis.MIA.Module.ImageProcessing.Pixel.FilterImage;
 //import io.github.mianalysis.MIA.Module.InputOutput.ImageLoader;
 //import io.github.mianalysis.MIA.Module.ObjectProcessing.Identification.IdentifyObjects;
-//import io.github.mianalysis.MIA.Module.ModuleCollection;
+//import io.github.mianalysis.MIA.Module.Modules;
 //
 //import java.io.File;
 //import java.io.IOException;
@@ -19,8 +19,8 @@ package io.github.mianalysis.MIA.Process.AnalysisHandling;
 //public class AnalysisTesterTest {
 //    @Test
 //    public void testModulesAllCorrect(@TempDir Path tempPath) throws IOException {
-//        // Initialising ModuleCollection
-//        ModuleCollection modules = new ModuleCollection();
+//        // Initialising Modules
+//        Modules modules = new Modules();
 //
 //        File testFile = new File(tempPath+File.separator+"TestFile.tif");
 //        testFile.createNewFile();
@@ -49,8 +49,8 @@ package io.github.mianalysis.MIA.Process.AnalysisHandling;
 //
 //    @Test
 //    public void testModulesOneIncorrect(@TempDir Path tempPath) throws IOException {
-//        // Initialising ModuleCollection
-//        ModuleCollection modules = new ModuleCollection();
+//        // Initialising Modules
+//        Modules modules = new Modules();
 //
 //        File testFile = new File(tempPath+File.separator+"TestFile.tif");
 //        testFile.createNewFile();
@@ -82,8 +82,8 @@ package io.github.mianalysis.MIA.Process.AnalysisHandling;
 //
 //    @Test
 //    public void testModulesOneIncorrectAnotherOneDisabled(@TempDir Path tempPath) throws IOException {
-//        // Initialising ModuleCollection
-//        ModuleCollection modules = new ModuleCollection();
+//        // Initialising Modules
+//        Modules modules = new Modules();
 //
 //        File testFile = new File(tempPath+File.separator+"TestFile.tif");
 //        testFile.createNewFile();
@@ -116,8 +116,8 @@ package io.github.mianalysis.MIA.Process.AnalysisHandling;
 //
 //    @Test
 //    public void testModulesOneIncorrectAndDisabled(@TempDir Path tempPath) throws IOException {
-//        // Initialising ModuleCollection
-//        ModuleCollection modules = new ModuleCollection();
+//        // Initialising Modules
+//        Modules modules = new Modules();
 //
 //        File testFile = new File(tempPath+File.separator+"TestFile.tif");
 //        testFile.createNewFile();
@@ -150,8 +150,8 @@ package io.github.mianalysis.MIA.Process.AnalysisHandling;
 //
 //    @Test
 //    public void testModulesAllDisabled(@TempDir Path tempPath) throws IOException {
-//        // Initialising ModuleCollection
-//        ModuleCollection modules = new ModuleCollection();
+//        // Initialising Modules
+//        Modules modules = new Modules();
 //
 //        File testFile = new File(tempPath+File.separator+"TestFile.tif");
 //        testFile.createNewFile();
@@ -186,8 +186,8 @@ package io.github.mianalysis.MIA.Process.AnalysisHandling;
 //
 //    @Test
 //    public void testModulesErrorInInput() {
-//        // Initialising ModuleCollection
-//        ModuleCollection modules = new ModuleCollection();
+//        // Initialising Modules
+//        Modules modules = new Modules();
 //
 //        modules.getInputControl().updateParameterValue(InputControl.INPUT_PATH,null);
 //
@@ -223,8 +223,8 @@ package io.github.mianalysis.MIA.Process.AnalysisHandling;
 //        File testFile = new File(tempPath+File.separator+"TestFile.tif");
 //        testFile.createNewFile();
 //
-//        // Initialising ModuleCollection
-//        ModuleCollection modules = new ModuleCollection();
+//        // Initialising Modules
+//        Modules modules = new Modules();
 //
 //        modules.getInputControl().updateParameterValue(InputControl.INPUT_PATH,testFile.getAbsolutePath());
 //
@@ -262,8 +262,8 @@ package io.github.mianalysis.MIA.Process.AnalysisHandling;
 //        File testFile = new File(tempPath+File.separator+"TestFile.tif");
 //        testFile.createNewFile();
 //
-//        // Initialising ModuleCollection
-//        ModuleCollection modules = new ModuleCollection();
+//        // Initialising Modules
+//        Modules modules = new Modules();
 //
 //        InputControl inputControl = modules.getInputControl();
 //        inputControl.updateParameterValue(InputControl.INPUT_PATH,testFile.getAbsolutePath());
@@ -276,8 +276,8 @@ package io.github.mianalysis.MIA.Process.AnalysisHandling;
 //
 //    @Test
 //    public void testModuleAllCorrect(@TempDir Path tempPath) throws IOException {
-//        // Initialising ModuleCollection
-//        ModuleCollection modules = new ModuleCollection();
+//        // Initialising Modules
+//        Modules modules = new Modules();
 //
 //        File testFile = new File(tempPath+File.separator+"TestFile.tif");
 //        testFile.createNewFile();
@@ -312,8 +312,8 @@ package io.github.mianalysis.MIA.Process.AnalysisHandling;
 //
 //    @Test
 //    public void testModuleOneIncorrect(@TempDir Path tempPath) throws IOException {
-//        // Initialising ModuleCollection
-//        ModuleCollection modules = new ModuleCollection();
+//        // Initialising Modules
+//        Modules modules = new Modules();
 //
 //        File testFile = new File(tempPath+File.separator+"TestFile.tif");
 //        testFile.createNewFile();
@@ -348,8 +348,8 @@ package io.github.mianalysis.MIA.Process.AnalysisHandling;
 //
 //    @Test
 //    public void testModuleNull(@TempDir Path tempPath) throws IOException {
-//        // Initialising ModuleCollection
-//        ModuleCollection modules = new ModuleCollection();
+//        // Initialising Modules
+//        Modules modules = new Modules();
 //
 //        File testFile = new File(tempPath+File.separator+"TestFile.tif");
 //        testFile.createNewFile();

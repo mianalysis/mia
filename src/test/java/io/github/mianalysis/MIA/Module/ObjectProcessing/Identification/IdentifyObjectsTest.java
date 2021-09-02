@@ -23,9 +23,9 @@ import io.github.mianalysis.MIA.Module.Module;
 import io.github.mianalysis.MIA.Module.ModuleTest;
 import io.github.mianalysis.MIA.Object.Image;
 import io.github.mianalysis.MIA.Object.Obj;
-import io.github.mianalysis.MIA.Object.ObjCollection;
+import io.github.mianalysis.MIA.Object.Objs;
 import io.github.mianalysis.MIA.Object.Workspace;
-import io.github.mianalysis.MIA.Object.WorkspaceCollection;
+import io.github.mianalysis.MIA.Object.Workspaces;
 import io.github.sjcross.common.Object.Volume.VolumeType;
 
 /**
@@ -58,7 +58,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testRunBlackBackground8bit2DPointListWithoutMT(VolumeType volumeType) throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -85,7 +85,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getObjects().size());
 
         // Getting the object set
-        ObjCollection actualObjects = workspace.getObjectSet("Test_output_objects");
+        Objs actualObjects = workspace.getObjectSet("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -94,7 +94,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 1;
         String calibratedUnits = "µm";
-        ObjCollection expectedObjects = new Objects2D(volumeType).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
+        Objs expectedObjects = new Objects2D(volumeType).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
@@ -112,7 +112,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testRunBlackBackground8bit2DQuadTreeWithoutMT(VolumeType volumeType) throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -140,7 +140,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getObjects().size());
 
         // Getting the object set
-        ObjCollection actualObjects = workspace.getObjectSet("Test_output_objects");
+        Objs actualObjects = workspace.getObjectSet("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -149,7 +149,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 1;
         String calibratedUnits = "µm";
-        ObjCollection expectedObjects = new Objects2D(volumeType).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
+        Objs expectedObjects = new Objects2D(volumeType).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
@@ -167,7 +167,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testRunBlackBackground8bit2DOcTreeWithoutMT(VolumeType volumeType) throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -194,7 +194,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getObjects().size());
 
         // Getting the object set
-        ObjCollection actualObjects = workspace.getObjectSet("Test_output_objects");
+        Objs actualObjects = workspace.getObjectSet("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -203,7 +203,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 1;
         String calibratedUnits = "µm";
-        ObjCollection expectedObjects = new Objects2D(volumeType).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
+        Objs expectedObjects = new Objects2D(volumeType).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
@@ -221,7 +221,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testRunBlackBackground8Bit3DPointListWithoutMT(VolumeType volumeType) throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -249,7 +249,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getObjects().size());
 
         // Getting the object set
-        ObjCollection actualObjects = workspace.getObjectSet("Test_output_objects");
+        Objs actualObjects = workspace.getObjectSet("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -258,7 +258,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        ObjCollection expectedObjects = new Objects3D(volumeType).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
+        Objs expectedObjects = new Objects3D(volumeType).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
@@ -276,7 +276,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testRunBlackBackground8Bit3DQuadTreeWithoutMT(VolumeType volumeType) throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -303,7 +303,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getObjects().size());
 
         // Getting the object set
-        ObjCollection actualObjects = workspace.getObjectSet("Test_output_objects");
+        Objs actualObjects = workspace.getObjectSet("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -312,7 +312,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        ObjCollection expectedObjects = new Objects3D(volumeType).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
+        Objs expectedObjects = new Objects3D(volumeType).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
@@ -330,7 +330,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testRunBlackBackground8Bit3DOcTreeWithoutMT(VolumeType volumeType) throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -357,7 +357,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getObjects().size());
 
         // Getting the object set
-        ObjCollection actualObjects = workspace.getObjectSet("Test_output_objects");
+        Objs actualObjects = workspace.getObjectSet("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -366,7 +366,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        ObjCollection expectedObjects = new Objects3D(volumeType).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
+        Objs expectedObjects = new Objects3D(volumeType).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
@@ -384,7 +384,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testRunBlackBackground8bit4DPointListWithoutMT(VolumeType volumeType) throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -411,7 +411,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getObjects().size());
 
         // Getting the object set
-        ObjCollection actualObjects = workspace.getObjectSet("Test_output_objects");
+        Objs actualObjects = workspace.getObjectSet("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -420,7 +420,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        ObjCollection expectedObjects = new Objects4D(volumeType).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
+        Objs expectedObjects = new Objects4D(volumeType).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
@@ -439,7 +439,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testRunBlackBackground8bit4DQuadTreeWithoutMT(VolumeType volumeType) throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -466,7 +466,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getObjects().size());
 
         // Getting the object set
-        ObjCollection actualObjects = workspace.getObjectSet("Test_output_objects");
+        Objs actualObjects = workspace.getObjectSet("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -475,7 +475,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        ObjCollection expectedObjects = new Objects4D(volumeType).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
+        Objs expectedObjects = new Objects4D(volumeType).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
@@ -494,7 +494,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testRunBlackBackground8bit4DOcTreeWithoutMT(VolumeType volumeType) throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -521,7 +521,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getObjects().size());
 
         // Getting the object set
-        ObjCollection actualObjects = workspace.getObjectSet("Test_output_objects");
+        Objs actualObjects = workspace.getObjectSet("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -530,7 +530,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        ObjCollection expectedObjects = new Objects4D(volumeType).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
+        Objs expectedObjects = new Objects4D(volumeType).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
@@ -561,7 +561,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testRunBlackBackground8Bit3DLabelledPointListWithoutMT(VolumeType volumeType) throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -587,7 +587,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getObjects().size());
 
         // Getting the object set
-        ObjCollection actualObjects = workspace.getObjectSet("Test_output_objects");
+        Objs actualObjects = workspace.getObjectSet("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -596,7 +596,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        ObjCollection expectedObjects = new Objects3D(volumeType).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
+        Objs expectedObjects = new Objects3D(volumeType).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
@@ -614,7 +614,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testRunBlackBackground8Bit3DLabelledQuadTreeWithoutMT(VolumeType volumeType) throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -640,7 +640,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getObjects().size());
 
         // Getting the object set
-        ObjCollection actualObjects = workspace.getObjectSet("Test_output_objects");
+        Objs actualObjects = workspace.getObjectSet("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -649,7 +649,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        ObjCollection expectedObjects = new Objects3D(volumeType).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
+        Objs expectedObjects = new Objects3D(volumeType).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
@@ -667,7 +667,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testRunBlackBackground8Bit3DLabelledOcTreeWithoutMT(VolumeType volumeType) throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -693,7 +693,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getObjects().size());
 
         // Getting the object set
-        ObjCollection actualObjects = workspace.getObjectSet("Test_output_objects");
+        Objs actualObjects = workspace.getObjectSet("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -702,7 +702,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        ObjCollection expectedObjects = new Objects3D(volumeType).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
+        Objs expectedObjects = new Objects3D(volumeType).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
@@ -720,7 +720,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testRunWhiteBackground8Bit3DPointListWithoutMT(VolumeType volumeType) throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -747,7 +747,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getObjects().size());
 
         // Getting the object set
-        ObjCollection actualObjects = workspace.getObjectSet("Test_output_objects");
+        Objs actualObjects = workspace.getObjectSet("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -756,7 +756,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        ObjCollection expectedObjects = new Objects3D(volumeType).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
+        Objs expectedObjects = new Objects3D(volumeType).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
@@ -774,7 +774,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testRunWhiteBackground8Bit3DQuadTreeWithoutMT(VolumeType volumeType) throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -801,7 +801,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getObjects().size());
 
         // Getting the object set
-        ObjCollection actualObjects = workspace.getObjectSet("Test_output_objects");
+        Objs actualObjects = workspace.getObjectSet("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -810,7 +810,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        ObjCollection expectedObjects = new Objects3D(volumeType).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
+        Objs expectedObjects = new Objects3D(volumeType).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
@@ -828,7 +828,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testRunWhiteBackground8Bit3DOcTreeWithoutMT(VolumeType volumeType) throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -855,7 +855,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getObjects().size());
 
         // Getting the object set
-        ObjCollection actualObjects = workspace.getObjectSet("Test_output_objects");
+        Objs actualObjects = workspace.getObjectSet("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -864,7 +864,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        ObjCollection expectedObjects = new Objects3D(volumeType).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
+        Objs expectedObjects = new Objects3D(volumeType).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
@@ -882,7 +882,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testRunBlackBackground8bit3DSingleObjectPointListWithoutMT(VolumeType volumeType) throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -910,7 +910,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getObjects().size());
 
         // Getting the object set
-        ObjCollection actualObjects = workspace.getObjectSet("Test_output_objects");
+        Objs actualObjects = workspace.getObjectSet("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -919,7 +919,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        ObjCollection expectedObjects = new Objects3D(volumeType).getObjects("Expected", ExpectedObjects.Mode.BINARY,
+        Objs expectedObjects = new Objects3D(volumeType).getObjects("Expected", ExpectedObjects.Mode.BINARY,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
@@ -937,7 +937,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testRunBlackBackground8bit3DSingleObjectQuadTreeWithoutMT(VolumeType volumeType) throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -965,7 +965,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getObjects().size());
 
         // Getting the object set
-        ObjCollection actualObjects = workspace.getObjectSet("Test_output_objects");
+        Objs actualObjects = workspace.getObjectSet("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -974,7 +974,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        ObjCollection expectedObjects = new Objects3D(volumeType).getObjects("Expected", ExpectedObjects.Mode.BINARY,
+        Objs expectedObjects = new Objects3D(volumeType).getObjects("Expected", ExpectedObjects.Mode.BINARY,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
@@ -992,7 +992,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testRunBlackBackground8bit3DSingleObjectOcTreeWithoutMT(VolumeType volumeType) throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -1020,7 +1020,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getObjects().size());
 
         // Getting the object set
-        ObjCollection actualObjects = workspace.getObjectSet("Test_output_objects");
+        Objs actualObjects = workspace.getObjectSet("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -1029,7 +1029,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        ObjCollection expectedObjects = new Objects3D(volumeType).getObjects("Expected", ExpectedObjects.Mode.BINARY,
+        Objs expectedObjects = new Objects3D(volumeType).getObjects("Expected", ExpectedObjects.Mode.BINARY,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
@@ -1048,7 +1048,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     public void testRunBlackBackground8bit3DLabelledSingleObjectPointListWithoutMT(VolumeType volumeType)
             throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -1075,7 +1075,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getObjects().size());
 
         // Getting the object set
-        ObjCollection actualObjects = workspace.getObjectSet("Test_output_objects");
+        Objs actualObjects = workspace.getObjectSet("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -1084,7 +1084,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        ObjCollection expectedObjects = new Objects3D(volumeType).getObjects("Expected", ExpectedObjects.Mode.BINARY,
+        Objs expectedObjects = new Objects3D(volumeType).getObjects("Expected", ExpectedObjects.Mode.BINARY,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
@@ -1103,7 +1103,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     public void testRunBlackBackground8bit3DLabelledSingleObjectQuadTreeWithoutMT(VolumeType volumeType)
             throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -1130,7 +1130,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getObjects().size());
 
         // Getting the object set
-        ObjCollection actualObjects = workspace.getObjectSet("Test_output_objects");
+        Objs actualObjects = workspace.getObjectSet("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -1139,7 +1139,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        ObjCollection expectedObjects = new Objects3D(volumeType).getObjects("Expected", ExpectedObjects.Mode.BINARY,
+        Objs expectedObjects = new Objects3D(volumeType).getObjects("Expected", ExpectedObjects.Mode.BINARY,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
@@ -1158,7 +1158,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     public void testRunBlackBackground8bit3DLabelledSingleObjectOcTreeWithoutMT(VolumeType volumeType)
             throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -1185,7 +1185,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getObjects().size());
 
         // Getting the object set
-        ObjCollection actualObjects = workspace.getObjectSet("Test_output_objects");
+        Objs actualObjects = workspace.getObjectSet("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -1194,7 +1194,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        ObjCollection expectedObjects = new Objects3D(volumeType).getObjects("Expected", ExpectedObjects.Mode.BINARY,
+        Objs expectedObjects = new Objects3D(volumeType).getObjects("Expected", ExpectedObjects.Mode.BINARY,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
@@ -1212,7 +1212,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testRunBlackBackground16Bit3DPointListWithoutMT(VolumeType volumeType) throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -1239,7 +1239,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getObjects().size());
 
         // Getting the object set
-        ObjCollection actualObjects = workspace.getObjectSet("Test_output_objects");
+        Objs actualObjects = workspace.getObjectSet("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -1248,7 +1248,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        ObjCollection expectedObjects = new Objects3D(volumeType).getObjects("Expected",
+        Objs expectedObjects = new Objects3D(volumeType).getObjects("Expected",
                 ExpectedObjects.Mode.SIXTEEN_BIT, dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
@@ -1266,7 +1266,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testRunBlackBackground16Bit3DQuadTreeWithoutMT(VolumeType volumeType) throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -1293,7 +1293,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getObjects().size());
 
         // Getting the object set
-        ObjCollection actualObjects = workspace.getObjectSet("Test_output_objects");
+        Objs actualObjects = workspace.getObjectSet("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -1302,7 +1302,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        ObjCollection expectedObjects = new Objects3D(volumeType).getObjects("Expected",
+        Objs expectedObjects = new Objects3D(volumeType).getObjects("Expected",
                 ExpectedObjects.Mode.SIXTEEN_BIT, dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
@@ -1320,7 +1320,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testRunBlackBackground16Bit3DOcTreeWithoutMT(VolumeType volumeType) throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -1347,7 +1347,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getObjects().size());
 
         // Getting the object set
-        ObjCollection actualObjects = workspace.getObjectSet("Test_output_objects");
+        Objs actualObjects = workspace.getObjectSet("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -1356,7 +1356,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        ObjCollection expectedObjects = new Objects3D(volumeType).getObjects("Expected",
+        Objs expectedObjects = new Objects3D(volumeType).getObjects("Expected",
                 ExpectedObjects.Mode.SIXTEEN_BIT, dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
@@ -1374,7 +1374,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testRunBlackBackground32Bit3DPointListWithoutMT(VolumeType volumeType) throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -1401,7 +1401,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getObjects().size());
 
         // Getting the object set
-        ObjCollection actualObjects = workspace.getObjectSet("Test_output_objects");
+        Objs actualObjects = workspace.getObjectSet("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -1413,7 +1413,7 @@ public class IdentifyObjectsTest extends ModuleTest {
 
         // Bit depth here doesn't matter - we only want to check the module can
         // interpret 32-bit images
-        ObjCollection expectedObjects = new Objects3D(volumeType).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
+        Objs expectedObjects = new Objects3D(volumeType).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
@@ -1431,7 +1431,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testRunBlackBackground32Bit3DQuadTreeWithoutMT(VolumeType volumeType) throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -1458,7 +1458,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getObjects().size());
 
         // Getting the object set
-        ObjCollection actualObjects = workspace.getObjectSet("Test_output_objects");
+        Objs actualObjects = workspace.getObjectSet("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -1470,7 +1470,7 @@ public class IdentifyObjectsTest extends ModuleTest {
 
         // Bit depth here doesn't matter - we only want to check the module can
         // interpret 32-bit images
-        ObjCollection expectedObjects = new Objects3D(volumeType).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
+        Objs expectedObjects = new Objects3D(volumeType).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
@@ -1488,7 +1488,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testRunBlackBackground32Bit3DOcTreeWithoutMT(VolumeType volumeType) throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -1515,7 +1515,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getObjects().size());
 
         // Getting the object set
-        ObjCollection actualObjects = workspace.getObjectSet("Test_output_objects");
+        Objs actualObjects = workspace.getObjectSet("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -1527,7 +1527,7 @@ public class IdentifyObjectsTest extends ModuleTest {
 
         // Bit depth here doesn't matter - we only want to check the module can
         // interpret 32-bit images
-        ObjCollection expectedObjects = new Objects3D(volumeType).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
+        Objs expectedObjects = new Objects3D(volumeType).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
@@ -1545,7 +1545,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testRunBlackBackground8Bit3DNot255PointListWithoutMT(VolumeType volumeType) throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -1572,7 +1572,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getObjects().size());
 
         // Getting the object set
-        ObjCollection actualObjects = workspace.getObjectSet("Test_output_objects");
+        Objs actualObjects = workspace.getObjectSet("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -1581,7 +1581,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        ObjCollection expectedObjects = new Objects3D(volumeType).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
+        Objs expectedObjects = new Objects3D(volumeType).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
@@ -1599,7 +1599,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testRunBlackBackground8Bit3DNot255QuadTreeWithoutMT(VolumeType volumeType) throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -1626,7 +1626,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getObjects().size());
 
         // Getting the object set
-        ObjCollection actualObjects = workspace.getObjectSet("Test_output_objects");
+        Objs actualObjects = workspace.getObjectSet("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -1635,7 +1635,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        ObjCollection expectedObjects = new Objects3D(volumeType).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
+        Objs expectedObjects = new Objects3D(volumeType).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
@@ -1653,7 +1653,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testRunBlackBackground8Bit3DNot255OcTreeWithoutMT(VolumeType volumeType) throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -1680,7 +1680,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getObjects().size());
 
         // Getting the object set
-        ObjCollection actualObjects = workspace.getObjectSet("Test_output_objects");
+        Objs actualObjects = workspace.getObjectSet("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -1689,7 +1689,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        ObjCollection expectedObjects = new Objects3D(volumeType).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
+        Objs expectedObjects = new Objects3D(volumeType).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
@@ -1707,7 +1707,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testRunBlackBackground16Bit3DNot65535PointListWithoutMT(VolumeType volumeType) throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -1734,7 +1734,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getObjects().size());
 
         // Getting the object set
-        ObjCollection actualObjects = workspace.getObjectSet("Test_output_objects");
+        Objs actualObjects = workspace.getObjectSet("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -1743,7 +1743,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        ObjCollection expectedObjects = new Objects3D(volumeType).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
+        Objs expectedObjects = new Objects3D(volumeType).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
@@ -1761,7 +1761,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testRunBlackBackground16Bit3DNot65535QuadTreeWithoutMT(VolumeType volumeType) throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -1788,7 +1788,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getObjects().size());
 
         // Getting the object set
-        ObjCollection actualObjects = workspace.getObjectSet("Test_output_objects");
+        Objs actualObjects = workspace.getObjectSet("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -1797,7 +1797,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        ObjCollection expectedObjects = new Objects3D(volumeType).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
+        Objs expectedObjects = new Objects3D(volumeType).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
@@ -1815,7 +1815,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testRunBlackBackground16Bit3DNot65535OcTreeWithoutMT(VolumeType volumeType) throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -1842,7 +1842,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getObjects().size());
 
         // Getting the object set
-        ObjCollection actualObjects = workspace.getObjectSet("Test_output_objects");
+        Objs actualObjects = workspace.getObjectSet("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -1851,7 +1851,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        ObjCollection expectedObjects = new Objects3D(volumeType).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
+        Objs expectedObjects = new Objects3D(volumeType).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
@@ -1869,7 +1869,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testRunBlackBackground32Bit3DNot1PointListWithoutMT(VolumeType volumeType) throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -1896,7 +1896,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getObjects().size());
 
         // Getting the object set
-        ObjCollection actualObjects = workspace.getObjectSet("Test_output_objects");
+        Objs actualObjects = workspace.getObjectSet("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -1908,7 +1908,7 @@ public class IdentifyObjectsTest extends ModuleTest {
 
         // Bit depth here doesn't matter - we only want to check the module can
         // interpret 32-bit images
-        ObjCollection expectedObjects = new Objects3D(volumeType).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
+        Objs expectedObjects = new Objects3D(volumeType).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
@@ -1926,7 +1926,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testRunBlackBackground32Bit3DNot1QuadTreeWithoutMT(VolumeType volumeType) throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -1953,7 +1953,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getObjects().size());
 
         // Getting the object set
-        ObjCollection actualObjects = workspace.getObjectSet("Test_output_objects");
+        Objs actualObjects = workspace.getObjectSet("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -1965,7 +1965,7 @@ public class IdentifyObjectsTest extends ModuleTest {
 
         // Bit depth here doesn't matter - we only want to check the module can
         // interpret 32-bit images
-        ObjCollection expectedObjects = new Objects3D(volumeType).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
+        Objs expectedObjects = new Objects3D(volumeType).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
@@ -1983,7 +1983,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testRunBlackBackground32Bit3DNot1OcTreeWithoutMT(VolumeType volumeType) throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -2010,7 +2010,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getObjects().size());
 
         // Getting the object set
-        ObjCollection actualObjects = workspace.getObjectSet("Test_output_objects");
+        Objs actualObjects = workspace.getObjectSet("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -2022,7 +2022,7 @@ public class IdentifyObjectsTest extends ModuleTest {
 
         // Bit depth here doesn't matter - we only want to check the module can
         // interpret 32-bit images
-        ObjCollection expectedObjects = new Objects3D(volumeType).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
+        Objs expectedObjects = new Objects3D(volumeType).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
@@ -2040,7 +2040,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testRunBlackBackground8bit2DPointListWithMT(VolumeType volumeType) throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -2067,7 +2067,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getObjects().size());
 
         // Getting the object set
-        ObjCollection actualObjects = workspace.getObjectSet("Test_output_objects");
+        Objs actualObjects = workspace.getObjectSet("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -2076,7 +2076,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 1;
         String calibratedUnits = "µm";
-        ObjCollection expectedObjects = new Objects2D(volumeType).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
+        Objs expectedObjects = new Objects2D(volumeType).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
@@ -2094,7 +2094,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testRunBlackBackground8bit2DQuadTreeWithMT(VolumeType volumeType) throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -2121,7 +2121,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getObjects().size());
 
         // Getting the object set
-        ObjCollection actualObjects = workspace.getObjectSet("Test_output_objects");
+        Objs actualObjects = workspace.getObjectSet("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -2130,7 +2130,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 1;
         String calibratedUnits = "µm";
-        ObjCollection expectedObjects = new Objects2D(volumeType).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
+        Objs expectedObjects = new Objects2D(volumeType).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
@@ -2148,7 +2148,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testRunBlackBackground8bit2DOcTreeWithMT(VolumeType volumeType) throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -2175,7 +2175,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getObjects().size());
 
         // Getting the object set
-        ObjCollection actualObjects = workspace.getObjectSet("Test_output_objects");
+        Objs actualObjects = workspace.getObjectSet("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -2184,7 +2184,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 1;
         String calibratedUnits = "µm";
-        ObjCollection expectedObjects = new Objects2D(volumeType).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
+        Objs expectedObjects = new Objects2D(volumeType).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
@@ -2202,7 +2202,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testRunBlackBackground8Bit3DPointListWithMT(VolumeType volumeType) throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -2229,7 +2229,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getObjects().size());
 
         // Getting the object set
-        ObjCollection actualObjects = workspace.getObjectSet("Test_output_objects");
+        Objs actualObjects = workspace.getObjectSet("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -2238,7 +2238,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        ObjCollection expectedObjects = new Objects3D(volumeType).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
+        Objs expectedObjects = new Objects3D(volumeType).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
@@ -2256,7 +2256,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testRunBlackBackground8Bit3DQuadTreeWithMT(VolumeType volumeType) throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -2283,7 +2283,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getObjects().size());
 
         // Getting the object set
-        ObjCollection actualObjects = workspace.getObjectSet("Test_output_objects");
+        Objs actualObjects = workspace.getObjectSet("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -2292,7 +2292,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        ObjCollection expectedObjects = new Objects3D(volumeType).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
+        Objs expectedObjects = new Objects3D(volumeType).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
@@ -2310,7 +2310,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testRunBlackBackground8Bit3DOcTreeWithMT(VolumeType volumeType) throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -2337,7 +2337,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getObjects().size());
 
         // Getting the object set
-        ObjCollection actualObjects = workspace.getObjectSet("Test_output_objects");
+        Objs actualObjects = workspace.getObjectSet("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -2346,7 +2346,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        ObjCollection expectedObjects = new Objects3D(volumeType).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
+        Objs expectedObjects = new Objects3D(volumeType).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
@@ -2364,7 +2364,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testRunBlackBackground8bit4DPointListWithMT(VolumeType volumeType) throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -2391,7 +2391,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getObjects().size());
 
         // Getting the object set
-        ObjCollection actualObjects = workspace.getObjectSet("Test_output_objects");
+        Objs actualObjects = workspace.getObjectSet("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -2400,7 +2400,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        ObjCollection expectedObjects = new Objects4D(volumeType).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
+        Objs expectedObjects = new Objects4D(volumeType).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
@@ -2419,7 +2419,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testRunBlackBackground8bit4DQuadTreeWithMT(VolumeType volumeType) throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -2446,7 +2446,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getObjects().size());
 
         // Getting the object set
-        ObjCollection actualObjects = workspace.getObjectSet("Test_output_objects");
+        Objs actualObjects = workspace.getObjectSet("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -2455,7 +2455,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        ObjCollection expectedObjects = new Objects4D(volumeType).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
+        Objs expectedObjects = new Objects4D(volumeType).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
@@ -2474,7 +2474,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testRunBlackBackground8bit4DOcTreeWithMT(VolumeType volumeType) throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -2501,7 +2501,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getObjects().size());
 
         // Getting the object set
-        ObjCollection actualObjects = workspace.getObjectSet("Test_output_objects");
+        Objs actualObjects = workspace.getObjectSet("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -2510,7 +2510,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        ObjCollection expectedObjects = new Objects4D(volumeType).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
+        Objs expectedObjects = new Objects4D(volumeType).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
@@ -2535,7 +2535,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testRunBlackBackground8Bit3DLabelledPointListWithMT(VolumeType volumeType) throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -2561,7 +2561,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getObjects().size());
 
         // Getting the object set
-        ObjCollection actualObjects = workspace.getObjectSet("Test_output_objects");
+        Objs actualObjects = workspace.getObjectSet("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -2570,7 +2570,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        ObjCollection expectedObjects = new Objects3D(volumeType).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
+        Objs expectedObjects = new Objects3D(volumeType).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
@@ -2588,7 +2588,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testRunBlackBackground8Bit3DLabelledQuadTreeWithMT(VolumeType volumeType) throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -2614,7 +2614,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getObjects().size());
 
         // Getting the object set
-        ObjCollection actualObjects = workspace.getObjectSet("Test_output_objects");
+        Objs actualObjects = workspace.getObjectSet("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -2623,7 +2623,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        ObjCollection expectedObjects = new Objects3D(volumeType).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
+        Objs expectedObjects = new Objects3D(volumeType).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
@@ -2641,7 +2641,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testRunBlackBackground8Bit3DLabelledOcTreeWithMT(VolumeType volumeType) throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -2667,7 +2667,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getObjects().size());
 
         // Getting the object set
-        ObjCollection actualObjects = workspace.getObjectSet("Test_output_objects");
+        Objs actualObjects = workspace.getObjectSet("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -2676,7 +2676,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        ObjCollection expectedObjects = new Objects3D(volumeType).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
+        Objs expectedObjects = new Objects3D(volumeType).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
@@ -2694,7 +2694,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testRunWhiteBackground8Bit3DPointListWithMT(VolumeType volumeType) throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -2721,7 +2721,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getObjects().size());
 
         // Getting the object set
-        ObjCollection actualObjects = workspace.getObjectSet("Test_output_objects");
+        Objs actualObjects = workspace.getObjectSet("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -2730,7 +2730,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        ObjCollection expectedObjects = new Objects3D(volumeType).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
+        Objs expectedObjects = new Objects3D(volumeType).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
@@ -2748,7 +2748,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testRunWhiteBackground8Bit3DQuadTreeWithMT(VolumeType volumeType) throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -2775,7 +2775,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getObjects().size());
 
         // Getting the object set
-        ObjCollection actualObjects = workspace.getObjectSet("Test_output_objects");
+        Objs actualObjects = workspace.getObjectSet("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -2784,7 +2784,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        ObjCollection expectedObjects = new Objects3D(volumeType).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
+        Objs expectedObjects = new Objects3D(volumeType).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
@@ -2802,7 +2802,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testRunWhiteBackground8Bit3DOcTreeWithMT(VolumeType volumeType) throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -2829,7 +2829,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getObjects().size());
 
         // Getting the object set
-        ObjCollection actualObjects = workspace.getObjectSet("Test_output_objects");
+        Objs actualObjects = workspace.getObjectSet("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -2838,7 +2838,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        ObjCollection expectedObjects = new Objects3D(volumeType).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
+        Objs expectedObjects = new Objects3D(volumeType).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
@@ -2856,7 +2856,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testRunBlackBackground8bit3DSingleObjectPointListWithMT(VolumeType volumeType) throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -2884,7 +2884,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getObjects().size());
 
         // Getting the object set
-        ObjCollection actualObjects = workspace.getObjectSet("Test_output_objects");
+        Objs actualObjects = workspace.getObjectSet("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -2893,7 +2893,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        ObjCollection expectedObjects = new Objects3D(volumeType).getObjects("Expected", ExpectedObjects.Mode.BINARY,
+        Objs expectedObjects = new Objects3D(volumeType).getObjects("Expected", ExpectedObjects.Mode.BINARY,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
@@ -2911,7 +2911,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testRunBlackBackground8bit3DSingleObjectQuadTreeWithMT(VolumeType volumeType) throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -2939,7 +2939,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getObjects().size());
 
         // Getting the object set
-        ObjCollection actualObjects = workspace.getObjectSet("Test_output_objects");
+        Objs actualObjects = workspace.getObjectSet("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -2948,7 +2948,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        ObjCollection expectedObjects = new Objects3D(volumeType).getObjects("Expected", ExpectedObjects.Mode.BINARY,
+        Objs expectedObjects = new Objects3D(volumeType).getObjects("Expected", ExpectedObjects.Mode.BINARY,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
@@ -2966,7 +2966,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testRunBlackBackground8bit3DSingleObjectOcTreeWithMT(VolumeType volumeType) throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -2994,7 +2994,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getObjects().size());
 
         // Getting the object set
-        ObjCollection actualObjects = workspace.getObjectSet("Test_output_objects");
+        Objs actualObjects = workspace.getObjectSet("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -3003,7 +3003,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        ObjCollection expectedObjects = new Objects3D(volumeType).getObjects("Expected", ExpectedObjects.Mode.BINARY,
+        Objs expectedObjects = new Objects3D(volumeType).getObjects("Expected", ExpectedObjects.Mode.BINARY,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
@@ -3022,7 +3022,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     public void testRunBlackBackground8bit3DLabelledSingleObjectPointListWithMT(VolumeType volumeType)
             throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -3049,7 +3049,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getObjects().size());
 
         // Getting the object set
-        ObjCollection actualObjects = workspace.getObjectSet("Test_output_objects");
+        Objs actualObjects = workspace.getObjectSet("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -3058,7 +3058,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        ObjCollection expectedObjects = new Objects3D(volumeType).getObjects("Expected", ExpectedObjects.Mode.BINARY,
+        Objs expectedObjects = new Objects3D(volumeType).getObjects("Expected", ExpectedObjects.Mode.BINARY,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
@@ -3076,7 +3076,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testRunBlackBackground8bit3DLabelledSingleObjectQuadTreeWithMT(VolumeType volumeType) throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -3103,7 +3103,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getObjects().size());
 
         // Getting the object set
-        ObjCollection actualObjects = workspace.getObjectSet("Test_output_objects");
+        Objs actualObjects = workspace.getObjectSet("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -3112,7 +3112,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        ObjCollection expectedObjects = new Objects3D(volumeType).getObjects("Expected", ExpectedObjects.Mode.BINARY,
+        Objs expectedObjects = new Objects3D(volumeType).getObjects("Expected", ExpectedObjects.Mode.BINARY,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
@@ -3130,7 +3130,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testRunBlackBackground8bit3DLabelledSingleObjectOcTreeWithMT(VolumeType volumeType) throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -3157,7 +3157,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getObjects().size());
 
         // Getting the object set
-        ObjCollection actualObjects = workspace.getObjectSet("Test_output_objects");
+        Objs actualObjects = workspace.getObjectSet("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -3166,7 +3166,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        ObjCollection expectedObjects = new Objects3D(volumeType).getObjects("Expected", ExpectedObjects.Mode.BINARY,
+        Objs expectedObjects = new Objects3D(volumeType).getObjects("Expected", ExpectedObjects.Mode.BINARY,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
@@ -3184,7 +3184,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testRunBlackBackground16Bit3DPointListWithMT(VolumeType volumeType) throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -3211,7 +3211,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getObjects().size());
 
         // Getting the object set
-        ObjCollection actualObjects = workspace.getObjectSet("Test_output_objects");
+        Objs actualObjects = workspace.getObjectSet("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -3220,7 +3220,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        ObjCollection expectedObjects = new Objects3D(volumeType).getObjects("Expected",
+        Objs expectedObjects = new Objects3D(volumeType).getObjects("Expected",
                 ExpectedObjects.Mode.SIXTEEN_BIT, dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
@@ -3238,7 +3238,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testRunBlackBackground16Bit3DQuadTreeWithMT(VolumeType volumeType) throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -3265,7 +3265,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getObjects().size());
 
         // Getting the object set
-        ObjCollection actualObjects = workspace.getObjectSet("Test_output_objects");
+        Objs actualObjects = workspace.getObjectSet("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -3274,7 +3274,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        ObjCollection expectedObjects = new Objects3D(volumeType).getObjects("Expected",
+        Objs expectedObjects = new Objects3D(volumeType).getObjects("Expected",
                 ExpectedObjects.Mode.SIXTEEN_BIT, dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
@@ -3292,7 +3292,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testRunBlackBackground16Bit3DOcTreeWithMT(VolumeType volumeType) throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -3319,7 +3319,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getObjects().size());
 
         // Getting the object set
-        ObjCollection actualObjects = workspace.getObjectSet("Test_output_objects");
+        Objs actualObjects = workspace.getObjectSet("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -3328,7 +3328,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        ObjCollection expectedObjects = new Objects3D(volumeType).getObjects("Expected",
+        Objs expectedObjects = new Objects3D(volumeType).getObjects("Expected",
                 ExpectedObjects.Mode.SIXTEEN_BIT, dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
@@ -3346,7 +3346,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testRunBlackBackground32Bit3DPointListWithMT(VolumeType volumeType) throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -3373,7 +3373,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getObjects().size());
 
         // Getting the object set
-        ObjCollection actualObjects = workspace.getObjectSet("Test_output_objects");
+        Objs actualObjects = workspace.getObjectSet("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -3385,7 +3385,7 @@ public class IdentifyObjectsTest extends ModuleTest {
 
         // Bit depth here doesn't matter - we only want to check the module can
         // interpret 32-bit images
-        ObjCollection expectedObjects = new Objects3D(volumeType).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
+        Objs expectedObjects = new Objects3D(volumeType).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
@@ -3403,7 +3403,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testRunBlackBackground32Bit3DQuadTreeWithMT(VolumeType volumeType) throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -3430,7 +3430,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getObjects().size());
 
         // Getting the object set
-        ObjCollection actualObjects = workspace.getObjectSet("Test_output_objects");
+        Objs actualObjects = workspace.getObjectSet("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -3442,7 +3442,7 @@ public class IdentifyObjectsTest extends ModuleTest {
 
         // Bit depth here doesn't matter - we only want to check the module can
         // interpret 32-bit images
-        ObjCollection expectedObjects = new Objects3D(volumeType).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
+        Objs expectedObjects = new Objects3D(volumeType).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
@@ -3460,7 +3460,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testRunBlackBackground32Bit3DOcTreeWithMT(VolumeType volumeType) throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -3487,7 +3487,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getObjects().size());
 
         // Getting the object set
-        ObjCollection actualObjects = workspace.getObjectSet("Test_output_objects");
+        Objs actualObjects = workspace.getObjectSet("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -3499,7 +3499,7 @@ public class IdentifyObjectsTest extends ModuleTest {
 
         // Bit depth here doesn't matter - we only want to check the module can
         // interpret 32-bit images
-        ObjCollection expectedObjects = new Objects3D(volumeType).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
+        Objs expectedObjects = new Objects3D(volumeType).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
@@ -3517,7 +3517,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testRunBlackBackground8Bit3DNot255PointListWithMT(VolumeType volumeType) throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -3544,7 +3544,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getObjects().size());
 
         // Getting the object set
-        ObjCollection actualObjects = workspace.getObjectSet("Test_output_objects");
+        Objs actualObjects = workspace.getObjectSet("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -3553,7 +3553,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        ObjCollection expectedObjects = new Objects3D(volumeType).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
+        Objs expectedObjects = new Objects3D(volumeType).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
@@ -3571,7 +3571,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testRunBlackBackground8Bit3DNot255QuadTreeWithMT(VolumeType volumeType) throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -3598,7 +3598,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getObjects().size());
 
         // Getting the object set
-        ObjCollection actualObjects = workspace.getObjectSet("Test_output_objects");
+        Objs actualObjects = workspace.getObjectSet("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -3607,7 +3607,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        ObjCollection expectedObjects = new Objects3D(volumeType).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
+        Objs expectedObjects = new Objects3D(volumeType).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
@@ -3625,7 +3625,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testRunBlackBackground8Bit3DNot255OcTreeWithMT(VolumeType volumeType) throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -3652,7 +3652,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getObjects().size());
 
         // Getting the object set
-        ObjCollection actualObjects = workspace.getObjectSet("Test_output_objects");
+        Objs actualObjects = workspace.getObjectSet("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -3661,7 +3661,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        ObjCollection expectedObjects = new Objects3D(volumeType).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
+        Objs expectedObjects = new Objects3D(volumeType).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
@@ -3679,7 +3679,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testRunBlackBackground16Bit3DNot65535PointListWithMT(VolumeType volumeType) throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -3706,7 +3706,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getObjects().size());
 
         // Getting the object set
-        ObjCollection actualObjects = workspace.getObjectSet("Test_output_objects");
+        Objs actualObjects = workspace.getObjectSet("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -3715,7 +3715,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        ObjCollection expectedObjects = new Objects3D(volumeType).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
+        Objs expectedObjects = new Objects3D(volumeType).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
@@ -3733,7 +3733,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testRunBlackBackground16Bit3DNot65535QuadTreeWithMT(VolumeType volumeType) throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -3760,7 +3760,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getObjects().size());
 
         // Getting the object set
-        ObjCollection actualObjects = workspace.getObjectSet("Test_output_objects");
+        Objs actualObjects = workspace.getObjectSet("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -3769,7 +3769,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        ObjCollection expectedObjects = new Objects3D(volumeType).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
+        Objs expectedObjects = new Objects3D(volumeType).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
@@ -3787,7 +3787,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testRunBlackBackground16Bit3DNot65535OcTreeWithMT(VolumeType volumeType) throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -3814,7 +3814,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getObjects().size());
 
         // Getting the object set
-        ObjCollection actualObjects = workspace.getObjectSet("Test_output_objects");
+        Objs actualObjects = workspace.getObjectSet("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -3823,7 +3823,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        ObjCollection expectedObjects = new Objects3D(volumeType).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
+        Objs expectedObjects = new Objects3D(volumeType).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
@@ -3841,7 +3841,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testRunBlackBackground32Bit3DNot1PointListWithMT(VolumeType volumeType) throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -3868,7 +3868,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getObjects().size());
 
         // Getting the object set
-        ObjCollection actualObjects = workspace.getObjectSet("Test_output_objects");
+        Objs actualObjects = workspace.getObjectSet("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -3880,7 +3880,7 @@ public class IdentifyObjectsTest extends ModuleTest {
 
         // Bit depth here doesn't matter - we only want to check the module can
         // interpret 32-bit images
-        ObjCollection expectedObjects = new Objects3D(volumeType).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
+        Objs expectedObjects = new Objects3D(volumeType).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
@@ -3898,7 +3898,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testRunBlackBackground32Bit3DNot1QuadTreeWithMT(VolumeType volumeType) throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -3925,7 +3925,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getObjects().size());
 
         // Getting the object set
-        ObjCollection actualObjects = workspace.getObjectSet("Test_output_objects");
+        Objs actualObjects = workspace.getObjectSet("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -3937,7 +3937,7 @@ public class IdentifyObjectsTest extends ModuleTest {
 
         // Bit depth here doesn't matter - we only want to check the module can
         // interpret 32-bit images
-        ObjCollection expectedObjects = new Objects3D(volumeType).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
+        Objs expectedObjects = new Objects3D(volumeType).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects
@@ -3955,7 +3955,7 @@ public class IdentifyObjectsTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testRunBlackBackground32Bit3DNot1OcTreeWithMT(VolumeType volumeType) throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -3982,7 +3982,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getObjects().size());
 
         // Getting the object set
-        ObjCollection actualObjects = workspace.getObjectSet("Test_output_objects");
+        Objs actualObjects = workspace.getObjectSet("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -3994,7 +3994,7 @@ public class IdentifyObjectsTest extends ModuleTest {
 
         // Bit depth here doesn't matter - we only want to check the module can
         // interpret 32-bit images
-        ObjCollection expectedObjects = new Objects3D(volumeType).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
+        Objs expectedObjects = new Objects3D(volumeType).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
 
         // Checking the number of detected objects

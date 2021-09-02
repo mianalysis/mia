@@ -16,7 +16,7 @@ import io.github.mianalysis.MIA.ExpectedObjects.VerticalCylinderR5;
 import io.github.mianalysis.MIA.Module.Module;
 import io.github.mianalysis.MIA.Module.ModuleTest;
 import io.github.mianalysis.MIA.Object.Obj;
-import io.github.mianalysis.MIA.Object.ObjCollection;
+import io.github.mianalysis.MIA.Object.Objs;
 import io.github.mianalysis.MIA.Object.Units.SpatialUnit;
 import io.github.sjcross.common.Exceptions.IntegerOverflowException;
 import io.github.sjcross.common.Object.Volume.VolumeType;
@@ -38,7 +38,7 @@ public class FitLongestChordTest extends ModuleTest {
         String calibratedUnits = "µm";
 
         // Getting test objects
-        ObjCollection inputObjs = new HorizontalCylinderR22(volumeType).getObjects("Input_obj", ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        Objs inputObjs = new HorizontalCylinderR22(volumeType).getObjects("Input_obj", ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         Obj inputObj = inputObjs.getFirst();
 
         // Processing object
@@ -107,7 +107,7 @@ public class FitLongestChordTest extends ModuleTest {
         String calibratedUnits = "µm";
 
         // Getting test objects
-        ObjCollection inputObjs = new VerticalCylinderR5(volumeType).getObjects("Input_obj", ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        Objs inputObjs = new VerticalCylinderR5(volumeType).getObjects("Input_obj", ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         Obj inputObj = inputObjs.getFirst();
 
         // Processing object

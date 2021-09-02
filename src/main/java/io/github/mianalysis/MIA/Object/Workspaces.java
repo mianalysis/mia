@@ -10,7 +10,7 @@ import io.github.sjcross.common.MathFunc.CumStat;
 /**
  * Created by sc13967 on 27/10/2016.
  */
-public class WorkspaceCollection extends LinkedHashSet<Workspace> {
+public class Workspaces extends LinkedHashSet<Workspace> {
     /**
      *
      */
@@ -44,7 +44,7 @@ public class WorkspaceCollection extends LinkedHashSet<Workspace> {
 
     public HashMap<String, Workspace> getMetadataWorkspaces(String metadataName) {
         HashMap<String, Workspace> workspaceList = new HashMap<>();
-        WorkspaceCollection workspacesMeta = new WorkspaceCollection();
+        Workspaces workspacesMeta = new Workspaces();
 
         for (Workspace currWorkspace:this) {
             // The metadata value to group on
@@ -69,15 +69,15 @@ public class WorkspaceCollection extends LinkedHashSet<Workspace> {
 
             // Adding all objects to the current workspace (there can only be one image for each name, so it makes no
             // sense to do any images)
-            LinkedHashMap<String,ObjCollection> currObjects = currWorkspace.getObjects();
+            LinkedHashMap<String,Objs> currObjects = currWorkspace.getObjects();
             for (String objName:currObjects.keySet()) {
-                // If this is the first time these objects have been added, create a blank ObjCollection
+                // If this is the first time these objects have been added, create a blank Objs
                 if (metadataWorkspace.getObjectSet(objName) == null) {
-                    metadataWorkspace.addObjects(new ObjCollection(objName,null));
+                    metadataWorkspace.addObjects(new Objs(objName,null));
                 }
 
                 // If a collection of these objects already exists, addRef to this
-                ObjCollection coreSet = metadataWorkspace.getObjectSet(objName);
+                Objs coreSet = metadataWorkspace.getObjectSet(objName);
                 for (Obj currObject:currObjects.get(objName).values()) {
                     // Adding the object and incrementing the count (a new ID has to be assigned for this to prevent
                     // clashes between workspaces)

@@ -12,13 +12,13 @@ import org.junit.jupiter.api.Test;
 
 import ij.IJ;
 import io.github.mianalysis.MIA.Module.Module;
-import io.github.mianalysis.MIA.Module.ModuleCollection;
+import io.github.mianalysis.MIA.Module.Modules;
 import io.github.mianalysis.MIA.Module.ModuleTest;
 import io.github.mianalysis.MIA.Module.ImageProcessing.Stack.CropImage;
 import io.github.mianalysis.MIA.Object.Image;
 import io.github.mianalysis.MIA.Object.Status;
 import io.github.mianalysis.MIA.Object.Workspace;
-import io.github.mianalysis.MIA.Object.WorkspaceCollection;
+import io.github.mianalysis.MIA.Object.Workspaces;
 import io.github.mianalysis.MIA.Object.Units.SpatialUnit;
 
 /**
@@ -94,11 +94,11 @@ public class ImageLoaderTest extends ModuleTest {
     @Test
     public void testRunWithSpecificTiffFile() throws Exception {
         // Initialising a blank workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Initialising ImageFileLoader
-        ImageLoader imageLoader = new ImageLoader(new ModuleCollection());
+        ImageLoader imageLoader = new ImageLoader(new Modules());
         imageLoader.initialiseParameters();
 
         // Setting parameters
@@ -142,11 +142,11 @@ public class ImageLoaderTest extends ModuleTest {
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BlankHyperstack5D_8bit.tif").getPath(),"UTF-8");
 
         // Initialising a blank workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(new File(pathToImage),1);
 
         // Initialising the ImageFileLoader
-        ImageLoader imageFileLoader = new ImageLoader(new ModuleCollection());
+        ImageLoader imageFileLoader = new ImageLoader(new Modules());
         imageFileLoader.initialiseParameters();
 
         // Setting parameters
@@ -188,11 +188,11 @@ public class ImageLoaderTest extends ModuleTest {
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BlankHyperstack5D_8bit.tif").getPath(),"UTF-8");
 
         // Initialising a blank workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(new File(pathToImage),1);
 
         // Initialising the ImageFileLoader
-        ImageLoader imageFileLoader = new ImageLoader(new ModuleCollection());
+        ImageLoader imageFileLoader = new ImageLoader(new Modules());
         imageFileLoader.initialiseParameters();
 
         // Setting parameters
@@ -234,11 +234,11 @@ public class ImageLoaderTest extends ModuleTest {
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BlankHyperstack5D_8bit.tif").getPath(),"UTF-8");
 
         // Initialising a blank workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(new File(pathToImage),1);
 
         // Initialising the ImageFileLoader
-        ImageLoader imageFileLoader = new ImageLoader(new ModuleCollection());
+        ImageLoader imageFileLoader = new ImageLoader(new Modules());
         imageFileLoader.initialiseParameters();
 
         // Setting parameters
@@ -286,11 +286,11 @@ public class ImageLoaderTest extends ModuleTest {
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BlankHyperstack5D_8bit.tif").getPath(),"UTF-8");
 
         // Initialising a blank workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(new File(pathToImage),1);
 
         // Initialising the ImageFileLoader
-        ImageLoader imageFileLoader = new ImageLoader(new ModuleCollection());
+        ImageLoader imageFileLoader = new ImageLoader(new Modules());
         imageFileLoader.initialiseParameters();
 
         // Setting parameters
@@ -336,11 +336,11 @@ public class ImageLoaderTest extends ModuleTest {
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BlankHyperstack5D_8bit.tif").getPath(),"UTF-8");
 
         // Initialising a blank workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(new File(pathToImage),1);
 
         // Initialising the ImageFileLoader
-        ImageLoader imageFileLoader = new ImageLoader(new ModuleCollection());
+        ImageLoader imageFileLoader = new ImageLoader(new Modules());
         imageFileLoader.initialiseParameters();
 
         // Setting parameters
@@ -364,11 +364,11 @@ public class ImageLoaderTest extends ModuleTest {
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BlankHyperstack5D_8bit.tif").getPath(),"UTF-8");
 
         // Initialising a blank workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(new File(pathToImage),1);
 
         // Initialising the ImageFileLoader
-        ImageLoader imageFileLoader = new ImageLoader(new ModuleCollection());
+        ImageLoader imageFileLoader = new ImageLoader(new Modules());
         imageFileLoader.initialiseParameters();
 
         // Setting parameters
@@ -392,11 +392,11 @@ public class ImageLoaderTest extends ModuleTest {
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BlankHyperstack5D_8bit.tif").getPath(),"UTF-8");
 
         // Initialising a blank workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(new File(pathToImage),1);
 
         // Initialising the ImageFileLoader
-        ImageLoader imageFileLoader = new ImageLoader(new ModuleCollection());
+        ImageLoader imageFileLoader = new ImageLoader(new Modules());
         imageFileLoader.initialiseParameters();
 
         // Setting parameters
@@ -442,11 +442,11 @@ public class ImageLoaderTest extends ModuleTest {
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BlankHyperstack5D_8bit.tif").getPath(),"UTF-8");
 
         // Initialising a blank workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(new File(pathToImage),1);
 
         // Initialising the ImageFileLoader
-        ImageLoader imageFileLoader = new ImageLoader(new ModuleCollection());
+        ImageLoader imageFileLoader = new ImageLoader(new Modules());
         imageFileLoader.initialiseParameters();
 
         // Setting parameters
@@ -470,11 +470,11 @@ public class ImageLoaderTest extends ModuleTest {
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BlankHyperstack5D_8bit.tif").getPath(),"UTF-8");
 
         // Initialising a blank workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(new File(pathToImage),1);
 
         // Initialising the ImageFileLoader
-        ImageLoader imageFileLoader = new ImageLoader(new ModuleCollection());
+        ImageLoader imageFileLoader = new ImageLoader(new Modules());
         imageFileLoader.initialiseParameters();
 
         // Setting parameters
@@ -498,11 +498,11 @@ public class ImageLoaderTest extends ModuleTest {
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BlankHyperstack5D_8bit.tif").getPath(),"UTF-8");
 
         // Initialising a blank workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(new File(pathToImage),1);
 
         // Initialising the ImageFileLoader
-        ImageLoader imageFileLoader = new ImageLoader(new ModuleCollection());
+        ImageLoader imageFileLoader = new ImageLoader(new Modules());
         imageFileLoader.initialiseParameters();
 
         // Setting parameters
@@ -548,11 +548,11 @@ public class ImageLoaderTest extends ModuleTest {
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BlankHyperstack5D_8bit.tif").getPath(),"UTF-8");
 
         // Initialising a blank workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(new File(pathToImage),1);
 
         // Initialising the ImageFileLoader
-        ImageLoader imageFileLoader = new ImageLoader(new ModuleCollection());
+        ImageLoader imageFileLoader = new ImageLoader(new Modules());
         imageFileLoader.initialiseParameters();
 
         // Setting parameters
@@ -576,11 +576,11 @@ public class ImageLoaderTest extends ModuleTest {
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BlankHyperstack5D_8bit.tif").getPath(),"UTF-8");
 
         // Initialising a blank workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(new File(pathToImage),1);
 
         // Initialising the ImageFileLoader
-        ImageLoader imageFileLoader = new ImageLoader(new ModuleCollection());
+        ImageLoader imageFileLoader = new ImageLoader(new Modules());
         imageFileLoader.initialiseParameters();
 
         // Setting parameters
@@ -604,11 +604,11 @@ public class ImageLoaderTest extends ModuleTest {
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BlankHyperstack5D_8bit.tif").getPath(),"UTF-8");
 
         // Initialising a blank workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(new File(pathToImage),1);
 
         // Initialising the ImageFileLoader
-        ImageLoader imageFileLoader = new ImageLoader(new ModuleCollection());
+        ImageLoader imageFileLoader = new ImageLoader(new Modules());
         imageFileLoader.initialiseParameters();
 
         // Setting parameters
@@ -654,11 +654,11 @@ public class ImageLoaderTest extends ModuleTest {
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BlankLif5D_8bit.lif").getPath(),"UTF-8");
 
         // Initialising a blank workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(new File(pathToImage),1);
 
         // Initialising the ImageFileLoader
-        ImageLoader imageFileLoader = new ImageLoader(new ModuleCollection());
+        ImageLoader imageFileLoader = new ImageLoader(new Modules());
         imageFileLoader.initialiseParameters();
 
         // Setting parameters
@@ -700,11 +700,11 @@ public class ImageLoaderTest extends ModuleTest {
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient/NoisyGradient5D_8bit.tif").getPath(),"UTF-8");
 
         // Initialising a blank workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(new File(pathToImage),1);
 
         // Initialising the ImageFileLoader
-        ImageLoader imageFileLoader = new ImageLoader(new ModuleCollection());
+        ImageLoader imageFileLoader = new ImageLoader(new Modules());
         imageFileLoader.initialiseParameters();
 
         // Setting parameters
@@ -738,11 +738,11 @@ public class ImageLoaderTest extends ModuleTest {
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient/NoisyGradient5D_8bit.tif").getPath(),"UTF-8");
 
         // Initialising a blank workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(new File(pathToImage),1);
 
         // Initialising the ImageFileLoader
-        ImageLoader imageFileLoader = new ImageLoader(new ModuleCollection());
+        ImageLoader imageFileLoader = new ImageLoader(new Modules());
         imageFileLoader.initialiseParameters();
 
         // Setting parameters
@@ -785,11 +785,11 @@ public class ImageLoaderTest extends ModuleTest {
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient/NoisyGradient5D_8bit.tif").getPath(),"UTF-8");
 
         // Initialising a blank workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(new File(pathToImage),1);
 
         // Initialising the ImageFileLoader
-        ImageLoader imageFileLoader = new ImageLoader(new ModuleCollection());
+        ImageLoader imageFileLoader = new ImageLoader(new Modules());
         imageFileLoader.initialiseParameters();
 
         // Setting parameters
@@ -839,11 +839,11 @@ public class ImageLoaderTest extends ModuleTest {
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient/NoisyGradient5D_8bit.tif").getPath(),"UTF-8");
 
         // Initialising a blank workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(new File(pathToImage),1);
 
         // Initialising the ImageFileLoader
-        ImageLoader imageFileLoader = new ImageLoader(new ModuleCollection());
+        ImageLoader imageFileLoader = new ImageLoader(new Modules());
         imageFileLoader.initialiseParameters();
 
         // Setting parameters
@@ -890,11 +890,11 @@ public class ImageLoaderTest extends ModuleTest {
     //     String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient/NoisyGradient3D_8bit.tif").getPath(),"UTF-8");
 
     //     // Initialising a blank workspace
-    //     WorkspaceCollection workspaces = new WorkspaceCollection();
+    //     Workspaces workspaces = new Workspaces();
     //     Workspace workspace = workspaces.getNewWorkspace(new File(pathToImage),1);
 
     //     // Initialising the ImageFileLoader
-    //     ImageLoader imageFileLoader = new ImageLoader(new ModuleCollection());
+    //     ImageLoader imageFileLoader = new ImageLoader(new Modules());
     //     imageFileLoader.initialiseParameters();
 
     //     // Setting parameters
@@ -936,11 +936,11 @@ public class ImageLoaderTest extends ModuleTest {
     //     String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient/NoisyGradient3D_8bit.tif").getPath(),"UTF-8");
 
     //     // Initialising a blank workspace
-    //     WorkspaceCollection workspaces = new WorkspaceCollection();
+    //     Workspaces workspaces = new Workspaces();
     //     Workspace workspace = workspaces.getNewWorkspace(new File(pathToImage),1);
 
     //     // Initialising the ImageFileLoader
-    //     ImageLoader imageFileLoader = new ImageLoader(new ModuleCollection());
+    //     ImageLoader imageFileLoader = new ImageLoader(new Modules());
     //     imageFileLoader.initialiseParameters();
 
     //     // Setting parameters
@@ -982,11 +982,11 @@ public class ImageLoaderTest extends ModuleTest {
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient/NoisyGradient4D_CT_8bit.tif").getPath(),"UTF-8");
 
         // Initialising a blank workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(new File(pathToImage),1);
 
         // Initialising the ImageFileLoader
-        ImageLoader imageFileLoader = new ImageLoader(new ModuleCollection());
+        ImageLoader imageFileLoader = new ImageLoader(new Modules());
         imageFileLoader.initialiseParameters();
 
         // Setting parameters
@@ -1028,11 +1028,11 @@ public class ImageLoaderTest extends ModuleTest {
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient/NoisyGradient4D_CZ_8bit.tif").getPath(),"UTF-8");
 
         // Initialising a blank workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(new File(pathToImage),1);
 
         // Initialising the ImageFileLoader
-        ImageLoader imageFileLoader = new ImageLoader(new ModuleCollection());
+        ImageLoader imageFileLoader = new ImageLoader(new Modules());
         imageFileLoader.initialiseParameters();
 
         // Setting parameters
@@ -1074,11 +1074,11 @@ public class ImageLoaderTest extends ModuleTest {
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/ImageSequence/Seq0000.tif").getPath(),"UTF-8");
         
         // Initialising a blank workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(new File(pathToImage),1);
 
         // Initialising the ImageFileLoader
-        ImageLoader imageFileLoader = new ImageLoader(new ModuleCollection());
+        ImageLoader imageFileLoader = new ImageLoader(new Modules());
         imageFileLoader.initialiseParameters();
         // Setting parameters
         imageFileLoader.updateParameterValue(ImageLoader.IMPORT_MODE, ImageLoader.ImportModes.IMAGE_SEQUENCE_ZEROS);
@@ -1109,11 +1109,11 @@ public class ImageLoaderTest extends ModuleTest {
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/ImageSequence/Seq0000.tif").getPath(),"UTF-8");
 
         // Initialising a blank workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(new File(pathToImage),1);
 
         // Initialising the ImageFileLoader
-        ImageLoader imageFileLoader = new ImageLoader(new ModuleCollection());
+        ImageLoader imageFileLoader = new ImageLoader(new Modules());
         imageFileLoader.initialiseParameters();
 
         // Setting parameters
@@ -1145,11 +1145,11 @@ public class ImageLoaderTest extends ModuleTest {
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/ImageSequence/Seq0000.tif").getPath(),"UTF-8");
 
         // Initialising a blank workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(new File(pathToImage),1);
 
         // Initialising the ImageFileLoader
-        ImageLoader imageFileLoader = new ImageLoader(new ModuleCollection());
+        ImageLoader imageFileLoader = new ImageLoader(new Modules());
         imageFileLoader.initialiseParameters();
 
         // Setting parameters

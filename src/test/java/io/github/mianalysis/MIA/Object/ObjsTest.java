@@ -13,7 +13,7 @@ import io.github.sjcross.common.Object.Volume.VolumeType;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class ObjCollectionTest {
+public class ObjsTest {
     @ParameterizedTest
     @EnumSource(VolumeType.class)
     public void testGetFirstPresent(VolumeType volumeType) {
@@ -23,7 +23,7 @@ public class ObjCollectionTest {
         String calibratedUnits = "µm";
         SpatCal calibration = new SpatCal(dppXY,dppZ,calibratedUnits,1,1,1);
 
-        ObjCollection collection = new ObjCollection("Obj", calibration, 1, 0.02, UNITS.SECOND);
+        Objs collection = new Objs("Obj", calibration, 1, 0.02, UNITS.SECOND);
 
         collection.createAndAddNewObject(volumeType, 0);
         collection.createAndAddNewObject(volumeType, 1);
@@ -43,7 +43,7 @@ public class ObjCollectionTest {
         String calibratedUnits = "µm";
         SpatCal calibration = new SpatCal(dppXY,dppZ,calibratedUnits,1,1,1);
 
-        ObjCollection collection = new ObjCollection("TestObj",calibration,1,0.02,UNITS.SECOND);
+        Objs collection = new Objs("TestObj",calibration,1,0.02,UNITS.SECOND);
         Obj firstObj = collection.getFirst();
         assertNull(firstObj);
 
@@ -58,8 +58,8 @@ public class ObjCollectionTest {
         String calibratedUnits = "µm";
         SpatCal calibration = new SpatCal(dppXY,dppZ,calibratedUnits,10,3,12);
 
-        // Creating the ObjCollection
-        ObjCollection collection = new ObjCollection("Obj", calibration, 1, 0.02, UNITS.SECOND);
+        // Creating the Objs
+        Objs collection = new Objs("Obj", calibration, 1, 0.02, UNITS.SECOND);
 
         // Adding objects
         Obj obj = collection.createAndAddNewObject(volumeType, 0);
@@ -94,8 +94,8 @@ public class ObjCollectionTest {
         String calibratedUnits = "µm";
         SpatCal calibration = new SpatCal(dppXY,dppZ,calibratedUnits,1,1,1);
 
-        // Creating the ObjCollection
-        ObjCollection collection = new ObjCollection("Obj",calibration,1,0.02,UNITS.SECOND);
+        // Creating the Objs
+        Objs collection = new Objs("Obj",calibration,1,0.02,UNITS.SECOND);
 
         // Adding objects
         Obj obj = collection.createAndAddNewObject(volumeType, 0);
@@ -123,8 +123,8 @@ public class ObjCollectionTest {
         String calibratedUnits = "µm";
         SpatCal calibration = new SpatCal(dppXY,dppZ,calibratedUnits,1,1,1);
 
-        // Creating the ObjCollection
-        ObjCollection collection = new ObjCollection("Obj",calibration,1,0.02,UNITS.SECOND);
+        // Creating the Objs
+        Objs collection = new Objs("Obj",calibration,1,0.02,UNITS.SECOND);
 
         // Adding objects
         collection.createAndAddNewObject(volumeType, 4); 
@@ -168,8 +168,8 @@ public class ObjCollectionTest {
         String calibratedUnits = "µm";
         SpatCal calibration = new SpatCal(dppXY,dppZ,calibratedUnits,10,4,12);
 
-        // Creating the ObjCollection
-        ObjCollection collection = new ObjCollection("Obj",calibration,1,0.02,UNITS.SECOND);
+        // Creating the Objs
+        Objs collection = new Objs("Obj",calibration,1,0.02,UNITS.SECOND);
 
         // Adding objects
         Obj obj1 = collection.createAndAddNewObject(volumeType, 1);
@@ -193,7 +193,7 @@ public class ObjCollectionTest {
         oj4.add(2,2,9);
 
         // Creating a test object with the same coordinates as one of the other objects
-        ObjCollection testObjects = new ObjCollection("Test", calibration, 1, 0.02, UNITS.SECOND);
+        Objs testObjects = new Objs("Test", calibration, 1, 0.02, UNITS.SECOND);
         Obj testObj = testObjects.createAndAddNewObject(volumeType, 5);
         testObj.add(3,1,6);
         testObj.add(2,2,8);

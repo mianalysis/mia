@@ -9,7 +9,7 @@ import javax.swing.JButton;
 
 import io.github.mianalysis.MIA.GUI.GUI;
 import io.github.mianalysis.MIA.Module.Module;
-import io.github.mianalysis.MIA.Module.ModuleCollection;
+import io.github.mianalysis.MIA.Module.Modules;
 import io.github.mianalysis.MIA.Module.Miscellaneous.GUISeparator;
 
 /**
@@ -60,7 +60,7 @@ public class ModuleEnabledButton extends JButton implements ActionListener {
         if (idx <= GUI.getLastModuleEval()) GUI.setLastModuleEval(idx-1);
 
         // If this is a GUISeparator module, disable all modules after it, until the next separator
-        ModuleCollection modules = GUI.getModules();
+        Modules modules = GUI.getModules();
         if (module.getClass().isInstance(new GUISeparator(modules))) {
             for (int i=idx+1;i<modules.size();i++) {
                 Module currentModule = modules.get(i);

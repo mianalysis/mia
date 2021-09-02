@@ -10,8 +10,8 @@ import io.github.mianalysis.MIA.GUI.ParameterControls.ParameterControl;
 import io.github.mianalysis.MIA.GUI.ParameterControls.RefSelectorParameter;
 import io.github.mianalysis.MIA.Module.Module;
 import io.github.mianalysis.MIA.Object.Parameters.Abstract.Parameter;
-import io.github.mianalysis.MIA.Object.References.ObjMeasurementRef;
-import io.github.mianalysis.MIA.Object.References.Collections.ObjMeasurementRefCollection;
+import io.github.mianalysis.MIA.Object.Refs.ObjMeasurementRef;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ObjMeasurementRefs;
 
 /**
  * Created by Stephen Cross on 18/02/2020.
@@ -102,7 +102,7 @@ public class ObjMeasurementSelectorP extends Parameter {
      */
     public void validateStates() {
         // Getting list of all available measurements for selected object.
-        ObjMeasurementRefCollection refs = module.getModules().getObjectMeasurementRefs(objectName);
+        ObjMeasurementRefs refs = module.getModules().getObjectMeasurementRefs(objectName);
 
         // If no object is assigned, clear the state collection
         if (refs == null) {

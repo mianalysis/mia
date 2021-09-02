@@ -16,34 +16,34 @@ import ij.Prefs;
 import io.github.mianalysis.MIA.MIA;
 import io.github.mianalysis.MIA.Object.Status;
 import io.github.mianalysis.MIA.Object.Workspace;
-import io.github.mianalysis.MIA.Object.Parameters.ParameterCollection;
+import io.github.mianalysis.MIA.Object.Parameters.Parameters;
 import io.github.mianalysis.MIA.Object.Parameters.ParameterGroup;
 import io.github.mianalysis.MIA.Object.Parameters.Abstract.Parameter;
-import io.github.mianalysis.MIA.Object.References.ImageMeasurementRef;
-import io.github.mianalysis.MIA.Object.References.MetadataRef;
-import io.github.mianalysis.MIA.Object.References.ObjMeasurementRef;
-import io.github.mianalysis.MIA.Object.References.ParentChildRef;
-import io.github.mianalysis.MIA.Object.References.PartnerRef;
-import io.github.mianalysis.MIA.Object.References.Abstract.Ref;
-import io.github.mianalysis.MIA.Object.References.Collections.ImageMeasurementRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.MetadataRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.ObjMeasurementRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.ParentChildRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.PartnerRefCollection;
+import io.github.mianalysis.MIA.Object.Refs.ImageMeasurementRef;
+import io.github.mianalysis.MIA.Object.Refs.MetadataRef;
+import io.github.mianalysis.MIA.Object.Refs.ObjMeasurementRef;
+import io.github.mianalysis.MIA.Object.Refs.ParentChildRef;
+import io.github.mianalysis.MIA.Object.Refs.PartnerRef;
+import io.github.mianalysis.MIA.Object.Refs.Abstract.Ref;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ImageMeasurementRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.MetadataRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ObjMeasurementRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ParentChildRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.PartnerRefs;
 import io.github.mianalysis.MIA.Process.Logging.LogRenderer;
 
 /**
  * Created by sc13967 on 02/05/2017.
  */
 public abstract class Module extends Ref implements Comparable {
-    protected ModuleCollection modules;
+    protected Modules modules;
 
-    protected ParameterCollection parameters = new ParameterCollection();
-    protected ImageMeasurementRefCollection imageMeasurementRefs = new ImageMeasurementRefCollection();
-    protected ObjMeasurementRefCollection objectMeasurementRefs = new ObjMeasurementRefCollection();
-    protected MetadataRefCollection metadataRefs = new MetadataRefCollection();
-    protected ParentChildRefCollection parentChildRefs = new ParentChildRefCollection();
-    protected PartnerRefCollection partnerRefs = new PartnerRefCollection();
+    protected Parameters parameters = new Parameters();
+    protected ImageMeasurementRefs imageMeasurementRefs = new ImageMeasurementRefs();
+    protected ObjMeasurementRefs objectMeasurementRefs = new ObjMeasurementRefs();
+    protected MetadataRefs metadataRefs = new MetadataRefs();
+    protected ParentChildRefs parentChildRefs = new ParentChildRefs();
+    protected PartnerRefs partnerRefs = new PartnerRefs();
 
     private String moduleID = String.valueOf(System.currentTimeMillis()); // Using the system time to create a unique ID
     private static boolean verbose = false;
@@ -59,7 +59,7 @@ public abstract class Module extends Ref implements Comparable {
 
     // CONSTRUCTOR
 
-    public Module(String name, ModuleCollection modules) {
+    public Module(String name, Modules modules) {
         super(name);
         this.modules = modules;
         initialiseParameters();
@@ -72,32 +72,32 @@ public abstract class Module extends Ref implements Comparable {
     protected abstract Status process(Workspace workspace);
 
     /*
-     * Get a ParameterCollection of all the possible parameters this class requires
-     * (not all may be used). This returns the ParameterCollection, rather than just
+     * Get a Parameters of all the possible parameters this class requires
+     * (not all may be used). This returns the Parameters, rather than just
      * setting the local variable directly, which helps ensure the correct operation
      * is included in the method.
      */
     protected abstract void initialiseParameters();
 
     /*
-     * Return a ParameterCollection of the currently active parameters. This is
+     * Return a Parameters of the currently active parameters. This is
      * generateModuleList each time a parameter is changed. For example, if
      * "Export XML" is set to "false" a sub-parameter specifying the measurements to
-     * export won't be included in the ParameterCollection. A separate rendering
-     * class will take this ParameterCollection and generate an appropriate GUI
+     * export won't be included in the Parameters. A separate rendering
+     * class will take this Parameters and generate an appropriate GUI
      * panel.
      */
-    public abstract ParameterCollection updateAndGetParameters();
+    public abstract Parameters updateAndGetParameters();
 
-    public abstract ImageMeasurementRefCollection updateAndGetImageMeasurementRefs();
+    public abstract ImageMeasurementRefs updateAndGetImageMeasurementRefs();
 
-    public abstract ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs();
+    public abstract ObjMeasurementRefs updateAndGetObjectMeasurementRefs();
 
-    public abstract MetadataRefCollection updateAndGetMetadataReferences();
+    public abstract MetadataRefs updateAndGetMetadataReferences();
 
-    public abstract ParentChildRefCollection updateAndGetParentChildRefs();
+    public abstract ParentChildRefs updateAndGetParentChildRefs();
 
-    public abstract PartnerRefCollection updateAndGetPartnerRefs();
+    public abstract PartnerRefs updateAndGetPartnerRefs();
 
     public abstract boolean verify();
 
@@ -198,7 +198,7 @@ public abstract class Module extends Ref implements Comparable {
         parameters.updateVisible(name, visible);
     }
 
-    public ParameterCollection getAllParameters() {
+    public Parameters getAllParameters() {
         return parameters;
     }
 
@@ -218,7 +218,7 @@ public abstract class Module extends Ref implements Comparable {
 
         // Running through all parameters, adding all images to the list
         LinkedHashSet<T> parameters = new LinkedHashSet<>();
-        ParameterCollection currParameters = updateAndGetParameters();
+        Parameters currParameters = updateAndGetParameters();
         for (Parameter currParameter : currParameters.values()) {
             if (type.isInstance(currParameter)) {
                 parameters.add((T) currParameter);
@@ -234,8 +234,8 @@ public abstract class Module extends Ref implements Comparable {
 
     public static <T extends Parameter> void addParameterGroupParameters(ParameterGroup parameterGroup, Class<T> type,
             LinkedHashSet<T> parameters) {
-        LinkedHashMap<Integer, ParameterCollection> collections = parameterGroup.getCollections(true);
-        for (ParameterCollection collection : collections.values()) {
+        LinkedHashMap<Integer, Parameters> collections = parameterGroup.getCollections(true);
+        for (Parameters collection : collections.values()) {
             for (Parameter currParameter : collection.values()) {
                 if (type.isInstance(currParameter)) {
                     parameters.add((T) currParameter);
@@ -247,11 +247,11 @@ public abstract class Module extends Ref implements Comparable {
         }
     }
 
-    public ModuleCollection getModules() {
+    public Modules getModules() {
         return modules;
     }
 
-    public void setModules(ModuleCollection modules) {
+    public void setModules(Modules modules) {
         this.modules = modules;
     }
 
@@ -358,11 +358,11 @@ public abstract class Module extends Ref implements Comparable {
 
     }
 
-    public Module duplicate(ModuleCollection newModules) {
+    public Module duplicate(Modules newModules) {
         Constructor constructor;
         Module newModule;
         try {
-            constructor = this.getClass().getDeclaredConstructor(ModuleCollection.class);
+            constructor = this.getClass().getDeclaredConstructor(Modules.class);
             newModule = (Module) constructor.newInstance(newModules);
         } catch (NoSuchMethodException | IllegalAccessException | InstantiationException
                 | InvocationTargetException e) {
@@ -377,7 +377,7 @@ public abstract class Module extends Ref implements Comparable {
         newModule.setNotes(notes);
         newModule.setCanBeDisabled(canBeDisabled);
 
-        ParameterCollection newParameters = newModule.getAllParameters();
+        Parameters newParameters = newModule.getAllParameters();
         for (Parameter parameter : parameters.values()) {
             Parameter newParameter = parameter.duplicate(newModule);
             if (newParameter == null)
@@ -386,7 +386,7 @@ public abstract class Module extends Ref implements Comparable {
             newParameters.add(newParameter);
         }
 
-        ObjMeasurementRefCollection newObjMeasurementRefs = newModule.objectMeasurementRefs;
+        ObjMeasurementRefs newObjMeasurementRefs = newModule.objectMeasurementRefs;
         for (ObjMeasurementRef ref : objectMeasurementRefs.values()) {
             ObjMeasurementRef newRef = ref.duplicate();
             if (newRef == null)
@@ -394,7 +394,7 @@ public abstract class Module extends Ref implements Comparable {
             newObjMeasurementRefs.add(newRef);
         }
 
-        ImageMeasurementRefCollection newImageMeasurementRefs = newModule.imageMeasurementRefs;
+        ImageMeasurementRefs newImageMeasurementRefs = newModule.imageMeasurementRefs;
         for (ImageMeasurementRef ref : imageMeasurementRefs.values()) {
             ImageMeasurementRef newRef = ref.duplicate();
             if (newRef == null)
@@ -402,7 +402,7 @@ public abstract class Module extends Ref implements Comparable {
             newImageMeasurementRefs.add(newRef);
         }
 
-        MetadataRefCollection newMetadataRefs = newModule.metadataRefs;
+        MetadataRefs newMetadataRefs = newModule.metadataRefs;
         for (MetadataRef ref : metadataRefs.values()) {
             MetadataRef newRef = ref.duplicate();
             if (newRef == null)
@@ -410,7 +410,7 @@ public abstract class Module extends Ref implements Comparable {
             newMetadataRefs.add(newRef);
         }
 
-        ParentChildRefCollection newParentChildRefs = newModule.parentChildRefs;
+        ParentChildRefs newParentChildRefs = newModule.parentChildRefs;
         for (ParentChildRef ref : parentChildRefs.values()) {
             ParentChildRef newRef = ref.duplicate();
             if (newRef == null)
@@ -418,7 +418,7 @@ public abstract class Module extends Ref implements Comparable {
             newParentChildRefs.add(newRef);
         }
 
-        PartnerRefCollection newPartnerRefs = newModule.partnerRefs;
+        PartnerRefs newPartnerRefs = newModule.partnerRefs;
         for (PartnerRef ref : newPartnerRefs.values()) {
             PartnerRef newRef = ref.duplicate();
             if (newRef == null)

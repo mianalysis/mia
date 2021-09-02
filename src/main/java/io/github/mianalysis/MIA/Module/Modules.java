@@ -11,24 +11,24 @@ import java.util.LinkedHashSet;
 import io.github.mianalysis.MIA.Module.Core.InputControl;
 import io.github.mianalysis.MIA.Module.Core.OutputControl;
 import io.github.mianalysis.MIA.Object.Parameters.OutputImageP;
-import io.github.mianalysis.MIA.Object.Parameters.ParameterCollection;
+import io.github.mianalysis.MIA.Object.Parameters.Parameters;
 import io.github.mianalysis.MIA.Object.Parameters.RemovedImageP;
 import io.github.mianalysis.MIA.Object.Parameters.Abstract.Parameter;
 import io.github.mianalysis.MIA.Object.Parameters.Objects.OutputObjectsP;
 import io.github.mianalysis.MIA.Object.Parameters.Objects.RemovedObjectsP;
-import io.github.mianalysis.MIA.Object.References.ImageMeasurementRef;
-import io.github.mianalysis.MIA.Object.References.ObjMeasurementRef;
-import io.github.mianalysis.MIA.Object.References.Collections.ImageMeasurementRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.MetadataRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.ObjMeasurementRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.ParentChildRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.PartnerRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.RefCollection;
+import io.github.mianalysis.MIA.Object.Refs.ImageMeasurementRef;
+import io.github.mianalysis.MIA.Object.Refs.ObjMeasurementRef;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ImageMeasurementRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.MetadataRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ObjMeasurementRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ParentChildRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.PartnerRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.Refs;
 
 /**
  * Created by sc13967 on 03/05/2017.
  */
-public class ModuleCollection extends ArrayList<Module> implements RefCollection<Module> {
+public class Modules extends ArrayList<Module> implements Refs<Module> {
     /**
      *
      */
@@ -47,12 +47,12 @@ public class ModuleCollection extends ArrayList<Module> implements RefCollection
 
     }
 
-    public ImageMeasurementRefCollection getImageMeasurementRefs(String imageName) {
+    public ImageMeasurementRefs getImageMeasurementRefs(String imageName) {
         return getImageMeasurementRefs(imageName, null);
     }
 
-    public ImageMeasurementRefCollection getImageMeasurementRefs(String imageName, Module cutoffModule) {
-        ImageMeasurementRefCollection measurementRefs = new ImageMeasurementRefCollection();
+    public ImageMeasurementRefs getImageMeasurementRefs(String imageName, Module cutoffModule) {
+        ImageMeasurementRefs measurementRefs = new ImageMeasurementRefs();
 
         addImageMeasurementRefs(inputControl, measurementRefs, imageName);
         addImageMeasurementRefs(outputControl, measurementRefs, imageName);
@@ -70,10 +70,10 @@ public class ModuleCollection extends ArrayList<Module> implements RefCollection
 
     }
 
-    void addImageMeasurementRefs(Module module, ImageMeasurementRefCollection measurementRefs, String imageName) {
+    void addImageMeasurementRefs(Module module, ImageMeasurementRefs measurementRefs, String imageName) {
         if (!module.isEnabled())
             return;
-        ImageMeasurementRefCollection currentMeasurementRefs = module.updateAndGetImageMeasurementRefs();
+        ImageMeasurementRefs currentMeasurementRefs = module.updateAndGetImageMeasurementRefs();
 
         if (currentMeasurementRefs == null)
             return;
@@ -87,13 +87,13 @@ public class ModuleCollection extends ArrayList<Module> implements RefCollection
         }
     }
 
-    public ObjMeasurementRefCollection getObjectMeasurementRefs(String objectName) {
+    public ObjMeasurementRefs getObjectMeasurementRefs(String objectName) {
         return getObjectMeasurementRefs(objectName, null);
 
     }
 
-    public ObjMeasurementRefCollection getObjectMeasurementRefs(String objectName, Module cutoffModule) {
-        ObjMeasurementRefCollection measurementRefs = new ObjMeasurementRefCollection();
+    public ObjMeasurementRefs getObjectMeasurementRefs(String objectName, Module cutoffModule) {
+        ObjMeasurementRefs measurementRefs = new ObjMeasurementRefs();
         
         // If this is a distant relative there will be "//" in the name that need to be
         // removed
@@ -118,7 +118,7 @@ public class ModuleCollection extends ArrayList<Module> implements RefCollection
     }
 
     public boolean objectsExportMeasurements(String objectName) {
-        ObjMeasurementRefCollection refCollection = getObjectMeasurementRefs(objectName);
+        ObjMeasurementRefs refCollection = getObjectMeasurementRefs(objectName);
 
         for (ObjMeasurementRef ref : refCollection.values()) {
             if (ref.isExportIndividual() && ref.isExportGlobal())
@@ -129,10 +129,10 @@ public class ModuleCollection extends ArrayList<Module> implements RefCollection
 
     }
 
-    void addObjectMeasurementRefs(Module module, ObjMeasurementRefCollection measurementRefs, String objectName) {
+    void addObjectMeasurementRefs(Module module, ObjMeasurementRefs measurementRefs, String objectName) {
         if (!module.isEnabled())
             return;
-        ObjMeasurementRefCollection currentMeasurementRefs = module.updateAndGetObjectMeasurementRefs();
+        ObjMeasurementRefs currentMeasurementRefs = module.updateAndGetObjectMeasurementRefs();
         if (currentMeasurementRefs == null)
             return;
 
@@ -145,13 +145,13 @@ public class ModuleCollection extends ArrayList<Module> implements RefCollection
         }
     }
 
-    public MetadataRefCollection getMetadataRefs() {
+    public MetadataRefs getMetadataRefs() {
         return getMetadataRefs(null);
 
     }
 
-    public MetadataRefCollection getMetadataRefs(Module cutoffModule) {
-        MetadataRefCollection metadataRefs = new MetadataRefCollection();
+    public MetadataRefs getMetadataRefs(Module cutoffModule) {
+        MetadataRefs metadataRefs = new MetadataRefs();
 
         addMetadataRefs(inputControl, metadataRefs);
         addMetadataRefs(outputControl, metadataRefs);
@@ -168,11 +168,11 @@ public class ModuleCollection extends ArrayList<Module> implements RefCollection
 
     }
 
-    void addMetadataRefs(Module module, MetadataRefCollection metadataRefs) {
+    void addMetadataRefs(Module module, MetadataRefs metadataRefs) {
         if (!module.isEnabled())
             return;
 
-        MetadataRefCollection currentMetadataReferences = module.updateAndGetMetadataReferences();
+        MetadataRefs currentMetadataReferences = module.updateAndGetMetadataReferences();
         if (currentMetadataReferences == null)
             return;
 
@@ -180,13 +180,13 @@ public class ModuleCollection extends ArrayList<Module> implements RefCollection
 
     }
 
-    public ParentChildRefCollection getParentChildRefs() {
+    public ParentChildRefs getParentChildRefs() {
         return getParentChildRefs(null);
 
     }
 
-    public ParentChildRefCollection getParentChildRefs(Module cutoffModule) {
-        ParentChildRefCollection parentChildRefs = new ParentChildRefCollection();
+    public ParentChildRefs getParentChildRefs(Module cutoffModule) {
+        ParentChildRefs parentChildRefs = new ParentChildRefs();
 
         addParentChildRefs(inputControl, parentChildRefs);
         addParentChildRefs(outputControl, parentChildRefs);
@@ -205,11 +205,11 @@ public class ModuleCollection extends ArrayList<Module> implements RefCollection
 
     }
 
-    void addParentChildRefs(Module module, ParentChildRefCollection parentChildRefs) {
+    void addParentChildRefs(Module module, ParentChildRefs parentChildRefs) {
         if (!module.isEnabled())
             return;
 
-        ParentChildRefCollection currentParentChildRefs = module.updateAndGetParentChildRefs();
+        ParentChildRefs currentParentChildRefs = module.updateAndGetParentChildRefs();
         if (currentParentChildRefs == null)
             return;
 
@@ -217,13 +217,13 @@ public class ModuleCollection extends ArrayList<Module> implements RefCollection
 
     }
 
-    public PartnerRefCollection getPartnerRefs() {
+    public PartnerRefs getPartnerRefs() {
         return getPartnerRefs(null);
 
     }
 
-    public PartnerRefCollection getPartnerRefs(Module cutoffModule) {
-        PartnerRefCollection partnerRefs = new PartnerRefCollection();
+    public PartnerRefs getPartnerRefs(Module cutoffModule) {
+        PartnerRefs partnerRefs = new PartnerRefs();
 
         addPartnerRefs(inputControl, partnerRefs);
         addPartnerRefs(outputControl, partnerRefs);
@@ -242,11 +242,11 @@ public class ModuleCollection extends ArrayList<Module> implements RefCollection
 
     }
 
-    void addPartnerRefs(Module module, PartnerRefCollection partnerRefs) {
+    void addPartnerRefs(Module module, PartnerRefs partnerRefs) {
         if (!module.isEnabled())
             return;
 
-        PartnerRefCollection currentPartnerRefs = module.updateAndGetPartnerRefs();
+        PartnerRefs currentPartnerRefs = module.updateAndGetPartnerRefs();
         if (currentPartnerRefs == null)
             return;
 
@@ -272,7 +272,7 @@ public class ModuleCollection extends ArrayList<Module> implements RefCollection
                 continue;
 
             // Running through all parameters, adding all images to the list
-            ParameterCollection currParameters = module.updateAndGetParameters();
+            Parameters currParameters = module.updateAndGetParameters();
             for (Parameter currParameter : currParameters.values()) {
                 if (type.isInstance(currParameter)) {
                     parameters.add((T) currParameter);
@@ -465,7 +465,7 @@ public class ModuleCollection extends ArrayList<Module> implements RefCollection
 
         // Iterating over all input indices, when we get to the target index, add the
         // moved values
-        ModuleCollection newModules = new ModuleCollection();
+        Modules newModules = new Modules();
         for (int idx = 0; idx < inIdx.size() + fromIndices.length + 1; idx++) {
             // If this is the target, move the relevant indices, else move the current value
             if (idx == toIndex) {
@@ -499,10 +499,10 @@ public class ModuleCollection extends ArrayList<Module> implements RefCollection
 
     }
 
-    public void insert(ModuleCollection modulesToInsert, int toIndex) {
+    public void insert(Modules modulesToInsert, int toIndex) {
         // Iterating over all input indices, when we get to the target index, add the
         // moved values
-        ModuleCollection newModules = new ModuleCollection();
+        Modules newModules = new Modules();
         for (Module module : this) {
             int idx = indexOf(module);
 
@@ -519,8 +519,8 @@ public class ModuleCollection extends ArrayList<Module> implements RefCollection
         addAll(newModules);
     }
 
-    public ModuleCollection duplicate() {
-        ModuleCollection copyModules = new ModuleCollection();
+    public Modules duplicate() {
+        Modules copyModules = new Modules();
 
         copyModules.setInputControl((InputControl) inputControl.duplicate(copyModules));
         copyModules.setOutputControl((OutputControl) outputControl.duplicate(copyModules));

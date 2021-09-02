@@ -10,7 +10,7 @@ import java.util.StringTokenizer;
 import io.github.mianalysis.MIA.Module.Categories;
 import io.github.mianalysis.MIA.Module.Category;
 import io.github.mianalysis.MIA.Module.Module;
-import io.github.mianalysis.MIA.Module.ModuleCollection;
+import io.github.mianalysis.MIA.Module.Modules;
 import io.github.mianalysis.MIA.Object.Status;
 import io.github.mianalysis.MIA.Object.Workspace;
 import io.github.mianalysis.MIA.Object.Parameters.BooleanP;
@@ -18,15 +18,15 @@ import io.github.mianalysis.MIA.Object.Parameters.ChoiceP;
 import io.github.mianalysis.MIA.Object.Parameters.FilePathP;
 import io.github.mianalysis.MIA.Object.Parameters.GenericButtonP;
 import io.github.mianalysis.MIA.Object.Parameters.MetadataItemP;
-import io.github.mianalysis.MIA.Object.Parameters.ParameterCollection;
+import io.github.mianalysis.MIA.Object.Parameters.Parameters;
 import io.github.mianalysis.MIA.Object.Parameters.SeparatorP;
 import io.github.mianalysis.MIA.Object.Parameters.Text.StringP;
 import io.github.mianalysis.MIA.Object.Parameters.Text.TextAreaP;
-import io.github.mianalysis.MIA.Object.References.Collections.ImageMeasurementRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.MetadataRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.ObjMeasurementRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.ParentChildRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.PartnerRefCollection;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ImageMeasurementRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.MetadataRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ObjMeasurementRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ParentChildRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.PartnerRefs;
 import io.github.sjcross.common.MetadataExtractors.CV1000FilenameExtractor;
 import io.github.sjcross.common.MetadataExtractors.CV1000FoldernameExtractor;
 import io.github.sjcross.common.MetadataExtractors.CV7000FilenameExtractor;
@@ -66,7 +66,7 @@ public class MetadataExtractor extends Module {
     public static final String METADATA_VALUE_NAME = "Metadata value name";
     public static final String REFRESH_BUTTON = "Refresh parameters";
 
-    public MetadataExtractor(ModuleCollection modules) {
+    public MetadataExtractor(Modules modules) {
         super("Extract metadata", modules);
     }
 
@@ -387,8 +387,8 @@ public class MetadataExtractor extends Module {
     }
 
     @Override
-    public ParameterCollection updateAndGetParameters() {
-        ParameterCollection returnedParameters = new ParameterCollection();
+    public Parameters updateAndGetParameters() {
+        Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(EXTRACTOR_SEPARATOR));
         returnedParameters.add(parameters.getParameter(EXTRACTOR_MODE));
@@ -449,8 +449,8 @@ public class MetadataExtractor extends Module {
 
     }
 
-    private ParameterCollection getGenericExtractorParameters() {
-        ParameterCollection returnedParameters = new ParameterCollection();
+    private Parameters getGenericExtractorParameters() {
+        Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(REGEX_SEPARATOR));
         returnedParameters.add(parameters.getParameter(PATTERN));
@@ -477,18 +477,18 @@ public class MetadataExtractor extends Module {
     }
 
     @Override
-    public ImageMeasurementRefCollection updateAndGetImageMeasurementRefs() {
+    public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MetadataRefCollection updateAndGetMetadataReferences() {
-        MetadataRefCollection returnedRefs = new MetadataRefCollection();
+    public MetadataRefs updateAndGetMetadataReferences() {
+        MetadataRefs returnedRefs = new MetadataRefs();
 
         switch ((String) parameters.getValue(EXTRACTOR_MODE)) {
             case ExtractorModes.FILENAME_MODE:
@@ -617,12 +617,12 @@ public class MetadataExtractor extends Module {
     }
 
     @Override
-    public ParentChildRefCollection updateAndGetParentChildRefs() {
+    public ParentChildRefs updateAndGetParentChildRefs() {
         return null;
     }
 
     @Override
-    public PartnerRefCollection updateAndGetPartnerRefs() {
+    public PartnerRefs updateAndGetPartnerRefs() {
         return null;
     }
 

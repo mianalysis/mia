@@ -2,7 +2,7 @@ package io.github.mianalysis.MIA.Macro.ObjectMeasurements;
 
 import ij.macro.MacroExtension;
 import io.github.mianalysis.MIA.Macro.MacroOperation;
-import io.github.mianalysis.MIA.Module.ModuleCollection;
+import io.github.mianalysis.MIA.Module.Modules;
 import io.github.mianalysis.MIA.Object.*;
 
 public class MIA_SetObjectMeasurement extends MacroOperation {
@@ -16,14 +16,14 @@ public class MIA_SetObjectMeasurement extends MacroOperation {
     }
 
     @Override
-    public String action(Object[] objects, Workspace workspace, ModuleCollection modules) {
+    public String action(Object[] objects, Workspace workspace, Modules modules) {
         String objectName = (String) objects[0];
         int objectID = (int) Math.round((Double) objects[1]);
         String measurementName = (String) objects[2];
         double measurementValue = (double) objects[3];
 
         // Getting the object set
-        ObjCollection objCollection = workspace.getObjectSet(objectName);
+        Objs objCollection = workspace.getObjectSet(objectName);
         if (objCollection == null) return "";
 
         // Getting the object

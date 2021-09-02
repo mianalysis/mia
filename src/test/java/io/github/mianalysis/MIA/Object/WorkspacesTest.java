@@ -6,11 +6,11 @@ import java.io.File;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class WorkspaceCollectionTest {
+public class WorkspacesTest {
 
     @Test
     public void testGetNewWorkspace() {
-        WorkspaceCollection collection = new WorkspaceCollection();
+        Workspaces collection = new Workspaces();
 
         // Checking the collection is empty to start with
         assertEquals(0,collection.size());

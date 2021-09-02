@@ -10,12 +10,12 @@ import org.junit.jupiter.params.provider.EnumSource;
 import io.github.mianalysis.MIA.ExpectedObjects.ExpectedObjects;
 import io.github.mianalysis.MIA.ExpectedObjects.Objects3D;
 import io.github.mianalysis.MIA.Module.Module;
-import io.github.mianalysis.MIA.Module.ModuleCollection;
+import io.github.mianalysis.MIA.Module.Modules;
 import io.github.mianalysis.MIA.Module.ModuleTest;
 import io.github.mianalysis.MIA.Object.Obj;
-import io.github.mianalysis.MIA.Object.ObjCollection;
+import io.github.mianalysis.MIA.Object.Objs;
 import io.github.mianalysis.MIA.Object.Workspace;
-import io.github.mianalysis.MIA.Object.WorkspaceCollection;
+import io.github.mianalysis.MIA.Object.Workspaces;
 import io.github.sjcross.common.Object.Volume.VolumeType;
 
 public class BinObjectsByMeasurementTest extends ModuleTest {
@@ -35,7 +35,7 @@ public class BinObjectsByMeasurementTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testRunAllInRange(VolumeType volumeType) throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Setting object parameters
@@ -47,11 +47,11 @@ public class BinObjectsByMeasurementTest extends ModuleTest {
         String measurement = Objects3D.Measures.EXP_N_VOXELS.name();
 
         // Creating objects and adding to workspace
-        ObjCollection testObjects = new Objects3D(volumeType).getObjects(inputObjectsName, ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        Objs testObjects = new Objects3D(volumeType).getObjects(inputObjectsName, ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(testObjects);
 
         // Initialising BinObjectsyMeasurement
-        BinObjectsByMeasurement binObjectsByMeasurement = new BinObjectsByMeasurement(new ModuleCollection());
+        BinObjectsByMeasurement binObjectsByMeasurement = new BinObjectsByMeasurement(new Modules());
         binObjectsByMeasurement.initialiseParameters();
         binObjectsByMeasurement.updateParameterValue(BinObjectsByMeasurement.INPUT_OBJECTS, inputObjectsName);
         binObjectsByMeasurement.updateParameterValue(BinObjectsByMeasurement.MEASUREMENT,measurement);
@@ -75,7 +75,7 @@ public class BinObjectsByMeasurementTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testRunSomeBelowRange(VolumeType volumeType) throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Setting object parameters
@@ -87,11 +87,11 @@ public class BinObjectsByMeasurementTest extends ModuleTest {
         String measurement = Objects3D.Measures.EXP_N_VOXELS.name();
 
         // Creating objects and adding to workspace
-        ObjCollection testObjects = new Objects3D(volumeType).getObjects(inputObjectsName,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        Objs testObjects = new Objects3D(volumeType).getObjects(inputObjectsName,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(testObjects);
 
         // Initialising BinObjectsyMeasurement
-        BinObjectsByMeasurement binObjectsByMeasurement = new BinObjectsByMeasurement(new ModuleCollection());
+        BinObjectsByMeasurement binObjectsByMeasurement = new BinObjectsByMeasurement(new Modules());
         binObjectsByMeasurement.initialiseParameters();
         binObjectsByMeasurement.updateParameterValue(BinObjectsByMeasurement.INPUT_OBJECTS, inputObjectsName);
         binObjectsByMeasurement.updateParameterValue(BinObjectsByMeasurement.MEASUREMENT,measurement);
@@ -115,7 +115,7 @@ public class BinObjectsByMeasurementTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testRunSomeAboveRange(VolumeType volumeType) throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Setting object parameters
@@ -127,11 +127,11 @@ public class BinObjectsByMeasurementTest extends ModuleTest {
         String measurement = Objects3D.Measures.EXP_N_VOXELS.name();
 
         // Creating objects and adding to workspace
-        ObjCollection testObjects = new Objects3D(volumeType).getObjects(inputObjectsName,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        Objs testObjects = new Objects3D(volumeType).getObjects(inputObjectsName,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(testObjects);
 
         // Initialising BinObjectsyMeasurement
-        BinObjectsByMeasurement binObjectsByMeasurement = new BinObjectsByMeasurement(new ModuleCollection());
+        BinObjectsByMeasurement binObjectsByMeasurement = new BinObjectsByMeasurement(new Modules());
         binObjectsByMeasurement.initialiseParameters();
         binObjectsByMeasurement.updateParameterValue(BinObjectsByMeasurement.INPUT_OBJECTS, inputObjectsName);
         binObjectsByMeasurement.updateParameterValue(BinObjectsByMeasurement.MEASUREMENT,measurement);

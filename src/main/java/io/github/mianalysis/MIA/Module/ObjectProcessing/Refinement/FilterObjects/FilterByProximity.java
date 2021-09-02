@@ -7,22 +7,22 @@ import java.util.LinkedHashMap;
 
 import io.github.mianalysis.MIA.Module.Categories;
 import io.github.mianalysis.MIA.Module.Category;
-import io.github.mianalysis.MIA.Module.ModuleCollection;
+import io.github.mianalysis.MIA.Module.Modules;
 import io.github.mianalysis.MIA.Module.ObjectMeasurements.Spatial.CalculateNearestNeighbour;
 import io.github.mianalysis.MIA.Object.Measurement;
 import io.github.mianalysis.MIA.Object.Obj;
-import io.github.mianalysis.MIA.Object.ObjCollection;
+import io.github.mianalysis.MIA.Object.Objs;
 import io.github.mianalysis.MIA.Object.Status;
 import io.github.mianalysis.MIA.Object.Workspace;
 import io.github.mianalysis.MIA.Object.Parameters.BooleanP;
 import io.github.mianalysis.MIA.Object.Parameters.ChoiceP;
 import io.github.mianalysis.MIA.Object.Parameters.ObjectMeasurementP;
-import io.github.mianalysis.MIA.Object.Parameters.ParameterCollection;
+import io.github.mianalysis.MIA.Object.Parameters.Parameters;
 import io.github.mianalysis.MIA.Object.Parameters.SeparatorP;
 import io.github.mianalysis.MIA.Object.Parameters.Text.DoubleP;
-import io.github.mianalysis.MIA.Object.References.Collections.ImageMeasurementRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.MetadataRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.ObjMeasurementRefCollection;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ImageMeasurementRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.MetadataRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ObjMeasurementRefs;
 
 public class FilterByProximity extends AbstractObjectFilter {
     public static final String FILTER_SEPARATOR = "Object filtering";
@@ -33,7 +33,7 @@ public class FilterByProximity extends AbstractObjectFilter {
     public static final String FILTER_METHOD = "Method for filtering";
     public static final String MEASUREMENT = "Measurement to filter on";
 
-    public FilterByProximity(ModuleCollection modules) {
+    public FilterByProximity(Modules modules) {
         super("Object proximity", modules);
     }
 
@@ -58,7 +58,7 @@ public class FilterByProximity extends AbstractObjectFilter {
         }
     }
 
-    // public static void calculateAllOverlaps(Obj inputObject, ObjCollection
+    // public static void calculateAllOverlaps(Obj inputObject, Objs
     // testObjects, boolean linkInSameFrame,
     // @Nullable LinkedHashMap<Obj, Double> currOverlaps) {
     // for (Obj testObject : testObjects.values()) {
@@ -91,7 +91,7 @@ public class FilterByProximity extends AbstractObjectFilter {
     protected Status process(Workspace workspace) {
         // Getting input objects
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
-        ObjCollection inputObjects = workspace.getObjects().get(inputObjectsName);
+        Objs inputObjects = workspace.getObjects().get(inputObjectsName);
 
         // Getting parameters
         String filterMode = parameters.getValue(FILTER_MODE);
@@ -108,7 +108,7 @@ public class FilterByProximity extends AbstractObjectFilter {
         if (calibratedUnits)
             minSeparation = minSeparation / inputObjects.getDppXY();
 
-        ObjCollection outputObjects = moveObjects ? new ObjCollection(outputObjectsName, inputObjects) : null;
+        Objs outputObjects = moveObjects ? new Objs(outputObjectsName, inputObjects) : null;
 
         // Ordering objects based on their measurement
         MeasurementComparator comparator = getComparator(filterMethod, measName);
@@ -182,10 +182,10 @@ public class FilterByProximity extends AbstractObjectFilter {
     }
 
     @Override
-    public ParameterCollection updateAndGetParameters() {
+    public Parameters updateAndGetParameters() {
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
 
-        ParameterCollection returnedParameters = new ParameterCollection();
+        Parameters returnedParameters = new Parameters();
         returnedParameters.addAll(super.updateAndGetParameters());
 
         returnedParameters.add(parameters.getParameter(FILTER_SEPARATOR));
@@ -203,18 +203,18 @@ public class FilterByProximity extends AbstractObjectFilter {
     }
 
     @Override
-    public ImageMeasurementRefCollection updateAndGetImageMeasurementRefs() {
+    public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
         return super.updateAndGetObjectMeasurementRefs();
 
     }
 
     @Override
-    public MetadataRefCollection updateAndGetMetadataReferences() {
+    public MetadataRefs updateAndGetMetadataReferences() {
         return null;
     }
 

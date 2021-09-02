@@ -15,11 +15,11 @@ import org.junit.jupiter.api.io.TempDir;
 import ij.IJ;
 import ij.ImagePlus;
 import io.github.mianalysis.MIA.Module.Module;
-import io.github.mianalysis.MIA.Module.ModuleCollection;
+import io.github.mianalysis.MIA.Module.Modules;
 import io.github.mianalysis.MIA.Module.ModuleTest;
 import io.github.mianalysis.MIA.Object.Image;
 import io.github.mianalysis.MIA.Object.Workspace;
-import io.github.mianalysis.MIA.Object.WorkspaceCollection;
+import io.github.mianalysis.MIA.Object.Workspaces;
 
 /**
  * Created by sc13967 on 13/11/2017.
@@ -42,7 +42,7 @@ public class ImageSaverTest extends ModuleTest {
         testFile.createNewFile();
 
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(testFile,1);
 
         // Load the test image and put in the workspace
@@ -52,7 +52,7 @@ public class ImageSaverTest extends ModuleTest {
         workspace.addImage(image);
 
         // Initialising FilterObjects module
-        ImageSaver imageSaver = new ImageSaver(new ModuleCollection());
+        ImageSaver imageSaver = new ImageSaver(new Modules());
         imageSaver.initialiseParameters();
         imageSaver.updateParameterValue(ImageSaver.INPUT_IMAGE,"Test_image");
         imageSaver.updateParameterValue(ImageSaver.SAVE_LOCATION,ImageSaver.SaveLocations.SAVE_WITH_INPUT);
@@ -83,7 +83,7 @@ public class ImageSaverTest extends ModuleTest {
         File temporaryFolder = tempPath.toFile();
 
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Load the test image and put in the workspace
@@ -93,7 +93,7 @@ public class ImageSaverTest extends ModuleTest {
         workspace.addImage(image);
 
         // Initialising FilterObjects module
-        ImageSaver imageSaver = new ImageSaver(new ModuleCollection());
+        ImageSaver imageSaver = new ImageSaver(new Modules());
         imageSaver.initialiseParameters();
         imageSaver.updateParameterValue(ImageSaver.INPUT_IMAGE,"Test_image");
         imageSaver.updateParameterValue(ImageSaver.SAVE_LOCATION,ImageSaver.SaveLocations.SPECIFIC_LOCATION);

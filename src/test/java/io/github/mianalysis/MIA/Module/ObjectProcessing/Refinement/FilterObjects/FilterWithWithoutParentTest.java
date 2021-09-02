@@ -11,9 +11,9 @@ import io.github.mianalysis.MIA.ExpectedObjects.ExpectedObjects;
 import io.github.mianalysis.MIA.ExpectedObjects.Objects3D;
 import io.github.mianalysis.MIA.Module.ModuleTest;
 import io.github.mianalysis.MIA.Object.Obj;
-import io.github.mianalysis.MIA.Object.ObjCollection;
+import io.github.mianalysis.MIA.Object.Objs;
 import io.github.mianalysis.MIA.Object.Workspace;
-import io.github.mianalysis.MIA.Object.WorkspaceCollection;
+import io.github.mianalysis.MIA.Object.Workspaces;
 import io.github.sjcross.common.Object.Volume.SpatCal;
 import io.github.sjcross.common.Object.Volume.VolumeType;
 
@@ -28,7 +28,7 @@ public class FilterWithWithoutParentTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testRunPresentParentDoNothing(VolumeType volumeType) throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null, 1);
 
         // Setting calibration parameters
@@ -38,14 +38,14 @@ public class FilterWithWithoutParentTest extends ModuleTest {
         SpatCal calibration = new SpatCal(dppXY, dppZ, calibratedUnits, 1, 1, 1);
 
         // Getting test objects
-        ObjCollection testObjects = new Objects3D(volumeType).getObjects("TestObj", ExpectedObjects.Mode.EIGHT_BIT,
+        Objs testObjects = new Objects3D(volumeType).getObjects("TestObj", ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
         workspace.addObjects(testObjects);
 
         // Creating a second set of objects and relate these to the test objects.
         boolean[] parents = new boolean[] { true, true, false, true, false, false, false, false };
-        ObjCollection parentObjects = new ObjCollection("Parents", calibration, 1, 0.02, UNITS.SECOND);
-        ObjCollection expectedPassObjects = new ObjCollection("PassOutput", calibration, 1, 0.02, UNITS.SECOND);
+        Objs parentObjects = new Objs("Parents", calibration, 1, 0.02, UNITS.SECOND);
+        Objs expectedPassObjects = new Objs("PassOutput", calibration, 1, 0.02, UNITS.SECOND);
 
         int counter = 0;
         for (Obj testObject : testObjects.values()) {
@@ -88,7 +88,7 @@ public class FilterWithWithoutParentTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testRunPresentParentMove(VolumeType volumeType) throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Setting calibration parameters
@@ -98,14 +98,14 @@ public class FilterWithWithoutParentTest extends ModuleTest {
         SpatCal calibration = new SpatCal(dppXY,dppZ,calibratedUnits,1,1,1);
 
         // Getting test objects
-        ObjCollection testObjects = new Objects3D(volumeType).getObjects("TestObj", ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        Objs testObjects = new Objects3D(volumeType).getObjects("TestObj", ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(testObjects);
 
         // Creating a second set of objects and relate these to the test objects.
         boolean[] parents = new boolean[]{true,true,false,true,false,false,false,false};
-        ObjCollection parentObjects = new ObjCollection("Parents",calibration,1,0.02,UNITS.SECOND);
-        ObjCollection expectedPassObjects = new ObjCollection("PassOutput",calibration,1,0.02,UNITS.SECOND);
-        ObjCollection expectedFailObjects = new ObjCollection("FailOutput",calibration,1,0.02,UNITS.SECOND);
+        Objs parentObjects = new Objs("Parents",calibration,1,0.02,UNITS.SECOND);
+        Objs expectedPassObjects = new Objs("PassOutput",calibration,1,0.02,UNITS.SECOND);
+        Objs expectedFailObjects = new Objs("FailOutput",calibration,1,0.02,UNITS.SECOND);
 
         int counter = 0;
         for (Obj testObject : testObjects.values()) {
@@ -136,7 +136,7 @@ public class FilterWithWithoutParentTest extends ModuleTest {
         // Checking basic facts                
         assertNotNull(workspace.getObjectSet("TestObj"));
         assertEquals(5, workspace.getObjectSet("TestObj").values().size());
-        ObjCollection actualPassObjects = workspace.getObjectSet("TestObj");
+        Objs actualPassObjects = workspace.getObjectSet("TestObj");
         for (Obj expectedPassObject : expectedPassObjects.values()) {
             Obj actualPassObject = actualPassObjects.get(expectedPassObject.getID());
             assertEquals(expectedPassObject, actualPassObject);
@@ -145,7 +145,7 @@ public class FilterWithWithoutParentTest extends ModuleTest {
 
         assertNotNull(workspace.getObjectSet("Output"));
         assertEquals(3, workspace.getObjectSet("Output").values().size());
-        ObjCollection actualFailObjects = workspace.getObjectSet("Output");
+        Objs actualFailObjects = workspace.getObjectSet("Output");
         for (Obj expectedFailObject : expectedFailObjects.values()) {
             Obj actualFailObject = actualFailObjects.get(expectedFailObject.getID());
             assertEquals(expectedFailObject, actualFailObject);
@@ -158,7 +158,7 @@ public class FilterWithWithoutParentTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testRunPresentParentRemove(VolumeType volumeType) throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Setting calibration parameters
@@ -168,13 +168,13 @@ public class FilterWithWithoutParentTest extends ModuleTest {
         SpatCal calibration = new SpatCal(dppXY,dppZ,calibratedUnits,1,1,1);
 
         // Getting test objects
-        ObjCollection testObjects = new Objects3D(volumeType).getObjects("TestObj", ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        Objs testObjects = new Objects3D(volumeType).getObjects("TestObj", ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(testObjects);
 
         // Creating a second set of objects and relate these to the test objects.
         boolean[] parents = new boolean[]{true,true,false,true,false,false,false,false};
-        ObjCollection parentObjects = new ObjCollection("Parents",calibration,1,0.02,UNITS.SECOND);
-        ObjCollection expectedPassObjects = new ObjCollection("PassOutput",calibration,1,0.02,UNITS.SECOND);
+        Objs parentObjects = new Objs("Parents",calibration,1,0.02,UNITS.SECOND);
+        Objs expectedPassObjects = new Objs("PassOutput",calibration,1,0.02,UNITS.SECOND);
 
         int counter = 0;
         for (Obj testObject:testObjects.values()) {
@@ -211,7 +211,7 @@ public class FilterWithWithoutParentTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testRunMissingParentDoNothing(VolumeType volumeType) throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Setting calibration parameters
@@ -221,13 +221,13 @@ public class FilterWithWithoutParentTest extends ModuleTest {
         SpatCal calibration = new SpatCal(dppXY,dppZ,calibratedUnits,1,1,1);
 
         // Getting test objects
-        ObjCollection testObjects = new Objects3D(volumeType).getObjects("TestObj", ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        Objs testObjects = new Objects3D(volumeType).getObjects("TestObj", ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(testObjects);
 
         // Creating a second set of objects and relate these to the test objects.
         boolean[] parents = new boolean[]{true,true,false,true,false,false,false,false};
-        ObjCollection parentObjects = new ObjCollection("Parents",calibration,1,0.02,UNITS.SECOND);
-        ObjCollection expectedPassObjects = new ObjCollection("PassOutput",calibration,1,0.02,UNITS.SECOND);
+        Objs parentObjects = new Objs("Parents",calibration,1,0.02,UNITS.SECOND);
+        Objs expectedPassObjects = new Objs("PassOutput",calibration,1,0.02,UNITS.SECOND);
 
         int counter = 0;
         for (Obj testObject:testObjects.values()) {
@@ -264,7 +264,7 @@ public class FilterWithWithoutParentTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testRunMissingParentMove(VolumeType volumeType) throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Setting calibration parameters
@@ -274,14 +274,14 @@ public class FilterWithWithoutParentTest extends ModuleTest {
         SpatCal calibration = new SpatCal(dppXY,dppZ,calibratedUnits,1,1,1);
 
         // Getting test objects
-        ObjCollection testObjects = new Objects3D(volumeType).getObjects("TestObj", ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        Objs testObjects = new Objects3D(volumeType).getObjects("TestObj", ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(testObjects);
 
         // Creating a second set of objects and relate these to the test objects.
         boolean[] parents = new boolean[]{true,true,false,true,false,false,false,false};
-        ObjCollection parentObjects = new ObjCollection("Parents",calibration,1,0.02,UNITS.SECOND);
-        ObjCollection expectedPassObjects = new ObjCollection("PassOutput",calibration,1,0.02,UNITS.SECOND);
-        ObjCollection expectedFailObjects = new ObjCollection("FailOutput",calibration,1,0.02,UNITS.SECOND);
+        Objs parentObjects = new Objs("Parents",calibration,1,0.02,UNITS.SECOND);
+        Objs expectedPassObjects = new Objs("PassOutput",calibration,1,0.02,UNITS.SECOND);
+        Objs expectedFailObjects = new Objs("FailOutput",calibration,1,0.02,UNITS.SECOND);
 
         int counter = 0;
         for (Obj testObject:testObjects.values()) {
@@ -324,7 +324,7 @@ public class FilterWithWithoutParentTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testRunMissingParentRemove(VolumeType volumeType) throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Setting calibration parameters
@@ -334,13 +334,13 @@ public class FilterWithWithoutParentTest extends ModuleTest {
         SpatCal calibration = new SpatCal(dppXY,dppZ,calibratedUnits,1,1,1);
 
         // Getting test objects
-        ObjCollection testObjects = new Objects3D(volumeType).getObjects("TestObj", ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        Objs testObjects = new Objects3D(volumeType).getObjects("TestObj", ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(testObjects);
 
         // Creating a second set of objects and relate these to the test objects.
         boolean[] parents = new boolean[]{true,true,false,true,false,false,false,false};
-        ObjCollection parentObjects = new ObjCollection("Parents",calibration,1,0.02,UNITS.SECOND);
-        ObjCollection expectedPassObjects = new ObjCollection("PassOutput",calibration,1,0.02,UNITS.SECOND);
+        Objs parentObjects = new Objs("Parents",calibration,1,0.02,UNITS.SECOND);
+        Objs expectedPassObjects = new Objs("PassOutput",calibration,1,0.02,UNITS.SECOND);
 
         int counter = 0;
         for (Obj testObject:testObjects.values()) {
@@ -376,7 +376,7 @@ public class FilterWithWithoutParentTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testRunWithParent(VolumeType volumeType) throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Setting calibration parameters
@@ -386,12 +386,12 @@ public class FilterWithWithoutParentTest extends ModuleTest {
         SpatCal calibration = new SpatCal(dppXY,dppZ,calibratedUnits,1,1,1);
 
         // Getting test objects
-        ObjCollection testObjects = new Objects3D(volumeType).getObjects("TestObj",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        Objs testObjects = new Objects3D(volumeType).getObjects("TestObj",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(testObjects);
 
         // Creating a second set of objects and relate these to the test objects.
         boolean[] parents = new boolean[]{true,true,false,true,false,false,true,true};
-        ObjCollection parentObjects = new ObjCollection("Parents",calibration,1,0.02,UNITS.SECOND);
+        Objs parentObjects = new Objs("Parents",calibration,1,0.02,UNITS.SECOND);
 
         int counter = 0;
         for (Obj testObject:testObjects.values()) {

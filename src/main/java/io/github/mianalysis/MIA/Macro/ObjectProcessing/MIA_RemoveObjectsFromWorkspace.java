@@ -2,7 +2,7 @@ package io.github.mianalysis.MIA.Macro.ObjectProcessing;
 
 import ij.macro.MacroExtension;
 import io.github.mianalysis.MIA.Macro.MacroOperation;
-import io.github.mianalysis.MIA.Module.ModuleCollection;
+import io.github.mianalysis.MIA.Module.Modules;
 import io.github.mianalysis.MIA.Module.ObjectProcessing.Refinement.RemoveObjects;
 import io.github.mianalysis.MIA.Object.Workspace;
 
@@ -17,7 +17,7 @@ public class MIA_RemoveObjectsFromWorkspace extends MacroOperation {
     }
 
     @Override
-    public String action(Object[] objects, Workspace workspace, ModuleCollection modules) {
+    public String action(Object[] objects, Workspace workspace, Modules modules) {
         RemoveObjects removeObjects = new RemoveObjects(modules);
 
         removeObjects.updateParameterValue(RemoveObjects.INPUT_OBJECTS,objects[0]);

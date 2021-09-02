@@ -3,17 +3,17 @@ package io.github.mianalysis.MIA.Module.Miscellaneous;
 import io.github.mianalysis.MIA.Module.Categories;
 import io.github.mianalysis.MIA.Module.Category;
 import io.github.mianalysis.MIA.Module.Module;
-import io.github.mianalysis.MIA.Module.ModuleCollection;
+import io.github.mianalysis.MIA.Module.Modules;
 import io.github.mianalysis.MIA.Object.Status;
 import io.github.mianalysis.MIA.Object.Workspace;
 import io.github.mianalysis.MIA.Object.Parameters.BooleanP;
-import io.github.mianalysis.MIA.Object.Parameters.ParameterCollection;
+import io.github.mianalysis.MIA.Object.Parameters.Parameters;
 import io.github.mianalysis.MIA.Object.Parameters.SeparatorP;
-import io.github.mianalysis.MIA.Object.References.Collections.ImageMeasurementRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.MetadataRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.ObjMeasurementRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.ParentChildRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.PartnerRefCollection;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ImageMeasurementRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.MetadataRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ObjMeasurementRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ParentChildRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.PartnerRefs;
 
 /**
  * Created by sc13967 on 14/03/2018.
@@ -24,12 +24,12 @@ public class GUISeparator extends Module {
     public static final String EXPANDED_BASIC = "Expanded basic GUI";
     public static final String EXPANDED_EDITING = "Expanded editing GUI";
 
-    public GUISeparator(ModuleCollection modules) {
+    public GUISeparator(Modules modules) {
         super("GUI separator", modules);
     }
 
-    public ModuleCollection getBasicModules() {
-        ModuleCollection basicModules = new ModuleCollection();
+    public Modules getBasicModules() {
+        Modules basicModules = new Modules();
 
         // If this separator isn't visible on the basic GUI it contains no modules
         if (!((boolean) parameters.getValue(SHOW_BASIC)))
@@ -65,8 +65,8 @@ public class GUISeparator extends Module {
 
     }
 
-    public ModuleCollection getEditingModules() {
-        ModuleCollection editingModules = new ModuleCollection();
+    public Modules getEditingModules() {
+        Modules editingModules = new Modules();
 
         boolean record = false;
         for (Module module : modules.values()) {
@@ -123,32 +123,32 @@ public class GUISeparator extends Module {
     }
 
     @Override
-    public ParameterCollection updateAndGetParameters() {
+    public Parameters updateAndGetParameters() {
         return parameters;
     }
 
     @Override
-    public ImageMeasurementRefCollection updateAndGetImageMeasurementRefs() {
+    public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MetadataRefCollection updateAndGetMetadataReferences() {
+    public MetadataRefs updateAndGetMetadataReferences() {
         return null;
     }
 
     @Override
-    public ParentChildRefCollection updateAndGetParentChildRefs() {
+    public ParentChildRefs updateAndGetParentChildRefs() {
         return null;
     }
 
     @Override
-    public PartnerRefCollection updateAndGetPartnerRefs() {
+    public PartnerRefs updateAndGetPartnerRefs() {
         return null;
     }
 

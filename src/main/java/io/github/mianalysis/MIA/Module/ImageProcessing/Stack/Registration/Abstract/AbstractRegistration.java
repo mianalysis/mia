@@ -22,7 +22,7 @@ import io.github.mianalysis.MIA.MIA;
 import io.github.mianalysis.MIA.Module.Categories;
 import io.github.mianalysis.MIA.Module.Category;
 import io.github.mianalysis.MIA.Module.Module;
-import io.github.mianalysis.MIA.Module.ModuleCollection;
+import io.github.mianalysis.MIA.Module.Modules;
 import io.github.mianalysis.MIA.Module.ImageProcessing.Pixel.InvertIntensity;
 import io.github.mianalysis.MIA.Module.ImageProcessing.Pixel.ProjectImage;
 import io.github.mianalysis.MIA.Module.ImageProcessing.Stack.ConcatenateStacks;
@@ -31,21 +31,21 @@ import io.github.mianalysis.MIA.Module.ImageProcessing.Stack.ExtractSubstack;
 import io.github.mianalysis.MIA.Module.Visualisation.Overlays.AddObjectCentroid;
 import io.github.mianalysis.MIA.Object.Image;
 import io.github.mianalysis.MIA.Object.Obj;
-import io.github.mianalysis.MIA.Object.ObjCollection;
+import io.github.mianalysis.MIA.Object.Objs;
 import io.github.mianalysis.MIA.Object.Status;
 import io.github.mianalysis.MIA.Object.Workspace;
 import io.github.mianalysis.MIA.Object.Parameters.BooleanP;
 import io.github.mianalysis.MIA.Object.Parameters.ChoiceP;
 import io.github.mianalysis.MIA.Object.Parameters.InputImageP;
 import io.github.mianalysis.MIA.Object.Parameters.OutputImageP;
-import io.github.mianalysis.MIA.Object.Parameters.ParameterCollection;
+import io.github.mianalysis.MIA.Object.Parameters.Parameters;
 import io.github.mianalysis.MIA.Object.Parameters.SeparatorP;
 import io.github.mianalysis.MIA.Object.Parameters.Text.IntegerP;
-import io.github.mianalysis.MIA.Object.References.Collections.ImageMeasurementRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.MetadataRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.ObjMeasurementRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.ParentChildRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.PartnerRefCollection;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ImageMeasurementRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.MetadataRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ObjMeasurementRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ParentChildRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.PartnerRefs;
 import io.github.mianalysis.MIA.Object.Units.TemporalUnit;
 import io.github.mianalysis.MIA.Process.Interactable.PointPairSelector.PointPair;
 import io.github.sjcross.common.Object.Volume.PointOutOfRangeException;
@@ -74,7 +74,7 @@ public abstract class AbstractRegistration<T extends RealType<T> & NativeType<T>
     public static final String CALCULATION_CHANNEL = "Calculation channel";
     public static final String SHOW_DETECTED_POINTS = "Show detected points";
 
-    public AbstractRegistration(String name, ModuleCollection modules) {
+    public AbstractRegistration(String name, Modules modules) {
         super(name, modules);
     }
 
@@ -245,7 +245,7 @@ public abstract class AbstractRegistration<T extends RealType<T> & NativeType<T>
     public static void showDetectedPoints(ImageProcessor referenceIpr, ImageProcessor warpedIpr,
             ArrayList<PointPair> pairs) {
         SpatCal sc = new SpatCal(1, 1, "um", referenceIpr.getWidth(), referenceIpr.getHeight(), 2);
-        ObjCollection oc = new ObjCollection("Im", sc, 1, 1d, TemporalUnit.getOMEUnit());
+        Objs oc = new Objs("Im", sc, 1, 1d, TemporalUnit.getOMEUnit());
         ImagePlus showIpl = IJ.createImage("Detected points", referenceIpr.getWidth(), referenceIpr.getHeight(), 2,
                 referenceIpr.getBitDepth());
 
@@ -597,8 +597,8 @@ public abstract class AbstractRegistration<T extends RealType<T> & NativeType<T>
     }
 
     @Override
-    public ParameterCollection updateAndGetParameters() {
-        ParameterCollection returnedParameters = new ParameterCollection();
+    public Parameters updateAndGetParameters() {
+        Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(INPUT_IMAGE));
@@ -638,27 +638,27 @@ public abstract class AbstractRegistration<T extends RealType<T> & NativeType<T>
     }
 
     @Override
-    public ImageMeasurementRefCollection updateAndGetImageMeasurementRefs() {
+    public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MetadataRefCollection updateAndGetMetadataReferences() {
+    public MetadataRefs updateAndGetMetadataReferences() {
         return null;
     }
 
     @Override
-    public ParentChildRefCollection updateAndGetParentChildRefs() {
+    public ParentChildRefs updateAndGetParentChildRefs() {
         return null;
     }
 
     @Override
-    public PartnerRefCollection updateAndGetPartnerRefs() {
+    public PartnerRefs updateAndGetPartnerRefs() {
         return null;
     }
 

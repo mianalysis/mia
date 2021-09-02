@@ -14,7 +14,7 @@ import io.github.mianalysis.MIA.Module.ModuleTest;
 import io.github.mianalysis.MIA.Object.Image;
 import io.github.mianalysis.MIA.Object.Status;
 import io.github.mianalysis.MIA.Object.Workspace;
-import io.github.mianalysis.MIA.Object.WorkspaceCollection;
+import io.github.mianalysis.MIA.Object.Workspaces;
 
 /**
  * Created by Stephen Cross on 07/03/2019.
@@ -32,7 +32,7 @@ public class FlipStackTest extends ModuleTest{
     @Test
     public void testRunApplyFlip2D8bitX() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
@@ -67,7 +67,7 @@ public class FlipStackTest extends ModuleTest{
     @Test
     public void testRunApplyFlip2D8bitY() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
@@ -102,7 +102,7 @@ public class FlipStackTest extends ModuleTest{
     @Test
     public void testRunApplyFlip2D8bitC() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
@@ -130,7 +130,7 @@ public class FlipStackTest extends ModuleTest{
     @Test
     public void testRunApplyFlip2D8bitZ() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
@@ -158,7 +158,7 @@ public class FlipStackTest extends ModuleTest{
     @Test
     public void testRunApplyFlip2D8bitT() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
@@ -189,7 +189,7 @@ public class FlipStackTest extends ModuleTest{
     @Test
     public void testRunApplyFlip3D8bitX() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
@@ -224,7 +224,7 @@ public class FlipStackTest extends ModuleTest{
     @Test
     public void testRunApplyFlip3D8bitY() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
@@ -259,7 +259,7 @@ public class FlipStackTest extends ModuleTest{
     @Test
     public void testRunApplyFlip3D8bitC() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
@@ -287,7 +287,7 @@ public class FlipStackTest extends ModuleTest{
     @Test
     public void testRunApplyFlip3D8bitZ() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
@@ -322,7 +322,7 @@ public class FlipStackTest extends ModuleTest{
     @Test
     public void testRunApplyFlip3D8bitT() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
@@ -353,7 +353,7 @@ public class FlipStackTest extends ModuleTest{
     @Test
     public void testRunApplyFlip4D8bitX() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
@@ -388,7 +388,7 @@ public class FlipStackTest extends ModuleTest{
     @Test
     public void testRunApplyFlip4D8bitY() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
@@ -423,7 +423,7 @@ public class FlipStackTest extends ModuleTest{
     @Test
     public void testRunApplyFlip4DCT8bitC() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
@@ -458,7 +458,7 @@ public class FlipStackTest extends ModuleTest{
     @Test
     public void testRunApplyFlip4DCZ8bitC() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
@@ -493,7 +493,7 @@ public class FlipStackTest extends ModuleTest{
     @Test
     public void testRunApplyFlip4DZT8bitC() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
@@ -548,7 +548,7 @@ public class FlipStackTest extends ModuleTest{
     @Test
     public void testRunApplyFlip5D8bitX() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
@@ -583,7 +583,7 @@ public class FlipStackTest extends ModuleTest{
     @Test
     public void testRunApplyFlip5D8bitY() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
@@ -618,7 +618,7 @@ public class FlipStackTest extends ModuleTest{
     @Test
     public void testRunApplyFlip5D8bitC() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
@@ -664,7 +664,7 @@ public class FlipStackTest extends ModuleTest{
     @Test
     public void testRunApplyFlip5D16bitX() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
@@ -699,7 +699,7 @@ public class FlipStackTest extends ModuleTest{
     @Test
     public void testRunApplyFlip5D32bitX() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
@@ -736,7 +736,7 @@ public class FlipStackTest extends ModuleTest{
     @Test
     public void testRunApplyFlip2D8bitXApplyToInput() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image

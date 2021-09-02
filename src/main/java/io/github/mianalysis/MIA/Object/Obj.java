@@ -30,17 +30,17 @@ public class Obj extends Volume {
 
     private int T;
 
-    private ObjCollection objCollection;
+    private Objs objCollection;
 
     private LinkedHashMap<String, Obj> parents = new LinkedHashMap<>();
-    private LinkedHashMap<String, ObjCollection> children = new LinkedHashMap<>();
-    private LinkedHashMap<String, ObjCollection> partners = new LinkedHashMap<>();
+    private LinkedHashMap<String, Objs> children = new LinkedHashMap<>();
+    private LinkedHashMap<String, Objs> partners = new LinkedHashMap<>();
     private LinkedHashMap<String, Measurement> measurements = new LinkedHashMap<>();
     private HashMap<Integer, Roi> rois = new HashMap<>();
 
     // CONSTRUCTORS
 
-    public Obj(ObjCollection objCollection, VolumeType volumeType, int ID) {
+    public Obj(Objs objCollection, VolumeType volumeType, int ID) {
         super(volumeType, objCollection.getSpatialCalibration());
 
         this.objCollection = objCollection;
@@ -48,7 +48,7 @@ public class Obj extends Volume {
 
     }
 
-    public Obj(ObjCollection objCollection, int ID, Volume exampleVolume) {
+    public Obj(Objs objCollection, int ID, Volume exampleVolume) {
         super(exampleVolume.getVolumeType(), exampleVolume.getSpatialCalibration());
 
         this.objCollection = objCollection;
@@ -56,7 +56,7 @@ public class Obj extends Volume {
 
     }
 
-    public Obj(ObjCollection objCollection, int ID, Obj exampleObj) {
+    public Obj(Objs objCollection, int ID, Obj exampleObj) {
         super(exampleObj.getVolumeType(), exampleObj.getSpatialCalibration());
 
         this.objCollection = objCollection;
@@ -64,7 +64,7 @@ public class Obj extends Volume {
 
     }
 
-    public Obj(ObjCollection objCollection, VolumeType volumeType, int ID, Volume exampleVolume) {
+    public Obj(Objs objCollection, VolumeType volumeType, int ID, Volume exampleVolume) {
         super(volumeType, exampleVolume.getSpatialCalibration());
 
         this.objCollection = objCollection;
@@ -72,7 +72,7 @@ public class Obj extends Volume {
 
     }
 
-    public Obj(ObjCollection objCollection, VolumeType volumeType, int ID, Obj exampleObj) {
+    public Obj(Objs objCollection, VolumeType volumeType, int ID, Obj exampleObj) {
         super(volumeType, exampleObj.getSpatialCalibration());
 
         this.objCollection = objCollection;
@@ -108,11 +108,11 @@ public class Obj extends Volume {
 
     }
 
-    public ObjCollection getObjectCollection() {
+    public Objs getObjectCollection() {
         return objCollection;
     }
 
-    public void setObjectCollection(ObjCollection objCollection) {
+    public void setObjectCollection(Objs objCollection) {
         this.objCollection = objCollection;
     }
 
@@ -206,18 +206,18 @@ public class Obj extends Volume {
 
     }
 
-    public LinkedHashMap<String, ObjCollection> getChildren() {
+    public LinkedHashMap<String, Objs> getChildren() {
         return children;
     }
 
-    public ObjCollection getChildren(String name) {
+    public Objs getChildren(String name) {
         // Split name down by " // " tokenizer
         String[] elements = name.split(" // ");
 
         // Getting the first set of children
-        ObjCollection allChildren = children.get(elements[0]);
+        Objs allChildren = children.get(elements[0]);
         if (allChildren == null)
-            return new ObjCollection(elements[0], spatCal, objCollection.getNFrames(), objCollection.getFrameInterval(),
+            return new Objs(elements[0], spatCal, objCollection.getNFrames(), objCollection.getFrameInterval(),
                     objCollection.getTemporalUnit());
 
         // If the first set of children was the only one listed, returning this
@@ -235,10 +235,10 @@ public class Obj extends Volume {
 
         // Going through each child in the current set, then adding all their children
         // to the output set
-        ObjCollection outputChildren = new ObjCollection(name, allChildren.getSpatialCalibration(),
+        Objs outputChildren = new Objs(name, allChildren.getSpatialCalibration(),
                 objCollection.getNFrames(), objCollection.getFrameInterval(), objCollection.getTemporalUnit());
         for (Obj child : allChildren.values()) {
-            ObjCollection currentChildren = child.getChildren(stringBuilder.toString());
+            Objs currentChildren = child.getChildren(stringBuilder.toString());
             for (Obj currentChild : currentChildren.values())
                 outputChildren.add(currentChild);
         }
@@ -247,11 +247,11 @@ public class Obj extends Volume {
 
     }
 
-    public void setChildren(LinkedHashMap<String, ObjCollection> children) {
+    public void setChildren(LinkedHashMap<String, Objs> children) {
         this.children = children;
     }
 
-    public void addChildren(ObjCollection childSet) {
+    public void addChildren(Objs childSet) {
         children.put(childSet.getName(), childSet);
     }
 
@@ -262,7 +262,7 @@ public class Obj extends Volume {
     public void addChild(Obj child) {
         String childName = child.getName();
 
-        children.computeIfAbsent(childName, k -> new ObjCollection(childName, child.getSpatialCalibration(),
+        children.computeIfAbsent(childName, k -> new Objs(childName, child.getSpatialCalibration(),
                 objCollection.getNFrames(), objCollection.getFrameInterval(), objCollection.getTemporalUnit()));
         children.get(childName).add(child);
 
@@ -274,19 +274,19 @@ public class Obj extends Volume {
 
     }
 
-    public LinkedHashMap<String, ObjCollection> getPartners() {
+    public LinkedHashMap<String, Objs> getPartners() {
         return partners;
     }
 
-    public ObjCollection getPartners(String name) {
+    public Objs getPartners(String name) {
         return partners.get(name);
     }
 
-    public void setPartners(LinkedHashMap<String, ObjCollection> partners) {
+    public void setPartners(LinkedHashMap<String, Objs> partners) {
         this.partners = partners;
     }
 
-    public void addPartners(ObjCollection partnerSet) {
+    public void addPartners(Objs partnerSet) {
         partners.put(partnerSet.getName(), partnerSet);
     }
 
@@ -297,7 +297,7 @@ public class Obj extends Volume {
     public void addPartner(Obj partner) {
         String partnerName = partner.getName();
 
-        partners.computeIfAbsent(partnerName, k -> new ObjCollection(partnerName, partner.getSpatialCalibration(),
+        partners.computeIfAbsent(partnerName, k -> new Objs(partnerName, partner.getSpatialCalibration(),
                 objCollection.getNFrames(), objCollection.getFrameInterval(), objCollection.getTemporalUnit()));
         partners.get(partnerName).add(partner);
     }
@@ -326,7 +326,7 @@ public class Obj extends Volume {
 
         // Removing itself as a parent from any children
         if (children != null) {
-            for (ObjCollection childSet : children.values()) {
+            for (Objs childSet : children.values()) {
                 for (Obj child : childSet.values()) {
                     if (child.getParent(getName()) == this) {
                         child.removeParent(getName());
@@ -337,7 +337,7 @@ public class Obj extends Volume {
 
         // Removing itself as a partner from any partners
         if (partners != null) {
-            for (ObjCollection partnerSet : partners.values()) {
+            for (Objs partnerSet : partners.values()) {
                 for (Obj partner : partnerSet.values()) {
                     partner.removePartner(this);
                 }
@@ -367,7 +367,7 @@ public class Obj extends Volume {
         // Getting the image corresponding to this slice
         Volume sliceVol = getSlice(slice);
 
-        ObjCollection objectCollection = new ObjCollection("Slice", sliceVol.getSpatialCalibration(), 1, 1, null);
+        Objs objectCollection = new Objs("Slice", sliceVol.getSpatialCalibration(), 1, 1, null);
         Obj sliceObj = objectCollection.createAndAddNewObject(sliceVol.getVolumeType(), ID);
         sliceObj.setCoordinateSet(sliceVol.getCoordinateSet());
 

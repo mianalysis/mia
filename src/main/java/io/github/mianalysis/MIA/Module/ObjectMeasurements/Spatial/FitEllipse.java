@@ -8,30 +8,30 @@ import java.util.concurrent.atomic.AtomicInteger;
 import ij.Prefs;
 import io.github.mianalysis.MIA.MIA;
 import io.github.mianalysis.MIA.Module.Module;
-import io.github.mianalysis.MIA.Module.ModuleCollection;
+import io.github.mianalysis.MIA.Module.Modules;
 import io.github.mianalysis.MIA.Module.Category;
 import io.github.mianalysis.MIA.Module.Categories;
 import io.github.mianalysis.MIA.Module.ObjectProcessing.Identification.GetObjectSurface;
 import io.github.mianalysis.MIA.Module.ObjectProcessing.Identification.ProjectObjects;
 import io.github.mianalysis.MIA.Object.Measurement;
 import io.github.mianalysis.MIA.Object.Obj;
-import io.github.mianalysis.MIA.Object.ObjCollection;
+import io.github.mianalysis.MIA.Object.Objs;
 import io.github.mianalysis.MIA.Object.Status;
 import io.github.mianalysis.MIA.Object.Units.SpatialUnit;
 import io.github.mianalysis.MIA.Object.Workspace;
 import io.github.mianalysis.MIA.Object.Parameters.BooleanP;
 import io.github.mianalysis.MIA.Object.Parameters.ChoiceP;
 import io.github.mianalysis.MIA.Object.Parameters.InputObjectsP;
-import io.github.mianalysis.MIA.Object.Parameters.ParameterCollection;
+import io.github.mianalysis.MIA.Object.Parameters.Parameters;
 import io.github.mianalysis.MIA.Object.Parameters.SeparatorP;
 import io.github.mianalysis.MIA.Object.Parameters.Objects.OutputObjectsP;
 import io.github.mianalysis.MIA.Object.Parameters.Text.DoubleP;
-import io.github.mianalysis.MIA.Object.References.ObjMeasurementRef;
-import io.github.mianalysis.MIA.Object.References.Collections.ImageMeasurementRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.MetadataRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.ObjMeasurementRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.ParentChildRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.PartnerRefCollection;
+import io.github.mianalysis.MIA.Object.Refs.ObjMeasurementRef;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ImageMeasurementRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.MetadataRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ObjMeasurementRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ParentChildRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.PartnerRefs;
 import io.github.sjcross.common.Analysis.EllipseCalculator;
 import io.github.sjcross.common.Exceptions.IntegerOverflowException;
 import io.github.sjcross.common.Object.Volume.Volume;
@@ -55,7 +55,7 @@ public class FitEllipse extends Module {
     public static final String EXECUTION_SEPARATOR = "Execution controls";
     public static final String ENABLE_MULTITHREADING = "Enable multithreading";
 
-    public FitEllipse(ModuleCollection modules) {
+    public FitEllipse(Modules modules) {
         super("Fit ellipse", modules);
     }
 
@@ -91,12 +91,12 @@ public class FitEllipse extends Module {
 
     }
 
-    public void processObject(Obj inputObject, ObjCollection outputObjects, String objectOutputMode,
+    public void processObject(Obj inputObject, Objs outputObjects, String objectOutputMode,
             double maxAxisLength, String fittingMode) throws IntegerOverflowException {
         EllipseCalculator calculator = null;
 
         // Get projected object
-        ObjCollection projectedObjects = new ObjCollection("Projected", inputObject.getObjectCollection());
+        Objs projectedObjects = new Objs("Projected", inputObject.getObjectCollection());
         Obj projObj = ProjectObjects.process(inputObject, projectedObjects, false);
 
         try {
@@ -106,7 +106,7 @@ public class FitEllipse extends Module {
                     break;
 
                 case FittingModes.FIT_TO_SURFACE:
-                    ObjCollection tempObjects = new ObjCollection("Edge", inputObject.getObjectCollection());
+                    Objs tempObjects = new Objs("Edge", inputObject.getObjectCollection());
                     Obj edgeObject = GetObjectSurface.getSurface(projObj, tempObjects, false);
                     calculator = new EllipseCalculator(edgeObject, maxAxisLength);
                     break;
@@ -138,7 +138,7 @@ public class FitEllipse extends Module {
         }
     }
 
-    public Obj createNewObject(Obj inputObject, Volume ellipse, ObjCollection outputObjects) {
+    public Obj createNewObject(Obj inputObject, Volume ellipse, Objs outputObjects) {
         if (ellipse == null)
             return null;
 
@@ -218,7 +218,7 @@ public class FitEllipse extends Module {
     public Status process(Workspace workspace) {
         // Getting input objects
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
-        ObjCollection inputObjects = workspace.getObjectSet(inputObjectsName);
+        Objs inputObjects = workspace.getObjectSet(inputObjectsName);
 
         // Getting parameters
         String objectOutputMode = parameters.getValue(OBJECT_OUTPUT_MODE);
@@ -228,10 +228,10 @@ public class FitEllipse extends Module {
         double maxAxisLength = limitAxisLength ? parameters.getValue(MAXIMUM_AXIS_LENGTH) : Double.MAX_VALUE;
         boolean multithread = parameters.getValue(ENABLE_MULTITHREADING);
 
-        // If necessary, creating a new ObjCollection and adding it to the Workspace
-        ObjCollection outputObjects = null;
+        // If necessary, creating a new Objs and adding it to the Workspace
+        Objs outputObjects = null;
         if (objectOutputMode.equals(OutputModes.CREATE_NEW_OBJECT)) {
-            outputObjects = new ObjCollection(outputObjectsName, inputObjects);
+            outputObjects = new Objs(outputObjectsName, inputObjects);
             workspace.addObjects(outputObjects);
         }
 
@@ -244,7 +244,7 @@ public class FitEllipse extends Module {
         // workspace where necessary
         AtomicInteger count = new AtomicInteger(1);
         int total = inputObjects.size();
-        ObjCollection finalOutputObjects = outputObjects;
+        Objs finalOutputObjects = outputObjects;
 
         for (Obj inputObject : inputObjects.values()) {
             Runnable task = () -> {
@@ -301,8 +301,8 @@ public class FitEllipse extends Module {
     }
 
     @Override
-    public ParameterCollection updateAndGetParameters() {
-        ParameterCollection returnedParameters = new ParameterCollection();
+    public Parameters updateAndGetParameters() {
+        Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(INPUT_OBJECTS));
@@ -329,13 +329,13 @@ public class FitEllipse extends Module {
     }
 
     @Override
-    public ImageMeasurementRefCollection updateAndGetImageMeasurementRefs() {
+    public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
-        ObjMeasurementRefCollection returnedRefs = new ObjMeasurementRefCollection();
+    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+        ObjMeasurementRefs returnedRefs = new ObjMeasurementRefs();
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
 
         ObjMeasurementRef reference = objectMeasurementRefs.getOrPut(Measurements.X_CENTRE_PX);
@@ -421,13 +421,13 @@ public class FitEllipse extends Module {
     }
 
     @Override
-    public MetadataRefCollection updateAndGetMetadataReferences() {
+    public MetadataRefs updateAndGetMetadataReferences() {
         return null;
     }
 
     @Override
-    public ParentChildRefCollection updateAndGetParentChildRefs() {
-        ParentChildRefCollection returnedRelationships = new ParentChildRefCollection();
+    public ParentChildRefs updateAndGetParentChildRefs() {
+        ParentChildRefs returnedRelationships = new ParentChildRefs();
 
         switch ((String) parameters.getValue(OBJECT_OUTPUT_MODE)) {
             case OutputModes.CREATE_NEW_OBJECT:
@@ -443,7 +443,7 @@ public class FitEllipse extends Module {
     }
 
     @Override
-    public PartnerRefCollection updateAndGetPartnerRefs() {
+    public PartnerRefs updateAndGetPartnerRefs() {
         return null;
     }
 

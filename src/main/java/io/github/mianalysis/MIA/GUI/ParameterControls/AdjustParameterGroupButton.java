@@ -15,7 +15,7 @@ import javax.swing.JPanel;
 import io.github.mianalysis.MIA.GUI.GUI;
 import io.github.mianalysis.MIA.Module.Core.OutputControl;
 import io.github.mianalysis.MIA.Object.Parameters.AdjustParameters;
-import io.github.mianalysis.MIA.Object.Parameters.ParameterCollection;
+import io.github.mianalysis.MIA.Object.Parameters.Parameters;
 
 /**
  * Created by Stephen Cross on 01/02/2019.
@@ -87,7 +87,7 @@ public class AdjustParameterGroupButton extends ParameterControl implements Acti
                 break;
 
             case MOVE_UP:
-                LinkedHashMap<Integer, ParameterCollection> collections = ((AdjustParameters) parameter).getGroup()
+                LinkedHashMap<Integer, Parameters> collections = ((AdjustParameters) parameter).getGroup()
                         .getCollections(false);
                 int moveIdx = ((AdjustParameters) parameter).getCollectionIndex();
                 int prevIdx = -1;
@@ -99,8 +99,8 @@ public class AdjustParameterGroupButton extends ParameterControl implements Acti
                         if (prevIdx == -1)
                             return;
 
-                        ParameterCollection moveCollection = collections.get(moveIdx);
-                        ParameterCollection targetCollection = collections.get(prevIdx);
+                        Parameters moveCollection = collections.get(moveIdx);
+                        Parameters targetCollection = collections.get(prevIdx);
 
                         collections.replace(prevIdx, moveCollection);
                         collections.replace(moveIdx, targetCollection);
@@ -126,8 +126,8 @@ public class AdjustParameterGroupButton extends ParameterControl implements Acti
                     }
 
                     if (ready) {
-                        ParameterCollection moveCollection = collections.get(moveIdx);
-                        ParameterCollection targetCollection = collections.get(idx);
+                        Parameters moveCollection = collections.get(moveIdx);
+                        Parameters targetCollection = collections.get(idx);
 
                         collections.replace(idx, moveCollection);
                         collections.replace(moveIdx, targetCollection);

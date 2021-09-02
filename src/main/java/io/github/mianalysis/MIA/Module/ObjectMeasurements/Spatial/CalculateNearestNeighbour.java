@@ -20,14 +20,14 @@ import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 
 import io.github.mianalysis.MIA.MIA;
 import io.github.mianalysis.MIA.Module.Module;
-import io.github.mianalysis.MIA.Module.ModuleCollection;
+import io.github.mianalysis.MIA.Module.Modules;
 import io.github.mianalysis.MIA.Module.Category;
 import io.github.mianalysis.MIA.Module.Categories;
 import io.github.mianalysis.MIA.Module.InputOutput.ImageSaver;
 import io.github.mianalysis.MIA.Module.ObjectProcessing.Relationships.RelateManyToOne;
 import io.github.mianalysis.MIA.Object.Measurement;
 import io.github.mianalysis.MIA.Object.Obj;
-import io.github.mianalysis.MIA.Object.ObjCollection;
+import io.github.mianalysis.MIA.Object.Objs;
 import io.github.mianalysis.MIA.Object.Status;
 import io.github.mianalysis.MIA.Object.Units.SpatialUnit;
 import io.github.mianalysis.MIA.Object.Workspace;
@@ -35,16 +35,16 @@ import io.github.mianalysis.MIA.Object.Parameters.BooleanP;
 import io.github.mianalysis.MIA.Object.Parameters.ChoiceP;
 import io.github.mianalysis.MIA.Object.Parameters.InputObjectsP;
 import io.github.mianalysis.MIA.Object.Parameters.SeparatorP;
-import io.github.mianalysis.MIA.Object.Parameters.ParameterCollection;
+import io.github.mianalysis.MIA.Object.Parameters.Parameters;
 import io.github.mianalysis.MIA.Object.Parameters.ParentObjectsP;
 import io.github.mianalysis.MIA.Object.Parameters.Text.DoubleP;
 import io.github.mianalysis.MIA.Object.Parameters.Text.StringP;
-import io.github.mianalysis.MIA.Object.References.ObjMeasurementRef;
-import io.github.mianalysis.MIA.Object.References.Collections.ImageMeasurementRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.MetadataRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.ObjMeasurementRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.ParentChildRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.PartnerRefCollection;
+import io.github.mianalysis.MIA.Object.Refs.ObjMeasurementRef;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ImageMeasurementRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.MetadataRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ObjMeasurementRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ParentChildRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.PartnerRefs;
 
 /**
  * Created by sc13967 on 22/06/2017.
@@ -116,7 +116,7 @@ public class CalculateNearestNeighbour extends Module {
         String NN_ID = "NN_${NEIGHBOUR}_ID";
     }
 
-    public CalculateNearestNeighbour(ModuleCollection modules) {
+    public CalculateNearestNeighbour(Modules modules) {
         super("Calculate nearest neighbour", modules);
     }
 
@@ -124,7 +124,7 @@ public class CalculateNearestNeighbour extends Module {
         return "NEAREST_NEIGHBOUR // " + measurement.replace("${NEIGHBOUR}", neighbourObjectsName);
     }
 
-    public static Obj getNearestNeighbour(Obj inputObject, ObjCollection testObjects, String referenceMode,
+    public static Obj getNearestNeighbour(Obj inputObject, Objs testObjects, String referenceMode,
             double maximumLinkingDistance, boolean linkInSameFrame,
             @Nullable LinkedHashMap<Obj, Double> currDistances) {
         double minDist = Double.MAX_VALUE;
@@ -383,7 +383,7 @@ public class CalculateNearestNeighbour extends Module {
     public Status process(Workspace workspace) {
         // Getting objects to measure
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
-        ObjCollection inputObjects = workspace.getObjects().get(inputObjectsName);
+        Objs inputObjects = workspace.getObjects().get(inputObjectsName);
 
         // Getting parameters
         String relationshipMode = parameters.getValue(RELATIONSHIP_MODE);
@@ -424,7 +424,7 @@ public class CalculateNearestNeighbour extends Module {
         if (!limitLinkingDistance)
             maxLinkingDist = Double.MAX_VALUE;
 
-        ObjCollection neighbourObjects = null;
+        Objs neighbourObjects = null;
         String nearestNeighbourName = null;
         switch (relationshipMode) {
             case RelationshipModes.DIFFERENT_SET:
@@ -459,7 +459,7 @@ public class CalculateNearestNeighbour extends Module {
                     continue;
                 }
 
-                ObjCollection childObjects = parentObject.getChildren(nearestNeighbourName);
+                Objs childObjects = parentObject.getChildren(nearestNeighbourName);
                 Obj nearestNeighbour = getNearestNeighbour(inputObject, childObjects, referenceMode, maxLinkingDist,
                         linkInSameFrame, currDistances);
                 addMeasurements(inputObject, nearestNeighbour, referenceMode, nearestNeighbourName);
@@ -560,11 +560,11 @@ public class CalculateNearestNeighbour extends Module {
     }
 
     @Override
-    public ParameterCollection updateAndGetParameters() {
+    public Parameters updateAndGetParameters() {
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
         String neighbourObjectsName;
 
-        ParameterCollection returnedParameters = new ParameterCollection();
+        Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(INPUT_OBJECTS));
@@ -634,13 +634,13 @@ public class CalculateNearestNeighbour extends Module {
     }
 
     @Override
-    public ImageMeasurementRefCollection updateAndGetImageMeasurementRefs() {
+    public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
-        ObjMeasurementRefCollection returnedRefs = new ObjMeasurementRefCollection();
+    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+        ObjMeasurementRefs returnedRefs = new ObjMeasurementRefs();
 
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
         String relationshipMode = parameters.getValue(RELATIONSHIP_MODE);
@@ -675,17 +675,17 @@ public class CalculateNearestNeighbour extends Module {
     }
 
     @Override
-    public MetadataRefCollection updateAndGetMetadataReferences() {
+    public MetadataRefs updateAndGetMetadataReferences() {
         return null;
     }
 
     @Override
-    public ParentChildRefCollection updateAndGetParentChildRefs() {
+    public ParentChildRefs updateAndGetParentChildRefs() {
         return null;
     }
 
     @Override
-    public PartnerRefCollection updateAndGetPartnerRefs() {
+    public PartnerRefs updateAndGetPartnerRefs() {
         return null;
     }
 

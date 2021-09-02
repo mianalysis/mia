@@ -12,25 +12,25 @@ import inra.ijpb.binary.distmap.DistanceTransform3DShort;
 import io.github.mianalysis.MIA.Module.Categories;
 import io.github.mianalysis.MIA.Module.Category;
 import io.github.mianalysis.MIA.Module.Module;
-import io.github.mianalysis.MIA.Module.ModuleCollection;
+import io.github.mianalysis.MIA.Module.Modules;
 import io.github.mianalysis.MIA.Module.ImageProcessing.Stack.InterpolateZAxis;
 import io.github.mianalysis.MIA.Object.Image;
 import io.github.mianalysis.MIA.Object.Obj;
-import io.github.mianalysis.MIA.Object.ObjCollection;
+import io.github.mianalysis.MIA.Object.Objs;
 import io.github.mianalysis.MIA.Object.Status;
 import io.github.mianalysis.MIA.Object.Workspace;
 import io.github.mianalysis.MIA.Object.Parameters.BooleanP;
 import io.github.mianalysis.MIA.Object.Parameters.ChoiceP;
 import io.github.mianalysis.MIA.Object.Parameters.InputObjectsP;
-import io.github.mianalysis.MIA.Object.Parameters.ParameterCollection;
+import io.github.mianalysis.MIA.Object.Parameters.Parameters;
 import io.github.mianalysis.MIA.Object.Parameters.SeparatorP;
 import io.github.mianalysis.MIA.Object.Parameters.Objects.OutputObjectsP;
 import io.github.mianalysis.MIA.Object.Parameters.Text.DoubleP;
-import io.github.mianalysis.MIA.Object.References.Collections.ImageMeasurementRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.MetadataRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.ObjMeasurementRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.ParentChildRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.PartnerRefCollection;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ImageMeasurementRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.MetadataRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ObjMeasurementRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ParentChildRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.PartnerRefs;
 import io.github.mianalysis.MIA.Process.ColourFactory;
 import io.github.sjcross.common.ImageJ.LUTs;
 import io.github.sjcross.common.Object.Point;
@@ -54,7 +54,7 @@ public class ExtractObjectEdges extends Module {
 
     public enum Mode {INTERIOR, EDGE}
 
-    public ExtractObjectEdges(ModuleCollection modules) {
+    public ExtractObjectEdges(Modules modules) {
         super("Extract object edges",modules);
     }
 
@@ -66,7 +66,7 @@ public class ExtractObjectEdges extends Module {
 
     }
 
-    public static Obj getRegion(Obj inputObject, ObjCollection outputObjects, Image distImage, double edgeDistance, Mode mode) {
+    public static Obj getRegion(Obj inputObject, Objs outputObjects, Image distImage, double edgeDistance, Mode mode) {
         ImagePlus distIpl = distImage.getImagePlus();
 
         // Creating new edge object
@@ -147,7 +147,7 @@ public class ExtractObjectEdges extends Module {
 
     }
 
-    static void showObjects(ObjCollection objects, String parentObjectsName, LUT lut) {
+    static void showObjects(Objs objects, String parentObjectsName, LUT lut) {
         HashMap<Integer,Float> hues = ColourFactory.getParentIDHues(objects,parentObjectsName,true);
         Image dispImage = objects.convertToImage(objects.getName(),hues,8,false);
         ImagePlus dispIpl = dispImage.getImagePlus();
@@ -174,7 +174,7 @@ public class ExtractObjectEdges extends Module {
     public Status process(Workspace workspace) {
         // Getting input objects
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
-        ObjCollection inputObjects = workspace.getObjects().get(inputObjectsName);
+        Objs inputObjects = workspace.getObjects().get(inputObjectsName);
 
         // Getting parameters
         boolean createEdgeObjects = parameters.getValue(CREATE_EDGE_OBJECTS);
@@ -186,19 +186,19 @@ public class ExtractObjectEdges extends Module {
 
         // Initialising output edge objects
         String edgeObjectName = null;
-        ObjCollection edgeObjects = null;
+        Objs edgeObjects = null;
         if (createEdgeObjects) {
             edgeObjectName = parameters.getValue(OUTPUT_EDGE_OBJECTS);
-            edgeObjects = new ObjCollection(edgeObjectName,inputObjects);
+            edgeObjects = new Objs(edgeObjectName,inputObjects);
             workspace.addObjects(edgeObjects);
         }
 
         // Initialising output interior objects
         String interiorObjectName = null;
-        ObjCollection interiorObjects = null;
+        Objs interiorObjects = null;
         if (createInteriorObjects) {
             interiorObjectName = parameters.getValue(OUTPUT_INTERIOR_OBJECTS);
-            interiorObjects = new ObjCollection(interiorObjectName,inputObjects);
+            interiorObjects = new Objs(interiorObjectName,inputObjects);
             workspace.addObjects(interiorObjects);
         }
 
@@ -250,8 +250,8 @@ public class ExtractObjectEdges extends Module {
     }
 
     @Override
-    public ParameterCollection updateAndGetParameters() {
-        ParameterCollection returnedParameters = new ParameterCollection();
+    public Parameters updateAndGetParameters() {
+        Parameters returnedParameters = new Parameters();
         returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(INPUT_OBJECTS));
 
@@ -282,23 +282,23 @@ public class ExtractObjectEdges extends Module {
     }
 
     @Override
-    public ImageMeasurementRefCollection updateAndGetImageMeasurementRefs() {
+    public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MetadataRefCollection updateAndGetMetadataReferences() {
+    public MetadataRefs updateAndGetMetadataReferences() {
         return null;
     }
 
     @Override
-    public ParentChildRefCollection updateAndGetParentChildRefs() {
-        ParentChildRefCollection returnedRelationships = new ParentChildRefCollection();
+    public ParentChildRefs updateAndGetParentChildRefs() {
+        ParentChildRefs returnedRelationships = new ParentChildRefs();
 
         String inputObjects = parameters.getValue(INPUT_OBJECTS);
 
@@ -317,7 +317,7 @@ public class ExtractObjectEdges extends Module {
     }
 
     @Override
-    public PartnerRefCollection updateAndGetPartnerRefs() {
+    public PartnerRefs updateAndGetPartnerRefs() {
         return null;
     }
 

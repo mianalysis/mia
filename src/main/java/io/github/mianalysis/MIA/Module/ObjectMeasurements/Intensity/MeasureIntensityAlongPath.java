@@ -29,27 +29,27 @@ import io.github.mianalysis.MIA.MIA;
 import io.github.mianalysis.MIA.Module.Categories;
 import io.github.mianalysis.MIA.Module.Category;
 import io.github.mianalysis.MIA.Module.Module;
-import io.github.mianalysis.MIA.Module.ModuleCollection;
+import io.github.mianalysis.MIA.Module.Modules;
 import io.github.mianalysis.MIA.Module.ImageProcessing.Pixel.Binary.Skeletonise;
 import io.github.mianalysis.MIA.Module.InputOutput.ImageSaver;
 import io.github.mianalysis.MIA.Object.Image;
 import io.github.mianalysis.MIA.Object.Obj;
-import io.github.mianalysis.MIA.Object.ObjCollection;
+import io.github.mianalysis.MIA.Object.Objs;
 import io.github.mianalysis.MIA.Object.Status;
 import io.github.mianalysis.MIA.Object.Workspace;
 import io.github.mianalysis.MIA.Object.Parameters.BooleanP;
 import io.github.mianalysis.MIA.Object.Parameters.ChoiceP;
 import io.github.mianalysis.MIA.Object.Parameters.InputImageP;
 import io.github.mianalysis.MIA.Object.Parameters.InputObjectsP;
-import io.github.mianalysis.MIA.Object.Parameters.ParameterCollection;
+import io.github.mianalysis.MIA.Object.Parameters.Parameters;
 import io.github.mianalysis.MIA.Object.Parameters.ParameterGroup;
 import io.github.mianalysis.MIA.Object.Parameters.SeparatorP;
 import io.github.mianalysis.MIA.Object.Parameters.Text.StringP;
-import io.github.mianalysis.MIA.Object.References.Collections.ImageMeasurementRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.MetadataRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.ObjMeasurementRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.ParentChildRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.PartnerRefCollection;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ImageMeasurementRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.MetadataRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ObjMeasurementRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ParentChildRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.PartnerRefs;
 import io.github.sjcross.common.Object.Point;
 import io.github.sjcross.common.Object.Volume.CoordinateSet;
 import io.github.sjcross.common.Object.Volume.PointOutOfRangeException;
@@ -87,11 +87,11 @@ public class MeasureIntensityAlongPath extends Module {
     public interface AppendDateTimeModes extends ImageSaver.AppendDateTimeModes {
     }
 
-    public MeasureIntensityAlongPath(ModuleCollection modules) {
+    public MeasureIntensityAlongPath(Modules modules) {
         super("Measure intensity along path", modules);
     }
 
-    public static SXSSFWorkbook process(ObjCollection objects, Image[] images, boolean includeTimepoints) {
+    public static SXSSFWorkbook process(Objs objects, Image[] images, boolean includeTimepoints) {
         // Creating workbook
         SXSSFWorkbook workbook = new SXSSFWorkbook();
         Sheet[] sheets = new Sheet[images.length];
@@ -144,7 +144,7 @@ public class MeasureIntensityAlongPath extends Module {
         // Ensuring the input object is a single line
         Skeletonise.process(skeletonImage, true);
 
-        ObjCollection skeletons = skeletonImage.convertImageToObjects("Skeleton");
+        Objs skeletons = skeletonImage.convertImageToObjects("Skeleton");
         if (skeletons.size() == 0)
             return null;
         Obj skeleton = skeletons.getFirst();
@@ -512,11 +512,11 @@ public class MeasureIntensityAlongPath extends Module {
     public Status process(Workspace workspace) {
         // Getting objects to measure
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
-        ObjCollection inputObjects = workspace.getObjects().get(inputObjectsName);
+        Objs inputObjects = workspace.getObjects().get(inputObjectsName);
 
         // Getting parameters
         ParameterGroup inputImages = parameters.getParameter(MEASURE_ANOTHER_IMAGE);
-        LinkedHashMap<Integer, ParameterCollection> imageCollections = inputImages.getCollections(true);
+        LinkedHashMap<Integer, Parameters> imageCollections = inputImages.getCollections(true);
         boolean includeTimepoints = parameters.getValue(INCLUDE_TIMEPOINTS);
         String saveNameMode = parameters.getValue(SAVE_NAME_MODE);
         String saveFileName = parameters.getValue(SAVE_FILE_NAME);
@@ -533,7 +533,7 @@ public class MeasureIntensityAlongPath extends Module {
 
         Image[] images = new Image[imageCollections.size()];
         int i = 0;
-        for (ParameterCollection imageCollection : imageCollections.values()) {
+        for (Parameters imageCollection : imageCollections.values()) {
             String imageName = imageCollection.getValue(INPUT_IMAGE);
             images[i++] = workspace.getImage(imageName);
         }
@@ -573,7 +573,7 @@ public class MeasureIntensityAlongPath extends Module {
         parameters.add(new InputObjectsP(INPUT_OBJECTS, this));
 
         parameters.add(new SeparatorP(IMAGE_SEPARATOR, this));
-        ParameterCollection collection = new ParameterCollection();
+        Parameters collection = new Parameters();
         collection.add(new InputImageP(INPUT_IMAGE, this));
         parameters.add(new ParameterGroup(MEASURE_ANOTHER_IMAGE, this, collection, 1));
 
@@ -592,8 +592,8 @@ public class MeasureIntensityAlongPath extends Module {
     }
 
     @Override
-    public ParameterCollection updateAndGetParameters() {
-        ParameterCollection returnedParameters = new ParameterCollection();
+    public Parameters updateAndGetParameters() {
+        Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(INPUT_OBJECTS));
@@ -621,28 +621,28 @@ public class MeasureIntensityAlongPath extends Module {
     }
 
     @Override
-    public ImageMeasurementRefCollection updateAndGetImageMeasurementRefs() {
+    public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
         return null;
 
     }
 
     @Override
-    public MetadataRefCollection updateAndGetMetadataReferences() {
+    public MetadataRefs updateAndGetMetadataReferences() {
         return null;
     }
 
     @Override
-    public ParentChildRefCollection updateAndGetParentChildRefs() {
+    public ParentChildRefs updateAndGetParentChildRefs() {
         return null;
     }
 
     @Override
-    public PartnerRefCollection updateAndGetPartnerRefs() {
+    public PartnerRefs updateAndGetPartnerRefs() {
         return null;
     }
 
@@ -654,7 +654,7 @@ public class MeasureIntensityAlongPath extends Module {
     void addParameterDescriptions() {
         parameters.get(INPUT_OBJECTS).setDescription("Objects for which intensity profiles will be generated.");
 
-        ParameterCollection collection = ((ParameterGroup) parameters.get(MEASURE_ANOTHER_IMAGE))
+        Parameters collection = ((ParameterGroup) parameters.get(MEASURE_ANOTHER_IMAGE))
                 .getTemplateParameters();
 
         collection.get(INPUT_IMAGE).setDescription(

@@ -2,7 +2,7 @@ package io.github.mianalysis.MIA.GUI.Regions.AvailableModuleList;
 
 import io.github.mianalysis.MIA.GUI.GUI;
 import io.github.mianalysis.MIA.Module.Module;
-import io.github.mianalysis.MIA.Module.ModuleCollection;
+import io.github.mianalysis.MIA.Module.Modules;
 import io.github.mianalysis.MIA.Module.Core.InputControl;
 import io.github.mianalysis.MIA.Module.Core.OutputControl;
 
@@ -59,14 +59,14 @@ public class PopupMenuItem extends JMenuItem implements ActionListener {
         // Adding it after the currently-selected module
         Module newModule = null;
         try {
-            ModuleCollection modules = GUI.getModules();
-            newModule = module.getClass().getConstructor(ModuleCollection.class).newInstance(modules);
+            Modules modules = GUI.getModules();
+            newModule = module.getClass().getConstructor(Modules.class).newInstance(modules);
         } catch (IllegalAccessException | InstantiationException | NoSuchMethodException | InvocationTargetException e1) {
             e1.printStackTrace();
         }
 
         Module activeModule = GUI.getFirstSelectedModule();
-        ModuleCollection modules = GUI.getModules();
+        Modules modules = GUI.getModules();
         if (activeModule == null
                 || activeModule.getClass().isInstance(new InputControl(modules))
                 || activeModule.getClass().isInstance(new OutputControl(modules))) {

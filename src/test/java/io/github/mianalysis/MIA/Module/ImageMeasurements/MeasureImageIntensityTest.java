@@ -15,7 +15,7 @@ import io.github.mianalysis.MIA.Module.Module;
 import io.github.mianalysis.MIA.Module.ModuleTest;
 import io.github.mianalysis.MIA.Object.Image;
 import io.github.mianalysis.MIA.Object.Workspace;
-import io.github.mianalysis.MIA.Object.WorkspaceCollection;
+import io.github.mianalysis.MIA.Object.Workspaces;
 
 public class MeasureImageIntensityTest extends ModuleTest {
     private double tolerance = 1E-2;
@@ -33,7 +33,7 @@ public class MeasureImageIntensityTest extends ModuleTest {
     @Test
     public void testRun2DImage8bit() throws UnsupportedEncodingException {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
@@ -63,7 +63,7 @@ public class MeasureImageIntensityTest extends ModuleTest {
     @Test
     public void testRun2DImage16bit() throws UnsupportedEncodingException {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
@@ -93,7 +93,7 @@ public class MeasureImageIntensityTest extends ModuleTest {
     @Test
     public void testRun3DImage8bit() throws UnsupportedEncodingException {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
@@ -123,7 +123,7 @@ public class MeasureImageIntensityTest extends ModuleTest {
     @Test
     public void testRun4DImage8bit() throws UnsupportedEncodingException {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
@@ -153,7 +153,7 @@ public class MeasureImageIntensityTest extends ModuleTest {
     @Test
     public void testRun5DImage8bit() throws UnsupportedEncodingException {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace

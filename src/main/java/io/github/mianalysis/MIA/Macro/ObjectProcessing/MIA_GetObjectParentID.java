@@ -2,9 +2,9 @@ package io.github.mianalysis.MIA.Macro.ObjectProcessing;
 
 import ij.macro.MacroExtension;
 import io.github.mianalysis.MIA.Macro.MacroOperation;
-import io.github.mianalysis.MIA.Module.ModuleCollection;
+import io.github.mianalysis.MIA.Module.Modules;
 import io.github.mianalysis.MIA.Object.Obj;
-import io.github.mianalysis.MIA.Object.ObjCollection;
+import io.github.mianalysis.MIA.Object.Objs;
 import io.github.mianalysis.MIA.Object.Workspace;
 
 public class MIA_GetObjectParentID extends MacroOperation {
@@ -18,13 +18,13 @@ public class MIA_GetObjectParentID extends MacroOperation {
     }
 
     @Override
-    public String action(Object[] objects, Workspace workspace, ModuleCollection modules) {
+    public String action(Object[] objects, Workspace workspace, Modules modules) {
         String inputObjectsName = (String) objects[0];
         int objectID = (int) Math.round((Double) objects[1]);
         String parentObjectsName = (String) objects[2];
 
         // Getting the children of the input object
-        ObjCollection inputObjects = workspace.getObjectSet(inputObjectsName);
+        Objs inputObjects = workspace.getObjectSet(inputObjectsName);
         if (inputObjects == null) return "";
         Obj inputObject = inputObjects.get(objectID);
         Obj parentObject = inputObject.getParent(parentObjectsName);

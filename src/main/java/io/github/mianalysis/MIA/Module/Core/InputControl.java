@@ -22,7 +22,7 @@ import ome.xml.meta.IMetadata;
 import io.github.mianalysis.MIA.Module.Categories;
 import io.github.mianalysis.MIA.Module.Category;
 import io.github.mianalysis.MIA.Module.Module;
-import io.github.mianalysis.MIA.Module.ModuleCollection;
+import io.github.mianalysis.MIA.Module.Modules;
 import io.github.mianalysis.MIA.Module.Miscellaneous.Macros.RunMacro;
 import io.github.mianalysis.MIA.Module.Miscellaneous.Macros.RunMacroOnObjects;
 import io.github.mianalysis.MIA.Object.Colours;
@@ -32,19 +32,19 @@ import io.github.mianalysis.MIA.Object.Parameters.BooleanP;
 import io.github.mianalysis.MIA.Object.Parameters.ChoiceP;
 import io.github.mianalysis.MIA.Object.Parameters.FileFolderPathP;
 import io.github.mianalysis.MIA.Object.Parameters.GenericButtonP;
-import io.github.mianalysis.MIA.Object.Parameters.ParameterCollection;
+import io.github.mianalysis.MIA.Object.Parameters.Parameters;
 import io.github.mianalysis.MIA.Object.Parameters.ParameterGroup;
 import io.github.mianalysis.MIA.Object.Parameters.SeparatorP;
 import io.github.mianalysis.MIA.Object.Parameters.Text.IntegerP;
 import io.github.mianalysis.MIA.Object.Parameters.Text.MessageP;
 import io.github.mianalysis.MIA.Object.Parameters.Text.SeriesListSelectorP;
 import io.github.mianalysis.MIA.Object.Parameters.Text.StringP;
-import io.github.mianalysis.MIA.Object.References.ObjMeasurementRef;
-import io.github.mianalysis.MIA.Object.References.Collections.ImageMeasurementRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.MetadataRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.ObjMeasurementRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.ParentChildRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.PartnerRefCollection;
+import io.github.mianalysis.MIA.Object.Refs.ObjMeasurementRef;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ImageMeasurementRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.MetadataRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ObjMeasurementRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ParentChildRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.PartnerRefs;
 import io.github.mianalysis.MIA.Object.Units.SpatialUnit;
 import io.github.mianalysis.MIA.Object.Units.TemporalUnit;
 import io.github.mianalysis.MIA.Process.CommaSeparatedStringInterpreter;
@@ -89,7 +89,7 @@ public class InputControl extends Module {
     // A special store for timepoint references for all objects
     private HashMap<String, ObjMeasurementRef> objectTimepointRefs = new HashMap<>();
 
-    public InputControl(ModuleCollection modules) {
+    public InputControl(Modules modules) {
         super("Input control", modules);
     }
 
@@ -142,10 +142,10 @@ public class InputControl extends Module {
 
     public void addFilenameFilters(FileCrawler fileCrawler) {
         // Getting filters
-        LinkedHashMap<Integer, ParameterCollection> collections = parameters.getValue(ADD_FILTER);
+        LinkedHashMap<Integer, Parameters> collections = parameters.getValue(ADD_FILTER);
 
         // Iterating over each filter
-        for (ParameterCollection collection : collections.values()) {
+        for (Parameters collection : collections.values()) {
             // If this filter is a filename filter type, add it to the AnalysisRunner
             String filterSource = collection.getValue(FILTER_SOURCE);
             String filterValue = collection.getValue(FILTER_VALUE);
@@ -250,8 +250,8 @@ public class InputControl extends Module {
 
         // Creating a Collection of seriesname filters
         HashSet<FileCondition> filters = new HashSet<>();
-        LinkedHashMap<Integer, ParameterCollection> collections = parameters.getValue(ADD_FILTER);
-        for (ParameterCollection collection : collections.values()) {
+        LinkedHashMap<Integer, Parameters> collections = parameters.getValue(ADD_FILTER);
+        for (Parameters collection : collections.values()) {
             // If this filter is a filename filter type, addRef it to the AnalysisRunner
             String filterSource = collection.getValue(FILTER_SOURCE);
             String filterValue = collection.getValue(FILTER_VALUE);
@@ -383,7 +383,7 @@ public class InputControl extends Module {
                 .add(new ChoiceP(TEMPORAL_UNIT, this, AvailableTemporalUnits.MILLISECOND, AvailableTemporalUnits.ALL));
 
         parameters.add(new SeparatorP(FILTER_SEPARATOR, this));
-        ParameterCollection collection = new ParameterCollection();
+        Parameters collection = new Parameters();
         collection.add(new ChoiceP(FILTER_SOURCE, this, FilterSources.EXTENSION, FilterSources.ALL));
         collection.add(new StringP(FILTER_VALUE, this));
         collection.add(new ChoiceP(FILTER_TYPE, this, FilterTypes.INCLUDE_MATCHES_PARTIALLY, FilterTypes.ALL));
@@ -400,8 +400,8 @@ public class InputControl extends Module {
     }
 
     @Override
-    public ParameterCollection updateAndGetParameters() {
-        ParameterCollection returnedParameters = new ParameterCollection();
+    public Parameters updateAndGetParameters() {
+        Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(MESSAGE_SEPARATOR));
         returnedParameters.add(parameters.getParameter(NO_LOAD_MESSAGE));
@@ -448,21 +448,21 @@ public class InputControl extends Module {
     }
 
     @Override
-    public ImageMeasurementRefCollection updateAndGetImageMeasurementRefs() {
+    public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
         return null;
 
     }
 
     @Override
-    public MetadataRefCollection updateAndGetMetadataReferences() {
-        MetadataRefCollection returnedRefs = new MetadataRefCollection();
+    public MetadataRefs updateAndGetMetadataReferences() {
+        MetadataRefs returnedRefs = new MetadataRefs();
 
-        // The following are added to the MetadataRefCollection during Workspace
+        // The following are added to the MetadataRefs during Workspace
         // construction
         returnedRefs.add(metadataRefs.getOrPut(Metadata.EXTENSION));
         returnedRefs.add(metadataRefs.getOrPut(Metadata.FILE));
@@ -476,12 +476,12 @@ public class InputControl extends Module {
     }
 
     @Override
-    public ParentChildRefCollection updateAndGetParentChildRefs() {
+    public ParentChildRefs updateAndGetParentChildRefs() {
         return null;
     }
 
     @Override
-    public PartnerRefCollection updateAndGetPartnerRefs() {
+    public PartnerRefs updateAndGetPartnerRefs() {
         return null;
     }
 
@@ -521,7 +521,7 @@ public class InputControl extends Module {
         parameters.get(REFRESH_FILE).setDescription(
                 "When pressed, MIA will update the active file used in test mode (i.e. when executing individual modules from editing mode) based on the currently-selected input file/folder and series settings.");
 
-        ParameterCollection templateParameters = ((ParameterGroup) parameters.get(ADD_FILTER)).getTemplateParameters();
+        Parameters templateParameters = ((ParameterGroup) parameters.get(ADD_FILTER)).getTemplateParameters();
         templateParameters.get(FILTER_SOURCE).setDescription("Type of filter to add.");
 
         templateParameters.get(FILTER_VALUE).setDescription("Value to filter filenames against.");

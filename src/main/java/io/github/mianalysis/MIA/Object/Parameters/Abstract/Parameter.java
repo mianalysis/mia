@@ -9,7 +9,7 @@ import org.w3c.dom.Node;
 
 import io.github.mianalysis.MIA.GUI.ParameterControls.ParameterControl;
 import io.github.mianalysis.MIA.Module.Module;
-import io.github.mianalysis.MIA.Object.References.Abstract.Ref;
+import io.github.mianalysis.MIA.Object.Refs.Abstract.Ref;
 
 public abstract class Parameter extends Ref {
     protected Module module;

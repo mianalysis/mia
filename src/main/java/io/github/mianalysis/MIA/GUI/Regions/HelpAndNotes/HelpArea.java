@@ -5,13 +5,13 @@ import javax.swing.border.EmptyBorder;
 
 import io.github.mianalysis.MIA.GUI.HyperlinkOpener;
 import io.github.mianalysis.MIA.Module.Module;
-import io.github.mianalysis.MIA.Module.ModuleCollection;
+import io.github.mianalysis.MIA.Module.Modules;
 import io.github.mianalysis.MIA.Object.Parameters.ParameterGroup;
 import io.github.mianalysis.MIA.Object.Parameters.Abstract.Parameter;
-import io.github.mianalysis.MIA.Object.References.ImageMeasurementRef;
-import io.github.mianalysis.MIA.Object.References.ObjMeasurementRef;
-import io.github.mianalysis.MIA.Object.References.Collections.ImageMeasurementRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.ObjMeasurementRefCollection;
+import io.github.mianalysis.MIA.Object.Refs.ImageMeasurementRef;
+import io.github.mianalysis.MIA.Object.Refs.ObjMeasurementRef;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ImageMeasurementRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ObjMeasurementRefs;
 
 public class HelpArea extends JTextPane {
     /**
@@ -19,7 +19,7 @@ public class HelpArea extends JTextPane {
      */
     private static final long serialVersionUID = 1232662621405470033L;
 
-    public HelpArea(Module module, ModuleCollection modules) {
+    public HelpArea(Module module, Modules modules) {
         setContentType("text/html");
         addHyperlinkListener(new HyperlinkOpener());
 
@@ -39,7 +39,7 @@ public class HelpArea extends JTextPane {
 
     }
 
-    private static String getHelpText(Module module, ModuleCollection modules) {
+    private static String getHelpText(Module module, Modules modules) {
         StringBuilder sb = new StringBuilder();
 
         sb.append("<b>DESCRIPTION</b><br>").append(module.getDescription()).append("<br><br><br>")
@@ -52,7 +52,7 @@ public class HelpArea extends JTextPane {
 
         sb.append("<br>");
 
-        ObjMeasurementRefCollection objectMeasRefs = module.updateAndGetObjectMeasurementRefs();
+        ObjMeasurementRefs objectMeasRefs = module.updateAndGetObjectMeasurementRefs();
         if (objectMeasRefs != null && objectMeasRefs.hasExportedMeasurements()) {
             sb.append("<font face=\"sans-serif\" size=\"3\"><b>OBJECT MEASUREMENTS</b><br>")
                     .append("The following measurements are currently calculated by this module.<br><br></font>");
@@ -66,7 +66,7 @@ public class HelpArea extends JTextPane {
 
         }
 
-        ImageMeasurementRefCollection imageMeasRefs = module.updateAndGetImageMeasurementRefs();
+        ImageMeasurementRefs imageMeasRefs = module.updateAndGetImageMeasurementRefs();
         if (imageMeasRefs != null && imageMeasRefs.hasExportedMeasurements()) {
             sb.append("<font face=\"sans-serif\" size=\"3\"><b>IMAGE MEASUREMENTS</b><br>")
                     .append("The following measurements are currently calculated by this module.<br><br></font>");

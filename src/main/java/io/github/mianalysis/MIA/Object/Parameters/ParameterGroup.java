@@ -26,14 +26,14 @@ import io.github.mianalysis.MIA.Process.AnalysisHandling.AnalysisReader;
  * Created by Stephen Cross on 01/02/2019.
  */
 public class ParameterGroup extends Parameter {
-    private LinkedHashMap<Integer, ParameterCollection> collections = new LinkedHashMap<>();
-    private ParameterCollection templateParameters;
+    private LinkedHashMap<Integer, Parameters> collections = new LinkedHashMap<>();
+    private Parameters templateParameters;
     private ParameterUpdaterAndGetter updaterAndGetter;
     private int maxIdx = 0;
 
     // CONSTRUCTORS
 
-    public ParameterGroup(String name, Module module, ParameterCollection templateParameters,
+    public ParameterGroup(String name, Module module, Parameters templateParameters,
             ParameterUpdaterAndGetter updaterAndGetter) {
         super(name, module);
         this.templateParameters = templateParameters;
@@ -41,7 +41,7 @@ public class ParameterGroup extends Parameter {
 
     }
 
-    public ParameterGroup(String name, Module module, ParameterCollection templateParameters,
+    public ParameterGroup(String name, Module module, Parameters templateParameters,
             ParameterUpdaterAndGetter updaterAndGetter, String description) {
         super(name, module, description);
         this.templateParameters = templateParameters;
@@ -49,7 +49,7 @@ public class ParameterGroup extends Parameter {
 
     }
 
-    public ParameterGroup(String name, Module module, ParameterCollection templateParameters, int count,
+    public ParameterGroup(String name, Module module, Parameters templateParameters, int count,
             ParameterUpdaterAndGetter updaterAndGetter) {
         super(name, module);
         this.templateParameters = templateParameters;
@@ -61,7 +61,7 @@ public class ParameterGroup extends Parameter {
 
     }
 
-    public ParameterGroup(String name, Module module, ParameterCollection templateParameters, int count,
+    public ParameterGroup(String name, Module module, Parameters templateParameters, int count,
             ParameterUpdaterAndGetter updaterAndGetter, String description) {
         super(name, module, description);
         this.templateParameters = templateParameters;
@@ -73,21 +73,21 @@ public class ParameterGroup extends Parameter {
 
     }
 
-    public ParameterGroup(String name, Module module, ParameterCollection templateParameters) {
+    public ParameterGroup(String name, Module module, Parameters templateParameters) {
         super(name, module);
         this.templateParameters = templateParameters;
         this.updaterAndGetter = getFullUpdaterAndGetter();
 
     }
 
-    public ParameterGroup(String name, Module module, ParameterCollection templateParameters, String description) {
+    public ParameterGroup(String name, Module module, Parameters templateParameters, String description) {
         super(name, module, description);
         this.templateParameters = templateParameters;
         this.updaterAndGetter = getFullUpdaterAndGetter();
 
     }
 
-    public ParameterGroup(String name, Module module, ParameterCollection templateParameters, int count) {
+    public ParameterGroup(String name, Module module, Parameters templateParameters, int count) {
         super(name, module);
         this.templateParameters = templateParameters;
         this.updaterAndGetter = getFullUpdaterAndGetter();
@@ -98,7 +98,7 @@ public class ParameterGroup extends Parameter {
 
     }
 
-    public ParameterGroup(String name, Module module, ParameterCollection templateParameters, int count,
+    public ParameterGroup(String name, Module module, Parameters templateParameters, int count,
             String description) {
         super(name, module, description);
         this.templateParameters = templateParameters;
@@ -112,9 +112,9 @@ public class ParameterGroup extends Parameter {
 
     // PUBLIC METHODS
 
-    public ParameterCollection addParameters() {
+    public Parameters addParameters() {
         // Create new copy of template collections
-        ParameterCollection newParameters = new ParameterCollection();
+        Parameters newParameters = new Parameters();
         for (Parameter templateParameter : templateParameters.values()) {
             Parameter newParameter = templateParameter.duplicate(templateParameter.getModule());
 
@@ -132,7 +132,7 @@ public class ParameterGroup extends Parameter {
 
     }
 
-    public void addParameters(ParameterCollection collection) {
+    public void addParameters(Parameters collection) {
         collections.put(maxIdx++, collection);
 
     }
@@ -169,7 +169,7 @@ public class ParameterGroup extends Parameter {
     @Override
     public boolean verify() {
         boolean runnable = true;
-        for (ParameterCollection collection : getCollections(true).values()) {
+        for (Parameters collection : getCollections(true).values()) {
             for (Parameter parameter : collection.values()) {
                 boolean currentRunnable = parameter.verify();
                 parameter.setValid(currentRunnable);
@@ -188,9 +188,9 @@ public class ParameterGroup extends Parameter {
         ParameterGroup newParameter = new ParameterGroup(name, newModule, templateParameters.duplicate(),
                 updaterAndGetter, getDescription());
 
-        LinkedHashMap<Integer, ParameterCollection> newCollections = new LinkedHashMap<>();
+        LinkedHashMap<Integer, Parameters> newCollections = new LinkedHashMap<>();
         for (int idx : collections.keySet()) {
-            ParameterCollection collection = collections.get(idx);
+            Parameters collection = collections.get(idx);
             newCollections.put(idx, collection.duplicate());
         }
         newParameter.setCollections(newCollections);
@@ -203,21 +203,21 @@ public class ParameterGroup extends Parameter {
 
     }
 
-    public void setCollections(LinkedHashMap<Integer, ParameterCollection> collections) {
+    public void setCollections(LinkedHashMap<Integer, Parameters> collections) {
         this.collections = collections;
     }
 
-    public LinkedHashMap<Integer, ParameterCollection> getCollections(boolean getAvailableOnly) {
+    public LinkedHashMap<Integer, Parameters> getCollections(boolean getAvailableOnly) {
         // If getting available parameters only, run the ParameterUpdaterAndGetter
-        // class, which returns a collection of ParameterCollections for the visible
+        // class, which returns a collection of Parameterss for the visible
         // parameters only. This is necessary for populating the GUI.
         if (getAvailableOnly) {
-            LinkedHashMap<Integer, ParameterCollection> returnedCollections = new LinkedHashMap<>();
+            LinkedHashMap<Integer, Parameters> returnedCollections = new LinkedHashMap<>();
 
             // if (collections == null) return returnedCollections;
 
             for (int idx : collections.keySet()) {
-                ParameterCollection collection = collections.get(idx);
+                Parameters collection = collections.get(idx);
                 returnedCollections.put(idx, updaterAndGetter.updateAndGet(collection));
             }
 
@@ -231,9 +231,9 @@ public class ParameterGroup extends Parameter {
 
     }
 
-    public void removeCollection(ParameterCollection collection) {
+    public void removeCollection(Parameters collection) {
         for (int idx : collections.keySet()) {
-            ParameterCollection currCollection = collections.get(idx);
+            Parameters currCollection = collections.get(idx);
             if (collection == currCollection) {
                 collections.remove(idx);
                 return;
@@ -245,7 +245,7 @@ public class ParameterGroup extends Parameter {
         collections.remove(idx);
     }
 
-    public ParameterCollection getTemplateParameters() {
+    public Parameters getTemplateParameters() {
         return templateParameters;
     }
 
@@ -256,7 +256,7 @@ public class ParameterGroup extends Parameter {
         Document doc = element.getOwnerDocument();
         Element collectionElement = doc.createElement("COLLECTION");
 
-        for (ParameterCollection collection : collections.values()) {
+        for (Parameters collection : collections.values()) {
             Element paramElement = doc.createElement("PARAMS");
 
             collectionElement.appendChild(prepareRefsXML(doc, paramElement, collection, "PARAM"));
@@ -282,7 +282,7 @@ public class ParameterGroup extends Parameter {
 
         // Iterating over each parameter collection
         for (int i = 0; i < collectionNodes.getLength(); i++) {
-            ParameterCollection newParameters = addParameters();
+            Parameters newParameters = addParameters();
 
             NodeList newParametersNodes = collectionNodes.item(i).getChildNodes();
 
@@ -294,13 +294,13 @@ public class ParameterGroup extends Parameter {
     }
 
     public interface ParameterUpdaterAndGetter {
-        public ParameterCollection updateAndGet(ParameterCollection parameters);
+        public Parameters updateAndGet(Parameters parameters);
     }
 
     ParameterUpdaterAndGetter getFullUpdaterAndGetter() {
         return new ParameterUpdaterAndGetter() {
             @Override
-            public ParameterCollection updateAndGet(ParameterCollection parameters) {
+            public Parameters updateAndGet(Parameters parameters) {
                 // Return all parameters
                 return parameters;
             }

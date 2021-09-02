@@ -9,12 +9,12 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 
 import ome.units.UNITS;
-import io.github.mianalysis.MIA.Module.ModuleCollection;
+import io.github.mianalysis.MIA.Module.Modules;
 import io.github.mianalysis.MIA.Module.ModuleTest;
 import io.github.mianalysis.MIA.Object.Obj;
-import io.github.mianalysis.MIA.Object.ObjCollection;
+import io.github.mianalysis.MIA.Object.Objs;
 import io.github.mianalysis.MIA.Object.Workspace;
-import io.github.mianalysis.MIA.Object.WorkspaceCollection;
+import io.github.mianalysis.MIA.Object.Workspaces;
 import io.github.sjcross.common.Exceptions.IntegerOverflowException;
 import io.github.sjcross.common.Object.Volume.PointOutOfRangeException;
 import io.github.sjcross.common.Object.Volume.SpatCal;
@@ -25,7 +25,7 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
 
     @Override
     public void testGetHelp() {
-        assertNotNull(new CalculateNearestNeighbour(new ModuleCollection()).getDescription());
+        assertNotNull(new CalculateNearestNeighbour(new Modules()).getDescription());
     }
 
     @ParameterizedTest
@@ -40,7 +40,7 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         SpatCal calibration = new SpatCal(dppXY, dppZ, calibratedUnits, 60, 50, 50);
 
         // Creating first object set
-        ObjCollection objects1 = new ObjCollection("Objects 1", calibration, 1, 0.02, UNITS.SECOND);
+        Objs objects1 = new Objs("Objects 1", calibration, 1, 0.02, UNITS.SECOND);
 
         Obj obj1 = objects1.createAndAddNewObject(volumeType, 1);
         obj1.add(10, 20, 40);
@@ -56,7 +56,7 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
 
         // Testing against first object in set
         String referenceMode = CalculateNearestNeighbour.ReferenceModes.CENTROID_3D;
-        CalculateNearestNeighbour calculateNearestNeighbour = new CalculateNearestNeighbour(new ModuleCollection());
+        CalculateNearestNeighbour calculateNearestNeighbour = new CalculateNearestNeighbour(new Modules());
         Obj nearestNeighour = calculateNearestNeighbour.getNearestNeighbour(obj1, objects1, referenceMode,
                 Double.MAX_VALUE, false, null);
 
@@ -76,7 +76,7 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         SpatCal calibration = new SpatCal(dppXY, dppZ, calibratedUnits, 60, 50, 50);
 
         // Creating first object set
-        ObjCollection objects1 = new ObjCollection("Objects 1", calibration, 1, 0.02, UNITS.SECOND);
+        Objs objects1 = new Objs("Objects 1", calibration, 1, 0.02, UNITS.SECOND);
 
         Obj obj1 = objects1.createAndAddNewObject(volumeType, 1);
         obj1.add(10, 20, 40);
@@ -95,7 +95,7 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
 
         // Testing against first object in set
         String referenceMode = CalculateNearestNeighbour.ReferenceModes.CENTROID_3D;
-        CalculateNearestNeighbour calculateNearestNeighbour = new CalculateNearestNeighbour(new ModuleCollection());
+        CalculateNearestNeighbour calculateNearestNeighbour = new CalculateNearestNeighbour(new Modules());
         Obj nearestNeighour = calculateNearestNeighbour.getNearestNeighbour(obj1, objects1, referenceMode,
                 Double.MAX_VALUE, false, null);
 
@@ -115,7 +115,7 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         SpatCal calibration = new SpatCal(dppXY, dppZ, calibratedUnits, 60, 50, 50);
 
         // Creating first object set
-        ObjCollection objects1 = new ObjCollection("Objects 1", calibration, 1, 0.02, UNITS.SECOND);
+        Objs objects1 = new Objs("Objects 1", calibration, 1, 0.02, UNITS.SECOND);
 
         Obj obj1 = objects1.createAndAddNewObject(volumeType, 1);
         obj1.add(10, 20, 40);
@@ -131,7 +131,7 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
 
         // Testing against first object in set
         String referenceMode = CalculateNearestNeighbour.ReferenceModes.CENTROID_3D;
-        CalculateNearestNeighbour calculateNearestNeighbour = new CalculateNearestNeighbour(new ModuleCollection());
+        CalculateNearestNeighbour calculateNearestNeighbour = new CalculateNearestNeighbour(new Modules());
         Obj nearestNeighour = calculateNearestNeighbour.getNearestNeighbour(obj1, objects1, referenceMode, 100d, false,
                 null);
 
@@ -151,7 +151,7 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         SpatCal calibration = new SpatCal(dppXY, dppZ, calibratedUnits, 60, 50, 50);
 
         // Creating first object set
-        ObjCollection objects1 = new ObjCollection("Objects 1", calibration, 1, 0.02, UNITS.SECOND);
+        Objs objects1 = new Objs("Objects 1", calibration, 1, 0.02, UNITS.SECOND);
 
         Obj obj1 = objects1.createAndAddNewObject(volumeType, 1);
         obj1.add(10, 20, 40);
@@ -167,7 +167,7 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
 
         // Testing against first object in set
         String referenceMode = CalculateNearestNeighbour.ReferenceModes.CENTROID_3D;
-        CalculateNearestNeighbour calculateNearestNeighbour = new CalculateNearestNeighbour(new ModuleCollection());
+        CalculateNearestNeighbour calculateNearestNeighbour = new CalculateNearestNeighbour(new Modules());
         Obj nearestNeighour = calculateNearestNeighbour.getNearestNeighbour(obj1, objects1, referenceMode, 50d, false,
                 null);
 
@@ -179,7 +179,7 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testRunWithinSameSet(VolumeType volumeType) throws IntegerOverflowException, PointOutOfRangeException {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null, 1);
 
         // Setting object parameters
@@ -190,7 +190,7 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         SpatCal calibration = new SpatCal(dppXY, dppZ, calibratedUnits, 60, 50, 50);
 
         // Creating first object set
-        ObjCollection objects1 = new ObjCollection(inputObjectsName, calibration, 1, 0.02, UNITS.SECOND);
+        Objs objects1 = new Objs(inputObjectsName, calibration, 1, 0.02, UNITS.SECOND);
         workspace.addObjects(objects1);
         Obj obj1 = objects1.createAndAddNewObject(volumeType, 1);
         obj1.add(10, 20, 40);
@@ -203,7 +203,7 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
 
         // Initialising Module
         CalculateNearestNeighbour calculateNearestNeighbour = (CalculateNearestNeighbour) new CalculateNearestNeighbour(
-                new ModuleCollection())
+                new Modules())
                         .updateParameterValue(CalculateNearestNeighbour.INPUT_OBJECTS, inputObjectsName)
                         .updateParameterValue(CalculateNearestNeighbour.RELATIONSHIP_MODE,
                                 CalculateNearestNeighbour.RelationshipModes.WITHIN_SAME_SET)
@@ -254,7 +254,7 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
     public void testRunWithinSameSetMaxDistAllPass(VolumeType volumeType)
             throws IntegerOverflowException, PointOutOfRangeException {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null, 1);
 
         // Setting object parameters
@@ -265,7 +265,7 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         SpatCal calibration = new SpatCal(dppXY, dppZ, calibratedUnits, 60, 50, 50);
 
         // Creating first object set
-        ObjCollection objects1 = new ObjCollection(inputObjectsName, calibration, 1, 0.02, UNITS.SECOND);
+        Objs objects1 = new Objs(inputObjectsName, calibration, 1, 0.02, UNITS.SECOND);
         workspace.addObjects(objects1);
 
         Obj obj1 = objects1.createAndAddNewObject(volumeType, 1);
@@ -282,7 +282,7 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
 
         // Initialising Module
         CalculateNearestNeighbour calculateNearestNeighbour = (CalculateNearestNeighbour) new CalculateNearestNeighbour(
-                new ModuleCollection())
+                new Modules())
                         .updateParameterValue(CalculateNearestNeighbour.INPUT_OBJECTS, inputObjectsName)
                         .updateParameterValue(CalculateNearestNeighbour.RELATIONSHIP_MODE,
                                 CalculateNearestNeighbour.RelationshipModes.WITHIN_SAME_SET)
@@ -297,7 +297,7 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         calculateNearestNeighbour.execute(workspace);
 
         // // Creating second object set
-        // ObjCollection objects2 = new ObjCollection("Objects 2");
+        // Objs objects2 = new Objs("Objects 2");
         //
         // Obj obj5 = new Obj(volumeType,"Objects
         // 2",1,dppXY,dppZ,calibratedUnits,false);
@@ -351,7 +351,7 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
     public void testRunWithinSameSetMaxDistSomeFail(VolumeType volumeType)
             throws IntegerOverflowException, PointOutOfRangeException {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null, 1);
 
         // Setting object parameters
@@ -362,7 +362,7 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         SpatCal calibration = new SpatCal(dppXY, dppZ, calibratedUnits, 60, 50, 50);
 
         // Creating first object set
-        ObjCollection objects1 = new ObjCollection(inputObjectsName, calibration, 1, 0.02, UNITS.SECOND);
+        Objs objects1 = new Objs(inputObjectsName, calibration, 1, 0.02, UNITS.SECOND);
         workspace.addObjects(objects1);
 
         Obj obj1 = objects1.createAndAddNewObject(volumeType, 1);
@@ -379,7 +379,7 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
 
         // Initialising Module
         CalculateNearestNeighbour calculateNearestNeighbour = (CalculateNearestNeighbour) new CalculateNearestNeighbour(
-                new ModuleCollection())
+                new Modules())
                         .updateParameterValue(CalculateNearestNeighbour.INPUT_OBJECTS, inputObjectsName)
                         .updateParameterValue(CalculateNearestNeighbour.RELATIONSHIP_MODE,
                                 CalculateNearestNeighbour.RelationshipModes.WITHIN_SAME_SET)
@@ -394,7 +394,7 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         calculateNearestNeighbour.execute(workspace);
 
         // // Creating second object set
-        // ObjCollection objects2 = new ObjCollection("Objects 2");
+        // Objs objects2 = new Objs("Objects 2");
         //
         // Obj obj5 = new Obj(volumeType,"Objects
         // 2",1,dppXY,dppZ,calibratedUnits,false);
@@ -448,7 +448,7 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
     public void testRunWithinSameSetMaxDistCalibratedSomeFail(VolumeType volumeType)
             throws IntegerOverflowException, PointOutOfRangeException {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null, 1);
 
         // Setting object parameters
@@ -459,7 +459,7 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         SpatCal calibration = new SpatCal(dppXY, dppZ, calibratedUnits, 60, 50, 50);
 
         // Creating first object set
-        ObjCollection objects1 = new ObjCollection(inputObjectsName, calibration, 1, 0.02, UNITS.SECOND);
+        Objs objects1 = new Objs(inputObjectsName, calibration, 1, 0.02, UNITS.SECOND);
         workspace.addObjects(objects1);
 
         Obj obj1 = objects1.createAndAddNewObject(volumeType, 1);
@@ -476,7 +476,7 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
 
         // Initialising Module
         CalculateNearestNeighbour calculateNearestNeighbour = (CalculateNearestNeighbour) new CalculateNearestNeighbour(
-                new ModuleCollection())
+                new Modules())
                         .updateParameterValue(CalculateNearestNeighbour.INPUT_OBJECTS, inputObjectsName)
                         .updateParameterValue(CalculateNearestNeighbour.RELATIONSHIP_MODE,
                                 CalculateNearestNeighbour.RelationshipModes.WITHIN_SAME_SET)
@@ -491,7 +491,7 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         calculateNearestNeighbour.execute(workspace);
 
         // // Creating second object set
-        // ObjCollection objects2 = new ObjCollection("Objects 2");
+        // Objs objects2 = new Objs("Objects 2");
         //
         // Obj obj5 = new Obj(volumeType,"Objects
         // 2",1,dppXY,dppZ,calibratedUnits,false);
@@ -545,7 +545,7 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
     public void testRunWithinSameSetWithinParent(VolumeType volumeType)
             throws IntegerOverflowException, PointOutOfRangeException {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null, 1);
 
         // Setting object parameters
@@ -557,7 +557,7 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         SpatCal calibration = new SpatCal(dppXY, dppZ, calibratedUnits, 60, 50, 50);
 
         // Creating first object set
-        ObjCollection objects1 = new ObjCollection(inputObjectsName, calibration, 1, 0.02, UNITS.SECOND);
+        Objs objects1 = new Objs(inputObjectsName, calibration, 1, 0.02, UNITS.SECOND);
         workspace.addObjects(objects1);
         Obj obj1 = objects1.createAndAddNewObject(volumeType, 1);
         obj1.add(10, 20, 40);
@@ -569,7 +569,7 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         obj4.add(50, 20, 10);
 
         // Creating the parent object set
-        ObjCollection parents = new ObjCollection(parentObjectsName, calibration, 1, 0.02, UNITS.SECOND);
+        Objs parents = new Objs(parentObjectsName, calibration, 1, 0.02, UNITS.SECOND);
         workspace.addObjects(parents);
 
         Obj parent1 = parents.createAndAddNewObject(volumeType, 1);
@@ -588,7 +588,7 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
 
         // Initialising Module
         CalculateNearestNeighbour calculateNearestNeighbour = (CalculateNearestNeighbour) new CalculateNearestNeighbour(
-                new ModuleCollection())
+                new Modules())
                         .updateParameterValue(CalculateNearestNeighbour.INPUT_OBJECTS, inputObjectsName)
                         .updateParameterValue(CalculateNearestNeighbour.RELATIONSHIP_MODE,
                                 CalculateNearestNeighbour.RelationshipModes.WITHIN_SAME_SET)
@@ -639,7 +639,7 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
     public void testRunWithinSameSetWithinParentMaxDistSomeFail(VolumeType volumeType)
             throws IntegerOverflowException, PointOutOfRangeException {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null, 1);
 
         // Setting object parameters
@@ -651,7 +651,7 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         SpatCal calibration = new SpatCal(dppXY, dppZ, calibratedUnits, 60, 50, 50);
 
         // Creating first object set
-        ObjCollection objects1 = new ObjCollection(inputObjectsName, calibration, 1, 0.02, UNITS.SECOND);
+        Objs objects1 = new Objs(inputObjectsName, calibration, 1, 0.02, UNITS.SECOND);
         workspace.addObjects(objects1);
         Obj obj1 = objects1.createAndAddNewObject(volumeType, 1);
         obj1.add(10, 20, 40);
@@ -663,7 +663,7 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         obj4.add(50, 20, 10);
 
         // Creating the parent object set
-        ObjCollection parents = new ObjCollection(parentObjectsName, calibration, 1, 0.02, UNITS.SECOND);
+        Objs parents = new Objs(parentObjectsName, calibration, 1, 0.02, UNITS.SECOND);
         workspace.addObjects(parents);
 
         Obj parent1 = parents.createAndAddNewObject(volumeType, 1);
@@ -682,7 +682,7 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
 
         // Initialising Module
         CalculateNearestNeighbour calculateNearestNeighbour = (CalculateNearestNeighbour) new CalculateNearestNeighbour(
-                new ModuleCollection())
+                new Modules())
                         .updateParameterValue(CalculateNearestNeighbour.INPUT_OBJECTS, inputObjectsName)
                         .updateParameterValue(CalculateNearestNeighbour.RELATIONSHIP_MODE,
                                 CalculateNearestNeighbour.RelationshipModes.WITHIN_SAME_SET)
@@ -732,7 +732,7 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testRunDifferentSets(VolumeType volumeType) throws IntegerOverflowException, PointOutOfRangeException {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null, 1);
 
         // Setting object parameters
@@ -744,7 +744,7 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         SpatCal calibration = new SpatCal(dppXY, dppZ, calibratedUnits, 60, 50, 50);
 
         // Creating first object set
-        ObjCollection objects1 = new ObjCollection(inputObjectsName, calibration, 1, 0.02, UNITS.SECOND);
+        Objs objects1 = new Objs(inputObjectsName, calibration, 1, 0.02, UNITS.SECOND);
         workspace.addObjects(objects1);
         Obj obj1 = objects1.createAndAddNewObject(volumeType, 1);
         obj1.add(10, 20, 40);
@@ -756,7 +756,7 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         obj4.add(50, 20, 10);
 
         // Creating second object set
-        ObjCollection objects2 = new ObjCollection(secondObjectsName, calibration, 1, 0.02, UNITS.SECOND);
+        Objs objects2 = new Objs(secondObjectsName, calibration, 1, 0.02, UNITS.SECOND);
         workspace.addObjects(objects2);
         Obj obj5 = objects2.createAndAddNewObject(volumeType, 5);
         obj5.add(12, 25, 40);
@@ -767,7 +767,7 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
 
         // Initialising Module
         CalculateNearestNeighbour calculateNearestNeighbour = (CalculateNearestNeighbour) new CalculateNearestNeighbour(
-                new ModuleCollection())
+                new Modules())
                         .updateParameterValue(CalculateNearestNeighbour.INPUT_OBJECTS, inputObjectsName)
                         .updateParameterValue(CalculateNearestNeighbour.RELATIONSHIP_MODE,
                                 CalculateNearestNeighbour.RelationshipModes.DIFFERENT_SET)
@@ -818,7 +818,7 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
     public void testRunDifferentSetsMaxDistSomePass(VolumeType volumeType)
             throws IntegerOverflowException, PointOutOfRangeException {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null, 1);
 
         // Setting object parameters
@@ -830,7 +830,7 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         SpatCal calibration = new SpatCal(dppXY, dppZ, calibratedUnits, 60, 50, 50);
 
         // Creating first object set
-        ObjCollection objects1 = new ObjCollection(inputObjectsName, calibration, 1, 0.02, UNITS.SECOND);
+        Objs objects1 = new Objs(inputObjectsName, calibration, 1, 0.02, UNITS.SECOND);
         workspace.addObjects(objects1);
         Obj obj1 = objects1.createAndAddNewObject(volumeType, 1);
         obj1.add(10, 20, 40);
@@ -842,7 +842,7 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         obj4.add(50, 20, 10);
 
         // Creating second object set
-        ObjCollection objects2 = new ObjCollection(secondObjectsName, calibration, 1, 0.02, UNITS.SECOND);
+        Objs objects2 = new Objs(secondObjectsName, calibration, 1, 0.02, UNITS.SECOND);
         workspace.addObjects(objects2);
         Obj obj5 = objects2.createAndAddNewObject(volumeType, 5);
         obj5.add(12, 25, 40);
@@ -853,7 +853,7 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
 
         // Initialising Module
         CalculateNearestNeighbour calculateNearestNeighbour = (CalculateNearestNeighbour) new CalculateNearestNeighbour(
-                new ModuleCollection())
+                new Modules())
                         .updateParameterValue(CalculateNearestNeighbour.INPUT_OBJECTS, inputObjectsName)
                         .updateParameterValue(CalculateNearestNeighbour.RELATIONSHIP_MODE,
                                 CalculateNearestNeighbour.RelationshipModes.DIFFERENT_SET)
@@ -904,7 +904,7 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
     public void testRunDifferentSetsWithinParent(VolumeType volumeType)
             throws IntegerOverflowException, PointOutOfRangeException {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null, 1);
 
         // Setting object parameters
@@ -917,7 +917,7 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         SpatCal calibration = new SpatCal(dppXY, dppZ, calibratedUnits, 60, 50, 50);
 
         // Creating first object set
-        ObjCollection objects1 = new ObjCollection(inputObjectsName, calibration, 1, 0.02, UNITS.SECOND);
+        Objs objects1 = new Objs(inputObjectsName, calibration, 1, 0.02, UNITS.SECOND);
         workspace.addObjects(objects1);
         Obj obj1 = objects1.createAndAddNewObject(volumeType, 1);
         obj1.add(10, 20, 40);
@@ -929,7 +929,7 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         obj4.add(50, 20, 10);
 
         // Creating second object set
-        ObjCollection objects2 = new ObjCollection(secondObjectsName, calibration, 1, 0.02, UNITS.SECOND);
+        Objs objects2 = new Objs(secondObjectsName, calibration, 1, 0.02, UNITS.SECOND);
         workspace.addObjects(objects2);
         Obj obj5 = objects2.createAndAddNewObject(volumeType, 5);
         obj5.add(12, 25, 40);
@@ -939,7 +939,7 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         obj7.add(35, 20, 20);
 
         // Creating the parent object set
-        ObjCollection parents = new ObjCollection(parentObjectsName, calibration, 1, 0.02, UNITS.SECOND);
+        Objs parents = new Objs(parentObjectsName, calibration, 1, 0.02, UNITS.SECOND);
         workspace.addObjects(parents);
 
         Obj parent1 = parents.createAndAddNewObject(volumeType, 1);
@@ -964,7 +964,7 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
 
         // Initialising Module
         CalculateNearestNeighbour calculateNearestNeighbour = (CalculateNearestNeighbour) new CalculateNearestNeighbour(
-                new ModuleCollection())
+                new Modules())
                         .updateParameterValue(CalculateNearestNeighbour.INPUT_OBJECTS, inputObjectsName)
                         .updateParameterValue(CalculateNearestNeighbour.RELATIONSHIP_MODE,
                                 CalculateNearestNeighbour.RelationshipModes.DIFFERENT_SET)
@@ -1015,7 +1015,7 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
     public void testRunDifferentSetsWithinParentMaxDistSomeFail(VolumeType volumeType)
             throws IntegerOverflowException, PointOutOfRangeException {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null, 1);
 
         // Setting object parameters
@@ -1028,7 +1028,7 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         SpatCal calibration = new SpatCal(dppXY, dppZ, calibratedUnits, 60, 50, 50);
 
         // Creating first object set
-        ObjCollection objects1 = new ObjCollection(inputObjectsName, calibration, 1, 0.02, UNITS.SECOND);
+        Objs objects1 = new Objs(inputObjectsName, calibration, 1, 0.02, UNITS.SECOND);
         workspace.addObjects(objects1);
         Obj obj1 = objects1.createAndAddNewObject(volumeType, 1);
         obj1.add(10, 20, 40);
@@ -1040,7 +1040,7 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         obj4.add(50, 20, 10);
 
         // Creating second object set
-        ObjCollection objects2 = new ObjCollection(secondObjectsName, calibration, 1, 0.02, UNITS.SECOND);
+        Objs objects2 = new Objs(secondObjectsName, calibration, 1, 0.02, UNITS.SECOND);
         workspace.addObjects(objects2);
         Obj obj5 = objects2.createAndAddNewObject(volumeType, 5);
         obj5.add(12, 25, 40);
@@ -1050,7 +1050,7 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         obj7.add(35, 20, 20);
 
         // Creating the parent object set
-        ObjCollection parents = new ObjCollection(parentObjectsName, calibration, 1, 0.02, UNITS.SECOND);
+        Objs parents = new Objs(parentObjectsName, calibration, 1, 0.02, UNITS.SECOND);
         workspace.addObjects(parents);
 
         Obj parent1 = parents.createAndAddNewObject(volumeType, 1);
@@ -1075,7 +1075,7 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
 
         // Initialising Module
         CalculateNearestNeighbour calculateNearestNeighbour = (CalculateNearestNeighbour) new CalculateNearestNeighbour(
-                new ModuleCollection())
+                new Modules())
                         .updateParameterValue(CalculateNearestNeighbour.INPUT_OBJECTS, inputObjectsName)
                         .updateParameterValue(CalculateNearestNeighbour.RELATIONSHIP_MODE,
                                 CalculateNearestNeighbour.RelationshipModes.DIFFERENT_SET)

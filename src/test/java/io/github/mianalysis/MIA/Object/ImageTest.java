@@ -69,7 +69,7 @@ public class ImageTest < T extends RealType< T > & NativeType< T >> {
     }
 
     /**
-     * Tests the ability to take an image containing labelled pixels and turn it into an ObjCollection.
+     * Tests the ability to take an image containing labelled pixels and turn it into an Objs.
      * @throws Exception
      */
     @ParameterizedTest
@@ -84,7 +84,7 @@ public class ImageTest < T extends RealType< T > & NativeType< T >> {
         String testObjectsName = "Test objects";
 
         // Running the method to be tested
-        ObjCollection actualObjects = image.convertImageToObjects(testObjectsName);
+        Objs actualObjects = image.convertImageToObjects(testObjectsName);
 
         // Checking objects have been assigned
         assertNotNull(actualObjects);
@@ -96,7 +96,7 @@ public class ImageTest < T extends RealType< T > & NativeType< T >> {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        ObjCollection expectedObjects = new Objects3D(volumeType).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        Objs expectedObjects = new Objects3D(volumeType).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
 
         for (Obj object:expectedObjects.values()) {
             // Identifying the matching object.  If this is null, one isn't found
@@ -106,7 +106,7 @@ public class ImageTest < T extends RealType< T > & NativeType< T >> {
     }
 
     /**
-     * Tests the ability to take an image containing labelled pixels and turn it into an ObjCollection.
+     * Tests the ability to take an image containing labelled pixels and turn it into an Objs.
      * @throws Exception
      */
     @ParameterizedTest
@@ -121,7 +121,7 @@ public class ImageTest < T extends RealType< T > & NativeType< T >> {
         String testObjectsName = "Test objects";
 
         // Running the method to be tested
-        ObjCollection actualObjects = image.convertImageToObjects(testObjectsName);
+        Objs actualObjects = image.convertImageToObjects(testObjectsName);
 
         // Checking objects have been assigned
         assertNotNull(actualObjects);
@@ -133,7 +133,7 @@ public class ImageTest < T extends RealType< T > & NativeType< T >> {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        ObjCollection expectedObjects = new Objects3D(volumeType).getObjects("Expected",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        Objs expectedObjects = new Objects3D(volumeType).getObjects("Expected",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
 
         for (Obj object:expectedObjects.values()) {
             // Identifying the matching object.  If this is null, one isn't found

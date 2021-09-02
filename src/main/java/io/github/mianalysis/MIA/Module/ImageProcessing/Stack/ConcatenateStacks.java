@@ -23,7 +23,7 @@ import io.github.mianalysis.MIA.MIA;
 import io.github.mianalysis.MIA.Module.Categories;
 import io.github.mianalysis.MIA.Module.Category;
 import io.github.mianalysis.MIA.Module.Module;
-import io.github.mianalysis.MIA.Module.ModuleCollection;
+import io.github.mianalysis.MIA.Module.Modules;
 import io.github.mianalysis.MIA.Module.Visualisation.ImageRendering.SetLookupTable;
 import io.github.mianalysis.MIA.Object.Image;
 import io.github.mianalysis.MIA.Object.Status;
@@ -32,15 +32,15 @@ import io.github.mianalysis.MIA.Object.Parameters.BooleanP;
 import io.github.mianalysis.MIA.Object.Parameters.ChoiceP;
 import io.github.mianalysis.MIA.Object.Parameters.InputImageP;
 import io.github.mianalysis.MIA.Object.Parameters.OutputImageP;
-import io.github.mianalysis.MIA.Object.Parameters.ParameterCollection;
+import io.github.mianalysis.MIA.Object.Parameters.Parameters;
 import io.github.mianalysis.MIA.Object.Parameters.ParameterGroup;
 import io.github.mianalysis.MIA.Object.Parameters.SeparatorP;
 import io.github.mianalysis.MIA.Object.Parameters.Abstract.Parameter;
-import io.github.mianalysis.MIA.Object.References.Collections.ImageMeasurementRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.MetadataRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.ObjMeasurementRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.ParentChildRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.PartnerRefCollection;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ImageMeasurementRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.MetadataRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ObjMeasurementRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ParentChildRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.PartnerRefs;
 import io.github.sjcross.common.Process.ImgPlusTools;
 
 public class ConcatenateStacks <T extends RealType<T> & NativeType<T>> extends Module {
@@ -54,7 +54,7 @@ public class ConcatenateStacks <T extends RealType<T> & NativeType<T>> extends M
     public static final String AXIS_MODE = "Axis mode";
 
 
-    public ConcatenateStacks(ModuleCollection modules) {
+    public ConcatenateStacks(Modules modules) {
         super("Concatenate stacks",modules);
     }
 
@@ -71,10 +71,10 @@ public class ConcatenateStacks <T extends RealType<T> & NativeType<T>> extends M
     }
 
 
-    static <T extends RealType<T> & NativeType<T>> ArrayList<Image> getAvailableImages(Workspace workspace, LinkedHashMap<Integer,ParameterCollection> collections) {
+    static <T extends RealType<T> & NativeType<T>> ArrayList<Image> getAvailableImages(Workspace workspace, LinkedHashMap<Integer,Parameters> collections) {
         ArrayList<Image> available = new ArrayList<>();
 
-        for (ParameterCollection collection:collections.values()) {
+        for (Parameters collection:collections.values()) {
             Image image = workspace.getImage(collection.getValue(INPUT_IMAGE));
             if (image != null) available.add(image);
         }
@@ -308,7 +308,7 @@ public class ConcatenateStacks <T extends RealType<T> & NativeType<T>> extends M
         String axisMode = parameters.getValue(AXIS_MODE);
 
         // Creating a collection of images
-        LinkedHashMap<Integer,ParameterCollection> collections = parameters.getValue(ADD_INPUT_IMAGE);
+        LinkedHashMap<Integer,Parameters> collections = parameters.getValue(ADD_INPUT_IMAGE);
         ArrayList<Image> inputImages = getAvailableImages(workspace,collections);
 
         if (!allowMissingImages && collections.size() != inputImages.size()) {
@@ -336,7 +336,7 @@ public class ConcatenateStacks <T extends RealType<T> & NativeType<T>> extends M
     @Override
     protected void initialiseParameters() {
         parameters.add(new SeparatorP(INPUT_SEPARATOR,this));
-        ParameterCollection collection = new ParameterCollection();
+        Parameters collection = new Parameters();
         collection.add(new CustomInputImageP(INPUT_IMAGE,this,"","Image for concatenation."));
         parameters.add(new ParameterGroup(ADD_INPUT_IMAGE,this,collection,2,"Add another image for concatenation."));
         parameters.add(new BooleanP(ALLOW_MISSING_IMAGES, this, false,
@@ -349,11 +349,11 @@ public class ConcatenateStacks <T extends RealType<T> & NativeType<T>> extends M
     }
 
     @Override
-    public ParameterCollection updateAndGetParameters() {
+    public Parameters updateAndGetParameters() {
         boolean allowMissingImages = parameters.getValue(ALLOW_MISSING_IMAGES);
 
-        LinkedHashMap<Integer,ParameterCollection> collections = parameters.getValue(ADD_INPUT_IMAGE);
-        for (ParameterCollection collection:collections.values()) {
+        LinkedHashMap<Integer,Parameters> collections = parameters.getValue(ADD_INPUT_IMAGE);
+        for (Parameters collection:collections.values()) {
             CustomInputImageP parameter = collection.getParameter(INPUT_IMAGE);
             parameter.setAllowMissingImages(allowMissingImages);
         }
@@ -363,27 +363,27 @@ public class ConcatenateStacks <T extends RealType<T> & NativeType<T>> extends M
     }
 
     @Override
-    public ImageMeasurementRefCollection updateAndGetImageMeasurementRefs() {
+    public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MetadataRefCollection updateAndGetMetadataReferences() {
+    public MetadataRefs updateAndGetMetadataReferences() {
         return null;
     }
 
     @Override
-    public ParentChildRefCollection updateAndGetParentChildRefs() {
+    public ParentChildRefs updateAndGetParentChildRefs() {
         return null;
     }
 
     @Override
-    public PartnerRefCollection updateAndGetPartnerRefs() {
+    public PartnerRefs updateAndGetPartnerRefs() {
         return null;
     }
 

@@ -1,9 +1,9 @@
-package io.github.mianalysis.MIA.Object.References.Collections;
+package io.github.mianalysis.MIA.Object.Refs.Collections;
 
 
 import org.eclipse.sisu.Nullable;
 
-import io.github.mianalysis.MIA.Object.References.ParentChildRef;
+import io.github.mianalysis.MIA.Object.Refs.ParentChildRef;
 
 import java.util.LinkedHashSet;
 import java.util.TreeMap;
@@ -13,7 +13,7 @@ import java.util.TreeSet;
  * Extension of a TreeMap, which contains parents (keys) and their children (values).  As there can be multiple
  * different types of children these are stored in an ArrayList.
  */
-public class ParentChildRefCollection extends TreeMap<String, ParentChildRef> implements RefCollection<ParentChildRef> {
+public class ParentChildRefs extends TreeMap<String, ParentChildRef> implements Refs<ParentChildRef> {
     /**
      *
      */
@@ -109,7 +109,7 @@ public class ParentChildRefCollection extends TreeMap<String, ParentChildRef> im
 
     }
 
-    private static TreeSet<String> getChildNames(ParentChildRefCollection relationships, String parentName) {
+    private static TreeSet<String> getChildNames(ParentChildRefs relationships, String parentName) {
         TreeSet<String> childNames = new TreeSet<>();
 
         for (ParentChildRef ParentChildRef :relationships.values()) {
@@ -120,7 +120,7 @@ public class ParentChildRefCollection extends TreeMap<String, ParentChildRef> im
 
     }
 
-    private static TreeSet<String> getParentNames(ParentChildRefCollection relationships, String childName) {
+    private static TreeSet<String> getParentNames(ParentChildRefs relationships, String childName) {
         TreeSet<String> parentNames = new TreeSet<>();
 
         for (ParentChildRef ParentChildRef :relationships.values()) {

@@ -12,7 +12,7 @@ import ome.units.UNITS;
 import util.opencsv.CSVReader;
 import io.github.mianalysis.MIA.MIA;
 import io.github.mianalysis.MIA.Object.Obj;
-import io.github.mianalysis.MIA.Object.ObjCollection;
+import io.github.mianalysis.MIA.Object.Objs;
 import io.github.sjcross.common.Exceptions.IntegerOverflowException;
 import io.github.sjcross.common.Object.Tracks.Track;
 import io.github.sjcross.common.Object.Volume.PointOutOfRangeException;
@@ -39,12 +39,12 @@ public class Tracks3D {
      * @param calibratedUnits
      * @return
      */
-    public ObjCollection getObjects(VolumeType volumeType, String tracksName, String spotsName, double dppXY, double dppZ, String calibratedUnits) throws IntegerOverflowException {
+    public Objs getObjects(VolumeType volumeType, String tracksName, String spotsName, double dppXY, double dppZ, String calibratedUnits) throws IntegerOverflowException {
         SpatCal calibration = new SpatCal(dppXY,dppZ,calibratedUnits,127,90,13);
 
         // Initialising object store
-        ObjCollection spotObjects = new ObjCollection("Spots",calibration,10, 0.02, UNITS.SECOND);
-        ObjCollection trackObjects = new ObjCollection(tracksName,calibration,10, 0.02, UNITS.SECOND);
+        Objs spotObjects = new Objs("Spots",calibration,10, 0.02, UNITS.SECOND);
+        Objs trackObjects = new Objs(tracksName,calibration,10, 0.02, UNITS.SECOND);
 
         // Adding all provided coordinates to each object
         List<Integer[]> coordinates = getCoordinates5D();

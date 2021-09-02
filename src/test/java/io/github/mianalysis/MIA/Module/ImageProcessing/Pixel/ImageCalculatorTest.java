@@ -13,7 +13,7 @@ import ij.ImagePlus;
 import io.github.mianalysis.MIA.Module.ModuleTest;
 import io.github.mianalysis.MIA.Object.Image;
 import io.github.mianalysis.MIA.Object.Workspace;
-import io.github.mianalysis.MIA.Object.WorkspaceCollection;
+import io.github.mianalysis.MIA.Object.Workspaces;
 
 public class ImageCalculatorTest extends ModuleTest {
     private double tolerance = 1E-2;
@@ -28,7 +28,7 @@ public class ImageCalculatorTest extends ModuleTest {
     @Test
     public void testRun5DAddCreateNot32() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Setting calibration parameters
@@ -103,7 +103,7 @@ public class ImageCalculatorTest extends ModuleTest {
     @Test
     public void testRun5DAddOverwrite1Not32() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Setting calibration parameters
@@ -176,7 +176,7 @@ public class ImageCalculatorTest extends ModuleTest {
     @Test
     public void testRun5DAddOverwrite2Not32() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Setting calibration parameters
@@ -249,7 +249,7 @@ public class ImageCalculatorTest extends ModuleTest {
     @Test
     public void testRun5DAddCreateIs32() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Setting calibration parameters
@@ -324,7 +324,7 @@ public class ImageCalculatorTest extends ModuleTest {
     @Test
     public void testRun5DAddOverwrite1Is32() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Setting calibration parameters
@@ -397,7 +397,7 @@ public class ImageCalculatorTest extends ModuleTest {
     @Test
     public void testRun5DAddOverwrite2Is32() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Setting calibration parameters
@@ -473,7 +473,7 @@ public class ImageCalculatorTest extends ModuleTest {
     @Test
     public void testRun5DSubtractCreateNot32() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Setting calibration parameters
@@ -548,7 +548,7 @@ public class ImageCalculatorTest extends ModuleTest {
     @Test
     public void testRun5DSubtractCreateIs32() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Setting calibration parameters
@@ -626,7 +626,7 @@ public class ImageCalculatorTest extends ModuleTest {
     @Test
     public void testRun5DMultiplyCreateNot32() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Setting calibration parameters
@@ -701,7 +701,7 @@ public class ImageCalculatorTest extends ModuleTest {
     @Test
     public void testRun5DMultiplyCreateIs32() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Setting calibration parameters
@@ -779,7 +779,7 @@ public class ImageCalculatorTest extends ModuleTest {
     @Test
     public void testRun5DDivideCreateNot32() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Setting calibration parameters
@@ -854,7 +854,7 @@ public class ImageCalculatorTest extends ModuleTest {
     @Test
     public void testRun5DDivideCreateIs32() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Setting calibration parameters

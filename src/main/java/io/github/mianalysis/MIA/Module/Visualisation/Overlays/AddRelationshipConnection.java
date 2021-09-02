@@ -12,13 +12,13 @@ import ij.gui.Line;
 import ij.gui.PointRoi;
 import ij.plugin.Duplicator;
 import ij.plugin.HyperStackConverter;
-import io.github.mianalysis.MIA.Module.ModuleCollection;
+import io.github.mianalysis.MIA.Module.Modules;
 import io.github.mianalysis.MIA.Module.Category;
 import io.github.mianalysis.MIA.Module.Categories;
 import io.github.mianalysis.MIA.Object.Status;
 import io.github.mianalysis.MIA.Object.Image;
 import io.github.mianalysis.MIA.Object.Obj;
-import io.github.mianalysis.MIA.Object.ObjCollection;
+import io.github.mianalysis.MIA.Object.Objs;
 import io.github.mianalysis.MIA.Object.Workspace;
 import io.github.mianalysis.MIA.Object.Parameters.BooleanP;
 import io.github.mianalysis.MIA.Object.Parameters.ChildObjectsP;
@@ -28,14 +28,14 @@ import io.github.mianalysis.MIA.Object.Parameters.InputObjectsP;
 import io.github.mianalysis.MIA.Object.Parameters.ObjectMeasurementP;
 import io.github.mianalysis.MIA.Object.Parameters.OutputImageP;
 import io.github.mianalysis.MIA.Object.Parameters.SeparatorP;
-import io.github.mianalysis.MIA.Object.Parameters.ParameterCollection;
+import io.github.mianalysis.MIA.Object.Parameters.Parameters;
 import io.github.mianalysis.MIA.Object.Parameters.PartnerObjectsP;
 import io.github.mianalysis.MIA.Object.Parameters.Text.DoubleP;
-import io.github.mianalysis.MIA.Object.References.Collections.ImageMeasurementRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.MetadataRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.ObjMeasurementRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.ParentChildRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.PartnerRefCollection;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ImageMeasurementRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.MetadataRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ObjMeasurementRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ParentChildRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.PartnerRefs;
 import io.github.mianalysis.MIA.Process.ColourFactory;
 
 public class AddRelationshipConnection extends AbstractOverlay {
@@ -90,11 +90,11 @@ public class AddRelationshipConnection extends AbstractOverlay {
     public interface PointTypes extends AddObjectCentroid.PointTypes {
     }
 
-    public AddRelationshipConnection(ModuleCollection modules) {
+    public AddRelationshipConnection(Modules modules) {
         super("Add relationship connection", modules);
     }
 
-    public static void addParentChildOverlay(ImagePlus ipl, ObjCollection inputObjects, String childObjectsName,
+    public static void addParentChildOverlay(ImagePlus ipl, Objs inputObjects, String childObjectsName,
             String renderMode, double lineWidth, String pointSize, String pointType, boolean offset, String measName1,
             String measName2, HashMap<Integer, Float> hues, double opacity, boolean renderInAllFrames,
             boolean multithread) {
@@ -157,7 +157,7 @@ public class AddRelationshipConnection extends AbstractOverlay {
         }
     }
 
-    public static void addSiblingOverlay(ImagePlus ipl, ObjCollection inputObjects, String childObjects1Name,
+    public static void addSiblingOverlay(ImagePlus ipl, Objs inputObjects, String childObjects1Name,
             String childObjects2Name, String renderMode, double lineWidth, String pointSize, String pointType,
             boolean offset, String measName1, String measName2, HashMap<Integer, Float> hues, double opacity,
             boolean renderInAllFrames, boolean multithread) {
@@ -222,7 +222,7 @@ public class AddRelationshipConnection extends AbstractOverlay {
         }
     }
 
-    public static void addPartnerOverlay(ImagePlus ipl, ObjCollection partnerObjects1, String partnerObjects2Name,
+    public static void addPartnerOverlay(ImagePlus ipl, Objs partnerObjects1, String partnerObjects2Name,
             String renderMode, double lineWidth, String pointSize, String pointType, boolean offset, String measName1,
             String measName2, HashMap<Integer, Float> hues, double opacity, boolean renderInAllFrames,
             boolean multithread) {
@@ -441,7 +441,7 @@ public class AddRelationshipConnection extends AbstractOverlay {
 
         switch (lineMode) {
             case LineModes.BETWEEN_CHILDREN:
-                ObjCollection parentObjects = workspace.getObjectSet(parentObjectsName);
+                Objs parentObjects = workspace.getObjectSet(parentObjectsName);
                 HashMap<Integer, Float> hues = getHues(parentObjects);
                 addSiblingOverlay(ipl, parentObjects, childObjects1Name, childObjects2Name, renderMode, lineWidth,
                         pointSize, pointType, offset, measName1, measName2, hues, opacity, renderInAllFrames,
@@ -449,7 +449,7 @@ public class AddRelationshipConnection extends AbstractOverlay {
                 break;
 
             case LineModes.BETWEEN_PARTNERS:
-                ObjCollection partnerObjects1 = workspace.getObjectSet(partnerObjects1Name);
+                Objs partnerObjects1 = workspace.getObjectSet(partnerObjects1Name);
                 hues = getHues(partnerObjects1);
                 addPartnerOverlay(ipl, partnerObjects1, partnerObjects2Name, renderMode, lineWidth, pointSize,
                         pointType, offset, measName1, measName2, hues, opacity, renderInAllFrames, multithread);
@@ -512,10 +512,10 @@ public class AddRelationshipConnection extends AbstractOverlay {
     }
 
     @Override
-    public ParameterCollection updateAndGetParameters() {
+    public Parameters updateAndGetParameters() {
         String refObjectsName = "";
 
-        ParameterCollection returnedParameters = new ParameterCollection();
+        Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(INPUT_IMAGE));
@@ -625,27 +625,27 @@ public class AddRelationshipConnection extends AbstractOverlay {
     }
 
     @Override
-    public ImageMeasurementRefCollection updateAndGetImageMeasurementRefs() {
+    public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MetadataRefCollection updateAndGetMetadataReferences() {
+    public MetadataRefs updateAndGetMetadataReferences() {
         return null;
     }
 
     @Override
-    public ParentChildRefCollection updateAndGetParentChildRefs() {
+    public ParentChildRefs updateAndGetParentChildRefs() {
         return null;
     }
 
     @Override
-    public PartnerRefCollection updateAndGetPartnerRefs() {
+    public PartnerRefs updateAndGetPartnerRefs() {
         return null;
     }
 

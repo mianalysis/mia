@@ -1,7 +1,7 @@
 package io.github.mianalysis.MIA.Process.AnalysisHandling;
 
 import io.github.mianalysis.MIA.Module.Module;
-import io.github.mianalysis.MIA.Module.ModuleCollection;
+import io.github.mianalysis.MIA.Module.Modules;
 import io.github.mianalysis.MIA.Module.Miscellaneous.GlobalVariables;
 import io.github.mianalysis.MIA.Module.WorkflowHandling.FixedTextCondition;
 import io.github.mianalysis.MIA.Module.WorkflowHandling.GUICondition;
@@ -9,7 +9,7 @@ import io.github.mianalysis.MIA.Module.WorkflowHandling.ModuleIsEnabled;
 import io.github.mianalysis.MIA.Object.Parameters.Abstract.Parameter;
 
 public class AnalysisTester {
-    public static int testModules(ModuleCollection modules) {
+    public static int testModules(Modules modules) {
         GlobalVariables.updateVariables(modules);
 
         // Setting all module runnable states to false
@@ -53,7 +53,7 @@ public class AnalysisTester {
 
     }
 
-    public static boolean testModule(Module module, ModuleCollection modules) {
+    public static boolean testModule(Module module, Modules modules) {
         boolean runnable = true;
 
         if (module == null)

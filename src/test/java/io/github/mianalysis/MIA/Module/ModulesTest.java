@@ -21,38 +21,38 @@ import io.github.mianalysis.MIA.Module.ObjectProcessing.Relationships.SingleClas
 import io.github.mianalysis.MIA.Module.ObjectProcessing.Relationships.TrackObjects;
 import io.github.mianalysis.MIA.Object.Parameters.BooleanP;
 import io.github.mianalysis.MIA.Object.Parameters.OutputImageP;
-import io.github.mianalysis.MIA.Object.Parameters.ParameterCollection;
+import io.github.mianalysis.MIA.Object.Parameters.Parameters;
 import io.github.mianalysis.MIA.Object.Parameters.ParameterGroup;
 import io.github.mianalysis.MIA.Object.Parameters.Abstract.Parameter;
-import io.github.mianalysis.MIA.Object.References.Collections.ImageMeasurementRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.ObjMeasurementRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.ParentChildRefCollection;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ImageMeasurementRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ObjMeasurementRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ParentChildRefs;
 import io.github.mianalysis.MIA.Object.Units.SpatialUnit;
 
-public class ModuleCollectionTest<T extends RealType<T> & NativeType<T>> {
+public class ModulesTest<T extends RealType<T> & NativeType<T>> {
     @Test
     public void testGetAvailableImages() {
-        // Creating a ModuleCollection to hold the Modules
-        ModuleCollection modules = new ModuleCollection();
+        // Creating a Modules to hold the Modules
+        Modules modules = new Modules();
 
         String im1Name = "Im 1";
         String im2Name = "New_image";
 
         // Populating some modules (no need to populate all parameters as these should
         // be initialised)
-        ImageLoader imageLoader = new ImageLoader(new ModuleCollection());
+        ImageLoader imageLoader = new ImageLoader(new Modules());
         imageLoader.updateParameterValue(ImageLoader.OUTPUT_IMAGE, im1Name);
         modules.add(imageLoader);
 
-        FilterImage filterImage = new FilterImage(new ModuleCollection());
+        FilterImage filterImage = new FilterImage(new Modules());
         filterImage.updateParameterValue(FilterImage.INPUT_IMAGE, im1Name);
         filterImage.updateParameterValue(FilterImage.APPLY_TO_INPUT, false);
         filterImage.updateParameterValue(FilterImage.OUTPUT_IMAGE, im2Name);
         modules.add(filterImage);
 
-        RemoveImage removeImage = new RemoveImage(new ModuleCollection());
+        RemoveImage removeImage = new RemoveImage(new Modules());
         ParameterGroup group = removeImage.getParameter(RemoveImage.REMOVE_ANOTHER_IMAGE);
-        ParameterCollection collection = group.addParameters();
+        Parameters collection = group.addParameters();
         collection.updateValue(RemoveImage.INPUT_IMAGE, im1Name);
         modules.add(removeImage);
 
@@ -64,28 +64,28 @@ public class ModuleCollectionTest<T extends RealType<T> & NativeType<T>> {
 
     @Test
     public void testGetImageMeasurementRefsNoCutoff() {
-        // Creating a ModuleCollection to hold the Modules
-        ModuleCollection modules = new ModuleCollection();
+        // Creating a Modules to hold the Modules
+        Modules modules = new Modules();
 
         String im1Name = "Im 1";
         String im2Name = "New_image";
 
         // Populating some modules (no need to populate all parameters as these should
         // be initialised)
-        MeasureImageIntensity measureImageIntensity = new MeasureImageIntensity(new ModuleCollection());
+        MeasureImageIntensity measureImageIntensity = new MeasureImageIntensity(new Modules());
         measureImageIntensity.updateParameterValue(MeasureImageIntensity.INPUT_IMAGE, im1Name);
         modules.add(measureImageIntensity);
 
-        MeasureImageIntensity measureImageIntensity2 = new MeasureImageIntensity(new ModuleCollection());
+        MeasureImageIntensity measureImageIntensity2 = new MeasureImageIntensity(new Modules());
         measureImageIntensity2.updateParameterValue(MeasureImageIntensity.INPUT_IMAGE, im2Name);
         modules.add(measureImageIntensity2);
 
-        MeasureImageTexture measureImageTexture = new MeasureImageTexture(new ModuleCollection());
+        MeasureImageTexture measureImageTexture = new MeasureImageTexture(new Modules());
         measureImageTexture.updateParameterValue(MeasureImageTexture.INPUT_IMAGE, im2Name);
         modules.add(measureImageTexture);
 
         // Checking the values for "Im1"
-        ImageMeasurementRefCollection references1 = modules.getImageMeasurementRefs(im1Name);
+        ImageMeasurementRefs references1 = modules.getImageMeasurementRefs(im1Name);
         assertEquals(7, references1.size());
 
         String[] expectedNames1 = new String[] { MeasureImageIntensity.Measurements.MEAN,
@@ -97,7 +97,7 @@ public class ModuleCollectionTest<T extends RealType<T> & NativeType<T>> {
         }
 
         // Checking the values for "New_image"
-        ImageMeasurementRefCollection references2 = modules.getImageMeasurementRefs(im2Name);
+        ImageMeasurementRefs references2 = modules.getImageMeasurementRefs(im2Name);
         assertEquals(11, references2.size());
 
         String[] expectedNames2 = new String[] { MeasureImageIntensity.Measurements.MEAN,
@@ -113,28 +113,28 @@ public class ModuleCollectionTest<T extends RealType<T> & NativeType<T>> {
 
     @Test
     public void testGetImageMeasurementRefsWithCutoff() {
-        // Creating a ModuleCollection to hold the Modules
-        ModuleCollection modules = new ModuleCollection();
+        // Creating a Modules to hold the Modules
+        Modules modules = new Modules();
 
         String im1Name = "Im 1";
         String im2Name = "New_image";
 
         // Populating some modules (no need to populate all parameters as these should
         // be initialised)
-        MeasureImageIntensity measureImageIntensity = new MeasureImageIntensity(new ModuleCollection());
+        MeasureImageIntensity measureImageIntensity = new MeasureImageIntensity(new Modules());
         measureImageIntensity.updateParameterValue(MeasureImageIntensity.INPUT_IMAGE, im1Name);
         modules.add(measureImageIntensity);
 
-        MeasureImageIntensity measureImageIntensity2 = new MeasureImageIntensity(new ModuleCollection());
+        MeasureImageIntensity measureImageIntensity2 = new MeasureImageIntensity(new Modules());
         measureImageIntensity2.updateParameterValue(MeasureImageIntensity.INPUT_IMAGE, im2Name);
         modules.add(measureImageIntensity2);
 
-        MeasureImageTexture measureImageTexture = new MeasureImageTexture(new ModuleCollection());
+        MeasureImageTexture measureImageTexture = new MeasureImageTexture(new Modules());
         measureImageTexture.updateParameterValue(MeasureImageTexture.INPUT_IMAGE, im2Name);
         modules.add(measureImageTexture);
 
         // Checking the values for "Im1"
-        ImageMeasurementRefCollection references1 = modules.getImageMeasurementRefs(im1Name, measureImageIntensity2);
+        ImageMeasurementRefs references1 = modules.getImageMeasurementRefs(im1Name, measureImageIntensity2);
         assertEquals(7, references1.size());
 
         String[] expectedNames1 = new String[] { MeasureImageIntensity.Measurements.MEAN,
@@ -146,33 +146,33 @@ public class ModuleCollectionTest<T extends RealType<T> & NativeType<T>> {
         }
 
         // Checking the values for "New_image"
-        ImageMeasurementRefCollection references2 = modules.getImageMeasurementRefs(im2Name, measureImageIntensity2);
+        ImageMeasurementRefs references2 = modules.getImageMeasurementRefs(im2Name, measureImageIntensity2);
         assertEquals(0, references2.size());
 
     }
 
     @Test
     public void testGetObjectMeasurementRefsNoCutoff() {
-        // Creating a ModuleCollection to hold the Modules
-        ModuleCollection modules = new ModuleCollection();
+        // Creating a Modules to hold the Modules
+        Modules modules = new Modules();
 
         String obj1Name = "First obj set";
         String obj2Name = "Second";
 
         // Populating some modules (no need to populate all parameters as these should
         // be initialised)
-        MeasureObjectCentroid measureObjectCentroid = new MeasureObjectCentroid(new ModuleCollection());
+        MeasureObjectCentroid measureObjectCentroid = new MeasureObjectCentroid(new Modules());
         measureObjectCentroid.updateParameterValue(MeasureObjectCentroid.INPUT_OBJECTS, obj1Name);
         modules.add(measureObjectCentroid);
 
-        MeasureObjectShape measureObjectShape = new MeasureObjectShape(new ModuleCollection());
+        MeasureObjectShape measureObjectShape = new MeasureObjectShape(new Modules());
         measureObjectShape.updateParameterValue(MeasureObjectShape.INPUT_OBJECTS, obj2Name);
         measureObjectShape.updateParameterValue(MeasureObjectShape.MEASURE_VOLUME, true);
         measureObjectShape.updateParameterValue(MeasureObjectShape.MEASURE_PROJECTED_AREA, false);
         measureObjectShape.updateParameterValue(MeasureObjectShape.MEASURE_PROJECTED_DIA, true);
         modules.add(measureObjectShape);
 
-        MeasureObjectTexture measureObjectTexture = new MeasureObjectTexture(new ModuleCollection());
+        MeasureObjectTexture measureObjectTexture = new MeasureObjectTexture(new Modules());
         measureObjectTexture.updateParameterValue(MeasureObjectTexture.INPUT_OBJECTS, obj1Name);
         measureObjectTexture.updateParameterValue(MeasureObjectTexture.INPUT_IMAGE, "");
         measureObjectTexture.updateParameterValue(MeasureObjectTexture.X_OFFSET, 1d);
@@ -181,7 +181,7 @@ public class ModuleCollectionTest<T extends RealType<T> & NativeType<T>> {
         modules.add(measureObjectTexture);
 
         // Checking the values for "Im1"
-        ObjMeasurementRefCollection references1 = modules.getObjectMeasurementRefs(obj1Name);
+        ObjMeasurementRefs references1 = modules.getObjectMeasurementRefs(obj1Name);
         assertEquals(10, references1.size());
 
         double[] offs = new double[] { 1, 0, 0 };
@@ -200,7 +200,7 @@ public class ModuleCollectionTest<T extends RealType<T> & NativeType<T>> {
         }
 
         // Checking the values for the second object set
-        ObjMeasurementRefCollection references2 = modules.getObjectMeasurementRefs(obj2Name);
+        ObjMeasurementRefs references2 = modules.getObjectMeasurementRefs(obj2Name);
         assertEquals(9, references2.size());
 
         String[] expectedNames2 = new String[] { MeasureObjectShape.Measurements.PROJ_DIA_PX,
@@ -217,26 +217,26 @@ public class ModuleCollectionTest<T extends RealType<T> & NativeType<T>> {
 
     @Test
     public void testGetObjectMeasurementRefsWithCutoff() {
-        // Creating a ModuleCollection to hold the Modules
-        ModuleCollection modules = new ModuleCollection();
+        // Creating a Modules to hold the Modules
+        Modules modules = new Modules();
 
         String obj1Name = "First obj set";
         String obj2Name = "Second";
 
         // Populating some modules (no need to populate all parameters as these should
         // be initialised)
-        MeasureObjectCentroid measureObjectCentroid = new MeasureObjectCentroid(new ModuleCollection());
+        MeasureObjectCentroid measureObjectCentroid = new MeasureObjectCentroid(new Modules());
         measureObjectCentroid.updateParameterValue(MeasureObjectCentroid.INPUT_OBJECTS, obj1Name);
         modules.add(measureObjectCentroid);
 
-        MeasureObjectShape measureObjectShape = new MeasureObjectShape(new ModuleCollection());
+        MeasureObjectShape measureObjectShape = new MeasureObjectShape(new Modules());
         measureObjectShape.updateParameterValue(MeasureObjectShape.INPUT_OBJECTS, obj2Name);
         measureObjectShape.updateParameterValue(MeasureObjectShape.MEASURE_VOLUME, true);
         measureObjectShape.updateParameterValue(MeasureObjectShape.MEASURE_PROJECTED_AREA, false);
         measureObjectShape.updateParameterValue(MeasureObjectShape.MEASURE_PROJECTED_DIA, true);
         modules.add(measureObjectShape);
 
-        MeasureObjectTexture measureObjectTexture = new MeasureObjectTexture(new ModuleCollection());
+        MeasureObjectTexture measureObjectTexture = new MeasureObjectTexture(new Modules());
         measureObjectTexture.updateParameterValue(MeasureObjectTexture.INPUT_OBJECTS, obj1Name);
         measureObjectTexture.updateParameterValue(MeasureObjectTexture.INPUT_IMAGE, "");
         measureObjectTexture.updateParameterValue(MeasureObjectTexture.X_OFFSET, 1d);
@@ -245,7 +245,7 @@ public class ModuleCollectionTest<T extends RealType<T> & NativeType<T>> {
         modules.add(measureObjectTexture);
 
         // Checking the values for "Im1"
-        ObjMeasurementRefCollection references1 = modules.getObjectMeasurementRefs(obj1Name, measureObjectShape);
+        ObjMeasurementRefs references1 = modules.getObjectMeasurementRefs(obj1Name, measureObjectShape);
         assertEquals(6, references1.size());
 
         String[] expectedNames1 = new String[] { MeasureObjectCentroid.Measurements.MEAN_X_PX,
@@ -259,26 +259,26 @@ public class ModuleCollectionTest<T extends RealType<T> & NativeType<T>> {
         }
 
         // Checking the values for the second object set
-        ObjMeasurementRefCollection references2 = modules.getObjectMeasurementRefs(obj2Name, measureObjectShape);
+        ObjMeasurementRefs references2 = modules.getObjectMeasurementRefs(obj2Name, measureObjectShape);
         assertEquals(0, references2.size());
 
     }
 
     @Test
     public void testGetParametersMatchingTypeNoCutoff() {
-        // Creating a ModuleCollection to hold the Modules
-        ModuleCollection modules = new ModuleCollection();
+        // Creating a Modules to hold the Modules
+        Modules modules = new Modules();
 
         String obj1Name = "First obj set";
         String obj2Name = "Second";
 
         // Populating some modules (no need to populate all parameters as these should
         // be initialised)
-        MeasureObjectCentroid measureObjectCentroid = new MeasureObjectCentroid(new ModuleCollection());
+        MeasureObjectCentroid measureObjectCentroid = new MeasureObjectCentroid(new Modules());
         measureObjectCentroid.updateParameterValue(MeasureObjectCentroid.INPUT_OBJECTS, obj1Name);
         modules.add(measureObjectCentroid);
 
-        MeasureObjectShape measureObjectShape = new MeasureObjectShape(new ModuleCollection());
+        MeasureObjectShape measureObjectShape = new MeasureObjectShape(new Modules());
         measureObjectShape.updateParameterValue(MeasureObjectShape.INPUT_OBJECTS, obj2Name);
         measureObjectShape.updateParameterValue(MeasureObjectShape.MEASURE_VOLUME, true);
         measureObjectShape.updateParameterValue(MeasureObjectShape.MEASURE_PROJECTED_AREA, false);
@@ -286,7 +286,7 @@ public class ModuleCollectionTest<T extends RealType<T> & NativeType<T>> {
         measureObjectShape.updateParameterValue(MeasureObjectShape.MEASURE_PROJECTED_PERIM, false);
         modules.add(measureObjectShape);
 
-        MeasureObjectTexture measureObjectTexture = new MeasureObjectTexture(new ModuleCollection());
+        MeasureObjectTexture measureObjectTexture = new MeasureObjectTexture(new Modules());
         measureObjectTexture.updateParameterValue(MeasureObjectTexture.INPUT_OBJECTS, obj1Name);
         measureObjectTexture.updateParameterValue(MeasureObjectTexture.INPUT_IMAGE, "");
         measureObjectTexture.updateParameterValue(MeasureObjectTexture.X_OFFSET, 1d);
@@ -325,19 +325,19 @@ public class ModuleCollectionTest<T extends RealType<T> & NativeType<T>> {
 
     @Test
     public void testGetParametersMatchingTypeWithCutoff() {
-        // Creating a ModuleCollection to hold the Modules
-        ModuleCollection modules = new ModuleCollection();
+        // Creating a Modules to hold the Modules
+        Modules modules = new Modules();
 
         String obj1Name = "First obj set";
         String obj2Name = "Second";
 
         // Populating some modules (no need to populate all parameters as these should
         // be initialised)
-        MeasureObjectCentroid measureObjectCentroid = new MeasureObjectCentroid(new ModuleCollection());
+        MeasureObjectCentroid measureObjectCentroid = new MeasureObjectCentroid(new Modules());
         measureObjectCentroid.updateParameterValue(MeasureObjectCentroid.INPUT_OBJECTS, obj1Name);
         modules.add(measureObjectCentroid);
 
-        MeasureObjectShape measureObjectShape = new MeasureObjectShape(new ModuleCollection());
+        MeasureObjectShape measureObjectShape = new MeasureObjectShape(new Modules());
         measureObjectShape.updateParameterValue(MeasureObjectShape.INPUT_OBJECTS, obj2Name);
         measureObjectShape.updateParameterValue(MeasureObjectShape.MEASURE_VOLUME, true);
         measureObjectShape.updateParameterValue(MeasureObjectShape.MEASURE_PROJECTED_DIA, true);
@@ -345,7 +345,7 @@ public class ModuleCollectionTest<T extends RealType<T> & NativeType<T>> {
         measureObjectShape.updateParameterValue(MeasureObjectShape.MEASURE_PROJECTED_PERIM, false);
         modules.add(measureObjectShape);
 
-        MeasureObjectTexture measureObjectTexture = new MeasureObjectTexture(new ModuleCollection());
+        MeasureObjectTexture measureObjectTexture = new MeasureObjectTexture(new Modules());
         measureObjectTexture.updateParameterValue(MeasureObjectTexture.INPUT_OBJECTS, obj1Name);
         measureObjectTexture.updateParameterValue(MeasureObjectTexture.INPUT_IMAGE, "");
         measureObjectTexture.updateParameterValue(MeasureObjectTexture.X_OFFSET, 1d);
@@ -382,20 +382,20 @@ public class ModuleCollectionTest<T extends RealType<T> & NativeType<T>> {
 
     @Test
     public void testGetRelationshipsNoCutoff() {
-        // Creating a ModuleCollection to hold the Modules
-        ModuleCollection modules = new ModuleCollection();
+        // Creating a Modules to hold the Modules
+        Modules modules = new Modules();
 
         String spotsName = "Spot objects";
         String tracksName = "Tracks";
         String clustersName = "Clusters";
 
-        TrackObjects trackObjects = new TrackObjects(new ModuleCollection());
+        TrackObjects trackObjects = new TrackObjects(new Modules());
         trackObjects.updateParameterValue(TrackObjects.INPUT_OBJECTS, spotsName);
         trackObjects.updateParameterValue(TrackObjects.TRACK_OBJECTS, tracksName);
         trackObjects.updateParameterValue(TrackObjects.LINKING_METHOD, TrackObjects.LinkingMethods.CENTROID);
         modules.add(trackObjects);
 
-        SingleClassCluster singleClassCluster = new SingleClassCluster(new ModuleCollection());
+        SingleClassCluster singleClassCluster = new SingleClassCluster(new Modules());
         singleClassCluster.updateParameterValue(SingleClassCluster.INPUT_OBJECTS, spotsName);
         singleClassCluster.updateParameterValue(SingleClassCluster.CLUSTER_OBJECTS, clustersName);
         singleClassCluster.updateParameterValue(SingleClassCluster.CLUSTERING_ALGORITHM,
@@ -406,7 +406,7 @@ public class ModuleCollectionTest<T extends RealType<T> & NativeType<T>> {
         modules.add(singleClassCluster);
 
         // Getting actual relationships
-        ParentChildRefCollection actualRelationships = modules.getParentChildRefs();
+        ParentChildRefs actualRelationships = modules.getParentChildRefs();
 
         // Getting actual relationships for spots
         String[] actualSpotChildren = actualRelationships.getChildNames(spotsName, false);
@@ -510,20 +510,20 @@ public class ModuleCollectionTest<T extends RealType<T> & NativeType<T>> {
 
     @Test
     public void testGetRelationshipsWithCutoff() {
-        // Creating a ModuleCollection to hold the Modules
-        ModuleCollection modules = new ModuleCollection();
+        // Creating a Modules to hold the Modules
+        Modules modules = new Modules();
 
         String spotsName = "Spot objects";
         String tracksName = "Tracks";
         String clustersName = "Clusters";
 
-        TrackObjects trackObjects = new TrackObjects(new ModuleCollection());
+        TrackObjects trackObjects = new TrackObjects(new Modules());
         trackObjects.updateParameterValue(TrackObjects.INPUT_OBJECTS, spotsName);
         trackObjects.updateParameterValue(TrackObjects.TRACK_OBJECTS, tracksName);
         trackObjects.updateParameterValue(TrackObjects.LINKING_METHOD, TrackObjects.LinkingMethods.CENTROID);
         modules.add(trackObjects);
 
-        SingleClassCluster singleClassCluster = new SingleClassCluster(new ModuleCollection());
+        SingleClassCluster singleClassCluster = new SingleClassCluster(new Modules());
         singleClassCluster.updateParameterValue(SingleClassCluster.INPUT_OBJECTS, spotsName);
         singleClassCluster.updateParameterValue(SingleClassCluster.CLUSTER_OBJECTS, clustersName);
         singleClassCluster.updateParameterValue(SingleClassCluster.CLUSTERING_ALGORITHM,
@@ -534,7 +534,7 @@ public class ModuleCollectionTest<T extends RealType<T> & NativeType<T>> {
         modules.add(singleClassCluster);
 
         // Getting actual relationships
-        ParentChildRefCollection actualRelationships = modules.getParentChildRefs(singleClassCluster);
+        ParentChildRefs actualRelationships = modules.getParentChildRefs(singleClassCluster);
 
         // Getting actual relationships for spots
         String[] actualSpotChildren = actualRelationships.getChildNames(spotsName, false);

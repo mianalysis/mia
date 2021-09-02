@@ -6,11 +6,11 @@ import ij.process.ImageProcessor;
 import net.imglib2.type.NativeType;
 import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
-import io.github.mianalysis.MIA.Module.ModuleCollection;
+import io.github.mianalysis.MIA.Module.Modules;
 import io.github.mianalysis.MIA.Module.ImageProcessing.Stack.ImageTypeConverter;
 import io.github.mianalysis.MIA.Object.Workspace;
 import io.github.mianalysis.MIA.Object.Parameters.ChoiceP;
-import io.github.mianalysis.MIA.Object.Parameters.ParameterCollection;
+import io.github.mianalysis.MIA.Object.Parameters.Parameters;
 import io.github.mianalysis.MIA.Object.Parameters.SeparatorP;
 import io.github.mianalysis.MIA.Object.Parameters.Text.DoubleP;
 import io.github.mianalysis.MIA.Object.Parameters.Text.IntegerP;
@@ -59,7 +59,7 @@ public abstract class AbstractBUnwarpJRegistration<T extends RealType<T> & Nativ
 
     }
 
-    public AbstractBUnwarpJRegistration(String name, ModuleCollection modules) {
+    public AbstractBUnwarpJRegistration(String name, Modules modules) {
         super(name, modules);
     }
 
@@ -160,8 +160,8 @@ public abstract class AbstractBUnwarpJRegistration<T extends RealType<T> & Nativ
     }
 
     @Override
-    public ParameterCollection updateAndGetParameters() {
-        ParameterCollection returnedParameters = new ParameterCollection();
+    public Parameters updateAndGetParameters() {
+        Parameters returnedParameters = new Parameters();
 
         returnedParameters.addAll(super.updateAndGetParameters());
 

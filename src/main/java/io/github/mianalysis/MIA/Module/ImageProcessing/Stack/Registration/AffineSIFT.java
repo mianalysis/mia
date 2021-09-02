@@ -10,10 +10,10 @@ import mpicbg.imagefeatures.FloatArray2DSIFT;
 import mpicbg.models.AbstractAffineModel2D;
 import mpicbg.models.NotEnoughDataPointsException;
 import mpicbg.models.PointMatch;
-import io.github.mianalysis.MIA.Module.ModuleCollection;
+import io.github.mianalysis.MIA.Module.Modules;
 import io.github.mianalysis.MIA.Module.ImageProcessing.Stack.Registration.Abstract.AbstractAffineRegistration;
 import io.github.mianalysis.MIA.Object.Workspace;
-import io.github.mianalysis.MIA.Object.Parameters.ParameterCollection;
+import io.github.mianalysis.MIA.Object.Parameters.Parameters;
 import io.github.mianalysis.MIA.Object.Parameters.SeparatorP;
 import io.github.mianalysis.MIA.Object.Parameters.Text.DoubleP;
 import io.github.mianalysis.MIA.Object.Parameters.Text.IntegerP;
@@ -30,7 +30,7 @@ public class AffineSIFT extends AbstractAffineRegistration {
         public static final String MAX_EPSILON = "Maximal alignment error (px)";
         public static final String MIN_INLIER_RATIO = "Inlier ratio";
 
-        public AffineSIFT(ModuleCollection modules) {
+        public AffineSIFT(Modules modules) {
                 super("Affine (SIFT)", modules);
         }
 
@@ -131,8 +131,8 @@ public class AffineSIFT extends AbstractAffineRegistration {
         }
 
         @Override
-        public ParameterCollection updateAndGetParameters() {
-                ParameterCollection returnedParameters = new ParameterCollection();
+        public Parameters updateAndGetParameters() {
+                Parameters returnedParameters = new Parameters();
 
                 returnedParameters.addAll(super.updateAndGetParameters());
 

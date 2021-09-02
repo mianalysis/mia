@@ -10,7 +10,7 @@ import javax.swing.JButton;
 import io.github.mianalysis.MIA.MIA;
 import io.github.mianalysis.MIA.GUI.GUI;
 import io.github.mianalysis.MIA.Module.Module;
-import io.github.mianalysis.MIA.Module.ModuleCollection;
+import io.github.mianalysis.MIA.Module.Modules;
 import io.github.mianalysis.MIA.Module.Miscellaneous.GUISeparator;
 import io.github.mianalysis.MIA.Object.Status;
 import io.github.mianalysis.MIA.Object.Workspace;
@@ -95,7 +95,7 @@ public class EvalButton extends JButton implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        ModuleCollection modules = GUI.getModules();
+        Modules modules = GUI.getModules();
         int idx = modules.indexOf(module);
 
         // If this is the first (non-GUI separator) module, reset the workspace
@@ -165,7 +165,7 @@ public class EvalButton extends JButton implements ActionListener {
     }
 
     public boolean evaluateModule(Module module) {
-        ModuleCollection modules = GUI.getAnalysis().getModules();
+        Modules modules = GUI.getAnalysis().getModules();
         Workspace testWorkspace = GUI.getTestWorkspace();
 
         // Setting the index to the previous module. This will make the

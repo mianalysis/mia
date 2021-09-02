@@ -16,14 +16,14 @@ import ij.ImagePlus;
 import io.github.mianalysis.MIA.ExpectedObjects.ExpectedObjects;
 import io.github.mianalysis.MIA.ExpectedObjects.Rings2D;
 import io.github.mianalysis.MIA.Module.Module;
-import io.github.mianalysis.MIA.Module.ModuleCollection;
+import io.github.mianalysis.MIA.Module.Modules;
 import io.github.mianalysis.MIA.Module.ModuleTest;
 import io.github.mianalysis.MIA.Object.Image;
 import io.github.mianalysis.MIA.Object.Obj;
-import io.github.mianalysis.MIA.Object.ObjCollection;
+import io.github.mianalysis.MIA.Object.Objs;
 import io.github.mianalysis.MIA.Object.Units.SpatialUnit;
 import io.github.mianalysis.MIA.Object.Workspace;
-import io.github.mianalysis.MIA.Object.WorkspaceCollection;
+import io.github.mianalysis.MIA.Object.Workspaces;
 import io.github.sjcross.common.Object.Volume.VolumeType;
 
 /**
@@ -46,7 +46,7 @@ public class MeasureObjectCurvatureTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testRunCircleNoRelate10PxRadius2DLOESS(VolumeType volumeType) throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Setting calibration parameters
@@ -55,7 +55,7 @@ public class MeasureObjectCurvatureTest extends ModuleTest {
         String calibratedUnits = "µm";
 
         // Getting test objects
-        ObjCollection inputObj = new Rings2D(volumeType).getObjects("Input_obj", ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        Objs inputObj = new Rings2D(volumeType).getObjects("Input_obj", ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(inputObj);
 
         // Loading the reference image and adding to workspace
@@ -65,7 +65,7 @@ public class MeasureObjectCurvatureTest extends ModuleTest {
         workspace.addImage(image);
 
         // Initialising FilterObjects module
-        MeasureObjectCurvature measureObjectCurvature = new MeasureObjectCurvature(new ModuleCollection());
+        MeasureObjectCurvature measureObjectCurvature = new MeasureObjectCurvature(new Modules());
         measureObjectCurvature.updateParameterValue(MeasureObjectCurvature.INPUT_OBJECTS,"Input_obj");
         measureObjectCurvature.updateParameterValue(MeasureObjectCurvature.INPUT_IMAGE,"Ref_image");
         measureObjectCurvature.updateParameterValue(MeasureObjectCurvature.SPLINE_FITTING_METHOD, MeasureObjectCurvature.SplineFittingMethods.LOESS);
@@ -101,7 +101,7 @@ public class MeasureObjectCurvatureTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testRunCircleRelateAntiClockwise10PxRadius2DLOESS(VolumeType volumeType) throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Setting calibration parameters
@@ -110,7 +110,7 @@ public class MeasureObjectCurvatureTest extends ModuleTest {
         String calibratedUnits = "µm";
 
         // Getting test objects
-        ObjCollection inputObj = new Rings2D(volumeType).getObjects("Input_obj",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        Objs inputObj = new Rings2D(volumeType).getObjects("Input_obj",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(inputObj);
 
         // Loading the reference image and adding to workspace
@@ -120,7 +120,7 @@ public class MeasureObjectCurvatureTest extends ModuleTest {
         workspace.addImage(image);
 
         // Initialising FilterObjects module
-        MeasureObjectCurvature measureObjectCurvature = new MeasureObjectCurvature(new ModuleCollection());
+        MeasureObjectCurvature measureObjectCurvature = new MeasureObjectCurvature(new Modules());
         measureObjectCurvature.updateParameterValue(MeasureObjectCurvature.INPUT_OBJECTS,"Input_obj");
         measureObjectCurvature.updateParameterValue(MeasureObjectCurvature.INPUT_IMAGE,"Ref_image");
         measureObjectCurvature.updateParameterValue(MeasureObjectCurvature.SPLINE_FITTING_METHOD, MeasureObjectCurvature.SplineFittingMethods.LOESS);
@@ -165,7 +165,7 @@ public class MeasureObjectCurvatureTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testRunCircleRelateClockwise10PxRadius2DLOESS(VolumeType volumeType) throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Setting calibration parameters
@@ -174,7 +174,7 @@ public class MeasureObjectCurvatureTest extends ModuleTest {
         String calibratedUnits = "µm";
 
         // Getting test objects
-        ObjCollection inputObj = new Rings2D(volumeType).getObjects("Input_obj",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        Objs inputObj = new Rings2D(volumeType).getObjects("Input_obj",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(inputObj);
 
         // Loading the reference image and adding to workspace
@@ -184,7 +184,7 @@ public class MeasureObjectCurvatureTest extends ModuleTest {
         workspace.addImage(image);
 
         // Initialising FilterObjects module
-        MeasureObjectCurvature measureObjectCurvature = new MeasureObjectCurvature(new ModuleCollection());
+        MeasureObjectCurvature measureObjectCurvature = new MeasureObjectCurvature(new Modules());
         measureObjectCurvature.updateParameterValue(MeasureObjectCurvature.INPUT_OBJECTS,"Input_obj");
         measureObjectCurvature.updateParameterValue(MeasureObjectCurvature.INPUT_IMAGE,"Ref_image");
         measureObjectCurvature.updateParameterValue(MeasureObjectCurvature.SPLINE_FITTING_METHOD, MeasureObjectCurvature.SplineFittingMethods.LOESS);

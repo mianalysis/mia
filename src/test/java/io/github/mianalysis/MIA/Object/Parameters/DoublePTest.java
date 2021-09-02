@@ -4,7 +4,7 @@ import org.junit.jupiter.api.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
-import io.github.mianalysis.MIA.Module.ModuleCollection;
+import io.github.mianalysis.MIA.Module.Modules;
 import io.github.mianalysis.MIA.Object.Parameters.Text.DoubleP;
 
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -17,7 +17,7 @@ public class DoublePTest {
 
     @Test
     public void getRawStringValueProvidedInteger() {
-        ModuleCollection modules = new ModuleCollection();
+        Modules modules = new Modules();
         ParamTest paramTest = new ParamTest(modules);
 
         DoubleP doubleP = new DoubleP("Test val",paramTest,2);
@@ -28,7 +28,7 @@ public class DoublePTest {
 
     @Test
     public void getRawStringValueProvided4DP() {
-        ModuleCollection modules = new ModuleCollection();
+        Modules modules = new Modules();
         ParamTest paramTest = new ParamTest(modules);
 
         DoubleP doubleP = new DoubleP("Test val",paramTest,3.142);
@@ -39,7 +39,7 @@ public class DoublePTest {
 
     @Test
     public void getRawStringValueProvided10DP() {
-        ModuleCollection modules = new ModuleCollection();
+        Modules modules = new Modules();
         ParamTest paramTest = new ParamTest(modules);
 
         DoubleP doubleP = new DoubleP("Test val",paramTest,1.2345678901);
@@ -50,7 +50,7 @@ public class DoublePTest {
 
     @Test
     public void getRawStringValueProvidedScientific() {
-        ModuleCollection modules = new ModuleCollection();
+        Modules modules = new Modules();
         ParamTest paramTest = new ParamTest(modules);
 
         DoubleP doubleP = new DoubleP("Test val",paramTest,6.46E-42);
@@ -61,7 +61,7 @@ public class DoublePTest {
 
     @Test
     public void getRawStringValueProvidedBlank() {
-        ModuleCollection modules = new ModuleCollection();
+        Modules modules = new Modules();
         ParamTest paramTest = new ParamTest(modules);
 
         DoubleP doubleP = new DoubleP("Test val",paramTest,"");
@@ -72,7 +72,7 @@ public class DoublePTest {
 
     @Test
     public void getValueProvidedInteger() {
-        ModuleCollection modules = new ModuleCollection();
+        Modules modules = new Modules();
         ParamTest paramTest = new ParamTest(modules);
 
         DoubleP doubleP = new DoubleP("Test val",paramTest,2);
@@ -83,7 +83,7 @@ public class DoublePTest {
 
     @Test
     public void getValueProvided4dp() {
-        ModuleCollection modules = new ModuleCollection();
+        Modules modules = new Modules();
         ParamTest paramTest = new ParamTest(modules);
 
         DoubleP doubleP = new DoubleP("Test val",paramTest,3.142);
@@ -94,7 +94,7 @@ public class DoublePTest {
 
     @Test
     public void getValueProvided10DP() {
-        ModuleCollection modules = new ModuleCollection();
+        Modules modules = new Modules();
         ParamTest paramTest = new ParamTest(modules);
 
         DoubleP doubleP = new DoubleP("Test val",paramTest,1.2345678901);
@@ -105,7 +105,7 @@ public class DoublePTest {
 
     @Test
     public void getValueProvidedScientific() {
-        ModuleCollection modules = new ModuleCollection();
+        Modules modules = new Modules();
         ParamTest paramTest = new ParamTest(modules);
 
         DoubleP doubleP = new DoubleP("Test val",paramTest,6.46E-42);
@@ -116,7 +116,7 @@ public class DoublePTest {
 
     @Test
     public void getValueProvidedBlank() {
-        ModuleCollection modules = new ModuleCollection();
+        Modules modules = new Modules();
         ParamTest paramTest = new ParamTest(modules);
 
         DoubleP doubleP = new DoubleP("Test val",paramTest,"");
@@ -128,7 +128,7 @@ public class DoublePTest {
 
     @Test
     public void duplicate() {
-        ModuleCollection modules = new ModuleCollection();
+        Modules modules = new Modules();
         ParamTest paramTest = new ParamTest(modules);
 
         DoubleP doubleP = new DoubleP("Test val",paramTest,42.54);
@@ -143,7 +143,7 @@ public class DoublePTest {
 
     @Test
     public void setValueFromStringProvidedInteger() {
-        ModuleCollection modules = new ModuleCollection();
+        Modules modules = new Modules();
         ParamTest paramTest = new ParamTest(modules);
 
         DoubleP doubleP = new DoubleP("Test val",paramTest,"");
@@ -155,7 +155,7 @@ public class DoublePTest {
 
     @Test
     public void setValueFromStringProvided4dp() {
-        ModuleCollection modules = new ModuleCollection();
+        Modules modules = new Modules();
         ParamTest paramTest = new ParamTest(modules);
 
         DoubleP doubleP = new DoubleP("Test val",paramTest,"");
@@ -167,7 +167,7 @@ public class DoublePTest {
 
     @Test
     public void setValueFromStringProvided10DP() {
-        ModuleCollection modules = new ModuleCollection();
+        Modules modules = new Modules();
         ParamTest paramTest = new ParamTest(modules);
 
         DoubleP doubleP = new DoubleP("Test val",paramTest,"");
@@ -179,7 +179,7 @@ public class DoublePTest {
 
     @Test
     public void setValueFromStringProvidedScientific() {
-        ModuleCollection modules = new ModuleCollection();
+        Modules modules = new Modules();
         ParamTest paramTest = new ParamTest(modules);
 
         DoubleP doubleP = new DoubleP("Test val",paramTest,"");
@@ -191,7 +191,7 @@ public class DoublePTest {
 
     @Test
     public void setValueFromStringProvidedBlank() {
-        ModuleCollection modules = new ModuleCollection();
+        Modules modules = new Modules();
         ParamTest paramTest = new ParamTest(modules);
 
         DoubleP doubleP = new DoubleP("Test val",paramTest,12);
@@ -205,7 +205,7 @@ public class DoublePTest {
     @Test
     public void verifyDouble() {
         // It shouldn't be possible to get a false value here.
-        ModuleCollection modules = new ModuleCollection();
+        Modules modules = new Modules();
         ParamTest paramTest = new ParamTest(modules);
 
         DoubleP doubleP = new DoubleP("Test val",paramTest,-23.5423423);
@@ -216,7 +216,7 @@ public class DoublePTest {
 
     @Test
     public void appendXMLAttributes() throws ParserConfigurationException {
-        ModuleCollection modules = new ModuleCollection();
+        Modules modules = new Modules();
         ParamTest paramTest = new ParamTest(modules);
 
         DoubleP doubleP = new DoubleP("Test val",paramTest,-23.5423423);
@@ -242,7 +242,7 @@ public class DoublePTest {
 
     @Test
     public void setAttributesFromXML() throws ParserConfigurationException {
-        ModuleCollection modules = new ModuleCollection();
+        Modules modules = new Modules();
         ParamTest paramTest = new ParamTest(modules);
 
         DoubleP doubleP = new DoubleP("Test val",paramTest,-23.5423423);

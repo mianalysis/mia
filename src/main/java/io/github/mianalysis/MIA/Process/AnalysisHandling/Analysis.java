@@ -8,7 +8,7 @@ import io.github.mianalysis.MIA.MIA;
 import io.github.mianalysis.MIA.GUI.GUI;
 import io.github.mianalysis.MIA.Macro.MacroHandler;
 import io.github.mianalysis.MIA.Module.Module;
-import io.github.mianalysis.MIA.Module.ModuleCollection;
+import io.github.mianalysis.MIA.Module.Modules;
 import io.github.mianalysis.MIA.Module.Miscellaneous.Macros.AbstractMacroRunner;
 import io.github.mianalysis.MIA.Object.Status;
 import io.github.mianalysis.MIA.Object.Workspace;
@@ -18,7 +18,7 @@ import io.github.mianalysis.MIA.Process.Logging.LogRenderer;
  * Created by sc13967 on 21/10/2016.
  */
 public class Analysis {
-    private ModuleCollection modules = new ModuleCollection();
+    private Modules modules = new Modules();
     private String analysisFilename = "";
 
     // CONSTRUCTOR
@@ -129,12 +129,12 @@ public class Analysis {
 
     }
 
-    public ModuleCollection getModules() {
+    public Modules getModules() {
         return modules;
 
     }
 
-    public void setModules(ModuleCollection modules) {
+    public void setModules(Modules modules) {
         this.modules = modules;
     }
 

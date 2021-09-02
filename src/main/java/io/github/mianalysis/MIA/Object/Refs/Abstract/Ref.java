@@ -1,4 +1,4 @@
-package io.github.mianalysis.MIA.Object.References.Abstract;
+package io.github.mianalysis.MIA.Object.Refs.Abstract;
 
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;

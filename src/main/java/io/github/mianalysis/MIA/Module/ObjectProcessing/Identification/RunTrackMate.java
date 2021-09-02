@@ -27,30 +27,30 @@ import io.github.mianalysis.MIA.MIA;
 import io.github.mianalysis.MIA.Module.Categories;
 import io.github.mianalysis.MIA.Module.Category;
 import io.github.mianalysis.MIA.Module.Module;
-import io.github.mianalysis.MIA.Module.ModuleCollection;
+import io.github.mianalysis.MIA.Module.Modules;
 import io.github.mianalysis.MIA.Module.Visualisation.Overlays.AddObjectCentroid;
 import io.github.mianalysis.MIA.Module.Visualisation.Overlays.AddObjectOutline;
 import io.github.mianalysis.MIA.Object.Image;
 import io.github.mianalysis.MIA.Object.Measurement;
 import io.github.mianalysis.MIA.Object.Obj;
-import io.github.mianalysis.MIA.Object.ObjCollection;
+import io.github.mianalysis.MIA.Object.Objs;
 import io.github.mianalysis.MIA.Object.Status;
 import io.github.mianalysis.MIA.Object.Workspace;
 import io.github.mianalysis.MIA.Object.Parameters.BooleanP;
 import io.github.mianalysis.MIA.Object.Parameters.ChoiceP;
 import io.github.mianalysis.MIA.Object.Parameters.InputImageP;
-import io.github.mianalysis.MIA.Object.Parameters.ParameterCollection;
+import io.github.mianalysis.MIA.Object.Parameters.Parameters;
 import io.github.mianalysis.MIA.Object.Parameters.SeparatorP;
 import io.github.mianalysis.MIA.Object.Parameters.Objects.OutputObjectsP;
 import io.github.mianalysis.MIA.Object.Parameters.Objects.OutputTrackObjectsP;
 import io.github.mianalysis.MIA.Object.Parameters.Text.DoubleP;
 import io.github.mianalysis.MIA.Object.Parameters.Text.IntegerP;
-import io.github.mianalysis.MIA.Object.References.ObjMeasurementRef;
-import io.github.mianalysis.MIA.Object.References.Collections.ImageMeasurementRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.MetadataRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.ObjMeasurementRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.ParentChildRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.PartnerRefCollection;
+import io.github.mianalysis.MIA.Object.Refs.ObjMeasurementRef;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ImageMeasurementRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.MetadataRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ObjMeasurementRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ParentChildRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.PartnerRefs;
 import io.github.mianalysis.MIA.Object.Units.SpatialUnit;
 import io.github.mianalysis.MIA.Object.Units.TemporalUnit;
 import io.github.mianalysis.MIA.Process.ColourFactory;
@@ -104,7 +104,7 @@ public class RunTrackMate extends Module {
 
     }
 
-    public RunTrackMate(ModuleCollection modules) {
+    public RunTrackMate(Modules modules) {
         super("Run TrackMate", modules);
     }
 
@@ -165,7 +165,7 @@ public class RunTrackMate extends Module {
 
     }
 
-    public ObjCollection getSpots(Model model, SpatCal calibration, int nFrames, double frameInterval)
+    public Objs getSpots(Model model, SpatCal calibration, int nFrames, double frameInterval)
             throws IntegerOverflowException {
         String spotObjectsName = parameters.getValue(OUTPUT_SPOT_OBJECTS);
 
@@ -175,7 +175,7 @@ public class RunTrackMate extends Module {
         // Getting calibration
         double dppXY = calibration.getDppXY();
 
-        ObjCollection spotObjects = new ObjCollection(spotObjectsName, calibration, nFrames, frameInterval,
+        Objs spotObjects = new Objs(spotObjectsName, calibration, nFrames, frameInterval,
                 TemporalUnit.getOMEUnit());
         SpotCollection spots = model.getSpots();
         for (Spot spot : spots.iterable(false)) {
@@ -205,15 +205,15 @@ public class RunTrackMate extends Module {
 
     }
 
-    public ObjCollection[] getSpotsAndTracks(Model model, SpatCal calibration, int nFrames, double frameInterval)
+    public Objs[] getSpotsAndTracks(Model model, SpatCal calibration, int nFrames, double frameInterval)
             throws IntegerOverflowException {
         String spotObjectsName = parameters.getValue(OUTPUT_SPOT_OBJECTS);
         String trackObjectsName = parameters.getValue(OUTPUT_TRACK_OBJECTS);
 
         // Getting calibration
-        ObjCollection spotObjects = new ObjCollection(spotObjectsName, calibration, nFrames, frameInterval,
+        Objs spotObjects = new Objs(spotObjectsName, calibration, nFrames, frameInterval,
                 TemporalUnit.getOMEUnit());
-        ObjCollection trackObjects = new ObjCollection(trackObjectsName, calibration, nFrames, frameInterval,
+        Objs trackObjects = new Objs(trackObjectsName, calibration, nFrames, frameInterval,
                 TemporalUnit.getOMEUnit());
 
         // Converting tracks to local track model
@@ -276,12 +276,12 @@ public class RunTrackMate extends Module {
         writeStatus(spotObjects.size() + " spots detected");
         writeStatus(trackObjects.size() + " tracks detected");
 
-        return new ObjCollection[] { spotObjects, trackObjects };
+        return new Objs[] { spotObjects, trackObjects };
 
     }
 
-    public void estimateSpotSize(ObjCollection spotObjects, ImagePlus ipl) throws IntegerOverflowException {
-        ObjCollection tempObjects = new ObjCollection("SpotVolume", spotObjects);
+    public void estimateSpotSize(Objs spotObjects, ImagePlus ipl) throws IntegerOverflowException {
+        Objs tempObjects = new Objs("SpotVolume", spotObjects);
         // Replacing spot volumes with explicit volume
         for (Obj spotObject : spotObjects.values()) {
             int radius = (int) Math.round(spotObject.getMeasurement(Measurements.RADIUS_PX).getValue());
@@ -298,7 +298,7 @@ public class RunTrackMate extends Module {
         }
     }
 
-    public void showObjects(ImagePlus ipl, ObjCollection spotObjects, boolean estimateSize) {
+    public void showObjects(ImagePlus ipl, Objs spotObjects, boolean estimateSize) {
         String trackObjectsName = parameters.getValue(OUTPUT_TRACK_OBJECTS);
         boolean doTracking = parameters.getValue(DO_TRACKING);
 
@@ -338,7 +338,7 @@ public class RunTrackMate extends Module {
 
     @Override
     public String getDescription() {
-        return "Uses the <a href=\"https://imagej.net/TrackMate\">TrackMate</a> plugin included with Fiji to detect and track spots in images.";
+        return "Uses the TrackMate plugin included with Fiji to detect and track spots in images.  For more information, see the <a href=\"https://imagej.net/TrackMate\">TrackMate</a> documentation.";
     }
 
     @Override
@@ -369,15 +369,15 @@ public class RunTrackMate extends Module {
         // Resetting ipl to the input image
         ipl = inputImage.getImagePlus();
 
-        ObjCollection spotObjects;
+        Objs spotObjects;
         try {
             if (doTracking) {
                 writeStatus("Running detection and tracking");
                 trackmate.process();
 
-                ObjCollection[] spotsAndTracks = getSpotsAndTracks(model, calibration, nFrames, frameInterval);
+                Objs[] spotsAndTracks = getSpotsAndTracks(model, calibration, nFrames, frameInterval);
                 spotObjects = spotsAndTracks[0];
-                ObjCollection trackObjects = spotsAndTracks[1];
+                Objs trackObjects = spotsAndTracks[1];
 
                 if (estimateSize)
                     estimateSpotSize(spotObjects, ipl);
@@ -470,8 +470,8 @@ public class RunTrackMate extends Module {
     }
 
     @Override
-    public ParameterCollection updateAndGetParameters() {
-        ParameterCollection returnedParameters = new ParameterCollection();
+    public Parameters updateAndGetParameters() {
+        Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(INPUT_IMAGE));
@@ -508,13 +508,13 @@ public class RunTrackMate extends Module {
     }
 
     @Override
-    public ImageMeasurementRefCollection updateAndGetImageMeasurementRefs() {
+    public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
-        ObjMeasurementRefCollection returnedRefs = new ObjMeasurementRefCollection();
+    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+        ObjMeasurementRefs returnedRefs = new ObjMeasurementRefs();
         String outputSpotObjectsName = parameters.getValue(OUTPUT_SPOT_OBJECTS);
 
         ObjMeasurementRef reference = objectMeasurementRefs.getOrPut(Measurements.RADIUS_PX);
@@ -548,13 +548,13 @@ public class RunTrackMate extends Module {
     }
 
     @Override
-    public MetadataRefCollection updateAndGetMetadataReferences() {
+    public MetadataRefs updateAndGetMetadataReferences() {
         return null;
     }
 
     @Override
-    public ParentChildRefCollection updateAndGetParentChildRefs() {
-        ParentChildRefCollection returnedRelationships = new ParentChildRefCollection();
+    public ParentChildRefs updateAndGetParentChildRefs() {
+        ParentChildRefs returnedRelationships = new ParentChildRefs();
 
         if ((boolean) parameters.getValue(DO_TRACKING)) {
             returnedRelationships.add(parentChildRefs.getOrPut(parameters.getValue(OUTPUT_TRACK_OBJECTS),
@@ -567,7 +567,7 @@ public class RunTrackMate extends Module {
     }
 
     @Override
-    public PartnerRefCollection updateAndGetPartnerRefs() {
+    public PartnerRefs updateAndGetPartnerRefs() {
         return null;
     }
 

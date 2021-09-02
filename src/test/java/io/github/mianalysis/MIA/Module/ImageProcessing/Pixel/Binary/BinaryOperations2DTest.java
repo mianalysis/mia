@@ -11,11 +11,11 @@ import org.junit.jupiter.api.Test;
 import ij.IJ;
 import ij.ImagePlus;
 import io.github.mianalysis.MIA.Module.Module;
-import io.github.mianalysis.MIA.Module.ModuleCollection;
+import io.github.mianalysis.MIA.Module.Modules;
 import io.github.mianalysis.MIA.Module.ModuleTest;
 import io.github.mianalysis.MIA.Object.Image;
 import io.github.mianalysis.MIA.Object.Workspace;
-import io.github.mianalysis.MIA.Object.WorkspaceCollection;
+import io.github.mianalysis.MIA.Object.Workspaces;
 
 /**
  * Created by sc13967 on 13/11/2017.
@@ -34,7 +34,7 @@ public class BinaryOperations2DTest extends ModuleTest {
     @Test
     public void testRunWithDilate2DOperation2DStackWhiteBG() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -50,7 +50,7 @@ public class BinaryOperations2DTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
-        BinaryOperations2D binaryOperations = new BinaryOperations2D(new ModuleCollection());
+        BinaryOperations2D binaryOperations = new BinaryOperations2D(new Modules());
         binaryOperations.updateParameterValue(BinaryOperations2D.INPUT_IMAGE, "Test_image");
         binaryOperations.updateParameterValue(BinaryOperations2D.APPLY_TO_INPUT, false);
         binaryOperations.updateParameterValue(BinaryOperations2D.NUM_ITERATIONS, 1);
@@ -77,7 +77,7 @@ public class BinaryOperations2DTest extends ModuleTest {
     @Test
     public void testRunWithDilate2DOperation3DStackWhiteBG() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -93,7 +93,7 @@ public class BinaryOperations2DTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
-        BinaryOperations2D binaryOperations = new BinaryOperations2D(new ModuleCollection());
+        BinaryOperations2D binaryOperations = new BinaryOperations2D(new Modules());
         binaryOperations.updateParameterValue(BinaryOperations2D.INPUT_IMAGE, "Test_image");
         binaryOperations.updateParameterValue(BinaryOperations2D.APPLY_TO_INPUT, false);
         binaryOperations.updateParameterValue(BinaryOperations2D.NUM_ITERATIONS, 1);
@@ -120,7 +120,7 @@ public class BinaryOperations2DTest extends ModuleTest {
     @Test
     public void testRunWithDilate2DOperation4DStackWhiteBG() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -136,7 +136,7 @@ public class BinaryOperations2DTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
-        BinaryOperations2D binaryOperations = new BinaryOperations2D(new ModuleCollection());
+        BinaryOperations2D binaryOperations = new BinaryOperations2D(new Modules());
         binaryOperations.updateParameterValue(BinaryOperations2D.INPUT_IMAGE, "Test_image");
         binaryOperations.updateParameterValue(BinaryOperations2D.APPLY_TO_INPUT, false);
         binaryOperations.updateParameterValue(BinaryOperations2D.NUM_ITERATIONS, 1);
@@ -163,7 +163,7 @@ public class BinaryOperations2DTest extends ModuleTest {
     @Test
     public void testRunWithDilate2DOperation5DStackWhiteBG() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -179,7 +179,7 @@ public class BinaryOperations2DTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
-        BinaryOperations2D binaryOperations = new BinaryOperations2D(new ModuleCollection());
+        BinaryOperations2D binaryOperations = new BinaryOperations2D(new Modules());
         binaryOperations.updateParameterValue(BinaryOperations2D.INPUT_IMAGE, "Test_image");
         binaryOperations.updateParameterValue(BinaryOperations2D.APPLY_TO_INPUT, false);
         binaryOperations.updateParameterValue(BinaryOperations2D.NUM_ITERATIONS, 1);
@@ -206,7 +206,7 @@ public class BinaryOperations2DTest extends ModuleTest {
     @Test
     public void testRunWithDilateOperation2DStackOnInputWhiteBG() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -222,7 +222,7 @@ public class BinaryOperations2DTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
-        BinaryOperations2D binaryOperations = new BinaryOperations2D(new ModuleCollection());
+        BinaryOperations2D binaryOperations = new BinaryOperations2D(new Modules());
         binaryOperations.updateParameterValue(BinaryOperations2D.INPUT_IMAGE, "Test_image");
         binaryOperations.updateParameterValue(BinaryOperations2D.APPLY_TO_INPUT, true);
         binaryOperations.updateParameterValue(BinaryOperations2D.NUM_ITERATIONS, 1);
@@ -248,7 +248,7 @@ public class BinaryOperations2DTest extends ModuleTest {
     @Test
     public void testRunWithDilate2DOperationZeroIters2DStackWhiteBG() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -265,7 +265,7 @@ public class BinaryOperations2DTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
-        BinaryOperations2D binaryOperations = new BinaryOperations2D(new ModuleCollection());
+        BinaryOperations2D binaryOperations = new BinaryOperations2D(new Modules());
         binaryOperations.updateParameterValue(BinaryOperations2D.INPUT_IMAGE, "Test_image");
         binaryOperations.updateParameterValue(BinaryOperations2D.APPLY_TO_INPUT, false);
         binaryOperations.updateParameterValue(BinaryOperations2D.NUM_ITERATIONS, 0);
@@ -292,7 +292,7 @@ public class BinaryOperations2DTest extends ModuleTest {
     @Test
     public void testRunWithErode2DOperationFiveIters2DStackWhiteBG() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -308,7 +308,7 @@ public class BinaryOperations2DTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
-        BinaryOperations2D binaryOperations = new BinaryOperations2D(new ModuleCollection());
+        BinaryOperations2D binaryOperations = new BinaryOperations2D(new Modules());
         binaryOperations.updateParameterValue(BinaryOperations2D.INPUT_IMAGE, "Test_image");
         binaryOperations.updateParameterValue(BinaryOperations2D.APPLY_TO_INPUT, false);
         binaryOperations.updateParameterValue(BinaryOperations2D.NUM_ITERATIONS, 5);
@@ -335,7 +335,7 @@ public class BinaryOperations2DTest extends ModuleTest {
     @Test
     public void testRunWithErode2DOperationFiveIters3DStackWhiteBG() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -351,7 +351,7 @@ public class BinaryOperations2DTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
-        BinaryOperations2D binaryOperations = new BinaryOperations2D(new ModuleCollection());
+        BinaryOperations2D binaryOperations = new BinaryOperations2D(new Modules());
         binaryOperations.updateParameterValue(BinaryOperations2D.INPUT_IMAGE, "Test_image");
         binaryOperations.updateParameterValue(BinaryOperations2D.APPLY_TO_INPUT, false);
         binaryOperations.updateParameterValue(BinaryOperations2D.NUM_ITERATIONS, 5);
@@ -378,7 +378,7 @@ public class BinaryOperations2DTest extends ModuleTest {
     @Test
     public void testRunWithErode2DOperationFiveIters4DStackWhiteBG() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -394,7 +394,7 @@ public class BinaryOperations2DTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
-        BinaryOperations2D binaryOperations = new BinaryOperations2D(new ModuleCollection());
+        BinaryOperations2D binaryOperations = new BinaryOperations2D(new Modules());
         binaryOperations.updateParameterValue(BinaryOperations2D.INPUT_IMAGE, "Test_image");
         binaryOperations.updateParameterValue(BinaryOperations2D.APPLY_TO_INPUT, false);
         binaryOperations.updateParameterValue(BinaryOperations2D.NUM_ITERATIONS, 5);
@@ -421,7 +421,7 @@ public class BinaryOperations2DTest extends ModuleTest {
     @Test
     public void testRunWithErode2DOperationFiveIters5DStackWhiteBG() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -437,7 +437,7 @@ public class BinaryOperations2DTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
-        BinaryOperations2D binaryOperations = new BinaryOperations2D(new ModuleCollection());
+        BinaryOperations2D binaryOperations = new BinaryOperations2D(new Modules());
         binaryOperations.updateParameterValue(BinaryOperations2D.INPUT_IMAGE, "Test_image");
         binaryOperations.updateParameterValue(BinaryOperations2D.APPLY_TO_INPUT, false);
         binaryOperations.updateParameterValue(BinaryOperations2D.NUM_ITERATIONS, 5);
@@ -470,7 +470,7 @@ public class BinaryOperations2DTest extends ModuleTest {
     @Test
     public void testRunWithErode2DOperationHundredIters2DStackWhiteBG() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -486,7 +486,7 @@ public class BinaryOperations2DTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
-        BinaryOperations2D binaryOperations = new BinaryOperations2D(new ModuleCollection());
+        BinaryOperations2D binaryOperations = new BinaryOperations2D(new Modules());
         binaryOperations.updateParameterValue(BinaryOperations2D.INPUT_IMAGE, "Test_image");
         binaryOperations.updateParameterValue(BinaryOperations2D.APPLY_TO_INPUT, false);
         binaryOperations.updateParameterValue(BinaryOperations2D.NUM_ITERATIONS, 100);
@@ -519,7 +519,7 @@ public class BinaryOperations2DTest extends ModuleTest {
     @Test
     public void testRunWithErode2DOperationHundredIters3DStackWhiteBG() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -535,7 +535,7 @@ public class BinaryOperations2DTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
-        BinaryOperations2D binaryOperations = new BinaryOperations2D(new ModuleCollection());
+        BinaryOperations2D binaryOperations = new BinaryOperations2D(new Modules());
         binaryOperations.updateParameterValue(BinaryOperations2D.INPUT_IMAGE, "Test_image");
         binaryOperations.updateParameterValue(BinaryOperations2D.APPLY_TO_INPUT, false);
         binaryOperations.updateParameterValue(BinaryOperations2D.NUM_ITERATIONS, 100);
@@ -568,7 +568,7 @@ public class BinaryOperations2DTest extends ModuleTest {
     @Test
     public void testRunWithErode2DOperationHundredIters4DStackWhiteBG() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -584,7 +584,7 @@ public class BinaryOperations2DTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
-        BinaryOperations2D binaryOperations = new BinaryOperations2D(new ModuleCollection());
+        BinaryOperations2D binaryOperations = new BinaryOperations2D(new Modules());
         binaryOperations.updateParameterValue(BinaryOperations2D.INPUT_IMAGE, "Test_image");
         binaryOperations.updateParameterValue(BinaryOperations2D.APPLY_TO_INPUT, false);
         binaryOperations.updateParameterValue(BinaryOperations2D.NUM_ITERATIONS, 100);
@@ -617,7 +617,7 @@ public class BinaryOperations2DTest extends ModuleTest {
     @Test
     public void testRunWithErode2DOperationHundredIters5DStackWhiteBG() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -633,7 +633,7 @@ public class BinaryOperations2DTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
-        BinaryOperations2D binaryOperations = new BinaryOperations2D(new ModuleCollection());
+        BinaryOperations2D binaryOperations = new BinaryOperations2D(new Modules());
         binaryOperations.updateParameterValue(BinaryOperations2D.INPUT_IMAGE, "Test_image");
         binaryOperations.updateParameterValue(BinaryOperations2D.APPLY_TO_INPUT, false);
         binaryOperations.updateParameterValue(BinaryOperations2D.NUM_ITERATIONS, 100);
@@ -660,7 +660,7 @@ public class BinaryOperations2DTest extends ModuleTest {
     @Test
     public void testRunWithFillHoles2DOperation2DStackWhiteBG() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -677,7 +677,7 @@ public class BinaryOperations2DTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
-        BinaryOperations2D binaryOperations = new BinaryOperations2D(new ModuleCollection());
+        BinaryOperations2D binaryOperations = new BinaryOperations2D(new Modules());
         binaryOperations.updateParameterValue(BinaryOperations2D.INPUT_IMAGE, "Test_image");
         binaryOperations.updateParameterValue(BinaryOperations2D.APPLY_TO_INPUT, false);
         binaryOperations.updateParameterValue(BinaryOperations2D.NUM_ITERATIONS, 1);
@@ -704,7 +704,7 @@ public class BinaryOperations2DTest extends ModuleTest {
     @Test
     public void testRunWithFillHoles2DOperation3DStackWhiteBG() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -721,7 +721,7 @@ public class BinaryOperations2DTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
-        BinaryOperations2D binaryOperations = new BinaryOperations2D(new ModuleCollection());
+        BinaryOperations2D binaryOperations = new BinaryOperations2D(new Modules());
         binaryOperations.updateParameterValue(BinaryOperations2D.INPUT_IMAGE, "Test_image");
         binaryOperations.updateParameterValue(BinaryOperations2D.APPLY_TO_INPUT, false);
         binaryOperations.updateParameterValue(BinaryOperations2D.NUM_ITERATIONS, 1);
@@ -748,7 +748,7 @@ public class BinaryOperations2DTest extends ModuleTest {
     @Test
     public void testRunWithFillHoles2DOperation4DStackWhiteBG() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -765,7 +765,7 @@ public class BinaryOperations2DTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
-        BinaryOperations2D binaryOperations = new BinaryOperations2D(new ModuleCollection());
+        BinaryOperations2D binaryOperations = new BinaryOperations2D(new Modules());
         binaryOperations.updateParameterValue(BinaryOperations2D.INPUT_IMAGE, "Test_image");
         binaryOperations.updateParameterValue(BinaryOperations2D.APPLY_TO_INPUT, false);
         binaryOperations.updateParameterValue(BinaryOperations2D.NUM_ITERATIONS, 1);
@@ -792,7 +792,7 @@ public class BinaryOperations2DTest extends ModuleTest {
     @Test
     public void testRunWithFillHoles2DOperation5DStackWhiteBG() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -809,7 +809,7 @@ public class BinaryOperations2DTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
-        BinaryOperations2D binaryOperations = new BinaryOperations2D(new ModuleCollection());
+        BinaryOperations2D binaryOperations = new BinaryOperations2D(new Modules());
         binaryOperations.updateParameterValue(BinaryOperations2D.INPUT_IMAGE, "Test_image");
         binaryOperations.updateParameterValue(BinaryOperations2D.APPLY_TO_INPUT, false);
         binaryOperations.updateParameterValue(BinaryOperations2D.NUM_ITERATIONS, 1);
@@ -836,7 +836,7 @@ public class BinaryOperations2DTest extends ModuleTest {
     @Test
     public void testRunWithDilate2DOperation2DStackBlackBG() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -852,7 +852,7 @@ public class BinaryOperations2DTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
-        BinaryOperations2D binaryOperations = new BinaryOperations2D(new ModuleCollection());
+        BinaryOperations2D binaryOperations = new BinaryOperations2D(new Modules());
         binaryOperations.updateParameterValue(BinaryOperations2D.INPUT_IMAGE, "Test_image");
         binaryOperations.updateParameterValue(BinaryOperations2D.APPLY_TO_INPUT, false);
         binaryOperations.updateParameterValue(BinaryOperations2D.NUM_ITERATIONS, 1);
@@ -879,7 +879,7 @@ public class BinaryOperations2DTest extends ModuleTest {
     @Test
     public void testRunWithDilate2DOperation3DStackBlackBG() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -895,7 +895,7 @@ public class BinaryOperations2DTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
-        BinaryOperations2D binaryOperations = new BinaryOperations2D(new ModuleCollection());
+        BinaryOperations2D binaryOperations = new BinaryOperations2D(new Modules());
         binaryOperations.updateParameterValue(BinaryOperations2D.INPUT_IMAGE, "Test_image");
         binaryOperations.updateParameterValue(BinaryOperations2D.APPLY_TO_INPUT, false);
         binaryOperations.updateParameterValue(BinaryOperations2D.NUM_ITERATIONS, 1);
@@ -922,7 +922,7 @@ public class BinaryOperations2DTest extends ModuleTest {
     @Test
     public void testRunWithDilate2DOperation4DStackBlackBG() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -938,7 +938,7 @@ public class BinaryOperations2DTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
-        BinaryOperations2D binaryOperations = new BinaryOperations2D(new ModuleCollection());
+        BinaryOperations2D binaryOperations = new BinaryOperations2D(new Modules());
         binaryOperations.updateParameterValue(BinaryOperations2D.INPUT_IMAGE, "Test_image");
         binaryOperations.updateParameterValue(BinaryOperations2D.APPLY_TO_INPUT, false);
         binaryOperations.updateParameterValue(BinaryOperations2D.NUM_ITERATIONS, 1);
@@ -965,7 +965,7 @@ public class BinaryOperations2DTest extends ModuleTest {
     @Test
     public void testRunWithDilate2DOperation5DStackBlackBG() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -981,7 +981,7 @@ public class BinaryOperations2DTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
-        BinaryOperations2D binaryOperations = new BinaryOperations2D(new ModuleCollection());
+        BinaryOperations2D binaryOperations = new BinaryOperations2D(new Modules());
         binaryOperations.updateParameterValue(BinaryOperations2D.INPUT_IMAGE, "Test_image");
         binaryOperations.updateParameterValue(BinaryOperations2D.APPLY_TO_INPUT, false);
         binaryOperations.updateParameterValue(BinaryOperations2D.NUM_ITERATIONS, 1);
@@ -1008,7 +1008,7 @@ public class BinaryOperations2DTest extends ModuleTest {
     @Test
     public void testRunWithDilateOperation2DStackOnInputBlackBG() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -1024,7 +1024,7 @@ public class BinaryOperations2DTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
-        BinaryOperations2D binaryOperations = new BinaryOperations2D(new ModuleCollection());
+        BinaryOperations2D binaryOperations = new BinaryOperations2D(new Modules());
         binaryOperations.updateParameterValue(BinaryOperations2D.INPUT_IMAGE, "Test_image");
         binaryOperations.updateParameterValue(BinaryOperations2D.APPLY_TO_INPUT, true);
         binaryOperations.updateParameterValue(BinaryOperations2D.NUM_ITERATIONS, 1);
@@ -1050,7 +1050,7 @@ public class BinaryOperations2DTest extends ModuleTest {
     @Test
     public void testRunWithDilate2DOperationZeroIters2DStackBlackBG() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -1067,7 +1067,7 @@ public class BinaryOperations2DTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
-        BinaryOperations2D binaryOperations = new BinaryOperations2D(new ModuleCollection());
+        BinaryOperations2D binaryOperations = new BinaryOperations2D(new Modules());
         binaryOperations.updateParameterValue(BinaryOperations2D.INPUT_IMAGE, "Test_image");
         binaryOperations.updateParameterValue(BinaryOperations2D.APPLY_TO_INPUT, false);
         binaryOperations.updateParameterValue(BinaryOperations2D.NUM_ITERATIONS, 0);
@@ -1094,7 +1094,7 @@ public class BinaryOperations2DTest extends ModuleTest {
     @Test
     public void testRunWithErode2DOperationFiveIters2DStackBlackBG() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -1110,7 +1110,7 @@ public class BinaryOperations2DTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
-        BinaryOperations2D binaryOperations = new BinaryOperations2D(new ModuleCollection());
+        BinaryOperations2D binaryOperations = new BinaryOperations2D(new Modules());
         binaryOperations.updateParameterValue(BinaryOperations2D.INPUT_IMAGE, "Test_image");
         binaryOperations.updateParameterValue(BinaryOperations2D.APPLY_TO_INPUT, false);
         binaryOperations.updateParameterValue(BinaryOperations2D.NUM_ITERATIONS, 5);
@@ -1137,7 +1137,7 @@ public class BinaryOperations2DTest extends ModuleTest {
     @Test
     public void testRunWithErode2DOperationFiveIters3DStackBlackBG() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -1153,7 +1153,7 @@ public class BinaryOperations2DTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
-        BinaryOperations2D binaryOperations = new BinaryOperations2D(new ModuleCollection());
+        BinaryOperations2D binaryOperations = new BinaryOperations2D(new Modules());
         binaryOperations.updateParameterValue(BinaryOperations2D.INPUT_IMAGE, "Test_image");
         binaryOperations.updateParameterValue(BinaryOperations2D.APPLY_TO_INPUT, false);
         binaryOperations.updateParameterValue(BinaryOperations2D.NUM_ITERATIONS, 5);
@@ -1180,7 +1180,7 @@ public class BinaryOperations2DTest extends ModuleTest {
     @Test
     public void testRunWithErode2DOperationFiveIters4DStackBlackBG() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -1196,7 +1196,7 @@ public class BinaryOperations2DTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
-        BinaryOperations2D binaryOperations = new BinaryOperations2D(new ModuleCollection());
+        BinaryOperations2D binaryOperations = new BinaryOperations2D(new Modules());
         binaryOperations.updateParameterValue(BinaryOperations2D.INPUT_IMAGE, "Test_image");
         binaryOperations.updateParameterValue(BinaryOperations2D.APPLY_TO_INPUT, false);
         binaryOperations.updateParameterValue(BinaryOperations2D.NUM_ITERATIONS, 5);
@@ -1223,7 +1223,7 @@ public class BinaryOperations2DTest extends ModuleTest {
     @Test
     public void testRunWithErode2DOperationFiveIters5DStackBlackBG() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -1239,7 +1239,7 @@ public class BinaryOperations2DTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
-        BinaryOperations2D binaryOperations = new BinaryOperations2D(new ModuleCollection());
+        BinaryOperations2D binaryOperations = new BinaryOperations2D(new Modules());
         binaryOperations.updateParameterValue(BinaryOperations2D.INPUT_IMAGE, "Test_image");
         binaryOperations.updateParameterValue(BinaryOperations2D.APPLY_TO_INPUT, false);
         binaryOperations.updateParameterValue(BinaryOperations2D.NUM_ITERATIONS, 5);
@@ -1272,7 +1272,7 @@ public class BinaryOperations2DTest extends ModuleTest {
     @Test
     public void testRunWithErode2DOperationHundredIters2DStackBlackBG() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -1288,7 +1288,7 @@ public class BinaryOperations2DTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
-        BinaryOperations2D binaryOperations = new BinaryOperations2D(new ModuleCollection());
+        BinaryOperations2D binaryOperations = new BinaryOperations2D(new Modules());
         binaryOperations.updateParameterValue(BinaryOperations2D.INPUT_IMAGE, "Test_image");
         binaryOperations.updateParameterValue(BinaryOperations2D.APPLY_TO_INPUT, false);
         binaryOperations.updateParameterValue(BinaryOperations2D.NUM_ITERATIONS, 100);
@@ -1321,7 +1321,7 @@ public class BinaryOperations2DTest extends ModuleTest {
     @Test
     public void testRunWithErode2DOperationHundredIters3DStackBlackBG() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -1337,7 +1337,7 @@ public class BinaryOperations2DTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
-        BinaryOperations2D binaryOperations = new BinaryOperations2D(new ModuleCollection());
+        BinaryOperations2D binaryOperations = new BinaryOperations2D(new Modules());
         binaryOperations.updateParameterValue(BinaryOperations2D.INPUT_IMAGE, "Test_image");
         binaryOperations.updateParameterValue(BinaryOperations2D.APPLY_TO_INPUT, false);
         binaryOperations.updateParameterValue(BinaryOperations2D.NUM_ITERATIONS, 100);
@@ -1370,7 +1370,7 @@ public class BinaryOperations2DTest extends ModuleTest {
     @Test
     public void testRunWithErode2DOperationHundredIters4DStackBlackBG() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -1386,7 +1386,7 @@ public class BinaryOperations2DTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
-        BinaryOperations2D binaryOperations = new BinaryOperations2D(new ModuleCollection());
+        BinaryOperations2D binaryOperations = new BinaryOperations2D(new Modules());
         binaryOperations.updateParameterValue(BinaryOperations2D.INPUT_IMAGE, "Test_image");
         binaryOperations.updateParameterValue(BinaryOperations2D.APPLY_TO_INPUT, false);
         binaryOperations.updateParameterValue(BinaryOperations2D.NUM_ITERATIONS, 100);
@@ -1419,7 +1419,7 @@ public class BinaryOperations2DTest extends ModuleTest {
     @Test
     public void testRunWithErode2DOperationHundredIters5DStackBlackBG() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -1435,7 +1435,7 @@ public class BinaryOperations2DTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
-        BinaryOperations2D binaryOperations = new BinaryOperations2D(new ModuleCollection());
+        BinaryOperations2D binaryOperations = new BinaryOperations2D(new Modules());
         binaryOperations.updateParameterValue(BinaryOperations2D.INPUT_IMAGE, "Test_image");
         binaryOperations.updateParameterValue(BinaryOperations2D.APPLY_TO_INPUT, false);
         binaryOperations.updateParameterValue(BinaryOperations2D.NUM_ITERATIONS, 100);
@@ -1462,7 +1462,7 @@ public class BinaryOperations2DTest extends ModuleTest {
     @Test
     public void testRunWithFillHoles2DOperation2DStackBlackBG() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -1479,7 +1479,7 @@ public class BinaryOperations2DTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
-        BinaryOperations2D binaryOperations = new BinaryOperations2D(new ModuleCollection());
+        BinaryOperations2D binaryOperations = new BinaryOperations2D(new Modules());
         binaryOperations.updateParameterValue(BinaryOperations2D.INPUT_IMAGE, "Test_image");
         binaryOperations.updateParameterValue(BinaryOperations2D.APPLY_TO_INPUT, false);
         binaryOperations.updateParameterValue(BinaryOperations2D.NUM_ITERATIONS, 1);
@@ -1506,7 +1506,7 @@ public class BinaryOperations2DTest extends ModuleTest {
     @Test
     public void testRunWithFillHoles2DOperation3DStackBlackBG() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -1523,7 +1523,7 @@ public class BinaryOperations2DTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
-        BinaryOperations2D binaryOperations = new BinaryOperations2D(new ModuleCollection());
+        BinaryOperations2D binaryOperations = new BinaryOperations2D(new Modules());
         binaryOperations.updateParameterValue(BinaryOperations2D.INPUT_IMAGE, "Test_image");
         binaryOperations.updateParameterValue(BinaryOperations2D.APPLY_TO_INPUT, false);
         binaryOperations.updateParameterValue(BinaryOperations2D.NUM_ITERATIONS, 1);
@@ -1550,7 +1550,7 @@ public class BinaryOperations2DTest extends ModuleTest {
     @Test
     public void testRunWithFillHoles2DOperation4DStackBlackBG() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -1567,7 +1567,7 @@ public class BinaryOperations2DTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
-        BinaryOperations2D binaryOperations = new BinaryOperations2D(new ModuleCollection());
+        BinaryOperations2D binaryOperations = new BinaryOperations2D(new Modules());
         binaryOperations.updateParameterValue(BinaryOperations2D.INPUT_IMAGE, "Test_image");
         binaryOperations.updateParameterValue(BinaryOperations2D.APPLY_TO_INPUT, false);
         binaryOperations.updateParameterValue(BinaryOperations2D.NUM_ITERATIONS, 1);
@@ -1594,7 +1594,7 @@ public class BinaryOperations2DTest extends ModuleTest {
     @Test
     public void testRunWithFillHoles2DOperation5DStackBlackBG() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null, 1);
 
         // Loading the test image and adding to workspace
@@ -1611,7 +1611,7 @@ public class BinaryOperations2DTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
-        BinaryOperations2D binaryOperations = new BinaryOperations2D(new ModuleCollection());
+        BinaryOperations2D binaryOperations = new BinaryOperations2D(new Modules());
         binaryOperations.updateParameterValue(BinaryOperations2D.INPUT_IMAGE, "Test_image");
         binaryOperations.updateParameterValue(BinaryOperations2D.APPLY_TO_INPUT, false);
         binaryOperations.updateParameterValue(BinaryOperations2D.NUM_ITERATIONS, 1);

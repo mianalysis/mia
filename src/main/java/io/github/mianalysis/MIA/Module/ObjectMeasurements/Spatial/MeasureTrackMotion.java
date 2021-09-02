@@ -8,25 +8,25 @@ import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 import io.github.mianalysis.MIA.Module.Categories;
 import io.github.mianalysis.MIA.Module.Category;
 import io.github.mianalysis.MIA.Module.Module;
-import io.github.mianalysis.MIA.Module.ModuleCollection;
+import io.github.mianalysis.MIA.Module.Modules;
 import io.github.mianalysis.MIA.Module.ObjectProcessing.Relationships.TrackObjects;
 import io.github.mianalysis.MIA.Object.Measurement;
 import io.github.mianalysis.MIA.Object.Obj;
-import io.github.mianalysis.MIA.Object.ObjCollection;
+import io.github.mianalysis.MIA.Object.Objs;
 import io.github.mianalysis.MIA.Object.Status;
 import io.github.mianalysis.MIA.Object.Workspace;
 import io.github.mianalysis.MIA.Object.Parameters.BooleanP;
 import io.github.mianalysis.MIA.Object.Parameters.ChildObjectsP;
 import io.github.mianalysis.MIA.Object.Parameters.ChoiceP;
-import io.github.mianalysis.MIA.Object.Parameters.ParameterCollection;
+import io.github.mianalysis.MIA.Object.Parameters.Parameters;
 import io.github.mianalysis.MIA.Object.Parameters.SeparatorP;
 import io.github.mianalysis.MIA.Object.Parameters.Objects.InputTrackObjectsP;
-import io.github.mianalysis.MIA.Object.References.ObjMeasurementRef;
-import io.github.mianalysis.MIA.Object.References.Collections.ImageMeasurementRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.MetadataRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.ObjMeasurementRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.ParentChildRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.PartnerRefCollection;
+import io.github.mianalysis.MIA.Object.Refs.ObjMeasurementRef;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ImageMeasurementRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.MetadataRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ObjMeasurementRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ParentChildRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.PartnerRefs;
 import io.github.sjcross.common.MathFunc.CumStat;
 import io.github.sjcross.common.Object.Point;
 import io.github.sjcross.common.Object.Tracks.Timepoint;
@@ -45,7 +45,7 @@ public class MeasureTrackMotion extends Module {
     public static final String IDENTIFY_LEADING_POINT = "Identify leading point";
     public static final String ORIENTATION_MODE = "Orientation mode";
 
-    public MeasureTrackMotion(ModuleCollection modules) {
+    public MeasureTrackMotion(Modules modules) {
         super("Measure track motion", modules);
     }
 
@@ -121,7 +121,7 @@ public class MeasureTrackMotion extends Module {
 
     }
 
-    public static Track createAverageTrack(ObjCollection tracks, String spotObjectsName) {
+    public static Track createAverageTrack(Objs tracks, String spotObjectsName) {
         TreeMap<Integer, CumStat> x = new TreeMap<>();
         TreeMap<Integer, CumStat> y = new TreeMap<>();
         TreeMap<Integer, CumStat> z = new TreeMap<>();
@@ -407,7 +407,7 @@ public class MeasureTrackMotion extends Module {
         }
     }
 
-    public static double getInstantaneousOrientationRads(Obj object, ObjCollection objects, String orientationMode) {
+    public static double getInstantaneousOrientationRads(Obj object, Objs objects, String orientationMode) {
         double prevAngle = Double.NaN;
         double nextAngle = Double.NaN;
 
@@ -438,7 +438,7 @@ public class MeasureTrackMotion extends Module {
 
     }
 
-    public static void identifyLeading(ObjCollection objects, String orientationMode) {
+    public static void identifyLeading(Objs objects, String orientationMode) {
         for (Obj obj : objects.values()) {
             double angle = getInstantaneousOrientationRads(obj, objects, orientationMode);
 
@@ -506,7 +506,7 @@ public class MeasureTrackMotion extends Module {
     public Status process(Workspace workspace) {
         // Getting input track objects
         String inputTrackObjectsName = parameters.getValue(INPUT_TRACK_OBJECTS);
-        ObjCollection trackObjects = workspace.getObjects().get(inputTrackObjectsName);
+        Objs trackObjects = workspace.getObjects().get(inputTrackObjectsName);
 
         // Getting input spot objects
         String inputSpotObjectsName = parameters.getValue(INPUT_SPOT_OBJECTS);
@@ -539,7 +539,7 @@ public class MeasureTrackMotion extends Module {
 
         // Determining the leading point in the object (to next object)
         if (identifyLeading) {
-            ObjCollection spotObjects = workspace.getObjectSet(inputSpotObjectsName);
+            Objs spotObjects = workspace.getObjectSet(inputSpotObjectsName);
             identifyLeading(spotObjects, orientationMode);
         }
 
@@ -568,8 +568,8 @@ public class MeasureTrackMotion extends Module {
     }
 
     @Override
-    public ParameterCollection updateAndGetParameters() {
-        ParameterCollection returnedParameters = new ParameterCollection();
+    public Parameters updateAndGetParameters() {
+        Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(INPUT_TRACK_OBJECTS));
@@ -590,13 +590,13 @@ public class MeasureTrackMotion extends Module {
     }
 
     @Override
-    public ImageMeasurementRefCollection updateAndGetImageMeasurementRefs() {
+    public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
-        ObjMeasurementRefCollection returnedRefs = new ObjMeasurementRefCollection();
+    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+        ObjMeasurementRefs returnedRefs = new ObjMeasurementRefs();
         String inputTrackObjects = parameters.getValue(INPUT_TRACK_OBJECTS);
         String inputSpotObjects = parameters.getValue(INPUT_SPOT_OBJECTS);
         boolean subtractAverage = parameters.getValue(SUBTRACT_AVERAGE_MOTION);
@@ -784,17 +784,17 @@ public class MeasureTrackMotion extends Module {
     }
 
     @Override
-    public MetadataRefCollection updateAndGetMetadataReferences() {
+    public MetadataRefs updateAndGetMetadataReferences() {
         return null;
     }
 
     @Override
-    public ParentChildRefCollection updateAndGetParentChildRefs() {
+    public ParentChildRefs updateAndGetParentChildRefs() {
         return null;
     }
 
     @Override
-    public PartnerRefCollection updateAndGetPartnerRefs() {
+    public PartnerRefs updateAndGetPartnerRefs() {
         return null;
     }
 

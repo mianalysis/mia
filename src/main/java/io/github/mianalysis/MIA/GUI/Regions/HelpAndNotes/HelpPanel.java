@@ -16,7 +16,7 @@ import javax.swing.border.EtchedBorder;
 import io.github.mianalysis.MIA.GUI.GUI;
 import io.github.mianalysis.MIA.GUI.Regions.ClosePanelButton;
 import io.github.mianalysis.MIA.Module.Module;
-import io.github.mianalysis.MIA.Module.ModuleCollection;
+import io.github.mianalysis.MIA.Module.Modules;
 
 public class HelpPanel extends JPanel {
     private static final long serialVersionUID = 3704479016316750858L;
@@ -30,7 +30,7 @@ public class HelpPanel extends JPanel {
 
     public void updatePanel() {
         Module activeModule = GUI.getFirstSelectedModule();
-        ModuleCollection modules = GUI.getModules();
+        Modules modules = GUI.getModules();
 
         removeAll();
 

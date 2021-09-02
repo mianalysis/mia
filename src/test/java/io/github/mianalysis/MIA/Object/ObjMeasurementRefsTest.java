@@ -2,12 +2,12 @@ package io.github.mianalysis.MIA.Object;
 
 import org.junit.jupiter.api.Test;
 
-import io.github.mianalysis.MIA.Object.References.ObjMeasurementRef;
-import io.github.mianalysis.MIA.Object.References.Collections.ObjMeasurementRefCollection;
+import io.github.mianalysis.MIA.Object.Refs.ObjMeasurementRef;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ObjMeasurementRefs;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class ObjMeasurementRefCollectionTest {
+public class ObjMeasurementRefsTest {
     @Test
     public void get() {
         // Creating some measurements
@@ -17,7 +17,7 @@ public class ObjMeasurementRefCollectionTest {
         ObjMeasurementRef ref4 = new ObjMeasurementRef("One more");
 
         // Populating the collection
-        ObjMeasurementRefCollection collection = new ObjMeasurementRefCollection();
+        ObjMeasurementRefs collection = new ObjMeasurementRefs();
         collection.put(ref1.getName(),ref1);
         collection.put(ref2.getName(),ref2);
         collection.put(ref3.getName(),ref3);
@@ -42,7 +42,7 @@ public class ObjMeasurementRefCollectionTest {
         ObjMeasurementRef ref4 = new ObjMeasurementRef("One more");
 
         // Populating the collection
-        ObjMeasurementRefCollection collection = new ObjMeasurementRefCollection();
+        ObjMeasurementRefs collection = new ObjMeasurementRefs();
         collection.put(ref1.getName(),ref1);
         collection.put(ref2.getName(),ref2);
         collection.put(ref3.getName(),ref3);

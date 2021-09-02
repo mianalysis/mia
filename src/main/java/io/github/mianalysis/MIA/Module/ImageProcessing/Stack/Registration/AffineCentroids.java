@@ -9,13 +9,13 @@ import mpicbg.imagefeatures.FloatArray2DSIFT;
 import mpicbg.models.AbstractAffineModel2D;
 import mpicbg.models.NotEnoughDataPointsException;
 import mpicbg.models.PointMatch;
-import io.github.mianalysis.MIA.Module.ModuleCollection;
+import io.github.mianalysis.MIA.Module.Modules;
 import io.github.mianalysis.MIA.Module.ImageProcessing.Stack.Registration.Abstract.AbstractAffineRegistration;
 import io.github.mianalysis.MIA.Object.Obj;
-import io.github.mianalysis.MIA.Object.ObjCollection;
+import io.github.mianalysis.MIA.Object.Objs;
 import io.github.mianalysis.MIA.Object.Workspace;
 import io.github.mianalysis.MIA.Object.Parameters.InputObjectsP;
-import io.github.mianalysis.MIA.Object.Parameters.ParameterCollection;
+import io.github.mianalysis.MIA.Object.Parameters.Parameters;
 import io.github.mianalysis.MIA.Object.Parameters.SeparatorP;
 import io.github.mianalysis.MIA.Object.Parameters.Text.DoubleP;
 
@@ -26,7 +26,7 @@ public class AffineCentroids extends AbstractAffineRegistration {
     public static final String MAX_EPSILON = "Maximal alignment error (px)";
     public static final String MIN_INLIER_RATIO = "Inlier ratio";
 
-    public AffineCentroids(ModuleCollection modules) {
+    public AffineCentroids(Modules modules) {
         super("Affine (object centroids)", modules);
     }
 
@@ -48,7 +48,7 @@ public class AffineCentroids extends AbstractAffineRegistration {
 
         // Setting up the parameters
         CentroidParam centroidParam = (CentroidParam) param;
-        centroidParam.centroidObjects = (ObjCollection) workspace.getObjectSet(parameters.getValue(INPUT_OBJECTS));
+        centroidParam.centroidObjects = (Objs) workspace.getObjectSet(parameters.getValue(INPUT_OBJECTS));
         centroidParam.rod = (float) (double) parameters.getValue(ROD);
         centroidParam.maxEpsilon = (float) (double) parameters.getValue(MAX_EPSILON);
         centroidParam.minInlierRatio = (float) (double) parameters.getValue(MIN_INLIER_RATIO);
@@ -114,8 +114,8 @@ public class AffineCentroids extends AbstractAffineRegistration {
     }
 
     @Override
-    public ParameterCollection updateAndGetParameters() {
-        ParameterCollection returnedParameters = new ParameterCollection();
+    public Parameters updateAndGetParameters() {
+        Parameters returnedParameters = new Parameters();
 
         returnedParameters.addAll(super.updateAndGetParameters());
 
@@ -158,7 +158,7 @@ public class AffineCentroids extends AbstractAffineRegistration {
         float maxEpsilon = 25.0f;
         float minInlierRatio = 0.05f;
 
-        ObjCollection centroidObjects = null;
+        Objs centroidObjects = null;
 
     }
 }

@@ -6,14 +6,14 @@ import java.awt.event.ActionListener;
 import javax.swing.JCheckBox;
 
 import io.github.mianalysis.MIA.GUI.GUI;
-import io.github.mianalysis.MIA.Module.ModuleCollection;
+import io.github.mianalysis.MIA.Module.Modules;
 import io.github.mianalysis.MIA.Object.Parameters.OutputImageP;
 import io.github.mianalysis.MIA.Object.Parameters.Objects.OutputObjectsP;
-import io.github.mianalysis.MIA.Object.References.Abstract.ExportableRef;
-import io.github.mianalysis.MIA.Object.References.Abstract.SummaryRef;
-import io.github.mianalysis.MIA.Object.References.Collections.ImageMeasurementRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.MetadataRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.ObjMeasurementRefCollection;
+import io.github.mianalysis.MIA.Object.Refs.Abstract.ExportableRef;
+import io.github.mianalysis.MIA.Object.Refs.Abstract.SummaryRef;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ImageMeasurementRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.MetadataRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ObjMeasurementRefs;
 
 /**
  * Created by Stephen Cross on 02/12/2017.
@@ -81,19 +81,19 @@ public class ExportCheck extends JCheckBox implements ActionListener {
                 }
                 break;
             case ALL:
-                ModuleCollection modules = GUI.getModules();
+                Modules modules = GUI.getModules();
 
                 for (OutputObjectsP objectName:modules.getAvailableObjects(null)) {
-                    ObjMeasurementRefCollection refs = modules.getObjectMeasurementRefs(objectName.getObjectsName());
+                    ObjMeasurementRefs refs = modules.getObjectMeasurementRefs(objectName.getObjectsName());
                     for (SummaryRef ref:refs.values()) setStates(ref);
                 }
 
                 for (OutputImageP imageName:modules.getAvailableImages(null)) {
-                    ImageMeasurementRefCollection refs = modules.getImageMeasurementRefs(imageName.getImageName());
+                    ImageMeasurementRefs refs = modules.getImageMeasurementRefs(imageName.getImageName());
                     for (ExportableRef ref:refs.values()) ref.setExportIndividual(isSelected());
                 }
 
-                MetadataRefCollection metadataRefs = modules.getMetadataRefs();
+                MetadataRefs metadataRefs = modules.getMetadataRefs();
                 for (ExportableRef ref:metadataRefs.values()) ref.setExportIndividual(isSelected());
 
                 break;

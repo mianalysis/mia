@@ -14,9 +14,9 @@ import io.github.mianalysis.MIA.ExpectedObjects.Spots3D;
 import io.github.mianalysis.MIA.Module.Module;
 import io.github.mianalysis.MIA.Module.ModuleTest;
 import io.github.mianalysis.MIA.Object.Obj;
-import io.github.mianalysis.MIA.Object.ObjCollection;
+import io.github.mianalysis.MIA.Object.Objs;
 import io.github.mianalysis.MIA.Object.Workspace;
-import io.github.mianalysis.MIA.Object.WorkspaceCollection;
+import io.github.mianalysis.MIA.Object.Workspaces;
 import io.github.sjcross.common.Exceptions.IntegerOverflowException;
 import io.github.sjcross.common.Object.Volume.VolumeType;
 
@@ -35,7 +35,7 @@ public class CombineObjectSetsTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testRunWithoutObjectDeletion(VolumeType volumeType) throws IntegerOverflowException {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Setting calibration parameters
@@ -44,9 +44,9 @@ public class CombineObjectSetsTest extends ModuleTest {
         String calibratedUnits = "µm";
 
         // Getting test objects
-        ObjCollection inputObj1 = new Objects3D(volumeType).getObjects("Input_obj_1", ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        Objs inputObj1 = new Objects3D(volumeType).getObjects("Input_obj_1", ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(inputObj1);
-        ObjCollection inputObj2 = new Spots3D(volumeType).getObjects("Input_obj_2",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        Objs inputObj2 = new Spots3D(volumeType).getObjects("Input_obj_2",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(inputObj2);
 
         // Initialising FilterObjects module
@@ -59,11 +59,11 @@ public class CombineObjectSetsTest extends ModuleTest {
         combineObjectSets.execute(workspace);
 
         // Getting expected output objects
-        ObjCollection expectedOutputObj= new MergedObjects3D(volumeType).getObjects("Output_obj",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        Objs expectedOutputObj= new MergedObjects3D(volumeType).getObjects("Output_obj",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(expectedOutputObj);
 
         // Getting actual output objects
-        ObjCollection actualOutputObj = workspace.getObjectSet("Output_obj");
+        Objs actualOutputObj = workspace.getObjectSet("Output_obj");
 
         // Checking the number of detected objects
         assertEquals(33,actualOutputObj.size());

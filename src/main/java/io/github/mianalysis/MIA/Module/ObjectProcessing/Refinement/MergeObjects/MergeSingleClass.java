@@ -3,27 +3,27 @@ package io.github.mianalysis.MIA.Module.ObjectProcessing.Refinement.MergeObjects
 import io.github.mianalysis.MIA.Module.Categories;
 import io.github.mianalysis.MIA.Module.Category;
 import io.github.mianalysis.MIA.Module.Module;
-import io.github.mianalysis.MIA.Module.ModuleCollection;
+import io.github.mianalysis.MIA.Module.Modules;
 import io.github.mianalysis.MIA.Object.Obj;
-import io.github.mianalysis.MIA.Object.ObjCollection;
+import io.github.mianalysis.MIA.Object.Objs;
 import io.github.mianalysis.MIA.Object.Status;
 import io.github.mianalysis.MIA.Object.Workspace;
 import io.github.mianalysis.MIA.Object.Parameters.InputObjectsP;
-import io.github.mianalysis.MIA.Object.Parameters.ParameterCollection;
+import io.github.mianalysis.MIA.Object.Parameters.Parameters;
 import io.github.mianalysis.MIA.Object.Parameters.SeparatorP;
 import io.github.mianalysis.MIA.Object.Parameters.Objects.OutputObjectsP;
-import io.github.mianalysis.MIA.Object.References.Collections.ImageMeasurementRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.MetadataRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.ObjMeasurementRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.ParentChildRefCollection;
-import io.github.mianalysis.MIA.Object.References.Collections.PartnerRefCollection;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ImageMeasurementRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.MetadataRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ObjMeasurementRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.ParentChildRefs;
+import io.github.mianalysis.MIA.Object.Refs.Collections.PartnerRefs;
 
 public class MergeSingleClass extends Module {
     public final static String INPUT_SEPARATOR = "Object input";
     public final static String INPUT_OBJECTS = "Input objects";
     public static final String OUTPUT_OBJECTS = "Output merged objects";
 
-    public MergeSingleClass(ModuleCollection modules) {
+    public MergeSingleClass(Modules modules) {
         super("Merge single class", modules);
     }
 
@@ -37,8 +37,8 @@ public class MergeSingleClass extends Module {
         return "Combines all objects at a single timepoint from a specific object collection into a single object.  Due to the fact objects are stored in 3D, there are still separate objects for each timepoint.";
     }
 
-    public static ObjCollection mergeSingleClass(ObjCollection inputObjects, String outputObjectsName) {
-        ObjCollection outputObjects = new ObjCollection(outputObjectsName, inputObjects);
+    public static Objs mergeSingleClass(Objs inputObjects, String outputObjectsName) {
+        Objs outputObjects = new Objs(outputObjectsName, inputObjects);
         
         // Iterating over all input objects, adding their coordinates to the relevant
         // object
@@ -65,11 +65,11 @@ public class MergeSingleClass extends Module {
     @Override
     protected Status process(Workspace workspace) {
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
-        ObjCollection inputObjects = workspace.getObjectSet(inputObjectsName);
+        Objs inputObjects = workspace.getObjectSet(inputObjectsName);
         String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);
 
         // Merging objects
-        ObjCollection outputObjects = mergeSingleClass(inputObjects, outputObjectsName);
+        Objs outputObjects = mergeSingleClass(inputObjects, outputObjectsName);
 
         // Adding objects to workspace
         workspace.addObjects(outputObjects);
@@ -93,32 +93,32 @@ public class MergeSingleClass extends Module {
     }
 
     @Override
-    public ParameterCollection updateAndGetParameters() {
+    public Parameters updateAndGetParameters() {
         return parameters;
     }
 
     @Override
-    public ImageMeasurementRefCollection updateAndGetImageMeasurementRefs() {
+    public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MetadataRefCollection updateAndGetMetadataReferences() {
+    public MetadataRefs updateAndGetMetadataReferences() {
         return null;
     }
 
     @Override
-    public ParentChildRefCollection updateAndGetParentChildRefs() {
+    public ParentChildRefs updateAndGetParentChildRefs() {
         return null;
     }
 
     @Override
-    public PartnerRefCollection updateAndGetPartnerRefs() {
+    public PartnerRefs updateAndGetPartnerRefs() {
         return null;
     }
 

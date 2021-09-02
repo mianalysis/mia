@@ -20,6 +20,7 @@ import org.scijava.ui.UIService;
 
 import net.imagej.ImageJ;
 import io.github.mianalysis.MIA.GUI.GUI;
+import io.github.mianalysis.MIA.Object.Preferences;
 import io.github.mianalysis.MIA.Process.DependencyValidator;
 import io.github.mianalysis.MIA.Process.AnalysisHandling.Analysis;
 import io.github.mianalysis.MIA.Process.AnalysisHandling.AnalysisReader;

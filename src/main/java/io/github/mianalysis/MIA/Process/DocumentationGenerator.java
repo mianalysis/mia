@@ -32,7 +32,7 @@ import io.github.mianalysis.MIA.Macro.MacroOperation;
 import io.github.mianalysis.MIA.Module.Categories;
 import io.github.mianalysis.MIA.Module.Category;
 import io.github.mianalysis.MIA.Module.Module;
-import io.github.mianalysis.MIA.Module.ModuleCollection;
+import io.github.mianalysis.MIA.Module.Modules;
 import io.github.mianalysis.MIA.Object.Parameters.ParameterGroup;
 import io.github.mianalysis.MIA.Object.Parameters.Abstract.Parameter;
 
@@ -366,8 +366,8 @@ public class DocumentationGenerator {
                 if (Modifier.isAbstract(clazz.getModifiers()))
                     continue;
 
-                Constructor constructor = clazz.getDeclaredConstructor(ModuleCollection.class);
-                modules.add((Module) constructor.newInstance(new ModuleCollection()));
+                Constructor constructor = clazz.getDeclaredConstructor(Modules.class);
+                modules.add((Module) constructor.newInstance(new Modules()));
             } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | NoSuchMethodException
                     | InvocationTargetException e) {
                 MIA.log.writeError(e);

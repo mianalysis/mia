@@ -23,13 +23,13 @@ import io.github.mianalysis.MIA.ExpectedObjects.ProxSquares1;
 import io.github.mianalysis.MIA.ExpectedObjects.ProxSquares2;
 import io.github.mianalysis.MIA.ExpectedObjects.Spots3D;
 import io.github.mianalysis.MIA.Module.Module;
-import io.github.mianalysis.MIA.Module.ModuleCollection;
+import io.github.mianalysis.MIA.Module.Modules;
 import io.github.mianalysis.MIA.Module.ModuleTest;
 import io.github.mianalysis.MIA.Module.ObjectProcessing.Relationships.RelateObjects;
 import io.github.mianalysis.MIA.Object.Obj;
-import io.github.mianalysis.MIA.Object.ObjCollection;
+import io.github.mianalysis.MIA.Object.Objs;
 import io.github.mianalysis.MIA.Object.Workspace;
-import io.github.mianalysis.MIA.Object.WorkspaceCollection;
+import io.github.mianalysis.MIA.Object.Workspaces;
 import io.github.mianalysis.MIA.Object.Units.SpatialUnit;
 import io.github.sjcross.common.Object.Volume.VolumeType;
 
@@ -54,7 +54,7 @@ public class RelateObjectsTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testLinkMatchingIDsOneChild(VolumeType volumeType) {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null, 1);
 
         // Setting object parameters
@@ -65,15 +65,15 @@ public class RelateObjectsTest extends ModuleTest {
         String calibratedUnits = "µm";
 
         // Creating objects and adding to workspace
-        ObjCollection testObjects = new Objects3D(volumeType).getObjects(inputObjectsName,
+        Objs testObjects = new Objects3D(volumeType).getObjects(inputObjectsName,
                 ExpectedObjects.Mode.EIGHT_BIT, dppXY, dppZ, calibratedUnits, true);
         workspace.addObjects(testObjects);
-        ObjCollection testSpots = new Spots3D(volumeType).getObjects(inputSpotsName, ExpectedObjects.Mode.EIGHT_BIT,
+        Objs testSpots = new Spots3D(volumeType).getObjects(inputSpotsName, ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
         workspace.addObjects(testSpots);
 
         // Initialising RelateObjects
-        RelateObjects relateObjects = new RelateObjects(new ModuleCollection());
+        RelateObjects relateObjects = new RelateObjects(new Modules());
         relateObjects.updateParameterValue(RelateObjects.PARENT_OBJECTS, inputObjectsName);
         relateObjects.updateParameterValue(RelateObjects.CHILD_OBJECTS, inputSpotsName);
         relateObjects.updateParameterValue(RelateObjects.RELATE_MODE, RelateObjects.RelateModes.MATCHING_IDS);
@@ -93,7 +93,7 @@ public class RelateObjectsTest extends ModuleTest {
         // Running through each object, checking it has the expected number of children
         // and the expected value
         for (Obj testObject : testObjects.values()) {
-            ObjCollection childSpots = testObject.getChildren(inputSpotsName);
+            Objs childSpots = testObject.getChildren(inputSpotsName);
 
             // Testing the number of children
             assertNotNull(childSpots);
@@ -123,7 +123,7 @@ public class RelateObjectsTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testProximityCentroidLink(VolumeType volumeType) {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null, 1);
 
         // Setting object parameters
@@ -134,15 +134,15 @@ public class RelateObjectsTest extends ModuleTest {
         String calibratedUnits = "µm";
 
         // Creating objects and adding to workspace
-        ObjCollection testObjects = new Objects3D(volumeType).getObjects(inputObjectsName,
+        Objs testObjects = new Objects3D(volumeType).getObjects(inputObjectsName,
                 ExpectedObjects.Mode.EIGHT_BIT, dppXY, dppZ, calibratedUnits, true);
         workspace.addObjects(testObjects);
-        ObjCollection testSpots = new Spots3D(volumeType).getObjects(inputSpotsName, ExpectedObjects.Mode.EIGHT_BIT,
+        Objs testSpots = new Spots3D(volumeType).getObjects(inputSpotsName, ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
         workspace.addObjects(testSpots);
 
         // Initialising RelateObjects
-        RelateObjects relateObjects = new RelateObjects(new ModuleCollection());
+        RelateObjects relateObjects = new RelateObjects(new Modules());
         relateObjects.updateParameterValue(RelateObjects.PARENT_OBJECTS, inputObjectsName);
         relateObjects.updateParameterValue(RelateObjects.CHILD_OBJECTS, inputSpotsName);
         relateObjects.updateParameterValue(RelateObjects.RELATE_MODE, RelateObjects.RelateModes.PROXIMITY);
@@ -167,7 +167,7 @@ public class RelateObjectsTest extends ModuleTest {
                     .get(Objects3D.Measures.EXP_SPOT_PROX_CENT_DIST.name());
 
             // Getting child objects (those linked here)
-            ObjCollection childSpots = testObject.getChildren(inputSpotsName);
+            Objs childSpots = testObject.getChildren(inputSpotsName);
 
             // Each object won't necessarily have any children
             if (childSpots == null)
@@ -215,7 +215,7 @@ public class RelateObjectsTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testProximityCentroidLink20px(VolumeType volumeType) {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null, 1);
 
         // Setting object parameters
@@ -226,15 +226,15 @@ public class RelateObjectsTest extends ModuleTest {
         String calibratedUnits = "µm";
 
         // Creating objects and adding to workspace
-        ObjCollection testObjects = new Objects3D(volumeType).getObjects(inputObjectsName,
+        Objs testObjects = new Objects3D(volumeType).getObjects(inputObjectsName,
                 ExpectedObjects.Mode.EIGHT_BIT, dppXY, dppZ, calibratedUnits, true);
         workspace.addObjects(testObjects);
-        ObjCollection testSpots = new Spots3D(volumeType).getObjects(inputSpotsName, ExpectedObjects.Mode.EIGHT_BIT,
+        Objs testSpots = new Spots3D(volumeType).getObjects(inputSpotsName, ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
         workspace.addObjects(testSpots);
 
         // Initialising RelateObjects
-        RelateObjects relateObjects = new RelateObjects(new ModuleCollection());
+        RelateObjects relateObjects = new RelateObjects(new Modules());
 
         relateObjects.updateParameterValue(RelateObjects.PARENT_OBJECTS, inputObjectsName);
         relateObjects.updateParameterValue(RelateObjects.CHILD_OBJECTS, inputSpotsName);
@@ -261,7 +261,7 @@ public class RelateObjectsTest extends ModuleTest {
                     .get(Objects3D.Measures.EXP_SPOT_PROX_CENT_20PX_DIST.name());
 
             // Getting child objects (those linked here)
-            ObjCollection childSpots = testObject.getChildren(inputSpotsName);
+            Objs childSpots = testObject.getChildren(inputSpotsName);
 
             // Each object won't necessarily have any children
             if (childSpots == null)
@@ -309,7 +309,7 @@ public class RelateObjectsTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testProximityCentroidResponse2D(VolumeType volumeType) {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null, 1);
 
         // Setting object parameters
@@ -320,15 +320,15 @@ public class RelateObjectsTest extends ModuleTest {
         String calibratedUnits = "µm";
 
         // Creating objects and adding to workspace
-        ObjCollection proxObj1 = new ProxSquares1(volumeType).getObjects(proxObj1Name, ExpectedObjects.Mode.EIGHT_BIT,
+        Objs proxObj1 = new ProxSquares1(volumeType).getObjects(proxObj1Name, ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
         workspace.addObjects(proxObj1);
-        ObjCollection proxObj2 = new ProxSquares2(volumeType).getObjects(proxObj2Name, ExpectedObjects.Mode.EIGHT_BIT,
+        Objs proxObj2 = new ProxSquares2(volumeType).getObjects(proxObj2Name, ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
         workspace.addObjects(proxObj2);
 
         // Initialising RelateObjects
-        RelateObjects relateObjects = new RelateObjects(new ModuleCollection());
+        RelateObjects relateObjects = new RelateObjects(new Modules());
 
         relateObjects.updateParameterValue(RelateObjects.PARENT_OBJECTS, proxObj1Name);
         relateObjects.updateParameterValue(RelateObjects.CHILD_OBJECTS, proxObj2Name);
@@ -343,7 +343,7 @@ public class RelateObjectsTest extends ModuleTest {
         // measurements and the expected value
         for (Obj proxObj2Obj : proxObj2.values()) {
             // Checking the object has no children
-            LinkedHashMap<String, ObjCollection> children = proxObj2Obj.getChildren();
+            LinkedHashMap<String, Objs> children = proxObj2Obj.getChildren();
             assertEquals(0, children.size());
 
             // Checking the distance to the parent
@@ -360,7 +360,7 @@ public class RelateObjectsTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void trial(VolumeType volumeType) {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null, 1);
 
         // Setting object parameters
@@ -371,26 +371,26 @@ public class RelateObjectsTest extends ModuleTest {
         String calibratedUnits = "µm";
 
         // // Creating objects and adding to workspace
-        // ObjCollection proxObj1 = new
+        // Objs proxObj1 = new
         // ProxCubes1(volumeType).getObjects(proxObj1Name,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         // workspace.addObjects(proxObj1);
-        // ObjCollection proxObj2 = new
+        // Objs proxObj2 = new
         // ProxCubes2(volumeType).getObjects(proxObj2Name,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         // workspace.addObjects(proxObj2);
 
-        ObjCollection proxObj1 = new ProxCubes1(volumeType).getObjects(proxObj1Name, ExpectedObjects.Mode.EIGHT_BIT,
+        Objs proxObj1 = new ProxCubes1(volumeType).getObjects(proxObj1Name, ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
-        ObjCollection c1 = new ObjCollection(proxObj1Name, proxObj1);
+        Objs c1 = new Objs(proxObj1Name, proxObj1);
         c1.add(proxObj1.get(20));
         workspace.addObjects(c1);
-        ObjCollection proxObj2 = new ProxCubes2(volumeType).getObjects(proxObj2Name, ExpectedObjects.Mode.EIGHT_BIT,
+        Objs proxObj2 = new ProxCubes2(volumeType).getObjects(proxObj2Name, ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
-        ObjCollection c2 = new ObjCollection(proxObj2Name, proxObj2);
+        Objs c2 = new Objs(proxObj2Name, proxObj2);
         c2.add(proxObj2.get(12));
         workspace.addObjects(c2);
 
         // Initialising RelateObjects
-        RelateObjects relateObjects = new RelateObjects(new ModuleCollection());
+        RelateObjects relateObjects = new RelateObjects(new Modules());
 
         relateObjects.updateParameterValue(RelateObjects.PARENT_OBJECTS, proxObj2Name);
         relateObjects.updateParameterValue(RelateObjects.CHILD_OBJECTS, proxObj1Name);
@@ -408,7 +408,7 @@ public class RelateObjectsTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testProximitySurfaceLink(VolumeType volumeType) {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null, 1);
 
         // Setting object parameters
@@ -419,17 +419,17 @@ public class RelateObjectsTest extends ModuleTest {
         String calibratedUnits = "µm";
 
         // Creating objects and adding to workspace
-        ObjCollection proxObj1 = new ProxCubes1(volumeType).getObjects(proxObj1Name, ExpectedObjects.Mode.EIGHT_BIT,
+        Objs proxObj1 = new ProxCubes1(volumeType).getObjects(proxObj1Name, ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
         workspace.addObjects(proxObj1);
-        ObjCollection proxObj2 = new ProxCubes2(volumeType).getObjects(proxObj2Name, ExpectedObjects.Mode.EIGHT_BIT,
+        Objs proxObj2 = new ProxCubes2(volumeType).getObjects(proxObj2Name, ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
         workspace.addObjects(proxObj2);
 
-        ObjCollection c1 = new ObjCollection(proxObj1Name, proxObj1);
+        Objs c1 = new Objs(proxObj1Name, proxObj1);
 
         // Initialising RelateObjects
-        RelateObjects relateObjects = new RelateObjects(new ModuleCollection());
+        RelateObjects relateObjects = new RelateObjects(new Modules());
 
         relateObjects.updateParameterValue(RelateObjects.PARENT_OBJECTS, proxObj2Name);
         relateObjects.updateParameterValue(RelateObjects.CHILD_OBJECTS, proxObj1Name);
@@ -446,7 +446,7 @@ public class RelateObjectsTest extends ModuleTest {
         // measurements and the expected value
         for (Obj proxObj1Obj : proxObj1.values()) {
             // Checking the object has no children
-            LinkedHashMap<String, ObjCollection> children = proxObj1Obj.getChildren();
+            LinkedHashMap<String, Objs> children = proxObj1Obj.getChildren();
             assertEquals(0, children.size());
 
             // Checking the parent ID is the one expected
@@ -476,7 +476,7 @@ public class RelateObjectsTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testProximitySurfaceLink5px(VolumeType volumeType) {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null, 1);
 
         // Setting object parameters
@@ -487,15 +487,15 @@ public class RelateObjectsTest extends ModuleTest {
         String calibratedUnits = "µm";
 
         // Creating objects and adding to workspace
-        ObjCollection proxObj1 = new ProxCubes1(volumeType).getObjects(proxObj1Name, ExpectedObjects.Mode.EIGHT_BIT,
+        Objs proxObj1 = new ProxCubes1(volumeType).getObjects(proxObj1Name, ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
         workspace.addObjects(proxObj1);
-        ObjCollection proxObj2 = new ProxCubes2(volumeType).getObjects(proxObj2Name, ExpectedObjects.Mode.EIGHT_BIT,
+        Objs proxObj2 = new ProxCubes2(volumeType).getObjects(proxObj2Name, ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
         workspace.addObjects(proxObj2);
 
         // Initialising RelateObjects
-        RelateObjects relateObjects = new RelateObjects(new ModuleCollection());
+        RelateObjects relateObjects = new RelateObjects(new Modules());
 
         relateObjects.updateParameterValue(RelateObjects.PARENT_OBJECTS, proxObj2Name);
         relateObjects.updateParameterValue(RelateObjects.CHILD_OBJECTS, proxObj1Name);
@@ -513,7 +513,7 @@ public class RelateObjectsTest extends ModuleTest {
         // measurements and the expected value
         for (Obj proxObj1Obj : proxObj1.values()) {
             // Checking the object has no children
-            LinkedHashMap<String, ObjCollection> children = proxObj1Obj.getChildren();
+            LinkedHashMap<String, Objs> children = proxObj1Obj.getChildren();
             assertEquals(0, children.size());
 
             // Checking the parent ID is the one expected
@@ -548,7 +548,7 @@ public class RelateObjectsTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testProximitySurfaceResponse2DInOut(VolumeType volumeType) {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null, 1);
 
         // Setting object parameters
@@ -559,15 +559,15 @@ public class RelateObjectsTest extends ModuleTest {
         String calibratedUnits = "µm";
 
         // Creating objects and adding to workspace
-        ObjCollection proxObj1 = new ProxSquares1(volumeType).getObjects(proxObj1Name, ExpectedObjects.Mode.EIGHT_BIT,
+        Objs proxObj1 = new ProxSquares1(volumeType).getObjects(proxObj1Name, ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
         workspace.addObjects(proxObj1);
-        ObjCollection proxObj2 = new ProxSquares2(volumeType).getObjects(proxObj2Name, ExpectedObjects.Mode.EIGHT_BIT,
+        Objs proxObj2 = new ProxSquares2(volumeType).getObjects(proxObj2Name, ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
         workspace.addObjects(proxObj2);
 
         // Initialising RelateObjects
-        RelateObjects relateObjects = new RelateObjects(new ModuleCollection());
+        RelateObjects relateObjects = new RelateObjects(new Modules());
 
         relateObjects.updateParameterValue(RelateObjects.PARENT_OBJECTS, proxObj1Name);
         relateObjects.updateParameterValue(RelateObjects.CHILD_OBJECTS, proxObj2Name);
@@ -584,7 +584,7 @@ public class RelateObjectsTest extends ModuleTest {
         // measurements and the expected value
         for (Obj proxObj2Obj : proxObj2.values()) {
             // Checking the object has no children
-            LinkedHashMap<String, ObjCollection> children = proxObj2Obj.getChildren();
+            LinkedHashMap<String, Objs> children = proxObj2Obj.getChildren();
             assertEquals(0, children.size());
 
             // Checking the distance to the parent
@@ -601,7 +601,7 @@ public class RelateObjectsTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testProximitySurfaceResponse2DIn(VolumeType volumeType) {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null, 1);
 
         // Setting object parameters
@@ -612,15 +612,15 @@ public class RelateObjectsTest extends ModuleTest {
         String calibratedUnits = "µm";
 
         // Creating objects and adding to workspace
-        ObjCollection proxObj1 = new ProxSquares1(volumeType).getObjects(proxObj1Name, ExpectedObjects.Mode.EIGHT_BIT,
+        Objs proxObj1 = new ProxSquares1(volumeType).getObjects(proxObj1Name, ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
         workspace.addObjects(proxObj1);
-        ObjCollection proxObj2 = new ProxSquares2(volumeType).getObjects(proxObj2Name, ExpectedObjects.Mode.EIGHT_BIT,
+        Objs proxObj2 = new ProxSquares2(volumeType).getObjects(proxObj2Name, ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
         workspace.addObjects(proxObj2);
 
         // Initialising RelateObjects
-        RelateObjects relateObjects = new RelateObjects(new ModuleCollection());
+        RelateObjects relateObjects = new RelateObjects(new Modules());
 
         relateObjects.updateParameterValue(RelateObjects.PARENT_OBJECTS, proxObj1Name);
         relateObjects.updateParameterValue(RelateObjects.CHILD_OBJECTS, proxObj2Name);
@@ -637,7 +637,7 @@ public class RelateObjectsTest extends ModuleTest {
         // measurements and the expected value
         for (Obj proxObj2Obj : proxObj2.values()) {
             // Checking the object has no children
-            LinkedHashMap<String, ObjCollection> children = proxObj2Obj.getChildren();
+            LinkedHashMap<String, Objs> children = proxObj2Obj.getChildren();
             assertEquals(0, children.size());
 
             // Checking the distance to the parent
@@ -654,7 +654,7 @@ public class RelateObjectsTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testProximitySurfaceResponse2DOut(VolumeType volumeType) {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null, 1);
 
         // Setting object parameters
@@ -665,15 +665,15 @@ public class RelateObjectsTest extends ModuleTest {
         String calibratedUnits = "µm";
 
         // Creating objects and adding to workspace
-        ObjCollection proxObj1 = new ProxSquares1(volumeType).getObjects(proxObj1Name, ExpectedObjects.Mode.EIGHT_BIT,
+        Objs proxObj1 = new ProxSquares1(volumeType).getObjects(proxObj1Name, ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
         workspace.addObjects(proxObj1);
-        ObjCollection proxObj2 = new ProxSquares2(volumeType).getObjects(proxObj2Name, ExpectedObjects.Mode.EIGHT_BIT,
+        Objs proxObj2 = new ProxSquares2(volumeType).getObjects(proxObj2Name, ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
         workspace.addObjects(proxObj2);
 
         // Initialising RelateObjects
-        RelateObjects relateObjects = new RelateObjects(new ModuleCollection());
+        RelateObjects relateObjects = new RelateObjects(new Modules());
 
         relateObjects.updateParameterValue(RelateObjects.PARENT_OBJECTS, proxObj1Name);
         relateObjects.updateParameterValue(RelateObjects.CHILD_OBJECTS, proxObj2Name);
@@ -690,7 +690,7 @@ public class RelateObjectsTest extends ModuleTest {
         // measurements and the expected value
         for (Obj proxObj2Obj : proxObj2.values()) {
             // Checking the object has no children
-            LinkedHashMap<String, ObjCollection> children = proxObj2Obj.getChildren();
+            LinkedHashMap<String, Objs> children = proxObj2Obj.getChildren();
             assertEquals(0, children.size());
 
             // Checking the distance to the parent
@@ -707,7 +707,7 @@ public class RelateObjectsTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testProximityCentroidSurfaceLink(VolumeType volumeType) {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null, 1);
 
         // Setting object parameters
@@ -718,15 +718,15 @@ public class RelateObjectsTest extends ModuleTest {
         String calibratedUnits = "µm";
 
         // Creating objects and adding to workspace
-        ObjCollection proxObj1 = new ProxCubes1(volumeType).getObjects(proxObj1Name, ExpectedObjects.Mode.EIGHT_BIT,
+        Objs proxObj1 = new ProxCubes1(volumeType).getObjects(proxObj1Name, ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
         workspace.addObjects(proxObj1);
-        ObjCollection proxObj2 = new ProxCubes2(volumeType).getObjects(proxObj2Name, ExpectedObjects.Mode.EIGHT_BIT,
+        Objs proxObj2 = new ProxCubes2(volumeType).getObjects(proxObj2Name, ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
         workspace.addObjects(proxObj2);
 
         // Initialising RelateObjects
-        RelateObjects relateObjects = new RelateObjects(new ModuleCollection());
+        RelateObjects relateObjects = new RelateObjects(new Modules());
 
         relateObjects.updateParameterValue(RelateObjects.PARENT_OBJECTS, proxObj2Name);
         relateObjects.updateParameterValue(RelateObjects.CHILD_OBJECTS, proxObj1Name);
@@ -744,7 +744,7 @@ public class RelateObjectsTest extends ModuleTest {
         // measurements and the expected value
         for (Obj proxObj1Obj : proxObj1.values()) {
             // Checking the object has no children
-            LinkedHashMap<String, ObjCollection> children = proxObj1Obj.getChildren();
+            LinkedHashMap<String, Objs> children = proxObj1Obj.getChildren();
             assertEquals(0, children.size());
 
             // Checking the parent ID is the one expected
@@ -775,7 +775,7 @@ public class RelateObjectsTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testProximityCentroidSurfaceLink5px(VolumeType volumeType) {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null, 1);
 
         // Setting object parameters
@@ -786,15 +786,15 @@ public class RelateObjectsTest extends ModuleTest {
         String calibratedUnits = "µm";
 
         // Creating objects and adding to workspace
-        ObjCollection proxObj1 = new ProxCubes1(volumeType).getObjects(proxObj1Name, ExpectedObjects.Mode.EIGHT_BIT,
+        Objs proxObj1 = new ProxCubes1(volumeType).getObjects(proxObj1Name, ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
         workspace.addObjects(proxObj1);
-        ObjCollection proxObj2 = new ProxCubes2(volumeType).getObjects(proxObj2Name, ExpectedObjects.Mode.EIGHT_BIT,
+        Objs proxObj2 = new ProxCubes2(volumeType).getObjects(proxObj2Name, ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
         workspace.addObjects(proxObj2);
 
         // Initialising RelateObjects
-        RelateObjects relateObjects = new RelateObjects(new ModuleCollection());
+        RelateObjects relateObjects = new RelateObjects(new Modules());
 
         relateObjects.updateParameterValue(RelateObjects.PARENT_OBJECTS, proxObj2Name);
         relateObjects.updateParameterValue(RelateObjects.CHILD_OBJECTS, proxObj1Name);
@@ -813,7 +813,7 @@ public class RelateObjectsTest extends ModuleTest {
         // measurements and the expected value
         for (Obj proxObj1Obj : proxObj1.values()) {
             // Checking the object has no children
-            LinkedHashMap<String, ObjCollection> children = proxObj1Obj.getChildren();
+            LinkedHashMap<String, Objs> children = proxObj1Obj.getChildren();
             assertEquals(0, children.size());
 
             // Checking the parent ID is the one expected
@@ -848,7 +848,7 @@ public class RelateObjectsTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testProximityCentroidSurfaceResponse2DInOut(VolumeType volumeType) {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null, 1);
 
         // Setting object parameters
@@ -859,22 +859,22 @@ public class RelateObjectsTest extends ModuleTest {
         String calibratedUnits = "µm";
 
         // Creating objects and adding to workspace
-        ObjCollection proxObj1 = new ProxSquares1(volumeType).getObjects(proxObj1Name, ExpectedObjects.Mode.EIGHT_BIT,
+        Objs proxObj1 = new ProxSquares1(volumeType).getObjects(proxObj1Name, ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
         workspace.addObjects(proxObj1);
-        ObjCollection proxObj2 = new ProxSquares2(volumeType).getObjects(proxObj2Name, ExpectedObjects.Mode.EIGHT_BIT,
+        Objs proxObj2 = new ProxSquares2(volumeType).getObjects(proxObj2Name, ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
         workspace.addObjects(proxObj2);
 
-        // ObjCollection o1 = new ObjCollection(proxObj1Name);
+        // Objs o1 = new Objs(proxObj1Name);
         // o1.add(proxObj1.getFirst());
         // workspace.addObjects(o1);
-        // ObjCollection o2 = new ObjCollection(proxObj2Name);
+        // Objs o2 = new Objs(proxObj2Name);
         // o2.add(proxObj2.getFirst());
         // workspace.addObjects(o2);
 
         // Initialising RelateObjects
-        RelateObjects relateObjects = new RelateObjects(new ModuleCollection());
+        RelateObjects relateObjects = new RelateObjects(new Modules());
 
         relateObjects.updateParameterValue(RelateObjects.PARENT_OBJECTS, proxObj1Name);
         relateObjects.updateParameterValue(RelateObjects.CHILD_OBJECTS, proxObj2Name);
@@ -892,7 +892,7 @@ public class RelateObjectsTest extends ModuleTest {
         // measurements and the expected value
         for (Obj proxObj2Obj : proxObj2.values()) {
             // Checking the object has no children
-            LinkedHashMap<String, ObjCollection> children = proxObj2Obj.getChildren();
+            LinkedHashMap<String, Objs> children = proxObj2Obj.getChildren();
             assertEquals(0, children.size());
 
             // Checking the distance to the parent
@@ -909,7 +909,7 @@ public class RelateObjectsTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testProximityCentroidSurfaceResponse2DIn(VolumeType volumeType) {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null, 1);
 
         // Setting object parameters
@@ -920,15 +920,15 @@ public class RelateObjectsTest extends ModuleTest {
         String calibratedUnits = "µm";
 
         // Creating objects and adding to workspace
-        ObjCollection proxObj1 = new ProxSquares1(volumeType).getObjects(proxObj1Name, ExpectedObjects.Mode.EIGHT_BIT,
+        Objs proxObj1 = new ProxSquares1(volumeType).getObjects(proxObj1Name, ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
         workspace.addObjects(proxObj1);
-        ObjCollection proxObj2 = new ProxSquares2(volumeType).getObjects(proxObj2Name, ExpectedObjects.Mode.EIGHT_BIT,
+        Objs proxObj2 = new ProxSquares2(volumeType).getObjects(proxObj2Name, ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
         workspace.addObjects(proxObj2);
 
         // Initialising RelateObjects
-        RelateObjects relateObjects = new RelateObjects(new ModuleCollection());
+        RelateObjects relateObjects = new RelateObjects(new Modules());
 
         relateObjects.updateParameterValue(RelateObjects.PARENT_OBJECTS, proxObj1Name);
         relateObjects.updateParameterValue(RelateObjects.CHILD_OBJECTS, proxObj2Name);
@@ -946,7 +946,7 @@ public class RelateObjectsTest extends ModuleTest {
         // measurements and the expected value
         for (Obj proxObj2Obj : proxObj2.values()) {
             // Checking the object has no children
-            LinkedHashMap<String, ObjCollection> children = proxObj2Obj.getChildren();
+            LinkedHashMap<String, Objs> children = proxObj2Obj.getChildren();
             assertEquals(0, children.size());
 
             // Checking the distance to the parent
@@ -963,7 +963,7 @@ public class RelateObjectsTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testProximityCentroidSurfaceResponse2DOut(VolumeType volumeType) {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null, 1);
 
         // Setting object parameters
@@ -974,15 +974,15 @@ public class RelateObjectsTest extends ModuleTest {
         String calibratedUnits = "µm";
 
         // Creating objects and adding to workspace
-        ObjCollection proxObj1 = new ProxSquares1(volumeType).getObjects(proxObj1Name, ExpectedObjects.Mode.EIGHT_BIT,
+        Objs proxObj1 = new ProxSquares1(volumeType).getObjects(proxObj1Name, ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
         workspace.addObjects(proxObj1);
-        ObjCollection proxObj2 = new ProxSquares2(volumeType).getObjects(proxObj2Name, ExpectedObjects.Mode.EIGHT_BIT,
+        Objs proxObj2 = new ProxSquares2(volumeType).getObjects(proxObj2Name, ExpectedObjects.Mode.EIGHT_BIT,
                 dppXY, dppZ, calibratedUnits, true);
         workspace.addObjects(proxObj2);
 
         // Initialising RelateObjects
-        RelateObjects relateObjects = new RelateObjects(new ModuleCollection());
+        RelateObjects relateObjects = new RelateObjects(new Modules());
 
         relateObjects.updateParameterValue(RelateObjects.PARENT_OBJECTS, proxObj1Name);
         relateObjects.updateParameterValue(RelateObjects.CHILD_OBJECTS, proxObj2Name);
@@ -1000,7 +1000,7 @@ public class RelateObjectsTest extends ModuleTest {
         // measurements and the expected value
         for (Obj proxObj2Obj : proxObj2.values()) {
             // Checking the object has no children
-            LinkedHashMap<String, ObjCollection> children = proxObj2Obj.getChildren();
+            LinkedHashMap<String, Objs> children = proxObj2Obj.getChildren();
             assertEquals(0, children.size());
 
             // Checking the distance to the parent

@@ -11,12 +11,12 @@ import org.junit.jupiter.api.Test;
 import ij.IJ;
 import ij.ImagePlus;
 import io.github.mianalysis.MIA.Module.Module;
-import io.github.mianalysis.MIA.Module.ModuleCollection;
+import io.github.mianalysis.MIA.Module.Modules;
 import io.github.mianalysis.MIA.Module.ModuleTest;
 import io.github.mianalysis.MIA.Object.Image;
 import io.github.mianalysis.MIA.Object.Status;
 import io.github.mianalysis.MIA.Object.Workspace;
-import io.github.mianalysis.MIA.Object.WorkspaceCollection;
+import io.github.mianalysis.MIA.Object.Workspaces;
 
 public class WekaProbabilityMapsTest extends ModuleTest {
     @BeforeAll
@@ -32,7 +32,7 @@ public class WekaProbabilityMapsTest extends ModuleTest {
     @Test
     public void testRun2D8Bit() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
@@ -45,7 +45,7 @@ public class WekaProbabilityMapsTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
-        WekaProbabilityMaps wekaProbabilityMaps = new WekaProbabilityMaps(new ModuleCollection());
+        WekaProbabilityMaps wekaProbabilityMaps = new WekaProbabilityMaps(new Modules());
         wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.INPUT_IMAGE,"Test_image");
         wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.OUTPUT_IMAGE,"Test_output");
         wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.CLASSIFIER_FILE,this.getClass().getResource("/images/WekaProbabilityMaps/Example_classifier.model").toURI().getPath());
@@ -69,7 +69,7 @@ public class WekaProbabilityMapsTest extends ModuleTest {
     @Test
     public void testRun2D16Bit() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
@@ -82,7 +82,7 @@ public class WekaProbabilityMapsTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
-        WekaProbabilityMaps wekaProbabilityMaps = new WekaProbabilityMaps(new ModuleCollection());
+        WekaProbabilityMaps wekaProbabilityMaps = new WekaProbabilityMaps(new Modules());
         wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.INPUT_IMAGE,"Test_image");
         wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.OUTPUT_IMAGE,"Test_output");
         wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.CLASSIFIER_FILE,this.getClass().getResource("/images/WekaProbabilityMaps/Example_classifier.model").toURI().getPath());
@@ -105,7 +105,7 @@ public class WekaProbabilityMapsTest extends ModuleTest {
     @Test
     public void testRun2D32Bit() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
@@ -118,7 +118,7 @@ public class WekaProbabilityMapsTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
-        WekaProbabilityMaps wekaProbabilityMaps = new WekaProbabilityMaps(new ModuleCollection());
+        WekaProbabilityMaps wekaProbabilityMaps = new WekaProbabilityMaps(new Modules());
         wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.INPUT_IMAGE,"Test_image");
         wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.OUTPUT_IMAGE,"Test_output");
         wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.CLASSIFIER_FILE,this.getClass().getResource("/images/WekaProbabilityMaps/Example_classifier.model").toURI().getPath());
@@ -141,7 +141,7 @@ public class WekaProbabilityMapsTest extends ModuleTest {
     @Test
     public void testRun3D8Bit() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
@@ -154,7 +154,7 @@ public class WekaProbabilityMapsTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
-        WekaProbabilityMaps wekaProbabilityMaps = new WekaProbabilityMaps(new ModuleCollection());
+        WekaProbabilityMaps wekaProbabilityMaps = new WekaProbabilityMaps(new Modules());
         wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.INPUT_IMAGE,"Test_image");
         wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.OUTPUT_IMAGE,"Test_output");
         wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.CLASSIFIER_FILE,this.getClass().getResource("/images/WekaProbabilityMaps/Example_classifier.model").toURI().getPath());
@@ -177,7 +177,7 @@ public class WekaProbabilityMapsTest extends ModuleTest {
     @Test
     public void testRun4D8Bit() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
@@ -190,7 +190,7 @@ public class WekaProbabilityMapsTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
-        WekaProbabilityMaps wekaProbabilityMaps = new WekaProbabilityMaps(new ModuleCollection());
+        WekaProbabilityMaps wekaProbabilityMaps = new WekaProbabilityMaps(new Modules());
         wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.INPUT_IMAGE,"Test_image");
         wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.OUTPUT_IMAGE,"Test_output");
         wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.CLASSIFIER_FILE,this.getClass().getResource("/images/WekaProbabilityMaps/Example_classifier.model").toURI().getPath());
@@ -213,7 +213,7 @@ public class WekaProbabilityMapsTest extends ModuleTest {
     @Test
     public void testRun5D8Bit() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
@@ -226,7 +226,7 @@ public class WekaProbabilityMapsTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
-        WekaProbabilityMaps wekaProbabilityMaps = new WekaProbabilityMaps(new ModuleCollection());
+        WekaProbabilityMaps wekaProbabilityMaps = new WekaProbabilityMaps(new Modules());
         wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.INPUT_IMAGE,"Test_image");
         wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.OUTPUT_IMAGE,"Test_output");
         wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.CLASSIFIER_FILE,this.getClass().getResource("/images/WekaProbabilityMaps/Example_classifier.model").toURI().getPath());
@@ -249,7 +249,7 @@ public class WekaProbabilityMapsTest extends ModuleTest {
     @Test
     public void testRun3DChannels8Bit() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
@@ -262,7 +262,7 @@ public class WekaProbabilityMapsTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
-        WekaProbabilityMaps wekaProbabilityMaps = new WekaProbabilityMaps(new ModuleCollection());
+        WekaProbabilityMaps wekaProbabilityMaps = new WekaProbabilityMaps(new Modules());
         wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.INPUT_IMAGE,"Test_image");
         wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.OUTPUT_IMAGE,"Test_output");
         wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.CLASSIFIER_FILE,this.getClass().getResource("/images/WekaProbabilityMaps/Example_classifier.model").toURI().getPath());
@@ -285,7 +285,7 @@ public class WekaProbabilityMapsTest extends ModuleTest {
     @Test
     public void testRun3DChannels8Bit1Block() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
@@ -298,7 +298,7 @@ public class WekaProbabilityMapsTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
-        WekaProbabilityMaps wekaProbabilityMaps = new WekaProbabilityMaps(new ModuleCollection());
+        WekaProbabilityMaps wekaProbabilityMaps = new WekaProbabilityMaps(new Modules());
         wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.INPUT_IMAGE,"Test_image");
         wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.OUTPUT_IMAGE,"Test_output");
         wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.CLASSIFIER_FILE,this.getClass().getResource("/images/WekaProbabilityMaps/Example_classifier.model").toURI().getPath());
@@ -321,7 +321,7 @@ public class WekaProbabilityMapsTest extends ModuleTest {
     @Test
     public void testRun4DChannelsSlice8Bit() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
@@ -334,7 +334,7 @@ public class WekaProbabilityMapsTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
-        WekaProbabilityMaps wekaProbabilityMaps = new WekaProbabilityMaps(new ModuleCollection());
+        WekaProbabilityMaps wekaProbabilityMaps = new WekaProbabilityMaps(new Modules());
         wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.INPUT_IMAGE,"Test_image");
         wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.OUTPUT_IMAGE,"Test_output");
         wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.CLASSIFIER_FILE,this.getClass().getResource("/images/WekaProbabilityMaps/Example_classifier.model").toURI().getPath());
@@ -358,7 +358,7 @@ public class WekaProbabilityMapsTest extends ModuleTest {
     @Test
     public void testRun4DChannelsSlice8Bit1Block() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
@@ -371,7 +371,7 @@ public class WekaProbabilityMapsTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
-        WekaProbabilityMaps wekaProbabilityMaps = new WekaProbabilityMaps(new ModuleCollection());
+        WekaProbabilityMaps wekaProbabilityMaps = new WekaProbabilityMaps(new Modules());
         wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.INPUT_IMAGE,"Test_image");
         wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.OUTPUT_IMAGE,"Test_output");
         wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.CLASSIFIER_FILE,this.getClass().getResource("/images/WekaProbabilityMaps/Example_classifier.model").toURI().getPath());
@@ -395,7 +395,7 @@ public class WekaProbabilityMapsTest extends ModuleTest {
     @Test
     public void testRun4DChannelsSlice8Bit3Block() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
@@ -408,7 +408,7 @@ public class WekaProbabilityMapsTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
-        WekaProbabilityMaps wekaProbabilityMaps = new WekaProbabilityMaps(new ModuleCollection());
+        WekaProbabilityMaps wekaProbabilityMaps = new WekaProbabilityMaps(new Modules());
         wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.INPUT_IMAGE,"Test_image");
         wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.OUTPUT_IMAGE,"Test_output");
         wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.CLASSIFIER_FILE,this.getClass().getResource("/images/WekaProbabilityMaps/Example_classifier.model").toURI().getPath());
@@ -432,7 +432,7 @@ public class WekaProbabilityMapsTest extends ModuleTest {
     @Test
     public void testRun4DChannelsTime8Bit() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
@@ -445,7 +445,7 @@ public class WekaProbabilityMapsTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
-        WekaProbabilityMaps wekaProbabilityMaps = new WekaProbabilityMaps(new ModuleCollection());
+        WekaProbabilityMaps wekaProbabilityMaps = new WekaProbabilityMaps(new Modules());
         wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.INPUT_IMAGE,"Test_image");
         wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.OUTPUT_IMAGE,"Test_output");
         wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.CLASSIFIER_FILE,this.getClass().getResource("/images/WekaProbabilityMaps/Example_classifier.model").toURI().getPath());
@@ -468,7 +468,7 @@ public class WekaProbabilityMapsTest extends ModuleTest {
     @Test
     public void testRunMissingClassifier() throws Exception {
         // Creating a new workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
@@ -481,7 +481,7 @@ public class WekaProbabilityMapsTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
-        WekaProbabilityMaps wekaProbabilityMaps = new WekaProbabilityMaps(new ModuleCollection());
+        WekaProbabilityMaps wekaProbabilityMaps = new WekaProbabilityMaps(new Modules());
         wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.INPUT_IMAGE,"Test_image");
         wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.OUTPUT_IMAGE,"Test_output");
         wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.CLASSIFIER_FILE,"");

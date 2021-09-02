@@ -22,7 +22,7 @@
 // import ij.process.StackStatistics;
 // import io.github.mianalysis.MIA.MIA;
 // import io.github.mianalysis.MIA.Module.Module;
-// import io.github.mianalysis.MIA.Module.ModuleCollection;
+// import io.github.mianalysis.MIA.Module.Modules;
 // import io.github.mianalysis.MIA.Module.Category;
 // import io.github.mianalysis.MIA.Module.Categories;
 // import io.github.mianalysis.MIA.Module.ImageProcessing.Pixel.ImageCalculator;
@@ -33,22 +33,22 @@
 // import io.github.mianalysis.MIA.Object.Status;
 // import io.github.mianalysis.MIA.Object.Image;
 // import io.github.mianalysis.MIA.Object.Measurement;
-// import io.github.mianalysis.MIA.Object.ObjCollection;
+// import io.github.mianalysis.MIA.Object.Objs;
 // import io.github.mianalysis.MIA.Object.Workspace;
 // import io.github.mianalysis.MIA.Object.Parameters.BooleanP;
 // import io.github.mianalysis.MIA.Object.Parameters.ChoiceP;
 // import io.github.mianalysis.MIA.Object.Parameters.InputImageP;
 // import io.github.mianalysis.MIA.Object.Parameters.InputObjectsP;
-// import io.github.mianalysis.MIA.Object.Parameters.ParameterCollection;
+// import io.github.mianalysis.MIA.Object.Parameters.Parameters;
 // import io.github.mianalysis.MIA.Object.Parameters.Text.DoubleP;
 // import io.github.mianalysis.MIA.Object.Parameters.Text.IntegerP;
 // import io.github.mianalysis.MIA.Object.Parameters.Text.StringP;
 // import io.github.mianalysis.MIA.Object.References.ImageMeasurementRef;
-// import io.github.mianalysis.MIA.Object.References.Collections.ImageMeasurementRefCollection;
-// import io.github.mianalysis.MIA.Object.References.Collections.MetadataRefCollection;
-// import io.github.mianalysis.MIA.Object.References.Collections.ObjMeasurementRefCollection;
-// import io.github.mianalysis.MIA.Object.References.Collections.ParentChildRefCollection;
-// import io.github.mianalysis.MIA.Object.References.Collections.PartnerRefCollection;
+// import io.github.mianalysis.MIA.Object.References.Collections.ImageMeasurementRefs;
+// import io.github.mianalysis.MIA.Object.References.Collections.MetadataRefs;
+// import io.github.mianalysis.MIA.Object.References.Collections.ObjMeasurementRefs;
+// import io.github.mianalysis.MIA.Object.References.Collections.ParentChildRefs;
+// import io.github.mianalysis.MIA.Object.References.Collections.PartnerRefs;
 // import io.github.mianalysis.MIA.Process.ColourFactory;
 // import io.github.sjcross.common.MathFunc.CumStat;
 // import io.github.sjcross.common.MetadataExtractors.Metadata;
@@ -72,7 +72,7 @@
 //     public static final String IGNORE_ON_OBJECTS = "Ignore values on objects";
 //     public static final String EDGE_DISTANCE_MODE = "Edge distance mode";
 
-//     public MeasureIntensityDistribution(ModuleCollection modules) {
+//     public MeasureIntensityDistribution(Modules modules) {
 //         super("Measure intensity distribution",modules);
 //     }
 
@@ -171,7 +171,7 @@
 
 //     }
 
-//     public CumStat[] measureFractionProximal(ObjCollection inputObjects, Image inputImage, double proximalDistance, boolean ignoreOnObjects) {
+//     public CumStat[] measureFractionProximal(Objs inputObjects, Image inputImage, double proximalDistance, boolean ignoreOnObjects) {
 //         // Get binary image showing the objects
 //         HashMap<Integer,Float> hues = ColourFactory.getSingleColourHues(inputObjects,ColourFactory.SingleColours.WHITE);
 //         Image objectsImage = inputObjects.convertToImage("Objects", hues, 8,false);
@@ -227,7 +227,7 @@
 
 //     }
 
-//     public static CumStat measureIntensityWeightedProximity(ObjCollection inputObjects, Image inputImage, String edgeMode) {
+//     public static CumStat measureIntensityWeightedProximity(Objs inputObjects, Image inputImage, String edgeMode) {
 //         // Get binary image showing the objects
 //         HashMap<Integer,Float> hues = ColourFactory.getSingleColourHues(inputObjects,ColourFactory.SingleColours.WHITE);
 //         Image objectsImage = inputObjects.convertToImage("Objects", hues, 8, false);
@@ -487,7 +487,7 @@
 //                 break;
 
 //             case MeasurementTypes.FRACTION_PROXIMAL_TO_OBJECTS:
-//                 ObjCollection inputObjects = workspace.getObjects().get(inputObjectsName);
+//                 Objs inputObjects = workspace.getObjects().get(inputObjectsName);
 
 //                 // Checking if there are any objects to measure
 //                 if (inputObjects.size() == 0) {
@@ -589,8 +589,8 @@
 //     }
 
 //     @Override
-//     public ParameterCollection updateAndGetParameters() {
-//         ParameterCollection returnedParameters = new ParameterCollection();
+//     public Parameters updateAndGetParameters() {
+//         Parameters returnedParameters = new Parameters();
 //         returnedParameters.add(parameters.getParameter(INPUT_IMAGE));
 //         returnedParameters.add(parameters.getParameter(MEASUREMENT_TYPE));
 
@@ -632,8 +632,8 @@
 //     }
 
 //     @Override
-//     public ImageMeasurementRefCollection updateAndGetImageMeasurementRefs() {
-//         ImageMeasurementRefCollection returnedRefs = new ImageMeasurementRefCollection();
+//     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
+//         ImageMeasurementRefs returnedRefs = new ImageMeasurementRefs();
 
 //         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
 //         String inputImageName = parameters.getValue(INPUT_IMAGE);
@@ -701,22 +701,22 @@
 //     }
 
 //     @Override
-//     public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+//     public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
 //         return null;
 //     }
 
 //     @Override
-//     public MetadataRefCollection updateAndGetMetadataReferences() {
+//     public MetadataRefs updateAndGetMetadataReferences() {
 //         return null;
 //     }
 
 //     @Override
-//     public ParentChildRefCollection updateAndGetParentChildRefs() {
+//     public ParentChildRefs updateAndGetParentChildRefs() {
 //         return null;
 //     }
 
 //     @Override
-//     public PartnerRefCollection updateAndGetPartnerRefs() {
+//     public PartnerRefs updateAndGetPartnerRefs() {
 //         return null;
 //     }
 
