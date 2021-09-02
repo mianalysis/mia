@@ -8,12 +8,12 @@
         <relativePath />
     </parent>
 
-    <groupId>wbif.sjx</groupId>
-    <artifactId>MIA_</artifactId>
-    <version>0.19.1</version>
+    <groupId>io.github.mianalysis</groupId>
+    <artifactId>MIA</artifactId>
+    <version>0.20.0</version>
     <packaging>jar</packaging>
-    <name>MIA_</name>
-    <url>https://github.com/SJCross/MIA</url>
+    <name>MIA</name>
+    <url>https://github.com/mianalysis/MIA</url>
     <inceptionYear>2017</inceptionYear>
     <description>Image/object analysis using modularised components</description>
     <organization>
@@ -313,10 +313,10 @@
         <dependency>
             <groupId>com.github.SJCross</groupId>
             <artifactId>Common</artifactId>
-            <version>v1.8.0</version>
-            <!-- <groupId>wbif.sjx</groupId>
+            <version>v1.10.0</version>
+            <!-- <groupId>io.github.sjcross</groupId>
             <artifactId>Common</artifactId>
-            <version>1.8.0</version> -->
+            <version>1.10.0</version> -->
         </dependency>
     </dependencies>
 
@@ -341,7 +341,7 @@
                 </executions>
                 <configuration>
                     <classpathScope>compile</classpathScope>
-                    <mainClass>wbif.sjx.MIA.Process.DocumentationGenerator</mainClass>
+                    <mainClass>io.github.mianalysis.mia.process.DocumentationGenerator</mainClass>
                 </configuration>
             </plugin>
 
@@ -355,7 +355,7 @@
                         <manifest>
                             <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
                             <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
-                            <mainClass>wbif.sjx.MIA.MIA</mainClass>
+                            <mainClass>io.github.mianalysis.mia.MIA</mainClass>
                         </manifest>
                     </archive>
                 </configuration>

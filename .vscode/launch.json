@@ -6,51 +6,79 @@
     "configurations": [
         {
             "type": "java",
+            "name": "Launch MIA",
+            "request": "launch",
+            "mainClass": "io.github.mianalysis.mia.MIA",
+            "projectName": "MIA"
+        },
+        {
+            "type": "java",
+            "name": "Launch MIA",
+            "request": "launch",
+            "mainClass": "io.github.mianalysis.MIA.MIA",
+            "projectName": "MIA_"
+        },
+        {
+            "type": "java",
+            "name": "Launch DocumentationCoverageChecker",
+            "request": "launch",
+            "mainClass": "io.github.mianalysis.MIA.Process.DocumentationCoverageChecker",
+            "projectName": "MIA_"
+        },
+        {
+            "type": "java",
+            "name": "Launch ModuleSearcher",
+            "request": "launch",
+            "mainClass": "io.github.mianalysis.MIA.Process.ModuleSearcher",
+            "projectName": "MIA_"
+        },
+        {
+            "type": "java",
             "name": "Launch Test",
             "request": "launch",
-            "mainClass": "wbif.sjx.MIA.Test",
+            "mainClass": "io.github.mianalysis.MIA.Test",
             "projectName": "MIA_"
         },
         {
             "type": "java",
             "name": "Launch TextType",
             "request": "launch",
-            "mainClass": "wbif.sjx.MIA.Object.Parameters.Abstract.TextType",
+            "mainClass": "io.github.mianalysis.MIA.Object.Parameters.Abstract.TextType",
             "projectName": "MIA_"
         },
         {
             "type": "java",
             "name": "CodeLens (Launch) - Module",
             "request": "launch",
-            "mainClass": "wbif.sjx.MIA.Module.Module",
+            "mainClass": "io.github.mianalysis.MIA.Module.Module",
             "projectName": "MIA_"
         },
         {
             "type": "java",
             "name": "CodeLens (Launch) - DocumentationGenerator2",
             "request": "launch",
-            "mainClass": "wbif.sjx.MIA.Process.DocumentationGenerator2",
+            "mainClass": "io.github.mianalysis.MIA.Process.DocumentationGenerator2",
             "projectName": "MIA_"
         },
         {
             "type": "java",
             "name": "CodeLens (Launch) - FilterWithWithoutParentTest",
             "request": "launch",
-            "mainClass": "wbif.sjx.MIA.Module.ObjectProcessing.Refinement.FilterObjects.FilterWithWithoutParentTest",
+            "mainClass": "io.github.mianalysis.MIA.Module.ObjectProcessing.Refinement.FilterObjects.FilterWithWithoutParentTest",
             "projectName": "MIA_"
         },
         {
             "type": "java",
             "name": "CodeLens (Launch) - LostAndFound",
             "request": "launch",
-            "mainClass": "wbif.sjx.MIA.Process.AnalysisHandling.LostAndFound",
+            "mainClass": "io.github.mianalysis.MIA.Process.AnalysisHandling.LostAndFound",
             "projectName": "MIA_"
         },
         {
             "type": "java",
             "name": "Debug (Launch)-MIA<MIA_>",
             "request": "launch",
-            "mainClass": "wbif.sjx.MIA.MIA",
+            "mainClass": "io.github.mianalysis.MIA.MIA",
             "projectName": "MIA_",
             "vmArgs": "-Xmx20000m"
         },
@@ -64,14 +92,14 @@
             "type": "java",
             "name": "Debug (Launch)-DocumentationCoverageChecker<MIA_>",
             "request": "launch",
-            "mainClass": "wbif.sjx.MIA.Process.DocumentationCoverageChecker",
+            "mainClass": "io.github.mianalysis.MIA.Process.DocumentationCoverageChecker",
             "projectName": "MIA_"
         },
         {
             "type": "java",
             "name": "Debug (Launch)-DocumentationGenerator<MIA_>",
             "request": "launch",
-            "mainClass": "wbif.sjx.MIA.Process.DocumentationGenerator",
+            "mainClass": "io.github.mianalysis.MIA.Process.DocumentationGenerator",
             "projectName": "MIA_"
         }
     ]

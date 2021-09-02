@@ -1,0 +1,30 @@
+---
+layout: default
+---
+
+<head>
+    <link rel="stylesheet" href="../../css/index.css">
+</head>
+
+<body>
+<!-- Side navigation -->
+<div class="sidenav">
+    <a href="../../index.html" class="nav1">Introduction</a>
+    <a href="../gettingstarted.html" class="nav1">Getting started</a>
+    <a href="../modulelist.html" class="nav1">Modules</a>
+    <a href="../macrolist.html" class="nav1">Macros</a>
+    <!-- <a href="../extendingmia.html" class="nav1">Extending MIA</a> -->
+</div>
+
+<!-- Page content -->
+<div class="main">
+    <!--The following is replaced automatically by the generated module list-->
+    <a href="../modulelist.html">Back to module list</a>
+<h1>Measure intensity along path</h1>
+<h2>Description</h2>
+Measures the intensity profile along the pixel-wide backbone of an object and outputs this profile to .xlsx file.  Input objects are skeletonised to single pixel-wide representations prior to measurement; however, pre-skeletonised objects can also be processed.<br><br>Output results are stored in a multi-sheet .xlsx file, where each sheet includes the profile for a specific input image.  Each row of a sheet contains the profile for a single object.  Profiles are linearly-interpolated such that each measured position along a profile is 1px from the previous.
+<h2>Parameters</h2>
+<ul><li><b>Input objects</b> (default = "") Objects for which intensity profiles will be generated.</li><br><li><b>Measure another image</b> (default = "") Include another image from the workspace to be measured.  Each separate image will be measured at the same spatial points and be saved to a separate sheet of the .xlsx file.</li><br><li><b>Input image</b> (default = "") Image for which the intensity profile will be measured.  Results from this profile will be added to a separate sheet in the .xlsx file.</li><br><li><b>Include timepoints</b> (default = "false") Include a column recording the timepoint that the objects were present in.</li><br><li><b>Save name mode</b> (default = "Match input file name") Controls how saved profile file names will be generated.<br><ul><li>"Match input file name" Use the same name as the root file for this workspace (i.e. the input file in "Input control".</li><li>"Specific name" Use a specific name for the output file.  Care should be taken with this when working in batch mode as it's easy to continuously write over output files from other runs.</li></ul></li><br><li><b>File name</b> (default = "") Filename for saved distance file.  Note: Care should be taken with this when working in batch mode as it's easy to continuously write over output files from other runs.</li><br><li><b>Append series mode</b> (default = "Series number") Controls if any series information should be appended to the end of the filename.  This is useful when working with multi-series files, as it should help prevent writing files from multiple runs with the same filename.  Series numbers are prepended by "S".  Choices are: None, Series name, Series number.</li><br><li><b>Append date/time mode</b> (default = "Never") Controls under what conditions the time and date will be appended on to the end of the profile file filename.  This can be used to prevent accidental over-writing of files from previous runs:<br><ul><li>"Always" Always append the time and date on to the end of the filename.</li><li>"If file exists" Only append the time and date if the results file already exists.</li><li>"Never" Never append time and date (unless the file is open and unwritable).</li></ul></li><br><li><b>Add filename suffix</b> (default = "") A custom suffix to be added to each filename.</li><br></ul>
+
+</div>
+</body>
