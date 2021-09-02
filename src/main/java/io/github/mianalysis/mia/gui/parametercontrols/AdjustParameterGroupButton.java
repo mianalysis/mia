@@ -14,8 +14,8 @@ import javax.swing.JPanel;
 
 import io.github.mianalysis.mia.gui.GUI;
 import io.github.mianalysis.mia.module.core.OutputControl;
-import io.github.mianalysis.mia.Object.Parameters.AdjustParameters;
-import io.github.mianalysis.mia.Object.Parameters.Parameters;
+import io.github.mianalysis.mia.object.parameters.AdjustParameters;
+import io.github.mianalysis.mia.object.parameters.Parameters;
 
 /**
  * Created by Stephen Cross on 01/02/2019.

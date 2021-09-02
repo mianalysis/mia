@@ -10,8 +10,8 @@ import javax.swing.JToggleButton;
 
 import io.github.mianalysis.mia.gui.GUI;
 import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.module.Miscellaneous.GUISeparator;
-import io.github.mianalysis.mia.Object.Colours;
+import io.github.mianalysis.mia.module.miscellaneous.GUISeparator;
+import io.github.mianalysis.mia.object.Colours;
 
 /**
  * Created by Stephen on 20/05/2017.

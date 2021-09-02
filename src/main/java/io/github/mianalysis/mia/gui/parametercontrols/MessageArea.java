@@ -10,7 +10,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
-import io.github.mianalysis.mia.Object.Parameters.Text.MessageP;
+import io.github.mianalysis.mia.object.parameters.text.MessageP;
 
 public class MessageArea extends ParameterControl {
     protected JPanel control;

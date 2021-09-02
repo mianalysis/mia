@@ -20,17 +20,17 @@ import org.scijava.ui.UIService;
 
 import net.imagej.ImageJ;
 import io.github.mianalysis.mia.gui.GUI;
-import io.github.mianalysis.mia.Object.Preferences;
-import io.github.mianalysis.mia.Process.DependencyValidator;
-import io.github.mianalysis.mia.Process.AnalysisHandling.Analysis;
-import io.github.mianalysis.mia.Process.AnalysisHandling.AnalysisReader;
-import io.github.mianalysis.mia.Process.AnalysisHandling.AnalysisRunner;
-import io.github.mianalysis.mia.Process.AnalysisHandling.LostAndFound;
-import io.github.mianalysis.mia.Process.Logging.BasicLogRenderer;
-import io.github.mianalysis.mia.Process.Logging.ConsoleRenderer;
-import io.github.mianalysis.mia.Process.Logging.Log;
-import io.github.mianalysis.mia.Process.Logging.LogHistory;
-import io.github.mianalysis.mia.Process.Logging.LogRenderer;
+import io.github.mianalysis.mia.object.Preferences;
+import io.github.mianalysis.mia.process.DependencyValidator;
+import io.github.mianalysis.mia.process.analysishandling.Analysis;
+import io.github.mianalysis.mia.process.analysishandling.AnalysisReader;
+import io.github.mianalysis.mia.process.analysishandling.AnalysisRunner;
+import io.github.mianalysis.mia.process.analysishandling.LostAndFound;
+import io.github.mianalysis.mia.process.logging.BasicLogRenderer;
+import io.github.mianalysis.mia.process.logging.ConsoleRenderer;
+import io.github.mianalysis.mia.process.logging.Log;
+import io.github.mianalysis.mia.process.logging.LogHistory;
+import io.github.mianalysis.mia.process.logging.LogRenderer;
 
 
 /**

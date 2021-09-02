@@ -3,9 +3,9 @@ package io.github.mianalysis.mia.macro.imagemeasurements;
 import ij.macro.MacroExtension;
 import io.github.mianalysis.mia.macro.MacroOperation;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.Object.Image;
-import io.github.mianalysis.mia.Object.Measurement;
-import io.github.mianalysis.mia.Object.Workspace;
+import io.github.mianalysis.mia.object.Image;
+import io.github.mianalysis.mia.object.Measurement;
+import io.github.mianalysis.mia.object.Workspace;
 
 public class MIA_GetImageMeasurement extends MacroOperation {
     public MIA_GetImageMeasurement(MacroExtension theHandler) {

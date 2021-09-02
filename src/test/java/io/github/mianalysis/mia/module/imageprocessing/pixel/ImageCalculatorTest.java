@@ -11,9 +11,9 @@ import org.junit.jupiter.api.Test;
 import ij.IJ;
 import ij.ImagePlus;
 import io.github.mianalysis.mia.module.ModuleTest;
-import io.github.mianalysis.mia.Object.Image;
-import io.github.mianalysis.mia.Object.Workspace;
-import io.github.mianalysis.mia.Object.Workspaces;
+import io.github.mianalysis.mia.object.Image;
+import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.Workspaces;
 
 public class ImageCalculatorTest extends ModuleTest {
     private double tolerance = 1E-2;
@@ -37,17 +37,17 @@ public class ImageCalculatorTest extends ModuleTest {
         String calibratedUnits = "µm";
 
         // Loading the test images and adding to workspace
-        String pathToImage1 = URLDecoder.decode(this.getClass().getResource("/images/BinaryObjects/BinaryObjects5D_8bit_blackBG.tif").getPath(),"UTF-8");
+        String pathToImage1 = URLDecoder.decode(this.getClass().getResource("/images/binaryobjects/BinaryObjects5D_8bit_blackBG.tif").getPath(),"UTF-8");
         ImagePlus ipl1 = IJ.openImage(pathToImage1);
         Image image1 = new Image("Test_image_1",ipl1);
         workspace.addImage(image1);
 
-        String pathToImage2 = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient/NoisyGradient5D_8bit.tif").getPath(),"UTF-8");
+        String pathToImage2 = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient5D_8bit.tif").getPath(),"UTF-8");
         ImagePlus ipl2 = IJ.openImage(pathToImage2);
         Image image2 = new Image("Test_image_2",ipl2);
         workspace.addImage(image2);
 
-        pathToImage2 = URLDecoder.decode(this.getClass().getResource("/images/ImageCalculator/BinaryAndNoisyGradientAddNot32.tif").getPath(),"UTF-8");
+        pathToImage2 = URLDecoder.decode(this.getClass().getResource("/images/imagecalculator/BinaryAndNoisyGradientAddNot32.tif").getPath(),"UTF-8");
         ImagePlus expectedImage = IJ.openImage(pathToImage2);
 
         // Initialising BinaryOperations
@@ -112,17 +112,17 @@ public class ImageCalculatorTest extends ModuleTest {
         String calibratedUnits = "µm";
 
         // Loading the test images and adding to workspace
-        String pathToImage1 = URLDecoder.decode(this.getClass().getResource("/images/BinaryObjects/BinaryObjects5D_8bit_blackBG.tif").getPath(),"UTF-8");
+        String pathToImage1 = URLDecoder.decode(this.getClass().getResource("/images/binaryobjects/BinaryObjects5D_8bit_blackBG.tif").getPath(),"UTF-8");
         ImagePlus ipl1 = IJ.openImage(pathToImage1);
         Image image1 = new Image("Test_image_1",ipl1);
         workspace.addImage(image1);
 
-        String pathToImage2 = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient/NoisyGradient5D_8bit.tif").getPath(),"UTF-8");
+        String pathToImage2 = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient5D_8bit.tif").getPath(),"UTF-8");
         ImagePlus ipl2 = IJ.openImage(pathToImage2);
         Image image2 = new Image("Test_image_2",ipl2);
         workspace.addImage(image2);
 
-        pathToImage2 = URLDecoder.decode(this.getClass().getResource("/images/ImageCalculator/BinaryAndNoisyGradientAddNot32.tif").getPath(),"UTF-8");
+        pathToImage2 = URLDecoder.decode(this.getClass().getResource("/images/imagecalculator/BinaryAndNoisyGradientAddNot32.tif").getPath(),"UTF-8");
         ImagePlus expectedImage = IJ.openImage(pathToImage2);
 
         // Initialising BinaryOperations
@@ -185,17 +185,17 @@ public class ImageCalculatorTest extends ModuleTest {
         String calibratedUnits = "µm";
 
         // Loading the test images and adding to workspace
-        String pathToImage1 = URLDecoder.decode(this.getClass().getResource("/images/BinaryObjects/BinaryObjects5D_8bit_blackBG.tif").getPath(),"UTF-8");
+        String pathToImage1 = URLDecoder.decode(this.getClass().getResource("/images/binaryobjects/BinaryObjects5D_8bit_blackBG.tif").getPath(),"UTF-8");
         ImagePlus ipl1 = IJ.openImage(pathToImage1);
         Image image1 = new Image("Test_image_1",ipl1);
         workspace.addImage(image1);
 
-        String pathToImage2 = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient/NoisyGradient5D_8bit.tif").getPath(),"UTF-8");
+        String pathToImage2 = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient5D_8bit.tif").getPath(),"UTF-8");
         ImagePlus ipl2 = IJ.openImage(pathToImage2);
         Image image2 = new Image("Test_image_2",ipl2);
         workspace.addImage(image2);
 
-        pathToImage2 = URLDecoder.decode(this.getClass().getResource("/images/ImageCalculator/BinaryAndNoisyGradientAddNot32.tif").getPath(),"UTF-8");
+        pathToImage2 = URLDecoder.decode(this.getClass().getResource("/images/imagecalculator/BinaryAndNoisyGradientAddNot32.tif").getPath(),"UTF-8");
         ImagePlus expectedImage = IJ.openImage(pathToImage2);
 
         // Initialising BinaryOperations
@@ -258,17 +258,17 @@ public class ImageCalculatorTest extends ModuleTest {
         String calibratedUnits = "µm";
 
         // Loading the test images and adding to workspace
-        String pathToImage1 = URLDecoder.decode(this.getClass().getResource("/images/BinaryObjects/BinaryObjects5D_8bit_blackBG.tif").getPath(),"UTF-8");
+        String pathToImage1 = URLDecoder.decode(this.getClass().getResource("/images/binaryobjects/BinaryObjects5D_8bit_blackBG.tif").getPath(),"UTF-8");
         ImagePlus ipl1 = IJ.openImage(pathToImage1);
         Image image1 = new Image("Test_image_1",ipl1);
         workspace.addImage(image1);
 
-        String pathToImage2 = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient/NoisyGradient5D_8bit.tif").getPath(),"UTF-8");
+        String pathToImage2 = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient5D_8bit.tif").getPath(),"UTF-8");
         ImagePlus ipl2 = IJ.openImage(pathToImage2);
         Image image2 = new Image("Test_image_2",ipl2);
         workspace.addImage(image2);
 
-        pathToImage2 = URLDecoder.decode(this.getClass().getResource("/images/ImageCalculator/BinaryAndNoisyGradientAddIs32.tif").getPath(),"UTF-8");
+        pathToImage2 = URLDecoder.decode(this.getClass().getResource("/images/imagecalculator/BinaryAndNoisyGradientAddIs32.tif").getPath(),"UTF-8");
         ImagePlus expectedImage = IJ.openImage(pathToImage2);
 
         // Initialising BinaryOperations
@@ -333,17 +333,17 @@ public class ImageCalculatorTest extends ModuleTest {
         String calibratedUnits = "µm";
 
         // Loading the test images and adding to workspace
-        String pathToImage1 = URLDecoder.decode(this.getClass().getResource("/images/BinaryObjects/BinaryObjects5D_8bit_blackBG.tif").getPath(),"UTF-8");
+        String pathToImage1 = URLDecoder.decode(this.getClass().getResource("/images/binaryobjects/BinaryObjects5D_8bit_blackBG.tif").getPath(),"UTF-8");
         ImagePlus ipl1 = IJ.openImage(pathToImage1);
         Image image1 = new Image("Test_image_1",ipl1);
         workspace.addImage(image1);
 
-        String pathToImage2 = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient/NoisyGradient5D_8bit.tif").getPath(),"UTF-8");
+        String pathToImage2 = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient5D_8bit.tif").getPath(),"UTF-8");
         ImagePlus ipl2 = IJ.openImage(pathToImage2);
         Image image2 = new Image("Test_image_2",ipl2);
         workspace.addImage(image2);
 
-        pathToImage2 = URLDecoder.decode(this.getClass().getResource("/images/ImageCalculator/BinaryAndNoisyGradientAddIs32.tif").getPath(),"UTF-8");
+        pathToImage2 = URLDecoder.decode(this.getClass().getResource("/images/imagecalculator/BinaryAndNoisyGradientAddIs32.tif").getPath(),"UTF-8");
         ImagePlus expectedImage = IJ.openImage(pathToImage2);
 
         // Initialising BinaryOperations
@@ -406,17 +406,17 @@ public class ImageCalculatorTest extends ModuleTest {
         String calibratedUnits = "µm";
 
         // Loading the test images and adding to workspace
-        String pathToImage1 = URLDecoder.decode(this.getClass().getResource("/images/BinaryObjects/BinaryObjects5D_8bit_blackBG.tif").getPath(),"UTF-8");
+        String pathToImage1 = URLDecoder.decode(this.getClass().getResource("/images/binaryobjects/BinaryObjects5D_8bit_blackBG.tif").getPath(),"UTF-8");
         ImagePlus ipl1 = IJ.openImage(pathToImage1);
         Image image1 = new Image("Test_image_1",ipl1);
         workspace.addImage(image1);
 
-        String pathToImage2 = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient/NoisyGradient5D_8bit.tif").getPath(),"UTF-8");
+        String pathToImage2 = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient5D_8bit.tif").getPath(),"UTF-8");
         ImagePlus ipl2 = IJ.openImage(pathToImage2);
         Image image2 = new Image("Test_image_2",ipl2);
         workspace.addImage(image2);
 
-        pathToImage2 = URLDecoder.decode(this.getClass().getResource("/images/ImageCalculator/BinaryAndNoisyGradientAddIs32.tif").getPath(),"UTF-8");
+        pathToImage2 = URLDecoder.decode(this.getClass().getResource("/images/imagecalculator/BinaryAndNoisyGradientAddIs32.tif").getPath(),"UTF-8");
         ImagePlus expectedImage = IJ.openImage(pathToImage2);
 
         // Initialising BinaryOperations
@@ -482,17 +482,17 @@ public class ImageCalculatorTest extends ModuleTest {
         String calibratedUnits = "µm";
 
         // Loading the test images and adding to workspace
-        String pathToImage1 = URLDecoder.decode(this.getClass().getResource("/images/BinaryObjects/BinaryObjects5D_8bit_blackBG.tif").getPath(),"UTF-8");
+        String pathToImage1 = URLDecoder.decode(this.getClass().getResource("/images/binaryobjects/BinaryObjects5D_8bit_blackBG.tif").getPath(),"UTF-8");
         ImagePlus ipl1 = IJ.openImage(pathToImage1);
         Image image1 = new Image("Test_image_1",ipl1);
         workspace.addImage(image1);
 
-        String pathToImage2 = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient/NoisyGradient5D_8bit.tif").getPath(),"UTF-8");
+        String pathToImage2 = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient5D_8bit.tif").getPath(),"UTF-8");
         ImagePlus ipl2 = IJ.openImage(pathToImage2);
         Image image2 = new Image("Test_image_2",ipl2);
         workspace.addImage(image2);
 
-        pathToImage2 = URLDecoder.decode(this.getClass().getResource("/images/ImageCalculator/BinaryAndNoisyGradientSubtractNot32.tif").getPath(),"UTF-8");
+        pathToImage2 = URLDecoder.decode(this.getClass().getResource("/images/imagecalculator/BinaryAndNoisyGradientSubtractNot32.tif").getPath(),"UTF-8");
         ImagePlus expectedImage = IJ.openImage(pathToImage2);
 
         // Initialising BinaryOperations
@@ -557,17 +557,17 @@ public class ImageCalculatorTest extends ModuleTest {
         String calibratedUnits = "µm";
 
         // Loading the test images and adding to workspace
-        String pathToImage1 = URLDecoder.decode(this.getClass().getResource("/images/BinaryObjects/BinaryObjects5D_8bit_blackBG.tif").getPath(),"UTF-8");
+        String pathToImage1 = URLDecoder.decode(this.getClass().getResource("/images/binaryobjects/BinaryObjects5D_8bit_blackBG.tif").getPath(),"UTF-8");
         ImagePlus ipl1 = IJ.openImage(pathToImage1);
         Image image1 = new Image("Test_image_1",ipl1);
         workspace.addImage(image1);
 
-        String pathToImage2 = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient/NoisyGradient5D_8bit.tif").getPath(),"UTF-8");
+        String pathToImage2 = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient5D_8bit.tif").getPath(),"UTF-8");
         ImagePlus ipl2 = IJ.openImage(pathToImage2);
         Image image2 = new Image("Test_image_2",ipl2);
         workspace.addImage(image2);
 
-        pathToImage2 = URLDecoder.decode(this.getClass().getResource("/images/ImageCalculator/BinaryAndNoisyGradientSubtractIs32.tif").getPath(),"UTF-8");
+        pathToImage2 = URLDecoder.decode(this.getClass().getResource("/images/imagecalculator/BinaryAndNoisyGradientSubtractIs32.tif").getPath(),"UTF-8");
         ImagePlus expectedImage = IJ.openImage(pathToImage2);
 
         // Initialising BinaryOperations
@@ -635,17 +635,17 @@ public class ImageCalculatorTest extends ModuleTest {
         String calibratedUnits = "µm";
 
         // Loading the test images and adding to workspace
-        String pathToImage1 = URLDecoder.decode(this.getClass().getResource("/images/BinaryObjects/BinaryObjects5D_8bit_blackBG.tif").getPath(),"UTF-8");
+        String pathToImage1 = URLDecoder.decode(this.getClass().getResource("/images/binaryobjects/BinaryObjects5D_8bit_blackBG.tif").getPath(),"UTF-8");
         ImagePlus ipl1 = IJ.openImage(pathToImage1);
         Image image1 = new Image("Test_image_1",ipl1);
         workspace.addImage(image1);
 
-        String pathToImage2 = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient/NoisyGradient5D_8bit.tif").getPath(),"UTF-8");
+        String pathToImage2 = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient5D_8bit.tif").getPath(),"UTF-8");
         ImagePlus ipl2 = IJ.openImage(pathToImage2);
         Image image2 = new Image("Test_image_2",ipl2);
         workspace.addImage(image2);
 
-        pathToImage2 = URLDecoder.decode(this.getClass().getResource("/images/ImageCalculator/BinaryAndNoisyGradientMultiplyNot32.tif").getPath(),"UTF-8");
+        pathToImage2 = URLDecoder.decode(this.getClass().getResource("/images/imagecalculator/BinaryAndNoisyGradientMultiplyNot32.tif").getPath(),"UTF-8");
         ImagePlus expectedImage = IJ.openImage(pathToImage2);
 
         // Initialising BinaryOperations
@@ -710,17 +710,17 @@ public class ImageCalculatorTest extends ModuleTest {
         String calibratedUnits = "µm";
 
         // Loading the test images and adding to workspace
-        String pathToImage1 = URLDecoder.decode(this.getClass().getResource("/images/BinaryObjects/BinaryObjects5D_8bit_blackBG.tif").getPath(),"UTF-8");
+        String pathToImage1 = URLDecoder.decode(this.getClass().getResource("/images/binaryobjects/BinaryObjects5D_8bit_blackBG.tif").getPath(),"UTF-8");
         ImagePlus ipl1 = IJ.openImage(pathToImage1);
         Image image1 = new Image("Test_image_1",ipl1);
         workspace.addImage(image1);
 
-        String pathToImage2 = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient/NoisyGradient5D_8bit.tif").getPath(),"UTF-8");
+        String pathToImage2 = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient5D_8bit.tif").getPath(),"UTF-8");
         ImagePlus ipl2 = IJ.openImage(pathToImage2);
         Image image2 = new Image("Test_image_2",ipl2);
         workspace.addImage(image2);
 
-        pathToImage2 = URLDecoder.decode(this.getClass().getResource("/images/ImageCalculator/BinaryAndNoisyGradientMultiplyIs32.tif").getPath(),"UTF-8");
+        pathToImage2 = URLDecoder.decode(this.getClass().getResource("/images/imagecalculator/BinaryAndNoisyGradientMultiplyIs32.tif").getPath(),"UTF-8");
         ImagePlus expectedImage = IJ.openImage(pathToImage2);
 
         // Initialising BinaryOperations
@@ -788,17 +788,17 @@ public class ImageCalculatorTest extends ModuleTest {
         String calibratedUnits = "µm";
 
         // Loading the test images and adding to workspace
-        String pathToImage1 = URLDecoder.decode(this.getClass().getResource("/images/BinaryObjects/BinaryObjects5D_8bit_blackBG.tif").getPath(),"UTF-8");
+        String pathToImage1 = URLDecoder.decode(this.getClass().getResource("/images/binaryobjects/BinaryObjects5D_8bit_blackBG.tif").getPath(),"UTF-8");
         ImagePlus ipl1 = IJ.openImage(pathToImage1);
         Image image1 = new Image("Test_image_1",ipl1);
         workspace.addImage(image1);
 
-        String pathToImage2 = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient/NoisyGradient5D_8bit.tif").getPath(),"UTF-8");
+        String pathToImage2 = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient5D_8bit.tif").getPath(),"UTF-8");
         ImagePlus ipl2 = IJ.openImage(pathToImage2);
         Image image2 = new Image("Test_image_2",ipl2);
         workspace.addImage(image2);
 
-        pathToImage2 = URLDecoder.decode(this.getClass().getResource("/images/ImageCalculator/BinaryAndNoisyGradientDivideNot32.tif").getPath(),"UTF-8");
+        pathToImage2 = URLDecoder.decode(this.getClass().getResource("/images/imagecalculator/BinaryAndNoisyGradientDivideNot32.tif").getPath(),"UTF-8");
         ImagePlus expectedImage = IJ.openImage(pathToImage2);
 
         // Initialising BinaryOperations
@@ -863,17 +863,17 @@ public class ImageCalculatorTest extends ModuleTest {
         String calibratedUnits = "µm";
 
         // Loading the test images and adding to workspace
-        String pathToImage1 = URLDecoder.decode(this.getClass().getResource("/images/BinaryObjects/BinaryObjects5D_8bit_blackBG.tif").getPath(),"UTF-8");
+        String pathToImage1 = URLDecoder.decode(this.getClass().getResource("/images/binaryobjects/BinaryObjects5D_8bit_blackBG.tif").getPath(),"UTF-8");
         ImagePlus ipl1 = IJ.openImage(pathToImage1);
         Image image1 = new Image("Test_image_1",ipl1);
         workspace.addImage(image1);
 
-        String pathToImage2 = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient/NoisyGradient5D_8bit.tif").getPath(),"UTF-8");
+        String pathToImage2 = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient5D_8bit.tif").getPath(),"UTF-8");
         ImagePlus ipl2 = IJ.openImage(pathToImage2);
         Image image2 = new Image("Test_image_2",ipl2);
         workspace.addImage(image2);
 
-        pathToImage2 = URLDecoder.decode(this.getClass().getResource("/images/ImageCalculator/BinaryAndNoisyGradientDivideIs32.tif").getPath(),"UTF-8");
+        pathToImage2 = URLDecoder.decode(this.getClass().getResource("/images/imagecalculator/BinaryAndNoisyGradientDivideIs32.tif").getPath(),"UTF-8");
         ImagePlus expectedImage = IJ.openImage(pathToImage2);
 
         // Initialising BinaryOperations

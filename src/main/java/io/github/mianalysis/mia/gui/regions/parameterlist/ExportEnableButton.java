@@ -8,7 +8,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 
 import io.github.mianalysis.mia.gui.GUI;
-import io.github.mianalysis.mia.Object.Refs.Abstract.ExportableRef;
+import io.github.mianalysis.mia.object.refs.abstrakt.ExportableRef;
 
 /**
  * Created by sc13967 on 07/06/2017.

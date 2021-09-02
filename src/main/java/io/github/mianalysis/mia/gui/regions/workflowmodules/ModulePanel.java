@@ -12,8 +12,8 @@ import javax.swing.border.EtchedBorder;
 import io.github.mianalysis.mia.gui.GUI;
 import io.github.mianalysis.mia.module.core.InputControl;
 import io.github.mianalysis.mia.module.core.OutputControl;
-import io.github.mianalysis.mia.Process.AnalysisHandling.Analysis;
-import io.github.mianalysis.mia.Process.AnalysisHandling.AnalysisTester;
+import io.github.mianalysis.mia.process.analysishandling.Analysis;
+import io.github.mianalysis.mia.process.analysishandling.AnalysisTester;
 
 public class ModulePanel extends JPanel {
     private final InputOutputPanel inputPanel = new InputOutputPanel();

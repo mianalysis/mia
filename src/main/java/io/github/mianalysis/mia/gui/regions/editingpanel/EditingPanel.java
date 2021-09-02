@@ -11,7 +11,7 @@ import javax.swing.plaf.basic.BasicSplitPaneUI;
 
 import ij.Prefs;
 import io.github.mianalysis.mia.gui.GUI;
-import io.github.mianalysis.mia.gui.regions.abstrac.AbstractPanel;
+import io.github.mianalysis.mia.gui.regions.abstrakt.AbstractPanel;
 import io.github.mianalysis.mia.gui.regions.filelist.FileListPanel;
 import io.github.mianalysis.mia.gui.regions.helpandnotes.HelpNotesPanel;
 import io.github.mianalysis.mia.gui.regions.parameterlist.ParametersPanel;

@@ -17,7 +17,7 @@ import javax.swing.border.EmptyBorder;
 import io.github.mianalysis.mia.gui.GUI;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.module.Miscellaneous.GUISeparator;
+import io.github.mianalysis.mia.module.miscellaneous.GUISeparator;
 
 public class ModuleListPanel extends JScrollPane {
     private static final long serialVersionUID = -8916783536735299254L;

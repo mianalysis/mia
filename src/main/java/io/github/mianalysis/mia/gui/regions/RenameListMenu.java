@@ -10,7 +10,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 
 import io.github.mianalysis.mia.gui.GUI;
-import io.github.mianalysis.mia.Object.Refs.Abstract.Ref;
+import io.github.mianalysis.mia.object.refs.abstrakt.Ref;
 
 public class RenameListMenu extends JPopupMenu implements ActionListener {
     /**

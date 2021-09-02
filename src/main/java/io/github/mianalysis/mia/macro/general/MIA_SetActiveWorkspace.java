@@ -4,7 +4,7 @@ import ij.macro.MacroExtension;
 import io.github.mianalysis.mia.macro.MacroHandler;
 import io.github.mianalysis.mia.macro.MacroOperation;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.Object.Workspace;
+import io.github.mianalysis.mia.object.Workspace;
 
 public class MIA_SetActiveWorkspace extends MacroOperation {
     public MIA_SetActiveWorkspace(MacroExtension theHandler) {

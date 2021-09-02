@@ -5,10 +5,10 @@ import java.util.ArrayList;
 import ij.macro.MacroExtension;
 import io.github.mianalysis.mia.macro.MacroOperation;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.module.ObjectMeasurements.Spatial.FitSpline;
-import io.github.mianalysis.mia.Object.Obj;
-import io.github.mianalysis.mia.Object.Objs;
-import io.github.mianalysis.mia.Object.Workspace;
+import io.github.mianalysis.mia.module.objectmeasurements.spatial.FitSpline;
+import io.github.mianalysis.mia.object.Obj;
+import io.github.mianalysis.mia.object.Objs;
+import io.github.mianalysis.mia.object.Workspace;
 import io.github.sjcross.common.Object.Vertex;
 
 public class MIA_GetLongestPathCoordinates extends MacroOperation {

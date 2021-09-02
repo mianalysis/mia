@@ -4,8 +4,8 @@ import io.github.mianalysis.mia.gui.GUIAnalysisHandler;
 import io.github.mianalysis.mia.gui.GUI;
 import io.github.mianalysis.mia.gui.UndoRedoStore;
 import io.github.mianalysis.mia.MIA;
-import io.github.mianalysis.mia.Process.Logging.LogRenderer;
-import io.github.mianalysis.mia.Process.Logging.LogRenderer.Level;
+import io.github.mianalysis.mia.process.logging.LogRenderer;
+import io.github.mianalysis.mia.process.logging.LogRenderer.Level;
 
 import javax.swing.*;
 import java.awt.*;

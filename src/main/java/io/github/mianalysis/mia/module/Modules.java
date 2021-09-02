@@ -10,20 +10,20 @@ import java.util.LinkedHashSet;
 
 import io.github.mianalysis.mia.module.core.InputControl;
 import io.github.mianalysis.mia.module.core.OutputControl;
-import io.github.mianalysis.mia.Object.Parameters.OutputImageP;
-import io.github.mianalysis.mia.Object.Parameters.Parameters;
-import io.github.mianalysis.mia.Object.Parameters.RemovedImageP;
-import io.github.mianalysis.mia.Object.Parameters.Abstract.Parameter;
-import io.github.mianalysis.mia.Object.Parameters.Objects.OutputObjectsP;
-import io.github.mianalysis.mia.Object.Parameters.Objects.RemovedObjectsP;
-import io.github.mianalysis.mia.Object.Refs.ImageMeasurementRef;
-import io.github.mianalysis.mia.Object.Refs.ObjMeasurementRef;
-import io.github.mianalysis.mia.Object.Refs.Collections.ImageMeasurementRefs;
-import io.github.mianalysis.mia.Object.Refs.Collections.MetadataRefs;
-import io.github.mianalysis.mia.Object.Refs.Collections.ObjMeasurementRefs;
-import io.github.mianalysis.mia.Object.Refs.Collections.ParentChildRefs;
-import io.github.mianalysis.mia.Object.Refs.Collections.PartnerRefs;
-import io.github.mianalysis.mia.Object.Refs.Collections.Refs;
+import io.github.mianalysis.mia.object.parameters.OutputImageP;
+import io.github.mianalysis.mia.object.parameters.Parameters;
+import io.github.mianalysis.mia.object.parameters.RemovedImageP;
+import io.github.mianalysis.mia.object.parameters.abstrakt.Parameter;
+import io.github.mianalysis.mia.object.parameters.objects.OutputObjectsP;
+import io.github.mianalysis.mia.object.parameters.objects.RemovedObjectsP;
+import io.github.mianalysis.mia.object.refs.ImageMeasurementRef;
+import io.github.mianalysis.mia.object.refs.ObjMeasurementRef;
+import io.github.mianalysis.mia.object.refs.collections.ImageMeasurementRefs;
+import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
+import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
+import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
+import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
+import io.github.mianalysis.mia.object.refs.collections.Refs;
 
 /**
  * Created by sc13967 on 03/05/2017.

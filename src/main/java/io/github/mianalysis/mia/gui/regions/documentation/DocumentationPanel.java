@@ -12,7 +12,7 @@ import javax.swing.JScrollPane;
 
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.gui.HyperlinkOpener;
-import io.github.mianalysis.mia.Process.DocumentationGenerator;
+import io.github.mianalysis.mia.process.DocumentationGenerator;
 
 public class DocumentationPanel {
     public static void showAbout() {

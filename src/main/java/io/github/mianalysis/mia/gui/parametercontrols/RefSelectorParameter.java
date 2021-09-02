@@ -15,7 +15,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextArea;
 
 import io.github.mianalysis.mia.gui.GUI;
-import io.github.mianalysis.mia.Object.Parameters.ObjMeasurementSelectorP;
+import io.github.mianalysis.mia.object.parameters.ObjMeasurementSelectorP;
 
 /**
  * Created by Stephen Cross on 18/02/2020.

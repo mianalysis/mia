@@ -13,8 +13,8 @@ import javax.swing.JPopupMenu;
 import javax.swing.border.EtchedBorder;
 
 import io.github.mianalysis.mia.gui.GUI;
-import io.github.mianalysis.mia.gui.regions.abstrac.AnalysisControlButton;
-import io.github.mianalysis.mia.gui.regions.abstrac.ModuleControlButton;
+import io.github.mianalysis.mia.gui.regions.abstrakt.AnalysisControlButton;
+import io.github.mianalysis.mia.gui.regions.abstrakt.ModuleControlButton;
 import io.github.mianalysis.mia.gui.regions.availablemodulelist.ModuleListMenu;
 import io.github.mianalysis.mia.gui.regions.availablemodulelist.SearchForModuleItem;
 import io.github.mianalysis.mia.module.Categories;

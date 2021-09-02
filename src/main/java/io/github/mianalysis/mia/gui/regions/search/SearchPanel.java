@@ -21,8 +21,8 @@ import javax.swing.border.EtchedBorder;
 
 import io.github.mianalysis.mia.gui.GUI;
 import io.github.mianalysis.mia.gui.regions.ClosePanelButton;
-import io.github.mianalysis.mia.Process.ModuleSearcher;
-import io.github.mianalysis.mia.Process.ModuleSearcher.SearchMatch;
+import io.github.mianalysis.mia.process.ModuleSearcher;
+import io.github.mianalysis.mia.process.ModuleSearcher.SearchMatch;
 
 public class SearchPanel extends JPanel {
     private final static int minimumWidth = 300;

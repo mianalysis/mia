@@ -9,7 +9,7 @@ import javax.swing.JComponent;
 
 import io.github.mianalysis.mia.gui.GUI;
 import io.github.mianalysis.mia.module.core.OutputControl;
-import io.github.mianalysis.mia.Object.Parameters.ParameterGroup;
+import io.github.mianalysis.mia.object.parameters.ParameterGroup;
 
 /**
  * Created by Stephen Cross on 01/02/2019.

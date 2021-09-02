@@ -8,9 +8,9 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 
 import io.github.mianalysis.mia.gui.GUI;
-import io.github.mianalysis.mia.Object.Refs.Abstract.ExportableRef;
-import io.github.mianalysis.mia.Object.Refs.Abstract.SummaryRef;
-import io.github.mianalysis.mia.Object.Refs.Collections.Refs;
+import io.github.mianalysis.mia.object.refs.abstrakt.ExportableRef;
+import io.github.mianalysis.mia.object.refs.abstrakt.SummaryRef;
+import io.github.mianalysis.mia.object.refs.collections.Refs;
 
 public class DisableRefsButton extends JButton implements ActionListener {
     /**

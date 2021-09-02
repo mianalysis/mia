@@ -3,8 +3,8 @@ package io.github.mianalysis.mia.macro.objectprocessing;
 import ij.macro.MacroExtension;
 import io.github.mianalysis.mia.macro.MacroOperation;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.module.ObjectProcessing.Refinement.RemoveObjects;
-import io.github.mianalysis.mia.Object.Workspace;
+import io.github.mianalysis.mia.module.objectprocessing.refinement.RemoveObjects;
+import io.github.mianalysis.mia.object.Workspace;
 
 public class MIA_RemoveObjectsFromWorkspace extends MacroOperation {
     public MIA_RemoveObjectsFromWorkspace(MacroExtension theHandler) {

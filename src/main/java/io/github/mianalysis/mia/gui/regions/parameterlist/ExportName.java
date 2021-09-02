@@ -8,7 +8,7 @@ import javax.swing.JLabel;
 
 import io.github.mianalysis.mia.gui.GUI;
 import io.github.mianalysis.mia.gui.regions.RenameListMenu;
-import io.github.mianalysis.mia.Object.Refs.Abstract.Ref;
+import io.github.mianalysis.mia.object.refs.abstrakt.Ref;
 
 /**
  * Created by Stephen on 06/09/2017.

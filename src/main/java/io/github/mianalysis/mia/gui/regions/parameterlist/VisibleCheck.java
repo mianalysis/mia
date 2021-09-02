@@ -8,7 +8,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 
 import io.github.mianalysis.mia.gui.GUI;
-import io.github.mianalysis.mia.Object.Parameters.Abstract.Parameter;
+import io.github.mianalysis.mia.object.parameters.abstrakt.Parameter;
 
 /**
  * Created by sc13967 on 06/06/2017.

@@ -3,8 +3,8 @@ package io.github.mianalysis.mia.macro.general;
 import ij.macro.MacroExtension;
 import io.github.mianalysis.mia.macro.MacroOperation;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.Object.Workspace;
-import io.github.mianalysis.mia.Object.Workspaces;
+import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.Workspaces;
 
 public class MIA_GetListOfWorkspaceIDs extends MacroOperation {
     public MIA_GetListOfWorkspaceIDs(MacroExtension theHandler) {

@@ -2,7 +2,7 @@ package io.github.mianalysis.mia.gui.regions.menubar;
 
 import org.apache.commons.lang.WordUtils;
 import io.github.mianalysis.mia.MIA;
-import io.github.mianalysis.mia.Process.Logging.LogRenderer;
+import io.github.mianalysis.mia.process.logging.LogRenderer;
 
 import javax.swing.*;
 import java.awt.*;

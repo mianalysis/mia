@@ -9,8 +9,8 @@ import javax.swing.JButton;
 
 import io.github.mianalysis.mia.gui.GUI;
 import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.module.Miscellaneous.GUISeparator;
-import io.github.mianalysis.mia.Object.Parameters.BooleanP;
+import io.github.mianalysis.mia.module.miscellaneous.GUISeparator;
+import io.github.mianalysis.mia.object.parameters.BooleanP;
 
 /**
  * Created by sc13967 on 07/06/2017.

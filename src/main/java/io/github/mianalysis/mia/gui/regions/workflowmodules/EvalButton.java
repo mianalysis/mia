@@ -11,9 +11,9 @@ import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.gui.GUI;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.module.Miscellaneous.GUISeparator;
-import io.github.mianalysis.mia.Object.Status;
-import io.github.mianalysis.mia.Object.Workspace;
+import io.github.mianalysis.mia.module.miscellaneous.GUISeparator;
+import io.github.mianalysis.mia.object.Status;
+import io.github.mianalysis.mia.object.Workspace;
 
 /**
  * Created by Stephen on 08/06/2017.

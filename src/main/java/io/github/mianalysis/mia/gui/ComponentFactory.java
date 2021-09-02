@@ -36,19 +36,19 @@ import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.core.InputControl;
 import io.github.mianalysis.mia.module.core.OutputControl;
-import io.github.mianalysis.mia.module.Miscellaneous.GUISeparator;
-import io.github.mianalysis.mia.Object.Colours;
-import io.github.mianalysis.mia.Object.Parameters.BooleanP;
-import io.github.mianalysis.mia.Object.Parameters.ObjMeasurementSelectorP;
-import io.github.mianalysis.mia.Object.Parameters.Parameters;
-import io.github.mianalysis.mia.Object.Parameters.ParameterGroup;
-import io.github.mianalysis.mia.Object.Parameters.SeparatorP;
-import io.github.mianalysis.mia.Object.Parameters.Abstract.Parameter;
-import io.github.mianalysis.mia.Object.Parameters.Text.MessageP;
-import io.github.mianalysis.mia.Object.Parameters.Text.TextAreaP;
-import io.github.mianalysis.mia.Object.Refs.Abstract.ExportableRef;
-import io.github.mianalysis.mia.Object.Refs.Abstract.SummaryRef;
-import io.github.mianalysis.mia.Object.Refs.Collections.Refs;
+import io.github.mianalysis.mia.module.miscellaneous.GUISeparator;
+import io.github.mianalysis.mia.object.Colours;
+import io.github.mianalysis.mia.object.parameters.BooleanP;
+import io.github.mianalysis.mia.object.parameters.ObjMeasurementSelectorP;
+import io.github.mianalysis.mia.object.parameters.Parameters;
+import io.github.mianalysis.mia.object.parameters.ParameterGroup;
+import io.github.mianalysis.mia.object.parameters.SeparatorP;
+import io.github.mianalysis.mia.object.parameters.abstrakt.Parameter;
+import io.github.mianalysis.mia.object.parameters.text.MessageP;
+import io.github.mianalysis.mia.object.parameters.text.TextAreaP;
+import io.github.mianalysis.mia.object.refs.abstrakt.ExportableRef;
+import io.github.mianalysis.mia.object.refs.abstrakt.SummaryRef;
+import io.github.mianalysis.mia.object.refs.collections.Refs;
 
 /**
  * Created by Stephen on 23/06/2017.

@@ -31,8 +31,8 @@ import io.github.mianalysis.mia.gui.GUIAnalysisHandler;
 import io.github.mianalysis.mia.gui.regions.RenameListMenu;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.module.Miscellaneous.GUISeparator;
-import io.github.mianalysis.mia.Object.Colours;
+import io.github.mianalysis.mia.module.miscellaneous.GUISeparator;
+import io.github.mianalysis.mia.object.Colours;
 
 public class ModuleTable extends JTable implements ActionListener, MouseListener, TableCellRenderer {
     private static final String BACKSPACE = "backspace";

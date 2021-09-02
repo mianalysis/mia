@@ -6,12 +6,12 @@ import javax.swing.border.EmptyBorder;
 import io.github.mianalysis.mia.gui.HyperlinkOpener;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.Object.Parameters.ParameterGroup;
-import io.github.mianalysis.mia.Object.Parameters.Abstract.Parameter;
-import io.github.mianalysis.mia.Object.Refs.ImageMeasurementRef;
-import io.github.mianalysis.mia.Object.Refs.ObjMeasurementRef;
-import io.github.mianalysis.mia.Object.Refs.Collections.ImageMeasurementRefs;
-import io.github.mianalysis.mia.Object.Refs.Collections.ObjMeasurementRefs;
+import io.github.mianalysis.mia.object.parameters.ParameterGroup;
+import io.github.mianalysis.mia.object.parameters.abstrakt.Parameter;
+import io.github.mianalysis.mia.object.refs.ImageMeasurementRef;
+import io.github.mianalysis.mia.object.refs.ObjMeasurementRef;
+import io.github.mianalysis.mia.object.refs.collections.ImageMeasurementRefs;
+import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 
 public class HelpArea extends JTextPane {
     /**

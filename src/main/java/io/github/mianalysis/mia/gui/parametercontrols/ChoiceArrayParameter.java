@@ -9,7 +9,7 @@ import javax.swing.JComponent;
 
 import io.github.mianalysis.mia.gui.GUI;
 import io.github.mianalysis.mia.module.core.OutputControl;
-import io.github.mianalysis.mia.Object.Parameters.Abstract.ChoiceType;
+import io.github.mianalysis.mia.object.parameters.abstrakt.ChoiceType;
 
 /**
  * Created by sc13967 on 22/05/2017.

@@ -7,21 +7,21 @@ import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Categories;
-import io.github.mianalysis.mia.module.Miscellaneous.GlobalVariables;
-import io.github.mianalysis.mia.Object.Status;
-import io.github.mianalysis.mia.Object.Workspace;
-import io.github.mianalysis.mia.Object.Parameters.BooleanP;
-import io.github.mianalysis.mia.Object.Parameters.ChoiceP;
-import io.github.mianalysis.mia.Object.Parameters.Parameters;
-import io.github.mianalysis.mia.Object.Parameters.ParameterGroup;
-import io.github.mianalysis.mia.Object.Parameters.ParameterGroup.ParameterUpdaterAndGetter;
-import io.github.mianalysis.mia.Object.Parameters.SeparatorP;
-import io.github.mianalysis.mia.Object.Parameters.Text.StringP;
-import io.github.mianalysis.mia.Object.Refs.Collections.ImageMeasurementRefs;
-import io.github.mianalysis.mia.Object.Refs.Collections.MetadataRefs;
-import io.github.mianalysis.mia.Object.Refs.Collections.ObjMeasurementRefs;
-import io.github.mianalysis.mia.Object.Refs.Collections.ParentChildRefs;
-import io.github.mianalysis.mia.Object.Refs.Collections.PartnerRefs;
+import io.github.mianalysis.mia.module.miscellaneous.GlobalVariables;
+import io.github.mianalysis.mia.object.Status;
+import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.parameters.BooleanP;
+import io.github.mianalysis.mia.object.parameters.ChoiceP;
+import io.github.mianalysis.mia.object.parameters.Parameters;
+import io.github.mianalysis.mia.object.parameters.ParameterGroup;
+import io.github.mianalysis.mia.object.parameters.ParameterGroup.ParameterUpdaterAndGetter;
+import io.github.mianalysis.mia.object.parameters.SeparatorP;
+import io.github.mianalysis.mia.object.parameters.text.StringP;
+import io.github.mianalysis.mia.object.refs.collections.ImageMeasurementRefs;
+import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
+import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
+import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
+import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 
 /**
  * Created by Stephen Cross on 23/11/2018.

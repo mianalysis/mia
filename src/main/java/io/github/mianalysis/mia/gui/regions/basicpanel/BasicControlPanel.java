@@ -3,14 +3,14 @@ package io.github.mianalysis.mia.gui.regions.basicpanel;
 import io.github.mianalysis.mia.gui.ComponentFactory;
 import io.github.mianalysis.mia.gui.GUI;
 import io.github.mianalysis.mia.gui.regions.workflowmodules.ModuleEnabledButton;
-import io.github.mianalysis.mia.module.Miscellaneous.GUISeparator;
+import io.github.mianalysis.mia.module.miscellaneous.GUISeparator;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.core.InputControl;
 import io.github.mianalysis.mia.module.core.OutputControl;
-import io.github.mianalysis.mia.Object.Parameters.BooleanP;
-import io.github.mianalysis.mia.Process.AnalysisHandling.Analysis;
-import io.github.mianalysis.mia.Process.AnalysisHandling.AnalysisTester;
+import io.github.mianalysis.mia.object.parameters.BooleanP;
+import io.github.mianalysis.mia.process.analysishandling.Analysis;
+import io.github.mianalysis.mia.process.analysishandling.AnalysisTester;
 
 import javax.swing.*;
 import javax.swing.border.EtchedBorder;

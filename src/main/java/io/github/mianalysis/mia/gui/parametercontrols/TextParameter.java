@@ -9,7 +9,7 @@ import javax.swing.JTextField;
 
 import io.github.mianalysis.mia.gui.GUI;
 import io.github.mianalysis.mia.module.core.OutputControl;
-import io.github.mianalysis.mia.Object.Parameters.Abstract.TextType;
+import io.github.mianalysis.mia.object.parameters.abstrakt.TextType;
 
 /**
  * Created by Stephen on 20/05/2017.

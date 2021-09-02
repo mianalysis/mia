@@ -3,7 +3,7 @@ package io.github.mianalysis.mia.macro.objectmeasurements;
 import ij.macro.MacroExtension;
 import io.github.mianalysis.mia.macro.MacroOperation;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.Object.*;
+import io.github.mianalysis.mia.object.*;
 
 public class MIA_GetObjectTimepoint extends MacroOperation {
     public MIA_GetObjectTimepoint(MacroExtension theHandler) {

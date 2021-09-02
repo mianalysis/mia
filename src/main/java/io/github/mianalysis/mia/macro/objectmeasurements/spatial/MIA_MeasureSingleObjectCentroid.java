@@ -4,9 +4,9 @@ import ij.macro.MacroExtension;
 import ij.measure.ResultsTable;
 import io.github.mianalysis.mia.macro.MacroOperation;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.Object.Obj;
-import io.github.mianalysis.mia.Object.Workspace;
-import io.github.mianalysis.mia.Object.Units.SpatialUnit;
+import io.github.mianalysis.mia.object.Obj;
+import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.units.SpatialUnit;
 
 public class MIA_MeasureSingleObjectCentroid extends MacroOperation {
     public MIA_MeasureSingleObjectCentroid(MacroExtension theHandler) {

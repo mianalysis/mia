@@ -341,7 +341,7 @@
                 </executions>
                 <configuration>
                     <classpathScope>compile</classpathScope>
-                    <mainClass>io.github.mianalysis.mia.Process.DocumentationGenerator</mainClass>
+                    <mainClass>io.github.mianalysis.mia.process.DocumentationGenerator</mainClass>
                 </configuration>
             </plugin>
 

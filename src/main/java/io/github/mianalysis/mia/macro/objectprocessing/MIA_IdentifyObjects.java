@@ -4,8 +4,8 @@ import ij.macro.MacroExtension;
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.macro.MacroOperation;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.module.ObjectProcessing.Identification.IdentifyObjects;
-import io.github.mianalysis.mia.Object.Workspace;
+import io.github.mianalysis.mia.module.objectprocessing.identification.IdentifyObjects;
+import io.github.mianalysis.mia.object.Workspace;
 
 public class MIA_IdentifyObjects extends MacroOperation {
     public MIA_IdentifyObjects(MacroExtension theHandler) {

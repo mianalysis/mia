@@ -15,7 +15,7 @@ import io.github.mianalysis.mia.gui.GUI;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.core.InputControl;
 import io.github.mianalysis.mia.module.core.OutputControl;
-import io.github.mianalysis.mia.Object.Parameters.Abstract.FileFolderType;
+import io.github.mianalysis.mia.object.parameters.abstrakt.FileFolderType;
 
 /**
  * Created by Stephen on 20/05/2017.

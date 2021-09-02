@@ -17,7 +17,7 @@ import javax.swing.JTextPane;
 
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.Process.ModuleSearcher.SearchMatch;
+import io.github.mianalysis.mia.process.ModuleSearcher.SearchMatch;
 
 public class ResultsPanel extends JPanel {
     public ResultsPanel() {

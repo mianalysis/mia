@@ -7,13 +7,13 @@ import javax.swing.JCheckBox;
 
 import io.github.mianalysis.mia.gui.GUI;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.Object.Parameters.OutputImageP;
-import io.github.mianalysis.mia.Object.Parameters.Objects.OutputObjectsP;
-import io.github.mianalysis.mia.Object.Refs.Abstract.ExportableRef;
-import io.github.mianalysis.mia.Object.Refs.Abstract.SummaryRef;
-import io.github.mianalysis.mia.Object.Refs.Collections.ImageMeasurementRefs;
-import io.github.mianalysis.mia.Object.Refs.Collections.MetadataRefs;
-import io.github.mianalysis.mia.Object.Refs.Collections.ObjMeasurementRefs;
+import io.github.mianalysis.mia.object.parameters.OutputImageP;
+import io.github.mianalysis.mia.object.parameters.objects.OutputObjectsP;
+import io.github.mianalysis.mia.object.refs.abstrakt.ExportableRef;
+import io.github.mianalysis.mia.object.refs.abstrakt.SummaryRef;
+import io.github.mianalysis.mia.object.refs.collections.ImageMeasurementRefs;
+import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
+import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 
 /**
  * Created by Stephen Cross on 02/12/2017.
