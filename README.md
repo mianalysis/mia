@@ -2,7 +2,7 @@
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.1201372.svg)](https://doi.org/10.5281/zenodo.1201320)
 [![JitPack](https://jitpack.io/v/SJCross/ModularImageAnalysis.svg)](https://jitpack.io/#SJCross/ModularImageAnalysis/)
 
-[![Wolfson Bioimaging](src/main/resources/images/Logo_text_UoB_128.png)](http://www.bristol.ac.uk/wolfson-bioimaging/)
+[![Wolfson Bioimaging](./src/main/resources/Images/Logo_text_UoB_128.png)](http://www.bristol.ac.uk/wolfson-bioimaging/)
 
 About MIA
 ------------
