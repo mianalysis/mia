@@ -29,10 +29,10 @@ import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
-import io.github.sjcross.common.MathFunc.CumStat;
-import io.github.sjcross.common.MathFunc.Indexer;
-import io.github.sjcross.common.Object.Point;
-import io.github.sjcross.common.Object.Volume.SpatCal;
+import io.github.sjcross.common.mathfunc.CumStat;
+import io.github.sjcross.common.mathfunc.Indexer;
+import io.github.sjcross.common.object.Point;
+import io.github.sjcross.common.object.volume.SpatCal;
 
 public class CreateObjectDensityMap extends Module {
     public static final String INPUT_SEPARATOR = "Object input / Image output";

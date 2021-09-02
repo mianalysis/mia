@@ -28,8 +28,8 @@
 // import io.github.mianalysis.MIA.Object.References.Collections.ObjMeasurementRefs;
 // import io.github.mianalysis.MIA.Object.References.Collections.ParentChildRefs;
 // import io.github.mianalysis.MIA.Object.References.Collections.PartnerRefs;
-// import io.github.sjcross.common.MathFunc.CumStat;
-// import io.github.sjcross.common.Object.Point;
+// import io.github.sjcross.common.mathfunc.CumStat;
+// import io.github.sjcross.common.object.Point;
 
 // public class MeasureRadialIntensityProfile extends Module {
 //     public static final String INPUT_OBJECTS = "Input objects";

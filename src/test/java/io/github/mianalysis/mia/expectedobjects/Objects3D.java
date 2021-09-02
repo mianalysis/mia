@@ -1,8 +1,8 @@
 package io.github.mianalysis.mia.expectedobjects;
 
 import io.github.mianalysis.mia.object.Objs;
-import io.github.sjcross.common.Exceptions.IntegerOverflowException;
-import io.github.sjcross.common.Object.Volume.VolumeType;
+import io.github.sjcross.common.exceptions.IntegerOverflowException;
+import io.github.sjcross.common.object.volume.VolumeType;
 
 import java.util.HashMap;
 import java.util.List;

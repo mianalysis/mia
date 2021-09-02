@@ -50,12 +50,12 @@ import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
-import io.github.sjcross.common.Object.Point;
-import io.github.sjcross.common.Object.Volume.CoordinateSet;
-import io.github.sjcross.common.Object.Volume.PointOutOfRangeException;
-import io.github.sjcross.common.Object.Volume.SpatCal;
-import io.github.sjcross.common.Object.Volume.Volume;
-import io.github.sjcross.common.Object.Volume.VolumeType;
+import io.github.sjcross.common.object.Point;
+import io.github.sjcross.common.object.volume.CoordinateSet;
+import io.github.sjcross.common.object.volume.PointOutOfRangeException;
+import io.github.sjcross.common.object.volume.SpatCal;
+import io.github.sjcross.common.object.volume.Volume;
+import io.github.sjcross.common.object.volume.VolumeType;
 
 /**
  * Created by sc13967 on 22/06/2017.

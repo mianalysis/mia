@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 
-import io.github.sjcross.common.MathFunc.CumStat;
+import io.github.sjcross.common.mathfunc.CumStat;
 
 /**
  * Created by sc13967 on 27/10/2016.

@@ -16,7 +16,7 @@ import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.Workspaces;
-import io.github.sjcross.common.Object.Volume.VolumeType;
+import io.github.sjcross.common.object.volume.VolumeType;
 
 public class BinObjectsByMeasurementTest extends ModuleTest {
     private double tolerance = 1E-2;

@@ -29,7 +29,7 @@ import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
-import io.github.sjcross.common.Analysis.TextureCalculator;
+import io.github.sjcross.common.analysis.TextureCalculator;
 
 /**
  * Takes a set of objects and measures intensity texture values on a provided image.  Measurements are stored with the

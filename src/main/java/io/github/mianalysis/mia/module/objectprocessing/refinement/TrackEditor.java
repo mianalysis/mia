@@ -46,7 +46,7 @@ import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
-import io.github.sjcross.common.Object.Volume.VolumeType;
+import io.github.sjcross.common.object.volume.VolumeType;
 
 /**
  * Created by Stephen on 13/05/2021.

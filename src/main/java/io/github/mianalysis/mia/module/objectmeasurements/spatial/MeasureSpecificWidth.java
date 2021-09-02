@@ -32,8 +32,8 @@ import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
-import io.github.sjcross.common.Object.Point;
-import io.github.sjcross.common.Object.Volume.SpatCal;
+import io.github.sjcross.common.object.Point;
+import io.github.sjcross.common.object.volume.SpatCal;
 
 public class MeasureSpecificWidth extends Module {
     public static final String INPUT_SEPARATOR = "Object input";

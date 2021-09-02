@@ -44,7 +44,7 @@ import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.process.ColourFactory;
 import io.github.mianalysis.mia.process.LabelFactory;
-import io.github.sjcross.common.Object.Point;
+import io.github.sjcross.common.object.Point;
 
 public class AddLabels extends AbstractOverlay {
     TextRoi textRoi = null;

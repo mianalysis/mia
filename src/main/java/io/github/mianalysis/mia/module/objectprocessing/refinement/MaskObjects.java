@@ -31,8 +31,8 @@ import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.process.ColourFactory;
-import io.github.sjcross.common.Object.Point;
-import io.github.sjcross.common.Object.Volume.PointOutOfRangeException;
+import io.github.sjcross.common.object.Point;
+import io.github.sjcross.common.object.volume.PointOutOfRangeException;
 
 public class MaskObjects<T extends RealType<T> & NativeType<T>> extends Module {
     public static final String INPUT_SEPARATOR = "Object input/output";

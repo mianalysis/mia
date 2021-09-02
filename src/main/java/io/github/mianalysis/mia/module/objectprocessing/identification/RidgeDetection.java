@@ -48,12 +48,12 @@ import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.units.SpatialUnit;
 import io.github.mianalysis.mia.object.units.TemporalUnit;
 import io.github.mianalysis.mia.process.ColourFactory;
-import io.github.sjcross.common.MathFunc.CumStat;
-import io.github.sjcross.common.Object.Volume.PointOutOfRangeException;
-import io.github.sjcross.common.Object.Volume.SpatCal;
-import io.github.sjcross.common.Object.Volume.VolumeType;
-import io.github.sjcross.common.Process.IntensityMinMax;
-import io.github.sjcross.common.Process.SkeletonTools.BreakFixer;
+import io.github.sjcross.common.mathfunc.CumStat;
+import io.github.sjcross.common.object.volume.PointOutOfRangeException;
+import io.github.sjcross.common.object.volume.SpatCal;
+import io.github.sjcross.common.object.volume.VolumeType;
+import io.github.sjcross.common.process.IntensityMinMax;
+import io.github.sjcross.common.process.skeletontools.BreakFixer;
 
 /**
  * Created by sc13967 on 30/05/2017.

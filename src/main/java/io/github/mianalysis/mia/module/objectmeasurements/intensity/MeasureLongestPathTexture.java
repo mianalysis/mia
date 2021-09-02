@@ -31,8 +31,8 @@
 // import io.github.mianalysis.MIA.Object.References.Collections.ObjMeasurementRefs;
 // import io.github.mianalysis.MIA.Object.References.Collections.ParentChildRefs;
 // import io.github.mianalysis.MIA.Object.References.Collections.PartnerRefs;
-// import io.github.sjcross.common.Analysis.TextureCalculator;
-// import io.github.sjcross.common.Object.Vertex;
+// import io.github.sjcross.common.analysis.TextureCalculator;
+// import io.github.sjcross.common.object.Vertex;
 
 // /**
 //  * Takes a set of objects and measures intensity texture values on a provided

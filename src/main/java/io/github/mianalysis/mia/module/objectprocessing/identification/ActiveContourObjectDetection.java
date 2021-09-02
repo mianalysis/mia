@@ -27,19 +27,19 @@ import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
-import io.github.sjcross.common.Exceptions.IntegerOverflowException;
-import io.github.sjcross.common.Object.Volume.PointOutOfRangeException;
-import io.github.sjcross.common.Process.IntensityMinMax;
-import io.github.sjcross.common.Process.ActiveContour.ContourInitialiser;
-import io.github.sjcross.common.Process.ActiveContour.Energies.BendingEnergy;
-import io.github.sjcross.common.Process.ActiveContour.Energies.ElasticEnergy;
-import io.github.sjcross.common.Process.ActiveContour.Energies.Energy;
-import io.github.sjcross.common.Process.ActiveContour.Energies.EnergyCollection;
-import io.github.sjcross.common.Process.ActiveContour.Energies.PathEnergy;
-import io.github.sjcross.common.Process.ActiveContour.Minimisers.GreedyMinimiser;
-import io.github.sjcross.common.Process.ActiveContour.PhysicalModel.NodeCollection;
-import io.github.sjcross.common.Process.ActiveContour.PhysicalModel.Vertex;
-import io.github.sjcross.common.Process.ActiveContour.Visualisation.GridOverlay;
+import io.github.sjcross.common.exceptions.IntegerOverflowException;
+import io.github.sjcross.common.object.volume.PointOutOfRangeException;
+import io.github.sjcross.common.process.IntensityMinMax;
+import io.github.sjcross.common.process.activecontour.ContourInitialiser;
+import io.github.sjcross.common.process.activecontour.energies.BendingEnergy;
+import io.github.sjcross.common.process.activecontour.energies.ElasticEnergy;
+import io.github.sjcross.common.process.activecontour.energies.Energy;
+import io.github.sjcross.common.process.activecontour.energies.EnergyCollection;
+import io.github.sjcross.common.process.activecontour.energies.PathEnergy;
+import io.github.sjcross.common.process.activecontour.minimisers.GreedyMinimiser;
+import io.github.sjcross.common.process.activecontour.physicalmodel.NodeCollection;
+import io.github.sjcross.common.process.activecontour.physicalmodel.Vertex;
+import io.github.sjcross.common.process.activecontour.visualisation.GridOverlay;
 
 /**
  * Created by sc13967 on 16/01/2018.

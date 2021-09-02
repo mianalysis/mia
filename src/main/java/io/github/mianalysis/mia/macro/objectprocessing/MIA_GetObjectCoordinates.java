@@ -6,7 +6,7 @@ import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
-import io.github.sjcross.common.Object.Point;
+import io.github.sjcross.common.object.Point;
 
 public class MIA_GetObjectCoordinates extends MacroOperation {
     public MIA_GetObjectCoordinates(MacroExtension theHandler) {

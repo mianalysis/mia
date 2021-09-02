@@ -17,7 +17,7 @@ import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
-import io.github.sjcross.common.Object.Volume.Volume;
+import io.github.sjcross.common.object.volume.Volume;
 
 public class GetObjectSurface extends Module {
     public static final String INPUT_SEPARATOR = "Image input, object output";

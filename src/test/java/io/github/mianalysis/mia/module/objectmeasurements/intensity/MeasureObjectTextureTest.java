@@ -12,8 +12,8 @@ import io.github.mianalysis.mia.module.ModuleTest;
 import io.github.mianalysis.mia.object.Image;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
-import io.github.sjcross.common.Analysis.TextureCalculator;
-import io.github.sjcross.common.Object.Volume.VolumeType;
+import io.github.sjcross.common.analysis.TextureCalculator;
+import io.github.sjcross.common.object.volume.VolumeType;
 
 import java.net.URLDecoder;
 

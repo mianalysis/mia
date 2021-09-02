@@ -50,8 +50,8 @@
 // import io.github.mianalysis.MIA.Object.References.Collections.ParentChildRefs;
 // import io.github.mianalysis.MIA.Object.References.Collections.PartnerRefs;
 // import io.github.mianalysis.MIA.Process.ColourFactory;
-// import io.github.sjcross.common.MathFunc.CumStat;
-// import io.github.sjcross.common.MetadataExtractors.Metadata;
+// import io.github.sjcross.common.mathfunc.CumStat;
+// import io.github.sjcross.common.metadataextractors.Metadata;
 
 // /**
 //  * Created by Stephen on 17/11/2017.

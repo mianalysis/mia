@@ -123,8 +123,8 @@ import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.process.ColourFactory;
-import io.github.sjcross.common.ImageJ.LUTs;
-import io.github.sjcross.common.Object.Volume.VolumeType;
+import io.github.sjcross.common.imagej.LUTs;
+import io.github.sjcross.common.object.volume.VolumeType;
 
 public class RelateManyToMany extends Module {
     public static final String INPUT_SEPARATOR = "Objects input/output";

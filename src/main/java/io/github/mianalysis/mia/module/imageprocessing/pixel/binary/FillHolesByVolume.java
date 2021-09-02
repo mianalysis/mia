@@ -39,7 +39,7 @@ import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
-import io.github.sjcross.common.Exceptions.LongOverflowException;
+import io.github.sjcross.common.exceptions.LongOverflowException;
 
 public class FillHolesByVolume extends Module {
     public static final String INPUT_SEPARATOR = "Image input, object output";

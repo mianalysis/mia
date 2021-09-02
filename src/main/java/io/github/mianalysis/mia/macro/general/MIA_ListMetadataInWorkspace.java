@@ -5,7 +5,7 @@ import ij.measure.ResultsTable;
 import io.github.mianalysis.mia.macro.MacroOperation;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.Workspace;
-import io.github.sjcross.common.MetadataExtractors.Metadata;
+import io.github.sjcross.common.metadataextractors.Metadata;
 
 public class MIA_ListMetadataInWorkspace extends MacroOperation {
     public MIA_ListMetadataInWorkspace(MacroExtension theHandler) {

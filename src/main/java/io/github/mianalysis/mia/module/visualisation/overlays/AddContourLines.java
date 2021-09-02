@@ -43,8 +43,8 @@ import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.process.ColourFactory;
 import io.github.mianalysis.mia.process.LabelFactory;
-import io.github.sjcross.common.MathFunc.CumStat;
-import io.github.sjcross.common.ImageJ.LUTs;
+import io.github.sjcross.common.mathfunc.CumStat;
+import io.github.sjcross.common.imagej.LUTs;
 
 public class AddContourLines extends Module {
     public static final String INPUT_SEPARATOR = "Image input/output";

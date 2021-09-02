@@ -27,11 +27,11 @@ import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.object.refs.ImageMeasurementRef;
 import io.github.mianalysis.mia.object.refs.collections.ImageMeasurementRefs;
 import io.github.mianalysis.mia.object.units.TemporalUnit;
-import io.github.sjcross.common.MathFunc.CumStat;
-import io.github.sjcross.common.Object.Volume.PointOutOfRangeException;
-import io.github.sjcross.common.Object.Volume.SpatCal;
-import io.github.sjcross.common.Object.Volume.VolumeType;
-import io.github.sjcross.common.Process.IntensityMinMax;
+import io.github.sjcross.common.mathfunc.CumStat;
+import io.github.sjcross.common.object.volume.PointOutOfRangeException;
+import io.github.sjcross.common.object.volume.SpatCal;
+import io.github.sjcross.common.object.volume.VolumeType;
+import io.github.sjcross.common.process.IntensityMinMax;
 
 /**
  * Created by stephen on 30/04/2017.

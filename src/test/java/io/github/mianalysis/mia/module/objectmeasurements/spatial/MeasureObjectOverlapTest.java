@@ -14,9 +14,9 @@ import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.Workspaces;
-import io.github.sjcross.common.Object.Volume.PointOutOfRangeException;
-import io.github.sjcross.common.Object.Volume.SpatCal;
-import io.github.sjcross.common.Object.Volume.VolumeType;
+import io.github.sjcross.common.object.volume.PointOutOfRangeException;
+import io.github.sjcross.common.object.volume.SpatCal;
+import io.github.sjcross.common.object.volume.VolumeType;
 
 public class MeasureObjectOverlapTest extends ModuleTest {
 

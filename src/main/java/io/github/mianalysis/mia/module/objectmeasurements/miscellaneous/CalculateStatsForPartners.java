@@ -21,7 +21,7 @@ import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.PartnerObjectsP;
-import io.github.sjcross.common.MathFunc.CumStat;
+import io.github.sjcross.common.mathfunc.CumStat;
 
 public class CalculateStatsForPartners extends Module {
     public static final String INPUT_SEPARATOR = "Objects input";

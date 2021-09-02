@@ -28,8 +28,8 @@ import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.parameters.Parameters;
-import io.github.sjcross.common.Exceptions.IntegerOverflowException;
-import io.github.sjcross.common.Object.Point;
+import io.github.sjcross.common.exceptions.IntegerOverflowException;
+import io.github.sjcross.common.object.Point;
 
 /**
  * Created by sc13967 on 29/06/2017.

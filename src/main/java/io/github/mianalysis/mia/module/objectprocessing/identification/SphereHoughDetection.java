@@ -41,13 +41,13 @@ import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.units.TemporalUnit;
 import io.github.mianalysis.mia.process.ColourFactory;
 import io.github.mianalysis.mia.process.LabelFactory;
-import io.github.sjcross.common.Exceptions.IntegerOverflowException;
-import io.github.sjcross.common.Object.Volume.PointOutOfRangeException;
-import io.github.sjcross.common.Object.Volume.SpatCal;
-import io.github.sjcross.common.Object.Volume.VolumeType;
-import io.github.sjcross.common.Object.Voxels.SphereSolid;
-import io.github.sjcross.common.Process.IntensityMinMax;
-import io.github.sjcross.common.Process.HoughTransform.Transforms.SphereHoughTransform;
+import io.github.sjcross.common.exceptions.IntegerOverflowException;
+import io.github.sjcross.common.object.volume.PointOutOfRangeException;
+import io.github.sjcross.common.object.volume.SpatCal;
+import io.github.sjcross.common.object.volume.VolumeType;
+import io.github.sjcross.common.object.voxels.SphereSolid;
+import io.github.sjcross.common.process.IntensityMinMax;
+import io.github.sjcross.common.process.houghtransform.transforms.SphereHoughTransform;
 
 /**
  * Created by sc13967 on 15/01/2018.

@@ -20,7 +20,7 @@
 // import io.github.mianalysis.MIA.Object.Objs;
 // import io.github.mianalysis.MIA.Object.Workspace;
 // import io.github.mianalysis.MIA.Object.Workspaces;
-// import io.github.sjcross.common.Object.Volume.VolumeType;
+// import io.github.sjcross.common.object.volume.VolumeType;
 
 // public class MeasureImageColocalisationTest extends ModuleTest {
 //     private double tolerance = 1E-2;
@@ -160,7 +160,7 @@
 // //import io.github.mianalysis.MIA.Object.Image;
 // //import io.github.mianalysis.MIA.Object.Objs;
 // //import io.github.mianalysis.MIA.Object.Workspace;
-// //import io.github.sjcross.common.Object.Volume.VolumeType;
+// //import io.github.sjcross.common.object.volume.VolumeType;
 // //
 // //import java.net.URLDecoder;
 // //

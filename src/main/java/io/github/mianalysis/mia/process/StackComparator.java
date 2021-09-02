@@ -4,7 +4,7 @@ package io.github.mianalysis.mia.process;
 
 import java.util.Comparator;
 
-import io.github.sjcross.common.MetadataExtractors.Metadata;
+import io.github.sjcross.common.metadataextractors.Metadata;
 
 /**
  * Created by Stephen on 01/05/2017.

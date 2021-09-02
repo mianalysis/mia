@@ -48,12 +48,12 @@ import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.units.SpatialUnit;
 import io.github.mianalysis.mia.object.units.TemporalUnit;
 import io.github.mianalysis.mia.process.CommaSeparatedStringInterpreter;
-import io.github.sjcross.common.FileConditions.ExtensionMatchesString;
-import io.github.sjcross.common.FileConditions.FileCondition;
-import io.github.sjcross.common.FileConditions.NameContainsString;
-import io.github.sjcross.common.FileConditions.ParentContainsString;
-import io.github.sjcross.common.MetadataExtractors.Metadata;
-import io.github.sjcross.common.System.FileCrawler;
+import io.github.sjcross.common.fileconditions.ExtensionMatchesString;
+import io.github.sjcross.common.fileconditions.FileCondition;
+import io.github.sjcross.common.fileconditions.NameContainsString;
+import io.github.sjcross.common.fileconditions.ParentContainsString;
+import io.github.sjcross.common.metadataextractors.Metadata;
+import io.github.sjcross.common.system.FileCrawler;
 
 /**
  * Created by Stephen on 29/07/2017.

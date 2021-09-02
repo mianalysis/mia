@@ -37,14 +37,14 @@ import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.units.TemporalUnit;
 import io.github.mianalysis.mia.process.ColourFactory;
 import io.github.mianalysis.mia.process.LabelFactory;
-import io.github.sjcross.common.Exceptions.IntegerOverflowException;
-import io.github.sjcross.common.MathFunc.Indexer;
-import io.github.sjcross.common.Object.Volume.PointOutOfRangeException;
-import io.github.sjcross.common.Object.Volume.SpatCal;
-import io.github.sjcross.common.Object.Volume.VolumeType;
-import io.github.sjcross.common.Object.Voxels.MidpointCircle;
-import io.github.sjcross.common.Process.IntensityMinMax;
-import io.github.sjcross.common.Process.HoughTransform.Transforms.CircleHoughTransform;
+import io.github.sjcross.common.exceptions.IntegerOverflowException;
+import io.github.sjcross.common.mathfunc.Indexer;
+import io.github.sjcross.common.object.volume.PointOutOfRangeException;
+import io.github.sjcross.common.object.volume.SpatCal;
+import io.github.sjcross.common.object.volume.VolumeType;
+import io.github.sjcross.common.object.voxels.MidpointCircle;
+import io.github.sjcross.common.process.IntensityMinMax;
+import io.github.sjcross.common.process.houghtransform.transforms.CircleHoughTransform;
 
 /**
  * Created by sc13967 on 15/01/2018.

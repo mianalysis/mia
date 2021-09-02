@@ -27,18 +27,18 @@ import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
-import io.github.sjcross.common.MetadataExtractors.CV1000FilenameExtractor;
-import io.github.sjcross.common.MetadataExtractors.CV1000FoldernameExtractor;
-import io.github.sjcross.common.MetadataExtractors.CV7000FilenameExtractor;
-import io.github.sjcross.common.MetadataExtractors.FileExtractor;
-import io.github.sjcross.common.MetadataExtractors.GenericExtractor;
-import io.github.sjcross.common.MetadataExtractors.IncuCyteLongFilenameExtractor;
-import io.github.sjcross.common.MetadataExtractors.IncuCyteShortFilenameExtractor;
-import io.github.sjcross.common.MetadataExtractors.Metadata;
-import io.github.sjcross.common.MetadataExtractors.NameExtractor;
-import io.github.sjcross.common.MetadataExtractors.OperaFileExtractor;
-import io.github.sjcross.common.MetadataExtractors.OperaFilenameExtractor;
-import io.github.sjcross.common.MetadataExtractors.OperaFoldernameExtractor;
+import io.github.sjcross.common.metadataextractors.CV1000FilenameExtractor;
+import io.github.sjcross.common.metadataextractors.CV1000FoldernameExtractor;
+import io.github.sjcross.common.metadataextractors.CV7000FilenameExtractor;
+import io.github.sjcross.common.metadataextractors.FileExtractor;
+import io.github.sjcross.common.metadataextractors.GenericExtractor;
+import io.github.sjcross.common.metadataextractors.IncuCyteLongFilenameExtractor;
+import io.github.sjcross.common.metadataextractors.IncuCyteShortFilenameExtractor;
+import io.github.sjcross.common.metadataextractors.Metadata;
+import io.github.sjcross.common.metadataextractors.NameExtractor;
+import io.github.sjcross.common.metadataextractors.OperaFileExtractor;
+import io.github.sjcross.common.metadataextractors.OperaFilenameExtractor;
+import io.github.sjcross.common.metadataextractors.OperaFoldernameExtractor;
 
 /**
  * Created by sc13967 on 05/05/2017.

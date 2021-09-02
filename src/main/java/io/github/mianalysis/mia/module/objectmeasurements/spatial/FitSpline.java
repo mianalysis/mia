@@ -44,13 +44,13 @@ import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
-import io.github.sjcross.common.Analysis.CurvatureCalculator;
-import io.github.sjcross.common.MathFunc.CumStat;
-import io.github.sjcross.common.Object.Point;
-import io.github.sjcross.common.Object.Vertex;
-import io.github.sjcross.common.Object.Volume.PointOutOfRangeException;
-import io.github.sjcross.common.Object.Volume.VolumeType;
-import io.github.sjcross.common.Object.Voxels.BresenhamLine;
+import io.github.sjcross.common.analysis.CurvatureCalculator;
+import io.github.sjcross.common.mathfunc.CumStat;
+import io.github.sjcross.common.object.Point;
+import io.github.sjcross.common.object.Vertex;
+import io.github.sjcross.common.object.volume.PointOutOfRangeException;
+import io.github.sjcross.common.object.volume.VolumeType;
+import io.github.sjcross.common.object.voxels.BresenhamLine;
 
 /**
  * Created by sc13967 on 24/01/2018.

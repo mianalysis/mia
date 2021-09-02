@@ -20,7 +20,7 @@ Installation
 
 Create new workflow
 ------------
-- In Fiji, run the plugin from Plugins > Bristol WBIF > Modular Image Analysis
+- In Fiji, run the plugin from Plugins > MIA > MIA (Modular Image Analysis)
 > - Select View > "Switch to editing view" from the menu bar
 > - Modules are added and removed from the workflow using the "+" and "-" buttons
 > - Module order can be shifted with the arrow buttons
@@ -30,7 +30,7 @@ Create new workflow
 
 Use existing workflow
 ------------
-- In Fiji, run the plugin from Plugins > Bristol WBIF > Modular Image Analysis
+- In Fiji, run the plugin from Plugins > MIA > MIA (Modular Image Analysis)
 - To run an existing analysis workflow
 > - Click "Load" and select the .mia workflow file
 > - Depending on workflow configuration, a number of controls may be visible

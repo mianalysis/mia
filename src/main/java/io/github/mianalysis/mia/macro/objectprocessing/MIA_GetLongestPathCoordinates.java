@@ -9,7 +9,7 @@ import io.github.mianalysis.mia.module.objectmeasurements.spatial.FitSpline;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
-import io.github.sjcross.common.Object.Vertex;
+import io.github.sjcross.common.object.Vertex;
 
 public class MIA_GetLongestPathCoordinates extends MacroOperation {
     public MIA_GetLongestPathCoordinates(MacroExtension theHandler) {

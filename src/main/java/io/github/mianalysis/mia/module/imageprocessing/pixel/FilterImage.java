@@ -40,7 +40,7 @@ import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.process.CommaSeparatedStringInterpreter;
-import io.github.sjcross.common.Filters.DoG;
+import io.github.sjcross.common.filters.DoG;
 
 /**
  * Created by Stephen on 30/05/2017.

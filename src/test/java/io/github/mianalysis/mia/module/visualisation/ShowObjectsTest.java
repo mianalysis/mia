@@ -13,7 +13,7 @@ import io.github.mianalysis.mia.module.objectprocessing.miscellaneous.ConvertObj
 import io.github.mianalysis.mia.object.Image;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.process.ColourFactory;
-import io.github.sjcross.common.Object.Volume.VolumeType;
+import io.github.sjcross.common.object.volume.VolumeType;
 
 import java.net.URLDecoder;
 import java.util.HashMap;

@@ -16,8 +16,8 @@ import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
-import io.github.sjcross.common.MathFunc.CumStat;
-import io.github.sjcross.common.Object.Point;
+import io.github.sjcross.common.mathfunc.CumStat;
+import io.github.sjcross.common.object.Point;
 
 /**
  * Similar to MeasureObjectIntensity, but performed on circular (or spherical)
