@@ -65,7 +65,7 @@ public class MIA implements Command {
     // public static Context context;
 
     @Parameter
-    public static ImageJService iJService;
+    public static ImageJService ijService;
 
 
     public static void main(String[] args) throws Exception {
@@ -105,7 +105,7 @@ public class MIA implements Command {
         try {
             if (!headless) {
                 // Before removing the old renderer we want to check the new one can be created
-                UIService uiService = iJService.context().getService(UIService.class);
+                UIService uiService = ijService.context().getService(UIService.class);
                 LogRenderer newRenderer = new ConsoleRenderer(uiService);
                 log.removeRenderer(mainRenderer);
 

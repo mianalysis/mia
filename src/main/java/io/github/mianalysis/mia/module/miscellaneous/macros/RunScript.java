@@ -171,7 +171,7 @@ public class RunScript extends Module {
                 scriptParameters.put("thisModule", this);
 
             // Running script
-            ScriptService scriptService = MIA.iJService.getContext().getService(ScriptService.class);
+            ScriptService scriptService = MIA.ijService.getContext().getService(ScriptService.class);
             // MIA.scriptService.setContext(MIA.context);
             ScriptModule scriptModule = scriptService
                     .run("script." + extension, scriptText, false, scriptParameters).get();
