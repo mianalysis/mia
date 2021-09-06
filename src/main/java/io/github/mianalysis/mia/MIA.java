@@ -19,6 +19,7 @@ import org.scijava.script.ScriptService;
 import org.scijava.ui.UIService;
 
 import net.imagej.ImageJ;
+import net.imagej.ImageJService;
 import io.github.mianalysis.mia.gui.GUI;
 import io.github.mianalysis.mia.object.Preferences;
 import io.github.mianalysis.mia.process.DependencyValidator;
@@ -54,14 +55,17 @@ public class MIA implements Command {
          */
     private static final boolean imagePlusMode = true;
 
-    @Parameter
-    public static UIService uiService;
+    // @Parameter
+    // public static UIService uiService;
+
+    // @Parameter
+    // public static ScriptService scriptService;
+
+    // @Parameter
+    // public static Context context;
 
     @Parameter
-    public static ScriptService scriptService;
-
-    @Parameter
-    public static Context context;
+    public static ImageJService iJService;
 
 
     public static void main(String[] args) throws Exception {
@@ -88,19 +92,20 @@ public class MIA implements Command {
         preferences = new Preferences(null);
         
         setLookAndFeel();
-
+        
         // Waiting for UIService to become available
-        while (uiService == null) {
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
+        // while (uiService == null) {
+        //     try {
+        //         Thread.sleep(100);
+        //     } catch (InterruptedException e) {
+        //         e.printStackTrace();
+        //     }
+        // }
 
         try {
             if (!headless) {
                 // Before removing the old renderer we want to check the new one can be created
+                UIService uiService = iJService.context().getService(UIService.class);
                 LogRenderer newRenderer = new ConsoleRenderer(uiService);
                 log.removeRenderer(mainRenderer);
 

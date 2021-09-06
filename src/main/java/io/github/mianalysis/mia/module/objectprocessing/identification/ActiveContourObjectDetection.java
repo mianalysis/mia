@@ -196,8 +196,6 @@ public class ActiveContourObjectDetection extends Module {
                 }
             } catch (IntegerOverflowException e) {
                 return Status.FAIL;
-            } catch (PointOutOfRangeException e) {
-
             }
 
             writeProgressStatus(count++, total, "objects");

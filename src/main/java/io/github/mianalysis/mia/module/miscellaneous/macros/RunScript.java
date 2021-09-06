@@ -21,6 +21,7 @@ import java.util.concurrent.ExecutionException;
 
 import org.apache.commons.io.FilenameUtils;
 import org.scijava.script.ScriptModule;
+import org.scijava.script.ScriptService;
 
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Categories;
@@ -170,8 +171,9 @@ public class RunScript extends Module {
                 scriptParameters.put("thisModule", this);
 
             // Running script
-            MIA.scriptService.setContext(MIA.context);
-            ScriptModule scriptModule = MIA.scriptService
+            ScriptService scriptService = MIA.iJService.getContext().getService(ScriptService.class);
+            // MIA.scriptService.setContext(MIA.context);
+            ScriptModule scriptModule = scriptService
                     .run("script." + extension, scriptText, false, scriptParameters).get();
 
             // Adding output images/objects to the workspace

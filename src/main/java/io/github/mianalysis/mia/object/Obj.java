@@ -391,9 +391,11 @@ public class Obj extends Volume {
 
     }
 
-    public void addPointsFromRoi(Roi roi, int z) throws IntegerOverflowException, PointOutOfRangeException {
+    public void addPointsFromRoi(Roi roi, int z) throws IntegerOverflowException {
         for (java.awt.Point point : roi.getContainedPoints()) {
+            try {
             add((int) point.getX(), (int) point.getY(), z);
+            } catch (PointOutOfRangeException e) {}
         }
     }
 
