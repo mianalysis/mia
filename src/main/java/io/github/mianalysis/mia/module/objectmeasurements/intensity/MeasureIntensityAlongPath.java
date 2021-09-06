@@ -109,18 +109,18 @@ public class MeasureIntensityAlongPath extends Module {
     }
 
     public static void process(Obj object, Image image, Sheet sheet, boolean includeTimepoints) {
-        ImagePlus iplMeas = image.getImagePlus().duplicate();
+        // ImagePlus iplMeas = image.getImagePlus().duplicate();
 
-        // If the input stack is a single timepoint and channel, there's no need to
-        // create a new ImageStack
-        ImageStack timeStack;
-        if (iplMeas.getNChannels() == 1 && iplMeas.getNFrames() == 1) {
-            timeStack = iplMeas.getStack();
-        } else {
-            int t = object.getT() + 1;
-            int nSlices = iplMeas.getNSlices();
-            timeStack = SubHyperstackMaker.makeSubhyperstack(iplMeas, "1-1", "1-" + nSlices, t + "-" + t).getStack();
-        }
+        // // If the input stack is a single timepoint and channel, there's no need to
+        // // create a new ImageStack
+        // ImageStack timeStack;
+        // if (iplMeas.getNChannels() == 1 && iplMeas.getNFrames() == 1) {
+        //     timeStack = iplMeas.getStack();
+        // } else {
+        //     int t = object.getT() + 1;
+        //     int nSlices = iplMeas.getNSlices();
+        //     timeStack = SubHyperstackMaker.makeSubhyperstack(iplMeas, "1-1", "1-" + nSlices, t + "-" + t).getStack();
+        // }
 
         CoordinateSet unorderedPoints = getUnorderedPoints(object);
         if (unorderedPoints == null)
@@ -130,7 +130,7 @@ public class MeasureIntensityAlongPath extends Module {
         if (orderedPoints == null)
             return;
 
-        LinkedHashMap<Double, Double> rawIntensities = measureIntensityProfile(orderedPoints, timeStack,
+        LinkedHashMap<Double, Double> rawIntensities = measureIntensityProfile(orderedPoints, image, object.getT(),
                 object.getSpatialCalibration());
         LinkedHashMap<Integer, Double> spacedIntensities = interpolateProfile(rawIntensities);
 
@@ -370,7 +370,9 @@ public class MeasureIntensityAlongPath extends Module {
     }
 
     public static LinkedHashMap<Double, Double> measureIntensityProfile(Collection<Point<Integer>> points,
-            ImageStack ist, SpatCal spatCal) {
+            Image image, int t, SpatCal spatCal) {
+        ImagePlus ipl = image.getImagePlus();
+
         LinkedHashMap<Double, Double> profile = new LinkedHashMap<>();
         Point<Integer> prevPoint = null;
         double distance = 0;
@@ -379,7 +381,9 @@ public class MeasureIntensityAlongPath extends Module {
             int y = point.getY();
             int z = point.getZ();
 
-            double intensity = ist.getVoxel(x, y, z);
+            ipl.setPosition(1, z + 1, t + 1);
+            double intensity = ipl.getProcessor().getPixel(x, y);
+            // double intensity = ist.getVoxel(x, y, z);
 
             if (prevPoint != null) {
                 Volume volume1 = new Volume(VolumeType.POINTLIST, spatCal.duplicate());

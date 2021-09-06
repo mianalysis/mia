@@ -412,7 +412,7 @@ public class DocumentationGenerator {
             sb.append("\n\n");
 
             sb.append(
-                    "[![Wolfson Bioimaging](./src/main/resources/Images/Logo_text_UoB_128.png)](http://www.bristol.ac.uk/wolfson-bioimaging/)");
+                    "[![Wolfson Bioimaging](./src/main/resources/images/Logo_text_UoB_128.png)](http://www.bristol.ac.uk/wolfson-bioimaging/)");
             sb.append("\n\n");
 
             sb.append("About MIA").append("\n").append("------------").append("\n");

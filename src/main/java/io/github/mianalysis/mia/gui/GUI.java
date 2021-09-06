@@ -170,6 +170,8 @@ public class GUI {
         menuBar.setFileListSelected(showFileList());
         menuBar.setSearchSelected(showSearch());
 
+        menuBar.update();
+
         frame.pack();
         frame.revalidate();
         frame.repaint();
