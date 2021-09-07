@@ -109,19 +109,6 @@ public class MeasureIntensityAlongPath extends Module {
     }
 
     public static void process(Obj object, Image image, Sheet sheet, boolean includeTimepoints) {
-        // ImagePlus iplMeas = image.getImagePlus().duplicate();
-
-        // // If the input stack is a single timepoint and channel, there's no need to
-        // // create a new ImageStack
-        // ImageStack timeStack;
-        // if (iplMeas.getNChannels() == 1 && iplMeas.getNFrames() == 1) {
-        //     timeStack = iplMeas.getStack();
-        // } else {
-        //     int t = object.getT() + 1;
-        //     int nSlices = iplMeas.getNSlices();
-        //     timeStack = SubHyperstackMaker.makeSubhyperstack(iplMeas, "1-1", "1-" + nSlices, t + "-" + t).getStack();
-        // }
-
         CoordinateSet unorderedPoints = getUnorderedPoints(object);
         if (unorderedPoints == null)
             return;
@@ -147,6 +134,7 @@ public class MeasureIntensityAlongPath extends Module {
         Objs skeletons = skeletonImage.convertImageToObjects("Skeleton");
         if (skeletons.size() == 0)
             return null;
+
         Obj skeleton = skeletons.getFirst();
         skeleton.setSpatialCalibration(object.getSpatialCalibration());
 
@@ -369,8 +357,8 @@ public class MeasureIntensityAlongPath extends Module {
 
     }
 
-    public static LinkedHashMap<Double, Double> measureIntensityProfile(Collection<Point<Integer>> points,
-            Image image, int t, SpatCal spatCal) {
+    public static LinkedHashMap<Double, Double> measureIntensityProfile(Collection<Point<Integer>> points, Image image,
+            int t, SpatCal spatCal) {
         ImagePlus ipl = image.getImagePlus();
 
         LinkedHashMap<Double, Double> profile = new LinkedHashMap<>();
@@ -509,7 +497,9 @@ public class MeasureIntensityAlongPath extends Module {
         return "Measures the intensity profile along the pixel-wide backbone of an object and outputs this profile to .xlsx file.  Input objects are skeletonised to single pixel-wide representations prior to measurement; however, pre-skeletonised objects can also be processed.<br><br>"
                 +
 
-                "Output results are stored in a multi-sheet .xlsx file, where each sheet includes the profile for a specific input image.  Each row of a sheet contains the profile for a single object.  Profiles are linearly-interpolated such that each measured position along a profile is 1px from the previous.";
+                "Output results are stored in a multi-sheet .xlsx file, where each sheet includes the profile for a specific input image.  Each row of a sheet contains the profile for a single object.  Profiles are linearly-interpolated such that each measured position along a profile is 1px from the previous.<br><br>"
+
+                + "Note: Objects must either form a single line (i.e. not contain multiple branches) or reduce to a single line during skeletonisation.  No profile will be recorded for any objects which fail this requirement.";
     }
 
     @Override
@@ -658,8 +648,7 @@ public class MeasureIntensityAlongPath extends Module {
     void addParameterDescriptions() {
         parameters.get(INPUT_OBJECTS).setDescription("Objects for which intensity profiles will be generated.");
 
-        Parameters collection = ((ParameterGroup) parameters.get(MEASURE_ANOTHER_IMAGE))
-                .getTemplateParameters();
+        Parameters collection = ((ParameterGroup) parameters.get(MEASURE_ANOTHER_IMAGE)).getTemplateParameters();
 
         collection.get(INPUT_IMAGE).setDescription(
                 "Image for which the intensity profile will be measured.  Results from this profile will be added to a separate sheet in the .xlsx file.");
