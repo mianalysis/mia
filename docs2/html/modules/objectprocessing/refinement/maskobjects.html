@@ -69,7 +69,7 @@
           </li>
         </ul>
         <a class="btn btn-outline-primary ml-2"
-          href="https://github.com/mianalysis/mia/releases/download/v0.15.9/MIA_-0.15.9.jar">Download</a>
+          href="https://github.com/mianalysis/mia/releases/download/v0.20.1/MIA_-0.20.1.jar">Download</a>
       </div>
     </div>
   </nav>
@@ -82,12 +82,12 @@
 
 <div class="pt-md-2 pb-md-4 mx-auto">
     <h2 class="display-6">Description</h2>
-    Applies the mask image to the specified object collection.  Only object pixels coincident with black pixels (intensity 0) will be removed.
+    Applies the mask image to the specified object collection.  Any object coordinates coincident with black pixels (intensity 0) will be removed.
 </div>
 
 <div class="pt-md-2 pb-md-4 mx-auto">
     <h2 class="display-6">Parameters</h2>
-    <b>Input objects</b> (default = "") Objects to be masked.<br><br><b>Mask image</b> (default = "") Image to use as mask on input objects.  Object coordinates coincident with black pixels (pixel intensity = 0) are removed.<br><br><b>Output object mode</b> (default = "Create new objects") Controls how the masked objects will be stored.<br><br> - "Create new objects" (default) will add the masked objects to a new object set and store this set in the workspace.<br><br> - "Update input objects" will replace the coordinates of the input object with the masked coordinates.  All measurements associated with input objects will be transferred to the masked objects.<br><b>Output objects</b> (default = "") Name for the output masked objects to be stored in workspace.<br><br>
+    <b>Input objects</b> (default = "") Objects to be masked.<br><br><b>Output object mode</b> (default = "Create new objects") Controls how the masked objects will be stored:<br><ul><li>"Create new objects" (Default) Will add the masked objects to a new object set and store this set in the workspace.</li><li>"Update input objects" Will replace the coordinates of the input object with the masked coordinates.  All measurements associated with input objects will be transferred to the masked objects.</li></ul><br><b>Output objects</b> (default = "") Name for the output masked objects to be stored in workspace.<br><br><b>Mask mode</b> (default = "Mask from image") Controls whether the input objects will be masked by an image or an object collection:<br><ul>"Mask from image" (Default) Input objects will be masked based on the image specified by "Mask image".  Any object regions coincident with black pixels (0 pixel intensity) will be removed.<li>"Mask from objects (remove overlap)" Input objects will be masked based on all objects of the collection specified by "Mask objects".  Any object regions coincident with any objects in the masking collection will be removed.  The masking objects will be unaffected by this process.<li>"Mask from objects (retain overlap)" Input objects will be masked based on all objects of the collection specified by "Mask objects".  Any object regions not coincident with any objects in the masking collection will be removed.  The masking objects will be unaffected by this process.<li></ul><br><b>Mask objects</b> (default = "") Object collection to use as mask on input objects.  Depending on which object-masking mode is selected, the input objects will either have coordinates coincident with these objects removed or retained.<br><br><b>Mask image</b> (default = "") Image to use as mask on input objects.  Object coordinates coincident with black pixels (pixel intensity = 0) are removed.<br><br>
 </div>
 
   <!-- Footer -->

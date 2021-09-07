@@ -69,7 +69,7 @@
           </li>
         </ul>
         <a class="btn btn-outline-primary ml-2"
-          href="https://github.com/mianalysis/mia/releases/download/v0.15.9/MIA_-0.15.9.jar">Download</a>
+          href="https://github.com/mianalysis/mia/releases/download/v0.20.1/MIA_-0.20.1.jar">Download</a>
       </div>
     </div>
   </nav>
@@ -88,7 +88,7 @@
       
       <div class="card mb-4 box-shadow mia-card">
   <div class="card-header">
-    <h4 class="my-0 font-weight-normal">Automatic MOPS-based registration</h4>
+    <h4 class="my-0 font-weight-normal">Affine (MOPS)</h4>
   </div>
   <div class="card-body">
     <p class="card-text mb-4">
@@ -96,13 +96,13 @@
   </div>
   <div class="card-footer bg-transparent mb-2 mia-card-footer">
     <!-- <button type="button" class="btn btn-lg btn-block btn-primary">See modules</button> -->
-    <a class="btn btn-lg btn-block btn-outline-primary" href="../../../../../html/modules/imageprocessing/stack/registration/automaticmops-basedregistration.html">
+    <a class="btn btn-lg btn-block btn-outline-primary" href="../../../../../html/modules/imageprocessing/stack/registration/affine(mops).html">
       View
     </a>
   </div>
 </div><div class="card mb-4 box-shadow mia-card">
   <div class="card-header">
-    <h4 class="my-0 font-weight-normal">Automatic SIFT-based registration</h4>
+    <h4 class="my-0 font-weight-normal">Affine (SIFT)</h4>
   </div>
   <div class="card-body">
     <p class="card-text mb-4">
@@ -110,13 +110,13 @@
   </div>
   <div class="card-footer bg-transparent mb-2 mia-card-footer">
     <!-- <button type="button" class="btn btn-lg btn-block btn-primary">See modules</button> -->
-    <a class="btn btn-lg btn-block btn-outline-primary" href="../../../../../html/modules/imageprocessing/stack/registration/automaticsift-basedregistration.html">
+    <a class="btn btn-lg btn-block btn-outline-primary" href="../../../../../html/modules/imageprocessing/stack/registration/affine(sift).html">
       View
     </a>
   </div>
 </div><div class="card mb-4 box-shadow mia-card">
   <div class="card-header">
-    <h4 class="my-0 font-weight-normal">Automatic block-matching registration</h4>
+    <h4 class="my-0 font-weight-normal">Affine (block matching)</h4>
   </div>
   <div class="card-body">
     <p class="card-text mb-4">
@@ -124,21 +124,63 @@
   </div>
   <div class="card-footer bg-transparent mb-2 mia-card-footer">
     <!-- <button type="button" class="btn btn-lg btn-block btn-primary">See modules</button> -->
-    <a class="btn btn-lg btn-block btn-outline-primary" href="../../../../../html/modules/imageprocessing/stack/registration/automaticblock-matchingregistration.html">
+    <a class="btn btn-lg btn-block btn-outline-primary" href="../../../../../html/modules/imageprocessing/stack/registration/affine(blockmatching).html">
       View
     </a>
   </div>
 </div><div class="card mb-4 box-shadow mia-card">
   <div class="card-header">
-    <h4 class="my-0 font-weight-normal">Manual registration</h4>
+    <h4 class="my-0 font-weight-normal">Affine (manual)</h4>
   </div>
   <div class="card-body">
     <p class="card-text mb-4">
-      Align an image from the workspace to another image from the workspace using manually-selected reference points.</p>
+      Apply 2D affine transforms to align images from the workspace to other images from the workspace using manually-selected reference points.</p>
   </div>
   <div class="card-footer bg-transparent mb-2 mia-card-footer">
     <!-- <button type="button" class="btn btn-lg btn-block btn-primary">See modules</button> -->
-    <a class="btn btn-lg btn-block btn-outline-primary" href="../../../../../html/modules/imageprocessing/stack/registration/manualregistration.html">
+    <a class="btn btn-lg btn-block btn-outline-primary" href="../../../../../html/modules/imageprocessing/stack/registration/affine(manual).html">
+      View
+    </a>
+  </div>
+</div><div class="card mb-4 box-shadow mia-card">
+  <div class="card-header">
+    <h4 class="my-0 font-weight-normal">Affine (object centroids)</h4>
+  </div>
+  <div class="card-body">
+    <p class="card-text mb-4">
+      Apply slice-by-slice (2D) affine-based image registration to a multi-dimensional stack.</p>
+  </div>
+  <div class="card-footer bg-transparent mb-2 mia-card-footer">
+    <!-- <button type="button" class="btn btn-lg btn-block btn-primary">See modules</button> -->
+    <a class="btn btn-lg btn-block btn-outline-primary" href="../../../../../html/modules/imageprocessing/stack/registration/affine(objectcentroids).html">
+      View
+    </a>
+  </div>
+</div><div class="card mb-4 box-shadow mia-card">
+  <div class="card-header">
+    <h4 class="my-0 font-weight-normal">Unwarp (automatic)</h4>
+  </div>
+  <div class="card-body">
+    <p class="card-text mb-4">
+      Apply slice-by-slice (2D) B-spline unwarping-based image registration to a multi-dimensional stack.</p>
+  </div>
+  <div class="card-footer bg-transparent mb-2 mia-card-footer">
+    <!-- <button type="button" class="btn btn-lg btn-block btn-primary">See modules</button> -->
+    <a class="btn btn-lg btn-block btn-outline-primary" href="../../../../../html/modules/imageprocessing/stack/registration/unwarp(automatic).html">
+      View
+    </a>
+  </div>
+</div><div class="card mb-4 box-shadow mia-card">
+  <div class="card-header">
+    <h4 class="my-0 font-weight-normal">Unwarp (manual)</h4>
+  </div>
+  <div class="card-body">
+    <p class="card-text mb-4">
+      Apply 2D B-spline unwarping transforms to align images from the workspace to other images from the workspace using manually-selected reference points.</p>
+  </div>
+  <div class="card-footer bg-transparent mb-2 mia-card-footer">
+    <!-- <button type="button" class="btn btn-lg btn-block btn-primary">See modules</button> -->
+    <a class="btn btn-lg btn-block btn-outline-primary" href="../../../../../html/modules/imageprocessing/stack/registration/unwarp(manual).html">
       View
     </a>
   </div>

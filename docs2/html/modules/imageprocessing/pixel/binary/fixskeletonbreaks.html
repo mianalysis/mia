@@ -69,7 +69,7 @@
           </li>
         </ul>
         <a class="btn btn-outline-primary ml-2"
-          href="https://github.com/mianalysis/mia/releases/download/v0.15.9/MIA_-0.15.9.jar">Download</a>
+          href="https://github.com/mianalysis/mia/releases/download/v0.20.1/MIA_-0.20.1.jar">Download</a>
       </div>
     </div>
   </nav>
@@ -77,17 +77,17 @@
   <div class="page-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
     <p class="text-secondary"><a href="../../../../../html/modules/modules.html">Modules</a> ➤ <a href="../../../../../html/modules/imageprocessing/imageprocessing.html">Image processing</a> ➤ <a href="../../../../../html/modules/imageprocessing/pixel/pixel.html">Pixel</a> ➤ <a href="../../../../../html/modules/imageprocessing/pixel/binary/binary.html">Binary</a></p>
     <h1 class="display-4">Fix skeleton breaks</h1>
-    <p class="lead"></p>
+    <p class="lead">Fixes breaks (gaps) in binary skeleton images.</p>
 </div>
 
 <div class="pt-md-2 pb-md-4 mx-auto">
     <h2 class="display-6">Description</h2>
-    
+    Fixes breaks (gaps) in binary skeleton images.  This considers each end point of the skeleton and tests it against multiple distance and orientation criteria to see if it can be linked to any other ends (or even midpoints) of the skeleton.  The path between linked ends is added to the binary image as a straight line.  This image will be 8-bit with binary logic determined by the "Binary logic" parameter.
 </div>
 
 <div class="pt-md-2 pb-md-4 mx-auto">
     <h2 class="display-6">Parameters</h2>
-    <b>Input image</b> (default = "") Image to apply break correction to.<br><br><b>Apply to input image</b> (default = "true") Select if the correction should be applied directly to the input image, or if it should be applied to a duplicate, then stored as a different image in the workspace.<br><br><b>Output image</b> (default = "") Name of the output image created during processing.  This image will be added to the workspace.<br><br><b>Number of end pixels to fit</b> (default = "5") Number of pixels at the end of a branch to be used for determination of branch orientation.<br><br><b>Maximum linking distance</b> (default = "10.0") Maximum break distance that can be bridged.  Specified in pixels unless "Calibrated units" is enabled.<br><br><b>Calibrated units</b> (default = "false") Select whether "Maximum linking distance" should be specified in pixel (false) or calibrated (true) units.<br><br><b>Maximum linking angle (degrees)</b> (default = "45.0") Maximum angular deviation of linking region relative to orientation of existing branch end.  Specified in degrees.<br><br><b>Only link ends</b> (default = "false") Only remove breaks between pixels at branch ends.  When disabled, an end can link into the middle of another branch.<br><br><b>Angle weight</b> (default = "1.0") <br><br><b>Distance weight</b> (default = "1.0") <br><br><b>End weight</b> (default = "20.0") <br><br>
+    <b>Input image</b> (default = "") Image to apply break correction to.  This image will be 8-bit with binary logic determined by the "Binary logic" parameter.<br><br><b>Apply to input image</b> (default = "true") Select if the correction should be applied directly to the input image, or if it should be applied to a duplicate, then stored as a different image in the workspace.<br><br><b>Output image</b> (default = "") Name of the output image created during processing.  This image will be added to the workspace.<br><br><b>Number of end pixels to fit</b> (default = "5") Number of pixels at the end of a branch to be used for determination of branch orientation.<br><br><b>Maximum linking distance</b> (default = "10.0") Maximum break distance that can be bridged.  Specified in pixels unless "Calibrated units" is enabled.<br><br><b>Calibrated units</b> (default = "false") Select whether "Maximum linking distance" should be specified in pixel (false) or calibrated (true) units.<br><br><b>Maximum linking angle (degrees)</b> (default = "45.0") Maximum angular deviation of linking region relative to orientation of existing branch end.  Specified in degrees.<br><br><b>Only link ends</b> (default = "false") Only remove breaks between pixels at branch ends.  When disabled, an end can link into the middle of another branch.<br><br><b>Angle weight</b> (default = "1.0") Weight applied to orientation mismatch of ends.  This controls how important orientation mismatches are when considering multiple candidate fixes.  The larger this is, the more likely ends need to be well aligned to be chosen for linking.<br><br><b>Distance weight</b> (default = "1.0") Weight applied to distance between candidate ends.  This controls how important minimising the distance between candidate ends is when multiple candidate fixes are available.  The larger than is, the more likely ends will need to be in close proximity to be chosen for linking.<br><br><b>End weight</b> (default = "20.0") Weight applied to preference for linking end points. The larger this is, the more likely the points chosen for linking will be ends of the skeleton (rather than mid-points).<br><br><b>Binary logic</b> (default = "Black (0) background") Controls whether objects are considered to be white (255 intensity) on a black (0 intensity) background, or black on a white background.<br>
 </div>
 
   <!-- Footer -->

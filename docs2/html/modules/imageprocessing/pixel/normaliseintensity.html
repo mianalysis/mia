@@ -69,7 +69,7 @@
           </li>
         </ul>
         <a class="btn btn-outline-primary ml-2"
-          href="https://github.com/mianalysis/mia/releases/download/v0.15.9/MIA_-0.15.9.jar">Download</a>
+          href="https://github.com/mianalysis/mia/releases/download/v0.20.1/MIA_-0.20.1.jar">Download</a>
       </div>
     </div>
   </nav>
@@ -83,12 +83,12 @@
 <div class="pt-md-2 pb-md-4 mx-auto">
     <h2 class="display-6">Description</h2>
     Sets the intensity to maximise the dynamic range of the image.
-"Clipping fraction" is the fraction of pixels at either end of the range that gets clipped.The "Per object" region mode will normalise all pixels within each object.
+"Clipping fraction" is the fraction of pixels at either end of the range that gets clipped.The "Per object" region mode will normalise all pixels within each object.<br><br>Note: This module will change pixel intensities.  To set the display range without altering pixel intensities, use the "Set intensity display range" module
 </div>
 
 <div class="pt-md-2 pb-md-4 mx-auto">
     <h2 class="display-6">Parameters</h2>
-    <b>Input image</b> (default = "") <br><br><b>Apply to input image</b> (default = "true") <br><br><b>Output image</b> (default = "") <br><br><b>Region mode</b> (default = "Entire image") <br><b>Input objects</b> (default = "") <br><br><b>Calculation mode</b> (default = "Fast") <br><b>Clipping fraction (min)</b> (default = "0.0") <br><br><b>Clipping fraction (max)</b> (default = "0.0") <br><br><b>Minimum range value</b> (default = "0.0") <br><br><b>Maximum range value</b> (default = "255.0") <br><br>
+    <b>Input image</b> (default = "") Image from the workspace for which intensity normalisation will be calculated.<br><br><b>Apply to input image</b> (default = "true") Select if the normalisation should be applied directly to the input image, or if it should be applied to a duplicate image, then stored as a different image in the workspace.<br><br><b>Output image</b> (default = "") If storing the processed image separately in the workspace, this is the name of the output image.<br><br><b>Region mode</b> (default = "Entire image") Controls whether the intensities are normalised across the entire image stack ("Entire image"), across the image slice-by-slice ("Per slice") or separately within each object ("Per slice")<br><b>Input objects</b> (default = "") If normalising intensities on an object-by-object basis ("Region mode" set to "Per object"), these are the objects that will be used.<br><br><b>Calculation mode</b> (default = "Fast") Controls how the normalisation is calculated.  In each case, the minimum and maximum intensities are calculated and all values in the output image linearly interpolated between them:<br><ul><li>"Fast" All intensity values in the image are collected in a histogram.  As such, for 8 and 16-bit this is fast to calculate as there are a limited number of bins.  In this instance, the clip fraction corresponds to the fraction of bins.</li><li>"Manual" The minimum and maximum intensities in the final image are manually specified with the "Minimum range value" and "Maximum range value" parameters.</li><li>"Precise" All intensity values are ordered by their intensity and the clip fraction corresponds to the fraction of pixels (rather than the fraction of unique intensities as with "Fast" mode.  As such, this method is more precise; however, can take a much longer time (especially for large images).</li></ul><br><b>Clipping fraction (min)</b> (default = "0.0") Fraction of unique intensities ("Precise") or pixels ("Fast") that are clipped when setting the minimum intensity.  Any values below this will be set to the calculated minimum intensity.<br><br><b>Clipping fraction (max)</b> (default = "0.0") Fraction of unique intensities ("Precise") or pixels ("Fast") that are clipped when setting the maximum intensity.  Any values above this will be set to the calculated maximum intensity.<br><br><b>Minimum range value</b> (default = "0.0") If manually setting the minimum intensity, this is the value that will be applied.<br><br><b>Maximum range value</b> (default = "255.0") If manually setting the maximum intensity, this is the value that will be applied.<br><br>
 </div>
 
   <!-- Footer -->

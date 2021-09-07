@@ -69,7 +69,7 @@
           </li>
         </ul>
         <a class="btn btn-outline-primary ml-2"
-          href="https://github.com/mianalysis/mia/releases/download/v0.15.9/MIA_-0.15.9.jar">Download</a>
+          href="https://github.com/mianalysis/mia/releases/download/v0.20.1/MIA_-0.20.1.jar">Download</a>
       </div>
     </div>
   </nav>
@@ -82,12 +82,12 @@
 
 <div class="pt-md-2 pb-md-4 mx-auto">
     <h2 class="display-6">Description</h2>
-    Measure intensity of each object in a specified image.  Measurements of intensity are taken at all pixel coordinates corresponding to each object.
+    Measure intensity of each object in a specified image.  Measurements of intensity are taken at all pixel coordinates corresponding to each object.  By default, basic measurements such as mean, minimum and maximum will be calculated.  Additional measurements can optionally be enabled.
 </div>
 
 <div class="pt-md-2 pb-md-4 mx-auto">
     <h2 class="display-6">Parameters</h2>
-    <b>Input objects</b> (default = "") <br><br><b>Input image</b> (default = "") <br><br><b>Measure weighted centre</b> (default = "false") <br><br><b>Measure weighted distance to edge</b> (default = "false") <br><br><b>Edge distance mode</b> (default = "Inside and outside") <br><b>Measure intensity profile from edge</b> (default = "false") <br><br><b>Minimum distance</b> (default = "0.0") <br><br><b>Maximum distance</b> (default = "1.0") <br><br><b>Calibrated distances</b> (default = "false") <br><br><b>Number of measurements</b> (default = "10") <br><br><b>Only measure on masked regions</b> (default = "false") <br><br><b>Mask image</b> (default = "") <br><br>
+    <b>Input objects</b> (default = "") Objects from the workspace for which intensities will be measured.<br><br><b>Input image</b> (default = "") Image from which pixel intensities will be measured.  This image can be 8-bit, 16-bit or 32-bit.  Measurements are always taken from the first channel if more than one channel is present (to measure additional channels, please first use the "Extract substack" module).<br><br><b>Measure weighted centre</b> (default = "false") When selected, the intensity-weighted centroid of each input object will be calculated.  With this, the greater the intensity in a particular region of an object, the more the "centre of mass" will be drawn towards it.<br><br>
 </div>
 
   <!-- Footer -->
