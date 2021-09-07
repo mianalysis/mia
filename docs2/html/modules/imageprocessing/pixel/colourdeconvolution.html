@@ -69,7 +69,7 @@
           </li>
         </ul>
         <a class="btn btn-outline-primary ml-2"
-          href="https://github.com/mianalysis/mia/releases/download/v0.15.9/MIA_-0.15.9.jar">Download</a>
+          href="https://github.com/mianalysis/mia/releases/download/v0.20.1/MIA_-0.20.1.jar">Download</a>
       </div>
     </div>
   </nav>
@@ -77,17 +77,17 @@
   <div class="page-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
     <p class="text-secondary"><a href="../../../../html/modules/modules.html">Modules</a> ➤ <a href="../../../../html/modules/imageprocessing/imageprocessing.html">Image processing</a> ➤ <a href="../../../../html/modules/imageprocessing/pixel/pixel.html">Pixel</a></p>
     <h1 class="display-4">Colour deconvolution</h1>
-    <p class="lead"></p>
+    <p class="lead">Applies the <a href="https://imagej.</p>
 </div>
 
 <div class="pt-md-2 pb-md-4 mx-auto">
     <h2 class="display-6">Description</h2>
-    
+    Applies the <a href="https://imagej.net/plugins/colour-deconvolution">Colour Deconvolution</a> plugin to unmix an RGB image (stored in the workspace) into up to three separate channels, which are output as separate images.  The input image can be stored as either an RGB or composite image.  This process is only applicable to images created via subtractive mixing (e.g. histological staining), not to additive methods (e.g. fluorescence).
 </div>
 
 <div class="pt-md-2 pb-md-4 mx-auto">
     <h2 class="display-6">Parameters</h2>
-    <b>Input image</b> (default = "") <br><br><b>Output image 1</b> (default = "true") <br><br><b>Output image 1 name</b> (default = "") <br><br><b>Output image 2</b> (default = "true") <br><br><b>Output image 2 name</b> (default = "") <br><br><b>Output image 3</b> (default = "true") <br><br><b>Output image 3 name</b> (default = "") <br><br><b>Stain model</b> (default = "H&E") <br>
+    <b>Input image</b> (default = "") Image from the workspace to apply unmixing to.  This can be stored as either an RGB or composite image.<br><br><b>Output image 1</b> (default = "true") When selected, the first stain in the stain matrix will be output to the workspace with the name specified by "Output image 1 name"<br><br><b>Output image 1 name</b> (default = "") Name to assign to first stain image, if output to the workspace.<br><br><b>Output image 2</b> (default = "true") When selected, the second stain in the stain matrix will be output to the workspace with the name specified by "Output image 2 name"<br><br><b>Output image 2 name</b> (default = "") Name to assign to second stain image, if output to the workspace.<br><br><b>Output image 3</b> (default = "true") When selected, the third stain in the stain matrix will be output to the workspace with the name specified by "Output image 3 name"<br><br><b>Output image 3 name</b> (default = "") Name to assign to third stain image, if output to the workspace.<br><br><b>Stain model</b> (default = "H&E") Stain models to apply to input image.  If set to "Custom (user values)" the individual RGB components for each channel can be specified.  Model choices are: Alcian blue & H,Azan-Mallory,Brilliant_Blue,CMY,FastRed FastBlue DAB,Feulgen Light Green,Giemsa,H AEC,H&E,H&E 2,H&E DAB,H DAB,H PAS,Masson Trichrome,Methyl Green DAB,RGB,Custom (user values)<br><b>Stain 1 (red)</b> (default = "0.0") Red component of stain 1.  Value specified in range 0-1.<br><br><b>Stain 1 (green)</b> (default = "0.0") Green component of stain 1.  Value specified in range 0-1.<br><br><b>Stain 1 (blue)</b> (default = "0.0") Blue component of stain 1.  Value specified in range 0-1.<br><br><b>Stain 2 (red)</b> (default = "0.0") Red component of stain 2.  Value specified in range 0-1.<br><br><b>Stain 2 (green)</b> (default = "0.0") Green component of stain 2.  Value specified in range 0-1.<br><br><b>Stain 2 (blue)</b> (default = "0.0") Blue component of stain 2.  Value specified in range 0-1.<br><br><b>Stain 3 (red)</b> (default = "0.0") Red component of stain 3.  Value specified in range 0-1.<br><br><b>Stain 3 (green)</b> (default = "0.0") Green component of stain 3.  Value specified in range 0-1.<br><br><b>Stain 3 (blue)</b> (default = "0.0") Blue component of stain 3.  Value specified in range 0-1.<br><br>
 </div>
 
   <!-- Footer -->

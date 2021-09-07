@@ -69,7 +69,7 @@
           </li>
         </ul>
         <a class="btn btn-outline-primary ml-2"
-          href="https://github.com/mianalysis/mia/releases/download/v0.15.9/MIA_-0.15.9.jar">Download</a>
+          href="https://github.com/mianalysis/mia/releases/download/v0.20.1/MIA_-0.20.1.jar">Download</a>
       </div>
     </div>
   </nav>
@@ -77,17 +77,17 @@
   <div class="page-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
     <p class="text-secondary"><a href="../../../../html/modules/modules.html">Modules</a> ➤ <a href="../../../../html/modules/objectmeasurements/objectmeasurements.html">Object measurements</a> ➤ <a href="../../../../html/modules/objectmeasurements/spatial/spatial.html">Spatial</a></p>
     <h1 class="display-4">Measure object overlap</h1>
-    <p class="lead"></p>
+    <p class="lead">Calculates the overlap of each object in an object collection with any object from another collection.</p>
 </div>
 
 <div class="pt-md-2 pb-md-4 mx-auto">
     <h2 class="display-6">Description</h2>
-    
+    Calculates the overlap of each object in an object collection with any object from another collection.  Overlaps are calculated for both specified object collections and are stored as measurements associated with the relevant object.  Overlap can occur for multiple objects; however, doubly-overlapped regions will only be counted once (i.e. an object can have no more than 100% overlap).  For example, an object in the first collection with 20% overlap with one object and 12% overlap with another would receive an overlap measurement of 32% (assuming the two overlapping objects weren't themselves overlapped in the overlapping region).
 </div>
 
 <div class="pt-md-2 pb-md-4 mx-auto">
     <h2 class="display-6">Parameters</h2>
-    <b>Object set 1</b> (default = "") <br><br><b>Object set 2</b> (default = "") <br><br><b>Only link objects in same frame</b> (default = "true") <br><br>
+    <b>Object source mode</b> (default = "Different classes") Controls whether overlap of objects from the same class should be calculated, or whether objects from two different classes should be compared.<br><b>Object set 1</b> (default = "") Object collection for which, the overlap of each object with any object from a separate object collection (specified by the "Object set 2" parameter) will be calculated.<br><br><b>Object set 2</b> (default = "") Object collection for which, the overlap of each object with any object from a separate object collection (specified by the "Object set 1" parameter) will be calculated.<br><br><b>Only link objects in same frame</b> (default = "true") When selected, objects will only be considered to have any overlap if they're present in the same frame (timepoint).<br><br>
 </div>
 
   <!-- Footer -->
