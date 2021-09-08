@@ -6,7 +6,10 @@ import io.github.mianalysis.mia.module.core.InputControl;
 import io.github.mianalysis.mia.module.imageprocessing.pixel.ImageMath;
 // import io.github.mianalysis.MIA.Module.ImageMeasurements.MeasureIntensityDistribution;
 import io.github.mianalysis.mia.module.imageprocessing.pixel.WekaProbabilityMaps;
+import io.github.mianalysis.mia.module.imageprocessing.pixel.binary.BinaryOperations;
 import io.github.mianalysis.mia.module.imageprocessing.pixel.binary.DistanceMap;
+import io.github.mianalysis.mia.module.imageprocessing.pixel.binary.ExtendedMinima;
+import io.github.mianalysis.mia.module.imageprocessing.pixel.binary.FillHolesByVolume;
 import io.github.mianalysis.mia.module.imageprocessing.pixel.threshold.LocalAutoThreshold;
 import io.github.mianalysis.mia.module.imageprocessing.pixel.threshold.ThresholdImage;
 import io.github.mianalysis.mia.module.imageprocessing.stack.registration.AffineBlockMatching;
@@ -60,6 +63,12 @@ public class LostAndFound {
         HashMap<String, String> currentParameterNames = null;
         String moduleName = null;
 
+        // BinaryOperations
+        currentParameterNames = new HashMap<>();
+        currentParameterNames.put("Connectivity (3D)", BinaryOperations.CONNECTIVITY);
+        moduleName = new BinaryOperations(null).getClass().getSimpleName();
+        lostParameterNames.put(moduleName, currentParameterNames);
+
         // BlockMatchingRegistration
         currentParameterNames = new HashMap<>();
         currentParameterNames.put("Relative mode", AffineBlockMatching.REFERENCE_MODE);
@@ -95,6 +104,21 @@ public class LostAndFound {
         currentParameterNames = new HashMap<>();
         currentParameterNames.put("Radius change (px)", ExpandShrinkObjects.RADIUS_CHANGE);
         moduleName = new ExpandShrinkObjects(null).getClass().getSimpleName();
+        lostParameterNames.put(moduleName, currentParameterNames);
+
+        // ExtendedMinima
+        currentParameterNames = new HashMap<>();
+        currentParameterNames.put("Connectivity (3D)", ExtendedMinima.CONNECTIVITY);
+        moduleName = new ExtendedMinima(null).getClass().getSimpleName();
+        lostParameterNames.put(moduleName, currentParameterNames);
+
+        // FillHolesByVolume
+        currentParameterNames = new HashMap<>();
+        currentParameterNames.put("Use minimum volume", FillHolesByVolume.SET_MINIMUM_VOLUME);
+        currentParameterNames.put("Minimum size", FillHolesByVolume.MINIMUM_VOLUME);
+        currentParameterNames.put("Use maximum volume", FillHolesByVolume.SET_MAXIMUM_VOLUME);
+        currentParameterNames.put("Maximum size", FillHolesByVolume.MAXIMUM_VOLUME);
+        moduleName = new FillHolesByVolume(null).getClass().getSimpleName();
         lostParameterNames.put(moduleName, currentParameterNames);
 
         // GetObjectLocalRegion

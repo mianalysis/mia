@@ -48,10 +48,10 @@ public class FillHolesByVolume extends Module {
     public static final String OUTPUT_IMAGE = "Output image";
 
     public static final String HOLE_FILLING_SEPARATOR = "Hole filling controls";
-    public static final String USE_MINIMUM_VOLUME = "Use minimum volume";
-    public static final String MINIMUM_VOLUME = "Minimum size";
-    public static final String USE_MAXIMUM_VOLUME = "Use maximum volume";
-    public static final String MAXIMUM_VOLUME = "Maximum size";
+    public static final String SET_MINIMUM_VOLUME = "Set minimum volume";
+    public static final String MINIMUM_VOLUME = "Minimum permitted volume";
+    public static final String SET_MAXIMUM_VOLUME = "Set maximum volume";
+    public static final String MAXIMUM_VOLUME = "Maximum permitted volume";
     public static final String CALIBRATED_UNITS = "Calibrated units";
     public static final String CONNECTIVITY = "Connectivity";
     public static final String BINARY_LOGIC = "Binary logic";
@@ -231,8 +231,8 @@ public class FillHolesByVolume extends Module {
         // Getting parameters
         boolean applyToInput = parameters.getValue(APPLY_TO_INPUT);
         String outputImageName = parameters.getValue(OUTPUT_IMAGE);
-        boolean useMinVolume = parameters.getValue(USE_MINIMUM_VOLUME);
-        boolean useMaxVolume = parameters.getValue(USE_MAXIMUM_VOLUME);
+        boolean useMinVolume = parameters.getValue(SET_MINIMUM_VOLUME);
+        boolean useMaxVolume = parameters.getValue(SET_MAXIMUM_VOLUME);
         double minVolume = parameters.getValue(MINIMUM_VOLUME);
         double maxVolume = parameters.getValue(MAXIMUM_VOLUME);
         boolean calibratedUnits = parameters.getValue(CALIBRATED_UNITS);
@@ -293,9 +293,9 @@ public class FillHolesByVolume extends Module {
         parameters.add(new OutputImageP(OUTPUT_IMAGE, this));
 
         parameters.add(new SeparatorP(HOLE_FILLING_SEPARATOR, this));
-        parameters.add(new BooleanP(USE_MINIMUM_VOLUME, this, true));
+        parameters.add(new BooleanP(SET_MINIMUM_VOLUME, this, true));
         parameters.add(new DoubleP(MINIMUM_VOLUME, this, 0d));
-        parameters.add(new BooleanP(USE_MAXIMUM_VOLUME, this, true));
+        parameters.add(new BooleanP(SET_MAXIMUM_VOLUME, this, true));
         parameters.add(new DoubleP(MAXIMUM_VOLUME, this, 1000d));
         parameters.add(new BooleanP(CALIBRATED_UNITS, this, false));
         parameters.add(new ChoiceP(CONNECTIVITY, this, Connectivity.TWENTYSIX, Connectivity.ALL));
@@ -322,12 +322,12 @@ public class FillHolesByVolume extends Module {
         }
 
         returnedParameters.add(parameters.getParameter(HOLE_FILLING_SEPARATOR));
-        returnedParameters.add(parameters.getParameter(USE_MINIMUM_VOLUME));
-        if ((boolean) parameters.getValue(USE_MINIMUM_VOLUME)) {
+        returnedParameters.add(parameters.getParameter(SET_MINIMUM_VOLUME));
+        if ((boolean) parameters.getValue(SET_MINIMUM_VOLUME)) {
             returnedParameters.add(parameters.getParameter(MINIMUM_VOLUME));
         }
-        returnedParameters.add(parameters.getParameter(USE_MAXIMUM_VOLUME));
-        if ((boolean) parameters.getValue(USE_MAXIMUM_VOLUME)) {
+        returnedParameters.add(parameters.getParameter(SET_MAXIMUM_VOLUME));
+        if ((boolean) parameters.getValue(SET_MAXIMUM_VOLUME)) {
             returnedParameters.add(parameters.getParameter(MAXIMUM_VOLUME));
         }
 
@@ -377,7 +377,8 @@ public class FillHolesByVolume extends Module {
 
     void addParameterDescriptions() {
         parameters.get(INPUT_IMAGE).setDescription(
-                "Image from workspace to apply fill holes operation to.  This image will be 8-bit with binary logic determined by the \"" + BINARY_LOGIC + "\" parameter.");
+                "Image from workspace to apply fill holes operation to.  This image will be 8-bit with binary logic determined by the \""
+                        + BINARY_LOGIC + "\" parameter.");
 
         parameters.get(APPLY_TO_INPUT).setDescription(
                 "When selected, the post-operation image will overwrite the input image in the workspace.  Otherwise, the image will be saved to the workspace with the name specified by the \""
@@ -386,18 +387,32 @@ public class FillHolesByVolume extends Module {
         parameters.get(OUTPUT_IMAGE).setDescription("If \"" + APPLY_TO_INPUT
                 + "\" is not selected, the post-operation image will be saved to the workspace with this name.");
 
-        parameters.get(USE_MINIMUM_VOLUME).setDescription("");
+        parameters.get(SET_MINIMUM_VOLUME).setDescription(
+                "When selected, a minimum permitted volume for binary holes can be set.  Any holes with volumes smaller than this value will be removed.");
 
-        parameters.get(MINIMUM_VOLUME).setDescription("");
+        parameters.get(MINIMUM_VOLUME).setDescription("If \"" + SET_MINIMUM_VOLUME
+                + "\" is selected, this is the minimum volume each hole must have for it to be retained.  Volumes are specified in units controlled by the \""
+                + CALIBRATED_UNITS + "\" parameter.");
 
-        parameters.get(USE_MAXIMUM_VOLUME).setDescription("");
+        parameters.get(SET_MAXIMUM_VOLUME).setDescription(
+                "When selected, a maximum permitted volume for binary holes can be set.  Any holes with volumes larger than this value will be removed.");
 
-        parameters.get(MAXIMUM_VOLUME).setDescription("");
+        parameters.get(MAXIMUM_VOLUME).setDescription("If \"" + SET_MAXIMUM_VOLUME
+                + "\" is selected, this is the maximum volume each hole must have for it to be retained.  Volumes are specified in units controlled by the \""
+                + CALIBRATED_UNITS + "\" parameter.");
 
         parameters.get(CALIBRATED_UNITS).setDescription(
                 "When selected, hole size limits are assumed to be specified in calibrated units (as defined by the \""
                         + new InputControl(null).getName() + "\" parameter \"" + InputControl.SPATIAL_UNIT
                         + "\").  Otherwise, pixel units are assumed.");
+
+        parameters.get(CONNECTIVITY).setDescription("Controls which adjacent pixels are considered:<br><ul>"
+
+                + "<li>\"" + Connectivity.SIX
+                + "\" Only pixels immediately next to the active pixel are considered.  These are the pixels on the four \"cardinal\" directions plus the pixels immediately above and below the current pixel.  If working in 2D, 4-way connectivity is used.</li>"
+
+                + "<li>\"" + Connectivity.TWENTYSIX
+                + "\" In addition to the core 6-pixels, all immediately diagonal pixels are used.  If working in 2D, 8-way connectivity is used.</li>");
 
         parameters.get(BINARY_LOGIC).setDescription(BinaryLogicInterface.getDescription());
 

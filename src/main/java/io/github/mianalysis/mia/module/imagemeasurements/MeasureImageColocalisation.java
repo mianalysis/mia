@@ -67,7 +67,7 @@ public class MeasureImageColocalisation<T extends RealType<T> & NativeType<T>> e
     public static final String IMAGE_MEASUREMENT_2 = "Image measurement (C2)";
     public static final String FIXED_THRESHOLD_1 = "Threshold (C1)";
     public static final String FIXED_THRESHOLD_2 = "Threshold (C2)";
-    
+
     public static final String MEASUREMENT_SEPARATOR = "Measurement controls";
     public static final String PCC_IMPLEMENTATION = "PCC implementation";
     public static final String MEASURE_KENDALLS_RANK = "Measure Kendall's Rank Correlation";
@@ -163,8 +163,7 @@ public class MeasureImageColocalisation<T extends RealType<T> & NativeType<T>> e
         }
     }
 
-    public static  Image getObjectMask(Objs objects,
-            String maskLogic) {
+    public static Image getObjectMask(Objs objects, String maskLogic) {
         HashMap<Integer, Float> hues = ColourFactory.getSingleColourHues(objects, ColourFactory.SingleColours.WHITE);
         Image mask = objects.convertToImage("Mask", hues, 8, false);
 
@@ -244,8 +243,8 @@ public class MeasureImageColocalisation<T extends RealType<T> & NativeType<T>> e
 
     }
 
-    public static <T extends RealType<T> & NativeType<T>> void setManualThresholds(DataContainer<T> data,
-            Image image1, double fixedThreshold1, double fixedThreshold2) {
+    public static <T extends RealType<T> & NativeType<T>> void setManualThresholds(DataContainer<T> data, Image image1,
+            double fixedThreshold1, double fixedThreshold2) {
         ManualThreshold<T> manualThreshold = new ManualThreshold<T>(image1, fixedThreshold1, fixedThreshold2);
         data.setAutoThreshold(manualThreshold);
     }
@@ -738,8 +737,9 @@ public class MeasureImageColocalisation<T extends RealType<T> & NativeType<T>> e
 
     void addParameterDescriptions() {
         String siteRef = "Description taken from <a href=\"https://imagej.net/imaging/colocalization-analysis\">https://imagej.net/imaging/colocalization-analysis</a>";
-        
-        parameters.get(INPUT_IMAGE_1).setDescription("First image for which colocalisation will be calculated.  Measurements will be associated with this image.");
+
+        parameters.get(INPUT_IMAGE_1).setDescription(
+                "First image for which colocalisation will be calculated.  Measurements will be associated with this image.");
 
         parameters.get(INPUT_IMAGE_2).setDescription("Second image for which colocalisation will be calculated.");
 
@@ -778,29 +778,57 @@ public class MeasureImageColocalisation<T extends RealType<T> & NativeType<T>> e
         parameters.get(THRESHOLDING_MODE)
                 .setDescription("Controls how the thresholds for measurements such as Manders' are set:<br><ul>"
 
-                        + "<li>\"" + ThresholdingModes.BISECTION + "\" A faster method to calculate thresholds than the Costes approach.</li>"
+                        + "<li>\"" + ThresholdingModes.BISECTION
+                        + "\" A faster method to calculate thresholds than the Costes approach.</li>"
 
-                        + "<li>\"" + ThresholdingModes.COSTES + "\" The \"standard\" method to calculate thresholds for Manders' colocalisation measures.  This approach sets the thresholds for the two input images such that the pixels with intensities lower than their respective thresholds don't have any statistical correlation (i.e. have PCC values less than or equal to 0).  This is based on Costes' 2004 paper (Costes et al., <i>Biophys. J.</i> <b>86</b> (2004) 3993–4003.</li>"
+                        + "<li>\"" + ThresholdingModes.COSTES
+                        + "\" The \"standard\" method to calculate thresholds for Manders' colocalisation measures.  This approach sets the thresholds for the two input images such that the pixels with intensities lower than their respective thresholds don't have any statistical correlation (i.e. have PCC values less than or equal to 0).  This is based on Costes' 2004 paper (Costes et al., <i>Biophys. J.</i> <b>86</b> (2004) 3993–4003.</li>"
 
-                        + "<li>\"" + ThresholdingModes.MANUAL + "\" Threshold values are manually set from user-defined values (\""+FIXED_THRESHOLD_1+"\" and \""+FIXED_THRESHOLD_2+"\" parameters).</li>"
+                        + "<li>\"" + ThresholdingModes.IMAGE_MEASUREMENTS
+                        + "\" Thresholds for each image will be set equal to measurements associated with each object.</li>"
 
-                        + "<li>\"" + ThresholdingModes.NONE + "\" No threshold is set.  In this instance, Manders' metrics will only be calculated above zero intensity rather than both above zero and above the thresholds.  Similarly, Pearson's correlation coefficients will only be calculated for the entire region (after masking) rather than also for above and below the thresholds.</li></ul>");
+                        + "<li>\"" + ThresholdingModes.MANUAL
+                        + "\" Threshold values are manually set from user-defined values (\"" + FIXED_THRESHOLD_1
+                        + "\" and \"" + FIXED_THRESHOLD_2 + "\" parameters).</li>"
 
-        parameters.get(FIXED_THRESHOLD_1).setDescription("If \""+THRESHOLDING_MODE+"\" is set to \""+ThresholdingModes.MANUAL+"\", this is the threshold that will be applied to the first image.");
+                        + "<li>\"" + ThresholdingModes.NONE
+                        + "\" No threshold is set.  In this instance, Manders' metrics will only be calculated above zero intensity rather than both above zero and above the thresholds.  Similarly, Pearson's correlation coefficients will only be calculated for the entire region (after masking) rather than also for above and below the thresholds.</li></ul>");
 
-        parameters.get(FIXED_THRESHOLD_2).setDescription("If \""+THRESHOLDING_MODE+"\" is set to \""+ThresholdingModes.MANUAL+"\", this is the threshold that will be applied to the second image.");
+        parameters.get(IMAGE_MEASUREMENT_1)
+                .setDescription("If \"" + THRESHOLDING_MODE + "\" is set to \"" + ThresholdingModes.IMAGE_MEASUREMENTS
+                        + "\", this is the measurement associated with \"" + INPUT_IMAGE_1
+                        + "\" that will be applied to the first image.");
 
-        parameters.get(PCC_IMPLEMENTATION).setDescription("Controls whether PCC should be calculated using the classic algorithm or using the Coloc2-default \"fast\" method.");
+        parameters.get(IMAGE_MEASUREMENT_2)
+                .setDescription("If \"" + THRESHOLDING_MODE + "\" is set to \"" + ThresholdingModes.IMAGE_MEASUREMENTS
+                        + "\", this is the measurement associated with \"" + INPUT_IMAGE_2
+                        + "\" that will be applied to the second image.");
 
-        parameters.get(MEASURE_KENDALLS_RANK).setDescription("When selected, Kendall's rank correlation will be calculated.  This works in a similar manner to Pearson's PCC, except it's calculated on ranked data rather than raw pixel intensities.");
+        parameters.get(FIXED_THRESHOLD_1).setDescription("If \"" + THRESHOLDING_MODE + "\" is set to \""
+                + ThresholdingModes.MANUAL + "\", this is the threshold that will be applied to the first image.");
 
-        parameters.get(MEASURE_LI_ICQ).setDescription("When selected, Li's ICQ (intensity correlation quotient) will be calculated.  This measure reports the frequency with which both corresponding pixels for both channels are either both above or both below their respective means.  Values are scaled into the range -0.5 to +0.5, with values below 0 corresponding to anti-correlation and values above 0 indicating correlation.");
+        parameters.get(FIXED_THRESHOLD_2).setDescription("If \"" + THRESHOLDING_MODE + "\" is set to \""
+                + ThresholdingModes.MANUAL + "\", this is the threshold that will be applied to the second image.");
 
-        parameters.get(MEASURE_MANDERS).setDescription("When selected, Manders' M1 and M2 coefficients will be calculated.  \"Proportional to the amount of fluorescence of the colocalizing pixels or voxels in each colour channel. You can get more details in Manders et al. Values range from 0 to 1, expressing the fraction of intensity in a channel that is located in pixels where there is above zero (or threshold) intensity in the other colour channel.\" "+siteRef);
+        parameters.get(PCC_IMPLEMENTATION).setDescription(
+                "Controls whether PCC should be calculated using the classic algorithm or using the Coloc2-default \"fast\" method.");
 
-        parameters.get(MEASURE_PCC).setDescription("When selected, Pearson's Correlation Coefficient (PCC) will be calculated.  \"It is not sensitive to differences in mean signal intensities or range, or a zero offset between the two components. The result is +1 for perfect correlation, 0 for no correlation, and -1 for perfect anti-correlation. Noise makes the value closer to 0 than it should be.\" "+siteRef);
+        parameters.get(MEASURE_KENDALLS_RANK).setDescription(
+                "When selected, Kendall's rank correlation will be calculated.  This works in a similar manner to Pearson's PCC, except it's calculated on ranked data rather than raw pixel intensities.");
 
-        parameters.get(MEASURE_SPEARMANS_RANK).setDescription("When selected, Spearman's rank correlation will be calculated.  Spearman's rho is calculated in a similar manner to Pearson's PCC, except the image intensities are replaced by their respective rank.  Spearman's correlation works with monotonic relationships.  As with PCC, values are in the range -1 to +1.");
+        parameters.get(MEASURE_LI_ICQ).setDescription(
+                "When selected, Li's ICQ (intensity correlation quotient) will be calculated.  This measure reports the frequency with which both corresponding pixels for both channels are either both above or both below their respective means.  Values are scaled into the range -0.5 to +0.5, with values below 0 corresponding to anti-correlation and values above 0 indicating correlation.");
+
+        parameters.get(MEASURE_MANDERS).setDescription(
+                "When selected, Manders' M1 and M2 coefficients will be calculated.  \"Proportional to the amount of fluorescence of the colocalizing pixels or voxels in each colour channel. You can get more details in Manders et al. Values range from 0 to 1, expressing the fraction of intensity in a channel that is located in pixels where there is above zero (or threshold) intensity in the other colour channel.\" "
+                        + siteRef);
+
+        parameters.get(MEASURE_PCC).setDescription(
+                "When selected, Pearson's Correlation Coefficient (PCC) will be calculated.  \"It is not sensitive to differences in mean signal intensities or range, or a zero offset between the two components. The result is +1 for perfect correlation, 0 for no correlation, and -1 for perfect anti-correlation. Noise makes the value closer to 0 than it should be.\" "
+                        + siteRef);
+
+        parameters.get(MEASURE_SPEARMANS_RANK).setDescription(
+                "When selected, Spearman's rank correlation will be calculated.  Spearman's rho is calculated in a similar manner to Pearson's PCC, except the image intensities are replaced by their respective rank.  Spearman's correlation works with monotonic relationships.  As with PCC, values are in the range -1 to +1.");
 
     }
 }
