@@ -35,6 +35,7 @@ import io.github.mianalysis.mia.object.Status;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
+import io.github.mianalysis.mia.object.parameters.ImageMeasurementP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
 import io.github.mianalysis.mia.object.parameters.InputObjectsP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
@@ -62,9 +63,11 @@ public class MeasureImageColocalisation<T extends RealType<T> & NativeType<T>> e
 
     public static final String THRESHOLD_SEPARATOR = "Threshold controls";
     public static final String THRESHOLDING_MODE = "Thresholding mode";
+    public static final String IMAGE_MEASUREMENT_1 = "Image measurement (C1)";
+    public static final String IMAGE_MEASUREMENT_2 = "Image measurement (C2)";
     public static final String FIXED_THRESHOLD_1 = "Threshold (C1)";
     public static final String FIXED_THRESHOLD_2 = "Threshold (C2)";
-
+    
     public static final String MEASUREMENT_SEPARATOR = "Measurement controls";
     public static final String PCC_IMPLEMENTATION = "PCC implementation";
     public static final String MEASURE_KENDALLS_RANK = "Measure Kendall's Rank Correlation";
@@ -113,10 +116,11 @@ public class MeasureImageColocalisation<T extends RealType<T> & NativeType<T>> e
     public interface ThresholdingModes {
         String BISECTION = "Bisection (correlation)";
         String COSTES = "Costes (correlation)";
+        String IMAGE_MEASUREMENTS = "Image measurements";
         String MANUAL = "Manual";
         String NONE = "None";
 
-        String[] ALL = new String[] { BISECTION, COSTES, MANUAL, NONE };
+        String[] ALL = new String[] { BISECTION, COSTES, IMAGE_MEASUREMENTS, MANUAL, NONE };
 
     }
 
@@ -429,6 +433,8 @@ public class MeasureImageColocalisation<T extends RealType<T> & NativeType<T>> e
         Objs objects = workspace.getObjects().get(objectName);
         String objectMaskLogic = parameters.getValue(OBJECT_MASK_LOGIC);
         String thresholdingMode = parameters.getValue(THRESHOLDING_MODE);
+        String imageMeasurementName1 = parameters.getValue(IMAGE_MEASUREMENT_1);
+        String imageMeasurementName2 = parameters.getValue(IMAGE_MEASUREMENT_2);
         double fixedThreshold1 = parameters.getValue(FIXED_THRESHOLD_1);
         double fixedThreshold2 = parameters.getValue(FIXED_THRESHOLD_2);
         String pccImplementationName = parameters.getValue(PCC_IMPLEMENTATION);
@@ -463,6 +469,11 @@ public class MeasureImageColocalisation<T extends RealType<T> & NativeType<T>> e
             case ThresholdingModes.COSTES:
                 HashMap<String, Double> measurements = setAutoThresholds(data, thresholdingMode, pccImplementationName);
                 setImageMeasurements(image1, measurements, imageName1, imageName2);
+                break;
+            case ThresholdingModes.IMAGE_MEASUREMENTS:
+                double threshold1 = image1.getMeasurement(imageMeasurementName1).getValue();
+                double threshold2 = image1.getMeasurement(imageMeasurementName2).getValue();
+                setManualThresholds(data, image1, threshold1, threshold2);
                 break;
             case ThresholdingModes.MANUAL:
                 setManualThresholds(data, image1, fixedThreshold1, fixedThreshold2);
@@ -518,6 +529,8 @@ public class MeasureImageColocalisation<T extends RealType<T> & NativeType<T>> e
 
         parameters.add(new SeparatorP(THRESHOLD_SEPARATOR, this));
         parameters.add(new ChoiceP(THRESHOLDING_MODE, this, ThresholdingModes.BISECTION, ThresholdingModes.ALL));
+        parameters.add(new ImageMeasurementP(IMAGE_MEASUREMENT_1, this));
+        parameters.add(new ImageMeasurementP(IMAGE_MEASUREMENT_2, this));
         parameters.add(new DoubleP(FIXED_THRESHOLD_1, this, 1.0));
         parameters.add(new DoubleP(FIXED_THRESHOLD_2, this, 1.0));
 
@@ -557,6 +570,14 @@ public class MeasureImageColocalisation<T extends RealType<T> & NativeType<T>> e
         returnedParameters.add(parameters.getParameter(THRESHOLD_SEPARATOR));
         returnedParameters.add(parameters.getParameter(THRESHOLDING_MODE));
         switch ((String) parameters.getValue(THRESHOLDING_MODE)) {
+            case ThresholdingModes.IMAGE_MEASUREMENTS:
+                returnedParameters.add(parameters.getParameter(IMAGE_MEASUREMENT_1));
+                String imageName1 = parameters.getValue(INPUT_IMAGE_1);
+                ((ImageMeasurementP) parameters.getParameter(IMAGE_MEASUREMENT_1)).setImageName(imageName1);
+                returnedParameters.add(parameters.getParameter(IMAGE_MEASUREMENT_2));
+                String imageName2 = parameters.getValue(INPUT_IMAGE_2);
+                ((ImageMeasurementP) parameters.getParameter(IMAGE_MEASUREMENT_2)).setImageName(imageName2);
+                break;
             case ThresholdingModes.MANUAL:
                 returnedParameters.add(parameters.getParameter(FIXED_THRESHOLD_1));
                 returnedParameters.add(parameters.getParameter(FIXED_THRESHOLD_2));

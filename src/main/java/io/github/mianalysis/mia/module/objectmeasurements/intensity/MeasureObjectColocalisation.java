@@ -2,9 +2,6 @@ package io.github.mianalysis.mia.module.objectmeasurements.intensity;
 
 import java.util.HashMap;
 
-import net.imglib2.type.NativeType;
-import net.imglib2.type.numeric.RealType;
-import sc.fiji.coloc.gadgets.DataContainer;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
@@ -18,6 +15,7 @@ import io.github.mianalysis.mia.object.Status;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
+import io.github.mianalysis.mia.object.parameters.ImageMeasurementP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
 import io.github.mianalysis.mia.object.parameters.InputObjectsP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
@@ -29,6 +27,9 @@ import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
+import net.imglib2.type.NativeType;
+import net.imglib2.type.numeric.RealType;
+import sc.fiji.coloc.gadgets.DataContainer;
 
 public class MeasureObjectColocalisation<T extends RealType<T> & NativeType<T>> extends Module {
     public static final String INPUT_SEPARATOR = "Input separator";
@@ -38,6 +39,8 @@ public class MeasureObjectColocalisation<T extends RealType<T> & NativeType<T>> 
 
     public static final String THRESHOLD_SEPARATOR = "Threshold controls";
     public static final String THRESHOLDING_MODE = "Thresholding mode";
+    public static final String IMAGE_MEASUREMENT_1 = "Image measurement (C1)";
+    public static final String IMAGE_MEASUREMENT_2 = "Image measurement (C2)";
     public static final String FIXED_THRESHOLD_1 = "Threshold (C1)";
     public static final String FIXED_THRESHOLD_2 = "Threshold (C2)";
 
@@ -99,6 +102,8 @@ public class MeasureObjectColocalisation<T extends RealType<T> & NativeType<T>> 
         String objectName = parameters.getValue(INPUT_OBJECTS);
         Objs objects = workspace.getObjects().get(objectName);
         String thresholdingMode = parameters.getValue(THRESHOLDING_MODE);
+        String imageMeasurementName1 = parameters.getValue(IMAGE_MEASUREMENT_1);
+        String imageMeasurementName2 = parameters.getValue(IMAGE_MEASUREMENT_2);
         double fixedThreshold1 = parameters.getValue(FIXED_THRESHOLD_1);
         double fixedThreshold2 = parameters.getValue(FIXED_THRESHOLD_2);
         String pccImplementationName = parameters.getValue(PCC_IMPLEMENTATION);
@@ -126,6 +131,11 @@ public class MeasureObjectColocalisation<T extends RealType<T> & NativeType<T>> 
                     HashMap<String, Double> measurements = MeasureImageColocalisation.setAutoThresholds(data,
                             thresholdingMode, pccImplementationName);
                     setObjectMeasurements(inputObject, measurements, imageName1, imageName2);
+                    break;
+                case ThresholdingModes.IMAGE_MEASUREMENTS:
+                    double threshold1 = image1.getMeasurement(imageMeasurementName1).getValue();
+                    double threshold2 = image1.getMeasurement(imageMeasurementName2).getValue();
+                    MeasureImageColocalisation.setManualThresholds(data, image1, threshold1, threshold2);
                     break;
                 case ThresholdingModes.MANUAL:
                     MeasureImageColocalisation.setManualThresholds(data, image1, fixedThreshold1, fixedThreshold2);
@@ -176,6 +186,8 @@ public class MeasureObjectColocalisation<T extends RealType<T> & NativeType<T>> 
 
         parameters.add(new SeparatorP(THRESHOLD_SEPARATOR, this));
         parameters.add(new ChoiceP(THRESHOLDING_MODE, this, ThresholdingModes.BISECTION, ThresholdingModes.ALL));
+        parameters.add(new ImageMeasurementP(IMAGE_MEASUREMENT_1, this));
+        parameters.add(new ImageMeasurementP(IMAGE_MEASUREMENT_2, this));
         parameters.add(new DoubleP(FIXED_THRESHOLD_1, this, 1.0));
         parameters.add(new DoubleP(FIXED_THRESHOLD_2, this, 1.0));
 
@@ -203,6 +215,14 @@ public class MeasureObjectColocalisation<T extends RealType<T> & NativeType<T>> 
         returnedParameters.add(parameters.getParameter(THRESHOLD_SEPARATOR));
         returnedParameters.add(parameters.getParameter(THRESHOLDING_MODE));
         switch ((String) parameters.getValue(THRESHOLDING_MODE)) {
+            case ThresholdingModes.IMAGE_MEASUREMENTS:
+                returnedParameters.add(parameters.getParameter(IMAGE_MEASUREMENT_1));
+                String imageName1 = parameters.getValue(INPUT_IMAGE_1);
+                ((ImageMeasurementP) parameters.getParameter(IMAGE_MEASUREMENT_1)).setImageName(imageName1);
+                returnedParameters.add(parameters.getParameter(IMAGE_MEASUREMENT_2));
+                String imageName2 = parameters.getValue(INPUT_IMAGE_2);
+                ((ImageMeasurementP) parameters.getParameter(IMAGE_MEASUREMENT_2)).setImageName(imageName2);
+                break;
             case ThresholdingModes.MANUAL:
                 returnedParameters.add(parameters.getParameter(FIXED_THRESHOLD_1));
                 returnedParameters.add(parameters.getParameter(FIXED_THRESHOLD_2));
@@ -393,17 +413,25 @@ public class MeasureObjectColocalisation<T extends RealType<T> & NativeType<T>> 
         parameters.get(FIXED_THRESHOLD_2).setDescription("If \"" + THRESHOLDING_MODE + "\" is set to \""
                 + ThresholdingModes.MANUAL + "\", this is the threshold that will be applied to the second image.");
 
-        parameters.get(PCC_IMPLEMENTATION).setDescription("Controls whether PCC should be calculated using the classic algorithm or using the Coloc2-default \"fast\" method.");
+        parameters.get(PCC_IMPLEMENTATION).setDescription(
+                "Controls whether PCC should be calculated using the classic algorithm or using the Coloc2-default \"fast\" method.");
 
-        parameters.get(MEASURE_KENDALLS_RANK).setDescription("When selected, Kendall's rank correlation will be calculated.  This works in a similar manner to Pearson's PCC, except it's calculated on ranked data rather than raw pixel intensities.");
+        parameters.get(MEASURE_KENDALLS_RANK).setDescription(
+                "When selected, Kendall's rank correlation will be calculated.  This works in a similar manner to Pearson's PCC, except it's calculated on ranked data rather than raw pixel intensities.");
 
-        parameters.get(MEASURE_LI_ICQ).setDescription("When selected, Li's ICQ (intensity correlation quotient) will be calculated.  This measure reports the frequency with which both corresponding pixels for both channels are either both above or both below their respective means.  Values are scaled into the range -0.5 to +0.5, with values below 0 corresponding to anti-correlation and values above 0 indicating correlation.");
+        parameters.get(MEASURE_LI_ICQ).setDescription(
+                "When selected, Li's ICQ (intensity correlation quotient) will be calculated.  This measure reports the frequency with which both corresponding pixels for both channels are either both above or both below their respective means.  Values are scaled into the range -0.5 to +0.5, with values below 0 corresponding to anti-correlation and values above 0 indicating correlation.");
 
-        parameters.get(MEASURE_MANDERS).setDescription("When selected, Manders' M1 and M2 coefficients will be calculated.  \"Proportional to the amount of fluorescence of the colocalizing pixels or voxels in each colour channel. You can get more details in Manders et al. Values range from 0 to 1, expressing the fraction of intensity in a channel that is located in pixels where there is above zero (or threshold) intensity in the other colour channel.\" "+siteRef);
+        parameters.get(MEASURE_MANDERS).setDescription(
+                "When selected, Manders' M1 and M2 coefficients will be calculated.  \"Proportional to the amount of fluorescence of the colocalizing pixels or voxels in each colour channel. You can get more details in Manders et al. Values range from 0 to 1, expressing the fraction of intensity in a channel that is located in pixels where there is above zero (or threshold) intensity in the other colour channel.\" "
+                        + siteRef);
 
-        parameters.get(MEASURE_PCC).setDescription("When selected, Pearson's Correlation Coefficient (PCC) will be calculated.  \"It is not sensitive to differences in mean signal intensities or range, or a zero offset between the two components. The result is +1 for perfect correlation, 0 for no correlation, and -1 for perfect anti-correlation. Noise makes the value closer to 0 than it should be.\" "+siteRef);
+        parameters.get(MEASURE_PCC).setDescription(
+                "When selected, Pearson's Correlation Coefficient (PCC) will be calculated.  \"It is not sensitive to differences in mean signal intensities or range, or a zero offset between the two components. The result is +1 for perfect correlation, 0 for no correlation, and -1 for perfect anti-correlation. Noise makes the value closer to 0 than it should be.\" "
+                        + siteRef);
 
-        parameters.get(MEASURE_SPEARMANS_RANK).setDescription("When selected, Spearman's rank correlation will be calculated.  Spearman's rho is calculated in a similar manner to Pearson's PCC, except the image intensities are replaced by their respective rank.  Spearman's correlation works with monotonic relationships.  As with PCC, values are in the range -1 to +1.");
+        parameters.get(MEASURE_SPEARMANS_RANK).setDescription(
+                "When selected, Spearman's rank correlation will be calculated.  Spearman's rho is calculated in a similar manner to Pearson's PCC, except the image intensities are replaced by their respective rank.  Spearman's correlation works with monotonic relationships.  As with PCC, values are in the range -1 to +1.");
 
     }
 }
