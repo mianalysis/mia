@@ -37,9 +37,9 @@ import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChildObjectsP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
+import io.github.mianalysis.mia.object.parameters.InputObjectsP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.SeparatorP;
-import io.github.mianalysis.mia.object.parameters.objects.InputTrackObjectsP;
 import io.github.mianalysis.mia.object.parameters.text.MessageP;
 import io.github.mianalysis.mia.object.refs.collections.ImageMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
@@ -104,16 +104,14 @@ public class TrackEditor extends Module {
                 currSpot.putFeature(Spot.POSITION_T, new Double(spotObj.getT()));
                 currSpot.putFeature("ID", new Double(spotObj.getID()));
 
-                // Adding spot
                 spotCollection.add(currSpot, spotObj.getT());
 
-                // If tis isn't the first timepoint
+                // Adding spot
                 if (prevSpot != null) {
                     graph.addVertex(prevSpot);
                     graph.addVertex(currSpot);
                     DefaultWeightedEdge edge = graph.addEdge(prevSpot, currSpot);
                     graph.setEdgeWeight(edge, 1);
-
                 }
 
                 prevSpot = currSpot;
@@ -207,6 +205,25 @@ public class TrackEditor extends Module {
 
     }
 
+    static void addSingleTimepointTracks(Set<Integer> trackIDs, Objs spotObjects, Objs trackObjects, String inputTrackObjectsName) {
+        // Determining the maximum current track ID
+        int maxID = 0;
+        for (int trackID : trackIDs)
+            maxID = Math.max(maxID, trackID);
+
+        // Single timepoint "tracks" aren't assigned track IDs yet, so doing that now
+        for (Obj obj : spotObjects.values()) {
+            if (obj.getParent(inputTrackObjectsName) == null) {
+                Obj trackObject = trackObjects.createAndAddNewObject(VolumeType.POINTLIST, ++maxID+1);
+                obj.addParent(trackObject);
+                trackObject.addChild(obj);
+                obj.addMeasurement(new Measurement(Measurements.TRACK_NEXT_ID, Double.NaN));
+                obj.addMeasurement(new Measurement(Measurements.TRACK_PREV_ID, Double.NaN));
+            }
+        }
+
+    }
+
     @Override
     public Status process(Workspace workspace) {
         // Getting input track objects
@@ -232,6 +249,8 @@ public class TrackEditor extends Module {
         removeDeletedSpots(spotObjects, model);
 
         // Clearing the existing tracks
+        trackObjects.removeChildren(inputSpotObjectsName);
+        spotObjects.removeParents(inputTrackObjectsName);
         trackObjects.resetCollection();
 
         // Creating new tracks
@@ -240,7 +259,7 @@ public class TrackEditor extends Module {
 
         for (Integer trackID : trackIDs) {
             // If necessary, creating a new summary object for the track
-            Obj trackObject = trackObjects.createAndAddNewObject(VolumeType.POINTLIST, trackID);
+            Obj trackObject = trackObjects.createAndAddNewObject(VolumeType.POINTLIST, trackID + 1);
             ArrayList<Spot> spots = new ArrayList<>(trackModel.trackSpots(trackID));
 
             // Sorting spots based on frame number
@@ -274,6 +293,8 @@ public class TrackEditor extends Module {
             prevSpotObj.addMeasurement(new Measurement(Measurements.TRACK_NEXT_ID, Double.NaN));
         }
 
+        addSingleTimepointTracks(trackIDs, spotObjects, trackObjects, inputTrackObjectsName);
+
         return Status.PASS;
 
     }
@@ -281,7 +302,7 @@ public class TrackEditor extends Module {
     @Override
     protected void initialiseParameters() {
         parameters.add(new SeparatorP(INPUT_SEPARATOR, this));
-        parameters.add(new InputTrackObjectsP(INPUT_TRACK_OBJECTS, this));
+        parameters.add(new InputObjectsP(INPUT_TRACK_OBJECTS, this));
         parameters.add(new ChildObjectsP(INPUT_SPOT_OBJECTS, this));
 
         parameters.add(new SeparatorP(DISPLAY_SEPARATOR, this));

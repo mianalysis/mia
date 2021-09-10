@@ -25,11 +25,11 @@ import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChildObjectsP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
+import io.github.mianalysis.mia.object.parameters.InputObjectsP;
 import io.github.mianalysis.mia.object.parameters.ObjectMeasurementP;
 import io.github.mianalysis.mia.object.parameters.OutputImageP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.SeparatorP;
-import io.github.mianalysis.mia.object.parameters.objects.InputTrackObjectsP;
 import io.github.mianalysis.mia.object.parameters.text.DoubleP;
 import io.github.mianalysis.mia.object.parameters.text.IntegerP;
 import io.github.mianalysis.mia.object.refs.collections.ImageMeasurementRefs;
@@ -236,7 +236,7 @@ public class AddTracks extends AbstractOverlay {
         parameters.add(new SeparatorP(INPUT_SEPARATOR, this));
         parameters.add(new InputImageP(INPUT_IMAGE, this));
         parameters.add(new InputImageP(INPUT_IMAGE, this));
-        parameters.add(new InputTrackObjectsP(INPUT_OBJECTS, this));
+        parameters.add(new InputObjectsP(INPUT_OBJECTS, this));
         parameters.add(new ChildObjectsP(SPOT_OBJECTS, this));
 
         parameters.add(new SeparatorP(OUTPUT_SEPARATOR, this));

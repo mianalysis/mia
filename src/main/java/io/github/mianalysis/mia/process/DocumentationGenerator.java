@@ -53,6 +53,9 @@ public class DocumentationGenerator {
             generateMacroList();
             generateMacroPages();
 
+            // Run second documentation generator (new version)
+            new DocumentationGenerator2().run();
+
         } catch (IOException e) {
             e.printStackTrace();
         }
