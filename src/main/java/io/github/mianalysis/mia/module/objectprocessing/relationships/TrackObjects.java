@@ -402,7 +402,7 @@ public class TrackObjects extends Module {
 
     }
 
-    public static void showObjects(Objs spotObjects, String trackObjectsName, String colourMode) {
+    public static void showObjects(Objs spotObjects, String trackObjectsName) {
         HashMap<Integer, Float> hues = ColourFactory.getParentIDHues(spotObjects, trackObjectsName, true);
 
         // Creating a parent-ID encoded image of the objects
@@ -526,9 +526,8 @@ public class TrackObjects extends Module {
         }
 
         // If selected, showing an overlay of the tracked objects
-        String colourMode = AbstractOverlay.ColourModes.PARENT_ID;
         if (showOutput)
-            showObjects(inputObjects, trackObjectsName, colourMode);
+            showObjects(inputObjects, trackObjectsName);
 
         // Adding track objects to the workspace
         writeStatus("Assigned " + trackObjects.size() + " tracks");

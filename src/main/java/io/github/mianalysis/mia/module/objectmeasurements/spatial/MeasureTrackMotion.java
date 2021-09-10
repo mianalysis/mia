@@ -18,9 +18,9 @@ import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChildObjectsP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
+import io.github.mianalysis.mia.object.parameters.InputObjectsP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.SeparatorP;
-import io.github.mianalysis.mia.object.parameters.objects.InputTrackObjectsP;
 import io.github.mianalysis.mia.object.refs.ObjMeasurementRef;
 import io.github.mianalysis.mia.object.refs.collections.ImageMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
@@ -555,7 +555,7 @@ public class MeasureTrackMotion extends Module {
     @Override
     protected void initialiseParameters() {
         parameters.add(new SeparatorP(INPUT_SEPARATOR, this));
-        parameters.add(new InputTrackObjectsP(INPUT_TRACK_OBJECTS, this));
+        parameters.add(new InputObjectsP(INPUT_TRACK_OBJECTS, this));
         parameters.add(new ChildObjectsP(INPUT_SPOT_OBJECTS, this));
 
         parameters.add(new SeparatorP(MEASUREMENT_SEPARATOR, this));

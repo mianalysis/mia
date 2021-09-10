@@ -101,6 +101,12 @@ public class RunTrackMate extends Module {
         String ESTIMATED_DIAMETER_PX = "SPOT_DETECT_TRACK // EST_DIAMETER_(PX)";
         String ESTIMATED_DIAMETER_CAL = "SPOT_DETECT_TRACK // EST_DIAMETER_(${SCAL})";
         String QUALITY = "SPOT_DETECT_TRACK // QUALITY";
+        String X_CENTROID_PX = "SPOT_DETECT_TRACK // X_CENTROID_(PX)";
+        String X_CENTROID_CAL = "SPOT_DETECT_TRACK // X_CENTROID_(${SCAL})";
+        String Y_CENTROID_PX = "SPOT_DETECT_TRACK // Y_CENTROID_(PX)";
+        String Y_CENTROID_CAL = "SPOT_DETECT_TRACK // Y_CENTROID_(${SCAL})";
+        String Z_CENTROID_SLICE = "SPOT_DETECT_TRACK // Z_CENTROID_(SLICE)";
+        String Z_CENTROID_CAL = "SPOT_DETECT_TRACK // Z_CENTROID_(${SCAL})";
 
     }
 
@@ -168,15 +174,12 @@ public class RunTrackMate extends Module {
     public Objs getSpots(Model model, SpatCal calibration, int nFrames, double frameInterval)
             throws IntegerOverflowException {
         String spotObjectsName = parameters.getValue(OUTPUT_SPOT_OBJECTS);
+        boolean doSubpixel = parameters.getValue(DO_SUBPIXEL_LOCALIZATION);
 
         // Getting trackObjects and adding them to the output trackObjects
         writeStatus("Processing detected objects");
 
-        // Getting calibration
-        double dppXY = calibration.getDppXY();
-
-        Objs spotObjects = new Objs(spotObjectsName, calibration, nFrames, frameInterval,
-                TemporalUnit.getOMEUnit());
+        Objs spotObjects = new Objs(spotObjectsName, calibration, nFrames, frameInterval, TemporalUnit.getOMEUnit());
         SpotCollection spots = model.getSpots();
         for (Spot spot : spots.iterable(false)) {
             Obj spotObject = spotObjects.createAndAddNewObject(VolumeType.POINTLIST, spot.ID());
@@ -188,13 +191,7 @@ public class RunTrackMate extends Module {
             }
             spotObject.setT((int) Math.round(spot.getFeature(Spot.FRAME)));
 
-            spotObject.addMeasurement(new Measurement(Measurements.RADIUS_PX, spot.getFeature(Spot.RADIUS)));
-            spotObject.addMeasurement(new Measurement(Measurements.RADIUS_CAL, spot.getFeature(Spot.RADIUS) * dppXY));
-            spotObject.addMeasurement(new Measurement(Measurements.ESTIMATED_DIAMETER_PX,
-                    spot.getFeature(SpotRadiusEstimatorFactory.ESTIMATED_DIAMETER)));
-            spotObject.addMeasurement(new Measurement(Measurements.ESTIMATED_DIAMETER_CAL,
-                    spot.getFeature(SpotRadiusEstimatorFactory.ESTIMATED_DIAMETER) * dppXY));
-            spotObject.addMeasurement(new Measurement(Measurements.QUALITY, spot.getFeature(Spot.QUALITY)));
+            addSpotMeasurements(spotObject, spot, doSubpixel);
 
         }
 
@@ -209,12 +206,11 @@ public class RunTrackMate extends Module {
             throws IntegerOverflowException {
         String spotObjectsName = parameters.getValue(OUTPUT_SPOT_OBJECTS);
         String trackObjectsName = parameters.getValue(OUTPUT_TRACK_OBJECTS);
+        boolean doSubpixel = parameters.getValue(DO_SUBPIXEL_LOCALIZATION);
 
         // Getting calibration
-        Objs spotObjects = new Objs(spotObjectsName, calibration, nFrames, frameInterval,
-                TemporalUnit.getOMEUnit());
-        Objs trackObjects = new Objs(trackObjectsName, calibration, nFrames, frameInterval,
-                TemporalUnit.getOMEUnit());
+        Objs spotObjects = new Objs(spotObjectsName, calibration, nFrames, frameInterval, TemporalUnit.getOMEUnit());
+        Objs trackObjects = new Objs(trackObjectsName, calibration, nFrames, frameInterval, TemporalUnit.getOMEUnit());
 
         // Converting tracks to local track model
         writeStatus("Converting tracks to local track model");
@@ -242,14 +238,8 @@ public class RunTrackMate extends Module {
                 // group (track) ID.
                 Obj spotObject = spotObjects.createAndAddNewObject(trackObject.getVolumeType());
 
-                spotObject.addMeasurement(new Measurement(Measurements.RADIUS_PX, spot.getFeature(Spot.RADIUS)));
-                spotObject
-                        .addMeasurement(new Measurement(Measurements.RADIUS_CAL, spot.getFeature(Spot.RADIUS) * dppXY));
-                spotObject.addMeasurement(new Measurement(Measurements.ESTIMATED_DIAMETER_PX,
-                        spot.getFeature(SpotRadiusEstimatorFactory.ESTIMATED_DIAMETER)));
-                spotObject.addMeasurement(new Measurement(Measurements.ESTIMATED_DIAMETER_CAL,
-                        spot.getFeature(SpotRadiusEstimatorFactory.ESTIMATED_DIAMETER) * dppXY));
-                spotObject.addMeasurement(new Measurement(Measurements.QUALITY, spot.getFeature(Spot.QUALITY)));
+                // Adding measurements
+                addSpotMeasurements(spotObject, spot, doSubpixel);
 
                 // Getting coordinates
                 int x = (int) Math.round(spot.getDoublePosition(0));
@@ -280,13 +270,41 @@ public class RunTrackMate extends Module {
 
     }
 
+    void addSpotMeasurements(Obj spotObject, Spot spot, boolean doSubpixel) {
+        double dppXY = spotObject.getDppXY();
+        double dppZ = spotObject.getDppZ();
+
+        spotObject.addMeasurement(new Measurement(Measurements.RADIUS_PX, spot.getFeature(Spot.RADIUS)));
+        spotObject.addMeasurement(new Measurement(Measurements.RADIUS_CAL, spot.getFeature(Spot.RADIUS) * dppXY));
+        spotObject.addMeasurement(new Measurement(Measurements.ESTIMATED_DIAMETER_PX,
+                spot.getFeature(SpotRadiusEstimatorFactory.ESTIMATED_DIAMETER)));
+        spotObject.addMeasurement(new Measurement(Measurements.ESTIMATED_DIAMETER_CAL,
+                spot.getFeature(SpotRadiusEstimatorFactory.ESTIMATED_DIAMETER) * dppXY));
+        spotObject.addMeasurement(new Measurement(Measurements.QUALITY, spot.getFeature(Spot.QUALITY)));
+
+        if (doSubpixel) {
+            spotObject.addMeasurement(new Measurement(Measurements.X_CENTROID_PX, spot.getFeature(Spot.POSITION_X)));
+            spotObject.addMeasurement(
+                    new Measurement(Measurements.X_CENTROID_CAL, spot.getFeature(Spot.POSITION_X) * dppXY));
+
+            spotObject.addMeasurement(new Measurement(Measurements.Y_CENTROID_PX, spot.getFeature(Spot.POSITION_Y)));
+            spotObject.addMeasurement(
+                    new Measurement(Measurements.Y_CENTROID_CAL, spot.getFeature(Spot.POSITION_Y) * dppXY));
+
+            spotObject.addMeasurement(new Measurement(Measurements.Z_CENTROID_SLICE, spot.getFeature(Spot.POSITION_Z)));
+            spotObject.addMeasurement(
+                    new Measurement(Measurements.Z_CENTROID_CAL, spot.getFeature(Spot.POSITION_Z) * dppZ));
+        }
+    }
+
     public void estimateSpotSize(Objs spotObjects, ImagePlus ipl) throws IntegerOverflowException {
         Objs tempObjects = new Objs("SpotVolume", spotObjects);
         // Replacing spot volumes with explicit volume
         for (Obj spotObject : spotObjects.values()) {
             int radius = (int) Math.round(spotObject.getMeasurement(Measurements.RADIUS_PX).getValue());
-            Point<Double> cent = spotObject.getMeanCentroid(true,false);
-            int[] centroid = new int[] {(int) Math.round(cent.getX()),(int) Math.round(cent.getY()),(int) Math.round(cent.getZ())};
+            Point<Double> cent = spotObject.getMeanCentroid(true, false);
+            int[] centroid = new int[] { (int) Math.round(cent.getX()), (int) Math.round(cent.getY()),
+                    (int) Math.round(cent.getZ()) };
             Obj volumeObject = GetLocalObjectRegion.getLocalRegion(spotObject, tempObjects, centroid, radius, false);
             spotObject.getCoordinateSet().clear();
             spotObject.getCoordinateSet().addAll(volumeObject.getCoordinateSet());
@@ -430,7 +448,7 @@ public class RunTrackMate extends Module {
                 + "\" or \"" + LINKING_MAX_DISTANCE
                 + "\") are being specified in calibrated units.  If disabled, parameters are assumed to be specified in pixel units."));
         parameters.add(new BooleanP(DO_SUBPIXEL_LOCALIZATION, this, true,
-                "Enable TrackMate's \"Subpixel localisation\" functionality."));
+                "Enable TrackMate's \"Subpixel localisation\" functionality.  When enabled, subpixel centroid coordinates will be stored as measurements associated with each detected object."));
         parameters.add(new BooleanP(DO_MEDIAN_FILTERING, this, false,
                 "Enable TrackMate's \"Median filtering\" functionality."));
         parameters.add(new DoubleP(RADIUS, this, 2.0,
@@ -542,6 +560,32 @@ public class RunTrackMate extends Module {
         reference = objectMeasurementRefs.getOrPut(Measurements.QUALITY);
         reference.setObjectsName(outputSpotObjectsName);
         returnedRefs.add(reference);
+
+        if ((boolean) parameters.getValue(DO_SUBPIXEL_LOCALIZATION)) {
+            reference = objectMeasurementRefs.getOrPut(Measurements.X_CENTROID_PX);
+            reference.setObjectsName(outputSpotObjectsName);
+            returnedRefs.add(reference);
+
+            reference = objectMeasurementRefs.getOrPut(Measurements.X_CENTROID_CAL);
+            reference.setObjectsName(outputSpotObjectsName);
+            returnedRefs.add(reference);
+
+            reference = objectMeasurementRefs.getOrPut(Measurements.Y_CENTROID_PX);
+            reference.setObjectsName(outputSpotObjectsName);
+            returnedRefs.add(reference);
+
+            reference = objectMeasurementRefs.getOrPut(Measurements.Y_CENTROID_CAL);
+            reference.setObjectsName(outputSpotObjectsName);
+            returnedRefs.add(reference);
+
+            reference = objectMeasurementRefs.getOrPut(Measurements.Z_CENTROID_SLICE);
+            reference.setObjectsName(outputSpotObjectsName);
+            returnedRefs.add(reference);
+
+            reference = objectMeasurementRefs.getOrPut(Measurements.Z_CENTROID_CAL);
+            reference.setObjectsName(outputSpotObjectsName);
+            returnedRefs.add(reference);
+        }
 
         return returnedRefs;
 

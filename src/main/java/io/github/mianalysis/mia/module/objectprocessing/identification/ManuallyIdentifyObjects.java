@@ -198,7 +198,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
         maxID = 0;
         frame = new JFrame();
         frame.setAlwaysOnTop(true);
-        
+
         frame.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
@@ -226,7 +226,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
         c.insets = new Insets(5, 5, 5, 5);
 
         instructionText = instructionText.replace("\n", "<br>");
-        JLabel headerLabel = new JLabel("<html>"+instructionText+"</html>");
+        JLabel headerLabel = new JLabel("<html>" + instructionText + "</html>");
         headerLabel.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 14));
 
         frame.add(headerLabel, c);
@@ -303,8 +303,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
 
     }
 
-    public static void applySpatialInterpolation(Objs inputObjects, String type)
-            throws IntegerOverflowException {
+    public static void applySpatialInterpolation(Objs inputObjects, String type) throws IntegerOverflowException {
         for (Obj inputObj : inputObjects.values()) {
             Image binaryImage = inputObj.getAsTightImage("BinaryTight");
 
@@ -351,7 +350,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
             ArrayList<Integer> timepoints = new ArrayList<>();
 
             // Creating a blank image for this track
-            Image binaryImage = trackObj.getAsImage("Track",false);
+            Image binaryImage = trackObj.getAsImage("Track", false);
 
             // Adding each timepoint object (child) to this image
             for (Obj childObj : trackObj.getChildren(inputObjects.getName()).values()) {
@@ -476,8 +475,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
         updateOverlay();
 
         // Initialising output objects
-        outputObjects = new Objs(outputObjectsName, calibration, nFrames, frameInterval,
-                TemporalUnit.getOMEUnit());
+        outputObjects = new Objs(outputObjectsName, calibration, nFrames, frameInterval, TemporalUnit.getOMEUnit());
         if (outputTracks) {
             outputTrackObjects = new Objs(outputTrackObjectsName, calibration, nFrames, frameInterval,
                     TemporalUnit.getOMEUnit());
@@ -515,13 +513,11 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
         workspace.addObjects(outputObjects);
 
         // Showing the selected objects
-        if (showOutput) {
-            if (outputTracks) {
-                TrackObjects.showObjects(outputObjects, outputTrackObjectsName, AbstractOverlay.ColourModes.PARENT_ID);
-            } else {
+        if (showOutput)
+            if (outputTracks)
+                TrackObjects.showObjects(outputObjects, outputTrackObjectsName);
+            else
                 outputObjects.convertToImageRandomColours().showImage();
-            }
-        }
 
         return Status.PASS;
 
@@ -541,9 +537,11 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
         parameters.add(new BooleanP(TEMPORAL_INTERPOLATION, this, false));
 
         parameters.add(new SeparatorP(SELECTION_SEPARATOR, this));
-        parameters.add(new TextAreaP(INSTRUCTION_TEXT, this, "Draw round an object, then select one of the following"
-        + "\n(or click \"Finish adding objects\" at any time)."
-        + "\nDifferent timepoints must be added as new objects.", true, 100));
+        parameters.add(new TextAreaP(INSTRUCTION_TEXT, this,
+                "Draw round an object, then select one of the following"
+                        + "\n(or click \"Finish adding objects\" at any time)."
+                        + "\nDifferent timepoints must be added as new objects.",
+                true, 100));
         parameters.add(new ChoiceP(SELECTOR_TYPE, this, SelectorTypes.FREEHAND_REGION, SelectorTypes.ALL));
         parameters.add(new StringP(MESSAGE_ON_IMAGE, this, "Draw objects on this image"));
 
@@ -644,8 +642,9 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
         parameters.get(TEMPORAL_INTERPOLATION).setDescription(
                 "Interpolate objects across multiple frames.  Objects assigned the same ID will be interpolated to appear in all frames between the first and last specified timepoints.  Specified regions must contain a degree of overlap (higher overlap will give better results).");
 
-        parameters.get(INSTRUCTION_TEXT).setDescription("Text that will be displayed to the user on the object selection control panel.  This can inform them of the steps they need to take to select the objects.");
-                
+        parameters.get(INSTRUCTION_TEXT).setDescription(
+                "Text that will be displayed to the user on the object selection control panel.  This can inform them of the steps they need to take to select the objects.");
+
         parameters.get(SELECTOR_TYPE).setDescription(
                 "Default region drawing tool to enable.  This tool can be changed by the user when selecting regions.  Choices are: "
                         + String.join(", ", SelectorTypes.ALL) + ".");
@@ -785,7 +784,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
             String type = parameters.getValue(VOLUME_TYPE);
             VolumeType volumeType = VolumeTypesInterface.getVolumeType(type);
             Obj outputObject = outputObjects.createAndAddNewObject(volumeType, ID);
-            
+
             for (ObjRoi objRoi : currentRois) {
                 Roi roi = objRoi.getRoi();
                 Point[] points = roi.getContainedPoints();
@@ -818,7 +817,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
 
             // Creating current track object
             Obj outputTrack = outputTrackObjects.createAndAddNewObject(VolumeType.POINTLIST, ID);
-            
+
             // Creating the new object
             String type = parameters.getValue(VOLUME_TYPE);
             VolumeType volumeType = VolumeTypesInterface.getVolumeType(type);

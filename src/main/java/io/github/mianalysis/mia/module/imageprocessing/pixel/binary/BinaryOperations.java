@@ -53,7 +53,7 @@ public class BinaryOperations extends Module {
     public static final String INTENSITY_MODE = "Intensity mode";
     public static final String INTENSITY_IMAGE = "Intensity image";
     public static final String DYNAMIC = "Dynamic";
-    public static final String CONNECTIVITY_3D = "Connectivity (3D)";
+    public static final String CONNECTIVITY = "Connectivity";
     public static final String MATCH_Z_TO_X= "Match Z to XY";
 
     public BinaryOperations(Modules modules) {
@@ -349,7 +349,7 @@ public class BinaryOperations extends Module {
         String intensityMode = parameters.getValue(INTENSITY_MODE);
         String intensityImageName = parameters.getValue(INTENSITY_IMAGE);
         int dynamic = parameters.getValue(DYNAMIC);
-        int connectivity = Integer.parseInt(parameters.getValue(CONNECTIVITY_3D));
+        int connectivity = Integer.parseInt(parameters.getValue(CONNECTIVITY));
         boolean matchZToXY = parameters.getValue(MATCH_Z_TO_X);
 
         // If applying to a new image, the input image is duplicated
@@ -434,7 +434,7 @@ public class BinaryOperations extends Module {
         parameters.add(new ChoiceP(INTENSITY_MODE,this,IntensityModes.DISTANCE,IntensityModes.ALL));
         parameters.add(new InputImageP(INTENSITY_IMAGE,this));
         parameters.add(new IntegerP(DYNAMIC,this,1));
-        parameters.add(new ChoiceP(CONNECTIVITY_3D,this,Connectivity3D.SIX,Connectivity3D.ALL));
+        parameters.add(new ChoiceP(CONNECTIVITY,this,Connectivity3D.SIX,Connectivity3D.ALL));
         parameters.add(new BooleanP(MATCH_Z_TO_X,this,true));
 
         addParameterDescriptions();
@@ -482,7 +482,7 @@ public class BinaryOperations extends Module {
                         returnedParameters.add(parameters.getParameter(INTENSITY_IMAGE));
                         break;
                 }
-                returnedParameters.add(parameters.getParameter(CONNECTIVITY_3D));
+                returnedParameters.add(parameters.getParameter(CONNECTIVITY));
                 break;
         }
 
@@ -583,7 +583,7 @@ public class BinaryOperations extends Module {
 
         parameters.get(DYNAMIC).setDescription("(3D watershed only) If \""+USE_MARKERS+"\" is not selected, the initial region markers will be created by generating a distance map for the input binary image and calculating the extended minima.  This parameter specifies the maximum permitted pixel intensity difference for a single marker.  Local intensity differences greater than this will result in creation of more markers.  The smaller the dynamic value is, the more the watershed transform will split the image.");
 
-        parameters.get(CONNECTIVITY_3D).setDescription("(3D watershed only) Controls which adjacent pixels are considered:<br><ul>"
+        parameters.get(CONNECTIVITY).setDescription("(3D watershed only) Controls which adjacent pixels are considered:<br><ul>"
 
         +"<li>\""+Connectivity3D.SIX+"\" Only pixels immediately next to the active pixel are considered.  These are the pixels on the four \"cardinal\" directions plus the pixels immediately above and below the current pixel.  If working in 2D, 4-way connectivity is used.</li>"
 

@@ -47,7 +47,7 @@ public class ExtendedMinima extends Module {
     public static final String EXTENDED_MINIMA_SEPARATOR = "Extended minima controls";
     public static final String MINIMA_MAXIMA_MODE = "Minima/maxima";
     public static final String DYNAMIC = "Dynamic";
-    public static final String CONNECTIVITY_3D = "Connectivity (3D)";
+    public static final String CONNECTIVITY = "Connectivity";
     public static final String BINARY_LOGIC = "Binary logic";
 
     public static final String EXECUTION_SEPARATOR = "Execution controls";
@@ -186,7 +186,7 @@ public class ExtendedMinima extends Module {
         String outputImageName = parameters.getValue(OUTPUT_IMAGE);
         String minimaMaximaMode = parameters.getValue(MINIMA_MAXIMA_MODE);
         int dynamic = parameters.getValue(DYNAMIC);
-        int connectivity = Integer.parseInt(parameters.getValue(CONNECTIVITY_3D));
+        int connectivity = Integer.parseInt(parameters.getValue(CONNECTIVITY));
         String binaryLogic = parameters.getValue(BINARY_LOGIC);
         boolean blackBackground = binaryLogic.equals(BinaryLogic.BLACK_BACKGROUND);
         boolean multithread = parameters.getValue(ENABLE_MULTITHREADING);
@@ -226,7 +226,7 @@ public class ExtendedMinima extends Module {
         parameters.add(new SeparatorP(EXTENDED_MINIMA_SEPARATOR, this));
         parameters.add(new ChoiceP(MINIMA_MAXIMA_MODE, this, MinimaMaximaModes.MINIMA, MinimaMaximaModes.ALL));
         parameters.add(new IntegerP(DYNAMIC, this, 1));
-        parameters.add(new ChoiceP(CONNECTIVITY_3D, this, Connectivity.TWENTYSIX, Connectivity.ALL));
+        parameters.add(new ChoiceP(CONNECTIVITY, this, Connectivity.TWENTYSIX, Connectivity.ALL));
         parameters.add(new ChoiceP(BINARY_LOGIC, this, BinaryLogic.BLACK_BACKGROUND, BinaryLogic.ALL));
 
         parameters.add(new SeparatorP(EXECUTION_SEPARATOR, this));
@@ -251,7 +251,7 @@ public class ExtendedMinima extends Module {
         returnedParameters.add(parameters.getParameter(EXTENDED_MINIMA_SEPARATOR));
         returnedParameters.add(parameters.getParameter(MINIMA_MAXIMA_MODE));
         returnedParameters.add(parameters.getParameter(DYNAMIC));
-        returnedParameters.add(parameters.getParameter(CONNECTIVITY_3D));
+        returnedParameters.add(parameters.getParameter(CONNECTIVITY));
         returnedParameters.add(parameters.getParameter(BINARY_LOGIC));
 
         returnedParameters.add(parameters.getParameter(EXECUTION_SEPARATOR));
@@ -307,7 +307,7 @@ public class ExtendedMinima extends Module {
         parameters.get(DYNAMIC).setDescription(
                 "This parameter specifies the maximum permitted pixel intensity difference for a single minima.  Local intensity differences greater than this will result in creation of more minima.  The smaller the dynamic value is, the more minima will be created.  As the dynamic value increases, minima will increase in size.");
 
-        parameters.get(CONNECTIVITY_3D).setDescription("Controls which adjacent pixels are considered:<br><ul>"
+        parameters.get(CONNECTIVITY).setDescription("Controls which adjacent pixels are considered:<br><ul>"
 
                 + "<li>\"" + Connectivity.SIX
                 + "\" Only pixels immediately next to the active pixel are considered.  These are the pixels on the four \"cardinal\" directions plus the pixels immediately above and below the current pixel.  If working in 2D, 4-way connectivity is used.</li>"
