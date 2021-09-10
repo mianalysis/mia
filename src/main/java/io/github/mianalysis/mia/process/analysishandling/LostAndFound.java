@@ -28,6 +28,7 @@ import io.github.mianalysis.mia.module.miscellaneous.macros.RunSingleCommand;
 import io.github.mianalysis.mia.module.objectmeasurements.intensity.MeasureObjectIntensity;
 import io.github.mianalysis.mia.module.objectmeasurements.miscellaneous.ReplaceMeasurementValue;
 import io.github.mianalysis.mia.module.objectmeasurements.spatial.CalculateNearestNeighbour;
+import io.github.mianalysis.mia.module.objectmeasurements.spatial.FitGaussian2D;
 import io.github.mianalysis.mia.module.objectmeasurements.spatial.FitSpline;
 import io.github.mianalysis.mia.module.objectprocessing.identification.CircleHoughDetection;
 import io.github.mianalysis.mia.module.objectprocessing.identification.GetLocalObjectRegion;
@@ -119,6 +120,16 @@ public class LostAndFound {
         currentParameterNames.put("Use maximum volume", FillHolesByVolume.SET_MAXIMUM_VOLUME);
         currentParameterNames.put("Maximum size", FillHolesByVolume.MAXIMUM_VOLUME);
         moduleName = new FillHolesByVolume(null).getClass().getSimpleName();
+        lostParameterNames.put(moduleName, currentParameterNames);
+
+        // FitGaussian2D
+        currentParameterNames = new HashMap<>();
+        currentParameterNames.put("Method to estimate spot radius", FitGaussian2D.SIGMA_MODE);
+        currentParameterNames.put("Radius", FitGaussian2D.SIGMA_MODE);
+        currentParameterNames.put("Radius measurement", FitGaussian2D.SIGMA_MEASUREMENT);
+        currentParameterNames.put("Minimum sigma (x Radius)", FitGaussian2D.MIN_SIGMA);
+        currentParameterNames.put("Maximum sigma (x Radius)", FitGaussian2D.MAX_SIGMA);        
+        moduleName = new FitGaussian2D(null).getClass().getSimpleName();
         lostParameterNames.put(moduleName, currentParameterNames);
 
         // GetObjectLocalRegion

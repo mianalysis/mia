@@ -89,7 +89,7 @@ public class AddFromPositionMeasurement extends AbstractOverlay {
 
         if (renderInAllFrames) t = 0;
         if (radiusMeasurement == null) {
-            PointRoi pointRoi = new PointRoi(xMean+0.5,yMean+0.5);
+            PointRoi pointRoi = new PointRoi(xMean,yMean);
             pointRoi.setPointType(typeVal);
             pointRoi.setSize(sizeVal);
             if (ipl.isHyperStack()) {
@@ -103,7 +103,7 @@ public class AddFromPositionMeasurement extends AbstractOverlay {
 
         } else {
             double r = object.getMeasurement(radiusMeasurement).getValue();
-            OvalRoi ovalRoi = new OvalRoi(xMean + 0.5 - r, yMean + 0.5 - r, 2 * r, 2 * r);
+            OvalRoi ovalRoi = new OvalRoi(xMean - r, yMean - r, 2 * r, 2 * r);
             if (ipl.isHyperStack()) {
                 ovalRoi.setPosition(1, z, t);
             } else {
