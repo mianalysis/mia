@@ -12,6 +12,7 @@ import io.github.mianalysis.mia.module.imageprocessing.pixel.binary.ExtendedMini
 import io.github.mianalysis.mia.module.imageprocessing.pixel.binary.FillHolesByVolume;
 import io.github.mianalysis.mia.module.imageprocessing.pixel.threshold.LocalAutoThreshold;
 import io.github.mianalysis.mia.module.imageprocessing.pixel.threshold.ThresholdImage;
+import io.github.mianalysis.mia.module.imageprocessing.stack.FocusStack;
 import io.github.mianalysis.mia.module.imageprocessing.stack.registration.AffineBlockMatching;
 import io.github.mianalysis.mia.module.imageprocessing.stack.registration.AffineMOPS;
 import io.github.mianalysis.mia.module.imageprocessing.stack.registration.AffineManual;
@@ -32,6 +33,7 @@ import io.github.mianalysis.mia.module.objectmeasurements.spatial.FitGaussian2D;
 import io.github.mianalysis.mia.module.objectmeasurements.spatial.FitSpline;
 import io.github.mianalysis.mia.module.objectprocessing.identification.CircleHoughDetection;
 import io.github.mianalysis.mia.module.objectprocessing.identification.GetLocalObjectRegion;
+import io.github.mianalysis.mia.module.objectprocessing.miscellaneous.ConvertImageToObjects;
 import io.github.mianalysis.mia.module.objectprocessing.miscellaneous.CreateDistanceMap;
 import io.github.mianalysis.mia.module.objectprocessing.refinement.ExpandShrinkObjects;
 import io.github.mianalysis.mia.module.objectprocessing.relationships.RelateManyToOne;
@@ -82,6 +84,13 @@ public class LostAndFound {
         moduleName = new CalculateNearestNeighbour(null).getClass().getSimpleName();
         lostParameterNames.put(moduleName, currentParameterNames);
 
+        // ConvertImageToObjects
+        currentParameterNames = new HashMap<>();
+        currentParameterNames.put("Create parent objects", ConvertImageToObjects.CREATE_TRACKS);
+        currentParameterNames.put("Output track objects name", ConvertImageToObjects.TRACK_OBJECTS_NAME);
+        moduleName = new ConvertImageToObjects(null).getClass().getSimpleName();
+        lostParameterNames.put(moduleName, currentParameterNames);
+
         // CreateDistanceMap
         currentParameterNames = new HashMap<>();
         currentParameterNames.put("Spatial units", CreateDistanceMap.SPATIAL_UNITS_MODE);
@@ -128,8 +137,14 @@ public class LostAndFound {
         currentParameterNames.put("Radius", FitGaussian2D.SIGMA_MODE);
         currentParameterNames.put("Radius measurement", FitGaussian2D.SIGMA_MEASUREMENT);
         currentParameterNames.put("Minimum sigma (x Radius)", FitGaussian2D.MIN_SIGMA);
-        currentParameterNames.put("Maximum sigma (x Radius)", FitGaussian2D.MAX_SIGMA);        
+        currentParameterNames.put("Maximum sigma (x Radius)", FitGaussian2D.MAX_SIGMA);
         moduleName = new FitGaussian2D(null).getClass().getSimpleName();
+        lostParameterNames.put(moduleName, currentParameterNames);
+
+        // FocusStack
+        currentParameterNames = new HashMap<>();
+        currentParameterNames.put("Show height image", null);
+        moduleName = new FocusStack(null).getClass().getSimpleName();
         lostParameterNames.put(moduleName, currentParameterNames);
 
         // GetObjectLocalRegion

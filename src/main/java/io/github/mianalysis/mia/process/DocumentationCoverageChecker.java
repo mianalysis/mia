@@ -84,10 +84,10 @@ public class DocumentationCoverageChecker {
 
                 boolean hasSeparators = moduleHasSeparators(module);
 
-                System.out.println("Module \"" + module.getName() + "\", description = " + hasDescription
-                        + ", parameters = " + df.format(100 * parameterCoverage) + "%, incomplete parameters = "
-                        + incompleteParameters + ", image refs = " + df.format(100 * imageRefCoverage)
-                        + "%, obj refs = " + df.format(100 * objRefCoverage) + ", separators = " + hasSeparators);
+                System.out.println("Name = \""+module.getName() + "\", desc = " + hasDescription
+                        + ", params = " + df.format(100 * parameterCoverage) + "%, incomp params = "
+                        + incompleteParameters + ", im refs = " + df.format(100 * imageRefCoverage)
+                        + "%, obj refs = " + df.format(100 * objRefCoverage) + ", seps = " + hasSeparators);
 
             } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | NoSuchMethodException
                     | InvocationTargetException e) {
