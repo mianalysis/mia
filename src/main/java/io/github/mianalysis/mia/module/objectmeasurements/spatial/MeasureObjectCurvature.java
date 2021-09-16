@@ -131,7 +131,7 @@ public class MeasureObjectCurvature extends Module {
         CurvatureCalculator curvatureCalculator = new CurvatureCalculator(longestPath,false);
         switch (splineFittingMethod) {
             case SplineFittingMethods.LOESS:
-                curvatureCalculator.setLoessNNeighbours(nNeighbours);
+                curvatureCalculator.setNNeighbours(nNeighbours);
                 curvatureCalculator.setLoessIterations(iterations);
                 curvatureCalculator.setLoessAccuracy(accuracy);
                 curvatureCalculator.setFittingMethod(CurvatureCalculator.FittingMethod.LOESS);
@@ -360,7 +360,7 @@ public class MeasureObjectCurvature extends Module {
             initialiseObjectMeasurements(inputObject,fitSpline,absoluteCurvature,signedCurvature,useReference);
 
             // Getting the backbone of the object
-            ArrayList<Vertex> longestPath = FitSpline.getSkeletonBackbone(inputObject);
+            ArrayList<Vertex> longestPath = FitSpline2D.getSkeletonBackbone(inputObject);
 
             // If the object is too small to be fit
             if (longestPath.size() < 3) continue;
@@ -427,7 +427,7 @@ public class MeasureObjectCurvature extends Module {
         parameters.add(new BooleanP(FIT_SPLINE, this,true));
         parameters.add(new ChoiceP(SPLINE_FITTING_METHOD, this,SplineFittingMethods.LOESS,SplineFittingMethods.ALL));
         parameters.add(new IntegerP(N_NEIGHBOURS, this,20));
-        parameters.add(new IntegerP(ITERATIONS, this,10));
+        parameters.add(new IntegerP(ITERATIONS, this,0));
         parameters.add(new DoubleP(ACCURACY, this,1d));
         parameters.add(new BooleanP(ABSOLUTE_CURVATURE,this,true));
         parameters.add(new BooleanP(SIGNED_CURVATURE,this,true));

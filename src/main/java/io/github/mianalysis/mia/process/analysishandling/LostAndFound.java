@@ -30,7 +30,7 @@ import io.github.mianalysis.mia.module.objectmeasurements.intensity.MeasureObjec
 import io.github.mianalysis.mia.module.objectmeasurements.miscellaneous.ReplaceMeasurementValue;
 import io.github.mianalysis.mia.module.objectmeasurements.spatial.CalculateNearestNeighbour;
 import io.github.mianalysis.mia.module.objectmeasurements.spatial.FitGaussian2D;
-import io.github.mianalysis.mia.module.objectmeasurements.spatial.FitSpline;
+import io.github.mianalysis.mia.module.objectmeasurements.spatial.FitSpline2D;
 import io.github.mianalysis.mia.module.objectprocessing.identification.CircleHoughDetection;
 import io.github.mianalysis.mia.module.objectprocessing.identification.GetLocalObjectRegion;
 import io.github.mianalysis.mia.module.objectprocessing.miscellaneous.ConvertImageToObjects;
@@ -48,7 +48,7 @@ public class LostAndFound {
 
     public LostAndFound() {
         /// Populating hard-coded module reassignments ///
-        lostModules.put("Fit spline", new FitSpline(null).getClass().getSimpleName());
+        lostModules.put("FitSpline", new FitSpline2D(null).getClass().getSimpleName());
         lostModules.put("AutomaticRegistration", new AffineSIFT(null).getClass().getSimpleName());
         lostModules.put("ConditionalAnalysisTermination", new WorkflowHandling(null).getClass().getSimpleName());
         lostModules.put("RunMacroOnImage", new RunMacro(null).getClass().getSimpleName());
@@ -139,6 +139,12 @@ public class LostAndFound {
         currentParameterNames.put("Minimum sigma (x Radius)", FitGaussian2D.MIN_SIGMA);
         currentParameterNames.put("Maximum sigma (x Radius)", FitGaussian2D.MAX_SIGMA);
         moduleName = new FitGaussian2D(null).getClass().getSimpleName();
+        lostParameterNames.put(moduleName, currentParameterNames);
+
+        // FitSpline2D
+        currentParameterNames = new HashMap<>();
+        currentParameterNames.put("Iterations", "");
+        moduleName = new FitSpline2D(null).getClass().getSimpleName();
         lostParameterNames.put(moduleName, currentParameterNames);
 
         // FocusStack

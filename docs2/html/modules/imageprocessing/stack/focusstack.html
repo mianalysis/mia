@@ -69,7 +69,7 @@
           </li>
         </ul>
         <a class="btn btn-outline-primary ml-2"
-          href="https://github.com/mianalysis/mia/releases/download/v0.20.2/MIA_-0.20.2.jar">Download</a>
+          href="https://github.com/mianalysis/mia/releases/download/v0.20.3-SNAPSHOT/MIA_-0.20.3-SNAPSHOT.jar">Download</a>
       </div>
     </div>
   </nav>
@@ -77,19 +77,17 @@
   <div class="page-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
     <p class="text-secondary"><a href="../../../../html/modules/modules.html">Modules</a> ? <a href="../../../../html/modules/imageprocessing/imageprocessing.html">Image processing</a> ? <a href="../../../../html/modules/imageprocessing/stack/stack.html">Stack</a></p>
     <h1 class="display-4">Focus stack</h1>
-    <p class="lead">Channels will be focused individually.</p>
+    <p class="lead">Focuses a Z-stack into a single plane using the StackFocuser Fiji plugin.</p>
 </div>
 
 <div class="pt-md-2 pb-md-4 mx-auto">
     <h2 class="display-6">Description</h2>
-    Channels will be focused individually.
-Uses the <a href="https://imagej.nih.gov/ij/plugins/download/Stack_Focuser_.java">StackFocuser</a> plugin created by Mikhail Umorin.
-Source downloaded from https://imagej.nih.gov/ij/plugins/download/Stack_Focuser_.java on 06-June-2018
+    Focuses a Z-stack into a single plane using the StackFocuser Fiji plugin.  Best focus position is determined at each 2D pixel location, with the final image being comprised of the pixels from the slice with the best focus at that location.  Each channel and timepoint is focused separately.  Prior to application, the focus map can be median filtered to remove outliers.  Height maps can be stored and used in additional "Focus stack" instances, thus allowing height maps to be edited prior to use.<br><br>Uses the <a href="https://imagej.nih.gov/ij/plugins/download/Stack_Focuser_.java">StackFocuser</a> plugin created by Mikhail Umorin (source code downloaded on 06-June-2018).
 </div>
 
 <div class="pt-md-2 pb-md-4 mx-auto">
     <h2 class="display-6">Parameters</h2>
-    <b>Input image</b> (default = "") <br><br><b>Output focused image</b> (default = "") <br><br><b>Use existing height image</b> (default = "false") <br><br><b>Input height image</b> (default = "") <br><br><b>Range</b> (default = "11") <br><br><b>Smooth height map</b> (default = "true") <br><br><b>Add height map image to workspace</b> (default = "false") <br><br><b>Output height image</b> (default = "") <br><br><b>Show height image</b> (default = "false") <br><br>
+    <b>Input image</b> (default = "") Image stack from the workspace which will be focused into a single plane.<br><br><b>Output focused image</b> (default = "") Output focused image which will be added to the workspace.  This image will have the same number of channels and timepoints as the input image, but will always only have a single Z-slice.<br><br><b>Add height map image to workspace</b> (default = "false") When selected, the height map image will be added to the workspace with the name specified by "Output height image".  Since the height map image can be used as an input to the "FocusStack" module, the height map can be edited prior to being used to generate a focused image.<br><br><b>Output height image</b> (default = "") If "Add height map image to workspace" is selected, the height map will be added to the workspace with this name.  The height map image has a single slice and equal number of channels and timepoints to the input image.  The value of each pixel corresponds to the best-focused Z-position of the input stack.  Slice indices are zero-indexed (i.e. first slice has an index of 0).<br><br><b>Use existing height image</b> (default = "false") When selected, the height map image will be loaded from the workspace ("Input height image" parameter) rather than being calculated based on the input image.<br><br><b>Input height image</b> (default = "") The name of the height map image in the workspace if the height map has been pre-determined.<br><br><b>Range</b> (default = "11") If calculating a new height image ("Use existing height image" parameter isn't selected), the best focus slice at each pixel will be based on pixel intensities within this range (specified in pixel units).<br><br><b>Smooth height map</b> (default = "true") When selected, the height map will be passed through a 2D median filter (range specified by "Range" parameter) to remove outliers.<br><br>
 </div>
 
   <!-- Footer -->
