@@ -106,9 +106,9 @@
 
     <repositories>
         <repository>
-            <id>scijava.public</id>
-            <url>https://maven.scijava.org/content/groups/public</url>
-        </repository>
+			<id>scijava.public</id>
+			<url>https://maven.scijava.org/content/groups/public</url>
+		</repository>
 
         <repository>
             <id>jitpack.io</id>
@@ -286,7 +286,7 @@
         </dependency>
         <dependency>
             <groupId>sc.fiji</groupId>
-            <artifactId>TrackMate_</artifactId>
+            <artifactId>TrackMate</artifactId>
             <scope>${scp}</scope>
         </dependency>
         <dependency>
