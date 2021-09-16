@@ -1,0 +1,30 @@
+---
+layout: default
+---
+
+<head>
+    <link rel="stylesheet" href="../../css/index.css">
+</head>
+
+<body>
+<!-- Side navigation -->
+<div class="sidenav">
+    <a href="../../index.html" class="nav1">Introduction</a>
+    <a href="../gettingstarted.html" class="nav1">Getting started</a>
+    <a href="../modulelist.html" class="nav1">Modules</a>
+    <a href="../macrolist.html" class="nav1">Macros</a>
+    <!-- <a href="../extendingmia.html" class="nav1">Extending MIA</a> -->
+</div>
+
+<!-- Page content -->
+<div class="main">
+    <!--The following is replaced automatically by the generated module list-->
+    <a href="../modulelist.html">Back to module list</a>
+<h1>Spot detection</h1>
+<h2>Description</h2>
+
+<h2>Parameters</h2>
+<ul><li><b>Input image</b> (default = "") Image in which to detect spots.</li><br><li><b>Output spot objects</b> (default = "") Spot objects that will be added to the workspace.</li><br><li><b>Calibrated units</b> (default = "false") Enable if spatial parameters (e.g. "Radius") are being specified in calibrated units.  If disabled, parameters are assumed to be specified in pixel units.</li><br><li><b>Do sub-pixel localisation</b> (default = "true") Enable TrackMate's "Subpixel localisation" functionality.  When enabled, subpixel centroid coordinates will be stored as measurements associated with each detected object.</li><br><li><b>Median filtering</b> (default = "false") Enable TrackMate's "Median filtering" functionality.</li><br><li><b>Radius</b> (default = "2.0") Expected radius of spots in the input image.  Specified in pixel units, unless "Calibrated units" is selected.</li><br><li><b>Threshold</b> (default = "10.0") Threshold for spot detection.  Threshold is applied to filtered image (Laplacian of Gaussian), so will be affected by the specified "Radius" value.  Increase this value to make detection more selective (i.e. detect fewer spots).</li><br><li><b>Estimate spot size</b> (default = "false") When enabled, output spot objects will have explicit size (rather than a single, centroid coordinate) determined by the TrackMate-calculated estimated diameter.</li><br></ul>
+
+</div>
+</body>
