@@ -16,8 +16,8 @@ import fiji.plugin.trackmate.Spot;
 import fiji.plugin.trackmate.SpotCollection;
 import fiji.plugin.trackmate.TrackModel;
 import fiji.plugin.trackmate.features.track.TrackIndexAnalyzer;
-import fiji.plugin.trackmate.visualization.PerTrackFeatureColorGenerator;
-import fiji.plugin.trackmate.visualization.TrackMateModelView;
+import fiji.plugin.trackmate.gui.displaysettings.DisplaySettings;
+import fiji.plugin.trackmate.gui.displaysettings.DisplaySettings.TrackMateObject;
 import fiji.plugin.trackmate.visualization.hyperstack.HyperStackDisplayer;
 import fiji.plugin.trackmate.visualization.trackscheme.TrackScheme;
 import ij.ImagePlus;
@@ -147,12 +147,16 @@ public class TrackEditor extends Module {
         }
     }
 
-    public static void displayTrackScheme(Model model, Image image, boolean showProjected) {
-        // Colouring tracks by index
-        TrackIndexAnalyzer indexAnalyzer = new TrackIndexAnalyzer();
-        indexAnalyzer.process(model.getTrackModel().trackIDs(true), model);
-        PerTrackFeatureColorGenerator colGen = new PerTrackFeatureColorGenerator(model, TrackIndexAnalyzer.TRACK_INDEX);
+    static int getMaxID(Set<Integer> IDs) {
+        int maxID = 0;
+        for (int ID:IDs)
+            maxID = Math.max(ID, maxID);
 
+        return maxID;
+
+    }
+
+    public static void displayTrackScheme(Model model, Image image, boolean showProjected) {
         SelectionModel selectionModel = new SelectionModel(model);
 
         // Removing the image spatial calibration, since values are in pixel and slice
@@ -162,8 +166,10 @@ public class TrackEditor extends Module {
         inputIpl.getCalibration().pixelHeight = 1;
         inputIpl.getCalibration().pixelDepth = 1;
 
-        HyperStackDisplayer stackDisplayer = new HyperStackDisplayer(model, selectionModel, inputIpl);
-        stackDisplayer.setDisplaySettings(TrackMateModelView.KEY_TRACK_COLORING, colGen);
+        DisplaySettings displaySettings = new DisplaySettings();
+        displaySettings.setTrackColorBy(TrackMateObject.TRACKS, TrackIndexAnalyzer.TRACK_INDEX);
+
+        HyperStackDisplayer stackDisplayer = new HyperStackDisplayer(model, selectionModel, inputIpl, displaySettings);
         stackDisplayer.render();
 
         ImagePlus projectedIpl = null;
@@ -175,14 +181,11 @@ public class TrackEditor extends Module {
             projectedIpl.getCalibration().pixelHeight = 1;
             projectedIpl.getCalibration().pixelDepth = 1;
 
-            projectedDisplayer = new HyperStackDisplayer(model, selectionModel, projectedIpl);
-            projectedDisplayer.setDisplaySettings(TrackMateModelView.KEY_TRACK_COLORING, colGen);
-            projectedDisplayer.setDisplaySettings(TrackMateModelView.KEY_LIMIT_DRAWING_DEPTH, false);
+            projectedDisplayer = new HyperStackDisplayer(model, selectionModel, projectedIpl, displaySettings);
             projectedDisplayer.render();
         }
 
-        TrackScheme trackScheme = new TrackScheme(model, selectionModel);
-        trackScheme.setDisplaySettings(TrackScheme.KEY_TRACK_COLORING, colGen);
+        TrackScheme trackScheme = new TrackScheme(model, selectionModel, displaySettings);
         trackScheme.render();
 
         while (trackScheme.getGUI().isVisible())

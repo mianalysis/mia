@@ -51,7 +51,7 @@ public class DependencyValidator {
             int dialogResult = JOptionPane.showConfirmDialog(null, message, "Dependencies missing", JOptionPane.YES_NO_OPTION);
             if (dialogResult == JOptionPane.YES_OPTION) {
                 update(toInstall);
-                MIA.log.writeWarning("Installation complete.  Please restart Fiji.");
+                MIA.log.writeMessage("Installation complete.  Please restart Fiji.");
                 JOptionPane.showMessageDialog(null, "Please restart Fiji, then process the plugin again");
             }
         }

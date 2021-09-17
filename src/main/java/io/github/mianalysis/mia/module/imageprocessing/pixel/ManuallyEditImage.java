@@ -1,25 +1,29 @@
 package io.github.mianalysis.mia.module.imageprocessing.pixel;
 
+import ij.CompositeImage;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.plugin.Duplicator;
+import ij.process.ColorProcessor;
+import io.github.mianalysis.mia.module.Categories;
+import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.module.Category;
-import io.github.mianalysis.mia.module.Categories;
+import io.github.mianalysis.mia.module.visualisation.ShowImage;
 import io.github.mianalysis.mia.object.Image;
 import io.github.mianalysis.mia.object.Status;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
+import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
 import io.github.mianalysis.mia.object.parameters.OutputImageP;
+import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.SeparatorP;
 import io.github.mianalysis.mia.object.refs.collections.ImageMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
-import io.github.mianalysis.mia.object.parameters.Parameters;
 
 public class ManuallyEditImage extends Module {
     public static final String INPUT_SEPARATOR = "Image input/output";
@@ -27,10 +31,15 @@ public class ManuallyEditImage extends Module {
     public static final String APPLY_TO_INPUT = "Apply to input image";
     public static final String OUTPUT_IMAGE = "Output image";
 
+    public static final String DISPLAY_SEPARATOR = "Display controls";
+    public static final String CHANNEL_MODE = "Channel mode";
+
+    public interface ChannelModes extends ShowImage.ChannelModes {
+    }
+
     public ManuallyEditImage(Modules modules) {
         super("Manually edit image", modules);
     }
-
 
     @Override
     public Category getCategory() {
@@ -52,12 +61,21 @@ public class ManuallyEditImage extends Module {
         // Getting parameters
         boolean applyToInput = parameters.getValue(APPLY_TO_INPUT);
         String outputImageName = parameters.getValue(OUTPUT_IMAGE);
+        String channelMode = parameters.getValue(CHANNEL_MODE);
 
         // If applying to a new image, the input image is duplicated
         if (!applyToInput)
             inputImagePlus = new Duplicator().run(inputImagePlus);
 
         // Displaying image to edit
+        switch (channelMode) {
+            case ChannelModes.COLOUR:
+                inputImagePlus.setDisplayMode(CompositeImage.COLOR);
+                break;
+            case ChannelModes.COMPOSITE:
+                inputImagePlus.setDisplayMode(CompositeImage.COMPOSITE);
+                break;
+        }
         inputImagePlus.show();
 
         // When the edits have been made, the user needs to click on the following
@@ -88,8 +106,11 @@ public class ManuallyEditImage extends Module {
     protected void initialiseParameters() {
         parameters.add(new SeparatorP(INPUT_SEPARATOR, this));
         parameters.add(new InputImageP(INPUT_IMAGE, this));
-        parameters.add(new BooleanP(APPLY_TO_INPUT, this,true));
+        parameters.add(new BooleanP(APPLY_TO_INPUT, this, true));
         parameters.add(new OutputImageP(OUTPUT_IMAGE, this));
+
+        parameters.add(new SeparatorP(DISPLAY_SEPARATOR, this));
+        parameters.add(new ChoiceP(CHANNEL_MODE, this, ChannelModes.COMPOSITE, ChannelModes.ALL));
 
         addParameterDescriptions();
 
@@ -101,10 +122,11 @@ public class ManuallyEditImage extends Module {
         returnedParameters.add(parameters.get(INPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(INPUT_IMAGE));
         returnedParameters.add(parameters.getParameter(APPLY_TO_INPUT));
-
-        if (!(boolean) parameters.getValue(APPLY_TO_INPUT)) {
+        if (!(boolean) parameters.getValue(APPLY_TO_INPUT))
             returnedParameters.add(parameters.getParameter(OUTPUT_IMAGE));
-        }
+
+        returnedParameters.add(parameters.getParameter(DISPLAY_SEPARATOR));
+        returnedParameters.add(parameters.getParameter(CHANNEL_MODE));
 
         return returnedParameters;
 
@@ -141,12 +163,20 @@ public class ManuallyEditImage extends Module {
     }
 
     void addParameterDescriptions() {
-        parameters.get(INPUT_IMAGE).setDescription("Image from workspace to manually edit.  When this module executes the image will be displayed along with a dialog box allowing the user to identify when editing is complete.  Depending on the \""+APPLY_TO_INPUT+"\" parameter, the edits will either be applied directly to this input image or stored in a separate image in the workspace.");
+        parameters.get(INPUT_IMAGE).setDescription(
+                "Image from workspace to manually edit.  When this module executes the image will be displayed along with a dialog box allowing the user to identify when editing is complete.  Depending on the \""
+                        + APPLY_TO_INPUT
+                        + "\" parameter, the edits will either be applied directly to this input image or stored in a separate image in the workspace.");
 
-        parameters.get(APPLY_TO_INPUT).setDescription("When selected, the edited image will overwrite the input image in the workspace.  Otherwise, the image will be saved to the workspace with the name specified by the \"" + OUTPUT_IMAGE + "\" parameter.");
+        parameters.get(APPLY_TO_INPUT).setDescription(
+                "When selected, the edited image will overwrite the input image in the workspace.  Otherwise, the image will be saved to the workspace with the name specified by the \""
+                        + OUTPUT_IMAGE + "\" parameter.");
 
         parameters.get(OUTPUT_IMAGE).setDescription("If \"" + APPLY_TO_INPUT
-        + "\" is not selected, the edited image will be saved to the workspace with this name.");
-        
+                + "\" is not selected, the edited image will be saved to the workspace with this name.");
+
+        parameters.get(CHANNEL_MODE).setDescription(
+                "Select whether multi-channel images should be displayed as composites (show all channels overlaid) or individually (the displayed channel is controlled by the \"C\" slider at the bottom of the image window).");
+
     }
 }
