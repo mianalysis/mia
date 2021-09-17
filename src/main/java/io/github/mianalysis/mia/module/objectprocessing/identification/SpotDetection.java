@@ -2,9 +2,7 @@
 
 package io.github.mianalysis.mia.module.objectprocessing.identification;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Set;
 
 import fiji.plugin.trackmate.Logger;
 import fiji.plugin.trackmate.Model;
@@ -12,13 +10,8 @@ import fiji.plugin.trackmate.Settings;
 import fiji.plugin.trackmate.Spot;
 import fiji.plugin.trackmate.SpotCollection;
 import fiji.plugin.trackmate.TrackMate;
-import fiji.plugin.trackmate.TrackModel;
 import fiji.plugin.trackmate.detection.DetectorKeys;
 import fiji.plugin.trackmate.detection.LogDetectorFactory;
-import fiji.plugin.trackmate.tracking.LAPUtils;
-import fiji.plugin.trackmate.tracking.TrackerKeys;
-import fiji.plugin.trackmate.tracking.kalman.KalmanTrackerFactory;
-import fiji.plugin.trackmate.tracking.sparselap.SparseLAPTrackerFactory;
 import ij.ImagePlus;
 import ij.measure.Calibration;
 import ij.plugin.Duplicator;
@@ -36,14 +29,11 @@ import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Status;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
-import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.SeparatorP;
 import io.github.mianalysis.mia.object.parameters.objects.OutputObjectsP;
-import io.github.mianalysis.mia.object.parameters.objects.OutputTrackObjectsP;
 import io.github.mianalysis.mia.object.parameters.text.DoubleP;
-import io.github.mianalysis.mia.object.parameters.text.IntegerP;
 import io.github.mianalysis.mia.object.refs.ObjMeasurementRef;
 import io.github.mianalysis.mia.object.refs.collections.ImageMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
@@ -75,7 +65,6 @@ public class SpotDetection extends Module {
     public static final String RADIUS = "Radius";
     public static final String THRESHOLD = "Threshold";
     public static final String ESTIMATE_SIZE = "Estimate spot size";
-
 
     public interface Measurements {
         String RADIUS_PX = "SPOT_DETECT // RADIUS_(PX)";
@@ -188,8 +177,9 @@ public class SpotDetection extends Module {
     }
 
     public void showObjects(ImagePlus ipl, Objs spotObjects, boolean estimateSize) {
-        HashMap<Integer, Float> hues = ColourFactory.getSingleColourHues(spotObjects, ColourFactory.SingleColours.ORANGE);
-        
+        HashMap<Integer, Float> hues = ColourFactory.getSingleColourHues(spotObjects,
+                ColourFactory.SingleColours.ORANGE);
+
         String pointSize = AddObjectCentroid.PointSizes.SMALL;
         String pointType = AddObjectCentroid.PointTypes.CIRCLE;
 
@@ -218,7 +208,9 @@ public class SpotDetection extends Module {
 
     @Override
     public String getDescription() {
-        return "";
+        return "Detects spot-like features in 2D and 3D using TrackMate's LogDetector.  By default, detected spots are stored as individual, single pixel, objects centred on the detected feature.  Optionally, spots can be given area or volume based on the estimated size of the spot.  Adds measurements to each output spot for estimated radius and quality.  If sub-pixel localisation is specified, the sub-pixel centroid location in X,Y and Z is also stored as a measurement."
+
+                + "<br><br>For more information, see the <a href=\"https://imagej.net/TrackMate\">TrackMate</a> documentation.";
     }
 
     @Override
@@ -250,21 +242,21 @@ public class SpotDetection extends Module {
 
         Objs spotObjects;
         try {
-                            if (!trackmate.checkInput())
-                    MIA.log.writeError(trackmate.getErrorMessage());
-                if (!trackmate.execDetection())
-                    MIA.log.writeError(trackmate.getErrorMessage());
-                if (!trackmate.computeSpotFeatures(false))
-                    MIA.log.writeError(trackmate.getErrorMessage());
+            if (!trackmate.checkInput())
+                MIA.log.writeError(trackmate.getErrorMessage());
+            if (!trackmate.execDetection())
+                MIA.log.writeError(trackmate.getErrorMessage());
+            if (!trackmate.computeSpotFeatures(false))
+                MIA.log.writeError(trackmate.getErrorMessage());
 
-                spotObjects = getSpots(model, calibration, nFrames, frameInterval);
+            spotObjects = getSpots(model, calibration, nFrames, frameInterval);
 
-                if (estimateSize)
-                    estimateSpotSize(spotObjects, ipl);
+            if (estimateSize)
+                estimateSpotSize(spotObjects, ipl);
 
-                workspace.addObjects(spotObjects);
+            workspace.addObjects(spotObjects);
 
-                    } catch (IntegerOverflowException e) {
+        } catch (IntegerOverflowException e) {
             return Status.FAIL;
         }
 
@@ -283,8 +275,8 @@ public class SpotDetection extends Module {
     protected void initialiseParameters() {
         parameters.add(new SeparatorP(INPUT_SEPARATOR, this));
         parameters.add(new InputImageP(INPUT_IMAGE, this, "", "Image in which to detect spots."));
-        parameters.add(new OutputObjectsP(OUTPUT_SPOT_OBJECTS, this, "",
-                "Spot objects that will be added to the workspace."));
+        parameters.add(
+                new OutputObjectsP(OUTPUT_SPOT_OBJECTS, this, "", "Spot objects that will be added to the workspace."));
 
         parameters.add(new SeparatorP(SPOT_SEPARATOR, this));
         parameters.add(new BooleanP(CALIBRATED_UNITS, this, false, "Enable if spatial parameters (e.g. \"" + RADIUS

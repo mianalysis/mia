@@ -1,10 +1,9 @@
-package io.github.mianalysis.mia.process.analysishandling;
+package io.github.mianalysis.mia.module;
 
 import java.util.HashMap;
 
 import io.github.mianalysis.mia.module.core.InputControl;
 import io.github.mianalysis.mia.module.imageprocessing.pixel.ImageMath;
-// import io.github.mianalysis.MIA.Module.ImageMeasurements.MeasureIntensityDistribution;
 import io.github.mianalysis.mia.module.imageprocessing.pixel.WekaProbabilityMaps;
 import io.github.mianalysis.mia.module.imageprocessing.pixel.binary.BinaryOperations;
 import io.github.mianalysis.mia.module.imageprocessing.pixel.binary.DistanceMap;
