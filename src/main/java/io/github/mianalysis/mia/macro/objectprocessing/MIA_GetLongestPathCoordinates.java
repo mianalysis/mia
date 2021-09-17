@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import ij.macro.MacroExtension;
 import io.github.mianalysis.mia.macro.MacroOperation;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.module.objectmeasurements.spatial.FitSpline2D;
+import io.github.mianalysis.mia.module.objectmeasurements.spatial.MeasureObjectCurvature;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
@@ -32,7 +32,7 @@ public class MIA_GetLongestPathCoordinates extends MacroOperation {
             return "";
         
         Obj inputObject = inputObjects.get(inputObjectsID);
-        ArrayList<Vertex> longestPath = FitSpline2D.getSkeletonBackbone(inputObject);
+        ArrayList<Vertex> longestPath = MeasureObjectCurvature.getSkeletonBackbone(inputObject);
 
         StringBuilder sb = new StringBuilder();        
         for (Vertex point : longestPath) {
