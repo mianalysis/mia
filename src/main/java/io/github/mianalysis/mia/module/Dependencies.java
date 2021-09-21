@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 
 import fiji.plugin.trackmate.TrackMate;
+import trainableSegmentation.WekaSegmentation;
 
 public class Dependencies {
     private HashMap<String, HashSet<Dependency>> dependencies = new HashMap<>();
@@ -23,6 +24,11 @@ public class Dependencies {
         moduleDependencies = new HashSet<>();
         moduleDependencies.add(new Dependency(TrackMate.class, "7.0.0", Dependency.Relationship.GREATER_THAN_OR_EQUAL_TO));
         dependencies.put("TrackEditor", moduleDependencies);
+
+        // WekaProbabilityMaps
+        moduleDependencies = new HashSet<>();
+        moduleDependencies.add(new Dependency(WekaSegmentation.class, "3.2.35", Dependency.Relationship.NOT_EQUAL_TO));
+        dependencies.put("WekaProbabilityMaps", moduleDependencies);
 
     }
 

@@ -8,9 +8,9 @@ public class Dependency {
     private final Relationship relationship;
 
     enum Relationship {
-        LESS_THAN, LESS_THAN_OR_EQUAL_TO, EQUAL_TO, GREATER_THAN_OR_EQUAL_TO, GREATER_THAN;
+        LESS_THAN, LESS_THAN_OR_EQUAL_TO, EQUAL_TO, GREATER_THAN_OR_EQUAL_TO, GREATER_THAN, NOT_EQUAL_TO;
     }
-    
+
     public Dependency(Class dependencyClass, String versionThreshold, Relationship relationship) {
         this.dependencyClass = dependencyClass;
         this.versionThreshold = versionThreshold;
@@ -38,6 +38,9 @@ public class Dependency {
             case GREATER_THAN:
                 return comparison > 0;
 
+            case NOT_EQUAL_TO:
+                return comparison != 0;
+
         }
 
         return false;
@@ -64,12 +67,15 @@ public class Dependency {
             case GREATER_THAN:
                 return ">";
 
+            case NOT_EQUAL_TO:
+                return "!=";
+
         }
     }
 
     @Override
     public String toString() {
         return dependencyClass.getSimpleName() + " " + getSymbol(relationship) + " " + versionThreshold;
-        
+
     }
 }

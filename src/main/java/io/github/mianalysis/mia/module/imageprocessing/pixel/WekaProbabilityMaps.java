@@ -1,8 +1,6 @@
 package io.github.mianalysis.mia.module.imageprocessing.pixel;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import ij.IJ;
@@ -12,27 +10,23 @@ import ij.Prefs;
 import ij.plugin.RGBStackConverter;
 import ij.plugin.SubstackMaker;
 import ij.process.ImageProcessor;
-import loci.common.services.DependencyException;
-import loci.common.services.ServiceException;
-import loci.formats.FormatException;
-import trainableSegmentation.WekaSegmentation;
 import io.github.mianalysis.mia.MIA;
+import io.github.mianalysis.mia.module.Categories;
+import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.module.Category;
-import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.imageprocessing.stack.ImageTypeConverter;
 import io.github.mianalysis.mia.module.inputoutput.ImageLoader;
-import io.github.mianalysis.mia.object.Status;
 import io.github.mianalysis.mia.object.Image;
+import io.github.mianalysis.mia.object.Status;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.FilePathP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
 import io.github.mianalysis.mia.object.parameters.OutputImageP;
-import io.github.mianalysis.mia.object.parameters.SeparatorP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
+import io.github.mianalysis.mia.object.parameters.SeparatorP;
 import io.github.mianalysis.mia.object.parameters.text.IntegerP;
 import io.github.mianalysis.mia.object.parameters.text.StringP;
 import io.github.mianalysis.mia.object.parameters.text.TextAreaP;
@@ -42,6 +36,12 @@ import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.sjcross.common.metadataextractors.Metadata;
+import loci.common.services.DependencyException;
+import loci.common.services.ServiceException;
+import loci.formats.FormatException;
+import trainableSegmentation.WekaSegmentation;
+import weka.classifiers.AbstractClassifier;
+import weka.core.SerializationHelper;
 
 /**
  * Created by sc13967 on 22/03/2018.
@@ -99,14 +99,16 @@ public class WekaProbabilityMaps extends Module {
             return null;
         }
 
-        writeStatus("Loading classifier");
-        try {
-            wekaSegmentation.loadClassifier(new FileInputStream(classifierFilePath));
-        } catch (FileNotFoundException e) {
+        // System.out.println("Loading classifier");
+        AbstractClassifier cls = null;
+		// deserialize model
+		try {
+			cls = (AbstractClassifier) SerializationHelper.read(classifierFilePath);
+        } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
-        writeStatus("Classifier loaded");
+        wekaSegmentation.setClassifier(cls);
 
         int width = inputImagePlus.getWidth();
         int height = inputImagePlus.getHeight();
@@ -141,8 +143,9 @@ public class WekaProbabilityMaps extends Module {
                 wekaSegmentation.applyClassifier(true);
                 iplSingle = wekaSegmentation.getClassifiedImage();
             } else {
-                iplSingle = wekaSegmentation.applyClassifier(iplSingle, new int[] { tileFactor, tileFactor }, nThreads, true);
-            }            
+                iplSingle = wekaSegmentation.applyClassifier(iplSingle, new int[] { tileFactor, tileFactor }, nThreads,
+                        true);
+            }
 
             // Converting probability image to specified bit depth (it will be 32-bit by
             // default)
