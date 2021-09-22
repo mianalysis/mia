@@ -55,17 +55,17 @@ public class ShowOutputButton extends JButton implements ActionListener {
     public void updateState() {
         if ((state && module.isEnabled()) && module.isReachable() && module.isRunnable())
             setIcon(blackOpenIcon);
-        else if ((state && module.isEnabled()) &! module.isReachable())
+        else if ((state && module.isEnabled()) & !module.isReachable())
             setIcon(orangeOpenIcon);
-        else if ((state && module.isEnabled()) &! module.isRunnable())
+        else if ((state && module.isEnabled()) & !module.isRunnable())
             setIcon(redOpenIcon);
         else if (state & !module.isEnabled())
             setIcon(greyOpenIcon);
         else if ((!state && module.isEnabled()) && module.isReachable() && module.isRunnable())
             setIcon(blackClosedIcon);
-        else if ((!state && module.isEnabled()) &! module.isReachable())
+        else if ((!state && module.isEnabled()) & !module.isReachable())
             setIcon(orangeClosedIcon);
-        else if ((!state && module.isEnabled()) &! module.isRunnable())
+        else if ((!state && module.isEnabled()) & !module.isRunnable())
             setIcon(redClosedIcon);
         else if (!state & !module.isEnabled())
             setIcon(greyClosedIcon);
