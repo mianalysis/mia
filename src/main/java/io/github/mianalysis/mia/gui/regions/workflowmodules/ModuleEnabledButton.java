@@ -21,16 +21,21 @@ public class ModuleEnabledButton extends JButton implements ActionListener {
      */
     private static final long serialVersionUID = 6135822183769524507L;
     private Module module;
-    private static final ImageIcon blackIcon = new ImageIcon(ModuleEnabledButton.class.getResource("/icons/power_black_strike_12px.png"), "");
-    private static final ImageIcon redIcon = new ImageIcon(ModuleEnabledButton.class.getResource("/icons/power_red_12px.png"), "");
-    private static final ImageIcon greenIcon = new ImageIcon(ModuleEnabledButton.class.getResource("/icons/power_brightgreen_12px.png"), "");
+    private static final ImageIcon blackIcon = new ImageIcon(
+            ModuleEnabledButton.class.getResource("/icons/power_black_strike_12px.png"), "");
+    private static final ImageIcon redIcon = new ImageIcon(
+            ModuleEnabledButton.class.getResource("/icons/power_red_12px.png"), "");
+    private static final ImageIcon orangeIcon = new ImageIcon(
+            ModuleEnabledButton.class.getResource("/icons/power_orange_12px.png"), "");
+    private static final ImageIcon greenIcon = new ImageIcon(
+            ModuleEnabledButton.class.getResource("/icons/power_brightgreen_12px.png"), "");
 
     public ModuleEnabledButton(Module module) {
         this.module = module;
 
         setFocusPainted(false);
         setSelected(false);
-        setMargin(new Insets(0,0,0,0));
+        setMargin(new Insets(0, 0, 0, 0));
         setName("ModuleEnabled");
         setToolTipText("Enable/disable module");
         updateState();
@@ -40,9 +45,14 @@ public class ModuleEnabledButton extends JButton implements ActionListener {
     }
 
     public void updateState() {
-        if (module.isEnabled() && module.isRunnable()) setIcon(greenIcon);
-        else if (module.isEnabled() &! module.isRunnable()) setIcon(redIcon);
-        else setIcon(blackIcon);
+        if (module.isEnabled() && module.isReachable() && module.isRunnable())
+            setIcon(greenIcon);
+        else if (module.isEnabled() & !module.isReachable())
+            setIcon(orangeIcon);
+        else if (module.isEnabled() & !module.isRunnable())
+            setIcon(redIcon);
+        else
+            setIcon(blackIcon);
     }
 
     public Module getModule() {
@@ -57,12 +67,14 @@ public class ModuleEnabledButton extends JButton implements ActionListener {
         updateState();
 
         int idx = GUI.getModules().indexOf(module);
-        if (idx <= GUI.getLastModuleEval()) GUI.setLastModuleEval(idx-1);
+        if (idx <= GUI.getLastModuleEval())
+            GUI.setLastModuleEval(idx - 1);
 
-        // If this is a GUISeparator module, disable all modules after it, until the next separator
+        // If this is a GUISeparator module, disable all modules after it, until the
+        // next separator
         Modules modules = GUI.getModules();
         if (module.getClass().isInstance(new GUISeparator(modules))) {
-            for (int i=idx+1;i<modules.size();i++) {
+            for (int i = idx + 1; i < modules.size(); i++) {
                 Module currentModule = modules.get(i);
                 if (currentModule.getClass().isInstance(new GUISeparator(modules))) {
                     break;

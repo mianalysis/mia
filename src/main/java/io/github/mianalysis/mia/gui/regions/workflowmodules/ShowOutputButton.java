@@ -20,13 +20,22 @@ public class ShowOutputButton extends JButton implements ActionListener {
     private static final long serialVersionUID = -5640712162795245225L;
     private Module module;
     private boolean state = true;
-    private static final ImageIcon blackClosedIcon = new ImageIcon(ShowOutputButton.class.getResource("/icons/eyeclosed_black_12px.png"), "");
-    private static final ImageIcon blackOpenIcon = new ImageIcon(ShowOutputButton.class.getResource("/icons/eyeopen_black_12px.png"), "");
-    private static final ImageIcon redClosedIcon = new ImageIcon(ShowOutputButton.class.getResource("/icons/eyeclosed_red_12px.png"), "");
-    private static final ImageIcon redOpenIcon = new ImageIcon(ShowOutputButton.class.getResource("/icons/eyeopen_red_12px.png"), "");
-    private static final ImageIcon greyClosedIcon = new ImageIcon(ShowOutputButton.class.getResource("/icons/eyeclosed_grey_12px.png"), "");
-    private static final ImageIcon greyOpenIcon = new ImageIcon(ShowOutputButton.class.getResource("/icons/eyeopen_grey_12px.png"), "");
-
+    private static final ImageIcon blackClosedIcon = new ImageIcon(
+            ShowOutputButton.class.getResource("/icons/eyeclosed_black_12px.png"), "");
+    private static final ImageIcon blackOpenIcon = new ImageIcon(
+            ShowOutputButton.class.getResource("/icons/eyeopen_black_12px.png"), "");
+    private static final ImageIcon redClosedIcon = new ImageIcon(
+            ShowOutputButton.class.getResource("/icons/eyeclosed_red_12px.png"), "");
+    private static final ImageIcon redOpenIcon = new ImageIcon(
+            ShowOutputButton.class.getResource("/icons/eyeopen_red_12px.png"), "");
+    private static final ImageIcon orangeClosedIcon = new ImageIcon(
+            ShowOutputButton.class.getResource("/icons/eyeclosed_orange_12px.png"), "");
+    private static final ImageIcon orangeOpenIcon = new ImageIcon(
+            ShowOutputButton.class.getResource("/icons/eyeopen_orange_12px.png"), "");
+    private static final ImageIcon greyClosedIcon = new ImageIcon(
+            ShowOutputButton.class.getResource("/icons/eyeclosed_grey_12px.png"), "");
+    private static final ImageIcon greyOpenIcon = new ImageIcon(
+            ShowOutputButton.class.getResource("/icons/eyeopen_grey_12px.png"), "");
 
     public ShowOutputButton(Module module) {
         this.module = module;
@@ -36,7 +45,7 @@ public class ShowOutputButton extends JButton implements ActionListener {
         addActionListener(this);
         setFocusPainted(false);
         setSelected(false);
-        setMargin(new Insets(0,0,0,0));
+        setMargin(new Insets(0, 0, 0, 0));
         setName("Show output");
         setToolTipText("Show output from module");
         updateState();
@@ -44,13 +53,22 @@ public class ShowOutputButton extends JButton implements ActionListener {
     }
 
     public void updateState() {
-        if ((state && module.isEnabled()) && module.isRunnable()) setIcon(blackOpenIcon);
-        else if ((state && module.isEnabled()) &! module.isRunnable()) setIcon(redOpenIcon);
-        else if (state &! module.isEnabled()) setIcon(greyOpenIcon);
-        else if ((!state && module.isEnabled()) && module.isRunnable()) setIcon(blackClosedIcon);
-        else if ((!state && module.isEnabled()) && module.isRunnable()) setIcon(blackClosedIcon);
-        else if ((!state && module.isEnabled()) &! module.isRunnable()) setIcon(redClosedIcon);
-        else if (!state &! module.isEnabled()) setIcon(greyClosedIcon);
+        if ((state && module.isEnabled()) && module.isReachable() && module.isRunnable())
+            setIcon(blackOpenIcon);
+        else if ((state && module.isEnabled()) &! module.isReachable())
+            setIcon(orangeOpenIcon);
+        else if ((state && module.isEnabled()) &! module.isRunnable())
+            setIcon(redOpenIcon);
+        else if (state & !module.isEnabled())
+            setIcon(greyOpenIcon);
+        else if ((!state && module.isEnabled()) && module.isReachable() && module.isRunnable())
+            setIcon(blackClosedIcon);
+        else if ((!state && module.isEnabled()) &! module.isReachable())
+            setIcon(orangeClosedIcon);
+        else if ((!state && module.isEnabled()) &! module.isRunnable())
+            setIcon(redClosedIcon);
+        else if (!state & !module.isEnabled())
+            setIcon(greyClosedIcon);
 
     }
 

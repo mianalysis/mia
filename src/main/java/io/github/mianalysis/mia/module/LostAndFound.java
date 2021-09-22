@@ -31,6 +31,7 @@ import io.github.mianalysis.mia.module.objectmeasurements.spatial.CalculateNeare
 import io.github.mianalysis.mia.module.objectmeasurements.spatial.FitGaussian2D;
 import io.github.mianalysis.mia.module.objectmeasurements.spatial.MeasureObjectCurvature;
 import io.github.mianalysis.mia.module.objectprocessing.identification.CircleHoughDetection;
+import io.github.mianalysis.mia.module.objectprocessing.identification.FitActiveContours;
 import io.github.mianalysis.mia.module.objectprocessing.identification.GetLocalObjectRegion;
 import io.github.mianalysis.mia.module.objectprocessing.miscellaneous.ConvertImageToObjects;
 import io.github.mianalysis.mia.module.objectprocessing.miscellaneous.CreateDistanceMap;
@@ -47,23 +48,30 @@ public class LostAndFound {
 
     public LostAndFound() {
         /// Populating hard-coded module reassignments ///
-        lostModules.put("FitSpline", new MeasureObjectCurvature(null).getClass().getSimpleName());
+        lostModules.put("Active contour-based detection", new FitActiveContours(null).getClass().getSimpleName());
         lostModules.put("AutomaticRegistration", new AffineSIFT(null).getClass().getSimpleName());
+        lostModules.put("BlockMatchingRegistration", new AffineBlockMatching(null).getClass().getSimpleName());
         lostModules.put("ConditionalAnalysisTermination", new WorkflowHandling(null).getClass().getSimpleName());
+        lostModules.put("FitSpline", new MeasureObjectCurvature(null).getClass().getSimpleName());
+        lostModules.put("HoughObjectDetection", new CircleHoughDetection(null).getClass().getSimpleName());
+        lostModules.put("ManualRegistration", new AffineManual(null).getClass().getSimpleName());
+        lostModules.put("ManualUnwarp", new UnwarpManual(null).getClass().getSimpleName());
+        lostModules.put("MOPSRegistration", new AffineMOPS(null).getClass().getSimpleName());
         lostModules.put("RunMacroOnImage", new RunMacro(null).getClass().getSimpleName());
         lostModules.put("RunSingleMacroCommand", new RunSingleCommand(null).getClass().getSimpleName());
-        lostModules.put("ManualUnwarp", new UnwarpManual(null).getClass().getSimpleName());
-        lostModules.put("UnwarpImages", new UnwarpAutomatic(null).getClass().getSimpleName());
-        lostModules.put("BlockMatchingRegistration", new AffineBlockMatching(null).getClass().getSimpleName());
-        lostModules.put("ManualRegistration", new AffineManual(null).getClass().getSimpleName());
-        lostModules.put("MOPSRegistration", new AffineMOPS(null).getClass().getSimpleName());
         lostModules.put("SIFTRegistration", new AffineSIFT(null).getClass().getSimpleName());
         lostModules.put("UnwarpImages", new UnwarpAutomatic(null).getClass().getSimpleName());
-        lostModules.put("HoughObjectDetection", new CircleHoughDetection(null).getClass().getSimpleName());
+        
 
         /// Populating hard-coded parameter reassignments ///
         HashMap<String, String> currentParameterNames = null;
         String moduleName = null;
+
+        // FitActiveContours
+        currentParameterNames = new HashMap<>();
+        currentParameterNames.put("Connectivity (3D)", BinaryOperations.CONNECTIVITY);
+        moduleName = new BinaryOperations(null).getClass().getSimpleName();
+        lostParameterNames.put(moduleName, currentParameterNames);
 
         // BinaryOperations
         currentParameterNames = new HashMap<>();
@@ -226,6 +234,7 @@ public class LostAndFound {
         // RelateManyToOne
         currentParameterNames = new HashMap<>();
         currentParameterNames.put("Reference point", RelateManyToOne.REFERENCE_MODE);
+        currentParameterNames.put("Minimum percentage overlap", RelateManyToOne.MINIMUM_OVERLAP);
         moduleName = new RelateManyToOne(null).getClass().getSimpleName();
         lostParameterNames.put(moduleName, currentParameterNames);
 

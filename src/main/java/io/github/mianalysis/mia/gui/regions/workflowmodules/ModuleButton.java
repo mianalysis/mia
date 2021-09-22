@@ -23,7 +23,6 @@ public class ModuleButton extends JToggleButton implements ActionListener {
     private static final long serialVersionUID = -7386345086449867288L;
     private Module module;
 
-
     // CONSTRUCTOR
 
     public ModuleButton(Module module) {
@@ -33,27 +32,28 @@ public class ModuleButton extends JToggleButton implements ActionListener {
         addActionListener(this);
         setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
         setText(module.getNickname());
-        setMinimumSize(new Dimension(1,30));
-        setPreferredSize(new Dimension(1,30));
+        setMinimumSize(new Dimension(1, 30));
+        setPreferredSize(new Dimension(1, 30));
         updateState();
     }
-
 
     // PUBLIC METHODS
 
     public void updateState() {
         setText(module.getNickname());
-        if (module.getClass() == GUISeparator.class) {
-            setForeground(Colours.DARK_BLUE);
-        } else if (module.isEnabled() && module.isRunnable()) {
-            setForeground(Color.BLACK);
-        } else if (module.isEnabled() &! module.isRunnable()) {
-            setForeground(Colours.RED);
-        } else {
-            setForeground(Color.GRAY);
-        }
-    }
 
+        if (module.getClass() == GUISeparator.class)
+            setForeground(Colours.DARK_BLUE);
+        else if (module.isEnabled() && module.isReachable() && module.isRunnable())
+            setForeground(Color.BLACK);
+        else if (module.isEnabled() & !module.isReachable())
+            setForeground(Colours.ORANGE);
+        else if (module.isEnabled() & !module.isRunnable())
+            setForeground(Colours.RED);
+        else
+            setForeground(Color.GRAY);
+
+    }
 
     // GETTERS
 
@@ -63,7 +63,7 @@ public class ModuleButton extends JToggleButton implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        GUI.setSelectedModules(new Module[]{module});
+        GUI.setSelectedModules(new Module[] { module });
         GUI.updateParameters();
         GUI.updateModules();
     }

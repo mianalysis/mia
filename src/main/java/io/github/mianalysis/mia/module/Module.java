@@ -51,6 +51,7 @@ public abstract class Module extends Ref implements Comparable {
     private boolean enabled = true;
     private boolean canBeDisabled = false;
     private boolean runnable = true;
+    private boolean reachable = true;
     protected boolean showOutput = false;
     protected Module redirectModule = null; // After this module, can redirect to another module
     private boolean showBasicTitle = true;
@@ -209,13 +210,12 @@ public abstract class Module extends Ref implements Comparable {
 
     public <T extends Parameter> LinkedHashSet<T> getParametersMatchingType(Class<T> type) {
         // If the current module is the cutoff the loop terminates. This prevents the
-        // system offering measurements
-        // that are created after this module or are currently unavailable.
+        // system offering measurements that are created after this module or are currently unavailable.
         if (!isEnabled())
             return null;
         if (!isRunnable())
             return null;
-
+        
         // Running through all parameters, adding all images to the list
         LinkedHashSet<T> parameters = new LinkedHashSet<>();
         Parameters currParameters = updateAndGetParameters();
@@ -335,6 +335,14 @@ public abstract class Module extends Ref implements Comparable {
 
     public void setRunnable(boolean runnable) {
         this.runnable = runnable;
+    }
+
+    public boolean isReachable() {
+        return reachable;
+    }
+
+    public void setReachable(boolean reachable) {
+        this.reachable = reachable;
     }
 
     public boolean isDeprecated() {

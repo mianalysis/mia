@@ -6,19 +6,20 @@ import java.util.Iterator;
 import ij.ImagePlus;
 import ij.gui.Roi;
 import ij.plugin.Duplicator;
+import io.github.mianalysis.mia.module.Categories;
+import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.module.Category;
-import io.github.mianalysis.mia.module.Categories;
-import io.github.mianalysis.mia.object.Status;
 import io.github.mianalysis.mia.object.Image;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
+import io.github.mianalysis.mia.object.Status;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
 import io.github.mianalysis.mia.object.parameters.InputObjectsP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
+import io.github.mianalysis.mia.object.parameters.SeparatorP;
 import io.github.mianalysis.mia.object.parameters.objects.OutputObjectsP;
 import io.github.mianalysis.mia.object.parameters.text.DoubleP;
 import io.github.mianalysis.mia.object.parameters.text.IntegerP;
@@ -28,7 +29,6 @@ import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.sjcross.common.exceptions.IntegerOverflowException;
-import io.github.sjcross.common.object.volume.PointOutOfRangeException;
 import io.github.sjcross.common.process.IntensityMinMax;
 import io.github.sjcross.common.process.activecontour.ContourInitialiser;
 import io.github.sjcross.common.process.activecontour.energies.BendingEnergy;
@@ -44,26 +44,34 @@ import io.github.sjcross.common.process.activecontour.visualisation.GridOverlay;
 /**
  * Created by sc13967 on 16/01/2018.
  */
-public class ActiveContourObjectDetection extends Module {
+public class FitActiveContours extends Module {
+    public static final String IMAGE_SEPARATOR = "Image input";
     public static final String INPUT_IMAGE = "Input image";
+
+    public static final String OBJECTS_SEPARATOR = "Objects input/output";
     public static final String INPUT_OBJECTS = "Input objects";
     public static final String UPDATE_INPUT_OBJECTS = "Update input objects";
     public static final String OUTPUT_OBJECTS = "Output objects";
+
+    public static final String ENERGY_SEPARATOR = "Energy terms";
     public static final String NODE_DENSITY = "Node density";
     public static final String ELASTIC_ENERGY = "Elastic energy contribution";
     public static final String BENDING_ENERGY = "Bending energy contribution";
     public static final String IMAGE_PATH_ENERGY = "Image path energy contribution";
     public static final String BALLOON_ENERGY = "Balloon energy contribution";
+
+    public static final String OPTIMISATION_SEPARATOR = "Optimisation controls";
     public static final String SEARCH_RADIUS = "Search radius (px)";
     public static final String NUMBER_OF_ITERATIONS = "Maximum number of iterations";
     public static final String USE_MOTION_THRESHOLD = "Use motion threshold";
     public static final String MOTION_THRESHOLD_PX = "Motion threshold (px)";
+
+    public static final String MISCELLANEOUS_SEPARATOR = "Miscellaneous";
     public static final String SHOW_CONTOURS_REALTIME = "Show contours in realtime";
 
-    public ActiveContourObjectDetection(Modules modules) {
-        super("Active contour-based detection", modules);
+    public FitActiveContours(Modules modules) {
+        super("Fit active contours", modules);
     }
-
 
     @Override
     public Category getCategory() {
@@ -127,7 +135,7 @@ public class ActiveContourObjectDetection extends Module {
         Iterator<Obj> iterator = inputObjects.values().iterator();
         while (iterator.hasNext()) {
             Obj inputObject = iterator.next();
-            
+
             // Getting the z-plane of the current object
             int z = inputObject.getCoordinateSet().iterator().next().getZ();
 
@@ -147,7 +155,7 @@ public class ActiveContourObjectDetection extends Module {
             // Initialising the contour
             NodeCollection nodes = ContourInitialiser.buildContour(xCoordsSub, yCoordsSub);
 
-            //Assigning energies
+            // Assigning energies
             EnergyCollection energies = new EnergyCollection();
             energies.add(new ElasticEnergy(elasticEnergy));
             energies.add(new BendingEnergy(bendingEnergy));
@@ -160,7 +168,8 @@ public class ActiveContourObjectDetection extends Module {
             greedy.setWidth(searchRadius);
             greedy.setSequence(GreedyMinimiser.RANDOM);
 
-            // Up to the specified maximum number of iterations, updating the contour.  If the contour doesn't move
+            // Up to the specified maximum number of iterations, updating the contour. If
+            // the contour doesn't move
             // between frames, the loop is terminated.
             for (int i = 0; i < maxInteractions; i++) {
                 greedy.evaluateGreedy(nodes);
@@ -183,8 +192,9 @@ public class ActiveContourObjectDetection extends Module {
                 continue;
             }
 
-            // If the input objects are to be transformed, taking the new pixel coordinates and applying them to
-            // the input object.  Otherwise, the new object is added to the nascent Objs.
+            // If the input objects are to be transformed, taking the new pixel coordinates
+            // and applying them to
+            // the input object. Otherwise, the new object is added to the nascent Objs.
             try {
                 if (updateInputObjects) {
                     inputObject.clearAllCoordinates();
@@ -199,7 +209,7 @@ public class ActiveContourObjectDetection extends Module {
             }
 
             writeProgressStatus(count++, total, "objects");
-            
+
         }
 
         // Resetting the image position
@@ -222,20 +232,31 @@ public class ActiveContourObjectDetection extends Module {
 
     @Override
     protected void initialiseParameters() {
+        parameters.add(new SeparatorP(IMAGE_SEPARATOR, this));
         parameters.add(new InputImageP(INPUT_IMAGE, this));
+
+        parameters.add(new SeparatorP(OBJECTS_SEPARATOR, this));
         parameters.add(new InputObjectsP(INPUT_OBJECTS, this));
         parameters.add(new BooleanP(UPDATE_INPUT_OBJECTS, this, true));
         parameters.add(new OutputObjectsP(OUTPUT_OBJECTS, this));
-        parameters.add(new DoubleP(NODE_DENSITY, this, 1.0));
+
+        parameters.add(new SeparatorP(ENERGY_SEPARATOR, this));
         parameters.add(new DoubleP(ELASTIC_ENERGY, this, 1.0));
         parameters.add(new DoubleP(BENDING_ENERGY, this, 1.0));
         parameters.add(new DoubleP(IMAGE_PATH_ENERGY, this, 1.0));
         parameters.add(new DoubleP(BALLOON_ENERGY, this, 1.0));
+
+        parameters.add(new SeparatorP(OPTIMISATION_SEPARATOR, this));
+        parameters.add(new DoubleP(NODE_DENSITY, this, 1.0));
         parameters.add(new IntegerP(SEARCH_RADIUS, this, 1));
         parameters.add(new IntegerP(NUMBER_OF_ITERATIONS, this, 1000));
         parameters.add(new BooleanP(USE_MOTION_THRESHOLD, this, true));
         parameters.add(new DoubleP(MOTION_THRESHOLD_PX, this, 0.1d));
+
+        parameters.add(new SeparatorP(MISCELLANEOUS_SEPARATOR, this));
         parameters.add(new BooleanP(SHOW_CONTOURS_REALTIME, this, false));
+
+        addParameterDescriptions();
 
     }
 
@@ -243,28 +264,34 @@ public class ActiveContourObjectDetection extends Module {
     public Parameters updateAndGetParameters() {
         Parameters returnedParameters = new Parameters();
 
+        returnedParameters.add(parameters.getParameter(IMAGE_SEPARATOR));
         returnedParameters.add(parameters.getParameter(INPUT_IMAGE));
+
+        returnedParameters.add(parameters.getParameter(OBJECTS_SEPARATOR));
         returnedParameters.add(parameters.getParameter(INPUT_OBJECTS));
         returnedParameters.add(parameters.getParameter(UPDATE_INPUT_OBJECTS));
 
-        if (!(boolean) parameters.getValue(UPDATE_INPUT_OBJECTS)) {
+        if (!(boolean) parameters.getValue(UPDATE_INPUT_OBJECTS))
             returnedParameters.add(parameters.getParameter(OUTPUT_OBJECTS));
-        }
 
-        returnedParameters.add(parameters.getParameter(NODE_DENSITY));
+        returnedParameters.add(parameters.getParameter(ENERGY_SEPARATOR));
         returnedParameters.add(parameters.getParameter(ELASTIC_ENERGY));
         returnedParameters.add(parameters.getParameter(BENDING_ENERGY));
         returnedParameters.add(parameters.getParameter(IMAGE_PATH_ENERGY));
         returnedParameters.add(parameters.getParameter(BALLOON_ENERGY));
+
+        returnedParameters.add(parameters.getParameter(OPTIMISATION_SEPARATOR));
+        returnedParameters.add(parameters.getParameter(NODE_DENSITY));
         returnedParameters.add(parameters.getParameter(SEARCH_RADIUS));
         returnedParameters.add(parameters.getParameter(NUMBER_OF_ITERATIONS));
 
         returnedParameters.add(parameters.getParameter(USE_MOTION_THRESHOLD));
-        if ((boolean) parameters.getValue(USE_MOTION_THRESHOLD)) {
+        if ((boolean) parameters.getValue(USE_MOTION_THRESHOLD))
             returnedParameters.add(parameters.getParameter(MOTION_THRESHOLD_PX));
-        }
+
+        returnedParameters.add(parameters.getParameter(MISCELLANEOUS_SEPARATOR));
         returnedParameters.add(parameters.getParameter(SHOW_CONTOURS_REALTIME));
-        
+
         return returnedParameters;
 
     }
@@ -299,6 +326,37 @@ public class ActiveContourObjectDetection extends Module {
         return true;
     }
 
+    void addParameterDescriptions() {
+        parameters.get(INPUT_IMAGE).setDescription("");
+
+        parameters.get(INPUT_OBJECTS).setDescription("");
+
+        parameters.get(UPDATE_INPUT_OBJECTS).setDescription("");
+
+        parameters.get(OUTPUT_OBJECTS).setDescription("");
+
+        parameters.get(ELASTIC_ENERGY).setDescription("");
+
+        parameters.get(BENDING_ENERGY).setDescription("");
+
+        parameters.get(IMAGE_PATH_ENERGY).setDescription("");
+
+        parameters.get(BALLOON_ENERGY).setDescription("");
+
+        parameters.get(NODE_DENSITY).setDescription("");
+
+        parameters.get(SEARCH_RADIUS).setDescription("");
+
+        parameters.get(NUMBER_OF_ITERATIONS).setDescription("");
+
+        parameters.get(USE_MOTION_THRESHOLD).setDescription("");
+
+        parameters.get(MOTION_THRESHOLD_PX).setDescription("");
+
+        parameters.get(SHOW_CONTOURS_REALTIME).setDescription("");
+
+    }
+
     public static void main(String[] args) {
         BalloonEnergy balloonEnergy = new BalloonEnergy(1);
 
@@ -325,18 +383,18 @@ class BalloonEnergy extends Energy {
         double xT = node.getX();
         double yT = node.getY();
         double xL = node.getLeftNeighbour().getX();
-        double yL = node.getLeftNeighbour().getY();        
+        double yL = node.getLeftNeighbour().getY();
         double xR = node.getRightNeighbour().getX();
         double yR = node.getRightNeighbour().getY();
         double xC = (xR - xL) / 2 + xL;
         double yC = (yR - yL) / 2 + yL;
 
-        double dx = xR-xL;
-        double dy = yR-yL;
+        double dx = xR - xL;
+        double dy = yR - yL;
         double mag = Math.sqrt(dx * dx + dy * dy);
         double nx = -dy / mag;
         double ny = dx / mag;
-        
+
         double shiftX = xT - xC;
         double shiftY = yT - yC;
 

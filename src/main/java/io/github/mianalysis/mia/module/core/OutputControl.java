@@ -623,7 +623,7 @@ public class OutputControl extends AbstractMacroRunner {
                 "When selected, the \"Summary\" results sheet displays columns reporting the number of objects per object collection.");
 
         parameters.get(EXPORT_INDIVIDUAL_OBJECTS).setDescription(
-                "When selected, individual results sheets will be created for each object collection.  In these sheets, each object in that collection is summarised per row.  The individual object sheets have names in the format \"OBJ_[NAME]\", where \"[NAME]\" is the name of that object collection.");
+                "When selected, individual results sheets will be created for each object collection.  In these sheets, each object in that collection is summarised per row.  The individual object sheets have the same name as their corresponding object collection.");
 
     }
 }

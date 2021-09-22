@@ -45,7 +45,7 @@ public class RelateManyToOne extends Module {
     public static final String LIMIT_LINKING_BY_DISTANCE = "Limit linking by distance";
     public static final String LINKING_DISTANCE = "Maximum linking distance (px)";
     public static final String INSIDE_OUTSIDE_MODE = "Inside/outside mode";
-    public static final String MINIMUM_PERCENTAGE_OVERLAP = "Minimum percentage overlap";
+    public static final String MINIMUM_OVERLAP = "Minimum overlap (%)";
     public static final String REQUIRE_CENTROID_OVERLAP = "Require centroid overlap";
     public static final String LINK_IN_SAME_FRAME = "Only link objects in same frame";
     public static final String CALCULATE_FRACTIONAL_DISTANCE = "Calculate fractional distance";
@@ -516,7 +516,7 @@ public class RelateManyToOne extends Module {
         boolean limitLinking = parameters.getValue(LIMIT_LINKING_BY_DISTANCE);
         double linkingDistance = parameters.getValue(LINKING_DISTANCE);
         String insideOutsideMode = parameters.getValue(INSIDE_OUTSIDE_MODE);
-        double minOverlap = parameters.getValue(MINIMUM_PERCENTAGE_OVERLAP);
+        double minOverlap = parameters.getValue(MINIMUM_OVERLAP);
         boolean centroidOverlap = parameters.getValue(REQUIRE_CENTROID_OVERLAP);
         boolean calcFrac = parameters.getValue(CALCULATE_FRACTIONAL_DISTANCE);
         boolean multithread = parameters.getValue(ENABLE_MULTITHREADING);
@@ -585,7 +585,7 @@ public class RelateManyToOne extends Module {
         parameters.add(new DoubleP(LINKING_DISTANCE, this, 1.0));
         parameters.add(
                 new ChoiceP(INSIDE_OUTSIDE_MODE, this, InsideOutsideModes.INSIDE_AND_OUTSIDE, InsideOutsideModes.ALL));
-        parameters.add(new DoubleP(MINIMUM_PERCENTAGE_OVERLAP, this, 0d));
+        parameters.add(new DoubleP(MINIMUM_OVERLAP, this, 0d));
         parameters.add(new BooleanP(REQUIRE_CENTROID_OVERLAP, this, true));
         parameters.add(new BooleanP(LINK_IN_SAME_FRAME, this, true));
         parameters.add(new BooleanP(CALCULATE_FRACTIONAL_DISTANCE, this, true));
@@ -624,7 +624,7 @@ public class RelateManyToOne extends Module {
                 break;
 
             case RelateModes.SPATIAL_OVERLAP:
-                returnedParameters.add(parameters.getParameter(MINIMUM_PERCENTAGE_OVERLAP));
+                returnedParameters.add(parameters.getParameter(MINIMUM_OVERLAP));
                 returnedParameters.add(parameters.getParameter(REQUIRE_CENTROID_OVERLAP));
                 break;
         }
@@ -835,7 +835,7 @@ public class RelateManyToOne extends Module {
                 "When relating children to parent surfaces it's possible to only include children inside, outside or on the edge of the parent.This parameter controls which children are allowed to be related to the parents.  Choices are: "
                         + String.join(", ", InsideOutsideModes.ALL) + ".");
 
-        parameters.get(MINIMUM_PERCENTAGE_OVERLAP)
+        parameters.get(MINIMUM_OVERLAP)
                 .setDescription("Percentage of total child volume overlapping with the parent object.");
 
         parameters.get(REQUIRE_CENTROID_OVERLAP).setDescription(
