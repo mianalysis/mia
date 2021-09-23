@@ -8,7 +8,6 @@ import org.scijava.plugin.PluginService;
 
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.module.ModuleInterface;
 
 public class ClassHunter<T> {
     private static List<String> moduleNames = null;
@@ -24,31 +23,12 @@ public class ClassHunter<T> {
 
     public List<String> getClasses(Class<T> clazz) {
         PluginService pluginService = MIA.ijService.getContext().getService(PluginService.class);
-        List<PluginInfo<ModuleInterface>> modules = pluginService.getPluginsOfType(ModuleInterface.class);
+        List<PluginInfo<Module>> modules = pluginService.getPluginsOfType(Module.class);
         List<String> names = new ArrayList<>();
         
-        for (PluginInfo<ModuleInterface> module : modules)
+        for (PluginInfo<Module> module : modules)
             names.add(module.getClassName());
-        // ScanResult scanResult = new ClassGraph().enableClassInfo().scan();
-        // ClassInfoList classInfos = scanResult.getSubclasses(clazz.getName());
-
-        // if (clazz.getPackage().getName().equals(Module.class.getPackage().getName())) {
-        //     moduleNames = classInfos.getNames();
-        //     System.out.println(moduleNames);
-
-        //     // Add any packages from the explicitly named list
-        //     moduleNames.addAll(MIA.getPluginPackages());
-
-        // }
-
-        // List<String> classNames = classInfos.getNames();
-
-        // scanResult.close();
-        // scanResult = null;
-        // classInfos = null;
-
-        // return classNames;
-
+        
         return names;
 
     }

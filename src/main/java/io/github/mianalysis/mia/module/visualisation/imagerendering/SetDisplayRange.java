@@ -6,6 +6,9 @@ import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.Module;
+import org.scijava.Priority;
+import org.scijava.plugin.Plugin;
 import io.github.mianalysis.mia.module.imageprocessing.pixel.NormaliseIntensity;
 import io.github.mianalysis.mia.object.Image;
 import io.github.mianalysis.mia.object.Status;
@@ -27,6 +30,7 @@ import io.github.sjcross.common.process.IntensityMinMax;
 /**
  * Created by sc13967 on 10/08/2017.
  */
+@Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class SetDisplayRange extends Module {
     public static final String INPUT_SEPARATOR = "Image input/output";
     public static final String INPUT_IMAGE = "Input image";

@@ -25,8 +25,10 @@ import ij.process.ImageProcessor;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.module.ModuleInterface;
 import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.Module;
+import org.scijava.Priority;
+import org.scijava.plugin.Plugin;
 import io.github.mianalysis.mia.object.Image;
 import io.github.mianalysis.mia.object.Status;
 import io.github.mianalysis.mia.object.Workspace;
@@ -48,7 +50,7 @@ import io.github.mianalysis.mia.process.LabelFactory;
 import io.github.sjcross.common.imagej.LUTs;
 import io.github.sjcross.common.mathfunc.CumStat;
 
-@Plugin(type = ModuleInterface.class, priority=Priority.LOW, visible=true)
+@Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class AddContourLines extends Module {
     public static final String INPUT_SEPARATOR = "Image input/output";
     public static final String INPUT_IMAGE = "Input image";

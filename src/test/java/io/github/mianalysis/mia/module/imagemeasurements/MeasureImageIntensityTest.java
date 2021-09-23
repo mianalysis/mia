@@ -17,6 +17,7 @@ import io.github.mianalysis.mia.object.Image;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.Workspaces;
 
+
 public class MeasureImageIntensityTest extends ModuleTest {
     private double tolerance = 1E-2;
 

@@ -8,6 +8,7 @@ import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 
+import org.scijava.plugin.SciJavaPlugin;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
@@ -35,7 +36,7 @@ import io.github.mianalysis.mia.process.logging.LogRenderer;
 /**
  * Created by sc13967 on 02/05/2017.
  */
-public abstract class Module extends Ref implements Comparable, ModuleInterface {
+public abstract class Module extends Ref implements Comparable, SciJavaPlugin {
     protected Modules modules;
 
     protected Parameters parameters = new Parameters();

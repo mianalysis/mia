@@ -10,11 +10,15 @@ import bunwarpj.bUnwarpJ_;
 import ij.ImagePlus;
 import ij.process.ImageProcessor;
 import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.Module;
+import org.scijava.Priority;
+import org.scijava.plugin.Plugin;
 import io.github.mianalysis.mia.module.imageprocessing.stack.registration.abstrakt.AbstractBUnwarpJRegistration;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.process.interactable.Interactable;
 
+@Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class UnwarpAutomatic extends AbstractBUnwarpJRegistration implements Interactable {
     public UnwarpAutomatic(Modules modules) {
         super("Unwarp (automatic)", modules);
@@ -101,7 +105,7 @@ public class UnwarpAutomatic extends AbstractBUnwarpJRegistration implements Int
 
     }
 
-    public class AutomaticBUnwarpJParam extends BUnwarpJParam {
+public class AutomaticBUnwarpJParam extends BUnwarpJParam {
 
     }
 }

@@ -16,6 +16,9 @@ import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.Module;
+import org.scijava.Priority;
+import org.scijava.plugin.Plugin;
 import io.github.mianalysis.mia.object.Image;
 import io.github.mianalysis.mia.object.Measurement;
 import io.github.mianalysis.mia.object.Obj;
@@ -41,6 +44,7 @@ import io.github.sjcross.common.object.Point;
 import io.github.sjcross.common.object.volume.SpatCal;
 import io.github.sjcross.common.object.voxels.MidpointCircle;
 
+@Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class CreateMeasurementMap extends Module {
     public static final String INPUT_OBJECTS = "Input objects";
     public static final String OUTPUT_IMAGE = "Output image";

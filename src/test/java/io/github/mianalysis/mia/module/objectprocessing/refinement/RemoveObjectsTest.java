@@ -19,6 +19,7 @@ import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.ParameterGroup;
 import io.github.sjcross.common.object.volume.VolumeType;
 
+
 public class RemoveObjectsTest extends ModuleTest {
     @BeforeAll
     public static void setVerbose() {

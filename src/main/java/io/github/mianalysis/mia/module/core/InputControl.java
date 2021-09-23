@@ -23,6 +23,9 @@ import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.Module;
+import org.scijava.Priority;
+import org.scijava.plugin.Plugin;
 import io.github.mianalysis.mia.module.miscellaneous.macros.RunMacro;
 import io.github.mianalysis.mia.module.miscellaneous.macros.RunMacroOnObjects;
 import io.github.mianalysis.mia.object.Colours;
@@ -58,6 +61,7 @@ import io.github.sjcross.common.system.FileCrawler;
 /**
  * Created by Stephen on 29/07/2017.
  */
+@Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class InputControl extends Module {
     public static final String MESSAGE_SEPARATOR = "Message";
     public static final String NO_LOAD_MESSAGE = "No load message";

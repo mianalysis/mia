@@ -15,6 +15,9 @@ import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.Module;
+import org.scijava.Priority;
+import org.scijava.plugin.Plugin;
 import io.github.mianalysis.mia.module.core.OutputControl;
 import io.github.mianalysis.mia.object.Colours;
 import io.github.mianalysis.mia.object.Image;
@@ -35,6 +38,7 @@ import io.github.sjcross.common.process.IntensityMinMax;
 /**
  * Created by sc13967 on 26/06/2017.
  */
+@Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class ImageSaver extends AbstractImageSaver {
     public static final String SAVE_LOCATION = "Save location";
     public static final String MIRROR_DIRECTORY_ROOT = "Mirrored directory root";

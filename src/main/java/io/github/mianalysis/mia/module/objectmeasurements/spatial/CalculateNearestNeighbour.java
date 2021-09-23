@@ -21,6 +21,9 @@ import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.Module;
+import org.scijava.Priority;
+import org.scijava.plugin.Plugin;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.inputoutput.ImageSaver;
@@ -49,6 +52,7 @@ import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 /**
  * Created by sc13967 on 22/06/2017.
  */
+@Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class CalculateNearestNeighbour extends Module {
     public static final String INPUT_SEPARATOR = "Objects input";
     public static final String INPUT_OBJECTS = "Input objects";

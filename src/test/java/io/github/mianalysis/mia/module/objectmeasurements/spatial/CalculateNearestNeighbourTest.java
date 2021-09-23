@@ -10,6 +10,9 @@ import org.junit.jupiter.params.provider.EnumSource;
 
 import ome.units.UNITS;
 import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.Module;
+import org.scijava.Priority;
+import org.scijava.plugin.Plugin;
 import io.github.mianalysis.mia.module.ModuleTest;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
@@ -19,6 +22,7 @@ import io.github.sjcross.common.exceptions.IntegerOverflowException;
 import io.github.sjcross.common.object.volume.PointOutOfRangeException;
 import io.github.sjcross.common.object.volume.SpatCal;
 import io.github.sjcross.common.object.volume.VolumeType;
+
 
 public class CalculateNearestNeighbourTest extends ModuleTest {
     private double tolerance = 1E-2;

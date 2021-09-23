@@ -1,4 +1,4 @@
-package io.github.mianalysis.mia.module.objectmeasurements.intensity;
+// package io.github.mianalysis.mia.module.objectmeasurements.intensity;
 // package io.github.mianalysis.MIA.Module.ObjectMeasurements.Intensity;
 
 // import ij.IJ;
@@ -18,6 +18,7 @@ package io.github.mianalysis.mia.module.objectmeasurements.intensity;
 
 // import static org.junit.jupiter.api.Assertions.*;
 
+// 
 // public class MeasureObjectColocalisationTest extends ModuleTest {
 //     private double tolerance  = 1E-2;
 

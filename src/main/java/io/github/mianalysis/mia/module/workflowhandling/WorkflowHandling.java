@@ -11,6 +11,9 @@ import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.Module;
+import org.scijava.Priority;
+import org.scijava.plugin.Plugin;
 import io.github.mianalysis.mia.module.inputoutput.ImageLoader;
 import io.github.mianalysis.mia.module.objectprocessing.refinement.filterobjects.AbstractNumericObjectFilter;
 import io.github.mianalysis.mia.object.Colours;
@@ -41,6 +44,7 @@ import io.github.sjcross.common.metadataextractors.Metadata;
 /**
  * Created by Stephen Cross on 23/11/2018.
  */
+@Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class WorkflowHandling extends Module {
     public static final String CONDITION_SEPARATOR = "Condition";
     public static final String TEST_MODE = "Test mode";

@@ -10,6 +10,9 @@ import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.Module;
+import org.scijava.Priority;
+import org.scijava.plugin.Plugin;
 import io.github.mianalysis.mia.object.Measurement;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
@@ -32,6 +35,7 @@ import weka.core.SparseInstance;
 import weka.filters.Filter;
 import weka.filters.unsupervised.attribute.Normalize;
 
+@Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class ApplyWekaObjectClassification extends Module {
     public static final String INPUT_SEPARATOR = "Objects input";
     public static final String INPUT_OBJECTS = "Input objects";

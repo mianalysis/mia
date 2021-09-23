@@ -8,6 +8,9 @@ import ij.process.ImageConverter;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.Module;
+import org.scijava.Priority;
+import org.scijava.plugin.Plugin;
 import io.github.mianalysis.mia.object.Colours;
 import io.github.mianalysis.mia.object.Image;
 import io.github.mianalysis.mia.object.Status;
@@ -26,6 +29,7 @@ import io.github.sjcross.common.process.IntensityMinMax;
 /**
  * Created by sc13967 on 26/06/2017.
  */
+@Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class GenericImageSaver extends AbstractImageSaver {
     public static final String GENERIC_FORMAT = "Generic format";
     public static final String AVAILABLE_METADATA_FIELDS = "Available metadata fields";

@@ -1,11 +1,12 @@
-package io.github.mianalysis.mia.module.objectmeasurements.miscellaneous;
+// package io.github.mianalysis.mia.module.objectmeasurements.miscellaneous;
 //package io.github.mianalysis.MIA.Module.ObjectMeasurements.Miscellaneous;
 //
 //import io.github.mianalysis.MIA.Module.ModuleTest;
 //
 //import static org.junit.jupiter.api.Assertions.*;
 //
-//public class ApplyManualClassificationTest extends ModuleTest {
+//
+// public class ApplyManualClassificationTest extends ModuleTest {
 //
 //    @Override
 //    public void testGetTitle() {

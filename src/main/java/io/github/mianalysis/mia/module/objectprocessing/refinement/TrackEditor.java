@@ -25,6 +25,9 @@ import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.Module;
+import org.scijava.Priority;
+import org.scijava.plugin.Plugin;
 import io.github.mianalysis.mia.module.imageprocessing.pixel.ProjectImage;
 import io.github.mianalysis.mia.module.objectprocessing.relationships.TrackObjects.Measurements;
 import io.github.mianalysis.mia.object.Colours;
@@ -51,6 +54,7 @@ import io.github.sjcross.common.object.volume.VolumeType;
 /**
  * Created by Stephen on 13/05/2021.
  */
+@Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class TrackEditor extends Module {
     public static final String INPUT_SEPARATOR = "Object input";
     public static final String INPUT_TRACK_OBJECTS = "Input track objects";

@@ -22,6 +22,7 @@
 // import io.github.mianalysis.MIA.Object.Workspaces;
 // import io.github.sjcross.common.object.volume.VolumeType;
 
+// 
 // public class MeasureImageColocalisationTest extends ModuleTest {
 //     private double tolerance = 1E-2;
 
@@ -166,7 +167,8 @@
 // //
 // //import static org.junit.jupiter.api.Assertions.*;
 // //
-// //public class MeasureImageColocalisationTest extends ModuleTest {
+// //
+// public class MeasureImageColocalisationTest extends ModuleTest {
 // //    private double tolerance = 1E-2;
 // //
 // //    @Test

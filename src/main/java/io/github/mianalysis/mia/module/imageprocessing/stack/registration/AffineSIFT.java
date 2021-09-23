@@ -11,6 +11,9 @@ import mpicbg.models.AbstractAffineModel2D;
 import mpicbg.models.NotEnoughDataPointsException;
 import mpicbg.models.PointMatch;
 import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.Module;
+import org.scijava.Priority;
+import org.scijava.plugin.Plugin;
 import io.github.mianalysis.mia.module.imageprocessing.stack.registration.abstrakt.AbstractAffineRegistration;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.parameters.Parameters;
@@ -18,6 +21,7 @@ import io.github.mianalysis.mia.object.parameters.SeparatorP;
 import io.github.mianalysis.mia.object.parameters.text.DoubleP;
 import io.github.mianalysis.mia.object.parameters.text.IntegerP;
 
+@Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class AffineSIFT extends AbstractAffineRegistration {
         public static final String FEATURE_SEPARATOR = "Feature detection";
         public static final String INITIAL_SIGMA = "Initial Gaussian blur (px)";
@@ -195,7 +199,7 @@ public class AffineSIFT extends AbstractAffineRegistration {
 
         }
 
-        public class SIFTParam extends AffineParam {
+public class SIFTParam extends AffineParam {
                 // Fitting parameters
                 float rod = 0.92f;
                 float maxEpsilon = 25.0f;

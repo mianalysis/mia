@@ -19,6 +19,7 @@ import io.github.mianalysis.mia.object.Workspaces;
 /**
  * Created by Stephen Cross on 07/03/2019.
  */
+
 public class FlipStackTest extends ModuleTest{
 
     @Override
