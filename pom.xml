@@ -334,7 +334,7 @@
             <version>v1.10.2</version> -->
             <groupId>io.github.sjcross</groupId>
             <artifactId>Common</artifactId>
-            <version>1.10.3-SNAPSHOT</version>
+            <version>1.10.3</version>
         </dependency>
     </dependencies>
 

@@ -80,7 +80,7 @@ public class FitActiveContours extends Module {
 
     @Override
     public String getDescription() {
-        return "";
+        return "Uses active contours to fit a 2D concave hull to specified objects.  The 2D perimeter of each input object is converted to a closed contour, the position of which is optimised in order to minimise various internal (contour) and external (image) energies.  Internal energies are elasticity and bending of the contour, which aim to minimise point-point separation and adjacent segment alignment, respectively.  External energies are provided by the image intensity along the path and are minimised when the contour sits in dark areas of the image.  Energies are iteratively optimised using a greedy algorithm which tests each point along the contour at all points within a specified search radius, taking the lowest energy point as the new location.  For more information on active contours, see Kass, M.; Witkin, A.; Terzopoulos, D., \"Snakes: Active contour models\",  <i>International Journal of Computer Vision</i>, 1988, <b>1</b>, 321.";
     }
 
     @Override
@@ -343,17 +343,17 @@ public class FitActiveContours extends Module {
 
         parameters.get(BALLOON_ENERGY).setDescription("Weight assigned to the balloon energy of the contour.  The balloon energy pushes the contour outwards in at attempt to overcome the elastic energy-induced shrinkage.  The greater the associated weight, the more this term will contribute to the overall energy of the contour.  Larger weights will cause the contour to grow outwards faster.");
 
-        parameters.get(NODE_DENSITY).setDescription("");
+        parameters.get(NODE_DENSITY).setDescription("Density of coordinates along the perimeter of the input object that will be used as control points in the contour.  Density is specified as a decimal in the range 0-1, where densities approaching 0 have fewer points and a density of 1 includes all points on the object perimeter.");
 
         parameters.get(SEARCH_RADIUS).setDescription("On each optimisation iteration, each point along the contour will be tested at all local points within this search radius, with the lowest energy point taken as the new location.");
 
         parameters.get(NUMBER_OF_ITERATIONS).setDescription("The maximum number of optimisation iterations that will be completed.  If contour stability has not been reached by this number of iterations, the contour at this point will be exported.");
 
-        parameters.get(USE_MOTION_THRESHOLD).setDescription("When selected, ");
+        parameters.get(USE_MOTION_THRESHOLD).setDescription("When selected, optimisation of the contour can be terminated early if successive iterations don't yield sufficient motion (i.e. the contour has reached stability).  The threshold amount of motion is specified by \""+MOTION_THRESHOLD_PX+"\".  Early termination of optimisation for stable contours will result in a speed increase for this module.");
 
-        parameters.get(MOTION_THRESHOLD_PX).setDescription("");
+        parameters.get(MOTION_THRESHOLD_PX).setDescription("If \""+USE_MOTION_THRESHOLD+"\" is selected, this is the average motion of contour points between successive optimisation iterations below which the contour will be assumed to have reached stability.  If stability is reached the optimisation routine is terminated.");
 
-        parameters.get(SHOW_CONTOURS_REALTIME).setDescription("");
+        parameters.get(SHOW_CONTOURS_REALTIME).setDescription("When selected, the contour evolution will be displayed on the input image in realtime.  This may be useful for optimising weight parameters.");
 
     }
 
