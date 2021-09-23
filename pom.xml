@@ -329,12 +329,12 @@
         </dependency>
 
         <dependency>
-            <groupId>com.github.SJCross</groupId>
+            <!-- <groupId>com.github.SJCross</groupId>
             <artifactId>Common</artifactId>
-            <version>v1.10.2</version>
-            <!-- <groupId>io.github.sjcross</groupId>
+            <version>v1.10.2</version> -->
+            <groupId>io.github.sjcross</groupId>
             <artifactId>Common</artifactId>
-            <version>1.10.2</version> -->
+            <version>1.10.3-SNAPSHOT</version>
         </dependency>
     </dependencies>
 

@@ -138,7 +138,7 @@ public class FitActiveContours extends Module {
 
             // Getting the z-plane of the current object
             int z = inputObject.getCoordinateSet().iterator().next().getZ();
-
+            
             // Getting the Roi for the current object
             Polygon roi = inputObject.getRoi(z).getPolygon();
             int[] xCoords = roi.xpoints;
@@ -327,29 +327,29 @@ public class FitActiveContours extends Module {
     }
 
     void addParameterDescriptions() {
-        parameters.get(INPUT_IMAGE).setDescription("");
+        parameters.get(INPUT_IMAGE).setDescription("Image from the workspace to which the contours will be fit.  The intensity of this image will contribute to the external forces applied to the contour.  For example, the contour will attempt to minimise the intensity along the path of the contour.");
 
-        parameters.get(INPUT_OBJECTS).setDescription("");
+        parameters.get(INPUT_OBJECTS).setDescription("Objects from the workspace to which active contours will be fit.  Active contours are fit in 2D to the object points from the first slice.  As such, input objects can be stored in 3D space, but only a single slice will be fit.");
 
-        parameters.get(UPDATE_INPUT_OBJECTS).setDescription("");
+        parameters.get(UPDATE_INPUT_OBJECTS).setDescription("When selected, the input objects will have their coordinates replaced with the coordinates from the fit contour.  Applied coordinates will be solid within the boundary of the associated contour.");
 
-        parameters.get(OUTPUT_OBJECTS).setDescription("");
+        parameters.get(OUTPUT_OBJECTS).setDescription("If \""+UPDATE_INPUT_OBJECTS+"\" is not selected, this is the name with which the output contour objects will be stored in the workspace.");
 
-        parameters.get(ELASTIC_ENERGY).setDescription("");
+        parameters.get(ELASTIC_ENERGY).setDescription("Weight assigned to the elastic energy of the contour.  The elastic energy grows with increasing separation between adjacent points along the contour.  During optimisation, the contour will attempt to minimise the elastic energy by reducing the separation between adjacent points (i.e. the contour will shrink).  The greater the associated weight, the more this term will contribute to the overall energy of the contour.  Larger weights will cause the contour to shrink more readily.");
 
-        parameters.get(BENDING_ENERGY).setDescription("");
+        parameters.get(BENDING_ENERGY).setDescription("Weight assigned to the bending energy of the contour.  The bending energy grows as the angle between adjacent segments also increases.  During optimisation, the contour will attempt to minimise the bending energy by reducing small bends in the contour.  The lowest bending energy state for a contour is a perfect circle.  The greater the associated weight, the more this term will contribute to the overall energy of the contour.  Larger weights will cause the contour to become smoother.");
 
-        parameters.get(IMAGE_PATH_ENERGY).setDescription("");
+        parameters.get(IMAGE_PATH_ENERGY).setDescription("Weight assigned to the external (image) energy of the contour.  The image path energy is equal to the intensity of the pixels along the path.  During optimisation, the contour will attempt to minimise the image path energy by sitting along low intensity lines in the image.  The greater the associated weight, the more this term will contribute to the overall energy of the contour.  Larger weights will cause the contour to stick to dark regions more readily, but may also cause it to get stuck on local minima in the image.");
 
-        parameters.get(BALLOON_ENERGY).setDescription("");
+        parameters.get(BALLOON_ENERGY).setDescription("Weight assigned to the balloon energy of the contour.  The balloon energy pushes the contour outwards in at attempt to overcome the elastic energy-induced shrinkage.  The greater the associated weight, the more this term will contribute to the overall energy of the contour.  Larger weights will cause the contour to grow outwards faster.");
 
         parameters.get(NODE_DENSITY).setDescription("");
 
-        parameters.get(SEARCH_RADIUS).setDescription("");
+        parameters.get(SEARCH_RADIUS).setDescription("On each optimisation iteration, each point along the contour will be tested at all local points within this search radius, with the lowest energy point taken as the new location.");
 
-        parameters.get(NUMBER_OF_ITERATIONS).setDescription("");
+        parameters.get(NUMBER_OF_ITERATIONS).setDescription("The maximum number of optimisation iterations that will be completed.  If contour stability has not been reached by this number of iterations, the contour at this point will be exported.");
 
-        parameters.get(USE_MOTION_THRESHOLD).setDescription("");
+        parameters.get(USE_MOTION_THRESHOLD).setDescription("When selected, ");
 
         parameters.get(MOTION_THRESHOLD_PX).setDescription("");
 
