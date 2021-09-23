@@ -1,7 +1,6 @@
 package io.github.mianalysis.mia.process;
 
 import java.io.File;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
@@ -19,10 +18,6 @@ import java.util.TreeSet;
 import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
 
-import org.apache.maven.model.Model;
-import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
-import org.apache.maven.project.MavenProject;
-import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.commonmark.parser.Parser;
 import org.commonmark.renderer.html.HtmlRenderer;
 
@@ -465,15 +460,14 @@ public class DocumentationGenerator {
         // The following is required to get the version number and release date from the
         // pom.xml
         String version = "";
-        try {
-            FileReader reader = new FileReader("pom.xml");
-            Model model = new MavenXpp3Reader().read(reader);
-            reader.close();
-            version = new MavenProject(model).getVersion();
-        } catch (XmlPullParserException | IOException e) {
+        // try {
+        //     FileReader reader = new FileReader("pom.xml");
+        //     Model model = new MavenXpp3Reader().read(reader);
+        //     reader.close();
+        //     version = new MavenProject(model).getVersion();
+        // } catch (XmlPullParserException | IOException e) {
             version = MIA.class.getPackage().getImplementationVersion();
-
-        }
+        // }
 
         try {
             sb.append("<html><body><div align=\"justify\">");

@@ -134,7 +134,7 @@
             <artifactId>maven-project-info-reports-plugin</artifactId>
             <version>2.9</version>
             <type>maven-plugin</type>
-            <scope>compile</scope>
+            <scope>${scp}</scope>
             <exclusions>
                 <exclusion>
                     <groupId>classworlds</groupId>
@@ -171,7 +171,7 @@
             <groupId>org.apache.maven</groupId>
             <artifactId>maven-model</artifactId>
             <version>3.0.4</version>
-            <scope>provided</scope>
+            <scope>${scp}</scope>
         </dependency>
 
         <dependency>
@@ -196,6 +196,7 @@
             <groupId>net.objecthunter</groupId>
             <artifactId>exp4j</artifactId>
             <version>0.4.8</version>
+            <scope>${scp}</scope>
         </dependency>
 
         <dependency>
@@ -316,16 +317,17 @@
             <scope>${scp}</scope>
         </dependency>
 
-        <dependency>
+        <!-- <dependency>
             <groupId>io.github.classgraph</groupId>
             <artifactId>classgraph</artifactId>
             <version>4.8.54</version>
-        </dependency>
+        </dependency> -->
 
         <dependency>
             <groupId>com.atlassian.commonmark</groupId>
             <artifactId>commonmark</artifactId>
             <version>0.12.1</version>
+            <scope>${scp}</scope>
         </dependency>
 
         <dependency>

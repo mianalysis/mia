@@ -1,12 +1,14 @@
 package io.github.mianalysis.mia.process;
 
-import io.github.classgraph.ClassGraph;
-import io.github.classgraph.ClassInfoList;
-import io.github.classgraph.ScanResult;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.scijava.plugin.PluginInfo;
+import org.scijava.plugin.PluginService;
+
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Module;
-
-import java.util.List;
+import io.github.mianalysis.mia.module.ModuleInterface;
 
 public class ClassHunter<T> {
     private static List<String> moduleNames = null;
@@ -21,24 +23,33 @@ public class ClassHunter<T> {
     }
 
     public List<String> getClasses(Class<T> clazz) {
-        ScanResult scanResult = new ClassGraph().enableClassInfo().scan();
-        ClassInfoList classInfos = scanResult.getSubclasses(clazz.getName());
+        PluginService pluginService = MIA.ijService.getContext().getService(PluginService.class);
+        List<PluginInfo<ModuleInterface>> modules = pluginService.getPluginsOfType(ModuleInterface.class);
+        List<String> names = new ArrayList<>();
+        
+        for (PluginInfo<ModuleInterface> module : modules)
+            names.add(module.getClassName());
+        // ScanResult scanResult = new ClassGraph().enableClassInfo().scan();
+        // ClassInfoList classInfos = scanResult.getSubclasses(clazz.getName());
 
-        if (clazz.getPackage().getName().equals(Module.class.getPackage().getName())) {
-            moduleNames = classInfos.getNames();
+        // if (clazz.getPackage().getName().equals(Module.class.getPackage().getName())) {
+        //     moduleNames = classInfos.getNames();
+        //     System.out.println(moduleNames);
 
-            // Add any packages from the explicitly named list
-            moduleNames.addAll(MIA.getPluginPackages());
+        //     // Add any packages from the explicitly named list
+        //     moduleNames.addAll(MIA.getPluginPackages());
 
-        }
+        // }
 
-        List<String> classNames = classInfos.getNames();
+        // List<String> classNames = classInfos.getNames();
 
-        scanResult.close();
-        scanResult = null;
-        classInfos = null;
+        // scanResult.close();
+        // scanResult = null;
+        // classInfos = null;
 
-        return classNames;
+        // return classNames;
+
+        return names;
 
     }
 }

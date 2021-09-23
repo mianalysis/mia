@@ -35,7 +35,7 @@ import io.github.mianalysis.mia.process.logging.LogRenderer;
 /**
  * Created by sc13967 on 02/05/2017.
  */
-public abstract class Module extends Ref implements Comparable {
+public abstract class Module extends Ref implements Comparable, ModuleInterface {
     protected Modules modules;
 
     protected Parameters parameters = new Parameters();
