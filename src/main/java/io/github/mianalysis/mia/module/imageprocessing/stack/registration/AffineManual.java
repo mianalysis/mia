@@ -17,6 +17,9 @@ import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.Module;
+import org.scijava.Priority;
+import org.scijava.plugin.Plugin;
 import io.github.mianalysis.mia.module.imageprocessing.stack.ConcatenateStacks;
 import io.github.mianalysis.mia.module.imageprocessing.stack.registration.abstrakt.AbstractAffineRegistration;
 import io.github.mianalysis.mia.object.Image;
@@ -28,6 +31,7 @@ import io.github.mianalysis.mia.process.interactable.Interactable;
 import io.github.mianalysis.mia.process.interactable.PointPairSelector;
 import io.github.mianalysis.mia.process.interactable.PointPairSelector.PointPair;
 
+@Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class AffineManual<T extends RealType<T> & NativeType<T>> extends AbstractAffineRegistration
         implements Interactable {
     public static final String FEATURE_SEPARATOR = "Feature detection";
@@ -238,7 +242,7 @@ public class AffineManual<T extends RealType<T> & NativeType<T>> extends Abstrac
 
     }
 
-    public class ManualParam extends AffineParam {
+public class ManualParam extends AffineParam {
         String pointSelectionMode = PointSelectionModes.RUNTIME;
         Roi warpedRoi = null;
         Roi referenceRoi = null;

@@ -19,6 +19,7 @@ import java.net.URLDecoder;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+
 public class MeasureObjectTextureTest extends ModuleTest {
     private double tolerance = 1E-4;
 

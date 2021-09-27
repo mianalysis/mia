@@ -19,6 +19,9 @@ import inra.ijpb.watershed.ExtendedMinimaWatershed;
 import inra.ijpb.watershed.Watershed;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.Module;
+import org.scijava.Priority;
+import org.scijava.plugin.Plugin;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.imageprocessing.pixel.InvertIntensity;
@@ -42,6 +45,7 @@ import io.github.sjcross.common.process.IntensityMinMax;
 /**
  * Created by sc13967 on 06/06/2017.
  */
+@Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class BinaryOperations extends Module {
     public static final String INPUT_IMAGE = "Input image";
     public static final String APPLY_TO_INPUT = "Apply to input image";

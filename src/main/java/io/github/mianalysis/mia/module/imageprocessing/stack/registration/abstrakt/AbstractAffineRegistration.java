@@ -19,6 +19,9 @@ import mpicbg.models.TranslationModel2D;
 import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
 import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.Module;
+import org.scijava.Priority;
+import org.scijava.plugin.Plugin;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
@@ -94,7 +97,7 @@ public abstract class AbstractAffineRegistration<T extends RealType<T> & NativeT
         for (int x = 0; x < iprIn.getWidth(); x++)
             for (int y = 0; y < iprIn.getHeight(); y++)
                 iprOut.putPixel(iprIn.getWidth() - x, y, iprIn.getPixel(x, y));
-            
+
         return iprOut;
 
     }
@@ -108,7 +111,7 @@ public abstract class AbstractAffineRegistration<T extends RealType<T> & NativeT
         Object[] res1 = fitModel(referenceIpr, warpedIpr, param);
         if (res1 == null)
             return null;
-            
+
         if (((AffineParam) param).testFlip) {
             warpedIpr = flip(warpedIpr);
             Object[] res2 = fitModel(referenceIpr, warpedIpr, param);
@@ -129,7 +132,7 @@ public abstract class AbstractAffineRegistration<T extends RealType<T> & NativeT
         }
 
         transform.mapping = new InverseTransformMapping<AbstractAffineModel2D<?>>((AbstractAffineModel2D) res1[0]);
-        
+
         return transform;
 
     }
@@ -203,9 +206,9 @@ public abstract class AbstractAffineRegistration<T extends RealType<T> & NativeT
                 + "<li>\"" + TransformationModes.TRANSLATION
                 + "\" Applies only translation (motion within the 2D plane) to the input image.</li></ul>");
 
-                parameters.get(TEST_FLIP).setDescription(
-                        "When selected, alignment will be tested for both the \"normal\" and \"flipped\" (mirror) states of the image.  The state yielding the lower cost to alignment will be retained.");
-                
+        parameters.get(TEST_FLIP).setDescription(
+                "When selected, alignment will be tested for both the \"normal\" and \"flipped\" (mirror) states of the image.  The state yielding the lower cost to alignment will be retained.");
+
     }
 
     public abstract class AffineParam extends Param {

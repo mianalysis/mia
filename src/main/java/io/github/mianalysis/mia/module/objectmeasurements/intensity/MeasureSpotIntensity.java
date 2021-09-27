@@ -3,6 +3,9 @@ package io.github.mianalysis.mia.module.objectmeasurements.intensity;
 import ij.ImagePlus;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.Module;
+import org.scijava.Priority;
+import org.scijava.plugin.Plugin;
 import io.github.mianalysis.mia.module.core.InputControl;
 import io.github.mianalysis.mia.module.objectprocessing.identification.GetLocalObjectRegion;
 import io.github.mianalysis.mia.module.Category;
@@ -25,6 +28,7 @@ import io.github.sjcross.common.object.Point;
  * region around each point to be measured. Intensity traces are stored as
  * HCMultiMeasurements
  */
+@Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class MeasureSpotIntensity extends Module {
     public static final String INPUT_SEPARATOR = "Object and image input";
     public static final String INPUT_IMAGE = "Input image";

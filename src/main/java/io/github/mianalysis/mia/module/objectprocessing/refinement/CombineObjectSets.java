@@ -2,6 +2,9 @@ package io.github.mianalysis.mia.module.objectprocessing.refinement;
 
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.Module;
+import org.scijava.Priority;
+import org.scijava.plugin.Plugin;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.object.Obj;
@@ -22,6 +25,7 @@ import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 /**
  * Created by sc13967 on 31/01/2018.
  */
+@Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class CombineObjectSets extends Module {
     public static final String INPUT_SEPARATOR = "Objects input";
     public static final String INPUT_OBJECTS_1 = "Input objects 1";

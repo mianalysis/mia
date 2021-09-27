@@ -23,6 +23,7 @@ import static org.junit.jupiter.api.Assertions.*;
 /**
  * Created by Stephen Cross on 02/09/2017.
  */
+
 public class ShowObjectsTest extends ModuleTest {
     private double tolerance = 1E-2;
 

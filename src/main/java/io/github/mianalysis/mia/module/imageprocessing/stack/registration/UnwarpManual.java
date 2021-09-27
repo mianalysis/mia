@@ -17,6 +17,9 @@ import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.Module;
+import org.scijava.Priority;
+import org.scijava.plugin.Plugin;
 import io.github.mianalysis.mia.module.imageprocessing.stack.ConcatenateStacks;
 import io.github.mianalysis.mia.module.imageprocessing.stack.registration.abstrakt.AbstractBUnwarpJRegistration;
 import io.github.mianalysis.mia.object.Image;
@@ -28,6 +31,7 @@ import io.github.mianalysis.mia.process.interactable.PointPairSelector;
 import io.github.mianalysis.mia.process.interactable.PointPairSelector.PointPair;
 import io.github.mianalysis.mia.thirdparty.bUnwarpJ_Mod;
 
+@Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class UnwarpManual<T extends RealType<T> & NativeType<T>> extends AbstractBUnwarpJRegistration
         implements Interactable {
     public static final String POINT_SELECTION_MODE = "Point selection mode";
@@ -97,7 +101,8 @@ public class UnwarpManual<T extends RealType<T> & NativeType<T>> extends Abstrac
     }
 
     @Override
-    public Transform getTransform(ImageProcessor referenceIpr, ImageProcessor warpedIpr, Param param, boolean showDetectedPoints) {
+    public Transform getTransform(ImageProcessor referenceIpr, ImageProcessor warpedIpr, Param param,
+            boolean showDetectedPoints) {
         ManualBUnwarpJParam p = (ManualBUnwarpJParam) param;
 
         ImagePlus referenceIpl = new ImagePlus("Reference", referenceIpr.duplicate());
@@ -273,7 +278,7 @@ public class UnwarpManual<T extends RealType<T> & NativeType<T>> extends Abstrac
 
     }
 
-    public class ManualBUnwarpJParam extends BUnwarpJParam {
+    class ManualBUnwarpJParam extends BUnwarpJParam {
         public String pointSelectionMode = PointSelectionModes.RUNTIME;
         public Roi warpedRoi = null;
         public Roi referenceRoi = null;

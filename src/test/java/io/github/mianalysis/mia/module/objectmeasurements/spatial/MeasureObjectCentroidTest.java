@@ -20,6 +20,7 @@ import io.github.sjcross.common.object.volume.VolumeType;
 /**
  * Created by Stephen Cross on 10/09/2017.
  */
+
 public class MeasureObjectCentroidTest extends ModuleTest {
     private double tolerance = 1E-2;
 

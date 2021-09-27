@@ -15,9 +15,7 @@ import org.scijava.command.Command;
 import org.scijava.plugin.Parameter;
 import org.scijava.plugin.Plugin;
 import org.scijava.ui.UIService;
-import org.scijava.util.VersionUtils;
 
-import fiji.plugin.trackmate.TrackMate;
 import io.github.mianalysis.mia.gui.GUI;
 import io.github.mianalysis.mia.module.Dependencies;
 import io.github.mianalysis.mia.module.LostAndFound;

@@ -6,6 +6,9 @@ import ij.process.ImageProcessor;
 import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
 import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.Module;
+import org.scijava.Priority;
+import org.scijava.plugin.Plugin;
 import io.github.mianalysis.mia.module.imageprocessing.stack.ImageTypeConverter;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
@@ -229,7 +232,7 @@ public abstract class AbstractBUnwarpJRegistration<T extends RealType<T> & Nativ
         public bunwarpj.Param bParam = null;
     }
 
-    public class BUnwarpJTransform extends Transform {
+public class BUnwarpJTransform extends Transform {
         public String transformPath = "";
     }
 }

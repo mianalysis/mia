@@ -6,6 +6,9 @@ import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.Module;
+import org.scijava.Priority;
+import org.scijava.plugin.Plugin;
 import io.github.mianalysis.mia.module.imageprocessing.pixel.ProjectImage;
 import io.github.mianalysis.mia.module.imageprocessing.pixel.binary.DistanceMap;
 import io.github.mianalysis.mia.object.Image;
@@ -33,6 +36,7 @@ import io.github.sjcross.common.object.Point;
 /**
  * Created by sc13967 on 04/05/2017.
  */
+@Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class RelateObjects extends Module {
     public static final String INPUT_SEPARATOR = "Object input";
     public static final String PARENT_OBJECTS = "Parent (larger) objects";

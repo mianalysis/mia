@@ -6,6 +6,9 @@ import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.Module;
+import org.scijava.Priority;
+import org.scijava.plugin.Plugin;
 import io.github.mianalysis.mia.module.imagemeasurements.MeasureImageColocalisation;
 import io.github.mianalysis.mia.object.Image;
 import io.github.mianalysis.mia.object.Measurement;
@@ -31,6 +34,7 @@ import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
 import sc.fiji.coloc.gadgets.DataContainer;
 
+@Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class MeasureObjectColocalisation<T extends RealType<T> & NativeType<T>> extends Module {
     public static final String INPUT_SEPARATOR = "Input separator";
     public static final String INPUT_OBJECTS = "Input objects";

@@ -16,6 +16,7 @@ import io.github.mianalysis.mia.object.Image;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.Workspaces;
 
+
 public class ProjectImageTest extends ModuleTest {
     @BeforeAll
     public static void setVerbose() {

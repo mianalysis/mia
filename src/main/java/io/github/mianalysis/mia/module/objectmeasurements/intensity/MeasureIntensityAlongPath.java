@@ -30,6 +30,9 @@ import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.Module;
+import org.scijava.Priority;
+import org.scijava.plugin.Plugin;
 import io.github.mianalysis.mia.module.imageprocessing.pixel.binary.Skeletonise;
 import io.github.mianalysis.mia.module.inputoutput.ImageSaver;
 import io.github.mianalysis.mia.object.Image;
@@ -60,6 +63,7 @@ import io.github.sjcross.common.object.volume.VolumeType;
 /**
  * Created by sc13967 on 22/06/2017.
  */
+@Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class MeasureIntensityAlongPath extends Module {
     public static final String INPUT_SEPARATOR = "Object input";
     public static final String INPUT_OBJECTS = "Input objects";

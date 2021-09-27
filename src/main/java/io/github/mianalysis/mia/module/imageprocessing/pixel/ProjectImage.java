@@ -11,6 +11,9 @@ import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.Module;
+import org.scijava.Priority;
+import org.scijava.plugin.Plugin;
 import io.github.mianalysis.mia.object.Image;
 import io.github.mianalysis.mia.object.Status;
 import io.github.mianalysis.mia.object.Workspace;
@@ -30,6 +33,7 @@ import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 /**
  * Created by sc13967 on 04/05/2017.
  */
+@Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class ProjectImage < T extends RealType< T > & NativeType< T >> extends Module {
     public static final String INPUT_SEPARATOR = "Image input/output";
     public static final String INPUT_IMAGE = "Input image";
@@ -234,7 +238,10 @@ public class ProjectImage < T extends RealType< T > & NativeType< T >> extends M
 //import net.imglib2.view.Views;
 //import io.github.mianalysis.MIA.MIA;
 //import io.github.mianalysis.MIA.Module.Module;
-//import io.github.mianalysis.MIA.Module.Modules;
+//import io.github.mianalysis.mia.module.Modules;
+// import io.github.mianalysis.mia.module.Module;
+// import org.scijava.Priority;
+// import org.scijava.plugin.Plugin;
 //import io.github.mianalysis.MIA.Module.PackageNames;
 //import io.github.mianalysis.MIA.Module.Category;
 //import io.github.mianalysis.MIA.Object.*;

@@ -2,6 +2,9 @@ package io.github.mianalysis.mia.module.imagemeasurements;
 
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.Module;
+import org.scijava.Priority;
+import org.scijava.plugin.Plugin;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.object.Status;
@@ -24,6 +27,7 @@ import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 /**
  * Created by Stephen Cross on 19/03/2019.
  */
+@Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class ImageMeasurementCalculator extends Module {
     public static final String INPUT_SEPARATOR = "Image input";
     public static final String INPUT_IMAGE = "Input image";

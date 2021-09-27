@@ -2,6 +2,9 @@ package io.github.mianalysis.mia.module.visualisation;
 
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.Module;
+import org.scijava.Priority;
+import org.scijava.plugin.Plugin;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.object.Image;
@@ -22,6 +25,7 @@ import io.github.sjcross.common.metadataextractors.Metadata;
 /**
  * Created by sc13967 on 03/05/2017.
  */
+@Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class ShowImage extends Module {
     public static final String INPUT_SEPARATOR = "Image input";
     public final static String DISPLAY_IMAGE = "Display image";

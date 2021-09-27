@@ -10,6 +10,9 @@ import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.Module;
+import org.scijava.Priority;
+import org.scijava.plugin.Plugin;
 import io.github.mianalysis.mia.module.imageprocessing.stack.ImageTypeConverter;
 import io.github.mianalysis.mia.object.Image;
 import io.github.mianalysis.mia.object.Measurement;
@@ -35,6 +38,7 @@ import io.github.sjcross.common.analysis.TextureCalculator;
  * Takes a set of objects and measures intensity texture values on a provided
  * image. Measurements are stored with the objects.
  */
+@Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class MeasureObjectTexture extends Module {
     public static final String INPUT_SEPARATOR = "Object and image input";
     public static final String INPUT_OBJECTS = "Input objects";

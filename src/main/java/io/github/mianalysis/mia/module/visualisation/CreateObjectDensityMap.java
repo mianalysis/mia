@@ -10,6 +10,9 @@ import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.Module;
+import org.scijava.Priority;
+import org.scijava.plugin.Plugin;
 import io.github.mianalysis.mia.module.imageprocessing.pixel.FilterImage;
 import io.github.mianalysis.mia.module.imageprocessing.pixel.ImageMath;
 import io.github.mianalysis.mia.object.Image;
@@ -34,6 +37,7 @@ import io.github.sjcross.common.mathfunc.Indexer;
 import io.github.sjcross.common.object.Point;
 import io.github.sjcross.common.object.volume.SpatCal;
 
+@Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class CreateObjectDensityMap extends Module {
     public static final String INPUT_SEPARATOR = "Object input / Image output";
     public static final String INPUT_OBJECTS = "Input objects";

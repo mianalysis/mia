@@ -28,6 +28,9 @@ import ij.plugin.Duplicator;
 import ij.plugin.HyperStackConverter;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.Module;
+import org.scijava.Priority;
+import org.scijava.plugin.Plugin;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.object.Image;
@@ -57,6 +60,7 @@ import io.github.mianalysis.mia.process.LabelFactory;
 /**
  * Created by sc13967 on 17/05/2017.
  */
+@Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class AddObjectsOverlay extends Module {
     public static final String INPUT_IMAGE = "Input image";
     public static final String INPUT_OBJECTS = "Input objects";

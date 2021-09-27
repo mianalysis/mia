@@ -2,6 +2,9 @@ package io.github.mianalysis.mia.module.visualisation;
 
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.Module;
+import org.scijava.Priority;
+import org.scijava.plugin.Plugin;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.object.Status;
@@ -18,6 +21,7 @@ import io.github.mianalysis.mia.object.parameters.Parameters;
 /**
  * Created by Stephen Cross on 14/10/2019.
  */
+@Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class ShowObjectMeasurements extends Module {
     public static final String INPUT_SEPARATOR = "Input";
     public static final String INPUT_OBJECTS = "Input objects";

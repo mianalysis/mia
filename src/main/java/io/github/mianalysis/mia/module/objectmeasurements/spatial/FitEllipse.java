@@ -9,6 +9,9 @@ import ij.Prefs;
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.Module;
+import org.scijava.Priority;
+import org.scijava.plugin.Plugin;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.objectprocessing.identification.GetObjectSurface;
@@ -39,6 +42,7 @@ import io.github.sjcross.common.object.volume.Volume;
 /**
  * Created by sc13967 on 19/06/2018.
  */
+@Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class FitEllipse extends Module {
     public static final String INPUT_SEPARATOR = "Object input";
     public static final String INPUT_OBJECTS = "Input objects";

@@ -77,17 +77,17 @@
   <div class="page-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
     <p class="text-secondary"><a href="../../../../html/modules/modules.html">Modules</a> ? <a href="../../../../html/modules/objectprocessing/objectprocessing.html">Object processing</a> ? <a href="../../../../html/modules/objectprocessing/miscellaneous/miscellaneous.html">Miscellaneous</a></p>
     <h1 class="display-4">Create distance map</h1>
-    <p class="lead"></p>
+    <p class="lead">Creates a distance map for a selected object set.</p>
 </div>
 
 <div class="pt-md-2 pb-md-4 mx-auto">
     <h2 class="display-6">Description</h2>
-    
+    Creates a distance map for a selected object set.  Pixels in the output image are encoded with the distance to the nearest image edge or centroid (depending on setting).  A single distance map image is created for all objects in the specified set.  Uses the plugin "<a href="https://github.com/ijpb/MorphoLibJ">MorphoLibJ</a>".
 </div>
 
 <div class="pt-md-2 pb-md-4 mx-auto">
     <h2 class="display-6">Parameters</h2>
-    <b>Input objects</b> (default = "") <br><br><b>Output image</b> (default = "") <br><br><b>Reference mode</b> (default = "Distance from object centroid") <br><b>Invert map within objects</b> (default = "true") <br><br><b>Masking mode</b> (default = "Inside and outside") <br><b>Normalise map per object</b> (default = "false") <br><br><b>Spatial units mode</b> (default = "Pixel/slice") Controls whether spatial values are assumed to be specified in calibrated units (as defined by the "Input control" parameter "Spatial unit") or pixel units.<br>
+    <b>Input objects</b> (default = "") Objects from workspace for which distance map will be created.  A single distance map will be created for all objects.<br><br><b>Output image</b> (default = "") Output distance map image which will be added to the workspace.  This will contain the distance map for each object.<br><br><b>Reference mode</b> (default = "Distance from object centroid") Controls where the distances are calculated from:<br><ul><li>"Distance from object centroid" Each pixel is encoded with the distance from the centre of the respective object.</li><li>"Distance from object edge" Each pixel is encoded with the distance from the edge of the respective object.</li></ul><br><b>Invert map within objects</b> (default = "true") When selected (and "Reference mode" is set to "Distance from object edge"), the distance map will be inverted, such that the distances inside objects are also positive.  If not selected, the distances inside objects will be negative.  Distance values outside objects are always positive.<br><br><b>Masking mode</b> (default = "Inside and outside") Controls which regions of the image are displayed:<br><ul><li>"Inside and outside" Distances both inside and outside the objects are non-zero.</li><li>"Inside only" Distances are shown inside each object, but are set to zero for all pixels outside an object.</li><li>"Outside only" Distances are shown outside each object, but are set to zero for all pixels inside an object.</li></ul><br><b>Normalise map per object</b> (default = "false") When selected, the distance values inside each object are normalised to the range 0-1.  Normalisation is performed on an object-by-object basis, so the absolute distance values cannot be directly compared between objects.<br><br><b>Spatial units mode</b> (default = "Pixel/slice") Controls whether spatial values are assumed to be specified in calibrated units (as defined by the "Input control" parameter "Spatial unit") or pixel units.<br>
 </div>
 
   <!-- Footer -->

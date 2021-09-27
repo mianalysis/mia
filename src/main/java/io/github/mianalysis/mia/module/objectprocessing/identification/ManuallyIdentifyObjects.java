@@ -50,6 +50,9 @@ import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.Module;
+import org.scijava.Priority;
+import org.scijava.plugin.Plugin;
 import io.github.mianalysis.mia.module.objectprocessing.relationships.TrackObjects;
 import io.github.mianalysis.mia.object.Image;
 import io.github.mianalysis.mia.object.Obj;
@@ -80,6 +83,7 @@ import io.github.sjcross.common.object.volume.VolumeType;
 /**
  * Created by sc13967 on 27/02/2018.
  */
+@Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class ManuallyIdentifyObjects extends Module implements ActionListener {
     private JFrame frame;
     private JTextField objectNumberField;

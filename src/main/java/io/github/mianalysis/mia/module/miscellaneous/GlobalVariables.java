@@ -7,6 +7,9 @@ import java.util.regex.Pattern;
 
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.Module;
+import org.scijava.Priority;
+import org.scijava.plugin.Plugin;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.object.Status;
@@ -26,6 +29,7 @@ import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 
+@Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class GlobalVariables extends Module {
     public static final String VARIABLE_SEPARATOR = "Variable settings";
     public static final String ADD_NEW_VARIABLE = "Add new variable";
