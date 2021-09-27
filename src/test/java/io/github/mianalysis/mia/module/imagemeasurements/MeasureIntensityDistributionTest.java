@@ -1,4 +1,4 @@
-package io.github.mianalysis.mia.module.imagemeasurements;
+// package io.github.mianalysis.mia.module.imagemeasurements;
 // package io.github.mianalysis.MIA.Module.ImageMeasurements;
 
 // import org.junit.jupiter.api.BeforeAll;
@@ -12,6 +12,7 @@ package io.github.mianalysis.mia.module.imagemeasurements;
 // /**
 //  * Created by Stephen on 17/11/2017.
 //  */
+// 
 // public class MeasureIntensityDistributionTest extends ModuleTest {
 
 //     @BeforeAll

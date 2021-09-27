@@ -1,11 +1,12 @@
-// TODO: Add option to create parent objects based on intensity (i.e. follow objects through time)
-
 package io.github.mianalysis.mia.module.objectprocessing.miscellaneous;
 
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.Module;
+import org.scijava.Priority;
+import org.scijava.plugin.Plugin;
 import io.github.mianalysis.mia.module.objectmeasurements.intensity.MeasureObjectIntensity;
 import io.github.mianalysis.mia.module.objectprocessing.identification.IdentifyObjects;
 import io.github.mianalysis.mia.module.objectprocessing.relationships.TrackObjects;
@@ -21,6 +22,7 @@ import io.github.mianalysis.mia.object.parameters.InputImageP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.SeparatorP;
 import io.github.mianalysis.mia.object.parameters.objects.OutputObjectsP;
+import io.github.mianalysis.mia.object.parameters.objects.OutputTrackObjectsP;
 import io.github.mianalysis.mia.object.refs.collections.ImageMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
@@ -33,6 +35,7 @@ import io.github.sjcross.common.object.volume.VolumeType;
 /**
  * Created by sc13967 on 04/05/2017.
  */
+@Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class ConvertImageToObjects extends Module {
     public static final String INPUT_SEPARATOR = "Image input";
     public static final String INPUT_IMAGE = "Input image";
@@ -40,8 +43,8 @@ public class ConvertImageToObjects extends Module {
     public static final String OUTPUT_SEPARATOR = "Object output";
     public static final String OUTPUT_OBJECTS = "Output objects";
     public static final String VOLUME_TYPE = "Volume type";
-    public static final String CREATE_PARENTS = "Create parent objects";
-    public static final String PARENT_OBJECTS_NAME = "Output parent objects name";
+    public static final String CREATE_TRACKS = "Create track objects";
+    public static final String TRACK_OBJECTS_NAME = "Output track objects name";
 
     public ConvertImageToObjects(Modules modules) {
         super("Convert image to objects", modules);
@@ -57,8 +60,9 @@ public class ConvertImageToObjects extends Module {
 
     @Override
     public String getDescription() {
-        return "Converts objects encoded in a labelled image stack back into objects.  Each output object is comprised of all pixels in a single timepoint with the same pixel intensity.  As such, pixels need not be in direct contact to be assigned the same object.<br><br>Note: This is different behaviour to the \""
-                + new IdentifyObjects(null).getName()
+        return "Converts objects encoded in a labelled image stack back into objects.  Each output object is comprised of all pixels in a single timepoint with the same pixel intensity.  As such, pixels need not be in direct contact to be assigned the same object.  For objects tracked through time, the image intensity can be interpreted as the ID of a parent track object."
+
+                + "<br><br>Note: This module has different behaviour to the \"" + new IdentifyObjects(null).getName()
                 + "\" module, which takes a binary image, identifies contiguous foreground regions and assigns new object IDs.";
     }
 
@@ -91,8 +95,8 @@ public class ConvertImageToObjects extends Module {
 
         String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);
         String volumeType = parameters.getValue(VOLUME_TYPE);
-        boolean createParents = parameters.getValue(CREATE_PARENTS);
-        String parentObjectsName = parameters.getValue(PARENT_OBJECTS_NAME);
+        boolean createParents = parameters.getValue(CREATE_TRACKS);
+        String parentObjectsName = parameters.getValue(TRACK_OBJECTS_NAME);
 
         Objs objects = null;
         try {
@@ -124,8 +128,8 @@ public class ConvertImageToObjects extends Module {
         parameters.add(new SeparatorP(OUTPUT_SEPARATOR, this));
         parameters.add(new OutputObjectsP(OUTPUT_OBJECTS, this));
         parameters.add(new ChoiceP(VOLUME_TYPE, this, VolumeTypes.POINTLIST, VolumeTypes.ALL));
-        parameters.add(new BooleanP(CREATE_PARENTS, this, false));
-        parameters.add(new OutputObjectsP(PARENT_OBJECTS_NAME, this));
+        parameters.add(new BooleanP(CREATE_TRACKS, this, false));
+        parameters.add(new OutputTrackObjectsP(TRACK_OBJECTS_NAME, this));
 
         addParameterDescriptions();
 
@@ -142,9 +146,9 @@ public class ConvertImageToObjects extends Module {
         returnedParameters.add(parameters.get(OUTPUT_OBJECTS));
         returnedParameters.add(parameters.get(VOLUME_TYPE));
 
-        returnedParameters.add(parameters.get(CREATE_PARENTS));
-        if ((boolean) parameters.getValue(CREATE_PARENTS))
-            returnedParameters.add(parameters.get(PARENT_OBJECTS_NAME));
+        returnedParameters.add(parameters.get(CREATE_TRACKS));
+        if ((boolean) parameters.getValue(CREATE_TRACKS))
+            returnedParameters.add(parameters.get(TRACK_OBJECTS_NAME));
 
         return returnedParameters;
 
@@ -169,9 +173,9 @@ public class ConvertImageToObjects extends Module {
     public ParentChildRefs updateAndGetParentChildRefs() {
         ParentChildRefs returnedRelationships = new ParentChildRefs();
 
-        if ((boolean) parameters.getValue(CREATE_PARENTS)) {
+        if ((boolean) parameters.getValue(CREATE_TRACKS)) {
             String childObjectsName = parameters.getValue(OUTPUT_OBJECTS);
-            String parentObjectsName = parameters.getValue(PARENT_OBJECTS_NAME);
+            String parentObjectsName = parameters.getValue(TRACK_OBJECTS_NAME);
 
             returnedRelationships.add(parentChildRefs.getOrPut(parentObjectsName, childObjectsName));
         }
@@ -206,5 +210,10 @@ public class ConvertImageToObjects extends Module {
                         + "<li>\"" + VolumeTypes.QUADTREE
                         + "\" stores objects in a quadtree format.  Here, each Z-plane of the object is broken down into squares of different sizes, each of which is marked as foreground (i.e. an object) or background.  Quadtrees are most efficient when there are lots of large square regions of the same label, as the space can be represented by larger (and thus fewer) squares.  This is best used when there are large, completely solid objects.</li></ul>");
 
+        parameters.get(CREATE_TRACKS).setDescription(
+                "When selected, the intensity of the image for each object will be assumed as corresponding to the ID of a parent track object.  This allows track relationships for objects present in multiple timepoints to be loaded back into MIA.");
+
+        parameters.get(TRACK_OBJECTS_NAME).setDescription("If creating track objects (\"" + CREATE_TRACKS
+                + "\" is selected), this is the name of the output tracks.  These will be parents of the output objects.");
     }
 }

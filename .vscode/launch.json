@@ -6,6 +6,20 @@
     "configurations": [
         {
             "type": "java",
+            "name": "Launch DocumentationGenerator",
+            "request": "launch",
+            "mainClass": "io.github.mianalysis.mia.process.DocumentationGenerator",
+            "projectName": "MIA"
+        },
+        {
+            "type": "java",
+            "name": "Launch Test",
+            "request": "launch",
+            "mainClass": "io.github.mianalysis.mia.thirdparty.Test",
+            "projectName": "MIA"
+        },
+        {
+            "type": "java",
             "name": "Launch DocumentationCoverageChecker",
             "request": "launch",
             "mainClass": "io.github.mianalysis.mia.process.DocumentationCoverageChecker",

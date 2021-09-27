@@ -5,6 +5,9 @@ import ij.plugin.ChannelSplitter;
 import ij.plugin.Duplicator;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.Module;
+import org.scijava.Priority;
+import org.scijava.plugin.Plugin;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.object.Image;
@@ -23,6 +26,7 @@ import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 /**
  * Created by Stephen on 08/05/2017.
  */
+@Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class ChannelExtractor extends Module {
     public static final String INPUT_IMAGE = "Input image";
     public static final String OUTPUT_IMAGE = "Output image";

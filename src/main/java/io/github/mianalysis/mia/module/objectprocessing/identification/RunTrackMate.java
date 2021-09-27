@@ -15,7 +15,6 @@ import fiji.plugin.trackmate.TrackMate;
 import fiji.plugin.trackmate.TrackModel;
 import fiji.plugin.trackmate.detection.DetectorKeys;
 import fiji.plugin.trackmate.detection.LogDetectorFactory;
-import fiji.plugin.trackmate.features.spot.SpotRadiusEstimatorFactory;
 import fiji.plugin.trackmate.tracking.LAPUtils;
 import fiji.plugin.trackmate.tracking.TrackerKeys;
 import fiji.plugin.trackmate.tracking.kalman.KalmanTrackerFactory;
@@ -28,6 +27,9 @@ import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.Module;
+import org.scijava.Priority;
+import org.scijava.plugin.Plugin;
 import io.github.mianalysis.mia.module.visualisation.overlays.AddObjectCentroid;
 import io.github.mianalysis.mia.module.visualisation.overlays.AddObjectOutline;
 import io.github.mianalysis.mia.object.Image;
@@ -64,6 +66,7 @@ import io.github.sjcross.common.process.IntensityMinMax;
 /**
  * Created by sc13967 on 15/05/2017.
  */
+@Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class RunTrackMate extends Module {
     public static final String INPUT_SEPARATOR = "Image input, object output";
     public static final String INPUT_IMAGE = "Input image";
@@ -98,8 +101,6 @@ public class RunTrackMate extends Module {
     public interface Measurements {
         String RADIUS_PX = "SPOT_DETECT_TRACK // RADIUS_(PX)";
         String RADIUS_CAL = "SPOT_DETECT_TRACK // RADIUS_(${SCAL})";
-        String ESTIMATED_DIAMETER_PX = "SPOT_DETECT_TRACK // EST_DIAMETER_(PX)";
-        String ESTIMATED_DIAMETER_CAL = "SPOT_DETECT_TRACK // EST_DIAMETER_(${SCAL})";
         String QUALITY = "SPOT_DETECT_TRACK // QUALITY";
         String X_CENTROID_PX = "SPOT_DETECT_TRACK // X_CENTROID_(PX)";
         String X_CENTROID_CAL = "SPOT_DETECT_TRACK // X_CENTROID_(${SCAL})";
@@ -112,6 +113,7 @@ public class RunTrackMate extends Module {
 
     public RunTrackMate(Modules modules) {
         super("Run TrackMate", modules);
+        deprecated = true;
     }
 
     public Settings initialiseSettings(ImagePlus ipl, SpatCal calibration) {
@@ -145,8 +147,6 @@ public class RunTrackMate extends Module {
         settings.detectorSettings.put(DetectorKeys.KEY_RADIUS, radius);
         settings.detectorSettings.put(DetectorKeys.KEY_THRESHOLD, threshold);
         settings.detectorSettings.put(DetectorKeys.KEY_TARGET_CHANNEL, 1);
-
-        settings.addSpotAnalyzerFactory(new SpotRadiusEstimatorFactory<>());
 
         switch (trackingMethod) {
             case TrackingMethods.KALMAN:
@@ -276,11 +276,6 @@ public class RunTrackMate extends Module {
 
         spotObject.addMeasurement(new Measurement(Measurements.RADIUS_PX, spot.getFeature(Spot.RADIUS)));
         spotObject.addMeasurement(new Measurement(Measurements.RADIUS_CAL, spot.getFeature(Spot.RADIUS) * dppXY));
-        spotObject.addMeasurement(new Measurement(Measurements.ESTIMATED_DIAMETER_PX,
-                spot.getFeature(SpotRadiusEstimatorFactory.ESTIMATED_DIAMETER)));
-        spotObject.addMeasurement(new Measurement(Measurements.ESTIMATED_DIAMETER_CAL,
-                spot.getFeature(SpotRadiusEstimatorFactory.ESTIMATED_DIAMETER) * dppXY));
-        spotObject.addMeasurement(new Measurement(Measurements.QUALITY, spot.getFeature(Spot.QUALITY)));
 
         if (doSubpixel) {
             spotObject.addMeasurement(new Measurement(Measurements.X_CENTROID_PX, spot.getFeature(Spot.POSITION_X)));
@@ -543,17 +538,6 @@ public class RunTrackMate extends Module {
         reference = objectMeasurementRefs.getOrPut(Measurements.RADIUS_CAL);
         reference.setObjectsName(outputSpotObjectsName);
         reference.setDescription("Radius used as size estimate for spot detection.  Measured in calibrated " + "("
-                + SpatialUnit.getOMEUnit().getSymbol() + ") units.");
-        returnedRefs.add(reference);
-
-        reference = objectMeasurementRefs.getOrPut(Measurements.ESTIMATED_DIAMETER_PX);
-        reference.setObjectsName(outputSpotObjectsName);
-        reference.setDescription("Diameter of spot as estimated by TrackMate.  Measured in pixel units.");
-        returnedRefs.add(reference);
-
-        reference = objectMeasurementRefs.getOrPut(Measurements.ESTIMATED_DIAMETER_CAL);
-        reference.setObjectsName(outputSpotObjectsName);
-        reference.setDescription("Diameter of spots as estimated by TrackMate.  Measured in calibrated " + "("
                 + SpatialUnit.getOMEUnit().getSymbol() + ") units.");
         returnedRefs.add(reference);
 

@@ -360,31 +360,33 @@ public class Obj extends Volume {
 
     }
 
+    @Override
     public Roi getRoi(int slice) {
         if (rois.containsKey(slice))
             return (Roi) rois.get(slice).clone();
 
-        // Getting the image corresponding to this slice
-        Volume sliceVol = getSlice(slice);
+        // // Getting the image corresponding to this slice
+        // Volume sliceVol = getSlice(slice);
 
-        Objs objectCollection = new Objs("Slice", sliceVol.getSpatialCalibration(), 1, 1, null);
-        Obj sliceObj = objectCollection.createAndAddNewObject(sliceVol.getVolumeType(), ID);
-        sliceObj.setCoordinateSet(sliceVol.getCoordinateSet());
+        // Objs objectCollection = new Objs("Slice", sliceVol.getSpatialCalibration(), 1, 1, null);
+        // Obj sliceObj = objectCollection.createAndAddNewObject(sliceVol.getVolumeType(), ID);
+        // sliceObj.setCoordinateSet(sliceVol.getCoordinateSet());
 
-        // Checking if the object exists in this slice
-        if (sliceVol.size() == 0)
-            return null;
+        // // Checking if the object exists in this slice
+        // if (sliceVol.size() == 0)
+        //     return null;
 
-        HashMap<Integer, Float> hues = ColourFactory.getSingleColourHues(objectCollection,
-                ColourFactory.SingleColours.WHITE);
-        Image objectImage = objectCollection.convertToImage("Output", hues, 8, false);
-        IJ.run(objectImage.getImagePlus(), "Invert", "stack");
+        // HashMap<Integer, Float> hues = ColourFactory.getSingleColourHues(objectCollection,
+        //         ColourFactory.SingleColours.WHITE);
+        // Image objectImage = objectCollection.convertToImage("Output", hues, 8, false);
+        // IJ.run(objectImage.getImagePlus(), "Invert", "stack");
 
-        ImageProcessor ipr = objectImage.getImagePlus().getProcessor();
-        ipr.setThreshold(0, 0, ImageProcessor.NO_LUT_UPDATE);
-        ThresholdToSelection selection = new ThresholdToSelection();
+        // ImageProcessor ipr = objectImage.getImagePlus().getProcessor();
+        // ipr.setThreshold(0, 0, ImageProcessor.NO_LUT_UPDATE);
+        // ThresholdToSelection selection = new ThresholdToSelection();
 
-        Roi roi = selection.convert(objectImage.getImagePlus().getProcessor());
+        // Roi roi = selection.convert(objectImage.getImagePlus().getProcessor());
+        Roi roi = super.getRoi(slice);
         rois.put(slice, roi);
 
         return (Roi) roi.clone();

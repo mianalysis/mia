@@ -17,6 +17,9 @@ import ij.plugin.HyperStackConverter;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.Module;
+import org.scijava.Priority;
+import org.scijava.plugin.Plugin;
 import io.github.mianalysis.mia.module.imageprocessing.pixel.binary.BinaryOperations2D;
 import io.github.mianalysis.mia.module.imageprocessing.pixel.binary.DistanceMap;
 import io.github.mianalysis.mia.object.Image;
@@ -46,6 +49,7 @@ import io.github.mianalysis.mia.process.ColourFactory;
 import io.github.mianalysis.mia.process.LabelFactory;
 import io.github.sjcross.common.object.Point;
 
+@Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class AddLabels extends AbstractOverlay {
     TextRoi textRoi = null;
     public static final String INPUT_SEPARATOR = "Image and object input";

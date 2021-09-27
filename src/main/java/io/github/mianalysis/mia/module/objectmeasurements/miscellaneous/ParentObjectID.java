@@ -4,6 +4,9 @@ package io.github.mianalysis.mia.module.objectmeasurements.miscellaneous;
 
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.Module;
+import org.scijava.Priority;
+import org.scijava.plugin.Plugin;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.object.Obj;
@@ -25,6 +28,7 @@ import io.github.mianalysis.mia.object.parameters.ParentObjectsP;
 /**
  * Created by sc13967 on 05/05/2017.
  */
+@Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class ParentObjectID extends Module {
     public static final String INPUT_SEPARATOR = "Object and image input";
     public static final String INPUT_OBJECTS = "Input objects";

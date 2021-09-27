@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.*;
 /**
  * Created by Stephen Cross on 29/03/2019.
  */
+
 public class AddLabelsTest extends ModuleTest {
 
     @Override

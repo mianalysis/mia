@@ -6,6 +6,9 @@ import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.Module;
+import org.scijava.Priority;
+import org.scijava.plugin.Plugin;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Status;
@@ -26,6 +29,7 @@ import io.github.sjcross.common.object.volume.Volume;
 /**
  * Projects xy coordinates into a single plane.  Duplicates of xy coordinates at different heights are removed.
  */
+@Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class ProjectObjects extends Module {
     public static final String INPUT_SEPARATOR = "Object input/output";
     public static final String INPUT_OBJECTS = "Input objects";

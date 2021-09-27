@@ -1,5 +1,6 @@
 package io.github.mianalysis.mia.process.analysishandling;
 
+import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.miscellaneous.GlobalVariables;
@@ -13,15 +14,17 @@ public class AnalysisTester {
         GlobalVariables.updateVariables(modules);
 
         // Setting all module runnable states to false
-        for (Module module : modules)
+        for (Module module : modules) {
             module.setRunnable(false);
+            module.setReachable(false);
+        }
 
         // Iterating over all modules, checking if they are runnable
         int nRunnable = 0;
         for (int i = 0; i < modules.size(); i++) {
             Module module = modules.get(i);
-            boolean runnable = testModule(module, modules);
-            module.setRunnable(runnable);
+            module.setReachable(true);
+            module.setRunnable(testModule(module, modules));
 
             // Checking for the special case of WorkflowHandling module in
             // "GUI choice" mode (this we can definitively evaluate at this point)
@@ -44,7 +47,7 @@ public class AnalysisTester {
 
             }
 
-            if (runnable && module.isEnabled())
+            if (module.isRunnable() && module.isEnabled())
                 nRunnable++;
 
         }

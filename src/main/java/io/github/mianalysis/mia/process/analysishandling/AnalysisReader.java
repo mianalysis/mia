@@ -14,6 +14,7 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
+import org.scijava.util.VersionUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
@@ -21,7 +22,6 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
-import fiji.plugin.trackmate.util.Version;
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.gui.GUI;
 import io.github.mianalysis.mia.module.Module;
@@ -87,10 +87,10 @@ public class AnalysisReader {
         // If loading a suitably old version, use the relevant legacy loader. Also, has
         // handling for older versions still, which didn't include a version number.
         Node versionNode = doc.getChildNodes().item(0).getAttributes().getNamedItem("MIA_VERSION");
-        Version loadedVersion = versionNode == null ? null : new Version(versionNode.getNodeValue());
-        if (loadedVersion == null || new Version("0.10.0").compareTo(loadedVersion) > 0)
+        String loadedVersion = versionNode.getNodeValue();
+        if (versionNode == null || VersionUtils.compare("0.10.0", loadedVersion) > 0)
             return AnalysisReader_Pre_0p10p0.loadAnalysis(xml);
-        else if (new Version("0.15.0").compareTo(loadedVersion) > 0)
+        else if (VersionUtils.compare("0.15.0",loadedVersion) > 0)
             return AnalysisReader_0p10p0_0p15p0.loadAnalysis(xml);
 
         Analysis analysis = new Analysis();
@@ -101,7 +101,7 @@ public class AnalysisReader {
 
     }
 
-    public static Modules loadModules(Document doc, Version loadedVersion)
+    public static Modules loadModules(Document doc, String loadedVersion)
             throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
         Modules modules = new Modules();
 
@@ -133,7 +133,7 @@ public class AnalysisReader {
         }
 
         // Adding timepoint measurements for all objects
-        if (new Version("0.18.0").compareTo(loadedVersion) > 0)
+        if (VersionUtils.compare("0.18.0", loadedVersion) > 0)
             AnalysisReader_0p10p0_0p15p0.addTimepointMeasurements(modules);
 
         return modules;

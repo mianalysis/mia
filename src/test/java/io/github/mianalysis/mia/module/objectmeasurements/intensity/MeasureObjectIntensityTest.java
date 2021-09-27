@@ -28,6 +28,7 @@ import io.github.sjcross.common.object.volume.VolumeType;
 /**
  * Created by Stephen Cross on 09/09/2017.
  */
+
 public class MeasureObjectIntensityTest extends ModuleTest {
     @BeforeAll
     public static void setVerbose() {

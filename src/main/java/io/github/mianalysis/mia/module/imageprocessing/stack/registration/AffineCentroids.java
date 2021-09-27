@@ -10,6 +10,9 @@ import mpicbg.models.AbstractAffineModel2D;
 import mpicbg.models.NotEnoughDataPointsException;
 import mpicbg.models.PointMatch;
 import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.Module;
+import org.scijava.Priority;
+import org.scijava.plugin.Plugin;
 import io.github.mianalysis.mia.module.imageprocessing.stack.registration.abstrakt.AbstractAffineRegistration;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
@@ -19,6 +22,7 @@ import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.SeparatorP;
 import io.github.mianalysis.mia.object.parameters.text.DoubleP;
 
+@Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class AffineCentroids extends AbstractAffineRegistration {
     public static final String FEATURE_SEPARATOR = "Feature detection";
     public static final String INPUT_OBJECTS = "Input objects";
@@ -152,7 +156,7 @@ public class AffineCentroids extends AbstractAffineRegistration {
 
     }
 
-    public class CentroidParam extends AffineParam {
+public class CentroidParam extends AffineParam {
         // Fitting parameters
         float rod = 0.92f;
         float maxEpsilon = 25.0f;

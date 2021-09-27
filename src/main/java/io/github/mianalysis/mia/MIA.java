@@ -11,33 +11,32 @@ import org.apache.maven.model.Model;
 import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
-import org.scijava.Context;
 import org.scijava.command.Command;
 import org.scijava.plugin.Parameter;
 import org.scijava.plugin.Plugin;
-import org.scijava.script.ScriptService;
 import org.scijava.ui.UIService;
 
-import net.imagej.ImageJ;
-import net.imagej.ImageJService;
 import io.github.mianalysis.mia.gui.GUI;
+import io.github.mianalysis.mia.module.Dependencies;
+import io.github.mianalysis.mia.module.LostAndFound;
 import io.github.mianalysis.mia.object.Preferences;
 import io.github.mianalysis.mia.process.DependencyValidator;
 import io.github.mianalysis.mia.process.analysishandling.Analysis;
 import io.github.mianalysis.mia.process.analysishandling.AnalysisReader;
 import io.github.mianalysis.mia.process.analysishandling.AnalysisRunner;
-import io.github.mianalysis.mia.process.analysishandling.LostAndFound;
 import io.github.mianalysis.mia.process.logging.BasicLogRenderer;
 import io.github.mianalysis.mia.process.logging.ConsoleRenderer;
 import io.github.mianalysis.mia.process.logging.Log;
 import io.github.mianalysis.mia.process.logging.LogHistory;
 import io.github.mianalysis.mia.process.logging.LogRenderer;
+import net.imagej.ImageJ;
+import net.imagej.ImageJService;
 
 
 /**
  * Created by Stephen Cross on 14/07/2017.
  */
-@Plugin(type = Command.class, menuPath = "Plugins>MIA>MIA (Modular Image Analysis)")
+@Plugin(type = Command.class, menuPath = "Plugins>MIA>MIA (Modular Image Analysis)", visible=true)
 public class MIA implements Command {
     private static ArrayList<String> pluginPackageNames = new ArrayList<>();
     private static String version = "";
@@ -48,21 +47,13 @@ public class MIA implements Command {
 
     public static Preferences preferences;
     public static Log log = new Log(mainRenderer); // This is for testing and headless modes
+    public final static Dependencies dependencies = new Dependencies(); // Maps module dependencies and reports if a module's requirements aren't satisfied
     public final static LostAndFound lostAndFound = new LostAndFound(); // Maps missing modules and parameters to replacements (e.g. if a module was renamed)
 
     /*
         Gearing up for the transition from ImagePlus to ImgLib2 formats.  Modules can use this to addRef compatibility.
          */
     private static final boolean imagePlusMode = true;
-
-    // @Parameter
-    // public static UIService uiService;
-
-    // @Parameter
-    // public static ScriptService scriptService;
-
-    // @Parameter
-    // public static Context context;
 
     @Parameter
     public static ImageJService ijService;
@@ -93,15 +84,6 @@ public class MIA implements Command {
         
         setLookAndFeel();
         
-        // Waiting for UIService to become available
-        // while (uiService == null) {
-        //     try {
-        //         Thread.sleep(100);
-        //     } catch (InterruptedException e) {
-        //         e.printStackTrace();
-        //     }
-        // }
-
         try {
             if (!headless) {
                 // Before removing the old renderer we want to check the new one can be created

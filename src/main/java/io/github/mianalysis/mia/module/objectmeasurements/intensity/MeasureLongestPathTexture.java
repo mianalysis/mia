@@ -11,7 +11,10 @@
 // import io.github.mianalysis.MIA.Module.Categories;
 // import io.github.mianalysis.MIA.Module.Category;
 // import io.github.mianalysis.MIA.Module.Module;
-// import io.github.mianalysis.MIA.Module.Modules;
+// import io.github.mianalysis.mia.module.Modules;
+// import io.github.mianalysis.mia.module.Module;
+// import org.scijava.Priority;
+// import org.scijava.plugin.Plugin;
 // import io.github.mianalysis.MIA.Module.ImageProcessing.Stack.ImageTypeConverter;
 // import io.github.mianalysis.MIA.Module.ObjectMeasurements.Spatial.FitSpline;
 // import io.github.mianalysis.MIA.Object.Image;
@@ -38,7 +41,7 @@
 //  * Takes a set of objects and measures intensity texture values on a provided
 //  * image. Measurements are stored with the objects.
 //  */
-// public class MeasureLongestPathTexture extends Module {
+//public class MeasureLongestPathTexture extends Module {
 //     public static final String INPUT_SEPARATOR = "Object and image input";
 //     public static final String INPUT_OBJECTS = "Input objects";
 //     public static final String INPUT_IMAGE = "Input image";

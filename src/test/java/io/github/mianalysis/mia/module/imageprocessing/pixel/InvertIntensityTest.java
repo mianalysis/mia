@@ -19,6 +19,7 @@ import io.github.mianalysis.mia.object.Workspaces;
 /**
  * Created by sc13967 on 26/03/2018.
  */
+
 public class InvertIntensityTest extends ModuleTest {
     @BeforeAll
     public static void setVerbose() {

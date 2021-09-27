@@ -28,6 +28,9 @@ import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.Module;
+import org.scijava.Priority;
+import org.scijava.plugin.Plugin;
 import io.github.mianalysis.mia.module.miscellaneous.GlobalVariables;
 import io.github.mianalysis.mia.object.Status;
 import io.github.mianalysis.mia.object.Workspace;
@@ -56,6 +59,7 @@ import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 /**
  * Created by Stephen on 12/05/2021.
  */
+@Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class RunScript extends Module {
     public static final String SCRIPT_SEPARATOR = "Script definition";
     public static final String SCRIPT_MODE = "Script mode";

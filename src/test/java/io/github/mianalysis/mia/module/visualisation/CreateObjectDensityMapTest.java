@@ -4,6 +4,7 @@ import io.github.mianalysis.mia.module.ModuleTest;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+
 public class CreateObjectDensityMapTest extends ModuleTest {
 
     @Override

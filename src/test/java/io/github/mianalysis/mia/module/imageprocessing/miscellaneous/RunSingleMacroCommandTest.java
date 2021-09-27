@@ -5,6 +5,7 @@ import io.github.mianalysis.mia.module.ModuleTest;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+
 public class RunSingleMacroCommandTest extends ModuleTest {
 
     @Override

@@ -7,6 +7,7 @@ import org.junit.jupiter.api.BeforeAll;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.ModuleTest;
 
+
 public class MetadataExtractorTest extends ModuleTest {
     @BeforeAll
     public static void setVerbose() {

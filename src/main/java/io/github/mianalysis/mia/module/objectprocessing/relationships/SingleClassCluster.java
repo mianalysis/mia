@@ -22,6 +22,9 @@ import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.Module;
+import org.scijava.Priority;
+import org.scijava.plugin.Plugin;
 import io.github.mianalysis.mia.module.imageprocessing.pixel.binary.DistanceMap;
 import io.github.mianalysis.mia.module.objectprocessing.identification.GetLocalObjectRegion;
 import io.github.mianalysis.mia.object.Image;
@@ -53,6 +56,7 @@ import io.github.sjcross.common.object.volume.VolumeType;
 /**
  * Created by sc13967 on 21/06/2017.
  */
+@Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class SingleClassCluster extends Module {
     public static final String INPUT_SEPARATOR = "Object input/output";
     public static final String INPUT_OBJECTS = "Input objects";
@@ -425,7 +429,10 @@ public class SingleClassCluster extends Module {
 //import io.github.mianalysis.MIA.Module.ImageProcessing.Pixel.Binary.DistanceMap;
 //import io.github.mianalysis.MIA.Module.ImageProcessing.Pixel.InvertIntensity;
 //import io.github.mianalysis.MIA.Module.Module;
-//import io.github.mianalysis.MIA.Module.Modules;
+//import io.github.mianalysis.mia.module.Modules;
+// import io.github.mianalysis.mia.module.Module;
+// import org.scijava.Priority;
+// import org.scijava.plugin.Plugin;
 //import io.github.mianalysis.MIA.Module.ObjectProcessing.Identification.GetLocalObjectRegion;
 //import io.github.mianalysis.MIA.Module.PackageNames;
 //import io.github.mianalysis.MIA.Module.Category;

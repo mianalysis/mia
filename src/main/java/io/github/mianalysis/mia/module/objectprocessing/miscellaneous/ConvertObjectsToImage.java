@@ -10,6 +10,9 @@ import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.Module;
+import org.scijava.Priority;
+import org.scijava.plugin.Plugin;
 import io.github.mianalysis.mia.module.imageprocessing.pixel.InvertIntensity;
 import io.github.mianalysis.mia.module.visualisation.overlays.AbstractOverlay;
 import io.github.mianalysis.mia.module.visualisation.overlays.AddAllObjectPoints;
@@ -38,6 +41,7 @@ import io.github.sjcross.common.process.IntensityMinMax;
 /**
  * Created by sc13967 on 04/05/2017.
  */
+@Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class ConvertObjectsToImage extends Module {
   public static final String INPUT_SEPARATOR = "Object input/image output";
   public static final String INPUT_OBJECTS = "Input objects";

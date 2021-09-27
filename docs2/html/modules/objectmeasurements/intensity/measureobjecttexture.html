@@ -69,25 +69,25 @@
           </li>
         </ul>
         <a class="btn btn-outline-primary ml-2"
-          href="https://github.com/mianalysis/mia/releases/download/v0.20.2/MIA_-0.20.2.jar">Download</a>
+          href="https://github.com/mianalysis/mia/releases/download/v0.20.3/MIA_-0.20.3.jar">Download</a>
       </div>
     </div>
   </nav>
 
   <div class="page-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
-    <p class="text-secondary"><a href="../../../../html/modules/modules.html">Modules</a> ? <a href="../../../../html/modules/objectmeasurements/objectmeasurements.html">Object measurements</a> ? <a href="../../../../html/modules/objectmeasurements/intensity/intensity.html">Intensity</a></p>
+    <p class="text-secondary"><a href="../../../../html/modules/modules.html">Modules</a> ➤ <a href="../../../../html/modules/objectmeasurements/objectmeasurements.html">Object measurements</a> ➤ <a href="../../../../html/modules/objectmeasurements/intensity/intensity.html">Intensity</a></p>
     <h1 class="display-4">Measure object texture</h1>
-    <p class="lead">Texture measures, largely from  Robert M.</p>
+    <p class="lead">Calculates Haralick's texture features for each object in a collection for a specific image.</p>
 </div>
 
 <div class="pt-md-2 pb-md-4 mx-auto">
     <h2 class="display-6">Description</h2>
-    Texture measures, largely from  Robert M. Haralick, K. Shanmugam, and Its'hak Dinstein, "Textural Features for Image Classification", IEEE Transactions on Systems, Man, and Cybernetics, 1973, SMC-3 (6): 610�621
+    Calculates Haralick's texture features for each object in a collection for a specific image.  Each point in each object is compared to a corresponding point, a defined offset away (e.g. x-offset = 1, y-offset=0, z-offset=0 to compare to the pixel immediately right of each pixel).  The intensities of each point pair are added to a 2D gray-level co-occurrence matrix (GLCM) from which measures of angular second moment, contrast, correlation and entropy can be calculated.<br><br>Robert M Haralick; K Shanmugam; Its'hak Dinstein, "Textural Features for Image Classification" <i>IEEE Transactions on Systems, Man, and Cybernetics. SMC-3</i> (1973) <b>6</b> 610–621.
 </div>
 
 <div class="pt-md-2 pb-md-4 mx-auto">
     <h2 class="display-6">Parameters</h2>
-    <b>Input objects</b> (default = "") <br><br><b>Input image</b> (default = "") <br><br><b>X-offset</b> (default = "1.0") <br><br><b>Y-offset</b> (default = "0.0") <br><br><b>Z-offset</b> (default = "0.0") <br><br><b>Calibrated offset</b> (default = "false") <br><br>
+    <b>Input objects</b> (default = "") Objects from the workspace for which the corresponding texture of the image (specified by "Input image") will be calculated.  Textures will be calculated for each coordinate of each object and will include instances where the corresponding point (the intensity at the specified offset) is outside the object.  Texture measurements will be assigned to the relevant objects.<br><br><b>Input image</b> (default = "") Image from the workspace from which texture metrics for each object will be calculated.<br><br><b>X-offset</b> (default = "1.0") Each pixel in the input image will be compared to the pixel a defined offset-away.  This parameter controls the x-axis offset.  Offset specified in pixel units unless "Calibrated offset" is selected.  If using calibrated units, the offset will be rounded to the closest integer value.<br><br><b>Y-offset</b> (default = "0.0") Each pixel in the input image will be compared to the pixel a defined offset-away.  This parameter controls the y-axis offset.  Offset specified in pixel units unless "Calibrated offset" is selected.  If using calibrated units, the offset will be rounded to the closest integer value.<br><br><b>Z-offset</b> (default = "0.0") Each pixel in the input image will be compared to the pixel a defined offset-away.  This parameter controls the z-axis offset.  Offset specified in pixel units unless "Calibrated offset" is selected.  If using calibrated units, the offset will be rounded to the closest integer value.<br><br><b>Calibrated offset</b> (default = "false") When selected, offsets are specified in calibrated units.  Otherwise, offsets are assumed to be in pixel units.<br><br>
 </div>
 
   <!-- Footer -->

@@ -3,6 +3,9 @@ package io.github.mianalysis.mia.module.objectprocessing.refinement;
 import ij.ImagePlus;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.Module;
+import org.scijava.Priority;
+import org.scijava.plugin.Plugin;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.imageprocessing.pixel.InvertIntensity;
@@ -23,6 +26,7 @@ import io.github.sjcross.common.exceptions.IntegerOverflowException;
 import io.github.sjcross.common.object.Point;
 import io.github.sjcross.common.object.volume.PointOutOfRangeException;
 
+@Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class ReassignEnclosedObjects extends Module {
     public static final String INPUT_OBJECTS = "Input objects";
 

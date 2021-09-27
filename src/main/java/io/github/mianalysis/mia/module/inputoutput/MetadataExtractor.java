@@ -11,6 +11,9 @@ import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.Module;
+import org.scijava.Priority;
+import org.scijava.plugin.Plugin;
 import io.github.mianalysis.mia.object.Status;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
@@ -43,6 +46,7 @@ import io.github.sjcross.common.metadataextractors.OperaFoldernameExtractor;
 /**
  * Created by sc13967 on 05/05/2017.
  */
+@Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class MetadataExtractor extends Module {
     public static final String EXTRACTOR_SEPARATOR = "Metadata extractor selection";
     public static final String EXTRACTOR_MODE = "Extractor mode";

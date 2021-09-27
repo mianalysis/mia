@@ -8,6 +8,9 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
+import org.scijava.Priority;
+import org.scijava.plugin.Plugin;
+
 import ij.ImagePlus;
 import ij.ImageStack;
 import ij.Prefs;
@@ -46,6 +49,7 @@ import io.github.sjcross.common.object.volume.SpatCal;
 /**
  * Created by sc13967 on 06/06/2017.
  */
+@Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class IdentifyObjects extends Module {
     public static final String INPUT_SEPARATOR = "Image input, object output";
     public static final String INPUT_IMAGE = "Input image";

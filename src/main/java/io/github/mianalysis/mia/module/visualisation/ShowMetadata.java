@@ -4,6 +4,9 @@ import java.awt.Color;
 
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.Module;
+import org.scijava.Priority;
+import org.scijava.plugin.Plugin;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.object.Status;
@@ -19,6 +22,7 @@ import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 /**
  * Created by Stephen Cross on 14/10/2019.
  */
+@Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class ShowMetadata extends Module {
     public static final String MESSAGE = "Message";
 

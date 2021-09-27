@@ -13,6 +13,9 @@ import ij.ImagePlus;
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.Module;
+import org.scijava.Priority;
+import org.scijava.plugin.Plugin;
 import io.github.mianalysis.mia.module.ModuleTest;
 import io.github.mianalysis.mia.object.Image;
 import io.github.mianalysis.mia.object.Workspace;
@@ -21,6 +24,7 @@ import io.github.mianalysis.mia.object.Workspaces;
 /**
  * Created by Stephen Cross on 09/09/2017.
  */
+
 public class ChannelExtractorTest extends ModuleTest {
     @BeforeAll
     public static void setVerbose() {

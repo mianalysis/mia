@@ -9,6 +9,9 @@ import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.Module;
+import org.scijava.Priority;
+import org.scijava.plugin.Plugin;
 import io.github.mianalysis.mia.module.objectprocessing.relationships.TrackObjects;
 import io.github.mianalysis.mia.object.Measurement;
 import io.github.mianalysis.mia.object.Obj;
@@ -35,6 +38,7 @@ import io.github.sjcross.common.object.tracks.Track;
 /**
  * Created by Stephen Cross on 24/05/2017.
  */
+@Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class MeasureTrackMotion extends Module {
     public static final String INPUT_SEPARATOR = "Input objects";
     public static final String INPUT_TRACK_OBJECTS = "Input track objects";

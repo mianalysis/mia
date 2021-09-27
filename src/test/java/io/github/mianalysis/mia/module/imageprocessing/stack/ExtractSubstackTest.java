@@ -10,6 +10,7 @@ import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.ModuleTest;
 import io.github.mianalysis.mia.process.CommaSeparatedStringInterpreter;
 
+
 public class ExtractSubstackTest extends ModuleTest {
 
     @BeforeAll

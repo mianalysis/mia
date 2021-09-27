@@ -8,7 +8,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.eclipse.sisu.Nullable;
-
+import org.scijava.Priority;
+import org.scijava.plugin.Plugin;
 import org.scijava.vecmath.Point2d;
 
 import ij.ImagePlus;
@@ -21,10 +22,13 @@ import ij.plugin.HyperStackConverter;
 import ij.plugin.filter.ThresholdToSelection;
 import ij.process.FloatPolygon;
 import ij.process.ImageProcessor;
+import io.github.mianalysis.mia.module.Categories;
+import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.module.Category;
-import io.github.mianalysis.mia.module.Categories;
+import io.github.mianalysis.mia.module.Module;
+import org.scijava.Priority;
+import org.scijava.plugin.Plugin;
 import io.github.mianalysis.mia.object.Image;
 import io.github.mianalysis.mia.object.Status;
 import io.github.mianalysis.mia.object.Workspace;
@@ -32,8 +36,8 @@ import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
 import io.github.mianalysis.mia.object.parameters.OutputImageP;
-import io.github.mianalysis.mia.object.parameters.SeparatorP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
+import io.github.mianalysis.mia.object.parameters.SeparatorP;
 import io.github.mianalysis.mia.object.parameters.text.DoubleP;
 import io.github.mianalysis.mia.object.parameters.text.IntegerP;
 import io.github.mianalysis.mia.object.refs.collections.ImageMeasurementRefs;
@@ -43,9 +47,10 @@ import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.process.ColourFactory;
 import io.github.mianalysis.mia.process.LabelFactory;
-import io.github.sjcross.common.mathfunc.CumStat;
 import io.github.sjcross.common.imagej.LUTs;
+import io.github.sjcross.common.mathfunc.CumStat;
 
+@Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class AddContourLines extends Module {
     public static final String INPUT_SEPARATOR = "Image input/output";
     public static final String INPUT_IMAGE = "Input image";

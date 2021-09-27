@@ -1,10 +1,13 @@
 package io.github.mianalysis.mia.module.imageprocessing.pixel;
 
 import ij.ImagePlus;
+import io.github.mianalysis.mia.module.Categories;
+import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.module.Category;
-import io.github.mianalysis.mia.module.Categories;
+import io.github.mianalysis.mia.module.Module;
+import org.scijava.Priority;
+import org.scijava.plugin.Plugin;
 import io.github.mianalysis.mia.object.Image;
 import io.github.mianalysis.mia.object.Status;
 import io.github.mianalysis.mia.object.Workspace;
@@ -12,6 +15,7 @@ import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
 import io.github.mianalysis.mia.object.parameters.OutputImageP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
+import io.github.mianalysis.mia.object.parameters.SeparatorP;
 import io.github.mianalysis.mia.object.parameters.text.IntegerP;
 import io.github.mianalysis.mia.object.refs.collections.ImageMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
@@ -20,10 +24,14 @@ import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.sjcross.common.filters.CombingCorrector;
 
+@Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class CombingCorrection extends Module {
+    public static final String INPUT_SEPARATOR = "Image input/output";
     public static final String INPUT_IMAGE = "Input image";
     public static final String APPLY_TO_INPUT = "Apply to input image";
     public static final String OUTPUT_IMAGE = "Output image";
+
+    public static final String CORRECTION_SEPARATOR = "Combing correction";
     public static final String OFFSET = "Offset (px)";
 
     public CombingCorrection(Modules modules) {
@@ -77,22 +85,29 @@ public class CombingCorrection extends Module {
 
     @Override
     protected void initialiseParameters() {
+        parameters.add(new SeparatorP(INPUT_SEPARATOR, this));
         parameters.add(new InputImageP(INPUT_IMAGE, this, "", "Image to which the correction will be applied."));
         parameters.add(new BooleanP(APPLY_TO_INPUT, this, true, "Set to \"true\" to apply correction to the input image or \"false\" to store the corrected image separately."));
         parameters.add(new OutputImageP(OUTPUT_IMAGE, this, "","Output image with correction applied."));
+
+        parameters.add(new SeparatorP(CORRECTION_SEPARATOR, this));
         parameters.add(new IntegerP(OFFSET, this, 0, "Pixel offset to be applied to every other row."));
+
+        addParameterDescriptions();
+
     }
 
     @Override
     public Parameters updateAndGetParameters() {
         Parameters returnedParameters = new Parameters();
+
+        returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(INPUT_IMAGE));
         returnedParameters.add(parameters.getParameter(APPLY_TO_INPUT));
-
-        if (!(boolean) parameters.getValue(APPLY_TO_INPUT)) {
+        if (!(boolean) parameters.getValue(APPLY_TO_INPUT))
             returnedParameters.add(parameters.getParameter(OUTPUT_IMAGE));
-        }
-
+        
+            returnedParameters.add(parameters.getParameter(CORRECTION_SEPARATOR));
         returnedParameters.add(parameters.getParameter(OFFSET));
 
         return returnedParameters;
@@ -127,5 +142,16 @@ public class CombingCorrection extends Module {
     @Override
     public boolean verify() {
         return true;
+    }
+
+    void addParameterDescriptions() {
+        parameters.get(INPUT_IMAGE).setDescription("Image to which the correction will be applied.");
+
+        parameters.get(APPLY_TO_INPUT).setDescription("When selected, the input image will be updated to contain the corrected image.  Otherwise, the corrected image will be stored separately in the workspace (name controlled by \""+OUTPUT_IMAGE+"\" parameter).");
+
+        parameters.get(OUTPUT_IMAGE).setDescription("Output image with correction applied.");
+
+        parameters.get(OFFSET).setDescription("Pixel offset to be applied to every other row.");
+
     }
 }

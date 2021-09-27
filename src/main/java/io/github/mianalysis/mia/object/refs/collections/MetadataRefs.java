@@ -67,7 +67,7 @@ public class MetadataRefs extends TreeMap<String,MetadataRef> implements Refs<Me
         }
 
         sb.append(
-                "\r\n\r\nWildcard character \"*\" is also available to match variable content (first matching instance will be loaded).\r\n");
+                "\r\n\r\nWildcard character \"*\" is also available to match variable content (first matching instance will be loaded).");
 
         return sb.toString();
 

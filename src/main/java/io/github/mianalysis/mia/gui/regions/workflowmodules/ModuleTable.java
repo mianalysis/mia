@@ -145,7 +145,7 @@ public class ModuleTable extends JTable implements ActionListener, MouseListener
             int row, int column) {
         JLabel label = new JLabel();
 
-        label.setBorder(new EmptyBorder(2, 5, 0, 0));        
+        label.setBorder(new EmptyBorder(2, 5, 0, 0));
         Font font = new Font(Font.SANS_SERIF, Font.PLAIN, 12);
         label.setOpaque(true);
 
@@ -158,16 +158,21 @@ public class ModuleTable extends JTable implements ActionListener, MouseListener
             Module module = (Module) value;
             if (module instanceof GUISeparator)
                 label.setForeground(Colours.DARK_BLUE);
-            else if (!module.isEnabled())
-                label.setForeground(Color.GRAY);
-            else
+            else if (module.isEnabled() && module.isReachable() && module.isRunnable())
                 label.setForeground(Color.BLACK);
-                if (module.isDeprecated()) {
-                    Map attributes = font.getAttributes();
-                    attributes.put(TextAttribute.STRIKETHROUGH, TextAttribute.STRIKETHROUGH_ON);
-                    font = new Font(attributes);            
-                }
-                label.setFont(font);
+            else if (module.isEnabled() & !module.isReachable())
+                label.setForeground(Colours.ORANGE);
+            else if (module.isEnabled() & !module.isRunnable())
+                label.setForeground(Colours.RED);
+            else
+                label.setForeground(Color.GRAY);
+
+            if (module.isDeprecated()) {
+                Map attributes = font.getAttributes();
+                attributes.put(TextAttribute.STRIKETHROUGH, TextAttribute.STRIKETHROUGH_ON);
+                font = new Font(attributes);
+            }
+            label.setFont(font);
             label.setText(module.getNickname());
 
         } else if (value instanceof String) {

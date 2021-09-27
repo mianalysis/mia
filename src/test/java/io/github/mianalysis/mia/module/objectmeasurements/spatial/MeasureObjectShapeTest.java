@@ -22,6 +22,7 @@ import io.github.sjcross.common.object.volume.VolumeType;
 /**
  * Created by Stephen Cross on 03/09/2017.
  */
+
 public class MeasureObjectShapeTest extends ModuleTest {
     private double tolerance = 1E-2;
 

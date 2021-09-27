@@ -18,6 +18,7 @@ import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.Workspaces;
 import io.github.mianalysis.mia.object.parameters.Parameters;
 
+
 public class ConcatenateStacksTest extends ModuleTest {
 
     @Override

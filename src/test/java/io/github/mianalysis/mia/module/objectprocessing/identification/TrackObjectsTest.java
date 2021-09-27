@@ -5,6 +5,7 @@ import io.github.mianalysis.mia.module.objectprocessing.relationships.TrackObjec
 
 import static org.junit.jupiter.api.Assertions.*;
 
+
 public class TrackObjectsTest extends ModuleTest {
 
     @Override

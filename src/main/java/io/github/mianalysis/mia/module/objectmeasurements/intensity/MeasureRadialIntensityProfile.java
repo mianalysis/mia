@@ -8,7 +8,10 @@
 // import ij.ImagePlus;
 // import ij.measure.ResultsTable;
 // import io.github.mianalysis.MIA.Module.Module;
-// import io.github.mianalysis.MIA.Module.Modules;
+// import io.github.mianalysis.mia.module.Modules;
+// import io.github.mianalysis.mia.module.Module;
+// import org.scijava.Priority;
+// import org.scijava.plugin.Plugin;
 // import io.github.mianalysis.MIA.Module.Category;
 // import io.github.mianalysis.MIA.Module.Categories;
 // import io.github.mianalysis.MIA.Module.ObjectProcessing.Miscellaneous.CreateDistanceMap;
@@ -31,7 +34,7 @@
 // import io.github.sjcross.common.mathfunc.CumStat;
 // import io.github.sjcross.common.object.Point;
 
-// public class MeasureRadialIntensityProfile extends Module {
+//public class MeasureRadialIntensityProfile extends Module {
 //     public static final String INPUT_OBJECTS = "Input objects";
 //     public static final String INPUT_IMAGE = "Input image";
 //     public static final String REFERENCE_MODE = "Reference mode";

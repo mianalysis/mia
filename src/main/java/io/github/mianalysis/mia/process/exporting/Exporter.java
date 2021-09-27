@@ -727,7 +727,7 @@ public class Exporter {
             if (!modules.objectsExportMeasurements(objectName)) continue;
 
             // Creating relevant sheet prefixed with "OBJ"
-            objectSheets.put(objectName, workbook.createSheet("OBJ_" + objectName));
+            objectSheets.put(objectName, workbook.createSheet(objectName));
 
             objectRows.put(objectName, 1);
             Row objectHeaderRow = objectSheets.get(objectName).createRow(0);

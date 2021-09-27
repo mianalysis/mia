@@ -21,6 +21,7 @@ import io.github.mianalysis.mia.gui.regions.editingpanel.EditingPanel;
 import io.github.mianalysis.mia.gui.regions.menubar.CustomMenuBar;
 import io.github.mianalysis.mia.gui.regions.progressandstatus.StatusTextField;
 import io.github.mianalysis.mia.macro.MacroHandler;
+import io.github.mianalysis.mia.module.Dependency;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.core.InputControl;
@@ -135,6 +136,17 @@ public class GUI {
     void initialiseAvailableModules(List<String> detectedModuleNames) {
         // Creating an alphabetically-ordered list of all modules
         for (String detectedModuleName : detectedModuleNames) {
+            String shortName = detectedModuleName.substring(detectedModuleName.lastIndexOf(".")+1);
+            
+            // Checking dependencies have been met
+            if (!MIA.dependencies.compatible(shortName)) {
+                MIA.log.writeWarning("Module \"" + shortName + "\" not loaded.  Dependencies not satisfied:");
+                for (Dependency dependency : MIA.dependencies.getDependencies(shortName))
+                    if (!dependency.test())
+                        MIA.log.writeWarning("    Requirement: "+dependency.toString());
+                continue;
+            }
+
             try {
                 Class<? extends Module> clazz = (Class<? extends Module>) Class.forName(detectedModuleName);
                 if (clazz != InputControl.class && clazz != OutputControl.class) {
@@ -149,9 +161,8 @@ public class GUI {
                 }
             } catch (ClassNotFoundException | NoSuchMethodException | IllegalAccessException | InstantiationException
                     | InvocationTargetException | NoClassDefFoundError e) {
-                MIA.log.writeWarning("Module \"" + detectedModuleName + "\" incompatible with MIA v" + MIA.getVersion()
-                        + ".  Module not loaded.");
-                e.printStackTrace();
+                MIA.log.writeWarning("Module \"" + shortName + "\" not loaded.  Incompatible with MIA v" + MIA.getVersion()
+                        + ".");
             }
         }
     }

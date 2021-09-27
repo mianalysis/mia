@@ -10,6 +10,9 @@ import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.Module;
+import org.scijava.Priority;
+import org.scijava.plugin.Plugin;
 import io.github.mianalysis.mia.module.imageprocessing.pixel.ImageCalculator;
 import io.github.mianalysis.mia.module.imageprocessing.pixel.ImageMath;
 import io.github.mianalysis.mia.module.imageprocessing.pixel.InvertIntensity;
@@ -35,6 +38,7 @@ import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.process.ColourFactory;
 import io.github.sjcross.common.object.Point;
 
+@Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class CreateDistanceMap extends Module {
     public static final String INPUT_SEPARATOR = "Objects input / image output";
     public static final String INPUT_OBJECTS = "Input objects";
@@ -71,7 +75,6 @@ public class CreateDistanceMap extends Module {
     public interface SpatialUnitsModes extends SpatialUnitsInterface {
     }
 
-    
     public static Image getCentroidDistanceMap(Objs inputObjects, String outputImageName) {
         // Getting image parameters
         int width = inputObjects.getWidth();
@@ -96,8 +99,8 @@ public class CreateDistanceMap extends Module {
         }
 
         // Calculating the distance map
-        return DistanceMap.process(distanceMap, outputImageName, false,
-                DistanceMap.WeightModes.WEIGHTS_3_4_5_7, true, false);
+        return DistanceMap.process(distanceMap, outputImageName, false, DistanceMap.WeightModes.WEIGHTS_3_4_5_7, true,
+                false);
 
     }
 
@@ -207,7 +210,7 @@ public class CreateDistanceMap extends Module {
 
     @Override
     public String getDescription() {
-        return "";
+        return "Creates a distance map for a selected object set.  Pixels in the output image are encoded with the distance to the nearest image edge or centroid (depending on setting).  A single distance map image is created for all objects in the specified set.  Uses the plugin \"<a href=\"https://github.com/ijpb/MorphoLibJ\">MorphoLibJ</a>\".";
     }
 
     @Override
@@ -344,6 +347,39 @@ public class CreateDistanceMap extends Module {
     }
 
     void addParameterDescriptions() {
+        parameters.get(INPUT_OBJECTS).setDescription(
+                "Objects from workspace for which distance map will be created.  A single distance map will be created for all objects.");
+
+        parameters.get(OUTPUT_IMAGE).setDescription(
+                "Output distance map image which will be added to the workspace.  This will contain the distance map for each object.");
+
+        parameters.get(REFERENCE_MODE).setDescription("Controls where the distances are calculated from:<br><ul>"
+
+                + "<li>\"" + ReferenceModes.DISTANCE_FROM_CENTROID
+                + "\" Each pixel is encoded with the distance from the centre of the respective object.</li>"
+
+                + "<li>\"" + ReferenceModes.DISTANCE_FROM_EDGE
+                + "\" Each pixel is encoded with the distance from the edge of the respective object.</li></ul>");
+
+        parameters.get(INVERT_MAP_WITHIN_OBJECTS).setDescription("When selected (and \"" + REFERENCE_MODE
+                + "\" is set to \"" + ReferenceModes.DISTANCE_FROM_EDGE
+                + "\"), the distance map will be inverted, such that the distances inside objects are also positive.  If not selected, the distances inside objects will be negative.  Distance values outside objects are always positive.");
+
+        parameters.get(MASKING_MODE).setDescription("Controls which regions of the image are displayed:<br><ul>"
+
+                + "<li>\"" + MaskingModes.INSIDE_AND_OUTSIDE
+                + "\" Distances both inside and outside the objects are non-zero.</li>"
+
+                + "<li>\"" + MaskingModes.INSIDE_ONLY
+                + "\" Distances are shown inside each object, but are set to zero for all pixels outside an object.</li>"
+
+                + "<li>\"" + MaskingModes.OUTSIDE_ONLY
+                + "\" Distances are shown outside each object, but are set to zero for all pixels inside an object.</li></ul>");
+
+        parameters.get(NORMALISE_MAP_PER_OBJECT).setDescription(
+                "When selected, the distance values inside each object are normalised to the range 0-1.  Normalisation is performed on an object-by-object basis, so the absolute distance values cannot be directly compared between objects.");
+
         parameters.get(SPATIAL_UNITS_MODE).setDescription(SpatialUnitsInterface.getDescription());
+
     }
 }

@@ -6,6 +6,9 @@ import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.Module;
+import org.scijava.Priority;
+import org.scijava.plugin.Plugin;
 import io.github.mianalysis.mia.object.Status;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
@@ -22,6 +25,7 @@ import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 /**
  * Created by sc13967 on 07/02/2018.
  */
+@Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class RemoveObjects extends Module {
     public static final String REMOVAL_SEPARATOR = "Objects to remove";
     public static final String INPUT_OBJECTS = "Input objects";

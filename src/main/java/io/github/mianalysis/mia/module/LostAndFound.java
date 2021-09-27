@@ -1,10 +1,9 @@
-package io.github.mianalysis.mia.process.analysishandling;
+package io.github.mianalysis.mia.module;
 
 import java.util.HashMap;
 
 import io.github.mianalysis.mia.module.core.InputControl;
 import io.github.mianalysis.mia.module.imageprocessing.pixel.ImageMath;
-// import io.github.mianalysis.MIA.Module.ImageMeasurements.MeasureIntensityDistribution;
 import io.github.mianalysis.mia.module.imageprocessing.pixel.WekaProbabilityMaps;
 import io.github.mianalysis.mia.module.imageprocessing.pixel.binary.BinaryOperations;
 import io.github.mianalysis.mia.module.imageprocessing.pixel.binary.DistanceMap;
@@ -12,6 +11,7 @@ import io.github.mianalysis.mia.module.imageprocessing.pixel.binary.ExtendedMini
 import io.github.mianalysis.mia.module.imageprocessing.pixel.binary.FillHolesByVolume;
 import io.github.mianalysis.mia.module.imageprocessing.pixel.threshold.LocalAutoThreshold;
 import io.github.mianalysis.mia.module.imageprocessing.pixel.threshold.ThresholdImage;
+import io.github.mianalysis.mia.module.imageprocessing.stack.FocusStack;
 import io.github.mianalysis.mia.module.imageprocessing.stack.registration.AffineBlockMatching;
 import io.github.mianalysis.mia.module.imageprocessing.stack.registration.AffineMOPS;
 import io.github.mianalysis.mia.module.imageprocessing.stack.registration.AffineManual;
@@ -29,9 +29,11 @@ import io.github.mianalysis.mia.module.objectmeasurements.intensity.MeasureObjec
 import io.github.mianalysis.mia.module.objectmeasurements.miscellaneous.ReplaceMeasurementValue;
 import io.github.mianalysis.mia.module.objectmeasurements.spatial.CalculateNearestNeighbour;
 import io.github.mianalysis.mia.module.objectmeasurements.spatial.FitGaussian2D;
-import io.github.mianalysis.mia.module.objectmeasurements.spatial.FitSpline;
+import io.github.mianalysis.mia.module.objectmeasurements.spatial.MeasureObjectCurvature;
 import io.github.mianalysis.mia.module.objectprocessing.identification.CircleHoughDetection;
+import io.github.mianalysis.mia.module.objectprocessing.identification.FitActiveContours;
 import io.github.mianalysis.mia.module.objectprocessing.identification.GetLocalObjectRegion;
+import io.github.mianalysis.mia.module.objectprocessing.miscellaneous.ConvertImageToObjects;
 import io.github.mianalysis.mia.module.objectprocessing.miscellaneous.CreateDistanceMap;
 import io.github.mianalysis.mia.module.objectprocessing.refinement.ExpandShrinkObjects;
 import io.github.mianalysis.mia.module.objectprocessing.relationships.RelateManyToOne;
@@ -46,23 +48,30 @@ public class LostAndFound {
 
     public LostAndFound() {
         /// Populating hard-coded module reassignments ///
-        lostModules.put("Fit spline", new FitSpline(null).getClass().getSimpleName());
+        lostModules.put("Active contour-based detection", new FitActiveContours(null).getClass().getSimpleName());
         lostModules.put("AutomaticRegistration", new AffineSIFT(null).getClass().getSimpleName());
+        lostModules.put("BlockMatchingRegistration", new AffineBlockMatching(null).getClass().getSimpleName());
         lostModules.put("ConditionalAnalysisTermination", new WorkflowHandling(null).getClass().getSimpleName());
+        lostModules.put("FitSpline", new MeasureObjectCurvature(null).getClass().getSimpleName());
+        lostModules.put("HoughObjectDetection", new CircleHoughDetection(null).getClass().getSimpleName());
+        lostModules.put("ManualRegistration", new AffineManual(null).getClass().getSimpleName());
+        lostModules.put("ManualUnwarp", new UnwarpManual(null).getClass().getSimpleName());
+        lostModules.put("MOPSRegistration", new AffineMOPS(null).getClass().getSimpleName());
         lostModules.put("RunMacroOnImage", new RunMacro(null).getClass().getSimpleName());
         lostModules.put("RunSingleMacroCommand", new RunSingleCommand(null).getClass().getSimpleName());
-        lostModules.put("ManualUnwarp", new UnwarpManual(null).getClass().getSimpleName());
-        lostModules.put("UnwarpImages", new UnwarpAutomatic(null).getClass().getSimpleName());
-        lostModules.put("BlockMatchingRegistration", new AffineBlockMatching(null).getClass().getSimpleName());
-        lostModules.put("ManualRegistration", new AffineManual(null).getClass().getSimpleName());
-        lostModules.put("MOPSRegistration", new AffineMOPS(null).getClass().getSimpleName());
         lostModules.put("SIFTRegistration", new AffineSIFT(null).getClass().getSimpleName());
         lostModules.put("UnwarpImages", new UnwarpAutomatic(null).getClass().getSimpleName());
-        lostModules.put("HoughObjectDetection", new CircleHoughDetection(null).getClass().getSimpleName());
+        
 
         /// Populating hard-coded parameter reassignments ///
         HashMap<String, String> currentParameterNames = null;
         String moduleName = null;
+
+        // FitActiveContours
+        currentParameterNames = new HashMap<>();
+        currentParameterNames.put("Connectivity (3D)", BinaryOperations.CONNECTIVITY);
+        moduleName = new BinaryOperations(null).getClass().getSimpleName();
+        lostParameterNames.put(moduleName, currentParameterNames);
 
         // BinaryOperations
         currentParameterNames = new HashMap<>();
@@ -80,6 +89,13 @@ public class LostAndFound {
         currentParameterNames = new HashMap<>();
         currentParameterNames.put("ParentChildRef mode", CalculateNearestNeighbour.RELATIONSHIP_MODE);
         moduleName = new CalculateNearestNeighbour(null).getClass().getSimpleName();
+        lostParameterNames.put(moduleName, currentParameterNames);
+
+        // ConvertImageToObjects
+        currentParameterNames = new HashMap<>();
+        currentParameterNames.put("Create parent objects", ConvertImageToObjects.CREATE_TRACKS);
+        currentParameterNames.put("Output track objects name", ConvertImageToObjects.TRACK_OBJECTS_NAME);
+        moduleName = new ConvertImageToObjects(null).getClass().getSimpleName();
         lostParameterNames.put(moduleName, currentParameterNames);
 
         // CreateDistanceMap
@@ -128,8 +144,14 @@ public class LostAndFound {
         currentParameterNames.put("Radius", FitGaussian2D.SIGMA_MODE);
         currentParameterNames.put("Radius measurement", FitGaussian2D.SIGMA_MEASUREMENT);
         currentParameterNames.put("Minimum sigma (x Radius)", FitGaussian2D.MIN_SIGMA);
-        currentParameterNames.put("Maximum sigma (x Radius)", FitGaussian2D.MAX_SIGMA);        
+        currentParameterNames.put("Maximum sigma (x Radius)", FitGaussian2D.MAX_SIGMA);
         moduleName = new FitGaussian2D(null).getClass().getSimpleName();
+        lostParameterNames.put(moduleName, currentParameterNames);
+
+        // FocusStack
+        currentParameterNames = new HashMap<>();
+        currentParameterNames.put("Show height image", null);
+        moduleName = new FocusStack(null).getClass().getSimpleName();
         lostParameterNames.put(moduleName, currentParameterNames);
 
         // GetObjectLocalRegion
@@ -212,6 +234,7 @@ public class LostAndFound {
         // RelateManyToOne
         currentParameterNames = new HashMap<>();
         currentParameterNames.put("Reference point", RelateManyToOne.REFERENCE_MODE);
+        currentParameterNames.put("Minimum percentage overlap", RelateManyToOne.MINIMUM_OVERLAP);
         moduleName = new RelateManyToOne(null).getClass().getSimpleName();
         lostParameterNames.put(moduleName, currentParameterNames);
 

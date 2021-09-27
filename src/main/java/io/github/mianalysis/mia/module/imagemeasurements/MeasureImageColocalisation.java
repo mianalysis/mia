@@ -26,6 +26,9 @@ import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.Module;
+import org.scijava.Priority;
+import org.scijava.plugin.Plugin;
 import io.github.mianalysis.mia.module.imageprocessing.pixel.InvertIntensity;
 import io.github.mianalysis.mia.module.objectmeasurements.intensity.MeasureObjectColocalisation;
 import io.github.mianalysis.mia.object.Image;
@@ -49,6 +52,7 @@ import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.process.ColourFactory;
 
+@Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class MeasureImageColocalisation<T extends RealType<T> & NativeType<T>> extends Module {
     public static final String INPUT_SEPARATOR = "Input separator";
     public static final String INPUT_IMAGE_1 = "Input image 1";

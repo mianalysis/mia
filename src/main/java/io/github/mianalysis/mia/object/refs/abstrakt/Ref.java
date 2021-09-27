@@ -4,8 +4,6 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
-
-
 public abstract class Ref {
     protected final String name;
     protected String nickname = "";

@@ -46,12 +46,14 @@ import ij.plugin.SubHyperstackMaker;
 import ij.process.BinaryInterpolator;
 import ij.process.LUT;
 import io.github.mianalysis.mia.MIA;
+import io.github.mianalysis.mia.module.Categories;
+import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.module.Category;
-import io.github.mianalysis.mia.module.Categories;
+import io.github.mianalysis.mia.module.Module;
+import org.scijava.Priority;
+import org.scijava.plugin.Plugin;
 import io.github.mianalysis.mia.module.objectprocessing.relationships.TrackObjects;
-import io.github.mianalysis.mia.module.visualisation.overlays.AbstractOverlay;
 import io.github.mianalysis.mia.object.Image;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
@@ -81,6 +83,7 @@ import io.github.sjcross.common.object.volume.VolumeType;
 /**
  * Created by sc13967 on 27/02/2018.
  */
+@Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class ManuallyIdentifyObjects extends Module implements ActionListener {
     private JFrame frame;
     private JTextField objectNumberField;
@@ -306,7 +309,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
     public static void applySpatialInterpolation(Objs inputObjects, String type) throws IntegerOverflowException {
         for (Obj inputObj : inputObjects.values()) {
             Image binaryImage = inputObj.getAsTightImage("BinaryTight");
-
+            
             // We need at least 3 slices to make interpolation worthwhile
             if (binaryImage.getImagePlus().getNSlices() < 3)
                 continue;
@@ -315,6 +318,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
 
             // Converting binary image back to objects
             Obj interpObj = binaryImage.convertImageToObjects(type, inputObj.getName(), true).getFirst();
+            interpObj.setSpatialCalibration(inputObj.getSpatialCalibration());
             double[][] extents = inputObj.getExtents(true, false);
 
             interpObj.translateCoords((int) Math.round(extents[0][0]), (int) Math.round(extents[1][0]),
@@ -476,25 +480,23 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
 
         // Initialising output objects
         outputObjects = new Objs(outputObjectsName, calibration, nFrames, frameInterval, TemporalUnit.getOMEUnit());
-        if (outputTracks) {
+        if (outputTracks)
             outputTrackObjects = new Objs(outputTrackObjectsName, calibration, nFrames, frameInterval,
                     TemporalUnit.getOMEUnit());
-        }
-
+        
         // Displaying the image and showing the control
         displayImagePlus.setLut(LUT.createLutFromColor(Color.WHITE));
         displayImagePlus.show();
         showOptionsPanel(instructionText);
 
         // All the while the control is open, do nothing
-        while (frame != null) {
+        while (frame != null)
             try {
                 Thread.sleep(100);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-        }
-
+        
         // If more pixels than Integer.MAX_VALUE were assigned, return false
         // (IntegerOverflowException).
         if (overflow)

@@ -9,6 +9,9 @@ import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.Module;
+import org.scijava.Priority;
+import org.scijava.plugin.Plugin;
 import io.github.mianalysis.mia.module.imageprocessing.stack.ExtractSubstack;
 import io.github.mianalysis.mia.object.Image;
 import io.github.mianalysis.mia.object.Measurement;
@@ -33,6 +36,7 @@ import io.github.sjcross.common.object.Point;
 /**
  * Created by sc13967 on 05/05/2017.
  */
+@Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class MeasureObjectIntensity extends Module {
     public static final String INPUT_SEPARATOR = "Object and image input";
     public static final String INPUT_OBJECTS = "Input objects";
