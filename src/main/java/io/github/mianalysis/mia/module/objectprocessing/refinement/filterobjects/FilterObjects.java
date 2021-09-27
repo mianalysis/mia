@@ -837,7 +837,6 @@ public class FilterObjects extends Module implements ActionListener {
         }
     }
 
-    @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class MeasRef {
         final String referenceType;
         final double value;

@@ -116,8 +116,6 @@ public class AddObjectsOverlayTest extends ModuleTest {
         new ImageJ();
         addObjectsOverlay.execute(workspace);
 
-        IJ.runMacro("waitForUser");
-
     }
 
     @Test @Disabled

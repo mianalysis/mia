@@ -10,7 +10,7 @@
 
     <groupId>io.github.mianalysis</groupId>
     <artifactId>MIA</artifactId>
-    <version>0.20.3</version>
+    <version>0.21.0</version>
     <packaging>jar</packaging>
     <name>MIA</name>
     <url>https://github.com/mianalysis/mia</url>
@@ -317,12 +317,6 @@
             <scope>${scp}</scope>
         </dependency>
 
-        <!-- <dependency>
-            <groupId>io.github.classgraph</groupId>
-            <artifactId>classgraph</artifactId>
-            <version>4.8.54</version>
-        </dependency> -->
-
         <dependency>
             <groupId>com.atlassian.commonmark</groupId>
             <artifactId>commonmark</artifactId>
@@ -331,12 +325,12 @@
         </dependency>
 
         <dependency>
-            <!-- <groupId>com.github.SJCross</groupId>
+            <groupId>com.github.sjcross</groupId>
             <artifactId>Common</artifactId>
-            <version>v1.10.2</version> -->
-            <groupId>io.github.sjcross</groupId>
+            <version>1.10.4</version>
+            <!-- <groupId>io.github.sjcross</groupId>
             <artifactId>Common</artifactId>
-            <version>1.10.3</version>
+            <version>1.10.4</version> -->
         </dependency>
     </dependencies>
 
@@ -348,7 +342,7 @@
                 <version>2.22.2</version>
             </plugin>
 
-            <plugin>
+            <!-- <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
                 <executions>
@@ -363,7 +357,7 @@
                     <classpathScope>compile</classpathScope>
                     <mainClass>io.github.mianalysis.mia.process.DocumentationGenerator</mainClass>
                 </configuration>
-            </plugin>
+            </plugin> -->
 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -418,6 +412,24 @@
                                         <!-- <exclude>org/openxmlformats/schemas/drawingml/x2006/**</exclude> -->
                                         <exclude>org/openxmlformats/schemas/presentationml/x2006/**</exclude>
                                         <exclude>org/openxmlformats/schemas/wordprocessingml/x2006/**</exclude>
+                                    </excludes>
+                                </filter>
+                                <filter>
+                                    <artifact>sc.fiji</artifact>
+                                    <excludes>
+                                        <exclude>**</exclude>
+                                    </excludes>
+                                </filter>
+                                <filter>
+                                    <artifact>org.scijava</artifact>
+                                    <excludes>
+                                        <exclude>**</exclude>
+                                    </excludes>
+                                </filter>
+                                <filter>
+                                    <artifact>commons-io</artifact>
+                                    <excludes>
+                                        <exclude>**</exclude>
                                     </excludes>
                                 </filter>
                                 <filter>
