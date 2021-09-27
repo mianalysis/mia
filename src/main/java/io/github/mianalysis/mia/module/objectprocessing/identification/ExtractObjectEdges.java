@@ -2,6 +2,9 @@ package io.github.mianalysis.mia.module.objectprocessing.identification;
 
 import java.util.HashMap;
 
+import org.scijava.Priority;
+import org.scijava.plugin.Plugin;
+
 import ij.IJ;
 import ij.ImagePlus;
 import ij.plugin.Resizer;
@@ -13,9 +16,6 @@ import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.module.Module;
-import org.scijava.Priority;
-import org.scijava.plugin.Plugin;
 import io.github.mianalysis.mia.module.imageprocessing.stack.InterpolateZAxis;
 import io.github.mianalysis.mia.object.Image;
 import io.github.mianalysis.mia.object.Obj;
@@ -50,6 +50,7 @@ public class ExtractObjectEdges extends Module {
     public static final String OUTPUT_EDGE_OBJECTS = "Output edge objects";
     public static final String CREATE_INTERIOR_OBJECTS = "Create interior objects";
     public static final String OUTPUT_INTERIOR_OBJECTS = "Output interior objects";
+
     public static final String DISTANCE_SEPARATOR = "Distance controls";
     public static final String EDGE_MODE = "Edge determination";
     public static final String EDGE_DISTANCE = "Distance";
@@ -74,8 +75,8 @@ public class ExtractObjectEdges extends Module {
         ImagePlus distIpl = distImage.getImagePlus();
 
         // Creating new edge object
-        Obj edgeObject = outputObjects.createAndAddNewObject(inputObject.getVolumeType());
-        edgeObject.setT(inputObject.getT());
+        Obj outputObject = outputObjects.createAndAddNewObject(inputObject.getVolumeType());
+        outputObject.setT(inputObject.getT());
 
         double[][] range = inputObject.getExtents(true,false);
 
@@ -88,20 +89,20 @@ public class ExtractObjectEdges extends Module {
             try {
                 switch (mode) {
                     case EDGE:
-                        if (pixelVal <= edgeDistance) edgeObject.add(point.getX(),point.getY(),point.getZ());
+                        if (pixelVal <= edgeDistance) outputObject.add(point.getX(),point.getY(),point.getZ());
                         break;
                     case INTERIOR:
-                        if (pixelVal > edgeDistance) edgeObject.add(point.getX(),point.getY(),point.getZ());
+                        if (pixelVal > edgeDistance) outputObject.add(point.getX(),point.getY(),point.getZ());
                         break;
                 }
             } catch (PointOutOfRangeException e) {}
         }
 
         // Applying relationships
-        edgeObject.addParent(inputObject);
-        inputObject.addChild(edgeObject);
+        outputObject.addParent(inputObject);
+        inputObject.addChild(outputObject);
 
-        return edgeObject;
+        return outputObject;
 
     }
 
@@ -171,7 +172,7 @@ public class ExtractObjectEdges extends Module {
 
     @Override
     public String getDescription() {
-        return "";
+        return "Extracts edge and interior objects for each object in a specified set.  The boundary defining the transition between edges and interiors can be specified either at a fixed distance from the object edge or as a percentage of the maximum edge-centroid distance for each object.  Output edge and interior objects are stored as children of the associated input object.    ";
     }
 
     @Override
@@ -251,6 +252,8 @@ public class ExtractObjectEdges extends Module {
         parameters.add(new BooleanP(CALIBRATED_DISTANCES,this,false));
         parameters.add(new DoubleP(EDGE_PERCENTAGE, this, 1.0));
 
+        addParameterDescriptions();
+
     }
 
     @Override
@@ -328,5 +331,34 @@ public class ExtractObjectEdges extends Module {
     @Override
     public boolean verify() {
         return true;
+    }
+
+    void addParameterDescriptions() {
+        parameters.get(INPUT_OBJECTS).setDescription("Objects from workspace for which edge and/or interior regions will be extracted.  Any extracted regions will be children of the associated input objects.");
+
+        parameters.get(CREATE_EDGE_OBJECTS).setDescription("When selected, an edge object will be created for each input object.  Edge objects contain only coordinates from the input object within a given distance of the object edge.  Output edge objects will be children associated with the relevant input object.  The edge objects will be stored in the workspace with the name specified by \""+OUTPUT_EDGE_OBJECTS+"\".");
+
+        parameters.get(OUTPUT_EDGE_OBJECTS).setDescription("If \""+CREATE_EDGE_OBJECTS+"\" is selected, this is the name assigned to output edge objects.");
+
+        parameters.get(CREATE_INTERIOR_OBJECTS).setDescription("When selected, an interior object will be created for each input object.  Interior objects contain only coordinates from the input object a given distance from the object edge or greater (i.e. they contain any points from the input object which aren't assigned as \"edge\" objects).  Output interior objects will be children associated with the relevant input object.  The interior objects will be stored in the workspace with the name specified by \""+OUTPUT_INTERIOR_OBJECTS+"\".");
+
+        parameters.get(OUTPUT_INTERIOR_OBJECTS).setDescription("If \""+CREATE_INTERIOR_OBJECTS+"\" is selected, this is the name assigned to output interior objects.");
+
+        parameters.get(EDGE_MODE).setDescription("Controls how the boundary between \"edge\" and \"interior\" objects is defined:<br><ul>"
+        
+                + "<li>\"" + EdgeModes.DISTANCE_FROM_EDGE + "\" The boundary is defined by a fixed distance value specified by \""+EDGE_DISTANCE+"\".  Any input object coordinates within (less than or equal to) this distance of the object edge can be output as \"edge\" coordinates, otherwise they can be output as \"interior\" coordinates.</li>"
+        
+                +"<li>\""+EdgeModes.PERCENTAGE_FROM_EDGE+"\" The boundary is defined as a percentage of the maximum distance from the edge of the object to its centroid.  As such, this boundary value will vary from object to object in terms of the absolute width of edge objects.</li></ul>");
+
+        parameters.get(EDGE_DISTANCE).setDescription("If \"" + EDGE_MODE + "\" is set to \""
+                + EdgeModes.DISTANCE_FROM_EDGE
+                + "\", this is the fixed distance value that defines the boundary between edge and interior objects.  It is assumed to be specified in pixel units unless \""+CALIBRATED_DISTANCES+"\" is selected, in which case they are assumed in calibrated units.");
+
+        parameters.get(CALIBRATED_DISTANCES).setDescription("When selected, the fixed boundary distance specified by \""+EDGE_DISTANCE+"\" is assumed to be in calibrated units.  Otherwise, the fixed distance is in pixel units.");
+
+        parameters.get(EDGE_PERCENTAGE).setDescription("If \"" + EDGE_MODE + "\" is set to \""
+        + EdgeModes.PERCENTAGE_FROM_EDGE
+        + "\", this is the percentage of the maximum centroid-edge distance for an object that will be used to calculate the edge/interior boundary location.  Percentages approaching 0% will put the boundary increasingly close to the object edge (more detected as \"interiors\"), while percentages approaching 100% will have the boundary increasingly close to the object centroid (more detected as \"edges\").");
+
     }
 }

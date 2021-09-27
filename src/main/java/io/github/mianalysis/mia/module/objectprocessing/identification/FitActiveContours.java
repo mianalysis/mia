@@ -3,6 +3,9 @@ package io.github.mianalysis.mia.module.objectprocessing.identification;
 import java.awt.Polygon;
 import java.util.Iterator;
 
+import org.scijava.Priority;
+import org.scijava.plugin.Plugin;
+
 import ij.ImagePlus;
 import ij.gui.Roi;
 import ij.plugin.Duplicator;
@@ -10,9 +13,6 @@ import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.module.Module;
-import org.scijava.Priority;
-import org.scijava.plugin.Plugin;
 import io.github.mianalysis.mia.object.Image;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
