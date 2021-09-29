@@ -52,7 +52,7 @@ import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
-import io.github.mianalysis.mia.process.CommaSeparatedStringInterpreter;
+import io.github.sjcross.common.process.CommaSeparatedStringInterpreter;
 
 /**
  * Created by sc13967 on 23/05/2017.

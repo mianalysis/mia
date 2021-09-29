@@ -171,12 +171,6 @@ public class LostAndFound {
         moduleName = new GlobalVariables(null).getClass().getSimpleName();
         lostParameterNames.put(moduleName, currentParameterNames);
 
-        // HoughObjectDetection
-        currentParameterNames = new HashMap<>();
-        currentParameterNames.put("Sampling rate", CircleHoughDetection.DOWNSAMPLE_FACTOR);
-        moduleName = new CircleHoughDetection(null).getClass().getSimpleName();
-        lostParameterNames.put(moduleName, currentParameterNames);
-
         // InputControl
         currentParameterNames = new HashMap<>();
         currentParameterNames.put("Spatial units", InputControl.SPATIAL_UNIT);

@@ -1,5 +1,6 @@
 package io.github.mianalysis.mia.module.objectprocessing.identification;
 
+import java.awt.Point;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -8,15 +9,13 @@ import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
 
 import ij.ImagePlus;
-import ij.ImageStack;
 import ij.Prefs;
+import ij.gui.RotatedRectRoi;
 import ij.plugin.Duplicator;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.module.imageprocessing.stack.ExtractSubstack;
-import io.github.mianalysis.mia.module.imageprocessing.stack.InterpolateZAxis;
 import io.github.mianalysis.mia.module.visualisation.overlays.AddLabels;
 import io.github.mianalysis.mia.module.visualisation.overlays.AddObjectOutline;
 import io.github.mianalysis.mia.object.Image;
@@ -47,29 +46,27 @@ import io.github.sjcross.common.exceptions.IntegerOverflowException;
 import io.github.sjcross.common.object.volume.PointOutOfRangeException;
 import io.github.sjcross.common.object.volume.SpatCal;
 import io.github.sjcross.common.object.volume.VolumeType;
-import io.github.sjcross.common.object.voxels.SphereSolid;
 import io.github.sjcross.common.process.IntensityMinMax;
-import io.github.sjcross.common.process.houghtransform.transforms.SphereTransform;
+import io.github.sjcross.common.process.houghtransform.transforms.RectangleTransform;
 
-/**
- * Created by sc13967 on 15/01/2018.
- */
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
-public class SphereHoughDetection extends Module {
+public class RectangleHoughDetection extends Module {
     public static final String INPUT_SEPARATOR = "Image input, object output";
     public static final String INPUT_IMAGE = "Input image";
     public static final String OUTPUT_OBJECTS = "Output objects";
     public static final String OUTPUT_TRANSFORM_IMAGE = "Output transform image";
     public static final String OUTPUT_IMAGE = "Output image";
 
-    public static final String DETECTION_SEPARATOR = "Hough-based sphere detection";
-    public static final String RADIUS_RANGE = "Radius range (px)";
+    public static final String DETECTION_SEPARATOR = "Hough-based rectangle detection";
+    public static final String X_RANGE = "X range (px)";
+    public static final String Y_RANGE = "Y range (px)";
+    public static final String WIDTH_RANGE = "Width range (px)";
+    public static final String LENGTH_RANGE = "Length range (px)";
+    public static final String ORIENTATION_RANGE = "Orientation range (degs)";
+    public static final String DOWNSAMPLE_FACTOR = "Downsample factor";
     public static final String DETECTION_THRESHOLD = "Detection threshold";
     public static final String EXCLUSION_RADIUS = "Exclusion radius (px)";
     public static final String ENABLE_MULTITHREADING = "Enable multithreading";
-
-    public static final String POST_PROCESSING_SEPARATOR = "Object post processing";
-    public static final String RADIUS_RESIZE = "Output radius resize (px)";
 
     public static final String VISUALISATION_SEPARATOR = "Visualisation controls";
     public static final String SHOW_TRANSFORM_IMAGE = "Show transform image";
@@ -77,8 +74,8 @@ public class SphereHoughDetection extends Module {
     public static final String SHOW_HOUGH_SCORE = "Show detection score";
     public static final String LABEL_SIZE = "Label size";
 
-    public SphereHoughDetection(Modules modules) {
-        super("Sphere detection", modules);
+    public RectangleHoughDetection(Modules modules) {
+        super("Rectangle detection", modules);
     }
 
     private interface Measurements {
@@ -93,7 +90,7 @@ public class SphereHoughDetection extends Module {
 
     @Override
     public String getDescription() {
-        return "Detects spheres within grayscale images using the Hough transform.  Input images can be of binary or grayscale format, but the sphere features must be brighter than their surrounding background and have dark centres (i.e. be shells).  For solid spheres, a gradient filter or equivalent should be applied to the image first.  Detected spheres are output to the workspace as solid objects.  Spheres are detected within a user-defined radius range and must exceed a user-defined threshold score (based on the intensity of the spherical feartures in the input image and the feature sphericity.";
+        return "Detects rectangles within grayscale images using the Hough transform.  Input images can be of binary or grayscale format, but the rectangular features must be brighter than their surrounding background and have dark centres (i.e. not be solid).  For solid rectangles, a gradient filter or equivalent should be applied to the image first.  Detected rectangles are output to the workspace as solid objects.  Rectangles are detected within a user-defined width, length and orientation range and must exceed a user-defined threshold score (based on the intensity of the rectangles feartures in the input image).";
 
     }
 
@@ -110,11 +107,15 @@ public class SphereHoughDetection extends Module {
         String outputImageName = parameters.getValue(OUTPUT_IMAGE);
 
         // Getting parameters
-        String radiusRange = parameters.getValue(RADIUS_RANGE);
+        String xRange = parameters.getValue(X_RANGE);
+        String yRange = parameters.getValue(Y_RANGE);
+        String widthRange = parameters.getValue(WIDTH_RANGE);
+        String lengthRange = parameters.getValue(LENGTH_RANGE);
+        String oriRange = parameters.getValue(ORIENTATION_RANGE);
+        int samplingRate = parameters.getValue(DOWNSAMPLE_FACTOR);
         boolean multithread = parameters.getValue(ENABLE_MULTITHREADING);
         double detectionThreshold = parameters.getValue(DETECTION_THRESHOLD);
         int exclusionRadius = parameters.getValue(EXCLUSION_RADIUS);
-        int radiusResize = parameters.getValue(RADIUS_RESIZE);
         boolean showTransformImage = parameters.getValue(SHOW_TRANSFORM_IMAGE);
         boolean showDetectionImage = parameters.getValue(SHOW_DETECTION_IMAGE);
         boolean showHoughScore = parameters.getValue(SHOW_HOUGH_SCORE);
@@ -130,86 +131,79 @@ public class SphereHoughDetection extends Module {
 
         // Iterating over all images in the ImagePlus
         int count = 1;
-        int total = ipl.getNChannels() * ipl.getNFrames();
+        int total = ipl.getNChannels() * ipl.getNSlices() * ipl.getNFrames();
 
         for (int c = 0; c < ipl.getNChannels(); c++) {
-            for (int t = 0; t < ipl.getNFrames(); t++) {
-                // Getting current image stack
-                Image substack = ExtractSubstack.extractSubstack(inputImage, "Substack", String.valueOf(c + 1), "1-end",
-                        String.valueOf(t + 1));
-                ImagePlus substackIpl = substack.getImagePlus();
+            for (int z = 0; z < ipl.getNSlices(); z++) {
+                for (int t = 0; t < ipl.getNFrames(); t++) {
+                    ipl.setPosition(c + 1, z + 1, t + 1);
 
-                // Interpolating Z axis, so the image is equal in all dimensions
-                substackIpl = InterpolateZAxis.matchZToXY(substackIpl, InterpolateZAxis.InterpolationModes.BILINEAR);
+                    // Initialising the Hough transform
+                    String[] paramRanges = new String[] { xRange, yRange, widthRange, lengthRange, oriRange };
+                    RectangleTransform transform = new RectangleTransform(ipl.getProcessor(), paramRanges);
+                    transform.setnThreads(nThreads);
 
-                ImageStack ist = substackIpl.getStack();
+                    // Running the transforms
+                    transform.run();
 
-                // Initialising the Hough transform
-                String[] paramRanges = new String[] { "0-" + (ist.getWidth() - 1), "0-" + (ist.getHeight() - 1),
-                        "0-" + (ist.size() - 1), radiusRange };
-                SphereTransform transform = new SphereTransform(ist, paramRanges);
-                transform.setnThreads(nThreads);
+                    // Normalising scores based on the number of points in that rectangle
+                    transform.normaliseScores();
 
-                // Running the transforms
-                transform.run();
+                    // Getting the accumulator as an image
+                    if (outputTransformImage || (showOutput && showTransformImage)) {
+                        ImagePlus showIpl = new Duplicator().run(transform.getAccumulatorAsImage());
 
-                // Normalising scores based on the number of points in that sphere
-                transform.normaliseScores();
-
-                // Getting the accumulator as an image
-                if (outputTransformImage || (showOutput && showTransformImage)) {
-                    ImagePlus showIpl = new Duplicator().run(transform.getAccumulatorAsImage());
-
-                    if (outputTransformImage) {
-                        Image outputImage = new Image(outputImageName, showIpl);
-                        workspace.addImage(outputImage);
-                    }
-                    if (showOutput && showTransformImage) {
-                        IntensityMinMax.run(showIpl, true);
-                        showIpl.setTitle("Accumulator");
-                        showIpl.show();
-                    }
-                }
-
-                // Getting sphere objects and adding to workspace
-                ArrayList<double[]> spheres = transform.getObjects(detectionThreshold, exclusionRadius);
-                for (double[] sphere : spheres) {
-                    // Initialising the object
-                    Obj outputObject = outputObjects.createAndAddNewObject(VolumeType.QUADTREE);
-
-                    // Getting sphere parameters
-                    int x = (int) Math.round(sphere[0]);
-                    int y = (int) Math.round(sphere[1]);
-                    int z = (int) Math.round(sphere[2] * cal.dppXY / cal.dppZ);
-                    int r = (int) Math.round(sphere[3]) + radiusResize;
-                    double score = sphere[4];
-
-                    // Getting coordinates corresponding to sphere
-                    SphereSolid voxelSphere = new SphereSolid(r);
-                    int[] xx = voxelSphere.getX();
-                    int[] yy = voxelSphere.getY();
-                    int[] zz = voxelSphere.getZ();
-
-                    for (int i = 0; i < xx.length; i++) {
-                        try {
-                            try {
-                                outputObject.add(xx[i] + x, yy[i] + y,
-                                        (int) Math.round(zz[i] * cal.dppXY / cal.dppZ + z));
-                            } catch (PointOutOfRangeException e) {
-                            }
-                        } catch (IntegerOverflowException e) {
-                            return Status.FAIL;
+                        if (outputTransformImage) {
+                            Image outputImage = new Image(outputImageName, showIpl);
+                            workspace.addImage(outputImage);
+                        }
+                        if (showOutput && showTransformImage) {
+                            IntensityMinMax.run(showIpl, true);
+                            showIpl.setTitle("Accumulator");
+                            showIpl.show();
                         }
                     }
 
-                    // Adding measurements
-                    outputObject.setT(t);
-                    outputObject.addMeasurement(new Measurement(Measurements.SCORE, score));
+                    // Getting rectangle objects and adding to workspace
+                    ArrayList<double[]> rectangles = transform.getObjects(detectionThreshold, exclusionRadius);
+                    for (double[] rectangle : rectangles) {
+                        // Initialising the object
+                        Obj outputObject = outputObjects.createAndAddNewObject(VolumeType.QUADTREE);
+
+                        // Getting rectangle parameters
+                        int x = (int) Math.round(rectangle[0]);
+                        int y = (int) Math.round(rectangle[1]);
+                        int w = (int) Math.round(rectangle[2]);
+                        int l = (int) Math.round(rectangle[3]);
+                        int ori = (int) Math.round(rectangle[4]);
+                        double score = rectangle[5];
+
+                        double thetaRads = -Math.toRadians((double) ori);
+                        int x1 = (int) Math.round((-l / 2) * Math.cos(thetaRads));
+                        int y1 = (int) Math.round(-(-l / 2) * Math.sin(thetaRads));
+
+                        RotatedRectRoi roi = new RotatedRectRoi(x + x1, y + y1, x - x1, y - y1, w);
+
+                        for (Point point : roi.getContainedPoints()) {
+                            try {
+                                try {
+                                    outputObject.add(point.x, point.y, z);
+                                } catch (PointOutOfRangeException e) {
+                                }
+                            } catch (IntegerOverflowException e) {
+                                return Status.FAIL;
+                            }
+                        }
+
+                        // Adding measurements
+                        outputObject.setT(t);
+                        outputObject.addMeasurement(new Measurement(Measurements.SCORE, score));
+
+                    }
+
+                    writeProgressStatus(count++, total, "images");
 
                 }
-
-                writeProgressStatus(count++, total, "images");
-
             }
         }
 
@@ -251,13 +245,14 @@ public class SphereHoughDetection extends Module {
         parameters.add(new OutputImageP(OUTPUT_IMAGE, this));
 
         parameters.add(new SeparatorP(DETECTION_SEPARATOR, this));
-        parameters.add(new StringP(RADIUS_RANGE, this, "10-20-1"));
+        parameters.add(new StringP(X_RANGE, this, "0-end"));
+        parameters.add(new StringP(Y_RANGE, this, "0-end"));
+        parameters.add(new StringP(WIDTH_RANGE, this, "10-20-1"));
+        parameters.add(new StringP(LENGTH_RANGE, this, "20-30-1"));
+        parameters.add(new StringP(ORIENTATION_RANGE, this, "0-360-20"));
         parameters.add(new DoubleP(DETECTION_THRESHOLD, this, 1.0));
         parameters.add(new IntegerP(EXCLUSION_RADIUS, this, 10));
         parameters.add(new BooleanP(ENABLE_MULTITHREADING, this, true));
-
-        parameters.add(new SeparatorP(POST_PROCESSING_SEPARATOR, this));
-        parameters.add(new IntegerP(RADIUS_RESIZE, this, 0));
 
         parameters.add(new SeparatorP(VISUALISATION_SEPARATOR, this));
         parameters.add(new BooleanP(SHOW_TRANSFORM_IMAGE, this, true));
@@ -282,13 +277,14 @@ public class SphereHoughDetection extends Module {
         }
 
         returnedParameters.add(parameters.getParameter(DETECTION_SEPARATOR));
-        returnedParameters.add(parameters.getParameter(RADIUS_RANGE));
+        returnedParameters.add(parameters.getParameter(X_RANGE));
+        returnedParameters.add(parameters.getParameter(Y_RANGE));
+        returnedParameters.add(parameters.getParameter(WIDTH_RANGE));
+        returnedParameters.add(parameters.getParameter(LENGTH_RANGE));
+        returnedParameters.add(parameters.getParameter(ORIENTATION_RANGE));
         returnedParameters.add(parameters.getParameter(DETECTION_THRESHOLD));
         returnedParameters.add(parameters.getParameter(EXCLUSION_RADIUS));
         returnedParameters.add(parameters.getParameter(ENABLE_MULTITHREADING));
-
-        returnedParameters.add(parameters.getParameter(POST_PROCESSING_SEPARATOR));
-        returnedParameters.add(parameters.getParameter(RADIUS_RESIZE));
 
         returnedParameters.add(parameters.getParameter(VISUALISATION_SEPARATOR));
         returnedParameters.add(parameters.getParameter(SHOW_TRANSFORM_IMAGE));
@@ -342,32 +338,35 @@ public class SphereHoughDetection extends Module {
     }
 
     void addParameterDescriptions() {
-        parameters.get(INPUT_IMAGE).setDescription("Input image from which spheres will be detected.");
+        parameters.get(INPUT_IMAGE).setDescription("Input image from which rectangles will be detected.");
 
         parameters.get(OUTPUT_OBJECTS).setDescription(
-                "Output sphere objects to be added to the workspace.  Irrespective of the form of the input sphere features, output spheres are always solid.");
+                "Output rectangle objects to be added to the workspace.  Irrespective of the form of the input rectangle features, output rectangles are always solid.");
 
         parameters.get(OUTPUT_TRANSFORM_IMAGE).setDescription(
                 "When selected, the Hough-transform image will be output to the workspace with the name specified by \""
                         + OUTPUT_IMAGE + "\".");
 
         parameters.get(OUTPUT_IMAGE).setDescription("If \"" + OUTPUT_TRANSFORM_IMAGE
-                + "\" is selected, this will be the name assigned to the transform image added to the workspace.  The transform image has XY dimensions equal to the input image and an equal number of Z-slices to the number of radii tested.  Circluar features in the input image appear as bright points, where the XYZ location of the point corresponds to the XYR (i.e. X, Y, radius) parameters for the sphere.");
+                + "\" is selected, this will be the name assigned to the transform image added to the workspace.  The transform image has XY dimensions equal to the input image and an equal number of Z-slices to the number of radii tested.  Circluar features in the input image appear as bright points, where the XYZ location of the point corresponds to the XYR (i.e. X, Y, radius) parameters for the rectangle.");
 
-                parameters.get(RADIUS_RANGE)
-                .setDescription("Range of radius values to be tested.  Radii can be specified as a comma-separated list, using a range (e.g. \"4-7\" will extract relative indices 4,5,6 and 7) or as a range extracting every nth slice (e.g. \"4-10-2\" will extract slices 4,6,8 and 10).  Radii are specified in pixel units.");
+        parameters.get(WIDTH_RANGE).setDescription(
+                "Range of width values to be tested.  Widths can be specified as a comma-separated list, using a range (e.g. \"4-7\" will extract relative indices 4,5,6 and 7) or as a range extracting every nth slice (e.g. \"4-10-2\" will extract slices 4,6,8 and 10).  Widths are specified in pixel units.");
+
+        parameters.get(LENGTH_RANGE).setDescription(
+                "Range of length values to be tested.  Lengths can be specified as a comma-separated list, using a range (e.g. \"4-7\" will extract relative indices 4,5,6 and 7) or as a range extracting every nth slice (e.g. \"4-10-2\" will extract slices 4,6,8 and 10).  Lengths are specified in pixel units.");
+
+        parameters.get(ORIENTATION_RANGE).setDescription(
+                "Range of orientation values to be tested.  Orientations can be specified as a comma-separated list, using a range (e.g. \"4-7\" will extract relative indices 4,5,6 and 7) or as a range extracting every nth slice (e.g. \"4-10-2\" will extract slices 4,6,8 and 10).  Orientations are specified in degree units.");
 
         parameters.get(DETECTION_THRESHOLD).setDescription(
-                "The minimum score a detected sphere must have to be stored.  Scores are the sum of all pixel intensities lying on the perimeter of the sphere.  As such, higher scores correspond to brighter spheres, spheres with high circularity (where all points lie on the perimeter of the detected sphere) and spheres with continuous intensity along their perimeter (no gaps).");
+                "The minimum score a detected rectangle must have to be stored.  Scores are the sum of all pixel intensities lying on the perimeter of the rectangle.  As such, higher scores correspond to brighter rectangles, rectangles with high circularity (where all points lie on the perimeter of the detected rectangle) and rectangles with continuous intensity along their perimeter (no gaps).");
 
         parameters.get(EXCLUSION_RADIUS).setDescription(
-                "The minimum distance between adjacent spheres.  For multiple candidate points within this range, the sphere with the highest score will be retained.  Specified in pixel units.");
+                "The minimum distance between adjacent rectangles.  For multiple candidate points within this range, the rectangle with the highest score will be retained.  Specified in pixel units.");
 
         parameters.get(ENABLE_MULTITHREADING).setDescription(
                 "Process multiple radii simultaneously.  This can provide a speed improvement when working on a computer with a multi-core CPU.");
-
-        parameters.get(RADIUS_RESIZE).setDescription(
-                "Radius of output objects will be adjusted by this value.  For example, a detected sphere of radius 5 with a \"radius resize\" of 2 will have an output radius of 7.  Similarly, setting \"radius resize\" to -3 would produce a sphere of radius 2.");
 
         parameters.get(SHOW_TRANSFORM_IMAGE).setDescription(
                 "When selected, the transform image will be displayed (as long as the module is currently set to show its output).");
@@ -376,7 +375,7 @@ public class SphereHoughDetection extends Module {
                 "When selected, the detection image will be displayed (as long as the module is currently set to show its output).");
 
         parameters.get(SHOW_HOUGH_SCORE).setDescription(
-                "When selected, the detection image will also show the score associated with each detected sphere.");
+                "When selected, the detection image will also show the score associated with each detected rectangle.");
 
         parameters.get(LABEL_SIZE).setDescription("Font size of the detection score text label.");
 
