@@ -217,8 +217,11 @@ public class SingleClassCluster extends Module {
 
     @Override
     public String getDescription() {
-        return "Clusters objects using K-Means and/or DB-SCAN algorithms."
-                + "\nUses Apache Commons Math library for clustering.";
+        return "Clusters objects (based on centroid locations) using K-Means++ and/or DBSCAN algorithms.  In K-Means++ [1], an optimisation of the standard K-Means algorithm, the points are assigned to a pre-determined number of clusters such that each point is assigned to its closest cluster mean position (this process is repeated until the cluster assignments stabilise or a maximum number of iterations is reached).  For DBSCAN [2], points are clustered based on a minimum number of neighbours within a specified spatial range.  As such, this algorithm doesn't require prior knowledge of the number of clusters.  Both algorithms use their respective <a href=\"https://commons.apache.org/proper/commons-math/\">Apache Commons Math implementations.</a><br><br>"
+
+                + "References:<br>"
+                + "[1] Arthur, D.; Vassilvitskii, S. (2007). \"k-means++: the advantages of careful seeding.\" <i>Proceedings of the eighteenth annual ACM-SIAM symposium on Discrete algorithms. Society for Industrial and Applied Mathematics Philadelphia, PA, USA.</i> pp. 1027–1035<br>"
+                + "[2] Ester, M.; Kriegel, H.-P.; Sander, J.; Xu, X. (1996). \"A density-based algorithm for discovering clusters in large spatial databases with noise.\" <i>Proceedings of the Second International Conference on Knowledge Discovery and Data Mining (KDD-96). AAAI Press.</i> pp. 226–231";
 
     }
 
@@ -350,6 +353,8 @@ public class SingleClassCluster extends Module {
         parameters.add(new IntegerP(MIN_POINTS, this, 5));
         parameters.add(new BooleanP(LINK_IN_SAME_FRAME, this, true));
 
+        addParameterDescriptions();
+        
     }
 
     @Override
@@ -431,17 +436,32 @@ public class SingleClassCluster extends Module {
 
         parameters.get(CLUSTERING_ALGORITHM).setDescription("The clustering algorithm to use:<br><ul>"
 
-                + "<li>\"" + ClusteringAlgorithms.DBSCAN + "\" Points are clustered based on a minimum number of neighbours within a specified distance.  All proximal points which satisfy these criteria are added to a common cluster.</li>"
+                + "<li>\"" + ClusteringAlgorithms.DBSCAN
+                + "\" Points are clustered based on a minimum number of neighbours (\"" + MIN_POINTS
+                + "\") within a specified distance (\"" + EPS
+                + "\").  All proximal points which satisfy these criteria are added to a common cluster.  This uses the <a href=\"http://commons.apache.org/proper/commons-math/javadocs/api-3.6/org/apache/commons/math3/stat/clustering/DBSCANClusterer.html\">Apache Commons Math3</a> implementation of DBSCAN, which describes the algorithm as: \"A point p is density connected to another point q, if there exists a chain of points pi, with i = 1 .. n and p1 = p and pn = q, such that each pair <pi, pi+1> is directly density-reachable. A point q is directly density-reachable from point p if it is in the ε-neighborhood of this point.\".</li>"
 
-                + "<li>\"" + ClusteringAlgorithms.KMEANSPLUSPLUS + "\"</li></ul>");
+                + "<li>\"" + ClusteringAlgorithms.KMEANSPLUSPLUS
+                + "\" Points are assigned into a pre-determined number of clusters (defined by \"" + K_CLUSTERS
+                + "\"), with each point assigned to the cluster with the closest centroid.  Since the cluster centroids will vary with each added point, this process is optimised iteratively.  The algorithm continues until either no points switch clusters or the maximum number of allowed iterations (\""
+                + MAX_ITERATIONS + "\") is reached.</li></ul>");
 
-        parameters.get(K_CLUSTERS).setDescription("");
+        parameters.get(K_CLUSTERS)
+                .setDescription("If \"" + CLUSTERING_ALGORITHM + "\" is set to \"" + ClusteringAlgorithms.KMEANSPLUSPLUS
+                        + "\", this is the number of clusters the points will be assigned to.");
 
-        parameters.get(MAX_ITERATIONS).setDescription("");
+        parameters.get(MAX_ITERATIONS).setDescription("If \"" + CLUSTERING_ALGORITHM + "\" is set to \""
+                + ClusteringAlgorithms.KMEANSPLUSPLUS
+                + "\", this is the maximum number of optimisation iterations that will be performed.  If cluster assignment has stabilised prior to reaching this number of iterations the algorithm will terminate early.");
 
-        parameters.get(EPS).setDescription("");
+        parameters.get(EPS).setDescription("If \"" + CLUSTERING_ALGORITHM + "\" is set to \""
+                + ClusteringAlgorithms.DBSCAN
+                + "\", this is the minimum distance to neighbour points that must be satisfied for a point to be added to a cluster.  This distance is specified in pixel units.");
 
-        parameters.get(MIN_POINTS).setDescription("");
+        parameters.get(MIN_POINTS).setDescription("If \"" + CLUSTERING_ALGORITHM + "\" is set to \""
+                + ClusteringAlgorithms.DBSCAN
+                + "\", this is the minimum number of neighbour points which must be within a specified distance (\""
+                + EPS + "\") of a point for that point to be included in the cluster.");
 
         parameters.get(LINK_IN_SAME_FRAME).setDescription(
                 "When selected, objects must be in the same time frame for them to be assigned to a common cluster.");

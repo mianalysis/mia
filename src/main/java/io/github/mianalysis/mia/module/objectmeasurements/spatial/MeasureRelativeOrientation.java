@@ -328,7 +328,7 @@ public class MeasureRelativeOrientation extends Module {
 
     @Override
     public String getDescription() {
-        return "Currently only works for X-Y plane measurements";
+        return "Note: Currently only works for X-Y plane measurements";
     }
 
     @Override
