@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
 
-import ij.IJ;
 import ij.ImagePlus;
 import ij.Prefs;
 import ij.plugin.Duplicator;
@@ -41,16 +40,13 @@ import io.github.sjcross.common.process.houghtransform.transforms.CircleTransfor
  */
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class CircleHoughDetection extends AbstractHoughDetection {
-    public static final String DETECTION_SEPARATOR = "Hough-based circle detection";
+    public static final String RANGE_SEPARATOR = "Parameter ranges";
+    public static final String X_RANGE = "X range (px)";
+    public static final String Y_RANGE = "Y range (px)";
     public static final String RADIUS_RANGE = "Radius range (px)";
-    public static final String DOWNSAMPLE_FACTOR = "Downsample factor";
-    public static final String DETECTION_THRESHOLD = "Detection threshold";
-    public static final String EXCLUSION_RADIUS = "Exclusion radius (px)";
-    public static final String ENABLE_MULTITHREADING = "Enable multithreading";
 
     public static final String POST_PROCESSING_SEPARATOR = "Object post processing";
     public static final String RADIUS_RESIZE = "Output radius resize (px)";
-
 
     public CircleHoughDetection(Modules modules) {
         super("Circle detection", modules);
@@ -80,10 +76,15 @@ public class CircleHoughDetection extends AbstractHoughDetection {
         String outputImageName = parameters.getValue(OUTPUT_IMAGE);
 
         // Getting parameters
+        String xRange = parameters.getValue(X_RANGE);
+        String yRange = parameters.getValue(Y_RANGE);
         String radiusRange = parameters.getValue(RADIUS_RANGE);
         int samplingRate = parameters.getValue(DOWNSAMPLE_FACTOR);
         boolean multithread = parameters.getValue(ENABLE_MULTITHREADING);
+        boolean normaliseScores = parameters.getValue(NORMALISE_SCORES);
+        String detectionMode = parameters.getValue(DETECTION_MODE);
         double detectionThreshold = parameters.getValue(DETECTION_THRESHOLD);
+        int nObjects = parameters.getValue(NUMBER_OF_OBJECTS);
         int exclusionRadius = parameters.getValue(EXCLUSION_RADIUS);
         int radiusResize = parameters.getValue(RADIUS_RESIZE);
         boolean showTransformImage = parameters.getValue(SHOW_TRANSFORM_IMAGE);
@@ -97,9 +98,11 @@ public class CircleHoughDetection extends AbstractHoughDetection {
         double frameInterval = ipl.getCalibration().frameInterval;
         Objs outputObjects = new Objs(outputObjectsName, cal, nFrames, frameInterval, TemporalUnit.getOMEUnit());
 
-        int nThreads = multithread ? Prefs.getThreads() : 1;
-
+        xRange = resampleRange(xRange, samplingRate);
+        yRange = resampleRange(yRange, samplingRate);
         radiusRange = resampleRange(radiusRange, samplingRate);
+
+        int nThreads = multithread ? Prefs.getThreads() : 1;
 
         // Iterating over all images in the ImagePlus
         int count = 1;
@@ -114,9 +117,9 @@ public class CircleHoughDetection extends AbstractHoughDetection {
                     ImageProcessor ipr = ipl.getProcessor();
                     if (samplingRate != 1)
                         ipr = ipr.resize(ipr.getWidth() / samplingRate);
-                    
+
                     // Initialising the Hough transform
-                    String[] paramRanges = new String[] { "0-" + (ipr.getWidth() - 1), "0-" + (ipr.getHeight() - 1),radiusRange};
+                    String[] paramRanges = new String[] { xRange, yRange, radiusRange };
                     CircleTransform transform = new CircleTransform(ipr, paramRanges);
                     transform.setnThreads(nThreads);
 
@@ -124,7 +127,8 @@ public class CircleHoughDetection extends AbstractHoughDetection {
                     transform.run();
 
                     // Normalising scores based on the number of points in that circle
-                    transform.normaliseScores();
+                    if (normaliseScores)
+                        transform.normaliseScores();
 
                     // Getting the accumulator as an image
                     if (outputTransformImage || (showOutput && showTransformImage)) {
@@ -142,16 +146,26 @@ public class CircleHoughDetection extends AbstractHoughDetection {
                     }
 
                     // Getting circle objects and adding to workspace
-                    ArrayList<double[]> circles = transform.getObjects(detectionThreshold, exclusionRadius);
+                    ArrayList<double[]> circles;
+                    switch (detectionMode) {
+                        default:
+                        case DetectionModes.ALL_ABOVE_SCORE:
+                            circles = transform.getObjects(detectionThreshold, exclusionRadius);
+                            break;
+                        case DetectionModes.N_HIGHEST_SCORES:
+                            circles = transform.getNObjects(nObjects, exclusionRadius);
+                            break;
+                    }
+
                     Indexer indexer = new Indexer(ipl.getWidth(), ipl.getHeight());
                     for (double[] circle : circles) {
                         // Initialising the object
                         Obj outputObject = outputObjects.createAndAddNewObject(VolumeType.QUADTREE);
 
                         // Getting circle parameters
-                        int x = (int) Math.round(circle[0])*samplingRate;
-                        int y = (int) Math.round(circle[1])*samplingRate;
-                        int r = (int) Math.round(circle[2])*samplingRate + radiusResize;
+                        int x = (int) Math.round(circle[0]) * samplingRate;
+                        int y = (int) Math.round(circle[1]) * samplingRate;
+                        int r = (int) Math.round(circle[2]) * samplingRate + radiusResize;
                         double score = circle[3];
 
                         // Getting coordinates corresponding to circle
@@ -200,12 +214,10 @@ public class CircleHoughDetection extends AbstractHoughDetection {
     protected void initialiseParameters() {
         super.initialiseParameters();
 
-        parameters.add(new SeparatorP(DETECTION_SEPARATOR, this));
+        parameters.add(new SeparatorP(RANGE_SEPARATOR, this));
+        parameters.add(new StringP(X_RANGE, this, "0-end"));
+        parameters.add(new StringP(Y_RANGE, this, "0-end"));
         parameters.add(new StringP(RADIUS_RANGE, this, "10-20-1"));
-        parameters.add(new IntegerP(DOWNSAMPLE_FACTOR,this,1));
-        parameters.add(new DoubleP(DETECTION_THRESHOLD, this, 1.0));
-        parameters.add(new IntegerP(EXCLUSION_RADIUS, this, 10));
-        parameters.add(new BooleanP(ENABLE_MULTITHREADING, this, true));
 
         parameters.add(new SeparatorP(POST_PROCESSING_SEPARATOR, this));
         parameters.add(new IntegerP(RADIUS_RESIZE, this, 0));
@@ -219,13 +231,13 @@ public class CircleHoughDetection extends AbstractHoughDetection {
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.addAll(updateAndGetInputParameters());
-        
-        returnedParameters.add(parameters.getParameter(DETECTION_SEPARATOR));
+
+        returnedParameters.add(parameters.getParameter(RANGE_SEPARATOR));
+        returnedParameters.add(parameters.getParameter(X_RANGE));
+        returnedParameters.add(parameters.getParameter(Y_RANGE));
         returnedParameters.add(parameters.getParameter(RADIUS_RANGE));
-        returnedParameters.add(parameters.getParameter(DOWNSAMPLE_FACTOR));
-        returnedParameters.add(parameters.getParameter(DETECTION_THRESHOLD));
-        returnedParameters.add(parameters.getParameter(EXCLUSION_RADIUS));
-        returnedParameters.add(parameters.getParameter(ENABLE_MULTITHREADING));
+
+        returnedParameters.addAll(updateAndGetDetectionParameters());
 
         returnedParameters.add(parameters.getParameter(POST_PROCESSING_SEPARATOR));
         returnedParameters.add(parameters.getParameter(RADIUS_RESIZE));
@@ -242,17 +254,18 @@ public class CircleHoughDetection extends AbstractHoughDetection {
         parameters.get(OUTPUT_IMAGE).setDescription("If \"" + OUTPUT_TRANSFORM_IMAGE
                 + "\" is selected, this will be the name assigned to the transform image added to the workspace.  The transform image has XY dimensions equal to the input image and an equal number of Z-slices to the number of radii tested.  Circluar features in the input image appear as bright points, where the XYZ location of the point corresponds to the XYR (i.e. X, Y, radius) parameters for the circle.");
 
-        parameters.get(RADIUS_RANGE)
-                .setDescription("Range of radius values to be tested.  Radii can be specified as a comma-separated list, using a range (e.g. \"4-7\" will extract relative indices 4,5,6 and 7) or as a range extracting every nth slice (e.g. \"4-10-2\" will extract slices 4,6,8 and 10).  Radii are specified in pixel units.");
+        parameters.get(X_RANGE).setDescription(
+                "Range of X-position values to be tested.  X-position can be specified as a comma-separated list, using a range (e.g. \"4-7\" specifies values 4,5,6 and 7).  Unlike other parameter ranges, X-position can't be specified as a range extracting every nth slice (e.g. \"4-10-2\"), instead image downsampling (\""
+                        + DOWNSAMPLE_FACTOR
+                        + "\" parameter) should be used.  X-position values are specified in pixel units.");
 
-        parameters.get(DETECTION_THRESHOLD).setDescription(
-                "The minimum score a detected circle must have to be stored.  Scores are the sum of all pixel intensities lying on the perimeter of the circle.  As such, higher scores correspond to brighter circles, circles with high circularity (where all points lie on the perimeter of the detected circle) and circles with continuous intensity along their perimeter (no gaps).");
+        parameters.get(Y_RANGE).setDescription(
+                "Range of Y-position values to be tested.  Y-position can be specified as a comma-separated list, using a range (e.g. \"4-7\" specifies values  4,5,6 and 7).  Unlike other parameter ranges, Y-position can't be specified as a range extracting every nth slice (e.g. \"4-10-2\"), instead image downsampling (\""
+                        + DOWNSAMPLE_FACTOR
+                        + "\" parameter) should be used.  Y-position values are specified in pixel units.");
 
-        parameters.get(EXCLUSION_RADIUS).setDescription(
-                "The minimum distance between adjacent circles.  For multiple candidate points within this range, the circle with the highest score will be retained.  Specified in pixel units.");
-
-        parameters.get(ENABLE_MULTITHREADING).setDescription(
-                "Process multiple radii simultaneously.  This can provide a speed improvement when working on a computer with a multi-core CPU.");
+        parameters.get(RADIUS_RANGE).setDescription(
+                "Range of radius values to be tested.  Radii can be specified as a comma-separated list, using a range (e.g. \"4-7\" specifies values 4,5,6 and 7) or as a range extracting every nth slice (e.g. \"4-10-2\" specifies values 4,6,8 and 10).  Radii are specified in pixel units.");
 
         parameters.get(RADIUS_RESIZE).setDescription(
                 "Radius of output objects will be adjusted by this value.  For example, a detected circle of radius 5 with a \"radius resize\" of 2 will have an output radius of 7.  Similarly, setting \"radius resize\" to -3 would produce a circle of radius 2.");

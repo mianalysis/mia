@@ -158,7 +158,8 @@ public class InputControl extends Module {
                 case FilterSources.EXTENSION:
                 case FilterSources.FILENAME:
                 case FilterSources.FILEPATH:
-                    fileCrawler.addFileCondition(getFilenameFilter(filterType, filterValue, filterSource));
+                    String[] filterValues = filterValue.split(",");
+                    fileCrawler.addFileCondition(getFilenameFilter(filterType, filterValues, filterSource));
                     break;
             }
         }
@@ -169,7 +170,7 @@ public class InputControl extends Module {
 
     }
 
-    private static FileCondition getFilenameFilter(String filterType, String filterValue, String filterSource) {
+    private static FileCondition getFilenameFilter(String filterType, String[] filterValues, String filterSource) {
         FileCondition.Mode fileCondition;
         switch (filterType) {
             case FilterTypes.INCLUDE_MATCHES_PARTIALLY:
@@ -189,12 +190,12 @@ public class InputControl extends Module {
 
         switch (filterSource) {
             case FilterSources.EXTENSION:
-                return new ExtensionMatchesString(filterValue, fileCondition);
+                return new ExtensionMatchesString(filterValues, fileCondition);
             case FilterSources.FILENAME:
             default:
-                return new NameContainsString(filterValue, fileCondition);
+                return new NameContainsString(filterValues, fileCondition);
             case FilterSources.FILEPATH:
-                return new ParentContainsString(filterValue, fileCondition);
+                return new ParentContainsString(filterValues, fileCondition);
         }
     }
 
@@ -262,7 +263,8 @@ public class InputControl extends Module {
 
             switch (filterSource) {
                 case FilterSources.SERIESNAME:
-                    filters.add(getFilenameFilter(filterType, filterValue, filterSource));
+                    String[] filterValues = filterValue.split(",");
+                    filters.add(getFilenameFilter(filterType, filterValues, filterSource));
                     break;
             }
         }
