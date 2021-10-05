@@ -331,7 +331,9 @@ public class MeasureRelativeOrientation extends Module {
 
     @Override
     public String getDescription() {
-        return "Note: Currently only works for X-Y plane measurements";
+        return "Measures the orientation of each object relative to a specific point.  Orientation of the objects themselves is provided by a previously-calculated measurement associated with each object.  The relative orientation is the angle between the vector specified by this measurement and a vector passing from the object centroid to a specific point."
+
+                + "<br><br>Note: Currently only works for X-Y plane measurements";
     }
 
     @Override
@@ -555,19 +557,38 @@ public class MeasureRelativeOrientation extends Module {
     }
 
     void addParameterDescriptions() {
-        parameters.get(INPUT_OBJECTS).setDescription("");
+        parameters.get(INPUT_OBJECTS).setDescription(
+                "Objects from the workspace for which orientation relative to a point will be measured.  Orientation of the objects themselves is provided by a previously-calculated measurement associated with each object.  The relative orientation is the angle between the vector specified by this measurement and a vector passing from the object centroid to a specific point.  Output relative orientation measurements are associated with the relevant input object.");
 
-        parameters.get(ORIENTATION_IN_X_Y_MEASUREMENT).setDescription("");
+        parameters.get(ORIENTATION_IN_X_Y_MEASUREMENT).setDescription(
+                "Measurement associated with each input object which defines the orientation of the first vector for the relative orientation calculation.  The other vector passes between the object centroid and a specific point (controlled by the other parameters).  This orientation measurement is assumed to be specified in degree units.");
 
-        parameters.get(MEASUREMENT_RANGE).setDescription("");
+        parameters.get(MEASUREMENT_RANGE).setDescription(
+                "The range over which output relative orientation measurements are specified.  For cases where the orientation of the object could be inverted without consequence (e.g. fitting orientation to an ellipse), the range \""
+                        + MeasurementRanges.ZERO_NINETY
+                        + "\" can be used; however, in cases where the orientation is more specific (e.g. having come from object tracking), the range \""
+                        + MeasurementRanges.ZERO_ONE_EIGHTY
+                        + "\" can be used.  Relative orientation measurements are absolute, in that there's no distinction between positive and negative angular differences.");
 
-        parameters.get(REFERENCE_MODE).setDescription("");
+        parameters.get(REFERENCE_MODE).setDescription(
+                "Controls the source of the reference point to which object orientations are compared.  :<br><ul>"
+                        + "<li>\"" + ReferenceModes.IMAGE_CENTRE
+                        + "\" Object orientations are compared to the centre of the object collection (i.e. to the image from which they were first detected).</li>"
 
-        parameters.get(REFERENCE_OBJECTS).setDescription("");
+                        + "<li>\"" + ReferenceModes.OBJECT_CENTROID
+                        + "\" Object orientations are compared to the centre of a specific object.  Since only a single object can be used per timepoint, this will be either the smallest or largest object (controlled by \""
+                        + OBJECT_CHOICE_MODE + "\") in the specified collection (\"" + REFERENCE_OBJECTS + "\").  If \""+MUST_BE_SAME_FRAME+"\" is not selected, the same object will be used in all timepoints.</li>"
 
-        parameters.get(OBJECT_CHOICE_MODE).setDescription("");
+                        + "<li>\"" + ReferenceModes.OBJECT_SURFACE
+                        + "\" Object orientations are compared to the closest point on the surface of a specific object.  In this mode, the reference points can be different for all objects.  Since only a single object can be used per timepoint, this will be either the smallest or largest object (controlled by \""
+                        + OBJECT_CHOICE_MODE + "\") in the specified collection (\"" + REFERENCE_OBJECTS
+                        + "\").  If \""+MUST_BE_SAME_FRAME+"\" is not selected, the same object will be used in all timepoints.</li></ul>");
 
-        parameters.get(MUST_BE_SAME_FRAME).setDescription("");
+        parameters.get(REFERENCE_OBJECTS).setDescription("If \""+REFERENCE_MODE+"\" is set to \""+ReferenceModes.OBJECT_CENTROID+"\" or \""+ReferenceModes.OBJECT_SURFACE+"\", this is the object collection from which the reference object(s) will be drawn.");
+
+        parameters.get(OBJECT_CHOICE_MODE).setDescription("If \""+REFERENCE_MODE+"\" is set to \""+ReferenceModes.OBJECT_CENTROID+"\" or \""+ReferenceModes.OBJECT_SURFACE+"\", this controls whether the smallest or largest object from that collection will be used as the reference point for relative orientation calculations.");
+
+        parameters.get(MUST_BE_SAME_FRAME).setDescription("When selected, the reference objects must be in the same frame as the input object being measured.  As such, all the objects in one frame will be compared to a common reference, but won't necessarily have the same reference as an object in another frame.");
 
     }
 }

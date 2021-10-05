@@ -43,11 +43,13 @@ public class ExportACCDataset extends Module {
     public static final String INPUT_OBJECTS = "Input objects";
     public static final String INPUT_RAW_IMAGE = "Input raw image";
     public static final String INPUT_OVERLAY_IMAGE = "Input overlay image";
+
     public static final String OUTPUT_SEPARATOR = "Dataset output";
     public static final String ROOT_DATASET_FOLDER = "Root dataset folder";
     public static final String PLATE_NAME = "Plate name";
     public static final String ROW_LETTER = "Row letter";
     public static final String COLUMN_NUMBER = "Column number";
+
     public static final String MEASUREMENT_SEPARATOR = "Measurement selection";
     public static final String SHOW_MEASUREMENTS = "Show measurement selection";
     public static final String MEASUREMENTS = "Measurements";
@@ -56,6 +58,11 @@ public class ExportACCDataset extends Module {
         super("Export ACC dataset", modules);
     }
 
+
+    @Override
+    public String getDescription() {
+        return "";
+    }
 
     @Override
     public Category getCategory() {
@@ -324,10 +331,5 @@ public class ExportACCDataset extends Module {
     @Override
     public boolean verify() {
         return true;
-    }
-
-    @Override
-    public String getDescription() {
-        return "";
     }
 }
