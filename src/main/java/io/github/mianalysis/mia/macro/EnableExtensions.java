@@ -7,13 +7,13 @@ import ij.IJ;
 import ij.macro.Functions;
 import io.github.mianalysis.mia.process.DependencyValidator;
 
-
 @Plugin(type = Command.class, menuPath = "Plugins>MIA>Enable MIA Extensions")
 public class EnableExtensions implements Command {
     @Override
     public void run() {
-        // Run the dependency validator.  If updates were required, return.
-        if (DependencyValidator.run()) return;
+        // Run the dependency validator. If updates were required, return.
+        if (DependencyValidator.run())
+            return;
 
         MacroHandler macroHandler = MacroHandler.getMacroHandler();
 

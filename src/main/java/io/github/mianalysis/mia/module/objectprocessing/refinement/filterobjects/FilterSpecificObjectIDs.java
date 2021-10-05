@@ -118,7 +118,7 @@ public class FilterSpecificObjectIDs extends AbstractObjectFilter implements Act
             }
         }
 
-        int[] ids = CommaSeparatedStringInterpreter.interpretIntegers(numbersField.getText(), true);
+        int[] ids = CommaSeparatedStringInterpreter.interpretIntegers(numbersField.getText(), true, 0);
 
         frame.dispose();
         frame = null;

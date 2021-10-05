@@ -1,11 +1,15 @@
 package io.github.mianalysis.mia.macro.inputoutput;
 
+import org.scijava.Priority;
+import org.scijava.plugin.Plugin;
+
 import ij.macro.MacroExtension;
 import io.github.mianalysis.mia.macro.MacroOperation;
-import io.github.mianalysis.mia.module.inputoutput.ImageLoader;
 import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.inputoutput.ImageLoader;
 import io.github.mianalysis.mia.object.Workspace;
 
+@Plugin(type = MacroOperation.class, priority=Priority.LOW, visible=true)
 public class MIA_LoadImageFromImageJ extends MacroOperation {
     public MIA_LoadImageFromImageJ(MacroExtension theHandler) {
         super(theHandler);

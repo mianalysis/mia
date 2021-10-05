@@ -1,5 +1,8 @@
 package io.github.mianalysis.mia.macro.objectprocessing;
 
+import org.scijava.Priority;
+import org.scijava.plugin.Plugin;
+
 import ij.gui.Roi;
 import ij.macro.MacroExtension;
 import ij.plugin.frame.RoiManager;
@@ -9,6 +12,7 @@ import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
 
+@Plugin(type = MacroOperation.class, priority=Priority.LOW, visible=true)
 public class MIA_GetSliceAsROI extends MacroOperation {
     public MIA_GetSliceAsROI(MacroExtension theHandler) {
         super(theHandler);

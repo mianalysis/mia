@@ -289,7 +289,7 @@ public class FitEllipsoid extends Module {
         try {
             pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS); // i.e. never terminate early
         } catch (InterruptedException e) {
-            MIA.log.writeError(e.getStackTrace().toString());
+            MIA.log.writeError(e);
         }
 
         if (showOutput) {

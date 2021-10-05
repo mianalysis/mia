@@ -1,11 +1,13 @@
 package io.github.mianalysis.mia.macro;
 
+import org.scijava.plugin.SciJavaPlugin;
+
 import ij.macro.ExtensionDescriptor;
 import ij.macro.MacroExtension;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.Workspace;
 
-public abstract class MacroOperation extends ExtensionDescriptor {
+public abstract class MacroOperation extends ExtensionDescriptor implements SciJavaPlugin {
     // Using the same numbering as MacroExtension
     protected static int ARG_STRING = 1;
     protected static int ARG_NUMBER = 2;

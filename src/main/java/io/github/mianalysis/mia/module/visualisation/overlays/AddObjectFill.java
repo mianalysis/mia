@@ -110,7 +110,7 @@ public class AddObjectFill extends AbstractOverlay {
             ipl.updateAndDraw();
 
         } catch (InterruptedException e) {
-            MIA.log.writeError(e.getLocalizedMessage());
+            MIA.log.writeError(e);
             return;
         }
     }

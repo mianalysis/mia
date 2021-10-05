@@ -1,5 +1,10 @@
 package io.github.mianalysis.mia.macro.objectprocessing;
 
+import java.util.HashMap;
+
+import org.scijava.Priority;
+import org.scijava.plugin.Plugin;
+
 import ij.macro.MacroExtension;
 import ij.measure.ResultsTable;
 import io.github.mianalysis.mia.macro.MacroOperation;
@@ -8,8 +13,7 @@ import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
 
-import java.util.HashMap;
-
+@Plugin(type = MacroOperation.class, priority=Priority.LOW, visible=true)
 public class MIA_ListObjectsInWorkspace extends MacroOperation {
     public MIA_ListObjectsInWorkspace(MacroExtension theHandler) {
         super(theHandler);

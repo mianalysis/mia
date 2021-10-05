@@ -1,5 +1,8 @@
 package io.github.mianalysis.mia.macro.objectprocessing;
 
+import org.scijava.Priority;
+import org.scijava.plugin.Plugin;
+
 import ij.macro.MacroExtension;
 import io.github.mianalysis.mia.macro.MacroOperation;
 import io.github.mianalysis.mia.module.Modules;
@@ -8,6 +11,7 @@ import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.sjcross.common.object.Point;
 
+@Plugin(type = MacroOperation.class, priority=Priority.LOW, visible=true)
 public class MIA_GetObjectCoordinates extends MacroOperation {
     public MIA_GetObjectCoordinates(MacroExtension theHandler) {
         super(theHandler);

@@ -315,7 +315,7 @@ public class FilterImage extends Module {
         ImagePlus tempImagePlus = new Duplicator().run(inputImagePlus);
 
         // Getting list of frames
-        int[] offsets = CommaSeparatedStringInterpreter.interpretIntegers(windowIndices, true);
+        int[] offsets = CommaSeparatedStringInterpreter.interpretIntegers(windowIndices, true,0);
 
         // Running through each frame, calculating the local average
         for (int f = 1; f <= inputImagePlus.getNFrames(); f++) {

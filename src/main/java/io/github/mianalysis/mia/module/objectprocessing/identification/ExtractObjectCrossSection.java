@@ -133,9 +133,7 @@ public class ExtractObjectCrossSection extends Module {
         Objs outputObjects = new Objs(outputObjectsName, inputObjects);
         workspace.addObjects(outputObjects);
 
-        int[] indices = CommaSeparatedStringInterpreter.interpretIntegers(indicesString, true);
-        if (indicesString.contains("end"))
-            indices = CommaSeparatedStringInterpreter.extendRangeToEnd(indices, inputObjects.getNSlices());
+        int[] indices = CommaSeparatedStringInterpreter.interpretIntegers(indicesString, true, inputObjects.getNSlices());
 
         // If using an image measurement, updating the indices here, as they will be the
         // same for all objects

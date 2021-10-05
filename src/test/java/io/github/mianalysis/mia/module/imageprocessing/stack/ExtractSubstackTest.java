@@ -27,7 +27,7 @@ public class ExtractSubstackTest extends ModuleTest {
     public void testInterpretRangeSingleSingle() {
         String inputRange = "1";
 
-        int[] actual = CommaSeparatedStringInterpreter.interpretIntegers(inputRange,true);
+        int[] actual = CommaSeparatedStringInterpreter.interpretIntegers(inputRange,true,0);
         int[] expected = new int[]{1};
 
         assertArrayEquals(expected,actual);
@@ -38,7 +38,7 @@ public class ExtractSubstackTest extends ModuleTest {
     public void testInterpretRangeMultipleSingleInOrder() {
         String inputRange = "1,3,6";
 
-        int[] actual = CommaSeparatedStringInterpreter.interpretIntegers(inputRange,true);
+        int[] actual = CommaSeparatedStringInterpreter.interpretIntegers(inputRange,true,0);
         int[] expected = new int[]{1,3,6};
 
         assertArrayEquals(expected,actual);
@@ -49,7 +49,7 @@ public class ExtractSubstackTest extends ModuleTest {
     public void testInterpretRangeMultipleSingleOutOfOrder() {
         String inputRange = "1,6,3";
 
-        int[] actual = CommaSeparatedStringInterpreter.interpretIntegers(inputRange,true);
+        int[] actual = CommaSeparatedStringInterpreter.interpretIntegers(inputRange,true,0);
         int[] expected = new int[]{1,3,6};
 
         assertArrayEquals(expected,actual);
@@ -60,7 +60,7 @@ public class ExtractSubstackTest extends ModuleTest {
     public void testInterpretRangeSingleRangeAscending() {
         String inputRange = "4-8";
 
-        int[] actual = CommaSeparatedStringInterpreter.interpretIntegers(inputRange,true);
+        int[] actual = CommaSeparatedStringInterpreter.interpretIntegers(inputRange,true,0);
         int[] expected = new int[]{4,5,6,7,8};
 
         assertArrayEquals(expected,actual);
@@ -71,7 +71,7 @@ public class ExtractSubstackTest extends ModuleTest {
     public void testInterpretRangeSingleRangeSame() {
         String inputRange = "4-4";
 
-        int[] actual = CommaSeparatedStringInterpreter.interpretIntegers(inputRange,true);
+        int[] actual = CommaSeparatedStringInterpreter.interpretIntegers(inputRange,true,0);
         int[] expected = new int[]{4};
 
         assertArrayEquals(expected,actual);
@@ -82,7 +82,7 @@ public class ExtractSubstackTest extends ModuleTest {
     public void testInterpretRangeSingleRangeDescending() {
         String inputRange = "8-4";
 
-        int[] actual = CommaSeparatedStringInterpreter.interpretIntegers(inputRange,true);
+        int[] actual = CommaSeparatedStringInterpreter.interpretIntegers(inputRange,true,0);
         int[] expected = new int[]{4,5,6,7,8};
 
         assertArrayEquals(expected,actual);
@@ -93,7 +93,7 @@ public class ExtractSubstackTest extends ModuleTest {
     public void testInterpretRangeMultipleRangeAscending() {
         String inputRange = "4-8,12-15";
 
-        int[] actual = CommaSeparatedStringInterpreter.interpretIntegers(inputRange,true);
+        int[] actual = CommaSeparatedStringInterpreter.interpretIntegers(inputRange,true,0);
         int[] expected = new int[]{4,5,6,7,8,12,13,14,15};
 
         assertArrayEquals(expected,actual);
@@ -104,7 +104,7 @@ public class ExtractSubstackTest extends ModuleTest {
     public void testInterpretRangeMultipleRangeAscendingDescending() {
         String inputRange = "4-8,15-12";
 
-        int[] actual = CommaSeparatedStringInterpreter.interpretIntegers(inputRange,true);
+        int[] actual = CommaSeparatedStringInterpreter.interpretIntegers(inputRange,true,0);
         int[] expected = new int[]{4,5,6,7,8,12,13,14,15};
 
         assertArrayEquals(expected,actual);
@@ -115,7 +115,7 @@ public class ExtractSubstackTest extends ModuleTest {
     public void testInterpretRangeIntervalRangeAscending() {
         String inputRange = "4-8-2";
 
-        int[] actual = CommaSeparatedStringInterpreter.interpretIntegers(inputRange,true);
+        int[] actual = CommaSeparatedStringInterpreter.interpretIntegers(inputRange,true,0);
         int[] expected = new int[]{4,6,8};
 
         assertArrayEquals(expected,actual);
@@ -126,7 +126,7 @@ public class ExtractSubstackTest extends ModuleTest {
     public void testInterpretRangeIntervalRangeAscendingNoneToFind() {
         String inputRange = "4-5-2";
 
-        int[] actual = CommaSeparatedStringInterpreter.interpretIntegers(inputRange,true);
+        int[] actual = CommaSeparatedStringInterpreter.interpretIntegers(inputRange,true,0);
         int[] expected = new int[]{4};
 
         assertArrayEquals(expected,actual);
@@ -137,7 +137,7 @@ public class ExtractSubstackTest extends ModuleTest {
     public void testInterpretRangeMixed() {
         String inputRange = "4-8,18,12-15,20-32-3";
 
-        int[] actual = CommaSeparatedStringInterpreter.interpretIntegers(inputRange,true);
+        int[] actual = CommaSeparatedStringInterpreter.interpretIntegers(inputRange,true,0);
         int[] expected = new int[]{4,5,6,7,8,12,13,14,15,18,20,23,26,29,32};
 
         assertArrayEquals(expected,actual);
@@ -148,8 +148,8 @@ public class ExtractSubstackTest extends ModuleTest {
     public void testInterpretRangeSingleRangeEnd() {
         String inputRange = "4-end";
 
-        int[] actual = CommaSeparatedStringInterpreter.interpretIntegers(inputRange,true);
-        int[] expected = new int[]{4,5,Integer.MAX_VALUE};
+        int[] actual = CommaSeparatedStringInterpreter.interpretIntegers(inputRange,true,8);
+        int[] expected = new int[]{4,5,6,7,8};
 
         assertArrayEquals(expected,actual);
 
@@ -159,8 +159,8 @@ public class ExtractSubstackTest extends ModuleTest {
     public void testInterpretRangeSingleRangeEndMixed() {
         String inputRange = "2-4,6,10-end";
 
-        int[] actual = CommaSeparatedStringInterpreter.interpretIntegers(inputRange,true);
-        int[] expected = new int[]{2,3,4,6,10,11,Integer.MAX_VALUE};
+        int[] actual = CommaSeparatedStringInterpreter.interpretIntegers(inputRange,true,15);
+        int[] expected = new int[]{2,3,4,6,10,11,12,13,14,15};
 
         assertArrayEquals(expected,actual);
 
@@ -170,8 +170,8 @@ public class ExtractSubstackTest extends ModuleTest {
     public void testInterpretRangeIntervalRangeEnd() {
         String inputRange = "4-end-3";
 
-        int[] actual = CommaSeparatedStringInterpreter.interpretIntegers(inputRange,true);
-        int[] expected = new int[]{4,7,Integer.MAX_VALUE};
+        int[] actual = CommaSeparatedStringInterpreter.interpretIntegers(inputRange,true,8);
+        int[] expected = new int[]{4,7};
 
         assertArrayEquals(expected,actual);
 
@@ -181,8 +181,8 @@ public class ExtractSubstackTest extends ModuleTest {
     public void testInterpretRangeIntervalRangeEndMixed() {
         String inputRange = "2-4,12-end-3";
 
-        int[] actual = CommaSeparatedStringInterpreter.interpretIntegers(inputRange,true);
-        int[] expected = new int[]{2,3,4,12,15,Integer.MAX_VALUE};
+        int[] actual = CommaSeparatedStringInterpreter.interpretIntegers(inputRange,true,20);
+        int[] expected = new int[]{2,3,4,12,15,18};
 
         assertArrayEquals(expected,actual);
 
@@ -192,8 +192,8 @@ public class ExtractSubstackTest extends ModuleTest {
     public void testInterpretRangeIntervalRangeEndMixedWhitespace() {
         String inputRange = "2 - 4 , 12 - end - 3";
 
-        int[] actual = CommaSeparatedStringInterpreter.interpretIntegers(inputRange,true);
-        int[] expected = new int[]{2,3,4,12,15,Integer.MAX_VALUE};
+        int[] actual = CommaSeparatedStringInterpreter.interpretIntegers(inputRange,true,20);
+        int[] expected = new int[]{2,3,4,12,15,18};
 
         assertArrayEquals(expected,actual);
 

@@ -393,7 +393,7 @@ public class FilterObjects extends Module implements ActionListener {
             }
         }
 
-        int[] ids = CommaSeparatedStringInterpreter.interpretIntegers(numbersField.getText(), true);
+        int[] ids = CommaSeparatedStringInterpreter.interpretIntegers(numbersField.getText(), true, 0);
 
         frame.dispose();
         frame = null;

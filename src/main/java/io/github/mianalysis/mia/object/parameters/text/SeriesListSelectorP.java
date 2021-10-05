@@ -39,7 +39,7 @@ public class SeriesListSelectorP extends StringP {
     }
 
     public int[] getSeriesList() {
-        return CommaSeparatedStringInterpreter.interpretIntegers(value,true);
+        return CommaSeparatedStringInterpreter.interpretIntegers(value,true,0);
 
     }
 }

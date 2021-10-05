@@ -123,10 +123,8 @@ public class AddText extends AbstractOverlay {
             ipl = new Duplicator().run(ipl);
 
         // Converting slice and frame ranges to numbers
-        int[] zRange = CommaSeparatedStringInterpreter.interpretIntegers(zRangeString, true);
-        zRange = CommaSeparatedStringInterpreter.extendRangeToEnd(zRange, ipl.getNSlices());
-        int[] frameRange = CommaSeparatedStringInterpreter.interpretIntegers(frameRangeString, true);
-        frameRange = CommaSeparatedStringInterpreter.extendRangeToEnd(frameRange, ipl.getNFrames());
+        int[] zRange = CommaSeparatedStringInterpreter.interpretIntegers(zRangeString, true, ipl.getNSlices());
+        int[] frameRange = CommaSeparatedStringInterpreter.interpretIntegers(frameRangeString, true, ipl.getNFrames());
 
         addOverlay(ipl, text, color, labelSize, opacity, xPosition, yPosition, zRange, frameRange, centreText);
 

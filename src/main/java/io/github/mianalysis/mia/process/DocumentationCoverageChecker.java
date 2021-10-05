@@ -91,7 +91,7 @@ public class DocumentationCoverageChecker {
 
             } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | NoSuchMethodException
                     | InvocationTargetException e) {
-                System.err.println(e.getMessage());
+                e.printStackTrace();
             }
         }
 

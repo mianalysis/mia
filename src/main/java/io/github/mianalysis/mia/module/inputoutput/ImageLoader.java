@@ -334,17 +334,9 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
             height = crop[3];
         }
 
-        int[] channelsList = CommaSeparatedStringInterpreter.interpretIntegers(dimRanges[0], true);
-        if (channelsList[channelsList.length - 1] == Integer.MAX_VALUE)
-            channelsList = CommaSeparatedStringInterpreter.extendRangeToEnd(channelsList, sizeC);
-
-        int[] slicesList = CommaSeparatedStringInterpreter.interpretIntegers(dimRanges[1], true);
-        if (slicesList[slicesList.length - 1] == Integer.MAX_VALUE)
-            slicesList = CommaSeparatedStringInterpreter.extendRangeToEnd(slicesList, sizeZ);
-
-        int[] framesList = CommaSeparatedStringInterpreter.interpretIntegers(dimRanges[2], true);
-        if (framesList[framesList.length - 1] == Integer.MAX_VALUE)
-            framesList = CommaSeparatedStringInterpreter.extendRangeToEnd(framesList, sizeT);
+        int[] channelsList = CommaSeparatedStringInterpreter.interpretIntegers(dimRanges[0], true,sizeC);
+        int[] slicesList = CommaSeparatedStringInterpreter.interpretIntegers(dimRanges[1], true, sizeZ);
+        int[] framesList = CommaSeparatedStringInterpreter.interpretIntegers(dimRanges[2], true, sizeT);
 
         int nC = channelsList.length;
         int nZ = slicesList.length;
@@ -664,9 +656,7 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
         // Getting list of all matching filenames
         String[] filenames = getGenericNames(metadata, absolutePath);
 
-        int[] framesList = CommaSeparatedStringInterpreter.interpretIntegers(frames, true);
-        if (framesList[framesList.length - 1] == Integer.MAX_VALUE)
-            framesList = CommaSeparatedStringInterpreter.extendRangeToEnd(framesList, filenames.length);
+        int[] framesList = CommaSeparatedStringInterpreter.interpretIntegers(frames, true, filenames.length);
 
         // Determining the dimensions of the input image
         String[] dimRanges = new String[] { channels, slices, "1" };
@@ -749,15 +739,10 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
         DecimalFormat df = new DecimalFormat(stringBuilder.toString());
 
         // Determining the number of images to load
-        int[] framesList = CommaSeparatedStringInterpreter.interpretIntegers(frames, true);
-
-        if (framesList[framesList.length - 1] == Integer.MAX_VALUE) {
-            int idx = framesList[0];
-            while (new File(nameBefore + df.format(idx) + nameAfter).exists())
-                idx++;
-
-            framesList = CommaSeparatedStringInterpreter.extendRangeToEnd(framesList, idx - 1);
-        }
+        int maxFrame = 0;
+        if (frames.contains("end"))
+            maxFrame = CommaSeparatedStringInterpreter.firstValue(frames);
+        int[] framesList = CommaSeparatedStringInterpreter.interpretIntegers(frames, true, maxFrame);
 
         // Determining the dimensions of the input image
         String[] dimRanges = new String[] { channels, slices, "1" };
