@@ -7,6 +7,9 @@ import java.util.LinkedList;
 import java.util.Map;
 import java.util.TreeMap;
 
+import org.scijava.Priority;
+import org.scijava.plugin.Plugin;
+
 import ij.ImagePlus;
 import ij.plugin.Duplicator;
 import ij.plugin.filter.Convolver;
@@ -17,9 +20,6 @@ import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.module.Module;
-import org.scijava.Priority;
-import org.scijava.plugin.Plugin;
 import io.github.mianalysis.mia.module.imageprocessing.pixel.ImageCalculator;
 import io.github.mianalysis.mia.module.imageprocessing.pixel.InvertIntensity;
 import io.github.mianalysis.mia.module.imageprocessing.pixel.ProjectImage;
@@ -60,7 +60,7 @@ import sc.fiji.analyzeSkeleton.AnalyzeSkeleton_;
 /**
  * Created by sc13967 on 24/01/2018.
  */
-@Plugin(type = Module.class, priority=Priority.LOW, visible=true)
+@Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class MeasureObjectCurvature extends Module {
     public static final String INPUT_SEPARATOR = "Object input/output";
     public static final String INPUT_OBJECTS = "Input objects";
@@ -510,7 +510,10 @@ public class MeasureObjectCurvature extends Module {
 
     @Override
     public String getDescription() {
-        return "";
+        return "Fits a 2D spline to the backbone of objects.  Each object in the input collection will be reduced to a single (longest skeleton path) backbone, which will be fit with the spline.  Local curvature of the spline can be calculated and any measurements will be assigned to the relevant object (irrespective of whether spline objects are exported).  Curvature values can be calculated as \"absolute\" (always greater than 0, irrespective of the direction of curvature), or \"signed\" (sign dependent on direction of curvature, but requires the \"start\" end of the backbone to be specified)."
+
+                + "<br><br>Note: Spline fitting will be performed in 2D, so any 3D objects will be projected into a single plane first.";
+
     }
 
     @Override
@@ -937,31 +940,50 @@ public class MeasureObjectCurvature extends Module {
         parameters.get(ACCURACY).setDescription(
                 "\"If the median residual at a certain robustness iteration is less than this amount, no more iterations are done\".  Description taken from <a href=\"https://commons.apache.org/proper/commons-math/javadocs/api-3.3/org/apache/commons/math3/analysis/interpolation/LoessInterpolator.html\">LoessInterpolator documentation</a>");
 
-        parameters.get(RELATE_TO_REFERENCE_POINT).setDescription("When selected, the fit spline will be oriented such that the first point is closer to the reference point (specified by measurements \""+X_REF_MEASUREMENT+"\" and \""+Y_REF_MEASUREMENT+"\") than the final point in the spline.  Having this consistency to the spline orientation allows measurements relative to the first point to be calculated (e.g. relative location of maximum curvature along the spline).  When this is not selected, there's no guarantee of which end of the spline will be \"first\".");
+        parameters.get(RELATE_TO_REFERENCE_POINT).setDescription(
+                "When selected, the fit spline will be oriented such that the first point is closer to the reference point (specified by measurements \""
+                        + X_REF_MEASUREMENT + "\" and \"" + Y_REF_MEASUREMENT
+                        + "\") than the final point in the spline.  Having this consistency to the spline orientation allows measurements relative to the first point to be calculated (e.g. relative location of maximum curvature along the spline).  When this is not selected, there's no guarantee of which end of the spline will be \"first\".");
 
-        parameters.get(X_REF_MEASUREMENT).setDescription("If \""+RELATE_TO_REFERENCE_POINT+"\" is selected, this is the measurement associated with the input object that will provide the x-axis reference for determining the orientation of the spline.");
+        parameters.get(X_REF_MEASUREMENT).setDescription("If \"" + RELATE_TO_REFERENCE_POINT
+                + "\" is selected, this is the measurement associated with the input object that will provide the x-axis reference for determining the orientation of the spline.");
 
-        parameters.get(Y_REF_MEASUREMENT).setDescription("If \""+RELATE_TO_REFERENCE_POINT+"\" is selected, this is the measurement associated with the input object that will provide the y-axis reference for determining the orientation of the spline.");
+        parameters.get(Y_REF_MEASUREMENT).setDescription("If \"" + RELATE_TO_REFERENCE_POINT
+                + "\" is selected, this is the measurement associated with the input object that will provide the y-axis reference for determining the orientation of the spline.");
 
-        parameters.get(ABSOLUTE_CURVATURE).setDescription("When selected (and when \""+RELATE_TO_REFERENCE_POINT+"\" is also selected), absolute curvature values will be calculated.  Absolute curvatures are always greater than or equal to 0, irrespective of direction.  Increasing signed curvature values indicate increasing curvatures.");
+        parameters.get(ABSOLUTE_CURVATURE).setDescription("When selected (and when \"" + RELATE_TO_REFERENCE_POINT
+                + "\" is also selected), absolute curvature values will be calculated.  Absolute curvatures are always greater than or equal to 0, irrespective of direction.  Increasing signed curvature values indicate increasing curvatures.");
 
-        parameters.get(SIGNED_CURVATURE).setDescription("When selected (and when \""+RELATE_TO_REFERENCE_POINT+"\" is also selected), signed curvature values will be calculated.  Signed curvatures are increasingly positive as the spline bends left and increasingly negative as the spline bends right (directions relative to path along spline, starting at first point).");
+        parameters.get(SIGNED_CURVATURE).setDescription("When selected (and when \"" + RELATE_TO_REFERENCE_POINT
+                + "\" is also selected), signed curvature values will be calculated.  Signed curvatures are increasingly positive as the spline bends left and increasingly negative as the spline bends right (directions relative to path along spline, starting at first point).");
 
-        parameters.get(CALCULATE_END_END_ANGLE).setDescription("When selected, the angle between the two ends of the spline are calculated in degree units.");
+        parameters.get(CALCULATE_END_END_ANGLE).setDescription(
+                "When selected, the angle between the two ends of the spline are calculated in degree units.");
 
-        parameters.get(FITTING_RANGE_PX).setDescription("If the angle between spline ends is being calculated, this is the number of points at each end of the spline that are fit to get the orientation at that end.");
+        parameters.get(FITTING_RANGE_PX).setDescription(
+                "If the angle between spline ends is being calculated, this is the number of points at each end of the spline that are fit to get the orientation at that end.");
 
-        parameters.get(DRAW_SPLINE).setDescription("When selected, the fit spline(s) will be rendered as an overlay on the image specified by \""+INPUT_IMAGE+"\".");
+        parameters.get(DRAW_SPLINE).setDescription(
+                "When selected, the fit spline(s) will be rendered as an overlay on the image specified by \""
+                        + INPUT_IMAGE + "\".");
 
-        parameters.get(INPUT_IMAGE).setDescription("If drawing the spline(s), this is the image onto which they will be added as overlays.");
+        parameters.get(INPUT_IMAGE).setDescription(
+                "If drawing the spline(s), this is the image onto which they will be added as overlays.");
 
-        parameters.get(APPLY_TO_IMAGE).setDescription("If drawing the spline(s), when this is selected, the spline overlays will be added to the image specified by \""+INPUT_IMAGE+"\".  If not selected, the image containing the overlays will be stored separately in the workspace with the name specified by \""+OUTPUT_IMAGE+"\".");
+        parameters.get(APPLY_TO_IMAGE).setDescription(
+                "If drawing the spline(s), when this is selected, the spline overlays will be added to the image specified by \""
+                        + INPUT_IMAGE
+                        + "\".  If not selected, the image containing the overlays will be stored separately in the workspace with the name specified by \""
+                        + OUTPUT_IMAGE + "\".");
 
-        parameters.get(OUTPUT_IMAGE).setDescription("If drawing the spline(s) and \""+APPLY_TO_IMAGE+"\" is not selected, this is the name with which the overlay images will be stored in the workspace.");
+        parameters.get(OUTPUT_IMAGE).setDescription("If drawing the spline(s) and \"" + APPLY_TO_IMAGE
+                + "\" is not selected, this is the name with which the overlay images will be stored in the workspace.");
 
-        parameters.get(LINE_WIDTH).setDescription("If drawing the spline(s), this is the width of the spline overlay lines that will be drawn.");
+        parameters.get(LINE_WIDTH).setDescription(
+                "If drawing the spline(s), this is the width of the spline overlay lines that will be drawn.");
 
-        parameters.get(MAX_CURVATURE).setDescription("If drawing the spline(s), the local colour of each spline will represent the local absolute curvature.  This value controls the maximum absolute curvature that will correspond to the top-end of the curvature colourmap.  Values above this will see the colourmap cycling.");
+        parameters.get(MAX_CURVATURE).setDescription(
+                "If drawing the spline(s), the local colour of each spline will represent the local absolute curvature.  This value controls the maximum absolute curvature that will correspond to the top-end of the curvature colourmap.  Values above this will see the colourmap cycling.");
 
     }
 }
