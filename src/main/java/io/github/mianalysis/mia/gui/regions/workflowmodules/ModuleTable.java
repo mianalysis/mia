@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.swing.DropMode;
+import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JTable;
@@ -44,6 +45,7 @@ public class ModuleTable extends JTable implements ActionListener, MouseListener
 
     private static final long serialVersionUID = 3722736203899254351L;
     private Modules modules;
+    private HashMap<Module, ModuleName> moduleNames = new HashMap<>();
 
     public ModuleTable(TableModel tableModel, Modules modules, HashMap<Module, Boolean> expandedStatus) {
         super(tableModel);
@@ -115,6 +117,12 @@ public class ModuleTable extends JTable implements ActionListener, MouseListener
         }
     }
 
+    public void updateStates() {
+        for (ModuleName moduleName : moduleNames.values())
+            moduleName.updateState();
+        repaint();
+    }
+
     @Override
     public void actionPerformed(ActionEvent e) {
         switch (e.getActionCommand()) {
@@ -137,51 +145,43 @@ public class ModuleTable extends JTable implements ActionListener, MouseListener
         }
 
         GUI.updateModules();
+        GUI.updateParameters();
 
     }
 
     @Override
     public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
             int row, int column) {
-        JLabel label = new JLabel();
-
-        label.setBorder(new EmptyBorder(2, 5, 0, 0));
-        Font font = new Font(Font.SANS_SERIF, Font.PLAIN, 12);
-        label.setOpaque(true);
-
-        if (isSelected)
-            label.setBackground(Colours.LIGHT_BLUE);
-        else
-            label.setBackground(table.getBackground());
 
         if (value instanceof Module) {
             Module module = (Module) value;
-            if (module instanceof GUISeparator)
-                label.setForeground(Colours.DARK_BLUE);
-            else if (module.isEnabled() && module.isReachable() && module.isRunnable())
-                label.setForeground(Color.BLACK);
-            else if (module.isEnabled() & !module.isReachable())
-                label.setForeground(Colours.ORANGE);
-            else if (module.isEnabled() & !module.isRunnable())
-                label.setForeground(Colours.RED);
-            else
-                label.setForeground(Color.GRAY);
+            moduleNames.putIfAbsent(module, new ModuleName(module, table, isSelected));
+            ModuleName moduleName = moduleNames.get(module);
+            moduleName.setSelected(isSelected);
 
-            if (module.isDeprecated()) {
-                Map attributes = font.getAttributes();
-                attributes.put(TextAttribute.STRIKETHROUGH, TextAttribute.STRIKETHROUGH_ON);
-                font = new Font(attributes);
-            }
-            label.setFont(font);
-            label.setText(module.getNickname());
+            return moduleName;
 
         } else if (value instanceof String) {
+            JLabel label = new JLabel();
+
+            label.setBorder(new EmptyBorder(2, 5, 0, 0));
+            label.setOpaque(true);
+
+            if (isSelected)
+                label.setBackground(Colours.LIGHT_BLUE);
+            else
+                label.setBackground(table.getBackground());
+
             GUI.getModules().get(row).setNickname(((String) value).trim());
             GUI.updateModules();
             GUI.updateParameters();
+
+            return label;
+
         }
 
-        return label;
+        else
+            return null;
 
     }
 

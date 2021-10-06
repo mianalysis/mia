@@ -221,7 +221,7 @@ public class BasicPanel extends AbstractPanel {
 
     @Override
     public void updateAvailableModules() {
-        
+
     }
 
     @Override

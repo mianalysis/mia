@@ -206,10 +206,6 @@ public class GUI {
         mainPanel.updateAvailableModules();
     }
 
-    public static void updateModuleList() {
-        mainPanel.updateModules();
-    }
-
     public static void updateHelpNotes() {
         mainPanel.updateHelpNotes();
     }
@@ -218,9 +214,19 @@ public class GUI {
         mainPanel.updateFileList();
     }
 
-    public static void updateModuleStates(boolean verbose) {
+    public static void updateModules() {
+        mainPanel.updateModules();
+        mainPanel.updateHelpNotes();
+
+    }
+    
+    public static void updateModuleStates() {
         AnalysisTester.testModules(getModules());
         mainPanel.updateModuleStates();
+    }
+
+    public static void updateParameters() {
+        mainPanel.updateParameters();
     }
 
     public static ComponentFactory getComponentFactory() {
@@ -253,16 +259,6 @@ public class GUI {
 
         updateProgressBar((int) Math.round(workspaces.getOverallProgress() * 100));
 
-    }
-
-    public static void updateModules() {
-        mainPanel.updateModules();
-        mainPanel.updateHelpNotes();
-
-    }
-
-    public static void updateParameters() {
-        mainPanel.updateParameters();
     }
 
     public static void updateTestFile(boolean verbose) {
@@ -510,10 +506,9 @@ public class GUI {
         // Updating the selected modules
         setSelectedModulesByIndex(selectedIndices);
 
-        updateParameters();
         updateModules();
-        updateModuleStates(false);
-
+        updateParameters();
+        
         menuBar.setUndoRedoStatus(undoRedoStore);
 
     }
@@ -529,9 +524,8 @@ public class GUI {
         // Updating the selected modules
         setSelectedModulesByIndex(selectedIndices);
 
-        updateParameters();
         updateModules();
-        updateModuleStates(false);
+        updateParameters();
 
         menuBar.setUndoRedoStatus(undoRedoStore);
 

@@ -70,7 +70,7 @@ public class ModuleControlButton extends JButton implements ActionListener {
         moduleListMenu.setVisible(true);
 
         GUI.updateModules();
-        GUI.updateModuleStates(true);
+        GUI.updateParameters();
 
     }
 }

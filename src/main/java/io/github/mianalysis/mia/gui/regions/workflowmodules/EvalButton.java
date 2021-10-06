@@ -117,7 +117,7 @@ public class EvalButton extends JButton implements ActionListener {
         if (idx == GUI.getModuleBeingEval()) {
             MIA.log.writeStatus("Stopping");
             GUI.setModuleBeingEval(-1);
-            GUI.updateModuleStates(false);
+            GUI.updateModuleStates();
             t.stop();
             return;
         }
@@ -146,12 +146,12 @@ public class EvalButton extends JButton implements ActionListener {
                     if (module.isEnabled() && module.isRunnable()) {
                         try {
                             if (!evaluateModule(module)) {
-                                GUI.updateModuleStates(false);
+                                GUI.updateModuleStates();
                                 break;
                             }
                         } catch (Exception e1) {
                             GUI.setModuleBeingEval(-1);
-                            GUI.updateModuleStates(false);
+                            GUI.updateModuleStates();
                             e1.printStackTrace();
                             break;
                         }
@@ -172,7 +172,7 @@ public class EvalButton extends JButton implements ActionListener {
         // currently-evaluated module go red
         GUI.setLastModuleEval(modules.indexOf(module) - 1);
         GUI.setModuleBeingEval(modules.indexOf(module));
-        GUI.updateModuleStates(false);
+        GUI.updateModuleStates();
 
         Module.setVerbose(true);
         boolean status = true;
@@ -198,7 +198,7 @@ public class EvalButton extends JButton implements ActionListener {
         }
 
         GUI.setModuleBeingEval(-1);
-        GUI.updateModuleStates(false);
+        GUI.updateModuleStates();
 
         return status;
 

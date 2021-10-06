@@ -89,7 +89,7 @@ import io.github.sjcross.common.system.FileCrawler;
 /**
  * Created by Stephen on 15/05/2017.
  */
-@Plugin(type = Module.class, priority=Priority.LOW, visible=true)
+@Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
     public static final String LOADER_SEPARATOR = "Core image loading controls";
     public static final String OUTPUT_IMAGE = "Output image";
@@ -334,7 +334,7 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
             height = crop[3];
         }
 
-        int[] channelsList = CommaSeparatedStringInterpreter.interpretIntegers(dimRanges[0], true,sizeC);
+        int[] channelsList = CommaSeparatedStringInterpreter.interpretIntegers(dimRanges[0], true, sizeC);
         int[] slicesList = CommaSeparatedStringInterpreter.interpretIntegers(dimRanges[1], true, sizeZ);
         int[] framesList = CommaSeparatedStringInterpreter.interpretIntegers(dimRanges[2], true, sizeT);
 
@@ -740,9 +740,13 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
 
         // Determining the number of images to load
         int maxFrame = 0;
-        if (frames.contains("end"))
+        if (frames.contains("end")) {
             maxFrame = CommaSeparatedStringInterpreter.firstValue(frames);
-        int[] framesList = CommaSeparatedStringInterpreter.interpretIntegers(frames, true, maxFrame);
+            while (new File(nameBefore + df.format(maxFrame) + nameAfter).exists())
+                maxFrame++;
+        }
+
+        int[] framesList = CommaSeparatedStringInterpreter.interpretIntegers(frames, true, maxFrame-1);
 
         // Determining the dimensions of the input image
         String[] dimRanges = new String[] { channels, slices, "1" };
