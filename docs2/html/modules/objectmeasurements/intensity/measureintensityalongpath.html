@@ -32,8 +32,10 @@
           style="padding-right:8px;">Modular Image Analysis</a>
       <a class="navbar-brand d-block d-sm-none" href="#"><img height="32" src="img/logo_64.png"
           style="padding-right:8px;"></a> -->
-      <a class="navbar-brand mia-name" href="../../../../index.html" style="padding-top: 5px;padding-bottom: 0px;"><img
-          height="30" src="../../../../img/logo_64.png" style="padding-right:8px;">Modular Image Analysis</a>
+      <a class="navbar-brand mia-name" href="../../../../index.html" style="padding-top: 3px;padding-bottom: 0px;">
+        <img height="36" src="../../../../img/logo_64.png" style="padding-bottom: 3px; padding-right:8px;">
+        Modular Image Analysis
+      </a>
       <buton class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive"
         style="border: none;">
         <span class="navbar-toggler-icon"></span>
@@ -44,8 +46,8 @@
             <a class="nav-link" href="../../../../index.html">Home</a>
           </li>
           <li class="nav-item dropdown ">
-            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownModules"
-              role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Guides</a>
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownModules" role="button" data-toggle="dropdown"
+              aria-haspopup="true" aria-expanded="false">Guides</a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdownModules">
               <a class="dropdown-item" href="../../../../html/gettingstarted.html">Getting started</a>
             </div>
@@ -69,25 +71,25 @@
           </li>
         </ul>
         <a class="btn btn-outline-primary ml-2"
-          href="https://github.com/mianalysis/mia/releases/download/v0.20.3/MIA_-0.20.3.jar">Download</a>
+          href="https://github.com/mianalysis/mia/releases/download/v0.21.1-SNAPSHOT/MIA_-0.21.1-SNAPSHOT.jar">Download</a>
       </div>
     </div>
   </nav>
 
   <div class="page-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
-    <p class="text-secondary"><a href="../../../../html/modules/modules.html">Modules</a> ➤ <a href="../../../../html/modules/objectmeasurements/objectmeasurements.html">Object measurements</a> ➤ <a href="../../../../html/modules/objectmeasurements/intensity/intensity.html">Intensity</a></p>
+    <p class="mia-path"><a href="../../../../html/modules/modules.html">Modules</a> > <a href="../../../../html/modules/objectmeasurements/objectmeasurements.html">Object measurements</a> > <a href="../../../../html/modules/objectmeasurements/intensity/intensity.html">Intensity</a></p>
     <h1 class="display-4">Measure intensity along path</h1>
-    <p class="lead">Measures the intensity profile along the pixel-wide backbone of an object and outputs this profile to .</p>
+    <p class="mia-description">Measures the intensity profile along the pixel-wide backbone of an object and outputs this profile to .</p>
 </div>
 
-<div class="pt-md-2 pb-md-4 mx-auto">
-    <h2 class="display-6">Description</h2>
-    Measures the intensity profile along the pixel-wide backbone of an object and outputs this profile to .xlsx file.  Input objects are skeletonised to single pixel-wide representations prior to measurement; however, pre-skeletonised objects can also be processed.<br><br>Output results are stored in a multi-sheet .xlsx file, where each sheet includes the profile for a specific input image.  Each row of a sheet contains the profile for a single object.  Profiles are linearly-interpolated such that each measured position along a profile is 1px from the previous.<br><br>Note: Objects must either form a single line (i.e. not contain multiple branches) or reduce to a single line during skeletonisation.  No profile will be recorded for any objects which fail this requirement.
+<div class="pt-md-2 pb-md-4 mx-auto mia-page">
+    <h2 class="mia-section-title">Description</h2>
+    <p class="mia-main-text">Measures the intensity profile along the pixel-wide backbone of an object and outputs this profile to .xlsx file.  Input objects are skeletonised to single pixel-wide representations prior to measurement; however, pre-skeletonised objects can also be processed.<br><br>Output results are stored in a multi-sheet .xlsx file, where each sheet includes the profile for a specific input image.  Each row of a sheet contains the profile for a single object.  Profiles are linearly-interpolated such that each measured position along a profile is 1px from the previous.<br><br>Note: Objects must either form a single line (i.e. not contain multiple branches) or reduce to a single line during skeletonisation.  No profile will be recorded for any objects which fail this requirement.</p>
 </div>
 
-<div class="pt-md-2 pb-md-4 mx-auto">
-    <h2 class="display-6">Parameters</h2>
-    <b>Input objects</b> (default = "") Objects for which intensity profiles will be generated.<br><br><b>Measure another image</b> (default = "") Include another image from the workspace to be measured.  Each separate image will be measured at the same spatial points and be saved to a separate sheet of the .xlsx file.<br><b>Input image</b> (default = "") Image for which the intensity profile will be measured.  Results from this profile will be added to a separate sheet in the .xlsx file.<br><br><br><b>Include timepoints</b> (default = "false") Include a column recording the timepoint that the objects were present in.<br><br><b>Save name mode</b> (default = "Match input file name") Controls how saved profile file names will be generated.<br><ul><li>"Match input file name" Use the same name as the root file for this workspace (i.e. the input file in "Input control".</li><li>"Specific name" Use a specific name for the output file.  Care should be taken with this when working in batch mode as it's easy to continuously write over output files from other runs.</li></ul><br><b>File name</b> (default = "") Filename for saved distance file.  Note: Care should be taken with this when working in batch mode as it's easy to continuously write over output files from other runs.<br><br><b>Append series mode</b> (default = "Series number") Controls if any series information should be appended to the end of the filename.  This is useful when working with multi-series files, as it should help prevent writing files from multiple runs with the same filename.  Series numbers are prepended by "S".  Choices are: None, Series name, Series number.<br><b>Append date/time mode</b> (default = "Never") Controls under what conditions the time and date will be appended on to the end of the profile file filename.  This can be used to prevent accidental over-writing of files from previous runs:<br><ul><li>"Always" Always append the time and date on to the end of the filename.</li><li>"If file exists" Only append the time and date if the results file already exists.</li><li>"Never" Never append time and date (unless the file is open and unwritable).</li></ul><br><b>Add filename suffix</b> (default = "") A custom suffix to be added to each filename.<br><br>
+<div class="pt-md-2 pb-md-4 mx-auto mia-page">
+    <h2 class="mia-section-title">Parameters</h2>
+    <p class="mia-main-text"><p class="mia-main-text"><b>Input objects</b>:  Objects for which intensity profiles will be generated.<br><p class="mia-main-text"><b>Measure another image</b>:  Include another image from the workspace to be measured.  Each separate image will be measured at the same spatial points and be saved to a separate sheet of the .xlsx file.<p class="mia-main-text"><b>Input image</b>:  Image for which the intensity profile will be measured.  Results from this profile will be added to a separate sheet in the .xlsx file.<br><br><p class="mia-main-text"><b>Include timepoints</b>:  Include a column recording the timepoint that the objects were present in.<br><p class="mia-main-text"><b>Save name mode</b>:  Controls how saved profile file names will be generated.<br><ul><li>"Match input file name" Use the same name as the root file for this workspace (i.e. the input file in "Input control".</li><li>"Specific name" Use a specific name for the output file.  Care should be taken with this when working in batch mode as it's easy to continuously write over output files from other runs.</li></ul><p class="mia-main-text"><b>File name</b>:  Filename for saved distance file.  Note: Care should be taken with this when working in batch mode as it's easy to continuously write over output files from other runs.<br><p class="mia-main-text"><b>Append series mode</b>:  Controls if any series information should be appended to the end of the filename.  This is useful when working with multi-series files, as it should help prevent writing files from multiple runs with the same filename.  Series numbers are prepended by "S".  Choices are: None, Series name, Series number.<p class="mia-main-text"><b>Append date/time mode</b>:  Controls under what conditions the time and date will be appended on to the end of the profile file filename.  This can be used to prevent accidental over-writing of files from previous runs:<br><ul><li>"Always" Always append the time and date on to the end of the filename.</li><li>"If file exists" Only append the time and date if the results file already exists.</li><li>"Never" Never append time and date (unless the file is open and unwritable).</li></ul><p class="mia-main-text"><b>Add filename suffix</b>:  A custom suffix to be added to each filename.<br></p>
 </div>
 
   <!-- Footer -->

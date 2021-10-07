@@ -32,8 +32,10 @@
           style="padding-right:8px;">Modular Image Analysis</a>
       <a class="navbar-brand d-block d-sm-none" href="#"><img height="32" src="img/logo_64.png"
           style="padding-right:8px;"></a> -->
-      <a class="navbar-brand mia-name" href="../../../../index.html" style="padding-top: 5px;padding-bottom: 0px;"><img
-          height="30" src="../../../../img/logo_64.png" style="padding-right:8px;">Modular Image Analysis</a>
+      <a class="navbar-brand mia-name" href="../../../../index.html" style="padding-top: 3px;padding-bottom: 0px;">
+        <img height="36" src="../../../../img/logo_64.png" style="padding-bottom: 3px; padding-right:8px;">
+        Modular Image Analysis
+      </a>
       <buton class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive"
         style="border: none;">
         <span class="navbar-toggler-icon"></span>
@@ -44,8 +46,8 @@
             <a class="nav-link" href="../../../../index.html">Home</a>
           </li>
           <li class="nav-item dropdown ">
-            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownModules"
-              role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Guides</a>
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownModules" role="button" data-toggle="dropdown"
+              aria-haspopup="true" aria-expanded="false">Guides</a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdownModules">
               <a class="dropdown-item" href="../../../../html/gettingstarted.html">Getting started</a>
             </div>
@@ -69,25 +71,25 @@
           </li>
         </ul>
         <a class="btn btn-outline-primary ml-2"
-          href="https://github.com/mianalysis/mia/releases/download/v0.20.3/MIA_-0.20.3.jar">Download</a>
+          href="https://github.com/mianalysis/mia/releases/download/v0.21.1-SNAPSHOT/MIA_-0.21.1-SNAPSHOT.jar">Download</a>
       </div>
     </div>
   </nav>
 
   <div class="page-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
-    <p class="text-secondary"><a href="../../../../html/modules/modules.html">Modules</a> ➤ <a href="../../../../html/modules/objectmeasurements/objectmeasurements.html">Object measurements</a> ➤ <a href="../../../../html/modules/objectmeasurements/intensity/intensity.html">Intensity</a></p>
+    <p class="mia-path"><a href="../../../../html/modules/modules.html">Modules</a> > <a href="../../../../html/modules/objectmeasurements/objectmeasurements.html">Object measurements</a> > <a href="../../../../html/modules/objectmeasurements/intensity/intensity.html">Intensity</a></p>
     <h1 class="display-4">Measure spot intensity</h1>
-    <p class="lead">DEPRECATED: Please use separate "Get local object region" and "Measure object intensity" modules.</p>
+    <p class="mia-description">DEPRECATED: Please use separate "Get local object region" and "Measure object intensity" modules.</p>
 </div>
 
-<div class="pt-md-2 pb-md-4 mx-auto">
-    <h2 class="display-6">Description</h2>
-    DEPRECATED: Please use separate "Get local object region" and "Measure object intensity" modules.<br><br>Measures the intensity of an image for a circular (2D object*) or spherical (3D object*) region coincident with the mean centroid of each object in a specified object collection.  Measurements are associated with the corresponding input objects.  The radius of the measurement region can be specified as a fixed value or determined on an object-by-object basis from associated object (or parent) measurements.<br><br>Note: This module differs from the "Measure object intensity" module, which measures the intensity of all coordinates of an object.<br><br>* 2D objects are defined as objects identified from a single-slice image.  Objects with coordinates confined to a single plane, but identified from a 3D image stack are still considered 3D objects.
+<div class="pt-md-2 pb-md-4 mx-auto mia-page">
+    <h2 class="mia-section-title">Description</h2>
+    <p class="mia-main-text">DEPRECATED: Please use separate "Get local object region" and "Measure object intensity" modules.<br><br>Measures the intensity of an image for a circular (2D object*) or spherical (3D object*) region coincident with the mean centroid of each object in a specified object collection.  Measurements are associated with the corresponding input objects.  The radius of the measurement region can be specified as a fixed value or determined on an object-by-object basis from associated object (or parent) measurements.<br><br>Note: This module differs from the "Measure object intensity" module, which measures the intensity of all coordinates of an object.<br><br>* 2D objects are defined as objects identified from a single-slice image.  Objects with coordinates confined to a single plane, but identified from a 3D image stack are still considered 3D objects.</p>
 </div>
 
-<div class="pt-md-2 pb-md-4 mx-auto">
-    <h2 class="display-6">Parameters</h2>
-    <b>Input image</b> (default = "") Image from the workspace to measure the intensity of.<br><br><b>Input spot objects</b> (default = "") Object collection from the workspace for which spot intensities will be measured.  One spot will be measured for each object.<br><br><b>Calibrated units</b> (default = "false") When selected, spot radius values (irrespective of whether they are fixed values, measurements or parent measurements) are assumed to be specified in calibrated units (as defined by the "Input control" parameter "Spatial unit").  Otherwise, pixel units are assumed.<br><br><b>Radius value source</b> (default = "Fixed value") Controls how the radius of the spot is defined:<br><ul><li>"Fixed value" A single radius, defined by "Fixed value" will be used for all objects.</li><li>"Measurement" The radius will be equal to the value of a measurement (specified by "Radius measurement") associated with the object being measured.  Radii will potentially be different for each object.</li><li>"Parent measurement" The radius will be equal to the value of a measurement (specified by "Parent radius measurement") associated a parent of the object being measured (specified by "Parent object").  Radii will potentially be different for each object..</li></ul><br><b>Fixed value</b> (default = "2.0") Fixed spot radius to use for all object measurements when "Radius value source" is in "Fixed value" mode.<br><br><b>Radius measurement</b> (default = "") Measurement associated with the input object.  This will be used as spot the radius for spot intensity measurements when "Radius value source" is in "Measurement" mode.<br><br><b>Parent object</b> (default = "") Parent object of the input object being measured.  This parent will provide the measurement (specified by "Parent radius measurement") to be used as the spot radius for spot intensity measurements when "Radius value source" is in "Parent measurement" mode.<br><br><b>Parent radius measurement</b> (default = "") Measurement associated with a parent of the input object.  This will be used as the spot radius for spot intensity measurements when "Radius value source" is in "Parent measurement" mode.<br><br><b>Measure mean</b> (default = "true") When selected, the mean intensity of all coordinates in the spot is calculated and stored as a measurement associated with the input object.<br><br><b>Measure minimum</b> (default = "true") When selected, the minimum intensity of all coordinates in the spot is calculated and stored as a measurement associated with the input object.<br><br><b>Measure maximum</b> (default = "true") When selected, the maximum intensity of all coordinates in the spot is calculated and stored as a measurement associated with the input object.<br><br><b>Measure standard deviation</b> (default = "true") When selected, the standard deviation of intensity of all coordinates in the spot is calculated and stored as a measurement associated with the input object.<br><br><b>Measure sum</b> (default = "true") When selected, the summed intensity of all coordinates in the spot is calculated and stored as a measurement associated with the input object.<br><br>
+<div class="pt-md-2 pb-md-4 mx-auto mia-page">
+    <h2 class="mia-section-title">Parameters</h2>
+    <p class="mia-main-text"><p class="mia-main-text"><b>Input image</b>:  Image from the workspace to measure the intensity of.<br><p class="mia-main-text"><b>Input spot objects</b>:  Object collection from the workspace for which spot intensities will be measured.  One spot will be measured for each object.<br><p class="mia-main-text"><b>Calibrated units</b>:  When selected, spot radius values (irrespective of whether they are fixed values, measurements or parent measurements) are assumed to be specified in calibrated units (as defined by the "Input control" parameter "Spatial unit").  Otherwise, pixel units are assumed.<br><p class="mia-main-text"><b>Radius value source</b>:  Controls how the radius of the spot is defined:<br><ul><li>"Fixed value" A single radius, defined by "Fixed value" will be used for all objects.</li><li>"Measurement" The radius will be equal to the value of a measurement (specified by "Radius measurement") associated with the object being measured.  Radii will potentially be different for each object.</li><li>"Parent measurement" The radius will be equal to the value of a measurement (specified by "Parent radius measurement") associated a parent of the object being measured (specified by "Parent object").  Radii will potentially be different for each object..</li></ul><p class="mia-main-text"><b>Fixed value</b>:  Fixed spot radius to use for all object measurements when "Radius value source" is in "Fixed value" mode.<br><p class="mia-main-text"><b>Radius measurement</b>:  Measurement associated with the input object.  This will be used as spot the radius for spot intensity measurements when "Radius value source" is in "Measurement" mode.<br><p class="mia-main-text"><b>Parent object</b>:  Parent object of the input object being measured.  This parent will provide the measurement (specified by "Parent radius measurement") to be used as the spot radius for spot intensity measurements when "Radius value source" is in "Parent measurement" mode.<br><p class="mia-main-text"><b>Parent radius measurement</b>:  Measurement associated with a parent of the input object.  This will be used as the spot radius for spot intensity measurements when "Radius value source" is in "Parent measurement" mode.<br><p class="mia-main-text"><b>Measure mean</b>:  When selected, the mean intensity of all coordinates in the spot is calculated and stored as a measurement associated with the input object.<br><p class="mia-main-text"><b>Measure minimum</b>:  When selected, the minimum intensity of all coordinates in the spot is calculated and stored as a measurement associated with the input object.<br><p class="mia-main-text"><b>Measure maximum</b>:  When selected, the maximum intensity of all coordinates in the spot is calculated and stored as a measurement associated with the input object.<br><p class="mia-main-text"><b>Measure standard deviation</b>:  When selected, the standard deviation of intensity of all coordinates in the spot is calculated and stored as a measurement associated with the input object.<br><p class="mia-main-text"><b>Measure sum</b>:  When selected, the summed intensity of all coordinates in the spot is calculated and stored as a measurement associated with the input object.<br></p>
 </div>
 
   <!-- Footer -->

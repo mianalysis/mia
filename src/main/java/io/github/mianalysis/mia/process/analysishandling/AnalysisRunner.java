@@ -341,6 +341,7 @@ public class AnalysisRunner {
         Prefs.setThreads(origThreads);
         GUI.setModuleBeingEval(-1);
         GUI.updateModules();
+        GUI.updateParameters();
         Thread.currentThread().getThreadGroup().stop();
         MIA.log.writeStatus("Shutdown complete!");
 

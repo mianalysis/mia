@@ -32,8 +32,10 @@
           style="padding-right:8px;">Modular Image Analysis</a>
       <a class="navbar-brand d-block d-sm-none" href="#"><img height="32" src="img/logo_64.png"
           style="padding-right:8px;"></a> -->
-      <a class="navbar-brand mia-name" href="../../../../index.html" style="padding-top: 5px;padding-bottom: 0px;"><img
-          height="30" src="../../../../img/logo_64.png" style="padding-right:8px;">Modular Image Analysis</a>
+      <a class="navbar-brand mia-name" href="../../../../index.html" style="padding-top: 3px;padding-bottom: 0px;">
+        <img height="36" src="../../../../img/logo_64.png" style="padding-bottom: 3px; padding-right:8px;">
+        Modular Image Analysis
+      </a>
       <buton class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive"
         style="border: none;">
         <span class="navbar-toggler-icon"></span>
@@ -44,8 +46,8 @@
             <a class="nav-link" href="../../../../index.html">Home</a>
           </li>
           <li class="nav-item dropdown ">
-            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownModules"
-              role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Guides</a>
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownModules" role="button" data-toggle="dropdown"
+              aria-haspopup="true" aria-expanded="false">Guides</a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdownModules">
               <a class="dropdown-item" href="../../../../html/gettingstarted.html">Getting started</a>
             </div>
@@ -69,25 +71,25 @@
           </li>
         </ul>
         <a class="btn btn-outline-primary ml-2"
-          href="https://github.com/mianalysis/mia/releases/download/v0.20.3/MIA_-0.20.3.jar">Download</a>
+          href="https://github.com/mianalysis/mia/releases/download/v0.21.1-SNAPSHOT/MIA_-0.21.1-SNAPSHOT.jar">Download</a>
       </div>
     </div>
   </nav>
 
   <div class="page-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
-    <p class="text-secondary"><a href="../../../../html/modules/modules.html">Modules</a> ➤ <a href="../../../../html/modules/imageprocessing/imageprocessing.html">Image processing</a> ➤ <a href="../../../../html/modules/imageprocessing/pixel/pixel.html">Pixel</a></p>
+    <p class="mia-path"><a href="../../../../html/modules/modules.html">Modules</a> > <a href="../../../../html/modules/imageprocessing/imageprocessing.html">Image processing</a> > <a href="../../../../html/modules/imageprocessing/pixel/pixel.html">Pixel</a></p>
     <h1 class="display-4">Colour deconvolution</h1>
-    <p class="lead">Applies the <a href="https://imagej.</p>
+    <p class="mia-description">Applies the <a href="https://imagej.</p>
 </div>
 
-<div class="pt-md-2 pb-md-4 mx-auto">
-    <h2 class="display-6">Description</h2>
-    Applies the <a href="https://imagej.net/plugins/colour-deconvolution">Colour Deconvolution</a> plugin to unmix an RGB image (stored in the workspace) into up to three separate channels, which are output as separate images.  The input image can be stored as either an RGB or composite image.  This process is only applicable to images created via subtractive mixing (e.g. histological staining), not to additive methods (e.g. fluorescence).
+<div class="pt-md-2 pb-md-4 mx-auto mia-page">
+    <h2 class="mia-section-title">Description</h2>
+    <p class="mia-main-text">Applies the <a href="https://imagej.net/plugins/colour-deconvolution">Colour Deconvolution</a> plugin to unmix an RGB image (stored in the workspace) into up to three separate channels, which are output as separate images.  The input image can be stored as either an RGB or composite image.  This process is only applicable to images created via subtractive mixing (e.g. histological staining), not to additive methods (e.g. fluorescence).</p>
 </div>
 
-<div class="pt-md-2 pb-md-4 mx-auto">
-    <h2 class="display-6">Parameters</h2>
-    <b>Input image</b> (default = "") Image from the workspace to apply unmixing to.  This can be stored as either an RGB or composite image.<br><br><b>Output image 1</b> (default = "true") When selected, the first stain in the stain matrix will be output to the workspace with the name specified by "Output image 1 name"<br><br><b>Output image 1 name</b> (default = "") Name to assign to first stain image, if output to the workspace.<br><br><b>Output image 2</b> (default = "true") When selected, the second stain in the stain matrix will be output to the workspace with the name specified by "Output image 2 name"<br><br><b>Output image 2 name</b> (default = "") Name to assign to second stain image, if output to the workspace.<br><br><b>Output image 3</b> (default = "true") When selected, the third stain in the stain matrix will be output to the workspace with the name specified by "Output image 3 name"<br><br><b>Output image 3 name</b> (default = "") Name to assign to third stain image, if output to the workspace.<br><br><b>Stain model</b> (default = "H&E") Stain models to apply to input image.  If set to "Custom (user values)" the individual RGB components for each channel can be specified.  Model choices are: Alcian blue & H,Azan-Mallory,Brilliant_Blue,CMY,FastRed FastBlue DAB,Feulgen Light Green,Giemsa,H AEC,H&E,H&E 2,H&E DAB,H DAB,H PAS,Masson Trichrome,Methyl Green DAB,RGB,Custom (user values)<br><b>Stain 1 (red)</b> (default = "0.0") Red component of stain 1.  Value specified in range 0-1.<br><br><b>Stain 1 (green)</b> (default = "0.0") Green component of stain 1.  Value specified in range 0-1.<br><br><b>Stain 1 (blue)</b> (default = "0.0") Blue component of stain 1.  Value specified in range 0-1.<br><br><b>Stain 2 (red)</b> (default = "0.0") Red component of stain 2.  Value specified in range 0-1.<br><br><b>Stain 2 (green)</b> (default = "0.0") Green component of stain 2.  Value specified in range 0-1.<br><br><b>Stain 2 (blue)</b> (default = "0.0") Blue component of stain 2.  Value specified in range 0-1.<br><br><b>Stain 3 (red)</b> (default = "0.0") Red component of stain 3.  Value specified in range 0-1.<br><br><b>Stain 3 (green)</b> (default = "0.0") Green component of stain 3.  Value specified in range 0-1.<br><br><b>Stain 3 (blue)</b> (default = "0.0") Blue component of stain 3.  Value specified in range 0-1.<br><br>
+<div class="pt-md-2 pb-md-4 mx-auto mia-page">
+    <h2 class="mia-section-title">Parameters</h2>
+    <p class="mia-main-text"><p class="mia-main-text"><b>Input image</b>:  Image from the workspace to apply unmixing to.  This can be stored as either an RGB or composite image.<br><p class="mia-main-text"><b>Output image 1</b>:  When selected, the first stain in the stain matrix will be output to the workspace with the name specified by "Output image 1 name"<br><p class="mia-main-text"><b>Output image 1 name</b>:  Name to assign to first stain image, if output to the workspace.<br><p class="mia-main-text"><b>Output image 2</b>:  When selected, the second stain in the stain matrix will be output to the workspace with the name specified by "Output image 2 name"<br><p class="mia-main-text"><b>Output image 2 name</b>:  Name to assign to second stain image, if output to the workspace.<br><p class="mia-main-text"><b>Output image 3</b>:  When selected, the third stain in the stain matrix will be output to the workspace with the name specified by "Output image 3 name"<br><p class="mia-main-text"><b>Output image 3 name</b>:  Name to assign to third stain image, if output to the workspace.<br><p class="mia-main-text"><b>Stain model</b>:  Stain models to apply to input image.  If set to "Custom (user values)" the individual RGB components for each channel can be specified.  Model choices are: Alcian blue & H,Azan-Mallory,Brilliant_Blue,CMY,FastRed FastBlue DAB,Feulgen Light Green,Giemsa,H AEC,H&E,H&E 2,H&E DAB,H DAB,H PAS,Masson Trichrome,Methyl Green DAB,RGB,Custom (user values)<p class="mia-main-text"><b>Stain 1 (red)</b>:  Red component of stain 1.  Value specified in range 0-1.<br><p class="mia-main-text"><b>Stain 1 (green)</b>:  Green component of stain 1.  Value specified in range 0-1.<br><p class="mia-main-text"><b>Stain 1 (blue)</b>:  Blue component of stain 1.  Value specified in range 0-1.<br><p class="mia-main-text"><b>Stain 2 (red)</b>:  Red component of stain 2.  Value specified in range 0-1.<br><p class="mia-main-text"><b>Stain 2 (green)</b>:  Green component of stain 2.  Value specified in range 0-1.<br><p class="mia-main-text"><b>Stain 2 (blue)</b>:  Blue component of stain 2.  Value specified in range 0-1.<br><p class="mia-main-text"><b>Stain 3 (red)</b>:  Red component of stain 3.  Value specified in range 0-1.<br><p class="mia-main-text"><b>Stain 3 (green)</b>:  Green component of stain 3.  Value specified in range 0-1.<br><p class="mia-main-text"><b>Stain 3 (blue)</b>:  Blue component of stain 3.  Value specified in range 0-1.<br></p>
 </div>
 
   <!-- Footer -->

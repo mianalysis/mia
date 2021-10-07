@@ -100,7 +100,7 @@ public class MenuItem extends JMenuItem implements ActionListener {
             case PREFERENCES:
                 GUI.setSelectedModules(new Module[] { MIA.preferences });
                 GUI.updateModules();
-                GUI.updateParameters();                
+                GUI.updateParameters();
                 break;
 
             case RUN_ANALYSIS:

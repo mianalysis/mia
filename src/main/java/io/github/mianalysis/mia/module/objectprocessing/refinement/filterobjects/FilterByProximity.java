@@ -27,7 +27,7 @@ import io.github.mianalysis.mia.object.refs.collections.ImageMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 
-@Plugin(type = Module.class, priority=Priority.LOW, visible=true)
+@Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class FilterByProximity extends AbstractObjectFilter {
     public static final String FILTER_SEPARATOR = "Object filtering";
     public static final String REFERENCE_MODE = "Reference mode";
@@ -41,8 +41,8 @@ public class FilterByProximity extends AbstractObjectFilter {
         super("Object proximity", modules);
     }
 
-    public interface ReferenceModes extends CalculateNearestNeighbour.ReferenceModes {};
-
+    public interface ReferenceModes extends CalculateNearestNeighbour.ReferenceModes {
+    };
 
     public interface FilterMethods {
         String PRIORITISE_LARGER_MEASUREMENT = "Prioritise larger measurement";
@@ -88,7 +88,8 @@ public class FilterByProximity extends AbstractObjectFilter {
 
     @Override
     public String getDescription() {
-        return "";
+        return "Filters objects in close XY proximity based on a specific measurement.  For two, or more, objects within close proximity of each other the object with the largest (or smallest) measurement will be retained, whilst the others will be removed.  This can be used to filter instances of the same object being detected multiple times.  Distances are only considered in XY.  Any Z-axis information on object position will be ignored.";
+        
     }
 
     @Override
@@ -134,8 +135,8 @@ public class FilterByProximity extends AbstractObjectFilter {
 
             // Calculating all nearest neighbour distances (minSeparation parameter doesn't
             // influence result here)
-                    CalculateNearestNeighbour.getNearestNeighbour(sortedObject, inputObjects, referenceMode,
-                            minSeparation, linkInSameFrame, scores);
+            CalculateNearestNeighbour.getNearestNeighbour(sortedObject, inputObjects, referenceMode, minSeparation,
+                    linkInSameFrame, scores);
 
             // Iterating over each neighbour, removing it if it's closer than the minimum
             // separation
@@ -226,7 +227,32 @@ public class FilterByProximity extends AbstractObjectFilter {
     protected void addParameterDescriptions() {
         super.addParameterDescriptions();
 
-        parameters.get(FILTER_METHOD).setDescription("");
+        parameters.get(REFERENCE_MODE)
+                .setDescription("Controls the method used for determining the nearest neighbour distances:<br><ul>"
+
+                        + "<li>\"" + ReferenceModes.CENTROID_2D
+                        + "\" Distances are between the input and neighbour object centroids, but only in the XY plane.  These distances are always positive; increasing as the distance between centroids increases.</li>"
+
+                        + "<li>\"" + ReferenceModes.CENTROID_3D
+                        + "\" Distances are between the input and neighbour object centroids.  These distances are always positive; increasing as the distance between centroids increases.</li>"
+
+                        + "<li>\"" + ReferenceModes.SURFACE_2D
+                        + "\" Distances are between the closest points on the input and neighbour surfaces, but only in the XY plane.  These distances increase in magnitude the greater the minimum input-neighbour object surface distance is; however, they are assigned a positive value if the closest input object surface point is outside the neighbour and a negative value if the closest input object surface point is inside the neighbour.  For example, a closest input object surface point 5px outside the neighbour will be simply \"5px\", whereas a closest input object surface point 5px from the surface, but contained within the neighbour object will be recorded as \"-5px\".  Note: Any instances where the input and neighbour object surfaces overlap will be recorded as \"0px\" distance.</li>"
+
+                        + "<li>\"" + ReferenceModes.SURFACE_3D
+                        + "\" Distances are between the closest points on the input and neighbour surfaces.  These distances increase in magnitude the greater the minimum input-neighbour object surface distance is; however, they are assigned a positive value if the closest input object surface point is outside the neighbour and a negative value if the closest input object surface point is inside the neighbour.  For example, a closest input object surface point 5px outside the neighbour will be simply \"5px\", whereas a closest input object surface point 5px from the surface, but contained within the neighbour object will be recorded as \"-5px\".  Note: Any instances where the input and neighbour object surfaces overlap will be recorded as \"0px\" distance.</li></ul>");
+
+        parameters.get(MINIMUM_SEPARATION).setDescription(
+                "Minimum allowed distance in XY plane for two objects to co-exist.  Any objects with XY separation smaller than this value will be subject to filtering, where the \"less suitable\" (depending on filter settings) object will be removed.");
+
+        parameters.get(CALIBRATED_UNITS).setDescription(
+                "When selected, object-object distances are to be specified in calibrated units; otherwise, units are specified in pixels.");
+
+        parameters.get(LINK_IN_SAME_FRAME)
+                .setDescription("When selected, objects must be in the same time frame for them to be linked.");
+
+        parameters.get(FILTER_METHOD).setDescription("For objects closer than the value specified by \""
+                + MINIMUM_SEPARATION + "\" this parameter controls which will be retained.");
 
         parameters.get(MEASUREMENT).setDescription(
                 "Objects will be filtered against their value of this measurement.  Objects missing this measurement are not removed; however, they can be removed by using the module \""

@@ -32,8 +32,10 @@
           style="padding-right:8px;">Modular Image Analysis</a>
       <a class="navbar-brand d-block d-sm-none" href="#"><img height="32" src="img/logo_64.png"
           style="padding-right:8px;"></a> -->
-      <a class="navbar-brand mia-name" href="../../../../index.html" style="padding-top: 5px;padding-bottom: 0px;"><img
-          height="30" src="../../../../img/logo_64.png" style="padding-right:8px;">Modular Image Analysis</a>
+      <a class="navbar-brand mia-name" href="../../../../index.html" style="padding-top: 3px;padding-bottom: 0px;">
+        <img height="36" src="../../../../img/logo_64.png" style="padding-bottom: 3px; padding-right:8px;">
+        Modular Image Analysis
+      </a>
       <buton class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive"
         style="border: none;">
         <span class="navbar-toggler-icon"></span>
@@ -44,8 +46,8 @@
             <a class="nav-link" href="../../../../index.html">Home</a>
           </li>
           <li class="nav-item dropdown ">
-            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownModules"
-              role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Guides</a>
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownModules" role="button" data-toggle="dropdown"
+              aria-haspopup="true" aria-expanded="false">Guides</a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdownModules">
               <a class="dropdown-item" href="../../../../html/gettingstarted.html">Getting started</a>
             </div>
@@ -69,25 +71,25 @@
           </li>
         </ul>
         <a class="btn btn-outline-primary ml-2"
-          href="https://github.com/mianalysis/mia/releases/download/v0.20.3/MIA_-0.20.3.jar">Download</a>
+          href="https://github.com/mianalysis/mia/releases/download/v0.21.1-SNAPSHOT/MIA_-0.21.1-SNAPSHOT.jar">Download</a>
       </div>
     </div>
   </nav>
 
   <div class="page-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
-    <p class="text-secondary"><a href="../../../../html/modules/modules.html">Modules</a> ➤ <a href="../../../../html/modules/visualisation/visualisation.html">Visualisation</a> ➤ <a href="../../../../html/modules/visualisation/imagerendering/imagerendering.html">ImageRendering</a></p>
+    <p class="mia-path"><a href="../../../../html/modules/modules.html">Modules</a> > <a href="../../../../html/modules/visualisation/visualisation.html">Visualisation</a> > <a href="../../../../html/modules/visualisation/imagerendering/imagerendering.html">Image rendering</a></p>
     <h1 class="display-4">Set intensity display range</h1>
-    <p class="lead">Set the minimum and maximum displayed intensities for a specified image from the workspace.</p>
+    <p class="mia-description">Set the minimum and maximum displayed intensities for a specified image from the workspace.</p>
 </div>
 
-<div class="pt-md-2 pb-md-4 mx-auto">
-    <h2 class="display-6">Description</h2>
-    Set the minimum and maximum displayed intensities for a specified image from the workspace.  Any pixels with intensities outside the set displayed range will be rendered with the corresponding extreme value (i.e. any pixels with intensities less than the minimum display value will be shown with the same as the value at the minimum display value).  Display ranges can be calculated automatically or specified manually.  One or both extrema can be set at a time.<br><br>Note: Unlike the "Normalise intensity" module, pixel values are unchanged by this module.  The only change is to the way ImageJ/Fiji renders the image.
+<div class="pt-md-2 pb-md-4 mx-auto mia-page">
+    <h2 class="mia-section-title">Description</h2>
+    <p class="mia-main-text">Set the minimum and maximum displayed intensities for a specified image from the workspace.  Any pixels with intensities outside the set displayed range will be rendered with the corresponding extreme value (i.e. any pixels with intensities less than the minimum display value will be shown with the same as the value at the minimum display value).  Display ranges can be calculated automatically or specified manually.  One or both extrema can be set at a time.<br><br>Note: Unlike the "Normalise intensity" module, pixel values are unchanged by this module.  The only change is to the way ImageJ/Fiji renders the image.</p>
 </div>
 
-<div class="pt-md-2 pb-md-4 mx-auto">
-    <h2 class="display-6">Parameters</h2>
-    <b>Input image</b> (default = "") Image from the workspace for which the updated intensity display range will be calculated.<br><br><b>Apply to input image</b> (default = "true") Select if the new intensity display range should be applied directly to the input image, or if it should be applied to a duplicate image, then stored as a different image in the workspace.<br><br><b>Output image</b> (default = "") If storing the processed image separately in the workspace, this is the name of the output image.<br><br><b>Calculation mode</b> (default = "Fast") Controls how the display range is calculated:<br><ul><li>"Fast" All intensity values in the image are collected in a histogram.  As such, for 8 and 16-bit this is fast to calculate as there are a limited number of bins.  In this instance, the clip fraction corresponds to the fraction of bins.</li><li>"Manual" The minimum and maximum displayed intensities are manually specified with the "Minimum range value" and "Maximum range value" parameters.</li><li>"Precise" All intensity values are ordered by their intensity and the clip fraction corresponds to the fraction of pixels (rather than the fraction of unique intensities as with "Fast" mode.  As such, this method is more precise; however, can take a much longer time (especially for large images).</li></ul><br><b>Clipping fraction (min)</b> (default = "0.0") Fraction of unique intensities ("Precise") or pixels ("Fast") that are clipped when setting the minimum displayed intensity.  Any values below this will be displayed equally with the minimum value of the LUT.<br><br><b>Clipping fraction (max)</b> (default = "0.0") Fraction of unique intensities ("Precise") or pixels ("Fast") that are clipped when setting the maximum displayed intensity.  Any values above this will be displayed equally with the maximum value of the LUT.<br><br><b>Set minimum value</b> (default = "true") When selected, the minimum displayed intensity will be updated.  Otherwise, the value will be unchanged.<br><br><b>Set maximum value</b> (default = "true") When selected, the maximum displayed intensity will be updated.  Otherwise, the value will be unchanged.<br><br><b>Minimum range value</b> (default = "0.0") If manually setting the minimum displayed intensity, this is the value that will be applied.<br><br><b>Maximum range value</b> (default = "255.0") If manually setting the maximum displayed intensity, this is the value that will be applied.<br><br>
+<div class="pt-md-2 pb-md-4 mx-auto mia-page">
+    <h2 class="mia-section-title">Parameters</h2>
+    <p class="mia-main-text"><p class="mia-main-text"><b>Input image</b>:  Image from the workspace for which the updated intensity display range will be calculated.<br><p class="mia-main-text"><b>Apply to input image</b>:  Select if the new intensity display range should be applied directly to the input image, or if it should be applied to a duplicate image, then stored as a different image in the workspace.<br><p class="mia-main-text"><b>Output image</b>:  If storing the processed image separately in the workspace, this is the name of the output image.<br><p class="mia-main-text"><b>Calculation mode</b>:  Controls how the display range is calculated:<br><ul><li>"Fast" All intensity values in the image are collected in a histogram.  As such, for 8 and 16-bit this is fast to calculate as there are a limited number of bins.  In this instance, the clip fraction corresponds to the fraction of bins.</li><li>"Manual" The minimum and maximum displayed intensities are manually specified with the "Minimum range value" and "Maximum range value" parameters.</li><li>"Precise" All intensity values are ordered by their intensity and the clip fraction corresponds to the fraction of pixels (rather than the fraction of unique intensities as with "Fast" mode.  As such, this method is more precise; however, can take a much longer time (especially for large images).</li></ul><p class="mia-main-text"><b>Clipping fraction (min)</b>:  Fraction of unique intensities ("Precise") or pixels ("Fast") that are clipped when setting the minimum displayed intensity.  Any values below this will be displayed equally with the minimum value of the LUT.<br><p class="mia-main-text"><b>Clipping fraction (max)</b>:  Fraction of unique intensities ("Precise") or pixels ("Fast") that are clipped when setting the maximum displayed intensity.  Any values above this will be displayed equally with the maximum value of the LUT.<br><p class="mia-main-text"><b>Set minimum value</b>:  When selected, the minimum displayed intensity will be updated.  Otherwise, the value will be unchanged.<br><p class="mia-main-text"><b>Set maximum value</b>:  When selected, the maximum displayed intensity will be updated.  Otherwise, the value will be unchanged.<br><p class="mia-main-text"><b>Minimum range value</b>:  If manually setting the minimum displayed intensity, this is the value that will be applied.<br><p class="mia-main-text"><b>Maximum range value</b>:  If manually setting the maximum displayed intensity, this is the value that will be applied.<br></p>
 </div>
 
   <!-- Footer -->

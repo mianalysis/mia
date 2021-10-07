@@ -32,8 +32,10 @@
           style="padding-right:8px;">Modular Image Analysis</a>
       <a class="navbar-brand d-block d-sm-none" href="#"><img height="32" src="img/logo_64.png"
           style="padding-right:8px;"></a> -->
-      <a class="navbar-brand mia-name" href="../../../index.html" style="padding-top: 5px;padding-bottom: 0px;"><img
-          height="30" src="../../../img/logo_64.png" style="padding-right:8px;">Modular Image Analysis</a>
+      <a class="navbar-brand mia-name" href="../../../index.html" style="padding-top: 3px;padding-bottom: 0px;">
+        <img height="36" src="../../../img/logo_64.png" style="padding-bottom: 3px; padding-right:8px;">
+        Modular Image Analysis
+      </a>
       <buton class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive"
         style="border: none;">
         <span class="navbar-toggler-icon"></span>
@@ -44,8 +46,8 @@
             <a class="nav-link" href="../../../index.html">Home</a>
           </li>
           <li class="nav-item dropdown ">
-            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownModules"
-              role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Guides</a>
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownModules" role="button" data-toggle="dropdown"
+              aria-haspopup="true" aria-expanded="false">Guides</a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdownModules">
               <a class="dropdown-item" href="../../../html/gettingstarted.html">Getting started</a>
             </div>
@@ -69,25 +71,25 @@
           </li>
         </ul>
         <a class="btn btn-outline-primary ml-2"
-          href="https://github.com/mianalysis/mia/releases/download/v0.20.3/MIA_-0.20.3.jar">Download</a>
+          href="https://github.com/mianalysis/mia/releases/download/v0.21.1-SNAPSHOT/MIA_-0.21.1-SNAPSHOT.jar">Download</a>
       </div>
     </div>
   </nav>
 
   <div class="page-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
-    <p class="text-secondary"><a href="../../../html/modules/modules.html">Modules</a> ➤ <a href="../../../html/modules/imagemeasurements/imagemeasurements.html">Image measurements</a></p>
+    <p class="mia-path"><a href="../../../html/modules/modules.html">Modules</a> > <a href="../../../html/modules/imagemeasurements/imagemeasurements.html">Image measurements</a></p>
     <h1 class="display-4">Create 2D intensity histogram</h1>
-    <p class="lead">Creates a 2D intensity histogram for a pair of specified images.</p>
+    <p class="mia-description">Creates a 2D intensity histogram for a pair of specified images.</p>
 </div>
 
-<div class="pt-md-2 pb-md-4 mx-auto">
-    <h2 class="display-6">Description</h2>
-    Creates a 2D intensity histogram for a pair of specified images.  Intensities along the x-axis correspond to the first input image and those along the y-axis to the second input image.  Output histogram is saved to the workspace as an image.  Works for N-dimensional image stacks (must have the same dimensions).  Uses the ImgLib2 implementation ND intensity histograms.
+<div class="pt-md-2 pb-md-4 mx-auto mia-page">
+    <h2 class="mia-section-title">Description</h2>
+    <p class="mia-main-text">Creates a 2D intensity histogram for a pair of specified images.  Intensities along the x-axis correspond to the first input image and those along the y-axis to the second input image.  Output histogram is saved to the workspace as an image.  Works for N-dimensional image stacks (must have the same dimensions).  Uses the ImgLib2 implementation ND intensity histograms.</p>
 </div>
 
-<div class="pt-md-2 pb-md-4 mx-auto">
-    <h2 class="display-6">Parameters</h2>
-    <b>Input image 1 (x-axis)</b> (default = "") First image from the workspace used in 2D intensity histogram plotting.  Intensities from this image are represented along te output histogram x-axis (columns).  For multidimensional stacks, all pixel values are compiled into a single intensity histogram.<br><br><b>Input image 2 (y-axis)</b> (default = "") Second image from the workspace used in 2D intensity histogram plotting.  Intensities from this image are represented along te output histogram y-axis (rows).  For multidimensional stacks, all pixel values are compiled into a single intensity histogram.<br><br><b>Output image</b> (default = "") Output 2D intensity histogram, which will be saved to the workspace.<br><br><b>Minimum bin (image 1)</b> (default = "0.0") Minimum intensity bin for the image specified by "Input image 1 (x-axis)".<br><br><b>Maximum bin (image 1)</b> (default = "255.0") Maximum intensity bin for the image specified by "Input image 1 (x-axis)".<br><br><b>Number of bins (image 1)</b> (default = "256") Number of intensity bins to use for the image specified by "Input image 1 (x-axis)".<br><br><b>Include tail bin (image 1)</b> (default = "false") When selected, additional bins at the extremes of the histogram x-axis will be used for intensity values that fall outside the specified intensity range.<br><br><b>Minimum bin (image 2)</b> (default = "0.0") Minimum intensity bin for the image specified by "Input image 2 (y-axis)".<br><br><b>Maximum bin (image 2)</b> (default = "255.0") Maximum intensity bin for the image specified by "Input image 2 (y-axis)".<br><br><b>Number of bins (image 2)</b> (default = "256") Number of intensity bins to use for the image specified by "Input image 2 (y-axis)".<br><br><b>Include tail bin (image 2)</b> (default = "false") When selected, additional bins at the extremes of the histogram y-axis will be used for intensity values that fall outside the specified intensity range.<br><br>
+<div class="pt-md-2 pb-md-4 mx-auto mia-page">
+    <h2 class="mia-section-title">Parameters</h2>
+    <p class="mia-main-text"><p class="mia-main-text"><b>Input image 1 (x-axis)</b>:  First image from the workspace used in 2D intensity histogram plotting.  Intensities from this image are represented along te output histogram x-axis (columns).  For multidimensional stacks, all pixel values are compiled into a single intensity histogram.<br><p class="mia-main-text"><b>Input image 2 (y-axis)</b>:  Second image from the workspace used in 2D intensity histogram plotting.  Intensities from this image are represented along te output histogram y-axis (rows).  For multidimensional stacks, all pixel values are compiled into a single intensity histogram.<br><p class="mia-main-text"><b>Output image</b>:  Output 2D intensity histogram, which will be saved to the workspace.<br><p class="mia-main-text"><b>Minimum bin (image 1)</b>:  Minimum intensity bin for the image specified by "Input image 1 (x-axis)".<br><p class="mia-main-text"><b>Maximum bin (image 1)</b>:  Maximum intensity bin for the image specified by "Input image 1 (x-axis)".<br><p class="mia-main-text"><b>Number of bins (image 1)</b>:  Number of intensity bins to use for the image specified by "Input image 1 (x-axis)".<br><p class="mia-main-text"><b>Include tail bin (image 1)</b>:  When selected, additional bins at the extremes of the histogram x-axis will be used for intensity values that fall outside the specified intensity range.<br><p class="mia-main-text"><b>Minimum bin (image 2)</b>:  Minimum intensity bin for the image specified by "Input image 2 (y-axis)".<br><p class="mia-main-text"><b>Maximum bin (image 2)</b>:  Maximum intensity bin for the image specified by "Input image 2 (y-axis)".<br><p class="mia-main-text"><b>Number of bins (image 2)</b>:  Number of intensity bins to use for the image specified by "Input image 2 (y-axis)".<br><p class="mia-main-text"><b>Include tail bin (image 2)</b>:  When selected, additional bins at the extremes of the histogram y-axis will be used for intensity values that fall outside the specified intensity range.<br></p>
 </div>
 
   <!-- Footer -->

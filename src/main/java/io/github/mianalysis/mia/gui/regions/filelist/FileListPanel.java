@@ -86,7 +86,7 @@ public class FileListPanel extends JPanel implements MouseListener, TableCellRen
         add(fileListLabel, c);
 
         // Adding close button
-        ClosePanelButton closeButton = new ClosePanelButton(this);        
+        ClosePanelButton closeButton = new ClosePanelButton(this);
         c.anchor = GridBagConstraints.EAST;
         c.weightx = 0;
         c.gridx++;
@@ -100,7 +100,7 @@ public class FileListPanel extends JPanel implements MouseListener, TableCellRen
         c.gridx = 0;
         c.gridwidth = 2;
         c.gridy++;
-        add(separator,c);
+        add(separator, c);
 
         model.setColumnCount(5);
         model.setColumnIdentifiers(new String[] { "#", "Filename", "Ser. name", "Ser. #", "Progress" });
@@ -115,13 +115,14 @@ public class FileListPanel extends JPanel implements MouseListener, TableCellRen
         table.setBackground(null);
         table.setDefaultEditor(Object.class, null);
 
-        TableColumnModel columnModel = table.getColumnModel();
-        columnModel.getColumn(COL_JOB_ID).setWidth(10);
+        TableColumnModel columnModel = table.getColumnModel();        
         columnModel.getColumn(COL_JOB_ID).setCellRenderer(this);
         columnModel.getColumn(COL_WORKSPACE).setCellRenderer(this);
         columnModel.getColumn(COL_SERIESNAME).setCellRenderer(this);
         columnModel.getColumn(COL_SERIESNUMBER).setCellRenderer(this);
         columnModel.getColumn(COL_PROGRESS).setCellRenderer(this);
+        
+        columnModel.getColumn(COL_JOB_ID).setWidth(30);
 
         showColumn(COL_SERIESNAME, false);
         showColumn(COL_SERIESNUMBER, false);
@@ -188,7 +189,7 @@ public class FileListPanel extends JPanel implements MouseListener, TableCellRen
 
         if (show) {
             if (columnIndex == COL_JOB_ID)
-                column.setPreferredWidth(10);
+                column.setPreferredWidth(30);
             else
                 column.setPreferredWidth(prefWidth);
             column.setMinWidth(minWidth);

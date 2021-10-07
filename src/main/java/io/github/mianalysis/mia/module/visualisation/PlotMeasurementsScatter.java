@@ -4,14 +4,14 @@ package io.github.mianalysis.mia.module.visualisation;
 
 import java.awt.Color;
 
+import org.scijava.Priority;
+import org.scijava.plugin.Plugin;
+
 import ij.gui.Plot;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.module.Module;
-import org.scijava.Priority;
-import org.scijava.plugin.Plugin;
 import io.github.mianalysis.mia.object.Image;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
@@ -88,7 +88,7 @@ public class PlotMeasurementsScatter extends Module {
 
     @Override
     public String getDescription() {
-        return "";
+        return "Creates an ImageJ scatter plot of two measurements associated with specified objects.  A third measurement can be encoded as point colour.  The output plot can either be displayed immediately in an interactive ImageJ plotting window or stored as an image to the MIA workspace (allowing it to subsequently be saved to file).";
     }
 
     @Override

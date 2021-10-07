@@ -82,7 +82,7 @@ public class Categories {
         public final static Category VISUALISATION = new Category("Visualisation",
                         "Modules altering how images are displayed (e.g. lookup-tables) or adding visual elements (e.g. text or object overlays).",
                         ROOT);
-        public final static Category VISUALISATION_IMAGE_RENDERING = new Category("ImageRendering",
+        public final static Category VISUALISATION_IMAGE_RENDERING = new Category("Image rendering",
                         "Operations altering how ImageJ displays images.  These operations don't result in fundamental changes to pixel values.",
                         VISUALISATION);
         public final static Category VISUALISATION_OVERLAYS = new Category("Overlays",

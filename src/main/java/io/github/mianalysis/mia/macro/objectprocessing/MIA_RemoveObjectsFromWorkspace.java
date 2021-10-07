@@ -1,11 +1,15 @@
 package io.github.mianalysis.mia.macro.objectprocessing;
 
+import org.scijava.Priority;
+import org.scijava.plugin.Plugin;
+
 import ij.macro.MacroExtension;
 import io.github.mianalysis.mia.macro.MacroOperation;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.objectprocessing.refinement.RemoveObjects;
 import io.github.mianalysis.mia.object.Workspace;
 
+@Plugin(type = MacroOperation.class, priority=Priority.LOW, visible=true)
 public class MIA_RemoveObjectsFromWorkspace extends MacroOperation {
     public MIA_RemoveObjectsFromWorkspace(MacroExtension theHandler) {
         super(theHandler);

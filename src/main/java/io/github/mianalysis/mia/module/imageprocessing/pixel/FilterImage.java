@@ -42,7 +42,7 @@ import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
-import io.github.mianalysis.mia.process.CommaSeparatedStringInterpreter;
+import io.github.sjcross.common.process.CommaSeparatedStringInterpreter;
 import io.github.sjcross.common.filters.DoG;
 
 /**
@@ -315,7 +315,7 @@ public class FilterImage extends Module {
         ImagePlus tempImagePlus = new Duplicator().run(inputImagePlus);
 
         // Getting list of frames
-        int[] offsets = CommaSeparatedStringInterpreter.interpretIntegers(windowIndices, true);
+        int[] offsets = CommaSeparatedStringInterpreter.interpretIntegers(windowIndices, true,0);
 
         // Running through each frame, calculating the local average
         for (int f = 1; f <= inputImagePlus.getNFrames(); f++) {

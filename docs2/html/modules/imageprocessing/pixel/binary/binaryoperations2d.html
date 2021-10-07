@@ -32,8 +32,10 @@
           style="padding-right:8px;">Modular Image Analysis</a>
       <a class="navbar-brand d-block d-sm-none" href="#"><img height="32" src="img/logo_64.png"
           style="padding-right:8px;"></a> -->
-      <a class="navbar-brand mia-name" href="../../../../../index.html" style="padding-top: 5px;padding-bottom: 0px;"><img
-          height="30" src="../../../../../img/logo_64.png" style="padding-right:8px;">Modular Image Analysis</a>
+      <a class="navbar-brand mia-name" href="../../../../../index.html" style="padding-top: 3px;padding-bottom: 0px;">
+        <img height="36" src="../../../../../img/logo_64.png" style="padding-bottom: 3px; padding-right:8px;">
+        Modular Image Analysis
+      </a>
       <buton class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive"
         style="border: none;">
         <span class="navbar-toggler-icon"></span>
@@ -44,8 +46,8 @@
             <a class="nav-link" href="../../../../../index.html">Home</a>
           </li>
           <li class="nav-item dropdown ">
-            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownModules"
-              role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Guides</a>
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownModules" role="button" data-toggle="dropdown"
+              aria-haspopup="true" aria-expanded="false">Guides</a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdownModules">
               <a class="dropdown-item" href="../../../../../html/gettingstarted.html">Getting started</a>
             </div>
@@ -69,25 +71,25 @@
           </li>
         </ul>
         <a class="btn btn-outline-primary ml-2"
-          href="https://github.com/mianalysis/mia/releases/download/v0.20.3/MIA_-0.20.3.jar">Download</a>
+          href="https://github.com/mianalysis/mia/releases/download/v0.21.1-SNAPSHOT/MIA_-0.21.1-SNAPSHOT.jar">Download</a>
       </div>
     </div>
   </nav>
 
   <div class="page-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
-    <p class="text-secondary"><a href="../../../../../html/modules/modules.html">Modules</a> ➤ <a href="../../../../../html/modules/imageprocessing/imageprocessing.html">Image processing</a> ➤ <a href="../../../../../html/modules/imageprocessing/pixel/pixel.html">Pixel</a> ➤ <a href="../../../../../html/modules/imageprocessing/pixel/binary/binary.html">Binary</a></p>
+    <p class="mia-path"><a href="../../../../../html/modules/modules.html">Modules</a> > <a href="../../../../../html/modules/imageprocessing/imageprocessing.html">Image processing</a> > <a href="../../../../../html/modules/imageprocessing/pixel/pixel.html">Pixel</a> > <a href="../../../../../html/modules/imageprocessing/pixel/binary/binary.html">Binary</a></p>
     <h1 class="display-4">Binary operations 2D</h1>
-    <p class="lead">Applies stock ImageJ binary operations to an image in the workspace.</p>
+    <p class="mia-description">Applies stock ImageJ binary operations to an image in the workspace.</p>
 </div>
 
-<div class="pt-md-2 pb-md-4 mx-auto">
-    <h2 class="display-6">Description</h2>
-    Applies stock ImageJ binary operations to an image in the workspace.  This image will be 8-bit with binary logic determined by the "Binary logic" parameter.  All operations are performed in 2D, with higher dimensionality stacks being processed slice-by-slice.
+<div class="pt-md-2 pb-md-4 mx-auto mia-page">
+    <h2 class="mia-section-title">Description</h2>
+    <p class="mia-main-text">Applies stock ImageJ binary operations to an image in the workspace.  This image will be 8-bit with binary logic determined by the "Binary logic" parameter.  All operations are performed in 2D, with higher dimensionality stacks being processed slice-by-slice.</p>
 </div>
 
-<div class="pt-md-2 pb-md-4 mx-auto">
-    <h2 class="display-6">Parameters</h2>
-    <b>Input image</b> (default = "") Image from workspace to apply binary operation to.  This image will be 8-bit with binary logic determined by the "Binary logic" parameter.<br><br><b>Apply to input image</b> (default = "true") When selected, the post-operation image will overwrite the input image in the workspace.  Otherwise, the image will be saved to the workspace with the name specified by the "Output image" parameter.<br><br><b>Output image</b> (default = "") If "Apply to input image" is not selected, the post-operation image will be saved to the workspace with this name.<br><br><b>Filter mode</b> (default = "Dilate") Controls which binary operation will be applied.  The operations are described in full <a href="https://imagej.nih.gov/ij/docs/guide/146-29.html#toc-Subsection-29.8">here</a>:<br><ul><li>"Dilate" Change any foreground-connected background pixels to foreground.  This effectively expands objects by one pixel.</li><li>"Distance map" Create a 32-bit greyscale image where the value of each foreground pixel is equal to its Euclidean distance to the nearest background pixel.</li><li>"Erode" Change any background-connected foreground pixels to background.  This effectively shrinks objects by one pixel.</li><li>"Fill holes" Change all background pixels in a region which is fully enclosed by foreground pixels to foreground.</li><li>"Outline" Convert all non-background-connected foreground pixels to background.  This effectively creates a fully-background image, except for the outer band of foreground pixels.</li><li>"Skeletonise" Repeatedly applies the erode process until each foreground region is a single pixel wide.</li><li>"Ultimate points" Repeatedly applies the erode process until each foreground is reduced to a single pixel.  The value of the remaining, isolated foreground pixels are equal to their equivalent, pre-erosion distance map values.  This process outputs a 32-bit greyscale image.</li><li>"Voronoi" Creates an image subdivided by lines such that all pixels contained within an enclosed region are closest to the same contiguous object in the input binary image.</li><li>"Watershed" Peforms a distance-based watershed transform on the image.  This process is able to split separate regions of a single connected foreground region as long as the sub-regions are connected by narrow necks (e.g. snowman shape).  Background lines are drawn between each sub-region such that they are no longer connected.</li></ul><br><b>Number of iterations</b> (default = "1") Number of times the operation will be run on a single image.  For example, this allows objects to be eroded further than one pixel in a single step.<br><br><b>Count</b> (default = "1") The minimum number of connected background or foreground for an erosion or dilation process to occur, respectively.<br><br><b>Binary logic</b> (default = "Black (0) background") Controls whether objects are considered to be white (255 intensity) on a black (0 intensity) background, or black on a white background.<br>
+<div class="pt-md-2 pb-md-4 mx-auto mia-page">
+    <h2 class="mia-section-title">Parameters</h2>
+    <p class="mia-main-text"><p class="mia-main-text"><b>Input image</b>:  Image from workspace to apply binary operation to.  This image will be 8-bit with binary logic determined by the "Binary logic" parameter.<br><p class="mia-main-text"><b>Apply to input image</b>:  When selected, the post-operation image will overwrite the input image in the workspace.  Otherwise, the image will be saved to the workspace with the name specified by the "Output image" parameter.<br><p class="mia-main-text"><b>Output image</b>:  If "Apply to input image" is not selected, the post-operation image will be saved to the workspace with this name.<br><p class="mia-main-text"><b>Filter mode</b>:  Controls which binary operation will be applied.  The operations are described in full <a href="https://imagej.nih.gov/ij/docs/guide/146-29.html#toc-Subsection-29.8">here</a>:<br><ul><li>"Dilate" Change any foreground-connected background pixels to foreground.  This effectively expands objects by one pixel.</li><li>"Distance map" Create a 32-bit greyscale image where the value of each foreground pixel is equal to its Euclidean distance to the nearest background pixel.</li><li>"Erode" Change any background-connected foreground pixels to background.  This effectively shrinks objects by one pixel.</li><li>"Fill holes" Change all background pixels in a region which is fully enclosed by foreground pixels to foreground.</li><li>"Outline" Convert all non-background-connected foreground pixels to background.  This effectively creates a fully-background image, except for the outer band of foreground pixels.</li><li>"Skeletonise" Repeatedly applies the erode process until each foreground region is a single pixel wide.</li><li>"Ultimate points" Repeatedly applies the erode process until each foreground is reduced to a single pixel.  The value of the remaining, isolated foreground pixels are equal to their equivalent, pre-erosion distance map values.  This process outputs a 32-bit greyscale image.</li><li>"Voronoi" Creates an image subdivided by lines such that all pixels contained within an enclosed region are closest to the same contiguous object in the input binary image.</li><li>"Watershed" Peforms a distance-based watershed transform on the image.  This process is able to split separate regions of a single connected foreground region as long as the sub-regions are connected by narrow necks (e.g. snowman shape).  Background lines are drawn between each sub-region such that they are no longer connected.</li></ul><p class="mia-main-text"><b>Number of iterations</b>:  Number of times the operation will be run on a single image.  For example, this allows objects to be eroded further than one pixel in a single step.<br><p class="mia-main-text"><b>Count</b>:  The minimum number of connected background or foreground for an erosion or dilation process to occur, respectively.<br><p class="mia-main-text"><b>Binary logic</b>:  Controls whether objects are considered to be white (255 intensity) on a black (0 intensity) background, or black on a white background.</p>
 </div>
 
   <!-- Footer -->

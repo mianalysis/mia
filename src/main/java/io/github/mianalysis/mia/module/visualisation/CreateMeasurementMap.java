@@ -6,6 +6,8 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.math3.analysis.function.Gaussian;
 import org.eclipse.sisu.Nullable;
+import org.scijava.Priority;
+import org.scijava.plugin.Plugin;
 
 import ij.IJ;
 import ij.ImagePlus;
@@ -16,9 +18,6 @@ import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.module.Module;
-import org.scijava.Priority;
-import org.scijava.plugin.Plugin;
 import io.github.mianalysis.mia.object.Image;
 import io.github.mianalysis.mia.object.Measurement;
 import io.github.mianalysis.mia.object.Obj;
@@ -32,6 +31,7 @@ import io.github.mianalysis.mia.object.parameters.ObjectMeasurementP;
 import io.github.mianalysis.mia.object.parameters.OutputImageP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.ParentObjectsP;
+import io.github.mianalysis.mia.object.parameters.SeparatorP;
 import io.github.mianalysis.mia.object.parameters.text.IntegerP;
 import io.github.mianalysis.mia.object.refs.collections.ImageMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
@@ -44,10 +44,13 @@ import io.github.sjcross.common.object.Point;
 import io.github.sjcross.common.object.volume.SpatCal;
 import io.github.sjcross.common.object.voxels.MidpointCircle;
 
-@Plugin(type = Module.class, priority=Priority.LOW, visible=true)
+@Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class CreateMeasurementMap extends Module {
+    public static final String INPUT_SEPARATOR = "Image input, object output";
     public static final String INPUT_OBJECTS = "Input objects";
     public static final String OUTPUT_IMAGE = "Output image";
+
+    public static final String MAP_SEPARATOR = "Map controls";
     public static final String MEASUREMENT_MODE = "Measurement mode";
     public static final String PARENT_OBJECT = "Parent object";
     public static final String MEASUREMENT = "Measurement";
@@ -138,7 +141,7 @@ public class CreateMeasurementMap extends Module {
 
             if (message != null)
                 writeProgressStatus(++count, nTotal, "objects", message);
-                
+
         }
     }
 
@@ -307,7 +310,7 @@ public class CreateMeasurementMap extends Module {
 
     @Override
     public String getDescription() {
-        return "";
+        return "Creates a map of object measurements.  Each pixel of the output map is a combination of all object measurements at that location.  Measurements can be taken from the input objects themselves or from associated parent objects.  Multiple Z-slices and/or timepoints can be combined into a single slice.  The outmap is blurred with a Gaussian function to show smooth transitions between regions.";
     }
 
     @Override
@@ -344,7 +347,6 @@ public class CreateMeasurementMap extends Module {
         }
 
         // Blurring image
-        writeStatus("Blurring image");
         CumStat[] blurCumStats = applyBlur(cumStats, indexer, range, statistic);
 
         // Converting statistic array to Image
@@ -361,8 +363,11 @@ public class CreateMeasurementMap extends Module {
 
     @Override
     protected void initialiseParameters() {
+        parameters.add(new SeparatorP(INPUT_SEPARATOR, this));
         parameters.add(new InputObjectsP(INPUT_OBJECTS, this));
         parameters.add(new OutputImageP(OUTPUT_IMAGE, this));
+
+        parameters.add(new SeparatorP(MAP_SEPARATOR, this));
         parameters.add(new ChoiceP(MEASUREMENT_MODE, this, MeasurementModes.MEASUREMENT, MeasurementModes.ALL));
         parameters.add(new ChoiceP(STATISTIC, this, Statistics.MEAN, Statistics.ALL));
         parameters.add(new ParentObjectsP(PARENT_OBJECT, this));
@@ -370,6 +375,8 @@ public class CreateMeasurementMap extends Module {
         parameters.add(new IntegerP(RANGE, this, 3));
         parameters.add(new BooleanP(MERGE_SLICES, this, true));
         parameters.add(new BooleanP(MERGE_TIME, this, true));
+
+        addParameterDescriptions();
 
     }
 
@@ -379,9 +386,11 @@ public class CreateMeasurementMap extends Module {
 
         Parameters returnedParameters = new Parameters();
 
+        returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(INPUT_OBJECTS));
         returnedParameters.add(parameters.getParameter(OUTPUT_IMAGE));
 
+        returnedParameters.add(parameters.getParameter(MAP_SEPARATOR));
         returnedParameters.add(parameters.getParameter(MEASUREMENT_MODE));
         switch ((String) parameters.getValue(MEASUREMENT_MODE)) {
             case MeasurementModes.MEASUREMENT:
@@ -437,5 +446,26 @@ public class CreateMeasurementMap extends Module {
     @Override
     public boolean verify() {
         return true;
+    }
+
+    public void addParameterDescriptions() {
+        parameters.get(INPUT_OBJECTS).setDescription("Objects from workspace for which the measurement map will be created.");
+
+        parameters.get(OUTPUT_IMAGE).setDescription("Output image showing the measurement map which will be output to the workspace.  The value at each location will be based on the measurements of nearby objects.  Any pixels too far from an object (this distance will be controlled by the blur range, \""+RANGE+"\") will be assigned NaN (not a number) values.");
+
+        parameters.get(MEASUREMENT_MODE).setDescription("Controls whether the measurements being rendered for each object are measurements associated with that object (\""+MeasurementModes.MEASUREMENT+"\") or are measurements associated with a parent object (\""+MeasurementModes.PARENT_MEASUREMENT+"\").");
+
+        parameters.get(PARENT_OBJECT).setDescription("If \""+MEASUREMENT_MODE+"\" is set to \""+MeasurementModes.PARENT_MEASUREMENT+"\", this is the parent object collection from which the measurement (specified by \""+MEASUREMENT+"\") will be taken.");
+
+        parameters.get(MEASUREMENT).setDescription("Controls the measurement for each object that will be rendered on the measurement map.  Depending on the setting for \""+MEASUREMENT_MODE+"\", this can either be a measurement associated with the input object or with a parent of that object.");
+
+        parameters.get(STATISTIC).setDescription("Controls the statistic that will be used to combine multiple object measurements at each location.  For example, if two objects overlap at a specific location (occurs more frequently when \""+MERGE_SLICES+"\" or \""+MERGE_TIME+"\" are selected), the value at that location could be an average (or any other listed statistic) of the two.");
+
+        parameters.get(RANGE).setDescription("The measurement map can be blurred using a Gaussian distribution.  This is the sigma value for that blurring function.");
+
+        parameters.get(MERGE_SLICES).setDescription("When selected, all measurements from different slices are combined into a single slice.");
+
+        parameters.get(MERGE_TIME).setDescription("When selected, all measurements from different timepoints are combined into a single timepoint.");
+
     }
 }

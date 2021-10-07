@@ -2,13 +2,13 @@ package io.github.mianalysis.mia.module.objectmeasurements.spatial;
 
 import java.util.HashMap;
 
+import org.scijava.Priority;
+import org.scijava.plugin.Plugin;
+
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.module.Module;
-import org.scijava.Priority;
-import org.scijava.plugin.Plugin;
 import io.github.mianalysis.mia.object.Measurement;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
@@ -19,6 +19,7 @@ import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputObjectsP;
 import io.github.mianalysis.mia.object.parameters.ObjectMeasurementP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
+import io.github.mianalysis.mia.object.parameters.SeparatorP;
 import io.github.mianalysis.mia.object.refs.ObjMeasurementRef;
 import io.github.mianalysis.mia.object.refs.collections.ImageMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
@@ -33,12 +34,16 @@ import io.github.sjcross.common.object.volume.SpatCal;
 import io.github.sjcross.common.object.volume.Volume;
 import io.github.sjcross.common.object.volume.VolumeType;
 
-@Plugin(type = Module.class, priority=Priority.LOW, visible=true)
+@Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class MeasureRelativeOrientation extends Module {
+    public static final String INPUT_SEPARATOR = "Object input";
     public static final String INPUT_OBJECTS = "Input objects";
-    public static final String ORIENTATION_MODE = "Orientation mode";
+
+    public static final String CALCULATION_SEPARATOR = "Calculation controls";
+    // public static final String ORIENTATION_MODE = "Orientation mode";
     public static final String ORIENTATION_IN_X_Y_MEASUREMENT = "Orientation in X/Y measurement";
-    public static final String ORIENTATION_IN_XY_Z_MEASUREMENT = "Orientation in XY/Z measurement";
+    // public static final String ORIENTATION_IN_XY_Z_MEASUREMENT = "Orientation in
+    // XY/Z measurement";
     public static final String MEASUREMENT_RANGE = "Measurement range";
     public static final String REFERENCE_MODE = "Reference mode";
     public static final String REFERENCE_OBJECTS = "Reference objects";
@@ -217,9 +222,8 @@ public class MeasureRelativeOrientation extends Module {
 
     }
 
-    static HashMap<Integer, Point<Double>> getObjectCentroidSurfaceRefs(Objs inputObjects,
-            Objs referenceObjects, String choiceMode, String orientationMode, int nFrames,
-            boolean mustBeSameFrame) {
+    static HashMap<Integer, Point<Double>> getObjectCentroidSurfaceRefs(Objs inputObjects, Objs referenceObjects,
+            String choiceMode, String orientationMode, int nFrames, boolean mustBeSameFrame) {
         HashMap<Integer, Point<Double>> centres = new HashMap<>();
 
         for (Obj inputObject : inputObjects.values()) {
@@ -238,7 +242,7 @@ public class MeasureRelativeOrientation extends Module {
                 int y1 = (int) inputObject.getYMean(true);
                 int z1 = (int) inputObject.getZMean(true, false);
 
-                Volume centroidVol = new Volume(VolumeType.POINTLIST, inputObject.getSpatialCalibration());                
+                Volume centroidVol = new Volume(VolumeType.POINTLIST, inputObject.getSpatialCalibration());
                 try {
                     centroidVol.add(x1, y1, z1);
                 } catch (IntegerOverflowException e) {
@@ -320,7 +324,6 @@ public class MeasureRelativeOrientation extends Module {
 
     }
 
-
     @Override
     public Category getCategory() {
         return Categories.OBJECT_MEASUREMENTS_SPATIAL;
@@ -328,7 +331,9 @@ public class MeasureRelativeOrientation extends Module {
 
     @Override
     public String getDescription() {
-        return "Currently only works for X-Y plane measurements";
+        return "Measures the orientation of each object relative to a specific point.  Orientation of the objects themselves is provided by a previously-calculated measurement associated with each object.  The relative orientation is the angle between the vector specified by this measurement and a vector passing from the object centroid to a specific point."
+
+                + "<br><br>Note: Currently only works for X-Y plane measurements";
     }
 
     @Override
@@ -338,9 +343,10 @@ public class MeasureRelativeOrientation extends Module {
         Objs inputObjects = workspace.getObjectSet(inputObjectsName);
 
         // Getting other parameters
-        String orientationMode = parameters.getValue(ORIENTATION_MODE);
+        // String orientationMode = parameters.getValue(ORIENTATION_MODE);
+        String orientationMode = OrientationModes.X_Y_PLANE;
         String xyOriMeasName = parameters.getValue(ORIENTATION_IN_X_Y_MEASUREMENT);
-        String xzOriMeasName = parameters.getValue(ORIENTATION_IN_XY_Z_MEASUREMENT);
+        // String xzOriMeasName = parameters.getValue(ORIENTATION_IN_XY_Z_MEASUREMENT);
         String measurementRange = parameters.getValue(MEASUREMENT_RANGE);
         String referenceMode = parameters.getValue(REFERENCE_MODE);
         String referenceObjectsName = parameters.getValue(REFERENCE_OBJECTS);
@@ -394,11 +400,10 @@ public class MeasureRelativeOrientation extends Module {
             }
 
             if (referencePoint == null) {
-                assignMissingMeasurements(inputObject, xyOriMeasName, xzOriMeasName, orientationMode,
-                        measurementReference);
+                assignMissingMeasurements(inputObject, xyOriMeasName, null, orientationMode, measurementReference);
             } else {
-                processObject(inputObject, xyOriMeasName, xzOriMeasName, measurementRange, referencePoint,
-                        orientationMode, measurementReference);
+                processObject(inputObject, xyOriMeasName, null, measurementRange, referencePoint, orientationMode,
+                        measurementReference);
             }
         }
 
@@ -411,15 +416,22 @@ public class MeasureRelativeOrientation extends Module {
 
     @Override
     protected void initialiseParameters() {
+        parameters.add(new SeparatorP(INPUT_SEPARATOR, this));
         parameters.add(new InputObjectsP(INPUT_OBJECTS, this));
-        parameters.add(new ChoiceP(ORIENTATION_MODE, this, OrientationModes.X_Y_PLANE, OrientationModes.ALL));
+
+        parameters.add(new SeparatorP(CALCULATION_SEPARATOR, this));
+        // parameters.add(new ChoiceP(ORIENTATION_MODE, this,
+        // OrientationModes.X_Y_PLANE, OrientationModes.ALL));
         parameters.add(new ObjectMeasurementP(ORIENTATION_IN_X_Y_MEASUREMENT, this));
-        parameters.add(new ObjectMeasurementP(ORIENTATION_IN_XY_Z_MEASUREMENT, this));
+        // parameters.add(new ObjectMeasurementP(ORIENTATION_IN_XY_Z_MEASUREMENT,
+        // this));
         parameters.add(new ChoiceP(MEASUREMENT_RANGE, this, MeasurementRanges.ZERO_NINETY, MeasurementRanges.ALL));
         parameters.add(new ChoiceP(REFERENCE_MODE, this, ReferenceModes.IMAGE_CENTRE, ReferenceModes.ALL));
         parameters.add(new InputObjectsP(REFERENCE_OBJECTS, this));
         parameters.add(new ChoiceP(OBJECT_CHOICE_MODE, this, ObjectChoiceModes.LARGEST_OBJECT, ObjectChoiceModes.ALL));
         parameters.add(new BooleanP(MUST_BE_SAME_FRAME, this, true));
+
+        addParameterDescriptions();
 
     }
 
@@ -427,28 +439,31 @@ public class MeasureRelativeOrientation extends Module {
     public Parameters updateAndGetParameters() {
         Parameters returnedParameters = new Parameters();
 
+        returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(INPUT_OBJECTS));
 
-        returnedParameters.add(parameters.getParameter(ORIENTATION_MODE));
-        switch ((String) parameters.getValue(ORIENTATION_MODE)) {
-            case OrientationModes.X_Y_PLANE:
-                returnedParameters.add(parameters.getParameter(ORIENTATION_IN_X_Y_MEASUREMENT));
-                break;
+        returnedParameters.add(parameters.getParameter(CALCULATION_SEPARATOR));
+        // returnedParameters.add(parameters.getParameter(ORIENTATION_MODE));
+        // switch ((String) parameters.getValue(ORIENTATION_MODE)) {
+        // case OrientationModes.X_Y_PLANE:
+        // returnedParameters.add(parameters.getParameter(ORIENTATION_IN_X_Y_MEASUREMENT));
+        // break;
 
-            // case OrientationModes.XY_Z_PLANE:
-            // returnedParameters.add(parameters.getParameter(ORIENTATION_IN_XY_Z_MEASUREMENT));
-            // break;
+        // case OrientationModes.XY_Z_PLANE:
+        // returnedParameters.add(parameters.getParameter(ORIENTATION_IN_XY_Z_MEASUREMENT));
+        // break;
 
-            // case OrientationModes.BOTH_X_Y_AND_XY_Z_PLANES:
-            // case OrientationModes.FULL_3D:
-            // returnedParameters.add(parameters.getParameter(ORIENTATION_IN_X_Y_MEASUREMENT));
-            // returnedParameters.add(parameters.getParameter(ORIENTATION_IN_XY_Z_MEASUREMENT));
-            // break;
-        }
+        // case OrientationModes.BOTH_X_Y_AND_XY_Z_PLANES:
+        // case OrientationModes.FULL_3D:
+        // returnedParameters.add(parameters.getParameter(ORIENTATION_IN_X_Y_MEASUREMENT));
+        // returnedParameters.add(parameters.getParameter(ORIENTATION_IN_XY_Z_MEASUREMENT));
+        // break;
+        // }
 
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
         ((ObjectMeasurementP) parameters.getParameter(ORIENTATION_IN_X_Y_MEASUREMENT)).setObjectName(inputObjectsName);
-        ((ObjectMeasurementP) parameters.getParameter(ORIENTATION_IN_XY_Z_MEASUREMENT)).setObjectName(inputObjectsName);
+        // ((ObjectMeasurementP)
+        // parameters.getParameter(ORIENTATION_IN_XY_Z_MEASUREMENT)).setObjectName(inputObjectsName);
 
         returnedParameters.add(parameters.getParameter(MEASUREMENT_RANGE));
 
@@ -502,20 +517,20 @@ public class MeasureRelativeOrientation extends Module {
                 break;
         }
 
-        switch ((String) parameters.getValue(ORIENTATION_MODE)) {
-            case OrientationModes.X_Y_PLANE:
-                String measurementName = getFullName(Measurements.X_Y_REL_ORIENTATION, reference);
-                ObjMeasurementRef measurementReference = objectMeasurementRefs.getOrPut(measurementName);
-                measurementReference.setObjectsName(inputObjectsName);
-                returnedRefs.add(measurementReference);
+        // switch ((String) parameters.getValue(ORIENTATION_MODE)) {
+        // case OrientationModes.X_Y_PLANE:
+        String measurementName = getFullName(Measurements.X_Y_REL_ORIENTATION, reference);
+        ObjMeasurementRef measurementReference = objectMeasurementRefs.getOrPut(measurementName);
+        measurementReference.setObjectsName(inputObjectsName);
+        returnedRefs.add(measurementReference);
 
-                String xyOriMeasName = parameters.getValue(ORIENTATION_IN_X_Y_MEASUREMENT);
-                measurementReference.setDescription("Orientation of the object (specified by the measurements \""
-                        + xyOriMeasName + "\") relative to " + referenceDescription
-                        + ". Measured in degrees between 0 and 90.");
-                returnedRefs.add(measurementReference);
-                break;
-        }
+        String xyOriMeasName = parameters.getValue(ORIENTATION_IN_X_Y_MEASUREMENT);
+        measurementReference
+                .setDescription("Orientation of the object (specified by the measurements \"" + xyOriMeasName
+                        + "\") relative to " + referenceDescription + ". Measured in degrees between 0 and 90.");
+        returnedRefs.add(measurementReference);
+        // break;
+        // }
 
         return returnedRefs;
 
@@ -539,5 +554,41 @@ public class MeasureRelativeOrientation extends Module {
     @Override
     public boolean verify() {
         return true;
+    }
+
+    void addParameterDescriptions() {
+        parameters.get(INPUT_OBJECTS).setDescription(
+                "Objects from the workspace for which orientation relative to a point will be measured.  Orientation of the objects themselves is provided by a previously-calculated measurement associated with each object.  The relative orientation is the angle between the vector specified by this measurement and a vector passing from the object centroid to a specific point.  Output relative orientation measurements are associated with the relevant input object.");
+
+        parameters.get(ORIENTATION_IN_X_Y_MEASUREMENT).setDescription(
+                "Measurement associated with each input object which defines the orientation of the first vector for the relative orientation calculation.  The other vector passes between the object centroid and a specific point (controlled by the other parameters).  This orientation measurement is assumed to be specified in degree units.");
+
+        parameters.get(MEASUREMENT_RANGE).setDescription(
+                "The range over which output relative orientation measurements are specified.  For cases where the orientation of the object could be inverted without consequence (e.g. fitting orientation to an ellipse), the range \""
+                        + MeasurementRanges.ZERO_NINETY
+                        + "\" can be used; however, in cases where the orientation is more specific (e.g. having come from object tracking), the range \""
+                        + MeasurementRanges.ZERO_ONE_EIGHTY
+                        + "\" can be used.  Relative orientation measurements are absolute, in that there's no distinction between positive and negative angular differences.");
+
+        parameters.get(REFERENCE_MODE).setDescription(
+                "Controls the source of the reference point to which object orientations are compared.  :<br><ul>"
+                        + "<li>\"" + ReferenceModes.IMAGE_CENTRE
+                        + "\" Object orientations are compared to the centre of the object collection (i.e. to the image from which they were first detected).</li>"
+
+                        + "<li>\"" + ReferenceModes.OBJECT_CENTROID
+                        + "\" Object orientations are compared to the centre of a specific object.  Since only a single object can be used per timepoint, this will be either the smallest or largest object (controlled by \""
+                        + OBJECT_CHOICE_MODE + "\") in the specified collection (\"" + REFERENCE_OBJECTS + "\").  If \""+MUST_BE_SAME_FRAME+"\" is not selected, the same object will be used in all timepoints.</li>"
+
+                        + "<li>\"" + ReferenceModes.OBJECT_SURFACE
+                        + "\" Object orientations are compared to the closest point on the surface of a specific object.  In this mode, the reference points can be different for all objects.  Since only a single object can be used per timepoint, this will be either the smallest or largest object (controlled by \""
+                        + OBJECT_CHOICE_MODE + "\") in the specified collection (\"" + REFERENCE_OBJECTS
+                        + "\").  If \""+MUST_BE_SAME_FRAME+"\" is not selected, the same object will be used in all timepoints.</li></ul>");
+
+        parameters.get(REFERENCE_OBJECTS).setDescription("If \""+REFERENCE_MODE+"\" is set to \""+ReferenceModes.OBJECT_CENTROID+"\" or \""+ReferenceModes.OBJECT_SURFACE+"\", this is the object collection from which the reference object(s) will be drawn.");
+
+        parameters.get(OBJECT_CHOICE_MODE).setDescription("If \""+REFERENCE_MODE+"\" is set to \""+ReferenceModes.OBJECT_CENTROID+"\" or \""+ReferenceModes.OBJECT_SURFACE+"\", this controls whether the smallest or largest object from that collection will be used as the reference point for relative orientation calculations.");
+
+        parameters.get(MUST_BE_SAME_FRAME).setDescription("When selected, the reference objects must be in the same frame as the input object being measured.  As such, all the objects in one frame will be compared to a common reference, but won't necessarily have the same reference as an object in another frame.");
+
     }
 }

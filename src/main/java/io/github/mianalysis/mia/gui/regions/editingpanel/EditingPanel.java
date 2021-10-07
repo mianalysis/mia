@@ -20,6 +20,7 @@ import io.github.mianalysis.mia.gui.regions.progressandstatus.StatusPanel;
 import io.github.mianalysis.mia.gui.regions.search.SearchPanel;
 import io.github.mianalysis.mia.gui.regions.workflowmodules.ModulePanel;
 import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.process.analysishandling.AnalysisTester;
 
 public class EditingPanel extends AbstractPanel {
     private static final long serialVersionUID = -6063268799004206526L;
@@ -267,9 +268,8 @@ public class EditingPanel extends AbstractPanel {
 
     @Override
     public void updateModules() {
+        AnalysisTester.testModules(GUI.getModules());
         modulesPanel.updatePanel();
-        parametersPanel.updatePanel(GUI.getFirstSelectedModule());
-
     }
 
     @Override

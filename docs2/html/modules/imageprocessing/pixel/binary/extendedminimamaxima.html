@@ -32,8 +32,10 @@
           style="padding-right:8px;">Modular Image Analysis</a>
       <a class="navbar-brand d-block d-sm-none" href="#"><img height="32" src="img/logo_64.png"
           style="padding-right:8px;"></a> -->
-      <a class="navbar-brand mia-name" href="../../../../../index.html" style="padding-top: 5px;padding-bottom: 0px;"><img
-          height="30" src="../../../../../img/logo_64.png" style="padding-right:8px;">Modular Image Analysis</a>
+      <a class="navbar-brand mia-name" href="../../../../../index.html" style="padding-top: 3px;padding-bottom: 0px;">
+        <img height="36" src="../../../../../img/logo_64.png" style="padding-bottom: 3px; padding-right:8px;">
+        Modular Image Analysis
+      </a>
       <buton class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive"
         style="border: none;">
         <span class="navbar-toggler-icon"></span>
@@ -44,8 +46,8 @@
             <a class="nav-link" href="../../../../../index.html">Home</a>
           </li>
           <li class="nav-item dropdown ">
-            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownModules"
-              role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Guides</a>
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownModules" role="button" data-toggle="dropdown"
+              aria-haspopup="true" aria-expanded="false">Guides</a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdownModules">
               <a class="dropdown-item" href="../../../../../html/gettingstarted.html">Getting started</a>
             </div>
@@ -69,25 +71,25 @@
           </li>
         </ul>
         <a class="btn btn-outline-primary ml-2"
-          href="https://github.com/mianalysis/mia/releases/download/v0.20.3/MIA_-0.20.3.jar">Download</a>
+          href="https://github.com/mianalysis/mia/releases/download/v0.21.1-SNAPSHOT/MIA_-0.21.1-SNAPSHOT.jar">Download</a>
       </div>
     </div>
   </nav>
 
   <div class="page-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
-    <p class="text-secondary"><a href="../../../../../html/modules/modules.html">Modules</a> ➤ <a href="../../../../../html/modules/imageprocessing/imageprocessing.html">Image processing</a> ➤ <a href="../../../../../html/modules/imageprocessing/pixel/pixel.html">Pixel</a> ➤ <a href="../../../../../html/modules/imageprocessing/pixel/binary/binary.html">Binary</a></p>
+    <p class="mia-path"><a href="../../../../../html/modules/modules.html">Modules</a> > <a href="../../../../../html/modules/imageprocessing/imageprocessing.html">Image processing</a> > <a href="../../../../../html/modules/imageprocessing/pixel/pixel.html">Pixel</a> > <a href="../../../../../html/modules/imageprocessing/pixel/binary/binary.html">Binary</a></p>
     <h1 class="display-4">Extended minima/maxima</h1>
-    <p class="lead">Detects extended minima or maxima in a specified input image.</p>
+    <p class="mia-description">Detects extended minima or maxima in a specified input image.</p>
 </div>
 
-<div class="pt-md-2 pb-md-4 mx-auto">
-    <h2 class="display-6">Description</h2>
-    Detects extended minima or maxima in a specified input image.<br><br>As described in the <a href="https://imagej.net/imagej-wiki-static/MorphoLibJ">MorphoLibJ documentation</a>: "Extended maxima are defined as a connected region containing elements such that the difference of the value of each element within the region with the maximal value within the region is lower than the tolerance, and such that the neighbors of the regions all have values smaller than the maximum within the region minus the tolerance. This definition allows the identification of larger extrema, that better takes into account the noise within the image. The extended minima are defined in a similar way, and are efficiently used as pre-processing step for watershed segmentation.".<br><br>This module uses the plugin "<a href="https://github.com/ijpb/MorphoLibJ">MorphoLibJ</a>".
+<div class="pt-md-2 pb-md-4 mx-auto mia-page">
+    <h2 class="mia-section-title">Description</h2>
+    <p class="mia-main-text">Detects extended minima or maxima in a specified input image.<br><br>As described in the <a href="https://imagej.net/imagej-wiki-static/MorphoLibJ">MorphoLibJ documentation</a>: "Extended maxima are defined as a connected region containing elements such that the difference of the value of each element within the region with the maximal value within the region is lower than the tolerance, and such that the neighbors of the regions all have values smaller than the maximum within the region minus the tolerance. This definition allows the identification of larger extrema, that better takes into account the noise within the image. The extended minima are defined in a similar way, and are efficiently used as pre-processing step for watershed segmentation.".<br><br>This module uses the plugin "<a href="https://github.com/ijpb/MorphoLibJ">MorphoLibJ</a>".</p>
 </div>
 
-<div class="pt-md-2 pb-md-4 mx-auto">
-    <h2 class="display-6">Parameters</h2>
-    <b>Input image</b> (default = "") Image from workspace to apply extended minima operation to.<br><br><b>Apply to input image</b> (default = "true") When selected, the post-operation image will overwrite the input image in the workspace.  Otherwise, the image will be saved to the workspace with the name specified by the "Output image" parameter.<br><br><b>Output image</b> (default = "") If "Apply to input image" is not selected, the post-operation image will be saved to the workspace with this name.  This image will be 8-bit with binary logic determined by the "Binary logic" parameter.<br><br><b>Minima/maxima</b> (default = "Minima") Controls whether the module will detect minima or maxima in the input intensity image<br><b>Dynamic</b> (default = "1") This parameter specifies the maximum permitted pixel intensity difference for a single minima.  Local intensity differences greater than this will result in creation of more minima.  The smaller the dynamic value is, the more minima will be created.  As the dynamic value increases, minima will increase in size.<br><br><b>Connectivity</b> (default = "26") Controls which adjacent pixels are considered:<br><ul><li>"6" Only pixels immediately next to the active pixel are considered.  These are the pixels on the four "cardinal" directions plus the pixels immediately above and below the current pixel.  If working in 2D, 4-way connectivity is used.</li><li>"26" In addition to the core 6-pixels, all immediately diagonal pixels are used.  If working in 2D, 8-way connectivity is used.</li><br><b>Binary logic</b> (default = "Black (0) background") Controls whether objects are considered to be white (255 intensity) on a black (0 intensity) background, or black on a white background.<br><b>Enable multithreading</b> (default = "true") Process multiple 3D stacks simultaneously.  Since the extended minima operation is applied on a single 3D stack at a time, multithreading only works for images with multiple channels or timepoints (other stacks will still work, but won't see a speed improvement).  This can provide a speed improvement when working on a computer with a multi-core CPU.<br><br>
+<div class="pt-md-2 pb-md-4 mx-auto mia-page">
+    <h2 class="mia-section-title">Parameters</h2>
+    <p class="mia-main-text"><p class="mia-main-text"><b>Input image</b>:  Image from workspace to apply extended minima operation to.<br><p class="mia-main-text"><b>Apply to input image</b>:  When selected, the post-operation image will overwrite the input image in the workspace.  Otherwise, the image will be saved to the workspace with the name specified by the "Output image" parameter.<br><p class="mia-main-text"><b>Output image</b>:  If "Apply to input image" is not selected, the post-operation image will be saved to the workspace with this name.  This image will be 8-bit with binary logic determined by the "Binary logic" parameter.<br><p class="mia-main-text"><b>Minima/maxima</b>:  Controls whether the module will detect minima or maxima in the input intensity image<p class="mia-main-text"><b>Dynamic</b>:  This parameter specifies the maximum permitted pixel intensity difference for a single minima.  Local intensity differences greater than this will result in creation of more minima.  The smaller the dynamic value is, the more minima will be created.  As the dynamic value increases, minima will increase in size.<br><p class="mia-main-text"><b>Connectivity</b>:  Controls which adjacent pixels are considered:<br><ul><li>"6" Only pixels immediately next to the active pixel are considered.  These are the pixels on the four "cardinal" directions plus the pixels immediately above and below the current pixel.  If working in 2D, 4-way connectivity is used.</li><li>"26" In addition to the core 6-pixels, all immediately diagonal pixels are used.  If working in 2D, 8-way connectivity is used.</li><p class="mia-main-text"><b>Binary logic</b>:  Controls whether objects are considered to be white (255 intensity) on a black (0 intensity) background, or black on a white background.<p class="mia-main-text"><b>Enable multithreading</b>:  Process multiple 3D stacks simultaneously.  Since the extended minima operation is applied on a single 3D stack at a time, multithreading only works for images with multiple channels or timepoints (other stacks will still work, but won't see a speed improvement).  This can provide a speed improvement when working on a computer with a multi-core CPU.<br></p>
 </div>
 
   <!-- Footer -->

@@ -28,7 +28,7 @@ import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
-import io.github.mianalysis.mia.process.CommaSeparatedStringInterpreter;
+import io.github.sjcross.common.process.CommaSeparatedStringInterpreter;
 import io.github.sjcross.common.object.Point;
 import io.github.sjcross.common.object.volume.PointOutOfRangeException;
 import io.github.sjcross.common.object.volume.Volume;
@@ -70,7 +70,7 @@ public class ExtractObjectCrossSection extends Module {
 
     @Override
     public String getDescription() {
-        return "";
+        return "Extracts XY-plane cross-sections of specified objects.  The extracted cross-sections are stored as separate objects, which are children of the associated input object.  Slice indicies can be specified as fixed values or relative to image/object measurements (e.g. relative to the object centroids).";
     }
 
     static int[] applyIndexOffset(int[] inputIndices, Measurement measurement) {
@@ -133,9 +133,7 @@ public class ExtractObjectCrossSection extends Module {
         Objs outputObjects = new Objs(outputObjectsName, inputObjects);
         workspace.addObjects(outputObjects);
 
-        int[] indices = CommaSeparatedStringInterpreter.interpretIntegers(indicesString, true);
-        if (indicesString.contains("end"))
-            indices = CommaSeparatedStringInterpreter.extendRangeToEnd(indices, inputObjects.getNSlices());
+        int[] indices = CommaSeparatedStringInterpreter.interpretIntegers(indicesString, true, inputObjects.getNSlices());
 
         // If using an image measurement, updating the indices here, as they will be the
         // same for all objects

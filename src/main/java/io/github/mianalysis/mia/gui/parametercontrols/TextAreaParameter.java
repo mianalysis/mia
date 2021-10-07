@@ -106,7 +106,8 @@ public class TextAreaParameter extends ParameterControl implements FocusListener
 
         updateControl();
 
-        GUI.updateModuleStates(true);
+        GUI.updateModules();
+        GUI.updateParameters();
 
     }
 }

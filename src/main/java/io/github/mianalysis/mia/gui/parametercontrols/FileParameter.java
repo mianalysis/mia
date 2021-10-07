@@ -99,7 +99,6 @@ public class FileParameter extends ParameterControl implements ActionListener {
             new Thread(() -> GUI.updateTestFile(true)).start();
         }
 
-        GUI.updateModuleStates(true);
         GUI.updateModules();
         GUI.updateParameters();
 

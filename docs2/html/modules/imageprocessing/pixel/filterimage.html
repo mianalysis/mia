@@ -32,8 +32,10 @@
           style="padding-right:8px;">Modular Image Analysis</a>
       <a class="navbar-brand d-block d-sm-none" href="#"><img height="32" src="img/logo_64.png"
           style="padding-right:8px;"></a> -->
-      <a class="navbar-brand mia-name" href="../../../../index.html" style="padding-top: 5px;padding-bottom: 0px;"><img
-          height="30" src="../../../../img/logo_64.png" style="padding-right:8px;">Modular Image Analysis</a>
+      <a class="navbar-brand mia-name" href="../../../../index.html" style="padding-top: 3px;padding-bottom: 0px;">
+        <img height="36" src="../../../../img/logo_64.png" style="padding-bottom: 3px; padding-right:8px;">
+        Modular Image Analysis
+      </a>
       <buton class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive"
         style="border: none;">
         <span class="navbar-toggler-icon"></span>
@@ -44,8 +46,8 @@
             <a class="nav-link" href="../../../../index.html">Home</a>
           </li>
           <li class="nav-item dropdown ">
-            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownModules"
-              role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Guides</a>
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownModules" role="button" data-toggle="dropdown"
+              aria-haspopup="true" aria-expanded="false">Guides</a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdownModules">
               <a class="dropdown-item" href="../../../../html/gettingstarted.html">Getting started</a>
             </div>
@@ -69,25 +71,25 @@
           </li>
         </ul>
         <a class="btn btn-outline-primary ml-2"
-          href="https://github.com/mianalysis/mia/releases/download/v0.20.3/MIA_-0.20.3.jar">Download</a>
+          href="https://github.com/mianalysis/mia/releases/download/v0.21.1-SNAPSHOT/MIA_-0.21.1-SNAPSHOT.jar">Download</a>
       </div>
     </div>
   </nav>
 
   <div class="page-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
-    <p class="text-secondary"><a href="../../../../html/modules/modules.html">Modules</a> ➤ <a href="../../../../html/modules/imageprocessing/imageprocessing.html">Image processing</a> ➤ <a href="../../../../html/modules/imageprocessing/pixel/pixel.html">Pixel</a></p>
+    <p class="mia-path"><a href="../../../../html/modules/modules.html">Modules</a> > <a href="../../../../html/modules/imageprocessing/imageprocessing.html">Image processing</a> > <a href="../../../../html/modules/imageprocessing/pixel/pixel.html">Pixel</a></p>
     <h1 class="display-4">Filter image</h1>
-    <p class="lead">Apply intensity filters to an image in the workspace.</p>
+    <p class="mia-description">Apply intensity filters to an image in the workspace.</p>
 </div>
 
-<div class="pt-md-2 pb-md-4 mx-auto">
-    <h2 class="display-6">Description</h2>
-    Apply intensity filters to an image in the workspace.<br>Note: 3D median filter is currently incompatible with 5D hyperstacks
+<div class="pt-md-2 pb-md-4 mx-auto mia-page">
+    <h2 class="mia-section-title">Description</h2>
+    <p class="mia-main-text">Apply intensity filters to an image in the workspace.<br>Note: 3D median filter is currently incompatible with 5D hyperstacks</p>
 </div>
 
-<div class="pt-md-2 pb-md-4 mx-auto">
-    <h2 class="display-6">Parameters</h2>
-    <b>Input image</b> (default = "") Image to apply filter to.<br><br><b>Apply to input image</b> (default = "true") Select if the filter should be applied directly to the input image, or if it should be applied to a duplicate, then stored as a different image in the workspace.<br><br><b>Output image</b> (default = "") Name of the output image created during the filtering process.  This image will be added to the workspace.<br><br><b>Filter mode</b> (default = "Difference of Gaussian 2D") Filter to be applied to the image.<br><ul><li>"Difference of Gaussian 2D" Difference of Gaussian filter (2D)  Used to enhance spot-like features of sizes similar to the setting for "Filter radius".</li><li>"Gaussian 2D" </li><li>"Gaussian 3D" </li><li>"Gradient 2D" </li><li>"Maximum 2D" </li><li>"Maximum 3D" </li><li>"Mean 2D" </li><li>"Mean 3D" </li><li>"Median 2D" </li><li>"Median 3D" </li><li>"Minimum 2D" </li><li>"Minimum 3D" </li><li>"Ridge enhancement 2D" Uses initial image processing steps from "Ridge Detection" plugin to enhance ridge-like structures.</li><li>"Rolling frame" Filters the image at each frame based on frames before and/after.  The frame window over which the statistics are calculated is user-controllable</li><li>"Variance 2D" </li><li>"Variance 3D" </li></ul><br><b>Filter radius</b> (default = "2.0") Range the filter is calculated over.  Often also referred to as "sigma".  Value specified in pixel units, unless "calibrated units" is enabled.<br><br><b>Calibrated units</b> (default = "false") Choose if filter radius is specified in pixel (set to "false") or calibrated (set to "true") units.  What units are used are controlled from "Input control".<br><br><b>Rolling filter method</b> (default = "Average") Statistic to apply for rolling frame filtering.<br><b>Window indices</b> (default = "-1-1") When "Filter mode" is set to "Rolling frame", the rolling frame statistic will be calculated for each frame using these relative frames (i.e. with indices set to "-1,1" the statistic would be calculated based on the frames immediately before and after).<br><br><b>Contour contrast</b> (default = "Dark line") When "Filter mode" is set to "Ridge enhancement 2D", this parameter controls whether the ridges to be enhanced are bright (brighter than the background) or dark (darker than the background).<br>
+<div class="pt-md-2 pb-md-4 mx-auto mia-page">
+    <h2 class="mia-section-title">Parameters</h2>
+    <p class="mia-main-text"><p class="mia-main-text"><b>Input image</b>:  Image to apply filter to.<br><p class="mia-main-text"><b>Apply to input image</b>:  Select if the filter should be applied directly to the input image, or if it should be applied to a duplicate, then stored as a different image in the workspace.<br><p class="mia-main-text"><b>Output image</b>:  Name of the output image created during the filtering process.  This image will be added to the workspace.<br><p class="mia-main-text"><b>Filter mode</b>:  Filter to be applied to the image.<br><ul><li>"Difference of Gaussian 2D" Difference of Gaussian filter (2D)  Used to enhance spot-like features of sizes similar to the setting for "Filter radius".</li><li>"Gaussian 2D" </li><li>"Gaussian 3D" </li><li>"Gradient 2D" </li><li>"Maximum 2D" </li><li>"Maximum 3D" </li><li>"Mean 2D" </li><li>"Mean 3D" </li><li>"Median 2D" </li><li>"Median 3D" </li><li>"Minimum 2D" </li><li>"Minimum 3D" </li><li>"Ridge enhancement 2D" Uses initial image processing steps from "Ridge Detection" plugin to enhance ridge-like structures.</li><li>"Rolling frame" Filters the image at each frame based on frames before and/after.  The frame window over which the statistics are calculated is user-controllable</li><li>"Variance 2D" </li><li>"Variance 3D" </li></ul><p class="mia-main-text"><b>Filter radius</b>:  Range the filter is calculated over.  Often also referred to as "sigma".  Value specified in pixel units, unless "calibrated units" is enabled.<br><p class="mia-main-text"><b>Calibrated units</b>:  Choose if filter radius is specified in pixel (set to "false") or calibrated (set to "true") units.  What units are used are controlled from "Input control".<br><p class="mia-main-text"><b>Rolling filter method</b>:  Statistic to apply for rolling frame filtering.<p class="mia-main-text"><b>Window indices</b>:  When "Filter mode" is set to "Rolling frame", the rolling frame statistic will be calculated for each frame using these relative frames (i.e. with indices set to "-1,1" the statistic would be calculated based on the frames immediately before and after).<br><p class="mia-main-text"><b>Contour contrast</b>:  When "Filter mode" is set to "Ridge enhancement 2D", this parameter controls whether the ridges to be enhanced are bright (brighter than the background) or dark (darker than the background).</p>
 </div>
 
   <!-- Footer -->

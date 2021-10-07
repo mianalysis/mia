@@ -7,25 +7,13 @@ import java.util.LinkedHashMap;
 import java.util.TreeMap;
 
 import org.apache.commons.io.FilenameUtils;
+import org.scijava.Priority;
+import org.scijava.plugin.Plugin;
 
-import loci.common.DebugTools;
-import loci.common.services.ServiceFactory;
-import loci.formats.ChannelSeparator;
-import loci.formats.MissingLibraryException;
-import loci.formats.UnknownFormatException;
-import loci.formats.meta.MetadataStore;
-import loci.formats.ome.OMEXMLMetadata;
-import loci.formats.services.OMEXMLService;
-import loci.plugins.util.ImageProcessorReader;
-import loci.plugins.util.LociPrefs;
-import ome.xml.meta.IMetadata;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.module.Module;
-import org.scijava.Priority;
-import org.scijava.plugin.Plugin;
 import io.github.mianalysis.mia.module.miscellaneous.macros.RunMacro;
 import io.github.mianalysis.mia.module.miscellaneous.macros.RunMacroOnObjects;
 import io.github.mianalysis.mia.object.Colours;
@@ -35,8 +23,8 @@ import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.FileFolderPathP;
 import io.github.mianalysis.mia.object.parameters.GenericButtonP;
-import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.ParameterGroup;
+import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.SeparatorP;
 import io.github.mianalysis.mia.object.parameters.text.IntegerP;
 import io.github.mianalysis.mia.object.parameters.text.MessageP;
@@ -50,13 +38,24 @@ import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.units.SpatialUnit;
 import io.github.mianalysis.mia.object.units.TemporalUnit;
-import io.github.mianalysis.mia.process.CommaSeparatedStringInterpreter;
 import io.github.sjcross.common.fileconditions.ExtensionMatchesString;
 import io.github.sjcross.common.fileconditions.FileCondition;
 import io.github.sjcross.common.fileconditions.NameContainsString;
 import io.github.sjcross.common.fileconditions.ParentContainsString;
 import io.github.sjcross.common.metadataextractors.Metadata;
+import io.github.sjcross.common.process.CommaSeparatedStringInterpreter;
 import io.github.sjcross.common.system.FileCrawler;
+import loci.common.DebugTools;
+import loci.common.services.ServiceFactory;
+import loci.formats.ChannelSeparator;
+import loci.formats.MissingLibraryException;
+import loci.formats.UnknownFormatException;
+import loci.formats.meta.MetadataStore;
+import loci.formats.ome.OMEXMLMetadata;
+import loci.formats.services.OMEXMLService;
+import loci.plugins.util.ImageProcessorReader;
+import loci.plugins.util.LociPrefs;
+import ome.xml.meta.IMetadata;
 
 /**
  * Created by Stephen on 29/07/2017.
@@ -159,7 +158,8 @@ public class InputControl extends Module {
                 case FilterSources.EXTENSION:
                 case FilterSources.FILENAME:
                 case FilterSources.FILEPATH:
-                    fileCrawler.addFileCondition(getFilenameFilter(filterType, filterValue, filterSource));
+                    String[] filterValues = filterValue.split(",");
+                    fileCrawler.addFileCondition(getFilenameFilter(filterType, filterValues, filterSource));
                     break;
             }
         }
@@ -170,7 +170,7 @@ public class InputControl extends Module {
 
     }
 
-    private static FileCondition getFilenameFilter(String filterType, String filterValue, String filterSource) {
+    private static FileCondition getFilenameFilter(String filterType, String[] filterValues, String filterSource) {
         FileCondition.Mode fileCondition;
         switch (filterType) {
             case FilterTypes.INCLUDE_MATCHES_PARTIALLY:
@@ -190,12 +190,12 @@ public class InputControl extends Module {
 
         switch (filterSource) {
             case FilterSources.EXTENSION:
-                return new ExtensionMatchesString(filterValue, fileCondition);
+                return new ExtensionMatchesString(filterValues, fileCondition);
             case FilterSources.FILENAME:
             default:
-                return new NameContainsString(filterValue, fileCondition);
+                return new NameContainsString(filterValues, fileCondition);
             case FilterSources.FILEPATH:
-                return new ParentContainsString(filterValue, fileCondition);
+                return new ParentContainsString(filterValues, fileCondition);
         }
     }
 
@@ -263,7 +263,8 @@ public class InputControl extends Module {
 
             switch (filterSource) {
                 case FilterSources.SERIESNAME:
-                    filters.add(getFilenameFilter(filterType, filterValue, filterSource));
+                    String[] filterValues = filterValue.split(",");
+                    filters.add(getFilenameFilter(filterType, filterValues, filterSource));
                     break;
             }
         }
@@ -530,7 +531,7 @@ public class InputControl extends Module {
 
         templateParameters.get(FILTER_VALUE).setDescription("Value to filter filenames against.");
 
-        templateParameters.get(FILTER_TYPE).setDescription("Control how the present filter operates:"
+        templateParameters.get(FILTER_TYPE).setDescription("Control how the present filter operates:<br><ul>"
 
                 + "<li>\"" + FilterTypes.INCLUDE_MATCHES_PARTIALLY
                 + "\" will process an image if the filter value is partially present in the source (e.g. filename or extension).</li>"

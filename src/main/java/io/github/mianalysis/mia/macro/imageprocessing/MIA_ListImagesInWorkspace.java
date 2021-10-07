@@ -2,6 +2,9 @@ package io.github.mianalysis.mia.macro.imageprocessing;
 
 import java.util.HashMap;
 
+import org.scijava.Priority;
+import org.scijava.plugin.Plugin;
+
 import ij.macro.MacroExtension;
 import ij.measure.ResultsTable;
 import io.github.mianalysis.mia.macro.MacroOperation;
@@ -9,6 +12,7 @@ import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.Image;
 import io.github.mianalysis.mia.object.Workspace;
 
+@Plugin(type = MacroOperation.class, priority=Priority.LOW, visible=true)
 public class MIA_ListImagesInWorkspace extends MacroOperation {
     public MIA_ListImagesInWorkspace(MacroExtension theHandler) {
         super(theHandler);

@@ -31,7 +31,7 @@ import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.process.ColourFactory;
-import io.github.mianalysis.mia.process.CommaSeparatedStringInterpreter;
+import io.github.sjcross.common.process.CommaSeparatedStringInterpreter;
 
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class AddText extends AbstractOverlay {
@@ -123,10 +123,8 @@ public class AddText extends AbstractOverlay {
             ipl = new Duplicator().run(ipl);
 
         // Converting slice and frame ranges to numbers
-        int[] zRange = CommaSeparatedStringInterpreter.interpretIntegers(zRangeString, true);
-        zRange = CommaSeparatedStringInterpreter.extendRangeToEnd(zRange, ipl.getNSlices());
-        int[] frameRange = CommaSeparatedStringInterpreter.interpretIntegers(frameRangeString, true);
-        frameRange = CommaSeparatedStringInterpreter.extendRangeToEnd(frameRange, ipl.getNFrames());
+        int[] zRange = CommaSeparatedStringInterpreter.interpretIntegers(zRangeString, true, ipl.getNSlices());
+        int[] frameRange = CommaSeparatedStringInterpreter.interpretIntegers(frameRangeString, true, ipl.getNFrames());
 
         addOverlay(ipl, text, color, labelSize, opacity, xPosition, yPosition, zRange, frameRange, centreText);
 

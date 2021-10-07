@@ -32,8 +32,10 @@
           style="padding-right:8px;">Modular Image Analysis</a>
       <a class="navbar-brand d-block d-sm-none" href="#"><img height="32" src="img/logo_64.png"
           style="padding-right:8px;"></a> -->
-      <a class="navbar-brand mia-name" href="../../../../index.html" style="padding-top: 5px;padding-bottom: 0px;"><img
-          height="30" src="../../../../img/logo_64.png" style="padding-right:8px;">Modular Image Analysis</a>
+      <a class="navbar-brand mia-name" href="../../../../index.html" style="padding-top: 3px;padding-bottom: 0px;">
+        <img height="36" src="../../../../img/logo_64.png" style="padding-bottom: 3px; padding-right:8px;">
+        Modular Image Analysis
+      </a>
       <buton class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive"
         style="border: none;">
         <span class="navbar-toggler-icon"></span>
@@ -44,8 +46,8 @@
             <a class="nav-link" href="../../../../index.html">Home</a>
           </li>
           <li class="nav-item dropdown ">
-            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownModules"
-              role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Guides</a>
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownModules" role="button" data-toggle="dropdown"
+              aria-haspopup="true" aria-expanded="false">Guides</a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdownModules">
               <a class="dropdown-item" href="../../../../html/gettingstarted.html">Getting started</a>
             </div>
@@ -69,25 +71,25 @@
           </li>
         </ul>
         <a class="btn btn-outline-primary ml-2"
-          href="https://github.com/mianalysis/mia/releases/download/v0.20.3/MIA_-0.20.3.jar">Download</a>
+          href="https://github.com/mianalysis/mia/releases/download/v0.21.1-SNAPSHOT/MIA_-0.21.1-SNAPSHOT.jar">Download</a>
       </div>
     </div>
   </nav>
 
   <div class="page-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
-    <p class="text-secondary"><a href="../../../../html/modules/modules.html">Modules</a> ➤ <a href="../../../../html/modules/objectprocessing/objectprocessing.html">Object processing</a> ➤ <a href="../../../../html/modules/objectprocessing/identification/identification.html">Identification</a></p>
+    <p class="mia-path"><a href="../../../../html/modules/modules.html">Modules</a> > <a href="../../../../html/modules/objectprocessing/objectprocessing.html">Object processing</a> > <a href="../../../../html/modules/objectprocessing/identification/identification.html">Identification</a></p>
     <h1 class="display-4">Spot detection</h1>
-    <p class="lead">Detects spot-like features in 2D and 3D using TrackMate's LogDetector.</p>
+    <p class="mia-description">Detects spot-like features in 2D and 3D using TrackMate's LogDetector.</p>
 </div>
 
-<div class="pt-md-2 pb-md-4 mx-auto">
-    <h2 class="display-6">Description</h2>
-    Detects spot-like features in 2D and 3D using TrackMate's LogDetector.  By default, detected spots are stored as individual, single pixel, objects centred on the detected feature.  Optionally, spots can be given area or volume based on the estimated size of the spot.  Adds measurements to each output spot for estimated radius and quality.  If sub-pixel localisation is specified, the sub-pixel centroid location in X,Y and Z is also stored as a measurement.<br><br>For more information, see the <a href="https://imagej.net/TrackMate">TrackMate</a> documentation.
+<div class="pt-md-2 pb-md-4 mx-auto mia-page">
+    <h2 class="mia-section-title">Description</h2>
+    <p class="mia-main-text">Detects spot-like features in 2D and 3D using TrackMate's LogDetector.  By default, detected spots are stored as individual, single pixel, objects centred on the detected feature.  Optionally, spots can be given area or volume based on the estimated size of the spot.  Adds measurements to each output spot for estimated radius and quality.  If sub-pixel localisation is specified, the sub-pixel centroid location in X,Y and Z is also stored as a measurement.<br><br>For more information, see the <a href="https://imagej.net/TrackMate">TrackMate</a> documentation.</p>
 </div>
 
-<div class="pt-md-2 pb-md-4 mx-auto">
-    <h2 class="display-6">Parameters</h2>
-    <b>Input image</b> (default = "") Image in which to detect spots.<br><br><b>Output spot objects</b> (default = "") Spot objects that will be added to the workspace.<br><br><b>Calibrated units</b> (default = "false") Enable if spatial parameters (e.g. "Radius") are being specified in calibrated units.  If disabled, parameters are assumed to be specified in pixel units.<br><br><b>Do sub-pixel localisation</b> (default = "true") Enable TrackMate's "Subpixel localisation" functionality.  When enabled, subpixel centroid coordinates will be stored as measurements associated with each detected object.<br><br><b>Median filtering</b> (default = "false") Enable TrackMate's "Median filtering" functionality.<br><br><b>Radius</b> (default = "2.0") Expected radius of spots in the input image.  Specified in pixel units, unless "Calibrated units" is selected.<br><br><b>Threshold</b> (default = "10.0") Threshold for spot detection.  Threshold is applied to filtered image (Laplacian of Gaussian), so will be affected by the specified "Radius" value.  Increase this value to make detection more selective (i.e. detect fewer spots).<br><br><b>Estimate spot size</b> (default = "false") When enabled, output spot objects will have explicit size (rather than a single, centroid coordinate) determined by the TrackMate-calculated estimated diameter.<br><br>
+<div class="pt-md-2 pb-md-4 mx-auto mia-page">
+    <h2 class="mia-section-title">Parameters</h2>
+    <p class="mia-main-text"><p class="mia-main-text"><b>Input image</b>:  Image in which to detect spots.<br><p class="mia-main-text"><b>Output spot objects</b>:  Spot objects that will be added to the workspace.<br><p class="mia-main-text"><b>Calibrated units</b>:  Enable if spatial parameters (e.g. "Radius") are being specified in calibrated units.  If disabled, parameters are assumed to be specified in pixel units.<br><p class="mia-main-text"><b>Do sub-pixel localisation</b>:  Enable TrackMate's "Subpixel localisation" functionality.  When enabled, subpixel centroid coordinates will be stored as measurements associated with each detected object.<br><p class="mia-main-text"><b>Median filtering</b>:  Enable TrackMate's "Median filtering" functionality.<br><p class="mia-main-text"><b>Radius</b>:  Expected radius of spots in the input image.  Specified in pixel units, unless "Calibrated units" is selected.<br><p class="mia-main-text"><b>Threshold</b>:  Threshold for spot detection.  Threshold is applied to filtered image (Laplacian of Gaussian), so will be affected by the specified "Radius" value.  Increase this value to make detection more selective (i.e. detect fewer spots).<br><p class="mia-main-text"><b>Estimate spot size</b>:  When enabled, output spot objects will have explicit size (rather than a single, centroid coordinate) determined by the TrackMate-calculated estimated diameter.<br></p>
 </div>
 
   <!-- Footer -->

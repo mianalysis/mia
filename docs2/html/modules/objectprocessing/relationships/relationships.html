@@ -32,8 +32,10 @@
           style="padding-right:8px;">Modular Image Analysis</a>
       <a class="navbar-brand d-block d-sm-none" href="#"><img height="32" src="img/logo_64.png"
           style="padding-right:8px;"></a> -->
-      <a class="navbar-brand mia-name" href="../../../../index.html" style="padding-top: 5px;padding-bottom: 0px;"><img
-          height="30" src="../../../../img/logo_64.png" style="padding-right:8px;">Modular Image Analysis</a>
+      <a class="navbar-brand mia-name" href="../../../../index.html" style="padding-top: 3px;padding-bottom: 0px;">
+        <img height="36" src="../../../../img/logo_64.png" style="padding-bottom: 3px; padding-right:8px;">
+        Modular Image Analysis
+      </a>
       <buton class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive"
         style="border: none;">
         <span class="navbar-toggler-icon"></span>
@@ -44,8 +46,8 @@
             <a class="nav-link" href="../../../../index.html">Home</a>
           </li>
           <li class="nav-item dropdown ">
-            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownModules"
-              role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Guides</a>
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownModules" role="button" data-toggle="dropdown"
+              aria-haspopup="true" aria-expanded="false">Guides</a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdownModules">
               <a class="dropdown-item" href="../../../../html/gettingstarted.html">Getting started</a>
             </div>
@@ -69,17 +71,21 @@
           </li>
         </ul>
         <a class="btn btn-outline-primary ml-2"
-          href="https://github.com/mianalysis/mia/releases/download/v0.20.3/MIA_-0.20.3.jar">Download</a>
+          href="https://github.com/mianalysis/mia/releases/download/v0.21.1-SNAPSHOT/MIA_-0.21.1-SNAPSHOT.jar">Download</a>
       </div>
     </div>
   </nav>
 
   <!-- TODO: Implement module search tool on a separate page (maybe with a search bar in the Module nav dropdown?), but link it here. -->
 
+<!-- <nav id="subnav" class="navbar navbar-default mia-path-nav" role="navigation">
+  <p class="mia-path"><a href="../../../../html/modules/modules.html">Modules</a> > <a href="../../../../html/modules/objectprocessing/objectprocessing.html">Object processing</a> > <a href="../../../../html/modules/objectprocessing/relationships/relationships.html">Relationships</a></p>
+</nav> -->
+
 <div class="page-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
-  <p class="text-secondary"><a href="../../../../html/modules/modules.html">Modules</a> ➤ <a href="../../../../html/modules/objectprocessing/objectprocessing.html">Object processing</a> ➤ <a href="../../../../html/modules/objectprocessing/relationships/relationships.html">Relationships</a></p>
+  <p class="mia-path"><a href="../../../../html/modules/modules.html">Modules</a> > <a href="../../../../html/modules/objectprocessing/objectprocessing.html">Object processing</a> > <a href="../../../../html/modules/objectprocessing/relationships/relationships.html">Relationships</a></p>
   <h1 class="display-4">Relationships</h1>
-  <p class="lead">Modules creating relationships between objects.  Relationships can be one-to-many (parent-child) or one-to-one (partners).</p>
+  <p class="mia-description">Modules creating relationships between objects.  Relationships can be one-to-many (parent-child) or one-to-one (partners).</p>
 </div>
 
 <div class="container mia-card-container">
@@ -88,7 +94,7 @@
       
       <div class="card mb-4 box-shadow mia-card">
   <div class="card-header">
-    <h4 class="my-0 font-weight-normal">Relate many-to-many</h4>
+    <h4 class="my-0 mia-card-title">Relate many-to-many</h4>
   </div>
   <div class="card-body">
     <p class="card-text mb-4">
@@ -102,7 +108,7 @@
   </div>
 </div><div class="card mb-4 box-shadow mia-card">
   <div class="card-header">
-    <h4 class="my-0 font-weight-normal">Relate many-to-one</h4>
+    <h4 class="my-0 mia-card-title">Relate many-to-one</h4>
   </div>
   <div class="card-body">
     <p class="card-text mb-4">
@@ -116,7 +122,7 @@
   </div>
 </div><div class="card mb-4 box-shadow mia-card">
   <div class="card-header">
-    <h4 class="my-0 font-weight-normal">Relate objects</h4>
+    <h4 class="my-0 mia-card-title">Relate objects</h4>
   </div>
   <div class="card-body">
     <p class="card-text mb-4">
@@ -130,7 +136,7 @@
   </div>
 </div><div class="card mb-4 box-shadow mia-card">
   <div class="card-header">
-    <h4 class="my-0 font-weight-normal">Relate one-to-one</h4>
+    <h4 class="my-0 mia-card-title">Relate one-to-one</h4>
   </div>
   <div class="card-body">
     <p class="card-text mb-4">
@@ -144,11 +150,11 @@
   </div>
 </div><div class="card mb-4 box-shadow mia-card">
   <div class="card-header">
-    <h4 class="my-0 font-weight-normal">Single class cluster</h4>
+    <h4 class="my-0 mia-card-title">Single class cluster</h4>
   </div>
   <div class="card-body">
     <p class="card-text mb-4">
-      Clusters objects using K-Means and/or DB-SCAN algorithms.</p>
+      Clusters objects (based on centroid locations) using K-Means++ and/or DBSCAN algorithms.</p>
   </div>
   <div class="card-footer bg-transparent mb-2 mia-card-footer">
     <!-- <button type="button" class="btn btn-lg btn-block btn-primary">See modules</button> -->
@@ -158,7 +164,7 @@
   </div>
 </div><div class="card mb-4 box-shadow mia-card">
   <div class="card-header">
-    <h4 class="my-0 font-weight-normal">Track objects</h4>
+    <h4 class="my-0 mia-card-title">Track objects</h4>
   </div>
   <div class="card-body">
     <p class="card-text mb-4">

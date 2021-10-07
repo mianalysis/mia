@@ -13,7 +13,7 @@ import io.github.mianalysis.mia.module.Module;
 import net.imagej.ImageJ;
 import net.imagej.ImageJService;
 
-public class ClassHunter<T> {
+public class ClassHunter<T extends org.scijava.plugin.SciJavaPlugin> {
 
     private static List<String> moduleNames = null;
 
@@ -38,10 +38,10 @@ public class ClassHunter<T> {
         }
 
         PluginService pluginService = context.getService(PluginService.class);
-        List<PluginInfo<Module>> modules = pluginService.getPluginsOfType(Module.class);
+        List<PluginInfo<T>> modules = pluginService.getPluginsOfType(clazz);
         List<String> names = new ArrayList<>();
 
-        for (PluginInfo<Module> module : modules)
+        for (PluginInfo<T> module : modules)
             names.add(module.getClassName());
 
         return names;

@@ -1,5 +1,8 @@
 package io.github.mianalysis.mia.macro.general;
 
+import org.scijava.Priority;
+import org.scijava.plugin.Plugin;
+
 import ij.macro.MacroExtension;
 import ij.measure.ResultsTable;
 import io.github.mianalysis.mia.macro.MacroOperation;
@@ -7,6 +10,7 @@ import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.sjcross.common.metadataextractors.Metadata;
 
+@Plugin(type = MacroOperation.class, priority=Priority.LOW, visible=true)
 public class MIA_ListMetadataInWorkspace extends MacroOperation {
     public MIA_ListMetadataInWorkspace(MacroExtension theHandler) {
         super(theHandler);

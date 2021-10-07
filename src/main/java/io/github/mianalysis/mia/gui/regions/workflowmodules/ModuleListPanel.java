@@ -47,8 +47,6 @@ public class ModuleListPanel extends JScrollPane {
     }
 
     public void updatePanel() {
-        moduleListPanel.removeAll();
-
         GridBagConstraints c = new GridBagConstraints();
         c.gridx = 0;
         c.gridy = 0;
@@ -75,6 +73,8 @@ public class ModuleListPanel extends JScrollPane {
         scrollPane.setOpaque(false);
         scrollPane.getViewport().setOpaque(false);
         scrollPane.setBackground(new Color(0, 0, 0, 0));
+
+        moduleListPanel.removeAll();
 
         // Creating control buttons for modules
         for (Module module:modules) {
@@ -165,7 +165,7 @@ public class ModuleListPanel extends JScrollPane {
 
     }
 
-    public void updateButtonStates() {
+    public void updateStates() {
         for (Component component : moduleListPanel.getComponents()) {
             if (component.getClass() == ModuleEnabledButton.class) {
                 ((ModuleEnabledButton) component).updateState();
@@ -175,6 +175,8 @@ public class ModuleListPanel extends JScrollPane {
                 ((ModuleButton) component).updateState();
             } else if (component.getClass() == EvalButton.class) {
                 ((EvalButton) component).updateState();
+            } else if (component.getClass() == ModuleTable.class) {
+                ((ModuleTable) component).updateStates();
             }
         }
     }

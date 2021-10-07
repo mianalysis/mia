@@ -32,8 +32,10 @@
           style="padding-right:8px;">Modular Image Analysis</a>
       <a class="navbar-brand d-block d-sm-none" href="#"><img height="32" src="img/logo_64.png"
           style="padding-right:8px;"></a> -->
-      <a class="navbar-brand mia-name" href="../../../../index.html" style="padding-top: 5px;padding-bottom: 0px;"><img
-          height="30" src="../../../../img/logo_64.png" style="padding-right:8px;">Modular Image Analysis</a>
+      <a class="navbar-brand mia-name" href="../../../../index.html" style="padding-top: 3px;padding-bottom: 0px;">
+        <img height="36" src="../../../../img/logo_64.png" style="padding-bottom: 3px; padding-right:8px;">
+        Modular Image Analysis
+      </a>
       <buton class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive"
         style="border: none;">
         <span class="navbar-toggler-icon"></span>
@@ -44,8 +46,8 @@
             <a class="nav-link" href="../../../../index.html">Home</a>
           </li>
           <li class="nav-item dropdown ">
-            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownModules"
-              role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Guides</a>
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownModules" role="button" data-toggle="dropdown"
+              aria-haspopup="true" aria-expanded="false">Guides</a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdownModules">
               <a class="dropdown-item" href="../../../../html/gettingstarted.html">Getting started</a>
             </div>
@@ -69,25 +71,25 @@
           </li>
         </ul>
         <a class="btn btn-outline-primary ml-2"
-          href="https://github.com/mianalysis/mia/releases/download/v0.20.3/MIA_-0.20.3.jar">Download</a>
+          href="https://github.com/mianalysis/mia/releases/download/v0.21.1-SNAPSHOT/MIA_-0.21.1-SNAPSHOT.jar">Download</a>
       </div>
     </div>
   </nav>
 
   <div class="page-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
-    <p class="text-secondary"><a href="../../../../html/modules/modules.html">Modules</a> ➤ <a href="../../../../html/modules/imageprocessing/imageprocessing.html">Image processing</a> ➤ <a href="../../../../html/modules/imageprocessing/pixel/pixel.html">Pixel</a></p>
+    <p class="mia-path"><a href="../../../../html/modules/modules.html">Modules</a> > <a href="../../../../html/modules/imageprocessing/imageprocessing.html">Image processing</a> > <a href="../../../../html/modules/imageprocessing/pixel/pixel.html">Pixel</a></p>
     <h1 class="display-4">Image calculator</h1>
-    <p class="lead">Apply pixel-wise intensity calculations for two images of matching dimensions.</p>
+    <p class="mia-description">Apply pixel-wise intensity calculations for two images of matching dimensions.</p>
 </div>
 
-<div class="pt-md-2 pb-md-4 mx-auto">
-    <h2 class="display-6">Description</h2>
-    Apply pixel-wise intensity calculations for two images of matching dimensions.<br><br>Note: Images to be processed must have matching spatial dimensions and intensity bit-depths.
+<div class="pt-md-2 pb-md-4 mx-auto mia-page">
+    <h2 class="mia-section-title">Description</h2>
+    <p class="mia-main-text">Apply pixel-wise intensity calculations for two images of matching dimensions.<br><br>Note: Images to be processed must have matching spatial dimensions and intensity bit-depths.</p>
 </div>
 
-<div class="pt-md-2 pb-md-4 mx-auto">
-    <h2 class="display-6">Parameters</h2>
-    <b>Input image 1</b> (default = "") First image to be processed as part of calculation.<br><br><b>Input image 2</b> (default = "") Second image to be processed as part of calculation.<br><br><b>Overwrite mode</b> (default = "Create new image") Controls how the resultant image should be output:<br><ul><li>"Create new image" (default) will create a new image and save it to the workspace.</li><li>"Overwrite image 1" will overwrite the first input image with the output image.  The output image will retain all measurements from the first input image.</li><li>"Overwrite image 2" will overwrite the second input image with the output image.  The output image will retain all measurements from the second input image.</li></ul><br><b>Output image</b> (default = "") Name of the output image created during the image calculation.  This image will be added to the workspace.<br><br><b>Output 32-bit image</b> (default = "false") When enabled, the calculation will be performed on 32-bit float values.  This is useful if the calculation is likely to create negative or decimal values.  The output image will also be stored in the workspace as a 32-bit float image.<br><br><b>Calculation method</b> (default = "Add image 1 and image 2") The calculation to apply to the two input images.<br><b>Set NaN values to zero</b> (default = "false") If input images are 32-bit (or are being converted to 32-bit via "Output 32-bit image" option) the output image can contain NaN (not a number) values in place of any zeros.<br><br>
+<div class="pt-md-2 pb-md-4 mx-auto mia-page">
+    <h2 class="mia-section-title">Parameters</h2>
+    <p class="mia-main-text"><p class="mia-main-text"><b>Input image 1</b>:  First image to be processed as part of calculation.<br><p class="mia-main-text"><b>Input image 2</b>:  Second image to be processed as part of calculation.<br><p class="mia-main-text"><b>Overwrite mode</b>:  Controls how the resultant image should be output:<br><ul><li>"Create new image" (default) will create a new image and save it to the workspace.</li><li>"Overwrite image 1" will overwrite the first input image with the output image.  The output image will retain all measurements from the first input image.</li><li>"Overwrite image 2" will overwrite the second input image with the output image.  The output image will retain all measurements from the second input image.</li></ul><p class="mia-main-text"><b>Output image</b>:  Name of the output image created during the image calculation.  This image will be added to the workspace.<br><p class="mia-main-text"><b>Output 32-bit image</b>:  When enabled, the calculation will be performed on 32-bit float values.  This is useful if the calculation is likely to create negative or decimal values.  The output image will also be stored in the workspace as a 32-bit float image.<br><p class="mia-main-text"><b>Calculation method</b>:  The calculation to apply to the two input images.<p class="mia-main-text"><b>Set NaN values to zero</b>:  If input images are 32-bit (or are being converted to 32-bit via "Output 32-bit image" option) the output image can contain NaN (not a number) values in place of any zeros.<br></p>
 </div>
 
   <!-- Footer -->

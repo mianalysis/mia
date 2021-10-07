@@ -272,7 +272,7 @@ public class DocumentationGenerator2 {
         if (category.getParent() == null)
             return categoryContent;
 
-        return appendCategoryPath(category.getParent(), pathToRoot) + " ➤ " + categoryContent;
+        return appendCategoryPath(category.getParent(), pathToRoot) + " > " + categoryContent;
 
     }
 
@@ -281,8 +281,7 @@ public class DocumentationGenerator2 {
             return "";
 
         StringBuilder sb = new StringBuilder();
-        sb.append("<b>").append(parameter.getName()).append("</b> (default = \"").append(parameter.getRawStringValue())
-                .append("\") ").append(parameter.getDescription()).append("<br>");
+        sb.append("<p class=\"mia-main-text\"><b>").append(parameter.getName()).append("</b>:  ").append(parameter.getDescription());
 
         if (parameter instanceof ParameterGroup)
             for (Parameter collectionParam : ((ParameterGroup) parameter).getTemplateParameters().values())

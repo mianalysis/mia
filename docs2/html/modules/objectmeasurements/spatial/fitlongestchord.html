@@ -32,8 +32,10 @@
           style="padding-right:8px;">Modular Image Analysis</a>
       <a class="navbar-brand d-block d-sm-none" href="#"><img height="32" src="img/logo_64.png"
           style="padding-right:8px;"></a> -->
-      <a class="navbar-brand mia-name" href="../../../../index.html" style="padding-top: 5px;padding-bottom: 0px;"><img
-          height="30" src="../../../../img/logo_64.png" style="padding-right:8px;">Modular Image Analysis</a>
+      <a class="navbar-brand mia-name" href="../../../../index.html" style="padding-top: 3px;padding-bottom: 0px;">
+        <img height="36" src="../../../../img/logo_64.png" style="padding-bottom: 3px; padding-right:8px;">
+        Modular Image Analysis
+      </a>
       <buton class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive"
         style="border: none;">
         <span class="navbar-toggler-icon"></span>
@@ -44,8 +46,8 @@
             <a class="nav-link" href="../../../../index.html">Home</a>
           </li>
           <li class="nav-item dropdown ">
-            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownModules"
-              role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Guides</a>
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownModules" role="button" data-toggle="dropdown"
+              aria-haspopup="true" aria-expanded="false">Guides</a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdownModules">
               <a class="dropdown-item" href="../../../../html/gettingstarted.html">Getting started</a>
             </div>
@@ -69,25 +71,25 @@
           </li>
         </ul>
         <a class="btn btn-outline-primary ml-2"
-          href="https://github.com/mianalysis/mia/releases/download/v0.20.3/MIA_-0.20.3.jar">Download</a>
+          href="https://github.com/mianalysis/mia/releases/download/v0.21.1-SNAPSHOT/MIA_-0.21.1-SNAPSHOT.jar">Download</a>
       </div>
     </div>
   </nav>
 
   <div class="page-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
-    <p class="text-secondary"><a href="../../../../html/modules/modules.html">Modules</a> ➤ <a href="../../../../html/modules/objectmeasurements/objectmeasurements.html">Object measurements</a> ➤ <a href="../../../../html/modules/objectmeasurements/spatial/spatial.html">Spatial</a></p>
+    <p class="mia-path"><a href="../../../../html/modules/modules.html">Modules</a> > <a href="../../../../html/modules/objectmeasurements/objectmeasurements.html">Object measurements</a> > <a href="../../../../html/modules/objectmeasurements/spatial/spatial.html">Spatial</a></p>
     <h1 class="display-4">Fit longest chord</h1>
-    <p class="lead">Measures the longest chord of each object in a specified object collection from the workspace.</p>
+    <p class="mia-description">Measures the longest chord of each object in a specified object collection from the workspace.</p>
 </div>
 
-<div class="pt-md-2 pb-md-4 mx-auto">
-    <h2 class="display-6">Description</h2>
-    Measures the longest chord of each object in a specified object collection from the workspace.  The longest chord of an object is defined as the line passing between the two furthest-spaced points on the surface of the object.  This can act as an approximate measure of object length.  In addition to the longest chord length, the distance of all object surface points from the longest chord can be measured, which themselves act as an approximation of object width.
+<div class="pt-md-2 pb-md-4 mx-auto mia-page">
+    <h2 class="mia-section-title">Description</h2>
+    <p class="mia-main-text">Measures the longest chord of each object in a specified object collection from the workspace.  The longest chord of an object is defined as the line passing between the two furthest-spaced points on the surface of the object.  This can act as an approximate measure of object length.  In addition to the longest chord length, the distance of all object surface points from the longest chord can be measured, which themselves act as an approximation of object width.</p>
 </div>
 
-<div class="pt-md-2 pb-md-4 mx-auto">
-    <h2 class="display-6">Parameters</h2>
-    <b>Input objects</b> (default = "") Objects from workspace to measure longest chord for.  Measurements will be associated with the corresponding object in this collection.<br><br><b>Measure object width</b> (default = "true") When selected the width of the object from the longest chord will be estimated.  The distance of all object surface points (those with at least one non-object neighbour in 4/6-way connectivity) from the longest chord are calculated.  Statistics (mean, minimum, maximum, sum and standard deviation) of these distances for an object are stored as measurements associated with that object.<br><br><b>Measure object orientation</b> (default = "true") When selected, the orientation of the line in the XY plane is measured and this measurement associated with the corresponding object.  Orientations are reported in degree units and are relative to positive x-axis (positive above x-axis, negative below x-axis).<br><br><b>Store end points</b> (default = "true") When selected, the two coordinates corresponding to the end points of the longest chord (the two furthest-spaced points on the object surface) are stored as measurements associated with the corresponding input object.<br><br>
+<div class="pt-md-2 pb-md-4 mx-auto mia-page">
+    <h2 class="mia-section-title">Parameters</h2>
+    <p class="mia-main-text"><p class="mia-main-text"><b>Input objects</b>:  Objects from workspace to measure longest chord for.  Measurements will be associated with the corresponding object in this collection.<br><p class="mia-main-text"><b>Measure object width</b>:  When selected the width of the object from the longest chord will be estimated.  The distance of all object surface points (those with at least one non-object neighbour in 4/6-way connectivity) from the longest chord are calculated.  Statistics (mean, minimum, maximum, sum and standard deviation) of these distances for an object are stored as measurements associated with that object.<br><p class="mia-main-text"><b>Measure object orientation</b>:  When selected, the orientation of the line in the XY plane is measured and this measurement associated with the corresponding object.  Orientations are reported in degree units and are relative to positive x-axis (positive above x-axis, negative below x-axis).<br><p class="mia-main-text"><b>Store end points</b>:  When selected, the two coordinates corresponding to the end points of the longest chord (the two furthest-spaced points on the object surface) are stored as measurements associated with the corresponding input object.<br></p>
 </div>
 
   <!-- Footer -->

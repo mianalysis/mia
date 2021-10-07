@@ -32,8 +32,10 @@
           style="padding-right:8px;">Modular Image Analysis</a>
       <a class="navbar-brand d-block d-sm-none" href="#"><img height="32" src="img/logo_64.png"
           style="padding-right:8px;"></a> -->
-      <a class="navbar-brand mia-name" href="../../../../index.html" style="padding-top: 5px;padding-bottom: 0px;"><img
-          height="30" src="../../../../img/logo_64.png" style="padding-right:8px;">Modular Image Analysis</a>
+      <a class="navbar-brand mia-name" href="../../../../index.html" style="padding-top: 3px;padding-bottom: 0px;">
+        <img height="36" src="../../../../img/logo_64.png" style="padding-bottom: 3px; padding-right:8px;">
+        Modular Image Analysis
+      </a>
       <buton class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive"
         style="border: none;">
         <span class="navbar-toggler-icon"></span>
@@ -44,8 +46,8 @@
             <a class="nav-link" href="../../../../index.html">Home</a>
           </li>
           <li class="nav-item dropdown ">
-            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownModules"
-              role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Guides</a>
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownModules" role="button" data-toggle="dropdown"
+              aria-haspopup="true" aria-expanded="false">Guides</a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdownModules">
               <a class="dropdown-item" href="../../../../html/gettingstarted.html">Getting started</a>
             </div>
@@ -69,25 +71,25 @@
           </li>
         </ul>
         <a class="btn btn-outline-primary ml-2"
-          href="https://github.com/mianalysis/mia/releases/download/v0.20.3/MIA_-0.20.3.jar">Download</a>
+          href="https://github.com/mianalysis/mia/releases/download/v0.21.1-SNAPSHOT/MIA_-0.21.1-SNAPSHOT.jar">Download</a>
       </div>
     </div>
   </nav>
 
   <div class="page-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
-    <p class="text-secondary"><a href="../../../../html/modules/modules.html">Modules</a> ➤ <a href="../../../../html/modules/objectmeasurements/objectmeasurements.html">Object measurements</a> ➤ <a href="../../../../html/modules/objectmeasurements/miscellaneous/miscellaneous.html">Miscellaneous</a></p>
+    <p class="mia-path"><a href="../../../../html/modules/modules.html">Modules</a> > <a href="../../../../html/modules/objectmeasurements/objectmeasurements.html">Object measurements</a> > <a href="../../../../html/modules/objectmeasurements/miscellaneous/miscellaneous.html">Miscellaneous</a></p>
     <h1 class="display-4">Bin objects by measurement</h1>
-    <p class="lead">Distribute objects into a set of "bins" based on a measurement associated with each object.</p>
+    <p class="mia-description">Distribute objects into a set of "bins" based on a measurement associated with each object.</p>
 </div>
 
-<div class="pt-md-2 pb-md-4 mx-auto">
-    <h2 class="display-6">Description</h2>
-    Distribute objects into a set of "bins" based on a measurement associated with each object.  Bins are evenly distributed between manually-specified smallest and largest bin centres.  The assigned bin for each object is stored as a new measurement associated with that object.
+<div class="pt-md-2 pb-md-4 mx-auto mia-page">
+    <h2 class="mia-section-title">Description</h2>
+    <p class="mia-main-text">Distribute objects into a set of "bins" based on a measurement associated with each object.  Bins are evenly distributed between manually-specified smallest and largest bin centres.  The assigned bin for each object is stored as a new measurement associated with that object.</p>
 </div>
 
-<div class="pt-md-2 pb-md-4 mx-auto">
-    <h2 class="display-6">Parameters</h2>
-    <b>Input objects</b> (default = "") Objects from the workspace.  The specified measurement for each of these will be binned according to various parameters.  The assigned bin will be stored as a new measurement associated with this object.<br><br><b>Measurement</b> (default = "") Measurement associated with the input objects that will be binned according to the other parameters.<br><br><b>Smallest bin centre</b> (default = "0.0") Centre value associated with the smallest bin.  Bins will be evenly distributed in bins between this value and the upper bin centre (specified by "Largest bin centre".<br><br><b>Largest bin centre</b> (default = "1.0") Centre value associated with the largest bin.  Bins will be evenly distributed in bins between this value and the lower bin centre (specified by "Smallest bin centre".<br><br><b>Number of bins</b> (default = "1") Number of bins to divide measurements into.  These will be evenly distributed in the range between "Smallest bin centre" and "Largest bin centre".<br><br>
+<div class="pt-md-2 pb-md-4 mx-auto mia-page">
+    <h2 class="mia-section-title">Parameters</h2>
+    <p class="mia-main-text"><p class="mia-main-text"><b>Input objects</b>:  Objects from the workspace.  The specified measurement for each of these will be binned according to various parameters.  The assigned bin will be stored as a new measurement associated with this object.<br><p class="mia-main-text"><b>Measurement</b>:  Measurement associated with the input objects that will be binned according to the other parameters.<br><p class="mia-main-text"><b>Smallest bin centre</b>:  Centre value associated with the smallest bin.  Bins will be evenly distributed in bins between this value and the upper bin centre (specified by "Largest bin centre".<br><p class="mia-main-text"><b>Largest bin centre</b>:  Centre value associated with the largest bin.  Bins will be evenly distributed in bins between this value and the lower bin centre (specified by "Smallest bin centre".<br><p class="mia-main-text"><b>Number of bins</b>:  Number of bins to divide measurements into.  These will be evenly distributed in the range between "Smallest bin centre" and "Largest bin centre".<br></p>
 </div>
 
   <!-- Footer -->

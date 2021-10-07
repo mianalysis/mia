@@ -1,5 +1,8 @@
 package io.github.mianalysis.mia.macro.imagemeasurements;
 
+import org.scijava.Priority;
+import org.scijava.plugin.Plugin;
+
 import ij.macro.MacroExtension;
 import ij.measure.ResultsTable;
 import io.github.mianalysis.mia.macro.MacroOperation;
@@ -8,6 +11,7 @@ import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.refs.ImageMeasurementRef;
 import io.github.mianalysis.mia.object.refs.collections.ImageMeasurementRefs;
 
+@Plugin(type = MacroOperation.class, priority=Priority.LOW, visible=true)
 public class MIA_ListImageMeasurementNames extends MacroOperation {
     public MIA_ListImageMeasurementNames(MacroExtension theHandler) {
         super(theHandler);

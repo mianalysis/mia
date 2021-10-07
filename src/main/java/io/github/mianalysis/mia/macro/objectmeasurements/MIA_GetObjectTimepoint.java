@@ -1,10 +1,16 @@
 package io.github.mianalysis.mia.macro.objectmeasurements;
 
+import org.scijava.Priority;
+import org.scijava.plugin.Plugin;
+
 import ij.macro.MacroExtension;
 import io.github.mianalysis.mia.macro.MacroOperation;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.object.*;
+import io.github.mianalysis.mia.object.Obj;
+import io.github.mianalysis.mia.object.Objs;
+import io.github.mianalysis.mia.object.Workspace;
 
+@Plugin(type = MacroOperation.class, priority=Priority.LOW, visible=true)
 public class MIA_GetObjectTimepoint extends MacroOperation {
     public MIA_GetObjectTimepoint(MacroExtension theHandler) {
         super(theHandler);

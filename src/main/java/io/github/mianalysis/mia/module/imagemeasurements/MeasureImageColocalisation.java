@@ -192,7 +192,7 @@ public class MeasureImageColocalisation<T extends RealType<T> & NativeType<T>> e
             return data;
 
         } catch (MissingPreconditionException e) {
-            MIA.log.writeError(e.getMessage());
+            MIA.log.writeError(e);
             return null;
         }
     }
@@ -239,7 +239,7 @@ public class MeasureImageColocalisation<T extends RealType<T> & NativeType<T>> e
             measurements.put(Measurements.THRESHOLD_SLOPE, Double.NaN);
             measurements.put(Measurements.THRESHOLD_Y_INTERCEPT, Double.NaN);
 
-            MIA.log.writeError(e.getMessage());
+            MIA.log.writeError(e);
 
         }
 
@@ -362,7 +362,7 @@ public class MeasureImageColocalisation<T extends RealType<T> & NativeType<T>> e
                 measurements.put(Measurements.PCC_ABOVE_THRESHOLD, Double.NaN);
             }
 
-            MIA.log.writeError(e.getMessage());
+            MIA.log.writeError(e);
 
         }
 
