@@ -71,14 +71,14 @@ public class ModulePanel extends JPanel {
         outputPanel.updateButtonState();
         outputPanel.updatePanel(outputControl);
 
-        moduleListPanel.updateButtonStates();
+        moduleListPanel.updateStates();
         moduleListPanel.updatePanel();
 
     }
 
     public void updateModuleStates() {
         inputPanel.updateButtonState();
-        moduleListPanel.updateButtonStates();
+        moduleListPanel.updateStates();
         outputPanel.updateButtonState();
     }
 }

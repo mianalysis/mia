@@ -5,12 +5,12 @@ import java.awt.Font;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
-import javax.swing.JTextField;
+import javax.swing.JLabel;
 
 import io.github.mianalysis.mia.gui.GUI;
 import io.github.mianalysis.mia.module.Module;
 
-public class ModuleTitle extends JTextField implements MouseListener {
+public class ModuleTitle extends JLabel implements MouseListener {
     /**
      *
      */
@@ -22,7 +22,7 @@ public class ModuleTitle extends JTextField implements MouseListener {
 
         setText(module.getNickname());
         addMouseListener(this);
-        setEditable(false);
+        // setEditable(false);
         setBorder(null);
         Font font = new Font(Font.SANS_SERIF, Font.BOLD, 12);
         setFont(font);

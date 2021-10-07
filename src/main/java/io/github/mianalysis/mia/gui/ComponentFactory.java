@@ -64,13 +64,14 @@ public class ComponentFactory {
             ComponentFactory.class.getResource("/icons/leftarrow_darkblue_12px.png"), "");
     // private static final ImageIcon circle = new ImageIcon(
     // ComponentFactory.class.getResource("/Icons/dot_blue_12px.png"), "");
+    private static final ImageIcon warningIcon = new ImageIcon(
+            ComponentFactory.class.getResource("/icons/warning_red_12px.png"), "");
 
     public ComponentFactory(int elementHeight) {
         this.elementHeight = elementHeight;
     }
 
-    public JPanel createParameterControl(Parameter parameter, Modules modules, Module module,
-            boolean editable) {
+    public JPanel createParameterControl(Parameter parameter, Modules modules, Module module, boolean editable) {
         JPanel paramPanel = new JPanel(new GridBagLayout());
 
         GridBagConstraints c = new GridBagConstraints();
@@ -106,7 +107,7 @@ public class ComponentFactory {
             paramPanel.add(parameterComponent, c);
 
         } else {
-            JComponent parameterName = editable ? new ExportName(parameter) : new JLabel(parameter.getNickname());
+            JLabel parameterName = editable ? new ExportName(parameter) : new JLabel(parameter.getNickname());
             parameterName.setBorder(null);
             parameterName.setOpaque(false);
             parameterName.setPreferredSize(new Dimension(0, elementHeight));
@@ -117,8 +118,10 @@ public class ComponentFactory {
 
             if (parameter.isValid())
                 parameterName.setForeground(Color.BLACK);
-            else
+            else {
                 parameterName.setForeground(Colours.RED);
+                parameterName.setIcon(warningIcon);
+            }
 
             c.gridx++;
             c.weightx = 1;
@@ -161,7 +164,7 @@ public class ComponentFactory {
         if (activeModule.isDeprecated()) {
             Map attributes = font.getAttributes();
             attributes.put(TextAttribute.STRIKETHROUGH, TextAttribute.STRIKETHROUGH_ON);
-            font = new Font(attributes);            
+            font = new Font(attributes);
         }
         moduleName.setFont(font);
         moduleName.setForeground(Color.BLACK);
@@ -334,7 +337,7 @@ public class ComponentFactory {
                     BooleanP expandedBasic = (BooleanP) module.getParameter(GUISeparator.EXPANDED_BASIC);
                     expandedBasic.flipBoolean();
                     GUI.updateModules();
-
+                    GUI.updateParameters();
                 }
             }
 
@@ -391,20 +394,19 @@ public class ComponentFactory {
             return modulePanel;
 
         c.insets = new Insets(0, 40, 0, 17);
-        addParameters(module, module.updateAndGetParameters(), modulePanel, c, false);
+        addBasicParameters(module, module.updateAndGetParameters(), modulePanel, c, false);
 
         return modulePanel;
 
     }
 
-    private void addParameters(Module module, Parameters parameters, JPanel modulePanel, GridBagConstraints c,
+    private void addBasicParameters(Module module, Parameters parameters, JPanel modulePanel, GridBagConstraints c,
             boolean editable) {
         for (Parameter parameter : parameters.values()) {
             if (parameter.getClass() == ParameterGroup.class) {
-                LinkedHashMap<Integer, Parameters> collections = ((ParameterGroup) parameter)
-                        .getCollections(true);
+                LinkedHashMap<Integer, Parameters> collections = ((ParameterGroup) parameter).getCollections(true);
                 for (Parameters collection : collections.values())
-                    addParameters(module, collection, modulePanel, c, editable);
+                    addBasicParameters(module, collection, modulePanel, c, editable);
 
             }
 

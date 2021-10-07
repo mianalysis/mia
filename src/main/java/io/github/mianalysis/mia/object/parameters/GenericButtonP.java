@@ -135,7 +135,6 @@ public class GenericButtonP extends Parameter {
                     if (idx <= GUI.getLastModuleEval() & !(getModule() instanceof OutputControl))
                         GUI.setLastModuleEval(idx - 1);
 
-                    GUI.updateModuleStates(true);
                     GUI.updateModules();
                     GUI.updateParameters();
                 }).start();
@@ -154,7 +153,6 @@ public class GenericButtonP extends Parameter {
                     if (idx <= GUI.getLastModuleEval() & !(getModule() instanceof OutputControl))
                         GUI.setLastModuleEval(idx - 1);
 
-                    GUI.updateModuleStates(true);
                     GUI.updateTestFile(true);
                     GUI.updateModules();
                     GUI.updateParameters();

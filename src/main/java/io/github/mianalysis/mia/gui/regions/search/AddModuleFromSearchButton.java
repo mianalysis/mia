@@ -57,8 +57,6 @@ public class AddModuleFromSearchButton extends JButton implements ActionListener
         // Adding to the list of modules
         GUI.setSelectedModules(new Module[] { newModule });
         GUI.updateModules();
-        GUI.updateModuleStates(true);
-        GUI.updateModuleList();
         GUI.updateParameters();
         GUI.updateHelpNotes();
 

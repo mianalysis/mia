@@ -6,21 +6,21 @@ import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.TreeMap;
 
+import org.scijava.Priority;
+import org.scijava.plugin.Plugin;
+
 import ij.CompositeImage;
 import ij.IJ;
 import ij.ImagePlus;
 import io.github.mianalysis.mia.MIA;
+import io.github.mianalysis.mia.module.Categories;
+import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.module.Module;
-import org.scijava.Priority;
-import org.scijava.plugin.Plugin;
-import io.github.mianalysis.mia.module.Category;
-import io.github.mianalysis.mia.module.Categories;
-import io.github.mianalysis.mia.object.Status;
 import io.github.mianalysis.mia.object.Image;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
+import io.github.mianalysis.mia.object.Status;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.FolderPathP;
@@ -28,6 +28,7 @@ import io.github.mianalysis.mia.object.parameters.InputImageP;
 import io.github.mianalysis.mia.object.parameters.InputObjectsP;
 import io.github.mianalysis.mia.object.parameters.MetadataItemP;
 import io.github.mianalysis.mia.object.parameters.ObjMeasurementSelectorP;
+import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.SeparatorP;
 import io.github.mianalysis.mia.object.refs.ObjMeasurementRef;
 import io.github.mianalysis.mia.object.refs.collections.ImageMeasurementRefs;
@@ -35,9 +36,8 @@ import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
-import io.github.mianalysis.mia.object.parameters.Parameters;
 
-@Plugin(type = Module.class, priority=Priority.LOW, visible=true)
+@Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class ExportACCDataset extends Module {
     public static final String INPUT_SEPARATOR = "Image/objects input";
     public static final String INPUT_OBJECTS = "Input objects";
@@ -58,10 +58,10 @@ public class ExportACCDataset extends Module {
         super("Export ACC dataset", modules);
     }
 
-
     @Override
     public String getDescription() {
-        return "";
+        return "Exports objects and associated measurements in the Advanced Cell Classifier (ACC) format.  The output dataset can be loaded into ACC, where machine learning can be applied to classify objects in a GUI-based environment.  This module allows specific measurements to be exported from all those associated with the input objects.  For more information on the format, please visit the <a href=\"http://www.cellclassifier.org/>Advanced Cell Classifier documentation</>.";
+
     }
 
     @Override
@@ -115,8 +115,7 @@ public class ExportACCDataset extends Module {
 
     }
 
-    static boolean saveFeatureNames(ObjMeasurementRefs refs, TreeMap<String, Boolean> states,
-            String folderName) {
+    static boolean saveFeatureNames(ObjMeasurementRefs refs, TreeMap<String, Boolean> states, String folderName) {
         // Check if featureName file exists
         File featureNamesFile = new File(folderName + "featureNames.acc");
         if (featureNamesFile.exists())
@@ -155,8 +154,8 @@ public class ExportACCDataset extends Module {
 
     }
 
-    static boolean saveFeatures(Objs objects, ObjMeasurementRefs refs,
-            TreeMap<String, Boolean> states, String folderName, String fileName) {
+    static boolean saveFeatures(Objs objects, ObjMeasurementRefs refs, TreeMap<String, Boolean> states,
+            String folderName, String fileName) {
         DecimalFormat df = new DecimalFormat("0.0000000E0");
 
         // Check analysis folder exists
@@ -274,6 +273,8 @@ public class ExportACCDataset extends Module {
         parameters.add(new BooleanP(SHOW_MEASUREMENTS, this, true));
         parameters.add(new ObjMeasurementSelectorP(MEASUREMENTS, this));
 
+        addParameterDescriptions();
+        
     }
 
     @Override
@@ -331,5 +332,31 @@ public class ExportACCDataset extends Module {
     @Override
     public boolean verify() {
         return true;
+    }
+
+    public void addParameterDescriptions() {
+        parameters.get(INPUT_OBJECTS).setDescription(
+                "Objects for which an ACC dataset will be generated.  A summary of each object is output along with the specified measurements in a format that can be loaded into ACC.");
+
+        parameters.get(INPUT_RAW_IMAGE).setDescription(
+                "Raw image from which objects were ultimately detected.  This image doesn't need to show the object selections, but will be displayed in ACC with an optional overlay variant (specified by \""
+                        + INPUT_OVERLAY_IMAGE
+                        + "\").  As such, the objects themselves should be visible.  Typically this would be a fluorescence or brightfield image.");
+
+        parameters.get(INPUT_OVERLAY_IMAGE).setDescription("Equivalent image to that specified by \"" + INPUT_RAW_IMAGE
+                + "\", but with an overlay showing the input objects.  The overlay will be automatically flattened onto this image prior to saving.");
+
+        parameters.get(ROOT_DATASET_FOLDER).setDescription("Root folder where the output ACC dataset will be stored.");
+
+        parameters.get(PLATE_NAME).setDescription("Metadata item associated with the input image that corresponds to the plate name from which the image was taken.  Note: The ACC format requires objects and images to be organised in a plate-based format; however, for single image samples, this text value could be set to the filename.");
+
+        parameters.get(ROW_LETTER).setDescription("Metadata item associated with the input image that corresponds to the row letter for the plate well from which the image was taken.  Note: The ACC format requires objects and images to be organised in a plate-based format; however, for single image samples, this text value could be set to the series number.");
+
+        parameters.get(COLUMN_NUMBER).setDescription("Metadata item associated with the input image that corresponds to the column number for the plate well from which the image was taken.  Note: The ACC format requires objects and images to be organised in a plate-based format; however, for single image samples, this numeric value could be set to the series number.");
+
+        parameters.get(SHOW_MEASUREMENTS).setDescription("When selected, the available measurements are displayed in the MIA interface.  This allows only the relevant measurements associated with the objects to be used in ACC.");
+
+        parameters.get(MEASUREMENTS).setDescription("If \""+SHOW_MEASUREMENTS+"\" is selected, all measurements associated with the input objects will be shown in the MIA interface, along with tickboxes that can be used to mark those for inclusion in the ACC dataset.");
+
     }
 }

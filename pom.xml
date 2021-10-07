@@ -10,7 +10,7 @@
 
     <groupId>io.github.mianalysis</groupId>
     <artifactId>MIA</artifactId>
-    <version>0.21.1-SNAPSHOT</version>
+    <version>0.21.1</version>
     <packaging>jar</packaging>
     <name>MIA</name>
     <url>https://github.com/mianalysis/mia</url>
@@ -325,12 +325,12 @@
         </dependency>
 
         <dependency>
-            <!-- <groupId>com.github.sjcross</groupId>
-            <artifactId>Common</artifactId>
-            <version>1.10.4</version> -->
-            <groupId>io.github.sjcross</groupId>
+            <groupId>com.github.sjcross</groupId>
             <artifactId>Common</artifactId>
             <version>1.11.0</version>
+            <!-- <groupId>io.github.sjcross</groupId>
+            <artifactId>Common</artifactId>
+            <version>1.11.0</version> -->
         </dependency>
     </dependencies>
 

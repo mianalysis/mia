@@ -104,7 +104,7 @@ public class AdjustParameterGroupButton extends ParameterControl implements Acti
 
                         collections.replace(prevIdx, moveCollection);
                         collections.replace(moveIdx, targetCollection);
-                        
+
                         break;
 
                     }
@@ -144,7 +144,6 @@ public class AdjustParameterGroupButton extends ParameterControl implements Acti
         if (idx <= GUI.getLastModuleEval() & !(parameter.getModule() instanceof OutputControl))
             GUI.setLastModuleEval(idx - 1);
 
-        GUI.updateModuleStates(true);
         GUI.updateModules();
         GUI.updateParameters();
 

@@ -479,7 +479,8 @@ public class DocumentationGenerator {
 
             URL url = Resources.getResource("templatemd/introduction.md");
             String string = Resources.toString(url, Charsets.UTF_8);
-            string = string.replace("${version}", version);
+            if (version != null)
+                string = string.replace("${version}", version);
             sb.append(renderer.render(parser.parse(string)));
             sb.append("<br><br>");
 
