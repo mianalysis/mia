@@ -32,8 +32,10 @@
           style="padding-right:8px;">Modular Image Analysis</a>
       <a class="navbar-brand d-block d-sm-none" href="#"><img height="32" src="img/logo_64.png"
           style="padding-right:8px;"></a> -->
-      <a class="navbar-brand mia-name" href="../../../index.html" style="padding-top: 5px;padding-bottom: 0px;"><img
-          height="30" src="../../../img/logo_64.png" style="padding-right:8px;">Modular Image Analysis</a>
+      <a class="navbar-brand mia-name" href="../../../index.html" style="padding-top: 3px;padding-bottom: 0px;">
+        <img height="36" src="../../../img/logo_64.png" style="padding-bottom: 3px; padding-right:8px;">
+        Modular Image Analysis
+      </a>
       <buton class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive"
         style="border: none;">
         <span class="navbar-toggler-icon"></span>
@@ -44,8 +46,8 @@
             <a class="nav-link" href="../../../index.html">Home</a>
           </li>
           <li class="nav-item dropdown ">
-            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownModules"
-              role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Guides</a>
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownModules" role="button" data-toggle="dropdown"
+              aria-haspopup="true" aria-expanded="false">Guides</a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdownModules">
               <a class="dropdown-item" href="../../../html/gettingstarted.html">Getting started</a>
             </div>
@@ -69,25 +71,25 @@
           </li>
         </ul>
         <a class="btn btn-outline-primary ml-2"
-          href="https://github.com/mianalysis/mia/releases/download/v0.20.3/MIA_-0.20.3.jar">Download</a>
+          href="https://github.com/mianalysis/mia/releases/download/v0.21.1-SNAPSHOT/MIA_-0.21.1-SNAPSHOT.jar">Download</a>
       </div>
     </div>
   </nav>
 
   <div class="page-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
-    <p class="text-secondary"><a href="../../../html/modules/modules.html">Modules</a> ➤ <a href="../../../html/modules/core/core.html">Core</a></p>
+    <p class="mia-path"><a href="../../../html/modules/modules.html">Modules</a> > <a href="../../../html/modules/core/core.html">Core</a></p>
     <h1 class="display-4">Input control</h1>
-    <p class="lead">Select which file(s) or folder(s) MIA will process through.</p>
+    <p class="mia-description">Select which file(s) or folder(s) MIA will process through.</p>
 </div>
 
-<div class="pt-md-2 pb-md-4 mx-auto">
-    <h2 class="display-6">Description</h2>
-    Select which file(s) or folder(s) MIA will process through.  If a file is selected, that file alone will be processed; however, selecting a folder will cause the system to iterate over all files and sub-folders within that folder.  Each file identified here will initialise its own workspace.  <br><br>It is possible to add filters to limit which files are used.  Multiple filters can be applied.<br><br>n.b. This module simply creates the workspace for subsequent analysis; no images are automatically loaded at this point.  To load image data to the workspace use the "Load image" module.
+<div class="pt-md-2 pb-md-4 mx-auto mia-page">
+    <h2 class="mia-section-title">Description</h2>
+    <p class="mia-main-text">Select which file(s) or folder(s) MIA will process through.  If a file is selected, that file alone will be processed; however, selecting a folder will cause the system to iterate over all files and sub-folders within that folder.  Each file identified here will initialise its own workspace.  <br><br>It is possible to add filters to limit which files are used.  Multiple filters can be applied.<br><br>n.b. This module simply creates the workspace for subsequent analysis; no images are automatically loaded at this point.  To load image data to the workspace use the "Load image" module.</p>
 </div>
 
-<div class="pt-md-2 pb-md-4 mx-auto">
-    <h2 class="display-6">Parameters</h2>
-    <b>Input path</b> (default = "") The file or folder path to process.  If a file is selected, that file alone will be processed.  If a folder is selected, each file in that folder (and all sub-folders) passing the filters will be processed.<br><br><b>Series mode</b> (default = "All series") For multi-series files, select which series to process:<br><ul><li>"All series" will create a new workspace for each series in the file.</li><li>"Series list" allows a comma-separated list of series numbers to be specified.</li></ul><br><b>Series list</b> (default = "1") Comma-separated list of series numbers to be processed.<br><br><b>Only load first file per folder</b> (default = "false") Only load the (alphabetically) first file in each folder.<br><br><b>Only load first matching group</b> (default = "false") Only load the (alphabetically) first file matching the group specified by the regular expression "Pattern" parameter.  Each candidate filename will be matched against the regular expression in "Pattern" and retained for analysis if the selected group hasn't been seen before.  Only one group (specified using standard regex parenthesis notation) can be used.<br><br><b>Pattern</b> (default = "") Regular expression pattern to use when "Only load first matching group" is enabled.  This pattern must contain at least one group (specified using standard regex parenthesis notation).<br><br><b>Spatial unit</b> (default = "Micrometres") Spatial units for calibrated measurements.  Assuming spatial calibration can be read from the input file when loaded, this will convert the input calibrated units to the units specified here.<br><b>Temporal unit</b> (default = "Milliseconds") Temporal units for calibrated measurements.  Assuming temporal calibration can be read from the input file when loaded, this will convert the input calibrated units to the units specified here.<br><b>Add filter</b> (default = "") Add another filename filter.  All images to be processed will pass all filters.<br><b>Filter source</b> (default = "Extension") Type of filter to add.<br><b>Filter value</b> (default = "") Value to filter filenames against.<br><br><b>Filter type</b> (default = "Matches partially (include)") Control how the present filter operates:<li>"Matches partially (include)" will process an image if the filter value is partially present in the source (e.g. filename or extension).</li><li>"Matches completely (include)" will process an image if the filter value is exactly the same as the source.</li><li>"Matches partially (exclude)" will not process an image if the filter value is partially present in the source.</li><li>"Matches completely (exclude)" will not process an image if the filter value is exactly the same as the source.</li></ul><br><br><b>Simultaneous jobs</b> (default = "1") The number of images that will be processed simultaneously.  If this is set to "1" while processing a folder each valid file will still be processed, they will just complete one at a time.  For large images this is best left as "1" unless using a system with large amounts of RAM.<br><br>
+<div class="pt-md-2 pb-md-4 mx-auto mia-page">
+    <h2 class="mia-section-title">Parameters</h2>
+    <p class="mia-main-text"><p class="mia-main-text"><b>Input path</b>:  The file or folder path to process.  If a file is selected, that file alone will be processed.  If a folder is selected, each file in that folder (and all sub-folders) passing the filters will be processed.<br><p class="mia-main-text"><b>Series mode</b>:  For multi-series files, select which series to process:<br><ul><li>"All series" will create a new workspace for each series in the file.</li><li>"Series list" allows a comma-separated list of series numbers to be specified.</li></ul><p class="mia-main-text"><b>Series list</b>:  Comma-separated list of series numbers to be processed.<br><p class="mia-main-text"><b>Only load first file per folder</b>:  Only load the (alphabetically) first file in each folder.<br><p class="mia-main-text"><b>Only load first matching group</b>:  Only load the (alphabetically) first file matching the group specified by the regular expression "Pattern" parameter.  Each candidate filename will be matched against the regular expression in "Pattern" and retained for analysis if the selected group hasn't been seen before.  Only one group (specified using standard regex parenthesis notation) can be used.<br><p class="mia-main-text"><b>Pattern</b>:  Regular expression pattern to use when "Only load first matching group" is enabled.  This pattern must contain at least one group (specified using standard regex parenthesis notation).<br><p class="mia-main-text"><b>Spatial unit</b>:  Spatial units for calibrated measurements.  Assuming spatial calibration can be read from the input file when loaded, this will convert the input calibrated units to the units specified here.<p class="mia-main-text"><b>Temporal unit</b>:  Temporal units for calibrated measurements.  Assuming temporal calibration can be read from the input file when loaded, this will convert the input calibrated units to the units specified here.<p class="mia-main-text"><b>Add filter</b>:  Add another filename filter.  All images to be processed will pass all filters.<p class="mia-main-text"><b>Filter source</b>:  Type of filter to add.<p class="mia-main-text"><b>Filter value</b>:  Value to filter filenames against.<br><p class="mia-main-text"><b>Filter type</b>:  Control how the present filter operates:<br><ul><li>"Matches partially (include)" will process an image if the filter value is partially present in the source (e.g. filename or extension).</li><li>"Matches completely (include)" will process an image if the filter value is exactly the same as the source.</li><li>"Matches partially (exclude)" will not process an image if the filter value is partially present in the source.</li><li>"Matches completely (exclude)" will not process an image if the filter value is exactly the same as the source.</li></ul><br><p class="mia-main-text"><b>Simultaneous jobs</b>:  The number of images that will be processed simultaneously.  If this is set to "1" while processing a folder each valid file will still be processed, they will just complete one at a time.  For large images this is best left as "1" unless using a system with large amounts of RAM.<br></p>
 </div>
 
   <!-- Footer -->

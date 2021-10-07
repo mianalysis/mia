@@ -32,8 +32,10 @@
           style="padding-right:8px;">Modular Image Analysis</a>
       <a class="navbar-brand d-block d-sm-none" href="#"><img height="32" src="img/logo_64.png"
           style="padding-right:8px;"></a> -->
-      <a class="navbar-brand mia-name" href="../../../../index.html" style="padding-top: 5px;padding-bottom: 0px;"><img
-          height="30" src="../../../../img/logo_64.png" style="padding-right:8px;">Modular Image Analysis</a>
+      <a class="navbar-brand mia-name" href="../../../../index.html" style="padding-top: 3px;padding-bottom: 0px;">
+        <img height="36" src="../../../../img/logo_64.png" style="padding-bottom: 3px; padding-right:8px;">
+        Modular Image Analysis
+      </a>
       <buton class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive"
         style="border: none;">
         <span class="navbar-toggler-icon"></span>
@@ -44,8 +46,8 @@
             <a class="nav-link" href="../../../../index.html">Home</a>
           </li>
           <li class="nav-item dropdown ">
-            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownModules"
-              role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Guides</a>
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownModules" role="button" data-toggle="dropdown"
+              aria-haspopup="true" aria-expanded="false">Guides</a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdownModules">
               <a class="dropdown-item" href="../../../../html/gettingstarted.html">Getting started</a>
             </div>
@@ -69,25 +71,25 @@
           </li>
         </ul>
         <a class="btn btn-outline-primary ml-2"
-          href="https://github.com/mianalysis/mia/releases/download/v0.20.3/MIA_-0.20.3.jar">Download</a>
+          href="https://github.com/mianalysis/mia/releases/download/v0.21.1-SNAPSHOT/MIA_-0.21.1-SNAPSHOT.jar">Download</a>
       </div>
     </div>
   </nav>
 
   <div class="page-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
-    <p class="text-secondary"><a href="../../../../html/modules/modules.html">Modules</a> ➤ <a href="../../../../html/modules/imageprocessing/imageprocessing.html">Image processing</a> ➤ <a href="../../../../html/modules/imageprocessing/stack/stack.html">Stack</a></p>
+    <p class="mia-path"><a href="../../../../html/modules/modules.html">Modules</a> > <a href="../../../../html/modules/imageprocessing/imageprocessing.html">Image processing</a> > <a href="../../../../html/modules/imageprocessing/stack/stack.html">Stack</a></p>
     <h1 class="display-4">Extract substack</h1>
-    <p class="lead">Extract a substack from the specified input image in terms of channels, slices and frames.</p>
+    <p class="mia-description">Extract a substack from the specified input image in terms of channels, slices and frames.</p>
 </div>
 
-<div class="pt-md-2 pb-md-4 mx-auto">
-    <h2 class="display-6">Description</h2>
-    Extract a substack from the specified input image in terms of channels, slices and frames.  The output image is saved to the workspace for use later on in the workflow.
+<div class="pt-md-2 pb-md-4 mx-auto mia-page">
+    <h2 class="mia-section-title">Description</h2>
+    <p class="mia-main-text">Extract a substack from the specified input image in terms of channels, slices and frames.  The output image is saved to the workspace for use later on in the workflow.</p>
 </div>
 
-<div class="pt-md-2 pb-md-4 mx-auto">
-    <h2 class="display-6">Parameters</h2>
-    <b>Input image</b> (default = "") Image from which the substack will be taken.<br><br><b>Output image</b> (default = "") Output substack image.<br><br><b>Selection mode</b> (default = "Fixed") Method for selection of substack dimension ranges.<br><br>- "Fixed" (default) will apply the pre-specified dimension ranges to the input image.<br><br>- "Manual" will display a dialog asking the user to select the dimension ranges at runtime.  Each dimension (channel, slice or frame) can be fixed (i.e. not presented as an option to the user) using the "enable" toggles.<br><b>Channels</b> (default = "1-end") Channel range to be extracted from the input image.  If "Selection mode" is set to "Fixed" this will be applied to each image.  If "Selection mode" is set to "Manual" this will be the default value present to the user, but can be changed for the final extraction.<br><br><b>Slices</b> (default = "1-end") Slice range to be extracted from the input image.  If "Selection mode" is set to "Fixed" this will be applied to each image.  If "Selection mode" is set to "Manual" this will be the default value present to the user, but can be changed for the final extraction.<br><br><b>Frames</b> (default = "1-end") Frame range to be extracted from the input image.  If "Selection mode" is set to "Fixed" this will be applied to each image.  If "Selection mode" is set to "Manual" this will be the default value present to the user, but can be changed for the final extraction.<br><br><b>Enable channels selection</b> (default = "true") If enabled, the user will be able to specify the final channel range to be used in the substack extraction.<br><br><b>Enable slices selection</b> (default = "true") If enabled, the user will be able to specify the final slice range to be used in the substack extraction.<br><br><b>Enable frames selection</b> (default = "true") If enabled, the user will be able to specify the final frame range to be used in the substack extraction.<br><br>
+<div class="pt-md-2 pb-md-4 mx-auto mia-page">
+    <h2 class="mia-section-title">Parameters</h2>
+    <p class="mia-main-text"><p class="mia-main-text"><b>Input image</b>:  Image from which the substack will be taken.<br><p class="mia-main-text"><b>Output image</b>:  Output substack image.<br><p class="mia-main-text"><b>Selection mode</b>:  Method for selection of substack dimension ranges.<br><br>- "Fixed" (default) will apply the pre-specified dimension ranges to the input image.<br><br>- "Manual" will display a dialog asking the user to select the dimension ranges at runtime.  Each dimension (channel, slice or frame) can be fixed (i.e. not presented as an option to the user) using the "enable" toggles.<p class="mia-main-text"><b>Channels</b>:  Channel range to be extracted from the input image.  If "Selection mode" is set to "Fixed" this will be applied to each image.  If "Selection mode" is set to "Manual" this will be the default value present to the user, but can be changed for the final extraction.<br><p class="mia-main-text"><b>Slices</b>:  Slice range to be extracted from the input image.  If "Selection mode" is set to "Fixed" this will be applied to each image.  If "Selection mode" is set to "Manual" this will be the default value present to the user, but can be changed for the final extraction.<br><p class="mia-main-text"><b>Frames</b>:  Frame range to be extracted from the input image.  If "Selection mode" is set to "Fixed" this will be applied to each image.  If "Selection mode" is set to "Manual" this will be the default value present to the user, but can be changed for the final extraction.<br><p class="mia-main-text"><b>Enable channels selection</b>:  If enabled, the user will be able to specify the final channel range to be used in the substack extraction.<br><p class="mia-main-text"><b>Enable slices selection</b>:  If enabled, the user will be able to specify the final slice range to be used in the substack extraction.<br><p class="mia-main-text"><b>Enable frames selection</b>:  If enabled, the user will be able to specify the final frame range to be used in the substack extraction.<br></p>
 </div>
 
   <!-- Footer -->

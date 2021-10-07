@@ -32,8 +32,10 @@
           style="padding-right:8px;">Modular Image Analysis</a>
       <a class="navbar-brand d-block d-sm-none" href="#"><img height="32" src="img/logo_64.png"
           style="padding-right:8px;"></a> -->
-      <a class="navbar-brand mia-name" href="../../../../index.html" style="padding-top: 5px;padding-bottom: 0px;"><img
-          height="30" src="../../../../img/logo_64.png" style="padding-right:8px;">Modular Image Analysis</a>
+      <a class="navbar-brand mia-name" href="../../../../index.html" style="padding-top: 3px;padding-bottom: 0px;">
+        <img height="36" src="../../../../img/logo_64.png" style="padding-bottom: 3px; padding-right:8px;">
+        Modular Image Analysis
+      </a>
       <buton class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive"
         style="border: none;">
         <span class="navbar-toggler-icon"></span>
@@ -44,8 +46,8 @@
             <a class="nav-link" href="../../../../index.html">Home</a>
           </li>
           <li class="nav-item dropdown ">
-            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownModules"
-              role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Guides</a>
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownModules" role="button" data-toggle="dropdown"
+              aria-haspopup="true" aria-expanded="false">Guides</a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdownModules">
               <a class="dropdown-item" href="../../../../html/gettingstarted.html">Getting started</a>
             </div>
@@ -69,25 +71,25 @@
           </li>
         </ul>
         <a class="btn btn-outline-primary ml-2"
-          href="https://github.com/mianalysis/mia/releases/download/v0.20.3/MIA_-0.20.3.jar">Download</a>
+          href="https://github.com/mianalysis/mia/releases/download/v0.21.1-SNAPSHOT/MIA_-0.21.1-SNAPSHOT.jar">Download</a>
       </div>
     </div>
   </nav>
 
   <div class="page-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
-    <p class="text-secondary"><a href="../../../../html/modules/modules.html">Modules</a> ➤ <a href="../../../../html/modules/objectmeasurements/objectmeasurements.html">Object measurements</a> ➤ <a href="../../../../html/modules/objectmeasurements/spatial/spatial.html">Spatial</a></p>
+    <p class="mia-path"><a href="../../../../html/modules/modules.html">Modules</a> > <a href="../../../../html/modules/objectmeasurements/objectmeasurements.html">Object measurements</a> > <a href="../../../../html/modules/objectmeasurements/spatial/spatial.html">Spatial</a></p>
     <h1 class="display-4">Measure skeleton</h1>
-    <p class="lead">Uses the <a href="https://imagej.</p>
+    <p class="mia-description">Uses the <a href="https://imagej.</p>
 </div>
 
-<div class="pt-md-2 pb-md-4 mx-auto">
-    <h2 class="display-6">Description</h2>
-    Uses the <a href="https://imagej.net/AnalyzeSkeleton">AnalyzeSkeleton</a> plugin by Ignacio Arganda-Carreras.<br><br>The optional, output skeleton object acts solely as a linking object for the edge, junction and loop objects.  It doesn't itself hold any coordinate data.
+<div class="pt-md-2 pb-md-4 mx-auto mia-page">
+    <h2 class="mia-section-title">Description</h2>
+    <p class="mia-main-text">Uses the <a href="https://imagej.net/AnalyzeSkeleton">AnalyzeSkeleton</a> plugin by Ignacio Arganda-Carreras.<br><br>The optional, output skeleton object acts solely as a linking object for the edge, junction and loop objects.  It doesn't itself hold any coordinate data.</p>
 </div>
 
-<div class="pt-md-2 pb-md-4 mx-auto">
-    <h2 class="display-6">Parameters</h2>
-    <b>Input objects</b> (default = "") Input objects from the workspace to be skeletonised.  These can be either 2D or 3D objects.  Skeleton measurements will be added to this object.<br><br><b>Add skeletons to workspace</b> (default = "false") When selected, the coordinates for the various skeleton components (edges, junctions and loops) will be stored as new objects.  These objects will all be children of a parent "Skeleton" object, which itself will be a child of the corresponding input object.<br><br><b>Output skeleton objects</b> (default = "") If "Add skeletons to workspace" is selected, a single "Skeleton" object will be created per input object.  This skeleton object will act as a linking object (parent) for the edges, junctions and loops that comprise that skeleton.  As such, the skeleton object itself doesn't store any coordinate information.<br><br><b>Output edge objects</b> (default = "") If "Add skeletons to workspace" is selected, the edges of each skeleton will be stored in these objects.  An "Edge" is comprised of a continuous run of points each with one (end points) or two neighbours.  These edge objects are children of a "Skeleton" object (specified by the "Output skeleton objects" parameter), which itself is the child of the corresponding input object.  Each edge object has a partner relationship with its adjacent "Junction" and (optionally) "Loop" objects (specified by the "Output junction objects" and "Output loop objects" parameters, respectively).<br><br><b>Output junction objects</b> (default = "") If "Add skeletons to workspace" is selected, the junctions of each skeleton will be stored in these objects.  A "Junction" is comprised of a contiguous regions of points each with three or neighbours.  These junction objects are children of a "Skeleton" object (specified by the "Output skeleton objects" parameter), which itself is the child of the corresponding input object.  Each junction object has a partner relationship with its adjacent "Edge" and (optionally) "Loop" objects (specified by the "Output edge objects" and "Output loop objects" parameters, respectively).<br><br><b>Export loop objects</b> (default = "true") When selected (and if "Add skeletons to workspace" is also selected), the loops of each skeleton will be stored in the workspace as new objects.  The name for the output loop objects is determined by the "Output loop objects" parameter.<br><br><b>Output loop objects</b> (default = "") If both "Add skeletons to workspace" and "Export loop objects" are selected, the loops of each skeleton will be stored in these objects.  A "Loop" is comprised of a continuous region of points bounded on all sides by either "Edge" or "Junction" points.  These loop objects are children of a "Skeleton" object (specified by the "Output skeleton objects" parameter), which itself is the child of the corresponding input object.  Each loop object has a partner relationship with its adjacent "Edge" and "Junction" objects (specified by the "Output edge objects" and "Output junction objects" parameters, respectively).<br><br><b>Minimum branch length</b> (default = "0.0") The minimum length of a branch (edge terminating in point with just one neighbour) for it to be included in skeleton measurements and (optionally) exported as an object.<br><br><b>Calibrated units</b> (default = "false") When selected, spatial values are assumed to be specified in calibrated units (as defined by the "Input control" parameter "Spatial unit").  Otherwise, pixel units are assumed.<br><br><b>Enable multithreading</b> (default = "true") Break the image down into strips, each one processed on a separate CPU thread.  The overhead required to do this means it's best for large multi-core CPUs, but should be left disabled for small images or on CPUs with few cores.<br><br>
+<div class="pt-md-2 pb-md-4 mx-auto mia-page">
+    <h2 class="mia-section-title">Parameters</h2>
+    <p class="mia-main-text"><p class="mia-main-text"><b>Input objects</b>:  Input objects from the workspace to be skeletonised.  These can be either 2D or 3D objects.  Skeleton measurements will be added to this object.<br><p class="mia-main-text"><b>Add skeletons to workspace</b>:  When selected, the coordinates for the various skeleton components (edges, junctions and loops) will be stored as new objects.  These objects will all be children of a parent "Skeleton" object, which itself will be a child of the corresponding input object.<br><p class="mia-main-text"><b>Output skeleton objects</b>:  If "Add skeletons to workspace" is selected, a single "Skeleton" object will be created per input object.  This skeleton object will act as a linking object (parent) for the edges, junctions and loops that comprise that skeleton.  As such, the skeleton object itself doesn't store any coordinate information.<br><p class="mia-main-text"><b>Output edge objects</b>:  If "Add skeletons to workspace" is selected, the edges of each skeleton will be stored in these objects.  An "Edge" is comprised of a continuous run of points each with one (end points) or two neighbours.  These edge objects are children of a "Skeleton" object (specified by the "Output skeleton objects" parameter), which itself is the child of the corresponding input object.  Each edge object has a partner relationship with its adjacent "Junction" and (optionally) "Loop" objects (specified by the "Output junction objects" and "Output loop objects" parameters, respectively).<br><p class="mia-main-text"><b>Output junction objects</b>:  If "Add skeletons to workspace" is selected, the junctions of each skeleton will be stored in these objects.  A "Junction" is comprised of a contiguous regions of points each with three or neighbours.  These junction objects are children of a "Skeleton" object (specified by the "Output skeleton objects" parameter), which itself is the child of the corresponding input object.  Each junction object has a partner relationship with its adjacent "Edge" and (optionally) "Loop" objects (specified by the "Output edge objects" and "Output loop objects" parameters, respectively).<br><p class="mia-main-text"><b>Export loop objects</b>:  When selected (and if "Add skeletons to workspace" is also selected), the loops of each skeleton will be stored in the workspace as new objects.  The name for the output loop objects is determined by the "Output loop objects" parameter.<br><p class="mia-main-text"><b>Output loop objects</b>:  If both "Add skeletons to workspace" and "Export loop objects" are selected, the loops of each skeleton will be stored in these objects.  A "Loop" is comprised of a continuous region of points bounded on all sides by either "Edge" or "Junction" points.  These loop objects are children of a "Skeleton" object (specified by the "Output skeleton objects" parameter), which itself is the child of the corresponding input object.  Each loop object has a partner relationship with its adjacent "Edge" and "Junction" objects (specified by the "Output edge objects" and "Output junction objects" parameters, respectively).<br><p class="mia-main-text"><b>Minimum branch length</b>:  The minimum length of a branch (edge terminating in point with just one neighbour) for it to be included in skeleton measurements and (optionally) exported as an object.<br><p class="mia-main-text"><b>Calibrated units</b>:  When selected, spatial values are assumed to be specified in calibrated units (as defined by the "Input control" parameter "Spatial unit").  Otherwise, pixel units are assumed.<br><p class="mia-main-text"><b>Enable multithreading</b>:  Break the image down into strips, each one processed on a separate CPU thread.  The overhead required to do this means it's best for large multi-core CPUs, but should be left disabled for small images or on CPUs with few cores.<br></p>
 </div>
 
   <!-- Footer -->

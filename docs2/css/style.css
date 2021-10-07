@@ -1,12 +1,49 @@
 .mia-name, .mia-name:link, .mia-name:visited, .mia-name:hover, .mia-name:active {
     color: #424242;
-    /* font-family: 'Roboto',  */
     font-size: large;
     text-decoration: none;
 }
 
+.mia-page {
+  max-width: 960px;
+}
+
+.mia-path-nav {
+  max-height: 40px;
+}
+
+.mia-main-text {
+  font-size: 1.1rem;
+  font-weight: 300;
+}
+
+.mia-section-title {
+  font-size: 2rem;
+  font-weight: 300;
+}
+
 .mia-card-container {
   max-width: 960px;
+}
+
+.mia-description {
+  font-size: 1.4rem;
+  font-weight: 300;
+}
+
+.mia-path {
+  font-size: 1.1rem;
+  font-weight: 300;
+}
+
+.mia-card-title {
+  /* font-size: 1.1rem; */
+  font-weight: 400;
+}
+
+.card-body {
+  font-size: 1.1rem;
+  font-weight: 300;
 }
 
 .mia-card {

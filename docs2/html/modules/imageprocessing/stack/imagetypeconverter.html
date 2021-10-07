@@ -32,8 +32,10 @@
           style="padding-right:8px;">Modular Image Analysis</a>
       <a class="navbar-brand d-block d-sm-none" href="#"><img height="32" src="img/logo_64.png"
           style="padding-right:8px;"></a> -->
-      <a class="navbar-brand mia-name" href="../../../../index.html" style="padding-top: 5px;padding-bottom: 0px;"><img
-          height="30" src="../../../../img/logo_64.png" style="padding-right:8px;">Modular Image Analysis</a>
+      <a class="navbar-brand mia-name" href="../../../../index.html" style="padding-top: 3px;padding-bottom: 0px;">
+        <img height="36" src="../../../../img/logo_64.png" style="padding-bottom: 3px; padding-right:8px;">
+        Modular Image Analysis
+      </a>
       <buton class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive"
         style="border: none;">
         <span class="navbar-toggler-icon"></span>
@@ -44,8 +46,8 @@
             <a class="nav-link" href="../../../../index.html">Home</a>
           </li>
           <li class="nav-item dropdown ">
-            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownModules"
-              role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Guides</a>
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownModules" role="button" data-toggle="dropdown"
+              aria-haspopup="true" aria-expanded="false">Guides</a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdownModules">
               <a class="dropdown-item" href="../../../../html/gettingstarted.html">Getting started</a>
             </div>
@@ -69,25 +71,25 @@
           </li>
         </ul>
         <a class="btn btn-outline-primary ml-2"
-          href="https://github.com/mianalysis/mia/releases/download/v0.20.3/MIA_-0.20.3.jar">Download</a>
+          href="https://github.com/mianalysis/mia/releases/download/v0.21.1-SNAPSHOT/MIA_-0.21.1-SNAPSHOT.jar">Download</a>
       </div>
     </div>
   </nav>
 
   <div class="page-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
-    <p class="text-secondary"><a href="../../../../html/modules/modules.html">Modules</a> ➤ <a href="../../../../html/modules/imageprocessing/imageprocessing.html">Image processing</a> ➤ <a href="../../../../html/modules/imageprocessing/stack/stack.html">Stack</a></p>
+    <p class="mia-path"><a href="../../../../html/modules/modules.html">Modules</a> > <a href="../../../../html/modules/imageprocessing/imageprocessing.html">Image processing</a> > <a href="../../../../html/modules/imageprocessing/stack/stack.html">Stack</a></p>
     <h1 class="display-4">Image type converter</h1>
-    <p class="lead">Change the bit-depth of an image stack.</p>
+    <p class="mia-description">Change the bit-depth of an image stack.</p>
 </div>
 
-<div class="pt-md-2 pb-md-4 mx-auto">
-    <h2 class="display-6">Description</h2>
-    Change the bit-depth of an image stack.  This module provides multiple ways to handle the intensity transformation from one bit-depth to another.<br><br>Note: Different scaling modes currently only apply when reducing the bit-depth of an image.  As such, converting from 8-bit to 16-bit will always result in direct conversion of intensities.
+<div class="pt-md-2 pb-md-4 mx-auto mia-page">
+    <h2 class="mia-section-title">Description</h2>
+    <p class="mia-main-text">Change the bit-depth of an image stack.  This module provides multiple ways to handle the intensity transformation from one bit-depth to another.<br><br>Note: Different scaling modes currently only apply when reducing the bit-depth of an image.  As such, converting from 8-bit to 16-bit will always result in direct conversion of intensities.</p>
 </div>
 
-<div class="pt-md-2 pb-md-4 mx-auto">
-    <h2 class="display-6">Parameters</h2>
-    <b>Input image</b> (default = "") Input image to be converted to another bit-depth.<br><br><b>Apply to input image</b> (default = "true") If selected, the converted image will replace the input image in the workspace.  All measurements associated with the input image will be transferred to the converted image.<br><br><b>Output image</b> (default = "") Name of the output converted image.<br><br><b>Output image type</b> (default = "8-bit integer") Target bit-depth to convert the image to.  Pixel intensities will lie within the following ranges for each bit-depth: 8-bit (0-255), 16-bit (0-65535), 32-bit (floating point precision).<br><b>Scaling mode</b> (default = "Clip (direct conversion)") Method for calculating the intensity transformation between the input and output bit-depths<br><br> - "Clip (direct conversion)" will convert directly from the input to output bit-depth without performing any intensity scaling.  As such, any input intensities outside the available range of the output bit-depth will be clipped to the closest possible value.  For example, an input 16-bit image with intensity range 234-34563 converted to 8-bit will have an output range of 234-255.<br><br> - "Fill target range (normalise)" will stretch the input intensity range to fill the available output intensity range.  For example, an input 16-bit image with intensity range 234-34563 converted to 8-bit will have an output range of 0-255.  Images converted to 32-bit will be scaled to the range 0-1.<br><br> - "Scale proportionally" will proportionately scale intensities such that the input and output intensity ranges fill their respective bit-depths by equal amounts.  For example, an input 16-bit image with intensity range 234-34563 converted to 8-bit will have an output range of 1-135.<br>
+<div class="pt-md-2 pb-md-4 mx-auto mia-page">
+    <h2 class="mia-section-title">Parameters</h2>
+    <p class="mia-main-text"><p class="mia-main-text"><b>Input image</b>:  Input image to be converted to another bit-depth.<br><p class="mia-main-text"><b>Apply to input image</b>:  If selected, the converted image will replace the input image in the workspace.  All measurements associated with the input image will be transferred to the converted image.<br><p class="mia-main-text"><b>Output image</b>:  Name of the output converted image.<br><p class="mia-main-text"><b>Output image type</b>:  Target bit-depth to convert the image to.  Pixel intensities will lie within the following ranges for each bit-depth: 8-bit (0-255), 16-bit (0-65535), 32-bit (floating point precision).<p class="mia-main-text"><b>Scaling mode</b>:  Method for calculating the intensity transformation between the input and output bit-depths<br><br> - "Clip (direct conversion)" will convert directly from the input to output bit-depth without performing any intensity scaling.  As such, any input intensities outside the available range of the output bit-depth will be clipped to the closest possible value.  For example, an input 16-bit image with intensity range 234-34563 converted to 8-bit will have an output range of 234-255.<br><br> - "Fill target range (normalise)" will stretch the input intensity range to fill the available output intensity range.  For example, an input 16-bit image with intensity range 234-34563 converted to 8-bit will have an output range of 0-255.  Images converted to 32-bit will be scaled to the range 0-1.<br><br> - "Scale proportionally" will proportionately scale intensities such that the input and output intensity ranges fill their respective bit-depths by equal amounts.  For example, an input 16-bit image with intensity range 234-34563 converted to 8-bit will have an output range of 1-135.</p>
 </div>
 
   <!-- Footer -->

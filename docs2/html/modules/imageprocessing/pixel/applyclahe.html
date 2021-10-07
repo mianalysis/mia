@@ -32,8 +32,10 @@
           style="padding-right:8px;">Modular Image Analysis</a>
       <a class="navbar-brand d-block d-sm-none" href="#"><img height="32" src="img/logo_64.png"
           style="padding-right:8px;"></a> -->
-      <a class="navbar-brand mia-name" href="../../../../index.html" style="padding-top: 5px;padding-bottom: 0px;"><img
-          height="30" src="../../../../img/logo_64.png" style="padding-right:8px;">Modular Image Analysis</a>
+      <a class="navbar-brand mia-name" href="../../../../index.html" style="padding-top: 3px;padding-bottom: 0px;">
+        <img height="36" src="../../../../img/logo_64.png" style="padding-bottom: 3px; padding-right:8px;">
+        Modular Image Analysis
+      </a>
       <buton class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive"
         style="border: none;">
         <span class="navbar-toggler-icon"></span>
@@ -44,8 +46,8 @@
             <a class="nav-link" href="../../../../index.html">Home</a>
           </li>
           <li class="nav-item dropdown ">
-            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownModules"
-              role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Guides</a>
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownModules" role="button" data-toggle="dropdown"
+              aria-haspopup="true" aria-expanded="false">Guides</a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdownModules">
               <a class="dropdown-item" href="../../../../html/gettingstarted.html">Getting started</a>
             </div>
@@ -69,25 +71,25 @@
           </li>
         </ul>
         <a class="btn btn-outline-primary ml-2"
-          href="https://github.com/mianalysis/mia/releases/download/v0.20.3/MIA_-0.20.3.jar">Download</a>
+          href="https://github.com/mianalysis/mia/releases/download/v0.21.1-SNAPSHOT/MIA_-0.21.1-SNAPSHOT.jar">Download</a>
       </div>
     </div>
   </nav>
 
   <div class="page-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
-    <p class="text-secondary"><a href="../../../../html/modules/modules.html">Modules</a> ➤ <a href="../../../../html/modules/imageprocessing/imageprocessing.html">Image processing</a> ➤ <a href="../../../../html/modules/imageprocessing/pixel/pixel.html">Pixel</a></p>
+    <p class="mia-path"><a href="../../../../html/modules/modules.html">Modules</a> > <a href="../../../../html/modules/imageprocessing/imageprocessing.html">Image processing</a> > <a href="../../../../html/modules/imageprocessing/pixel/pixel.html">Pixel</a></p>
     <h1 class="display-4">Apply CLAHE</h1>
-    <p class="lead">Applies the MPICBG implementation of CLAHE (Contrast Limited Adaptive Histogram Equalization).</p>
+    <p class="mia-description">Applies the MPICBG implementation of CLAHE (Contrast Limited Adaptive Histogram Equalization).</p>
 </div>
 
-<div class="pt-md-2 pb-md-4 mx-auto">
-    <h2 class="display-6">Description</h2>
-    Applies the MPICBG implementation of CLAHE (Contrast Limited Adaptive Histogram Equalization).  This module runs the Image "<a href="https://imagej.net/Enhance_Local_Contrast_(CLAHE)">CLAHE</a>" plugin.
+<div class="pt-md-2 pb-md-4 mx-auto mia-page">
+    <h2 class="mia-section-title">Description</h2>
+    <p class="mia-main-text">Applies the MPICBG implementation of CLAHE (Contrast Limited Adaptive Histogram Equalization).  This module runs the Image "<a href="https://imagej.net/Enhance_Local_Contrast_(CLAHE)">CLAHE</a>" plugin.</p>
 </div>
 
-<div class="pt-md-2 pb-md-4 mx-auto">
-    <h2 class="display-6">Parameters</h2>
-    <b>Input image</b> (default = "") Image to apply CLAHE to.<br><br><b>Apply to input image</b> (default = "true") Select if CLAHE should be applied directly to the input image, or if it should be applied to a duplicate, then stored as a different image in the workspace.<br><br><b>Output image</b> (default = "") Name of the output image created during the CLAHE process.  This image will be added to the workspace.<br><br><b>Blocksize</b> (default = "127.0") "The size of the local region around a pixel for which the histogram is equalized. This size should be larger than the size of features to be preserved".  Description taken from <a href="https://imagej.net/plugins/clahe">https://imagej.net/plugins/clahe</a><br><br><b>Calibrated units</b> (default = "false") Choose if block size is specified in pixel (set to "false") or calibrated (set to "true") units.  What units are used are controlled from "Input control".<br><br><b>Histogram bins</b> (default = "256") "The number of histogram bins used for histogram equalization. The implementation internally works with byte resolution, so values larger than 256 are not meaningful. This value also limits the quantification of the output when processing 8bit gray or 24bit RGB images. The number of histogram bins should be smaller than the number of pixels in a block".  Description taken from <a href="https://imagej.net/plugins/clahe">https://imagej.net/plugins/clahe</a><br><br><b>Maximum slope</b> (default = "3.0") "Limits the contrast stretch in the intensity transfer function. Very large values will let the histogram equalization do whatever it wants to do, that is result in maximal local contrast. The value 1 will result in the original image".  Description taken from <a href="https://imagej.net/plugins/clahe">https://imagej.net/plugins/clahe</a><br><br><b>Use mask</b> (default = "false") When selected, only pixels coincident with the white (255 intensity) part of the mask image (specified by the "Mask image" parameter) are processed.  All other pixels will retain their initial value<br><br><b>Mask image</b> (default = "") Image to use for masking when "Use mask" is selected.  Only pixels in the input image coincident with white (255 intensity) pixels in this mask will be processed.<br><br><b>Fast (less accurate)</b> (default = "true") "Use the fast but less accurate version of the filter. The fast version does not evaluate the intensity transfer function for each pixel independently but for a grid of adjacent boxes of the given block size only and interpolates for locations in between".  Description taken from <a href="https://imagej.net/plugins/clahe">https://imagej.net/plugins/clahe</a><br><br><b>Enable multithreading</b> (default = "true") Process multiple slices independently.  This can provide a speed improvement when working on a computer with a multi-core CPU.<br><br>
+<div class="pt-md-2 pb-md-4 mx-auto mia-page">
+    <h2 class="mia-section-title">Parameters</h2>
+    <p class="mia-main-text"><p class="mia-main-text"><b>Input image</b>:  Image to apply CLAHE to.<br><p class="mia-main-text"><b>Apply to input image</b>:  Select if CLAHE should be applied directly to the input image, or if it should be applied to a duplicate, then stored as a different image in the workspace.<br><p class="mia-main-text"><b>Output image</b>:  Name of the output image created during the CLAHE process.  This image will be added to the workspace.<br><p class="mia-main-text"><b>Blocksize</b>:  "The size of the local region around a pixel for which the histogram is equalized. This size should be larger than the size of features to be preserved".  Description taken from <a href="https://imagej.net/plugins/clahe">https://imagej.net/plugins/clahe</a><br><p class="mia-main-text"><b>Calibrated units</b>:  Choose if block size is specified in pixel (set to "false") or calibrated (set to "true") units.  What units are used are controlled from "Input control".<br><p class="mia-main-text"><b>Histogram bins</b>:  "The number of histogram bins used for histogram equalization. The implementation internally works with byte resolution, so values larger than 256 are not meaningful. This value also limits the quantification of the output when processing 8bit gray or 24bit RGB images. The number of histogram bins should be smaller than the number of pixels in a block".  Description taken from <a href="https://imagej.net/plugins/clahe">https://imagej.net/plugins/clahe</a><br><p class="mia-main-text"><b>Maximum slope</b>:  "Limits the contrast stretch in the intensity transfer function. Very large values will let the histogram equalization do whatever it wants to do, that is result in maximal local contrast. The value 1 will result in the original image".  Description taken from <a href="https://imagej.net/plugins/clahe">https://imagej.net/plugins/clahe</a><br><p class="mia-main-text"><b>Use mask</b>:  When selected, only pixels coincident with the white (255 intensity) part of the mask image (specified by the "Mask image" parameter) are processed.  All other pixels will retain their initial value<br><p class="mia-main-text"><b>Mask image</b>:  Image to use for masking when "Use mask" is selected.  Only pixels in the input image coincident with white (255 intensity) pixels in this mask will be processed.<br><p class="mia-main-text"><b>Fast (less accurate)</b>:  "Use the fast but less accurate version of the filter. The fast version does not evaluate the intensity transfer function for each pixel independently but for a grid of adjacent boxes of the given block size only and interpolates for locations in between".  Description taken from <a href="https://imagej.net/plugins/clahe">https://imagej.net/plugins/clahe</a><br><p class="mia-main-text"><b>Enable multithreading</b>:  Process multiple slices independently.  This can provide a speed improvement when working on a computer with a multi-core CPU.<br></p>
 </div>
 
   <!-- Footer -->

@@ -32,8 +32,10 @@
           style="padding-right:8px;">Modular Image Analysis</a>
       <a class="navbar-brand d-block d-sm-none" href="#"><img height="32" src="img/logo_64.png"
           style="padding-right:8px;"></a> -->
-      <a class="navbar-brand mia-name" href="../../../index.html" style="padding-top: 5px;padding-bottom: 0px;"><img
-          height="30" src="../../../img/logo_64.png" style="padding-right:8px;">Modular Image Analysis</a>
+      <a class="navbar-brand mia-name" href="../../../index.html" style="padding-top: 3px;padding-bottom: 0px;">
+        <img height="36" src="../../../img/logo_64.png" style="padding-bottom: 3px; padding-right:8px;">
+        Modular Image Analysis
+      </a>
       <buton class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive"
         style="border: none;">
         <span class="navbar-toggler-icon"></span>
@@ -44,8 +46,8 @@
             <a class="nav-link" href="../../../index.html">Home</a>
           </li>
           <li class="nav-item dropdown ">
-            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownModules"
-              role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Guides</a>
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownModules" role="button" data-toggle="dropdown"
+              aria-haspopup="true" aria-expanded="false">Guides</a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdownModules">
               <a class="dropdown-item" href="../../../html/gettingstarted.html">Getting started</a>
             </div>
@@ -69,25 +71,25 @@
           </li>
         </ul>
         <a class="btn btn-outline-primary ml-2"
-          href="https://github.com/mianalysis/mia/releases/download/v0.20.3/MIA_-0.20.3.jar">Download</a>
+          href="https://github.com/mianalysis/mia/releases/download/v0.21.1-SNAPSHOT/MIA_-0.21.1-SNAPSHOT.jar">Download</a>
       </div>
     </div>
   </nav>
 
   <div class="page-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
-    <p class="text-secondary"><a href="../../../html/modules/modules.html">Modules</a> ➤ <a href="../../../html/modules/miscellaneous/miscellaneous.html">Miscellaneous</a></p>
+    <p class="mia-path"><a href="../../../html/modules/modules.html">Modules</a> > <a href="../../../html/modules/miscellaneous/miscellaneous.html">Miscellaneous</a></p>
     <h1 class="display-4">GUI separator</h1>
-    <p class="lead">GUI separators break the module list into sections, where all modules are considered to be in the "section" corresponding to the separator above them in the module list.</p>
+    <p class="mia-description">GUI separators break the module list into sections, where all modules are considered to be in the "section" corresponding to the separator above them in the module list.</p>
 </div>
 
-<div class="pt-md-2 pb-md-4 mx-auto">
-    <h2 class="display-6">Description</h2>
-    GUI separators break the module list into sections, where all modules are considered to be in the "section" corresponding to the separator above them in the module list.  All modules contained within these sections can be enabled/disabled <i>en masse</i> by enabling/disabling their associated separator.  In basic view, the separator can be shown as a blue line, while in editing view it appears as a normal module entry albeit with blue text.  In both views it's possible to hide/show the contents of a separator section using the blue arrows.<br><br>Separators are intended to break analyses into logical groups, thus making workflow organisation easier and tidier.
+<div class="pt-md-2 pb-md-4 mx-auto mia-page">
+    <h2 class="mia-section-title">Description</h2>
+    <p class="mia-main-text">GUI separators break the module list into sections, where all modules are considered to be in the "section" corresponding to the separator above them in the module list.  All modules contained within these sections can be enabled/disabled <i>en masse</i> by enabling/disabling their associated separator.  In basic view, the separator can be shown as a blue line, while in editing view it appears as a normal module entry albeit with blue text.  In both views it's possible to hide/show the contents of a separator section using the blue arrows.<br><br>Separators are intended to break analyses into logical groups, thus making workflow organisation easier and tidier.</p>
 </div>
 
-<div class="pt-md-2 pb-md-4 mx-auto">
-    <h2 class="display-6">Parameters</h2>
-    <b>Show basic</b> (default = "true") Display this GUI separator in the basic control panel view.  When this parameter is selected, this separator will still only be shown if at least one of the following is true:<br><ul><li>The separator (and thus all associated modules) can be enabled/disabled from the basic view.  This is done by ticking "Can be disabled" at the top of this module in editing view.  Enabling/disabling a GUI separator will automatically apply the same state to all modules contained within (i.e. between this separator and the next separator).  If the separator can be enabled/disabled from basic view the power icon will be shown in green when enabled or in black with a strikethrough when disabled; however, if it can't be enabled/disabled, the power icon will be greyed out.</li><li>At least one module associated with this separator (a module between this separator and the next) can be disabled from the basic control view.  Modules can be set to allow enabling/disabling from basic view by ticking "Can be disabled" at the top of the relevant module parameter control in editing view.</li><li>At least one parameter from a module associated with this separator (a module between this separator and the next) can be set from the basic control view.  Parameters can be set as visible in basic view by clicking the eyeball icon to the right of that parameter in editing view.  When a module is visible an open eye is shown, while this is a closed eye when it's not visible (default option).</li></ul><br><br><b>Expanded basic GUI</b> (default = "true") In basic view, all controls between this separator and the next can be displayed/hidden by clicking the blue arrows either side of the separator bar.  This parameter controls if this parameter is in the expanded (controls displayed) or collapsed (controls hidden) state.  When the expansion state is changed from the basic view, this parameter is automatically updated.<br><br><b>Expanded editing GUI</b> (default = "true") In editing view, all modules in the module list between this separator and the next can be displayed/hidden by clicking the blue arrows either side of module button.  This parameter controls if this parameter is in the expanded (modules displayed) or collapsed (modules hidden) state.  When the expansion state is changed from the editing view, this parameter is automatically updated.<br><br>
+<div class="pt-md-2 pb-md-4 mx-auto mia-page">
+    <h2 class="mia-section-title">Parameters</h2>
+    <p class="mia-main-text"><p class="mia-main-text"><b>Show basic</b>:  Display this GUI separator in the basic control panel view.  When this parameter is selected, this separator will still only be shown if at least one of the following is true:<br><ul><li>The separator (and thus all associated modules) can be enabled/disabled from the basic view.  This is done by ticking "Can be disabled" at the top of this module in editing view.  Enabling/disabling a GUI separator will automatically apply the same state to all modules contained within (i.e. between this separator and the next separator).  If the separator can be enabled/disabled from basic view the power icon will be shown in green when enabled or in black with a strikethrough when disabled; however, if it can't be enabled/disabled, the power icon will be greyed out.</li><li>At least one module associated with this separator (a module between this separator and the next) can be disabled from the basic control view.  Modules can be set to allow enabling/disabling from basic view by ticking "Can be disabled" at the top of the relevant module parameter control in editing view.</li><li>At least one parameter from a module associated with this separator (a module between this separator and the next) can be set from the basic control view.  Parameters can be set as visible in basic view by clicking the eyeball icon to the right of that parameter in editing view.  When a module is visible an open eye is shown, while this is a closed eye when it's not visible (default option).</li></ul><br><p class="mia-main-text"><b>Expanded basic GUI</b>:  In basic view, all controls between this separator and the next can be displayed/hidden by clicking the blue arrows either side of the separator bar.  This parameter controls if this parameter is in the expanded (controls displayed) or collapsed (controls hidden) state.  When the expansion state is changed from the basic view, this parameter is automatically updated.<br><p class="mia-main-text"><b>Expanded editing GUI</b>:  In editing view, all modules in the module list between this separator and the next can be displayed/hidden by clicking the blue arrows either side of module button.  This parameter controls if this parameter is in the expanded (modules displayed) or collapsed (modules hidden) state.  When the expansion state is changed from the editing view, this parameter is automatically updated.<br></p>
 </div>
 
   <!-- Footer -->

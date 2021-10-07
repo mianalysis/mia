@@ -32,8 +32,10 @@
           style="padding-right:8px;">Modular Image Analysis</a>
       <a class="navbar-brand d-block d-sm-none" href="#"><img height="32" src="img/logo_64.png"
           style="padding-right:8px;"></a> -->
-      <a class="navbar-brand mia-name" href="../../../../../index.html" style="padding-top: 5px;padding-bottom: 0px;"><img
-          height="30" src="../../../../../img/logo_64.png" style="padding-right:8px;">Modular Image Analysis</a>
+      <a class="navbar-brand mia-name" href="../../../../../index.html" style="padding-top: 3px;padding-bottom: 0px;">
+        <img height="36" src="../../../../../img/logo_64.png" style="padding-bottom: 3px; padding-right:8px;">
+        Modular Image Analysis
+      </a>
       <buton class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive"
         style="border: none;">
         <span class="navbar-toggler-icon"></span>
@@ -44,8 +46,8 @@
             <a class="nav-link" href="../../../../../index.html">Home</a>
           </li>
           <li class="nav-item dropdown ">
-            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownModules"
-              role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Guides</a>
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownModules" role="button" data-toggle="dropdown"
+              aria-haspopup="true" aria-expanded="false">Guides</a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdownModules">
               <a class="dropdown-item" href="../../../../../html/gettingstarted.html">Getting started</a>
             </div>
@@ -69,25 +71,25 @@
           </li>
         </ul>
         <a class="btn btn-outline-primary ml-2"
-          href="https://github.com/mianalysis/mia/releases/download/v0.20.3/MIA_-0.20.3.jar">Download</a>
+          href="https://github.com/mianalysis/mia/releases/download/v0.21.1-SNAPSHOT/MIA_-0.21.1-SNAPSHOT.jar">Download</a>
       </div>
     </div>
   </nav>
 
   <div class="page-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
-    <p class="text-secondary"><a href="../../../../../html/modules/modules.html">Modules</a> ➤ <a href="../../../../../html/modules/imageprocessing/imageprocessing.html">Image processing</a> ➤ <a href="../../../../../html/modules/imageprocessing/pixel/pixel.html">Pixel</a> ➤ <a href="../../../../../html/modules/imageprocessing/pixel/threshold/threshold.html">Threshold</a></p>
+    <p class="mia-path"><a href="../../../../../html/modules/modules.html">Modules</a> > <a href="../../../../../html/modules/imageprocessing/imageprocessing.html">Image processing</a> > <a href="../../../../../html/modules/imageprocessing/pixel/pixel.html">Pixel</a> > <a href="../../../../../html/modules/imageprocessing/pixel/threshold/threshold.html">Threshold</a></p>
     <h1 class="display-4">Local auto-threshold</h1>
-    <p class="lead">Binarise an image in the workspace such that the output only has pixel values of 0 and 255.</p>
+    <p class="mia-description">Binarise an image in the workspace such that the output only has pixel values of 0 and 255.</p>
 </div>
 
-<div class="pt-md-2 pb-md-4 mx-auto">
-    <h2 class="display-6">Description</h2>
-    Binarise an image in the workspace such that the output only has pixel values of 0 and 255.  Uses the built-in ImageJ global and 2D local auto-thresholding algorithms.<br><br>Note: Currently only works on 8-bit images.  Images with other bit depths will be automatically converted to 8-bit based on the "Fill target range (normalise)" scaling method from the "Image type converter" module.
+<div class="pt-md-2 pb-md-4 mx-auto mia-page">
+    <h2 class="mia-section-title">Description</h2>
+    <p class="mia-main-text">Binarise an image in the workspace such that the output only has pixel values of 0 and 255.  Uses the built-in ImageJ global and 2D local auto-thresholding algorithms.<br><br>Note: Currently only works on 8-bit images.  Images with other bit depths will be automatically converted to 8-bit based on the "Fill target range (normalise)" scaling method from the "Image type converter" module.</p>
 </div>
 
-<div class="pt-md-2 pb-md-4 mx-auto">
-    <h2 class="display-6">Parameters</h2>
-    <b>Input image</b> (default = "") Image to apply threshold to.<br><br><b>Apply to input image</b> (default = "true") Select if the threshold should be applied directly to the input image, or if it should be applied to a duplicate, then stored as a different image in the workspace.<br><br><b>Output image</b> (default = "") Name of the output image created during the thresholding process.  This image will be added to the workspace.<br><br><b>Threshold mode</b> (default = "Slice-by-slice") Local thresholding algorithm mode to use.<br><ul><li>"Slice-by-slice" Local thresholds are applied to a multidimensional image stack one 2D image at a time.  Images are processed independently.</li><li>"3D" Local threshold algorithms are calculated in 3D and applied to all slices of an image in a single run.  This is more computationally expensive.</li></ul><br><b>Algorithm (slice-by-slice)</b> (default = "Bernsen") Algorithms available for calculating local threshold on a slice-by-slice basis.  These are described at <a href="https://imagej.net/Auto_Local_Threshold">https://imagej.net/Auto_Local_Threshold</a>.  Algorithms available: Bernsen, Contrast, Mean, Median, MidGrey, Niblack, Otsu, Phansalkar, Sauvola<br><b>Algorithm (3D)</b> (default = "Bernsen") Algorithms available for calculating local threshold on 3D stack in a single run (all slices processed together).  These are 3D modifications of the algorithms described at <a href="https://imagej.net/Auto_Local_Threshold">https://imagej.net/Auto_Local_Threshold</a>.  Algorithms available: Bernsen, Contrast, Mean, Median, Phansalkar<br><b>Threshold multiplier</b> (default = "1.0") Prior to application of automatically-calculated thresholds the threshold value is multiplied by this value.  This allows the threshold to be systematically increased or decreased.  For example, a "Threshold multiplier" of 0.9 applied to an automatically-calculated threshold of 200 will see the image thresholded at the level 180.<br><br><b>Use lower threshold limit</b> (default = "false") Limit the lowest threshold that can be applied to the image.  This is used to prevent unintentional segmentation of an image containing only background (i.e. no features present).<br><br><b>Lower threshold limit</b> (default = "0.0") Lowest absolute threshold value that can be applied.<br><br><b>Local radius</b> (default = "1.0") Radius of region to be used when calculating local intensity thresholds.  Units controlled by "Spatial units mode" control.<br><br><b>Spatial units mode</b> (default = "Pixel/slice") Controls whether spatial values are assumed to be specified in calibrated units (as defined by the "Input control" parameter "Spatial unit") or pixel units.<br><b>Use full Z-range ("Global Z")</b> (default = "false") When performing 3D local thresholding, this takes all z-values at a location into account.  If disabled, pixels will be sampled in z according to the "Local radius" setting.<br><br><b>Binary logic</b> (default = "Black (0) background") Controls whether objects are considered to be white (255 intensity) on a black (0 intensity) background, or black on a white background.<br>
+<div class="pt-md-2 pb-md-4 mx-auto mia-page">
+    <h2 class="mia-section-title">Parameters</h2>
+    <p class="mia-main-text"><p class="mia-main-text"><b>Input image</b>:  Image to apply threshold to.<br><p class="mia-main-text"><b>Apply to input image</b>:  Select if the threshold should be applied directly to the input image, or if it should be applied to a duplicate, then stored as a different image in the workspace.<br><p class="mia-main-text"><b>Output image</b>:  Name of the output image created during the thresholding process.  This image will be added to the workspace.<br><p class="mia-main-text"><b>Threshold mode</b>:  Local thresholding algorithm mode to use.<br><ul><li>"Slice-by-slice" Local thresholds are applied to a multidimensional image stack one 2D image at a time.  Images are processed independently.</li><li>"3D" Local threshold algorithms are calculated in 3D and applied to all slices of an image in a single run.  This is more computationally expensive.</li></ul><p class="mia-main-text"><b>Algorithm (slice-by-slice)</b>:  Algorithms available for calculating local threshold on a slice-by-slice basis.  These are described at <a href="https://imagej.net/Auto_Local_Threshold">https://imagej.net/Auto_Local_Threshold</a>.  Algorithms available: Bernsen, Contrast, Mean, Median, MidGrey, Niblack, Otsu, Phansalkar, Sauvola<p class="mia-main-text"><b>Algorithm (3D)</b>:  Algorithms available for calculating local threshold on 3D stack in a single run (all slices processed together).  These are 3D modifications of the algorithms described at <a href="https://imagej.net/Auto_Local_Threshold">https://imagej.net/Auto_Local_Threshold</a>.  Algorithms available: Bernsen, Contrast, Mean, Median, Phansalkar<p class="mia-main-text"><b>Threshold multiplier</b>:  Prior to application of automatically-calculated thresholds the threshold value is multiplied by this value.  This allows the threshold to be systematically increased or decreased.  For example, a "Threshold multiplier" of 0.9 applied to an automatically-calculated threshold of 200 will see the image thresholded at the level 180.<br><p class="mia-main-text"><b>Use lower threshold limit</b>:  Limit the lowest threshold that can be applied to the image.  This is used to prevent unintentional segmentation of an image containing only background (i.e. no features present).<br><p class="mia-main-text"><b>Lower threshold limit</b>:  Lowest absolute threshold value that can be applied.<br><p class="mia-main-text"><b>Local radius</b>:  Radius of region to be used when calculating local intensity thresholds.  Units controlled by "Spatial units mode" control.<br><p class="mia-main-text"><b>Spatial units mode</b>:  Controls whether spatial values are assumed to be specified in calibrated units (as defined by the "Input control" parameter "Spatial unit") or pixel units.<p class="mia-main-text"><b>Use full Z-range ("Global Z")</b>:  When performing 3D local thresholding, this takes all z-values at a location into account.  If disabled, pixels will be sampled in z according to the "Local radius" setting.<br><p class="mia-main-text"><b>Binary logic</b>:  Controls whether objects are considered to be white (255 intensity) on a black (0 intensity) background, or black on a white background.</p>
 </div>
 
   <!-- Footer -->

@@ -32,8 +32,10 @@
           style="padding-right:8px;">Modular Image Analysis</a>
       <a class="navbar-brand d-block d-sm-none" href="#"><img height="32" src="img/logo_64.png"
           style="padding-right:8px;"></a> -->
-      <a class="navbar-brand mia-name" href="../../../../index.html" style="padding-top: 5px;padding-bottom: 0px;"><img
-          height="30" src="../../../../img/logo_64.png" style="padding-right:8px;">Modular Image Analysis</a>
+      <a class="navbar-brand mia-name" href="../../../../index.html" style="padding-top: 3px;padding-bottom: 0px;">
+        <img height="36" src="../../../../img/logo_64.png" style="padding-bottom: 3px; padding-right:8px;">
+        Modular Image Analysis
+      </a>
       <buton class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive"
         style="border: none;">
         <span class="navbar-toggler-icon"></span>
@@ -44,8 +46,8 @@
             <a class="nav-link" href="../../../../index.html">Home</a>
           </li>
           <li class="nav-item dropdown ">
-            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownModules"
-              role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Guides</a>
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownModules" role="button" data-toggle="dropdown"
+              aria-haspopup="true" aria-expanded="false">Guides</a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdownModules">
               <a class="dropdown-item" href="../../../../html/gettingstarted.html">Getting started</a>
             </div>
@@ -69,25 +71,25 @@
           </li>
         </ul>
         <a class="btn btn-outline-primary ml-2"
-          href="https://github.com/mianalysis/mia/releases/download/v0.20.3/MIA_-0.20.3.jar">Download</a>
+          href="https://github.com/mianalysis/mia/releases/download/v0.21.1-SNAPSHOT/MIA_-0.21.1-SNAPSHOT.jar">Download</a>
       </div>
     </div>
   </nav>
 
   <div class="page-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
-    <p class="text-secondary"><a href="../../../../html/modules/modules.html">Modules</a> ➤ <a href="../../../../html/modules/objectprocessing/objectprocessing.html">Object processing</a> ➤ <a href="../../../../html/modules/objectprocessing/refinement/refinement.html">Refinement</a></p>
+    <p class="mia-path"><a href="../../../../html/modules/modules.html">Modules</a> > <a href="../../../../html/modules/objectprocessing/objectprocessing.html">Object processing</a> > <a href="../../../../html/modules/objectprocessing/refinement/refinement.html">Refinement</a></p>
     <h1 class="display-4">Expand and shrink objects</h1>
-    <p class="lead">Expands or shrinks all objects in a specified object collection from the workspace.</p>
+    <p class="mia-description">Expands or shrinks all objects in a specified object collection from the workspace.</p>
 </div>
 
-<div class="pt-md-2 pb-md-4 mx-auto">
-    <h2 class="display-6">Description</h2>
-    Expands or shrinks all objects in a specified object collection from the workspace.  Expand and shrink operations can be performed in 2D or 3D.  These are effectively binary dilate and erode operations, respectively.  Input objects can be updated with the post-hole filling coordinates, or all output objects can be stored in the workspace as a new collection.<br><br>Note: MIA permits object overlap, so objects may share coordinates.  This is important to consider if subsequently converting objects to an image, where it's not possible to represent both objects in shared pixels.
+<div class="pt-md-2 pb-md-4 mx-auto mia-page">
+    <h2 class="mia-section-title">Description</h2>
+    <p class="mia-main-text">Expands or shrinks all objects in a specified object collection from the workspace.  Expand and shrink operations can be performed in 2D or 3D.  These are effectively binary dilate and erode operations, respectively.  Input objects can be updated with the post-hole filling coordinates, or all output objects can be stored in the workspace as a new collection.<br><br>Note: MIA permits object overlap, so objects may share coordinates.  This is important to consider if subsequently converting objects to an image, where it's not possible to represent both objects in shared pixels.</p>
 </div>
 
-<div class="pt-md-2 pb-md-4 mx-auto">
-    <h2 class="display-6">Parameters</h2>
-    <b>Input objects</b> (default = "") Object collection from the workspace to apply the expand or shrink operation to.<br><br><b>Update input objects</b> (default = "true") When selected, the post-operation objects will update the input objects in the workspace (all measurements and relationships will be retained).  Otherwise, the objects will be saved to the workspace in a new collection with the name specified by the "Output objects" parameter.  Note: If updating the objects, any previously-measured object properties (e.g. object volume) may become invalid.  To update such measurements it's necessary to re-run the relevant measurement modules.<br><br><b>Output objects</b> (default = "") If "Update input objects" is not selected, the post-operation objects will be saved to the workspace in a new collection with this name.<br><br><b>Method</b> (default = "Expand 2D") Controls which expand or shrink operation is applied to the input objects:<br><ul><li>"Expand 2D" Adds any non-object coordinates within "Radius change" of the object to the object.  This operates in a slice-by-slice manner, irrespective of whether a 2D or 3D object is provided.  This effectively runs a 2D binary dilation operation on each object. Uses ImageJ implementation.</li><li>"Expand 3D" Adds any non-object coordinates within "Radius change" of the object to the object.  This effectively runs a 3D binary dilation operation on each object.  Uses MorphoLibJ implementation.</li><li>"Shrink 2D" Removes any object coordinates within "Radius change" of the object boundary from the object.  This operates in a slice-by-slice manner, irrespective of whether a 2D or 3D object is provided.  This effectively runs a 2D binary erosion operation on each object.  Uses ImageJ implementation.</li><li>"Shrink 3D" Removes any object coordinates within "Radius change" of the object boundary from the object.  This effectively runs a 3D binary erosion operation on each object.  Uses MorphoLibJ implementation.</li></ul><br><b>Radius change</b> (default = "1.0") Distance from the object boundary to test for potential inclusion or removal of coordinates.  When expanding, any non-object coordinates within this distance of the object are included in the object.  While shrinking, any object coordinates within this distance of the object boundary are removed from the object.  This value is assumed specified in pixel coordinates unless "Calibrated units" is selected.<br><br><b>Calibrated units</b> (default = "false") When selected, "Radius change" is assumed to be specified in calibrated units (as defined by the "Input control" parameter "Spatial unit").  Otherwise, pixel units are assumed.<br><br>
+<div class="pt-md-2 pb-md-4 mx-auto mia-page">
+    <h2 class="mia-section-title">Parameters</h2>
+    <p class="mia-main-text"><p class="mia-main-text"><b>Input objects</b>:  Object collection from the workspace to apply the expand or shrink operation to.<br><p class="mia-main-text"><b>Update input objects</b>:  When selected, the post-operation objects will update the input objects in the workspace (all measurements and relationships will be retained).  Otherwise, the objects will be saved to the workspace in a new collection with the name specified by the "Output objects" parameter.  Note: If updating the objects, any previously-measured object properties (e.g. object volume) may become invalid.  To update such measurements it's necessary to re-run the relevant measurement modules.<br><p class="mia-main-text"><b>Output objects</b>:  If "Update input objects" is not selected, the post-operation objects will be saved to the workspace in a new collection with this name.<br><p class="mia-main-text"><b>Method</b>:  Controls which expand or shrink operation is applied to the input objects:<br><ul><li>"Expand 2D" Adds any non-object coordinates within "Radius change" of the object to the object.  This operates in a slice-by-slice manner, irrespective of whether a 2D or 3D object is provided.  This effectively runs a 2D binary dilation operation on each object. Uses ImageJ implementation.</li><li>"Expand 3D" Adds any non-object coordinates within "Radius change" of the object to the object.  This effectively runs a 3D binary dilation operation on each object.  Uses MorphoLibJ implementation.</li><li>"Shrink 2D" Removes any object coordinates within "Radius change" of the object boundary from the object.  This operates in a slice-by-slice manner, irrespective of whether a 2D or 3D object is provided.  This effectively runs a 2D binary erosion operation on each object.  Uses ImageJ implementation.</li><li>"Shrink 3D" Removes any object coordinates within "Radius change" of the object boundary from the object.  This effectively runs a 3D binary erosion operation on each object.  Uses MorphoLibJ implementation.</li></ul><p class="mia-main-text"><b>Radius change</b>:  Distance from the object boundary to test for potential inclusion or removal of coordinates.  When expanding, any non-object coordinates within this distance of the object are included in the object.  While shrinking, any object coordinates within this distance of the object boundary are removed from the object.  This value is assumed specified in pixel coordinates unless "Calibrated units" is selected.<br><p class="mia-main-text"><b>Calibrated units</b>:  When selected, "Radius change" is assumed to be specified in calibrated units (as defined by the "Input control" parameter "Spatial unit").  Otherwise, pixel units are assumed.<br></p>
 </div>
 
   <!-- Footer -->

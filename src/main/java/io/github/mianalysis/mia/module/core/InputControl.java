@@ -531,7 +531,7 @@ public class InputControl extends Module {
 
         templateParameters.get(FILTER_VALUE).setDescription("Value to filter filenames against.");
 
-        templateParameters.get(FILTER_TYPE).setDescription("Control how the present filter operates:"
+        templateParameters.get(FILTER_TYPE).setDescription("Control how the present filter operates:<br><ul>"
 
                 + "<li>\"" + FilterTypes.INCLUDE_MATCHES_PARTIALLY
                 + "\" will process an image if the filter value is partially present in the source (e.g. filename or extension).</li>"

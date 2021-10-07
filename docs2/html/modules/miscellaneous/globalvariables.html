@@ -32,8 +32,10 @@
           style="padding-right:8px;">Modular Image Analysis</a>
       <a class="navbar-brand d-block d-sm-none" href="#"><img height="32" src="img/logo_64.png"
           style="padding-right:8px;"></a> -->
-      <a class="navbar-brand mia-name" href="../../../index.html" style="padding-top: 5px;padding-bottom: 0px;"><img
-          height="30" src="../../../img/logo_64.png" style="padding-right:8px;">Modular Image Analysis</a>
+      <a class="navbar-brand mia-name" href="../../../index.html" style="padding-top: 3px;padding-bottom: 0px;">
+        <img height="36" src="../../../img/logo_64.png" style="padding-bottom: 3px; padding-right:8px;">
+        Modular Image Analysis
+      </a>
       <buton class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive"
         style="border: none;">
         <span class="navbar-toggler-icon"></span>
@@ -44,8 +46,8 @@
             <a class="nav-link" href="../../../index.html">Home</a>
           </li>
           <li class="nav-item dropdown ">
-            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownModules"
-              role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Guides</a>
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownModules" role="button" data-toggle="dropdown"
+              aria-haspopup="true" aria-expanded="false">Guides</a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdownModules">
               <a class="dropdown-item" href="../../../html/gettingstarted.html">Getting started</a>
             </div>
@@ -69,25 +71,25 @@
           </li>
         </ul>
         <a class="btn btn-outline-primary ml-2"
-          href="https://github.com/mianalysis/mia/releases/download/v0.20.3/MIA_-0.20.3.jar">Download</a>
+          href="https://github.com/mianalysis/mia/releases/download/v0.21.1-SNAPSHOT/MIA_-0.21.1-SNAPSHOT.jar">Download</a>
       </div>
     </div>
   </nav>
 
   <div class="page-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
-    <p class="text-secondary"><a href="../../../html/modules/modules.html">Modules</a> ➤ <a href="../../../html/modules/miscellaneous/miscellaneous.html">Miscellaneous</a></p>
+    <p class="mia-path"><a href="../../../html/modules/modules.html">Modules</a> > <a href="../../../html/modules/miscellaneous/miscellaneous.html">Miscellaneous</a></p>
     <h1 class="display-4">Global variables</h1>
-    <p class="lead">Create fixed values which can be accessed by text entry parameters from all modules.</p>
+    <p class="mia-description">Create fixed values which can be accessed by text entry parameters from all modules.</p>
 </div>
 
-<div class="pt-md-2 pb-md-4 mx-auto">
-    <h2 class="display-6">Description</h2>
-    Create fixed values which can be accessed by text entry parameters from all modules.  Use of global variables allows the same value to be used across multiple different modules without the need to explicitly type it.  Global variables are accessed with the notation "V{[NAME]}", where "[NAME]" is replaced with the name of the relevant variable.  Global variables can be used by any text or numeric parameter.
+<div class="pt-md-2 pb-md-4 mx-auto mia-page">
+    <h2 class="mia-section-title">Description</h2>
+    <p class="mia-main-text">Create fixed values which can be accessed by text entry parameters from all modules.  Use of global variables allows the same value to be used across multiple different modules without the need to explicitly type it.  Global variables are accessed with the notation "V{[NAME]}", where "[NAME]" is replaced with the name of the relevant variable.  Global variables can be used by any text or numeric parameter.</p>
 </div>
 
-<div class="pt-md-2 pb-md-4 mx-auto">
-    <h2 class="display-6">Parameters</h2>
-    <b>Add new variable</b> (default = "") Add a new global variable.  Added variables can be removed using the "Remove" button.<br><b>Variable name</b> (default = "") Name of this variable.  This is the name that will be used when referring to the variable in place of fixed values.  To refer to variables, use the form "V{[VARIABLE_NAME]}", where "[VARIABLE_NAME]" is replaced by the variable name.  For example, a variable called "my_var" would be referred to using the text "V{my_var}".<br><br><b>Variable type</b> (default = "Text") Controls how the variable is specified:<br><ul><li>"Boolean" The output variable is assigned either "True" or "False" depending on whether the switch (specified with the "Variable Boolean" parameter) is enabled or disabled, respectively.</li><li>"Choice" Select the output variable from a pre-determined list of options (specified with the "Variable choices" parameter).</li><li>"File" Select a specific file on the computer for this variable using the "Variable file" parameter.  The variable will be set to the full path to this file.  Note: backslash characters will be escaped (i.e. "\" will appear as "\\").</li><li>"Folder" Select a specific folder on the computer for this variable using the "Variable folder" parameter.  The variable will be set to the full path to this folder.  Note: backslash characters will be escaped (i.e. "\" will appear as "\\").</li><li>"Text" Specify a fixed text value for this variable using the "Variable value" parameter.</li></ul><br><b>Variable Boolean</b> (default = "false") Boolean value for the corresponding global variable when "Variable type" is in "Boolean" mode.<br><br><b>Variable value</b> (default = "") Fixed value for the corresponding global variable when "Variable type" is in "Text" mode.<br><br><b>Variable file</b> (default = "") Fixed value file location for the corresponding global variable when "Variable type" is in "File" mode.<br><br><b>Variable folder</b> (default = "") Fixed value folder location for the corresponding global variable when "Variable type" is in "Folder" mode.<br><br><b>Variable choices</b> (default = "") When "Variable type" is set to "Choice" mode, these are the options that will be presented by the "Variable choice" drop-down parameter.  Choices are specified as a comma-separated list.<br><br><b>Variable choice</b> (default = "") Pre-defined list of choices to select global variable value from when "Variable type" is in "Choice" mode.<br><b>Store as metadata item</b> (default = "false") When selected, the variable will be stored as a metadata item.  This allows it to be exported to the final spreadsheet.<br><br><br>
+<div class="pt-md-2 pb-md-4 mx-auto mia-page">
+    <h2 class="mia-section-title">Parameters</h2>
+    <p class="mia-main-text"><p class="mia-main-text"><b>Add new variable</b>:  Add a new global variable.  Added variables can be removed using the "Remove" button.<p class="mia-main-text"><b>Variable name</b>:  Name of this variable.  This is the name that will be used when referring to the variable in place of fixed values.  To refer to variables, use the form "V{[VARIABLE_NAME]}", where "[VARIABLE_NAME]" is replaced by the variable name.  For example, a variable called "my_var" would be referred to using the text "V{my_var}".<br><p class="mia-main-text"><b>Variable type</b>:  Controls how the variable is specified:<br><ul><li>"Boolean" The output variable is assigned either "True" or "False" depending on whether the switch (specified with the "Variable Boolean" parameter) is enabled or disabled, respectively.</li><li>"Choice" Select the output variable from a pre-determined list of options (specified with the "Variable choices" parameter).</li><li>"File" Select a specific file on the computer for this variable using the "Variable file" parameter.  The variable will be set to the full path to this file.  Note: backslash characters will be escaped (i.e. "\" will appear as "\\").</li><li>"Folder" Select a specific folder on the computer for this variable using the "Variable folder" parameter.  The variable will be set to the full path to this folder.  Note: backslash characters will be escaped (i.e. "\" will appear as "\\").</li><li>"Text" Specify a fixed text value for this variable using the "Variable value" parameter.</li></ul><p class="mia-main-text"><b>Variable Boolean</b>:  Boolean value for the corresponding global variable when "Variable type" is in "Boolean" mode.<br><p class="mia-main-text"><b>Variable value</b>:  Fixed value for the corresponding global variable when "Variable type" is in "Text" mode.<br><p class="mia-main-text"><b>Variable file</b>:  Fixed value file location for the corresponding global variable when "Variable type" is in "File" mode.<br><p class="mia-main-text"><b>Variable folder</b>:  Fixed value folder location for the corresponding global variable when "Variable type" is in "Folder" mode.<br><p class="mia-main-text"><b>Variable choices</b>:  When "Variable type" is set to "Choice" mode, these are the options that will be presented by the "Variable choice" drop-down parameter.  Choices are specified as a comma-separated list.<br><p class="mia-main-text"><b>Variable choice</b>:  Pre-defined list of choices to select global variable value from when "Variable type" is in "Choice" mode.<p class="mia-main-text"><b>Store as metadata item</b>:  When selected, the variable will be stored as a metadata item.  This allows it to be exported to the final spreadsheet.<br><br></p>
 </div>
 
   <!-- Footer -->

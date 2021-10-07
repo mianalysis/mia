@@ -32,8 +32,10 @@
           style="padding-right:8px;">Modular Image Analysis</a>
       <a class="navbar-brand d-block d-sm-none" href="#"><img height="32" src="img/logo_64.png"
           style="padding-right:8px;"></a> -->
-      <a class="navbar-brand mia-name" href="../../../../index.html" style="padding-top: 5px;padding-bottom: 0px;"><img
-          height="30" src="../../../../img/logo_64.png" style="padding-right:8px;">Modular Image Analysis</a>
+      <a class="navbar-brand mia-name" href="../../../../index.html" style="padding-top: 3px;padding-bottom: 0px;">
+        <img height="36" src="../../../../img/logo_64.png" style="padding-bottom: 3px; padding-right:8px;">
+        Modular Image Analysis
+      </a>
       <buton class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive"
         style="border: none;">
         <span class="navbar-toggler-icon"></span>
@@ -44,8 +46,8 @@
             <a class="nav-link" href="../../../../index.html">Home</a>
           </li>
           <li class="nav-item dropdown ">
-            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownModules"
-              role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Guides</a>
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownModules" role="button" data-toggle="dropdown"
+              aria-haspopup="true" aria-expanded="false">Guides</a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdownModules">
               <a class="dropdown-item" href="../../../../html/gettingstarted.html">Getting started</a>
             </div>
@@ -69,26 +71,25 @@
           </li>
         </ul>
         <a class="btn btn-outline-primary ml-2"
-          href="https://github.com/mianalysis/mia/releases/download/v0.20.3/MIA_-0.20.3.jar">Download</a>
+          href="https://github.com/mianalysis/mia/releases/download/v0.21.1-SNAPSHOT/MIA_-0.21.1-SNAPSHOT.jar">Download</a>
       </div>
     </div>
   </nav>
 
   <div class="page-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
-    <p class="text-secondary"><a href="../../../../html/modules/modules.html">Modules</a> ➤ <a href="../../../../html/modules/objectprocessing/objectprocessing.html">Object processing</a> ➤ <a href="../../../../html/modules/objectprocessing/relationships/relationships.html">Relationships</a></p>
+    <p class="mia-path"><a href="../../../../html/modules/modules.html">Modules</a> > <a href="../../../../html/modules/objectprocessing/objectprocessing.html">Object processing</a> > <a href="../../../../html/modules/objectprocessing/relationships/relationships.html">Relationships</a></p>
     <h1 class="display-4">Single class cluster</h1>
-    <p class="lead">Clusters objects using K-Means and/or DB-SCAN algorithms.</p>
+    <p class="mia-description">Clusters objects (based on centroid locations) using K-Means++ and/or DBSCAN algorithms.</p>
 </div>
 
-<div class="pt-md-2 pb-md-4 mx-auto">
-    <h2 class="display-6">Description</h2>
-    Clusters objects using K-Means and/or DB-SCAN algorithms.
-Uses Apache Commons Math library for clustering.
+<div class="pt-md-2 pb-md-4 mx-auto mia-page">
+    <h2 class="mia-section-title">Description</h2>
+    <p class="mia-main-text">Clusters objects (based on centroid locations) using K-Means++ and/or DBSCAN algorithms.  In K-Means++ [1], an optimisation of the standard K-Means algorithm, the points are assigned to a pre-determined number of clusters such that each point is assigned to its closest cluster mean position (this process is repeated until the cluster assignments stabilise or a maximum number of iterations is reached).  For DBSCAN [2], points are clustered based on a minimum number of neighbours within a specified spatial range.  As such, this algorithm doesn't require prior knowledge of the number of clusters.  Both algorithms use their respective <a href="https://commons.apache.org/proper/commons-math/">Apache Commons Math implementations.</a><br><br>References:<br>[1] Arthur, D.; Vassilvitskii, S. (2007). "k-means++: the advantages of careful seeding." <i>Proceedings of the eighteenth annual ACM-SIAM symposium on Discrete algorithms. Society for Industrial and Applied Mathematics Philadelphia, PA, USA.</i> pp. 1027–1035<br>[2] Ester, M.; Kriegel, H.-P.; Sander, J.; Xu, X. (1996). "A density-based algorithm for discovering clusters in large spatial databases with noise." <i>Proceedings of the Second International Conference on Knowledge Discovery and Data Mining (KDD-96). AAAI Press.</i> pp. 226–231</p>
 </div>
 
-<div class="pt-md-2 pb-md-4 mx-auto">
-    <h2 class="display-6">Parameters</h2>
-    <b>Input objects</b> (default = "") <br><br><b>Cluster (parent) objects</b> (default = "") <br><br><b>Apply volume</b> (default = "false") <br><br><b>Clustering algorithm</b> (default = "DBSCAN") <br><b>Number of clusters</b> (default = "100") <br><br><b>Maximum number of iterations</b> (default = "10000") <br><br><b>Neighbourhood for clustering (epsilon)</b> (default = "10.0") <br><br><b>Minimum number of points per cluster</b> (default = "5") <br><br><b>Only link objects in same frame</b> (default = "true") <br><br>
+<div class="pt-md-2 pb-md-4 mx-auto mia-page">
+    <h2 class="mia-section-title">Parameters</h2>
+    <p class="mia-main-text"><p class="mia-main-text"><b>Input objects</b>:  Objects from the workspace to be grouped into clusters.  Clusters are determined based on the centroid postions of the input objects.  Input objects will be children of their assigned clusters.  Each input object will be assigned to a single cluster.<br><p class="mia-main-text"><b>Cluster (parent) objects</b>:  Output cluster objects to be added to the workspace.  Each cluster will be a parent of the associated input objects.<br><p class="mia-main-text"><b>Apply volume</b>:  When selected, the output cluster object will be assigned volume based on the extents of all child objects.<br><p class="mia-main-text"><b>Clustering algorithm</b>:  The clustering algorithm to use:<br><ul><li>"DBSCAN" Points are clustered based on a minimum number of neighbours ("Minimum number of points per cluster") within a specified distance ("Neighbourhood for clustering (epsilon)").  All proximal points which satisfy these criteria are added to a common cluster.  This uses the <a href="http://commons.apache.org/proper/commons-math/javadocs/api-3.6/org/apache/commons/math3/stat/clustering/DBSCANClusterer.html">Apache Commons Math3</a> implementation of DBSCAN, which describes the algorithm as: "A point p is density connected to another point q, if there exists a chain of points pi, with i = 1 .. n and p1 = p and pn = q, such that each pair <pi, pi+1> is directly density-reachable. A point q is directly density-reachable from point p if it is in the ε-neighborhood of this point.".</li><li>"KMeans++" Points are assigned into a pre-determined number of clusters (defined by "Number of clusters"), with each point assigned to the cluster with the closest centroid.  Since the cluster centroids will vary with each added point, this process is optimised iteratively.  The algorithm continues until either no points switch clusters or the maximum number of allowed iterations ("Maximum number of iterations") is reached.</li></ul><p class="mia-main-text"><b>Number of clusters</b>:  If "Clustering algorithm" is set to "KMeans++", this is the number of clusters the points will be assigned to.<br><p class="mia-main-text"><b>Maximum number of iterations</b>:  If "Clustering algorithm" is set to "KMeans++", this is the maximum number of optimisation iterations that will be performed.  If cluster assignment has stabilised prior to reaching this number of iterations the algorithm will terminate early.<br><p class="mia-main-text"><b>Neighbourhood for clustering (epsilon)</b>:  If "Clustering algorithm" is set to "DBSCAN", this is the minimum distance to neighbour points that must be satisfied for a point to be added to a cluster.  This distance is specified in pixel units.<br><p class="mia-main-text"><b>Minimum number of points per cluster</b>:  If "Clustering algorithm" is set to "DBSCAN", this is the minimum number of neighbour points which must be within a specified distance ("Neighbourhood for clustering (epsilon)") of a point for that point to be included in the cluster.<br><p class="mia-main-text"><b>Only link objects in same frame</b>:  When selected, objects must be in the same time frame for them to be assigned to a common cluster.<br></p>
 </div>
 
   <!-- Footer -->
