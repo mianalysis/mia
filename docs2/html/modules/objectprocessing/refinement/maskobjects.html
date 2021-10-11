@@ -71,7 +71,7 @@
           </li>
         </ul>
         <a class="btn btn-outline-primary ml-2"
-          href="https://github.com/mianalysis/mia/releases/download/v0.21.1-SNAPSHOT/MIA_-0.21.1-SNAPSHOT.jar">Download</a>
+          href="https://github.com/mianalysis/mia/releases/download/v0.21.2-SNAPSHOT/MIA_-0.21.2-SNAPSHOT.jar">Download</a>
       </div>
     </div>
   </nav>
@@ -83,25 +83,25 @@
 </div>
 
 <div class="pt-md-2 pb-md-4 mx-auto mia-page">
-    <h2 class="mia-section-title">Description</h2>
-    <p class="mia-main-text">Applies the mask image to the specified object collection.  Any object coordinates coincident with black pixels (intensity 0) will be removed.</p>
+    <h2 class="text-center mia-section-title">Description</h2>
+    <p class="text-center mia-main-text">Applies the mask image to the specified object collection.  Any object coordinates coincident with black pixels (intensity 0) will be removed.</p>
 </div>
 
 <div class="pt-md-2 pb-md-4 mx-auto mia-page">
-    <h2 class="mia-section-title">Parameters</h2>
-    <p class="mia-main-text"><p class="mia-main-text"><b>Input objects</b>:  Objects to be masked.<br><p class="mia-main-text"><b>Output object mode</b>:  Controls how the masked objects will be stored:<br><ul><li>"Create new objects" (Default) Will add the masked objects to a new object set and store this set in the workspace.</li><li>"Update input objects" Will replace the coordinates of the input object with the masked coordinates.  All measurements associated with input objects will be transferred to the masked objects.</li></ul><p class="mia-main-text"><b>Output objects</b>:  Name for the output masked objects to be stored in workspace.<br><p class="mia-main-text"><b>Mask mode</b>:  Controls whether the input objects will be masked by an image or an object collection:<br><ul>"Mask from image" (Default) Input objects will be masked based on the image specified by "Mask image".  Any object regions coincident with black pixels (0 pixel intensity) will be removed.<li>"Mask from objects (remove overlap)" Input objects will be masked based on all objects of the collection specified by "Mask objects".  Any object regions coincident with any objects in the masking collection will be removed.  The masking objects will be unaffected by this process.<li>"Mask from objects (retain overlap)" Input objects will be masked based on all objects of the collection specified by "Mask objects".  Any object regions not coincident with any objects in the masking collection will be removed.  The masking objects will be unaffected by this process.<li></ul><p class="mia-main-text"><b>Mask objects</b>:  Object collection to use as mask on input objects.  Depending on which object-masking mode is selected, the input objects will either have coordinates coincident with these objects removed or retained.<br><p class="mia-main-text"><b>Mask image</b>:  Image to use as mask on input objects.  Object coordinates coincident with black pixels (pixel intensity = 0) are removed.<br></p>
+    <h2 class="text-center mia-section-title">Parameters</h2>
+    <p class="text-center mia-main-text"><p class="mia-main-text"><b>Input objects</b>:  Objects to be masked.<br><p class="mia-main-text"><b>Output object mode</b>:  Controls how the masked objects will be stored:<br><ul><li>"Create new objects" (Default) Will add the masked objects to a new object set and store this set in the workspace.</li><li>"Update input objects" Will replace the coordinates of the input object with the masked coordinates.  All measurements associated with input objects will be transferred to the masked objects.</li></ul><p class="mia-main-text"><b>Output objects</b>:  Name for the output masked objects to be stored in workspace.<br><p class="mia-main-text"><b>Mask mode</b>:  Controls whether the input objects will be masked by an image or an object collection:<br><ul>"Mask from image" (Default) Input objects will be masked based on the image specified by "Mask image".  Any object regions coincident with black pixels (0 pixel intensity) will be removed.<li>"Mask from objects (remove overlap)" Input objects will be masked based on all objects of the collection specified by "Mask objects".  Any object regions coincident with any objects in the masking collection will be removed.  The masking objects will be unaffected by this process.<li>"Mask from objects (retain overlap)" Input objects will be masked based on all objects of the collection specified by "Mask objects".  Any object regions not coincident with any objects in the masking collection will be removed.  The masking objects will be unaffected by this process.<li></ul><p class="mia-main-text"><b>Mask objects</b>:  Object collection to use as mask on input objects.  Depending on which object-masking mode is selected, the input objects will either have coordinates coincident with these objects removed or retained.<br><p class="mia-main-text"><b>Mask image</b>:  Image to use as mask on input objects.  Object coordinates coincident with black pixels (pixel intensity = 0) are removed.<br></p>
 </div>
 
   <!-- Footer -->
   <footer>
-    <div class="container-fluid padding">
-      <div class="row text-center text-light align-items-center">
+    <div class="container-fluid padding mia-page">
+      <div class="row text-light">
         <div class="col-6 mt-4 mb-4">
           <a href="http://www.bristol.ac.uk/wolfson-bioimaging/">
             <img height="48" src="../../../../img/wbif.png">
           </a>
         </div>
-        <div class="col-6 mt-4 mb-4 align-items-center">
+        <div class="col-6 mt-4 mb-4 text-right">
           <a href="https://github.com/mianalysis/mia/">
             <img height="48" src="../../../../img/GitHub-Mark-Light-64px.png"><img height="32"
               src="../../../../img/GitHub_Logo_White.png" height="32px">

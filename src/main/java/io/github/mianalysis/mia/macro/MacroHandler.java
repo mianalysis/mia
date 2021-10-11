@@ -32,7 +32,7 @@ public class MacroHandler implements MacroExtension {
                     workspace = new Workspaces().getNewWorkspace(File.createTempFile("Temp", "File"), 0);
                 }
             } catch (IOException e) {
-                e.printStackTrace();
+                MIA.log.writeError(e);
             }
             
             macroOperations = initialiseMacroOperations(macroHandler);

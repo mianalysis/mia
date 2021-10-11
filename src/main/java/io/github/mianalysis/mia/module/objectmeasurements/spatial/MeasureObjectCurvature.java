@@ -1,10 +1,8 @@
 package io.github.mianalysis.mia.module.objectmeasurements.spatial;
 
-import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.Map;
 import java.util.TreeMap;
 
 import org.scijava.Priority;
@@ -12,19 +10,10 @@ import org.scijava.plugin.Plugin;
 
 import ij.ImagePlus;
 import ij.plugin.Duplicator;
-import ij.plugin.filter.Convolver;
-import inra.ijpb.binary.ChamferWeights;
-import inra.ijpb.measure.region2d.GeodesicDiameter;
-import inra.ijpb.measure.region2d.GeodesicDiameter.Result;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.module.imageprocessing.pixel.ImageCalculator;
-import io.github.mianalysis.mia.module.imageprocessing.pixel.InvertIntensity;
-import io.github.mianalysis.mia.module.imageprocessing.pixel.ProjectImage;
-import io.github.mianalysis.mia.module.imageprocessing.pixel.binary.BinaryOperations2D;
-import io.github.mianalysis.mia.module.imageprocessing.pixel.threshold.ManualThreshold;
 import io.github.mianalysis.mia.object.Image;
 import io.github.mianalysis.mia.object.Measurement;
 import io.github.mianalysis.mia.object.Obj;
@@ -51,7 +40,6 @@ import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.sjcross.common.analysis.CurvatureCalculator;
 import io.github.sjcross.common.mathfunc.CumStat;
 import io.github.sjcross.common.object.Point;
-import io.github.sjcross.common.object.Vertex;
 import io.github.sjcross.common.object.volume.PointOutOfRangeException;
 import io.github.sjcross.common.object.volume.VolumeType;
 import io.github.sjcross.common.object.voxels.BresenhamLine;
@@ -139,86 +127,15 @@ public class MeasureObjectCurvature extends Module {
 
     }
 
-    public static ArrayList<Vertex> getSkeletonBackbone(Obj inputObject) {
-        Image objectImage = getInitialSkeleton(inputObject);
-
-        eliminateLoops(objectImage);
-
-        return getLongestPath(objectImage);
-
-    }
-
-    static Image getInitialSkeleton(Obj inputObject) {
-        // Converting object to image, then projecting into 2D
-        Image objectImage = inputObject.getAsImage("Objects", true);
-        objectImage = ProjectImage.projectImageInZ(objectImage, "Projected", ProjectImage.ProjectionModes.MAX);
-
-        // Skeletonise fish to get single backbone
-        BinaryOperations2D.process(objectImage, BinaryOperations2D.OperationModes.SKELETONISE, 1, 1, true);
-
-        return objectImage;
-
-    }
-
-    static void eliminateLoops(Image image) {
-        String calculationMode = ImageCalculator.CalculationMethods.SUBTRACT;
-        String overwriteMode = ImageCalculator.OverwriteModes.OVERWRITE_IMAGE1;
-
-        ImagePlus objectIpl = image.getImagePlus();
-
-        // Using AnalyzeSkeleton_ to remove loops
-        AnalyzeSkeleton_ analyzeSkeleton_ = new AnalyzeSkeleton_();
-
-        analyzeSkeleton_.setup("", objectIpl);
-        analyzeSkeleton_.run(AnalyzeSkeleton_.SHORTEST_BRANCH, false, false, null, true, false);
-
-        // Creating a connectivity image
-        ImagePlus connIpl = objectIpl.duplicate();
-        connIpl.getProcessor().multiply(1d / 255d);
-
-        float[] kernel = new float[] { 1, 1, 1, 1, 0, 1, 1, 1, 1 };
-        Convolver convolver = new Convolver();
-        convolver.setNormalize(false);
-        convolver.convolve(connIpl.getProcessor(), kernel, 3, 3);
-
-        // Thresholding the connectivity image to show only values with 1
-        ManualThreshold.applyThreshold(connIpl, 1);
-        InvertIntensity.process(connIpl);
-        ImageCalculator.process(objectIpl, connIpl, calculationMode, overwriteMode, image.getName(), false, false);
-
-    }
-
-    static ArrayList<Vertex> getLongestPath(Image image) {
-        // Using MorphoLibJ to identify longest path
-        GeodesicDiameter geodesicDiameter = new GeodesicDiameter(ChamferWeights.BORGEFORS);
-        geodesicDiameter.setComputePaths(true);
-
-        // Removing calibration, as GeodesicDiameter will output calibrated units
-        ImagePlus ipl = image.getImagePlus();
-        ipl.setCalibration(null);
-
-        Map<Integer, Result> results = geodesicDiameter.analyzeRegions(ipl);
-
-        // Converting coordinates to expected format
-        ArrayList<Vertex> longestPath = new ArrayList<>();
-        for (Result result : results.values())
-            for (Point2D point : result.path) {
-                longestPath.add(new Vertex((int) Math.round(point.getX()), (int) Math.round(point.getY()), 0));
-            }
-
-        return longestPath;
-
-    }
-
-    static boolean checkForLoop(ArrayList<Vertex> longestPath) {
+    static boolean checkForLoop(ArrayList<Point<Integer>> longestPath) {
         if (longestPath.size() < 2)
             return false;
 
         // Determining if it was a loop based on the proximity of the longest path ends
-        Vertex firstPoint = longestPath.get(0);
-        Vertex finalPoint = longestPath.get(longestPath.size() - 1);
+        Point<Integer> firstPoint = longestPath.get(0);
+        Point<Integer> finalPoint = longestPath.get(longestPath.size() - 1);
 
-        return firstPoint.getEdgeLength(finalPoint) <= 6;
+        return firstPoint.calculateDistanceToPoint(finalPoint) <= 6;
 
     }
 
@@ -226,15 +143,15 @@ public class MeasureObjectCurvature extends Module {
      * Checks if the longest path (skeleton backbone) needs to be inverted to have
      * the first point closer to the reference than the last point.
      */
-    public static boolean testForPathInversion(ArrayList<Vertex> longestPath, double xRef, double yRef) {
+    public static boolean testForPathInversion(ArrayList<Point<Integer>> longestPath, double xRef, double yRef) {
         Point<Integer> referencePoint = new Point<Integer>((int) xRef, (int) yRef, 0);
-        Iterator<Vertex> iterator = longestPath.iterator();
+        Iterator<Point<Integer>> iterator = longestPath.iterator();
 
         double firstPointDistance = iterator.next().calculateDistanceToPoint(referencePoint);
         double lastPointDistance = Double.MAX_VALUE;
 
         while (iterator.hasNext()) {
-            Vertex nextVertex = iterator.next();
+            Point<Integer> nextVertex = iterator.next();
 
             // Only calculate the distance for the final point
             if (!iterator.hasNext())
@@ -246,8 +163,8 @@ public class MeasureObjectCurvature extends Module {
 
     }
 
-    public static CurvatureCalculator getCurvatureCalculator(ArrayList<Vertex> longestPath, String splineFittingMethod,
-            int nNeighbours, int iterations, double accuracy, boolean isLoop) {
+    public static CurvatureCalculator getCurvatureCalculator(ArrayList<Point<Integer>> longestPath,
+            String splineFittingMethod, int nNeighbours, int iterations, double accuracy, boolean isLoop) {
         // Calculating local curvature along the path
         CurvatureCalculator curvatureCalculator = new CurvatureCalculator(longestPath, isLoop);
         switch (splineFittingMethod) {
@@ -317,7 +234,7 @@ public class MeasureObjectCurvature extends Module {
         }
     }
 
-    public static void measureRelativeCurvature(Obj inputObject, ArrayList<Vertex> longestPath,
+    public static void measureRelativeCurvature(Obj inputObject, ArrayList<Point<Integer>> longestPath,
             TreeMap<Double, Double> curvature, boolean useReference) {
         double pathLength = 0;
         double posMin = 0;
@@ -350,7 +267,7 @@ public class MeasureObjectCurvature extends Module {
         inputObject.addMeasurement(new Measurement(Measurements.SPLINE_LENGTH_CAL, pathLength * dppXY));
 
         if (useReference) {
-            Vertex firstPoint = longestPath.iterator().next();
+            Point<Integer> firstPoint = longestPath.iterator().next();
 
             inputObject.addMeasurement(new Measurement(Measurements.FIRST_POINT_X_PX, firstPoint.getX()));
             inputObject.addMeasurement(new Measurement(Measurements.FIRST_POINT_Y_PX, firstPoint.getY()));
@@ -360,7 +277,7 @@ public class MeasureObjectCurvature extends Module {
         }
     }
 
-    public static void measureHeadTailAngle(Obj inputObject, ArrayList<Vertex> longestPath, int nPoints) {
+    public static void measureHeadTailAngle(Obj inputObject, ArrayList<Point<Integer>> longestPath, int nPoints) {
         // Getting starting and ending points for comparison
         double x1 = 0, x2 = 0, y1 = 0, y2 = 0;
         int pathLength = longestPath.size();
@@ -370,7 +287,7 @@ public class MeasureObjectCurvature extends Module {
             return;
 
         int count = 0;
-        for (Vertex vertex : longestPath) {
+        for (Point<Integer> vertex : longestPath) {
             if (count == 0) {
                 x1 = vertex.getX();
                 y1 = vertex.getY();
@@ -434,15 +351,15 @@ public class MeasureObjectCurvature extends Module {
 
     }
 
-    public Obj createFullContour(Obj inputObject, Objs outputObjects, ArrayList<Vertex> spline, int everyNPoints,
-            boolean isLoop) {
+    public Obj createFullContour(Obj inputObject, Objs outputObjects, ArrayList<Point<Integer>> spline,
+            int everyNPoints, boolean isLoop) {
         if (spline == null)
             return null;
 
         Obj splineObject = outputObjects.createAndAddNewObject(VolumeType.POINTLIST);
 
-        Vertex previousVertex = null;
-        for (Vertex currentVertex : spline) {
+        Point<Integer> previousVertex = null;
+        for (Point<Integer> currentVertex : spline) {
             if (previousVertex == null) {
                 previousVertex = currentVertex;
                 continue;
@@ -466,7 +383,8 @@ public class MeasureObjectCurvature extends Module {
 
     }
 
-    static void addLineSegment(Obj splineObject, Vertex previousVertex, Vertex currentVertex, int everyNPoints) {
+    static void addLineSegment(Obj splineObject, Point<Integer> previousVertex, Point<Integer> currentVertex,
+            int everyNPoints) {
         try {
             // Getting points linking the previous and current vertices
             int x1 = previousVertex.x;
@@ -486,10 +404,10 @@ public class MeasureObjectCurvature extends Module {
         }
     }
 
-    public void createControlPointObjects(Obj inputObject, Objs outputObjects, ArrayList<Vertex> spline,
+    public void createControlPointObjects(Obj inputObject, Objs outputObjects, ArrayList<Point<Integer>> spline,
             int everyNPoints) {
         int i = 0;
-        for (Vertex vertex : spline) {
+        for (Point<Integer> vertex : spline) {
             try {
                 if (i++ % everyNPoints == 0) {
                     Obj splineObject = outputObjects.createAndAddNewObject(inputObject.getVolumeType());
@@ -573,7 +491,7 @@ public class MeasureObjectCurvature extends Module {
             initialiseObjectMeasurements(inputObject, absoluteCurvature, signedCurvature, useReference);
 
             // Getting the backbone of the object
-            ArrayList<Vertex> longestPath = getSkeletonBackbone(inputObject);
+            ArrayList<Point<Integer>> longestPath = MeasureSkeleton.getLargestShortestPath(inputObject);
             boolean isLoop = checkForLoop(longestPath);
 
             // If the object is too small to be fit
@@ -588,8 +506,8 @@ public class MeasureObjectCurvature extends Module {
 
                 if (testForPathInversion(longestPath, xRef, yRef)) {
                     // Store the longest path in a list, then iterate through this backwards
-                    LinkedList<Vertex> temporaryPathList = new LinkedList<>(longestPath);
-                    Iterator<Vertex> reverseIterator = temporaryPathList.descendingIterator();
+                    LinkedList<Point<Integer>> temporaryPathList = new LinkedList<>(longestPath);
+                    Iterator<Point<Integer>> reverseIterator = temporaryPathList.descendingIterator();
 
                     longestPath = new ArrayList<>();
                     while (reverseIterator.hasNext())

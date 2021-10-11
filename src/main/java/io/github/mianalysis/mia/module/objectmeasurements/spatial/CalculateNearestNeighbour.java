@@ -366,10 +366,10 @@ public class CalculateNearestNeighbour extends Module {
                 MIA.log.writeWarning("Saved to alternative file (" + new File(newOutPath).getName() + ")");
 
             } catch (IOException e1) {
-                e.printStackTrace();
+                MIA.log.writeError(e);
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            MIA.log.writeError(e);
         }
     }
 

@@ -187,7 +187,7 @@ public class RunTrackMate extends Module {
                 spotObject.add((int) spot.getDoublePosition(0), (int) spot.getDoublePosition(1),
                         (int) spot.getDoublePosition(2));
             } catch (PointOutOfRangeException e) {
-                e.printStackTrace();
+                MIA.log.writeError(e);
             }
             spotObject.setT((int) Math.round(spot.getFeature(Spot.FRAME)));
 

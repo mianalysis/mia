@@ -2,26 +2,34 @@
 
 package io.github.mianalysis.mia.module.imageprocessing.pixel.threshold;
 
+import org.scijava.Priority;
+import org.scijava.plugin.Plugin;
+
 import fiji.threshold.Auto_Local_Threshold;
 import ij.ImagePlus;
 import ij.Prefs;
 import ij.plugin.Duplicator;
 import ij.process.AutoThresholder;
-import io.github.mianalysis.mia.module.imageprocessing.pixel.InvertIntensity;
-import io.github.mianalysis.mia.module.imageprocessing.stack.ImageTypeConverter;
+import io.github.mianalysis.mia.module.Categories;
+import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.module.Module;
-import org.scijava.Priority;
-import org.scijava.plugin.Plugin;
-import io.github.mianalysis.mia.module.Category;
-import io.github.mianalysis.mia.module.Categories;
-import io.github.mianalysis.mia.object.*;
-import io.github.mianalysis.mia.object.parameters.*;
+import io.github.mianalysis.mia.module.imageprocessing.pixel.InvertIntensity;
+import io.github.mianalysis.mia.module.imageprocessing.stack.ImageTypeConverter;
+import io.github.mianalysis.mia.object.Image;
+import io.github.mianalysis.mia.object.Measurement;
+import io.github.mianalysis.mia.object.Status;
+import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.parameters.BooleanP;
+import io.github.mianalysis.mia.object.parameters.ChoiceP;
+import io.github.mianalysis.mia.object.parameters.InputImageP;
+import io.github.mianalysis.mia.object.parameters.OutputImageP;
+import io.github.mianalysis.mia.object.parameters.Parameters;
+import io.github.mianalysis.mia.object.parameters.SeparatorP;
 import io.github.mianalysis.mia.object.parameters.choiceinterfaces.SpatialUnitsInterface;
 import io.github.mianalysis.mia.object.parameters.text.DoubleP;
 import io.github.mianalysis.mia.object.parameters.text.IntegerP;
-import io.github.mianalysis.mia.object.refs.*;
+import io.github.mianalysis.mia.object.refs.ImageMeasurementRef;
 import io.github.mianalysis.mia.object.refs.collections.ImageMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;

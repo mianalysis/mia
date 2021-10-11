@@ -71,7 +71,7 @@
           </li>
         </ul>
         <a class="btn btn-outline-primary ml-2"
-          href="https://github.com/mianalysis/mia/releases/download/v0.21.1-SNAPSHOT/MIA_-0.21.1-SNAPSHOT.jar">Download</a>
+          href="https://github.com/mianalysis/mia/releases/download/v0.21.2-SNAPSHOT/MIA_-0.21.2-SNAPSHOT.jar">Download</a>
       </div>
     </div>
   </nav>
@@ -83,26 +83,26 @@
 </div>
 
 <div class="pt-md-2 pb-md-4 mx-auto mia-page">
-    <h2 class="mia-section-title">Description</h2>
-    <p class="mia-main-text">Sets the intensity to maximise the dynamic range of the image.
+    <h2 class="text-center mia-section-title">Description</h2>
+    <p class="text-center mia-main-text">Sets the intensity to maximise the dynamic range of the image.
 "Clipping fraction" is the fraction of pixels at either end of the range that gets clipped.The "Per object" region mode will normalise all pixels within each object.<br><br>Note: This module will change pixel intensities.  To set the display range without altering pixel intensities, use the "Set intensity display range" module</p>
 </div>
 
 <div class="pt-md-2 pb-md-4 mx-auto mia-page">
-    <h2 class="mia-section-title">Parameters</h2>
-    <p class="mia-main-text"><p class="mia-main-text"><b>Input image</b>:  Image from the workspace for which intensity normalisation will be calculated.<br><p class="mia-main-text"><b>Apply to input image</b>:  Select if the normalisation should be applied directly to the input image, or if it should be applied to a duplicate image, then stored as a different image in the workspace.<br><p class="mia-main-text"><b>Output image</b>:  If storing the processed image separately in the workspace, this is the name of the output image.<br><p class="mia-main-text"><b>Region mode</b>:  Controls whether the intensities are normalised across the entire image stack ("Entire image"), across the image slice-by-slice ("Per slice") or separately within each object ("Per slice")<p class="mia-main-text"><b>Input objects</b>:  If normalising intensities on an object-by-object basis ("Region mode" set to "Per object"), these are the objects that will be used.<br><p class="mia-main-text"><b>Calculation mode</b>:  Controls how the normalisation is calculated.  In each case, the minimum and maximum intensities are calculated and all values in the output image linearly interpolated between them:<br><ul><li>"Fast" All intensity values in the image are collected in a histogram.  As such, for 8 and 16-bit this is fast to calculate as there are a limited number of bins.  In this instance, the clip fraction corresponds to the fraction of bins.</li><li>"Manual" The minimum and maximum intensities in the final image are manually specified with the "Minimum range value" and "Maximum range value" parameters.</li><li>"Precise" All intensity values are ordered by their intensity and the clip fraction corresponds to the fraction of pixels (rather than the fraction of unique intensities as with "Fast" mode.  As such, this method is more precise; however, can take a much longer time (especially for large images).</li></ul><p class="mia-main-text"><b>Clipping fraction (min)</b>:  Fraction of unique intensities ("Precise") or pixels ("Fast") that are clipped when setting the minimum intensity.  Any values below this will be set to the calculated minimum intensity.<br><p class="mia-main-text"><b>Clipping fraction (max)</b>:  Fraction of unique intensities ("Precise") or pixels ("Fast") that are clipped when setting the maximum intensity.  Any values above this will be set to the calculated maximum intensity.<br><p class="mia-main-text"><b>Minimum range value</b>:  If manually setting the minimum intensity, this is the value that will be applied.<br><p class="mia-main-text"><b>Maximum range value</b>:  If manually setting the maximum intensity, this is the value that will be applied.<br></p>
+    <h2 class="text-center mia-section-title">Parameters</h2>
+    <p class="text-center mia-main-text"><p class="mia-main-text"><b>Input image</b>:  Image from the workspace for which intensity normalisation will be calculated.<br><p class="mia-main-text"><b>Apply to input image</b>:  Select if the normalisation should be applied directly to the input image, or if it should be applied to a duplicate image, then stored as a different image in the workspace.<br><p class="mia-main-text"><b>Output image</b>:  If storing the processed image separately in the workspace, this is the name of the output image.<br><p class="mia-main-text"><b>Region mode</b>:  Controls whether the intensities are normalised across the entire image stack ("Entire image"), across the image slice-by-slice ("Per slice") or separately within each object ("Per slice")<p class="mia-main-text"><b>Input objects</b>:  If normalising intensities on an object-by-object basis ("Region mode" set to "Per object"), these are the objects that will be used.<br><p class="mia-main-text"><b>Calculation mode</b>:  Controls how the normalisation is calculated.  In each case, the minimum and maximum intensities are calculated and all values in the output image linearly interpolated between them:<br><ul><li>"Fast" All intensity values in the image are collected in a histogram.  As such, for 8 and 16-bit this is fast to calculate as there are a limited number of bins.  In this instance, the clip fraction corresponds to the fraction of bins.</li><li>"Manual" The minimum and maximum intensities in the final image are manually specified with the "Minimum range value" and "Maximum range value" parameters.</li><li>"Precise" All intensity values are ordered by their intensity and the clip fraction corresponds to the fraction of pixels (rather than the fraction of unique intensities as with "Fast" mode.  As such, this method is more precise; however, can take a much longer time (especially for large images).</li></ul><p class="mia-main-text"><b>Clipping fraction (min)</b>:  Fraction of unique intensities ("Precise") or pixels ("Fast") that are clipped when setting the minimum intensity.  Any values below this will be set to the calculated minimum intensity.<br><p class="mia-main-text"><b>Clipping fraction (max)</b>:  Fraction of unique intensities ("Precise") or pixels ("Fast") that are clipped when setting the maximum intensity.  Any values above this will be set to the calculated maximum intensity.<br><p class="mia-main-text"><b>Minimum range value</b>:  If manually setting the minimum intensity, this is the value that will be applied.<br><p class="mia-main-text"><b>Maximum range value</b>:  If manually setting the maximum intensity, this is the value that will be applied.<br></p>
 </div>
 
   <!-- Footer -->
   <footer>
-    <div class="container-fluid padding">
-      <div class="row text-center text-light align-items-center">
+    <div class="container-fluid padding mia-page">
+      <div class="row text-light">
         <div class="col-6 mt-4 mb-4">
           <a href="http://www.bristol.ac.uk/wolfson-bioimaging/">
             <img height="48" src="../../../../img/wbif.png">
           </a>
         </div>
-        <div class="col-6 mt-4 mb-4 align-items-center">
+        <div class="col-6 mt-4 mb-4 text-right">
           <a href="https://github.com/mianalysis/mia/">
             <img height="48" src="../../../../img/GitHub-Mark-Light-64px.png"><img height="32"
               src="../../../../img/GitHub_Logo_White.png" height="32px">

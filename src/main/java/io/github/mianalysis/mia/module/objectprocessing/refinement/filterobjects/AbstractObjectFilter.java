@@ -6,6 +6,7 @@ import java.util.LinkedHashMap;
 
 import org.eclipse.sisu.Nullable;
 
+import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.Obj;
@@ -117,7 +118,7 @@ public abstract class AbstractObjectFilter extends Module {
                     parameters.add(newOutputObjects);
                 } catch (InstantiationException | IllegalAccessException | IllegalArgumentException
                         | InvocationTargetException e) {
-                    e.printStackTrace();
+                    MIA.log.writeError(e);
                 }
             }
 

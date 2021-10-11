@@ -109,7 +109,7 @@ public class WekaProbabilityMaps extends Module {
 		try {
 			cls = (AbstractClassifier) SerializationHelper.read(classifierFilePath);
         } catch (Exception e) {
-            e.printStackTrace();
+            MIA.log.writeError(e);
             return null;
         }
         wekaSegmentation.setClassifier(cls);
@@ -240,7 +240,7 @@ public class WekaProbabilityMaps extends Module {
             try {
                 classifierFilePath = ImageLoader.getGenericName(metadata, genericFormat);
             } catch (ServiceException | DependencyException | FormatException | IOException e) {
-                e.printStackTrace();
+                MIA.log.writeError(e);
             }
             break;
         }

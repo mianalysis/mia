@@ -17,6 +17,7 @@ import ij.plugin.Duplicator;
 import ij.plugin.SubHyperstackMaker;
 import ij.process.ImageProcessor;
 import inra.ijpb.binary.conncomp.FloodFillComponentsLabeling3D;
+import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
@@ -151,7 +152,7 @@ public class FillHolesByVolume extends Module {
                 try {
                     pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS); // i.e. never terminate early
                 } catch (InterruptedException e) {
-                    e.printStackTrace(System.err);
+                    MIA.log.writeError(e);
                 }
 
                 // Removing pixels with counts outside the limits
@@ -196,7 +197,7 @@ public class FillHolesByVolume extends Module {
                 try {
                     pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS); // i.e. never terminate early
                 } catch (InterruptedException e) {
-                    e.printStackTrace(System.err);
+                    MIA.log.writeError(e);
                 }
 
                 writeProgressStatus(++count, total, "stacks", name);

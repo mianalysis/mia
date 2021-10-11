@@ -71,7 +71,7 @@
           </li>
         </ul>
         <a class="btn btn-outline-primary ml-2"
-          href="https://github.com/mianalysis/mia/releases/download/v0.21.1-SNAPSHOT/MIA_-0.21.1-SNAPSHOT.jar">Download</a>
+          href="https://github.com/mianalysis/mia/releases/download/v0.21.2-SNAPSHOT/MIA_-0.21.2-SNAPSHOT.jar">Download</a>
       </div>
     </div>
   </nav>
@@ -83,25 +83,25 @@
 </div>
 
 <div class="pt-md-2 pb-md-4 mx-auto mia-page">
-    <h2 class="mia-section-title">Description</h2>
-    <p class="mia-main-text">Creates a map of object measurements.  Each pixel of the output map is a combination of all object measurements at that location.  Measurements can be taken from the input objects themselves or from associated parent objects.  Multiple Z-slices and/or timepoints can be combined into a single slice.  The outmap is blurred with a Gaussian function to show smooth transitions between regions.</p>
+    <h2 class="text-center mia-section-title">Description</h2>
+    <p class="text-center mia-main-text">Creates a map of object measurements.  Each pixel of the output map is a combination of all object measurements at that location.  Measurements can be taken from the input objects themselves or from associated parent objects.  Multiple Z-slices and/or timepoints can be combined into a single slice.  The outmap is blurred with a Gaussian function to show smooth transitions between regions.</p>
 </div>
 
 <div class="pt-md-2 pb-md-4 mx-auto mia-page">
-    <h2 class="mia-section-title">Parameters</h2>
-    <p class="mia-main-text"><p class="mia-main-text"><b>Input objects</b>:  Objects from workspace for which the measurement map will be created.<br><p class="mia-main-text"><b>Output image</b>:  Output image showing the measurement map which will be output to the workspace.  The value at each location will be based on the measurements of nearby objects.  Any pixels too far from an object (this distance will be controlled by the blur range, "Range") will be assigned NaN (not a number) values.<br><p class="mia-main-text"><b>Measurement mode</b>:  Controls whether the measurements being rendered for each object are measurements associated with that object ("Measurement") or are measurements associated with a parent object ("Parent object measurement").<p class="mia-main-text"><b>Statistic</b>:  Controls the statistic that will be used to combine multiple object measurements at each location.  For example, if two objects overlap at a specific location (occurs more frequently when "Merge slices" or "Merge time" are selected), the value at that location could be an average (or any other listed statistic) of the two.<p class="mia-main-text"><b>Parent object</b>:  If "Measurement mode" is set to "Parent object measurement", this is the parent object collection from which the measurement (specified by "Measurement") will be taken.<br><p class="mia-main-text"><b>Measurement</b>:  Controls the measurement for each object that will be rendered on the measurement map.  Depending on the setting for "Measurement mode", this can either be a measurement associated with the input object or with a parent of that object.<br><p class="mia-main-text"><b>Range</b>:  The measurement map can be blurred using a Gaussian distribution.  This is the sigma value for that blurring function.<br><p class="mia-main-text"><b>Merge slices</b>:  When selected, all measurements from different slices are combined into a single slice.<br><p class="mia-main-text"><b>Merge time</b>:  When selected, all measurements from different timepoints are combined into a single timepoint.<br></p>
+    <h2 class="text-center mia-section-title">Parameters</h2>
+    <p class="text-center mia-main-text"><p class="mia-main-text"><b>Input objects</b>:  Objects from workspace for which the measurement map will be created.<br><p class="mia-main-text"><b>Output image</b>:  Output image showing the measurement map which will be output to the workspace.  The value at each location will be based on the measurements of nearby objects.  Any pixels too far from an object (this distance will be controlled by the blur range, "Range") will be assigned NaN (not a number) values.<br><p class="mia-main-text"><b>Measurement mode</b>:  Controls whether the measurements being rendered for each object are measurements associated with that object ("Measurement") or are measurements associated with a parent object ("Parent object measurement").<p class="mia-main-text"><b>Statistic</b>:  Controls the statistic that will be used to combine multiple object measurements at each location.  For example, if two objects overlap at a specific location (occurs more frequently when "Merge slices" or "Merge time" are selected), the value at that location could be an average (or any other listed statistic) of the two.<p class="mia-main-text"><b>Parent object</b>:  If "Measurement mode" is set to "Parent object measurement", this is the parent object collection from which the measurement (specified by "Measurement") will be taken.<br><p class="mia-main-text"><b>Measurement</b>:  Controls the measurement for each object that will be rendered on the measurement map.  Depending on the setting for "Measurement mode", this can either be a measurement associated with the input object or with a parent of that object.<br><p class="mia-main-text"><b>Range</b>:  The measurement map can be blurred using a Gaussian distribution.  This is the sigma value for that blurring function.<br><p class="mia-main-text"><b>Merge slices</b>:  When selected, all measurements from different slices are combined into a single slice.<br><p class="mia-main-text"><b>Merge time</b>:  When selected, all measurements from different timepoints are combined into a single timepoint.<br></p>
 </div>
 
   <!-- Footer -->
   <footer>
-    <div class="container-fluid padding">
-      <div class="row text-center text-light align-items-center">
+    <div class="container-fluid padding mia-page">
+      <div class="row text-light">
         <div class="col-6 mt-4 mb-4">
           <a href="http://www.bristol.ac.uk/wolfson-bioimaging/">
             <img height="48" src="../../../img/wbif.png">
           </a>
         </div>
-        <div class="col-6 mt-4 mb-4 align-items-center">
+        <div class="col-6 mt-4 mb-4 text-right">
           <a href="https://github.com/mianalysis/mia/">
             <img height="48" src="../../../img/GitHub-Mark-Light-64px.png"><img height="32"
               src="../../../img/GitHub_Logo_White.png" height="32px">

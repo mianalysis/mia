@@ -156,7 +156,7 @@ public class UnwarpManual<T extends RealType<T> & NativeType<T>> extends Abstrac
             return transform;
 
         } catch (IOException e) {
-            e.printStackTrace();
+            MIA.log.writeError(e);
             return null;
         }
     }
@@ -228,7 +228,7 @@ public class UnwarpManual<T extends RealType<T> & NativeType<T>> extends Abstrac
             applyTransformation(image1, transform, fillMode, multithread);
 
         } catch (InterruptedException | IOException e) {
-            e.printStackTrace();
+            MIA.log.writeError(e);
             return;
         }
 

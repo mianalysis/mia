@@ -307,6 +307,10 @@ public class DocumentationGenerator2 {
         aboutContent = renderer.render(parser.parse(aboutContent));
         mainContent = mainContent.replace("${ABOUT_INTRODUCTION}", aboutContent);
 
+        aboutContent = new String(Files.readAllBytes(Paths.get("src/main/resources/templatemd/description.md")));
+        aboutContent = renderer.render(parser.parse(aboutContent));
+        mainContent = mainContent.replace("${ABOUT_DESCRIPTION}", aboutContent);
+
         aboutContent = new String(Files.readAllBytes(Paths.get("src/main/resources/templatemd/acknowledgements.md")));
         aboutContent = renderer.render(parser.parse(aboutContent));
         mainContent = mainContent.replace("${ABOUT_ACKNOWLEDGEMENTS}", aboutContent);

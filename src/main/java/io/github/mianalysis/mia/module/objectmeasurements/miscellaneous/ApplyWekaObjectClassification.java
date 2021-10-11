@@ -6,13 +6,14 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.util.ArrayList;
 
+import org.scijava.Priority;
+import org.scijava.plugin.Plugin;
+
+import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.module.Module;
-import org.scijava.Priority;
-import org.scijava.plugin.Plugin;
 import io.github.mianalysis.mia.object.Measurement;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
@@ -105,7 +106,7 @@ public class ApplyWekaObjectClassification extends Module {
             instances = (Instances) objectInputStream.readObject();
             objectInputStream.close();
         } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
+            MIA.log.writeError(e);
             return Status.FAIL;
         }
 
@@ -157,7 +158,7 @@ public class ApplyWekaObjectClassification extends Module {
                 
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            MIA.log.writeError(e);
             return Status.FAIL;
         }
 
@@ -222,7 +223,7 @@ public class ApplyWekaObjectClassification extends Module {
             return returnedRefs;
 
         } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
+            MIA.log.writeError(e);
             return null;
         }
     }

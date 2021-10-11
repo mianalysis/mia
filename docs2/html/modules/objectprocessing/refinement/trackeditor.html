@@ -71,7 +71,7 @@
           </li>
         </ul>
         <a class="btn btn-outline-primary ml-2"
-          href="https://github.com/mianalysis/mia/releases/download/v0.21.1-SNAPSHOT/MIA_-0.21.1-SNAPSHOT.jar">Download</a>
+          href="https://github.com/mianalysis/mia/releases/download/v0.21.2-SNAPSHOT/MIA_-0.21.2-SNAPSHOT.jar">Download</a>
       </div>
     </div>
   </nav>
@@ -83,25 +83,25 @@
 </div>
 
 <div class="pt-md-2 pb-md-4 mx-auto mia-page">
-    <h2 class="mia-section-title">Description</h2>
-    <p class="mia-main-text">Display TrackMate's TrackScheme track editor to allow tracks to be re-linked between detected objects.  TrackScheme also allows individual timepoint objects to be deleted.  TrackScheme represents the connectivity within a track (i.e. between instances in different timepoints) as a graph, which can be adjusted by deleting and drawing lines between each timepoint instance.  Interaction with the TrackScheme window can be directly visualised on the accompanying overlay image.<br><br>Full details on using TrackScheme can be found at <a href="https://imagej.net/plugins/trackmate/trackscheme">https://imagej.net/plugins/trackmate/trackscheme</a>.<br><br>Note: This module will update the existing spot (individual timepoint instances) and track objects.  As such, any track-related measurements will still be available, but may no longer be valid.  They can be re-calculated by re-running the relevant measurement modules.</p>
+    <h2 class="text-center mia-section-title">Description</h2>
+    <p class="text-center mia-main-text">Display TrackMate's TrackScheme track editor to allow tracks to be re-linked between detected objects.  TrackScheme also allows individual timepoint objects to be deleted.  TrackScheme represents the connectivity within a track (i.e. between instances in different timepoints) as a graph, which can be adjusted by deleting and drawing lines between each timepoint instance.  Interaction with the TrackScheme window can be directly visualised on the accompanying overlay image.<br><br>Full details on using TrackScheme can be found at <a href="https://imagej.net/plugins/trackmate/trackscheme">https://imagej.net/plugins/trackmate/trackscheme</a>.<br><br>Note: This module will update the existing spot (individual timepoint instances) and track objects.  As such, any track-related measurements will still be available, but may no longer be valid.  They can be re-calculated by re-running the relevant measurement modules.</p>
 </div>
 
 <div class="pt-md-2 pb-md-4 mx-auto mia-page">
-    <h2 class="mia-section-title">Parameters</h2>
-    <p class="mia-main-text"><p class="mia-main-text"><b>Input track objects</b>:  Track objects that will be edited.  This same object collection will be updated by this module; however, all track objects will effectively be new, so any previous measurements and relationships will be lost.<br><p class="mia-main-text"><b>Input spot objects</b>:  Spot objects for the selected tracks that will be edited.  These "spot" objects are the individual timepoint instances of the tracks.  This same object collection will be updated by this module and all spot objects (unless deleted during editing) will be retained; however, as their associated tracks may be different, any track-related measurements may become invalid.  Track measurements should be re-calculated using the relevant modules.<br><p class="mia-main-text"><b>Display image</b>:  In addition to the graph-based TrackScheme editor, tracks and spots will be displayed as an overlay on this image.<br><p class="mia-main-text"><b>Show projected (3D only)</b>:  When selected (and when "Display image" has more than one Z-slice), a separate projected image will be displayed.  This can assist understanding track connectivity in 3D.<br></p>
+    <h2 class="text-center mia-section-title">Parameters</h2>
+    <p class="text-center mia-main-text"><p class="mia-main-text"><b>Input track objects</b>:  Track objects that will be edited.  This same object collection will be updated by this module; however, all track objects will effectively be new, so any previous measurements and relationships will be lost.<br><p class="mia-main-text"><b>Input spot objects</b>:  Spot objects for the selected tracks that will be edited.  These "spot" objects are the individual timepoint instances of the tracks.  This same object collection will be updated by this module and all spot objects (unless deleted during editing) will be retained; however, as their associated tracks may be different, any track-related measurements may become invalid.  Track measurements should be re-calculated using the relevant modules.<br><p class="mia-main-text"><b>Display image</b>:  In addition to the graph-based TrackScheme editor, tracks and spots will be displayed as an overlay on this image.<br><p class="mia-main-text"><b>Show projected (3D only)</b>:  When selected (and when "Display image" has more than one Z-slice), a separate projected image will be displayed.  This can assist understanding track connectivity in 3D.<br></p>
 </div>
 
   <!-- Footer -->
   <footer>
-    <div class="container-fluid padding">
-      <div class="row text-center text-light align-items-center">
+    <div class="container-fluid padding mia-page">
+      <div class="row text-light">
         <div class="col-6 mt-4 mb-4">
           <a href="http://www.bristol.ac.uk/wolfson-bioimaging/">
             <img height="48" src="../../../../img/wbif.png">
           </a>
         </div>
-        <div class="col-6 mt-4 mb-4 align-items-center">
+        <div class="col-6 mt-4 mb-4 text-right">
           <a href="https://github.com/mianalysis/mia/">
             <img height="48" src="../../../../img/GitHub-Mark-Light-64px.png"><img height="32"
               src="../../../../img/GitHub_Logo_White.png" height="32px">

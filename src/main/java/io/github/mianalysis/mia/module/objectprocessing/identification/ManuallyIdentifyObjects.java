@@ -494,7 +494,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
             try {
                 Thread.sleep(100);
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                MIA.log.writeError(e);
             }
         
         // If more pixels than Integer.MAX_VALUE were assigned, return false

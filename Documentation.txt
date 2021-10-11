@@ -1,0 +1,11 @@
+- Loading images into a workflow
+    - General
+        - Input control only specifies root path.  It doesn't actually load any data.
+        - If a folder, MIA iterates over each valid file, running the analysis workflow on each file.
+    - Current file
+        - Simple, gives access to that selected file.
+    - From ImageJ
+        - Must be an open window
+    - Specific file
+        - Will be the same for all analysis runs (good for reference images)
+    

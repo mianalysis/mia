@@ -6,6 +6,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.eclipse.sisu.Nullable;
+import org.scijava.Priority;
+import org.scijava.plugin.Plugin;
 
 import ij.IJ;
 import ij.ImagePlus;
@@ -14,13 +16,11 @@ import ij.Prefs;
 import ij.plugin.SubHyperstackMaker;
 import ij.process.StackProcessor;
 import inra.ijpb.morphology.MinimaAndMaxima3D;
+import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.module.Module;
-import org.scijava.Priority;
-import org.scijava.plugin.Plugin;
 import io.github.mianalysis.mia.object.Image;
 import io.github.mianalysis.mia.object.Status;
 import io.github.mianalysis.mia.object.Workspace;
@@ -201,7 +201,7 @@ public class ExtendedMinima extends Module {
             outputImage = process(inputImage, outputImageName, minimaMaximaMode, blackBackground, dynamic, connectivity,
                     multithread);
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            MIA.log.writeError(e);
             return Status.FAIL;
         }
 

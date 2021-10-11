@@ -246,7 +246,7 @@ public class MeasureObjectShape extends Module {
         try {
             pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS); // i.e. never terminate early
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            MIA.log.writeError(e);
             return Status.FAIL;
         }
 

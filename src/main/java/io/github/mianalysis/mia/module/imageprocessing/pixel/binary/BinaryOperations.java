@@ -2,6 +2,9 @@
 
 package io.github.mianalysis.mia.module.imageprocessing.pixel.binary;
 
+import org.scijava.Priority;
+import org.scijava.plugin.Plugin;
+
 import ij.IJ;
 import ij.ImagePlus;
 import ij.ImageStack;
@@ -17,13 +20,10 @@ import inra.ijpb.morphology.Strel3D;
 import inra.ijpb.plugins.GeodesicDistanceMap3D;
 import inra.ijpb.watershed.ExtendedMinimaWatershed;
 import inra.ijpb.watershed.Watershed;
+import io.github.mianalysis.mia.module.Categories;
+import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.module.Module;
-import org.scijava.Priority;
-import org.scijava.plugin.Plugin;
-import io.github.mianalysis.mia.module.Category;
-import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.imageprocessing.pixel.InvertIntensity;
 import io.github.mianalysis.mia.module.imageprocessing.stack.InterpolateZAxis;
 import io.github.mianalysis.mia.object.Image;

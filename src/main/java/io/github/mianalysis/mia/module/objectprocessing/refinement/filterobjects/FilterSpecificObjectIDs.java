@@ -15,14 +15,15 @@ import javax.swing.JLabel;
 import javax.swing.JTextField;
 
 import org.eclipse.sisu.Nullable;
-
-import ij.ImagePlus;
-import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.module.Module;
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
-import io.github.mianalysis.mia.module.Category;
+
+import ij.ImagePlus;
+import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Categories;
+import io.github.mianalysis.mia.module.Category;
+import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.visualisation.overlays.AddLabels;
 import io.github.mianalysis.mia.object.Image;
 import io.github.mianalysis.mia.object.Obj;
@@ -31,11 +32,11 @@ import io.github.mianalysis.mia.object.Status;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
+import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.SeparatorP;
 import io.github.mianalysis.mia.object.refs.collections.ImageMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
-import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.sjcross.common.process.CommaSeparatedStringInterpreter;
 
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
@@ -114,7 +115,7 @@ public class FilterSpecificObjectIDs extends AbstractObjectFilter implements Act
             try {
                 Thread.sleep(100);
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                MIA.log.writeError(e);
             }
         }
 

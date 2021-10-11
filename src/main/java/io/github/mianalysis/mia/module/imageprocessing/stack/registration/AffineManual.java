@@ -139,7 +139,7 @@ public class AffineManual<T extends RealType<T> & NativeType<T>> extends Abstrac
         try {
             model.fit(candidates);
         } catch (NotEnoughDataPointsException | IllDefinedDataPointsException e) {
-            e.printStackTrace();
+            MIA.log.writeError(e);
             return null;
         }
 
@@ -182,7 +182,7 @@ public class AffineManual<T extends RealType<T> & NativeType<T>> extends Abstrac
         try {
             model.fit(candidates);
         } catch (NotEnoughDataPointsException | IllDefinedDataPointsException e) {
-            e.printStackTrace();
+            MIA.log.writeError(e);
             return;
         }
 
@@ -192,7 +192,7 @@ public class AffineManual<T extends RealType<T> & NativeType<T>> extends Abstrac
         try {
             applyTransformation(image1, transform, fillMode, multithread);
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            MIA.log.writeError(e);
         }
 
         ArrayList<Image> images = new ArrayList<>();

@@ -2,15 +2,15 @@
 
 package io.github.mianalysis.mia.module.imageprocessing.pixel.threshold;
 
+import org.scijava.Priority;
+import org.scijava.plugin.Plugin;
+
 import ij.ImagePlus;
 import ij.plugin.Duplicator;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.module.Module;
-import org.scijava.Priority;
-import org.scijava.plugin.Plugin;
 import io.github.mianalysis.mia.module.imageprocessing.pixel.InvertIntensity;
 import io.github.mianalysis.mia.module.imageprocessing.stack.ImageTypeConverter;
 import io.github.mianalysis.mia.object.Image;

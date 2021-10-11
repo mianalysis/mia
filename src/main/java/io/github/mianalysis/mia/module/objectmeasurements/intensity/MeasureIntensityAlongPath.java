@@ -5,7 +5,6 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.LinkedHashMap;
@@ -21,20 +20,17 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
+import org.scijava.Priority;
+import org.scijava.plugin.Plugin;
 
 import ij.ImagePlus;
-import ij.ImageStack;
-import ij.plugin.SubHyperstackMaker;
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.module.Module;
-import org.scijava.Priority;
-import org.scijava.plugin.Plugin;
-import io.github.mianalysis.mia.module.imageprocessing.pixel.binary.Skeletonise;
 import io.github.mianalysis.mia.module.inputoutput.ImageSaver;
+import io.github.mianalysis.mia.module.objectmeasurements.spatial.MeasureSkeleton;
 import io.github.mianalysis.mia.object.Image;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
@@ -44,8 +40,8 @@ import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
 import io.github.mianalysis.mia.object.parameters.InputObjectsP;
-import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.ParameterGroup;
+import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.SeparatorP;
 import io.github.mianalysis.mia.object.parameters.text.StringP;
 import io.github.mianalysis.mia.object.refs.collections.ImageMeasurementRefs;
@@ -54,7 +50,6 @@ import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.sjcross.common.object.Point;
-import io.github.sjcross.common.object.volume.CoordinateSet;
 import io.github.sjcross.common.object.volume.PointOutOfRangeException;
 import io.github.sjcross.common.object.volume.SpatCal;
 import io.github.sjcross.common.object.volume.Volume;
@@ -63,7 +58,7 @@ import io.github.sjcross.common.object.volume.VolumeType;
 /**
  * Created by sc13967 on 22/06/2017.
  */
-@Plugin(type = Module.class, priority=Priority.LOW, visible=true)
+@Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class MeasureIntensityAlongPath extends Module {
     public static final String INPUT_SEPARATOR = "Object input";
     public static final String INPUT_OBJECTS = "Input objects";
@@ -113,251 +108,14 @@ public class MeasureIntensityAlongPath extends Module {
     }
 
     public static void process(Obj object, Image image, Sheet sheet, boolean includeTimepoints) {
-        CoordinateSet unorderedPoints = getUnorderedPoints(object);
-        if (unorderedPoints == null)
-            return;
-
-        LinkedHashSet<Point<Integer>> orderedPoints = orderPoints(unorderedPoints);
-        if (orderedPoints == null)
-            return;
+        // Ordering points
+        LinkedHashSet<Point<Integer>> orderedPoints = new LinkedHashSet<>(MeasureSkeleton.getLargestShortestPath(object));
 
         LinkedHashMap<Double, Double> rawIntensities = measureIntensityProfile(orderedPoints, image, object.getT(),
                 object.getSpatialCalibration());
         LinkedHashMap<Integer, Double> spacedIntensities = interpolateProfile(rawIntensities);
 
         addProfileToSheet(sheet, object, spacedIntensities, includeTimepoints);
-
-    }
-
-    protected static CoordinateSet getUnorderedPoints(Obj object) {
-        Image skeletonImage = object.getAsTightImage("Skeleton");
-
-        // Ensuring the input object is a single line
-        Skeletonise.process(skeletonImage, true);
-
-        Objs skeletons = skeletonImage.convertImageToObjects("Skeleton");
-        if (skeletons.size() == 0)
-            return null;
-
-        Obj skeleton = skeletons.getFirst();
-        skeleton.setSpatialCalibration(object.getSpatialCalibration());
-
-        double[][] extents = object.getExtents(true, false);
-        int xOffs = (int) Math.round(extents[0][0]);
-        int yOffs = (int) Math.round(extents[1][0]);
-        int zOffs = (int) Math.round(extents[2][0]);
-
-        skeleton.translateCoords(xOffs, yOffs, zOffs);
-
-        return skeleton.getCoordinateSet();
-
-    }
-
-    protected static LinkedHashSet<Point<Integer>> orderPoints(Collection<Point<Integer>> unorderedPoints) {
-        // Determining start point
-        Point<Integer> startPoint = getStartPoint(unorderedPoints);
-        if (startPoint == null)
-            return null;
-
-        // Duplicating points, so we can move them from one list to another without
-        // affecting the input object
-        ArrayList<Point<Integer>> inputPoints = new ArrayList<>();
-        for (Point<Integer> point : unorderedPoints)
-            inputPoints.add(new Point<Integer>(point.getX(), point.getY(), point.getZ()));
-
-        // Creating sorted list
-        LinkedHashSet<Point<Integer>> sortedPoints = new LinkedHashSet<>();
-        sortedPoints.add(startPoint);
-        inputPoints.remove(startPoint);
-
-        int prevSize = inputPoints.size();
-        while (inputPoints.size() > 0) {
-            for (int i = 0; i < inputPoints.size(); i++) {
-                Point<Integer> testPoint = inputPoints.get(i);
-                if (isNeighbourPoint(testPoint, startPoint, 26)) {
-                    sortedPoints.add(testPoint);
-                    inputPoints.remove(testPoint);
-                    startPoint = testPoint;
-                    break;
-                }
-            }
-
-            // If input point collection hasn't changed size this round then the object
-            // isn't a single line
-            if (inputPoints.size() == prevSize)
-                return null;
-
-            prevSize = inputPoints.size();
-
-        }
-
-        return sortedPoints;
-
-    }
-
-    protected static Point<Integer> getStartPoint(Collection<Point<Integer>> unorderedPoints) {
-        Point<Integer> startPoint = null;
-        for (Point<Integer> point : unorderedPoints) {
-            if (getPointConnectivity(unorderedPoints, point, 26) == 1) {
-                startPoint = point;
-                break;
-            }
-        }
-
-        return startPoint;
-
-    }
-
-    public static boolean isNeighbourPoint(Point<Integer> testPoint, Point<Integer> point, int connectivity) {
-        int x = point.getX();
-        int y = point.getY();
-        int z = point.getZ();
-
-        // Testing 6-day connectivity
-        if (testPoint.equals(new Point<Integer>(x - 1, y, z)))
-            return true;
-
-        if (testPoint.equals(new Point<Integer>(x + 1, y, z)))
-            return true;
-
-        if (testPoint.equals(new Point<Integer>(x, y - 1, z)))
-            return true;
-
-        if (testPoint.equals(new Point<Integer>(x, y + 1, z)))
-            return true;
-
-        if (testPoint.equals(new Point<Integer>(x, y, z - 1)))
-            return true;
-
-        if (testPoint.equals(new Point<Integer>(x, y, z + 1)))
-            return true;
-
-        // If calculating 6-way connectivity, exit here
-        if (connectivity == 6)
-            return false;
-
-        if (testPoint.equals(new Point<Integer>(x - 1, y - 1, z - 1)))
-            return true;
-        if (testPoint.equals(new Point<Integer>(x, y - 1, z - 1)))
-            return true;
-        if (testPoint.equals(new Point<Integer>(x + 1, y - 1, z - 1)))
-            return true;
-        if (testPoint.equals(new Point<Integer>(x - 1, y, z - 1)))
-            return true;
-        if (testPoint.equals(new Point<Integer>(x + 1, y, z - 1)))
-            return true;
-        if (testPoint.equals(new Point<Integer>(x - 1, y + 1, z - 1)))
-            return true;
-        if (testPoint.equals(new Point<Integer>(x, y + 1, z - 1)))
-            return true;
-        if (testPoint.equals(new Point<Integer>(x + 1, y + 1, z - 1)))
-            return true;
-
-        if (testPoint.equals(new Point<Integer>(x - 1, y - 1, z)))
-            return true;
-        if (testPoint.equals(new Point<Integer>(x + 1, y - 1, z)))
-            return true;
-        if (testPoint.equals(new Point<Integer>(x - 1, y + 1, z)))
-            return true;
-        if (testPoint.equals(new Point<Integer>(x + 1, y + 1, z)))
-            return true;
-
-        if (testPoint.equals(new Point<Integer>(x - 1, y - 1, z + 1)))
-            return true;
-        if (testPoint.equals(new Point<Integer>(x, y - 1, z + 1)))
-            return true;
-        if (testPoint.equals(new Point<Integer>(x + 1, y - 1, z + 1)))
-            return true;
-        if (testPoint.equals(new Point<Integer>(x - 1, y, z + 1)))
-            return true;
-        if (testPoint.equals(new Point<Integer>(x + 1, y, z + 1)))
-            return true;
-        if (testPoint.equals(new Point<Integer>(x - 1, y + 1, z + 1)))
-            return true;
-        if (testPoint.equals(new Point<Integer>(x, y + 1, z + 1)))
-            return true;
-        if (testPoint.equals(new Point<Integer>(x + 1, y + 1, z + 1)))
-            return true;
-
-        return false;
-
-    }
-
-    public static int getPointConnectivity(Collection<Point<Integer>> testPoints, Point<Integer> point,
-            int connectivity) {
-        int count = 0;
-
-        int x = point.getX();
-        int y = point.getY();
-        int z = point.getZ();
-
-        // Testing 6-day connectivity
-        if (testPoints.contains(new Point<Integer>(x - 1, y, z)))
-            count++;
-
-        if (testPoints.contains(new Point<Integer>(x + 1, y, z)))
-            count++;
-
-        if (testPoints.contains(new Point<Integer>(x, y - 1, z)))
-            count++;
-
-        if (testPoints.contains(new Point<Integer>(x, y + 1, z)))
-            count++;
-
-        if (testPoints.contains(new Point<Integer>(x, y, z - 1)))
-            count++;
-
-        if (testPoints.contains(new Point<Integer>(x, y, z + 1)))
-            count++;
-
-        // If calculating 6-way connectivity, exit here
-        if (connectivity == 6)
-            return count;
-
-        if (testPoints.contains(new Point<Integer>(x - 1, y - 1, z - 1)))
-            count++;
-        if (testPoints.contains(new Point<Integer>(x, y - 1, z - 1)))
-            count++;
-        if (testPoints.contains(new Point<Integer>(x + 1, y - 1, z - 1)))
-            count++;
-        if (testPoints.contains(new Point<Integer>(x - 1, y, z - 1)))
-            count++;
-        if (testPoints.contains(new Point<Integer>(x + 1, y, z - 1)))
-            count++;
-        if (testPoints.contains(new Point<Integer>(x - 1, y + 1, z - 1)))
-            count++;
-        if (testPoints.contains(new Point<Integer>(x, y + 1, z - 1)))
-            count++;
-        if (testPoints.contains(new Point<Integer>(x + 1, y + 1, z - 1)))
-            count++;
-
-        if (testPoints.contains(new Point<Integer>(x - 1, y - 1, z)))
-            count++;
-        if (testPoints.contains(new Point<Integer>(x + 1, y - 1, z)))
-            count++;
-        if (testPoints.contains(new Point<Integer>(x - 1, y + 1, z)))
-            count++;
-        if (testPoints.contains(new Point<Integer>(x + 1, y + 1, z)))
-            count++;
-
-        if (testPoints.contains(new Point<Integer>(x - 1, y - 1, z + 1)))
-            count++;
-        if (testPoints.contains(new Point<Integer>(x, y - 1, z + 1)))
-            count++;
-        if (testPoints.contains(new Point<Integer>(x + 1, y - 1, z + 1)))
-            count++;
-        if (testPoints.contains(new Point<Integer>(x - 1, y, z + 1)))
-            count++;
-        if (testPoints.contains(new Point<Integer>(x + 1, y, z + 1)))
-            count++;
-        if (testPoints.contains(new Point<Integer>(x - 1, y + 1, z + 1)))
-            count++;
-        if (testPoints.contains(new Point<Integer>(x, y + 1, z + 1)))
-            count++;
-        if (testPoints.contains(new Point<Integer>(x + 1, y + 1, z + 1)))
-            count++;
-
-        return count;
 
     }
 
@@ -374,8 +132,7 @@ public class MeasureIntensityAlongPath extends Module {
             int z = point.getZ();
 
             ipl.setPosition(1, z + 1, t + 1);
-            double intensity = ipl.getProcessor().getPixel(x, y);
-            // double intensity = ist.getVoxel(x, y, z);
+            double intensity = ipl.getProcessor().getPixel(x, y);            
 
             if (prevPoint != null) {
                 Volume volume1 = new Volume(VolumeType.POINTLIST, spatCal.duplicate());
@@ -385,7 +142,7 @@ public class MeasureIntensityAlongPath extends Module {
                     volume1.add(prevPoint.getX(), prevPoint.getY(), prevPoint.getZ());
                     volume2.add(point.getX(), point.getY(), point.getZ());
                 } catch (PointOutOfRangeException e) {
-                    e.printStackTrace();
+                    MIA.log.writeError(e);
                 }
 
                 distance += volume1.getCentroidSeparation(volume2, true);
@@ -404,7 +161,7 @@ public class MeasureIntensityAlongPath extends Module {
     public static LinkedHashMap<Integer, Double> interpolateProfile(LinkedHashMap<Double, Double> profile) {
         LinkedHashMap<Integer, Double> interpolated = new LinkedHashMap<>();
 
-        // Converting to double arrays
+        // Converting to double arrays (here, x is parametric location along the profile and y is the raw intensity at that point)
         double[] x = profile.keySet().stream().mapToDouble(Double::doubleValue).toArray();
         double[] y = profile.values().stream().mapToDouble(Double::doubleValue).toArray();
 
@@ -413,7 +170,7 @@ public class MeasureIntensityAlongPath extends Module {
         int max = (int) Math.floor(x[x.length - 1]);
         for (int i = 0; i <= max; i++)
             interpolated.put(i, spline.value(i));
-
+            
         return interpolated;
 
     }
@@ -484,10 +241,10 @@ public class MeasureIntensityAlongPath extends Module {
                 MIA.log.writeWarning("Saved to alternative file (" + new File(newOutPath).getName() + ")");
 
             } catch (IOException e1) {
-                e.printStackTrace();
+                MIA.log.writeError(e);
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            MIA.log.writeError(e);
         }
     }
 
@@ -499,9 +256,8 @@ public class MeasureIntensityAlongPath extends Module {
     @Override
     public String getDescription() {
         return "Measures the intensity profile along the pixel-wide backbone of an object and outputs this profile to .xlsx file.  Input objects are skeletonised to single pixel-wide representations prior to measurement; however, pre-skeletonised objects can also be processed.<br><br>"
-                +
 
-                "Output results are stored in a multi-sheet .xlsx file, where each sheet includes the profile for a specific input image.  Each row of a sheet contains the profile for a single object.  Profiles are linearly-interpolated such that each measured position along a profile is 1px from the previous.<br><br>"
+                + "Output results are stored in a multi-sheet .xlsx file, where each sheet includes the profile for a specific input image.  Each row of a sheet contains the profile for a single object.  Profiles are linearly-interpolated such that each measured position along a profile is 1px from the previous.<br><br>"
 
                 + "Note: Objects must either form a single line (i.e. not contain multiple branches) or reduce to a single line during skeletonisation.  No profile will be recorded for any objects which fail this requirement.";
     }
