@@ -6,6 +6,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.eclipse.sisu.Nullable;
+import org.scijava.Priority;
+import org.scijava.plugin.Plugin;
 
 import ij.IJ;
 import ij.ImagePlus;
@@ -15,13 +17,11 @@ import ij.plugin.Duplicator;
 import ij.plugin.SubHyperstackMaker;
 import inra.ijpb.binary.BinaryImages;
 import inra.ijpb.watershed.ExtendedMinimaWatershed;
+import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.module.Module;
-import org.scijava.Priority;
-import org.scijava.plugin.Plugin;
 import io.github.mianalysis.mia.module.imageprocessing.pixel.InvertIntensity;
 import io.github.mianalysis.mia.object.Image;
 import io.github.mianalysis.mia.object.Status;
@@ -227,7 +227,7 @@ public class Watershed extends Module {
         try {
             process(intensityIpl, markerIpl, inputImagePlus, blackBackground, dynamic, connectivity, multithread);
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            MIA.log.writeError(e);
         }
 
         // If the image is being saved as a new image, adding it to the workspace

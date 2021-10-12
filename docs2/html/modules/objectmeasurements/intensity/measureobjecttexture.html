@@ -71,7 +71,7 @@
           </li>
         </ul>
         <a class="btn btn-outline-primary ml-2"
-          href="https://github.com/mianalysis/mia/releases/download/v0.21.1-SNAPSHOT/MIA_-0.21.1-SNAPSHOT.jar">Download</a>
+          href="https://github.com/mianalysis/mia/releases/download/v0.21.2-SNAPSHOT/MIA_-0.21.2-SNAPSHOT.jar">Download</a>
       </div>
     </div>
   </nav>
@@ -83,25 +83,25 @@
 </div>
 
 <div class="pt-md-2 pb-md-4 mx-auto mia-page">
-    <h2 class="mia-section-title">Description</h2>
-    <p class="mia-main-text">Calculates Haralick's texture features for each object in a collection for a specific image.  Each point in each object is compared to a corresponding point, a defined offset away (e.g. x-offset = 1, y-offset=0, z-offset=0 to compare to the pixel immediately right of each pixel).  The intensities of each point pair are added to a 2D gray-level co-occurrence matrix (GLCM) from which measures of angular second moment, contrast, correlation and entropy can be calculated.<br><br>Robert M Haralick; K Shanmugam; Its'hak Dinstein, "Textural Features for Image Classification" <i>IEEE Transactions on Systems, Man, and Cybernetics. SMC-3</i> (1973) <b>6</b> 610–621.</p>
+    <h2 class="text-center mia-section-title">Description</h2>
+    <p class="text-center mia-main-text">Calculates Haralick's texture features for each object in a collection for a specific image.  Each point in each object is compared to a corresponding point, a defined offset away (e.g. x-offset = 1, y-offset=0, z-offset=0 to compare to the pixel immediately right of each pixel).  The intensities of each point pair are added to a 2D gray-level co-occurrence matrix (GLCM) from which measures of angular second moment, contrast, correlation and entropy can be calculated.<br><br>Robert M Haralick; K Shanmugam; Its'hak Dinstein, "Textural Features for Image Classification" <i>IEEE Transactions on Systems, Man, and Cybernetics. SMC-3</i> (1973) <b>6</b> 610–621.</p>
 </div>
 
 <div class="pt-md-2 pb-md-4 mx-auto mia-page">
-    <h2 class="mia-section-title">Parameters</h2>
-    <p class="mia-main-text"><p class="mia-main-text"><b>Input objects</b>:  Objects from the workspace for which the corresponding texture of the image (specified by "Input image") will be calculated.  Textures will be calculated for each coordinate of each object and will include instances where the corresponding point (the intensity at the specified offset) is outside the object.  Texture measurements will be assigned to the relevant objects.<br><p class="mia-main-text"><b>Input image</b>:  Image from the workspace from which texture metrics for each object will be calculated.<br><p class="mia-main-text"><b>X-offset</b>:  Each pixel in the input image will be compared to the pixel a defined offset-away.  This parameter controls the x-axis offset.  Offset specified in pixel units unless "Calibrated offset" is selected.  If using calibrated units, the offset will be rounded to the closest integer value.<br><p class="mia-main-text"><b>Y-offset</b>:  Each pixel in the input image will be compared to the pixel a defined offset-away.  This parameter controls the y-axis offset.  Offset specified in pixel units unless "Calibrated offset" is selected.  If using calibrated units, the offset will be rounded to the closest integer value.<br><p class="mia-main-text"><b>Z-offset</b>:  Each pixel in the input image will be compared to the pixel a defined offset-away.  This parameter controls the z-axis offset.  Offset specified in pixel units unless "Calibrated offset" is selected.  If using calibrated units, the offset will be rounded to the closest integer value.<br><p class="mia-main-text"><b>Calibrated offset</b>:  When selected, offsets are specified in calibrated units.  Otherwise, offsets are assumed to be in pixel units.<br></p>
+    <h2 class="text-center mia-section-title">Parameters</h2>
+    <p class="text-center mia-main-text"><p class="mia-main-text"><b>Input objects</b>:  Objects from the workspace for which the corresponding texture of the image (specified by "Input image") will be calculated.  Textures will be calculated for each coordinate of each object and will include instances where the corresponding point (the intensity at the specified offset) is outside the object.  Texture measurements will be assigned to the relevant objects.<br><p class="mia-main-text"><b>Input image</b>:  Image from the workspace from which texture metrics for each object will be calculated.<br><p class="mia-main-text"><b>X-offset</b>:  Each pixel in the input image will be compared to the pixel a defined offset-away.  This parameter controls the x-axis offset.  Offset specified in pixel units unless "Calibrated offset" is selected.  If using calibrated units, the offset will be rounded to the closest integer value.<br><p class="mia-main-text"><b>Y-offset</b>:  Each pixel in the input image will be compared to the pixel a defined offset-away.  This parameter controls the y-axis offset.  Offset specified in pixel units unless "Calibrated offset" is selected.  If using calibrated units, the offset will be rounded to the closest integer value.<br><p class="mia-main-text"><b>Z-offset</b>:  Each pixel in the input image will be compared to the pixel a defined offset-away.  This parameter controls the z-axis offset.  Offset specified in pixel units unless "Calibrated offset" is selected.  If using calibrated units, the offset will be rounded to the closest integer value.<br><p class="mia-main-text"><b>Calibrated offset</b>:  When selected, offsets are specified in calibrated units.  Otherwise, offsets are assumed to be in pixel units.<br></p>
 </div>
 
   <!-- Footer -->
   <footer>
-    <div class="container-fluid padding">
-      <div class="row text-center text-light align-items-center">
+    <div class="container-fluid padding mia-page">
+      <div class="row text-light">
         <div class="col-6 mt-4 mb-4">
           <a href="http://www.bristol.ac.uk/wolfson-bioimaging/">
             <img height="48" src="../../../../img/wbif.png">
           </a>
         </div>
-        <div class="col-6 mt-4 mb-4 align-items-center">
+        <div class="col-6 mt-4 mb-4 text-right">
           <a href="https://github.com/mianalysis/mia/">
             <img height="48" src="../../../../img/GitHub-Mark-Light-64px.png"><img height="32"
               src="../../../../img/GitHub_Logo_White.png" height="32px">

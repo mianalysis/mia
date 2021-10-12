@@ -9,6 +9,8 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 import org.eclipse.sisu.Nullable;
+import org.scijava.Priority;
+import org.scijava.plugin.Plugin;
 
 import ij.IJ;
 import ij.ImagePlus;
@@ -16,29 +18,11 @@ import ij.Prefs;
 import ij.plugin.Duplicator;
 import ij.plugin.SubHyperstackMaker;
 import ij.process.ImageProcessor;
-import mpicbg.ij.InverseTransformMapping;
-import mpicbg.ij.Mapping;
-import mpicbg.ij.SIFT;
-import mpicbg.ij.util.Util;
-import mpicbg.imagefeatures.Feature;
-import mpicbg.imagefeatures.FloatArray2DSIFT;
-import mpicbg.models.AbstractAffineModel2D;
-import mpicbg.models.AffineModel2D;
-import mpicbg.models.IllDefinedDataPointsException;
-import mpicbg.models.NotEnoughDataPointsException;
-import mpicbg.models.PointMatch;
-import mpicbg.models.RigidModel2D;
-import mpicbg.models.SimilarityModel2D;
-import mpicbg.models.TranslationModel2D;
-import net.imglib2.type.NativeType;
-import net.imglib2.type.numeric.RealType;
+import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.module.Module;
-import org.scijava.Priority;
-import org.scijava.plugin.Plugin;
 import io.github.mianalysis.mia.module.imageprocessing.pixel.InvertIntensity;
 import io.github.mianalysis.mia.module.imageprocessing.pixel.ProjectImage;
 import io.github.mianalysis.mia.object.Image;
@@ -61,6 +45,22 @@ import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.process.interactable.Interactable;
 import io.github.mianalysis.mia.process.interactable.PointPairSelector;
 import io.github.mianalysis.mia.process.interactable.PointPairSelector.PointPair;
+import mpicbg.ij.InverseTransformMapping;
+import mpicbg.ij.Mapping;
+import mpicbg.ij.SIFT;
+import mpicbg.ij.util.Util;
+import mpicbg.imagefeatures.Feature;
+import mpicbg.imagefeatures.FloatArray2DSIFT;
+import mpicbg.models.AbstractAffineModel2D;
+import mpicbg.models.AffineModel2D;
+import mpicbg.models.IllDefinedDataPointsException;
+import mpicbg.models.NotEnoughDataPointsException;
+import mpicbg.models.PointMatch;
+import mpicbg.models.RigidModel2D;
+import mpicbg.models.SimilarityModel2D;
+import mpicbg.models.TranslationModel2D;
+import net.imglib2.type.NativeType;
+import net.imglib2.type.numeric.RealType;
 
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class RegisterImages<T extends RealType<T> & NativeType<T>> extends Module implements Interactable {
@@ -349,7 +349,7 @@ public class RegisterImages<T extends RealType<T> & NativeType<T>> extends Modul
         try {
             model.filterRansac(candidates, inliers, 1000, param.maxEpsilon, param.minInlierRatio);
         } catch (NotEnoughDataPointsException e) {
-            e.printStackTrace();
+            MIA.log.writeError(e);
             return null;
         }
 
@@ -370,7 +370,7 @@ public class RegisterImages<T extends RealType<T> & NativeType<T>> extends Modul
         try {
             model.fit(candidates);
         } catch (NotEnoughDataPointsException | IllDefinedDataPointsException e) {
-            e.printStackTrace();
+            MIA.log.writeError(e);
             return null;
         }
 

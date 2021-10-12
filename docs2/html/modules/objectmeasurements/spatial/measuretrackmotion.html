@@ -71,7 +71,7 @@
           </li>
         </ul>
         <a class="btn btn-outline-primary ml-2"
-          href="https://github.com/mianalysis/mia/releases/download/v0.21.1-SNAPSHOT/MIA_-0.21.1-SNAPSHOT.jar">Download</a>
+          href="https://github.com/mianalysis/mia/releases/download/v0.21.2-SNAPSHOT/MIA_-0.21.2-SNAPSHOT.jar">Download</a>
       </div>
     </div>
   </nav>
@@ -83,25 +83,25 @@
 </div>
 
 <div class="pt-md-2 pb-md-4 mx-auto mia-page">
-    <h2 class="mia-section-title">Description</h2>
-    <p class="mia-main-text">Measures various motion metrics for tracked objects.  Global motion statistics (e.g. total path length) are stored as measurements associated with the input track objects, whilst instantaneous motion statistics (e.g. instantaneous x-velocity) are associated with the input spot objects.</p>
+    <h2 class="text-center mia-section-title">Description</h2>
+    <p class="text-center mia-main-text">Measures various motion metrics for tracked objects.  Global motion statistics (e.g. total path length) are stored as measurements associated with the input track objects, whilst instantaneous motion statistics (e.g. instantaneous x-velocity) are associated with the input spot objects.</p>
 </div>
 
 <div class="pt-md-2 pb-md-4 mx-auto mia-page">
-    <h2 class="mia-section-title">Parameters</h2>
-    <p class="mia-main-text"><p class="mia-main-text"><b>Input track objects</b>:  Input track objects to measure motion for.  These must be specific "track" class objects as output by modules such as "Track objects".  The track objects are parents of individual timepoint instance objects, which are specified using the "Input spot objects" parameter.  Global track measurements (e.g. total path length) are associated with the corresponding track objects.<br><p class="mia-main-text"><b>Input spot objects</b>:  Input individual timepoint instance objects for the track.  These are the spatial records of the tracked objects in a single timepoint and are children of the track object specified by "Input track objects".  Instantaneous track measurements (e.g. instantaneous x-velociyty) are associated with the corresponding spot objects.<br><p class="mia-main-text"><b>Subtract average motion</b>:  When selected, the average motion of all points between two frames is subtracted from the motion prior to calculation of any track measurements.  This can be used as a crude form of drift correction; however, it only works for global drift (where the whole sample moved together) and is less robust with few tracked objects.  Ideally, drift would be removed from the input images using image registration prior to object detection.<br><p class="mia-main-text"><b>Identify leading point</b>:  When selected, the "leading point" of each object in the track will be determined and stored as X,Y,Z coordinate measurements associated with the relevant object.  The orientation of the track at that location will also be calculated.  In this instance, "leading point" refers to the front-most point in the object when considering the direction the object is moving in that frame.  This can be calculated relative to the previous frame, next frame or both previous and next frames (controlled by the "Orientation mode" parameter).<br><p class="mia-main-text"><b>Orientation mode</b>:  If calculating the leading point of each object in each track ("Identify leading point" selected), this controls whether the instantaneous orientation of the track is determined relative to the previous frame, next frame or both previous and next frames.</p>
+    <h2 class="text-center mia-section-title">Parameters</h2>
+    <p class="text-center mia-main-text"><p class="mia-main-text"><b>Input track objects</b>:  Input track objects to measure motion for.  These must be specific "track" class objects as output by modules such as "Track objects".  The track objects are parents of individual timepoint instance objects, which are specified using the "Input spot objects" parameter.  Global track measurements (e.g. total path length) are associated with the corresponding track objects.<br><p class="mia-main-text"><b>Input spot objects</b>:  Input individual timepoint instance objects for the track.  These are the spatial records of the tracked objects in a single timepoint and are children of the track object specified by "Input track objects".  Instantaneous track measurements (e.g. instantaneous x-velociyty) are associated with the corresponding spot objects.<br><p class="mia-main-text"><b>Subtract average motion</b>:  When selected, the average motion of all points between two frames is subtracted from the motion prior to calculation of any track measurements.  This can be used as a crude form of drift correction; however, it only works for global drift (where the whole sample moved together) and is less robust with few tracked objects.  Ideally, drift would be removed from the input images using image registration prior to object detection.<br><p class="mia-main-text"><b>Identify leading point</b>:  When selected, the "leading point" of each object in the track will be determined and stored as X,Y,Z coordinate measurements associated with the relevant object.  The orientation of the track at that location will also be calculated.  In this instance, "leading point" refers to the front-most point in the object when considering the direction the object is moving in that frame.  This can be calculated relative to the previous frame, next frame or both previous and next frames (controlled by the "Orientation mode" parameter).<br><p class="mia-main-text"><b>Orientation mode</b>:  If calculating the leading point of each object in each track ("Identify leading point" selected), this controls whether the instantaneous orientation of the track is determined relative to the previous frame, next frame or both previous and next frames.</p>
 </div>
 
   <!-- Footer -->
   <footer>
-    <div class="container-fluid padding">
-      <div class="row text-center text-light align-items-center">
+    <div class="container-fluid padding mia-page">
+      <div class="row text-light">
         <div class="col-6 mt-4 mb-4">
           <a href="http://www.bristol.ac.uk/wolfson-bioimaging/">
             <img height="48" src="../../../../img/wbif.png">
           </a>
         </div>
-        <div class="col-6 mt-4 mb-4 align-items-center">
+        <div class="col-6 mt-4 mb-4 text-right">
           <a href="https://github.com/mianalysis/mia/">
             <img height="48" src="../../../../img/GitHub-Mark-Light-64px.png"><img height="32"
               src="../../../../img/GitHub_Logo_White.png" height="32px">

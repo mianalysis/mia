@@ -479,7 +479,7 @@ public class FitEllipsoid extends Module {
 
       parameters.get(FITTING_MODE).setDescription("Controls which object coordinates are used for ellipsoid fitting:<br><ul>"
 
-      +"<li>\""+FittingModes.FIT_TO_WHOLE+"\" All coordinates for the input object are passed to the ellipsoid fitter.<.li>"
+      +"<li>\""+FittingModes.FIT_TO_WHOLE+"\" All coordinates for the input object are passed to the ellipsoid fitter.</li>"
 
       +"<li>\""+FittingModes.FIT_TO_SURFACE+"\" (default) Only surface coordinates of the input object are passed to the ellipsoid fitter.  Surface coordinates are calculated using 6-way connectivity.</li></ul>");
 

@@ -9,6 +9,8 @@ import java.util.Set;
 
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.SimpleWeightedGraph;
+import org.scijava.Priority;
+import org.scijava.plugin.Plugin;
 
 import fiji.plugin.trackmate.Model;
 import fiji.plugin.trackmate.SelectionModel;
@@ -21,13 +23,11 @@ import fiji.plugin.trackmate.gui.displaysettings.DisplaySettings.TrackMateObject
 import fiji.plugin.trackmate.visualization.hyperstack.HyperStackDisplayer;
 import fiji.plugin.trackmate.visualization.trackscheme.TrackScheme;
 import ij.ImagePlus;
+import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.module.Module;
-import org.scijava.Priority;
-import org.scijava.plugin.Plugin;
 import io.github.mianalysis.mia.module.imageprocessing.pixel.ProjectImage;
 import io.github.mianalysis.mia.module.objectprocessing.relationships.TrackObjects.Measurements;
 import io.github.mianalysis.mia.object.Colours;
@@ -196,7 +196,7 @@ public class TrackEditor extends Module {
             try {
                 Thread.sleep(100);
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                MIA.log.writeError(e);
             }
 
         // Closing the images

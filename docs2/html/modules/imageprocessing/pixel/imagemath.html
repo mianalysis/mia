@@ -71,7 +71,7 @@
           </li>
         </ul>
         <a class="btn btn-outline-primary ml-2"
-          href="https://github.com/mianalysis/mia/releases/download/v0.21.1-SNAPSHOT/MIA_-0.21.1-SNAPSHOT.jar">Download</a>
+          href="https://github.com/mianalysis/mia/releases/download/v0.21.2-SNAPSHOT/MIA_-0.21.2-SNAPSHOT.jar">Download</a>
       </div>
     </div>
   </nav>
@@ -83,25 +83,25 @@
 </div>
 
 <div class="pt-md-2 pb-md-4 mx-auto mia-page">
-    <h2 class="mia-section-title">Description</h2>
-    <p class="mia-main-text">Applies a mathematical operation to all pixels of the input image stack.  Operations that can be performed are: Absolute, Add, Divide, Multiply, Square, Squareroot, Subtract</p>
+    <h2 class="text-center mia-section-title">Description</h2>
+    <p class="text-center mia-main-text">Applies a mathematical operation to all pixels of the input image stack.  Operations that can be performed are: Absolute, Add, Divide, Multiply, Square, Squareroot, Subtract</p>
 </div>
 
 <div class="pt-md-2 pb-md-4 mx-auto mia-page">
-    <h2 class="mia-section-title">Parameters</h2>
-    <p class="mia-main-text"><p class="mia-main-text"><b>Input image</b>:  Image from workspace to apply calculation to.  This image can be of any bit depth.<br><p class="mia-main-text"><b>Apply to input image</b>:  When selected, the post-operation image will overwrite the input image in the workspace.  Otherwise, the image will be saved to the workspace with the name specified by the "Output image" parameter.<br><p class="mia-main-text"><b>Output image</b>:  If "Apply to input image" is not selected, the post-operation image will be saved to the workspace with this name.<br><p class="mia-main-text"><b>Calculation</b>:  Controls the mathematical operation being applied to all pixels of this image.  Choices are: Absolute, Add, Divide, Multiply, Square, Squareroot, Subtract<p class="mia-main-text"><b>Value source</b>:  For calculations that require a specific value (i.e. addition, subtraction, etc.) this parameter controls how the value is defined:<br><ul><li>"Fixed value" A fixed value is specified using the "Value" parameter.  This value is the same for all images processed by this module..</li><li>"Image measurement value" The value is taken from a measurement associated with the input image.  Values obtained in this way can be different from image to image.</li></ul><p class="mia-main-text"><b>Image for measurement</b>:  If "Value source" is set to "Image measurement value", this is the image that the measurement will be taken from.  It can be any image in the workspace, not necessarily the image to which the math operation is being applied.<br><p class="mia-main-text"><b>Measurement</b>:  If "Value source" is set to "Image measurement value", this is the measurement associated with the image specified by "Image for measurement" that will be used in the calculation.<br><p class="mia-main-text"><b>Value</b>:  If "Value source" is set to "Fixed value", this is the value that will be used in the calculation.<br></p>
+    <h2 class="text-center mia-section-title">Parameters</h2>
+    <p class="text-center mia-main-text"><p class="mia-main-text"><b>Input image</b>:  Image from workspace to apply calculation to.  This image can be of any bit depth.<br><p class="mia-main-text"><b>Apply to input image</b>:  When selected, the post-operation image will overwrite the input image in the workspace.  Otherwise, the image will be saved to the workspace with the name specified by the "Output image" parameter.<br><p class="mia-main-text"><b>Output image</b>:  If "Apply to input image" is not selected, the post-operation image will be saved to the workspace with this name.<br><p class="mia-main-text"><b>Calculation</b>:  Controls the mathematical operation being applied to all pixels of this image.  Choices are: Absolute, Add, Divide, Multiply, Square, Squareroot, Subtract<p class="mia-main-text"><b>Value source</b>:  For calculations that require a specific value (i.e. addition, subtraction, etc.) this parameter controls how the value is defined:<br><ul><li>"Fixed value" A fixed value is specified using the "Value" parameter.  This value is the same for all images processed by this module..</li><li>"Image measurement value" The value is taken from a measurement associated with the input image.  Values obtained in this way can be different from image to image.</li></ul><p class="mia-main-text"><b>Image for measurement</b>:  If "Value source" is set to "Image measurement value", this is the image that the measurement will be taken from.  It can be any image in the workspace, not necessarily the image to which the math operation is being applied.<br><p class="mia-main-text"><b>Measurement</b>:  If "Value source" is set to "Image measurement value", this is the measurement associated with the image specified by "Image for measurement" that will be used in the calculation.<br><p class="mia-main-text"><b>Value</b>:  If "Value source" is set to "Fixed value", this is the value that will be used in the calculation.<br></p>
 </div>
 
   <!-- Footer -->
   <footer>
-    <div class="container-fluid padding">
-      <div class="row text-center text-light align-items-center">
+    <div class="container-fluid padding mia-page">
+      <div class="row text-light">
         <div class="col-6 mt-4 mb-4">
           <a href="http://www.bristol.ac.uk/wolfson-bioimaging/">
             <img height="48" src="../../../../img/wbif.png">
           </a>
         </div>
-        <div class="col-6 mt-4 mb-4 align-items-center">
+        <div class="col-6 mt-4 mb-4 text-right">
           <a href="https://github.com/mianalysis/mia/">
             <img height="48" src="../../../../img/GitHub-Mark-Light-64px.png"><img height="32"
               src="../../../../img/GitHub_Logo_White.png" height="32px">

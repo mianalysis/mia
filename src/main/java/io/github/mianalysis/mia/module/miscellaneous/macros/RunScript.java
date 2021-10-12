@@ -198,7 +198,7 @@ public class RunScript extends Module {
             }
 
         } catch (InterruptedException | ExecutionException | IOException e) {
-            e.printStackTrace();
+            MIA.log.writeError(e);
         }
 
         return Status.PASS;

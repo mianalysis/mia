@@ -74,7 +74,7 @@ public class MIA implements Command {
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
+            MIA.log.writeError(e);
         }
     }
 
@@ -127,7 +127,7 @@ public class MIA implements Command {
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e) {
-            e.printStackTrace();
+            MIA.log.writeError(e);
         }
     }
 

@@ -71,7 +71,7 @@
           </li>
         </ul>
         <a class="btn btn-outline-primary ml-2"
-          href="https://github.com/mianalysis/mia/releases/download/v0.21.1-SNAPSHOT/MIA_-0.21.1-SNAPSHOT.jar">Download</a>
+          href="https://github.com/mianalysis/mia/releases/download/v0.21.2-SNAPSHOT/MIA_-0.21.2-SNAPSHOT.jar">Download</a>
       </div>
     </div>
   </nav>
@@ -83,25 +83,25 @@
 </div>
 
 <div class="pt-md-2 pb-md-4 mx-auto mia-page">
-    <h2 class="mia-section-title">Description</h2>
-    <p class="mia-main-text">Apply pixel-wise intensity calculations for two images of matching dimensions.<br><br>Note: Images to be processed must have matching spatial dimensions and intensity bit-depths.</p>
+    <h2 class="text-center mia-section-title">Description</h2>
+    <p class="text-center mia-main-text">Apply pixel-wise intensity calculations for two images of matching dimensions.<br><br>Note: Images to be processed must have matching spatial dimensions and intensity bit-depths.</p>
 </div>
 
 <div class="pt-md-2 pb-md-4 mx-auto mia-page">
-    <h2 class="mia-section-title">Parameters</h2>
-    <p class="mia-main-text"><p class="mia-main-text"><b>Input image 1</b>:  First image to be processed as part of calculation.<br><p class="mia-main-text"><b>Input image 2</b>:  Second image to be processed as part of calculation.<br><p class="mia-main-text"><b>Overwrite mode</b>:  Controls how the resultant image should be output:<br><ul><li>"Create new image" (default) will create a new image and save it to the workspace.</li><li>"Overwrite image 1" will overwrite the first input image with the output image.  The output image will retain all measurements from the first input image.</li><li>"Overwrite image 2" will overwrite the second input image with the output image.  The output image will retain all measurements from the second input image.</li></ul><p class="mia-main-text"><b>Output image</b>:  Name of the output image created during the image calculation.  This image will be added to the workspace.<br><p class="mia-main-text"><b>Output 32-bit image</b>:  When enabled, the calculation will be performed on 32-bit float values.  This is useful if the calculation is likely to create negative or decimal values.  The output image will also be stored in the workspace as a 32-bit float image.<br><p class="mia-main-text"><b>Calculation method</b>:  The calculation to apply to the two input images.<p class="mia-main-text"><b>Set NaN values to zero</b>:  If input images are 32-bit (or are being converted to 32-bit via "Output 32-bit image" option) the output image can contain NaN (not a number) values in place of any zeros.<br></p>
+    <h2 class="text-center mia-section-title">Parameters</h2>
+    <p class="text-center mia-main-text"><p class="mia-main-text"><b>Input image 1</b>:  First image to be processed as part of calculation.<br><p class="mia-main-text"><b>Input image 2</b>:  Second image to be processed as part of calculation.<br><p class="mia-main-text"><b>Overwrite mode</b>:  Controls how the resultant image should be output:<br><ul><li>"Create new image" (default) will create a new image and save it to the workspace.</li><li>"Overwrite image 1" will overwrite the first input image with the output image.  The output image will retain all measurements from the first input image.</li><li>"Overwrite image 2" will overwrite the second input image with the output image.  The output image will retain all measurements from the second input image.</li></ul><p class="mia-main-text"><b>Output image</b>:  Name of the output image created during the image calculation.  This image will be added to the workspace.<br><p class="mia-main-text"><b>Output 32-bit image</b>:  When enabled, the calculation will be performed on 32-bit float values.  This is useful if the calculation is likely to create negative or decimal values.  The output image will also be stored in the workspace as a 32-bit float image.<br><p class="mia-main-text"><b>Calculation method</b>:  The calculation to apply to the two input images.<p class="mia-main-text"><b>Set NaN values to zero</b>:  If input images are 32-bit (or are being converted to 32-bit via "Output 32-bit image" option) the output image can contain NaN (not a number) values in place of any zeros.<br></p>
 </div>
 
   <!-- Footer -->
   <footer>
-    <div class="container-fluid padding">
-      <div class="row text-center text-light align-items-center">
+    <div class="container-fluid padding mia-page">
+      <div class="row text-light">
         <div class="col-6 mt-4 mb-4">
           <a href="http://www.bristol.ac.uk/wolfson-bioimaging/">
             <img height="48" src="../../../../img/wbif.png">
           </a>
         </div>
-        <div class="col-6 mt-4 mb-4 align-items-center">
+        <div class="col-6 mt-4 mb-4 text-right">
           <a href="https://github.com/mianalysis/mia/">
             <img height="48" src="../../../../img/GitHub-Mark-Light-64px.png"><img height="32"
               src="../../../../img/GitHub_Logo_White.png" height="32px">

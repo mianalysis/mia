@@ -71,7 +71,7 @@
           </li>
         </ul>
         <a class="btn btn-outline-primary ml-2"
-          href="https://github.com/mianalysis/mia/releases/download/v0.21.1-SNAPSHOT/MIA_-0.21.1-SNAPSHOT.jar">Download</a>
+          href="https://github.com/mianalysis/mia/releases/download/v0.21.2-SNAPSHOT/MIA_-0.21.2-SNAPSHOT.jar">Download</a>
       </div>
     </div>
   </nav>
@@ -83,25 +83,25 @@
 </div>
 
 <div class="pt-md-2 pb-md-4 mx-auto mia-page">
-    <h2 class="mia-section-title">Description</h2>
-    <p class="mia-main-text">Run a single command on an image from the workspace.   This module only runs commands of the format "run([COMMAND], [ARGUMENTS])".  For example, the command "run("Subtract Background...", "rolling=50 stack");" would be specified with the "Command" parameter set to "Subtract Background..." and the "Parameters" parameter set to "rolling=50 stack".  For more advanced macro processing please use the "Run macro" module.</p>
+    <h2 class="text-center mia-section-title">Description</h2>
+    <p class="text-center mia-main-text">Run a single command on an image from the workspace.   This module only runs commands of the format "run([COMMAND], [ARGUMENTS])".  For example, the command "run("Subtract Background...", "rolling=50 stack");" would be specified with the "Command" parameter set to "Subtract Background..." and the "Parameters" parameter set to "rolling=50 stack".  For more advanced macro processing please use the "Run macro" module.</p>
 </div>
 
 <div class="pt-md-2 pb-md-4 mx-auto mia-page">
-    <h2 class="mia-section-title">Parameters</h2>
-    <p class="mia-main-text"><p class="mia-main-text"><b>Input image</b>:  Image from workspace to apply command to.  This image is duplicated prior to application of the command, so won't be updated by default.  To store any changes back onto this image, select the "Apply to input image" parameter.<br><p class="mia-main-text"><b>Apply to input image</b>:  When selected, the image returned by the command will be stored back into the MIA workspace at the same name as the input image.  This will update the input image.<br><p class="mia-main-text"><b>Output image</b>:  When "Apply to input image" is not selected this will store the command output image into the MIA workspace with the name specified by this parameter.<br><p class="mia-main-text"><b>Command</b>:  The command command to run.  This must be the exact name as given by the ImageJ command recorder.  Note: Only commands of the format "run([MACRO TITLE], [ARGUMENTS])" can be run by this module.  For more advanced command processing please use the "Run macro" module.<br><p class="mia-main-text"><b>Parameters</b>:  The options to pass to the command.<br><p class="mia-main-text"><b>Enable multithreading</b>:  When running a command which operates on a single slice at a time, multithreading will create a new thread for each slice.  This can provide a speed improvement when working on a computer with a multi-core CPU.  Note: Multithreading is only available for commands containing the "stack" argument.<br></p>
+    <h2 class="text-center mia-section-title">Parameters</h2>
+    <p class="text-center mia-main-text"><p class="mia-main-text"><b>Input image</b>:  Image from workspace to apply command to.  This image is duplicated prior to application of the command, so won't be updated by default.  To store any changes back onto this image, select the "Apply to input image" parameter.<br><p class="mia-main-text"><b>Apply to input image</b>:  When selected, the image returned by the command will be stored back into the MIA workspace at the same name as the input image.  This will update the input image.<br><p class="mia-main-text"><b>Output image</b>:  When "Apply to input image" is not selected this will store the command output image into the MIA workspace with the name specified by this parameter.<br><p class="mia-main-text"><b>Command</b>:  The command command to run.  This must be the exact name as given by the ImageJ command recorder.  Note: Only commands of the format "run([MACRO TITLE], [ARGUMENTS])" can be run by this module.  For more advanced command processing please use the "Run macro" module.<br><p class="mia-main-text"><b>Parameters</b>:  The options to pass to the command.<br><p class="mia-main-text"><b>Enable multithreading</b>:  When running a command which operates on a single slice at a time, multithreading will create a new thread for each slice.  This can provide a speed improvement when working on a computer with a multi-core CPU.  Note: Multithreading is only available for commands containing the "stack" argument.<br></p>
 </div>
 
   <!-- Footer -->
   <footer>
-    <div class="container-fluid padding">
-      <div class="row text-center text-light align-items-center">
+    <div class="container-fluid padding mia-page">
+      <div class="row text-light">
         <div class="col-6 mt-4 mb-4">
           <a href="http://www.bristol.ac.uk/wolfson-bioimaging/">
             <img height="48" src="../../../../img/wbif.png">
           </a>
         </div>
-        <div class="col-6 mt-4 mb-4 align-items-center">
+        <div class="col-6 mt-4 mb-4 text-right">
           <a href="https://github.com/mianalysis/mia/">
             <img height="48" src="../../../../img/GitHub-Mark-Light-64px.png"><img height="32"
               src="../../../../img/GitHub_Logo_White.png" height="32px">

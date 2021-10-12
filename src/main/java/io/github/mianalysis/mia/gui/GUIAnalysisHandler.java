@@ -58,7 +58,7 @@ public class GUIAnalysisHandler {
         } catch (SAXException | IllegalAccessException | IOException | InstantiationException
                 | ParserConfigurationException | ClassNotFoundException | NoSuchMethodException
                 | InvocationTargetException e) {
-            e.printStackTrace();
+                    MIA.log.writeError(e);
         }
         if (newAnalysis == null)
             return;
@@ -77,7 +77,7 @@ public class GUIAnalysisHandler {
         try {
             AnalysisWriter.saveAnalysisAs(GUI.getAnalysis(), GUI.getAnalysis().getAnalysisFilename());
         } catch (IOException | ParserConfigurationException | TransformerException e) {
-            e.printStackTrace();
+            MIA.log.writeError(e);
         }
     }
 
@@ -85,7 +85,7 @@ public class GUIAnalysisHandler {
         try {
             AnalysisWriter.saveAnalysis(GUI.getAnalysis());
         } catch (IOException | ParserConfigurationException | TransformerException e) {
-            e.printStackTrace();
+            MIA.log.writeError(e);
         }
     }
 
@@ -93,8 +93,8 @@ public class GUIAnalysisHandler {
         Thread t = new Thread(() -> {
             try {
                 GUI.getAnalysisRunner().run(GUI.getAnalysis());
-            } catch (IOException | InterruptedException e1) {
-                e1.printStackTrace();
+            } catch (IOException | InterruptedException e) {
+                MIA.log.writeError(e);
             }
         });
         t.start();
@@ -234,7 +234,7 @@ public class GUIAnalysisHandler {
             Toolkit.getDefaultToolkit().getSystemClipboard().setContents(stringSelection, null);
 
         } catch (ParserConfigurationException | TransformerException | IOException e) {
-            e.printStackTrace();
+            MIA.log.writeError(e);
         }
     }
 
@@ -276,7 +276,7 @@ public class GUIAnalysisHandler {
         } catch (IOException | UnsupportedFlavorException | IllegalAccessException | InstantiationException
                 | InvocationTargetException | ClassNotFoundException | ParserConfigurationException | SAXException
                 | NoSuchMethodException e) {
-            e.printStackTrace();
+                    MIA.log.writeError(e);
         }
     }
 

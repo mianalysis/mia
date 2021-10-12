@@ -71,7 +71,7 @@
           </li>
         </ul>
         <a class="btn btn-outline-primary ml-2"
-          href="https://github.com/mianalysis/mia/releases/download/v0.21.1-SNAPSHOT/MIA_-0.21.1-SNAPSHOT.jar">Download</a>
+          href="https://github.com/mianalysis/mia/releases/download/v0.21.2-SNAPSHOT/MIA_-0.21.2-SNAPSHOT.jar">Download</a>
       </div>
     </div>
   </nav>
@@ -83,25 +83,25 @@
 </div>
 
 <div class="pt-md-2 pb-md-4 mx-auto mia-page">
-    <h2 class="mia-section-title">Description</h2>
-    <p class="mia-main-text">Binarises an image (or image stack) using a fixed intensity threshold.  The input threshold can be a single value (same for all images) or taken from a measurement associated with the image to be binarised.</p>
+    <h2 class="text-center mia-section-title">Description</h2>
+    <p class="text-center mia-main-text">Binarises an image (or image stack) using a fixed intensity threshold.  The input threshold can be a single value (same for all images) or taken from a measurement associated with the image to be binarised.</p>
 </div>
 
 <div class="pt-md-2 pb-md-4 mx-auto mia-page">
-    <h2 class="mia-section-title">Parameters</h2>
-    <p class="mia-main-text"><p class="mia-main-text"><b>Input image</b>:  Image to apply threshold to.<br><p class="mia-main-text"><b>Apply to input image</b>:  Select if the threshold should be applied directly to the input image, or if it should be applied to a duplicate, then stored as a different image in the workspace.<br><p class="mia-main-text"><b>Output image</b>:  Name of the output image created during the thresholding process.  This image will be added to the workspace.<br><p class="mia-main-text"><b>Threshold source</b>:  Source for the threshold value:<br><ul><li>"Fixed value" Uses a single, fixed value for all images.  This value is specified using the "Threshold value" parameter.</li><li>"Image measurement" Threshold is set to the value of a measurement assoiated with the image to be binarised.  Measurement selected by "Measurement" parameter.  In this mode a different threshold can be applied to each image.</li></ul><p class="mia-main-text"><b>Threshold value</b>:  Absolute manual threshold value that will be applied to all pixels.<br><p class="mia-main-text"><b>Measurement</b>:  Measurement to act as threshold value when in "Image measurement" mode.<br><p class="mia-main-text"><b>Binary logic</b>:  Controls whether objects are considered to be white (255 intensity) on a black (0 intensity) background, or black on a white background.</p>
+    <h2 class="text-center mia-section-title">Parameters</h2>
+    <p class="text-center mia-main-text"><p class="mia-main-text"><b>Input image</b>:  Image to apply threshold to.<br><p class="mia-main-text"><b>Apply to input image</b>:  Select if the threshold should be applied directly to the input image, or if it should be applied to a duplicate, then stored as a different image in the workspace.<br><p class="mia-main-text"><b>Output image</b>:  Name of the output image created during the thresholding process.  This image will be added to the workspace.<br><p class="mia-main-text"><b>Threshold source</b>:  Source for the threshold value:<br><ul><li>"Fixed value" Uses a single, fixed value for all images.  This value is specified using the "Threshold value" parameter.</li><li>"Image measurement" Threshold is set to the value of a measurement assoiated with the image to be binarised.  Measurement selected by "Measurement" parameter.  In this mode a different threshold can be applied to each image.</li></ul><p class="mia-main-text"><b>Threshold value</b>:  Absolute manual threshold value that will be applied to all pixels.<br><p class="mia-main-text"><b>Measurement</b>:  Measurement to act as threshold value when in "Image measurement" mode.<br><p class="mia-main-text"><b>Binary logic</b>:  Controls whether objects are considered to be white (255 intensity) on a black (0 intensity) background, or black on a white background.</p>
 </div>
 
   <!-- Footer -->
   <footer>
-    <div class="container-fluid padding">
-      <div class="row text-center text-light align-items-center">
+    <div class="container-fluid padding mia-page">
+      <div class="row text-light">
         <div class="col-6 mt-4 mb-4">
           <a href="http://www.bristol.ac.uk/wolfson-bioimaging/">
             <img height="48" src="../../../../../img/wbif.png">
           </a>
         </div>
-        <div class="col-6 mt-4 mb-4 align-items-center">
+        <div class="col-6 mt-4 mb-4 text-right">
           <a href="https://github.com/mianalysis/mia/">
             <img height="48" src="../../../../../img/GitHub-Mark-Light-64px.png"><img height="32"
               src="../../../../../img/GitHub_Logo_White.png" height="32px">

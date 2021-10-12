@@ -5,14 +5,16 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
+import org.scijava.Priority;
+import org.scijava.plugin.Plugin;
+
 import bunwarpj.Transformation;
 import bunwarpj.bUnwarpJ_;
 import ij.ImagePlus;
 import ij.process.ImageProcessor;
-import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Module;
-import org.scijava.Priority;
-import org.scijava.plugin.Plugin;
+import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.imageprocessing.stack.registration.abstrakt.AbstractBUnwarpJRegistration;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.parameters.Parameters;
@@ -67,7 +69,7 @@ public class UnwarpAutomatic extends AbstractBUnwarpJRegistration implements Int
             return transform;
 
         } catch (IOException e) {
-            e.printStackTrace();
+            MIA.log.writeError(e);
             return null;
         }
     }

@@ -10,6 +10,7 @@ import org.apache.commons.io.FilenameUtils;
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
 
+import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
@@ -210,7 +211,7 @@ public class InputControl extends Module {
 
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            MIA.log.writeError(e);
         }
 
         return new TreeMap<>();

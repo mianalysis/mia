@@ -5,22 +5,21 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import ij.Prefs;
-import io.github.mianalysis.mia.MIA;
-import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.module.Module;
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
-import io.github.mianalysis.mia.module.Category;
+
+import ij.Prefs;
+import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Categories;
+import io.github.mianalysis.mia.module.Category;
+import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.objectprocessing.identification.GetObjectSurface;
 import io.github.mianalysis.mia.module.objectprocessing.identification.ProjectObjects;
 import io.github.mianalysis.mia.object.Measurement;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Status;
-import io.github.mianalysis.mia.object.units.SpatialUnit;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
@@ -35,6 +34,7 @@ import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
+import io.github.mianalysis.mia.object.units.SpatialUnit;
 import io.github.sjcross.common.analysis.EllipseCalculator;
 import io.github.sjcross.common.exceptions.IntegerOverflowException;
 import io.github.sjcross.common.object.volume.Volume;
@@ -116,7 +116,7 @@ public class FitEllipse extends Module {
                     break;
             }
         } catch (RuntimeException e) {
-            e.printStackTrace();
+            MIA.log.writeError(e);
         }
 
         addMeasurements(inputObject, calculator);
@@ -466,7 +466,7 @@ public class FitEllipse extends Module {
                 .setDescription("Controls which object coordinates are used for ellipse fitting:<br><ul>"
 
                         + "<li>\"" + FittingModes.FIT_TO_WHOLE
-                        + "\" All coordinates for the input object are passed to the ellipse fitter.<.li>"
+                        + "\" All coordinates for the input object are passed to the ellipse fitter.</li>"
 
                         + "<li>\"" + FittingModes.FIT_TO_SURFACE
                         + "\" (default) Only surface coordinates of the input object are passed to the ellipse fitter.  Surface coordinates are calculated using 4-way connectivity.</li></ul>");

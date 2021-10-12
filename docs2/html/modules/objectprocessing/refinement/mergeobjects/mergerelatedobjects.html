@@ -71,7 +71,7 @@
           </li>
         </ul>
         <a class="btn btn-outline-primary ml-2"
-          href="https://github.com/mianalysis/mia/releases/download/v0.21.1-SNAPSHOT/MIA_-0.21.1-SNAPSHOT.jar">Download</a>
+          href="https://github.com/mianalysis/mia/releases/download/v0.21.2-SNAPSHOT/MIA_-0.21.2-SNAPSHOT.jar">Download</a>
       </div>
     </div>
   </nav>
@@ -83,25 +83,25 @@
 </div>
 
 <div class="pt-md-2 pb-md-4 mx-auto mia-page">
-    <h2 class="mia-section-title">Description</h2>
-    <p class="mia-main-text">Combine coordinates from related objects into a single object.  This module can either add coordinates from all child objects into the associated parent or create entirely new merged objects.  New merged objects can either contain just coordinates from child objects, or from the parent and its children.  Any duplicate coordinates arising from overlapping child objects will only be stored once.<br><br>Note: If updating the parent objects, any previously-measured object properties may be invalid (i.e. they are not updated).  To update such measurements it's necessary to re-run the relevant measurement modules.</p>
+    <h2 class="text-center mia-section-title">Description</h2>
+    <p class="text-center mia-main-text">Combine coordinates from related objects into a single object.  This module can either add coordinates from all child objects into the associated parent or create entirely new merged objects.  New merged objects can either contain just coordinates from child objects, or from the parent and its children.  Any duplicate coordinates arising from overlapping child objects will only be stored once.<br><br>Note: If updating the parent objects, any previously-measured object properties may be invalid (i.e. they are not updated).  To update such measurements it's necessary to re-run the relevant measurement modules.</p>
 </div>
 
 <div class="pt-md-2 pb-md-4 mx-auto mia-page">
-    <h2 class="mia-section-title">Parameters</h2>
-    <p class="mia-main-text"><p class="mia-main-text"><b>Parent objects</b>:  Input parent objects for merging.  If "Output mode" is set to "Merge children into parent" all the coordinates from child objects will be added to this object.  However, if operating in "Create new object" mode and "Merge mode" is set to "Merge parents and children", coordinates from parent objects will be added to the new merged objects.<br><p class="mia-main-text"><b>Child objects</b>:  Child objects of the input parent.  If "Output mode" is set to "Merge children into parent" all the coordinates from these objects will be added to their respective parent.  However, if operating in "Create new object" coordinates from these objects will be added to the new merged objects.<br><p class="mia-main-text"><b>Output mode</b>:  Controls where the merged object coordinates are output to:<br><ul><li>"Create new object" For each input parent, a new merged object will be created.  These merged objects are themselves children of the parent object.</li><li>"Merge children into parent" Combined coordinates (original coordinates from parent and coordinates of children) are added to this parent object.  Note: In this mode the coordinates of the parent object are being updated, so any previously-measured object properties may be invalid (i.e. they are not updated).  To update such measurements it's necessary to re-run the relevant measurement modules.</li></ul><p class="mia-main-text"><b>Output overlapping objects</b>:  If outputting new merged objects (as opposed to updating the parent), objects will be stored with this reference name.<br><p class="mia-main-text"><b>Merge mode</b>:  When in "Create new object" mode, this parameter controls what coordinates are added to the new merged objects:<ul><li>"Merge children only" Only coordinates from child objects are added to the merged object.  In this mode, coordinates for the parent are ignored.</li><li>"Merge parents and children" Coordinates from both the parent and child objects are added to the new merged object.</li></ul></p>
+    <h2 class="text-center mia-section-title">Parameters</h2>
+    <p class="text-center mia-main-text"><p class="mia-main-text"><b>Parent objects</b>:  Input parent objects for merging.  If "Output mode" is set to "Merge children into parent" all the coordinates from child objects will be added to this object.  However, if operating in "Create new object" mode and "Merge mode" is set to "Merge parents and children", coordinates from parent objects will be added to the new merged objects.<br><p class="mia-main-text"><b>Child objects</b>:  Child objects of the input parent.  If "Output mode" is set to "Merge children into parent" all the coordinates from these objects will be added to their respective parent.  However, if operating in "Create new object" coordinates from these objects will be added to the new merged objects.<br><p class="mia-main-text"><b>Output mode</b>:  Controls where the merged object coordinates are output to:<br><ul><li>"Create new object" For each input parent, a new merged object will be created.  These merged objects are themselves children of the parent object.</li><li>"Merge children into parent" Combined coordinates (original coordinates from parent and coordinates of children) are added to this parent object.  Note: In this mode the coordinates of the parent object are being updated, so any previously-measured object properties may be invalid (i.e. they are not updated).  To update such measurements it's necessary to re-run the relevant measurement modules.</li></ul><p class="mia-main-text"><b>Output overlapping objects</b>:  If outputting new merged objects (as opposed to updating the parent), objects will be stored with this reference name.<br><p class="mia-main-text"><b>Merge mode</b>:  When in "Create new object" mode, this parameter controls what coordinates are added to the new merged objects:<ul><li>"Merge children only" Only coordinates from child objects are added to the merged object.  In this mode, coordinates for the parent are ignored.</li><li>"Merge parents and children" Coordinates from both the parent and child objects are added to the new merged object.</li></ul></p>
 </div>
 
   <!-- Footer -->
   <footer>
-    <div class="container-fluid padding">
-      <div class="row text-center text-light align-items-center">
+    <div class="container-fluid padding mia-page">
+      <div class="row text-light">
         <div class="col-6 mt-4 mb-4">
           <a href="http://www.bristol.ac.uk/wolfson-bioimaging/">
             <img height="48" src="../../../../../img/wbif.png">
           </a>
         </div>
-        <div class="col-6 mt-4 mb-4 align-items-center">
+        <div class="col-6 mt-4 mb-4 text-right">
           <a href="https://github.com/mianalysis/mia/">
             <img height="48" src="../../../../../img/GitHub-Mark-Light-64px.png"><img height="32"
               src="../../../../../img/GitHub_Logo_White.png" height="32px">

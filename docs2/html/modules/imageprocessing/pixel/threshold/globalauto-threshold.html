@@ -71,7 +71,7 @@
           </li>
         </ul>
         <a class="btn btn-outline-primary ml-2"
-          href="https://github.com/mianalysis/mia/releases/download/v0.21.1-SNAPSHOT/MIA_-0.21.1-SNAPSHOT.jar">Download</a>
+          href="https://github.com/mianalysis/mia/releases/download/v0.21.2-SNAPSHOT/MIA_-0.21.2-SNAPSHOT.jar">Download</a>
       </div>
     </div>
   </nav>
@@ -83,25 +83,25 @@
 </div>
 
 <div class="pt-md-2 pb-md-4 mx-auto mia-page">
-    <h2 class="mia-section-title">Description</h2>
-    <p class="mia-main-text">Binarise an image in the workspace such that the output only has pixel values of 0 and 255.  Uses the built-in ImageJ global <a href="https://imagej.net/Auto_Threshold">auto-thresholding algorithms</a>.<br><br>Note: Currently only works on 8-bit images.  Images with other bit depths will be automatically converted to 8-bit based on the "Fill target range (normalise)" scaling method from the "Image type converter" module.</p>
+    <h2 class="text-center mia-section-title">Description</h2>
+    <p class="text-center mia-main-text">Binarise an image in the workspace such that the output only has pixel values of 0 and 255.  Uses the built-in ImageJ global <a href="https://imagej.net/Auto_Threshold">auto-thresholding algorithms</a>.<br><br>Note: Currently only works on 8-bit images.  Images with other bit depths will be automatically converted to 8-bit based on the "Fill target range (normalise)" scaling method from the "Image type converter" module.</p>
 </div>
 
 <div class="pt-md-2 pb-md-4 mx-auto mia-page">
-    <h2 class="mia-section-title">Parameters</h2>
-    <p class="mia-main-text"><p class="mia-main-text"><b>Input image</b>:  Image to apply threshold to.<br><p class="mia-main-text"><b>Output mode</b>:  Controls if the threshold is applied to the input image or only calculated and stored as a measurement:<br><ul><li>"Calculate and apply" Calculate the threshold and apply it to the input image.  Whether the binarised image updates the input image or is saved as a separate image to the workspace is controlled by the "Apply to input image" parameter.  In this mode the calculated threshold is still stored as a measurement of the input image.</li><li>"Calculate only" Calculate the threshold, but do not apply it to the input image.  The calculated threshold is only stored as a measurement of the input image.</li><p class="mia-main-text"><b>Apply to input image</b>:  Select if the threshold should be applied directly to the input image, or if it should be applied to a duplicate, then stored as a different image in the workspace.<br><p class="mia-main-text"><b>Output image</b>:  Name of the output image created during the thresholding process.  This image will be added to the workspace.<br><p class="mia-main-text"><b>Algorithm</b>:  Global thresholding algorithm to use.  Choices are: Huang, Intermodes, IsoData, Li, MaxEntropy, Mean, MinError, Minimum, Moments, Otsu, Percentile, RenyiEntropy, Shanbhag, Triangle, Yen.<p class="mia-main-text"><b>Threshold multiplier</b>:  Prior to application of automatically-calculated thresholds the threshold value is multiplied by this value.  This allows the threshold to be systematically increased or decreased.  For example, a "Threshold multiplier" of 0.9 applied to an automatically-calculated threshold of 200 will see the image thresholded at the level 180.<br><p class="mia-main-text"><b>Use lower threshold limit</b>:  Limit the lowest threshold that can be applied to the image.  This is used to prevent unintentional segmentation of an image containing only background (i.e. no features present).<br><p class="mia-main-text"><b>Lower threshold limit</b>:  Lowest absolute threshold value that can be applied.<br><p class="mia-main-text"><b>Binary logic</b>:  Controls whether objects are considered to be white (255 intensity) on a black (0 intensity) background, or black on a white background.</p>
+    <h2 class="text-center mia-section-title">Parameters</h2>
+    <p class="text-center mia-main-text"><p class="mia-main-text"><b>Input image</b>:  Image to apply threshold to.<br><p class="mia-main-text"><b>Output mode</b>:  Controls if the threshold is applied to the input image or only calculated and stored as a measurement:<br><ul><li>"Calculate and apply" Calculate the threshold and apply it to the input image.  Whether the binarised image updates the input image or is saved as a separate image to the workspace is controlled by the "Apply to input image" parameter.  In this mode the calculated threshold is still stored as a measurement of the input image.</li><li>"Calculate only" Calculate the threshold, but do not apply it to the input image.  The calculated threshold is only stored as a measurement of the input image.</li><p class="mia-main-text"><b>Apply to input image</b>:  Select if the threshold should be applied directly to the input image, or if it should be applied to a duplicate, then stored as a different image in the workspace.<br><p class="mia-main-text"><b>Output image</b>:  Name of the output image created during the thresholding process.  This image will be added to the workspace.<br><p class="mia-main-text"><b>Algorithm</b>:  Global thresholding algorithm to use.  Choices are: Huang, Intermodes, IsoData, Li, MaxEntropy, Mean, MinError, Minimum, Moments, Otsu, Percentile, RenyiEntropy, Shanbhag, Triangle, Yen.<p class="mia-main-text"><b>Threshold multiplier</b>:  Prior to application of automatically-calculated thresholds the threshold value is multiplied by this value.  This allows the threshold to be systematically increased or decreased.  For example, a "Threshold multiplier" of 0.9 applied to an automatically-calculated threshold of 200 will see the image thresholded at the level 180.<br><p class="mia-main-text"><b>Use lower threshold limit</b>:  Limit the lowest threshold that can be applied to the image.  This is used to prevent unintentional segmentation of an image containing only background (i.e. no features present).<br><p class="mia-main-text"><b>Lower threshold limit</b>:  Lowest absolute threshold value that can be applied.<br><p class="mia-main-text"><b>Binary logic</b>:  Controls whether objects are considered to be white (255 intensity) on a black (0 intensity) background, or black on a white background.</p>
 </div>
 
   <!-- Footer -->
   <footer>
-    <div class="container-fluid padding">
-      <div class="row text-center text-light align-items-center">
+    <div class="container-fluid padding mia-page">
+      <div class="row text-light">
         <div class="col-6 mt-4 mb-4">
           <a href="http://www.bristol.ac.uk/wolfson-bioimaging/">
             <img height="48" src="../../../../../img/wbif.png">
           </a>
         </div>
-        <div class="col-6 mt-4 mb-4 align-items-center">
+        <div class="col-6 mt-4 mb-4 text-right">
           <a href="https://github.com/mianalysis/mia/">
             <img height="48" src="../../../../../img/GitHub-Mark-Light-64px.png"><img height="32"
               src="../../../../../img/GitHub_Logo_White.png" height="32px">

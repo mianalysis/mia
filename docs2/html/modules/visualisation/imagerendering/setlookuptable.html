@@ -71,7 +71,7 @@
           </li>
         </ul>
         <a class="btn btn-outline-primary ml-2"
-          href="https://github.com/mianalysis/mia/releases/download/v0.21.1-SNAPSHOT/MIA_-0.21.1-SNAPSHOT.jar">Download</a>
+          href="https://github.com/mianalysis/mia/releases/download/v0.21.2-SNAPSHOT/MIA_-0.21.2-SNAPSHOT.jar">Download</a>
       </div>
     </div>
   </nav>
@@ -83,25 +83,25 @@
 </div>
 
 <div class="pt-md-2 pb-md-4 mx-auto mia-page">
-    <h2 class="mia-section-title">Description</h2>
-    <p class="mia-main-text">Set look-up table (LUT) for an image or a specific channel of an image.  The look-up table determines what colour ImageJ will render each intensity value of an image.</p>
+    <h2 class="text-center mia-section-title">Description</h2>
+    <p class="text-center mia-main-text">Set look-up table (LUT) for an image or a specific channel of an image.  The look-up table determines what colour ImageJ will render each intensity value of an image.</p>
 </div>
 
 <div class="pt-md-2 pb-md-4 mx-auto mia-page">
-    <h2 class="mia-section-title">Parameters</h2>
-    <p class="mia-main-text"><p class="mia-main-text"><b>Input image</b>:  Image to set look-up table for.<br><p class="mia-main-text"><b>Channel mode</b>:  Control if the same look-up table is applied to all channels, or just one:<br><br>- "All channels" Apply the same look-up table to all channels of the input image.<br><br>- "Specific channels" Only apply the look-up table to the channel specified by the "Channel" parameter.  All other channels will remain unaffected.<br><p class="mia-main-text"><b>Channel</b>:  When in "Specific channels" mode, this is the channel the look-up table will be applied to.  Channel numbering starts at 1.<br><p class="mia-main-text"><b>Lookup table</b>:  Look-up table to apply to the relevant channels.  Choices are: Grey, Red, Green, Blue, Cyan, Magenta, Yellow, Fire, Ice, Jet, Physics, Spectrum, Thermal, Random.<p class="mia-main-text"><b>Display mode</b>:  Controls how the minimum value in the look-up table should be rendered:<br><br>- "Full range" Use the full colour range of the look-up table.  This is the default look-up table without modifications.<br><br>- "Set zero to black" Uses the standard look-up table, except for the lowest value, which is always set to black.  This is useful for cases where the background will be 0 or NaN and should be rendered as black.<br></p>
+    <h2 class="text-center mia-section-title">Parameters</h2>
+    <p class="text-center mia-main-text"><p class="mia-main-text"><b>Input image</b>:  Image to set look-up table for.<br><p class="mia-main-text"><b>Channel mode</b>:  Control if the same look-up table is applied to all channels, or just one:<br><br>- "All channels" Apply the same look-up table to all channels of the input image.<br><br>- "Specific channels" Only apply the look-up table to the channel specified by the "Channel" parameter.  All other channels will remain unaffected.<br><p class="mia-main-text"><b>Channel</b>:  When in "Specific channels" mode, this is the channel the look-up table will be applied to.  Channel numbering starts at 1.<br><p class="mia-main-text"><b>Lookup table</b>:  Look-up table to apply to the relevant channels.  Choices are: Grey, Red, Green, Blue, Cyan, Magenta, Yellow, Fire, Ice, Jet, Physics, Spectrum, Thermal, Random.<p class="mia-main-text"><b>Display mode</b>:  Controls how the minimum value in the look-up table should be rendered:<br><br>- "Full range" Use the full colour range of the look-up table.  This is the default look-up table without modifications.<br><br>- "Set zero to black" Uses the standard look-up table, except for the lowest value, which is always set to black.  This is useful for cases where the background will be 0 or NaN and should be rendered as black.<br></p>
 </div>
 
   <!-- Footer -->
   <footer>
-    <div class="container-fluid padding">
-      <div class="row text-center text-light align-items-center">
+    <div class="container-fluid padding mia-page">
+      <div class="row text-light">
         <div class="col-6 mt-4 mb-4">
           <a href="http://www.bristol.ac.uk/wolfson-bioimaging/">
             <img height="48" src="../../../../img/wbif.png">
           </a>
         </div>
-        <div class="col-6 mt-4 mb-4 align-items-center">
+        <div class="col-6 mt-4 mb-4 text-right">
           <a href="https://github.com/mianalysis/mia/">
             <img height="48" src="../../../../img/GitHub-Mark-Light-64px.png"><img height="32"
               src="../../../../img/GitHub_Logo_White.png" height="32px">

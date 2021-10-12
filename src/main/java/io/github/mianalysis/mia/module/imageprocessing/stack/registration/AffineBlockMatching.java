@@ -4,9 +4,21 @@ import java.util.Collection;
 import java.util.Vector;
 import java.util.concurrent.ExecutionException;
 
+import org.scijava.Priority;
+import org.scijava.plugin.Plugin;
+
 import ij.IJ;
 import ij.process.FloatProcessor;
 import ij.process.ImageProcessor;
+import io.github.mianalysis.mia.MIA;
+import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.imageprocessing.stack.registration.abstrakt.AbstractAffineRegistration;
+import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.parameters.Parameters;
+import io.github.mianalysis.mia.object.parameters.SeparatorP;
+import io.github.mianalysis.mia.object.parameters.text.DoubleP;
+import io.github.mianalysis.mia.object.parameters.text.IntegerP;
 import mpicbg.ij.blockmatching.BlockMatching;
 import mpicbg.models.AbstractAffineModel2D;
 import mpicbg.models.ErrorStatistic;
@@ -14,16 +26,6 @@ import mpicbg.models.PointMatch;
 import mpicbg.models.SpringMesh;
 import mpicbg.models.TranslationModel2D;
 import mpicbg.models.Vertex;
-import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.module.Module;
-import org.scijava.Priority;
-import org.scijava.plugin.Plugin;
-import io.github.mianalysis.mia.module.imageprocessing.stack.registration.abstrakt.AbstractAffineRegistration;
-import io.github.mianalysis.mia.object.Workspace;
-import io.github.mianalysis.mia.object.parameters.Parameters;
-import io.github.mianalysis.mia.object.parameters.SeparatorP;
-import io.github.mianalysis.mia.object.parameters.text.DoubleP;
-import io.github.mianalysis.mia.object.parameters.text.IntegerP;
 
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class AffineBlockMatching extends AbstractAffineRegistration {
@@ -91,7 +93,7 @@ public class AffineBlockMatching extends AbstractAffineRegistration {
             BlockMatching.matchByMaximalPMCC(ipr1, ipr2, null, null, p.scale, translationModel, p.blockR, p.blockR,
                     p.searchR, p.searchR, p.minR, p.rod, p.maxCurvature, vertices, candidates, new ErrorStatistic(1));
         } catch (InterruptedException | ExecutionException e) {
-            e.printStackTrace();
+            MIA.log.writeError(e);
             return null;
         }
 

@@ -182,7 +182,7 @@ public class ObjectLoader extends Module {
                 return new File(filePath);
             }
         } catch (DependencyException | FormatException | IOException | ServiceException e) {
-            e.printStackTrace();
+            MIA.log.writeError(e);
             return null;
         }
     }
@@ -249,7 +249,7 @@ public class ObjectLoader extends Module {
             }
 
         } catch (IOException e) {
-            e.printStackTrace();
+            MIA.log.writeError(e);
             return null;
         }
 
@@ -374,7 +374,7 @@ public class ObjectLoader extends Module {
             reader.close();
 
         } catch (IOException e) {
-            e.printStackTrace();
+            MIA.log.writeError(e);
         }
 
         if (outOfRangeCount > 0)

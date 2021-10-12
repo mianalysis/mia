@@ -71,7 +71,7 @@
           </li>
         </ul>
         <a class="btn btn-outline-primary ml-2"
-          href="https://github.com/mianalysis/mia/releases/download/v0.21.1-SNAPSHOT/MIA_-0.21.1-SNAPSHOT.jar">Download</a>
+          href="https://github.com/mianalysis/mia/releases/download/v0.21.2-SNAPSHOT/MIA_-0.21.2-SNAPSHOT.jar">Download</a>
       </div>
     </div>
   </nav>
@@ -83,25 +83,25 @@
 </div>
 
 <div class="pt-md-2 pb-md-4 mx-auto mia-page">
-    <h2 class="mia-section-title">Description</h2>
-    <p class="mia-main-text">Crop an image in X and Y using pre-defined limits or limits based on the extents of objects in a collection.  Any pixels outside the specified limits are discarded.<br><br>Note: The x-min, y-min, width and height limits used here are in the same order and format as those output by ImageJ's default rectangle region of interest tool (i.e. displayed in the status bar of the ImageJ control panel).</p>
+    <h2 class="text-center mia-section-title">Description</h2>
+    <p class="text-center mia-main-text">Crop an image in X and Y using pre-defined limits or limits based on the extents of objects in a collection.  Any pixels outside the specified limits are discarded.<br><br>Note: The x-min, y-min, width and height limits used here are in the same order and format as those output by ImageJ's default rectangle region of interest tool (i.e. displayed in the status bar of the ImageJ control panel).</p>
 </div>
 
 <div class="pt-md-2 pb-md-4 mx-auto mia-page">
-    <h2 class="mia-section-title">Parameters</h2>
-    <p class="mia-main-text"><p class="mia-main-text"><b>Input image</b>:  Image from workspace to apply crop process to.<br><p class="mia-main-text"><b>Apply to input image</b>:  Select if the crop should be applied directly to the input image, or if it should be applied to a duplicate, then stored as a different image in the workspace.<br><p class="mia-main-text"><b>Output image</b>:  Name of the output image created during the cropping process if storing the cropped image as a new image in the workspace ("Apply to input image" parameter).<br><p class="mia-main-text"><b>Limits mode</b>:  Controls how the limits for the cropped region are specified:<br><ul><li>"Fixed values" The input image will be cropped to the region specified by the fixed values, "Left coordinate", "Top coordinate", "Width" and "Height".</li><li>"Object collection limits" The input image will be cropped to the region corresponding to the limits of the object collection specified by "Input objects"</li></ul><p class="mia-main-text"><b>Left coordinate</b>:  Left crop coordinate.  All pixels with x-coordinates lower than this will be removed.  Specified in pixel units with indexing starting at 0.<br><p class="mia-main-text"><b>Top coordinate</b>:  Top crop coordinate.  All pixels with y-coordinates lower than this will be removed.  Specified in pixel units with indexing starting at 0.<br><p class="mia-main-text"><b>Width</b>:  Width (number of columns) of the output cropped region.  Specified in pixel units.<br><p class="mia-main-text"><b>Height</b>:  Height (number of rows) of the output cropped region.  Specified in pixel units.<br><p class="mia-main-text"><b>Input objects</b>:  When "Limits mode" is set to "Object collection limits", these are the objects that will be used to define the cropped region.<br></p>
+    <h2 class="text-center mia-section-title">Parameters</h2>
+    <p class="text-center mia-main-text"><p class="mia-main-text"><b>Input image</b>:  Image from workspace to apply crop process to.<br><p class="mia-main-text"><b>Apply to input image</b>:  Select if the crop should be applied directly to the input image, or if it should be applied to a duplicate, then stored as a different image in the workspace.<br><p class="mia-main-text"><b>Output image</b>:  Name of the output image created during the cropping process if storing the cropped image as a new image in the workspace ("Apply to input image" parameter).<br><p class="mia-main-text"><b>Limits mode</b>:  Controls how the limits for the cropped region are specified:<br><ul><li>"Fixed values" The input image will be cropped to the region specified by the fixed values, "Left coordinate", "Top coordinate", "Width" and "Height".</li><li>"Object collection limits" The input image will be cropped to the region corresponding to the limits of the object collection specified by "Input objects"</li></ul><p class="mia-main-text"><b>Left coordinate</b>:  Left crop coordinate.  All pixels with x-coordinates lower than this will be removed.  Specified in pixel units with indexing starting at 0.<br><p class="mia-main-text"><b>Top coordinate</b>:  Top crop coordinate.  All pixels with y-coordinates lower than this will be removed.  Specified in pixel units with indexing starting at 0.<br><p class="mia-main-text"><b>Width</b>:  Width (number of columns) of the output cropped region.  Specified in pixel units.<br><p class="mia-main-text"><b>Height</b>:  Height (number of rows) of the output cropped region.  Specified in pixel units.<br><p class="mia-main-text"><b>Input objects</b>:  When "Limits mode" is set to "Object collection limits", these are the objects that will be used to define the cropped region.<br></p>
 </div>
 
   <!-- Footer -->
   <footer>
-    <div class="container-fluid padding">
-      <div class="row text-center text-light align-items-center">
+    <div class="container-fluid padding mia-page">
+      <div class="row text-light">
         <div class="col-6 mt-4 mb-4">
           <a href="http://www.bristol.ac.uk/wolfson-bioimaging/">
             <img height="48" src="../../../../img/wbif.png">
           </a>
         </div>
-        <div class="col-6 mt-4 mb-4 align-items-center">
+        <div class="col-6 mt-4 mb-4 text-right">
           <a href="https://github.com/mianalysis/mia/">
             <img height="48" src="../../../../img/GitHub-Mark-Light-64px.png"><img height="32"
               src="../../../../img/GitHub_Logo_White.png" height="32px">

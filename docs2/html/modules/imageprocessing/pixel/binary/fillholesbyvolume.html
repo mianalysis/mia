@@ -71,7 +71,7 @@
           </li>
         </ul>
         <a class="btn btn-outline-primary ml-2"
-          href="https://github.com/mianalysis/mia/releases/download/v0.21.1-SNAPSHOT/MIA_-0.21.1-SNAPSHOT.jar">Download</a>
+          href="https://github.com/mianalysis/mia/releases/download/v0.21.2-SNAPSHOT/MIA_-0.21.2-SNAPSHOT.jar">Download</a>
       </div>
     </div>
   </nav>
@@ -79,29 +79,29 @@
   <div class="page-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
     <p class="mia-path"><a href="../../../../../html/modules/modules.html">Modules</a> > <a href="../../../../../html/modules/imageprocessing/imageprocessing.html">Image processing</a> > <a href="../../../../../html/modules/imageprocessing/pixel/pixel.html">Pixel</a> > <a href="../../../../../html/modules/imageprocessing/pixel/binary/binary.html">Binary</a></p>
     <h1 class="display-4">Fill holes by volume</h1>
-    <p class="mia-description"></p>
+    <p class="mia-description">Performs a volume-limited 3D fill holes operation on an input binary image.</p>
 </div>
 
 <div class="pt-md-2 pb-md-4 mx-auto mia-page">
-    <h2 class="mia-section-title">Description</h2>
-    <p class="mia-main-text"></p>
+    <h2 class="text-center mia-section-title">Description</h2>
+    <p class="text-center mia-main-text">Performs a volume-limited 3D fill holes operation on an input binary image.  This operation will change all background pixels in a region which is fully enclosed by foreground pixels to foreground.  The volume of holes to be filled can be restricted with both minimum and maximum permissible holes.  This image will be 8-bit with binary logic determined by the "Binary logic" parameter.  Uses the plugin "<a href="https://github.com/ijpb/MorphoLibJ">MorphoLibJ</a>".</p>
 </div>
 
 <div class="pt-md-2 pb-md-4 mx-auto mia-page">
-    <h2 class="mia-section-title">Parameters</h2>
-    <p class="mia-main-text"><p class="mia-main-text"><b>Input image</b>:  Image from workspace to apply fill holes operation to.  This image will be 8-bit with binary logic determined by the "Binary logic" parameter.<br><p class="mia-main-text"><b>Apply to input image</b>:  When selected, the post-operation image will overwrite the input image in the workspace.  Otherwise, the image will be saved to the workspace with the name specified by the "Output image" parameter.<br><p class="mia-main-text"><b>Output image</b>:  If "Apply to input image" is not selected, the post-operation image will be saved to the workspace with this name.<br><p class="mia-main-text"><b>Set minimum volume</b>:  When selected, a minimum permitted volume for binary holes can be set.  Any holes with volumes smaller than this value will be removed.<br><p class="mia-main-text"><b>Minimum permitted volume</b>:  If "Set minimum volume" is selected, this is the minimum volume each hole must have for it to be retained.  Volumes are specified in units controlled by the "Calibrated units" parameter.<br><p class="mia-main-text"><b>Set maximum volume</b>:  When selected, a maximum permitted volume for binary holes can be set.  Any holes with volumes larger than this value will be removed.<br><p class="mia-main-text"><b>Maximum permitted volume</b>:  If "Set maximum volume" is selected, this is the maximum volume each hole must have for it to be retained.  Volumes are specified in units controlled by the "Calibrated units" parameter.<br><p class="mia-main-text"><b>Calibrated units</b>:  When selected, hole size limits are assumed to be specified in calibrated units (as defined by the "Input control" parameter "Spatial unit").  Otherwise, pixel units are assumed.<br><p class="mia-main-text"><b>Connectivity</b>:  Controls which adjacent pixels are considered:<br><ul><li>"6" Only pixels immediately next to the active pixel are considered.  These are the pixels on the four "cardinal" directions plus the pixels immediately above and below the current pixel.  If working in 2D, 4-way connectivity is used.</li><li>"26" In addition to the core 6-pixels, all immediately diagonal pixels are used.  If working in 2D, 8-way connectivity is used.</li><p class="mia-main-text"><b>Binary logic</b>:  Controls whether objects are considered to be white (255 intensity) on a black (0 intensity) background, or black on a white background.<p class="mia-main-text"><b>Enable multithreading</b>:  Break the image down into strips, each one processed on a separate CPU thread.  The overhead required to do this means it's best for large multi-core CPUs, but should be left disabled for small images or on CPUs with few cores.<br><p class="mia-main-text"><b>Minimum strip width (px)</b>:  Minimum width of each strip to be processed on a separate CPU thread.  Measured in pixel units.<br></p>
+    <h2 class="text-center mia-section-title">Parameters</h2>
+    <p class="text-center mia-main-text"><p class="mia-main-text"><b>Input image</b>:  Image from workspace to apply fill holes operation to.  This image will be 8-bit with binary logic determined by the "Binary logic" parameter.<br><p class="mia-main-text"><b>Apply to input image</b>:  When selected, the post-operation image will overwrite the input image in the workspace.  Otherwise, the image will be saved to the workspace with the name specified by the "Output image" parameter.<br><p class="mia-main-text"><b>Output image</b>:  If "Apply to input image" is not selected, the post-operation image will be saved to the workspace with this name.<br><p class="mia-main-text"><b>Set minimum volume</b>:  When selected, a minimum permitted volume for binary holes can be set.  Any holes with volumes smaller than this value will be removed.<br><p class="mia-main-text"><b>Minimum permitted volume</b>:  If "Set minimum volume" is selected, this is the minimum volume each hole must have for it to be retained.  Volumes are specified in units controlled by the "Calibrated units" parameter.<br><p class="mia-main-text"><b>Set maximum volume</b>:  When selected, a maximum permitted volume for binary holes can be set.  Any holes with volumes larger than this value will be removed.<br><p class="mia-main-text"><b>Maximum permitted volume</b>:  If "Set maximum volume" is selected, this is the maximum volume each hole must have for it to be retained.  Volumes are specified in units controlled by the "Calibrated units" parameter.<br><p class="mia-main-text"><b>Calibrated units</b>:  When selected, hole size limits are assumed to be specified in calibrated units (as defined by the "Input control" parameter "Spatial unit").  Otherwise, pixel units are assumed.<br><p class="mia-main-text"><b>Connectivity</b>:  Controls which adjacent pixels are considered:<br><ul><li>"6" Only pixels immediately next to the active pixel are considered.  These are the pixels on the four "cardinal" directions plus the pixels immediately above and below the current pixel.  If working in 2D, 4-way connectivity is used.</li><li>"26" In addition to the core 6-pixels, all immediately diagonal pixels are used.  If working in 2D, 8-way connectivity is used.</li><p class="mia-main-text"><b>Binary logic</b>:  Controls whether objects are considered to be white (255 intensity) on a black (0 intensity) background, or black on a white background.<p class="mia-main-text"><b>Enable multithreading</b>:  Break the image down into strips, each one processed on a separate CPU thread.  The overhead required to do this means it's best for large multi-core CPUs, but should be left disabled for small images or on CPUs with few cores.<br><p class="mia-main-text"><b>Minimum strip width (px)</b>:  Minimum width of each strip to be processed on a separate CPU thread.  Measured in pixel units.<br></p>
 </div>
 
   <!-- Footer -->
   <footer>
-    <div class="container-fluid padding">
-      <div class="row text-center text-light align-items-center">
+    <div class="container-fluid padding mia-page">
+      <div class="row text-light">
         <div class="col-6 mt-4 mb-4">
           <a href="http://www.bristol.ac.uk/wolfson-bioimaging/">
             <img height="48" src="../../../../../img/wbif.png">
           </a>
         </div>
-        <div class="col-6 mt-4 mb-4 align-items-center">
+        <div class="col-6 mt-4 mb-4 text-right">
           <a href="https://github.com/mianalysis/mia/">
             <img height="48" src="../../../../../img/GitHub-Mark-Light-64px.png"><img height="32"
               src="../../../../../img/GitHub_Logo_White.png" height="32px">

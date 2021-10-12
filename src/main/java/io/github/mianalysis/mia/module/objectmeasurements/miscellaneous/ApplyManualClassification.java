@@ -102,7 +102,7 @@
 //            }
 //
 //        } catch (IOException e) {
-//            e.printStackTrace();
+//            MIA.log.writeError(e);
 //        }
 //
 //        if (showOutput) inputObjects.showMeasurements(this,modules);

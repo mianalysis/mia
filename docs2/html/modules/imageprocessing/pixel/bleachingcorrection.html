@@ -71,7 +71,7 @@
           </li>
         </ul>
         <a class="btn btn-outline-primary ml-2"
-          href="https://github.com/mianalysis/mia/releases/download/v0.21.1-SNAPSHOT/MIA_-0.21.1-SNAPSHOT.jar">Download</a>
+          href="https://github.com/mianalysis/mia/releases/download/v0.21.2-SNAPSHOT/MIA_-0.21.2-SNAPSHOT.jar">Download</a>
       </div>
     </div>
   </nav>
@@ -83,25 +83,25 @@
 </div>
 
 <div class="pt-md-2 pb-md-4 mx-auto mia-page">
-    <h2 class="mia-section-title">Description</h2>
-    <p class="mia-main-text">Apply bleaching correction to a specified image.  This adjusts intensities in all frames (after the first) to match the histogram distribution of the first frame.  It is intended to account for any fluorophore bleaching that occurs during acquisition of a timecourse.<br><br>This macro runs the Fiji bleaching correction plugin, "<a href="https://imagej.net/Bleach_Correction">Bleach Correction</a>".</p>
+    <h2 class="text-center mia-section-title">Description</h2>
+    <p class="text-center mia-main-text">Apply bleaching correction to a specified image.  This adjusts intensities in all frames (after the first) to match the histogram distribution of the first frame.  It is intended to account for any fluorophore bleaching that occurs during acquisition of a timecourse.<br><br>This macro runs the Fiji bleaching correction plugin, "<a href="https://imagej.net/Bleach_Correction">Bleach Correction</a>".</p>
 </div>
 
 <div class="pt-md-2 pb-md-4 mx-auto mia-page">
-    <h2 class="mia-section-title">Parameters</h2>
-    <p class="mia-main-text"><p class="mia-main-text"><b>Input image</b>:  Image from workspace to apply bleaching correction process to.<br><p class="mia-main-text"><b>Apply to input image</b>:  When selected, the post-operation image will overwrite the input image in the workspace.  Otherwise, the image will be saved to the workspace with the name specified by the "Output image" parameter.<br><p class="mia-main-text"><b>Output image</b>:  If "Apply to input image" is not selected, the post-operation image will be saved to the workspace with this name.<br><p class="mia-main-text"><b>Correction mode</b>:  Controls the bleach correction algorithm to use:<br><ul><li>"Exponential fit" Assumes the bleaching process is controlled by a mono-exponential decay.  Will fail if the signal does not decay over time.  Calculation can be performed using a single ROI for all frames.</li><li>"Histogram matching" Adjusts image intensities so that the histograms match that from the first frame.</li><li>"Simple ratio" Normalises images to have the same mean intensity.  Calculation can be performed using a single ROI for all frames.</li></ul><p class="mia-main-text"><b>Use ROI objects</b>:  When selected, the bleaching and associated intensity correction will be calculated based on the pixels within a region of interest (specified as the objects of collection "ROI objects").  A single ROI is used for all frames (i.e. the region can't be different from frame to frame).<br><p class="mia-main-text"><b>ROI objects</b>:  If "Use ROI objects" is selected, this is the object collection which will act as the region of interest for calculating the bleaching.  Since only a single ROI can be used, all objects in this collection are reduced down into a single frame and timepoint.<br></p>
+    <h2 class="text-center mia-section-title">Parameters</h2>
+    <p class="text-center mia-main-text"><p class="mia-main-text"><b>Input image</b>:  Image from workspace to apply bleaching correction process to.<br><p class="mia-main-text"><b>Apply to input image</b>:  When selected, the post-operation image will overwrite the input image in the workspace.  Otherwise, the image will be saved to the workspace with the name specified by the "Output image" parameter.<br><p class="mia-main-text"><b>Output image</b>:  If "Apply to input image" is not selected, the post-operation image will be saved to the workspace with this name.<br><p class="mia-main-text"><b>Correction mode</b>:  Controls the bleach correction algorithm to use:<br><ul><li>"Exponential fit" Assumes the bleaching process is controlled by a mono-exponential decay.  Will fail if the signal does not decay over time.  Calculation can be performed using a single ROI for all frames.</li><li>"Histogram matching" Adjusts image intensities so that the histograms match that from the first frame.</li><li>"Simple ratio" Normalises images to have the same mean intensity.  Calculation can be performed using a single ROI for all frames.</li></ul><p class="mia-main-text"><b>Use ROI objects</b>:  When selected, the bleaching and associated intensity correction will be calculated based on the pixels within a region of interest (specified as the objects of collection "ROI objects").  A single ROI is used for all frames (i.e. the region can't be different from frame to frame).<br><p class="mia-main-text"><b>ROI objects</b>:  If "Use ROI objects" is selected, this is the object collection which will act as the region of interest for calculating the bleaching.  Since only a single ROI can be used, all objects in this collection are reduced down into a single frame and timepoint.<br></p>
 </div>
 
   <!-- Footer -->
   <footer>
-    <div class="container-fluid padding">
-      <div class="row text-center text-light align-items-center">
+    <div class="container-fluid padding mia-page">
+      <div class="row text-light">
         <div class="col-6 mt-4 mb-4">
           <a href="http://www.bristol.ac.uk/wolfson-bioimaging/">
             <img height="48" src="../../../../img/wbif.png">
           </a>
         </div>
-        <div class="col-6 mt-4 mb-4 align-items-center">
+        <div class="col-6 mt-4 mb-4 text-right">
           <a href="https://github.com/mianalysis/mia/">
             <img height="48" src="../../../../img/GitHub-Mark-Light-64px.png"><img height="32"
               src="../../../../img/GitHub_Logo_White.png" height="32px">

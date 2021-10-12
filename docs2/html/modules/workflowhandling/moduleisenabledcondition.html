@@ -71,7 +71,7 @@
           </li>
         </ul>
         <a class="btn btn-outline-primary ml-2"
-          href="https://github.com/mianalysis/mia/releases/download/v0.21.1-SNAPSHOT/MIA_-0.21.1-SNAPSHOT.jar">Download</a>
+          href="https://github.com/mianalysis/mia/releases/download/v0.21.2-SNAPSHOT/MIA_-0.21.2-SNAPSHOT.jar">Download</a>
       </div>
     </div>
   </nav>
@@ -83,25 +83,25 @@
 </div>
 
 <div class="pt-md-2 pb-md-4 mx-auto mia-page">
-    <h2 class="mia-section-title">Description</h2>
-    <p class="mia-main-text">Implement workflow handling outcome based on whether another module is enabled or disabled.  Outcomes can include termination of the analysis and redirection of the active module to another part of the workflow.  Redirection allows parts of the analysis to skipped.<br><br>Note: This only applies to modules explictly enabled/disabled by the user.  It does not apply to modules that are inactive due to invalid parameters (modules highlighted in red in the module list).</p>
+    <h2 class="text-center mia-section-title">Description</h2>
+    <p class="text-center mia-main-text">Implement workflow handling outcome based on whether another module is enabled or disabled.  Outcomes can include termination of the analysis and redirection of the active module to another part of the workflow.  Redirection allows parts of the analysis to skipped.<br><br>Note: This only applies to modules explictly enabled/disabled by the user.  It does not apply to modules that are inactive due to invalid parameters (modules highlighted in red in the module list).</p>
 </div>
 
 <div class="pt-md-2 pb-md-4 mx-auto mia-page">
-    <h2 class="mia-section-title">Parameters</h2>
-    <p class="mia-main-text"><p class="mia-main-text"><b>Continuation mode</b>:  Controls what happens if the termination/redirection condition is met:<br><ul><li>"Redirect to module" The analysis workflow will skip to the module specified by the "Redirect module" parameter.  Any modules between the present module and the target module will not be evaluated.</li><li>"Terminate"The analysis will stop evaluating any further modules.</li></ul><p class="mia-main-text"><b>Redirect module</b>:  If the condition is met, the workflow will redirect to this module.  In doing so, it will skip evaluation of any modules between the present module and this module.<br><p class="mia-main-text"><b>Show redirect message</b>:  Controls if a message should be displayed in the log if redirection occurs.<br><p class="mia-main-text"><b>Redirect message</b>:  Message to display if redirection occurs.<br><p class="mia-main-text"><b>Export terminated workspaces</b>:  Controls if the workspace should still be exported to the output Excel spreadsheet if termination occurs.<br><p class="mia-main-text"><b>Remove images from workspace</b>:  Controls if images should be completely removed from the workspace along with any associated measurements if termination occurs.<br><p class="mia-main-text"><b>Remove objects from workspace</b>:  Controls if objects should be completely removed from the workspace along with any associated measurements if termination occurs.<br><p class="mia-main-text"><b>Test mode</b>:  Controls whether the specified workflow handling outcome is applied if another module is enabled or disabled:<br><ul><li>"Module is enabled" Execute specified outcome if another module is enabled.</li><li>"Module is not enabled" Execute specified outcome if another module is not enabled.</li></ul><p class="mia-main-text"><b>Test module</b>:  Module to test the enabled/disabled state of.  This doesn't necessarily need to be a module that would execute before the current module.<br></p>
+    <h2 class="text-center mia-section-title">Parameters</h2>
+    <p class="text-center mia-main-text"><p class="mia-main-text"><b>Continuation mode</b>:  Controls what happens if the termination/redirection condition is met:<br><ul><li>"Redirect to module" The analysis workflow will skip to the module specified by the "Redirect module" parameter.  Any modules between the present module and the target module will not be evaluated.</li><li>"Terminate"The analysis will stop evaluating any further modules.</li></ul><p class="mia-main-text"><b>Redirect module</b>:  If the condition is met, the workflow will redirect to this module.  In doing so, it will skip evaluation of any modules between the present module and this module.<br><p class="mia-main-text"><b>Show redirect message</b>:  Controls if a message should be displayed in the log if redirection occurs.<br><p class="mia-main-text"><b>Redirect message</b>:  Message to display if redirection occurs.<br><p class="mia-main-text"><b>Export terminated workspaces</b>:  Controls if the workspace should still be exported to the output Excel spreadsheet if termination occurs.<br><p class="mia-main-text"><b>Remove images from workspace</b>:  Controls if images should be completely removed from the workspace along with any associated measurements if termination occurs.<br><p class="mia-main-text"><b>Remove objects from workspace</b>:  Controls if objects should be completely removed from the workspace along with any associated measurements if termination occurs.<br><p class="mia-main-text"><b>Test mode</b>:  Controls whether the specified workflow handling outcome is applied if another module is enabled or disabled:<br><ul><li>"Module is enabled" Execute specified outcome if another module is enabled.</li><li>"Module is not enabled" Execute specified outcome if another module is not enabled.</li></ul><p class="mia-main-text"><b>Test module</b>:  Module to test the enabled/disabled state of.  This doesn't necessarily need to be a module that would execute before the current module.<br></p>
 </div>
 
   <!-- Footer -->
   <footer>
-    <div class="container-fluid padding">
-      <div class="row text-center text-light align-items-center">
+    <div class="container-fluid padding mia-page">
+      <div class="row text-light">
         <div class="col-6 mt-4 mb-4">
           <a href="http://www.bristol.ac.uk/wolfson-bioimaging/">
             <img height="48" src="../../../img/wbif.png">
           </a>
         </div>
-        <div class="col-6 mt-4 mb-4 align-items-center">
+        <div class="col-6 mt-4 mb-4 text-right">
           <a href="https://github.com/mianalysis/mia/">
             <img height="48" src="../../../img/GitHub-Mark-Light-64px.png"><img height="32"
               src="../../../img/GitHub_Logo_White.png" height="32px">

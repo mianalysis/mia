@@ -375,7 +375,7 @@ public abstract class Module extends Ref implements Comparable, SciJavaPlugin {
             newModule = (Module) constructor.newInstance(newModules);
         } catch (NoSuchMethodException | IllegalAccessException | InstantiationException
                 | InvocationTargetException e) {
-            e.printStackTrace();
+                    MIA.log.writeError(e);
             return null;
         }
 
