@@ -3,10 +3,10 @@ package io.github.mianalysis.mia.process.analysishandling;
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.module.miscellaneous.GlobalVariables;
-import io.github.mianalysis.mia.module.workflowhandling.FixedTextCondition;
-import io.github.mianalysis.mia.module.workflowhandling.GUICondition;
-import io.github.mianalysis.mia.module.workflowhandling.ModuleIsEnabled;
+import io.github.mianalysis.mia.module.system.GlobalVariables;
+import io.github.mianalysis.mia.module.workflow.FixedTextCondition;
+import io.github.mianalysis.mia.module.workflow.GUICondition;
+import io.github.mianalysis.mia.module.workflow.ModuleIsEnabled;
 import io.github.mianalysis.mia.object.parameters.abstrakt.Parameter;
 
 public class AnalysisTester {

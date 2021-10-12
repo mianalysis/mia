@@ -6,7 +6,7 @@ import org.scijava.plugin.Plugin;
 import ij.macro.MacroExtension;
 import io.github.mianalysis.mia.macro.MacroOperation;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.module.imagemeasurements.MeasureImageIntensity;
+import io.github.mianalysis.mia.module.images.measure.MeasureImageIntensity;
 import io.github.mianalysis.mia.object.Workspace;
 
 @Plugin(type = MacroOperation.class, priority=Priority.LOW, visible=true)

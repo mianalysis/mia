@@ -129,7 +129,7 @@ public class GUI {
         MacroHandler.setWorkspace(GUI.getTestWorkspace());
         MacroHandler.setModules(GUI.getModules());
 
-        ToolTipManager.sharedInstance().setDismissDelay(Integer.MAX_VALUE);
+        ToolTipManager.sharedInstance().setDismissDelay(Integer.MAX_VALUE);       
 
     }
 

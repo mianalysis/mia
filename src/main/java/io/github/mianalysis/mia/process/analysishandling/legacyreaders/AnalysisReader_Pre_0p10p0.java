@@ -28,7 +28,7 @@ import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.core.InputControl;
 import io.github.mianalysis.mia.module.core.OutputControl;
-import io.github.mianalysis.mia.module.miscellaneous.GlobalVariables;
+import io.github.mianalysis.mia.module.system.GlobalVariables;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChildObjectsP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;

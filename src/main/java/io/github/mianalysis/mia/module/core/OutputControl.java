@@ -13,11 +13,12 @@ import io.github.mianalysis.mia.macro.general.MIA_SetActiveWorkspace;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.script.AbstractMacroRunner;
+import io.github.mianalysis.mia.module.script.RunMacro.MacroModes;
 import io.github.mianalysis.mia.module.Module;
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
-import io.github.mianalysis.mia.module.miscellaneous.macros.AbstractMacroRunner;
-import io.github.mianalysis.mia.module.miscellaneous.macros.RunMacro.MacroModes;
+
 import io.github.mianalysis.mia.object.Status;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
