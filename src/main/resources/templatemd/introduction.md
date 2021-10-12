@@ -1,1 +1,1 @@
-MIA is an image and object analysis workflow automation tool for Fiji.
+Image and object analysis workflow automation tool for Fiji

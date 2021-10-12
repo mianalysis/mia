@@ -118,10 +118,10 @@ public class DocumentationGenerator2 {
 
         String mainContent = getPageTemplate("src/main/resources/templatehtml/indextemplate.html", pathToRoot);
 
-        String introductionContent = new String(
-                Files.readAllBytes(Paths.get("src/main/resources/templatemd/introduction.md")));
-        introductionContent = renderer.render(parser.parse(introductionContent));
-        mainContent = mainContent.replace("${INDEX_INTRODUCTION}", introductionContent);
+        String descriptionContent = new String(
+                Files.readAllBytes(Paths.get("src/main/resources/templatemd/description.md")));
+        descriptionContent = renderer.render(parser.parse(descriptionContent));
+        mainContent = mainContent.replace("${INDEX_INTRODUCTION}", descriptionContent);
 
         page = page.replace("${MAIN_CONTENT}", mainContent);
 
