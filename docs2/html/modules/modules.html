@@ -57,14 +57,10 @@
 
   <!-- TODO: Implement module search tool on a separate page (maybe with a search bar in the Module nav dropdown?), but link it here. -->
 
-<!-- <nav id="subnav" class="navbar navbar-default mia-path-nav" role="navigation">
-  <p class="mia-path"></p>
-</nav> -->
-
 <div class="page-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
-  <p class="mia-path"></p>
-  <h1 class="display-4">Modules</h1>
-  <p class="mia-description">All operations are performed using dedicated modules. Typically, a module will perform one specific task, such as loading an image or measuring the shapes of objects.</p>
+  <p class="mia-main-text"></p>
+  <p class="mia-title">Modules</p>
+  <p class="mia-main-text-large">All operations are performed using dedicated modules. Typically, a module will perform one specific task, such as loading an image or measuring the shapes of objects.</p>
 </div>
 
 <div class="container mia-card-container">
@@ -72,113 +68,113 @@
     <div class="card-deck justify-content-center">
       <div class="card mb-4 box-shadow mia-card">
     <div class="card-header bg-secondary">
-      <h4 class="my-0 mia-card-title text-light">Core</h4>
+      <p class="my-0 mia-main-text-large text-light">Core</p>
     </div>
-    <div class="card-body">
+    <div class="card-body mia-main-text">
       <p class="card-text mb-4">
         Required modules for input and output control.  Each workflow contains one copy of each module.</p>
     </div>
     <div class="card-footer bg-transparent mb-2 mia-card-footer">
       <!-- <button type="button" class="btn btn-lg btn-block btn-primary">See modules</button> -->
-      <a class="btn btn-lg btn-block btn-primary" href="../../html/modules/core/core.html">
+      <a class="btn btn-lg btn-block btn-primary mia-main-text-large mia-card-button" href="../../html/modules/core/core.html">
         See modules
       </a>
     </div>
   </div><div class="card mb-4 box-shadow mia-card">
     <div class="card-header bg-secondary">
-      <h4 class="my-0 mia-card-title text-light">Images</h4>
+      <p class="my-0 mia-main-text-large text-light">Images</p>
     </div>
-    <div class="card-body">
+    <div class="card-body mia-main-text">
       <p class="card-text mb-4">
         Modules dealing primarily with images.  These operations typically take images as inputs and may output new images or update existing ones.</p>
     </div>
     <div class="card-footer bg-transparent mb-2 mia-card-footer">
       <!-- <button type="button" class="btn btn-lg btn-block btn-primary">See modules</button> -->
-      <a class="btn btn-lg btn-block btn-primary" href="../../html/modules/images/images.html">
+      <a class="btn btn-lg btn-block btn-primary mia-main-text-large mia-card-button" href="../../html/modules/images/images.html">
         See modules
       </a>
     </div>
   </div><div class="card mb-4 box-shadow mia-card">
     <div class="card-header bg-secondary">
-      <h4 class="my-0 mia-card-title text-light">Input output</h4>
+      <p class="my-0 mia-main-text-large text-light">Input output</p>
     </div>
-    <div class="card-body">
+    <div class="card-body mia-main-text">
       <p class="card-text mb-4">
         Modules loading or saving files to the filesystem.</p>
     </div>
     <div class="card-footer bg-transparent mb-2 mia-card-footer">
       <!-- <button type="button" class="btn btn-lg btn-block btn-primary">See modules</button> -->
-      <a class="btn btn-lg btn-block btn-primary" href="../../html/modules/inputoutput/inputoutput.html">
+      <a class="btn btn-lg btn-block btn-primary mia-main-text-large mia-card-button" href="../../html/modules/inputoutput/inputoutput.html">
         See modules
       </a>
     </div>
   </div><div class="card mb-4 box-shadow mia-card">
     <div class="card-header bg-secondary">
-      <h4 class="my-0 mia-card-title text-light">Objects</h4>
+      <p class="my-0 mia-main-text-large text-light">Objects</p>
     </div>
-    <div class="card-body">
+    <div class="card-body mia-main-text">
       <p class="card-text mb-4">
         Modules dealing primarily with objects.  These include object detection, measurements and operations leading to changes in existing objects.</p>
     </div>
     <div class="card-footer bg-transparent mb-2 mia-card-footer">
       <!-- <button type="button" class="btn btn-lg btn-block btn-primary">See modules</button> -->
-      <a class="btn btn-lg btn-block btn-primary" href="../../html/modules/objects/objects.html">
+      <a class="btn btn-lg btn-block btn-primary mia-main-text-large mia-card-button" href="../../html/modules/objects/objects.html">
         See modules
       </a>
     </div>
   </div><div class="card mb-4 box-shadow mia-card">
     <div class="card-header bg-secondary">
-      <h4 class="my-0 mia-card-title text-light">Script</h4>
+      <p class="my-0 mia-main-text-large text-light">Script</p>
     </div>
-    <div class="card-body">
+    <div class="card-body mia-main-text">
       <p class="card-text mb-4">
         Modules for running code directly witin a workflow.  Both single commands and full scripts (e.g. macro, Jython and Groovy) can be implemented.</p>
     </div>
     <div class="card-footer bg-transparent mb-2 mia-card-footer">
       <!-- <button type="button" class="btn btn-lg btn-block btn-primary">See modules</button> -->
-      <a class="btn btn-lg btn-block btn-primary" href="../../html/modules/script/script.html">
+      <a class="btn btn-lg btn-block btn-primary mia-main-text-large mia-card-button" href="../../html/modules/script/script.html">
         See modules
       </a>
     </div>
   </div><div class="card mb-4 box-shadow mia-card">
     <div class="card-header bg-secondary">
-      <h4 class="my-0 mia-card-title text-light">System</h4>
+      <p class="my-0 mia-main-text-large text-light">System</p>
     </div>
-    <div class="card-body">
+    <div class="card-body mia-main-text">
       <p class="card-text mb-4">
         Operations handling MIA properties such as memory and global variables.</p>
     </div>
     <div class="card-footer bg-transparent mb-2 mia-card-footer">
       <!-- <button type="button" class="btn btn-lg btn-block btn-primary">See modules</button> -->
-      <a class="btn btn-lg btn-block btn-primary" href="../../html/modules/system/system.html">
+      <a class="btn btn-lg btn-block btn-primary mia-main-text-large mia-card-button" href="../../html/modules/system/system.html">
         See modules
       </a>
     </div>
   </div><div class="card mb-4 box-shadow mia-card">
     <div class="card-header bg-secondary">
-      <h4 class="my-0 mia-card-title text-light">Visualisation</h4>
+      <p class="my-0 mia-main-text-large text-light">Visualisation</p>
     </div>
-    <div class="card-body">
+    <div class="card-body mia-main-text">
       <p class="card-text mb-4">
         Modules primarily concerned with generating and displaying images.  These include adding overlay elements and plotting data.</p>
     </div>
     <div class="card-footer bg-transparent mb-2 mia-card-footer">
       <!-- <button type="button" class="btn btn-lg btn-block btn-primary">See modules</button> -->
-      <a class="btn btn-lg btn-block btn-primary" href="../../html/modules/visualisation/visualisation.html">
+      <a class="btn btn-lg btn-block btn-primary mia-main-text-large mia-card-button" href="../../html/modules/visualisation/visualisation.html">
         See modules
       </a>
     </div>
   </div><div class="card mb-4 box-shadow mia-card">
     <div class="card-header bg-secondary">
-      <h4 class="my-0 mia-card-title text-light">Workflow</h4>
+      <p class="my-0 mia-main-text-large text-light">Workflow</p>
     </div>
-    <div class="card-body">
+    <div class="card-body mia-main-text">
       <p class="card-text mb-4">
         Modules capable of controlling the order of module execution.  For example, skipping specific modules if certain criteria are met.</p>
     </div>
     <div class="card-footer bg-transparent mb-2 mia-card-footer">
       <!-- <button type="button" class="btn btn-lg btn-block btn-primary">See modules</button> -->
-      <a class="btn btn-lg btn-block btn-primary" href="../../html/modules/workflow/workflow.html">
+      <a class="btn btn-lg btn-block btn-primary mia-main-text-large mia-card-button" href="../../html/modules/workflow/workflow.html">
         See modules
       </a>
     </div>

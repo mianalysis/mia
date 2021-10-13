@@ -56,27 +56,27 @@
   </nav>
 
   <div class="page-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
-    <p class="mia-path"><a href="../../../../html/modules/modules.html">Modules</a> > <a href="../../../../html/modules/images/images.html">Images</a> > <a href="../../../../html/modules/images/transform/transform.html">Transform</a></p>
-    <h1 class="display-4">Crop image</h1>
-    <p class="mia-description">Crop an image in X and Y using pre-defined limits or limits based on the extents of objects in a collection.</p>
+    <p class="mia-main-text"><a href="../../../../html/modules/modules.html">Modules</a> > <a href="../../../../html/modules/images/images.html">Images</a> > <a href="../../../../html/modules/images/transform/transform.html">Transform</a></p>
+    <p class="mia-title">Crop image</p>
+    <p class="mia-main-text-large">Crop an image in X and Y using pre-defined limits or limits based on the extents of objects in a collection.</p>
 </div>
 
 <div class="pt-md-2 pb-md-4 mx-auto mia-page">
-    <h2 class="text-center mia-section-title">Description</h2>
+    <p class="text-center mia-heading">Description</p>
     <p class="text-center mia-main-text">Crop an image in X and Y using pre-defined limits or limits based on the extents of objects in a collection.  Any pixels outside the specified limits are discarded.<br><br>Note: The x-min, y-min, width and height limits used here are in the same order and format as those output by ImageJ's default rectangle region of interest tool (i.e. displayed in the status bar of the ImageJ control panel).</p>
 </div>
 
 <div class="pt-md-2 pb-md-4 mx-auto mia-page">
-    <h2 class="text-center mia-section-title">Parameters</h2>
+    <p class="text-center mia-heading">Parameters</p>
     <!-- <p class="text-center mia-main-text"><tr><td class="mia-table-text-bold">Input image</td><td>Image from workspace to apply crop process to.</td></tr><tr><td class="mia-table-text-bold">Apply to input image</td><td>Select if the crop should be applied directly to the input image, or if it should be applied to a duplicate, then stored as a different image in the workspace.</td></tr><tr><td class="mia-table-text-bold">Output image</td><td>Name of the output image created during the cropping process if storing the cropped image as a new image in the workspace ("Apply to input image" parameter).</td></tr><tr><td class="mia-table-text-bold">Limits mode</td><td>Controls how the limits for the cropped region are specified:<br><ul><li>"Fixed values" The input image will be cropped to the region specified by the fixed values, "Left coordinate", "Top coordinate", "Width" and "Height".</li><li>"Object collection limits" The input image will be cropped to the region corresponding to the limits of the object collection specified by "Input objects"</li></ul></td></tr><tr><td class="mia-table-text-bold">Left coordinate</td><td>Left crop coordinate.  All pixels with x-coordinates lower than this will be removed.  Specified in pixel units with indexing starting at 0.</td></tr><tr><td class="mia-table-text-bold">Top coordinate</td><td>Top crop coordinate.  All pixels with y-coordinates lower than this will be removed.  Specified in pixel units with indexing starting at 0.</td></tr><tr><td class="mia-table-text-bold">Width</td><td>Width (number of columns) of the output cropped region.  Specified in pixel units.</td></tr><tr><td class="mia-table-text-bold">Height</td><td>Height (number of rows) of the output cropped region.  Specified in pixel units.</td></tr><tr><td class="mia-table-text-bold">Input objects</td><td>When "Limits mode" is set to "Object collection limits", these are the objects that will be used to define the cropped region.</td></tr></p> -->
     <table class="table table-striped">
-        <thead class="mia-table-text-bold">
+        <thead class="mia-main-text-small mia-bold">
             <tr>
                 <td>Parameter</th>
                 <td>Description</th>
             </tr>
         </thead>
-        <tbody class="mia-table-text">
+        <tbody class="mia-main-text-small">
             <tr><td class="mia-table-text-bold">Input image</td><td>Image from workspace to apply crop process to.</td></tr><tr><td class="mia-table-text-bold">Apply to input image</td><td>Select if the crop should be applied directly to the input image, or if it should be applied to a duplicate, then stored as a different image in the workspace.</td></tr><tr><td class="mia-table-text-bold">Output image</td><td>Name of the output image created during the cropping process if storing the cropped image as a new image in the workspace ("Apply to input image" parameter).</td></tr><tr><td class="mia-table-text-bold">Limits mode</td><td>Controls how the limits for the cropped region are specified:<br><ul><li>"Fixed values" The input image will be cropped to the region specified by the fixed values, "Left coordinate", "Top coordinate", "Width" and "Height".</li><li>"Object collection limits" The input image will be cropped to the region corresponding to the limits of the object collection specified by "Input objects"</li></ul></td></tr><tr><td class="mia-table-text-bold">Left coordinate</td><td>Left crop coordinate.  All pixels with x-coordinates lower than this will be removed.  Specified in pixel units with indexing starting at 0.</td></tr><tr><td class="mia-table-text-bold">Top coordinate</td><td>Top crop coordinate.  All pixels with y-coordinates lower than this will be removed.  Specified in pixel units with indexing starting at 0.</td></tr><tr><td class="mia-table-text-bold">Width</td><td>Width (number of columns) of the output cropped region.  Specified in pixel units.</td></tr><tr><td class="mia-table-text-bold">Height</td><td>Height (number of rows) of the output cropped region.  Specified in pixel units.</td></tr><tr><td class="mia-table-text-bold">Input objects</td><td>When "Limits mode" is set to "Object collection limits", these are the objects that will be used to define the cropped region.</td></tr>
         </tbody>
     </table>

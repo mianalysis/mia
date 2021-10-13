@@ -56,27 +56,27 @@
   </nav>
 
   <div class="page-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
-    <p class="mia-path"><a href="../../../../../html/modules/modules.html">Modules</a> > <a href="../../../../../html/modules/objects/objects.html">Objects</a> > <a href="../../../../../html/modules/objects/measure/measure.html">Measure</a> > <a href="../../../../../html/modules/objects/measure/miscellaneous/miscellaneous.html">Miscellaneous</a></p>
-    <h1 class="display-4">Apply Weka object classification</h1>
-    <p class="mia-description">Apply a previously-prepared WEKA object classifier to a specified object collection from the workspace.</p>
+    <p class="mia-main-text"><a href="../../../../../html/modules/modules.html">Modules</a> > <a href="../../../../../html/modules/objects/objects.html">Objects</a> > <a href="../../../../../html/modules/objects/measure/measure.html">Measure</a> > <a href="../../../../../html/modules/objects/measure/miscellaneous/miscellaneous.html">Miscellaneous</a></p>
+    <p class="mia-title">Apply Weka object classification</p>
+    <p class="mia-main-text-large">Apply a previously-prepared WEKA object classifier to a specified object collection from the workspace.</p>
 </div>
 
 <div class="pt-md-2 pb-md-4 mx-auto mia-page">
-    <h2 class="text-center mia-section-title">Description</h2>
+    <p class="text-center mia-heading">Description</p>
     <p class="text-center mia-main-text">Apply a previously-prepared WEKA object classifier to a specified object collection from the workspace.  Classification can be based on a range of measurements associated with the input objects.  All measurements used to create this model should be present in the input objects and have the same names (i.e. measurement names shouldn't be changed during preparation of training data).<br><br>The probability of each input object belonging to each class is output as a measurement associated with that object.  Each object also has a class index (based on the order the classes are listed in the .model file) indicating the most probable class that object belongs to.</p>
 </div>
 
 <div class="pt-md-2 pb-md-4 mx-auto mia-page">
-    <h2 class="text-center mia-section-title">Parameters</h2>
+    <p class="text-center mia-heading">Parameters</p>
     <!-- <p class="text-center mia-main-text"><tr><td class="mia-table-text-bold">Input objects</td><td>Input objects from workspace which will be classified based on model specified by "Classifier path" parameter.</td></tr><tr><td class="mia-table-text-bold">Classifier path</td><td>WEKA model (.model extension) that will be used to classify input objects based on a variety of measurements.  This model must be created in the <a href="https://www.cs.waikato.ac.nz/ml/index.html">WEKA software</a>.  All measurements used to create this model should be present in the input objects and have the same names (i.e. measurement names shouldn't be changed during preparation of training data).</td></tr><tr><td class="mia-table-text-bold">Apply normalisation</td><td>When selected, measurements will be normalised (set to the range 0-1) within their respective classes.</td></tr></p> -->
     <table class="table table-striped">
-        <thead class="mia-table-text-bold">
+        <thead class="mia-main-text-small mia-bold">
             <tr>
                 <td>Parameter</th>
                 <td>Description</th>
             </tr>
         </thead>
-        <tbody class="mia-table-text">
+        <tbody class="mia-main-text-small">
             <tr><td class="mia-table-text-bold">Input objects</td><td>Input objects from workspace which will be classified based on model specified by "Classifier path" parameter.</td></tr><tr><td class="mia-table-text-bold">Classifier path</td><td>WEKA model (.model extension) that will be used to classify input objects based on a variety of measurements.  This model must be created in the <a href="https://www.cs.waikato.ac.nz/ml/index.html">WEKA software</a>.  All measurements used to create this model should be present in the input objects and have the same names (i.e. measurement names shouldn't be changed during preparation of training data).</td></tr><tr><td class="mia-table-text-bold">Apply normalisation</td><td>When selected, measurements will be normalised (set to the range 0-1) within their respective classes.</td></tr>
         </tbody>
     </table>

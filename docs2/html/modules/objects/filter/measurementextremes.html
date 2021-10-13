@@ -56,27 +56,27 @@
   </nav>
 
   <div class="page-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
-    <p class="mia-path"><a href="../../../../html/modules/modules.html">Modules</a> > <a href="../../../../html/modules/objects/objects.html">Objects</a> > <a href="../../../../html/modules/objects/filter/filter.html">Filter</a></p>
-    <h1 class="display-4">Measurement extremes</h1>
-    <p class="mia-description">Filter an object collection to remove/retain the object with the largest/smallest value for a specific measurement.</p>
+    <p class="mia-main-text"><a href="../../../../html/modules/modules.html">Modules</a> > <a href="../../../../html/modules/objects/objects.html">Objects</a> > <a href="../../../../html/modules/objects/filter/filter.html">Filter</a></p>
+    <p class="mia-title">Measurement extremes</p>
+    <p class="mia-main-text-large">Filter an object collection to remove/retain the object with the largest/smallest value for a specific measurement.</p>
 </div>
 
 <div class="pt-md-2 pb-md-4 mx-auto mia-page">
-    <h2 class="text-center mia-section-title">Description</h2>
+    <p class="text-center mia-heading">Description</p>
     <p class="text-center mia-main-text">Filter an object collection to remove/retain the object with the largest/smallest value for a specific measurement.  The objects identified for removal can be indeed removed from the input collection, moved to another collection (and removed from the input collection) or simply counted (but retained in the input collection).</p>
 </div>
 
 <div class="pt-md-2 pb-md-4 mx-auto mia-page">
-    <h2 class="text-center mia-section-title">Parameters</h2>
+    <p class="text-center mia-heading">Parameters</p>
     <!-- <p class="text-center mia-main-text"><tr><td class="mia-table-text-bold">Input objects</td><td>Objects to be filtered.</td></tr><tr><td class="mia-table-text-bold">Filter mode</td><td>Controls what happens to objects which don't pass the filter:<br><ul><li>"Do nothing" Retains all input objects, irrespective of whether they passed or failed the filter.  This is useful when also storing the filter results as metadata values (i.e. just counting the number of objects which pass the filter).</li><li>"Move filtered objects to new class" Objects failing the filter are moved to a new object class.  The name of the class is determined by the "Output (filtered) objects" parameter.  All existing measurements and relationships are carried forward into the new object collection.</li><li>"Remove filtered objects" (default) Removes objects failing the filter.  Once removed, these objects are unavailable for further use by modules and won't be included in exported results.</li></ul></td></tr><tr><td class="mia-table-text-bold">Output (filtered) objects</td><td>New object collection containing input objects which did not pass the filter.  These objects are only stored if "Filter mode" is set to "Move filtered objects to new class".</td></tr><tr><td class="mia-table-text-bold">Method for filtering</td><td>Controls what happens to objects which don't pass the filter:<br><br>- "Remove object with largest measurement" Remove the object with the largest value measurement specified by "Measurement to filter on".<br><br>- "Remove object with smallest measurement" Remove the object with the smallest value measurement specified by "Measurement to filter on".<br><br>- "Retain object with largest measurement" Retain only the object with the largest value measurement specified by "Measurement to filter on".<br><br>- "Retain object with smallest measurement" Retain only the object with the smallest value measurement specified by "Measurement to filter on".<br></td></tr><tr><td class="mia-table-text-bold">Measurement to filter on</td><td>Objects will be filtered against their value of this measurement.  Objects missing this measurement are not removed; however, they can be removed by using the module "With / without measurement".</td></tr></p> -->
     <table class="table table-striped">
-        <thead class="mia-table-text-bold">
+        <thead class="mia-main-text-small mia-bold">
             <tr>
                 <td>Parameter</th>
                 <td>Description</th>
             </tr>
         </thead>
-        <tbody class="mia-table-text">
+        <tbody class="mia-main-text-small">
             <tr><td class="mia-table-text-bold">Input objects</td><td>Objects to be filtered.</td></tr><tr><td class="mia-table-text-bold">Filter mode</td><td>Controls what happens to objects which don't pass the filter:<br><ul><li>"Do nothing" Retains all input objects, irrespective of whether they passed or failed the filter.  This is useful when also storing the filter results as metadata values (i.e. just counting the number of objects which pass the filter).</li><li>"Move filtered objects to new class" Objects failing the filter are moved to a new object class.  The name of the class is determined by the "Output (filtered) objects" parameter.  All existing measurements and relationships are carried forward into the new object collection.</li><li>"Remove filtered objects" (default) Removes objects failing the filter.  Once removed, these objects are unavailable for further use by modules and won't be included in exported results.</li></ul></td></tr><tr><td class="mia-table-text-bold">Output (filtered) objects</td><td>New object collection containing input objects which did not pass the filter.  These objects are only stored if "Filter mode" is set to "Move filtered objects to new class".</td></tr><tr><td class="mia-table-text-bold">Method for filtering</td><td>Controls what happens to objects which don't pass the filter:<br><br>- "Remove object with largest measurement" Remove the object with the largest value measurement specified by "Measurement to filter on".<br><br>- "Remove object with smallest measurement" Remove the object with the smallest value measurement specified by "Measurement to filter on".<br><br>- "Retain object with largest measurement" Retain only the object with the largest value measurement specified by "Measurement to filter on".<br><br>- "Retain object with smallest measurement" Retain only the object with the smallest value measurement specified by "Measurement to filter on".<br></td></tr><tr><td class="mia-table-text-bold">Measurement to filter on</td><td>Objects will be filtered against their value of this measurement.  Objects missing this measurement are not removed; however, they can be removed by using the module "With / without measurement".</td></tr>
         </tbody>
     </table>

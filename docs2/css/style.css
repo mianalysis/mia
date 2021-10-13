@@ -6,59 +6,12 @@
 
 .mia-page {
   max-width: 960px;
-}
-
-.mia-path-nav {
-  max-height: 40px;
-}
-
-.mia-main-text {
-  font-size: 1.1rem;
-  font-weight: 350;
-}
-
-.mia-main-text-bold {
-  font-size: 1rem;
-  font-weight: 500;
-}
-
-.mia-table-text {
-  font-size: 1rem;
-  font-weight: 350;
-}
-
-.mia-table-text-bold {
-  font-size: 1rem;
-  font-weight: 500;
-}
-
-.mia-section-title {
-  font-size: 2rem;
-  font-weight: 350;
+  padding-left: 10px;
+  padding-right: 10px;
 }
 
 .mia-card-container {
   max-width: 960px;
-}
-
-.mia-description {
-  font-size: 1.3rem;
-  font-weight: 350;
-}
-
-.mia-path {
-  font-size: 1.2rem;
-  font-weight: 350;
-}
-
-.mia-card-title {
-  font-size: 1.2rem;
-  font-weight: 400;
-}
-
-.card-body {
-  font-size: 1rem;
-  font-weight: 350;
 }
 
 .mia-card {
@@ -79,7 +32,6 @@
   -moz-box-shadow: 0 8px 0px 0px #aaa;
   box-shadow: 0 4px 4px 0px rgba(0, 0, 0, .05);
 
-  /* the rest of your styling */
 }
 
 .page-header {
@@ -98,6 +50,84 @@
   margin-top: 0;
 }
 
+.card-header {
+  padding: 0.5rem 1.25rem;
+}
+
+.card-body {
+  padding: 0.5rem 0.75rem 0rem;
+}
+
+.mia-card-button {
+  padding:0.2rem;
+}
+
+.mia-title-small {
+  font-size: 1.4rem;
+  font-weight: 350;
+  margin-bottom: 0;
+}
+
+.mia-title {
+  font-size: 1.8rem;
+  font-weight: 350;
+}
+
+.mia-heading {
+  font-size: 1.4rem;
+  font-weight: 350;
+}
+
+.mia-main-text-small {
+  font-size: 0.8rem;
+  font-weight: 350;
+}
+
+.mia-main-text {
+  font-size: 1rem;
+  font-weight: 350;
+}
+
+.mia-main-text-large {
+  font-size: 1.1rem;
+  font-weight: 350;
+}
+
+.mia-bold {
+  font-weight: 500;
+}
+
+.mia-carousel-indicators {
+  display: none;
+}
+
+.mia-carousel-button {  
+  margin-bottom: 0.2rem;
+  padding: .2rem .375rem;
+}
+
+.mia-carousel-caption {
+  bottom:-10px;
+}
+
+
 footer {
     background-color: #424242;
+}
+
+@media (min-width: 520px) { 
+  .mia-carousel-button {padding: .375rem .375rem;}
+  .mia-carousel-caption {bottom:20px} 
+  .mia-carousel-indicators {display:flex}
+
+  .card-header { padding: 0.75rem 1.25rem; }
+  .card-body { padding: 1.25rem; }
+  .mia-card-button { padding:0.5rem 1rem;}
+
+  .mia-title-small {font-size:3rem;margin-bottom: 1rem;}
+  .mia-title {font-size:2.6rem;}
+  .mia-heading {font-size:2rem;}
+  .mia-main-text-small {font-size: 1rem;}
+  .mia-main-text {font-size: 1.1rem;}
+  .mia-main-text-large{ font-size: 1.3rem;}
 }

@@ -56,27 +56,27 @@
   </nav>
 
   <div class="page-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
-    <p class="mia-path"><a href="../../../html/modules/modules.html">Modules</a> > <a href="../../../html/modules/visualisation/visualisation.html">Visualisation</a></p>
-    <h1 class="display-4">Create measurement map</h1>
-    <p class="mia-description">Creates a map of object measurements.</p>
+    <p class="mia-main-text"><a href="../../../html/modules/modules.html">Modules</a> > <a href="../../../html/modules/visualisation/visualisation.html">Visualisation</a></p>
+    <p class="mia-title">Create measurement map</p>
+    <p class="mia-main-text-large">Creates a map of object measurements.</p>
 </div>
 
 <div class="pt-md-2 pb-md-4 mx-auto mia-page">
-    <h2 class="text-center mia-section-title">Description</h2>
+    <p class="text-center mia-heading">Description</p>
     <p class="text-center mia-main-text">Creates a map of object measurements.  Each pixel of the output map is a combination of all object measurements at that location.  Measurements can be taken from the input objects themselves or from associated parent objects.  Multiple Z-slices and/or timepoints can be combined into a single slice.  The outmap is blurred with a Gaussian function to show smooth transitions between regions.</p>
 </div>
 
 <div class="pt-md-2 pb-md-4 mx-auto mia-page">
-    <h2 class="text-center mia-section-title">Parameters</h2>
+    <p class="text-center mia-heading">Parameters</p>
     <!-- <p class="text-center mia-main-text"><tr><td class="mia-table-text-bold">Input objects</td><td>Objects from workspace for which the measurement map will be created.</td></tr><tr><td class="mia-table-text-bold">Output image</td><td>Output image showing the measurement map which will be output to the workspace.  The value at each location will be based on the measurements of nearby objects.  Any pixels too far from an object (this distance will be controlled by the blur range, "Range") will be assigned NaN (not a number) values.</td></tr><tr><td class="mia-table-text-bold">Measurement mode</td><td>Controls whether the measurements being rendered for each object are measurements associated with that object ("Measurement") or are measurements associated with a parent object ("Parent object measurement").</td></tr><tr><td class="mia-table-text-bold">Statistic</td><td>Controls the statistic that will be used to combine multiple object measurements at each location.  For example, if two objects overlap at a specific location (occurs more frequently when "Merge slices" or "Merge time" are selected), the value at that location could be an average (or any other listed statistic) of the two.</td></tr><tr><td class="mia-table-text-bold">Parent object</td><td>If "Measurement mode" is set to "Parent object measurement", this is the parent object collection from which the measurement (specified by "Measurement") will be taken.</td></tr><tr><td class="mia-table-text-bold">Measurement</td><td>Controls the measurement for each object that will be rendered on the measurement map.  Depending on the setting for "Measurement mode", this can either be a measurement associated with the input object or with a parent of that object.</td></tr><tr><td class="mia-table-text-bold">Range</td><td>The measurement map can be blurred using a Gaussian distribution.  This is the sigma value for that blurring function.</td></tr><tr><td class="mia-table-text-bold">Merge slices</td><td>When selected, all measurements from different slices are combined into a single slice.</td></tr><tr><td class="mia-table-text-bold">Merge time</td><td>When selected, all measurements from different timepoints are combined into a single timepoint.</td></tr></p> -->
     <table class="table table-striped">
-        <thead class="mia-table-text-bold">
+        <thead class="mia-main-text-small mia-bold">
             <tr>
                 <td>Parameter</th>
                 <td>Description</th>
             </tr>
         </thead>
-        <tbody class="mia-table-text">
+        <tbody class="mia-main-text-small">
             <tr><td class="mia-table-text-bold">Input objects</td><td>Objects from workspace for which the measurement map will be created.</td></tr><tr><td class="mia-table-text-bold">Output image</td><td>Output image showing the measurement map which will be output to the workspace.  The value at each location will be based on the measurements of nearby objects.  Any pixels too far from an object (this distance will be controlled by the blur range, "Range") will be assigned NaN (not a number) values.</td></tr><tr><td class="mia-table-text-bold">Measurement mode</td><td>Controls whether the measurements being rendered for each object are measurements associated with that object ("Measurement") or are measurements associated with a parent object ("Parent object measurement").</td></tr><tr><td class="mia-table-text-bold">Statistic</td><td>Controls the statistic that will be used to combine multiple object measurements at each location.  For example, if two objects overlap at a specific location (occurs more frequently when "Merge slices" or "Merge time" are selected), the value at that location could be an average (or any other listed statistic) of the two.</td></tr><tr><td class="mia-table-text-bold">Parent object</td><td>If "Measurement mode" is set to "Parent object measurement", this is the parent object collection from which the measurement (specified by "Measurement") will be taken.</td></tr><tr><td class="mia-table-text-bold">Measurement</td><td>Controls the measurement for each object that will be rendered on the measurement map.  Depending on the setting for "Measurement mode", this can either be a measurement associated with the input object or with a parent of that object.</td></tr><tr><td class="mia-table-text-bold">Range</td><td>The measurement map can be blurred using a Gaussian distribution.  This is the sigma value for that blurring function.</td></tr><tr><td class="mia-table-text-bold">Merge slices</td><td>When selected, all measurements from different slices are combined into a single slice.</td></tr><tr><td class="mia-table-text-bold">Merge time</td><td>When selected, all measurements from different timepoints are combined into a single timepoint.</td></tr>
         </tbody>
     </table>

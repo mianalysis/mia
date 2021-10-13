@@ -56,27 +56,27 @@
   </nav>
 
   <div class="page-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
-    <p class="mia-path"><a href="../../../../html/modules/modules.html">Modules</a> > <a href="../../../../html/modules/images/images.html">Images</a> > <a href="../../../../html/modules/images/process/process.html">Process</a></p>
-    <h1 class="display-4">Image type converter</h1>
-    <p class="mia-description">Change the bit-depth of an image stack.</p>
+    <p class="mia-main-text"><a href="../../../../html/modules/modules.html">Modules</a> > <a href="../../../../html/modules/images/images.html">Images</a> > <a href="../../../../html/modules/images/process/process.html">Process</a></p>
+    <p class="mia-title">Image type converter</p>
+    <p class="mia-main-text-large">Change the bit-depth of an image stack.</p>
 </div>
 
 <div class="pt-md-2 pb-md-4 mx-auto mia-page">
-    <h2 class="text-center mia-section-title">Description</h2>
+    <p class="text-center mia-heading">Description</p>
     <p class="text-center mia-main-text">Change the bit-depth of an image stack.  This module provides multiple ways to handle the intensity transformation from one bit-depth to another.<br><br>Note: Different scaling modes currently only apply when reducing the bit-depth of an image.  As such, converting from 8-bit to 16-bit will always result in direct conversion of intensities.</p>
 </div>
 
 <div class="pt-md-2 pb-md-4 mx-auto mia-page">
-    <h2 class="text-center mia-section-title">Parameters</h2>
+    <p class="text-center mia-heading">Parameters</p>
     <!-- <p class="text-center mia-main-text"><tr><td class="mia-table-text-bold">Input image</td><td>Input image to be converted to another bit-depth.</td></tr><tr><td class="mia-table-text-bold">Apply to input image</td><td>If selected, the converted image will replace the input image in the workspace.  All measurements associated with the input image will be transferred to the converted image.</td></tr><tr><td class="mia-table-text-bold">Output image</td><td>Name of the output converted image.</td></tr><tr><td class="mia-table-text-bold">Output image type</td><td>Target bit-depth to convert the image to.  Pixel intensities will lie within the following ranges for each bit-depth: 8-bit (0-255), 16-bit (0-65535), 32-bit (floating point precision).</td></tr><tr><td class="mia-table-text-bold">Scaling mode</td><td>Method for calculating the intensity transformation between the input and output bit-depths:<br><ul><li>"Clip (direct conversion)" Will convert directly from the input to output bit-depth without performing any intensity scaling.  As such, any input intensities outside the available range of the output bit-depth will be clipped to the closest possible value.  For example, an input 16-bit image with intensity range 234-34563 converted to 8-bit will have an output range of 234-255.</li><li>"Fill target range (normalise)" Will stretch the input intensity range to fill the available output intensity range.  For example, an input 16-bit image with intensity range 234-34563 converted to 8-bit will have an output range of 0-255.  Images converted to 32-bit will be scaled to the range 0-1.</li><li>"Scale proportionally" Will proportionately scale intensities such that the input and output intensity ranges fill their respective bit-depths by equal amounts.  For example, an input 16-bit image with intensity range 234-34563 converted to 8-bit will have an output range of 1-135.</li></ul></td></tr></p> -->
     <table class="table table-striped">
-        <thead class="mia-table-text-bold">
+        <thead class="mia-main-text-small mia-bold">
             <tr>
                 <td>Parameter</th>
                 <td>Description</th>
             </tr>
         </thead>
-        <tbody class="mia-table-text">
+        <tbody class="mia-main-text-small">
             <tr><td class="mia-table-text-bold">Input image</td><td>Input image to be converted to another bit-depth.</td></tr><tr><td class="mia-table-text-bold">Apply to input image</td><td>If selected, the converted image will replace the input image in the workspace.  All measurements associated with the input image will be transferred to the converted image.</td></tr><tr><td class="mia-table-text-bold">Output image</td><td>Name of the output converted image.</td></tr><tr><td class="mia-table-text-bold">Output image type</td><td>Target bit-depth to convert the image to.  Pixel intensities will lie within the following ranges for each bit-depth: 8-bit (0-255), 16-bit (0-65535), 32-bit (floating point precision).</td></tr><tr><td class="mia-table-text-bold">Scaling mode</td><td>Method for calculating the intensity transformation between the input and output bit-depths:<br><ul><li>"Clip (direct conversion)" Will convert directly from the input to output bit-depth without performing any intensity scaling.  As such, any input intensities outside the available range of the output bit-depth will be clipped to the closest possible value.  For example, an input 16-bit image with intensity range 234-34563 converted to 8-bit will have an output range of 234-255.</li><li>"Fill target range (normalise)" Will stretch the input intensity range to fill the available output intensity range.  For example, an input 16-bit image with intensity range 234-34563 converted to 8-bit will have an output range of 0-255.  Images converted to 32-bit will be scaled to the range 0-1.</li><li>"Scale proportionally" Will proportionately scale intensities such that the input and output intensity ranges fill their respective bit-depths by equal amounts.  For example, an input 16-bit image with intensity range 234-34563 converted to 8-bit will have an output range of 1-135.</li></ul></td></tr>
         </tbody>
     </table>

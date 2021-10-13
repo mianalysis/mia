@@ -56,27 +56,27 @@
   </nav>
 
   <div class="page-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
-    <p class="mia-path"><a href="../../../../html/modules/modules.html">Modules</a> > <a href="../../../../html/modules/images/images.html">Images</a> > <a href="../../../../html/modules/images/transform/transform.html">Transform</a></p>
-    <h1 class="display-4">Convert 3D stack (switch Z and T)</h1>
-    <p class="mia-description">Emsures 3D stacks (or 4D with multiple channels) are of the expected type (timeseries or Z-stack).</p>
+    <p class="mia-main-text"><a href="../../../../html/modules/modules.html">Modules</a> > <a href="../../../../html/modules/images/images.html">Images</a> > <a href="../../../../html/modules/images/transform/transform.html">Transform</a></p>
+    <p class="mia-title">Convert 3D stack (switch Z and T)</p>
+    <p class="mia-main-text-large">Emsures 3D stacks (or 4D with multiple channels) are of the expected type (timeseries or Z-stack).</p>
 </div>
 
 <div class="pt-md-2 pb-md-4 mx-auto mia-page">
-    <h2 class="text-center mia-section-title">Description</h2>
+    <p class="text-center mia-heading">Description</p>
     <p class="text-center mia-main-text">Emsures 3D stacks (or 4D with multiple channels) are of the expected type (timeseries or Z-stack).  This module verifies the singular dimension of a 3D stack is correct for the specified output type (e.g. single slice when dealing with timeseries).  Any stacks which are not in the expected order have their T and Z axes swapped.</p>
 </div>
 
 <div class="pt-md-2 pb-md-4 mx-auto mia-page">
-    <h2 class="text-center mia-section-title">Parameters</h2>
+    <p class="text-center mia-heading">Parameters</p>
     <!-- <p class="text-center mia-main-text"><tr><td class="mia-table-text-bold">Input image</td><td>Image from workspace to test T and Z inversion of.</td></tr><tr><td class="mia-table-text-bold">Apply to input image</td><td>When selected, the post-operation image will overwrite the input image in the workspace.  Otherwise, the image will be saved to the workspace with the name specified by the "Output image" parameter.</td></tr><tr><td class="mia-table-text-bold">Output image</td><td>If "Apply to input image" is not selected, the post-operation image will be saved to the workspace with this name.</td></tr><tr><td class="mia-table-text-bold">Mode</td><td>Controls the expected stack output type.  Any input stacks which do not match this format are updated to give the expected order.  Choices are: Output timeseries, Output Z-stack.</td></tr></p> -->
     <table class="table table-striped">
-        <thead class="mia-table-text-bold">
+        <thead class="mia-main-text-small mia-bold">
             <tr>
                 <td>Parameter</th>
                 <td>Description</th>
             </tr>
         </thead>
-        <tbody class="mia-table-text">
+        <tbody class="mia-main-text-small">
             <tr><td class="mia-table-text-bold">Input image</td><td>Image from workspace to test T and Z inversion of.</td></tr><tr><td class="mia-table-text-bold">Apply to input image</td><td>When selected, the post-operation image will overwrite the input image in the workspace.  Otherwise, the image will be saved to the workspace with the name specified by the "Output image" parameter.</td></tr><tr><td class="mia-table-text-bold">Output image</td><td>If "Apply to input image" is not selected, the post-operation image will be saved to the workspace with this name.</td></tr><tr><td class="mia-table-text-bold">Mode</td><td>Controls the expected stack output type.  Any input stacks which do not match this format are updated to give the expected order.  Choices are: Output timeseries, Output Z-stack.</td></tr>
         </tbody>
     </table>

@@ -29,6 +29,8 @@ public class ModuleEnabledButton extends JButton implements ActionListener {
             ModuleEnabledButton.class.getResource("/icons/power_orange_12px.png"), "");
     private static final ImageIcon greenIcon = new ImageIcon(
             ModuleEnabledButton.class.getResource("/icons/power_brightgreen_12px.png"), "");
+    private static final ImageIcon darkBlueIcon = new ImageIcon(
+            ModuleEnabledButton.class.getResource("/icons/power_darkblue_12px.png"), "");
 
     public ModuleEnabledButton(Module module) {
         this.module = module;
@@ -45,7 +47,9 @@ public class ModuleEnabledButton extends JButton implements ActionListener {
     }
 
     public void updateState() {
-        if (module.isEnabled() && module.isReachable() && module.isRunnable())
+        if (module instanceof GUISeparator && module.isEnabled())
+            setIcon(darkBlueIcon);
+        else if (module.isEnabled() && module.isReachable() && module.isRunnable())
             setIcon(greenIcon);
         else if (module.isEnabled() & !module.isReachable())
             setIcon(orangeIcon);

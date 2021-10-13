@@ -56,27 +56,27 @@
   </nav>
 
   <div class="page-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
-    <p class="mia-path"><a href="../../../../../html/modules/modules.html">Modules</a> > <a href="../../../../../html/modules/objects/objects.html">Objects</a> > <a href="../../../../../html/modules/objects/measure/measure.html">Measure</a> > <a href="../../../../../html/modules/objects/measure/spatial/spatial.html">Spatial</a></p>
-    <h1 class="display-4">Measure object shape</h1>
-    <p class="mia-description">Measures various spatial metrics for each object in a specified object collection from the workspace.</p>
+    <p class="mia-main-text"><a href="../../../../../html/modules/modules.html">Modules</a> > <a href="../../../../../html/modules/objects/objects.html">Objects</a> > <a href="../../../../../html/modules/objects/measure/measure.html">Measure</a> > <a href="../../../../../html/modules/objects/measure/spatial/spatial.html">Spatial</a></p>
+    <p class="mia-title">Measure object shape</p>
+    <p class="mia-main-text-large">Measures various spatial metrics for each object in a specified object collection from the workspace.</p>
 </div>
 
 <div class="pt-md-2 pb-md-4 mx-auto mia-page">
-    <h2 class="text-center mia-section-title">Description</h2>
+    <p class="text-center mia-heading">Description</p>
     <p class="text-center mia-main-text">Measures various spatial metrics for each object in a specified object collection from the workspace.  Measurements are associated with the relevant input object.  When dealing with 3D objects (those with coordinates spanning multiple Z-slices) a 2D projection into the XY plane will be used.</p>
 </div>
 
 <div class="pt-md-2 pb-md-4 mx-auto mia-page">
-    <h2 class="text-center mia-section-title">Parameters</h2>
+    <p class="text-center mia-heading">Parameters</p>
     <!-- <p class="text-center mia-main-text"><tr><td class="mia-table-text-bold">Input objects</td><td>Input objects from workspace.  Shape metrics will be calculated for each object and stored as measurements associated with that object.</td></tr><tr><td class="mia-table-text-bold">Measure volume</td><td>When selected, 3D volume metrics will be calculated for each input object.  Metrics are: volume (px³), volume (calibrated_units³), number of voxels, base area (px²), base area (calibrated_units²), height (n_slices) and height (calibrated_units).</td></tr><tr><td class="mia-table-text-bold">Measure projected area</td><td>When selected, 2D area metrics will be calculated for each input object.  For 3D objects, a 2D projection in the XY plane is used for measurements.  This projection includes all XY coordinates present in any Z-slice.  Metrics are: area (px²) and area (calibrated_units²).</td></tr><tr><td class="mia-table-text-bold">Measure projected diameter</td><td>When selected, the diameter of 2D objects will be calculated for each input object.  For 3D objects, a 2D projection in the XY plane is used for measurements.  This projection includes all XY coordinates present in any Z-slice.  Metrics are: diameter (px) and diameter (calibrated_units).</td></tr><tr><td class="mia-table-text-bold">Measure projected perimeter</td><td>When selected, the perimeter and circularity of 2D objects will be calculated for each input object.  For 3D objects, a 2D projection in the XY plane is used for measurements.  This projection includes all XY coordinates present in any Z-slice.  Metrics are: perimeter (px), perimeter (calibrated_units) and circularity.</td></tr><tr><td class="mia-table-text-bold">Enable multithreading</td><td>Process multiple input objects simultaneously.  This can provide a speed improvement when working on a computer with a multi-core CPU.</td></tr></p> -->
     <table class="table table-striped">
-        <thead class="mia-table-text-bold">
+        <thead class="mia-main-text-small mia-bold">
             <tr>
                 <td>Parameter</th>
                 <td>Description</th>
             </tr>
         </thead>
-        <tbody class="mia-table-text">
+        <tbody class="mia-main-text-small">
             <tr><td class="mia-table-text-bold">Input objects</td><td>Input objects from workspace.  Shape metrics will be calculated for each object and stored as measurements associated with that object.</td></tr><tr><td class="mia-table-text-bold">Measure volume</td><td>When selected, 3D volume metrics will be calculated for each input object.  Metrics are: volume (px³), volume (calibrated_units³), number of voxels, base area (px²), base area (calibrated_units²), height (n_slices) and height (calibrated_units).</td></tr><tr><td class="mia-table-text-bold">Measure projected area</td><td>When selected, 2D area metrics will be calculated for each input object.  For 3D objects, a 2D projection in the XY plane is used for measurements.  This projection includes all XY coordinates present in any Z-slice.  Metrics are: area (px²) and area (calibrated_units²).</td></tr><tr><td class="mia-table-text-bold">Measure projected diameter</td><td>When selected, the diameter of 2D objects will be calculated for each input object.  For 3D objects, a 2D projection in the XY plane is used for measurements.  This projection includes all XY coordinates present in any Z-slice.  Metrics are: diameter (px) and diameter (calibrated_units).</td></tr><tr><td class="mia-table-text-bold">Measure projected perimeter</td><td>When selected, the perimeter and circularity of 2D objects will be calculated for each input object.  For 3D objects, a 2D projection in the XY plane is used for measurements.  This projection includes all XY coordinates present in any Z-slice.  Metrics are: perimeter (px), perimeter (calibrated_units) and circularity.</td></tr><tr><td class="mia-table-text-bold">Enable multithreading</td><td>Process multiple input objects simultaneously.  This can provide a speed improvement when working on a computer with a multi-core CPU.</td></tr>
         </tbody>
     </table>
