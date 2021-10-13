@@ -281,14 +281,22 @@ public class DocumentationGenerator2 {
             return "";
 
         StringBuilder sb = new StringBuilder();
-        sb.append("<p class=\"mia-main-text\"><b>").append(parameter.getName()).append("</b>:  ").append(parameter.getDescription());
+        sb.append("<tr>");
+        sb.append("<td class=\"mia-table-text-bold\">");
+        sb.append(parameter.getName());
+        sb.append("</td>");
+        sb.append("<td>");
+        sb.append(parameter.getDescription());
+        sb.append("</td>");
+        sb.append("</tr>");
+        // sb.append("<p class=\"mia-main-text\"><b>").append(parameter.getName()).append("</b>:  ").append(parameter.getDescription());
 
         if (parameter instanceof ParameterGroup)
             for (Parameter collectionParam : ((ParameterGroup) parameter).getTemplateParameters().values())
                 sb.append(getParameterSummary(collectionParam));
 
-        if (!(parameter instanceof ChoiceP))
-            sb.append("<br>");
+        // if (!(parameter instanceof ChoiceP))
+        //     sb.append("<br>");
 
         return sb.toString();
 

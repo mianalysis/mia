@@ -11,8 +11,6 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css"
     integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
   <link href="../../../css/style.css" rel="stylesheet">
-  <!-- <link rel="preconnect" href="https://fonts.gstatic.com">
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400&display=swap" rel="stylesheet">  -->
 
   <!-- Javascript -->
   <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
@@ -28,10 +26,6 @@
   <!-- Navigation bar -->
   <nav class="navbar navbar-expand-md navbar-light bg-light sticky-top">
     <div class="container-fluid">
-      <!-- <a class="navbar-brand d-none d-sm-block mia-name" href="#"><img height="32" src="img/logo_64.png"
-          style="padding-right:8px;">Modular Image Analysis</a>
-      <a class="navbar-brand d-block d-sm-none" href="#"><img height="32" src="img/logo_64.png"
-          style="padding-right:8px;"></a> -->
       <a class="navbar-brand mia-name" href="../../../index.html" style="padding-top: 3px;padding-bottom: 0px;">
         <img height="36" src="../../../img/logo_64.png" style="padding-bottom: 3px; padding-right:8px;">
         Modular Image Analysis
@@ -45,27 +39,12 @@
           <li class="nav-item ">
             <a class="nav-link" href="../../../index.html">Home</a>
           </li>
-          <li class="nav-item dropdown ">
-            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownModules" role="button" data-toggle="dropdown"
-              aria-haspopup="true" aria-expanded="false">Guides</a>
-            <div class="dropdown-menu" aria-labelledby="navbarDropdownModules">
-              <a class="dropdown-item" href="../../../html/gettingstarted.html">Getting started</a>
-            </div>
+          <li class="nav-item ">
+              <a class="nav-link" href="../../../html/gettingstarted.html">Guides</a>
           </li>
           <li class="nav-item active">
             <a class="nav-link" href="../../../html/modules/modules.html">Modules</a>
           </li>
-          <!-- <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" id="navbarDropdownModules" role="button" data-toggle="dropdown"
-              aria-haspopup="true" aria-expanded="false">Modules</a>
-            <div class="dropdown-menu" aria-labelledby="navbarDropdownModules">
-              <a class="dropdown-item" href="../../../html/modules/modules.html">All categories</a>
-              <div class="dropdown-divider"></div>
-              <a class="dropdown-item" href="#">Package 1</a>
-              <a class="dropdown-item" href="#">Package 2</a>
-              <a class="dropdown-item" href="#">Package 3</a>
-            </div>
-          </li> -->
           <li class="nav-item ">
             <a class="nav-link" href="../../../html/about.html">About</a>
           </li>
@@ -89,7 +68,18 @@
 
 <div class="pt-md-2 pb-md-4 mx-auto mia-page">
     <h2 class="text-center mia-section-title">Parameters</h2>
-    <p class="text-center mia-main-text"><p class="mia-main-text"><b>Input image</b>:  Image from workspace for which orthogonal view will be generated.  This image will not be affected by the process.<br><p class="mia-main-text"><b>Output image</b>:  Output orthogonal image showing orthogonal views in XY, XZ and YZ planes.  The output image will be formed from three panels, showing the orthogonal views, with white pixels elsewhere.  This image will be stored in the workspace using this name.<br><p class="mia-main-text"><b>Position mode</b>:  Controls how the orthogonal views are generated:<br><ul><li>"Image centre" Orthogonal views are extracted as single slices from the input image.  The views share a common coordinate, coincident with the centre of the image.</li><li>"Centroid of largest object" Orthogonal views are extracted as single slices from the input image.  The views share a common coordinate, coincident with the centre of the largest object from the collection specified by "Input objects".</li></ul><p class="mia-main-text"><b>Input objects</b>:  If "Position mode" is set to "Centroid of largest object", the orthogonal views will be positioned coincident with the centroid of the largest object from this collection.<br></p>
+    <!-- <p class="text-center mia-main-text"><tr><td class="mia-table-text-bold">Input image</td><td>Image from workspace for which orthogonal view will be generated.  This image will not be affected by the process.</td></tr><tr><td class="mia-table-text-bold">Output image</td><td>Output orthogonal image showing orthogonal views in XY, XZ and YZ planes.  The output image will be formed from three panels, showing the orthogonal views, with white pixels elsewhere.  This image will be stored in the workspace using this name.</td></tr><tr><td class="mia-table-text-bold">Position mode</td><td>Controls how the orthogonal views are generated:<br><ul><li>"Image centre" Orthogonal views are extracted as single slices from the input image.  The views share a common coordinate, coincident with the centre of the image.</li><li>"Centroid of largest object" Orthogonal views are extracted as single slices from the input image.  The views share a common coordinate, coincident with the centre of the largest object from the collection specified by "Input objects".</li></ul></td></tr><tr><td class="mia-table-text-bold">Input objects</td><td>If "Position mode" is set to "Centroid of largest object", the orthogonal views will be positioned coincident with the centroid of the largest object from this collection.</td></tr></p> -->
+    <table class="table table-striped">
+        <thead class="mia-table-text-bold">
+            <tr>
+                <td>Parameter</th>
+                <td>Description</th>
+            </tr>
+        </thead>
+        <tbody class="mia-table-text">
+            <tr><td class="mia-table-text-bold">Input image</td><td>Image from workspace for which orthogonal view will be generated.  This image will not be affected by the process.</td></tr><tr><td class="mia-table-text-bold">Output image</td><td>Output orthogonal image showing orthogonal views in XY, XZ and YZ planes.  The output image will be formed from three panels, showing the orthogonal views, with white pixels elsewhere.  This image will be stored in the workspace using this name.</td></tr><tr><td class="mia-table-text-bold">Position mode</td><td>Controls how the orthogonal views are generated:<br><ul><li>"Image centre" Orthogonal views are extracted as single slices from the input image.  The views share a common coordinate, coincident with the centre of the image.</li><li>"Centroid of largest object" Orthogonal views are extracted as single slices from the input image.  The views share a common coordinate, coincident with the centre of the largest object from the collection specified by "Input objects".</li></ul></td></tr><tr><td class="mia-table-text-bold">Input objects</td><td>If "Position mode" is set to "Centroid of largest object", the orthogonal views will be positioned coincident with the centroid of the largest object from this collection.</td></tr>
+        </tbody>
+    </table>
 </div>
 
   <!-- Footer -->

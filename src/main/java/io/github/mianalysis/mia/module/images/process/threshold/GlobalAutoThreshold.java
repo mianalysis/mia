@@ -12,7 +12,7 @@ import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.module.images.configure.ImageTypeConverter;
+import io.github.mianalysis.mia.module.images.process.ImageTypeConverter;
 import io.github.mianalysis.mia.module.images.process.InvertIntensity;
 import io.github.mianalysis.mia.object.Image;
 import io.github.mianalysis.mia.object.Measurement;

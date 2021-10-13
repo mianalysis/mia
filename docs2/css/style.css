@@ -14,12 +14,27 @@
 
 .mia-main-text {
   font-size: 1.1rem;
-  font-weight: 300;
+  font-weight: 350;
+}
+
+.mia-main-text-bold {
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+.mia-table-text {
+  font-size: 1rem;
+  font-weight: 350;
+}
+
+.mia-table-text-bold {
+  font-size: 1rem;
+  font-weight: 500;
 }
 
 .mia-section-title {
   font-size: 2rem;
-  font-weight: 300;
+  font-weight: 350;
 }
 
 .mia-card-container {
@@ -27,23 +42,23 @@
 }
 
 .mia-description {
-  font-size: 1.4rem;
-  font-weight: 300;
+  font-size: 1.3rem;
+  font-weight: 350;
 }
 
 .mia-path {
-  font-size: 1.1rem;
-  font-weight: 300;
+  font-size: 1.2rem;
+  font-weight: 350;
 }
 
 .mia-card-title {
-  /* font-size: 1.1rem; */
+  font-size: 1.2rem;
   font-weight: 400;
 }
 
 .card-body {
-  font-size: 1.1rem;
-  font-weight: 300;
+  font-size: 1rem;
+  font-weight: 350;
 }
 
 .mia-card {

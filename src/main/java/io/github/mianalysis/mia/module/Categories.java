@@ -10,14 +10,14 @@ public class Categories {
                         ROOT, false);
 
         public final static Category IMAGES = new Category("Images",
-                        "Operations making measurements on images in the workspace.  Measurements are associated with the input images for later use.",
+                        "Modules dealing primarily with images.  These operations typically take images as inputs and may output new images or update existing ones.",
                         ROOT);
 
         public final static Category IMAGES_CONFIGURE = new Category("Configure",
-                        "Modules applying operations to images from the workspace.  For example, image filtering, thresholding or intensity normalisation.",
+                        "Non-pixel operations such as setting display ranges or spatial calibrations.",
                         IMAGES);
         public final static Category IMAGES_MEASURE = new Category("Measure",
-                        "General image processing operations, such as setting spatial calibration.", IMAGES);
+                        "Operations making measurements on images. Measurements are associated with the input images for later use.", IMAGES);
         public final static Category IMAGES_PROCESS = new Category("Process",
                         "Image processing operations which act on a pixel level, such as image filtering or thresholding.",
                         IMAGES);
@@ -28,17 +28,17 @@ public class Categories {
                         "Operations binarising images from the workspace.  Thresholds can be calculated automatically or applied manually. ",
                         IMAGES_PROCESS);
         public final static Category IMAGES_TRANSFORM = new Category("Transform",
-                        "Image processing operations leading to changes in the whole stack layout.  For example, substack extraction, cropping or drift correction",
+                        "Image processing operations leading to changes in the whole stack layout.  For example, substack extraction, cropping or drift correction.",
                         IMAGES);
         public final static Category IMAGES_TRANSFORM_REGISTRATION = new Category("Registration",
                         "Modules performing alignment of images within a stack to account for sample drift or other motion.",
                         IMAGES_TRANSFORM);
 
         public final static Category INPUT_OUTPUT = new Category("Input output",
-                        "Modules loading or saving files to the computer filesystem.", ROOT);
+                        "Modules loading or saving files to the filesystem.", ROOT);
 
         public final static Category OBJECTS = new Category("Objects",
-                        "Operations making measurements of individual objects in the workspace.  Measurements are associated with the relevant input objects.",
+                        "Modules dealing primarily with objects.  These include object detection, measurements and operations leading to changes in existing objects.",
                         ROOT);
         public final static Category OBJECTS_CONVERT = new Category("Convert",
                         "Operations which allow conversion between objects and images.", OBJECTS);
@@ -59,7 +59,7 @@ public class Categories {
         public final static Category OBJECTS_MEASURE_SPATIAL = new Category("Spatial",
                         "Modules performing spatial-based measurements on objects in the workspace.", OBJECTS_MEASURE);
         public final static Category OBJECTS_PROCESS = new Category("Process",
-                        "Operations capable of creating new objects, changing existing ones or creating new object relationships.",
+                        "Operations capable of creating new objects from existing ones.  For example, fitting ellipsoids or creating projections along an axis.",
                         OBJECTS);
         public final static Category OBJECTS_RELATE = new Category("Relate",
                         "Modules creating relationships between objects.  Relationships can be one-to-many (parent-child) or one-to-one (partners).",
@@ -68,19 +68,19 @@ public class Categories {
                         "Modules used for combining either different objects into one or combining objects from different collections into a single collection.",
                         OBJECTS_RELATE);
         public final static Category OBJECTS_TRANSFORM = new Category("Transform",
-                        "Modules capable of updating object coordinates or removing objects entirely from the workspace (e.g. measurement-based filters).",
+                        "Modules capable of updating coordinates of existing objects.  These operations can include hole filling and masking.",
                         OBJECTS);
 
         public final static Category SCRIPT = new Category("Script",
-                        "Miscellaneous modules which don't fit into fixed categories.  Includes global variable definitions and macro handling.",
+                        "Modules for running code directly witin a workflow.  Both single commands and full scripts (e.g. macro, Jython and Groovy) can be implemented.",
                         ROOT);
 
-        public final static Category SYSTEM = new Category("Macros",
-                        "Modules capable of running ImageJ macros during a workflow.  Using MIA-specific macro commands, images and objects in the workspace can be accessed from each macro.",
+        public final static Category SYSTEM = new Category("System",
+                        "Operations handling MIA properties such as memory and global variables.",
                         ROOT);
 
         public final static Category VISUALISATION = new Category("Visualisation",
-                        "Modules altering how images are displayed (e.g. lookup-tables) or adding visual elements (e.g. text or object overlays).",
+                        "Modules primarily concerned with generating and displaying images.  These include adding overlay elements and plotting data.",
                         ROOT);
         public final static Category VISUALISATION_OVERLAYS = new Category("Overlays",
                         "Modules adding ImageJ overlay elements to images.  For example, object outlines, object ID labels or fixed text.",

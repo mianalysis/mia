@@ -4,7 +4,7 @@ import bunwarpj.bUnwarpJ_;
 import ij.ImagePlus;
 import ij.process.ImageProcessor;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.module.images.configure.ImageTypeConverter;
+import io.github.mianalysis.mia.module.images.process.ImageTypeConverter;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
