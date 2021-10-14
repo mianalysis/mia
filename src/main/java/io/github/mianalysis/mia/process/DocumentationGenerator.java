@@ -1,62 +1,91 @@
 package io.github.mianalysis.mia.process;
 
 import java.io.File;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
-import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.TreeSet;
+import java.util.TreeMap;
 
-import com.google.common.base.Charsets;
-import com.google.common.io.Resources;
-
+import org.apache.maven.model.Model;
+import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
+import org.apache.maven.project.MavenProject;
+import org.apache.maven.shared.utils.xml.pull.XmlPullParserException;
 import org.commonmark.parser.Parser;
 import org.commonmark.renderer.html.HtmlRenderer;
 
 import io.github.mianalysis.mia.MIA;
-import io.github.mianalysis.mia.macro.MacroHandler;
-import io.github.mianalysis.mia.macro.MacroOperation;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.parameters.ParameterGroup;
 import io.github.mianalysis.mia.object.parameters.abstrakt.Parameter;
+import io.github.mianalysis.mia.object.refs.abstrakt.Ref;
 
 public class DocumentationGenerator {
+    private Parser parser;
+    private HtmlRenderer renderer;
+
+    private String version = "";
+    private TreeMap<String, Module> modules;
+
+    private enum Page {
+        HOME, GUIDES, MODULES, ABOUT;
+    }
+
     public static void main(String[] args) {
         try {
-            // Clearing existing HTML files
-            deleteFolders(new File("docs/html/"));
-
-            // Creating README.md
-            generateReadmeMarkdown();
-
-            // Creating website content
-            generateIndexPage();
-            generateGettingStartedPage();
-            generateModuleList();
-            generateModulePages();
-            generateMacroList();
-            generateMacroPages();
-
-            // Run second documentation generator (new version)
-            new DocumentationGenerator2().run();
+            DocumentationGenerator generator = new DocumentationGenerator();
+            generator.run();
 
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    private static void deleteFolders(File root) {
+    public DocumentationGenerator() {
+        parser = Parser.builder().build();
+        renderer = HtmlRenderer.builder().build();
+
+        modules = getModules();
+        try {
+            FileReader reader = new FileReader("pom.xml");
+            Model model = new MavenXpp3Reader().read(reader);
+            reader.close();
+            version = new MavenProject(model).getVersion();
+        } catch (XmlPullParserException | IOException | org.codehaus.plexus.util.xml.pull.XmlPullParserException e) {
+            version = getClass().getPackage().getImplementationVersion();
+        }
+    }
+
+    public void run() throws IOException {
+        // Clearing existing HTML files
+        File root = new File("docs/html");
+        deleteFolders(root);
+        root.mkdir();
+
+        generateIndexPage();
+        generateGuidesPages();
+
+        // Generating module pages
+        Category rootCategory = Categories.getRootCategory();
+        generateCategoryListPages(rootCategory);
+        generateModulePages();
+
+        generateAboutPage();
+
+        // Creating README.md
+        generateReadmeMarkdown();
+
+    }
+
+    private void deleteFolders(File root) {
         if (root.isFile()) {
             root.delete();
 
@@ -68,337 +97,252 @@ public class DocumentationGenerator {
         }
     }
 
-    private static void generateIndexPage() throws IOException {
+    private String getPageTemplate(String pathToTemplate, String pathToRoot) {
+        try {
+            String page = new String(Files.readAllBytes(Paths.get(pathToTemplate)));
+            page = insertPathToRoot(page, pathToRoot);
+            page = insertMIAVersion(page);
+            return page;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return "";
+        }
+    }
+
+    public void generateIndexPage() throws IOException {
         // Generate module list HTML document
-        String template = new String(Files.readAllBytes(Paths.get("src/main/resources/templatehtml/index_orig.html")));
-        String indexContent = getIndexContent();
-        template = template.replace("${INSERT}", indexContent);
+        String pathToRoot = ".";
+        String page = getPageTemplate("src/main/resources/templatehtml/pagetemplate.html", pathToRoot);
+        page = setNavbarActive(page, Page.HOME);
+
+        String mainContent = getPageTemplate("src/main/resources/templatehtml/indextemplate.html", pathToRoot);
+
+        String descriptionContent = new String(
+                Files.readAllBytes(Paths.get("src/main/resources/templatemd/description.md")));
+        descriptionContent = renderer.render(parser.parse(descriptionContent));
+        mainContent = mainContent.replace("${INDEX_INTRODUCTION}", descriptionContent);
+
+        page = page.replace("${MAIN_CONTENT}", mainContent);
 
         FileWriter writer = new FileWriter("docs/index.html");
-        writer.write(template);
+        writer.write(page);
         writer.flush();
         writer.close();
+
     }
 
-    private static void generateGettingStartedPage() throws IOException {
-        // Generate module list HTML document
-        String template = new String(
-                Files.readAllBytes(Paths.get("src/main/resources/templatehtml/gettingstarted_orig.html")));
-        String gettingStartedContent = getGettingStartedContent();
-        template = template.replace("${INSERT}", gettingStartedContent);
+    public void generateGuidesPages() throws IOException {
+        generateGettingStartedPage();
+        
+    }
 
-        new File("docs/html/").mkdirs();
+    public void generateGettingStartedPage() throws IOException {
+        // Generate module list HTML document
+        String pathToRoot = "..";
+        String page = getPageTemplate("src/main/resources/templatehtml/pagetemplate.html", pathToRoot);
+        page = setNavbarActive(page, Page.GUIDES);
+
+        String mainContent = getPageTemplate("src/main/resources/templatehtml/gettingstartedtemplate.html", pathToRoot);
+
+        String gsContent = new String(
+                Files.readAllBytes(Paths.get("src/main/resources/templatemd/installation.md")));
+        gsContent = renderer.render(parser.parse(gsContent));
+        mainContent = mainContent.replace("${INSTALLATION}", gsContent);
+
+        gsContent = new String(Files.readAllBytes(Paths.get("src/main/resources/templatemd/creatingWorkflow.md")));
+        gsContent = renderer.render(parser.parse(gsContent));
+        mainContent = mainContent.replace("${CREATE_NEW}", gsContent);
+
+        gsContent = new String(Files.readAllBytes(Paths.get("src/main/resources/templatemd/usingExistingWorkflow.md")));
+        gsContent = renderer.render(parser.parse(gsContent));
+        mainContent = mainContent.replace("${USE_EXISTING}", gsContent);
+
+        page = page.replace("${MAIN_CONTENT}", mainContent);
+
         FileWriter writer = new FileWriter("docs/html/gettingstarted.html");
-        writer.write(template);
+        writer.write(page);
         writer.flush();
         writer.close();
 
     }
 
-    private static void generateModuleList() throws IOException {
-        // Generate module list HTML document
-        String template = new String(Files.readAllBytes(Paths.get("src/main/resources/templatehtml/modulelist_orig.html")));
-        String moduleList = getModuleList();
-        template = template.replace("${INSERT}", moduleList);
+    public void generateCategoryListPages(Category category) throws IOException {
+        // Setting the path and ensuring the folder exists
+        String pathToRoot = getCatgoryPathToRoot(category) + "..";
+        String categorySaveName = getSaveName(category);
+        String categoryPath = getCategoryPath(category);
+        String path = "docs/html/";
+        new File(path + categoryPath).mkdirs();
 
-        new File("docs/html/").mkdirs();
-        FileWriter writer = new FileWriter("docs/html/modulelist.html");
-        writer.write(template);
-        writer.flush();
-        writer.close();
+        // Initialise HTML document
+        String page = getPageTemplate("src/main/resources/templatehtml/pagetemplate.html", pathToRoot);
+        page = setNavbarActive(page, Page.MODULES);
 
-    }
+        // Populate module packages content
+        String mainContent = getPageTemplate("src/main/resources/templatehtml/categorylisttemplate.html", pathToRoot);
+        mainContent = mainContent.replace("${CATEGORY_PATH}", appendCategoryPath(category, pathToRoot));
+        mainContent = mainContent.replace("${CATEGORY_NAME}", category.getName());
+        mainContent = mainContent.replace("${CATEGORY_DESCRIPTION}", category.getDescription());
 
-    private static void generateModulePages() throws IOException {
-        HashSet<Module> modules = getModules();
-        for (Module module : modules) {
-            String template = new String(Files.readAllBytes(Paths.get("src/main/resources/templatehtml/modules_orig.html")));
-            String moduleList = getModuleSummary(module);
-            template = template.replace("${INSERT}", moduleList);
-
-            new File("docs/html/modules/").mkdirs();
-
-            FileWriter writer = new FileWriter("docs/html/" + getSimpleModulePath(module));
-            writer.write(template);
-            writer.flush();
-            writer.close();
-
+        // Adding a card for each child category
+        String categoryContent = "";
+        for (Category childCategory : category.getChildren()) {
+            String cardContent = getPageTemplate("src/main/resources/templatehtml/categorycardtemplate.html",
+                    pathToRoot);
+            cardContent = cardContent.replace("${CARD_TITLE}", childCategory.getName());
+            cardContent = cardContent.replace("${CARD_TEXT}", childCategory.getDescription());
+            cardContent = cardContent.replace("${TARGET_PATH}",
+                    getCategoryPath(childCategory) + "/" + getSaveName(childCategory));
+            categoryContent = categoryContent + cardContent;
         }
-    }
+        mainContent = mainContent.replace("${CATEGORY_CARDS}", categoryContent);
 
-    private static void generateMacroList() throws IOException {
-        // Generate module list HTML document
-        String template = new String(Files.readAllBytes(Paths.get("src/main/resources/templatehtml/macrolist_orig.html")));
-        String macroList = getMacroList();
-        template = template.replace("${INSERT}", macroList);
-
-        new File("docs/html/").mkdirs();
-        FileWriter writer = new FileWriter("docs/html/macrolist.html");
-        writer.write(template);
-        writer.flush();
-        writer.close();
-
-    }
-
-    private static void generateMacroPages() throws IOException {
-        ArrayList<MacroOperation> macros = MacroHandler.getMacroOperations();
-        for (MacroOperation macro : macros) {
-            String template = new String(Files.readAllBytes(Paths.get("src/main/resources/templatehtml/macros_orig.html")));
-            String macroList = getMacroSummary(macro);
-            template = template.replace("${INSERT}", macroList);
-
-            new File("docs/html/macros/").mkdirs();
-
-            FileWriter writer = new FileWriter("docs/html/" + getSimpleMacroPath(macro));
-            writer.write(template);
-            writer.flush();
-            writer.close();
-
-        }
-    }
-
-    private static String getIndexContent() {
-        Parser parser = Parser.builder().build();
-        HtmlRenderer renderer = HtmlRenderer.builder().build();
-        StringBuilder sb = new StringBuilder();
-
-        try {
-            String string = new String(Files.readAllBytes(Paths.get("src/main/resources/templatemd/introduction.md")));
-            sb.append(renderer.render(parser.parse(string)));
-            sb.append("<br><br>");
-
-            string = new String(Files.readAllBytes(Paths.get("src/main/resources/templatemd/acknowledgements.md")));
-            sb.append(renderer.render(parser.parse(string)));
-            sb.append("<br><br>");
-
-            string = new String(Files.readAllBytes(Paths.get("src/main/resources/templatemd/citing.md")));
-            sb.append(renderer.render(parser.parse(string)));
-            sb.append("<br><br>");
-
-            string = new String(Files.readAllBytes(Paths.get("src/main/resources/templatemd/note.md")));
-            sb.append(renderer.render(parser.parse(string)));
-            sb.append("<br><br>");
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return sb.toString();
-
-    }
-
-    private static String getGettingStartedContent() {
-        Parser parser = Parser.builder().build();
-        HtmlRenderer renderer = HtmlRenderer.builder().build();
-        StringBuilder sb = new StringBuilder();
-
-        try {
-            String string = new String(Files.readAllBytes(Paths.get("src/main/resources/templatemd/installation.md")));
-            sb.append(renderer.render(parser.parse(string)));
-            sb.append("<br><br>");
-
-            string = new String(Files.readAllBytes(Paths.get("src/main/resources/templatemd/creatingWorkflow.md")));
-            sb.append(renderer.render(parser.parse(string)));
-            sb.append("<br><br>");
-
-            string = new String(
-                    Files.readAllBytes(Paths.get("src/main/resources/templatemd/usingExistingWorkflow.md")));
-            sb.append(renderer.render(parser.parse(string)));
-            sb.append("<br><br>");
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return sb.toString();
-
-    }
-
-    private static String getModuleSummary(Module module) {
-        StringBuilder sb = new StringBuilder();
-
-        // Adding a return to Module list button
-        sb.append("<a href=\"../modulelist.html\">Back to module list</a>\r\n");
-
-        // Adding the Module title
-        sb.append("<h1>").append(module.getName()).append("</h1>\r\n");
-
-        // Adding the Module summary
-        String helpText = module.getDescription();
-        helpText = helpText == null ? "" : helpText;
-        sb.append("<h2>Description</h2>\r\n").append(helpText).append("\r\n");
-
-        sb.append("<h2>Parameters</h2>\r\n<ul>");
-        for (Parameter parameter : module.getAllParameters().values()) {
-            if (!parameter.isExported())
-                continue;
-            sb.append("<li><b>").append(parameter.getName()).append("</b> (default = \"")
-                    .append(parameter.getRawStringValue()).append("\") ").append(parameter.getDescription())
-                    .append("</li><br>");
-
-            if (parameter instanceof ParameterGroup) {
-                for (Parameter collectionParam : ((ParameterGroup) parameter).getTemplateParameters().values()) {
-                    if (collectionParam.getDescription().length() > 1) {
-                        sb.append("<li><b>").append(collectionParam.getName()).append("</b> (default = \"")
-                                .append(collectionParam.getRawStringValue()).append("\") ")
-                                .append(collectionParam.getDescription()).append("</li><br>");
-                    }
-
-                }
+        // Finding modules in this category and adding them to this page
+        String moduleContent = "";
+        for (Module module : modules.values()) {
+            if (module.getCategory() == category) {
+                String cardContent = getPageTemplate("src/main/resources/templatehtml/modulecardtemplate.html",
+                        pathToRoot);
+                cardContent = cardContent.replace("${CARD_TITLE}", module.getName());
+                cardContent = cardContent.replace("${CARD_TEXT}", module.getShortDescription());
+                cardContent = cardContent.replace("${TARGET_PATH}",
+                        getCategoryPath(category) + "/" + getSaveName(module));
+                moduleContent = moduleContent + cardContent;
             }
+        }
+        mainContent = mainContent.replace("${MODULE_CARDS}", moduleContent);
+
+        // Add packages content to page
+        page = page.replace("${MAIN_CONTENT}", mainContent);
+
+        FileWriter writer = new FileWriter(path + categoryPath + "/" + categorySaveName + ".html");
+        writer.write(page);
+        writer.flush();
+        writer.close();
+
+        // For each child category, repeating the same process
+        for (Category childCategory : category.getChildren())
+            generateCategoryListPages(childCategory);
+
+    }
+
+    public void generateModulePages() throws IOException {
+        for (Module module : modules.values()) {
+            Category category = module.getCategory();
+            String pathToRoot = getCatgoryPathToRoot(category) + "..";
+            String categoryPath = getCategoryPath(category);
+            String path = "docs/html/";
+            String moduleSaveName = getSaveName(module);
+
+            // Initialise HTML document
+            String page = getPageTemplate("src/main/resources/templatehtml/pagetemplate.html", pathToRoot);
+            page = setNavbarActive(page, Page.MODULES);
+
+            // Populate module packages content
+            String mainContent = getPageTemplate("src/main/resources/templatehtml/moduletemplate.html", pathToRoot);
+            mainContent = mainContent.replace("${MODULE_PATH}", appendCategoryPath(module.getCategory(), pathToRoot));
+            mainContent = mainContent.replace("${MODULE_NAME}", module.getName());
+            mainContent = mainContent.replace("${MODULE_SHORT_DESCRIPTION}", module.getShortDescription());
+            mainContent = mainContent.replace("${MODULE_FULL_DESCRIPTION}", module.getDescription());
+
+            String parameterContent = "";
+            for (Parameter parameter : module.getAllParameters().values())
+                parameterContent = parameterContent + getParameterSummary(parameter);
+            mainContent = mainContent.replace("${MODULE_PARAMETERS}", parameterContent);
+
+            // Add module information to page
+            page = page.replace("${MAIN_CONTENT}", mainContent);
+
+            FileWriter writer = new FileWriter(path + categoryPath + "/" + moduleSaveName + ".html");
+            writer.write(page);
+            writer.flush();
+            writer.close();
 
         }
-        sb.append("</ul>");
+    }
 
-        // Generate module list HTML document
-        return sb.toString();
+    String appendCategoryPath(Category category, String pathToRoot) {
+        String categoryPath = pathToRoot + "/html" + getCategoryPath(category) + "/" + getSaveName(category) + ".html";
+        String categoryContent = "<a href=\"" + categoryPath + "\">" + category.getName() + "</a>";
+
+        if (category.getParent() == null)
+            return categoryContent;
+
+        return appendCategoryPath(category.getParent(), pathToRoot) + " > " + categoryContent;
 
     }
 
-    private static String getMacroSummary(MacroOperation macro) {
-        StringBuilder sb = new StringBuilder();
-
-        // Adding a return to Module list button
-        sb.append("<a href=\"../macrolist.html\">Back to macro list</a>\r\n");
-
-        // Adding the MacroOperation title
-        sb.append("<h1>").append(macro.getName()).append("</h1>\r\n");
-
-        // Adding the Module summary
-        String helpText = macro.getDescription();
-        helpText = helpText == null ? "" : helpText;
-        sb.append("<h2>Description</h2>\r\n").append(helpText).append("\r\n");
-
-        sb.append("<h2>Parameters</h2>\r\n<ul>");
-        String parameterList = macro.getArgumentsDescription();
-        for (String parameter : parameterList.split(",")) {
-            sb.append("<li>").append(parameter).append("</li><br>");
-        }
-        sb.append("</ul>");
-
-        // Generate module list HTML document
-        return sb.toString();
-
-    }
-
-    private static void addCategories(TreeSet<String> categories, Category category) {
-        if (category != Categories.getRootCategory())
-            categories.add(getCategoryPath(category));
-
-        for (Category childCategory:category.getChildren())
-            addCategories(categories, childCategory);
-
-    }
-    
-    private static String getCategoryPath(Category category) {
-        if (category == null)
+    String getParameterSummary(Parameter parameter) {
+        if (!parameter.isExported())
             return "";
 
-        return getCategoryPath(category.getParent()) + "/" + category.getName();
-
-    }
-
-    private static String getModuleList() {
         StringBuilder sb = new StringBuilder();
-        sb.append("<h1>Modules</h1>");
+        sb.append("<tr>");
+        sb.append("<td class=\"mia-table-text-bold\">");
+        sb.append(parameter.getName());
+        sb.append("</td>");
+        sb.append("<td>");
+        sb.append(parameter.getDescription());
+        sb.append("</td>");
+        sb.append("</tr>");
+        // sb.append("<p class=\"mia-main-text\"><b>").append(parameter.getName()).append("</b>:  ").append(parameter.getDescription());
 
-        // Getting a list of unique package names
-        LinkedHashSet<Module> modules = getModules();
-        TreeSet<String> categories= new TreeSet<>();
+        if (parameter instanceof ParameterGroup)
+            for (Parameter collectionParam : ((ParameterGroup) parameter).getTemplateParameters().values())
+                sb.append(getParameterSummary(collectionParam));
 
-        Category root = Categories.getRootCategory();
-        addCategories(categories, root);
-
-        // For each package name, adding a list of the matching Modules
-        for (String category : categories) {            
-            sb.append("<h2>").append(category).append("</h2>\r\n").append("<ul>\r\n");
-
-            // For each Module in this package, create a link to the description document
-            for (Module module : modules) {
-                if (!getCategoryPath(module.getCategory()).equals(category))
-                    continue;
-
-                sb.append("<li><a href=\".").append(getSimpleModulePath(module)).append("\">").append(module.getName())
-                        .append("</a></li>\r\n");
-
-            }
-
-            sb.append("</ul>\r\n");
-
-        }
+        // if (!(parameter instanceof ChoiceP))
+        //     sb.append("<br>");
 
         return sb.toString();
 
     }
 
-    private static String getMacroList() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("<h1>Macros</h1>");
+    public void generateAboutPage() throws IOException {
+        // Generate module list HTML document
+        String pathToRoot = "..";
+        String page = getPageTemplate("src/main/resources/templatehtml/pagetemplate.html", pathToRoot);
+        page = setNavbarActive(page, Page.ABOUT);
 
-        // Getting a list of unique package names
-        ArrayList<MacroOperation> macros = MacroHandler.getMacroOperations();
+        String mainContent = getPageTemplate("src/main/resources/templatehtml/abouttemplate.html", pathToRoot);
 
-        // For each package name, adding a list of the matching Modules
-        for (MacroOperation macro : macros) {
-            sb.append("<li><a href=\".").append(getSimpleMacroPath(macro)).append("\">").append(macro.getName())
-                    .append("</a></li>\r\n");
-        }
+        String aboutContent = new String(
+                Files.readAllBytes(Paths.get("src/main/resources/templatemd/introduction.md")));
+        aboutContent = renderer.render(parser.parse(aboutContent));
+        mainContent = mainContent.replace("${ABOUT_INTRODUCTION}", aboutContent);
 
-        sb.append("</ul>\r\n");
+        aboutContent = new String(Files.readAllBytes(Paths.get("src/main/resources/templatemd/description.md")));
+        aboutContent = renderer.render(parser.parse(aboutContent));
+        mainContent = mainContent.replace("${ABOUT_DESCRIPTION}", aboutContent);
 
-        return sb.toString();
+        aboutContent = new String(Files.readAllBytes(Paths.get("src/main/resources/templatemd/acknowledgements.md")));
+        aboutContent = renderer.render(parser.parse(aboutContent));
+        mainContent = mainContent.replace("${ABOUT_ACKNOWLEDGEMENTS}", aboutContent);
 
-    }
+        aboutContent = new String(Files.readAllBytes(Paths.get("src/main/resources/templatemd/citing.md")));
+        aboutContent = renderer.render(parser.parse(aboutContent));
+        mainContent = mainContent.replace("${ABOUT_CITING}", aboutContent);
 
-    private static LinkedHashSet<Module> getModules() {
-        // Get a list of Modules
-        List<String> classNames = ClassHunter.getModules(false);
+        aboutContent = new String(Files.readAllBytes(Paths.get("src/main/resources/templatemd/note.md")));
+        aboutContent = renderer.render(parser.parse(aboutContent));
+        mainContent = mainContent.replace("${ABOUT_DEVELOPMENT}", aboutContent);
 
-        // Converting the list of classes to a list of Modules
-        LinkedHashSet<Module> modules = new LinkedHashSet<>();
-        for (String className : classNames) {
-            try {
-                Class<Module> clazz = (Class<Module>) Class.forName(className);
+        page = page.replace("${MAIN_CONTENT}", mainContent);
 
-                // Skip any abstract Modules
-                if (Modifier.isAbstract(clazz.getModifiers()))
-                    continue;
-
-                Constructor constructor = clazz.getDeclaredConstructor(Modules.class);
-                modules.add((Module) constructor.newInstance(new Modules()));
-            } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | NoSuchMethodException
-                    | InvocationTargetException e) {
-                MIA.log.writeError(e);
-            }
-        }
-
-        return modules;
+        FileWriter writer = new FileWriter("docs/html/about.html");
+        writer.write(page);
+        writer.flush();
+        writer.close();
 
     }
 
-    private static String getSimpleModulePath(Module module) {
-        StringBuilder sb = new StringBuilder();
+    String setNavbarActive(String content, Page page) {
+        content = content.replace("${ACTIVE_HOME}", page == Page.HOME ? "active" : "");
+        content = content.replace("${ACTIVE_GUIDES}", page == Page.GUIDES ? "active" : "");
+        content = content.replace("${ACTIVE_MODULES}", page == Page.MODULES ? "active" : "");
+        content = content.replace("${ACTIVE_ABOUT}", page == Page.ABOUT ? "active" : "");
 
-        String simplePackageName = getCategoryPath(module.getCategory());
-        simplePackageName = simplePackageName.replaceAll("[^A-Za-z0-9]", "");
-        simplePackageName = simplePackageName.replace(".", "");
-
-        sb.append("/modules/").append(simplePackageName).append(module.getClass().getSimpleName()).append(".html");
-
-        return sb.toString();
-
-    }
-
-    private static String getSimpleMacroPath(MacroOperation macro) {
-        StringBuilder sb = new StringBuilder();
-
-        String simpleName = macro.getName();
-        simpleName = simpleName.replaceAll("[^A-Za-z0-9]", "");
-        simpleName = simpleName.replace(".", "");
-
-        sb.append("/macros/").append(simpleName).append(".html");
-
-        return sb.toString();
+        return content;
 
     }
 
@@ -452,98 +396,59 @@ public class DocumentationGenerator {
         }
     }
 
-    public static String generateAboutGUI() {
-        Parser parser = Parser.builder().build();
-        HtmlRenderer renderer = HtmlRenderer.builder().build();
-        StringBuilder sb = new StringBuilder();
+    static String insertPathToRoot(String str, String pathToRoot) {
+        return str.replace("${PTR}", pathToRoot);
+    }
 
-        // The following is required to get the version number and release date from the
-        // pom.xml
-        String version = "";
-        // try {
-        //     FileReader reader = new FileReader("pom.xml");
-        //     Model model = new MavenXpp3Reader().read(reader);
-        //     reader.close();
-        //     version = new MavenProject(model).getVersion();
-        // } catch (XmlPullParserException | IOException e) {
-            version = MIA.class.getPackage().getImplementationVersion();
-        // }
+    String insertMIAVersion(String str) {
+        return str.replace("${MIA_VERSION}", version);
+    }
 
-        try {
-            sb.append("<html><body><div align=\"justify\">");
+    String getCategoryPath(Category category) {
+        if (category == null)
+            return "";
 
-            sb.append("<img src=\"");
-            sb.append(MIA.class.getResource("/images/Logo_text_UoB_64.png").toString());
-            sb.append("\" align=\"middle\">");
-            sb.append("<br><br>");
-
-            URL url = Resources.getResource("templatemd/introduction.md");
-            String string = Resources.toString(url, Charsets.UTF_8);
-            if (version != null)
-                string = string.replace("${version}", version);
-            sb.append(renderer.render(parser.parse(string)));
-            sb.append("<br><br>");
-
-            url = Resources.getResource("templatemd/acknowledgements.md");
-            string = Resources.toString(url, Charsets.UTF_8);
-            sb.append(renderer.render(parser.parse(string)));
-            sb.append("<br><br>");
-
-            url = Resources.getResource("templatemd/citing.md");
-            string = Resources.toString(url, Charsets.UTF_8);
-            sb.append(renderer.render(parser.parse(string)));
-            sb.append("<br><br>");
-
-            url = Resources.getResource("templatemd/note.md");
-            string = Resources.toString(url, Charsets.UTF_8);
-            sb.append(renderer.render(parser.parse(string)));
-            sb.append("<br><br>");
-
-            sb.append("</div></body></html>");
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return sb.toString();
+        return (getCategoryPath(category.getParent()) + "/" + getSaveName(category));
 
     }
 
-    public static String generateGettingStartedGUI() {
-        Parser parser = Parser.builder().build();
-        HtmlRenderer renderer = HtmlRenderer.builder().build();
-        StringBuilder sb = new StringBuilder();
+    String getCatgoryPathToRoot(Category category) {
+        if (category == null)
+            return "";
 
-        try {
-            sb.append("<html><body><div align=\"justify\">");
+        return getCatgoryPathToRoot(category.getParent()) + "../";
+    }
 
-            sb.append("<img src=\"");
-            sb.append(MIA.class.getResource("/images/Logo_text_UoB_64.png").toString());
-            sb.append("\" align=\"middle\">");
-            sb.append("<br><br>");
+    String getSaveName(Ref ref) {
+        return ref.getName().toLowerCase().replace(" ", "").replace("/", "");
+    }
 
-            URL url = Resources.getResource("templatemd/installation.md");
-            String string = Resources.toString(url, Charsets.UTF_8);
-            sb.append(renderer.render(parser.parse(string)));
-            sb.append("<br><br>");
+    private static TreeMap<String, Module> getModules() {
+        // Get a list of Modules
+        List<String> classNames = ClassHunter.getModules(false);
 
-            url = Resources.getResource("templatemd/creatingWorkflow.md");
-            string = Resources.toString(url, Charsets.UTF_8);
-            sb.append(renderer.render(parser.parse(string)));
-            sb.append("<br><br>");
+        // Converting the list of classes to a list of Modules
+        TreeMap<String, Module> modules = new TreeMap<>();
+        Modules tempCollection = new Modules();
+        for (String className : classNames) {
+            try {
+                Class<Module> clazz = (Class<Module>) Class.forName(className);
 
-            url = Resources.getResource("templatemd/usingExistingWorkflow.md");
-            string = Resources.toString(url, Charsets.UTF_8);
-            sb.append(renderer.render(parser.parse(string)));
-            sb.append("<br><br>");
+                // Skip any abstract Modules
+                if (Modifier.isAbstract(clazz.getModifiers()))
+                    continue;
 
-            sb.append("</div></body></html>");
-
-        } catch (IOException e) {
-            e.printStackTrace();
+                Constructor constructor = clazz.getDeclaredConstructor(Modules.class);
+                Module module = (Module) constructor.newInstance(tempCollection);
+                modules.put(module.getName(), module);
+            } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | NoSuchMethodException
+                    | InvocationTargetException e) {
+                MIA.log.writeError(e);
+            }
         }
 
-        return sb.toString();
+        return modules;
 
     }
+
 }

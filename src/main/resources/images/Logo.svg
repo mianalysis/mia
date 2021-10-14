@@ -1,23 +1,23 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <svg
-   xmlns:dc="http://purl.org/dc/elements/1.1/"
-   xmlns:cc="http://creativecommons.org/ns#"
-   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-   xmlns:svg="http://www.w3.org/2000/svg"
-   xmlns="http://www.w3.org/2000/svg"
-   xmlns:xlink="http://www.w3.org/1999/xlink"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    inkscape:export-ydpi="9.4073963"
    inkscape:export-xdpi="9.4073963"
    inkscape:export-filename="D:\Documents\Java Projects\MIA\docs\img\logo.png"
    sodipodi:docname="Logo.svg"
-   inkscape:version="0.92.3 (2405546, 2018-03-11)"
+   inkscape:version="1.1 (c68e22c387, 2021-05-23)"
    id="svg8"
    version="1.1"
    viewBox="0 0 210 297"
    height="297mm"
-   width="210mm">
+   width="210mm"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:dc="http://purl.org/dc/elements/1.1/">
   <defs
      id="defs2">
     <clipPath
@@ -69,7 +69,7 @@
        height="1.2076753"
        y="-0.10383765"
        width="1.1410526"
-       x="-0.070526308"
+       x="-0.070526306"
        id="filter1254"
        style="color-interpolation-filters:sRGB"
        inkscape:collect="always">
@@ -93,7 +93,7 @@
        height="1.2076753"
        y="-0.10383765"
        width="1.1410526"
-       x="-0.070526309"
+       x="-0.070526306"
        id="filter1254-8"
        style="color-interpolation-filters:sRGB"
        inkscape:collect="always">
@@ -103,10 +103,10 @@
          inkscape:collect="always" />
     </filter>
     <filter
-       height="1.7784635"
-       y="-0.38923173"
-       width="1.0941604"
-       x="-0.047080181"
+       height="2.0868212"
+       y="-0.54341062"
+       width="1.1315304"
+       x="-0.065765206"
        id="filter1126"
        style="color-interpolation-filters:sRGB"
        inkscape:collect="always">
@@ -116,10 +116,10 @@
          inkscape:collect="always" />
     </filter>
     <filter
-       height="1.8185939"
-       y="-0.40929694"
-       width="1.0936053"
-       x="-0.046802654"
+       height="2.1281794"
+       y="-0.56408969"
+       width="1.12909"
+       x="-0.064545021"
        id="filter1170"
        style="color-interpolation-filters:sRGB"
        inkscape:collect="always">
@@ -129,10 +129,10 @@
          inkscape:collect="always" />
     </filter>
     <filter
-       height="1.8394266"
-       y="-0.4197133"
-       width="1.0933404"
-       x="-0.046670209"
+       height="2.1490121"
+       y="-0.57450607"
+       width="1.1278377"
+       x="-0.063918844"
        id="filter1049"
        style="color-interpolation-filters:sRGB"
        inkscape:collect="always">
@@ -167,7 +167,7 @@
        height="1.2076753"
        y="-0.10383765"
        width="1.1410526"
-       x="-0.070526309"
+       x="-0.070526306"
        id="filter1254-8-0"
        style="color-interpolation-filters:sRGB"
        inkscape:collect="always">
@@ -177,10 +177,10 @@
          inkscape:collect="always" />
     </filter>
     <filter
-       height="1.8185939"
-       y="-0.40929693"
-       width="1.0936053"
-       x="-0.046802655"
+       height="2.1281794"
+       y="-0.56408969"
+       width="1.12909"
+       x="-0.064545021"
        id="filter1170-5"
        style="color-interpolation-filters:sRGB"
        inkscape:collect="always">
@@ -190,10 +190,10 @@
          inkscape:collect="always" />
     </filter>
     <filter
-       height="1.7784635"
-       y="-0.38923174"
-       width="1.0941604"
-       x="-0.047080182"
+       height="2.0868212"
+       y="-0.54341062"
+       width="1.1315304"
+       x="-0.065765206"
        id="filter1126-0"
        style="color-interpolation-filters:sRGB"
        inkscape:collect="always">
@@ -203,10 +203,10 @@
          inkscape:collect="always" />
     </filter>
     <filter
-       height="1.8394266"
-       y="-0.41971329"
-       width="1.0933404"
-       x="-0.04667021"
+       height="2.1490121"
+       y="-0.57450607"
+       width="1.1278377"
+       x="-0.063918844"
        id="filter1049-4"
        style="color-interpolation-filters:sRGB"
        inkscape:collect="always">
@@ -230,7 +230,7 @@
        height="1.2076753"
        y="-0.10383765"
        width="1.1410526"
-       x="-0.070526309"
+       x="-0.070526306"
        id="filter1254-1"
        style="color-interpolation-filters:sRGB"
        inkscape:collect="always">
@@ -254,7 +254,7 @@
        height="1.2076753"
        y="-0.10383765"
        width="1.1410526"
-       x="-0.070526309"
+       x="-0.070526306"
        id="filter1254-8-2"
        style="color-interpolation-filters:sRGB"
        inkscape:collect="always">
@@ -264,10 +264,10 @@
          inkscape:collect="always" />
     </filter>
     <filter
-       height="1.7784635"
-       y="-0.38923174"
-       width="1.0941604"
-       x="-0.047080182"
+       height="2.0868212"
+       y="-0.54341062"
+       width="1.1315304"
+       x="-0.065765206"
        id="filter1126-7"
        style="color-interpolation-filters:sRGB"
        inkscape:collect="always">
@@ -277,10 +277,10 @@
          inkscape:collect="always" />
     </filter>
     <filter
-       height="1.8185939"
-       y="-0.40929693"
-       width="1.0936053"
-       x="-0.046802655"
+       height="2.1281794"
+       y="-0.56408969"
+       width="1.12909"
+       x="-0.064545021"
        id="filter1170-2"
        style="color-interpolation-filters:sRGB"
        inkscape:collect="always">
@@ -290,10 +290,10 @@
          inkscape:collect="always" />
     </filter>
     <filter
-       height="1.8394266"
-       y="-0.41971329"
-       width="1.0933404"
-       x="-0.04667021"
+       height="2.1490121"
+       y="-0.57450607"
+       width="1.1278377"
+       x="-0.063918844"
        id="filter1049-8"
        style="color-interpolation-filters:sRGB"
        inkscape:collect="always">
@@ -395,6 +395,17 @@
          id="path5455-5"
          d="M 360,1945 V 5440 H 12440 V 1945 Z" />
     </clipPath>
+    <clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath1236-2-73-6">
+      <rect
+         y="785.69849"
+         x="-339.85941"
+         height="81"
+         width="119.95027"
+         id="rect1238-9-7-2"
+         style="opacity:1;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:9.51215;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:fill markers stroke" />
+    </clipPath>
   </defs>
   <sodipodi:namedview
      inkscape:document-rotation="0"
@@ -407,23 +418,24 @@
      inkscape:guide-bbox="true"
      showguides="false"
      inkscape:window-maximized="1"
-     inkscape:window-y="-9"
-     inkscape:window-x="69"
-     inkscape:window-height="1051"
-     inkscape:window-width="1842"
+     inkscape:window-y="-8"
+     inkscape:window-x="54"
+     inkscape:window-height="1057"
+     inkscape:window-width="1858"
      inkscape:snap-global="false"
      showgrid="false"
      inkscape:current-layer="layer1"
      inkscape:document-units="mm"
-     inkscape:cy="-4151.5916"
-     inkscape:cx="283.32847"
-     inkscape:zoom="0.1767767"
+     inkscape:cy="4343.0497"
+     inkscape:cx="681.65092"
+     inkscape:zoom="0.3535534"
      inkscape:pageshadow="2"
      inkscape:pageopacity="0.0"
      borderopacity="1.0"
      bordercolor="#666666"
      pagecolor="#ffffff"
-     id="base">
+     id="base"
+     inkscape:pagecheckerboard="0">
     <inkscape:grid
        id="grid993"
        type="xygrid" />
@@ -549,7 +561,8 @@
              y="3848.5198"
              style="font-size:133.33332825px;fill:#404040;fill-opacity:1;stroke:#404040;stroke-width:11.33858299;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" /></flowRegion><flowPara
            id="flowPara912-6-2-1-6-8-5-0-3"
-           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:42.6667px;font-family:Calibri;-inkscape-font-specification:Calibri;fill:#404040;fill-opacity:1;stroke:#404040;stroke-width:11.3386;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1">Initialising modules</flowPara></flowRoot>      <flowRoot
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:42.6667px;font-family:Calibri;-inkscape-font-specification:Calibri;fill:#404040;fill-opacity:1;stroke:#404040;stroke-width:11.3386;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1">Initialising modules</flowPara></flowRoot>
+      <flowRoot
          xml:space="preserve"
          id="flowRoot906-1-4-4-3-7-7-5"
          style="font-style:normal;font-weight:normal;font-size:133.333px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:none"
@@ -565,7 +578,8 @@
              y="3848.5198"
              style="font-size:133.33332825px;fill:#ffffff;fill-opacity:1" /></flowRegion><flowPara
            id="flowPara912-6-2-1-6-8-5-9"
-           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:42.6667px;font-family:Calibri;-inkscape-font-specification:Calibri;fill:#ffffff;fill-opacity:1">Initialising modules</flowPara></flowRoot>    </g>
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:42.6667px;font-family:Calibri;-inkscape-font-specification:Calibri;fill:#ffffff;fill-opacity:1">Initialising modules</flowPara></flowRoot>
+    </g>
     <g
        transform="translate(-249.95061,237.56593)"
        id="g1194-4">
@@ -585,7 +599,8 @@
              y="3848.5198"
              style="font-size:133.33332825px;fill:#404040;fill-opacity:1;stroke:#404040;stroke-width:11.33858299;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" /></flowRegion><flowPara
            id="flowPara912-6-2-1-6-7-9"
-           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:42.6667px;font-family:Calibri;-inkscape-font-specification:Calibri;fill:#404040;fill-opacity:1;stroke:#404040;stroke-width:11.3386;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1">Detecting modules</flowPara></flowRoot>      <flowRoot
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:42.6667px;font-family:Calibri;-inkscape-font-specification:Calibri;fill:#404040;fill-opacity:1;stroke:#404040;stroke-width:11.3386;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1">Detecting modules</flowPara></flowRoot>
+      <flowRoot
          xml:space="preserve"
          id="flowRoot906-1-4-4-3-71"
          style="font-style:normal;font-weight:normal;font-size:133.333px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:none"
@@ -601,7 +616,8 @@
              y="3848.5198"
              style="font-size:133.33332825px;fill:#ffffff;fill-opacity:1" /></flowRegion><flowPara
            id="flowPara912-6-2-1-6-6"
-           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:42.6667px;font-family:Calibri;-inkscape-font-specification:Calibri;fill:#ffffff;fill-opacity:1">Detecting modules</flowPara></flowRoot>      <text
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:42.6667px;font-family:Calibri;-inkscape-font-specification:Calibri;fill:#ffffff;fill-opacity:1">Detecting modules</flowPara></flowRoot>
+      <text
          xml:space="preserve"
          style="font-style:normal;font-weight:normal;font-size:10.5833px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;opacity:0.36;fill:#404040;fill-opacity:1;stroke:#404040;stroke-width:0.264583;stroke-opacity:1"
          x="-307.68634"
@@ -643,7 +659,8 @@
              y="3848.5198"
              style="font-size:133.33332825px;fill:#404040;fill-opacity:1;stroke:#404040;stroke-width:11.33858299;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" /></flowRegion><flowPara
            id="flowPara912-6-2-1-6-8-2-0"
-           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:42.6667px;font-family:Calibri;-inkscape-font-specification:Calibri;fill:#404040;fill-opacity:1;stroke:#404040;stroke-width:11.3386;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1">Creating interface</flowPara></flowRoot>      <flowRoot
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:42.6667px;font-family:Calibri;-inkscape-font-specification:Calibri;fill:#404040;fill-opacity:1;stroke:#404040;stroke-width:11.3386;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1">Creating interface</flowPara></flowRoot>
+      <flowRoot
          xml:space="preserve"
          id="flowRoot906-1-4-4-3-7-0"
          style="font-style:normal;font-weight:normal;font-size:133.333px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:none"
@@ -659,7 +676,8 @@
              y="3848.5198"
              style="font-size:133.33332825px;fill:#ffffff;fill-opacity:1" /></flowRegion><flowPara
            id="flowPara912-6-2-1-6-8-26"
-           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:42.6667px;font-family:Calibri;-inkscape-font-specification:Calibri;fill:#ffffff;fill-opacity:1">Creating interface</flowPara></flowRoot>    </g>
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:42.6667px;font-family:Calibri;-inkscape-font-specification:Calibri;fill:#ffffff;fill-opacity:1">Creating interface</flowPara></flowRoot>
+    </g>
     <rect
        inkscape:export-filename="F:\Documents\Java Projects\ModularImageAnalysis\src\main\resources\Icons\Logo_wide_32.png"
        inkscape:export-ydpi="6.7761564"
@@ -689,7 +707,8 @@
              y="3848.5198"
              style="font-size:133.33332825px;fill:#404040;fill-opacity:1;stroke:#404040;stroke-width:11.33858299;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" /></flowRegion><flowPara
            id="flowPara912-6-2-1-6-8-2"
-           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:42.6667px;font-family:Calibri;-inkscape-font-specification:Calibri;fill:#404040;fill-opacity:1;stroke:#404040;stroke-width:11.3386;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1">Creating interface</flowPara></flowRoot>      <flowRoot
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:42.6667px;font-family:Calibri;-inkscape-font-specification:Calibri;fill:#404040;fill-opacity:1;stroke:#404040;stroke-width:11.3386;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1">Creating interface</flowPara></flowRoot>
+      <flowRoot
          xml:space="preserve"
          id="flowRoot906-1-4-4-3-7"
          style="font-style:normal;font-weight:normal;font-size:133.333px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:none"
@@ -705,7 +724,8 @@
              y="3848.5198"
              style="font-size:133.33332825px;fill:#ffffff;fill-opacity:1" /></flowRegion><flowPara
            id="flowPara912-6-2-1-6-8"
-           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:42.6667px;font-family:Calibri;-inkscape-font-specification:Calibri;fill:#ffffff;fill-opacity:1">Creating interface</flowPara></flowRoot>    </g>
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:42.6667px;font-family:Calibri;-inkscape-font-specification:Calibri;fill:#ffffff;fill-opacity:1">Creating interface</flowPara></flowRoot>
+    </g>
     <g
        transform="translate(-14.576158,-46.868543)"
        id="g1061">
@@ -725,7 +745,8 @@
              y="3848.5198"
              style="font-size:133.33332825px;fill:#404040;fill-opacity:1;stroke:#404040;stroke-width:11.33858299;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" /></flowRegion><flowPara
            id="flowPara912-6-2-1-6-8-5-0"
-           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:42.6667px;font-family:Calibri;-inkscape-font-specification:Calibri;fill:#404040;fill-opacity:1;stroke:#404040;stroke-width:11.3386;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1">Initialising modules</flowPara></flowRoot>      <flowRoot
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:42.6667px;font-family:Calibri;-inkscape-font-specification:Calibri;fill:#404040;fill-opacity:1;stroke:#404040;stroke-width:11.3386;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1">Initialising modules</flowPara></flowRoot>
+      <flowRoot
          xml:space="preserve"
          id="flowRoot906-1-4-4-3-7-7"
          style="font-style:normal;font-weight:normal;font-size:133.333px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:none"
@@ -741,7 +762,8 @@
              y="3848.5198"
              style="font-size:133.33332825px;fill:#ffffff;fill-opacity:1" /></flowRegion><flowPara
            id="flowPara912-6-2-1-6-8-5"
-           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:42.6667px;font-family:Calibri;-inkscape-font-specification:Calibri;fill:#ffffff;fill-opacity:1">Initialising modules</flowPara></flowRoot>    </g>
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:42.6667px;font-family:Calibri;-inkscape-font-specification:Calibri;fill:#ffffff;fill-opacity:1">Initialising modules</flowPara></flowRoot>
+    </g>
     <g
        transform="translate(41.226849,-28.675191)"
        id="g1194">
@@ -761,7 +783,8 @@
              y="3848.5198"
              style="font-size:133.33332825px;fill:#404040;fill-opacity:1;stroke:#404040;stroke-width:11.33858299;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" /></flowRegion><flowPara
            id="flowPara912-6-2-1-6-7"
-           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:42.6667px;font-family:Calibri;-inkscape-font-specification:Calibri;fill:#404040;fill-opacity:1;stroke:#404040;stroke-width:11.3386;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1">Detecting modules</flowPara></flowRoot>      <flowRoot
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:42.6667px;font-family:Calibri;-inkscape-font-specification:Calibri;fill:#404040;fill-opacity:1;stroke:#404040;stroke-width:11.3386;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1">Detecting modules</flowPara></flowRoot>
+      <flowRoot
          xml:space="preserve"
          id="flowRoot906-1-4-4-3"
          style="font-style:normal;font-weight:normal;font-size:133.333px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:none"
@@ -777,7 +800,8 @@
              y="3848.5198"
              style="font-size:133.33332825px;fill:#ffffff;fill-opacity:1" /></flowRegion><flowPara
            id="flowPara912-6-2-1-6"
-           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:42.6667px;font-family:Calibri;-inkscape-font-specification:Calibri;fill:#ffffff;fill-opacity:1">Detecting modules</flowPara></flowRoot>      <text
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:42.6667px;font-family:Calibri;-inkscape-font-specification:Calibri;fill:#ffffff;fill-opacity:1">Detecting modules</flowPara></flowRoot>
+      <text
          xml:space="preserve"
          style="font-style:normal;font-weight:normal;font-size:10.5833px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;opacity:0.36;fill:#404040;fill-opacity:1;stroke:#404040;stroke-width:0.264583;stroke-opacity:1"
          x="-307.68634"
@@ -1294,7 +1318,8 @@
              y="3848.5198"
              style="font-size:133.33332825px;fill:#404040;fill-opacity:1" /></flowRegion><flowPara
            id="flowPara912-6"
-           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:133.333px;font-family:Calibri;-inkscape-font-specification:Calibri;fill:#404040;fill-opacity:1">Modular Image Analysis</flowPara></flowRoot>    </g>
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:133.333px;font-family:Calibri;-inkscape-font-specification:Calibri;fill:#404040;fill-opacity:1">Modular Image Analysis</flowPara></flowRoot>
+    </g>
     <image
        inkscape:export-filename="D:\Documents\Java Projects\MIA\docs\img\wbif.png"
        inkscape:export-ydpi="20.069113"
@@ -1376,7 +1401,8 @@
          id="flowPara4801"
          style="font-size:40px" /><flowPara
          style="font-size:40px"
-         id="flowPara1794" /></flowRoot>    <path
+         id="flowPara1794" /></flowRoot>
+    <path
        inkscape:export-ydpi="40.138256"
        inkscape:export-xdpi="40.138256"
        transform="matrix(1.0685267,0,0,1.0685267,-459.87351,156.71379)"
@@ -1465,7 +1491,8 @@
            width="2722"
            id="rect910-6-1" /></flowRegion><flowPara
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:133.333px;font-family:Calibri;-inkscape-font-specification:Calibri;fill:#404040;fill-opacity:1"
-         id="flowPara912-6-3">Modular Image Analysis</flowPara></flowRoot>    <rect
+         id="flowPara912-6-3">Modular Image Analysis</flowPara></flowRoot>
+    <rect
        inkscape:export-ydpi="40.16"
        inkscape:export-xdpi="40.16"
        y="1552.3033"
@@ -1493,7 +1520,8 @@
              y="3848.5198"
              style="font-size:133.33332825px;fill:#404040;fill-opacity:1;stroke:#404040;stroke-width:11.33858299;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" /></flowRegion><flowPara
            id="flowPara912-6-2-1-6-8-5-0-1"
-           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:42.6667px;font-family:Calibri;-inkscape-font-specification:Calibri;fill:#404040;fill-opacity:1;stroke:#404040;stroke-width:11.3386;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1">Initialising modules</flowPara></flowRoot>      <flowRoot
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:42.6667px;font-family:Calibri;-inkscape-font-specification:Calibri;fill:#404040;fill-opacity:1;stroke:#404040;stroke-width:11.3386;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1">Initialising modules</flowPara></flowRoot>
+      <flowRoot
          xml:space="preserve"
          id="flowRoot906-1-4-4-3-7-7-71"
          style="font-style:normal;font-weight:normal;font-size:133.333px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:none"
@@ -1509,7 +1537,8 @@
              y="3848.5198"
              style="font-size:133.33332825px;fill:#ffffff;fill-opacity:1" /></flowRegion><flowPara
            id="flowPara912-6-2-1-6-8-5-2"
-           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:42.6667px;font-family:Calibri;-inkscape-font-specification:Calibri;fill:#ffffff;fill-opacity:1">Initialising modules</flowPara></flowRoot>    </g>
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:42.6667px;font-family:Calibri;-inkscape-font-specification:Calibri;fill:#ffffff;fill-opacity:1">Initialising modules</flowPara></flowRoot>
+    </g>
     <g
        transform="translate(-9.7287509,484.09322)"
        id="g1194-43">
@@ -1529,7 +1558,8 @@
              y="3848.5198"
              style="font-size:133.33332825px;fill:#404040;fill-opacity:1;stroke:#404040;stroke-width:11.33858299;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" /></flowRegion><flowPara
            id="flowPara912-6-2-1-6-7-5"
-           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:42.6667px;font-family:Calibri;-inkscape-font-specification:Calibri;fill:#404040;fill-opacity:1;stroke:#404040;stroke-width:11.3386;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1">Detecting modules</flowPara></flowRoot>      <flowRoot
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:42.6667px;font-family:Calibri;-inkscape-font-specification:Calibri;fill:#404040;fill-opacity:1;stroke:#404040;stroke-width:11.3386;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1">Detecting modules</flowPara></flowRoot>
+      <flowRoot
          xml:space="preserve"
          id="flowRoot906-1-4-4-3-4"
          style="font-style:normal;font-weight:normal;font-size:133.333px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:none"
@@ -1545,7 +1575,8 @@
              y="3848.5198"
              style="font-size:133.33332825px;fill:#ffffff;fill-opacity:1" /></flowRegion><flowPara
            id="flowPara912-6-2-1-6-1"
-           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:42.6667px;font-family:Calibri;-inkscape-font-specification:Calibri;fill:#ffffff;fill-opacity:1">Detecting modules</flowPara></flowRoot>      <text
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:42.6667px;font-family:Calibri;-inkscape-font-specification:Calibri;fill:#ffffff;fill-opacity:1">Detecting modules</flowPara></flowRoot>
+      <text
          xml:space="preserve"
          style="font-style:normal;font-weight:normal;font-size:10.5833px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;opacity:0.36;fill:#404040;fill-opacity:1;stroke:#404040;stroke-width:0.264583;stroke-opacity:1"
          x="-307.68634"
@@ -1587,7 +1618,8 @@
              y="3848.5198"
              style="font-size:133.33332825px;fill:#404040;fill-opacity:1;stroke:#404040;stroke-width:11.33858299;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" /></flowRegion><flowPara
            id="flowPara912-6-2-1-6-8-2-8"
-           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:42.6667px;font-family:Calibri;-inkscape-font-specification:Calibri;fill:#404040;fill-opacity:1;stroke:#404040;stroke-width:11.3386;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1">Creating interface</flowPara></flowRoot>      <flowRoot
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:42.6667px;font-family:Calibri;-inkscape-font-specification:Calibri;fill:#404040;fill-opacity:1;stroke:#404040;stroke-width:11.3386;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1">Creating interface</flowPara></flowRoot>
+      <flowRoot
          xml:space="preserve"
          id="flowRoot906-1-4-4-3-7-9"
          style="font-style:normal;font-weight:normal;font-size:133.333px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:none"
@@ -1603,7 +1635,8 @@
              y="3848.5198"
              style="font-size:133.33332825px;fill:#ffffff;fill-opacity:1" /></flowRegion><flowPara
            id="flowPara912-6-2-1-6-8-58"
-           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:42.6667px;font-family:Calibri;-inkscape-font-specification:Calibri;fill:#ffffff;fill-opacity:1">Creating interface</flowPara></flowRoot>    </g>
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:42.6667px;font-family:Calibri;-inkscape-font-specification:Calibri;fill:#ffffff;fill-opacity:1">Creating interface</flowPara></flowRoot>
+    </g>
     <path
        inkscape:export-ydpi="40.138256"
        inkscape:export-xdpi="40.138256"
@@ -1784,7 +1817,8 @@
            y="3848.5198"
            style="fill:#404040;fill-opacity:1" /></flowRegion><flowPara
          id="flowPara912-6-7"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:160px;font-family:Calibri;-inkscape-font-specification:Calibri;fill:#404040;fill-opacity:1">Modular Image Analysis</flowPara></flowRoot>    <g
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:160px;font-family:Calibri;-inkscape-font-specification:Calibri;fill:#404040;fill-opacity:1">Modular Image Analysis</flowPara></flowRoot>
+    <g
        transform="matrix(2.4302303,0,0,2.4302303,-1318.5366,-595.90086)"
        id="g1173-4"
        inkscape:export-filename="D:\Documents\Java Projects\MIA\docs\img\logo.png"
@@ -1842,7 +1876,8 @@
              y="3848.5198"
              style="fill:#404040;fill-opacity:1;" /></flowRegion><flowPara
            id="flowPara912-6-7-1"
-           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:160px;font-family:Calibri;-inkscape-font-specification:Calibri;fill:#404040;fill-opacity:1">Modular Image Analysis</flowPara></flowRoot>    </g>
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:160px;font-family:Calibri;-inkscape-font-specification:Calibri;fill:#404040;fill-opacity:1">Modular Image Analysis</flowPara></flowRoot>
+    </g>
     <g
        id="g5480"
        transform="matrix(0.12110559,0,0,0.12110559,450.22461,867.23334)"
@@ -1864,12 +1899,46 @@
          font-size="94"
          font-weight="500"
          transform="matrix(1.33333,0,0,1.33333,48,717.636)"
-         style="font-weight:500;font-size:94px;font-family:HelveticaNeue;-inkscape-font-specification:HelveticaNeue-Medium;fill:#ffffff">
-        <tspan
+         style="font-weight:500;font-size:94px;font-family:HelveticaNeue;-inkscape-font-specification:HelveticaNeue-Medium;fill:#ffffff"><tspan
            id="tspan5464"
            x="0 87.04351 142.7843 165.43831 195.0471 243.8331 299.57391 353.5289 379.66092 445.83691 468.49091 524.23175 546.88574 628.66571 680.92975 736.67047 759.32446 813.2796 869.0202 895.15222 950.89307 1003.157 1055.421 1078.0751 1100.729 1123.3831 1154.6844"
-           y="0">Wolfson Bioimaging Facility</tspan>
-      </text>
+           y="0">Wolfson Bioimaging Facility</tspan></text>
+    </g>
+    <g
+       id="g1186-2-5-29"
+       clip-path="url(#clipPath1236-2-73-6)"
+       inkscape:export-filename="D:\Stephen\Programming\Java Projects\mia\docs\img\logo_square_192.png"
+       inkscape:export-xdpi="60.209999"
+       inkscape:export-ydpi="60.209999"
+       transform="translate(770.05657,516.33193)">
+      <path
+         inkscape:connector-curvature="0"
+         id="path981-3-5-7"
+         d="m -350.01457,884.28751 56.97662,-98.6847 12.32617,23.58006 13.86717,-23.78321 57.11734,98.93516 c -0.01,0.008 -20.28228,0.066 -20.28228,0.066 l -36.8917,-63.89958 -13.78905,23.8828 -12.86327,-22.68945 -36.16895,62.64844 z"
+         style="fill:#42b7d9;fill-opacity:1;stroke:none;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         sodipodi:nodetypes="ccccccccccc" />
+      <path
+         inkscape:connector-curvature="0"
+         id="path983-6-3-6"
+         d="m -323.95095,884.34303 30.35639,-52.58009 10.0039,17.64453 -20.14968,34.90215 c 0,0 -20.21061,0.0334 -20.21061,0.0334 z"
+         style="fill:#e98e32;fill-opacity:1;stroke:none;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         sodipodi:nodetypes="ccccc" />
+      <path
+         inkscape:connector-curvature="0"
+         id="path985-1-2-7"
+         d="m -298.00761,884.37706 31.1064,-53.87584 31.14613,53.84181 c 0,0 -21.66858,-2e-5 -21.63613,0.0562 l -10.21898,-17.70073 -10.21865,17.70014 z"
+         style="fill:#59d844;fill-opacity:1;stroke:none;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         sodipodi:nodetypes="ccccccc" />
+      <rect
+         inkscape:export-ydpi="12.090315"
+         inkscape:export-xdpi="12.090315"
+         inkscape:export-filename="C:\Users\steph\Documents\Java Projects\ModularImageAnalysis\src\main\resources\Icons\Logo_left_47.png"
+         y="785.53015"
+         x="-350.00467"
+         height="98.740211"
+         width="119.50387"
+         id="rect1171-2-1-0"
+         style="opacity:1;fill:#ffffff;fill-opacity:0;stroke:none;stroke-width:8.31368;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:fill markers stroke" />
     </g>
   </g>
 </svg>

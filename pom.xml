@@ -342,7 +342,7 @@
                 <version>2.22.2</version>
             </plugin>
 
-            <!-- <plugin>
+            <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
                 <executions>
@@ -357,7 +357,7 @@
                     <classpathScope>compile</classpathScope>
                     <mainClass>io.github.mianalysis.mia.process.DocumentationGenerator</mainClass>
                 </configuration>
-            </plugin> -->
+            </plugin>
 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
