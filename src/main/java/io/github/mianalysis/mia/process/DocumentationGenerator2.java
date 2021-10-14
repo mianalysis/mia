@@ -141,7 +141,7 @@ public class DocumentationGenerator2 {
         // Generate module list HTML document
         String pathToRoot = "..";
         String page = getPageTemplate("src/main/resources/templatehtml/pagetemplate.html", pathToRoot);
-        page = setNavbarActive(page, Page.HOME);
+        page = setNavbarActive(page, Page.GUIDES);
 
         String mainContent = getPageTemplate("src/main/resources/templatehtml/gettingstartedtemplate.html", pathToRoot);
 
@@ -181,10 +181,7 @@ public class DocumentationGenerator2 {
 
         // Populate module packages content
         String mainContent = getPageTemplate("src/main/resources/templatehtml/categorylisttemplate.html", pathToRoot);
-        if (category.getParent() == null) // Just having a single link looks strange
-            mainContent = mainContent.replace("${CATEGORY_PATH}", "");
-        else
-            mainContent = mainContent.replace("${CATEGORY_PATH}", appendCategoryPath(category, pathToRoot));
+        mainContent = mainContent.replace("${CATEGORY_PATH}", appendCategoryPath(category, pathToRoot));
         mainContent = mainContent.replace("${CATEGORY_NAME}", category.getName());
         mainContent = mainContent.replace("${CATEGORY_DESCRIPTION}", category.getDescription());
 
@@ -306,7 +303,7 @@ public class DocumentationGenerator2 {
         // Generate module list HTML document
         String pathToRoot = "..";
         String page = getPageTemplate("src/main/resources/templatehtml/pagetemplate.html", pathToRoot);
-        page = setNavbarActive(page, Page.HOME);
+        page = setNavbarActive(page, Page.ABOUT);
 
         String mainContent = getPageTemplate("src/main/resources/templatehtml/abouttemplate.html", pathToRoot);
 
