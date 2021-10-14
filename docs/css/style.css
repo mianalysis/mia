@@ -117,18 +117,29 @@
 }
 
 .mia-carousel-caption {
-  bottom:-10px;
+  /* bottom:-10px; */
+  backdrop-filter: blur(2px);
+  bottom:0;
+  margin: 0;
+  padding: 0;
+  max-width: 100%;
+  width:100%;
+  left: 0;
+  background: rgba(255,255,255, 0.5);
 }
 
 .mia-carousel-title {
   font-size: 1.3rem;
   font-weight: 350;
   margin-bottom: 0;
+  padding: 0;
+  color:#424242;
 }
 
 .mia-carousel-text {
   font-size: 0.8rem;
   font-weight: 350;
+  color:#424242;
 }
 
 .mia-home-link-container {
@@ -169,14 +180,14 @@ footer {
 
 @media (min-width: 640px) { 
   .mia-carousel-button {padding: .375rem .375rem;}
-  .mia-carousel-caption {bottom:20px} 
+  /* .mia-carousel-caption {bottom:20px}  */
   .mia-carousel-indicators {display:flex}
 
   .card-header {padding: 0.75rem 1.25rem;}
   .card-body {padding: 1.25rem;}
   .mia-card-button {padding:0.5rem 1rem;}
 
-  .mia-carousel-title {font-size:3rem;margin-bottom: 1rem;}
+  .mia-carousel-title {font-size:3rem;}
   .mia-carousel-text {font-size: 1.2rem;}
   .mia-footer {margin-top: 1.5rem; margin-bottom: 1.5rem}
   .mia-footer-logo {height: 48px;}
