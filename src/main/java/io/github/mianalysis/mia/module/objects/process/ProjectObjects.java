@@ -1,14 +1,12 @@
 package io.github.mianalysis.mia.module.objects.process;
 
-import ome.units.quantity.Time;
-import ome.units.unit.Unit;
+import org.scijava.Priority;
+import org.scijava.plugin.Plugin;
+
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.module.Module;
-import org.scijava.Priority;
-import org.scijava.plugin.Plugin;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Status;
@@ -25,10 +23,10 @@ import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.sjcross.common.exceptions.IntegerOverflowException;
 import io.github.sjcross.common.object.volume.SpatCal;
 import io.github.sjcross.common.object.volume.Volume;
+import ome.units.quantity.Time;
+import ome.units.unit.Unit;
 
-/**
- * Projects xy coordinates into a single plane.  Duplicates of xy coordinates at different heights are removed.
- */
+
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class ProjectObjects extends Module {
     public static final String INPUT_SEPARATOR = "Object input/output";
@@ -46,7 +44,6 @@ public class ProjectObjects extends Module {
         outputObject.setCoordinateSet(projected.getCoordinateSet());
         outputObject.setT(inputObject.getT());
 
-        // If adding relationship
         if (addRelationship) {
             outputObject.addParent(inputObject);
             inputObject.addChild(outputObject);
@@ -56,19 +53,9 @@ public class ProjectObjects extends Module {
 
     }
 
-
-
     @Override
     public Category getCategory() {
         return Categories.OBJECTS_PROCESS;
-    }
-
-    @Override
-    public String getDescription() {
-        return "Create projections of objects along the z-axis into an xy-plane representation.  The output projected " +
-                "objects capture the maximum xy profile of the object, thus acting like a silhouette.  These objects " +
-                "are stored separately in the workspace from the input objects, but are related in a parent-child " +
-                "relationship (input-output, respectively).";
     }
 
     @Override

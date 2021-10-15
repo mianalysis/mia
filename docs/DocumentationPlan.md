@@ -21,13 +21,9 @@
    - Subtext: Designed for compatibility with spatially-calibrated 5D images, yielding image and object measurements in both pixel and physical (calibrated) units
    - Button: "Learn more" goes to general guide page
 1. Extensible
-   - Image: 
+   - Image: Code showing a random module
    - Subtext: Functionality can be extended both internally, via integration with Fiji’s scripting interface, and externally, with Java modules that extend the core MIA framework
    - Button: "Learn more" goes to "Scripting" guide page
-<!-- 5. Reactive
-   - Image: Screenshot of editing view with some modules inactive (red) and others skipped
-   - Subtext: Module groups automatically activate in response to factors such as availability of images/objects, user inputs and measurement-based filters
-   - Button: "Learn more" goes to "Reactive workflows" guide page -->
 
 
 ## Description
@@ -66,6 +62,8 @@ MIA is developed in the Wolfson Bioimaging Facility at the University of Bristol
 ## Batch processing
 - Selecting folder
 
+## Running workflows from a macro
+
 
 # Section: Creating new workflows
 ## Loading images into a workflow
@@ -90,6 +88,8 @@ MIA is developed in the Wolfson Bioimaging Facility at the University of Bristol
 
 ## Troubleshooting
 - Logging (debug and memory)
+- Version error (versions before v0.21.0?)
+   - Requires TrackMate 6 or lower
 
 # Section: General MIA structure
 ## Object models

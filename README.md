@@ -4,9 +4,9 @@
 
 [![Wolfson Bioimaging](./src/main/resources/images/Logo_text_UoB_128.png)](http://www.bristol.ac.uk/wolfson-bioimaging/)
 
-About MIA
-------------
-Image and object analysis workflow automation tool for Fiji
+## Image and object analysis workflow automation tool for Fiji
+
+For the full documentation, please go to [mianalysis.github.io](https://mianalysis.github.io)
 
 Installation
 ------------
