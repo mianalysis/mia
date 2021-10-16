@@ -6,6 +6,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "Launch MainGenerator",
+            "request": "launch",
+            "mainClass": "io.github.mianalysis.mia.process.documentation.MainGenerator",
+            "projectName": "MIA"
+        },
+        {
+            "type": "java",
             "name": "Launch GFG",
             "request": "launch",
             "mainClass": "io.github.mianalysis.mia.module.objectprocessing.identification.GFG",
