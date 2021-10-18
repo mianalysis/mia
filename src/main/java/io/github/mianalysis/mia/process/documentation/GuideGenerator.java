@@ -13,16 +13,17 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.apache.commons.io.FileUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 public class GuideGenerator extends AbstractGenerator {
+    private boolean verbose = true;
+    private GuidePaths guidePaths = new GuidePaths();
 
     @Override
     public void generate() throws IOException {
-        String path = DocumentationGenerator.class.getResource("/guides").getPath();
+        String path = GuideGenerator.class.getResource("/guides").getPath();
         path = path.replace("%20", " ");
         File guideRoot = new File(path);
         generateGuideListPages(guideRoot);
@@ -80,6 +81,9 @@ public class GuideGenerator extends AbstractGenerator {
             if (guide.isDirectory() || guide.getName().equals("_" + file.getName() + ".html"))
                 continue;
 
+            if (verbose)
+                System.out.println("Generating list page \"" + guide.getName() + "\"");
+
             HashMap<String, String> guideMetadata = getMetadata(guide);
             String guideTitle = guideMetadata.get("title");
             guideTitle = guideTitle == null ? "" : guideTitle;
@@ -115,37 +119,41 @@ public class GuideGenerator extends AbstractGenerator {
     }
 
     public void generateGuidePage(File guide) throws IOException {
-            String pathToRoot = getPathToRoot(guide.getParentFile()) + "..";
-            String guidePath = getPath(guide);
-            String path = "docs/html/";
+        if (verbose)
+            System.out.println("Generating guide page \"" + guide.getName() + "\"");
+        String pathToRoot = getPathToRoot(guide.getParentFile()) + "..";
+        String guidePath = getPath(guide);
+        String path = "docs/html/";
 
-            // Initialise HTML document
-            String page = getPageTemplate("src/main/resources/templatehtml/pagetemplate.html", pathToRoot);
-            page = setNavbarActive(page, Page.GUIDES);
+        // Initialise HTML document
+        String page = getPageTemplate("src/main/resources/templatehtml/pagetemplate.html", pathToRoot);
+        page = setNavbarActive(page, Page.GUIDES);
 
-            // Populate module packages content
-            String html = FileUtils.readFileToString(guide, "UTF-8");
-            String guideContent = html.substring(html.indexOf("<body>") + 6, html.indexOf("</body>"));
-        
-            HashMap<String, String> guideMetadata = getMetadata(guide);
-            String guideTitle = guideMetadata.get("title");
-            guideTitle = guideTitle == null ? "" : guideTitle;
-            String guideDescription = guideMetadata.get("description");
-            guideDescription = guideDescription == null ? "" : guideDescription;
+        // Populate module packages content
+        String html = FileUtils.readFileToString(guide, "UTF-8");
+        String guideContent = html.substring(html.indexOf("<body>") + 6, html.indexOf("</body>"));
 
-            String mainContent = getPageTemplate("src/main/resources/templatehtml/guidetemplate.html", pathToRoot);
-            mainContent = mainContent.replace("${GUIDE_PATH}", appendPath(guide.getParentFile(), pathToRoot));
-            mainContent = mainContent.replace("${GUIDE_NAME}", guideTitle);
-            mainContent = mainContent.replace("${GUIDE_DESCRIPTION}", guideDescription);
-            mainContent = mainContent.replace("${GUIDE_CONTENT}", guideContent);
+        HashMap<String, String> guideMetadata = getMetadata(guide);
+        String guideTitle = guideMetadata.get("title");
+        guideTitle = guideTitle == null ? "" : guideTitle;
+        String guideDescription = guideMetadata.get("description");
+        guideDescription = guideDescription == null ? "" : guideDescription;
 
-            // Add module information to page
-            page = page.replace("${MAIN_CONTENT}", mainContent);
+        String mainContent = getPageTemplate("src/main/resources/templatehtml/guidetemplate.html", pathToRoot);
+        mainContent = mainContent.replace("${GUIDE_PATH}", appendPath(guide.getParentFile(), pathToRoot));
+        mainContent = mainContent.replace("${GUIDE_NAME}", guideTitle);
+        mainContent = mainContent.replace("${GUIDE_DESCRIPTION}", guideDescription);
+        mainContent = mainContent.replace("${GUIDE_CONTENT}", guideContent);
 
-            FileWriter writer = new FileWriter(path + guidePath + ".html");
-            writer.write(page);
-            writer.flush();
-            writer.close();
+        // Add module information to page
+        page = page.replace("${MAIN_CONTENT}", mainContent);
+        page = guidePaths.replacePaths(page);
+        page = insertPathToRoot(page, pathToRoot);
+
+        FileWriter writer = new FileWriter(path + guidePath + ".html");
+        writer.write(page);
+        writer.flush();
+        writer.close();
 
     }
 

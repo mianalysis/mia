@@ -6,30 +6,17 @@
     "configurations": [
         {
             "type": "java",
-            "name": "Launch MainGenerator",
+            "name": "Launch MainGenerator (All)",
             "request": "launch",
             "mainClass": "io.github.mianalysis.mia.process.documentation.MainGenerator",
             "projectName": "MIA"
         },
         {
             "type": "java",
-            "name": "Launch GFG",
+            "name": "Launch MainGenerator (Guides only)",
             "request": "launch",
-            "mainClass": "io.github.mianalysis.mia.module.objectprocessing.identification.GFG",
-            "projectName": "MIA"
-        },
-        {
-            "type": "java",
-            "name": "Launch AbstractHoughDetection",
-            "request": "launch",
-            "mainClass": "io.github.mianalysis.mia.module.objectprocessing.identification.AbstractHoughDetection",
-            "projectName": "MIA"
-        },
-        {
-            "type": "java",
-            "name": "Launch DocumentationGenerator",
-            "request": "launch",
-            "mainClass": "io.github.mianalysis.mia.process.DocumentationGenerator",
+            "mainClass": "io.github.mianalysis.mia.process.documentation.MainGenerator",
+            "args": "GUIDES",
             "projectName": "MIA"
         },
         {
@@ -44,13 +31,6 @@
             "name": "Launch DocumentationCoverageChecker",
             "request": "launch",
             "mainClass": "io.github.mianalysis.mia.process.DocumentationCoverageChecker",
-            "projectName": "MIA"
-        },
-        {
-            "type": "java",
-            "name": "Launch DocumentationGenerator2",
-            "request": "launch",
-            "mainClass": "io.github.mianalysis.mia.process.DocumentationGenerator2",
             "projectName": "MIA"
         },
         {
