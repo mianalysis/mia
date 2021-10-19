@@ -2,6 +2,7 @@ package io.github.mianalysis.mia.module.objects.measure.spatial;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.concurrent.Future;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -40,7 +41,6 @@ import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
-import io.github.sjcross.common.exceptions.IntegerOverflowException;
 import io.github.sjcross.common.object.volume.CoordinateSet;
 import io.github.sjcross.common.object.volume.PointOutOfRangeException;
 import io.github.sjcross.common.object.volume.VolumeType;
@@ -259,7 +259,7 @@ public class MeasureSkeleton extends Module {
         ArrayList<Double> shortestPaths = skeletonResult.getShortestPathList();
         if (shortestPaths.size() == 0)
             return points2;
-            
+
         int longestPathIdx = -1;
         double longestPathLength = -1;
 
@@ -408,7 +408,7 @@ public class MeasureSkeleton extends Module {
         int nThreads = multithread ? Prefs.getThreads() : 1;
         ThreadPoolExecutor pool = new ThreadPoolExecutor(nThreads, nThreads, 0L, TimeUnit.MILLISECONDS,
                 new LinkedBlockingQueue<>());
-
+        
         int total = inputObjects.size();
         AtomicInteger count = new AtomicInteger();
 
@@ -419,10 +419,11 @@ public class MeasureSkeleton extends Module {
         final boolean exportLargestShortestPathFinal = exportLargestShortestPath;
         for (Obj inputObject : inputObjects.values()) {
             Runnable task = () -> {
-                Object[] result = initialiseAnalyzer(inputObject, minLengthFinal, exportLargestShortestPathFinal);
-                // Adding the skeleton to the input object
-                if (addToWorkspace) {
-                    try {
+                try {
+                    Object[] result = initialiseAnalyzer(inputObject, minLengthFinal, exportLargestShortestPathFinal);
+                    // Adding the skeleton to the input object
+                    if (addToWorkspace) {
+
                         Obj skeletonObject = createEdgeJunctionObjects(inputObject, (SkeletonResult) result[1],
                                 skeletonObjects, edgeObjects, junctionObjects);
 
@@ -433,14 +434,15 @@ public class MeasureSkeleton extends Module {
                             workspace.addObjects(loopObjects);
                             applyLoopPartnerships(loopObjects, edgeObjects, junctionObjects);
                         }
-
-                    } catch (IntegerOverflowException e) {
-                        MIA.log.writeError(e);
                     }
-                }
 
-                if (exportLargestShortestPathFinal)
-                    createLargestShortestPath(inputObject, largestShortestPathObjects, (AnalyzeSkeleton_) result[0]);
+                    if (exportLargestShortestPathFinal)
+                        createLargestShortestPath(inputObject, largestShortestPathObjects,
+                                (AnalyzeSkeleton_) result[0]);
+
+                } catch (Throwable t) {
+                    MIA.log.writeError(t);
+                }
 
                 writeProgressStatus(count.incrementAndGet(), total, "objects");
 
@@ -452,10 +454,11 @@ public class MeasureSkeleton extends Module {
         pool.shutdown();
         try {
             pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS); // i.e. never terminate early
-        } catch (InterruptedException e) {
-            MIA.log.writeError(e);
+        } catch (Throwable t) {
+            MIA.log.writeError(t);
             return Status.FAIL;
         }
+        
 
         if (showOutput)
             inputObjects.showMeasurements(this, modules);

@@ -38,7 +38,8 @@
             "name": "Launch MIA",
             "request": "launch",
             "mainClass": "io.github.mianalysis.mia.MIA",
-            "projectName": "MIA"
+            "projectName": "MIA",
+            // "vmArgs": "-Xmx30000m"
         }
     ]
 }

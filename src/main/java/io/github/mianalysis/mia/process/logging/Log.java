@@ -61,6 +61,17 @@ public class Log {
         }
     }
 
+    public void writeError(Throwable t) {
+        if (t == null) {
+            write("null", Level.ERROR);
+        } else {
+            StringWriter sw = new StringWriter();
+            PrintWriter pw = new PrintWriter(sw);
+            t.printStackTrace(pw);
+            write(sw.toString(), Level.ERROR);
+        }
+    }
+
     public void writeError(Object message) {
         if (message == null)
             write("null", Level.ERROR);
