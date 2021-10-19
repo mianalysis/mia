@@ -147,8 +147,8 @@ public class MeasureSpecificWidth extends Module {
         final double dppZ = obj.getSpatialCalibration().dppZ;
 
         // Getting the vector pointing to p2
-        final Vector3D vector1 = new Vector3D(ref1.x * dppXY, ref1.y * dppXY, ref1.z * dppZ);
-        final Vector3D vector2 = new Vector3D(ref2.x * dppXY, ref2.y * dppXY, ref2.z * dppZ);
+        final Vector3D vector1 = new Vector3D(ref1.x, ref1.y, ref1.z * dppZ/dppXY);
+        final Vector3D vector2 = new Vector3D(ref2.x, ref2.y, ref2.z * dppZ/dppXY);
         final Line primaryLine = new Line(vector1, vector2, 1.0E-10D);
 
         // Getting surface points
@@ -164,7 +164,7 @@ public class MeasureSpecificWidth extends Module {
         // retained.
         for (final Point<Integer> point : surface.getCoordinateSet()) {
             // Vector representation of current coordinate
-            final Vector3D testVector = new Vector3D(point.x * dppXY, point.y * dppXY, point.z * dppZ);
+            final Vector3D testVector = new Vector3D(point.x, point.y, point.z * dppZ/dppXY);
 
             // Distance of current point to line. If less than 0.1, we will consider it
             final double distance = primaryLine.distance(testVector);
