@@ -68,6 +68,7 @@ public class GuideGenerator extends AbstractGenerator {
                     pathToRoot);
             cardContent = cardContent.replace("${CARD_TITLE}", childMetadata.get("title"));
             cardContent = cardContent.replace("${CARD_TEXT}", childMetadata.get("description"));
+            cardContent = cardContent.replace("${CARD_BUTTON}", "See guides");
             cardContent = cardContent.replace("${TARGET_PATH}",
                     getPath(childCategory) + "/" + getSaveName(childCategory));
             categoryContent = categoryContent + cardContent;

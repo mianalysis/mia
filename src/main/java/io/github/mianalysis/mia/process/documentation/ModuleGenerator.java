@@ -59,6 +59,7 @@ public class ModuleGenerator extends AbstractGenerator {
                     pathToRoot);
             cardContent = cardContent.replace("${CARD_TITLE}", childCategory.getName());
             cardContent = cardContent.replace("${CARD_TEXT}", childCategory.getDescription());
+            cardContent = cardContent.replace("${CARD_BUTTON}", "See modules");
             cardContent = cardContent.replace("${TARGET_PATH}",
                     getCategoryPath(childCategory) + "/" + getSaveName(childCategory));
             categoryContent = categoryContent + cardContent;

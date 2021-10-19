@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.Vector;
 
 import ij.gui.PointRoi;
+import ij.measure.ResultsTable;
 import ij.process.ByteProcessor;
 import ij.process.FloatProcessor;
 import ij.process.ImageProcessor;
@@ -28,8 +29,12 @@ import net.imglib2.type.numeric.RealType;
 
 public abstract class AbstractAffineRegistration<T extends RealType<T> & NativeType<T>>
         extends AbstractRegistration<T> {
+    protected ResultsTable resultsTable;
+
     public static final String TRANSFORMATION_MODE = "Transformation mode";
     public static final String TEST_FLIP = "Test flip (mirror image)";
+    public static final String SHOW_TRANSFORMATION = "Show transformation(s)";
+    public static final String CLEAR_BETWEEN_IMAGES = "Clear between images";
 
     public AbstractAffineRegistration(String name, Modules modules) {
         super(name, modules);
@@ -128,6 +133,23 @@ public abstract class AbstractAffineRegistration<T extends RealType<T> & NativeT
             showDetectedPoints(referenceIpr, warpedIpr, pairs);
         }
 
+        if (((AffineParam) param).showTransform) {
+            AbstractAffineModel2D model = (AbstractAffineModel2D) res1[0];
+            double[] matrix = new double[6];
+            model.toArray(matrix);
+
+            resultsTable.addRow();
+            resultsTable.addValue("TIMEPOINT", param.t);
+            resultsTable.addValue("M00", matrix[0]);
+            resultsTable.addValue("M10", matrix[1]);
+            resultsTable.addValue("M01", matrix[2]);
+            resultsTable.addValue("M11", matrix[3]);
+            resultsTable.addValue("M02", matrix[4]);
+            resultsTable.addValue("M12", matrix[5]);
+            resultsTable.show("Affine transformations ("+((AffineParam) param).imageName+")");
+
+        }
+
         transform.mapping = new InverseTransformMapping<AbstractAffineModel2D<?>>((AbstractAffineModel2D) res1[0]);
 
         return transform;
@@ -139,7 +161,13 @@ public abstract class AbstractAffineRegistration<T extends RealType<T> & NativeT
         AffineParam affineParam = (AffineParam) param;
         affineParam.transformationMode = parameters.getValue(TRANSFORMATION_MODE);
         affineParam.testFlip = parameters.getValue(TEST_FLIP);
+        affineParam.showTransform = parameters.getValue(SHOW_TRANSFORMATION);
+        affineParam.clearBetweenImages = parameters.getValue(CLEAR_BETWEEN_IMAGES);
+        affineParam.imageName = parameters.getValue(INPUT_IMAGE);
 
+        if (affineParam.showTransform)
+            if (resultsTable == null || affineParam.clearBetweenImages)
+                resultsTable = new ResultsTable();
     }
 
     @Override
@@ -162,6 +190,8 @@ public abstract class AbstractAffineRegistration<T extends RealType<T> & NativeT
 
         parameters.add(new ChoiceP(TRANSFORMATION_MODE, this, TransformationModes.RIGID, TransformationModes.ALL));
         parameters.add(new BooleanP(TEST_FLIP, this, false));
+        parameters.add(new BooleanP(SHOW_TRANSFORMATION, this, false));
+        parameters.add(new BooleanP(CLEAR_BETWEEN_IMAGES, this, false));
 
     }
 
@@ -179,6 +209,12 @@ public abstract class AbstractAffineRegistration<T extends RealType<T> & NativeT
 
             if (parameter.getName().equals(FILL_MODE))
                 returnedParameters.add(parameters.getParameter(TEST_FLIP));
+
+            if (parameter.getName().equals(SHOW_DETECTED_POINTS)) {
+                returnedParameters.add(parameters.getParameter(SHOW_TRANSFORMATION));
+                if ((boolean) parameters.getValue(SHOW_TRANSFORMATION))
+                    returnedParameters.add(parameters.getParameter(CLEAR_BETWEEN_IMAGES));
+            }
         }
 
         return returnedParameters;
@@ -211,11 +247,15 @@ public abstract class AbstractAffineRegistration<T extends RealType<T> & NativeT
     public abstract class AffineParam extends Param {
         public String transformationMode = TransformationModes.RIGID;
         public boolean testFlip = false;
+        public boolean showTransform = false;
+        public boolean clearBetweenImages = false;
+        public String imageName = "";
 
     }
 
     public class AffineTransform extends Transform {
         public boolean flip = false;
         public InverseTransformMapping mapping = null;
+
     }
 }

@@ -26,16 +26,17 @@
   <!-- Navigation bar -->
   <nav class="navbar navbar-expand-md navbar-light bg-light sticky-top">
     <div class="container-fluid">
-      <a class="navbar-brand mia-name mia-mobile" href="../../../index.html"
-        style="padding-top: 3px;padding-bottom: 0px;">
-        <img height="36" src="../../../img/logo_64.png" style="padding-bottom: 3px; padding-right:8px;">
-        MIA
-      </a>
-      <a class="navbar-brand mia-name mia-desktop" href="../../../index.html"
-        style="padding-top: 3px;padding-bottom: 0px;">
-        <img height="36" src="../../../img/logo_64.png" style="padding-bottom: 3px; padding-right:8px;">
-        Modular Image Analysis
-      </a>
+      <div>
+        <a class="navbar-brand" href="../../../index.html" style="padding-bottom: 0px;">
+          <img height="36" src="../../../img/logo_64.png" style="padding-bottom: 3px; padding-right:0px;">
+        </a>
+        <a class="navbar-brand mia-name mia-mobile" href="../../../index.html" style="float:right; padding-top: 6px;">
+          MIA
+        </a>
+        <a class="navbar-brand mia-name mia-desktop" href="../../../index.html" style="float:right; padding-top: 6px;">
+          Modular Image Analysis
+        </a>
+      </div>
       <buton class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive"
         style="border: none;">
         <span class="navbar-toggler-icon"></span>
@@ -83,7 +84,6 @@
         Operations which allow conversion between objects and images.</p>
     </div>
     <div class="card-footer bg-transparent mb-2 mia-card-footer">
-      <!-- <button type="button" class="btn btn-lg btn-block btn-primary">See modules</button> -->
       <a class="btn btn-lg btn-block btn-primary mia-main-text-large mia-card-button" href="../../../html/modules/objects/convert/convert.html">
         See modules
       </a>
@@ -97,7 +97,6 @@
         Modules resulting in creation of new objects to be stored in the workspace.</p>
     </div>
     <div class="card-footer bg-transparent mb-2 mia-card-footer">
-      <!-- <button type="button" class="btn btn-lg btn-block btn-primary">See modules</button> -->
       <a class="btn btn-lg btn-block btn-primary mia-main-text-large mia-card-button" href="../../../html/modules/objects/detect/detect.html">
         See modules
       </a>
@@ -111,7 +110,6 @@
         Modules which can remove objects from an object collection (or move them to a new collection) based on various metrics.</p>
     </div>
     <div class="card-footer bg-transparent mb-2 mia-card-footer">
-      <!-- <button type="button" class="btn btn-lg btn-block btn-primary">See modules</button> -->
       <a class="btn btn-lg btn-block btn-primary mia-main-text-large mia-card-button" href="../../../html/modules/objects/filter/filter.html">
         See modules
       </a>
@@ -125,7 +123,6 @@
         Operations making measurements of individual objects in the workspace.  Measurements are associated with the relevant input objects.</p>
     </div>
     <div class="card-footer bg-transparent mb-2 mia-card-footer">
-      <!-- <button type="button" class="btn btn-lg btn-block btn-primary">See modules</button> -->
       <a class="btn btn-lg btn-block btn-primary mia-main-text-large mia-card-button" href="../../../html/modules/objects/measure/measure.html">
         See modules
       </a>
@@ -139,7 +136,6 @@
         Operations capable of creating new objects from existing ones.  For example, fitting ellipsoids or creating projections along an axis.</p>
     </div>
     <div class="card-footer bg-transparent mb-2 mia-card-footer">
-      <!-- <button type="button" class="btn btn-lg btn-block btn-primary">See modules</button> -->
       <a class="btn btn-lg btn-block btn-primary mia-main-text-large mia-card-button" href="../../../html/modules/objects/process/process.html">
         See modules
       </a>
@@ -153,7 +149,6 @@
         Modules creating relationships between objects.  Relationships can be one-to-many (parent-child) or one-to-one (partners).</p>
     </div>
     <div class="card-footer bg-transparent mb-2 mia-card-footer">
-      <!-- <button type="button" class="btn btn-lg btn-block btn-primary">See modules</button> -->
       <a class="btn btn-lg btn-block btn-primary mia-main-text-large mia-card-button" href="../../../html/modules/objects/relate/relate.html">
         See modules
       </a>
@@ -167,7 +162,6 @@
         Modules capable of updating coordinates of existing objects.  These operations can include hole filling and masking.</p>
     </div>
     <div class="card-footer bg-transparent mb-2 mia-card-footer">
-      <!-- <button type="button" class="btn btn-lg btn-block btn-primary">See modules</button> -->
       <a class="btn btn-lg btn-block btn-primary mia-main-text-large mia-card-button" href="../../../html/modules/objects/transform/transform.html">
         See modules
       </a>

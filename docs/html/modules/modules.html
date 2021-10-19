@@ -26,16 +26,17 @@
   <!-- Navigation bar -->
   <nav class="navbar navbar-expand-md navbar-light bg-light sticky-top">
     <div class="container-fluid">
-      <a class="navbar-brand mia-name mia-mobile" href="../../index.html"
-        style="padding-top: 3px;padding-bottom: 0px;">
-        <img height="36" src="../../img/logo_64.png" style="padding-bottom: 3px; padding-right:8px;">
-        MIA
-      </a>
-      <a class="navbar-brand mia-name mia-desktop" href="../../index.html"
-        style="padding-top: 3px;padding-bottom: 0px;">
-        <img height="36" src="../../img/logo_64.png" style="padding-bottom: 3px; padding-right:8px;">
-        Modular Image Analysis
-      </a>
+      <div>
+        <a class="navbar-brand" href="../../index.html" style="padding-bottom: 0px;">
+          <img height="36" src="../../img/logo_64.png" style="padding-bottom: 3px; padding-right:0px;">
+        </a>
+        <a class="navbar-brand mia-name mia-mobile" href="../../index.html" style="float:right; padding-top: 6px;">
+          MIA
+        </a>
+        <a class="navbar-brand mia-name mia-desktop" href="../../index.html" style="float:right; padding-top: 6px;">
+          Modular Image Analysis
+        </a>
+      </div>
       <buton class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive"
         style="border: none;">
         <span class="navbar-toggler-icon"></span>
@@ -83,7 +84,6 @@
         Required modules for input and output control.  Each workflow contains one copy of each module.</p>
     </div>
     <div class="card-footer bg-transparent mb-2 mia-card-footer">
-      <!-- <button type="button" class="btn btn-lg btn-block btn-primary">See modules</button> -->
       <a class="btn btn-lg btn-block btn-primary mia-main-text-large mia-card-button" href="../../html/modules/core/core.html">
         See modules
       </a>
@@ -97,7 +97,6 @@
         Modules dealing primarily with images.  These operations typically take images as inputs and may output new images or update existing ones.</p>
     </div>
     <div class="card-footer bg-transparent mb-2 mia-card-footer">
-      <!-- <button type="button" class="btn btn-lg btn-block btn-primary">See modules</button> -->
       <a class="btn btn-lg btn-block btn-primary mia-main-text-large mia-card-button" href="../../html/modules/images/images.html">
         See modules
       </a>
@@ -111,7 +110,6 @@
         Modules loading or saving files to the filesystem.</p>
     </div>
     <div class="card-footer bg-transparent mb-2 mia-card-footer">
-      <!-- <button type="button" class="btn btn-lg btn-block btn-primary">See modules</button> -->
       <a class="btn btn-lg btn-block btn-primary mia-main-text-large mia-card-button" href="../../html/modules/inputoutput/inputoutput.html">
         See modules
       </a>
@@ -125,7 +123,6 @@
         Modules dealing primarily with objects.  These include object detection, measurements and operations leading to changes in existing objects.</p>
     </div>
     <div class="card-footer bg-transparent mb-2 mia-card-footer">
-      <!-- <button type="button" class="btn btn-lg btn-block btn-primary">See modules</button> -->
       <a class="btn btn-lg btn-block btn-primary mia-main-text-large mia-card-button" href="../../html/modules/objects/objects.html">
         See modules
       </a>
@@ -139,7 +136,6 @@
         Modules for running code directly witin a workflow.  Both single commands and full scripts (e.g. macro, Jython and Groovy) can be implemented.</p>
     </div>
     <div class="card-footer bg-transparent mb-2 mia-card-footer">
-      <!-- <button type="button" class="btn btn-lg btn-block btn-primary">See modules</button> -->
       <a class="btn btn-lg btn-block btn-primary mia-main-text-large mia-card-button" href="../../html/modules/script/script.html">
         See modules
       </a>
@@ -153,7 +149,6 @@
         Operations handling MIA properties such as memory and global variables.</p>
     </div>
     <div class="card-footer bg-transparent mb-2 mia-card-footer">
-      <!-- <button type="button" class="btn btn-lg btn-block btn-primary">See modules</button> -->
       <a class="btn btn-lg btn-block btn-primary mia-main-text-large mia-card-button" href="../../html/modules/system/system.html">
         See modules
       </a>
@@ -167,7 +162,6 @@
         Modules primarily concerned with generating and displaying images.  These include adding overlay elements and plotting data.</p>
     </div>
     <div class="card-footer bg-transparent mb-2 mia-card-footer">
-      <!-- <button type="button" class="btn btn-lg btn-block btn-primary">See modules</button> -->
       <a class="btn btn-lg btn-block btn-primary mia-main-text-large mia-card-button" href="../../html/modules/visualisation/visualisation.html">
         See modules
       </a>
@@ -181,7 +175,6 @@
         Modules capable of controlling the order of module execution.  For example, skipping specific modules if certain criteria are met.</p>
     </div>
     <div class="card-footer bg-transparent mb-2 mia-card-footer">
-      <!-- <button type="button" class="btn btn-lg btn-block btn-primary">See modules</button> -->
       <a class="btn btn-lg btn-block btn-primary mia-main-text-large mia-card-button" href="../../html/modules/workflow/workflow.html">
         See modules
       </a>

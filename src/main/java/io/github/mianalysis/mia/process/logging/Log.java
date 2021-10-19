@@ -100,6 +100,17 @@ public class Log {
             write(message.toString(), Level.DEBUG);
     }
 
+    public void writeDebug(Exception e) {
+        if (e == null) {
+            write("null", Level.DEBUG);
+        } else {
+            StringWriter sw = new StringWriter();
+            PrintWriter pw = new PrintWriter(sw);
+            e.printStackTrace(pw);
+            write(sw.toString(), Level.DEBUG);
+        }
+    }
+
     public void writeMemory(Object message) {
         if (message == null)
             write("null", Level.MEMORY);

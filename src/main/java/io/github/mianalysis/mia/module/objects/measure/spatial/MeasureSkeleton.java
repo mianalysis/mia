@@ -97,13 +97,20 @@ public class MeasureSkeleton extends Module {
     static Object[] initialiseAnalyzer(Obj inputObject, double minLengthFinal, boolean exportLargestShortestPathFinal) {
         Image skeletonImage = getSkeletonImage(inputObject);
 
-        AnalyzeSkeleton_ analyzeSkeleton = new AnalyzeSkeleton_();
-        analyzeSkeleton.setup("", skeletonImage.getImagePlus());
-        SkeletonResult skeletonResult = analyzeSkeleton.run(AnalyzeSkeleton_.NONE, minLengthFinal,
-                exportLargestShortestPathFinal, skeletonImage.getImagePlus(), true, false);
+        try {
+            AnalyzeSkeleton_ analyzeSkeleton = new AnalyzeSkeleton_();
+            analyzeSkeleton.setup("", skeletonImage.getImagePlus());
+            SkeletonResult skeletonResult = analyzeSkeleton.run(AnalyzeSkeleton_.NONE, minLengthFinal,
+                    exportLargestShortestPathFinal, skeletonImage.getImagePlus(), true, false);
 
-        return new Object[] { analyzeSkeleton, skeletonResult };
+            MIA.log.writeDebug("Got this far");
+            MIA.log.writeDebug("Skeleton result = "+skeletonResult);
+            return new Object[] { analyzeSkeleton, skeletonResult };
 
+        } catch (Exception e) {
+            MIA.log.writeError(e);
+            return null;
+        }
     }
 
     static Obj createEdgeJunctionObjects(Obj inputObject, SkeletonResult result, Objs skeletonObjects, Objs edgeObjects,
@@ -281,9 +288,10 @@ public class MeasureSkeleton extends Module {
     }
 
     static void createLargestShortestPath(Obj inputObject, Objs largestShortestPathObjects,
-            AnalyzeSkeleton_ analyzeSkeleton) {
+            AnalyzeSkeleton_ analyzeSkeleton, SkeletonResult skeletonResult) {
 
-        ArrayList<io.github.sjcross.common.object.Point<Integer>> points = getLargestShortestPath(inputObject);
+        ArrayList<io.github.sjcross.common.object.Point<Integer>> points = getLargestShortestPath(inputObject,
+                analyzeSkeleton, skeletonResult);
 
         Obj largestShortestPath = largestShortestPathObjects.createAndAddNewObject(VolumeType.POINTLIST);
         largestShortestPath.getCoordinateSet().addAll(points);
@@ -373,7 +381,7 @@ public class MeasureSkeleton extends Module {
         // If necessary, converting to calibrated units (Skeletonise takes calibrated
         // measurements, so unlike most modules, we want to convert to calibrated units)
         if (!calibratedUnits)
-            minLength = minLength * inputObjects.getDppXY();
+            minLength = minLength / inputObjects.getDppXY();
 
         // Creating empty output object collections
         final Objs skeletonObjects = addToWorkspace ? new Objs(skeletonObjectsName, inputObjects) : null;
@@ -412,9 +420,6 @@ public class MeasureSkeleton extends Module {
         int total = inputObjects.size();
         AtomicInteger count = new AtomicInteger();
 
-        // For each object, create a child projected object, then generate a binary
-        // image. This is run through ImageJ's skeletonize plugin to ensure it has 4-way
-        // connectivity. Finally, it is processed with the AnalyzeSkeleton plugin.
         final double minLengthFinal = minLength;
         final boolean exportLargestShortestPathFinal = exportLargestShortestPath;
         for (Obj inputObject : inputObjects.values()) {
@@ -438,7 +443,7 @@ public class MeasureSkeleton extends Module {
 
                     if (exportLargestShortestPathFinal)
                         createLargestShortestPath(inputObject, largestShortestPathObjects,
-                                (AnalyzeSkeleton_) result[0]);
+                                (AnalyzeSkeleton_) result[0], (SkeletonResult) result[1]);
 
                 } catch (Throwable t) {
                     MIA.log.writeError(t);
