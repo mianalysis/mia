@@ -10,6 +10,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.eclipse.sisu.Nullable;
+import org.scijava.Priority;
+import org.scijava.plugin.Plugin;
 
 import de.biomedical_imaging.ij.steger.Junction;
 import de.biomedical_imaging.ij.steger.Junctions;
@@ -23,9 +25,6 @@ import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.module.Module;
-import org.scijava.Priority;
-import org.scijava.plugin.Plugin;
 import io.github.mianalysis.mia.module.core.InputControl;
 import io.github.mianalysis.mia.module.visualise.overlays.AddObjectFill;
 import io.github.mianalysis.mia.object.Image;

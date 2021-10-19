@@ -168,6 +168,12 @@ public class AnalysisReader {
             throws IllegalAccessException, InstantiationException, NoSuchMethodException, InvocationTargetException {
         Class<Module> clazz = null;
         try {
+            String shortName = availableModuleName.substring(availableModuleName.lastIndexOf(".")+1);
+            if (!MIA.dependencies.compatible(shortName)) {
+                MIA.log.writeWarning("Module \"" + shortName + "\" not available");
+                return null;
+            }                
+
             clazz = (Class<Module>) Class.forName(availableModuleName);
         } catch (ClassNotFoundException e) {
             MIA.log.writeError(e);
