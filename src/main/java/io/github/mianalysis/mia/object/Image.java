@@ -14,14 +14,8 @@ import ij.measure.Calibration;
 import ij.measure.ResultsTable;
 import ij.plugin.Duplicator;
 import ij.process.ImageProcessor;
+import ij.process.ImageStatistics;
 import ij.process.LUT;
-import net.imagej.ImgPlus;
-import net.imagej.axis.Axes;
-import net.imagej.axis.CalibratedAxis;
-import net.imglib2.img.ImagePlusAdapter;
-import net.imglib2.img.display.imagej.ImageJFunctions;
-import net.imglib2.type.NativeType;
-import net.imglib2.type.numeric.RealType;
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.object.refs.ImageMeasurementRef;
@@ -32,6 +26,13 @@ import io.github.sjcross.common.object.volume.PointOutOfRangeException;
 import io.github.sjcross.common.object.volume.SpatCal;
 import io.github.sjcross.common.object.volume.VolumeType;
 import io.github.sjcross.common.process.IntensityMinMax;
+import net.imagej.ImgPlus;
+import net.imagej.axis.Axes;
+import net.imagej.axis.CalibratedAxis;
+import net.imglib2.img.ImagePlusAdapter;
+import net.imglib2.img.display.imagej.ImageJFunctions;
+import net.imglib2.type.NativeType;
+import net.imglib2.type.numeric.RealType;
 
 /**
  * Created by stephen on 30/04/2017.
@@ -205,8 +206,12 @@ public class Image {
     public void showImage(String title, @Nullable LUT lut, boolean normalise, boolean composite) {
         ImagePlus dispIpl = new Duplicator().run(imagePlus);
         dispIpl.setTitle(title);
-        if (normalise)
-            IntensityMinMax.run(dispIpl, true);
+        if (normalise) {
+            ImageStatistics stats = dispIpl.getStatistics();
+            if (stats.min != stats.max)
+                IntensityMinMax.run(dispIpl, true);
+        }
+            
         dispIpl.setPosition(1, 1, 1);
         dispIpl.updateChannelAndDraw();
         if (lut != null && dispIpl.getBitDepth() != 24)
