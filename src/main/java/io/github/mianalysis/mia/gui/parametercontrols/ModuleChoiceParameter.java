@@ -15,7 +15,7 @@ import javax.swing.ListCellRenderer;
 import io.github.mianalysis.mia.gui.GUI;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.core.OutputControl;
-import io.github.mianalysis.mia.module.miscellaneous.GUISeparator;
+import io.github.mianalysis.mia.module.system.GUISeparator;
 import io.github.mianalysis.mia.object.Colours;
 import io.github.mianalysis.mia.object.parameters.ModuleP;
 

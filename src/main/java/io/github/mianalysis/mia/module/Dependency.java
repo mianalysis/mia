@@ -3,7 +3,7 @@ package io.github.mianalysis.mia.module;
 import org.scijava.util.VersionUtils;
 
 public class Dependency {
-    private final Class dependencyClass;
+    private final String className;
     private final String versionThreshold;
     private final Relationship relationship;
 
@@ -11,14 +11,21 @@ public class Dependency {
         LESS_THAN, LESS_THAN_OR_EQUAL_TO, EQUAL_TO, GREATER_THAN_OR_EQUAL_TO, GREATER_THAN, NOT_EQUAL_TO;
     }
 
-    public Dependency(Class dependencyClass, String versionThreshold, Relationship relationship) {
-        this.dependencyClass = dependencyClass;
+    public Dependency(String className, String versionThreshold, Relationship relationship) {
+        this.className = className;
         this.versionThreshold = versionThreshold;
         this.relationship = relationship;
 
     }
 
     public boolean test() {
+        Class<?> dependencyClass = null;
+        try {
+            dependencyClass = Class.forName(className);
+        } catch (ClassNotFoundException e) {
+            return false;
+        }
+        
         int comparison = VersionUtils.compare(dependencyClass.getPackage().getImplementationVersion(),
                 this.versionThreshold);
 
@@ -75,7 +82,8 @@ public class Dependency {
 
     @Override
     public String toString() {
-        return dependencyClass.getSimpleName() + " " + getSymbol(relationship) + " " + versionThreshold;
+        String shortName = className.substring(className.lastIndexOf(".")+1);
+        return shortName + " " + getSymbol(relationship) + " " + versionThreshold;
 
     }
 }

@@ -1,6 +1,7 @@
 package io.github.mianalysis.mia.module.visualisation.overlays;
 
 import io.github.mianalysis.mia.module.ModuleTest;
+import io.github.mianalysis.mia.module.visualise.overlays.AddLabels;
 
 import static org.junit.jupiter.api.Assertions.*;
 

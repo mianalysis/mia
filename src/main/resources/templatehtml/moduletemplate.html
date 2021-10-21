@@ -1,15 +1,26 @@
 <div class="page-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
-    <p class="mia-path">${MODULE_PATH}</p>
-    <h1 class="display-4">${MODULE_NAME}</h1>
-    <p class="mia-description">${MODULE_SHORT_DESCRIPTION}</p>
+    <p class="mia-main-text">${MODULE_PATH}</p>
+    <p class="mia-title">${MODULE_NAME}</p>
+    <p class="mia-main-text-large">${MODULE_SHORT_DESCRIPTION}</p>
 </div>
 
 <div class="pt-md-2 pb-md-4 mx-auto mia-page">
-    <h2 class="text-center mia-section-title">Description</h2>
+    <p class="text-center mia-heading">Description</p>
     <p class="text-center mia-main-text">${MODULE_FULL_DESCRIPTION}</p>
 </div>
 
 <div class="pt-md-2 pb-md-4 mx-auto mia-page">
-    <h2 class="text-center mia-section-title">Parameters</h2>
-    <p class="text-center mia-main-text">${MODULE_PARAMETERS}</p>
+    <p class="text-center mia-heading">Parameters</p>
+    <!-- <p class="text-center mia-main-text">${MODULE_PARAMETERS}</p> -->
+    <table class="table table-striped">
+        <thead class="mia-main-text-small mia-bold">
+            <tr>
+                <td>Parameter</th>
+                <td>Description</th>
+            </tr>
+        </thead>
+        <tbody class="mia-main-text-small">
+            ${MODULE_PARAMETERS}
+        </tbody>
+    </table>
 </div>

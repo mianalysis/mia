@@ -11,7 +11,7 @@ import javax.swing.JTable;
 import javax.swing.border.EmptyBorder;
 
 import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.module.miscellaneous.GUISeparator;
+import io.github.mianalysis.mia.module.system.GUISeparator;
 import io.github.mianalysis.mia.object.Colours;
 
 public class ModuleName extends JLabel {

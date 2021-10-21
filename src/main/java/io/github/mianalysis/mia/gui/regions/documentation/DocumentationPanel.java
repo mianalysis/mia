@@ -4,25 +4,32 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Insets;
 import java.awt.Toolkit;
+import java.io.IOException;
+import java.net.URL;
 
 import javax.swing.ImageIcon;
 import javax.swing.JEditorPane;
 import javax.swing.JFrame;
 import javax.swing.JScrollPane;
 
+import com.google.common.base.Charsets;
+import com.google.common.io.Resources;
+
+import org.commonmark.parser.Parser;
+import org.commonmark.renderer.html.HtmlRenderer;
+
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.gui.HyperlinkOpener;
-import io.github.mianalysis.mia.process.DocumentationGenerator;
 
 public class DocumentationPanel {
     public static void showAbout() {
-        String aboutText = DocumentationGenerator.generateAboutGUI();
+        String aboutText = generateAboutGUI();
         showDocumentation(aboutText);
 
     }
 
     public static void showGettingStarted() {
-        String gettingStartedText = DocumentationGenerator.generateGettingStartedGUI();
+        String gettingStartedText = generateGettingStartedGUI();
         showDocumentation(gettingStartedText);
 
     }
@@ -41,34 +48,129 @@ public class DocumentationPanel {
     }
 
     static JFrame showDocumentation(String textToDisplay) {
-            JEditorPane editorPane = new JEditorPane();
-            editorPane.setEditable(false);
-            editorPane.putClientProperty(JEditorPane.HONOR_DISPLAY_PROPERTIES, Boolean.TRUE);
-            editorPane.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 14));
-            editorPane.setContentType("text/html");
-            editorPane.setText(textToDisplay);
-            editorPane.setCaretPosition(0);
-            editorPane.setMargin(new Insets(10,10,10,10));
-            editorPane.addHyperlinkListener(new HyperlinkOpener());
+        JEditorPane editorPane = new JEditorPane();
+        editorPane.setEditable(false);
+        editorPane.putClientProperty(JEditorPane.HONOR_DISPLAY_PROPERTIES, Boolean.TRUE);
+        editorPane.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 14));
+        editorPane.setContentType("text/html");
+        editorPane.setText(textToDisplay);
+        editorPane.setCaretPosition(0);
+        editorPane.setMargin(new Insets(10, 10, 10, 10));
+        editorPane.addHyperlinkListener(new HyperlinkOpener());
 
-            JScrollPane scrollPane = new JScrollPane(editorPane);
-            scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-            scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-            scrollPane.getVerticalScrollBar().setUnitIncrement(10);
-            scrollPane.getVerticalScrollBar().setValue(0);
+        JScrollPane scrollPane = new JScrollPane(editorPane);
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        scrollPane.getVerticalScrollBar().setUnitIncrement(10);
+        scrollPane.getVerticalScrollBar().setValue(0);
 
-            JFrame frame = new JFrame();
-            frame.add(scrollPane);
-            frame.setIconImage(new ImageIcon(MIA.class.getResource("/icons/Logo_wide_32.png"),"").getImage());
+        JFrame frame = new JFrame();
+        frame.add(scrollPane);
+        frame.setIconImage(new ImageIcon(MIA.class.getResource("/icons/Logo_wide_32.png"), "").getImage());
 
-            Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-            frame.setPreferredSize(new Dimension(700,700));
-            frame.setMinimumSize(new Dimension(700,200));
-            frame.pack();
-            frame.setLocation((screenSize.width - frame.getWidth()) / 2, (screenSize.height - frame.getHeight()) / 2);
-            frame.setVisible(true);
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        frame.setPreferredSize(new Dimension(700, 700));
+        frame.setMinimumSize(new Dimension(700, 200));
+        frame.pack();
+        frame.setLocation((screenSize.width - frame.getWidth()) / 2, (screenSize.height - frame.getHeight()) / 2);
+        frame.setVisible(true);
 
-            return frame;
+        return frame;
+
+    }
+    
+    public static String generateAboutGUI() {
+        Parser parser = Parser.builder().build();
+        HtmlRenderer renderer = HtmlRenderer.builder().build();
+        StringBuilder sb = new StringBuilder();
+
+        // The following is required to get the version number and release date from the
+        // pom.xml
+        String version = "";
+        // try {
+        //     FileReader reader = new FileReader("pom.xml");
+        //     Model model = new MavenXpp3Reader().read(reader);
+        //     reader.close();
+        //     version = new MavenProject(model).getVersion();
+        // } catch (XmlPullParserException | IOException e) {
+            version = MIA.class.getPackage().getImplementationVersion();
+        // }
+
+        try {
+            sb.append("<html><body><div align=\"justify\">");
+
+            sb.append("<img src=\"");
+            sb.append(MIA.class.getResource("/images/Logo_text_UoB_64.png").toString());
+            sb.append("\" align=\"middle\">");
+            sb.append("<br><br>");
+
+            URL url = Resources.getResource("templatemd/introduction.md");
+            String string = Resources.toString(url, Charsets.UTF_8);
+            if (version != null)
+                string = string.replace("${version}", version);
+            sb.append(renderer.render(parser.parse(string)));
+            sb.append("<br><br>");
+
+            url = Resources.getResource("templatemd/acknowledgements.md");
+            string = Resources.toString(url, Charsets.UTF_8);
+            sb.append(renderer.render(parser.parse(string)));
+            sb.append("<br><br>");
+
+            url = Resources.getResource("templatemd/citing.md");
+            string = Resources.toString(url, Charsets.UTF_8);
+            sb.append(renderer.render(parser.parse(string)));
+            sb.append("<br><br>");
+
+            url = Resources.getResource("templatemd/note.md");
+            string = Resources.toString(url, Charsets.UTF_8);
+            sb.append(renderer.render(parser.parse(string)));
+            sb.append("<br><br>");
+
+            sb.append("</div></body></html>");
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return sb.toString();
+
+    }
+
+    public static String generateGettingStartedGUI() {
+        Parser parser = Parser.builder().build();
+        HtmlRenderer renderer = HtmlRenderer.builder().build();
+        StringBuilder sb = new StringBuilder();
+
+        try {
+            sb.append("<html><body><div align=\"justify\">");
+
+            sb.append("<img src=\"");
+            sb.append(MIA.class.getResource("/images/Logo_text_UoB_64.png").toString());
+            sb.append("\" align=\"middle\">");
+            sb.append("<br><br>");
+
+            URL url = Resources.getResource("templatemd/installation.md");
+            String string = Resources.toString(url, Charsets.UTF_8);
+            sb.append(renderer.render(parser.parse(string)));
+            sb.append("<br><br>");
+
+            url = Resources.getResource("templatemd/creatingWorkflow.md");
+            string = Resources.toString(url, Charsets.UTF_8);
+            sb.append(renderer.render(parser.parse(string)));
+            sb.append("<br><br>");
+
+            url = Resources.getResource("templatemd/usingExistingWorkflow.md");
+            string = Resources.toString(url, Charsets.UTF_8);
+            sb.append(renderer.render(parser.parse(string)));
+            sb.append("<br><br>");
+
+            sb.append("</div></body></html>");
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return sb.toString();
 
     }
 }

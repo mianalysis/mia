@@ -136,14 +136,14 @@ public class GUI {
     void initialiseAvailableModules(List<String> detectedModuleNames) {
         // Creating an alphabetically-ordered list of all modules
         for (String detectedModuleName : detectedModuleNames) {
-            String shortName = detectedModuleName.substring(detectedModuleName.lastIndexOf(".")+1);
-            
+            String shortName = detectedModuleName.substring(detectedModuleName.lastIndexOf(".") + 1);
+
             // Checking dependencies have been met
             if (!MIA.dependencies.compatible(shortName)) {
                 MIA.log.writeWarning("Module \"" + shortName + "\" not loaded.  Dependencies not satisfied:");
                 for (Dependency dependency : MIA.dependencies.getDependencies(shortName))
                     if (!dependency.test())
-                        MIA.log.writeWarning("    Requirement: "+dependency.toString());
+                        MIA.log.writeWarning("    Requirement: " + dependency.toString());
                 continue;
             }
 
@@ -159,10 +159,10 @@ public class GUI {
                     availableModules.add(module);
 
                 }
-            } catch (ClassNotFoundException | NoSuchMethodException | IllegalAccessException | InstantiationException
-                    | InvocationTargetException | NoClassDefFoundError e) {
-                MIA.log.writeWarning("Module \"" + shortName + "\" not loaded.  Incompatible with MIA v" + MIA.getVersion()
-                        + ".");
+            } catch (Exception e) {
+                MIA.log.writeWarning(
+                        "Module \"" + shortName + "\" not loaded.  Incompatible with MIA v" + MIA.getVersion() + ".");
+                MIA.log.writeDebug(e);
             }
         }
     }
@@ -219,7 +219,7 @@ public class GUI {
         mainPanel.updateHelpNotes();
 
     }
-    
+
     public static void updateModuleStates() {
         AnalysisTester.testModules(getModules());
         mainPanel.updateModuleStates();
@@ -508,7 +508,7 @@ public class GUI {
 
         updateModules();
         updateParameters();
-        
+
         menuBar.setUndoRedoStatus(undoRedoStore);
 
     }

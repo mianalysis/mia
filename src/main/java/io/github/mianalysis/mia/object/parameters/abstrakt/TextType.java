@@ -7,7 +7,7 @@ import net.objecthunter.exp4j.ExpressionBuilder;
 import io.github.mianalysis.mia.gui.parametercontrols.ParameterControl;
 import io.github.mianalysis.mia.gui.parametercontrols.TextParameter;
 import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.module.miscellaneous.GlobalVariables;
+import io.github.mianalysis.mia.module.system.GlobalVariables;
 
 public abstract class TextType extends Parameter {
     public TextType(String name, Module module) {

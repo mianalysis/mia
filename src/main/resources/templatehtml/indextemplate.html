@@ -1,30 +1,62 @@
 <div class="container mia-text-container">
   <!-- Carousel -->
-  <div id="slides" class="carousel slide mb-4" data-ride="carousel">
-    <ul class="carousel-indicators">
+  <div id="slides" class="carousel slide mt-4 mb-4" data-ride="carousel">
+    <!-- <ul class="carousel-indicators mia-carousel-indicators">
       <li data-target="#slides" data-slide-to="0" class="active"></li>
       <li data-target="#slides" data-slide-to="1"></li>
       <li data-target="#slides" data-slide-to="2"></li>
-    </ul>
+      <li data-target="#slides" data-slide-to="3"></li>
+      <li data-target="#slides" data-slide-to="4"></li>
+      <li data-target="#slides" data-slide-to="5"></li>
+    </ul> -->
     <div class="carousel-inner">
       <div class="carousel-item active">
-        <img src="${PTR}/img/bg1.png" style="width:100%;">
-        <div class="carousel-caption">
-          <h1 class="display-4 mb-4">Modular Image Analysis</h1>
-          <h4 class="display-6 mb-4">Modular object and image processing in Fiji</h3>
-            <a class="btn btn-outline-light mb-4" href="${PTR}/html/gettingstarted.html">
-              Get started
-            </a>
-            <a class="btn btn-light mb-4" href="https://github.com/mianalysis/mia/releases">
-              Download
-            </a>
+        <img src="${PTR}/img/carousel1.png" style="width:100%;">
+        <div class="carousel-caption mia-carousel-caption">
+          <p class="mia-carousel-title">Modular Image Analysis</p>
+          <p class="mia-carousel-text">A Fiji plugin providing a modular framework for assembling image and object
+            analysis pipelines</p>
         </div>
       </div>
       <div class="carousel-item">
-        <img src="${PTR}/img/bg2.png" style="width:100%;">
+        <img src="${PTR}/img/carousel2.png" style="width:100%;">
+        <div class="carousel-caption mia-carousel-caption">
+          <p class="mia-carousel-title">Automated</p>
+          <p class="mia-carousel-text">Workflows can be automated from initial image loading through processing, object
+            detection, measurement extraction, visualisation, and data exporting</p>
+        </div>
+      </div>\
+      <div class="carousel-item">
+        <img src="${PTR}/img/carousel3.png" style="width:100%;">
+        <div class="carousel-caption mia-carousel-caption">
+          <p class="mia-carousel-title">Modular</p>
+          <p class="mia-carousel-text">Near 200 modules integrated with key Fiji plugins such as BioFormats, TrackMate
+            and Weka Trainable Segmentation</p>
+        </div>
       </div>
       <div class="carousel-item">
-        <img src="${PTR}/img/bg3.png" style="width:100%;">
+        <img src="${PTR}/img/carousel4.png" style="width:100%;">
+        <div class="carousel-caption mia-carousel-caption">
+          <p class="mia-carousel-title">High throughput</p>
+          <p class="mia-carousel-text">Workflows are, by default, compatible with batch processing multiple files within
+            a single folder</p>
+        </div>
+      </div>
+      <div class="carousel-item">
+        <img src="${PTR}/img/carousel5.png" style="width:100%;">
+        <div class="carousel-caption mia-carousel-caption">
+          <p class="mia-carousel-title">Compatible</p>
+          <p class="mia-carousel-text">Designed for compatibility with spatially-calibrated 5D images, yielding image
+            and object measurements in both pixel and physical units</p>
+        </div>
+      </div>
+      <div class="carousel-item">
+        <img src="${PTR}/img/carousel6.png" style="width:100%;">
+        <div class="carousel-caption mia-carousel-caption">
+          <p class="mia-carousel-title">Extensible</p>
+          <p class="mia-carousel-text">Functionality can be extended via integration with Fiji’s scripting interface or
+            with Java classes that extend the core MIA framework</p>
+        </div>
       </div>
     </div>
     <a class="carousel-control-prev" href="#slides" role="button" data-slide="prev">
@@ -37,7 +69,30 @@
     </a>
   </div>
 
-  <div class="pt-md-3 pb-md-4 mx-auto text-center">
-    <h5 class="mia-description">${INDEX_INTRODUCTION}</h5>
+  <div class="container mia-home-link-container">
+    <div class="row text-light text-center">
+      <div class="col mt-4 mb-4">
+        <a href="${PTR}/html/guides/gettingstarted/gettingstarted.html">
+          <img class="mia-home-link-logo" src="${PTR}/img/play_blue_128px.png">
+          <p class="mia-home-link-text">Get started</p>
+        </a>
+      </div>
+      <div class="col mt-4 mb-4">
+        <a href="${PTR}/html/guides/guides.html">
+          <img class="mia-home-link-logo" src="${PTR}/img/book_orange_128px.png">
+          <p class="mia-home-link-text">Guides</p>
+        </a>
+      </div>
+      <div class="col mt-4 mb-4">
+        <a href="${PTR}/html/modules/modules.html">
+          <img class="mia-home-link-logo" src="${PTR}/img/grid_green_128px.png">
+          <p class="mia-home-link-text">List of modules</p>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="pt-md-3 pb-md-4 mx-auto text-center mia-main-text">
+    ${INDEX_INTRODUCTION}
   </div>
 </div>

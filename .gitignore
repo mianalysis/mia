@@ -4,6 +4,7 @@
 .settings/
 
 *~
+bin/*
 target/*
 !target/site
 target/site/*

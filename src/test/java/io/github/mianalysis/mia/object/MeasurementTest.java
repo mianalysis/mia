@@ -1,7 +1,8 @@
 package io.github.mianalysis.mia.object;
 
 import org.junit.jupiter.api.Test;
-import io.github.mianalysis.mia.module.imageprocessing.pixel.FilterImage;
+
+import io.github.mianalysis.mia.module.images.process.FilterImage;
 
 import static org.junit.jupiter.api.Assertions.*;
 

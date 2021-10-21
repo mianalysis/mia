@@ -22,33 +22,19 @@ import io.github.mianalysis.mia.MIA;
 public class DependencyValidator {
     public static boolean run() {
         // Checking the relevant plugins are available
-        boolean[] toInstall = new boolean[2];
+        boolean[] toInstall = new boolean[1];
         Arrays.fill(toInstall,false);
-
-        // Checking for Biomedgroup (ridge detection)
-        try {
-            Class.forName("de.biomedical_imaging.ij.steger.Line");
-        } catch (ClassNotFoundException e) {
-            toInstall[0] = true;
-        }
 
         // Checking for MorphoLibJ (2D and 3D morphological tools)
         try {
             Class.forName("inra.ijpb.binary.BinaryImages");
         } catch (ClassNotFoundException e) {
-            toInstall[1] = true;
+            toInstall[0] = true;
         }
 
-        // Checking for StackReg (image registration)
-        try {
-            Class.forName("inra.ijpb.binary.BinaryImages");
-        } catch (ClassNotFoundException e) {
-            toInstall[1] = true;
-        }
-
-        if (toInstall[0] | toInstall[1]) {
-            String message = "Missing dependencies Biomedgroup and/or IJPB-plugins\nClick \"Yes\" to install";
-            int dialogResult = JOptionPane.showConfirmDialog(null, message, "Dependencies missing", JOptionPane.YES_NO_OPTION);
+        if (toInstall[0]) {
+            String message = "Missing dependency IJPB-plugins\nClick \"Yes\" to install";
+            int dialogResult = JOptionPane.showConfirmDialog(null, message, "Dependency missing", JOptionPane.YES_NO_OPTION);
             if (dialogResult == JOptionPane.YES_OPTION) {
                 update(toInstall);
                 MIA.log.writeMessage("Installation complete.  Please restart Fiji.");
@@ -56,7 +42,7 @@ public class DependencyValidator {
             }
         }
 
-        return (toInstall[0] || toInstall[1]);
+        return toInstall[0];
 
     }
 
@@ -75,16 +61,6 @@ public class DependencyValidator {
             MIA.log.writeStatus("Gathering available sites");
             Map<String,UpdateSite> sites = AvailableSites.getAvailableSites();
             if (toInstall[0]) {
-                UpdateSite updateSite = sites.get("http://sites.imagej.net/Biomedgroup/");
-                if (updateSite == null) updateSite = sites.get("https://sites.imagej.net/Biomedgroup/");
-                if (updateSite == null) {
-                    MIA.log.writeError("Can't load Biomedgroup dependency.  Please install manually using Fiji Updater.");
-                    return;
-                }
-                files.addUpdateSite(updateSite);
-                files.activateUpdateSite(updateSite, null);
-            }
-            if (toInstall[1]) {
                 UpdateSite updateSite = sites.get("http://sites.imagej.net/IJPB-plugins/");
                 if (updateSite == null) updateSite = sites.get("https://sites.imagej.net/IJPB-plugins/");
                 if (updateSite == null) {

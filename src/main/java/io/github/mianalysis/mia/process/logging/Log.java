@@ -61,6 +61,17 @@ public class Log {
         }
     }
 
+    public void writeError(Throwable t) {
+        if (t == null) {
+            write("null", Level.ERROR);
+        } else {
+            StringWriter sw = new StringWriter();
+            PrintWriter pw = new PrintWriter(sw);
+            t.printStackTrace(pw);
+            write(sw.toString(), Level.ERROR);
+        }
+    }
+
     public void writeError(Object message) {
         if (message == null)
             write("null", Level.ERROR);
@@ -87,6 +98,17 @@ public class Log {
             write("null", Level.DEBUG);
         else
             write(message.toString(), Level.DEBUG);
+    }
+
+    public void writeDebug(Exception e) {
+        if (e == null) {
+            write("null", Level.DEBUG);
+        } else {
+            StringWriter sw = new StringWriter();
+            PrintWriter pw = new PrintWriter(sw);
+            e.printStackTrace(pw);
+            write(sw.toString(), Level.DEBUG);
+        }
     }
 
     public void writeMemory(Object message) {
