@@ -23,8 +23,3 @@ $(window).on("load resize", function () {
     $dropdown.off("mouseenter mouseleave");
   }
 });
-
-// $( "#mia-screenshot" ).each( function() {
-//   var $img = $( this );
-//   $img.width( $img.width() * .75 );
-// });

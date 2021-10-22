@@ -174,13 +174,16 @@
   display: none;
 }
 
+.mia-screenshot {
+  max-width: 100%;
+}
+
 footer {
     background-color: #424242;
 }
 
 @media (min-width: 640px) { 
   .mia-carousel-button {padding: .375rem .375rem;}
-  /* .mia-carousel-caption {bottom:20px}  */
   .mia-carousel-indicators {display:flex}
 
   .card-header {padding: 0.75rem 1.25rem;}
@@ -201,4 +204,6 @@ footer {
   .mia-title {font-size:2.6rem;}
   .mia-mobile {display:none;}  
   .mia-desktop {display: flex;}
+
+  .mia-screenshot {max-width: 75%;}
 }
