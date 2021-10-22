@@ -70,12 +70,12 @@
     <p class="mia-main-text-large">Apply bleaching correction to a specified image.</p>
 </div>
 
-<div class="pt-md-2 pb-md-4 mx-auto mia-page">
+<div class="mia-text-block mia-page">
     <p class="text-center mia-heading">Description</p>
     <p class="text-center mia-main-text">Apply bleaching correction to a specified image.  This adjusts intensities in all frames (after the first) to match the histogram distribution of the first frame.  It is intended to account for any fluorophore bleaching that occurs during acquisition of a timecourse.<br><br>This macro runs the Fiji bleaching correction plugin, "<a href="https://imagej.net/Bleach_Correction">Bleach Correction</a>".</p>
 </div>
 
-<div class="pt-md-2 pb-md-4 mx-auto mia-page">
+<div class="mia-text-block mia-page">
     <p class="text-center mia-heading">Parameters</p>
     <!-- <p class="text-center mia-main-text"><tr><td class="mia-table-text-bold">Input image</td><td>Image from workspace to apply bleaching correction process to.</td></tr><tr><td class="mia-table-text-bold">Apply to input image</td><td>When selected, the post-operation image will overwrite the input image in the workspace.  Otherwise, the image will be saved to the workspace with the name specified by the "Output image" parameter.</td></tr><tr><td class="mia-table-text-bold">Output image</td><td>If "Apply to input image" is not selected, the post-operation image will be saved to the workspace with this name.</td></tr><tr><td class="mia-table-text-bold">Correction mode</td><td>Controls the bleach correction algorithm to use:<br><ul><li>"Exponential fit" Assumes the bleaching process is controlled by a mono-exponential decay.  Will fail if the signal does not decay over time.  Calculation can be performed using a single ROI for all frames.</li><li>"Histogram matching" Adjusts image intensities so that the histograms match that from the first frame.</li><li>"Simple ratio" Normalises images to have the same mean intensity.  Calculation can be performed using a single ROI for all frames.</li></ul></td></tr><tr><td class="mia-table-text-bold">Use ROI objects</td><td>When selected, the bleaching and associated intensity correction will be calculated based on the pixels within a region of interest (specified as the objects of collection "ROI objects").  A single ROI is used for all frames (i.e. the region can't be different from frame to frame).</td></tr><tr><td class="mia-table-text-bold">ROI objects</td><td>If "Use ROI objects" is selected, this is the object collection which will act as the region of interest for calculating the bleaching.  Since only a single ROI can be used, all objects in this collection are reduced down into a single frame and timepoint.</td></tr></p> -->
     <table class="table table-striped">

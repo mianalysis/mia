@@ -11,6 +11,11 @@
   padding-right: 10px;
 }
 
+.mia-text-block {
+  margin-top: 0rem;
+  margin-bottom: 2rem;
+}
+
 .mia-card-container {
   max-width: 960px;
 }
@@ -176,6 +181,14 @@
 
 .mia-screenshot {
   max-width: 100%;
+}
+
+.mia-main-text > ul > li {
+    margin-bottom: 1rem;
+}
+
+.mia-main-text > ol > li {
+    margin-bottom: 1rem;
 }
 
 footer {
