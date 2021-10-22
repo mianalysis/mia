@@ -16,9 +16,9 @@ import javax.swing.ToolTipManager;
 
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.gui.regions.abstrakt.AbstractPanel;
-import io.github.mianalysis.mia.gui.regions.basicpanel.BasicPanel;
 import io.github.mianalysis.mia.gui.regions.editingpanel.EditingPanel;
 import io.github.mianalysis.mia.gui.regions.menubar.CustomMenuBar;
+import io.github.mianalysis.mia.gui.regions.processingpanel.ProcessingPanel;
 import io.github.mianalysis.mia.gui.regions.progressandstatus.StatusTextField;
 import io.github.mianalysis.mia.macro.MacroHandler;
 import io.github.mianalysis.mia.module.Dependency;
@@ -65,8 +65,8 @@ public class GUI {
     private static JFrame frame = new JFrame();
     private static CustomMenuBar menuBar = new CustomMenuBar();
     private static StatusTextField textField = new StatusTextField();
-    private static BasicPanel basicPan = new BasicPanel();
-    private static EditingPanel editingPan;
+    private static ProcessingPanel processingPanel = new ProcessingPanel();
+    private static EditingPanel editingPanel;
     private static AbstractPanel mainPanel;
     private static Modules availableModules = new Modules();
 
@@ -94,17 +94,17 @@ public class GUI {
         initialiseAvailableModules(detectedModules);
 
         splash.setStatus(Splash.Status.CREATING_INTERFACE);
-        basicPan = new BasicPanel();
-        editingPan = new EditingPanel();
+        processingPanel = new ProcessingPanel();
+        editingPanel = new EditingPanel();
 
         // Adding a new ImageLoader module to the empty analysis
         analysis.getModules().add(new ImageLoader<>(getModules()));
 
         // Determining which panel should be shown
         if (MIA.isDebug())
-            mainPanel = editingPan;
+            mainPanel = editingPanel;
         else
-            mainPanel = basicPan;
+            mainPanel = processingPanel;
 
         initialiseStatusTextField();
         frame.setTitle("MIA (version " + MIA.getVersion() + ")");
@@ -237,8 +237,8 @@ public class GUI {
         return frame;
     }
 
-    public static boolean isBasicGUI() {
-        return mainPanel == basicPan;
+    public static boolean isProcessingGUI() {
+        return mainPanel == processingPanel;
     }
 
     public static void setAnalysis(Analysis analysis) {
@@ -412,10 +412,10 @@ public class GUI {
     }
 
     public static void enableEditingMode() {
-        editingPan.setProgress(mainPanel.getProgress());
+        editingPanel.setProgress(mainPanel.getProgress());
 
         frame.remove(mainPanel);
-        mainPanel = editingPan;
+        mainPanel = editingPanel;
         frame.add(mainPanel);
 
         mainPanel.updatePanel();
@@ -423,11 +423,11 @@ public class GUI {
 
     }
 
-    public static void enableBasicMode() {
-        basicPan.setProgress(mainPanel.getProgress());
+    public static void enableProcessingMode() {
+        processingPanel.setProgress(mainPanel.getProgress());
 
         frame.remove(mainPanel);
-        mainPanel = basicPan;
+        mainPanel = processingPanel;
         frame.add(mainPanel);
 
         mainPanel.updatePanel();

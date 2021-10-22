@@ -206,7 +206,7 @@ public class GUICondition extends AbstractWorkspaceHandler {
         parameters.get(CHOICE)
                 .setDescription("Currently-selected choice from the available set (all choices added via \""
                         + ADD_CHOICE
-                        + "\" option).  The relevant workflow operation (e.g. termination/redirection) will be implemented for the selected condition.  This control can be made visible in the basic view, so users can select between a set of pre-determined outcomes.");
+                        + "\" option).  The relevant workflow operation (e.g. termination/redirection) will be implemented for the selected condition.  This control can be made visible in the processing view, so users can select between a set of pre-determined outcomes.");
 
         parameters.get(STORE_AS_METADATA_ITEM).setDescription(
                 "When selected, the selected choice will be stored as a metadata item.  This allows it to be exported to the final spreadsheet.");

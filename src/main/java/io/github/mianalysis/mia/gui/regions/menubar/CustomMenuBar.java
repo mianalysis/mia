@@ -81,7 +81,7 @@ public class CustomMenuBar extends JMenuBar implements ActionListener {
         viewMenu.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
         add(viewMenu);
         if (MIA.isDebug())
-            viewMenu.add(new MenuItem(MenuItem.BASIC_VIEW));
+            viewMenu.add(new MenuItem(MenuItem.PROCESSING_VIEW));
         else
             viewMenu.add(new MenuItem(MenuItem.EDITING_VIEW));
 
@@ -145,17 +145,17 @@ public class CustomMenuBar extends JMenuBar implements ActionListener {
     }
 
     public void update() {
-        newPipeline.setVisible(!GUI.isBasicGUI());
+        newPipeline.setVisible(!GUI.isProcessingGUI());
 
-        editMenu.setVisible(!GUI.isBasicGUI());
+        editMenu.setVisible(!GUI.isProcessingGUI());
 
-        resetAnalysis.setVisible(!GUI.isBasicGUI());
-        enableAllModules.setVisible(!GUI.isBasicGUI());
-        disableAllModules.setVisible(!GUI.isBasicGUI());
-        outputAllModules.setVisible(!GUI.isBasicGUI());
-        silenceAllModules.setVisible(!GUI.isBasicGUI());
+        resetAnalysis.setVisible(!GUI.isProcessingGUI());
+        enableAllModules.setVisible(!GUI.isProcessingGUI());
+        disableAllModules.setVisible(!GUI.isProcessingGUI());
+        outputAllModules.setVisible(!GUI.isProcessingGUI());
+        silenceAllModules.setVisible(!GUI.isProcessingGUI());
 
-        searchCheckbox.setVisible(!GUI.isBasicGUI());
+        searchCheckbox.setVisible(!GUI.isProcessingGUI());
     }
 
     public void setHelpSelected(Boolean showHelp) {

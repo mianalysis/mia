@@ -31,7 +31,7 @@ public class VisibleCheck extends JButton implements ActionListener {
         setSelected(parameter.isVisible());
         setMargin(new Insets(0,0,0,0));
         setName("Show parameter");
-        setToolTipText("Show parameter on basic GUI");
+        setToolTipText("Show parameter in processing view");
         updateIcon();
 
     }

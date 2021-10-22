@@ -36,7 +36,7 @@ public class MenuItem extends JMenuItem implements ActionListener {
     public static final String DISABLE_ALL = "Disable all modules";
     public static final String OUTPUT_ALL = "Show output for all modules";
     public static final String SILENCE_ALL = "Hide output for all modules";
-    public static final String BASIC_VIEW = "Switch to basic view";
+    public static final String PROCESSING_VIEW = "Switch to processing view";
     public static final String EDITING_VIEW = "Switch to editing view";
     public static final String SHOW_ABOUT = "About";
     public static final String SHOW_GETTING_STARTED = "Getting started";
@@ -127,8 +127,8 @@ public class MenuItem extends JMenuItem implements ActionListener {
                 GUIAnalysisHandler.disableAllModulesOutput();
                 break;
 
-            case BASIC_VIEW:
-                GUI.enableBasicMode();
+            case PROCESSING_VIEW:
+                GUI.enableProcessingMode();
                 GUI.setSelectedModules(null);
                 setText(MenuItem.EDITING_VIEW);
                 break;
@@ -136,7 +136,7 @@ public class MenuItem extends JMenuItem implements ActionListener {
             case EDITING_VIEW:
                 GUI.enableEditingMode();
                 GUI.setSelectedModules(null);
-                setText(MenuItem.BASIC_VIEW);
+                setText(MenuItem.PROCESSING_VIEW);
                 break;
 
             case SHOW_ABOUT:

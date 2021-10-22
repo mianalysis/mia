@@ -1,4 +1,4 @@
-package io.github.mianalysis.mia.gui.regions.basicpanel;
+package io.github.mianalysis.mia.gui.regions.processingpanel;
 
 import java.awt.Color;
 import java.awt.Font;

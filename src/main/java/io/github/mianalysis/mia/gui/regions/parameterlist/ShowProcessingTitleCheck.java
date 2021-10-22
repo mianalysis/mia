@@ -7,17 +7,17 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class ShowBasicTitleCheck extends JCheckBox implements ActionListener {
+public class ShowProcessingTitleCheck extends JCheckBox implements ActionListener {
     /**
      *
      */
     private static final long serialVersionUID = 4959776467163361296L;
     private Module module;
 
-    public ShowBasicTitleCheck(Module module) {
+    public ShowProcessingTitleCheck(Module module) {
         this.module = module;
 
-        this.setSelected(module.canShowBasicTitle());
+        this.setSelected(module.canShowProcessingTitle());
         setText("Show basic title  ");
         addActionListener(this);
 
@@ -30,7 +30,7 @@ public class ShowBasicTitleCheck extends JCheckBox implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         GUI.addUndo();
 
-        module.setShowBasicTitle(isSelected());
+        module.setShowProcessingViewTitle(isSelected());
 
     }
 }
