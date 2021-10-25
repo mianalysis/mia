@@ -21,7 +21,7 @@
 
     <div class="mia-text-block mx-auto">
         <p class="mia-heading">Processing view</p>
-        <div class="mia-main-text pb-md-4">
+        <div class="mia-main-text pb-2">
             The basic processing view comprises a single main panel, showing all the available parameters. Certain
             modules can be set by the workflow creator to be optionally enabled (<img
                 src="${PTR}/img/icons/power_brightgreen_12px.png" />) or disabled (<img
@@ -41,16 +41,32 @@
 
     <div class="mia-text-block mx-auto">
         <p class="mia-heading">Additional panels</p>
-        <div class="mia-main-text">
-            <a href="${PTR}/img/screenshots/basicviewexpanded.png">
-                <img src="${PTR}/img/screenshots/basicviewexpanded.png" class="img-fluid pt-md-2 mia-screenshot" />
-                <br />
-                Click to see full size
-            </a>
+        <div class="mia-main-text  pb-2">
+            Additional panels are available via the "View" menu. These are present in both "processing" and "editing"
+            views and can be closed using the cross button in the top-left corner of the panel.
+            <br />
+            <br />
+            The "About" panel displays the full documentation for a selected module, while the "Notes" panel offers a
+            location to add module-specific notes. The corresponding module for both of these can be selected by
+            clicking on the module heading. Notes could be added by the workflow creator to provide usage information
+            for the end user, or they could be added by the end user as reminders. Notes are stored with a workflow when
+            that workflow is saved.
+            <br />
+            <br />
+            The "File list" panel shows the current processing status of all queued analysis jobs. As such, it's
+            primarily intended for <a href="${GUIDE_BATCHPROCESSING}">batch processing</a> files. By default, this view
+            displays the job number, filename and progress; however, series name and series number can be added by
+            right-clicking the top row.
         </div>
+        <a href="${PTR}/img/screenshots/basicviewexpanded.png">
+            <img src="${PTR}/img/screenshots/basicviewexpanded.png" class="img-fluid pt-md-2 mia-screenshot" />
+            <br />
+            Click to see full size
+        </a>
     </div>
 
     <div class="mia-text-block mx-auto">
+        <p class="mia-heading">Navigation</p>
         <div class="mia-main-text">
             Previous: <a href="${GUIDE_INSTALLATION}">Installing MIA</a>, Next: <a href="${GUIDE_USEEXISTING}">Using
                 existing workflows</a>
