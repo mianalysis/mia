@@ -27,10 +27,10 @@ public class CustomMenuBar extends JMenuBar implements ActionListener {
     private static JMenu helpMenu = new JMenu("Help");
     private static JMenu logMenu = new JMenu("Logging");
 
-    private static MenuItem newPipeline = new MenuItem(MenuItem.NEW_PIPELINE);
-    private static MenuItem loadPipeline = new MenuItem(MenuItem.LOAD_PIPELINE);
-    private static MenuItem savePipeline = new MenuItem(MenuItem.SAVE_PIPELINE);
-    private static MenuItem savePipelineAs = new MenuItem(MenuItem.SAVE_PIPELINE_AS);
+    private static MenuItem newWorkflow = new MenuItem(MenuItem.NEW_WORKFLOW);
+    private static MenuItem loadWorkflow = new MenuItem(MenuItem.LOAD_WORKFLOW);
+    private static MenuItem saveWorkflow = new MenuItem(MenuItem.SAVE_WORKFLOW);
+    private static MenuItem saveWorkflowAs = new MenuItem(MenuItem.SAVE_WORKFLOW_AS);
 
     private static MenuItem resetAnalysis = new MenuItem(MenuItem.RESET_ANALYSIS);
     private static MenuItem enableAllModules = new MenuItem(MenuItem.ENABLE_ALL);
@@ -49,10 +49,10 @@ public class CustomMenuBar extends JMenuBar implements ActionListener {
         // Creating the file menu
         fileMenu.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
         add(fileMenu);
-        fileMenu.add(newPipeline);
-        fileMenu.add(loadPipeline);
-        fileMenu.add(savePipeline);
-        fileMenu.add(savePipelineAs);
+        fileMenu.add(newWorkflow);
+        fileMenu.add(loadWorkflow);
+        fileMenu.add(saveWorkflow);
+        fileMenu.add(saveWorkflowAs);
 
         // Creating the edit menu
         editMenu.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
@@ -145,7 +145,7 @@ public class CustomMenuBar extends JMenuBar implements ActionListener {
     }
 
     public void update() {
-        newPipeline.setVisible(!GUI.isProcessingGUI());
+        newWorkflow.setVisible(!GUI.isProcessingGUI());
 
         editMenu.setVisible(!GUI.isProcessingGUI());
 

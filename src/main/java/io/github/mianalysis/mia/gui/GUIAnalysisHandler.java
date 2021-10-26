@@ -27,11 +27,11 @@ import java.util.Arrays;
 
 public class GUIAnalysisHandler {
     public static void newAnalysis() {
-        int savePipeline = JOptionPane.showConfirmDialog(new Frame(), "Save existing pipeline?", "Create new pipeline",
+        int saveWorkflow = JOptionPane.showConfirmDialog(new Frame(), "Save existing workflow?", "Create new workflow",
                 JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE);
 
-        switch (savePipeline) {
-            case -1: // Cancel (don't create new pipeline
+        switch (saveWorkflow) {
+            case -1: // Cancel (don't create new workflow)
                 return;
             case 0: // Save
                 saveAnalysis();

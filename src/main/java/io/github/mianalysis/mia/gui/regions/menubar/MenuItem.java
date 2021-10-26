@@ -20,15 +20,15 @@ public class MenuItem extends JMenuItem implements ActionListener {
      *
      */
     private static final long serialVersionUID = -1055282940194950277L;
-    public static final String NEW_PIPELINE = "New pipeline";
-    public static final String LOAD_PIPELINE = "Load pipeline";
-    public static final String SAVE_PIPELINE = "Save pipeline";
-    public static final String SAVE_PIPELINE_AS = "Save pipeline as";
+    public static final String NEW_WORKFLOW = "New workflow";
+    public static final String LOAD_WORKFLOW = "Load workflow";
+    public static final String SAVE_WORKFLOW = "Save workflow";
+    public static final String SAVE_WORKFLOW_AS = "Save workflow as...";
     public static final String UNDO = "Undo";
     public static final String REDO = "Redo";
     public static final String COPY = "Copy";
     public static final String PASTE = "Paste";
-    public static final String PREFERENCES = "Preferences";
+    public static final String PREFERENCES = "Preferences...";
     public static final String RUN_ANALYSIS = "Run analysis";
     public static final String STOP_ANALYSIS = "Stop analysis";
     public static final String RESET_ANALYSIS = "Reset analysis";
@@ -38,8 +38,8 @@ public class MenuItem extends JMenuItem implements ActionListener {
     public static final String SILENCE_ALL = "Hide output for all modules";
     public static final String PROCESSING_VIEW = "Switch to processing view";
     public static final String EDITING_VIEW = "Switch to editing view";
-    public static final String SHOW_ABOUT = "About";
-    public static final String SHOW_GETTING_STARTED = "Getting started";
+    public static final String SHOW_ABOUT = "About...";
+    public static final String SHOW_GETTING_STARTED = "Getting started...";
     public static final String SHOW_PONY = "Pony?";
 
     public MenuItem(String command) {
@@ -54,22 +54,22 @@ public class MenuItem extends JMenuItem implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         switch (getText()) {
-            case NEW_PIPELINE:
+            case NEW_WORKFLOW:
                 GUIAnalysisHandler.newAnalysis();
                 GUI.setSelectedModules(null);
                 GUI.updateModules();
                 GUI.updateParameters();
                 break;
 
-            case LOAD_PIPELINE:
+            case LOAD_WORKFLOW:
                 GUIAnalysisHandler.loadAnalysis();
                 break;
 
-            case SAVE_PIPELINE:
+            case SAVE_WORKFLOW:
                 GUIAnalysisHandler.saveAnalysis();
                 break;
 
-            case SAVE_PIPELINE_AS:
+            case SAVE_WORKFLOW_AS:
                 GUIAnalysisHandler.saveAnalysisAs();
                 break;
 
