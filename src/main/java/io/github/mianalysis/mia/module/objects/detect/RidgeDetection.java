@@ -4,6 +4,7 @@
 
 package io.github.mianalysis.mia.module.objects.detect;
 
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -403,7 +404,8 @@ public class RidgeDetection extends Module {
 
             // Creating the overlay
             HashMap<Integer, Float> hues = ColourFactory.getIDHues(outputObjects, true);
-            AddObjectFill.addOverlay(dispIpl, outputObjects, hues, 100, false, true);
+            HashMap<Integer, Color> colours = ColourFactory.getColours(hues);
+            AddObjectFill.addOverlay(dispIpl, outputObjects, colours, false, true);
             
             dispIpl.show();
 

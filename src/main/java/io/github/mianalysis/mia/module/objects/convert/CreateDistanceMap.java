@@ -106,7 +106,7 @@ public class CreateDistanceMap extends Module {
 
     public static Image getEdgeDistanceMap(Objs inputObjects, String outputImageName, boolean invertInside) {
         // Creating an objects image
-        HashMap<Integer, Float> hues = ColourFactory.getSingleColourHues(inputObjects,
+        HashMap<Integer, Float> hues = ColourFactory.getSingleColourValues(inputObjects,
                 ColourFactory.SingleColours.WHITE);
         Image objImage = inputObjects.convertToImage(outputImageName, hues, 8, false);
 
@@ -136,7 +136,7 @@ public class CreateDistanceMap extends Module {
 
         // Convert to image (and possibly invert), set to binary image (0 and 1) and
         // multiply as appropriate
-        HashMap<Integer, Float> hues = ColourFactory.getSingleColourHues(inputObjects,
+        HashMap<Integer, Float> hues = ColourFactory.getSingleColourValues(inputObjects,
                 ColourFactory.SingleColours.WHITE);
         ImagePlus objIpl = inputObjects.convertToImage("Objects", hues, 8, false).getImagePlus();
 

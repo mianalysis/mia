@@ -36,7 +36,7 @@ import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.process.ColourFactory;
 
-@Plugin(type = Module.class, priority=Priority.LOW, visible=true)
+@Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class AddObjectCentroid extends AbstractOverlay {
     public static final String INPUT_SEPARATOR = "Image and object input";
     public static final String INPUT_IMAGE = "Input image";
@@ -80,8 +80,8 @@ public class AddObjectCentroid extends AbstractOverlay {
         super("Add object centroid", modules);
     }
 
-    public static void addOverlay(ImagePlus ipl, Objs inputObjects, HashMap<Integer, Float> hues,
-            double opacity, String size, String type, boolean renderInAllFrames, boolean multithread) {
+    public static void addOverlay(ImagePlus ipl, Objs inputObjects, HashMap<Integer, Color> colours, String size,
+            String type, boolean renderInAllFrames, boolean multithread) {
         // Adding the overlay element
         try {
             // If necessary, turning the image into a HyperStack (if 2 dimensions=1 it will
@@ -99,8 +99,7 @@ public class AddObjectCentroid extends AbstractOverlay {
                 ImagePlus finalIpl = ipl;
 
                 Runnable task = () -> {
-                    float hue = hues.get(object.getID());
-                    Color colour = ColourFactory.getColour(hue, opacity);
+                    Color colour = colours.get(object.getID());
 
                     addOverlay(object, finalIpl, colour, size, type, renderInAllFrames);
 
@@ -152,34 +151,33 @@ public class AddObjectCentroid extends AbstractOverlay {
 
     static int getSize(String size) {
         switch (size) {
-            case PointSizes.TINY:
-                return 0;
-            case PointSizes.SMALL:
-            default:
-                return 1;
-            case PointSizes.MEDIUM:
-                return 2;
-            case PointSizes.LARGE:
-                return 3;
-            case PointSizes.EXTRA_LARGE:
-                return 4;
+        case PointSizes.TINY:
+            return 0;
+        case PointSizes.SMALL:
+        default:
+            return 1;
+        case PointSizes.MEDIUM:
+            return 2;
+        case PointSizes.LARGE:
+            return 3;
+        case PointSizes.EXTRA_LARGE:
+            return 4;
         }
     }
 
     static int getType(String type) {
         switch (type) {
-            case PointTypes.HYBRID:
-                return 0;
-            case PointTypes.CROSS:
-                return 1;
-            case PointTypes.DOT:
-                return 2;
-            case PointTypes.CIRCLE:
-            default:
-                return 3;
+        case PointTypes.HYBRID:
+            return 0;
+        case PointTypes.CROSS:
+            return 1;
+        case PointTypes.DOT:
+            return 2;
+        case PointTypes.CIRCLE:
+        default:
+            return 3;
         }
     }
-
 
     @Override
     public Category getCategory() {
@@ -207,7 +205,6 @@ public class AddObjectCentroid extends AbstractOverlay {
         Image inputImage = workspace.getImages().get(inputImageName);
         ImagePlus ipl = inputImage.getImagePlus();
 
-        double opacity = parameters.getValue(OPACITY);
         String pointSize = parameters.getValue(POINT_SIZE);
         String pointType = parameters.getValue(POINT_TYPE);
         boolean renderInAllFrames = parameters.getValue(RENDER_IN_ALL_FRAMES);
@@ -222,9 +219,9 @@ public class AddObjectCentroid extends AbstractOverlay {
             ipl = new Duplicator().run(ipl);
 
         // Generating colours for each object
-        HashMap<Integer, Float> hues = getHues(inputObjects);
+        HashMap<Integer, Color> colours = getColours(inputObjects);
 
-        addOverlay(ipl, inputObjects, hues, opacity, pointSize, pointType, renderInAllFrames, multithread);
+        addOverlay(ipl, inputObjects, colours, pointSize, pointType, renderInAllFrames, multithread);
 
         Image outputImage = new Image(outputImageName, ipl);
 
@@ -285,7 +282,7 @@ public class AddObjectCentroid extends AbstractOverlay {
         }
 
         returnedParameters.addAll(super.updateAndGetParameters(inputObjectsName));
-        
+
         returnedParameters.add(parameters.getParameter(RENDERING_SEPARATOR));
         returnedParameters.add(parameters.getParameter(POINT_SIZE));
         returnedParameters.add(parameters.getParameter(POINT_TYPE));
@@ -331,7 +328,7 @@ public class AddObjectCentroid extends AbstractOverlay {
     @Override
     protected void addParameterDescriptions() {
         super.addParameterDescriptions();
-        
+
         parameters.get(INPUT_IMAGE)
                 .setDescription("Image onto which overlay will be rendered.  Input image will only be updated if \""
                         + APPLY_TO_INPUT

@@ -39,7 +39,7 @@ import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.process.ColourFactory;
 
-@Plugin(type = Module.class, priority=Priority.LOW, visible=true)
+@Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class AddObjectOutline extends AbstractOverlay {
     public static final String INPUT_SEPARATOR = "Image and object input";
     public static final String INPUT_IMAGE = "Input image";
@@ -70,7 +70,7 @@ public class AddObjectOutline extends AbstractOverlay {
     }
 
     public static void addOverlay(ImagePlus ipl, Objs inputObjects, double lineInterpolation, double lineWidth,
-            HashMap<Integer, Float> hues, double opacity, boolean renderInAllFrames, boolean multithread) {
+            HashMap<Integer, Color> colours, boolean renderInAllFrames, boolean multithread) {
         String name = new AddObjectOutline(null).getName();
 
         // Adding the overlay element
@@ -120,10 +120,9 @@ public class AddObjectOutline extends AbstractOverlay {
 
                     for (int t = t1; t <= t2; t++) {
                         for (int z = minZ; z <= maxZ; z++) {
-                            float hue = hues.get(object.getID());
-                            addOverlay(object, finalIpl, ColourFactory.getColour(hue, opacity), lineInterpolation,
-                                    lineWidth, t, z);
-                            writeProgressStatus(count.getAndIncrement(), total, "objects", name);                            
+                            Color colour = colours.get(object.getID());
+                            addOverlay(object, finalIpl, colour, lineInterpolation, lineWidth, t, z);
+                            writeProgressStatus(count.getAndIncrement(), total, "objects", name);
 
                         }
                     }
@@ -218,7 +217,6 @@ public class AddObjectOutline extends AbstractOverlay {
         Image inputImage = workspace.getImages().get(inputImageName);
         ImagePlus ipl = inputImage.getImagePlus();
 
-        double opacity = parameters.getValue(OPACITY);
         boolean reduceLineComplexity = parameters.getValue(REDUCE_LINE_COMPLEXITY);
         double lineInterpolation = parameters.getValue(LINE_INTERPOLATION);
         double lineWidth = parameters.getValue(LINE_WIDTH);
@@ -233,9 +231,9 @@ public class AddObjectOutline extends AbstractOverlay {
             ipl = new Duplicator().run(ipl);
 
         // Generating colours for each object
-        HashMap<Integer, Float> hues = getHues(inputObjects);
+        HashMap<Integer, Color> colours = getColours(inputObjects);
 
-        addOverlay(ipl, inputObjects, lineInterpolation, lineWidth, hues, opacity, renderInAllFrames, multithread);
+        addOverlay(ipl, inputObjects, lineInterpolation, lineWidth, colours, renderInAllFrames, multithread);
 
         Image outputImage = new Image(outputImageName, ipl);
 
@@ -296,7 +294,7 @@ public class AddObjectOutline extends AbstractOverlay {
         }
 
         returnedParameters.addAll(super.updateAndGetParameters(inputObjectsName));
-        
+
         returnedParameters.add(parameters.getParameter(RENDERING_SEPARATOR));
         returnedParameters.add(parameters.getParameter(REDUCE_LINE_COMPLEXITY));
         if ((boolean) parameters.getValue(REDUCE_LINE_COMPLEXITY)) {

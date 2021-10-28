@@ -1,5 +1,6 @@
 package io.github.mianalysis.mia.module.objects.detect;
 
+import java.awt.Color;
 import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.regex.Matcher;
@@ -100,16 +101,16 @@ public abstract class AbstractHoughDetection extends Module {
         IntensityMinMax.run(dispIpl, true);
 
         HashMap<Integer, Float> hues = ColourFactory.getRandomHues(outputObjects);
+        HashMap<Integer, Color> colours = ColourFactory.getColours(hues);
 
         HashMap<Integer, String> IDs = null;
         if (showHoughScore) {
             DecimalFormat df = LabelFactory.getDecimalFormat(0, true);
             IDs = LabelFactory.getMeasurementLabels(outputObjects, Measurements.SCORE, df);
-            AddLabels.addOverlay(dispIpl, outputObjects, AddLabels.LabelPositions.CENTRE, IDs, labelSize, 0, 0, hues,
-                    100, false, false, true);
+            AddLabels.addOverlay(dispIpl, outputObjects, AddLabels.LabelPositions.CENTRE, IDs, labelSize, 0, 0, colours, false, false, true);
         }
 
-        AddObjectOutline.addOverlay(dispIpl, outputObjects, 1, 1, hues, 100, false, true);
+        AddObjectOutline.addOverlay(dispIpl, outputObjects, 1, 1, colours, false, true);
 
         dispIpl.setPosition(1, 1, 1);
         dispIpl.updateChannelAndDraw();

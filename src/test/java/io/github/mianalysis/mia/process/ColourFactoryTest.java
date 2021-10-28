@@ -40,7 +40,7 @@ public class ColourFactoryTest {
         obj = collection.createAndAddNewObject(volumeType, 2);
         collection.add(obj);
 
-        HashMap<Integer, Float> actual = ColourFactory.getSingleColourHues(collection,ColourFactory.SingleColours.WHITE);
+        HashMap<Integer, Float> actual = ColourFactory.getSingleColourValues(collection,ColourFactory.SingleColours.WHITE);
 
         assertEquals(3,actual.size());
         assertEquals(Float.MAX_VALUE,actual.get(0),tolerance);
@@ -329,7 +329,7 @@ public class ColourFactoryTest {
         obj = collection.createAndAddNewObject(volumeType, 2);
         collection.add(obj);
 
-        HashMap<Integer, Float> hues = ColourFactory.getSingleColourHues(collection,ColourFactory.SingleColours.WHITE);
+        HashMap<Integer, Float> hues = ColourFactory.getSingleColourValues(collection,ColourFactory.SingleColours.WHITE);
         HashMap<Integer, Color> actual = ColourFactory.getColours(hues,100);
 
         assertEquals(3,actual.size());

@@ -181,7 +181,6 @@ public class AddLine extends AbstractOverlay {
         // final String zPosMeasObj2 =
         // parameters.getValue(Z_POSITION_MEASUREMENT_OBJ_2);
 
-        double opacity = parameters.getValue(OPACITY);
         double lineWidth = parameters.getValue(LINE_WIDTH);
         boolean multithread = parameters.getValue(ENABLE_MULTITHREADING);
 
@@ -204,7 +203,7 @@ public class AddLine extends AbstractOverlay {
             ipl = new Duplicator().run(ipl);
 
         // Generating colours for each object
-        HashMap<Integer, Float> hues = getHues(inputObjects);
+        HashMap<Integer, Color> colours = getColours(inputObjects);
 
         for (final Obj inputObject : inputObjects.values()) {
             final Point<Double> pos1;
@@ -238,8 +237,7 @@ public class AddLine extends AbstractOverlay {
             }
 
             // Adding the overlay
-            float hue = hues.get(inputObject.getID());
-            Color colour = ColourFactory.getColour(hue, opacity);
+            Color colour = colours.get(inputObject.getID());
             addOverlay(inputObject, ipl, colour, lineWidth, pos1, pos2);
 
         }

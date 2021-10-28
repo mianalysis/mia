@@ -14,7 +14,10 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import com.drew.lang.annotations.NotNull;
+
 import org.eclipse.sisu.Nullable;
+import org.scijava.Priority;
+import org.scijava.plugin.Plugin;
 
 import ij.ImagePlus;
 import ij.Prefs;
@@ -26,13 +29,10 @@ import ij.gui.Roi;
 import ij.gui.TextRoi;
 import ij.plugin.Duplicator;
 import ij.plugin.HyperStackConverter;
+import io.github.mianalysis.mia.module.Categories;
+import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.module.Module;
-import org.scijava.Priority;
-import org.scijava.plugin.Plugin;
-import io.github.mianalysis.mia.module.Category;
-import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.object.Image;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
@@ -410,7 +410,7 @@ public class AddObjectsOverlay extends Module {
         switch (colourMode) {
             case ColourModes.SINGLE_COLOUR:
             default:
-                return ColourFactory.getSingleColourHues(inputObjects, singleColour);
+                return ColourFactory.getSingleColourValues(inputObjects, singleColour);
             case ColourModes.ID:
                 return ColourFactory.getIDHues(inputObjects, true);
             case ColourModes.RANDOM_COLOUR:
@@ -443,7 +443,7 @@ public class AddObjectsOverlay extends Module {
 
     }
 
-    public void createAllPointsOverlay(ImagePlus ipl, Objs inputObjects, @NotNull HashMap<Integer, Float> hues,
+    public void createAllPointsOverlay(ImagePlus ipl, Objs inputObjects, @NotNull HashMap<Integer, Float> values,
             boolean multithread, double lineWidth, boolean renderInAllFrames) throws InterruptedException {
         // If necessary, turning the image into a HyperStack (if 2 dimensions=1 it will
         // be a standard ImagePlus)
@@ -461,8 +461,8 @@ public class AddObjectsOverlay extends Module {
             ImagePlus finalIpl = ipl;
 
             Runnable task = () -> {
-                float hue = hues.get(object.getID());
-                Color colour = ColourFactory.getColour(hue, 100);
+                float value = values.get(object.getID());
+                Color colour = ColourFactory.getColour(value, 100);
 
                 addAllPointsOverlay(object, finalIpl, colour, lineWidth, renderInAllFrames);
 
@@ -477,7 +477,7 @@ public class AddObjectsOverlay extends Module {
 
     }
 
-    public void createArrowsOverlay(ImagePlus ipl, Objs inputObjects, @NotNull HashMap<Integer, Float> hues,
+    public void createArrowsOverlay(ImagePlus ipl, Objs inputObjects, @NotNull HashMap<Integer, Float> values,
             boolean multithread, double lineWidth, String oriMode, String oriMeasurementName,
             @Nullable String oriParentName, String lengthMode, String lengthMeasurementName,
             @Nullable String lengthParentName, double lengthValue, double lengthScale, int headSize)
@@ -499,8 +499,8 @@ public class AddObjectsOverlay extends Module {
             ImagePlus finalIpl = ipl;
 
             Runnable task = () -> {
-                float hue = hues.get(object.getID());
-                Color colour = ColourFactory.getColour(hue, 100);
+                float value = values.get(object.getID());
+                Color colour = ColourFactory.getColour(value, 100);
                 double orientation = 0;
                 switch (oriMode) {
                     case OrientationModes.MEASUREMENT:
@@ -539,7 +539,7 @@ public class AddObjectsOverlay extends Module {
 
     }
 
-    public void createCentroidOverlay(ImagePlus ipl, Objs inputObjects, @NotNull HashMap<Integer, Float> hues,
+    public void createCentroidOverlay(ImagePlus ipl, Objs inputObjects, @NotNull HashMap<Integer, Float> values,
             boolean multithread, double lineWidth, boolean renderInAllFrames) throws InterruptedException {
         // If necessary, turning the image into a HyperStack (if 2 dimensions=1 it will
         // be a standard ImagePlus)
@@ -557,8 +557,8 @@ public class AddObjectsOverlay extends Module {
             ImagePlus finalIpl = ipl;
 
             Runnable task = () -> {
-                float hue = hues.get(object.getID());
-                Color colour = ColourFactory.getColour(hue, 100);
+                float value = values.get(object.getID());
+                Color colour = ColourFactory.getColour(value, 100);
                 addCentroidOverlay(object, finalIpl, colour, lineWidth, renderInAllFrames);
 
                 writeProgressStatus(count.incrementAndGet(), inputObjects.size(), "objects");
@@ -571,7 +571,7 @@ public class AddObjectsOverlay extends Module {
 
     }
 
-    public void createLabelOverlay(ImagePlus ipl, Objs inputObjects, @NotNull HashMap<Integer, Float> hues,
+    public void createLabelOverlay(ImagePlus ipl, Objs inputObjects, @NotNull HashMap<Integer, Float> values,
             @Nullable HashMap<Integer, String> labels, boolean multithread, int labelSize, boolean renderInAllFrames)
             throws InterruptedException {
         // If necessary, turning the image into a HyperStack (if 2 dimensions=1 it will
@@ -590,8 +590,8 @@ public class AddObjectsOverlay extends Module {
             ImagePlus finalIpl = ipl;
 
             Runnable task = () -> {
-                float hue = hues.get(object.getID());
-                Color colour = ColourFactory.getColour(hue, 100);
+                float value = values.get(object.getID());
+                Color colour = ColourFactory.getColour(value, 100);
                 String label = labels == null ? "" : labels.get(object.getID());
 
                 double xMean = object.getXMean(true);
@@ -615,7 +615,7 @@ public class AddObjectsOverlay extends Module {
 
     }
 
-    public void createOutlineOverlay(ImagePlus ipl, Objs inputObjects, @NotNull HashMap<Integer, Float> hues,
+    public void createOutlineOverlay(ImagePlus ipl, Objs inputObjects, @NotNull HashMap<Integer, Float> values,
             boolean multithread, double lineWidth, boolean renderInAllFrames) throws InterruptedException {
         // If necessary, turning the image into a HyperStack (if 2 dimensions=1 it will
         // be a standard ImagePlus)
@@ -633,8 +633,8 @@ public class AddObjectsOverlay extends Module {
             ImagePlus finalIpl = ipl;
 
             Runnable task = () -> {
-                float hue = hues.get(object.getID());
-                Color colour = ColourFactory.getColour(hue, 100);
+                float value = values.get(object.getID());
+                Color colour = ColourFactory.getColour(value, 100);
 
                 addOutlineOverlay(object, finalIpl, colour, lineWidth, renderInAllFrames);
 
@@ -649,7 +649,7 @@ public class AddObjectsOverlay extends Module {
     }
 
     public void createPositionMeasurementsOverlay(ImagePlus ipl, Objs inputObjects,
-            @NotNull HashMap<Integer, Float> hues, String[] posMeasurements, boolean multithread, double lineWidth,
+            @NotNull HashMap<Integer, Float> values, String[] posMeasurements, boolean multithread, double lineWidth,
             boolean renderInAllFrames) throws InterruptedException {
         // If necessary, turning the image into a HyperStack (if 2 dimensions=1 it will
         // be a standard ImagePlus)
@@ -667,8 +667,8 @@ public class AddObjectsOverlay extends Module {
             ImagePlus finalIpl = ipl;
 
             Runnable task = () -> {
-                float hue = hues.get(object.getID());
-                Color colour = ColourFactory.getColour(hue, 100);
+                float value = values.get(object.getID());
+                Color colour = ColourFactory.getColour(value, 100);
 
                 addPositionMeasurementsOverlay(object, finalIpl, colour, lineWidth, posMeasurements, renderInAllFrames);
 
@@ -682,7 +682,7 @@ public class AddObjectsOverlay extends Module {
 
     }
 
-    public void createTracksOverlay(ImagePlus ipl, Objs inputObjects, @NotNull HashMap<Integer, Float> hues,
+    public void createTracksOverlay(ImagePlus ipl, Objs inputObjects, @NotNull HashMap<Integer, Float> values,
             String spotObjectsName, int history, boolean multithread, double lineWidth) throws InterruptedException {
         // If necessary, turning the image into a HyperStack (if 2 dimensions=1 it will
         // be a standard ImagePlus)
@@ -701,8 +701,8 @@ public class AddObjectsOverlay extends Module {
             ImagePlus finalIpl = ipl;
 
             // Job task = () -> {
-            float hue = hues.get(object.getID());
-            Color colour = ColourFactory.getColour(hue, 100);
+            float value = values.get(object.getID());
+            Color colour = ColourFactory.getColour(value, 100);
 
             addTrackOverlay(object, spotObjectsName, finalIpl, colour, lineWidth, history);
 
@@ -791,43 +791,43 @@ public class AddObjectsOverlay extends Module {
             ipl = new Duplicator().run(ipl);
 
         // Generating colours for each object
-        HashMap<Integer, Float> hues = getHues(inputObjects, colourMode, singleColour, parentObjectsForColourName,
+        HashMap<Integer, Float> values = getHues(inputObjects, colourMode, singleColour, parentObjectsForColourName,
                 measurementForColour);
 
         // Adding the overlay element
         try {
             switch (positionMode) {
                 case PositionModes.ALL_POINTS:
-                    createAllPointsOverlay(ipl, inputObjects, hues, multithread, lineWidth, renderInAllFrames);
+                    createAllPointsOverlay(ipl, inputObjects, values, multithread, lineWidth, renderInAllFrames);
                     break;
                 case PositionModes.ARROWS:
-                    createArrowsOverlay(ipl, inputObjects, hues, multithread, lineWidth, orientationMode,
+                    createArrowsOverlay(ipl, inputObjects, values, multithread, lineWidth, orientationMode,
                             measurementForOrientation, parentForOrientation, lengthMode, measurementForLength,
                             parentForLength, lengthValue, lengthScale, headSize);
                     break;
                 case PositionModes.CENTROID:
-                    createCentroidOverlay(ipl, inputObjects, hues, multithread, lineWidth, renderInAllFrames);
+                    createCentroidOverlay(ipl, inputObjects, values, multithread, lineWidth, renderInAllFrames);
                     break;
                 case PositionModes.LABEL_ONLY:
                     DecimalFormat df = LabelFactory.getDecimalFormat(decimalPlaces, useScientific);
                     HashMap<Integer, String> labels = getLabels(inputObjects, labelMode, df, parentObjectsForLabelName,
                             measurementForLabel);
-                    createLabelOverlay(ipl, inputObjects, hues, labels, multithread, labelSize, renderInAllFrames);
+                    createLabelOverlay(ipl, inputObjects, values, labels, multithread, labelSize, renderInAllFrames);
                     break;
                 case PositionModes.OUTLINE:
-                    createOutlineOverlay(ipl, inputObjects, hues, multithread, lineWidth, renderInAllFrames);
+                    createOutlineOverlay(ipl, inputObjects, values, multithread, lineWidth, renderInAllFrames);
                     break;
                 case PositionModes.POSITION_MEASUREMENTS:
                     if (!useRadius)
                         measurementForRadius = null;
                     String[] posMeasurements = new String[] { xPosMeas, yPosMeas, zPosMeas, measurementForRadius };
-                    createPositionMeasurementsOverlay(ipl, inputObjects, hues, posMeasurements, multithread, lineWidth,
+                    createPositionMeasurementsOverlay(ipl, inputObjects, values, posMeasurements, multithread, lineWidth,
                             renderInAllFrames);
                     break;
                 case PositionModes.TRACKS:
                     if (!limitHistory)
                         history = Integer.MAX_VALUE;
-                    createTracksOverlay(ipl, inputObjects, hues, spotObjectsName, history, multithread, lineWidth);
+                    createTracksOverlay(ipl, inputObjects, values, spotObjectsName, history, multithread, lineWidth);
                     break;
             }
         } catch (InterruptedException e) {
@@ -1237,7 +1237,7 @@ public class AddObjectsOverlay extends Module {
 
                         + "<li>\"" + ColourModes.ID
                         + "\" Overlay colour is quasi-randomly selected based on the ID number of the object.  The colour used for a specific "
-                        + "ID number will always be the same and is calculated using the equation <i>hue = (ID * 1048576 % 255) / 255</i>.</li>"
+                        + "ID number will always be the same and is calculated using the equation <i>value = (ID * 1048576 % 255) / 255</i>.</li>"
 
                         + "<li>\"" + ColourModes.MEASUREMENT_VALUE
                         + "\" Overlay colour is determined by a measurement value.  "
@@ -1248,7 +1248,7 @@ public class AddObjectsOverlay extends Module {
 
                         + "<li>\"" + ColourModes.PARENT_ID
                         + "\" Overlay colour is quasi-randomly selected based on the ID number of a parent of this object.  "
-                        + "The colour used for a specific ID number will always be the same and is calculated using the equation <i>hue = (ID * 1048576 % 255) / 255</i>.  "
+                        + "The colour used for a specific ID number will always be the same and is calculated using the equation <i>value = (ID * 1048576 % 255) / 255</i>.  "
                         + "The parent object is selected with the \"" + PARENT_OBJECT_FOR_COLOUR + "\" parameter.</li>"
 
                         + "<li>\"" + ColourModes.PARENT_MEASUREMENT_VALUE

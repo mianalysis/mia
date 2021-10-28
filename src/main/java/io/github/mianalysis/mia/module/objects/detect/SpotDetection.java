@@ -2,7 +2,11 @@
 
 package io.github.mianalysis.mia.module.objects.detect;
 
+import java.awt.Color;
 import java.util.HashMap;
+
+import org.scijava.Priority;
+import org.scijava.plugin.Plugin;
 
 import fiji.plugin.trackmate.Logger;
 import fiji.plugin.trackmate.Model;
@@ -23,10 +27,6 @@ import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.objects.process.GetLocalObjectRegion;
 import io.github.mianalysis.mia.module.visualise.overlays.AddObjectCentroid;
 import io.github.mianalysis.mia.module.visualise.overlays.AddObjectOutline;
-import io.github.mianalysis.mia.module.Module;
-import org.scijava.Priority;
-import org.scijava.plugin.Plugin;
-
 import io.github.mianalysis.mia.object.Image;
 import io.github.mianalysis.mia.object.Measurement;
 import io.github.mianalysis.mia.object.Obj;
@@ -183,8 +183,9 @@ public class SpotDetection extends Module {
     }
 
     public void showObjects(ImagePlus ipl, Objs spotObjects, boolean estimateSize) {
-        HashMap<Integer, Float> hues = ColourFactory.getSingleColourHues(spotObjects,
+        HashMap<Integer, Float> hues = ColourFactory.getSingleColourValues(spotObjects,
                 ColourFactory.SingleColours.ORANGE);
+        HashMap<Integer, Color> colours = ColourFactory.getColours(hues,100);
 
         String pointSize = AddObjectCentroid.PointSizes.SMALL;
         String pointType = AddObjectCentroid.PointTypes.CIRCLE;
@@ -195,9 +196,9 @@ public class SpotDetection extends Module {
 
         // Adding the overlay
         if (estimateSize)
-            AddObjectOutline.addOverlay(ipl, spotObjects, 1, 1, hues, 100, false, true);
+            AddObjectOutline.addOverlay(ipl, spotObjects, 1, 1, colours, false, true);
         else
-            AddObjectCentroid.addOverlay(ipl, spotObjects, hues, 100, pointSize, pointType, false, true);
+            AddObjectCentroid.addOverlay(ipl, spotObjects, colours, pointSize, pointType, false, true);
 
         ipl.setPosition(1, 1, 1);
         ipl.updateChannelAndDraw();

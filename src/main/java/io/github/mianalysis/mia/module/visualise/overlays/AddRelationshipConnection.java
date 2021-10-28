@@ -100,7 +100,7 @@ public class AddRelationshipConnection extends AbstractOverlay {
 
     public static void addParentChildOverlay(ImagePlus ipl, Objs inputObjects, String childObjectsName,
             String renderMode, double lineWidth, String pointSize, String pointType, boolean offset, String measName1,
-            String measName2, HashMap<Integer, Float> hues, double opacity, boolean renderInAllFrames,
+            String measName2, HashMap<Integer, Color> colours, boolean renderInAllFrames,
             boolean multithread) {
         // Adding the overlay element
         try {
@@ -119,8 +119,7 @@ public class AddRelationshipConnection extends AbstractOverlay {
                 ImagePlus finalIpl = ipl;
 
                 Runnable task = () -> {
-                    float hue = hues.get(object.getID());
-                    Color colour = ColourFactory.getColour(hue, opacity);
+                    Color colour = colours.get(object.getID());
 
                     addParentChildOverlay(object, childObjectsName, finalIpl, colour, renderMode, lineWidth, pointSize,
                             pointType, offset, measName1, measName2, renderInAllFrames);
@@ -163,7 +162,7 @@ public class AddRelationshipConnection extends AbstractOverlay {
 
     public static void addSiblingOverlay(ImagePlus ipl, Objs inputObjects, String childObjects1Name,
             String childObjects2Name, String renderMode, double lineWidth, String pointSize, String pointType,
-            boolean offset, String measName1, String measName2, HashMap<Integer, Float> hues, double opacity,
+            boolean offset, String measName1, String measName2, HashMap<Integer, Color> colours,
             boolean renderInAllFrames, boolean multithread) {
         // Adding the overlay element
         try {
@@ -182,8 +181,7 @@ public class AddRelationshipConnection extends AbstractOverlay {
                 ImagePlus finalIpl = ipl;
 
                 Runnable task = () -> {
-                    float hue = hues.get(object.getID());
-                    Color colour = ColourFactory.getColour(hue, opacity);
+                    Color colour = colours.get(object.getID());
 
                     addSiblingOverlay(object, childObjects1Name, childObjects2Name, finalIpl, colour, renderMode,
                             lineWidth, pointSize, pointType, offset, measName1, measName2, renderInAllFrames);
@@ -228,7 +226,7 @@ public class AddRelationshipConnection extends AbstractOverlay {
 
     public static void addPartnerOverlay(ImagePlus ipl, Objs partnerObjects1, String partnerObjects2Name,
             String renderMode, double lineWidth, String pointSize, String pointType, boolean offset, String measName1,
-            String measName2, HashMap<Integer, Float> hues, double opacity, boolean renderInAllFrames,
+            String measName2, HashMap<Integer, Color> colours, boolean renderInAllFrames,
             boolean multithread) {
         // Adding the overlay element
         try {
@@ -247,8 +245,7 @@ public class AddRelationshipConnection extends AbstractOverlay {
                 ImagePlus finalIpl = ipl;
 
                 Runnable task = () -> {
-                    float hue = hues.get(partnerObject1.getID());
-                    Color colour = ColourFactory.getColour(hue, opacity);
+                    Color colour = colours.get(partnerObject1.getID());
 
                     addPartnerOverlay(partnerObject1, partnerObjects2Name, finalIpl, colour, renderMode, lineWidth,
                             pointSize, pointType, offset, measName1, measName2, renderInAllFrames);
@@ -446,24 +443,24 @@ public class AddRelationshipConnection extends AbstractOverlay {
         switch (lineMode) {
             case LineModes.BETWEEN_CHILDREN:
                 Objs parentObjects = workspace.getObjectSet(parentObjectsName);
-                HashMap<Integer, Float> hues = getHues(parentObjects);
+                HashMap<Integer, Color> colours = getColours(parentObjects);
                 addSiblingOverlay(ipl, parentObjects, childObjects1Name, childObjects2Name, renderMode, lineWidth,
-                        pointSize, pointType, offset, measName1, measName2, hues, opacity, renderInAllFrames,
+                        pointSize, pointType, offset, measName1, measName2, colours, renderInAllFrames,
                         multithread);
                 break;
 
             case LineModes.BETWEEN_PARTNERS:
                 Objs partnerObjects1 = workspace.getObjectSet(partnerObjects1Name);
-                hues = getHues(partnerObjects1);
+                colours = getColours(partnerObjects1);
                 addPartnerOverlay(ipl, partnerObjects1, partnerObjects2Name, renderMode, lineWidth, pointSize,
-                        pointType, offset, measName1, measName2, hues, opacity, renderInAllFrames, multithread);
+                        pointType, offset, measName1, measName2, colours, renderInAllFrames, multithread);
                 break;
 
             case LineModes.PARENT_TO_CHILD:
                 parentObjects = workspace.getObjectSet(parentObjectsName);
-                hues = getHues(parentObjects);
+                colours = getColours(parentObjects);
                 addParentChildOverlay(ipl, parentObjects, childObjects1Name, renderMode, lineWidth, pointSize,
-                        pointType, offset, measName1, measName2, hues, opacity, renderInAllFrames, multithread);
+                        pointType, offset, measName1, measName2, colours, renderInAllFrames, multithread);
                 break;
         }
 
