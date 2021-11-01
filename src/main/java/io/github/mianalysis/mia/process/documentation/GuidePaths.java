@@ -14,6 +14,7 @@ public class GuidePaths {
 
     public GuidePaths() {
         // Getting started
+        paths.put("GUIDE_INSTALLATION", "${PTR}/html/guides/gettingstarted/1installation.html");
         paths.put("GUIDE_PROCESSINGVIEW", "${PTR}/html/guides/gettingstarted/2processingview.html");
         paths.put("GUIDE_USEEXISTING", "${PTR}/html/guides/gettingstarted/3useexisting.html");
         paths.put("GUIDE_EDITINGVIEW", "${PTR}/html/guides/gettingstarted/4editingview.html");

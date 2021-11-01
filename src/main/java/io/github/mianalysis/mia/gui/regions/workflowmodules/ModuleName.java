@@ -10,6 +10,8 @@ import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.border.EmptyBorder;
 
+import io.github.mianalysis.mia.gui.GUI;
+import io.github.mianalysis.mia.gui.regions.RenameListMenu;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.system.GUISeparator;
 import io.github.mianalysis.mia.object.Colours;
@@ -22,7 +24,7 @@ public class ModuleName extends JLabel {
     private static final ImageIcon skipIcon = new ImageIcon(
             ModuleName.class.getResource("/icons/skiparrow_orange_12px.png"), "");
     private static final ImageIcon warningIcon = new ImageIcon(
-        ModuleName.class.getResource("/icons/warning_red_12px.png"), "");
+            ModuleName.class.getResource("/icons/warning_red_12px.png"), "");
 
     public ModuleName(Module module, JTable table, boolean isSelected) {
         this.module = module;
@@ -53,7 +55,7 @@ public class ModuleName extends JLabel {
 
     public void updateState() {
         setIcon(null);
-        
+
         if (isSelected)
             setBackground(Colours.LIGHT_BLUE);
         else
@@ -91,6 +93,6 @@ public class ModuleName extends JLabel {
 
         revalidate();
         repaint();
-        
+
     }
 }

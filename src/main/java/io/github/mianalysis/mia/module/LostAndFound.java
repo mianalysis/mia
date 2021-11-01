@@ -37,6 +37,7 @@ import io.github.mianalysis.mia.module.objects.relate.RelateManyToOne;
 import io.github.mianalysis.mia.module.objects.transform.ExpandShrinkObjects;
 import io.github.mianalysis.mia.module.script.RunMacro;
 import io.github.mianalysis.mia.module.script.RunSingleCommand;
+import io.github.mianalysis.mia.module.system.GUISeparator;
 import io.github.mianalysis.mia.module.system.GlobalVariables;
 import io.github.mianalysis.mia.module.visualise.PlotMeasurementsScatter;
 import io.github.mianalysis.mia.module.workflow.WorkflowHandling;
@@ -170,6 +171,14 @@ public class LostAndFound {
         currentParameterNames = new HashMap<>();
         currentParameterNames.put("Control type", GlobalVariables.VARIABLE_TYPE);
         currentParameterNames.put("Variable choice", GlobalVariables.VARIABLE_CHOICE);
+        moduleName = new GlobalVariables(null).getClass().getSimpleName();
+        lostParameterNames.put(moduleName, currentParameterNames);
+
+        // GUISeparator
+        currentParameterNames = new HashMap<>();
+        currentParameterNames.put("Show basic", GUISeparator.SHOW_PROCESSING);
+        currentParameterNames.put("Expanded basic GUI", GUISeparator.EXPANDED_PROCESSING);
+        currentParameterNames.put("Expanded editing GUI", GUISeparator.EXPANDED_EDITING);
         moduleName = new GlobalVariables(null).getClass().getSimpleName();
         lostParameterNames.put(moduleName, currentParameterNames);
 

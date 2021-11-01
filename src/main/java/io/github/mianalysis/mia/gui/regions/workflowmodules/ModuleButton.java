@@ -3,12 +3,16 @@ package io.github.mianalysis.mia.gui.regions.workflowmodules;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.MouseInfo;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
 import javax.swing.JToggleButton;
 
 import io.github.mianalysis.mia.gui.GUI;
+import io.github.mianalysis.mia.gui.regions.RenameListMenu;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.system.GUISeparator;
 import io.github.mianalysis.mia.object.Colours;
@@ -16,7 +20,7 @@ import io.github.mianalysis.mia.object.Colours;
 /**
  * Created by Stephen on 20/05/2017.
  */
-public class ModuleButton extends JToggleButton implements ActionListener {
+public class ModuleButton extends JToggleButton implements ActionListener, MouseListener {
     /**
      *
      */
@@ -30,6 +34,7 @@ public class ModuleButton extends JToggleButton implements ActionListener {
         setFocusPainted(false);
         setSelected(false);
         addActionListener(this);
+        addMouseListener(this);
         setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
         setText(module.getNickname());
         setMinimumSize(new Dimension(1, 30));
@@ -66,5 +71,42 @@ public class ModuleButton extends JToggleButton implements ActionListener {
         GUI.setSelectedModules(new Module[] { module });
         GUI.updateModules();
         GUI.updateParameters();     
+    }
+
+    @Override
+    public void mouseClicked(MouseEvent e) {
+        switch (e.getButton()) {
+        case MouseEvent.BUTTON3:
+            RenameListMenu renameListMenu = new RenameListMenu(module);
+            renameListMenu.show(GUI.getFrame(), 0, 0);
+            renameListMenu.setLocation(MouseInfo.getPointerInfo().getLocation());
+            renameListMenu.setVisible(true);
+
+            break;
+        }
+    }
+
+    @Override
+    public void mousePressed(MouseEvent e) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent e) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void mouseEntered(MouseEvent e) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void mouseExited(MouseEvent e) {
+        // TODO Auto-generated method stub
+        
     }
 }

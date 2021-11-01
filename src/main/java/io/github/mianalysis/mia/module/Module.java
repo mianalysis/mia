@@ -55,7 +55,7 @@ public abstract class Module extends Ref implements Comparable, SciJavaPlugin {
     private boolean reachable = true;
     protected boolean showOutput = false;
     protected Module redirectModule = null; // After this module, can redirect to another module
-    private boolean showBasicTitle = true;
+    private boolean showProcessingViewTitle = true;
     protected boolean deprecated = false; // When set to true, this module is marked for future removal
 
 
@@ -306,12 +306,12 @@ public abstract class Module extends Ref implements Comparable, SciJavaPlugin {
         this.canBeDisabled = canBeDisabled;
     }
 
-    public boolean canShowBasicTitle() {
-        return showBasicTitle;
+    public boolean canShowProcessingTitle() {
+        return showProcessingViewTitle;
     }
 
-    public void setShowBasicTitle(boolean showBasicTitle) {
-        this.showBasicTitle = showBasicTitle;
+    public void setShowProcessingViewTitle(boolean showProcessingViewTitle) {
+        this.showProcessingViewTitle = showProcessingViewTitle;
     }
 
     public static boolean isVerbose() {
@@ -477,7 +477,7 @@ public abstract class Module extends Ref implements Comparable, SciJavaPlugin {
         element.setAttribute("CLASSNAME", getClass().getName());
         element.setAttribute("ENABLED", String.valueOf(enabled));
         element.setAttribute("DISABLEABLE", String.valueOf(canBeDisabled));
-        element.setAttribute("SHOW_BASIC_TITLE", String.valueOf(showBasicTitle));
+        element.setAttribute("SHOW_BASIC_TITLE", String.valueOf(showProcessingViewTitle));
         element.setAttribute("SHOW_OUTPUT", String.valueOf(showOutput));
         element.setAttribute("NOTES", notes);
 
@@ -501,7 +501,7 @@ public abstract class Module extends Ref implements Comparable, SciJavaPlugin {
         this.enabled = Boolean.parseBoolean(map.getNamedItem("ENABLED").getNodeValue());
         this.canBeDisabled = Boolean.parseBoolean(map.getNamedItem("DISABLEABLE").getNodeValue());
         if (map.getNamedItem("SHOW_BASIC_TITLE") != null) {
-            this.showBasicTitle = Boolean.parseBoolean(map.getNamedItem("SHOW_BASIC_TITLE").getNodeValue());
+            this.showProcessingViewTitle = Boolean.parseBoolean(map.getNamedItem("SHOW_BASIC_TITLE").getNodeValue());
         }
         this.showOutput = Boolean.parseBoolean(map.getNamedItem("SHOW_OUTPUT").getNodeValue());
         this.notes = map.getNamedItem("NOTES").getNodeValue();

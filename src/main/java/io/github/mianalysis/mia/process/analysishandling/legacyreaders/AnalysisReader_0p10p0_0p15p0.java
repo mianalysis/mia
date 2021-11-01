@@ -417,7 +417,7 @@ public class AnalysisReader_0p10p0_0p15p0 {
         GUISeparator guiSeparator = new GUISeparator(modules);
         modules.add(guiSeparator);
 
-        guiSeparator.updateParameterValue(GUISeparator.SHOW_BASIC, false);
+        guiSeparator.updateParameterValue(GUISeparator.SHOW_PROCESSING, false);
         guiSeparator.setNickname("[AUTOGEN] Timepoint measurements");
         guiSeparator.setNotes(
                 "The following modules were automatically added to aid compatibility with MIA v0.18.0 and above.  Object timepoints are now exported as measurements.");
@@ -448,7 +448,7 @@ public class AnalysisReader_0p10p0_0p15p0 {
         GUISeparator guiSeparator = new GUISeparator(modules);
         modules.add(guiSeparator);
 
-        guiSeparator.updateParameterValue(GUISeparator.SHOW_BASIC, false);
+        guiSeparator.updateParameterValue(GUISeparator.SHOW_PROCESSING, false);
         guiSeparator.setNickname("[AUTOGEN] Object relationships");
         guiSeparator.setNotes(
                 "The following modules were automatically added to aid compatibility with MIA v0.15.0 and above.  Child object counts, parent IDs and partner object counts are now stored as measurements.  The following modules add the same data exporting as present in the original analysis.  Note: Spreadsheet column headers may have changed.");

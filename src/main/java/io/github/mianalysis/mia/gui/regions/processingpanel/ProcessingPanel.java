@@ -1,4 +1,4 @@
-package io.github.mianalysis.mia.gui.regions.basicpanel;
+package io.github.mianalysis.mia.gui.regions.processingpanel;
 
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
@@ -23,7 +23,7 @@ import io.github.mianalysis.mia.gui.regions.progressandstatus.ProgressBarPanel;
 import io.github.mianalysis.mia.gui.regions.progressandstatus.StatusPanel;
 import io.github.mianalysis.mia.module.Module;
 
-public class BasicPanel extends AbstractPanel {
+public class ProcessingPanel extends AbstractPanel {
     /**
      *
      */
@@ -32,20 +32,20 @@ public class BasicPanel extends AbstractPanel {
     private static int minimumFrameHeight = GUI.getMinimumFrameHeight();
 
     private static final StatusPanel statusPanel = new StatusPanel();
-    private static final BasicControlPanel controlPanel = new BasicControlPanel();
+    private static final ProcessingControlPanel controlPanel = new ProcessingControlPanel();
     private static final ProgressBarPanel progressBarPanel = new ProgressBarPanel();
     private final HelpNotesPanel helpNotesPanel = new HelpNotesPanel();
     private final FileListPanel fileListPanel = new FileListPanel(GUI.getAnalysisRunner().getWorkspaces());
     private final JSplitPane splitPane1;
     private final JSplitPane splitPane2;
 
-    private static boolean showHelp = Prefs.get("MIA.showBasicHelp",false);
-    private static boolean showNotes = Prefs.get("MIA.showBasicNotes",false);
-    private boolean showFileList = Prefs.get("MIA.showBasicFileList",false);
+    private static boolean showHelp = Prefs.get("MIA.showProcessingHelp",false);
+    private static boolean showNotes = Prefs.get("MIA.showProcessingNotes",false);
+    private boolean showFileList = Prefs.get("MIA.showProcessingFileList",false);
     private static Module lastHelpNotesModule = null;
 
 
-    public BasicPanel() {
+    public ProcessingPanel() {
         setLayout(new GridBagLayout());
 
         GridBagConstraints c = new GridBagConstraints();
@@ -59,7 +59,7 @@ public class BasicPanel extends AbstractPanel {
         c.gridwidth = 1;
         c.gridheight = 1;
         c.fill = GridBagConstraints.HORIZONTAL;
-        add(initialiseBasicControlPanel(), c);
+        add(initialiseProcessingControlPanel(), c);
 
         // Initialising the parameters panel
         updateFileList();
@@ -110,15 +110,15 @@ public class BasicPanel extends AbstractPanel {
 
     }
 
-    private static JPanel initialiseBasicControlPanel() {
+    private static JPanel initialiseProcessingControlPanel() {
         int bigButtonSize = GUI.getBigButtonSize();
         int frameWidth = GUI.getFrameHeight();
 
-        JPanel basicControlPanel = new JPanel();
+        JPanel processingControlPanel = new JPanel();
 
-        basicControlPanel.setMinimumSize(new Dimension(frameWidth-30, bigButtonSize + 15));
-        basicControlPanel.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
-        basicControlPanel.setLayout(new GridBagLayout());
+        processingControlPanel.setMinimumSize(new Dimension(frameWidth-30, bigButtonSize + 15));
+        processingControlPanel.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
+        processingControlPanel.setLayout(new GridBagLayout());
 
         GridBagConstraints c = new GridBagConstraints();
         c.gridx = 0;
@@ -132,13 +132,13 @@ public class BasicPanel extends AbstractPanel {
                 = new AnalysisControlButton(AnalysisControlButton.LOAD_ANALYSIS,bigButtonSize);
         c.gridx++;
         c.anchor = GridBagConstraints.PAGE_END;
-        basicControlPanel.add(loadAnalysisButton, c);
+        processingControlPanel.add(loadAnalysisButton, c);
 
         // Save analysis protocol button
         AnalysisControlButton saveAnalysisButton
                 = new AnalysisControlButton(AnalysisControlButton.SAVE_ANALYSIS,bigButtonSize);
         c.gridx++;
-        basicControlPanel.add(saveAnalysisButton, c);
+        processingControlPanel.add(saveAnalysisButton, c);
 
         // Start analysis button
         AnalysisControlButton startAnalysisButton
@@ -146,19 +146,19 @@ public class BasicPanel extends AbstractPanel {
         c.gridx++;
         c.weightx = 1;
         c.anchor = GridBagConstraints.FIRST_LINE_END;
-        basicControlPanel.add(startAnalysisButton, c);
+        processingControlPanel.add(startAnalysisButton, c);
 
         // Stop analysis button
         AnalysisControlButton stopAnalysisButton
                 = new AnalysisControlButton(AnalysisControlButton.STOP_ANALYSIS,bigButtonSize);
         c.gridx++;
         c.weightx = 0;
-        basicControlPanel.add(stopAnalysisButton, c);
+        processingControlPanel.add(stopAnalysisButton, c);
 
-        basicControlPanel.validate();
-        basicControlPanel.repaint();
+        processingControlPanel.validate();
+        processingControlPanel.repaint();
 
-        return basicControlPanel;
+        return processingControlPanel;
 
     }
 
@@ -261,7 +261,7 @@ public class BasicPanel extends AbstractPanel {
 
     @Override
     public int getPreferredWidth() {
-        int currentWidth = BasicControlPanel.getPreferredWidth();
+        int currentWidth = ProcessingControlPanel.getPreferredWidth();
 
         if (showHelp || showNotes) currentWidth = currentWidth + HelpNotesPanel.getPreferredWidth();
         if (showFileList) currentWidth = currentWidth + FileListPanel.getPreferredWidth();
@@ -272,7 +272,7 @@ public class BasicPanel extends AbstractPanel {
 
     @Override
     public int getMinimumWidth() {
-        int currentWidth = BasicControlPanel.getMinimumWidth();
+        int currentWidth = ProcessingControlPanel.getMinimumWidth();
 
         if (showHelp || showNotes) currentWidth = currentWidth + HelpNotesPanel.getPreferredWidth();
         if (showFileList) currentWidth = currentWidth + FileListPanel.getPreferredWidth();
@@ -315,7 +315,7 @@ public class BasicPanel extends AbstractPanel {
     @Override
     public void setShowHelp(boolean showHelp) {
         this.showHelp = showHelp;
-        Prefs.set("MIA.showBasicHelp",showHelp);
+        Prefs.set("MIA.showProcessingHelp",showHelp);
 
         helpNotesPanel.setVisible(showHelp);
         GUI.updatePanel();
@@ -332,7 +332,7 @@ public class BasicPanel extends AbstractPanel {
     @Override
     public void setShowNotes(boolean showNotes) {
         this.showNotes = showNotes;
-        Prefs.set("MIA.showBasicNotes",showNotes);
+        Prefs.set("MIA.showProcessingNotes",showNotes);
 
         helpNotesPanel.setVisible(showNotes);
         GUI.updatePanel();
@@ -349,7 +349,7 @@ public class BasicPanel extends AbstractPanel {
     @Override
     public void setShowFileList(boolean showFileList) {
         this.showFileList = showFileList;
-        Prefs.set("MIA.showBasicFileList", showFileList);
+        Prefs.set("MIA.showProcessingFileList", showFileList);
 
         fileListPanel.setVisible(showFileList);
         GUI.updatePanel();

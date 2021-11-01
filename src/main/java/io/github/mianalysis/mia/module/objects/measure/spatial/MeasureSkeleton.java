@@ -103,8 +103,6 @@ public class MeasureSkeleton extends Module {
             SkeletonResult skeletonResult = analyzeSkeleton.run(AnalyzeSkeleton_.NONE, minLengthFinal,
                     exportLargestShortestPathFinal, skeletonImage.getImagePlus(), true, false);
 
-            MIA.log.writeDebug("Got this far");
-            MIA.log.writeDebug("Skeleton result = "+skeletonResult);
             return new Object[] { analyzeSkeleton, skeletonResult };
 
         } catch (Exception e) {
@@ -416,7 +414,7 @@ public class MeasureSkeleton extends Module {
         int nThreads = multithread ? Prefs.getThreads() : 1;
         ThreadPoolExecutor pool = new ThreadPoolExecutor(nThreads, nThreads, 0L, TimeUnit.MILLISECONDS,
                 new LinkedBlockingQueue<>());
-        
+
         int total = inputObjects.size();
         AtomicInteger count = new AtomicInteger();
 
@@ -442,8 +440,8 @@ public class MeasureSkeleton extends Module {
                     }
 
                     if (exportLargestShortestPathFinal)
-                        createLargestShortestPath(inputObject, largestShortestPathObjects,
-                                (AnalyzeSkeleton_) result[0], (SkeletonResult) result[1]);
+                        createLargestShortestPath(inputObject, largestShortestPathObjects, (AnalyzeSkeleton_) result[0],
+                                (SkeletonResult) result[1]);
 
                 } catch (Throwable t) {
                     MIA.log.writeError(t);
@@ -463,7 +461,6 @@ public class MeasureSkeleton extends Module {
             MIA.log.writeError(t);
             return Status.FAIL;
         }
-        
 
         if (showOutput)
             inputObjects.showMeasurements(this, modules);
@@ -613,7 +610,7 @@ public class MeasureSkeleton extends Module {
 
     @Override
     public String getDescription() {
-        return "Uses the <a href=\"https://imagej.net/AnalyzeSkeleton\">AnalyzeSkeleton</a> plugin by Ignacio Arganda-Carreras."
+        return "Creates and measures the skeletonised form of specified input objects.  This module uses the <a href=\"https://imagej.net/AnalyzeSkeleton\">AnalyzeSkeleton</a> plugin by Ignacio Arganda-Carreras."
                 + "<br><br>The optional, output skeleton object acts solely as a linking object for the edge, junction and loop objects.  It doesn't itself hold any coordinate data.";
     }
 

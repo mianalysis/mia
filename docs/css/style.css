@@ -11,6 +11,11 @@
   padding-right: 10px;
 }
 
+.mia-text-block {
+  margin-top: 0rem;
+  margin-bottom: 2rem;
+}
+
 .mia-card-container {
   max-width: 960px;
 }
@@ -174,13 +179,24 @@
   display: none;
 }
 
+.mia-screenshot {
+  max-width: 100%;
+}
+
+.mia-main-text > ul > li {
+    margin-bottom: 1rem;
+}
+
+.mia-main-text > ol > li {
+    margin-bottom: 1rem;
+}
+
 footer {
     background-color: #424242;
 }
 
 @media (min-width: 640px) { 
   .mia-carousel-button {padding: .375rem .375rem;}
-  /* .mia-carousel-caption {bottom:20px}  */
   .mia-carousel-indicators {display:flex}
 
   .card-header {padding: 0.75rem 1.25rem;}
@@ -201,4 +217,6 @@ footer {
   .mia-title {font-size:2.6rem;}
   .mia-mobile {display:none;}  
   .mia-desktop {display: flex;}
+
+  .mia-screenshot {max-width: 75%;}
 }

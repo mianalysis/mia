@@ -6,7 +6,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <title>MIA (Modular Image Analysis)</title>
-  <link rel="shortcut icon" href="../../../../img/logo_square_partclip_192.png" type="image/x-icon" />
+  <link rel="shortcut icon" href="../../../../img/logos/logo_square_partclip_192.png" type="image/x-icon" />
 
   <!-- CSS -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css"
@@ -28,7 +28,7 @@
     <div class="container-fluid">
       <div>
         <a class="navbar-brand" href="../../../../index.html" style="padding-bottom: 0px;">
-          <img height="36" src="../../../../img/logo_64.png" style="padding-bottom: 3px; padding-right:0px;">
+          <img height="36" src="../../../../img/logos/logo_64.png" style="padding-bottom: 3px; padding-right:0px;">
         </a>
         <a class="navbar-brand mia-name mia-mobile" href="../../../../index.html" style="float:right; padding-top: 6px;">
           MIA
@@ -70,12 +70,12 @@
     <p class="mia-main-text-large">Extract a Z-substack from an input stack based on either manually-selected slices, or an automatically-calculated best-focus slice.</p>
 </div>
 
-<div class="pt-md-2 pb-md-4 mx-auto mia-page">
+<div class="mia-text-block mx-auto mia-page">
     <p class="text-center mia-heading">Description</p>
     <p class="text-center mia-main-text">Extract a Z-substack from an input stack based on either manually-selected slices, or an automatically-calculated best-focus slice.  For automated methods, best focus is determined using intensity statistics (e.g. largest variance) of all pixels in each slice.  When in manual mode, only the best focus slice for the first and last timepoints need be specified (all others will be estimated using polynomial spline interpolation); however, more frames can be specified if preferred.<br><br>Irrespective of the calculation method (manual or automatic), it's possible to extract a fixed number of slices above and below the determined best-focus slice.</p>
 </div>
 
-<div class="pt-md-2 pb-md-4 mx-auto mia-page">
+<div class="mia-text-block mx-auto mia-page">
     <p class="text-center mia-heading">Parameters</p>
     <!-- <p class="text-center mia-main-text"><tr><td class="mia-table-text-bold">Input image</td><td>Image to extract substack from.</td></tr><tr><td class="mia-table-text-bold">Output mode</td><td>Controls whether the best focus positions are calculated and applied (creating a new image) or simply calculated.  In both cases, statistics for the best focus position (mean, median, minimum, maximum and standard deviation of slices) are stored as measurements associated with the input image.</td></tr><tr><td class="mia-table-text-bold">Output image</td><td>Substack image to be added to the current workspace.</td></tr><tr><td class="mia-table-text-bold">Best-focus calculation</td><td>Method for determining the best-focus slice.<br><ul><li>"Manual" Displays a control window, allowing the user to specify reference slices.  These slices should be at the same true z-plane.  Once complete, a substack will be extracted a specific number of slices above and below the reference plane (defined by "Relative start slice" and "Relative end slice".  If references aren't specific for all timepoints, the missing frames will be estimated using polynomial spline interpolation.</li><li>"Smallest mean intensity" The reference slice is taken as the slice with the minimum mean intensity.</li><li>"Largest mean intensity" The reference slice is taken as the slice with the maximum mean intensity.</li><li>"Smallest standard deviation" The reference slice is taken as the slice with the minimum intensity standard deviation.</li><li>"Largest standard deviation" The reference slice is taken as the slice with the maximum intensity standard deviation.</li></ul></td></tr><tr><td class="mia-table-text-bold">Relative start slice</td><td>Index of start slice relative to determined best-focus slice (i.e. -5 is 5 slices below the best-focus).</td></tr><tr><td class="mia-table-text-bold">Relative end slice</td><td>Index of end slice relative to determined best-focus slice (i.e. 5 is 5 slices above the best-focus).</td></tr><tr><td class="mia-table-text-bold">Reference image</td><td>If using manual selection of best focus slices, this is the image that will be shown to the user.  While it doesn't need to be the input image (the one the output substack will be generated from), it must have the same number of slices and timepoints as the input.</td></tr><tr><td class="mia-table-text-bold">Calculation source</td><td>When using automatic best focus slice determination this controls the image source:<br><ul><li>"External" The image for which intensity statistics are calculated is different to the image that the final substack will be created from.  For example, this could be an filtered version of the input image to enhance structures when in focus.</li><li>"Internal" The same image will be used for determination of the best slice and generation of the output substack.</li></ul></td></tr><tr><td class="mia-table-text-bold">External source</td><td>If using a separate image to determine the best focus slice ("Calculation source" set to "External").</td></tr><tr><td class="mia-table-text-bold">Channel mode</td><td>How many channels to use when calculating the best-focus slice.  "Use all channels" will use all channels, whereas "Use single channel" will base the calculation on a single, user-defined channel.</td></tr><tr><td class="mia-table-text-bold">Channel</td><td>Channel to base the best-focus calculation on.</td></tr><tr><td class="mia-table-text-bold">Smooth timeseries</td><td>Apply median filter to best focus slice index over time.  This should smooth the transitions over time (prevent large jumps between frames).</td></tr><tr><td class="mia-table-text-bold">Smoothing range (odd numbers)</td><td>Number of frames over which to calculate the median.  If the specified number is even it will be increased by 1.</td></tr></p> -->
     <table class="table table-striped">
@@ -97,13 +97,13 @@
       <div class="row text-light">
         <div class="col-6 mia-footer">
           <a href="http://www.bristol.ac.uk/wolfson-bioimaging/">
-            <img class="mia-footer-logo" src="../../../../img/wbif.png">
+            <img class="mia-footer-logo" src="../../../../img/logos/wbif.png">
           </a>
         </div>
         <div class="col-6 mia-footer text-right">
           <a href="https://github.com/mianalysis/mia/">
-            <img class="mia-footer-logo" src="../../../../img/GitHub-Mark-Light-64px.png"><img height="32"
-              src="../../../../img/GitHub_Logo_White.png" height="32px">
+            <img class="mia-footer-logo" src="../../../../img/logos/GitHub-Mark-Light-64px.png"><img height="32"
+              src="../../../../img/logos/GitHub_Logo_White.png" height="32px">
           </a>
         </div>
       </div>

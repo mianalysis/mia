@@ -1,4 +1,4 @@
-package io.github.mianalysis.mia.gui.regions.basicpanel;
+package io.github.mianalysis.mia.gui.regions.processingpanel;
 
 import io.github.mianalysis.mia.gui.ComponentFactory;
 import io.github.mianalysis.mia.gui.GUI;
@@ -16,7 +16,7 @@ import javax.swing.*;
 import javax.swing.border.EtchedBorder;
 import java.awt.*;
 
-public class BasicControlPanel extends JScrollPane {
+public class ProcessingControlPanel extends JScrollPane {
     /**
      *
      */
@@ -27,7 +27,7 @@ public class BasicControlPanel extends JScrollPane {
     private static final int minimumWidth = 400;
     private static final int preferredWidth = 400;
 
-    public BasicControlPanel() {
+    public ProcessingControlPanel() {
         panel = new JPanel();
         setViewportView(panel);
 
@@ -82,16 +82,16 @@ public class BasicControlPanel extends JScrollPane {
 
         // Adding a separator between the input and main modules
         c.insets = new Insets(5, 0, 0, 5);
-        panel.add(componentFactory.createBasicSeparator(loadSeparator), c);
+        panel.add(componentFactory.createProcessingSeparator(loadSeparator), c);
         c.insets = new Insets(0, 0, 0, 5);
 
         // Only modules below an expanded GUISeparator should be displayed
-        BooleanP expanded = (loadSeparator.getParameter(GUISeparator.EXPANDED_BASIC));
+        BooleanP expanded = (loadSeparator.getParameter(GUISeparator.EXPANDED_PROCESSING));
 
         // Adding input control options
         if (expanded.isSelected()) {
             c.gridy++;
-            JPanel inputPanel = componentFactory.createBasicModuleControl(inputControl);
+            JPanel inputPanel = componentFactory.createProcessingModuleControl(inputControl);
             if (inputPanel != null)
                 panel.add(inputPanel, c);
         }
@@ -111,21 +111,21 @@ public class BasicControlPanel extends JScrollPane {
                 if (!separator.isRunnable())
                     continue;
 
-                // Not all GUI separators are shown on the basic panel
-                BooleanP showBasic = module.getParameter(GUISeparator.SHOW_BASIC);
-                if (!showBasic.isSelected())
+                // Not all GUI separators are shown on the processing view panel
+                BooleanP showProcessing = module.getParameter(GUISeparator.SHOW_PROCESSING);
+                if (!showProcessing.isSelected())
                     continue;
 
                 // If this separator doesn't control any visible modules, skip it
-                if (((GUISeparator) module).getBasicModules().size() == 0 & !module.canBeDisabled())
+                if (((GUISeparator) module).getProcessingViewModules().size() == 0 & !module.canBeDisabled())
                     continue;
 
-                expanded = module.getParameter(GUISeparator.EXPANDED_BASIC);
-                modulePanel = componentFactory.createBasicSeparator(module);
+                expanded = module.getParameter(GUISeparator.EXPANDED_PROCESSING);
+                modulePanel = componentFactory.createProcessingSeparator(module);
 
             } else {
                 if (separator.isEnabled() && module.isRunnable() || module.invalidParameterIsVisible()) {
-                    modulePanel = componentFactory.createBasicModuleControl(module);
+                    modulePanel = componentFactory.createProcessingModuleControl(module);
                 }
             }
 
@@ -140,7 +140,7 @@ public class BasicControlPanel extends JScrollPane {
             }
         }
 
-        JPanel outputPanel = componentFactory.createBasicModuleControl(outputControl);
+        JPanel outputPanel = componentFactory.createProcessingModuleControl(outputControl);
         if (outputPanel != null && expanded.isSelected()) {
             c.gridy++;
             panel.add(outputPanel, c);

@@ -21,7 +21,6 @@ import javax.swing.JSeparator;
 import org.apache.batik.ext.swing.GridBagConstants;
 
 import io.github.mianalysis.mia.gui.parametercontrols.ParameterControl;
-import io.github.mianalysis.mia.gui.regions.basicpanel.ModuleTitle;
 import io.github.mianalysis.mia.gui.regions.parameterlist.DisableRefsButton;
 import io.github.mianalysis.mia.gui.regions.parameterlist.DisableableCheck;
 import io.github.mianalysis.mia.gui.regions.parameterlist.EnableRefsButton;
@@ -29,8 +28,9 @@ import io.github.mianalysis.mia.gui.regions.parameterlist.ExportCheck;
 import io.github.mianalysis.mia.gui.regions.parameterlist.ExportEnableButton;
 import io.github.mianalysis.mia.gui.regions.parameterlist.ExportName;
 import io.github.mianalysis.mia.gui.regions.parameterlist.ResetExport;
-import io.github.mianalysis.mia.gui.regions.parameterlist.ShowBasicTitleCheck;
+import io.github.mianalysis.mia.gui.regions.parameterlist.ShowProcessingTitleCheck;
 import io.github.mianalysis.mia.gui.regions.parameterlist.VisibleCheck;
+import io.github.mianalysis.mia.gui.regions.processingpanel.ModuleTitle;
 import io.github.mianalysis.mia.gui.regions.workflowmodules.ModuleEnabledButton;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
@@ -178,15 +178,15 @@ public class ComponentFactory {
         c.weightx = 0;
         paramPanel.add(separator, c);
 
-        ShowBasicTitleCheck showBasicTitleCheck = new ShowBasicTitleCheck(activeModule);
-        showBasicTitleCheck.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
+        ShowProcessingTitleCheck showProcessingTitleCheck = new ShowProcessingTitleCheck(activeModule);
+        showProcessingTitleCheck.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
         if (activeModule.getClass() == GUISeparator.class) {
-            showBasicTitleCheck.setEnabled(false);
-            showBasicTitleCheck.setOpaque(false);
+            showProcessingTitleCheck.setEnabled(false);
+            showProcessingTitleCheck.setOpaque(false);
         }
         c.gridx++;
         c.anchor = GridBagConstraints.EAST;
-        paramPanel.add(showBasicTitleCheck, c);
+        paramPanel.add(showProcessingTitleCheck, c);
 
         separator = new JSeparator();
         separator.setOrientation(JSeparator.VERTICAL);
@@ -209,7 +209,7 @@ public class ComponentFactory {
 
     }
 
-    public JPanel createBasicModuleHeading(Module module) {
+    public JPanel createProcessingModuleHeading(Module module) {
         JPanel modulePanel = new JPanel(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
 
@@ -229,10 +229,7 @@ public class ComponentFactory {
         modulePanel.add(moduleEnabledButton, c);
 
         ModuleTitle title = new ModuleTitle(module);
-        if (module.isRunnable() | !module.isEnabled())
-            title.setForeground(Color.BLACK);
-        else
-            title.setForeground(Colours.RED);
+        title.setForeground(Color.BLACK);
         title.setToolTipText("<html><div style=\"width:500px;\">" + module.getDescription() + "</div></html>");
         c.insets = new Insets(0, 0, 0, 0);
         c.weightx = 1;
@@ -243,7 +240,7 @@ public class ComponentFactory {
 
     }
 
-    public JPanel createBasicSeparator(Module module) {
+    public JPanel createProcessingSeparator(Module module) {
         JPanel panel = new JPanel(new GridBagLayout());
 
         GridBagConstraints c = new GridBagConstraints();
@@ -263,19 +260,14 @@ public class ComponentFactory {
         moduleEnabledButton.setContentAreaFilled(false);
         panel.add(moduleEnabledButton, c);
 
-        BooleanP expandedBasic = (BooleanP) module.getParameter(GUISeparator.EXPANDED_BASIC);
+        BooleanP expandedProcessing = (BooleanP) module.getParameter(GUISeparator.EXPANDED_PROCESSING);
         JLabel leftArrowLabel = new JLabel();
-
-        // if (((GUISeparator) module).getBasicModules().size() == 0 &
-        // !module.getNickname().equals("File selection")) {
-        // leftArrowLabel.setIcon(circle);
-        // } else {
-        if (expandedBasic.isSelected()) {
+        if (expandedProcessing.isSelected()) {
             leftArrowLabel.setIcon(downArrow);
         } else {
             leftArrowLabel.setIcon(rightArrow);
         }
-        // }
+        
         c.insets = new Insets(0, 0, 0, 5);
         c.gridx++;
         panel.add(leftArrowLabel, c);
@@ -304,38 +296,27 @@ public class ComponentFactory {
         panel.add(separatorRight, c);
 
         JLabel rightArrowLabel = new JLabel();
-        // if (((GUISeparator) module).getBasicModules().size() == 0 &
-        // !module.getNickname().equals("File selection")) {
-        // rightArrowLabel.setIcon(circle);
-        // } else {
-        if (expandedBasic.isSelected()) {
+        if (expandedProcessing.isSelected()) {
             rightArrowLabel.setIcon(downArrow);
         } else {
             rightArrowLabel.setIcon(leftArrow);
         }
-        // }
 
         c.weightx = 0;
         c.gridx++;
         panel.add(rightArrowLabel, c);
 
-        // panel.setPreferredSize(new Dimension(panelWidth,25));
-
         int labelWidth = label.getPreferredSize().width;
         label.setPreferredSize(new Dimension(labelWidth + 20, 25));
         label.setHorizontalAlignment(JLabel.CENTER);
-        // separatorLeft.setPreferredSize(new Dimension((panelWidth-labelWidth)/2-10,
-        // 1));
-        // separatorRight.setPreferredSize(new Dimension((panelWidth-labelWidth)/2-10,
-        // 1));
 
         // Adding an MouseListener to check if it was clicked
         panel.addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if (e.getButton() == MouseEvent.BUTTON1) {
-                    BooleanP expandedBasic = (BooleanP) module.getParameter(GUISeparator.EXPANDED_BASIC);
-                    expandedBasic.flipBoolean();
+                    BooleanP expandedProcessing = (BooleanP) module.getParameter(GUISeparator.EXPANDED_PROCESSING);
+                    expandedProcessing.flipBoolean();
                     GUI.updateModules();
                     GUI.updateParameters();
                 }
@@ -366,7 +347,7 @@ public class ComponentFactory {
 
     }
 
-    public JPanel createBasicModuleControl(Module module) {
+    public JPanel createProcessingModuleControl(Module module) {
         // Only displaying the module title if it has at least one visible parameter
         if (!module.hasVisibleParameters() & !module.canBeDisabled())
             return null;
@@ -381,8 +362,8 @@ public class ComponentFactory {
         c.fill = GridBagConstraints.HORIZONTAL;
         c.anchor = GridBagConstraints.NORTHWEST;
 
-        if (module.canBeDisabled() || module.canShowBasicTitle()) {
-            JPanel titlePanel = createBasicModuleHeading(module);
+        if (module.canBeDisabled() || module.canShowProcessingTitle()) {
+            JPanel titlePanel = createProcessingModuleHeading(module);
             modulePanel.add(titlePanel, c);
         }
 
@@ -394,19 +375,19 @@ public class ComponentFactory {
             return modulePanel;
 
         c.insets = new Insets(0, 40, 0, 17);
-        addBasicParameters(module, module.updateAndGetParameters(), modulePanel, c, false);
+        addProcessingParameters(module, module.updateAndGetParameters(), modulePanel, c, false);
 
         return modulePanel;
 
     }
 
-    private void addBasicParameters(Module module, Parameters parameters, JPanel modulePanel, GridBagConstraints c,
+    private void addProcessingParameters(Module module, Parameters parameters, JPanel modulePanel, GridBagConstraints c,
             boolean editable) {
         for (Parameter parameter : parameters.values()) {
             if (parameter.getClass() == ParameterGroup.class) {
                 LinkedHashMap<Integer, Parameters> collections = ((ParameterGroup) parameter).getCollections(true);
                 for (Parameters collection : collections.values())
-                    addBasicParameters(module, collection, modulePanel, c, editable);
+                    addProcessingParameters(module, collection, modulePanel, c, editable);
 
             }
 

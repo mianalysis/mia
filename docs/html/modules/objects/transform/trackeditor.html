@@ -6,7 +6,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <title>MIA (Modular Image Analysis)</title>
-  <link rel="shortcut icon" href="../../../../img/logo_square_partclip_192.png" type="image/x-icon" />
+  <link rel="shortcut icon" href="../../../../img/logos/logo_square_partclip_192.png" type="image/x-icon" />
 
   <!-- CSS -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css"
@@ -28,7 +28,7 @@
     <div class="container-fluid">
       <div>
         <a class="navbar-brand" href="../../../../index.html" style="padding-bottom: 0px;">
-          <img height="36" src="../../../../img/logo_64.png" style="padding-bottom: 3px; padding-right:0px;">
+          <img height="36" src="../../../../img/logos/logo_64.png" style="padding-bottom: 3px; padding-right:0px;">
         </a>
         <a class="navbar-brand mia-name mia-mobile" href="../../../../index.html" style="float:right; padding-top: 6px;">
           MIA
@@ -70,12 +70,12 @@
     <p class="mia-main-text-large">Display TrackMate's TrackScheme track editor to allow tracks to be re-linked between detected objects.</p>
 </div>
 
-<div class="pt-md-2 pb-md-4 mx-auto mia-page">
+<div class="mia-text-block mx-auto mia-page">
     <p class="text-center mia-heading">Description</p>
     <p class="text-center mia-main-text">Display TrackMate's TrackScheme track editor to allow tracks to be re-linked between detected objects.  TrackScheme also allows individual timepoint objects to be deleted.  TrackScheme represents the connectivity within a track (i.e. between instances in different timepoints) as a graph, which can be adjusted by deleting and drawing lines between each timepoint instance.  Interaction with the TrackScheme window can be directly visualised on the accompanying overlay image.<br><br>Full details on using TrackScheme can be found at <a href="https://imagej.net/plugins/trackmate/trackscheme">https://imagej.net/plugins/trackmate/trackscheme</a>.<br><br>Note: This module will update the existing spot (individual timepoint instances) and track objects.  As such, any track-related measurements will still be available, but may no longer be valid.  They can be re-calculated by re-running the relevant measurement modules.</p>
 </div>
 
-<div class="pt-md-2 pb-md-4 mx-auto mia-page">
+<div class="mia-text-block mx-auto mia-page">
     <p class="text-center mia-heading">Parameters</p>
     <!-- <p class="text-center mia-main-text"><tr><td class="mia-table-text-bold">Input track objects</td><td>Track objects that will be edited.  This same object collection will be updated by this module; however, all track objects will effectively be new, so any previous measurements and relationships will be lost.</td></tr><tr><td class="mia-table-text-bold">Input spot objects</td><td>Spot objects for the selected tracks that will be edited.  These "spot" objects are the individual timepoint instances of the tracks.  This same object collection will be updated by this module and all spot objects (unless deleted during editing) will be retained; however, as their associated tracks may be different, any track-related measurements may become invalid.  Track measurements should be re-calculated using the relevant modules.</td></tr><tr><td class="mia-table-text-bold">Display image</td><td>In addition to the graph-based TrackScheme editor, tracks and spots will be displayed as an overlay on this image.</td></tr><tr><td class="mia-table-text-bold">Show projected (3D only)</td><td>When selected (and when "Display image" has more than one Z-slice), a separate projected image will be displayed.  This can assist understanding track connectivity in 3D.</td></tr></p> -->
     <table class="table table-striped">
@@ -97,13 +97,13 @@
       <div class="row text-light">
         <div class="col-6 mia-footer">
           <a href="http://www.bristol.ac.uk/wolfson-bioimaging/">
-            <img class="mia-footer-logo" src="../../../../img/wbif.png">
+            <img class="mia-footer-logo" src="../../../../img/logos/wbif.png">
           </a>
         </div>
         <div class="col-6 mia-footer text-right">
           <a href="https://github.com/mianalysis/mia/">
-            <img class="mia-footer-logo" src="../../../../img/GitHub-Mark-Light-64px.png"><img height="32"
-              src="../../../../img/GitHub_Logo_White.png" height="32px">
+            <img class="mia-footer-logo" src="../../../../img/logos/GitHub-Mark-Light-64px.png"><img height="32"
+              src="../../../../img/logos/GitHub_Logo_White.png" height="32px">
           </a>
         </div>
       </div>

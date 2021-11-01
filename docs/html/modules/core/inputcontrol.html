@@ -6,7 +6,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <title>MIA (Modular Image Analysis)</title>
-  <link rel="shortcut icon" href="../../../img/logo_square_partclip_192.png" type="image/x-icon" />
+  <link rel="shortcut icon" href="../../../img/logos/logo_square_partclip_192.png" type="image/x-icon" />
 
   <!-- CSS -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css"
@@ -28,7 +28,7 @@
     <div class="container-fluid">
       <div>
         <a class="navbar-brand" href="../../../index.html" style="padding-bottom: 0px;">
-          <img height="36" src="../../../img/logo_64.png" style="padding-bottom: 3px; padding-right:0px;">
+          <img height="36" src="../../../img/logos/logo_64.png" style="padding-bottom: 3px; padding-right:0px;">
         </a>
         <a class="navbar-brand mia-name mia-mobile" href="../../../index.html" style="float:right; padding-top: 6px;">
           MIA
@@ -70,12 +70,12 @@
     <p class="mia-main-text-large">Select which file(s) or folder(s) MIA will process through.</p>
 </div>
 
-<div class="pt-md-2 pb-md-4 mx-auto mia-page">
+<div class="mia-text-block mx-auto mia-page">
     <p class="text-center mia-heading">Description</p>
     <p class="text-center mia-main-text">Select which file(s) or folder(s) MIA will process through.  If a file is selected, that file alone will be processed; however, selecting a folder will cause the system to iterate over all files and sub-folders within that folder.  Each file identified here will initialise its own workspace.  <br><br>It is possible to add filters to limit which files are used.  Multiple filters can be applied.<br><br>n.b. This module simply creates the workspace for subsequent analysis; no images are automatically loaded at this point.  To load image data to the workspace use the "Load image" module.</p>
 </div>
 
-<div class="pt-md-2 pb-md-4 mx-auto mia-page">
+<div class="mia-text-block mx-auto mia-page">
     <p class="text-center mia-heading">Parameters</p>
     <!-- <p class="text-center mia-main-text"><tr><td class="mia-table-text-bold">Input path</td><td>The file or folder path to process.  If a file is selected, that file alone will be processed.  If a folder is selected, each file in that folder (and all sub-folders) passing the filters will be processed.</td></tr><tr><td class="mia-table-text-bold">Series mode</td><td>For multi-series files, select which series to process:<br><ul><li>"All series" will create a new workspace for each series in the file.</li><li>"Series list" allows a comma-separated list of series numbers to be specified.</li></ul></td></tr><tr><td class="mia-table-text-bold">Series list</td><td>Comma-separated list of series numbers to be processed.</td></tr><tr><td class="mia-table-text-bold">Only load first file per folder</td><td>Only load the (alphabetically) first file in each folder.</td></tr><tr><td class="mia-table-text-bold">Only load first matching group</td><td>Only load the (alphabetically) first file matching the group specified by the regular expression "Pattern" parameter.  Each candidate filename will be matched against the regular expression in "Pattern" and retained for analysis if the selected group hasn't been seen before.  Only one group (specified using standard regex parenthesis notation) can be used.</td></tr><tr><td class="mia-table-text-bold">Pattern</td><td>Regular expression pattern to use when "Only load first matching group" is enabled.  This pattern must contain at least one group (specified using standard regex parenthesis notation).</td></tr><tr><td class="mia-table-text-bold">Spatial unit</td><td>Spatial units for calibrated measurements.  Assuming spatial calibration can be read from the input file when loaded, this will convert the input calibrated units to the units specified here.</td></tr><tr><td class="mia-table-text-bold">Temporal unit</td><td>Temporal units for calibrated measurements.  Assuming temporal calibration can be read from the input file when loaded, this will convert the input calibrated units to the units specified here.</td></tr><tr><td class="mia-table-text-bold">Add filter</td><td>Add another filename filter.  All images to be processed will pass all filters.</td></tr><tr><td class="mia-table-text-bold">Filter source</td><td>Type of filter to add.</td></tr><tr><td class="mia-table-text-bold">Filter value</td><td>Value to filter filenames against.</td></tr><tr><td class="mia-table-text-bold">Filter type</td><td>Control how the present filter operates:<br><ul><li>"Matches partially (include)" will process an image if the filter value is partially present in the source (e.g. filename or extension).</li><li>"Matches completely (include)" will process an image if the filter value is exactly the same as the source.</li><li>"Matches partially (exclude)" will not process an image if the filter value is partially present in the source.</li><li>"Matches completely (exclude)" will not process an image if the filter value is exactly the same as the source.</li></ul></td></tr><tr><td class="mia-table-text-bold">Simultaneous jobs</td><td>The number of images that will be processed simultaneously.  If this is set to "1" while processing a folder each valid file will still be processed, they will just complete one at a time.  For large images this is best left as "1" unless using a system with large amounts of RAM.</td></tr></p> -->
     <table class="table table-striped">
@@ -97,13 +97,13 @@
       <div class="row text-light">
         <div class="col-6 mia-footer">
           <a href="http://www.bristol.ac.uk/wolfson-bioimaging/">
-            <img class="mia-footer-logo" src="../../../img/wbif.png">
+            <img class="mia-footer-logo" src="../../../img/logos/wbif.png">
           </a>
         </div>
         <div class="col-6 mia-footer text-right">
           <a href="https://github.com/mianalysis/mia/">
-            <img class="mia-footer-logo" src="../../../img/GitHub-Mark-Light-64px.png"><img height="32"
-              src="../../../img/GitHub_Logo_White.png" height="32px">
+            <img class="mia-footer-logo" src="../../../img/logos/GitHub-Mark-Light-64px.png"><img height="32"
+              src="../../../img/logos/GitHub_Logo_White.png" height="32px">
           </a>
         </div>
       </div>

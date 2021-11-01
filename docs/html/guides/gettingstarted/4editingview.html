@@ -6,7 +6,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <title>MIA (Modular Image Analysis)</title>
-  <link rel="shortcut icon" href="../../../img/logo_square_partclip_192.png" type="image/x-icon" />
+  <link rel="shortcut icon" href="../../../img/logos/logo_square_partclip_192.png" type="image/x-icon" />
 
   <!-- CSS -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css"
@@ -28,7 +28,7 @@
     <div class="container-fluid">
       <div>
         <a class="navbar-brand" href="../../../index.html" style="padding-bottom: 0px;">
-          <img height="36" src="../../../img/logo_64.png" style="padding-bottom: 3px; padding-right:0px;">
+          <img height="36" src="../../../img/logos/logo_64.png" style="padding-bottom: 3px; padding-right:0px;">
         </a>
         <a class="navbar-brand mia-name mia-mobile" href="../../../index.html" style="float:right; padding-top: 6px;">
           MIA
@@ -67,12 +67,180 @@
   <div class="page-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
     <p class="mia-main-text"><a href="../../../html/guides/guides.html">Guides</a> > <a href="../../../html/guides/gettingstarted/gettingstarted.html">Getting started</a></p>
     <p class="mia-title">4. Editing view</p>
-    <p class="mia-main-text-large">Introduction to the interface for creating and editing workflows</p>
+    <p class="mia-main-text-large">The interface for creating, editing and testing workflows</p>
 </div>
 
 <div class="container mia-text-container text-center">
     
+    <div class="mia-text-block mx-auto">
+        <p class="mia-heading">Introduction</p>
+        <div class="mia-main-text">
+            Workflows can be constructed and tested in "editing view". Modules are assembled into a sequential list,
+            with
+            parameters for each displayed when the corresponding module name is clicked. It's also possible to control
+            which parameters are visible to end users via <a href="../../../html/guides/gettingstarted/2processingview.html">processing view</a>. In
+            editing view,
+            workflows can be manually run one module at a time or initiated for a full run in the same way as in
+            processing view.
+            <br />
+            <br />
+            Details on constructing and editing workflows can be found in the <a href="../../../html/guides/gettingstarted/5createnew.html">Creating
+                workflows</a> guide.
+        </div>
+        <a href="../../../img/screenshots/editingviewfull.png">
+            <img src="../../../img/screenshots/editingviewfull.png" class="img-fluid pt-md-2 mia-screenshot" />
+            <br />
+            Click to see full size
+        </a>
+    </div>
 
+    <div class="mia-text-block mx-auto">
+        <p class="mia-heading">Workflow controls</p>
+        <div class="mia-main-text pb-2">
+            The left-most section of editing view is split into two sections. The top half deals with adding, removing
+            and sorting modules in the current workflow, while the bottom half offers shortcuts for workflow handling
+            (e.g. loading and saving).
+            <br />
+            <br />
+            The + button will open a menu listing all available modules sorted by category. Selecting a module will
+            insert it into the current workflow (see "Modules in workflow" below). If any module is currently selected
+            in the workflow, the new module will be inserted immediately after it, otherwise, it will be added to the
+            bottom of the list. Similarly, the - button will remove any selected modules (note: multiple modules can be
+            selected from the current workflow). The ▲ and ▼ buttons can be used to move modules around in the workflow.
+            A full list of modules and descriptions can be found in the <a
+                href="../../../html/modules/modules.html">module documentation</a>.
+            <br />
+            <br />
+            Existing workflows can be loaded from .mia files using the "Load" button and saved with "Save". If the
+            workflow has been loaded from a .mia file or has been saved previously, the "Save" button will overwrite the
+            existing file. To save to a new file, please use "File > Save as...". A full analysis run can be started
+            using the "Run" button. This will run the workflow on the file specified in "Input control" and is
+            equivalent to starting an analysis from "processing view". The "Stop" button will terminate any active
+            analysis runs.
+        </div>
+        <a href="../../../img/screenshots/editingviewcontrolpanel.png">
+            <img src="../../../img/screenshots/editingviewcontrolpanel.png" class="img-fluid pt-md-2 mia-screenshot" />
+            <br />
+            Click to see full size
+        </a>
+    </div>
+
+    <div class="mia-text-block mx-auto">
+        <p class="mia-heading">Modules in workflow</p>
+        <div class="mia-main-text pb-2">
+            Modules forming the current workflow are assembled into a sequential list, with the first to be evaluated at
+            the top. A pair of fixed modules, "Input control" and "Output control", are always present at the top and
+            bottom of the module list. These are concerned with selecting the file(s) to process and exporting results,
+            respectively.
+            <br />
+            <br />
+            Each module can be enabled and disabled using the associated <img
+                src="../../../img/icons/power_brightgreen_12px.png" /> and <img
+                src="../../../img/icons/power_black_strike_12px.png" /> buttons, where a strike-through indicates the
+            module is currently disabled. Most modules are also able to display an immediate visual output when they
+            have been evaluated, this visualisation can be toggled using the <img
+                src="../../../img/icons/eyeopen_black_12px.png" /> (visualisation enabled) and <img
+                src="../../../img/icons/eyeclosed_black_12px.png" /> (visualisation disabled) buttons.
+            <br />
+            <br />
+            Module parameters can be edited by selecting the associated module name (see "Module parameters" below).
+            Modules can be moved within the workflow by selecting their name and dragging them to a new position.
+            Multiple modules can be moved by holding down the Ctrl or Shift keyboard buttons or dragging the mouse over
+            multiple module names. Modules can be assigned nicknames by right-clicking the name and selecting "Rename".
+            <br />
+            <br />
+            Primarily for the purpose of testing, workflows can be run manually, one module at a time using the
+            evaluation buttons. The <img src="../../../img/icons/arrowopen_black_12px.png" /> button indicates a module
+            not yet run, <img src="../../../img/icons/Dual Ring-1s-12px.gif" /> a module currently being evaluated and
+            <img src="../../../img/icons/arrowclosed_green_12px.png" /> a module previously run. Editing a module will
+            cause any previously-evaluated modules downstream to reset to the "not yet run" state.
+            <br />
+            <br />
+            Separators can be used to break modules down into groups. Groups can be collapsed and expanded using the
+            <img src="../../../img/icons/downarrow_darkblue_12px.png" /> and <img
+                src="../../../img/icons/rightarrow_darkblue_12px.png" /> buttons on the associated separator row. All
+            modules of a group can also be simultaneously enabled or disabled using the associated separator <img
+                src="../../../img/icons/power_darkblue_12px.png" /> button.
+            <br />
+            <br />
+            Any modules identified as containing errors (e.g. missing input images or objects) will be shown in red with
+            the <img src="../../../img/icons/warning_red_12px.png" /> icon. It is also possible to have optional modules
+            which are disabled under specific conditions (see <a
+                href="../../../html/modules/workflow/workflow.html">workflow</a> modules). Skipped modules are highlighted
+            in orange and given the <img src="../../../img/icons/skiparrow_orange_12px.png" /> icon.
+        </div>
+        <a href="../../../img/screenshots/editingviewmodulelist.png">
+            <img src="../../../img/screenshots/editingviewmodulelist.png" class="img-fluid pt-md-2 mia-screenshot" />
+            <br />
+            Click to see full size
+        </a>
+    </div>
+
+    <div class="mia-text-block mx-auto">
+        <p class="mia-heading">Module parameters</p>
+        <div class="mia-main-text  pb-2">
+            Each module has a set of associated parameters, which can be accessed by clicking the relevant module name
+            in the module list (see "Modules in workflow"). These parameters are broken down into sections based on
+            their common actions. The parameter control will depend on its type (e.g. input objects list objects
+            available in the workspace).
+            <br />
+            <br />
+            By default, no modules are visible to the end user in <a href="../../../html/guides/gettingstarted/2processingview.html">processing view</a>.
+            Modules can be made editable in processing view by toggling the associated visibility button, with <img
+                src="../../../img/icons/eyeopen_black_12px.png" /> indicating a visible (editable) parameter and <img
+                src="../../../img/icons/eyeclosed_black_12px.png" /> one that will not be visible. Modules with visible
+            parameters will also have their name displayed in processing view, unless "Show basic title" is unticked.
+            <br />
+            <br />
+            Similarly, entire modules can be made optional by selecting "Can be disabled". When selected, the module
+            title will be displayed in processing view along with an <img
+                src="../../../img/icons/power_brightgreen_12px.png" /> or <img
+                src="../../../img/icons/power_black_strike_12px.png" /> icon (depending on state of the module).
+            <br />
+            <br />
+            Any modules with identified errors will be highlighted in red along with the <img
+                src="../../../img/icons/warning_red_12px.png" /> icon.
+        </div>
+        <a href="../../../img/screenshots/editingviewparameterpanel.png">
+            <img src="../../../img/screenshots/editingviewparameterpanel.png" class="img-fluid pt-md-2 mia-screenshot" />
+            <br />
+            Click to see full size
+        </a>
+    </div>
+
+    <div class="mia-text-block mx-auto">
+        <p class="mia-heading">Module search</p>
+        <div class="mia-main-text pb-2">
+            An optional search panel can be enabled by either selecting "Search for module" from the "Add new module"
+            (+) menu or by going to "View > Show module search". Here, modules can be searched based on words that may
+            appear in the module name, module description or associated parameter descriptions. The module search will
+            always look at module names, but module descriptions and associated parameter
+            descriptions can be optionally included using the tick boxes.
+            <br />
+            <br />
+            Multiple search terms can be provided (e.g. "overlay outline"), with identified modules only needing to
+            match one of the terms. Mandatory search terms can be included using quotation marks - all identified
+            modules must include at least one instance of such terms.
+            <br />
+            <br />
+            Found modules are listed below the search controls, with the best matches (those including most search
+            terms) at the top. Each identified module can be directly added to the current workflow using the associated
+            + button.
+        </div>
+        <a href="../../../img/screenshots/editingviewsearch.png">
+            <img src="../../../img/screenshots/editingviewsearch.png" class="img-fluid pt-md-2 mia-screenshot" />
+            <br />
+            Click to see full size
+        </a>
+    </div>
+
+    <div class="mia-text-block mx-auto">
+        <p class="mia-heading">Navigation</p>
+        <div class="mia-main-text">
+            Previous: <a href="../../../html/guides/gettingstarted/3useexisting.html">Using
+                existing workflows</a>, Next: <a href="../../../html/guides/gettingstarted/5createnew.html">Creating workflows</a>
+        </div>
+    </div>
 
 </div>
 
@@ -82,13 +250,13 @@
       <div class="row text-light">
         <div class="col-6 mia-footer">
           <a href="http://www.bristol.ac.uk/wolfson-bioimaging/">
-            <img class="mia-footer-logo" src="../../../img/wbif.png">
+            <img class="mia-footer-logo" src="../../../img/logos/wbif.png">
           </a>
         </div>
         <div class="col-6 mia-footer text-right">
           <a href="https://github.com/mianalysis/mia/">
-            <img class="mia-footer-logo" src="../../../img/GitHub-Mark-Light-64px.png"><img height="32"
-              src="../../../img/GitHub_Logo_White.png" height="32px">
+            <img class="mia-footer-logo" src="../../../img/logos/GitHub-Mark-Light-64px.png"><img height="32"
+              src="../../../img/logos/GitHub_Logo_White.png" height="32px">
           </a>
         </div>
       </div>
