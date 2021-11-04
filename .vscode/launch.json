@@ -6,6 +6,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "Launch VoronoiTest",
+            "request": "launch",
+            "mainClass": "signalprocesser.voronoi.VoronoiTest",
+            "projectName": "MIA"
+        },
+        {
+            "type": "java",
             "name": "Launch MainGenerator (All)",
             "request": "launch",
             "mainClass": "io.github.mianalysis.mia.process.documentation.MainGenerator",
@@ -38,8 +45,7 @@
             "name": "Launch MIA",
             "request": "launch",
             "mainClass": "io.github.mianalysis.mia.MIA",
-            "projectName": "MIA",
-            // "vmArgs": "-Xmx30000m"
+            "projectName": "MIA"
         }
     ]
 }
