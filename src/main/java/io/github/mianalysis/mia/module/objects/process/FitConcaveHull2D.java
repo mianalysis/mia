@@ -26,23 +26,25 @@ import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.sjcross.common.object.volume.PointOutOfRangeException;
 import io.github.sjcross.common.object.volume.VolumeType;
-import signalprocessor.voronoi.VPoint;
-import signalprocessor.voronoi.VoronoiAlgorithm;
-import signalprocessor.voronoi.representation.AbstractRepresentation;
-import signalprocessor.voronoi.representation.RepresentationFactory;
-import signalprocessor.voronoi.representation.triangulation.TriangulationRepresentation;
-import signalprocessor.voronoi.representation.triangulation.TriangulationRepresentation.CalcCutOff;
-import signalprocessor.voronoi.shapegeneration.ShapeGeneration;
+import signalprocesser.voronoi.VPoint;
+import signalprocesser.voronoi.VoronoiAlgorithm;
+import signalprocesser.voronoi.representation.AbstractRepresentation;
+import signalprocesser.voronoi.representation.RepresentationFactory;
+import signalprocesser.voronoi.representation.triangulation.TriangulationRepresentation;
+import signalprocesser.voronoi.representation.triangulation.TriangulationRepresentation.CalcCutOff;
+import signalprocesser.voronoi.shapegeneration.ShapeGeneration;
 
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class FitConcaveHull2D extends Module {
     public static final String INPUT_SEPARATOR = "Object input/output";
     public static final String INPUT_OBJECTS = "Input objects";
     public static final String OUTPUT_OBJECTS = "Output objects";
+
+    public static final String HULL_SEPARATOR = "Concave hull controls";
     public static final String RANGE_PX = "Range (px)";
 
     public Obj processObject(Obj inputObject, Objs outputObjects, int range) {
-        ArrayList<VPoint> points = new ArrayList<VPoint>();        
+        ArrayList<VPoint> points = new ArrayList<VPoint>();
         points = RepresentationFactory.convertPointsToSimpleTriangulationPoints(points);
         AbstractRepresentation representation = RepresentationFactory.createTriangulationRepresentation();
         TriangulationRepresentation triangularrep = (TriangulationRepresentation) representation;
@@ -54,19 +56,22 @@ public class FitConcaveHull2D extends Module {
         };
         triangularrep.setCalcCutOff(calccutoff);
         for (java.awt.Point point : inputObject.getRoi(0).getContainedPoints())
-            points.add( representation.createPoint((int) Math.round(point.x), (int) Math.round(point.y)) );
+            points.add(representation.createPoint((int) Math.round(point.x), (int) Math.round(point.y)));
 
-        // TestRepresentationWrapper representationwrapper.innerrepresentation = representation;
+        // TestRepresentationWrapper representationwrapper.innerrepresentation =
+        // representation;
         VoronoiAlgorithm.generateVoronoi(triangularrep, points);
-        
+
         ArrayList<VPoint> outterpoints = triangularrep.getPointsFormingOutterBoundary();
         Area shape = ShapeGeneration.createArea(outterpoints);
-        
+
         // We have to explicitly define this, as the number of slices is 1 (potentially
         // unlike the input object)
         Obj outputObject = outputObjects.createAndAddNewObject(VolumeType.QUADTREE);
-        try {outputObject.addPointsFromShape(shape,0);}
-        catch (PointOutOfRangeException e) {}
+        try {
+            outputObject.addPointsFromShape(shape, 0);
+        } catch (PointOutOfRangeException e) {
+        }
 
         outputObject.setT(inputObject.getT());
 
@@ -83,7 +88,13 @@ public class FitConcaveHull2D extends Module {
 
     @Override
     public String getDescription() {
-        return "Fit 2D concave hull to a 2D object.  If objects are in 3D, a Z-projection of the object is used.";
+        return "Fits a 2D concave hull to all objects in a collection.  Each input object will be fit with a single concave hull.  Even for non-contiguous input objects, a single concave hull will be created.  The smoothness of the output hull is controlled by the \"range\" parameter, with smaller range values more closely following the surface of the object.  Larger range values should be used to overcome gaps in object edges.<br><br>"
+
+                + "Generated concave hulls are set as children of their respective input object.  If objects are in 3D, a Z-projection of the object is used.<br><br>"
+
+                + "The implementation used in this module (\"chi-shapes\") is entirely from the \"Concave hulls\" library by Glenn Hudson and Matt Duckham (<a href=\"https://archive.md/l3Un5#selection-571.0-587.218\">link</a>).  A paper with full details of the characteristic hulls algorithm is published in Pattern Recognition:<br><br>"
+
+                + "Duckham, M., Kulik, L., Worboys, M.F., Galton, A. (2008) \"Efficient generation of simple polygons for characterizing the shape of a set of points in the plane\", <i>Pattern Recognition</i>, <b>41</b>, 3224-3236 (<a href=\"https://archive.md/o/l3Un5/www.geosensor.net/papers/duckham08.PR.pdf\">PDF</a>, <a href=\"https://archive.md/o/l3Un5/dx.doi.org/10.1016/j.patcog.2008.03.023\">DOI</a>).";
     }
 
     @Override
@@ -106,7 +117,7 @@ public class FitConcaveHull2D extends Module {
         workspace.addObjects(outputObjects);
 
         for (Obj inputObject : inputObjects.values())
-            processObject(inputObject, outputObjects,range);
+            processObject(inputObject, outputObjects, range);
 
         if (showOutput)
             outputObjects.convertToImageRandomColours().showImage();
@@ -120,6 +131,8 @@ public class FitConcaveHull2D extends Module {
         parameters.add(new SeparatorP(INPUT_SEPARATOR, this));
         parameters.add(new InputObjectsP(INPUT_OBJECTS, this));
         parameters.add(new OutputObjectsP(OUTPUT_OBJECTS, this));
+
+        parameters.add(new SeparatorP(HULL_SEPARATOR, this));
         parameters.add(new IntegerP(RANGE_PX, this, 50));
 
         addParameterDescriptions();
@@ -133,6 +146,8 @@ public class FitConcaveHull2D extends Module {
         returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(INPUT_OBJECTS));
         returnedParameters.add(parameters.getParameter(OUTPUT_OBJECTS));
+
+        returnedParameters.add(parameters.getParameter(HULL_SEPARATOR));
         returnedParameters.add(parameters.getParameter(RANGE_PX));
 
         return returnedParameters;
@@ -178,10 +193,12 @@ public class FitConcaveHull2D extends Module {
 
     void addParameterDescriptions() {
         parameters.get(INPUT_OBJECTS).setDescription(
-                "Input objects to create 2D convex hulls for.  Each convex hull will be a child of its respective input object.");
+                "Input objects to create 2D concave hulls for.  Each convex hull will be a child of its respective input object.");
 
         parameters.get(OUTPUT_OBJECTS).setDescription(
-                "Output convex hull objects will be stored in the workspace with this name.  Each convex hull object will be a child of the input object it was created from.");
+                "Output concave hull objects will be stored in the workspace with this name.  Each concave hull object will be a child of the input object it was created from.");
+
+        parameters.get(RANGE_PX).setDescription("The maximum gap in the surface (edge) of an object that the hull can smooth over.  For gaps larger than this the hull will follow the discontinuity.");
 
     }
 }
