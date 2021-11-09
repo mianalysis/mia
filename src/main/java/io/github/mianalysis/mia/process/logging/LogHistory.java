@@ -22,6 +22,7 @@ public class LogHistory implements LogRenderer {
         if (levelStatus.get(level) == null || !levelStatus.get(level))
             return;
         
+        logHistory.putIfAbsent(level, "");
         logHistory.put(level, logHistory.get(level) + message);
         
     }

@@ -5,7 +5,6 @@ import java.awt.Font;
 import java.awt.Toolkit;
 import java.io.File;
 import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 import java.util.List;
 import java.util.TreeMap;
@@ -70,7 +69,7 @@ public class GUI {
     private static AbstractPanel mainPanel;
     private static Modules availableModules = new Modules();
 
-    public GUI() throws InstantiationException, IllegalAccessException {
+    public GUI() throws Exception {
         // Only create a GUI if one hasn't already been created
         if (initialised) {
             frame.setVisible(true);

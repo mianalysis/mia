@@ -118,7 +118,7 @@ public class MIA implements Command {
                 
         try {
             new GUI();
-        } catch (InstantiationException | IllegalAccessException e) {
+        } catch (Exception e) {
             MIA.log.writeError(e);
         }
     }

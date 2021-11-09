@@ -1,6 +1,5 @@
 package io.github.mianalysis.mia.process.analysishandling;
 
-import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.system.GlobalVariables;
@@ -31,7 +30,7 @@ public class AnalysisTester {
             if (module instanceof GUICondition || module instanceof FixedTextCondition
                     || module instanceof ModuleIsEnabled) {
 
-                        // For ModuleIsEnabled check if we need to redirect/terminate
+                // For ModuleIsEnabled check if we need to redirect/terminate
                 if (module instanceof ModuleIsEnabled)
                     if (!((ModuleIsEnabled) module).testDoRedirect())
                         continue;
@@ -42,8 +41,10 @@ public class AnalysisTester {
                 if (redirectModule == null)
                     break;
 
-                // Setting the index of the next module to be evaluated
-                i = modules.indexOf(redirectModule) - 1;
+                    // Setting the index of the next module to be evaluated
+                for (Module testModule : modules)
+                    if (testModule.getModuleID().equals(redirectModule.getModuleID()))
+                        i = modules.indexOf(testModule) - 1;
 
             }
 

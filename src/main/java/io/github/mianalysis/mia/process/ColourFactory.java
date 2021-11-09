@@ -5,7 +5,6 @@ import java.awt.image.IndexColorModel;
 import java.util.HashMap;
 import java.util.Random;
 
-import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.object.Measurement;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
@@ -19,12 +18,10 @@ public class ColourFactory {
         String JET = "Jet";
         String PHYSICS = "Physics";
         String RANDOM = "Random";
-        String SINGLE_COLOUR_GRADIENT = "Single colour gradient";
-        String SINGLE_COLOUR = "Single colour";
         String SPECTRUM = "Spectrum";
         String THERMAL = "Thermal";
 
-        String[] ALL = new String[] { BLACK_FIRE, ICE, JET, PHYSICS, RANDOM, SINGLE_COLOUR_GRADIENT, SINGLE_COLOUR,
+        String[] ALL = new String[] { BLACK_FIRE, ICE, JET, PHYSICS, RANDOM,
                 SPECTRUM, THERMAL };
 
     }
@@ -443,6 +440,8 @@ public class ColourFactory {
             color = Color.getHSBColor(0f, 0f, 1f);
         } else if (value == Float.MIN_VALUE) {
             color = Color.getHSBColor(0f, 0f, 0f);
+        } else if (colourMode.equals(ColourMaps.SPECTRUM)) {
+            color = Color.getHSBColor(value + 1E-8f, 1f, 1f);
         } else {
             // Have to addRef 1E-8 to prevent 0 values having a rounding error that makes
             // them negative
