@@ -77,7 +77,7 @@ public class GuideGenerator extends AbstractGenerator {
 
         // Finding guides in this category and adding them to this page
         String guideContent = "";
-        for (File guide : file.listFiles()) {
+        for (File guide : file.listFiles()) {            
             // We won't want to process categories or the metadata files for categories
             if (guide.isDirectory() || guide.getName().equals("_" + file.getName() + ".html"))
                 continue;

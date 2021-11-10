@@ -22,6 +22,9 @@ public class GuidePaths {
         paths.put("GUIDE_RESULTSFORMAT", "${PTR}/html/guides/gettingstarted/6resultsformat.html");
         paths.put("GUIDE_BATCHPROCESSING", "${PTR}/html/guides/gettingstarted/7batchprocessing.html");
 
+        // MIA structure
+        paths.put("GUIDE_MIASTRUCTURE", "${PTR}/html/guides/miastructure.html");
+
         // General
         paths.put("GUIDE_TROUBLESHOOTING", "${PTR}/html/guides/troubleshooting.html");
         
