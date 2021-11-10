@@ -88,7 +88,7 @@ public class ClusterPoints extends Module {
             int t) {
         KMeansPlusPlusClusterer<DoublePoint> clusterer = new KMeansPlusPlusClusterer<>(kClusters, maxIterations);
         List<CentroidCluster<DoublePoint>> clusters = clusterer.cluster(locations);
-                
+
         // Assigning relationships between points and clusters
         for (CentroidCluster<DoublePoint> cluster : clusters) {
             Obj outputObject = outputObjects.createAndAddNewObject(VolumeType.POINTLIST);

@@ -88,6 +88,13 @@ public class AnalysisReader {
         // handling for older versions still, which didn't include a version number.
         Node versionNode = doc.getChildNodes().item(0).getAttributes().getNamedItem("MIA_VERSION");
         String loadedVersion = versionNode.getNodeValue();
+
+        if (VersionUtils.compare(MIA.getVersion(), loadedVersion) != 0)
+            MIA.log.writeWarning("Loaded workflow created in different version of MIA.");
+            MIA.log.writeWarning("    Note: Workflow will likely still be compatible, but some issues may be encountered.");
+            MIA.log.writeWarning("    Workflow version: " + loadedVersion);
+            MIA.log.writeWarning("    Installed version: "+MIA.getVersion());
+        
         if (versionNode == null || VersionUtils.compare("0.10.0", loadedVersion) > 0)
             return AnalysisReader_Pre_0p10p0.loadAnalysis(xml);
         else if (VersionUtils.compare("0.15.0",loadedVersion) > 0)
@@ -168,11 +175,11 @@ public class AnalysisReader {
             throws IllegalAccessException, InstantiationException, NoSuchMethodException, InvocationTargetException {
         Class<Module> clazz = null;
         try {
-            String shortName = availableModuleName.substring(availableModuleName.lastIndexOf(".")+1);
+            String shortName = availableModuleName.substring(availableModuleName.lastIndexOf(".") + 1);
             if (!MIA.dependencies.compatible(shortName)) {
                 MIA.log.writeWarning("Module \"" + shortName + "\" not available");
                 return null;
-            }                
+            }
 
             clazz = (Class<Module>) Class.forName(availableModuleName);
         } catch (ClassNotFoundException e) {
@@ -184,25 +191,25 @@ public class AnalysisReader {
         NodeList moduleChildNodes = moduleNode.getChildNodes();
         for (int i = 0; i < moduleChildNodes.getLength(); i++) {
             switch (moduleChildNodes.item(i).getNodeName()) {
-                case "PARAMETERS":
-                    populateParameters(moduleChildNodes.item(i), module);
-                    break;
+            case "PARAMETERS":
+                populateParameters(moduleChildNodes.item(i), module);
+                break;
 
-                case "MEASUREMENTS":
-                    populateLegacyMeasurementRefs(moduleChildNodes.item(i), module);
-                    break;
+            case "MEASUREMENTS":
+                populateLegacyMeasurementRefs(moduleChildNodes.item(i), module);
+                break;
 
-                case "IMAGE_MEASUREMENTS":
-                    populateImageMeasurementRefs(moduleChildNodes.item(i), module);
-                    break;
+            case "IMAGE_MEASUREMENTS":
+                populateImageMeasurementRefs(moduleChildNodes.item(i), module);
+                break;
 
-                case "OBJECT_MEASUREMENTS":
-                    populateObjMeasurementRefs(moduleChildNodes.item(i), module);
-                    break;
+            case "OBJECT_MEASUREMENTS":
+                populateObjMeasurementRefs(moduleChildNodes.item(i), module);
+                break;
 
-                case "METADATA":
-                    populateModuleMetadataRefs(moduleChildNodes.item(i), module);
-                    break;
+            case "METADATA":
+                populateModuleMetadataRefs(moduleChildNodes.item(i), module);
+                break;
             }
         }
 
@@ -244,7 +251,7 @@ public class AnalysisReader {
         if (parameter == null) {
             String parameterValue = attributes.getNamedItem("VALUE").getNodeValue();
             MIA.log.writeWarning("Parameter not found.  Module: " + module.getName() + ".  Parameter: " + parameterName
-                    + ".  Value: " + parameterValue+".");
+                    + ".  Value: " + parameterValue + ".");
             return;
         }
 
@@ -264,15 +271,15 @@ public class AnalysisReader {
 
             // Acquiring the relevant reference
             switch (type) {
-                case "IMAGE":
-                    ImageMeasurementRef imageMeasurementRef = new ImageMeasurementRef(referenceNode);
-                    module.addImageMeasurementRef(imageMeasurementRef);
-                    break;
+            case "IMAGE":
+                ImageMeasurementRef imageMeasurementRef = new ImageMeasurementRef(referenceNode);
+                module.addImageMeasurementRef(imageMeasurementRef);
+                break;
 
-                case "OBJECTS":
-                    ObjMeasurementRef objMeasurementRef = new ObjMeasurementRef(referenceNode);
-                    module.addObjectMeasurementRef(objMeasurementRef);
-                    break;
+            case "OBJECTS":
+                ObjMeasurementRef objMeasurementRef = new ObjMeasurementRef(referenceNode);
+                module.addObjectMeasurementRef(objMeasurementRef);
+                break;
             }
         }
     }
