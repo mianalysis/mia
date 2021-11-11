@@ -91,7 +91,7 @@ public class AnalysisReader {
 
         if (VersionUtils.compare(MIA.getVersion(), loadedVersion) != 0)
             MIA.log.writeWarning("Loaded workflow created in different version of MIA.");
-            MIA.log.writeWarning("    Note: Workflow will likely still be compatible, but some issues may be encountered.");
+            MIA.log.writeWarning("    Workflow will likely still be compatible, but some issues may be encountered.");
             MIA.log.writeWarning("    Workflow version: " + loadedVersion);
             MIA.log.writeWarning("    Installed version: "+MIA.getVersion());
         

@@ -1,5 +1,9 @@
 package io.github.mianalysis.mia.moduledependencies;
 
+import org.scijava.Priority;
+import org.scijava.plugin.Plugin;
+
+@Plugin(type = Dependency.class, priority = Priority.LOW, visible = true)
 public class SpotDetectionDependency extends Dependency {
     @Override
     public String getModuleName() {

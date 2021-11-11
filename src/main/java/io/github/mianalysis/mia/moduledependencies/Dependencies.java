@@ -11,12 +11,12 @@ import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.process.ClassHunter;
 
 public class Dependencies {
-    private HashMap<String, HashSet<Dependency>> dependencies = new HashMap<>();
+    private HashMap<String, HashSet<Dependency>> dependencies = null;
 
     public boolean compatible(String moduleName, boolean rescan) {
         // Check if dependencies have already been searched for
         if (dependencies == null || rescan)
-            updateDependencies();   
+            updateDependencies();
 
         boolean compatible = true;
 
@@ -24,7 +24,7 @@ public class Dependencies {
             for (Dependency dependency : dependencies.get(moduleName))
                 if (!dependency.test())
                     compatible = false;
-
+        
         return compatible;
 
     }
@@ -32,13 +32,15 @@ public class Dependencies {
     public HashSet<Dependency> getDependencies(String moduleName, boolean rescan) {
         // Check if dependencies have already been searched for
         if (dependencies == null || rescan)
-            updateDependencies();   
-        
+            updateDependencies();
+
         return dependencies.get(moduleName);
 
     }
 
     public void updateDependencies() {
+        dependencies = new HashMap<>();
+        
         List<PluginInfo<Dependency>> plugins = ClassHunter.getPlugins(Dependency.class);
         for (PluginInfo<Dependency> plugin : plugins) {
             try {

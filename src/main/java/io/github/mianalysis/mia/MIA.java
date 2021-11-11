@@ -38,17 +38,16 @@ import net.imagej.ImageJService;
  */
 @Plugin(type = Command.class, menuPath = "Plugins>MIA>MIA (Modular Image Analysis)", visible=true)
 public class MIA implements Command {
-    private static ArrayList<String> pluginPackageNames = new ArrayList<>();
     private static String version = "";
     private static boolean debug = false;
-    private static LogRenderer mainRenderer = new BasicLogRenderer();
-    private static LogHistory logHistory = new LogHistory();
+    private static LogRenderer mainRenderer;
+    private static LogHistory logHistory;
     private final static boolean headless = false; // Determines if there is a GUI
 
     public static Preferences preferences;
-    public static Log log = new Log(mainRenderer); // This is for testing and headless modes
-    public final static Dependencies dependencies = new Dependencies(); // Maps module dependencies and reports if a module's requirements aren't satisfied
-    public final static LostAndFound lostAndFound = new LostAndFound(); // Maps missing modules and parameters to replacements (e.g. if a module was renamed)
+    public static Log log; // This is for testing and headless modes
+    public static Dependencies dependencies; // Maps module dependencies and reports if a module's requirements aren't satisfied
+    public static LostAndFound lostAndFound; // Maps missing modules and parameters to replacements (e.g. if a module was renamed)
 
     /*
         Gearing up for the transition from ImagePlus to ImgLib2 formats.  Modules can use this to addRef compatibility.
@@ -64,7 +63,7 @@ public class MIA implements Command {
 
         try {
             if (args.length == 0) {
-                ImageJ ij = new ImageJ();                
+                ImageJ ij = new ImageJ();
                 ij.ui().showUI();
                 ij.command().run("io.github.mianalysis.mia.MIA", false);
             } else {
@@ -80,7 +79,12 @@ public class MIA implements Command {
 
     @Override
     public void run() {
+        logHistory = new LogHistory();
+        mainRenderer = new BasicLogRenderer();        
+        log = new Log(mainRenderer);
         preferences = new Preferences(null);
+        dependencies = new Dependencies();
+        lostAndFound = new LostAndFound(); 
         
         setLookAndFeel();
         
@@ -96,7 +100,7 @@ public class MIA implements Command {
                 log.addRenderer(mainRenderer);
 
             }
-        } catch (Exception e) {
+        } catch (Exception e) {            
             // If any exception was thrown, just don't apply the ConsoleRenderer.
         }
 
@@ -119,7 +123,7 @@ public class MIA implements Command {
         try {
             new GUI();
         } catch (Exception e) {
-            MIA.log.writeError(e);
+            e.printStackTrace();
         }
     }
 
@@ -133,14 +137,6 @@ public class MIA implements Command {
 
     public static boolean isImagePlusMode() {
         return imagePlusMode;
-    }
-
-    public static void addPluginPackageName(String packageName) {
-        pluginPackageNames.add(packageName);
-    }
-
-    public static ArrayList<String> getPluginPackages() {
-        return pluginPackageNames;
     }
 
     public static String getVersion() {

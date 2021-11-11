@@ -8,13 +8,13 @@ public class BasicLogRenderer implements LogRenderer {
     private HashMap<Level, Boolean> levelStatus = new HashMap<>();
 
     public BasicLogRenderer() {
-        levelStatus.put(Level.DEBUG, Prefs.get("MIA_Log_Debug", false));
+        levelStatus.put(Level.DEBUG, Prefs.get("MIA.Log.Debug", false));
         levelStatus.put(Level.ERROR, true); // While this can be turned off during a session, it should always re-enable
                                             // by default
-        levelStatus.put(Level.MEMORY, Prefs.get("MIA_Log_Memory", false));
-        levelStatus.put(Level.MESSAGE, Prefs.get("MIA_Log_Message", false));
-        levelStatus.put(Level.STATUS, Prefs.get("MIA_Log_Status", true));
-        levelStatus.put(Level.WARNING, Prefs.get("MIA_Log_Warning", true));
+        levelStatus.put(Level.MEMORY, Prefs.get("MIA.Log.Memory", false));
+        levelStatus.put(Level.MESSAGE, Prefs.get("MIA.Log.Message", false));
+        levelStatus.put(Level.STATUS, Prefs.get("MIA.Log.Status", true));
+        levelStatus.put(Level.WARNING, Prefs.get("MIA.Log.Warning", true));
 
     }
 
@@ -49,19 +49,19 @@ public class BasicLogRenderer implements LogRenderer {
         switch (level) {
         default:
         case WARNING:
-            Prefs.set("MIA_Log_Warning", writeEnabled);
+            Prefs.set("MIA.Log.Warning", writeEnabled);
             break;
         case MESSAGE:
-            Prefs.set("MIA_Log_Message", writeEnabled);
+            Prefs.set("MIA.Log.Message", writeEnabled);
             break;
         case MEMORY:
-            Prefs.set("MIA_Log_Memory", writeEnabled);
+            Prefs.set("MIA.Log.Memory", writeEnabled);
             break;
         case DEBUG:
-            Prefs.set("MIA_Log_Debug", writeEnabled);
+            Prefs.set("MIA.Log.Debug", writeEnabled);
             break;
         case STATUS:
-            Prefs.set("MIA_Log_Status", writeEnabled);
+            Prefs.set("MIA.Log.Status", writeEnabled);
             break;
         }
         levelStatus.put(level, writeEnabled);

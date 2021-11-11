@@ -4,7 +4,7 @@ import org.scijava.plugin.SciJavaPlugin;
 import org.scijava.util.VersionUtils;
 
 public abstract class Dependency implements SciJavaPlugin {
-    enum Relationship {
+    public enum Relationship {
         LESS_THAN, LESS_THAN_OR_EQUAL_TO, EQUAL_TO, GREATER_THAN_OR_EQUAL_TO, GREATER_THAN, NOT_EQUAL_TO;
     }
 

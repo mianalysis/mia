@@ -242,7 +242,6 @@
         <dependency>
             <groupId>net.imagej</groupId>
             <artifactId>imagej-legacy</artifactId>
-            <version>0.35.0</version>
             <scope>${scp}</scope>
         </dependency>
         <dependency>
