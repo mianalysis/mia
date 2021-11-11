@@ -7,10 +7,11 @@ import java.text.DecimalFormat;
 import java.util.List;
 import java.util.StringTokenizer;
 
+import io.github.mianalysis.mia.module.AvailableModules;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.ParameterGroup;
+import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.SeparatorP;
 import io.github.mianalysis.mia.object.parameters.abstrakt.Parameter;
 import io.github.mianalysis.mia.object.parameters.text.MessageP;
@@ -18,12 +19,11 @@ import io.github.mianalysis.mia.object.refs.ImageMeasurementRef;
 import io.github.mianalysis.mia.object.refs.ObjMeasurementRef;
 import io.github.mianalysis.mia.object.refs.collections.ImageMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
-import io.github.mianalysis.mia.process.ClassHunter;
 
 public class CoverageChecker {
     public static void main(String[] args) {
         // Get a list of Modules
-        List<String> classNames = ClassHunter.getModules(false);
+        List<String> classNames = AvailableModules.getModuleNames(false);
 
         int nModules = 0;
         int completedModuleDescriptions = 0;

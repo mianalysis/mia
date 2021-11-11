@@ -71,7 +71,7 @@ public class MacroHandler implements MacroExtension {
 
     private static ArrayList<MacroOperation> initialiseMacroOperations(MacroHandler macroHandler) {
         // Using Reflections to get all MacroOperations
-        List<String> clazzes = new ClassHunter<MacroOperation>().getClasses(MacroOperation.class);
+        List<String> clazzes = new ClassHunter<MacroOperation>().getClassNames(MacroOperation.class);
 
         // Iterating over each Module, adding MacroOperations to an ArrayList
         ArrayList<MacroOperation> macroOperations = new ArrayList<>();

@@ -113,7 +113,7 @@ public class AnalysisReader_Pre_0p10p0 {
         // Creating a list of all available modules (rather than reading their full
         // path, in case they move) using
         // Reflections tool
-        List<String> availableModules = new ClassHunter<Module>().getClasses(Module.class);
+        List<String> availableModules = new ClassHunter<Module>().getClassNames(Module.class);
 
         NodeList moduleNodes = doc.getElementsByTagName("MODULE");
         for (int i = 0; i < moduleNodes.getLength(); i++) {

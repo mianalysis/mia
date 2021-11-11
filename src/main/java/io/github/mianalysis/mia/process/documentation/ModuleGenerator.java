@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.TreeMap;
 
 import io.github.mianalysis.mia.MIA;
+import io.github.mianalysis.mia.module.AvailableModules;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
@@ -17,7 +18,6 @@ import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.parameters.ParameterGroup;
 import io.github.mianalysis.mia.object.parameters.abstrakt.Parameter;
 import io.github.mianalysis.mia.object.refs.abstrakt.Ref;
-import io.github.mianalysis.mia.process.ClassHunter;
 
 public class ModuleGenerator extends AbstractGenerator {
     private TreeMap<String, Module> modules;
@@ -191,12 +191,12 @@ public class ModuleGenerator extends AbstractGenerator {
 
     private static TreeMap<String, Module> getModules() {
         // Get a list of Modules
-        List<String> classNames = ClassHunter.getModules(false);
+        List<String> moduleNames = AvailableModules.getModuleNames(false);
 
         // Converting the list of classes to a list of Modules
         TreeMap<String, Module> modules = new TreeMap<>();
         Modules tempCollection = new Modules();
-        for (String className : classNames) {
+        for (String className : moduleNames) {
             try {
                 Class<Module> clazz = (Class<Module>) Class.forName(className);
 

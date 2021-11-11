@@ -24,6 +24,7 @@ import org.xml.sax.SAXException;
 
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.gui.GUI;
+import io.github.mianalysis.mia.module.AvailableModules;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.core.InputControl;
@@ -33,7 +34,6 @@ import io.github.mianalysis.mia.object.parameters.abstrakt.Parameter;
 import io.github.mianalysis.mia.object.refs.ImageMeasurementRef;
 import io.github.mianalysis.mia.object.refs.MetadataRef;
 import io.github.mianalysis.mia.object.refs.ObjMeasurementRef;
-import io.github.mianalysis.mia.process.ClassHunter;
 import io.github.mianalysis.mia.process.analysishandling.legacyreaders.AnalysisReader_0p10p0_0p15p0;
 import io.github.mianalysis.mia.process.analysishandling.legacyreaders.AnalysisReader_Pre_0p10p0;
 
@@ -115,7 +115,7 @@ public class AnalysisReader {
         // Creating a list of all available modules (rather than reading their full
         // path, in case they move) using
         // Reflections tool
-        List<String> availableModuleNames = ClassHunter.getModules(false);
+        List<String> availableModuleNames = AvailableModules.getModuleNames(false);
 
         NodeList moduleNodes = doc.getElementsByTagName("MODULE");
         for (int i = 0; i < moduleNodes.getLength(); i++) {
@@ -176,7 +176,7 @@ public class AnalysisReader {
         Class<Module> clazz = null;
         try {
             String shortName = availableModuleName.substring(availableModuleName.lastIndexOf(".") + 1);
-            if (!MIA.dependencies.compatible(shortName)) {
+            if (!MIA.dependencies.compatible(shortName,false)) {
                 MIA.log.writeWarning("Module \"" + shortName + "\" not available");
                 return null;
             }
