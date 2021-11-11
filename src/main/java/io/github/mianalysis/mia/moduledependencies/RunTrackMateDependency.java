@@ -17,7 +17,7 @@ public class RunTrackMateDependency extends Dependency {
 
     @Override
     public String getVersionThreshold() {
-        return "7.0.0";
+        return "7.2.0";
     }
 
     @Override

@@ -89,11 +89,12 @@ public class AnalysisReader {
         Node versionNode = doc.getChildNodes().item(0).getAttributes().getNamedItem("MIA_VERSION");
         String loadedVersion = versionNode.getNodeValue();
 
-        if (VersionUtils.compare(MIA.getVersion(), loadedVersion) != 0)
+        if (VersionUtils.compare(MIA.getVersion(), loadedVersion) != 0) {
             MIA.log.writeWarning("Loaded workflow created in different version of MIA.");
             MIA.log.writeWarning("    Workflow will likely still be compatible, but some issues may be encountered.");
             MIA.log.writeWarning("    Workflow version: " + loadedVersion);
-            MIA.log.writeWarning("    Installed version: "+MIA.getVersion());
+            MIA.log.writeWarning("    Installed version: " + MIA.getVersion());
+        }
         
         if (versionNode == null || VersionUtils.compare("0.10.0", loadedVersion) > 0)
             return AnalysisReader_Pre_0p10p0.loadAnalysis(xml);

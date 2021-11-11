@@ -101,9 +101,7 @@ public class SpotDetection extends Module {
             radius = radius / calibration.getDppXY();
 
         // Initialising settings for TrackMate
-        Settings settings = new Settings();
-
-        settings.setFrom(ipl);
+        Settings settings = new Settings(ipl);
 
         settings.detectorFactory = new LogDetectorFactory();
         settings.detectorSettings.put(DetectorKeys.KEY_DO_SUBPIXEL_LOCALIZATION, subpixelLocalisation);
