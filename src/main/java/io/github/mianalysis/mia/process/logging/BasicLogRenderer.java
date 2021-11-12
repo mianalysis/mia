@@ -8,13 +8,13 @@ public class BasicLogRenderer implements LogRenderer {
     private HashMap<Level, Boolean> levelStatus = new HashMap<>();
 
     public BasicLogRenderer() {
-        levelStatus.put(Level.DEBUG, Prefs.get("MIA.Log.Debug", false));
+        levelStatus.put(Level.DEBUG, false);
         levelStatus.put(Level.ERROR, true); // While this can be turned off during a session, it should always re-enable
                                             // by default
-        levelStatus.put(Level.MEMORY, Prefs.get("MIA.Log.Memory", false));
-        levelStatus.put(Level.MESSAGE, Prefs.get("MIA.Log.Message", false));
-        levelStatus.put(Level.STATUS, Prefs.get("MIA.Log.Status", true));
-        levelStatus.put(Level.WARNING, Prefs.get("MIA.Log.Warning", true));
+        levelStatus.put(Level.MEMORY, false);
+        levelStatus.put(Level.MESSAGE, false);
+        levelStatus.put(Level.STATUS, true);
+        levelStatus.put(Level.WARNING, true);
 
     }
 

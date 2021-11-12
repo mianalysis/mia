@@ -1,18 +1,24 @@
 package io.github.mianalysis.mia.gui.regions.menubar;
 
-import io.github.mianalysis.mia.gui.GUIAnalysisHandler;
-import io.github.mianalysis.mia.gui.GUI;
-import io.github.mianalysis.mia.gui.UndoRedoStore;
-import io.github.mianalysis.mia.MIA;
-import io.github.mianalysis.mia.process.logging.LogRenderer;
-import io.github.mianalysis.mia.process.logging.LogRenderer.Level;
-
-import javax.swing.*;
-import java.awt.*;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
+
+import javax.swing.Box;
+import javax.swing.JComponent;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.KeyStroke;
+
+import ij.Prefs;
+import io.github.mianalysis.mia.MIA;
+import io.github.mianalysis.mia.gui.GUI;
+import io.github.mianalysis.mia.gui.GUIAnalysisHandler;
+import io.github.mianalysis.mia.gui.UndoRedoStore;
+import io.github.mianalysis.mia.process.logging.LogRenderer;
+import io.github.mianalysis.mia.process.logging.LogRenderer.Level;
 
 public class CustomMenuBar extends JMenuBar implements ActionListener {
     /**
@@ -106,22 +112,27 @@ public class CustomMenuBar extends JMenuBar implements ActionListener {
         LogRenderer renderer = MIA.getMainRenderer();
 
         Level level = Level.DEBUG;
+        renderer.setWriteEnabled(level, Prefs.get("MIA.Log.Debug", false));
         MenuLogCheckbox menuLogCheckbox = new MenuLogCheckbox(level, renderer.isWriteEnabled(level));
         logMenu.add(menuLogCheckbox);
 
         level = Level.MEMORY;
+        renderer.setWriteEnabled(level, Prefs.get("MIA.Log.Memory", false));
         menuLogCheckbox = new MenuLogCheckbox(level, renderer.isWriteEnabled(level));
         logMenu.add(menuLogCheckbox);
 
         level = Level.MESSAGE;
+        renderer.setWriteEnabled(level, Prefs.get("MIA.Log.Message", false));
         menuLogCheckbox = new MenuLogCheckbox(level, renderer.isWriteEnabled(level));
         logMenu.add(menuLogCheckbox);
 
         level = Level.STATUS;
+        renderer.setWriteEnabled(level, Prefs.get("MIA.Log.Status", true));
         menuLogCheckbox = new MenuLogCheckbox(level, renderer.isWriteEnabled(level));
         logMenu.add(menuLogCheckbox);
 
         level = Level.WARNING;
+        renderer.setWriteEnabled(level, Prefs.get("MIA.Log.Warning", true));
         menuLogCheckbox = new MenuLogCheckbox(level, renderer.isWriteEnabled(level));
         logMenu.add(menuLogCheckbox);
 

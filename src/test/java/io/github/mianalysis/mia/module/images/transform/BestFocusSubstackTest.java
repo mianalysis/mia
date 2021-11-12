@@ -8,18 +8,16 @@ import java.net.URLDecoder;
 import org.junit.jupiter.api.Test;
 
 import ij.IJ;
+import ij.ImageJ;
 import ij.ImagePlus;
-import net.imagej.ImgPlus;
-import net.imagej.axis.Axes;
-import net.imagej.axis.DefaultLinearAxis;
-import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.module.Module;
-import org.scijava.Priority;
-import org.scijava.plugin.Plugin;
 import io.github.mianalysis.mia.module.ModuleTest;
+import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.Image;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.Workspaces;
+import net.imagej.ImgPlus;
+import net.imagej.axis.Axes;
+import net.imagej.axis.DefaultLinearAxis;
 
 /**
  * Created by Stephen Cross on 28/02/2019.
@@ -626,9 +624,9 @@ public class BestFocusSubstackTest extends ModuleTest {
         bestFocusSubstack.updateParameterValue(BestFocusSubstack.RELATIVE_START_SLICE,2);
         bestFocusSubstack.updateParameterValue(BestFocusSubstack.RELATIVE_END_SLICE,-3);
         bestFocusSubstack.updateParameterValue(BestFocusSubstack.CHANNEL_MODE, BestFocusSubstack.ChannelModes.USE_SINGLE);
-        bestFocusSubstack.updateParameterValue(BestFocusSubstack.CHANNEL,1);
+        bestFocusSubstack.updateParameterValue(BestFocusSubstack.CHANNEL, 1);
 
-        // Running Module
+        // Running Module O
         bestFocusSubstack.execute(workspace);
 
         // Checking the images in the workspace

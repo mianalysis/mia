@@ -19,7 +19,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.TransformerFactoryConfigurationError;
@@ -42,7 +41,6 @@ import org.eclipse.sisu.Nullable;
 import org.w3c.dom.Document;
 
 import io.github.mianalysis.mia.MIA;
-import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.Image;
 import io.github.mianalysis.mia.object.Measurement;
@@ -51,9 +49,6 @@ import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.Workspaces;
 import io.github.mianalysis.mia.object.parameters.OutputImageP;
-import io.github.mianalysis.mia.object.parameters.ParameterGroup;
-import io.github.mianalysis.mia.object.parameters.Parameters;
-import io.github.mianalysis.mia.object.parameters.abstrakt.Parameter;
 import io.github.mianalysis.mia.object.parameters.objects.OutputObjectsP;
 import io.github.mianalysis.mia.object.refs.ImageMeasurementRef;
 import io.github.mianalysis.mia.object.refs.MetadataRef;
@@ -278,11 +273,21 @@ public class Exporter {
             transformer.transform(new DOMSource(doc), new StreamResult(stringWriter));
             stringWriter.close();
 
+            String xml = stringWriter.getBuffer().toString();
+            while (xml.length() > 30000) {
+                String part = xml.substring(0, 30000);
+                xml = xml.substring(30000);
+
+                row = paramSheet.createRow(rowIdx++);
+                cell = row.createCell(0);
+                cell.setCellValue(part);
+            }
             row = paramSheet.createRow(rowIdx++);
             cell = row.createCell(0);
-            cell.setCellValue(stringWriter.getBuffer().toString());
-            
-        } catch (ParserConfigurationException | TransformerFactoryConfigurationError | TransformerException | IOException e) {
+            cell.setCellValue(xml);
+
+        } catch (ParserConfigurationException | TransformerFactoryConfigurationError | TransformerException
+                | IOException e) {
             MIA.log.writeError(e);
         }
     }

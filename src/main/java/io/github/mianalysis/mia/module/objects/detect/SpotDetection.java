@@ -16,6 +16,7 @@ import fiji.plugin.trackmate.SpotCollection;
 import fiji.plugin.trackmate.TrackMate;
 import fiji.plugin.trackmate.detection.DetectorKeys;
 import fiji.plugin.trackmate.detection.LogDetectorFactory;
+import fiji.plugin.trackmate.tracking.sparselap.SimpleSparseLAPTrackerFactory;
 import ij.ImagePlus;
 import ij.measure.Calibration;
 import ij.plugin.Duplicator;
@@ -247,8 +248,6 @@ public class SpotDetection extends Module {
 
         Objs spotObjects;
         try {
-            if (!trackmate.checkInput())
-                MIA.log.writeError(trackmate.getErrorMessage());
             if (!trackmate.execDetection())
                 MIA.log.writeError(trackmate.getErrorMessage());
             if (!trackmate.computeSpotFeatures(false))
