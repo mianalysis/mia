@@ -8,6 +8,9 @@ About MIA
 ------------
 Image and object analysis workflow automation tool for Fiji
 
+For the full documentation, please go to [mianalysis.github.io](https://mianalysis.github.io)
+
+
 Installation
 ------------
 - The latest version of the plugin can be downloaded from the [Releases](https://github.com/mianalysis/mia/releases) page.
