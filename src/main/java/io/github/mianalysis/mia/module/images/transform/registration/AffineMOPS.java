@@ -104,6 +104,7 @@ public class AffineMOPS extends AbstractAffineRegistration {
                 List<PointMatch> candidates = FloatArray2DMOPS.createMatches(featureList1, featureList2, 1.5f, null,
                                 Double.MAX_VALUE, p.rod);
                 Vector<PointMatch> inliers = new Vector<PointMatch>();
+                Vector<PointMatch> candidatesVector = new Vector<>(candidates);
 
                 try {
                         model.filterRansac(candidates, inliers, 1000, p.maxEpsilon, p.minInlierRatio);
@@ -111,7 +112,7 @@ public class AffineMOPS extends AbstractAffineRegistration {
                         return null;
                 }
 
-                return new Object[] { model, candidates };
+                return new Object[] { model, candidatesVector };
 
         }
 

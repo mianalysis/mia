@@ -127,7 +127,7 @@ public class AddAllObjectPoints extends AbstractOverlay {
         if (!applyToInput) ipl = new Duplicator().run(ipl);
 
         // Generating colours for each object
-        HashMap<Integer,Float> hues = getHues(inputObjects);
+        HashMap<Integer,Color> colours = getColours(inputObjects);
 
         // If necessary, turning the image into a HyperStack (if 2 dimensions=1 it will be a standard ImagePlus)
         if (!ipl.isComposite() & (ipl.getNSlices() > 1 | ipl.getNFrames() > 1 | ipl.getNChannels() > 1)) {
@@ -145,8 +145,7 @@ public class AddAllObjectPoints extends AbstractOverlay {
                 ImagePlus finalIpl = ipl;
 
                 Runnable task = () -> {
-                    float hue = hues.get(object.getID());
-                    Color colour = ColourFactory.getColour(hue,opacity);
+                    Color colour = colours.get(object.getID());
 
                     addAllPointsOverlay(object, finalIpl, colour, renderInAllFrames);
 

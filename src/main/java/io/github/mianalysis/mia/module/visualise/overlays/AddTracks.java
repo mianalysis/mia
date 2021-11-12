@@ -3,6 +3,7 @@
 
 package io.github.mianalysis.mia.module.visualise.overlays;
 
+import java.awt.Color;
 import java.util.HashMap;
 import java.util.TreeMap;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -45,7 +46,7 @@ import io.github.mianalysis.mia.process.ColourFactory;
 /**
  * Created by sc13967 on 17/05/2017.
  */
-@Plugin(type = Module.class, priority=Priority.LOW, visible=true)
+@Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class AddTracks extends AbstractOverlay {
     public static final String INPUT_SEPARATOR = "Image and object input";
     public static final String INPUT_IMAGE = "Input image";
@@ -77,8 +78,8 @@ public class AddTracks extends AbstractOverlay {
 
     }
 
-    public static void addOverlay(Obj object, String spotObjectsName, ImagePlus ipl, float hue, double opacity,
-            double lineWidth, int history, @Nullable HashMap<Integer, Float> instantaneousHues) {
+    public static void addOverlay(Obj object, String spotObjectsName, ImagePlus ipl, Color colour, 
+            double lineWidth, int history, @Nullable HashMap<Integer, Color> instantaneousColours) {
         Objs pointObjects = object.getChildren(spotObjectsName);
 
         if (ipl.getOverlay() == null)
@@ -115,11 +116,11 @@ public class AddTracks extends AbstractOverlay {
                     }
 
                     line.setStrokeWidth(lineWidth);
-                    if (instantaneousHues != null)
+                    if (instantaneousColours != null)
                         // Special case of instantaneous colour
-                        hue = instantaneousHues.get(p2.getID());
+                        colour = instantaneousColours.get(p2.getID());
 
-                    line.setStrokeColor(ColourFactory.getColour(hue, opacity));
+                    line.setStrokeColor(colour);
                     ovl.addElement(line);
 
                 }
@@ -158,6 +159,7 @@ public class AddTracks extends AbstractOverlay {
         ImagePlus ipl = inputImage.getImagePlus();
 
         String colourMode = parameters.getValue(COLOUR_MODE);
+        String colourMap = parameters.getValue(COLOUR_MAP);
         String rangeMinMode = parameters.getValue(RANGE_MINIMUM_MODE);
         double minValue = parameters.getValue(MINIMUM_VALUE);
         String rangeMaxMode = parameters.getValue(RANGE_MAXIMUM_MODE);
@@ -178,9 +180,9 @@ public class AddTracks extends AbstractOverlay {
             ipl = new Duplicator().run(ipl);
 
         // Generating colours for each object
-        HashMap<Integer, Float> hues = getHues(inputObjects);
+        HashMap<Integer, Color> colours = getColours(inputObjects);
 
-        HashMap<Integer, Float> instantaneousHues = null;
+        HashMap<Integer, Color> instantaneousColours = null;
         if (colourMode.equals(ColourModes.INSTANTANEOUS_MEASUREMENT_VALUE)) {
             String[] elements = spotObjectsName.split(" // ");
             Objs spotObjects = workspace.getObjectSet(elements[elements.length - 1]);
@@ -189,7 +191,8 @@ public class AddTracks extends AbstractOverlay {
                 range[0] = minValue;
             if (rangeMaxMode.equals(RangeModes.MANUAL))
                 range[1] = maxValue;
-            instantaneousHues = ColourFactory.getMeasurementValueHues(spotObjects, measurementForColour, true, range);
+            instantaneousColours = ColourFactory
+                    .getColours(ColourFactory.getMeasurementValueHues(spotObjects, measurementForColour, true, range),colourMap,opacity);
         }
 
         // Adding the overlay element
@@ -205,12 +208,12 @@ public class AddTracks extends AbstractOverlay {
         // Running through each object, adding it to the overlay along with an ID label
         AtomicInteger count = new AtomicInteger();
         for (Obj object : inputObjects.values()) {
-            // If using an instantaneous measurement, hues will be null
-            float hue = -1;
-            if (hues != null)
-                hue = hues.get(object.getID());
+            // If using an instantaneous measurement, values will be null
+            Color colour = null;
+            if (colours != null)
+                colour = colours.get(object.getID());
 
-            addOverlay(object, spotObjectsName, ipl, hue, opacity, lineWidth, history, instantaneousHues);
+            addOverlay(object, spotObjectsName, ipl, colour, lineWidth, history, instantaneousColours);
 
             writeProgressStatus(count.getAndIncrement(), inputObjects.size(), "objects");
 
@@ -284,6 +287,7 @@ public class AddTracks extends AbstractOverlay {
         returnedParameters.addAll(super.updateAndGetParameters(inputObjectsName));
         if (((String) parameters.getValue(COLOUR_MODE)).equals(ColourModes.INSTANTANEOUS_MEASUREMENT_VALUE)) {
             returnedParameters.add(parameters.getParameter(LINE_WIDTH));
+            returnedParameters.add(parameters.getParameter(COLOUR_MAP));
             returnedParameters.add(parameters.getParameter(MEASUREMENT_FOR_COLOUR));
             ((ObjectMeasurementP) parameters.getParameter(MEASUREMENT_FOR_COLOUR))
                     .setObjectName(parameters.getValue(SPOT_OBJECTS));
@@ -294,7 +298,7 @@ public class AddTracks extends AbstractOverlay {
             if (((String) parameters.getValue(RANGE_MAXIMUM_MODE)).equals(RangeModes.MANUAL))
                 returnedParameters.add(parameters.getParameter(MAXIMUM_VALUE));
         }
-        
+
         returnedParameters.add(parameters.getParameter(RENDERING_SEPARATOR));
         returnedParameters.add(parameters.getParameter(LIMIT_TRACK_HISTORY));
 

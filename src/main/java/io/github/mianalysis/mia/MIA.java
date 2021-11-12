@@ -2,7 +2,6 @@ package io.github.mianalysis.mia;
 
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
 
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
@@ -17,8 +16,8 @@ import org.scijava.plugin.Plugin;
 import org.scijava.ui.UIService;
 
 import io.github.mianalysis.mia.gui.GUI;
-import io.github.mianalysis.mia.module.Dependencies;
 import io.github.mianalysis.mia.module.LostAndFound;
+import io.github.mianalysis.mia.moduledependencies.Dependencies;
 import io.github.mianalysis.mia.object.Preferences;
 import io.github.mianalysis.mia.process.DependencyValidator;
 import io.github.mianalysis.mia.process.analysishandling.Analysis;
@@ -38,7 +37,6 @@ import net.imagej.ImageJService;
  */
 @Plugin(type = Command.class, menuPath = "Plugins>MIA>MIA (Modular Image Analysis)", visible=true)
 public class MIA implements Command {
-    private static ArrayList<String> pluginPackageNames = new ArrayList<>();
     private static String version = "";
     private static boolean debug = false;
     private static LogRenderer mainRenderer = new BasicLogRenderer();
@@ -118,7 +116,7 @@ public class MIA implements Command {
                 
         try {
             new GUI();
-        } catch (InstantiationException | IllegalAccessException e) {
+        } catch (Exception e) {
             MIA.log.writeError(e);
         }
     }
@@ -133,14 +131,6 @@ public class MIA implements Command {
 
     public static boolean isImagePlusMode() {
         return imagePlusMode;
-    }
-
-    public static void addPluginPackageName(String packageName) {
-        pluginPackageNames.add(packageName);
-    }
-
-    public static ArrayList<String> getPluginPackages() {
-        return pluginPackageNames;
     }
 
     public static String getVersion() {

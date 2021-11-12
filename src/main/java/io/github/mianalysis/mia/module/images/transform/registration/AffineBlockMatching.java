@@ -81,8 +81,8 @@ public class AffineBlockMatching extends AbstractAffineRegistration {
         BMParam p = (BMParam) param;
 
         // Converting to FloatProcessors and padding
-        FloatProcessor ipr1 = padImage(referenceIpr, p).convertToFloatProcessor();
-        FloatProcessor ipr2 = padImage(warpedIpr, p).convertToFloatProcessor();
+        FloatProcessor ipr1 = padImage(warpedIpr, p).convertToFloatProcessor();
+        FloatProcessor ipr2 = padImage(referenceIpr, p).convertToFloatProcessor();
 
         TranslationModel2D translationModel = new TranslationModel2D();
         SpringMesh mesh = new SpringMesh(p.resolution, ipr1.getWidth(), ipr2.getHeight(), 1, 1000, 0.9f);

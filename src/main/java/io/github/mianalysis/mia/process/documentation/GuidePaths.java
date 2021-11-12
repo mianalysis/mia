@@ -13,16 +13,14 @@ public class GuidePaths {
     }
 
     public GuidePaths() {
-        // Getting started
-        paths.put("GUIDE_INSTALLATION", "${PTR}/html/guides/gettingstarted/1installation.html");
-        paths.put("GUIDE_PROCESSINGVIEW", "${PTR}/html/guides/gettingstarted/2processingview.html");
-        paths.put("GUIDE_USEEXISTING", "${PTR}/html/guides/gettingstarted/3useexisting.html");
-        paths.put("GUIDE_EDITINGVIEW", "${PTR}/html/guides/gettingstarted/4editingview.html");
-        paths.put("GUIDE_CREATENEW", "${PTR}/html/guides/gettingstarted/5createnew.html");
-        paths.put("GUIDE_RESULTSFORMAT", "${PTR}/html/guides/gettingstarted/6resultsformat.html");
-        paths.put("GUIDE_BATCHPROCESSING", "${PTR}/html/guides/gettingstarted/7batchprocessing.html");
-
-        // General
+        paths.put("GUIDE_GETTINGSTARTED", "${PTR}/html/guides/1gettingstarted.html");
+        paths.put("GUIDE_MIASTRUCTURE", "${PTR}/html/guides/2miastructure.html");
+        paths.put("GUIDE_PROCESSINGVIEW", "${PTR}/html/guides/3processingview.html");
+        paths.put("GUIDE_USEEXISTING", "${PTR}/html/guides/4useexisting.html");
+        paths.put("GUIDE_EDITINGVIEW", "${PTR}/html/guides/5editingview.html");
+        paths.put("GUIDE_CREATENEW", "${PTR}/html/guides/6createnew.html");
+        paths.put("GUIDE_RESULTSFORMAT", "${PTR}/html/guides/7resultsformat.html");
+        paths.put("GUIDE_BATCHPROCESSING", "${PTR}/html/guides/8batchprocessing.html");
         paths.put("GUIDE_TROUBLESHOOTING", "${PTR}/html/guides/troubleshooting.html");
         
     }

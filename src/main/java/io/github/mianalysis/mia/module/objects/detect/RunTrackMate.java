@@ -2,9 +2,13 @@
 
 package io.github.mianalysis.mia.module.objects.detect;
 
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Set;
+
+import org.scijava.Priority;
+import org.scijava.plugin.Plugin;
 
 import fiji.plugin.trackmate.Logger;
 import fiji.plugin.trackmate.Model;
@@ -30,10 +34,6 @@ import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.objects.process.GetLocalObjectRegion;
 import io.github.mianalysis.mia.module.visualise.overlays.AddObjectCentroid;
 import io.github.mianalysis.mia.module.visualise.overlays.AddObjectOutline;
-import io.github.mianalysis.mia.module.Module;
-import org.scijava.Priority;
-import org.scijava.plugin.Plugin;
-
 import io.github.mianalysis.mia.object.Image;
 import io.github.mianalysis.mia.object.Measurement;
 import io.github.mianalysis.mia.object.Obj;
@@ -139,9 +139,7 @@ public class RunTrackMate extends Module {
         }
 
         // Initialising settings for TrackMate
-        Settings settings = new Settings();
-
-        settings.setFrom(ipl);
+        Settings settings = new Settings(ipl);
 
         settings.detectorFactory = new LogDetectorFactory();
         settings.detectorSettings.put(DetectorKeys.KEY_DO_SUBPIXEL_LOCALIZATION, subpixelLocalisation);
@@ -322,8 +320,9 @@ public class RunTrackMate extends Module {
         if (doTracking) {
             hues = ColourFactory.getParentIDHues(spotObjects, trackObjectsName, true);
         } else {
-            hues = ColourFactory.getSingleColourHues(spotObjects, ColourFactory.SingleColours.ORANGE);
+            hues = ColourFactory.getSingleColourValues(spotObjects, ColourFactory.SingleColours.ORANGE);
         }
+        HashMap<Integer, Color> colours = ColourFactory.getColours(hues);
 
         String pointSize = AddObjectCentroid.PointSizes.SMALL;
         String pointType = AddObjectCentroid.PointTypes.CIRCLE;
@@ -334,9 +333,9 @@ public class RunTrackMate extends Module {
 
         // Adding the overlay
         if (estimateSize)
-            AddObjectOutline.addOverlay(ipl, spotObjects, 1, 1, hues, 100, false, true);
+            AddObjectOutline.addOverlay(ipl, spotObjects, 1, 1, colours, false, true);
         else
-            AddObjectCentroid.addOverlay(ipl, spotObjects, hues, 100, pointSize, pointType, false, true);
+            AddObjectCentroid.addOverlay(ipl, spotObjects, colours, pointSize, pointType, false, true);
 
         ipl.setPosition(1, 1, 1);
         ipl.updateChannelAndDraw();

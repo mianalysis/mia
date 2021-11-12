@@ -179,7 +179,7 @@ public class LostAndFound {
         currentParameterNames.put("Show basic", GUISeparator.SHOW_PROCESSING);
         currentParameterNames.put("Expanded basic GUI", GUISeparator.EXPANDED_PROCESSING);
         currentParameterNames.put("Expanded editing GUI", GUISeparator.EXPANDED_EDITING);
-        moduleName = new GlobalVariables(null).getClass().getSimpleName();
+        moduleName = new GUISeparator(null).getClass().getSimpleName();
         lostParameterNames.put(moduleName, currentParameterNames);
 
         // InputControl

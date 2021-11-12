@@ -141,7 +141,7 @@ public class ConvertObjectsToImage extends Module {
         break;
       case ColourModes.SINGLE_COLOUR:
       default:
-        hues = ColourFactory.getSingleColourHues(inputObjects, ColourFactory.SingleColours.WHITE);
+        hues = ColourFactory.getSingleColourValues(inputObjects, ColourFactory.SingleColours.WHITE);
         break;
     }
 

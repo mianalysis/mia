@@ -5,7 +5,6 @@ import java.awt.Font;
 import java.awt.Toolkit;
 import java.io.File;
 import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 import java.util.List;
 import java.util.TreeMap;
@@ -21,19 +20,19 @@ import io.github.mianalysis.mia.gui.regions.menubar.CustomMenuBar;
 import io.github.mianalysis.mia.gui.regions.processingpanel.ProcessingPanel;
 import io.github.mianalysis.mia.gui.regions.progressandstatus.StatusTextField;
 import io.github.mianalysis.mia.macro.MacroHandler;
-import io.github.mianalysis.mia.module.Dependency;
+import io.github.mianalysis.mia.module.AvailableModules;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.core.InputControl;
 import io.github.mianalysis.mia.module.core.OutputControl;
 import io.github.mianalysis.mia.module.inputoutput.ImageLoader;
+import io.github.mianalysis.mia.moduledependencies.Dependency;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.Workspaces;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.FileFolderPathP;
 import io.github.mianalysis.mia.object.units.SpatialUnit;
 import io.github.mianalysis.mia.object.units.TemporalUnit;
-import io.github.mianalysis.mia.process.ClassHunter;
 import io.github.mianalysis.mia.process.analysishandling.Analysis;
 import io.github.mianalysis.mia.process.analysishandling.AnalysisRunner;
 import io.github.mianalysis.mia.process.analysishandling.AnalysisTester;
@@ -70,7 +69,7 @@ public class GUI {
     private static AbstractPanel mainPanel;
     private static Modules availableModules = new Modules();
 
-    public GUI() throws InstantiationException, IllegalAccessException {
+    public GUI() throws Exception {
         // Only create a GUI if one hasn't already been created
         if (initialised) {
             frame.setVisible(true);
@@ -88,7 +87,7 @@ public class GUI {
 
         // Detecting modules
         splash.setStatus(Splash.Status.DETECTING_MODULES);
-        List<String> detectedModules = ClassHunter.getModules(false);
+        List<String> detectedModules = AvailableModules.getModuleNames(false);
 
         splash.setStatus(Splash.Status.INITIALISING_MODULES);
         initialiseAvailableModules(detectedModules);
@@ -139,9 +138,9 @@ public class GUI {
             String shortName = detectedModuleName.substring(detectedModuleName.lastIndexOf(".") + 1);
 
             // Checking dependencies have been met
-            if (!MIA.dependencies.compatible(shortName)) {
+            if (!MIA.dependencies.compatible(shortName,false)) {
                 MIA.log.writeWarning("Module \"" + shortName + "\" not loaded.  Dependencies not satisfied:");
-                for (Dependency dependency : MIA.dependencies.getDependencies(shortName))
+                for (Dependency dependency : MIA.dependencies.getDependencies(shortName,false))
                     if (!dependency.test())
                         MIA.log.writeWarning("    Requirement: " + dependency.toString());
                 continue;
@@ -162,7 +161,7 @@ public class GUI {
             } catch (Exception e) {
                 MIA.log.writeWarning(
                         "Module \"" + shortName + "\" not loaded.  Incompatible with MIA v" + MIA.getVersion() + ".");
-                MIA.log.writeDebug(e);
+                MIA.log.writeWarning(e);
             }
         }
     }

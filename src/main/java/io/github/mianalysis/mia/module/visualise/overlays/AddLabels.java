@@ -8,6 +8,9 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
+import org.scijava.Priority;
+import org.scijava.plugin.Plugin;
+
 import ij.ImagePlus;
 import ij.ImageStack;
 import ij.Prefs;
@@ -16,13 +19,10 @@ import ij.plugin.Duplicator;
 import ij.plugin.HyperStackConverter;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
+import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.images.process.binary.BinaryOperations2D;
 import io.github.mianalysis.mia.module.images.process.binary.DistanceMap;
-import io.github.mianalysis.mia.module.Module;
-import org.scijava.Priority;
-import org.scijava.plugin.Plugin;
-
 import io.github.mianalysis.mia.object.Image;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
@@ -46,11 +46,10 @@ import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
-import io.github.mianalysis.mia.process.ColourFactory;
 import io.github.mianalysis.mia.process.LabelFactory;
 import io.github.sjcross.common.object.Point;
 
-@Plugin(type = Module.class, priority=Priority.LOW, visible=true)
+@Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class AddLabels extends AbstractOverlay {
     TextRoi textRoi = null;
     public static final String INPUT_SEPARATOR = "Image and object input";
@@ -113,7 +112,9 @@ public class AddLabels extends AbstractOverlay {
         // Binarise object and calculate its distance map
         Image binaryImage = obj.getAsImage("Binary", false);
         BinaryOperations2D.process(binaryImage, BinaryOperations2D.OperationModes.ERODE, 1, 1, true);
-        ImagePlus distanceIpl = DistanceMap.process(binaryImage, "Distance", true, DistanceMap.WeightModes.WEIGHTS_3_4_5_7, true, false).getImagePlus();
+        ImagePlus distanceIpl = DistanceMap
+                .process(binaryImage, "Distance", true, DistanceMap.WeightModes.WEIGHTS_3_4_5_7, true, false)
+                .getImagePlus();
         ImageStack distanceIst = distanceIpl.getStack();
 
         // Get location of largest value
@@ -130,13 +131,13 @@ public class AddLabels extends AbstractOverlay {
         }
 
         // Returning this point
-        return new double[] { bestPoint.getX(), bestPoint.getY(), bestPoint.getZ() + 1};
+        return new double[] { bestPoint.getX(), bestPoint.getY(), bestPoint.getZ() + 1 };
 
     }
 
     public static void addOverlay(ImagePlus ipl, Objs inputObjects, String labelPosition,
-            HashMap<Integer, String> labels, int labelSize, int xOffset, int yOffset, HashMap<Integer, Float> hues,
-            double opacity, boolean renderInAllSlices, boolean renderInAllFrames, boolean multithread) {
+            HashMap<Integer, String> labels, int labelSize, int xOffset, int yOffset, HashMap<Integer, Color> colours,
+            boolean renderInAllSlices, boolean renderInAllFrames, boolean multithread) {
         // If necessary, turning the image into a HyperStack (if 2 dimensions=1 it will
         // be a standard ImagePlus)
         if (!ipl.isComposite() & (ipl.getNSlices() > 1 | ipl.getNFrames() > 1 | ipl.getNChannels() > 1)) {
@@ -161,8 +162,7 @@ public class AddLabels extends AbstractOverlay {
                         t2 = finalIpl.getNFrames();
                     }
 
-                    float hue = hues.get(object.getID());
-                    Color colour = ColourFactory.getColour(hue, opacity);
+                    Color colour = colours.get(object.getID());
                     String label = labels == null ? "" : labels.get(object.getID());
 
                     double[] location;
@@ -288,7 +288,6 @@ public class AddLabels extends AbstractOverlay {
         ImagePlus ipl = inputImage.getImagePlus();
 
         // Getting label settings
-        double opacity = parameters.getValue(OPACITY);
         String labelMode = parameters.getValue(LABEL_MODE);
         int labelSize = parameters.getValue(LABEL_SIZE);
         int xOffset = parameters.getValue(X_OFFSET);
@@ -315,14 +314,14 @@ public class AddLabels extends AbstractOverlay {
             ipl = new Duplicator().run(ipl);
 
         // Generating colours for each object
-        HashMap<Integer, Float> hues = getHues(inputObjects);
+        HashMap<Integer, Color> colours = getColours(inputObjects);
         DecimalFormat df = LabelFactory.getDecimalFormat(decimalPlaces, useScientific);
         HashMap<Integer, String> labels = getLabels(inputObjects, labelMode, df, childObjectsForLabelName,
                 parentObjectsForLabelName, partnerObjectsForLabelName, measurementForLabel);
         appendPrefixSuffix(labels, prefix, suffix);
 
-        addOverlay(ipl, inputObjects, labelPosition, labels, labelSize, xOffset, yOffset, hues, opacity,
-                renderInAllSlices, renderInAllFrames, multithread);
+        addOverlay(ipl, inputObjects, labelPosition, labels, labelSize, xOffset, yOffset, colours, renderInAllSlices,
+                renderInAllFrames, multithread);
 
         Image outputImage = new Image(outputImageName, ipl);
 
@@ -437,7 +436,7 @@ public class AddLabels extends AbstractOverlay {
         returnedParameters.add(parameters.getParameter(USE_SCIENTIFIC));
         returnedParameters.add(parameters.getParameter(LABEL_SIZE));
         returnedParameters.add(parameters.getParameter(X_OFFSET));
-        returnedParameters.add(parameters.getParameter(Y_OFFSET));        
+        returnedParameters.add(parameters.getParameter(Y_OFFSET));
         returnedParameters.add(parameters.getParameter(PREFIX));
         returnedParameters.add(parameters.getParameter(SUFFIX));
 

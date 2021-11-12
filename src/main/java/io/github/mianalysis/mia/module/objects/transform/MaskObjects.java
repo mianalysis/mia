@@ -150,7 +150,7 @@ public class MaskObjects<T extends RealType<T> & NativeType<T>> extends Module {
         case MaskModes.MASK_FROM_OBJECTS_REMOVE_OVERLAP:
         case MaskModes.MASK_FROM_OBJECTS_RETAIN_OVERLAP:
             Objs maskObjects = workspace.getObjectSet(maskObjectsName);
-            HashMap<Integer, Float> hues = ColourFactory.getSingleColourHues(maskObjects,
+            HashMap<Integer, Float> hues = ColourFactory.getSingleColourValues(maskObjects,
                     ColourFactory.SingleColours.WHITE);
             maskImage = maskObjects.convertToImage("Mask", hues, 8, false);
 

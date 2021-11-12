@@ -2,7 +2,6 @@ package io.github.mianalysis.mia.module.objects.measure.spatial;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.concurrent.Future;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -74,6 +73,8 @@ public class MeasureSkeleton extends Module {
     public static final String ENABLE_MULTITHREADING = "Enable multithreading";
 
     public interface Measurements {
+        String sumLengthPx = "SKELETON // SUM_LENGTH_(PX)";
+        String sumLengthCal = "SKELETON // SUM_LENGTH_(${SCAL})";
         String edgeLengthPx = "SKELETON // LENGTH_(PX)";
         String edgeLengthCal = "SKELETON // LENGTH_(${SCAL})";
 
@@ -352,6 +353,19 @@ public class MeasureSkeleton extends Module {
         }
     }
 
+    static void addMeasurements(Obj inputObject, SkeletonResult result) {
+        double length = 0;
+        for (Graph graph : result.getGraph()) {
+            for (Edge edge : graph.getEdges())
+                length = length + edge.getLength();
+        }
+
+        double dppXY = inputObject.getDppXY();
+        inputObject.addMeasurement(new Measurement(Measurements.sumLengthPx, length / dppXY));
+        inputObject.addMeasurement(new Measurement(Measurements.sumLengthCal, length));
+
+    }
+
     @Override
     public Category getCategory() {
         return Categories.OBJECTS_MEASURE_SPATIAL;
@@ -443,6 +457,8 @@ public class MeasureSkeleton extends Module {
                         createLargestShortestPath(inputObject, largestShortestPathObjects, (AnalyzeSkeleton_) result[0],
                                 (SkeletonResult) result[1]);
 
+                    addMeasurements(inputObject, (SkeletonResult) result[1]);
+
                 } catch (Throwable t) {
                     MIA.log.writeError(t);
                 }
@@ -462,8 +478,11 @@ public class MeasureSkeleton extends Module {
             return Status.FAIL;
         }
 
-        if (showOutput)
+        if (showOutput) {
             inputObjects.showMeasurements(this, modules);
+            if (addToWorkspace)
+                edgeObjects.showMeasurements(this, modules);
+        }
 
         return Status.PASS;
 
@@ -540,22 +559,24 @@ public class MeasureSkeleton extends Module {
     public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
         ObjMeasurementRefs returnedRefs = new ObjMeasurementRefs();
 
-        String edgeObjectsName = parameters.getValue(OUTPUT_EDGE_OBJECTS);
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
 
-        ObjMeasurementRef ref = objectMeasurementRefs.getOrPut(Measurements.edgeLengthPx);
-        ref.setObjectsName(edgeObjectsName);
+        ObjMeasurementRef ref = objectMeasurementRefs.getOrPut(Measurements.sumLengthPx);
+        ref.setObjectsName(inputObjectsName);
         returnedRefs.add(ref);
-        ref = objectMeasurementRefs.getOrPut(Measurements.edgeLengthCal);
-        ref.setObjectsName(edgeObjectsName);
+        ref = objectMeasurementRefs.getOrPut(Measurements.sumLengthCal);
+        ref.setObjectsName(inputObjectsName);
         returnedRefs.add(ref);
 
-        // ref = objectMeasurementRefs.getOrPut(Measurements.maxBranchLengthPx);
-        // ref.setObjectsName(inputObjectsName);
-        // returnedRefs.add(ref);
-
-        // ref = objectMeasurementRefs.getOrPut(Measurements.maxBranchLengthCal);
-        // ref.setObjectsName(inputObjectsName);
-        // returnedRefs.add(ref);
+        if ((boolean) parameters.getValue(ADD_SKELETONS_TO_WORKSPACE)) {
+            String edgeObjectsName = parameters.getValue(OUTPUT_EDGE_OBJECTS);
+            ref = objectMeasurementRefs.getOrPut(Measurements.edgeLengthPx);
+            ref.setObjectsName(edgeObjectsName);
+            returnedRefs.add(ref);
+            ref = objectMeasurementRefs.getOrPut(Measurements.edgeLengthCal);
+            ref.setObjectsName(edgeObjectsName);
+            returnedRefs.add(ref);
+        }
 
         return returnedRefs;
 

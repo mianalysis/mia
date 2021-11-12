@@ -52,10 +52,13 @@ public class GuideGenerator extends AbstractGenerator {
 
         // Populate module packages content
         String mainContent = getPageTemplate("src/main/resources/templatehtml/categorylisttemplate.html", pathToRoot);
-        mainContent = mainContent.replace("${CATEGORY_PATH}", appendPath(file, pathToRoot));
         mainContent = mainContent.replace("${CATEGORY_NAME}", title);
         mainContent = mainContent.replace("${CATEGORY_DESCRIPTION}", description);
 
+        // For now, removing the guide path section since all guides are on a single page
+        // mainContent = mainContent.replace("${CATEGORY_PATH}", appendPath(file, pathToRoot));
+        mainContent = mainContent.replace("<p class=\"mia-main-text\">${CATEGORY_PATH}</p>", "");
+        
         // Adding a card for each child category
         String categoryContent = "";
         for (File childCategory : file.listFiles()) {
@@ -77,7 +80,7 @@ public class GuideGenerator extends AbstractGenerator {
 
         // Finding guides in this category and adding them to this page
         String guideContent = "";
-        for (File guide : file.listFiles()) {
+        for (File guide : file.listFiles()) {            
             // We won't want to process categories or the metadata files for categories
             if (guide.isDirectory() || guide.getName().equals("_" + file.getName() + ".html"))
                 continue;

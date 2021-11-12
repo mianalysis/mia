@@ -6,13 +6,37 @@
 
     <body>
         <div class="mia-text-block mx-auto">
-            <p class="mia-heading">Section header</p>
-            <div class="mia-main-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</div>
+            <p class="mia-heading">Introduction</p>
+            <div class="mia-main-text">MIA is in ongoing development and from time-to-time, issues may arise.  Below are listed some common problems and solutions.  For any problems not covered in the table (or if you have concerns something isn't working correctly), please submit an <a href="https://github.com/mianalysis/mia/issues">issue</a> via GitHub.</div>
         </div>
 
         <div class="mia-text-block mx-auto">
-            <p class="mia-heading">Second section</p>
-            <div class="mia-main-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</div>
+            <table class="table table-striped">
+                <thead class="mia-main-text-small mia-bold">
+                    <tr>
+                        <td>Problem</td>
+                        <td>Solution</td>
+                    </tr>
+                </thead>
+                <tbody class="mia-main-text-small text-left">
+                    <tr>
+                        <td>"Module [name] not loaded.  Dependencies not satisfied" displayed when starting MIA</td>
+                        <td>Certain modules require specific versions of other Fiji plugins to be installed.  The warning message should list the required version of that plugin.  You can check what version of a plugin is currently installed by looking in the "plugins" folder of your Fiji installation.</td>
+                    </tr>
+                    <tr>
+                        <td>"Loaded workflow created in different version of MIA." displayed when loading a workflow</td>                        
+                        <td>On its own this warning doesn't necessarily mean anything won't work as expected; however, to ensure the workflow operates as intended, it's advisable to install the same version of MIA as that used to prepare the workflow.  Subsequent lines of this warning should indicate the version used to create the workflow.</td>
+                    </tr>
+                    <tr>
+                        <td>"Module [name] not found (skipping)" displayed when loading a workflow</td>
+                        <td>If loading a workflow prepared in an older version of MIA, the module in question may have been removed.  Similarly, if the workflow is from a newer version of MIA, this module may not yet have been added.  To fix this, install the MIA version matching that used to create the workflow.</td>
+                    </tr>
+                    <tr>
+                        <td>"Parameter not found.  Module: [name].  Parameter: [name].  Value: [name]." displayed when loading a workflow</td>                        
+                        <td>If loading a workflow prepared in an older version of MIA, the parameter in question may have been renamed or removed.  To fix this, install the MIA version matching that used to create the workflow.</td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
     </body>
 </html>

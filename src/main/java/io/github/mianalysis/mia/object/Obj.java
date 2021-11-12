@@ -1,5 +1,6 @@
 package io.github.mianalysis.mia.object;
 
+import java.awt.Shape;
 import java.awt.Polygon;
 import java.awt.Rectangle;
 import java.util.HashMap;
@@ -393,12 +394,17 @@ public class Obj extends Volume {
     public void addPointsFromRoi(Roi roi, int z) throws IntegerOverflowException {
         for (java.awt.Point point : roi.getContainedPoints()) {
             try {
-            add((int) point.getX(), (int) point.getY(), z);
-            } catch (PointOutOfRangeException e) {}
+                add((int) point.getX(), (int) point.getY(), z);
+            } catch (PointOutOfRangeException e) {
+            }
         }
     }
 
     public void addPointsFromPolygon(Polygon polygon, int z) throws PointOutOfRangeException {
+        addPointsFromShape(polygon, z);
+    }
+
+    public void addPointsFromShape(Shape polygon, int z) throws PointOutOfRangeException {
         // Determining xy limits
         // int minX = Arrays.stream(polygon.xpoints).min().getAsInt();
         // int maxX = Arrays.stream(polygon.xpoints).max().getAsInt();

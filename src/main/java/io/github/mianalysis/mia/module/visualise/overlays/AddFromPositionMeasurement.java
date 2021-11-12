@@ -154,7 +154,6 @@ public class AddFromPositionMeasurement extends AbstractOverlay {
         boolean useRadius = parameters.getValue(USE_RADIUS);
         String tempRadiusMeasurement = parameters.getValue(MEASUREMENT_FOR_RADIUS);
 
-        double opacity = parameters.getValue(OPACITY);        
         String pointSize = parameters.getValue(POINT_SIZE);
         String pointType = parameters.getValue(POINT_TYPE);
         double lineWidth = parameters.getValue(LINE_WIDTH);
@@ -172,7 +171,7 @@ public class AddFromPositionMeasurement extends AbstractOverlay {
         String[] posMeasurements = new String[]{xPosMeas, yPosMeas, zPosMeas};
 
         // Generating colours for each object
-        HashMap<Integer,Float> hues = getHues(inputObjects);
+        HashMap<Integer,Color> colours = getColours(inputObjects);
 
         // If necessary, turning the image into a HyperStack (if 2 dimensions=1 it will be a standard ImagePlus)
         if (!ipl.isComposite() & (ipl.getNSlices() > 1 | ipl.getNFrames() > 1 | ipl.getNChannels() > 1)) {
@@ -189,8 +188,7 @@ public class AddFromPositionMeasurement extends AbstractOverlay {
                 ImagePlus finalIpl = ipl;
 
                 Runnable task = () -> {
-                    float hue = hues.get(object.getID());
-                    Color colour = ColourFactory.getColour(hue,opacity);
+                    Color colour = colours.get(object.getID());
                 
                     addOverlay(object, finalIpl, colour, pointSize, pointType, lineWidth, posMeasurements, radiusMeasurement, renderInAllFrames);
 

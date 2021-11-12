@@ -161,7 +161,6 @@ public class AddArrows extends AbstractOverlay {
         double lengthScale = parameters.getValue(LENGTH_SCALE);
         int headSize = parameters.getValue(HEAD_SIZE);
 
-        double opacity = parameters.getValue(OPACITY);
         double lineWidth = parameters.getValue(LINE_WIDTH);
         boolean multithread = parameters.getValue(ENABLE_MULTITHREADING);
 
@@ -174,7 +173,7 @@ public class AddArrows extends AbstractOverlay {
             ipl = new Duplicator().run(ipl);
 
         // Generating colours for each object
-        HashMap<Integer, Float> hues = getHues(inputObjects);
+        HashMap<Integer, Color> colours = getColours(inputObjects);
 
         // If necessary, turning the image into a HyperStack (if 2 dimensions=1 it will
         // be a standard ImagePlus)
@@ -194,8 +193,7 @@ public class AddArrows extends AbstractOverlay {
                 ImagePlus finalIpl = ipl;
 
                 Runnable task = () -> {
-                    float hue = hues.get(object.getID());
-                    Color colour = ColourFactory.getColour(hue, opacity);
+                    Color colour = colours.get(object.getID());
                     double orientation = 0;
                     switch (orientationMode) {
                         case OrientationModes.MEASUREMENT:

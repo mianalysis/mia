@@ -168,7 +168,7 @@ public class MeasureImageColocalisation<T extends RealType<T> & NativeType<T>> e
     }
 
     public static Image getObjectMask(Objs objects, String maskLogic) {
-        HashMap<Integer, Float> hues = ColourFactory.getSingleColourHues(objects, ColourFactory.SingleColours.WHITE);
+        HashMap<Integer, Float> hues = ColourFactory.getSingleColourValues(objects, ColourFactory.SingleColours.WHITE);
         Image mask = objects.convertToImage("Mask", hues, 8, false);
 
         if (maskLogic.equals(ObjectMaskLogic.MEASURE_OUTSIDE_OBJECTS))
