@@ -295,8 +295,8 @@ public class FitGaussian2D extends Module {
 
         // Iterate over all pixels, evaluating the Gaussian
         ImageProcessor ipr = inputImage.getImagePlus().getProcessor();
-        for (int x = minX; x <= maxX; x++) {
-            for (int y = minY; y <= maxY; y++) {
+        for (int x = minX; x < maxX; x++) {
+            for (int y = minY; y < maxY; y++) {
                 float inputVal = ipr.getf(x, y);
                 float newVal = (float) g2D.getValues(x, y)[0];
                 ipr.setf(x, y, inputVal + newVal);
