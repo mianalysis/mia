@@ -134,9 +134,10 @@ public class Watershed extends Module {
                     ImagePlus timepointMaskIpl = new ImagePlus("Timepoint mask", timepointMask);
                     IJ.setRawThreshold(timepointMaskIpl, 0, 0, null);
                     IJ.run(timepointMaskIpl, "Convert to Mask", "method=Default background=Light");
-                    if (blackBackground)
+                    if (blackBackground) {
                         IJ.run(timepointMaskIpl, "Invert", "stack");
-                    IJ.run(timepointMaskIpl, "Invert LUT", "");
+                        // IJ.run(timepointMaskIpl, "Invert LUT", "");
+                    }
                     IJ.run(timepointMaskIpl, "8-bit", null);
 
                     // Replacing the maskIpl intensity

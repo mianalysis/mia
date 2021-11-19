@@ -14,14 +14,22 @@ public class GuidePaths {
 
     public GuidePaths() {
         paths.put("GUIDE_GETTINGSTARTED", "${PTR}/html/guides/1gettingstarted.html");
-        paths.put("GUIDE_MIASTRUCTURE", "${PTR}/html/guides/2miastructure.html");
+        paths.put("GUIDE_EXAMPLEWORKFLOW", "${PTR}/html/guides/2exampleworkflow.html");
+        paths.put("GUIDE_MIASTRUCTURE", "${PTR}/html/guides/3miastructure.html");
         paths.put("GUIDE_PROCESSINGVIEW", "${PTR}/html/guides/3processingview.html");
         paths.put("GUIDE_USEEXISTING", "${PTR}/html/guides/4useexisting.html");
         paths.put("GUIDE_EDITINGVIEW", "${PTR}/html/guides/5editingview.html");
         paths.put("GUIDE_CREATENEW", "${PTR}/html/guides/6createnew.html");
-        paths.put("GUIDE_RESULTSFORMAT", "${PTR}/html/guides/7resultsformat.html");
-        paths.put("GUIDE_BATCHPROCESSING", "${PTR}/html/guides/8batchprocessing.html");
+        paths.put("GUIDE_RESULTSFORMAT", "${PTR}/html/guides/8resultsformat.html");
+        paths.put("GUIDE_BATCHPROCESSING", "${PTR}/html/guides/9batchprocessing.html");
         paths.put("GUIDE_TROUBLESHOOTING", "${PTR}/html/guides/troubleshooting.html");
+        
+        paths.put("GUIDE_MODULE_LIST", "${PTR}/html/modules/modules.html");
+        paths.put("GUIDE_MODULE_INPUTCONTROL", "${PTR}/html/modules/core/inputcontrol.html");
+        paths.put("GUIDE_MODULE_OUTPUTCONTROL", "${PTR}/html/modules/core/outputcontrol.html");
+        paths.put("GUIDE_MODULE_INPUTOUTPUT", "${PTR}/html/modules/inputoutput/inputoutput.html");        
+        paths.put("GUIDE_MODULE_LOADIMAGE", "${PTR}/html/modules/inputoutput/loadimage.html");        
+        
         
     }
 

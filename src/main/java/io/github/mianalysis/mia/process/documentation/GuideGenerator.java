@@ -82,7 +82,7 @@ public class GuideGenerator extends AbstractGenerator {
         String guideContent = "";
         for (File guide : file.listFiles()) {            
             // We won't want to process categories or the metadata files for categories
-            if (guide.isDirectory() || guide.getName().equals("_" + file.getName() + ".html"))
+            if (guide.isDirectory() || guide.getName().subSequence(0,1).equals("_"))
                 continue;
 
             if (verbose)
