@@ -43,7 +43,6 @@ import io.github.sjcross.common.object.Point;
 import io.github.sjcross.common.object.volume.PointOutOfRangeException;
 import io.github.sjcross.common.object.volume.VolumeType;
 import io.github.sjcross.common.object.voxels.BresenhamLine;
-import sc.fiji.analyzeSkeleton.AnalyzeSkeleton_;
 
 /**
  * Created by sc13967 on 24/01/2018.
