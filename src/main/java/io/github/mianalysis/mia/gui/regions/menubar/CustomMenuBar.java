@@ -127,7 +127,7 @@ public class CustomMenuBar extends JMenuBar implements ActionListener {
         logMenu.add(menuLogCheckbox);
 
         level = Level.STATUS;
-        renderer.setWriteEnabled(level, Prefs.get("MIA.Log.Status", true));
+        renderer.setWriteEnabled(level, Prefs.get("MIA.Log.Status", false));
         menuLogCheckbox = new MenuLogCheckbox(level, renderer.isWriteEnabled(level));
         logMenu.add(menuLogCheckbox);
 

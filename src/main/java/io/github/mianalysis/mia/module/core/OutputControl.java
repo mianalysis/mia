@@ -65,7 +65,7 @@ public class OutputControl extends AbstractMacroRunner {
     public static final String SAVE_EVERY_N = "Save every n files";
     public static final String APPEND_DATETIME_MODE = "Append date/time mode";
 
-    public static final String SUMMARY_SEPARATOR = "Summary sheets";
+    public static final String SUMMARY_SEPARATOR = "Summary sheet";
     public static final String EXPORT_SUMMARY = "Export summary";
     public static final String SUMMARY_MODE = "Summary mode";
     public static final String METADATA_ITEM_FOR_SUMMARY = "Metadata item for summary";
