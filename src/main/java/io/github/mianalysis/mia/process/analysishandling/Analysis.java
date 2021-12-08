@@ -87,6 +87,8 @@ public class Analysis {
                                 + "\" (series " + workspace.getMetadata().getSeriesNumber() + ") by module \""
                                 + module.getName() + "\" (\"" + module.getNickname() + "\").");
                         break;
+                    case TERMINATE_SILENT:
+                        break;
                 }
             }
 

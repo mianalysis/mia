@@ -266,6 +266,7 @@ public class FileListPanel extends JPanel implements MouseListener, TableCellRen
                         progressBar.setForeground(Colours.RED);
                         break;
                     case TERMINATE:
+                    case TERMINATE_SILENT:
                         progressBar.setForeground(Colours.ORANGE);
                         break;
                 }

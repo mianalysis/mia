@@ -22,7 +22,7 @@ import io.github.mianalysis.mia.object.parameters.Parameters;
 /**
  * Created by Stephen Cross on 23/11/2018.
  */
-@Plugin(type = Module.class, priority=Priority.LOW, visible=true)
+@Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class ModuleIsEnabled extends AbstractWorkspaceHandler {
     public static final String CONDITION_SEPARATOR = "Condition";
     public static final String TEST_MODE = "Test mode";
@@ -58,11 +58,10 @@ public class ModuleIsEnabled extends AbstractWorkspaceHandler {
                 terminate = !testModule.isEnabled();
                 break;
         }
-        
+
         return terminate;
 
     }
-
 
     @Override
     public Category getCategory() {
@@ -71,9 +70,9 @@ public class ModuleIsEnabled extends AbstractWorkspaceHandler {
 
     @Override
     public String getDescription() {
-        return "Implement workflow handling outcome based on whether another module is enabled or disabled.  Outcomes can include termination of the analysis and redirection of the active module to another part of the workflow.  Redirection allows parts of the analysis to skipped.<br><br>" 
-        
-        + "Note: This only applies to modules explictly enabled/disabled by the user.  It does not apply to modules that are inactive due to invalid parameters (modules highlighted in red in the module list).";
+        return "Implement workflow handling outcome based on whether another module is enabled or disabled.  Outcomes can include termination of the analysis and redirection of the active module to another part of the workflow.  Redirection allows parts of the analysis to skipped.<br><br>"
+
+                + "Note: This only applies to modules explictly enabled/disabled by the user.  It does not apply to modules that are inactive due to invalid parameters (modules highlighted in red in the module list).";
 
     }
 
@@ -96,12 +95,12 @@ public class ModuleIsEnabled extends AbstractWorkspaceHandler {
         parameters.add(new SeparatorP(CONDITION_SEPARATOR, this));
         parameters.add(new ChoiceP(TEST_MODE, this, TestModes.MODULE_IS_ENABLED, TestModes.ALL));
         parameters.add(new ModuleP(TEST_MODULE, this, true));
-        
+
         parameters.add(new SeparatorP(RESULT_SEPARATOR, this));
         parameters.addAll(super.updateAndGetParameters());
 
         addParameterDescriptions();
-        
+
     }
 
     @Override
@@ -124,6 +123,7 @@ public class ModuleIsEnabled extends AbstractWorkspaceHandler {
                 }
                 break;
             case ContinuationModes.TERMINATE:
+                returnedParameters.add(parameters.getParameter(SHOW_TERMINATION_WARNING));
                 returnedParameters.add(parameters.getParameter(EXPORT_WORKSPACE));
                 returnedParameters.add(parameters.getParameter(REMOVE_IMAGES));
                 returnedParameters.add(parameters.getParameter(REMOVE_OBJECTS));
@@ -168,14 +168,17 @@ public class ModuleIsEnabled extends AbstractWorkspaceHandler {
     @Override
     protected void addParameterDescriptions() {
         super.addParameterDescriptions();
-        
+
         parameters.get(TEST_MODE).setDescription(
                 "Controls whether the specified workflow handling outcome is applied if another module is enabled or disabled:<br><ul>"
-        +"<li>\""+TestModes.MODULE_IS_ENABLED+"\" Execute specified outcome if another module is enabled.</li>"
-        
-        +"<li>\""+TestModes.MODULE_IS_NOT_ENABLED+"\" Execute specified outcome if another module is not enabled.</li></ul>");
+                        + "<li>\"" + TestModes.MODULE_IS_ENABLED
+                        + "\" Execute specified outcome if another module is enabled.</li>"
 
-        parameters.get(TEST_MODULE).setDescription("Module to test the enabled/disabled state of.  This doesn't necessarily need to be a module that would execute before the current module.");
+                        + "<li>\"" + TestModes.MODULE_IS_NOT_ENABLED
+                        + "\" Execute specified outcome if another module is not enabled.</li></ul>");
+
+        parameters.get(TEST_MODULE).setDescription(
+                "Module to test the enabled/disabled state of.  This doesn't necessarily need to be a module that would execute before the current module.");
 
     }
 }

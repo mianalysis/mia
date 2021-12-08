@@ -19,6 +19,7 @@ public abstract class AbstractWorkspaceHandler extends Module {
     public static final String EXPORT_WORKSPACE = "Export terminated workspaces";
     public static final String REMOVE_OBJECTS = "Remove objects from workspace";
     public static final String REMOVE_IMAGES = "Remove images from workspace";
+    public static final String SHOW_TERMINATION_WARNING = "Show termination warning";
 
     public interface ContinuationModes {
         String REDIRECT_TO_MODULE = "Redirect to module";
@@ -40,6 +41,7 @@ public abstract class AbstractWorkspaceHandler extends Module {
     protected Status processTermination(Parameters parameters, Workspace workspace, boolean showRedirectMessage) {
         String continuationMode = parameters.getValue(CONTINUATION_MODE);
         String redirectMessage = parameters.getValue(REDIRECT_MESSAGE);
+        boolean showTerminationWarning = parameters.getValue(SHOW_TERMINATION_WARNING);
         boolean exportWorkspace = parameters.getValue(EXPORT_WORKSPACE);
         boolean removeImages = parameters.getValue(REMOVE_IMAGES);
         boolean removeObjects = parameters.getValue(REMOVE_OBJECTS);
@@ -49,14 +51,21 @@ public abstract class AbstractWorkspaceHandler extends Module {
             case ContinuationModes.REDIRECT_TO_MODULE:
                 if (showRedirectMessage)
                     MIA.log.writeMessage(workspace.getMetadata().insertMetadataValues(redirectMessage));
+                    
                 return Status.REDIRECT;
+
             case ContinuationModes.TERMINATE:
+                if (showTerminationWarning)
+                    MIA.log.writeWarning("Analysis terminated early");
+
                 workspace.setExportWorkspace(exportWorkspace);
                 if (removeImages)
                     workspace.clearAllImages(false);
                 if (removeObjects)
                     workspace.clearAllObjects(false);
-                return Status.TERMINATE;
+
+                return Status.TERMINATE_SILENT;
+
         }
 
         return Status.PASS;
@@ -69,6 +78,7 @@ public abstract class AbstractWorkspaceHandler extends Module {
         parameters.add(new ModuleP(REDIRECT_MODULE, this, true));
         parameters.add(new BooleanP(SHOW_REDIRECT_MESSAGE, this, false));
         parameters.add(new StringP(REDIRECT_MESSAGE, this, ""));
+        parameters.add(new BooleanP(SHOW_TERMINATION_WARNING, this, true));
         parameters.add(new BooleanP(EXPORT_WORKSPACE, this, true));
         parameters.add(new BooleanP(REMOVE_IMAGES, this, false));
         parameters.add(new BooleanP(REMOVE_OBJECTS, this, false));
@@ -78,6 +88,7 @@ public abstract class AbstractWorkspaceHandler extends Module {
     @Override
     public Parameters updateAndGetParameters() {
         return parameters;
+
     }
 
     protected void addParameterDescriptions() {
@@ -98,6 +109,9 @@ public abstract class AbstractWorkspaceHandler extends Module {
                 .setDescription("Controls if a message should be displayed in the log if redirection occurs.");
 
         parameters.get(REDIRECT_MESSAGE).setDescription("Message to display if redirection occurs.");
+
+        parameters.get(SHOW_TERMINATION_WARNING).setDescription(
+                "When selected, a warning will be displayed in the terminal if terminating a workflow early.");
 
         parameters.get(EXPORT_WORKSPACE).setDescription(
                 "Controls if the workspace should still be exported to the output Excel spreadsheet if termination occurs.");

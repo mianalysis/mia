@@ -193,6 +193,7 @@ public class EvalButton extends JButton implements ActionListener {
                 break;
             case FAIL:
             case TERMINATE:
+            case TERMINATE_SILENT:
                 status = false;
                 break;
         }

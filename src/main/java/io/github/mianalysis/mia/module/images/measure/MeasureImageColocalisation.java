@@ -52,7 +52,7 @@ import sc.fiji.coloc.algorithms.SpearmanRankCorrelation;
 import sc.fiji.coloc.gadgets.DataContainer;
 import sc.fiji.coloc.gadgets.ThresholdMode;
 
-@Plugin(type = Module.class, priority=Priority.LOW, visible=true)
+@Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class MeasureImageColocalisation<T extends RealType<T> & NativeType<T>> extends Module {
     public static final String INPUT_SEPARATOR = "Input separator";
     public static final String INPUT_IMAGE_1 = "Input image 1";
@@ -341,7 +341,7 @@ public class MeasureImageColocalisation<T extends RealType<T> & NativeType<T>> e
     }
 
     public static <T extends RealType<T> & NativeType<T>> HashMap<String, Double> measurePCC(DataContainer<T> data,
-            String pccImplementationName) {
+            String pccImplementationName) throws MissingPreconditionException {
         HashMap<String, Double> measurements = new HashMap<>();
 
         PearsonsCorrelation.Implementation implementation = getPCCImplementation(pccImplementationName);
@@ -362,7 +362,9 @@ public class MeasureImageColocalisation<T extends RealType<T> & NativeType<T>> e
                 measurements.put(Measurements.PCC_ABOVE_THRESHOLD, Double.NaN);
             }
 
-            MIA.log.writeError(e);
+            // Throw the exception, so the calling class can deal with writing an
+            // appropriate warning (i.e. images and objects will want a different message).
+            throw e;
 
         }
 
@@ -500,8 +502,12 @@ public class MeasureImageColocalisation<T extends RealType<T> & NativeType<T>> e
         }
 
         if (measurePCC) {
-            HashMap<String, Double> measurements = measurePCC(data, pccImplementationName);
-            setImageMeasurements(image1, measurements, imageName1, imageName2);
+            try {
+                HashMap<String, Double> measurements = measurePCC(data, pccImplementationName);
+                setImageMeasurements(image1, measurements, imageName1, imageName2);
+            } catch (MissingPreconditionException e) {
+                MIA.log.writeWarning("PCC can't be calculated for image");
+            }
         }
 
         if (measureSpearman) {

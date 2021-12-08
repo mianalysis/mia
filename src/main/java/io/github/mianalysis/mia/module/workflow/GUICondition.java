@@ -242,7 +242,8 @@ public class GUICondition extends AbstractWorkspaceHandler {
                     }
                     break;
                 case ContinuationModes.TERMINATE:
-                default:
+                    default:
+                    returnedParameters.add(params.getParameter(SHOW_TERMINATION_WARNING));
                     returnedParameters.add(params.getParameter(EXPORT_WORKSPACE));
                     returnedParameters.add(params.getParameter(REMOVE_IMAGES));
                     returnedParameters.add(params.getParameter(REMOVE_OBJECTS));
