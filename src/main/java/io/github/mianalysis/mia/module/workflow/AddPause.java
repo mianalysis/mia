@@ -29,7 +29,7 @@ import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 /**
  * Created by sc13967 on 09/02/2018.
  */
-@Plugin(type = Module.class, priority=Priority.LOW, visible=true)
+@Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class AddPause extends Module {
     public static final String PAUSE_SEPARATOR = "Pause controls";
     public static final String SHOW_IMAGE = "Show image";
@@ -39,10 +39,8 @@ public class AddPause extends Module {
     private static final String TERMINATE = "Terminate";
 
     public AddPause(Modules modules) {
-        super("Add pause",modules);
+        super("Add pause", modules);
     }
-
-
 
     @Override
     public Category getCategory() {
@@ -99,8 +97,8 @@ public class AddPause extends Module {
     @Override
     protected void initialiseParameters() {
         parameters.add(new SeparatorP(PAUSE_SEPARATOR, this));
-        parameters.add(new BooleanP(SHOW_IMAGE,this,true));
-        parameters.add(new InputImageP(INPUT_IMAGE,this));
+        parameters.add(new BooleanP(SHOW_IMAGE, this, true));
+        parameters.add(new InputImageP(INPUT_IMAGE, this));
 
         addParameterDescriptions();
 
@@ -150,9 +148,11 @@ public class AddPause extends Module {
     }
 
     protected void addParameterDescriptions() {
-        parameters.get(SHOW_IMAGE).setDescription("When selected, an image from the workspace can be automatically displayed when this module executes.");
+        parameters.get(SHOW_IMAGE).setDescription(
+                "When selected, an image from the workspace can be automatically displayed when this module executes.");
 
-        parameters.get(INPUT_IMAGE).setDescription("If \""+SHOW_IMAGE+"\" is selected, this image will be displayed when the module executes.");
+        parameters.get(INPUT_IMAGE).setDescription(
+                "If \"" + SHOW_IMAGE + "\" is selected, this image will be displayed when the module executes.");
 
     }
 }

@@ -2,20 +2,19 @@ package io.github.mianalysis.mia.module.workflow;
 
 import java.util.LinkedHashMap;
 
+import org.scijava.Priority;
+import org.scijava.plugin.Plugin;
+
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.system.GlobalVariables;
-import io.github.mianalysis.mia.module.Module;
-import org.scijava.Priority;
-import org.scijava.plugin.Plugin;
-
 import io.github.mianalysis.mia.object.Status;
 import io.github.mianalysis.mia.object.Workspace;
-import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.ParameterGroup;
 import io.github.mianalysis.mia.object.parameters.ParameterGroup.ParameterUpdaterAndGetter;
+import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.SeparatorP;
 import io.github.mianalysis.mia.object.parameters.text.StringP;
 import io.github.mianalysis.mia.object.refs.collections.ImageMeasurementRefs;
@@ -27,17 +26,18 @@ import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 /**
  * Created by Stephen Cross on 23/11/2018.
  */
-@Plugin(type = Module.class, priority=Priority.LOW, visible=true)
+@Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class FixedTextCondition extends AbstractWorkspaceHandler {
     public static final String CONDITION_SEPARATOR = "Condition";
     public static final String TEST_VALUE = "Test value";
     public static final String ADD_CONDITION = "Add condition";
     public static final String REFERENCE_VALUE = "Reference value";
 
+    public static final String RESULT_SEPARATOR = "Result";
+
     public FixedTextCondition(Modules modules) {
         super("Fixed text condition", modules);
     }
-
 
     @Override
     public Category getCategory() {
@@ -116,6 +116,8 @@ public class FixedTextCondition extends AbstractWorkspaceHandler {
         parameters.add(new StringP(TEST_VALUE, this));
         parameters.add(new SeparatorP(CONDITION_SEPARATOR, this));
         parameters.add(new ParameterGroup(ADD_CONDITION, this, collection, 1, getUpdaterAndGetter()));
+
+        parameters.add(new SeparatorP(RESULT_SEPARATOR, this));
 
         addParameterDescriptions();
 
@@ -198,6 +200,7 @@ public class FixedTextCondition extends AbstractWorkspaceHandler {
                         }
                         break;
                     case ContinuationModes.TERMINATE:
+                        returnedParameters.add(params.getParameter(SHOW_TERMINATION_WARNING));
                         returnedParameters.add(params.getParameter(EXPORT_WORKSPACE));
                         returnedParameters.add(params.getParameter(REMOVE_IMAGES));
                         returnedParameters.add(params.getParameter(REMOVE_OBJECTS));

@@ -2,15 +2,15 @@ package io.github.mianalysis.mia.module.objects.measure.intensity;
 
 import java.util.HashMap;
 
+import org.scijava.Priority;
+import org.scijava.plugin.Plugin;
+
+import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.images.measure.MeasureImageColocalisation;
-import io.github.mianalysis.mia.module.Module;
-import org.scijava.Priority;
-import org.scijava.plugin.Plugin;
-
 import io.github.mianalysis.mia.object.Image;
 import io.github.mianalysis.mia.object.Measurement;
 import io.github.mianalysis.mia.object.Obj;
@@ -33,9 +33,10 @@ import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
+import sc.fiji.coloc.algorithms.MissingPreconditionException;
 import sc.fiji.coloc.gadgets.DataContainer;
 
-@Plugin(type = Module.class, priority=Priority.LOW, visible=true)
+@Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class MeasureObjectColocalisation<T extends RealType<T> & NativeType<T>> extends Module {
     public static final String INPUT_SEPARATOR = "Input separator";
     public static final String INPUT_OBJECTS = "Input objects";
@@ -164,9 +165,13 @@ public class MeasureObjectColocalisation<T extends RealType<T> & NativeType<T>> 
             }
 
             if (measurePCC) {
-                HashMap<String, Double> measurements = MeasureImageColocalisation.measurePCC(data,
-                        pccImplementationName);
-                setObjectMeasurements(inputObject, measurements, imageName1, imageName2);
+                try {
+                    HashMap<String, Double> measurements = MeasureImageColocalisation.measurePCC(data,
+                            pccImplementationName);
+                    setObjectMeasurements(inputObject, measurements, imageName1, imageName2);
+                } catch (MissingPreconditionException e) {
+                    MIA.log.writeWarning("PCC can't be calculated for object with ID "+inputObject.getID());
+                }
             }
 
             if (measureSpearman) {
@@ -407,7 +412,7 @@ public class MeasureObjectColocalisation<T extends RealType<T> & NativeType<T>> 
 
                         + "<li>\"" + ThresholdingModes.IMAGE_MEASUREMENTS
                         + "\" Thresholds for each image will be set equal to measurements associated with each object.</li>"
-                        
+
                         + "<li>\"" + ThresholdingModes.MANUAL
                         + "\" Threshold values are manually set from user-defined values (\"" + FIXED_THRESHOLD_1
                         + "\" and \"" + FIXED_THRESHOLD_2 + "\" parameters).</li>"

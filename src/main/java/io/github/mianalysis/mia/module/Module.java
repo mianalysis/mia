@@ -58,7 +58,6 @@ public abstract class Module extends Ref implements Comparable, SciJavaPlugin {
     private boolean showProcessingViewTitle = true;
     protected boolean deprecated = false; // When set to true, this module is marked for future removal
 
-
     // CONSTRUCTOR
 
     public Module(String name, Modules modules) {
@@ -120,6 +119,8 @@ public abstract class Module extends Ref implements Comparable, SciJavaPlugin {
                 break;
             case TERMINATE:
                 writeStatus("Completed (ending analysis early)");
+                break;
+            case TERMINATE_SILENT:
                 break;
             case FAIL:
                 writeStatus("Did not complete");
@@ -211,12 +212,13 @@ public abstract class Module extends Ref implements Comparable, SciJavaPlugin {
 
     public <T extends Parameter> LinkedHashSet<T> getParametersMatchingType(Class<T> type) {
         // If the current module is the cutoff the loop terminates. This prevents the
-        // system offering measurements that are created after this module or are currently unavailable.
+        // system offering measurements that are created after this module or are
+        // currently unavailable.
         if (!isEnabled())
             return null;
         if (!isRunnable())
             return null;
-        
+
         // Running through all parameters, adding all images to the list
         LinkedHashSet<T> parameters = new LinkedHashSet<>();
         Parameters currParameters = updateAndGetParameters();
@@ -375,7 +377,7 @@ public abstract class Module extends Ref implements Comparable, SciJavaPlugin {
             newModule = (Module) constructor.newInstance(newModules);
         } catch (NoSuchMethodException | IllegalAccessException | InstantiationException
                 | InvocationTargetException e) {
-                    MIA.log.writeError(e);
+            MIA.log.writeError(e);
             return null;
         }
 
@@ -459,7 +461,6 @@ public abstract class Module extends Ref implements Comparable, SciJavaPlugin {
             writeStatus("Processed " + count + " of " + total + " " + featureBeingProcessed + " ("
                     + Math.floorDiv(100 * count, total) + "%)", moduleName);
     }
-    
 
     // OVER-RIDDEN METHODS
 

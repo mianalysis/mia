@@ -44,7 +44,7 @@ import loci.formats.FormatException;
 /**
  * Created by Stephen Cross on 23/11/2018.
  */
-@Plugin(type = Module.class, priority=Priority.LOW, visible=true)
+@Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class WorkflowHandling extends Module {
     public static final String CONDITION_SEPARATOR = "Condition";
     public static final String TEST_MODE = "Test mode";
@@ -65,6 +65,7 @@ public class WorkflowHandling extends Module {
     public static final String REDIRECT_MODULE = "Redirect module";
     public static final String SHOW_REDIRECT_MESSAGE = "Show redirect message";
     public static final String REDIRECT_MESSAGE = "Redirect message";
+    public static final String SHOW_TERMINATION_WARNING = "Show termination warning";
     public static final String EXPORT_WORKSPACE = "Export terminated workspaces";
     public static final String REMOVE_OBJECTS = "Remove objects from workspace";
     public static final String REMOVE_IMAGES = "Remove images from workspace";
@@ -114,6 +115,7 @@ public class WorkflowHandling extends Module {
     Status processTermination(Parameters parameters, Workspace workspace, boolean showRedirectMessage) {
         String continuationMode = parameters.getValue(CONTINUATION_MODE);
         String redirectMessage = parameters.getValue(REDIRECT_MESSAGE);
+        boolean showTerminationWarning = parameters.getValue(SHOW_TERMINATION_WARNING);
         boolean exportWorkspace = parameters.getValue(EXPORT_WORKSPACE);
         boolean removeImages = parameters.getValue(REMOVE_IMAGES);
         boolean removeObjects = parameters.getValue(REMOVE_OBJECTS);
@@ -124,14 +126,21 @@ public class WorkflowHandling extends Module {
                 redirectModule = parameters.getValue(REDIRECT_MODULE);
                 if (showRedirectMessage)
                     MIA.log.writeMessage(workspace.getMetadata().insertMetadataValues(redirectMessage));
+
                 return Status.REDIRECT;
+
             case ContinuationModes.TERMINATE:
+                if (showTerminationWarning)
+                    MIA.log.writeWarning("Analysis terminated early");
+
                 workspace.setExportWorkspace(exportWorkspace);
                 if (removeImages)
                     workspace.clearAllImages(false);
                 if (removeObjects)
                     workspace.clearAllObjects(false);
-                return Status.TERMINATE;
+
+                return Status.TERMINATE_SILENT;
+
         }
 
         return Status.PASS;
@@ -290,6 +299,7 @@ public class WorkflowHandling extends Module {
         parameters.add(new ModuleP(REDIRECT_MODULE, this, true));
         parameters.add(new BooleanP(SHOW_REDIRECT_MESSAGE, this, false));
         parameters.add(new StringP(REDIRECT_MESSAGE, this, ""));
+        parameters.add(new BooleanP(SHOW_TERMINATION_WARNING, this, true));
         parameters.add(new BooleanP(EXPORT_WORKSPACE, this, true));
         parameters.add(new BooleanP(REMOVE_IMAGES, this, false));
         parameters.add(new BooleanP(REMOVE_OBJECTS, this, false));
@@ -360,6 +370,7 @@ public class WorkflowHandling extends Module {
                 }
                 break;
             case ContinuationModes.TERMINATE:
+                returnedParameters.add(parameters.getParameter(SHOW_TERMINATION_WARNING));
                 returnedParameters.add(parameters.getParameter(EXPORT_WORKSPACE));
                 returnedParameters.add(parameters.getParameter(REMOVE_IMAGES));
                 returnedParameters.add(parameters.getParameter(REMOVE_OBJECTS));
