@@ -34,6 +34,7 @@ import io.github.mianalysis.mia.module.objects.process.FitConvexHull2D;
 import io.github.mianalysis.mia.module.objects.process.FitGaussian2D;
 import io.github.mianalysis.mia.module.objects.process.GetLocalObjectRegion;
 import io.github.mianalysis.mia.module.objects.relate.RelateManyToOne;
+import io.github.mianalysis.mia.module.objects.relate.TrackObjects;
 import io.github.mianalysis.mia.module.objects.transform.ExpandShrinkObjects;
 import io.github.mianalysis.mia.module.script.RunMacro;
 import io.github.mianalysis.mia.module.script.RunSingleCommand;
@@ -265,6 +266,12 @@ public class LostAndFound {
         currentParameterNames = new HashMap<>();
         currentParameterNames.put("Spatial units", ThresholdImage.SPATIAL_UNITS_MODE);
         moduleName = new ThresholdImage(null).getClass().getSimpleName();
+        lostParameterNames.put(moduleName, currentParameterNames);
+
+        // TrackObjects
+        currentParameterNames = new HashMap<>();
+        currentParameterNames.put("Preferred direction (-180 to 180 degs)", TrackObjects.PREFERRED_DIRECTION);
+        moduleName = new TrackObjects(null).getClass().getSimpleName();
         lostParameterNames.put(moduleName, currentParameterNames);
 
         // WorkflowHandling
