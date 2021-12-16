@@ -15,7 +15,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import com.drew.lang.annotations.NotNull;
 
-import org.eclipse.sisu.Nullable;
+import com.drew.lang.annotations.Nullable;
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
 
