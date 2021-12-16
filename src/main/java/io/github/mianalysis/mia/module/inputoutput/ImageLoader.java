@@ -16,6 +16,8 @@ import com.drew.lang.annotations.NotNull;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
+import org.scijava.Priority;
+import org.scijava.plugin.Plugin;
 
 import ij.CompositeImage;
 import ij.IJ;
@@ -27,32 +29,11 @@ import ij.plugin.CanvasResizer;
 import ij.plugin.CompositeConverter;
 import ij.process.ImageProcessor;
 import ij.process.LUT;
-import loci.common.DebugTools;
-import loci.common.services.DependencyException;
-import loci.common.services.ServiceException;
-import loci.common.services.ServiceFactory;
-import loci.formats.ChannelSeparator;
-import loci.formats.FormatException;
-import loci.formats.meta.MetadataStore;
-import loci.formats.services.OMEXMLService;
-import loci.plugins.util.ImageProcessorReader;
-import loci.plugins.util.LociPrefs;
-import net.imglib2.type.NativeType;
-import net.imglib2.type.numeric.RealType;
-import ome.units.UNITS;
-import ome.units.quantity.Length;
-import ome.units.quantity.Time;
-import ome.units.unit.Unit;
-import ome.xml.meta.IMetadata;
-import ome.xml.model.primitives.Color;
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.module.Module;
-import org.scijava.Priority;
-import org.scijava.plugin.Plugin;
 import io.github.mianalysis.mia.module.core.InputControl;
 import io.github.mianalysis.mia.object.Colours;
 import io.github.mianalysis.mia.object.Image;
@@ -79,12 +60,30 @@ import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.units.SpatialUnit;
 import io.github.mianalysis.mia.object.units.TemporalUnit;
-import io.github.sjcross.common.process.CommaSeparatedStringInterpreter;
 import io.github.sjcross.common.metadataextractors.CV7000FilenameExtractor;
 import io.github.sjcross.common.metadataextractors.IncuCyteShortFilenameExtractor;
 import io.github.sjcross.common.metadataextractors.Metadata;
 import io.github.sjcross.common.metadataextractors.NameExtractor;
+import io.github.sjcross.common.process.CommaSeparatedStringInterpreter;
 import io.github.sjcross.common.system.FileCrawler;
+import loci.common.DebugTools;
+import loci.common.services.DependencyException;
+import loci.common.services.ServiceException;
+import loci.common.services.ServiceFactory;
+import loci.formats.ChannelSeparator;
+import loci.formats.FormatException;
+import loci.formats.meta.MetadataStore;
+import loci.formats.services.OMEXMLService;
+import loci.plugins.util.ImageProcessorReader;
+import loci.plugins.util.LociPrefs;
+import net.imglib2.type.NativeType;
+import net.imglib2.type.numeric.RealType;
+import ome.units.UNITS;
+import ome.units.quantity.Length;
+import ome.units.quantity.Time;
+import ome.units.unit.Unit;
+import ome.xml.meta.IMetadata;
+import ome.xml.model.primitives.Color;
 
 /**
  * Created by Stephen on 15/05/2017.
@@ -448,7 +447,7 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
 
         // Adding spatial calibration
         if (!manualCal[0]) {
-            if (!setSpatialCalibrationBF(ipl, meta, seriesNumber, scaleFactors)) {
+            if (!setSpatialCalibrationBF(ipl, meta, seriesNumber, scaleFactors) && ipl.getCalibration().getUnit().equals("pixel")) {
                 MIA.log.writeWarning("Can't apply spatial units for file \"" + new File(path).getName()
                         + "\".  Spatially calibrated values will be unavailable.");
                 setDummySpatialCalibration(ipl);
@@ -1163,7 +1162,7 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
                     break;
                 case Readers.IMAGEJ:
                     ipl = IJ.openImage(file.getAbsolutePath());
-                    if (!setSpatialCalibration)
+                    if (!setSpatialCalibration && ipl.getCalibration().getUnit().equals("pixel"))
                         parseImageJSpatialCalibration(ipl, file.getAbsolutePath());
                     if (!setTemporalCalibration)
                         parseImageJTemporalCalibration(ipl, file.getAbsolutePath());
@@ -1177,7 +1176,7 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
                     MIA.log.writeWarning("No image open in ImageJ.  Skipping.");
                     return Status.FAIL;
                 }
-                if (!setSpatialCalibration)
+                if (!setSpatialCalibration && ipl.getCalibration().getUnit().equals("pixel"))
                     parseImageJSpatialCalibration(ipl, null);
                 if (!setTemporalCalibration)
                     parseImageJTemporalCalibration(ipl, null);
@@ -1237,7 +1236,7 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
                     break;
                 case Readers.IMAGEJ:
                     ipl = IJ.openImage(file.getAbsolutePath());
-                    if (!setSpatialCalibration)
+                    if (!setSpatialCalibration && ipl.getCalibration().getUnit().equals("pixel"))
                         parseImageJSpatialCalibration(ipl, file.getAbsolutePath());
                     if (!setTemporalCalibration)
                         parseImageJTemporalCalibration(ipl, file.getAbsolutePath());
@@ -1259,7 +1258,7 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
                     break;
                 case Readers.IMAGEJ:
                     ipl = IJ.openImage(filePath);
-                    if (!setSpatialCalibration)
+                    if (!setSpatialCalibration && ipl.getCalibration().getUnit().equals("pixel"))
                         parseImageJSpatialCalibration(ipl, filePath);
                     if (!setTemporalCalibration)
                         parseImageJTemporalCalibration(ipl, filePath);
