@@ -2,7 +2,7 @@ package io.github.mianalysis.mia.module.images.process;
 
 import java.awt.Color;
 
-import org.eclipse.sisu.Nullable;
+import com.drew.lang.annotations.Nullable;
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
 

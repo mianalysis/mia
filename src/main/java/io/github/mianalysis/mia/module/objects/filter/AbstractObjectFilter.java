@@ -4,7 +4,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 
-import org.eclipse.sisu.Nullable;
+import com.drew.lang.annotations.Nullable;
 
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Module;

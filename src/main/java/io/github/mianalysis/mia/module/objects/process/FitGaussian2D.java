@@ -6,7 +6,7 @@ import static io.github.sjcross.common.mathfunc.GaussianFitter.fitGaussian2D;
 
 import java.util.Iterator;
 
-import org.eclipse.sisu.Nullable;
+import com.drew.lang.annotations.Nullable;
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
 

@@ -9,9 +9,12 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.TreeSet;
 
+import com.drew.lang.annotations.Nullable;
+
 import org.apache.commons.math3.exception.MathArithmeticException;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
-import org.eclipse.sisu.Nullable;
+import org.scijava.Priority;
+import org.scijava.plugin.Plugin;
 
 import fiji.plugin.trackmate.tracking.sparselap.costmatrix.DefaultCostMatrixCreator;
 import fiji.plugin.trackmate.tracking.sparselap.linker.JaqamanLinker;
@@ -21,11 +24,6 @@ import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.module.visualise.overlays.AbstractOverlay;
-import io.github.mianalysis.mia.module.Module;
-import org.scijava.Priority;
-import org.scijava.plugin.Plugin;
-
 import io.github.mianalysis.mia.object.Image;
 import io.github.mianalysis.mia.object.Measurement;
 import io.github.mianalysis.mia.object.Obj;
@@ -56,7 +54,7 @@ import io.github.sjcross.common.object.volume.VolumeType;
 /**
  * Created by sc13967 on 20/09/2017.
  */
-@Plugin(type = Module.class, priority=Priority.LOW, visible=true)
+@Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class TrackObjects extends Module {
     public static final String INPUT_SEPARATOR = "Object input/output";
     public static final String INPUT_OBJECTS = "Input objects";
@@ -78,7 +76,8 @@ public class TrackObjects extends Module {
 
     public static final String DIRECTION_SEPARATOR = "Direction cost";
     public static final String DIRECTION_WEIGHTING_MODE = "Direction weighting mode";
-    public static final String PREFERRED_DIRECTION = "Preferred direction (-180 to 180 degs)";
+    public static final String ORIENTATION_RANGE_MODE = "Orientation range mode";
+    public static final String PREFERRED_DIRECTION = "Preferred direction";
     public static final String DIRECTION_TOLERANCE = "Direction tolerance";
     public static final String DIRECTION_WEIGHTING = "Direction weighting";
 
@@ -87,7 +86,6 @@ public class TrackObjects extends Module {
     public static final String MEASUREMENT = "Measurement";
     public static final String MEASUREMENT_WEIGHTING = "Measurement weighting";
     public static final String MAXIMUM_MEASUREMENT_CHANGE = "Maximum measurement change";
-
 
     public TrackObjects(Modules modules) {
         super("Track objects", modules);
@@ -106,6 +104,14 @@ public class TrackObjects extends Module {
         String RELATIVE_TO_PREVIOUS_STEP = "Relative to previous step";
 
         String[] ALL = new String[] { NONE, ABSOLUTE_ORIENTATION, RELATIVE_TO_PREVIOUS_STEP };
+
+    }
+
+    public interface OrientationRangeModes {
+        String NINETY = "-90 to 90 degs";
+        String ONE_EIGHTY = "-180 to 180 degs";
+
+        String[] ALL = new String[] { NINETY, ONE_EIGHTY };
 
     }
 
@@ -143,6 +149,7 @@ public class TrackObjects extends Module {
         double volumeWeighting = parameters.getValue(VOLUME_WEIGHTING);
         double maxVolumeChange = parameters.getValue(MAXIMUM_VOLUME_CHANGE);
         String directionWeightingMode = parameters.getValue(DIRECTION_WEIGHTING_MODE);
+        String orientationRangeMode = parameters.getValue(ORIENTATION_RANGE_MODE);
         double preferredDirection = parameters.getValue(PREFERRED_DIRECTION);
         double directionTolerance = parameters.getValue(DIRECTION_TOLERANCE);
         double directionWeighting = parameters.getValue(DIRECTION_WEIGHTING);
@@ -183,7 +190,8 @@ public class TrackObjects extends Module {
                 double directionCost = 0;
                 switch (directionWeightingMode) {
                     case DirectionWeightingModes.ABSOLUTE_ORIENTATION:
-                        directionCost = getAbsoluteOrientationCost(prevObj, currObj, preferredDirection);
+                        directionCost = getAbsoluteOrientationCost(prevObj, currObj, orientationRangeMode,
+                                preferredDirection);
                         break;
                     case DirectionWeightingModes.RELATIVE_TO_PREVIOUS_STEP:
                         directionCost = getPreviousStepDirectionCost(prevObj, currObj, inputObjects);
@@ -297,7 +305,8 @@ public class TrackObjects extends Module {
 
     }
 
-    public static double getAbsoluteOrientationCost(Obj prevObj, Obj currObj, double preferredDirection) {
+    public static double getAbsoluteOrientationCost(Obj prevObj, Obj currObj, String orientationRangeMode,
+            double preferredDirection) {
         // Getting centroid coordinates for three points
         double prevXCent = prevObj.getXMean(true);
         double prevYCent = prevObj.getYMean(true);
@@ -306,15 +315,24 @@ public class TrackObjects extends Module {
         double preferredX = Math.cos(Math.toRadians(preferredDirection));
         double preferredY = Math.sin(Math.toRadians(preferredDirection));
 
-        Vector2D v1 = new Vector2D(preferredX, preferredY);
+        Vector2D v1f = new Vector2D(preferredX, preferredY);
+        Vector2D v1b = new Vector2D(-preferredX, -preferredY);
 
-        // Having these in this order gives us positive preferred directions above the x-axis
+        // Having these in this order gives us positive preferred directions above the
+        // x-axis
         Vector2D v2 = new Vector2D(currXCent - prevXCent, prevYCent - currYCent);
 
         // MathArithmeticException thrown if two points are coincident. In these cases,
         // give a cost of 0.
         try {
-            return Math.abs(Vector2D.angle(v1, v2));
+            switch (orientationRangeMode) {
+                case OrientationRangeModes.NINETY:
+                    return Math.min(Math.abs(Vector2D.angle(v1f, v2)), Math.abs(Vector2D.angle(v1b, v2)));
+                case OrientationRangeModes.ONE_EIGHTY:
+                default:
+                    return Math.abs(Vector2D.angle(v1f, v2));
+            }
+
         } catch (MathArithmeticException e) {
             return 0;
         }
@@ -564,8 +582,10 @@ public class TrackObjects extends Module {
         parameters.add(new SeparatorP(DIRECTION_SEPARATOR, this));
         parameters.add(
                 new ChoiceP(DIRECTION_WEIGHTING_MODE, this, DirectionWeightingModes.NONE, DirectionWeightingModes.ALL));
+        parameters.add(
+                new ChoiceP(ORIENTATION_RANGE_MODE, this, OrientationRangeModes.ONE_EIGHTY, OrientationRangeModes.ALL));
         parameters.add(new DoubleP(PREFERRED_DIRECTION, this, 0.0));
-        parameters.add(new DoubleP(DIRECTION_TOLERANCE, this, 180.0));
+        parameters.add(new DoubleP(DIRECTION_TOLERANCE, this, 90.0));
         parameters.add(new DoubleP(DIRECTION_WEIGHTING, this, 1.0));
 
         parameters.add(new SeparatorP(MEASUREMENT_SEPARATOR, this));
@@ -613,6 +633,7 @@ public class TrackObjects extends Module {
         returnedParameters.add(parameters.getParameter(DIRECTION_WEIGHTING_MODE));
         switch ((String) parameters.getValue(DIRECTION_WEIGHTING_MODE)) {
             case DirectionWeightingModes.ABSOLUTE_ORIENTATION:
+                returnedParameters.add(parameters.getParameter(ORIENTATION_RANGE_MODE));
                 returnedParameters.add(parameters.getParameter(PREFERRED_DIRECTION));
                 returnedParameters.add(parameters.getParameter(DIRECTION_TOLERANCE));
                 returnedParameters.add(parameters.getParameter(DIRECTION_WEIGHTING));
@@ -756,16 +777,20 @@ public class TrackObjects extends Module {
                 + "\"), this is the maximum deviation in direction from the preferred direction that a candidate object can have.  For absolute linking, this is relative to the preferred direction and for relative linking, this is relative to the previous frame.");
 
         parameters.get(DIRECTION_WEIGHTING).setDescription("If using directional weighting (\""
-        + DIRECTION_WEIGHTING_MODE + "\" not set to \"" + DirectionWeightingModes.NONE
-        + "\"), the angular difference (in degrees) between the candidate track direction and the reference direction will be muliplied by this weight.  The larger the weight, the more this angular difference will contribute towards the total linking cost.");
+                + DIRECTION_WEIGHTING_MODE + "\" not set to \"" + DirectionWeightingModes.NONE
+                + "\"), the angular difference (in degrees) between the candidate track direction and the reference direction will be muliplied by this weight.  The larger the weight, the more this angular difference will contribute towards the total linking cost.");
 
-        parameters.get(USE_MEASUREMENT).setDescription("When selected, an additional cost can be included based on a measurement assigned to each object.  This allows for tracking to favour minimising variation in this measurement.");
+        parameters.get(USE_MEASUREMENT).setDescription(
+                "When selected, an additional cost can be included based on a measurement assigned to each object.  This allows for tracking to favour minimising variation in this measurement.");
 
-        parameters.get(MEASUREMENT).setDescription("If \""+USE_MEASUREMENT+"\" is selected, this is the measurement (associated with the input objects) for which variation within a track will be minimised.");
+        parameters.get(MEASUREMENT).setDescription("If \"" + USE_MEASUREMENT
+                + "\" is selected, this is the measurement (associated with the input objects) for which variation within a track will be minimised.");
 
-        parameters.get(MEASUREMENT_WEIGHTING).setDescription("If \""+USE_MEASUREMENT+"\" is selected, the difference in measurement associated with a candidate object and the previous instance in a target track will be multiplied by this value.  The larger the weight, the more this difference in measurement will contribute towards the total linking cost.");
+        parameters.get(MEASUREMENT_WEIGHTING).setDescription("If \"" + USE_MEASUREMENT
+                + "\" is selected, the difference in measurement associated with a candidate object and the previous instance in a target track will be multiplied by this value.  The larger the weight, the more this difference in measurement will contribute towards the total linking cost.");
 
-        parameters.get(MAXIMUM_MEASUREMENT_CHANGE).setDescription("If \""+USE_MEASUREMENT+"\" is selected, this is the maximum amount the measurement can change between consecutive instances in a track.  Variations greater than this will result in the track being split into two.");
+        parameters.get(MAXIMUM_MEASUREMENT_CHANGE).setDescription("If \"" + USE_MEASUREMENT
+                + "\" is selected, this is the maximum amount the measurement can change between consecutive instances in a track.  Variations greater than this will result in the track being split into two.");
 
     }
 }

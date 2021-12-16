@@ -3,7 +3,7 @@ package io.github.mianalysis.mia.module.objects.filter;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import org.eclipse.sisu.Nullable;
+import com.drew.lang.annotations.Nullable;
 
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.Module;

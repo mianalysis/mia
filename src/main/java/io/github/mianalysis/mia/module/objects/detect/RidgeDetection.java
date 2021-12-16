@@ -10,7 +10,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.eclipse.sisu.Nullable;
+import com.drew.lang.annotations.Nullable;
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
 

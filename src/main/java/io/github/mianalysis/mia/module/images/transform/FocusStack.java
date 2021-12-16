@@ -1,6 +1,6 @@
 package io.github.mianalysis.mia.module.images.transform;
 
-import org.eclipse.sisu.Nullable;
+import com.drew.lang.annotations.Nullable;
 
 import ij.IJ;
 import ij.ImagePlus;
