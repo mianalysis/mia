@@ -141,7 +141,7 @@ public class ImageMeasurementCalculator extends Module {
 
         // Adding the new measurement
         inputImage.addMeasurement(new Measurement(outputMeasurementName, result));
-
+        
         // Showing results
         if (showOutput)
             inputImage.showMeasurements(this);

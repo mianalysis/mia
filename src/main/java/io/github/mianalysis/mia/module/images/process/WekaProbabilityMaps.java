@@ -42,13 +42,11 @@ import loci.common.services.DependencyException;
 import loci.common.services.ServiceException;
 import loci.formats.FormatException;
 import trainableSegmentation.WekaSegmentation;
-import weka.classifiers.AbstractClassifier;
-import weka.core.SerializationHelper;
 
 /**
  * Created by sc13967 on 22/03/2018.
  */
-@Plugin(type = Module.class, priority=Priority.LOW, visible=true)
+@Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class WekaProbabilityMaps extends Module {
     public static final String INPUT_SEPARATOR = "Image input";
     public static final String INPUT_IMAGE = "Input image";
@@ -89,29 +87,19 @@ public class WekaProbabilityMaps extends Module {
 
     public ImagePlus calculateProbabilityMaps(ImagePlus inputImagePlus, String outputImageName,
             String classifierFilePath, int nSimSlices, int tileFactor, int bitDepth) {
-        return calculateProbabilityMaps(inputImagePlus, outputImageName, classifierFilePath, nSimSlices, tileFactor, bitDepth, -1);
+        return calculateProbabilityMaps(inputImagePlus, outputImageName, classifierFilePath, nSimSlices, tileFactor,
+                bitDepth, -1);
     }
 
     public ImagePlus calculateProbabilityMaps(ImagePlus inputImagePlus, String outputImageName,
             String classifierFilePath, int nSimSlices, int tileFactor, int bitDepth, int outputClass) {
-        WekaSegmentation wekaSegmentation = new WekaSegmentation();
-
         // Checking classifier can be loaded
         if (!new File(classifierFilePath).exists()) {
             MIA.log.writeError("Can't find classifier (" + classifierFilePath + ")");
             return null;
         }
 
-        // System.out.println("Loading classifier");
-        AbstractClassifier cls = null;
-		// deserialize model
-		try {
-			cls = (AbstractClassifier) SerializationHelper.read(classifierFilePath);
-        } catch (Exception e) {
-            MIA.log.writeError(e);
-            return null;
-        }
-        wekaSegmentation.setClassifier(cls);
+        WekaSegmentation wekaSegmentation = new WekaSegmentation();
 
         int width = inputImagePlus.getWidth();
         int height = inputImagePlus.getHeight();
@@ -141,8 +129,11 @@ public class WekaProbabilityMaps extends Module {
             ImagePlus iplSingle = new SubstackMaker().makeSubstack(new ImagePlus("Tempstack", inputStack),
                     startingBlock + "-" + endingBlock);
 
+            wekaSegmentation.setTrainingImage(iplSingle);
+            if (wekaSegmentation.getTrainingInstances() == null)
+                wekaSegmentation.loadClassifier(classifierFilePath);
+
             if (tileFactor == 1) {
-                wekaSegmentation.setTrainingImage(iplSingle);
                 wekaSegmentation.applyClassifier(true);
                 iplSingle = wekaSegmentation.getClassifiedImage();
             } else {
@@ -179,7 +170,7 @@ public class WekaProbabilityMaps extends Module {
 
             count = count + endingBlock - startingBlock + 1;
             writeProgressStatus(count, slices, "images");
-            
+
         }
 
         // Clearing the segmentation model from memory
@@ -234,14 +225,14 @@ public class WekaProbabilityMaps extends Module {
             outputClass = -1;
 
         switch (pathType) {
-        case PathTypes.MATCHING_FORMAT:
-            Metadata metadata = (Metadata) workspace.getMetadata().clone();
-            try {
-                classifierFilePath = ImageLoader.getGenericName(metadata, genericFormat);
-            } catch (ServiceException | DependencyException | FormatException | IOException e) {
-                MIA.log.writeError(e);
-            }
-            break;
+            case PathTypes.MATCHING_FORMAT:
+                Metadata metadata = (Metadata) workspace.getMetadata().clone();
+                try {
+                    classifierFilePath = ImageLoader.getGenericName(metadata, genericFormat);
+                } catch (ServiceException | DependencyException | FormatException | IOException e) {
+                    MIA.log.writeError(e);
+                }
+                break;
         }
 
         // Running the classifier on each individual stack
@@ -317,15 +308,15 @@ public class WekaProbabilityMaps extends Module {
         returnedParameters.add(parameters.getParameter(CLASSIFIER_SEPARATOR));
         returnedParameters.add(parameters.getParameter(PATH_TYPE));
         switch ((String) parameters.getValue(PATH_TYPE)) {
-        case PathTypes.MATCHING_FORMAT:
-            returnedParameters.add(parameters.getParameter(GENERIC_FORMAT));
-            returnedParameters.add(parameters.getParameter(AVAILABLE_METADATA_FIELDS));
-            MetadataRefs metadataRefs = modules.getMetadataRefs(this);
-            parameters.getParameter(AVAILABLE_METADATA_FIELDS).setValue(metadataRefs.getMetadataValues());
-            break;
-        case PathTypes.SPECIFIC_FILE:
-            returnedParameters.add(parameters.getParameter(CLASSIFIER_FILE));
-            break;
+            case PathTypes.MATCHING_FORMAT:
+                returnedParameters.add(parameters.getParameter(GENERIC_FORMAT));
+                returnedParameters.add(parameters.getParameter(AVAILABLE_METADATA_FIELDS));
+                MetadataRefs metadataRefs = modules.getMetadataRefs(this);
+                parameters.getParameter(AVAILABLE_METADATA_FIELDS).setValue(metadataRefs.getMetadataValues());
+                break;
+            case PathTypes.SPECIFIC_FILE:
+                returnedParameters.add(parameters.getParameter(CLASSIFIER_FILE));
+                break;
         }
         returnedParameters.add(parameters.getParameter(SIMULTANEOUS_SLICES));
         returnedParameters.add(parameters.getParameter(TILE_FACTOR));
