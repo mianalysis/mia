@@ -128,9 +128,12 @@ public abstract class AbstractBUnwarpJRegistration<T extends RealType<T> & Nativ
     }
     
     @Override
-    public ImageProcessor applyTransform(ImageProcessor inputIpr, Transform transform) {
+    public ImageProcessor applyTransform(ImageProcessor inputIpr, Transform transform, int fillValue) {
         BUnwarpJTransform bUnwarpJTransform = (BUnwarpJTransform) transform;
-        ImagePlus outputIpl = new ImagePlus("Output",inputIpr.duplicate());
+        ImagePlus outputIpl = new ImagePlus("Output", inputIpr.duplicate());
+        for (int i = 0; i < outputIpl.getStack().size();i++)
+            outputIpl.getStack().getProcessor(i).setColor(fillValue);
+
         bUnwarpJ_.applyTransformToSource(bUnwarpJTransform.transformPath, outputIpl, outputIpl);
         ImageTypeConverter.process(outputIpl, inputIpr.getBitDepth(), ImageTypeConverter.ScalingModes.CLIP);
 

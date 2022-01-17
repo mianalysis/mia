@@ -21,7 +21,6 @@ import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.module.images.process.InvertIntensity;
 import io.github.mianalysis.mia.module.images.transform.ConcatenateStacks;
 import io.github.mianalysis.mia.module.images.transform.Convert3DStack;
 import io.github.mianalysis.mia.module.images.transform.ExtractSubstack;
@@ -61,8 +60,11 @@ public abstract class AbstractRegistration<T extends RealType<T> & NativeType<T>
     public static final String REGISTRATION_SEPARATOR = "Registration controls";
     public static final String REGISTRATION_AXIS = "Registration axis";
     public static final String OTHER_AXIS_MODE = "Other axis mode";
-    public static final String ENABLE_MULTITHREADING = "Enable multithreading";
     public static final String FILL_MODE = "Fill mode";
+
+    public static final String EXECUTION_SEPARATOR = "Execution controls";
+    public static final String SHOW_DETECTED_POINTS = "Show detected points";
+    public static final String ENABLE_MULTITHREADING = "Enable multithreading";
 
     public static final String REFERENCE_SEPARATOR = "Reference image source";
     public static final String REFERENCE_MODE = "Reference mode";
@@ -72,7 +74,6 @@ public abstract class AbstractRegistration<T extends RealType<T> & NativeType<T>
     public static final String CALCULATION_SOURCE = "Calculation source";
     public static final String EXTERNAL_SOURCE = "External source";
     public static final String CALCULATION_CHANNEL = "Calculation channel";
-    public static final String SHOW_DETECTED_POINTS = "Show detected points";
 
     public AbstractRegistration(String name, Modules modules) {
         super(name, modules);
@@ -124,12 +125,20 @@ public abstract class AbstractRegistration<T extends RealType<T> & NativeType<T>
 
     public abstract Param createParameterSet();
 
-    public abstract void getParameters(Param param, Workspace workspace);
-
     public abstract Transform getTransform(ImageProcessor referenceIpr, ImageProcessor warpedIpr, Param param,
             boolean showDetectedPoints);
 
-    public abstract ImageProcessor applyTransform(ImageProcessor inputIpl, Transform transform);
+    public abstract ImageProcessor applyTransform(ImageProcessor inputIpl, Transform transform, int fillValue);
+
+    public static int getFillValue(String fillMode, ImageProcessor ipr) {
+        switch (fillMode) {
+            case FillModes.BLACK:
+            default:
+                return 0;
+            case FillModes.WHITE:
+                return (int) Math.round(Math.pow(2, ipr.getBitDepth())) - 1;
+        }
+    }
 
     public void processIndependent(Image inputImage, Image calculationImage, String referenceMode, int numPrevFrames,
             String prevFrameStatMode, Param param, String fillMode, boolean showDetectedPoints, boolean multithread,
@@ -205,7 +214,7 @@ public abstract class AbstractRegistration<T extends RealType<T> & NativeType<T>
                     warped.getImagePlus().getProcessor(), param, showDetectedPoints);
 
             if (transform == null) {
-                MIA.log.writeWarning("Unable to align images at position " + (t+1));
+                MIA.log.writeWarning("Unable to align images at position " + (t + 1));
                 continue;
             }
 
@@ -289,9 +298,6 @@ public abstract class AbstractRegistration<T extends RealType<T> & NativeType<T>
         ThreadPoolExecutor pool = new ThreadPoolExecutor(nThreads, nThreads, 0L, TimeUnit.MILLISECONDS,
                 new LinkedBlockingQueue<>());
 
-        if (fillMode.equals(FillModes.WHITE))
-            InvertIntensity.process(inputImage);
-
         for (int c = 1; c <= nChannels; c++) {
             for (int z = 1; z <= nSlices; z++) {
                 for (int t = 1; t <= nFrames; t++) {
@@ -299,10 +305,10 @@ public abstract class AbstractRegistration<T extends RealType<T> & NativeType<T>
                     int finalZ = z;
                     int finalT = t;
 
-                    Runnable task = () -> {
+                    Runnable task = () -> {                        
                         ImageProcessor slice = getSetStack(inputIpl, finalT, finalC, finalZ, null).getProcessor();
-
-                        ImageProcessor alignedSlice = applyTransform(slice, transform);
+                        int fillValue = getFillValue(fillMode, slice);
+                        ImageProcessor alignedSlice = applyTransform(slice, transform, fillValue);
                         alignedSlice.setMinAndMax(slice.getMin(), slice.getMax());
 
                         getSetStack(inputIpl, finalT, finalC, finalZ, alignedSlice);
@@ -315,9 +321,6 @@ public abstract class AbstractRegistration<T extends RealType<T> & NativeType<T>
 
         pool.shutdown();
         pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS); // i.e. never terminate early
-
-        if (fillMode.equals(FillModes.WHITE))
-            InvertIntensity.process(inputImage);
 
     }
 
@@ -459,8 +462,6 @@ public abstract class AbstractRegistration<T extends RealType<T> & NativeType<T>
 
     @Override
     public Status process(Workspace workspace) {
-        IJ.setBackgroundColor(255, 255, 255);
-
         // Getting parameters
         String inputImageName = parameters.getValue(INPUT_IMAGE);
         boolean applyToInput = parameters.getValue(APPLY_TO_INPUT);
@@ -582,6 +583,9 @@ public abstract class AbstractRegistration<T extends RealType<T> & NativeType<T>
         parameters.add(new ChoiceP(REGISTRATION_AXIS, this, RegistrationAxes.TIME, RegistrationAxes.ALL));
         parameters.add(new ChoiceP(OTHER_AXIS_MODE, this, OtherAxisModes.INDEPENDENT, OtherAxisModes.ALL));
         parameters.add(new ChoiceP(FILL_MODE, this, FillModes.BLACK, FillModes.ALL));
+
+        parameters.add(new SeparatorP(EXECUTION_SEPARATOR, this));
+        parameters.add(new BooleanP(SHOW_DETECTED_POINTS, this, false));
         parameters.add(new BooleanP(ENABLE_MULTITHREADING, this, true));
 
         parameters.add(new SeparatorP(REFERENCE_SEPARATOR, this));
@@ -592,7 +596,6 @@ public abstract class AbstractRegistration<T extends RealType<T> & NativeType<T>
         parameters.add(new ChoiceP(CALCULATION_SOURCE, this, CalculationSources.INTERNAL, CalculationSources.ALL));
         parameters.add(new InputImageP(EXTERNAL_SOURCE, this));
         parameters.add(new IntegerP(CALCULATION_CHANNEL, this, 1));
-        parameters.add(new BooleanP(SHOW_DETECTED_POINTS, this, false));
 
     }
 
@@ -611,6 +614,8 @@ public abstract class AbstractRegistration<T extends RealType<T> & NativeType<T>
         returnedParameters.add(parameters.getParameter(REGISTRATION_AXIS));
         returnedParameters.add(parameters.getParameter(OTHER_AXIS_MODE));
         returnedParameters.add(parameters.getParameter(FILL_MODE));
+
+        returnedParameters.add(parameters.getParameter(EXECUTION_SEPARATOR));
         returnedParameters.add(parameters.getParameter(SHOW_DETECTED_POINTS));
         returnedParameters.add(parameters.getParameter(ENABLE_MULTITHREADING));
 
@@ -757,10 +762,15 @@ public abstract class AbstractRegistration<T extends RealType<T> & NativeType<T>
 
     }
 
-public class Param {
-        public int t = 0;
+    public void getParameters(Param param, Workspace workspace) {
+        param.fillMode = parameters.getValue(FILL_MODE);
     }
 
-public class Transform {
+    public class Param {
+        public int t = 0;
+        public String fillMode = FillModes.BLACK;
+    }
+
+    public class Transform {
     }
 }

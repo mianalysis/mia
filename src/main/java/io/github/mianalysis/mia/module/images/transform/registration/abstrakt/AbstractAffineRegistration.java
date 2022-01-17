@@ -2,20 +2,27 @@ package io.github.mianalysis.mia.module.images.transform.registration.abstrakt;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Vector;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
+import ij.Prefs;
 import ij.gui.PointRoi;
 import ij.measure.ResultsTable;
 import ij.process.ByteProcessor;
 import ij.process.FloatProcessor;
 import ij.process.ImageProcessor;
 import ij.process.ShortProcessor;
+import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.abstrakt.Parameter;
+import io.github.mianalysis.mia.object.parameters.text.IntegerP;
 import io.github.mianalysis.mia.process.interactable.PointPairSelector.PointPair;
 import mpicbg.ij.InverseTransformMapping;
 import mpicbg.models.AbstractAffineModel2D;
@@ -33,6 +40,8 @@ public abstract class AbstractAffineRegistration<T extends RealType<T> & NativeT
 
     public static final String TRANSFORMATION_MODE = "Transformation mode";
     public static final String TEST_FLIP = "Test flip (mirror image)";
+    public static final String INDEPENDENT_ROTATION = "Independent rotation";
+    public static final String ORIENTATION_INCREMENT = "Orientation increment (degs)";
     public static final String SHOW_TRANSFORMATION = "Show transformation(s)";
     public static final String CLEAR_BETWEEN_IMAGES = "Clear between images";
 
@@ -104,37 +113,115 @@ public abstract class AbstractAffineRegistration<T extends RealType<T> & NativeT
 
     }
 
+    public ArrayList<Integer> getOrientations(int orientationIncrement) {
+        ArrayList<Integer> orientations = new ArrayList<>();
+
+        // Prevent infinite loops
+        if (orientationIncrement == 0) {
+            orientations.add(0);
+            return orientations;
+        }
+
+        // Prevent increments going backwards
+        orientationIncrement = Math.abs(orientationIncrement);
+
+        int orientation = 0;
+        while (orientation < 360) {
+            orientations.add(orientation);
+            orientation += orientationIncrement;
+        }
+
+        return orientations;
+
+    }
+
+    ImageProcessor applyRotation(ImageProcessor iprIn, int orientation, int fillValue) {
+        ImageProcessor iprOut = iprIn.duplicate();
+        iprOut.setBackgroundValue(fillValue);
+        
+        if (orientation != 0)
+            iprOut.rotate(orientation);
+
+        return iprOut;
+
+    }
+
+    Object[] testTransforms(ImageProcessor referenceIpr, ImageProcessor warpedIpr, AffineParam param,
+            boolean isFlipped, AffineTransform transform, Object[] resBest) throws InterruptedException {
+
+        int nThreads = param.multithread ? Prefs.getThreads() : 1;
+        ThreadPoolExecutor pool = new ThreadPoolExecutor(nThreads, nThreads, 0L, TimeUnit.MILLISECONDS,
+                new LinkedBlockingQueue<>());
+
+        int fillValue = getFillValue(param.fillMode, warpedIpr);
+
+        HashMap<Integer, Object[]> results = new HashMap<>();
+        // Iterating over all orientations in normal (unflipped) mode
+        for (int orientation : param.orientations) {
+            // Apply orientation
+            ImageProcessor rotatedIpr = applyRotation(warpedIpr, orientation, fillValue);
+
+            Runnable task = () -> {
+                results.put(orientation, fitModel(referenceIpr, rotatedIpr, param));
+            };
+            pool.submit(task);
+
+        }
+
+        pool.shutdown();
+        pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS); // i.e. never terminate early
+
+        for (int orientation : results.keySet()) {
+            Object[] resCandidate = results.get(orientation);
+
+            if (resCandidate == null)
+                continue;
+
+            // If no best alignment has been determined, use this one
+            if (resBest == null) {
+                resBest = resCandidate;
+                continue;
+            }
+
+            // Checking which is the best (lowest cost) match
+            if (((AbstractAffineModel2D) resCandidate[0]).getCost() < ((AbstractAffineModel2D) resBest[0]).getCost()) {
+                resBest = resCandidate;
+                transform.flip = isFlipped;
+                transform.orientation = orientation;
+            }
+        }
+
+        return resBest;
+
+    }
+
     @Override
     public Transform getTransform(ImageProcessor referenceIpr, ImageProcessor warpedIpr, Param param,
             boolean showDetectedPoints) {
         AffineTransform transform = new AffineTransform();
+        AffineParam aParam = (AffineParam) param;
 
-        // Test normal
-        Object[] res1 = fitModel(referenceIpr, warpedIpr, param);
-        if (res1 == null)
+        Object[] resBest = null;
+        try {
+            resBest = testTransforms(referenceIpr, warpedIpr, aParam, false, transform, resBest);
+            if (((AffineParam) param).testFlip) {
+                warpedIpr = flip(warpedIpr);
+                resBest = testTransforms(referenceIpr, warpedIpr, aParam, true, transform, resBest);
+            }
+        } catch (InterruptedException e) {
+            MIA.log.writeError(e);
+        }        
+
+        if (resBest == null)
             return null;
 
-        if (((AffineParam) param).testFlip) {
-            warpedIpr = flip(warpedIpr);
-            Object[] res2 = fitModel(referenceIpr, warpedIpr, param);
-            if (res2 == null)
-                return null;
-
-            if (((AbstractAffineModel2D) res2[0]).getCost() < ((AbstractAffineModel2D) res1[0]).getCost()) {
-                res1 = res2;
-                transform.flip = true;
-            } else {
-                transform.flip = false;
-            }
-        }
-
         if (showDetectedPoints) {
-            ArrayList<PointPair> pairs = convertPointMatchToPointPair((Vector<PointMatch>) res1[1]);
+            ArrayList<PointPair> pairs = convertPointMatchToPointPair((Vector<PointMatch>) resBest[1]);
             showDetectedPoints(referenceIpr, warpedIpr, pairs);
         }
 
         if (((AffineParam) param).showTransform) {
-            AbstractAffineModel2D model = (AbstractAffineModel2D) res1[0];
+            AbstractAffineModel2D model = (AbstractAffineModel2D) resBest[0];
             double[] matrix = new double[6];
             model.toArray(matrix);
 
@@ -146,11 +233,11 @@ public abstract class AbstractAffineRegistration<T extends RealType<T> & NativeT
             resultsTable.addValue("M11", matrix[3]);
             resultsTable.addValue("M02", matrix[4]);
             resultsTable.addValue("M12", matrix[5]);
-            resultsTable.show("Affine transformations ("+((AffineParam) param).imageName+")");
+            resultsTable.show("Affine transformations (" + ((AffineParam) param).imageName + ")");
 
         }
 
-        transform.mapping = new InverseTransformMapping<AbstractAffineModel2D<?>>((AbstractAffineModel2D) res1[0]);
+        transform.mapping = new InverseTransformMapping<AbstractAffineModel2D<?>>((AbstractAffineModel2D) resBest[0]);
 
         return transform;
 
@@ -158,9 +245,22 @@ public abstract class AbstractAffineRegistration<T extends RealType<T> & NativeT
 
     @Override
     public void getParameters(Param param, Workspace workspace) {
+        super.getParameters(param, workspace);
+
         AffineParam affineParam = (AffineParam) param;
         affineParam.transformationMode = parameters.getValue(TRANSFORMATION_MODE);
         affineParam.testFlip = parameters.getValue(TEST_FLIP);
+
+        if ((boolean) parameters.getValue(INDEPENDENT_ROTATION)) {
+            int orientationIncrement = parameters.getValue(ORIENTATION_INCREMENT);
+            ArrayList<Integer> orientations = getOrientations(orientationIncrement);
+            affineParam.orientations = orientations;
+        } else {
+            affineParam.orientations = new ArrayList<>();
+            affineParam.orientations.add(0);
+        }
+
+        affineParam.multithread = parameters.getValue(ENABLE_MULTITHREADING);
         affineParam.showTransform = parameters.getValue(SHOW_TRANSFORMATION);
         affineParam.clearBetweenImages = parameters.getValue(CLEAR_BETWEEN_IMAGES);
         affineParam.imageName = parameters.getValue(INPUT_IMAGE);
@@ -171,13 +271,19 @@ public abstract class AbstractAffineRegistration<T extends RealType<T> & NativeT
     }
 
     @Override
-    public ImageProcessor applyTransform(ImageProcessor inputIpr, Transform transform) {
+    public ImageProcessor applyTransform(ImageProcessor inputIpr, Transform transform, int fillValue) {
         if (((AffineTransform) transform).flip)
             inputIpr.flipHorizontal();
 
-        inputIpr.setInterpolationMethod(ImageProcessor.BILINEAR);
-        ImageProcessor outputIpr = inputIpr.createProcessor(inputIpr.getWidth(), inputIpr.getHeight());
+        // Applying rotation        
+        int orientation = ((AffineTransform) transform).orientation;
+        inputIpr = applyRotation(inputIpr, orientation, fillValue);        
 
+        ImageProcessor outputIpr = inputIpr.createProcessor(inputIpr.getWidth(), inputIpr.getHeight());
+        outputIpr.setColor(fillValue);
+        outputIpr.fill();
+
+        // inputIpr.setInterpolationMethod(ImageProcessor.BILINEAR);
         ((AffineTransform) transform).mapping.mapInterpolated(inputIpr, outputIpr);
 
         return outputIpr;
@@ -190,6 +296,8 @@ public abstract class AbstractAffineRegistration<T extends RealType<T> & NativeT
 
         parameters.add(new ChoiceP(TRANSFORMATION_MODE, this, TransformationModes.RIGID, TransformationModes.ALL));
         parameters.add(new BooleanP(TEST_FLIP, this, false));
+        parameters.add(new BooleanP(INDEPENDENT_ROTATION, this, false));
+        parameters.add(new IntegerP(ORIENTATION_INCREMENT, this, 10));
         parameters.add(new BooleanP(SHOW_TRANSFORMATION, this, false));
         parameters.add(new BooleanP(CLEAR_BETWEEN_IMAGES, this, false));
 
@@ -207,8 +315,12 @@ public abstract class AbstractAffineRegistration<T extends RealType<T> & NativeT
             if (parameter.getName().equals(REGISTRATION_SEPARATOR))
                 returnedParameters.add(parameters.getParameter(TRANSFORMATION_MODE));
 
-            if (parameter.getName().equals(FILL_MODE))
+            if (parameter.getName().equals(FILL_MODE)) {
                 returnedParameters.add(parameters.getParameter(TEST_FLIP));
+                returnedParameters.add(parameters.getParameter(INDEPENDENT_ROTATION));
+                if ((boolean) parameters.getValue(INDEPENDENT_ROTATION))
+                    returnedParameters.add(parameters.getParameter(ORIENTATION_INCREMENT));
+            }
 
             if (parameter.getName().equals(SHOW_DETECTED_POINTS)) {
                 returnedParameters.add(parameters.getParameter(SHOW_TRANSFORMATION));
@@ -247,6 +359,9 @@ public abstract class AbstractAffineRegistration<T extends RealType<T> & NativeT
     public abstract class AffineParam extends Param {
         public String transformationMode = TransformationModes.RIGID;
         public boolean testFlip = false;
+        public ArrayList<Integer> orientations = new ArrayList<>();
+
+        public boolean multithread = false;
         public boolean showTransform = false;
         public boolean clearBetweenImages = false;
         public String imageName = "";
@@ -255,6 +370,7 @@ public abstract class AbstractAffineRegistration<T extends RealType<T> & NativeT
 
     public class AffineTransform extends Transform {
         public boolean flip = false;
+        public int orientation = 0;
         public InverseTransformMapping mapping = null;
 
     }

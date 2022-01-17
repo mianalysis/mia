@@ -6,6 +6,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "Launch demo",
+            "request": "launch",
+            "mainClass": "io.github.mianalysis.mia.demo",
+            "projectName": "MIA"
+        },
+        {
+            "type": "java",
             "name": "Launch VoronoiTest",
             "request": "launch",
             "mainClass": "signalprocesser.voronoi.VoronoiTest",

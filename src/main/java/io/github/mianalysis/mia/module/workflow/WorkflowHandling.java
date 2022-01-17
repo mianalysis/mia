@@ -36,6 +36,7 @@ import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
+import io.github.mianalysis.mia.process.logging.LogRenderer.Level;
 import io.github.sjcross.common.metadataextractors.Metadata;
 import loci.common.services.DependencyException;
 import loci.common.services.ServiceException;
@@ -65,6 +66,7 @@ public class WorkflowHandling extends Module {
     public static final String REDIRECT_MODULE = "Redirect module";
     public static final String SHOW_REDIRECT_MESSAGE = "Show redirect message";
     public static final String REDIRECT_MESSAGE = "Redirect message";
+    public static final String MESSAGE_LEVEL = "Message level";
     public static final String SHOW_TERMINATION_WARNING = "Show termination warning";
     public static final String EXPORT_WORKSPACE = "Export terminated workspaces";
     public static final String REMOVE_OBJECTS = "Remove objects from workspace";
@@ -85,6 +87,15 @@ public class WorkflowHandling extends Module {
 
         String[] ALL = new String[] { FILE_DOES_NOT_EXIST, FILE_EXISTS, FIXED_VALUE, IMAGE_MEASUREMENT,
                 METADATA_NUMERIC_VALUE, METADATA_TEXT_VALUE, OBJECT_COUNT };
+
+    }
+
+    public interface MessageLevels {
+        String DEBUG = "Debug";
+        String MESSAGE = "Message";
+        String WARNING = "Warning";
+        
+        String[] ALL = new String[] { DEBUG, MESSAGE, WARNING };
 
     }
 
@@ -115,6 +126,7 @@ public class WorkflowHandling extends Module {
     Status processTermination(Parameters parameters, Workspace workspace, boolean showRedirectMessage) {
         String continuationMode = parameters.getValue(CONTINUATION_MODE);
         String redirectMessage = parameters.getValue(REDIRECT_MESSAGE);
+        String messageLevel = parameters.getValue(MESSAGE_LEVEL);
         boolean showTerminationWarning = parameters.getValue(SHOW_TERMINATION_WARNING);
         boolean exportWorkspace = parameters.getValue(EXPORT_WORKSPACE);
         boolean removeImages = parameters.getValue(REMOVE_IMAGES);
@@ -124,8 +136,10 @@ public class WorkflowHandling extends Module {
         switch (continuationMode) {
             case ContinuationModes.REDIRECT_TO_MODULE:
                 redirectModule = parameters.getValue(REDIRECT_MODULE);
-                if (showRedirectMessage)
-                    MIA.log.writeMessage(workspace.getMetadata().insertMetadataValues(redirectMessage));
+                if (showRedirectMessage) {
+                    Level level = getLevel(messageLevel);
+                    MIA.log.write(workspace.getMetadata().insertMetadataValues(redirectMessage), level);
+                }
 
                 return Status.REDIRECT;
 
@@ -145,6 +159,18 @@ public class WorkflowHandling extends Module {
 
         return Status.PASS;
 
+    }
+
+    static Level getLevel(String messageLevel) {
+        switch (messageLevel) {
+            case MessageLevels.DEBUG:
+                return Level.DEBUG;
+            case MessageLevels.MESSAGE:
+            default:
+                return Level.MESSAGE;
+            case MessageLevels.WARNING:
+                return Level.WARNING;
+        }
     }
 
     public static boolean testFileExists(Metadata metadata, String genericFormat) {
@@ -299,6 +325,7 @@ public class WorkflowHandling extends Module {
         parameters.add(new ModuleP(REDIRECT_MODULE, this, true));
         parameters.add(new BooleanP(SHOW_REDIRECT_MESSAGE, this, false));
         parameters.add(new StringP(REDIRECT_MESSAGE, this, ""));
+        parameters.add(new ChoiceP(MESSAGE_LEVEL, this, MessageLevels.MESSAGE, MessageLevels.ALL));
         parameters.add(new BooleanP(SHOW_TERMINATION_WARNING, this, true));
         parameters.add(new BooleanP(EXPORT_WORKSPACE, this, true));
         parameters.add(new BooleanP(REMOVE_IMAGES, this, false));
@@ -367,6 +394,7 @@ public class WorkflowHandling extends Module {
                 returnedParameters.add(parameters.getParameter(SHOW_REDIRECT_MESSAGE));
                 if ((boolean) parameters.getValue(SHOW_REDIRECT_MESSAGE)) {
                     returnedParameters.add(parameters.getParameter(REDIRECT_MESSAGE));
+                    returnedParameters.add(parameters.getParameter(MESSAGE_LEVEL));
                 }
                 break;
             case ContinuationModes.TERMINATE:
@@ -503,6 +531,8 @@ public class WorkflowHandling extends Module {
                 .setDescription("Controls if a message should be displayed in the log if redirection occurs.");
 
         parameters.get(REDIRECT_MESSAGE).setDescription("Message to display if redirection occurs.");
+
+        parameters.get(MESSAGE_LEVEL).setDescription("Controls the logging level in which the message will be displayed.  Warnings are enabled for users by default, but debug and message aren't.");
 
         parameters.get(EXPORT_WORKSPACE).setDescription(
                 "Controls if the workspace should still be exported to the output Excel spreadsheet if termination occurs.");

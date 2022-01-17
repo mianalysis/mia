@@ -15,6 +15,7 @@ import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.images.transform.registration.abstrakt.AbstractAffineRegistration;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.SeparatorP;
 import io.github.mianalysis.mia.object.parameters.text.DoubleP;
@@ -27,7 +28,7 @@ import mpicbg.models.SpringMesh;
 import mpicbg.models.TranslationModel2D;
 import mpicbg.models.Vertex;
 
-@Plugin(type = Module.class, priority=Priority.LOW, visible=true)
+@Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class AffineBlockMatching extends AbstractAffineRegistration {
     public static final String FEATURE_SEPARATOR = "Feature detection";
     public static final String LAYER_SCALE = "Layer scale";
@@ -211,7 +212,7 @@ public class AffineBlockMatching extends AbstractAffineRegistration {
 
     }
 
-public class BMParam extends AffineParam {
+    public class BMParam extends AffineParam {
         float scale = 1.0f;
         int searchR = 50;
         int blockR = 50;
