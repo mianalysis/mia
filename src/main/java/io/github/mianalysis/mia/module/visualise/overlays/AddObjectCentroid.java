@@ -111,6 +111,7 @@ public class AddObjectCentroid extends AbstractOverlay {
             pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS); // i.e. never terminate early
 
         } catch (InterruptedException e) {
+            // Do nothing as the user has selected this
         }
     }
 

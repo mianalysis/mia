@@ -198,7 +198,9 @@ public class RunScript extends Module {
                 }
             }
 
-        } catch (InterruptedException | ExecutionException | IOException e) {
+        } catch (InterruptedException e) {
+            // Do nothing as the user has selected this
+        } catch (ExecutionException | IOException e) {
             MIA.log.writeError(e);
         }
 
@@ -212,7 +214,7 @@ public class RunScript extends Module {
         parameters.add(new ChoiceP(SCRIPT_MODE, this, ScriptModes.SCRIPT_TEXT, ScriptModes.ALL));
         parameters.add(new ChoiceP(SCRIPT_LANGUAGE, this, ScriptLanguages.IMAGEJ1, ScriptLanguages.ALL));
         parameters.add(new TextAreaP(SCRIPT_TEXT, this,
-                "// The following two parameters will provide references to the workspace and current module.\n#@ io.github.mianalysis.mia.object.Workspace workspace\n#@ io.github.mianalysis.mia.module.Module thisModule",
+                "// The following two parameters will provide references to the workspace and current module.\n#@ io.github.mianalysis.mia.object.Workspace workspace\n#@ io.github.mianalysis.mia.module.Module thisModule\n\nimport io.github.mianalysis.mia.MIA",
                 true));
         parameters.add(new FilePathP(SCRIPT_FILE, this));
         parameters.add(new GenericButtonP(REFRESH_BUTTON, this, "Refresh", GenericButtonP.DefaultModes.REFRESH));

@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.HashSet;
+import java.util.List;
 import java.util.TreeMap;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -97,6 +98,7 @@ public class AnalysisRunner {
 
             // Adding this Workspace to the Progress monitor
             workspace.setProgress(0);
+
         }
 
         for (Workspace workspace : workspaces)
@@ -173,7 +175,7 @@ public class AnalysisRunner {
                 if (load) {
                     TreeMap<Integer, String> seriesNumbers = inputControl.getSeriesNumbers(next);
                     for (int seriesNumber : seriesNumbers.keySet()) {
-                        MIA.log.writeStatus("Initialising " + dfInt.format(++loadTotal) + " jobs");
+                        MIA.log.writeStatus("Processing " + dfInt.format(++loadTotal) + " jobs");
                         jobs.add(new Job(next, seriesNumber, seriesNumbers.get(seriesNumber),
                                 fileCrawler.getCurrentDepth()));
                     }
@@ -337,13 +339,18 @@ public class AnalysisRunner {
     }
 
     public static void stopAnalysis() {
-        MIA.log.writeWarning("STOPPING");
+        MIA.log.writeWarning("STOPPING");        
         Prefs.setThreads(origThreads);
+        
         GUI.setModuleBeingEval(-1);
         GUI.updateModules();
         GUI.updateParameters();
-        Thread.currentThread().getThreadGroup().stop();
-        MIA.log.writeStatus("Shutdown complete!");
+        GUI.updateProgressBar();
+
+        Thread.currentThread().getThreadGroup().interrupt();
+        pool.shutdownNow();
+
+        MIA.log.writeWarning("ANALYSIS STOPPED");
 
     }
 

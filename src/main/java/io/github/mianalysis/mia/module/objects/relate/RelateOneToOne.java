@@ -164,7 +164,7 @@ public class RelateOneToOne extends Module {
 
     }
 
-    static ArrayList<Linkable> getCentroidSeparationLinkables(Objs inputObjects1, Objs inputObjects2,
+    public static ArrayList<Linkable> getCentroidSeparationLinkables(Objs inputObjects1, Objs inputObjects2,
             double maxSeparation) {
         ArrayList<Linkable> linkables = new ArrayList<>();
 
@@ -185,7 +185,7 @@ public class RelateOneToOne extends Module {
 
     }
 
-    static ArrayList<Linkable> getSpatialOverlapLinkables(Objs inputObjects1, Objs inputObjects2,
+    public static ArrayList<Linkable> getSpatialOverlapLinkables(Objs inputObjects1, Objs inputObjects2,
             double minOverlap1, double minOverlap2) {
         ArrayList<Linkable> linkables = new ArrayList<>();
 
@@ -201,7 +201,7 @@ public class RelateOneToOne extends Module {
                     double overlapPercentage2 = 100 * overlap / object2.size();
 
                     // Checking the minimum overlaps have been met
-                    if (overlapPercentage1 > minOverlap1 && overlapPercentage2 > minOverlap2) {
+                    if (overlapPercentage1 >= minOverlap1 && overlapPercentage2 >= minOverlap2) {
                         // Calculated using the raw pixel overlap to prevent small objects being
                         // weighted too highly
                         linkables.add(new Linkable(1 / overlap, object1.getID(), object2.getID()));
@@ -214,11 +214,11 @@ public class RelateOneToOne extends Module {
 
     }
 
-    static DefaultCostMatrixCreator<Integer, Integer> getCostMatrixCreator(ArrayList<Linkable> linkables) {
+    public static DefaultCostMatrixCreator<Integer, Integer> getCostMatrixCreator(ArrayList<Linkable> linkables) {
         return getCostMatrixCreator(linkables, 1.05, 1);
     }
 
-    static DefaultCostMatrixCreator<Integer, Integer> getCostMatrixCreator(ArrayList<Linkable> linkables,
+    public static DefaultCostMatrixCreator<Integer, Integer> getCostMatrixCreator(ArrayList<Linkable> linkables,
             double alternativeCostFactor, double percentile) {
         List<Integer> IDs1 = linkables.stream().mapToInt(Linkable::getID1).boxed()
                 .collect(Collectors.toCollection(ArrayList::new));

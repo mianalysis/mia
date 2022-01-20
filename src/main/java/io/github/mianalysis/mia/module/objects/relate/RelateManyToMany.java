@@ -220,7 +220,7 @@ public class RelateManyToMany extends Module {
         double overlapPercentage2 = 100 * overlap / object2.size();
 
         // Checking the minimum overlaps have been met
-        return overlapPercentage1 > minOverlap1 && overlapPercentage2 > minOverlap2;
+        return overlapPercentage1 >= minOverlap1 && overlapPercentage2 >= minOverlap2;
 
     }
 

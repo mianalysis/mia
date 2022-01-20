@@ -201,7 +201,7 @@ public class ExtendedMinima extends Module {
             outputImage = process(inputImage, outputImageName, minimaMaximaMode, blackBackground, dynamic, connectivity,
                     multithread);
         } catch (InterruptedException e) {
-            MIA.log.writeError(e);
+            // Do nothing as the user has selected this
             return Status.FAIL;
         }
 

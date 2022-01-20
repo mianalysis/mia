@@ -228,7 +228,7 @@ public class Watershed extends Module {
         try {
             process(intensityIpl, markerIpl, inputImagePlus, blackBackground, dynamic, connectivity, multithread);
         } catch (InterruptedException e) {
-            MIA.log.writeError(e);
+            // Do nothing as the user has selected this
         }
 
         // If the image is being saved as a new image, adding it to the workspace

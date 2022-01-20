@@ -152,7 +152,7 @@ public class FillHolesByVolume extends Module {
                 try {
                     pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS); // i.e. never terminate early
                 } catch (InterruptedException e) {
-                    MIA.log.writeError(e);
+                    // Do nothing as the user has selected this
                 }
 
                 // Removing pixels with counts outside the limits
@@ -197,7 +197,7 @@ public class FillHolesByVolume extends Module {
                 try {
                     pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS); // i.e. never terminate early
                 } catch (InterruptedException e) {
-                    MIA.log.writeError(e);
+                    // Do nothing as the user has selected this
                 }
 
                 writeProgressStatus(++count, total, "stacks", name);

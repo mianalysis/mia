@@ -1,20 +1,21 @@
 package io.github.mianalysis.mia.module.images.transform.registration;
 
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.Vector;
 
-import ij.process.ImageProcessor;
-import mpicbg.imagefeatures.Feature;
-import mpicbg.imagefeatures.FloatArray2DSIFT;
-import mpicbg.models.AbstractAffineModel2D;
-import mpicbg.models.NotEnoughDataPointsException;
-import mpicbg.models.PointMatch;
-import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.module.images.transform.registration.abstrakt.AbstractAffineRegistration;
-import io.github.mianalysis.mia.module.Module;
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
 
+import fiji.plugin.trackmate.tracking.sparselap.costmatrix.DefaultCostMatrixCreator;
+import fiji.plugin.trackmate.tracking.sparselap.linker.JaqamanLinker;
+import ij.process.ImageProcessor;
+import io.github.mianalysis.mia.MIA;
+import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.images.transform.registration.abstrakt.AbstractAffineRegistration;
+import io.github.mianalysis.mia.module.objects.relate.Linkable;
+import io.github.mianalysis.mia.module.objects.relate.RelateOneToOne;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
@@ -22,12 +23,17 @@ import io.github.mianalysis.mia.object.parameters.InputObjectsP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.SeparatorP;
 import io.github.mianalysis.mia.object.parameters.text.DoubleP;
+import mpicbg.models.AbstractAffineModel2D;
+import mpicbg.models.AffineModel2D;
+import mpicbg.models.NotEnoughDataPointsException;
+import mpicbg.models.Point;
+import mpicbg.models.PointMatch;
 
-@Plugin(type = Module.class, priority=Priority.LOW, visible=true)
+@Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class AffineCentroids extends AbstractAffineRegistration {
     public static final String FEATURE_SEPARATOR = "Feature detection";
     public static final String INPUT_OBJECTS = "Input objects";
-    public static final String ROD = "Closest/next closest ratio";
+    public static final String MAXIMUM_SEPARATION = "Maximum separation (px)";
     public static final String MAX_EPSILON = "Maximal alignment error (px)";
     public static final String MIN_INLIER_RATIO = "Inlier ratio";
 
@@ -54,7 +60,7 @@ public class AffineCentroids extends AbstractAffineRegistration {
         // Setting up the parameters
         CentroidParam centroidParam = (CentroidParam) param;
         centroidParam.centroidObjects = (Objs) workspace.getObjectSet(parameters.getValue(INPUT_OBJECTS));
-        centroidParam.rod = (float) (double) parameters.getValue(ROD);
+        centroidParam.maxSeparation = (float) (double) parameters.getValue(MAXIMUM_SEPARATION);
         centroidParam.maxEpsilon = (float) (double) parameters.getValue(MAX_EPSILON);
         centroidParam.minInlierRatio = (float) (double) parameters.getValue(MIN_INLIER_RATIO);
 
@@ -67,37 +73,54 @@ public class AffineCentroids extends AbstractAffineRegistration {
         String referenceMode = parameters.getValue(REFERENCE_MODE);
         int numPrevFrames = parameters.getValue(NUM_PREV_FRAMES);
 
-        // Extracting features
-        ArrayList<Feature> featureList1 = new ArrayList<Feature>();
-        ArrayList<Feature> featureList2 = new ArrayList<Feature>();
+        Objs candidates1 = new Objs("Candidates1", p.centroidObjects);
+        Objs candidates2 = new Objs("Candidates2", p.centroidObjects);
 
         for (Obj obj : p.centroidObjects.values()) {
             if ((referenceMode.equals(ReferenceModes.FIRST_FRAME) && obj.getT() == 0)
                     || (referenceMode.equals(ReferenceModes.PREVIOUS_N_FRAMES)
                             && ((p.t - obj.getT()) <= numPrevFrames && (p.t - obj.getT()) > 0))) {
-                Feature f = new Feature();
-                f.location = new double[] { obj.getXMean(true), obj.getYMean(true) };
-                f.scale = 1;
-                f.descriptor = new float[] { (float) obj.getXMean(true), (float) obj.getYMean(true) };
-                featureList1.add(f);
+                Obj candidateObj = candidates1.createAndAddNewObject(obj.getVolumeType());
+                candidateObj.setCoordinateSet(obj.getCoordinateSet().duplicate());
             } else if (obj.getT() == p.t) {
-                Feature f = new Feature();
-                f.location = new double[] { obj.getXMean(true), obj.getYMean(true) };
-                f.scale = 1;
-                f.descriptor = new float[] { (float) obj.getXMean(true), (float) obj.getYMean(true) };
-                featureList2.add(f);
+                Obj candidateObj = candidates2.createAndAddNewObject(obj.getVolumeType());
+                candidateObj.setCoordinateSet(obj.getCoordinateSet().duplicate());
             }
         }
 
-        // Running registration
-        AbstractAffineModel2D model = getModel(p.transformationMode);
-        Vector<PointMatch> candidates = FloatArray2DSIFT.createMatches(featureList2, featureList1, p.rod);
+        ArrayList<Linkable> linkables = RelateOneToOne.getCentroidSeparationLinkables(candidates1, candidates2,
+                p.maxSeparation);
+        DefaultCostMatrixCreator<Integer, Integer> creator = RelateOneToOne.getCostMatrixCreator(linkables);
+        JaqamanLinker<Integer, Integer> linker = new JaqamanLinker<>(creator);
+        if (!linker.checkInput() || !linker.process())
+            return null;
+        Map<Integer, Integer> assignment = linker.getResult();
+
+        Vector<PointMatch> candidates = new Vector<>();
+        for (int ID1 : assignment.keySet()) {
+            int ID2 = assignment.get(ID1);
+            Point point1 = new Point(
+                    new double[] { candidates1.get(ID1).getXMean(true), candidates1.get(ID1).getYMean(true) });
+            Point point2 = new Point(
+                    new double[] { candidates2.get(ID2).getXMean(true), candidates2.get(ID2).getYMean(true) });
+            candidates.add(new PointMatch(point2, point1));
+        }
+
         ArrayList<PointMatch> inliers = new ArrayList<PointMatch>();
+        AbstractAffineModel2D model = getModel(p.transformationMode);
 
         try {
             model.filterRansac(candidates, inliers, 1000, p.maxEpsilon, p.minInlierRatio);
         } catch (NotEnoughDataPointsException e) {
-            return null;
+            if (candidates.size() == 1) {
+                MIA.log.writeWarning("Single pair detected, enforcing translation model");
+                double dx = candidates.get(0).getP2().getL()[0] - candidates.get(0).getP1().getL()[0];
+                double dy = candidates.get(0).getP2().getL()[1] - candidates.get(0).getP1().getL()[1];
+                model = new AffineModel2D();
+                ((AffineModel2D) model).set(1d, 0d, 0d, 1d, dx, dy);
+            } else {
+                return null;
+            }
         }
 
         return new Object[] { model, candidates };
@@ -110,7 +133,7 @@ public class AffineCentroids extends AbstractAffineRegistration {
 
         parameters.add(new SeparatorP(FEATURE_SEPARATOR, this));
         parameters.add(new InputObjectsP(INPUT_OBJECTS, this));
-        parameters.add(new DoubleP(ROD, this, 0.92));
+        parameters.add(new DoubleP(MAXIMUM_SEPARATION, this, 100));
         parameters.add(new DoubleP(MAX_EPSILON, this, 25.0));
         parameters.add(new DoubleP(MIN_INLIER_RATIO, this, 0.05));
 
@@ -126,7 +149,7 @@ public class AffineCentroids extends AbstractAffineRegistration {
 
         returnedParameters.add(parameters.getParameter(FEATURE_SEPARATOR));
         returnedParameters.add(parameters.getParameter(INPUT_OBJECTS));
-        returnedParameters.add(parameters.getParameter(ROD));
+        returnedParameters.add(parameters.getParameter(MAXIMUM_SEPARATION));
         returnedParameters.add(parameters.getParameter(MAX_EPSILON));
         returnedParameters.add(parameters.getParameter(MIN_INLIER_RATIO));
 
@@ -143,9 +166,8 @@ public class AffineCentroids extends AbstractAffineRegistration {
         parameters.get(INPUT_OBJECTS).setDescription(
                 "Centroids for these objects will be used as the references for image alignment.");
 
-        parameters.get(ROD).setDescription(
-                "\"Correspondence candidates from local descriptor matching are accepted only if the Euclidean distance to the nearest neighbour is significantly smaller than that to the next nearest neighbour. Lowe (2004) suggests a ratio of r=0.8 which requires some increase when matching things that appear significantly distorted.\".  "
-                        + siteRef);
+        parameters.get(MAXIMUM_SEPARATION).setDescription(
+                "Maximum spatial separation between object centroids for them to be linked and used in the alignment.");
 
         parameters.get(MAX_EPSILON).setDescription(
                 "\"Matching local descriptors gives many false positives, but true positives are consistent with respect to a common transformation while false positives are not. This consistent set and the underlying transformation are identified using RANSAC. This value is the maximal allowed transfer error of a match to be counted as a good one. Tip: Set this to about 10% of the image size.\".  "
@@ -157,9 +179,9 @@ public class AffineCentroids extends AbstractAffineRegistration {
 
     }
 
-public class CentroidParam extends AffineParam {
+    public class CentroidParam extends AffineParam {
         // Fitting parameters
-        float rod = 0.92f;
+        float maxSeparation = 100f;
         float maxEpsilon = 25.0f;
         float minInlierRatio = 0.05f;
 

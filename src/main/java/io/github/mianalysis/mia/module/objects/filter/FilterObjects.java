@@ -389,7 +389,7 @@ public class FilterObjects extends Module implements ActionListener {
             try {
                 Thread.sleep(100);
             } catch (InterruptedException e) {
-                MIA.log.writeError(e);
+                // Do nothing as the user has selected this
             }
         }
 

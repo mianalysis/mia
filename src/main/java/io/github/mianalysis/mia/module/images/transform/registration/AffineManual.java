@@ -193,7 +193,7 @@ public class AffineManual<T extends RealType<T> & NativeType<T>> extends Abstrac
         try {
             applyTransformation(image1, transform, fillMode, multithread);
         } catch (InterruptedException e) {
-            MIA.log.writeError(e);
+            // Do nothing as the user has selected this
         }
 
         ArrayList<Image> images = new ArrayList<>();

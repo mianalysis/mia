@@ -5,9 +5,14 @@ package io.github.mianalysis.mia.module.images.process.threshold;
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
 
+import ij.IJ;
 import ij.ImagePlus;
+import ij.gui.Roi;
+import ij.gui.ShapeRoi;
 import ij.plugin.Duplicator;
 import ij.process.AutoThresholder;
+import ij.process.ImageProcessor;
+import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
@@ -16,11 +21,14 @@ import io.github.mianalysis.mia.module.images.process.ImageTypeConverter;
 import io.github.mianalysis.mia.module.images.process.InvertIntensity;
 import io.github.mianalysis.mia.object.Image;
 import io.github.mianalysis.mia.object.Measurement;
+import io.github.mianalysis.mia.object.Obj;
+import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Status;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
+import io.github.mianalysis.mia.object.parameters.InputObjectsP;
 import io.github.mianalysis.mia.object.parameters.OutputImageP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.SeparatorP;
@@ -36,7 +44,7 @@ import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 /**
  * Created by sc13967 on 06/06/2017.
  */
-@Plugin(type = Module.class, priority=Priority.LOW, visible=true)
+@Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class GlobalAutoThreshold extends Module {
     public static final String INPUT_SEPARATOR = "Image input/output";
     public static final String INPUT_IMAGE = "Input image";
@@ -50,6 +58,8 @@ public class GlobalAutoThreshold extends Module {
     public static final String USE_LOWER_THRESHOLD_LIMIT = "Use lower threshold limit";
     public static final String LOWER_THRESHOLD_LIMIT = "Lower threshold limit";
     public static final String BINARY_LOGIC = "Binary logic";
+    public static final String MEASURE_ON_OBJECTS = "Measure on objects";
+    public static final String INPUT_OBJECTS = "Input objects";
 
     public GlobalAutoThreshold(Modules modules) {
         super("Global auto-threshold", modules);
@@ -97,7 +107,7 @@ public class GlobalAutoThreshold extends Module {
     }
 
     public int calculateThreshold(ImagePlus inputImagePlus, String algorithm, double thrMult, boolean useLowerLim,
-            double lowerLim) {
+            double lowerLim, Objs inputObjects) {
 
         // Image must be 8-bit
         if (inputImagePlus.getBitDepth() != 8) {
@@ -114,8 +124,15 @@ public class GlobalAutoThreshold extends Module {
             for (int c = 1; c <= inputImagePlus.getNChannels(); c++) {
                 for (int t = 1; t <= inputImagePlus.getNFrames(); t++) {
                     inputImagePlus.setPosition(c, z, t);
+                    ImageProcessor ipr = inputImagePlus.getProcessor();
 
-                    int[] tempHist = inputImagePlus.getProcessor().getHistogram();
+                    if (inputObjects != null)
+                        ipr.setRoi(getRoi(inputObjects, t, z));
+                    
+                    int[] tempHist = ipr.getHistogram();
+
+                    if (inputObjects != null)
+                        inputImagePlus.killRoi();
 
                     if (histogram == null)
                         histogram = new long[tempHist.length];
@@ -157,6 +174,33 @@ public class GlobalAutoThreshold extends Module {
 
     }
 
+    public static Roi getRoi(Objs inputObjects, int t, int z) {
+        ShapeRoi roi = null;
+
+        for (Obj inputObject : inputObjects.values()) {
+            if (inputObject.getT() != t - 1)
+                continue;
+
+            double[][] extents = inputObject.getExtents(true, false);
+            if ((z-1) < extents[2][0] || (z-1) > extents[2][1])
+                continue;
+
+            Roi currRoi = inputObject.getRoi(z - 1);
+
+            if (currRoi == null)
+                continue;
+
+            if (roi == null)
+                roi = new ShapeRoi(currRoi);
+            else
+                roi.xor(new ShapeRoi(currRoi));
+
+        }
+        
+        return roi;
+
+    }
+
     public void addMeasurements(Image image, double threshold) {
         String method = parameters.getValue(ALGORITHM);
         String measurementName = getFullName(Measurements.GLOBAL_VALUE, method);
@@ -195,12 +239,15 @@ public class GlobalAutoThreshold extends Module {
         String binaryLogic = parameters.getValue(BINARY_LOGIC);
         boolean useLowerLim = parameters.getValue(USE_LOWER_THRESHOLD_LIMIT);
         double lowerLim = parameters.getValue(LOWER_THRESHOLD_LIMIT);
+        boolean measureOnObjects = parameters.getValue(MEASURE_ON_OBJECTS);
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
 
+        Objs inputObjects = measureOnObjects ? workspace.getObjectSet(inputObjectsName) : null;
         int threshold = 0;
 
         // Calculating the threshold based on the selected algorithm
         writeStatus("Applying " + algorithm + " threshold (multiplier = " + thrMult + " x)");
-        threshold = calculateThreshold(inputImagePlus, algorithm, thrMult, useLowerLim, lowerLim);
+        threshold = calculateThreshold(inputImagePlus, algorithm, thrMult, useLowerLim, lowerLim, inputObjects);
 
         if (outputMode.equals(OutputModes.CALCULATE_AND_APPLY)) {
             // If applying to a new image, the input image is duplicated
@@ -210,7 +257,7 @@ public class GlobalAutoThreshold extends Module {
             // Image must be 8-bit
             if (inputImagePlus.getBitDepth() != 8)
                 ImageTypeConverter.process(inputImagePlus, 8, ImageTypeConverter.ScalingModes.FILL);
-            
+
             // Applying threshold
             ManualThreshold.applyThreshold(inputImagePlus, threshold);
 
@@ -249,10 +296,10 @@ public class GlobalAutoThreshold extends Module {
     @Override
     protected void initialiseParameters() {
         parameters.add(new SeparatorP(INPUT_SEPARATOR, this));
-        parameters.add(new InputImageP(INPUT_IMAGE, this, ""));
+        parameters.add(new InputImageP(INPUT_IMAGE, this));
         parameters.add(new ChoiceP(OUTPUT_MODE, this, OutputModes.CALCULATE_AND_APPLY, OutputModes.ALL));
         parameters.add(new BooleanP(APPLY_TO_INPUT, this, true));
-        parameters.add(new OutputImageP(OUTPUT_IMAGE, this, ""));
+        parameters.add(new OutputImageP(OUTPUT_IMAGE, this));
 
         parameters.add(new SeparatorP(THRESHOLD_SEPARATOR, this));
         parameters.add(new ChoiceP(ALGORITHM, this, Algorithms.HUANG, Algorithms.ALL));
@@ -260,6 +307,8 @@ public class GlobalAutoThreshold extends Module {
         parameters.add(new BooleanP(USE_LOWER_THRESHOLD_LIMIT, this, false));
         parameters.add(new DoubleP(LOWER_THRESHOLD_LIMIT, this, 0.0));
         parameters.add(new ChoiceP(BINARY_LOGIC, this, BinaryLogic.BLACK_BACKGROUND, BinaryLogic.ALL));
+        parameters.add(new BooleanP(MEASURE_ON_OBJECTS, this, false));
+        parameters.add(new InputObjectsP(INPUT_OBJECTS, this));
 
         addParameterDescriptions();
 
@@ -285,11 +334,14 @@ public class GlobalAutoThreshold extends Module {
         returnedParameters.add(parameters.getParameter(ALGORITHM));
 
         returnedParameters.add(parameters.getParameter(USE_LOWER_THRESHOLD_LIMIT));
-        if ((boolean) parameters.getValue(USE_LOWER_THRESHOLD_LIMIT)) {
+        if ((boolean) parameters.getValue(USE_LOWER_THRESHOLD_LIMIT))
             returnedParameters.add(parameters.getParameter(LOWER_THRESHOLD_LIMIT));
-        }
 
         returnedParameters.add(parameters.getParameter(BINARY_LOGIC));
+
+        returnedParameters.add(parameters.getParameter(MEASURE_ON_OBJECTS));
+        if ((boolean) parameters.getValue(MEASURE_ON_OBJECTS))
+            returnedParameters.add(parameters.getParameter(INPUT_OBJECTS));
 
         return returnedParameters;
 

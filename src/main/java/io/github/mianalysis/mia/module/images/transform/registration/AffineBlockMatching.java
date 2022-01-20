@@ -93,7 +93,10 @@ public class AffineBlockMatching extends AbstractAffineRegistration {
         try {
             BlockMatching.matchByMaximalPMCC(ipr1, ipr2, null, null, p.scale, translationModel, p.blockR, p.blockR,
                     p.searchR, p.searchR, p.minR, p.rod, p.maxCurvature, vertices, candidates, new ErrorStatistic(1));
-        } catch (InterruptedException | ExecutionException e) {
+        } catch (InterruptedException e) {
+            // Do nothing as the user has selected this
+            return null;
+        } catch (ExecutionException e) {
             MIA.log.writeError(e);
             return null;
         }

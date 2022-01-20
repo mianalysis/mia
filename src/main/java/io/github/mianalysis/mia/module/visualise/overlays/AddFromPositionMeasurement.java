@@ -202,6 +202,7 @@ public class AddFromPositionMeasurement extends AbstractOverlay {
         try {
             pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS); // i.e. never terminate early
         } catch (InterruptedException e) {
+            // Do nothing as the user has selected this
             return Status.FAIL;
         }
 

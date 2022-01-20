@@ -45,7 +45,7 @@ public class bUnwarpJ_Mod {
             source.getThread().join();
             target.getThread().join();
         } catch (InterruptedException e) {
-            IJ.error("Unexpected interruption exception " + e);
+            // Do nothing as the user has selected this
         }
 
         // Set transformation parameters

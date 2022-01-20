@@ -228,7 +228,10 @@ public class UnwarpManual<T extends RealType<T> & NativeType<T>> extends Abstrac
 
             applyTransformation(image1, transform, fillMode, multithread);
 
-        } catch (InterruptedException | IOException e) {
+        } catch (InterruptedException e) {
+            // Do nothing as the user has selected this
+            return;
+        } catch (IOException e) {
             MIA.log.writeError(e);
             return;
         }

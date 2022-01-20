@@ -276,7 +276,7 @@ public class BestFocusSubstack <T extends RealType<T> & NativeType<T>> extends M
             try {
                 Thread.sleep(100);
             } catch (InterruptedException e) {
-                MIA.log.writeError(e);
+                // Do nothing as the user has selected this
             }
         }
 

@@ -181,7 +181,7 @@ public class RelateManyToOne extends Module {
         try {
             pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS); // i.e. never terminate early
         } catch (InterruptedException e) {
-            MIA.log.writeError(e);
+            // Do nothing as the user has selected this
         }
     }
 
@@ -245,7 +245,7 @@ public class RelateManyToOne extends Module {
         try {
             pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS); // i.e. never terminate early
         } catch (InterruptedException e) {
-            MIA.log.writeError(e);
+            // Do nothing as the user has selected this
         }
     }
 
@@ -277,7 +277,7 @@ public class RelateManyToOne extends Module {
         try {
             pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS); // i.e. never terminate early
         } catch (InterruptedException e) {
-            e.printStackTrace(System.err);
+            // Do nothing as the user has selected this
         }
 
         pool = new ThreadPoolExecutor(nThreads, nThreads, 0L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<>());
@@ -338,7 +338,7 @@ public class RelateManyToOne extends Module {
         try {
             pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS); // i.e. never terminate early
         } catch (InterruptedException e) {
-            MIA.log.writeError(e);
+            // Do nothing as the user has selected this
         }
     }
 
@@ -403,7 +403,7 @@ public class RelateManyToOne extends Module {
                 double overlap = (nOverlap / nTotal) * 100;
 
                 // Testing the minimum overlap requirement
-                if (overlap == 0 || overlap < minOverlap)
+                if (overlap == 0 || overlap <= minOverlap)
                     continue;
 
                 // If the tests are successful, addRef the link. If the child has already been

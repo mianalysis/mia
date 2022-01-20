@@ -58,7 +58,7 @@ public class GUIAnalysisHandler {
         } catch (SAXException | IllegalAccessException | IOException | InstantiationException
                 | ParserConfigurationException | ClassNotFoundException | NoSuchMethodException
                 | InvocationTargetException e) {
-                    MIA.log.writeError(e);
+            MIA.log.writeError(e);
         }
         if (newAnalysis == null)
             return;
@@ -93,8 +93,10 @@ public class GUIAnalysisHandler {
         Thread t = new Thread(() -> {
             try {
                 GUI.getAnalysisRunner().run(GUI.getAnalysis());
-            } catch (IOException | InterruptedException e) {
+            } catch (IOException e) {
                 MIA.log.writeError(e);
+            } catch (InterruptedException e) {
+                // Do nothing as the user has terminated this
             }
         });
         t.start();
@@ -276,7 +278,7 @@ public class GUIAnalysisHandler {
         } catch (IOException | UnsupportedFlavorException | IllegalAccessException | InstantiationException
                 | InvocationTargetException | ClassNotFoundException | ParserConfigurationException | SAXException
                 | NoSuchMethodException e) {
-                    MIA.log.writeError(e);
+            MIA.log.writeError(e);
         }
     }
 

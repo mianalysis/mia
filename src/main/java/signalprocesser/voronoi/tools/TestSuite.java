@@ -937,7 +937,7 @@ public class TestSuite extends javax.swing.JDialog {
                         }
                     }
                 } catch ( InterruptedException e ) {
-                    displayError(e);
+                    // Do nothing as the user has selected this
                 }
             }
         }.start();

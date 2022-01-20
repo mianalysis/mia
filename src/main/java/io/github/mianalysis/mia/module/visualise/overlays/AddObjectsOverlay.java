@@ -831,6 +831,7 @@ public class AddObjectsOverlay extends Module {
                     break;
             }
         } catch (InterruptedException e) {
+            // Do nothing as the user has selected this
             return Status.FAIL;
         }
 

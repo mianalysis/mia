@@ -176,7 +176,7 @@ public class AffineFixedTransform extends Module {
         try {
             applyTransformation(inputImage, transform, fillMode, multithread);
         } catch (InterruptedException e) {
-            MIA.log.writeError(e);
+            // Do nothing as the user has selected this
             return Status.FAIL;
         }
 

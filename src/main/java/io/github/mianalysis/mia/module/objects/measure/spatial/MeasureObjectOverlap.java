@@ -1,13 +1,19 @@
 package io.github.mianalysis.mia.module.objects.measure.spatial;
 
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import org.scijava.Priority;
+import org.scijava.plugin.Plugin;
+
+import ij.Prefs;
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.module.Module;
-import org.scijava.Priority;
-import org.scijava.plugin.Plugin;
 import io.github.mianalysis.mia.object.Measurement;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
@@ -29,13 +35,16 @@ import io.github.sjcross.common.object.volume.Volume;
 /**
  * Created by sc13967 on 07/02/2018.
  */
-@Plugin(type = Module.class, priority=Priority.LOW, visible=true)
+@Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class MeasureObjectOverlap extends Module {
     public final static String INPUT_SEPARATOR = "Object input";
     public static final String OBJECT_SOURCE_MODE = "Object source mode";
     public final static String OBJECT_SET_1 = "Object set 1";
     public final static String OBJECT_SET_2 = "Object set 2";
     public final static String LINK_IN_SAME_FRAME = "Only link objects in same frame";
+
+    public static final String EXECUTION_SEPARATOR = "Execution controls";
+    public static final String ENABLE_MULTITHREADING = "Enable multithreading";
 
     public interface ObjectSourceModes {
         String DIFFERENT_CLASSES = "Different classes";
@@ -102,7 +111,7 @@ public class MeasureObjectOverlap extends Module {
     @Override
     public Status process(Workspace workspace) {
         String objectSourceMode = parameters.getValue(OBJECT_SOURCE_MODE);
-        
+
         // Getting input objects
         String inputObjects1Name = parameters.getValue(OBJECT_SET_1);
         Objs inputObjects1 = workspace.getObjects().get(inputObjects1Name);
@@ -127,60 +136,82 @@ public class MeasureObjectOverlap extends Module {
 
         // Getting parameters
         boolean linkInSameFrame = parameters.getValue(LINK_IN_SAME_FRAME);
+        boolean multithread = parameters.getValue(ENABLE_MULTITHREADING);
 
-        int totalObjects = inputObjects1.size() + inputObjects2.size();
-        int count = 0;
+        // Configuring multithreading
+        int nThreads = multithread ? Prefs.getThreads() : 1;
+        ThreadPoolExecutor pool = new ThreadPoolExecutor(nThreads, nThreads, 0L, TimeUnit.MILLISECONDS,
+                new LinkedBlockingQueue<>());
+
+        int total = inputObjects1.size() + inputObjects2.size();
+        AtomicInteger count = new AtomicInteger();
 
         // Iterating over all object pairs, adding overlapping pixels to a HashSet based
         // on their index
         for (Obj obj1 : inputObjects1.values()) {
-            double dppXY = obj1.getDppXY();
-            double dppZ = obj1.getDppZ();
+            Runnable task = () -> {
+                double dppXY = obj1.getDppXY();
+                double dppZ = obj1.getDppZ();
 
-            // Calculating volume
-            double objVolume = (double) obj1.size();
-            double overlap = (double) getNOverlappingPoints(obj1, inputObjects2, linkInSameFrame);
-            double overlapVolPx = overlap * dppZ / dppXY;
-            double overlapVolCal = overlap * dppXY * dppXY * dppZ;
-            double overlapPC = 100 * overlap / objVolume;
+                // Calculating volume
+                double objVolume = (double) obj1.size();
+                double overlap = (double) getNOverlappingPoints(obj1, inputObjects2, linkInSameFrame);
+                double overlapVolPx = overlap * dppZ / dppXY;
+                double overlapVolCal = overlap * dppXY * dppXY * dppZ;
+                double overlapPC = 100 * overlap / objVolume;
 
-            // Adding the measurements
-            obj1.addMeasurement(new Measurement(getFullName(inputObjects2Name, Measurements.OVERLAP_VOX_1), overlap));
-            obj1.addMeasurement(
-                    new Measurement(getFullName(inputObjects2Name, Measurements.OVERLAP_VOL_PX_1), overlapVolPx));
-            obj1.addMeasurement(
-                    new Measurement(getFullName(inputObjects2Name, Measurements.OVERLAP_VOL_CAL_1), overlapVolCal));
-            obj1.addMeasurement(
-                    new Measurement(getFullName(inputObjects2Name, Measurements.OVERLAP_PERCENT_1), overlapPC));
+                // Adding the measurements
+                obj1.addMeasurement(
+                        new Measurement(getFullName(inputObjects2Name, Measurements.OVERLAP_VOX_1), overlap));
+                obj1.addMeasurement(
+                        new Measurement(getFullName(inputObjects2Name, Measurements.OVERLAP_VOL_PX_1), overlapVolPx));
+                obj1.addMeasurement(
+                        new Measurement(getFullName(inputObjects2Name, Measurements.OVERLAP_VOL_CAL_1), overlapVolCal));
+                obj1.addMeasurement(
+                        new Measurement(getFullName(inputObjects2Name, Measurements.OVERLAP_PERCENT_1), overlapPC));
 
-            writeProgressStatus(++count, totalObjects, "objects");
+                writeProgressStatus(count.getAndIncrement(), total, "objects");
+            };
+            pool.submit(task);
 
         }
 
         // Iterating over all object pairs, adding overlapping pixels to a HashSet based
         // on their index
         for (Obj obj2 : inputObjects2.values()) {
-            double dppXY = obj2.getDppXY();
-            double dppZ = obj2.getDppZ();
+            Runnable task = () -> {
+                double dppXY = obj2.getDppXY();
+                double dppZ = obj2.getDppZ();
 
-            // Calculating volume
-            double objVolume = (double) obj2.size();
-            double overlap = (double) getNOverlappingPoints(obj2, inputObjects1, linkInSameFrame);
-            double overlapVolPx = overlap * dppZ / dppXY;
-            double overlapVolCal = overlap * dppXY * dppXY * dppZ;
-            double overlapPC = 100 * overlap / objVolume;
+                // Calculating volume
+                double objVolume = (double) obj2.size();
+                double overlap = (double) getNOverlappingPoints(obj2, inputObjects1, linkInSameFrame);
+                double overlapVolPx = overlap * dppZ / dppXY;
+                double overlapVolCal = overlap * dppXY * dppXY * dppZ;
+                double overlapPC = 100 * overlap / objVolume;
 
-            // Adding the measurements
-            obj2.addMeasurement(new Measurement(getFullName(inputObjects1Name, Measurements.OVERLAP_VOX_2), overlap));
-            obj2.addMeasurement(
-                    new Measurement(getFullName(inputObjects1Name, Measurements.OVERLAP_VOL_PX_2), overlapVolPx));
-            obj2.addMeasurement(
-                    new Measurement(getFullName(inputObjects1Name, Measurements.OVERLAP_VOL_CAL_2), overlapVolCal));
-            obj2.addMeasurement(
-                    new Measurement(getFullName(inputObjects1Name, Measurements.OVERLAP_PERCENT_2), overlapPC));
+                // Adding the measurements
+                obj2.addMeasurement(
+                        new Measurement(getFullName(inputObjects1Name, Measurements.OVERLAP_VOX_2), overlap));
+                obj2.addMeasurement(
+                        new Measurement(getFullName(inputObjects1Name, Measurements.OVERLAP_VOL_PX_2), overlapVolPx));
+                obj2.addMeasurement(
+                        new Measurement(getFullName(inputObjects1Name, Measurements.OVERLAP_VOL_CAL_2), overlapVolCal));
+                obj2.addMeasurement(
+                        new Measurement(getFullName(inputObjects1Name, Measurements.OVERLAP_PERCENT_2), overlapPC));
 
-            writeProgressStatus(++count, totalObjects, "objects");
+                writeProgressStatus(count.getAndIncrement(), total, "objects");
+            };
+            pool.submit(task);
 
+        }
+
+        pool.shutdown();
+        try {
+            pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS); // i.e. never terminate early
+        } catch (InterruptedException e) {
+            // Do nothing as the user has selected this
+            return Status.FAIL;
         }
 
         if (showOutput)
@@ -200,6 +231,9 @@ public class MeasureObjectOverlap extends Module {
         parameters.add(new InputObjectsP(OBJECT_SET_1, this));
         parameters.add(new InputObjectsP(OBJECT_SET_2, this));
         parameters.add(new BooleanP(LINK_IN_SAME_FRAME, this, true));
+
+        parameters.add(new SeparatorP(EXECUTION_SEPARATOR, this));
+        parameters.add(new BooleanP(ENABLE_MULTITHREADING, this, true));
 
         addParameterDescriptions();
 
@@ -222,6 +256,9 @@ public class MeasureObjectOverlap extends Module {
         }
 
         returnedParameters.add(parameters.getParameter(LINK_IN_SAME_FRAME));
+
+        returnedParameters.add(parameters.getParameter(EXECUTION_SEPARATOR));
+        returnedParameters.add(parameters.getParameter(ENABLE_MULTITHREADING));
 
         return returnedParameters;
 
@@ -307,7 +344,7 @@ public class MeasureObjectOverlap extends Module {
     void addParameterDescriptions() {
         parameters.get(OBJECT_SOURCE_MODE).setDescription(
                 "Controls whether overlap of objects from the same class should be calculated, or whether objects from two different classes should be compared.");
-                
+
         parameters.get(OBJECT_SET_1).setDescription(
                 "Object collection for which, the overlap of each object with any object from a separate object collection (specified by the \""
                         + OBJECT_SET_2 + "\" parameter) will be calculated.");
@@ -318,5 +355,9 @@ public class MeasureObjectOverlap extends Module {
 
         parameters.get(LINK_IN_SAME_FRAME).setDescription(
                 "When selected, objects will only be considered to have any overlap if they're present in the same frame (timepoint).");
+
+        parameters.get(ENABLE_MULTITHREADING).setDescription(
+                "Process multiple input objects simultaneously.  This can provide a speed improvement when working on a computer with a multi-core CPU.");
+
     }
 }

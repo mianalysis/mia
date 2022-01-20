@@ -155,7 +155,7 @@ public class IdentifyObjects extends Module {
         try {
             pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS); // i.e. never terminate early
         } catch (InterruptedException e) {
-            e.printStackTrace(System.err);
+            // Do nothing as the user has selected this
         }
 
         // Processing overlapping regions, adding links
@@ -246,7 +246,7 @@ public class IdentifyObjects extends Module {
         try {
             pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS); // i.e. never terminate early
         } catch (InterruptedException e) {
-            e.printStackTrace(System.err);
+            // Do nothing as the user has selected this
         }
 
         return ist;

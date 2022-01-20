@@ -209,7 +209,7 @@ public abstract class AbstractAffineRegistration<T extends RealType<T> & NativeT
                 resBest = testTransforms(referenceIpr, warpedIpr, aParam, true, transform, resBest);
             }
         } catch (InterruptedException e) {
-            MIA.log.writeError(e);
+            // Do nothing as the user has selected this
         }        
 
         if (resBest == null)

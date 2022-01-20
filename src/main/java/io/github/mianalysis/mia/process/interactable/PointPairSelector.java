@@ -93,7 +93,7 @@ public class PointPairSelector implements ActionListener {
             try {
                 Thread.sleep(100);
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                // Do nothing as the user has selected this
                 return null;
             }
         }
