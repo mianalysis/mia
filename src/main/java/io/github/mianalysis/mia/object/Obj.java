@@ -432,7 +432,7 @@ public class Obj extends Volume {
 
         ImagePlus ipl = IJ.createHyperStack(imageName, spatCal.width, spatCal.height, 1, spatCal.nSlices, nFrames, 8);
         spatCal.setImageCalibration(ipl);
-
+        
         for (Point<Integer> point : getCoordinateSet()) {
             int idx = ipl.getStackIndex(1, point.getZ() + 1, t + 1);
             ipl.getStack().getProcessor(idx).set(point.getX(), point.getY(), 255);

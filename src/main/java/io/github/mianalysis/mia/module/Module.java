@@ -211,9 +211,6 @@ public abstract class Module extends Ref implements Comparable, SciJavaPlugin {
     }
 
     public <T extends Parameter> LinkedHashSet<T> getParametersMatchingType(Class<T> type) {
-        // If the current module is the cutoff the loop terminates. This prevents the
-        // system offering measurements that are created after this module or are
-        // currently unavailable.
         if (!isEnabled())
             return null;
         if (!isRunnable())

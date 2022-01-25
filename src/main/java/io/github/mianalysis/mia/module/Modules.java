@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 
+import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.core.InputControl;
 import io.github.mianalysis.mia.module.core.OutputControl;
 import io.github.mianalysis.mia.object.parameters.OutputImageP;
@@ -299,7 +300,7 @@ public class Modules extends ArrayList<Module> implements Refs<Module> {
             LinkedHashSet<OutputObjectsP> addedObjects = module.getParametersMatchingType(OutputObjectsP.class);
             if (addedObjects == null)
                 continue;
-                
+
             // Find most recent instance of this object being created
             for (OutputObjectsP addedObject : addedObjects) {
                 if (addedObject.getValue().equals(objectName))
@@ -312,16 +313,22 @@ public class Modules extends ArrayList<Module> implements Refs<Module> {
     }
 
     public <T extends OutputObjectsP> LinkedHashSet<OutputObjectsP> getAvailableObjects(Module cutoffModule,
-            Class<T> objectClass, boolean ignoreRemoved) {
+            Class<T> objectClass, boolean ignoreRemoved, boolean includeCutoff) {
         LinkedHashSet<OutputObjectsP> objects = new LinkedHashSet<>();
 
+        boolean terminate = false;
         for (Module module : this) {
             if (module == cutoffModule)
-                break;
+                if (includeCutoff)
+                    terminate = true;
+                else
+                    break;
 
             // Get the added and removed objects
             LinkedHashSet<T> addedObjects = module.getParametersMatchingType(objectClass);
             LinkedHashSet<RemovedObjectsP> removedObjects = module.getParametersMatchingType(RemovedObjectsP.class);
+
+            // MIA.log.writeDebug(terminate+"_"+includeCutoff+"_"+module+"_"+cutoffModule+"_"+addedObjects);
 
             // Adding new objects
             if (addedObjects != null)
@@ -335,9 +342,18 @@ public class Modules extends ArrayList<Module> implements Refs<Module> {
                 String removeObjectName = removedImage.getRawStringValue();
                 objects.removeIf(outputObjectP -> outputObjectP.getObjectsName().equals(removeObjectName));
             }
+
+            if (includeCutoff && terminate)
+                break;
         }
 
         return objects;
+
+    }
+    
+    public <T extends OutputObjectsP> LinkedHashSet<OutputObjectsP> getAvailableObjects(Module cutoffModule,
+            Class<T> objectClass, boolean ignoreRemoved) {
+        return getAvailableObjects(cutoffModule, objectClass, ignoreRemoved, false);
 
     }
 

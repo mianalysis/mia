@@ -1,19 +1,18 @@
 package io.github.mianalysis.mia.module.objects.measure.spatial;
 
+import java.util.Iterator;
 import java.util.TreeMap;
 
 import org.apache.commons.math3.geometry.euclidean.twod.Line;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
+import org.scijava.Priority;
+import org.scijava.plugin.Plugin;
 
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.objects.relate.TrackObjects;
-import io.github.mianalysis.mia.module.Module;
-import org.scijava.Priority;
-import org.scijava.plugin.Plugin;
-
 import io.github.mianalysis.mia.object.Measurement;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
@@ -65,6 +64,7 @@ public class MeasureTrackMotion extends Module {
     public interface Measurements {
         String DURATION = "DURATION_(FRAMES)";
         String FIRST_FRAME = "FIRST_FRAME";
+        String LAST_FRAME = "LAST_FRAME";
         String X_VELOCITY_PX = "X_VELOCITY_(PX/FRAME)";
         String X_VELOCITY_CAL = "X_VELOCITY_(${SCAL}/FRAME)";
         String Y_VELOCITY_PX = "Y_VELOCITY_(PX/FRAME)";
@@ -183,17 +183,24 @@ public class MeasureTrackMotion extends Module {
             trackObject.addMeasurement(new Measurement(name, Double.NaN));
             name = getFullName(Measurements.FIRST_FRAME, averageSubtracted);
             trackObject.addMeasurement(new Measurement(name, Double.NaN));
+            name = getFullName(Measurements.LAST_FRAME, averageSubtracted);
+            trackObject.addMeasurement(new Measurement(name, Double.NaN));
             name = getFullName(Measurements.DETECTION_FRACTION, averageSubtracted);
             trackObject.addMeasurement(new Measurement(name, Double.NaN));
 
         } else {
             Timepoint<Double> firstPoint = track.values().iterator().next();
+            Timepoint<Double> lastPoint = null;
+            Iterator<Timepoint<Double>> iterator = track.values().iterator();
+            while (iterator.hasNext()) lastPoint = iterator.next();
 
             int duration = track.getDuration();
             String name = getFullName(Measurements.DURATION, averageSubtracted);
             trackObject.addMeasurement(new Measurement(name, duration));
             name = getFullName(Measurements.FIRST_FRAME, averageSubtracted);
             trackObject.addMeasurement(new Measurement(name, firstPoint.getF()));
+            name = getFullName(Measurements.LAST_FRAME, averageSubtracted);
+            trackObject.addMeasurement(new Measurement(name, lastPoint.getF()));
 
             int nSpots = track.values().size();
             double detectionFraction = (double) nSpots / ((double) duration + 1);
@@ -637,6 +644,11 @@ public class MeasureTrackMotion extends Module {
         returnedRefs.add(reference);
 
         name = getFullName(Measurements.FIRST_FRAME, subtractAverage);
+        reference = objectMeasurementRefs.getOrPut(name);
+        reference.setObjectsName(inputTrackObjects);
+        returnedRefs.add(reference);
+
+        name = getFullName(Measurements.LAST_FRAME, subtractAverage);
         reference = objectMeasurementRefs.getOrPut(name);
         reference.setObjectsName(inputTrackObjects);
         returnedRefs.add(reference);

@@ -89,7 +89,7 @@ public class AffineSIFT extends AbstractAffineRegistration {
                 siftParam.maxOctaveSize = p.maxOctaveSize;
                 siftParam.minOctaveSize = p.minOctaveSize;
                 siftParam.steps = p.steps;
-
+                
                 // Initialising SIFT feature extractor
                 SIFT sift = new SIFT(new FloatArray2DSIFT(siftParam));
 

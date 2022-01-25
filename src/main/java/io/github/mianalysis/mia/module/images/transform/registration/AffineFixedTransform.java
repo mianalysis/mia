@@ -73,7 +73,7 @@ public class AffineFixedTransform extends Module {
 
         AffineModel2D model = new AffineModel2D();
         model.set(m00, m10, m01, m11, m02, m12);
-
+                
         return new InverseTransformMapping<AbstractAffineModel2D<?>>(model);
 
     }

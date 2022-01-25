@@ -1,13 +1,14 @@
 package io.github.mianalysis.mia.object.parameters.objects;
 
-import io.github.mianalysis.mia.MIA;
-import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.object.parameters.abstrakt.Parameter;
-import io.github.mianalysis.mia.object.parameters.abstrakt.TextType;
-
+import javax.swing.JComponent;
 import java.util.LinkedHashSet;
 
 import com.drew.lang.annotations.NotNull;
+
+import io.github.mianalysis.mia.gui.parametercontrols.ParameterControl;
+import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.object.parameters.abstrakt.Parameter;
+import io.github.mianalysis.mia.object.parameters.abstrakt.TextType;
 
 public class OutputObjectsP extends TextType {
     private String objectsName = "";
@@ -74,12 +75,11 @@ public class OutputObjectsP extends TextType {
         if (module.isEnabled()) {
             LinkedHashSet<OutputObjectsP> availableObjects = module.getModules().getAvailableObjects(module);
             for (OutputObjectsP availableObject : availableObjects)
-                if (availableObject.getObjectsName().equals(objectsName)) {
-                    MIA.log.writeWarning("Object names must be unique.  This name has already been assigned.");
+                if (availableObject.getObjectsName().equals(objectsName))
                     return false;
-                }
         }
         
         return true;
+
     }
 }

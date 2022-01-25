@@ -238,7 +238,7 @@ public class RelateOneToOne extends Module {
 
     }
 
-    static Objs assignLinks(Objs inputObjects1, Objs inputObjects2,
+    public static Objs assignLinks(Objs inputObjects1, Objs inputObjects2,
             DefaultCostMatrixCreator<Integer, Integer> creator, @Nullable String outputObjectsName) {
         Objs outputObjects = null;
         if (outputObjectsName != null)

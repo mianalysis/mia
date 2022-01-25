@@ -205,11 +205,11 @@ public class AddRelationshipConnection extends AbstractOverlay {
         if (ipl.getOverlay() == null)
             ipl.setOverlay(new ij.gui.Overlay());
 
-        int t = renderInAllFrames ? 0 : object.getT() + 1;
-
         // Running through each slice of this object
         for (Obj childObj1 : object.getChildren(childObjects1Name).values()) {
+            int t = renderInAllFrames ? 0 : childObj1.getT() + 1;
             for (Obj childObj2 : object.getChildren(childObjects2Name).values()) {
+                if (childObj1.getT() == childObj2.getT())
                 switch (renderMode) {
                     case RenderModes.FULL_LINE:
                         drawFullLine(ipl, childObj1, childObj2, t, colour, lineWidth);
