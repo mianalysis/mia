@@ -220,12 +220,12 @@ public abstract class Module extends Ref implements Comparable, SciJavaPlugin {
         LinkedHashSet<T> parameters = new LinkedHashSet<>();
         Parameters currParameters = updateAndGetParameters();
         for (Parameter currParameter : currParameters.values()) {
-            if (type.isInstance(currParameter)) {
+            if (type.isInstance(currParameter))
                 parameters.add((T) currParameter);
-            }
-            if (currParameter instanceof ParameterGroup) {
+            
+            if (currParameter instanceof ParameterGroup)
                 addParameterGroupParameters((ParameterGroup) currParameter, type, parameters);
-            }
+            
         }
 
         return parameters;

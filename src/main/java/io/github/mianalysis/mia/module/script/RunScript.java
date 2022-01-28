@@ -16,6 +16,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
@@ -43,6 +44,7 @@ import io.github.mianalysis.mia.object.parameters.ParameterGroup;
 import io.github.mianalysis.mia.object.parameters.ParameterGroup.ParameterUpdaterAndGetter;
 import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.SeparatorP;
+import io.github.mianalysis.mia.object.parameters.abstrakt.Parameter;
 import io.github.mianalysis.mia.object.parameters.abstrakt.TextType;
 import io.github.mianalysis.mia.object.parameters.objects.OutputObjectsP;
 import io.github.mianalysis.mia.object.parameters.text.StringP;
@@ -236,12 +238,12 @@ public class RunScript extends Module {
         parameterCollection.add(new OutputObjectsP(OUTPUT_OBJECTS, this));
         parameterCollection.add(new InputImageP(ASSOCIATED_IMAGE, this));
         parameterCollection.add(new StringP(METADATA_NAME, this));
-        parameterCollection.add(new InputObjectsP(ASSOCIATED_OBJECTS, this));
+        parameterCollection.add(new InputObjectsInclusiveP(ASSOCIATED_OBJECTS, this));
         parameterCollection.add(new StringP(MEASUREMENT_NAME, this));
-        parameterCollection.add(new InputObjectsP(PARENT_NAME, this));
-        parameterCollection.add(new InputObjectsP(CHILDREN_NAME, this));
-        parameterCollection.add(new InputObjectsP(PARTNERS_NAME_1, this));
-        parameterCollection.add(new InputObjectsP(PARTNERS_NAME_2, this));
+        parameterCollection.add(new InputObjectsInclusiveP(PARENT_NAME, this));
+        parameterCollection.add(new InputObjectsInclusiveP(CHILDREN_NAME, this));
+        parameterCollection.add(new InputObjectsInclusiveP(PARTNERS_NAME_1, this));
+        parameterCollection.add(new InputObjectsInclusiveP(PARTNERS_NAME_2, this));
         parameters.add(new ParameterGroup(ADD_OUTPUT, this, parameterCollection, getUpdaterAndGetter()));
 
         addParameterDescriptions();
@@ -491,54 +493,38 @@ public class RunScript extends Module {
     }
 }
 
-// class ObjectsForMeasurementP extends InputObjectsP {
+class InputObjectsInclusiveP extends InputObjectsP {
 
-// public ObjectsForMeasurementP(String name, Module module) {
-// super(name, module);
-// }
+    public InputObjectsInclusiveP(String name, Module module) {
+        super(name, module);
+    }
 
-// @Override
-// public String[] getChoices() {
-// LinkedHashSet<OutputObjectsP> objects =
-// module.getModules().getAvailableObjects(module, OutputObjectsP.class,
-// true, true);
-// return
-// objects.stream().map(OutputObjectsP::getObjectsName).distinct().toArray(String[]::new);
-// }
+    @Override
+    public String[] getChoices() {
+        LinkedHashSet<OutputObjectsP> objects = module.getModules().getAvailableObjects(module, OutputObjectsP.class,
+                true, true);
+        return objects.stream().map(OutputObjectsP::getObjectsName).distinct().toArray(String[]::new);
+    }
 
-// @Override
-// public boolean verify() {
-// // Verifying the choice is present in the choices. When we generateModuleList
-// getChoices, we should be getting the valid
-// // options only.
-// LinkedHashSet<OutputObjectsP> objects =
-// module.getModules().getAvailableObjects(module, OutputObjectsP.class,
-// true, true);
+    @Override
+    public boolean verify() {
+        // For this particular parameter we have to assume it'll be accessible
+        return true;
 
-// for (OutputObjectsP currChoice : objects) {
-// MIA.log.writeDebug(" "+currChoice);
-// if (choice.equals(currChoice.getValue()))
-// return true;
-// }
+    }
 
-// MIA.log.writeDebug("false"+"_"+getChoice());
+    @Override
+    public <T extends Parameter> T duplicate(Module newModule) {
+        InputObjectsInclusiveP newParameter = new InputObjectsInclusiveP(name,
+                newModule);
 
-// return false;
+        newParameter.setChoice(getChoice());
+        newParameter.setDescription(getDescription());
+        newParameter.setNickname(getNickname());
+        newParameter.setVisible(isVisible());
+        newParameter.setExported(isExported());
 
-// }
+        return (T) newParameter;
 
-// @Override
-// public <T extends Parameter> T duplicate(Module newModule) {
-// ObjectsForMeasurementP newParameter = new ObjectsForMeasurementP(name,
-// newModule);
-
-// newParameter.setChoice(getChoice());
-// newParameter.setDescription(getDescription());
-// newParameter.setNickname(getNickname());
-// newParameter.setVisible(isVisible());
-// newParameter.setExported(isExported());
-
-// return (T) newParameter;
-
-// }
-// }
+    }
+}

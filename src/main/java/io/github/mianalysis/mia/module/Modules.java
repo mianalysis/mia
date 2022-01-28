@@ -328,8 +328,6 @@ public class Modules extends ArrayList<Module> implements Refs<Module> {
             LinkedHashSet<T> addedObjects = module.getParametersMatchingType(objectClass);
             LinkedHashSet<RemovedObjectsP> removedObjects = module.getParametersMatchingType(RemovedObjectsP.class);
 
-            // MIA.log.writeDebug(terminate+"_"+includeCutoff+"_"+module+"_"+cutoffModule+"_"+addedObjects);
-
             // Adding new objects
             if (addedObjects != null)
                 objects.addAll(addedObjects);
