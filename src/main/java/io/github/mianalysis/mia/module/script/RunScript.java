@@ -491,40 +491,66 @@ public class RunScript extends Module {
             }
         };
     }
-}
 
-class InputObjectsInclusiveP extends InputObjectsP {
+    class InputObjectsInclusiveP extends InputObjectsP {
 
-    public InputObjectsInclusiveP(String name, Module module) {
-        super(name, module);
+        public InputObjectsInclusiveP(String name, Module module) {
+            super(name, module);
+        }
+
+        @Override
+        public String[] getChoices() {
+            LinkedHashSet<OutputObjectsP> objects = module.getModules().getAvailableObjects(module,
+                    OutputObjectsP.class,
+                    true);
+
+            // Adding objects output by this module
+            ParameterGroup group = parameters.getParameter(ADD_OUTPUT);
+            LinkedHashMap<Integer, Parameters> collections = group.getCollections(true);
+
+            for (Parameters collection : collections.values())
+                if (collection.getValue(OUTPUT_TYPE).equals(OutputTypes.OBJECTS))
+                    objects.add((OutputObjectsP) collection.getParameter(OUTPUT_OBJECTS));
+
+            return objects.stream().map(OutputObjectsP::getObjectsName).distinct().toArray(String[]::new);
+        }
+
+        @Override
+        public boolean verify() {
+            LinkedHashSet<OutputObjectsP> objects = module.getModules().getAvailableObjects(module,
+                    OutputObjectsP.class, true);
+
+            for (OutputObjectsP currChoice : objects)
+                if (choice.equals(currChoice.getValue()))
+                    return true;
+
+            // If not found yet, it could have been generated in this module
+            ParameterGroup group = parameters.getParameter(ADD_OUTPUT);
+            LinkedHashMap<Integer, Parameters> collections = group.getCollections(true);
+
+            for (Parameters collection : collections.values())
+                if (collection.getValue(OUTPUT_TYPE).equals(OutputTypes.OBJECTS))
+                    if (((String) collection.getValue(OUTPUT_OBJECTS)).equals(choice))
+                        return true;
+
+            return false;
+
+        }
+
+        @Override
+        public <T extends Parameter> T duplicate(Module newModule) {
+            InputObjectsInclusiveP newParameter = new InputObjectsInclusiveP(name,
+                    newModule);
+
+            newParameter.setChoice(getChoice());
+            newParameter.setDescription(getDescription());
+            newParameter.setNickname(getNickname());
+            newParameter.setVisible(isVisible());
+            newParameter.setExported(isExported());
+
+            return (T) newParameter;
+
+        }
     }
 
-    @Override
-    public String[] getChoices() {
-        LinkedHashSet<OutputObjectsP> objects = module.getModules().getAvailableObjects(module, OutputObjectsP.class,
-                true, true);
-        return objects.stream().map(OutputObjectsP::getObjectsName).distinct().toArray(String[]::new);
-    }
-
-    @Override
-    public boolean verify() {
-        // For this particular parameter we have to assume it'll be accessible
-        return true;
-
-    }
-
-    @Override
-    public <T extends Parameter> T duplicate(Module newModule) {
-        InputObjectsInclusiveP newParameter = new InputObjectsInclusiveP(name,
-                newModule);
-
-        newParameter.setChoice(getChoice());
-        newParameter.setDescription(getDescription());
-        newParameter.setNickname(getNickname());
-        newParameter.setVisible(isVisible());
-        newParameter.setExported(isExported());
-
-        return (T) newParameter;
-
-    }
 }
