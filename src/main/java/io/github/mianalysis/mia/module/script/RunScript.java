@@ -57,7 +57,6 @@ import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
-import weka.classifiers.rules.PART;
 
 /**
  * Created by Stephen on 12/05/2021.
@@ -82,7 +81,8 @@ public class RunScript extends Module {
     public static final String MEASUREMENT_NAME = "Measurement name";
     public static final String PARENT_NAME = "Parent name";
     public static final String CHILDREN_NAME = "Children name";
-    public static final String PARTNERS_NAME = "Partners name";
+    public static final String PARTNERS_NAME_1 = "Partners name 1";
+    public static final String PARTNERS_NAME_2 = "Partners name 2";
 
     public interface ScriptModes {
         String SCRIPT_FILE = "Script file";
@@ -111,12 +111,11 @@ public class RunScript extends Module {
         String METADATA = "Metadata";
         String OBJECTS = "Objects";
         String OBJECT_MEASUREMENT = "Object measurement";
-        String OBJECT_PARENT = "Object parent assignment";
-        String OBJECT_CHILDREN = "Object children assignment";
-        String OBJECT_PARTNERS = "Object partners assignment";
+        String PARENT_CHILD = "Parent-child relationship";
+        String PARTNERS = "Partner relationship";
 
-        String[] ALL = new String[] { IMAGE, IMAGE_MEASUREMENT, METADATA, OBJECTS, OBJECT_MEASUREMENT, OBJECT_PARENT,
-                OBJECT_CHILDREN, OBJECT_PARTNERS };
+        String[] ALL = new String[] { IMAGE, IMAGE_MEASUREMENT, METADATA, OBJECTS, OBJECT_MEASUREMENT, PARENT_CHILD,
+                PARTNERS };
 
     }
 
@@ -241,7 +240,8 @@ public class RunScript extends Module {
         parameterCollection.add(new StringP(MEASUREMENT_NAME, this));
         parameterCollection.add(new InputObjectsP(PARENT_NAME, this));
         parameterCollection.add(new InputObjectsP(CHILDREN_NAME, this));
-        parameterCollection.add(new InputObjectsP(PARTNERS_NAME, this));
+        parameterCollection.add(new InputObjectsP(PARTNERS_NAME_1, this));
+        parameterCollection.add(new InputObjectsP(PARTNERS_NAME_2, this));
         parameters.add(new ParameterGroup(ADD_OUTPUT, this, parameterCollection, getUpdaterAndGetter()));
 
         addParameterDescriptions();
@@ -342,16 +342,10 @@ public class RunScript extends Module {
 
         for (Parameters collection : collections.values()) {
             switch ((String) collection.getValue(OUTPUT_TYPE)) {
-                case OutputTypes.OBJECT_PARENT:
-                    String objectsName = collection.getValue(ASSOCIATED_OBJECTS);
-                    String parentName = collection.getValue(PARENT_NAME);
-                    ParentChildRef ref = parentChildRefs.getOrPut(parentName, objectsName);
-                    returnedRefs.add(ref);
-                    break;
-                case OutputTypes.OBJECT_CHILDREN:
-                    objectsName = collection.getValue(ASSOCIATED_OBJECTS);
+                case OutputTypes.PARENT_CHILD:
+                    String parentsName = collection.getValue(PARENT_NAME);
                     String childrenName = collection.getValue(CHILDREN_NAME);
-                    ref = parentChildRefs.getOrPut(objectsName, childrenName);
+                    ParentChildRef ref = parentChildRefs.getOrPut(parentsName, childrenName);
                     returnedRefs.add(ref);
                     break;
             }
@@ -370,10 +364,10 @@ public class RunScript extends Module {
 
         for (Parameters collection : collections.values()) {
             switch ((String) collection.getValue(OUTPUT_TYPE)) {
-                case OutputTypes.OBJECT_PARTNERS:
-                    String objectsName = collection.getValue(ASSOCIATED_OBJECTS);
-                    String partnersName = collection.getValue(PARTNERS_NAME);
-                    PartnerRef ref = partnerRefs.getOrPut(objectsName, partnersName);
+                case OutputTypes.PARTNERS:
+                    String partnersName1 = collection.getValue(PARTNERS_NAME_1);
+                    String partnersName2 = collection.getValue(PARTNERS_NAME_2);
+                    PartnerRef ref = partnerRefs.getOrPut(partnersName1, partnersName2);
                     returnedRefs.add(ref);
                     break;
             }
@@ -435,15 +429,19 @@ public class RunScript extends Module {
 
         collection.get(PARENT_NAME).setDescription(
                 "Name of a parent object already in the workspace which has been related to the objects specified by \""
-                        + ASSOCIATED_OBJECTS + "\" during execution of the script.");
+                        + CHILDREN_NAME + "\" during execution of the script.");
 
         collection.get(CHILDREN_NAME).setDescription(
                 "Name of child objects already in the workspace which have been related to the objects specified by \""
-                        + ASSOCIATED_OBJECTS + "\" during execution of the script.");
+                        + PARENT_NAME + "\" during execution of the script.");
 
-        collection.get(PARTNERS_NAME).setDescription(
+        collection.get(PARTNERS_NAME_1).setDescription(
                 "Name of partner object already in the workspace which have been related to the objects specified by \""
-                        + ASSOCIATED_OBJECTS + "\" during execution of the script.");
+                        + PARTNERS_NAME_2 + "\" during execution of the script.");
+
+        collection.get(PARTNERS_NAME_2).setDescription(
+                "Name of partner object already in the workspace which have been related to the objects specified by \""
+                        + PARTNERS_NAME_1 + "\" during execution of the script.");
 
         parameters.get(ADD_OUTPUT).setDescription(
                 "If images or new object collections have been added to the workspace during script execution they must be added here, so subsequent modules are aware of their presence.  The act of adding an output via this method simply tells subsequent MIA modules the relevant images/object collections were added to the workspace; the image/object collection must be added to the workspace during script execution using the \"workspace.addImage([image])\" or \"workspace.addObjects([object collection])\" commands.");
@@ -476,17 +474,13 @@ public class RunScript extends Module {
                         returnedParameters.add(params.getParameter(ASSOCIATED_OBJECTS));
                         returnedParameters.add(params.getParameter(MEASUREMENT_NAME));
                         break;
-                    case OutputTypes.OBJECT_PARENT:
-                        returnedParameters.add(params.getParameter(ASSOCIATED_OBJECTS));
+                    case OutputTypes.PARENT_CHILD:
                         returnedParameters.add(params.getParameter(PARENT_NAME));
-                        break;
-                    case OutputTypes.OBJECT_CHILDREN:
-                        returnedParameters.add(params.getParameter(ASSOCIATED_OBJECTS));
                         returnedParameters.add(params.getParameter(CHILDREN_NAME));
                         break;
-                    case OutputTypes.OBJECT_PARTNERS:
-                        returnedParameters.add(params.getParameter(ASSOCIATED_OBJECTS));
-                        returnedParameters.add(params.getParameter(PARTNERS_NAME));
+                    case OutputTypes.PARTNERS:
+                        returnedParameters.add(params.getParameter(PARTNERS_NAME_1));
+                        returnedParameters.add(params.getParameter(PARTNERS_NAME_2));
                         break;
                 }
 
