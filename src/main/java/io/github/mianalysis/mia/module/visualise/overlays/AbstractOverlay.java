@@ -146,9 +146,9 @@ public abstract class AbstractOverlay extends Module {
         returnedParameters.add(parameters.getParameter(COLOUR_MODE));
         switch ((String) parameters.getValue(COLOUR_MODE)) {
         case ColourModes.CHILD_COUNT:
-            returnedParameters.add(parameters.getParameter(COLOUR_MAP));
             returnedParameters.add(parameters.getParameter(CHILD_OBJECTS_FOR_COLOUR));
             ((ChildObjectsP) parameters.getParameter(CHILD_OBJECTS_FOR_COLOUR)).setParentObjectsName(inputObjectsName);
+            returnedParameters.add(parameters.getParameter(COLOUR_MAP));
             break;
 
         case ColourModes.SINGLE_COLOUR:
@@ -156,36 +156,37 @@ public abstract class AbstractOverlay extends Module {
             break;
 
         case ColourModes.MEASUREMENT_VALUE:
-            returnedParameters.add(parameters.getParameter(COLOUR_MAP));
             returnedParameters.add(parameters.getParameter(MEASUREMENT_FOR_COLOUR));
             if (inputObjectsName != null) {
                 ObjectMeasurementP colourMeasurement = parameters.getParameter(MEASUREMENT_FOR_COLOUR);
                 colourMeasurement.setObjectName(inputObjectsName);
             }
+            returnedParameters.add(parameters.getParameter(COLOUR_MAP));
             break;
 
         case ColourModes.PARENT_ID:
-            returnedParameters.add(parameters.getParameter(COLOUR_MAP));
             returnedParameters.add(parameters.getParameter(PARENT_OBJECT_FOR_COLOUR));
             ((ParentObjectsP) parameters.getParameter(PARENT_OBJECT_FOR_COLOUR)).setChildObjectsName(inputObjectsName);
+            returnedParameters.add(parameters.getParameter(COLOUR_MAP));
             break;
 
         case ColourModes.PARENT_MEASUREMENT_VALUE:
-            returnedParameters.add(parameters.getParameter(COLOUR_MAP));
             returnedParameters.add(parameters.getParameter(PARENT_OBJECT_FOR_COLOUR));
             ((ParentObjectsP) parameters.getParameter(PARENT_OBJECT_FOR_COLOUR)).setChildObjectsName(inputObjectsName);
-
+            
             returnedParameters.add(parameters.getParameter(MEASUREMENT_FOR_COLOUR));
             ObjectMeasurementP colourMeasurement = parameters.getParameter(MEASUREMENT_FOR_COLOUR);
             colourMeasurement.setObjectName(parameters.getValue(PARENT_OBJECT_FOR_COLOUR));
 
+            returnedParameters.add(parameters.getParameter(COLOUR_MAP));
+
             break;
 
         case ColourModes.PARTNER_COUNT:
-            returnedParameters.add(parameters.getParameter(COLOUR_MAP));
             returnedParameters.add(parameters.getParameter(PARTNER_OBJECTS_FOR_COLOUR));
             ((PartnerObjectsP) parameters.getParameter(PARTNER_OBJECTS_FOR_COLOUR))
                     .setPartnerObjectsName(inputObjectsName);
+            returnedParameters.add(parameters.getParameter(COLOUR_MAP));
             break;
         }
 

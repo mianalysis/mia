@@ -243,7 +243,7 @@ public class RelateOneToOne extends Module {
         Objs outputObjects = null;
         if (outputObjectsName != null)
             outputObjects = new Objs(outputObjectsName, inputObjects1);
-
+        
         JaqamanLinker<Integer, Integer> linker = new JaqamanLinker<>(creator);
         if (!linker.checkInput() || !linker.process())
             return null;
