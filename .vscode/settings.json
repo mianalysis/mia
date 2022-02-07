@@ -9,5 +9,8 @@
     "java.configuration.updateBuildConfiguration": "automatic",
     "editor.formatOnType": true,
     "java.home": "",
-    "java.dependency.packagePresentation": "hierarchical"
+    "java.dependency.packagePresentation": "hierarchical",
+    "cSpell.words": [
+        "penalises"
+    ]
 }

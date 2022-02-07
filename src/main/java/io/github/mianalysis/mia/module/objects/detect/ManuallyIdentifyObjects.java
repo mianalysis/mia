@@ -90,6 +90,8 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
     private DefaultListModel<ObjRoi> listModel = new DefaultListModel<>();
     private JList<ObjRoi> list = new JList<>(listModel);
     private JScrollPane objectsScrollPane = new JScrollPane(list);
+    private JCheckBox overlayCheck;
+    private JCheckBox labelCheck;
 
     private ImagePlus displayImagePlus;
     private Overlay overlay;
@@ -284,12 +286,13 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
         c.fill = GridBagConstraints.BOTH;
         frame.add(objectsScrollPane, c);
 
-        JCheckBox overlayCheck = new JCheckBox("Show all selections");
+        overlayCheck = new JCheckBox("Show all selections");
         overlayCheck.setSelected(false);
         overlayCheck.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 displayImagePlus.setHideOverlay(!overlayCheck.isSelected());
+                labelCheck.setEnabled(overlayCheck.isSelected());
             }
         });
         c.gridy++;
@@ -298,6 +301,20 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
         c.gridwidth = 1;
         c.gridheight = 1;
         frame.add(overlayCheck, c);
+
+        labelCheck = new JCheckBox("Show labels");
+        labelCheck.setSelected(true);
+        labelCheck.setEnabled(false);
+        labelCheck.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                updateOverlay();
+            }
+        });
+        c.gridx++;
+        frame.add(labelCheck, c);
+
+        displayImagePlus.setHideOverlay(!overlayCheck.isSelected());
 
         frame.pack();
         // Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
@@ -893,16 +910,20 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
         // Adding overlay showing ROI and its ID number
         overlay.add(ObjRoi.duplicateRoi(roi));
 
-        double[] centroid = roi.getContourCentroid();
-        TextRoi textRoi = new TextRoi(centroid[0], centroid[1], String.valueOf(ID));
+        // Adding label (if necessary)
+        if (labelCheck.isSelected()) {
+            double[] centroid = roi.getContourCentroid();
+            TextRoi textRoi = new TextRoi(centroid[0], centroid[1], String.valueOf(ID));
 
-        if (displayImagePlus.isHyperStack()) {
-            textRoi.setPosition(1, displayImagePlus.getZ(), displayImagePlus.getT());
-        } else {
-            int pos = Math.max(Math.max(1, displayImagePlus.getZ()), displayImagePlus.getT());
-            textRoi.setPosition(pos);
+            if (displayImagePlus.isHyperStack()) {
+                textRoi.setPosition(1, displayImagePlus.getZ(), displayImagePlus.getT());
+            } else {
+                int pos = Math.max(Math.max(1, displayImagePlus.getZ()), displayImagePlus.getT());
+                textRoi.setPosition(pos);
+            }
+            overlay.add(textRoi);
         }
-        overlay.add(textRoi);
+
         displayImagePlus.updateAndDraw();
 
     }

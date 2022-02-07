@@ -68,6 +68,8 @@ public class TrackObjects extends Module {
     public static final String TEMPORAL_SEPARATOR = "Temporal cost";
     public static final String FRAME_GAP_WEIGHTING = "Frame gap weighting";
     public static final String MAXIMUM_MISSING_FRAMES = "Maximum number of missing frames";
+    public static final String FAVOUR_ESTABLISHED_TRACKS = "Favour established tracks";
+    public static final String TRACK_LENGTH_WEIGHTING = "Track length weighting";
 
     public static final String VOLUME_SEPARATOR = "Volume cost";
     public static final String USE_VOLUME = "Use volume (minimise volume change)";
@@ -144,6 +146,7 @@ public class TrackObjects extends Module {
 
     public ArrayList<Linkable> calculateCostMatrix(ArrayList<Obj> prevObjects, ArrayList<Obj> currObjects,
             @Nullable Objs inputObjects, @Nullable int[][] spatialLimits) {
+        String trackObjectsName = parameters.getValue(TRACK_OBJECTS);
         boolean useVolume = parameters.getValue(USE_VOLUME);
         double frameGapWeighting = parameters.getValue(FRAME_GAP_WEIGHTING);
         double volumeWeighting = parameters.getValue(VOLUME_WEIGHTING);
@@ -153,6 +156,8 @@ public class TrackObjects extends Module {
         double preferredDirection = parameters.getValue(PREFERRED_DIRECTION);
         double directionTolerance = parameters.getValue(DIRECTION_TOLERANCE);
         double directionWeighting = parameters.getValue(DIRECTION_WEIGHTING);
+        boolean favourEstablished = parameters.getValue(FAVOUR_ESTABLISHED_TRACKS);
+        double durationWeighting = parameters.getValue(TRACK_LENGTH_WEIGHTING);
         boolean useMeasurement = parameters.getValue(USE_MEASUREMENT);
         String measurementName = parameters.getValue(MEASUREMENT);
         double measurementWeighting = parameters.getValue(MEASUREMENT_WEIGHTING);
@@ -185,6 +190,7 @@ public class TrackObjects extends Module {
 
                 // Calculating additional costs
                 double frameGapCost = getFrameGapCost(prevObj, currObj);
+                double durationCost = favourEstablished ? getTrackDurationCost(prevObj, trackObjectsName) : 0;
                 double volumeCost = useVolume ? getVolumeCost(prevObj, currObj) : 0;
                 double measurementCost = useMeasurement ? getMeasurementCost(prevObj, currObj, measurementName) : 0;
                 double directionCost = 0;
@@ -231,8 +237,12 @@ public class TrackObjects extends Module {
 
                 // Assigning costs if the link is valid (set to Double.NaN otherwise)
                 if (linkValid) {
-                    double cost = spatialCost + frameGapCost * frameGapWeighting + volumeCost * volumeWeighting
-                            + directionCost * directionWeighting + measurementCost * measurementWeighting;
+                    double cost = spatialCost
+                            + frameGapCost * frameGapWeighting
+                            + durationCost * durationWeighting
+                            + volumeCost * volumeWeighting
+                            + directionCost * directionWeighting
+                            + measurementCost * measurementWeighting;
 
                     // Linker occasionally fails on zero-costs, so adding 0.1 to all values
                     cost = cost + 0.1;
@@ -280,6 +290,21 @@ public class TrackObjects extends Module {
         double currT = currObj.getT();
 
         return Math.abs(prevT - currT);
+
+    }
+
+    public static double getTrackDurationCost(Obj prevObj, String trackObjectsName) {
+        // Scores between 0 (track present since start of time-series) and 1 (no track
+        // assigned)
+        Obj prevTrack = prevObj.getParent(trackObjectsName);
+        if (prevTrack == null)
+            return 1;
+
+        // Getting track length as a proportion of all previous frames
+        double dur = (double) prevTrack.getChildren(prevObj.getName()).size();
+        double maxDur = (double) prevObj.getT() + 1;
+
+        return 1 - (dur / maxDur);
 
     }
 
@@ -573,6 +598,8 @@ public class TrackObjects extends Module {
         parameters.add(new SeparatorP(TEMPORAL_SEPARATOR, this));
         parameters.add(new IntegerP(MAXIMUM_MISSING_FRAMES, this, 0));
         parameters.add(new DoubleP(FRAME_GAP_WEIGHTING, this, 0.0));
+        parameters.add(new BooleanP(FAVOUR_ESTABLISHED_TRACKS, this, false));
+        parameters.add(new DoubleP(TRACK_LENGTH_WEIGHTING, this, 1.0));
 
         parameters.add(new SeparatorP(VOLUME_SEPARATOR, this));
         parameters.add(new BooleanP(USE_VOLUME, this, false));
@@ -621,6 +648,9 @@ public class TrackObjects extends Module {
         returnedParameters.add(parameters.getParameter(TEMPORAL_SEPARATOR));
         returnedParameters.add(parameters.getParameter(MAXIMUM_MISSING_FRAMES));
         returnedParameters.add(parameters.getParameter(FRAME_GAP_WEIGHTING));
+        returnedParameters.add(parameters.getParameter(FAVOUR_ESTABLISHED_TRACKS));
+        if ((boolean) returnedParameters.getValue(FAVOUR_ESTABLISHED_TRACKS))
+            returnedParameters.add(parameters.getParameter(TRACK_LENGTH_WEIGHTING));
 
         returnedParameters.add(parameters.getParameter(VOLUME_SEPARATOR));
         returnedParameters.add(parameters.getParameter(USE_VOLUME));
@@ -746,6 +776,10 @@ public class TrackObjects extends Module {
 
         parameters.get(FRAME_GAP_WEIGHTING).setDescription(
                 "When non-zero, an additional cost will be included that penalises linking objects with large temporal separations.  The frame gap between candidate objects will be multiplied by this weight.  For example, if calculating spatial costs using centroid spatial separation, a frame gap weight of 1 will equally weight 1 frame of temporal separation to 1 pixel of spatial separation.  The larger the weight, the more this frame gap will contribute towards the total linking cost.");
+
+        parameters.get(FAVOUR_ESTABLISHED_TRACKS).setDescription("When selected, points will be preferentially linked to tracks containing more previous points.  For example, in cases where an object was detected twice in one timepoint this will favour linking to the original track, rather than establishing the on-going track from the new point.");
+
+        parameters.get(TRACK_LENGTH_WEIGHTING).setDescription("If \""+FAVOUR_ESTABLISHED_TRACKS+"\" is selected this is the weight assigned to the existing track duration.  Track duration costs are calculated as 1 minus the ratio of frames in which the track was detected (up to the previous time-point).");
 
         parameters.get(USE_VOLUME).setDescription(
                 "When enabled, the 3D volume of the objects being linked will contribute towards linking costs.");
