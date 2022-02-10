@@ -13,7 +13,7 @@ import ij.plugin.Resizer;
 import ij.plugin.SubHyperstackMaker;
 import ij.process.ImageProcessor;
 import inra.ijpb.binary.BinaryImages;
-import inra.ijpb.binary.ChamferWeights3D;
+import inra.ijpb.binary.distmap.ChamferMask3D;
 import inra.ijpb.morphology.Morphology;
 import inra.ijpb.morphology.Reconstruction3D;
 import inra.ijpb.morphology.Strel3D;
@@ -24,6 +24,7 @@ import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.images.process.ImageMath;
 import io.github.mianalysis.mia.module.images.process.InvertIntensity;
 import io.github.mianalysis.mia.module.images.transform.InterpolateZAxis;
 import io.github.mianalysis.mia.object.Image;
@@ -185,15 +186,13 @@ public class BinaryOperations extends Module {
         // If necessary, interpolating the image in Z to match the XY spacing
         if (matchZToXY && nSlices > 1) ipl = InterpolateZAxis.matchZToXY(ipl,InterpolateZAxis.InterpolationModes.NONE);
 
-        // Calculating the distance map using MorphoLibJ
-        float[] weights = ChamferWeights3D.WEIGHTS_3_4_5_7.getFloatWeights();
-
         // Creating duplicates of the input image
         ipl = new Duplicator().run(ipl);
         ImagePlus maskIpl = new Duplicator().run(ipl);
+        ImageMath.process(maskIpl, ImageMath.CalculationTypes.MULTIPLY, 0);
+        ImageMath.process(maskIpl, ImageMath.CalculationTypes.ADD, 255);
 
-        IJ.run(maskIpl,"Invert","stack");
-        ipl.setStack(new GeodesicDistanceMap3D().process(ipl,maskIpl,"Dist",weights,true).getStack());
+        ipl.setStack(new GeodesicDistanceMap3D().process(ipl,maskIpl,"Dist",ChamferMask3D.SVENSSON_3_4_5_7,true).getStack());
 
         // If the input image as interpolated, it now needs to be returned to the original scaling
         if (matchZToXY && nSlices > 1) {

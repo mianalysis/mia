@@ -8,7 +8,6 @@ import javax.swing.UnsupportedLookAndFeelException;
 
 import org.apache.maven.model.Model;
 import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
-import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.scijava.command.Command;
 import org.scijava.plugin.Parameter;
@@ -103,9 +102,9 @@ public class MIA implements Command {
         // Determining the version number from the pom file
         try {
             FileReader reader = new FileReader("pom.xml");
-            Model model = new MavenXpp3Reader().read(reader);
+            Model model = new MavenXpp3Reader().read(reader);            
             reader.close();
-            version = new MavenProject(model).getVersion();
+            version = model.getVersion();
         } catch (XmlPullParserException | IOException e) {
             version = getClass().getPackage().getImplementationVersion();
         }
