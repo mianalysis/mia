@@ -10,8 +10,8 @@ import ij.measure.Calibration;
 import ij.plugin.Duplicator;
 import ij.plugin.Resizer;
 import ij.plugin.SubHyperstackMaker;
-import inra.ijpb.binary.ChamferWeights3D;
-import inra.ijpb.plugins.GeodesicDistanceMap3D;
+import inra.ijpb.binary.distmap.ChamferMask3D;
+import inra.ijpb.plugins.GeodesicDistanceMap3DPlugin;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
@@ -37,7 +37,7 @@ import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 
-@Plugin(type = Module.class, priority=Priority.LOW, visible=true)
+@Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class DistanceMap extends Module {
     public static final String INPUT_SEPARATOR = "Image input/output";
     public static final String INPUT_IMAGE = "Input image";
@@ -85,7 +85,7 @@ public class DistanceMap extends Module {
         ImagePlus inputIpl = inputImage.getImagePlus();
 
         // Calculating the distance map using MorphoLibJ
-        float[] weights = getFloatWeights(weightMode);
+        ChamferMask3D weights = getFloatWeights(weightMode);
 
         // Calculating the distance map, one frame at a time
         int count = 0;
@@ -103,19 +103,22 @@ public class DistanceMap extends Module {
                     .makeSubhyperstack(inputIpl, "1", "1-" + nSlices, String.valueOf(t + 1)).duplicate();
             currentIpl.setCalibration(inputIpl.getCalibration());
 
-            if (blackBackground)
+            if (!blackBackground)
                 InvertIntensity.process(currentIpl);
 
             // If necessary, interpolating the image in Z to match the XY spacing
             if (matchZToXY && nSlices > 1)
                 currentIpl = InterpolateZAxis.matchZToXY(currentIpl, InterpolateZAxis.InterpolationModes.NONE);
 
-            // Creating a duplicate of the input image to act as a mask
+            // We're calculating the distance map across the entire image, so setting the
+            // mask to all foreground
             ImagePlus maskIpl = new Duplicator().run(currentIpl);
-            IJ.run(maskIpl, "Invert", "stack");
+            ImageMath.process(maskIpl, ImageMath.CalculationTypes.MULTIPLY, 0);
+            ImageMath.process(maskIpl, ImageMath.CalculationTypes.ADD, 255);
 
             currentIpl.setStack(
-                    new GeodesicDistanceMap3D().process(currentIpl, maskIpl, "Dist", weights, true).getStack());
+                    new GeodesicDistanceMap3DPlugin()
+                            .process(currentIpl, maskIpl, "Dist", weights, true).getStack());
 
             // If the input image as interpolated, it now needs to be returned to the
             // original scaling
@@ -153,19 +156,19 @@ public class DistanceMap extends Module {
 
     }
 
-    static float[] getFloatWeights(String weightMode) {
+    static ChamferMask3D getFloatWeights(String weightMode) {
         switch (weightMode) {
             case WeightModes.BORGEFORS:
-                return ChamferWeights3D.BORGEFORS.getFloatWeights();
+                return ChamferMask3D.BORGEFORS;
             case WeightModes.CHESSBOARD:
-                return ChamferWeights3D.CHESSBOARD.getFloatWeights();
+                return ChamferMask3D.CHESSBOARD;
             case WeightModes.CITY_BLOCK:
-                return ChamferWeights3D.CITY_BLOCK.getFloatWeights();
+                return ChamferMask3D.CITY_BLOCK;
             // case WeightModes.QUASI_EUCLIDEAN:
-            // return ChamferWeights3D.QUASI_EUCLIDEAN.getFloatWeights();
+            // return ChamferMask3D.QUASI_EUCLIDEAN;
             case WeightModes.WEIGHTS_3_4_5_7:
             default:
-                return ChamferWeights3D.WEIGHTS_3_4_5_7.getFloatWeights();
+                return ChamferMask3D.SVENSSON_3_4_5_7;
         }
     }
 
