@@ -35,7 +35,7 @@ public class BestFocusSubstackTest extends ModuleTest {
     @Test
     public void testGetMaxStatSliceStdevFirstChannel5D() throws Exception {
         // Loading the test image
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/bestfocussubstack/BestFocus5D_8bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/bestfocussubstack/BestFocus5D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image",ipl);
 
@@ -56,7 +56,7 @@ public class BestFocusSubstackTest extends ModuleTest {
     @Test
     public void testGetMaxStatSliceStdevSecondChannel5D() throws Exception {
         // Loading the test image
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/bestfocussubstack/BestFocus5D_8bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/bestfocussubstack/BestFocus5D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image",ipl);
 
@@ -77,7 +77,7 @@ public class BestFocusSubstackTest extends ModuleTest {
     @Test
     public void testGetMaxStatSliceStdevBothChannels5D() throws Exception {
         // Loading the test image
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/bestfocussubstack/BestFocus5D_8bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/bestfocussubstack/BestFocus5D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image",ipl);
 
@@ -98,7 +98,7 @@ public class BestFocusSubstackTest extends ModuleTest {
     @Test
     public void testGetMaxStatSliceStdevOnlyChannel() throws Exception {
         // Loading the test image
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/bestfocussubstack/BestFocus5D_C1_8bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/bestfocussubstack/BestFocus5D_C1_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image",ipl);
 
@@ -121,7 +121,7 @@ public class BestFocusSubstackTest extends ModuleTest {
     @Test
     public void testGetEmptyImageBelowAndAbove5D() throws Exception {
         // Loading the test image
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/bestfocussubstack/BestFocus5D_8bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/bestfocussubstack/BestFocus5D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image inputImage = new Image("Test_image",ipl);
         ImgPlus inputImg = inputImage.getImgPlus();
@@ -149,7 +149,7 @@ public class BestFocusSubstackTest extends ModuleTest {
     @Test
     public void testGetEmptyImageBelowOnly5D() throws Exception {
         // Loading the test image
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/bestfocussubstack/BestFocus5D_8bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/bestfocussubstack/BestFocus5D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image inputImage = new Image("Test_image",ipl);
         ImgPlus inputImg = inputImage.getImgPlus();
@@ -177,7 +177,7 @@ public class BestFocusSubstackTest extends ModuleTest {
     @Test
     public void testGetEmptyImageAboveOnly5D() throws Exception {
         // Loading the test image
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/bestfocussubstack/BestFocus5D_8bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/bestfocussubstack/BestFocus5D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image inputImage = new Image("Test_image",ipl);
         ImgPlus inputImg = inputImage.getImgPlus();
@@ -205,7 +205,7 @@ public class BestFocusSubstackTest extends ModuleTest {
     @Test
     public void testGetEmptyImageSinglePlane5D() throws Exception {
         // Loading the test image
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/bestfocussubstack/BestFocus5D_8bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/bestfocussubstack/BestFocus5D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image inputImage = new Image("Test_image",ipl);
         ImgPlus inputImg = inputImage.getImgPlus();
@@ -230,7 +230,7 @@ public class BestFocusSubstackTest extends ModuleTest {
     @Test
     public void testGetEmptyImageAllBelow5D() throws Exception {
         // Loading the test image
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/bestfocussubstack/BestFocus5D_8bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/bestfocussubstack/BestFocus5D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image inputImage = new Image("Test_image",ipl);
         ImgPlus inputImg = inputImage.getImgPlus();
@@ -255,7 +255,7 @@ public class BestFocusSubstackTest extends ModuleTest {
     @Test
     public void testGetEmptyImageBelowAndAboveSingleChannel4D() throws Exception {
         // Loading the test image
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/bestfocussubstack/BestFocus5D_C1_8bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/bestfocussubstack/BestFocus5D_C1_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image inputImage = new Image("Test_image",ipl);
         ImgPlus inputImg = inputImage.getImgPlus();
@@ -283,7 +283,7 @@ public class BestFocusSubstackTest extends ModuleTest {
     @Test
     public void testGetEmptyImageSinglePlaneSingleChannel4D() throws Exception {
         // Loading the test image
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/bestfocussubstack/BestFocus5D_C1_8bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/bestfocussubstack/BestFocus5D_C1_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image inputImage = new Image("Test_image",ipl);
         ImgPlus inputImg = inputImage.getImgPlus();
@@ -308,7 +308,7 @@ public class BestFocusSubstackTest extends ModuleTest {
     @Test
     public void testGetEmptyImageBelowAndAboveSingleTimepoint4D() throws Exception {
         // Loading the test image
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/bestfocussubstack/BestFocus4D_T1_8bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/bestfocussubstack/BestFocus4D_T1_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image inputImage = new Image("Test_image",ipl);
         ImgPlus inputImg = inputImage.getImgPlus();
@@ -336,7 +336,7 @@ public class BestFocusSubstackTest extends ModuleTest {
     @Test
     public void testGetEmptyImageSinglePlaneSingleTimepoint4D() throws Exception {
         // Loading the test image
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/bestfocussubstack/BestFocus4D_T1_8bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/bestfocussubstack/BestFocus4D_T1_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image inputImage = new Image("Test_image",ipl);
         ImgPlus inputImg = inputImage.getImgPlus();
@@ -361,7 +361,7 @@ public class BestFocusSubstackTest extends ModuleTest {
     @Test
     public void testGetEmptyImageBelowAndAbove3D() throws Exception {
         // Loading the test image
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/bestfocussubstack/BestFocus3D_8bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/bestfocussubstack/BestFocus3D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image inputImage = new Image("Test_image",ipl);
         ImgPlus inputImg = inputImage.getImgPlus();
@@ -389,7 +389,7 @@ public class BestFocusSubstackTest extends ModuleTest {
     @Test
     public void testGetEmptyImageSinglePlane3D() throws Exception {
         // Loading the test image
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/bestfocussubstack/BestFocus3D_8bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/bestfocussubstack/BestFocus3D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image inputImage = new Image("Test_image",ipl);
         ImgPlus inputImg = inputImage.getImgPlus();
@@ -420,12 +420,12 @@ public class BestFocusSubstackTest extends ModuleTest {
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/bestfocussubstack/BestFocus5D_8bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/bestfocussubstack/BestFocus5D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image inputImage = new Image("Test_image",ipl);
         workspace.addImage(inputImage);
 
-        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/bestfocussubstack/BestFocus5D_8bit_C1_belowabove.tif").getPath(),"UTF-8");
+        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/bestfocussubstack/BestFocus5D_8bit_C1_belowabove.zip").getPath(),"UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         BestFocusSubstack bestFocusSubstack = new BestFocusSubstack(new Modules());
@@ -458,12 +458,12 @@ public class BestFocusSubstackTest extends ModuleTest {
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/bestfocussubstack/BestFocus5D_8bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/bestfocussubstack/BestFocus5D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image inputImage = new Image("Test_image",ipl);
         workspace.addImage(inputImage);
 
-        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/bestfocussubstack/BestFocus5D_8bit_C2_belowabove.tif").getPath(),"UTF-8");
+        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/bestfocussubstack/BestFocus5D_8bit_C2_belowabove.zip").getPath(),"UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         BestFocusSubstack bestFocusSubstack = new BestFocusSubstack(new Modules());
@@ -496,12 +496,12 @@ public class BestFocusSubstackTest extends ModuleTest {
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/bestfocussubstack/BestFocus5D_8bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/bestfocussubstack/BestFocus5D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image inputImage = new Image("Test_image",ipl);
         workspace.addImage(inputImage);
 
-        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/bestfocussubstack/BestFocus5D_8bit_bothC_belowabove.tif").getPath(),"UTF-8");
+        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/bestfocussubstack/BestFocus5D_8bit_bothC_belowabove.zip").getPath(),"UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         BestFocusSubstack bestFocusSubstack = new BestFocusSubstack(new Modules());
@@ -533,12 +533,12 @@ public class BestFocusSubstackTest extends ModuleTest {
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/bestfocussubstack/BestFocus5D_8bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/bestfocussubstack/BestFocus5D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image inputImage = new Image("Test_image",ipl);
         workspace.addImage(inputImage);
 
-        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/bestfocussubstack/BestFocus5D_8bit_C1_bothbelow.tif").getPath(),"UTF-8");
+        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/bestfocussubstack/BestFocus5D_8bit_C1_bothbelow.zip").getPath(),"UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         BestFocusSubstack bestFocusSubstack = new BestFocusSubstack(new Modules());
@@ -571,12 +571,12 @@ public class BestFocusSubstackTest extends ModuleTest {
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/bestfocussubstack/BestFocus5D_8bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/bestfocussubstack/BestFocus5D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image inputImage = new Image("Test_image",ipl);
         workspace.addImage(inputImage);
 
-        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/bestfocussubstack/BestFocus5D_8bit_C1_singleplane.tif").getPath(),"UTF-8");
+        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/bestfocussubstack/BestFocus5D_8bit_C1_singleplane.zip").getPath(),"UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         BestFocusSubstack bestFocusSubstack = new BestFocusSubstack(new Modules());
@@ -609,12 +609,12 @@ public class BestFocusSubstackTest extends ModuleTest {
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/bestfocussubstack/BestFocus5D_8bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/bestfocussubstack/BestFocus5D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image inputImage = new Image("Test_image",ipl);
         workspace.addImage(inputImage);
 
-        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/bestfocussubstack/BestFocus5D_8bit_C1_belowabove.tif").getPath(),"UTF-8");
+        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/bestfocussubstack/BestFocus5D_8bit_C1_belowabove.zip").getPath(),"UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         BestFocusSubstack bestFocusSubstack = new BestFocusSubstack(new Modules());
@@ -647,12 +647,12 @@ public class BestFocusSubstackTest extends ModuleTest {
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/bestfocussubstack/BestFocus5D_C1_8bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/bestfocussubstack/BestFocus5D_C1_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image inputImage = new Image("Test_image",ipl);
         workspace.addImage(inputImage);
 
-        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/bestfocussubstack/BestFocus5D_8bit_C1_belowabove_C1.tif").getPath(),"UTF-8");
+        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/bestfocussubstack/BestFocus5D_8bit_C1_belowabove_C1.zip").getPath(),"UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         BestFocusSubstack bestFocusSubstack = new BestFocusSubstack(new Modules());
@@ -685,12 +685,12 @@ public class BestFocusSubstackTest extends ModuleTest {
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/bestfocussubstack/BestFocus4D_T1_8bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/bestfocussubstack/BestFocus4D_T1_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image inputImage = new Image("Test_image",ipl);
         workspace.addImage(inputImage);
 
-        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/bestfocussubstack/BestFocus5D_8bit_C1_belowabove_T1.tif").getPath(),"UTF-8");
+        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/bestfocussubstack/BestFocus5D_8bit_C1_belowabove_T1.zip").getPath(),"UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         BestFocusSubstack bestFocusSubstack = new BestFocusSubstack(new Modules());
@@ -723,12 +723,12 @@ public class BestFocusSubstackTest extends ModuleTest {
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/bestfocussubstack/BestFocus3D_8bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/bestfocussubstack/BestFocus3D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image inputImage = new Image("Test_image",ipl);
         workspace.addImage(inputImage);
 
-        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/bestfocussubstack/BestFocus3D_8bit_C1_belowabove.tif").getPath(),"UTF-8");
+        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/bestfocussubstack/BestFocus3D_8bit_C1_belowabove.zip").getPath(),"UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         BestFocusSubstack bestFocusSubstack = new BestFocusSubstack(new Modules());

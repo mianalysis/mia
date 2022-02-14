@@ -36,17 +36,17 @@ public class ConcatenateStacksTest extends ModuleTest {
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient2D_8bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient2D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image inputImage = new Image("Test_image1",ipl);
         workspace.addImage(inputImage);
 
-        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/imagefilter/LabelledObjects2D_8bit_2pxGauss2D.tif").getPath(),"UTF-8");
+        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/imagefilter/LabelledObjects2D_8bit_2pxGauss2D.zip").getPath(),"UTF-8");
         ipl = IJ.openImage(pathToImage);
         inputImage = new Image("Test_image2",ipl);
         workspace.addImage(inputImage);
 
-        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/concatenatestacks/ConcatenateStacks2D_8bit_X.tif").getPath(),"UTF-8");
+        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/concatenatestacks/ConcatenateStacks2D_8bit_X.zip").getPath(),"UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         ConcatenateStacks concatenateStacks = new ConcatenateStacks(null);
@@ -80,17 +80,17 @@ public class ConcatenateStacksTest extends ModuleTest {
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient2D_8bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient2D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image inputImage = new Image("Test_image1",ipl);
         workspace.addImage(inputImage);
 
-        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/imagefilter/LabelledObjects2D_8bit_2pxGauss2D.tif").getPath(),"UTF-8");
+        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/imagefilter/LabelledObjects2D_8bit_2pxGauss2D.zip").getPath(),"UTF-8");
         ipl = IJ.openImage(pathToImage);
         inputImage = new Image("Test_image2",ipl);
         workspace.addImage(inputImage);
 
-        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/concatenatestacks/ConcatenateStacks2D_8bit_Y.tif").getPath(),"UTF-8");
+        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/concatenatestacks/ConcatenateStacks2D_8bit_Y.zip").getPath(),"UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         ConcatenateStacks concatenateStacks = new ConcatenateStacks(null);
@@ -124,17 +124,17 @@ public class ConcatenateStacksTest extends ModuleTest {
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient2D_8bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient2D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image inputImage = new Image("Test_image1",ipl);
         workspace.addImage(inputImage);
 
-        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/imagefilter/LabelledObjects2D_8bit_2pxGauss2D.tif").getPath(),"UTF-8");
+        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/imagefilter/LabelledObjects2D_8bit_2pxGauss2D.zip").getPath(),"UTF-8");
         ipl = IJ.openImage(pathToImage);
         inputImage = new Image("Test_image2",ipl);
         workspace.addImage(inputImage);
 
-        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/concatenatestacks/ConcatenateStacks2D_8bit_C.tif").getPath(),"UTF-8");
+        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/concatenatestacks/ConcatenateStacks2D_8bit_C.zip").getPath(),"UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         ConcatenateStacks concatenateStacks = new ConcatenateStacks(null);
@@ -168,17 +168,17 @@ public class ConcatenateStacksTest extends ModuleTest {
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient2D_8bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient2D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image inputImage = new Image("Test_image1",ipl);
         workspace.addImage(inputImage);
 
-        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/imagefilter/LabelledObjects2D_8bit_2pxGauss2D.tif").getPath(),"UTF-8");
+        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/imagefilter/LabelledObjects2D_8bit_2pxGauss2D.zip").getPath(),"UTF-8");
         ipl = IJ.openImage(pathToImage);
         inputImage = new Image("Test_image2",ipl);
         workspace.addImage(inputImage);
 
-        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/concatenatestacks/ConcatenateStacks2D_8bit_Z.tif").getPath(),"UTF-8");
+        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/concatenatestacks/ConcatenateStacks2D_8bit_Z.zip").getPath(),"UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         ConcatenateStacks concatenateStacks = new ConcatenateStacks(null);
@@ -212,17 +212,17 @@ public class ConcatenateStacksTest extends ModuleTest {
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient2D_8bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient2D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image inputImage = new Image("Test_image1",ipl);
         workspace.addImage(inputImage);
 
-        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/imagefilter/LabelledObjects2D_8bit_2pxGauss2D.tif").getPath(),"UTF-8");
+        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/imagefilter/LabelledObjects2D_8bit_2pxGauss2D.zip").getPath(),"UTF-8");
         ipl = IJ.openImage(pathToImage);
         inputImage = new Image("Test_image2",ipl);
         workspace.addImage(inputImage);
 
-        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/concatenatestacks/ConcatenateStacks2D_8bit_T.tif").getPath(),"UTF-8");
+        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/concatenatestacks/ConcatenateStacks2D_8bit_T.zip").getPath(),"UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         ConcatenateStacks concatenateStacks = new ConcatenateStacks(null);
@@ -259,17 +259,17 @@ public class ConcatenateStacksTest extends ModuleTest {
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient2D_8bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient2D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image inputImage = new Image("Test_image1",ipl);
         workspace.addImage(inputImage);
 
-        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/imagefilter/LabelledObjects2D_8bit_2pxGauss2D.tif").getPath(),"UTF-8");
+        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/imagefilter/LabelledObjects2D_8bit_2pxGauss2D.zip").getPath(),"UTF-8");
         ipl = IJ.openImage(pathToImage);
         inputImage = new Image("Test_image2",ipl);
         workspace.addImage(inputImage);
 
-        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/concatenatestacks/NoisyGradient2D_8bit_X.tif").getPath(),"UTF-8");
+        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/concatenatestacks/NoisyGradient2D_8bit_X.zip").getPath(),"UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         ConcatenateStacks concatenateStacks = new ConcatenateStacks(null);
@@ -303,17 +303,17 @@ public class ConcatenateStacksTest extends ModuleTest {
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient2D_8bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient2D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image inputImage = new Image("Test_image1",ipl);
         workspace.addImage(inputImage);
 
-        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/imagefilter/LabelledObjects2D_8bit_2pxGauss2D.tif").getPath(),"UTF-8");
+        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/imagefilter/LabelledObjects2D_8bit_2pxGauss2D.zip").getPath(),"UTF-8");
         ipl = IJ.openImage(pathToImage);
         inputImage = new Image("Test_image2",ipl);
         workspace.addImage(inputImage);
 
-        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/concatenatestacks/NoisyGradient2D_8bit_Y.tif").getPath(),"UTF-8");
+        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/concatenatestacks/NoisyGradient2D_8bit_Y.zip").getPath(),"UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         ConcatenateStacks concatenateStacks = new ConcatenateStacks(null);
@@ -347,17 +347,17 @@ public class ConcatenateStacksTest extends ModuleTest {
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient3D_8bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient3D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image inputImage = new Image("Test_image1",ipl);
         workspace.addImage(inputImage);
 
-        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/imagefilter/LabelledObjects3D_8bit_2pxMean3D.tif").getPath(),"UTF-8");
+        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/imagefilter/LabelledObjects3D_8bit_2pxMean3D.zip").getPath(),"UTF-8");
         ipl = IJ.openImage(pathToImage);
         inputImage = new Image("Test_image2",ipl);
         workspace.addImage(inputImage);
 
-        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/concatenatestacks/ConcatenateStacks3D_8bit_C.tif").getPath(),"UTF-8");
+        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/concatenatestacks/ConcatenateStacks3D_8bit_C.zip").getPath(),"UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         ConcatenateStacks concatenateStacks = new ConcatenateStacks(null);
@@ -391,17 +391,17 @@ public class ConcatenateStacksTest extends ModuleTest {
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient3D_8bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient3D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image inputImage = new Image("Test_image1",ipl);
         workspace.addImage(inputImage);
 
-        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/imagefilter/LabelledObjects3D_8bit_2pxMean3D.tif").getPath(),"UTF-8");
+        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/imagefilter/LabelledObjects3D_8bit_2pxMean3D.zip").getPath(),"UTF-8");
         ipl = IJ.openImage(pathToImage);
         inputImage = new Image("Test_image2",ipl);
         workspace.addImage(inputImage);
 
-        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/concatenatestacks/ConcatenateStacks3D_8bit_Z.tif").getPath(),"UTF-8");
+        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/concatenatestacks/ConcatenateStacks3D_8bit_Z.zip").getPath(),"UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         ConcatenateStacks concatenateStacks = new ConcatenateStacks(null);
@@ -435,17 +435,17 @@ public class ConcatenateStacksTest extends ModuleTest {
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient3D_8bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient3D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image inputImage = new Image("Test_image1",ipl);
         workspace.addImage(inputImage);
 
-        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/imagefilter/LabelledObjects3D_8bit_2pxMean3D.tif").getPath(),"UTF-8");
+        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/imagefilter/LabelledObjects3D_8bit_2pxMean3D.zip").getPath(),"UTF-8");
         ipl = IJ.openImage(pathToImage);
         inputImage = new Image("Test_image2",ipl);
         workspace.addImage(inputImage);
 
-        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/concatenatestacks/ConcatenateStacks3D_8bit_T.tif").getPath(),"UTF-8");
+        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/concatenatestacks/ConcatenateStacks3D_8bit_T.zip").getPath(),"UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         ConcatenateStacks concatenateStacks = new ConcatenateStacks(null);
@@ -482,17 +482,17 @@ public class ConcatenateStacksTest extends ModuleTest {
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient2D_8bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient2D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image inputImage = new Image("Test_image1",ipl);
         workspace.addImage(inputImage);
 
-        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/imagefilter/LabelledObjects2D_8bit_2pxGauss2D.tif").getPath(),"UTF-8");
+        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/imagefilter/LabelledObjects2D_8bit_2pxGauss2D.zip").getPath(),"UTF-8");
         ipl = IJ.openImage(pathToImage);
         inputImage = new Image("Test_image2",ipl);
         workspace.addImage(inputImage);
 
-        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/concatenatestacks/NoisyGradient2D_8bit_X.tif").getPath(),"UTF-8");
+        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/concatenatestacks/NoisyGradient2D_8bit_X.zip").getPath(),"UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         ConcatenateStacks concatenateStacks = new ConcatenateStacks(null);
@@ -526,17 +526,17 @@ public class ConcatenateStacksTest extends ModuleTest {
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient2D_8bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient2D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image inputImage = new Image("Test_image1",ipl);
         workspace.addImage(inputImage);
 
-        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/imagefilter/LabelledObjects2D_8bit_2pxGauss2D.tif").getPath(),"UTF-8");
+        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/imagefilter/LabelledObjects2D_8bit_2pxGauss2D.zip").getPath(),"UTF-8");
         ipl = IJ.openImage(pathToImage);
         inputImage = new Image("Test_image2",ipl);
         workspace.addImage(inputImage);
 
-        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/concatenatestacks/NoisyGradient2D_8bit_Y.tif").getPath(),"UTF-8");
+        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/concatenatestacks/NoisyGradient2D_8bit_Y.zip").getPath(),"UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         ConcatenateStacks concatenateStacks = new ConcatenateStacks(null);
@@ -570,17 +570,17 @@ public class ConcatenateStacksTest extends ModuleTest {
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient4D_CT_8bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient4D_CT_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image inputImage = new Image("Test_image1",ipl);
         workspace.addImage(inputImage);
 
-        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/labelledobjects/LabelledObjects4D_CT_8bit.tif").getPath(),"UTF-8");
+        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/labelledobjects/LabelledObjects4D_CT_8bit.zip").getPath(),"UTF-8");
         ipl = IJ.openImage(pathToImage);
         inputImage = new Image("Test_image2",ipl);
         workspace.addImage(inputImage);
 
-        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/concatenatestacks/ConcatenateStacks4DCT_8bit_C.tif").getPath(),"UTF-8");
+        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/concatenatestacks/ConcatenateStacks4DCT_8bit_C.zip").getPath(),"UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         ConcatenateStacks concatenateStacks = new ConcatenateStacks(null);
@@ -614,17 +614,17 @@ public class ConcatenateStacksTest extends ModuleTest {
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient4DCZ_8bit_C_full.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient4DCZ_8bit_C_full.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image inputImage = new Image("Test_image1",ipl);
         workspace.addImage(inputImage);
 
-        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/labelledobjects/LabelledObjects4D_CZ_8bit.tif").getPath(),"UTF-8");
+        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/labelledobjects/LabelledObjects4D_CZ_8bit.zip").getPath(),"UTF-8");
         ipl = IJ.openImage(pathToImage);
         inputImage = new Image("Test_image2",ipl);
         workspace.addImage(inputImage);
 
-        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/concatenatestacks/ConcatenateStacks4DCZ_8bit_C.tif").getPath(),"UTF-8");
+        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/concatenatestacks/ConcatenateStacks4DCZ_8bit_C.zip").getPath(),"UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         ConcatenateStacks concatenateStacks = new ConcatenateStacks(null);
@@ -658,17 +658,17 @@ public class ConcatenateStacksTest extends ModuleTest {
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient4D_ZT_8bit_C1.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient4D_ZT_8bit_C1.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image inputImage = new Image("Test_image1",ipl);
         workspace.addImage(inputImage);
 
-        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/imagefilter/LabelledObjects4D_8bit_2pxMedian3D.tif").getPath(),"UTF-8");
+        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/imagefilter/LabelledObjects4D_8bit_2pxMedian3D.zip").getPath(),"UTF-8");
         ipl = IJ.openImage(pathToImage);
         inputImage = new Image("Test_image2",ipl);
         workspace.addImage(inputImage);
 
-        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/concatenatestacks/ConcatenateStacks4DZT_8bit_C.tif").getPath(),"UTF-8");
+        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/concatenatestacks/ConcatenateStacks4DZT_8bit_C.zip").getPath(),"UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         ConcatenateStacks concatenateStacks = new ConcatenateStacks(null);
@@ -702,17 +702,17 @@ public class ConcatenateStacksTest extends ModuleTest {
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient4D_CT_8bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient4D_CT_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image inputImage = new Image("Test_image1",ipl);
         workspace.addImage(inputImage);
 
-        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/labelledobjects/LabelledObjects4D_CT_8bit.tif").getPath(),"UTF-8");
+        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/labelledobjects/LabelledObjects4D_CT_8bit.zip").getPath(),"UTF-8");
         ipl = IJ.openImage(pathToImage);
         inputImage = new Image("Test_image2",ipl);
         workspace.addImage(inputImage);
 
-        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/concatenatestacks/ConcatenateStacks4DCT_8bit_Z.tif").getPath(),"UTF-8");
+        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/concatenatestacks/ConcatenateStacks4DCT_8bit_Z.zip").getPath(),"UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         ConcatenateStacks concatenateStacks = new ConcatenateStacks(null);
@@ -746,17 +746,17 @@ public class ConcatenateStacksTest extends ModuleTest {
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient4DCZ_8bit_C_full.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient4DCZ_8bit_C_full.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image inputImage = new Image("Test_image1",ipl);
         workspace.addImage(inputImage);
 
-        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/labelledobjects/LabelledObjects4D_CZ_8bit.tif").getPath(),"UTF-8");
+        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/labelledobjects/LabelledObjects4D_CZ_8bit.zip").getPath(),"UTF-8");
         ipl = IJ.openImage(pathToImage);
         inputImage = new Image("Test_image2",ipl);
         workspace.addImage(inputImage);
 
-        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/concatenatestacks/ConcatenateStacks4DCZ_8bit_Z.tif").getPath(),"UTF-8");
+        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/concatenatestacks/ConcatenateStacks4DCZ_8bit_Z.zip").getPath(),"UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         ConcatenateStacks concatenateStacks = new ConcatenateStacks(null);
@@ -790,17 +790,17 @@ public class ConcatenateStacksTest extends ModuleTest {
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient4D_ZT_8bit_C1.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient4D_ZT_8bit_C1.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image inputImage = new Image("Test_image1",ipl);
         workspace.addImage(inputImage);
 
-        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/labelledobjects/LabelledObjects4D_8bit.tif").getPath(),"UTF-8");
+        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/labelledobjects/LabelledObjects4D_8bit.zip").getPath(),"UTF-8");
         ipl = IJ.openImage(pathToImage);
         inputImage = new Image("Test_image2",ipl);
         workspace.addImage(inputImage);
 
-        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/concatenatestacks/ConcatenateStacks4DZT_8bit_Z.tif").getPath(),"UTF-8");
+        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/concatenatestacks/ConcatenateStacks4DZT_8bit_Z.zip").getPath(),"UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         ConcatenateStacks concatenateStacks = new ConcatenateStacks(null);
@@ -834,17 +834,17 @@ public class ConcatenateStacksTest extends ModuleTest {
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient4D_CT_8bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient4D_CT_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image inputImage = new Image("Test_image1",ipl);
         workspace.addImage(inputImage);
 
-        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/labelledobjects/LabelledObjects4D_CT_8bit.tif").getPath(),"UTF-8");
+        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/labelledobjects/LabelledObjects4D_CT_8bit.zip").getPath(),"UTF-8");
         ipl = IJ.openImage(pathToImage);
         inputImage = new Image("Test_image2",ipl);
         workspace.addImage(inputImage);
 
-        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/concatenatestacks/ConcatenateStacks4DCT_8bit_T.tif").getPath(),"UTF-8");
+        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/concatenatestacks/ConcatenateStacks4DCT_8bit_T.zip").getPath(),"UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         ConcatenateStacks concatenateStacks = new ConcatenateStacks(null);
@@ -878,17 +878,17 @@ public class ConcatenateStacksTest extends ModuleTest {
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient4DCZ_8bit_C_full.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient4DCZ_8bit_C_full.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image inputImage = new Image("Test_image1",ipl);
         workspace.addImage(inputImage);
 
-        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/labelledobjects/LabelledObjects4D_CZ_8bit.tif").getPath(),"UTF-8");
+        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/labelledobjects/LabelledObjects4D_CZ_8bit.zip").getPath(),"UTF-8");
         ipl = IJ.openImage(pathToImage);
         inputImage = new Image("Test_image2",ipl);
         workspace.addImage(inputImage);
 
-        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/concatenatestacks/ConcatenateStacks4DCZ_8bit_T.tif").getPath(),"UTF-8");
+        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/concatenatestacks/ConcatenateStacks4DCZ_8bit_T.zip").getPath(),"UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         ConcatenateStacks concatenateStacks = new ConcatenateStacks(null);
@@ -922,17 +922,17 @@ public class ConcatenateStacksTest extends ModuleTest {
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient4D_ZT_8bit_C1.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient4D_ZT_8bit_C1.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image inputImage = new Image("Test_image1",ipl);
         workspace.addImage(inputImage);
 
-        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/imagefilter/LabelledObjects4D_8bit_2pxMedian3D.tif").getPath(),"UTF-8");
+        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/imagefilter/LabelledObjects4D_8bit_2pxMedian3D.zip").getPath(),"UTF-8");
         ipl = IJ.openImage(pathToImage);
         inputImage = new Image("Test_image2",ipl);
         workspace.addImage(inputImage);
 
-        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/concatenatestacks/ConcatenateStacks4DZT_8bit_T.tif").getPath(),"UTF-8");
+        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/concatenatestacks/ConcatenateStacks4DZT_8bit_T.zip").getPath(),"UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         ConcatenateStacks concatenateStacks = new ConcatenateStacks(null);
@@ -969,17 +969,17 @@ public class ConcatenateStacksTest extends ModuleTest {
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient2D_8bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient2D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image inputImage = new Image("Test_image1",ipl);
         workspace.addImage(inputImage);
 
-        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/imagefilter/LabelledObjects2D_8bit_2pxGauss2D.tif").getPath(),"UTF-8");
+        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/imagefilter/LabelledObjects2D_8bit_2pxGauss2D.zip").getPath(),"UTF-8");
         ipl = IJ.openImage(pathToImage);
         inputImage = new Image("Test_image2",ipl);
         workspace.addImage(inputImage);
 
-        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/concatenatestacks/NoisyGradient2D_8bit_X.tif").getPath(),"UTF-8");
+        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/concatenatestacks/NoisyGradient2D_8bit_X.zip").getPath(),"UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         ConcatenateStacks concatenateStacks = new ConcatenateStacks(null);
@@ -1013,17 +1013,17 @@ public class ConcatenateStacksTest extends ModuleTest {
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient2D_8bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient2D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image inputImage = new Image("Test_image1",ipl);
         workspace.addImage(inputImage);
 
-        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/imagefilter/LabelledObjects2D_8bit_2pxGauss2D.tif").getPath(),"UTF-8");
+        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/imagefilter/LabelledObjects2D_8bit_2pxGauss2D.zip").getPath(),"UTF-8");
         ipl = IJ.openImage(pathToImage);
         inputImage = new Image("Test_image2",ipl);
         workspace.addImage(inputImage);
 
-        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/concatenatestacks/NoisyGradient2D_8bit_Y.tif").getPath(),"UTF-8");
+        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/concatenatestacks/NoisyGradient2D_8bit_Y.zip").getPath(),"UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         ConcatenateStacks concatenateStacks = new ConcatenateStacks(null);
@@ -1057,17 +1057,17 @@ public class ConcatenateStacksTest extends ModuleTest {
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient5D_8bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient5D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image inputImage = new Image("Test_image1",ipl);
         workspace.addImage(inputImage);
 
-        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/imagefilter/LabelledObjects5D_8bit_2pxMean3D.tif").getPath(),"UTF-8");
+        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/imagefilter/LabelledObjects5D_8bit_2pxMean3D.zip").getPath(),"UTF-8");
         ipl = IJ.openImage(pathToImage);
         inputImage = new Image("Test_image2",ipl);
         workspace.addImage(inputImage);
 
-        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/concatenatestacks/ConcatenateStacks5D_8bit_C.tif").getPath(),"UTF-8");
+        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/concatenatestacks/ConcatenateStacks5D_8bit_C.zip").getPath(),"UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         ConcatenateStacks concatenateStacks = new ConcatenateStacks(null);
@@ -1101,17 +1101,17 @@ public class ConcatenateStacksTest extends ModuleTest {
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient2D_8bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient2D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image inputImage = new Image("Test_image1",ipl);
         workspace.addImage(inputImage);
 
-        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/imagefilter/LabelledObjects2D_8bit_2pxGauss2D.tif").getPath(),"UTF-8");
+        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/imagefilter/LabelledObjects2D_8bit_2pxGauss2D.zip").getPath(),"UTF-8");
         ipl = IJ.openImage(pathToImage);
         inputImage = new Image("Test_image2",ipl);
         workspace.addImage(inputImage);
 
-        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/concatenatestacks/NoisyGradient2D_8bit_Z.tif").getPath(),"UTF-8");
+        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/concatenatestacks/NoisyGradient2D_8bit_Z.zip").getPath(),"UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         ConcatenateStacks concatenateStacks = new ConcatenateStacks(null);
@@ -1145,17 +1145,17 @@ public class ConcatenateStacksTest extends ModuleTest {
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient5D_8bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient5D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image inputImage = new Image("Test_image1",ipl);
         workspace.addImage(inputImage);
 
-        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/imagefilter/LabelledObjects5D_8bit_2pxMean3D.tif").getPath(),"UTF-8");
+        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/imagefilter/LabelledObjects5D_8bit_2pxMean3D.zip").getPath(),"UTF-8");
         ipl = IJ.openImage(pathToImage);
         inputImage = new Image("Test_image2",ipl);
         workspace.addImage(inputImage);
 
-        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/concatenatestacks/ConcatenateStacks5D_8bit_T.tif").getPath(),"UTF-8");
+        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/concatenatestacks/ConcatenateStacks5D_8bit_T.zip").getPath(),"UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         ConcatenateStacks concatenateStacks = new ConcatenateStacks(null);
@@ -1192,17 +1192,17 @@ public class ConcatenateStacksTest extends ModuleTest {
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient2D_8bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient2D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image inputImage = new Image("Test_image1",ipl);
         workspace.addImage(inputImage);
 
-        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/imagefilter/LabelledObjects2D_8bit_2pxGauss2D.tif").getPath(),"UTF-8");
+        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/imagefilter/LabelledObjects2D_8bit_2pxGauss2D.zip").getPath(),"UTF-8");
         ipl = IJ.openImage(pathToImage);
         inputImage = new Image("Test_image2",ipl);
         workspace.addImage(inputImage);
 
-        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/concatenatestacks/NoisyGradient2D_8bit_X.tif").getPath(),"UTF-8");
+        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/concatenatestacks/NoisyGradient2D_8bit_X.zip").getPath(),"UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         ConcatenateStacks concatenateStacks = new ConcatenateStacks(null);
@@ -1236,17 +1236,17 @@ public class ConcatenateStacksTest extends ModuleTest {
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient2D_8bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient2D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image inputImage = new Image("Test_image1",ipl);
         workspace.addImage(inputImage);
 
-        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/imagefilter/LabelledObjects2D_8bit_2pxGauss2D.tif").getPath(),"UTF-8");
+        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/imagefilter/LabelledObjects2D_8bit_2pxGauss2D.zip").getPath(),"UTF-8");
         ipl = IJ.openImage(pathToImage);
         inputImage = new Image("Test_image2",ipl);
         workspace.addImage(inputImage);
 
-        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/concatenatestacks/NoisyGradient2D_8bit_Y.tif").getPath(),"UTF-8");
+        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/concatenatestacks/NoisyGradient2D_8bit_Y.zip").getPath(),"UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         ConcatenateStacks concatenateStacks = new ConcatenateStacks(null);
@@ -1280,17 +1280,17 @@ public class ConcatenateStacksTest extends ModuleTest {
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient2D_8bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient2D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image inputImage = new Image("Test_image1",ipl);
         workspace.addImage(inputImage);
 
-        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/imagefilter/LabelledObjects2D_8bit_2pxGauss2D.tif").getPath(),"UTF-8");
+        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/imagefilter/LabelledObjects2D_8bit_2pxGauss2D.zip").getPath(),"UTF-8");
         ipl = IJ.openImage(pathToImage);
         inputImage = new Image("Test_image2",ipl);
         workspace.addImage(inputImage);
 
-        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/concatenatestacks/NoisyGradient2D_8bit_C.tif").getPath(),"UTF-8");
+        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/concatenatestacks/NoisyGradient2D_8bit_C.zip").getPath(),"UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         ConcatenateStacks concatenateStacks = new ConcatenateStacks(null);
@@ -1324,17 +1324,17 @@ public class ConcatenateStacksTest extends ModuleTest {
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient2D_8bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient2D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image inputImage = new Image("Test_image1",ipl);
         workspace.addImage(inputImage);
 
-        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/imagefilter/LabelledObjects2D_8bit_2pxGauss2D.tif").getPath(),"UTF-8");
+        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/imagefilter/LabelledObjects2D_8bit_2pxGauss2D.zip").getPath(),"UTF-8");
         ipl = IJ.openImage(pathToImage);
         inputImage = new Image("Test_image2",ipl);
         workspace.addImage(inputImage);
 
-        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/concatenatestacks/NoisyGradient2D_8bit_Z.tif").getPath(),"UTF-8");
+        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/concatenatestacks/NoisyGradient2D_8bit_Z.zip").getPath(),"UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         ConcatenateStacks concatenateStacks = new ConcatenateStacks(null);
@@ -1368,17 +1368,17 @@ public class ConcatenateStacksTest extends ModuleTest {
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient2D_8bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient2D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image inputImage = new Image("Test_image1",ipl);
         workspace.addImage(inputImage);
 
-        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/imagefilter/LabelledObjects2D_8bit_2pxGauss2D.tif").getPath(),"UTF-8");
+        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/imagefilter/LabelledObjects2D_8bit_2pxGauss2D.zip").getPath(),"UTF-8");
         ipl = IJ.openImage(pathToImage);
         inputImage = new Image("Test_image2",ipl);
         workspace.addImage(inputImage);
 
-        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/concatenatestacks/NoisyGradient2D_8bit_T.tif").getPath(),"UTF-8");
+        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/concatenatestacks/NoisyGradient2D_8bit_T.zip").getPath(),"UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         ConcatenateStacks concatenateStacks = new ConcatenateStacks(null);
@@ -1415,17 +1415,17 @@ public class ConcatenateStacksTest extends ModuleTest {
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient2D_8bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient2D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image inputImage = new Image("Test_image1",ipl);
         workspace.addImage(inputImage);
 
-        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/imagefilter/LabelledObjects2D_8bit_2pxGauss2D.tif").getPath(),"UTF-8");
+        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/imagefilter/LabelledObjects2D_8bit_2pxGauss2D.zip").getPath(),"UTF-8");
         ipl = IJ.openImage(pathToImage);
         inputImage = new Image("Test_image2",ipl);
         workspace.addImage(inputImage);
 
-        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/concatenatestacks/NoisyGradient2D_8bit_X.tif").getPath(),"UTF-8");
+        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/concatenatestacks/NoisyGradient2D_8bit_X.zip").getPath(),"UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         ConcatenateStacks concatenateStacks = new ConcatenateStacks(null);
@@ -1459,17 +1459,17 @@ public class ConcatenateStacksTest extends ModuleTest {
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient2D_8bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient2D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image inputImage = new Image("Test_image1",ipl);
         workspace.addImage(inputImage);
 
-        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/imagefilter/LabelledObjects2D_8bit_2pxGauss2D.tif").getPath(),"UTF-8");
+        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/imagefilter/LabelledObjects2D_8bit_2pxGauss2D.zip").getPath(),"UTF-8");
         ipl = IJ.openImage(pathToImage);
         inputImage = new Image("Test_image2",ipl);
         workspace.addImage(inputImage);
 
-        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/concatenatestacks/NoisyGradient2D_8bit_X.tif").getPath(),"UTF-8");
+        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/concatenatestacks/NoisyGradient2D_8bit_X.zip").getPath(),"UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         ConcatenateStacks concatenateStacks = new ConcatenateStacks(null);
@@ -1503,17 +1503,17 @@ public class ConcatenateStacksTest extends ModuleTest {
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient2D_8bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient2D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image inputImage = new Image("Test_image1",ipl);
         workspace.addImage(inputImage);
 
-        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/imagefilter/LabelledObjects2D_8bit_2pxGauss2D.tif").getPath(),"UTF-8");
+        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/imagefilter/LabelledObjects2D_8bit_2pxGauss2D.zip").getPath(),"UTF-8");
         ipl = IJ.openImage(pathToImage);
         inputImage = new Image("Test_image2",ipl);
         workspace.addImage(inputImage);
 
-        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/concatenatestacks/NoisyGradient2D_8bit_X.tif").getPath(),"UTF-8");
+        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/concatenatestacks/NoisyGradient2D_8bit_X.zip").getPath(),"UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         ConcatenateStacks concatenateStacks = new ConcatenateStacks(null);

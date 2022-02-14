@@ -22,7 +22,7 @@ public class ImageTest < T extends RealType< T > & NativeType< T >> {
     @Test
     public void testConstructorImagePlus() throws Exception {
         // Loading the test image
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/labelledobjects/LabelledObjects5D_8bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/labelledobjects/LabelledObjects5D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image",ipl);
 
@@ -46,7 +46,7 @@ public class ImageTest < T extends RealType< T > & NativeType< T >> {
     @Test
     public void testConstructorImg() throws Exception {
         // Loading the test image
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/labelledobjects/LabelledObjects5D_8bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/labelledobjects/LabelledObjects5D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         ImgPlus<T> img = ImagePlusAdapter.wrapImgPlus(ipl);
         Image image = new Image("Test_image",img);
@@ -76,7 +76,7 @@ public class ImageTest < T extends RealType< T > & NativeType< T >> {
     @EnumSource(VolumeType.class)
     public void testConvertImageToObjects8bit3D(VolumeType volumeType) throws Exception {
         // Loading the test image
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/labelledobjects/LabelledObjects3D_8bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/labelledobjects/LabelledObjects3D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image",ipl);
 
@@ -113,7 +113,7 @@ public class ImageTest < T extends RealType< T > & NativeType< T >> {
     @EnumSource(VolumeType.class)
     public void testConvertImageToObjects16bit3D(VolumeType volumeType) throws Exception {
         // Loading the test image
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/labelledobjects/LabelledObjects3D_16bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/labelledobjects/LabelledObjects3D_16bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image",ipl);
 
@@ -145,7 +145,7 @@ public class ImageTest < T extends RealType< T > & NativeType< T >> {
     @Test
     public void testAddMeasurement() throws Exception {
         // Loading the test image
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/labelledobjects/LabelledObjects3D_8bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/labelledobjects/LabelledObjects3D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image",ipl);
 

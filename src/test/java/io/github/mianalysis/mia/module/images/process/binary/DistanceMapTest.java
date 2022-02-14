@@ -37,7 +37,7 @@ public class DistanceMapTest extends ModuleTest {
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
-                this.getClass().getResource("/images/binaryobjects/BinaryObjects3D_8bit_blackBG.tif").getPath(),
+                this.getClass().getResource("/images/binaryobjects/BinaryObjects3D_8bit_blackBG.zip").getPath(),
                 "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image", ipl);
@@ -79,7 +79,7 @@ public class DistanceMapTest extends ModuleTest {
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
-                this.getClass().getResource("/images/binaryobjects/BinaryObjects3D_8bit_whiteBG.tif").getPath(),
+                this.getClass().getResource("/images/binaryobjects/BinaryObjects3D_8bit_whiteBG.zip").getPath(),
                 "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image", ipl);

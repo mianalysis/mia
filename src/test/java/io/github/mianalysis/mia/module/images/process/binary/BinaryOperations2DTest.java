@@ -40,14 +40,14 @@ public class BinaryOperations2DTest extends ModuleTest {
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
-                this.getClass().getResource("/images/binaryobjects/BinaryObjects2D_8bit_whiteBG.tif").getPath(),
+                this.getClass().getResource("/images/binaryobjects/BinaryObjects2D_8bit_whiteBG.zip").getPath(),
                 "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image", ipl);
         workspace.addImage(image);
 
         pathToImage = URLDecoder.decode(this.getClass()
-                .getResource("/images/binaryoperations/BinaryObjects2D_8bit_whiteBG_dilate1.tif").getPath(), "UTF-8");
+                .getResource("/images/binaryoperations/BinaryObjects2D_8bit_whiteBG_dilate1.zip").getPath(), "UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
@@ -83,14 +83,14 @@ public class BinaryOperations2DTest extends ModuleTest {
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
-                this.getClass().getResource("/images/binaryobjects/BinaryObjects3D_8bit_whiteBG.tif").getPath(),
+                this.getClass().getResource("/images/binaryobjects/BinaryObjects3D_8bit_whiteBG.zip").getPath(),
                 "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image", ipl);
         workspace.addImage(image);
 
         pathToImage = URLDecoder.decode(this.getClass()
-                .getResource("/images/binaryoperations/BinaryObjects3D_8bit_whiteBG_dilate1.tif").getPath(), "UTF-8");
+                .getResource("/images/binaryoperations/BinaryObjects3D_8bit_whiteBG_dilate1.zip").getPath(), "UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
@@ -126,14 +126,14 @@ public class BinaryOperations2DTest extends ModuleTest {
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
-                this.getClass().getResource("/images/binaryobjects/BinaryObjects4D_8bit_whiteBG.tif").getPath(),
+                this.getClass().getResource("/images/binaryobjects/BinaryObjects4D_8bit_whiteBG.zip").getPath(),
                 "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image", ipl);
         workspace.addImage(image);
 
         pathToImage = URLDecoder.decode(this.getClass()
-                .getResource("/images/binaryoperations/BinaryObjects4D_8bit_whiteBG_dilate1.tif").getPath(), "UTF-8");
+                .getResource("/images/binaryoperations/BinaryObjects4D_8bit_whiteBG_dilate1.zip").getPath(), "UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
@@ -169,14 +169,14 @@ public class BinaryOperations2DTest extends ModuleTest {
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
-                this.getClass().getResource("/images/binaryobjects/BinaryObjects5D_8bit_whiteBG.tif").getPath(),
+                this.getClass().getResource("/images/binaryobjects/BinaryObjects5D_8bit_whiteBG.zip").getPath(),
                 "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image", ipl);
         workspace.addImage(image);
 
         pathToImage = URLDecoder.decode(this.getClass()
-                .getResource("/images/binaryoperations/BinaryObjects5D_8bit_whiteBG_dilate1.tif").getPath(), "UTF-8");
+                .getResource("/images/binaryoperations/BinaryObjects5D_8bit_whiteBG_dilate1.zip").getPath(), "UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
@@ -212,14 +212,14 @@ public class BinaryOperations2DTest extends ModuleTest {
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
-                this.getClass().getResource("/images/binaryobjects/BinaryObjects2D_8bit_whiteBG.tif").getPath(),
+                this.getClass().getResource("/images/binaryobjects/BinaryObjects2D_8bit_whiteBG.zip").getPath(),
                 "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image", ipl);
         workspace.addImage(image);
 
         pathToImage = URLDecoder.decode(this.getClass()
-                .getResource("/images/binaryoperations/BinaryObjects2D_8bit_whiteBG_dilate1.tif").getPath(), "UTF-8");
+                .getResource("/images/binaryoperations/BinaryObjects2D_8bit_whiteBG_dilate1.zip").getPath(), "UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
@@ -254,14 +254,14 @@ public class BinaryOperations2DTest extends ModuleTest {
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
-                this.getClass().getResource("/images/binaryobjects/BinaryObjects2D_8bit_whiteBG.tif").getPath(),
+                this.getClass().getResource("/images/binaryobjects/BinaryObjects2D_8bit_whiteBG.zip").getPath(),
                 "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image", ipl);
         workspace.addImage(image);
 
         pathToImage = URLDecoder.decode(
-                this.getClass().getResource("/images/binaryobjects/BinaryObjects2D_8bit_whiteBG.tif").getPath(),
+                this.getClass().getResource("/images/binaryobjects/BinaryObjects2D_8bit_whiteBG.zip").getPath(),
                 "UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
@@ -298,14 +298,14 @@ public class BinaryOperations2DTest extends ModuleTest {
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
-                this.getClass().getResource("/images/binaryobjects/BinaryObjects2D_8bit_whiteBG.tif").getPath(),
+                this.getClass().getResource("/images/binaryobjects/BinaryObjects2D_8bit_whiteBG.zip").getPath(),
                 "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image", ipl);
         workspace.addImage(image);
 
         pathToImage = URLDecoder.decode(this.getClass()
-                .getResource("/images/binaryoperations/BinaryObjects2D_8bit_whiteBG_erode5.tif").getPath(), "UTF-8");
+                .getResource("/images/binaryoperations/BinaryObjects2D_8bit_whiteBG_erode5.zip").getPath(), "UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
@@ -341,14 +341,14 @@ public class BinaryOperations2DTest extends ModuleTest {
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
-                this.getClass().getResource("/images/binaryobjects/BinaryObjects3D_8bit_whiteBG.tif").getPath(),
+                this.getClass().getResource("/images/binaryobjects/BinaryObjects3D_8bit_whiteBG.zip").getPath(),
                 "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image", ipl);
         workspace.addImage(image);
 
         pathToImage = URLDecoder.decode(this.getClass()
-                .getResource("/images/binaryoperations/BinaryObjects3D_8bit_whiteBG_erode5.tif").getPath(), "UTF-8");
+                .getResource("/images/binaryoperations/BinaryObjects3D_8bit_whiteBG_erode5.zip").getPath(), "UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
@@ -384,14 +384,14 @@ public class BinaryOperations2DTest extends ModuleTest {
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
-                this.getClass().getResource("/images/binaryobjects/BinaryObjects4D_8bit_whiteBG.tif").getPath(),
+                this.getClass().getResource("/images/binaryobjects/BinaryObjects4D_8bit_whiteBG.zip").getPath(),
                 "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image", ipl);
         workspace.addImage(image);
 
         pathToImage = URLDecoder.decode(this.getClass()
-                .getResource("/images/binaryoperations/BinaryObjects4D_8bit_whiteBG_erode5.tif").getPath(), "UTF-8");
+                .getResource("/images/binaryoperations/BinaryObjects4D_8bit_whiteBG_erode5.zip").getPath(), "UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
@@ -427,14 +427,14 @@ public class BinaryOperations2DTest extends ModuleTest {
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
-                this.getClass().getResource("/images/binaryobjects/BinaryObjects5D_8bit_whiteBG.tif").getPath(),
+                this.getClass().getResource("/images/binaryobjects/BinaryObjects5D_8bit_whiteBG.zip").getPath(),
                 "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image", ipl);
         workspace.addImage(image);
 
         pathToImage = URLDecoder.decode(this.getClass()
-                .getResource("/images/binaryoperations/BinaryObjects5D_8bit_whiteBG_erode5.tif").getPath(), "UTF-8");
+                .getResource("/images/binaryoperations/BinaryObjects5D_8bit_whiteBG_erode5.zip").getPath(), "UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
@@ -476,14 +476,14 @@ public class BinaryOperations2DTest extends ModuleTest {
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
-                this.getClass().getResource("/images/binaryobjects/BinaryObjects2D_8bit_whiteBG.tif").getPath(),
+                this.getClass().getResource("/images/binaryobjects/BinaryObjects2D_8bit_whiteBG.zip").getPath(),
                 "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image", ipl);
         workspace.addImage(image);
 
         pathToImage = URLDecoder.decode(this.getClass()
-                .getResource("/images/binaryoperations/BinaryObjects2D_8bit_whiteBG_erode100.tif").getPath(), "UTF-8");
+                .getResource("/images/binaryoperations/BinaryObjects2D_8bit_whiteBG_erode100.zip").getPath(), "UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
@@ -525,14 +525,14 @@ public class BinaryOperations2DTest extends ModuleTest {
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
-                this.getClass().getResource("/images/binaryobjects/BinaryObjects3D_8bit_whiteBG.tif").getPath(),
+                this.getClass().getResource("/images/binaryobjects/BinaryObjects3D_8bit_whiteBG.zip").getPath(),
                 "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image", ipl);
         workspace.addImage(image);
 
         pathToImage = URLDecoder.decode(this.getClass()
-                .getResource("/images/binaryoperations/BinaryObjects3D_8bit_whiteBG_erode100.tif").getPath(), "UTF-8");
+                .getResource("/images/binaryoperations/BinaryObjects3D_8bit_whiteBG_erode100.zip").getPath(), "UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
@@ -574,14 +574,14 @@ public class BinaryOperations2DTest extends ModuleTest {
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
-                this.getClass().getResource("/images/binaryobjects/BinaryObjects4D_8bit_whiteBG.tif").getPath(),
+                this.getClass().getResource("/images/binaryobjects/BinaryObjects4D_8bit_whiteBG.zip").getPath(),
                 "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image", ipl);
         workspace.addImage(image);
 
         pathToImage = URLDecoder.decode(this.getClass()
-                .getResource("/images/binaryoperations/BinaryObjects4D_8bit_whiteBG_erode100.tif").getPath(), "UTF-8");
+                .getResource("/images/binaryoperations/BinaryObjects4D_8bit_whiteBG_erode100.zip").getPath(), "UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
@@ -623,14 +623,14 @@ public class BinaryOperations2DTest extends ModuleTest {
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
-                this.getClass().getResource("/images/binaryobjects/BinaryObjects5D_8bit_whiteBG.tif").getPath(),
+                this.getClass().getResource("/images/binaryobjects/BinaryObjects5D_8bit_whiteBG.zip").getPath(),
                 "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image", ipl);
         workspace.addImage(image);
 
         pathToImage = URLDecoder.decode(this.getClass()
-                .getResource("/images/binaryoperations/BinaryObjects5D_8bit_whiteBG_erode100.tif").getPath(), "UTF-8");
+                .getResource("/images/binaryoperations/BinaryObjects5D_8bit_whiteBG_erode100.zip").getPath(), "UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
@@ -666,14 +666,14 @@ public class BinaryOperations2DTest extends ModuleTest {
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
-                this.getClass().getResource("/images/binaryobjects/BinaryObjects2D_8bit_whiteBG.tif").getPath(),
+                this.getClass().getResource("/images/binaryobjects/BinaryObjects2D_8bit_whiteBG.zip").getPath(),
                 "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image", ipl);
         workspace.addImage(image);
 
         pathToImage = URLDecoder.decode(this.getClass()
-                .getResource("/images/binaryoperations/BinaryObjects2D_8bit_whiteBG_fillHoles2D.tif").getPath(),
+                .getResource("/images/binaryoperations/BinaryObjects2D_8bit_whiteBG_fillHoles2D.zip").getPath(),
                 "UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
@@ -710,14 +710,14 @@ public class BinaryOperations2DTest extends ModuleTest {
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
-                this.getClass().getResource("/images/binaryobjects/BinaryObjects3D_8bit_whiteBG.tif").getPath(),
+                this.getClass().getResource("/images/binaryobjects/BinaryObjects3D_8bit_whiteBG.zip").getPath(),
                 "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image", ipl);
         workspace.addImage(image);
 
         pathToImage = URLDecoder.decode(this.getClass()
-                .getResource("/images/binaryoperations/BinaryObjects3D_8bit_whiteBG_fillHoles2D.tif").getPath(),
+                .getResource("/images/binaryoperations/BinaryObjects3D_8bit_whiteBG_fillHoles2D.zip").getPath(),
                 "UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
@@ -754,14 +754,14 @@ public class BinaryOperations2DTest extends ModuleTest {
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
-                this.getClass().getResource("/images/binaryobjects/BinaryObjects4D_8bit_whiteBG.tif").getPath(),
+                this.getClass().getResource("/images/binaryobjects/BinaryObjects4D_8bit_whiteBG.zip").getPath(),
                 "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image", ipl);
         workspace.addImage(image);
 
         pathToImage = URLDecoder.decode(this.getClass()
-                .getResource("/images/binaryoperations/BinaryObjects4D_8bit_whiteBG_fillHoles2D.tif").getPath(),
+                .getResource("/images/binaryoperations/BinaryObjects4D_8bit_whiteBG_fillHoles2D.zip").getPath(),
                 "UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
@@ -798,14 +798,14 @@ public class BinaryOperations2DTest extends ModuleTest {
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
-                this.getClass().getResource("/images/binaryobjects/BinaryObjects5D_8bit_whiteBG.tif").getPath(),
+                this.getClass().getResource("/images/binaryobjects/BinaryObjects5D_8bit_whiteBG.zip").getPath(),
                 "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image", ipl);
         workspace.addImage(image);
 
         pathToImage = URLDecoder.decode(this.getClass()
-                .getResource("/images/binaryoperations/BinaryObjects5D_8bit_whiteBG_fillHoles2D.tif").getPath(),
+                .getResource("/images/binaryoperations/BinaryObjects5D_8bit_whiteBG_fillHoles2D.zip").getPath(),
                 "UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
@@ -842,14 +842,14 @@ public class BinaryOperations2DTest extends ModuleTest {
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
-                this.getClass().getResource("/images/binaryobjects/BinaryObjects2D_8bit_blackBG.tif").getPath(),
+                this.getClass().getResource("/images/binaryobjects/BinaryObjects2D_8bit_blackBG.zip").getPath(),
                 "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image", ipl);
         workspace.addImage(image);
 
         pathToImage = URLDecoder.decode(this.getClass()
-                .getResource("/images/binaryoperations/BinaryObjects2D_8bit_blackBG_dilate1.tif").getPath(), "UTF-8");
+                .getResource("/images/binaryoperations/BinaryObjects2D_8bit_blackBG_dilate1.zip").getPath(), "UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
@@ -885,14 +885,14 @@ public class BinaryOperations2DTest extends ModuleTest {
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
-                this.getClass().getResource("/images/binaryobjects/BinaryObjects3D_8bit_blackBG.tif").getPath(),
+                this.getClass().getResource("/images/binaryobjects/BinaryObjects3D_8bit_blackBG.zip").getPath(),
                 "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image", ipl);
         workspace.addImage(image);
 
         pathToImage = URLDecoder.decode(this.getClass()
-                .getResource("/images/binaryoperations/BinaryObjects3D_8bit_blackBG_dilate1.tif").getPath(), "UTF-8");
+                .getResource("/images/binaryoperations/BinaryObjects3D_8bit_blackBG_dilate1.zip").getPath(), "UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
@@ -928,14 +928,14 @@ public class BinaryOperations2DTest extends ModuleTest {
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
-                this.getClass().getResource("/images/binaryobjects/BinaryObjects4D_8bit_blackBG.tif").getPath(),
+                this.getClass().getResource("/images/binaryobjects/BinaryObjects4D_8bit_blackBG.zip").getPath(),
                 "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image", ipl);
         workspace.addImage(image);
 
         pathToImage = URLDecoder.decode(this.getClass()
-                .getResource("/images/binaryoperations/BinaryObjects4D_8bit_blackBG_dilate1.tif").getPath(), "UTF-8");
+                .getResource("/images/binaryoperations/BinaryObjects4D_8bit_blackBG_dilate1.zip").getPath(), "UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
@@ -971,14 +971,14 @@ public class BinaryOperations2DTest extends ModuleTest {
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
-                this.getClass().getResource("/images/binaryobjects/BinaryObjects5D_8bit_blackBG.tif").getPath(),
+                this.getClass().getResource("/images/binaryobjects/BinaryObjects5D_8bit_blackBG.zip").getPath(),
                 "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image", ipl);
         workspace.addImage(image);
 
         pathToImage = URLDecoder.decode(this.getClass()
-                .getResource("/images/binaryoperations/BinaryObjects5D_8bit_blackBG_dilate1.tif").getPath(), "UTF-8");
+                .getResource("/images/binaryoperations/BinaryObjects5D_8bit_blackBG_dilate1.zip").getPath(), "UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
@@ -1014,14 +1014,14 @@ public class BinaryOperations2DTest extends ModuleTest {
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
-                this.getClass().getResource("/images/binaryobjects/BinaryObjects2D_8bit_blackBG.tif").getPath(),
+                this.getClass().getResource("/images/binaryobjects/BinaryObjects2D_8bit_blackBG.zip").getPath(),
                 "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image", ipl);
         workspace.addImage(image);
 
         pathToImage = URLDecoder.decode(this.getClass()
-                .getResource("/images/binaryoperations/BinaryObjects2D_8bit_blackBG_dilate1.tif").getPath(), "UTF-8");
+                .getResource("/images/binaryoperations/BinaryObjects2D_8bit_blackBG_dilate1.zip").getPath(), "UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
@@ -1056,14 +1056,14 @@ public class BinaryOperations2DTest extends ModuleTest {
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
-                this.getClass().getResource("/images/binaryobjects/BinaryObjects2D_8bit_blackBG.tif").getPath(),
+                this.getClass().getResource("/images/binaryobjects/BinaryObjects2D_8bit_blackBG.zip").getPath(),
                 "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image", ipl);
         workspace.addImage(image);
 
         pathToImage = URLDecoder.decode(
-                this.getClass().getResource("/images/binaryobjects/BinaryObjects2D_8bit_blackBG.tif").getPath(),
+                this.getClass().getResource("/images/binaryobjects/BinaryObjects2D_8bit_blackBG.zip").getPath(),
                 "UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
@@ -1100,14 +1100,14 @@ public class BinaryOperations2DTest extends ModuleTest {
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
-                this.getClass().getResource("/images/binaryobjects/BinaryObjects2D_8bit_blackBG.tif").getPath(),
+                this.getClass().getResource("/images/binaryobjects/BinaryObjects2D_8bit_blackBG.zip").getPath(),
                 "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image", ipl);
         workspace.addImage(image);
 
         pathToImage = URLDecoder.decode(this.getClass()
-                .getResource("/images/binaryoperations/BinaryObjects2D_8bit_blackBG_erode5.tif").getPath(), "UTF-8");
+                .getResource("/images/binaryoperations/BinaryObjects2D_8bit_blackBG_erode5.zip").getPath(), "UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
@@ -1143,14 +1143,14 @@ public class BinaryOperations2DTest extends ModuleTest {
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
-                this.getClass().getResource("/images/binaryobjects/BinaryObjects3D_8bit_blackBG.tif").getPath(),
+                this.getClass().getResource("/images/binaryobjects/BinaryObjects3D_8bit_blackBG.zip").getPath(),
                 "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image", ipl);
         workspace.addImage(image);
 
         pathToImage = URLDecoder.decode(this.getClass()
-                .getResource("/images/binaryoperations/BinaryObjects3D_8bit_blackBG_erode5.tif").getPath(), "UTF-8");
+                .getResource("/images/binaryoperations/BinaryObjects3D_8bit_blackBG_erode5.zip").getPath(), "UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
@@ -1186,14 +1186,14 @@ public class BinaryOperations2DTest extends ModuleTest {
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
-                this.getClass().getResource("/images/binaryobjects/BinaryObjects4D_8bit_blackBG.tif").getPath(),
+                this.getClass().getResource("/images/binaryobjects/BinaryObjects4D_8bit_blackBG.zip").getPath(),
                 "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image", ipl);
         workspace.addImage(image);
 
         pathToImage = URLDecoder.decode(this.getClass()
-                .getResource("/images/binaryoperations/BinaryObjects4D_8bit_blackBG_erode5.tif").getPath(), "UTF-8");
+                .getResource("/images/binaryoperations/BinaryObjects4D_8bit_blackBG_erode5.zip").getPath(), "UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
@@ -1229,14 +1229,14 @@ public class BinaryOperations2DTest extends ModuleTest {
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
-                this.getClass().getResource("/images/binaryobjects/BinaryObjects5D_8bit_blackBG.tif").getPath(),
+                this.getClass().getResource("/images/binaryobjects/BinaryObjects5D_8bit_blackBG.zip").getPath(),
                 "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image", ipl);
         workspace.addImage(image);
 
         pathToImage = URLDecoder.decode(this.getClass()
-                .getResource("/images/binaryoperations/BinaryObjects5D_8bit_blackBG_erode5.tif").getPath(), "UTF-8");
+                .getResource("/images/binaryoperations/BinaryObjects5D_8bit_blackBG_erode5.zip").getPath(), "UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
@@ -1278,14 +1278,14 @@ public class BinaryOperations2DTest extends ModuleTest {
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
-                this.getClass().getResource("/images/binaryobjects/BinaryObjects2D_8bit_blackBG.tif").getPath(),
+                this.getClass().getResource("/images/binaryobjects/BinaryObjects2D_8bit_blackBG.zip").getPath(),
                 "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image", ipl);
         workspace.addImage(image);
 
         pathToImage = URLDecoder.decode(this.getClass()
-                .getResource("/images/binaryoperations/BinaryObjects2D_8bit_blackBG_erode100.tif").getPath(), "UTF-8");
+                .getResource("/images/binaryoperations/BinaryObjects2D_8bit_blackBG_erode100.zip").getPath(), "UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
@@ -1327,14 +1327,14 @@ public class BinaryOperations2DTest extends ModuleTest {
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
-                this.getClass().getResource("/images/binaryobjects/BinaryObjects3D_8bit_blackBG.tif").getPath(),
+                this.getClass().getResource("/images/binaryobjects/BinaryObjects3D_8bit_blackBG.zip").getPath(),
                 "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image", ipl);
         workspace.addImage(image);
 
         pathToImage = URLDecoder.decode(this.getClass()
-                .getResource("/images/binaryoperations/BinaryObjects3D_8bit_blackBG_erode100.tif").getPath(), "UTF-8");
+                .getResource("/images/binaryoperations/BinaryObjects3D_8bit_blackBG_erode100.zip").getPath(), "UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
@@ -1376,14 +1376,14 @@ public class BinaryOperations2DTest extends ModuleTest {
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
-                this.getClass().getResource("/images/binaryobjects/BinaryObjects4D_8bit_blackBG.tif").getPath(),
+                this.getClass().getResource("/images/binaryobjects/BinaryObjects4D_8bit_blackBG.zip").getPath(),
                 "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image", ipl);
         workspace.addImage(image);
 
         pathToImage = URLDecoder.decode(this.getClass()
-                .getResource("/images/binaryoperations/BinaryObjects4D_8bit_blackBG_erode100.tif").getPath(), "UTF-8");
+                .getResource("/images/binaryoperations/BinaryObjects4D_8bit_blackBG_erode100.zip").getPath(), "UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
@@ -1425,14 +1425,14 @@ public class BinaryOperations2DTest extends ModuleTest {
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
-                this.getClass().getResource("/images/binaryobjects/BinaryObjects5D_8bit_blackBG.tif").getPath(),
+                this.getClass().getResource("/images/binaryobjects/BinaryObjects5D_8bit_blackBG.zip").getPath(),
                 "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image", ipl);
         workspace.addImage(image);
 
         pathToImage = URLDecoder.decode(this.getClass()
-                .getResource("/images/binaryoperations/BinaryObjects5D_8bit_blackBG_erode100.tif").getPath(), "UTF-8");
+                .getResource("/images/binaryoperations/BinaryObjects5D_8bit_blackBG_erode100.zip").getPath(), "UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
@@ -1468,14 +1468,14 @@ public class BinaryOperations2DTest extends ModuleTest {
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
-                this.getClass().getResource("/images/binaryobjects/BinaryObjects2D_8bit_blackBG.tif").getPath(),
+                this.getClass().getResource("/images/binaryobjects/BinaryObjects2D_8bit_blackBG.zip").getPath(),
                 "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image", ipl);
         workspace.addImage(image);
 
         pathToImage = URLDecoder.decode(this.getClass()
-                .getResource("/images/binaryoperations/BinaryObjects2D_8bit_blackBG_fillHoles2D.tif").getPath(),
+                .getResource("/images/binaryoperations/BinaryObjects2D_8bit_blackBG_fillHoles2D.zip").getPath(),
                 "UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
@@ -1512,14 +1512,14 @@ public class BinaryOperations2DTest extends ModuleTest {
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
-                this.getClass().getResource("/images/binaryobjects/BinaryObjects3D_8bit_blackBG.tif").getPath(),
+                this.getClass().getResource("/images/binaryobjects/BinaryObjects3D_8bit_blackBG.zip").getPath(),
                 "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image", ipl);
         workspace.addImage(image);
 
         pathToImage = URLDecoder.decode(this.getClass()
-                .getResource("/images/binaryoperations/BinaryObjects3D_8bit_blackBG_fillHoles2D.tif").getPath(),
+                .getResource("/images/binaryoperations/BinaryObjects3D_8bit_blackBG_fillHoles2D.zip").getPath(),
                 "UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
@@ -1556,14 +1556,14 @@ public class BinaryOperations2DTest extends ModuleTest {
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
-                this.getClass().getResource("/images/binaryobjects/BinaryObjects4D_8bit_blackBG.tif").getPath(),
+                this.getClass().getResource("/images/binaryobjects/BinaryObjects4D_8bit_blackBG.zip").getPath(),
                 "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image", ipl);
         workspace.addImage(image);
 
         pathToImage = URLDecoder.decode(this.getClass()
-                .getResource("/images/binaryoperations/BinaryObjects4D_8bit_blackBG_fillHoles2D.tif").getPath(),
+                .getResource("/images/binaryoperations/BinaryObjects4D_8bit_blackBG_fillHoles2D.zip").getPath(),
                 "UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
@@ -1600,14 +1600,14 @@ public class BinaryOperations2DTest extends ModuleTest {
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
-                this.getClass().getResource("/images/binaryobjects/BinaryObjects5D_8bit_blackBG.tif").getPath(),
+                this.getClass().getResource("/images/binaryobjects/BinaryObjects5D_8bit_blackBG.zip").getPath(),
                 "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image", ipl);
         workspace.addImage(image);
 
         pathToImage = URLDecoder.decode(this.getClass()
-                .getResource("/images/binaryoperations/BinaryObjects5D_8bit_blackBG_fillHoles2D.tif").getPath(),
+                .getResource("/images/binaryoperations/BinaryObjects5D_8bit_blackBG_fillHoles2D.zip").getPath(),
                 "UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 

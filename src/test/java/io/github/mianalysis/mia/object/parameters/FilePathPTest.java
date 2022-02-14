@@ -18,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class FilePathPTest {
     @Test
     public void isDirectoryFile(@TempDir Path tempPath) throws IOException {
-        File testFile = new File(tempPath+File.separator+"TestFile.tif");
+        File testFile = new File(tempPath+File.separator+"TestFile.zip");
         testFile.createNewFile();
 
         Modules modules = new Modules();
@@ -76,7 +76,7 @@ public class FilePathPTest {
 
     @Test
     public void setPathFile(@TempDir Path tempPath) throws IOException {
-        File testFile = new File(tempPath+File.separator+"TestFile.tif");
+        File testFile = new File(tempPath+File.separator+"TestFile.zip");
         testFile.createNewFile();
 
         Modules modules = new Modules();
@@ -92,7 +92,7 @@ public class FilePathPTest {
     @Test
     public void setPathDirectory(@TempDir Path tempPath) throws IOException {
         File temporaryFolder = tempPath.toFile();
-        File testFile = new File(tempPath+File.separator+"TestFile.tif");
+        File testFile = new File(tempPath+File.separator+"TestFile.zip");
         testFile.createNewFile();
 
         Modules modules = new Modules();
@@ -107,7 +107,7 @@ public class FilePathPTest {
 
     @Test
     public void getRawStringValueFile(@TempDir Path tempPath) throws IOException {
-        File testFile = new File(tempPath+File.separator+"TestFile.tif");
+        File testFile = new File(tempPath+File.separator+"TestFile.zip");
         testFile.createNewFile();
 
         Modules modules = new Modules();
@@ -136,7 +136,7 @@ public class FilePathPTest {
 
     @Test
     public void setValueFromStringFile(@TempDir Path tempPath) throws IOException {
-        File testFile = new File(tempPath+File.separator+"TestFile.tif");
+        File testFile = new File(tempPath+File.separator+"TestFile.zip");
         testFile.createNewFile();
 
         Modules modules = new Modules();
@@ -165,7 +165,7 @@ public class FilePathPTest {
 
     @Test
     public void verifyFile(@TempDir Path tempPath) throws IOException {
-        File testFile = new File(tempPath+File.separator+"TestFile.tif");
+        File testFile = new File(tempPath+File.separator+"TestFile.zip");
         testFile.createNewFile();
 
         Modules modules = new Modules();
@@ -194,7 +194,7 @@ public class FilePathPTest {
 
     @Test
     public void verifyMissingFile(@TempDir Path tempPath) throws IOException {
-        File testFile = new File(tempPath+File.separator+"TestFile.tif");
+        File testFile = new File(tempPath+File.separator+"TestFile.zip");
         testFile.createNewFile();
 
         Modules modules = new Modules();
@@ -235,7 +235,7 @@ public class FilePathPTest {
 
     @Test
     public void appendXMLAttributes(@TempDir Path tempPath) throws IOException, ParserConfigurationException {
-        File testFile = new File(tempPath+File.separator+"TestFile.tif");
+        File testFile = new File(tempPath+File.separator+"TestFile.zip");
         testFile.createNewFile();
 
         Modules modules = new Modules();
@@ -274,14 +274,14 @@ public class FilePathPTest {
         Element element = doc.createElement("Test");
         element.setAttribute("NAME","New name");
         element.setAttribute("NICKNAME","New nick");
-        element.setAttribute("VALUE","C:\\Users\\Stephen\\myfile.tif");
+        element.setAttribute("VALUE","C:\\Users\\Stephen\\myfile.zip");
         element.setAttribute("VISIBLE","false");
 
         filePathP.setAttributesFromXML(element);
 
         assertEquals("Demo file",filePathP.getName());
         assertEquals("New nick",filePathP.getNickname());
-        assertEquals("C:\\Users\\Stephen\\myfile.tif",filePathP.getValue());
+        assertEquals("C:\\Users\\Stephen\\myfile.zip",filePathP.getValue());
         assertFalse(filePathP.isVisible());
 
     }

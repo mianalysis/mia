@@ -37,12 +37,12 @@ public class FlipStackTest extends ModuleTest{
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient2D_8bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient2D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image inputImage = new Image("Test_image",ipl);
         workspace.addImage(inputImage);
 
-        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/flipstack/NoisyGradient2D_8bit_X.tif").getPath(),"UTF-8");
+        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/flipstack/NoisyGradient2D_8bit_X.zip").getPath(),"UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         FlipStack flipStack = new FlipStack(null);
@@ -72,12 +72,12 @@ public class FlipStackTest extends ModuleTest{
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient2D_8bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient2D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image inputImage = new Image("Test_image",ipl);
         workspace.addImage(inputImage);
 
-        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/flipstack/NoisyGradient2D_8bit_Y.tif").getPath(),"UTF-8");
+        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/flipstack/NoisyGradient2D_8bit_Y.zip").getPath(),"UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         FlipStack flipStack = new FlipStack(null);
@@ -107,7 +107,7 @@ public class FlipStackTest extends ModuleTest{
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient2D_8bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient2D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image inputImage = new Image("Test_image",ipl);
         workspace.addImage(inputImage);
@@ -135,7 +135,7 @@ public class FlipStackTest extends ModuleTest{
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient2D_8bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient2D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image inputImage = new Image("Test_image",ipl);
         workspace.addImage(inputImage);
@@ -163,7 +163,7 @@ public class FlipStackTest extends ModuleTest{
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient2D_8bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient2D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image inputImage = new Image("Test_image",ipl);
         workspace.addImage(inputImage);
@@ -194,12 +194,12 @@ public class FlipStackTest extends ModuleTest{
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient3D_8bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient3D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image inputImage = new Image("Test_image",ipl);
         workspace.addImage(inputImage);
 
-        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/flipstack/NoisyGradient3D_8bit_X.tif").getPath(),"UTF-8");
+        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/flipstack/NoisyGradient3D_8bit_X.zip").getPath(),"UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         FlipStack flipStack = new FlipStack(null);
@@ -229,12 +229,12 @@ public class FlipStackTest extends ModuleTest{
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient3D_8bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient3D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image inputImage = new Image("Test_image",ipl);
         workspace.addImage(inputImage);
 
-        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/flipstack/NoisyGradient3D_8bit_Y.tif").getPath(),"UTF-8");
+        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/flipstack/NoisyGradient3D_8bit_Y.zip").getPath(),"UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         FlipStack flipStack = new FlipStack(null);
@@ -264,7 +264,7 @@ public class FlipStackTest extends ModuleTest{
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient3D_8bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient3D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image inputImage = new Image("Test_image",ipl);
         workspace.addImage(inputImage);
@@ -292,12 +292,12 @@ public class FlipStackTest extends ModuleTest{
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient3D_8bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient3D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image inputImage = new Image("Test_image",ipl);
         workspace.addImage(inputImage);
 
-        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/flipstack/NoisyGradient3D_8bit_Z.tif").getPath(),"UTF-8");
+        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/flipstack/NoisyGradient3D_8bit_Z.zip").getPath(),"UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         FlipStack flipStack = new FlipStack(null);
@@ -327,7 +327,7 @@ public class FlipStackTest extends ModuleTest{
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient3D_8bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient3D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image inputImage = new Image("Test_image",ipl);
         workspace.addImage(inputImage);
@@ -358,12 +358,12 @@ public class FlipStackTest extends ModuleTest{
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient4D_CT_8bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient4D_CT_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image inputImage = new Image("Test_image",ipl);
         workspace.addImage(inputImage);
 
-        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/flipstack/NoisyGradient4D_CT_8bit_X.tif").getPath(),"UTF-8");
+        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/flipstack/NoisyGradient4D_CT_8bit_X.zip").getPath(),"UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         FlipStack flipStack = new FlipStack(null);
@@ -393,12 +393,12 @@ public class FlipStackTest extends ModuleTest{
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient4D_CT_8bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient4D_CT_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image inputImage = new Image("Test_image",ipl);
         workspace.addImage(inputImage);
 
-        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/flipstack/NoisyGradient4D_CT_8bit_Y.tif").getPath(),"UTF-8");
+        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/flipstack/NoisyGradient4D_CT_8bit_Y.zip").getPath(),"UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         FlipStack flipStack = new FlipStack(null);
@@ -428,12 +428,12 @@ public class FlipStackTest extends ModuleTest{
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient4D_CT_8bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient4D_CT_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image inputImage = new Image("Test_image",ipl);
         workspace.addImage(inputImage);
 
-        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/flipstack/NoisyGradient4D_CT_8bit_C.tif").getPath(),"UTF-8");
+        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/flipstack/NoisyGradient4D_CT_8bit_C.zip").getPath(),"UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         FlipStack flipStack = new FlipStack(null);
@@ -463,12 +463,12 @@ public class FlipStackTest extends ModuleTest{
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient4D_CZ_8bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient4D_CZ_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image inputImage = new Image("Test_image",ipl);
         workspace.addImage(inputImage);
 
-        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/flipstack/NoisyGradient4D_CZ_8bit_C.tif").getPath(),"UTF-8");
+        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/flipstack/NoisyGradient4D_CZ_8bit_C.zip").getPath(),"UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         FlipStack flipStack = new FlipStack(null);
@@ -498,7 +498,7 @@ public class FlipStackTest extends ModuleTest{
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient4D_ZT_8bit_C1.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient4D_ZT_8bit_C1.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image inputImage = new Image("Test_image",ipl);
         workspace.addImage(inputImage);
@@ -553,12 +553,12 @@ public class FlipStackTest extends ModuleTest{
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient5D_8bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient5D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image inputImage = new Image("Test_image",ipl);
         workspace.addImage(inputImage);
 
-        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/flipstack/NoisyGradient5D_8bit_X.tif").getPath(),"UTF-8");
+        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/flipstack/NoisyGradient5D_8bit_X.zip").getPath(),"UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         FlipStack flipStack = new FlipStack(null);
@@ -588,12 +588,12 @@ public class FlipStackTest extends ModuleTest{
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient5D_8bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient5D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image inputImage = new Image("Test_image",ipl);
         workspace.addImage(inputImage);
 
-        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/flipstack/NoisyGradient5D_8bit_Y.tif").getPath(),"UTF-8");
+        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/flipstack/NoisyGradient5D_8bit_Y.zip").getPath(),"UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         FlipStack flipStack = new FlipStack(null);
@@ -623,12 +623,12 @@ public class FlipStackTest extends ModuleTest{
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient5D_8bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient5D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image inputImage = new Image("Test_image",ipl);
         workspace.addImage(inputImage);
 
-        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/flipstack/NoisyGradient5D_8bit_C.tif").getPath(),"UTF-8");
+        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/flipstack/NoisyGradient5D_8bit_C.zip").getPath(),"UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         FlipStack flipStack = new FlipStack(null);
@@ -669,12 +669,12 @@ public class FlipStackTest extends ModuleTest{
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient5D_16bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient5D_16bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image inputImage = new Image("Test_image",ipl);
         workspace.addImage(inputImage);
 
-        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/flipstack/NoisyGradient5D_16bit_X.tif").getPath(),"UTF-8");
+        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/flipstack/NoisyGradient5D_16bit_X.zip").getPath(),"UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         FlipStack flipStack = new FlipStack(null);
@@ -704,12 +704,12 @@ public class FlipStackTest extends ModuleTest{
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient5D_32bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient5D_32bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image inputImage = new Image("Test_image",ipl);
         workspace.addImage(inputImage);
 
-        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/flipstack/NoisyGradient5D_32bit_X.tif").getPath(),"UTF-8");
+        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/flipstack/NoisyGradient5D_32bit_X.zip").getPath(),"UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         FlipStack flipStack = new FlipStack(null);
@@ -741,12 +741,12 @@ public class FlipStackTest extends ModuleTest{
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient2D_8bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient2D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image inputImage = new Image("Test_image",ipl);
         workspace.addImage(inputImage);
 
-        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/flipstack/NoisyGradient2D_8bit_X.tif").getPath(),"UTF-8");
+        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/flipstack/NoisyGradient2D_8bit_X.zip").getPath(),"UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         FlipStack flipStack = new FlipStack(null);

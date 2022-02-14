@@ -46,11 +46,11 @@ package io.github.mianalysis.mia.module.objects.measure.intensity;
 //         Objs expectedObjects = new Objects2D(volumeType).getObjects("Expected",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
 
 //         // Loading images
-//         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/MeasureColocalisation/ColocalisationChannel1_2D_8bit.tif").getPath(),"UTF-8");
+//         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/MeasureColocalisation/ColocalisationChannel1_2D_8bit.zip").getPath(),"UTF-8");
 //         ImagePlus ipl1 = IJ.openImage(pathToImage);
 //         Image image1 = new Image("Im1",ipl1);
 
-//         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/MeasureColocalisation/ColocalisationChannel2_2D_8bit.tif").getPath(),"UTF-8");
+//         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/MeasureColocalisation/ColocalisationChannel2_2D_8bit.zip").getPath(),"UTF-8");
 //         ImagePlus ipl2 = IJ.openImage(pathToImage);
 //         Image image2 = new Image("Im2",ipl2);
 

@@ -37,13 +37,13 @@ public class WekaProbabilityMapsTest extends ModuleTest {
 
     // Loading the test image and adding to workspace
     String pathToImage =
-    URLDecoder.decode(this.getClass().getResource("/images/wekaprobabilitymaps/NoisyObjects_2D_8bit.tif").getPath(),"UTF-8");
+    URLDecoder.decode(this.getClass().getResource("/images/wekaprobabilitymaps/NoisyObjects_2D_8bit.zip").getPath(),"UTF-8");
     ImagePlus ipl = IJ.openImage(pathToImage);
     Image image = new Image("Test_image",ipl);
     workspace.addImage(image);
 
     pathToImage =
-    URLDecoder.decode(this.getClass().getResource("/images/wekaprobabilitymaps/NoisyObjects_2D_probability.tif").getPath(),"UTF-8");
+    URLDecoder.decode(this.getClass().getResource("/images/wekaprobabilitymaps/NoisyObjects_2D_probability.zip").getPath(),"UTF-8");
     Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
     // Initialising BinaryOperations
@@ -76,13 +76,13 @@ public class WekaProbabilityMapsTest extends ModuleTest {
 
     // Loading the test image and adding to workspace
     String pathToImage =
-    URLDecoder.decode(this.getClass().getResource("/images/wekaprobabilitymaps/NoisyObjects_2D_16bit.tif").getPath(),"UTF-8");
+    URLDecoder.decode(this.getClass().getResource("/images/wekaprobabilitymaps/NoisyObjects_2D_16bit.zip").getPath(),"UTF-8");
     ImagePlus ipl = IJ.openImage(pathToImage);
     Image image = new Image("Test_image",ipl);
     workspace.addImage(image);
 
     pathToImage =
-    URLDecoder.decode(this.getClass().getResource("/images/wekaprobabilitymaps/NoisyObjects_2D_probability.tif").getPath(),"UTF-8");
+    URLDecoder.decode(this.getClass().getResource("/images/wekaprobabilitymaps/NoisyObjects_2D_probability.zip").getPath(),"UTF-8");
     Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
     // Initialising BinaryOperations
@@ -115,13 +115,13 @@ public class WekaProbabilityMapsTest extends ModuleTest {
 
     // Loading the test image and adding to workspace
     String pathToImage =
-    URLDecoder.decode(this.getClass().getResource("/images/wekaprobabilitymaps/NoisyObjects_2D_32bit.tif").getPath(),"UTF-8");
+    URLDecoder.decode(this.getClass().getResource("/images/wekaprobabilitymaps/NoisyObjects_2D_32bit.zip").getPath(),"UTF-8");
     ImagePlus ipl = IJ.openImage(pathToImage);
     Image image = new Image("Test_image",ipl);
     workspace.addImage(image);
 
     pathToImage =
-    URLDecoder.decode(this.getClass().getResource("/images/wekaprobabilitymaps/NoisyObjects_2D_probability.tif").getPath(),"UTF-8");
+    URLDecoder.decode(this.getClass().getResource("/images/wekaprobabilitymaps/NoisyObjects_2D_probability.zip").getPath(),"UTF-8");
     Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
     // Initialising BinaryOperations
@@ -154,13 +154,13 @@ public class WekaProbabilityMapsTest extends ModuleTest {
 
     // Loading the test image and adding to workspace
     String pathToImage =
-    URLDecoder.decode(this.getClass().getResource("/images/wekaprobabilitymaps/NoisyObjects_3D_8bit.tif").getPath(),"UTF-8");
+    URLDecoder.decode(this.getClass().getResource("/images/wekaprobabilitymaps/NoisyObjects_3D_8bit.zip").getPath(),"UTF-8");
     ImagePlus ipl = IJ.openImage(pathToImage);
     Image image = new Image("Test_image",ipl);
     workspace.addImage(image);
 
     pathToImage =
-    URLDecoder.decode(this.getClass().getResource("/images/wekaprobabilitymaps/NoisyObjects_3D_probability.tif").getPath(),"UTF-8");
+    URLDecoder.decode(this.getClass().getResource("/images/wekaprobabilitymaps/NoisyObjects_3D_probability.zip").getPath(),"UTF-8");
     Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
     // Initialising BinaryOperations
@@ -193,13 +193,13 @@ public class WekaProbabilityMapsTest extends ModuleTest {
 
     // Loading the test image and adding to workspace
     String pathToImage =
-    URLDecoder.decode(this.getClass().getResource("/images/wekaprobabilitymaps/NoisyObjects_4D_8bit.tif").getPath(),"UTF-8");
+    URLDecoder.decode(this.getClass().getResource("/images/wekaprobabilitymaps/NoisyObjects_4D_8bit.zip").getPath(),"UTF-8");
     ImagePlus ipl = IJ.openImage(pathToImage);
     Image image = new Image("Test_image",ipl);
     workspace.addImage(image);
 
     pathToImage =
-    URLDecoder.decode(this.getClass().getResource("/images/wekaprobabilitymaps/NoisyObjects_4D_probability.tif").getPath(),"UTF-8");
+    URLDecoder.decode(this.getClass().getResource("/images/wekaprobabilitymaps/NoisyObjects_4D_probability.zip").getPath(),"UTF-8");
     Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
     // Initialising BinaryOperations
@@ -232,13 +232,13 @@ public class WekaProbabilityMapsTest extends ModuleTest {
 
     // Loading the test image and adding to workspace
     String pathToImage =
-    URLDecoder.decode(this.getClass().getResource("/images/wekaprobabilitymaps/NoisyObjects_5D_8bit.tif").getPath(),"UTF-8");
+    URLDecoder.decode(this.getClass().getResource("/images/wekaprobabilitymaps/NoisyObjects_5D_8bit.zip").getPath(),"UTF-8");
     ImagePlus ipl = IJ.openImage(pathToImage);
     Image image = new Image("Test_image",ipl);
     workspace.addImage(image);
 
     pathToImage =
-    URLDecoder.decode(this.getClass().getResource("/images/wekaprobabilitymaps/NoisyObjects_5D_probability.tif").getPath(),"UTF-8");
+    URLDecoder.decode(this.getClass().getResource("/images/wekaprobabilitymaps/NoisyObjects_5D_probability.zip").getPath(),"UTF-8");
     Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
     // Initialising BinaryOperations
@@ -271,13 +271,13 @@ public class WekaProbabilityMapsTest extends ModuleTest {
 
     // Loading the test image and adding to workspace
     String pathToImage =
-    URLDecoder.decode(this.getClass().getResource("/images/wekaprobabilitymaps/NoisyObjects_3D_channels_8bit.tif").getPath(),"UTF-8");
+    URLDecoder.decode(this.getClass().getResource("/images/wekaprobabilitymaps/NoisyObjects_3D_channels_8bit.zip").getPath(),"UTF-8");
     ImagePlus ipl = IJ.openImage(pathToImage);
     Image image = new Image("Test_image",ipl);
     workspace.addImage(image);
 
     pathToImage =
-    URLDecoder.decode(this.getClass().getResource("/images/wekaprobabilitymaps/NoisyObjects_3D_channels_probability.tif").getPath(),"UTF-8");
+    URLDecoder.decode(this.getClass().getResource("/images/wekaprobabilitymaps/NoisyObjects_3D_channels_probability.zip").getPath(),"UTF-8");
     Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
     // Initialising BinaryOperations
@@ -310,13 +310,13 @@ public class WekaProbabilityMapsTest extends ModuleTest {
 
     // Loading the test image and adding to workspace
     String pathToImage =
-    URLDecoder.decode(this.getClass().getResource("/images/wekaprobabilitymaps/NoisyObjects_3D_channels_8bit.tif").getPath(),"UTF-8");
+    URLDecoder.decode(this.getClass().getResource("/images/wekaprobabilitymaps/NoisyObjects_3D_channels_8bit.zip").getPath(),"UTF-8");
     ImagePlus ipl = IJ.openImage(pathToImage);
     Image image = new Image("Test_image",ipl);
     workspace.addImage(image);
 
     pathToImage =
-    URLDecoder.decode(this.getClass().getResource("/images/wekaprobabilitymaps/NoisyObjects_3D_channels_probability.tif").getPath(),"UTF-8");
+    URLDecoder.decode(this.getClass().getResource("/images/wekaprobabilitymaps/NoisyObjects_3D_channels_probability.zip").getPath(),"UTF-8");
     Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
     // Initialising BinaryOperations
@@ -349,13 +349,13 @@ public class WekaProbabilityMapsTest extends ModuleTest {
 
     // Loading the test image and adding to workspace
     String pathToImage =
-    URLDecoder.decode(this.getClass().getResource("/images/wekaprobabilitymaps/NoisyObjects_4D_channels-slice_8bit.tif").getPath(),"UTF-8");
+    URLDecoder.decode(this.getClass().getResource("/images/wekaprobabilitymaps/NoisyObjects_4D_channels-slice_8bit.zip").getPath(),"UTF-8");
     ImagePlus ipl = IJ.openImage(pathToImage);
     Image image = new Image("Test_image",ipl);
     workspace.addImage(image);
 
     pathToImage =
-    URLDecoder.decode(this.getClass().getResource("/images/wekaprobabilitymaps/NoisyObjects_4D_channels-slice_probability.tif").getPath(),"UTF-8");
+    URLDecoder.decode(this.getClass().getResource("/images/wekaprobabilitymaps/NoisyObjects_4D_channels-slice_probability.zip").getPath(),"UTF-8");
     Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
     // Initialising BinaryOperations
@@ -389,13 +389,13 @@ public class WekaProbabilityMapsTest extends ModuleTest {
 
     // Loading the test image and adding to workspace
     String pathToImage =
-    URLDecoder.decode(this.getClass().getResource("/images/wekaprobabilitymaps/NoisyObjects_4D_channels-slice_8bit.tif").getPath(),"UTF-8");
+    URLDecoder.decode(this.getClass().getResource("/images/wekaprobabilitymaps/NoisyObjects_4D_channels-slice_8bit.zip").getPath(),"UTF-8");
     ImagePlus ipl = IJ.openImage(pathToImage);
     Image image = new Image("Test_image",ipl);
     workspace.addImage(image);
 
     pathToImage =
-    URLDecoder.decode(this.getClass().getResource("/images/wekaprobabilitymaps/NoisyObjects_4D_channels-slice_probability.tif").getPath(),"UTF-8");
+    URLDecoder.decode(this.getClass().getResource("/images/wekaprobabilitymaps/NoisyObjects_4D_channels-slice_probability.zip").getPath(),"UTF-8");
     Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
     // Initialising BinaryOperations
@@ -429,13 +429,13 @@ public class WekaProbabilityMapsTest extends ModuleTest {
 
     // Loading the test image and adding to workspace
     String pathToImage =
-    URLDecoder.decode(this.getClass().getResource("/images/wekaprobabilitymaps/NoisyObjects_4D_channels-slice_8bit.tif").getPath(),"UTF-8");
+    URLDecoder.decode(this.getClass().getResource("/images/wekaprobabilitymaps/NoisyObjects_4D_channels-slice_8bit.zip").getPath(),"UTF-8");
     ImagePlus ipl = IJ.openImage(pathToImage);
     Image image = new Image("Test_image",ipl);
     workspace.addImage(image);
 
     pathToImage =
-    URLDecoder.decode(this.getClass().getResource("/images/wekaprobabilitymaps/NoisyObjects_4D_channels-slice_probability.tif").getPath(),"UTF-8");
+    URLDecoder.decode(this.getClass().getResource("/images/wekaprobabilitymaps/NoisyObjects_4D_channels-slice_probability.zip").getPath(),"UTF-8");
     Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
     // Initialising BinaryOperations
@@ -469,13 +469,13 @@ public class WekaProbabilityMapsTest extends ModuleTest {
 
     // Loading the test image and adding to workspace
     String pathToImage =
-    URLDecoder.decode(this.getClass().getResource("/images/wekaprobabilitymaps/NoisyObjects_4D_channels-time_8bit.tif").getPath(),"UTF-8");
+    URLDecoder.decode(this.getClass().getResource("/images/wekaprobabilitymaps/NoisyObjects_4D_channels-time_8bit.zip").getPath(),"UTF-8");
     ImagePlus ipl = IJ.openImage(pathToImage);
     Image image = new Image("Test_image",ipl);
     workspace.addImage(image);
 
     pathToImage =
-    URLDecoder.decode(this.getClass().getResource("/images/wekaprobabilitymaps/NoisyObjects_4D_channels-time_probability.tif").getPath(),"UTF-8");
+    URLDecoder.decode(this.getClass().getResource("/images/wekaprobabilitymaps/NoisyObjects_4D_channels-time_probability.zip").getPath(),"UTF-8");
     Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
     // Initialising BinaryOperations
@@ -508,13 +508,13 @@ public class WekaProbabilityMapsTest extends ModuleTest {
 
     // Loading the test image and adding to workspace
     String pathToImage =
-    URLDecoder.decode(this.getClass().getResource("/images/wekaprobabilitymaps/NoisyObjects_4D_channels-time_8bit.tif").getPath(),"UTF-8");
+    URLDecoder.decode(this.getClass().getResource("/images/wekaprobabilitymaps/NoisyObjects_4D_channels-time_8bit.zip").getPath(),"UTF-8");
     ImagePlus ipl = IJ.openImage(pathToImage);
     Image image = new Image("Test_image",ipl);
     workspace.addImage(image);
 
     pathToImage =
-    URLDecoder.decode(this.getClass().getResource("/images/wekaprobabilitymaps/NoisyObjects_4D_channels-time_probability.tif").getPath(),"UTF-8");
+    URLDecoder.decode(this.getClass().getResource("/images/wekaprobabilitymaps/NoisyObjects_4D_channels-time_probability.zip").getPath(),"UTF-8");
     Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
     // Initialising BinaryOperations

@@ -95,7 +95,7 @@ public class AddObjectsOverlayTest extends ModuleTest {
 
         // Loading the test image and adding to workspace
         String imageName = "Test_image";
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/Tracks.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/Tracks.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Convert3DStack.process(ipl,Convert3DStack.Modes.OUTPUT_TIMESERIES);
         Image intensityImage = new Image(imageName,ipl);

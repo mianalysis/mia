@@ -42,7 +42,7 @@ public class ImageSaverTest extends ModuleTest {
     @Test
     public void testRunSaveWithInputFileWithSeriesNumber(@TempDir Path tempPath) throws Exception {
         File temporaryFolder = tempPath.toFile();
-        File testFile = new File(tempPath+File.separator+"TestFile.tif");
+        File testFile = new File(tempPath+File.separator+"TestFile.zip");
         testFile.createNewFile();
 
         // Creating a new workspace
@@ -50,7 +50,7 @@ public class ImageSaverTest extends ModuleTest {
         Workspace workspace = workspaces.getNewWorkspace(testFile,1);
 
         // Load the test image and put in the workspace
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/binaryobjects/BinaryObjects2D_8bit_whiteBG.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/binaryobjects/BinaryObjects2D_8bit_whiteBG.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image",ipl);
         workspace.addImage(image);
@@ -91,7 +91,7 @@ public class ImageSaverTest extends ModuleTest {
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Load the test image and put in the workspace
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/binaryobjects/BinaryObjects2D_8bit_whiteBG.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/binaryobjects/BinaryObjects2D_8bit_whiteBG.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image",ipl);
         workspace.addImage(image);
@@ -103,7 +103,7 @@ public class ImageSaverTest extends ModuleTest {
         imageSaver.updateParameterValue(ImageSaver.SAVE_LOCATION,ImageSaver.SaveLocations.SPECIFIC_LOCATION);
         imageSaver.updateParameterValue(ImageSaver.MIRROR_DIRECTORY_ROOT,"");
         imageSaver.updateParameterValue(ImageSaver.SAVE_NAME_MODE,ImageSaver.SaveNameModes.SPECIFIC_NAME);
-        imageSaver.updateParameterValue(ImageSaver.SAVE_FILE_NAME,"TestFile.tif");
+        imageSaver.updateParameterValue(ImageSaver.SAVE_FILE_NAME,"TestFile.zip");
         imageSaver.updateParameterValue(ImageSaver.SAVE_FILE_PATH,temporaryFolder.getAbsolutePath());
         imageSaver.updateParameterValue(ImageSaver.APPEND_SERIES_MODE,ImageSaver.AppendSeriesModes.SERIES_NUMBER);
         imageSaver.updateParameterValue(ImageSaver.APPEND_DATETIME_MODE,ImageSaver.AppendDateTimeModes.NEVER);
