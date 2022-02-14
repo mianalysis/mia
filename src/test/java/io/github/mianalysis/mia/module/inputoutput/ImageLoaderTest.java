@@ -105,7 +105,7 @@ public class ImageLoaderTest extends ModuleTest {
 
         // Setting parameters
         imageLoader.updateParameterValue(ImageLoader.IMPORT_MODE, ImageLoader.ImportModes.SPECIFIC_FILE);
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BlankHyperstack5D_8bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BlankHyperstack5D_8bit.zip").getPath(),"UTF-8");
         imageLoader.updateParameterValue(ImageLoader.FILE_PATH,pathToImage);
         imageLoader.updateParameterValue(ImageLoader.OUTPUT_IMAGE,"Test_Output_Image");
 
@@ -141,7 +141,7 @@ public class ImageLoaderTest extends ModuleTest {
     @Test
     public void testRunWithCurrentTiffFile() throws Exception {
         // Getting path to image file
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BlankHyperstack5D_8bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BlankHyperstack5D_8bit.zip").getPath(),"UTF-8");
 
         // Initialising a blank workspace
         Workspaces workspaces = new Workspaces();
@@ -187,7 +187,7 @@ public class ImageLoaderTest extends ModuleTest {
     @Test
     public void testRunWithCurrentTiffFileBioformats() throws Exception {
         // Getting path to image file
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BlankHyperstack5D_8bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BlankHyperstack5D_8bit.zip").getPath(),"UTF-8");
 
         // Initialising a blank workspace
         Workspaces workspaces = new Workspaces();
@@ -233,7 +233,7 @@ public class ImageLoaderTest extends ModuleTest {
     @Test
     public void testRunWithCurrentTiffSpecifiedCalibration() throws Exception {
         // Getting path to image file
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BlankHyperstack5D_8bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BlankHyperstack5D_8bit.zip").getPath(),"UTF-8");
 
         // Initialising a blank workspace
         Workspaces workspaces = new Workspaces();
@@ -285,7 +285,7 @@ public class ImageLoaderTest extends ModuleTest {
     @Test
     public void testRunWithCurrentTiffSubsetC() throws Exception {
         // Getting path to image file
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BlankHyperstack5D_8bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BlankHyperstack5D_8bit.zip").getPath(),"UTF-8");
 
         // Initialising a blank workspace
         Workspaces workspaces = new Workspaces();
@@ -335,7 +335,7 @@ public class ImageLoaderTest extends ModuleTest {
     @Test
     public void testRunWithCurrentTiffSubsetCTooLow() throws Exception {
         // Getting path to image file
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BlankHyperstack5D_8bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BlankHyperstack5D_8bit.zip").getPath(),"UTF-8");
 
         // Initialising a blank workspace
         Workspaces workspaces = new Workspaces();
@@ -363,7 +363,7 @@ public class ImageLoaderTest extends ModuleTest {
     @Test
     public void testRunWithCurrentTiffSubsetCTooHigh() throws Exception {
         // Getting path to image file
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BlankHyperstack5D_8bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BlankHyperstack5D_8bit.zip").getPath(),"UTF-8");
 
         // Initialising a blank workspace
         Workspaces workspaces = new Workspaces();
@@ -391,7 +391,7 @@ public class ImageLoaderTest extends ModuleTest {
     @Test
     public void testRunWithCurrentTiffSubsetZ() throws Exception {
         // Getting path to image file
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BlankHyperstack5D_8bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BlankHyperstack5D_8bit.zip").getPath(),"UTF-8");
 
         // Initialising a blank workspace
         Workspaces workspaces = new Workspaces();
@@ -441,7 +441,7 @@ public class ImageLoaderTest extends ModuleTest {
     @Test
     public void testRunWithCurrentTiffSubsetZTooLow() throws Exception {
         // Getting path to image file
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BlankHyperstack5D_8bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BlankHyperstack5D_8bit.zip").getPath(),"UTF-8");
 
         // Initialising a blank workspace
         Workspaces workspaces = new Workspaces();
@@ -469,7 +469,7 @@ public class ImageLoaderTest extends ModuleTest {
     @Test
     public void testRunWithCurrentTiffSubsetZTooHigh() throws Exception {
         // Getting path to image file
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BlankHyperstack5D_8bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BlankHyperstack5D_8bit.zip").getPath(),"UTF-8");
 
         // Initialising a blank workspace
         Workspaces workspaces = new Workspaces();
@@ -497,7 +497,7 @@ public class ImageLoaderTest extends ModuleTest {
     @Test
     public void testRunWithCurrentTiffSubsetT() throws Exception {
         // Getting path to image file
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BlankHyperstack5D_8bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BlankHyperstack5D_8bit.zip").getPath(),"UTF-8");
 
         // Initialising a blank workspace
         Workspaces workspaces = new Workspaces();
@@ -547,7 +547,7 @@ public class ImageLoaderTest extends ModuleTest {
     @Test
     public void testRunWithCurrentTiffSubsetTTooLow() throws Exception {
         // Getting path to image file
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BlankHyperstack5D_8bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BlankHyperstack5D_8bit.zip").getPath(),"UTF-8");
 
         // Initialising a blank workspace
         Workspaces workspaces = new Workspaces();
@@ -575,7 +575,7 @@ public class ImageLoaderTest extends ModuleTest {
     @Test
     public void testRunWithCurrentTiffSubsetTTooHigh() throws Exception {
         // Getting path to image file
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BlankHyperstack5D_8bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BlankHyperstack5D_8bit.zip").getPath(),"UTF-8");
 
         // Initialising a blank workspace
         Workspaces workspaces = new Workspaces();
@@ -603,7 +603,7 @@ public class ImageLoaderTest extends ModuleTest {
     @Test
     public void testRunWithCurrentTiffSubsetAll() throws Exception {
         // Getting path to image file
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BlankHyperstack5D_8bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BlankHyperstack5D_8bit.zip").getPath(),"UTF-8");
 
         // Initialising a blank workspace
         Workspaces workspaces = new Workspaces();
@@ -699,7 +699,7 @@ public class ImageLoaderTest extends ModuleTest {
     @Test
     public void testRunWithCropping() throws Exception {
         // Getting path to image file
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient5D_8bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient5D_8bit.zip").getPath(),"UTF-8");
 
         // Initialising a blank workspace
         Workspaces workspaces = new Workspaces();
@@ -722,7 +722,7 @@ public class ImageLoaderTest extends ModuleTest {
         imageFileLoader.execute(workspace);
 
         // Getting expected image
-        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/cropimage/NoisyGradient5D_8bit_3-12-52-49.tif").getPath(),"UTF-8");
+        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/cropimage/NoisyGradient5D_8bit_3-12-52-49.zip").getPath(),"UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Checking there is one image in the workspace
@@ -737,7 +737,7 @@ public class ImageLoaderTest extends ModuleTest {
     @Test
     public void testRunWithSpecifiedCalibration() throws Exception {
         // Getting path to image file
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient5D_8bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient5D_8bit.zip").getPath(),"UTF-8");
 
         // Initialising a blank workspace
         Workspaces workspaces = new Workspaces();
@@ -784,7 +784,7 @@ public class ImageLoaderTest extends ModuleTest {
         SpatialUnit.setUnit(SpatialUnit.AvailableUnits.NANOMETRE);
 
         // Getting path to image file
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient5D_8bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient5D_8bit.zip").getPath(),"UTF-8");
 
         // Initialising a blank workspace
         Workspaces workspaces = new Workspaces();
@@ -838,7 +838,7 @@ public class ImageLoaderTest extends ModuleTest {
         SpatialUnit.setUnit(SpatialUnit.AvailableUnits.MILLIMETRE);
 
         // Getting path to image file
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient5D_8bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient5D_8bit.zip").getPath(),"UTF-8");
 
         // Initialising a blank workspace
         Workspaces workspaces = new Workspaces();
@@ -889,7 +889,7 @@ public class ImageLoaderTest extends ModuleTest {
     // @Test
     // public void testRunThreeDTimeseries()throws Exception {
     //     // Getting path to image file
-    //     String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient/NoisyGradient3D_8bit.tif").getPath(),"UTF-8");
+    //     String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient/NoisyGradient3D_8bit.zip").getPath(),"UTF-8");
 
     //     // Initialising a blank workspace
     //     Workspaces workspaces = new Workspaces();
@@ -935,7 +935,7 @@ public class ImageLoaderTest extends ModuleTest {
     // @Test
     // public void testRunThreeDStack()throws Exception {
     //     // Getting path to image file
-    //     String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient/NoisyGradient3D_8bit.tif").getPath(),"UTF-8");
+    //     String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient/NoisyGradient3D_8bit.zip").getPath(),"UTF-8");
 
     //     // Initialising a blank workspace
     //     Workspaces workspaces = new Workspaces();
@@ -981,7 +981,7 @@ public class ImageLoaderTest extends ModuleTest {
     @Test
     public void testRunFourDTimeseries()throws Exception {
         // Getting path to image file
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient4D_CT_8bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient4D_CT_8bit.zip").getPath(),"UTF-8");
 
         // Initialising a blank workspace
         Workspaces workspaces = new Workspaces();
@@ -1027,7 +1027,7 @@ public class ImageLoaderTest extends ModuleTest {
     @Test
     public void testRunFourDStack()throws Exception {
         // Getting path to image file
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient4D_CZ_8bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient4D_CZ_8bit.zip").getPath(),"UTF-8");
 
         // Initialising a blank workspace
         Workspaces workspaces = new Workspaces();
@@ -1073,7 +1073,7 @@ public class ImageLoaderTest extends ModuleTest {
     @Test
     public void testRunImageSequenceFull() throws Exception {
         // Getting path to image file
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/imagesequence/Seq0000.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/imagesequence/Seq0000.zip").getPath(),"UTF-8");
         
         // Initialising a blank workspace
         Workspaces workspaces = new Workspaces();
@@ -1084,7 +1084,7 @@ public class ImageLoaderTest extends ModuleTest {
         imageFileLoader.initialiseParameters();
         // Setting parameters
         imageFileLoader.updateParameterValue(ImageLoader.IMPORT_MODE, ImageLoader.ImportModes.IMAGE_SEQUENCE_ZEROS);
-        imageFileLoader.updateParameterValue(ImageLoader.SEQUENCE_ROOT_NAME, new File(pathToImage).getParent()+File.separator+"SeqZ{0000}.tif");
+        imageFileLoader.updateParameterValue(ImageLoader.SEQUENCE_ROOT_NAME, new File(pathToImage).getParent()+File.separator+"SeqZ{0000}.zip");
         imageFileLoader.updateParameterValue(ImageLoader.OUTPUT_IMAGE, "Test_Output_Image");
         imageFileLoader.updateParameterValue(ImageLoader.FRAMES,"0-end");
         imageFileLoader.updateParameterValue(ImageLoader.CROP_MODE,ImageLoader.CropModes.NONE);
@@ -1093,7 +1093,7 @@ public class ImageLoaderTest extends ModuleTest {
         imageFileLoader.execute(workspace);
 
         // Getting expected image
-        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/imagesequence/Seq0-11.tif").getPath(),"UTF-8");
+        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/imagesequence/Seq0-11.zip").getPath(),"UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Checking there is one image in the workspace
@@ -1108,7 +1108,7 @@ public class ImageLoaderTest extends ModuleTest {
     @Test
     public void testRunImageSequenceInterval2() throws Exception {
         // Getting path to image file
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/imagesequence/Seq0000.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/imagesequence/Seq0000.zip").getPath(),"UTF-8");
 
         // Initialising a blank workspace
         Workspaces workspaces = new Workspaces();
@@ -1120,7 +1120,7 @@ public class ImageLoaderTest extends ModuleTest {
 
         // Setting parameters
         imageFileLoader.updateParameterValue(ImageLoader.IMPORT_MODE, ImageLoader.ImportModes.IMAGE_SEQUENCE_ZEROS);
-        imageFileLoader.updateParameterValue(ImageLoader.SEQUENCE_ROOT_NAME, new File(pathToImage).getParent()+File.separator+"SeqZ{0000}.tif");
+        imageFileLoader.updateParameterValue(ImageLoader.SEQUENCE_ROOT_NAME, new File(pathToImage).getParent()+File.separator+"SeqZ{0000}.zip");
         imageFileLoader.updateParameterValue(ImageLoader.OUTPUT_IMAGE, "Test_Output_Image");
         imageFileLoader.updateParameterValue(ImageLoader.FRAMES,"3-end-2");
         imageFileLoader.updateParameterValue(ImageLoader.CROP_MODE,ImageLoader.CropModes.NONE);
@@ -1129,7 +1129,7 @@ public class ImageLoaderTest extends ModuleTest {
         imageFileLoader.execute(workspace);
 
         // Getting expected image
-        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/imagesequence/Seq3-11-2.tif").getPath(),"UTF-8");
+        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/imagesequence/Seq3-11-2.zip").getPath(),"UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Checking there is one image in the workspace
@@ -1144,7 +1144,7 @@ public class ImageLoaderTest extends ModuleTest {
     @Test
     public void testRunImageSequenceInterval2LimitFrames() throws Exception {
         // Getting path to image file
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/imagesequence/Seq0000.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/imagesequence/Seq0000.zip").getPath(),"UTF-8");
 
         // Initialising a blank workspace
         Workspaces workspaces = new Workspaces();
@@ -1156,7 +1156,7 @@ public class ImageLoaderTest extends ModuleTest {
 
         // Setting parameters
         imageFileLoader.updateParameterValue(ImageLoader.IMPORT_MODE, ImageLoader.ImportModes.IMAGE_SEQUENCE_ZEROS);
-        imageFileLoader.updateParameterValue(ImageLoader.SEQUENCE_ROOT_NAME, new File(pathToImage).getParent()+File.separator+"SeqZ{0000}.tif");
+        imageFileLoader.updateParameterValue(ImageLoader.SEQUENCE_ROOT_NAME, new File(pathToImage).getParent()+File.separator+"SeqZ{0000}.zip");
         imageFileLoader.updateParameterValue(ImageLoader.OUTPUT_IMAGE, "Test_Output_Image");
         imageFileLoader.updateParameterValue(ImageLoader.FRAMES,"4-8-2");
         imageFileLoader.updateParameterValue(ImageLoader.CROP_MODE,ImageLoader.CropModes.NONE);
@@ -1165,7 +1165,7 @@ public class ImageLoaderTest extends ModuleTest {
         imageFileLoader.execute(workspace);
 
         // Getting expected image
-        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/imagesequence/Seq4-8-2.tif").getPath(),"UTF-8");
+        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/imagesequence/Seq4-8-2.zip").getPath(),"UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Checking there is one image in the workspace

@@ -41,12 +41,12 @@ public class ThresholdImageTest extends ModuleTest {
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient2D_8bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient2D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image",ipl);
         workspace.addImage(image);
 
-        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/thresholdimage/NoisyGradient2D_8bit_GlobalHuangNoLimsNoMultWhiteBG.tif").getPath(),"UTF-8");
+        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/thresholdimage/NoisyGradient2D_8bit_GlobalHuangNoLimsNoMultWhiteBG.zip").getPath(),"UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising ThresholdImage
@@ -82,12 +82,12 @@ public class ThresholdImageTest extends ModuleTest {
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient3D_8bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient3D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image",ipl);
         workspace.addImage(image);
 
-        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/thresholdimage/NoisyGradient3D_8bit_GlobalHuangNoLimsNoMultWhiteBG.tif").getPath(),"UTF-8");
+        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/thresholdimage/NoisyGradient3D_8bit_GlobalHuangNoLimsNoMultWhiteBG.zip").getPath(),"UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising ThresholdImage
@@ -123,12 +123,12 @@ public class ThresholdImageTest extends ModuleTest {
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient4D_ZT_8bit_C1.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient4D_ZT_8bit_C1.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image",ipl);
         workspace.addImage(image);
 
-        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/thresholdimage/NoisyGradient5D_8bit_C1_GlobalHuangNoLimsNoMultWhiteBG.tif").getPath(),"UTF-8");
+        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/thresholdimage/NoisyGradient5D_8bit_C1_GlobalHuangNoLimsNoMultWhiteBG.zip").getPath(),"UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising ThresholdImage
@@ -164,12 +164,12 @@ public class ThresholdImageTest extends ModuleTest {
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient5D_8bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient5D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image",ipl);
         workspace.addImage(image);
 
-        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/thresholdimage/NoisyGradient5D_8bit_GlobalHuangNoLimsNoMultWhiteBG.tif").getPath(),"UTF-8");
+        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/thresholdimage/NoisyGradient5D_8bit_GlobalHuangNoLimsNoMultWhiteBG.zip").getPath(),"UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising ThresholdImage
@@ -205,12 +205,12 @@ public class ThresholdImageTest extends ModuleTest {
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient3D_16bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient3D_16bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image",ipl);
         workspace.addImage(image);
 
-        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/thresholdimage/NoisyGradient3D_16bit_GlobalHuangNoLimsNoMultWhiteBG.tif").getPath(),"UTF-8");
+        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/thresholdimage/NoisyGradient3D_16bit_GlobalHuangNoLimsNoMultWhiteBG.zip").getPath(),"UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising ThresholdImage
@@ -248,12 +248,12 @@ public class ThresholdImageTest extends ModuleTest {
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient3D_32bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient3D_32bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image",ipl);
         workspace.addImage(image);
 
-        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/thresholdimage/NoisyGradient3D_32bit_GlobalHuangNoLimsNoMultWhiteBG.tif").getPath(),"UTF-8");
+        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/thresholdimage/NoisyGradient3D_32bit_GlobalHuangNoLimsNoMultWhiteBG.zip").getPath(),"UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising ThresholdImage
@@ -289,12 +289,12 @@ public class ThresholdImageTest extends ModuleTest {
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient3D_8bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient3D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image",ipl);
         workspace.addImage(image);
 
-        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/thresholdimage/NoisyGradient3D_8bit_GlobalHuangNoLimsNoMultBlackBG.tif").getPath(),"UTF-8");
+        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/thresholdimage/NoisyGradient3D_8bit_GlobalHuangNoLimsNoMultBlackBG.zip").getPath(),"UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising ThresholdImage
@@ -330,12 +330,12 @@ public class ThresholdImageTest extends ModuleTest {
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient3D_8bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient3D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image",ipl);
         workspace.addImage(image);
 
-        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/thresholdimage/NoisyGradient3D_8bit_GlobalHuangNoLims2xMultWhiteBG.tif").getPath(),"UTF-8");
+        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/thresholdimage/NoisyGradient3D_8bit_GlobalHuangNoLims2xMultWhiteBG.zip").getPath(),"UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising ThresholdImage
@@ -371,12 +371,12 @@ public class ThresholdImageTest extends ModuleTest {
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient3D_8bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient3D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image",ipl);
         workspace.addImage(image);
 
-        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/thresholdimage/NoisyGradient3D_8bit_GlobalHuangNoLims0p5xMultWhiteBG.tif").getPath(),"UTF-8");
+        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/thresholdimage/NoisyGradient3D_8bit_GlobalHuangNoLims0p5xMultWhiteBG.zip").getPath(),"UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising ThresholdImage
@@ -412,12 +412,12 @@ public class ThresholdImageTest extends ModuleTest {
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient3D_8bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient3D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image",ipl);
         workspace.addImage(image);
 
-        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/thresholdimage/NoisyGradient3D_8bit_GlobalHuangNoLimsNoMultWhiteBG.tif").getPath(),"UTF-8");
+        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/thresholdimage/NoisyGradient3D_8bit_GlobalHuangNoLimsNoMultWhiteBG.zip").getPath(),"UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising ThresholdImage
@@ -454,12 +454,12 @@ public class ThresholdImageTest extends ModuleTest {
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient3D_8bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient3D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image",ipl);
         workspace.addImage(image);
 
-        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/thresholdimage/NoisyGradient3D_8bit_GlobalHuangMinLimFailNoMultWhiteBG.tif").getPath(),"UTF-8");
+        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/thresholdimage/NoisyGradient3D_8bit_GlobalHuangMinLimFailNoMultWhiteBG.zip").getPath(),"UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising ThresholdImage
@@ -521,12 +521,12 @@ public class ThresholdImageTest extends ModuleTest {
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient3D_8bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient3D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image",ipl);
         workspace.addImage(image);
 
-        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/thresholdimage/NoisyGradient3D_8bit_LocalSlicePhansalkarNoLimsNoMultWhiteBG.tif").getPath(),"UTF-8");
+        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/thresholdimage/NoisyGradient3D_8bit_LocalSlicePhansalkarNoLimsNoMultWhiteBG.zip").getPath(),"UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising ThresholdImage
@@ -563,12 +563,12 @@ public class ThresholdImageTest extends ModuleTest {
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient3D_8bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient3D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image",ipl);
         workspace.addImage(image);
 
-        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/thresholdimage/NoisyGradient3D_8bit_LocalSlicePhansalkarNoLimsNoMultBlackBG.tif").getPath(),"UTF-8");
+        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/thresholdimage/NoisyGradient3D_8bit_LocalSlicePhansalkarNoLimsNoMultBlackBG.zip").getPath(),"UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising ThresholdImage
@@ -605,12 +605,12 @@ public class ThresholdImageTest extends ModuleTest {
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient2D_8bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient2D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image",ipl);
         workspace.addImage(image);
 
-        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/thresholdimage/NoisyGradient2D_8bit_Manual62.tif").getPath(),"UTF-8");
+        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/thresholdimage/NoisyGradient2D_8bit_Manual62.zip").getPath(),"UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising ThresholdImage
@@ -647,13 +647,13 @@ public class ThresholdImageTest extends ModuleTest {
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient3D_8bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient3D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image",ipl);
         workspace.addImage(image);
 
 
-        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/thresholdimage/NoisyGradient3D_8bit_GlobalIntermodesNoLimsNoMultWhiteBG.tif").getPath(),"UTF-8");
+        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/thresholdimage/NoisyGradient3D_8bit_GlobalIntermodesNoLimsNoMultWhiteBG.zip").getPath(),"UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising ThresholdImage
@@ -689,12 +689,12 @@ public class ThresholdImageTest extends ModuleTest {
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient3D_8bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient3D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image",ipl);
         workspace.addImage(image);
 
-        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/thresholdimage/NoisyGradient3D_8bit_GlobalIsoDataNoLimsNoMultBlackBG.tif").getPath(),"UTF-8");
+        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/thresholdimage/NoisyGradient3D_8bit_GlobalIsoDataNoLimsNoMultBlackBG.zip").getPath(),"UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising ThresholdImage
@@ -730,12 +730,12 @@ public class ThresholdImageTest extends ModuleTest {
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient3D_8bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient3D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image",ipl);
         workspace.addImage(image);
 
-        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/thresholdimage/NoisyGradient3D_8bit_GlobalMaxEntropyNoLimsNoMultWhiteBG.tif").getPath(),"UTF-8");
+        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/thresholdimage/NoisyGradient3D_8bit_GlobalMaxEntropyNoLimsNoMultWhiteBG.zip").getPath(),"UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising ThresholdImage
@@ -771,12 +771,12 @@ public class ThresholdImageTest extends ModuleTest {
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient3D_8bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient3D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image",ipl);
         workspace.addImage(image);
 
-        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/thresholdimage/NoisyGradient3D_8bit_GlobalOtsuNoLimsNoMultWhiteBG.tif").getPath(),"UTF-8");
+        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/thresholdimage/NoisyGradient3D_8bit_GlobalOtsuNoLimsNoMultWhiteBG.zip").getPath(),"UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising ThresholdImage
@@ -812,12 +812,12 @@ public class ThresholdImageTest extends ModuleTest {
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient3D_8bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient3D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image",ipl);
         workspace.addImage(image);
 
-        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/thresholdimage/NoisyGradient3D_8bit_GlobalTriangleNoLimsNoMultWhiteBG.tif").getPath(),"UTF-8");
+        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/thresholdimage/NoisyGradient3D_8bit_GlobalTriangleNoLimsNoMultWhiteBG.zip").getPath(),"UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising ThresholdImage
@@ -856,7 +856,7 @@ public class ThresholdImageTest extends ModuleTest {
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient2D_8bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient2D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image",ipl);
         workspace.addImage(image);
@@ -894,7 +894,7 @@ public class ThresholdImageTest extends ModuleTest {
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient2D_8bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient2D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image",ipl);
         workspace.addImage(image);
@@ -928,7 +928,7 @@ public class ThresholdImageTest extends ModuleTest {
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient2D_8bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient2D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image",ipl);
         workspace.addImage(image);
@@ -962,7 +962,7 @@ public class ThresholdImageTest extends ModuleTest {
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient2D_8bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient2D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image",ipl);
         workspace.addImage(image);
@@ -993,7 +993,7 @@ public class ThresholdImageTest extends ModuleTest {
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient2D_8bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient2D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image",ipl);
         workspace.addImage(image);

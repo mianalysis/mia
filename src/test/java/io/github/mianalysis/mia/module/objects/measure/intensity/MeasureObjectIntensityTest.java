@@ -60,7 +60,7 @@ public class MeasureObjectIntensityTest extends ModuleTest {
         workspace.addObjects(testObjects);
 
         // Loading the test image and adding to workspace
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient3D_8bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient3D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image",ipl);
         workspace.addImage(image);
@@ -126,7 +126,7 @@ public class MeasureObjectIntensityTest extends ModuleTest {
         workspace.addObjects(testObjects);
 
         // Loading the test image and adding to workspace
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient3D_16bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient3D_16bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image",ipl);
         workspace.addImage(image);
@@ -192,7 +192,7 @@ public class MeasureObjectIntensityTest extends ModuleTest {
         workspace.addObjects(testObjects);
 
         // Loading the test image and adding to workspace
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient3D_32bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient3D_32bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image",ipl);
         workspace.addImage(image);
@@ -264,7 +264,7 @@ public class MeasureObjectIntensityTest extends ModuleTest {
 
     //     // Loading the test image and adding to workspace
     //     String imageName = "Test_image";
-    //     String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/MeasureObjectIntensity/BinarySphere3D_1pxInside10pxOutsideShell_8bit.tif").getPath(),"UTF-8");
+    //     String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/MeasureObjectIntensity/BinarySphere3D_1pxInside10pxOutsideShell_8bit.zip").getPath(),"UTF-8");
     //     ImagePlus ipl = IJ.openImage(pathToImage);
     //     Image intensityImage = new Image(imageName,ipl);
     //     workspace.addImage(intensityImage);
@@ -309,7 +309,7 @@ public class MeasureObjectIntensityTest extends ModuleTest {
 
     //     // Loading the test image and adding to workspace
     //     String imageName = "Test_image";
-    //     String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/MeasureObjectIntensity/BinarySphere3D_1pxInside10pxOutsideShell_8bit.tif").getPath(),"UTF-8");
+    //     String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/MeasureObjectIntensity/BinarySphere3D_1pxInside10pxOutsideShell_8bit.zip").getPath(),"UTF-8");
     //     ImagePlus ipl = IJ.openImage(pathToImage);
     //     Image intensityImage = new Image(imageName,ipl);
     //     workspace.addImage(intensityImage);

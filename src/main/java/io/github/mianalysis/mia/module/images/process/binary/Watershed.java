@@ -16,12 +16,14 @@ import ij.Prefs;
 import ij.plugin.Duplicator;
 import ij.plugin.SubHyperstackMaker;
 import inra.ijpb.binary.BinaryImages;
+import inra.ijpb.plugins.Watershed3DPlugin;
 import inra.ijpb.watershed.ExtendedMinimaWatershed;
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.images.process.ImageCalculator;
 import io.github.mianalysis.mia.module.images.process.InvertIntensity;
 import io.github.mianalysis.mia.object.Image;
 import io.github.mianalysis.mia.object.Status;
@@ -40,7 +42,7 @@ import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 
-@Plugin(type = Module.class, priority=Priority.LOW, visible=true)
+@Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class Watershed extends Module {
     public static final String INPUT_SEPARATOR = "Image input/output";
     public static final String INPUT_IMAGE = "Input image";
@@ -92,11 +94,6 @@ public class Watershed extends Module {
         // be inverted before using as MorphoLibJ uses the opposite convention.
         if (!blackBackground)
             IJ.run(maskIpl, "Invert", "stack");
-        if (markerIpl != null) {
-            markerIpl = markerIpl.duplicate();
-            if (!blackBackground)
-                IJ.run(markerIpl, "Invert", "stack");
-        }
 
         int nThreads = multithread ? Prefs.getThreads() : 1;
         ThreadPoolExecutor pool = new ThreadPoolExecutor(nThreads, nThreads, 0L, TimeUnit.MILLISECONDS,
@@ -112,22 +109,15 @@ public class Watershed extends Module {
                 int finalT = t;
                 int finalC = c;
 
-                ImagePlus finalMarkerIpl = markerIpl;
                 Runnable task = () -> {
                     // Getting maskIpl for this timepoint
                     ImageStack timepointMask = getSetStack(maskIpl, finalT, finalC, null);
                     ImageStack timepointIntensity = getSetStack(intensityIpl, finalT, finalC, null);
+                    ImageStack timepointMarker = getSetStack(markerIpl, finalT, finalC, null);
+                    timepointMarker = BinaryImages.componentsLabeling(timepointMarker, connectivity, 32);
 
-                    if (finalMarkerIpl == null) {
-                        timepointMask = ExtendedMinimaWatershed.extendedMinimaWatershed(timepointIntensity,
-                                timepointMask, dynamic, connectivity, false);
-                    } else {
-                        ImageStack timepointMarker = getSetStack(finalMarkerIpl, finalT, finalC, null);
-                        timepointMarker = BinaryImages.componentsLabeling(timepointMarker, connectivity, 32);
-                        timepointMask = inra.ijpb.watershed.Watershed.computeWatershed(timepointIntensity,
-                                timepointMarker, timepointMask, connectivity, true, false);
-
-                    }
+                    timepointMask = inra.ijpb.watershed.Watershed.computeWatershed(timepointIntensity, timepointMarker,
+                            timepointMask, connectivity, true, false);
 
                     // The image produced by MorphoLibJ's watershed function is labelled. Converting
                     // to binary and back to 8-bit.
@@ -135,10 +125,12 @@ public class Watershed extends Module {
                     IJ.setRawThreshold(timepointMaskIpl, 0, 0, null);
                     IJ.run(timepointMaskIpl, "Convert to Mask", "method=Default background=Light");
                     if (blackBackground) {
-                        IJ.run(timepointMaskIpl, "Invert", "stack");
-                        // IJ.run(timepointMaskIpl, "Invert LUT", "");
+                        IJ.run(timepointMaskIpl, "Invert", "stack");                        
                     }
                     IJ.run(timepointMaskIpl, "8-bit", null);
+
+                    if (timepointMaskIpl.isInvertedLut())
+                        IJ.run(timepointMaskIpl, "Invert LUT", "");
 
                     // Replacing the maskIpl intensity
                     getSetStack(maskIpl, finalT, finalC, timepointMaskIpl.getStack());
@@ -187,7 +179,7 @@ public class Watershed extends Module {
         // Getting input image
         String inputImageName = parameters.getValue(INPUT_IMAGE);
         Image inputImage = workspace.getImages().get(inputImageName);
-        ImagePlus inputImagePlus = inputImage.getImagePlus();
+        ImagePlus maskIpl = inputImage.getImagePlus();
 
         // Getting parameters
         boolean applyToInput = parameters.getValue(APPLY_TO_INPUT);
@@ -205,17 +197,12 @@ public class Watershed extends Module {
 
         // If applying to a new image, the input image is duplicated
         if (!applyToInput)
-            inputImagePlus = new Duplicator().run(inputImagePlus);
-
-        ImagePlus markerIpl = null;
-        if (useMarkers)
-            markerIpl = workspace.getImage(markerImageName).getImagePlus();
+            maskIpl = new Duplicator().run(maskIpl);
 
         ImagePlus intensityIpl = null;
         switch (intensityMode) {
             case IntensityModes.DISTANCE:
-                intensityIpl = inputImagePlus.duplicate();
-                intensityIpl = DistanceMap.process(intensityIpl, "Distance", blackBackground,
+                intensityIpl = DistanceMap.process(maskIpl, "Distance", blackBackground,
                         DistanceMap.WeightModes.WEIGHTS_3_4_5_7, matchZToXY, false);
                 InvertIntensity.process(intensityIpl);
                 break;
@@ -226,7 +213,19 @@ public class Watershed extends Module {
         }
 
         try {
-            process(intensityIpl, markerIpl, inputImagePlus, blackBackground, dynamic, connectivity, multithread);
+            ImagePlus markerIpl = null;
+            if (useMarkers) {
+                markerIpl = workspace.getImage(markerImageName).getImagePlus();
+            } else {
+                Image tempIntensity = new Image("TempIntensity", intensityIpl);
+                String mode = ExtendedMinima.MinimaMaximaModes.MINIMA;
+                markerIpl = ExtendedMinima
+                        .process(tempIntensity, "Marker", mode, blackBackground, dynamic, connectivity, multithread)
+                        .getImagePlus();
+            }
+
+            process(intensityIpl, markerIpl, maskIpl, blackBackground, dynamic, connectivity, multithread);
+
         } catch (InterruptedException e) {
             // Do nothing as the user has selected this
         }
@@ -234,7 +233,7 @@ public class Watershed extends Module {
         // If the image is being saved as a new image, adding it to the workspace
         if (!applyToInput) {
             writeStatus("Adding image (" + outputImageName + ") to workspace");
-            Image outputImage = new Image(outputImageName, inputImagePlus);
+            Image outputImage = new Image(outputImageName, maskIpl);
             workspace.addImage(outputImage);
             if (showOutput)
                 outputImage.showImage();
@@ -345,7 +344,8 @@ public class Watershed extends Module {
 
     void addParameterDescriptions() {
         parameters.get(INPUT_IMAGE).setDescription(
-                "Image from workspace to apply watershed transform to.  This image will be 8-bit with binary logic determined by the \"" + BINARY_LOGIC + "\" parameter.");
+                "Image from workspace to apply watershed transform to.  This image will be 8-bit with binary logic determined by the \""
+                        + BINARY_LOGIC + "\" parameter.");
 
         parameters.get(APPLY_TO_INPUT).setDescription(
                 "When selected, the post-operation image will overwrite the input image in the workspace.  Otherwise, the image will be saved to the workspace with the name specified by the \""
@@ -361,7 +361,8 @@ public class Watershed extends Module {
                         + DYNAMIC + "\".");
 
         parameters.get(MARKER_IMAGE).setDescription("Marker image to be used if \"" + USE_MARKERS
-                + "\" is selected.  This image must be of equal dimensions to the input image (to which the transform will be applied).  This image will be 8-bit with binary logic determined by the \"" + BINARY_LOGIC + "\" parameter.");
+                + "\" is selected.  This image must be of equal dimensions to the input image (to which the transform will be applied).  This image will be 8-bit with binary logic determined by the \""
+                + BINARY_LOGIC + "\" parameter.");
 
         parameters.get(INTENSITY_MODE).setDescription(
                 "Controls the source for the intensity image against which the watershed transform will be computed.  Irrespective of mode, the image (raw image or object distance map) will act as a surface that the starting points will evolve up until adjacent regions come into contact (at which point creating a dividing line between the two):<br><ul>"

@@ -65,7 +65,7 @@ public class IdentifyObjectsTest extends ModuleTest {
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
-                this.getClass().getResource("/images/binaryobjects/BinaryObjects2D_8bit_blackBG.tif").getPath(),
+                this.getClass().getResource("/images/binaryobjects/BinaryObjects2D_8bit_blackBG.zip").getPath(),
                 "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image", ipl);
@@ -119,7 +119,7 @@ public class IdentifyObjectsTest extends ModuleTest {
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
-                this.getClass().getResource("/images/binaryobjects/BinaryObjects2D_8bit_blackBG.tif").getPath(),
+                this.getClass().getResource("/images/binaryobjects/BinaryObjects2D_8bit_blackBG.zip").getPath(),
                 "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image", ipl);
@@ -174,7 +174,7 @@ public class IdentifyObjectsTest extends ModuleTest {
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
-                this.getClass().getResource("/images/binaryobjects/BinaryObjects2D_8bit_blackBG.tif").getPath(),
+                this.getClass().getResource("/images/binaryobjects/BinaryObjects2D_8bit_blackBG.zip").getPath(),
                 "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image", ipl);
@@ -228,7 +228,7 @@ public class IdentifyObjectsTest extends ModuleTest {
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
-                this.getClass().getResource("/images/binaryobjects/BinaryObjects3D_8bit_blackBG.tif").getPath(),
+                this.getClass().getResource("/images/binaryobjects/BinaryObjects3D_8bit_blackBG.zip").getPath(),
                 "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image", ipl);
@@ -283,7 +283,7 @@ public class IdentifyObjectsTest extends ModuleTest {
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
-                this.getClass().getResource("/images/binaryobjects/BinaryObjects3D_8bit_blackBG.tif").getPath(),
+                this.getClass().getResource("/images/binaryobjects/BinaryObjects3D_8bit_blackBG.zip").getPath(),
                 "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image", ipl);
@@ -337,7 +337,7 @@ public class IdentifyObjectsTest extends ModuleTest {
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
-                this.getClass().getResource("/images/binaryobjects/BinaryObjects3D_8bit_blackBG.tif").getPath(),
+                this.getClass().getResource("/images/binaryobjects/BinaryObjects3D_8bit_blackBG.zip").getPath(),
                 "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image", ipl);
@@ -391,7 +391,7 @@ public class IdentifyObjectsTest extends ModuleTest {
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
-                this.getClass().getResource("/images/binaryobjects/BinaryObjects4D_8bit_blackBG.tif").getPath(),
+                this.getClass().getResource("/images/binaryobjects/BinaryObjects4D_8bit_blackBG.zip").getPath(),
                 "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image", ipl);
@@ -446,7 +446,7 @@ public class IdentifyObjectsTest extends ModuleTest {
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
-                this.getClass().getResource("/images/binaryobjects/BinaryObjects4D_8bit_blackBG.tif").getPath(),
+                this.getClass().getResource("/images/binaryobjects/BinaryObjects4D_8bit_blackBG.zip").getPath(),
                 "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image", ipl);
@@ -501,7 +501,7 @@ public class IdentifyObjectsTest extends ModuleTest {
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
-                this.getClass().getResource("/images/binaryobjects/BinaryObjects4D_8bit_blackBG.tif").getPath(),
+                this.getClass().getResource("/images/binaryobjects/BinaryObjects4D_8bit_blackBG.zip").getPath(),
                 "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image", ipl);
@@ -568,7 +568,7 @@ public class IdentifyObjectsTest extends ModuleTest {
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
-                this.getClass().getResource("/images/labelledobjects/LabelledObjects3D_8bit.tif").getPath(), "UTF-8");
+                this.getClass().getResource("/images/labelledobjects/LabelledObjects3D_8bit.zip").getPath(), "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image", ipl);
         workspace.addImage(image);
@@ -621,7 +621,7 @@ public class IdentifyObjectsTest extends ModuleTest {
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
-                this.getClass().getResource("/images/labelledobjects/LabelledObjects3D_8bit.tif").getPath(), "UTF-8");
+                this.getClass().getResource("/images/labelledobjects/LabelledObjects3D_8bit.zip").getPath(), "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image", ipl);
         workspace.addImage(image);
@@ -674,7 +674,7 @@ public class IdentifyObjectsTest extends ModuleTest {
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
-                this.getClass().getResource("/images/labelledobjects/LabelledObjects3D_8bit.tif").getPath(), "UTF-8");
+                this.getClass().getResource("/images/labelledobjects/LabelledObjects3D_8bit.zip").getPath(), "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image", ipl);
         workspace.addImage(image);
@@ -727,7 +727,7 @@ public class IdentifyObjectsTest extends ModuleTest {
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
-                this.getClass().getResource("/images/binaryobjects/BinaryObjects3D_8bit_whiteBG.tif").getPath(),
+                this.getClass().getResource("/images/binaryobjects/BinaryObjects3D_8bit_whiteBG.zip").getPath(),
                 "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image", ipl);
@@ -781,7 +781,7 @@ public class IdentifyObjectsTest extends ModuleTest {
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
-                this.getClass().getResource("/images/binaryobjects/BinaryObjects3D_8bit_whiteBG.tif").getPath(),
+                this.getClass().getResource("/images/binaryobjects/BinaryObjects3D_8bit_whiteBG.zip").getPath(),
                 "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image", ipl);
@@ -835,7 +835,7 @@ public class IdentifyObjectsTest extends ModuleTest {
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
-                this.getClass().getResource("/images/binaryobjects/BinaryObjects3D_8bit_whiteBG.tif").getPath(),
+                this.getClass().getResource("/images/binaryobjects/BinaryObjects3D_8bit_whiteBG.zip").getPath(),
                 "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image", ipl);
@@ -889,7 +889,7 @@ public class IdentifyObjectsTest extends ModuleTest {
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
-                this.getClass().getResource("/images/binaryobjects/BinaryObjects3D_8bit_blackBG.tif").getPath(),
+                this.getClass().getResource("/images/binaryobjects/BinaryObjects3D_8bit_blackBG.zip").getPath(),
                 "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image", ipl);
@@ -944,7 +944,7 @@ public class IdentifyObjectsTest extends ModuleTest {
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
-                this.getClass().getResource("/images/binaryobjects/BinaryObjects3D_8bit_blackBG.tif").getPath(),
+                this.getClass().getResource("/images/binaryobjects/BinaryObjects3D_8bit_blackBG.zip").getPath(),
                 "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image", ipl);
@@ -999,7 +999,7 @@ public class IdentifyObjectsTest extends ModuleTest {
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
-                this.getClass().getResource("/images/binaryobjects/BinaryObjects3D_8bit_blackBG.tif").getPath(),
+                this.getClass().getResource("/images/binaryobjects/BinaryObjects3D_8bit_blackBG.zip").getPath(),
                 "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image", ipl);
@@ -1055,7 +1055,7 @@ public class IdentifyObjectsTest extends ModuleTest {
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
-                this.getClass().getResource("/images/labelledobjects/LabelledObjects3D_8bit.tif").getPath(), "UTF-8");
+                this.getClass().getResource("/images/labelledobjects/LabelledObjects3D_8bit.zip").getPath(), "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image", ipl);
         workspace.addImage(image);
@@ -1110,7 +1110,7 @@ public class IdentifyObjectsTest extends ModuleTest {
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
-                this.getClass().getResource("/images/labelledobjects/LabelledObjects3D_8bit.tif").getPath(), "UTF-8");
+                this.getClass().getResource("/images/labelledobjects/LabelledObjects3D_8bit.zip").getPath(), "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image", ipl);
         workspace.addImage(image);
@@ -1165,7 +1165,7 @@ public class IdentifyObjectsTest extends ModuleTest {
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
-                this.getClass().getResource("/images/labelledobjects/LabelledObjects3D_8bit.tif").getPath(), "UTF-8");
+                this.getClass().getResource("/images/labelledobjects/LabelledObjects3D_8bit.zip").getPath(), "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image", ipl);
         workspace.addImage(image);
@@ -1219,7 +1219,7 @@ public class IdentifyObjectsTest extends ModuleTest {
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
-                this.getClass().getResource("/images/binaryobjects/BinaryObjects3D_16bit_blackBG.tif").getPath(),
+                this.getClass().getResource("/images/binaryobjects/BinaryObjects3D_16bit_blackBG.zip").getPath(),
                 "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image", ipl);
@@ -1273,7 +1273,7 @@ public class IdentifyObjectsTest extends ModuleTest {
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
-                this.getClass().getResource("/images/binaryobjects/BinaryObjects3D_16bit_blackBG.tif").getPath(),
+                this.getClass().getResource("/images/binaryobjects/BinaryObjects3D_16bit_blackBG.zip").getPath(),
                 "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image", ipl);
@@ -1327,7 +1327,7 @@ public class IdentifyObjectsTest extends ModuleTest {
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
-                this.getClass().getResource("/images/binaryobjects/BinaryObjects3D_16bit_blackBG.tif").getPath(),
+                this.getClass().getResource("/images/binaryobjects/BinaryObjects3D_16bit_blackBG.zip").getPath(),
                 "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image", ipl);
@@ -1381,7 +1381,7 @@ public class IdentifyObjectsTest extends ModuleTest {
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
-                this.getClass().getResource("/images/binaryobjects/BinaryObjects3D_32bit_blackBG.tif").getPath(),
+                this.getClass().getResource("/images/binaryobjects/BinaryObjects3D_32bit_blackBG.zip").getPath(),
                 "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image", ipl);
@@ -1438,7 +1438,7 @@ public class IdentifyObjectsTest extends ModuleTest {
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
-                this.getClass().getResource("/images/binaryobjects/BinaryObjects3D_32bit_blackBG.tif").getPath(),
+                this.getClass().getResource("/images/binaryobjects/BinaryObjects3D_32bit_blackBG.zip").getPath(),
                 "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image", ipl);
@@ -1495,7 +1495,7 @@ public class IdentifyObjectsTest extends ModuleTest {
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
-                this.getClass().getResource("/images/binaryobjects/BinaryObjects3D_32bit_blackBG.tif").getPath(),
+                this.getClass().getResource("/images/binaryobjects/BinaryObjects3D_32bit_blackBG.zip").getPath(),
                 "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image", ipl);
@@ -1552,7 +1552,7 @@ public class IdentifyObjectsTest extends ModuleTest {
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
-                this.getClass().getResource("/images/binaryobjects/BinaryObjects3D_8bit_blackBG_204.tif").getPath(),
+                this.getClass().getResource("/images/binaryobjects/BinaryObjects3D_8bit_blackBG_204.zip").getPath(),
                 "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image", ipl);
@@ -1606,7 +1606,7 @@ public class IdentifyObjectsTest extends ModuleTest {
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
-                this.getClass().getResource("/images/binaryobjects/BinaryObjects3D_8bit_blackBG_204.tif").getPath(),
+                this.getClass().getResource("/images/binaryobjects/BinaryObjects3D_8bit_blackBG_204.zip").getPath(),
                 "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image", ipl);
@@ -1660,7 +1660,7 @@ public class IdentifyObjectsTest extends ModuleTest {
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
-                this.getClass().getResource("/images/binaryobjects/BinaryObjects3D_8bit_blackBG_204.tif").getPath(),
+                this.getClass().getResource("/images/binaryobjects/BinaryObjects3D_8bit_blackBG_204.zip").getPath(),
                 "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image", ipl);
@@ -1714,7 +1714,7 @@ public class IdentifyObjectsTest extends ModuleTest {
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
-                this.getClass().getResource("/images/binaryobjects/BinaryObjects3D_16bit_blackBG_15073.tif").getPath(),
+                this.getClass().getResource("/images/binaryobjects/BinaryObjects3D_16bit_blackBG_15073.zip").getPath(),
                 "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image", ipl);
@@ -1768,7 +1768,7 @@ public class IdentifyObjectsTest extends ModuleTest {
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
-                this.getClass().getResource("/images/binaryobjects/BinaryObjects3D_16bit_blackBG_15073.tif").getPath(),
+                this.getClass().getResource("/images/binaryobjects/BinaryObjects3D_16bit_blackBG_15073.zip").getPath(),
                 "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image", ipl);
@@ -1822,7 +1822,7 @@ public class IdentifyObjectsTest extends ModuleTest {
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
-                this.getClass().getResource("/images/binaryobjects/BinaryObjects3D_16bit_blackBG_15073.tif").getPath(),
+                this.getClass().getResource("/images/binaryobjects/BinaryObjects3D_16bit_blackBG_15073.zip").getPath(),
                 "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image", ipl);
@@ -1876,7 +1876,7 @@ public class IdentifyObjectsTest extends ModuleTest {
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
-                this.getClass().getResource("/images/binaryobjects/BinaryObjects3D_32bit_blackBG_-0p54.tif").getPath(),
+                this.getClass().getResource("/images/binaryobjects/BinaryObjects3D_32bit_blackBG_-0p54.zip").getPath(),
                 "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image", ipl);
@@ -1933,7 +1933,7 @@ public class IdentifyObjectsTest extends ModuleTest {
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
-                this.getClass().getResource("/images/binaryobjects/BinaryObjects3D_32bit_blackBG_-0p54.tif").getPath(),
+                this.getClass().getResource("/images/binaryobjects/BinaryObjects3D_32bit_blackBG_-0p54.zip").getPath(),
                 "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image", ipl);
@@ -1990,7 +1990,7 @@ public class IdentifyObjectsTest extends ModuleTest {
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
-                this.getClass().getResource("/images/binaryobjects/BinaryObjects3D_32bit_blackBG_-0p54.tif").getPath(),
+                this.getClass().getResource("/images/binaryobjects/BinaryObjects3D_32bit_blackBG_-0p54.zip").getPath(),
                 "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image", ipl);
@@ -2047,7 +2047,7 @@ public class IdentifyObjectsTest extends ModuleTest {
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
-                this.getClass().getResource("/images/binaryobjects/BinaryObjects2D_8bit_blackBG.tif").getPath(),
+                this.getClass().getResource("/images/binaryobjects/BinaryObjects2D_8bit_blackBG.zip").getPath(),
                 "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image", ipl);
@@ -2101,7 +2101,7 @@ public class IdentifyObjectsTest extends ModuleTest {
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
-                this.getClass().getResource("/images/binaryobjects/BinaryObjects2D_8bit_blackBG.tif").getPath(),
+                this.getClass().getResource("/images/binaryobjects/BinaryObjects2D_8bit_blackBG.zip").getPath(),
                 "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image", ipl);
@@ -2155,7 +2155,7 @@ public class IdentifyObjectsTest extends ModuleTest {
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
-                this.getClass().getResource("/images/binaryobjects/BinaryObjects2D_8bit_blackBG.tif").getPath(),
+                this.getClass().getResource("/images/binaryobjects/BinaryObjects2D_8bit_blackBG.zip").getPath(),
                 "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image", ipl);
@@ -2209,7 +2209,7 @@ public class IdentifyObjectsTest extends ModuleTest {
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
-                this.getClass().getResource("/images/binaryobjects/BinaryObjects3D_8bit_blackBG.tif").getPath(),
+                this.getClass().getResource("/images/binaryobjects/BinaryObjects3D_8bit_blackBG.zip").getPath(),
                 "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image", ipl);
@@ -2263,7 +2263,7 @@ public class IdentifyObjectsTest extends ModuleTest {
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
-                this.getClass().getResource("/images/binaryobjects/BinaryObjects3D_8bit_blackBG.tif").getPath(),
+                this.getClass().getResource("/images/binaryobjects/BinaryObjects3D_8bit_blackBG.zip").getPath(),
                 "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image", ipl);
@@ -2317,7 +2317,7 @@ public class IdentifyObjectsTest extends ModuleTest {
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
-                this.getClass().getResource("/images/binaryobjects/BinaryObjects3D_8bit_blackBG.tif").getPath(),
+                this.getClass().getResource("/images/binaryobjects/BinaryObjects3D_8bit_blackBG.zip").getPath(),
                 "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image", ipl);
@@ -2371,7 +2371,7 @@ public class IdentifyObjectsTest extends ModuleTest {
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
-                this.getClass().getResource("/images/binaryobjects/BinaryObjects4D_8bit_blackBG.tif").getPath(),
+                this.getClass().getResource("/images/binaryobjects/BinaryObjects4D_8bit_blackBG.zip").getPath(),
                 "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image", ipl);
@@ -2426,7 +2426,7 @@ public class IdentifyObjectsTest extends ModuleTest {
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
-                this.getClass().getResource("/images/binaryobjects/BinaryObjects4D_8bit_blackBG.tif").getPath(),
+                this.getClass().getResource("/images/binaryobjects/BinaryObjects4D_8bit_blackBG.zip").getPath(),
                 "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image", ipl);
@@ -2481,7 +2481,7 @@ public class IdentifyObjectsTest extends ModuleTest {
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
-                this.getClass().getResource("/images/binaryobjects/BinaryObjects4D_8bit_blackBG.tif").getPath(),
+                this.getClass().getResource("/images/binaryobjects/BinaryObjects4D_8bit_blackBG.zip").getPath(),
                 "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image", ipl);
@@ -2542,7 +2542,7 @@ public class IdentifyObjectsTest extends ModuleTest {
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
-                this.getClass().getResource("/images/labelledobjects/LabelledObjects3D_8bit.tif").getPath(), "UTF-8");
+                this.getClass().getResource("/images/labelledobjects/LabelledObjects3D_8bit.zip").getPath(), "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image", ipl);
         workspace.addImage(image);
@@ -2595,7 +2595,7 @@ public class IdentifyObjectsTest extends ModuleTest {
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
-                this.getClass().getResource("/images/labelledobjects/LabelledObjects3D_8bit.tif").getPath(), "UTF-8");
+                this.getClass().getResource("/images/labelledobjects/LabelledObjects3D_8bit.zip").getPath(), "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image", ipl);
         workspace.addImage(image);
@@ -2648,7 +2648,7 @@ public class IdentifyObjectsTest extends ModuleTest {
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
-                this.getClass().getResource("/images/labelledobjects/LabelledObjects3D_8bit.tif").getPath(), "UTF-8");
+                this.getClass().getResource("/images/labelledobjects/LabelledObjects3D_8bit.zip").getPath(), "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image", ipl);
         workspace.addImage(image);
@@ -2701,7 +2701,7 @@ public class IdentifyObjectsTest extends ModuleTest {
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
-                this.getClass().getResource("/images/binaryobjects/BinaryObjects3D_8bit_whiteBG.tif").getPath(),
+                this.getClass().getResource("/images/binaryobjects/BinaryObjects3D_8bit_whiteBG.zip").getPath(),
                 "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image", ipl);
@@ -2755,7 +2755,7 @@ public class IdentifyObjectsTest extends ModuleTest {
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
-                this.getClass().getResource("/images/binaryobjects/BinaryObjects3D_8bit_whiteBG.tif").getPath(),
+                this.getClass().getResource("/images/binaryobjects/BinaryObjects3D_8bit_whiteBG.zip").getPath(),
                 "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image", ipl);
@@ -2809,7 +2809,7 @@ public class IdentifyObjectsTest extends ModuleTest {
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
-                this.getClass().getResource("/images/binaryobjects/BinaryObjects3D_8bit_whiteBG.tif").getPath(),
+                this.getClass().getResource("/images/binaryobjects/BinaryObjects3D_8bit_whiteBG.zip").getPath(),
                 "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image", ipl);
@@ -2863,7 +2863,7 @@ public class IdentifyObjectsTest extends ModuleTest {
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
-                this.getClass().getResource("/images/binaryobjects/BinaryObjects3D_8bit_blackBG.tif").getPath(),
+                this.getClass().getResource("/images/binaryobjects/BinaryObjects3D_8bit_blackBG.zip").getPath(),
                 "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image", ipl);
@@ -2918,7 +2918,7 @@ public class IdentifyObjectsTest extends ModuleTest {
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
-                this.getClass().getResource("/images/binaryobjects/BinaryObjects3D_8bit_blackBG.tif").getPath(),
+                this.getClass().getResource("/images/binaryobjects/BinaryObjects3D_8bit_blackBG.zip").getPath(),
                 "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image", ipl);
@@ -2973,7 +2973,7 @@ public class IdentifyObjectsTest extends ModuleTest {
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
-                this.getClass().getResource("/images/binaryobjects/BinaryObjects3D_8bit_blackBG.tif").getPath(),
+                this.getClass().getResource("/images/binaryobjects/BinaryObjects3D_8bit_blackBG.zip").getPath(),
                 "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image", ipl);
@@ -3029,7 +3029,7 @@ public class IdentifyObjectsTest extends ModuleTest {
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
-                this.getClass().getResource("/images/labelledobjects/LabelledObjects3D_8bit.tif").getPath(), "UTF-8");
+                this.getClass().getResource("/images/labelledobjects/LabelledObjects3D_8bit.zip").getPath(), "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image", ipl);
         workspace.addImage(image);
@@ -3083,7 +3083,7 @@ public class IdentifyObjectsTest extends ModuleTest {
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
-                this.getClass().getResource("/images/labelledobjects/LabelledObjects3D_8bit.tif").getPath(), "UTF-8");
+                this.getClass().getResource("/images/labelledobjects/LabelledObjects3D_8bit.zip").getPath(), "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image", ipl);
         workspace.addImage(image);
@@ -3137,7 +3137,7 @@ public class IdentifyObjectsTest extends ModuleTest {
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
-                this.getClass().getResource("/images/labelledobjects/LabelledObjects3D_8bit.tif").getPath(), "UTF-8");
+                this.getClass().getResource("/images/labelledobjects/LabelledObjects3D_8bit.zip").getPath(), "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image", ipl);
         workspace.addImage(image);
@@ -3191,7 +3191,7 @@ public class IdentifyObjectsTest extends ModuleTest {
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
-                this.getClass().getResource("/images/binaryobjects/BinaryObjects3D_16bit_blackBG.tif").getPath(),
+                this.getClass().getResource("/images/binaryobjects/BinaryObjects3D_16bit_blackBG.zip").getPath(),
                 "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image", ipl);
@@ -3245,7 +3245,7 @@ public class IdentifyObjectsTest extends ModuleTest {
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
-                this.getClass().getResource("/images/binaryobjects/BinaryObjects3D_16bit_blackBG.tif").getPath(),
+                this.getClass().getResource("/images/binaryobjects/BinaryObjects3D_16bit_blackBG.zip").getPath(),
                 "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image", ipl);
@@ -3299,7 +3299,7 @@ public class IdentifyObjectsTest extends ModuleTest {
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
-                this.getClass().getResource("/images/binaryobjects/BinaryObjects3D_16bit_blackBG.tif").getPath(),
+                this.getClass().getResource("/images/binaryobjects/BinaryObjects3D_16bit_blackBG.zip").getPath(),
                 "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image", ipl);
@@ -3353,7 +3353,7 @@ public class IdentifyObjectsTest extends ModuleTest {
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
-                this.getClass().getResource("/images/binaryobjects/BinaryObjects3D_32bit_blackBG.tif").getPath(),
+                this.getClass().getResource("/images/binaryobjects/BinaryObjects3D_32bit_blackBG.zip").getPath(),
                 "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image", ipl);
@@ -3410,7 +3410,7 @@ public class IdentifyObjectsTest extends ModuleTest {
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
-                this.getClass().getResource("/images/binaryobjects/BinaryObjects3D_32bit_blackBG.tif").getPath(),
+                this.getClass().getResource("/images/binaryobjects/BinaryObjects3D_32bit_blackBG.zip").getPath(),
                 "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image", ipl);
@@ -3467,7 +3467,7 @@ public class IdentifyObjectsTest extends ModuleTest {
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
-                this.getClass().getResource("/images/binaryobjects/BinaryObjects3D_32bit_blackBG.tif").getPath(),
+                this.getClass().getResource("/images/binaryobjects/BinaryObjects3D_32bit_blackBG.zip").getPath(),
                 "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image", ipl);
@@ -3524,7 +3524,7 @@ public class IdentifyObjectsTest extends ModuleTest {
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
-                this.getClass().getResource("/images/binaryobjects/BinaryObjects3D_8bit_blackBG_204.tif").getPath(),
+                this.getClass().getResource("/images/binaryobjects/BinaryObjects3D_8bit_blackBG_204.zip").getPath(),
                 "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image", ipl);
@@ -3578,7 +3578,7 @@ public class IdentifyObjectsTest extends ModuleTest {
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
-                this.getClass().getResource("/images/binaryobjects/BinaryObjects3D_8bit_blackBG_204.tif").getPath(),
+                this.getClass().getResource("/images/binaryobjects/BinaryObjects3D_8bit_blackBG_204.zip").getPath(),
                 "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image", ipl);
@@ -3632,7 +3632,7 @@ public class IdentifyObjectsTest extends ModuleTest {
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
-                this.getClass().getResource("/images/binaryobjects/BinaryObjects3D_8bit_blackBG_204.tif").getPath(),
+                this.getClass().getResource("/images/binaryobjects/BinaryObjects3D_8bit_blackBG_204.zip").getPath(),
                 "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image", ipl);
@@ -3686,7 +3686,7 @@ public class IdentifyObjectsTest extends ModuleTest {
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
-                this.getClass().getResource("/images/binaryobjects/BinaryObjects3D_16bit_blackBG_15073.tif").getPath(),
+                this.getClass().getResource("/images/binaryobjects/BinaryObjects3D_16bit_blackBG_15073.zip").getPath(),
                 "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image", ipl);
@@ -3740,7 +3740,7 @@ public class IdentifyObjectsTest extends ModuleTest {
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
-                this.getClass().getResource("/images/binaryobjects/BinaryObjects3D_16bit_blackBG_15073.tif").getPath(),
+                this.getClass().getResource("/images/binaryobjects/BinaryObjects3D_16bit_blackBG_15073.zip").getPath(),
                 "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image", ipl);
@@ -3794,7 +3794,7 @@ public class IdentifyObjectsTest extends ModuleTest {
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
-                this.getClass().getResource("/images/binaryobjects/BinaryObjects3D_16bit_blackBG_15073.tif").getPath(),
+                this.getClass().getResource("/images/binaryobjects/BinaryObjects3D_16bit_blackBG_15073.zip").getPath(),
                 "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image", ipl);
@@ -3848,7 +3848,7 @@ public class IdentifyObjectsTest extends ModuleTest {
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
-                this.getClass().getResource("/images/binaryobjects/BinaryObjects3D_32bit_blackBG_-0p54.tif").getPath(),
+                this.getClass().getResource("/images/binaryobjects/BinaryObjects3D_32bit_blackBG_-0p54.zip").getPath(),
                 "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image", ipl);
@@ -3905,7 +3905,7 @@ public class IdentifyObjectsTest extends ModuleTest {
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
-                this.getClass().getResource("/images/binaryobjects/BinaryObjects3D_32bit_blackBG_-0p54.tif").getPath(),
+                this.getClass().getResource("/images/binaryobjects/BinaryObjects3D_32bit_blackBG_-0p54.zip").getPath(),
                 "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image", ipl);
@@ -3962,7 +3962,7 @@ public class IdentifyObjectsTest extends ModuleTest {
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(
-                this.getClass().getResource("/images/binaryobjects/BinaryObjects3D_32bit_blackBG_-0p54.tif").getPath(),
+                this.getClass().getResource("/images/binaryobjects/BinaryObjects3D_32bit_blackBG_-0p54.zip").getPath(),
                 "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image", ipl);

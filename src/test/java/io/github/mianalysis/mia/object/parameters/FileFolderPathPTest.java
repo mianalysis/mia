@@ -19,7 +19,7 @@ public class FileFolderPathPTest {
 
     @Test
     public void isDirectoryFile(@TempDir Path tempPath) throws IOException {
-        File testFile = new File(tempPath+File.separator+"TestFile.tif");
+        File testFile = new File(tempPath+File.separator+"TestFile.zip");
         testFile.createNewFile();
 
         Modules modules = new Modules();
@@ -72,7 +72,7 @@ public class FileFolderPathPTest {
 
     @Test
     public void getRawStringValueFile(@TempDir Path tempPath) throws IOException {
-        File testFile = new File(tempPath+File.separator+"TestFile.tif");
+        File testFile = new File(tempPath+File.separator+"TestFile.zip");
         testFile.createNewFile();
 
         Modules modules = new Modules();
@@ -101,7 +101,7 @@ public class FileFolderPathPTest {
 
     @Test
     public void setValueFromStringFile(@TempDir Path tempPath) throws IOException {
-        File testFile = new File(tempPath+File.separator+"TestFile.tif");
+        File testFile = new File(tempPath+File.separator+"TestFile.zip");
         testFile.createNewFile();
 
         Modules modules = new Modules();
@@ -130,7 +130,7 @@ public class FileFolderPathPTest {
 
     @Test
     public void verifyFile(@TempDir Path tempPath) throws IOException {
-        File testFile = new File(tempPath+File.separator+"TestFile.tif");
+        File testFile = new File(tempPath+File.separator+"TestFile.zip");
         testFile.createNewFile();
 
         Modules modules = new Modules();
@@ -159,7 +159,7 @@ public class FileFolderPathPTest {
 
     @Test
     public void verifyMissingFile(@TempDir Path tempPath) throws IOException {
-        File testFile = new File(tempPath+File.separator+"TestFile.tif");
+        File testFile = new File(tempPath+File.separator+"TestFile.zip");
         testFile.createNewFile();
 
         Modules modules = new Modules();
@@ -216,7 +216,7 @@ public class FileFolderPathPTest {
 
     @Test
     public void appendXMLAttributes(@TempDir Path tempPath) throws IOException, ParserConfigurationException {
-        File testFile = new File(tempPath+File.separator+"TestFile.tif");
+        File testFile = new File(tempPath+File.separator+"TestFile.zip");
         testFile.createNewFile();
 
         Modules modules = new Modules();
@@ -255,14 +255,14 @@ public class FileFolderPathPTest {
         Element element = doc.createElement("Test");
         element.setAttribute("NAME","New name");
         element.setAttribute("NICKNAME","New nick");
-        element.setAttribute("VALUE","C:\\Users\\Stephen\\myfile.tif");
+        element.setAttribute("VALUE","C:\\Users\\Stephen\\myfile.zip");
         element.setAttribute("VISIBLE","false");
 
         fileFolderPathP.setAttributesFromXML(element);
 
         assertEquals("Demo path",fileFolderPathP.getName());
         assertEquals("New nick",fileFolderPathP.getNickname());
-        assertEquals("C:\\Users\\Stephen\\myfile.tif",fileFolderPathP.getValue());
+        assertEquals("C:\\Users\\Stephen\\myfile.zip",fileFolderPathP.getValue());
         assertFalse(fileFolderPathP.isVisible());
 
     }

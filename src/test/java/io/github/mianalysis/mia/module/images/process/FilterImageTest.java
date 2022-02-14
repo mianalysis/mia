@@ -63,12 +63,12 @@ public class FilterImageTest extends ModuleTest {
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/labelledobjects/LabelledObjects2D_8bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/labelledobjects/LabelledObjects2D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image",ipl);
         workspace.addImage(image);
 
-        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/imagefilter/LabelledObjects2D_8bit_2pxGauss2D.tif").getPath(),"UTF-8");
+        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/imagefilter/LabelledObjects2D_8bit_2pxGauss2D.zip").getPath(),"UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
@@ -101,12 +101,12 @@ public class FilterImageTest extends ModuleTest {
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/labelledobjects/LabelledObjects5D_8bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/labelledobjects/LabelledObjects5D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image",ipl);
         workspace.addImage(image);
 
-        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/imagefilter/LabelledObjects5D_8bit_2pxGauss2D.tif").getPath(),"UTF-8");
+        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/imagefilter/LabelledObjects5D_8bit_2pxGauss2D.zip").getPath(),"UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
@@ -139,12 +139,12 @@ public class FilterImageTest extends ModuleTest {
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/labelledobjects/LabelledObjects2D_8bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/labelledobjects/LabelledObjects2D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image",ipl);
         workspace.addImage(image);
 
-        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/imagefilter/LabelledObjects2D_8bit_2pxGauss2D.tif").getPath(),"UTF-8");
+        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/imagefilter/LabelledObjects2D_8bit_2pxGauss2D.zip").getPath(),"UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
@@ -184,12 +184,12 @@ public class FilterImageTest extends ModuleTest {
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/labelledobjects/LabelledObjects2D_8bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/labelledobjects/LabelledObjects2D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image",ipl);
         workspace.addImage(image);
 
-        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/imagefilter/LabelledObjects2D_8bit_2pxGauss3D.tif").getPath(),"UTF-8");
+        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/imagefilter/LabelledObjects2D_8bit_2pxGauss3D.zip").getPath(),"UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
@@ -222,12 +222,12 @@ public class FilterImageTest extends ModuleTest {
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/labelledobjects/LabelledObjects5D_8bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/labelledobjects/LabelledObjects5D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image",ipl);
         workspace.addImage(image);
 
-        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/imagefilter/LabelledObjects5D_8bit_2pxGauss3D.tif").getPath(),"UTF-8");
+        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/imagefilter/LabelledObjects5D_8bit_2pxGauss3D.zip").getPath(),"UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
@@ -260,12 +260,12 @@ public class FilterImageTest extends ModuleTest {
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/labelledobjects/LabelledObjects2D_8bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/labelledobjects/LabelledObjects2D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image",ipl);
         workspace.addImage(image);
 
-        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/imagefilter/LabelledObjects2D_8bit_2pxGauss3D.tif").getPath(),"UTF-8");
+        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/imagefilter/LabelledObjects2D_8bit_2pxGauss3D.zip").getPath(),"UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
@@ -301,12 +301,12 @@ public class FilterImageTest extends ModuleTest {
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/labelledobjects/LabelledObjects2D_8bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/labelledobjects/LabelledObjects2D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image",ipl);
         workspace.addImage(image);
 
-        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/imagefilter/LabelledObjects2D_8bit_2pxMax2D.tif").getPath(),"UTF-8");
+        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/imagefilter/LabelledObjects2D_8bit_2pxMax2D.zip").getPath(),"UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
@@ -338,12 +338,12 @@ public class FilterImageTest extends ModuleTest {
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/labelledobjects/LabelledObjects5D_8bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/labelledobjects/LabelledObjects5D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image",ipl);
         workspace.addImage(image);
 
-        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/imagefilter/LabelledObjects5D_8bit_2pxMax2D.tif").getPath(),"UTF-8");
+        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/imagefilter/LabelledObjects5D_8bit_2pxMax2D.zip").getPath(),"UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
@@ -376,12 +376,12 @@ public class FilterImageTest extends ModuleTest {
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/labelledobjects/LabelledObjects5D_8bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/labelledobjects/LabelledObjects5D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image",ipl);
         workspace.addImage(image);
 
-        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/imagefilter/LabelledObjects5D_8bit_2pxMax2D.tif").getPath(),"UTF-8");
+        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/imagefilter/LabelledObjects5D_8bit_2pxMax2D.zip").getPath(),"UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
@@ -414,12 +414,12 @@ public class FilterImageTest extends ModuleTest {
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/labelledobjects/LabelledObjects2D_8bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/labelledobjects/LabelledObjects2D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image",ipl);
         workspace.addImage(image);
 
-        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/imagefilter/LabelledObjects2D_8bit_2pxMean2D.tif").getPath(),"UTF-8");
+        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/imagefilter/LabelledObjects2D_8bit_2pxMean2D.zip").getPath(),"UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
@@ -451,12 +451,12 @@ public class FilterImageTest extends ModuleTest {
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/labelledobjects/LabelledObjects5D_8bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/labelledobjects/LabelledObjects5D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image",ipl);
         workspace.addImage(image);
 
-        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/imagefilter/LabelledObjects5D_8bit_2pxMean2D.tif").getPath(),"UTF-8");
+        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/imagefilter/LabelledObjects5D_8bit_2pxMean2D.zip").getPath(),"UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
@@ -489,12 +489,12 @@ public class FilterImageTest extends ModuleTest {
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/labelledobjects/LabelledObjects2D_8bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/labelledobjects/LabelledObjects2D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image",ipl);
         workspace.addImage(image);
 
-        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/imagefilter/LabelledObjects2D_8bit_2pxMedian2D.tif").getPath(),"UTF-8");
+        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/imagefilter/LabelledObjects2D_8bit_2pxMedian2D.zip").getPath(),"UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
@@ -526,12 +526,12 @@ public class FilterImageTest extends ModuleTest {
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/labelledobjects/LabelledObjects5D_8bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/labelledobjects/LabelledObjects5D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image",ipl);
         workspace.addImage(image);
 
-        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/imagefilter/LabelledObjects5D_8bit_2pxMedian2D.tif").getPath(),"UTF-8");
+        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/imagefilter/LabelledObjects5D_8bit_2pxMedian2D.zip").getPath(),"UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
@@ -564,12 +564,12 @@ public class FilterImageTest extends ModuleTest {
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/labelledobjects/LabelledObjects2D_8bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/labelledobjects/LabelledObjects2D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image",ipl);
         workspace.addImage(image);
 
-        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/imagefilter/LabelledObjects2D_8bit_2pxMin2D.tif").getPath(),"UTF-8");
+        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/imagefilter/LabelledObjects2D_8bit_2pxMin2D.zip").getPath(),"UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
@@ -601,12 +601,12 @@ public class FilterImageTest extends ModuleTest {
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/labelledobjects/LabelledObjects5D_8bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/labelledobjects/LabelledObjects5D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image",ipl);
         workspace.addImage(image);
 
-        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/imagefilter/LabelledObjects5D_8bit_2pxMin2D.tif").getPath(),"UTF-8");
+        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/imagefilter/LabelledObjects5D_8bit_2pxMin2D.zip").getPath(),"UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
@@ -639,12 +639,12 @@ public class FilterImageTest extends ModuleTest {
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/labelledobjects/LabelledObjects2D_8bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/labelledobjects/LabelledObjects2D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image",ipl);
         workspace.addImage(image);
 
-        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/imagefilter/LabelledObjects2D_8bit_2pxVariance2D.tif").getPath(),"UTF-8");
+        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/imagefilter/LabelledObjects2D_8bit_2pxVariance2D.zip").getPath(),"UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
@@ -677,12 +677,12 @@ public class FilterImageTest extends ModuleTest {
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/labelledobjects/LabelledObjects5D_8bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/labelledobjects/LabelledObjects5D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image",ipl);
         workspace.addImage(image);
 
-        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/imagefilter/LabelledObjects5D_8bit_2pxVariance2D.tif").getPath(),"UTF-8");
+        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/imagefilter/LabelledObjects5D_8bit_2pxVariance2D.zip").getPath(),"UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
@@ -718,12 +718,12 @@ public class FilterImageTest extends ModuleTest {
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/labelledobjects/LabelledObjects2D_8bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/labelledobjects/LabelledObjects2D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image",ipl);
         workspace.addImage(image);
 
-        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/imagefilter/LabelledObjects2D_8bit_2pxMax3D.tif").getPath(),"UTF-8");
+        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/imagefilter/LabelledObjects2D_8bit_2pxMax3D.zip").getPath(),"UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
@@ -757,12 +757,12 @@ public class FilterImageTest extends ModuleTest {
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/labelledobjects/LabelledObjects3D_8bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/labelledobjects/LabelledObjects3D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image",ipl);
         workspace.addImage(image);
 
-        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/imagefilter/LabelledObjects3D_8bit_2pxMax3D.tif").getPath(),"UTF-8");
+        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/imagefilter/LabelledObjects3D_8bit_2pxMax3D.zip").getPath(),"UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
@@ -795,12 +795,12 @@ public class FilterImageTest extends ModuleTest {
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/labelledobjects/LabelledObjects2D_8bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/labelledobjects/LabelledObjects2D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image",ipl);
         workspace.addImage(image);
 
-        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/imagefilter/LabelledObjects2D_8bit_2pxMax3D.tif").getPath(),"UTF-8");
+        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/imagefilter/LabelledObjects2D_8bit_2pxMax3D.zip").getPath(),"UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
@@ -834,12 +834,12 @@ public class FilterImageTest extends ModuleTest {
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/labelledobjects/LabelledObjects5D_8bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/labelledobjects/LabelledObjects5D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image",ipl);
         workspace.addImage(image);
 
-        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/imagefilter/LabelledObjects5D_8bit_2pxMax3D.tif").getPath(),"UTF-8");
+        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/imagefilter/LabelledObjects5D_8bit_2pxMax3D.zip").getPath(),"UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
@@ -873,12 +873,12 @@ public class FilterImageTest extends ModuleTest {
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/labelledobjects/LabelledObjects2D_8bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/labelledobjects/LabelledObjects2D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image",ipl);
         workspace.addImage(image);
 
-        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/imagefilter/LabelledObjects2D_8bit_2pxMean3D.tif").getPath(),"UTF-8");
+        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/imagefilter/LabelledObjects2D_8bit_2pxMean3D.zip").getPath(),"UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
@@ -911,12 +911,12 @@ public class FilterImageTest extends ModuleTest {
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/labelledobjects/LabelledObjects3D_8bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/labelledobjects/LabelledObjects3D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image",ipl);
         workspace.addImage(image);
 
-        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/imagefilter/LabelledObjects3D_8bit_2pxMean3D.tif").getPath(),"UTF-8");
+        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/imagefilter/LabelledObjects3D_8bit_2pxMean3D.zip").getPath(),"UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
@@ -949,12 +949,12 @@ public class FilterImageTest extends ModuleTest {
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/labelledobjects/LabelledObjects5D_8bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/labelledobjects/LabelledObjects5D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image",ipl);
         workspace.addImage(image);
 
-        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/imagefilter/LabelledObjects5D_8bit_2pxMean3D.tif").getPath(),"UTF-8");
+        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/imagefilter/LabelledObjects5D_8bit_2pxMean3D.zip").getPath(),"UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
@@ -992,12 +992,12 @@ public class FilterImageTest extends ModuleTest {
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/labelledobjects/LabelledObjects2D_8bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/labelledobjects/LabelledObjects2D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image",ipl);
         workspace.addImage(image);
 
-        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/imagefilter/LabelledObjects2D_8bit_2pxMedian3D.tif").getPath(),"UTF-8");
+        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/imagefilter/LabelledObjects2D_8bit_2pxMedian3D.zip").getPath(),"UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
@@ -1030,12 +1030,12 @@ public class FilterImageTest extends ModuleTest {
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/labelledobjects/LabelledObjects3D_8bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/labelledobjects/LabelledObjects3D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image",ipl);
         workspace.addImage(image);
 
-        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/imagefilter/LabelledObjects3D_8bit_2pxMedian3D.tif").getPath(),"UTF-8");
+        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/imagefilter/LabelledObjects3D_8bit_2pxMedian3D.zip").getPath(),"UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
@@ -1068,12 +1068,12 @@ public class FilterImageTest extends ModuleTest {
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/labelledobjects/LabelledObjects4D_8bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/labelledobjects/LabelledObjects4D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image",ipl);
         workspace.addImage(image);
 
-        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/imagefilter/LabelledObjects4D_8bit_2pxMedian3D.tif").getPath(),"UTF-8");
+        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/imagefilter/LabelledObjects4D_8bit_2pxMedian3D.zip").getPath(),"UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
@@ -1106,12 +1106,12 @@ public class FilterImageTest extends ModuleTest {
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/labelledobjects/LabelledObjects5D_8bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/labelledobjects/LabelledObjects5D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image",ipl);
         workspace.addImage(image);
 
-        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/imagefilter/LabelledObjects5D_8bit_2pxMedian3D.tif").getPath(),"UTF-8");
+        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/imagefilter/LabelledObjects5D_8bit_2pxMedian3D.zip").getPath(),"UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
@@ -1144,12 +1144,12 @@ public class FilterImageTest extends ModuleTest {
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/labelledobjects/LabelledObjects2D_8bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/labelledobjects/LabelledObjects2D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image",ipl);
         workspace.addImage(image);
 
-        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/imagefilter/LabelledObjects2D_8bit_2pxMin3D.tif").getPath(),"UTF-8");
+        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/imagefilter/LabelledObjects2D_8bit_2pxMin3D.zip").getPath(),"UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
@@ -1182,12 +1182,12 @@ public class FilterImageTest extends ModuleTest {
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/labelledobjects/LabelledObjects3D_8bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/labelledobjects/LabelledObjects3D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image",ipl);
         workspace.addImage(image);
 
-        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/imagefilter/LabelledObjects3D_8bit_2pxMin3D.tif").getPath(),"UTF-8");
+        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/imagefilter/LabelledObjects3D_8bit_2pxMin3D.zip").getPath(),"UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
@@ -1220,12 +1220,12 @@ public class FilterImageTest extends ModuleTest {
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/labelledobjects/LabelledObjects5D_8bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/labelledobjects/LabelledObjects5D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image",ipl);
         workspace.addImage(image);
 
-        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/imagefilter/LabelledObjects5D_8bit_2pxMin3D.tif").getPath(),"UTF-8");
+        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/imagefilter/LabelledObjects5D_8bit_2pxMin3D.zip").getPath(),"UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
@@ -1259,12 +1259,12 @@ public class FilterImageTest extends ModuleTest {
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/labelledobjects/LabelledObjects2D_8bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/labelledobjects/LabelledObjects2D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image",ipl);
         workspace.addImage(image);
 
-        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/imagefilter/LabelledObjects2D_8bit_2pxVar3D.tif").getPath(),"UTF-8");
+        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/imagefilter/LabelledObjects2D_8bit_2pxVar3D.zip").getPath(),"UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
@@ -1298,12 +1298,12 @@ public class FilterImageTest extends ModuleTest {
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/labelledobjects/LabelledObjects3D_8bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/labelledobjects/LabelledObjects3D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image",ipl);
         workspace.addImage(image);
 
-        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/imagefilter/LabelledObjects3D_8bit_2pxVar3D.tif").getPath(),"UTF-8");
+        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/imagefilter/LabelledObjects3D_8bit_2pxVar3D.zip").getPath(),"UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
@@ -1336,12 +1336,12 @@ public class FilterImageTest extends ModuleTest {
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/labelledobjects/LabelledObjects5D_8bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/labelledobjects/LabelledObjects5D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image",ipl);
         workspace.addImage(image);
 
-        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/imagefilter/LabelledObjects5D_8bit_2pxVar3D.tif").getPath(),"UTF-8");
+        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/imagefilter/LabelledObjects5D_8bit_2pxVar3D.zip").getPath(),"UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations

@@ -10,7 +10,10 @@ import ij.measure.Calibration;
 import ij.plugin.Duplicator;
 import ij.plugin.Resizer;
 import ij.plugin.SubHyperstackMaker;
+import inra.ijpb.binary.distmap.ChamferDistanceTransform3DFloat;
 import inra.ijpb.binary.distmap.ChamferMask3D;
+import inra.ijpb.binary.distmap.ChamferMasks3D;
+import inra.ijpb.plugins.ChamferDistanceMap3DPlugin;
 import inra.ijpb.plugins.GeodesicDistanceMap3DPlugin;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
@@ -109,16 +112,10 @@ public class DistanceMap extends Module {
             // If necessary, interpolating the image in Z to match the XY spacing
             if (matchZToXY && nSlices > 1)
                 currentIpl = InterpolateZAxis.matchZToXY(currentIpl, InterpolateZAxis.InterpolationModes.NONE);
-
-            // We're calculating the distance map across the entire image, so setting the
-            // mask to all foreground
-            ImagePlus maskIpl = new Duplicator().run(currentIpl);
-            ImageMath.process(maskIpl, ImageMath.CalculationTypes.MULTIPLY, 0);
-            ImageMath.process(maskIpl, ImageMath.CalculationTypes.ADD, 255);
-
-            currentIpl.setStack(
-                    new GeodesicDistanceMap3DPlugin()
-                            .process(currentIpl, maskIpl, "Dist", weights, true).getStack());
+                            
+            ChamferMasks3D weightsOption = ChamferMasks3D.fromLabel("Svensson <3,4,5,7>");
+		    weights = weightsOption.getMask();
+            currentIpl.setStack(new ChamferDistanceTransform3DFloat(weights, true).distanceMap(currentIpl.getStack()));
 
             // If the input image as interpolated, it now needs to be returned to the
             // original scaling
@@ -127,6 +124,7 @@ public class DistanceMap extends Module {
                 resizer.setAverageWhenDownsizing(true);
                 currentIpl = resizer.zScale(currentIpl, nSlices, Resizer.IN_PLACE);
             }
+            
             // Putting the image back into the distanceMapImage
             ImageStack currentIst = currentIpl.getStack();
             for (int z = 0; z < currentIpl.getNSlices(); z++) {

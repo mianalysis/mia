@@ -32,7 +32,7 @@ package io.github.mianalysis.mia.process.analysishandling;
 //
 //    @Test
 //    public void testGetInputFileSingleFilePresent(@TempDir Path tempPath) throws Exception {
-//        File file = new File(tempPath+File.separator+"fake file.tif");
+//        File file = new File(tempPath+File.separator+"fake file.zip");
 //        file.createNewFile();
 //        String path = file.getAbsolutePath();
 //
@@ -43,7 +43,7 @@ package io.github.mianalysis.mia.process.analysishandling;
 //
 //        assertNotNull(actual);
 //        assert(actual.isFile());
-//        assertEquals("fake file.tif",actual.getName());
+//        assertEquals("fake file.zip",actual.getName());
 //        assertEquals(path,actual.getAbsolutePath());
 //
 //    }
@@ -88,7 +88,7 @@ package io.github.mianalysis.mia.process.analysishandling;
 //    public void testCheckInputFileValidityMissingFile(@TempDir Path tempPath) throws Exception {
 //        File folder = new File(tempPath+File.separator+"test folder\\");
 //        folder.createNewFile();
-//        String path = folder.getAbsolutePath() + File.separator + "fake file.tif";
+//        String path = folder.getAbsolutePath() + File.separator + "fake file.zip";
 //
 //        boolean actual = AnalysisRunner.checkInputFileValidity(path);
 //
@@ -111,7 +111,7 @@ package io.github.mianalysis.mia.process.analysishandling;
 //    @Test
 //    public void testCheckInputFileValidityCorrectFile(@TempDir Path tempPath) throws Exception {
 //        // Creating a fake file
-//        File file = new File(tempPath+File.separator+"fake file.tif");
+//        File file = new File(tempPath+File.separator+"fake file.zip");
 //        file.createNewFile();
 //        String path = file.getAbsolutePath();
 //
@@ -146,7 +146,7 @@ package io.github.mianalysis.mia.process.analysishandling;
 //        inputControl.updateParameterValue(InputControl.SERIES_MODE,InputControl.SeriesModes.SERIES_LIST);
 //        inputControl.updateParameterValue(InputControl.SERIES_LIST,"3");
 //
-//        File file = new File(tempPath+File.separator+"fake file.tif");
+//        File file = new File(tempPath+File.separator+"fake file.zip");
 //        file.createNewFile();
 //
 //        String actual = AnalysisRunner.getExportName(inputControl,outputControl,file);
@@ -164,7 +164,7 @@ package io.github.mianalysis.mia.process.analysishandling;
 //
 //        inputControl.updateParameterValue(InputControl.SERIES_MODE,InputControl.SeriesModes.ALL_SERIES);
 //
-//        File file = new File(tempPath+File.separator+"fake file.tif");
+//        File file = new File(tempPath+File.separator+"fake file.zip");
 //        file.createNewFile();
 //
 //        String actual = AnalysisRunner.getExportName(inputControl,outputControl,file);

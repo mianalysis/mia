@@ -22,7 +22,7 @@ package io.github.mianalysis.mia.process.analysishandling;
 //        // Initialising Modules
 //        Modules modules = new Modules();
 //
-//        File testFile = new File(tempPath+File.separator+"TestFile.tif");
+//        File testFile = new File(tempPath+File.separator+"TestFile.zip");
 //        testFile.createNewFile();
 //
 //        modules.getInputControl().updateParameterValue(InputControl.INPUT_PATH,testFile.getAbsolutePath());
@@ -52,7 +52,7 @@ package io.github.mianalysis.mia.process.analysishandling;
 //        // Initialising Modules
 //        Modules modules = new Modules();
 //
-//        File testFile = new File(tempPath+File.separator+"TestFile.tif");
+//        File testFile = new File(tempPath+File.separator+"TestFile.zip");
 //        testFile.createNewFile();
 //
 //        modules.getInputControl().updateParameterValue(InputControl.INPUT_PATH,testFile.getAbsolutePath());
@@ -85,7 +85,7 @@ package io.github.mianalysis.mia.process.analysishandling;
 //        // Initialising Modules
 //        Modules modules = new Modules();
 //
-//        File testFile = new File(tempPath+File.separator+"TestFile.tif");
+//        File testFile = new File(tempPath+File.separator+"TestFile.zip");
 //        testFile.createNewFile();
 //
 //        modules.getInputControl().updateParameterValue(InputControl.INPUT_PATH,testFile.getAbsolutePath());
@@ -119,7 +119,7 @@ package io.github.mianalysis.mia.process.analysishandling;
 //        // Initialising Modules
 //        Modules modules = new Modules();
 //
-//        File testFile = new File(tempPath+File.separator+"TestFile.tif");
+//        File testFile = new File(tempPath+File.separator+"TestFile.zip");
 //        testFile.createNewFile();
 //
 //        modules.getInputControl().updateParameterValue(InputControl.INPUT_PATH,testFile.getAbsolutePath());
@@ -153,7 +153,7 @@ package io.github.mianalysis.mia.process.analysishandling;
 //        // Initialising Modules
 //        Modules modules = new Modules();
 //
-//        File testFile = new File(tempPath+File.separator+"TestFile.tif");
+//        File testFile = new File(tempPath+File.separator+"TestFile.zip");
 //        testFile.createNewFile();
 //
 //        modules.getInputControl().updateParameterValue(InputControl.INPUT_PATH,testFile.getAbsolutePath());
@@ -220,7 +220,7 @@ package io.github.mianalysis.mia.process.analysishandling;
 //
 //    @Test
 //    public void testModulesErrorInOutput(@TempDir Path tempPath) throws IOException {
-//        File testFile = new File(tempPath+File.separator+"TestFile.tif");
+//        File testFile = new File(tempPath+File.separator+"TestFile.zip");
 //        testFile.createNewFile();
 //
 //        // Initialising Modules
@@ -259,7 +259,7 @@ package io.github.mianalysis.mia.process.analysishandling;
 //
 //    @Test
 //    public void testModulesEmptyCollection(@TempDir Path tempPath) throws IOException {
-//        File testFile = new File(tempPath+File.separator+"TestFile.tif");
+//        File testFile = new File(tempPath+File.separator+"TestFile.zip");
 //        testFile.createNewFile();
 //
 //        // Initialising Modules
@@ -279,7 +279,7 @@ package io.github.mianalysis.mia.process.analysishandling;
 //        // Initialising Modules
 //        Modules modules = new Modules();
 //
-//        File testFile = new File(tempPath+File.separator+"TestFile.tif");
+//        File testFile = new File(tempPath+File.separator+"TestFile.zip");
 //        testFile.createNewFile();
 //
 //        modules.getInputControl().updateParameterValue(InputControl.INPUT_PATH,testFile.getAbsolutePath());
@@ -315,7 +315,7 @@ package io.github.mianalysis.mia.process.analysishandling;
 //        // Initialising Modules
 //        Modules modules = new Modules();
 //
-//        File testFile = new File(tempPath+File.separator+"TestFile.tif");
+//        File testFile = new File(tempPath+File.separator+"TestFile.zip");
 //        testFile.createNewFile();
 //
 //        modules.getInputControl().updateParameterValue(InputControl.INPUT_PATH,testFile.getAbsolutePath());
@@ -351,7 +351,7 @@ package io.github.mianalysis.mia.process.analysishandling;
 //        // Initialising Modules
 //        Modules modules = new Modules();
 //
-//        File testFile = new File(tempPath+File.separator+"TestFile.tif");
+//        File testFile = new File(tempPath+File.separator+"TestFile.zip");
 //        testFile.createNewFile();
 //
 //        modules.getInputControl().updateParameterValue(InputControl.INPUT_PATH,testFile.getAbsolutePath());

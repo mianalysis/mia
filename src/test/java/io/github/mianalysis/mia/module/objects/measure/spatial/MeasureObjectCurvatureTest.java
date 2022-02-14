@@ -64,7 +64,7 @@ public class MeasureObjectCurvatureTest extends ModuleTest {
         workspace.addObjects(inputObj);
 
         // Loading the reference image and adding to workspace
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/binaryobjects/BinaryRing9p5pxRadius2D.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/binaryobjects/BinaryRing9p5pxRadius2D.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Ref_image", ipl);
         workspace.addImage(image);
@@ -119,7 +119,7 @@ public class MeasureObjectCurvatureTest extends ModuleTest {
         workspace.addObjects(inputObj);
 
         // Loading the reference image and adding to workspace
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/binaryobjects/BinaryRing9p5pxRadius2D.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/binaryobjects/BinaryRing9p5pxRadius2D.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Ref_image",ipl);
         workspace.addImage(image);
@@ -183,7 +183,7 @@ public class MeasureObjectCurvatureTest extends ModuleTest {
         workspace.addObjects(inputObj);
 
         // Loading the reference image and adding to workspace
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/binaryobjects/BinaryRing9p5pxRadius2D.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/binaryobjects/BinaryRing9p5pxRadius2D.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Ref_image",ipl);
         workspace.addImage(image);

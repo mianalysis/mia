@@ -9,6 +9,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import ij.IJ;
+import ij.ImageJ;
 import ij.ImagePlus;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.ModuleTest;
@@ -38,12 +39,12 @@ public class InvertIntensityTest extends ModuleTest {
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient3D_8bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient3D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image",ipl);
         workspace.addImage(image);
 
-        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/imagemath/NoisyGradient3D_Invert_8bit.tif").getPath(),"UTF-8");
+        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/imagemath/NoisyGradient3D_Invert_8bit.zip").getPath(),"UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising InvertIntensity
@@ -74,12 +75,12 @@ public class InvertIntensityTest extends ModuleTest {
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient3D_8bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient3D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image",ipl);
         workspace.addImage(image);
 
-        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/imagemath/NoisyGradient3D_Invert_8bit.tif").getPath(),"UTF-8");
+        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/imagemath/NoisyGradient3D_Invert_8bit.zip").getPath(),"UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising InvertIntensity
@@ -109,12 +110,12 @@ public class InvertIntensityTest extends ModuleTest {
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient3D_16bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient3D_16bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image",ipl);
         workspace.addImage(image);
 
-        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/imagemath/NoisyGradient3D_Invert_16bit.tif").getPath(),"UTF-8");
+        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/imagemath/NoisyGradient3D_Invert_16bit.zip").getPath(),"UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising InvertIntensity
@@ -145,12 +146,12 @@ public class InvertIntensityTest extends ModuleTest {
         Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient3D_32bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient3D_32bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image",ipl);
         workspace.addImage(image);
 
-        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/imagemath/NoisyGradient3D_Invert_32bit.tif").getPath(),"UTF-8");
+        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/imagemath/NoisyGradient3D_Invert_32bit.zip").getPath(),"UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising InvertIntensity
@@ -170,6 +171,7 @@ public class InvertIntensityTest extends ModuleTest {
 
         // Checking the output image has the expected calibration
         Image outputImage = workspace.getImage("Test_output");
+        
         assertEquals(expectedImage,outputImage);
 
     }
