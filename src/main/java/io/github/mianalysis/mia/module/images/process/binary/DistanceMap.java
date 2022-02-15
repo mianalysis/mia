@@ -112,9 +112,7 @@ public class DistanceMap extends Module {
             // If necessary, interpolating the image in Z to match the XY spacing
             if (matchZToXY && nSlices > 1)
                 currentIpl = InterpolateZAxis.matchZToXY(currentIpl, InterpolateZAxis.InterpolationModes.NONE);
-                            
-            ChamferMasks3D weightsOption = ChamferMasks3D.fromLabel("Svensson <3,4,5,7>");
-		    weights = weightsOption.getMask();
+            
             currentIpl.setStack(new ChamferDistanceTransform3DFloat(weights, true).distanceMap(currentIpl.getStack()));
 
             // If the input image as interpolated, it now needs to be returned to the
