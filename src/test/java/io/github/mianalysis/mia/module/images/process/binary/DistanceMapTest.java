@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import java.io.UnsupportedEncodingException;
 
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import io.github.mianalysis.TestUtils;
@@ -550,5 +551,507 @@ public class DistanceMapTest extends ModuleTest {
     }
     
     
+    /*  
+        #################
+        ### 4D IMAGES ###
+        #################
+    */
+
+    @Test
+    public void testRunWithWhiteObjects4DBlackBackgroundSvensonMatchPixels() throws Exception {
+        // Creating a new workspace
+        Workspaces workspaces = new Workspaces();
+        Workspace workspace = workspaces.getNewWorkspace(null, 1);
+
+        // Loading the test image and adding to workspace
+        TestUtils.addImageToWorkspace(workspace, "/images/binaryobjects/BinaryObjects4D_8bit_blackBG.zip", inputImageName);
+                
+        // Initialising BinaryOperations
+        DistanceMap distanceMap = new DistanceMap(new Modules());
+        distanceMap.updateParameterValue(DistanceMap.INPUT_IMAGE, inputImageName);
+        distanceMap.updateParameterValue(DistanceMap.OUTPUT_IMAGE, outputImageName);
+        distanceMap.updateParameterValue(DistanceMap.WEIGHT_MODE, DistanceMap.WeightModes.WEIGHTS_3_4_5_7);
+        distanceMap.updateParameterValue(DistanceMap.MATCH_Z_TO_X, true);
+        distanceMap.updateParameterValue(DistanceMap.SPATIAL_UNITS_MODE, DistanceMap.SpatialUnitsModes.PIXELS);
+        distanceMap.updateParameterValue(DistanceMap.BINARY_LOGIC, DistanceMap.BinaryLogic.BLACK_BACKGROUND);
+
+        // Running Module
+        distanceMap.execute(workspace);
+
+        // Checking the images in the workspace
+        String expectedImagePath = "/images/distancemap3D/DistanceMap3D_insideObjects_svensson_match_pixels_4D.tif.zip";
+        testImage(workspace, expectedImagePath);
+
+    }
+
+    @Test
+    public void testRunWithWhiteObjects4DBlackBackgroundChessboardMatchPixels() throws Exception {
+        // Creating a new workspace
+        Workspaces workspaces = new Workspaces();
+        Workspace workspace = workspaces.getNewWorkspace(null, 1);
+
+        // Loading the test image and adding to workspace
+        TestUtils.addImageToWorkspace(workspace, "/images/binaryobjects/BinaryObjects4D_8bit_blackBG.zip",
+                inputImageName);
+
+        // Initialising BinaryOperations
+        DistanceMap distanceMap = new DistanceMap(new Modules());
+        distanceMap.updateParameterValue(DistanceMap.INPUT_IMAGE, inputImageName);
+        distanceMap.updateParameterValue(DistanceMap.OUTPUT_IMAGE, outputImageName);
+        distanceMap.updateParameterValue(DistanceMap.WEIGHT_MODE, DistanceMap.WeightModes.CHESSBOARD);
+        distanceMap.updateParameterValue(DistanceMap.MATCH_Z_TO_X, true);
+        distanceMap.updateParameterValue(DistanceMap.SPATIAL_UNITS_MODE, DistanceMap.SpatialUnitsModes.PIXELS);
+        distanceMap.updateParameterValue(DistanceMap.BINARY_LOGIC, DistanceMap.BinaryLogic.BLACK_BACKGROUND);
+
+        // Running Module
+        distanceMap.execute(workspace);
+
+        // Checking the images in the workspace
+        String expectedImagePath = "/images/distancemap3D/DistanceMap3D_insideObjects_chessboard_match_pixels_4D.tif.zip";
+        testImage(workspace, expectedImagePath);
+
+    }
+
+    @Test
+    public void testRunWithWhiteObjects4DBlackBackgroundCityblockMatchPixels() throws Exception {
+        // Creating a new workspace
+        Workspaces workspaces = new Workspaces();
+        Workspace workspace = workspaces.getNewWorkspace(null, 1);
+
+        // Loading the test image and adding to workspace
+        TestUtils.addImageToWorkspace(workspace, "/images/binaryobjects/BinaryObjects4D_8bit_blackBG.zip", inputImageName);
+                
+        // Initialising BinaryOperations
+        DistanceMap distanceMap = new DistanceMap(new Modules());
+        distanceMap.updateParameterValue(DistanceMap.INPUT_IMAGE, inputImageName);
+        distanceMap.updateParameterValue(DistanceMap.OUTPUT_IMAGE, outputImageName);
+        distanceMap.updateParameterValue(DistanceMap.WEIGHT_MODE, DistanceMap.WeightModes.CITY_BLOCK);
+        distanceMap.updateParameterValue(DistanceMap.MATCH_Z_TO_X, true);
+        distanceMap.updateParameterValue(DistanceMap.SPATIAL_UNITS_MODE, DistanceMap.SpatialUnitsModes.PIXELS);
+        distanceMap.updateParameterValue(DistanceMap.BINARY_LOGIC, DistanceMap.BinaryLogic.BLACK_BACKGROUND);
+
+        // Running Module
+        distanceMap.execute(workspace);
+
+        // Checking the images in the workspace
+        String expectedImagePath = "/images/distancemap3D/DistanceMap3D_insideObjects_cityblock_match_pixels_4D.tif.zip";
+        testImage(workspace, expectedImagePath);
+
+    }
+
+    @Test
+    public void testRunWithWhiteObjects4DBlackBackgroundBorgeforsMatchPixels() throws Exception {
+        // Creating a new workspace
+        Workspaces workspaces = new Workspaces();
+        Workspace workspace = workspaces.getNewWorkspace(null, 1);
+
+        // Loading the test image and adding to workspace
+        TestUtils.addImageToWorkspace(workspace, "/images/binaryobjects/BinaryObjects4D_8bit_blackBG.zip", inputImageName);
+                
+        // Initialising BinaryOperations
+        DistanceMap distanceMap = new DistanceMap(new Modules());
+        distanceMap.updateParameterValue(DistanceMap.INPUT_IMAGE, inputImageName);
+        distanceMap.updateParameterValue(DistanceMap.OUTPUT_IMAGE, outputImageName);
+        distanceMap.updateParameterValue(DistanceMap.WEIGHT_MODE, DistanceMap.WeightModes.BORGEFORS);
+        distanceMap.updateParameterValue(DistanceMap.MATCH_Z_TO_X, true);
+        distanceMap.updateParameterValue(DistanceMap.SPATIAL_UNITS_MODE, DistanceMap.SpatialUnitsModes.PIXELS);
+        distanceMap.updateParameterValue(DistanceMap.BINARY_LOGIC, DistanceMap.BinaryLogic.BLACK_BACKGROUND);
+
+        // Running Module
+        distanceMap.execute(workspace);
+
+        // Checking the images in the workspace
+        String expectedImagePath = "/images/distancemap3D/DistanceMap3D_insideObjects_borgefors_match_pixels_4D.tif.zip";
+        testImage(workspace, expectedImagePath);
+
+    }
+
+    @Test
+    public void testRunWithWhiteObjects4DWhiteBackgroundSvensonMatchPixels() throws Exception {
+        // Creating a new workspace
+        Workspaces workspaces = new Workspaces();
+        Workspace workspace = workspaces.getNewWorkspace(null, 1);
+
+        // Loading the test image and adding to workspace
+        TestUtils.addImageToWorkspace(workspace, "/images/binaryobjects/BinaryObjects4D_8bit_whiteBG.zip", inputImageName);
+                
+        // Initialising BinaryOperations
+        DistanceMap distanceMap = new DistanceMap(new Modules());
+        distanceMap.updateParameterValue(DistanceMap.INPUT_IMAGE, inputImageName);
+        distanceMap.updateParameterValue(DistanceMap.OUTPUT_IMAGE, outputImageName);
+        distanceMap.updateParameterValue(DistanceMap.WEIGHT_MODE, DistanceMap.WeightModes.WEIGHTS_3_4_5_7);
+        distanceMap.updateParameterValue(DistanceMap.MATCH_Z_TO_X, true);
+        distanceMap.updateParameterValue(DistanceMap.SPATIAL_UNITS_MODE, DistanceMap.SpatialUnitsModes.PIXELS);
+        distanceMap.updateParameterValue(DistanceMap.BINARY_LOGIC, DistanceMap.BinaryLogic.BLACK_BACKGROUND);
+
+        // Running Module
+        distanceMap.execute(workspace);
+
+        // Checking the images in the workspace
+        String expectedImagePath = "/images/distancemap3D/DistanceMap3D_outsideObjects_svensson_match_pixels_4D.tif.zip";
+        testImage(workspace, expectedImagePath);
+
+    }
+
+    @Test
+    public void testRunWithBlackObjects4DWhiteBackgroundSvensonMatchPixels() throws Exception {
+        // Creating a new workspace
+        Workspaces workspaces = new Workspaces();
+        Workspace workspace = workspaces.getNewWorkspace(null, 1);
+
+        // Loading the test image and adding to workspace
+        TestUtils.addImageToWorkspace(workspace, "/images/binaryobjects/BinaryObjects4D_8bit_whiteBG.zip", inputImageName);
+
+        // Initialising BinaryOperations
+        DistanceMap distanceMap = new DistanceMap(new Modules());
+        distanceMap.updateParameterValue(DistanceMap.INPUT_IMAGE, inputImageName);
+        distanceMap.updateParameterValue(DistanceMap.OUTPUT_IMAGE, outputImageName);
+        distanceMap.updateParameterValue(DistanceMap.WEIGHT_MODE, DistanceMap.WeightModes.WEIGHTS_3_4_5_7);
+        distanceMap.updateParameterValue(DistanceMap.MATCH_Z_TO_X, true);
+        distanceMap.updateParameterValue(DistanceMap.SPATIAL_UNITS_MODE, DistanceMap.SpatialUnitsModes.PIXELS);
+        distanceMap.updateParameterValue(DistanceMap.BINARY_LOGIC, DistanceMap.BinaryLogic.WHITE_BACKGROUND);
+
+        // Running Module
+        distanceMap.execute(workspace);
+
+        // Checking the images in the workspace
+        String expectedImagePath = "/images/distancemap3D/DistanceMap3D_insideObjects_svensson_match_pixels_4D.tif.zip";
+        testImage(workspace, expectedImagePath);
+
+    }
+
+    @Test
+    public void testRunWithWhiteObjects4DBlackBackgroundSvensonMatchCalibrated() throws Exception {
+        // Creating a new workspace
+        Workspaces workspaces = new Workspaces();
+        Workspace workspace = workspaces.getNewWorkspace(null, 1);
+
+        // Loading the test image and adding to workspace
+        TestUtils.addImageToWorkspace(workspace, "/images/binaryobjects/BinaryObjects4D_8bit_blackBG.zip", inputImageName);
+
+        // Initialising BinaryOperations
+        DistanceMap distanceMap = new DistanceMap(new Modules());
+        distanceMap.updateParameterValue(DistanceMap.INPUT_IMAGE, inputImageName);
+        distanceMap.updateParameterValue(DistanceMap.OUTPUT_IMAGE, outputImageName);
+        distanceMap.updateParameterValue(DistanceMap.WEIGHT_MODE, DistanceMap.WeightModes.WEIGHTS_3_4_5_7);
+        distanceMap.updateParameterValue(DistanceMap.MATCH_Z_TO_X, true);
+        distanceMap.updateParameterValue(DistanceMap.SPATIAL_UNITS_MODE, DistanceMap.SpatialUnitsModes.CALIBRATED);
+        distanceMap.updateParameterValue(DistanceMap.BINARY_LOGIC, DistanceMap.BinaryLogic.BLACK_BACKGROUND);
+
+        // Running Module
+        distanceMap.execute(workspace);
+
+        // Checking the images in the workspace
+        String expectedImagePath = "/images/distancemap3D/DistanceMap3D_insideObjects_svensson_match_cal_4D.tif.zip";
+        testImage(workspace, expectedImagePath);
+
+    }
+
+    @Test
+    public void testRunWithWhiteObjects4DBlackBackgroundSvensonUnmatchCalibrated() throws Exception {
+        // Creating a new workspace
+        Workspaces workspaces = new Workspaces();
+        Workspace workspace = workspaces.getNewWorkspace(null, 1);
+
+        // Loading the test image and adding to workspace
+        TestUtils.addImageToWorkspace(workspace, "/images/binaryobjects/BinaryObjects4D_8bit_blackBG.zip", inputImageName);
+
+        // Initialising BinaryOperations
+        DistanceMap distanceMap = new DistanceMap(new Modules());
+        distanceMap.updateParameterValue(DistanceMap.INPUT_IMAGE, inputImageName);
+        distanceMap.updateParameterValue(DistanceMap.OUTPUT_IMAGE, outputImageName);
+        distanceMap.updateParameterValue(DistanceMap.WEIGHT_MODE, DistanceMap.WeightModes.WEIGHTS_3_4_5_7);
+        distanceMap.updateParameterValue(DistanceMap.MATCH_Z_TO_X, false);
+        distanceMap.updateParameterValue(DistanceMap.SPATIAL_UNITS_MODE, DistanceMap.SpatialUnitsModes.CALIBRATED);
+        distanceMap.updateParameterValue(DistanceMap.BINARY_LOGIC, DistanceMap.BinaryLogic.BLACK_BACKGROUND);
+
+        // Running Module
+        distanceMap.execute(workspace);
+
+        // Checking the images in the workspace
+        String expectedImagePath = "/images/distancemap3D/DistanceMap3D_insideObjects_svensson_unmatch_cal_4D.tif.zip";
+        testImage(workspace, expectedImagePath);
+
+    }
+
+    @Test
+    public void testRunWithWhiteObjects4DBlackBackgroundSvensonUnmatchPixels() throws Exception {
+        // Creating a new workspace
+        Workspaces workspaces = new Workspaces();
+        Workspace workspace = workspaces.getNewWorkspace(null, 1);
+
+        // Loading the test image and adding to workspace
+        TestUtils.addImageToWorkspace(workspace, "/images/binaryobjects/BinaryObjects4D_8bit_blackBG.zip",
+                inputImageName);
+
+        // Initialising BinaryOperations
+        DistanceMap distanceMap = new DistanceMap(new Modules());
+        distanceMap.updateParameterValue(DistanceMap.INPUT_IMAGE, inputImageName);
+        distanceMap.updateParameterValue(DistanceMap.OUTPUT_IMAGE, outputImageName);
+        distanceMap.updateParameterValue(DistanceMap.WEIGHT_MODE, DistanceMap.WeightModes.WEIGHTS_3_4_5_7);
+        distanceMap.updateParameterValue(DistanceMap.MATCH_Z_TO_X, false);
+        distanceMap.updateParameterValue(DistanceMap.SPATIAL_UNITS_MODE, DistanceMap.SpatialUnitsModes.PIXELS);
+        distanceMap.updateParameterValue(DistanceMap.BINARY_LOGIC, DistanceMap.BinaryLogic.BLACK_BACKGROUND);
+
+        // Running Module
+        distanceMap.execute(workspace);
+
+        // Checking the images in the workspace
+        String expectedImagePath = "/images/distancemap3D/DistanceMap3D_insideObjects_svensson_unmatch_pixels_4D.tif.zip";
+        testImage(workspace, expectedImagePath);
+
+    }
+
+
+    /*  
+        #################
+        ### 5D IMAGES ###
+        #################
+    */
+
+    @Test @Disabled
+    public void testRunWithWhiteObjects5DBlackBackgroundSvensonMatchPixels() throws Exception {
+        // Creating a new workspace
+        Workspaces workspaces = new Workspaces();
+        Workspace workspace = workspaces.getNewWorkspace(null, 1);
+
+        // Loading the test image and adding to workspace
+        TestUtils.addImageToWorkspace(workspace, "/images/binaryobjects/BinaryObjects5D_8bit_blackBG.zip", inputImageName);
+                
+        // Initialising BinaryOperations
+        DistanceMap distanceMap = new DistanceMap(new Modules());
+        distanceMap.updateParameterValue(DistanceMap.INPUT_IMAGE, inputImageName);
+        distanceMap.updateParameterValue(DistanceMap.OUTPUT_IMAGE, outputImageName);
+        distanceMap.updateParameterValue(DistanceMap.WEIGHT_MODE, DistanceMap.WeightModes.WEIGHTS_3_4_5_7);
+        distanceMap.updateParameterValue(DistanceMap.MATCH_Z_TO_X, true);
+        distanceMap.updateParameterValue(DistanceMap.SPATIAL_UNITS_MODE, DistanceMap.SpatialUnitsModes.PIXELS);
+        distanceMap.updateParameterValue(DistanceMap.BINARY_LOGIC, DistanceMap.BinaryLogic.BLACK_BACKGROUND);
+
+        // Running Module
+        distanceMap.execute(workspace);
+
+        // Checking the images in the workspace
+        String expectedImagePath = "/images/distancemap3D/DistanceMap3D_insideObjects_svensson_match_pixels_5D.tif.zip";
+        testImage(workspace, expectedImagePath);
+
+    }
+
+    @Test @Disabled
+    public void testRunWithWhiteObjects5DBlackBackgroundChessboardMatchPixels() throws Exception {
+        // Creating a new workspace
+        Workspaces workspaces = new Workspaces();
+        Workspace workspace = workspaces.getNewWorkspace(null, 1);
+
+        // Loading the test image and adding to workspace
+        TestUtils.addImageToWorkspace(workspace, "/images/binaryobjects/BinaryObjects5D_8bit_blackBG.zip",
+                inputImageName);
+
+        // Initialising BinaryOperations
+        DistanceMap distanceMap = new DistanceMap(new Modules());
+        distanceMap.updateParameterValue(DistanceMap.INPUT_IMAGE, inputImageName);
+        distanceMap.updateParameterValue(DistanceMap.OUTPUT_IMAGE, outputImageName);
+        distanceMap.updateParameterValue(DistanceMap.WEIGHT_MODE, DistanceMap.WeightModes.CHESSBOARD);
+        distanceMap.updateParameterValue(DistanceMap.MATCH_Z_TO_X, true);
+        distanceMap.updateParameterValue(DistanceMap.SPATIAL_UNITS_MODE, DistanceMap.SpatialUnitsModes.PIXELS);
+        distanceMap.updateParameterValue(DistanceMap.BINARY_LOGIC, DistanceMap.BinaryLogic.BLACK_BACKGROUND);
+
+        // Running Module
+        distanceMap.execute(workspace);
+
+        // Checking the images in the workspace
+        String expectedImagePath = "/images/distancemap3D/DistanceMap3D_insideObjects_chessboard_match_pixels_5D.tif.zip";
+        testImage(workspace, expectedImagePath);
+
+    }
+
+    @Test @Disabled
+    public void testRunWithWhiteObjects5DBlackBackgroundCityblockMatchPixels() throws Exception {
+        // Creating a new workspace
+        Workspaces workspaces = new Workspaces();
+        Workspace workspace = workspaces.getNewWorkspace(null, 1);
+
+        // Loading the test image and adding to workspace
+        TestUtils.addImageToWorkspace(workspace, "/images/binaryobjects/BinaryObjects5D_8bit_blackBG.zip", inputImageName);
+                
+        // Initialising BinaryOperations
+        DistanceMap distanceMap = new DistanceMap(new Modules());
+        distanceMap.updateParameterValue(DistanceMap.INPUT_IMAGE, inputImageName);
+        distanceMap.updateParameterValue(DistanceMap.OUTPUT_IMAGE, outputImageName);
+        distanceMap.updateParameterValue(DistanceMap.WEIGHT_MODE, DistanceMap.WeightModes.CITY_BLOCK);
+        distanceMap.updateParameterValue(DistanceMap.MATCH_Z_TO_X, true);
+        distanceMap.updateParameterValue(DistanceMap.SPATIAL_UNITS_MODE, DistanceMap.SpatialUnitsModes.PIXELS);
+        distanceMap.updateParameterValue(DistanceMap.BINARY_LOGIC, DistanceMap.BinaryLogic.BLACK_BACKGROUND);
+
+        // Running Module
+        distanceMap.execute(workspace);
+
+        // Checking the images in the workspace
+        String expectedImagePath = "/images/distancemap3D/DistanceMap3D_insideObjects_cityblock_match_pixels_5D.tif.zip";
+        testImage(workspace, expectedImagePath);
+
+    }
+
+    @Test @Disabled
+    public void testRunWithWhiteObjects5DBlackBackgroundBorgeforsMatchPixels() throws Exception {
+        // Creating a new workspace
+        Workspaces workspaces = new Workspaces();
+        Workspace workspace = workspaces.getNewWorkspace(null, 1);
+
+        // Loading the test image and adding to workspace
+        TestUtils.addImageToWorkspace(workspace, "/images/binaryobjects/BinaryObjects5D_8bit_blackBG.zip", inputImageName);
+                
+        // Initialising BinaryOperations
+        DistanceMap distanceMap = new DistanceMap(new Modules());
+        distanceMap.updateParameterValue(DistanceMap.INPUT_IMAGE, inputImageName);
+        distanceMap.updateParameterValue(DistanceMap.OUTPUT_IMAGE, outputImageName);
+        distanceMap.updateParameterValue(DistanceMap.WEIGHT_MODE, DistanceMap.WeightModes.BORGEFORS);
+        distanceMap.updateParameterValue(DistanceMap.MATCH_Z_TO_X, true);
+        distanceMap.updateParameterValue(DistanceMap.SPATIAL_UNITS_MODE, DistanceMap.SpatialUnitsModes.PIXELS);
+        distanceMap.updateParameterValue(DistanceMap.BINARY_LOGIC, DistanceMap.BinaryLogic.BLACK_BACKGROUND);
+
+        // Running Module
+        distanceMap.execute(workspace);
+
+        // Checking the images in the workspace
+        String expectedImagePath = "/images/distancemap3D/DistanceMap3D_insideObjects_borgefors_match_pixels_5D.tif.zip";
+        testImage(workspace, expectedImagePath);
+
+    }
+
+    @Test @Disabled
+    public void testRunWithWhiteObjects5DWhiteBackgroundSvensonMatchPixels() throws Exception {
+        // Creating a new workspace
+        Workspaces workspaces = new Workspaces();
+        Workspace workspace = workspaces.getNewWorkspace(null, 1);
+
+        // Loading the test image and adding to workspace
+        TestUtils.addImageToWorkspace(workspace, "/images/binaryobjects/BinaryObjects5D_8bit_whiteBG.zip", inputImageName);
+                
+        // Initialising BinaryOperations
+        DistanceMap distanceMap = new DistanceMap(new Modules());
+        distanceMap.updateParameterValue(DistanceMap.INPUT_IMAGE, inputImageName);
+        distanceMap.updateParameterValue(DistanceMap.OUTPUT_IMAGE, outputImageName);
+        distanceMap.updateParameterValue(DistanceMap.WEIGHT_MODE, DistanceMap.WeightModes.WEIGHTS_3_4_5_7);
+        distanceMap.updateParameterValue(DistanceMap.MATCH_Z_TO_X, true);
+        distanceMap.updateParameterValue(DistanceMap.SPATIAL_UNITS_MODE, DistanceMap.SpatialUnitsModes.PIXELS);
+        distanceMap.updateParameterValue(DistanceMap.BINARY_LOGIC, DistanceMap.BinaryLogic.BLACK_BACKGROUND);
+
+        // Running Module
+        distanceMap.execute(workspace);
+
+        // Checking the images in the workspace
+        String expectedImagePath = "/images/distancemap3D/DistanceMap3D_outsideObjects_svensson_match_pixels_5D.tif.zip";
+        testImage(workspace, expectedImagePath);
+
+    }
+
+    @Test @Disabled
+    public void testRunWithBlackObjects5DWhiteBackgroundSvensonMatchPixels() throws Exception {
+        // Creating a new workspace
+        Workspaces workspaces = new Workspaces();
+        Workspace workspace = workspaces.getNewWorkspace(null, 1);
+
+        // Loading the test image and adding to workspace
+        TestUtils.addImageToWorkspace(workspace, "/images/binaryobjects/BinaryObjects5D_8bit_whiteBG.zip", inputImageName);
+
+        // Initialising BinaryOperations
+        DistanceMap distanceMap = new DistanceMap(new Modules());
+        distanceMap.updateParameterValue(DistanceMap.INPUT_IMAGE, inputImageName);
+        distanceMap.updateParameterValue(DistanceMap.OUTPUT_IMAGE, outputImageName);
+        distanceMap.updateParameterValue(DistanceMap.WEIGHT_MODE, DistanceMap.WeightModes.WEIGHTS_3_4_5_7);
+        distanceMap.updateParameterValue(DistanceMap.MATCH_Z_TO_X, true);
+        distanceMap.updateParameterValue(DistanceMap.SPATIAL_UNITS_MODE, DistanceMap.SpatialUnitsModes.PIXELS);
+        distanceMap.updateParameterValue(DistanceMap.BINARY_LOGIC, DistanceMap.BinaryLogic.WHITE_BACKGROUND);
+
+        // Running Module
+        distanceMap.execute(workspace);
+
+        // Checking the images in the workspace
+        String expectedImagePath = "/images/distancemap3D/DistanceMap3D_insideObjects_svensson_match_pixels_5D.tif.zip";
+        testImage(workspace, expectedImagePath);
+
+    }
+
+    @Test @Disabled
+    public void testRunWithWhiteObjects5DBlackBackgroundSvensonMatchCalibrated() throws Exception {
+        // Creating a new workspace
+        Workspaces workspaces = new Workspaces();
+        Workspace workspace = workspaces.getNewWorkspace(null, 1);
+
+        // Loading the test image and adding to workspace
+        TestUtils.addImageToWorkspace(workspace, "/images/binaryobjects/BinaryObjects5D_8bit_blackBG.zip", inputImageName);
+
+        // Initialising BinaryOperations
+        DistanceMap distanceMap = new DistanceMap(new Modules());
+        distanceMap.updateParameterValue(DistanceMap.INPUT_IMAGE, inputImageName);
+        distanceMap.updateParameterValue(DistanceMap.OUTPUT_IMAGE, outputImageName);
+        distanceMap.updateParameterValue(DistanceMap.WEIGHT_MODE, DistanceMap.WeightModes.WEIGHTS_3_4_5_7);
+        distanceMap.updateParameterValue(DistanceMap.MATCH_Z_TO_X, true);
+        distanceMap.updateParameterValue(DistanceMap.SPATIAL_UNITS_MODE, DistanceMap.SpatialUnitsModes.CALIBRATED);
+        distanceMap.updateParameterValue(DistanceMap.BINARY_LOGIC, DistanceMap.BinaryLogic.BLACK_BACKGROUND);
+
+        // Running Module
+        distanceMap.execute(workspace);
+
+        // Checking the images in the workspace
+        String expectedImagePath = "/images/distancemap3D/DistanceMap3D_insideObjects_svensson_match_cal_5D.tif.zip";
+        testImage(workspace, expectedImagePath);
+
+    }
+
+    @Test @Disabled
+    public void testRunWithWhiteObjects5DBlackBackgroundSvensonUnmatchCalibrated() throws Exception {
+        // Creating a new workspace
+        Workspaces workspaces = new Workspaces();
+        Workspace workspace = workspaces.getNewWorkspace(null, 1);
+
+        // Loading the test image and adding to workspace
+        TestUtils.addImageToWorkspace(workspace, "/images/binaryobjects/BinaryObjects5D_8bit_blackBG.zip", inputImageName);
+
+        // Initialising BinaryOperations
+        DistanceMap distanceMap = new DistanceMap(new Modules());
+        distanceMap.updateParameterValue(DistanceMap.INPUT_IMAGE, inputImageName);
+        distanceMap.updateParameterValue(DistanceMap.OUTPUT_IMAGE, outputImageName);
+        distanceMap.updateParameterValue(DistanceMap.WEIGHT_MODE, DistanceMap.WeightModes.WEIGHTS_3_4_5_7);
+        distanceMap.updateParameterValue(DistanceMap.MATCH_Z_TO_X, false);
+        distanceMap.updateParameterValue(DistanceMap.SPATIAL_UNITS_MODE, DistanceMap.SpatialUnitsModes.CALIBRATED);
+        distanceMap.updateParameterValue(DistanceMap.BINARY_LOGIC, DistanceMap.BinaryLogic.BLACK_BACKGROUND);
+
+        // Running Module
+        distanceMap.execute(workspace);
+
+        // Checking the images in the workspace
+        String expectedImagePath = "/images/distancemap3D/DistanceMap3D_insideObjects_svensson_unmatch_cal_5D.tif.zip";
+        testImage(workspace, expectedImagePath);
+
+    }
+
+    @Test @Disabled
+    public void testRunWithWhiteObjects5DBlackBackgroundSvensonUnmatchPixels() throws Exception {
+        // Creating a new workspace
+        Workspaces workspaces = new Workspaces();
+        Workspace workspace = workspaces.getNewWorkspace(null, 1);
+
+        // Loading the test image and adding to workspace
+        TestUtils.addImageToWorkspace(workspace, "/images/binaryobjects/BinaryObjects5D_8bit_blackBG.zip",
+                inputImageName);
+
+        // Initialising BinaryOperations
+        DistanceMap distanceMap = new DistanceMap(new Modules());
+        distanceMap.updateParameterValue(DistanceMap.INPUT_IMAGE, inputImageName);
+        distanceMap.updateParameterValue(DistanceMap.OUTPUT_IMAGE, outputImageName);
+        distanceMap.updateParameterValue(DistanceMap.WEIGHT_MODE, DistanceMap.WeightModes.WEIGHTS_3_4_5_7);
+        distanceMap.updateParameterValue(DistanceMap.MATCH_Z_TO_X, false);
+        distanceMap.updateParameterValue(DistanceMap.SPATIAL_UNITS_MODE, DistanceMap.SpatialUnitsModes.PIXELS);
+        distanceMap.updateParameterValue(DistanceMap.BINARY_LOGIC, DistanceMap.BinaryLogic.BLACK_BACKGROUND);
+
+        // Running Module
+        distanceMap.execute(workspace);
+
+        // Checking the images in the workspace
+        String expectedImagePath = "/images/distancemap3D/DistanceMap3D_insideObjects_svensson_unmatch_pixels_5D.tif.zip";
+        testImage(workspace, expectedImagePath);
+
+    }
 
 }
