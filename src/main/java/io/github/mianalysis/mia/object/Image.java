@@ -9,7 +9,10 @@ import java.util.Set;
 import com.drew.lang.annotations.Nullable;
 
 import ij.CompositeImage;
+import ij.IJ;
+import ij.ImageJ;
 import ij.ImagePlus;
+import ij.ImageStack;
 import ij.measure.Calibration;
 import ij.measure.ResultsTable;
 import ij.plugin.Duplicator;
@@ -211,7 +214,7 @@ public class Image {
             if (stats.min != stats.max)
                 IntensityMinMax.run(dispIpl, true);
         }
-            
+
         dispIpl.setPosition(1, 1, 1);
         dispIpl.updateChannelAndDraw();
         if (lut != null && dispIpl.getBitDepth() != 24)
@@ -365,14 +368,23 @@ public class Image {
         hash = 31 * hash + ((Number) calibration.pixelDepth).hashCode();
         hash = 31 * hash + calibration.getUnits().toUpperCase().hashCode();
 
+        hash = 31 * hash + imagePlus.getWidth();
+        hash = 31 * hash + imagePlus.getHeight();
+        hash = 31 * hash + imagePlus.getNChannels();
+        hash = 31 * hash + imagePlus.getNSlices();
+        hash = 31 * hash + imagePlus.getNFrames();
+        hash = 31 * hash + imagePlus.getBitDepth();
+
+        ImageStack ist = imagePlus.getImageStack();
         for (int z = 1; z <= imagePlus.getNSlices(); z++) {
             for (int c = 1; c <= imagePlus.getNChannels(); c++) {
                 for (int t = 1; t <= imagePlus.getNFrames(); t++) {
-                    imagePlus.setPosition(c, z, t);
-                    ImageProcessor imageProcessor = imagePlus.getProcessor();
-                    for (int x = 0; x < imagePlus.getWidth(); x++) {
-                        for (int y = 0; y < imagePlus.getHeight(); y++) {
-                            hash = 31 * hash + ((Number) imageProcessor.getf(x, y)).hashCode();
+                    int idx = imagePlus.getStackIndex(c, z, t);
+                    ImageProcessor ipr = ist.getProcessor(idx);
+
+                    for (int x = 0; x < ipr.getWidth(); x++) {
+                        for (int y = 0; y < ipr.getHeight(); y++) {
+                            hash = 31 * hash + ipr.getPixel(x, y);
                         }
                     }
                 }
@@ -419,14 +431,16 @@ public class Image {
             return false;
 
         // Checking the individual image pixel values
-        for (int c = 0; c < imagePlus.getNChannels(); c++) {
-            for (int z = 0; z < imagePlus.getNSlices(); z++) {
-                for (int t = 0; t < imagePlus.getNFrames(); t++) {
-                    imagePlus.setPosition(c + 1, z + 1, t + 1);
-                    imagePlus2.setPosition(c + 1, z + 1, t + 1);
+        ImageStack ist = imagePlus.getImageStack();
+        ImageStack ist2 = imagePlus2.getImageStack();
+        for (int c = 1; c <= imagePlus.getNChannels(); c++) {
+            for (int z = 1; z <= imagePlus.getNSlices(); z++) {
+                for (int t = 1; t <= imagePlus.getNFrames(); t++) {
+                    int idx = imagePlus.getStackIndex(c, z, t);
+                    ImageProcessor imageProcessor1 = ist.getProcessor(idx);
+                    int idx2 = imagePlus2.getStackIndex(c, z, t);
+                    ImageProcessor imageProcessor2 = ist2.getProcessor(idx2);
 
-                    ImageProcessor imageProcessor1 = imagePlus.getProcessor();
-                    ImageProcessor imageProcessor2 = imagePlus2.getProcessor();
                     for (int x = 0; x < imagePlus.getWidth(); x++) {
                         for (int y = 0; y < imagePlus.getHeight(); y++) {
                             if (imageProcessor1.getf(x, y) != imageProcessor2.getf(x, y))
