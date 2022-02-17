@@ -1,30 +1,34 @@
 package io.github.mianalysis.mia.module.objects.filter;
 
+import java.util.HashMap;
 import java.util.Iterator;
 
-import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.module.Module;
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
-import io.github.mianalysis.mia.module.Category;
+
 import io.github.mianalysis.mia.module.Categories;
+import io.github.mianalysis.mia.module.Category;
+import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.Measurement;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Status;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.ObjectMeasurementP;
+import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.SeparatorP;
 import io.github.mianalysis.mia.object.refs.collections.ImageMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
-import io.github.mianalysis.mia.object.parameters.Parameters;
 
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class FilterByMeasurementExtremes extends AbstractObjectFilter {
     public static final String FILTER_SEPARATOR = "Object filtering";
     public static final String FILTER_METHOD = "Method for filtering";
+    public static final String PER_TIMEPOINT = "Filter per timepoint";
     public static final String MEASUREMENT = "Measurement to filter on";
 
     public FilterByMeasurementExtremes(Modules modules) {
@@ -41,8 +45,8 @@ public class FilterByMeasurementExtremes extends AbstractObjectFilter {
 
     }
 
-    public static double[] getMeasurementExtremes(Objs objects, String measurementName) {
-        double[] minMax = new double[] { Double.MAX_VALUE, -Double.MAX_VALUE };
+    public static HashMap<Integer,double[]> getMeasurementExtremes(Objs objects, String measurementName, boolean perTimepoint) {
+        HashMap<Integer, double[]> minMax = new HashMap<>();
 
         for (Obj obj : objects.values()) {
             Measurement measurement = obj.getMeasurement(measurementName);
@@ -51,9 +55,13 @@ public class FilterByMeasurementExtremes extends AbstractObjectFilter {
 
             // Getting the values to filter on
             double value = measurement.getValue();
+            int t = perTimepoint ? obj.getT() : 0;
 
-            minMax[0] = Math.min(minMax[0], value);
-            minMax[1] = Math.max(minMax[1], value);
+            minMax.putIfAbsent(t, new double[] { Double.MAX_VALUE, -Double.MAX_VALUE });
+            double[] currMinMax = minMax.get(t); 
+
+            currMinMax[0] = Math.min(currMinMax[0], value);
+            currMinMax[1] = Math.max(currMinMax[1], value);
 
         }
 
@@ -97,6 +105,7 @@ public class FilterByMeasurementExtremes extends AbstractObjectFilter {
         String filterMode = parameters.getValue(FILTER_MODE);
         String outputObjectsName = parameters.getValue(OUTPUT_FILTERED_OBJECTS);
         String filterMethod = parameters.getValue(FILTER_METHOD);
+        boolean perTimepoint = parameters.getValue(PER_TIMEPOINT);
         String measName = parameters.getValue(MEASUREMENT);
 
         boolean moveObjects = filterMode.equals(FilterModes.MOVE_FILTERED);
@@ -105,7 +114,7 @@ public class FilterByMeasurementExtremes extends AbstractObjectFilter {
         Objs outputObjects = moveObjects ? new Objs(outputObjectsName, inputObjects) : null;
 
         // Getting reference limits
-        double[] minMax = getMeasurementExtremes(inputObjects, measName);
+        HashMap<Integer,double[]> minMax = getMeasurementExtremes(inputObjects, measName, perTimepoint);
 
         Iterator<Obj> iterator = inputObjects.values().iterator();
         while (iterator.hasNext()) {
@@ -116,7 +125,10 @@ public class FilterByMeasurementExtremes extends AbstractObjectFilter {
 
             // Getting the values to filter on
             double value = measurement.getValue();
-            boolean conditionMet = testFilter(value, minMax, filterMethod);
+            int t = perTimepoint ? inputObject.getT() : 0;
+            double[] currMinMax = minMax.get(t); 
+
+            boolean conditionMet = testFilter(value, currMinMax, filterMethod);
 
             // Removing the object if it failed the test
             if (conditionMet && remove)
@@ -142,6 +154,7 @@ public class FilterByMeasurementExtremes extends AbstractObjectFilter {
 
         parameters.add(new SeparatorP(FILTER_SEPARATOR, this));
         parameters.add(new ChoiceP(FILTER_METHOD, this, FilterMethods.REMOVE_LARGEST, FilterMethods.ALL));
+        parameters.add(new BooleanP(PER_TIMEPOINT, this, false));
         parameters.add(new ObjectMeasurementP(MEASUREMENT, this));
 
         addParameterDescriptions();
@@ -157,6 +170,7 @@ public class FilterByMeasurementExtremes extends AbstractObjectFilter {
 
         returnedParameters.add(parameters.getParameter(FILTER_SEPARATOR));
         returnedParameters.add(parameters.getParameter(FILTER_METHOD));
+        returnedParameters.add(parameters.getParameter(PER_TIMEPOINT));
         returnedParameters.add(parameters.getParameter(MEASUREMENT));
         ((ObjectMeasurementP) parameters.getParameter(MEASUREMENT)).setObjectName(inputObjectsName);
 
@@ -196,8 +210,11 @@ public class FilterByMeasurementExtremes extends AbstractObjectFilter {
 
                 + "<br>- \"" + FilterMethods.RETAIN_SMALLEST
                 + "\" Retain only the object with the smallest value measurement specified by \""+MEASUREMENT+"\".<br>"
-                );
+        );
 
+        parameters.get(PER_TIMEPOINT).setDescription(
+                "When selected, the measurements will be considered on a timepoint-by-timepoint basis.  For example, if retaining the object with the largest measurement, the object in each timepoint with the largest measurement would be retained; however, when not selected, only one object in the entire timeseries would be retained.");
+        
         parameters.get(MEASUREMENT).setDescription("Objects will be filtered against their value of this measurement.  Objects missing this measurement are not removed; however, they can be removed by using the module \""+new FilterWithWithoutMeasurement(null).getName()+"\".");
 
     }
