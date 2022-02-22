@@ -21,7 +21,6 @@ import io.github.mianalysis.mia.expectedobjects.Objects3D;
 import io.github.mianalysis.mia.expectedobjects.Objects4D;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.ModuleTest;
-import io.github.mianalysis.mia.module.objects.detect.IdentifyObjects;
 import io.github.mianalysis.mia.object.Image;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
