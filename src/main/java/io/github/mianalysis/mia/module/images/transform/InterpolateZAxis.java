@@ -125,7 +125,7 @@ public class InterpolateZAxis extends Module {
         parameters.add(new OutputImageP(OUTPUT_IMAGE, this));
 
         parameters.add(new SeparatorP(INTERPOLATION_SEPARATOR, this));
-        parameters.add(new ChoiceP(INTERPOLATION_MODE, this, InterpolationModes.NONE, InterpolationModes.ALL));
+        parameters.add(new ChoiceP(INTERPOLATION_MODE, this, InterpolationModes.BILINEAR, InterpolationModes.ALL));
 
         addParameterDescriptions();
 
