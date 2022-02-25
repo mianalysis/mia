@@ -172,6 +172,6 @@ public class InterpolateZAxis extends Module {
         parameters.get(OUTPUT_IMAGE).setDescription(
                 "Output image with Z-axis interpolation applied.  This image will be stored in the workspace and be accessible using this name.");
 
-        parameters.get(INTERPOLATION_MODE).setDescription("Controls how interpolated pixel values are calculated");
+        parameters.get(INTERPOLATION_MODE).setDescription("Controls how interpolated pixel values are calculated.");
     }
 }

@@ -88,7 +88,7 @@ public class ScaleStack<T extends RealType<T> & NativeType<T>> extends Module {
 
     @Override
     public String getDescription() {
-        return "";
+        return "Applies independent X,Y and Z-axis scaling to an input image.  Output dimensions can be specified explicitly, matched to another image in the workspace or calculated with a scaling factor.";
     }
 
     @Override
@@ -160,13 +160,13 @@ public class ScaleStack<T extends RealType<T> & NativeType<T>> extends Module {
         // If setting a dimension to an image, there is an option to use that image's
         // calibration
         if (xScaleMode.equals(ScaleModes.MATCH_IMAGE) && xAdoptCalibration)
-                outputCal.pixelWidth = workspace.getImage(xImageName).getImagePlus().getCalibration().pixelWidth;
+            outputCal.pixelWidth = workspace.getImage(xImageName).getImagePlus().getCalibration().pixelWidth;
 
         if (yScaleMode.equals(ScaleModes.MATCH_IMAGE) && yAdoptCalibration)
-                outputCal.pixelHeight = workspace.getImage(yImageName).getImagePlus().getCalibration().pixelHeight;
+            outputCal.pixelHeight = workspace.getImage(yImageName).getImagePlus().getCalibration().pixelHeight;
 
-        if (zScaleMode.equals(ScaleModes.MATCH_IMAGE)  && zAdoptCalibration)
-                outputCal.pixelDepth = workspace.getImage(zImageName).getImagePlus().getCalibration().pixelDepth;
+        if (zScaleMode.equals(ScaleModes.MATCH_IMAGE) && zAdoptCalibration)
+            outputCal.pixelDepth = workspace.getImage(zImageName).getImagePlus().getCalibration().pixelDepth;
 
         Image outputImage = new Image(outputImageName, outputIpl);
 
@@ -208,6 +208,8 @@ public class ScaleStack<T extends RealType<T> & NativeType<T>> extends Module {
         parameters.add(new InputImageP(Z_IMAGE, this));
         parameters.add(new BooleanP(Z_ADOPT_CALIBRATION, this, false));
         parameters.add(new DoubleP(Z_SCALE_FACTOR, this, 1.0));
+
+        addParameterDescriptions();
 
     }
 
@@ -299,5 +301,105 @@ public class ScaleStack<T extends RealType<T> & NativeType<T>> extends Module {
     @Override
     public boolean verify() {
         return true;
+    }
+
+    void addParameterDescriptions() {
+        parameters.get(INPUT_IMAGE).setDescription("Image to process.");
+
+        parameters.get(OUTPUT_IMAGE).setDescription("Name of the output scaled image.");
+
+        parameters.get(INTERPOLATION_MODE)
+                .setDescription("Controls how interpolated pixel values are calculated.  Choices are: "
+                        + String.join(",", InterpolationModes.ALL));
+
+        parameters.get(X_SCALE_MODE)
+                .setDescription("Controls how the output x-axis resolution is calculated:<br><ul>"
+
+                        + "<li>\"" + ScaleModes.FIXED_RESOLUTION
+                        + "\" The output image will have the specific resolution defined by the \"" + X_RESOLUTION
+                        + "\" parameter.</li>"
+
+                        + "<li>\"" + ScaleModes.MATCH_IMAGE
+                        + "\" The output image will have the same resolution as the image specified by the \""
+                        + X_IMAGE + "\" parameter.</li>"
+
+                        + "<li>\"" + ScaleModes.SCALE_FACTOR
+                        + "\" The output image will have an equal resolution to the input resolution multiplied by the scaling factor, \""
+                        + X_SCALE_FACTOR
+                        + "\".  The output resolution will be rounded to the closest whole number.</li></ul>");
+
+        parameters.get(X_RESOLUTION).setDescription("If \"" + X_SCALE_MODE + "\" is set to \""
+                + ScaleModes.FIXED_RESOLUTION + "\", this is the resolution in the output image.");
+
+        parameters.get(X_IMAGE).setDescription("If \"" + X_SCALE_MODE + "\" is set to \"" + ScaleModes.MATCH_IMAGE
+                + "\", the output image will have the same resolution as this image.");
+
+        parameters.get(X_ADOPT_CALIBRATION).setDescription("If \"" + X_SCALE_MODE + "\" is set to \""
+                + ScaleModes.MATCH_IMAGE
+                + "\", and this is selected, the output image's x-axis calibration will be copied from the input image.");
+
+        parameters.get(X_SCALE_FACTOR).setDescription("If \"" + X_SCALE_MODE + "\" is set to \""
+                + ScaleModes.SCALE_FACTOR
+                + "\", the output image will have a resolution equal to the input resolution multiplied by this scale factor.  The applied resolution will be rounded to the closest whole number");
+
+        parameters.get(Y_SCALE_MODE)
+                .setDescription("Controls how the output y-axis resolution is calculated:<br><ul>"
+
+                        + "<li>\"" + ScaleModes.FIXED_RESOLUTION
+                        + "\" The output image will have the specific resolution defined by the \"" + Y_RESOLUTION
+                        + "\" parameter.</li>"
+
+                        + "<li>\"" + ScaleModes.MATCH_IMAGE
+                        + "\" The output image will have the same resolution as the image specified by the \""
+                        + Y_IMAGE + "\" parameter.</li>"
+
+                        + "<li>\"" + ScaleModes.SCALE_FACTOR
+                        + "\" The output image will have an equal resolution to the input resolution multiplied by the scaling factor, \""
+                        + Y_SCALE_FACTOR
+                        + "\".  The output resolution will be rounded to the closest whole number.</li></ul>");
+
+        parameters.get(Y_RESOLUTION).setDescription("If \"" + Y_SCALE_MODE + "\" is set to \""
+                + ScaleModes.FIXED_RESOLUTION + "\", this is the resolution in the output image.");
+
+        parameters.get(Y_IMAGE).setDescription("If \"" + Y_SCALE_MODE + "\" is set to \"" + ScaleModes.MATCH_IMAGE
+                + "\", the output image will have the same resolution as this image.");
+
+        parameters.get(Y_ADOPT_CALIBRATION).setDescription("If \"" + Y_SCALE_MODE + "\" is set to \""
+                + ScaleModes.MATCH_IMAGE
+                + "\", and this is selected, the output image's y-axis calibration will be copied from the input image.");
+
+        parameters.get(Y_SCALE_FACTOR).setDescription("If \"" + Y_SCALE_MODE + "\" is set to \""
+                + ScaleModes.SCALE_FACTOR
+                + "\", the output image will have a resolution equal to the input resolution multiplied by this scale factor.  The applied resolution will be rounded to the closest whole number");
+
+        parameters.get(Z_SCALE_MODE)
+                .setDescription("Controls how the output z-axis resolution (number of slices) is calculated:<br><ul>"
+
+                        + "<li>\"" + ScaleModes.FIXED_RESOLUTION
+                        + "\" The output image will have the specific number of slices defined by the \"" + Z_RESOLUTION
+                        + "\" parameter.</li>"
+
+                        + "<li>\"" + ScaleModes.MATCH_IMAGE
+                        + "\" The output image will have the same number of slices as the image specified by the \""
+                        + Z_IMAGE + "\" parameter.</li>"
+
+                        + "<li>\"" + ScaleModes.SCALE_FACTOR
+                        + "\" The output image will have an equal number of slices to the input number of slices multiplied by the scaling factor, \""
+                        + Z_SCALE_FACTOR
+                        + "\".  The output number of slices will be rounded to the closest whole number.</li></ul>");
+
+        parameters.get(Z_RESOLUTION).setDescription("If \"" + Z_SCALE_MODE + "\" is set to \""
+                + ScaleModes.FIXED_RESOLUTION + "\", this is the number of slices in the output image.");
+
+        parameters.get(Z_IMAGE).setDescription("If \"" + Z_SCALE_MODE + "\" is set to \"" + ScaleModes.MATCH_IMAGE
+                + "\", the output image will have the same number of slices as there are in this image.");
+
+        parameters.get(Z_ADOPT_CALIBRATION).setDescription("If \"" + Z_SCALE_MODE + "\" is set to \""
+                + ScaleModes.MATCH_IMAGE
+                + "\", and this is selected, the output image's z-axis calibration will be copied from the input image.");
+
+        parameters.get(Z_SCALE_FACTOR).setDescription("If \"" + Z_SCALE_MODE + "\" is set to \""
+                + ScaleModes.SCALE_FACTOR
+                + "\", the output image will have a number of slices equal to the input number of slices multiplied by this scale factor.  The applied number of slices will be rounded to the closest whole number");
     }
 }
