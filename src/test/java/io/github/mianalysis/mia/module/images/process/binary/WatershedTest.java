@@ -34,14 +34,11 @@ public class WatershedTest extends ModuleTest {
         assertNotNull(new Watershed(null).getDescription());
     }
   
-    static Stream<Arguments> inputProvider() {
-        Stream.Builder<Arguments> argumentBuilder = Stream.builder();
-        for (Dimension dimension : Dimension.values())
-            for (Logic logic : Logic.values())
-                argumentBuilder.add(Arguments.of(dimension, logic));
-            
-        return argumentBuilder.build();
-    }
+    // @ParameterizedTest
+    // @MethodSource("dimensionLogicInputProvider")
+    // void testTest(Dimension dimension,Logic logic) {
+        
+    // }
 
     void testImageMaskOnly(Workspace workspace, String expectedImagePath) throws UnsupportedEncodingException {
         assertEquals(2, workspace.getImages().size());

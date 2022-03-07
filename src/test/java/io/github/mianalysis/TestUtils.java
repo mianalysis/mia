@@ -26,4 +26,12 @@ public class TestUtils {
 
     }
     
+    public static Stream<Arguments> dimensionLogicInputProvider() {
+        Stream.Builder<Arguments> argumentBuilder = Stream.builder();
+        for (Dimension dimension : Dimension.values())
+            for (Logic logic : Logic.values())
+                argumentBuilder.add(Arguments.of(dimension, logic));
+            
+        return argumentBuilder.build();
+    }
 }
