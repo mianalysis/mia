@@ -347,10 +347,13 @@ public class MeasureImageColocalisation<T extends RealType<T> & NativeType<T>> e
         PearsonsCorrelation.Implementation implementation = getPCCImplementation(pccImplementationName);
         PearsonsCorrelation<T> pc = new PearsonsCorrelation<T>(implementation);
         try {
-            pc.execute(data);
-
-            measurements.put(Measurements.PCC, pc.getPearsonsCorrelationValue());
+            if (data.getMask() == null)
+                measurements.put(Measurements.PCC, pc.calculatePearsons(data.getSourceImage1(), data.getSourceImage2()));
+            else
+                measurements.put(Measurements.PCC, pc.calculatePearsons(data.getSourceImage1(), data.getSourceImage2(), data.getMask()));
+            
             if (data.getAutoThreshold() != null) {
+                pc.execute(data);            
                 measurements.put(Measurements.PCC_BELOW_THRESHOLD, pc.getPearsonsCorrelationBelowThreshold());
                 measurements.put(Measurements.PCC_ABOVE_THRESHOLD, pc.getPearsonsCorrelationAboveThreshold());
             }
