@@ -63,19 +63,29 @@ public class FileListColumnSelectorMenu extends JPopupMenu implements ActionList
     public void actionPerformed(ActionEvent e) {
         switch (e.getActionCommand()) {
             case "Show job ID":
-                panel.showColumn(FileListPanel.COL_JOB_ID,showJobID.isSelected());
+                boolean state = panel.showColumn(FileListPanel.COL_JOB_ID, showJobID.isSelected());
+                if (!state)
+                    showJobID.setSelected(!showJobID.isSelected());
                 break;
             case "Show filename":
-                panel.showColumn(FileListPanel.COL_WORKSPACE,showFilename.isSelected());
+                state = panel.showColumn(FileListPanel.COL_WORKSPACE, showFilename.isSelected());
+                if (!state)
+                    showFilename.setSelected(!showFilename.isSelected());
                 break;
             case "Show series name":
-                panel.showColumn(FileListPanel.COL_SERIESNAME,showSeriesname.isSelected());
+                state = panel.showColumn(FileListPanel.COL_SERIESNAME, showSeriesname.isSelected());
+                if (!state)
+                    showSeriesname.setSelected(!showSeriesname.isSelected());
                 break;
             case "Show series number":
-                panel.showColumn(FileListPanel.COL_SERIESNUMBER,showSeriesnumber.isSelected());
+                state = panel.showColumn(FileListPanel.COL_SERIESNUMBER, showSeriesnumber.isSelected());
+                if (!state)
+                    showSeriesnumber.setSelected(!showSeriesnumber.isSelected());
                 break;
             case "Show progress":
-                panel.showColumn(FileListPanel.COL_PROGRESS,showProgress.isSelected());
+                state = panel.showColumn(FileListPanel.COL_PROGRESS, showProgress.isSelected());
+                if (!state)
+                    showProgress.setSelected(!showProgress.isSelected());
                 break;
         }
     }
