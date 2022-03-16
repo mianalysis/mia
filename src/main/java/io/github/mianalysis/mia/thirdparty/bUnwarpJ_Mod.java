@@ -1,11 +1,15 @@
 package io.github.mianalysis.mia.thirdparty;
 
-import bunwarpj.*;
-import ij.IJ;
-import ij.process.ImageProcessor;
-
-import java.awt.*;
+import java.awt.Point;
 import java.util.Stack;
+
+import bunwarpj.BSplineModel;
+import bunwarpj.MainDialog;
+import bunwarpj.Mask;
+import bunwarpj.Param;
+import bunwarpj.PointHandler;
+import bunwarpj.Transformation;
+import ij.process.ImageProcessor;
 
 public class bUnwarpJ_Mod {
     public static Transformation computeTransformationBatch(ImageProcessor sourceIpr, ImageProcessor targetIpr, Stack<Point> sourcePoints, Stack<Point> targetPoints, Param parameter) {

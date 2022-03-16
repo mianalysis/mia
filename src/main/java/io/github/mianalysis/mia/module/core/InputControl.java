@@ -49,6 +49,7 @@ import io.github.sjcross.common.system.FileCrawler;
 import loci.common.DebugTools;
 import loci.common.services.ServiceFactory;
 import loci.formats.ChannelSeparator;
+import loci.formats.ImageReader;
 import loci.formats.MissingLibraryException;
 import loci.formats.UnknownFormatException;
 import loci.formats.meta.MetadataStore;
@@ -315,7 +316,7 @@ public class InputControl extends Module {
         ServiceFactory factory = new ServiceFactory();
         OMEXMLService service = factory.getInstance(OMEXMLService.class);
         OMEXMLMetadata meta = service.createOMEXMLMetadata();
-        ImageProcessorReader reader = new ImageProcessorReader(new ChannelSeparator(LociPrefs.makeImageReader()));
+        ImageReader reader = new ImageReader();
         reader.setMetadataStore((MetadataStore) meta);
         reader.setGroupFiles(false);
         try {

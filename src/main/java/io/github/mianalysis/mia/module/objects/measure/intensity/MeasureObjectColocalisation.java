@@ -11,6 +11,8 @@ import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.images.measure.MeasureImageColocalisation;
+import io.github.mianalysis.mia.module.images.transform.CropImage;
+import io.github.mianalysis.mia.module.images.transform.ExtractSubstack;
 import io.github.mianalysis.mia.object.Image;
 import io.github.mianalysis.mia.object.Measurement;
 import io.github.mianalysis.mia.object.Obj;
@@ -121,15 +123,34 @@ public class MeasureObjectColocalisation<T extends RealType<T> & NativeType<T>> 
 
         // If objects are to be used as a mask a binary image is created. Otherwise,
         // null is returned
-
+        int count = 0;
+        int total = objects.size();
         for (Obj inputObject : objects.values()) {
             Image maskImage = null;
 
             if (inputObject.size() > 0)
-                maskImage = inputObject.getAsImage("Mask", false);
+                maskImage = inputObject.getAsTightImage("Mask");
+
+            // Cropping image to object
+            double[][] extents = inputObject.getExtents(true, false);
+            int top = (int) Math.round(extents[1][0]);
+            int left = (int) Math.round(extents[0][0]);
+            int width = (int) Math.round(extents[0][1] - extents[0][0]+1);
+            int height = (int) Math.round(extents[1][1] - extents[1][0]+1);
+            Image crop1 = CropImage.cropImage(image1, "Crop1", top, left, width, height);
+            Image crop2 = CropImage.cropImage(image2, "Crop2", top, left, width, height);
+
+            Image timepoint1 = ExtractSubstack.extractSubstack(crop1, "Timepoint1", "1-end", "1-end",
+                    String.valueOf(inputObject.getT() + 1));
+            Image timepoint2 = ExtractSubstack.extractSubstack(crop2, "Timepoint2", "1-end", "1-end",
+                    String.valueOf(inputObject.getT() + 1));
+
+            // timepoint1.showImage();
+            // timepoint2.showImage();
+            // maskImage.showImage();
 
             // Creating data container against which all algorithms will be run
-            DataContainer<T> data = MeasureImageColocalisation.prepareDataContainer(image1, image2, maskImage);
+            DataContainer<T> data = MeasureImageColocalisation.prepareDataContainer(timepoint1, timepoint2, maskImage);
 
             switch (thresholdingMode) {
                 case ThresholdingModes.BISECTION:
@@ -141,10 +162,10 @@ public class MeasureObjectColocalisation<T extends RealType<T> & NativeType<T>> 
                 case ThresholdingModes.IMAGE_MEASUREMENTS:
                     double threshold1 = image1.getMeasurement(imageMeasurementName1).getValue();
                     double threshold2 = image1.getMeasurement(imageMeasurementName2).getValue();
-                    MeasureImageColocalisation.setManualThresholds(data, image1, threshold1, threshold2);
+                    MeasureImageColocalisation.setManualThresholds(data, timepoint1, threshold1, threshold2);
                     break;
                 case ThresholdingModes.MANUAL:
-                    MeasureImageColocalisation.setManualThresholds(data, image1, fixedThreshold1, fixedThreshold2);
+                    MeasureImageColocalisation.setManualThresholds(data, timepoint1, fixedThreshold1, fixedThreshold2);
                     break;
             }
 
@@ -170,7 +191,7 @@ public class MeasureObjectColocalisation<T extends RealType<T> & NativeType<T>> 
                             pccImplementationName);
                     setObjectMeasurements(inputObject, measurements, imageName1, imageName2);
                 } catch (MissingPreconditionException e) {
-                    MIA.log.writeWarning("PCC can't be calculated for object with ID "+inputObject.getID());
+                    MIA.log.writeWarning("PCC can't be calculated for object with ID " + inputObject.getID());
                 }
             }
 
@@ -178,6 +199,9 @@ public class MeasureObjectColocalisation<T extends RealType<T> & NativeType<T>> 
                 HashMap<String, Double> measurements = MeasureImageColocalisation.measureSpearman(data);
                 setObjectMeasurements(inputObject, measurements, imageName1, imageName2);
             }
+
+            writeProgressStatus(++count, total, "objects");
+
         }
 
         if (showOutput)

@@ -32,7 +32,7 @@ public class Workspace {
     protected Workspace(int ID, File file, int series, Workspaces workspaces) {
         this.ID = ID;
         this.workspaces = workspaces;
-
+        
         metadata.setFile(file);
         metadata.setSeriesNumber(series);
 

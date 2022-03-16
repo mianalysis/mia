@@ -95,15 +95,16 @@ public class FileParameter extends ParameterControl implements ActionListener {
         if (idx <= GUI.getLastModuleEval() & !(module instanceof OutputControl))
             GUI.setLastModuleEval(idx - 1);
 
+            
+
         if (module.getClass().isInstance(new InputControl(GUI.getModules()))) {
-            new Thread(() -> GUI.updateTestFile(true)).start();
-        }
-
-        GUI.updateModules();
-        GUI.updateParameters();
-
-        updateControl();
-
+            new Thread(() -> {
+                GUI.updateTestFile(true);
+                GUI.updateModules();
+                GUI.updateParameters();
+                updateControl();
+            }).start();
+        }      
     }
 
     private String checkPath(String path) {

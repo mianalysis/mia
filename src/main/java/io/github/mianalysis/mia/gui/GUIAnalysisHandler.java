@@ -66,11 +66,12 @@ public class GUIAnalysisHandler {
         GUI.setAnalysis(newAnalysis);
         GUI.updateHelpNotes();
         GUI.setLastModuleEval(-1);
-        GUI.updateTestFile(true);
-        GUI.updateModules();
-        GUI.updateParameters();
-        GUI.getUndoRedoStore().reset();
-
+        new Thread(() -> {
+            GUI.updateTestFile(true);
+            GUI.updateModules();
+            GUI.updateParameters();
+            GUI.getUndoRedoStore().reset();
+        }).start();
     }
 
     public static void saveAnalysis() {

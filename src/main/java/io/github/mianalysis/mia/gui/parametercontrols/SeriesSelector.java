@@ -15,9 +15,10 @@ public class SeriesSelector extends TextParameter {
         GUI.addUndo();
         super.focusLost(e);
 
-        GUI.updateTestFile(true);
-        GUI.updateModules();
-        GUI.updateParameters();
-
+        new Thread(() -> {
+            GUI.updateTestFile(true);
+            GUI.updateModules();
+            GUI.updateParameters();
+        }).start();
     }
 }

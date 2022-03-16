@@ -53,15 +53,15 @@ public class DistanceMap extends Module {
     public static final String BINARY_LOGIC = "Binary logic";
 
     public interface WeightModes {
+        String BORGEFORS = "Borgefors (3,4,5)";
         String CHESSBOARD = "Chessboard (1,1,1)";
         String CITY_BLOCK = "City-Block (1,2,3)";
         // String QUASI_EUCLIDEAN = "Quasi-Euclidean (1,1.41,1.73)";
-        String BORGEFORS = "Borgefors (3,4,5)";
         String WEIGHTS_3_4_5_7 = "Svensson (3,4,5,7)";
 
-        // String[] ALL = new String[] { CHESSBOARD, CITY_BLOCK, QUASI_EUCLIDEAN,
-        // BORGEFORS, WEIGHTS_3_4_5_7 };
-        String[] ALL = new String[] { CHESSBOARD, CITY_BLOCK, BORGEFORS, WEIGHTS_3_4_5_7 };
+        // String[] ALL = new String[] { BORGEFORS, CHESSBOARD, CITY_BLOCK, QUASI_EUCLIDEAN,
+        // WEIGHTS_3_4_5_7 };
+        String[] ALL = new String[] { BORGEFORS, CHESSBOARD, CITY_BLOCK, WEIGHTS_3_4_5_7 };
 
     }
 
@@ -92,6 +92,7 @@ public class DistanceMap extends Module {
 
         // Calculating the distance map, one frame at a time
         int count = 0;
+        int nChannels = inputIpl.getNChannels();
         int nFrames = inputIpl.getNFrames();
         int nSlices = inputIpl.getNSlices();
 
@@ -99,43 +100,53 @@ public class DistanceMap extends Module {
         ImagePlus outputIpl = IJ.createHyperStack(inputIpl.getTitle(), inputIpl.getWidth(), inputIpl.getHeight(),
                 inputIpl.getNChannels(), nSlices, nFrames, 32);
         ImageStack outputIst = outputIpl.getStack();
+        
+        for (int c = 0; c < nChannels; c++) {
+            for (int t = 0; t < nFrames; t++) {
+                // Getting the mask image at this timepoint
+                ImagePlus currentIpl = SubHyperstackMaker
+                        .makeSubhyperstack(inputIpl, String.valueOf(c + 1), "1-" + nSlices, String.valueOf(t + 1))
+                        .duplicate();
+                // if (t == 1) {
+                //     inputIpl.duplicate().show();
+                //     currentIpl.duplicate().show();
+                //     IJ.runMacro("waitForUser");
+                // }
+                currentIpl.setCalibration(inputIpl.getCalibration());
 
-        for (int t = 0; t < nFrames; t++) {
-            // Getting the mask image at this timepoint
-            ImagePlus currentIpl = SubHyperstackMaker
-                    .makeSubhyperstack(inputIpl, "1", "1-" + nSlices, String.valueOf(t + 1)).duplicate();
-            currentIpl.setCalibration(inputIpl.getCalibration());
+                if (!blackBackground)
+                    InvertIntensity.process(currentIpl);
 
-            if (!blackBackground)
-                InvertIntensity.process(currentIpl);
+                // If necessary, interpolating the image in Z to match the XY spacing
+                if (matchZToXY && nSlices > 1)
+                    currentIpl = InterpolateZAxis.matchZToXY(currentIpl, InterpolateZAxis.InterpolationModes.NONE);
 
-            // If necessary, interpolating the image in Z to match the XY spacing
-            if (matchZToXY && nSlices > 1)
-                currentIpl = InterpolateZAxis.matchZToXY(currentIpl, InterpolateZAxis.InterpolationModes.NONE);
-                            
-            ChamferMasks3D weightsOption = ChamferMasks3D.fromLabel("Svensson <3,4,5,7>");
-		    weights = weightsOption.getMask();
-            currentIpl.setStack(new ChamferDistanceTransform3DFloat(weights, true).distanceMap(currentIpl.getStack()));
+                currentIpl.setStack(
+                        new ChamferDistanceTransform3DFloat(weights, true).distanceMap(currentIpl.getStack()));
 
-            // If the input image as interpolated, it now needs to be returned to the
-            // original scaling
-            if (matchZToXY && nSlices > 1) {
-                Resizer resizer = new Resizer();
-                resizer.setAverageWhenDownsizing(true);
-                currentIpl = resizer.zScale(currentIpl, nSlices, Resizer.IN_PLACE);
+                // If the input image as interpolated, it now needs to be returned to the
+                // original scaling
+                if (matchZToXY && nSlices > 1) {
+                    Resizer resizer = new Resizer();
+                    resizer.setAverageWhenDownsizing(true);
+                    currentIpl = resizer.zScale(currentIpl, nSlices, Resizer.IN_PLACE);
+                }
+
+                // Putting the image back into the distanceMapImage
+                ImageStack currentIst = currentIpl.getStack();
+                for (int z = 0; z < currentIpl.getNSlices(); z++) {
+                    int currentIdx = currentIpl.getStackIndex(1, z + 1, 1);
+                    int outputIdx = outputIpl.getStackIndex(c + 1, z + 1, t + 1);
+                    outputIst.setProcessor(currentIst.getProcessor(currentIdx), outputIdx);
+                }
+
+                if (verbose)
+                    writeProgressStatus(++count, nFrames, "timepoints", name);
+
             }
             
-            // Putting the image back into the distanceMapImage
-            ImageStack currentIst = currentIpl.getStack();
-            for (int z = 0; z < currentIpl.getNSlices(); z++) {
-                int currentIdx = currentIpl.getStackIndex(1, z + 1, 1);
-                int outputIdx = outputIpl.getStackIndex(1, z + 1, t + 1);
-                outputIst.setProcessor(currentIst.getProcessor(currentIdx), outputIdx);
-            }
+            outputIpl.setPosition(1, 1, 1);
             outputIpl.updateAndDraw();
-
-            if (verbose)
-                writeProgressStatus(++count, nFrames, "timepoints", name);
 
         }
 

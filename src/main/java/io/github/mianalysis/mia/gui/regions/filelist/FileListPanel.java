@@ -10,6 +10,7 @@ import java.awt.MouseInfo;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.text.DecimalFormat;
+import java.util.HashMap;
 import java.util.HashSet;
 
 import javax.swing.BorderFactory;
@@ -27,6 +28,7 @@ import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
 
+import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.gui.GUI;
 import io.github.mianalysis.mia.gui.regions.ClosePanelButton;
 import io.github.mianalysis.mia.object.Colours;
@@ -49,16 +51,14 @@ public class FileListPanel extends JPanel implements MouseListener, TableCellRen
     private final static int minimumWidth = 200;
     private final static int preferredWidth = 300;
 
-    private final int maxWidth;
-    private final int minWidth;
-    private final int prefWidth;
-
     public static final int COL_JOB_ID = 0;
     public static final int COL_WORKSPACE = 1;
     public static final int COL_SERIESNAME = 2;
     public static final int COL_SERIESNUMBER = 3;
     public static final int COL_PROGRESS = 4;
 
+    HashMap<Integer, TableColumn> columns = new HashMap<>();
+    
     private int maxJob = 0;
 
     public FileListPanel(Workspaces workspaces) {
@@ -121,15 +121,17 @@ public class FileListPanel extends JPanel implements MouseListener, TableCellRen
         columnModel.getColumn(COL_SERIESNAME).setCellRenderer(this);
         columnModel.getColumn(COL_SERIESNUMBER).setCellRenderer(this);
         columnModel.getColumn(COL_PROGRESS).setCellRenderer(this);
+
+        columns.put(COL_JOB_ID, columnModel.getColumn(COL_JOB_ID));
+        columns.put(COL_WORKSPACE, columnModel.getColumn(COL_WORKSPACE));
+        columns.put(COL_SERIESNAME, columnModel.getColumn(COL_SERIESNAME));
+        columns.put(COL_SERIESNUMBER, columnModel.getColumn(COL_SERIESNUMBER));
+        columns.put(COL_PROGRESS, columnModel.getColumn(COL_PROGRESS));
         
-        columnModel.getColumn(COL_JOB_ID).setWidth(30);
+        columnModel.getColumn(COL_JOB_ID).setPreferredWidth(10);
 
         showColumn(COL_SERIESNAME, false);
         showColumn(COL_SERIESNUMBER, false);
-
-        maxWidth = columnModel.getColumn(1).getMaxWidth();
-        minWidth = columnModel.getColumn(1).getMinWidth();
-        prefWidth = columnModel.getColumn(1).getPreferredWidth();
 
         JScrollPane scrollPane = new JScrollPane(table);
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
@@ -184,25 +186,25 @@ public class FileListPanel extends JPanel implements MouseListener, TableCellRen
 
     }
 
-    public void showColumn(int columnIndex, boolean show) {
-        TableColumn column = table.getColumnModel().getColumn(columnIndex);
-
+    public boolean showColumn(int columnIndex, boolean show) {
+        TableColumn column = columns.get(columnIndex);
+        
         if (show) {
-            if (columnIndex == COL_JOB_ID)
-                column.setPreferredWidth(30);
-            else
-                column.setPreferredWidth(prefWidth);
-            column.setMinWidth(minWidth);
-            column.setMaxWidth(maxWidth);
+            table.addColumn(column);
         } else {
-            column.setPreferredWidth(0);
-            column.setMinWidth(0);
-            column.setMaxWidth(0);
+            if (table.getColumnCount() > 1) {
+                table.removeColumn(column);
+            } else {
+                MIA.log.writeWarning("File list must have at least one column");
+                return false;
+            }
         }
 
         table.repaint();
         table.validate();
         table.doLayout();
+
+        return true;
 
     }
 
@@ -221,29 +223,29 @@ public class FileListPanel extends JPanel implements MouseListener, TableCellRen
     @Override
     public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
             int row, int column) {
-        switch (column) {
-            case COL_JOB_ID:
+        switch (table.getColumnName(column)) {
+            case "#":            
                 JLabel label = new JLabel();
                 JobNumber jobNumber = (JobNumber) value;
                 label.setText(String.valueOf(jobNumber.getJobNumber()));
                 label.setToolTipText(String.valueOf(jobNumber.getJobNumber()));
                 return label;
 
-            case COL_WORKSPACE:
+            case "Filename":
                 Metadata metadata = ((Workspace) value).getMetadata();
                 label = new JLabel();
                 label.setText(" " + metadata.getFilename());
                 label.setToolTipText(metadata.getFile().getAbsolutePath());
                 return label;
 
-            case COL_SERIESNAME:
-            case COL_SERIESNUMBER:
+            case "Ser. name":
+            case "Ser. #":
                 label = new JLabel();
                 label.setText((String) value);
                 label.setToolTipText((String) value);
                 return label;
 
-            case COL_PROGRESS:
+            case "Progress":
                 int progress = (int) Math.round(((double) value) * 100);
                 JProgressBar progressBar = new JProgressBar(0, 100);
                 progressBar.setValue(progress);
