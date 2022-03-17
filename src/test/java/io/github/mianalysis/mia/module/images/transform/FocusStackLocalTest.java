@@ -5,10 +5,10 @@ import io.github.mianalysis.mia.module.ModuleTest;
 import static org.junit.jupiter.api.Assertions.*;
 
 
-public class FocusStackTest extends ModuleTest {
+public class FocusStackLocalTest extends ModuleTest {
 
     @Override
     public void testGetHelp() {
-        assertNotNull(new FocusStack(null).getDescription());
+        assertNotNull(new FocusStackLocal(null).getDescription());
     }
 }

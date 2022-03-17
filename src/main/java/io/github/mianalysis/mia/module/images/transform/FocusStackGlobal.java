@@ -1,9 +1,9 @@
 package io.github.mianalysis.mia.module.images.transform;
 
-import static io.github.mianalysis.mia.module.images.transform.BestFocusSubstack.MinMaxMode.MAX;
-import static io.github.mianalysis.mia.module.images.transform.BestFocusSubstack.MinMaxMode.MIN;
-import static io.github.mianalysis.mia.module.images.transform.BestFocusSubstack.Stat.MEAN;
-import static io.github.mianalysis.mia.module.images.transform.BestFocusSubstack.Stat.STDEV;
+import static io.github.mianalysis.mia.module.images.transform.FocusStackGlobal.MinMaxMode.MAX;
+import static io.github.mianalysis.mia.module.images.transform.FocusStackGlobal.MinMaxMode.MIN;
+import static io.github.mianalysis.mia.module.images.transform.FocusStackGlobal.Stat.MEAN;
+import static io.github.mianalysis.mia.module.images.transform.FocusStackGlobal.Stat.STDEV;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -39,7 +39,6 @@ import org.scijava.plugin.Plugin;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.process.LUT;
-import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
@@ -74,7 +73,7 @@ import net.imglib2.type.numeric.RealType;
 import net.imglib2.view.Views;
 
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
-public class BestFocusSubstack <T extends RealType<T> & NativeType<T>> extends Module implements ActionListener {
+public class FocusStackGlobal <T extends RealType<T> & NativeType<T>> extends Module implements ActionListener {
     private JFrame frame;
     private DefaultListModel<Ref> listModel = new DefaultListModel<>();
     private JList<Ref> list = new JList<>(listModel);
@@ -106,8 +105,8 @@ public class BestFocusSubstack <T extends RealType<T> & NativeType<T>> extends M
     public static final String CHANNEL_MODE = "Channel mode";
     public static final String CHANNEL = "Channel";
 
-    public BestFocusSubstack(Modules modules) {
-        super("Best focus stack", modules);
+    public FocusStackGlobal(Modules modules) {
+        super("Focus stack (global)", modules);
     }
 
     public interface OutputModes {

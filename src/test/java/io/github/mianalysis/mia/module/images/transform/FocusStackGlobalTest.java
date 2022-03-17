@@ -8,7 +8,6 @@ import java.net.URLDecoder;
 import org.junit.jupiter.api.Test;
 
 import ij.IJ;
-import ij.ImageJ;
 import ij.ImagePlus;
 import io.github.mianalysis.mia.module.ModuleTest;
 import io.github.mianalysis.mia.module.Modules;
@@ -23,12 +22,12 @@ import net.imagej.axis.DefaultLinearAxis;
  * Created by Stephen Cross on 28/02/2019.
  */
 
-public class BestFocusSubstackTest extends ModuleTest {
+public class FocusStackGlobalTest extends ModuleTest {
     private double tolerance = 1E-10;
 
     @Override
     public void testGetHelp() {
-        assertNotNull(new BestFocusSubstack<>(null).getDescription());
+        assertNotNull(new FocusStackGlobal<>(null).getDescription());
     }
 
 
@@ -39,16 +38,16 @@ public class BestFocusSubstackTest extends ModuleTest {
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image",ipl);
 
-        int actual = BestFocusSubstack.getOptimalStatSlice(image,0,0, BestFocusSubstack.Stat.STDEV, BestFocusSubstack.MinMaxMode.MAX);
+        int actual = FocusStackGlobal.getOptimalStatSlice(image,0,0, FocusStackGlobal.Stat.STDEV, FocusStackGlobal.MinMaxMode.MAX);
         assertEquals(5,actual);
 
-        actual = BestFocusSubstack.getOptimalStatSlice(image,1,0, BestFocusSubstack.Stat.STDEV, BestFocusSubstack.MinMaxMode.MAX);
+        actual = FocusStackGlobal.getOptimalStatSlice(image,1,0, FocusStackGlobal.Stat.STDEV, FocusStackGlobal.MinMaxMode.MAX);
         assertEquals(6,actual);
 
-        actual = BestFocusSubstack.getOptimalStatSlice(image,2,0, BestFocusSubstack.Stat.STDEV, BestFocusSubstack.MinMaxMode.MAX);
+        actual = FocusStackGlobal.getOptimalStatSlice(image,2,0, FocusStackGlobal.Stat.STDEV, FocusStackGlobal.MinMaxMode.MAX);
         assertEquals(3,actual);
 
-        actual = BestFocusSubstack.getOptimalStatSlice(image,3,0, BestFocusSubstack.Stat.STDEV, BestFocusSubstack.MinMaxMode.MAX);
+        actual = FocusStackGlobal.getOptimalStatSlice(image,3,0, FocusStackGlobal.Stat.STDEV, FocusStackGlobal.MinMaxMode.MAX);
         assertEquals(10,actual);
 
     }
@@ -60,16 +59,16 @@ public class BestFocusSubstackTest extends ModuleTest {
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image",ipl);
 
-        int actual = BestFocusSubstack.getOptimalStatSlice(image,0,1, BestFocusSubstack.Stat.STDEV, BestFocusSubstack.MinMaxMode.MAX);
+        int actual = FocusStackGlobal.getOptimalStatSlice(image,0,1, FocusStackGlobal.Stat.STDEV, FocusStackGlobal.MinMaxMode.MAX);
         assertEquals(0,actual);
 
-        actual = BestFocusSubstack.getOptimalStatSlice(image,1,1, BestFocusSubstack.Stat.STDEV, BestFocusSubstack.MinMaxMode.MAX);
+        actual = FocusStackGlobal.getOptimalStatSlice(image,1,1, FocusStackGlobal.Stat.STDEV, FocusStackGlobal.MinMaxMode.MAX);
         assertEquals(8,actual);
 
-        actual = BestFocusSubstack.getOptimalStatSlice(image,2,1, BestFocusSubstack.Stat.STDEV, BestFocusSubstack.MinMaxMode.MAX);
+        actual = FocusStackGlobal.getOptimalStatSlice(image,2,1, FocusStackGlobal.Stat.STDEV, FocusStackGlobal.MinMaxMode.MAX);
         assertEquals(7,actual);
 
-        actual = BestFocusSubstack.getOptimalStatSlice(image,3,1, BestFocusSubstack.Stat.STDEV, BestFocusSubstack.MinMaxMode.MAX);
+        actual = FocusStackGlobal.getOptimalStatSlice(image,3,1, FocusStackGlobal.Stat.STDEV, FocusStackGlobal.MinMaxMode.MAX);
         assertEquals(11,actual);
 
     }
@@ -81,16 +80,16 @@ public class BestFocusSubstackTest extends ModuleTest {
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image",ipl);
 
-        int actual = BestFocusSubstack.getOptimalStatSlice(image,0,-1, BestFocusSubstack.Stat.STDEV, BestFocusSubstack.MinMaxMode.MAX);
+        int actual = FocusStackGlobal.getOptimalStatSlice(image,0,-1, FocusStackGlobal.Stat.STDEV, FocusStackGlobal.MinMaxMode.MAX);
         assertEquals(0,actual);
 
-        actual = BestFocusSubstack.getOptimalStatSlice(image,1,-1, BestFocusSubstack.Stat.STDEV, BestFocusSubstack.MinMaxMode.MAX);
+        actual = FocusStackGlobal.getOptimalStatSlice(image,1,-1, FocusStackGlobal.Stat.STDEV, FocusStackGlobal.MinMaxMode.MAX);
         assertEquals(6,actual);
 
-        actual = BestFocusSubstack.getOptimalStatSlice(image,2,-1, BestFocusSubstack.Stat.STDEV, BestFocusSubstack.MinMaxMode.MAX);
+        actual = FocusStackGlobal.getOptimalStatSlice(image,2,-1, FocusStackGlobal.Stat.STDEV, FocusStackGlobal.MinMaxMode.MAX);
         assertEquals(7,actual);
 
-        actual = BestFocusSubstack.getOptimalStatSlice(image,3,-1, BestFocusSubstack.Stat.STDEV, BestFocusSubstack.MinMaxMode.MAX);
+        actual = FocusStackGlobal.getOptimalStatSlice(image,3,-1, FocusStackGlobal.Stat.STDEV, FocusStackGlobal.MinMaxMode.MAX);
         assertEquals(10,actual);
 
     }
@@ -102,16 +101,16 @@ public class BestFocusSubstackTest extends ModuleTest {
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image",ipl);
 
-        int actual = BestFocusSubstack.getOptimalStatSlice(image,0,0, BestFocusSubstack.Stat.STDEV, BestFocusSubstack.MinMaxMode.MAX);
+        int actual = FocusStackGlobal.getOptimalStatSlice(image,0,0, FocusStackGlobal.Stat.STDEV, FocusStackGlobal.MinMaxMode.MAX);
         assertEquals(5,actual);
 
-        actual = BestFocusSubstack.getOptimalStatSlice(image,1,0, BestFocusSubstack.Stat.STDEV, BestFocusSubstack.MinMaxMode.MAX);
+        actual = FocusStackGlobal.getOptimalStatSlice(image,1,0, FocusStackGlobal.Stat.STDEV, FocusStackGlobal.MinMaxMode.MAX);
         assertEquals(6,actual);
 
-        actual = BestFocusSubstack.getOptimalStatSlice(image,2,0, BestFocusSubstack.Stat.STDEV, BestFocusSubstack.MinMaxMode.MAX);
+        actual = FocusStackGlobal.getOptimalStatSlice(image,2,0, FocusStackGlobal.Stat.STDEV, FocusStackGlobal.MinMaxMode.MAX);
         assertEquals(3,actual);
 
-        actual = BestFocusSubstack.getOptimalStatSlice(image,3,0, BestFocusSubstack.Stat.STDEV, BestFocusSubstack.MinMaxMode.MAX);
+        actual = FocusStackGlobal.getOptimalStatSlice(image,3,0, FocusStackGlobal.Stat.STDEV, FocusStackGlobal.MinMaxMode.MAX);
         assertEquals(10,actual);
 
     }
@@ -126,7 +125,7 @@ public class BestFocusSubstackTest extends ModuleTest {
         Image inputImage = new Image("Test_image",ipl);
         ImgPlus inputImg = inputImage.getImgPlus();
 
-        ImgPlus actualImg = BestFocusSubstack.getEmptyImage(inputImg,-3,4);
+        ImgPlus actualImg = FocusStackGlobal.getEmptyImage(inputImg,-3,4);
 
         assertNotNull(actualImg);
         assertEquals(64,actualImg.dimension(actualImg.dimensionIndex(Axes.X)));
@@ -154,7 +153,7 @@ public class BestFocusSubstackTest extends ModuleTest {
         Image inputImage = new Image("Test_image",ipl);
         ImgPlus inputImg = inputImage.getImgPlus();
 
-        ImgPlus actualImg = BestFocusSubstack.getEmptyImage(inputImg,-3,0);
+        ImgPlus actualImg = FocusStackGlobal.getEmptyImage(inputImg,-3,0);
 
         assertNotNull(actualImg);
         assertEquals(64,actualImg.dimension(actualImg.dimensionIndex(Axes.X)));
@@ -182,7 +181,7 @@ public class BestFocusSubstackTest extends ModuleTest {
         Image inputImage = new Image("Test_image",ipl);
         ImgPlus inputImg = inputImage.getImgPlus();
 
-        ImgPlus actualImg = BestFocusSubstack.getEmptyImage(inputImg,0,4);
+        ImgPlus actualImg = FocusStackGlobal.getEmptyImage(inputImg,0,4);
 
         assertNotNull(actualImg);
         assertEquals(64,actualImg.dimension(actualImg.dimensionIndex(Axes.X)));
@@ -210,7 +209,7 @@ public class BestFocusSubstackTest extends ModuleTest {
         Image inputImage = new Image("Test_image",ipl);
         ImgPlus inputImg = inputImage.getImgPlus();
 
-        ImgPlus actualImg = BestFocusSubstack.getEmptyImage(inputImg,0,0);
+        ImgPlus actualImg = FocusStackGlobal.getEmptyImage(inputImg,0,0);
 
         assertNotNull(actualImg);
         assertEquals(64,actualImg.dimension(actualImg.dimensionIndex(Axes.X)));
@@ -235,7 +234,7 @@ public class BestFocusSubstackTest extends ModuleTest {
         Image inputImage = new Image("Test_image",ipl);
         ImgPlus inputImg = inputImage.getImgPlus();
 
-        ImgPlus actualImg = BestFocusSubstack.getEmptyImage(inputImg,-5,-2);
+        ImgPlus actualImg = FocusStackGlobal.getEmptyImage(inputImg,-5,-2);
 
         assertNotNull(actualImg);
         assertEquals(64,actualImg.dimension(actualImg.dimensionIndex(Axes.X)));
@@ -260,7 +259,7 @@ public class BestFocusSubstackTest extends ModuleTest {
         Image inputImage = new Image("Test_image",ipl);
         ImgPlus inputImg = inputImage.getImgPlus();
 
-        ImgPlus actualImg = BestFocusSubstack.getEmptyImage(inputImg,-3,4);
+        ImgPlus actualImg = FocusStackGlobal.getEmptyImage(inputImg,-3,4);
 
         assertNotNull(actualImg);
         assertEquals(64,actualImg.dimension(actualImg.dimensionIndex(Axes.X)));
@@ -288,7 +287,7 @@ public class BestFocusSubstackTest extends ModuleTest {
         Image inputImage = new Image("Test_image",ipl);
         ImgPlus inputImg = inputImage.getImgPlus();
 
-        ImgPlus actualImg = BestFocusSubstack.getEmptyImage(inputImg,0,0);
+        ImgPlus actualImg = FocusStackGlobal.getEmptyImage(inputImg,0,0);
 
         assertNotNull(actualImg);
         assertEquals(64,actualImg.dimension(actualImg.dimensionIndex(Axes.X)));
@@ -313,7 +312,7 @@ public class BestFocusSubstackTest extends ModuleTest {
         Image inputImage = new Image("Test_image",ipl);
         ImgPlus inputImg = inputImage.getImgPlus();
 
-        ImgPlus actualImg = BestFocusSubstack.getEmptyImage(inputImg,-3,4);
+        ImgPlus actualImg = FocusStackGlobal.getEmptyImage(inputImg,-3,4);
 
         assertNotNull(actualImg);
         assertEquals(64,actualImg.dimension(actualImg.dimensionIndex(Axes.X)));
@@ -341,7 +340,7 @@ public class BestFocusSubstackTest extends ModuleTest {
         Image inputImage = new Image("Test_image",ipl);
         ImgPlus inputImg = inputImage.getImgPlus();
 
-        ImgPlus actualImg = BestFocusSubstack.getEmptyImage(inputImg,0,0);
+        ImgPlus actualImg = FocusStackGlobal.getEmptyImage(inputImg,0,0);
 
         assertNotNull(actualImg);
         assertEquals(64,actualImg.dimension(actualImg.dimensionIndex(Axes.X)));
@@ -366,7 +365,7 @@ public class BestFocusSubstackTest extends ModuleTest {
         Image inputImage = new Image("Test_image",ipl);
         ImgPlus inputImg = inputImage.getImgPlus();
 
-        ImgPlus actualImg = BestFocusSubstack.getEmptyImage(inputImg,-3,4);
+        ImgPlus actualImg = FocusStackGlobal.getEmptyImage(inputImg,-3,4);
 
         assertNotNull(actualImg);
         assertEquals(64,actualImg.dimension(actualImg.dimensionIndex(Axes.X)));
@@ -394,7 +393,7 @@ public class BestFocusSubstackTest extends ModuleTest {
         Image inputImage = new Image("Test_image",ipl);
         ImgPlus inputImg = inputImage.getImgPlus();
 
-        ImgPlus actualImg = BestFocusSubstack.getEmptyImage(inputImg,0,0);
+        ImgPlus actualImg = FocusStackGlobal.getEmptyImage(inputImg,0,0);
 
         assertNotNull(actualImg);
         assertEquals(64,actualImg.dimension(actualImg.dimensionIndex(Axes.X)));
@@ -428,14 +427,14 @@ public class BestFocusSubstackTest extends ModuleTest {
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/bestfocussubstack/BestFocus5D_8bit_C1_belowabove.zip").getPath(),"UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
-        BestFocusSubstack bestFocusSubstack = new BestFocusSubstack(new Modules());
-        bestFocusSubstack.updateParameterValue(BestFocusSubstack.INPUT_IMAGE,"Test_image");
-        bestFocusSubstack.updateParameterValue(BestFocusSubstack.OUTPUT_IMAGE,"Test_output");
-        bestFocusSubstack.updateParameterValue(BestFocusSubstack.BEST_FOCUS_CALCULATION, BestFocusSubstack.BestFocusCalculations.MAX_STDEV);
-        bestFocusSubstack.updateParameterValue(BestFocusSubstack.RELATIVE_START_SLICE,-3);
-        bestFocusSubstack.updateParameterValue(BestFocusSubstack.RELATIVE_END_SLICE,2);
-        bestFocusSubstack.updateParameterValue(BestFocusSubstack.CHANNEL_MODE, BestFocusSubstack.ChannelModes.USE_SINGLE);
-        bestFocusSubstack.updateParameterValue(BestFocusSubstack.CHANNEL,1);
+        FocusStackGlobal bestFocusSubstack = new FocusStackGlobal(new Modules());
+        bestFocusSubstack.updateParameterValue(FocusStackGlobal.INPUT_IMAGE,"Test_image");
+        bestFocusSubstack.updateParameterValue(FocusStackGlobal.OUTPUT_IMAGE,"Test_output");
+        bestFocusSubstack.updateParameterValue(FocusStackGlobal.BEST_FOCUS_CALCULATION, FocusStackGlobal.BestFocusCalculations.MAX_STDEV);
+        bestFocusSubstack.updateParameterValue(FocusStackGlobal.RELATIVE_START_SLICE,-3);
+        bestFocusSubstack.updateParameterValue(FocusStackGlobal.RELATIVE_END_SLICE,2);
+        bestFocusSubstack.updateParameterValue(FocusStackGlobal.CHANNEL_MODE, FocusStackGlobal.ChannelModes.USE_SINGLE);
+        bestFocusSubstack.updateParameterValue(FocusStackGlobal.CHANNEL,1);
 
         // Running Module
         bestFocusSubstack.execute(workspace);
@@ -466,14 +465,14 @@ public class BestFocusSubstackTest extends ModuleTest {
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/bestfocussubstack/BestFocus5D_8bit_C2_belowabove.zip").getPath(),"UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
-        BestFocusSubstack bestFocusSubstack = new BestFocusSubstack(new Modules());
-        bestFocusSubstack.updateParameterValue(BestFocusSubstack.INPUT_IMAGE,"Test_image");
-        bestFocusSubstack.updateParameterValue(BestFocusSubstack.OUTPUT_IMAGE,"Test_output");
-        bestFocusSubstack.updateParameterValue(BestFocusSubstack.BEST_FOCUS_CALCULATION, BestFocusSubstack.BestFocusCalculations.MAX_STDEV);
-        bestFocusSubstack.updateParameterValue(BestFocusSubstack.RELATIVE_START_SLICE,-3);
-        bestFocusSubstack.updateParameterValue(BestFocusSubstack.RELATIVE_END_SLICE,2);
-        bestFocusSubstack.updateParameterValue(BestFocusSubstack.CHANNEL_MODE, BestFocusSubstack.ChannelModes.USE_SINGLE);
-        bestFocusSubstack.updateParameterValue(BestFocusSubstack.CHANNEL,2);
+        FocusStackGlobal bestFocusSubstack = new FocusStackGlobal(new Modules());
+        bestFocusSubstack.updateParameterValue(FocusStackGlobal.INPUT_IMAGE,"Test_image");
+        bestFocusSubstack.updateParameterValue(FocusStackGlobal.OUTPUT_IMAGE,"Test_output");
+        bestFocusSubstack.updateParameterValue(FocusStackGlobal.BEST_FOCUS_CALCULATION, FocusStackGlobal.BestFocusCalculations.MAX_STDEV);
+        bestFocusSubstack.updateParameterValue(FocusStackGlobal.RELATIVE_START_SLICE,-3);
+        bestFocusSubstack.updateParameterValue(FocusStackGlobal.RELATIVE_END_SLICE,2);
+        bestFocusSubstack.updateParameterValue(FocusStackGlobal.CHANNEL_MODE, FocusStackGlobal.ChannelModes.USE_SINGLE);
+        bestFocusSubstack.updateParameterValue(FocusStackGlobal.CHANNEL,2);
 
         // Running Module
         bestFocusSubstack.execute(workspace);
@@ -504,13 +503,13 @@ public class BestFocusSubstackTest extends ModuleTest {
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/bestfocussubstack/BestFocus5D_8bit_bothC_belowabove.zip").getPath(),"UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
-        BestFocusSubstack bestFocusSubstack = new BestFocusSubstack(new Modules());
-        bestFocusSubstack.updateParameterValue(BestFocusSubstack.INPUT_IMAGE,"Test_image");
-        bestFocusSubstack.updateParameterValue(BestFocusSubstack.OUTPUT_IMAGE,"Test_output");
-        bestFocusSubstack.updateParameterValue(BestFocusSubstack.BEST_FOCUS_CALCULATION, BestFocusSubstack.BestFocusCalculations.MAX_STDEV);
-        bestFocusSubstack.updateParameterValue(BestFocusSubstack.RELATIVE_START_SLICE,-3);
-        bestFocusSubstack.updateParameterValue(BestFocusSubstack.RELATIVE_END_SLICE,2);
-        bestFocusSubstack.updateParameterValue(BestFocusSubstack.CHANNEL_MODE, BestFocusSubstack.ChannelModes.USE_ALL);
+        FocusStackGlobal bestFocusSubstack = new FocusStackGlobal(new Modules());
+        bestFocusSubstack.updateParameterValue(FocusStackGlobal.INPUT_IMAGE,"Test_image");
+        bestFocusSubstack.updateParameterValue(FocusStackGlobal.OUTPUT_IMAGE,"Test_output");
+        bestFocusSubstack.updateParameterValue(FocusStackGlobal.BEST_FOCUS_CALCULATION, FocusStackGlobal.BestFocusCalculations.MAX_STDEV);
+        bestFocusSubstack.updateParameterValue(FocusStackGlobal.RELATIVE_START_SLICE,-3);
+        bestFocusSubstack.updateParameterValue(FocusStackGlobal.RELATIVE_END_SLICE,2);
+        bestFocusSubstack.updateParameterValue(FocusStackGlobal.CHANNEL_MODE, FocusStackGlobal.ChannelModes.USE_ALL);
 
         // Running Module
         bestFocusSubstack.execute(workspace);
@@ -541,14 +540,14 @@ public class BestFocusSubstackTest extends ModuleTest {
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/bestfocussubstack/BestFocus5D_8bit_C1_bothbelow.zip").getPath(),"UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
-        BestFocusSubstack bestFocusSubstack = new BestFocusSubstack(new Modules());
-        bestFocusSubstack.updateParameterValue(BestFocusSubstack.INPUT_IMAGE,"Test_image");
-        bestFocusSubstack.updateParameterValue(BestFocusSubstack.OUTPUT_IMAGE,"Test_output");
-        bestFocusSubstack.updateParameterValue(BestFocusSubstack.BEST_FOCUS_CALCULATION, BestFocusSubstack.BestFocusCalculations.MAX_STDEV);
-        bestFocusSubstack.updateParameterValue(BestFocusSubstack.RELATIVE_START_SLICE,-5);
-        bestFocusSubstack.updateParameterValue(BestFocusSubstack.RELATIVE_END_SLICE,-2);
-        bestFocusSubstack.updateParameterValue(BestFocusSubstack.CHANNEL_MODE, BestFocusSubstack.ChannelModes.USE_SINGLE);
-        bestFocusSubstack.updateParameterValue(BestFocusSubstack.CHANNEL,1);
+        FocusStackGlobal bestFocusSubstack = new FocusStackGlobal(new Modules());
+        bestFocusSubstack.updateParameterValue(FocusStackGlobal.INPUT_IMAGE,"Test_image");
+        bestFocusSubstack.updateParameterValue(FocusStackGlobal.OUTPUT_IMAGE,"Test_output");
+        bestFocusSubstack.updateParameterValue(FocusStackGlobal.BEST_FOCUS_CALCULATION, FocusStackGlobal.BestFocusCalculations.MAX_STDEV);
+        bestFocusSubstack.updateParameterValue(FocusStackGlobal.RELATIVE_START_SLICE,-5);
+        bestFocusSubstack.updateParameterValue(FocusStackGlobal.RELATIVE_END_SLICE,-2);
+        bestFocusSubstack.updateParameterValue(FocusStackGlobal.CHANNEL_MODE, FocusStackGlobal.ChannelModes.USE_SINGLE);
+        bestFocusSubstack.updateParameterValue(FocusStackGlobal.CHANNEL,1);
 
         // Running Module
         bestFocusSubstack.execute(workspace);
@@ -579,14 +578,14 @@ public class BestFocusSubstackTest extends ModuleTest {
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/bestfocussubstack/BestFocus5D_8bit_C1_singleplane.zip").getPath(),"UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
-        BestFocusSubstack bestFocusSubstack = new BestFocusSubstack(new Modules());
-        bestFocusSubstack.updateParameterValue(BestFocusSubstack.INPUT_IMAGE,"Test_image");
-        bestFocusSubstack.updateParameterValue(BestFocusSubstack.OUTPUT_IMAGE,"Test_output");
-        bestFocusSubstack.updateParameterValue(BestFocusSubstack.BEST_FOCUS_CALCULATION, BestFocusSubstack.BestFocusCalculations.MAX_STDEV);
-        bestFocusSubstack.updateParameterValue(BestFocusSubstack.RELATIVE_START_SLICE,0);
-        bestFocusSubstack.updateParameterValue(BestFocusSubstack.RELATIVE_END_SLICE,0);
-        bestFocusSubstack.updateParameterValue(BestFocusSubstack.CHANNEL_MODE, BestFocusSubstack.ChannelModes.USE_SINGLE);
-        bestFocusSubstack.updateParameterValue(BestFocusSubstack.CHANNEL,1);
+        FocusStackGlobal bestFocusSubstack = new FocusStackGlobal(new Modules());
+        bestFocusSubstack.updateParameterValue(FocusStackGlobal.INPUT_IMAGE,"Test_image");
+        bestFocusSubstack.updateParameterValue(FocusStackGlobal.OUTPUT_IMAGE,"Test_output");
+        bestFocusSubstack.updateParameterValue(FocusStackGlobal.BEST_FOCUS_CALCULATION, FocusStackGlobal.BestFocusCalculations.MAX_STDEV);
+        bestFocusSubstack.updateParameterValue(FocusStackGlobal.RELATIVE_START_SLICE,0);
+        bestFocusSubstack.updateParameterValue(FocusStackGlobal.RELATIVE_END_SLICE,0);
+        bestFocusSubstack.updateParameterValue(FocusStackGlobal.CHANNEL_MODE, FocusStackGlobal.ChannelModes.USE_SINGLE);
+        bestFocusSubstack.updateParameterValue(FocusStackGlobal.CHANNEL,1);
 
         // Running Module
         bestFocusSubstack.execute(workspace);
@@ -617,14 +616,14 @@ public class BestFocusSubstackTest extends ModuleTest {
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/bestfocussubstack/BestFocus5D_8bit_C1_belowabove.zip").getPath(),"UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
-        BestFocusSubstack bestFocusSubstack = new BestFocusSubstack(new Modules());
-        bestFocusSubstack.updateParameterValue(BestFocusSubstack.INPUT_IMAGE,"Test_image");
-        bestFocusSubstack.updateParameterValue(BestFocusSubstack.OUTPUT_IMAGE,"Test_output");
-        bestFocusSubstack.updateParameterValue(BestFocusSubstack.BEST_FOCUS_CALCULATION, BestFocusSubstack.BestFocusCalculations.MAX_STDEV);
-        bestFocusSubstack.updateParameterValue(BestFocusSubstack.RELATIVE_START_SLICE,2);
-        bestFocusSubstack.updateParameterValue(BestFocusSubstack.RELATIVE_END_SLICE,-3);
-        bestFocusSubstack.updateParameterValue(BestFocusSubstack.CHANNEL_MODE, BestFocusSubstack.ChannelModes.USE_SINGLE);
-        bestFocusSubstack.updateParameterValue(BestFocusSubstack.CHANNEL, 1);
+        FocusStackGlobal bestFocusSubstack = new FocusStackGlobal(new Modules());
+        bestFocusSubstack.updateParameterValue(FocusStackGlobal.INPUT_IMAGE,"Test_image");
+        bestFocusSubstack.updateParameterValue(FocusStackGlobal.OUTPUT_IMAGE,"Test_output");
+        bestFocusSubstack.updateParameterValue(FocusStackGlobal.BEST_FOCUS_CALCULATION, FocusStackGlobal.BestFocusCalculations.MAX_STDEV);
+        bestFocusSubstack.updateParameterValue(FocusStackGlobal.RELATIVE_START_SLICE,2);
+        bestFocusSubstack.updateParameterValue(FocusStackGlobal.RELATIVE_END_SLICE,-3);
+        bestFocusSubstack.updateParameterValue(FocusStackGlobal.CHANNEL_MODE, FocusStackGlobal.ChannelModes.USE_SINGLE);
+        bestFocusSubstack.updateParameterValue(FocusStackGlobal.CHANNEL, 1);
 
         // Running Module O
         bestFocusSubstack.execute(workspace);
@@ -655,14 +654,14 @@ public class BestFocusSubstackTest extends ModuleTest {
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/bestfocussubstack/BestFocus5D_8bit_C1_belowabove_C1.zip").getPath(),"UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
-        BestFocusSubstack bestFocusSubstack = new BestFocusSubstack(new Modules());
-        bestFocusSubstack.updateParameterValue(BestFocusSubstack.INPUT_IMAGE,"Test_image");
-        bestFocusSubstack.updateParameterValue(BestFocusSubstack.OUTPUT_IMAGE,"Test_output");
-        bestFocusSubstack.updateParameterValue(BestFocusSubstack.BEST_FOCUS_CALCULATION, BestFocusSubstack.BestFocusCalculations.MAX_STDEV);
-        bestFocusSubstack.updateParameterValue(BestFocusSubstack.RELATIVE_START_SLICE,-3);
-        bestFocusSubstack.updateParameterValue(BestFocusSubstack.RELATIVE_END_SLICE,2);
-        bestFocusSubstack.updateParameterValue(BestFocusSubstack.CHANNEL_MODE, BestFocusSubstack.ChannelModes.USE_SINGLE);
-        bestFocusSubstack.updateParameterValue(BestFocusSubstack.CHANNEL,1);
+        FocusStackGlobal bestFocusSubstack = new FocusStackGlobal(new Modules());
+        bestFocusSubstack.updateParameterValue(FocusStackGlobal.INPUT_IMAGE,"Test_image");
+        bestFocusSubstack.updateParameterValue(FocusStackGlobal.OUTPUT_IMAGE,"Test_output");
+        bestFocusSubstack.updateParameterValue(FocusStackGlobal.BEST_FOCUS_CALCULATION, FocusStackGlobal.BestFocusCalculations.MAX_STDEV);
+        bestFocusSubstack.updateParameterValue(FocusStackGlobal.RELATIVE_START_SLICE,-3);
+        bestFocusSubstack.updateParameterValue(FocusStackGlobal.RELATIVE_END_SLICE,2);
+        bestFocusSubstack.updateParameterValue(FocusStackGlobal.CHANNEL_MODE, FocusStackGlobal.ChannelModes.USE_SINGLE);
+        bestFocusSubstack.updateParameterValue(FocusStackGlobal.CHANNEL,1);
 
         // Running Module
         bestFocusSubstack.execute(workspace);
@@ -693,14 +692,14 @@ public class BestFocusSubstackTest extends ModuleTest {
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/bestfocussubstack/BestFocus5D_8bit_C1_belowabove_T1.zip").getPath(),"UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
-        BestFocusSubstack bestFocusSubstack = new BestFocusSubstack(new Modules());
-        bestFocusSubstack.updateParameterValue(BestFocusSubstack.INPUT_IMAGE,"Test_image");
-        bestFocusSubstack.updateParameterValue(BestFocusSubstack.OUTPUT_IMAGE,"Test_output");
-        bestFocusSubstack.updateParameterValue(BestFocusSubstack.BEST_FOCUS_CALCULATION, BestFocusSubstack.BestFocusCalculations.MAX_STDEV);
-        bestFocusSubstack.updateParameterValue(BestFocusSubstack.RELATIVE_START_SLICE,-3);
-        bestFocusSubstack.updateParameterValue(BestFocusSubstack.RELATIVE_END_SLICE,2);
-        bestFocusSubstack.updateParameterValue(BestFocusSubstack.CHANNEL_MODE, BestFocusSubstack.ChannelModes.USE_SINGLE);
-        bestFocusSubstack.updateParameterValue(BestFocusSubstack.CHANNEL,1);
+        FocusStackGlobal bestFocusSubstack = new FocusStackGlobal(new Modules());
+        bestFocusSubstack.updateParameterValue(FocusStackGlobal.INPUT_IMAGE,"Test_image");
+        bestFocusSubstack.updateParameterValue(FocusStackGlobal.OUTPUT_IMAGE,"Test_output");
+        bestFocusSubstack.updateParameterValue(FocusStackGlobal.BEST_FOCUS_CALCULATION, FocusStackGlobal.BestFocusCalculations.MAX_STDEV);
+        bestFocusSubstack.updateParameterValue(FocusStackGlobal.RELATIVE_START_SLICE,-3);
+        bestFocusSubstack.updateParameterValue(FocusStackGlobal.RELATIVE_END_SLICE,2);
+        bestFocusSubstack.updateParameterValue(FocusStackGlobal.CHANNEL_MODE, FocusStackGlobal.ChannelModes.USE_SINGLE);
+        bestFocusSubstack.updateParameterValue(FocusStackGlobal.CHANNEL,1);
 
         // Running Module
         bestFocusSubstack.execute(workspace);
@@ -731,14 +730,14 @@ public class BestFocusSubstackTest extends ModuleTest {
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/bestfocussubstack/BestFocus3D_8bit_C1_belowabove.zip").getPath(),"UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
-        BestFocusSubstack bestFocusSubstack = new BestFocusSubstack(new Modules());
-        bestFocusSubstack.updateParameterValue(BestFocusSubstack.INPUT_IMAGE,"Test_image");
-        bestFocusSubstack.updateParameterValue(BestFocusSubstack.OUTPUT_IMAGE,"Test_output");
-        bestFocusSubstack.updateParameterValue(BestFocusSubstack.BEST_FOCUS_CALCULATION, BestFocusSubstack.BestFocusCalculations.MAX_STDEV);
-        bestFocusSubstack.updateParameterValue(BestFocusSubstack.RELATIVE_START_SLICE,-3);
-        bestFocusSubstack.updateParameterValue(BestFocusSubstack.RELATIVE_END_SLICE,2);
-        bestFocusSubstack.updateParameterValue(BestFocusSubstack.CHANNEL_MODE, BestFocusSubstack.ChannelModes.USE_SINGLE);
-        bestFocusSubstack.updateParameterValue(BestFocusSubstack.CHANNEL,1);
+        FocusStackGlobal bestFocusSubstack = new FocusStackGlobal(new Modules());
+        bestFocusSubstack.updateParameterValue(FocusStackGlobal.INPUT_IMAGE,"Test_image");
+        bestFocusSubstack.updateParameterValue(FocusStackGlobal.OUTPUT_IMAGE,"Test_output");
+        bestFocusSubstack.updateParameterValue(FocusStackGlobal.BEST_FOCUS_CALCULATION, FocusStackGlobal.BestFocusCalculations.MAX_STDEV);
+        bestFocusSubstack.updateParameterValue(FocusStackGlobal.RELATIVE_START_SLICE,-3);
+        bestFocusSubstack.updateParameterValue(FocusStackGlobal.RELATIVE_END_SLICE,2);
+        bestFocusSubstack.updateParameterValue(FocusStackGlobal.CHANNEL_MODE, FocusStackGlobal.ChannelModes.USE_SINGLE);
+        bestFocusSubstack.updateParameterValue(FocusStackGlobal.CHANNEL,1);
 
         // Running Module
         bestFocusSubstack.execute(workspace);

@@ -11,7 +11,8 @@ import io.github.mianalysis.mia.module.images.process.binary.ExtendedMinima;
 import io.github.mianalysis.mia.module.images.process.binary.FillHolesByVolume;
 import io.github.mianalysis.mia.module.images.process.threshold.LocalAutoThreshold;
 import io.github.mianalysis.mia.module.images.process.threshold.ThresholdImage;
-import io.github.mianalysis.mia.module.images.transform.FocusStack;
+import io.github.mianalysis.mia.module.images.transform.FocusStackGlobal;
+import io.github.mianalysis.mia.module.images.transform.FocusStackLocal;
 import io.github.mianalysis.mia.module.images.transform.registration.AffineBlockMatching;
 import io.github.mianalysis.mia.module.images.transform.registration.AffineMOPS;
 import io.github.mianalysis.mia.module.images.transform.registration.AffineManual;
@@ -53,19 +54,21 @@ public class LostAndFound {
         /// Populating hard-coded module reassignments ///
         lostModules.put("Active contour-based detection", new FitActiveContours(null).getClass().getSimpleName());
         lostModules.put("AutomaticRegistration", new AffineSIFT(null).getClass().getSimpleName());
+        lostModules.put("Best focus stack", new FocusStackGlobal(null).getClass().getSimpleName());
         lostModules.put("BlockMatchingRegistration", new AffineBlockMatching(null).getClass().getSimpleName());
         lostModules.put("ConditionalAnalysisTermination", new WorkflowHandling(null).getClass().getSimpleName());
         lostModules.put("ConvexHull2D", new FitConvexHull2D(null).getClass().getSimpleName());
         lostModules.put("FitSpline", new MeasureObjectCurvature(null).getClass().getSimpleName());
+        lostModules.put("Focus stack", new FocusStackLocal(null).getClass().getSimpleName());
         lostModules.put("HoughObjectDetection", new CircleHoughDetection(null).getClass().getSimpleName());
         lostModules.put("ManualRegistration", new AffineManual(null).getClass().getSimpleName());
         lostModules.put("ManualUnwarp", new UnwarpManual(null).getClass().getSimpleName());
         lostModules.put("MOPSRegistration", new AffineMOPS(null).getClass().getSimpleName());
         lostModules.put("RunMacroOnImage", new RunMacro(null).getClass().getSimpleName());
         lostModules.put("RunSingleMacroCommand", new RunSingleCommand(null).getClass().getSimpleName());
-        lostModules.put("SIFTRegistration", new AffineSIFT(null).getClass().getSimpleName());
+        lostModules.put("SIFTRegistration", new AffineSIFT(null).getClass().getSimpleName());        
         lostModules.put("UnwarpImages", new UnwarpAutomatic(null).getClass().getSimpleName());
-        
+       
 
         /// Populating hard-coded parameter reassignments ///
         HashMap<String, String> currentParameterNames = null;
@@ -155,7 +158,7 @@ public class LostAndFound {
         // FocusStack
         currentParameterNames = new HashMap<>();
         currentParameterNames.put("Show height image", null);
-        moduleName = new FocusStack(null).getClass().getSimpleName();
+        moduleName = new FocusStackLocal(null).getClass().getSimpleName();
         lostParameterNames.put(moduleName, currentParameterNames);
 
         // GetObjectLocalRegion
