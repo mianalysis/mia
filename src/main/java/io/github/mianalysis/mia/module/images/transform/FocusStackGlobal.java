@@ -254,7 +254,7 @@ public class FocusStackGlobal <T extends RealType<T> & NativeType<T>> extends Mo
         int[] bestSlices = new int[(int) nFrames];
         for (int f = 0; f < nFrames; f++) {
             bestSlices[f] = getOptimalStatSlice(calculationImage, f, channel, stat, minMax);
-            writeStatus("Best focus for frame " + (f + 1) + " at " + (bestSlices[f] + 1) + " (provisional)");
+            writeProgressStatus(f+1, (int) nFrames, "frames");
         }
 
         return bestSlices;
@@ -379,6 +379,7 @@ public class FocusStackGlobal <T extends RealType<T> & NativeType<T>> extends Mo
         long nFrames = inputImg.dimension(inputImg.dimensionIndex(Axes.TIME));
         for (int f = 0; f < nFrames; f++) {
             extractSubstack(inputImg, outputImg, bestSlices[f] + relativeStart, bestSlices[f] + relativeEnd, f);
+            writeProgressStatus(f+1, (int) nFrames, "frames");
         }
 
         ImagePlus outputImagePlus = ImageJFunctions.wrap(outputImg, outputImageName);
