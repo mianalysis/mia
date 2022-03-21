@@ -116,9 +116,9 @@ public class ComponentFactory {
                     .setToolTipText("<html><div style=\"width:500;\">" + parameter.getDescription() + "</div></html>");
             paramPanel.add(parameterName, c);
 
-            if (parameter.isValid())
-                parameterName.setForeground(Color.BLACK);
-            else {
+            if (!parameter.isValid()) {
+            //     parameterName.setForeground(Color.BLACK);
+            // else {
                 parameterName.setForeground(Colours.RED);
                 parameterName.setIcon(warningIcon);
             }
@@ -167,7 +167,7 @@ public class ComponentFactory {
             font = new Font(attributes);
         }
         moduleName.setFont(font);
-        moduleName.setForeground(Color.BLACK);
+        // moduleName.setForeground(Color.BLACK);
         moduleName.setToolTipText("<html><div style=\"width:500;\">" + activeModule.getDescription() + "</div></html>");
         paramPanel.add(moduleName, c);
 
@@ -229,7 +229,7 @@ public class ComponentFactory {
         modulePanel.add(moduleEnabledButton, c);
 
         ModuleTitle title = new ModuleTitle(module);
-        title.setForeground(Color.BLACK);
+        // title.setForeground(Color.BLACK);
         title.setToolTipText("<html><div style=\"width:500px;\">" + module.getDescription() + "</div></html>");
         c.insets = new Insets(0, 0, 0, 0);
         c.weightx = 1;

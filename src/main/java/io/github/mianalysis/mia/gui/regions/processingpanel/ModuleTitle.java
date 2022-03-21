@@ -27,7 +27,7 @@ public class ModuleTitle extends JLabel implements MouseListener {
         Font font = new Font(Font.SANS_SERIF, Font.BOLD, 12);
         setFont(font);
         setOpaque(false);
-        setForeground(Color.BLACK);
+        // setForeground(Color.BLACK);
 
     }
 

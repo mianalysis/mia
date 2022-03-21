@@ -7,6 +7,7 @@ import java.awt.event.FocusListener;
 import javax.swing.JComponent;
 import javax.swing.JTextField;
 
+import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.gui.GUI;
 import io.github.mianalysis.mia.module.core.OutputControl;
 import io.github.mianalysis.mia.object.parameters.abstrakt.TextType;
@@ -25,6 +26,8 @@ public class TextParameter extends ParameterControl implements FocusListener {
         control.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
         control.setText(parameter.getRawStringValue());
         control.addFocusListener(this);
+
+        MIA.log.writeDebug(control.getForeground());
 
     }
 
