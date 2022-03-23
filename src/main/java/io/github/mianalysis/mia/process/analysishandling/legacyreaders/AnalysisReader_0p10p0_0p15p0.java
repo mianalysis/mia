@@ -1,7 +1,5 @@
 package io.github.mianalysis.mia.process.analysishandling.legacyreaders;
 
-import java.awt.FileDialog;
-import java.awt.Frame;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
@@ -11,6 +9,8 @@ import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 
+import javax.swing.JFileChooser;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -45,7 +45,6 @@ import io.github.mianalysis.mia.object.refs.ParentChildRef;
 import io.github.mianalysis.mia.object.refs.PartnerRef;
 import io.github.mianalysis.mia.object.refs.abstrakt.SummaryRef;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
-import io.github.mianalysis.mia.process.ClassHunter;
 import io.github.mianalysis.mia.process.analysishandling.Analysis;
 
 /**
@@ -55,18 +54,20 @@ public class AnalysisReader_0p10p0_0p15p0 {
     public static Analysis loadAnalysis()
             throws SAXException, IllegalAccessException, IOException, InstantiationException,
             ParserConfigurationException, ClassNotFoundException, NoSuchMethodException, InvocationTargetException {
-        FileDialog fileDialog = new FileDialog(new Frame(), "Select file to load", FileDialog.LOAD);
-        fileDialog.setMultipleMode(false);
-        fileDialog.setFile("*.mia");
-        fileDialog.setVisible(true);
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setMultiSelectionEnabled(false);
+        fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+        fileChooser.setFileFilter(new FileNameExtensionFilter("MIA workflow (.mia)", "mia"));
+        fileChooser.showDialog(null, "Load workflow");
 
-        if (fileDialog.getFiles().length == 0)
+        File file = fileChooser.getSelectedFile();
+        if (file == null)
             return null;
 
-        Analysis analysis = loadAnalysis(fileDialog.getFiles()[0]);
-        analysis.setAnalysisFilename(fileDialog.getFiles()[0].getAbsolutePath());
+        Analysis analysis = loadAnalysis(file);
+        analysis.setAnalysisFilename(file.getAbsolutePath());
 
-        MIA.log.writeStatus("File loaded (" + FilenameUtils.getName(fileDialog.getFiles()[0].getName()) + ")");
+        MIA.log.writeStatus("File loaded (" + FilenameUtils.getName(file.getName()) + ")");
 
         return analysis;
 
@@ -185,30 +186,30 @@ public class AnalysisReader_0p10p0_0p15p0 {
         NodeList moduleChildNodes = moduleNode.getChildNodes();
         for (int i = 0; i < moduleChildNodes.getLength(); i++) {
             switch (moduleChildNodes.item(i).getNodeName()) {
-            case "PARAMETERS":
-                populateParameters(moduleChildNodes.item(i), module);
-                break;
+                case "PARAMETERS":
+                    populateParameters(moduleChildNodes.item(i), module);
+                    break;
 
-            case "MEASUREMENTS":
-                populateLegacyMeasurementRefs(moduleChildNodes.item(i), module);
-                break;
+                case "MEASUREMENTS":
+                    populateLegacyMeasurementRefs(moduleChildNodes.item(i), module);
+                    break;
 
-            case "IMAGE_MEASUREMENTS":
-                populateImageMeasurementRefs(moduleChildNodes.item(i), module);
-                break;
+                case "IMAGE_MEASUREMENTS":
+                    populateImageMeasurementRefs(moduleChildNodes.item(i), module);
+                    break;
 
-            case "OBJECT_MEASUREMENTS":
-                populateObjMeasurementRefs(moduleChildNodes.item(i), module);
-                break;
+                case "OBJECT_MEASUREMENTS":
+                    populateObjMeasurementRefs(moduleChildNodes.item(i), module);
+                    break;
 
-            case "METADATA":
-                populateModuleMetadataRefs(moduleChildNodes.item(i), module);
-                break;
+                case "METADATA":
+                    populateModuleMetadataRefs(moduleChildNodes.item(i), module);
+                    break;
 
-            case "RELATIONSHIPS":
-            case "PARENT_CHILD":
-                relationshipsToCovert.add(moduleChildNodes.item(i));
-                break;
+                case "RELATIONSHIPS":
+                case "PARENT_CHILD":
+                    relationshipsToCovert.add(moduleChildNodes.item(i));
+                    break;
             }
         }
 
@@ -260,15 +261,15 @@ public class AnalysisReader_0p10p0_0p15p0 {
 
             // Acquiring the relevant reference
             switch (type) {
-            case "IMAGE":
-                ImageMeasurementRef imageMeasurementRef = new ImageMeasurementRef(referenceNode);
-                module.addImageMeasurementRef(imageMeasurementRef);
-                break;
+                case "IMAGE":
+                    ImageMeasurementRef imageMeasurementRef = new ImageMeasurementRef(referenceNode);
+                    module.addImageMeasurementRef(imageMeasurementRef);
+                    break;
 
-            case "OBJECTS":
-                ObjMeasurementRef objMeasurementRef = new ObjMeasurementRef(referenceNode);
-                module.addObjectMeasurementRef(objMeasurementRef);
-                break;
+                case "OBJECTS":
+                    ObjMeasurementRef objMeasurementRef = new ObjMeasurementRef(referenceNode);
+                    module.addObjectMeasurementRef(objMeasurementRef);
+                    break;
             }
         }
     }
@@ -343,58 +344,58 @@ public class AnalysisReader_0p10p0_0p15p0 {
                     separator = addRefSeparatorModule(modules);
 
                 switch (node.getNodeName()) {
-                case "RELATIONSHIP":
-                case "PARENT_CHILD":
-                    // Getting relationship properties and modules
-                    ParentChildRef pcRef = new ParentChildRef(node);
-                    String parentName = pcRef.getParentName();
-                    String childName = pcRef.getChildName();
+                    case "RELATIONSHIP":
+                    case "PARENT_CHILD":
+                        // Getting relationship properties and modules
+                        ParentChildRef pcRef = new ParentChildRef(node);
+                        String parentName = pcRef.getParentName();
+                        String childName = pcRef.getChildName();
 
-                    // Checking if this pair has already been added
-                    if (parentChildRefs.contains(parentName, childName))
-                        continue;
-                    else
-                        parentChildRefs.addPair(parentName, childName);
+                        // Checking if this pair has already been added
+                        if (parentChildRefs.contains(parentName, childName))
+                            continue;
+                        else
+                            parentChildRefs.addPair(parentName, childName);
 
-                    // Checking objects still exist (i.e. haven't been removed)
-                    if (!availableObjectNames.contains(parentName))
-                        continue;
+                        // Checking objects still exist (i.e. haven't been removed)
+                        if (!availableObjectNames.contains(parentName))
+                            continue;
 
-                    if (!availableObjectNames.contains(childName))
-                        continue;
+                        if (!availableObjectNames.contains(childName))
+                            continue;
 
-                    addChildCountModule(modules, lRef, parentName, childName);
-                    addParentIDModule(modules, lRef, parentName, childName);
+                        addChildCountModule(modules, lRef, parentName, childName);
+                        addParentIDModule(modules, lRef, parentName, childName);
 
-                    nAdded += 2;
+                        nAdded += 2;
 
-                    break;
+                        break;
 
-                case "PARTNER":
-                    // Getting relationship properties and module
-                    PartnerRef pRef = new PartnerRef(node);
-                    String object1Name = pRef.getObject1Name();
-                    String object2Name = pRef.getObject2Name();
+                    case "PARTNER":
+                        // Getting relationship properties and module
+                        PartnerRef pRef = new PartnerRef(node);
+                        String object1Name = pRef.getObject1Name();
+                        String object2Name = pRef.getObject2Name();
 
-                    // Checking if this pair has already been added
-                    if (partnerRefs.contains(object1Name, object2Name))
-                        continue;
-                    else
-                        partnerRefs.addPair(object1Name, object2Name);
+                        // Checking if this pair has already been added
+                        if (partnerRefs.contains(object1Name, object2Name))
+                            continue;
+                        else
+                            partnerRefs.addPair(object1Name, object2Name);
 
-                    // Checking objects still exist (i.e. haven't been removed)
-                    if (!availableObjectNames.contains(object1Name))
-                        continue;
+                        // Checking objects still exist (i.e. haven't been removed)
+                        if (!availableObjectNames.contains(object1Name))
+                            continue;
 
-                    if (!availableObjectNames.contains(object2Name))
-                        continue;
+                        if (!availableObjectNames.contains(object2Name))
+                            continue;
 
-                    addPartnerCountModule(modules, lRef, object1Name, object2Name);
-                    addPartnerCountModule(modules, lRef, object2Name, object1Name);
+                        addPartnerCountModule(modules, lRef, object1Name, object2Name);
+                        addPartnerCountModule(modules, lRef, object2Name, object1Name);
 
-                    nAdded += 2;
+                        nAdded += 2;
 
-                    break;
+                        break;
                 }
 
                 // Display a message if any relationship modules were added, otherwise remove
@@ -441,7 +442,7 @@ public class AnalysisReader_0p10p0_0p15p0 {
             measRef.setExportMin(false);
             measRef.setExportStd(false);
             measRef.setExportSum(false);
-            
+
         }
     }
 
