@@ -26,11 +26,13 @@ public class ModuleButton extends JToggleButton implements ActionListener, Mouse
      */
     private static final long serialVersionUID = -7386345086449867288L;
     private Module module;
+    private Color defaultColour;
 
     // CONSTRUCTOR
 
     public ModuleButton(Module module) {
         this.module = module;
+        defaultColour = getForeground();
         setFocusPainted(false);
         setSelected(false);
         addActionListener(this);
@@ -50,7 +52,7 @@ public class ModuleButton extends JToggleButton implements ActionListener, Mouse
         if (module.getClass() == GUISeparator.class)
             setForeground(Colours.DARK_BLUE);
         else if (module.isEnabled() && module.isReachable() && module.isRunnable())
-            setForeground(Color.BLACK);
+            setForeground(defaultColour);
         else if (module.isEnabled() & !module.isReachable())
             setForeground(Colours.ORANGE);
         else if (module.isEnabled() & !module.isRunnable())

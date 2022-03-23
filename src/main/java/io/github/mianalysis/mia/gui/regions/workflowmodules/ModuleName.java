@@ -10,8 +10,6 @@ import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.border.EmptyBorder;
 
-import io.github.mianalysis.mia.gui.GUI;
-import io.github.mianalysis.mia.gui.regions.RenameListMenu;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.system.GUISeparator;
 import io.github.mianalysis.mia.object.Colours;
@@ -20,6 +18,7 @@ public class ModuleName extends JLabel {
     private Module module;
     private JTable table;
     private boolean isSelected;
+    private Color defaultColour;
 
     private static final ImageIcon skipIcon = new ImageIcon(
             ModuleName.class.getResource("/icons/skiparrow_orange_12px.png"), "");
@@ -39,6 +38,9 @@ public class ModuleName extends JLabel {
             attributes.put(TextAttribute.STRIKETHROUGH, TextAttribute.STRIKETHROUGH_ON);
             font = new Font(attributes);
         }
+
+        defaultColour = getForeground();
+
         setFont(font);
         setText(module.getNickname());
         updateState();
@@ -74,7 +76,7 @@ public class ModuleName extends JLabel {
             setForeground(Colours.DARK_BLUE);
             setToolTipText("Module separator");
         } else if (module.isEnabled() && module.isReachable() && module.isRunnable()) {
-            setForeground(Color.BLACK);
+            setForeground(defaultColour);
             setToolTipText("<html>Module: " + module.getName() + "<br>Nickname: " + module.getNickname()
                     + "<br>Status: OK"+deprecationMessage+"</html>");
         } else if (module.isEnabled() & !module.isReachable()) {
