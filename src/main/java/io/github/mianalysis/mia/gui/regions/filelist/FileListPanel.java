@@ -138,6 +138,7 @@ public class FileListPanel extends JPanel implements MouseListener, TableCellRen
         scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         scrollPane.getVerticalScrollBar().setUnitIncrement(10);
         scrollPane.setBorder(BorderFactory.createEmptyBorder());
+        scrollPane.setViewportBorder(BorderFactory.createEmptyBorder());
 
         c.gridy++;
         c.weightx = 1;

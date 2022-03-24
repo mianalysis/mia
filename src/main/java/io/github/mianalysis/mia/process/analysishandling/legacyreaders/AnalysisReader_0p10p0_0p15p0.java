@@ -24,6 +24,7 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
+import ij.Prefs;
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.gui.GUI;
 import io.github.mianalysis.mia.module.AvailableModules;
@@ -54,7 +55,8 @@ public class AnalysisReader_0p10p0_0p15p0 {
     public static Analysis loadAnalysis()
             throws SAXException, IllegalAccessException, IOException, InstantiationException,
             ParserConfigurationException, ClassNotFoundException, NoSuchMethodException, InvocationTargetException {
-        JFileChooser fileChooser = new JFileChooser();
+        String previousPath = Prefs.get("MIA.PreviousPath", "");
+        JFileChooser fileChooser = new JFileChooser(previousPath);
         fileChooser.setMultiSelectionEnabled(false);
         fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
         fileChooser.setFileFilter(new FileNameExtensionFilter("MIA workflow (.mia)", "mia"));
@@ -63,6 +65,8 @@ public class AnalysisReader_0p10p0_0p15p0 {
         File file = fileChooser.getSelectedFile();
         if (file == null)
             return null;
+
+        Prefs.set("MIA.PreviousPath", file.getAbsolutePath());
 
         Analysis analysis = loadAnalysis(file);
         analysis.setAnalysisFilename(file.getAbsolutePath());

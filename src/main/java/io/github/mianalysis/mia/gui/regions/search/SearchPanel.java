@@ -126,16 +126,17 @@ public class SearchPanel extends JPanel {
         c2.fill = GridBagConstraints.BOTH;
         sPanel.add(resultsPanel, c2);
 
-        JScrollPane jsp = new JScrollPane(sPanel);
-        jsp.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-        jsp.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-        jsp.getVerticalScrollBar().setUnitIncrement(10);
-        jsp.setBackground(Color.CYAN);
-        jsp.setBorder(null);
+        JScrollPane scrollPane = new JScrollPane(sPanel);
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        scrollPane.getVerticalScrollBar().setUnitIncrement(10);
+        scrollPane.setBackground(Color.CYAN);
+        scrollPane.setBorder(null);
+        scrollPane.setViewportBorder(BorderFactory.createEmptyBorder());
         c.gridy++;
         c.weighty = 1;
         c.insets = new Insets(5, 5, 5, 5);
-        add(jsp, c);
+        add(scrollPane, c);
 
         revalidate();
         repaint();

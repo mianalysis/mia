@@ -72,14 +72,15 @@ public class NotesPanel extends JPanel {
 
         NotesArea notesArea = new NotesArea(activeModule);
         
-        JScrollPane jsp = new JScrollPane(notesArea);
-        jsp.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-        jsp.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-        jsp.getVerticalScrollBar().setUnitIncrement(10);
+        JScrollPane scrollPane = new JScrollPane(notesArea);
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        scrollPane.getVerticalScrollBar().setUnitIncrement(10);
+        scrollPane.setViewportBorder(BorderFactory.createEmptyBorder());
         c.gridy++;
         c.weighty = 1;
         c.insets = new Insets(5,5,5,5);
-        add(jsp,c);
+        add(scrollPane,c);
 
         validate();
         repaint();

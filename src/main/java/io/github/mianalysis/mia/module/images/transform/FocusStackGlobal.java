@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
 
+import javax.swing.BorderFactory;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -214,6 +215,7 @@ public class FocusStackGlobal <T extends RealType<T> & NativeType<T>> extends Mo
         objectsScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         objectsScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         objectsScrollPane.getVerticalScrollBar().setUnitIncrement(10);
+        objectsScrollPane.setViewportBorder(BorderFactory.createEmptyBorder());
 
         c.gridx = 0;
         c.gridy++;

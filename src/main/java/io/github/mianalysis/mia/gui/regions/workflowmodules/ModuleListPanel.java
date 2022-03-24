@@ -8,6 +8,7 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.util.HashMap;
 
+import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
@@ -28,16 +29,17 @@ public class ModuleListPanel extends JScrollPane {
         moduleListPanel = new JPanel();
         
         setViewportView(moduleListPanel);
-        setBorder(new EmptyBorder(0, 0, 0, 0));
-
+        
         // Initialising the scroll panel
+        setViewportBorder(BorderFactory.createEmptyBorder());
+        setBorder(new EmptyBorder(0, 0, 0, 0));
         setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         getVerticalScrollBar().setUnitIncrement(10);
 
         // Initialising the panel for module buttons
-        moduleListPanel.setBorder(new EmptyBorder(0, 0, 0, 0));
-        moduleListPanel.setLayout(new GridBagLayout());
+        moduleListPanel.setBorder(BorderFactory.createEmptyBorder());
+                moduleListPanel.setLayout(new GridBagLayout());
         moduleListPanel.validate();
         moduleListPanel.repaint();
 
@@ -67,12 +69,15 @@ public class ModuleListPanel extends JScrollPane {
             if (expandedStatus.get(modules.get(i))) data[count++][0] = modules.get(i);
         }
         DraggableTableModel tableModel = new DraggableTableModel(data, columnNames,modules);
-        JTable moduleNameTable = new ModuleTable(tableModel,modules,expandedStatus);
-
+        JTable moduleNameTable = new ModuleTable(tableModel, modules, expandedStatus);
+        moduleNameTable.setBorder(BorderFactory.createEmptyBorder());
+        
         JScrollPane scrollPane = new JScrollPane(moduleNameTable);
         scrollPane.setOpaque(false);
         scrollPane.getViewport().setOpaque(false);
         scrollPane.setBackground(new Color(0, 0, 0, 0));
+        scrollPane.setBorder(BorderFactory.createEmptyBorder());
+        scrollPane.setViewportBorder(BorderFactory.createEmptyBorder());
 
         moduleListPanel.removeAll();
 

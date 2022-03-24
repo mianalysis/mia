@@ -18,6 +18,7 @@ import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+import ij.Prefs;
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
@@ -66,6 +67,8 @@ public class AnalysisWriter {
         // If no file was selected quit the method
         if (file == null)
             return;
+
+        Prefs.set("MIA.PreviousPath", file.getAbsolutePath());
 
         // Updating the analysis filename
         String outputFileName = file.getAbsolutePath();

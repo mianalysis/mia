@@ -12,6 +12,7 @@ import java.awt.font.TextAttribute;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
@@ -274,6 +275,7 @@ public class ComponentFactory {
 
         JSeparator separatorLeft = new JSeparator();
         separatorLeft.setForeground(Colours.DARK_BLUE);
+        separatorLeft.setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, Colours.DARK_BLUE));
         c.weightx = 1;
         c.gridx++;
         panel.add(separatorLeft, c);
@@ -289,6 +291,7 @@ public class ComponentFactory {
 
         JSeparator separatorRight = new JSeparator();
         separatorRight.setForeground(Colours.DARK_BLUE);
+        separatorRight.setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, Colours.DARK_BLUE));
         c.weightx = 1;
         c.gridx++;
         c.anchor = GridBagConstants.EAST;

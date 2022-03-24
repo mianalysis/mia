@@ -22,6 +22,7 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
+import ij.Prefs;
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.gui.GUI;
 import io.github.mianalysis.mia.module.Module;
@@ -65,7 +66,8 @@ public class AnalysisReader_Pre_0p10p0 {
     public static Analysis loadAnalysis()
             throws SAXException, IllegalAccessException, IOException, InstantiationException,
             ParserConfigurationException, ClassNotFoundException, NoSuchMethodException, InvocationTargetException {
-                JFileChooser fileChooser = new JFileChooser();
+        String previousPath = Prefs.get("MIA.PreviousPath", "");
+        JFileChooser fileChooser = new JFileChooser(previousPath);
         fileChooser.setMultiSelectionEnabled(false);
         fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
         fileChooser.setFileFilter(new FileNameExtensionFilter("MIA workflow (.mia)", "mia"));
@@ -75,6 +77,8 @@ public class AnalysisReader_Pre_0p10p0 {
         if (file == null)
             return null;
 
+        Prefs.set("MIA.PreviousPath", file.getAbsolutePath());
+            
         Analysis analysis = loadAnalysis(file);
         analysis.setAnalysisFilename(file.getAbsolutePath());
 
@@ -337,7 +341,7 @@ public class AnalysisReader_Pre_0p10p0 {
                     ((BooleanP) parameters.getParameter(parameterName)).setValueFromString(parameterValue);
                 } else if (parameter instanceof ChoiceP) {
                     parameterValue = MIA.lostAndFound.findParameterValue(module.getClass().getSimpleName(),
-                            parameterName, parameterValue);                            
+                            parameterName, parameterValue);
                     ((ChoiceP) parameters.getParameter(parameterName)).setChoice(parameterValue);
                 } else if (parameter instanceof ChildObjectsP) {
                     parameterValue = MIA.lostAndFound.findParameterValue(module.getClass().getSimpleName(),

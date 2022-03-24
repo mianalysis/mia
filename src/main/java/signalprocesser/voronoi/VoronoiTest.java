@@ -1623,15 +1623,15 @@ public class VoronoiTest extends javax.swing.JFrame {
     }//GEN-LAST:event_optLetterGenerationActionPerformed
     
     private void btnLoadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoadActionPerformed
-        JFileChooser chooser = new JFileChooser();
-        chooser.setDialogType(JFileChooser.OPEN_DIALOG);
-        chooser.setDialogTitle("Choose Points File to Load");
-        String directory = ( lastdirectoryopened!=null ? lastdirectoryopened : chooser.getCurrentDirectory().getAbsolutePath() );
-        chooser.setSelectedFile( new File( directory + File.separator + "pointsfile.txt" ) );
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setDialogType(JFileChooser.OPEN_DIALOG);
+        fileChooser.setDialogTitle("Choose Points File to Load");
+        String directory = ( lastdirectoryopened!=null ? lastdirectoryopened : fileChooser.getCurrentDirectory().getAbsolutePath() );
+        fileChooser.setSelectedFile( new File( directory + File.separator + "pointsfile.txt" ) );
         
-        int returnval = chooser.showOpenDialog(this);
+        int returnval = fileChooser.showOpenDialog(this);
         if( returnval==JFileChooser.APPROVE_OPTION ) {
-            File file = chooser.getSelectedFile();
+            File file = fileChooser.getSelectedFile();
             
             // Set last directory
             lastdirectoryopened = file.getPath();
@@ -1661,15 +1661,15 @@ public class VoronoiTest extends javax.swing.JFrame {
     }//GEN-LAST:event_btnLoadActionPerformed
     
     private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
-        JFileChooser chooser = new JFileChooser();
-        chooser.setDialogType(JFileChooser.SAVE_DIALOG);
-        chooser.setDialogTitle("Choose location to Save Points File");
-        String directory = ( lastdirectoryopened!=null ? lastdirectoryopened : chooser.getCurrentDirectory().getAbsolutePath() );
-        chooser.setSelectedFile( new File( directory + File.separator + "pointsfile.txt" ) );
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setDialogType(JFileChooser.SAVE_DIALOG);
+        fileChooser.setDialogTitle("Choose location to Save Points File");
+        String directory = ( lastdirectoryopened!=null ? lastdirectoryopened : fileChooser.getCurrentDirectory().getAbsolutePath() );
+        fileChooser.setSelectedFile( new File( directory + File.separator + "pointsfile.txt" ) );
         
-        int returnval = chooser.showSaveDialog(this);
+        int returnval = fileChooser.showSaveDialog(this);
         if( returnval==JFileChooser.APPROVE_OPTION ) {
-            File file = chooser.getSelectedFile();
+            File file = fileChooser.getSelectedFile();
             
             // Set last directory
             lastdirectoryopened = file.getPath();
@@ -1684,15 +1684,15 @@ public class VoronoiTest extends javax.swing.JFrame {
     }//GEN-LAST:event_btnSaveActionPerformed
     
     private void btnExportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
-        JFileChooser chooser = new JFileChooser();
-        chooser.setDialogType(JFileChooser.SAVE_DIALOG);
-        chooser.setDialogTitle("Choose location to Save Points File");
-        String directory = ( lastdirectoryopened!=null ? lastdirectoryopened : chooser.getCurrentDirectory().getAbsolutePath() );
-        chooser.setSelectedFile( new File( directory + File.separator + "pointsfile.txt" ) );
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setDialogType(JFileChooser.SAVE_DIALOG);
+        fileChooser.setDialogTitle("Choose location to Save Points File");
+        String directory = ( lastdirectoryopened!=null ? lastdirectoryopened : fileChooser.getCurrentDirectory().getAbsolutePath() );
+        fileChooser.setSelectedFile( new File( directory + File.separator + "pointsfile.txt" ) );
         
-        int returnval = chooser.showSaveDialog(this);
+        int returnval = fileChooser.showSaveDialog(this);
         if( returnval==JFileChooser.APPROVE_OPTION ) {
-            File file = chooser.getSelectedFile();
+            File file = fileChooser.getSelectedFile();
             
             // Set last directory
             lastdirectoryopened = file.getPath();

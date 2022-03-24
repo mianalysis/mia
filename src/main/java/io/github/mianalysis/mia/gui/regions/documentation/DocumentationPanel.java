@@ -7,6 +7,7 @@ import java.awt.Toolkit;
 import java.io.IOException;
 import java.net.URL;
 
+import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JEditorPane;
 import javax.swing.JFrame;
@@ -63,6 +64,7 @@ public class DocumentationPanel {
         scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         scrollPane.getVerticalScrollBar().setUnitIncrement(10);
         scrollPane.getVerticalScrollBar().setValue(0);
+        scrollPane.setViewportBorder(BorderFactory.createEmptyBorder());
 
         JFrame frame = new JFrame();
         frame.add(scrollPane);
