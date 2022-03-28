@@ -9,8 +9,6 @@ import java.util.Set;
 import com.drew.lang.annotations.Nullable;
 
 import ij.CompositeImage;
-import ij.IJ;
-import ij.ImageJ;
 import ij.ImagePlus;
 import ij.ImageStack;
 import ij.measure.Calibration;
@@ -40,28 +38,31 @@ import net.imglib2.type.numeric.RealType;
 /**
  * Created by stephen on 30/04/2017.
  */
-public class Image {
+public class Image <T extends RealType<T> & NativeType<T>> {
     private String name;
-    private ImagePlus imagePlus;
+    private ImgPlus<T> img;
+    // private ImagePlus imagePlus;
     private LinkedHashMap<String, Measurement> measurements = new LinkedHashMap<>();
 
     // CONSTRUCTORS
 
     public Image(String name, ImagePlus imagePlus) {
         this.name = name;
-        this.imagePlus = imagePlus;
+        this.img = ImagePlusAdapter.wrapImgPlus(imagePlus);
+        // this.imagePlus = imagePlus;
 
     }
 
-    public <T extends RealType<T> & NativeType<T>> Image(String name, ImgPlus<T> img) {
+    public Image(String name, ImgPlus<T> img) {
         this.name = name;
-        this.imagePlus = ImageJFunctions.wrap(img, name);
+        this.img = img;
+        // this.imagePlus = ImageJFunctions.wrap(img, name);
 
-        // Calibrations don't always appear to transfer over, so doing this explicitly
-        Calibration calibration = imagePlus.getCalibration();
-        if (img.dimensionIndex(Axes.Z) != -1) {
-            calibration.pixelDepth = ((CalibratedAxis) img.axis(img.dimensionIndex(Axes.Z))).calibratedValue(1);
-        }
+        // // Calibrations don't always appear to transfer over, so doing this explicitly
+        // Calibration calibration = imagePlus.getCalibration();
+        // if (img.dimensionIndex(Axes.Z) != -1)
+        //     calibration.pixelDepth = ((CalibratedAxis) img.axis(img.dimensionIndex(Axes.Z))).calibratedValue(1);
+        
     }
 
     public Objs convertImageToObjects(String outputObjectsName) {
@@ -85,6 +86,8 @@ public class Image {
     }
 
     public Objs convertImageToObjects(String type, String outputObjectsName, boolean singleObject) {
+        ImagePlus imagePlus = getImagePlus();
+
         // Getting spatial calibration
         double dppXY = imagePlus.getCalibration().pixelWidth;
         double dppZ = imagePlus.getCalibration().pixelDepth;
@@ -163,6 +166,7 @@ public class Image {
     }
 
     HashMap<Integer, IDLink> getOptimisedLinks(int c, int t, Objs outputObjects, boolean singleObject) {
+        ImagePlus imagePlus = getImagePlus();
         int h = imagePlus.getHeight();
         int w = imagePlus.getWidth();
         int nSlices = imagePlus.getNSlices();
@@ -207,24 +211,27 @@ public class Image {
     }
 
     public void showImage(String title, @Nullable LUT lut, boolean normalise, boolean composite) {
-        ImagePlus dispIpl = new Duplicator().run(imagePlus);
-        dispIpl.setTitle(title);
-        if (normalise) {
-            ImageStatistics stats = dispIpl.getStatistics();
-            if (stats.min != stats.max)
-                IntensityMinMax.run(dispIpl, true);
-        }
+        ImageJFunctions.show(img);
+        
+        // ImagePlus imagePlus = getImagePlus();
+        // ImagePlus dispIpl = new Duplicator().run(imagePlus);
+        // dispIpl.setTitle(title);
+        // if (normalise) {
+        //     ImageStatistics stats = dispIpl.getStatistics();
+        //     if (stats.min != stats.max)
+        //         IntensityMinMax.run(dispIpl, true);
+        // }
 
-        dispIpl.setPosition(1, 1, 1);
-        dispIpl.updateChannelAndDraw();
-        if (lut != null && dispIpl.getBitDepth() != 24)
-            dispIpl.setLut(lut);
-        if (composite && dispIpl.getNChannels() > 1) {
-            dispIpl.setDisplayMode(CompositeImage.COMPOSITE);
-        } else {
-            dispIpl.setDisplayMode(CompositeImage.COLOR);
-        }
-        dispIpl.show();
+        // dispIpl.setPosition(1, 1, 1);
+        // dispIpl.updateChannelAndDraw();
+        // if (lut != null && dispIpl.getBitDepth() != 24)
+        //     dispIpl.setLut(lut);
+        // if (composite && dispIpl.getNChannels() > 1) {
+        //     dispIpl.setDisplayMode(CompositeImage.COMPOSITE);
+        // } else {
+        //     dispIpl.setDisplayMode(CompositeImage.COLOR);
+        // }
+        // dispIpl.show();
     }
 
     public void showImage(String title, LUT lut) {
@@ -335,19 +342,23 @@ public class Image {
     }
 
     public ImagePlus getImagePlus() {
-        return imagePlus;
+        return ImageJFunctions.wrap(img, name);
+        // return imagePlus;
     }
 
     public void setImagePlus(ImagePlus imagePlus) {
-        this.imagePlus = imagePlus;
+        this.img = ImagePlusAdapter.wrapImgPlus(imagePlus);
+        // this.imagePlus = imagePlus;
     }
 
-    public <T extends RealType<T> & NativeType<T>> ImgPlus<T> getImgPlus() {
-        return ImagePlusAdapter.wrapImgPlus(new Duplicator().run(imagePlus));
+    public ImgPlus<T> getImgPlus() {
+        return img;
+        // return ImagePlusAdapter.wrapImgPlus(imagePlus);
     }
 
-    public <T extends RealType<T> & NativeType<T>> void setImgPlus(ImgPlus<T> img) {
-        imagePlus = ImageJFunctions.wrap(img, name);
+    public void setImgPlus(ImgPlus<T> img) {
+        this.img = img;
+        // imagePlus = ImageJFunctions.wrap(img, name);
     }
 
     public HashMap<String, Measurement> getMeasurements() {
@@ -362,6 +373,7 @@ public class Image {
     public int hashCode() {
         int hash = 1;
 
+        ImagePlus imagePlus = getImagePlus();
         Calibration calibration = imagePlus.getCalibration();
 
         hash = 31 * hash + ((Number) calibration.pixelWidth).hashCode();
@@ -406,6 +418,7 @@ public class Image {
         ImagePlus imagePlus2 = image2.getImagePlus();
 
         // Comparing calibrations
+        ImagePlus imagePlus = getImagePlus();
         Calibration calibration1 = imagePlus.getCalibration();
         Calibration calibration2 = imagePlus2.getCalibration();
 
@@ -492,6 +505,7 @@ public class Image {
                 return VolumeType.POINTLIST;
 
             // Ratio of xy to z
+            ImagePlus imagePlus = getImagePlus();
             double xyToZ = imagePlus.getCalibration().pixelDepth / imagePlus.getCalibration().pixelWidth;
             MIA.log.writeMessage("        XY to Z " + xyToZ);
 

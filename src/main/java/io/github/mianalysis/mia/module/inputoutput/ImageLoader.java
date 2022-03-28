@@ -296,11 +296,11 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
         DebugTools.enableLogging("off");
         DebugTools.setRootLevel("off");
 
+    
         // Setting spatial calibration
         ServiceFactory factory = new ServiceFactory();
         OMEXMLService service = factory.getInstance(OMEXMLService.class);
         IMetadata meta = service.createOMEXMLMetadata();
-
         ImageProcessorReader reader = new ImageProcessorReader(new ChannelSeparator(LociPrefs.makeImageReader()));
         reader.setMetadataStore((MetadataStore) meta);
         reader.setGroupFiles(false);
@@ -320,7 +320,6 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
         // If a specific bit depth is to be used
         if (intRange != null)
             bitDepth = (int) intRange[0];
-
         bitDepth = checkBitDepth(bitDepth);
         if (bitDepth == -1)
             return null;
@@ -345,16 +344,16 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
 
         // Applying scaling
         switch (scaleMode) {
-        case ScaleModes.NONE:
-            scaleFactors[0] = 1;
-            scaleFactors[1] = 1;
-            break;
-        case ScaleModes.NO_INTERPOLATION:
-        case ScaleModes.BILINEAR:
-        case ScaleModes.BICUBIC:
-            widthOut = (int) Math.round(width * scaleFactors[0]);
-            heightOut = (int) Math.round(height * scaleFactors[1]);
-            break;
+            case ScaleModes.NONE:
+                scaleFactors[0] = 1;
+                scaleFactors[1] = 1;
+                break;
+            case ScaleModes.NO_INTERPOLATION:
+            case ScaleModes.BILINEAR:
+            case ScaleModes.BICUBIC:
+                widthOut = (int) Math.round(width * scaleFactors[0]);
+                heightOut = (int) Math.round(height * scaleFactors[1]);
+                break;
         }
 
         // Creating the new ImagePlus
@@ -385,32 +384,32 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
                     if (intRange != null) {
                         ip.setMinAndMax(intRange[1], intRange[2]);
                         switch (bitDepth) {
-                        case 8:
-                            ip = ip.convertToByte(true);
-                            break;
-                        case 16:
-                            ip = ip.convertToShort(true);
-                            break;
-                        case 32:
-                            ip = ip.convertToFloat();
-                            break;
+                            case 8:
+                                ip = ip.convertToByte(true);
+                                break;
+                            case 16:
+                                ip = ip.convertToShort(true);
+                                break;
+                            case 32:
+                                ip = ip.convertToFloat();
+                                break;
                         }
                     }
 
                     // Applying scaling
                     switch (scaleMode) {
-                    case ScaleModes.NO_INTERPOLATION:
-                        ip.setInterpolationMethod(ImageProcessor.NONE);
-                        ip = ip.resize(widthOut, heightOut);
-                        break;
-                    case ScaleModes.BILINEAR:
-                        ip.setInterpolationMethod(ImageProcessor.BILINEAR);
-                        ip = ip.resize(widthOut, heightOut);
-                        break;
-                    case ScaleModes.BICUBIC:
-                        ip.setInterpolationMethod(ImageProcessor.BICUBIC);
-                        ip = ip.resize(widthOut, heightOut);
-                        break;
+                        case ScaleModes.NO_INTERPOLATION:
+                            ip.setInterpolationMethod(ImageProcessor.NONE);
+                            ip = ip.resize(widthOut, heightOut);
+                            break;
+                        case ScaleModes.BILINEAR:
+                            ip.setInterpolationMethod(ImageProcessor.BILINEAR);
+                            ip = ip.resize(widthOut, heightOut);
+                            break;
+                        case ScaleModes.BICUBIC:
+                            ip.setInterpolationMethod(ImageProcessor.BICUBIC);
+                            ip = ip.resize(widthOut, heightOut);
+                            break;
                     }
 
                     ipl.setPosition(countC, countZ, countT);
@@ -1092,15 +1091,15 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
         int seriesNumber = 1;
         if (reader.equals(Readers.BIOFORMATS))
             switch (seriesMode) {
-            case SeriesModes.CURRENT_SERIES:
-                seriesNumber = workspace.getMetadata().getSeriesNumber();
-                break;
-            case SeriesModes.SPECIFIC_SERIES:
-                seriesNumber = parameters.getValue(SERIES_NUMBER);
-                break;
+                case SeriesModes.CURRENT_SERIES:
+                    seriesNumber = workspace.getMetadata().getSeriesNumber();
+                    break;
+                case SeriesModes.SPECIFIC_SERIES:
+                    seriesNumber = parameters.getValue(SERIES_NUMBER);
+                    break;
             }
 
-        // ImageJ reader can't use crop
+            // ImageJ reader can't use crop
         if (reader.equals(Readers.IMAGEJ))
             cropMode = CropModes.NONE;
 
@@ -1108,19 +1107,20 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
 
         int[] crop = null;
         switch (cropMode) {
-        case CropModes.FIXED:
-            crop = new int[] { left, top, width, height };
-            break;
-        case CropModes.FROM_REFERENCE:
-            // Displaying the image
-            Image referenceImage = workspace.getImage(referenceImageName);
-            crop = getCropROI(referenceImage);
-            break;
-        case CropModes.OBJECT_COLLECTION_LIMITS:
-            Objs objectsForLimits = workspace.getObjectSet(objectsForLimitsName);
-            int[][] limits = objectsForLimits.getSpatialExtents();
-            crop = new int[] { limits[0][0], limits[1][0], limits[0][1] - limits[0][0], limits[1][1] - limits[1][0] };
-            break;
+            case CropModes.FIXED:
+                crop = new int[] { left, top, width, height };
+                break;
+            case CropModes.FROM_REFERENCE:
+                // Displaying the image
+                Image referenceImage = workspace.getImage(referenceImageName);
+                crop = getCropROI(referenceImage);
+                break;
+            case CropModes.OBJECT_COLLECTION_LIMITS:
+                Objs objectsForLimits = workspace.getObjectSet(objectsForLimitsName);
+                int[][] limits = objectsForLimits.getSpatialExtents();
+                crop = new int[] { limits[0][0], limits[1][0], limits[0][1] - limits[0][0],
+                        limits[1][1] - limits[1][0] };
+                break;
         }
 
         if (scaleMode.equals(ScaleModes.NONE)) {
@@ -1135,7 +1135,7 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
 
         boolean[] manualCalibration = new boolean[] { setSpatialCalibration, setTemporalCalibration };
 
-        ImagePlus ipl = null;
+                ImagePlus ipl = null;
         try {
             switch (importMode) {
             case ImportModes.ALL_IN_FOLDER:
@@ -1251,7 +1251,7 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
                 }
 
                 switch (reader) {
-                case Readers.BIOFORMATS:
+                    case Readers.BIOFORMATS:
                     ipl = getBFImage(filePath, seriesNumber, dimRanges, crop, scaleFactors, scaleMode, intRange,
                             manualCalibration, true);
                     break;

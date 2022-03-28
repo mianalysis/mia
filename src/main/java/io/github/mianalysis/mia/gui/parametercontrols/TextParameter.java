@@ -27,8 +27,6 @@ public class TextParameter extends ParameterControl implements FocusListener {
         control.setText(parameter.getRawStringValue());
         control.addFocusListener(this);
 
-        MIA.log.writeDebug(control.getForeground());
-
     }
 
     @Override

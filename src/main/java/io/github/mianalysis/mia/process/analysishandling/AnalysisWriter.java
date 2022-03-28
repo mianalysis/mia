@@ -59,7 +59,11 @@ public class AnalysisWriter {
 
     public static void saveAnalysis(Analysis analysis)
             throws IOException, ParserConfigurationException, TransformerException {
-        JFileChooser fileChooser = new JFileChooser(analysis.getAnalysisFilename());
+        String previousPath = analysis.getAnalysisFilename();
+        if (previousPath.equals(""))
+            previousPath = Prefs.get("MIA.PreviousPath", "");
+
+        JFileChooser fileChooser = new JFileChooser(previousPath);
         fileChooser.setMultiSelectionEnabled(false);
         fileChooser.showDialog(null, "Save workflow");
 

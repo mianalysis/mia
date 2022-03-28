@@ -24,6 +24,7 @@ public class SeparatorParameter extends ParameterControl {
 
         JSeparator separatorLeft = new JSeparator();
         separatorLeft.setForeground(Colours.DARK_BLUE);
+        separatorLeft.setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, Colours.DARK_BLUE));
         c.weightx = 1;
         c.gridx++;
         c.insets = new Insets(0,0,0,5);
@@ -39,6 +40,7 @@ public class SeparatorParameter extends ParameterControl {
 
         JSeparator separatorRight = new JSeparator();
         separatorRight.setForeground(Colours.DARK_BLUE);
+        separatorRight.setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, Colours.DARK_BLUE));
         c.weightx = 1;
         c.gridx++;
         c.insets = new Insets(0,5,0,0);
