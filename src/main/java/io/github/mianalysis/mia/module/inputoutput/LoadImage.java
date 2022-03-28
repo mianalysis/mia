@@ -8,6 +8,7 @@ import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.object.Image;
 import io.github.mianalysis.mia.object.Status;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.parameters.OutputImageP;
@@ -21,8 +22,8 @@ import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.scif.config.SCIFIOConfig;
 import io.scif.config.SCIFIOConfig.ImgMode;
 import io.scif.img.ImgOpener;
+import net.imagej.ImgPlus;
 import net.imglib2.img.Img;
-import net.imglib2.img.display.imagej.ImageJFunctions;
 import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
 
@@ -64,9 +65,12 @@ public class LoadImage<T extends RealType<T> & NativeType<T>> extends Module {
         SCIFIOConfig config = new SCIFIOConfig();
         config.imgOpenerSetImgModes( ImgMode.CELL );
 
-        Img< T > imageCell = ( Img< T > ) imgOpener.openImgs( path, config ).get( 0 );
-
-        ImageJFunctions.show(imageCell);
+        ImgPlus< T > img = new ImgPlus(( Img< T > ) imgOpener.openImgs( path, config ).get( 0 ));
+        Image image = new Image(outputImageName, img);
+        workspace.addImage(image);
+        
+        if (showOutput)
+            image.showImage();
         
         return Status.PASS;
 
