@@ -1,23 +1,16 @@
 package io.github.mianalysis.mia.module.images.transform;
 
+import java.nio.file.Paths;
+
+import org.scijava.Priority;
+import org.scijava.plugin.Plugin;
+
 import ij.ImagePlus;
-import net.imagej.ImgPlus;
-import net.imagej.axis.Axes;
-import net.imglib2.Cursor;
-import net.imglib2.RandomAccess;
-import net.imglib2.img.cell.CellImgFactory;
-import net.imglib2.img.display.imagej.ImageJFunctions;
-import net.imglib2.type.NativeType;
-import net.imglib2.type.numeric.RealType;
-import net.imglib2.view.Views;
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.module.Module;
-import org.scijava.Priority;
-import org.scijava.plugin.Plugin;
 import io.github.mianalysis.mia.object.Image;
 import io.github.mianalysis.mia.object.Status;
 import io.github.mianalysis.mia.object.Workspace;
@@ -33,6 +26,19 @@ import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.sjcross.common.process.ImgPlusTools;
+import net.imagej.ImgPlus;
+import net.imagej.axis.Axes;
+import net.imglib2.Cursor;
+import net.imglib2.RandomAccess;
+import net.imglib2.cache.img.CachedCellImg;
+import net.imglib2.cache.img.DiskCachedCellImgFactory;
+import net.imglib2.cache.img.DiskCachedCellImgOptions;
+import net.imglib2.img.cell.CellImgFactory;
+import net.imglib2.img.display.imagej.ImageJFunctions;
+import net.imglib2.type.NativeType;
+import net.imglib2.type.numeric.RealType;
+import net.imglib2.type.numeric.real.FloatType;
+import net.imglib2.view.Views;
 
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class FlipStack<T extends RealType<T> & NativeType<T>> extends Module {
@@ -81,10 +87,23 @@ public class FlipStack<T extends RealType<T> & NativeType<T>> extends Module {
         ImgPlus<T> inputImg = inputImage.getImgPlus();
 
         // Creating the new Img
-        CellImgFactory<T> factory = new CellImgFactory<T>((T) inputImg .firstElement());
+        int[] cellSize = new int[]{128,128,128};
+        DiskCachedCellImgOptions options = DiskCachedCellImgOptions.options();
+        options.cacheDirectory(Paths.get("/tmp/mycache"));
+        options.numIoThreads(2);
+        options.cellDimensions(cellSize);
+        
         long[] dims = new long[inputImg.numDimensions()];
-        for (int i=0;i<inputImg.numDimensions();i++) dims[i] = inputImg.dimension(i);
-        ImgPlus<T> outputImg = new ImgPlus<T>(factory.create(dims));
+        for (int i = 0; i < inputImg.numDimensions(); i++)
+            dims[i] = inputImg.dimension(i);
+        
+        T type = (T) inputImg.firstElement();
+        ImgPlus<T> outputImg = new ImgPlus<>(new DiskCachedCellImgFactory(type,options).create(dims));
+        
+        // CellImgFactory<T> factory = new CellImgFactory<T>((T) inputImg .firstElement());
+        // long[] dims = new long[inputImg.numDimensions()];
+        // for (int i=0;i<inputImg.numDimensions();i++) dims[i] = inputImg.dimension(i);
+        // ImgPlus<T> outputImg = new ImgPlus<T>(factory.create(dims));
         ImgPlusTools.copyAxes(inputImg,outputImg);
 
         // Determining the axis index
