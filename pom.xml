@@ -10,7 +10,7 @@
 
     <groupId>io.github.mianalysis</groupId>
     <artifactId>MIA</artifactId>
-    <version>0.21.14</version>
+    <version>0.22.0-SNAPSHOT-IMGLIB2</version>
     <packaging>jar</packaging>
     <name>MIA</name>
     <url>https://github.com/mianalysis/mia</url>
@@ -18,6 +18,7 @@
     <description>Image/object analysis using modularised components</description>
     <organization>
         <name>University of Bristol</name>
+        
     </organization>
 
     <licenses>
