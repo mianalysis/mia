@@ -1,5 +1,7 @@
 package io.github.mianalysis.mia;
 
+import java.nio.file.Paths;
+
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
 
@@ -19,6 +21,8 @@ import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import net.imagej.ImgPlus;
 import net.imglib2.Cursor;
+import net.imglib2.cache.img.DiskCachedCellImgFactory;
+import net.imglib2.cache.img.DiskCachedCellImgOptions;
 import net.imglib2.img.Img;
 import net.imglib2.img.ImgFactory;
 import net.imglib2.img.cell.CellImgFactory;
@@ -61,16 +65,22 @@ public class TestBigImage<T extends RealType<T> & NativeType<T>> extends Module 
         // Getting parameters
         String outputImageName = parameters.getValue(OUTPUT_IMAGE);
 
-        final ImgFactory<FloatType> imgFactory = new CellImgFactory<FloatType>(new FloatType(), 20);
-        final Img< FloatType > img1 = imgFactory.create( 6000, 900, 1000 );
-        final ImgPlus<FloatType> img = new ImgPlus<FloatType>(img1);
-
-        Cursor c = img.cursor();
+        int[] cellSize = new int[] { 128, 128, 128 };
+        long[] dims = new long[] {3000,4000,100};
+        DiskCachedCellImgOptions options = DiskCachedCellImgOptions.options();
+        options.cacheDirectory(Paths.get("/tmp/mycache"));
+        options.numIoThreads(2);
+        options.cellDimensions(cellSize);
+        
+        ImgPlus<T> img = new ImgPlus<>(new DiskCachedCellImgFactory(new FloatType(), options).create(dims));
+                
+        // Creating a ramp intensity gradient along the x-axis, so operations can be tested
+        Cursor<T> c = img.cursor();
         while (c.hasNext()) {
             c.fwd();
             ((FloatType) c.get()).set(c.getFloatPosition(0));
         }
-        
+
         Image image = new Image(outputImageName, img);
         workspace.addImage(image);
         

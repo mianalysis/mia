@@ -27,6 +27,8 @@ import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 public class Preferences extends Module {
     public static final String GUI_SEPARATOR = "GUI parameters";
     public static final String SHOW_DEPRECATED = "Show deprecated modules (editing mode)";
+
+    public static final String DATA_SEPARATOR = "Data parameters";
     public static final String DATA_STORAGE_MODE = "Data storage mode";
     public static final String CACHE_DIRECTORY = "Cache directory";
 
@@ -95,6 +97,8 @@ public class Preferences extends Module {
     protected void initialiseParameters() {
         parameters.add(new SeparatorP(GUI_SEPARATOR, this));
         parameters.add(new BooleanP(SHOW_DEPRECATED, this, Prefs.get("MIA.GUI.showDeprecated", false)));
+
+        parameters.add(new SeparatorP(DATA_SEPARATOR, this));
         parameters.add(new ChoiceP(DATA_STORAGE_MODE, this,
                 Prefs.get("MIA.core.dataStorageMode", DataStorageModes.KEEP_IN_RAM), DataStorageModes.ALL));
         parameters.add(new FolderPathP(CACHE_DIRECTORY, this, Prefs.get("MIA.core.cacheDirectory", "")));
@@ -108,7 +112,23 @@ public class Preferences extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
-        return parameters;
+        Parameters returnedParameters = new Parameters();
+
+        returnedParameters.add(parameters.getParameter(GUI_SEPARATOR));
+        returnedParameters.add(parameters.getParameter(SHOW_DEPRECATED));
+
+        returnedParameters.add(parameters.getParameter(DATA_SEPARATOR));
+        returnedParameters.add(parameters.getParameter(DATA_STORAGE_MODE));
+        switch ((String) parameters.getValue(DATA_STORAGE_MODE)) {
+            case DataStorageModes.STREAM_FROM_DRIVE:
+            returnedParameters.add(parameters.getParameter(CACHE_DIRECTORY));
+            break;
+        }
+
+        returnedParameters.add(parameters.getParameter(UPDATE_SEPARATOR));
+        returnedParameters.add(parameters.getParameter(UPDATE_PARAMETERS));
+
+        return returnedParameters;
 
     }
 
