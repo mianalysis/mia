@@ -25,6 +25,7 @@ import io.github.mianalysis.mia.module.images.process.InvertIntensity;
 import io.github.mianalysis.mia.module.images.transform.InterpolateZAxis;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
@@ -77,7 +78,7 @@ public class DistanceMap extends Module {
 
     public static ImagePlus process(ImagePlus inputIpl, String outputImageName, boolean blackBackground,
             String weightMode, boolean matchZToXY, boolean verbose) {
-        return process(new Image(inputIpl.getTitle(), inputIpl), outputImageName, blackBackground, weightMode,
+        return process(ImageFactory.createImage(inputIpl.getTitle(), inputIpl), outputImageName, blackBackground, weightMode,
                 matchZToXY, verbose).getImagePlus();
     }
 
@@ -161,7 +162,7 @@ public class DistanceMap extends Module {
 
         outputIpl.setCalibration(outputCalibration);
 
-        return new Image(outputImageName, outputIpl);
+        return ImageFactory.createImage(outputImageName, outputIpl);
 
     }
 

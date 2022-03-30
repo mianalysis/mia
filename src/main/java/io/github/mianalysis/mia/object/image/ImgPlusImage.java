@@ -284,4 +284,9 @@ public class ImgPlusImage <T extends RealType<T> & NativeType<T>> extends Image<
         return true;
 
     }
+
+    @Override
+    public String toString() {
+        return "ImgPlusImage ("+name+")";
+    }
 }

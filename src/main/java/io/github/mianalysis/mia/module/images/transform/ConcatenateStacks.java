@@ -19,6 +19,7 @@ import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.images.configure.SetLookupTable;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
@@ -268,7 +269,7 @@ public class ConcatenateStacks<T extends RealType<T> & NativeType<T>> extends Mo
         outputImagePlus.setCalibration(inputImages.get(0).getImagePlus().getCalibration());
         ImgPlusTools.applyAxes(imgOut, outputImagePlus);
 
-        return new Image(outputImageName, outputImagePlus);
+        return ImageFactory.createImage(outputImageName, outputImagePlus);
 
     }
 
@@ -348,7 +349,7 @@ public class ConcatenateStacks<T extends RealType<T> & NativeType<T>> extends Mo
         // otherwise do concatenation.
         Image outputImage;
         if (inputImages.size() == 1) {
-            outputImage = new Image(outputImageName, inputImages.get(0).getImagePlus());
+            outputImage = ImageFactory.createImage(outputImageName, inputImages.get(0).getImagePlus());
         } else {
             outputImage = concatenateImages(inputImages, axisMode, outputImageName);
         }

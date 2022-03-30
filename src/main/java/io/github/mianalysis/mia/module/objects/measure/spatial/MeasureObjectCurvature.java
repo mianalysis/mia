@@ -18,6 +18,7 @@ import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.measurements.Measurement;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
@@ -555,10 +556,10 @@ public class MeasureObjectCurvature extends Module {
                 inputImage.setImagePlus(inputIpl);
             }            
         else
-            workspace.addImage(new Image(outputImageName, inputIpl));
+            workspace.addImage(ImageFactory.createImage(outputImageName, inputIpl));
 
         if (showOutput && drawSpline)
-            new Image("Spline", inputIpl).showImage();
+            ImageFactory.createImage("Spline", inputIpl).showImage();
         if (showOutput)
             inputObjects.showMeasurements(this, modules);
         if (showOutput & !objectOutputMode.equals(ObjectOutputModes.DO_NOT_STORE)) {

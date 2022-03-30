@@ -10,6 +10,7 @@ import ij.IJ;
 import ij.ImagePlus;
 import ij.gui.Roi;
 import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.measurements.Measurement;
 import io.github.mianalysis.mia.object.units.SpatialUnit;
 import io.github.mianalysis.mia.object.units.TemporalUnit;
@@ -442,7 +443,7 @@ public class Obj extends Volume {
             // ipl.getProcessor().putPixel(point.getX(), point.getY(), 255);
         }
 
-        return new Image(imageName, ipl);
+        return ImageFactory.createImage(imageName, ipl);
 
     }
 
@@ -528,7 +529,7 @@ public class Obj extends Volume {
 
         }
 
-        return new Image("Tight", ipl);
+        return ImageFactory.createImage("Tight", ipl);
 
     }
 

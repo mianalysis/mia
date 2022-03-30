@@ -28,6 +28,7 @@ import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.VolumeTypesInterface;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
@@ -299,7 +300,7 @@ public class IdentifyObjects extends Module {
             }
 
             // Converting image to objects
-            Image tempImage = new Image("Temp image", currStack);
+            Image tempImage = ImageFactory.createImage("Temp image", currStack);
             Objs currOutputObjects = tempImage.convertImageToObjects(type, outputObjectsName, singleObject);
 
             // Updating the current objects (setting the real frame number and offsetting

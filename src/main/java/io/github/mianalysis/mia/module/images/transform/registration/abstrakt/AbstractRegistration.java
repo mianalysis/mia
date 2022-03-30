@@ -30,6 +30,7 @@ import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
@@ -488,7 +489,7 @@ public abstract class AbstractRegistration<T extends RealType<T> & NativeType<T>
         // separately
         Image inputImage = workspace.getImage(inputImageName);
         if (!applyToInput)
-            inputImage = new Image(outputImageName, inputImage.getImagePlus().duplicate());
+            inputImage = ImageFactory.createImage(outputImageName, inputImage.getImagePlus().duplicate());
 
         // If comparing to a fixed image, get this now
         Image reference = referenceMode.equals(ReferenceModes.SPECIFIC_IMAGE) ? workspace.getImage(referenceImageName)

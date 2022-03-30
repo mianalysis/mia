@@ -28,6 +28,7 @@ import io.github.mianalysis.mia.object.units.SpatialUnit;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.Workspaces;
 import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.sjcross.common.object.volume.VolumeType;
 
 /**
@@ -66,7 +67,7 @@ public class MeasureObjectCurvatureTest extends ModuleTest {
         // Loading the reference image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/binaryobjects/BinaryRing9p5pxRadius2D.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
-        Image image = new Image("Ref_image", ipl);
+        Image image = ImageFactory.createImage("Ref_image", ipl);
         workspace.addImage(image);
 
         // Initialising FilterObjects module
@@ -121,7 +122,7 @@ public class MeasureObjectCurvatureTest extends ModuleTest {
         // Loading the reference image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/binaryobjects/BinaryRing9p5pxRadius2D.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
-        Image image = new Image("Ref_image",ipl);
+        Image image = ImageFactory.createImage("Ref_image",ipl);
         workspace.addImage(image);
 
         // Initialising FilterObjects module
@@ -185,7 +186,7 @@ public class MeasureObjectCurvatureTest extends ModuleTest {
         // Loading the reference image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/binaryobjects/BinaryRing9p5pxRadius2D.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
-        Image image = new Image("Ref_image",ipl);
+        Image image = ImageFactory.createImage("Ref_image",ipl);
         workspace.addImage(image);
 
         // Initialising FilterObjects module

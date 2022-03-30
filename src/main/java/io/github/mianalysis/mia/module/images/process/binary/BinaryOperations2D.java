@@ -13,6 +13,7 @@ import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.images.process.InvertIntensity;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
@@ -68,7 +69,7 @@ public class BinaryOperations2D extends Module {
 
     public static void process(ImagePlus ipl, String operationMode, int numIterations, int count,
             boolean blackBackground) {
-        process(new Image("Image", ipl), operationMode, numIterations, count, blackBackground);
+        process(ImageFactory.createImage("Image", ipl), operationMode, numIterations, count, blackBackground);
     }
 
     public static void process(Image image, String operationMode, int numIterations, int count,
@@ -169,7 +170,7 @@ public class BinaryOperations2D extends Module {
         // If the image is being saved as a new image, adding it to the workspace
         if (!applyToInput) {
             writeStatus("Adding image (" + outputImageName + ") to workspace");
-            Image outputImage = new Image(outputImageName, inputImagePlus);
+            Image outputImage = ImageFactory.createImage(outputImageName, inputImagePlus);
             workspace.addImage(outputImage);
             if (showOutput)
                 outputImage.showImage();

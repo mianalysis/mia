@@ -21,6 +21,7 @@ import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.inputoutput.ImageLoader;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.FilePathP;
@@ -244,7 +245,7 @@ public class WekaProbabilityMaps extends Module {
             return Status.FAIL;
 
         // Adding the probability maps to the Workspace
-        Image probabilityImage = new Image(outputImageName, probabilityMaps);
+        Image probabilityImage = ImageFactory.createImage(outputImageName, probabilityMaps);
         workspace.addImage(probabilityImage);
 
         if (showOutput)

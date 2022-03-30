@@ -22,6 +22,7 @@ import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputObjectsP;
@@ -84,7 +85,7 @@ public class CreateDistanceMap extends Module {
 
         // Creating a blank image (8-bit, so binary operations work)
         ImagePlus distanceMapIpl = IJ.createHyperStack(outputImageName, width, height, 1, nZ, nT, 8);
-        Image distanceMap = new Image(outputImageName, distanceMapIpl);
+        Image distanceMap = ImageFactory.createImage(outputImageName, distanceMapIpl);
         inputObjects.applyCalibration(distanceMap);
 
         // Adding a spot to the centre of each object

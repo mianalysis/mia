@@ -25,6 +25,7 @@ import org.scijava.plugin.Plugin;
 
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.SeparatorP;
@@ -111,8 +112,8 @@ public class AffineManual<T extends RealType<T> & NativeType<T>> extends Abstrac
         ArrayList<PointPair> pairs = null;
         switch (p.pointSelectionMode) {
             case PointSelectionModes.PRESELECTED:
-                pairs = PointPairSelector.getPreselectedPoints(new Image("Warped", warpedIpl),
-                        new Image("Reference", referenceIpl));                   
+                pairs = PointPairSelector.getPreselectedPoints(ImageFactory.createImage("Warped", warpedIpl),
+                        ImageFactory.createImage("Reference", referenceIpl));                   
                 break;
             case PointSelectionModes.RUNTIME:
             default:
@@ -172,8 +173,8 @@ public class AffineManual<T extends RealType<T> & NativeType<T>> extends Abstrac
         ImagePlus ipl2 = ((ImagePlus) objects[2]).duplicate();
 
         // Duplicating image
-        Image image1 = new Image("Registered", ipl1);
-        Image image2 = new Image("Reference", ipl2);
+        Image image1 = ImageFactory.createImage("Registered", ipl1);
+        Image image2 = ImageFactory.createImage("Reference", ipl2);
 
         AbstractAffineModel2D model = getModel(transformationMode);
         final ArrayList<PointMatch> candidates = new ArrayList<PointMatch>();

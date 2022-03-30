@@ -16,6 +16,7 @@ import io.github.mianalysis.mia.module.ModuleTest;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.Workspaces;
 import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageFactory;
 
 
 public class NormaliseIntensityTest extends ModuleTest {
@@ -38,11 +39,11 @@ public class NormaliseIntensityTest extends ModuleTest {
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/normaliseintensity/DarkNoisyGradient2D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
-        Image image = new Image("Test_image",ipl);
+        Image image = ImageFactory.createImage("Test_image",ipl);
         workspace.addImage(image);
 
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/normaliseintensity/DarkNoisyGradientNormalised2D_8bit.zip").getPath(),"UTF-8");
-        Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
+        Image expectedImage = ImageFactory.createImage("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
         NormaliseIntensity normaliseIntensity = new NormaliseIntensity(new Modules());
@@ -73,11 +74,11 @@ public class NormaliseIntensityTest extends ModuleTest {
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/normaliseintensity/DarkNoisyGradient3D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
-        Image image = new Image("Test_image",ipl);
+        Image image = ImageFactory.createImage("Test_image",ipl);
         workspace.addImage(image);
 
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/normaliseintensity/DarkNoisyGradientNormalised3D_8bit.zip").getPath(),"UTF-8");
-        Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
+        Image expectedImage = ImageFactory.createImage("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
         NormaliseIntensity normaliseIntensity = new NormaliseIntensity(new Modules());
@@ -108,11 +109,11 @@ public class NormaliseIntensityTest extends ModuleTest {
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/normaliseintensity/DarkNoisyGradient5D_8bit_C1.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
-        Image image = new Image("Test_image",ipl);
+        Image image = ImageFactory.createImage("Test_image",ipl);
         workspace.addImage(image);
 
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/normaliseintensity/DarkNoisyGradientNormalised5D_8bit_C1.zip").getPath(),"UTF-8");
-        Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
+        Image expectedImage = ImageFactory.createImage("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
         NormaliseIntensity normaliseIntensity = new NormaliseIntensity(new Modules());
@@ -143,11 +144,11 @@ public class NormaliseIntensityTest extends ModuleTest {
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/normaliseintensity/DarkNoisyGradient5D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
-        Image image = new Image("Test_image",ipl);
+        Image image = ImageFactory.createImage("Test_image",ipl);
         workspace.addImage(image);
 
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/normaliseintensity/DarkNoisyGradientNormalised5D_8bit.zip").getPath(),"UTF-8");
-        Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
+        Image expectedImage = ImageFactory.createImage("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
         NormaliseIntensity normaliseIntensity = new NormaliseIntensity(new Modules());
@@ -178,11 +179,11 @@ public class NormaliseIntensityTest extends ModuleTest {
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/normaliseintensity/DarkNoisyGradient3D_16bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
-        Image image = new Image("Test_image",ipl);
+        Image image = ImageFactory.createImage("Test_image",ipl);
         workspace.addImage(image);
 
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/normaliseintensity/DarkNoisyGradientNormalised3D_16bit.zip").getPath(),"UTF-8");
-        Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
+        Image expectedImage = ImageFactory.createImage("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
         NormaliseIntensity normaliseIntensity = new NormaliseIntensity(new Modules());
@@ -213,11 +214,11 @@ public class NormaliseIntensityTest extends ModuleTest {
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/normaliseintensity/LightNoisyGradient3D_32bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
-        Image image = new Image("Test_image",ipl);
+        Image image = ImageFactory.createImage("Test_image",ipl);
         workspace.addImage(image);
 
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/normaliseintensity/LightNoisyGradientNormalised3D_32bit.zip").getPath(),"UTF-8");
-        Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
+        Image expectedImage = ImageFactory.createImage("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
         NormaliseIntensity normaliseIntensity = new NormaliseIntensity(new Modules());
@@ -248,11 +249,11 @@ public class NormaliseIntensityTest extends ModuleTest {
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/normaliseintensity/DarkNoisyGradient3D_32bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
-        Image image = new Image("Test_image",ipl);
+        Image image = ImageFactory.createImage("Test_image",ipl);
         workspace.addImage(image);
 
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/normaliseintensity/DarkNoisyGradientNormalised3D_32bit.zip").getPath(),"UTF-8");
-        Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
+        Image expectedImage = ImageFactory.createImage("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
         NormaliseIntensity normaliseIntensity = new NormaliseIntensity(new Modules());
@@ -283,11 +284,11 @@ public class NormaliseIntensityTest extends ModuleTest {
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/normaliseintensity/DarkNoisyGradient3D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
-        Image image = new Image("Test_image",ipl);
+        Image image = ImageFactory.createImage("Test_image",ipl);
         workspace.addImage(image);
 
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/normaliseintensity/DarkNoisyGradientNormalised3D_8bit.zip").getPath(),"UTF-8");
-        Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
+        Image expectedImage = ImageFactory.createImage("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
         NormaliseIntensity normaliseIntensity = new NormaliseIntensity(new Modules());
@@ -316,11 +317,11 @@ public class NormaliseIntensityTest extends ModuleTest {
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/normaliseintensity/DarkNoisyGradientClip2D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
-        Image image = new Image("Test_image",ipl);
+        Image image = ImageFactory.createImage("Test_image",ipl);
         workspace.addImage(image);
 
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/normaliseintensity/DarkNoisyGradientNormalisedClip2D_8bit.zip").getPath(),"UTF-8");
-        Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
+        Image expectedImage = ImageFactory.createImage("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
         NormaliseIntensity normaliseIntensity = new NormaliseIntensity(new Modules());

@@ -12,6 +12,7 @@ import org.scijava.plugin.Plugin;
 
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
@@ -114,7 +115,7 @@ public class FixSkeletonBreaks extends Module {
 
         // If applying to a new image, the input image is duplicated
         if (!applyToInput) {
-            inputImage = new Image("Temp", inputImagePlus.duplicate());
+            inputImage = ImageFactory.createImage("Temp", inputImagePlus.duplicate());
         }
 
         // Running skeleton break fixing
@@ -124,7 +125,7 @@ public class FixSkeletonBreaks extends Module {
 
         // If the image is being saved as a new image, adding it to the workspace
         if (!applyToInput) {
-            Image outputImage = new Image(outputImageName, inputImage.getImagePlus());
+            Image outputImage = ImageFactory.createImage(outputImageName, inputImage.getImagePlus());
             workspace.addImage(outputImage);
             if (showOutput)
                 outputImage.showImage();

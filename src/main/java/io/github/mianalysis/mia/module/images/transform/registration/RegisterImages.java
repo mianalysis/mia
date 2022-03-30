@@ -30,6 +30,7 @@ import io.github.mianalysis.mia.module.images.transform.ExtractSubstack;
 import io.github.mianalysis.mia.module.images.transform.ProjectImage;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.measurements.Measurement;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
@@ -510,7 +511,7 @@ public class RegisterImages<T extends RealType<T> & NativeType<T>> extends Modul
 
         // Duplicating image
         ImagePlus dupIpl = inputImage.getImagePlus().duplicate();
-        Image dupImage = new Image("Registered", dupIpl);
+        Image dupImage = ImageFactory.createImage("Registered", dupIpl);
 
         // Getting transform
         Object[] output = getLandmarkTransformation(pairs, transformationMode);
@@ -598,7 +599,7 @@ public class RegisterImages<T extends RealType<T> & NativeType<T>> extends Modul
 
         inputImage = workspace.getImage(inputImageName);
         if (!applyToInput)
-            inputImage = new Image(outputImageName, inputImage.getImagePlus().duplicate());
+            inputImage = ImageFactory.createImage(outputImageName, inputImage.getImagePlus().duplicate());
 
         switch (alignmentMode) {
             case AlignmentModes.AUTOMATIC:
@@ -624,7 +625,7 @@ public class RegisterImages<T extends RealType<T> & NativeType<T>> extends Modul
 
                 // Getting external source image
                 Image externalSource = calculationSource.equals(CalculationSources.EXTERNAL)
-                        ? new Image(externalSourceName,
+                        ? ImageFactory.createImage(externalSourceName,
                                 workspace.getImage(externalSourceName).getImagePlus().duplicate())
                         : null;
 

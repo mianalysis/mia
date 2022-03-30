@@ -17,6 +17,7 @@ import io.github.mianalysis.mia.module.objects.measure.intensity.MeasureObjectCo
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.measurements.Measurement;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
@@ -456,7 +457,7 @@ public class MeasureImageColocalisation<T extends RealType<T> & NativeType<T>> e
         // null is returned
         switch (maskingMode) {
             case MaskingModes.MASK_IMAGE:
-                maskImage = new Image("Mask", maskImage.getImagePlus().duplicate());
+                maskImage = ImageFactory.createImage("Mask", maskImage.getImagePlus().duplicate());
                 if (imageMaskLogic.equals(ImageMaskLogic.MEASURE_ON_BLACK))
                     InvertIntensity.process(maskImage);
                 break;

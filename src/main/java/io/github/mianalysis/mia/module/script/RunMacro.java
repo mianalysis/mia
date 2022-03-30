@@ -22,6 +22,7 @@ import io.github.mianalysis.mia.module.core.InputControl;
 import io.github.mianalysis.mia.module.system.GlobalVariables;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.measurements.Measurement;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
@@ -182,7 +183,7 @@ public class RunMacro extends AbstractMacroRunner {
                 if (showOutput)
                     inputImage.showImage();
             } else {
-                Image outputImage = new Image(outputImageName, inputImagePlus);
+                Image outputImage = ImageFactory.createImage(outputImageName, inputImagePlus);
                 workspace.addImage(outputImage);
                 if (showOutput)
                     outputImage.showImage();

@@ -19,6 +19,7 @@ import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
@@ -240,7 +241,7 @@ public class NormaliseIntensity extends Module {
         // If the image is being saved as a new image, adding it to the workspace
         if (!applyToInput) {
             String outputImageName = parameters.getValue(OUTPUT_IMAGE);
-            Image outputImage = new Image(outputImageName, inputImagePlus);
+            Image outputImage = ImageFactory.createImage(outputImageName, inputImagePlus);
             workspace.addImage(outputImage);
             if (showOutput)
                 outputImage.showImage(outputImageName, LUT.createLutFromColor(Color.WHITE), false, true);

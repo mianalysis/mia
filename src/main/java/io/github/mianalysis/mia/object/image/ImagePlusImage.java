@@ -40,7 +40,9 @@ public class ImagePlusImage <T extends RealType<T> & NativeType<T>> extends Imag
 
     public ImagePlusImage(String name, ImgPlus<T> img) {
         this.name = name;
-        this.imagePlus = ImageJFunctions.wrap(img, name);
+        
+        // The ImgPlus is duplicated to ensure it's not a virtual stack
+        this.imagePlus = ImageJFunctions.wrap(img, name).duplicate();
 
         // Calibrations don't always appear to transfer over, so doing this explicitly
         Calibration calibration = imagePlus.getCalibration();
@@ -299,5 +301,10 @@ public class ImagePlusImage <T extends RealType<T> & NativeType<T>> extends Imag
 
         return true;
 
+    }
+
+    @Override
+    public String toString() {
+        return "ImagePlusImage ("+name+")";
     }
 }

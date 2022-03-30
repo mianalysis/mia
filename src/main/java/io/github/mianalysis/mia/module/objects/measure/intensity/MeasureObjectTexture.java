@@ -18,6 +18,7 @@ import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.measurements.Measurement;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
@@ -140,7 +141,7 @@ public class MeasureObjectTexture extends Module {
                     "Texture analysis requires an 8-bit image.  Converting to 8-bit with scaling enabled.");
             inputImagePlus = inputImagePlus.duplicate();
             ImageTypeConverter.process(inputImagePlus, 8, ImageTypeConverter.ScalingModes.SCALE);
-            inputImage = new Image(inputImage.getName(), inputImagePlus);
+            inputImage = ImageFactory.createImage(inputImage.getName(), inputImagePlus);
         }
 
         // Getting input objects

@@ -17,6 +17,7 @@ import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
@@ -212,21 +213,21 @@ public class ColourDeconvolution extends Module {
 
         // If selected, displaying the image
         if (outputImage1) {
-            Image outImage1 = new Image(outputImageName1, outputImagePluses[0]);
+            Image outImage1 = ImageFactory.createImage(outputImageName1, outputImagePluses[0]);
             workspace.addImage(outImage1);
             if (showOutput)
                 outImage1.showImage();
         }
 
         if (outputImage2) {
-            Image outImage2 = new Image(outputImageName2, outputImagePluses[1]);
+            Image outImage2 = ImageFactory.createImage(outputImageName2, outputImagePluses[1]);
             workspace.addImage(outImage2);
             if (showOutput)
                 outImage2.showImage();
         }
 
         if (outputImage3) {
-            Image outImage3 = new Image(outputImageName3, outputImagePluses[2]);
+            Image outImage3 = ImageFactory.createImage(outputImageName3, outputImagePluses[2]);
             workspace.addImage(outImage3);
             if (showOutput)
                 outImage3.showImage();

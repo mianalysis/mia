@@ -17,6 +17,7 @@ import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.measurements.Measurement;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
@@ -135,7 +136,7 @@ public class CircleHoughDetection extends AbstractHoughDetection {
                         ImagePlus showIpl = new Duplicator().run(transform.getAccumulatorAsImage());
 
                         if (outputTransformImage) {
-                            Image outputImage = new Image(outputImageName, showIpl);
+                            Image outputImage = ImageFactory.createImage(outputImageName, showIpl);
                             workspace.addImage(outputImage);
                         }
                         if (showOutput && showTransformImage) {

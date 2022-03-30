@@ -46,6 +46,7 @@ import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.measurements.Measurement;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
@@ -391,7 +392,7 @@ public class FocusStackGlobal <T extends RealType<T> & NativeType<T>> extends Mo
         ImgPlusTools.applyAxes(outputImg, outputImagePlus);
 
         // Adding the new image to the Workspace
-        return new Image(outputImageName, outputImagePlus);
+        return ImageFactory.createImage(outputImageName, outputImagePlus);
 
     }
 
@@ -577,7 +578,7 @@ public class FocusStackGlobal <T extends RealType<T> & NativeType<T>> extends Mo
             updateAndGetImageMeasurementRefs().addBlankMeasurements(inputImage);
             
             if (outputMode.equals(OutputModes.CALCULATE_AND_APPLY)) {
-                Image outputImage = new Image(outputImageName, inputImage.getImagePlus().duplicate());
+                Image outputImage = ImageFactory.createImage(outputImageName, inputImage.getImagePlus().duplicate());
                 workspace.addImage(outputImage);
 
                 if (showOutput)

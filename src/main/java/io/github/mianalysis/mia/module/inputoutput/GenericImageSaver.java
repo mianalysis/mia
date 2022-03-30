@@ -14,6 +14,7 @@ import org.scijava.plugin.Plugin;
 
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.text.MessageP;
 import io.github.mianalysis.mia.object.parameters.text.StringP;

@@ -14,6 +14,7 @@ import org.junit.jupiter.params.provider.EnumSource;
 import ij.ImagePlus;
 import ome.units.UNITS;
 import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.measurements.Measurement;
 import io.github.sjcross.common.exceptions.IntegerOverflowException;
 import io.github.sjcross.common.object.volume.PointOutOfRangeException;
@@ -56,12 +57,12 @@ public class WorkspaceTest {
 
         // Adding images
         ImagePlus imagePlus = new ImagePlus();
-        Image image = new Image("Test im",imagePlus);
+        Image image = ImageFactory.createImage("Test im",imagePlus);
         image.addMeasurement(new Measurement("Test meas",4.6));
         workspace.addImage(image);
 
         imagePlus = new ImagePlus();
-        image = new Image("Test im2",imagePlus);
+        image = ImageFactory.createImage("Test im2",imagePlus);
         image.addMeasurement(new Measurement("Test meas",4.6));
         workspace.addImage(image);
 
@@ -92,12 +93,12 @@ public class WorkspaceTest {
         
         // Adding images
         ImagePlus imagePlus = new ImagePlus();
-        Image image = new Image("Test im",imagePlus);
+        Image image = ImageFactory.createImage("Test im",imagePlus);
         image.addMeasurement(new Measurement("Test meas",4.6));
         workspace.addImage(image);
 
         imagePlus = new ImagePlus();
-        image = new Image("Test im2",imagePlus);
+        image = ImageFactory.createImage("Test im2",imagePlus);
         image.addMeasurement(new Measurement("Test meas",4.6));
         workspace.addImage(image);
 

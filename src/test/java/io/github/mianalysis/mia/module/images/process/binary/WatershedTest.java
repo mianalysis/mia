@@ -19,6 +19,7 @@ import io.github.mianalysis.enums.Logic;
 import io.github.mianalysis.mia.module.ModuleTest;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageFactory;
 
 
 public class WatershedTest extends ModuleTest {

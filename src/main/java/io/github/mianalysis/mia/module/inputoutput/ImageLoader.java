@@ -37,6 +37,7 @@ import io.github.mianalysis.mia.module.core.InputControl;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.measurements.Measurement;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
@@ -1308,7 +1309,7 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
 
         // Adding image to workspace
         writeStatus("Adding image (" + outputImageName + ") to workspace");
-        Image outputImage = new Image(outputImageName, ipl);
+        Image outputImage = ImageFactory.createImage(outputImageName, ipl);
         workspace.addImage(outputImage);
 
         if (showOutput)

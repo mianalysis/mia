@@ -14,6 +14,7 @@ import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
@@ -112,7 +113,7 @@ public class ImageCalculator extends Module {
         switch (overwriteMode) {
             case OverwriteModes.CREATE_NEW:
             default:
-                return new Image(outputImageName, iplOut);
+                return ImageFactory.createImage(outputImageName, iplOut);
             case OverwriteModes.OVERWRITE_IMAGE1:
                 inputImage1.setImagePlus(ipl1);
                 return inputImage1;

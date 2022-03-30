@@ -11,6 +11,7 @@ import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.parameters.OutputImageP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.refs.collections.ImageMeasurementRefs;
@@ -81,7 +82,7 @@ public class TestBigImage<T extends RealType<T> & NativeType<T>> extends Module 
             ((FloatType) c.get()).set(c.getFloatPosition(0));
         }
 
-        Image image = new Image(outputImageName, img);
+        Image image = ImageFactory.createImage(outputImageName, img);
         workspace.addImage(image);
         
         if (showOutput)

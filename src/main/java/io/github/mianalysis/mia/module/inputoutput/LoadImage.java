@@ -10,6 +10,7 @@ import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.parameters.FilePathP;
 import io.github.mianalysis.mia.object.parameters.OutputImageP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
@@ -74,7 +75,7 @@ public class LoadImage<T extends RealType<T> & NativeType<T>> extends Module {
         // config.imgOpenerSetImgModes(ImgMode.CELL);
         // ImgPlus< T > img = new ImgPlus(( Img< T > ) imgOpener.openImgs( filePath, config ).get( 0 ));
 
-        Image image = new Image(outputImageName, img);
+        Image image = ImageFactory.createImage(outputImageName, img);
         workspace.addImage(image);
         
         if (showOutput)

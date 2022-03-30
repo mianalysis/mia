@@ -21,6 +21,7 @@ import org.scijava.plugin.Plugin;
 import io.github.mianalysis.mia.module.core.OutputControl;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.FolderPathP;
 import io.github.mianalysis.mia.object.parameters.Parameters;

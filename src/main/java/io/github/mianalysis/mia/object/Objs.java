@@ -15,6 +15,7 @@ import ome.units.unit.Unit;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.measurements.Measurement;
 import io.github.mianalysis.mia.object.refs.ObjMeasurementRef;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
@@ -299,7 +300,7 @@ public class Objs extends LinkedHashMap<Integer, Obj> {
         ImagePlus ipl = IJ.createHyperStack(outputName, spatCal.getWidth(), spatCal.getHeight(), 1,
                 spatCal.getNSlices(), nFrames, bitDepth);
 
-        return new Image(outputName, ipl);
+        return ImageFactory.createImage(outputName, ipl);
 
     }
 
