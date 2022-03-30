@@ -1,55 +1,56 @@
 package io.github.mianalysis.mia.object.image;
 
+import java.awt.Color;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 import com.drew.lang.annotations.Nullable;
 
-import ij.CompositeImage;
 import ij.ImagePlus;
 import ij.ImageStack;
 import ij.measure.Calibration;
-import ij.plugin.Duplicator;
+import ij.measure.ResultsTable;
 import ij.process.ImageProcessor;
-import ij.process.ImageStatistics;
 import ij.process.LUT;
+import io.github.mianalysis.mia.MIA;
+import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
+import io.github.mianalysis.mia.object.VolumeTypesInterface;
+import io.github.mianalysis.mia.object.measurements.Measurement;
+import io.github.mianalysis.mia.object.refs.ImageMeasurementRef;
+import io.github.mianalysis.mia.object.refs.collections.ImageMeasurementRefs;
 import io.github.mianalysis.mia.object.units.TemporalUnit;
+import io.github.sjcross.common.mathfunc.CumStat;
 import io.github.sjcross.common.object.volume.PointOutOfRangeException;
 import io.github.sjcross.common.object.volume.SpatCal;
 import io.github.sjcross.common.object.volume.VolumeType;
-import io.github.sjcross.common.process.IntensityMinMax;
 import net.imagej.ImgPlus;
-import net.imagej.axis.Axes;
-import net.imagej.axis.CalibratedAxis;
 import net.imglib2.img.ImagePlusAdapter;
 import net.imglib2.img.display.imagej.ImageJFunctions;
 import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
 
-public class ImagePlusImage <T extends RealType<T> & NativeType<T>> extends Image<T> {   
-    private ImagePlus imagePlus;
+public class ImgPlusImage <T extends RealType<T> & NativeType<T>> extends Image<T> {
+    private ImgPlus<T> img;
 
-    // CONSTRUCTORS
-
-    public ImagePlusImage(String name, ImagePlus imagePlus) {
+    public ImgPlusImage(String name, ImagePlus imagePlus) {
         this.name = name;
-        this.imagePlus = imagePlus;
+        this.img = ImagePlusAdapter.wrapImgPlus(imagePlus);
 
     }
 
-    public ImagePlusImage(String name, ImgPlus<T> img) {
+    public ImgPlusImage(String name, ImgPlus<T> img) {
         this.name = name;
-        this.imagePlus = ImageJFunctions.wrap(img, name);
-
-        // Calibrations don't always appear to transfer over, so doing this explicitly
-        Calibration calibration = imagePlus.getCalibration();
-        if (img.dimensionIndex(Axes.Z) != -1)
-            calibration.pixelDepth = ((CalibratedAxis) img.axis(img.dimensionIndex(Axes.Z))).calibratedValue(1);
+        this.img = img;
         
     }
-
+    
     public Objs convertImageToObjects(String type, String outputObjectsName, boolean singleObject) {
+        ImagePlus imagePlus = getImagePlus();
+
         // Getting spatial calibration
         double dppXY = imagePlus.getCalibration().pixelWidth;
         double dppZ = imagePlus.getCalibration().pixelDepth;
@@ -162,44 +163,27 @@ public class ImagePlusImage <T extends RealType<T> & NativeType<T>> extends Imag
 
     // PUBLIC METHODS
 
-    public void showImage(String title, @Nullable LUT lut, boolean normalise, boolean composite) {       
-        ImagePlus dispIpl = new Duplicator().run(imagePlus);
-        dispIpl.setTitle(title);
-        if (normalise) {
-            ImageStatistics stats = dispIpl.getStatistics();
-            if (stats.min != stats.max)
-                IntensityMinMax.run(dispIpl, true);
-        }
-
-        dispIpl.setPosition(1, 1, 1);
-        dispIpl.updateChannelAndDraw();
-        if (lut != null && dispIpl.getBitDepth() != 24)
-            dispIpl.setLut(lut);
-        if (composite && dispIpl.getNChannels() > 1) {
-            dispIpl.setDisplayMode(CompositeImage.COMPOSITE);
-        } else {
-            dispIpl.setDisplayMode(CompositeImage.COLOR);
-        }
-        dispIpl.show();
+    public void showImage(String title, @Nullable LUT lut, boolean normalise, boolean composite) {
+        ImageJFunctions.show(img);
     }
 
 
     // GETTERS AND SETTERS
 
     public ImagePlus getImagePlus() {
-        return imagePlus;
+        return ImageJFunctions.wrap(img, name);
     }
 
     public void setImagePlus(ImagePlus imagePlus) {
-        this.imagePlus = imagePlus;
+        this.img = ImagePlusAdapter.wrapImgPlus(imagePlus);        
     }
 
-    public ImgPlus<T> getImgPlus() {
-        return ImagePlusAdapter.wrapImgPlus(imagePlus);
+    public ImgPlus getImgPlus() {
+        return img;
     }
 
-    public void setImgPlus(ImgPlus<T> img) {
-        imagePlus = ImageJFunctions.wrap(img, name);
+    public void setImgPlus(ImgPlus img) {
+        this.img = img;
     }
 
     @Override

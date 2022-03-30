@@ -9,8 +9,6 @@ import java.util.Set;
 import com.drew.lang.annotations.Nullable;
 
 import ij.ImagePlus;
-import ij.ImageStack;
-import ij.measure.Calibration;
 import ij.measure.ResultsTable;
 import ij.process.ImageProcessor;
 import ij.process.LUT;
@@ -28,40 +26,28 @@ import io.github.sjcross.common.object.volume.PointOutOfRangeException;
 import io.github.sjcross.common.object.volume.SpatCal;
 import io.github.sjcross.common.object.volume.VolumeType;
 import net.imagej.ImgPlus;
-import net.imglib2.img.ImagePlusAdapter;
-import net.imglib2.img.display.imagej.ImageJFunctions;
 import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
 
 /**
  * Created by stephen on 30/04/2017.
  */
-public class Image <T extends RealType<T> & NativeType<T>> {
-    private String name;
-    private ImgPlus<T> img;
-    // private ImagePlus imagePlus;
-    private LinkedHashMap<String, Measurement> measurements = new LinkedHashMap<>();
+public abstract class Image <T extends RealType<T> & NativeType<T>> {
+    protected String name;
+    protected LinkedHashMap<String, Measurement> measurements = new LinkedHashMap<>();
 
-    // CONSTRUCTORS
+    // Abstract methods
 
-    public Image(String name, ImagePlus imagePlus) {
-        this.name = name;
-        this.img = ImagePlusAdapter.wrapImgPlus(imagePlus);
-        // this.imagePlus = imagePlus;
+    public abstract void showImage(String title, @Nullable LUT lut, boolean normalise, boolean composite);
 
-    }
+    public abstract ImagePlus getImagePlus();
 
-    public Image(String name, ImgPlus<T> img) {
-        this.name = name;
-        this.img = img;
-        // this.imagePlus = ImageJFunctions.wrap(img, name);
+    public abstract void setImagePlus(ImagePlus imagePlus);
 
-        // // Calibrations don't always appear to transfer over, so doing this explicitly
-        // Calibration calibration = imagePlus.getCalibration();
-        // if (img.dimensionIndex(Axes.Z) != -1)
-        //     calibration.pixelDepth = ((CalibratedAxis) img.axis(img.dimensionIndex(Axes.Z))).calibratedValue(1);
-        
-    }
+    public abstract ImgPlus<T> getImgPlus();
+
+    public abstract void setImgPlus(ImgPlus<T> img);
+
 
     public Objs convertImageToObjects(String outputObjectsName) {
         String type = getVolumeType(VolumeType.POINTLIST);
@@ -208,30 +194,6 @@ public class Image <T extends RealType<T> & NativeType<T>> {
 
     }
 
-    public void showImage(String title, @Nullable LUT lut, boolean normalise, boolean composite) {
-        ImageJFunctions.show(img);
-        
-        // ImagePlus imagePlus = getImagePlus();
-        // ImagePlus dispIpl = new Duplicator().run(imagePlus);
-        // dispIpl.setTitle(title);
-        // if (normalise) {
-        //     ImageStatistics stats = dispIpl.getStatistics();
-        //     if (stats.min != stats.max)
-        //         IntensityMinMax.run(dispIpl, true);
-        // }
-
-        // dispIpl.setPosition(1, 1, 1);
-        // dispIpl.updateChannelAndDraw();
-        // if (lut != null && dispIpl.getBitDepth() != 24)
-        //     dispIpl.setLut(lut);
-        // if (composite && dispIpl.getNChannels() > 1) {
-        //     dispIpl.setDisplayMode(CompositeImage.COMPOSITE);
-        // } else {
-        //     dispIpl.setDisplayMode(CompositeImage.COLOR);
-        // }
-        // dispIpl.show();
-    }
-
     public void showImage(String title, LUT lut) {
         showImage(title, lut, true, false);
     }
@@ -339,131 +301,12 @@ public class Image <T extends RealType<T> & NativeType<T>> {
         return name;
     }
 
-    public ImagePlus getImagePlus() {
-        return ImageJFunctions.wrap(img, name);
-        // return imagePlus;
-    }
-
-    public void setImagePlus(ImagePlus imagePlus) {
-        this.img = ImagePlusAdapter.wrapImgPlus(imagePlus);
-        // this.imagePlus = imagePlus;
-    }
-
-    public ImgPlus<T> getImgPlus() {
-        return img;
-        // return ImagePlusAdapter.wrapImgPlus(imagePlus);
-    }
-
-    public void setImgPlus(ImgPlus<T> img) {
-        this.img = img;
-        // imagePlus = ImageJFunctions.wrap(img, name);
-    }
-
     public HashMap<String, Measurement> getMeasurements() {
         return measurements;
     }
 
     public void setMeasurements(LinkedHashMap<String, Measurement> singleMeasurements) {
         this.measurements = singleMeasurements;
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = 1;
-
-        ImagePlus imagePlus = getImagePlus();
-        Calibration calibration = imagePlus.getCalibration();
-
-        hash = 31 * hash + ((Number) calibration.pixelWidth).hashCode();
-        hash = 31 * hash + ((Number) calibration.pixelDepth).hashCode();
-        hash = 31 * hash + calibration.getUnits().toUpperCase().hashCode();
-
-        hash = 31 * hash + imagePlus.getWidth();
-        hash = 31 * hash + imagePlus.getHeight();
-        hash = 31 * hash + imagePlus.getNChannels();
-        hash = 31 * hash + imagePlus.getNSlices();
-        hash = 31 * hash + imagePlus.getNFrames();
-        hash = 31 * hash + imagePlus.getBitDepth();
-
-        ImageStack ist = imagePlus.getImageStack();
-        for (int z = 1; z <= imagePlus.getNSlices(); z++) {
-            for (int c = 1; c <= imagePlus.getNChannels(); c++) {
-                for (int t = 1; t <= imagePlus.getNFrames(); t++) {
-                    int idx = imagePlus.getStackIndex(c, z, t);
-                    ImageProcessor ipr = ist.getProcessor(idx);
-
-                    for (int x = 0; x < ipr.getWidth(); x++) {
-                        for (int y = 0; y < ipr.getHeight(); y++) {
-                            hash = 31 * hash + ipr.getPixel(x, y);
-                        }
-                    }
-                }
-            }
-        }
-
-        return hash;
-
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == this)
-            return true;
-        if (!(obj instanceof Image))
-            return false;
-
-        Image image2 = (Image) obj;
-        ImagePlus imagePlus2 = image2.getImagePlus();
-
-        // Comparing calibrations
-        ImagePlus imagePlus = getImagePlus();
-        Calibration calibration1 = imagePlus.getCalibration();
-        Calibration calibration2 = imagePlus2.getCalibration();
-
-        if (calibration1.pixelWidth != calibration2.pixelWidth)
-            return false;
-        if (calibration1.pixelDepth != calibration2.pixelDepth)
-            return false;
-        if (!calibration1.getUnits().equals(calibration2.getUnits()))
-            return false;
-
-        // Comparing dimensions
-        if (imagePlus.getWidth() != imagePlus2.getWidth())
-            return false;
-        if (imagePlus.getHeight() != imagePlus2.getHeight())
-            return false;
-        if (imagePlus.getNChannels() != imagePlus2.getNChannels())
-            return false;
-        if (imagePlus.getNSlices() != imagePlus2.getNSlices())
-            return false;
-        if (imagePlus.getNFrames() != imagePlus2.getNFrames())
-            return false;
-        if (imagePlus.getBitDepth() != imagePlus2.getBitDepth())
-            return false;
-
-        // Checking the individual image pixel values
-        ImageStack ist = imagePlus.getImageStack();
-        ImageStack ist2 = imagePlus2.getImageStack();
-        for (int c = 1; c <= imagePlus.getNChannels(); c++) {
-            for (int z = 1; z <= imagePlus.getNSlices(); z++) {
-                for (int t = 1; t <= imagePlus.getNFrames(); t++) {
-                    int idx = imagePlus.getStackIndex(c, z, t);
-                    ImageProcessor imageProcessor1 = ist.getProcessor(idx);
-                    int idx2 = imagePlus2.getStackIndex(c, z, t);
-                    ImageProcessor imageProcessor2 = ist2.getProcessor(idx2);
-
-                    for (int x = 0; x < imagePlus.getWidth(); x++) {
-                        for (int y = 0; y < imagePlus.getHeight(); y++) {
-                            if (imageProcessor1.getf(x, y) != imageProcessor2.getf(x, y))
-                                return false;
-                        }
-                    }
-                }
-            }
-        }
-
-        return true;
-
     }
 
     class IDLink {
