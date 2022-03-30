@@ -24,7 +24,7 @@ import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.sjcross.common.filters.CombingCorrector;
 
-@Plugin(type = Module.class, priority=Priority.LOW, visible=true)
+@Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class CombingCorrection extends Module {
     public static final String INPUT_SEPARATOR = "Image input/output";
     public static final String INPUT_IMAGE = "Input image";
@@ -35,10 +35,8 @@ public class CombingCorrection extends Module {
     public static final String OFFSET = "Offset (px)";
 
     public CombingCorrection(Modules modules) {
-        super("Combing correction",modules);
+        super("Combing correction", modules);
     }
-
-
 
     @Override
     public Category getCategory() {
@@ -63,19 +61,24 @@ public class CombingCorrection extends Module {
         int offset = parameters.getValue(OFFSET);
 
         // If applying to a new image, the input image is duplicated
-        if (!applyToInput) {inputImagePlus = inputImagePlus.duplicate();}
+        if (!applyToInput) {
+            inputImagePlus = inputImagePlus.duplicate();
+        }
 
         // Running the correction
-        CombingCorrector.run(inputImagePlus,offset,true);
+        CombingCorrector.run(inputImagePlus, offset, true);
 
         // If the image is being saved as a new image, adding it to the workspace
         if (!applyToInput) {
-            Image outputImage = new Image(outputImageName,inputImagePlus);
+            Image outputImage = new Image(outputImageName, inputImagePlus);
             workspace.addImage(outputImage);
-            if (showOutput) outputImage.showImage();
+            if (showOutput)
+                outputImage.showImage();
 
         } else {
-            if (showOutput) inputImage.showImage();
+            inputImage.setImagePlus(inputImagePlus);
+            if (showOutput)
+                inputImage.showImage();
 
         }
 
@@ -87,8 +90,9 @@ public class CombingCorrection extends Module {
     protected void initialiseParameters() {
         parameters.add(new SeparatorP(INPUT_SEPARATOR, this));
         parameters.add(new InputImageP(INPUT_IMAGE, this, "", "Image to which the correction will be applied."));
-        parameters.add(new BooleanP(APPLY_TO_INPUT, this, true, "Set to \"true\" to apply correction to the input image or \"false\" to store the corrected image separately."));
-        parameters.add(new OutputImageP(OUTPUT_IMAGE, this, "","Output image with correction applied."));
+        parameters.add(new BooleanP(APPLY_TO_INPUT, this, true,
+                "Set to \"true\" to apply correction to the input image or \"false\" to store the corrected image separately."));
+        parameters.add(new OutputImageP(OUTPUT_IMAGE, this, "", "Output image with correction applied."));
 
         parameters.add(new SeparatorP(CORRECTION_SEPARATOR, this));
         parameters.add(new IntegerP(OFFSET, this, 0, "Pixel offset to be applied to every other row."));
@@ -106,8 +110,8 @@ public class CombingCorrection extends Module {
         returnedParameters.add(parameters.getParameter(APPLY_TO_INPUT));
         if (!(boolean) parameters.getValue(APPLY_TO_INPUT))
             returnedParameters.add(parameters.getParameter(OUTPUT_IMAGE));
-        
-            returnedParameters.add(parameters.getParameter(CORRECTION_SEPARATOR));
+
+        returnedParameters.add(parameters.getParameter(CORRECTION_SEPARATOR));
         returnedParameters.add(parameters.getParameter(OFFSET));
 
         return returnedParameters;
@@ -147,7 +151,9 @@ public class CombingCorrection extends Module {
     void addParameterDescriptions() {
         parameters.get(INPUT_IMAGE).setDescription("Image to which the correction will be applied.");
 
-        parameters.get(APPLY_TO_INPUT).setDescription("When selected, the input image will be updated to contain the corrected image.  Otherwise, the corrected image will be stored separately in the workspace (name controlled by \""+OUTPUT_IMAGE+"\" parameter).");
+        parameters.get(APPLY_TO_INPUT).setDescription(
+                "When selected, the input image will be updated to contain the corrected image.  Otherwise, the corrected image will be stored separately in the workspace (name controlled by \""
+                        + OUTPUT_IMAGE + "\" parameter).");
 
         parameters.get(OUTPUT_IMAGE).setDescription("Output image with correction applied.");
 

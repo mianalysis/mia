@@ -150,6 +150,7 @@ public class ApplyCLAHE extends Module {
             if (showOutput)
                 outputImage.showImage();
         } else {
+            inputImage.setImagePlus(inputImagePlus);
             if (showOutput)
                 inputImage.showImage();
         }

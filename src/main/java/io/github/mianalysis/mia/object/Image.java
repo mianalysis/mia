@@ -8,14 +8,11 @@ import java.util.Set;
 
 import com.drew.lang.annotations.Nullable;
 
-import ij.CompositeImage;
 import ij.ImagePlus;
 import ij.ImageStack;
 import ij.measure.Calibration;
 import ij.measure.ResultsTable;
-import ij.plugin.Duplicator;
 import ij.process.ImageProcessor;
-import ij.process.ImageStatistics;
 import ij.process.LUT;
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Module;
@@ -26,10 +23,7 @@ import io.github.sjcross.common.mathfunc.CumStat;
 import io.github.sjcross.common.object.volume.PointOutOfRangeException;
 import io.github.sjcross.common.object.volume.SpatCal;
 import io.github.sjcross.common.object.volume.VolumeType;
-import io.github.sjcross.common.process.IntensityMinMax;
 import net.imagej.ImgPlus;
-import net.imagej.axis.Axes;
-import net.imagej.axis.CalibratedAxis;
 import net.imglib2.img.ImagePlusAdapter;
 import net.imglib2.img.display.imagej.ImageJFunctions;
 import net.imglib2.type.NativeType;

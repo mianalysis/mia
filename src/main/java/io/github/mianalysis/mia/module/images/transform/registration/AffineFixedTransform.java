@@ -130,6 +130,8 @@ public class AffineFixedTransform extends Module {
         pool.shutdown();
         pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS); // i.e. never terminate early
 
+        inputImage.setImagePlus(inputIpl);
+
         if (fillMode.equals(FillModes.WHITE))
             InvertIntensity.process(inputImage);
 

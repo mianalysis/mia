@@ -322,6 +322,8 @@ public abstract class AbstractRegistration<T extends RealType<T> & NativeType<T>
         pool.shutdown();
         pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS); // i.e. never terminate early
 
+        inputImage.setImagePlus(inputIpl);
+        
     }
 
     public static boolean testReferenceValidity(Image inputImage, Image calculationImage, String otherAxisMode) {
@@ -434,7 +436,9 @@ public abstract class AbstractRegistration<T extends RealType<T> & NativeType<T>
             targetIst.setProcessor(sourceIst.getProcessor(sourceIdx), targetIdx);
 
         }
+        targetImage.setImagePlus(targetIpl);
         targetImage.getImagePlus().updateAndDraw();
+        
     }
 
     public static void replaceSlice(Image targetImage, Image sourceSlice, int slice) {
@@ -452,6 +456,7 @@ public abstract class AbstractRegistration<T extends RealType<T> & NativeType<T>
 
             }
         }
+        targetImage.setImagePlus(targetIpl);
         targetImage.getImagePlus().updateAndDraw();
     }
 

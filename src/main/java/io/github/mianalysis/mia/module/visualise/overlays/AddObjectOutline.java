@@ -240,6 +240,8 @@ public class AddObjectOutline extends AbstractOverlay {
 
         // If necessary, adding output image to workspace. This also allows us to show
         // it.
+        if (applyToInput)
+            inputImage.setImagePlus(ipl);
         if (!applyToInput && addOutputToWorkspace)
             workspace.addImage(outputImage);
         if (showOutput)

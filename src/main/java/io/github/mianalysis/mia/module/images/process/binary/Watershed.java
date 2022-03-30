@@ -239,6 +239,7 @@ public class Watershed extends Module {
                 outputImage.showImage();
 
         } else {
+            inputImage.setImagePlus(maskIpl);
             if (showOutput)
                 inputImage.showImage();
 

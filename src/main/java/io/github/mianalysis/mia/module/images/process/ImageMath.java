@@ -161,11 +161,10 @@ public class ImageMath extends Module {
             workspace.addImage(outputImage);
             if (showOutput)
                 outputImage.showImage();
-
         } else {
+            inputImage.setImagePlus(inputImagePlus);
             if (showOutput)
                 inputImage.showImage();
-
         }
 
         return Status.PASS;

@@ -37,7 +37,7 @@ import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.process.ColourFactory;
 
-@Plugin(type = Module.class, priority=Priority.LOW, visible=true)
+@Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class AddAllObjectPoints extends AbstractOverlay {
     public static final String INPUT_SEPARATOR = "Image and object input";
     public static final String INPUT_IMAGE = "Input image";
@@ -55,40 +55,39 @@ public class AddAllObjectPoints extends AbstractOverlay {
     public static final String ENABLE_MULTITHREADING = "Enable multithreading";
 
     public AddAllObjectPoints(Modules modules) {
-        super("Add all object points",modules);
+        super("Add all object points", modules);
     }
 
-
     public void addAllPointsOverlay(Obj object, ImagePlus ipl, Color colour, boolean renderInAllFrames) {
-        if (ipl.getOverlay() == null) ipl.setOverlay(new ij.gui.Overlay());
+        if (ipl.getOverlay() == null)
+            ipl.setOverlay(new ij.gui.Overlay());
 
         // Adding each point
         double[] xx = object.getX(true);
         double[] yy = object.getY(true);
-        double[] zz = object.getZ(true,false);
+        double[] zz = object.getZ(true, false);
 
-        int t = object.getT()+1;
+        int t = object.getT() + 1;
 
-        if (renderInAllFrames) t = 0;
+        if (renderInAllFrames)
+            t = 0;
 
-        for (int i=0;i<xx.length;i++) {
-            PointRoi roi = new PointRoi(xx[i]+0.5,yy[i]+0.5);
+        for (int i = 0; i < xx.length; i++) {
+            PointRoi roi = new PointRoi(xx[i] + 0.5, yy[i] + 0.5);
             roi.setPointType(3);
             roi.setSize(0);
             roi.setStrokeColor(colour);
 
             if (ipl.isHyperStack()) {
-                roi.setPosition(1, (int) zz[i]+1, t);
+                roi.setPosition(1, (int) zz[i] + 1, t);
             } else {
-                int pos = Math.max(Math.max(1,(int) zz[i]+1),t);
+                int pos = Math.max(Math.max(1, (int) zz[i] + 1), t);
                 roi.setPosition(pos);
             }
             ipl.getOverlay().addElement(roi);
 
         }
     }
-
-
 
     @Override
     public Category getCategory() {
@@ -116,20 +115,22 @@ public class AddAllObjectPoints extends AbstractOverlay {
         Image inputImage = workspace.getImages().get(inputImageName);
         ImagePlus ipl = inputImage.getImagePlus();
 
-        double opacity = parameters.getValue(OPACITY);
         boolean renderInAllFrames = parameters.getValue(RENDER_IN_ALL_FRAMES);
         boolean multithread = parameters.getValue(ENABLE_MULTITHREADING);
 
         // Only add output to workspace if not applying to input
-        if (applyToInput) addOutputToWorkspace = false;
+        if (applyToInput)
+            addOutputToWorkspace = false;
 
         // Duplicating the image, so the original isn't altered
-        if (!applyToInput) ipl = new Duplicator().run(ipl);
+        if (!applyToInput)
+            ipl = new Duplicator().run(ipl);
 
         // Generating colours for each object
-        HashMap<Integer,Color> colours = getColours(inputObjects);
+        HashMap<Integer, Color> colours = getColours(inputObjects);
 
-        // If necessary, turning the image into a HyperStack (if 2 dimensions=1 it will be a standard ImagePlus)
+        // If necessary, turning the image into a HyperStack (if 2 dimensions=1 it will
+        // be a standard ImagePlus)
         if (!ipl.isComposite() & (ipl.getNSlices() > 1 | ipl.getNFrames() > 1 | ipl.getNChannels() > 1)) {
             ipl = HyperStackConverter.toHyperStack(ipl, ipl.getNChannels(), ipl.getNSlices(), ipl.getNFrames());
         }
@@ -137,11 +138,12 @@ public class AddAllObjectPoints extends AbstractOverlay {
         // Adding the overlay element
         try {
             int nThreads = multithread ? Prefs.getThreads() : 1;
-            ThreadPoolExecutor pool = new ThreadPoolExecutor(nThreads,nThreads,0L, TimeUnit.MILLISECONDS,new LinkedBlockingQueue<>());
+            ThreadPoolExecutor pool = new ThreadPoolExecutor(nThreads, nThreads, 0L, TimeUnit.MILLISECONDS,
+                    new LinkedBlockingQueue<>());
 
             // Running through each object, adding it to the overlay along with an ID label
             AtomicInteger count = new AtomicInteger();
-            for (Obj object:inputObjects.values()) {
+            for (Obj object : inputObjects.values()) {
                 ImagePlus finalIpl = ipl;
 
                 Runnable task = () -> {
@@ -162,11 +164,16 @@ public class AddAllObjectPoints extends AbstractOverlay {
             return Status.FAIL;
         }
 
-        Image outputImage = new Image(outputImageName,ipl);
+        Image outputImage = new Image(outputImageName, ipl);
 
-        // If necessary, adding output image to workspace.  This also allows us to show it.
-        if (addOutputToWorkspace) workspace.addImage(outputImage);
-        if (showOutput) outputImage.showImage();
+        // If necessary, adding output image to workspace. This also allows us to show
+        // it.
+        if (applyToInput)
+            inputImage.setImagePlus(ipl);
+        if (addOutputToWorkspace)
+            workspace.addImage(outputImage);
+        if (showOutput)
+            outputImage.showImage();        
 
         return Status.PASS;
 
@@ -176,23 +183,23 @@ public class AddAllObjectPoints extends AbstractOverlay {
     protected void initialiseParameters() {
         super.initialiseParameters();
 
-        parameters.add(new SeparatorP(INPUT_SEPARATOR,this));
+        parameters.add(new SeparatorP(INPUT_SEPARATOR, this));
         parameters.add(new InputImageP(INPUT_IMAGE, this));
         parameters.add(new InputObjectsP(INPUT_OBJECTS, this));
 
-        parameters.add(new SeparatorP(OUTPUT_SEPARATOR,this));
+        parameters.add(new SeparatorP(OUTPUT_SEPARATOR, this));
         parameters.add(new BooleanP(APPLY_TO_INPUT, this, false));
-        parameters.add(new BooleanP(ADD_OUTPUT_TO_WORKSPACE, this,false));
+        parameters.add(new BooleanP(ADD_OUTPUT_TO_WORKSPACE, this, false));
         parameters.add(new OutputImageP(OUTPUT_IMAGE, this));
 
-        parameters.add(new SeparatorP(RENDERING_SEPARATOR,this));
-        parameters.add(new BooleanP(RENDER_IN_ALL_FRAMES,this,false));
+        parameters.add(new SeparatorP(RENDERING_SEPARATOR, this));
+        parameters.add(new BooleanP(RENDER_IN_ALL_FRAMES, this, false));
 
-        parameters.add(new SeparatorP(EXECUTION_SEPARATOR,this));
+        parameters.add(new SeparatorP(EXECUTION_SEPARATOR, this));
         parameters.add(new BooleanP(ENABLE_MULTITHREADING, this, true));
 
         addParameterDescriptions();
-        
+
     }
 
     @Override
@@ -216,8 +223,8 @@ public class AddAllObjectPoints extends AbstractOverlay {
         }
 
         returnedParameters.addAll(super.updateAndGetParameters(inputObjectsName));
-        
-        returnedParameters.add(parameters.getParameter(RENDERING_SEPARATOR));        
+
+        returnedParameters.add(parameters.getParameter(RENDERING_SEPARATOR));
         returnedParameters.add(parameters.getParameter(RENDER_IN_ALL_FRAMES));
 
         returnedParameters.add(parameters.getParameter(EXECUTION_SEPARATOR));
@@ -260,20 +267,29 @@ public class AddAllObjectPoints extends AbstractOverlay {
     @Override
     protected void addParameterDescriptions() {
         super.addParameterDescriptions();
-        
-        parameters.getParameter(INPUT_IMAGE).setDescription("Image onto which overlay will be rendered.  Input image will only be updated if \""+APPLY_TO_INPUT+"\" is enabled, otherwise the image containing the overlay will be stored as a new image with name specified by \""+OUTPUT_IMAGE+"\".");
-        
+
+        parameters.getParameter(INPUT_IMAGE)
+                .setDescription("Image onto which overlay will be rendered.  Input image will only be updated if \""
+                        + APPLY_TO_INPUT
+                        + "\" is enabled, otherwise the image containing the overlay will be stored as a new image with name specified by \""
+                        + OUTPUT_IMAGE + "\".");
+
         parameters.getParameter(INPUT_OBJECTS).setDescription("Objects to represent as overlays.");
 
-        parameters.getParameter(APPLY_TO_INPUT).setDescription("Determines if the modifications made to the input image (added overlay elements) will be applied to that image or directed to a new image.  When selected, the input image will be updated.");
-        
-        parameters.getParameter(ADD_OUTPUT_TO_WORKSPACE).setDescription("If the modifications (overlay) aren't being applied directly to the input image, this control will determine if a separate image containing the overlay should be saved to the workspace.");
-        
-        parameters.getParameter(OUTPUT_IMAGE).setDescription("The name of the new image to be saved to the workspace (if not applying the changes directly to the input image).");
-        
-        parameters.getParameter(RENDER_IN_ALL_FRAMES).setDescription("Display the overlay elements in all frames (time axis) of the input image stack, irrespective of whether the object was present in that frame.");
-        
-        parameters.getParameter(ENABLE_MULTITHREADING).setDescription("Process multiple overlay elements simultaneously.  This can provide a speed improvement when working on a computer with a multi-core CPU.");
-        
+        parameters.getParameter(APPLY_TO_INPUT).setDescription(
+                "Determines if the modifications made to the input image (added overlay elements) will be applied to that image or directed to a new image.  When selected, the input image will be updated.");
+
+        parameters.getParameter(ADD_OUTPUT_TO_WORKSPACE).setDescription(
+                "If the modifications (overlay) aren't being applied directly to the input image, this control will determine if a separate image containing the overlay should be saved to the workspace.");
+
+        parameters.getParameter(OUTPUT_IMAGE).setDescription(
+                "The name of the new image to be saved to the workspace (if not applying the changes directly to the input image).");
+
+        parameters.getParameter(RENDER_IN_ALL_FRAMES).setDescription(
+                "Display the overlay elements in all frames (time axis) of the input image stack, irrespective of whether the object was present in that frame.");
+
+        parameters.getParameter(ENABLE_MULTITHREADING).setDescription(
+                "Process multiple overlay elements simultaneously.  This can provide a speed improvement when working on a computer with a multi-core CPU.");
+
     }
 }

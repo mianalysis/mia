@@ -18,6 +18,7 @@ import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import net.imagej.ImgPlus;
+import net.imglib2.Cursor;
 import net.imglib2.img.Img;
 import net.imglib2.img.ImgFactory;
 import net.imglib2.img.cell.CellImgFactory;
@@ -63,6 +64,12 @@ public class TestBigImage<T extends RealType<T> & NativeType<T>> extends Module 
         final ImgFactory<FloatType> imgFactory = new CellImgFactory<FloatType>(new FloatType(), 20);
         final Img< FloatType > img1 = imgFactory.create( 6000, 900, 1000 );
         final ImgPlus<FloatType> img = new ImgPlus<FloatType>(img1);
+
+        Cursor c = img.cursor();
+        while (c.hasNext()) {
+            c.fwd();
+            ((FloatType) c.get()).set(c.getFloatPosition(0));
+        }
         
         Image image = new Image(outputImageName, img);
         workspace.addImage(image);

@@ -228,6 +228,8 @@ public class SetSpatialCalibration extends Module {
                 break;
         }
 
+        image.setImagePlus(ipl);
+
         if (showOutput)
             image.showImage();
 

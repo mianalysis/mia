@@ -180,10 +180,9 @@ public class ImageTypeConverter extends Module {
 
         if (!ipl.isComposite()) return luts;
 
-        for (int c=0;c<ipl.getNChannels();c++) {
+        for (int c=0;c<ipl.getNChannels();c++)
             luts.put(c,((CompositeImage) ipl).getChannelLut(c+1));
-        }
-
+        
         return luts;
 
     }
@@ -193,9 +192,11 @@ public class ImageTypeConverter extends Module {
 
         if (!ipl.isComposite()) return;
 
-        for (int c:luts.keySet()) {
+        for (int c:luts.keySet())
             ((CompositeImage) ipl).setChannelLut(luts.get(c),c+1);
-        }
+        
+        image.setImagePlus(ipl);
+
     }
 
 
@@ -243,6 +244,7 @@ public class ImageTypeConverter extends Module {
             if (showOutput) outputImage.showImage();
 
         } else {
+            inputImage.setImagePlus(inputImagePlus);
             setLUTs(inputImage,luts);
             if (showOutput) inputImage.showImage();
 

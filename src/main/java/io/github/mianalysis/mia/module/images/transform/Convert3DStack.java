@@ -115,6 +115,7 @@ public class Convert3DStack extends Module {
                 outputImage.showImage();
 
         } else {
+            inputImage.setImagePlus(inputImagePlus);
             if (showOutput)
                 inputImage.showImage();
 

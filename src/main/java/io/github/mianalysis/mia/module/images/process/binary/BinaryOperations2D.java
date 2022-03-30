@@ -128,6 +128,9 @@ public class BinaryOperations2D extends Module {
                 break;
 
         }
+
+        image.setImagePlus(ipl);
+        
     }
 
     @Override
@@ -172,6 +175,7 @@ public class BinaryOperations2D extends Module {
                 outputImage.showImage();
 
         } else {
+            inputImage.setImagePlus(inputImagePlus);
             if (showOutput)
                 inputImage.showImage();
 

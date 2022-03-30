@@ -266,6 +266,7 @@ public class GlobalAutoThreshold extends Module {
 
             // If the image is being saved as a new image, adding it to the workspace
             if (applyToInput) {
+                inputImage.setImagePlus(inputImagePlus);
                 addMeasurements(inputImage, threshold);
                 if (showOutput)
                     inputImage.showImage();
