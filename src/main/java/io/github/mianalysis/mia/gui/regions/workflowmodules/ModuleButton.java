@@ -15,7 +15,7 @@ import io.github.mianalysis.mia.gui.GUI;
 import io.github.mianalysis.mia.gui.regions.RenameListMenu;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.system.GUISeparator;
-import io.github.mianalysis.mia.object.Colours;
+import io.github.mianalysis.mia.object.system.Colours;
 
 /**
  * Created by Stephen on 20/05/2017.

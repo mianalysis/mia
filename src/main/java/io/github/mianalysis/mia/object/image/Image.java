@@ -1,4 +1,4 @@
-package io.github.mianalysis.mia.object;
+package io.github.mianalysis.mia.object.image;
 
 import java.awt.Color;
 import java.util.HashMap;
@@ -16,6 +16,10 @@ import ij.process.ImageProcessor;
 import ij.process.LUT;
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.object.Obj;
+import io.github.mianalysis.mia.object.Objs;
+import io.github.mianalysis.mia.object.VolumeTypesInterface;
+import io.github.mianalysis.mia.object.measurements.Measurement;
 import io.github.mianalysis.mia.object.refs.ImageMeasurementRef;
 import io.github.mianalysis.mia.object.refs.collections.ImageMeasurementRefs;
 import io.github.mianalysis.mia.object.units.TemporalUnit;

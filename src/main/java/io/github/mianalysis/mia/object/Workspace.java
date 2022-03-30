@@ -8,8 +8,10 @@ import org.apache.commons.io.FilenameUtils;
 
 import ij.measure.ResultsTable;
 import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.object.image.Image;
 import io.github.mianalysis.mia.object.refs.MetadataRef;
 import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
+import io.github.mianalysis.mia.object.system.Status;
 import io.github.sjcross.common.metadataextractors.Metadata;
 
 /**

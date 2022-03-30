@@ -17,7 +17,7 @@ import org.scijava.ui.UIService;
 import io.github.mianalysis.mia.gui.GUI;
 import io.github.mianalysis.mia.module.LostAndFound;
 import io.github.mianalysis.mia.moduledependencies.Dependencies;
-import io.github.mianalysis.mia.object.Preferences;
+import io.github.mianalysis.mia.object.system.Preferences;
 import io.github.mianalysis.mia.process.DependencyValidator;
 import io.github.mianalysis.mia.process.analysishandling.Analysis;
 import io.github.mianalysis.mia.process.analysishandling.AnalysisReader;

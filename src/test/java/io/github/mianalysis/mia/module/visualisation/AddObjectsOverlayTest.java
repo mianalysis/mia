@@ -20,10 +20,10 @@ import io.github.mianalysis.mia.module.ModuleTest;
 import io.github.mianalysis.mia.module.images.transform.Convert3DStack;
 import io.github.mianalysis.mia.module.objects.relate.TrackObjects;
 import io.github.mianalysis.mia.module.visualise.overlays.AddObjectsOverlay;
-import io.github.mianalysis.mia.object.Image;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.Workspaces;
+import io.github.mianalysis.mia.object.image.Image;
 import io.github.sjcross.common.object.volume.VolumeType;
 
 

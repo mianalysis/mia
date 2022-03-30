@@ -9,6 +9,8 @@ import java.util.LinkedHashMap;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.gui.Roi;
+import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.measurements.Measurement;
 import io.github.mianalysis.mia.object.units.SpatialUnit;
 import io.github.mianalysis.mia.object.units.TemporalUnit;
 import io.github.sjcross.common.exceptions.IntegerOverflowException;

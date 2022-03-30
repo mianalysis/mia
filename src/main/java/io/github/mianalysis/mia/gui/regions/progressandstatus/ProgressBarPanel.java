@@ -4,7 +4,7 @@ import java.awt.Dimension;
 
 import javax.swing.JProgressBar;
 
-import io.github.mianalysis.mia.object.Colours;
+import io.github.mianalysis.mia.object.system.Colours;
 
 public class ProgressBarPanel extends JProgressBar {
     /**

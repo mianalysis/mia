@@ -2,8 +2,8 @@ package io.github.mianalysis.mia.object.refs.collections;
 
 import io.github.mianalysis.mia.object.units.SpatialUnit;
 import io.github.mianalysis.mia.object.units.TemporalUnit;
-import io.github.mianalysis.mia.object.Image;
-import io.github.mianalysis.mia.object.Measurement;
+import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.measurements.Measurement;
 import io.github.mianalysis.mia.object.refs.ImageMeasurementRef;
 
 import java.util.TreeMap;

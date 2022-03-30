@@ -2,9 +2,9 @@ package io.github.mianalysis.mia.expectedobjects;
 
 import util.opencsv.CSVReader;
 import io.github.mianalysis.mia.MIA;
-import io.github.mianalysis.mia.object.Measurement;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
+import io.github.mianalysis.mia.object.measurements.Measurement;
 import io.github.sjcross.common.exceptions.IntegerOverflowException;
 import io.github.sjcross.common.object.volume.PointOutOfRangeException;
 import io.github.sjcross.common.object.volume.SpatCal;

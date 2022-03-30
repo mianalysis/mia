@@ -38,7 +38,6 @@ import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.core.InputControl;
 import io.github.mianalysis.mia.module.core.OutputControl;
 import io.github.mianalysis.mia.module.system.GUISeparator;
-import io.github.mianalysis.mia.object.Colours;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ObjMeasurementSelectorP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
@@ -50,6 +49,7 @@ import io.github.mianalysis.mia.object.parameters.text.TextAreaP;
 import io.github.mianalysis.mia.object.refs.abstrakt.ExportableRef;
 import io.github.mianalysis.mia.object.refs.abstrakt.SummaryRef;
 import io.github.mianalysis.mia.object.refs.collections.Refs;
+import io.github.mianalysis.mia.object.system.Colours;
 
 /**
  * Created by Stephen on 23/06/2017.

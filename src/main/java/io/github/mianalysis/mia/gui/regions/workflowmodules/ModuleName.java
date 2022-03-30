@@ -12,7 +12,7 @@ import javax.swing.border.EmptyBorder;
 
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.system.GUISeparator;
-import io.github.mianalysis.mia.object.Colours;
+import io.github.mianalysis.mia.object.system.Colours;
 
 public class ModuleName extends JLabel {
     private Module module;

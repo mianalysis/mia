@@ -9,9 +9,8 @@ import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.object.Image;
-import io.github.mianalysis.mia.object.Status;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.image.Image;
 import io.github.mianalysis.mia.object.parameters.OutputImageP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.refs.collections.ImageMeasurementRefs;
@@ -19,6 +18,7 @@ import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
+import io.github.mianalysis.mia.object.system.Status;
 import net.imagej.ImgPlus;
 import net.imglib2.Cursor;
 import net.imglib2.cache.img.DiskCachedCellImgFactory;
@@ -66,7 +66,7 @@ public class TestBigImage<T extends RealType<T> & NativeType<T>> extends Module 
         String outputImageName = parameters.getValue(OUTPUT_IMAGE);
 
         int[] cellSize = new int[] { 128, 128, 128 };
-        long[] dims = new long[] {3000,4000,100};
+        long[] dims = new long[] {3000,4000,2};
         DiskCachedCellImgOptions options = DiskCachedCellImgOptions.options();
         options.cacheDirectory(Paths.get("/tmp/mycache"));
         options.numIoThreads(2);

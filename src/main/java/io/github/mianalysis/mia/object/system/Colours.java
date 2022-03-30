@@ -1,4 +1,4 @@
-package io.github.mianalysis.mia.object;
+package io.github.mianalysis.mia.object.system;
 
 import java.awt.*;
 

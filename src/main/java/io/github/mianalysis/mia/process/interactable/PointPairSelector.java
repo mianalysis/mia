@@ -32,7 +32,7 @@ import ij.gui.Roi;
 import ij.gui.TextRoi;
 import ij.gui.Toolbar;
 import io.github.mianalysis.mia.MIA;
-import io.github.mianalysis.mia.object.Image;
+import io.github.mianalysis.mia.object.image.Image;
 
 public class PointPairSelector implements ActionListener {
     private static final String ADD_PAIRS = "Add pair(s)";

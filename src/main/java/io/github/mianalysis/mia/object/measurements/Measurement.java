@@ -1,4 +1,4 @@
-package io.github.mianalysis.mia.object;
+package io.github.mianalysis.mia.object.measurements;
 
 import io.github.mianalysis.mia.object.units.SpatialUnit;
 import io.github.mianalysis.mia.object.units.TemporalUnit;
