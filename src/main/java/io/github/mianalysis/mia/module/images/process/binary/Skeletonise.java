@@ -74,8 +74,6 @@ public class Skeletonise extends Module {
         // Multiplying back to the range 0-255
         ImageMath.process(ipl, ImageMath.CalculationTypes.MULTIPLY, 255);
 
-        image.setImagePlus(ipl);
-
         // Inverting back to original logic
         if (!blackBackground)
             InvertIntensity.process(image);
@@ -116,11 +114,10 @@ public class Skeletonise extends Module {
         if (!applyToInput) {
             writeStatus("Adding image (" + outputImageName + ") to workspace");
             workspace.addImage(inputImage);
-        } else {
-            inputImage.setImagePlus(inputImagePlus);
-            if (showOutput)
-                inputImage.showImage();
         }
+
+        if (showOutput)
+            inputImage.showImage();
 
         return Status.PASS;
 

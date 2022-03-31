@@ -469,9 +469,6 @@ public class Obj extends Volume {
                     break;
             }
         }
-
-        image.setImagePlus(ipl);
-
     }
 
     public void addCentroidToImage(Image image, float hue) {
@@ -494,9 +491,6 @@ public class Obj extends Volume {
                 ipl.getProcessor().putPixelValue(xPos, yPos, hue);
                 break;
         }
-
-        image.setImagePlus(ipl);
-        
     }
 
     public Image getAsTightImage(String imageName) {

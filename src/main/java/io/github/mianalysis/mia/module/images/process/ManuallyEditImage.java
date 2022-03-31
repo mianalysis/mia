@@ -97,7 +97,6 @@ public class ManuallyEditImage extends Module {
                 outputImage.showImage();
 
         } else {
-            inputImage.setImagePlus(inputImagePlus);
             if (showOutput)
                 inputImage.showImage();
 

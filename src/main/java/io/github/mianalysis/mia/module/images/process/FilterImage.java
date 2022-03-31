@@ -48,7 +48,7 @@ import io.github.sjcross.common.process.CommaSeparatedStringInterpreter;
 /**
  * Created by Stephen on 30/05/2017.
  */
-@Plugin(type = Module.class, priority = Priority.LOW, visible = true)
+@Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class FilterImage extends Module {
     public static final String INPUT_SEPARATOR = "Image input/output";
     public static final String INPUT_IMAGE = "Input image";
@@ -315,7 +315,7 @@ public class FilterImage extends Module {
         ImagePlus tempImagePlus = new Duplicator().run(inputImagePlus);
 
         // Getting list of frames
-        int[] offsets = CommaSeparatedStringInterpreter.interpretIntegers(windowIndices, true, 0);
+        int[] offsets = CommaSeparatedStringInterpreter.interpretIntegers(windowIndices, true,0);
 
         // Running through each frame, calculating the local average
         for (int f = 1; f <= inputImagePlus.getNFrames(); f++) {
@@ -496,9 +496,10 @@ public class FilterImage extends Module {
         if (calibratedUnits)
             filterRadius = inputImagePlus.getCalibration().getRawX(filterRadius);
 
+        // If applying to a new image, the input image is duplicated
         if (!applyToInput)
-        inputImagePlus = inputImagePlus.duplicate();
-
+            inputImagePlus = inputImagePlus.duplicate();
+        
         // Applying smoothing filter
         switch (filterMode) {
             case FilterModes.MAXIMUM2D:
@@ -558,7 +559,6 @@ public class FilterImage extends Module {
             if (showOutput)
                 outputImage.showImage();
         } else {
-            inputImage.setImagePlus(inputImagePlus);
             if (showOutput)
                 inputImage.showImage();
         }

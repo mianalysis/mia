@@ -8,7 +8,9 @@ import javax.swing.JMenu;
 import javax.swing.JPopupMenu;
 
 import io.github.mianalysis.mia.MIA;
+import io.github.mianalysis.mia.module.IL2Support;
 import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.object.system.Preferences;
 
 /**
  * Created by Stephen on 28/07/2017.
@@ -35,7 +37,8 @@ public class ModuleListMenu extends JMenu implements Comparable {
 
     public void addMenuItem(Module module) {
         if (!module.isDeprecated() || MIA.preferences.showDeprecated())
-            add(new PopupMenuItem(module, topLevelMenu));
+            if (MIA.preferences.getDataStorageMode().equals(Preferences.DataStorageModes.KEEP_IN_RAM) || !module.getIL2Support().equals(IL2Support.NONE))
+                add(new PopupMenuItem(module, topLevelMenu));
     }
 
     public TreeSet<ModuleListMenu> getChildren() {

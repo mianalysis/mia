@@ -247,7 +247,6 @@ public class NormaliseIntensity extends Module {
                 outputImage.showImage(outputImageName, LUT.createLutFromColor(Color.WHITE), false, true);
 
         } else {
-            inputImage.setImagePlus(inputImagePlus);
             if (showOutput)
                 inputImage.showImage(inputImageName, LUT.createLutFromColor(Color.WHITE), false, true);
 

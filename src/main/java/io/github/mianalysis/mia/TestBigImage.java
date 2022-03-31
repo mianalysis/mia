@@ -38,12 +38,6 @@ import net.imglib2.type.numeric.real.FloatType;
 public class TestBigImage<T extends RealType<T> & NativeType<T>> extends Module {
     public static final String OUTPUT_IMAGE = "Output image";
 
-    public static void main(String[] args) {
-        final ImgFactory<FloatType> imgFactory = new CellImgFactory<FloatType>(new FloatType(), 5);
-        final Img< FloatType > img1 = imgFactory.create( 600, 900, 100 );
-        final ImgPlus<FloatType> img = new ImgPlus<FloatType>(img1);
-
-    }
     public TestBigImage(Modules modules) {
         super("Test big image", modules);
 
@@ -67,7 +61,7 @@ public class TestBigImage<T extends RealType<T> & NativeType<T>> extends Module 
         String outputImageName = parameters.getValue(OUTPUT_IMAGE);
 
         int[] cellSize = new int[] { 128, 128, 128 };
-        long[] dims = new long[] {3000,4000,2};
+        long[] dims = new long[] {3000,4000,100};
         DiskCachedCellImgOptions options = DiskCachedCellImgOptions.options();
         options.cacheDirectory(Paths.get("/tmp/mycache"));
         options.numIoThreads(2);

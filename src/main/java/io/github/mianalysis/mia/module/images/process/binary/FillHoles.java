@@ -123,7 +123,6 @@ public class FillHoles extends Module {
             if (showOutput) outputImage.showImage();
 
         } else {
-            inputImage.setImagePlus(inputImagePlus);
             if (showOutput) inputImage.showImage();
 
         }

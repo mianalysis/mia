@@ -31,7 +31,7 @@ import io.github.mianalysis.mia.object.system.Status;
 /**
  * Created by sc13967 on 19/09/2017.
  */
-@Plugin(type = Module.class, priority = Priority.LOW, visible = true)
+@Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class ImageCalculator extends Module {
     public static final String INPUT_SEPARATOR = "Image input/output";
     public static final String INPUT_IMAGE1 = "Input image 1";
@@ -115,10 +115,8 @@ public class ImageCalculator extends Module {
             default:
                 return ImageFactory.createImage(outputImageName, iplOut);
             case OverwriteModes.OVERWRITE_IMAGE1:
-                inputImage1.setImagePlus(ipl1);
                 return inputImage1;
             case OverwriteModes.OVERWRITE_IMAGE2:
-                inputImage2.setImagePlus(ipl2);
                 return inputImage2;
         }
     }
@@ -271,9 +269,11 @@ public class ImageCalculator extends Module {
         // Getting input images
         String inputImageName1 = parameters.getValue(INPUT_IMAGE1);
         Image inputImage1 = workspace.getImages().get(inputImageName1);
+        ImagePlus inputImagePlus1 = inputImage1.getImagePlus();
 
         String inputImageName2 = parameters.getValue(INPUT_IMAGE2);
         Image inputImage2 = workspace.getImages().get(inputImageName2);
+        ImagePlus inputImagePlus2 = inputImage2.getImagePlus();
 
         // Getting parameters
         String overwriteMode = parameters.getValue(OVERWRITE_MODE);
@@ -282,23 +282,27 @@ public class ImageCalculator extends Module {
         String calculationMethod = parameters.getValue(CALCULATION_METHOD);
         boolean setNaNToZero = parameters.getValue(SET_NAN_TO_ZERO);
 
-        Image outputImage = process(inputImage1, inputImage2, calculationMethod, overwriteMode, outputImageName,
+        ImagePlus newIpl = process(inputImagePlus1, inputImagePlus2, calculationMethod, overwriteMode, outputImageName,
                 output32Bit, setNaNToZero);
 
         // If the image is being saved as a new image, adding it to the workspace
         switch (overwriteMode) {
             case OverwriteModes.CREATE_NEW:
+                newIpl.updateChannelAndDraw();
+                Image outputImage = ImageFactory.createImage(outputImageName, newIpl);
                 workspace.addImage(outputImage);
                 if (showOutput)
                     outputImage.showImage();
                 break;
 
             case OverwriteModes.OVERWRITE_IMAGE1:
+                inputImage1.getImagePlus().updateChannelAndDraw();
                 if (showOutput)
                     inputImage1.showImage();
                 break;
 
             case OverwriteModes.OVERWRITE_IMAGE2:
+            inputImage2.getImagePlus().updateChannelAndDraw();
                 if (showOutput)
                     inputImage2.showImage();
                 break;

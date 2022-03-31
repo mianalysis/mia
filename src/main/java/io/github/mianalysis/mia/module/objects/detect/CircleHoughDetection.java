@@ -202,8 +202,6 @@ public class CircleHoughDetection extends AbstractHoughDetection {
         }
 
         ipl.setPosition(1, 1, 1);
-        inputImage.setImagePlus(ipl);
-
         workspace.addObjects(outputObjects);
 
         if (showOutput && showDetectionImage)

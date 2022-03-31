@@ -153,8 +153,6 @@ public class CreateDistanceMap extends Module {
         String overwriteMode = ImageCalculator.OverwriteModes.OVERWRITE_IMAGE1;
         ImageCalculator.process(inputIpl, objIpl, calculationMode, overwriteMode, null, false, true);
 
-        inputImage.setImagePlus(inputIpl);
-
     }
 
     public static void applyNormalisation(Image inputImage, Objs inputObjects) {
@@ -204,9 +202,6 @@ public class CreateDistanceMap extends Module {
             inputIpl.getProcessor().setf(x, y, (float) (currentValue / maxDistance));
 
         }
-
-        inputImage.setImagePlus(inputIpl);
-        
     }
 
     @Override

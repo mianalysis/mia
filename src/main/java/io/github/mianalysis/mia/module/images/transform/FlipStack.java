@@ -9,6 +9,7 @@ import ij.ImagePlus;
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
+import io.github.mianalysis.mia.module.IL2Support;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.Workspace;
@@ -25,6 +26,7 @@ import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
+import io.github.mianalysis.mia.object.system.Preferences;
 import io.github.mianalysis.mia.object.system.Status;
 import io.github.sjcross.common.process.ImgPlusTools;
 import net.imagej.ImgPlus;
@@ -52,7 +54,8 @@ public class FlipStack<T extends RealType<T> & NativeType<T>> extends Module {
     public static final String AXIS_MODE = "Axis mode";
 
     public FlipStack(Modules modules) {
-        super("Flip stack",modules);
+        super("Flip stack", modules);
+        il2Support = IL2Support.PARTIAL;
     }
 
 
@@ -71,7 +74,7 @@ public class FlipStack<T extends RealType<T> & NativeType<T>> extends Module {
     private int getAxesIndex(ImgPlus<T> img, String axis) {
         switch (axis) {
             case AxisModes.X:
-                default:
+            default:
                 return img.dimensionIndex(Axes.X);
             case AxisModes.Y:
                 return img.dimensionIndex(Axes.Y);
@@ -90,7 +93,7 @@ public class FlipStack<T extends RealType<T> & NativeType<T>> extends Module {
         // Creating the new Img
         int[] cellSize = new int[]{128,128,128};
         DiskCachedCellImgOptions options = DiskCachedCellImgOptions.options();
-        options.cacheDirectory(Paths.get("/tmp/mycache"));
+        // options.cacheDirectory(Paths.get("/tmp/mycache"));
         options.numIoThreads(2);
         options.cellDimensions(cellSize);
         

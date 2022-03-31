@@ -550,12 +550,7 @@ public class MeasureObjectCurvature extends Module {
 
         }
 
-        if (drawSpline)
-            if (applyToImage) {
-                Image inputImage = workspace.getImage(inputImageName);
-                inputImage.setImagePlus(inputIpl);
-            }            
-        else
+        if (drawSpline & !applyToImage)
             workspace.addImage(ImageFactory.createImage(outputImageName, inputIpl));
 
         if (showOutput && drawSpline)

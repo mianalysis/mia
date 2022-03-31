@@ -569,8 +569,6 @@ public class AddContourLines extends Module {
         // If necessary, adding output image to workspace. This also allows us to show
         // it.
         Image outputImage = ImageFactory.createImage(outputImageName, ipl);
-        if (applyToInput)
-            inputImage.setImagePlus(ipl);
         if (addOutputToWorkspace)
             workspace.addImage(outputImage);
         if (showOutput)

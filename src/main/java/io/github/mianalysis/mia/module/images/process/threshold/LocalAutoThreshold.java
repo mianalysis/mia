@@ -199,7 +199,6 @@ public class LocalAutoThreshold extends Module {
 
         // If the image is being saved as a new image, adding it to the workspace
         if (applyToInput) {
-            inputImage.setImagePlus(inputImagePlus);
             if (showOutput) inputImage.showImage();
         } else {
             String outputImageName = parameters.getValue(OUTPUT_IMAGE);

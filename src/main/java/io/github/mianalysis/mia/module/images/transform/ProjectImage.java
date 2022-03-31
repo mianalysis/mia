@@ -88,10 +88,9 @@ public class ProjectImage < T extends RealType< T > & NativeType< T >> extends M
 
     public static Image projectImageInZ(Image inputImage, String outputImageName, String projectionMode) {
         // If the image has a single slice we don't need to do the projection
-        if (inputImage.getImagePlus().getNSlices() == 1) {
+        if (inputImage.getImagePlus().getNSlices() == 1)
             return ImageFactory.createImage(outputImageName,inputImage.getImagePlus().duplicate());
-        }
-
+        
         ImagePlus iplOut = null;
         switch (projectionMode) {
             case ProjectionModes.AVERAGE:
@@ -107,7 +106,7 @@ public class ProjectImage < T extends RealType< T > & NativeType< T >> extends M
                 break;
 
             case ProjectionModes.MAX:
-                iplOut = ZProjector.run(inputImage.getImagePlus(),"max all");
+                iplOut = ZProjector.run(inputImage.getImagePlus(), "max all");
                 break;
 
             case ProjectionModes.STDEV:

@@ -159,8 +159,6 @@ public class SetLookupTable extends Module {
         
         ipl.updateAndDraw();
 
-        inputImage.setImagePlus(ipl);
-
     }
 
     @Override

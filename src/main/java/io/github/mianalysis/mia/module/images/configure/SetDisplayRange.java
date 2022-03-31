@@ -177,7 +177,6 @@ public class SetDisplayRange extends Module {
                 outputImage.showImage(outputImageName, null, false, true);
 
         } else {
-            inputImage.setImagePlus(inputImagePlus);
             if (showOutput)
                 inputImage.showImage(inputImageName, null, false, true);
 

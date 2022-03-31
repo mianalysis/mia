@@ -79,8 +79,6 @@ public class FixSkeletonBreaks extends Module {
 
         inputImagePlus.setPosition(1, 1, 1);
 
-        inputImage.setImagePlus(inputImagePlus);
-
     }
 
     @Override
@@ -130,7 +128,6 @@ public class FixSkeletonBreaks extends Module {
             if (showOutput)
                 outputImage.showImage();
         } else {
-            inputImage.setImagePlus(inputImagePlus);
             if (showOutput)
                 inputImage.showImage();
         }

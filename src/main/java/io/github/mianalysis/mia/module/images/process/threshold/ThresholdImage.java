@@ -335,7 +335,6 @@ public class ThresholdImage extends Module {
 
         // If the image is being saved as a new image, adding it to the workspace
         if (applyToInput) {
-            inputImage.setImagePlus(inputImagePlus);
             if (showOutput) inputImage.showImage();
 
             if (thresholdType.equals(ThresholdTypes.GLOBAL)) addGlobalThresholdMeasurement(inputImage,threshold);

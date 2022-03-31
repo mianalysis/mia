@@ -126,7 +126,6 @@ public class BleachingCorrection extends Module {
                 outputImage.showImage();
 
         } else {
-            inputImage.setImagePlus(inputImagePlus);
             if (showOutput)
                 inputImage.showImage();
 

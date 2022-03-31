@@ -39,7 +39,7 @@ public class Preferences extends Module {
     public interface DataStorageModes {
         // String AUTOMATIC = "Automatic"; // This mode will look at each image and send it to RAM if bigger than say 10% of the available memory
         String KEEP_IN_RAM = "Keep in RAM";
-        String STREAM_FROM_DRIVE = "Stream from drive (cached)";
+        String STREAM_FROM_DRIVE = "Stream from drive";
 
         String[] ALL = new String[] { KEEP_IN_RAM, STREAM_FROM_DRIVE };
 

@@ -9,7 +9,6 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 import com.drew.lang.annotations.Nullable;
-
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
 
@@ -28,6 +27,7 @@ import io.github.mianalysis.mia.module.images.process.InvertIntensity;
 import io.github.mianalysis.mia.module.images.transform.ConcatenateStacks;
 import io.github.mianalysis.mia.module.images.transform.ExtractSubstack;
 import io.github.mianalysis.mia.module.images.transform.ProjectImage;
+import io.github.mianalysis.mia.module.images.transform.ConcatenateStacks.AxisModes;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.image.Image;
 import io.github.mianalysis.mia.object.image.ImageFactory;
@@ -427,8 +427,6 @@ public class RegisterImages<T extends RealType<T> & NativeType<T>> extends Modul
         pool.shutdown();
         pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS); // i.e. never terminate early
 
-        inputImage.setImagePlus(inputIpl);
-
         if (fillMode.equals(FillModes.WHITE))
             InvertIntensity.process(inputImage);
 
@@ -461,8 +459,6 @@ public class RegisterImages<T extends RealType<T> & NativeType<T>> extends Modul
         }
 
         inputImagePlus.updateAndDraw();
-
-        inputImage.setImagePlus(inputImagePlus);
         
     }
 

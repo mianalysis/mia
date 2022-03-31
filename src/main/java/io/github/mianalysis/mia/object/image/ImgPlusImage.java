@@ -1,37 +1,31 @@
 package io.github.mianalysis.mia.object.image;
 
-import java.awt.Color;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
-import java.util.Set;
 
 import com.drew.lang.annotations.Nullable;
 
 import ij.ImagePlus;
 import ij.ImageStack;
 import ij.measure.Calibration;
-import ij.measure.ResultsTable;
 import ij.process.ImageProcessor;
 import ij.process.LUT;
 import io.github.mianalysis.mia.MIA;
-import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
-import io.github.mianalysis.mia.object.VolumeTypesInterface;
-import io.github.mianalysis.mia.object.measurements.Measurement;
-import io.github.mianalysis.mia.object.refs.ImageMeasurementRef;
-import io.github.mianalysis.mia.object.refs.collections.ImageMeasurementRefs;
 import io.github.mianalysis.mia.object.units.TemporalUnit;
-import io.github.sjcross.common.mathfunc.CumStat;
 import io.github.sjcross.common.object.volume.PointOutOfRangeException;
 import io.github.sjcross.common.object.volume.SpatCal;
 import io.github.sjcross.common.object.volume.VolumeType;
 import net.imagej.ImgPlus;
+import net.imagej.axis.Axes;
+import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.img.ImagePlusAdapter;
+import net.imglib2.img.Img;
+import net.imglib2.img.ImgView;
 import net.imglib2.img.display.imagej.ImageJFunctions;
 import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
+import net.imglib2.view.Views;
 
 public class ImgPlusImage <T extends RealType<T> & NativeType<T>> extends Image<T> {
     private ImgPlus<T> img;
@@ -39,7 +33,7 @@ public class ImgPlusImage <T extends RealType<T> & NativeType<T>> extends Image<
     public ImgPlusImage(String name, ImagePlus imagePlus) {
         this.name = name;
         this.img = ImagePlusAdapter.wrapImgPlus(imagePlus);
-
+        
     }
 
     public ImgPlusImage(String name, ImgPlus<T> img) {
@@ -163,15 +157,45 @@ public class ImgPlusImage <T extends RealType<T> & NativeType<T>> extends Image<
 
     // PUBLIC METHODS
 
+    /*
+    *   The following method is from John Bogovic via the image.sc forum (https://forum.image.sc/t/imglib2-force-wrapped-imageplus-rai-dimensions-to-xyczt/56461/2), accessed 2022-03-30
+    */
+    public RandomAccessibleInterval<T> forceImgPlusToXYCZT(ImgPlus<T> imgIn) {
+        RandomAccessibleInterval<T> raiOut = imgIn;
+
+        if (imgIn.dimensionIndex(Axes.CHANNEL) == -1) {
+            int nd = raiOut.numDimensions();
+            raiOut = Views.permute(Views.addDimension(raiOut, 0, 0), 2, nd);
+        }
+    
+        if (imgIn.dimensionIndex(Axes.Z) == -1) {
+            int nd = raiOut.numDimensions();
+            raiOut = Views.permute(Views.addDimension(raiOut, 0, 0), 3, nd);
+        }
+    
+        if (imgIn.dimensionIndex(Axes.TIME) == -1) {
+            int nd = raiOut.numDimensions();
+            raiOut = Views.permute(Views.addDimension(raiOut, 0, 0), 4, nd);
+        }
+
+        return raiOut;
+
+    }
+
     public void showImage(String title, @Nullable LUT lut, boolean normalise, boolean composite) {
-        ImageJFunctions.show(img);
+        RandomAccessibleInterval<T> rai = forceImgPlusToXYCZT(img);
+        ImageJFunctions.show(rai);
+
     }
 
 
     // GETTERS AND SETTERS
 
     public ImagePlus getImagePlus() {
-        return ImageJFunctions.wrap(img, name);
+        RandomAccessibleInterval<T> rai = forceImgPlusToXYCZT(img);
+
+        return ImageJFunctions.wrap(rai, name);
+
     }
 
     public void setImagePlus(ImagePlus imagePlus) {
@@ -231,8 +255,8 @@ public class ImgPlusImage <T extends RealType<T> & NativeType<T>> extends Image<
         if (!(obj instanceof Image))
             return false;
 
-        Image image2 = (Image) obj;
-        ImagePlus imagePlus2 = image2.getImagePlus();
+        Image image = (Image) obj;
+        ImagePlus imagePlus2 = image.getImagePlus();
 
         // Comparing calibrations
         ImagePlus imagePlus = getImagePlus();

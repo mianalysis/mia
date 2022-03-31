@@ -225,8 +225,6 @@ public class AddTracks extends AbstractOverlay {
 
         // If necessary, adding output image to workspace. This also allows us to show
         // it.
-        if (applyToInput)
-            inputImage.setImagePlus(ipl);
         if (addOutputToWorkspace)
             workspace.addImage(outputImage);
         if (showOutput)

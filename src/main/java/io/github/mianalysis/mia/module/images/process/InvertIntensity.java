@@ -40,14 +40,14 @@ public class InvertIntensity extends Module {
     }
 
     public static void process(Image inputImage) {
-        ImagePlus ipl = inputImage.getImagePlus();
-        IJ.run(ipl, "Invert", "stack");
-        inputImage.setImagePlus(ipl);
+        IJ.run(inputImage.getImagePlus(),"Invert","stack");
     }
 
     public static void process(ImagePlus inputImagePlus) {
         IJ.run(inputImagePlus,"Invert","stack");
+
     }
+
 
 
     @Override
@@ -83,9 +83,10 @@ public class InvertIntensity extends Module {
             Image outputImage = ImageFactory.createImage(outputImageName,inputImagePlus);
             workspace.addImage(outputImage);
             if (showOutput) outputImage.showImage();
+
         } else {
-            inputImage.setImagePlus(inputImagePlus);
             if (showOutput) inputImage.showImage();
+
         }
 
         return Status.PASS;

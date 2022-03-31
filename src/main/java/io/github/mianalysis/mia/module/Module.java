@@ -57,6 +57,8 @@ public abstract class Module extends Ref implements Comparable, SciJavaPlugin {
     protected Module redirectModule = null; // After this module, can redirect to another module
     private boolean showProcessingViewTitle = true;
     protected boolean deprecated = false; // When set to true, this module is marked for future removal
+    protected IL2Support il2Support = IL2Support.NONE;
+
 
     // CONSTRUCTOR
 
@@ -351,6 +353,10 @@ public abstract class Module extends Ref implements Comparable, SciJavaPlugin {
 
     public void setDeprecated(boolean deprecated) {
         this.deprecated = deprecated;
+    }
+
+    public IL2Support getIL2Support() {
+        return il2Support;
     }
 
     public Module getRedirectModule() {

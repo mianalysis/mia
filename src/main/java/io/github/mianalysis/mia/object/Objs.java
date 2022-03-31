@@ -250,8 +250,6 @@ public class Objs extends LinkedHashMap<Integer, Obj> {
         dispIpl.setPosition(1, 1, 1);
         dispIpl.updateChannelAndDraw();
 
-        dispImage.setImagePlus(dispIpl);
-
         return dispImage;
 
     }
