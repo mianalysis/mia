@@ -99,8 +99,7 @@ public class ModuleP extends Parameter {
     }
 
     @Override
-    public boolean verify() {
-        // Checking the selected module has been assigned and is present
+    public boolean verify() {        // Checking the selected module has been assigned and is present
         if (selectedModuleID == "")
             return false;
 

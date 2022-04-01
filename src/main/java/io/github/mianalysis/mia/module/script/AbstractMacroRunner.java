@@ -4,16 +4,19 @@ import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 
 import ij.measure.ResultsTable;
+import io.github.mianalysis.mia.MIA;
+import io.github.mianalysis.mia.module.IL2Support;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.measurements.Measurement;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
-import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.ParameterGroup;
 import io.github.mianalysis.mia.object.parameters.ParameterGroup.ParameterUpdaterAndGetter;
+import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.text.DoubleP;
 import io.github.mianalysis.mia.object.parameters.text.StringP;
+import io.github.mianalysis.mia.object.system.Preferences;
 
 public abstract class AbstractMacroRunner extends Module {
     public static final String VARIABLE_NAME = "Variable name";
@@ -125,6 +128,10 @@ public abstract class AbstractMacroRunner extends Module {
 
     @Override
     public boolean verify() {
+        String storageMode = MIA.preferences.getDataStorageMode();
+        if (storageMode.equals(Preferences.DataStorageModes.STREAM_FROM_DRIVE) & il2Support.equals(IL2Support.NONE))
+            return false;
+
         return true;
     }
 

@@ -1,5 +1,6 @@
 package io.github.mianalysis.mia.object.image;
 
+import java.nio.file.Paths;
 import java.util.HashMap;
 
 import com.drew.lang.annotations.Nullable;
@@ -18,10 +19,10 @@ import io.github.sjcross.common.object.volume.SpatCal;
 import io.github.sjcross.common.object.volume.VolumeType;
 import net.imagej.ImgPlus;
 import net.imagej.axis.Axes;
+import net.imagej.axis.CalibratedAxis;
 import net.imglib2.RandomAccessibleInterval;
+import net.imglib2.cache.img.DiskCachedCellImgOptions;
 import net.imglib2.img.ImagePlusAdapter;
-import net.imglib2.img.Img;
-import net.imglib2.img.ImgView;
 import net.imglib2.img.display.imagej.ImageJFunctions;
 import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
@@ -39,7 +40,7 @@ public class ImgPlusImage <T extends RealType<T> & NativeType<T>> extends Image<
     public ImgPlusImage(String name, ImgPlus<T> img) {
         this.name = name;
         this.img = img;
-        
+                
     }
     
     public Objs convertImageToObjects(String type, String outputObjectsName, boolean singleObject) {
@@ -182,9 +183,32 @@ public class ImgPlusImage <T extends RealType<T> & NativeType<T>> extends Image<
 
     }
 
+    public static <T extends RealType<T> & NativeType<T>> void setCalibration(ImagePlus targetIpl, ImgPlus<T> sourceImg) {
+        Calibration calibration = targetIpl.getCalibration();
+
+        int xIdx = sourceImg.dimensionIndex(Axes.X);
+        int zIdx = sourceImg.dimensionIndex(Axes.Z);
+        int tIdx = sourceImg.dimensionIndex(Axes.TIME);
+
+        CalibratedAxis xAxis = sourceImg.axis(xIdx);
+        calibration.pixelWidth = xAxis.calibratedValue(1);
+        calibration.pixelHeight = xAxis.calibratedValue(1);
+        calibration.setUnit(xAxis.unit());
+
+        if (zIdx != -1)
+            calibration.pixelDepth = sourceImg.axis(zIdx).calibratedValue(1);
+
+        if (tIdx != -1) {
+            CalibratedAxis tAxis = sourceImg.axis(tIdx);
+            calibration.frameInterval = tAxis.calibratedValue(1);
+            calibration.setTimeUnit(tAxis.unit());
+        }        
+    }
+
     public void showImage(String title, @Nullable LUT lut, boolean normalise, boolean composite) {
         RandomAccessibleInterval<T> rai = forceImgPlusToXYCZT(img);
-        ImageJFunctions.show(rai);
+        ImagePlus ipl = ImageJFunctions.show(rai);
+        setCalibration(ipl,img);
 
     }
 
@@ -194,7 +218,10 @@ public class ImgPlusImage <T extends RealType<T> & NativeType<T>> extends Image<
     public ImagePlus getImagePlus() {
         RandomAccessibleInterval<T> rai = forceImgPlusToXYCZT(img);
 
-        return ImageJFunctions.wrap(rai, name);
+        ImagePlus ipl = ImageJFunctions.wrap(rai, name);
+        setCalibration(ipl, img);
+        
+        return ipl;
 
     }
 
@@ -311,6 +338,19 @@ public class ImgPlusImage <T extends RealType<T> & NativeType<T>> extends Image<
 
     @Override
     public String toString() {
-        return "ImgPlusImage ("+name+")";
+        return "ImgPlusImage (" + name + ")";
+    }
+    
+    public static DiskCachedCellImgOptions getCellImgOptions() {
+        int[] cellSize = new int[] { 128, 128, 128 };
+        
+        DiskCachedCellImgOptions options = DiskCachedCellImgOptions.options();
+        if (MIA.preferences.isSpecifyCacheDirectory())
+            options.cacheDirectory(Paths.get(MIA.preferences.getCacheDirectory()));
+        options.numIoThreads(2);
+        options.cellDimensions(cellSize);
+
+        return options;
+
     }
 }

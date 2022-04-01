@@ -18,7 +18,7 @@ import io.github.mianalysis.mia.gui.regions.abstrakt.AbstractPanel;
 import io.github.mianalysis.mia.gui.regions.abstrakt.AnalysisControlButton;
 import io.github.mianalysis.mia.gui.regions.filelist.FileListPanel;
 import io.github.mianalysis.mia.gui.regions.helpandnotes.HelpNotesPanel;
-import io.github.mianalysis.mia.gui.regions.parameterlist.ParametersPanel;
+import io.github.mianalysis.mia.gui.regions.parameterspanel.ParametersPanel;
 import io.github.mianalysis.mia.gui.regions.progressandstatus.ProgressBarPanel;
 import io.github.mianalysis.mia.gui.regions.progressandstatus.StatusPanel;
 import io.github.mianalysis.mia.module.Module;

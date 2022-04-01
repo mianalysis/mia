@@ -10,9 +10,12 @@ import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.border.EmptyBorder;
 
+import io.github.mianalysis.mia.MIA;
+import io.github.mianalysis.mia.module.IL2Support;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.system.GUISeparator;
 import io.github.mianalysis.mia.object.system.Colours;
+import io.github.mianalysis.mia.object.system.Preferences;
 
 public class ModuleName extends JLabel {
     private Module module;
@@ -22,6 +25,8 @@ public class ModuleName extends JLabel {
 
     private static final ImageIcon skipIcon = new ImageIcon(
             ModuleName.class.getResource("/icons/skiparrow_orange_12px.png"), "");
+            private static final ImageIcon alertIcon = new ImageIcon(
+            ModuleName.class.getResource("/icons/alert_orange_12px.png"), "");
     private static final ImageIcon warningIcon = new ImageIcon(
             ModuleName.class.getResource("/icons/warning_red_12px.png"), "");
 
@@ -75,10 +80,6 @@ public class ModuleName extends JLabel {
         if (module instanceof GUISeparator) {
             setForeground(Colours.DARK_BLUE);
             setToolTipText("Module separator");
-        } else if (module.isEnabled() && module.isReachable() && module.isRunnable()) {
-            setForeground(defaultColour);
-            setToolTipText("<html>Module: " + module.getName() + "<br>Nickname: " + module.getNickname()
-                    + "<br>Status: OK"+deprecationMessage+"</html>");
         } else if (module.isEnabled() & !module.isReachable()) {
             setForeground(Colours.ORANGE);
             setIcon(skipIcon);
@@ -89,8 +90,19 @@ public class ModuleName extends JLabel {
             setIcon(warningIcon);
             setToolTipText("<html>Module: " + module.getName() + "<br>Nickname: " + module.getNickname()
                     + "<br>Status: Error"+deprecationMessage+"</html>");
+        } else if (module.isEnabled()
+                & MIA.preferences.getDataStorageMode().equals(Preferences.DataStorageModes.STREAM_FROM_DRIVE)
+                && module.getIL2Support().equals(IL2Support.PARTIAL)) {
+            setForeground(defaultColour);
+            setIcon(alertIcon);
+            setToolTipText("<html>Module: " + module.getName() + "<br>Nickname: " + module.getNickname()
+                    + "<br>Status: Partial image streaming support"+deprecationMessage+"</html>");
+        } else if (module.isEnabled() && module.isReachable() && module.isRunnable()) {
+            setForeground(defaultColour);
+            setToolTipText("<html>Module: " + module.getName() + "<br>Nickname: " + module.getNickname()
+                    + "<br>Status: OK"+deprecationMessage+"</html>");
         } else {
-            setForeground(Color.GRAY);
+            setForeground(Color.BLACK);
             setToolTipText("<html>Module: " + module.getName() + "<br>Nickname: " + module.getNickname()
                     + "<br>Status: Disabled"+deprecationMessage+"</html>");
         }

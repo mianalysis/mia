@@ -8,21 +8,19 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Stack;
 
+import org.scijava.Priority;
+import org.scijava.plugin.Plugin;
+
 import bunwarpj.Transformation;
 import ij.ImagePlus;
 import ij.gui.PointRoi;
 import ij.gui.Roi;
 import ij.process.ImageProcessor;
-import net.imglib2.type.NativeType;
-import net.imglib2.type.numeric.RealType;
 import io.github.mianalysis.mia.MIA;
+import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.images.transform.ConcatenateStacks;
 import io.github.mianalysis.mia.module.images.transform.registration.abstrakt.AbstractBUnwarpJRegistration;
-import io.github.mianalysis.mia.module.Module;
-import org.scijava.Priority;
-import org.scijava.plugin.Plugin;
-
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.image.Image;
 import io.github.mianalysis.mia.object.image.ImageFactory;
@@ -32,6 +30,8 @@ import io.github.mianalysis.mia.process.interactable.Interactable;
 import io.github.mianalysis.mia.process.interactable.PointPairSelector;
 import io.github.mianalysis.mia.process.interactable.PointPairSelector.PointPair;
 import io.github.mianalysis.mia.thirdparty.bUnwarpJ_Mod;
+import net.imglib2.type.NativeType;
+import net.imglib2.type.numeric.RealType;
 
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class UnwarpManual<T extends RealType<T> & NativeType<T>> extends AbstractBUnwarpJRegistration

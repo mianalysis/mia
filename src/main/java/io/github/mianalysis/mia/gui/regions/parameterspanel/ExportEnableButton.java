@@ -1,4 +1,4 @@
-package io.github.mianalysis.mia.gui.regions.parameterlist;
+package io.github.mianalysis.mia.gui.regions.parameterspanel;
 
 import java.awt.Insets;
 import java.awt.event.ActionEvent;

@@ -3,24 +3,24 @@ package io.github.mianalysis.mia.module.images.transform.registration;
 import java.util.ArrayList;
 import java.util.Vector;
 
+import org.scijava.Priority;
+import org.scijava.plugin.Plugin;
+
 import ij.process.ImageProcessor;
+import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.images.transform.registration.abstrakt.AbstractAffineRegistration;
+import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.parameters.Parameters;
+import io.github.mianalysis.mia.object.parameters.SeparatorP;
+import io.github.mianalysis.mia.object.parameters.text.DoubleP;
+import io.github.mianalysis.mia.object.parameters.text.IntegerP;
 import mpicbg.ij.SIFT;
 import mpicbg.imagefeatures.Feature;
 import mpicbg.imagefeatures.FloatArray2DSIFT;
 import mpicbg.models.AbstractAffineModel2D;
 import mpicbg.models.NotEnoughDataPointsException;
 import mpicbg.models.PointMatch;
-import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.module.images.transform.registration.abstrakt.AbstractAffineRegistration;
-import io.github.mianalysis.mia.module.Module;
-import org.scijava.Priority;
-import org.scijava.plugin.Plugin;
-
-import io.github.mianalysis.mia.object.Workspace;
-import io.github.mianalysis.mia.object.parameters.Parameters;
-import io.github.mianalysis.mia.object.parameters.SeparatorP;
-import io.github.mianalysis.mia.object.parameters.text.DoubleP;
-import io.github.mianalysis.mia.object.parameters.text.IntegerP;
 
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class AffineSIFT extends AbstractAffineRegistration {

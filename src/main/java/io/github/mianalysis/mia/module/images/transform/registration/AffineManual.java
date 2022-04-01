@@ -3,26 +3,18 @@ package io.github.mianalysis.mia.module.images.transform.registration;
 import java.util.ArrayList;
 import java.util.Vector;
 
+import org.scijava.Priority;
+import org.scijava.plugin.Plugin;
+
 import ij.ImagePlus;
 import ij.gui.PointRoi;
 import ij.gui.Roi;
 import ij.process.ImageProcessor;
-import mpicbg.ij.InverseTransformMapping;
-import mpicbg.ij.util.Util;
-import mpicbg.models.AbstractAffineModel2D;
-import mpicbg.models.IllDefinedDataPointsException;
-import mpicbg.models.NotEnoughDataPointsException;
-import mpicbg.models.PointMatch;
-import net.imglib2.type.NativeType;
-import net.imglib2.type.numeric.RealType;
 import io.github.mianalysis.mia.MIA;
+import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.images.transform.ConcatenateStacks;
 import io.github.mianalysis.mia.module.images.transform.registration.abstrakt.AbstractAffineRegistration;
-import io.github.mianalysis.mia.module.Module;
-import org.scijava.Priority;
-import org.scijava.plugin.Plugin;
-
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.image.Image;
 import io.github.mianalysis.mia.object.image.ImageFactory;
@@ -32,6 +24,14 @@ import io.github.mianalysis.mia.object.parameters.SeparatorP;
 import io.github.mianalysis.mia.process.interactable.Interactable;
 import io.github.mianalysis.mia.process.interactable.PointPairSelector;
 import io.github.mianalysis.mia.process.interactable.PointPairSelector.PointPair;
+import mpicbg.ij.InverseTransformMapping;
+import mpicbg.ij.util.Util;
+import mpicbg.models.AbstractAffineModel2D;
+import mpicbg.models.IllDefinedDataPointsException;
+import mpicbg.models.NotEnoughDataPointsException;
+import mpicbg.models.PointMatch;
+import net.imglib2.type.NativeType;
+import net.imglib2.type.numeric.RealType;
 
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class AffineManual<T extends RealType<T> & NativeType<T>> extends AbstractAffineRegistration

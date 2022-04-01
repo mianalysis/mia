@@ -1,7 +1,5 @@
 package io.github.mianalysis.mia.module.images.transform;
 
-import java.nio.file.Paths;
-
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
 
@@ -15,6 +13,7 @@ import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.image.Image;
 import io.github.mianalysis.mia.object.image.ImageFactory;
+import io.github.mianalysis.mia.object.image.ImgPlusImage;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
@@ -33,14 +32,11 @@ import net.imagej.ImgPlus;
 import net.imagej.axis.Axes;
 import net.imglib2.Cursor;
 import net.imglib2.RandomAccess;
-import net.imglib2.cache.img.CachedCellImg;
 import net.imglib2.cache.img.DiskCachedCellImgFactory;
 import net.imglib2.cache.img.DiskCachedCellImgOptions;
-import net.imglib2.img.cell.CellImgFactory;
 import net.imglib2.img.display.imagej.ImageJFunctions;
 import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
-import net.imglib2.type.numeric.real.FloatType;
 import net.imglib2.view.Views;
 
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
@@ -55,7 +51,7 @@ public class FlipStack<T extends RealType<T> & NativeType<T>> extends Module {
 
     public FlipStack(Modules modules) {
         super("Flip stack", modules);
-        il2Support = IL2Support.PARTIAL;
+        il2Support = IL2Support.FULL;
     }
 
 
@@ -87,27 +83,18 @@ public class FlipStack<T extends RealType<T> & NativeType<T>> extends Module {
         }
     }
 
-    public Image applyFlip(Image inputImage, String axis, String outputImageName) {
+    public Image<T> applyFlip(Image<T> inputImage, String axis, String outputImageName) {
         ImgPlus<T> inputImg = inputImage.getImgPlus();
 
-        // Creating the new Img
-        int[] cellSize = new int[]{128,128,128};
-        DiskCachedCellImgOptions options = DiskCachedCellImgOptions.options();
-        // options.cacheDirectory(Paths.get("/tmp/mycache"));
-        options.numIoThreads(2);
-        options.cellDimensions(cellSize);
-        
+        // Creating the new Img       
         long[] dims = new long[inputImg.numDimensions()];
         for (int i = 0; i < inputImg.numDimensions(); i++)
             dims[i] = inputImg.dimension(i);
         
         T type = (T) inputImg.firstElement();
+        DiskCachedCellImgOptions options = ImgPlusImage.getCellImgOptions();
         ImgPlus<T> outputImg = new ImgPlus<>(new DiskCachedCellImgFactory(type,options).create(dims));
         
-        // CellImgFactory<T> factory = new CellImgFactory<T>((T) inputImg .firstElement());
-        // long[] dims = new long[inputImg.numDimensions()];
-        // for (int i=0;i<inputImg.numDimensions();i++) dims[i] = inputImg.dimension(i);
-        // ImgPlus<T> outputImg = new ImgPlus<T>(factory.create(dims));
         ImgPlusTools.copyAxes(inputImg,outputImg);
 
         // Determining the axis index
@@ -122,21 +109,31 @@ public class FlipStack<T extends RealType<T> & NativeType<T>> extends Module {
         offsetOut[axisIndex] = -dims[axisIndex] + 1;
 
         Cursor<T> targetCursor = Views.offsetInterval(Views.invertAxis(outputImg,axisIndex),offsetOut,dims).localizingCursor();
-        RandomAccess<T> sourceRandomAccess = Views.offsetInterval(inputImg,offsetIn,dims).randomAccess();
+        RandomAccess<T> sourceRandomAccess = Views.offsetInterval(inputImg, offsetIn, dims).randomAccess();
 
+        long count = 0;
+        long total = inputImg.size();
+        long interval = Math.floorDiv(total, 100);
         while (targetCursor.hasNext()) {
             targetCursor.fwd();
             sourceRandomAccess.setPosition(targetCursor);
             targetCursor.get().set(sourceRandomAccess.get());
+            count++;
+
+            if (count % interval == 0)
+                writeStatus("Processed " + Math.floorDiv(100 * count, total) + "%");
+
         }
-
-        // For some reason the ImagePlus produced by ImageJFunctions.wrap() behaves strangely, but this can be remedied
-        // by duplicating it
-        ImagePlus outputImagePlus = ImageJFunctions.wrap(outputImg,outputImageName);
-        outputImagePlus.setCalibration(inputImage.getImagePlus().getCalibration());
-        ImgPlusTools.applyAxes(outputImg,outputImagePlus);
-
-        return ImageFactory.createImage(outputImageName,outputImagePlus);
+        
+        // // For some reason the ImagePlus produced by ImageJFunctions.wrap() behaves strangely, but this can be remedied
+        //     // by duplicating it
+        // if (MIA.preferences.getDataStorageMode().equals(Preferences.DataStorageModes.KEEP_IN_RAM)) {            
+        //     ImagePlus outputImagePlus = ImageJFunctions.wrap(outputImg, outputImageName);
+        //     outputImagePlus.setCalibration(inputImage.getImagePlus().getCalibration());
+        //     ImgPlusTools.applyAxes(outputImg, outputImagePlus);
+        // }
+        
+        return ImageFactory.createImage(outputImageName,outputImg);
 
     }
 
@@ -238,6 +235,10 @@ public class FlipStack<T extends RealType<T> & NativeType<T>> extends Module {
 
     @Override
     public boolean verify() {
+        String storageMode = MIA.preferences.getDataStorageMode();
+        if (storageMode.equals(Preferences.DataStorageModes.STREAM_FROM_DRIVE) & il2Support.equals(IL2Support.NONE))
+            return false;
+
         return true;
     }
 }

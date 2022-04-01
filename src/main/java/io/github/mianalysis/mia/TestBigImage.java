@@ -1,17 +1,17 @@
 package io.github.mianalysis.mia;
 
-import java.nio.file.Paths;
-
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
 
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
+import io.github.mianalysis.mia.module.IL2Support;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.image.Image;
 import io.github.mianalysis.mia.object.image.ImageFactory;
+import io.github.mianalysis.mia.object.image.ImgPlusImage;
 import io.github.mianalysis.mia.object.parameters.OutputImageP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.refs.collections.ImageMeasurementRefs;
@@ -19,14 +19,12 @@ import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
+import io.github.mianalysis.mia.object.system.Preferences;
 import io.github.mianalysis.mia.object.system.Status;
 import net.imagej.ImgPlus;
 import net.imglib2.Cursor;
 import net.imglib2.cache.img.DiskCachedCellImgFactory;
 import net.imglib2.cache.img.DiskCachedCellImgOptions;
-import net.imglib2.img.Img;
-import net.imglib2.img.ImgFactory;
-import net.imglib2.img.cell.CellImgFactory;
 import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
 import net.imglib2.type.numeric.real.FloatType;
@@ -40,7 +38,8 @@ public class TestBigImage<T extends RealType<T> & NativeType<T>> extends Module 
 
     public TestBigImage(Modules modules) {
         super("Test big image", modules);
-
+        il2Support = IL2Support.FULL;
+        
         // This module isn't deprecated, but this will keep it mostly hidden
         this.deprecated = true;
     }
@@ -60,13 +59,8 @@ public class TestBigImage<T extends RealType<T> & NativeType<T>> extends Module 
         // Getting parameters
         String outputImageName = parameters.getValue(OUTPUT_IMAGE);
 
-        int[] cellSize = new int[] { 128, 128, 128 };
         long[] dims = new long[] {3000,4000,100};
-        DiskCachedCellImgOptions options = DiskCachedCellImgOptions.options();
-        options.cacheDirectory(Paths.get("/tmp/mycache"));
-        options.numIoThreads(2);
-        options.cellDimensions(cellSize);
-        
+        DiskCachedCellImgOptions options = ImgPlusImage.getCellImgOptions();        
         ImgPlus<T> img = new ImgPlus<>(new DiskCachedCellImgFactory(new FloatType(), options).create(dims));
                 
         // Creating a ramp intensity gradient along the x-axis, so operations can be tested
@@ -129,6 +123,10 @@ public class TestBigImage<T extends RealType<T> & NativeType<T>> extends Module 
 
     @Override
     public boolean verify() {
+        String storageMode = MIA.preferences.getDataStorageMode();
+        if (storageMode.equals(Preferences.DataStorageModes.STREAM_FROM_DRIVE) & il2Support.equals(IL2Support.NONE))
+            return false;
+
         return true;
     }
 }

@@ -6,11 +6,13 @@ import org.scijava.plugin.Plugin;
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
+import io.github.mianalysis.mia.module.IL2Support;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.image.Image;
 import io.github.mianalysis.mia.object.image.ImageFactory;
+import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.FilePathP;
 import io.github.mianalysis.mia.object.parameters.OutputImageP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
@@ -20,14 +22,14 @@ import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
+import io.github.mianalysis.mia.object.system.Preferences;
 import io.github.mianalysis.mia.object.system.Status;
-import io.scif.Reader;
-import io.scif.SCIFIO;
 import io.scif.config.SCIFIOConfig;
 import io.scif.config.SCIFIOConfig.ImgMode;
 import io.scif.img.IO;
-import io.scif.img.SCIFIOImgPlus;
 import net.imagej.ImgPlus;
+import net.imagej.axis.Axes;
+import net.imagej.axis.CalibratedAxis;
 import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
 
@@ -37,11 +39,21 @@ import net.imglib2.type.numeric.RealType;
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class LoadImage<T extends RealType<T> & NativeType<T>> extends Module {
     public static final String LOADER_SEPARATOR = "Core image loading controls";
+    public static final String IMPORT_MODE = "Import mode";
     public static final String FILE_PATH = "File path";
     public static final String OUTPUT_IMAGE = "Output image";    
 
+    public interface ImportModes {
+        String CURRENT_FILE = "Current file";
+        String SPECIFIC_FILE = "Specific file";
+
+        String[] ALL = new String[] { CURRENT_FILE, SPECIFIC_FILE };
+
+    }
+
     public LoadImage(Modules modules) {
         super("Load image 2", modules);
+        il2Support = IL2Support.FULL;
 
         // This module isn't deprecated, but this will keep it mostly hidden
         this.deprecated = true;
@@ -60,20 +72,40 @@ public class LoadImage<T extends RealType<T> & NativeType<T>> extends Module {
     @Override
     public Status process(Workspace workspace) {
         // Getting parameters
+        String importMode = parameters.getValue(IMPORT_MODE);
         String filePath = parameters.getValue(FILE_PATH);
         String outputImageName = parameters.getValue(OUTPUT_IMAGE);
         
-        MIA.log.writeDebug(filePath);
+        switch (importMode) {
+            case ImportModes.CURRENT_FILE:
+                filePath = workspace.getMetadata().getFilepath();
+                break;
+        }
 
         SCIFIOConfig config = new SCIFIOConfig();
         config.imgOpenerSetImgModes(ImgMode.CELL);
         ImgPlus<T> img = (ImgPlus<T>) IO.open(filePath, config);
+        
+        int xIdx = img.dimensionIndex(Axes.X);
+        if (xIdx != -1) {
+            CalibratedAxis xAxis = img.axis(xIdx);
+            if (xAxis.unit().equals("\\u00B5m"))
+                xAxis.setUnit("μm");
+        }
 
-        // For first, basic version, loading the entirety of the "current file" image as a CellImg
-        // ImgOpener imgOpener = new ImgOpener();        
-        // SCIFIOConfig config = new SCIFIOConfig();
-        // config.imgOpenerSetImgModes(ImgMode.CELL);
-        // ImgPlus< T > img = new ImgPlus(( Img< T > ) imgOpener.openImgs( filePath, config ).get( 0 ));
+        int yIdx = img.dimensionIndex(Axes.Y);
+        if (yIdx != -1) {
+            CalibratedAxis yAxis = img.axis(yIdx);
+            if (yAxis.unit().equals("\\u00B5m"))
+                yAxis.setUnit("μm");
+        }
+
+        int zIdx = img.dimensionIndex(Axes.Z);
+        if (zIdx != -1) {
+            CalibratedAxis zAxis = img.axis(zIdx);
+            if (zAxis.unit().equals("\\u00B5m"))
+                zAxis.setUnit("μm");
+        }
 
         Image image = ImageFactory.createImage(outputImageName, img);
         workspace.addImage(image);
@@ -88,6 +120,7 @@ public class LoadImage<T extends RealType<T> & NativeType<T>> extends Module {
     @Override
     protected void initialiseParameters() {
         parameters.add(new SeparatorP(LOADER_SEPARATOR, this));
+        parameters.add(new ChoiceP(IMPORT_MODE, this, ImportModes.CURRENT_FILE, ImportModes.ALL));
         parameters.add(new FilePathP(FILE_PATH, this));
         parameters.add(new OutputImageP(OUTPUT_IMAGE, this));
         
@@ -98,7 +131,14 @@ public class LoadImage<T extends RealType<T> & NativeType<T>> extends Module {
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(LOADER_SEPARATOR));
-        returnedParameters.add(parameters.getParameter(FILE_PATH));
+
+        returnedParameters.add(parameters.getParameter(IMPORT_MODE));
+        switch ((String) parameters.getValue(IMPORT_MODE)) {
+            case ImportModes.SPECIFIC_FILE:
+            returnedParameters.add(parameters.getParameter(FILE_PATH));
+                break;
+        }
+        
         returnedParameters.add(parameters.getParameter(OUTPUT_IMAGE));
         
         return returnedParameters;
@@ -132,6 +172,10 @@ public class LoadImage<T extends RealType<T> & NativeType<T>> extends Module {
 
     @Override
     public boolean verify() {
+        String storageMode = MIA.preferences.getDataStorageMode();
+        if (storageMode.equals(Preferences.DataStorageModes.STREAM_FROM_DRIVE) & il2Support.equals(IL2Support.NONE))
+            return false;
+
         return true;
     }
 }

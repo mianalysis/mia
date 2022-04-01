@@ -1,5 +1,6 @@
-package io.github.mianalysis.mia.gui.regions.parameterlist;
+package io.github.mianalysis.mia.gui.regions.parameterspanel;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
@@ -9,22 +10,27 @@ import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 
 import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
+import javax.swing.JTextArea;
 import javax.swing.JTextPane;
 import javax.swing.border.EtchedBorder;
 
+import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.gui.ComponentFactory;
 import io.github.mianalysis.mia.gui.GUI;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.core.InputControl;
 import io.github.mianalysis.mia.module.core.OutputControl;
-import io.github.mianalysis.mia.object.parameters.OutputImageP;
-import io.github.mianalysis.mia.object.parameters.Parameters;
-import io.github.mianalysis.mia.object.parameters.ParameterGroup;
 import io.github.mianalysis.mia.object.parameters.AdjustParameters;
+import io.github.mianalysis.mia.object.parameters.OutputImageP;
+import io.github.mianalysis.mia.object.parameters.ParameterGroup;
+import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.abstrakt.Parameter;
 import io.github.mianalysis.mia.object.parameters.objects.OutputObjectsP;
 import io.github.mianalysis.mia.object.refs.abstrakt.ExportableRef;
@@ -33,12 +39,19 @@ import io.github.mianalysis.mia.object.refs.collections.ImageMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.Refs;
+import io.github.mianalysis.mia.object.system.Colours;
+import io.github.mianalysis.mia.object.system.Preferences;
 import io.github.mianalysis.mia.process.analysishandling.Analysis;
 
 public class ParametersPanel extends JScrollPane {
     private static final long serialVersionUID = 1455273666893303846L;
     private static final int minimumWidth = 400;
     private static final int preferredWidth = 600;
+
+    private static final ImageIcon alertIcon = new ImageIcon(
+            ComponentFactory.class.getResource("/icons/alert_orange_12px.png"), "");
+    private static final ImageIcon warningIcon = new ImageIcon(
+            ComponentFactory.class.getResource("/icons/warning_red_12px.png"), "");
 
     private JPanel panel;
 
@@ -90,61 +103,124 @@ public class ParametersPanel extends JScrollPane {
 
         JPanel topPanel = componentFactory.createParametersTopRow(module);
         c.gridwidth = 2;
-        panel.add(topPanel,c);
+        panel.add(topPanel, c);
+        c.gridwidth = 1;
 
         // If it's an input/output control, get the current version
-        if (module instanceof InputControl) module = inputControl;
-        if (module instanceof OutputControl) module = outputControl;
+        if (module instanceof InputControl) {
+            module = inputControl;
+            c.insets = new Insets(2, 8, 20, 0);
+                    c.gridy++;
+                    JPanel warningPanel = getWarning("\"Input control\" only specifies the path to the root image; no image is loaded into the workspace at this point.  To load images, add one or more \"Load Image\" modules.", Colours.ORANGE, alertIcon);
+                    panel.add(warningPanel, c);            
+        }
+            
+        if (module instanceof OutputControl)
+            module = outputControl;
+        
+
+        // Adding an ImgLib2 warning if necessary
+        String storageMode = MIA.preferences.getDataStorageMode();
+        if (storageMode.equals(Preferences.DataStorageModes.STREAM_FROM_DRIVE)) {
+            switch (module.getIL2Support()) {
+                case NONE:
+                    c.insets = new Insets(2, 8, 20, 0);
+                    c.gridy++;
+                    JPanel warningPanel = getWarning("This module is currently incompatible with images streamed directly from storage.  To use this module please go to preferences (Edit > Preferences) and change data storage method to \""
+                            + Preferences.DataStorageModes.KEEP_IN_RAM + "\".", Colours.RED, warningIcon);
+                    panel.add(warningPanel, c);
+                    break;
+                case PARTIAL:
+                c.insets = new Insets(2, 8, 20, 0);
+                    c.gridy++;
+                    warningPanel = getWarning("This module currently only has partial support for images streamed directly from storage.  The module will run, but any images used may be loaded entirely into RAM.", Colours.ORANGE, alertIcon);
+                    panel.add(warningPanel, c);
+                    break;
+            }
+        }
 
         // If the active module hasn't got parameters enabled, skip it
         c.anchor = GridBagConstraints.NORTHWEST;
-        c.gridwidth = 1;
+
         c.insets = new Insets(2, 5, 0, 0);
         if (module.updateAndGetParameters() != null) {
             for (Parameter parameter : module.updateAndGetParameters().values()) {
                 if (parameter.getClass() == ParameterGroup.class) {
-                    addAdvancedParameterGroupControl((ParameterGroup) parameter,module,c);
+                    addAdvancedParameterGroupControl((ParameterGroup) parameter, module, c);
                 } else {
-                    addAdvancedParameterControl(parameter,c);
+                    addAdvancedParameterControl(parameter, c);
                 }
             }
         }
 
         // If selected, adding the measurement selector for output control
         String exportMode = outputControl.getParameterValue(OutputControl.EXPORT_MODE);
-        if (module.getClass().isInstance(new OutputControl(modules)) && outputControl.isEnabled() &! exportMode.equals(OutputControl.ExportModes.NONE)) {
+        if (module.getClass().isInstance(new OutputControl(modules))
+                && outputControl.isEnabled() & !exportMode.equals(OutputControl.ExportModes.NONE)) {
             MetadataRefs metadataRefs = modules.getMetadataRefs();
-            addRefExportControls(metadataRefs,"Metadata",componentFactory,c);
+            addRefExportControls(metadataRefs, "Metadata", componentFactory, c);
 
             LinkedHashSet<OutputImageP> imageNameParameters = modules.getAvailableImages(null);
-            for (OutputImageP imageNameParameter:imageNameParameters) {
+            for (OutputImageP imageNameParameter : imageNameParameters) {
                 String imageName = imageNameParameter.getImageName();
                 ImageMeasurementRefs measurementReferences = modules.getImageMeasurementRefs(imageName);
-                addRefExportControls(measurementReferences,imageName+" (Image)",componentFactory,c);
+                addRefExportControls(measurementReferences, imageName + " (Image)", componentFactory, c);
             }
 
             LinkedHashSet<OutputObjectsP> objectNameParameters = modules.getAvailableObjects(null);
-            for (OutputObjectsP objectNameParameter:objectNameParameters) {
+            for (OutputObjectsP objectNameParameter : objectNameParameters) {
                 String objectName = objectNameParameter.getObjectsName();
                 ObjMeasurementRefs measurementReferences = modules.getObjectMeasurementRefs(objectName);
-                addSummaryRefExportControls(measurementReferences,objectName+" (Object)",componentFactory,c);
-            }            
+                addSummaryRefExportControls(measurementReferences, objectName + " (Object)", componentFactory, c);
+            }
         }
 
         JSeparator separator = new JSeparator();
         separator.setOpaque(true);
-        separator.setSize(new Dimension(0,0));
+        separator.setSize(new Dimension(0, 0));
         c.weighty = 1;
         c.gridy++;
-        c.insets = new Insets(20,0,0,0);
+        c.insets = new Insets(20, 0, 0, 0);
         c.fill = GridBagConstraints.VERTICAL;
-        panel.add(separator,c);
+        panel.add(separator, c);
 
         panel.revalidate();
         panel.repaint();
 
         revalidate();
         repaint();
+
+    }
+    
+    JPanel getWarning(String message, Color colour, ImageIcon icon) {
+        JPanel warningPanel = new JPanel(new GridBagLayout());
+        warningPanel.setBackground(null);
+
+        GridBagConstraints c = new GridBagConstraints();
+        c.gridx = 0;
+        c.gridy = 0;
+        c.weightx = 1;
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.insets = new Insets(2, 5, 0, 0);
+
+        JLabel iconLabel = new JLabel();
+        iconLabel.setIcon(icon);
+        warningPanel.add(iconLabel, c);
+        
+        c.gridx++;
+        JTextArea textArea = new JTextArea();
+        textArea.setEditable(false);
+        textArea.setBackground(null);
+        textArea.setText(message);
+        textArea.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
+        textArea.setForeground(colour);
+        textArea.setLineWrap(true);
+        textArea.setWrapStyleWord(true);
+        textArea.setAlignmentX(JComponent.LEFT_ALIGNMENT);
+        textArea.setBorder(BorderFactory.createEmptyBorder());
+        warningPanel.add(textArea, c);
+        
+        return warningPanel;
 
     }
 

@@ -13,6 +13,7 @@ import org.scijava.plugin.Plugin;
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
+import io.github.mianalysis.mia.module.IL2Support;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.script.RunMacro;
@@ -36,6 +37,7 @@ import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Colours;
+import io.github.mianalysis.mia.object.system.Preferences;
 import io.github.mianalysis.mia.object.system.Status;
 import io.github.mianalysis.mia.object.units.SpatialUnit;
 import io.github.mianalysis.mia.object.units.TemporalUnit;
@@ -97,6 +99,7 @@ public class InputControl extends Module {
 
     public InputControl(Modules modules) {
         super("Input control", modules);
+        il2Support = IL2Support.FULL;
     }
 
     public static interface InputModes {
@@ -371,11 +374,6 @@ public class InputControl extends Module {
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new SeparatorP(MESSAGE_SEPARATOR, this));
-        parameters.add(new MessageP(NO_LOAD_MESSAGE, this,
-                "\"Input control\" only specifies the path to the root image; no image is loaded into the workspace at this point.  To load images, add one or more \"Load Image\" modules.",
-                Colours.ORANGE));
-
         parameters.add(new SeparatorP(IMPORT_SEPARATOR, this));
         parameters.add(new FileFolderPathP(INPUT_PATH, this));
         // parameters.add(new FileListP(FILE_LIST,this));
@@ -412,9 +410,6 @@ public class InputControl extends Module {
     @Override
     public Parameters updateAndGetParameters() {
         Parameters returnedParameters = new Parameters();
-
-        returnedParameters.add(parameters.getParameter(MESSAGE_SEPARATOR));
-        returnedParameters.add(parameters.getParameter(NO_LOAD_MESSAGE));
 
         returnedParameters.add(parameters.getParameter(IMPORT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(INPUT_PATH));
@@ -498,6 +493,10 @@ public class InputControl extends Module {
 
     @Override
     public boolean verify() {
+        String storageMode = MIA.preferences.getDataStorageMode();
+        if (storageMode.equals(Preferences.DataStorageModes.STREAM_FROM_DRIVE) & il2Support.equals(IL2Support.NONE))
+            return false;
+
         return true;
     }
 

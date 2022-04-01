@@ -7,6 +7,7 @@ import ij.Prefs;
 import io.github.mianalysis.mia.gui.GUI;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
+import io.github.mianalysis.mia.module.IL2Support;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.Workspace;
@@ -31,6 +32,7 @@ public class Preferences extends Module {
 
     public static final String DATA_SEPARATOR = "Data parameters";
     public static final String DATA_STORAGE_MODE = "Data storage mode";
+    public static final String SPECIFY_CACHE_DIRECTORY = "Specify cache directory";
     public static final String CACHE_DIRECTORY = "Cache directory";
 
     public static final String UPDATE_SEPARATOR = "Update";
@@ -65,6 +67,15 @@ public class Preferences extends Module {
         parameters.getParameter(DATA_STORAGE_MODE).setValue(dataStorageMode);
     }
 
+    public boolean isSpecifyCacheDirectory() {
+        return parameters.getValue(SPECIFY_CACHE_DIRECTORY);
+    }
+
+    public void setSpecifyCacheDirectory(boolean specifyCacheDirectory) {
+        Prefs.set("MIA.core.specifyCacheDirectory", specifyCacheDirectory);
+        parameters.getParameter(SPECIFY_CACHE_DIRECTORY).setValue(specifyCacheDirectory);
+    }
+
     public String getCacheDirectory() {
         return parameters.getValue(CACHE_DIRECTORY);
     }
@@ -77,6 +88,7 @@ public class Preferences extends Module {
 
     public Preferences(Modules modules) {
         super("Preferences", modules);
+        il2Support = IL2Support.FULL;
     }
 
     @Override
@@ -102,6 +114,7 @@ public class Preferences extends Module {
         parameters.add(new SeparatorP(DATA_SEPARATOR, this));
         parameters.add(new ChoiceP(DATA_STORAGE_MODE, this,
                 Prefs.get("MIA.core.dataStorageMode", DataStorageModes.KEEP_IN_RAM), DataStorageModes.ALL));
+        parameters.add(new BooleanP(SPECIFY_CACHE_DIRECTORY, this, Prefs.get("MIA.core.specifyCacheDirectory", false)));
         parameters.add(new FolderPathP(CACHE_DIRECTORY, this, Prefs.get("MIA.core.cacheDirectory", "")));
         
         parameters.add(new SeparatorP(UPDATE_SEPARATOR, this));
@@ -122,7 +135,9 @@ public class Preferences extends Module {
         returnedParameters.add(parameters.getParameter(DATA_STORAGE_MODE));
         switch ((String) parameters.getValue(DATA_STORAGE_MODE)) {
             case DataStorageModes.STREAM_FROM_DRIVE:
-            returnedParameters.add(parameters.getParameter(CACHE_DIRECTORY));
+                returnedParameters.add(parameters.getParameter(SPECIFY_CACHE_DIRECTORY));
+            if ((boolean) parameters.getValue(SPECIFY_CACHE_DIRECTORY))
+                returnedParameters.add(parameters.getParameter(CACHE_DIRECTORY));
             break;
         }
 
