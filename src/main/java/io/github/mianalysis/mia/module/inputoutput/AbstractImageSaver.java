@@ -32,7 +32,7 @@ import io.github.mianalysis.mia.object.system.Preferences;
 /**
  * Created by sc13967 on 26/06/2017.
  */
-public abstract class AbstractImageSaver extends Module {
+public abstract class  AbstractImageSaver extends Module {
     public static final String LOADER_SEPARATOR = "Image saving";
     public static final String INPUT_IMAGE = "Input image";
 
@@ -49,7 +49,7 @@ public abstract class AbstractImageSaver extends Module {
     public static final String FLATTEN_OVERLAY = "Flatten overlay";
 
     public AbstractImageSaver(String name, Modules modules) {
-        super(name, modules);
+        super(name, modules);        
     }
 
     

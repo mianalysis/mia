@@ -40,7 +40,7 @@ import net.imglib2.type.numeric.RealType;
 import net.imglib2.view.Views;
 
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
-public class FlipStack<T extends RealType<T> & NativeType<T>> extends Module {
+public class FlipStack <T extends RealType<T> & NativeType<T>> extends Module {
     public static final String INPUT_SEPARATOR = "Image input/output";
     public static final String INPUT_IMAGE = "Input image";
     public static final String APPLY_TO_INPUT = "Apply to input image";
@@ -168,7 +168,7 @@ public class FlipStack<T extends RealType<T> & NativeType<T>> extends Module {
 
         if (showOutput) outputImage.showImage();
         if (applyToInput) {
-            inputImage.setImagePlus(outputImage.getImagePlus());
+            inputImage.setImgPlus(outputImage.getImgPlus());
         } else {
             workspace.addImage(outputImage);
         }

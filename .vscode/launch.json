@@ -6,6 +6,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "Launch SaveImage",
+            "request": "launch",
+            "mainClass": "io.github.mianalysis.mia.module.inputoutput.SaveImage",
+            "projectName": "MIA"
+        },
+        {
+            "type": "java",
             "name": "Launch TestCZI",
             "request": "launch",
             "mainClass": "io.github.mianalysis.mia.TestCZI",

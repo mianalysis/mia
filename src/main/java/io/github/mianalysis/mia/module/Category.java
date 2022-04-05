@@ -8,6 +8,7 @@ public class Category extends Ref implements Comparable {
     private final Category parent;
     private final TreeSet<Category> children = new TreeSet<>();
     private final boolean showInMenu;
+    private int childModuleCount = 0;
 
     public Category(String name, String description, Category parent) {
         super(name);
@@ -41,6 +42,27 @@ public class Category extends Ref implements Comparable {
 
     public boolean showInMenu() {
         return showInMenu;
+    }
+
+    public void resetModuleCount(boolean processChildren) {
+        childModuleCount = 0;
+
+        // Removing the count from all child categories
+        if (processChildren)
+            for (Category childCategory:children)
+                childCategory.resetModuleCount(processChildren);
+    }
+
+    public void incrementModuleCount(boolean processParent) {
+        childModuleCount++;
+
+        // Adding this module to all parent's counts
+        if (processParent && parent != null)
+            parent.incrementModuleCount(processParent);
+    }
+
+    public int getModuleCount() {
+        return childModuleCount;
     }
 
     @Override

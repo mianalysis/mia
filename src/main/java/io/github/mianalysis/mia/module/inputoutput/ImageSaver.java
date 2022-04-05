@@ -19,6 +19,7 @@ import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.core.OutputControl;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImagePlusImage;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.FolderPathP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
@@ -54,6 +55,7 @@ public class ImageSaver extends AbstractImageSaver {
 
     public ImageSaver(Modules modules) {
         super("Save image", modules);
+        il2Support = IL2Support.PARTIAL;
     }
 
     public interface SaveLocations {
@@ -110,6 +112,29 @@ public class ImageSaver extends AbstractImageSaver {
                 + "\" module can be used.  To prevent overwriting of previously-saved files, the current date and time can be appended to the end of each filename.  Images can be saved in a variety of formats (AVI, TIF and Zipped TIF).";
     }
 
+    public static ImagePlus convertToRGB(ImagePlus inputImagePlus, boolean saveAsRGB, boolean flattenOverlay) {
+    // If the image is being altered make a copy
+    if (saveAsRGB || flattenOverlay) {
+        inputImagePlus = inputImagePlus.duplicate();
+        new ImageConverter(inputImagePlus).convertToRGB();
+    }
+
+    if (flattenOverlay) {
+        // Flattening overlay onto image for saving
+        if (inputImagePlus.getNSlices() > 1 || inputImagePlus.getNFrames() > 1) {
+            IntensityMinMax.run(inputImagePlus, true);
+            if (inputImagePlus.getOverlay() != null)
+                inputImagePlus.flattenStack();
+        } else {
+            if (inputImagePlus.getOverlay() != null)
+                inputImagePlus = inputImagePlus.flatten();
+        }
+    }
+    
+    return inputImagePlus;
+
+    }
+
     @Override
     public Status process(Workspace workspace) {
         // Getting input image
@@ -132,27 +157,17 @@ public class ImageSaver extends AbstractImageSaver {
 
         // Loading the image to save
         Image inputImage = workspace.getImages().get(inputImageName);
-        ImagePlus inputImagePlus = inputImage.getImagePlus();
 
-        if (channelMode.equals(ChannelModes.COMPOSITE))
-            inputImagePlus.setDisplayMode(CompositeImage.COMPOSITE);
-
-        // If the image is being altered make a copy
-        if (saveAsRGB || flattenOverlay) {
-            inputImagePlus = inputImagePlus.duplicate();
-            new ImageConverter(inputImagePlus).convertToRGB();
-        }
-
-        if (flattenOverlay) {
-            // Flattening overlay onto image for saving
-            if (inputImagePlus.getNSlices() > 1 || inputImagePlus.getNFrames() > 1) {
-                IntensityMinMax.run(inputImagePlus, true);
-                if (inputImagePlus.getOverlay() != null)
-                    inputImagePlus.flattenStack();
-            } else {
-                if (inputImagePlus.getOverlay() != null)
-                    inputImagePlus = inputImagePlus.flatten();
-            }
+        ImagePlus inputImagePlus = null;
+        if (inputImage instanceof ImagePlusImage) {
+            inputImagePlus = inputImage.getImagePlus();
+            if (channelMode.equals(ChannelModes.COMPOSITE))
+                inputImagePlus.setDisplayMode(CompositeImage.COMPOSITE);
+            inputImagePlus = convertToRGB(inputImagePlus, saveAsRGB, flattenOverlay);
+        } else {
+            MIA.log.writeWarning(
+                    "Flattened overlays and saving RGB images not currently supported for images streamed directly from disc.");
+            inputImagePlus = inputImage.getImagePlus();
         }
 
         // If using the same settings as OutputControl, update saveLocation and filePath
@@ -243,12 +258,11 @@ public class ImageSaver extends AbstractImageSaver {
         switch (fileFormat) {
             case FileFormats.AVI:
                 path = path + suffix + ".avi";
-                saveVideo(inputImagePlus, compressionMode, frameRate, quality, path);
-                break;
+                    saveVideo(inputImagePlus, compressionMode, frameRate, quality, path);
             case FileFormats.TIF:
             case FileFormats.ZIP:
                 path = path + suffix + ".tif";
-                saveImage(inputImagePlus, fileFormat, path);
+                    saveImage(inputImagePlus, fileFormat, path);                
                 break;
         }
 

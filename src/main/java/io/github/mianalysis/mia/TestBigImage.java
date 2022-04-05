@@ -1,5 +1,7 @@
 package io.github.mianalysis.mia;
 
+import java.util.Random;
+
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
 
@@ -23,6 +25,7 @@ import io.github.mianalysis.mia.object.system.Preferences;
 import io.github.mianalysis.mia.object.system.Status;
 import net.imagej.ImgPlus;
 import net.imglib2.Cursor;
+import net.imglib2.RandomAccess;
 import net.imglib2.cache.img.DiskCachedCellImgFactory;
 import net.imglib2.cache.img.DiskCachedCellImgOptions;
 import net.imglib2.type.NativeType;
@@ -59,16 +62,28 @@ public class TestBigImage<T extends RealType<T> & NativeType<T>> extends Module 
         // Getting parameters
         String outputImageName = parameters.getValue(OUTPUT_IMAGE);
 
-        long[] dims = new long[] {3000,4000,100};
+        int w = 400;
+        int h = 400;
+        int d = 100;
+        long[] dims = new long[] {w,h,d};
         DiskCachedCellImgOptions options = ImgPlusImage.getCellImgOptions();        
         ImgPlus<T> img = new ImgPlus<>(new DiskCachedCellImgFactory(new FloatType(), options).create(dims));
                 
         // Creating a ramp intensity gradient along the x-axis, so operations can be tested
-        Cursor<T> c = img.cursor();
-        while (c.hasNext()) {
-            c.fwd();
-            ((FloatType) c.get()).set(c.getFloatPosition(0));
+        RandomAccess ra = img.randomAccess();
+        Random random = new Random();
+        for (int i = 0; i < 10000; i++) {
+            int x = (int) Math.floor(random.nextDouble()*w);
+            int y = (int) Math.floor(random.nextDouble()*h);
+            int z = (int) Math.floor(random.nextDouble()*d);
+            ra.setPosition(new int[]{x,y,z});
+            ((FloatType) ra.get()).set(1000);
         }
+        // Cursor<T> c = img.cursor();
+        // while (c.hasNext()) {
+        //     c.fwd();
+        //     ((FloatType) c.get()).set(c.getFloatPosition(0));
+        // }
 
         Image image = ImageFactory.createImage(outputImageName, img);
         workspace.addImage(image);

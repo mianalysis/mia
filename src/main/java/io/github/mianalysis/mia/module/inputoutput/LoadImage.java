@@ -78,7 +78,7 @@ public class LoadImage<T extends RealType<T> & NativeType<T>> extends Module {
         
         switch (importMode) {
             case ImportModes.CURRENT_FILE:
-                filePath = workspace.getMetadata().getFilepath();
+                filePath = workspace.getMetadata().getFile().getAbsolutePath();
                 break;
         }
 
@@ -89,21 +89,21 @@ public class LoadImage<T extends RealType<T> & NativeType<T>> extends Module {
         int xIdx = img.dimensionIndex(Axes.X);
         if (xIdx != -1) {
             CalibratedAxis xAxis = img.axis(xIdx);
-            if (xAxis.unit().equals("\\u00B5m"))
+            if (xAxis != null && xAxis.unit() != null && xAxis.unit().equals("\\u00B5m"))
                 xAxis.setUnit("μm");
         }
 
         int yIdx = img.dimensionIndex(Axes.Y);
         if (yIdx != -1) {
             CalibratedAxis yAxis = img.axis(yIdx);
-            if (yAxis.unit().equals("\\u00B5m"))
+            if (yAxis != null && yAxis.unit() != null && yAxis.unit().equals("\\u00B5m"))
                 yAxis.setUnit("μm");
         }
 
         int zIdx = img.dimensionIndex(Axes.Z);
         if (zIdx != -1) {
             CalibratedAxis zAxis = img.axis(zIdx);
-            if (zAxis.unit().equals("\\u00B5m"))
+            if (zAxis != null && zAxis.unit() != null && zAxis.unit().equals("\\u00B5m"))
                 zAxis.setUnit("μm");
         }
 

@@ -12,6 +12,7 @@ import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.border.EtchedBorder;
 
+import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.gui.GUI;
 import io.github.mianalysis.mia.gui.regions.abstrakt.AnalysisControlButton;
 import io.github.mianalysis.mia.gui.regions.abstrakt.ModuleControlButton;
@@ -19,7 +20,9 @@ import io.github.mianalysis.mia.gui.regions.availablemodulelist.ModuleListMenu;
 import io.github.mianalysis.mia.gui.regions.availablemodulelist.SearchForModuleItem;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
+import io.github.mianalysis.mia.module.IL2Support;
 import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.object.system.Preferences;
 
 public class EditingControlPanel extends JPanel {
     /**
@@ -115,7 +118,7 @@ public class EditingControlPanel extends JPanel {
 
     }
 
-    private void addCategoryModules(JPopupMenu rootMenu, ModuleListMenu parentMenu, Category category) {
+    private void addCategoryModules(JPopupMenu rootMenu, ModuleListMenu parentMenu, Category category, boolean ignoreEmptyCategories) {
         // Adding child categories
         for (Category childCategory : category.getChildren()) {
             ModuleListMenu childCategoryMenu = new ModuleListMenu(childCategory.getName(), new ArrayList<>(), rootMenu);
@@ -123,12 +126,17 @@ public class EditingControlPanel extends JPanel {
             // If this category isn't to be shown, skip to next (note: child modules also won't be shown)
             if (!childCategory.showInMenu())
                 continue;
+
+            if (childCategory.getModuleCount() == 0)
+                continue;
                 
             if (parentMenu == null)
                 rootMenu.add(childCategoryMenu);
             else
                 parentMenu.add(childCategoryMenu);
-            addCategoryModules(rootMenu, childCategoryMenu, childCategory);
+
+            addCategoryModules(rootMenu, childCategoryMenu, childCategory, ignoreEmptyCategories);
+
         }
 
         // Adding modules
@@ -142,7 +150,17 @@ public class EditingControlPanel extends JPanel {
     public void listAvailableModules() {
         Category root = Categories.getRootCategory();
         moduleListMenu.removeAll();
-        addCategoryModules(moduleListMenu, null, root);
+
+        // Iterating over all categories, resetting counts
+        root.resetModuleCount(true);
+        
+        // Iterating over all available modules, adding their count to the relevant categories
+        for (Module availableModule : GUI.getAvailableModules())
+            if (!availableModule.isDeprecated() || MIA.preferences.showDeprecated())
+                if (MIA.preferences.getDataStorageMode().equals(Preferences.DataStorageModes.KEEP_IN_RAM) || !availableModule.getIL2Support().equals(IL2Support.NONE))
+                availableModule.getCategory().incrementModuleCount(true);
+
+        addCategoryModules(moduleListMenu, null, root,true);
 
         moduleListMenu.add(new SearchForModuleItem());
 
