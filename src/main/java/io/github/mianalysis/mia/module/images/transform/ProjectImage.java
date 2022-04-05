@@ -17,6 +17,7 @@ import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.image.Image;
 import io.github.mianalysis.mia.object.image.ImageFactory;
+import io.github.mianalysis.mia.object.image.ImgPlusImage;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
 import io.github.mianalysis.mia.object.parameters.OutputImageP;
@@ -29,6 +30,19 @@ import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Preferences;
 import io.github.mianalysis.mia.object.system.Status;
+import net.imagej.ImageJ;
+import net.imagej.ImgPlus;
+import net.imagej.axis.Axes;
+import net.imagej.ops.OpService;
+import net.imagej.ops.Ops;
+import net.imagej.ops.special.computer.Computers;
+import net.imagej.ops.special.computer.UnaryComputerOp;
+import net.imglib2.FinalDimensions;
+import net.imglib2.cache.img.DiskCachedCellImgFactory;
+import net.imglib2.cache.img.DiskCachedCellImgOptions;
+import net.imglib2.display.projector.Projector;
+import net.imglib2.img.Img;
+import net.imglib2.img.display.imagej.ImageJFunctions;
 import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
 
@@ -46,7 +60,8 @@ public class ProjectImage < T extends RealType< T > & NativeType< T >> extends M
     public static final String PROJECTION_MODE = "Projection mode";
 
     public ProjectImage(Modules modules) {
-        super("Project image",modules);
+        super("Project image", modules);
+        il2Support = IL2Support.PARTIAL;
     }
 
     public interface ProjectionModes {
@@ -61,33 +76,58 @@ public class ProjectImage < T extends RealType< T > & NativeType< T >> extends M
 
     }
 
-//    public Image project(Image inputImage, String projectionDimension, String projectionMode) {
-//        final ImageJ ij = new ImageJ();
-//
-//        ImgPlus inputImg = inputImage.getImgPlus();
-//
-//        int d;
-//        int[] projected_dimensions = new int[inputImg.numDimensions()-1];
-//        int dim = inputImg.dimensionIndex(Axes.Z);
-//        for (d=0; d < inputImg.numDimensions();++d){
-//            if(d != dim) projected_dimensions[d]= (int) inputImg.dimension(d);
-//        }
-//
-//        Img<T> proj = (Img<T>) ij.op().create().img(projected_dimensions);
-//
-//        // 1.  Use Computers.unary to get op
-//        //UnaryComputerOp mean_op =Computers.unary(ij.op(), Ops.Stats.Mean.class, RealType.class, Iterable.class);
-//
-//        // or 2. Cast it
-//        UnaryComputerOp mean_op =(UnaryComputerOp) ij.op().op(Ops.Stats.Mean.NAME, inputImg);
-//
-//        Img<T> projection=(Img<T>)ij.op().transform().project(proj, inputImg, mean_op, dim);
-//
-//        ij.ui().show(projection);
-//
-//        return null;
-//
-//    }
+   public Image<T> project(Image inputImage, String projectionDimension, String projectionMode) {
+       ImgPlus<T> inputImg = inputImage.getImgPlus();
+
+       ImageJFunctions.show(inputImg);
+       int d = 0;
+       int[] projected_dimensions = new int[inputImg.numDimensions()-1];
+       int dim = inputImg.dimensionIndex(Axes.Z);
+       MIA.log.writeDebug("C " + inputImg.dimensionIndex(Axes.CHANNEL));
+       MIA.log.writeDebug("Z " + inputImg.dimensionIndex(Axes.Z));
+       MIA.log.writeDebug("T "+inputImg.dimensionIndex(Axes.TIME));
+       for (int i=0;i<inputImg.numDimensions();i++)
+           if (i != dim) {
+               MIA.log.writeDebug("d "+d);
+               MIA.log.writeDebug("i " + i);
+               MIA.log.writeDebug("projected_dimensions[d++] " + projected_dimensions[d]);
+               MIA.log.writeDebug("inputImg.dimension(i) "+inputImg.dimension(i));
+               projected_dimensions[d++] = (int) inputImg.dimension(i);
+           }
+       
+       for (int currDim:projected_dimensions)
+           MIA.log.writeDebug(currDim);
+
+    //    ImageJ ij = new ImageJ();       
+    // OpService ops = MIA.ijService.getContext().getService(OpService.class);
+        ImageJ ij = MIA.ij;
+        
+        // int[] projected_dimensions = new int[inputImg.numDimensions() - 1];
+        T type = (T) inputImg.firstElement();
+        DiskCachedCellImgOptions options = ImgPlusImage.getCellImgOptions();
+        ImgPlus<T> proj = new ImgPlus<>(new DiskCachedCellImgFactory(type, options).create(projected_dimensions));
+    
+        // Img<T> proj = (Img<T>) ij.op().create().img(new FinalDimensions(projected_dimensions));
+        UnaryComputerOp maxOp = Computers.unary(ij.op(),Ops.Stats.Max.class,RealType.class, Iterable.class);
+        Img<T> projection = (Img<T>) ij.op().transform().project(proj, inputImg, maxOp, 2);
+
+        ImageJFunctions.show(proj);
+        ImageJFunctions.show(projection);
+    //    Img<T> proj = (Img<T>) ij.op().create().img(projected_dimensions);
+
+    //    // 1.  Use Computers.unary to get op
+    //    //UnaryComputerOp mean_op =Computers.unary(ij.op(), Ops.Stats.Mean.class, RealType.class, Iterable.class);
+
+    //    // or 2. Cast it
+    //    UnaryComputerOp mean_op =(UnaryComputerOp) ij.op().op(Ops.Stats.Mean.NAME, inputImg);
+
+    //    Img<T> projection=(Img<T>)ij.op().transform().project(proj, inputImg, mean_op, dim);
+
+    //    ij.ui().show(projection);
+
+       return null;
+
+   }
 
     public static Image projectImageInZ(Image inputImage, String outputImageName, String projectionMode) {
         // If the image has a single slice we don't need to do the projection
@@ -160,7 +200,7 @@ public class ProjectImage < T extends RealType< T > & NativeType< T >> extends M
         String projectionMode = parameters.getValue(PROJECTION_MODE);
 
         // Create max projection image
-        Image outputImage = projectImageInZ(inputImage,outputImageName,projectionMode);
+        Image outputImage = project(inputImage,outputImageName,projectionMode);
 
         // Adding projected image to workspace
         workspace.addImage(outputImage);

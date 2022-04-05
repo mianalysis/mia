@@ -55,6 +55,9 @@ public class MIA implements Command {
     @Parameter
     public static ImageJService ijService;
 
+    @Parameter
+    public static ImageJ ij;
+
 
     public static void main(String[] args) throws Exception {
         debug = true;
