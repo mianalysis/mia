@@ -18,10 +18,9 @@ import io.github.mianalysis.mia.object.units.TemporalUnit;
 import io.github.sjcross.common.object.volume.PointOutOfRangeException;
 import io.github.sjcross.common.object.volume.SpatCal;
 import io.github.sjcross.common.object.volume.VolumeType;
+import io.github.sjcross.common.process.ImgPlusTools;
 import io.github.sjcross.common.process.IntensityMinMax;
 import net.imagej.ImgPlus;
-import net.imagej.axis.Axes;
-import net.imagej.axis.CalibratedAxis;
 import net.imglib2.img.ImagePlusAdapter;
 import net.imglib2.img.display.imagej.ImageJFunctions;
 import net.imglib2.type.NativeType;
@@ -43,11 +42,7 @@ public class ImagePlusImage <T extends RealType<T> & NativeType<T>> extends Imag
         
         // The ImgPlus is duplicated to ensure it's not a virtual stack
         this.imagePlus = ImageJFunctions.wrap(img, name).duplicate();
-
-        // Calibrations don't always appear to transfer over, so doing this explicitly
-        Calibration calibration = imagePlus.getCalibration();
-        if (img.dimensionIndex(Axes.Z) != -1)
-            calibration.pixelDepth = ((CalibratedAxis) img.axis(img.dimensionIndex(Axes.Z))).calibratedValue(1);
+        ImgPlusTools.applyAxes(img, this.imagePlus);
         
     }
 
