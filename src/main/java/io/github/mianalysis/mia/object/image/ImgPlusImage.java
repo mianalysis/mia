@@ -164,18 +164,24 @@ public class ImgPlusImage <T extends RealType<T> & NativeType<T>> extends Image<
     public RandomAccessibleInterval<T> forceImgPlusToXYCZT(ImgPlus<T> imgIn) {
         RandomAccessibleInterval<T> raiOut = imgIn;
 
+        MIA.log.writeDebug("C: "+imgIn.dimensionIndex(Axes.CHANNEL));
         if (imgIn.dimensionIndex(Axes.CHANNEL) == -1) {
             int nd = raiOut.numDimensions();
+            MIA.log.writeDebug("    "+nd);
             raiOut = Views.permute(Views.addDimension(raiOut, 0, 0), 2, nd);
         }
     
+        MIA.log.writeDebug("Z: "+imgIn.dimensionIndex(Axes.Z));
         if (imgIn.dimensionIndex(Axes.Z) == -1) {
             int nd = raiOut.numDimensions();
+            MIA.log.writeDebug("    "+nd);
             raiOut = Views.permute(Views.addDimension(raiOut, 0, 0), 3, nd);
         }
     
+        MIA.log.writeDebug("T: "+imgIn.dimensionIndex(Axes.TIME));
         if (imgIn.dimensionIndex(Axes.TIME) == -1) {
             int nd = raiOut.numDimensions();
+            MIA.log.writeDebug("    "+nd);
             raiOut = Views.permute(Views.addDimension(raiOut, 0, 0), 4, nd);
         }
 

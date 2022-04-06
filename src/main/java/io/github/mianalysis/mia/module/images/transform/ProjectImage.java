@@ -295,6 +295,7 @@ import net.imagej.ImgPlus;
 import net.imagej.axis.Axes;
 import net.imagej.axis.AxisType;
 import net.imagej.axis.CalibratedAxis;
+import net.imagej.axis.DefaultLinearAxis;
 import net.imagej.ops.OpService;
 import net.imagej.ops.Ops;
 import net.imagej.ops.special.computer.UnaryComputerOp;
@@ -311,7 +312,7 @@ import net.imglib2.view.Views;
 /**
  * Created by sc13967 on 04/05/2017.
  */
-@Plugin(type = Module.class, priority=Priority.LOW, visible=true)
+@Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class ProjectImage<T extends RealType<T> & NativeType<T>> extends Module {
     public static final String INPUT_SEPARATOR = "Image input/output";
     public static final String INPUT_IMAGE = "Input image";
@@ -328,13 +329,14 @@ public class ProjectImage<T extends RealType<T> & NativeType<T>> extends Module 
     }
 
     public interface AxisModes {
-        String X = "X";
-        String Y = "Y";
+        // String X = "X";
+        // String Y = "Y";
         String Z = "Z";
         String CHANNEL = "Channel";
         String TIME = "Time";
 
-        String[] ALL = new String[] { X, Y, Z, CHANNEL, TIME };
+        // String[] ALL = new String[] { X, Y, Z, CHANNEL, TIME };
+        String[] ALL = new String[] { Z, CHANNEL, TIME };
 
     }
 
@@ -352,10 +354,10 @@ public class ProjectImage<T extends RealType<T> & NativeType<T>> extends Module 
 
     static AxisType getAxis(String axisName) {
         switch (axisName) {
-            case AxisModes.X:
-                return Axes.X;
-            case AxisModes.Y:
-                return Axes.Y;
+            // case AxisModes.X:
+            //     return Axes.X;
+            // case AxisModes.Y:
+            //     return Axes.Y;
             case AxisModes.CHANNEL:
                 return Axes.CHANNEL;
             case AxisModes.Z:
@@ -386,16 +388,21 @@ public class ProjectImage<T extends RealType<T> & NativeType<T>> extends Module 
 
     public static <T extends RealType<T> & NativeType<T>> Image projectImageInZ(Image inputImage,
             String outputImageName, String projectionMode) {
-        return project(inputImage, outputImageName, AxisModes.X, AxisModes.Y, AxisModes.Z, projectionMode);
+        // return project(inputImage, outputImageName, AxisModes.X, AxisModes.Y, AxisModes.Z, projectionMode);
+        return project(inputImage, outputImageName, AxisModes.Z, projectionMode);
     }
 
+    // public static <T extends RealType<T> & NativeType<T>> Image project(Image inputImage, String outputImageName,
+    //         String outputXAxis, String outputYAxis, String projectionAxis, String projectionMode) {
     public static <T extends RealType<T> & NativeType<T>> Image project(Image inputImage, String outputImageName,
-            String outputXAxis, String outputYAxis, String projectionAxis, String projectionMode) {
+            String projectionAxis, String projectionMode) {
         ImgPlus<T> img = inputImage.getImgPlus();
 
         // Getting key axis indices
-        AxisType xType = getAxis(outputXAxis);
-        AxisType yType = getAxis(outputYAxis);
+        // AxisType xType = getAxis(outputXAxis);
+        // AxisType yType = getAxis(outputYAxis);
+        AxisType xType = Axes.X;
+        AxisType yType = Axes.Y;
         AxisType projType = getAxis(projectionAxis);
 
         // Check specified axes exist, else return null
@@ -433,16 +440,25 @@ public class ProjectImage<T extends RealType<T> & NativeType<T>> extends Module 
         T type = (T) img.firstElement();
         DiskCachedCellImgOptions options = ImgPlusImage.getCellImgOptions();
         ImgPlus<T> proj = new ImgPlus<>(new DiskCachedCellImgFactory(type, options).create(projected_dimensions));
-        // ImgPlus<T> proj = ImgPlus.wrap((Img<T>) ops.create().img(new
-        // FinalDimensions(projected_dimensions), perm.randomAccess().get()));
 
         // Apply transformation
         UnaryComputerOp mean_op = (UnaryComputerOp) ops.op(getProjection(projectionMode), img);
         ops.transform().project(proj, perm, mean_op, 2);
 
         // Update axes
-        for (int cD = 0; cD < proj.numDimensions(); cD++)
-            proj.setAxis(axes.get(cD), cD);
+        int dOut = 0;
+        for (int dIn = 0; dIn < img.numDimensions(); dIn++) {
+            if (dIn != img.dimensionIndex(projType)) {
+                CalibratedAxis axIn = img.axis(dIn);
+                CalibratedAxis axOut = new DefaultLinearAxis(axIn.type(), axIn.unit(), axIn.calibratedValue(1));
+                proj.setAxis(axOut, dOut++);
+            }
+        }
+
+        // proj.setAxis(axes.get(cD), cD);
+
+        // ((CalibratedAxis) proj.axis(0)).setType(Axes.X);
+        // ((CalibratedAxis) proj.axis(1)).setType(Axes.Y);
 
         // ImagePlus outputImagePlus = ImageJFunctions.wrap(proj,outputImageName);
         // ImgPlusTools.applyAxes(proj,outputImagePlus);
@@ -455,8 +471,6 @@ public class ProjectImage<T extends RealType<T> & NativeType<T>> extends Module 
     static <T extends RealType<T> & NativeType<T>> Image getNonProjectedImage(ImgPlus<T> img, String outputImageName,
             AxisType xType, AxisType yType) {
         HashMap<Integer, AxisType> axisAssignments = getAxisAssignments(img);
-
-        OpService ops = MIA.ijService.getContext().getService(OpService.class);
 
         // Permute axes, so that display axes X and Y are at positions 0 and 1 and
         // projection axis is at position 2
@@ -572,13 +586,14 @@ public class ProjectImage<T extends RealType<T> & NativeType<T>> extends Module 
 
         // Getting parameters
         String outputImageName = parameters.getValue(OUTPUT_IMAGE);
-        String xAxis = parameters.getValue(AXIS_1);
-        String yAxis = parameters.getValue(AXIS_2);
+        // String xAxis = parameters.getValue(AXIS_1);
+        // String yAxis = parameters.getValue(AXIS_2);
         String projectionAxis = parameters.getValue(PROJECTION_AXIS);
         String projectionMode = parameters.getValue(PROJECTION_MODE);
 
         // Create max projection image
-        Image outputImage = project(inputImage, outputImageName, xAxis, yAxis, projectionAxis, projectionMode);
+        // Image outputImage = project(inputImage, outputImageName, xAxis, yAxis, projectionAxis, projectionMode);
+        Image outputImage = project(inputImage, outputImageName, projectionAxis, projectionMode);
 
         // Adding projected image to workspace
         workspace.addImage(outputImage);
@@ -596,8 +611,8 @@ public class ProjectImage<T extends RealType<T> & NativeType<T>> extends Module 
         parameters.add(new InputImageP(INPUT_IMAGE, this));
         parameters.add(new OutputImageP(OUTPUT_IMAGE, this));
         parameters.add(new SeparatorP(PROJECTION_SEPARATOR, this));
-        parameters.add(new ChoiceP(AXIS_1, this, AxisModes.X, AxisModes.ALL));
-        parameters.add(new ChoiceP(AXIS_2, this, AxisModes.Y, AxisModes.ALL));
+        // parameters.add(new ChoiceP(AXIS_1, this, AxisModes.X, AxisModes.ALL));
+        // parameters.add(new ChoiceP(AXIS_2, this, AxisModes.Y, AxisModes.ALL));
         parameters.add(new ChoiceP(PROJECTION_AXIS, this, AxisModes.Z, AxisModes.ALL));
         parameters.add(new ChoiceP(PROJECTION_MODE, this, ProjectionModes.AVERAGE, ProjectionModes.ALL));
 
