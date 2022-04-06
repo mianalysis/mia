@@ -24,6 +24,10 @@ import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Preferences;
 import io.github.mianalysis.mia.object.system.Status;
 import net.imagej.ImgPlus;
+import net.imagej.axis.Axes;
+import net.imagej.axis.Axis;
+import net.imagej.axis.AxisType;
+import net.imagej.axis.CalibratedAxis;
 import net.imglib2.Cursor;
 import net.imglib2.RandomAccess;
 import net.imglib2.cache.img.DiskCachedCellImgFactory;
@@ -68,7 +72,16 @@ public class TestBigImage<T extends RealType<T> & NativeType<T>> extends Module 
         long[] dims = new long[] {w,h,d};
         DiskCachedCellImgOptions options = ImgPlusImage.getCellImgOptions();        
         ImgPlus<T> img = new ImgPlus<>(new DiskCachedCellImgFactory(new FloatType(), options).create(dims));
-                
+        CalibratedAxis xAxis = img.axis(0);
+        xAxis.setUnit("um");
+        xAxis.setType(Axes.X);
+        CalibratedAxis yAxis = img.axis(1);
+        yAxis.setUnit("um");
+        yAxis.setType(Axes.Y);
+        CalibratedAxis zAxis = img.axis(2);
+        zAxis.setUnit("um");
+        zAxis.setType(Axes.Z);
+                        
         // Creating a ramp intensity gradient along the x-axis, so operations can be tested
         RandomAccess ra = img.randomAccess();
         Random random = new Random();
