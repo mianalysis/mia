@@ -10,9 +10,7 @@ import com.drew.lang.annotations.Nullable;
 
 import ij.ImagePlus;
 import ij.measure.ResultsTable;
-import ij.process.ImageProcessor;
 import ij.process.LUT;
-import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
@@ -20,10 +18,6 @@ import io.github.mianalysis.mia.object.VolumeTypesInterface;
 import io.github.mianalysis.mia.object.measurements.Measurement;
 import io.github.mianalysis.mia.object.refs.ImageMeasurementRef;
 import io.github.mianalysis.mia.object.refs.collections.ImageMeasurementRefs;
-import io.github.mianalysis.mia.object.units.TemporalUnit;
-import io.github.sjcross.common.mathfunc.CumStat;
-import io.github.sjcross.common.object.volume.PointOutOfRangeException;
-import io.github.sjcross.common.object.volume.SpatCal;
 import io.github.sjcross.common.object.volume.VolumeType;
 import net.imagej.ImgPlus;
 import net.imglib2.type.NativeType;
@@ -48,7 +42,11 @@ public abstract class Image <T extends RealType<T> & NativeType<T>> {
 
     public abstract void setImgPlus(ImgPlus<T> img);
 
-    public abstract Objs convertImageToObjects(String type, String outputObjectsName, boolean singleObject);
+    public abstract Objs initialiseEmptyObjs(String outputObjectsName);
+
+    public abstract Objs convertImageToSingleObjects(String type, String outputObjectsName, boolean blackBackground);
+
+    public abstract Objs convertImageToObjects(String type, String outputObjectsName);
 
     public abstract void addObject(Obj obj, float hue);
 
@@ -65,16 +63,6 @@ public abstract class Image <T extends RealType<T> & NativeType<T>> {
     public Objs convertImageToObjects(VolumeType volumeType, String outputObjectsName) {
         String type = getVolumeType(volumeType);
         return convertImageToObjects(type, outputObjectsName);
-    }
-
-    public Objs convertImageToObjects(VolumeType volumeType, String outputObjectsName, boolean singleObject) {
-        String type = getVolumeType(volumeType);
-        return convertImageToObjects(type, outputObjectsName, singleObject);
-    }
-
-    public Objs convertImageToObjects(String type, String outputObjectsName) {
-        return convertImageToObjects(type, outputObjectsName, false);
-
     }
 
     public void addMeasurement(Measurement measurement) {
@@ -162,7 +150,7 @@ public abstract class Image <T extends RealType<T> & NativeType<T>> {
 
     // PACKAGE PRIVATE METHODS
 
-    VolumeType getVolumeType(String volumeType) {
+    public static VolumeType getVolumeType(String volumeType) {
         switch (volumeType) {
             case VolumeTypesInterface.OCTREE:
                 return VolumeType.OCTREE;
@@ -176,7 +164,7 @@ public abstract class Image <T extends RealType<T> & NativeType<T>> {
         }
     }
 
-    String getVolumeType(VolumeType volumeType) {
+    public static String getVolumeType(VolumeType volumeType) {
         switch (volumeType) {
             case OCTREE:
                 return VolumeTypesInterface.OCTREE;
@@ -200,105 +188,5 @@ public abstract class Image <T extends RealType<T> & NativeType<T>> {
 
     public void setMeasurements(LinkedHashMap<String, Measurement> singleMeasurements) {
         this.measurements = singleMeasurements;
-    }
-
-    class IDLink {
-        private final int ID;
-        private final CumStat csX;
-        private final CumStat csY;
-        private final CumStat csZ;
-        private VolumeType volumeType = null;
-
-        IDLink(int ID, @Nullable VolumeType volumeType) {
-            this.ID = ID;
-            this.volumeType = volumeType;
-
-            this.csX = new CumStat();
-            this.csY = new CumStat();
-            this.csZ = new CumStat();
-
-        }
-
-        void addMeasurement(int x, int y, int z) {
-            csX.addMeasure(x);
-            csY.addMeasure(y);
-            csZ.addMeasure(z);
-        }
-
-        VolumeType getVolumeType() {
-            if (volumeType == null)
-                volumeType = calculateVolumeType();
-            return volumeType;
-        }
-
-        private VolumeType calculateVolumeType() {
-            double N = csX.getN();
-
-            // If this point is less than 50 voxels, use PointList
-            if (N < 50)
-                return VolumeType.POINTLIST;
-
-            // Ratio of xy to z
-            ImagePlus imagePlus = getImagePlus();
-            double xyToZ = imagePlus.getCalibration().pixelDepth / imagePlus.getCalibration().pixelWidth;
-            MIA.log.writeMessage("        XY to Z " + xyToZ);
-
-            // If distribution of points indicates a sparse object, use PointList. This is
-            // calculated differently for 2D/3D
-            if (csZ.getMax() - csZ.getMin() == 0) {
-                // Assuming a circle of volume equal the number of coordinates, the expected
-                // radius is
-                double expectedRadius = Math.sqrt(N / Math.PI);
-                double expectedStdev = 4.24 * expectedRadius;
-                MIA.log.writeMessage("        2D, Exp stdev = " + expectedStdev + ", actual stdev = "
-                        + ((csX.getStd() + csY.getStd()) / 2));
-                if ((csX.getStd() + csY.getStd()) / 2 < expectedStdev * 2)
-                    return VolumeType.QUADTREE;
-
-            } else {
-                // Assuming a sphere of volume equal the number of coordinates (corrected for
-                // different XY and Z
-                // sampling), the expected radius is
-                double expectedRadius = Math.cbrt(N * xyToZ * 3d / (4d * Math.PI));
-                double expectedStdev = 5.16 * expectedRadius;
-                MIA.log.writeMessage("        3D, Exp stdev = " + expectedStdev + ", actual stdev = "
-                        + ((csX.getStd() + csY.getStd() + csZ.getStd() * xyToZ) / 3));
-                if ((csX.getStd() + csY.getStd() + csZ.getStd() * xyToZ) / 3 < expectedStdev * 2) {
-                    if (xyToZ > 3)
-                        return VolumeType.QUADTREE;
-                    else
-                        return VolumeType.OCTREE;
-                }
-            }
-
-            // If distribution of points indicates an elongated object, use PointList
-            if (csZ.getMax() - csZ.getMin() == 0) {
-                CumStat cs = new CumStat();
-                cs.addMeasure(csX.getStd());
-                cs.addMeasure(csY.getStd());
-                MIA.log.writeMessage("        2D, Ratio " + (cs.getStd() / cs.getMean()));
-                if (cs.getStd() / cs.getMean() < 2)
-                    return VolumeType.QUADTREE;
-            } else {
-                CumStat cs = new CumStat();
-                cs.addMeasure(csX.getStd());
-                cs.addMeasure(csY.getStd());
-                cs.addMeasure(csZ.getStd());
-                MIA.log.writeMessage("        3D, Ratio " + (cs.getStd() / cs.getMean()));
-                if (cs.getStd() / cs.getMean() < 2) {
-                    if (xyToZ > 3)
-                        return VolumeType.QUADTREE;
-                    else
-                        return VolumeType.OCTREE;
-                }
-            }
-
-            return VolumeType.POINTLIST;
-
-        }
-
-        int getID() {
-            return ID;
-        }
     }
 }

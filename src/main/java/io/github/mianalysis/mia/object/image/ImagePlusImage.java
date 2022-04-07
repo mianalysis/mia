@@ -19,7 +19,6 @@ import io.github.sjcross.common.object.Point;
 import io.github.sjcross.common.object.volume.PointOutOfRangeException;
 import io.github.sjcross.common.object.volume.SpatCal;
 import io.github.sjcross.common.object.volume.VolumeType;
-import io.github.sjcross.common.process.ImgPlusTools;
 import io.github.sjcross.common.process.IntensityMinMax;
 import net.imagej.ImgPlus;
 import net.imglib2.img.ImagePlusAdapter;
@@ -49,7 +48,27 @@ public class ImagePlusImage<T extends RealType<T> & NativeType<T>> extends Image
 
     // PUBLIC METHODS
 
-    public Objs convertImageToObjects(String type, String outputObjectsName, boolean singleObject) {
+    public Objs initialiseEmptyObjs(String outputObjectsName) {
+        SpatCal cal = SpatCal.getFromImage(imagePlus);
+        int nFrames = imagePlus.getNFrames();
+        double frameInterval = imagePlus.getCalibration().frameInterval;
+
+        return new Objs(outputObjectsName, cal, nFrames, frameInterval,
+                TemporalUnit.getOMEUnit());
+
+    }
+
+    @Override
+    public Objs convertImageToSingleObjects(String type, String outputObjectsName, boolean blackBackground) {
+        return convertImageToObjects(type, outputObjectsName, true, blackBackground);
+    }
+
+    @Override
+    public Objs convertImageToObjects(String type, String outputObjectsName) {
+        return convertImageToObjects(type, outputObjectsName, false, true);
+    }
+
+    Objs convertImageToObjects(String type, String outputObjectsName, boolean singleObject, boolean blackBackground) {
         // Getting spatial calibration
         double dppXY = imagePlus.getCalibration().pixelWidth;
         double dppZ = imagePlus.getCalibration().pixelDepth;
@@ -74,11 +93,7 @@ public class ImagePlusImage<T extends RealType<T> & NativeType<T>> extends Image
 
         for (int c = 0; c < nChannels; c++) {
             for (int t = 0; t < nFrames; t++) {
-                // If using optimised type, determine types for each object, otherwise use a
-                // blank map
-                HashMap<Integer, IDLink> links = volumeType == null
-                        ? getOptimisedLinks(c, t, outputObjects, singleObject)
-                        : new HashMap<>();
+                HashMap<Integer, Integer> links = new HashMap<>();
 
                 for (int z = 0; z < nSlices; z++) {
                     imagePlus.setPosition(c + 1, z + 1, t + 1);
@@ -87,6 +102,10 @@ public class ImagePlusImage<T extends RealType<T> & NativeType<T>> extends Image
                             // Getting the ID of this object in the current stack.
                             int imageID = (int) ipr.getPixelValue(x, y);
 
+                            // Checking for inversion
+                            if (singleObject)
+                                imageID = (blackBackground && imageID != 0) || (!blackBackground && imageID == 0) ? 1 : 0;
+                        
                             // If assigning a single object ID, this is the same value for all objects
                             if (singleObject && imageID != 0)
                                 imageID = 1;
@@ -94,15 +113,13 @@ public class ImagePlusImage<T extends RealType<T> & NativeType<T>> extends Image
                             if (imageID != 0) {
                                 // If not using optimised type, each link needs to be added here
                                 if (!links.containsKey(imageID))
-                                    links.put(imageID, new IDLink(outputObjects.getAndIncrementID(), volumeType));
+                                    links.put(imageID, outputObjects.getAndIncrementID());
 
-                                IDLink link = links.get(imageID);
-                                int outID = link.getID();
-                                VolumeType outType = link.getVolumeType();
+                                int outID = links.get(imageID);
                                 int finalT = t;
 
                                 outputObjects.computeIfAbsent(outID,
-                                        k -> new Obj(outputObjects, outType, outID).setT(finalT));
+                                        k -> new Obj(outputObjects, volumeType, outID).setT(finalT));
                                 try {
                                     outputObjects.get(outID).add(x, y, z);
                                 } catch (PointOutOfRangeException e) {
@@ -124,39 +141,6 @@ public class ImagePlusImage<T extends RealType<T> & NativeType<T>> extends Image
             obj.finalise();
 
         return outputObjects;
-
-    }
-
-    HashMap<Integer, IDLink> getOptimisedLinks(int c, int t, Objs outputObjects, boolean singleObject) {
-        ImagePlus imagePlus = getImagePlus();
-        int h = imagePlus.getHeight();
-        int w = imagePlus.getWidth();
-        int nSlices = imagePlus.getNSlices();
-
-        // Looping over all pixels in this stack and adding to the relevant CumStat
-        HashMap<Integer, IDLink> links = new HashMap<>();
-        for (int z = 0; z < nSlices; z++) {
-            imagePlus.setPosition(c, z + 1, t);
-            ImageProcessor ipr = imagePlus.getProcessor();
-            for (int x = 0; x < w; x++) {
-                for (int y = 0; y < h; y++) {
-                    // Getting the ID of this object in the current stack.
-                    int imageID = (int) ipr.getPixelValue(x, y);
-
-                    // If assigning a single object ID, this is the same value for all objects
-                    if (singleObject && imageID != 0)
-                        imageID = 1;
-
-                    if (imageID == 0)
-                        continue;
-                    links.putIfAbsent(imageID, new IDLink(outputObjects.getAndIncrementID(), null));
-                    links.get(imageID).addMeasurement(x, y, z);
-
-                }
-            }
-        }
-
-        return links;
 
     }
 

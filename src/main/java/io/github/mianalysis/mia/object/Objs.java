@@ -16,7 +16,7 @@ import io.github.mianalysis.mia.object.image.Image;
 import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.image.ImagePlusImage;
 import io.github.mianalysis.mia.object.image.ImgPlusImage;
-import io.github.mianalysis.mia.object.image.ImgPlusTools2;
+import io.github.mianalysis.mia.object.image.ImgPlusTools;
 import io.github.mianalysis.mia.object.measurements.Measurement;
 import io.github.mianalysis.mia.object.refs.ObjMeasurementRef;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
@@ -269,8 +269,6 @@ public class Objs extends LinkedHashMap<Integer, Obj> {
             dispIpl.setPosition(1, 1, 1);
             dispIpl.updateChannelAndDraw();
 
-        } else {
-            MIA.log.writeWarning("MIA doesn't currently support setting LUTs for images streamed directly from disc.");
         }
 
         return dispImage;
@@ -337,15 +335,15 @@ public class Objs extends LinkedHashMap<Integer, Obj> {
             case Preferences.DataStorageModes.STREAM_FROM_DRIVE:
                 switch (bitDepth) {
                     case 8:
-                        ImgPlus<UnsignedByteType> img8 = ImgPlusTools2.createNewImgPlus(spatCal, 1, nFrames,
+                        ImgPlus<UnsignedByteType> img8 = ImgPlusTools.createNewImgPlus(spatCal, 1, nFrames,
                                 new UnsignedByteType());
                         return ImageFactory.createImage(outputName, img8);
                     case 16:
-                        ImgPlus<UnsignedShortType> img16 = ImgPlusTools2.createNewImgPlus(spatCal, 1, nFrames,
+                        ImgPlus<UnsignedShortType> img16 = ImgPlusTools.createNewImgPlus(spatCal, 1, nFrames,
                                 new UnsignedShortType());
                         return ImageFactory.createImage(outputName, img16);
                     case 32:
-                        ImgPlus<FloatType> img32 = ImgPlusTools2.createNewImgPlus(spatCal, 1, nFrames,
+                        ImgPlus<FloatType> img32 = ImgPlusTools.createNewImgPlus(spatCal, 1, nFrames,
                                 new FloatType());
                         return ImageFactory.createImage(outputName, img32);
                 }

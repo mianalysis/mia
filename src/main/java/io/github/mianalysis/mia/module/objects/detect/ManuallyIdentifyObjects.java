@@ -338,7 +338,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
             applySpatialInterpolation(binaryImage);
 
             // Converting binary image back to objects
-            Obj interpObj = binaryImage.convertImageToObjects(type, inputObj.getName(), true).getFirst();
+            Obj interpObj = binaryImage.convertImageToSingleObjects(type, inputObj.getName(), true).getFirst();
             interpObj.setSpatialCalibration(inputObj.getSpatialCalibration());
             double[][] extents = inputObj.getExtents(true, false);
 
@@ -385,7 +385,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
             applyTemporalInterpolation(binaryImage);
 
             // Converting binary image back to objects
-            Objs interpObjs = binaryImage.convertImageToObjects(type, inputObjects.getName(), true);
+            Objs interpObjs = binaryImage.convertImageToSingleObjects(type, inputObjects.getName(), true);
 
             // Transferring new timepoint objects to inputObjects Objs
             Iterator<Obj> iterator = interpObjs.values().iterator();

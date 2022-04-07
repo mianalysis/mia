@@ -14,7 +14,7 @@ import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.image.Image;
 import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.image.ImgPlusImage;
-import io.github.mianalysis.mia.object.image.ImgPlusTools2;
+import io.github.mianalysis.mia.object.image.ImgPlusTools;
 import io.github.mianalysis.mia.object.parameters.OutputImageP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.refs.collections.ImageMeasurementRefs;
@@ -72,8 +72,7 @@ public class TestBigImage<T extends RealType<T> & NativeType<T>> extends Module 
         int h = 400;
         int d = 100;
 
-        ImgPlus<T> img = (ImgPlus<T>) ImgPlusTools2.createNewImgPlus(w, h, 1, d, 1, 0.2, 0.1, "um",
-                new FloatType());
+        ImgPlus<T> img = (ImgPlus<T>) ImgPlusTools.createNewImgPlus(w, h, 0, d, 0, 0.2, 0.1, "um",new FloatType());
                         
         // Creating a ramp intensity gradient along the x-axis, so operations can be tested
         RandomAccess ra = img.randomAccess();
