@@ -43,15 +43,13 @@ import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Preferences;
 import io.github.mianalysis.mia.object.system.Status;
+import io.github.mianalysis.mia.object.units.TemporalUnit;
 import io.github.sjcross.common.exceptions.IntegerOverflowException;
+import io.github.sjcross.common.object.volume.SpatCal;
 import net.imagej.ImgPlus;
-import net.imagej.ops.OpService;
 import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.algorithm.labeling.ConnectedComponentAnalysis;
-import net.imglib2.algorithm.labeling.ConnectedComponents;
 import net.imglib2.algorithm.neighborhood.DiamondShape;
-import net.imglib2.cache.img.DiskCachedCellImgFactory;
-import net.imglib2.cache.img.DiskCachedCellImgOptions;
 import net.imglib2.converter.Converter;
 import net.imglib2.converter.Converters;
 import net.imglib2.type.NativeType;
@@ -59,7 +57,6 @@ import net.imglib2.type.logic.BitType;
 import net.imglib2.type.numeric.IntegerType;
 import net.imglib2.type.numeric.RealType;
 import net.imglib2.type.numeric.integer.UnsignedLongType;
-import net.imglib2.type.numeric.integer.UnsignedShortType;
 
 /**
  * Created by sc13967 on 06/06/2017.
@@ -82,6 +79,7 @@ public class IdentifyObjects <T extends RealType<T> & NativeType<T>> extends Mod
 
     public IdentifyObjects(Modules modules) {
         super("Identify objects", modules);
+        il2Support = IL2Support.PARTIAL;
     }
 
     public interface BinaryLogic extends BinaryLogicInterface {
@@ -271,24 +269,16 @@ public class IdentifyObjects <T extends RealType<T> & NativeType<T>> extends Mod
     public static <T extends RealType<T> & NativeType<T>> Objs process(Image inputImage, String outputObjectsName, boolean blackBackground,
     boolean singleObject, int connectivity, String type, boolean multithread, int minStripWidth,
             boolean verbose) throws IntegerOverflowException, RuntimeException {
-        ImgPlus<T> img = inputImage.getImgPlus();
+        // SpatCal cal = SpatCal.getFromImage(inputImagePlus);
+        Objs outputObjects = new Objs(outputObjectsName, null, 1, 1, TemporalUnit.getOMEUnit());
 
-        // Creating the output image
-        long[] dims = new long[img.numDimensions()];
-        for (int i = 0; i < img.numDimensions(); i++)
-            dims[i] = img.dimension(i);
+        ImgPlus<T> inputImg = inputImage.getImgPlus();
+        ImgPlus<UnsignedLongType> outputImg = ImgPlusImage.createNewImgPlus(inputImg, new UnsignedLongType());
         
-        DiskCachedCellImgOptions options = ImgPlusImage.getCellImgOptions();
-        ImgPlus<UnsignedLongType> outputImg = new ImgPlus<>(
-                new DiskCachedCellImgFactory(new UnsignedLongType(), options).create(dims));
-        
-        RandomAccessibleInterval< BitType > mask = Converters.convert((RandomAccessibleInterval<IntegerType>) img, ( i, o ) -> o.set( i.getRealDouble() > 0 ? true : false ), new BitType() );
-                
+        Converter<IntegerType, BitType> converter = ( i, o ) -> o.set( i.getInteger() > 0 ? true : false );
+        RandomAccessibleInterval< BitType > mask = Converters.convert((RandomAccessibleInterval<IntegerType>) inputImg, converter, new BitType() );
         ConnectedComponentAnalysis.connectedComponents(mask, outputImg, new DiamondShape(1));
         
-        // RandomAccessibleInterval labeling = ops.labeling().cca(againBinary,
-        //         ConnectedComponents.StructuringElement.FOUR_CONNECTED);
-
         
         // ImagePlus inputImagePlus = inputImage.getImagePlus();
 

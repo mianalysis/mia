@@ -60,7 +60,7 @@ public class ProjectImage<T extends RealType<T> & NativeType<T>> extends Module 
 
     public ProjectImage(Modules modules) {
         super("Project image", modules);
-        il2Support = IL2Support.PARTIAL;
+        il2Support = IL2Support.FULL;
     }
 
     public interface AxisModes {

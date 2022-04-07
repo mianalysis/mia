@@ -20,6 +20,7 @@ import io.github.sjcross.common.object.volume.VolumeType;
 import net.imagej.ImgPlus;
 import net.imagej.axis.Axes;
 import net.imagej.axis.CalibratedAxis;
+import net.imglib2.Cursor;
 import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.cache.img.DiskCachedCellImgOptions;
 import net.imglib2.img.ImagePlusAdapter;
@@ -28,23 +29,23 @@ import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
 import net.imglib2.view.Views;
 
-public class ImgPlusImage <T extends RealType<T> & NativeType<T>> extends Image<T> {
+public class ImgPlusImage<T extends RealType<T> & NativeType<T>> extends Image<T> {
     private ImgPlus<T> img;
 
     public ImgPlusImage(String name, ImagePlus imagePlus) {
         this.name = name;
         this.img = ImagePlusAdapter.wrapImgPlus(imagePlus);
-        
+
     }
 
     public ImgPlusImage(String name, ImgPlus<T> img) {
         this.name = name;
         this.img = img;
-                
+
     }
-    
+
     public Objs convertImageToObjects(String type, String outputObjectsName, boolean singleObject) {
-        ImagePlus imagePlus = getImagePlus();
+        // ImagePlus imagePlus = getImagePlus();
 
         // Getting spatial calibration
         double dppXY = imagePlus.getCalibration().pixelWidth;
@@ -68,6 +69,8 @@ public class ImgPlusImage <T extends RealType<T> & NativeType<T>> extends Image<
         // Will return null if optimised
         VolumeType volumeType = getVolumeType(type);
 
+        
+
         for (int c = 0; c < nChannels; c++) {
             for (int t = 0; t < nFrames; t++) {
                 // If using optimised type, determine types for each object, otherwise use a
@@ -75,13 +78,15 @@ public class ImgPlusImage <T extends RealType<T> & NativeType<T>> extends Image<
                 HashMap<Integer, IDLink> links = volumeType == null
                         ? getOptimisedLinks(c, t, outputObjects, singleObject)
                         : new HashMap<>();
-
+                
                 for (int z = 0; z < nSlices; z++) {
-                    imagePlus.setPosition(c + 1, z + 1, t + 1);
-                    for (int x = 0; x < w; x++) {
-                        for (int y = 0; y < h; y++) {
-                            // Getting the ID of this object in the current stack.
-                            int imageID = (int) ipr.getPixelValue(x, y);
+                    long[][] interval = ImgPlusTools2.getSliceInterval(img, c, z, t);
+
+                    Cursor<T> cursor = Views.interval(img, interval[0], interval[1]).cursor();
+                    while (cursor.hasNext()) {
+                        cursor.get();
+                        cursor.getLongPosition(arg0)
+                    }
 
                             // If assigning a single object ID, this is the same value for all objects
                             if (singleObject && imageID != 0)
@@ -103,8 +108,7 @@ public class ImgPlusImage <T extends RealType<T> & NativeType<T>> extends Image<
                                     outputObjects.get(outID).add(x, y, z);
                                 } catch (PointOutOfRangeException e) {
                                 }
-                            }
-                        }
+                         
                     }
 
                     // Finalising the object store for this slice (this only does something for
@@ -159,29 +163,31 @@ public class ImgPlusImage <T extends RealType<T> & NativeType<T>> extends Image<
     // PUBLIC METHODS
 
     /*
-    *   The following method is from John Bogovic via the image.sc forum (https://forum.image.sc/t/imglib2-force-wrapped-imageplus-rai-dimensions-to-xyczt/56461/2), accessed 2022-03-30
-    */
+     * The following method is from John Bogovic via the image.sc forum
+     * (https://forum.image.sc/t/imglib2-force-wrapped-imageplus-rai-dimensions-to-
+     * xyczt/56461/2), accessed 2022-03-30
+     */
     public RandomAccessibleInterval<T> forceImgPlusToXYCZT(ImgPlus<T> imgIn) {
         RandomAccessibleInterval<T> raiOut = imgIn;
 
-        MIA.log.writeDebug("C: "+imgIn.dimensionIndex(Axes.CHANNEL));
+        MIA.log.writeDebug("C: " + imgIn.dimensionIndex(Axes.CHANNEL));
         if (imgIn.dimensionIndex(Axes.CHANNEL) == -1) {
             int nd = raiOut.numDimensions();
-            MIA.log.writeDebug("    "+nd);
+            MIA.log.writeDebug("    " + nd);
             raiOut = Views.permute(Views.addDimension(raiOut, 0, 0), 2, nd);
         }
-    
-        MIA.log.writeDebug("Z: "+imgIn.dimensionIndex(Axes.Z));
+
+        MIA.log.writeDebug("Z: " + imgIn.dimensionIndex(Axes.Z));
         if (imgIn.dimensionIndex(Axes.Z) == -1) {
             int nd = raiOut.numDimensions();
-            MIA.log.writeDebug("    "+nd);
+            MIA.log.writeDebug("    " + nd);
             raiOut = Views.permute(Views.addDimension(raiOut, 0, 0), 3, nd);
         }
-    
-        MIA.log.writeDebug("T: "+imgIn.dimensionIndex(Axes.TIME));
+
+        MIA.log.writeDebug("T: " + imgIn.dimensionIndex(Axes.TIME));
         if (imgIn.dimensionIndex(Axes.TIME) == -1) {
             int nd = raiOut.numDimensions();
-            MIA.log.writeDebug("    "+nd);
+            MIA.log.writeDebug("    " + nd);
             raiOut = Views.permute(Views.addDimension(raiOut, 0, 0), 4, nd);
         }
 
@@ -189,7 +195,8 @@ public class ImgPlusImage <T extends RealType<T> & NativeType<T>> extends Image<
 
     }
 
-    public static <T extends RealType<T> & NativeType<T>> void setCalibration(ImagePlus targetIpl, ImgPlus<T> sourceImg) {
+    public static <T extends RealType<T> & NativeType<T>> void setCalibration(ImagePlus targetIpl,
+            ImgPlus<T> sourceImg) {
         Calibration calibration = targetIpl.getCalibration();
 
         int xIdx = sourceImg.dimensionIndex(Axes.X);
@@ -208,16 +215,15 @@ public class ImgPlusImage <T extends RealType<T> & NativeType<T>> extends Image<
             CalibratedAxis tAxis = sourceImg.axis(tIdx);
             calibration.frameInterval = tAxis.calibratedValue(1);
             calibration.setTimeUnit(tAxis.unit());
-        }        
+        }
     }
 
     public void showImage(String title, @Nullable LUT lut, boolean normalise, boolean composite) {
         RandomAccessibleInterval<T> rai = forceImgPlusToXYCZT(img);
         ImagePlus ipl = ImageJFunctions.show(rai);
-        setCalibration(ipl,img);
+        setCalibration(ipl, img);
 
     }
-
 
     // GETTERS AND SETTERS
 
@@ -226,13 +232,13 @@ public class ImgPlusImage <T extends RealType<T> & NativeType<T>> extends Image<
 
         ImagePlus ipl = ImageJFunctions.wrap(rai, name);
         setCalibration(ipl, img);
-        
+
         return ipl;
 
     }
 
     public void setImagePlus(ImagePlus imagePlus) {
-        this.img = ImagePlusAdapter.wrapImgPlus(imagePlus);        
+        this.img = ImagePlusAdapter.wrapImgPlus(imagePlus);
     }
 
     public ImgPlus getImgPlus() {
@@ -346,10 +352,10 @@ public class ImgPlusImage <T extends RealType<T> & NativeType<T>> extends Image<
     public String toString() {
         return "ImgPlusImage (" + name + ")";
     }
-    
+
     public static DiskCachedCellImgOptions getCellImgOptions() {
         int[] cellSize = new int[] { 128, 128, 128 };
-        
+
         DiskCachedCellImgOptions options = DiskCachedCellImgOptions.options();
         if (MIA.preferences.isSpecifyCacheDirectory())
             options.cacheDirectory(Paths.get(MIA.preferences.getCacheDirectory()));
