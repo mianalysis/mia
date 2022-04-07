@@ -15,6 +15,7 @@ import ij.process.LUT;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.units.TemporalUnit;
+import io.github.sjcross.common.object.Point;
 import io.github.sjcross.common.object.volume.PointOutOfRangeException;
 import io.github.sjcross.common.object.volume.SpatCal;
 import io.github.sjcross.common.object.volume.VolumeType;
@@ -26,7 +27,7 @@ import net.imglib2.img.display.imagej.ImageJFunctions;
 import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
 
-public class ImagePlusImage <T extends RealType<T> & NativeType<T>> extends Image<T> {   
+public class ImagePlusImage<T extends RealType<T> & NativeType<T>> extends Image<T> {
     private ImagePlus imagePlus;
 
     // CONSTRUCTORS
@@ -39,12 +40,14 @@ public class ImagePlusImage <T extends RealType<T> & NativeType<T>> extends Imag
 
     public ImagePlusImage(String name, ImgPlus<T> img) {
         this.name = name;
-        
+
         // The ImgPlus is duplicated to ensure it's not a virtual stack
         this.imagePlus = ImageJFunctions.wrap(img, name).duplicate();
         ImgPlusTools.applyAxes(img, this.imagePlus);
-        
+
     }
+
+    // PUBLIC METHODS
 
     public Objs convertImageToObjects(String type, String outputObjectsName, boolean singleObject) {
         // Getting spatial calibration
@@ -157,9 +160,52 @@ public class ImagePlusImage <T extends RealType<T> & NativeType<T>> extends Imag
 
     }
 
-    // PUBLIC METHODS
+    @Override
+    public void addObject(Obj obj, float hue) {
+        int bitDepth = imagePlus.getBitDepth();
 
-    public void showImage(String title, @Nullable LUT lut, boolean normalise, boolean composite) {       
+        int tPos = obj.getT();
+        for (Point<Integer> point : obj.getCoordinateSet()) {
+            int xPos = point.x;
+            int yPos = point.y;
+            int zPos = point.z;
+
+            imagePlus.setPosition(1, zPos + 1, tPos + 1);
+
+            switch (bitDepth) {
+                case 8:
+                case 16:
+                imagePlus.getProcessor().putPixel(xPos, yPos, Math.round(hue * 255));
+                    break;
+                case 32:
+                imagePlus.getProcessor().putPixelValue(xPos, yPos, hue);
+                    break;
+            }
+        }
+    }
+
+    public void addObjectCentroid(Obj obj, float hue) {
+        int bitDepth = imagePlus.getBitDepth();
+
+        int tPos = obj.getT();
+        int xPos = (int) Math.round(obj.getXMean(true));
+        int yPos = (int) Math.round(obj.getYMean(true));
+        int zPos = (int) Math.round(obj.getZMean(true, false));
+
+        imagePlus.setPosition(1, zPos + 1, tPos + 1);
+
+        switch (bitDepth) {
+            case 8:
+            case 16:
+            imagePlus.getProcessor().putPixel(xPos, yPos, Math.round(hue * 255));
+                break;
+            case 32:
+            imagePlus.getProcessor().putPixelValue(xPos, yPos, hue);
+                break;
+        }
+    }
+
+    public void showImage(String title, @Nullable LUT lut, boolean normalise, boolean composite) {
         ImagePlus dispIpl = new Duplicator().run(imagePlus);
         dispIpl.setTitle(title);
         if (normalise) {
@@ -179,7 +225,6 @@ public class ImagePlusImage <T extends RealType<T> & NativeType<T>> extends Imag
         }
         dispIpl.show();
     }
-
 
     // GETTERS AND SETTERS
 
@@ -301,6 +346,6 @@ public class ImagePlusImage <T extends RealType<T> & NativeType<T>> extends Imag
 
     @Override
     public String toString() {
-        return "ImagePlusImage ("+name+")";
+        return "ImagePlusImage (" + name + ")";
     }
 }

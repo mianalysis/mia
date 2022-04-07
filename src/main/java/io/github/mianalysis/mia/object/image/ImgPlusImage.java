@@ -14,6 +14,7 @@ import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.units.TemporalUnit;
+import io.github.sjcross.common.object.Point;
 import io.github.sjcross.common.object.volume.PointOutOfRangeException;
 import io.github.sjcross.common.object.volume.SpatCal;
 import io.github.sjcross.common.object.volume.VolumeType;
@@ -21,16 +22,23 @@ import net.imagej.ImgPlus;
 import net.imagej.axis.Axes;
 import net.imagej.axis.CalibratedAxis;
 import net.imglib2.Cursor;
+import net.imglib2.RandomAccess;
 import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.cache.img.DiskCachedCellImgOptions;
 import net.imglib2.img.ImagePlusAdapter;
 import net.imglib2.img.display.imagej.ImageJFunctions;
 import net.imglib2.type.NativeType;
+import net.imglib2.type.numeric.IntegerType;
 import net.imglib2.type.numeric.RealType;
+import net.imglib2.type.numeric.integer.UnsignedByteType;
+import net.imglib2.type.numeric.integer.UnsignedShortType;
+import net.imglib2.type.numeric.real.FloatType;
 import net.imglib2.view.Views;
 
 public class ImgPlusImage<T extends RealType<T> & NativeType<T>> extends Image<T> {
     private ImgPlus<T> img;
+
+    // CONSTRUCTORS
 
     public ImgPlusImage(String name, ImagePlus imagePlus) {
         this.name = name;
@@ -44,22 +52,29 @@ public class ImgPlusImage<T extends RealType<T> & NativeType<T>> extends Image<T
 
     }
 
+    // PUBLIC METHODS
+
+    @Override
     public Objs convertImageToObjects(String type, String outputObjectsName, boolean singleObject) {
         // ImagePlus imagePlus = getImagePlus();
 
-        // Getting spatial calibration
-        double dppXY = imagePlus.getCalibration().pixelWidth;
-        double dppZ = imagePlus.getCalibration().pixelDepth;
-        String units = imagePlus.getCalibration().getUnits();
-        ImageProcessor ipr = imagePlus.getProcessor();
+        int xIdx = img.dimensionIndex(Axes.X);
+        int yIdx = img.dimensionIndex(Axes.Y);
+        int cIdx = img.dimensionIndex(Axes.CHANNEL);
+        int zIdx = img.dimensionIndex(Axes.Z);
+        int tIdx = img.dimensionIndex(Axes.TIME);
 
-        int h = imagePlus.getHeight();
-        int w = imagePlus.getWidth();
-        int nSlices = imagePlus.getNSlices();
-        int nFrames = imagePlus.getNFrames();
-        int nChannels = imagePlus.getNChannels();
+        double dppXY = xIdx == -1 ? 1 : img.axis(xIdx).calibratedValue(1);
+        double dppZ = zIdx == -1 ? 1 : img.axis(zIdx).calibratedValue(1);
+        String units = xIdx == -1 ? "px" : img.axis(xIdx).unit();
 
-        double frameInterval = imagePlus.getCalibration().frameInterval;
+        int w = (int) (xIdx == -1 ? 1 : img.dimension(xIdx));
+        int h = (int) (yIdx == -1 ? 1 : img.dimension(yIdx));
+        int nChannels = (int) (cIdx == -1 ? 1 : img.dimension(cIdx));
+        int nSlices = (int) (zIdx == -1 ? 1 : img.dimension(zIdx));
+        int nFrames = (int) (tIdx == -1 ? 1 : img.dimension(tIdx));
+
+        double frameInterval = tIdx == -1 ? 1 : img.axis(tIdx).calibratedValue(1);
 
         // Need to get coordinates and convert to a HCObject
         SpatCal calibration = new SpatCal(dppXY, dppZ, units, w, h, nSlices);
@@ -69,8 +84,6 @@ public class ImgPlusImage<T extends RealType<T> & NativeType<T>> extends Image<T
         // Will return null if optimised
         VolumeType volumeType = getVolumeType(type);
 
-        
-
         for (int c = 0; c < nChannels; c++) {
             for (int t = 0; t < nFrames; t++) {
                 // If using optimised type, determine types for each object, otherwise use a
@@ -78,37 +91,40 @@ public class ImgPlusImage<T extends RealType<T> & NativeType<T>> extends Image<T
                 HashMap<Integer, IDLink> links = volumeType == null
                         ? getOptimisedLinks(c, t, outputObjects, singleObject)
                         : new HashMap<>();
-                
+
                 for (int z = 0; z < nSlices; z++) {
                     long[][] interval = ImgPlusTools2.getSliceInterval(img, c, z, t);
 
-                    Cursor<T> cursor = Views.interval(img, interval[0], interval[1]).cursor();
+                    Cursor<IntegerType> cursor = (Cursor<IntegerType>) Views.interval(img, interval[0], interval[1])
+                            .localizingCursor();
                     while (cursor.hasNext()) {
-                        cursor.get();
-                        cursor.getLongPosition(arg0)
-                    }
+                        cursor.fwd();
 
-                            // If assigning a single object ID, this is the same value for all objects
-                            if (singleObject && imageID != 0)
-                                imageID = 1;
+                        int imageID = cursor.get().getInteger();
+                        int x = cursor.getIntPosition(xIdx);
+                        int y = cursor.getIntPosition(yIdx);
 
-                            if (imageID != 0) {
-                                // If not using optimised type, each link needs to be added here
-                                if (!links.containsKey(imageID))
-                                    links.put(imageID, new IDLink(outputObjects.getAndIncrementID(), volumeType));
+                        // If assigning a single object ID, this is the same value for all objects
+                        if (singleObject && imageID != 0)
+                            imageID = 1;
 
-                                IDLink link = links.get(imageID);
-                                int outID = link.getID();
-                                VolumeType outType = link.getVolumeType();
-                                int finalT = t;
+                        if (imageID != 0) {
+                            // If not using optimised type, each link needs to be added here
+                            if (!links.containsKey(imageID))
+                                links.put(imageID, new IDLink(outputObjects.getAndIncrementID(), volumeType));
 
-                                outputObjects.computeIfAbsent(outID,
-                                        k -> new Obj(outputObjects, outType, outID).setT(finalT));
-                                try {
-                                    outputObjects.get(outID).add(x, y, z);
-                                } catch (PointOutOfRangeException e) {
-                                }
-                         
+                            IDLink link = links.get(imageID);
+                            int outID = link.getID();
+                            VolumeType outType = link.getVolumeType();
+                            int finalT = t;
+
+                            outputObjects.computeIfAbsent(outID,
+                                    k -> new Obj(outputObjects, outType, outID).setT(finalT));
+                            try {
+                                outputObjects.get(outID).add(x, y, z);
+                            } catch (PointOutOfRangeException e) {
+                            }
+                        }
                     }
 
                     // Finalising the object store for this slice (this only does something for
@@ -128,31 +144,35 @@ public class ImgPlusImage<T extends RealType<T> & NativeType<T>> extends Image<T
     }
 
     HashMap<Integer, IDLink> getOptimisedLinks(int c, int t, Objs outputObjects, boolean singleObject) {
-        ImagePlus imagePlus = getImagePlus();
-        int h = imagePlus.getHeight();
-        int w = imagePlus.getWidth();
-        int nSlices = imagePlus.getNSlices();
+        int xIdx = img.dimensionIndex(Axes.X);
+        int yIdx = img.dimensionIndex(Axes.Y);
+        int zIdx = img.dimensionIndex(Axes.Z);
+
+        int nSlices = (int) (zIdx == -1 ? 1 : img.dimension(zIdx));
 
         // Looping over all pixels in this stack and adding to the relevant CumStat
         HashMap<Integer, IDLink> links = new HashMap<>();
         for (int z = 0; z < nSlices; z++) {
-            imagePlus.setPosition(c, z + 1, t);
-            ImageProcessor ipr = imagePlus.getProcessor();
-            for (int x = 0; x < w; x++) {
-                for (int y = 0; y < h; y++) {
-                    // Getting the ID of this object in the current stack.
-                    int imageID = (int) ipr.getPixelValue(x, y);
+            long[][] interval = ImgPlusTools2.getSliceInterval(img, 1, z, 1);
 
-                    // If assigning a single object ID, this is the same value for all objects
-                    if (singleObject && imageID != 0)
-                        imageID = 1;
+            Cursor<IntegerType> cursor = (Cursor<IntegerType>) Views.interval(img, interval[0], interval[1])
+                    .localizingCursor();
+            while (cursor.hasNext()) {
+                cursor.fwd();
 
-                    if (imageID == 0)
-                        continue;
-                    links.putIfAbsent(imageID, new IDLink(outputObjects.getAndIncrementID(), null));
-                    links.get(imageID).addMeasurement(x, y, z);
+                int imageID = cursor.get().getInteger();
+                int x = cursor.getIntPosition(xIdx);
+                int y = cursor.getIntPosition(yIdx);
 
-                }
+                // If assigning a single object ID, this is the same value for all objects
+                if (singleObject && imageID != 0)
+                    imageID = 1;
+
+                if (imageID == 0)
+                    continue;
+                links.putIfAbsent(imageID, new IDLink(outputObjects.getAndIncrementID(), null));
+                links.get(imageID).addMeasurement(x, y, z);
+
             }
         }
 
@@ -160,38 +180,44 @@ public class ImgPlusImage<T extends RealType<T> & NativeType<T>> extends Image<T
 
     }
 
-    // PUBLIC METHODS
+    @Override
+    public void addObject(Obj obj, float hue) {
+        T type = img.firstElement();
 
-    /*
-     * The following method is from John Bogovic via the image.sc forum
-     * (https://forum.image.sc/t/imglib2-force-wrapped-imageplus-rai-dimensions-to-
-     * xyczt/56461/2), accessed 2022-03-30
-     */
-    public RandomAccessibleInterval<T> forceImgPlusToXYCZT(ImgPlus<T> imgIn) {
-        RandomAccessibleInterval<T> raiOut = imgIn;
+        int xIdx = img.dimensionIndex(Axes.X);
+        int yIdx = img.dimensionIndex(Axes.Y);
+        int zIdx = img.dimensionIndex(Axes.Z);
+        int tIdx = img.dimensionIndex(Axes.TIME);
+        
+        int tPos = obj.getT();
+        RandomAccess<T> ra = img.randomAccess();
+        for (Point<Integer> point : obj.getCoordinateSet()) {
+            int xPos = point.x;
+            int yPos = point.y;
+            int zPos = point.z;
 
-        MIA.log.writeDebug("C: " + imgIn.dimensionIndex(Axes.CHANNEL));
-        if (imgIn.dimensionIndex(Axes.CHANNEL) == -1) {
-            int nd = raiOut.numDimensions();
-            MIA.log.writeDebug("    " + nd);
-            raiOut = Views.permute(Views.addDimension(raiOut, 0, 0), 2, nd);
+            if (xIdx != -1)
+                ra.setPosition(xPos, xIdx);
+            if (yIdx != -1)
+                ra.setPosition(yPos, yIdx);
+            if (zIdx != -1)
+                ra.setPosition(zPos, zIdx);
+            if (tIdx != -1)
+                ra.setPosition(tPos, tIdx);
+
+            if (type instanceof UnsignedByteType) {
+                ((UnsignedByteType) ra.get()).set(new UnsignedByteType(Math.round(hue * 255)));
+            } else if (type instanceof UnsignedShortType) {
+                ((UnsignedShortType) ra.get()).set(new UnsignedShortType(Math.round(hue * 65535)));
+            } else if (type instanceof FloatType) {
+                ((FloatType) ra.get()).set(new FloatType(hue));
+            }
         }
+    }
 
-        MIA.log.writeDebug("Z: " + imgIn.dimensionIndex(Axes.Z));
-        if (imgIn.dimensionIndex(Axes.Z) == -1) {
-            int nd = raiOut.numDimensions();
-            MIA.log.writeDebug("    " + nd);
-            raiOut = Views.permute(Views.addDimension(raiOut, 0, 0), 3, nd);
-        }
-
-        MIA.log.writeDebug("T: " + imgIn.dimensionIndex(Axes.TIME));
-        if (imgIn.dimensionIndex(Axes.TIME) == -1) {
-            int nd = raiOut.numDimensions();
-            MIA.log.writeDebug("    " + nd);
-            raiOut = Views.permute(Views.addDimension(raiOut, 0, 0), 4, nd);
-        }
-
-        return raiOut;
+    @Override
+    public void addObjectCentroid(Obj obj, float hue) {
+        // TODO Auto-generated method stub
 
     }
 
@@ -219,7 +245,7 @@ public class ImgPlusImage<T extends RealType<T> & NativeType<T>> extends Image<T
     }
 
     public void showImage(String title, @Nullable LUT lut, boolean normalise, boolean composite) {
-        RandomAccessibleInterval<T> rai = forceImgPlusToXYCZT(img);
+        RandomAccessibleInterval<T> rai = ImgPlusTools2.forceImgPlusToXYCZT(img);
         ImagePlus ipl = ImageJFunctions.show(rai);
         setCalibration(ipl, img);
 
@@ -228,7 +254,7 @@ public class ImgPlusImage<T extends RealType<T> & NativeType<T>> extends Image<T
     // GETTERS AND SETTERS
 
     public ImagePlus getImagePlus() {
-        RandomAccessibleInterval<T> rai = forceImgPlusToXYCZT(img);
+        RandomAccessibleInterval<T> rai = ImgPlusTools2.forceImgPlusToXYCZT(img);
 
         ImagePlus ipl = ImageJFunctions.wrap(rai, name);
         setCalibration(ipl, img);

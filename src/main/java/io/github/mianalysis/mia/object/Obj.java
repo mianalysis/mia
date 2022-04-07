@@ -447,52 +447,6 @@ public class Obj extends Volume {
 
     }
 
-    public void addToImage(Image image, float hue) {
-        ImagePlus ipl = image.getImagePlus();
-        int bitDepth = ipl.getBitDepth();
-
-        int tPos = getT();
-        for (Point<Integer> point : getCoordinateSet()) {
-            int xPos = point.x;
-            int yPos = point.y;
-            int zPos = point.z;
-
-            ipl.setPosition(1, zPos + 1, tPos + 1);
-
-            switch (bitDepth) {
-                case 8:
-                case 16:
-                    ipl.getProcessor().putPixel(xPos, yPos, Math.round(hue * 255));
-                    break;
-                case 32:
-                    ipl.getProcessor().putPixelValue(xPos, yPos, hue);
-                    break;
-            }
-        }
-    }
-
-    public void addCentroidToImage(Image image, float hue) {
-        ImagePlus ipl = image.getImagePlus();
-        int bitDepth = ipl.getBitDepth();
-
-        int tPos = getT();
-        int xPos = (int) Math.round(getXMean(true));
-        int yPos = (int) Math.round(getYMean(true));
-        int zPos = (int) Math.round(getZMean(true, false));
-
-        ipl.setPosition(1, zPos + 1, tPos + 1);
-
-        switch (bitDepth) {
-            case 8:
-            case 16:
-                ipl.getProcessor().putPixel(xPos, yPos, Math.round(hue * 255));
-                break;
-            case 32:
-                ipl.getProcessor().putPixelValue(xPos, yPos, hue);
-                break;
-        }
-    }
-
     public Image getAsTightImage(String imageName) {
         int[][] borderWidths = new int[][] { { 0, 0 }, { 0, 0 }, { 0, 0 } };
 

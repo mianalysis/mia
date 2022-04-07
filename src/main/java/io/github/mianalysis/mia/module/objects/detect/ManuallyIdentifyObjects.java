@@ -379,7 +379,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
 
             // Adding each timepoint object (child) to this image
             for (Obj childObj : trackObj.getChildren(inputObjects.getName()).values()) {
-                childObj.addToImage(binaryImage, Float.MAX_VALUE);
+                binaryImage.addObject(childObj, Float.MAX_VALUE);
                 timepoints.add(childObj.getT());
             }
             applyTemporalInterpolation(binaryImage);

@@ -48,6 +48,14 @@ public abstract class Image <T extends RealType<T> & NativeType<T>> {
 
     public abstract void setImgPlus(ImgPlus<T> img);
 
+    public abstract Objs convertImageToObjects(String type, String outputObjectsName, boolean singleObject);
+
+    public abstract void addObject(Obj obj, float hue);
+
+    public abstract void addObjectCentroid(Obj obj, float hue);
+
+
+    // PUBLIC METHODS
 
     public Objs convertImageToObjects(String outputObjectsName) {
         String type = getVolumeType(VolumeType.POINTLIST);
@@ -68,121 +76,6 @@ public abstract class Image <T extends RealType<T> & NativeType<T>> {
         return convertImageToObjects(type, outputObjectsName, false);
 
     }
-
-    public Objs convertImageToObjects(String type, String outputObjectsName, boolean singleObject) {
-        ImagePlus imagePlus = getImagePlus();
-
-        // Getting spatial calibration
-        double dppXY = imagePlus.getCalibration().pixelWidth;
-        double dppZ = imagePlus.getCalibration().pixelDepth;
-        String units = imagePlus.getCalibration().getUnits();
-        ImageProcessor ipr = imagePlus.getProcessor();
-
-        int h = imagePlus.getHeight();
-        int w = imagePlus.getWidth();
-        int nSlices = imagePlus.getNSlices();
-        int nFrames = imagePlus.getNFrames();
-        int nChannels = imagePlus.getNChannels();
-
-        double frameInterval = imagePlus.getCalibration().frameInterval;
-
-        // Need to get coordinates and convert to a HCObject
-        SpatCal calibration = new SpatCal(dppXY, dppZ, units, w, h, nSlices);
-        Objs outputObjects = new Objs(outputObjectsName, calibration, nFrames, frameInterval,
-                TemporalUnit.getOMEUnit());
-
-        // Will return null if optimised
-        VolumeType volumeType = getVolumeType(type);
-
-        for (int c = 0; c < nChannels; c++) {
-            for (int t = 0; t < nFrames; t++) {
-                // If using optimised type, determine types for each object, otherwise use a
-                // blank map
-                HashMap<Integer, IDLink> links = volumeType == null
-                        ? getOptimisedLinks(c, t, outputObjects, singleObject)
-                        : new HashMap<>();
-
-                for (int z = 0; z < nSlices; z++) {
-                    imagePlus.setPosition(c + 1, z + 1, t + 1);
-                    for (int x = 0; x < w; x++) {
-                        for (int y = 0; y < h; y++) {
-                            // Getting the ID of this object in the current stack.
-                            int imageID = (int) ipr.getPixelValue(x, y);
-
-                            // If assigning a single object ID, this is the same value for all objects
-                            if (singleObject && imageID != 0)
-                                imageID = 1;
-
-                            if (imageID != 0) {
-                                // If not using optimised type, each link needs to be added here
-                                if (!links.containsKey(imageID))
-                                    links.put(imageID, new IDLink(outputObjects.getAndIncrementID(), volumeType));
-
-                                IDLink link = links.get(imageID);
-                                int outID = link.getID();
-                                VolumeType outType = link.getVolumeType();
-                                int finalT = t;
-
-                                outputObjects.computeIfAbsent(outID,
-                                        k -> new Obj(outputObjects, outType, outID).setT(finalT));
-                                try {
-                                    outputObjects.get(outID).add(x, y, z);
-                                } catch (PointOutOfRangeException e) {
-                                }
-                            }
-                        }
-                    }
-
-                    // Finalising the object store for this slice (this only does something for
-                    // QuadTrees)
-                    for (Obj obj : outputObjects.values())
-                        obj.finalise(z);
-
-                }
-            }
-        }
-
-        for (Obj obj : outputObjects.values())
-            obj.finalise();
-
-        return outputObjects;
-
-    }
-
-    HashMap<Integer, IDLink> getOptimisedLinks(int c, int t, Objs outputObjects, boolean singleObject) {
-        ImagePlus imagePlus = getImagePlus();
-        int h = imagePlus.getHeight();
-        int w = imagePlus.getWidth();
-        int nSlices = imagePlus.getNSlices();
-
-        // Looping over all pixels in this stack and adding to the relevant CumStat
-        HashMap<Integer, IDLink> links = new HashMap<>();
-        for (int z = 0; z < nSlices; z++) {
-            imagePlus.setPosition(c, z + 1, t);
-            ImageProcessor ipr = imagePlus.getProcessor();
-            for (int x = 0; x < w; x++) {
-                for (int y = 0; y < h; y++) {
-                    // Getting the ID of this object in the current stack.
-                    int imageID = (int) ipr.getPixelValue(x, y);
-
-                    // If assigning a single object ID, this is the same value for all objects
-                    if (singleObject && imageID != 0)
-                        imageID = 1;
-
-                    if (imageID == 0)
-                        continue;
-                    links.putIfAbsent(imageID, new IDLink(outputObjects.getAndIncrementID(), null));
-                    links.get(imageID).addMeasurement(x, y, z);
-
-                }
-            }
-        }
-
-        return links;
-
-    }
-
-    // PUBLIC METHODS
 
     public void addMeasurement(Measurement measurement) {
         measurements.put(measurement.getName(), measurement);

@@ -9,16 +9,18 @@ import ij.IJ;
 import ij.ImagePlus;
 import ij.measure.Calibration;
 import ij.measure.ResultsTable;
-import ome.units.UNITS;
-import ome.units.quantity.Time;
-import ome.units.unit.Unit;
+import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.image.Image;
 import io.github.mianalysis.mia.object.image.ImageFactory;
+import io.github.mianalysis.mia.object.image.ImagePlusImage;
+import io.github.mianalysis.mia.object.image.ImgPlusImage;
+import io.github.mianalysis.mia.object.image.ImgPlusTools2;
 import io.github.mianalysis.mia.object.measurements.Measurement;
 import io.github.mianalysis.mia.object.refs.ObjMeasurementRef;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
+import io.github.mianalysis.mia.object.system.Preferences;
 import io.github.mianalysis.mia.object.units.TemporalUnit;
 import io.github.mianalysis.mia.process.ColourFactory;
 import io.github.sjcross.common.imagej.LUTs;
@@ -26,6 +28,15 @@ import io.github.sjcross.common.object.Point;
 import io.github.sjcross.common.object.volume.PointOutOfRangeException;
 import io.github.sjcross.common.object.volume.SpatCal;
 import io.github.sjcross.common.object.volume.VolumeType;
+import net.imagej.ImgPlus;
+import net.imglib2.type.NativeType;
+import net.imglib2.type.numeric.RealType;
+import net.imglib2.type.numeric.integer.UnsignedByteType;
+import net.imglib2.type.numeric.integer.UnsignedShortType;
+import net.imglib2.type.numeric.real.FloatType;
+import ome.units.UNITS;
+import ome.units.quantity.Time;
+import ome.units.unit.Unit;
 
 /**
  * Created by sc13967 on 12/05/2017.
@@ -196,7 +207,7 @@ public class Objs extends LinkedHashMap<Integer, Obj> {
     }
 
     public Obj getAsSingleObject() {
-        Objs newCollection = new Objs("Single",this);
+        Objs newCollection = new Objs("Single", this);
 
         VolumeType volumeType = VolumeType.POINTLIST;
         Obj firstObj = getFirst();
@@ -209,7 +220,8 @@ public class Objs extends LinkedHashMap<Integer, Obj> {
                 try {
                     newObj.add(point.duplicate());
                 } catch (PointOutOfRangeException e) {
-                    // This shouldn't occur, as the points are from a collection with the same dimensions
+                    // This shouldn't occur, as the points are from a collection with the same
+                    // dimensions
                     e.printStackTrace();
                 }
 
@@ -222,15 +234,20 @@ public class Objs extends LinkedHashMap<Integer, Obj> {
         Image image = createImage(outputName, bitDepth);
 
         // If it's a 32-bit image, set all background pixels to NaN
-        if (bitDepth == 32 && nanBackground)
-            setNaNBackground(image.getImagePlus());
+        if (bitDepth == 32 && nanBackground) {
+            if (image instanceof ImagePlusImage) {
+                setNaNBackground(image.getImagePlus());
+            } else if (image instanceof ImgPlusImage) {
+                MIA.log.writeWarning(
+                        "MIA doesn't currently support setting background pixels to NaN for images streamed directly from disc.");
+                // setNaNBackground() is a function of this (Objs) class, so should be easy
+                // enough to implement for ImgLib2
+            }
+        }
 
         // Labelling pixels in image
-        for (Obj object : values())
-            object.addToImage(image, hues.get(object.getID()));
-
-        // Assigning the spatial cal from the cal
-        spatCal.setImageCalibration(image.getImagePlus());
+        for (Obj obj : values())
+            image.addObject(obj, hues.get(obj.getID()));
 
         return image;
 
@@ -242,31 +259,44 @@ public class Objs extends LinkedHashMap<Integer, Obj> {
 
         if (dispImage == null)
             return null;
-        if (dispImage.getImagePlus() == null)
-            return null;
 
-        ImagePlus dispIpl = dispImage.getImagePlus();
-        dispIpl.setLut(LUTs.Random(true));
-        dispIpl.setPosition(1, 1, 1);
-        dispIpl.updateChannelAndDraw();
+        if (dispImage instanceof ImagePlusImage) {
+            if (dispImage.getImagePlus() == null)
+                return null;
+
+            ImagePlus dispIpl = dispImage.getImagePlus();
+            dispIpl.setLut(LUTs.Random(true));
+            dispIpl.setPosition(1, 1, 1);
+            dispIpl.updateChannelAndDraw();
+
+        } else {
+            MIA.log.writeWarning("MIA doesn't currently support setting LUTs for images streamed directly from disc.");
+        }
 
         return dispImage;
 
     }
 
-    public Image convertCentroidsToImage(String outputName, HashMap<Integer,Float> hues, int bitDepth, boolean nanBackground) {
+    public Image convertCentroidsToImage(String outputName, HashMap<Integer, Float> hues, int bitDepth,
+            boolean nanBackground) {
         // Create output image
-        Image image = createImage(outputName,bitDepth);
+        Image image = createImage(outputName, bitDepth);
 
         // If it's a 32-bit image, set all background pixels to NaN
-        if (bitDepth == 32 && nanBackground) setNaNBackground(image.getImagePlus());
+        if (bitDepth == 32 && nanBackground) {
+            if (image instanceof ImagePlusImage) {
+                setNaNBackground(image.getImagePlus());
+            } else if (image instanceof ImgPlusImage) {
+                MIA.log.writeWarning(
+                        "MIA doesn't currently support setting background pixels to NaN for images streamed directly from disc.");
+                // setNaNBackground() is a function of this (Objs) class, so should be easy
+                // enough to implement for ImgLib2
+            }
+        }
 
         // Labelling pixels in image
-        for (Obj object:values()) 
-        object.addCentroidToImage(image, hues.get(object.getID()));
-
-        // Assigning the spatial cal from the cal
-        spatCal.setImageCalibration(image.getImagePlus());
+        for (Obj obj : values())
+            image.addObjectCentroid(obj, hues.get(obj.getID()));
 
         return image;
 
@@ -275,7 +305,6 @@ public class Objs extends LinkedHashMap<Integer, Obj> {
     public void applyCalibration(Image image) {
         applyCalibration(image.getImagePlus());
     }
-
 
     public void applyCalibration(ImagePlus ipl) {
         Obj obj = getFirst();
@@ -293,12 +322,36 @@ public class Objs extends LinkedHashMap<Integer, Obj> {
 
     }
 
-    Image createImage(String outputName, int bitDepth) {
-        // Creating a new image
-        ImagePlus ipl = IJ.createHyperStack(outputName, spatCal.getWidth(), spatCal.getHeight(), 1,
-                spatCal.getNSlices(), nFrames, bitDepth);
+    <T extends RealType<T> & NativeType<T>> Image<T> createImage(String outputName, int bitDepth) {
+        switch (MIA.preferences.getDataStorageMode()) {
+            case Preferences.DataStorageModes.KEEP_IN_RAM:
+                // Creating a new ImagePlusI
+                ImagePlus ipl = IJ.createHyperStack(outputName, spatCal.getWidth(), spatCal.getHeight(), 1,
+                        spatCal.getNSlices(), nFrames, bitDepth);
 
-        return ImageFactory.createImage(outputName, ipl);
+                // Assigning the spatial cal from the cal
+                spatCal.setImageCalibration(ipl);
+
+                return ImageFactory.createImage(outputName, ipl);
+
+            case Preferences.DataStorageModes.STREAM_FROM_DRIVE:
+                switch (bitDepth) {
+                    case 8:
+                        ImgPlus<UnsignedByteType> img8 = ImgPlusTools2.createNewImgPlus(spatCal, 1, nFrames,
+                                new UnsignedByteType());
+                        return ImageFactory.createImage(outputName, img8);
+                    case 16:
+                        ImgPlus<UnsignedShortType> img16 = ImgPlusTools2.createNewImgPlus(spatCal, 1, nFrames,
+                                new UnsignedShortType());
+                        return ImageFactory.createImage(outputName, img16);
+                    case 32:
+                        ImgPlus<FloatType> img32 = ImgPlusTools2.createNewImgPlus(spatCal, 1, nFrames,
+                                new FloatType());
+                        return ImageFactory.createImage(outputName, img32);
+                }
+        }
+
+        return null;
 
     }
 

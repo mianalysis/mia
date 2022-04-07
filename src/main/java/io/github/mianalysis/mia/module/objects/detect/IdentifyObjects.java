@@ -23,11 +23,13 @@ import io.github.mianalysis.mia.module.IL2Support;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.images.process.ImageTypeConverter;
+import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.VolumeTypesInterface;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.image.Image;
-import io.github.mianalysis.mia.object.image.ImgPlusImage;
+import io.github.mianalysis.mia.object.image.ImageFactory;
+import io.github.mianalysis.mia.object.image.ImgPlusTools2;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
@@ -48,8 +50,8 @@ import io.github.sjcross.common.exceptions.IntegerOverflowException;
 import io.github.sjcross.common.object.volume.SpatCal;
 import net.imagej.ImgPlus;
 import net.imglib2.RandomAccessibleInterval;
-import net.imglib2.algorithm.labeling.ConnectedComponentAnalysis;
-import net.imglib2.algorithm.neighborhood.DiamondShape;
+import net.imglib2.algorithm.labeling.ConnectedComponents;
+import net.imglib2.algorithm.labeling.ConnectedComponents.StructuringElement;
 import net.imglib2.converter.Converter;
 import net.imglib2.converter.Converters;
 import net.imglib2.type.NativeType;
@@ -61,8 +63,8 @@ import net.imglib2.type.numeric.integer.UnsignedLongType;
 /**
  * Created by sc13967 on 06/06/2017.
  */
-@Plugin(type = Module.class, priority=Priority.LOW, visible=true)
-public class IdentifyObjects <T extends RealType<T> & NativeType<T>> extends Module {
+@Plugin(type = Module.class, priority = Priority.LOW, visible = true)
+public class IdentifyObjects<T extends RealType<T> & NativeType<T>> extends Module {
     public static final String INPUT_SEPARATOR = "Image input, object output";
     public static final String INPUT_IMAGE = "Input image";
     public static final String OUTPUT_OBJECTS = "Output objects";
@@ -266,152 +268,189 @@ public class IdentifyObjects <T extends RealType<T> & NativeType<T>> extends Mod
 
     }
 
-    public static <T extends RealType<T> & NativeType<T>> Objs process(Image inputImage, String outputObjectsName, boolean blackBackground,
-    boolean singleObject, int connectivity, String type, boolean multithread, int minStripWidth,
+    public static <T extends RealType<T> & NativeType<T>> Objs process(Image inputImage, String outputObjectsName,
+            boolean blackBackground,
+            boolean singleObject, int connectivity, String type, boolean multithread, int minStripWidth,
             boolean verbose) throws IntegerOverflowException, RuntimeException {
-        // SpatCal cal = SpatCal.getFromImage(inputImagePlus);
-        Objs outputObjects = new Objs(outputObjectsName, null, 1, 1, TemporalUnit.getOMEUnit());
-
-        ImgPlus<T> inputImg = inputImage.getImgPlus();
-        ImgPlus<UnsignedLongType> outputImg = ImgPlusImage.createNewImgPlus(inputImg, new UnsignedLongType());
-        
-        Converter<IntegerType, BitType> converter = ( i, o ) -> o.set( i.getInteger() > 0 ? true : false );
-        RandomAccessibleInterval< BitType > mask = Converters.convert((RandomAccessibleInterval<IntegerType>) inputImg, converter, new BitType() );
-        ConnectedComponentAnalysis.connectedComponents(mask, outputImg, new DiamondShape(1));
-        
-        
-        // ImagePlus inputImagePlus = inputImage.getImagePlus();
 
         // SpatCal cal = SpatCal.getFromImage(inputImagePlus);
-        // int nFrames = inputImagePlus.getNFrames();
+        // int nFrames = inputImage.getNFrames();
         // double frameInterval = inputImagePlus.getCalibration().frameInterval;
         // Objs outputObjects = new Objs(outputObjectsName, cal, nFrames, frameInterval,
         //         TemporalUnit.getOMEUnit());
 
+        SpatCal spatCal = new SpatCal(1, 1, "um", 64, 76, 12);
+        Objs outputObjects = new Objs(outputObjectsName, spatCal, 1, 1, TemporalUnit.getOMEUnit());
+
+        ImgPlus<T> inputImg = inputImage.getImgPlus();
+
+        // For now, we'll just process the first frame
+        int t = 1;
+
+        ImgPlus<UnsignedLongType> labelImg = ImgPlusTools2.createNewImgPlus(inputImg, new UnsignedLongType());
+
+        Converter<IntegerType, BitType> converter = (i, o) -> o.set(i.getInteger() > 0 ? true : false);
+        RandomAccessibleInterval<BitType> mask = Converters.convert((RandomAccessibleInterval<IntegerType>) inputImg,
+                converter, new BitType());
+
+        StructuringElement se = connectivity == 6 ? StructuringElement.FOUR_CONNECTED
+                : StructuringElement.EIGHT_CONNECTED;
+        new ConnectedComponents().labelAllConnectedComponents(mask, labelImg, se);
+        // ConnectedComponentAnalysis.connectedComponents(mask, labelImg, new
+        // DiamondShape(1));
+
+        Image tempImage = ImageFactory.createImage("Temp image", labelImg);
+        Objs currOutputObjects = tempImage.convertImageToObjects(type, outputObjectsName, singleObject);
+
+        // Updating the current objects (setting the real frame number and offsetting
+        // the ID)
+        int maxID = 0;
+        for (Obj object : outputObjects.values()) {
+            maxID = Math.max(object.getID(), maxID);
+        }
+
+        for (Obj object : currOutputObjects.values()) {
+            object.setID(object.getID() + maxID + 1);
+            object.setT(t);
+            outputObjects.put(object.getID(), object);
+        }
+
         // for (int t = 1; t <= inputImagePlus.getNFrames(); t++) {
-        //     // Creating a copy of the input image
-        //     ImagePlus currStack;
-        //     if (inputImagePlus.getNFrames() == 1) {
-        //         currStack = inputImagePlus.duplicate();
-        //     } else {
-        //         currStack = SubHyperstackMaker.makeSubhyperstack(inputImagePlus, "1-" + inputImagePlus.getNChannels(),
-        //                 "1-" + inputImagePlus.getNSlices(), t + "-" + t).duplicate();
-        //         currStack.setCalibration(inputImagePlus.getCalibration());
-        //     }
-        //     currStack.updateChannelAndDraw();
+        // // Creating a copy of the input image
+        // ImagePlus currStack;
+        // if (inputImagePlus.getNFrames() == 1) {
+        // currStack = inputImagePlus.duplicate();
+        // } else {
+        // currStack = SubHyperstackMaker.makeSubhyperstack(inputImagePlus, "1-" +
+        // inputImagePlus.getNChannels(),
+        // "1-" + inputImagePlus.getNSlices(), t + "-" + t).duplicate();
+        // currStack.setCalibration(inputImagePlus.getCalibration());
+        // }
+        // currStack.updateChannelAndDraw();
 
-        //     if (!blackBackground)
-        //         InvertIntensity.process(currStack);
+        // if (!blackBackground)
+        // InvertIntensity.process(currStack);
 
-        //     // Applying connected components labelling
-        //     if (!singleObject) {
-        //         int nThreads = multithread ? Prefs.getThreads() : 1;
-        //         if (nThreads > 1 && minStripWidth < currStack.getWidth()) {
-        //             currStack.setStack(
-        //                     connectedComponentsLabellingMT(currStack.getStack(), connectivity, minStripWidth));
-        //         } else {
-        //             try {
-        //                 FloodFillComponentsLabeling3D ffcl3D = new FloodFillComponentsLabeling3D(connectivity, 16);
-        //                 currStack.setStack(ffcl3D.computeLabels(currStack.getStack()));
-        //             } catch (RuntimeException e2) {
-        //                 FloodFillComponentsLabeling3D ffcl3D = new FloodFillComponentsLabeling3D(connectivity, 32);
-        //                 currStack.setStack(ffcl3D.computeLabels(currStack.getStack()));
-        //             }
-        //         }
-        //     }
+        // // Applying connected components labelling
+        // if (!singleObject) {
+        // int nThreads = multithread ? Prefs.getThreads() : 1;
+        // if (nThreads > 1 && minStripWidth < currStack.getWidth()) {
+        // currStack.setStack(
+        // connectedComponentsLabellingMT(currStack.getStack(), connectivity,
+        // minStripWidth));
+        // } else {
+        // try {
+        // FloodFillComponentsLabeling3D ffcl3D = new
+        // FloodFillComponentsLabeling3D(connectivity, 16);
+        // currStack.setStack(ffcl3D.computeLabels(currStack.getStack()));
+        // } catch (RuntimeException e2) {
+        // FloodFillComponentsLabeling3D ffcl3D = new
+        // FloodFillComponentsLabeling3D(connectivity, 32);
+        // currStack.setStack(ffcl3D.computeLabels(currStack.getStack()));
+        // }
+        // }
+        // }
 
-        //     // Converting image to objects
-        //     Image tempImage = ImageFactory.createImage("Temp image", currStack);
-        //     Objs currOutputObjects = tempImage.convertImageToObjects(type, outputObjectsName, singleObject);
+        // // Converting image to objects
+        // Image tempImage = ImageFactory.createImage("Temp image", currStack);
+        // Objs currOutputObjects = tempImage.convertImageToObjects(type,
+        // outputObjectsName, singleObject);
 
-        //     // Updating the current objects (setting the real frame number and offsetting
-        //     // the ID)
-        //     int maxID = 0;
-        //     for (Obj object : outputObjects.values()) {
-        //         maxID = Math.max(object.getID(), maxID);
-        //     }
+        // // Updating the current objects (setting the real frame number and offsetting
+        // // the ID)
+        // int maxID = 0;
+        // for (Obj object : outputObjects.values()) {
+        // maxID = Math.max(object.getID(), maxID);
+        // }
 
-        //     for (Obj object : currOutputObjects.values()) {
-        //         object.setID(object.getID() + maxID + 1);
-        //         object.setT(t - 1);
-        //         outputObjects.put(object.getID(), object);
-        //     }
+        // for (Obj object : currOutputObjects.values()) {
+        // object.setID(object.getID() + maxID + 1);
+        // object.setT(t - 1);
+        // outputObjects.put(object.getID(), object);
+        // }
 
-        //     writeProgressStatus(t, inputImagePlus.getNFrames(), "images", name);
+        // writeProgressStatus(t, inputImagePlus.getNFrames(), "images", name);
 
         // }
 
-        return null;
+        return outputObjects;
 
     }
 
-    // public static Objs process(Image inputImage, String outputObjectsName, boolean blackBackground,
-    //         boolean singleObject, int connectivity, String type, boolean multithread, int minStripWidth,
-    //         boolean verbose) throws IntegerOverflowException, RuntimeException {
-    //     String name = new IdentifyObjects(null).getName();
+    // public static Objs process(Image inputImage, String outputObjectsName,
+    // boolean blackBackground,
+    // boolean singleObject, int connectivity, String type, boolean multithread, int
+    // minStripWidth,
+    // boolean verbose) throws IntegerOverflowException, RuntimeException {
+    // String name = new IdentifyObjects(null).getName();
 
-    //     ImagePlus inputImagePlus = inputImage.getImagePlus();
+    // ImagePlus inputImagePlus = inputImage.getImagePlus();
 
-    //     SpatCal cal = SpatCal.getFromImage(inputImagePlus);
-    //     int nFrames = inputImagePlus.getNFrames();
-    //     double frameInterval = inputImagePlus.getCalibration().frameInterval;
-    //     Objs outputObjects = new Objs(outputObjectsName, cal, nFrames, frameInterval,
-    //             TemporalUnit.getOMEUnit());
+    // SpatCal cal = SpatCal.getFromImage(inputImagePlus);
+    // int nFrames = inputImagePlus.getNFrames();
+    // double frameInterval = inputImagePlus.getCalibration().frameInterval;
+    // Objs outputObjects = new Objs(outputObjectsName, cal, nFrames, frameInterval,
+    // TemporalUnit.getOMEUnit());
 
-    //     for (int t = 1; t <= inputImagePlus.getNFrames(); t++) {
-    //         // Creating a copy of the input image
-    //         ImagePlus currStack;
-    //         if (inputImagePlus.getNFrames() == 1) {
-    //             currStack = inputImagePlus.duplicate();
-    //         } else {
-    //             currStack = SubHyperstackMaker.makeSubhyperstack(inputImagePlus, "1-" + inputImagePlus.getNChannels(),
-    //                     "1-" + inputImagePlus.getNSlices(), t + "-" + t).duplicate();
-    //             currStack.setCalibration(inputImagePlus.getCalibration());
-    //         }
-    //         currStack.updateChannelAndDraw();
+    // for (int t = 1; t <= inputImagePlus.getNFrames(); t++) {
+    // // Creating a copy of the input image
+    // ImagePlus currStack;
+    // if (inputImagePlus.getNFrames() == 1) {
+    // currStack = inputImagePlus.duplicate();
+    // } else {
+    // currStack = SubHyperstackMaker.makeSubhyperstack(inputImagePlus, "1-" +
+    // inputImagePlus.getNChannels(),
+    // "1-" + inputImagePlus.getNSlices(), t + "-" + t).duplicate();
+    // currStack.setCalibration(inputImagePlus.getCalibration());
+    // }
+    // currStack.updateChannelAndDraw();
 
-    //         if (!blackBackground)
-    //             InvertIntensity.process(currStack);
+    // if (!blackBackground)
+    // InvertIntensity.process(currStack);
 
-    //         // Applying connected components labelling
-    //         if (!singleObject) {
-    //             int nThreads = multithread ? Prefs.getThreads() : 1;
-    //             if (nThreads > 1 && minStripWidth < currStack.getWidth()) {
-    //                 currStack.setStack(
-    //                         connectedComponentsLabellingMT(currStack.getStack(), connectivity, minStripWidth));
-    //             } else {
-    //                 try {
-    //                     FloodFillComponentsLabeling3D ffcl3D = new FloodFillComponentsLabeling3D(connectivity, 16);
-    //                     currStack.setStack(ffcl3D.computeLabels(currStack.getStack()));
-    //                 } catch (RuntimeException e2) {
-    //                     FloodFillComponentsLabeling3D ffcl3D = new FloodFillComponentsLabeling3D(connectivity, 32);
-    //                     currStack.setStack(ffcl3D.computeLabels(currStack.getStack()));
-    //                 }
-    //             }
-    //         }
+    // // Applying connected components labelling
+    // if (!singleObject) {
+    // int nThreads = multithread ? Prefs.getThreads() : 1;
+    // if (nThreads > 1 && minStripWidth < currStack.getWidth()) {
+    // currStack.setStack(
+    // connectedComponentsLabellingMT(currStack.getStack(), connectivity,
+    // minStripWidth));
+    // } else {
+    // try {
+    // FloodFillComponentsLabeling3D ffcl3D = new
+    // FloodFillComponentsLabeling3D(connectivity, 16);
+    // currStack.setStack(ffcl3D.computeLabels(currStack.getStack()));
+    // } catch (RuntimeException e2) {
+    // FloodFillComponentsLabeling3D ffcl3D = new
+    // FloodFillComponentsLabeling3D(connectivity, 32);
+    // currStack.setStack(ffcl3D.computeLabels(currStack.getStack()));
+    // }
+    // }
+    // }
 
-    //         // Converting image to objects
-    //         Image tempImage = ImageFactory.createImage("Temp image", currStack);
-    //         Objs currOutputObjects = tempImage.convertImageToObjects(type, outputObjectsName, singleObject);
+    // // Converting image to objects
+    // Image tempImage = ImageFactory.createImage("Temp image", currStack);
+    // Objs currOutputObjects = tempImage.convertImageToObjects(type,
+    // outputObjectsName, singleObject);
 
-    //         // Updating the current objects (setting the real frame number and offsetting
-    //         // the ID)
-    //         int maxID = 0;
-    //         for (Obj object : outputObjects.values()) {
-    //             maxID = Math.max(object.getID(), maxID);
-    //         }
+    // // Updating the current objects (setting the real frame number and offsetting
+    // // the ID)
+    // int maxID = 0;
+    // for (Obj object : outputObjects.values()) {
+    // maxID = Math.max(object.getID(), maxID);
+    // }
 
-    //         for (Obj object : currOutputObjects.values()) {
-    //             object.setID(object.getID() + maxID + 1);
-    //             object.setT(t - 1);
-    //             outputObjects.put(object.getID(), object);
-    //         }
+    // for (Obj object : currOutputObjects.values()) {
+    // object.setID(object.getID() + maxID + 1);
+    // object.setT(t - 1);
+    // outputObjects.put(object.getID(), object);
+    // }
 
-    //         writeProgressStatus(t, inputImagePlus.getNFrames(), "images", name);
+    // writeProgressStatus(t, inputImagePlus.getNFrames(), "images", name);
 
-    //     }
+    // }
 
-    //     return outputObjects;
+    // return outputObjects;
 
     // }
 
@@ -577,7 +616,7 @@ public class IdentifyObjects <T extends RealType<T> & NativeType<T>> extends Mod
                         + "\" stores objects in a quadtree format.  Here, each Z-plane of the object is broken down into squares of different sizes, each of which is marked as foreground (i.e. an object) or background.  Quadtrees are most efficient when there are lots of large square regions of the same label, as the space can be represented by larger (and thus fewer) squares.  This is best used when there are large, completely solid objects.</li></ul>");
 
         parameters.get(BINARY_LOGIC).setDescription(BinaryLogicInterface.getDescription());
-                        
+
         parameters.get(ENABLE_MULTITHREADING).setDescription(
                 "Break the image down into strips, each one processed on a separate CPU thread.  The overhead required to do this means it's best for large multi-core CPUs, but should be left disabled for small images or on CPUs with few cores.");
 

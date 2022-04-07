@@ -14,6 +14,7 @@ import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.image.Image;
 import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.image.ImgPlusImage;
+import io.github.mianalysis.mia.object.image.ImgPlusTools2;
 import io.github.mianalysis.mia.object.parameters.OutputImageP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.refs.collections.ImageMeasurementRefs;
@@ -34,6 +35,7 @@ import net.imglib2.cache.img.DiskCachedCellImgFactory;
 import net.imglib2.cache.img.DiskCachedCellImgOptions;
 import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
+import net.imglib2.type.numeric.integer.UnsignedByteType;
 import net.imglib2.type.numeric.real.FloatType;
 
 /**
@@ -66,21 +68,12 @@ public class TestBigImage<T extends RealType<T> & NativeType<T>> extends Module 
         // Getting parameters
         String outputImageName = parameters.getValue(OUTPUT_IMAGE);
 
-        int w = 400;
+        int w = 600;
         int h = 400;
         int d = 100;
-        long[] dims = new long[] {w,h,d};
-        DiskCachedCellImgOptions options = ImgPlusImage.getCellImgOptions();        
-        ImgPlus<T> img = new ImgPlus<>(new DiskCachedCellImgFactory(new FloatType(), options).create(dims));
-        CalibratedAxis xAxis = img.axis(0);
-        xAxis.setUnit("um");
-        xAxis.setType(Axes.X);
-        CalibratedAxis yAxis = img.axis(1);
-        yAxis.setUnit("um");
-        yAxis.setType(Axes.Y);
-        CalibratedAxis zAxis = img.axis(2);
-        zAxis.setUnit("um");
-        zAxis.setType(Axes.Z);
+
+        ImgPlus<T> img = (ImgPlus<T>) ImgPlusTools2.createNewImgPlus(w, h, 1, d, 1, 0.2, 0.1, "um",
+                new FloatType());
                         
         // Creating a ramp intensity gradient along the x-axis, so operations can be tested
         RandomAccess ra = img.randomAccess();
