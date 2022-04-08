@@ -11,6 +11,7 @@ import java.util.TreeMap;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
+import javax.swing.SwingUtilities;
 import javax.swing.ToolTipManager;
 
 import io.github.mianalysis.mia.MIA;
@@ -31,6 +32,7 @@ import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.Workspaces;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.FileFolderPathP;
+import io.github.mianalysis.mia.object.parameters.abstrakt.Parameter;
 import io.github.mianalysis.mia.object.units.SpatialUnit;
 import io.github.mianalysis.mia.object.units.TemporalUnit;
 import io.github.mianalysis.mia.process.analysishandling.Analysis;
@@ -138,9 +140,9 @@ public class GUI {
             String shortName = detectedModuleName.substring(detectedModuleName.lastIndexOf(".") + 1);
 
             // Checking dependencies have been met
-            if (!MIA.dependencies.compatible(shortName,false)) {
+            if (!MIA.dependencies.compatible(shortName, false)) {
                 MIA.log.writeWarning("Module \"" + shortName + "\" not loaded.  Dependencies not satisfied:");
-                for (Dependency dependency : MIA.dependencies.getDependencies(shortName,false))
+                for (Dependency dependency : MIA.dependencies.getDependencies(shortName, false))
                     if (!dependency.test())
                         MIA.log.writeWarning("    Requirement: " + dependency.toString());
                 continue;
@@ -164,6 +166,22 @@ public class GUI {
                 MIA.log.writeWarning(e);
             }
         }
+    }
+
+    public static void refreshLookAndFeel() {
+        if (frame != null)
+            SwingUtilities.updateComponentTreeUI(frame);
+
+        if (processingPanel != null)
+            SwingUtilities.updateComponentTreeUI(processingPanel);
+
+        if (editingPanel != null)
+            SwingUtilities.updateComponentTreeUI(editingPanel);
+
+        for (Module module : getModules())
+            for (Parameter parameter : module.getAllParameters().values())
+            SwingUtilities.updateComponentTreeUI(parameter.getControl().getComponent());
+
     }
 
     public static void updatePanel() {
@@ -202,30 +220,36 @@ public class GUI {
     }
 
     public static void updateAvailableModules() {
-        mainPanel.updateAvailableModules();
+        if (mainPanel != null)
+            mainPanel.updateAvailableModules();
     }
 
     public static void updateHelpNotes() {
-        mainPanel.updateHelpNotes();
+        if (mainPanel != null)
+            mainPanel.updateHelpNotes();
     }
 
     public static void updateFileList() {
-        mainPanel.updateFileList();
+        if (mainPanel != null)
+            mainPanel.updateFileList();
     }
 
     public static void updateModules() {
-        mainPanel.updateModules();
-        mainPanel.updateHelpNotes();
-
+        if (mainPanel != null) {
+            mainPanel.updateModules();
+            mainPanel.updateHelpNotes();
+        }
     }
 
     public static void updateModuleStates() {
         AnalysisTester.testModules(getModules());
-        mainPanel.updateModuleStates();
+        if (mainPanel != null)
+            mainPanel.updateModuleStates();
     }
 
     public static void updateParameters() {
-        mainPanel.updateParameters();
+        if (mainPanel != null)
+            mainPanel.updateParameters();
     }
 
     public static ComponentFactory getComponentFactory() {

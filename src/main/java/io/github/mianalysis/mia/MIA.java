@@ -81,8 +81,7 @@ public class MIA implements Command {
     @Override
     public void run() {
         preferences = new Preferences(null);
-        
-        setLookAndFeel();
+        preferences.setTheme(preferences.getParameterValue(Preferences.THEME));
         
         try {
             if (!headless) {
@@ -97,7 +96,7 @@ public class MIA implements Command {
 
             }
         } catch (Exception e) {
-            // If any exception was thrown, just don't apply the ConsoleRenderer.
+            e.printStackTrace();
         }
 
         log.addRenderer(logHistory);
@@ -119,14 +118,6 @@ public class MIA implements Command {
         try {
             new GUI();
         } catch (Exception e) {
-            MIA.log.writeError(e);
-        }
-    }
-
-    public void setLookAndFeel() {
-        try {
-            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e) {
             MIA.log.writeError(e);
         }
     }

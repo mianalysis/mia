@@ -29,6 +29,8 @@ public class EvalButton extends JButton implements ActionListener {
     private Module module;
     private static final ImageIcon blackIcon = new ImageIcon(
             EvalButton.class.getResource("/icons/arrowopen_black_12px.png"), "");
+    private static final ImageIcon greyIcon = new ImageIcon(
+            EvalButton.class.getResource("/icons/arrowopen_lightgrey_12px.png"), "");
     private static final ImageIcon amberIcon = new ImageIcon(
             EvalButton.class.getResource("/icons/Dual Ring-1s-12px.gif"), "");
     private static final ImageIcon greenIcon = new ImageIcon(
@@ -75,8 +77,13 @@ public class EvalButton extends JButton implements ActionListener {
             }
         } else {
             if (module.isRunnable()) {
-                setIcon(blackIcon);
-                setRolloverIcon(blackIcon);
+                if (MIA.preferences.darkThemeEnabled()) {
+                    setIcon(greyIcon);
+                    setRolloverIcon(greyIcon);
+                } else {
+                    setIcon(blackIcon);
+                    setRolloverIcon(blackIcon);
+                }
             } else {
                 setIcon(redOpenIcon);
                 setRolloverIcon(redOpenIcon);
