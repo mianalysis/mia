@@ -39,7 +39,8 @@ public class MeasureObjectCentroid extends Module {
     public static final String INPUT_OBJECTS = "Input objects";
 
     public MeasureObjectCentroid(Modules modules) {
-        super("Measure object centroid",modules);
+        super("Measure object centroid", modules);
+        il2Support = IL2Support.FULL;
     }
 
     public interface Measurements {

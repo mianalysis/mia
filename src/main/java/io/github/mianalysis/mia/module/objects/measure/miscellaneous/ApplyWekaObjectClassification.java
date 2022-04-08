@@ -49,6 +49,7 @@ public class ApplyWekaObjectClassification extends Module {
 
     public ApplyWekaObjectClassification(Modules modules) {
         super("Apply Weka object classification", modules);
+        il2Support = IL2Support.FULL;
     }
 
     @Override

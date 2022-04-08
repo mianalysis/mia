@@ -61,6 +61,7 @@ import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Preferences;
 import io.github.mianalysis.mia.object.system.Status;
+import io.github.sjcross.common.imagej.LUTs;
 
 /**
  * Created by Stephen on 12/05/2021.
@@ -125,6 +126,7 @@ public class RunScript extends Module {
 
     public RunScript(Modules modules) {
         super("Run script", modules);
+        il2Support = IL2Support.FULL;
     }
 
     @Override
@@ -207,7 +209,7 @@ public class RunScript extends Module {
                     case OutputTypes.OBJECTS:
                         if (showOutput)
                             workspace.getObjectSet(parameterCollection.getValue(OUTPUT_OBJECTS))
-                                    .convertToImageRandomColours().showImage();
+                                    .convertToImageRandomColours().showImage(LUTs.Random(true));
                         break;
                 }
             }

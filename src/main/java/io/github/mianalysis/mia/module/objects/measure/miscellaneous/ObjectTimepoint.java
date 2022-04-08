@@ -35,6 +35,7 @@ public class ObjectTimepoint extends Module {
 
     public ObjectTimepoint(Modules modules) {
         super("Object timepoint", modules);
+        il2Support = IL2Support.FULL;
     }
 
 

@@ -32,7 +32,8 @@ public class MeasureObjectLimits extends Module {
     public static final String INPUT_OBJECTS = "Input objects";
 
     public MeasureObjectLimits(Modules modules) {
-        super("Measure object limits",modules);
+        super("Measure object limits", modules);
+        il2Support = IL2Support.FULL;
     }
 
     public interface Measurements {

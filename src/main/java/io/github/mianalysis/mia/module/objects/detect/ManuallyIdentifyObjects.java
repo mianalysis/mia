@@ -78,6 +78,7 @@ import io.github.mianalysis.mia.object.system.Preferences;
 import io.github.mianalysis.mia.object.system.Status;
 import io.github.mianalysis.mia.object.units.TemporalUnit;
 import io.github.sjcross.common.exceptions.IntegerOverflowException;
+import io.github.sjcross.common.imagej.LUTs;
 import io.github.sjcross.common.object.volume.PointOutOfRangeException;
 import io.github.sjcross.common.object.volume.SpatCal;
 import io.github.sjcross.common.object.volume.VolumeType;
@@ -540,7 +541,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
             if (outputTracks)
                 TrackObjects.showObjects(outputObjects, outputTrackObjectsName);
             else
-                outputObjects.convertToImageRandomColours().showImage();
+                outputObjects.convertToImageRandomColours().showImage(LUTs.Random(true));
 
         return Status.PASS;
 

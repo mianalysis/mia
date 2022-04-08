@@ -76,6 +76,8 @@ public class MetadataExtractor extends Module {
 
     public MetadataExtractor(Modules modules) {
         super("Extract metadata", modules);
+        il2Support = IL2Support.FULL;
+        
     }
 
     public interface ExtractorModes {

@@ -33,6 +33,7 @@ public class GUISeparator extends Module {
 
     public GUISeparator(Modules modules) {
         super("GUI separator", modules);
+        il2Support = IL2Support.FULL;
     }
 
     public Modules getProcessingViewModules() {

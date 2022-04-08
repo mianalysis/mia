@@ -35,6 +35,7 @@ import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Preferences;
 import io.github.mianalysis.mia.object.system.Status;
 import io.github.sjcross.common.exceptions.IntegerOverflowException;
+import io.github.sjcross.common.imagej.LUTs;
 import io.github.sjcross.common.process.IntensityMinMax;
 import io.github.sjcross.common.process.activecontour.ContourInitialiser;
 import io.github.sjcross.common.process.activecontour.energies.BendingEnergy;
@@ -224,9 +225,9 @@ public class FitActiveContours extends Module {
 
         if (showOutput) {
             if (updateInputObjects)
-                inputObjects.convertToImageRandomColours().showImage();
+                inputObjects.convertToImageRandomColours().showImage(LUTs.Random(true));
             else
-                outputObjects.convertToImageRandomColours().showImage();
+                outputObjects.convertToImageRandomColours().showImage(LUTs.Random(true));
         }
 
         // If selected, adding new Objs to the Workspace

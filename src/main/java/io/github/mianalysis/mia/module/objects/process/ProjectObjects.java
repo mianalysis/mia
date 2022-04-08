@@ -24,6 +24,7 @@ import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Preferences;
 import io.github.mianalysis.mia.object.system.Status;
 import io.github.sjcross.common.exceptions.IntegerOverflowException;
+import io.github.sjcross.common.imagej.LUTs;
 import io.github.sjcross.common.object.volume.SpatCal;
 import io.github.sjcross.common.object.volume.Volume;
 import ome.units.quantity.Time;
@@ -37,7 +38,8 @@ public class ProjectObjects extends Module {
     public static final String OUTPUT_OBJECTS = "Output objects";
 
     public ProjectObjects(Modules modules) {
-        super("Project objects",modules);
+        super("Project objects", modules);
+        il2Support = IL2Support.FULL;
     }
 
     public static Obj process(Obj inputObject, Objs outputObjects, boolean addRelationship) throws IntegerOverflowException {
@@ -86,7 +88,7 @@ public class ProjectObjects extends Module {
         workspace.addObjects(outputObjects);
 
         // Showing objects
-        if (showOutput) outputObjects.convertToImageRandomColours().showImage();
+        if (showOutput) outputObjects.convertToImageRandomColours().showImage(LUTs.Random(true));
 
         return Status.PASS;
 

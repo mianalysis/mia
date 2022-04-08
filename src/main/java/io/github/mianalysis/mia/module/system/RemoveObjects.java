@@ -37,6 +37,7 @@ public class RemoveObjects extends Module {
 
     public RemoveObjects(Modules modules) {
         super("Remove objects",modules);
+        il2Support = IL2Support.FULL;
     }
 
 

@@ -37,6 +37,7 @@ public class RemoveImage extends Module {
 
     public RemoveImage(Modules modules) {
         super("Remove image",modules);
+        il2Support = IL2Support.PARTIAL; // Partial, because there may be some disk cached image cleanup that can be implemented
     }
 
 

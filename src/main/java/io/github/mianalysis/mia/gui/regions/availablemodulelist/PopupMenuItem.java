@@ -1,21 +1,24 @@
 package io.github.mianalysis.mia.gui.regions.availablemodulelist;
 
+import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.font.TextAttribute;
+import java.lang.reflect.InvocationTargetException;
+import java.util.Map;
+
+import javax.swing.ImageIcon;
+import javax.swing.JMenuItem;
+import javax.swing.JPopupMenu;
+
+import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.gui.GUI;
+import io.github.mianalysis.mia.module.IL2Support;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.core.InputControl;
 import io.github.mianalysis.mia.module.core.OutputControl;
-
-import java.awt.Font;
-import java.awt.font.TextAttribute;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.lang.reflect.InvocationTargetException;
-import java.util.Map;
-
-
-import javax.swing.JMenuItem;
-import javax.swing.JPopupMenu;
+import io.github.mianalysis.mia.object.system.Preferences;
 
 /**
  * Created by Stephen on 20/05/2017.
@@ -37,12 +40,18 @@ public class PopupMenuItem extends JMenuItem implements ActionListener {
         if (module.isDeprecated()) {
             Map attributes = font.getAttributes();
             attributes.put(TextAttribute.STRIKETHROUGH, TextAttribute.STRIKETHROUGH_ON);
-            font = new Font(attributes);            
+            font = new Font(attributes);
         }
         setFont(font);
         setToolTipText("<html><div style=\"width:500px;\">" + module.getDescription() + "</div></html>");
-        addActionListener(this);
 
+        // Adding a warning icon if in ImgLib2 mode and this module only has partial support
+        if (MIA.preferences.getDataStorageMode().equals(Preferences.DataStorageModes.STREAM_FROM_DRIVE)
+                && module.getIL2Support().equals(IL2Support.PARTIAL)) {
+            setIcon(new ImageIcon(PopupMenuItem.class.getResource("/icons/alert_orange_12px.png"), ""));
+        }
+        
+        addActionListener(this);
 
     }
 

@@ -1,5 +1,6 @@
 package io.github.mianalysis.mia.module.objects.filter;
 
+import io.github.mianalysis.mia.module.IL2Support;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Workspace;
@@ -53,6 +54,7 @@ public abstract class AbstractNumericObjectFilter extends AbstractObjectFilter {
 
     protected AbstractNumericObjectFilter(String name, Modules modules) {
         super(name, modules);
+        il2Support = IL2Support.FULL;
     }
 
     public String getIndividualFixedValueFullName(String filterMethod, String targetName, String referenceValue) {

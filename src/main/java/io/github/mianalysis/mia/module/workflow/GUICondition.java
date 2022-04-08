@@ -44,6 +44,7 @@ public class GUICondition extends AbstractWorkspaceHandler {
 
     public GUICondition(Modules modules) {
         super("GUI condition", modules);
+        il2Support = IL2Support.FULL;
         deprecated = true;
     }
 

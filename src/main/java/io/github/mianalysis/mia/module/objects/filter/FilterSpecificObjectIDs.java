@@ -38,6 +38,7 @@ import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.system.Status;
 import io.github.sjcross.common.process.CommaSeparatedStringInterpreter;
+import io.github.sjcross.common.imagej.LUTs;
 
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class FilterSpecificObjectIDs extends AbstractObjectFilter implements ActionListener {
@@ -188,7 +189,7 @@ public class FilterSpecificObjectIDs extends AbstractObjectFilter implements Act
 
         // Showing objects
         if (showOutput)
-            inputObjects.convertToImageRandomColours().showImage();
+            inputObjects.convertToImageRandomColours().showImage(LUTs.Random(true));
 
         return Status.PASS;
 

@@ -49,6 +49,7 @@ import io.github.mianalysis.mia.object.system.Preferences;
 import io.github.mianalysis.mia.object.system.Status;
 import io.github.mianalysis.mia.object.units.TemporalUnit;
 import io.github.sjcross.common.exceptions.IntegerOverflowException;
+import io.github.sjcross.common.imagej.LUTs;
 import io.github.sjcross.common.object.Point;
 import io.github.sjcross.common.object.volume.CoordinateSet;
 import io.github.sjcross.common.object.volume.PointOutOfRangeException;
@@ -261,7 +262,7 @@ public class ClusterPoints extends Module {
         workspace.addObjects(outputObjects);
 
         if (showOutput)
-            outputObjects.convertToImageRandomColours().showImage();
+            outputObjects.convertToImageRandomColours().showImage(LUTs.Random(true));
 
         return Status.PASS;
 

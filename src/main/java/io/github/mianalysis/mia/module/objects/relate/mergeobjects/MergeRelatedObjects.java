@@ -25,6 +25,7 @@ import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Preferences;
 import io.github.mianalysis.mia.object.system.Status;
+import io.github.sjcross.common.imagej.LUTs;
 
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class MergeRelatedObjects extends Module {
@@ -55,6 +56,7 @@ public class MergeRelatedObjects extends Module {
 
     public MergeRelatedObjects(Modules modules) {
         super("Merge related objects", modules);
+        il2Support = IL2Support.FULL;
     }
 
     public static Objs mergeRelatedObjectsCreateNew(Objs parentObjects, String childObjectsName,
@@ -145,14 +147,14 @@ public class MergeRelatedObjects extends Module {
 
                 workspace.addObjects(relatedObjects);
                 if (showOutput)
-                    relatedObjects.convertToImageRandomColours().showImage();
+                    relatedObjects.convertToImageRandomColours().showImage(LUTs.Random(true));
 
                 break;
 
             case OutputModes.UPDATE_PARENT:
                 mergeRelatedObjectsUpdateParent(parentObjects, childObjectsName, mergeMode);
                 if (showOutput)
-                    parentObjects.convertToImageRandomColours().showImage();
+                    parentObjects.convertToImageRandomColours().showImage(LUTs.Random(true));
                 break;
         }
         return Status.PASS;

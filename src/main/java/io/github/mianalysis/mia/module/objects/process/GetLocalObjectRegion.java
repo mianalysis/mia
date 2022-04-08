@@ -31,6 +31,7 @@ import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Preferences;
 import io.github.mianalysis.mia.object.system.Status;
 import io.github.sjcross.common.exceptions.IntegerOverflowException;
+import io.github.sjcross.common.imagej.LUTs;
 import io.github.sjcross.common.object.volume.PointOutOfRangeException;
 
 /**
@@ -86,6 +87,7 @@ public class GetLocalObjectRegion extends Module {
 
     public GetLocalObjectRegion(Modules modules) {
         super("Get local object region", modules);
+        il2Support = IL2Support.FULL;
     }
 
     public static Obj getLocalRegion(Obj inputObject, Objs outputObjects, int[] centroid, int radius,
@@ -298,7 +300,7 @@ public class GetLocalObjectRegion extends Module {
 
         // Showing objects
         if (showOutput)
-            outputObjects.convertToImageRandomColours().showImage();
+            outputObjects.convertToImageRandomColours().showImage(LUTs.Random(true));
 
         return Status.PASS;
 

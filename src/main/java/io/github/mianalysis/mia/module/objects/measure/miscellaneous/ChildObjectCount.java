@@ -37,6 +37,7 @@ public class ChildObjectCount extends Module {
 
     public ChildObjectCount(Modules modules) {
         super("Child object count", modules);
+        il2Support = IL2Support.FULL;
     }
 
     public static String getFullName(String childObjectsName) {

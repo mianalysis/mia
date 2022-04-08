@@ -7,6 +7,7 @@ import org.scijava.plugin.Plugin;
 
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
+import io.github.mianalysis.mia.module.IL2Support;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.Obj;
@@ -20,13 +21,15 @@ import io.github.mianalysis.mia.object.refs.collections.ImageMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.system.Status;
+import io.github.sjcross.common.imagej.LUTs;
 
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class FilterByMeasurement extends AbstractNumericObjectFilter {    
     public static final String MEASUREMENT = "Measurement to filter on";   
     
     public FilterByMeasurement(Modules modules) {
-        super("Based on measurement",modules);
+        super("Based on measurement", modules);
+        il2Support = IL2Support.FULL;
     }
         
         
@@ -101,7 +104,7 @@ public class FilterByMeasurement extends AbstractNumericObjectFilter {
         }
         
         // Showing objects
-        if (showOutput) inputObjects.convertToImageRandomColours().showImage();
+        if (showOutput) inputObjects.convertToImageRandomColours().showImage(LUTs.Random(true));
         
         return Status.PASS;
         

@@ -55,6 +55,7 @@ public class MeasureRelativeOrientation extends Module {
 
     public MeasureRelativeOrientation(Modules modules) {
         super("Measure relative orientation", modules);
+        il2Support = IL2Support.FULL;
     }
 
     public interface OrientationModes {

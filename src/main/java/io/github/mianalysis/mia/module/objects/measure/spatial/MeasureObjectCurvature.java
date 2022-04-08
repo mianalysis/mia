@@ -42,6 +42,7 @@ import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Preferences;
 import io.github.mianalysis.mia.object.system.Status;
 import io.github.sjcross.common.analysis.CurvatureCalculator;
+import io.github.sjcross.common.imagej.LUTs;
 import io.github.sjcross.common.mathfunc.CumStat;
 import io.github.sjcross.common.object.Point;
 import io.github.sjcross.common.object.volume.PointOutOfRangeException;
@@ -561,7 +562,7 @@ public class MeasureObjectCurvature extends Module {
         if (showOutput)
             inputObjects.showMeasurements(this, modules);
         if (showOutput & !objectOutputMode.equals(ObjectOutputModes.DO_NOT_STORE)) {
-            outputObjects.convertToImageRandomColours().showImage();
+            outputObjects.convertToImageRandomColours().showImage(LUTs.Random(true));
         }
 
         return Status.PASS;

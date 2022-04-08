@@ -37,6 +37,7 @@ import io.github.mianalysis.mia.object.system.Status;
 import io.github.mianalysis.mia.object.units.SpatialUnit;
 import io.github.sjcross.common.analysis.EllipseCalculator;
 import io.github.sjcross.common.exceptions.IntegerOverflowException;
+import io.github.sjcross.common.imagej.LUTs;
 import io.github.sjcross.common.object.volume.Volume;
 
 /**
@@ -61,6 +62,7 @@ public class FitEllipse extends Module {
 
     public FitEllipse(Modules modules) {
         super("Fit ellipse", modules);
+        il2Support = IL2Support.FULL;
     }
 
     public interface FittingModes {
@@ -275,7 +277,7 @@ public class FitEllipse extends Module {
         if (showOutput) {
             inputObjects.showMeasurements(this, modules);
             if (!objectOutputMode.equals(OutputModes.DO_NOT_STORE)) {
-                outputObjects.convertToImageRandomColours().showImage();
+                outputObjects.convertToImageRandomColours().showImage(LUTs.Random(true));
             }
         }
 

@@ -58,6 +58,7 @@ public class MeasureObjectOverlap extends Module {
 
     public MeasureObjectOverlap(Modules modules) {
         super("Measure object overlap", modules);
+        il2Support = IL2Support.FULL;
     }
 
     public interface Measurements {

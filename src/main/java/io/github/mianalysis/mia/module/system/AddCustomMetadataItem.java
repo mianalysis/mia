@@ -30,6 +30,7 @@ public class AddCustomMetadataItem extends Module {
 
     public AddCustomMetadataItem(Modules modules) {
         super("Add custom metadata item", modules);
+        il2Support = IL2Support.FULL;
         deprecated = true;
     }
 

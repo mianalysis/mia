@@ -39,6 +39,7 @@ public class ParentObjectID extends Module {
 
     public ParentObjectID(Modules modules) {
         super("Parent object ID", modules);
+        il2Support = IL2Support.FULL;
     }
 
     public static String getFullName(String parentObjectsName) {

@@ -55,6 +55,7 @@ public class MeasureObjectShape extends Module {
 
     public MeasureObjectShape(Modules modules) {
         super("Measure object shape", modules);
+        il2Support = IL2Support.FULL;
     }
 
     public interface Measurements {

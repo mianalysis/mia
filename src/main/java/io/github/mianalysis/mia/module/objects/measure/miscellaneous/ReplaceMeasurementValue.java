@@ -69,6 +69,7 @@ public class ReplaceMeasurementValue extends Module {
 
     public ReplaceMeasurementValue(Modules modules) {
         super("Replace measurement value", modules);
+        il2Support = IL2Support.FULL;
     }
 
 

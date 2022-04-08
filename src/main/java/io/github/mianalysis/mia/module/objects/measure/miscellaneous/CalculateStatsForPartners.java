@@ -45,6 +45,7 @@ public class CalculateStatsForPartners extends Module {
 
     public CalculateStatsForPartners(Modules modules) {
         super("Calculate statistics for partners", modules);
+        il2Support = IL2Support.FULL;
     }
 
     public interface Measurements {

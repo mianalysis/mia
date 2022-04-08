@@ -36,6 +36,7 @@ import io.github.mianalysis.mia.object.system.Preferences;
 import io.github.mianalysis.mia.object.system.Status;
 import io.github.sjcross.common.analysis.EllipsoidCalculator;
 import io.github.sjcross.common.exceptions.IntegerOverflowException;
+import io.github.sjcross.common.imagej.LUTs;
 import io.github.sjcross.common.object.volume.Volume;
 
 /**
@@ -60,6 +61,7 @@ public class FitEllipsoid extends Module {
 
     public FitEllipsoid(Modules modules) {
         super("Fit ellipsoid", modules);
+        il2Support = IL2Support.FULL;
     }
 
     public interface FittingModes {
@@ -296,7 +298,7 @@ public class FitEllipsoid extends Module {
         if (showOutput) {
             inputObjects.showMeasurements(this, modules);
             if (!objectOutputMode.equals(OutputModes.DO_NOT_STORE)) {
-                outputObjects.convertToImageRandomColours().showImage();
+                outputObjects.convertToImageRandomColours().showImage(LUTs.Random(true));
             }
         }
 

@@ -37,6 +37,7 @@ public class PartnerObjectCount extends Module {
 
     public PartnerObjectCount(Modules modules) {
         super("Partner object count", modules);
+        il2Support = IL2Support.FULL;
     }
 
     public static String getFullName(String partnerObjectsName) {

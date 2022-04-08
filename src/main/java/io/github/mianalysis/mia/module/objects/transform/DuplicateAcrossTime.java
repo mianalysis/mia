@@ -30,6 +30,7 @@ import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Colours;
 import io.github.mianalysis.mia.object.system.Preferences;
 import io.github.mianalysis.mia.object.system.Status;
+import io.github.sjcross.common.imagej.LUTs;
 import io.github.sjcross.common.object.Point;
 import io.github.sjcross.common.object.volume.PointOutOfRangeException;
 
@@ -122,6 +123,7 @@ public class DuplicateAcrossTime extends Module {
 
     public DuplicateAcrossTime(Modules modules) {
         super("Duplicate objects across time", modules);
+        il2Support = IL2Support.FULL;
     }
 
     @Override
@@ -176,7 +178,7 @@ public class DuplicateAcrossTime extends Module {
         workspace.addObjects(outputObjects);
 
         if (showOutput)
-            outputObjects.convertToImageRandomColours().showImage();
+            outputObjects.convertToImageRandomColours().showImage(LUTs.Random(true));
 
         return Status.PASS;
 

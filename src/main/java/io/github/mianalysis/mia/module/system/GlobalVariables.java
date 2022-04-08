@@ -61,6 +61,7 @@ public class GlobalVariables extends Module {
 
     public GlobalVariables(Modules modules) {
         super("Global variables", modules);
+        il2Support = IL2Support.FULL;
     }
 
     public static String convertString(String string, Modules modules) {

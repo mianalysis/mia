@@ -30,6 +30,7 @@ import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Preferences;
 import io.github.mianalysis.mia.object.system.Status;
 import io.github.mianalysis.mia.process.ColourFactory;
+import io.github.sjcross.common.imagej.LUTs;
 import io.github.sjcross.common.object.Point;
 import io.github.sjcross.common.object.volume.PointOutOfRangeException;
 import net.imagej.ImgPlus;
@@ -205,10 +206,10 @@ public class MaskObjects<T extends RealType<T> & NativeType<T>> extends Module {
         if (showOutput) {
             switch (outputMode) {
             case OutputModes.CREATE_NEW_OBJECT:
-                outputObjects.convertToImageRandomColours().showImage();
+                outputObjects.convertToImageRandomColours().showImage(LUTs.Random(true));
                 break;
             case OutputModes.UPDATE_INPUT:
-                inputObjects.convertToImageRandomColours().showImage();
+                inputObjects.convertToImageRandomColours().showImage(LUTs.Random(true));
                 break;
             }
         }

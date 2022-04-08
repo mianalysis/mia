@@ -24,6 +24,7 @@ import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Preferences;
 import io.github.mianalysis.mia.object.system.Status;
+import io.github.sjcross.common.imagej.LUTs;
 
 /**
  * Created by sc13967 on 31/01/2018.
@@ -49,6 +50,7 @@ public class CombineObjectSets extends Module {
 
     public CombineObjectSets(Modules modules) {
         super("Combine object sets", modules);
+        il2Support = IL2Support.FULL;
     }
 
     public static void combineAndCreate(Objs inputObjects, Objs outputObjects) {
@@ -95,7 +97,7 @@ public class CombineObjectSets extends Module {
                 combineAndAdd(inputObjects1, inputObjects2);
 
                 if (showOutput)
-                    inputObjects1.convertToImageRandomColours().showImage();
+                    inputObjects1.convertToImageRandomColours().showImage(LUTs.Random(true));
 
                 break;
 
@@ -103,7 +105,7 @@ public class CombineObjectSets extends Module {
                 combineAndAdd(inputObjects2, inputObjects1);
 
                 if (showOutput)
-                    inputObjects2.convertToImageRandomColours().showImage();
+                    inputObjects2.convertToImageRandomColours().showImage(LUTs.Random(true));
 
                 break;
 
@@ -116,7 +118,7 @@ public class CombineObjectSets extends Module {
                 workspace.addObjects(outputObjects);
 
                 if (showOutput)
-                    outputObjects.convertToImageRandomColours().showImage();
+                    outputObjects.convertToImageRandomColours().showImage(LUTs.Random(true));
 
                 break;
         }

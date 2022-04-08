@@ -23,6 +23,7 @@ import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Preferences;
 import io.github.mianalysis.mia.object.system.Status;
+import io.github.sjcross.common.imagej.LUTs;
 import io.github.sjcross.common.object.volume.Volume;
 
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
@@ -47,6 +48,7 @@ public class GetObjectSurface extends Module {
 
     public GetObjectSurface(Modules modules) {
         super("Get object surface", modules);
+        il2Support = IL2Support.FULL;
     }
 
     @Override
@@ -77,7 +79,7 @@ public class GetObjectSurface extends Module {
 
         // Showing objects
         if (showOutput)
-            outputObjects.convertToImageRandomColours().showImage();
+            outputObjects.convertToImageRandomColours().showImage(LUTs.Random(true));
 
         return Status.PASS;
 

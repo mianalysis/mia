@@ -31,6 +31,7 @@ import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Preferences;
 import io.github.mianalysis.mia.object.system.Status;
 import io.github.sjcross.common.exceptions.IntegerOverflowException;
+import io.github.sjcross.common.imagej.LUTs;
 import io.github.sjcross.common.object.Point;
 import io.github.sjcross.common.object.volume.PointOutOfRangeException;
 
@@ -187,9 +188,9 @@ public class FillHolesInObjects extends Module {
         // Displaying updated objects
         if (showOutput) {
             if (updateInputObjects)
-                inputObjects.convertToImageRandomColours().showImage();
+                inputObjects.convertToImageRandomColours().showImage(LUTs.Random(true));
             else
-                outputObjects.convertToImageRandomColours().showImage();
+                outputObjects.convertToImageRandomColours().showImage(LUTs.Random(true));
         }
 
         return Status.PASS;

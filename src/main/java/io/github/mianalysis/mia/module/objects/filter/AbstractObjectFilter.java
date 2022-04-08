@@ -32,6 +32,7 @@ public abstract class AbstractObjectFilter extends Module {
 
     protected AbstractObjectFilter(String name, Modules modules) {
         super(name, modules);
+        il2Support = IL2Support.FULL;
     }
 
     public interface FilterModes {

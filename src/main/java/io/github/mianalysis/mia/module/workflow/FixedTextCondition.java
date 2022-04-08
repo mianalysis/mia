@@ -40,6 +40,7 @@ public class FixedTextCondition extends AbstractWorkspaceHandler {
 
     public FixedTextCondition(Modules modules) {
         super("Fixed text condition", modules);
+        il2Support = IL2Support.FULL;
     }
 
     @Override

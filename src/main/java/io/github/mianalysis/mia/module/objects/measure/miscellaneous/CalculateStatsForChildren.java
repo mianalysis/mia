@@ -44,7 +44,8 @@ public class CalculateStatsForChildren extends Module {
     public static final String CALCULATE_SUM = "Calculate sum";
 
     public CalculateStatsForChildren(Modules modules) {
-        super("Calculate statistics for children",modules);
+        super("Calculate statistics for children", modules);
+        il2Support = IL2Support.FULL;
     }
 
     public interface Measurements {

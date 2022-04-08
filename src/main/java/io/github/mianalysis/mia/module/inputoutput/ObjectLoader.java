@@ -45,6 +45,7 @@ import io.github.mianalysis.mia.object.system.Preferences;
 import io.github.mianalysis.mia.object.system.Status;
 import io.github.mianalysis.mia.object.units.SpatialUnit;
 import io.github.mianalysis.mia.object.units.TemporalUnit;
+import io.github.sjcross.common.imagej.LUTs;
 import io.github.sjcross.common.metadataextractors.Metadata;
 import io.github.sjcross.common.object.volume.PointOutOfRangeException;
 import io.github.sjcross.common.object.volume.SpatCal;
@@ -467,7 +468,7 @@ public class ObjectLoader extends Module {
         loadObjects(outputObjects, inputFile, parentObjects);
 
         if (showOutput)
-            outputObjects.convertToImageRandomColours().showImage();
+            outputObjects.convertToImageRandomColours().showImage(LUTs.Random(true));
 
         return Status.PASS;
 

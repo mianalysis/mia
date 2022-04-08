@@ -30,6 +30,7 @@ import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.image.Image;
 import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.image.ImageType;
+import io.github.mianalysis.mia.object.image.ImgPlusImage;
 import io.github.mianalysis.mia.object.image.ImgPlusTools;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
@@ -275,10 +276,8 @@ public class IdentifyObjects<T extends RealType<T> & NativeType<T>> extends Modu
     }
 
     public static <T extends RealType<T> & NativeType<T>> Objs process(Image<T> inputImage, String outputObjectsName,
-            boolean blackBackground, int connectivity, String type) throws IntegerOverflowException, RuntimeException {
-        String moduleName = new IdentifyObjects<>(null).getName();
-
-        Objs outputObjects = inputImage.initialiseEmptyObjs(outputObjectsName);
+            boolean blackBackground, int connectivity, String type) throws RuntimeException {
+        // Objs outputObjects = inputImage.initialiseEmptyObjs(outputObjectsName);
         ImgPlus<T> inputImg = inputImage.getImgPlus();
 
         Converter<IntegerType, BitType> converter;
@@ -290,42 +289,16 @@ public class IdentifyObjects<T extends RealType<T> & NativeType<T>> extends Modu
         StructuringElement se = connectivity == 6 ? StructuringElement.FOUR_CONNECTED
                 : StructuringElement.EIGHT_CONNECTED;
 
-        // Iterating over each frame, extracting the relevant View and processing
-        for (int t = 0; t < outputObjects.getNFrames(); t++) {
-            int[] cRange = new int[] { 0, -1 };
-            int[] zRange = new int[] { 0, -1 };
-            int[] tRange = new int[] { t, t };
+        ImgPlus<UnsignedLongType> labelImg = ImgPlusTools.createNewImgPlus(inputImg, new UnsignedLongType());
 
-            // Getting the current View
-            long[][] interval = ImgPlusTools.getSubHyperstackInterval(inputImg, cRange, zRange, tRange);
-            ImgPlus<UnsignedLongType> labelImg = ImgPlusTools.createNewSubHyperstackImg(inputImg, cRange, zRange,
-                    tRange, new UnsignedLongType());
-            IntervalView<T> view = Views.interval(inputImg, interval[0], interval[1]);
+        RandomAccessibleInterval<BitType> mask = Converters.convert(
+                (RandomAccessibleInterval<IntegerType>) inputImg,
+                converter, new BitType());
 
-            RandomAccessibleInterval<BitType> mask = Converters.convert(
-                    (RandomAccessibleInterval<IntegerType>) view,
-                    converter, new BitType());
+        new ConnectedComponents().labelAllConnectedComponents(mask, labelImg, se);
 
-            new ConnectedComponents().labelAllConnectedComponents(mask, labelImg, se);
-
-            Image tempImage = ImageFactory.createImage("Temp image", labelImg, ImageType.IMGLIB2);
-            Objs currOutputObjects = tempImage.convertImageToObjects(type, outputObjectsName);
-
-            // Updating the current objects (setting the real frame number and offsetting
-            // the ID)
-            int maxID = 0;
-            for (Obj object : outputObjects.values())
-                maxID = Math.max(object.getID(), maxID);
-
-            for (Obj object : currOutputObjects.values()) {
-                object.setID(object.getID() + maxID + 1);
-                object.setT(t);
-                outputObjects.put(object.getID(), object);
-            }
-
-            writeProgressStatus(t, outputObjects.getNFrames(), "images", moduleName);
-
-        }
+        Image tempImage = ImageFactory.createImage("Temp image", labelImg, ImageType.IMGLIB2);
+        Objs outputObjects = tempImage.convertImageToObjects(type, outputObjectsName);
 
         return outputObjects;
 

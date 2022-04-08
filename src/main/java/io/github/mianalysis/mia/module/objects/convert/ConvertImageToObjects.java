@@ -32,6 +32,7 @@ import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Preferences;
 import io.github.mianalysis.mia.object.system.Status;
 import io.github.sjcross.common.exceptions.IntegerOverflowException;
+import io.github.sjcross.common.imagej.LUTs;
 import io.github.sjcross.common.mathfunc.CumStat;
 import io.github.sjcross.common.object.volume.VolumeType;
 
@@ -115,7 +116,7 @@ public class ConvertImageToObjects extends Module {
             if (createParents)
                 TrackObjects.showObjects(objects, parentObjectsName);
             else
-                objects.convertToImageRandomColours().showImage();
+                objects.convertToImageRandomColours().showImage(LUTs.Random(true));
 
         workspace.addObjects(objects);
 

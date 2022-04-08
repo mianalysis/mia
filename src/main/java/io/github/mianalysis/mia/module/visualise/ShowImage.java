@@ -58,7 +58,8 @@ public class ShowImage extends Module {
 
 
     public ShowImage(Modules modules) {
-        super("Show image",modules);
+        super("Show image", modules);
+        il2Support = IL2Support.PARTIAL; // Partial because ImgLib2 intensity normalisation isn't yet enabled
 
         // This module likely wants to have this enabled (otherwise it does nothing)
         showOutput = true;

@@ -6,8 +6,6 @@ import javax.swing.JOptionPane;
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
 
-import ij.ImagePlus;
-import ij.plugin.Duplicator;
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
@@ -42,6 +40,7 @@ public class AddPause extends Module {
 
     public AddPause(Modules modules) {
         super("Add pause", modules);
+        il2Support = IL2Support.FULL;
     }
 
     @Override
@@ -62,9 +61,7 @@ public class AddPause extends Module {
 
         if (showImage) {
             Image inputImage = workspace.getImage(inputImageName);
-            ImagePlus showIpl = new Duplicator().run(inputImage.getImagePlus());
-            showIpl.setTitle(inputImageName);
-            showIpl.show();
+            inputImage.showImage();
         }
 
         String[] options = {RESUME,TERMINATE};

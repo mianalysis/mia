@@ -31,6 +31,7 @@ public class ShowMetadata extends Module {
 
     public ShowMetadata(Modules modules) {
         super("Show metadata", modules);
+        il2Support = IL2Support.FULL;
 
         // This module likely wants to have this enabled (otherwise it does nothing)
         showOutput = true;

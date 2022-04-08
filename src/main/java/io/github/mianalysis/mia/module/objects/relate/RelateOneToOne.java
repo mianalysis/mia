@@ -323,6 +323,7 @@ public class RelateOneToOne extends Module {
 
     public RelateOneToOne(Modules modules) {
         super("Relate one-to-one", modules);
+        il2Support = IL2Support.FULL;
     }
 
     @Override

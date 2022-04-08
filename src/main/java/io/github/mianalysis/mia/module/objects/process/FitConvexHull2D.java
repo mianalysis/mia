@@ -25,6 +25,7 @@ import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Preferences;
 import io.github.mianalysis.mia.object.system.Status;
+import io.github.sjcross.common.imagej.LUTs;
 import io.github.sjcross.common.object.volume.PointOutOfRangeException;
 import io.github.sjcross.common.object.volume.VolumeType;
 
@@ -55,6 +56,7 @@ public class FitConvexHull2D extends Module {
 
     public FitConvexHull2D(Modules modules) {
         super("Fit convex hull 2D", modules);
+        il2Support = IL2Support.FULL;
     }
 
     @Override
@@ -85,7 +87,7 @@ public class FitConvexHull2D extends Module {
         for (Obj inputObject:inputObjects.values())
             processObject(inputObject,outputObjects);            
 
-        if (showOutput) outputObjects.convertToImageRandomColours().showImage();
+        if (showOutput) outputObjects.convertToImageRandomColours().showImage(LUTs.Random(true));
 
         return Status.PASS;
 

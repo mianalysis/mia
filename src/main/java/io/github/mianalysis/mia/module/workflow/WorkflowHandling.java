@@ -76,6 +76,7 @@ public class WorkflowHandling extends Module {
 
     public WorkflowHandling(Modules modules) {
         super("Workflow handling", modules);
+        il2Support = IL2Support.FULL;
     }
 
     public interface TestModes {

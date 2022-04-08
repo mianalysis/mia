@@ -41,6 +41,7 @@ public class BinObjectsByMeasurement extends Module {
 
     public BinObjectsByMeasurement(Modules modules) {
         super("Bin objects by measurement", modules);
+        il2Support = IL2Support.FULL;
     }
 
     interface Measurements {

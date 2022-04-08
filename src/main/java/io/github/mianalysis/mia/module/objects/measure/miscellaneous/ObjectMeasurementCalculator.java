@@ -99,6 +99,7 @@ public class ObjectMeasurementCalculator extends Module {
 
     public ObjectMeasurementCalculator(Modules modules) {
         super("Object measurement calculator", modules);
+        il2Support = IL2Support.FULL;
     }
 
     public static String getFullName(String measurementName) {

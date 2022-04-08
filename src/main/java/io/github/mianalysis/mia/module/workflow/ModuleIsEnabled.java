@@ -35,6 +35,7 @@ public class ModuleIsEnabled extends AbstractWorkspaceHandler {
 
     public ModuleIsEnabled(Modules modules) {
         super("Module is enabled condition", modules);
+        il2Support = IL2Support.FULL;
     }
 
     public interface TestModes {

@@ -55,6 +55,7 @@ import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Preferences;
 import io.github.mianalysis.mia.object.system.Status;
+import io.github.sjcross.common.imagej.LUTs;
 import io.github.sjcross.common.process.CommaSeparatedStringInterpreter;
 
 /**
@@ -550,7 +551,7 @@ public class FilterObjects extends Module implements ActionListener {
 
         // Showing objects
         if (showOutput)
-            inputObjects.convertToImageRandomColours().showImage();
+            inputObjects.convertToImageRandomColours().showImage(LUTs.Random(true));
 
         return Status.PASS;
 

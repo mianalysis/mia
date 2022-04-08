@@ -45,6 +45,7 @@ public class FitLongestChord extends Module {
 
     public FitLongestChord(Modules modules) {
         super("Fit longest chord", modules);
+        il2Support = IL2Support.FULL;
     }
 
     public interface Measurements {
