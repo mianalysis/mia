@@ -57,16 +57,16 @@ public class ParametersPanel extends JScrollPane {
 
     public ParametersPanel() {
         panel = new JPanel();
-        setViewportView(panel);        
-        
+        setViewportView(panel);
+
         // Initialising the scroll panel
         setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
         setViewportBorder(BorderFactory.createEmptyBorder());
         setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         getVerticalScrollBar().setUnitIncrement(10);
-        setMinimumSize(new Dimension(minimumWidth,1));
-        setPreferredSize(new Dimension(preferredWidth,1));
+        setMinimumSize(new Dimension(minimumWidth, 1));
+        setPreferredSize(new Dimension(preferredWidth, 1));
 
         panel.setLayout(new GridBagLayout());
         panel.validate();
@@ -95,7 +95,8 @@ public class ParametersPanel extends JScrollPane {
         c.insets = new Insets(5, 5, 20, 0);
         c.anchor = GridBagConstraints.WEST;
 
-        // If the active module is set to null (i.e. we're looking at the analysis options panel) exit this method
+        // If the active module is set to null (i.e. we're looking at the analysis
+        // options panel) exit this method
         if (module == null) {
             showUsageMessage();
             return;
@@ -110,14 +111,15 @@ public class ParametersPanel extends JScrollPane {
         if (module instanceof InputControl) {
             module = inputControl;
             c.insets = new Insets(2, 8, 20, 0);
-                    c.gridy++;
-                    JPanel warningPanel = getWarning("\"Input control\" only specifies the path to the root image; no image is loaded into the workspace at this point.  To load images, add one or more \"Load Image\" modules.", Colours.ORANGE, alertIcon);
-                    panel.add(warningPanel, c);            
+            c.gridy++;
+            JPanel warningPanel = getWarning(
+                    "\"Input control\" only specifies the path to the root image; no image is loaded into the workspace at this point.  To load images, add one or more \"Load Image\" modules.",
+                    Colours.ORANGE, alertIcon);
+            panel.add(warningPanel, c);
         }
-            
+
         if (module instanceof OutputControl)
             module = outputControl;
-        
 
         // Adding an ImgLib2 warning if necessary
         String storageMode = MIA.preferences.getDataStorageMode();
@@ -126,14 +128,18 @@ public class ParametersPanel extends JScrollPane {
                 case NONE:
                     c.insets = new Insets(2, 8, 20, 0);
                     c.gridy++;
-                    JPanel warningPanel = getWarning("This module is currently incompatible with images streamed directly from storage.  To use this module please go to preferences (Edit > Preferences) and change data storage method to \""
-                            + Preferences.DataStorageModes.KEEP_IN_RAM + "\".", Colours.RED, warningIcon);
+                    JPanel warningPanel = getWarning(
+                            "This module is currently incompatible with images streamed directly from storage.  To use this module please go to preferences (Edit > Preferences) and change data storage method to \""
+                                    + Preferences.DataStorageModes.KEEP_IN_RAM + "\".",
+                                    Colours.RED, warningIcon);
                     panel.add(warningPanel, c);
                     break;
                 case PARTIAL:
-                c.insets = new Insets(2, 8, 20, 0);
+                    c.insets = new Insets(2, 8, 20, 0);
                     c.gridy++;
-                    warningPanel = getWarning("This module currently only has partial support for images streamed directly from storage.  The module will run, but any images used may be loaded entirely into RAM.", Colours.ORANGE, alertIcon);
+                    warningPanel = getWarning(
+                            "This module currently only has partial support for images streamed directly from storage.  The module will run, but any images used may be loaded entirely into RAM.",
+                            Colours.ORANGE, alertIcon);
                     panel.add(warningPanel, c);
                     break;
             }
@@ -187,11 +193,11 @@ public class ParametersPanel extends JScrollPane {
         panel.revalidate();
         panel.repaint();
 
-        revalidate();
-        repaint();
+        revalidate();        
+        repaint();        
 
     }
-    
+
     JPanel getWarning(String message, Color colour, ImageIcon icon) {
         JPanel warningPanel = new JPanel(new GridBagLayout());
         warningPanel.setBackground(null);
@@ -206,9 +212,9 @@ public class ParametersPanel extends JScrollPane {
         JLabel iconLabel = new JLabel();
         iconLabel.setIcon(icon);
         warningPanel.add(iconLabel, c);
-        
+
         c.gridx++;
-        JTextArea textArea = new JTextArea();
+        JTextArea textArea = new JTextArea();        
         textArea.setEditable(false);
         textArea.setBackground(null);
         textArea.setText(message);
@@ -219,47 +225,53 @@ public class ParametersPanel extends JScrollPane {
         textArea.setAlignmentX(JComponent.LEFT_ALIGNMENT);
         textArea.setBorder(BorderFactory.createEmptyBorder());
         warningPanel.add(textArea, c);
-        
+
         return warningPanel;
 
     }
 
-    void addRefExportControls(Refs<? extends ExportableRef> refs, String header, ComponentFactory componentFactory, GridBagConstraints c) {
-        if (refs.values().size() == 0) return;
+    void addRefExportControls(Refs<? extends ExportableRef> refs, String header, ComponentFactory componentFactory,
+            GridBagConstraints c) {
+        if (refs.values().size() == 0)
+            return;
 
-        JPanel  measurementHeader = componentFactory.createRefExportHeader(header,refs,false);
+        JPanel measurementHeader = componentFactory.createRefExportHeader(header, refs, false);
         c.gridx = 0;
         c.gridy++;
         c.anchor = GridBagConstraints.WEST;
-        panel.add(measurementHeader,c);
+        panel.add(measurementHeader, c);
 
-        // Iterating over the measurements for the current object, adding a control for each
-        for (ExportableRef reference:refs.values()) {
+        // Iterating over the measurements for the current object, adding a control for
+        // each
+        for (ExportableRef reference : refs.values()) {
             // Adding measurement control
             JPanel currentMeasurementPanel = componentFactory.createSingleRefControl(reference);
             c.gridy++;
             c.anchor = GridBagConstraints.EAST;
-            panel.add(currentMeasurementPanel,c);
+            panel.add(currentMeasurementPanel, c);
 
         }
     }
 
-    void addSummaryRefExportControls(Refs<? extends SummaryRef> refs, String header, ComponentFactory componentFactory, GridBagConstraints c) {
-        if (refs.values().size() == 0) return;
+    void addSummaryRefExportControls(Refs<? extends SummaryRef> refs, String header, ComponentFactory componentFactory,
+            GridBagConstraints c) {
+        if (refs.values().size() == 0)
+            return;
 
-        JPanel  measurementHeader = componentFactory.createRefExportHeader(header,refs,true);
+        JPanel measurementHeader = componentFactory.createRefExportHeader(header, refs, true);
         c.gridx = 0;
         c.gridy++;
         c.anchor = GridBagConstraints.WEST;
-        panel.add(measurementHeader,c);
+        panel.add(measurementHeader, c);
 
-        // Iterating over the measurements for the current object, adding a control for each
-        for (SummaryRef reference:refs.values()) {
+        // Iterating over the measurements for the current object, adding a control for
+        // each
+        for (SummaryRef reference : refs.values()) {
             // Adding measurement control
             JPanel currentMeasurementPanel = componentFactory.createSingleSummaryRefControl(reference);
             c.gridy++;
             c.anchor = GridBagConstraints.EAST;
-            panel.add(currentMeasurementPanel,c);
+            panel.add(currentMeasurementPanel, c);
 
         }
     }
@@ -280,17 +292,19 @@ public class ParametersPanel extends JScrollPane {
     }
 
     public void addAdvancedParameterGroupControl(ParameterGroup group, Module module, GridBagConstraints c) {
-        // Iterating over each collection of Parameters.  After adding each one, a remove button is included
+        // Iterating over each collection of Parameters. After adding each one, a remove
+        // button is included
         LinkedHashMap<Integer, Parameters> collections = group.getCollections(true);
 
         for (int collectionIdx : collections.keySet()) {
             Parameters collection = collections.get(collectionIdx);
             // Adding the individual parameters
-            for (Parameter parameter:collection.values()) addAdvancedParameterControl(parameter,c);
+            for (Parameter parameter : collection.values())
+                addAdvancedParameterControl(parameter, c);
 
             c.gridy++;
-            AdjustParameters removeParameters = new AdjustParameters("",module,group,collectionIdx);
-            addAdvancedParameterControl(removeParameters,c);
+            AdjustParameters removeParameters = new AdjustParameters("", module, group, collectionIdx);
+            addAdvancedParameterControl(removeParameters, c);
 
             c.gridy++;
             panel.add(getInvisibleSeparator(), c);
@@ -298,7 +312,7 @@ public class ParametersPanel extends JScrollPane {
         }
 
         // Adding an addRef button
-        addAdvancedParameterControl(group,c);
+        addAdvancedParameterControl(group, c);
 
         c.gridy++;
         panel.add(getInvisibleSeparator(), c);
@@ -322,7 +336,7 @@ public class ParametersPanel extends JScrollPane {
         usageMessage.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
         usageMessage.setText("<html><center><font face=\"sans-serif\" size=\"3\">" +
                 "To change parameters for an existing module," +
-                "<br>click the module name on the list to the left."+
+                "<br>click the module name on the list to the left." +
                 "<br><br>" +
                 "Modules can be added, removed and re-ordered using" +
                 "<br>the +, -, ▲ and ▼ buttons." +
@@ -349,7 +363,7 @@ public class ParametersPanel extends JScrollPane {
 
     private JSeparator getInvisibleSeparator() {
         JSeparator separator = new JSeparator();
-        separator.setPreferredSize(new Dimension(0,15));
+        separator.setPreferredSize(new Dimension(0, 15));
         separator.setForeground(panel.getBackground());
         separator.setBackground(panel.getBackground());
 

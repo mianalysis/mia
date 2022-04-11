@@ -23,6 +23,7 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableModel;
 
+import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.gui.GUI;
 import io.github.mianalysis.mia.gui.GUIAnalysisHandler;
 import io.github.mianalysis.mia.gui.regions.RenameListMenu;
@@ -145,6 +146,23 @@ public class ModuleTable extends JTable implements ActionListener, MouseListener
     }
 
     @Override
+    public Component prepareRenderer(TableCellRenderer renderer, int row, int column) {
+        Component comp = super.prepareRenderer(renderer, row, column);
+
+        int[] selectedRows = getSelectedRows();
+        for (int selectedRow : selectedRows) {
+            if (row == selectedRow) {
+                if (MIA.preferences.darkThemeEnabled())
+                    comp.setBackground(Colours.DARK_BLUE);
+                else
+                    comp.setBackground(Colours.LIGHT_BLUE);
+                return comp;
+            }
+        }
+        return comp;
+    }
+
+    @Override
     public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
             int row, int column) {
 
@@ -162,10 +180,10 @@ public class ModuleTable extends JTable implements ActionListener, MouseListener
             label.setBorder(new EmptyBorder(2, 5, 0, 0));
             label.setOpaque(true);
 
-            if (isSelected)
-                label.setBackground(Colours.LIGHT_BLUE);
-            else
-                label.setBackground(table.getBackground());
+            // if (isSelected)
+            // label.setBackground(Colours.LIGHT_BLUE);
+            // else
+            // label.setBackground(table.getBackground());
 
             GUI.getModules().get(row).setNickname(((String) value).trim());
             GUI.updateModules();

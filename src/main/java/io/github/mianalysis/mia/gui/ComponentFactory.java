@@ -118,8 +118,6 @@ public class ComponentFactory {
             paramPanel.add(parameterName, c);
 
             if (!parameter.isValid()) {
-            //     parameterName.setForeground(Color.BLACK);
-            // else {
                 parameterName.setForeground(Colours.RED);
                 parameterName.setIcon(warningIcon);
             }

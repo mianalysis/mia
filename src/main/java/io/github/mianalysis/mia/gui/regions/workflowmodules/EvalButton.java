@@ -31,8 +31,10 @@ public class EvalButton extends JButton implements ActionListener {
             EvalButton.class.getResource("/icons/arrowopen_black_12px.png"), "");
     private static final ImageIcon greyIcon = new ImageIcon(
             EvalButton.class.getResource("/icons/arrowopen_lightgrey_12px.png"), "");
-    private static final ImageIcon amberIcon = new ImageIcon(
-            EvalButton.class.getResource("/icons/Dual Ring-1s-12px.gif"), "");
+    private static final ImageIcon spinningBlackIcon = new ImageIcon(
+            EvalButton.class.getResource("/icons/Dual Ring-1s_black_12px.gif"), "");
+    private static final ImageIcon spinningGreyIcon = new ImageIcon(
+            EvalButton.class.getResource("/icons/Dual Ring-1s_lightgrey_12px.gif"), "");
     private static final ImageIcon greenIcon = new ImageIcon(
             EvalButton.class.getResource("/icons/arrowclosed_green_12px.png"), "");
     private static final ImageIcon redOpenIcon = new ImageIcon(
@@ -62,7 +64,10 @@ public class EvalButton extends JButton implements ActionListener {
 
         // If the module is being currently evaluated
         if (idx == GUI.getModuleBeingEval()) {
-            setIcon(amberIcon);
+            if (MIA.preferences.darkThemeEnabled())
+                setIcon(spinningGreyIcon);
+            else
+                setIcon(spinningBlackIcon);
             setRolloverIcon(redStopIcon);
             return;
         }

@@ -25,7 +25,7 @@ public class ModuleName extends JLabel {
 
     private static final ImageIcon skipIcon = new ImageIcon(
             ModuleName.class.getResource("/icons/skiparrow_orange_12px.png"), "");
-            private static final ImageIcon alertIcon = new ImageIcon(
+    private static final ImageIcon alertIcon = new ImageIcon(
             ModuleName.class.getResource("/icons/alert_orange_12px.png"), "");
     private static final ImageIcon warningIcon = new ImageIcon(
             ModuleName.class.getResource("/icons/warning_red_12px.png"), "");
@@ -84,27 +84,30 @@ public class ModuleName extends JLabel {
             setForeground(Colours.ORANGE);
             setIcon(skipIcon);
             setToolTipText("<html>Module: " + module.getName() + "<br>Nickname: " + module.getNickname()
-                    + "<br>Status: Skipped"+deprecationMessage+"</html>");
+                    + "<br>Status: Skipped" + deprecationMessage + "</html>");
         } else if (module.isEnabled() & !module.isRunnable()) {
-            setForeground(Colours.RED);
+            if (MIA.preferences.darkThemeEnabled())
+                setForeground(Colours.LIGHT_RED);
+            else
+                setForeground(Colours.RED);
             setIcon(warningIcon);
             setToolTipText("<html>Module: " + module.getName() + "<br>Nickname: " + module.getNickname()
-                    + "<br>Status: Error"+deprecationMessage+"</html>");
+                    + "<br>Status: Error" + deprecationMessage + "</html>");
         } else if (module.isEnabled()
                 & MIA.preferences.getDataStorageMode().equals(Preferences.DataStorageModes.STREAM_FROM_DRIVE)
                 && module.getIL2Support().equals(IL2Support.PARTIAL)) {
             setForeground(defaultColour);
             setIcon(alertIcon);
             setToolTipText("<html>Module: " + module.getName() + "<br>Nickname: " + module.getNickname()
-                    + "<br>Status: Partial image streaming support"+deprecationMessage+"</html>");
+                    + "<br>Status: Partial image streaming support" + deprecationMessage + "</html>");
         } else if (module.isEnabled() && module.isReachable() && module.isRunnable()) {
             setForeground(defaultColour);
             setToolTipText("<html>Module: " + module.getName() + "<br>Nickname: " + module.getNickname()
-                    + "<br>Status: OK"+deprecationMessage+"</html>");
+                    + "<br>Status: OK" + deprecationMessage + "</html>");
         } else {
             setForeground(Color.BLACK);
             setToolTipText("<html>Module: " + module.getName() + "<br>Nickname: " + module.getNickname()
-                    + "<br>Status: Disabled"+deprecationMessage+"</html>");
+                    + "<br>Status: Disabled" + deprecationMessage + "</html>");
         }
 
         if (module.isDeprecated()) {

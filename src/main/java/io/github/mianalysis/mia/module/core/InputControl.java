@@ -1,5 +1,6 @@
 package io.github.mianalysis.mia.module.core;
 
+import java.awt.Color;
 import java.io.File;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -64,7 +65,7 @@ import ome.xml.meta.IMetadata;
 /**
  * Created by Stephen on 29/07/2017.
  */
-@Plugin(type = Module.class, priority=Priority.LOW, visible=true)
+@Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class InputControl extends Module {
     public static final String MESSAGE_SEPARATOR = "Message";
     public static final String NO_LOAD_MESSAGE = "No load message";
@@ -149,7 +150,7 @@ public class InputControl extends Module {
         return new File((String) parameters.getValue(INPUT_PATH));
     }
 
-    public void addFilenameFilters(FileCrawler fileCrawler) {        
+    public void addFilenameFilters(FileCrawler fileCrawler) {
         // Getting filters
         LinkedHashMap<Integer, Parameters> collections = parameters.getValue(ADD_FILTER);
 
@@ -281,7 +282,7 @@ public class InputControl extends Module {
 
             boolean pass = true;
             for (FileCondition filter : filters) {
-                if (name != null & !filter.test(new File(name),ignoreCase)) {
+                if (name != null & !filter.test(new File(name), ignoreCase)) {
                     pass = false;
                     break;
                 }

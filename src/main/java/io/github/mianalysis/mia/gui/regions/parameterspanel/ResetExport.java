@@ -7,6 +7,7 @@ import java.awt.event.ActionListener;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 
+import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.gui.GUI;
 import io.github.mianalysis.mia.object.refs.abstrakt.ExportableRef;
 
@@ -18,16 +19,23 @@ public class ResetExport extends JButton implements ActionListener {
 
     private ExportableRef ref;
 
-    private static final ImageIcon refreshIcon = new ImageIcon(ResetExport.class.getResource("/icons/refresh_black_12px.png"), "");
+    private static final ImageIcon blackRefreshIcon = new ImageIcon(
+            ResetExport.class.getResource("/icons/refresh_black_12px.png"), "");
+    private static final ImageIcon lightgreyRefreshIcon = new ImageIcon(
+            ResetExport.class.getResource("/icons/refresh_lightgrey_12px.png"), "");
 
     public ResetExport(ExportableRef ref) {
         this.ref = ref;
 
-        setMargin(new Insets(0,0,0,0));
+        setMargin(new Insets(0, 0, 0, 0));
         setFocusPainted(false);
         setSelected(false);
         addActionListener(this);
-        setIcon(refreshIcon);
+        
+        if (MIA.preferences.darkThemeEnabled())
+            setIcon(lightgreyRefreshIcon);
+        else
+            setIcon(blackRefreshIcon);
 
     }
 

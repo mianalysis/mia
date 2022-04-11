@@ -7,6 +7,7 @@ import java.awt.event.ActionListener;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 
+import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.gui.GUI;
 import io.github.mianalysis.mia.module.Module;
 
@@ -25,7 +26,7 @@ public class ShowOutputButton extends JButton implements ActionListener {
     private static final ImageIcon blackOpenIcon = new ImageIcon(
             ShowOutputButton.class.getResource("/icons/eyeopen_black_12px.png"), "");
     private static final ImageIcon redClosedIcon = new ImageIcon(
-            ShowOutputButton.class.getResource("/icons/eyeclosed_red_12px.png"), "");
+            ShowOutputButton.class.getResource("/icons/eyeclosed_redish_12px.png"), "");
     private static final ImageIcon redOpenIcon = new ImageIcon(
             ShowOutputButton.class.getResource("/icons/eyeopen_red_12px.png"), "");
     private static final ImageIcon orangeClosedIcon = new ImageIcon(
@@ -33,9 +34,9 @@ public class ShowOutputButton extends JButton implements ActionListener {
     private static final ImageIcon orangeOpenIcon = new ImageIcon(
             ShowOutputButton.class.getResource("/icons/eyeopen_orange_12px.png"), "");
     private static final ImageIcon greyClosedIcon = new ImageIcon(
-            ShowOutputButton.class.getResource("/icons/eyeclosed_grey_12px.png"), "");
+            ShowOutputButton.class.getResource("/icons/eyeclosed_lightgrey_12px.png"), "");
     private static final ImageIcon greyOpenIcon = new ImageIcon(
-            ShowOutputButton.class.getResource("/icons/eyeopen_grey_12px.png"), "");
+            ShowOutputButton.class.getResource("/icons/eyeopen_lightgrey_12px.png"), "");
 
     public ShowOutputButton(Module module) {
         this.module = module;
@@ -53,23 +54,39 @@ public class ShowOutputButton extends JButton implements ActionListener {
     }
 
     public void updateState() {
-        if ((state && module.isEnabled()) && module.isReachable() && module.isRunnable())
-            setIcon(blackOpenIcon);
-        else if ((state && module.isEnabled()) & !module.isReachable())
+        if ((state && module.isEnabled()) && module.isReachable() && module.isRunnable()) {
+            if (MIA.preferences.darkThemeEnabled()) {
+                setIcon(greyOpenIcon);
+            } else {
+                setIcon(blackOpenIcon);
+            }
+        } else if ((state && module.isEnabled()) & !module.isReachable()) {
             setIcon(orangeOpenIcon);
-        else if ((state && module.isEnabled()) & !module.isRunnable())
+        } else if ((state && module.isEnabled()) & !module.isRunnable()) {
             setIcon(redOpenIcon);
-        else if (state & !module.isEnabled())
-            setIcon(greyOpenIcon);
-        else if ((!state && module.isEnabled()) && module.isReachable() && module.isRunnable())
-            setIcon(blackClosedIcon);
-        else if ((!state && module.isEnabled()) & !module.isReachable())
+        } else if (state & !module.isEnabled()) {
+            if (MIA.preferences.darkThemeEnabled()) {
+                setIcon(blackOpenIcon);
+            } else {
+                setIcon(greyOpenIcon);
+            }
+        } else if ((!state && module.isEnabled()) && module.isReachable() && module.isRunnable()) {
+            if (MIA.preferences.darkThemeEnabled()) {
+                setIcon(greyClosedIcon);
+            } else {
+                setIcon(blackClosedIcon);
+            }
+        } else if ((!state && module.isEnabled()) & !module.isReachable()) {
             setIcon(orangeClosedIcon);
-        else if ((!state && module.isEnabled()) & !module.isRunnable())
+        } else if ((!state && module.isEnabled()) & !module.isRunnable()) {
             setIcon(redClosedIcon);
-        else if (!state & !module.isEnabled())
-            setIcon(greyClosedIcon);
-
+        } else if (!state & !module.isEnabled()) {
+            if (MIA.preferences.darkThemeEnabled()) {
+                setIcon(blackClosedIcon);
+            } else {
+                setIcon(greyClosedIcon);
+            }
+        }
     }
 
     public Module getModule() {

@@ -178,9 +178,15 @@ public class GUI {
         if (editingPanel != null)
             SwingUtilities.updateComponentTreeUI(editingPanel);
 
+        for (Parameter parameter : getModules().getInputControl().getAllParameters().values())
+            SwingUtilities.updateComponentTreeUI(parameter.getControl().getComponent());
+
+        for (Parameter parameter : getModules().getOutputControl().getAllParameters().values())
+            SwingUtilities.updateComponentTreeUI(parameter.getControl().getComponent());
+
         for (Module module : getModules())
             for (Parameter parameter : module.getAllParameters().values())
-            SwingUtilities.updateComponentTreeUI(parameter.getControl().getComponent());
+                SwingUtilities.updateComponentTreeUI(parameter.getControl().getComponent());
 
     }
 

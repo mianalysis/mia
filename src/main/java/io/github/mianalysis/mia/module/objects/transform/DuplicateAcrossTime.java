@@ -1,5 +1,7 @@
 package io.github.mianalysis.mia.module.objects.transform;
 
+import java.awt.Color;
+
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
 
