@@ -103,9 +103,9 @@ public class Preferences extends Module {
                 | UnsupportedLookAndFeelException e) {
             e.printStackTrace();
         }
-
+        
         GUI.refreshLookAndFeel();
-
+        
     }
 
     public boolean isDarkTheme(String theme) {
@@ -188,7 +188,7 @@ public class Preferences extends Module {
     protected void initialiseParameters() {
         parameters.add(new SeparatorP(GUI_SEPARATOR, this));
         parameters.add(new ChoiceP(THEME, this,
-                Prefs.get("MIA.GUI.theme", Themes.SYSTEM_DEFAULT), Themes.ALL));
+                Prefs.get("MIA.GUI.theme", Themes.FLAT_LAF_LIGHT), Themes.ALL));
         parameters.add(new BooleanP(SHOW_DEPRECATED, this, Prefs.get("MIA.GUI.showDeprecated", false)));
 
         parameters.add(new SeparatorP(DATA_SEPARATOR, this));

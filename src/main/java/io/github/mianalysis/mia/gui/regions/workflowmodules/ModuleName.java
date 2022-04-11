@@ -86,10 +86,7 @@ public class ModuleName extends JLabel {
             setToolTipText("<html>Module: " + module.getName() + "<br>Nickname: " + module.getNickname()
                     + "<br>Status: Skipped" + deprecationMessage + "</html>");
         } else if (module.isEnabled() & !module.isRunnable()) {
-            if (MIA.preferences.darkThemeEnabled())
-                setForeground(Colours.LIGHT_RED);
-            else
-                setForeground(Colours.RED);
+            setForeground(Colours.RED);
             setIcon(warningIcon);
             setToolTipText("<html>Module: " + module.getName() + "<br>Nickname: " + module.getNickname()
                     + "<br>Status: Error" + deprecationMessage + "</html>");

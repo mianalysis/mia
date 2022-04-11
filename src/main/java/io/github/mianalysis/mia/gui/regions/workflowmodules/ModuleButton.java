@@ -15,6 +15,8 @@ import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.gui.GUI;
 import io.github.mianalysis.mia.gui.regions.RenameListMenu;
 import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.module.core.InputControl;
+import io.github.mianalysis.mia.module.core.OutputControl;
 import io.github.mianalysis.mia.module.system.GUISeparator;
 import io.github.mianalysis.mia.object.system.Colours;
 
@@ -57,7 +59,7 @@ public class ModuleButton extends JToggleButton implements ActionListener, Mouse
         else if (module.isEnabled() & !module.isReachable())
             setForeground(Colours.ORANGE);
         else if (module.isEnabled() & !module.isRunnable())
-            setForeground(Colours.RED);
+                setForeground(Colours.RED);
         else
             setForeground(Color.GRAY);
 

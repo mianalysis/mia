@@ -14,6 +14,7 @@ import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 import javax.swing.ToolTipManager;
 
+import ij.IJ;
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.gui.regions.abstrakt.AbstractPanel;
 import io.github.mianalysis.mia.gui.regions.editingpanel.EditingPanel;
@@ -169,25 +170,28 @@ public class GUI {
     }
 
     public static void refreshLookAndFeel() {
-        if (frame != null)
-            SwingUtilities.updateComponentTreeUI(frame);
+        if (IJ.isWindows()) {
+            MIA.log.writeMessage("Theme will be applied upon restarting Fiji");
+        } else {
+            if (frame != null)
+                SwingUtilities.updateComponentTreeUI(frame);
 
-        if (processingPanel != null)
-            SwingUtilities.updateComponentTreeUI(processingPanel);
+            if (processingPanel != null)
+                SwingUtilities.updateComponentTreeUI(processingPanel);
 
-        if (editingPanel != null)
-            SwingUtilities.updateComponentTreeUI(editingPanel);
+            if (editingPanel != null)
+                SwingUtilities.updateComponentTreeUI(editingPanel);
 
-        for (Parameter parameter : getModules().getInputControl().getAllParameters().values())
-            SwingUtilities.updateComponentTreeUI(parameter.getControl().getComponent());
-
-        for (Parameter parameter : getModules().getOutputControl().getAllParameters().values())
-            SwingUtilities.updateComponentTreeUI(parameter.getControl().getComponent());
-
-        for (Module module : getModules())
-            for (Parameter parameter : module.getAllParameters().values())
+            for (Parameter parameter : getModules().getInputControl().getAllParameters().values())
                 SwingUtilities.updateComponentTreeUI(parameter.getControl().getComponent());
 
+            for (Parameter parameter : getModules().getOutputControl().getAllParameters().values())
+                SwingUtilities.updateComponentTreeUI(parameter.getControl().getComponent());
+
+            for (Module module : getModules())
+                for (Parameter parameter : module.getAllParameters().values())
+                    SwingUtilities.updateComponentTreeUI(parameter.getControl().getComponent());
+        }
     }
 
     public static void updatePanel() {

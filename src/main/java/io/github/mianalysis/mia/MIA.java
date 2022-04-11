@@ -79,11 +79,11 @@ public class MIA implements Command {
     }
 
     @Override
-    public void run() {
-        preferences = new Preferences(null);
-        preferences.setTheme(preferences.getParameterValue(Preferences.THEME));
-        
+    public void run() {      
         try {
+            preferences = new Preferences(null);            
+            preferences.setTheme(preferences.getParameterValue(Preferences.THEME));
+
             if (!headless) {
                 // Before removing the old renderer we want to check the new one can be created
                 UIService uiService = ijService.context().getService(UIService.class);
@@ -95,11 +95,12 @@ public class MIA implements Command {
                 log.addRenderer(mainRenderer);
 
             }
+
+            log.addRenderer(logHistory);
+
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-        log.addRenderer(logHistory);
 
         // Determining the version number from the pom file
         try {
