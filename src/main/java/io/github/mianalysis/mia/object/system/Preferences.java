@@ -3,7 +3,7 @@ package io.github.mianalysis.mia.object.system;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import javax.swing.SwingUtilities;
+import javax.swing.LookAndFeel;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
@@ -27,7 +27,6 @@ import io.github.mianalysis.mia.object.parameters.FolderPathP;
 import io.github.mianalysis.mia.object.parameters.GenericButtonP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.SeparatorP;
-import io.github.mianalysis.mia.object.parameters.abstrakt.Parameter;
 import io.github.mianalysis.mia.object.refs.collections.ImageMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
@@ -49,6 +48,8 @@ public class Preferences extends Module {
 
     public static final String UPDATE_SEPARATOR = "Update";
     public static final String UPDATE_PARAMETERS = "Update parameters";
+
+    private static LookAndFeel ijLAF = UIManager.getLookAndFeel();
 
     public interface Themes {
         String FLAT_LAF_DARK = "Flat LAF (dark)";
@@ -84,8 +85,7 @@ public class Preferences extends Module {
             case Themes.FLAT_LAF_LIGHT:
                 return FlatLightLaf.class.getCanonicalName();
             case Themes.MATCH_IMAGEJ:
-                MIA.log.writeWarning("Need to implement loading ImageJ LAF (Preferences.java)");
-                return FlatDarkLaf.class.getCanonicalName();
+                return ijLAF.getClass().getCanonicalName();
             case Themes.SYSTEM_DEFAULT:
             default:
                 return UIManager.getSystemLookAndFeelClassName();
