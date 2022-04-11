@@ -1,5 +1,8 @@
 package io.github.mianalysis.mia.object.image;
 
+import java.util.Arrays;
+import java.util.List;
+
 import ij.ImagePlus;
 import io.github.mianalysis.mia.MIA;
 import io.github.sjcross.common.object.volume.SpatCal;
@@ -228,7 +231,7 @@ public class ImgPlusTools {
     }
 
     /*
-     * The following method is from John Bogovic via the image.sc forum
+     * The following method is based on that from John Bogovic via the image.sc forum
      * (https://forum.image.sc/t/imglib2-force-wrapped-imageplus-rai-dimensions-to-
      * xyczt/56461/2), accessed 2022-03-30
      */
@@ -238,17 +241,17 @@ public class ImgPlusTools {
 
         if (imgIn.dimensionIndex(Axes.CHANNEL) == -1) {
             int nd = raiOut.numDimensions();
-            raiOut = Views.permute(Views.addDimension(raiOut, 0, 0), 2, nd);
+            raiOut = Views.moveAxis(Views.addDimension(raiOut, 0, 0), nd, 2);
         }
-
+        
         if (imgIn.dimensionIndex(Axes.Z) == -1) {
             int nd = raiOut.numDimensions();
-            raiOut = Views.permute(Views.addDimension(raiOut, 0, 0), 3, nd);
+            raiOut = Views.moveAxis(Views.addDimension(raiOut, 0, 0), nd, 3);
         }
 
         if (imgIn.dimensionIndex(Axes.TIME) == -1) {
             int nd = raiOut.numDimensions();
-            raiOut = Views.permute(Views.addDimension(raiOut, 0, 0), 4, nd);
+            raiOut = Views.moveAxis(Views.addDimension(raiOut, 0, 0), nd, 4);
         }
 
         return raiOut;

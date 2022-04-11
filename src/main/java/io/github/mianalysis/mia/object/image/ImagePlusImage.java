@@ -7,6 +7,7 @@ import com.drew.lang.annotations.Nullable;
 import ij.CompositeImage;
 import ij.ImagePlus;
 import ij.ImageStack;
+import ij.gui.Overlay;
 import ij.measure.Calibration;
 import ij.plugin.Duplicator;
 import ij.process.ImageProcessor;
@@ -190,7 +191,14 @@ public class ImagePlusImage<T extends RealType<T> & NativeType<T>> extends Image
     }
 
     public void showImage(String title, @Nullable LUT lut, boolean normalise, boolean composite) {
+        // Show using this overlay
+        showImage(title, lut, normalise, composite, imagePlus.getOverlay());
+    }
+
+    public void showImage(String title, @Nullable LUT lut, boolean normalise, boolean composite, Overlay overlay) {
+        // Adds the specified overlay rather than the overlay associated with this image
         ImagePlus dispIpl = new Duplicator().run(imagePlus);
+        dispIpl.setOverlay(overlay);
         dispIpl.setTitle(title);
         if (normalise) {
             ImageStatistics stats = dispIpl.getStatistics();
@@ -207,10 +215,29 @@ public class ImagePlusImage<T extends RealType<T> & NativeType<T>> extends Image
         } else {
             dispIpl.setDisplayMode(CompositeImage.COLOR);
         }
+        dispIpl.repaintWindow();
         dispIpl.show();
     }
 
+    public ImagePlusImage duplicate(String outputImageName) {
+        return new ImagePlusImage<>(outputImageName, imagePlus.duplicate());       
+
+    }
+
+
     // GETTERS AND SETTERS
+
+    public Overlay getOverlay() {
+        if (imagePlus.getOverlay() == null)
+            imagePlus.setOverlay(new ij.gui.Overlay());
+        
+        return imagePlus.getOverlay();
+
+    }
+
+    public void setOverlay(Overlay overlay) {
+        imagePlus.setOverlay(overlay);
+    }
 
     public ImagePlus getImagePlus() {
         return imagePlus;

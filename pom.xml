@@ -236,6 +236,14 @@
             <scope>${scp}</scope>
         </dependency>
 
+        <!--The following dependency is just here so we can use the latest version of ImageJ-->
+        <dependency>
+            <groupId>net.imagej</groupId>
+            <artifactId>ij</artifactId>
+            <version>1.53p</version>
+            <scope>${scp}</scope>
+        </dependency>
+
         <dependency>
             <groupId>net.imagej</groupId>
             <artifactId>imagej</artifactId>

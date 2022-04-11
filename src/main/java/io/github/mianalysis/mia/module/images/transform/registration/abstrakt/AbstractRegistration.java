@@ -13,6 +13,7 @@ import ij.IJ;
 import ij.ImagePlus;
 import ij.ImageStack;
 import ij.Prefs;
+import ij.gui.Overlay;
 import ij.plugin.HyperStackConverter;
 import ij.plugin.SubHyperstackMaker;
 import ij.process.ImageProcessor;
@@ -260,6 +261,7 @@ public abstract class AbstractRegistration<T extends RealType<T> & NativeType<T>
         Objs oc = new Objs("Im", sc, 1, 1d, TemporalUnit.getOMEUnit());
         ImagePlus showIpl = IJ.createImage("Detected points", referenceIpr.getWidth(), referenceIpr.getHeight(), 2,
                 referenceIpr.getBitDepth());
+        Overlay overlay = showIpl.getOverlay();
 
         showIpl.getStack().setProcessor(referenceIpr, 1);
         for (PointPair pair : pairs) {
@@ -269,7 +271,7 @@ public abstract class AbstractRegistration<T extends RealType<T> & NativeType<T>
                         0);
             } catch (PointOutOfRangeException e) {
             }
-            AddObjectCentroid.addOverlay(obj, showIpl, Color.RED, AddObjectCentroid.PointSizes.MEDIUM,
+            AddObjectCentroid.addOverlay(obj, overlay, Color.RED, AddObjectCentroid.PointSizes.MEDIUM,
                     AddObjectCentroid.PointTypes.DOT, false);
         }
 
@@ -281,10 +283,11 @@ public abstract class AbstractRegistration<T extends RealType<T> & NativeType<T>
                         1);
             } catch (PointOutOfRangeException e) {
             }
-            AddObjectCentroid.addOverlay(obj, showIpl, Color.BLUE, AddObjectCentroid.PointSizes.MEDIUM,
+            AddObjectCentroid.addOverlay(obj, overlay, Color.BLUE, AddObjectCentroid.PointSizes.MEDIUM,
                     AddObjectCentroid.PointTypes.DOT, false);
         }
 
+        showIpl.setOverlay(overlay);
         showIpl.duplicate().show();
 
     }

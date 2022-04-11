@@ -5,10 +5,8 @@ import java.awt.Color;
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
 
-import ij.ImagePlus;
+import ij.gui.Overlay;
 import ij.gui.TextRoi;
-import ij.plugin.Duplicator;
-import ij.plugin.HyperStackConverter;
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
@@ -38,7 +36,7 @@ import io.github.mianalysis.mia.object.system.Status;
 import io.github.mianalysis.mia.process.ColourFactory;
 import io.github.sjcross.common.process.CommaSeparatedStringInterpreter;
 
-@Plugin(type = Module.class, priority=Priority.LOW, visible=true)
+@Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class AddText extends AbstractOverlay {
     TextRoi textRoi = null;
     public static final String INPUT_SEPARATOR = "Image input/output";
@@ -60,21 +58,18 @@ public class AddText extends AbstractOverlay {
 
     public AddText(Modules modules) {
         super("Add text", modules);
+        il2Support = IL2Support.FULL;
     }
 
-    public static void addOverlay(ImagePlus ipl, String text, Color color, int labelSize, double opacity, int xPosition,
-            int yPosition, int[] zRange, int[] frameRange, boolean centreText) {
-        // If necessary, turning the image into a HyperStack (if 2 dimensions=1 it will
-        // be a standard ImagePlus)
-        if (!ipl.isComposite() & (ipl.getNSlices() > 1 | ipl.getNFrames() > 1 | ipl.getNChannels() > 1)) {
-            ipl = HyperStackConverter.toHyperStack(ipl, ipl.getNChannels(), ipl.getNSlices(), ipl.getNFrames());
-        }
+    public static void addOverlay(Overlay overlay, String text, Color color, int labelSize, double opacity,
+            int xPosition,
+            int yPosition, int[] zRange, int[] frameRange, boolean centreText, boolean is2D) {
 
         for (int z : zRange) {
             for (int f : frameRange) {
                 String finalText = replaceDynamicValues(text, f, z);
                 double[] location = new double[] { xPosition, yPosition, z };
-                AddLabels.addOverlay(ipl, finalText, location, f, color, labelSize, centreText);
+                AddLabels.addOverlay(overlay, finalText, location, f, color, labelSize, centreText, is2D);
             }
         }
     }
@@ -104,8 +99,7 @@ public class AddText extends AbstractOverlay {
 
         // Getting input image
         String inputImageName = parameters.getValue(INPUT_IMAGE);
-        Image inputImage = workspace.getImages().get(inputImageName);
-        ImagePlus ipl = inputImage.getImagePlus();
+        Image image = workspace.getImages().get(inputImageName);
 
         // Getting label settings
         double opacity = parameters.getValue(OPACITY);
@@ -119,28 +113,26 @@ public class AddText extends AbstractOverlay {
         String labelColour = parameters.getValue(LABEL_COLOUR);
         Color color = ColourFactory.getColour(labelColour);
 
-        // Only add output to workspace if not applying to input
-        if (applyToInput)
-            addOutputToWorkspace = false;
-
         // Duplicating the image, so the original isn't altered
         if (!applyToInput)
-            ipl = new Duplicator().run(ipl);
+            image = image.duplicate(outputImageName);
 
         // Converting slice and frame ranges to numbers
-        int[] zRange = CommaSeparatedStringInterpreter.interpretIntegers(zRangeString, true, ipl.getNSlices());
-        int[] frameRange = CommaSeparatedStringInterpreter.interpretIntegers(frameRangeString, true, ipl.getNFrames());
+        int[] zRange = CommaSeparatedStringInterpreter.interpretIntegers(zRangeString, true, image.getImagePlus().getNSlices());
+        int[] frameRange = CommaSeparatedStringInterpreter.interpretIntegers(frameRangeString, true, image.getImagePlus().getNFrames());
 
-        addOverlay(ipl, text, color, labelSize, opacity, xPosition, yPosition, zRange, frameRange, centreText);
+        // Getting the overlay and if one doesn't exist, creating one
+        Overlay overlay = image.getOverlay();
 
-        Image outputImage = ImageFactory.createImage(outputImageName, ipl);
+        boolean is2D = image.getImagePlus().getStack().size() == 1;
+        addOverlay(overlay, text, color, labelSize, opacity, xPosition, yPosition, zRange, frameRange, centreText, is2D);
 
-        // If necessary, adding output image to workspace. This also allows us to show
-        // it.
-        if (addOutputToWorkspace)
-            workspace.addImage(outputImage);
+        // If necessary, adding output image to workspace
+        if (!applyToInput && addOutputToWorkspace)
+            workspace.addImage(image);
+
         if (showOutput)
-            outputImage.showImage();
+            image.showImage();
 
         return Status.PASS;
 

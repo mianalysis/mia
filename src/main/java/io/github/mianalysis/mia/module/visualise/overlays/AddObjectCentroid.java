@@ -11,9 +11,9 @@ import org.scijava.plugin.Plugin;
 
 import ij.ImagePlus;
 import ij.Prefs;
+import ij.gui.Overlay;
 import ij.gui.PointRoi;
 import ij.plugin.Duplicator;
-import ij.plugin.HyperStackConverter;
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
@@ -82,30 +82,23 @@ public class AddObjectCentroid extends AbstractOverlay {
 
     public AddObjectCentroid(Modules modules) {
         super("Add object centroid", modules);
+        il2Support = IL2Support.FULL;
     }
 
-    public static void addOverlay(ImagePlus ipl, Objs inputObjects, HashMap<Integer, Color> colours, String size,
+    public static void addOverlay(Overlay overlay, Objs inputObjects, HashMap<Integer, Color> colours, String size,
             String type, boolean renderInAllFrames, boolean multithread) {
         // Adding the overlay element
         try {
-            // If necessary, turning the image into a HyperStack (if 2 dimensions=1 it will
-            // be a standard ImagePlus)
-            if (!ipl.isComposite() & (ipl.getNSlices() > 1 | ipl.getNFrames() > 1 | ipl.getNChannels() > 1)) {
-                ipl = HyperStackConverter.toHyperStack(ipl, ipl.getNChannels(), ipl.getNSlices(), ipl.getNFrames());
-            }
-
             int nThreads = multithread ? Prefs.getThreads() : 1;
             ThreadPoolExecutor pool = new ThreadPoolExecutor(nThreads, nThreads, 0L, TimeUnit.MILLISECONDS,
                     new LinkedBlockingQueue<>());
 
             // Running through each object, adding it to the overlay along with an ID label
             for (Obj object : inputObjects.values()) {
-                ImagePlus finalIpl = ipl;
-
                 Runnable task = () -> {
                     Color colour = colours.get(object.getID());
 
-                    addOverlay(object, finalIpl, colour, size, type, renderInAllFrames);
+                    addOverlay(object, overlay, colour, size, type, renderInAllFrames);
 
                 };
                 pool.submit(task);
@@ -119,11 +112,8 @@ public class AddObjectCentroid extends AbstractOverlay {
         }
     }
 
-    public static void addOverlay(Obj object, ImagePlus ipl, Color colour, String size, String type,
+    public static void addOverlay(Obj object, Overlay overlay, Color colour, String size, String type,
             boolean renderInAllFrames) {
-        if (ipl.getOverlay() == null)
-            ipl.setOverlay(new ij.gui.Overlay());
-
         double xMean = object.getXMean(true);
         double yMean = object.getYMean(true);
         double zMean = object.getZMean(true, false);
@@ -142,45 +132,43 @@ public class AddObjectCentroid extends AbstractOverlay {
         PointRoi pointRoi = new PointRoi(xMean + 0.5, yMean + 0.5);
         pointRoi.setPointType(typeVal);
         pointRoi.setSize(sizeVal);
-
-        if (ipl.isHyperStack()) {
+        if (object.is2D())
+            pointRoi.setPosition(1);
+        else
             pointRoi.setPosition(1, z, t);
-        } else {
-            int pos = Math.max(Math.max(1, z), t);
-            pointRoi.setPosition(pos);
-        }
         pointRoi.setStrokeColor(colour);
-        ipl.getOverlay().addElement(pointRoi);
+
+        overlay.addElement(pointRoi);
 
     }
 
     static int getSize(String size) {
         switch (size) {
-        case PointSizes.TINY:
-            return 0;
-        case PointSizes.SMALL:
-        default:
-            return 1;
-        case PointSizes.MEDIUM:
-            return 2;
-        case PointSizes.LARGE:
-            return 3;
-        case PointSizes.EXTRA_LARGE:
-            return 4;
+            case PointSizes.TINY:
+                return 0;
+            case PointSizes.SMALL:
+            default:
+                return 1;
+            case PointSizes.MEDIUM:
+                return 2;
+            case PointSizes.LARGE:
+                return 3;
+            case PointSizes.EXTRA_LARGE:
+                return 4;
         }
     }
 
     static int getType(String type) {
         switch (type) {
-        case PointTypes.HYBRID:
-            return 0;
-        case PointTypes.CROSS:
-            return 1;
-        case PointTypes.DOT:
-            return 2;
-        case PointTypes.CIRCLE:
-        default:
-            return 3;
+            case PointTypes.HYBRID:
+                return 0;
+            case PointTypes.CROSS:
+                return 1;
+            case PointTypes.DOT:
+                return 2;
+            case PointTypes.CIRCLE:
+            default:
+                return 3;
         }
     }
 
@@ -207,35 +195,31 @@ public class AddObjectCentroid extends AbstractOverlay {
 
         // Getting input image
         String inputImageName = parameters.getValue(INPUT_IMAGE);
-        Image inputImage = workspace.getImages().get(inputImageName);
-        ImagePlus ipl = inputImage.getImagePlus();
+        Image image = workspace.getImages().get(inputImageName);
 
         String pointSize = parameters.getValue(POINT_SIZE);
         String pointType = parameters.getValue(POINT_TYPE);
         boolean renderInAllFrames = parameters.getValue(RENDER_IN_ALL_FRAMES);
         boolean multithread = parameters.getValue(ENABLE_MULTITHREADING);
 
-        // Only add output to workspace if not applying to input
-        if (applyToInput)
-            addOutputToWorkspace = false;
-
         // Duplicating the image, so the original isn't altered
         if (!applyToInput)
-            ipl = new Duplicator().run(ipl);
+            image = image.duplicate(outputImageName);
 
         // Generating colours for each object
         HashMap<Integer, Color> colours = getColours(inputObjects);
 
-        addOverlay(ipl, inputObjects, colours, pointSize, pointType, renderInAllFrames, multithread);
+        // Getting the overlay and if one doesn't exist, creating one
+        Overlay overlay = image.getOverlay();
 
-        Image outputImage = ImageFactory.createImage(outputImageName, ipl);
+        addOverlay(overlay, inputObjects, colours, pointSize, pointType, renderInAllFrames, multithread);
 
-        // If necessary, adding output image to workspace. This also allows us to show
-        // it.
-        if (addOutputToWorkspace)
-            workspace.addImage(outputImage);
+        // If necessary, adding output image to workspace
+        if (!applyToInput && addOutputToWorkspace)
+            workspace.addImage(image);
+
         if (showOutput)
-            outputImage.showImage();
+            image.showImage();
 
         return Status.PASS;
 

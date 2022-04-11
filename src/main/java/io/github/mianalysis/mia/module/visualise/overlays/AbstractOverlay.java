@@ -3,6 +3,8 @@ package io.github.mianalysis.mia.module.visualise.overlays;
 import java.awt.Color;
 import java.util.HashMap;
 
+import ij.ImagePlus;
+import ij.plugin.HyperStackConverter;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.Objs;
@@ -88,36 +90,47 @@ public abstract class AbstractOverlay extends Module {
         HashMap<Integer, Float> values = null;
         // Generating colours for each object
         switch (colourMode) {
-        default:
-            return null;
-        case ColourModes.SINGLE_COLOUR:
-            // Special case where value actually specifies hue
-            return ColourFactory.getColours(ColourFactory.getSingleColourValues(inputObjects, singleColour), opacity);
-        case ColourModes.CHILD_COUNT:
-            values = ColourFactory.getChildCountHues(inputObjects, childObjectsForColourName, true, range);
-            break;
-        case ColourModes.ID:
-            values = ColourFactory.getIDHues(inputObjects, true);
-            break;
-        case ColourModes.RANDOM_COLOUR:
-            values = ColourFactory.getRandomHues(inputObjects);
-            break;
-        case ColourModes.MEASUREMENT_VALUE:
-            values = ColourFactory.getMeasurementValueHues(inputObjects, measurementForColour, true, range);
-            break;
-        case ColourModes.PARENT_ID:
-            values = ColourFactory.getParentIDHues(inputObjects, parentObjectsForColourName, true);
-            break;
-        case ColourModes.PARENT_MEASUREMENT_VALUE:
-            values = ColourFactory.getParentMeasurementValueHues(inputObjects, parentObjectsForColourName,
-                    measurementForColour, true, range);
-            break;
-        case ColourModes.PARTNER_COUNT:
-            values = ColourFactory.getPartnerCountHues(inputObjects, partnerObjectsForColourName, true, range);
-            break;
+            default:
+                return null;
+            case ColourModes.SINGLE_COLOUR:
+                // Special case where value actually specifies hue
+                return ColourFactory.getColours(ColourFactory.getSingleColourValues(inputObjects, singleColour),
+                        opacity);
+            case ColourModes.CHILD_COUNT:
+                values = ColourFactory.getChildCountHues(inputObjects, childObjectsForColourName, true, range);
+                break;
+            case ColourModes.ID:
+                values = ColourFactory.getIDHues(inputObjects, true);
+                break;
+            case ColourModes.RANDOM_COLOUR:
+                values = ColourFactory.getRandomHues(inputObjects);
+                break;
+            case ColourModes.MEASUREMENT_VALUE:
+                values = ColourFactory.getMeasurementValueHues(inputObjects, measurementForColour, true, range);
+                break;
+            case ColourModes.PARENT_ID:
+                values = ColourFactory.getParentIDHues(inputObjects, parentObjectsForColourName, true);
+                break;
+            case ColourModes.PARENT_MEASUREMENT_VALUE:
+                values = ColourFactory.getParentMeasurementValueHues(inputObjects, parentObjectsForColourName,
+                        measurementForColour, true, range);
+                break;
+            case ColourModes.PARTNER_COUNT:
+                values = ColourFactory.getPartnerCountHues(inputObjects, partnerObjectsForColourName, true, range);
+                break;
         }
 
         return ColourFactory.getColours(values, colourMap, opacity);
+
+    }
+    
+    public static ImagePlus ensureHyperstack(ImagePlus ipl) {
+        // If necessary, turning the image into a HyperStack (if 2 dimensions=1 it will
+        // be a standard ImagePlus)
+        // if (!ipl.isComposite() & (ipl.getNSlices() > 1 | ipl.getNFrames() > 1 | ipl.getNChannels() > 1))
+            ipl = HyperStackConverter.toHyperStack(ipl, ipl.getNChannels(), ipl.getNSlices(), ipl.getNFrames());
+        
+        return ipl;
 
     }
 

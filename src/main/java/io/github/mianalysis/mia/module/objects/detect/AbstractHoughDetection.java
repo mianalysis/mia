@@ -6,8 +6,7 @@ import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import ij.ImagePlus;
-import ij.plugin.Duplicator;
+import ij.gui.Overlay;
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.IL2Support;
 import io.github.mianalysis.mia.module.Module;
@@ -16,6 +15,8 @@ import io.github.mianalysis.mia.module.visualise.overlays.AddLabels;
 import io.github.mianalysis.mia.module.visualise.overlays.AddObjectOutline;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImagePlusImage;
+import io.github.mianalysis.mia.object.image.ImgPlusImage;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
@@ -34,7 +35,6 @@ import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Preferences;
 import io.github.mianalysis.mia.process.ColourFactory;
 import io.github.mianalysis.mia.process.LabelFactory;
-import io.github.sjcross.common.process.IntensityMinMax;
 
 public abstract class AbstractHoughDetection extends Module {
     public static final String INPUT_SEPARATOR = "Image input, object output";
@@ -100,9 +100,15 @@ public abstract class AbstractHoughDetection extends Module {
     }
 
     public static void showDetectionImage(Image image, Objs outputObjects, boolean showHoughScore, int labelSize) {
-        ImagePlus dispIpl = new Duplicator().run(image.getImagePlus());
-        IntensityMinMax.run(dispIpl, true);
+        // Creating a duplicate of the input image if working with ImagePlusImages (ImgPlusImages are only virtual stacks)
+        if (image instanceof ImagePlusImage)
+            image = image.duplicate(image.getName());
 
+        // If an ImgPlusImage we will create a dummy Overlay to display (so the original isn't affected)
+        Overlay overlay = image.getOverlay();
+        if (image instanceof ImgPlusImage)
+            overlay = overlay.duplicate();        
+        
         HashMap<Integer, Float> hues = ColourFactory.getRandomHues(outputObjects);
         HashMap<Integer, Color> colours = ColourFactory.getColours(hues);
 
@@ -110,14 +116,14 @@ public abstract class AbstractHoughDetection extends Module {
         if (showHoughScore) {
             DecimalFormat df = LabelFactory.getDecimalFormat(0, true);
             IDs = LabelFactory.getMeasurementLabels(outputObjects, Measurements.SCORE, df);
-            AddLabels.addOverlay(dispIpl, outputObjects, AddLabels.LabelPositions.CENTRE, IDs, labelSize, 0, 0, colours, false, false, true);
+
+            AddLabels.addOverlay(overlay, outputObjects, AddLabels.LabelPositions.CENTRE, IDs, labelSize, 0, 0, colours,
+                    false, false, true);
         }
 
-        AddObjectOutline.addOverlay(dispIpl, outputObjects, 1, 1, colours, false, true);
+        AddObjectOutline.addOverlay(overlay, outputObjects, 1, 1, colours, false, true);
 
-        dispIpl.setPosition(1, 1, 1);
-        dispIpl.updateChannelAndDraw();
-        dispIpl.show();
+        image.showImage(overlay);
 
     }
 

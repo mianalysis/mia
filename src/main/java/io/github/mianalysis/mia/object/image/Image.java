@@ -9,6 +9,7 @@ import java.util.Set;
 import com.drew.lang.annotations.Nullable;
 
 import ij.ImagePlus;
+import ij.gui.Overlay;
 import ij.measure.ResultsTable;
 import ij.process.LUT;
 import io.github.mianalysis.mia.module.Module;
@@ -34,6 +35,9 @@ public abstract class Image <T extends RealType<T> & NativeType<T>> {
 
     public abstract void showImage(String title, @Nullable LUT lut, boolean normalise, boolean composite);
 
+    public abstract void showImage(String title, @Nullable LUT lut, boolean normalise, boolean composite,
+            Overlay overlay);
+
     public abstract ImagePlus getImagePlus();
 
     public abstract void setImagePlus(ImagePlus imagePlus);
@@ -51,6 +55,12 @@ public abstract class Image <T extends RealType<T> & NativeType<T>> {
     public abstract void addObject(Obj obj, float hue);
 
     public abstract void addObjectCentroid(Obj obj, float hue);
+
+    public abstract Image duplicate(String outputImageName);
+
+    public abstract Overlay getOverlay();
+
+    public abstract void setOverlay(Overlay overlay);
 
 
     // PUBLIC METHODS
@@ -75,6 +85,10 @@ public abstract class Image <T extends RealType<T> & NativeType<T>> {
 
     }
 
+    public void showImage(String title, LUT lut, Overlay overlay) {
+        showImage(title, lut, true, false, overlay);
+    }
+
     public void showImage(String title, LUT lut) {
         showImage(title, lut, true, false);
     }
@@ -89,6 +103,10 @@ public abstract class Image <T extends RealType<T> & NativeType<T>> {
 
     public void showImage() {
         showImage(name, null);
+    }
+
+    public void showImage(Overlay overlay) {
+        showImage(name, null, overlay);
     }
 
     /**

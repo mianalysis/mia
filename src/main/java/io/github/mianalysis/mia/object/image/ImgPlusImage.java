@@ -6,9 +6,12 @@ import java.util.HashMap;
 import com.drew.lang.annotations.Nullable;
 
 import ij.CompositeImage;
+import ij.IJ;
 import ij.ImagePlus;
 import ij.ImageStack;
+import ij.gui.Overlay;
 import ij.measure.Calibration;
+import ij.plugin.frame.RoiManager;
 import ij.process.ImageProcessor;
 import ij.process.LUT;
 import io.github.mianalysis.mia.MIA;
@@ -28,6 +31,7 @@ import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.cache.img.DiskCachedCellImgOptions;
 import net.imglib2.img.ImagePlusAdapter;
 import net.imglib2.img.display.imagej.ImageJFunctions;
+import net.imglib2.loops.LoopBuilder;
 import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.IntegerType;
 import net.imglib2.type.numeric.RealType;
@@ -38,13 +42,15 @@ import net.imglib2.view.Views;
 
 public class ImgPlusImage<T extends RealType<T> & NativeType<T>> extends Image<T> {
     private ImgPlus<T> img;
+    private Overlay overlay = new Overlay();
 
     // CONSTRUCTORS
 
     public ImgPlusImage(String name, ImagePlus imagePlus) {
         this.name = name;
         this.img = ImagePlusAdapter.wrapImgPlus(imagePlus);
-
+        this.overlay = imagePlus.getOverlay();
+        
     }
 
     public ImgPlusImage(String name, ImgPlus<T> img) {
@@ -229,7 +235,6 @@ public class ImgPlusImage<T extends RealType<T> & NativeType<T>> extends Image<T
         } else if (type instanceof FloatType) {
             ((FloatType) ra.get()).set(new FloatType(hue));
         }
-
     }
 
     public static <T extends RealType<T> & NativeType<T>> void setCalibration(ImagePlus targetIpl,
@@ -256,27 +261,56 @@ public class ImgPlusImage<T extends RealType<T> & NativeType<T>> extends Image<T
     }
 
     public void showImage(String title, @Nullable LUT lut, boolean normalise, boolean composite) {
-        RandomAccessibleInterval<T> rai = ImgPlusTools.forceImgPlusToXYCZT(img);
-        ImagePlus ipl = ImageJFunctions.show(rai);
+        // Show using this overlay
+        showImage(title, lut, normalise, composite, overlay);
+    }
+
+    public void showImage(String title, @Nullable LUT lut, boolean normalise, boolean composite, Overlay overlay) {
+        // Adds the specified overlay rather than the overlay associated with this image
+        ImagePlus ipl = getImagePlus();
+        
         if (lut != null && ipl.getBitDepth() != 24)
             ipl.setLut(lut);
-        if (composite && ipl.getNChannels() > 1) {
+            
+        if (composite && ipl.getNChannels() > 1)
             ipl.setDisplayMode(CompositeImage.COMPOSITE);
-        } else {
+        else 
             ipl.setDisplayMode(CompositeImage.COLOR);
-        }
-
+        
         setCalibration(ipl, img);
+        ipl.setOverlay(overlay);
+        
+        ipl.show();
+
+    }
+
+    public ImgPlusImage<T> duplicate(String outputImageName) {
+        ImgPlus<T> outImg = ImgPlusTools.createNewImgPlus(img, img.firstElement());
+        LoopBuilder.setImages(img, outImg).forEachPixel((i, o) -> o.set(i));
+        
+        ImgPlusImage<T> outImage = new ImgPlusImage<>(outputImageName, outImg);
+        outImage.setOverlay(overlay.duplicate());
+
+        return outImage;
 
     }
 
     // GETTERS AND SETTERS
 
+    public Overlay getOverlay() {
+        return overlay;
+    }
+
+    public void setOverlay(Overlay overlay) {
+        this.overlay = overlay;
+    }
+
     public ImagePlus getImagePlus() {
         RandomAccessibleInterval<T> rai = ImgPlusTools.forceImgPlusToXYCZT(img);
 
         ImagePlus ipl = ImageJFunctions.wrap(rai, name);
-        setCalibration(ipl, img);
+        setCalibration(ipl, img);        
+        ipl.setOverlay(overlay);
 
         return ipl;
 
@@ -284,6 +318,7 @@ public class ImgPlusImage<T extends RealType<T> & NativeType<T>> extends Image<T
 
     public void setImagePlus(ImagePlus imagePlus) {
         this.img = ImagePlusAdapter.wrapImgPlus(imagePlus);
+        this.overlay = imagePlus.getOverlay();
     }
 
     public ImgPlus getImgPlus() {

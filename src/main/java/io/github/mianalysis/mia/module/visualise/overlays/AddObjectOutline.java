@@ -10,13 +10,11 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
 
-import ij.ImagePlus;
 import ij.Prefs;
+import ij.gui.Overlay;
 import ij.gui.PolygonRoi;
 import ij.gui.Roi;
 import ij.gui.ShapeRoi;
-import ij.plugin.Duplicator;
-import ij.plugin.HyperStackConverter;
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
@@ -27,7 +25,6 @@ import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.image.Image;
-import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
 import io.github.mianalysis.mia.object.parameters.InputObjectsP;
@@ -66,6 +63,7 @@ public class AddObjectOutline extends AbstractOverlay {
 
     public AddObjectOutline(Modules modules) {
         super("Add object outline", modules);
+        il2Support = IL2Support.FULL;
     }
 
     public interface ColourModes extends AbstractOverlay.ColourModes {
@@ -74,21 +72,15 @@ public class AddObjectOutline extends AbstractOverlay {
     public interface SingleColours extends ColourFactory.SingleColours {
     }
 
-    public static void addOverlay(ImagePlus ipl, Objs inputObjects, double lineInterpolation, double lineWidth,
+    public static void addOverlay(Overlay overlay, Objs inputObjects, double lineInterpolation, double lineWidth,
             HashMap<Integer, Color> colours, boolean renderInAllFrames, boolean multithread) {
         String name = new AddObjectOutline(null).getName();
 
         // Adding the overlay element
         try {
-            // If necessary, turning the image into a HyperStack (if 2 dimensions=1 it will
-            // be a standard ImagePlus)
-            if (!ipl.isComposite() & (ipl.getNSlices() > 1 | ipl.getNFrames() > 1 | ipl.getNChannels() > 1)) {
-                ipl = HyperStackConverter.toHyperStack(ipl, ipl.getNChannels(), ipl.getNSlices(), ipl.getNFrames());
-            }
-
             // Counting number of overlays to add
             int tempTotal = 0;
-            int nFrames = renderInAllFrames ? ipl.getNFrames() : 1;
+            int nFrames = renderInAllFrames ? inputObjects.getNFrames() : 1;
             for (Obj object : inputObjects.values()) {
                 double[][] extents = object.getExtents(true, false);
                 tempTotal = tempTotal + ((int) extents[2][1] - (int) extents[2][0] + 1) * nFrames;
@@ -102,14 +94,12 @@ public class AddObjectOutline extends AbstractOverlay {
             // Running through each object, adding it to the overlay along with an ID label
             AtomicInteger count = new AtomicInteger(1);
             for (Obj object : inputObjects.values()) {
-                ImagePlus finalIpl = ipl;
-
                 Runnable task = () -> {
                     int t1 = object.getT() + 1;
                     int t2 = object.getT() + 1;
                     if (renderInAllFrames) {
                         t1 = 1;
-                        t2 = finalIpl.getNFrames();
+                        t2 = inputObjects.getNFrames();
                     }
 
                     // Running through each slice of this object
@@ -120,13 +110,13 @@ public class AddObjectOutline extends AbstractOverlay {
                     int maxZ = (int) Math.floor(range[2][1]);
                     if (object.is2D()) {
                         minZ = 0;
-                        maxZ = finalIpl.getNSlices() - 1;
+                        maxZ = inputObjects.getNSlices() - 1;
                     }
 
                     for (int t = t1; t <= t2; t++) {
                         for (int z = minZ; z <= maxZ; z++) {
                             Color colour = colours.get(object.getID());
-                            addOverlay(object, finalIpl, colour, lineInterpolation, lineWidth, t, z);
+                            addOverlay(object, overlay, colour, lineInterpolation, lineWidth, t, z);
                             writeProgressStatus(count.getAndIncrement(), total, "objects", name);
 
                         }
@@ -144,55 +134,45 @@ public class AddObjectOutline extends AbstractOverlay {
         }
     }
 
-    static void addOverlay(Obj object, ImagePlus ipl, Color colour, double lineInterpolation, double lineWidth, int t,
+    static void addOverlay(Obj object, Overlay overlay, Color colour, double lineInterpolation, double lineWidth, int t,
             int z) {
-        if (ipl.getOverlay() == null)
-            ipl.setOverlay(new ij.gui.Overlay());
-
         Roi polyRoi = null;
-        if (object.is2D()) {
+        if (object.is2D())
             polyRoi = object.getRoi(0);
-        } else {
+        else
             polyRoi = object.getRoi(z);
-        }
 
         // If the object doesn't have any pixels in this plane, skip it
         if (polyRoi == null)
             return;
 
-        drawOverlay(polyRoi, z, t, ipl, colour, lineInterpolation, lineWidth);
+        drawOverlay(polyRoi, z, t, overlay, colour, lineInterpolation, lineWidth, object.is2D());
 
     }
 
-    static void drawOverlay(Roi roi, int z, int t, ImagePlus ipl, Color colour, double lineInterpolation,
-            double lineWidth) {
+    static void drawOverlay(Roi roi, int z, int t, Overlay overlay, Color colour, double lineInterpolation,
+            double lineWidth, boolean is2D) {
 
         if (roi.getType() == Roi.COMPOSITE) {
             ShapeRoi shapeRoi = new ShapeRoi(roi);
             for (Roi partRoi : shapeRoi.getRois()) {
-                drawOverlay(partRoi, z, t, ipl, colour, lineInterpolation, lineWidth);
+                drawOverlay(partRoi, z, t, overlay, colour, lineInterpolation, lineWidth, is2D);
             }
-
         } else {
             // Applying interpolation to reduce complexity of line
             if (lineInterpolation != 1 && roi.getType() == Roi.TRACED_ROI
-                    && roi.getFloatPolygon().npoints > lineInterpolation * 2) {
+                    && roi.getFloatPolygon().npoints > lineInterpolation * 2)
                 roi = new PolygonRoi(roi.getInterpolatedPolygon(lineInterpolation, true), roi.getType());
-            }
 
-            if (ipl.isHyperStack()) {
+            if (is2D)
+                roi.setPosition(1);
+            else
                 roi.setPosition(1, z + 1, t);
-                ipl.setPosition(1, z + 1, t);
-            } else {
-                int pos = Math.max(Math.max(1, z + 1), t);
-                roi.setPosition(pos);
-                ipl.setPosition(pos);
-            }
 
             roi.setStrokeColor(colour);
             roi.setStrokeWidth(lineWidth);
 
-            ipl.getOverlay().addElement(roi);
+            overlay.addElement(roi);
 
         }
     }
@@ -220,8 +200,7 @@ public class AddObjectOutline extends AbstractOverlay {
 
         // Getting input image
         String inputImageName = parameters.getValue(INPUT_IMAGE);
-        Image inputImage = workspace.getImages().get(inputImageName);
-        ImagePlus ipl = inputImage.getImagePlus();
+        Image image = workspace.getImages().get(inputImageName);
 
         boolean reduceLineComplexity = parameters.getValue(REDUCE_LINE_COMPLEXITY);
         double lineInterpolation = parameters.getValue(LINE_INTERPOLATION);
@@ -234,21 +213,22 @@ public class AddObjectOutline extends AbstractOverlay {
 
         // Duplicating the image, so the original isn't altered
         if (!applyToInput)
-            ipl = new Duplicator().run(ipl);
+            image = image.duplicate(outputImageName);
 
         // Generating colours for each object
         HashMap<Integer, Color> colours = getColours(inputObjects);
 
-        addOverlay(ipl, inputObjects, lineInterpolation, lineWidth, colours, renderInAllFrames, multithread);
+        // Getting the overlay and if one doesn't exist, creating one
+        Overlay overlay = image.getOverlay();
 
-        Image outputImage = ImageFactory.createImage(outputImageName, ipl);
+        addOverlay(overlay, inputObjects, lineInterpolation, lineWidth, colours, renderInAllFrames, multithread);
 
-        // If necessary, adding output image to workspace. This also allows us to show
-        // it.
+        // If necessary, adding output image to workspace
         if (!applyToInput && addOutputToWorkspace)
-            workspace.addImage(outputImage);
+            workspace.addImage(image);
+
         if (showOutput)
-            outputImage.showImage();
+            image.showImage();
 
         return Status.PASS;
 

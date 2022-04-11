@@ -24,8 +24,8 @@ import fiji.plugin.trackmate.tracking.TrackerKeys;
 import fiji.plugin.trackmate.tracking.kalman.KalmanTrackerFactory;
 import fiji.plugin.trackmate.tracking.sparselap.SparseLAPTrackerFactory;
 import ij.ImagePlus;
+import ij.gui.Overlay;
 import ij.measure.Calibration;
-import ij.plugin.Duplicator;
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
@@ -39,6 +39,8 @@ import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImagePlusImage;
+import io.github.mianalysis.mia.object.image.ImgPlusImage;
 import io.github.mianalysis.mia.object.measurements.Measurement;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
@@ -65,12 +67,11 @@ import io.github.sjcross.common.object.Point;
 import io.github.sjcross.common.object.volume.PointOutOfRangeException;
 import io.github.sjcross.common.object.volume.SpatCal;
 import io.github.sjcross.common.object.volume.VolumeType;
-import io.github.sjcross.common.process.IntensityMinMax;
 
 /**
  * Created by sc13967 on 15/05/2017.
  */
-@Plugin(type = Module.class, priority=Priority.LOW, visible=true)
+@Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class RunTrackMate extends Module {
     public static final String INPUT_SEPARATOR = "Image input, object output";
     public static final String INPUT_IMAGE = "Input image";
@@ -313,37 +314,40 @@ public class RunTrackMate extends Module {
         }
     }
 
-    public void showObjects(ImagePlus ipl, Objs spotObjects, boolean estimateSize) {
+    public void showObjects(Image image, Objs spotObjects, boolean estimateSize) {
         String trackObjectsName = parameters.getValue(OUTPUT_TRACK_OBJECTS);
         boolean doTracking = parameters.getValue(DO_TRACKING);
 
         HashMap<Integer, Float> hues;
         // Colours will depend on the detection/tracking mode
-        if (doTracking) {
+        if (doTracking)
             hues = ColourFactory.getParentIDHues(spotObjects, trackObjectsName, true);
-        } else {
+        else
             hues = ColourFactory.getSingleColourValues(spotObjects, ColourFactory.SingleColours.ORANGE);
-        }
+
         HashMap<Integer, Color> colours = ColourFactory.getColours(hues);
 
         String pointSize = AddObjectCentroid.PointSizes.SMALL;
         String pointType = AddObjectCentroid.PointTypes.CIRCLE;
 
-        // Creating a duplicate of the input image
-        ipl = new Duplicator().run(ipl);
-        IntensityMinMax.run(ipl, true);
+        // Creating a duplicate of the input image if working with ImagePlusImages
+        // (ImgPlusImages are only virtual stacks)
+        if (image instanceof ImagePlusImage)
+            image = image.duplicate(image.getName());
+
+        // If an ImgPlusImage we will create a dummy Overlay to display (so the original
+        // isn't affected)
+        Overlay overlay = image.getOverlay();
+        if (image instanceof ImgPlusImage)
+            overlay = overlay.duplicate();
 
         // Adding the overlay
         if (estimateSize)
-            AddObjectOutline.addOverlay(ipl, spotObjects, 1, 1, colours, false, true);
+            AddObjectOutline.addOverlay(overlay, spotObjects, 1, 1, colours, false, true);
         else
-            AddObjectCentroid.addOverlay(ipl, spotObjects, colours, pointSize, pointType, false, true);
+            AddObjectCentroid.addOverlay(overlay, spotObjects, colours, pointSize, pointType, false, true);
 
-        ipl.setPosition(1, 1, 1);
-        ipl.updateChannelAndDraw();
-
-        // Displaying the overlay
-        ipl.show();
+        image.showImage(overlay);
 
     }
 
@@ -425,7 +429,7 @@ public class RunTrackMate extends Module {
 
         // Displaying objects (if selected)
         if (showOutput)
-            showObjects(ipl, spotObjects, estimateSize);
+            showObjects(inputImage, spotObjects, estimateSize);
 
         // Reapplying calibration to input image
         inputImage.getImagePlus().setCalibration(cal);
