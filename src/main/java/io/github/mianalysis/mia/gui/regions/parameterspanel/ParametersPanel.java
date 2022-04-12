@@ -33,6 +33,7 @@ import io.github.mianalysis.mia.object.parameters.ParameterGroup;
 import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.abstrakt.Parameter;
 import io.github.mianalysis.mia.object.parameters.objects.OutputObjectsP;
+import io.github.mianalysis.mia.object.parameters.text.MessageP;
 import io.github.mianalysis.mia.object.refs.abstrakt.ExportableRef;
 import io.github.mianalysis.mia.object.refs.abstrakt.SummaryRef;
 import io.github.mianalysis.mia.object.refs.collections.ImageMeasurementRefs;
@@ -82,10 +83,11 @@ public class ParametersPanel extends JScrollPane {
         Modules modules = GUI.getModules();
 
         ComponentFactory componentFactory = GUI.getComponentFactory();
-        InputControl inputControl = analysis.getModules().getInputControl();
         OutputControl outputControl = analysis.getModules().getOutputControl();
 
-        panel.removeAll();
+        JPanel oldPanel = panel;
+        panel = new JPanel();
+        panel.setLayout(new GridBagLayout());
 
         GridBagConstraints c = new GridBagConstraints();
         c.gridy = 0;
@@ -107,46 +109,59 @@ public class ParametersPanel extends JScrollPane {
         panel.add(topPanel, c);
         c.gridwidth = 1;
 
-        // If it's an input/output control, get the current version
-        if (module instanceof InputControl) {
-            module = inputControl;
-            c.insets = new Insets(2, 8, 20, 0);
-            c.gridy++;
-            JPanel warningPanel = getWarning(
-                    "\"Input control\" only specifies the path to the root image; no image is loaded into the workspace at this point.  To load images, add one or more \"Load Image\" modules.",
-                    Colours.ORANGE, alertIcon);
-            panel.add(warningPanel, c);
-        }
-
         if (module instanceof OutputControl)
             module = outputControl;
 
+        // // Adding an ImgLib2 warning if necessary
+        // String storageMode = MIA.preferences.getDataStorageMode();
+        // if (storageMode.equals(Preferences.DataStorageModes.STREAM_FROM_DRIVE)) {
+        //     switch (module.getIL2Support()) {
+        //         case NONE:
+        //             c.insets = new Insets(2, 8, 20, 0);
+        //             c.gridy++;
+        //             JPanel warningPanel = getWarning(
+        //                     "This module is currently incompatible with images streamed directly from storage.  To use this module please go to preferences (Edit > Preferences) and change data storage method to \""
+        //                             + Preferences.DataStorageModes.KEEP_IN_RAM + "\".",
+        //                             Colours.RED, warningIcon);
+        //             panel.add(warningPanel, c);
+        //             break;
+        //         case PARTIAL:
+        //             c.insets = new Insets(2, 8, 20, 0);
+        //             c.gridy++;
+        //             warningPanel = getWarning(
+        //                     "This module currently only has partial support for images streamed directly from storage.  The module will run, but any images used may be loaded entirely into RAM.",
+        //                     Colours.ORANGE, alertIcon);
+        //             panel.add(warningPanel, c);
+        //             break;
+        //     }
+        // }
+
+        // If the active module hasn't got parameters enabled, skip it
+        c.anchor = GridBagConstraints.NORTHWEST;
+        
         // Adding an ImgLib2 warning if necessary
         String storageMode = MIA.preferences.getDataStorageMode();
         if (storageMode.equals(Preferences.DataStorageModes.STREAM_FROM_DRIVE)) {
             switch (module.getIL2Support()) {
                 case NONE:
-                    c.insets = new Insets(2, 8, 20, 0);
+                    c.insets = new Insets(2, 8, 0, 0);
                     c.gridy++;
-                    JPanel warningPanel = getWarning(
+                    MessageP warningMessage = new MessageP("", null,
                             "This module is currently incompatible with images streamed directly from storage.  To use this module please go to preferences (Edit > Preferences) and change data storage method to \""
                                     + Preferences.DataStorageModes.KEEP_IN_RAM + "\".",
-                                    Colours.RED, warningIcon);
-                    panel.add(warningPanel, c);
+                            MessageP.Icons.WARNING, Colours.RED);
+                    addAdvancedParameterControl(warningMessage, c);
                     break;
                 case PARTIAL:
-                    c.insets = new Insets(2, 8, 20, 0);
+                    c.insets = new Insets(2, 8, 0, 0);
                     c.gridy++;
-                    warningPanel = getWarning(
+                    MessageP alertMessage = new MessageP("", null,
                             "This module currently only has partial support for images streamed directly from storage.  The module will run, but any images used may be loaded entirely into RAM.",
-                            Colours.ORANGE, alertIcon);
-                    panel.add(warningPanel, c);
+                            MessageP.Icons.ALERT, Colours.ORANGE);
+                    addAdvancedParameterControl(alertMessage, c);
                     break;
             }
         }
-
-        // If the active module hasn't got parameters enabled, skip it
-        c.anchor = GridBagConstraints.NORTHWEST;
 
         c.insets = new Insets(2, 5, 0, 0);
         if (module.updateAndGetParameters() != null) {
@@ -180,7 +195,7 @@ public class ParametersPanel extends JScrollPane {
                 addSummaryRefExportControls(measurementReferences, objectName + " (Object)", componentFactory, c);
             }
         }
-
+        
         JSeparator separator = new JSeparator();
         separator.setOpaque(true);
         separator.setSize(new Dimension(0, 0));
@@ -192,9 +207,14 @@ public class ParametersPanel extends JScrollPane {
 
         panel.revalidate();
         panel.repaint();
+        setViewportView(panel);
 
-        revalidate();        
-        repaint();        
+        GUI.getFrame().pack();
+        revalidate();
+        repaint();
+
+        oldPanel.removeAll();
+        oldPanel = null;
 
     }
 
@@ -214,7 +234,7 @@ public class ParametersPanel extends JScrollPane {
         warningPanel.add(iconLabel, c);
 
         c.gridx++;
-        JTextArea textArea = new JTextArea();        
+        JTextArea textArea = new JTextArea();
         textArea.setEditable(false);
         textArea.setBackground(null);
         textArea.setText(message);

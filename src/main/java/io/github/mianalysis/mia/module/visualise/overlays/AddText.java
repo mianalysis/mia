@@ -62,14 +62,13 @@ public class AddText extends AbstractOverlay {
     }
 
     public static void addOverlay(Overlay overlay, String text, Color color, int labelSize, double opacity,
-            int xPosition,
-            int yPosition, int[] zRange, int[] frameRange, boolean centreText, boolean is2D) {
+            int xPosition, int yPosition, int[] zRange, int[] frameRange, boolean centreText, boolean isHyperStack) {
 
         for (int z : zRange) {
             for (int f : frameRange) {
                 String finalText = replaceDynamicValues(text, f, z);
                 double[] location = new double[] { xPosition, yPosition, z };
-                AddLabels.addOverlay(overlay, finalText, location, f, color, labelSize, centreText, is2D);
+                AddLabels.addOverlay(overlay, finalText, location, f, color, labelSize, centreText, isHyperStack);
             }
         }
     }
@@ -118,14 +117,17 @@ public class AddText extends AbstractOverlay {
             image = image.duplicate(outputImageName);
 
         // Converting slice and frame ranges to numbers
-        int[] zRange = CommaSeparatedStringInterpreter.interpretIntegers(zRangeString, true, image.getImagePlus().getNSlices());
-        int[] frameRange = CommaSeparatedStringInterpreter.interpretIntegers(frameRangeString, true, image.getImagePlus().getNFrames());
+        int[] zRange = CommaSeparatedStringInterpreter.interpretIntegers(zRangeString, true,
+                image.getImagePlus().getNSlices());
+        int[] frameRange = CommaSeparatedStringInterpreter.interpretIntegers(frameRangeString, true,
+                image.getImagePlus().getNFrames());
 
         // Getting the overlay and if one doesn't exist, creating one
         Overlay overlay = image.getOverlay();
 
-        boolean is2D = image.getImagePlus().getStack().size() == 1;
-        addOverlay(overlay, text, color, labelSize, opacity, xPosition, yPosition, zRange, frameRange, centreText, is2D);
+        boolean isHyperStack = image.getImagePlus().isHyperStack();
+        addOverlay(overlay, text, color, labelSize, opacity, xPosition, yPosition, zRange, frameRange, centreText,
+                isHyperStack);
 
         // If necessary, adding output image to workspace
         if (!applyToInput && addOutputToWorkspace)

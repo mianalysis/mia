@@ -263,6 +263,8 @@ public abstract class AbstractRegistration<T extends RealType<T> & NativeType<T>
                 referenceIpr.getBitDepth());
         Overlay overlay = showIpl.getOverlay();
 
+        boolean isHyperStack = showIpl.isHyperStack();
+
         showIpl.getStack().setProcessor(referenceIpr, 1);
         for (PointPair pair : pairs) {
             Obj obj = oc.createAndAddNewObject(VolumeType.POINTLIST);
@@ -272,7 +274,7 @@ public abstract class AbstractRegistration<T extends RealType<T> & NativeType<T>
             } catch (PointOutOfRangeException e) {
             }
             AddObjectCentroid.addOverlay(obj, overlay, Color.RED, AddObjectCentroid.PointSizes.MEDIUM,
-                    AddObjectCentroid.PointTypes.DOT, false);
+                    AddObjectCentroid.PointTypes.DOT, isHyperStack, false);
         }
 
         showIpl.getStack().setProcessor(warpedIpr, 2);
@@ -284,7 +286,7 @@ public abstract class AbstractRegistration<T extends RealType<T> & NativeType<T>
             } catch (PointOutOfRangeException e) {
             }
             AddObjectCentroid.addOverlay(obj, overlay, Color.BLUE, AddObjectCentroid.PointSizes.MEDIUM,
-                    AddObjectCentroid.PointTypes.DOT, false);
+                    AddObjectCentroid.PointTypes.DOT, isHyperStack, false);
         }
 
         showIpl.setOverlay(overlay);

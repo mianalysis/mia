@@ -118,10 +118,12 @@ public abstract class AbstractHoughDetection extends Module {
             IDs = LabelFactory.getMeasurementLabels(outputObjects, Measurements.SCORE, df);
 
             AddLabels.addOverlay(overlay, outputObjects, AddLabels.LabelPositions.CENTRE, IDs, labelSize, 0, 0, colours,
-                    false, false, true);
+                    false, false, image.getImagePlus().isHyperStack(), true);
         }
 
-        AddObjectOutline.addOverlay(overlay, outputObjects, 1, 1, colours, false, true);
+        boolean isHyperStack = image.getImagePlus().isHyperStack();
+
+        AddObjectOutline.addOverlay(overlay, outputObjects, 1, 1, colours, false, isHyperStack, true);
 
         image.showImage(overlay);
 

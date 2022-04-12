@@ -198,13 +198,15 @@ public class SpotDetection extends Module {
         // If an ImgPlusImage we will create a dummy Overlay to display (so the original isn't affected)
         Overlay overlay = image.getOverlay();
         if (image instanceof ImgPlusImage)
-            overlay = overlay.duplicate();        
+            overlay = overlay.duplicate();
+
+        boolean isHyperStack = image.getImagePlus().isHyperStack();
 
         // Adding the overlay
         if (estimateSize)
-            AddObjectOutline.addOverlay(overlay, spotObjects, 1, 1, colours, false, true);
+            AddObjectOutline.addOverlay(overlay, spotObjects, 1, 1, colours, false, isHyperStack, true);
         else
-            AddObjectCentroid.addOverlay(overlay, spotObjects, colours, pointSize, pointType, false, true);
+            AddObjectCentroid.addOverlay(overlay, spotObjects, colours, pointSize, pointType, false, isHyperStack, true);
 
         image.showImage(overlay);
 

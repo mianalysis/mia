@@ -1,21 +1,29 @@
 package io.github.mianalysis.mia.gui.parametercontrols;
 
-import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Insets;
 
 import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
 import javax.swing.JComponent;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+
+import org.apache.batik.ext.swing.GridBagConstants;
 
 import io.github.mianalysis.mia.object.parameters.text.MessageP;
 
 public class MessageArea extends ParameterControl {
     protected JPanel control;
     protected JTextArea textArea;
+
+    private static final ImageIcon alertIcon = new ImageIcon(
+            MessageArea.class.getResource("/icons/alert_orange_12px.png"), "");
+    private static final ImageIcon warningIcon = new ImageIcon(
+            MessageArea.class.getResource("/icons/warning_red_12px.png"), "");
 
     public MessageArea(MessageP parameter, int controlHeight) {
         super(parameter);
@@ -26,9 +34,23 @@ public class MessageArea extends ParameterControl {
         control.setBackground(null);
 
         GridBagConstraints c = new GridBagConstraints();
+        c.gridx = 0;
         c.weightx = 1;
         c.weighty = 1;
         c.fill = GridBagConstraints.BOTH;
+
+        ImageIcon imageIcon = getIcon(parameter.getIcon());
+        if (imageIcon != null) {
+            c.weightx = 0;            
+            c.insets = new Insets(0,2,0,5);
+            c.anchor = GridBagConstants.CENTER;
+            JLabel iconLabel = new JLabel();
+            iconLabel.setIcon(imageIcon);
+            control.add(iconLabel, c);
+            c.gridx++;
+            c.insets = new Insets(0,0,0,0);
+            c.weightx = 1;
+        }
 
         textArea = new JTextArea();
         textArea.setEditable(false);
@@ -41,17 +63,23 @@ public class MessageArea extends ParameterControl {
         textArea.setAlignmentX(JComponent.LEFT_ALIGNMENT);
         textArea.setBorder(BorderFactory.createEmptyBorder());
 
-        JScrollPane objectsScrollPane = new JScrollPane(textArea);
-        objectsScrollPane.setPreferredSize(new Dimension(0,controlHeight));
-        objectsScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-        objectsScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-        objectsScrollPane.getVerticalScrollBar().setUnitIncrement(10);
-        objectsScrollPane.getVerticalScrollBar().setValue(0);
-        objectsScrollPane.setViewportBorder(BorderFactory.createEmptyBorder());
-        objectsScrollPane.setBorder(BorderFactory.createEmptyBorder());
-        control.add(objectsScrollPane,c);
+        control.add(textArea, c);
 
+    }
 
+    ImageIcon getIcon(String icon) {
+        if (icon == null)
+            return null;
+
+        switch (icon) {
+            case MessageP.Icons.ALERT:
+                return alertIcon;
+            case MessageP.Icons.WARNING:
+                return warningIcon;
+            case MessageP.Icons.NONE:
+            default:
+                return null;
+        }
     }
 
     @Override

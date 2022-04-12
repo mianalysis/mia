@@ -141,7 +141,7 @@ public class AddLabels extends AbstractOverlay {
 
     public static void addOverlay(Overlay overlay, Objs inputObjects, String labelPosition,
             HashMap<Integer, String> labels, int labelSize, int xOffset, int yOffset, HashMap<Integer, Color> colours,
-            boolean renderInAllSlices, boolean renderInAllFrames, boolean multithread) {
+            boolean renderInAllSlices, boolean renderInAllFrames, boolean isHyperStack, boolean multithread) {
         // Adding the overlay element
         try {
             int nThreads = multithread ? Prefs.getThreads() : 1;
@@ -182,10 +182,10 @@ public class AddLabels extends AbstractOverlay {
                             int zMax = (int) Math.round(extents[2][1]);
                             for (int z = zMin; z <= zMax; z++) {
                                 location[2] = z + 1;
-                                addOverlay(overlay, label, location, t, colour, labelSize, true, object.is2D());
+                                addOverlay(overlay, label, location, t, colour, labelSize, true, isHyperStack);
                             }
                         } else {
-                            addOverlay(overlay, label, location, t, colour, labelSize, true, object.is2D());
+                            addOverlay(overlay, label, location, t, colour, labelSize, true, isHyperStack);
                         }
                     }
                 };
@@ -201,19 +201,18 @@ public class AddLabels extends AbstractOverlay {
     }
 
     public static void addOverlay(Overlay overlay, String label, double[] labelCoords, int t, Color colour,
-            int labelSize,
-            boolean centreText, boolean is2D) {
+            int labelSize, boolean centreText, boolean isHyperStack) {
         // Adding text label
         TextRoi text = new TextRoi(labelCoords[0], labelCoords[1], label,
                 new Font(Font.SANS_SERIF, Font.PLAIN, labelSize));
         text.setStrokeColor(colour);
         text.setAntialiased(true);
 
-        if (is2D)
-            text.setPosition(1);
-        else
+        if (isHyperStack)
             text.setPosition(1, (int) labelCoords[2], t);
-
+        else
+            text.setPosition((int) Math.max(Math.max(1, labelCoords[2]), t));
+        
         if (centreText)
             text.setLocation(text.getXBase() - text.getFloatWidth() / 2 + 1,
                     text.getYBase() - text.getFloatHeight() / 2 + 1);
@@ -313,9 +312,10 @@ public class AddLabels extends AbstractOverlay {
         // Getting the overlay and if one doesn't exist, creating one
         Overlay overlay = image.getOverlay();
 
+        boolean isHyperStack = image.getImagePlus().isHyperStack();
+
         addOverlay(overlay, inputObjects, labelPosition, labels, labelSize, xOffset, yOffset, colours,
-                renderInAllSlices,
-                renderInAllFrames, multithread);
+                renderInAllSlices, renderInAllFrames, isHyperStack, multithread);
 
         // If necessary, adding output image to workspace
         if (!applyToInput && addOutputToWorkspace)

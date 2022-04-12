@@ -11,7 +11,15 @@ import io.github.mianalysis.mia.object.parameters.abstrakt.Parameter;
 
 public class MessageP extends TextAreaP {
     private Color color = Color.BLACK;
+    private String icon = null;
     private int controlHeight = 50;
+
+    public interface Icons {
+        String NONE = "None";
+        String WARNING = "Warning";
+        String ALERT = "Alert";
+    }
+    
 
     public MessageP(String name, Module module, Color color) {
         super(name, module, false);
@@ -32,6 +40,13 @@ public class MessageP extends TextAreaP {
         setExported(false);
     }
 
+    public MessageP(String name, Module module, @NotNull String value, String icon, Color color) {
+        super(name, module, value, false);
+        this.color = color;
+        this.icon = icon;
+        setExported(false);
+    }
+
     public MessageP(String name, Module module, @NotNull String value, Color color, int controlHeight) {
         super(name, module, value, false);
         this.color = color;
@@ -42,6 +57,13 @@ public class MessageP extends TextAreaP {
     public MessageP(String name, Module module, @NotNull String value, Color color, String description) {
         super(name, module, value, false, description);
         this.color = color;
+        setExported(false);
+    }
+
+    public MessageP(String name, Module module, @NotNull String value, String icon, Color color, String description) {
+        super(name, module, value, false, description);
+        this.color = color;
+        this.icon = icon;
         setExported(false);
     }
 
@@ -57,6 +79,14 @@ public class MessageP extends TextAreaP {
         this.controlHeight = controlHeight;
     }
 
+    public String getIcon() {
+        return icon;
+    }
+
+    public void setIcon(String icon) {
+        this.icon = icon;
+    }
+
     @Override
     public ParameterControl getControl() {
         return new MessageArea(this, controlHeight);
@@ -64,7 +94,7 @@ public class MessageP extends TextAreaP {
 
     @Override
     public <T extends Parameter> T duplicate(Module newModule) {
-        MessageP newParameter = new MessageP(name, newModule, getValue(), color, getDescription());
+        MessageP newParameter = new MessageP(name, newModule, getValue(), icon, color, getDescription());
         
         newParameter.setControlHeight(controlHeight);
         newParameter.setNickname(getNickname());

@@ -1,6 +1,5 @@
 package io.github.mianalysis.mia.module.core;
 
-import java.awt.Color;
 import java.io.File;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -67,7 +66,6 @@ import ome.xml.meta.IMetadata;
  */
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class InputControl extends Module {
-    public static final String MESSAGE_SEPARATOR = "Message";
     public static final String NO_LOAD_MESSAGE = "No load message";
 
     public static final String IMPORT_SEPARATOR = "Core import controls";
@@ -375,6 +373,9 @@ public class InputControl extends Module {
 
     @Override
     protected void initialiseParameters() {
+        parameters.add(new MessageP(NO_LOAD_MESSAGE, this,
+                "\"Input control\" only specifies the path to the root image; no image is loaded into the workspace at this point.  To load images, add one or more \"Load Image\" modules.", MessageP.Icons.ALERT, Colours.ORANGE));
+
         parameters.add(new SeparatorP(IMPORT_SEPARATOR, this));
         parameters.add(new FileFolderPathP(INPUT_PATH, this));
         // parameters.add(new FileListP(FILE_LIST,this));
@@ -411,6 +412,8 @@ public class InputControl extends Module {
     @Override
     public Parameters updateAndGetParameters() {
         Parameters returnedParameters = new Parameters();
+
+        returnedParameters.add(parameters.getParameter(NO_LOAD_MESSAGE));
 
         returnedParameters.add(parameters.getParameter(IMPORT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(INPUT_PATH));

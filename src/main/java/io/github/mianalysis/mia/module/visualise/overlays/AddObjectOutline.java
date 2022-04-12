@@ -73,7 +73,7 @@ public class AddObjectOutline extends AbstractOverlay {
     }
 
     public static void addOverlay(Overlay overlay, Objs inputObjects, double lineInterpolation, double lineWidth,
-            HashMap<Integer, Color> colours, boolean renderInAllFrames, boolean multithread) {
+            HashMap<Integer, Color> colours, boolean renderInAllFrames, boolean isHyperStack, boolean multithread) {
         String name = new AddObjectOutline(null).getName();
 
         // Adding the overlay element
@@ -116,7 +116,7 @@ public class AddObjectOutline extends AbstractOverlay {
                     for (int t = t1; t <= t2; t++) {
                         for (int z = minZ; z <= maxZ; z++) {
                             Color colour = colours.get(object.getID());
-                            addOverlay(object, overlay, colour, lineInterpolation, lineWidth, t, z);
+                            addOverlay(object, overlay, colour, lineInterpolation, lineWidth, t, z, isHyperStack);
                             writeProgressStatus(count.getAndIncrement(), total, "objects", name);
 
                         }
@@ -135,7 +135,7 @@ public class AddObjectOutline extends AbstractOverlay {
     }
 
     static void addOverlay(Obj object, Overlay overlay, Color colour, double lineInterpolation, double lineWidth, int t,
-            int z) {
+            int z, boolean isHyperStack) {
         Roi polyRoi = null;
         if (object.is2D())
             polyRoi = object.getRoi(0);
@@ -146,28 +146,28 @@ public class AddObjectOutline extends AbstractOverlay {
         if (polyRoi == null)
             return;
 
-        drawOverlay(polyRoi, z, t, overlay, colour, lineInterpolation, lineWidth, object.is2D());
+        drawOverlay(polyRoi, z, t, overlay, colour, lineInterpolation, lineWidth, isHyperStack);
 
     }
 
     static void drawOverlay(Roi roi, int z, int t, Overlay overlay, Color colour, double lineInterpolation,
-            double lineWidth, boolean is2D) {
+            double lineWidth, boolean isHyperStack) {
 
         if (roi.getType() == Roi.COMPOSITE) {
             ShapeRoi shapeRoi = new ShapeRoi(roi);
-            for (Roi partRoi : shapeRoi.getRois()) {
-                drawOverlay(partRoi, z, t, overlay, colour, lineInterpolation, lineWidth, is2D);
-            }
+            for (Roi partRoi : shapeRoi.getRois())
+                drawOverlay(partRoi, z, t, overlay, colour, lineInterpolation, lineWidth, isHyperStack);
+            
         } else {
             // Applying interpolation to reduce complexity of line
             if (lineInterpolation != 1 && roi.getType() == Roi.TRACED_ROI
                     && roi.getFloatPolygon().npoints > lineInterpolation * 2)
                 roi = new PolygonRoi(roi.getInterpolatedPolygon(lineInterpolation, true), roi.getType());
 
-            if (is2D)
-                roi.setPosition(1);
-            else
+            if (isHyperStack)
                 roi.setPosition(1, z + 1, t);
+            else
+                roi.setPosition(Math.max(Math.max(1, z + 1), t));
 
             roi.setStrokeColor(colour);
             roi.setStrokeWidth(lineWidth);
@@ -221,7 +221,9 @@ public class AddObjectOutline extends AbstractOverlay {
         // Getting the overlay and if one doesn't exist, creating one
         Overlay overlay = image.getOverlay();
 
-        addOverlay(overlay, inputObjects, lineInterpolation, lineWidth, colours, renderInAllFrames, multithread);
+        boolean isHyperStack = image.getImagePlus().isHyperStack();
+
+        addOverlay(overlay, inputObjects, lineInterpolation, lineWidth, colours, renderInAllFrames, isHyperStack, multithread);
 
         // If necessary, adding output image to workspace
         if (!applyToInput && addOutputToWorkspace)

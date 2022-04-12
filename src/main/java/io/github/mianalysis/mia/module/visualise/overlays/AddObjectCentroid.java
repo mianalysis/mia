@@ -86,7 +86,7 @@ public class AddObjectCentroid extends AbstractOverlay {
     }
 
     public static void addOverlay(Overlay overlay, Objs inputObjects, HashMap<Integer, Color> colours, String size,
-            String type, boolean renderInAllFrames, boolean multithread) {
+            String type, boolean renderInAllFrames, boolean isHyperStack, boolean multithread) {
         // Adding the overlay element
         try {
             int nThreads = multithread ? Prefs.getThreads() : 1;
@@ -97,9 +97,7 @@ public class AddObjectCentroid extends AbstractOverlay {
             for (Obj object : inputObjects.values()) {
                 Runnable task = () -> {
                     Color colour = colours.get(object.getID());
-
-                    addOverlay(object, overlay, colour, size, type, renderInAllFrames);
-
+                    addOverlay(object, overlay, colour, size, type, renderInAllFrames, isHyperStack);
                 };
                 pool.submit(task);
             }
@@ -113,7 +111,7 @@ public class AddObjectCentroid extends AbstractOverlay {
     }
 
     public static void addOverlay(Obj object, Overlay overlay, Color colour, String size, String type,
-            boolean renderInAllFrames) {
+            boolean renderInAllFrames, boolean isHyperStack) {
         double xMean = object.getXMean(true);
         double yMean = object.getYMean(true);
         double zMean = object.getZMean(true, false);
@@ -132,12 +130,15 @@ public class AddObjectCentroid extends AbstractOverlay {
         PointRoi pointRoi = new PointRoi(xMean + 0.5, yMean + 0.5);
         pointRoi.setPointType(typeVal);
         pointRoi.setSize(sizeVal);
-        if (object.is2D())
-            pointRoi.setPosition(1);
-        else
-            pointRoi.setPosition(1, z, t);
         pointRoi.setStrokeColor(colour);
-
+                    
+        if (isHyperStack) {
+            pointRoi.setPosition(1, z, t);
+        } else {
+            int pos = Math.max(Math.max(1, z), t);
+            pointRoi.setPosition(pos);
+        }
+        
         overlay.addElement(pointRoi);
 
     }
@@ -212,7 +213,9 @@ public class AddObjectCentroid extends AbstractOverlay {
         // Getting the overlay and if one doesn't exist, creating one
         Overlay overlay = image.getOverlay();
 
-        addOverlay(overlay, inputObjects, colours, pointSize, pointType, renderInAllFrames, multithread);
+        boolean isHyperStack = image.getImagePlus().isHyperStack();
+
+        addOverlay(overlay, inputObjects, colours, pointSize, pointType, renderInAllFrames, isHyperStack, multithread);
 
         // If necessary, adding output image to workspace
         if (!applyToInput && addOutputToWorkspace)
