@@ -184,7 +184,7 @@ public class GlobalAutoThreshold extends Module {
                 continue;
 
             double[][] extents = inputObject.getExtents(true, false);
-            if ((z-1) < extents[2][0] || (z-1) > extents[2][1])
+            if ((z - 1) < extents[2][0] || (z - 1) > extents[2][1])
                 continue;
 
             Roi currRoi = inputObject.getRoi(z - 1);
@@ -198,8 +198,40 @@ public class GlobalAutoThreshold extends Module {
                 roi.xor(new ShapeRoi(currRoi));
 
         }
-        
+
         return roi;
+
+    }
+    
+        public static void applyThreshold(ImagePlus inputImagePlus, double threshold) {
+        // Creating an integer threshold in case image is 8 or 16 bit
+        int intThreshold = (int) Math.round(threshold);
+
+        // Applying threshold
+        for (int z = 1; z <= inputImagePlus.getNSlices(); z++) {
+            for (int c = 1; c <= inputImagePlus.getNChannels(); c++) {
+                for (int t = 1; t <= inputImagePlus.getNFrames(); t++) {
+                    inputImagePlus.setPosition(c, z, t);
+                    if (inputImagePlus.getBitDepth() == 32) {                        
+                        for (int x = 0; x < inputImagePlus.getWidth(); x++) {
+                            for (int y = 0; y < inputImagePlus.getHeight(); y++) {
+                                float val = inputImagePlus.getProcessor().getf(x, y);
+                                val = val <= threshold ? 0 : 255;
+                                inputImagePlus.getProcessor().setf(x, y, val);
+                            }
+                        }
+                    } else {
+                        inputImagePlus.getProcessor().threshold(intThreshold);
+                    }
+                }
+            }
+        }
+
+        inputImagePlus.setPosition(1, 1, 1);
+
+        // If the input was 32-bit we can now convert it to 8-bit
+        if (inputImagePlus.getBitDepth() == 32)
+            ImageTypeConverter.process(inputImagePlus, 8, ImageTypeConverter.ScalingModes.CLIP);
 
     }
 
@@ -261,7 +293,8 @@ public class GlobalAutoThreshold extends Module {
                 ImageTypeConverter.process(inputImagePlus, 8, ImageTypeConverter.ScalingModes.FILL);
 
             // Applying threshold
-            ManualThreshold.applyThreshold(inputImagePlus, threshold);
+            // TODO: In the finished module we can just use the same module from ManualThreshold
+            applyThreshold(inputImagePlus, threshold);
 
             if (binaryLogic.equals(BinaryLogic.WHITE_BACKGROUND))
                 InvertIntensity.process(inputImagePlus);

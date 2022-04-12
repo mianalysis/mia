@@ -5,19 +5,14 @@ package io.github.mianalysis.mia.module.images.process.threshold;
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
 
-import ij.ImagePlus;
-import ij.plugin.Duplicator;
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.IL2Support;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.module.images.process.ImageTypeConverter;
-import io.github.mianalysis.mia.module.images.process.InvertIntensity;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.image.Image;
-import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.ImageMeasurementP;
@@ -34,12 +29,16 @@ import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Preferences;
 import io.github.mianalysis.mia.object.system.Status;
+import net.imagej.ImgPlus;
+import net.imglib2.loops.LoopBuilder;
+import net.imglib2.type.NativeType;
+import net.imglib2.type.numeric.RealType;
 
 /**
  * Created by sc13967 on 06/06/2017.
  */
-@Plugin(type = Module.class, priority=Priority.LOW, visible=true)
-public class ManualThreshold extends Module {
+@Plugin(type = Module.class, priority = Priority.LOW, visible = true)
+public class ManualThreshold<T extends RealType<T> & NativeType<T>> extends Module {
     public static final String INPUT_SEPARATOR = "Image input/output";
     public static final String INPUT_IMAGE = "Input image";
     public static final String APPLY_TO_INPUT = "Apply to input image";
@@ -59,44 +58,24 @@ public class ManualThreshold extends Module {
 
     }
 
-    public interface BinaryLogic extends BinaryLogicInterface {}
+    public interface BinaryLogic extends BinaryLogicInterface {
+    }
 
     public ManualThreshold(Modules modules) {
         super("Manual threshold", modules);
+        il2Support = IL2Support.FULL;
     }
 
-    public static void applyThreshold(ImagePlus inputImagePlus, double threshold) {
-        // Creating an integer threshold in case image is 8 or 16 bit
-        int intThreshold = (int) Math.round(threshold);
+    public static <T extends RealType<T> & NativeType<T>> void applyThreshold(Image image, double threshold,
+            String binaryLogic) {
+        ImgPlus<T> img = image.getImgPlus();
 
-        // Applying threshold
-        for (int z = 1; z <= inputImagePlus.getNSlices(); z++) {
-            for (int c = 1; c <= inputImagePlus.getNChannels(); c++) {
-                for (int t = 1; t <= inputImagePlus.getNFrames(); t++) {
-                    inputImagePlus.setPosition(c, z, t);
-                    if (inputImagePlus.getBitDepth() == 32) {                        
-                        for (int x = 0; x < inputImagePlus.getWidth(); x++) {
-                            for (int y = 0; y < inputImagePlus.getHeight(); y++) {
-                                float val = inputImagePlus.getProcessor().getf(x, y);
-                                val = val <= threshold ? 0 : 255;
-                                inputImagePlus.getProcessor().setf(x, y, val);
-                            }
-                        }
-                    } else {
-                        inputImagePlus.getProcessor().threshold(intThreshold);
-                    }
-                }
-            }
-        }
+        int high = binaryLogic.equals(BinaryLogic.BLACK_BACKGROUND) ? 255 : 0;
+        int low = binaryLogic.equals(BinaryLogic.BLACK_BACKGROUND) ? 0 : 255;
 
-        inputImagePlus.setPosition(1, 1, 1);
-
-        // If the input was 32-bit we can now convert it to 8-bit
-        if (inputImagePlus.getBitDepth() == 32)
-            ImageTypeConverter.process(inputImagePlus, 8, ImageTypeConverter.ScalingModes.CLIP);
+        LoopBuilder.setImages(img).forEachPixel(v -> v.setReal(v.getRealDouble() > threshold ? (int) high : (int) low));
 
     }
-
 
     @Override
     public Category getCategory() {
@@ -106,50 +85,39 @@ public class ManualThreshold extends Module {
     @Override
     public String getDescription() {
         return "Binarises an image (or image stack) using a fixed intensity threshold.  The input threshold can be a single value (same for all images) or taken from a measurement associated with the image to be binarised.";
-        
+
     }
 
     @Override
     public Status process(Workspace workspace) {
         // Getting input image
         String inputImageName = parameters.getValue(INPUT_IMAGE);
-        Image inputImage = workspace.getImages().get(inputImageName);
-        ImagePlus inputImagePlus = inputImage.getImagePlus();
+        Image image = workspace.getImages().get(inputImageName);
 
         // Getting parameters
+        String outputImageName = parameters.getValue(OUTPUT_IMAGE);
         boolean applyToInput = parameters.getValue(APPLY_TO_INPUT);
         String binaryLogic = parameters.getValue(BINARY_LOGIC);
         String thresholdSource = parameters.getValue(THRESHOLD_SOURCE);
         double thresholdValue = parameters.getValue(THRESHOLD_VALUE);
         String measurementName = parameters.getValue(MEASUREMENT);
 
-        if (thresholdSource.equals(ThresholdSources.IMAGE_MEASUREMENT)) {
-            thresholdValue = (int) Math.round(inputImage.getMeasurement(measurementName).getValue());
-        }
+        if (thresholdSource.equals(ThresholdSources.IMAGE_MEASUREMENT))
+            thresholdValue = (int) Math.round(image.getMeasurement(measurementName).getValue());
 
-        // If applying to a new image, the input image is duplicated
-        if (!applyToInput) {
-            inputImagePlus = new Duplicator().run(inputImagePlus);
-        }
+        // Duplicating the image, so the original isn't altered
+        if (!applyToInput)
+            image = image.duplicate(outputImageName);
 
         // Calculating the threshold based on the selected algorithm
-        applyThreshold(inputImagePlus, thresholdValue);
+        applyThreshold(image, thresholdValue, binaryLogic);
 
-        if (binaryLogic.equals(BinaryLogic.WHITE_BACKGROUND))
-                InvertIntensity.process(inputImagePlus);
+        // If necessary, adding output image to workspace
+        if (!applyToInput)
+            workspace.addImage(image);
 
-        // If the image is being saved as a new image, adding it to the workspace
-        if (applyToInput) {
-            if (showOutput)
-                inputImage.showImage();
-
-        } else {
-            String outputImageName = parameters.getValue(OUTPUT_IMAGE);
-            Image outputImage = ImageFactory.createImage(outputImageName, inputImagePlus);
-            workspace.addImage(outputImage);
-            if (showOutput)
-                outputImage.showImage();
-        }
+        if (showOutput)
+            image.showImage();
 
         return Status.PASS;
 
@@ -264,7 +232,7 @@ public class ManualThreshold extends Module {
         parameters.get(MEASUREMENT).setDescription(
                 "Measurement to act as threshold value when in \"" + ThresholdSources.IMAGE_MEASUREMENT + "\" mode.");
 
-                parameters.get(BINARY_LOGIC).setDescription(BinaryLogicInterface.getDescription());
+        parameters.get(BINARY_LOGIC).setDescription(BinaryLogicInterface.getDescription());
 
     }
 }
