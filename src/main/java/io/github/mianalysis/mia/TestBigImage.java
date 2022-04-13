@@ -13,7 +13,6 @@ import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.image.Image;
 import io.github.mianalysis.mia.object.image.ImageFactory;
-import io.github.mianalysis.mia.object.image.ImgPlusImage;
 import io.github.mianalysis.mia.object.image.ImgPlusTools;
 import io.github.mianalysis.mia.object.parameters.OutputImageP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
@@ -25,17 +24,9 @@ import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Preferences;
 import io.github.mianalysis.mia.object.system.Status;
 import net.imagej.ImgPlus;
-import net.imagej.axis.Axes;
-import net.imagej.axis.Axis;
-import net.imagej.axis.AxisType;
-import net.imagej.axis.CalibratedAxis;
-import net.imglib2.Cursor;
 import net.imglib2.RandomAccess;
-import net.imglib2.cache.img.DiskCachedCellImgFactory;
-import net.imglib2.cache.img.DiskCachedCellImgOptions;
 import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
-import net.imglib2.type.numeric.integer.UnsignedByteType;
 import net.imglib2.type.numeric.real.FloatType;
 
 /**
@@ -72,7 +63,7 @@ public class TestBigImage<T extends RealType<T> & NativeType<T>> extends Module 
         int h = 400;
         int d = 100;
 
-        ImgPlus<T> img = (ImgPlus<T>) ImgPlusTools.createNewImgPlus(w, h, 0, d, 0, 0.2, 0.1, "um",new FloatType());
+        ImgPlus<FloatType> img = (ImgPlus<FloatType>) ImgPlusTools.createNewImgPlus(w, h, 0, d, 0, 0.2, 0.1, "um",new FloatType());
                         
         // Creating a ramp intensity gradient along the x-axis, so operations can be tested
         RandomAccess ra = img.randomAccess();

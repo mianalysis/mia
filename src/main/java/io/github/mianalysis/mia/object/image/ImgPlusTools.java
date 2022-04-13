@@ -1,8 +1,5 @@
 package io.github.mianalysis.mia.object.image;
 
-import java.util.Arrays;
-import java.util.List;
-
 import ij.ImagePlus;
 import io.github.mianalysis.mia.MIA;
 import io.github.sjcross.common.object.volume.SpatCal;
@@ -38,12 +35,22 @@ public class ImgPlusTools {
     }
 
     public static <T> void applyAxes(ImgPlus<T> sourceImg, ImagePlus targetImagePlus) {
+        // Setting dimensions
         int nChannels = (int) sourceImg.dimension(sourceImg.dimensionIndex(Axes.CHANNEL));
         int nSlices = (int) sourceImg.dimension(sourceImg.dimensionIndex(Axes.Z));
         int nFrames = (int) sourceImg.dimension(sourceImg.dimensionIndex(Axes.TIME));
-
         targetImagePlus.setDimensions(nChannels, nSlices, nFrames);
 
+        // Setting calibration
+        int zIdx = sourceImg.dimensionIndex(Axes.Z);
+        if (zIdx != -1)
+            targetImagePlus.getCalibration().pixelDepth = sourceImg.axis(zIdx).calibratedValue(1);
+
+        int tIdx = sourceImg.dimensionIndex(Axes.TIME);
+        if (tIdx != -1) {
+            targetImagePlus.getCalibration().frameInterval = sourceImg.axis(tIdx).calibratedValue(1);
+            targetImagePlus.getCalibration().setTimeUnit(sourceImg.axis(tIdx).unit());
+        }
     }
 
     public static <T extends RealType<T> & NativeType<T>> ImgPlus<T> createNewImgPlus(
@@ -153,17 +160,17 @@ public class ImgPlusTools {
 
         int[] cMod = c;
         if (cMod[1] == -1)
-            cMod[1] = cIdx == -1 ? 0 : (int) img.dimension(cIdx) -1;
+            cMod[1] = cIdx == -1 ? 0 : (int) img.dimension(cIdx) - 1;
         int nChannels = cMod[1] - cMod[0] + (cIdx != -1 ? 1 : 0);
 
         int[] zMod = z;
         if (zMod[1] == -1)
-            zMod[1] = zIdx == -1 ? 0 : (int) img.dimension(zIdx) -1;
+            zMod[1] = zIdx == -1 ? 0 : (int) img.dimension(zIdx) - 1;
         int nSlices = zMod[1] - zMod[0] + (zIdx != -1 ? 1 : 0);
 
         int[] tMod = t;
         if (tMod[1] == -1)
-            tMod[1] = tIdx == -1 ? 0 : (int) img.dimension(tIdx) -1;
+            tMod[1] = tIdx == -1 ? 0 : (int) img.dimension(tIdx) - 1;
         int nFrames = tMod[1] - tMod[0] + (tIdx != -1 ? 1 : 0);
 
         return createNewImgPlus(w, h, nChannels, nSlices, nFrames, dppXY, dppZ, units, type);
@@ -231,7 +238,8 @@ public class ImgPlusTools {
     }
 
     /*
-     * The following method is based on that from John Bogovic via the image.sc forum
+     * The following method is based on that from John Bogovic via the image.sc
+     * forum
      * (https://forum.image.sc/t/imglib2-force-wrapped-imageplus-rai-dimensions-to-
      * xyczt/56461/2), accessed 2022-03-30
      */
@@ -243,7 +251,7 @@ public class ImgPlusTools {
             int nd = raiOut.numDimensions();
             raiOut = Views.moveAxis(Views.addDimension(raiOut, 0, 0), nd, 2);
         }
-        
+
         if (imgIn.dimensionIndex(Axes.Z) == -1) {
             int nd = raiOut.numDimensions();
             raiOut = Views.moveAxis(Views.addDimension(raiOut, 0, 0), nd, 3);
@@ -268,8 +276,7 @@ public class ImgPlusTools {
     }
 
     public static <T extends RealType<T> & NativeType<T>> void reportDimensions(RandomAccessibleInterval<T> rai) {
-        for (int i = 0; i < rai.numDimensions(); i++) {
-            MIA.log.writeDebug("Index " + i + ": Length=" + rai.dimension(i));
-        }
+        for (int i = 0; i < rai.numDimensions(); i++)
+            MIA.log.writeDebug("Index " + i + ": Length=" + rai.dimension(i));        
     }
 }

@@ -3,9 +3,6 @@ package io.github.mianalysis.mia;
 import java.io.FileReader;
 import java.io.IOException;
 
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
-
 import org.apache.maven.model.Model;
 import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
@@ -54,10 +51,6 @@ public class MIA implements Command {
 
     @Parameter
     public static ImageJService ijService;
-
-    @Parameter
-    public static ImageJ ij;
-
 
     public static void main(String[] args) throws Exception {
         debug = true;

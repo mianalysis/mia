@@ -127,7 +127,7 @@ public class AddObjectCentroid extends AbstractOverlay {
             t = 0;
 
         // Adding circles where the object centroids are
-        PointRoi pointRoi = new PointRoi(xMean + 0.5, yMean + 0.5);
+        PointRoi pointRoi = new PointRoi(xMean, yMean);
         pointRoi.setPointType(typeVal);
         pointRoi.setSize(sizeVal);
         pointRoi.setStrokeColor(colour);

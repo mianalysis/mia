@@ -6,12 +6,10 @@ import java.util.HashMap;
 import com.drew.lang.annotations.Nullable;
 
 import ij.CompositeImage;
-import ij.IJ;
 import ij.ImagePlus;
 import ij.ImageStack;
 import ij.gui.Overlay;
 import ij.measure.Calibration;
-import ij.plugin.frame.RoiManager;
 import ij.process.ImageProcessor;
 import ij.process.LUT;
 import io.github.mianalysis.mia.MIA;
@@ -33,7 +31,6 @@ import net.imglib2.img.ImagePlusAdapter;
 import net.imglib2.img.display.imagej.ImageJFunctions;
 import net.imglib2.loops.LoopBuilder;
 import net.imglib2.type.NativeType;
-import net.imglib2.type.numeric.IntegerType;
 import net.imglib2.type.numeric.RealType;
 import net.imglib2.type.numeric.integer.UnsignedByteType;
 import net.imglib2.type.numeric.integer.UnsignedShortType;
@@ -118,12 +115,12 @@ public class ImgPlusImage<T extends RealType<T> & NativeType<T>> extends Image<T
                 for (int z = 0; z < nSlices; z++) {
                     long[][] interval = ImgPlusTools.getSliceInterval(img, c, z, t);
 
-                    Cursor<IntegerType> cursor = (Cursor<IntegerType>) Views.interval(img, interval[0], interval[1])
+                    Cursor<T> cursor = (Cursor<T>) Views.interval(img, interval[0], interval[1])
                             .localizingCursor();
                     while (cursor.hasNext()) {
                         cursor.fwd();
 
-                        int imageID = cursor.get().getInteger();
+                        int imageID = (int) cursor.get().getRealDouble();
                         int x = cursor.getIntPosition(xIdx);
                         int y = cursor.getIntPosition(yIdx);
 

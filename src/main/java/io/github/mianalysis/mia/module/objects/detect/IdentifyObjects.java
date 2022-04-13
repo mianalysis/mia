@@ -23,14 +23,12 @@ import io.github.mianalysis.mia.module.IL2Support;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.images.process.ImageTypeConverter;
-import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.VolumeTypesInterface;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.image.Image;
 import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.image.ImageType;
-import io.github.mianalysis.mia.object.image.ImgPlusImage;
 import io.github.mianalysis.mia.object.image.ImgPlusTools;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
@@ -47,25 +45,18 @@ import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Preferences;
 import io.github.mianalysis.mia.object.system.Status;
-import io.github.mianalysis.mia.object.units.TemporalUnit;
-import io.github.sjcross.common.exceptions.IntegerOverflowException;
 import io.github.sjcross.common.imagej.LUTs;
-import io.github.sjcross.common.object.volume.SpatCal;
 import net.imagej.ImgPlus;
-import net.imagej.axis.Axes;
 import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.algorithm.labeling.ConnectedComponents;
 import net.imglib2.algorithm.labeling.ConnectedComponents.StructuringElement;
 import net.imglib2.converter.Converter;
 import net.imglib2.converter.Converters;
-import net.imglib2.img.display.imagej.ImageJFunctions;
 import net.imglib2.type.NativeType;
 import net.imglib2.type.logic.BitType;
 import net.imglib2.type.numeric.IntegerType;
 import net.imglib2.type.numeric.RealType;
 import net.imglib2.type.numeric.integer.UnsignedLongType;
-import net.imglib2.view.IntervalView;
-import net.imglib2.view.Views;
 
 /**
  * Created by sc13967 on 06/06/2017.
@@ -280,11 +271,11 @@ public class IdentifyObjects<T extends RealType<T> & NativeType<T>> extends Modu
         // Objs outputObjects = inputImage.initialiseEmptyObjs(outputObjectsName);
         ImgPlus<T> inputImg = inputImage.getImgPlus();
 
-        Converter<IntegerType, BitType> converter;
+        Converter<T, BitType> converter;
         if (blackBackground)
-            converter = (i, o) -> o.set(i.getInteger() > 0 ? true : false);
+            converter = (i, o) -> o.set(i.getRealDouble() > 0 ? true : false);
         else
-            converter = (i, o) -> o.set(i.getInteger() == 0 ? true : false);
+            converter = (i, o) -> o.set(i.getRealDouble() == 0 ? true : false);
 
         StructuringElement se = connectivity == 6 ? StructuringElement.FOUR_CONNECTED
                 : StructuringElement.EIGHT_CONNECTED;
@@ -292,7 +283,7 @@ public class IdentifyObjects<T extends RealType<T> & NativeType<T>> extends Modu
         ImgPlus<UnsignedLongType> labelImg = ImgPlusTools.createNewImgPlus(inputImg, new UnsignedLongType());
 
         RandomAccessibleInterval<BitType> mask = Converters.convert(
-                (RandomAccessibleInterval<IntegerType>) inputImg,
+                (RandomAccessibleInterval<T>) inputImg,
                 converter, new BitType());
 
         new ConnectedComponents().labelAllConnectedComponents(mask, labelImg, se);

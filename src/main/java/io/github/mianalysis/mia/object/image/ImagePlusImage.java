@@ -210,11 +210,12 @@ public class ImagePlusImage<T extends RealType<T> & NativeType<T>> extends Image
         dispIpl.updateChannelAndDraw();
         if (lut != null && dispIpl.getBitDepth() != 24)
             dispIpl.setLut(lut);
-        if (composite && dispIpl.getNChannels() > 1) {
+            
+        if (composite && dispIpl.getNChannels() > 1)
             dispIpl.setDisplayMode(CompositeImage.COMPOSITE);
-        } else {
+        else
             dispIpl.setDisplayMode(CompositeImage.COLOR);
-        }
+                        
         dispIpl.repaintWindow();
         dispIpl.show();
     }

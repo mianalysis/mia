@@ -170,9 +170,7 @@ public class GUI {
     }
 
     public static void refreshLookAndFeel() {
-        if (IJ.isWindows()) {
-            MIA.log.writeMessage("Theme will be applied upon restarting Fiji");
-        } else {
+        if (!IJ.isWindows()) {
             if (frame != null)
                 SwingUtilities.updateComponentTreeUI(frame);
 

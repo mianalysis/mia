@@ -236,14 +236,6 @@
             <scope>${scp}</scope>
         </dependency>
 
-        <!--The following dependency is just here so we can use the latest version of ImageJ-->
-        <dependency>
-            <groupId>net.imagej</groupId>
-            <artifactId>ij</artifactId>
-            <version>1.53p</version>
-            <scope>${scp}</scope>
-        </dependency>
-
         <dependency>
             <groupId>net.imagej</groupId>
             <artifactId>imagej</artifactId>
@@ -341,12 +333,12 @@
         </dependency>
 
         <dependency>
-            <!-- <groupId>com.github.sjcross</groupId>
+            <groupId>com.github.sjcross</groupId>
             <artifactId>Common</artifactId>
-            <version>1.11.3</version> -->
-            <groupId>io.github.sjcross</groupId>
+            <version>1.11.4</version>
+            <!-- <groupId>io.github.sjcross</groupId>
             <artifactId>Common</artifactId>
-            <version>1.11.4-SNAPSHOT</version>
+            <version>1.11.4-SNAPSHOT</version> -->
         </dependency>
     </dependencies>
 

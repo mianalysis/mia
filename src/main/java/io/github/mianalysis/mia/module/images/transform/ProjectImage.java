@@ -5,6 +5,7 @@ import java.util.HashMap;
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
 
+import ij.IJ;
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
@@ -15,6 +16,7 @@ import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.image.Image;
 import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.image.ImgPlusImage;
+import io.github.mianalysis.mia.object.image.ImgPlusTools;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
 import io.github.mianalysis.mia.object.parameters.OutputImageP;
@@ -40,6 +42,7 @@ import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.cache.img.DiskCachedCellImgFactory;
 import net.imglib2.cache.img.DiskCachedCellImgOptions;
 import net.imglib2.img.cell.CellImgFactory;
+import net.imglib2.img.display.imagej.ImageJFunctions;
 import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
 import net.imglib2.view.Views;
@@ -156,6 +159,7 @@ public class ProjectImage<T extends RealType<T> & NativeType<T>> extends Module 
         perm = permute(perm, axisAssignments, yType, 1);
         perm = permute(perm, axisAssignments, projType, 2);
         perm = enforceCZT(perm, axisAssignments);
+        perm = Views.addDimension(perm, 0, 0);
 
         // Determine output size
         int idx = 0;
@@ -168,6 +172,8 @@ public class ProjectImage<T extends RealType<T> & NativeType<T>> extends Module 
                 idx++;
             }
         }
+        projected_dimensions[idx] = 1;
+        axes.put(idx, img.axis(img.dimensionIndex(axisAssignments.get(2))));
 
         OpService ops = MIA.ijService.getContext().getService(OpService.class);
 
@@ -189,6 +195,10 @@ public class ProjectImage<T extends RealType<T> & NativeType<T>> extends Module 
                 proj.setAxis(axOut, dOut++);
             }
         }
+
+        CalibratedAxis axIn = img.axis(img.dimensionIndex(projType));
+        CalibratedAxis axOut = new DefaultLinearAxis(axIn.type(), axIn.unit(), axIn.calibratedValue(1));
+        proj.setAxis(axOut, proj.numDimensions()-1);
 
         return ImageFactory.createImage(outputImageName, proj);
 

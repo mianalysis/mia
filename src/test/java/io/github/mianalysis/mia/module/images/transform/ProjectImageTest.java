@@ -9,19 +9,17 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import ij.IJ;
-import ij.ImageJ;
 import ij.ImagePlus;
-import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.ModuleTest;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.Workspaces;
 import io.github.mianalysis.mia.object.image.Image;
 import io.github.mianalysis.mia.object.image.ImageFactory;
-import io.github.mianalysis.mia.object.system.Preferences;
+import ij.ImageJ;
 
 
-public class ProjectImageTest extends ModuleTest {
+public class ProjectImageTest extends ModuleTest {   
     @BeforeAll
     public static void setVerbose() {
         Module.setVerbose(false);
@@ -103,6 +101,7 @@ public class ProjectImageTest extends ModuleTest {
 
         // Checking the output image has the expected calibration
         Image outputImage = workspace.getImage("Test_output");
+
         assertEquals(expectedImage,outputImage);
 
     }
@@ -327,12 +326,13 @@ public class ProjectImageTest extends ModuleTest {
 
         // Checking the output image has the expected calibration
         Image outputImage = workspace.getImage("Test_output");
+
         assertEquals(expectedImage,outputImage);
 
     }
 
     @Test
-    public void testRunMedianZ3D() throws Exception  {
+    public void testRunMedianZ3D() throws Exception {
         // Creating a new workspace
         Workspaces workspaces = new Workspaces();
         Workspace workspace = workspaces.getNewWorkspace(null,1);
