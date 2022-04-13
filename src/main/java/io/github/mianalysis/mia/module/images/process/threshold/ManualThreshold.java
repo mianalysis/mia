@@ -41,6 +41,7 @@ import net.imglib2.type.numeric.RealType;
 public class ManualThreshold<T extends RealType<T> & NativeType<T>> extends Module {
     public static final String INPUT_SEPARATOR = "Image input/output";
     public static final String INPUT_IMAGE = "Input image";
+    public static final String ENSURE_8BIT_OUTPUT = "Ensure 8-bit output";
     public static final String APPLY_TO_INPUT = "Apply to input image";
     public static final String OUTPUT_IMAGE = "Output image";
 
@@ -67,6 +68,17 @@ public class ManualThreshold<T extends RealType<T> & NativeType<T>> extends Modu
     }
 
     public static <T extends RealType<T> & NativeType<T>> void applyThreshold(Image image, double threshold,
+            String binaryLogic) {
+        ImgPlus<T> img = image.getImgPlus();
+
+        int high = binaryLogic.equals(BinaryLogic.BLACK_BACKGROUND) ? 255 : 0;
+        int low = binaryLogic.equals(BinaryLogic.BLACK_BACKGROUND) ? 0 : 255;
+
+        LoopBuilder.setImages(img).forEachPixel(v -> v.setReal(v.getRealDouble() > threshold ? (int) high : (int) low));
+
+    }
+
+    public static <T extends RealType<T> & NativeType<T>> void applyThresholdCreate(Image image, double threshold,
             String binaryLogic) {
         ImgPlus<T> img = image.getImgPlus();
 
@@ -111,6 +123,9 @@ public class ManualThreshold<T extends RealType<T> & NativeType<T>> extends Modu
 
         // Calculating the threshold based on the selected algorithm
         applyThreshold(image, thresholdValue, binaryLogic);
+
+        if (image.getImagePlus().getBitDepth() == 32)
+            workspace.addImage(image);
 
         // If necessary, adding output image to workspace
         if (!applyToInput)

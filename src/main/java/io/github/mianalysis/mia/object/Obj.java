@@ -1,9 +1,10 @@
 package io.github.mianalysis.mia.object;
 
-import java.awt.Shape;
 import java.awt.Polygon;
 import java.awt.Rectangle;
+import java.awt.Shape;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 
 import ij.IJ;
@@ -11,6 +12,7 @@ import ij.ImagePlus;
 import ij.gui.Roi;
 import io.github.mianalysis.mia.object.image.Image;
 import io.github.mianalysis.mia.object.image.ImageFactory;
+import io.github.mianalysis.mia.object.image.ImgPlusTools;
 import io.github.mianalysis.mia.object.measurements.Measurement;
 import io.github.mianalysis.mia.object.units.SpatialUnit;
 import io.github.mianalysis.mia.object.units.TemporalUnit;
@@ -19,6 +21,9 @@ import io.github.sjcross.common.object.Point;
 import io.github.sjcross.common.object.volume.PointOutOfRangeException;
 import io.github.sjcross.common.object.volume.Volume;
 import io.github.sjcross.common.object.volume.VolumeType;
+import net.imglib2.RandomAccessibleInterval;
+import net.imglib2.type.NativeType;
+import net.imglib2.type.numeric.RealType;
 
 /**
  * Created by Stephen on 30/04/2017.
@@ -502,6 +507,14 @@ public class Obj extends Volume {
         rois = new HashMap<>();
     }
 
+    public <T extends RealType<T> & NativeType<T>> ObjPixelIterable<T> getPixelIterable(Image<T> image, int channel) {
+        return new ObjPixelIterable<>(image, channel);
+    }
+
+    public <T extends RealType<T> & NativeType<T>> ObjPixelIterator<T> getPixelIterator(Image<T> image, int channel) {
+        return new ObjPixelIterator<T>(image, channel);
+    }
+
     @Override
     public int hashCode() {
         // Updating the hash for time-point. ID, measurements and relationships aren't
@@ -535,6 +548,49 @@ public class Obj extends Volume {
             name = name.substring(name.lastIndexOf("//") + 3);
 
         return name;
-        
+
+    }
+    
+    public class ObjPixelIterable<T extends RealType<T> & NativeType<T>> implements Iterable<T> {
+        private Image image;
+        private int channel;
+
+        public ObjPixelIterable(Image<T> image, int channel) {
+            this.image = image;
+            this.channel = channel;
+        }
+
+        @Override
+        public Iterator<T> iterator() {
+            return new ObjPixelIterator(image, channel);
+        }
+    }
+    
+    public class ObjPixelIterator<T extends RealType<T> & NativeType<T>> implements Iterator<T> {
+        private RandomAccessibleInterval<T> rai;
+        private Iterator<Point<Integer>> cIterator;
+        private int channel;
+
+        public ObjPixelIterator(Image<T> image, int channel) {
+            this.channel = channel;
+            rai = ImgPlusTools.forceImgPlusToXYCZT(image.getImgPlus());
+            cIterator = coordinateSet.iterator();
+        }
+
+        @Override
+        public boolean hasNext() {
+            return cIterator.hasNext();
+        }
+
+        @Override
+        public T next() {
+            Point<Integer> point = cIterator.next();
+            long x = point.getX();
+            long y = point.getY();
+            long z = point.getZ();
+            
+            return rai.getAt(x, y, channel, z, T);
+
+        }
     }
 }

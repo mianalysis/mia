@@ -42,6 +42,11 @@ import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Preferences;
 import io.github.mianalysis.mia.object.system.Status;
+import net.imglib2.Cursor;
+import net.imglib2.histogram.BinMapper1d;
+import net.imglib2.histogram.Histogram1d;
+import net.imglib2.histogram.Integer1dBinMapper;
+import net.imglib2.type.numeric.integer.UnsignedByteType;
 
 /**
  * Created by sc13967 on 06/06/2017.
@@ -65,6 +70,7 @@ public class GlobalAutoThreshold extends Module {
 
     public GlobalAutoThreshold(Modules modules) {
         super("Global auto-threshold", modules);
+        il2Support = IL2Support.PARTIAL;
     }
 
     public interface OutputModes {
@@ -128,8 +134,12 @@ public class GlobalAutoThreshold extends Module {
                     inputImagePlus.setPosition(c, z, t);
                     ImageProcessor ipr = inputImagePlus.getProcessor();
 
-                    if (inputObjects != null)
-                        ipr.setRoi(getRoi(inputObjects, t, z));
+                    if (inputObjects != null) {
+                        Roi roi = getRoi(inputObjects, t, z);
+                        ipr.setRoi(roi);
+                        if (roi == null)
+                            continue;
+                    }
                     
                     int[] tempHist = ipr.getHistogram();
 
@@ -149,6 +159,10 @@ public class GlobalAutoThreshold extends Module {
 
         if (histogram == null)
             return 0;
+
+        MIA.log.writeDebug("Old");
+        for (long h:histogram)
+            MIA.log.writeDebug(h);
 
         // Calculating the maximum value in any bin
         long maxVal = Long.MIN_VALUE;
@@ -278,6 +292,20 @@ public class GlobalAutoThreshold extends Module {
 
         Objs inputObjects = measureOnObjects ? workspace.getObjectSet(inputObjectsName) : null;
         int threshold = 0;
+
+        MIA.log.writeDebug("ImgLib2");
+        Iterable it = inputObjects.getFirst().getPixelIterable(inputImage,0);
+
+        BinMapper1d< UnsignedByteType > binMapper =
+				new Integer1dBinMapper< UnsignedByteType >( 0, 256, false );
+                
+        Histogram1d hist = new Histogram1d<>(binMapper);
+        hist.addData(it);
+        Cursor c = hist.cursor();
+        while (c.hasNext()) {
+            Object o = c.next();
+            MIA.log.writeDebug(o);
+        }
 
         // Calculating the threshold based on the selected algorithm
         writeStatus("Applying " + algorithm + " threshold (multiplier = " + thrMult + " x)");
