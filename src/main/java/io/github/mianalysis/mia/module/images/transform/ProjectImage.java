@@ -5,7 +5,6 @@ import java.util.HashMap;
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
 
-import ij.IJ;
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
@@ -16,7 +15,6 @@ import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.image.Image;
 import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.image.ImgPlusImage;
-import io.github.mianalysis.mia.object.image.ImgPlusTools;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
 import io.github.mianalysis.mia.object.parameters.OutputImageP;
@@ -42,9 +40,9 @@ import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.cache.img.DiskCachedCellImgFactory;
 import net.imglib2.cache.img.DiskCachedCellImgOptions;
 import net.imglib2.img.cell.CellImgFactory;
-import net.imglib2.img.display.imagej.ImageJFunctions;
 import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
+import net.imglib2.type.numeric.real.FloatType;
 import net.imglib2.view.Views;
 
 /**
@@ -178,7 +176,21 @@ public class ProjectImage<T extends RealType<T> & NativeType<T>> extends Module 
         OpService ops = MIA.ijService.getContext().getService(OpService.class);
 
         // Creating output image
-        T type = (T) img.firstElement();
+        T type;
+        switch (projectionMode) {
+            case ProjectionModes.AVERAGE:
+            case ProjectionModes.STDEV:
+            case ProjectionModes.SUM:
+                type = (T) new FloatType();
+                break;
+            default:
+            case ProjectionModes.MAX:
+            case ProjectionModes.MIN:            
+            case ProjectionModes.MEDIAN:
+                type = (T) img.firstElement();
+                break;
+        }
+        
         DiskCachedCellImgOptions options = ImgPlusImage.getCellImgOptions();
         ImgPlus<T> proj = new ImgPlus<>(new DiskCachedCellImgFactory(type, options).create(projected_dimensions));
 

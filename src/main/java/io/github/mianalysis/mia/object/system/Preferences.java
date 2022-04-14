@@ -2,6 +2,8 @@ package io.github.mianalysis.mia.object.system;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 
 import javax.swing.LookAndFeel;
 import javax.swing.UIManager;
@@ -13,6 +15,7 @@ import com.formdev.flatlaf.FlatIntelliJLaf;
 import com.formdev.flatlaf.FlatLightLaf;
 
 import ij.Prefs;
+import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.gui.GUI;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
@@ -73,38 +76,44 @@ public class Preferences extends Module {
 
     }
 
-    public static String getThemeClass(String theme) {
+    public static LookAndFeel getThemeClass(String theme) throws ClassNotFoundException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
         switch (theme) {
             case Themes.FLAT_LAF_DARK:
-                return FlatDarkLaf.class.getCanonicalName();
+                return new FlatDarkLaf();
             case Themes.FLAT_LAF_DARKULA:
-                return FlatDarculaLaf.class.getCanonicalName();
+                return new FlatDarculaLaf();
             case Themes.FLAT_LAF_INTELLIJ:
-                return FlatIntelliJLaf.class.getCanonicalName();
+                return new FlatIntelliJLaf();
             case Themes.FLAT_LAF_LIGHT:
-                return FlatLightLaf.class.getCanonicalName();
+                return new FlatLightLaf();
             case Themes.MATCH_IMAGEJ:
-                return ijLAF.getClass().getCanonicalName();
+                Class<?> clazz = Class.forName(ijLAF.getClass().getCanonicalName());
+                Constructor<?> ctor = clazz.getConstructor();
+                return (LookAndFeel) ctor.newInstance();
             case Themes.SYSTEM_DEFAULT:
             default:
-                return UIManager.getSystemLookAndFeelClassName();
-
+                clazz = Class.forName(UIManager.getSystemLookAndFeelClassName());
+                ctor = clazz.getConstructor();
+                return (LookAndFeel) ctor.newInstance();
         }
     }
 
     public void setTheme(String theme) {
         Prefs.set("MIA.GUI.theme", theme);
         parameters.getParameter(THEME).setValue(theme);
-        String themeClassName = getThemeClass(theme);
         try {
-            UIManager.setLookAndFeel(themeClassName);            
+            LookAndFeel lookAndFeel = getThemeClass(theme);
+            UIManager.setLookAndFeel(lookAndFeel);
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException
-                | UnsupportedLookAndFeelException e) {
+                | UnsupportedLookAndFeelException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e) {
             e.printStackTrace();
         }
-        
-        GUI.refreshLookAndFeel();
-        
+
+        MIA.log.writeMessage("Theme will be applied after restarting Fiji");
+
+        if (GUI.initialised)
+            GUI.refreshLookAndFeel();
+
     }
 
     public boolean isDarkTheme(String theme) {
@@ -187,7 +196,7 @@ public class Preferences extends Module {
     protected void initialiseParameters() {
         parameters.add(new SeparatorP(GUI_SEPARATOR, this));
         parameters.add(new ChoiceP(THEME, this,
-                Prefs.get("MIA.GUI.theme", Themes.FLAT_LAF_LIGHT), Themes.ALL));
+                Prefs.get("MIA.GUI.theme", Themes.SYSTEM_DEFAULT), Themes.ALL));
         parameters.add(new BooleanP(SHOW_DEPRECATED, this, Prefs.get("MIA.GUI.showDeprecated", false)));
 
         parameters.add(new SeparatorP(DATA_SEPARATOR, this));

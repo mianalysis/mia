@@ -431,13 +431,14 @@ public class ImgPlusImage<T extends RealType<T> & NativeType<T>> extends Image<T
     }
 
     public static DiskCachedCellImgOptions getCellImgOptions() {
-        int[] cellSize = new int[] { 128, 128, 128 };
+        int[] cellSize = new int[] { 32, 32, 32 };
 
         DiskCachedCellImgOptions options = DiskCachedCellImgOptions.options();
-        if (MIA.preferences.isSpecifyCacheDirectory())
-            options.cacheDirectory(Paths.get(MIA.preferences.getCacheDirectory()));
         options.numIoThreads(2);
         options.cellDimensions(cellSize);
+        
+        if (MIA.preferences.isSpecifyCacheDirectory())
+            options.cacheDirectory(Paths.get(MIA.preferences.getCacheDirectory()));
 
         return options;
 

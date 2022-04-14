@@ -1,5 +1,6 @@
 package io.github.mianalysis.mia.object.image;
 
+import ij.IJ;
 import ij.ImagePlus;
 import io.github.mianalysis.mia.MIA;
 import io.github.sjcross.common.object.volume.SpatCal;
@@ -35,12 +36,6 @@ public class ImgPlusTools {
     }
 
     public static <T> void applyAxes(ImgPlus<T> sourceImg, ImagePlus targetImagePlus) {
-        // Setting dimensions
-        int nChannels = (int) sourceImg.dimension(sourceImg.dimensionIndex(Axes.CHANNEL));
-        int nSlices = (int) sourceImg.dimension(sourceImg.dimensionIndex(Axes.Z));
-        int nFrames = (int) sourceImg.dimension(sourceImg.dimensionIndex(Axes.TIME));
-        targetImagePlus.setDimensions(nChannels, nSlices, nFrames);
-
         // Setting calibration
         int zIdx = sourceImg.dimensionIndex(Axes.Z);
         if (zIdx != -1)
@@ -51,6 +46,14 @@ public class ImgPlusTools {
             targetImagePlus.getCalibration().frameInterval = sourceImg.axis(tIdx).calibratedValue(1);
             targetImagePlus.getCalibration().setTimeUnit(sourceImg.axis(tIdx).unit());
         }
+    }
+
+    public static <T> void applyDimensions(ImgPlus<T> sourceImg, ImagePlus targetImagePlus) {
+        // Setting dimensions
+        int nChannels = (int) sourceImg.dimension(sourceImg.dimensionIndex(Axes.CHANNEL));
+        int nSlices = (int) sourceImg.dimension(sourceImg.dimensionIndex(Axes.Z));
+        int nFrames = (int) sourceImg.dimension(sourceImg.dimensionIndex(Axes.TIME));
+        targetImagePlus.setDimensions(nChannels, nSlices, nFrames);
     }
 
     public static <T extends RealType<T> & NativeType<T>> ImgPlus<T> createNewImgPlus(

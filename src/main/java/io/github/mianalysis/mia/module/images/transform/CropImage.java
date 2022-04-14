@@ -108,7 +108,7 @@ public class CropImage<T extends RealType<T> & NativeType<T>> extends Module {
         // strangely, but this can be remedied by duplicating it
         ImagePlus outputImagePlus = ImageJFunctions.wrap(outputImg, outputImageName).duplicate();
         outputImagePlus.setCalibration(calibration);
-        ImgPlusTools.applyAxes(outputImg, outputImagePlus);
+        ImgPlusTools.applyDimensions(outputImg, outputImagePlus);
 
         return ImageFactory.createImage(outputImageName, outputImagePlus);
 

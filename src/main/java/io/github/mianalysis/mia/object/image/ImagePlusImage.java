@@ -43,6 +43,7 @@ public class ImagePlusImage<T extends RealType<T> & NativeType<T>> extends Image
 
         // The ImgPlus is duplicated to ensure it's not a virtual stack
         this.imagePlus = ImageJFunctions.wrap(img, name).duplicate();
+        ImgPlusTools.applyDimensions(img, this.imagePlus);
         ImgPlusTools.applyAxes(img, this.imagePlus);
 
     }
@@ -105,8 +106,9 @@ public class ImagePlusImage<T extends RealType<T> & NativeType<T>> extends Image
 
                             // Checking for inversion
                             if (singleObject)
-                                imageID = (blackBackground && imageID != 0) || (!blackBackground && imageID == 0) ? 1 : 0;
-                        
+                                imageID = (blackBackground && imageID != 0) || (!blackBackground && imageID == 0) ? 1
+                                        : 0;
+
                             // If assigning a single object ID, this is the same value for all objects
                             if (singleObject && imageID != 0)
                                 imageID = 1;
@@ -160,10 +162,10 @@ public class ImagePlusImage<T extends RealType<T> & NativeType<T>> extends Image
             switch (bitDepth) {
                 case 8:
                 case 16:
-                imagePlus.getProcessor().putPixel(xPos, yPos, Math.round(hue * 255));
+                    imagePlus.getProcessor().putPixel(xPos, yPos, Math.round(hue * 255));
                     break;
                 case 32:
-                imagePlus.getProcessor().putPixelValue(xPos, yPos, hue);
+                    imagePlus.getProcessor().putPixelValue(xPos, yPos, hue);
                     break;
             }
         }
@@ -182,10 +184,10 @@ public class ImagePlusImage<T extends RealType<T> & NativeType<T>> extends Image
         switch (bitDepth) {
             case 8:
             case 16:
-            imagePlus.getProcessor().putPixel(xPos, yPos, Math.round(hue * 255));
+                imagePlus.getProcessor().putPixel(xPos, yPos, Math.round(hue * 255));
                 break;
             case 32:
-            imagePlus.getProcessor().putPixelValue(xPos, yPos, hue);
+                imagePlus.getProcessor().putPixelValue(xPos, yPos, hue);
                 break;
         }
     }
@@ -210,28 +212,27 @@ public class ImagePlusImage<T extends RealType<T> & NativeType<T>> extends Image
         dispIpl.updateChannelAndDraw();
         if (lut != null && dispIpl.getBitDepth() != 24)
             dispIpl.setLut(lut);
-            
+
         if (composite && dispIpl.getNChannels() > 1)
             dispIpl.setDisplayMode(CompositeImage.COMPOSITE);
         else
             dispIpl.setDisplayMode(CompositeImage.COLOR);
-                        
+
         dispIpl.repaintWindow();
         dispIpl.show();
     }
 
     public ImagePlusImage duplicate(String outputImageName) {
-        return new ImagePlusImage<>(outputImageName, imagePlus.duplicate());       
+        return new ImagePlusImage<>(outputImageName, imagePlus.duplicate());
 
     }
-
 
     // GETTERS AND SETTERS
 
     public Overlay getOverlay() {
         if (imagePlus.getOverlay() == null)
             imagePlus.setOverlay(new ij.gui.Overlay());
-        
+
         return imagePlus.getOverlay();
 
     }
@@ -301,6 +302,7 @@ public class ImagePlusImage<T extends RealType<T> & NativeType<T>> extends Image
             return true;
         if (!(obj instanceof Image))
             return false;
+        System.out.println("Passed type check");
 
         Image image2 = (Image) obj;
         ImagePlus imagePlus2 = image2.getImagePlus();
@@ -316,6 +318,7 @@ public class ImagePlusImage<T extends RealType<T> & NativeType<T>> extends Image
             return false;
         if (!calibration1.getUnits().equals(calibration2.getUnits()))
             return false;
+        System.out.println("Passed calibration check");
 
         // Comparing dimensions
         if (imagePlus.getWidth() != imagePlus2.getWidth())
@@ -330,6 +333,7 @@ public class ImagePlusImage<T extends RealType<T> & NativeType<T>> extends Image
             return false;
         if (imagePlus.getBitDepth() != imagePlus2.getBitDepth())
             return false;
+        System.out.println("Passed dimension check");
 
         // Checking the individual image pixel values
         ImageStack ist = imagePlus.getImageStack();
@@ -351,6 +355,7 @@ public class ImagePlusImage<T extends RealType<T> & NativeType<T>> extends Image
                 }
             }
         }
+        System.out.println("Passed intensity check");
 
         return true;
 

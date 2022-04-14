@@ -392,7 +392,7 @@ public class FocusStackGlobal <T extends RealType<T> & NativeType<T>> extends Mo
         outputImagePlus.setCalibration(inputImage.getImagePlus().getCalibration());
         if (outputImg.dimension(outputImg.dimensionIndex(Axes.Z)) == 1)
             outputImagePlus.getCalibration().pixelDepth = 1;
-        ImgPlusTools.applyAxes(outputImg, outputImagePlus);
+        ImgPlusTools.applyDimensions(outputImg, outputImagePlus);
 
         // Adding the new image to the Workspace
         return ImageFactory.createImage(outputImageName, outputImagePlus);

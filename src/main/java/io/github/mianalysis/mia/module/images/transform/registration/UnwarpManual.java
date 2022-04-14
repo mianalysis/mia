@@ -210,8 +210,8 @@ public class UnwarpManual<T extends RealType<T> & NativeType<T>> extends Abstrac
         ImagePlus ipl2 = ((ImagePlus) objects[2]).duplicate();
 
         // Duplicating image
-        Image image1 = ImageFactory.createImage("Registered", ipl1);
-        Image image2 = ImageFactory.createImage("Reference", ipl2);
+        Image<T> image1 = ImageFactory.createImage("Registered", ipl1);
+        Image<T> image2 = ImageFactory.createImage("Reference", ipl2);
 
         ArrayList<Stack<Point>> points = convertPointPairsToPointStacks(pairs);
         Transformation transformation = bUnwarpJ_Mod.computeTransformationBatch(ipl1.getProcessor(),
@@ -237,7 +237,7 @@ public class UnwarpManual<T extends RealType<T> & NativeType<T>> extends Abstrac
             return;
         }
 
-        ArrayList<Image> images = new ArrayList<>();
+        ArrayList<Image<T>> images = new ArrayList<>();
         images.add(image1);
         images.add(image2);
         ConcatenateStacks.concatenateImages(images, ConcatenateStacks.AxisModes.CHANNEL, "Registration comparison")

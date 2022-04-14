@@ -21,6 +21,7 @@ import io.github.mianalysis.mia.module.images.configure.SetLookupTable;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.image.Image;
 import io.github.mianalysis.mia.object.image.ImageFactory;
+import io.github.mianalysis.mia.object.image.ImageType;
 import io.github.mianalysis.mia.object.image.ImgPlusTools;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
@@ -62,6 +63,7 @@ public class ConcatenateStacks<T extends RealType<T> & NativeType<T>> extends Mo
 
     public ConcatenateStacks(Modules modules) {
         super("Concatenate stacks", modules);
+        il2Support = IL2Support.PARTIAL;
     }
 
     public interface AxisModes {
@@ -75,12 +77,12 @@ public class ConcatenateStacks<T extends RealType<T> & NativeType<T>> extends Mo
 
     }
 
-    static <T extends RealType<T> & NativeType<T>> ArrayList<Image> getAvailableImages(Workspace workspace,
+    static <T extends RealType<T> & NativeType<T>> ArrayList<Image<T>> getAvailableImages(Workspace workspace,
             LinkedHashMap<Integer, Parameters> collections) {
-        ArrayList<Image> available = new ArrayList<>();
+        ArrayList<Image<T>> available = new ArrayList<>();
 
         for (Parameters collection : collections.values()) {
-            Image image = workspace.getImage(collection.getValue(INPUT_IMAGE));
+            Image<T> image = workspace.getImage(collection.getValue(INPUT_IMAGE));
             if (image != null)
                 available.add(image);
         }
@@ -113,7 +115,7 @@ public class ConcatenateStacks<T extends RealType<T> & NativeType<T>> extends Mo
 
     }
 
-    static <T extends RealType<T> & NativeType<T>> void copyPixels(ImgPlus<T> sourceImg, ImgPlus targetImg,
+    static <T extends RealType<T> & NativeType<T>> void copyPixels(ImgPlus<T> sourceImg, ImgPlus<T> targetImg,
             long[] offset, long[] dims) {
         int xIdxIn1 = sourceImg.dimensionIndex(Axes.X);
         int yIdxIn1 = sourceImg.dimensionIndex(Axes.Y);
@@ -247,7 +249,7 @@ public class ConcatenateStacks<T extends RealType<T> & NativeType<T>> extends Mo
 
     }
 
-    public static <T extends RealType<T> & NativeType<T>> Image concatenateImages(ArrayList<Image> inputImages,
+    public static <T extends RealType<T> & NativeType<T>> Image<T> concatenateImages(ArrayList<Image<T>> inputImages,
             String axis, String outputImageName) {
         // Processing first two images
         ImgPlus<T> im1 = inputImages.get(0).getImgPlus();
@@ -255,27 +257,24 @@ public class ConcatenateStacks<T extends RealType<T> & NativeType<T>> extends Mo
         ImgPlus<T> imgOut = concatenateImages(im1, im2, axis);
 
         // Appending any additional images
-        for (int i = 2; i < inputImages.size(); i++) {
+        for (int i = 2; i < inputImages.size(); i++)
             imgOut = concatenateImages(imgOut, inputImages.get(i).getImgPlus(), axis);
-        }
-
+        
         // If concatenation failed (for example, if the dimensions were inconsistent) it
         // returns null
         if (imgOut == null)
             return null;
 
-        // For some reason the ImagePlus produced by ImageJFunctions.wrap() behaves
-        // strangely, but this can be remedied
-        // by duplicating it
+        // Duplicating the ImgPlus to ensure it's copied
         ImagePlus outputImagePlus = ImageJFunctions.wrap(imgOut, outputImageName).duplicate();
         outputImagePlus.setCalibration(inputImages.get(0).getImagePlus().getCalibration());
-        ImgPlusTools.applyAxes(imgOut, outputImagePlus);
-
+        ImgPlusTools.applyDimensions(imgOut, outputImagePlus);
+        
         return ImageFactory.createImage(outputImageName, outputImagePlus);
 
     }
 
-    static LUT[] getLUTs(Image[] images) {
+    static <T extends RealType<T> & NativeType<T>> LUT[] getLUTs(Image<T>[] images) {
         int count = 0;
         for (int i = 0; i < images.length; i++) {
             count = count + images[i].getImagePlus().getNChannels();
@@ -295,8 +294,8 @@ public class ConcatenateStacks<T extends RealType<T> & NativeType<T>> extends Mo
 
     }
 
-    public static <T extends RealType<T> & NativeType<T>> void convertToColour(Image image,
-            ArrayList<Image> inputImages) {
+    public static <T extends RealType<T> & NativeType<T>> void convertToColour(Image<T> image,
+            ArrayList<Image<T>> inputImages) {
         ImagePlus ipl = image.getImagePlus();
 
         int nChannels = ipl.getNChannels();
@@ -340,7 +339,7 @@ public class ConcatenateStacks<T extends RealType<T> & NativeType<T>> extends Mo
 
         // Creating a collection of images
         LinkedHashMap<Integer, Parameters> collections = parameters.getValue(ADD_INPUT_IMAGE);
-        ArrayList<Image> inputImages = getAvailableImages(workspace, collections);
+        ArrayList<Image<T>> inputImages = getAvailableImages(workspace, collections);
 
         if (!allowMissingImages && collections.size() != inputImages.size()) {
             MIA.log.writeError("Input images missing.");
@@ -349,13 +348,12 @@ public class ConcatenateStacks<T extends RealType<T> & NativeType<T>> extends Mo
 
         // If only one image was specified, simply create a duplicate of the input,
         // otherwise do concatenation.
-        Image outputImage;
-        if (inputImages.size() == 1) {
-            outputImage = ImageFactory.createImage(outputImageName, inputImages.get(0).getImagePlus());
-        } else {
+        Image<T> outputImage;
+        if (inputImages.size() == 1)
+            outputImage = inputImages.get(0).duplicate(outputImageName);
+        else
             outputImage = concatenateImages(inputImages, axisMode, outputImageName);
-        }
-
+        
         if (outputImage == null)
             return Status.FAIL;
         if (axisMode.equals(AxisModes.CHANNEL))

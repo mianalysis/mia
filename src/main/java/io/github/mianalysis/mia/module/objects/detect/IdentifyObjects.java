@@ -11,6 +11,8 @@ import java.util.concurrent.TimeUnit;
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
 
+import ij.IJ;
+import ij.ImageJ;
 import ij.ImagePlus;
 import ij.ImageStack;
 import ij.Prefs;
@@ -52,9 +54,9 @@ import net.imglib2.algorithm.labeling.ConnectedComponents;
 import net.imglib2.algorithm.labeling.ConnectedComponents.StructuringElement;
 import net.imglib2.converter.Converter;
 import net.imglib2.converter.Converters;
+import net.imglib2.img.display.imagej.ImageJFunctions;
 import net.imglib2.type.NativeType;
 import net.imglib2.type.logic.BitType;
-import net.imglib2.type.numeric.IntegerType;
 import net.imglib2.type.numeric.RealType;
 import net.imglib2.type.numeric.integer.UnsignedLongType;
 
@@ -273,15 +275,15 @@ public class IdentifyObjects<T extends RealType<T> & NativeType<T>> extends Modu
 
         Converter<T, BitType> converter;
         if (blackBackground)
-            converter = (i, o) -> o.set(i.getRealDouble() > 0 ? true : false);
+            converter = (i, o) -> o.set(i.getRealFloat() > 0 ? true : false);
         else
-            converter = (i, o) -> o.set(i.getRealDouble() == 0 ? true : false);
+            converter = (i, o) -> o.set(i.getRealFloat() == 0 ? true : false);
 
         StructuringElement se = connectivity == 6 ? StructuringElement.FOUR_CONNECTED
                 : StructuringElement.EIGHT_CONNECTED;
 
         ImgPlus<UnsignedLongType> labelImg = ImgPlusTools.createNewImgPlus(inputImg, new UnsignedLongType());
-
+        
         RandomAccessibleInterval<BitType> mask = Converters.convert(
                 (RandomAccessibleInterval<T>) inputImg,
                 converter, new BitType());
