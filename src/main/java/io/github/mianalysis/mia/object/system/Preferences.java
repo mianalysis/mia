@@ -2,6 +2,8 @@ package io.github.mianalysis.mia.object.system;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
@@ -38,7 +40,7 @@ import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 /**
  * Created by Stephen on 24/08/2021.
  */
-public class Preferences extends Module {
+public class Preferences extends Module implements FocusListener {
     public static final String GUI_SEPARATOR = "GUI parameters";
     public static final String THEME = "Theme";
     public static final String SHOW_DEPRECATED = "Show deprecated modules (editing mode)";
@@ -197,7 +199,8 @@ public class Preferences extends Module {
         parameters.add(new SeparatorP(GUI_SEPARATOR, this));
         parameters.add(new ChoiceP(THEME, this,
                 Prefs.get("MIA.GUI.theme", Themes.SYSTEM_DEFAULT), Themes.ALL));
-        parameters.add(new BooleanP(SHOW_DEPRECATED, this, Prefs.get("MIA.GUI.showDeprecated", false)));
+        parameters.get(THEME).getControl().getComponent().addFocusListener(this);;
+                parameters.add(new BooleanP(SHOW_DEPRECATED, this, Prefs.get("MIA.GUI.showDeprecated", false)));
 
         parameters.add(new SeparatorP(DATA_SEPARATOR, this));
         parameters.add(new ChoiceP(DATA_STORAGE_MODE, this,
@@ -283,5 +286,17 @@ public class Preferences extends Module {
             setDataStorageMode(parameters.getValue(DATA_STORAGE_MODE));
             setCacheDirectory(parameters.getValue(CACHE_DIRECTORY));
         }
+    }
+
+    @Override
+    public void focusGained(FocusEvent e) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void focusLost(FocusEvent e) {
+        // TODO Auto-generated method stub
+        MIA.log.writeDebug(e.toString());
     }
 }
