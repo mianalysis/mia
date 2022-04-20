@@ -169,13 +169,12 @@ public class GUI {
     }
 
     public static void refreshLookAndFeel() {
-        // if (!IJ.isWindows()) {
         if (frame != null)
             SwingUtilities.updateComponentTreeUI(frame);
 
         if (processingPanel != null)
             SwingUtilities.updateComponentTreeUI(processingPanel);
-
+            
         if (editingPanel != null)
             SwingUtilities.updateComponentTreeUI(editingPanel);
 
@@ -188,7 +187,7 @@ public class GUI {
         for (Module module : getModules())
             for (Parameter parameter : module.getAllParameters().values())
                 SwingUtilities.updateComponentTreeUI(parameter.getControl().getComponent());
-        // }
+        
     }
 
     public static void updatePanel() {

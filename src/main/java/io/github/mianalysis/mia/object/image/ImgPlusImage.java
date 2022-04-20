@@ -56,6 +56,7 @@ public class ImgPlusImage<T extends RealType<T> & NativeType<T>> extends Image<T
 
     }
 
+    
     // PUBLIC METHODS
 
     public Objs initialiseEmptyObjs(String outputObjectsName) {

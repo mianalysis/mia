@@ -43,7 +43,7 @@ public class FileListPanel extends JPanel implements MouseListener, TableCellRen
      */
     private static final long serialVersionUID = -2538934848503043479L;
     private final Workspaces workspaces;
-    private final JTable table;
+    private final FileListTable table;
     private final DefaultTableModel model = new DefaultTableModel();
     private final FileListColumnSelectorMenu columnSelectorMenu = new FileListColumnSelectorMenu(this);
     TableRowSorter<TableModel> sorter = new TableRowSorter<>(model);
@@ -105,7 +105,7 @@ public class FileListPanel extends JPanel implements MouseListener, TableCellRen
         model.setColumnCount(5);
         model.setColumnIdentifiers(new String[] { "#", "Filename", "Ser. name", "Ser. #", "Progress" });
 
-        table = new JTable(model);
+        table = new FileListTable(model);
         table.setRowSelectionAllowed(false);
         table.getTableHeader().addMouseListener(this);
         table.setAutoResizeMode(JTable.AUTO_RESIZE_LAST_COLUMN);
@@ -116,18 +116,18 @@ public class FileListPanel extends JPanel implements MouseListener, TableCellRen
         table.setDefaultEditor(Object.class, null);
 
         TableColumnModel columnModel = table.getColumnModel();
-        columnModel.getColumn(COL_JOB_ID).setCellRenderer(this);
-        columnModel.getColumn(COL_WORKSPACE).setCellRenderer(this);
-        columnModel.getColumn(COL_SERIESNAME).setCellRenderer(this);
-        columnModel.getColumn(COL_SERIESNUMBER).setCellRenderer(this);
-        columnModel.getColumn(COL_PROGRESS).setCellRenderer(this);
+        // columnModel.getColumn(COL_JOB_ID).setCellRenderer(this);
+        // columnModel.getColumn(COL_WORKSPACE).setCellRenderer(this);
+        // columnModel.getColumn(COL_SERIESNAME).setCellRenderer(this);
+        // columnModel.getColumn(COL_SERIESNUMBER).setCellRenderer(this);
+        // columnModel.getColumn(COL_PROGRESS).setCellRenderer(this);
 
         columns.put(COL_JOB_ID, columnModel.getColumn(COL_JOB_ID));
         columns.put(COL_WORKSPACE, columnModel.getColumn(COL_WORKSPACE));
         columns.put(COL_SERIESNAME, columnModel.getColumn(COL_SERIESNAME));
         columns.put(COL_SERIESNUMBER, columnModel.getColumn(COL_SERIESNUMBER));
         columns.put(COL_PROGRESS, columnModel.getColumn(COL_PROGRESS));
-
+        
         columnModel.getColumn(COL_JOB_ID).setPreferredWidth(10);
 
         showColumn(COL_SERIESNAME, false);

@@ -39,6 +39,8 @@ public class ModuleTable extends JTable implements ActionListener, MouseListener
     private static final String OUTPUT = "output";
     private static final String ENABLE = "enable";
 
+    private static boolean updated = false;
+
     private static final long serialVersionUID = 3722736203899254351L;
     private Modules modules;
     private HashMap<Module, ModuleName> moduleNames = new HashMap<>();
@@ -230,5 +232,15 @@ public class ModuleTable extends JTable implements ActionListener, MouseListener
     @Override
     public void mouseExited(MouseEvent e) {
 
+    }
+
+    @Override
+    public void updateUI() {
+        // For Java 8 we need a custom updateUI method to prevent a StackOverflowError when updating the LookAndFeel.
+        if (!updated) {
+            updated = true;
+            super.updateUI();            
+            updated = false;
+        }
     }
 }
