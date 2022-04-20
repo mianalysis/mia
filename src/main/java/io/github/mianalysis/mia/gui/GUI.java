@@ -11,6 +11,7 @@ import java.util.TreeMap;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
+import javax.swing.SwingUtilities;
 import javax.swing.ToolTipManager;
 
 import io.github.mianalysis.mia.MIA;
@@ -31,6 +32,7 @@ import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.Workspaces;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.FileFolderPathP;
+import io.github.mianalysis.mia.object.parameters.abstrakt.Parameter;
 import io.github.mianalysis.mia.object.units.SpatialUnit;
 import io.github.mianalysis.mia.object.units.TemporalUnit;
 import io.github.mianalysis.mia.process.analysishandling.Analysis;
@@ -168,24 +170,24 @@ public class GUI {
 
     public static void refreshLookAndFeel() {
         // if (!IJ.isWindows()) {
-        //     if (frame != null)
-        //         SwingUtilities.updateComponentTreeUI(frame);
+        if (frame != null)
+            SwingUtilities.updateComponentTreeUI(frame);
 
-        //     if (processingPanel != null)
-        //         SwingUtilities.updateComponentTreeUI(processingPanel);
+        if (processingPanel != null)
+            SwingUtilities.updateComponentTreeUI(processingPanel);
 
-        //     if (editingPanel != null)
-        //         SwingUtilities.updateComponentTreeUI(editingPanel);
+        if (editingPanel != null)
+            SwingUtilities.updateComponentTreeUI(editingPanel);
 
-        //     for (Parameter parameter : getModules().getInputControl().getAllParameters().values())
-        //         SwingUtilities.updateComponentTreeUI(parameter.getControl().getComponent());
+        for (Parameter parameter : getModules().getInputControl().getAllParameters().values())
+            SwingUtilities.updateComponentTreeUI(parameter.getControl().getComponent());
 
-        //     for (Parameter parameter : getModules().getOutputControl().getAllParameters().values())
-        //         SwingUtilities.updateComponentTreeUI(parameter.getControl().getComponent());
+        for (Parameter parameter : getModules().getOutputControl().getAllParameters().values())
+            SwingUtilities.updateComponentTreeUI(parameter.getControl().getComponent());
 
-        //     for (Module module : getModules())
-        //         for (Parameter parameter : module.getAllParameters().values())
-        //             SwingUtilities.updateComponentTreeUI(parameter.getControl().getComponent());
+        for (Module module : getModules())
+            for (Parameter parameter : module.getAllParameters().values())
+                SwingUtilities.updateComponentTreeUI(parameter.getControl().getComponent());
         // }
     }
 

@@ -1,9 +1,5 @@
 package io.github.mianalysis.mia.object.system;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
@@ -28,9 +24,9 @@ import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.FolderPathP;
-import io.github.mianalysis.mia.object.parameters.GenericButtonP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.SeparatorP;
+import io.github.mianalysis.mia.object.parameters.abstrakt.Parameter;
 import io.github.mianalysis.mia.object.refs.collections.ImageMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
@@ -40,7 +36,7 @@ import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 /**
  * Created by Stephen on 24/08/2021.
  */
-public class Preferences extends Module implements FocusListener {
+public class Preferences extends Module {
     public static final String GUI_SEPARATOR = "GUI parameters";
     public static final String THEME = "Theme";
     public static final String SHOW_DEPRECATED = "Show deprecated modules (editing mode)";
@@ -49,9 +45,6 @@ public class Preferences extends Module implements FocusListener {
     public static final String DATA_STORAGE_MODE = "Data storage mode";
     public static final String SPECIFY_CACHE_DIRECTORY = "Specify cache directory";
     public static final String CACHE_DIRECTORY = "Cache directory";
-
-    public static final String UPDATE_SEPARATOR = "Update";
-    public static final String UPDATE_PARAMETERS = "Update parameters";
 
     private static LookAndFeel ijLAF = UIManager.getLookAndFeel();
 
@@ -100,7 +93,9 @@ public class Preferences extends Module implements FocusListener {
         }
     }
 
-    public void setTheme(String theme) {
+    public void setTheme() {
+        String theme = parameters.getValue(THEME);
+
         Prefs.set("MIA.GUI.theme", theme);
         parameters.getParameter(THEME).setValue(theme);
         try {
@@ -110,8 +105,6 @@ public class Preferences extends Module implements FocusListener {
                 | UnsupportedLookAndFeelException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e) {
             e.printStackTrace();
         }
-
-        MIA.log.writeMessage("Theme will be applied after restarting Fiji");
 
         if (GUI.initialised)
             GUI.refreshLookAndFeel();
@@ -141,9 +134,15 @@ public class Preferences extends Module implements FocusListener {
         return parameters.getValue(SHOW_DEPRECATED);
     }
 
+    public void setShowDeprecated() {
+        boolean showDeprecated = parameters.getValue(SHOW_DEPRECATED);
+        Prefs.set("MIA.GUI.showDeprecated", showDeprecated);
+        GUI.updateAvailableModules();
+    }
+
     public void setShowDeprecated(boolean showDeprecated) {
         Prefs.set("MIA.GUI.showDeprecated", showDeprecated);
-        parameters.getParameter(SHOW_DEPRECATED).setValue(showDeprecated);
+        parameters.get(SHOW_DEPRECATED).setValue(showDeprecated);
         GUI.updateAvailableModules();
     }
 
@@ -151,27 +150,42 @@ public class Preferences extends Module implements FocusListener {
         return parameters.getValue(DATA_STORAGE_MODE);
     }
 
+    public void setDataStorageMode() {
+        String dataStorageMode = parameters.getValue(DATA_STORAGE_MODE);
+        Prefs.set("MIA.core.dataStorageMode", dataStorageMode);
+    }
+
     public void setDataStorageMode(String dataStorageMode) {
         Prefs.set("MIA.core.dataStorageMode", dataStorageMode);
-        parameters.getParameter(DATA_STORAGE_MODE).setValue(dataStorageMode);
+        parameters.get(DATA_STORAGE_MODE).setValue(dataStorageMode);
     }
 
     public boolean isSpecifyCacheDirectory() {
         return parameters.getValue(SPECIFY_CACHE_DIRECTORY);
     }
 
+    public void setSpecifyCacheDirectory() {
+        boolean specifyCacheDirectory = parameters.getValue(SPECIFY_CACHE_DIRECTORY);
+        Prefs.set("MIA.core.specifyCacheDirectory", specifyCacheDirectory);
+    }
+
     public void setSpecifyCacheDirectory(boolean specifyCacheDirectory) {
         Prefs.set("MIA.core.specifyCacheDirectory", specifyCacheDirectory);
-        parameters.getParameter(SPECIFY_CACHE_DIRECTORY).setValue(specifyCacheDirectory);
+        parameters.get(SPECIFY_CACHE_DIRECTORY).setValue(specifyCacheDirectory);
     }
 
     public String getCacheDirectory() {
         return parameters.getValue(CACHE_DIRECTORY);
     }
 
+    public void setCacheDirectory() {
+        String cacheDirectory = parameters.getValue(CACHE_DIRECTORY);
+        Prefs.set("MIA.core.cacheDirectory", cacheDirectory);
+    }
+
     public void setCacheDirectory(String cacheDirectory) {
         Prefs.set("MIA.core.cacheDirectory", cacheDirectory);
-        parameters.getParameter(CACHE_DIRECTORY).setValue(cacheDirectory);
+        parameters.get(CACHE_DIRECTORY).setValue(cacheDirectory);
     }
 
     public Preferences(Modules modules) {
@@ -196,20 +210,45 @@ public class Preferences extends Module implements FocusListener {
 
     @Override
     protected void initialiseParameters() {
+        // GUI parameters
         parameters.add(new SeparatorP(GUI_SEPARATOR, this));
-        parameters.add(new ChoiceP(THEME, this,
-                Prefs.get("MIA.GUI.theme", Themes.SYSTEM_DEFAULT), Themes.ALL));
-        parameters.get(THEME).getControl().getComponent().addFocusListener(this);;
-                parameters.add(new BooleanP(SHOW_DEPRECATED, this, Prefs.get("MIA.GUI.showDeprecated", false)));
+        
+        Parameter parameter = new ChoiceP(THEME, this, Prefs.get("MIA.GUI.theme", Themes.SYSTEM_DEFAULT), Themes.ALL);
+        parameter.getControl().getComponent().addPropertyChangeListener("ToolTipText", evt -> {
+            if (evt.getOldValue() != null)
+                setTheme();
+        });
+        parameters.add(parameter);
 
+        parameter = new BooleanP(SHOW_DEPRECATED, this, Prefs.get("MIA.GUI.showDeprecated", false));
+        parameter.getControl().getComponent().addPropertyChangeListener("ToolTipText", evt -> {
+            if (evt.getOldValue() != null)
+                setShowDeprecated();
+        });
+        parameters.add(parameter);
+        
+
+        // Data parameters
         parameters.add(new SeparatorP(DATA_SEPARATOR, this));
-        parameters.add(new ChoiceP(DATA_STORAGE_MODE, this,
-                Prefs.get("MIA.core.dataStorageMode", DataStorageModes.KEEP_IN_RAM), DataStorageModes.ALL));
-        parameters.add(new BooleanP(SPECIFY_CACHE_DIRECTORY, this, Prefs.get("MIA.core.specifyCacheDirectory", false)));
-        parameters.add(new FolderPathP(CACHE_DIRECTORY, this, Prefs.get("MIA.core.cacheDirectory", "")));
 
-        parameters.add(new SeparatorP(UPDATE_SEPARATOR, this));
-        parameters.add(new GenericButtonP(UPDATE_PARAMETERS, this, UPDATE_PARAMETERS, new Update()));
+        parameter = new ChoiceP(DATA_STORAGE_MODE, this,
+                Prefs.get("MIA.core.dataStorageMode", DataStorageModes.KEEP_IN_RAM), DataStorageModes.ALL);
+        parameter.getControl().getComponent().addPropertyChangeListener("ToolTipText", evt -> {
+            if (evt.getOldValue() != null)
+                setDataStorageMode();});
+        parameters.add(parameter);
+        
+        parameter = new BooleanP(SPECIFY_CACHE_DIRECTORY, this, Prefs.get("MIA.core.specifyCacheDirectory", false));
+        parameter.getControl().getComponent().addPropertyChangeListener("ToolTipText", evt -> {
+            if (evt.getOldValue() != null)
+                setSpecifyCacheDirectory();});
+        parameters.add(parameter);
+
+        parameter = new FolderPathP(CACHE_DIRECTORY, this, Prefs.get("MIA.core.cacheDirectory", ""));
+        parameter.getControl().getComponent().addPropertyChangeListener("ToolTipText", evt -> {
+            if (evt.getOldValue() != null)
+                setCacheDirectory();});
+        parameters.add(parameter);
 
         addParameterDescriptions();
 
@@ -232,9 +271,6 @@ public class Preferences extends Module implements FocusListener {
                     returnedParameters.add(parameters.getParameter(CACHE_DIRECTORY));
                 break;
         }
-
-        returnedParameters.add(parameters.getParameter(UPDATE_SEPARATOR));
-        returnedParameters.add(parameters.getParameter(UPDATE_PARAMETERS));
 
         return returnedParameters;
 
@@ -274,29 +310,15 @@ public class Preferences extends Module implements FocusListener {
         parameters.get(SHOW_DEPRECATED).setDescription(
                 "When selected, deprecated modules will appear in the editing view available modules list.  These modules will be marked with a strikethrough their name, but otherwise act as normal.  Note: Modules marked as deprecated will be removed from future versions of MIA.");
 
-        parameters.get(UPDATE_PARAMETERS).setDescription("When clicked, the preferences within MIA will be updated.");
-
     }
 
-    class Update implements ActionListener {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            setTheme(parameters.getValue(THEME));
-            setShowDeprecated(parameters.getValue(SHOW_DEPRECATED));
-            setDataStorageMode(parameters.getValue(DATA_STORAGE_MODE));
-            setCacheDirectory(parameters.getValue(CACHE_DIRECTORY));
-        }
-    }
-
-    @Override
-    public void focusGained(FocusEvent e) {
-        // TODO Auto-generated method stub
-        
-    }
-
-    @Override
-    public void focusLost(FocusEvent e) {
-        // TODO Auto-generated method stub
-        MIA.log.writeDebug(e.toString());
-    }
+    // class Update implements ActionListener {
+    //     @Override
+    //     public void actionPerformed(ActionEvent e) {
+    //         //setTheme(parameters.getValue(THEME));
+    //         setShowDeprecated(parameters.getValue(SHOW_DEPRECATED));
+    //         setDataStorageMode(parameters.getValue(DATA_STORAGE_MODE));
+    //         setCacheDirectory(parameters.getValue(CACHE_DIRECTORY));
+    //     }
+    // }
 }

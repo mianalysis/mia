@@ -74,8 +74,9 @@ public class MIA implements Command {
     @Override
     public void run() {      
         try {
-            preferences = new Preferences(null);            
-            preferences.setTheme(preferences.getParameterValue(Preferences.THEME));
+            preferences = new Preferences(null);
+            preferences.setTheme();           
+            //preferences.setTheme(preferences.getParameterValue(Preferences.THEME));
 
             if (!headless) {
                 // Before removing the old renderer we want to check the new one can be created
