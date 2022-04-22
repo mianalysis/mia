@@ -8,6 +8,7 @@ import java.util.regex.Pattern;
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
 
+import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
@@ -123,6 +124,9 @@ public class GlobalVariables extends Module {
                 module.updateAndGetParameters();
             }
         }
+        
+        // for (StringP k:globalVariables.keySet())
+        //     MIA.log.writeDebug(k.getValue() + "_" + globalVariables.get(k));
     }
 
     public static int count() {

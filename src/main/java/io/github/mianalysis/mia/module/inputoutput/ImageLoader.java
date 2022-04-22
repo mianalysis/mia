@@ -48,7 +48,6 @@ import io.github.mianalysis.mia.object.parameters.InputObjectsP;
 import io.github.mianalysis.mia.object.parameters.OutputImageP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.SeparatorP;
-import io.github.mianalysis.mia.object.parameters.abstrakt.Parameter;
 import io.github.mianalysis.mia.object.parameters.text.DoubleP;
 import io.github.mianalysis.mia.object.parameters.text.IntegerP;
 import io.github.mianalysis.mia.object.parameters.text.MessageP;
@@ -1099,7 +1098,7 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
             case SeriesModes.SPECIFIC_SERIES:
                 String seriesNumberText = parameters.getValue(SERIES_NUMBER);
                 Metadata metadata = workspace.getMetadata();
-                seriesNumber = Integer.parseInt(metadata.insertMetadataValues(seriesNumberText));
+                seriesNumber = (int) Math.round(Double.parseDouble(metadata.insertMetadataValues(seriesNumberText)));
                 break;
             }
 

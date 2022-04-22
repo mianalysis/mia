@@ -27,7 +27,7 @@ import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.sjcross.common.imagej.LUTs;
 
-@Plugin(type = Module.class, priority=Priority.LOW, visible=true)
+@Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class SetLookupTable extends Module {
     public static final String INPUT_SEPARATOR = "Image input";
     public static final String INPUT_IMAGE = "Input image";
@@ -35,6 +35,7 @@ public class SetLookupTable extends Module {
     public static final String LUT_SEPARATOR = "Lookup table selection";
     public static final String CHANNEL_MODE = "Channel mode";
     public static final String CHANNEL = "Channel";
+    public static final String REFERENCE_IMAGE = "Reference image";
     public static final String LOOKUP_TABLE = "Lookup table";
     public static final String DISPLAY_MODE = "Display mode";
 
@@ -44,9 +45,10 @@ public class SetLookupTable extends Module {
 
     public interface ChannelModes {
         String ALL_CHANNELS = "All channels";
+        String COPY_FROM_IMAGE = "Copy from image";
         String SPECIFIC_CHANNELS = "Specific channels";
 
-        String[] ALL = new String[] { ALL_CHANNELS, SPECIFIC_CHANNELS };
+        String[] ALL = new String[] { ALL_CHANNELS, COPY_FROM_IMAGE, SPECIFIC_CHANNELS };
 
     }
 
@@ -155,7 +157,7 @@ public class SetLookupTable extends Module {
                 ((CompositeImage) ipl).setChannelLut(lut, channel);
                 break;
         }
-        
+
         ipl.updateAndDraw();
 
     }
@@ -179,6 +181,7 @@ public class SetLookupTable extends Module {
         // Getting parameters
         String lookupTableName = parameters.getValue(LOOKUP_TABLE);
         String channelMode = parameters.getValue(CHANNEL_MODE);
+        String referenceImageName = parameters.getValue(REFERENCE_IMAGE);
         int channel = parameters.getValue(CHANNEL);
         String displayMode = parameters.getValue(DISPLAY_MODE);
 
@@ -192,14 +195,25 @@ public class SetLookupTable extends Module {
         if (channelMode.equals(ChannelModes.SPECIFIC_CHANNELS) && channel > inputImage.getImagePlus().getNChannels())
             return Status.PASS;
 
-        LUT lut = getLUT(lookupTableName);
-        switch (displayMode) {
-            case DisplayModes.SET_ZERO_TO_BLACK:
-                lut = setZeroToBlack(lut);
+        switch (channelMode) {
+            case ChannelModes.ALL_CHANNELS:
+            case ChannelModes.SPECIFIC_CHANNELS:
+                LUT lut = getLUT(lookupTableName);
+                switch (displayMode) {
+                    case DisplayModes.SET_ZERO_TO_BLACK:
+                        lut = setZeroToBlack(lut);
+                        break;
+                }
+                setLUT(inputImage, lut, channelMode, channel);
+                break;
+                case ChannelModes.COPY_FROM_IMAGE:
+                    ImagePlus inputIpl = inputImage.getImagePlus();
+                    LUT[] luts = workspace.getImage(referenceImageName).getImagePlus().getLuts();
+                    for (int ch = 0; ch < Math.min(inputIpl.getNChannels(),luts.length); ch++)
+                        setLUT(inputImage, luts[ch], ChannelModes.SPECIFIC_CHANNELS, ch+1);
+                    
                 break;
         }
-        
-        setLUT(inputImage, lut, channelMode, channel);
 
         inputImage.getImagePlus().updateChannelAndDraw();
 
@@ -217,6 +231,7 @@ public class SetLookupTable extends Module {
 
         parameters.add(new SeparatorP(LUT_SEPARATOR, this));
         parameters.add(new ChoiceP(CHANNEL_MODE, this, ChannelModes.ALL_CHANNELS, ChannelModes.ALL));
+        parameters.add(new InputImageP(REFERENCE_IMAGE, this));
         parameters.add(new IntegerP(CHANNEL, this, 1));
         parameters.add(new ChoiceP(LOOKUP_TABLE, this, LookupTables.GREY, LookupTables.ALL));
         parameters.add(new ChoiceP(DISPLAY_MODE, this, DisplayModes.FULL_RANGE, DisplayModes.ALL));
@@ -236,13 +251,19 @@ public class SetLookupTable extends Module {
         returnedParameters.add(parameters.getParameter(CHANNEL_MODE));
 
         switch ((String) parameters.getValue(CHANNEL_MODE)) {
+            case ChannelModes.ALL_CHANNELS:
+                returnedParameters.add(parameters.getParameter(LOOKUP_TABLE));
+                returnedParameters.add(parameters.getParameter(DISPLAY_MODE));
+                break;
+            case ChannelModes.COPY_FROM_IMAGE:
+                returnedParameters.add(parameters.getParameter(REFERENCE_IMAGE));
+                break;
             case ChannelModes.SPECIFIC_CHANNELS:
                 returnedParameters.add(parameters.getParameter(CHANNEL));
+                returnedParameters.add(parameters.getParameter(LOOKUP_TABLE));
+                returnedParameters.add(parameters.getParameter(DISPLAY_MODE));
                 break;
         }
-
-        returnedParameters.add(parameters.getParameter(LOOKUP_TABLE));
-        returnedParameters.add(parameters.getParameter(DISPLAY_MODE));
 
         return returnedParameters;
 
