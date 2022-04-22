@@ -10,6 +10,7 @@ public class MainGenerator {
     public static String INDEX = "INDEX";
     public static String MODULES = "MODULES";
     public static String GUIDES = "GUIDES";
+    public static String PUBLICATIONS = "PUBLICATIONS";
     public static String ABOUT = "ABOUT";
 
     public static void main(String[] args) {
@@ -46,6 +47,11 @@ public class MainGenerator {
                 new GuideGenerator().generate();
             }
     
+            if (componentToGenerate.equals(PUBLICATIONS)) {
+                deleteFolders(new File(root.getAbsolutePath() + "html/publications.html"));
+                new PublicationsGenerator().generate();
+            }   
+
             if (componentToGenerate.equals(ABOUT)) {
                 deleteFolders(new File(root.getAbsolutePath() + "html/about.html"));
                 new AboutGenerator().generate();
@@ -63,6 +69,7 @@ public class MainGenerator {
         new IndexGenerator().generate();
         new ModuleGenerator().generate();
         new GuideGenerator().generate();
+        new PublicationsGenerator().generate();
         new AboutGenerator().generate();
 
         // Creating README.md
@@ -119,7 +126,7 @@ public class MainGenerator {
             sb.append("\n\n");
 
             sb.append("Publications").append("\n").append("------------").append("\n");
-            sb.append(new String(Files.readAllBytes(Paths.get("src/main/resources/templatemd/publications.md"))));
+            sb.append(new String(Files.readAllBytes(Paths.get("src/main/resources/templatemd/publicationsshort.md"))));
             sb.append("\n\n");
 
             sb.append("Ongoing development").append("\n").append("------------").append("\n");
