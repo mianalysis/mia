@@ -428,9 +428,6 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
 
     /**
      * Verifies that at least two images in the stack contain non-zero pixels
-     * 
-     * @param stack
-     * @return
      */
     static boolean checkStackForInterpolation(ImageStack stack) {
         int count = 0;

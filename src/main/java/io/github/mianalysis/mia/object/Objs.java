@@ -193,7 +193,7 @@ public class Objs extends LinkedHashMap<Integer, Obj> {
     }
 
     public Obj getAsSingleObject() {
-        Objs newCollection = new Objs("Single",this);
+        Objs newCollection = new Objs("Single", this);
 
         VolumeType volumeType = VolumeType.POINTLIST;
         Obj firstObj = getFirst();
@@ -251,16 +251,18 @@ public class Objs extends LinkedHashMap<Integer, Obj> {
 
     }
 
-    public Image convertCentroidsToImage(String outputName, HashMap<Integer,Float> hues, int bitDepth, boolean nanBackground) {
+    public Image convertCentroidsToImage(String outputName, HashMap<Integer, Float> hues, int bitDepth,
+            boolean nanBackground) {
         // Create output image
-        Image image = createImage(outputName,bitDepth);
+        Image image = createImage(outputName, bitDepth);
 
         // If it's a 32-bit image, set all background pixels to NaN
-        if (bitDepth == 32 && nanBackground) setNaNBackground(image.getImagePlus());
+        if (bitDepth == 32 && nanBackground)
+            setNaNBackground(image.getImagePlus());
 
         // Labelling pixels in image
-        for (Obj object:values()) 
-        object.addCentroidToImage(image, hues.get(object.getID()));
+        for (Obj object : values())
+            object.addCentroidToImage(image, hues.get(object.getID()));
 
         // Assigning the spatial cal from the cal
         spatCal.setImageCalibration(image.getImagePlus());
@@ -272,7 +274,6 @@ public class Objs extends LinkedHashMap<Integer, Obj> {
     public void applyCalibration(Image image) {
         applyCalibration(image.getImagePlus());
     }
-
 
     public void applyCalibration(ImagePlus ipl) {
         Obj obj = getFirst();
@@ -335,8 +336,6 @@ public class Objs extends LinkedHashMap<Integer, Obj> {
 
     /**
      * Displays measurement values from a specific Module
-     * 
-     * @param module
      */
     public void showMeasurements(Module module, Modules modules) {
         // Getting MeasurementReferences
@@ -515,3 +514,10 @@ public class Objs extends LinkedHashMap<Integer, Obj> {
         this.nFrames = nFrames;
     }
 }
+
+// clear all
+// print'HelloWorld'
+// if{
+//         'theSkyIsGreen'
+//              getMeasurements
+// }

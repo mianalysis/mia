@@ -122,8 +122,6 @@ public class ImageTypeConverter extends Module {
 
     /**
      * Expand the display range of the image to the max range for the output image type (or the max range for 32-bit)
-     * @param imagePlus
-     * @param bitDepth
      */
     static void applyClippedRange(ImagePlus imagePlus, int bitDepth) {
         switch (bitDepth) {
@@ -145,7 +143,6 @@ public class ImageTypeConverter extends Module {
     /**
      * Expand the display range of the image to the max range for the input image type (or 0-1 for 32-bit).
      * This way the intensities will fill the same proportion of the dynamic range in the new bit depth.
-     * @param imagePlus
      */
     static void applyScaledRange(ImagePlus imagePlus) {
         int bitDepth = imagePlus.getBitDepth();
@@ -167,7 +164,6 @@ public class ImageTypeConverter extends Module {
 
     /**
      * Expand the display range of the image to the max range for the input image type (or the max range for 32-bit)
-     * @param imagePlus
      */
     static void applyFilledRange(ImagePlus imagePlus) {
         StackStatistics stackStatistics = new StackStatistics(imagePlus);
