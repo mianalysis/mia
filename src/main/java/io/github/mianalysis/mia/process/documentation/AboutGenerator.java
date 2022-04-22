@@ -39,6 +39,10 @@ public class AboutGenerator extends AbstractGenerator {
         aboutContent = renderer.render(parser.parse(aboutContent));
         mainContent = mainContent.replace("${ABOUT_CITING}", aboutContent);
 
+        aboutContent = new String(Files.readAllBytes(Paths.get("src/main/resources/templatemd/publications.md")));
+        aboutContent = renderer.render(parser.parse(aboutContent));
+        mainContent = mainContent.replace("${ABOUT_PUBLICATIONS}", aboutContent);
+
         aboutContent = new String(Files.readAllBytes(Paths.get("src/main/resources/templatemd/note.md")));
         aboutContent = renderer.render(parser.parse(aboutContent));
         mainContent = mainContent.replace("${ABOUT_DEVELOPMENT}", aboutContent);

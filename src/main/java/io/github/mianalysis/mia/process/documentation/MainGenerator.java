@@ -118,6 +118,10 @@ public class MainGenerator {
             sb.append(new String(Files.readAllBytes(Paths.get("src/main/resources/templatemd/citing.md"))));
             sb.append("\n\n");
 
+            sb.append("Publications").append("\n").append("------------").append("\n");
+            sb.append(new String(Files.readAllBytes(Paths.get("src/main/resources/templatemd/publications.md"))));
+            sb.append("\n\n");
+
             sb.append("Ongoing development").append("\n").append("------------").append("\n");
             sb.append(new String(Files.readAllBytes(Paths.get("src/main/resources/templatemd/note.md"))));
             sb.append("\n\n");

@@ -36,7 +36,7 @@ import net.imagej.ImageJService;
 /**
  * Created by Stephen Cross on 14/07/2017.
  */
-@Plugin(type = Command.class, menuPath = "Plugins>MIA>MIA (Modular Image Analysis)", visible=true)
+@Plugin(type = Command.class, menuPath = "Plugins>ModularImageAnalysis (MIA)", visible=true)
 public class MIA implements Command {
     private static String version = "";
     private static boolean debug = false;

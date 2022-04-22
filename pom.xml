@@ -327,7 +327,6 @@
             <groupId>com.atlassian.commonmark</groupId>
             <artifactId>commonmark</artifactId>
             <version>0.17.0</version>
-            <scope>${scp}</scope>
         </dependency>
 
         <dependency>
