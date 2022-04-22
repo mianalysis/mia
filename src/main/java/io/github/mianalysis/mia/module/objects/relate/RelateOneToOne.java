@@ -97,11 +97,13 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import com.drew.lang.annotations.Nullable;
+
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
 
 import fiji.plugin.trackmate.tracking.sparselap.costmatrix.DefaultCostMatrixCreator;
 import fiji.plugin.trackmate.tracking.sparselap.linker.JaqamanLinker;
+import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
@@ -174,10 +176,9 @@ public class RelateOneToOne extends Module {
                 // Calculating the separation between the two objects
                 double overlap = object1.getCentroidSeparation(object2, true);
 
-                // Only add if within the linking limit
+                // Only add if within the linking limit.  Adds 0.1 as 0 scores potentially cause problems with the link optimisation
                 if (overlap <= maxSeparation)
-                    linkables.add(new Linkable(overlap, object1.getID(), object2.getID()));
-
+                    linkables.add(new Linkable(overlap+0.1, object1.getID(), object2.getID()));
             }
         }
 
@@ -246,7 +247,7 @@ public class RelateOneToOne extends Module {
         
         JaqamanLinker<Integer, Integer> linker = new JaqamanLinker<>(creator);
         if (!linker.checkInput() || !linker.process())
-            return null;
+            return outputObjects;
         Map<Integer, Integer> assignment = linker.getResult();
 
         for (Integer ID1 : assignment.keySet()) {
@@ -384,6 +385,7 @@ public class RelateOneToOne extends Module {
         if (linkables.size() != 0) {
             // Creating cost matrix and checking creator was created
             DefaultCostMatrixCreator<Integer, Integer> creator = getCostMatrixCreator(linkables);
+            
             if (creator != null)
                 outputObjects = assignLinks(inputObjects1, inputObjects2, creator, outputObjectsName);
         }

@@ -10,6 +10,7 @@ import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.object.Status;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.parameters.SeparatorP;
+import io.github.mianalysis.mia.object.parameters.abstrakt.TextType;
 import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.text.StringP;
 import io.github.mianalysis.mia.object.refs.collections.ImageMeasurementRefs;
@@ -27,7 +28,6 @@ public class AddCustomMetadataItem extends Module {
 
     public AddCustomMetadataItem(Modules modules) {
         super("Add custom metadata item", modules);
-        deprecated = true;
     }
 
 
@@ -38,11 +38,7 @@ public class AddCustomMetadataItem extends Module {
 
     @Override
     public String getDescription() {
-        return "DEPRECATED: Please use \"" + new GlobalVariables(null).getName()
-                + "\" module instead, which allows custom values to be accessed using the V{[NAME]} notation.  Global variables can also be stored as metadata items for the purpose of exporting."
-        
-        + "<br><br>This module allows for a specific metadata item to be used.  An example of this would be to add a label " +
-                "for generic (metadata-based) filename generation in the image loader (i.e. all images to be loaded must have the word \"phase\" in them).";
+        return "This module allows for a specific metadata item to be used.  An example of this would be to add a label for generic (metadata-based) filename generation in the image loader (i.e. all images to be loaded must have the word \"phase\" in them).  Output metadata values can themselves be constructed from existing metadata values, accessed using the M{[NAME]} form (e.g. M{Filename}.";
     }
 
     @Override
@@ -50,7 +46,14 @@ public class AddCustomMetadataItem extends Module {
         String metadataName = parameters.getValue(METADATA_NAME);
         String metadataValue = parameters.getValue(METADATA_VALUE);
 
+        // Applying existing metadata values and calculations
+        metadataValue = workspace.getMetadata().insertMetadataValues(metadataValue);
+        metadataValue = TextType.applyCalculation(metadataValue);
+
         workspace.getMetadata().put(metadataName,metadataValue);
+
+        if (showOutput)
+            workspace.showMetadata();
 
         return Status.PASS;
 

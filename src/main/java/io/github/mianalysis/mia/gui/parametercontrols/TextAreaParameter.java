@@ -7,6 +7,7 @@ import java.awt.GridBagLayout;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 
+import javax.swing.BorderFactory;
 import javax.swing.JComponent;
 import javax.swing.JEditorPane;
 import javax.swing.JPanel;
@@ -70,6 +71,7 @@ public class TextAreaParameter extends ParameterControl implements FocusListener
         objectsScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         objectsScrollPane.getVerticalScrollBar().setUnitIncrement(10);
         objectsScrollPane.getVerticalScrollBar().setValue(0);
+        objectsScrollPane.setViewportBorder(BorderFactory.createEmptyBorder());
         control.add(objectsScrollPane, c);
     }
 

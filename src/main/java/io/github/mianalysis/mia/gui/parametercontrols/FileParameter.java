@@ -11,6 +11,7 @@ import javax.swing.JFileChooser;
 
 import org.apache.commons.io.FilenameUtils;
 
+import ij.Prefs;
 import io.github.mianalysis.mia.gui.GUI;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.core.InputControl;
@@ -60,7 +61,8 @@ public class FileParameter extends ParameterControl implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         GUI.addUndo();
 
-        JFileChooser fileChooser = new JFileChooser();
+        String previousPath = Prefs.get("MIA.PreviousPath", "");
+        JFileChooser fileChooser = new JFileChooser(previousPath);
         fileChooser.setDialogTitle("Select file");
         fileChooser.setMultiSelectionEnabled(false);
 
@@ -89,7 +91,8 @@ public class FileParameter extends ParameterControl implements ActionListener {
             return;
 
         ((FileFolderType) parameter).setPath(fileChooser.getSelectedFile().getAbsolutePath());
-
+        Prefs.set("MIA.PreviousPath", fileChooser.getSelectedFile().getAbsolutePath());
+        
         Module module = parameter.getModule();
         int idx = GUI.getModules().indexOf(module);
         if (idx <= GUI.getLastModuleEval() & !(module instanceof OutputControl))

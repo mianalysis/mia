@@ -1096,7 +1096,9 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
                 seriesNumber = workspace.getMetadata().getSeriesNumber();
                 break;
             case SeriesModes.SPECIFIC_SERIES:
-                seriesNumber = parameters.getValue(SERIES_NUMBER);
+                String seriesNumberText = parameters.getValue(SERIES_NUMBER);
+                Metadata metadata = workspace.getMetadata();
+                seriesNumber = (int) Math.round(Double.parseDouble(metadata.insertMetadataValues(seriesNumberText)));
                 break;
             }
 
@@ -1336,11 +1338,12 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
         parameters.add(new StringP(COMMENT, this));
         parameters.add(new StringP(EXTENSION, this));
         parameters.add(new StringP(GENERIC_FORMAT, this));
-        parameters.add(new MessageP(AVAILABLE_METADATA_FIELDS, this, Colours.DARK_BLUE, 170));
+        parameters.add(new MessageP(AVAILABLE_METADATA_FIELDS, this, Colours.DARK_BLUE, 130));
         parameters.add(new BooleanP(INCLUDE_SERIES_NUMBER, this, true));
         parameters.add(new FilePathP(FILE_PATH, this));
         parameters.add(new ChoiceP(SERIES_MODE, this, SeriesModes.CURRENT_SERIES, SeriesModes.ALL));
-        parameters.add(new IntegerP(SERIES_NUMBER, this, 1));
+        parameters.add(new StringP(SERIES_NUMBER, this, "1"));
+        // parameters.get(SERIES_NUMBER).
 
         parameters.add(new SeparatorP(RANGE_SEPARATOR, this));
         parameters.add(new StringP(CHANNELS, this, "1-end"));

@@ -136,8 +136,9 @@ public class AnalysisRunner {
             return new HashSet<>();
 
         FileCrawler fileCrawler = new FileCrawler(inputFile);
+        fileCrawler.setIgnoreCase(inputControl.getParameterValue(InputControl.IGNORE_CASE));
         inputControl.addFilenameFilters(fileCrawler);
-
+        
         boolean firstPerFolder = inputControl.getParameterValue(InputControl.LOAD_FIRST_PER_FOLDER);
         boolean firstMatchingGroup = inputControl.getParameterValue(InputControl.LOAD_FIRST_MATCHING_GROUP);
         String patternString = inputControl.getParameterValue(InputControl.PATTERN);

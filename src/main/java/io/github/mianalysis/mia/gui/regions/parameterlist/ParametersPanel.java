@@ -44,10 +44,11 @@ public class ParametersPanel extends JScrollPane {
 
     public ParametersPanel() {
         panel = new JPanel();
-        setViewportView(panel);
-
+        setViewportView(panel);        
+        
         // Initialising the scroll panel
         setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
+        setViewportBorder(BorderFactory.createEmptyBorder());
         setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         getVerticalScrollBar().setUnitIncrement(10);

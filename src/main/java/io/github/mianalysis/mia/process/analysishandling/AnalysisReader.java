@@ -1,13 +1,13 @@
 package io.github.mianalysis.mia.process.analysishandling;
 
-import java.awt.FileDialog;
-import java.awt.Frame;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
+import javax.swing.JFileChooser;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -22,6 +22,7 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
+import ij.Prefs;
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.gui.GUI;
 import io.github.mianalysis.mia.module.AvailableModules;
@@ -44,18 +45,23 @@ public class AnalysisReader {
     public static Analysis loadAnalysis()
             throws SAXException, IllegalAccessException, IOException, InstantiationException,
             ParserConfigurationException, ClassNotFoundException, NoSuchMethodException, InvocationTargetException {
-        FileDialog fileDialog = new FileDialog(new Frame(), "Select file to load", FileDialog.LOAD);
-        fileDialog.setMultipleMode(false);
-        fileDialog.setFile("*.mia");
-        fileDialog.setVisible(true);
+        String previousPath = Prefs.get("MIA.PreviousPath", "");
+        JFileChooser fileChooser = new JFileChooser(previousPath);
+        fileChooser.setMultiSelectionEnabled(false);
+        fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+        fileChooser.setFileFilter(new FileNameExtensionFilter("MIA workflow (.mia)", "mia"));
+        fileChooser.showDialog(null, "Load workflow");
 
-        if (fileDialog.getFiles().length == 0)
+        File file = fileChooser.getSelectedFile();
+        if (file == null)
             return null;
 
-        Analysis analysis = loadAnalysis(fileDialog.getFiles()[0]);
-        analysis.setAnalysisFilename(fileDialog.getFiles()[0].getAbsolutePath());
+        Prefs.set("MIA.PreviousPath", file.getAbsolutePath());
+        
+        Analysis analysis = loadAnalysis(file);
+        analysis.setAnalysisFilename(file.getAbsolutePath());
 
-        MIA.log.writeStatus("File loaded (" + FilenameUtils.getName(fileDialog.getFiles()[0].getName()) + ")");
+        MIA.log.writeStatus("File loaded (" + FilenameUtils.getName(file.getName()) + ")");
 
         return analysis;
 
@@ -95,10 +101,10 @@ public class AnalysisReader {
             MIA.log.writeWarning("    Workflow version: " + loadedVersion);
             MIA.log.writeWarning("    Installed version: " + MIA.getVersion());
         }
-        
+
         if (versionNode == null || VersionUtils.compare("0.10.0", loadedVersion) > 0)
             return AnalysisReader_Pre_0p10p0.loadAnalysis(xml);
-        else if (VersionUtils.compare("0.15.0",loadedVersion) > 0)
+        else if (VersionUtils.compare("0.15.0", loadedVersion) > 0)
             return AnalysisReader_0p10p0_0p15p0.loadAnalysis(xml);
 
         Analysis analysis = new Analysis();
@@ -177,7 +183,7 @@ public class AnalysisReader {
         Class<Module> clazz = null;
         try {
             String shortName = availableModuleName.substring(availableModuleName.lastIndexOf(".") + 1);
-            if (!MIA.dependencies.compatible(shortName,false)) {
+            if (!MIA.dependencies.compatible(shortName, false)) {
                 MIA.log.writeWarning("Module \"" + shortName + "\" not available");
                 return null;
             }
@@ -192,25 +198,25 @@ public class AnalysisReader {
         NodeList moduleChildNodes = moduleNode.getChildNodes();
         for (int i = 0; i < moduleChildNodes.getLength(); i++) {
             switch (moduleChildNodes.item(i).getNodeName()) {
-            case "PARAMETERS":
-                populateParameters(moduleChildNodes.item(i), module);
-                break;
+                case "PARAMETERS":
+                    populateParameters(moduleChildNodes.item(i), module);
+                    break;
 
-            case "MEASUREMENTS":
-                populateLegacyMeasurementRefs(moduleChildNodes.item(i), module);
-                break;
+                case "MEASUREMENTS":
+                    populateLegacyMeasurementRefs(moduleChildNodes.item(i), module);
+                    break;
 
-            case "IMAGE_MEASUREMENTS":
-                populateImageMeasurementRefs(moduleChildNodes.item(i), module);
-                break;
+                case "IMAGE_MEASUREMENTS":
+                    populateImageMeasurementRefs(moduleChildNodes.item(i), module);
+                    break;
 
-            case "OBJECT_MEASUREMENTS":
-                populateObjMeasurementRefs(moduleChildNodes.item(i), module);
-                break;
+                case "OBJECT_MEASUREMENTS":
+                    populateObjMeasurementRefs(moduleChildNodes.item(i), module);
+                    break;
 
-            case "METADATA":
-                populateModuleMetadataRefs(moduleChildNodes.item(i), module);
-                break;
+                case "METADATA":
+                    populateModuleMetadataRefs(moduleChildNodes.item(i), module);
+                    break;
             }
         }
 
@@ -272,15 +278,15 @@ public class AnalysisReader {
 
             // Acquiring the relevant reference
             switch (type) {
-            case "IMAGE":
-                ImageMeasurementRef imageMeasurementRef = new ImageMeasurementRef(referenceNode);
-                module.addImageMeasurementRef(imageMeasurementRef);
-                break;
+                case "IMAGE":
+                    ImageMeasurementRef imageMeasurementRef = new ImageMeasurementRef(referenceNode);
+                    module.addImageMeasurementRef(imageMeasurementRef);
+                    break;
 
-            case "OBJECTS":
-                ObjMeasurementRef objMeasurementRef = new ObjMeasurementRef(referenceNode);
-                module.addObjectMeasurementRef(objMeasurementRef);
-                break;
+                case "OBJECTS":
+                    ObjMeasurementRef objMeasurementRef = new ObjMeasurementRef(referenceNode);
+                    module.addObjectMeasurementRef(objMeasurementRef);
+                    break;
             }
         }
     }

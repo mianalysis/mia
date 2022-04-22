@@ -5,6 +5,7 @@ import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 
+import javax.swing.BorderFactory;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -20,8 +21,10 @@ public class MessageArea extends ParameterControl {
         super(parameter);
 
         control = new JPanel();
-
         control.setLayout(new GridBagLayout());
+        control.setBorder(BorderFactory.createEmptyBorder());
+        control.setBackground(null);
+
         GridBagConstraints c = new GridBagConstraints();
         c.weightx = 1;
         c.weighty = 1;
@@ -36,7 +39,7 @@ public class MessageArea extends ParameterControl {
         textArea.setLineWrap(true);
         textArea.setWrapStyleWord(true);
         textArea.setAlignmentX(JComponent.LEFT_ALIGNMENT);
-        textArea.setBorder(null);
+        textArea.setBorder(BorderFactory.createEmptyBorder());
 
         JScrollPane objectsScrollPane = new JScrollPane(textArea);
         objectsScrollPane.setPreferredSize(new Dimension(0,controlHeight));
@@ -44,7 +47,8 @@ public class MessageArea extends ParameterControl {
         objectsScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         objectsScrollPane.getVerticalScrollBar().setUnitIncrement(10);
         objectsScrollPane.getVerticalScrollBar().setValue(0);
-        objectsScrollPane.setBorder(null);
+        objectsScrollPane.setViewportBorder(BorderFactory.createEmptyBorder());
+        objectsScrollPane.setBorder(BorderFactory.createEmptyBorder());
         control.add(objectsScrollPane,c);
 
 

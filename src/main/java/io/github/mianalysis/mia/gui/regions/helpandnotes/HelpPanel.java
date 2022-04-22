@@ -70,15 +70,16 @@ public class HelpPanel extends JPanel {
         // If no Module is selected, also skip
         HelpArea helpArea = new HelpArea(activeModule, modules);
 
-        JScrollPane jsp = new JScrollPane(helpArea);
-        jsp.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-        jsp.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-        jsp.getVerticalScrollBar().setUnitIncrement(10);
-        jsp.setBorder(null);
+        JScrollPane scrollPane = new JScrollPane(helpArea);
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        scrollPane.getVerticalScrollBar().setUnitIncrement(10);
+        scrollPane.setBorder(null);
+        scrollPane.setViewportBorder(BorderFactory.createEmptyBorder());
         c.gridy++;
         c.weighty = 1;
         c.insets = new Insets(5, 5, 5, 5);
-        add(jsp, c);
+        add(scrollPane, c);
 
         revalidate();
         repaint();

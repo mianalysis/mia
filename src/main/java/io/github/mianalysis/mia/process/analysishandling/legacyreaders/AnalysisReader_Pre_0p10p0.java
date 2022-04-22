@@ -1,7 +1,5 @@
 package io.github.mianalysis.mia.process.analysishandling.legacyreaders;
 
-import java.awt.FileDialog;
-import java.awt.Frame;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
@@ -9,6 +7,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.JFileChooser;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -22,6 +22,7 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
+import ij.Prefs;
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.gui.GUI;
 import io.github.mianalysis.mia.module.Module;
@@ -41,8 +42,8 @@ import io.github.mianalysis.mia.object.parameters.InputObjectsP;
 import io.github.mianalysis.mia.object.parameters.MetadataItemP;
 import io.github.mianalysis.mia.object.parameters.ObjectMeasurementP;
 import io.github.mianalysis.mia.object.parameters.OutputImageP;
-import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.ParameterGroup;
+import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.ParentObjectsP;
 import io.github.mianalysis.mia.object.parameters.RemovedImageP;
 import io.github.mianalysis.mia.object.parameters.abstrakt.Parameter;
@@ -65,18 +66,23 @@ public class AnalysisReader_Pre_0p10p0 {
     public static Analysis loadAnalysis()
             throws SAXException, IllegalAccessException, IOException, InstantiationException,
             ParserConfigurationException, ClassNotFoundException, NoSuchMethodException, InvocationTargetException {
-        FileDialog fileDialog = new FileDialog(new Frame(), "Select file to load", FileDialog.LOAD);
-        fileDialog.setMultipleMode(false);
-        fileDialog.setFile("*.mia");
-        fileDialog.setVisible(true);
+        String previousPath = Prefs.get("MIA.PreviousPath", "");
+        JFileChooser fileChooser = new JFileChooser(previousPath);
+        fileChooser.setMultiSelectionEnabled(false);
+        fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+        fileChooser.setFileFilter(new FileNameExtensionFilter("MIA workflow (.mia)", "mia"));
+        fileChooser.showDialog(null, "Load workflow");
 
-        if (fileDialog.getFiles().length == 0)
+        File file = fileChooser.getSelectedFile();
+        if (file == null)
             return null;
 
-        Analysis analysis = loadAnalysis(fileDialog.getFiles()[0]);
-        analysis.setAnalysisFilename(fileDialog.getFiles()[0].getAbsolutePath());
+        Prefs.set("MIA.PreviousPath", file.getAbsolutePath());
+            
+        Analysis analysis = loadAnalysis(file);
+        analysis.setAnalysisFilename(file.getAbsolutePath());
 
-        MIA.log.writeStatus("File loaded (" + FilenameUtils.getName(fileDialog.getFiles()[0].getName()) + ")");
+        MIA.log.writeStatus("File loaded (" + FilenameUtils.getName(file.getName()) + ")");
 
         return analysis;
 
@@ -335,7 +341,7 @@ public class AnalysisReader_Pre_0p10p0 {
                     ((BooleanP) parameters.getParameter(parameterName)).setValueFromString(parameterValue);
                 } else if (parameter instanceof ChoiceP) {
                     parameterValue = MIA.lostAndFound.findParameterValue(module.getClass().getSimpleName(),
-                            parameterName, parameterValue);                            
+                            parameterName, parameterValue);
                     ((ChoiceP) parameters.getParameter(parameterName)).setChoice(parameterValue);
                 } else if (parameter instanceof ChildObjectsP) {
                     parameterValue = MIA.lostAndFound.findParameterValue(module.getClass().getSimpleName(),

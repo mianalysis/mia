@@ -82,6 +82,7 @@ public class InputControl extends Module {
     public static final String TEMPORAL_UNIT = "Temporal unit";
 
     public static final String FILTER_SEPARATOR = "File/folder filters";
+    public static final String IGNORE_CASE = "Ignore case";
     public static final String ADD_FILTER = "Add filter";
     public static final String FILTER_SOURCE = "Filter source";
     public static final String FILTER_VALUE = "Filter value";
@@ -145,7 +146,7 @@ public class InputControl extends Module {
         return new File((String) parameters.getValue(INPUT_PATH));
     }
 
-    public void addFilenameFilters(FileCrawler fileCrawler) {
+    public void addFilenameFilters(FileCrawler fileCrawler) {        
         // Getting filters
         LinkedHashMap<Integer, Parameters> collections = parameters.getValue(ADD_FILTER);
 
@@ -271,12 +272,13 @@ public class InputControl extends Module {
             }
         }
 
+        boolean ignoreCase = parameters.getValue(IGNORE_CASE);
         for (int seriesNumber = 0; seriesNumber < reader.getSeriesCount(); seriesNumber++) {
             String name = meta.getImageName(seriesNumber);
 
             boolean pass = true;
             for (FileCondition filter : filters) {
-                if (name != null & !filter.test(new File(name))) {
+                if (name != null & !filter.test(new File(name),ignoreCase)) {
                     pass = false;
                     break;
                 }
@@ -390,6 +392,7 @@ public class InputControl extends Module {
                 .add(new ChoiceP(TEMPORAL_UNIT, this, AvailableTemporalUnits.MILLISECOND, AvailableTemporalUnits.ALL));
 
         parameters.add(new SeparatorP(FILTER_SEPARATOR, this));
+        parameters.add(new BooleanP(IGNORE_CASE, this, false));
         Parameters collection = new Parameters();
         collection.add(new ChoiceP(FILTER_SOURCE, this, FilterSources.EXTENSION, FilterSources.ALL));
         collection.add(new StringP(FILTER_VALUE, this));
@@ -435,6 +438,7 @@ public class InputControl extends Module {
         returnedParameters.add(parameters.getParameter(TEMPORAL_UNIT));
 
         returnedParameters.add(parameters.getParameter(FILTER_SEPARATOR));
+        returnedParameters.add(parameters.getParameter(IGNORE_CASE));
         returnedParameters.add(parameters.getParameter(ADD_FILTER));
 
         returnedParameters.add(parameters.getParameter(EXECUTION_SEPARATOR));
