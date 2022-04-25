@@ -9,20 +9,20 @@
     <div class="mia-text-block mx-auto">
         <p class="mia-heading">Introduction</p>
         <div class="mia-main-text">
-            Workflows can be created and edited from <a href="${GUIDE_EDITINGVIEW}">"editing view"</a>. Modules are
+            Workflows can be created and edited from <a href="${PATH_EDITINGVIEW}">"editing view"</a>. Modules are
             assembled into a linear sequence that forms the workflow. Each module has its own independent set of
             parameters which can be configured by selecting that module from the workflow list. Images and objects
             created by modules are available to subsequent modules in the workflow, as are other items such as
             measurements, metadata and object relationships. 
             <!-- To learn more about the fundamental structure of MIA,
-            please see the <a href="${GUIDE_MIASTRUCTURE}">"MIA structure"</a> guide.-->
+            please see the <a href="${PATH_MIASTRUCTURE}">"MIA structure"</a> guide.-->
             <br /><br />
             In this guide we will cover adding modules, setting the input file, configuring modules, configuring output
-            Excel formats and setting parameters to be visible in <a href="${GUIDE_PROCESSINGVIEW}">"processing
+            Excel formats and setting parameters to be visible in <a href="${PATH_PROCESSINGVIEW}">"processing
                 view"</a>.
             <br /><br />
             If you haven't already done so, at this point it's also worth looking at the <a
-                href="${GUIDE_EXAMPLEWORKFLOWS}">example workflows</a>. These workflows include key modules used in the
+                href="${PATH_EXAMPLEWORKFLOWS}">example workflows</a>. These workflows include key modules used in the
             majority of analyses, each of which has accompanying notes, explaining its configuration.
         </div>
     </div>
@@ -31,12 +31,12 @@
         <p class="mia-heading">Accessing editing view</p>
         <div class="mia-main-text text-left">
             <ol>
-                <li>By default, MIA will open in <a href="${GUIDE_PROCESSINGVIEW}">"processing view"</a>. To switch to
+                <li>By default, MIA will open in <a href="${PATH_PROCESSINGVIEW}">"processing view"</a>. To switch to
                     editing
                     view, select "View > Switch to editing view" from the MIA menu.
                     <ul>
                         <li>The layout of editing view is covered in the
-                            <a href="${GUIDE_EDITINGVIEW}">"editing view"</a> guide.
+                            <a href="${PATH_EDITINGVIEW}">"editing view"</a> guide.
                         </li>
                     </ul>
                 </li>
@@ -60,7 +60,7 @@
                         <li>Modules are grouped into general categories and sub-categories.</li>
                         <li>To view a description of each module, hover the mouse over its name.</li>
                         <li>Full documentation of each module can be found in the <a
-                                href="${GUIDE_MODULE_LIST}">"Modules"</a> pages.</li>
+                                href="${PATH_MODULE_LIST}">"Modules"</a> pages.</li>
                     </ul>
                 </li>
                 <li>Click a module to add it to current workflow.
@@ -101,18 +101,18 @@
         <div class="mia-main-text text-left">
             <ol>
                 <li>Files or folders being processed are specified in the always-present <a
-                        href="${GUIDE_MODULE_INPUTCONTROL}">"Input control"</a> module, which can be found above the
+                        href="${PATH_MODULE_INPUTCONTROL}">"Input control"</a> module, which can be found above the
                     current workflow.</li>
                 <li>The "Input path" parameter specifies either a file or folder that the analysis will be run on.
                     <ul>
                         <li>The selected file only acts to provide a root path from which the analysis runs. The image
                             at this location isn't automatically loaded into the MIA workspace, instead this is done by
                             a variety of image loading modules (see <a
-                                href="${GUIDE_MODULE_INPUTOUTPUT}">"Input/output"</a> modules).</li>
+                                href="${PATH_MODULE_INPUTOUTPUT}">"Input/output"</a> modules).</li>
                         <li>This fine-grain control over image loading allows us to load sub-sets of image stacks (e.g.
                             a single channel) and gives greater control of the images stored in memory at any given
                             time.</li>
-                        <li>A copy of the <a href="${GUIDE_MODULE_LOADIMAGE}">"Load image"</a> module is automatically
+                        <li>A copy of the <a href="${PATH_MODULE_LOADIMAGE}">"Load image"</a> module is automatically
                             included with all new workflows.</li>
                     </ul>
                 </li>
@@ -120,7 +120,7 @@
                     <ul>
                         <li>In this "batch" mode, only files matching specified filters will be processed.</li>
                         <!--<li>More information about batch processing can be found in the <a
-                                href="${GUIDE_BATCHPROCESSING}">"Batch processing"</a> guide.</li>-->
+                                href="${PATH_BATCHPROCESSING}">"Batch processing"</a> guide.</li>-->
                     </ul>
                 </li>
             </ol>
@@ -148,7 +148,7 @@
                             only show objects detected by preceding modules, but not those from subsequent modules.</li>
                     </ul>
                 </li>
-                <li>Specific parameters can be added to <a href="${GUIDE_PROCESSINGVIEW}">"processing view"</a> by
+                <li>Specific parameters can be added to <a href="${PATH_PROCESSINGVIEW}">"processing view"</a> by
                     toggling the visibility button to the right of the parameter.<ul>
                         <li>The <img src="${PTR}/img/icons/eyeopen_black_12px.png" /> icons indicates a visible
                             (editable)
@@ -181,7 +181,7 @@
         <div class="mia-main-text text-left">
             <ol>
                 <li>The generated results spreadsheet can be configured in the always-present <a
-                        href="${GUIDE_MODULE_OUTPUTCONTROL}">"Output control"</a> module, which can be found above the
+                        href="${PATH_MODULE_OUTPUTCONTROL}">"Output control"</a> module, which can be found above the
                     current workflow.
                     <ul>
                         <li>Results spreadsheets will typically be stored in the same folder as the selected input file
@@ -220,7 +220,7 @@
     <div class="mia-text-block mx-auto">
         <p class="mia-heading">Navigation</p>
         <div class="mia-main-text">
-            Previous: <a href="${GUIDE_EDITINGVIEW}">Editing view</a>
+            Previous: <a href="${PATH_EDITINGVIEW}">Editing view</a>
         </div>
     </div>
 </body>

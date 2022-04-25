@@ -19,13 +19,14 @@ import org.xml.sax.SAXException;
 
 public class GuideGenerator extends AbstractGenerator {
     private boolean verbose = true;
-    private GuidePaths guidePaths = new GuidePaths();
+    private SitePaths sitePaths = new SitePaths();
 
     @Override
     public void generate() throws IOException {
         String path = GuideGenerator.class.getResource("/guides").getPath();
         path = path.replace("%20", " ");
         File guideRoot = new File(path);
+        
         generateGuideListPages(guideRoot);
 
     }
@@ -43,7 +44,7 @@ public class GuideGenerator extends AbstractGenerator {
         page = setNavbarActive(page, Page.GUIDES);
 
         // Getting file metadata
-        File metaFile = new File(file.getPath() + "\\_" + file.getName() + ".html");
+        File metaFile = new File(file.getPath() + "/_" + file.getName() + ".html");
         HashMap<String, String> metadata = getMetadata(metaFile);
         String title = metadata.get("title");
         title = title == null ? "" : title;
@@ -65,7 +66,7 @@ public class GuideGenerator extends AbstractGenerator {
             if (childCategory.isFile())
                 continue;
 
-            File childMetaFile = new File(childCategory.getPath() + "\\_" + childCategory.getName() + ".html");
+            File childMetaFile = new File(childCategory.getPath() + "/_" + childCategory.getName() + ".html");
             HashMap<String, String> childMetadata = getMetadata(childMetaFile);
             String cardContent = getPageTemplate("src/main/resources/templatehtml/categorycardtemplate.html",
                     pathToRoot);
@@ -144,14 +145,14 @@ public class GuideGenerator extends AbstractGenerator {
         guideDescription = guideDescription == null ? "" : guideDescription;
 
         String mainContent = getPageTemplate("src/main/resources/templatehtml/guidetemplate.html", pathToRoot);
-        mainContent = mainContent.replace("${GUIDE_PATH}", appendPath(guide.getParentFile(), pathToRoot));
-        mainContent = mainContent.replace("${GUIDE_NAME}", guideTitle);
-        mainContent = mainContent.replace("${GUIDE_DESCRIPTION}", guideDescription);
-        mainContent = mainContent.replace("${GUIDE_CONTENT}", guideContent);
+        mainContent = mainContent.replace("${PATH_PATH}", appendPath(guide.getParentFile(), pathToRoot));
+        mainContent = mainContent.replace("${PATH_NAME}", guideTitle);
+        mainContent = mainContent.replace("${PATH_DESCRIPTION}", guideDescription);
+        mainContent = mainContent.replace("${PATH_CONTENT}", guideContent);
 
         // Add module information to page
         page = page.replace("${MAIN_CONTENT}", mainContent);
-        page = guidePaths.replacePaths(page);
+        page = sitePaths.replacePaths(page);
         page = insertPathToRoot(page, pathToRoot);
 
         FileWriter writer = new FileWriter(path + guidePath + ".html");
@@ -221,7 +222,7 @@ public class GuideGenerator extends AbstractGenerator {
     }
 
     String appendPath(File file, String pathToRoot) {
-        File metaFile = new File(file.getPath() + "\\_" + file.getName() + ".html");
+        File metaFile = new File(file.getPath() + "/_" + file.getName() + ".html");
         HashMap<String, String> metadata = getMetadata(metaFile);
         String guidePath = pathToRoot + "/html" + getPath(file) + "/" + getSaveName(file) + ".html";
         String categoryContent = "<a href=\"" + guidePath + "\">" + metadata.get("title") + "</a>";

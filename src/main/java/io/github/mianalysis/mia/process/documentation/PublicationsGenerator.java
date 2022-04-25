@@ -22,10 +22,25 @@ public class PublicationsGenerator extends AbstractGenerator {
 
         String mainContent = getPageTemplate("src/main/resources/templatehtml/publicationstemplate.html", pathToRoot);
 
-        String publicationsContent = new String(
-                Files.readAllBytes(Paths.get("src/main/resources/templatemd/publicationsshort.md")));
-        publicationsContent = renderer.render(parser.parse(publicationsContent));
-        mainContent = mainContent.replace("${PUBLICATIONS}", publicationsContent);
+        String content = new String(Files.readAllBytes(Paths.get("src/main/resources/templatemd/publications2022.md")));
+        content = renderer.render(parser.parse(content));
+        mainContent = mainContent.replace("${PUBLICATIONS_2022}", content);
+
+        content = new String(Files.readAllBytes(Paths.get("src/main/resources/templatemd/publications2021.md")));
+        content = renderer.render(parser.parse(content));
+        mainContent = mainContent.replace("${PUBLICATIONS_2021}", content);
+
+        content = new String(Files.readAllBytes(Paths.get("src/main/resources/templatemd/publications2020.md")));
+        content = renderer.render(parser.parse(content));
+        mainContent = mainContent.replace("${PUBLICATIONS_2020}", content);
+
+        content = new String(Files.readAllBytes(Paths.get("src/main/resources/templatemd/publications2019.md")));
+        content = renderer.render(parser.parse(content));
+        mainContent = mainContent.replace("${PUBLICATIONS_2019}", content);
+
+        content = new String(Files.readAllBytes(Paths.get("src/main/resources/templatemd/publications2018.md")));
+        content = renderer.render(parser.parse(content));
+        mainContent = mainContent.replace("${PUBLICATIONS_2018}", content);
 
         page = page.replace("${MAIN_CONTENT}", mainContent);
 

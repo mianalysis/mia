@@ -9,6 +9,7 @@ import org.commonmark.parser.Parser;
 import org.commonmark.renderer.html.HtmlRenderer;
 
 public class AboutGenerator extends AbstractGenerator {
+    private SitePaths sitePaths = new SitePaths();
 
     @Override
     public void generate() throws IOException {
