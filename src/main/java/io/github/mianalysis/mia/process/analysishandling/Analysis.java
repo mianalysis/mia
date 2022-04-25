@@ -40,8 +40,6 @@ public class Analysis {
     /*
      * The method that gets called by the AnalysisRunner. This shouldn't have any
      * user interaction elements
-     * 
-     * @param workspace Workspace containing stores for images and objects
      */
     public boolean execute(Workspace workspace) {
         MIA.log.writeDebug("Processing file \"" + workspace.getMetadata().getFile().getAbsolutePath() + "\"");

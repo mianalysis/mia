@@ -61,28 +61,11 @@ public class TextToolkit {
     
     // NOTE: the code in the writeFromTop(), writeFromLeft() and writeFromRight()
     //  methods are essentially duplicated for performance reasons.
-    
-    /**
-     *
-     * @param graphic
-     * @param font
-     * @param color
-     * @param text
-     * @param textbounds
-     */    
+     
     static public void writeFromTop(Graphics2D graphic, Font font, Color color, String text, Rectangle textbounds) {
         writeFromTop(graphic, font, color, text, textbounds, textbounds.height);
     }
-    
-    /**
-     *
-     * @param graphic
-     * @param font
-     * @param color
-     * @param text
-     * @param textbounds
-     * @param height
-     */    
+     
     static public void writeFromTop(Graphics2D graphic, Font font, Color color, String text, Rectangle textbounds, int height) {
         
         // Get the metrics for the current font
@@ -173,14 +156,6 @@ public class TextToolkit {
         }
     }
     
-    /**
-     *
-     * @param graphic
-     * @param font
-     * @param color
-     * @param text
-     * @param textbounds
-     */    
     static public void writeFromLeft(Graphics2D graphic, Font font, Color color, String text, Rectangle textbounds) {
         
         // Get the metrics for the current font
@@ -227,14 +202,6 @@ public class TextToolkit {
         }
     }
     
-    /**
-     *
-     * @param graphic
-     * @param font
-     * @param color
-     * @param text
-     * @param textbounds
-     */    
     static public void writeFromRight(Graphics2D graphic, Font font, Color color, String text, Rectangle textbounds) {
         
         // Get the metrics for the current font
@@ -285,26 +252,12 @@ public class TextToolkit {
     /* ********************************************************* */
     // Private Methods
     
-    /**
-     *
-     * @param string
-     * @param metrics
-     * @param maxwidth
-     */    
     static private void getSinglelineOfText(String string, FontMetrics metrics, int maxwidth) {
         String iftoolong      = TERMINATE_IFMAXLEN_WITH;
         int    iftoolongwidth = metrics.stringWidth(iftoolong);
         printLine(0, string, metrics, 0, maxwidth, true, iftoolong, iftoolongwidth);
     }
     
-    /**
-     *
-     * @param string
-     * @param metrics
-     * @param maxnumberoflines
-     * @param maxwidth
-     * @return
-     */    
     static private int getMultilineOfText(String string, FontMetrics metrics, int maxnumberoflines, int maxwidth) {
         
         int currindex = 0;
@@ -339,18 +292,6 @@ public class TextToolkit {
         
     }
     
-    /**
-     *
-     * @param currline
-     * @param string
-     * @param metrics
-     * @param currindex
-     * @param maxwidth
-     * @param islastline
-     * @param iftoolong
-     * @param iftoolongwidth
-     * @return
-     */    
     static private int printLine(int currline, String string, FontMetrics metrics, int currindex, int maxwidth, boolean islastline, String iftoolong, int iftoolongwidth) {
         
         // Get the index of the beginning of the line

@@ -91,6 +91,7 @@ public class GUIAnalysisHandler {
     }
 
     public static void runAnalysis() {
+        MIA.log.writeStatus("Running");
         Thread t = new Thread(() -> {
             try {
                 GUI.getAnalysisRunner().run(GUI.getAnalysis());

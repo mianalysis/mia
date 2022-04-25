@@ -9,6 +9,7 @@ import org.commonmark.parser.Parser;
 import org.commonmark.renderer.html.HtmlRenderer;
 
 public class AboutGenerator extends AbstractGenerator {
+    private SitePaths sitePaths = new SitePaths();
 
     @Override
     public void generate() throws IOException {
@@ -38,6 +39,10 @@ public class AboutGenerator extends AbstractGenerator {
         aboutContent = new String(Files.readAllBytes(Paths.get("src/main/resources/templatemd/citing.md")));
         aboutContent = renderer.render(parser.parse(aboutContent));
         mainContent = mainContent.replace("${ABOUT_CITING}", aboutContent);
+
+        aboutContent = new String(Files.readAllBytes(Paths.get("src/main/resources/templatemd/publicationsshort.md")));
+        aboutContent = renderer.render(parser.parse(aboutContent));
+        mainContent = mainContent.replace("${ABOUT_PUBLICATIONS}", aboutContent);
 
         aboutContent = new String(Files.readAllBytes(Paths.get("src/main/resources/templatemd/note.md")));
         aboutContent = renderer.render(parser.parse(aboutContent));

@@ -6,7 +6,7 @@ import java.nio.file.Paths;
 
 public abstract class AbstractGenerator {
     protected enum Page {
-        HOME, GUIDES, MODULES, ABOUT;
+        HOME, GUIDES, MODULES, PUBLICATIONS, ABOUT;
     }
 
     public abstract void generate() throws IOException;

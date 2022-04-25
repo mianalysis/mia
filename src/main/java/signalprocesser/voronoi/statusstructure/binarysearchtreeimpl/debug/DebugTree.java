@@ -160,9 +160,6 @@ public class DebugTree extends javax.swing.JDialog {
         //System.exit(0);
     }//GEN-LAST:event_formWindowClosed
     
-    /**
-     * @param args the command line arguments
-     */
     public static void main(String args[]) {
         DebugTree app = new DebugTree(new javax.swing.JFrame());
         app.setVisible(true);

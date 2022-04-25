@@ -31,7 +31,7 @@ import net.imagej.ImageJService;
 /**
  * Created by Stephen Cross on 14/07/2017.
  */
-@Plugin(type = Command.class, menuPath = "Plugins>MIA>MIA (Modular Image Analysis)", visible=true)
+@Plugin(type = Command.class, menuPath = "Plugins>ModularImageAnalysis (MIA)", visible=true)
 public class MIA implements Command {
     private static String version = "";
     private static boolean debug = false;
@@ -72,10 +72,10 @@ public class MIA implements Command {
     }
 
     @Override
-    public void run() {      
+    public void run() {
         try {
             preferences = new Preferences(null);
-            preferences.setTheme();           
+            preferences.setTheme();
             //preferences.setTheme(preferences.getParameterValue(Preferences.THEME));
 
             if (!headless) {
@@ -99,7 +99,7 @@ public class MIA implements Command {
         // Determining the version number from the pom file
         try {
             FileReader reader = new FileReader("pom.xml");
-            Model model = new MavenXpp3Reader().read(reader);            
+            Model model = new MavenXpp3Reader().read(reader);
             reader.close();
             version = model.getVersion();
         } catch (XmlPullParserException | IOException e) {
@@ -109,7 +109,7 @@ public class MIA implements Command {
         // Run the dependency validator.  If updates were required, return.
         if (DependencyValidator.run())
             return;
-                
+
         try {
             new GUI();
         } catch (Exception e) {

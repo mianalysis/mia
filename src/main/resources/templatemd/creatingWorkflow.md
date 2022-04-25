@@ -1,4 +1,4 @@
-- In Fiji, run the plugin from Plugins > MIA > MIA (Modular Image Analysis)
+- In Fiji, run the plugin from Plugins > ModularImageAnalysis (MIA)
 > - Select View > "Switch to editing view" from the menu bar
 > - Modules are added and removed from the workflow using the "+" and "-" buttons
 > - Module order can be shifted with the arrow buttons

@@ -153,14 +153,6 @@ public class Stack_Focuser_ implements PlugInFilter
     private static final int redMask = 0xff0000, greenMask = 0x00ff00, blueMask = 0x0000ff;
     private static final int redShift = 16, greenShift = 8, blueShift = 0;
 
-    /*
-     * Setup routine. Checks for any initialization parameters.
-     * @param arg Initialization string. either empty or should contain parameter values in
-     * the form "name=value" space-separated list. Avaliable parameters are "ksize" -- kernel size,
-     * positive odd integer; "hmap" -- whether to create a height map, "true/false"; "rgbone" --
-     * whether R, G, and B come from same objects/structures, "true/false".
-     * @param imp image stack to work on.
-     */
     public int setup(String arg, ImagePlus imp) {
         k_size = 11;
         if (arg.equalsIgnoreCase("about")) {
@@ -709,12 +701,6 @@ public class Stack_Focuser_ implements PlugInFilter
         return float_array;
     }
 
-    /**
-     *
-     * @param source_ip Source ImageProcessor
-     * @param dest_ip Destination ImageProcessor
-     * @param kern_size odd number for kernel size
-     */
     private void maxFilter(ImageProcessor source_ip, ImageProcessor dest_ip, int kern_size)
     {
         // float[] dest_pixels = (float[]) dest_ip.getPixels();

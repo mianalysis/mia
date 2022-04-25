@@ -389,8 +389,6 @@ public class Objs extends LinkedHashMap<Integer, Obj> {
 
     /**
      * Displays measurement values from a specific Module
-     * 
-     * @param module
      */
     public void showMeasurements(Module module, Modules modules) {
         // Getting MeasurementReferences
@@ -569,3 +567,10 @@ public class Objs extends LinkedHashMap<Integer, Obj> {
         this.nFrames = nFrames;
     }
 }
+
+// clear all
+// print'HelloWorld'
+// if{
+//         'theSkyIsGreen'
+//              getMeasurements
+// }

@@ -208,7 +208,6 @@ public class RelateOneToOne extends Module {
                         // Calculated using the raw pixel overlap to prevent small objects being
                         // weighted too highly
                         linkables.add(new Linkable(1 / overlap, object1.getID(), object2.getID()));
-                        MIA.log.writeDebug(1/overlap);
                     }
                 }
             }
