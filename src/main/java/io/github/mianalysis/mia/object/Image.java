@@ -243,11 +243,6 @@ public class Image {
         showImage(name, null);
     }
 
-    /**
-     * Displays measurement values from a specific Module
-     *
-     * @param module
-     */
     public void showMeasurements(Module module) {
         // Getting MeasurementReferences
         ImageMeasurementRefs measRefs = module.updateAndGetImageMeasurementRefs();

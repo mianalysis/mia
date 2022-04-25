@@ -1,4 +1,4 @@
-- In Fiji, run the plugin from Plugins > MIA > MIA (Modular Image Analysis)
+- In Fiji, run the plugin from Plugins > ModularImageAnalysis (MIA)
 - To run an existing analysis workflow
 > - Click "Load" and select the .mia workflow file
 > - Depending on workflow configuration, a number of controls may be visible

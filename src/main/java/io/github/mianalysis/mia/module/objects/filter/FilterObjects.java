@@ -846,8 +846,6 @@ public class MeasRef {
 
         /*
          * Constructing a fixed- or image-value type
-         * 
-         * @param value
          */
         public MeasRef(String referenceType, double value, double referenceMultiplier) {
             this.referenceType = referenceType;

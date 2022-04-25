@@ -5,7 +5,7 @@
   <!-- Required meta tags -->
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <title>MIA (Modular Image Analysis)</title>
+  <title>ModularImageAnalysis (MIA)</title>
   <link rel="shortcut icon" href="../../../img/logos/logo_square_partclip_192.png" type="image/x-icon" />
 
   <!-- CSS -->
@@ -34,7 +34,7 @@
           MIA
         </a>
         <a class="navbar-brand mia-name mia-desktop" href="../../../index.html" style="float:right; padding-top: 6px;">
-          Modular Image Analysis
+          ModularImageAnalysis (MIA)
         </a>
       </div>
       <buton class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive"
@@ -52,6 +52,9 @@
           <li class="nav-item active">
             <a class="nav-link" href="../../../html/modules/modules.html">Modules</a>
           </li>
+          <li class="nav-item ${ACTIVE_PUBLICATIONS}">
+            <a class="nav-link" href="../../../html/publications.html">Publications</a>
+          </li>
           <li class="nav-item ">
             <a class="nav-link" href="../../../html/about.html">About</a>
           </li>
@@ -67,12 +70,12 @@
   <div class="page-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
     <p class="mia-main-text"><a href="../../../html/modules/modules.html">Modules</a> > <a href="../../../html/modules/system/system.html">System</a></p>
     <p class="mia-title">Add custom metadata item</p>
-    <p class="mia-main-text-large">DEPRECATED: Please use "Global variables" module instead, which allows custom values to be accessed using the V{[NAME]} notation.</p>
+    <p class="mia-main-text-large">This module allows for a specific metadata item to be used.</p>
 </div>
 
 <div class="mia-text-block mx-auto mia-page">
     <p class="text-center mia-heading">Description</p>
-    <p class="text-center mia-main-text">DEPRECATED: Please use "Global variables" module instead, which allows custom values to be accessed using the V{[NAME]} notation.  Global variables can also be stored as metadata items for the purpose of exporting.<br><br>This module allows for a specific metadata item to be used.  An example of this would be to add a label for generic (metadata-based) filename generation in the image loader (i.e. all images to be loaded must have the word "phase" in them).</p>
+    <p class="text-center mia-main-text">This module allows for a specific metadata item to be used.  An example of this would be to add a label for generic (metadata-based) filename generation in the image loader (i.e. all images to be loaded must have the word "phase" in them).  Output metadata values can themselves be constructed from existing metadata values, accessed using the M{[NAME]} form (e.g. M{Filename}.</p>
 </div>
 
 <div class="mia-text-block mx-auto mia-page">

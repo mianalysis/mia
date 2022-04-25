@@ -32,13 +32,6 @@ public class Tracks3D {
         return null;
     }
 
-    /**
-     * This method loads the track objects, using the second ID column as the Track ID
-     * @param dppXY
-     * @param dppZ
-     * @param calibratedUnits
-     * @return
-     */
     public Objs getObjects(VolumeType volumeType, String tracksName, String spotsName, double dppXY, double dppZ, String calibratedUnits) throws IntegerOverflowException {
         SpatCal calibration = new SpatCal(dppXY,dppZ,calibratedUnits,127,90,13);
 
@@ -86,13 +79,6 @@ public class Tracks3D {
         return getTracks("/coordinates/Tracks3DSubtracted.csv",zScaling);
     }
 
-    /**
-     *
-     * @param path
-     * @param zScaling All Z-coordinates will be multiplied by this value to convert them from the slice coordinates (as
-     *                 stored in the .csv file) to true pixel coordinates.
-     * @return
-     */
     private TreeMap<Integer,Track> getTracks(String path, double zScaling) {
         try {
             String pathToCoordinates = URLDecoder.decode(ExpectedObjects.class.getResource(path).getPath(),"UTF-8");
