@@ -5,7 +5,8 @@ import java.awt.Font;
 import java.awt.Insets;
 import java.awt.Toolkit;
 import java.io.IOException;
-import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
@@ -13,26 +14,27 @@ import javax.swing.JEditorPane;
 import javax.swing.JFrame;
 import javax.swing.JScrollPane;
 
-import com.google.common.base.Charsets;
-import com.google.common.io.Resources;
-
-import org.commonmark.parser.Parser;
-import org.commonmark.renderer.html.HtmlRenderer;
-
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.gui.HyperlinkOpener;
+import io.github.mianalysis.mia.process.documentation.DocumentationGenerator;
 
 public class DocumentationPanel {
     public static void showAbout() {
-        String aboutText = generateAboutGUI();
-        showDocumentation(aboutText);
-
+        try {
+            String aboutText = new String(Files.readAllBytes(Paths.get(DocumentationGenerator.ABOUT_PATH)));
+            showDocumentation(aboutText);
+        } catch (IOException e) {
+            MIA.log.writeError(e);
+        }
     }
 
     public static void showGettingStarted() {
-        String gettingStartedText = generateGettingStartedGUI();
-        showDocumentation(gettingStartedText);
-
+        try {
+            String gettingStartedText = new String(Files.readAllBytes(Paths.get(DocumentationGenerator.GETTING_STARTED_PATH)));
+            showDocumentation(gettingStartedText);
+        } catch (IOException e) {
+            MIA.log.writeError(e);
+        }
     }
 
     public static void showPony() {
@@ -78,101 +80,6 @@ public class DocumentationPanel {
         frame.setVisible(true);
 
         return frame;
-
-    }
-    
-    public static String generateAboutGUI() {
-        Parser parser = Parser.builder().build();
-        HtmlRenderer renderer = HtmlRenderer.builder().build();
-        StringBuilder sb = new StringBuilder();
-
-        // The following is required to get the version number and release date from the
-        // pom.xml
-        String version = "";
-        // try {
-        //     FileReader reader = new FileReader("pom.xml");
-        //     Model model = new MavenXpp3Reader().read(reader);
-        //     reader.close();
-        //     version = new MavenProject(model).getVersion();
-        // } catch (XmlPullParserException | IOException e) {
-            version = MIA.class.getPackage().getImplementationVersion();
-        // }
-
-        try {
-            sb.append("<html><body><div align=\"justify\">");
-
-            sb.append("<img src=\"");
-            sb.append(MIA.class.getResource("/images/Logo_text_UoB_64.png").toString());
-            sb.append("\" align=\"middle\">");
-            sb.append("<br><br>");
-
-            URL url = Resources.getResource("templatemd/introduction.md");
-            String string = Resources.toString(url, Charsets.UTF_8);
-            if (version != null)
-                string = string.replace("${version}", version);
-            sb.append(renderer.render(parser.parse(string)));
-            sb.append("<br><br>");
-
-            url = Resources.getResource("templatemd/acknowledgements.md");
-            string = Resources.toString(url, Charsets.UTF_8);
-            sb.append(renderer.render(parser.parse(string)));
-            sb.append("<br><br>");
-
-            url = Resources.getResource("templatemd/citing.md");
-            string = Resources.toString(url, Charsets.UTF_8);
-            sb.append(renderer.render(parser.parse(string)));
-            sb.append("<br><br>");
-
-            url = Resources.getResource("templatemd/note.md");
-            string = Resources.toString(url, Charsets.UTF_8);
-            sb.append(renderer.render(parser.parse(string)));
-            sb.append("<br><br>");
-
-            sb.append("</div></body></html>");
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return sb.toString();
-
-    }
-
-    public static String generateGettingStartedGUI() {
-        Parser parser = Parser.builder().build();
-        HtmlRenderer renderer = HtmlRenderer.builder().build();
-        StringBuilder sb = new StringBuilder();
-
-        try {
-            sb.append("<html><body><div align=\"justify\">");
-
-            sb.append("<img src=\"");
-            sb.append(MIA.class.getResource("/images/Logo_text_UoB_64.png").toString());
-            sb.append("\" align=\"middle\">");
-            sb.append("<br><br>");
-
-            URL url = Resources.getResource("templatemd/installation.md");
-            String string = Resources.toString(url, Charsets.UTF_8);
-            sb.append(renderer.render(parser.parse(string)));
-            sb.append("<br><br>");
-
-            url = Resources.getResource("templatemd/creatingWorkflow.md");
-            string = Resources.toString(url, Charsets.UTF_8);
-            sb.append(renderer.render(parser.parse(string)));
-            sb.append("<br><br>");
-
-            url = Resources.getResource("templatemd/usingExistingWorkflow.md");
-            string = Resources.toString(url, Charsets.UTF_8);
-            sb.append(renderer.render(parser.parse(string)));
-            sb.append("<br><br>");
-
-            sb.append("</div></body></html>");
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return sb.toString();
 
     }
 }

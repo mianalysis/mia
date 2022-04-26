@@ -16,6 +16,11 @@ public class RidgeDetectionDependency extends Dependency {
     }
 
     @Override
+    public String getMessage() {
+        return "Please update Ridge Detection plugin";
+    }
+
+    @Override
     public String getVersionThreshold() {
         return "1.0.0";
     }
