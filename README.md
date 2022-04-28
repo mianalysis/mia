@@ -8,44 +8,40 @@
 
 About MIA
 ------------
-Image and object analysis workflow automation plugin for Fiji
+ModularImageAnalysis (MIA) is a Fiji plugin which provides a modular framework for assembling image and object analysis workflows. Detected objects can be transformed, filtered, measured and related. Analysis workflows are batch-enabled by default, allowing easy processing of high-content datasets.
 
 For the full documentation, please go to [mianalysis.github.io](https://mianalysis.github.io)
 
 
 Installation
 ------------
-- The latest version of the plugin can be downloaded from the [Releases](https://github.com/mianalysis/mia/releases) page.
-- Place this .jar file into the /plugins directory of the your Fiji installation.
-- MIA requires the "Biomedgroup" and "MorphoLibJ" plugins to be installed.
-> - For MIA versions before 0.11.0: Launch Fiji's [Updater](https://imagej.net/Updater) tool and add the "Biomedgroup" and "IJPB-plugins" (possibly listed as "MorphoLibJ") update sites, then restart Fiji.
-> - For MIA versions 0.11.0 or newer: Start MIA as usual, then click "Yes" when prompted to automatically download the updates.
+### Via the update site
+The latest version of MIA can be installed directly into Fiji via an update site.
+1. Launch the Fiji [Updater](https://imagej.net/Updater) from Help > Update...
+2. Click "Manage update sites" and in the window that opens, click "Add update site" 
+3. In the blank row that appears, enter the following:
+    - Name: ModularImageAnalysis
+    - URL: https:/[]()/sites.imagej.net/ModularImageAnalysis
+4. Close the "Manage update sites" window, then click "Apply changes"
 
-Create new workflow
-------------
-- In Fiji, run the plugin from Plugins > ModularImageAnalysis (MIA)
-> - Select View > "Switch to editing view" from the menu bar
-> - Modules are added and removed from the workflow using the "+" and "-" buttons
-> - Module order can be shifted with the arrow buttons
-> - Selecting a module will display its relevant parameters in the right panel
-> - Checkboxes to the right of each module determine if they are visible in the processing view (default view)
-> - Input files and folders are specified using the "Input control" and Excel file export is configured in the "Output control"
+### Manually from GitHub
+Specific versions of MIA can be downloaded from GitHub and installed into Fiji manually.
 
-Use existing workflow
+Note: If installing MIA manually, the ModularImageAnalysis update site should be disabled from the Fiji Updater.
+1. Download the desired version of MIA from the [Releases](https://github.com/mianalysis/mia/releases) page.
+2. Place this .jar file into the /plugins directory of the your Fiji installation.
+3. Install [MorphoLibJ](http://imagej.net/plugins/morpholibj) using the instructions [here]([/plugins/morpholibj](http://imagej.net/plugins/morpholibj#installation)
+
+Using MIA
 ------------
-- In Fiji, run the plugin from Plugins > ModularImageAnalysis (MIA)
-- To run an existing analysis workflow
-> - Click "Load" and select the .mia workflow file
-> - Depending on workflow configuration, a number of controls may be visible
-> - When ready, click "Run" to start the analysis
-> - While processing the status panel will display the number of files completed (batch mode) or a summary of the ongoing task (single file mode)
-> - When finished, "Complete" will be displayed in the status panel.  Output XLS files will be saved in the input directory.
+Guides for using MIA can be found [here](https://mianalysis.github.io/mia/html/guides/guides.html).  There are also example workflows in the [mia_examples](https://github.com/mianalysis/mia_examples) repository (with more to be added over time).
+
 
 Acknowledgements
 ------------
 The plugin makes use of a combination of plugins packaged with Fiji as well as others that can be installed via the updater.
 
-Required plugins pre-packaged with Fiji: [AnalyzeSkeleton](https://github.com/fiji/AnalyzeSkeleton), [Auto Threshold](https://github.com/fiji/Auto_Threshold), [bUnwarpJ](https://github.com/fiji/bUnwarpJ), [BioFormats](https://github.com/openmicroscopy/bioformats), [Colour Deconvolution](https://github.com/fiji/Colour_Deconvolution), [Correct Bleach](https://github.com/fiji/CorrectBleach), [MPICBG](https://github.com/axtimwalde/mpicbg), [TrackMate](https://github.com/fiji/TrackMate), [Weka Trainable Segmentation](https://github.com/fiji/Trainable_Segmentation).  Required plugins that need installing via the Fiji updater: [MorphoLibJ](https://github.com/ijpb/MorphoLibJ).  Plugins bundled with MIA: [BoneJ legacy plugins](https://github.com/mdoube/BoneJ), [Stack Focuser](https://imagej.nih.gov/ij/plugins/stack-focuser.html).
+Required plugins pre-packaged with Fiji: [AnalyzeSkeleton](https://github.com/fiji/AnalyzeSkeleton), [Auto Threshold](https://github.com/fiji/Auto_Threshold), [bUnwarpJ](https://github.com/fiji/bUnwarpJ), [BioFormats](https://github.com/openmicroscopy/bioformats), [Colour Deconvolution](https://github.com/fiji/Colour_Deconvolution), [Correct Bleach](https://github.com/fiji/CorrectBleach), [MPICBG](https://github.com/axtimwalde/mpicbg), [TrackMate](https://github.com/fiji/TrackMate), [Weka Trainable Segmentation](https://github.com/fiji/Trainable_Segmentation).  Required plugins that need installing via the Fiji updater: [MorphoLibJ](https://github.com/ijpb/MorphoLibJ).  Plugins bundled with MIA: [Stack Focuser](https://imagej.nih.gov/ij/plugins/stack-focuser.html).
 
 A list of bundled dependencies along with their respective licenses can be found [here](https://htmlpreview.github.io/?https://github.com/mianalysis/mia/blob/master/target/site/dependencies.html).
 

@@ -1,6 +1,4 @@
-package io.github.mianalysis.mia.module.objects.measure.spatial;
-// package io.github.mianalysis.mia.module.objectmeasurements.spatial;
-// package io.github.mianalysis.MIA.Module.ObjectMeasurements.Spatial;
+// package io.github.mianalysis.mia.module.objects.measure.spatial;
 
 // import io.github.mianalysis.MIA.Module.ModuleTest;
 

@@ -108,13 +108,8 @@ public class MainGenerator {
             sb.append(new String(Files.readAllBytes(Paths.get("src/main/resources/templatemd/installation.md"))));
             sb.append("\n\n");
 
-            sb.append("Create new workflow").append("\n").append("------------").append("\n");
-            sb.append(new String(Files.readAllBytes(Paths.get("src/main/resources/templatemd/creatingWorkflow.md"))));
-            sb.append("\n\n");
-
-            sb.append("Use existing workflow").append("\n").append("------------").append("\n");
-            sb.append(new String(
-                    Files.readAllBytes(Paths.get("src/main/resources/templatemd/usingExistingWorkflow.md"))));
+            sb.append("Using MIA").append("\n").append("------------").append("\n");
+            sb.append("Guides for using MIA can be found [here](https://mianalysis.github.io/mia/html/guides/guides.html).  There are also example workflows in the [mia_examples](https://github.com/mianalysis/mia_examples) repository (with more to be added over time).\n");
             sb.append("\n\n");
 
             sb.append("Acknowledgements").append("\n").append("------------").append("\n");

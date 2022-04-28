@@ -16,6 +16,11 @@ public class SpotDetectionDependency extends Dependency {
     }
 
     @Override
+    public String getMessage() {
+        return "Please update TrackMate dependency";
+    }
+    
+    @Override
     public String getVersionThreshold() {
         return "7.2.0";
     }

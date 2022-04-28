@@ -16,6 +16,11 @@ public class WekaProbabilityMapsDependency extends Dependency {
     }
 
     @Override
+    public String getMessage() {
+        return "Please update TrainableSegmentation (WEKA) dependency";
+    }
+
+    @Override
     public String getVersionThreshold() {
         return "3.2.35";
     }

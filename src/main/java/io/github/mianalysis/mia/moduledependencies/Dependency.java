@@ -9,6 +9,7 @@ public abstract class Dependency implements SciJavaPlugin {
     }
 
     public abstract String getModuleName();
+    public abstract String getMessage();
     public abstract String getClassName();
     public abstract String getVersionThreshold();
     public abstract Relationship getRelationship();

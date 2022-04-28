@@ -16,6 +16,11 @@ public class DistanceMapDependency extends Dependency {
     }
 
     @Override
+    public String getMessage() {
+        return "Please update IJPB-Plugins (MorphoLibJ) dependency";
+    }
+    
+    @Override
     public String getVersionThreshold() {
         return "1.5.0";
     }

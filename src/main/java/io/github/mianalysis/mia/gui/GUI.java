@@ -141,8 +141,10 @@ public class GUI {
             if (!MIA.dependencies.compatible(shortName,false)) {
                 MIA.log.writeWarning("Module \"" + shortName + "\" not loaded.  Dependencies not satisfied:");
                 for (Dependency dependency : MIA.dependencies.getDependencies(shortName,false))
-                    if (!dependency.test())
+                    if (!dependency.test()) {
                         MIA.log.writeWarning("    Requirement: " + dependency.toString());
+                        MIA.log.writeWarning("    Message: " + dependency.getMessage());
+                    }
                 continue;
             }
 
