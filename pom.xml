@@ -84,9 +84,6 @@
         <scp>compile</scp>
         <license.licenseName>GNU General Public License v3+</license.licenseName>
         <license.copyrightOwners>Stephen Cross</license.copyrightOwners>
-        
-        <!-- NB: Deploy releases to the SciJava Maven repository. -->
-        <releaseProfiles>sign,deploy-to-scijava</releaseProfiles>
     </properties>
 
     <mailingLists>
