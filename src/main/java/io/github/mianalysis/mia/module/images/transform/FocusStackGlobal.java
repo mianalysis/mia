@@ -788,10 +788,9 @@ public class FocusStackGlobal <T extends RealType<T> & NativeType<T>> extends Mo
     public MetadataRefs updateAndGetMetadataReferences() {
         MetadataRefs returnedRefs = new MetadataRefs();
 
-        if (parameters.getValue(BEST_FOCUS_CALCULATION).equals(BestFocusCalculations.MANUAL)) {
+        if (parameters.getValue(BEST_FOCUS_CALCULATION).equals(BestFocusCalculations.MANUAL))
             returnedRefs.add(metadataRefs.getOrPut(MetadataNames.SLICES));
-        }
-
+        
         return returnedRefs;
 
     }

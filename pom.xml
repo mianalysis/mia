@@ -34,6 +34,7 @@
             <id>sjcross</id>
             <name>Stephen Cross</name>
             <roles>
+                <role>founder</role>
                 <role>lead</role>
                 <role>developer</role>
                 <role>debugger</role>
@@ -264,7 +265,7 @@
             <groupId>sc.fiji</groupId>
             <artifactId>Auto_Local_Threshold</artifactId>
             <scope>${scp}</scope>
-        </dependency>
+        </dependency>        
         <dependency>
             <groupId>sc.fiji</groupId>
             <artifactId>bUnwarpJ_</artifactId>
@@ -325,15 +326,23 @@
         </dependency>
 
         <dependency>
+            <groupId>org.bonej</groupId>
+            <artifactId>bonej-legacy-util_</artifactId>
+            <version>7.0.13</version>
+            <scope>${scp}</scope>
+        </dependency>
+
+        <dependency>
             <groupId>com.atlassian.commonmark</groupId>
             <artifactId>commonmark</artifactId>
             <version>0.17.0</version>
+            <scope>${scp}</scope>
         </dependency>
 
         <dependency>
             <groupId>com.github.sjcross</groupId>
             <artifactId>Common</artifactId>
-            <version>1.11.4</version>
+            <version>1.12.0</version>
             <!-- <groupId>io.github.sjcross</groupId>
             <artifactId>Common</artifactId>
             <version>1.11.4-SNAPSHOT</version> -->
@@ -352,14 +361,14 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>2.22.2</version>
-            </plugin>
-
+            </plugin>    
+            
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
                 <executions>
                     <execution>
-                        <phase>site</phase>
+                        <phase>compile</phase>
                         <goals>
                             <goal>java</goal>
                         </goals>
@@ -367,9 +376,9 @@
                 </executions>
                 <configuration>
                     <classpathScope>compile</classpathScope>
-                    <mainClass>io.github.mianalysis.mia.process.documentation.MainGenerator</mainClass>
+                    <mainClass>io.github.mianalysis.mia.process.documentation.DocumentationGenerator</mainClass>
                 </configuration>
-            </plugin>
+            </plugin>  
 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -400,6 +409,7 @@
                         <configuration>
                             <minimizeJar>true</minimizeJar>
                             <createDependencyReducedPom>false</createDependencyReducedPom>
+                            <!-- <shadedArtifactAttached>true</shadedArtifactAttached> -->
                             <filters>
                                 <filter>
                                     <artifact>org.apache.xmlbeans</artifact>
@@ -458,6 +468,49 @@
                     </execution>
                 </executions>
             </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>3.0.0</version>
+                <executions>
+                    <execution>
+                        <id>copy-dependencies</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <excludeScope>provided</excludeScope>
+                            <includeScope>runtime</includeScope>
+
+                            <excludeArtifactIds>commons-codec,commons-collections4,commons-io,guava,ij,jama,javassist,junit,MorphoLibJ_,Skeletonize3D_,vecmath</excludeArtifactIds>
+
+                            <outputDirectory>${project.build.directory}/jars/</outputDirectory>
+                            <overWriteReleases>false</overWriteReleases>
+                            <overWriteSnapshots>false</overWriteSnapshots>
+                            <overWriteIfNewer>true</overWriteIfNewer>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>site</phase>
+                        <goals>
+                            <goal>java</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <classpathScope>compile</classpathScope>
+                    <mainClass>io.github.mianalysis.mia.process.documentation.MainGenerator</mainClass>
+                </configuration>
+            </plugin>     
 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

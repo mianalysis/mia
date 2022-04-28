@@ -1,6 +1,5 @@
 package io.github.mianalysis.mia.object.image;
 
-import ij.IJ;
 import ij.ImagePlus;
 import io.github.mianalysis.mia.MIA;
 import io.github.sjcross.common.object.volume.SpatCal;
