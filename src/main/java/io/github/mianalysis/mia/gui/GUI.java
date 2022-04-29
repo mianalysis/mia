@@ -106,7 +106,7 @@ public class GUI {
             mainPanel = processingPanel;
 
         initialiseStatusTextField();
-        frame.setTitle("MIA (version " + MIA.getVersion() + ")");
+        frame.setTitle("MIA");
         frame.setJMenuBar(menuBar);
         frame.add(mainPanel);
         frame.setPreferredSize(new Dimension(mainPanel.getPreferredWidth(), mainPanel.getPreferredHeight()));

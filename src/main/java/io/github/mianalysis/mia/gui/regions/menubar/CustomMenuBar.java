@@ -1,5 +1,6 @@
 package io.github.mianalysis.mia.gui.regions.menubar;
 
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -31,6 +32,7 @@ public class CustomMenuBar extends JMenuBar implements ActionListener {
     private static JMenu analysisMenu = new JMenu("Analysis");
     private static JMenu viewMenu = new JMenu("View");
     private static JMenu helpMenu = new JMenu("Help");
+    private static JMenu blankMenu = new JMenu("");
     private static JMenu logMenu = new JMenu("Logging");
 
     private static MenuItem newWorkflow = new MenuItem(MenuItem.NEW_WORKFLOW);
@@ -137,9 +139,9 @@ public class CustomMenuBar extends JMenuBar implements ActionListener {
         logMenu.add(menuLogCheckbox);
 
         add(Box.createHorizontalGlue());
-        JMenu menu = new JMenu("");
-        add(menu);
-        menu.add(new MenuItem(MenuItem.SHOW_PONY));
+        
+        add(blankMenu);
+        blankMenu.add(new MenuItem(MenuItem.SHOW_PONY));
 
         KeyStroke saveAnalysis = KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_DOWN_MASK);
         registerKeyboardAction(this, "Save", saveAnalysis, JComponent.WHEN_IN_FOCUSED_WINDOW);
@@ -159,6 +161,7 @@ public class CustomMenuBar extends JMenuBar implements ActionListener {
         newWorkflow.setVisible(!GUI.isProcessingGUI());
 
         editMenu.setVisible(!GUI.isProcessingGUI());
+        blankMenu.setVisible(!GUI.isProcessingGUI());
 
         resetAnalysis.setVisible(!GUI.isProcessingGUI());
         enableAllModules.setVisible(!GUI.isProcessingGUI());
