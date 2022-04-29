@@ -13,6 +13,8 @@ import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageFactory;
+import io.github.mianalysis.mia.object.image.ImgPlusTools;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.ImageMeasurementP;
@@ -67,7 +69,7 @@ public class ManualThreshold<T extends RealType<T> & NativeType<T>> extends Modu
         il2Support = IL2Support.FULL;
     }
 
-    public static <T extends RealType<T> & NativeType<T>> void applyThreshold(Image image, double threshold,
+    public static <T extends RealType<T> & NativeType<T>> void applyThreshold(Image<T> image, double threshold,
             String binaryLogic) {
         ImgPlus<T> img = image.getImgPlus();
 
@@ -78,14 +80,17 @@ public class ManualThreshold<T extends RealType<T> & NativeType<T>> extends Modu
 
     }
 
-    public static <T extends RealType<T> & NativeType<T>> void applyThresholdCreate(Image image, double threshold,
-            String binaryLogic) {
-        ImgPlus<T> img = image.getImgPlus();
+    public static <T extends RealType<T> & NativeType<T>> Image<T> applyThresholdCreate(Image<T> inputImage, double threshold,
+            String binaryLogic, String outputImageName) {
+        ImgPlus<T> inputImg = inputImage.getImgPlus();
+        ImgPlus<T> outputImg = ImgPlusTools.createNewImgPlus(inputImg, inputImg.firstElement());
 
         int high = binaryLogic.equals(BinaryLogic.BLACK_BACKGROUND) ? 255 : 0;
         int low = binaryLogic.equals(BinaryLogic.BLACK_BACKGROUND) ? 0 : 255;
 
-        LoopBuilder.setImages(img).forEachPixel(v -> v.setReal(v.getRealDouble() > threshold ? (int) high : (int) low));
+        LoopBuilder.setImages(inputImg,outputImg).forEachPixel((i,o) -> o.setReal(i.getRealDouble() > threshold ? (int) high : (int) low));
+
+        return ImageFactory.createImage(outputImageName, outputImg);
 
     }
 
@@ -104,35 +109,34 @@ public class ManualThreshold<T extends RealType<T> & NativeType<T>> extends Modu
     public Status process(Workspace workspace) {
         // Getting input image
         String inputImageName = parameters.getValue(INPUT_IMAGE);
-        Image image = workspace.getImages().get(inputImageName);
+        Image<T> image = workspace.getImages().get(inputImageName);
 
         // Getting parameters
         String outputImageName = parameters.getValue(OUTPUT_IMAGE);
         boolean applyToInput = parameters.getValue(APPLY_TO_INPUT);
         String binaryLogic = parameters.getValue(BINARY_LOGIC);
         String thresholdSource = parameters.getValue(THRESHOLD_SOURCE);
-        double thresholdValue = parameters.getValue(THRESHOLD_VALUE);
+        double threshold = parameters.getValue(THRESHOLD_VALUE);
         String measurementName = parameters.getValue(MEASUREMENT);
 
         if (thresholdSource.equals(ThresholdSources.IMAGE_MEASUREMENT))
-            thresholdValue = (int) Math.round(image.getMeasurement(measurementName).getValue());
+            threshold = (int) Math.round(image.getMeasurement(measurementName).getValue());
 
-        // Duplicating the image, so the original isn't altered
-        if (!applyToInput)
-            image = image.duplicate(outputImageName);
+        if (applyToInput) {
+            applyThreshold(image, threshold, binaryLogic);
 
-        // Calculating the threshold based on the selected algorithm
-        applyThreshold(image, thresholdValue, binaryLogic);
+            if (showOutput)
+                image.showImage();
 
-        if (image.getImagePlus().getBitDepth() == 32)
-            workspace.addImage(image);
+        } else {
+            Image outputImage = applyThresholdCreate(image, threshold, binaryLogic,
+                    outputImageName);
+            workspace.addImage(outputImage);
 
-        // If necessary, adding output image to workspace
-        if (!applyToInput)
-            workspace.addImage(image);
+            if (showOutput)
+                outputImage.showImage();
 
-        if (showOutput)
-            image.showImage();
+        }
 
         return Status.PASS;
 

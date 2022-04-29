@@ -56,7 +56,7 @@ public abstract class Image <T extends RealType<T> & NativeType<T>> {
 
     public abstract void addObjectCentroid(Obj obj, float hue);
 
-    public abstract Image duplicate(String outputImageName);
+    public abstract Image<T> duplicate(String outputImageName);
 
     public abstract Overlay getOverlay();
 

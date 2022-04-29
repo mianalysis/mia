@@ -1,16 +1,12 @@
-// TODO: Add true 3D local thresholds (local auto thresholding works slice-by-slice)
+// TODO: Enable each thresholding method
 
 package io.github.mianalysis.mia.module.images.process.threshold;
+
+import com.drew.lang.annotations.Nullable;
 
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
 
-import ij.ImagePlus;
-import ij.gui.Roi;
-import ij.gui.ShapeRoi;
-import ij.plugin.Duplicator;
-import ij.process.AutoThresholder;
-import ij.process.ImageProcessor;
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
@@ -18,12 +14,10 @@ import io.github.mianalysis.mia.module.IL2Support;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.images.process.ImageTypeConverter;
-import io.github.mianalysis.mia.module.images.process.InvertIntensity;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.image.Image;
-import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.measurements.Measurement;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
@@ -42,17 +36,18 @@ import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Preferences;
 import io.github.mianalysis.mia.object.system.Status;
-import net.imglib2.Cursor;
+import net.imagej.ops.OpService;
 import net.imglib2.histogram.BinMapper1d;
 import net.imglib2.histogram.Histogram1d;
-import net.imglib2.histogram.Integer1dBinMapper;
-import net.imglib2.type.numeric.integer.UnsignedByteType;
+import net.imglib2.histogram.Real1dBinMapper;
+import net.imglib2.type.NativeType;
+import net.imglib2.type.numeric.RealType;
 
 /**
  * Created by sc13967 on 06/06/2017.
  */
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
-public class GlobalAutoThreshold extends Module {
+public class GlobalAutoThreshold<T extends RealType<T> & NativeType<T>> extends Module {
     public static final String INPUT_SEPARATOR = "Image input/output";
     public static final String INPUT_IMAGE = "Input image";
     public static final String OUTPUT_MODE = "Output mode";
@@ -70,7 +65,7 @@ public class GlobalAutoThreshold extends Module {
 
     public GlobalAutoThreshold(Modules modules) {
         super("Global auto-threshold", modules);
-        il2Support = IL2Support.PARTIAL;
+        il2Support = IL2Support.FULL;
     }
 
     public interface OutputModes {
@@ -114,70 +109,89 @@ public class GlobalAutoThreshold extends Module {
         return "THRESHOLD // " + measurement + " " + method;
     }
 
-    public int calculateThreshold(ImagePlus inputImagePlus, String algorithm, double thrMult, boolean useLowerLim,
-            double lowerLim, Objs inputObjects) {
+    public Histogram1d<T> getHistogram(Image<T> image) {
+        BinMapper1d<T> binMapper = new Real1dBinMapper<>(0, 255, 256, true);
+        Histogram1d<T> histogram = new Histogram1d<>(image.getImgPlus(), binMapper);
 
-        // Image must be 8-bit
-        if (inputImagePlus.getBitDepth() != 8) {
-            inputImagePlus = inputImagePlus.duplicate();
-            ImageTypeConverter.process(inputImagePlus, 8, ImageTypeConverter.ScalingModes.FILL);
+        return histogram;
+
+    }
+
+    public Histogram1d<T> getHistogram(Image<T> image, Objs objects) {
+        if (objects.size() == 0)
+            return null;
+
+        BinMapper1d<T> binMapper = new Real1dBinMapper<>(0, 255, 256, true);
+
+        Obj firstObject = objects.getFirst();
+        Histogram1d<T> histogram = new Histogram1d<T>(firstObject.getPixelIterable(image, 0), binMapper);
+
+        for (Obj object : objects.values())
+            if (object != firstObject) // Data for the first object has already been added
+                histogram.addData(object.getPixelIterable(image, 0));
+
+        return histogram;
+
+    }
+
+    public int calculateThreshold(Image<T> image, String algorithm, double thrMult, boolean useLowerLim,
+            double lowerLim, @Nullable Objs objects) {
+        OpService ops = MIA.ijService.getContext().getService(OpService.class);
+
+        // Getting the histogram
+        Histogram1d<T> histogram = objects == null ? getHistogram(image) : getHistogram(image, objects);
+
+        T rawThreshold;
+        switch (algorithm) {
+            case Algorithms.HUANG:
+            default:
+                rawThreshold = ops.threshold().huang(histogram);
+                break;
+            case Algorithms.INTERMODES:
+                rawThreshold = (T) ops.threshold().intermodes(histogram).get(0);
+                break;
+            case Algorithms.ISO_DATA:
+                rawThreshold = (T) ops.threshold().isoData(histogram).get(0);
+                break;
+            case Algorithms.LI:
+                rawThreshold = ops.threshold().li(histogram);
+                break;
+            case Algorithms.MAX_ENTROPY:
+                rawThreshold = ops.threshold().maxEntropy(histogram);
+                break;
+            case Algorithms.MEAN:
+                rawThreshold = ops.threshold().mean(histogram);
+                break;
+            case Algorithms.MINIMUM:
+                rawThreshold = (T) ops.threshold().minimum(histogram).get(0);
+                break;
+            case Algorithms.MIN_ERROR:
+                rawThreshold = (T) ops.threshold().minError(histogram).get(0);
+                break;
+            case Algorithms.MOMENTS:
+                rawThreshold = ops.threshold().moments(histogram);
+                break;
+            case Algorithms.OTSU:
+                rawThreshold = ops.threshold().otsu(histogram);
+                break;
+            case Algorithms.PERCENTILE:
+                rawThreshold = ops.threshold().percentile(histogram);
+                break;
+            case Algorithms.RENYI_ENTROPY:
+                rawThreshold = ops.threshold().renyiEntropy(histogram);
+                break;
+            case Algorithms.SHANBHAG:
+                rawThreshold = ops.threshold().shanbhag(histogram);
+                break;
+            case Algorithms.TRIANGLE:
+                rawThreshold = ops.threshold().triangle(histogram);
+                break;
+            case Algorithms.YEN:
+                rawThreshold = ops.threshold().yen(histogram);
+                break;
         }
 
-        // Compiling stack histogram. This is stored as long to prevent the Integer
-        // overflowing.
-        long[] histogram = null;
-        int count = 0;
-        int total = inputImagePlus.getNChannels() * inputImagePlus.getNSlices() * inputImagePlus.getNFrames();
-        for (int z = 1; z <= inputImagePlus.getNSlices(); z++) {
-            for (int c = 1; c <= inputImagePlus.getNChannels(); c++) {
-                for (int t = 1; t <= inputImagePlus.getNFrames(); t++) {
-                    inputImagePlus.setPosition(c, z, t);
-                    ImageProcessor ipr = inputImagePlus.getProcessor();
-
-                    if (inputObjects != null) {
-                        Roi roi = getRoi(inputObjects, t, z);
-                        ipr.setRoi(roi);
-                        if (roi == null)
-                            continue;
-                    }
-                    
-                    int[] tempHist = ipr.getHistogram();
-
-                    if (inputObjects != null)
-                        inputImagePlus.killRoi();
-
-                    if (histogram == null)
-                        histogram = new long[tempHist.length];
-                    for (int i = 0; i < histogram.length; i++)
-                        histogram[i] = histogram[i] + tempHist[i];
-
-                    writeProgressStatus(++count, total, "images");
-
-                }
-            }
-        }
-
-        if (histogram == null)
-            return 0;
-
-        MIA.log.writeDebug("Old");
-        for (long h:histogram)
-            MIA.log.writeDebug(h);
-
-        // Calculating the maximum value in any bin
-        long maxVal = Long.MIN_VALUE;
-        for (long val : histogram)
-            maxVal = Math.max(maxVal, val);
-        if (maxVal <= Integer.MAX_VALUE)
-            maxVal = Integer.MAX_VALUE;
-
-        // Normalising histogram, so it will fit in an int[]
-        int[] normHist = new int[histogram.length];
-        for (int i = 0; i < histogram.length; i++)
-            normHist[i] = (int) Math.round(Integer.MAX_VALUE * ((double) histogram[i]) / ((double) maxVal));
-
-        // Applying the threshold
-        int threshold = new AutoThresholder().getThreshold(algorithm, normHist);
+        int threshold = (int) Math.round(rawThreshold.getRealDouble());
 
         // Applying limits, where applicable
         if (useLowerLim && threshold < lowerLim)
@@ -190,66 +204,7 @@ public class GlobalAutoThreshold extends Module {
 
     }
 
-    public static Roi getRoi(Objs inputObjects, int t, int z) {
-        ShapeRoi roi = null;
-
-        for (Obj inputObject : inputObjects.values()) {
-            if (inputObject.getT() != t - 1)
-                continue;
-
-            double[][] extents = inputObject.getExtents(true, false);
-            if ((z - 1) < extents[2][0] || (z - 1) > extents[2][1])
-                continue;
-
-            Roi currRoi = inputObject.getRoi(z - 1);
-
-            if (currRoi == null)
-                continue;
-
-            if (roi == null)
-                roi = new ShapeRoi(currRoi);
-            else
-                roi.xor(new ShapeRoi(currRoi));
-
-        }
-
-        return roi;
-
-    }
-    
-        public static void applyThreshold(ImagePlus inputImagePlus, double threshold) {
-        // Creating an integer threshold in case image is 8 or 16 bit
-        int intThreshold = (int) Math.round(threshold);
-
-        // Applying threshold
-        for (int z = 1; z <= inputImagePlus.getNSlices(); z++) {
-            for (int c = 1; c <= inputImagePlus.getNChannels(); c++) {
-                for (int t = 1; t <= inputImagePlus.getNFrames(); t++) {
-                    inputImagePlus.setPosition(c, z, t);
-                    if (inputImagePlus.getBitDepth() == 32) {                        
-                        for (int x = 0; x < inputImagePlus.getWidth(); x++) {
-                            for (int y = 0; y < inputImagePlus.getHeight(); y++) {
-                                float val = inputImagePlus.getProcessor().getf(x, y);
-                                val = val <= threshold ? 0 : 255;
-                                inputImagePlus.getProcessor().setf(x, y, val);
-                            }
-                        }
-                    } else {
-                        inputImagePlus.getProcessor().threshold(intThreshold);
-                    }
-                }
-            }
-        }
-
-        inputImagePlus.setPosition(1, 1, 1);
-
-        // If the input was 32-bit we can now convert it to 8-bit
-        if (inputImagePlus.getBitDepth() == 32)
-            ImageTypeConverter.process(inputImagePlus, 8, ImageTypeConverter.ScalingModes.CLIP);
-
-    }
-
-    public void addMeasurements(Image image, double threshold) {
+    public void addMeasurements(Image<T> image, double threshold) {
         String method = parameters.getValue(ALGORITHM);
         String measurementName = getFullName(Measurements.GLOBAL_VALUE, method);
 
@@ -276,12 +231,12 @@ public class GlobalAutoThreshold extends Module {
     public Status process(Workspace workspace) {
         // Getting input image
         String inputImageName = parameters.getValue(INPUT_IMAGE);
-        Image inputImage = workspace.getImages().get(inputImageName);
-        ImagePlus inputImagePlus = inputImage.getImagePlus();
+        Image image = workspace.getImages().get(inputImageName);
 
         // Getting parameters
         String outputMode = parameters.getValue(OUTPUT_MODE);
         boolean applyToInput = parameters.getValue(APPLY_TO_INPUT);
+        String outputImageName = parameters.getValue(OUTPUT_IMAGE);
         String algorithm = parameters.getValue(ALGORITHM);
         double thrMult = parameters.getValue(THRESHOLD_MULTIPLIER);
         String binaryLogic = parameters.getValue(BINARY_LOGIC);
@@ -291,53 +246,24 @@ public class GlobalAutoThreshold extends Module {
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
 
         Objs inputObjects = measureOnObjects ? workspace.getObjectSet(inputObjectsName) : null;
-        int threshold = 0;
-
-        MIA.log.writeDebug("ImgLib2");
-        Iterable it = inputObjects.getFirst().getPixelIterable(inputImage,0);
-
-        BinMapper1d< UnsignedByteType > binMapper =
-				new Integer1dBinMapper< UnsignedByteType >( 0, 256, false );
-                
-        Histogram1d hist = new Histogram1d<>(binMapper);
-        hist.addData(it);
-        Cursor c = hist.cursor();
-        while (c.hasNext()) {
-            Object o = c.next();
-            MIA.log.writeDebug(o);
-        }
 
         // Calculating the threshold based on the selected algorithm
-        writeStatus("Applying " + algorithm + " threshold (multiplier = " + thrMult + " x)");
-        threshold = calculateThreshold(inputImagePlus, algorithm, thrMult, useLowerLim, lowerLim, inputObjects);
+        int threshold = calculateThreshold(image, algorithm, thrMult, useLowerLim, lowerLim, inputObjects);
 
         if (outputMode.equals(OutputModes.CALCULATE_AND_APPLY)) {
-            // If applying to a new image, the input image is duplicated
-            if (!applyToInput)
-                inputImagePlus = new Duplicator().run(inputImagePlus);
-
-            // Image must be 8-bit
-            if (inputImagePlus.getBitDepth() != 8)
-                ImageTypeConverter.process(inputImagePlus, 8, ImageTypeConverter.ScalingModes.FILL);
-
-            // Applying threshold
-            // TODO: In the finished module we can just use the same module from ManualThreshold
-            applyThreshold(inputImagePlus, threshold);
-
-            if (binaryLogic.equals(BinaryLogic.WHITE_BACKGROUND))
-                InvertIntensity.process(inputImagePlus);
-
-            // If the image is being saved as a new image, adding it to the workspace
             if (applyToInput) {
-                addMeasurements(inputImage, threshold);
+                ManualThreshold.applyThreshold(image, threshold, binaryLogic);
+
+                addMeasurements(image, threshold);
+
                 if (showOutput)
-                    inputImage.showImage();
+                    image.showImage();
                 if (showOutput)
-                    inputImage.showMeasurements(this);
+                    image.showMeasurements(this);
 
             } else {
-                String outputImageName = parameters.getValue(OUTPUT_IMAGE);
-                Image outputImage = ImageFactory.createImage(outputImageName, inputImagePlus);
+                Image outputImage = ManualThreshold.applyThresholdCreate(image, threshold, binaryLogic,
+                        outputImageName);
                 workspace.addImage(outputImage);
 
                 addMeasurements(outputImage, threshold);
@@ -345,11 +271,12 @@ public class GlobalAutoThreshold extends Module {
                     outputImage.showImage();
                 if (showOutput)
                     outputImage.showMeasurements(this);
+
             }
         } else {
-            addMeasurements(inputImage, threshold);
+            addMeasurements(image, threshold);
             if (showOutput)
-                inputImage.showMeasurements(this);
+                image.showMeasurements(this);
         }
 
         return Status.PASS;

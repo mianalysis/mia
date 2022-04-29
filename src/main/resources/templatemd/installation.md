@@ -13,4 +13,4 @@ Specific versions of MIA can be downloaded from GitHub and installed into Fiji m
 Note: If installing MIA manually, the ModularImageAnalysis update site should be disabled from the Fiji Updater.
 1. Download the desired version of MIA from the [Releases](https://github.com/mianalysis/mia/releases) page.
 2. Place this .jar file into the /plugins directory of the your Fiji installation.
-3. Install [MorphoLibJ](http://imagej.net/plugins/morpholibj) using the instructions [here]([/plugins/morpholibj](http://imagej.net/plugins/morpholibj#installation)
+3. Install [MorphoLibJ](http://imagej.net/plugins/morpholibj) using the instructions [here](http://imagej.net/plugins/morpholibj#installation)

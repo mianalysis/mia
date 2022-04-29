@@ -122,6 +122,24 @@ public class ImgPlusTools {
 
     }
 
+    public static <T extends RealType<T> & NativeType<T>> ImgPlus<T> createNewImgPlus(ImgPlus<T> inputImg,
+            int nChannels, int nSlices,
+            int nFrames, T type) {
+        int xIdx = inputImg.dimensionIndex(Axes.X);
+        int yIdx = inputImg.dimensionIndex(Axes.Y);
+        int zIdx = inputImg.dimensionIndex(Axes.Z);
+
+        double dppXY = xIdx == -1 ? 1 : inputImg.axis(xIdx).calibratedValue(1);
+        double dppZ = zIdx == -1 ? 1 : inputImg.axis(zIdx).calibratedValue(1);
+        String units = xIdx == -1 ? "px" : inputImg.axis(xIdx).unit();
+
+        int w = (int) (xIdx == -1 ? 1 : inputImg.dimension(xIdx));
+        int h = (int) (yIdx == -1 ? 1 : inputImg.dimension(yIdx));
+
+        return createNewImgPlus(w, h, nChannels, nSlices, nFrames, dppXY, dppZ, units, type);
+
+    }
+
     public static <T extends RealType<T> & NativeType<T>, R extends RealType<R> & NativeType<R>> ImgPlus<R> createNewImgPlus(
             ImgPlus<T> inputImg, R type) {
         // Creating the output image
@@ -279,6 +297,6 @@ public class ImgPlusTools {
 
     public static <T extends RealType<T> & NativeType<T>> void reportDimensions(RandomAccessibleInterval<T> rai) {
         for (int i = 0; i < rai.numDimensions(); i++)
-            MIA.log.writeDebug("Index " + i + ": Length=" + rai.dimension(i));        
+            MIA.log.writeDebug("Index " + i + ": Length=" + rai.dimension(i));
     }
 }
