@@ -384,7 +384,12 @@ public class Obj extends Volume {
         // ThresholdToSelection selection = new ThresholdToSelection();
 
         // Roi roi = selection.convert(objectImage.getImagePlus().getProcessor());
+        
         Roi roi = super.getRoi(slice);
+
+        if (roi == null)
+            return null;
+
         rois.put(slice, roi);
 
         return (Roi) roi.clone();

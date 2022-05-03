@@ -341,7 +341,7 @@
         <dependency>
             <groupId>com.github.sjcross</groupId>
             <artifactId>Common</artifactId>
-            <version>1.12.0</version>
+            <version>1.12.1</version>
             <!-- <groupId>io.github.sjcross</groupId>
             <artifactId>Common</artifactId>
             <version>1.11.3</version> -->
