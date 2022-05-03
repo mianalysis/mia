@@ -23,7 +23,7 @@ The latest version of MIA can be installed directly into Fiji via an update site
     - Name: ModularImageAnalysis
     - URL: https:/[]()/sites.imagej.net/ModularImageAnalysis
 4. Whilst still on the "Manage update sites" window, tick the "IJPB-Plugins" update site
-5. Close the "Manage update sites" window, then click "Apply changes"
+4. Close the "Manage update sites" window, then click "Apply changes"
 
 ### Manually from GitHub
 Specific versions of MIA can be downloaded from GitHub and installed into Fiji manually.
