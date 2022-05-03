@@ -210,19 +210,19 @@ public class ImgPlusTools {
             } else if (axisType == Axes.CHANNEL) {
                 interval[0][i] = c[0];
                 if (c[1] == -1)
-                    interval[1][i] = img.dimension(i);
+                    interval[1][i] = img.dimension(i)-1;
                 else
                     interval[1][i] = c[1];
             } else if (axisType == Axes.Z) {
                 interval[0][i] = z[0];
                 if (z[1] == -1)
-                    interval[1][i] = img.dimension(i);
+                    interval[1][i] = img.dimension(i)-1;
                 else
                     interval[1][i] = z[1];
             } else if (axisType == Axes.TIME) {
                 interval[0][i] = t[0];
                 if (t[1] == -1)
-                    interval[1][i] = img.dimension(i);
+                    interval[1][i] = img.dimension(i)-1;
                 else
                     interval[1][i] = t[1];
             }

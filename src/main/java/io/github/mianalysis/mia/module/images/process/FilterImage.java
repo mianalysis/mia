@@ -13,6 +13,7 @@ import ij.ImagePlus;
 import ij.ImageStack;
 import ij.plugin.Duplicator;
 import ij.plugin.Filters3D;
+import ij.plugin.GaussianBlur3D;
 import ij.plugin.SubHyperstackMaker;
 import ij.plugin.ZProjector;
 import ij.plugin.filter.RankFilters;
@@ -28,7 +29,7 @@ import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.image.Image;
-import io.github.mianalysis.mia.object.image.ImgPlusTools;
+import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
@@ -44,31 +45,14 @@ import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Preferences;
 import io.github.mianalysis.mia.object.system.Status;
+import io.github.sjcross.common.filters.DoG;
 import io.github.sjcross.common.process.CommaSeparatedStringInterpreter;
-import net.imagej.ImgPlus;
-import net.imagej.ops.OpService;
-import net.imagej.ops.Ops;
-import net.imagej.ops.special.computer.Computers;
-import net.imagej.ops.special.computer.UnaryComputerOp;
-import net.imglib2.RandomAccessibleInterval;
-import net.imglib2.algorithm.neighborhood.DiamondShape;
-import net.imglib2.algorithm.neighborhood.HyperSphereShape;
-import net.imglib2.algorithm.neighborhood.Shape;
-import net.imglib2.img.Img;
-import net.imglib2.img.cell.CellImgFactory;
-import net.imglib2.img.display.imagej.ImageJFunctions;
-import net.imglib2.outofbounds.OutOfBoundsFactory;
-import net.imglib2.outofbounds.OutOfBoundsMirrorFactory;
-import net.imglib2.outofbounds.OutOfBoundsMirrorFactory.Boundary;
-import net.imglib2.type.NativeType;
-import net.imglib2.type.numeric.RealType;
-import net.imglib2.view.Views;
 
 /**
  * Created by Stephen on 30/05/2017.
  */
-@Plugin(type = Module.class, priority = Priority.LOW, visible = true)
-public class FilterImage<T extends RealType<T> & NativeType<T>> extends Module {
+@Plugin(type = Module.class, priority=Priority.LOW, visible=true)
+public class FilterImage extends Module {
     public static final String INPUT_SEPARATOR = "Image input/output";
     public static final String INPUT_IMAGE = "Input image";
     public static final String APPLY_TO_INPUT = "Apply to input image";
@@ -83,8 +67,6 @@ public class FilterImage<T extends RealType<T> & NativeType<T>> extends Module {
 
     public FilterImage(Modules modules) {
         super("Filter image", modules);
-        il2Support = IL2Support.PARTIAL;
-
     }
 
     public interface FilterModes {
@@ -178,49 +160,6 @@ public class FilterImage<T extends RealType<T> & NativeType<T>> extends Module {
         }
         inputImagePlus.setPosition(1, 1, 1);
     }
-
-    // public static void apply2DFilter(Image inputImage, String filterMode, double
-    // filterRadius) {
-    // String moduleName = new FilterImage(null).getName();
-
-    // OpService ops = MIA.ijService.getContext().getService(OpService.class);
-
-    // // Determining which rank filter ID to use
-    // int rankFilter = 0;
-    // switch (filterMode) {
-    // case FilterModes.MAXIMUM2D:
-    // rankFilter = RankFilters.MAX;
-    // break;
-    // case FilterModes.MEAN2D:
-    // rankFilter = RankFilters.MEAN;
-    // break;
-    // case FilterModes.MEDIAN2D:
-    // rankFilter = RankFilters.MEDIAN;
-    // break;
-    // case FilterModes.MINIMUM2D:
-    // rankFilter = RankFilters.MIN;
-    // break;
-    // case FilterModes.VARIANCE2D:
-    // rankFilter = RankFilters.VARIANCE;
-    // break;
-    // }
-
-    // int count = 0;
-    // int total = inputImagePlus.getStack().size();
-    // RankFilters filter = new RankFilters();
-    // for (int z = 1; z <= inputImagePlus.getNSlices(); z++) {
-    // for (int c = 1; c <= inputImagePlus.getNChannels(); c++) {
-    // for (int t = 1; t <= inputImagePlus.getNFrames(); t++) {
-    // inputImagePlus.setPosition(c, z, t);
-    // filter.rank(inputImagePlus.getProcessor(), filterRadius, rankFilter);
-
-    // writeProgressStatus(count++, total, "images", moduleName);
-
-    // }
-    // }
-    // }
-    // inputImagePlus.setPosition(1, 1, 1);
-    // }
 
     public static void apply3DFilter(ImagePlus inputImagePlus, String filterMode, float filterRadius) {
         String moduleName = new FilterImage(null).getName();
@@ -379,7 +318,7 @@ public class FilterImage<T extends RealType<T> & NativeType<T>> extends Module {
         ImagePlus tempImagePlus = new Duplicator().run(inputImagePlus);
 
         // Getting list of frames
-        int[] offsets = CommaSeparatedStringInterpreter.interpretIntegers(windowIndices, true, 0);
+        int[] offsets = CommaSeparatedStringInterpreter.interpretIntegers(windowIndices, true,0);
 
         // Running through each frame, calculating the local average
         for (int f = 1; f <= inputImagePlus.getNFrames(); f++) {
@@ -560,137 +499,72 @@ public class FilterImage<T extends RealType<T> & NativeType<T>> extends Module {
         if (calibratedUnits)
             filterRadius = inputImagePlus.getCalibration().getRawX(filterRadius);
 
-        OpService ops = MIA.ijService.getContext().getService(OpService.class);
-
         // If applying to a new image, the input image is duplicated
         if (!applyToInput)
             inputImagePlus = inputImagePlus.duplicate();
-
-        ImgPlus<T> inputImg = inputImage.getImgPlus();
-
-        long[][] interval = ImgPlusTools.getSliceInterval(inputImg, 0, 0, 0);
-        RandomAccessibleInterval<T> sliceIn = Views.interval(inputImg, interval[0], interval[1]);
-        ImgPlus<T> median = ImgPlusTools.createNewImgPlus(inputImg, 0, 1, 0,(T) inputImage.getImgPlus().firstElement());
-
-        // ImgPlus<T> median = ImgPlusTools.createNewImgPlus(inputImg, inputImg.firstElement());
-        // Img<T> median = new CellImgFactory<>(inputImg.firstElement()).create(inputImg);        
-        Shape shape = new HyperSphereShape((long) Math.round(filterRadius));
-        // Shape shape = new DiamondShape((long) Math.round(filterRadius));
-
-        UnaryComputerOp<RandomAccessibleInterval<T>, RandomAccessibleInterval<T>> maxFilter = Computers.unary(ops, Ops.Filter.Max.class, median, sliceIn,shape);
-
-        ops.slice(median, sliceIn, maxFilter, 0,1);
         
-        // filter.setOutput(median);
-        
-        ImageJFunctions.show(median);
+        // Applying smoothing filter
+        switch (filterMode) {
+            case FilterModes.MAXIMUM2D:
+            case FilterModes.MEAN2D:
+            case FilterModes.MEDIAN2D:
+            case FilterModes.MINIMUM2D:
+            case FilterModes.VARIANCE2D:
+                writeStatus("Applying " + filterMode + " filter");
+                apply2DFilter(inputImagePlus, filterMode, filterRadius);
+                break;
 
-        // Shape shape = new HyperSphereShape((long) Math.round(filterRadius));
-        // long[] dims = ImgPlusTools.getDimensionsXYCZT(inputImg);
+            case FilterModes.MAXIMUM3D:
+            case FilterModes.MEAN3D:
+            case FilterModes.MEDIAN3D:
+            case FilterModes.MINIMUM3D:
+            case FilterModes.VARIANCE3D:
+                writeStatus("Applying " + filterMode + " filter");
+                apply3DFilter(inputImagePlus, filterMode, (float) filterRadius);
+                break;
 
-        // Create single blank slice (this will be overwritten for each slice)
-        // ImgPlus<T> filteredSlice = ImgPlusTools.createNewImgPlus(inputImg, 0, 1, 0,
-        //         (T) inputImage.getImgPlus().firstElement());
+            case FilterModes.DOG2D:
+                writeStatus("Applying " + filterMode + " filter");
+                DoG.run(inputImagePlus, filterRadius, true);
+                break;
 
-        // for (int c = 0; c < dims[2]; c++) {
-        //     for (int z = 0; z < dims[3]; z++) {
-        //         for (int t = 0; t < dims[4]; t++) {
-        //             long[][] interval = ImgPlusTools.getSliceInterval(inputImg, c, z, t);
-                    // RandomAccessibleInterval<T> sliceIn = Views.interval(inputImg, interval[0], interval[1]);
-                    // Img<T> filteredSlice = new CellImgFactory<>(inputImg.firstElement()).create(inputImg);
-                    // ops.filter().mean(filteredSlice, inputImg, shape);
+            case FilterModes.GAUSSIAN2D:
+                writeStatus("Applying " + filterMode + " filter");
+                runGaussian2DFilter(inputImagePlus, filterRadius);
+                break;
 
-                    // ImageJFunctions.show(filteredSlice);
-                    // IJ.runMacro("waitForUser");
+            case FilterModes.GAUSSIAN3D:
+                writeStatus("Applying " + filterMode + " filter");
+                GaussianBlur3D.blur(inputImagePlus, filterRadius, filterRadius, filterRadius);
+                break;
 
-                    // Cursor<T> cursorOut = filteredSlice.localizingCursor();
-                    // RandomAccess<T> ra = sliceIn.randomAccess();
-                    // while (cursorOut.hasNext()) {
-                    //     cursorOut.fwd();
-                    //     ra.setPosition(cursorOut);
-                    //     ra.get().set(cursorOut.get());
-                    // }
+            case FilterModes.GRADIENT2D:
+                writeStatus("Applying " + filterMode + " filter");
+                runGradient2DFilter(inputImagePlus, filterRadius);
+                break;
 
-                    // LoopBuilder.setImages(sliceIn, filteredSlice).forEachPixel((i, o) ->
-                    // i.setReal(o.getRealDouble()));
-        //         }
-        //     }
-        // }
+            case FilterModes.RIDGE_ENHANCEMENT:
+                writeStatus("Applying 2D ridge enhancement filter");
+                runRidgeEnhancement2DFilter(inputImagePlus, filterRadius, contourContrast);
+                break;
 
-        // if (showOutput)
-        //     inputImage.showImage();
+            case FilterModes.ROLLING_FRAME:
+                writeStatus("Applying rolling frame filter");
+                runRollingFrameFilter(inputImagePlus, windowIndices, rollingMethod);
+                break;
 
-        // // Applying smoothing filter
-        // switch (filterMode) {
-        // case FilterModes.MAXIMUM2D:
-        // case FilterModes.MEAN2D:
-        // case FilterModes.MEDIAN2D:
-        // case FilterModes.MINIMUM2D:
-        // case FilterModes.VARIANCE2D:
-        // writeStatus("Applying " + filterMode + " filter");
-        // apply2DFilter(inputImagePlus, filterMode, filterRadius);
-        // // apply2DFilter(inputImage, filterMode, filterRadius);
-        // break;
-
-        // case FilterModes.MAXIMUM3D:
-        // case FilterModes.MEAN3D:
-        // case FilterModes.MEDIAN3D:
-        // case FilterModes.MINIMUM3D:
-        // case FilterModes.VARIANCE3D:
-        // writeStatus("Applying " + filterMode + " filter");
-        // apply3DFilter(inputImagePlus, filterMode, (float) filterRadius);
-        // break;
-
-        // case FilterModes.DOG2D:
-        // writeStatus("Applying " + filterMode + " filter");
-        // DoG.run(inputImagePlus, filterRadius, true);
-        // break;
-
-        // case FilterModes.GAUSSIAN2D:
-        // writeStatus("Applying " + filterMode + " filter");
-        // runGaussian2DFilter(inputImagePlus, filterRadius);
-        // break;
-
-        // case FilterModes.GAUSSIAN3D:
-        // writeStatus("Applying " + filterMode + " filter");
-        // GaussianBlur3D.blur(inputImagePlus, filterRadius, filterRadius,
-        // filterRadius);
-        // break;
-
-        // case FilterModes.GRADIENT2D:
-        // writeStatus("Applying " + filterMode + " filter");
-        // runGradient2DFilter(inputImagePlus, filterRadius);
-        // break;
-
-        // case FilterModes.RIDGE_ENHANCEMENT:
-        // writeStatus("Applying 2D ridge enhancement filter");
-        // runRidgeEnhancement2DFilter(inputImagePlus, filterRadius, contourContrast);
-        // break;
-
-        // case FilterModes.ROLLING_FRAME:
-        // writeStatus("Applying rolling frame filter");
-        // runRollingFrameFilter(inputImagePlus, windowIndices, rollingMethod);
-        // break;
-
-        // }
-
-        // Image outputImage = ImageFactory.createImage(outputImageName, outputImg);
-        // workspace.addImage(outputImage);
-
-        // if (showOutput)
-        // outputImage.showImage();
+        }
 
         // If the image is being saved as a new image, adding it to the workspace
-        // if (!applyToInput) {
-        // Image outputImage = ImageFactory.createImage(outputImageName,
-        // inputImagePlus);
-        // workspace.addImage(outputImage);
-        // if (showOutput)
-        // outputImage.showImage();
-        // } else {
-        // if (showOutput)
-        // inputImage.showImage();
-        // }
+        if (!applyToInput) {
+            Image outputImage = ImageFactory.createImage(outputImageName, inputImagePlus);
+            workspace.addImage(outputImage);
+            if (showOutput)
+                outputImage.showImage();
+        } else {
+            if (showOutput)
+                inputImage.showImage();
+        }
 
         return Status.PASS;
 

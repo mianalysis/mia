@@ -315,6 +315,12 @@ public class ImgPlusImage<T extends RealType<T> & NativeType<T>> extends Image<T
     }
 
     public void setImagePlus(ImagePlus imagePlus) {
+        if (imagePlus == null) {
+            this.img = null;
+            this.overlay = null;
+            return;
+        }        
+        
         this.img = ImagePlusAdapter.wrapImgPlus(imagePlus);
         this.overlay = imagePlus.getOverlay();
     }

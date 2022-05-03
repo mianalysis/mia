@@ -254,8 +254,14 @@ public class ImagePlusImage<T extends RealType<T> & NativeType<T>> extends Image
     }
 
     public void setImgPlus(ImgPlus<T> img) {
+        if (img == null) {
+            this.imagePlus = null;
+            return;
+        }
+        
         // Duplicating ensures any cached images are moved to RAM
         imagePlus = ImageJFunctions.wrap(img, name).duplicate();
+
     }
 
     @Override
