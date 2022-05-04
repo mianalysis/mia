@@ -321,6 +321,9 @@ public class LostAndFound {
         currentValues.put("Image sequence", ImageLoader.ImportModes.IMAGE_SEQUENCE_ZEROS);
         currentParameterValues = new HashMap<>();
         currentParameterValues.put(ImageLoader.IMPORT_MODE, currentValues);
+        currentValues = new HashMap<>();
+        currentValues.put("BioFormats", ImageLoader.Readers.BIOFORMATS);
+        currentParameterValues.put(ImageLoader.READER, currentValues);
         moduleName = new ImageLoader(null).getClass().getSimpleName();
         lostParameterValues.put(moduleName, currentParameterValues);
 

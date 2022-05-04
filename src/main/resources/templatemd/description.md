@@ -1,3 +1,3 @@
-ModularImageAnalysis (MIA) is a Fiji plugin which provides a modular framework for assembling image and object analysis workflows.  Detected objects can be transformed, filtered, measured and related.  Analysis workflows are batch-enabled by default, allowing easy processing of high-content datasets.
+ModularImageAnalysis (MIA) is an ImageJ plugin which provides a modular framework for assembling image and object analysis workflows.  Detected objects can be transformed, filtered, measured and related.  Analysis workflows are batch-enabled by default, allowing easy processing of high-content datasets.
 
-MIA is developed in the [Wolfson Bioimaging Facility](http://www.bristol.ac.uk/wolfson-bioimaging/) at the University of Bristol.
+MIA is developed in the [Wolfson Bioimaging Facility](https://www.bristol.ac.uk/wolfson-bioimaging/) at the University of Bristol.

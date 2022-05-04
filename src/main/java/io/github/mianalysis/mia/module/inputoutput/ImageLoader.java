@@ -152,7 +152,7 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
     }
 
     public interface Readers {
-        String BIOFORMATS = "BioFormats";
+        String BIOFORMATS = "Bio-Formats";
         String IMAGEJ = "ImageJ";
 
         String[] ALL = new String[] { BIOFORMATS, IMAGEJ };
@@ -1608,7 +1608,7 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
         parameters.get(READER).setDescription("Set the reader for importing the image:<br><ul>"
 
                 + "<li>\"" + Readers.BIOFORMATS
-                + "\" will use the BioFormats plugin.  This is best for most cases (especially proprietary formats).</li>"
+                + "\" will use the Bio-Formats plugin.  This is best for most cases (especially proprietary formats).</li>"
 
                 + "<li>\"" + Readers.IMAGEJ + "\" will use the stock ImageJ file reader.</li></ul>");
 
