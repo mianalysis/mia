@@ -1,0 +1,16 @@
+{
+    "creators": [
+        {
+            "orcid": "0000-0003-3565-0479",
+            "affiliation": "University of Bristol",
+            "name": "Cross, Stephen John"
+        }
+    ],
+
+    "license": "GNU General Public License v3.0",
+
+    "title": "ModularImageAnalysis (MIA)",
+
+    "keywords": ["ImageJ", "Fiji", "ImageAnalysis", "BioImageAnalysis"]
+
+}
