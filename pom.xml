@@ -10,12 +10,12 @@
 
     <groupId>io.github.mianalysis</groupId>
     <artifactId>MIA</artifactId>
-    <version>0.21.15</version>
+    <version>1.0.0</version>
     <packaging>jar</packaging>
     <name>MIA</name>
     <url>https://github.com/mianalysis/mia</url>
     <inceptionYear>2017</inceptionYear>
-    <description>Image/object analysis using modularised components</description>
+    <description>ModularImageAnalysis (MIA) is an ImageJ plugin which provides a modular framework for assembling image and object analysis workflows. Detected objects can be transformed, filtered, measured and related. Analysis workflows are batch-enabled by default, allowing easy processing of high-content datasets.</description>
     <organization>
         <name>University of Bristol</name>
     </organization>
@@ -175,11 +175,11 @@
             <scope>${scp}</scope>
         </dependency>
 
-        <!-- <dependency>
+        <dependency>
 			<groupId>com.formdev</groupId>
 			<artifactId>flatlaf</artifactId>
-			<version>2.1</version>
-		</dependency> -->
+			<version>2.2</version>
+		</dependency>
 
         <dependency>
             <groupId>org.apache.poi</groupId>
@@ -335,16 +335,15 @@
             <groupId>com.atlassian.commonmark</groupId>
             <artifactId>commonmark</artifactId>
             <version>0.17.0</version>
-            <scope>${scp}</scope>
         </dependency>
 
         <dependency>
             <groupId>com.github.sjcross</groupId>
-            <artifactId>Common</artifactId>
-            <version>1.12.0</version>
+            <artifactId>sjcommon</artifactId>
+            <version>1.12.2</version>
             <!-- <groupId>io.github.sjcross</groupId>
-            <artifactId>Common</artifactId>
-            <version>1.11.3</version> -->
+            <artifactId>sjcommon</artifactId>
+            <version>1.12.2</version> -->
         </dependency>
     </dependencies>
 
@@ -452,6 +451,12 @@
                                     <excludes>
                                         <exclude>**</exclude>
                                     </excludes>
+                                </filter>
+                                <filter>
+                                    <artifact>com.formdev</artifact>
+                                    <includes>
+                                        <include>**</include>
+                                    </includes>
                                 </filter>
                                 <filter>
                                     <artifact>*:*</artifact>

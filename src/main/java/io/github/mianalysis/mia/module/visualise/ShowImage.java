@@ -20,7 +20,7 @@ import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
-import io.github.sjcross.common.metadataextractors.Metadata;
+import io.github.sjcross.sjcommon.metadataextractors.Metadata;
 
 /**
  * Created by sc13967 on 03/05/2017.

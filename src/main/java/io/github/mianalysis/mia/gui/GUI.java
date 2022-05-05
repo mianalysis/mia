@@ -37,7 +37,7 @@ import io.github.mianalysis.mia.process.analysishandling.Analysis;
 import io.github.mianalysis.mia.process.analysishandling.AnalysisRunner;
 import io.github.mianalysis.mia.process.analysishandling.AnalysisTester;
 import io.github.mianalysis.mia.process.logging.StatusPanelRenderer;
-import io.github.sjcross.common.system.FileCrawler;
+import io.github.sjcross.sjcommon.system.FileCrawler;
 
 /**
  * Created by Stephen on 20/05/2017.
@@ -106,7 +106,7 @@ public class GUI {
             mainPanel = processingPanel;
 
         initialiseStatusTextField();
-        frame.setTitle("MIA (version " + MIA.getVersion() + ")");
+        frame.setTitle("MIA");
         frame.setJMenuBar(menuBar);
         frame.add(mainPanel);
         frame.setPreferredSize(new Dimension(mainPanel.getPreferredWidth(), mainPanel.getPreferredHeight()));

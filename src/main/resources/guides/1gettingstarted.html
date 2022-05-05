@@ -9,38 +9,44 @@
     <div class="mia-text-block mx-auto">
         <p class="mia-heading">Introduction</p>
         <div class="mia-main-text">
-            Currently, MIA is installed manually into Fiji; however, in a future update it will be switched to a Fiji
-            update site. If problems are encountered, please see the <a
-                href="${PATH_TROUBLESHOOTING}">troubleshooting</a> page. For any issues not covered on
-            the troubleshooting page, you can <a href="https://github.com/mianalysis/mia/issues">submit an issue</a> via
-            GitHub.
+            MIA can either be installed into Fiji via the ImageJ Updater (Option 1) or manually using the latest releases on GitHub (Option 2).  For day-to-day use, installing from Fiji is recommended, whereas the GitHub route allows specific versions of MIA to be used.  If problems are encountered, please see the <a href="${PATH_TROUBLESHOOTING}">troubleshooting</a> page. For any issues not covered on
+            the troubleshooting page, you can <a href="https://github.com/mianalysis/mia/issues">submit an issue</a> via GitHub.
         </div>
     </div>
 
     <div class="mia-text-block mx-auto">
-        <p class="mia-heading">Downloading and installing</p>
+        <p class="mia-heading">Option 1: Installing directly from Fiji</p>
+        <div class="mia-main-text">
+            The latest version of MIA can be installed directly into Fiji via an update site.
+        </div>     
+        <br/>
         <div class="mia-main-text text-left">
             <ol>
-                <li>Before installing MIA, please ensure your copy of Fiji and all other plugins are up to date using
-                    Fiji's <a href="https://imagej.net/Updater">Updater</a>
-                    tool (Help > Update...).</li>
-                <li>All previously released versions of MIA can be downloaded from the <a
-                        href="https://github.com/mianalysis/mia/releases">Releases</a> page (the most recent version
-                    will appear first in the list). Download the "MIA_-x.x.x.jar" file (where "x.x.x" denotes the
-                    version number)</li>
-                <li>Place the MIA .jar file into the "/plugins" directory of your Fiji installation.
-                </li>
-                <li>MIA requires the "MorphoLibJ" plugin to be installed:
+                <li>Launch the ImageJ <a href="https://imagej.net/Updater">Updater</a> from Help > Update...</li>
+                <li>Click "Manage update sites" and in the window that opens, click "Add update site"</li>
+                <li>In the blank row that appears, enter the following:
                     <ul>
-                        <li>For MIA versions before 0.11.0: Launch and add the "IJPB-plugins" update site, then restart
-                            Fiji.</li>
-                        <li>For MIA versions 0.11.0 or newer: Start MIA as usual (Plugins > ModularImageAnalysis (MIA)), then click "Yes" when prompted to
-                            automatically
-                            download the updates.</li>
+                        <li>Name: ModularImageAnalysis</li>
+                        <li>URL: https://sites.imagej.net/ModularImageAnalysis</li>
                     </ul>
                 </li>
-                <li>To verify installation, run MIA from Plugins > ModularImageAnalysis (MIA). If working
-                    correctly, the MIA interface should be displayed after a couple of seconds.</li>
+                <li>Whilst still on the "Manage update sites" window, tick the "IJPB-Plugins" update site</li>
+                <li>Close the "Manage update sites" window, then click "Apply changes".</li>
+            </ol>
+        </div>
+    </div>
+
+    <div class="mia-text-block mx-auto">
+        <p class="mia-heading">Option 2: Installing manually from GitHub</p>
+        <div class="mia-main-text">
+            Specific versions of MIA can be downloaded from GitHub and installed into Fiji manually.  Note: If installing MIA manually, the ModularImageAnalysis update site should be disabled from the ImageJ Updater.
+        </div>
+        <br/>
+        <div class="mia-main-text text-left">
+            <ol>
+                <li>Download the desired version of MIA from the <a href="https://github.com/mianalysis/mia/releases">Releases</a> page.</li>
+                <li>Place this .jar file into the /plugins directory of the your Fiji installation.</li>
+                <li>Install <a href="http://imagej.net/plugins/morpholibj">MorphoLibJ</a> using the instructions <a href="http://imagej.net/plugins/morpholibj#installation">here</a>.</li>
             </ol>
         </div>
     </div>

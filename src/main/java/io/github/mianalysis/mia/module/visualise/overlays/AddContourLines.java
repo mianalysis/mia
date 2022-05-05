@@ -47,8 +47,8 @@ import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.process.ColourFactory;
 import io.github.mianalysis.mia.process.LabelFactory;
-import io.github.sjcross.common.imagej.LUTs;
-import io.github.sjcross.common.mathfunc.CumStat;
+import io.github.sjcross.sjcommon.imagej.LUTs;
+import io.github.sjcross.sjcommon.mathfunc.CumStat;
 
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class AddContourLines extends Module {

@@ -8,7 +8,7 @@ public class DependencyValidator {
             Class.forName("inra.ijpb.binary.BinaryImages");
         } catch (ClassNotFoundException e) {
             MIA.log.writeError(
-                    "MorphoLibJ plugin missing.\r\nPlease install via Fiji Updater by adding the \"IJPB-Plugins\" update site.");
+                    "MorphoLibJ plugin missing.\r\nPlease install via ImageJ Updater by adding the \"IJPB-Plugins\" update site.");
             return true;
         }
 
@@ -66,7 +66,7 @@ public class DependencyValidator {
     // sites.get("https://sites.imagej.net/IJPB-plugins/");
     // if (updateSite == null) {
     // MIA.log.writeError("Can't load IJPB-plugins dependency. Please install
-    // manually using Fiji Updater.");
+    // manually using ImageJ Updater.");
     // return;
     // }
     // files.addUpdateSite(updateSite);

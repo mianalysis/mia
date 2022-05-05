@@ -28,12 +28,12 @@ import io.github.mianalysis.mia.object.parameters.text.DoubleP;
 import io.github.mianalysis.mia.object.parameters.text.IntegerP;
 import io.github.mianalysis.mia.object.parameters.text.StringP;
 import io.github.mianalysis.mia.object.units.TemporalUnit;
-import io.github.sjcross.common.exceptions.IntegerOverflowException;
-import io.github.sjcross.common.object.volume.PointOutOfRangeException;
-import io.github.sjcross.common.object.volume.SpatCal;
-import io.github.sjcross.common.object.volume.VolumeType;
-import io.github.sjcross.common.process.IntensityMinMax;
-import io.github.sjcross.common.process.houghtransform.transforms.RectangleTransform;
+import io.github.sjcross.sjcommon.exceptions.IntegerOverflowException;
+import io.github.sjcross.sjcommon.object.volume.PointOutOfRangeException;
+import io.github.sjcross.sjcommon.object.volume.SpatCal;
+import io.github.sjcross.sjcommon.object.volume.VolumeType;
+import io.github.sjcross.sjcommon.process.IntensityMinMax;
+import io.github.sjcross.sjcommon.process.houghtransform.transforms.RectangleTransform;
 
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class RectangleHoughDetection extends AbstractHoughDetection {

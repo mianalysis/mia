@@ -14,9 +14,9 @@ import io.github.mianalysis.mia.module.ModuleTest;
 import io.github.mianalysis.mia.module.objects.measure.spatial.MeasureTrackMotion;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
-import io.github.sjcross.common.exceptions.IntegerOverflowException;
-import io.github.sjcross.common.object.tracks.Track;
-import io.github.sjcross.common.object.volume.VolumeType;
+import io.github.sjcross.sjcommon.exceptions.IntegerOverflowException;
+import io.github.sjcross.sjcommon.object.tracks.Track;
+import io.github.sjcross.sjcommon.object.volume.VolumeType;
 
 /**
  * Created by Stephen Cross on 09/08/2018.

@@ -11,11 +11,11 @@ import ij.ImagePlus;
 import ij.gui.Roi;
 import io.github.mianalysis.mia.object.units.SpatialUnit;
 import io.github.mianalysis.mia.object.units.TemporalUnit;
-import io.github.sjcross.common.exceptions.IntegerOverflowException;
-import io.github.sjcross.common.object.Point;
-import io.github.sjcross.common.object.volume.PointOutOfRangeException;
-import io.github.sjcross.common.object.volume.Volume;
-import io.github.sjcross.common.object.volume.VolumeType;
+import io.github.sjcross.sjcommon.exceptions.IntegerOverflowException;
+import io.github.sjcross.sjcommon.object.Point;
+import io.github.sjcross.sjcommon.object.volume.PointOutOfRangeException;
+import io.github.sjcross.sjcommon.object.volume.Volume;
+import io.github.sjcross.sjcommon.object.volume.VolumeType;
 
 /**
  * Created by Stephen on 30/04/2017.
@@ -384,7 +384,12 @@ public class Obj extends Volume {
         // ThresholdToSelection selection = new ThresholdToSelection();
 
         // Roi roi = selection.convert(objectImage.getImagePlus().getProcessor());
+        
         Roi roi = super.getRoi(slice);
+
+        if (roi == null)
+            return null;
+
         rois.put(slice, roi);
 
         return (Roi) roi.clone();

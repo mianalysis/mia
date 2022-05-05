@@ -46,11 +46,11 @@ import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.process.ColourFactory;
-import io.github.sjcross.common.exceptions.IntegerOverflowException;
-import io.github.sjcross.common.imagej.LUTs;
-import io.github.sjcross.common.object.Point;
-import io.github.sjcross.common.object.volume.CoordinateSet;
-import io.github.sjcross.common.object.volume.VolumeType;
+import io.github.sjcross.sjcommon.exceptions.IntegerOverflowException;
+import io.github.sjcross.sjcommon.imagej.LUTs;
+import io.github.sjcross.sjcommon.object.Point;
+import io.github.sjcross.sjcommon.object.volume.CoordinateSet;
+import io.github.sjcross.sjcommon.object.volume.VolumeType;
 
 /**
  * Created by sc13967 on 21/06/2017.
@@ -424,7 +424,7 @@ public class SingleClassCluster extends Module {
                 + "<li>\"" + ClusteringAlgorithms.DBSCAN
                 + "\" Points are clustered based on a minimum number of neighbours (\"" + MIN_POINTS
                 + "\") within a specified distance (\"" + EPS
-                + "\").  All proximal points which satisfy these criteria are added to a common cluster.  This uses the <a href=\"http://commons.apache.org/proper/commons-math/javadocs/api-3.6/org/apache/commons/math3/stat/clustering/DBSCANClusterer.html\">Apache Commons Math3</a> implementation of DBSCAN, which describes the algorithm as: \"A point p is density connected to another point q, if there exists a chain of points pi, with i = 1 .. n and p1 = p and pn = q, such that each pair <pi, pi+1> is directly density-reachable. A point q is directly density-reachable from point p if it is in the ε-neighborhood of this point.\".</li>"
+                + "\").  All proximal points which satisfy these criteria are added to a common cluster.  This uses the <a href=\"https://commons.apache.org/proper/commons-math/javadocs/api-3.6/org/apache/commons/math3/stat/clustering/DBSCANClusterer.html\">Apache Commons Math3</a> implementation of DBSCAN, which describes the algorithm as: \"A point p is density connected to another point q, if there exists a chain of points pi, with i = 1 .. n and p1 = p and pn = q, such that each pair <pi, pi+1> is directly density-reachable. A point q is directly density-reachable from point p if it is in the ε-neighborhood of this point.\".</li>"
 
                 + "<li>\"" + ClusteringAlgorithms.KMEANSPLUSPLUS
                 + "\" Points are assigned into a pre-determined number of clusters (defined by \"" + K_CLUSTERS
@@ -519,11 +519,11 @@ public class SingleClassCluster extends Module {
 // import io.github.mianalysis.MIA.Object.References.MetadataRefs;
 // import io.github.mianalysis.MIA.Object.References.ParentChildRefs;
 // import io.github.mianalysis.MIA.Process.ColourFactory;
-// import io.github.sjcross.common.exceptions.IntegerOverflowException;
-// import io.github.sjcross.common.object.LUTs;
-// import io.github.sjcross.common.object.Point;
-// import io.github.sjcross.common.object.volume.CoordinateSet;
-// import io.github.sjcross.common.object.volume.VolumeType;
+// import io.github.sjcross.sjcommon.exceptions.IntegerOverflowException;
+// import io.github.sjcross.sjcommon.object.LUTs;
+// import io.github.sjcross.sjcommon.object.Point;
+// import io.github.sjcross.sjcommon.object.volume.CoordinateSet;
+// import io.github.sjcross.sjcommon.object.volume.VolumeType;
 //
 // import java.util.ArrayList;
 // import java.util.HashMap;

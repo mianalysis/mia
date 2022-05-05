@@ -31,7 +31,7 @@ import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.process.ColourFactory;
 import io.github.mianalysis.mia.process.LabelFactory;
-import io.github.sjcross.common.process.IntensityMinMax;
+import io.github.sjcross.sjcommon.process.IntensityMinMax;
 
 public abstract class AbstractHoughDetection extends Module {
     public static final String INPUT_SEPARATOR = "Image input, object output";

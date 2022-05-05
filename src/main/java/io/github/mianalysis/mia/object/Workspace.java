@@ -10,7 +10,7 @@ import ij.measure.ResultsTable;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.object.refs.MetadataRef;
 import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
-import io.github.sjcross.common.metadataextractors.Metadata;
+import io.github.sjcross.sjcommon.metadataextractors.Metadata;
 
 /**
  * Created by sc13967 on 02/05/2017.

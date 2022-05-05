@@ -46,10 +46,10 @@ import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.process.ColourFactory;
-import io.github.sjcross.common.imagej.LUTs;
-import io.github.sjcross.common.mathfunc.Indexer;
-import io.github.sjcross.common.object.Point;
-import io.github.sjcross.common.object.volume.VolumeType;
+import io.github.sjcross.sjcommon.imagej.LUTs;
+import io.github.sjcross.sjcommon.mathfunc.Indexer;
+import io.github.sjcross.sjcommon.object.Point;
+import io.github.sjcross.sjcommon.object.volume.VolumeType;
 
 /**
  * Created by sc13967 on 20/09/2017.

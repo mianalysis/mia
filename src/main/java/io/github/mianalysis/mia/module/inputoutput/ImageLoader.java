@@ -59,12 +59,12 @@ import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.units.SpatialUnit;
 import io.github.mianalysis.mia.object.units.TemporalUnit;
-import io.github.sjcross.common.metadataextractors.CV7000FilenameExtractor;
-import io.github.sjcross.common.metadataextractors.IncuCyteShortFilenameExtractor;
-import io.github.sjcross.common.metadataextractors.Metadata;
-import io.github.sjcross.common.metadataextractors.NameExtractor;
-import io.github.sjcross.common.process.CommaSeparatedStringInterpreter;
-import io.github.sjcross.common.system.FileCrawler;
+import io.github.sjcross.sjcommon.metadataextractors.CV7000FilenameExtractor;
+import io.github.sjcross.sjcommon.metadataextractors.IncuCyteShortFilenameExtractor;
+import io.github.sjcross.sjcommon.metadataextractors.Metadata;
+import io.github.sjcross.sjcommon.metadataextractors.NameExtractor;
+import io.github.sjcross.sjcommon.process.CommaSeparatedStringInterpreter;
+import io.github.sjcross.sjcommon.system.FileCrawler;
 import loci.common.DebugTools;
 import loci.common.services.DependencyException;
 import loci.common.services.ServiceException;
@@ -152,7 +152,7 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
     }
 
     public interface Readers {
-        String BIOFORMATS = "BioFormats";
+        String BIOFORMATS = "Bio-Formats";
         String IMAGEJ = "ImageJ";
 
         String[] ALL = new String[] { BIOFORMATS, IMAGEJ };
@@ -1608,7 +1608,7 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
         parameters.get(READER).setDescription("Set the reader for importing the image:<br><ul>"
 
                 + "<li>\"" + Readers.BIOFORMATS
-                + "\" will use the BioFormats plugin.  This is best for most cases (especially proprietary formats).</li>"
+                + "\" will use the Bio-Formats plugin.  This is best for most cases (especially proprietary formats).</li>"
 
                 + "<li>\"" + Readers.IMAGEJ + "\" will use the stock ImageJ file reader.</li></ul>");
 

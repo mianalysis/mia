@@ -294,7 +294,7 @@ public class DistanceMap extends Module {
                 "The output distance map will be saved to the workspace with this name.  This image will be 32-bit format.");
 
         parameters.get(WEIGHT_MODE).setDescription(
-                "The pre-defined set of weights that are used to compute the 3D distance transform using chamfer approximations of the euclidean metric (descriptions taken from <a href=\"http://ijpb.github.io/MorphoLibJ/javadoc/\">http://ijpb.github.io/MorphoLibJ/javadoc/</a>):<br><ul>"
+                "The pre-defined set of weights that are used to compute the 3D distance transform using chamfer approximations of the euclidean metric (descriptions taken from <a href=\"https://ijpb.github.io/MorphoLibJ/javadoc/\">https://ijpb.github.io/MorphoLibJ/javadoc/</a>):<br><ul>"
                         + "<li>\"" + WeightModes.BORGEFORS
                         + "\" Use weight values of 3 for orthogonal neighbors, 4 for diagonal neighbors and 5 for cube-diagonals (best approximation for 3-by-3-by-3 masks).</li>"
 

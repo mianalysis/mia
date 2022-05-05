@@ -20,9 +20,9 @@ import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
-import io.github.sjcross.common.exceptions.IntegerOverflowException;
-import io.github.sjcross.common.object.volume.SpatCal;
-import io.github.sjcross.common.object.volume.Volume;
+import io.github.sjcross.sjcommon.exceptions.IntegerOverflowException;
+import io.github.sjcross.sjcommon.object.volume.SpatCal;
+import io.github.sjcross.sjcommon.object.volume.Volume;
 import ome.units.quantity.Time;
 import ome.units.unit.Unit;
 
