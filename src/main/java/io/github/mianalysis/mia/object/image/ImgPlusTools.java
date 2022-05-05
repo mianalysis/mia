@@ -2,7 +2,7 @@ package io.github.mianalysis.mia.object.image;
 
 import ij.ImagePlus;
 import io.github.mianalysis.mia.MIA;
-import io.github.sjcross.common.object.volume.SpatCal;
+import io.github.sjcross.sjcommon.object.volume.SpatCal;
 import net.imagej.ImgPlus;
 import net.imagej.axis.Axes;
 import net.imagej.axis.AxisType;

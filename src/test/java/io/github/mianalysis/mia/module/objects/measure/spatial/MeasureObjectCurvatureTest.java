@@ -29,7 +29,7 @@ import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.Workspaces;
 import io.github.mianalysis.mia.object.image.Image;
 import io.github.mianalysis.mia.object.image.ImageFactory;
-import io.github.sjcross.common.object.volume.VolumeType;
+import io.github.sjcross.sjcommon.object.volume.VolumeType;
 
 /**
  * Created by sc13967 on 31/01/2018.

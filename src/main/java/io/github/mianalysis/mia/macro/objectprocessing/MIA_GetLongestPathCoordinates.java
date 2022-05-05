@@ -13,7 +13,7 @@ import io.github.mianalysis.mia.module.objects.measure.spatial.MeasureSkeleton;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
-import io.github.sjcross.common.object.Point;
+import io.github.sjcross.sjcommon.object.Point;
 
 @Plugin(type = MacroOperation.class, priority=Priority.LOW, visible=true)
 public class MIA_GetLongestPathCoordinates extends MacroOperation {

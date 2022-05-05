@@ -32,9 +32,9 @@ import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Colours;
 import io.github.mianalysis.mia.object.system.Preferences;
 import io.github.mianalysis.mia.object.system.Status;
-import io.github.sjcross.common.imagej.LUTs;
-import io.github.sjcross.common.object.Point;
-import io.github.sjcross.common.object.volume.PointOutOfRangeException;
+import io.github.sjcross.sjcommon.imagej.LUTs;
+import io.github.sjcross.sjcommon.object.Point;
+import io.github.sjcross.sjcommon.object.volume.PointOutOfRangeException;
 
 /**
  * Created by sc13967 on 29/06/2017.

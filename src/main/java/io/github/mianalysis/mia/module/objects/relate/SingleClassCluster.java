@@ -49,11 +49,11 @@ import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Preferences;
 import io.github.mianalysis.mia.object.system.Status;
 import io.github.mianalysis.mia.process.ColourFactory;
-import io.github.sjcross.common.exceptions.IntegerOverflowException;
-import io.github.sjcross.common.imagej.LUTs;
-import io.github.sjcross.common.object.Point;
-import io.github.sjcross.common.object.volume.CoordinateSet;
-import io.github.sjcross.common.object.volume.VolumeType;
+import io.github.sjcross.sjcommon.exceptions.IntegerOverflowException;
+import io.github.sjcross.sjcommon.imagej.LUTs;
+import io.github.sjcross.sjcommon.object.Point;
+import io.github.sjcross.sjcommon.object.volume.CoordinateSet;
+import io.github.sjcross.sjcommon.object.volume.VolumeType;
 
 /**
  * Created by sc13967 on 21/06/2017.
@@ -526,11 +526,11 @@ public class SingleClassCluster extends Module {
 // import io.github.mianalysis.MIA.Object.References.MetadataRefs;
 // import io.github.mianalysis.MIA.Object.References.ParentChildRefs;
 // import io.github.mianalysis.MIA.Process.ColourFactory;
-// import io.github.sjcross.common.exceptions.IntegerOverflowException;
-// import io.github.sjcross.common.object.LUTs;
-// import io.github.sjcross.common.object.Point;
-// import io.github.sjcross.common.object.volume.CoordinateSet;
-// import io.github.sjcross.common.object.volume.VolumeType;
+// import io.github.sjcross.sjcommon.exceptions.IntegerOverflowException;
+// import io.github.sjcross.sjcommon.object.LUTs;
+// import io.github.sjcross.sjcommon.object.Point;
+// import io.github.sjcross.sjcommon.object.volume.CoordinateSet;
+// import io.github.sjcross.sjcommon.object.volume.VolumeType;
 //
 // import java.util.ArrayList;
 // import java.util.HashMap;

@@ -23,7 +23,7 @@ import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Preferences;
 import io.github.mianalysis.mia.object.system.Status;
-import io.github.sjcross.common.imagej.LUTs;
+import io.github.sjcross.sjcommon.imagej.LUTs;
 
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class MergeSingleClass extends Module {

@@ -34,7 +34,7 @@ import io.github.mianalysis.mia.object.system.Colours;
 import io.github.mianalysis.mia.object.system.Preferences;
 import io.github.mianalysis.mia.object.system.Status;
 import io.github.mianalysis.mia.process.ColourFactory;
-import io.github.sjcross.common.process.CommaSeparatedStringInterpreter;
+import io.github.sjcross.sjcommon.process.CommaSeparatedStringInterpreter;
 
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class AddText extends AbstractOverlay {

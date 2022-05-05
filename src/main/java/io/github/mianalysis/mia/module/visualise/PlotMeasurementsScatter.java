@@ -33,7 +33,7 @@ import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Preferences;
 import io.github.mianalysis.mia.object.system.Status;
-import io.github.sjcross.common.mathfunc.CumStat;
+import io.github.sjcross.sjcommon.mathfunc.CumStat;
 
 /**
  * Created by sc13967 on 19/05/2017.

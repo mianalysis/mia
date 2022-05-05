@@ -40,7 +40,7 @@ import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Preferences;
 import io.github.mianalysis.mia.object.system.Status;
 import io.github.mianalysis.mia.process.ColourFactory;
-import io.github.sjcross.common.object.Point;
+import io.github.sjcross.sjcommon.object.Point;
 
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class CreateDistanceMap extends Module {

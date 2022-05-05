@@ -61,8 +61,8 @@ import io.github.mianalysis.mia.process.analysishandling.Analysis;
 import io.github.mianalysis.mia.process.analysishandling.AnalysisWriter;
 import io.github.mianalysis.mia.process.logging.LogRenderer;
 import io.github.mianalysis.mia.process.logging.LogRenderer.Level;
-import io.github.sjcross.common.mathfunc.CumStat;
-import io.github.sjcross.common.metadataextractors.Metadata;
+import io.github.sjcross.sjcommon.mathfunc.CumStat;
+import io.github.sjcross.sjcommon.metadataextractors.Metadata;
 
 /**
  * Created by sc13967 on 12/05/2017.

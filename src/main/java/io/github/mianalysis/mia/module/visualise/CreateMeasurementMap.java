@@ -43,11 +43,11 @@ import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Preferences;
 import io.github.mianalysis.mia.object.system.Status;
-import io.github.sjcross.common.mathfunc.CumStat;
-import io.github.sjcross.common.mathfunc.Indexer;
-import io.github.sjcross.common.object.Point;
-import io.github.sjcross.common.object.volume.SpatCal;
-import io.github.sjcross.common.object.voxels.MidpointCircle;
+import io.github.sjcross.sjcommon.mathfunc.CumStat;
+import io.github.sjcross.sjcommon.mathfunc.Indexer;
+import io.github.sjcross.sjcommon.object.Point;
+import io.github.sjcross.sjcommon.object.volume.SpatCal;
+import io.github.sjcross.sjcommon.object.voxels.MidpointCircle;
 
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class CreateMeasurementMap extends Module {

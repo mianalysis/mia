@@ -17,7 +17,7 @@ import io.github.mianalysis.mia.object.measurements.Measurement;
 import java.net.URLDecoder;
 
 import org.junit.jupiter.api.Test;
-import io.github.sjcross.common.object.volume.VolumeType;
+import io.github.sjcross.sjcommon.object.volume.VolumeType;
 
 import static org.junit.jupiter.api.Assertions.*;
 

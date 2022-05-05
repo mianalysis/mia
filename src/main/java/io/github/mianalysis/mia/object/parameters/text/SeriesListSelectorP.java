@@ -4,7 +4,7 @@ import io.github.mianalysis.mia.gui.parametercontrols.ParameterControl;
 import io.github.mianalysis.mia.gui.parametercontrols.SeriesSelector;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.object.parameters.abstrakt.Parameter;
-import io.github.sjcross.common.process.CommaSeparatedStringInterpreter;
+import io.github.sjcross.sjcommon.process.CommaSeparatedStringInterpreter;
 
 import com.drew.lang.annotations.NotNull;
 

@@ -37,8 +37,8 @@ import io.github.mianalysis.mia.object.refs.collections.ImageMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.system.Status;
-import io.github.sjcross.common.process.CommaSeparatedStringInterpreter;
-import io.github.sjcross.common.imagej.LUTs;
+import io.github.sjcross.sjcommon.process.CommaSeparatedStringInterpreter;
+import io.github.sjcross.sjcommon.imagej.LUTs;
 
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class FilterSpecificObjectIDs extends AbstractObjectFilter implements ActionListener {

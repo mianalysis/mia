@@ -39,7 +39,7 @@ import io.github.mianalysis.mia.object.system.Colours;
 import io.github.mianalysis.mia.object.system.Preferences;
 import io.github.mianalysis.mia.object.system.Status;
 import io.github.mianalysis.mia.process.logging.LogRenderer.Level;
-import io.github.sjcross.common.metadataextractors.Metadata;
+import io.github.sjcross.sjcommon.metadataextractors.Metadata;
 import loci.common.services.DependencyException;
 import loci.common.services.ServiceException;
 import loci.formats.FormatException;

@@ -35,7 +35,7 @@ import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Preferences;
 import io.github.mianalysis.mia.object.system.Status;
-import io.github.sjcross.common.analysis.TextureCalculator;
+import io.github.sjcross.sjcommon.analysis.TextureCalculator;
 
 /**
  * Takes a set of objects and measures intensity texture values on a provided

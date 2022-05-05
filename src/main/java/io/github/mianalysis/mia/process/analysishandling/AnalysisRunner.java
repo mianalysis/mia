@@ -24,7 +24,7 @@ import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.Workspaces;
 import io.github.mianalysis.mia.object.parameters.FileFolderPathP;
 import io.github.mianalysis.mia.process.exporting.Exporter;
-import io.github.sjcross.common.system.FileCrawler;
+import io.github.sjcross.sjcommon.system.FileCrawler;
 
 /**
  * Created by sc13967 on 21/10/2016.
