@@ -18,7 +18,7 @@ import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.units.SpatialUnit;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.Workspaces;
-import io.github.sjcross.common.object.volume.VolumeType;
+import io.github.sjcross.sjcommon.object.volume.VolumeType;
 
 /**
  * Created by Stephen Cross on 03/09/2017.

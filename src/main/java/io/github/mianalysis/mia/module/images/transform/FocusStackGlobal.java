@@ -62,7 +62,7 @@ import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.process.ImgPlusTools;
-import io.github.sjcross.common.mathfunc.CumStat;
+import io.github.sjcross.sjcommon.mathfunc.CumStat;
 
 import net.imagej.ImgPlus;
 import net.imagej.axis.Axes;

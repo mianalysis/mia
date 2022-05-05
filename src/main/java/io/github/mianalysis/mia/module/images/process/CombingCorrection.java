@@ -22,7 +22,7 @@ import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
-import io.github.sjcross.common.filters.CombingCorrector;
+import io.github.sjcross.sjcommon.filters.CombingCorrector;
 
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class CombingCorrection extends Module {

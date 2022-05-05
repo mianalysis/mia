@@ -3,8 +3,8 @@
 // import org.junit.jupiter.api.Disabled;
 // import org.bonej.geometry.Ellipsoid;
 // import org.junit.jupiter.api.Test;
-// import io.github.sjcross.common.object.volume.Volume;
-// import io.github.sjcross.common.object.volume.VolumeType;
+// import io.github.sjcross.sjcommon.object.volume.Volume;
+// import io.github.sjcross.sjcommon.object.volume.VolumeType;
 
 // import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 // import static org.junit.jupiter.api.Assertions.assertEquals;

@@ -26,7 +26,7 @@ import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
-import io.github.sjcross.common.analysis.IntensityCalculator;
+import io.github.sjcross.sjcommon.analysis.IntensityCalculator;
 
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class WhiteBalanceCorrection extends Module {

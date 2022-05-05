@@ -11,11 +11,11 @@ import ij.ImagePlus;
 import ij.gui.Roi;
 import io.github.mianalysis.mia.object.units.SpatialUnit;
 import io.github.mianalysis.mia.object.units.TemporalUnit;
-import io.github.sjcross.common.exceptions.IntegerOverflowException;
-import io.github.sjcross.common.object.Point;
-import io.github.sjcross.common.object.volume.PointOutOfRangeException;
-import io.github.sjcross.common.object.volume.Volume;
-import io.github.sjcross.common.object.volume.VolumeType;
+import io.github.sjcross.sjcommon.exceptions.IntegerOverflowException;
+import io.github.sjcross.sjcommon.object.Point;
+import io.github.sjcross.sjcommon.object.volume.PointOutOfRangeException;
+import io.github.sjcross.sjcommon.object.volume.Volume;
+import io.github.sjcross.sjcommon.object.volume.VolumeType;
 
 /**
  * Created by Stephen on 30/04/2017.

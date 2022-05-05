@@ -41,7 +41,7 @@ import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
-import io.github.sjcross.common.process.IntensityMinMax;
+import io.github.sjcross.sjcommon.process.IntensityMinMax;
 
 /**
  * Created by sc13967 on 06/06/2017.

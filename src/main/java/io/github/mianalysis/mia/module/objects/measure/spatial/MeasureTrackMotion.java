@@ -30,10 +30,10 @@ import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
-import io.github.sjcross.common.mathfunc.CumStat;
-import io.github.sjcross.common.object.Point;
-import io.github.sjcross.common.object.tracks.Timepoint;
-import io.github.sjcross.common.object.tracks.Track;
+import io.github.sjcross.sjcommon.mathfunc.CumStat;
+import io.github.sjcross.sjcommon.object.Point;
+import io.github.sjcross.sjcommon.object.tracks.Timepoint;
+import io.github.sjcross.sjcommon.object.tracks.Track;
 
 /**
  * Created by Stephen Cross on 24/05/2017.

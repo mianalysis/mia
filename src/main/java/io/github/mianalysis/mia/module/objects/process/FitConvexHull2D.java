@@ -23,8 +23,8 @@ import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
-import io.github.sjcross.common.object.volume.PointOutOfRangeException;
-import io.github.sjcross.common.object.volume.VolumeType;
+import io.github.sjcross.sjcommon.object.volume.PointOutOfRangeException;
+import io.github.sjcross.sjcommon.object.volume.VolumeType;
 
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class FitConvexHull2D extends Module {

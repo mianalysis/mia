@@ -6,10 +6,10 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 
 import ome.units.UNITS;
-import io.github.sjcross.common.exceptions.IntegerOverflowException;
-import io.github.sjcross.common.object.volume.PointOutOfRangeException;
-import io.github.sjcross.common.object.volume.SpatCal;
-import io.github.sjcross.common.object.volume.VolumeType;
+import io.github.sjcross.sjcommon.exceptions.IntegerOverflowException;
+import io.github.sjcross.sjcommon.object.volume.PointOutOfRangeException;
+import io.github.sjcross.sjcommon.object.volume.SpatCal;
+import io.github.sjcross.sjcommon.object.volume.VolumeType;
 
 import static org.junit.jupiter.api.Assertions.*;
 

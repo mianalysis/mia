@@ -3,10 +3,10 @@
 // package io.github.mianalysis.mia.module.objects.measure.spatial.tools;
 
 // import org.bonej.geometry.FitEllipse;
-// import io.github.sjcross.common.exceptions.IntegerOverflowException;
-// import io.github.sjcross.common.object.Point;
-// import io.github.sjcross.common.object.volume.PointOutOfRangeException;
-// import io.github.sjcross.common.object.volume.Volume;
+// import io.github.sjcross.sjcommon.exceptions.IntegerOverflowException;
+// import io.github.sjcross.sjcommon.object.Point;
+// import io.github.sjcross.sjcommon.object.volume.PointOutOfRangeException;
+// import io.github.sjcross.sjcommon.object.volume.Volume;
 
 // public class EllipseCalculator {
 //     private final Volume volume;
