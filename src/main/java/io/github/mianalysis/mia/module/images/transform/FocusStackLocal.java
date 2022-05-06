@@ -194,7 +194,7 @@ public class FocusStackLocal extends Module {
 
     @Override
     public String getDescription() {
-        return "Focuses a Z-stack into a single plane using the StackFocuser Fiji plugin.  Best focus position is determined at each 2D pixel location, with the final image being comprised of the pixels from the slice with the best focus at that location.  Each channel and timepoint is focused separately.  Prior to application, the focus map can be median filtered to remove outliers.  Height maps can be stored and used in additional \""
+        return "Focuses a Z-stack into a single plane using the StackFocuser ImageJ plugin.  Best focus position is determined at each 2D pixel location, with the final image being comprised of the pixels from the slice with the best focus at that location.  Each channel and timepoint is focused separately.  Prior to application, the focus map can be median filtered to remove outliers.  Height maps can be stored and used in additional \""
                 + new FocusStackLocal(null).getName()
                 + "\" instances, thus allowing height maps to be edited prior to use."
 

@@ -4,11 +4,11 @@
 [![Testing](https://github.com/mianalysis/mia/actions/workflows/tests.yml/badge.svg)](https://github.com/mianalysis/mia/actions/workflows/tests.yml)
 
 
-[![Wolfson Bioimaging](./src/main/resources/images/Logo_text_UoB_128.png)](http://www.bristol.ac.uk/wolfson-bioimaging/)
+[![Wolfson Bioimaging](./src/main/resources/images/Logo_text_UoB_128.png)](https://www.bristol.ac.uk/wolfson-bioimaging/)
 
 About MIA
 ------------
-ModularImageAnalysis (MIA) is a Fiji plugin which provides a modular framework for assembling image and object analysis workflows. Detected objects can be transformed, filtered, measured and related. Analysis workflows are batch-enabled by default, allowing easy processing of high-content datasets.
+ModularImageAnalysis (MIA) is an ImageJ plugin which provides a modular framework for assembling image and object analysis workflows. Detected objects can be transformed, filtered, measured and related. Analysis workflows are batch-enabled by default, allowing easy processing of high-content datasets.
 
 For the full documentation, please go to [mianalysis.github.io](https://mianalysis.github.io)
 
@@ -17,20 +17,20 @@ Installation
 ------------
 ### Via the update site
 The latest version of MIA can be installed directly into Fiji via an update site.
-1. Launch the Fiji [Updater](https://imagej.net/Updater) from Help > Update...
+1. Launch the ImageJ [Updater](https://imagej.net/Updater) from Help > Update...
 2. Click "Manage update sites" and in the window that opens, click "Add update site" 
-3. In the blank row that appears, enter the following:
-    - Name: ModularImageAnalysis
-    - URL: https:/[]()/sites.imagej.net/ModularImageAnalysis
-4. Close the "Manage update sites" window, then click "Apply changes"
+3. Ensure the following two update sites are ticked:
+   - IJPB-plugins
+   - ModularImageAnalysis
+4. Close the "Manage update sites" window, then click "Apply changes" in the Updater window
 
 ### Manually from GitHub
 Specific versions of MIA can be downloaded from GitHub and installed into Fiji manually.
 
-Note: If installing MIA manually, the ModularImageAnalysis update site should be disabled from the Fiji Updater.
+Note: If installing MIA manually, the ModularImageAnalysis update site should be disabled from the ImageJ Updater.
 1. Download the desired version of MIA from the [Releases](https://github.com/mianalysis/mia/releases) page.
 2. Place this .jar file into the /plugins directory of the your Fiji installation.
-3. Install [MorphoLibJ](http://imagej.net/plugins/morpholibj) using the instructions [here](http://imagej.net/plugins/morpholibj#installation)
+3. Install [MorphoLibJ](https://imagej.net/plugins/morpholibj) using the instructions [here](https://imagej.net/plugins/morpholibj#installation)
 
 Using MIA
 ------------
@@ -41,7 +41,7 @@ Acknowledgements
 ------------
 The plugin makes use of a combination of plugins packaged with Fiji as well as others that can be installed via the updater.
 
-Required plugins pre-packaged with Fiji: [AnalyzeSkeleton](https://github.com/fiji/AnalyzeSkeleton), [Auto Threshold](https://github.com/fiji/Auto_Threshold), [bUnwarpJ](https://github.com/fiji/bUnwarpJ), [BioFormats](https://github.com/openmicroscopy/bioformats), [Colour Deconvolution](https://github.com/fiji/Colour_Deconvolution), [Correct Bleach](https://github.com/fiji/CorrectBleach), [MPICBG](https://github.com/axtimwalde/mpicbg), [TrackMate](https://github.com/fiji/TrackMate), [Weka Trainable Segmentation](https://github.com/fiji/Trainable_Segmentation).  Required plugins that need installing via the Fiji updater: [MorphoLibJ](https://github.com/ijpb/MorphoLibJ).  Plugins bundled with MIA: [Stack Focuser](https://imagej.nih.gov/ij/plugins/stack-focuser.html).
+Required plugins pre-packaged with Fiji: [AnalyzeSkeleton](https://github.com/fiji/AnalyzeSkeleton), [Auto Threshold](https://github.com/fiji/Auto_Threshold), [bUnwarpJ](https://github.com/fiji/bUnwarpJ), [Bio-Formats](https://github.com/openmicroscopy/bioformats), [Colour Deconvolution](https://github.com/fiji/Colour_Deconvolution), [Correct Bleach](https://github.com/fiji/CorrectBleach), [MPICBG](https://github.com/axtimwalde/mpicbg), [TrackMate](https://github.com/fiji/TrackMate), [Weka Trainable Segmentation](https://github.com/fiji/Trainable_Segmentation).  Required plugins that need installing via the ImageJ updater: [MorphoLibJ](https://github.com/ijpb/MorphoLibJ).  Plugins bundled with MIA: [Stack Focuser](https://imagej.nih.gov/ij/plugins/stack-focuser.html).
 
 A list of bundled dependencies along with their respective licenses can be found [here](https://htmlpreview.github.io/?https://github.com/mianalysis/mia/blob/master/target/site/dependencies.html).
 

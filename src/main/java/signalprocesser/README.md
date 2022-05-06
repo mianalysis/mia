@@ -2,7 +2,7 @@
 
 Source code downloaded from https://archive.md/l3Un5#selection-571.0-587.218 on 3rd November 2021.
 
-- This software is Copyright (C) 2008 Glenn Hudson released under Gnu Public License (GPL). Under GPL you are free to use, modify, and redistribute the software. Please acknowledge Glenn Hudson and Matt Duckham as the source of this software if you do use or adapt the code in further research or other work. For full details of GPL see http://www.gnu.org/licenses/gpl-3.0.txt.
+- This software is Copyright (C) 2008 Glenn Hudson released under Gnu Public License (GPL). Under GPL you are free to use, modify, and redistribute the software. Please acknowledge Glenn Hudson and Matt Duckham as the source of this software if you do use or adapt the code in further research or other work. For full details of GPL see https://www.gnu.org/licenses/gpl-3.0.txt.
 - This software comes with no warranty of any kind, expressed or implied.
 
 

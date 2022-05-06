@@ -57,6 +57,7 @@ import io.github.sjcross.sjcommon.object.Point;
 import io.github.sjcross.sjcommon.object.volume.PointOutOfRangeException;
 import io.github.sjcross.sjcommon.object.volume.SpatCal;
 import io.github.sjcross.sjcommon.object.volume.VolumeType;
+import io.github.sjcross.sjcommon.process.IntensityMinMax;
 
 /**
  * Created by sc13967 on 15/05/2017.

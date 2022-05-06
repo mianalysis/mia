@@ -62,7 +62,7 @@ public class ExportACCDataset extends Module {
 
     @Override
     public String getDescription() {
-        return "Exports objects and associated measurements in the Advanced Cell Classifier (ACC) format.  The output dataset can be loaded into ACC, where machine learning can be applied to classify objects in a GUI-based environment.  This module allows specific measurements to be exported from all those associated with the input objects.  For more information on the format, please visit the <a href=\"http://www.cellclassifier.org/>Advanced Cell Classifier documentation</>.";
+        return "Exports objects and associated measurements in the Advanced Cell Classifier (ACC) format.  The output dataset can be loaded into ACC, where machine learning can be applied to classify objects in a GUI-based environment.  This module allows specific measurements to be exported from all those associated with the input objects.  For more information on the format, please visit the <a href=\"https://www.cellclassifier.org/>Advanced Cell Classifier documentation</>.";
 
     }
 

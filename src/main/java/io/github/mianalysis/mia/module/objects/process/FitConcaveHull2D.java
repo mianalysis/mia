@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
 
+import ij.gui.Roi;
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
@@ -48,39 +49,55 @@ public class FitConcaveHull2D extends Module {
     public static final String RANGE_PX = "Range (px)";
 
     public Obj processObject(Obj inputObject, Objs outputObjects, int range) {
-        ArrayList<VPoint> points = new ArrayList<VPoint>();
-        points = RepresentationFactory.convertPointsToSimpleTriangulationPoints(points);
-        AbstractRepresentation representation = RepresentationFactory.createTriangulationRepresentation();
-        TriangulationRepresentation triangularrep = (TriangulationRepresentation) representation;
-        triangularrep.beginAlgorithm(points);
-        CalcCutOff calccutoff = new CalcCutOff() {
-            public int calculateCutOff(TriangulationRepresentation rep) {
-                return range;
-            }
-        };
-        triangularrep.setCalcCutOff(calccutoff);
-        for (java.awt.Point point : inputObject.getRoi(0).getContainedPoints())
-            points.add(representation.createPoint((int) Math.round(point.x), (int) Math.round(point.y)));
-
-        // TestRepresentationWrapper representationwrapper.innerrepresentation =
-        // representation;
-        VoronoiAlgorithm.generateVoronoi(triangularrep, points);
-
-        ArrayList<VPoint> outterpoints = triangularrep.getPointsFormingOutterBoundary();
-        Area shape = ShapeGeneration.createArea(outterpoints);
-
         // We have to explicitly define this, as the number of slices is 1 (potentially
         // unlike the input object)
         Obj outputObject = outputObjects.createAndAddNewObject(VolumeType.QUADTREE);
-        try {
-            outputObject.addPointsFromShape(shape, 0);
-        } catch (PointOutOfRangeException e) {
-        }
-
         outputObject.setT(inputObject.getT());
-
         outputObject.addParent(inputObject);
         inputObject.addChild(outputObject);
+
+        // Process slice-by-slice
+        for (int z = 0; z < inputObject.getNSlices(); z++) {
+            Roi roi = inputObject.getRoi(z);
+            if (roi == null)
+                continue;
+
+            ArrayList<VPoint> points = new ArrayList<VPoint>();
+            points = RepresentationFactory.convertPointsToSimpleTriangulationPoints(points);
+            AbstractRepresentation representation = RepresentationFactory.createTriangulationRepresentation();
+            TriangulationRepresentation triangularrep = (TriangulationRepresentation) representation;
+            triangularrep.beginAlgorithm(points);
+            CalcCutOff calccutoff = new CalcCutOff() {
+                public int calculateCutOff(TriangulationRepresentation rep) {
+                    return range;
+                }
+            };
+            triangularrep.setCalcCutOff(calccutoff);
+
+            for (java.awt.Point point : roi.getContainedPoints())
+                points.add(representation.createPoint((int) Math.round(point.x), (int) Math.round(point.y)));
+
+            VoronoiAlgorithm.generateVoronoi(triangularrep, points);
+
+            ArrayList<VPoint> outterpoints = triangularrep.getPointsFormingOutterBoundary();
+
+            Area shape;
+            try {
+                shape = ShapeGeneration.createArea(outterpoints);
+            } catch (NullPointerException e) {
+                // Occasionally, the concave hull fitter will give a NullPointerException. When
+                // this happens, a warning is shown and the raw ROI points used.
+                outputObject.addPointsFromRoi(roi, z);
+                MIA.log.writeWarning(
+                        "Concave hull fitting failed for object " + inputObject.getID() + " slice " + (z + 1));
+                continue;
+            }
+
+            try {
+                outputObject.addPointsFromShape(shape, z);
+            } catch (PointOutOfRangeException e) {
+            }
+        }
 
         return outputObject;
 
@@ -207,7 +224,8 @@ public class FitConcaveHull2D extends Module {
         parameters.get(OUTPUT_OBJECTS).setDescription(
                 "Output concave hull objects will be stored in the workspace with this name.  Each concave hull object will be a child of the input object it was created from.");
 
-        parameters.get(RANGE_PX).setDescription("The maximum gap in the surface (edge) of an object that the hull can smooth over.  For gaps larger than this the hull will follow the discontinuity.");
+        parameters.get(RANGE_PX).setDescription(
+                "The maximum gap in the surface (edge) of an object that the hull can smooth over.  For gaps larger than this the hull will follow the discontinuity.");
 
     }
 }

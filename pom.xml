@@ -15,7 +15,7 @@
     <name>MIA</name>
     <url>https://github.com/mianalysis/mia</url>
     <inceptionYear>2017</inceptionYear>
-    <description>Image/object analysis using modularised components</description>
+    <description>ModularImageAnalysis (MIA) is an ImageJ plugin which provides a modular framework for assembling image and object analysis workflows. Detected objects can be transformed, filtered, measured and related. Analysis workflows are batch-enabled by default, allowing easy processing of high-content datasets.</description>
     <organization>
         <name>University of Bristol</name>
         
@@ -179,7 +179,7 @@
         <dependency>
 			<groupId>com.formdev</groupId>
 			<artifactId>flatlaf</artifactId>
-			<version>2.1</version>
+			<version>2.2</version>
 		</dependency>
 
         <dependency>
@@ -336,7 +336,6 @@
             <groupId>com.atlassian.commonmark</groupId>
             <artifactId>commonmark</artifactId>
             <version>0.17.0</version>
-            <scope>${scp}</scope>
         </dependency>
 
         <dependency>
@@ -344,8 +343,8 @@
             <artifactId>sjcommon</artifactId>
             <version>1.12.2</version>
             <!-- <groupId>io.github.sjcross</groupId>
-            <artifactId>Common</artifactId>
-            <version>1.11.4-SNAPSHOT</version> -->
+            <artifactId>sjcommon</artifactId>
+            <version>1.12.2</version> -->
         </dependency>
     </dependencies>
 
@@ -453,6 +452,12 @@
                                     <excludes>
                                         <exclude>**</exclude>
                                     </excludes>
+                                </filter>
+                                <filter>
+                                    <artifact>com.formdev</artifact>
+                                    <includes>
+                                        <include>**</include>
+                                    </includes>
                                 </filter>
                                 <filter>
                                     <artifact>*:*</artifact>
