@@ -16,6 +16,7 @@ import ij.ImageStack;
 import ij.Prefs;
 import ij.plugin.SubHyperstackMaker;
 import ij.process.ImageProcessor;
+import inra.ijpb.binary.conncomp.FloodFillComponentsLabeling;
 import inra.ijpb.binary.conncomp.FloodFillComponentsLabeling3D;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
@@ -49,7 +50,7 @@ import io.github.sjcross.sjcommon.object.volume.SpatCal;
 /**
  * Created by sc13967 on 06/06/2017.
  */
-@Plugin(type = Module.class, priority=Priority.LOW, visible=true)
+@Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class IdentifyObjects extends Module {
     public static final String INPUT_SEPARATOR = "Image input, object output";
     public static final String INPUT_IMAGE = "Input image";
@@ -57,6 +58,7 @@ public class IdentifyObjects extends Module {
 
     public static final String IDENTIFICATION_SEPARATOR = "Object identification";
     public static final String BINARY_LOGIC = "Binary logic";
+    public static final String DETECTION_MODE = "Detection mode";
     public static final String SINGLE_OBJECT = "Identify as single object";
     public static final String CONNECTIVITY = "Connectivity";
     public static final String VOLUME_TYPE = "Volume type";
@@ -72,6 +74,14 @@ public class IdentifyObjects extends Module {
     public interface BinaryLogic extends BinaryLogicInterface {
     }
 
+    public interface DetectionModes {
+        String SLICE_BY_SLICE = "2D (slice-by-slice)";
+        String THREE_D = "3D";
+
+        String[] ALL = new String[] { SLICE_BY_SLICE, THREE_D };
+
+    }
+
     public interface Connectivity {
         String SIX = "6";
         String TWENTYSIX = "26";
@@ -83,7 +93,8 @@ public class IdentifyObjects extends Module {
     public interface VolumeTypes extends VolumeTypesInterface {
     }
 
-    public static ImageStack connectedComponentsLabellingMT(ImageStack ist, int connectivity, int minStripWidth) {
+    public static ImageStack connectedComponentsLabellingMT(ImageStack ist, String detectionMode, int connectivity,
+            int minStripWidth) {
         // Calculating strip width
         int imW = ist.getWidth();
         int imH = ist.getHeight();
@@ -119,14 +130,36 @@ public class IdentifyObjects extends Module {
 
             ImageStack cropIst = ist.crop(x0, 0, 0, w, imH, imNSlices);
             Runnable task = () -> {
+                ImageStack strip = cropIst.duplicate();
+                
                 // Running connected components labelling
-                FloodFillComponentsLabeling3D ffcl3D;
-                try {
-                    ffcl3D = new FloodFillComponentsLabeling3D(connectivity, 16);
-                } catch (RuntimeException e2) {
-                    ffcl3D = new FloodFillComponentsLabeling3D(connectivity, 32);
+                switch (detectionMode) {
+                    case DetectionModes.SLICE_BY_SLICE:
+                        FloodFillComponentsLabeling ffcl;
+                        try {
+                            ffcl = new FloodFillComponentsLabeling(connectivity, 16);
+                        } catch (RuntimeException e2) {
+                            ffcl = new FloodFillComponentsLabeling(connectivity, 32);
+                        }
+
+                        for (int slice = 0; slice < strip.size(); slice++)
+                            strip.setProcessor(ffcl.computeLabels(strip.getProcessor(slice + 1)), slice + 1);
+
+                        break;
+
+                    case DetectionModes.THREE_D:
+                        FloodFillComponentsLabeling3D ffcl3D;
+                        try {
+                            ffcl3D = new FloodFillComponentsLabeling3D(connectivity, 16);
+                        } catch (RuntimeException e2) {
+                            ffcl3D = new FloodFillComponentsLabeling3D(connectivity, 32);
+                        }
+
+                        strip = ffcl3D.computeLabels(strip);
+
+                        break;
                 }
-                ImageStack strip = ffcl3D.computeLabels(cropIst);
+
                 strips.put(finalStripIdx, strip);
 
                 // Identifying separate regions
@@ -254,7 +287,8 @@ public class IdentifyObjects extends Module {
     }
 
     public static Objs process(Image inputImage, String outputObjectsName, boolean blackBackground,
-            boolean singleObject, int connectivity, String type, boolean multithread, int minStripWidth,
+            boolean singleObject, String detectionMode, int connectivity, String type, boolean multithread,
+            int minStripWidth,
             boolean verbose) throws IntegerOverflowException, RuntimeException {
         String name = new IdentifyObjects(null).getName();
 
@@ -286,14 +320,34 @@ public class IdentifyObjects extends Module {
                 int nThreads = multithread ? Prefs.getThreads() : 1;
                 if (nThreads > 1 && minStripWidth < currStack.getWidth()) {
                     currStack.setStack(
-                            connectedComponentsLabellingMT(currStack.getStack(), connectivity, minStripWidth));
+                            connectedComponentsLabellingMT(currStack.getStack(), detectionMode, connectivity,
+                                    minStripWidth));
                 } else {
-                    try {
-                        FloodFillComponentsLabeling3D ffcl3D = new FloodFillComponentsLabeling3D(connectivity, 16);
-                        currStack.setStack(ffcl3D.computeLabels(currStack.getStack()));
-                    } catch (RuntimeException e2) {
-                        FloodFillComponentsLabeling3D ffcl3D = new FloodFillComponentsLabeling3D(connectivity, 32);
-                        currStack.setStack(ffcl3D.computeLabels(currStack.getStack()));
+                    switch (detectionMode) {
+                        case DetectionModes.SLICE_BY_SLICE:
+                            FloodFillComponentsLabeling ffcl;
+                            try {
+                                ffcl = new FloodFillComponentsLabeling(connectivity, 16);
+                            } catch (RuntimeException e2) {
+                                ffcl = new FloodFillComponentsLabeling(connectivity, 32);
+                            }
+
+                            ImageStack currIst = currStack.getImageStack();
+                            for (int slice = 0; slice < currIst.size(); slice++)
+                                currIst.setProcessor(ffcl.computeLabels(currIst.getProcessor(slice + 1)), slice + 1);
+
+                            break;
+                        case DetectionModes.THREE_D:
+                            FloodFillComponentsLabeling3D ffcl3D;
+                            try {
+                                ffcl3D = new FloodFillComponentsLabeling3D(connectivity, 16);
+                            } catch (RuntimeException e2) {
+                                ffcl3D = new FloodFillComponentsLabeling3D(connectivity, 32);
+                            }
+
+                            currStack.setStack(ffcl3D.computeLabels(currStack.getStack()));
+
+                            break;
                     }
                 }
             }
@@ -356,6 +410,7 @@ public class IdentifyObjects extends Module {
         String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);
         String binaryLogic = parameters.getValue(BINARY_LOGIC);
         boolean blackBackground = binaryLogic.equals(BinaryLogic.BLACK_BACKGROUND);
+        String detectionMode = parameters.getValue(DETECTION_MODE);
         boolean singleObject = parameters.getValue(SINGLE_OBJECT);
         String connectivityName = parameters.getValue(CONNECTIVITY);
         String type = parameters.getValue(VOLUME_TYPE);
@@ -366,7 +421,7 @@ public class IdentifyObjects extends Module {
         // Getting options
         int connectivity = getConnectivity(connectivityName);
 
-        Objs outputObjects = process(inputImage, outputObjectsName, blackBackground, singleObject,
+        Objs outputObjects = process(inputImage, outputObjectsName, blackBackground, singleObject, detectionMode,
                 connectivity, type, multithread, minStripWidth, true);
 
         // Adding objects to workspace
@@ -389,6 +444,7 @@ public class IdentifyObjects extends Module {
 
         parameters.add(new SeparatorP(IDENTIFICATION_SEPARATOR, this));
         parameters.add(new ChoiceP(BINARY_LOGIC, this, BinaryLogic.BLACK_BACKGROUND, BinaryLogic.ALL));
+        parameters.add(new ChoiceP(DETECTION_MODE, this, DetectionModes.THREE_D, DetectionModes.ALL));
         parameters.add(new BooleanP(SINGLE_OBJECT, this, false));
         parameters.add(new ChoiceP(CONNECTIVITY, this, Connectivity.TWENTYSIX, Connectivity.ALL));
         parameters.add(new ChoiceP(VOLUME_TYPE, this, VolumeTypes.POINTLIST, VolumeTypes.ALL));
@@ -411,6 +467,7 @@ public class IdentifyObjects extends Module {
 
         returnedParameters.add(parameters.get(IDENTIFICATION_SEPARATOR));
         returnedParameters.add(parameters.get(BINARY_LOGIC));
+        returnedParameters.add(parameters.get(DETECTION_MODE));
         returnedParameters.add(parameters.get(SINGLE_OBJECT));
         returnedParameters.add(parameters.get(CONNECTIVITY));
         returnedParameters.add(parameters.get(VOLUME_TYPE));
@@ -481,7 +538,7 @@ public class IdentifyObjects extends Module {
                         + "\" stores objects in a quadtree format.  Here, each Z-plane of the object is broken down into squares of different sizes, each of which is marked as foreground (i.e. an object) or background.  Quadtrees are most efficient when there are lots of large square regions of the same label, as the space can be represented by larger (and thus fewer) squares.  This is best used when there are large, completely solid objects.</li></ul>");
 
         parameters.get(BINARY_LOGIC).setDescription(BinaryLogicInterface.getDescription());
-                        
+
         parameters.get(ENABLE_MULTITHREADING).setDescription(
                 "Break the image down into strips, each one processed on a separate CPU thread.  The overhead required to do this means it's best for large multi-core CPUs, but should be left disabled for small images or on CPUs with few cores.");
 

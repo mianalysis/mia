@@ -183,7 +183,7 @@ public class MeasureSkeleton extends Module {
         Image binaryImage = tempObject.getAsTightImage("outputName", borders);
 
         // Converting binary image to loop objects
-        Objs tempLoopObjects = IdentifyObjects.process(binaryImage, loopObjectsName, false, false, 6,
+        Objs tempLoopObjects = IdentifyObjects.process(binaryImage, loopObjectsName, false, false, IdentifyObjects.DetectionModes.THREE_D, 6,
                 VolumeTypesInterface.QUADTREE, false, 0, false);
 
         // Removing any objects on the image edge, as these aren't loops

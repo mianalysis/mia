@@ -104,8 +104,9 @@ public class FillHolesByVolume extends Module {
 
                 // Applying connected components labelling
                 int nThreads = multithread ? Prefs.getThreads() : 1;
+                String detectionMode = IdentifyObjects.DetectionModes.THREE_D;
                 if (multithread && nThreads > 1 && minStripWidth < ipl.getWidth()) {
-                    currStack.setStack(IdentifyObjects.connectedComponentsLabellingMT(currStack.getStack(),
+                    currStack.setStack(IdentifyObjects.connectedComponentsLabellingMT(currStack.getStack(), detectionMode, 
                             connectivity, minStripWidth));
                 } else {
                     try {
