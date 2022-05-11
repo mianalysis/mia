@@ -18,6 +18,7 @@ import ij.plugin.SubHyperstackMaker;
 import ij.process.ImageProcessor;
 import inra.ijpb.binary.conncomp.FloodFillComponentsLabeling;
 import inra.ijpb.binary.conncomp.FloodFillComponentsLabeling3D;
+import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
@@ -131,7 +132,7 @@ public class IdentifyObjects extends Module {
             ImageStack cropIst = ist.crop(x0, 0, 0, w, imH, imNSlices);
             Runnable task = () -> {
                 ImageStack strip = cropIst.duplicate();
-                
+
                 // Running connected components labelling
                 switch (detectionMode) {
                     case DetectionModes.SLICE_BY_SLICE:
@@ -292,6 +293,7 @@ public class IdentifyObjects extends Module {
             boolean verbose) throws IntegerOverflowException, RuntimeException {
         String name = new IdentifyObjects(null).getName();
 
+        MIA.log.writeWarning("2D detection implementation incomplete.");
         ImagePlus inputImagePlus = inputImage.getImagePlus();
 
         SpatCal cal = SpatCal.getFromImage(inputImagePlus);
