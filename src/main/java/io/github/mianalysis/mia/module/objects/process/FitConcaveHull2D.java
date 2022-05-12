@@ -134,9 +134,13 @@ public class FitConcaveHull2D extends Module {
         Objs outputObjects = new Objs(outputObjectsName, inputObjects);
         workspace.addObjects(outputObjects);
 
-        for (Obj inputObject : inputObjects.values())
+        int count = 0;
+        int total = inputObjects.size();
+        for (Obj inputObject : inputObjects.values()) {
             processObject(inputObject, outputObjects, range);
-
+            writeProgressStatus(++count, total, "objects");
+        }
+        
         if (showOutput)
             outputObjects.convertToImageRandomColours().showImage();
 
