@@ -11,6 +11,7 @@ import java.util.concurrent.TimeUnit;
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
 
+import ij.IJ;
 import ij.ImagePlus;
 import ij.ImageStack;
 import ij.Prefs;
@@ -94,8 +95,7 @@ public class IdentifyObjects extends Module {
     public interface VolumeTypes extends VolumeTypesInterface {
     }
 
-    public static ImageStack connectedComponentsLabellingMT(ImageStack ist, String detectionMode, int connectivity,
-            int minStripWidth) {
+    public static ImageStack connectedComponentsLabellingMT(ImageStack ist, int connectivity, int minStripWidth) {
         // Calculating strip width
         int imW = ist.getWidth();
         int imH = ist.getHeight();
@@ -121,44 +121,24 @@ public class IdentifyObjects extends Module {
 
             int x0 = finalStripIdx == 0 ? 0 : (sW * finalStripIdx) - 1;
             int w;
-            if (finalStripIdx == 0) {
+            if (finalStripIdx == 0)
                 w = sW;
-            } else if (finalStripIdx == nThreads - 1) {
+            else if (finalStripIdx == nThreads - 1)
                 w = imW - (sW * (nThreads - 1)) + 1;
-            } else {
+            else
                 w = sW + 1;
-            }
 
             ImageStack cropIst = ist.crop(x0, 0, 0, w, imH, imNSlices);
             Runnable task = () -> {
                 ImageStack strip = cropIst.duplicate();
 
                 // Running connected components labelling
-                switch (detectionMode) {
-                    case DetectionModes.SLICE_BY_SLICE:
-                        FloodFillComponentsLabeling ffcl;
-                        try {
-                            ffcl = new FloodFillComponentsLabeling(connectivity, 16);
-                        } catch (RuntimeException e2) {
-                            ffcl = new FloodFillComponentsLabeling(connectivity, 32);
-                        }
-
-                        for (int slice = 0; slice < strip.size(); slice++)
-                            strip.setProcessor(ffcl.computeLabels(strip.getProcessor(slice + 1)), slice + 1);
-
-                        break;
-
-                    case DetectionModes.THREE_D:
-                        FloodFillComponentsLabeling3D ffcl3D;
-                        try {
-                            ffcl3D = new FloodFillComponentsLabeling3D(connectivity, 16);
-                        } catch (RuntimeException e2) {
-                            ffcl3D = new FloodFillComponentsLabeling3D(connectivity, 32);
-                        }
-
-                        strip = ffcl3D.computeLabels(strip);
-
-                        break;
+                try {
+                    FloodFillComponentsLabeling3D ffcl3D = new FloodFillComponentsLabeling3D(connectivity, 16);
+                    strip = ffcl3D.computeLabels(strip);
+                } catch (RuntimeException e2) {
+                    FloodFillComponentsLabeling3D ffcl3D = new FloodFillComponentsLabeling3D(connectivity, 32);
+                    strip = ffcl3D.computeLabels(strip);
                 }
 
                 strips.put(finalStripIdx, strip);
@@ -293,86 +273,91 @@ public class IdentifyObjects extends Module {
             boolean verbose) throws IntegerOverflowException, RuntimeException {
         String name = new IdentifyObjects(null).getName();
 
-        MIA.log.writeWarning("2D detection implementation incomplete.");
         ImagePlus inputImagePlus = inputImage.getImagePlus();
+        int nChannels = inputImagePlus.getNChannels();
+        int nSlices = inputImagePlus.getNSlices();
+        int nFrames = inputImagePlus.getNFrames();
 
         SpatCal cal = SpatCal.getFromImage(inputImagePlus);
-        int nFrames = inputImagePlus.getNFrames();
         double frameInterval = inputImagePlus.getCalibration().frameInterval;
         Objs outputObjects = new Objs(outputObjectsName, cal, nFrames, frameInterval,
                 TemporalUnit.getOMEUnit());
 
-        for (int t = 1; t <= inputImagePlus.getNFrames(); t++) {
-            // Creating a copy of the input image
-            ImagePlus currStack;
-            if (inputImagePlus.getNFrames() == 1) {
-                currStack = inputImagePlus.duplicate();
-            } else {
-                currStack = SubHyperstackMaker.makeSubhyperstack(inputImagePlus, "1-" + inputImagePlus.getNChannels(),
-                        "1-" + inputImagePlus.getNSlices(), t + "-" + t).duplicate();
+        if (detectionMode.equals(DetectionModes.THREE_D))
+            nSlices = 1;
+
+        int count = 0;
+        int total = nSlices * nFrames;
+        for (int z = 1; z <= nSlices; z++) {
+            for (int t = 1; t <= nFrames; t++) {
+                // Creating a copy of the input image
+                ImagePlus currStack;
+                switch (detectionMode) {
+                    case DetectionModes.SLICE_BY_SLICE:
+                        currStack = SubHyperstackMaker
+                                .makeSubhyperstack(inputImagePlus, "1-" + nChannels, z + "-" + z,
+                                        t + "-" + t)
+                                .duplicate();
+                        break;
+                    case DetectionModes.THREE_D:
+                    default:
+                        currStack = SubHyperstackMaker
+                                .makeSubhyperstack(inputImagePlus, "1-" + nChannels, "1-" + inputImagePlus.getNSlices(),
+                                        t + "-" + t)
+                                .duplicate();
+                        break;
+                }
                 currStack.setCalibration(inputImagePlus.getCalibration());
-            }
-            currStack.updateChannelAndDraw();
+                currStack.updateChannelAndDraw();
 
-            if (!blackBackground)
-                InvertIntensity.process(currStack);
+                if (!blackBackground)
+                    InvertIntensity.process(currStack);
 
-            // Applying connected components labelling
-            if (!singleObject) {
-                int nThreads = multithread ? Prefs.getThreads() : 1;
-                if (nThreads > 1 && minStripWidth < currStack.getWidth()) {
-                    currStack.setStack(
-                            connectedComponentsLabellingMT(currStack.getStack(), detectionMode, connectivity,
-                                    minStripWidth));
-                } else {
-                    switch (detectionMode) {
-                        case DetectionModes.SLICE_BY_SLICE:
-                            FloodFillComponentsLabeling ffcl;
-                            try {
-                                ffcl = new FloodFillComponentsLabeling(connectivity, 16);
-                            } catch (RuntimeException e2) {
-                                ffcl = new FloodFillComponentsLabeling(connectivity, 32);
-                            }
-
-                            ImageStack currIst = currStack.getImageStack();
-                            for (int slice = 0; slice < currIst.size(); slice++)
-                                currIst.setProcessor(ffcl.computeLabels(currIst.getProcessor(slice + 1)), slice + 1);
-
-                            break;
-                        case DetectionModes.THREE_D:
-                            FloodFillComponentsLabeling3D ffcl3D;
-                            try {
-                                ffcl3D = new FloodFillComponentsLabeling3D(connectivity, 16);
-                            } catch (RuntimeException e2) {
-                                ffcl3D = new FloodFillComponentsLabeling3D(connectivity, 32);
-                            }
-
+                // Applying connected components labelling
+                if (!singleObject) {
+                    int nThreads = multithread ? Prefs.getThreads() : 1;
+                    if (nThreads > 1 && minStripWidth < currStack.getWidth()) {
+                        currStack.setStack(
+                                connectedComponentsLabellingMT(currStack.getStack(), connectivity, minStripWidth));
+                    } else {
+                        try {
+                            FloodFillComponentsLabeling3D ffcl3D = new FloodFillComponentsLabeling3D(
+                                    connectivity, 16);
                             currStack.setStack(ffcl3D.computeLabels(currStack.getStack()));
-
-                            break;
+                        } catch (RuntimeException e2) {
+                            FloodFillComponentsLabeling3D ffcl3D = new FloodFillComponentsLabeling3D(
+                                    connectivity, 32);
+                            currStack.setStack(ffcl3D.computeLabels(currStack.getStack()));
+                        }
                     }
                 }
+
+                // Converting image to objects
+                Image tempImage = new Image("Temp image", currStack);
+                Objs currOutputObjects = tempImage.convertImageToObjects(type, outputObjectsName, singleObject);
+
+                // If processing each slice separately, offsetting it to the correct Z-position
+                if (detectionMode.equals(DetectionModes.SLICE_BY_SLICE)) {
+                    currOutputObjects.setSpatialCalibration(cal, true);
+                    for (Obj currOutputObj : currOutputObjects.values())
+                        currOutputObj.translateCoords(0, 0, z - 1);
+                }
+
+                // Updating the current objects (setting the real frame number and offsetting
+                // the ID)
+                int maxID = 0;
+                for (Obj object : outputObjects.values())
+                    maxID = Math.max(object.getID(), maxID);
+
+                for (Obj object : currOutputObjects.values()) {
+                    object.setID(object.getID() + maxID + 1);
+                    object.setT(t - 1);
+                    outputObjects.put(object.getID(), object);
+                }
+
+                writeProgressStatus(++count, total, "images", name);
+
             }
-
-            // Converting image to objects
-            Image tempImage = new Image("Temp image", currStack);
-            Objs currOutputObjects = tempImage.convertImageToObjects(type, outputObjectsName, singleObject);
-
-            // Updating the current objects (setting the real frame number and offsetting
-            // the ID)
-            int maxID = 0;
-            for (Obj object : outputObjects.values()) {
-                maxID = Math.max(object.getID(), maxID);
-            }
-
-            for (Obj object : currOutputObjects.values()) {
-                object.setID(object.getID() + maxID + 1);
-                object.setT(t - 1);
-                outputObjects.put(object.getID(), object);
-            }
-
-            writeProgressStatus(t, inputImagePlus.getNFrames(), "images", name);
-
         }
 
         return outputObjects;

@@ -45,7 +45,7 @@ import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.sjcross.sjcommon.exceptions.LongOverflowException;
 
-@Plugin(type = Module.class, priority=Priority.LOW, visible=true)
+@Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class FillHolesByVolume extends Module {
     public static final String INPUT_SEPARATOR = "Image input, object output";
     public static final String INPUT_IMAGE = "Input image";
@@ -95,18 +95,16 @@ public class FillHolesByVolume extends Module {
             for (int t = 1; t <= ipl.getNFrames(); t++) {
                 // Creating the current sub-stack
                 ImagePlus currStack;
-                if (ipl.getNFrames() == 1) {
+                if (ipl.getNFrames() == 1)
                     currStack = ipl;
-                } else {
+                else
                     currStack = SubHyperstackMaker.makeSubhyperstack(ipl, c + "-" + c, "1-" + nSlices, t + "-" + t);
-                }
                 currStack.updateChannelAndDraw();
 
                 // Applying connected components labelling
                 int nThreads = multithread ? Prefs.getThreads() : 1;
-                String detectionMode = IdentifyObjects.DetectionModes.THREE_D;
                 if (multithread && nThreads > 1 && minStripWidth < ipl.getWidth()) {
-                    currStack.setStack(IdentifyObjects.connectedComponentsLabellingMT(currStack.getStack(), detectionMode, 
+                    currStack.setStack(IdentifyObjects.connectedComponentsLabellingMT(currStack.getStack(),
                             connectivity, minStripWidth));
                 } else {
                     try {
@@ -224,7 +222,9 @@ public class FillHolesByVolume extends Module {
 
     @Override
     public String getDescription() {
-        return "Performs a volume-limited 3D fill holes operation on an input binary image.  This operation will change all background pixels in a region which is fully enclosed by foreground pixels to foreground.  The volume of holes to be filled can be restricted with both minimum and maximum permissible holes.  This image will be 8-bit with binary logic determined by the \"" + BINARY_LOGIC + "\" parameter.  Uses the plugin \"<a href=\"https://github.com/ijpb/MorphoLibJ\">MorphoLibJ</a>\".";
+        return "Performs a volume-limited 3D fill holes operation on an input binary image.  This operation will change all background pixels in a region which is fully enclosed by foreground pixels to foreground.  The volume of holes to be filled can be restricted with both minimum and maximum permissible holes.  This image will be 8-bit with binary logic determined by the \""
+                + BINARY_LOGIC
+                + "\" parameter.  Uses the plugin \"<a href=\"https://github.com/ijpb/MorphoLibJ\">MorphoLibJ</a>\".";
     }
 
     @Override
