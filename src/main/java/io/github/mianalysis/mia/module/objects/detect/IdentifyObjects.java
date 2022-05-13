@@ -11,8 +11,6 @@ import java.util.concurrent.TimeUnit;
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
 
-import ij.IJ;
-import ij.ImageJ;
 import ij.ImagePlus;
 import ij.ImageStack;
 import ij.Prefs;
@@ -54,14 +52,10 @@ import net.imglib2.algorithm.labeling.ConnectedComponents;
 import net.imglib2.algorithm.labeling.ConnectedComponents.StructuringElement;
 import net.imglib2.converter.Converter;
 import net.imglib2.converter.Converters;
-import net.imglib2.img.display.imagej.ImageJFunctions;
 import net.imglib2.type.NativeType;
 import net.imglib2.type.logic.BitType;
 import net.imglib2.type.numeric.RealType;
 import net.imglib2.type.numeric.integer.UnsignedLongType;
-import io.github.mianalysis.mia.object.units.TemporalUnit;
-import io.github.sjcross.sjcommon.exceptions.IntegerOverflowException;
-import io.github.sjcross.sjcommon.object.volume.SpatCal;
 
 /**
  * Created by sc13967 on 06/06/2017.
@@ -74,6 +68,7 @@ public class IdentifyObjects<T extends RealType<T> & NativeType<T>> extends Modu
 
     public static final String IDENTIFICATION_SEPARATOR = "Object identification";
     public static final String BINARY_LOGIC = "Binary logic";
+    // public static final String DETECTION_MODE = "Detection mode";
     public static final String SINGLE_OBJECT = "Identify as single object";
     public static final String CONNECTIVITY = "Connectivity";
     public static final String VOLUME_TYPE = "Volume type";
@@ -88,6 +83,14 @@ public class IdentifyObjects<T extends RealType<T> & NativeType<T>> extends Modu
     }
 
     public interface BinaryLogic extends BinaryLogicInterface {
+    }
+
+    public interface DetectionModes {
+        String SLICE_BY_SLICE = "2D (slice-by-slice)";
+        String THREE_D = "3D";
+
+        String[] ALL = new String[] { SLICE_BY_SLICE, THREE_D };
+
     }
 
     public interface Connectivity {
@@ -127,24 +130,26 @@ public class IdentifyObjects<T extends RealType<T> & NativeType<T>> extends Modu
 
             int x0 = finalStripIdx == 0 ? 0 : (sW * finalStripIdx) - 1;
             int w;
-            if (finalStripIdx == 0) {
+            if (finalStripIdx == 0)
                 w = sW;
-            } else if (finalStripIdx == nThreads - 1) {
+            else if (finalStripIdx == nThreads - 1)
                 w = imW - (sW * (nThreads - 1)) + 1;
-            } else {
+            else
                 w = sW + 1;
-            }
 
             ImageStack cropIst = ist.crop(x0, 0, 0, w, imH, imNSlices);
             Runnable task = () -> {
+                ImageStack strip = cropIst.duplicate();
+
                 // Running connected components labelling
-                FloodFillComponentsLabeling3D ffcl3D;
                 try {
-                    ffcl3D = new FloodFillComponentsLabeling3D(connectivity, 16);
+                    FloodFillComponentsLabeling3D ffcl3D = new FloodFillComponentsLabeling3D(connectivity, 16);
+                    strip = ffcl3D.computeLabels(strip);
                 } catch (RuntimeException e2) {
-                    ffcl3D = new FloodFillComponentsLabeling3D(connectivity, 32);
+                    FloodFillComponentsLabeling3D ffcl3D = new FloodFillComponentsLabeling3D(connectivity, 32);
+                    strip = ffcl3D.computeLabels(strip);
                 }
-                ImageStack strip = ffcl3D.computeLabels(cropIst);
+
                 strips.put(finalStripIdx, strip);
 
                 // Identifying separate regions
@@ -325,6 +330,7 @@ public class IdentifyObjects<T extends RealType<T> & NativeType<T>> extends Modu
 
     @Override
     public Status process(Workspace workspace) {
+        MIA.log.writeWarning("Needs detection mode (2D/3D) implementing");
         // Getting input image
         String inputImageName = parameters.getValue(INPUT_IMAGE);
         Image<T> inputImage = workspace.getImage(inputImageName);
@@ -333,6 +339,7 @@ public class IdentifyObjects<T extends RealType<T> & NativeType<T>> extends Modu
         String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);
         String binaryLogic = parameters.getValue(BINARY_LOGIC);
         boolean blackBackground = binaryLogic.equals(BinaryLogic.BLACK_BACKGROUND);
+        // String detectionMode = parameters.getValue(DETECTION_MODE);
         boolean singleObject = parameters.getValue(SINGLE_OBJECT);
         String connectivityName = parameters.getValue(CONNECTIVITY);
         String type = parameters.getValue(VOLUME_TYPE);
@@ -369,6 +376,7 @@ public class IdentifyObjects<T extends RealType<T> & NativeType<T>> extends Modu
 
         parameters.add(new SeparatorP(IDENTIFICATION_SEPARATOR, this));
         parameters.add(new ChoiceP(BINARY_LOGIC, this, BinaryLogic.BLACK_BACKGROUND, BinaryLogic.ALL));
+        // parameters.add(new ChoiceP(DETECTION_MODE, this, DetectionModes.THREE_D, DetectionModes.ALL));
         parameters.add(new BooleanP(SINGLE_OBJECT, this, false));
         parameters.add(new ChoiceP(CONNECTIVITY, this, Connectivity.TWENTYSIX, Connectivity.ALL));
         parameters.add(new ChoiceP(VOLUME_TYPE, this, VolumeTypes.POINTLIST, VolumeTypes.ALL));
@@ -391,6 +399,7 @@ public class IdentifyObjects<T extends RealType<T> & NativeType<T>> extends Modu
 
         returnedParameters.add(parameters.get(IDENTIFICATION_SEPARATOR));
         returnedParameters.add(parameters.get(BINARY_LOGIC));
+        // returnedParameters.add(parameters.get(DETECTION_MODE));
         returnedParameters.add(parameters.get(SINGLE_OBJECT));
         returnedParameters.add(parameters.get(CONNECTIVITY));
         returnedParameters.add(parameters.get(VOLUME_TYPE));

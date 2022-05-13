@@ -2,6 +2,8 @@ package io.github.mianalysis.mia.gui;
 
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
 import java.awt.Toolkit;
 import java.io.File;
 import java.lang.reflect.Constructor;
@@ -79,22 +81,19 @@ public class GUI {
         }
         initialised = true;
 
-        // Creating main Frame
-        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        frameHeight = Math.min(frameHeight, screenSize.height - 50);
-
         Splash splash = new Splash();
-        splash.setLocation((screenSize.width - splash.getWidth()) / 2, (screenSize.height - splash.getHeight()) / 2);
         splash.setVisible(true);
 
+        // Creating main Frame
+        GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
+        Dimension screenSize = new Dimension(gd.getDisplayMode().getWidth(),gd.getDisplayMode().getHeight());
+        // Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        frameHeight = Math.min(frameHeight, screenSize.height - 50);
+       
         // Detecting modules
-        splash.setStatus(Splash.Status.DETECTING_MODULES);
         List<String> detectedModules = AvailableModules.getModuleNames(false);
-
-        splash.setStatus(Splash.Status.INITIALISING_MODULES);
         initialiseAvailableModules(detectedModules);
 
-        splash.setStatus(Splash.Status.CREATING_INTERFACE);
         processingPanel = new ProcessingPanel();
         editingPanel = new EditingPanel();
 
