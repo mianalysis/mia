@@ -49,12 +49,13 @@ import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
+import io.github.sjcross.sjcommon.object.volume.PointOutOfRangeException;
 import io.github.sjcross.sjcommon.object.volume.VolumeType;
 
 /**
  * Created by Stephen on 13/05/2021.
  */
-@Plugin(type = Module.class, priority=Priority.LOW, visible=true)
+@Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class TrackEditor extends Module {
     public static final String INPUT_SEPARATOR = "Object input";
     public static final String INPUT_TRACK_OBJECTS = "Input track objects";
@@ -132,6 +133,32 @@ public class TrackEditor extends Module {
 
     }
 
+    public static void addSpots(Objs spotObjects, Model model) {
+        SpotCollection spots = model.getSpots();
+
+        int maxID = spotObjects.getLargestID();
+
+        for (Spot spot : spots.iterable(false)) {
+            if (spot.getFeatures().containsKey("ID"))
+                continue;
+
+            Obj spotObj = spotObjects.createAndAddNewObject(VolumeType.POINTLIST,++maxID);
+            int x = (int) Math.round(spot.getFeature(Spot.POSITION_X));
+            int y = (int) Math.round(spot.getFeature(Spot.POSITION_Y));
+            int z = (int) Math.round(spot.getFeature(Spot.POSITION_Z));
+            int t = (int) Math.round(spot.getFeature(Spot.FRAME));
+            try {
+                spotObj.add(x, y, z);
+            } catch (PointOutOfRangeException e) {
+            }
+            spotObj.setT(t);
+
+            spot.putFeature(Spot.POSITION_T, new Double(spotObj.getT()));
+            spot.putFeature("ID", new Double(spotObj.getID()));
+
+        }
+    }
+
     public static void removeDeletedSpots(Objs spotObjects, Model model) {
         // Finding any "spots" that have been deleted
         SpotCollection spots = model.getSpots();
@@ -139,7 +166,7 @@ public class TrackEditor extends Module {
         ArrayList<Integer> availableIDs = new ArrayList<>();
         for (Spot spot : spots.iterable(false))
             availableIDs.add((int) Math.round(spot.getFeature("ID")));
-
+                
         Iterator<Integer> iterator = spotObjects.keySet().iterator();
         while (iterator.hasNext()) {
             int ID = iterator.next();
@@ -153,7 +180,7 @@ public class TrackEditor extends Module {
 
     static int getMaxID(Set<Integer> IDs) {
         int maxID = 0;
-        for (int ID:IDs)
+        for (int ID : IDs)
             maxID = Math.max(ID, maxID);
 
         return maxID;
@@ -212,7 +239,8 @@ public class TrackEditor extends Module {
 
     }
 
-    static void addSingleTimepointTracks(Set<Integer> trackIDs, Objs spotObjects, Objs trackObjects, String inputTrackObjectsName) {
+    static void addSingleTimepointTracks(Set<Integer> trackIDs, Objs spotObjects, Objs trackObjects,
+            String inputTrackObjectsName) {
         // Determining the maximum current track ID
         int maxID = 0;
         for (int trackID : trackIDs)
@@ -221,7 +249,7 @@ public class TrackEditor extends Module {
         // Single timepoint "tracks" aren't assigned track IDs yet, so doing that now
         for (Obj obj : spotObjects.values()) {
             if (obj.getParent(inputTrackObjectsName) == null) {
-                Obj trackObject = trackObjects.createAndAddNewObject(VolumeType.POINTLIST, ++maxID+1);
+                Obj trackObject = trackObjects.createAndAddNewObject(VolumeType.POINTLIST, ++maxID + 1);
                 obj.addParent(trackObject);
                 trackObject.addChild(obj);
                 obj.addMeasurement(new Measurement(Measurements.TRACK_NEXT_ID, Double.NaN));
@@ -251,6 +279,9 @@ public class TrackEditor extends Module {
 
         // Displaying the TrackScheme tool
         displayTrackScheme(model, inputImage, showProjected);
+
+        // Adding IDs for new spots
+        addSpots(spotObjects, model);
 
         // Removing deleted spots
         removeDeletedSpots(spotObjects, model);

@@ -1,75 +1,51 @@
 package io.github.mianalysis.mia.gui;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import javax.swing.ImageIcon;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JWindow;
 import javax.swing.SwingConstants;
 
 
-public class Splash extends JFrame {
+public class Splash extends JWindow {
     /**
      *
      */
     private static final long serialVersionUID = 6710454328949590953L;
-    private int width = 231;
-    private JLabel image;
-
-    private final static String DETECTING_MODULES = "/images/Logo_splash_detecting-modules";
-    private final static String INITIALISING_MODULES = "/images/Logo_splash_initialising-modules";
-    private final static String CREATING_INTERFACE = "/images/Logo_splash_creating-interface";
-
-    private ImageIcon blankLogo = new ImageIcon(Splash.class.getResource("/images/Logo_splash.png"));
-    private final ImageIcon detectingModulesLogo;
-    private final ImageIcon initialisingModulesLogo;
-    private final ImageIcon creatingInterfaceLogo;
+    private JLabel label;
+    private ImageIcon blankLogo;
 
     public enum Status {
         BLANK, DETECTING_MODULES, INITIALISING_MODULES, CREATING_INTERFACE;
     }
 
-    public Splash() {
+    public Splash() {        
         // Determine special date
         String suffix = getSpecialSuffix();
 
-        detectingModulesLogo = new ImageIcon(Splash.class.getResource(DETECTING_MODULES+suffix+".png"));
-        initialisingModulesLogo = new ImageIcon(Splash.class.getResource(INITIALISING_MODULES+suffix+".png"));
-        creatingInterfaceLogo = new ImageIcon(Splash.class.getResource(CREATING_INTERFACE+suffix+".png"));
+        blankLogo = new ImageIcon(Splash.class.getResource("/images/Logo_splash."+suffix+"png"));
 
-        setUndecorated(true);
-        setBackground(new Color(0,0,0,0));
+        label = new JLabel("", blankLogo, SwingConstants.CENTER);
+        label.setOpaque(false);
+
+        final JPanel pane = new JPanel();
+		pane.setOpaque(false);
+		pane.setLayout(new BorderLayout());
+		pane.add(label, BorderLayout.CENTER);
+		setContentPane(pane);
+		pack();
+
         setAlwaysOnTop(true);
-        setPreferredSize(new Dimension(width,250));
-        setMinimumSize(new Dimension(width,250));
-        setMaximumSize(new Dimension(width,250));
-        setResizable(false);
+		setLocationRelativeTo(null);
+		setBackground(new Color(0, 0, 0, 0));
 
-        image = new JLabel("", blankLogo, SwingConstants.CENTER);
-        image.setOpaque(false);
-        add(image);
-
-    }
-
-    public void setStatus(Status status) {
-        switch (status) {
-            default:
-            case BLANK:
-                image.setIcon(blankLogo);
-                break;
-            case DETECTING_MODULES:
-                image.setIcon(detectingModulesLogo);
-                break;
-            case INITIALISING_MODULES:
-                image.setIcon(initialisingModulesLogo);
-                break;
-            case CREATING_INTERFACE:
-                image.setIcon(creatingInterfaceLogo);
-                break;
-        }
+        
     }
 
     static String getSpecialSuffix() {

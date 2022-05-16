@@ -79,11 +79,11 @@ public class MIA implements Command {
 
     @Override
     public void run() {
-        preferences = new Preferences(null);
-        
-        setLookAndFeel();
-        
         try {
+            preferences = new Preferences(null);
+        
+            setLookAndFeel();
+
             if (!headless) {
                 // Before removing the old renderer we want to check the new one can be created
                 UIService uiService = ijService.context().getService(UIService.class);

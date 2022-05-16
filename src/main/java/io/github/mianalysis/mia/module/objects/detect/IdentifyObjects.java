@@ -11,12 +11,15 @@ import java.util.concurrent.TimeUnit;
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
 
+import ij.IJ;
 import ij.ImagePlus;
 import ij.ImageStack;
 import ij.Prefs;
 import ij.plugin.SubHyperstackMaker;
 import ij.process.ImageProcessor;
+import inra.ijpb.binary.conncomp.FloodFillComponentsLabeling;
 import inra.ijpb.binary.conncomp.FloodFillComponentsLabeling3D;
+import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
@@ -49,7 +52,7 @@ import io.github.sjcross.sjcommon.object.volume.SpatCal;
 /**
  * Created by sc13967 on 06/06/2017.
  */
-@Plugin(type = Module.class, priority=Priority.LOW, visible=true)
+@Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class IdentifyObjects extends Module {
     public static final String INPUT_SEPARATOR = "Image input, object output";
     public static final String INPUT_IMAGE = "Input image";
@@ -57,6 +60,7 @@ public class IdentifyObjects extends Module {
 
     public static final String IDENTIFICATION_SEPARATOR = "Object identification";
     public static final String BINARY_LOGIC = "Binary logic";
+    public static final String DETECTION_MODE = "Detection mode";
     public static final String SINGLE_OBJECT = "Identify as single object";
     public static final String CONNECTIVITY = "Connectivity";
     public static final String VOLUME_TYPE = "Volume type";
@@ -70,6 +74,14 @@ public class IdentifyObjects extends Module {
     }
 
     public interface BinaryLogic extends BinaryLogicInterface {
+    }
+
+    public interface DetectionModes {
+        String SLICE_BY_SLICE = "2D (slice-by-slice)";
+        String THREE_D = "3D";
+
+        String[] ALL = new String[] { SLICE_BY_SLICE, THREE_D };
+
     }
 
     public interface Connectivity {
@@ -109,24 +121,26 @@ public class IdentifyObjects extends Module {
 
             int x0 = finalStripIdx == 0 ? 0 : (sW * finalStripIdx) - 1;
             int w;
-            if (finalStripIdx == 0) {
+            if (finalStripIdx == 0)
                 w = sW;
-            } else if (finalStripIdx == nThreads - 1) {
+            else if (finalStripIdx == nThreads - 1)
                 w = imW - (sW * (nThreads - 1)) + 1;
-            } else {
+            else
                 w = sW + 1;
-            }
 
             ImageStack cropIst = ist.crop(x0, 0, 0, w, imH, imNSlices);
             Runnable task = () -> {
+                ImageStack strip = cropIst.duplicate();
+
                 // Running connected components labelling
-                FloodFillComponentsLabeling3D ffcl3D;
                 try {
-                    ffcl3D = new FloodFillComponentsLabeling3D(connectivity, 16);
+                    FloodFillComponentsLabeling3D ffcl3D = new FloodFillComponentsLabeling3D(connectivity, 16);
+                    strip = ffcl3D.computeLabels(strip);
                 } catch (RuntimeException e2) {
-                    ffcl3D = new FloodFillComponentsLabeling3D(connectivity, 32);
+                    FloodFillComponentsLabeling3D ffcl3D = new FloodFillComponentsLabeling3D(connectivity, 32);
+                    strip = ffcl3D.computeLabels(strip);
                 }
-                ImageStack strip = ffcl3D.computeLabels(cropIst);
+
                 strips.put(finalStripIdx, strip);
 
                 // Identifying separate regions
@@ -254,69 +268,96 @@ public class IdentifyObjects extends Module {
     }
 
     public static Objs process(Image inputImage, String outputObjectsName, boolean blackBackground,
-            boolean singleObject, int connectivity, String type, boolean multithread, int minStripWidth,
+            boolean singleObject, String detectionMode, int connectivity, String type, boolean multithread,
+            int minStripWidth,
             boolean verbose) throws IntegerOverflowException, RuntimeException {
         String name = new IdentifyObjects(null).getName();
 
         ImagePlus inputImagePlus = inputImage.getImagePlus();
+        int nChannels = inputImagePlus.getNChannels();
+        int nSlices = inputImagePlus.getNSlices();
+        int nFrames = inputImagePlus.getNFrames();
 
         SpatCal cal = SpatCal.getFromImage(inputImagePlus);
-        int nFrames = inputImagePlus.getNFrames();
         double frameInterval = inputImagePlus.getCalibration().frameInterval;
         Objs outputObjects = new Objs(outputObjectsName, cal, nFrames, frameInterval,
                 TemporalUnit.getOMEUnit());
 
-        for (int t = 1; t <= inputImagePlus.getNFrames(); t++) {
-            // Creating a copy of the input image
-            ImagePlus currStack;
-            if (inputImagePlus.getNFrames() == 1) {
-                currStack = inputImagePlus.duplicate();
-            } else {
-                currStack = SubHyperstackMaker.makeSubhyperstack(inputImagePlus, "1-" + inputImagePlus.getNChannels(),
-                        "1-" + inputImagePlus.getNSlices(), t + "-" + t).duplicate();
+        if (detectionMode.equals(DetectionModes.THREE_D))
+            nSlices = 1;
+
+        int count = 0;
+        int total = nSlices * nFrames;
+        for (int z = 1; z <= nSlices; z++) {
+            for (int t = 1; t <= nFrames; t++) {
+                // Creating a copy of the input image
+                ImagePlus currStack;
+                switch (detectionMode) {
+                    case DetectionModes.SLICE_BY_SLICE:
+                        currStack = SubHyperstackMaker
+                                .makeSubhyperstack(inputImagePlus, "1-" + nChannels, z + "-" + z,
+                                        t + "-" + t)
+                                .duplicate();
+                        break;
+                    case DetectionModes.THREE_D:
+                    default:
+                        currStack = SubHyperstackMaker
+                                .makeSubhyperstack(inputImagePlus, "1-" + nChannels, "1-" + inputImagePlus.getNSlices(),
+                                        t + "-" + t)
+                                .duplicate();
+                        break;
+                }
                 currStack.setCalibration(inputImagePlus.getCalibration());
-            }
-            currStack.updateChannelAndDraw();
+                currStack.updateChannelAndDraw();
 
-            if (!blackBackground)
-                InvertIntensity.process(currStack);
+                if (!blackBackground)
+                    InvertIntensity.process(currStack);
 
-            // Applying connected components labelling
-            if (!singleObject) {
-                int nThreads = multithread ? Prefs.getThreads() : 1;
-                if (nThreads > 1 && minStripWidth < currStack.getWidth()) {
-                    currStack.setStack(
-                            connectedComponentsLabellingMT(currStack.getStack(), connectivity, minStripWidth));
-                } else {
-                    try {
-                        FloodFillComponentsLabeling3D ffcl3D = new FloodFillComponentsLabeling3D(connectivity, 16);
-                        currStack.setStack(ffcl3D.computeLabels(currStack.getStack()));
-                    } catch (RuntimeException e2) {
-                        FloodFillComponentsLabeling3D ffcl3D = new FloodFillComponentsLabeling3D(connectivity, 32);
-                        currStack.setStack(ffcl3D.computeLabels(currStack.getStack()));
+                // Applying connected components labelling
+                if (!singleObject) {
+                    int nThreads = multithread ? Prefs.getThreads() : 1;
+                    if (nThreads > 1 && minStripWidth < currStack.getWidth()) {
+                        currStack.setStack(
+                                connectedComponentsLabellingMT(currStack.getStack(), connectivity, minStripWidth));
+                    } else {
+                        try {
+                            FloodFillComponentsLabeling3D ffcl3D = new FloodFillComponentsLabeling3D(
+                                    connectivity, 16);
+                            currStack.setStack(ffcl3D.computeLabels(currStack.getStack()));
+                        } catch (RuntimeException e2) {
+                            FloodFillComponentsLabeling3D ffcl3D = new FloodFillComponentsLabeling3D(
+                                    connectivity, 32);
+                            currStack.setStack(ffcl3D.computeLabels(currStack.getStack()));
+                        }
                     }
                 }
+
+                // Converting image to objects
+                Image tempImage = new Image("Temp image", currStack);
+                Objs currOutputObjects = tempImage.convertImageToObjects(type, outputObjectsName, singleObject);
+
+                // If processing each slice separately, offsetting it to the correct Z-position
+                if (detectionMode.equals(DetectionModes.SLICE_BY_SLICE)) {
+                    currOutputObjects.setSpatialCalibration(cal, true);
+                    for (Obj currOutputObj : currOutputObjects.values())
+                        currOutputObj.translateCoords(0, 0, z - 1);
+                }
+
+                // Updating the current objects (setting the real frame number and offsetting
+                // the ID)
+                int maxID = 0;
+                for (Obj object : outputObjects.values())
+                    maxID = Math.max(object.getID(), maxID);
+
+                for (Obj object : currOutputObjects.values()) {
+                    object.setID(object.getID() + maxID + 1);
+                    object.setT(t - 1);
+                    outputObjects.put(object.getID(), object);
+                }
+
+                writeProgressStatus(++count, total, "images", name);
+
             }
-
-            // Converting image to objects
-            Image tempImage = new Image("Temp image", currStack);
-            Objs currOutputObjects = tempImage.convertImageToObjects(type, outputObjectsName, singleObject);
-
-            // Updating the current objects (setting the real frame number and offsetting
-            // the ID)
-            int maxID = 0;
-            for (Obj object : outputObjects.values()) {
-                maxID = Math.max(object.getID(), maxID);
-            }
-
-            for (Obj object : currOutputObjects.values()) {
-                object.setID(object.getID() + maxID + 1);
-                object.setT(t - 1);
-                outputObjects.put(object.getID(), object);
-            }
-
-            writeProgressStatus(t, inputImagePlus.getNFrames(), "images", name);
-
         }
 
         return outputObjects;
@@ -356,6 +397,7 @@ public class IdentifyObjects extends Module {
         String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);
         String binaryLogic = parameters.getValue(BINARY_LOGIC);
         boolean blackBackground = binaryLogic.equals(BinaryLogic.BLACK_BACKGROUND);
+        String detectionMode = parameters.getValue(DETECTION_MODE);
         boolean singleObject = parameters.getValue(SINGLE_OBJECT);
         String connectivityName = parameters.getValue(CONNECTIVITY);
         String type = parameters.getValue(VOLUME_TYPE);
@@ -366,7 +408,7 @@ public class IdentifyObjects extends Module {
         // Getting options
         int connectivity = getConnectivity(connectivityName);
 
-        Objs outputObjects = process(inputImage, outputObjectsName, blackBackground, singleObject,
+        Objs outputObjects = process(inputImage, outputObjectsName, blackBackground, singleObject, detectionMode,
                 connectivity, type, multithread, minStripWidth, true);
 
         // Adding objects to workspace
@@ -389,6 +431,7 @@ public class IdentifyObjects extends Module {
 
         parameters.add(new SeparatorP(IDENTIFICATION_SEPARATOR, this));
         parameters.add(new ChoiceP(BINARY_LOGIC, this, BinaryLogic.BLACK_BACKGROUND, BinaryLogic.ALL));
+        parameters.add(new ChoiceP(DETECTION_MODE, this, DetectionModes.THREE_D, DetectionModes.ALL));
         parameters.add(new BooleanP(SINGLE_OBJECT, this, false));
         parameters.add(new ChoiceP(CONNECTIVITY, this, Connectivity.TWENTYSIX, Connectivity.ALL));
         parameters.add(new ChoiceP(VOLUME_TYPE, this, VolumeTypes.POINTLIST, VolumeTypes.ALL));
@@ -411,6 +454,7 @@ public class IdentifyObjects extends Module {
 
         returnedParameters.add(parameters.get(IDENTIFICATION_SEPARATOR));
         returnedParameters.add(parameters.get(BINARY_LOGIC));
+        returnedParameters.add(parameters.get(DETECTION_MODE));
         returnedParameters.add(parameters.get(SINGLE_OBJECT));
         returnedParameters.add(parameters.get(CONNECTIVITY));
         returnedParameters.add(parameters.get(VOLUME_TYPE));
@@ -481,7 +525,7 @@ public class IdentifyObjects extends Module {
                         + "\" stores objects in a quadtree format.  Here, each Z-plane of the object is broken down into squares of different sizes, each of which is marked as foreground (i.e. an object) or background.  Quadtrees are most efficient when there are lots of large square regions of the same label, as the space can be represented by larger (and thus fewer) squares.  This is best used when there are large, completely solid objects.</li></ul>");
 
         parameters.get(BINARY_LOGIC).setDescription(BinaryLogicInterface.getDescription());
-                        
+
         parameters.get(ENABLE_MULTITHREADING).setDescription(
                 "Break the image down into strips, each one processed on a separate CPU thread.  The overhead required to do this means it's best for large multi-core CPUs, but should be left disabled for small images or on CPUs with few cores.");
 
