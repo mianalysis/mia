@@ -68,6 +68,7 @@ public class MeasureIntensityAlongPath extends Module {
     public static final String MEASURE_ANOTHER_IMAGE = "Measure another image";
 
     public static final String OUTPUT_SEPARATOR = "Data output";
+    public static final String INCLUDE_CENTROIDS = "Include centroids";
     public static final String INCLUDE_TIMEPOINTS = "Include timepoints";
 
     public static final String FILE_SAVING_SEPARATOR = "File saving controls";
@@ -90,27 +91,27 @@ public class MeasureIntensityAlongPath extends Module {
         super("Measure intensity along path", modules);
     }
 
-    public static SXSSFWorkbook process(Objs objects, Image[] images, boolean includeTimepoints) {
+    public static SXSSFWorkbook process(Objs objects, Image[] images, boolean includeCentroids, boolean includeTimepoints) {
         // Creating workbook
         SXSSFWorkbook workbook = new SXSSFWorkbook();
         Sheet[] sheets = new Sheet[images.length];
         for (int i = 0; i < images.length; i++) {
             sheets[i] = workbook.createSheet(images[i].getName());
-            addHeaderToSheet(sheets[i], includeTimepoints);
+            addHeaderToSheet(sheets[i], includeCentroids, includeTimepoints);
         }
 
         for (Obj object : objects.values())
             for (int i = 0; i < images.length; i++)
-                process(object, images[i], sheets[i], includeTimepoints);
+                process(object, images[i], sheets[i], includeCentroids, includeTimepoints);
 
         return workbook;
 
     }
 
-    public static void process(Obj object, Image image, Sheet sheet, boolean includeTimepoints) {
+    public static void process(Obj object, Image image, Sheet sheet, boolean includeCentroids, boolean includeTimepoints) {
         if (object.size() < 2)
             return;
-            
+
         // Ordering points
         LinkedHashSet<Point<Integer>> orderedPoints = new LinkedHashSet<>(
                 MeasureSkeleton.getLargestShortestPath(object));
@@ -119,7 +120,7 @@ public class MeasureIntensityAlongPath extends Module {
                 object.getSpatialCalibration());
         LinkedHashMap<Integer, Double> spacedIntensities = interpolateProfile(rawIntensities);
 
-        addProfileToSheet(sheet, object, spacedIntensities, includeTimepoints);
+        addProfileToSheet(sheet, object, spacedIntensities, includeCentroids, includeTimepoints);
 
     }
 
@@ -187,7 +188,7 @@ public class MeasureIntensityAlongPath extends Module {
 
     }
 
-    public static void addHeaderToSheet(Sheet sheet, boolean includeTimepoints) {
+    public static void addHeaderToSheet(Sheet sheet, boolean includeCentroids, boolean includeTimepoints) {
         int colCount = 0;
         Row row = sheet.createRow(0);
         Workbook workbook = sheet.getWorkbook();
@@ -202,6 +203,21 @@ public class MeasureIntensityAlongPath extends Module {
         cell.setCellValue("OBJECT_ID");
         cell.setCellStyle(cellStyle);
 
+        if (includeCentroids) {
+            cell = row.createCell(colCount++);
+            cell.setCellValue("X_CENTROID_(PX)");
+            cell.setCellStyle(cellStyle);
+
+            cell = row.createCell(colCount++);
+            cell.setCellValue("Y_CENTROID_(PX)");
+            cell.setCellStyle(cellStyle);
+
+            cell = row.createCell(colCount++);
+            cell.setCellValue("Z_CENTROID_(SLICE)");
+            cell.setCellStyle(cellStyle);
+
+        }
+
         if (includeTimepoints) {
             cell = row.createCell(colCount++);
             cell.setCellValue("TIMEPOINT");
@@ -214,13 +230,19 @@ public class MeasureIntensityAlongPath extends Module {
 
     }
 
-    public static void addProfileToSheet(Sheet sheet, Obj object, LinkedHashMap<?, Double> profile,
+    public static void addProfileToSheet(Sheet sheet, Obj object, LinkedHashMap<?, Double> profile, boolean includeCentroids,
             boolean includeTimepoints) {
         int colCount = 0;
         int rowCount = sheet.getLastRowNum() + 1;
         Row row = sheet.createRow(rowCount++);
 
         row.createCell(colCount++).setCellValue(object.getID());
+
+        if (includeCentroids) {
+            row.createCell(colCount++).setCellValue(object.getXMean(true));
+            row.createCell(colCount++).setCellValue(object.getYMean(true));
+            row.createCell(colCount++).setCellValue(object.getZMean(true,false));
+        }
 
         if (includeTimepoints)
             row.createCell(colCount++).setCellValue(object.getID());
@@ -283,6 +305,7 @@ public class MeasureIntensityAlongPath extends Module {
         // Getting parameters
         ParameterGroup inputImages = parameters.getParameter(MEASURE_ANOTHER_IMAGE);
         LinkedHashMap<Integer, Parameters> imageCollections = inputImages.getCollections(true);
+        boolean includeCentroids = parameters.getValue(INCLUDE_CENTROIDS);
         boolean includeTimepoints = parameters.getValue(INCLUDE_TIMEPOINTS);
         String saveNameMode = parameters.getValue(SAVE_NAME_MODE);
         String saveFileName = parameters.getValue(SAVE_FILE_NAME);
@@ -304,7 +327,7 @@ public class MeasureIntensityAlongPath extends Module {
             images[i++] = workspace.getImage(imageName);
         }
 
-        SXSSFWorkbook workbook = process(inputObjects, images, includeTimepoints);
+        SXSSFWorkbook workbook = process(inputObjects, images, includeCentroids, includeTimepoints);
 
         File rootFile = workspace.getMetadata().getFile();
         String path = rootFile.getParent() + File.separator;
@@ -344,6 +367,7 @@ public class MeasureIntensityAlongPath extends Module {
         parameters.add(new ParameterGroup(MEASURE_ANOTHER_IMAGE, this, collection, 1));
 
         parameters.add(new SeparatorP(OUTPUT_SEPARATOR, this));
+        parameters.add(new BooleanP(INCLUDE_CENTROIDS, this, false));
         parameters.add(new BooleanP(INCLUDE_TIMEPOINTS, this, false));
 
         parameters.add(new SeparatorP(FILE_SAVING_SEPARATOR, this));
@@ -368,6 +392,7 @@ public class MeasureIntensityAlongPath extends Module {
         returnedParameters.add(parameters.getParameter(MEASURE_ANOTHER_IMAGE));
 
         returnedParameters.add(parameters.getParameter(OUTPUT_SEPARATOR));
+        returnedParameters.add(parameters.getParameter(INCLUDE_CENTROIDS));
         returnedParameters.add(parameters.getParameter(INCLUDE_TIMEPOINTS));
 
         returnedParameters.add(parameters.getParameter(FILE_SAVING_SEPARATOR));
@@ -427,6 +452,9 @@ public class MeasureIntensityAlongPath extends Module {
 
         parameters.get(MEASURE_ANOTHER_IMAGE).setDescription(
                 "Include another image from the workspace to be measured.  Each separate image will be measured at the same spatial points and be saved to a separate sheet of the .xlsx file.");
+
+        parameters.get(INCLUDE_CENTROIDS)
+                .setDescription("Include columns recording the XYZ object centroid in pixel (or slice) units.");
 
         parameters.get(INCLUDE_TIMEPOINTS)
                 .setDescription("Include a column recording the timepoint that the objects were present in.");
