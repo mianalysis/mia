@@ -10,6 +10,7 @@ import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
+import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.GenericButtonP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.SeparatorP;
@@ -26,8 +27,19 @@ public class Preferences extends Module {
     public static final String GUI_SEPARATOR = "GUI parameters";
     public static final String SHOW_DEPRECATED = "Show deprecated modules (editing mode)";
 
+    public static final String WORKFLOW_SEPARATOR = "Workflow parameters";
+    public static final String IMAGE_DISPLAY_MODE = "Image display mode";
+
     public static final String UPDATE_SEPARATOR = "Update";
     public static final String UPDATE_PARAMETERS = "Update parameters";
+
+    public interface ImageDisplayModes {
+        String COMPOSITE = "Composite";
+        String COLOUR = "Colour";
+
+        String[] ALL = new String[]{COLOUR, COMPOSITE};
+
+    }
 
     public boolean showDeprecated() {
         return parameters.getValue(SHOW_DEPRECATED);
@@ -37,6 +49,16 @@ public class Preferences extends Module {
         Prefs.set("MIA.GUI.showDeprecated",showDeprecated);
         parameters.getParameter(SHOW_DEPRECATED).setValue(showDeprecated);
         GUI.updateAvailableModules();
+    }
+
+    public String imageDisplayMode() {
+        return parameters.getValue(IMAGE_DISPLAY_MODE);
+    }
+
+    public void setImageDisplayMode(String imageDisplayMode) {
+        Prefs.set("MIA.Workflow.imageDisplayMode",imageDisplayMode);
+        parameters.getParameter(IMAGE_DISPLAY_MODE).setValue(imageDisplayMode);
+        
     }
 
     public Preferences(Modules modules) {
@@ -63,6 +85,9 @@ public class Preferences extends Module {
         parameters.add(new SeparatorP(GUI_SEPARATOR, this));
         parameters.add(new BooleanP(SHOW_DEPRECATED, this, Prefs.get("MIA.GUI.showDeprecated", false)));
         
+        parameters.add(new SeparatorP(WORKFLOW_SEPARATOR, this));
+        parameters.add(new ChoiceP(IMAGE_DISPLAY_MODE, this, Prefs.get("MIA.Workflow.imageDisplayMode", ImageDisplayModes.COMPOSITE), ImageDisplayModes.ALL));
+
         parameters.add(new SeparatorP(UPDATE_SEPARATOR, this));
         parameters.add(new GenericButtonP(UPDATE_PARAMETERS, this, UPDATE_PARAMETERS, new Update()));
 
@@ -116,7 +141,8 @@ public class Preferences extends Module {
     class Update implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
-            setShowDeprecated(parameters.getValue(SHOW_DEPRECATED));               
+            setShowDeprecated(parameters.getValue(SHOW_DEPRECATED));     
+            setImageDisplayMode(parameters.getValue(IMAGE_DISPLAY_MODE));
         }        
     }
 }
