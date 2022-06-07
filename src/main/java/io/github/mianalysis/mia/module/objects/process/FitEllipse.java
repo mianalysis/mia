@@ -14,7 +14,7 @@ import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.module.objects.measure.spatial.tools.EllipseCalculator;
+import io.github.mianalysis.mia.module.objects.process.tools.EllipseCalculator;
 import io.github.mianalysis.mia.object.Measurement;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
@@ -101,43 +101,30 @@ public class FitEllipse extends Module {
         Objs projectedObjects = new Objs("Projected", inputObject.getObjectCollection());
         Obj projObj = ProjectObjects.process(inputObject, projectedObjects, false);
 
-        // try {
-        // switch (fittingMode) {
-        // case FittingModes.FIT_TO_WHOLE:
-        calculator = new EllipseCalculator(projObj, maxAxisLength);
-        // break;
+        boolean fitSurface = fittingMode.equals(FittingModes.FIT_TO_SURFACE);
+        calculator = new EllipseCalculator(projObj, maxAxisLength, fitSurface);
 
-        // case FittingModes.FIT_TO_SURFACE:
-        // Objs tempObjects = new Objs("Edge", inputObject.getObjectCollection());
-        // Obj edgeObject = GetObjectSurface.getSurface(projObj, tempObjects, false);
-        // calculator = new EllipseCalculator(edgeObject, maxAxisLength);
-        // break;
-        // }
-        // } catch (RuntimeException e) {
-        // MIA.log.writeError(e);
-        // }
+        addMeasurements(inputObject, calculator);
 
-        // addMeasurements(inputObject, calculator);
+        if (calculator == null || Double.isNaN(calculator.getXCentre())
+                || objectOutputMode.equals(OutputModes.DO_NOT_STORE))
+            return;
 
-        // if (calculator == null || Double.isNaN(calculator.getXCentre())
-        // || objectOutputMode.equals(OutputModes.DO_NOT_STORE))
-        // return;
+        Volume ellipse = calculator.getContainedPoints();
 
-        // Volume ellipse = calculator.getContainedPoints();
-
-        // switch (objectOutputMode) {
-        // case OutputModes.CREATE_NEW_OBJECT:
-        // Obj ellipseObject = createNewObject(inputObject, ellipse, outputObjects);
-        // if (ellipseObject != null) {
-        // outputObjects.add(ellipseObject);
-        // ellipseObject.removeOutOfBoundsCoords();
-        // }
-        // break;
-        // case OutputModes.UPDATE_INPUT:
-        // updateInputObject(inputObject, ellipse);
-        // inputObject.removeOutOfBoundsCoords();
-        // break;
-        // }
+        switch (objectOutputMode) {
+            case OutputModes.CREATE_NEW_OBJECT:
+                Obj ellipseObject = createNewObject(inputObject, ellipse, outputObjects);
+                if (ellipseObject != null) {
+                    outputObjects.add(ellipseObject);
+                    ellipseObject.removeOutOfBoundsCoords();
+                }
+                break;
+            case OutputModes.UPDATE_INPUT:
+                updateInputObject(inputObject, ellipse);
+                inputObject.removeOutOfBoundsCoords();
+                break;
+        }
     }
 
     public Obj createNewObject(Obj inputObject, Volume ellipse, Objs outputObjects) {
@@ -162,68 +149,42 @@ public class FitEllipse extends Module {
     }
 
     public void addMeasurements(Obj inputObject, EllipseCalculator calculator) {
-        // if (calculator.getEllipseFit() == null) {
-        // inputObject.addMeasurement(new Measurement(Measurements.MAJOR_MINOR_RATIO,
-        // Double.NaN));
-        // inputObject.addMeasurement(new Measurement(Measurements.ECCENTRICITY,
-        // Double.NaN));
-        // inputObject.addMeasurement(new Measurement(Measurements.ORIENTATION_DEGS,
-        // Double.NaN));
-        // inputObject.addMeasurement(new Measurement(Measurements.X_CENTRE_PX,
-        // Double.NaN));
-        // inputObject.addMeasurement(new Measurement(Measurements.X_CENTRE_CAL,
-        // Double.NaN));
-        // inputObject.addMeasurement(new Measurement(Measurements.Y_CENTRE_PX,
-        // Double.NaN));
-        // inputObject.addMeasurement(new Measurement(Measurements.Y_CENTRE_CAL,
-        // Double.NaN));
-        // inputObject.addMeasurement(new Measurement(Measurements.SEMI_MAJOR_PX,
-        // Double.NaN));
-        // inputObject.addMeasurement(new Measurement(Measurements.SEMI_MAJOR_CAL,
-        // Double.NaN));
-        // inputObject.addMeasurement(new Measurement(Measurements.SEMI_MINOR_PX,
-        // Double.NaN));
-        // inputObject.addMeasurement(new Measurement(Measurements.SEMI_MINOR_CAL,
-        // Double.NaN));
-        // return;
-        // }
+        double dppXY = inputObject.getDppXY();
 
-        // double dppXY = inputObject.getDppXY();
+        double xCent = calculator.getXCentre();
+        inputObject.addMeasurement(new Measurement(Measurements.X_CENTRE_PX, xCent));
+        inputObject.addMeasurement(new Measurement(Measurements.X_CENTRE_CAL, xCent *
+                dppXY));
 
-        // double xCent = calculator.getXCentre();
-        // inputObject.addMeasurement(new Measurement(Measurements.X_CENTRE_PX, xCent));
-        // inputObject.addMeasurement(new Measurement(Measurements.X_CENTRE_CAL, xCent *
-        // dppXY));
+        double yCent = calculator.getYCentre();
+        inputObject.addMeasurement(new Measurement(Measurements.Y_CENTRE_PX, yCent));
+        inputObject.addMeasurement(new Measurement(Measurements.Y_CENTRE_CAL, yCent *
+                dppXY));
 
-        // double yCent = calculator.getYCentre();
-        // inputObject.addMeasurement(new Measurement(Measurements.Y_CENTRE_PX, yCent));
-        // inputObject.addMeasurement(new Measurement(Measurements.Y_CENTRE_CAL, yCent *
-        // dppXY));
+        double semiMajor = calculator.getSemiMajorAxis();
+        inputObject.addMeasurement(new Measurement(Measurements.SEMI_MAJOR_PX,
+                semiMajor));
+        inputObject.addMeasurement(new Measurement(Measurements.SEMI_MAJOR_CAL,
+                semiMajor * dppXY));
 
-        // double semiMajor = calculator.getSemiMajorAxis();
-        // inputObject.addMeasurement(new Measurement(Measurements.SEMI_MAJOR_PX,
-        // semiMajor));
-        // inputObject.addMeasurement(new Measurement(Measurements.SEMI_MAJOR_CAL,
-        // semiMajor * dppXY));
+        double semiMinor = calculator.getSemiMinorAxis();
+        inputObject.addMeasurement(new Measurement(Measurements.SEMI_MINOR_PX,
+                semiMinor));
+        inputObject.addMeasurement(new Measurement(Measurements.SEMI_MINOR_CAL,
+                semiMinor * dppXY));
 
-        // double semiMinor = calculator.getSemiMinorAxis();
-        // inputObject.addMeasurement(new Measurement(Measurements.SEMI_MINOR_PX,
-        // semiMinor));
-        // inputObject.addMeasurement(new Measurement(Measurements.SEMI_MINOR_CAL,
-        // semiMinor * dppXY));
+        double eccentricity = Math.sqrt(1 - (semiMinor * semiMinor) / (semiMajor *
+                semiMajor));
+        inputObject.addMeasurement(new Measurement(Measurements.ECCENTRICITY,
+                eccentricity));
 
-        // double eccentricity = Math.sqrt(1 - (semiMinor * semiMinor) / (semiMajor *
-        // semiMajor));
-        // inputObject.addMeasurement(new Measurement(Measurements.ECCENTRICITY,
-        // eccentricity));
+        double ratio = semiMajor / semiMinor;
+        inputObject.addMeasurement(new Measurement(Measurements.MAJOR_MINOR_RATIO,
+                ratio));
 
-        // double ratio = semiMajor / semiMinor;
-        // inputObject.addMeasurement(new Measurement(Measurements.MAJOR_MINOR_RATIO,
-        // ratio));
-
-        // double theta = Math.toDegrees(calculator.getEllipseThetaRads());
-        // inputObject.addMeasurement(new Measurement(Measurements.ORIENTATION_DEGS,
-        // theta));
+        double theta = Math.toDegrees(calculator.getEllipseThetaRads());
+        inputObject.addMeasurement(new Measurement(Measurements.ORIENTATION_DEGS,
+                theta));
 
     }
 
