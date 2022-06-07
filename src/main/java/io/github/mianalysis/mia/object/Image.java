@@ -217,8 +217,10 @@ public class Image {
 
         dispIpl.setPosition(1, 1, 1);
         dispIpl.updateChannelAndDraw();
+
         if (lut != null && dispIpl.getBitDepth() != 24)
             dispIpl.setLut(lut);
+
         if (composite && dispIpl.getNChannels() > 1) {
             dispIpl.setDisplayMode(CompositeImage.COMPOSITE);
         } else {
@@ -228,7 +230,16 @@ public class Image {
     }
 
     public void showImage(String title, LUT lut) {
-        showImage(title, lut, true, false);
+        String imageDisplayMode = MIA.preferences.imageDisplayMode();
+        switch (imageDisplayMode) {
+            case Preferences.ImageDisplayModes.COLOUR:
+            default:
+                showImage(title, lut, true, false);
+                break;
+            case Preferences.ImageDisplayModes.COMPOSITE:
+                showImage(title, lut, true, true);
+                break;
+        }
     }
 
     public void showImage(String title) {
