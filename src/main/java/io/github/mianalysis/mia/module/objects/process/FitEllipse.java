@@ -195,7 +195,7 @@ public class FitEllipse extends Module {
 
     @Override
     public String getDescription() {
-        return "Fit ellipses to all objects in a collection using \"<a href=\"https://imagej.net/BoneJ\">BoneJ</a>\".  For 3D objects, a 2D projection in the XY plane is used for fitting.  Fit ellipses can be stored either as new objects, or replacing the input object coordinates.<br><br>Note: If updating input objects with ellipse coordinates, measurements associated with the input object (e.g. spatial measurements) will still be available, but may no longer be valid.";
+        return "Fit ellipses to all objects in a collection using ImageJ's built-in ellipse fitter.  For 3D objects, a 2D projection in the XY plane is used for fitting.  Fit ellipses can be stored either as new objects, or replacing the input object coordinates.<br><br>Note: If updating input objects with ellipse coordinates, measurements associated with the input object (e.g. spatial measurements) will still be available, but may no longer be valid.";
     }
 
     @Override
@@ -254,9 +254,8 @@ public class FitEllipse extends Module {
 
         if (showOutput) {
             inputObjects.showMeasurements(this, modules);
-            if (!objectOutputMode.equals(OutputModes.DO_NOT_STORE)) {
-                outputObjects.convertToImageRandomColours().showImage();
-            }
+            if (!objectOutputMode.equals(OutputModes.DO_NOT_STORE))
+                outputObjects.convertToImageRandomColours().showImage();            
         }
 
         return Status.PASS;

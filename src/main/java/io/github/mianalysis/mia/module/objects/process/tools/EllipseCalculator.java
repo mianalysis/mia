@@ -94,7 +94,7 @@ public class EllipseCalculator {
         } else {
             xCent = fitter.xCenter;
             yCent = fitter.yCenter;
-            angleDegs = fitter.angle;
+            angleDegs = -fitter.angle;
             
         }
     }
@@ -128,7 +128,7 @@ public class EllipseCalculator {
                 volume.getSpatialCalibration());
 
         Point2D cent = new Point2D(xCent, yCent);
-        Ellipse2D ell = Ellipse2D.create(cent, semiMajor, semiMinor, -getEllipseThetaRads(), true);
+        Ellipse2D ell = Ellipse2D.create(cent, semiMajor, semiMinor, getEllipseThetaRads(), true);
 
         for (int x = (int) Math.floor(xCent - semiMajor); x <= xCent + semiMajor; x++) {
             for (int y = (int) Math.floor(yCent - semiMajor); y <= yCent + semiMajor; y++) {
