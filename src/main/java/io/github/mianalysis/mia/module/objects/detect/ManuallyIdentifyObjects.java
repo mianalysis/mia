@@ -33,6 +33,7 @@ import javax.swing.event.ListSelectionListener;
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
 
+import ij.CompositeImage;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.ImageStack;
@@ -497,6 +498,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
         displayImagePlus = new Duplicator().run(inputImagePlus);
         displayImagePlus.setCalibration(null);
         displayImagePlus.setTitle(messageOnImage);
+        displayImagePlus.setDisplayMode(CompositeImage.COMPOSITE);
 
         // Clearing any ROIs stored from previous runs
         rois = new HashMap<>();

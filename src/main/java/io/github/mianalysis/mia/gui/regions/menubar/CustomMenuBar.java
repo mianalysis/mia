@@ -55,7 +55,7 @@ public class CustomMenuBar extends JMenuBar implements ActionListener {
 
     public CustomMenuBar() {
         // Creating the file menu
-        fileMenu.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 10));
+        fileMenu.setBorder(BorderFactory.createEmptyBorder(0, 5, 0, 5));
         fileMenu.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
         add(fileMenu);
         fileMenu.add(newWorkflow);
@@ -64,7 +64,7 @@ public class CustomMenuBar extends JMenuBar implements ActionListener {
         fileMenu.add(saveWorkflowAs);
 
         // Creating the edit menu
-        editMenu.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 10));
+        editMenu.setBorder(BorderFactory.createEmptyBorder(0, 5, 0, 5));
         editMenu.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
         add(editMenu);
         editMenu.add(undo);
@@ -76,7 +76,7 @@ public class CustomMenuBar extends JMenuBar implements ActionListener {
         editMenu.add(new MenuItem(MenuItem.PREFERENCES));
 
         // Creating the analysis menu
-        analysisMenu.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 10));
+        analysisMenu.setBorder(BorderFactory.createEmptyBorder(0, 5, 0, 5));
         analysisMenu.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
         add(analysisMenu);
         analysisMenu.add(new MenuItem(MenuItem.RUN_ANALYSIS));
@@ -89,7 +89,7 @@ public class CustomMenuBar extends JMenuBar implements ActionListener {
         analysisMenu.add(silenceAllModules);
 
         // Creating the new menu
-        viewMenu.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 10));
+        viewMenu.setBorder(BorderFactory.createEmptyBorder(0, 5, 0, 5));
         viewMenu.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
         add(viewMenu);
         if (MIA.isDebug())
@@ -108,7 +108,7 @@ public class CustomMenuBar extends JMenuBar implements ActionListener {
 
         // Creating the help menu
         add(helpMenu);
-        helpMenu.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
+        helpMenu.setBorder(BorderFactory.createEmptyBorder(0, 5, 0, 5));
         helpMenu.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
         helpMenu.add(new MenuItem(MenuItem.SHOW_ABOUT));
         helpMenu.add(new MenuItem(MenuItem.SHOW_GETTING_STARTED));

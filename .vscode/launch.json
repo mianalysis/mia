@@ -6,6 +6,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "Launch MeasureGreyscaleKFunction",
+            "request": "launch",
+            "mainClass": "io.github.mianalysis.mia.module.images.measure.MeasureGreyscaleKFunction",
+            "projectName": "MIA"
+        },
+        {
+            "type": "java",
             "name": "Launch Current File",
             "request": "launch",
             "mainClass": "${file}"
