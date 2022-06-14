@@ -31,7 +31,6 @@ import io.github.mianalysis.mia.process.logging.LogHistory;
 import io.github.mianalysis.mia.process.logging.LogRenderer;
 import net.imagej.ImageJ;
 import net.imagej.ImageJService;
-import net.imagej.patcher.LegacyInjector;
 
 /**
  * Created by Stephen Cross on 14/07/2017.

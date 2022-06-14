@@ -230,7 +230,10 @@ public class Image {
     }
 
     public void showImage(String title, LUT lut) {
-        String imageDisplayMode = MIA.preferences.imageDisplayMode();
+        String imageDisplayMode = Preferences.ImageDisplayModes.COLOUR;
+        if (MIA.preferences != null)
+            imageDisplayMode = MIA.preferences.imageDisplayMode();
+            
         switch (imageDisplayMode) {
             case Preferences.ImageDisplayModes.COLOUR:
             default:
