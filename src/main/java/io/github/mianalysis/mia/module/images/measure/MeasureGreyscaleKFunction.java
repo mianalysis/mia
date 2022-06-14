@@ -3,15 +3,16 @@
 package io.github.mianalysis.mia.module.images.measure;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
+import org.apache.commons.math3.distribution.NormalDistribution;
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
 
 import ij.IJ;
-import ij.ImageJ;
 import ij.ImagePlus;
-import ij.process.FloatProcessor;
-import ij.process.ShortProcessor;
+import ij.gui.Plot;
+import ij.process.ImageProcessor;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
@@ -59,22 +60,22 @@ public class MeasureGreyscaleKFunction extends Module {
 
     public static void main(String[] args) {
         ImagePlus ipl = IJ.openImage(
-                "C:\\Users\\steph\\Documents\\People\\Georgie McDonald\\2022-05-26 ALP scale segmentation\\Test Ripley\\TEST_crop.tif");
+                "C:\\Users\\steph\\Documents\\People\\Georgie McDonald\\2022-05-26 ALP scale segmentation\\Test Ripley\\TEST_crop.tiff");
         Image image = new Image("Test", ipl);
-        MeasureGreyscaleKFunction.calculateGSKfunction(image, 5);
+        for (int radius=3;radius<=9;radius++)
+            MeasureGreyscaleKFunction.calculateGSKfunction(image, radius);
 
     }
 
-    public static double calculateGSKfunction(Image image, int radius) {
+    public static double[] calculateGSKfunction(Image image, int radius) {
         if (radius <= 0)
-            return Double.NaN;
+            return null;
 
         int dia = (int) Math.ceil(2 * radius);
         if (dia % 2 == 0)
             dia++;
 
         int r = (int) Math.floor(dia / 2);
-        System.out.println("r: " + r);
 
         ArrayList<Integer> x = new ArrayList<>();
         ArrayList<Integer> y = new ArrayList<>();
@@ -88,64 +89,108 @@ public class MeasureGreyscaleKFunction extends Module {
 
         // Padding image with NaN
         ImagePlus ipl = image.getImagePlus();
-        FloatProcessor ipr = new FloatProcessor(ipl.getWidth() + 2 * radius, ipl.getHeight() + 2 * radius);
-        for (int i = 0; i < ipr.getPixelCount(); i++)
-            ipr.setf(i, Float.NaN);
+        ImageProcessor ipr = ipl.getProcessor();
+        int w = ipr.getWidth();
+        int h = ipr.getHeight();
 
-        for (int xx = 0; xx < ipl.getWidth(); xx++)
-            for (int yy = 0; yy < ipl.getHeight(); yy++)
-                ipr.setf(xx + radius, yy + radius, ipl.getProcessor().getf(xx, yy));
-
-        FloatProcessor aggMap = new FloatProcessor(ipr.getWidth(), ipr.getHeight());
+        double imSum = 0;
+        double aggSum = 0;
 
         // Creating aggregation map
-        for (int xx = radius; xx < radius + ipl.getWidth(); xx++) {
-            for (int yy = radius; yy < radius + ipl.getHeight(); yy++) {
-                // Calculating edge correction
-                int b = 0;
-                for (int i = 0; i < x.size(); i++)
-                    b = Float.isNaN(ipr.getf(xx + x.get(i), yy + y.get(i))) ? b : b + 1;
+        for (int xx = 0; xx < w; xx++) {
+            for (int yy = 0; yy < h; yy++) {
+                imSum = imSum + ipr.get(xx, yy);
 
-                double edgeCorrection = b / (Math.PI * radius * radius);
-
+                // Only calculate this value if the central value isn't NaN or 0
                 float val = ipr.getf(xx, yy);
                 if (Float.isNaN(val) || val == 0)
                     continue;
 
+                // Calculating edge correction
+                int b = 0;
                 float sum = 0;
                 for (int i = 0; i < x.size(); i++) {
+                    int xxx = xx + x.get(i);
+                    int yyy = yy + y.get(i);
+                    if (xxx < 0 || xxx >= w || yyy < 0 || yyy >= h)
+                        continue;
+
+                    b = Float.isNaN(ipr.getf(xxx, yyy)) ? b : b + 1;
+
                     if (x.get(i) == 0 && y.get(i) == 0)
                         continue;
 
-                    float newVal = ipr.getf(xx + x.get(i), yy + y.get(i));
-                    if (Float.isNaN(newVal))
-                        continue;
-
-                    sum = sum + newVal;
+                    float newVal = ipr.getf(xxx, yyy);
+                    sum = Float.isNaN(newVal) ? sum : sum + newVal;
 
                 }
+                double edgeCorrection = b / (Math.PI * radius * radius);
 
-                float agg = (val * (val - 1) + val * sum) / Double.valueOf(edgeCorrection).floatValue();
-                aggMap.setf(xx, yy, agg);
+                aggSum = aggSum + (val * (val - 1) + val * sum) / edgeCorrection;
 
             }
         }
 
-        new ImageJ();
-        new ImagePlus("Agg", aggMap).show();
+        // Calculating K
+        double imArea = w * h;
+        double K = aggSum * (imArea / (imSum * (imSum - 1)));
 
-        return Double.NaN;
+        // Calculating normalised and centred K
+        double imPerimeter = 2 * (w + h);
+        double betaR = Double.valueOf(Math.PI * radius * radius / imArea).floatValue();
+        double gammaR = imPerimeter * radius / imArea;
+        double varK = ((2 * Math.pow(imArea, 2) * betaR) / (imSum * imSum))
+                * (1 + 0.305 * gammaR + betaR * (-1 + 0.0132 * imSum * gammaR));
+        double normCentK = (K - Math.PI * radius * radius) / Math.sqrt(varK);
+
+        // Estimating critical quantiles
+        double skewK = ((4 * Math.pow(imArea, 3) * betaR) / (Math.pow(imSum, 4) * Math.pow(varK, 3.0 / 2)))
+                * (1 + 0.76 * gammaR + imSum * betaR * (1.173 + 0.414 * gammaR)
+                        + imSum * betaR * betaR * (-2 + 0.012 * imSum * gammaR));
+        double kurtK = ((Math.pow(imArea, 4) * betaR) / (Math.pow(imSum, 6) * (varK * varK)))
+                * (8 + 11.52 * gammaR
+                        + imSum * betaR
+                                * ((104.3 + 12 * imSum) + (78.7 + 7.32 * imSum) * gammaR
+                                        + 1.116 * imSum * gammaR * gammaR)
+                        + imSum * betaR * betaR
+                                * ((-304.3 - 1.92 * imSum) + (-97.9 + 2.69 * imSum + 0.317 * imSum * imSum) * gammaR
+                                        + 0.0966 * imSum * imSum * gammaR * gammaR)
+                        + imSum * imSum * Math.pow(betaR, 3) * (-36 + 0.0021 * imSum * imSum * gammaR * gammaR));
+
+        NormalDistribution distribution = new NormalDistribution(0, 1);
+        double z01 = distribution.inverseCumulativeProbability(0.01);
+        double z99 = distribution.inverseCumulativeProbability(0.99);
+
+        double Q01 = z01 + (1d / 6) * (z01 * z01 - 1) * skewK
+                + (1d / 24) * ((z01 * z01 * z01) - 3 * z01) * (kurtK - 3)
+                - (1d / 36) * (2 * (z01 * z01 * z01) - 5 * z01) * skewK * skewK;
+        double Q99 = z99 + (1d / 6) * (z99 * z99 - 1) * skewK
+                + (1d / 24) * ((z99 * z99 * z99) - 3 * z99) * (kurtK - 3)
+                - (1d / 36) * (2 * (z99 * z99 * z99) - 5 * z99) * skewK * skewK;
+
+        return new double[] { normCentK, Q01, Q99 };
 
     }
 
     @Override
     public Status process(Workspace workspace) {
         String inputImageName = parameters.getValue(INPUT_IMAGE);
-        String minRadiusPx = parameters.getValue(MINIMUM_RADIUS_PX);
-        String maxRadiusPx = parameters.getValue(MAXIMUM_RADIUS_PX);
-        String radiusIncrementPx = parameters.getValue(RADIUS_INCREMENT);
+        int minRadius = parameters.getValue(MINIMUM_RADIUS_PX);
+        int maxRadius = parameters.getValue(MAXIMUM_RADIUS_PX);
+        int radiusInc = parameters.getValue(RADIUS_INCREMENT);
 
         Image inputImage = workspace.getImage(inputImageName);
+
+        HashMap<Integer, Double> k = new HashMap<>();
+        HashMap<Integer, Double> q01 = new HashMap<>();
+        HashMap<Integer, Double> q99 = new HashMap<>();
+        for (int r = minRadius; r <= maxRadius; r = r + radiusInc) {
+            double[] kRes = calculateGSKfunction(inputImage, r);
+            k.put(r, kRes[0]);
+            q01.put(r, kRes[1]);
+            q99.put(r, kRes[2]);
+            System.out.println(r + "_" + kRes[0] + "_" + kRes[1] + "_" + kRes[2]);
+        }
 
         return Status.PASS;
 
