@@ -134,7 +134,7 @@ public class SpotDetection extends Module {
         int nSlices = inputImage.getImagePlus().getNSlices();
 
         for (int z=0;z<nSlices;z++) {
-            Image sliceImage = ExtractSubstack.extractSubstack(inputImage, "Slice", "1-end", String.valueOf(z)+1, "1-end");
+            Image sliceImage = ExtractSubstack.extractSubstack(inputImage, "Slice", "1-end", String.valueOf(z+1), "1-end");
             ArrayList<Obj> newSpots = processStack(sliceImage, spotObjects, estimateSize);
 
             // Putting the new spots at the correct Z-plane
@@ -290,17 +290,15 @@ public class SpotDetection extends Module {
         ImagePlus ipl = inputImage.getImagePlus();
 
         SpatCal calibration = SpatCal.getFromImage(ipl);
-        Calibration cal = ipl.getCalibration();
-        ipl.setCalibration(null);
         int nFrames = ipl.getNFrames();
-        double frameInterval = cal.frameInterval;
+        double frameInterval = ipl.getCalibration().frameInterval;
 
         Objs spotObjects = new Objs(spotObjectsName, calibration, nFrames, frameInterval, TemporalUnit.getOMEUnit());
         workspace.addObjects(spotObjects);
 
         switch (detectionMode) {
             case DetectionModes.SLICE_BY_SLICE:
-
+                processSlice(inputImage, spotObjects, estimateSize);
                 break;
             case DetectionModes.THREE_D:
                 processStack(inputImage, spotObjects, estimateSize);
