@@ -3,6 +3,7 @@
 package io.github.mianalysis.mia.module.objects.detect;
 
 import java.awt.Color;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.scijava.Priority;
@@ -16,7 +17,6 @@ import fiji.plugin.trackmate.SpotCollection;
 import fiji.plugin.trackmate.TrackMate;
 import fiji.plugin.trackmate.detection.DetectorKeys;
 import fiji.plugin.trackmate.detection.LogDetectorFactory;
-import fiji.plugin.trackmate.tracking.sparselap.SimpleSparseLAPTrackerFactory;
 import ij.ImagePlus;
 import ij.measure.Calibration;
 import ij.plugin.Duplicator;
@@ -25,6 +25,7 @@ import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.images.transform.ExtractSubstack;
 import io.github.mianalysis.mia.module.objects.process.GetLocalObjectRegion;
 import io.github.mianalysis.mia.module.visualise.overlays.AddObjectCentroid;
 import io.github.mianalysis.mia.module.visualise.overlays.AddObjectOutline;
@@ -35,6 +36,7 @@ import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Status;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
+import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.SeparatorP;
@@ -59,19 +61,28 @@ import io.github.sjcross.sjcommon.process.IntensityMinMax;
 /**
  * Created by sc13967 on 15/05/2017.
  */
-@Plugin(type = Module.class, priority=Priority.LOW, visible=true)
+@Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class SpotDetection extends Module {
     public static final String INPUT_SEPARATOR = "Image input, object output";
     public static final String INPUT_IMAGE = "Input image";
     public static final String OUTPUT_SPOT_OBJECTS = "Output spot objects";
 
     public static final String SPOT_SEPARATOR = "Spot detection";
+    public static final String DETECTION_MODE = "Detection mode";
     public static final String CALIBRATED_UNITS = "Calibrated units";
     public static final String DO_SUBPIXEL_LOCALIZATION = "Do sub-pixel localisation";
     public static final String DO_MEDIAN_FILTERING = "Median filtering";
     public static final String RADIUS = "Radius";
     public static final String THRESHOLD = "Threshold";
     public static final String ESTIMATE_SIZE = "Estimate spot size";
+
+    public interface DetectionModes {
+        String SLICE_BY_SLICE = "2D (slice-by-slice)";
+        String THREE_D = "3D";
+
+        String[] ALL = new String[] { SLICE_BY_SLICE, THREE_D };
+
+    }
 
     public interface Measurements {
         String RADIUS_PX = "SPOT_DETECT // RADIUS_(PX)";
@@ -88,6 +99,52 @@ public class SpotDetection extends Module {
 
     public SpotDetection(Modules modules) {
         super("Spot detection", modules);
+    }
+
+    public ArrayList<Obj> processStack(Image inputImage, Objs spotObjects, boolean estimateSize) {
+        ImagePlus ipl = inputImage.getImagePlus();
+        SpatCal calibration = SpatCal.getFromImage(ipl);
+        Calibration cal = ipl.getCalibration();
+        ipl.setCalibration(null);
+
+        // Initialising TrackMate model to store data
+        Model model = new Model();
+        model.setLogger(Logger.VOID_LOGGER);
+        Settings settings = initialiseSettings(ipl, calibration);
+        TrackMate trackmate = new TrackMate(model, settings);
+
+        if (!trackmate.execDetection())
+            MIA.log.writeError(trackmate.getErrorMessage());
+        if (!trackmate.computeSpotFeatures(false))
+            MIA.log.writeError(trackmate.getErrorMessage());
+
+            ArrayList<Obj> newSpots = addSpots(model, spotObjects);
+
+        if (estimateSize)
+            estimateSpotSize(spotObjects, ipl);
+
+        // Reapplying calibration to input image
+        inputImage.getImagePlus().setCalibration(cal);
+
+        return newSpots;
+
+    }
+
+    public Objs processSlice(Image inputImage, Objs spotObjects, boolean estimateSize) {
+        int nSlices = inputImage.getImagePlus().getNSlices();
+
+        for (int z=0;z<nSlices;z++) {
+            Image sliceImage = ExtractSubstack.extractSubstack(inputImage, "Slice", "1-end", String.valueOf(z)+1, "1-end");
+            ArrayList<Obj> newSpots = processStack(sliceImage, spotObjects, estimateSize);
+
+            // Putting the new spots at the correct Z-plane
+            for (Obj newSpot:newSpots)
+                newSpot.translateCoords(0, 0, z);
+
+        }        
+
+        return spotObjects;
+
     }
 
     public Settings initialiseSettings(ImagePlus ipl, SpatCal calibration) {
@@ -115,12 +172,11 @@ public class SpotDetection extends Module {
 
     }
 
-    public Objs getSpots(Model model, SpatCal calibration, int nFrames, double frameInterval)
+    public ArrayList<Obj> addSpots(Model model, Objs spotObjects)
             throws IntegerOverflowException {
-        String spotObjectsName = parameters.getValue(OUTPUT_SPOT_OBJECTS);
+                ArrayList<Obj> newSpots = new ArrayList<>();
         boolean doSubpixel = parameters.getValue(DO_SUBPIXEL_LOCALIZATION);
 
-        Objs spotObjects = new Objs(spotObjectsName, calibration, nFrames, frameInterval, TemporalUnit.getOMEUnit());
         SpotCollection spots = model.getSpots();
         for (Spot spot : spots.iterable(false)) {
             Obj spotObject = spotObjects.createAndAddNewObject(VolumeType.POINTLIST, spot.ID());
@@ -134,9 +190,11 @@ public class SpotDetection extends Module {
 
             addSpotMeasurements(spotObject, spot, doSubpixel);
 
+            newSpots.add(spotObject);
+
         }
 
-        return spotObjects;
+        return newSpots;
 
     }
 
@@ -184,7 +242,7 @@ public class SpotDetection extends Module {
     public void showObjects(ImagePlus ipl, Objs spotObjects, boolean estimateSize) {
         HashMap<Integer, Float> hues = ColourFactory.getSingleColourValues(spotObjects,
                 ColourFactory.SingleColours.ORANGE);
-        HashMap<Integer, Color> colours = ColourFactory.getColours(hues,100);
+        HashMap<Integer, Color> colours = ColourFactory.getColours(hues, 100);
 
         String pointSize = AddObjectCentroid.PointSizes.SMALL;
         String pointType = AddObjectCentroid.PointTypes.CIRCLE;
@@ -221,55 +279,37 @@ public class SpotDetection extends Module {
 
     @Override
     public Status process(Workspace workspace) {
-        // Loading input image
+        // Getting parameters
         String inputImageName = parameters.getValue(INPUT_IMAGE);
+        String spotObjectsName = parameters.getValue(OUTPUT_SPOT_OBJECTS);
+        String detectionMode = parameters.getValue(DETECTION_MODE);
+        boolean estimateSize = parameters.getValue(ESTIMATE_SIZE);
+
+        // Loading input image
         Image inputImage = workspace.getImage(inputImageName);
         ImagePlus ipl = inputImage.getImagePlus();
 
-        // Storing, then removing calibration. This will be reapplied after the
-        // detection.
         SpatCal calibration = SpatCal.getFromImage(ipl);
         Calibration cal = ipl.getCalibration();
         ipl.setCalibration(null);
         int nFrames = ipl.getNFrames();
         double frameInterval = cal.frameInterval;
 
-        // Getting parameters
-        boolean estimateSize = parameters.getValue(ESTIMATE_SIZE);
+        Objs spotObjects = new Objs(spotObjectsName, calibration, nFrames, frameInterval, TemporalUnit.getOMEUnit());
+        workspace.addObjects(spotObjects);
 
-        // Initialising TrackMate model to store data
-        Model model = new Model();
-        model.setLogger(Logger.VOID_LOGGER);
-        Settings settings = initialiseSettings(ipl, calibration);
-        TrackMate trackmate = new TrackMate(model, settings);
+        switch (detectionMode) {
+            case DetectionModes.SLICE_BY_SLICE:
 
-        // Resetting ipl to the input image
-        ipl = inputImage.getImagePlus();
-
-        Objs spotObjects;
-        try {
-            if (!trackmate.execDetection())
-                MIA.log.writeError(trackmate.getErrorMessage());
-            if (!trackmate.computeSpotFeatures(false))
-                MIA.log.writeError(trackmate.getErrorMessage());
-
-            spotObjects = getSpots(model, calibration, nFrames, frameInterval);
-
-            if (estimateSize)
-                estimateSpotSize(spotObjects, ipl);
-
-            workspace.addObjects(spotObjects);
-
-        } catch (IntegerOverflowException e) {
-            return Status.FAIL;
+                break;
+            case DetectionModes.THREE_D:
+                processStack(inputImage, spotObjects, estimateSize);
+                break;
         }
 
         // Displaying objects (if selected)
         if (showOutput)
             showObjects(ipl, spotObjects, estimateSize);
-
-        // Reapplying calibration to input image
-        inputImage.getImagePlus().setCalibration(cal);
 
         return Status.PASS;
 
@@ -283,6 +323,7 @@ public class SpotDetection extends Module {
                 new OutputObjectsP(OUTPUT_SPOT_OBJECTS, this, "", "Spot objects that will be added to the workspace."));
 
         parameters.add(new SeparatorP(SPOT_SEPARATOR, this));
+        parameters.add(new ChoiceP(DETECTION_MODE, this, DetectionModes.THREE_D, DetectionModes.ALL));
         parameters.add(new BooleanP(CALIBRATED_UNITS, this, false, "Enable if spatial parameters (e.g. \"" + RADIUS
                 + "\") are being specified in calibrated units.  If disabled, parameters are assumed to be specified in pixel units."));
         parameters.add(new BooleanP(DO_SUBPIXEL_LOCALIZATION, this, true,
@@ -310,6 +351,7 @@ public class SpotDetection extends Module {
         returnedParameters.add(parameters.getParameter(OUTPUT_SPOT_OBJECTS));
 
         returnedParameters.add(parameters.getParameter(SPOT_SEPARATOR));
+        returnedParameters.add(parameters.get(DETECTION_MODE));
         returnedParameters.add(parameters.getParameter(CALIBRATED_UNITS));
         returnedParameters.add(parameters.getParameter(DO_SUBPIXEL_LOCALIZATION));
         returnedParameters.add(parameters.getParameter(DO_MEDIAN_FILTERING));
