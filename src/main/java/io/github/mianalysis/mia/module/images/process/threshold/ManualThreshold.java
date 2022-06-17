@@ -119,15 +119,13 @@ public class ManualThreshold extends Module {
         double thresholdValue = parameters.getValue(THRESHOLD_VALUE);
         String measurementName = parameters.getValue(MEASUREMENT);
 
-        if (thresholdSource.equals(ThresholdSources.IMAGE_MEASUREMENT)) {
+        if (thresholdSource.equals(ThresholdSources.IMAGE_MEASUREMENT))
             thresholdValue = (int) Math.round(inputImage.getMeasurement(measurementName).getValue());
-        }
-
+        
         // If applying to a new image, the input image is duplicated
-        if (!applyToInput) {
+        if (!applyToInput)
             inputImagePlus = new Duplicator().run(inputImagePlus);
-        }
-
+        
         // Calculating the threshold based on the selected algorithm
         applyThreshold(inputImagePlus, thresholdValue);
 
