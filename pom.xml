@@ -245,11 +245,11 @@
             <artifactId>imagej-ui-swing</artifactId>
             <scope>${scp}</scope>
         </dependency>
-        <dependency>
+        <!-- <dependency>
             <groupId>net.imagej</groupId>
             <artifactId>imagej-legacy</artifactId>
             <scope>${scp}</scope>
-        </dependency>
+        </dependency> -->
         <dependency>
             <groupId>net.imagej</groupId>
             <artifactId>imagej-ops</artifactId>

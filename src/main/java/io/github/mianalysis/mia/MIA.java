@@ -63,9 +63,8 @@ public class MIA implements Command {
 
         try {
             if (args.length == 0) {
-                ImageJ ij = new ImageJ();                
-                ij.ui().showUI();
-                ij.command().run("io.github.mianalysis.mia.MIA", false);
+                new ij.ImageJ();
+                new ImageJ().command().run("io.github.mianalysis.mia.MIA", false);
             } else {
                 preferences = new Preferences(null);
                 Analysis analysis = AnalysisReader.loadAnalysis(args[0]);
