@@ -94,7 +94,7 @@ public class WorkflowHandling extends Module {
         String DEBUG = "Debug";
         String MESSAGE = "Message";
         String WARNING = "Warning";
-        
+
         String[] ALL = new String[] { DEBUG, MESSAGE, WARNING };
 
     }
@@ -103,10 +103,12 @@ public class WorkflowHandling extends Module {
     }
 
     public interface TextFilterModes {
+        String CONTAINS = "Contains";
+        String DOES_NOT_CONTAIN = "Does not contain";
         String EQUAL_TO = "Equal to";
         String NOT_EQUAL_TO = "Not equal to";
 
-        String[] ALL = new String[] { EQUAL_TO, NOT_EQUAL_TO };
+        String[] ALL = new String[] { CONTAINS, DOES_NOT_CONTAIN, EQUAL_TO, NOT_EQUAL_TO };
 
     }
 
@@ -220,6 +222,10 @@ public class WorkflowHandling extends Module {
 
     public static boolean testTextMetadata(String metadataValue, String referenceMode, String referenceValue) {
         switch (referenceMode) {
+            case TextFilterModes.CONTAINS:
+                return metadataValue.contains(referenceValue);
+            case TextFilterModes.DOES_NOT_CONTAIN:
+                return !metadataValue.contains(referenceValue);
             case TextFilterModes.EQUAL_TO:
                 return metadataValue.equals(referenceValue);
             case TextFilterModes.NOT_EQUAL_TO:
@@ -311,7 +317,7 @@ public class WorkflowHandling extends Module {
         parameters.add(new InputImageP(INPUT_IMAGE, this));
         parameters.add(new InputObjectsP(INPUT_OBJECTS, this));
         parameters.add(new ChoiceP(NUMERIC_FILTER_MODE, this, NumericFilterModes.LESS_THAN, NumericFilterModes.ALL));
-        parameters.add(new ChoiceP(TEXT_FILTER_MODE, this, TextFilterModes.EQUAL_TO, TextFilterModes.ALL));
+        parameters.add(new ChoiceP(TEXT_FILTER_MODE, this, TextFilterModes.CONTAINS, TextFilterModes.ALL));
         parameters.add(new ImageMeasurementP(IMAGE_MEASUREMENT, this));
         parameters.add(new MetadataItemP(METADATA_VALUE, this));
         parameters.add(new DoubleP(REFERENCE_NUMERIC_VALUE, this, 0d));
@@ -357,8 +363,8 @@ public class WorkflowHandling extends Module {
 
             case TestModes.IMAGE_MEASUREMENT:
                 returnedParameters.add(parameters.getParameter(INPUT_IMAGE));
-                returnedParameters.add(parameters.getParameter(NUMERIC_FILTER_MODE));
                 returnedParameters.add(parameters.getParameter(IMAGE_MEASUREMENT));
+                returnedParameters.add(parameters.getParameter(NUMERIC_FILTER_MODE));
                 returnedParameters.add(parameters.getParameter(REFERENCE_NUMERIC_VALUE));
 
                 String inputImageName = parameters.getValue(INPUT_IMAGE);
@@ -367,20 +373,20 @@ public class WorkflowHandling extends Module {
                 break;
 
             case TestModes.METADATA_NUMERIC_VALUE:
-                returnedParameters.add(parameters.getParameter(NUMERIC_FILTER_MODE));
                 returnedParameters.add(parameters.getParameter(METADATA_VALUE));
+                returnedParameters.add(parameters.getParameter(NUMERIC_FILTER_MODE));
                 returnedParameters.add(parameters.getParameter(REFERENCE_NUMERIC_VALUE));
                 break;
 
             case TestModes.METADATA_TEXT_VALUE:
-                returnedParameters.add(parameters.getParameter(TEXT_FILTER_MODE));
                 returnedParameters.add(parameters.getParameter(METADATA_VALUE));
+                returnedParameters.add(parameters.getParameter(TEXT_FILTER_MODE));
                 returnedParameters.add(parameters.getParameter(REFERENCE_TEXT_VALUE));
                 break;
 
             case TestModes.OBJECT_COUNT:
-                returnedParameters.add(parameters.getParameter(NUMERIC_FILTER_MODE));
                 returnedParameters.add(parameters.getParameter(INPUT_OBJECTS));
+                returnedParameters.add(parameters.getParameter(NUMERIC_FILTER_MODE));
                 returnedParameters.add(parameters.getParameter(REFERENCE_NUMERIC_VALUE));
                 break;
         }
@@ -532,7 +538,8 @@ public class WorkflowHandling extends Module {
 
         parameters.get(REDIRECT_MESSAGE).setDescription("Message to display if redirection occurs.");
 
-        parameters.get(MESSAGE_LEVEL).setDescription("Controls the logging level in which the message will be displayed.  Warnings are enabled for users by default, but debug and message aren't.");
+        parameters.get(MESSAGE_LEVEL).setDescription(
+                "Controls the logging level in which the message will be displayed.  Warnings are enabled for users by default, but debug and message aren't.");
 
         parameters.get(EXPORT_WORKSPACE).setDescription(
                 "Controls if the workspace should still be exported to the output Excel spreadsheet if termination occurs.");
