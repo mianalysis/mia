@@ -2,14 +2,14 @@ package io.github.mianalysis.mia.module.objects.transform;
 
 import java.util.Iterator;
 
+import org.scijava.Priority;
+import org.scijava.plugin.Plugin;
+
 import ij.Prefs;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.module.Module;
-import org.scijava.Priority;
-import org.scijava.plugin.Plugin;
 import io.github.mianalysis.mia.module.core.InputControl;
 import io.github.mianalysis.mia.module.images.process.binary.BinaryOperations2D;
 import io.github.mianalysis.mia.module.images.process.binary.DilateErode;
@@ -21,6 +21,7 @@ import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputObjectsP;
+import io.github.mianalysis.mia.object.parameters.ObjectMeasurementP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.SeparatorP;
 import io.github.mianalysis.mia.object.parameters.objects.OutputObjectsP;
@@ -37,7 +38,7 @@ import io.github.sjcross.sjcommon.object.volume.PointOutOfRangeException;
 /**
  * Created by sc13967 on 16/01/2018.
  */
-@Plugin(type = Module.class, priority=Priority.LOW, visible=true)
+@Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class ExpandShrinkObjects extends Module {
     public static final String INPUT_SEPARATOR = "Object input/output";
     public static final String INPUT_OBJECTS = "Input objects";
@@ -46,7 +47,9 @@ public class ExpandShrinkObjects extends Module {
 
     public static final String PROCESSING_SEPARATOR = "Processing options";
     public static final String METHOD = "Method";
+    public static final String RADIUS_CHANGE_SOURCE = "Radius change source";
     public static final String RADIUS_CHANGE = "Radius change";
+    public static final String MEASUREMENT = "Measurement";
     public static final String CALIBRATED_UNITS = "Calibrated units";
 
     public ExpandShrinkObjects(Modules modules) {
@@ -60,6 +63,14 @@ public class ExpandShrinkObjects extends Module {
         String SHRINK_3D = "Shrink 3D";
 
         String[] ALL = new String[] { EXPAND_2D, EXPAND_3D, SHRINK_2D, SHRINK_3D };
+
+    }
+
+    public interface RadiusChangeSources {
+        String FIXED_VALUE = "Fixed value";
+        String OBJECT_MEASUREMENT = "Object measurement";
+
+        String[] ALL = new String[] { FIXED_VALUE, OBJECT_MEASUREMENT };
 
     }
 
@@ -95,8 +106,8 @@ public class ExpandShrinkObjects extends Module {
         // from the converter has white objects on a black background.
         switch (method) {
             case Methods.EXPAND_2D:
-                BinaryOperations2D.process(objectImage, BinaryOperations2D.OperationModes.DILATE, radiusChangePx,
-                        1, true);
+                DilateErode.process(objectImage.getImagePlus(), DilateErode.OperationModes.DILATE_2D, true,
+                        radiusChangePx, false);
                 break;
 
             case Methods.EXPAND_3D:
@@ -105,8 +116,8 @@ public class ExpandShrinkObjects extends Module {
                 break;
 
             case Methods.SHRINK_2D:
-                BinaryOperations2D.process(objectImage, BinaryOperations2D.OperationModes.ERODE, radiusChangePx,
-                        1, true);
+                DilateErode.process(objectImage.getImagePlus(), DilateErode.OperationModes.ERODE_2D, true,
+                        radiusChangePx, false);
                 break;
 
             case Methods.SHRINK_3D:
@@ -180,7 +191,9 @@ public class ExpandShrinkObjects extends Module {
         // Getting parameters
         boolean updateInputObjects = parameters.getValue(UPDATE_INPUT_OBJECTS);
         String method = parameters.getValue(METHOD);
+        String radiusChangeSource = parameters.getValue(RADIUS_CHANGE_SOURCE);
         double radiusChange = parameters.getValue(RADIUS_CHANGE);
+        String measurementName = parameters.getValue(MEASUREMENT);
         boolean calibratedUnits = parameters.getValue(CALIBRATED_UNITS);
 
         // Storing the image calibration
@@ -193,11 +206,6 @@ public class ExpandShrinkObjects extends Module {
 
         }
 
-        if (calibratedUnits)
-            radiusChange = radiusChange / firstObj.getDppXY();
-
-        int radiusChangePx = (int) Math.round(radiusChange);
-
         // Iterating over all objects
         int count = 1;
         int total = inputObjects.size();
@@ -206,6 +214,15 @@ public class ExpandShrinkObjects extends Module {
         while (iterator.hasNext()) {
             Obj inputObject = iterator.next();
             Obj newObject = null;
+
+            if (radiusChangeSource.equals(RadiusChangeSources.OBJECT_MEASUREMENT))
+                radiusChange = inputObject.getMeasurement(measurementName).getValue();
+
+            if (calibratedUnits)
+                radiusChange = radiusChange / firstObj.getDppXY();
+
+            int radiusChangePx = (int) Math.round(radiusChange);
+
             try {
                 newObject = processObject(inputObject, method, radiusChangePx);
             } catch (IntegerOverflowException e) {
@@ -268,7 +285,10 @@ public class ExpandShrinkObjects extends Module {
 
         parameters.add(new SeparatorP(PROCESSING_SEPARATOR, this));
         parameters.add(new ChoiceP(METHOD, this, Methods.EXPAND_2D, Methods.ALL));
-        parameters.add(new DoubleP(RADIUS_CHANGE, this, 1));
+        parameters
+                .add(new ChoiceP(RADIUS_CHANGE_SOURCE, this, RadiusChangeSources.FIXED_VALUE, RadiusChangeSources.ALL));
+        parameters.add(new DoubleP(RADIUS_CHANGE, this, 1d));
+        parameters.add(new ObjectMeasurementP(MEASUREMENT, this));
         parameters.add(new BooleanP(CALIBRATED_UNITS, this, false));
 
         addParameterDescriptions();
@@ -283,13 +303,23 @@ public class ExpandShrinkObjects extends Module {
         returnedParameters.add(parameters.getParameter(INPUT_OBJECTS));
         returnedParameters.add(parameters.getParameter(UPDATE_INPUT_OBJECTS));
 
-        if (!(boolean) parameters.getValue(UPDATE_INPUT_OBJECTS)) {
+        if (!(boolean) parameters.getValue(UPDATE_INPUT_OBJECTS))
             returnedParameters.add(parameters.getParameter(OUTPUT_OBJECTS));
-        }
 
         returnedParameters.add(parameters.getParameter(PROCESSING_SEPARATOR));
         returnedParameters.add(parameters.getParameter(METHOD));
-        returnedParameters.add(parameters.getParameter(RADIUS_CHANGE));
+        returnedParameters.add(parameters.getParameter(RADIUS_CHANGE_SOURCE));
+
+        switch ((String) parameters.getValue(RADIUS_CHANGE_SOURCE)) {
+            case RadiusChangeSources.FIXED_VALUE:
+                returnedParameters.add(parameters.getParameter(RADIUS_CHANGE));
+                break;
+            case RadiusChangeSources.OBJECT_MEASUREMENT:
+                ObjectMeasurementP parameter = parameters.getParameter(MEASUREMENT);
+                parameter.setObjectName(parameters.getValue(INPUT_OBJECTS));
+                returnedParameters.add(parameters.getParameter(MEASUREMENT));
+                break;
+        }
         returnedParameters.add(parameters.getParameter(CALIBRATED_UNITS));
 
         return returnedParameters;
@@ -315,10 +345,9 @@ public class ExpandShrinkObjects extends Module {
     public ParentChildRefs updateAndGetParentChildRefs() {
         ParentChildRefs returnedRelationships = new ParentChildRefs();
 
-        if (!(boolean) parameters.getValue(UPDATE_INPUT_OBJECTS)) {
+        if (!(boolean) parameters.getValue(UPDATE_INPUT_OBJECTS))
             returnedRelationships.add(
                     parentChildRefs.getOrPut(parameters.getValue(INPUT_OBJECTS), parameters.getValue(OUTPUT_OBJECTS)));
-        }
 
         return returnedRelationships;
 

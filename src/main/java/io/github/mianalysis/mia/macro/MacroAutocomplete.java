@@ -8,7 +8,6 @@
 // import java.util.ArrayList;
 // import java.util.List;
 
-
 // @Plugin(type = MacroExtensionAutoCompletionPlugin.class)
 // public class MacroAutocomplete implements MacroExtensionAutoCompletionPlugin {
 //     @Override
