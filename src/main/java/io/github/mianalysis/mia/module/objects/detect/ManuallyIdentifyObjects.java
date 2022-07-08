@@ -10,6 +10,9 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.InputEvent;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
@@ -21,12 +24,14 @@ import javax.swing.BorderFactory;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
+import javax.swing.KeyStroke;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
@@ -37,6 +42,7 @@ import ij.CompositeImage;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.ImageStack;
+import ij.WindowManager;
 import ij.gui.Line;
 import ij.gui.OvalRoi;
 import ij.gui.Overlay;
@@ -85,7 +91,7 @@ import io.github.sjcross.sjcommon.object.volume.VolumeType;
  * Created by sc13967 on 27/02/2018.
  */
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
-public class ManuallyIdentifyObjects extends Module implements ActionListener {
+public class ManuallyIdentifyObjects extends Module implements ActionListener, KeyListener {
     private JFrame frame;
     private JTextField objectNumberField;
     private DefaultListModel<ObjRoi> listModel = new DefaultListModel<>();
@@ -256,6 +262,8 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
         c.gridy++;
         c.gridwidth = 1;
         frame.add(newObjectButton, c);
+        
+        displayImagePlus.getWindow().getComponent(0).addKeyListener(this);
 
         JButton existingObjectButton = new JButton("Add to existing object");
         existingObjectButton.addActionListener(this);
@@ -1085,5 +1093,28 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
         public String toString() {
             return "Object " + String.valueOf(ID) + ", T = " + (t + 1) + ", Z = " + z;
         }
+    }
+
+    @Override
+    public void keyPressed(KeyEvent arg0) {
+        if (arg0.getKeyCode() == KeyEvent.VK_SPACE) {
+            addNewObject();
+        }
+
+        MIA.log.writeDebug(arg0.getKeyCode());
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void keyReleased(KeyEvent arg0) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void keyTyped(KeyEvent arg0) {
+        // TODO Auto-generated method stub
+        
     }
 }
