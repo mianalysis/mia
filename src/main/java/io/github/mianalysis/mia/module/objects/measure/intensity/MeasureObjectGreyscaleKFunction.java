@@ -12,6 +12,7 @@ import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
 
+import ij.IJ;
 import ij.ImagePlus;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
@@ -113,7 +114,7 @@ public class MeasureObjectGreyscaleKFunction extends Module {
 
     @Override
     public String getDescription() {
-        return "Measure intensity of each object in a specified image.  Measurements of intensity are taken at all pixel coordinates corresponding to each object.  By default, basic measurements such as mean, minimum and maximum will be calculated.  Additional measurements can optionally be enabled.";
+        return "Measure's Ripley's K-function for greyscale images on an object-by-object basis.  This method is re-written from the publication \"Extending Ripley’s K-Function to Quantify Aggregation in 2-D Grayscale Images\" by M. Amgad, et al. (doi: 10.1371/journal.pone.0144404).  Results are output to an Excel spreadsheet, with one file per input image.";
     }
 
     @Override
@@ -149,16 +150,22 @@ public class MeasureObjectGreyscaleKFunction extends Module {
             double[][] extents = object.getExtents(true, false);
             int top = (int) Math.round(extents[1][0]);
             int left = (int) Math.round(extents[0][0]);
-            int width = (int) Math.round(left - extents[0][0]);
-            int height = (int) Math.round(top - extents[1][0]);
+            int width = (int) Math.round(extents[0][1]-left)+1;
+            int height = (int) Math.round(extents[1][1]-top)+1;
             Image cropImage = CropImage.cropImage(inputImage, "Crop", top, left, width, height);
 
+            // Cropping image in Z
+            int minZ = (int) Math.round(extents[2][0]);
+            int maxZ = (int) Math.round(extents[2][1]);           
+            Image subsImage = ExtractSubstack.extractSubstack(cropImage, "Substack", "1", (minZ+1)+"-"+(maxZ+1), "1");
+
+            // Getting 
             Image maskImage = object.getAsTightImage("Mask");
 
-            for (int z = 0; z < inputIpl.getNSlices(); z++) {
-                Image currImage = ExtractSubstack.extractSubstack(inputImage, "TimepointImage", "1-end",
+            for (int z = 0; z < maskImage.getImagePlus().getNSlices(); z++) {
+                Image currImage = ExtractSubstack.extractSubstack(subsImage, "TimepointImage", "1",
                         String.valueOf(z + 1), String.valueOf(t + 1));
-                Image currMask = ExtractSubstack.extractSubstack(maskImage, "TimepointMask", "1-end",
+                Image currMask = ExtractSubstack.extractSubstack(maskImage, "TimepointMask", "1",
                         String.valueOf(z + 1), String.valueOf(t + 1));
 
                 for (int r = minRadius; r <= maxRadius; r = r + radiusInc) {
@@ -175,6 +182,9 @@ public class MeasureObjectGreyscaleKFunction extends Module {
 
                     cell = row.createCell(colI++);
                     cell.setCellValue(r);
+
+                    cell = row.createCell(colI++);
+                    cell.setCellValue(object.getID());
 
                     cell = row.createCell(colI++);
                     cell.setCellValue(kRes[0]);

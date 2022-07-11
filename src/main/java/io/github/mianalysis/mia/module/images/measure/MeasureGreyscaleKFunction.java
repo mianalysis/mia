@@ -87,8 +87,7 @@ public class MeasureGreyscaleKFunction extends Module {
 
     @Override
     public String getDescription() {
-        return "Measure's Ripley's K-function for greyscale images.  This method is re-written from the publication \"Extending Ripley’s K-Function to Quantify Aggregation in 2-D Grayscale Images\" by M. Amgad, et al. (doi: 10.1371/journal.pone.0144404).";
-
+        return "Measure's Ripley's K-function for greyscale images.  This method is re-written from the publication \"Extending Ripley’s K-Function to Quantify Aggregation in 2-D Grayscale Images\" by M. Amgad, et al. (doi: 10.1371/journal.pone.0144404).  Results are output to an Excel spreadsheet, with one file per input image.";
     }
 
     public static double[] calculateGSKfunction(Image image, int radius, @Nullable Image maskImage) {
