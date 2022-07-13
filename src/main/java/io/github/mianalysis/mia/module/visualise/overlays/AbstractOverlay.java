@@ -88,33 +88,34 @@ public abstract class AbstractOverlay extends Module {
         HashMap<Integer, Float> values = null;
         // Generating colours for each object
         switch (colourMode) {
-        default:
-            return null;
-        case ColourModes.SINGLE_COLOUR:
-            // Special case where value actually specifies hue
-            return ColourFactory.getColours(ColourFactory.getSingleColourValues(inputObjects, singleColour), opacity);
-        case ColourModes.CHILD_COUNT:
-            values = ColourFactory.getChildCountHues(inputObjects, childObjectsForColourName, true, range);
-            break;
-        case ColourModes.ID:
-            values = ColourFactory.getIDHues(inputObjects, true);
-            break;
-        case ColourModes.RANDOM_COLOUR:
-            values = ColourFactory.getRandomHues(inputObjects);
-            break;
-        case ColourModes.MEASUREMENT_VALUE:
-            values = ColourFactory.getMeasurementValueHues(inputObjects, measurementForColour, true, range);
-            break;
-        case ColourModes.PARENT_ID:
-            values = ColourFactory.getParentIDHues(inputObjects, parentObjectsForColourName, true);
-            break;
-        case ColourModes.PARENT_MEASUREMENT_VALUE:
-            values = ColourFactory.getParentMeasurementValueHues(inputObjects, parentObjectsForColourName,
-                    measurementForColour, true, range);
-            break;
-        case ColourModes.PARTNER_COUNT:
-            values = ColourFactory.getPartnerCountHues(inputObjects, partnerObjectsForColourName, true, range);
-            break;
+            default:
+                return null;
+            case ColourModes.SINGLE_COLOUR:
+                // Special case where value actually specifies hue
+                return ColourFactory.getColours(ColourFactory.getSingleColourValues(inputObjects, singleColour),
+                        opacity);
+            case ColourModes.CHILD_COUNT:
+                values = ColourFactory.getChildCountHues(inputObjects, childObjectsForColourName, true, range);
+                break;
+            case ColourModes.ID:
+                values = ColourFactory.getIDHues(inputObjects, true);
+                break;
+            case ColourModes.RANDOM_COLOUR:
+                values = ColourFactory.getRandomHues(inputObjects);
+                break;
+            case ColourModes.MEASUREMENT_VALUE:
+                values = ColourFactory.getMeasurementValueHues(inputObjects, measurementForColour, true, range);
+                break;
+            case ColourModes.PARENT_ID:
+                values = ColourFactory.getParentIDHues(inputObjects, parentObjectsForColourName, true);
+                break;
+            case ColourModes.PARENT_MEASUREMENT_VALUE:
+                values = ColourFactory.getParentMeasurementValueHues(inputObjects, parentObjectsForColourName,
+                        measurementForColour, true, range);
+                break;
+            case ColourModes.PARTNER_COUNT:
+                values = ColourFactory.getPartnerCountHues(inputObjects, partnerObjectsForColourName, true, range);
+                break;
         }
 
         return ColourFactory.getColours(values, colourMap, opacity);
@@ -145,63 +146,70 @@ public abstract class AbstractOverlay extends Module {
         returnedParameters.add(parameters.getParameter(COLOUR_SEPARATOR));
         returnedParameters.add(parameters.getParameter(COLOUR_MODE));
         switch ((String) parameters.getValue(COLOUR_MODE)) {
-        case ColourModes.CHILD_COUNT:
-            returnedParameters.add(parameters.getParameter(CHILD_OBJECTS_FOR_COLOUR));
-            ((ChildObjectsP) parameters.getParameter(CHILD_OBJECTS_FOR_COLOUR)).setParentObjectsName(inputObjectsName);
-            returnedParameters.add(parameters.getParameter(COLOUR_MAP));
-            break;
+            case ColourModes.CHILD_COUNT:
+                returnedParameters.add(parameters.getParameter(CHILD_OBJECTS_FOR_COLOUR));
+                ((ChildObjectsP) parameters.getParameter(CHILD_OBJECTS_FOR_COLOUR))
+                        .setParentObjectsName(inputObjectsName);
+                returnedParameters.add(parameters.getParameter(COLOUR_MAP));
+                break;
 
-        case ColourModes.SINGLE_COLOUR:
-            returnedParameters.add(parameters.getParameter(SINGLE_COLOUR));
-            break;
+            case ColourModes.ID:
+                returnedParameters.add(parameters.getParameter(COLOUR_MAP));
+                break;
 
-        case ColourModes.MEASUREMENT_VALUE:
-            returnedParameters.add(parameters.getParameter(MEASUREMENT_FOR_COLOUR));
-            if (inputObjectsName != null) {
+            case ColourModes.SINGLE_COLOUR:
+                returnedParameters.add(parameters.getParameter(SINGLE_COLOUR));
+                break;
+
+            case ColourModes.MEASUREMENT_VALUE:
+                returnedParameters.add(parameters.getParameter(MEASUREMENT_FOR_COLOUR));
+                if (inputObjectsName != null) {
+                    ObjectMeasurementP colourMeasurement = parameters.getParameter(MEASUREMENT_FOR_COLOUR);
+                    colourMeasurement.setObjectName(inputObjectsName);
+                }
+                returnedParameters.add(parameters.getParameter(COLOUR_MAP));
+                break;
+
+            case ColourModes.PARENT_ID:
+                returnedParameters.add(parameters.getParameter(PARENT_OBJECT_FOR_COLOUR));
+                ((ParentObjectsP) parameters.getParameter(PARENT_OBJECT_FOR_COLOUR))
+                        .setChildObjectsName(inputObjectsName);
+                returnedParameters.add(parameters.getParameter(COLOUR_MAP));
+                break;
+
+            case ColourModes.PARENT_MEASUREMENT_VALUE:
+                returnedParameters.add(parameters.getParameter(PARENT_OBJECT_FOR_COLOUR));
+                ((ParentObjectsP) parameters.getParameter(PARENT_OBJECT_FOR_COLOUR))
+                        .setChildObjectsName(inputObjectsName);
+
+                returnedParameters.add(parameters.getParameter(MEASUREMENT_FOR_COLOUR));
                 ObjectMeasurementP colourMeasurement = parameters.getParameter(MEASUREMENT_FOR_COLOUR);
-                colourMeasurement.setObjectName(inputObjectsName);
-            }
-            returnedParameters.add(parameters.getParameter(COLOUR_MAP));
-            break;
+                colourMeasurement.setObjectName(parameters.getValue(PARENT_OBJECT_FOR_COLOUR));
 
-        case ColourModes.PARENT_ID:
-            returnedParameters.add(parameters.getParameter(PARENT_OBJECT_FOR_COLOUR));
-            ((ParentObjectsP) parameters.getParameter(PARENT_OBJECT_FOR_COLOUR)).setChildObjectsName(inputObjectsName);
-            returnedParameters.add(parameters.getParameter(COLOUR_MAP));
-            break;
+                returnedParameters.add(parameters.getParameter(COLOUR_MAP));
 
-        case ColourModes.PARENT_MEASUREMENT_VALUE:
-            returnedParameters.add(parameters.getParameter(PARENT_OBJECT_FOR_COLOUR));
-            ((ParentObjectsP) parameters.getParameter(PARENT_OBJECT_FOR_COLOUR)).setChildObjectsName(inputObjectsName);
-            
-            returnedParameters.add(parameters.getParameter(MEASUREMENT_FOR_COLOUR));
-            ObjectMeasurementP colourMeasurement = parameters.getParameter(MEASUREMENT_FOR_COLOUR);
-            colourMeasurement.setObjectName(parameters.getValue(PARENT_OBJECT_FOR_COLOUR));
+                break;
 
-            returnedParameters.add(parameters.getParameter(COLOUR_MAP));
-
-            break;
-
-        case ColourModes.PARTNER_COUNT:
-            returnedParameters.add(parameters.getParameter(PARTNER_OBJECTS_FOR_COLOUR));
-            ((PartnerObjectsP) parameters.getParameter(PARTNER_OBJECTS_FOR_COLOUR))
-                    .setPartnerObjectsName(inputObjectsName);
-            returnedParameters.add(parameters.getParameter(COLOUR_MAP));
-            break;
+            case ColourModes.PARTNER_COUNT:
+                returnedParameters.add(parameters.getParameter(PARTNER_OBJECTS_FOR_COLOUR));
+                ((PartnerObjectsP) parameters.getParameter(PARTNER_OBJECTS_FOR_COLOUR))
+                        .setPartnerObjectsName(inputObjectsName);
+                returnedParameters.add(parameters.getParameter(COLOUR_MAP));
+                break;
         }
 
         switch ((String) parameters.getValue(COLOUR_MODE)) {
-        case ColourModes.CHILD_COUNT:
-        case ColourModes.MEASUREMENT_VALUE:
-        case ColourModes.PARENT_MEASUREMENT_VALUE:
-        case ColourModes.PARTNER_COUNT:
-            returnedParameters.add(parameters.getParameter(RANGE_MINIMUM_MODE));
-            if (((String) parameters.getValue(RANGE_MINIMUM_MODE)).equals(RangeModes.MANUAL))
-                returnedParameters.add(parameters.getParameter(MINIMUM_VALUE));
-            returnedParameters.add(parameters.getParameter(RANGE_MAXIMUM_MODE));
-            if (((String) parameters.getValue(RANGE_MAXIMUM_MODE)).equals(RangeModes.MANUAL))
-                returnedParameters.add(parameters.getParameter(MAXIMUM_VALUE));
-            break;
+            case ColourModes.CHILD_COUNT:
+            case ColourModes.MEASUREMENT_VALUE:
+            case ColourModes.PARENT_MEASUREMENT_VALUE:
+            case ColourModes.PARTNER_COUNT:
+                returnedParameters.add(parameters.getParameter(RANGE_MINIMUM_MODE));
+                if (((String) parameters.getValue(RANGE_MINIMUM_MODE)).equals(RangeModes.MANUAL))
+                    returnedParameters.add(parameters.getParameter(MINIMUM_VALUE));
+                returnedParameters.add(parameters.getParameter(RANGE_MAXIMUM_MODE));
+                if (((String) parameters.getValue(RANGE_MAXIMUM_MODE)).equals(RangeModes.MANUAL))
+                    returnedParameters.add(parameters.getParameter(MAXIMUM_VALUE));
+                break;
         }
 
         returnedParameters.add(parameters.getParameter(OPACITY));
@@ -258,6 +266,12 @@ public abstract class AbstractOverlay extends Module {
                 + "\" (default option) Colour is fixed to one of a predetermined list of colours.  All objects "
                 + " will be assigned the same overlay colour.  The colour is chosen using the \"" + SINGLE_COLOUR
                 + "\" parameter.</li></ul>");
+
+        parameters.get(COLOUR_MAP)
+                .setDescription("Colourmap used for colour gradients.  This parameter is used if \""
+                        + COLOUR_MODE
+                        + "\" is set to any mode which yields a range of colours (e.g. measurements or IDs).  Choices are: "
+                        + String.join(", ", ColourMaps.ALL) + ".");
 
         parameters.get(SINGLE_COLOUR)
                 .setDescription("Colour for all object overlays to be rendered using.  This parameter is used if \""

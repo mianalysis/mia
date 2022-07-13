@@ -10,10 +10,13 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.drew.lang.annotations.Nullable;
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
 
+import com.drew.lang.annotations.Nullable;
+
+import de.biomedical_imaging.ij.steger.Junction;
+import de.biomedical_imaging.ij.steger.Junctions;
 import de.biomedical_imaging.ij.steger.Line;
 import de.biomedical_imaging.ij.steger.LineDetector;
 import de.biomedical_imaging.ij.steger.Lines;
@@ -79,6 +82,7 @@ public class RidgeDetection extends Module {
     public static final String REFINEMENT_SEPARATOR = "Refinement settings";
     public static final String MIN_LENGTH = "Minimum length";
     public static final String MAX_LENGTH = "Maximum length";
+    public static final String JOIN_AT_JUNCTIONS = "Join at junctions";
     public static final String LINK_ENDS = "Link ends";
     public static final String ALIGNMENT_RANGE = "Alignment range (px)";
     public static final String MAXIMUM_END_SEPARATION = "Maximum end separation (px)";
@@ -114,7 +118,31 @@ public class RidgeDetection extends Module {
 
     }
 
-    public static void linkEnds(HashMap<Line, HashSet<Line>> groups, int endRange, double maxEndSeparation, double maxMisalignment) {
+    public static void joinAtJunctions(Junctions junctions, HashMap<Line, HashSet<Line>> groups) {
+        for (Junction junction : junctions) {
+            // Getting the LineGroup associated with Line1. If there isn't one, creating a
+            // new one
+            Line line1 = junction.getLine1();
+            HashSet<Line> group1 = groups.get(line1);
+
+            // Getting the LineGroup associated with Line2. If there isn't one, creating a
+            // new one
+            Line line2 = junction.getLine2();
+            HashSet<Line> group2 = groups.get(line2);
+
+            // Adding all entries from the second LineGroup into the first
+            group1.addAll(group2);
+
+            // Removing the second Line from the HashMap, then re-adding it with the first
+            // LineGroup
+            groups.remove(line2);
+            groups.put(line2, group1);
+
+        }
+    }
+
+    public static void linkEnds(HashMap<Line, HashSet<Line>> groups, int endRange, double maxEndSeparation,
+            double maxMisalignment) {
         ArrayList<Line> lines = new ArrayList<>(groups.keySet());
 
         for (Line line1 : lines) {
@@ -178,7 +206,7 @@ public class RidgeDetection extends Module {
         if (calculatePointPointSeparation(x1_2, y1_2, x2_2, y2_2) <= maxEndSeparation)
             minMisalignment = Math.min(minMisalignment,
                     calculateEndMisalignment(line1, line2, x1_2, y1_2, x2_2, y2_2, endRange));
-                        
+
         return minMisalignment;
 
     }
@@ -334,6 +362,7 @@ public class RidgeDetection extends Module {
         String overlapMode = parameters.getValue(OVERLAP_MODE);
         double minLength = parameters.getValue(MIN_LENGTH);
         double maxLength = parameters.getValue(MAX_LENGTH);
+        boolean joinAtJunctions = parameters.getValue(JOIN_AT_JUNCTIONS);
         boolean linkEnds = parameters.getValue(LINK_ENDS);
         int alignmentRange = parameters.getValue(ALIGNMENT_RANGE);
         double maxEndSeparation = parameters.getValue(MAXIMUM_END_SEPARATION);
@@ -396,13 +425,19 @@ public class RidgeDetection extends Module {
                         groups.put(line, lineGroup);
                     }
 
+                    // Joining lines if RidgeDetection assigned them common junctions (this is
+                    // different to
+                    // the other end linking)
+                    if (joinAtJunctions)
+                        joinAtJunctions(lineDetector.getJunctions(), groups);
+
                     // Iterating over each object, adding it to the nascent Objs
                     if (linkEnds)
                         linkEnds(groups, alignmentRange, maxEndSeparation, maxEndMisalignment);
 
                     // Getting the unique LineGroups and converting them to Obj
-                    Set<HashSet<Line>> uniqueLineGroup = new HashSet<>(groups.values());
-                    for (HashSet<Line> lineGroup : uniqueLineGroup) {
+                    Set<HashSet<Line>> uniqueLineGroups = new HashSet<>(groups.values());
+                    for (HashSet<Line> lineGroup : uniqueLineGroups) {
                         Obj outputObject = initialiseObject(outputObjects, t);
 
                         double estimatedLength = 0;
@@ -466,6 +501,7 @@ public class RidgeDetection extends Module {
         parameters.add(new SeparatorP(REFINEMENT_SEPARATOR, this));
         parameters.add(new DoubleP(MIN_LENGTH, this, 0d));
         parameters.add(new DoubleP(MAX_LENGTH, this, 0d));
+        parameters.add(new BooleanP(JOIN_AT_JUNCTIONS, this, false));
         parameters.add(new BooleanP(LINK_ENDS, this, false));
         parameters.add(new IntegerP(ALIGNMENT_RANGE, this, 3));
         parameters.add(new DoubleP(MAXIMUM_END_SEPARATION, this, 5));
@@ -497,6 +533,7 @@ public class RidgeDetection extends Module {
         returnedParameters.add(parameters.getParameter(REFINEMENT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(MIN_LENGTH));
         returnedParameters.add(parameters.getParameter(MAX_LENGTH));
+        returnedParameters.add(parameters.getParameter(JOIN_AT_JUNCTIONS));
         returnedParameters.add(parameters.getParameter(LINK_ENDS));
         if ((boolean) parameters.getValue(LINK_ENDS)) {
             returnedParameters.add(parameters.getParameter(ALIGNMENT_RANGE));
@@ -640,9 +677,14 @@ public class RidgeDetection extends Module {
         parameters.get(LINK_ENDS).setDescription(
                 "When selected, ridges with ends in close proximity will be linked into a single object.");
 
-        // parameters.get(LIMIT_END_MISALIGNMENT).setDescription("When selected (and \"" + LINK_ENDS
-        //         + "\" is also enabled), this limits the permitted difference in the orientation of any linked ends.  This filter helps allow ridge linking where the ends are pointing in the same direction, whilst excluding those that are oriented very differently (e.g. at a junction).  The maximum allowed orientation difference is specified by \""
-        //         + MAXIMUM_END_MISALIGNMENT + "\".");
+        // parameters.get(LIMIT_END_MISALIGNMENT).setDescription("When selected (and \""
+        // + LINK_ENDS
+        // + "\" is also enabled), this limits the permitted difference in the
+        // orientation of any linked ends. This filter helps allow ridge linking where
+        // the ends are pointing in the same direction, whilst excluding those that are
+        // oriented very differently (e.g. at a junction). The maximum allowed
+        // orientation difference is specified by \""
+        // + MAXIMUM_END_MISALIGNMENT + "\".");
 
         parameters.get(ALIGNMENT_RANGE).setDescription(
                 "If linking contours, but limiting the end misalignment, this is the number of points from each contour end for which the orientation of that end is calculated.");
