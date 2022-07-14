@@ -183,7 +183,8 @@ public class MeasureSkeleton extends Module {
         Image binaryImage = tempObject.getAsTightImage("outputName", borders);
 
         // Converting binary image to loop objects
-        Objs tempLoopObjects = IdentifyObjects.process(binaryImage, loopObjectsName, false, false, IdentifyObjects.DetectionModes.THREE_D, 6,
+        Objs tempLoopObjects = IdentifyObjects.process(binaryImage, loopObjectsName, false, false,
+                IdentifyObjects.DetectionModes.THREE_D, 6,
                 VolumeTypesInterface.QUADTREE, false, 0, false);
 
         // Removing any objects on the image edge, as these aren't loops
@@ -592,20 +593,26 @@ public class MeasureSkeleton extends Module {
         ParentChildRefs returnedRefs = new ParentChildRefs();
 
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
-        String skeletonObjectsName = parameters.getValue(OUTPUT_SKELETON_OBJECTS);
-        String edgeObjectsName = parameters.getValue(OUTPUT_EDGE_OBJECTS);
-        String junctionObjectsName = parameters.getValue(OUTPUT_JUNCTION_OBJECTS);
-        String loopObjectsName = parameters.getValue(OUTPUT_LOOP_OBJECTS);
-        String largestShortestPathName = parameters.getValue(OUTPUT_LARGEST_SHORTEST_PATH);
 
-        returnedRefs.add(parentChildRefs.getOrPut(inputObjectsName, skeletonObjectsName));
-        returnedRefs.add(parentChildRefs.getOrPut(skeletonObjectsName, edgeObjectsName));
-        returnedRefs.add(parentChildRefs.getOrPut(skeletonObjectsName, junctionObjectsName));
-        if ((boolean) parameters.getValue(EXPORT_LOOP_OBJECTS))
-            returnedRefs.add(parentChildRefs.getOrPut(skeletonObjectsName, loopObjectsName));
+        if ((boolean) parameters.getValue(ADD_SKELETONS_TO_WORKSPACE)) {
+            String skeletonObjectsName = parameters.getValue(OUTPUT_SKELETON_OBJECTS);
+            String edgeObjectsName = parameters.getValue(OUTPUT_EDGE_OBJECTS);
+            String junctionObjectsName = parameters.getValue(OUTPUT_JUNCTION_OBJECTS);
+            String loopObjectsName = parameters.getValue(OUTPUT_LOOP_OBJECTS);
 
-        if ((boolean) parameters.getValue(EXPORT_LARGEST_SHORTEST_PATH))
+            returnedRefs.add(parentChildRefs.getOrPut(inputObjectsName, skeletonObjectsName));
+            returnedRefs.add(parentChildRefs.getOrPut(skeletonObjectsName, edgeObjectsName));
+            returnedRefs.add(parentChildRefs.getOrPut(skeletonObjectsName, junctionObjectsName));
+            if ((boolean) parameters.getValue(EXPORT_LOOP_OBJECTS))
+                returnedRefs.add(parentChildRefs.getOrPut(skeletonObjectsName, loopObjectsName));
+
+        }
+
+        if ((boolean) parameters.getValue(EXPORT_LARGEST_SHORTEST_PATH)) {
+            String largestShortestPathName = parameters.getValue(OUTPUT_LARGEST_SHORTEST_PATH);
             returnedRefs.add(parentChildRefs.getOrPut(inputObjectsName, largestShortestPathName));
+
+        }
 
         return returnedRefs;
 
@@ -615,14 +622,16 @@ public class MeasureSkeleton extends Module {
     public PartnerRefs updateAndGetPartnerRefs() {
         PartnerRefs returnedRefs = new PartnerRefs();
 
-        String edgeObjectsName = parameters.getValue(OUTPUT_EDGE_OBJECTS);
-        String junctionObjectsName = parameters.getValue(OUTPUT_JUNCTION_OBJECTS);
-        String loopObjectsName = parameters.getValue(OUTPUT_LOOP_OBJECTS);
+        if ((boolean) parameters.getValue(ADD_SKELETONS_TO_WORKSPACE)) {
+            String edgeObjectsName = parameters.getValue(OUTPUT_EDGE_OBJECTS);
+            String junctionObjectsName = parameters.getValue(OUTPUT_JUNCTION_OBJECTS);
+            String loopObjectsName = parameters.getValue(OUTPUT_LOOP_OBJECTS);
 
-        returnedRefs.add(partnerRefs.getOrPut(edgeObjectsName, junctionObjectsName));
-        if ((boolean) parameters.getValue(EXPORT_LOOP_OBJECTS)) {
-            returnedRefs.add(partnerRefs.getOrPut(edgeObjectsName, loopObjectsName));
-            returnedRefs.add(partnerRefs.getOrPut(junctionObjectsName, loopObjectsName));
+            returnedRefs.add(partnerRefs.getOrPut(edgeObjectsName, junctionObjectsName));
+            if ((boolean) parameters.getValue(EXPORT_LOOP_OBJECTS)) {
+                returnedRefs.add(partnerRefs.getOrPut(edgeObjectsName, loopObjectsName));
+                returnedRefs.add(partnerRefs.getOrPut(junctionObjectsName, loopObjectsName));
+            }
         }
 
         return returnedRefs;
