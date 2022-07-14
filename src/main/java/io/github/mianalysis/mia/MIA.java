@@ -124,7 +124,7 @@ public class MIA implements Command {
 
     public void setLookAndFeel() {
         try {
-            // UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+            UIManager.put("TitlePane.showIconBesideTitle", true);
             UIManager.setLookAndFeel(FlatLightLaf.class.getCanonicalName());
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException
                 | UnsupportedLookAndFeelException e) {
