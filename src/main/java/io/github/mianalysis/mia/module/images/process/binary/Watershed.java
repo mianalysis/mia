@@ -5,9 +5,10 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import com.drew.lang.annotations.Nullable;
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
+
+import com.drew.lang.annotations.Nullable;
 
 import ij.IJ;
 import ij.ImagePlus;
@@ -16,14 +17,10 @@ import ij.Prefs;
 import ij.plugin.Duplicator;
 import ij.plugin.SubHyperstackMaker;
 import inra.ijpb.binary.BinaryImages;
-import inra.ijpb.plugins.Watershed3DPlugin;
-import inra.ijpb.watershed.ExtendedMinimaWatershed;
-import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.module.images.process.ImageCalculator;
 import io.github.mianalysis.mia.module.images.process.InvertIntensity;
 import io.github.mianalysis.mia.object.Image;
 import io.github.mianalysis.mia.object.Status;
@@ -124,9 +121,9 @@ public class Watershed extends Module {
                     ImagePlus timepointMaskIpl = new ImagePlus("Timepoint mask", timepointMask);
                     IJ.setRawThreshold(timepointMaskIpl, 0, 0, null);
                     IJ.run(timepointMaskIpl, "Convert to Mask", "method=Default background=Light");
-                    if (blackBackground) {
+                    if (blackBackground)
                         IJ.run(timepointMaskIpl, "Invert", "stack");                        
-                    }
+                    
                     IJ.run(timepointMaskIpl, "8-bit", null);
 
                     if (timepointMaskIpl.isInvertedLut())

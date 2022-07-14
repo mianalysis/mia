@@ -16,6 +16,7 @@ import ij.process.FloatProcessor;
 import ij.process.ImageProcessor;
 import ij.process.ShortProcessor;
 import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.images.transform.registration.AffineFixedTransform;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
@@ -137,7 +138,7 @@ public abstract class AbstractAffineRegistration<T extends RealType<T> & NativeT
     ImageProcessor applyRotation(ImageProcessor iprIn, int orientation, int fillValue) {
         ImageProcessor iprOut = iprIn.duplicate();
         iprOut.setBackgroundValue(fillValue);
-        
+
         if (orientation != 0)
             iprOut.rotate(orientation);
 
@@ -209,7 +210,7 @@ public abstract class AbstractAffineRegistration<T extends RealType<T> & NativeT
             }
         } catch (InterruptedException e) {
             // Do nothing as the user has selected this
-        }        
+        }
 
         if (resBest == null)
             return null;
@@ -237,7 +238,7 @@ public abstract class AbstractAffineRegistration<T extends RealType<T> & NativeT
         }
 
         transform.mapping = new InverseTransformMapping<AbstractAffineModel2D<?>>((AbstractAffineModel2D) resBest[0]);
-        
+
         return transform;
 
     }
@@ -274,9 +275,9 @@ public abstract class AbstractAffineRegistration<T extends RealType<T> & NativeT
         if (((AffineTransform) transform).flip)
             inputIpr.flipHorizontal();
 
-        // Applying rotation        
+        // Applying rotation
         int orientation = ((AffineTransform) transform).orientation;
-        inputIpr = applyRotation(inputIpr, orientation, fillValue);        
+        inputIpr = applyRotation(inputIpr, orientation, fillValue);
 
         ImageProcessor outputIpr = inputIpr.createProcessor(inputIpr.getWidth(), inputIpr.getHeight());
         outputIpr.setColor(fillValue);
@@ -352,6 +353,22 @@ public abstract class AbstractAffineRegistration<T extends RealType<T> & NativeT
 
         parameters.get(TEST_FLIP).setDescription(
                 "When selected, alignment will be tested for both the \"normal\" and \"flipped\" (mirror) states of the image.  The state yielding the lower cost to alignment will be retained.");
+
+        parameters.get(INDEPENDENT_ROTATION).setDescription(
+                "When selected, the image will be rotated multiple times, with registration optimised at each orientation.  The orientation with the best score will be retained.  This is useful for algorithms which perform poorly with rotated features (e.g. block matching).  The increment between rotations is controlled by \""
+                        + ORIENTATION_INCREMENT + "\".");
+
+        parameters.get(ORIENTATION_INCREMENT).setDescription(
+                "If \"" + INDEPENDENT_ROTATION
+                        + "\" is enabled, this is the angular increment between rotations.  The increment is specified in degree units.");
+
+        parameters.get(SHOW_TRANSFORMATION).setDescription(
+                "When selected, the affine transform will be displayed in the results table.  Fixed affine transform values such as these can be applied using the \""
+                        + new AffineFixedTransform(null).getName() + "\" module.");
+
+        parameters.get(CLEAR_BETWEEN_IMAGES).setDescription(
+                "If \"" + SHOW_TRANSFORMATION
+                        + "\" is enabled, this parameter can be used to reset the displayed affine transform in the results table.  If this option isn't selected, the new transform will be added to the bottom of the results table.");
 
     }
 

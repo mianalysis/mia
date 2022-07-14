@@ -15,6 +15,7 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.StringTokenizer;
+import java.util.TreeMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -37,8 +38,9 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
-import com.drew.lang.annotations.Nullable;
 import org.w3c.dom.Document;
+
+import com.drew.lang.annotations.Nullable;
 
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Modules;
@@ -93,42 +95,42 @@ public class Exporter {
 
     public void exportResults(Workspaces workspaces, Analysis analysis, String exportFilePath) throws IOException {
         switch (exportMode) {
-        case ALL_TOGETHER:
-            export(workspaces, analysis, exportFilePath);
-            break;
+            case ALL_TOGETHER:
+                export(workspaces, analysis, exportFilePath);
+                break;
 
-        case GROUP_BY_METADATA:
-            // Getting list of unique metadata values
-            HashSet<String> metadataValues = new HashSet<>();
-            for (Workspace workspace : workspaces) {
-                if (!workspace.exportWorkspace())
-                    continue;
-                if (workspace.getMetadata().containsKey(metadataItemForGrouping)) {
-                    metadataValues.add(workspace.getMetadata().get(metadataItemForGrouping).toString());
-                }
-            }
-
-            for (String metadataValue : metadataValues) {
-                Workspaces currentWorkspaces = new Workspaces();
-
-                // Adding Workspaces matching this metadata value
+            case GROUP_BY_METADATA:
+                // Getting list of unique metadata values
+                HashSet<String> metadataValues = new HashSet<>();
                 for (Workspace workspace : workspaces) {
                     if (!workspace.exportWorkspace())
                         continue;
-                    if (!workspace.getMetadata().containsKey(metadataItemForGrouping))
-                        continue;
-                    if (workspace.getMetadata().get(metadataItemForGrouping).toString().equals(metadataValue)) {
-                        currentWorkspaces.add(workspace);
+                    if (workspace.getMetadata().containsKey(metadataItemForGrouping)) {
+                        metadataValues.add(workspace.getMetadata().get(metadataItemForGrouping).toString());
                     }
                 }
 
-                String name = exportFilePath + "_" + metadataItemForGrouping + "-" + metadataValue;
+                for (String metadataValue : metadataValues) {
+                    Workspaces currentWorkspaces = new Workspaces();
 
-                export(currentWorkspaces, analysis, name);
+                    // Adding Workspaces matching this metadata value
+                    for (Workspace workspace : workspaces) {
+                        if (!workspace.exportWorkspace())
+                            continue;
+                        if (!workspace.getMetadata().containsKey(metadataItemForGrouping))
+                            continue;
+                        if (workspace.getMetadata().get(metadataItemForGrouping).toString().equals(metadataValue)) {
+                            currentWorkspaces.add(workspace);
+                        }
+                    }
 
-            }
+                    String name = exportFilePath + "_" + metadataItemForGrouping + "-" + metadataValue;
 
-            break;
+                    export(currentWorkspaces, analysis, name);
+
+                }
+
+                break;
 
         }
     }
@@ -160,13 +162,13 @@ public class Exporter {
         // Writing the workbook to file
         String outPath = name + ".xlsx";
         switch (appendDateTimeMode) {
-        case ALWAYS:
-            outPath = appendDateTime(outPath);
-            break;
-        case IF_FILE_EXISTS:
-            if (new File(outPath).exists())
+            case ALWAYS:
                 outPath = appendDateTime(outPath);
-            break;
+                break;
+            case IF_FILE_EXISTS:
+                if (new File(outPath).exists())
+                    outPath = appendDateTime(outPath);
+                break;
         }
 
         try {
@@ -341,44 +343,45 @@ public class Exporter {
         // Running through each Workspace, adding a row
         int summaryRow = 1;
         switch (summaryType) {
-        case PER_FILE:
-            for (Workspace workspace : workspaces) {
-                if (!workspace.exportWorkspace())
-                    continue;
-                Row summaryValueRow = summarySheet.createRow(summaryRow++);
-                populateSummaryRow(summaryValueRow, workspace, modules, colNumbers, null, null);
-            }
-            break;
-
-        case PER_TIMEPOINT_PER_FILE:
-            for (Workspace workspace : workspaces) {
-                if (!workspace.exportWorkspace())
-                    continue;
-                // For the current workspace, iterating over all available time points and
-                // creating a new workspace
-                HashMap<Integer, Workspace> currentWorkspaces = workspace.getSingleTimepointWorkspaces();
-                for (Integer timepoint : currentWorkspaces.keySet()) {
-                    Workspace currentWorkspace = currentWorkspaces.get(timepoint);
+            case PER_FILE:
+                for (Workspace workspace : workspaces) {
+                    if (!workspace.exportWorkspace())
+                        continue;
                     Row summaryValueRow = summarySheet.createRow(summaryRow++);
-                    populateSummaryRow(summaryValueRow, currentWorkspace, modules, colNumbers, "TIMEPOINT",
-                            String.valueOf(timepoint));
+                    populateSummaryRow(summaryValueRow, workspace, modules, colNumbers, null, null);
+                }
+                break;
+
+            case PER_TIMEPOINT_PER_FILE:
+                for (Workspace workspace : workspaces) {
+                    if (!workspace.exportWorkspace())
+                        continue;
+                    // For the current workspace, iterating over all available time points and
+                    // creating a new workspace
+                    HashMap<Integer, Workspace> currentWorkspaces = workspace.getSingleTimepointWorkspaces();
+                    for (Integer timepoint : currentWorkspaces.keySet()) {
+                        Workspace currentWorkspace = currentWorkspaces.get(timepoint);
+                        Row summaryValueRow = summarySheet.createRow(summaryRow++);
+                        populateSummaryRow(summaryValueRow, currentWorkspace, modules, colNumbers, "TIMEPOINT",
+                                String.valueOf(timepoint));
+
+                    }
+                }
+                break;
+
+            case GROUP_BY_METADATA:
+                HashMap<String, Workspace> metadataWorkspaces = workspaces
+                        .getMetadataWorkspaces(metadataItemForSummary);
+                for (String metadataValue : metadataWorkspaces.keySet()) {
+                    Workspace currentWorkspace = metadataWorkspaces.get(metadataValue);
+                    if (!currentWorkspace.exportWorkspace())
+                        continue;
+                    Row summaryValueRow = summarySheet.createRow(summaryRow++);
+                    populateSummaryRow(summaryValueRow, currentWorkspace, modules, colNumbers, metadataItemForSummary,
+                            metadataValue);
 
                 }
-            }
-            break;
-
-        case GROUP_BY_METADATA:
-            HashMap<String, Workspace> metadataWorkspaces = workspaces.getMetadataWorkspaces(metadataItemForSummary);
-            for (String metadataValue : metadataWorkspaces.keySet()) {
-                Workspace currentWorkspace = metadataWorkspaces.get(metadataValue);
-                if (!currentWorkspace.exportWorkspace())
-                    continue;
-                Row summaryValueRow = summarySheet.createRow(summaryRow++);
-                populateSummaryRow(summaryValueRow, currentWorkspace, modules, colNumbers, metadataItemForSummary,
-                        metadataValue);
-
-            }
-            break;
+                break;
         }
     }
 
@@ -393,30 +396,36 @@ public class Exporter {
         cellStyle.setFont(font);
 
         switch (summaryType) {
-        case GROUP_BY_METADATA:
-            String summaryDataName = getMetadataString("Count");
-            Cell cell = summaryHeaderRow.createCell(headerCol.get());
-            cell.setCellValue(summaryDataName);
-            cell.setCellStyle(cellStyle);
-            colNumbers.put(summaryDataName, headerCol.getAndIncrement());
-            break;
-
-        case PER_FILE:
-        case PER_TIMEPOINT_PER_FILE:
-            // Adding metadata headers
-            MetadataRefs metadataRefs = modules.getMetadataRefs(null);
-            // Running through all the metadata values, adding them as new columns
-            for (MetadataRef ref : metadataRefs.values()) {
-                if (!ref.isExportGlobal())
-                    continue;
-
-                summaryDataName = getMetadataString(ref.getName());
-                cell = summaryHeaderRow.createCell(headerCol.get());
+            case GROUP_BY_METADATA:
+                String summaryDataName = getMetadataString("Count");
+                Cell cell = summaryHeaderRow.createCell(headerCol.get());
                 cell.setCellValue(summaryDataName);
                 cell.setCellStyle(cellStyle);
                 colNumbers.put(summaryDataName, headerCol.getAndIncrement());
-            }
-            break;
+                break;
+
+            case PER_FILE:
+            case PER_TIMEPOINT_PER_FILE:
+                // Adding metadata headers
+                MetadataRefs metadataRefs = modules.getMetadataRefs(null);
+
+                // Sorting by nickname
+                TreeMap<String, MetadataRef> sortedRefs = new TreeMap<>();
+                for (MetadataRef ref : metadataRefs.values())
+                    sortedRefs.put(ref.getNickname(), ref);
+
+                // Running through all the metadata values, adding them as new columns
+                for (MetadataRef ref : sortedRefs.values()) {
+                    if (!ref.isExportGlobal())
+                        continue;
+
+                    summaryDataName = getMetadataString(ref.getName());
+                    cell = summaryHeaderRow.createCell(headerCol.get());
+                    cell.setCellValue(summaryDataName);
+                    cell.setCellStyle(cellStyle);
+                    colNumbers.put(summaryDataName, headerCol.getAndIncrement());
+                }
+                break;
         }
     }
 
@@ -432,20 +441,20 @@ public class Exporter {
 
         // Add a column to record the timepoint
         switch (summaryType) {
-        case PER_TIMEPOINT_PER_FILE:
-            String timepointDataName = getMetadataString("TIMEPOINT");
-            Cell cell = summaryHeaderRow.createCell(headerCol.get());
-            cell.setCellValue(timepointDataName);
-            cell.setCellStyle(cellStyle);
-            colNumbers.put(timepointDataName, headerCol.getAndIncrement());
-            break;
-        case GROUP_BY_METADATA:
-            String metadataDataName = getMetadataString(metadataItemForSummary);
-            cell = summaryHeaderRow.createCell(headerCol.get());
-            cell.setCellValue(metadataDataName);
-            cell.setCellStyle(cellStyle);
-            colNumbers.put(metadataDataName, headerCol.getAndIncrement());
-            break;
+            case PER_TIMEPOINT_PER_FILE:
+                String timepointDataName = getMetadataString("TIMEPOINT");
+                Cell cell = summaryHeaderRow.createCell(headerCol.get());
+                cell.setCellValue(timepointDataName);
+                cell.setCellStyle(cellStyle);
+                colNumbers.put(timepointDataName, headerCol.getAndIncrement());
+                break;
+            case GROUP_BY_METADATA:
+                String metadataDataName = getMetadataString(metadataItemForSummary);
+                cell = summaryHeaderRow.createCell(headerCol.get());
+                cell.setCellValue(metadataDataName);
+                cell.setCellStyle(cellStyle);
+                colNumbers.put(metadataDataName, headerCol.getAndIncrement());
+                break;
         }
     }
 
@@ -466,8 +475,13 @@ public class Exporter {
 
                 ImageMeasurementRefs availableMeasurements = modules.getImageMeasurementRefs(availableImageName);
 
+                // Sorting by nickname
+                TreeMap<String, ImageMeasurementRef> sortedRefs = new TreeMap<>();
+                for (ImageMeasurementRef ref : availableMeasurements.values())
+                    sortedRefs.put(ref.getNickname(), ref);
+
                 // Running through all the image measurement values, adding them as new columns
-                for (ImageMeasurementRef imageMeasurement : availableMeasurements.values()) {
+                for (ImageMeasurementRef imageMeasurement : sortedRefs.values()) {
                     if (!imageMeasurement.isExportGlobal())
                         continue;
 
@@ -518,8 +532,13 @@ public class Exporter {
                 if (objectMeasurementRefs == null)
                     continue;
 
+                // Sorting by nickname
+                TreeMap<String, ObjMeasurementRef> sortedRefs = new TreeMap<>();
+                for (ObjMeasurementRef ref : objectMeasurementRefs.values())
+                    sortedRefs.put(ref.getNickname(), ref);
+
                 // Running through all the object measurement values, adding them as new columns
-                for (ObjMeasurementRef objectMeasurement : objectMeasurementRefs.values()) {
+                for (ObjMeasurementRef objectMeasurement : sortedRefs.values()) {
                     if (!objectMeasurement.isExportGlobal())
                         continue;
 
@@ -575,15 +594,17 @@ public class Exporter {
     private void addSummaryComment(Cell cell, ObjMeasurementRef measurement, String calculation) {
         String text = "";
         switch (summaryMode) {
-        case PER_FILE:
-            text = calculation + " value of the measurement (described below) for all \"" + measurement.getObjectsName()
-                    + "\" objects in the input file." + "\n\nMeasurement: " + measurement.getDescription();
-            break;
-        case PER_TIMEPOINT_PER_FILE:
-            text = calculation + " value of the measurement (described below) for all \"" + measurement.getObjectsName()
-                    + "\" objects at the stated timepoint of the input file." + "\n\nMeasurement: "
-                    + measurement.getDescription();
-            break;
+            case PER_FILE:
+                text = calculation + " value of the measurement (described below) for all \""
+                        + measurement.getObjectsName()
+                        + "\" objects in the input file." + "\n\nMeasurement: " + measurement.getDescription();
+                break;
+            case PER_TIMEPOINT_PER_FILE:
+                text = calculation + " value of the measurement (described below) for all \""
+                        + measurement.getObjectsName()
+                        + "\" objects at the stated timepoint of the input file." + "\n\nMeasurement: "
+                        + measurement.getDescription();
+                break;
         }
 
         addComment(cell, text);
@@ -802,7 +823,13 @@ public class Exporter {
 
             // Running through all the metadata values, adding them as new columns
             MetadataRefs metadataRefs = modules.getMetadataRefs(null);
-            for (MetadataRef ref : metadataRefs.values()) {
+
+            // Sorting by nickname
+            TreeMap<String, MetadataRef> sortedRefs = new TreeMap<>();
+            for (MetadataRef ref : metadataRefs.values())
+                sortedRefs.put(ref.getNickname(), ref);
+
+            for (MetadataRef ref : sortedRefs.values()) {
                 if (!ref.isExportGlobal())
                     continue;
                 if (!ref.isExportIndividual())
@@ -812,11 +839,18 @@ public class Exporter {
                 cell = objectHeaderRow.createCell(col++);
                 cell.setCellValue(getMetadataString(ref.getName()));
                 cell.setCellStyle(cellStyle);
+                
             }
 
             // Running through all the object measurement values, adding them as new columns
             ObjMeasurementRefs objectMeasurementRefs = modules.getObjectMeasurementRefs(objectName);
-            for (ObjMeasurementRef objectMeasurement : objectMeasurementRefs.values()) {
+
+            // Sorting by nickname
+            TreeMap<String, ObjMeasurementRef> sortedObjMeasurementRefs = new TreeMap<>();
+            for (ObjMeasurementRef ref : objectMeasurementRefs.values())
+                sortedObjMeasurementRefs.put(ref.getNickname(), ref);
+
+            for (ObjMeasurementRef objectMeasurement : sortedObjMeasurementRefs.values()) {
                 if (!objectMeasurement.isExportIndividual())
                     continue;
                 if (!objectMeasurement.isExportGlobal())
