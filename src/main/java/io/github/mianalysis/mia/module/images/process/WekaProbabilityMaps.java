@@ -100,6 +100,8 @@ public class WekaProbabilityMaps extends Module {
         }
 
         WekaSegmentation wekaSegmentation = new WekaSegmentation();
+        wekaSegmentation.setTrainingImage(inputImagePlus);
+        wekaSegmentation.loadClassifier(classifierFilePath);
 
         int width = inputImagePlus.getWidth();
         int height = inputImagePlus.getHeight();

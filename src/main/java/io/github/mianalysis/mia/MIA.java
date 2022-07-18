@@ -16,6 +16,7 @@ import org.scijava.ui.UIService;
 
 import com.formdev.flatlaf.FlatLightLaf;
 
+import ij.WindowManager;
 import io.github.mianalysis.mia.gui.GUI;
 import io.github.mianalysis.mia.module.LostAndFound;
 import io.github.mianalysis.mia.moduledependencies.Dependencies;
@@ -64,8 +65,9 @@ public class MIA implements Command {
 
         try {
             if (args.length == 0) {
-                new ij.ImageJ();
-                new ImageJ().command().run("io.github.mianalysis.mia.MIA", false);
+                ImageJ imageJ = new ImageJ();
+                ((UIService )imageJ.context().getService(UIService.class)).showUI();
+                imageJ.command().run("io.github.mianalysis.mia.MIA", false);
             } else {
                 preferences = new Preferences(null);
                 Analysis analysis = AnalysisReader.loadAnalysis(args[0]);

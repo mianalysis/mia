@@ -245,6 +245,11 @@
             <artifactId>imagej-ui-swing</artifactId>
             <scope>${scp}</scope>
         </dependency>
+        <dependency>
+            <groupId>org.scijava</groupId>
+            <artifactId>script-editor</artifactId>
+            <version>0.7.6</version>
+        </dependency>
         <!-- <dependency>
             <groupId>net.imagej</groupId>
             <artifactId>imagej-legacy</artifactId>
