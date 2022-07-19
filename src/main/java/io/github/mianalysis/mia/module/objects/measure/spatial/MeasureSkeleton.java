@@ -114,6 +114,12 @@ public class MeasureSkeleton extends Module {
 
     static Obj createEdgeJunctionObjects(Obj inputObject, SkeletonResult result, Objs skeletonObjects, Objs edgeObjects,
             Objs junctionObjects) {
+        return createEdgeJunctionObjects(inputObject, result, skeletonObjects, edgeObjects, junctionObjects, true);
+
+    }
+
+    static Obj createEdgeJunctionObjects(Obj inputObject, SkeletonResult result, Objs skeletonObjects, Objs edgeObjects,
+            Objs junctionObjects, boolean addRelationship) {
 
         double[][] extents = inputObject.getExtents(true, false);
         int xOffs = (int) Math.round(extents[0][0]);
@@ -124,8 +130,10 @@ public class MeasureSkeleton extends Module {
         // branches, junctions and loops.
         Obj skeletonObject = skeletonObjects.createAndAddNewObject(VolumeType.POINTLIST);
         skeletonObject.setT(inputObject.getT());
-        inputObject.addChild(skeletonObject);
-        skeletonObject.addParent(inputObject);
+        if (addRelationship) {
+            inputObject.addChild(skeletonObject);
+            skeletonObject.addParent(inputObject);
+        }
 
         // For the purpose of linking edges and junctions, these are stored in a
         // HashMap.
