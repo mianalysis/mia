@@ -86,10 +86,10 @@ public class GUI {
 
         // Creating main Frame
         GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
-        Dimension screenSize = new Dimension(gd.getDisplayMode().getWidth(),gd.getDisplayMode().getHeight());
+        Dimension screenSize = new Dimension(gd.getDisplayMode().getWidth(), gd.getDisplayMode().getHeight());
         // Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         frameHeight = Math.min(frameHeight, screenSize.height - 50);
-       
+
         // Detecting modules
         List<String> detectedModules = AvailableModules.getModuleNames(false);
         initialiseAvailableModules(detectedModules);
@@ -138,16 +138,17 @@ public class GUI {
         for (String detectedModuleName : detectedModuleNames) {
             String shortName = detectedModuleName.substring(detectedModuleName.lastIndexOf(".") + 1);
 
-            // Checking dependencies have been met
-            if (!MIA.dependencies.compatible(shortName, false)) {
-                MIA.log.writeWarning("Module \"" + shortName + "\" not loaded.  Dependencies not satisfied:");
-                for (Dependency dependency : MIA.dependencies.getDependencies(shortName,false))
-                    if (!dependency.test()) {
-                        MIA.log.writeWarning("    Requirement: " + dependency.toString());
-                        MIA.log.writeWarning("    Message: " + dependency.getMessage());
-                    }
-                continue;
-            }
+            try {
+                // Checking dependencies have been met
+                if (!MIA.dependencies.compatible(shortName, false)) {
+                    MIA.log.writeWarning("Module \"" + shortName + "\" not loaded.  Dependencies not satisfied:");
+                    for (Dependency dependency : MIA.dependencies.getDependencies(shortName, false))
+                        if (!dependency.test()) {
+                            MIA.log.writeWarning("    Requirement: " + dependency.toString());
+                            MIA.log.writeWarning("    Message: " + dependency.getMessage());
+                        }
+                    continue;
+                }
 
             try {
                 Class<? extends Module> clazz = (Class<? extends Module>) Class.forName(detectedModuleName);

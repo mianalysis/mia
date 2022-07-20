@@ -75,12 +75,13 @@ public class MeasureSkeleton extends Module {
     public static final String ENABLE_MULTITHREADING = "Enable multithreading";
 
     public interface Measurements {
-        String sumLengthPx = "SKELETON // SUM_LENGTH_(PX)";
-        String sumLengthCal = "SKELETON // SUM_LENGTH_(${SCAL})";
-        String edgeLengthPx = "SKELETON // LENGTH_(PX)";
-        String edgeLengthCal = "SKELETON // LENGTH_(${SCAL})";
+        String SUM_LENGTH_PX = "SKELETON // SUM_LENGTH_(PX)";
+        String SUM_LENGTH_CAL = "SKELETON // SUM_LENGTH_(${SCAL})";
+        String EDGE_LENGTH_PX = "SKELETON // LENGTH_(PX)";
+        String EDGE_LENGTH_CAL = "SKELETON // LENGTH_(${SCAL})";
 
     }
+    
 
     public MeasureSkeleton(Modules modules) {
         super("Measure skeleton", modules);
@@ -116,6 +117,12 @@ public class MeasureSkeleton extends Module {
 
     static Obj createEdgeJunctionObjects(Obj inputObject, SkeletonResult result, Objs skeletonObjects, Objs edgeObjects,
             Objs junctionObjects) {
+        return createEdgeJunctionObjects(inputObject, result, skeletonObjects, edgeObjects, junctionObjects, true);
+
+    }
+
+    static Obj createEdgeJunctionObjects(Obj inputObject, SkeletonResult result, Objs skeletonObjects, Objs edgeObjects,
+            Objs junctionObjects, boolean addRelationship) {
 
         double[][] extents = inputObject.getExtents(true, false);
         int xOffs = (int) Math.round(extents[0][0]);
@@ -126,8 +133,10 @@ public class MeasureSkeleton extends Module {
         // branches, junctions and loops.
         Obj skeletonObject = skeletonObjects.createAndAddNewObject(VolumeType.POINTLIST);
         skeletonObject.setT(inputObject.getT());
-        inputObject.addChild(skeletonObject);
-        skeletonObject.addParent(inputObject);
+        if (addRelationship) {
+            inputObject.addChild(skeletonObject);
+            skeletonObject.addParent(inputObject);
+        }
 
         // For the purpose of linking edges and junctions, these are stored in a
         // HashMap.
@@ -143,9 +152,9 @@ public class MeasureSkeleton extends Module {
 
                 // Adding edge length measurements
                 double calLength = edge.getLength();
-                Measurement lengthPx = new Measurement(Measurements.edgeLengthPx, calLength / dppXY);
+                Measurement lengthPx = new Measurement(Measurements.EDGE_LENGTH_PX, calLength / dppXY);
                 edgeObj.addMeasurement(lengthPx);
-                Measurement lengthCal = new Measurement(Measurements.edgeLengthCal, calLength);
+                Measurement lengthCal = new Measurement(Measurements.EDGE_LENGTH_CAL, calLength);
                 edgeObj.addMeasurement(lengthCal);
 
             }
@@ -363,8 +372,8 @@ public class MeasureSkeleton extends Module {
         }
 
         double dppXY = inputObject.getDppXY();
-        inputObject.addMeasurement(new Measurement(Measurements.sumLengthPx, length / dppXY));
-        inputObject.addMeasurement(new Measurement(Measurements.sumLengthCal, length));
+        inputObject.addMeasurement(new Measurement(Measurements.SUM_LENGTH_PX, length / dppXY));
+        inputObject.addMeasurement(new Measurement(Measurements.SUM_LENGTH_CAL, length));
 
     }
 
@@ -563,19 +572,19 @@ public class MeasureSkeleton extends Module {
 
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
 
-        ObjMeasurementRef ref = objectMeasurementRefs.getOrPut(Measurements.sumLengthPx);
+        ObjMeasurementRef ref = objectMeasurementRefs.getOrPut(Measurements.SUM_LENGTH_PX);
         ref.setObjectsName(inputObjectsName);
         returnedRefs.add(ref);
-        ref = objectMeasurementRefs.getOrPut(Measurements.sumLengthCal);
+        ref = objectMeasurementRefs.getOrPut(Measurements.SUM_LENGTH_CAL);
         ref.setObjectsName(inputObjectsName);
         returnedRefs.add(ref);
 
         if ((boolean) parameters.getValue(ADD_SKELETONS_TO_WORKSPACE)) {
             String edgeObjectsName = parameters.getValue(OUTPUT_EDGE_OBJECTS);
-            ref = objectMeasurementRefs.getOrPut(Measurements.edgeLengthPx);
+            ref = objectMeasurementRefs.getOrPut(Measurements.EDGE_LENGTH_PX);
             ref.setObjectsName(edgeObjectsName);
             returnedRefs.add(ref);
-            ref = objectMeasurementRefs.getOrPut(Measurements.edgeLengthCal);
+            ref = objectMeasurementRefs.getOrPut(Measurements.EDGE_LENGTH_CAL);
             ref.setObjectsName(edgeObjectsName);
             returnedRefs.add(ref);
         }
@@ -594,20 +603,26 @@ public class MeasureSkeleton extends Module {
         ParentChildRefs returnedRefs = new ParentChildRefs();
 
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
-        String skeletonObjectsName = parameters.getValue(OUTPUT_SKELETON_OBJECTS);
-        String edgeObjectsName = parameters.getValue(OUTPUT_EDGE_OBJECTS);
-        String junctionObjectsName = parameters.getValue(OUTPUT_JUNCTION_OBJECTS);
-        String loopObjectsName = parameters.getValue(OUTPUT_LOOP_OBJECTS);
-        String largestShortestPathName = parameters.getValue(OUTPUT_LARGEST_SHORTEST_PATH);
 
-        returnedRefs.add(parentChildRefs.getOrPut(inputObjectsName, skeletonObjectsName));
-        returnedRefs.add(parentChildRefs.getOrPut(skeletonObjectsName, edgeObjectsName));
-        returnedRefs.add(parentChildRefs.getOrPut(skeletonObjectsName, junctionObjectsName));
-        if ((boolean) parameters.getValue(EXPORT_LOOP_OBJECTS))
-            returnedRefs.add(parentChildRefs.getOrPut(skeletonObjectsName, loopObjectsName));
+        if ((boolean) parameters.getValue(ADD_SKELETONS_TO_WORKSPACE)) {
+            String skeletonObjectsName = parameters.getValue(OUTPUT_SKELETON_OBJECTS);
+            String edgeObjectsName = parameters.getValue(OUTPUT_EDGE_OBJECTS);
+            String junctionObjectsName = parameters.getValue(OUTPUT_JUNCTION_OBJECTS);
+            String loopObjectsName = parameters.getValue(OUTPUT_LOOP_OBJECTS);
 
-        if ((boolean) parameters.getValue(EXPORT_LARGEST_SHORTEST_PATH))
+            returnedRefs.add(parentChildRefs.getOrPut(inputObjectsName, skeletonObjectsName));
+            returnedRefs.add(parentChildRefs.getOrPut(skeletonObjectsName, edgeObjectsName));
+            returnedRefs.add(parentChildRefs.getOrPut(skeletonObjectsName, junctionObjectsName));
+            if ((boolean) parameters.getValue(EXPORT_LOOP_OBJECTS))
+                returnedRefs.add(parentChildRefs.getOrPut(skeletonObjectsName, loopObjectsName));
+
+        }
+
+        if ((boolean) parameters.getValue(EXPORT_LARGEST_SHORTEST_PATH)) {
+            String largestShortestPathName = parameters.getValue(OUTPUT_LARGEST_SHORTEST_PATH);
             returnedRefs.add(parentChildRefs.getOrPut(inputObjectsName, largestShortestPathName));
+
+        }
 
         return returnedRefs;
 
@@ -617,14 +632,16 @@ public class MeasureSkeleton extends Module {
     public PartnerRefs updateAndGetPartnerRefs() {
         PartnerRefs returnedRefs = new PartnerRefs();
 
-        String edgeObjectsName = parameters.getValue(OUTPUT_EDGE_OBJECTS);
-        String junctionObjectsName = parameters.getValue(OUTPUT_JUNCTION_OBJECTS);
-        String loopObjectsName = parameters.getValue(OUTPUT_LOOP_OBJECTS);
+        if ((boolean) parameters.getValue(ADD_SKELETONS_TO_WORKSPACE)) {
+            String edgeObjectsName = parameters.getValue(OUTPUT_EDGE_OBJECTS);
+            String junctionObjectsName = parameters.getValue(OUTPUT_JUNCTION_OBJECTS);
+            String loopObjectsName = parameters.getValue(OUTPUT_LOOP_OBJECTS);
 
-        returnedRefs.add(partnerRefs.getOrPut(edgeObjectsName, junctionObjectsName));
-        if ((boolean) parameters.getValue(EXPORT_LOOP_OBJECTS)) {
-            returnedRefs.add(partnerRefs.getOrPut(edgeObjectsName, loopObjectsName));
-            returnedRefs.add(partnerRefs.getOrPut(junctionObjectsName, loopObjectsName));
+            returnedRefs.add(partnerRefs.getOrPut(edgeObjectsName, junctionObjectsName));
+            if ((boolean) parameters.getValue(EXPORT_LOOP_OBJECTS)) {
+                returnedRefs.add(partnerRefs.getOrPut(edgeObjectsName, loopObjectsName));
+                returnedRefs.add(partnerRefs.getOrPut(junctionObjectsName, loopObjectsName));
+            }
         }
 
         return returnedRefs;

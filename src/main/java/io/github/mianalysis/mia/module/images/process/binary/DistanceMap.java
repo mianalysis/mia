@@ -59,7 +59,8 @@ public class DistanceMap extends Module {
         // String QUASI_EUCLIDEAN = "Quasi-Euclidean (1,1.41,1.73)";
         String WEIGHTS_3_4_5_7 = "Svensson (3,4,5,7)";
 
-        // String[] ALL = new String[] { BORGEFORS, CHESSBOARD, CITY_BLOCK, QUASI_EUCLIDEAN,
+        // String[] ALL = new String[] { BORGEFORS, CHESSBOARD, CITY_BLOCK,
+        // QUASI_EUCLIDEAN,
         // WEIGHTS_3_4_5_7 };
         String[] ALL = new String[] { BORGEFORS, CHESSBOARD, CITY_BLOCK, WEIGHTS_3_4_5_7 };
 
@@ -100,18 +101,15 @@ public class DistanceMap extends Module {
         ImagePlus outputIpl = IJ.createHyperStack(inputIpl.getTitle(), inputIpl.getWidth(), inputIpl.getHeight(),
                 inputIpl.getNChannels(), nSlices, nFrames, 32);
         ImageStack outputIst = outputIpl.getStack();
-        
+
+        ChamferDistanceTransform3DFloat transform = new ChamferDistanceTransform3DFloat(weights, true);
+
         for (int c = 0; c < nChannels; c++) {
             for (int t = 0; t < nFrames; t++) {
                 // Getting the mask image at this timepoint
                 ImagePlus currentIpl = SubHyperstackMaker
-                        .makeSubhyperstack(inputIpl, String.valueOf(c + 1), "1-" + nSlices, String.valueOf(t + 1))
-                        .duplicate();
-                // if (t == 1) {
-                //     inputIpl.duplicate().show();
-                //     currentIpl.duplicate().show();
-                //     IJ.runMacro("waitForUser");
-                // }
+                        .makeSubhyperstack(inputIpl, String.valueOf(c + 1), "1-" + nSlices, String.valueOf(t + 1));
+
                 currentIpl.setCalibration(inputIpl.getCalibration());
 
                 if (!blackBackground)
@@ -121,8 +119,8 @@ public class DistanceMap extends Module {
                 if (matchZToXY && nSlices > 1)
                     currentIpl = InterpolateZAxis.matchZToXY(currentIpl, InterpolateZAxis.InterpolationModes.NONE);
 
-                currentIpl.setStack(
-                        new ChamferDistanceTransform3DFloat(weights, true).distanceMap(currentIpl.getStack()));
+                ImageStack ist = transform.distanceMap(currentIpl.getStack().duplicate());
+                currentIpl.setStack(ist);
 
                 // If the input image as interpolated, it now needs to be returned to the
                 // original scaling
@@ -144,11 +142,11 @@ public class DistanceMap extends Module {
                     writeProgressStatus(++count, nFrames, "timepoints", name);
 
             }
-            
-            outputIpl.setPosition(1, 1, 1);
-            outputIpl.updateAndDraw();
-
         }
+
+        outputIpl.setStack(outputIst);
+        outputIpl.setPosition(1, 1, 1);
+        outputIpl.updateAndDraw();
 
         Calibration inputCalibration = inputIpl.getCalibration();
         Calibration outputCalibration = new Calibration();

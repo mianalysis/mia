@@ -6,9 +6,10 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import com.drew.lang.annotations.Nullable;
-
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
+
+import com.drew.lang.annotations.Nullable;
 
 import ij.IJ;
 import ij.ImagePlus;
@@ -125,9 +126,9 @@ public class Watershed extends Module {
                     ImagePlus timepointMaskIpl = new ImagePlus("Timepoint mask", timepointMask);
                     IJ.setRawThreshold(timepointMaskIpl, 0, 0, null);
                     IJ.run(timepointMaskIpl, "Convert to Mask", "method=Default background=Light");
-                    if (blackBackground) {
+                    if (blackBackground)
                         IJ.run(timepointMaskIpl, "Invert", "stack");                        
-                    }
+                    
                     IJ.run(timepointMaskIpl, "8-bit", null);
 
                     if (timepointMaskIpl.isInvertedLut())

@@ -189,6 +189,8 @@ public class ExtractSubstack extends Module implements ActionListener {
         ImagePlus outputImagePlus = SubHyperstackMaker.makeSubhyperstack(inputImagePlus,cList,zList,tList).duplicate();
         outputImagePlus.setCalibration(inputImagePlus.getCalibration());
 
+        
+
         if (outputImagePlus.isComposite()) ((CompositeImage) outputImagePlus).setMode(CompositeImage.COLOR);
 
         return ImageFactory.createImage(outputImageName,outputImagePlus);

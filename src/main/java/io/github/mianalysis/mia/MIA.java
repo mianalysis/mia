@@ -27,11 +27,10 @@ import io.github.mianalysis.mia.process.logging.LogRenderer;
 import net.imagej.ImageJ;
 import net.imagej.ImageJService;
 
-
 /**
  * Created by Stephen Cross on 14/07/2017.
  */
-@Plugin(type = Command.class, menuPath = "Plugins>ModularImageAnalysis (MIA)", visible=true)
+@Plugin(type = Command.class, menuPath = "Plugins>ModularImageAnalysis (MIA)", visible = true)
 public class MIA implements Command {
     private static String version = "";
     private static boolean debug = false;
@@ -41,12 +40,15 @@ public class MIA implements Command {
 
     public static Preferences preferences;
     public static Log log = new Log(mainRenderer); // This is for testing and headless modes
-    public final static Dependencies dependencies = new Dependencies(); // Maps module dependencies and reports if a module's requirements aren't satisfied
-    public final static LostAndFound lostAndFound = new LostAndFound(); // Maps missing modules and parameters to replacements (e.g. if a module was renamed)
+    public final static Dependencies dependencies = new Dependencies(); // Maps module dependencies and reports if a
+                                                                        // module's requirements aren't satisfied
+    public final static LostAndFound lostAndFound = new LostAndFound(); // Maps missing modules and parameters to
+                                                                        // replacements (e.g. if a module was renamed)
 
     /*
-        Gearing up for the transition from ImagePlus to ImgLib2 formats.  Modules can use this to addRef compatibility.
-         */
+     * Gearing up for the transition from ImagePlus to ImgLib2 formats. Modules can
+     * use this to addRef compatibility.
+     */
     private static final boolean imagePlusMode = true;
 
     @Parameter
@@ -57,9 +59,9 @@ public class MIA implements Command {
 
         try {
             if (args.length == 0) {
-                ImageJ ij = new ImageJ();                
-                ij.ui().showUI();
-                ij.command().run("io.github.mianalysis.mia.MIA", false);
+                ImageJ imageJ = new ImageJ();
+                ((UIService )imageJ.context().getService(UIService.class)).showUI();
+                imageJ.command().run("io.github.mianalysis.mia.MIA", false);
             } else {
                 preferences = new Preferences(null);
                 Analysis analysis = AnalysisReader.loadAnalysis(args[0]);
@@ -106,7 +108,7 @@ public class MIA implements Command {
             version = getClass().getPackage().getImplementationVersion();
         }
 
-        // Run the dependency validator.  If updates were required, return.
+        // Run the dependency validator. If updates were required, return.
         if (DependencyValidator.run())
             return;
 

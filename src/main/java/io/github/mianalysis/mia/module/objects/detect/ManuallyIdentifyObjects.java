@@ -10,6 +10,9 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.InputEvent;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
@@ -21,21 +24,25 @@ import javax.swing.BorderFactory;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
+import javax.swing.KeyStroke;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
 
+import ij.CompositeImage;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.ImageStack;
+import ij.WindowManager;
 import ij.gui.Line;
 import ij.gui.OvalRoi;
 import ij.gui.Overlay;
@@ -86,8 +93,8 @@ import io.github.sjcross.sjcommon.object.volume.VolumeType;
 /**
  * Created by sc13967 on 27/02/2018.
  */
-@Plugin(type = Module.class, priority=Priority.LOW, visible=true)
-public class ManuallyIdentifyObjects extends Module implements ActionListener {
+@Plugin(type = Module.class, priority = Priority.LOW, visible = true)
+public class ManuallyIdentifyObjects extends Module implements ActionListener, KeyListener {
     private JFrame frame;
     private JTextField objectNumberField;
     private DefaultListModel<ObjRoi> listModel = new DefaultListModel<>();
@@ -108,7 +115,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
     private boolean overflow = false;
 
     private static final String ADD_NEW = "Add new";
-    private static final String ADD_EXISTING = "Add existing";
+    private static final String ADD_EXISTING = "Add to existing";
     private static final String REMOVE = "Remove";
     private static final String FINISH = "Finish";
 
@@ -126,6 +133,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
     public static final String SELECTION_SEPARATOR = "Object selection controls";
     public static final String INSTRUCTION_TEXT = "Instruction text";
     public static final String SELECTOR_TYPE = "Default selector type";
+    public static final String POINT_MODE = "Point mode (point-type ROIs only)";
     public static final String MESSAGE_ON_IMAGE = "Message on image";
 
     public ManuallyIdentifyObjects(Modules modules) {
@@ -166,6 +174,14 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
     }
 
     public interface VolumeTypes extends VolumeTypesInterface {
+    }
+
+    public interface PointModes {
+        String INDIVIDUAL_OBJECTS = "Individual objects";
+        String SINGLE_OBJECT = "Single object";
+
+        String[] ALL = new String[] { INDIVIDUAL_OBJECTS, SINGLE_OBJECT };
+
     }
 
     void setSelector(String selectorType) {
@@ -239,12 +255,18 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
 
         frame.add(headerLabel, c);
 
+        JLabel sliceNotice = new JLabel("Note: ROIs must be selected slice-by-slice.  Slices can be combined in 3D using \""+ADD_EXISTING+"\".");
+        c.gridy++;
+        frame.add(sliceNotice, c);
+
         JButton newObjectButton = new JButton("Add as new object");
         newObjectButton.addActionListener(this);
         newObjectButton.setActionCommand(ADD_NEW);
         c.gridy++;
         c.gridwidth = 1;
         frame.add(newObjectButton, c);
+        
+        displayImagePlus.getWindow().getComponent(0).addKeyListener(this);
 
         JButton existingObjectButton = new JButton("Add to existing object");
         existingObjectButton.addActionListener(this);
@@ -322,8 +344,9 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
 
         frame.pack();
         // Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        // frame.setLocation((screenSize.width - frame.getWidth()) / 2, (screenSize.height - frame.getHeight()) / 2);
-        frame.setLocation(100,100);
+        // frame.setLocation((screenSize.width - frame.getWidth()) / 2,
+        // (screenSize.height - frame.getHeight()) / 2);
+        frame.setLocation(100, 100);
         frame.setVisible(true);
 
     }
@@ -331,7 +354,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
     public static void applySpatialInterpolation(Objs inputObjects, String type) throws IntegerOverflowException {
         for (Obj inputObj : inputObjects.values()) {
             Image binaryImage = inputObj.getAsTightImage("BinaryTight");
-            
+
             // We need at least 3 slices to make interpolation worthwhile
             if (binaryImage.getImagePlus().getNSlices() < 3)
                 continue;
@@ -457,7 +480,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
                 + "The target object for adding to an existing object is specified using the \"Existing object number\" control (a list of existing object IDs is shown directly below this control)."
                 + "<br><br>References to each selection are displayed below the controls.  Previously-added regions can be re-selected by clicking the relevant reference.  This allows selections to be deleted or used as a basis for further selections."
                 + "<br><br>Once all selections have been made, objects are added to the workspace with the \"" + FINISH
-                + "\" button.";
+                + "\" button.<br><br>Objects need to be added slice-by-slice and can be linked in 3D using the \""+ADD_EXISTING+"\" control.";
     }
 
     @Override
@@ -486,6 +509,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
         displayImagePlus = new Duplicator().run(inputImagePlus);
         displayImagePlus.setCalibration(null);
         displayImagePlus.setTitle(messageOnImage);
+        displayImagePlus.setDisplayMode(CompositeImage.COMPOSITE);
 
         // Clearing any ROIs stored from previous runs
         rois = new HashMap<>();
@@ -502,7 +526,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
         if (outputTracks)
             outputTrackObjects = new Objs(outputTrackObjectsName, calibration, nFrames, frameInterval,
                     TemporalUnit.getOMEUnit());
-        
+
         // Displaying the image and showing the control
         displayImagePlus.setLut(LUT.createLutFromColor(Color.WHITE));
         displayImagePlus.show();
@@ -515,7 +539,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
             } catch (InterruptedException e) {
                 // Do nothing as the user has selected this
             }
-        
+
         // If more pixels than Integer.MAX_VALUE were assigned, return false
         // (IntegerOverflowException).
         if (overflow)
@@ -564,6 +588,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
                         + "\nDifferent timepoints must be added as new objects.",
                 true, 100));
         parameters.add(new ChoiceP(SELECTOR_TYPE, this, SelectorTypes.FREEHAND_REGION, SelectorTypes.ALL));
+        parameters.add(new ChoiceP(POINT_MODE, this, PointModes.INDIVIDUAL_OBJECTS, PointModes.ALL));
         parameters.add(new StringP(MESSAGE_ON_IMAGE, this, "Draw objects on this image"));
 
         addParameterDescriptions();
@@ -580,6 +605,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
         returnedParameters.add(parameters.get(OUTPUT_SEPARATOR));
         returnedParameters.add(parameters.get(OUTPUT_OBJECTS));
         returnedParameters.add(parameters.get(VOLUME_TYPE));
+        returnedParameters.add(parameters.get(POINT_MODE)); // Must always be visible, as user can change ROI type
         returnedParameters.add(parameters.get(OUTPUT_TRACKS));
 
         if ((boolean) parameters.getValue(OUTPUT_TRACKS)) {
@@ -710,21 +736,40 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
             return;
         }
 
-        int ID = ++maxID;
-
-        // Adding the ROI to our current collection
-        ArrayList<ObjRoi> currentRois = new ArrayList<>();
-        ObjRoi objRoi = new ObjRoi(ID, roi, displayImagePlus.getT() - 1, displayImagePlus.getZ());
-        currentRois.add(objRoi);
-        rois.put(ID, currentRois);
-
+        if (roi.getType() == Roi.POINT)
+            switch ((String) parameters.getValue(POINT_MODE)) {
+                case PointModes.INDIVIDUAL_OBJECTS:
+                    Point[] points = ((PointRoi) roi).getContainedPoints();
+                    for (Point point:points)
+                        addSingleRoi(new PointRoi(new int[]{point.x}, new int[]{point.y}, 1));                    
+                    break;
+                case PointModes.SINGLE_OBJECT:
+                    addSingleRoi(roi);
+                    break;
+            }
+        else
+            addSingleRoi(roi);
+        
         // Displaying the ROI on the overlay
         updateOverlay();
 
         // Setting the number field to this number
-        objectNumberField.setText(String.valueOf(ID));
+        objectNumberField.setText(String.valueOf(maxID));
 
-        // Adding to the list of objects
+        // Deselecting the current ROI.  This can be re-enabled by selecting it from the list.
+        displayImagePlus.killRoi();
+
+    }
+
+    public void addSingleRoi(Roi roi) {
+        int ID = ++maxID;
+        
+        ArrayList<ObjRoi> currentRois = new ArrayList<>();
+
+        ObjRoi objRoi = new ObjRoi(ID, roi, displayImagePlus.getT() - 1, displayImagePlus.getZ());
+        currentRois.add(objRoi);
+        rois.put(ID, currentRois);
+
         addObjectToList(objRoi, ID);
 
     }
@@ -1055,5 +1100,28 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
         public String toString() {
             return "Object " + String.valueOf(ID) + ", T = " + (t + 1) + ", Z = " + z;
         }
+    }
+
+    @Override
+    public void keyPressed(KeyEvent arg0) {
+        if (arg0.getKeyCode() == KeyEvent.VK_SPACE) {
+            addNewObject();
+        }
+
+        MIA.log.writeDebug(arg0.getKeyCode());
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void keyReleased(KeyEvent arg0) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void keyTyped(KeyEvent arg0) {
+        // TODO Auto-generated method stub
+        
     }
 }

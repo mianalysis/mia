@@ -179,19 +179,19 @@
         <dependency>
 			<groupId>com.formdev</groupId>
 			<artifactId>flatlaf</artifactId>
-			<version>2.2</version>
+			<version>2.4</version>
 		</dependency>
 
         <dependency>
             <groupId>org.apache.poi</groupId>
             <artifactId>poi</artifactId>
-            <version>3.17</version>
+            <version>5.2.2</version>
         </dependency>
 
         <dependency>
             <groupId>org.apache.poi</groupId>
             <artifactId>poi-ooxml</artifactId>
-            <version>3.17</version>
+            <version>5.2.2</version>
         </dependency>
 
         <dependency>
@@ -247,10 +247,15 @@
             <scope>${scp}</scope>
         </dependency>
         <dependency>
+            <groupId>org.scijava</groupId>
+            <artifactId>script-editor</artifactId>
+            <version>0.7.6</version>
+        </dependency>
+        <!-- <dependency>
             <groupId>net.imagej</groupId>
             <artifactId>imagej-legacy</artifactId>
             <scope>${scp}</scope>
-        </dependency>
+        </dependency> -->
         <dependency>
             <groupId>net.imagej</groupId>
             <artifactId>imagej-ops</artifactId>
