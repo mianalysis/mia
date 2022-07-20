@@ -92,22 +92,23 @@ public class FileParameter extends ParameterControl implements ActionListener {
 
         ((FileFolderType) parameter).setPath(fileChooser.getSelectedFile().getAbsolutePath());
         Prefs.set("MIA.PreviousPath", fileChooser.getSelectedFile().getAbsolutePath());
-        
+
         Module module = parameter.getModule();
         int idx = GUI.getModules().indexOf(module);
         if (idx <= GUI.getLastModuleEval() & !(module instanceof OutputControl))
             GUI.setLastModuleEval(idx - 1);
 
-            
-
         if (module.getClass().isInstance(new InputControl(GUI.getModules()))) {
             new Thread(() -> {
                 GUI.updateTestFile(true);
+                updateControl();
                 GUI.updateModules();
                 GUI.updateParameters();
-                updateControl();
             }).start();
-        }      
+        } else {
+            GUI.updateModules();
+            GUI.updateParameters();
+        }
     }
 
     private String checkPath(String path) {
@@ -116,7 +117,7 @@ public class FileParameter extends ParameterControl implements ActionListener {
         // Check if the full path exists
         if (file.exists())
             return path;
-            
+
         // If this file doesn't exist, test to see if its parent does
         String parentPath = file.getParent();
 
