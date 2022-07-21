@@ -176,27 +176,33 @@
         </dependency>
 
         <dependency>
-			<groupId>com.formdev</groupId>
-			<artifactId>flatlaf</artifactId>
-			<version>2.4</version>
-		</dependency>
+            <groupId>com.formdev</groupId>
+            <artifactId>flatlaf</artifactId>
+            <version>2.4</version>
+        </dependency>
 
         <dependency>
             <groupId>org.apache.poi</groupId>
             <artifactId>poi</artifactId>
-            <version>5.2.2</version>
+            <version>5.2.0</version>
         </dependency>
 
         <dependency>
             <groupId>org.apache.poi</groupId>
             <artifactId>poi-ooxml</artifactId>
-            <version>5.2.2</version>
+            <version>5.2.0</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>xml-apis</groupId>
+                    <artifactId>xml-apis</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>
-            <groupId>org.apache.xmlbeans</groupId>
-            <artifactId>xmlbeans</artifactId>
-            <version>3.0.0</version>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-to-slf4j</artifactId>
+            <version>2.18.0</version>
         </dependency>
 
         <dependency>
@@ -269,7 +275,7 @@
             <groupId>sc.fiji</groupId>
             <artifactId>Auto_Local_Threshold</artifactId>
             <scope>${scp}</scope>
-        </dependency>        
+        </dependency>
         <dependency>
             <groupId>sc.fiji</groupId>
             <artifactId>bUnwarpJ_</artifactId>
@@ -357,15 +363,15 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>versions-maven-plugin</artifactId>
-                <version>2.7</version>  
+                <version>2.7</version>
             </plugin>
 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>2.22.2</version>
-            </plugin>    
-            
+            </plugin>
+
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
@@ -381,7 +387,7 @@
                     <classpathScope>compile</classpathScope>
                     <mainClass>io.github.mianalysis.mia.process.documentation.DocumentationGenerator</mainClass>
                 </configuration>
-            </plugin>  
+            </plugin>
 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -409,71 +415,6 @@
                         <goals>
                             <goal>shade</goal>
                         </goals>
-                        <configuration>
-                            <minimizeJar>true</minimizeJar>
-                            <createDependencyReducedPom>false</createDependencyReducedPom>
-                            <!-- <shadedArtifactAttached>true</shadedArtifactAttached> -->
-                            <filters>
-                                <filter>
-                                    <artifact>org.apache.xmlbeans</artifact>
-                                    <includes>
-                                        <include>**</include>
-                                    </includes>
-                                </filter>
-                                <filter>
-                                    <artifact>org.apache.poi</artifact>
-                                    <includes>
-                                        <include>**</include>
-                                        <!-- <include>schemaorg_apache_xmlbeans/system</include>
-                                        <include>org/apache/poi/ss/**</include>
-                                        <include>org/apache/poi/xssf/**</include>
-                                        <include>org/apache/poi/openxml4j/**</include>
-                                        <include>org/apache/poi/util/**</include>
-                                        <include>org/apache/poi/POIXML*.class</include>
-                                        <include>org/apache/poi/*Exception*</include>
-                                        <include>org/openxmlformats/schemas/spreadsheetml/x2006/**</include> -->
-                                    </includes>
-                                    <excludes>
-                                        <!-- <exclude>org/openxmlformats/schemas/drawingml/x2006/**</exclude> -->
-                                        <exclude>org/openxmlformats/schemas/presentationml/x2006/**</exclude>
-                                        <exclude>org/openxmlformats/schemas/wordprocessingml/x2006/**</exclude>
-                                    </excludes>
-                                </filter>
-                                <filter>
-                                    <artifact>sc.fiji</artifact>
-                                    <excludes>
-                                        <exclude>**</exclude>
-                                    </excludes>
-                                </filter>
-                                <filter>
-                                    <artifact>org.scijava</artifact>
-                                    <excludes>
-                                        <exclude>**</exclude>
-                                    </excludes>
-                                </filter>
-                                <filter>
-                                    <artifact>commons-io</artifact>
-                                    <excludes>
-                                        <exclude>**</exclude>
-                                    </excludes>
-                                </filter>
-                                <filter>
-                                    <artifact>com.formdev</artifact>
-                                    <includes>
-                                        <include>**</include>
-                                    </includes>
-                                </filter>
-                                <filter>
-                                    <artifact>*:*</artifact>
-                                    <excludes>
-                                        <exclude>META-INF/*.SF</exclude>
-                                        <exclude>META-INF/*.DSA</exclude>
-                                        <exclude>META-INF/*.RSA</exclude>
-                                        <exclude>ij/**</exclude>
-                                    </excludes>
-                                </filter>
-                            </filters>
-                        </configuration>
                     </execution>
                 </executions>
             </plugin>
@@ -519,7 +460,7 @@
                     <classpathScope>compile</classpathScope>
                     <mainClass>io.github.mianalysis.mia.process.documentation.MainGenerator</mainClass>
                 </configuration>
-            </plugin>     
+            </plugin>
 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

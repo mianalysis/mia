@@ -1,0 +1,22 @@
+{
+    "tasks": [
+        {
+            "label": "maven: package-quick",
+            "type": "shell",
+            "command": "mvn clean package -Dscp=provided -DskipTests=true",
+            "group": {
+                "kind": "build",
+                "isDefault": false
+            }
+        },
+        {
+            "label": "maven: package-complete",
+            "type": "shell",
+            "command": "mvn clean package -Dscp=provided site",
+            "group": {
+                "kind": "build",
+                "isDefault": false
+            }
+        }
+    ]
+}
