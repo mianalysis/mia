@@ -212,7 +212,7 @@ public class Preferences extends Module {
         // GUI parameters
         parameters.add(new SeparatorP(GUI_SEPARATOR, this));
         
-        Parameter parameter = new ChoiceP(THEME, this, Prefs.get("MIA.GUI.theme", Themes.SYSTEM_DEFAULT), Themes.ALL);
+        Parameter parameter = new ChoiceP(THEME, this, Prefs.get("MIA.GUI.theme", Themes.FLAT_LAF_LIGHT), Themes.ALL);
         parameter.getControl().getComponent().addPropertyChangeListener("ToolTipText", evt -> {
             if (evt.getOldValue() != null)
                 setTheme();

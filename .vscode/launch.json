@@ -6,6 +6,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "Launch Load",
+            "request": "launch",
+            "mainClass": "io.github.mianalysis.mia.Load",
+            "projectName": "MIA"
+        },
+        {
+            "type": "java",
             "name": "Launch Current File",
             "request": "launch",
             "mainClass": "${file}"

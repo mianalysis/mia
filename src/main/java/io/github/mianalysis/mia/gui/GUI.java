@@ -138,17 +138,16 @@ public class GUI {
         for (String detectedModuleName : detectedModuleNames) {
             String shortName = detectedModuleName.substring(detectedModuleName.lastIndexOf(".") + 1);
 
-            try {
-                // Checking dependencies have been met
-                if (!MIA.dependencies.compatible(shortName, false)) {
-                    MIA.log.writeWarning("Module \"" + shortName + "\" not loaded.  Dependencies not satisfied:");
-                    for (Dependency dependency : MIA.dependencies.getDependencies(shortName, false))
-                        if (!dependency.test()) {
-                            MIA.log.writeWarning("    Requirement: " + dependency.toString());
-                            MIA.log.writeWarning("    Message: " + dependency.getMessage());
-                        }
-                    continue;
-                }
+            // Checking dependencies have been met
+            if (!MIA.dependencies.compatible(shortName, false)) {
+                MIA.log.writeWarning("Module \"" + shortName + "\" not loaded.  Dependencies not satisfied:");
+                for (Dependency dependency : MIA.dependencies.getDependencies(shortName, false))
+                    if (!dependency.test()) {
+                        MIA.log.writeWarning("    Requirement: " + dependency.toString());
+                        MIA.log.writeWarning("    Message: " + dependency.getMessage());
+                    }
+                continue;
+            }
 
             try {
                 Class<? extends Module> clazz = (Class<? extends Module>) Class.forName(detectedModuleName);
@@ -176,7 +175,7 @@ public class GUI {
 
         if (processingPanel != null)
             SwingUtilities.updateComponentTreeUI(processingPanel);
-            
+
         if (editingPanel != null)
             SwingUtilities.updateComponentTreeUI(editingPanel);
 
@@ -189,7 +188,7 @@ public class GUI {
         for (Module module : getModules())
             for (Parameter parameter : module.getAllParameters().values())
                 SwingUtilities.updateComponentTreeUI(parameter.getControl().getComponent());
-        
+
     }
 
     public static void updatePanel() {
