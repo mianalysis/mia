@@ -10,13 +10,13 @@ import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.drew.lang.annotations.NotNull;
-import com.drew.lang.annotations.Nullable;
-
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
+
+import com.drew.lang.annotations.NotNull;
+import com.drew.lang.annotations.Nullable;
 
 import ij.CompositeImage;
 import ij.IJ;
@@ -71,6 +71,7 @@ import loci.common.services.ServiceException;
 import loci.common.services.ServiceFactory;
 import loci.formats.ChannelSeparator;
 import loci.formats.FormatException;
+import loci.formats.Memoizer;
 import loci.formats.meta.MetadataStore;
 import loci.formats.services.OMEXMLService;
 import loci.plugins.util.ImageProcessorReader;
@@ -301,7 +302,7 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
         OMEXMLService service = factory.getInstance(OMEXMLService.class);
         IMetadata meta = service.createOMEXMLMetadata();
 
-        ImageProcessorReader reader = new ImageProcessorReader(new ChannelSeparator(LociPrefs.makeImageReader()));
+        Memoizer reader = new Memoizer(new ImageProcessorReader(new ChannelSeparator(LociPrefs.makeImageReader())));
         reader.setMetadataStore((MetadataStore) meta);
         reader.setGroupFiles(false);
         reader.setId(path);
@@ -379,7 +380,7 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
                         return null;
                     }
 
-                    ImageProcessor ip = reader.openProcessors(idx, left, top, width, height)[0];
+                    ImageProcessor ip = ((ImageProcessorReader) reader.getReader()).openProcessors(idx, left, top, width, height)[0];
 
                     // If forcing bit depth
                     if (intRange != null) {

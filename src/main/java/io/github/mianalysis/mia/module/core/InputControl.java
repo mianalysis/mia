@@ -49,7 +49,7 @@ import io.github.sjcross.sjcommon.system.FileCrawler;
 import loci.common.DebugTools;
 import loci.common.services.ServiceFactory;
 import loci.formats.ChannelSeparator;
-import loci.formats.ImageReader;
+import loci.formats.Memoizer;
 import loci.formats.MissingLibraryException;
 import loci.formats.UnknownFormatException;
 import loci.formats.meta.MetadataStore;
@@ -245,13 +245,14 @@ public class InputControl extends Module {
         ServiceFactory factory = new ServiceFactory();
         OMEXMLService service = factory.getInstance(OMEXMLService.class);
         IMetadata meta = service.createOMEXMLMetadata();
-        ImageProcessorReader reader = new ImageProcessorReader(new ChannelSeparator(LociPrefs.makeImageReader()));
+        Memoizer reader = new Memoizer(new ImageProcessorReader(new ChannelSeparator(LociPrefs.makeImageReader())));
         reader.setMetadataStore((MetadataStore) meta);
         reader.setGroupFiles(false);
         try {
             reader.setId(inputFile.getAbsolutePath());
         } catch (IllegalArgumentException | MissingLibraryException | UnknownFormatException e) {
             namesAndNumbers.put(1, inputFile.getName());
+            reader.close();
             return namesAndNumbers;
         }
 
@@ -318,13 +319,14 @@ public class InputControl extends Module {
         ServiceFactory factory = new ServiceFactory();
         OMEXMLService service = factory.getInstance(OMEXMLService.class);
         OMEXMLMetadata meta = service.createOMEXMLMetadata();
-        ImageReader reader = new ImageReader();
+        Memoizer reader = new Memoizer(new ImageProcessorReader(new ChannelSeparator(LociPrefs.makeImageReader())));
         reader.setMetadataStore((MetadataStore) meta);
         reader.setGroupFiles(false);
         try {
             reader.setId(inputFile.getAbsolutePath());
         } catch (IllegalArgumentException | MissingLibraryException | UnknownFormatException e) {
             namesAndNumbers.put(1, inputFile.getName());
+            reader.close();
             return namesAndNumbers;
         }
 

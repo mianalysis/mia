@@ -12,6 +12,7 @@ import javax.swing.JFileChooser;
 import org.apache.commons.io.FilenameUtils;
 
 import ij.Prefs;
+import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.gui.GUI;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.core.InputControl;
@@ -99,16 +100,15 @@ public class FileParameter extends ParameterControl implements ActionListener {
             GUI.setLastModuleEval(idx - 1);
 
         if (module.getClass().isInstance(new InputControl(GUI.getModules()))) {
-            new Thread(() -> {
-                GUI.updateTestFile(true);
-                updateControl();
-                GUI.updateModules();
-                GUI.updateParameters();
-            }).start();
-        } else {
-            GUI.updateModules();
-            GUI.updateParameters();
+            MIA.log.writeStatus("Initialising file");
+            GUI.updateTestFile(true);
+            updateControl();
+            MIA.log.writeStatus("File initialisation complete");
         }
+
+        GUI.updateModules();
+        GUI.updateParameters();
+
     }
 
     private String checkPath(String path) {
