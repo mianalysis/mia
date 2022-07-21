@@ -245,7 +245,7 @@ public class InputControl extends Module {
         ServiceFactory factory = new ServiceFactory();
         OMEXMLService service = factory.getInstance(OMEXMLService.class);
         IMetadata meta = service.createOMEXMLMetadata();
-        Memoizer reader = new Memoizer(new ImageProcessorReader(new ChannelSeparator(LociPrefs.makeImageReader())));
+        Memoizer reader = new Memoizer(new ImageProcessorReader(new ChannelSeparator(LociPrefs.makeImageReader())),1000);
         reader.setMetadataStore((MetadataStore) meta);
         reader.setGroupFiles(false);
         try {
@@ -319,7 +319,7 @@ public class InputControl extends Module {
         ServiceFactory factory = new ServiceFactory();
         OMEXMLService service = factory.getInstance(OMEXMLService.class);
         OMEXMLMetadata meta = service.createOMEXMLMetadata();
-        Memoizer reader = new Memoizer(new ImageProcessorReader(new ChannelSeparator(LociPrefs.makeImageReader())));
+        Memoizer reader = new Memoizer(new ImageProcessorReader(new ChannelSeparator(LociPrefs.makeImageReader())),1000);
         reader.setMetadataStore((MetadataStore) meta);
         reader.setGroupFiles(false);
         try {
