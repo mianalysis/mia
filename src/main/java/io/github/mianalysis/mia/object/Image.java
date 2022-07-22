@@ -9,8 +9,6 @@ import java.util.Set;
 import com.drew.lang.annotations.Nullable;
 
 import ij.CompositeImage;
-import ij.IJ;
-import ij.ImageJ;
 import ij.ImagePlus;
 import ij.ImageStack;
 import ij.measure.Calibration;
@@ -85,19 +83,21 @@ public class Image {
     }
 
     public Objs convertImageToObjects(String type, String outputObjectsName, boolean singleObject) {
+        ImagePlus ipl = getImagePlus();
+
         // Getting spatial calibration
-        double dppXY = imagePlus.getCalibration().pixelWidth;
-        double dppZ = imagePlus.getCalibration().pixelDepth;
-        String units = imagePlus.getCalibration().getUnits();
-        ImageProcessor ipr = imagePlus.getProcessor();
+        double dppXY = ipl.getCalibration().pixelWidth;
+        double dppZ = ipl.getCalibration().pixelDepth;
+        String units = ipl.getCalibration().getUnits();
+        ImageProcessor ipr = ipl.getProcessor();
 
-        int h = imagePlus.getHeight();
-        int w = imagePlus.getWidth();
-        int nSlices = imagePlus.getNSlices();
-        int nFrames = imagePlus.getNFrames();
-        int nChannels = imagePlus.getNChannels();
+        int h = ipl.getHeight();
+        int w = ipl.getWidth();
+        int nSlices = ipl.getNSlices();
+        int nFrames = ipl.getNFrames();
+        int nChannels = ipl.getNChannels();
 
-        double frameInterval = imagePlus.getCalibration().frameInterval;
+        double frameInterval = ipl.getCalibration().frameInterval;
 
         // Need to get coordinates and convert to a HCObject
         SpatCal calibration = new SpatCal(dppXY, dppZ, units, w, h, nSlices);
@@ -116,7 +116,7 @@ public class Image {
                         : new HashMap<>();
 
                 for (int z = 0; z < nSlices; z++) {
-                    imagePlus.setPosition(c + 1, z + 1, t + 1);
+                    ipl.setPosition(c + 1, z + 1, t + 1);
                     for (int x = 0; x < w; x++) {
                         for (int y = 0; y < h; y++) {
                             // Getting the ID of this object in the current stack.
@@ -163,15 +163,17 @@ public class Image {
     }
 
     HashMap<Integer, IDLink> getOptimisedLinks(int c, int t, Objs outputObjects, boolean singleObject) {
-        int h = imagePlus.getHeight();
-        int w = imagePlus.getWidth();
-        int nSlices = imagePlus.getNSlices();
+        ImagePlus ipl = getImagePlus();
+
+        int h = ipl.getHeight();
+        int w = ipl.getWidth();
+        int nSlices = ipl.getNSlices();
 
         // Looping over all pixels in this stack and adding to the relevant CumStat
         HashMap<Integer, IDLink> links = new HashMap<>();
         for (int z = 0; z < nSlices; z++) {
-            imagePlus.setPosition(c, z + 1, t);
-            ImageProcessor ipr = imagePlus.getProcessor();
+            ipl.setPosition(c, z + 1, t);
+            ImageProcessor ipr = ipl.getProcessor();
             for (int x = 0; x < w; x++) {
                 for (int y = 0; y < h; y++) {
                     // Getting the ID of this object in the current stack.
@@ -207,7 +209,7 @@ public class Image {
     }
 
     public void showImage(String title, @Nullable LUT lut, boolean normalise, boolean composite) {
-        ImagePlus dispIpl = new Duplicator().run(imagePlus);
+        ImagePlus dispIpl = new Duplicator().run(getImagePlus());
         dispIpl.setTitle(title);
         if (normalise) {
             ImageStatistics stats = dispIpl.getStatistics();
@@ -233,7 +235,7 @@ public class Image {
         String imageDisplayMode = Preferences.ImageDisplayModes.COLOUR;
         if (MIA.preferences != null)
             imageDisplayMode = MIA.preferences.imageDisplayMode();
-            
+
         switch (imageDisplayMode) {
             case Preferences.ImageDisplayModes.COLOUR:
             default:
@@ -352,11 +354,11 @@ public class Image {
     }
 
     public <T extends RealType<T> & NativeType<T>> ImgPlus<T> getImgPlus() {
-        return ImagePlusAdapter.wrapImgPlus(new Duplicator().run(imagePlus));
+        return ImagePlusAdapter.wrapImgPlus(new Duplicator().run(getImagePlus()));
     }
 
     public <T extends RealType<T> & NativeType<T>> void setImgPlus(ImgPlus<T> img) {
-        imagePlus = ImageJFunctions.wrap(img, name);
+        setImagePlus(ImageJFunctions.wrap(img, name));
     }
 
     public HashMap<String, Measurement> getMeasurements() {
@@ -371,24 +373,26 @@ public class Image {
     public int hashCode() {
         int hash = 1;
 
-        Calibration calibration = imagePlus.getCalibration();
+        ImagePlus ipl = getImagePlus();
+
+        Calibration calibration = ipl.getCalibration();
 
         hash = 31 * hash + ((Number) calibration.pixelWidth).hashCode();
         hash = 31 * hash + ((Number) calibration.pixelDepth).hashCode();
         hash = 31 * hash + calibration.getUnits().toUpperCase().hashCode();
 
-        hash = 31 * hash + imagePlus.getWidth();
-        hash = 31 * hash + imagePlus.getHeight();
-        hash = 31 * hash + imagePlus.getNChannels();
-        hash = 31 * hash + imagePlus.getNSlices();
-        hash = 31 * hash + imagePlus.getNFrames();
-        hash = 31 * hash + imagePlus.getBitDepth();
+        hash = 31 * hash + ipl.getWidth();
+        hash = 31 * hash + ipl.getHeight();
+        hash = 31 * hash + ipl.getNChannels();
+        hash = 31 * hash + ipl.getNSlices();
+        hash = 31 * hash + ipl.getNFrames();
+        hash = 31 * hash + ipl.getBitDepth();
 
-        ImageStack ist = imagePlus.getImageStack();
-        for (int z = 1; z <= imagePlus.getNSlices(); z++) {
-            for (int c = 1; c <= imagePlus.getNChannels(); c++) {
-                for (int t = 1; t <= imagePlus.getNFrames(); t++) {
-                    int idx = imagePlus.getStackIndex(c, z, t);
+        ImageStack ist = ipl.getImageStack();
+        for (int z = 1; z <= ipl.getNSlices(); z++) {
+            for (int c = 1; c <= ipl.getNChannels(); c++) {
+                for (int t = 1; t <= ipl.getNFrames(); t++) {
+                    int idx = ipl.getStackIndex(c, z, t);
                     ImageProcessor ipr = ist.getProcessor(idx);
 
                     for (int x = 0; x < ipr.getWidth(); x++) {
@@ -411,11 +415,13 @@ public class Image {
         if (!(obj instanceof Image))
             return false;
 
+        ImagePlus imagePlus1 = getImagePlus();
+
         Image image2 = (Image) obj;
         ImagePlus imagePlus2 = image2.getImagePlus();
 
         // Comparing calibrations
-        Calibration calibration1 = imagePlus.getCalibration();
+        Calibration calibration1 = imagePlus1.getCalibration();
         Calibration calibration2 = imagePlus2.getCalibration();
 
         if (calibration1.pixelWidth != calibration2.pixelWidth)
@@ -426,32 +432,32 @@ public class Image {
             return false;
 
         // Comparing dimensions
-        if (imagePlus.getWidth() != imagePlus2.getWidth())
+        if (imagePlus1.getWidth() != imagePlus2.getWidth())
             return false;
-        if (imagePlus.getHeight() != imagePlus2.getHeight())
+        if (imagePlus1.getHeight() != imagePlus2.getHeight())
             return false;
-        if (imagePlus.getNChannels() != imagePlus2.getNChannels())
+        if (imagePlus1.getNChannels() != imagePlus2.getNChannels())
             return false;
-        if (imagePlus.getNSlices() != imagePlus2.getNSlices())
+        if (imagePlus1.getNSlices() != imagePlus2.getNSlices())
             return false;
-        if (imagePlus.getNFrames() != imagePlus2.getNFrames())
+        if (imagePlus1.getNFrames() != imagePlus2.getNFrames())
             return false;
-        if (imagePlus.getBitDepth() != imagePlus2.getBitDepth())
+        if (imagePlus1.getBitDepth() != imagePlus2.getBitDepth())
             return false;
 
         // Checking the individual image pixel values
-        ImageStack ist = imagePlus.getImageStack();
+        ImageStack ist = imagePlus1.getImageStack();
         ImageStack ist2 = imagePlus2.getImageStack();
-        for (int c = 1; c <= imagePlus.getNChannels(); c++) {
-            for (int z = 1; z <= imagePlus.getNSlices(); z++) {
-                for (int t = 1; t <= imagePlus.getNFrames(); t++) {
-                    int idx = imagePlus.getStackIndex(c, z, t);
+        for (int c = 1; c <= imagePlus1.getNChannels(); c++) {
+            for (int z = 1; z <= imagePlus1.getNSlices(); z++) {
+                for (int t = 1; t <= imagePlus1.getNFrames(); t++) {
+                    int idx = imagePlus1.getStackIndex(c, z, t);
                     ImageProcessor imageProcessor1 = ist.getProcessor(idx);
                     int idx2 = imagePlus2.getStackIndex(c, z, t);
                     ImageProcessor imageProcessor2 = ist2.getProcessor(idx2);
 
-                    for (int x = 0; x < imagePlus.getWidth(); x++) {
-                        for (int y = 0; y < imagePlus.getHeight(); y++) {
+                    for (int x = 0; x < imagePlus1.getWidth(); x++) {
+                        for (int y = 0; y < imagePlus1.getHeight(); y++) {
                             if (imageProcessor1.getf(x, y) != imageProcessor2.getf(x, y))
                                 return false;
                         }
@@ -500,8 +506,10 @@ public class Image {
             if (N < 50)
                 return VolumeType.POINTLIST;
 
+                ImagePlus ipl = getImagePlus();
+
             // Ratio of xy to z
-            double xyToZ = imagePlus.getCalibration().pixelDepth / imagePlus.getCalibration().pixelWidth;
+            double xyToZ = ipl.getCalibration().pixelDepth / ipl.getCalibration().pixelWidth;
             MIA.log.writeMessage("        XY to Z " + xyToZ);
 
             // If distribution of points indicates a sparse object, use PointList. This is
