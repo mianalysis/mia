@@ -74,8 +74,8 @@ import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
 import net.imglib2.view.Views;
 
-@Plugin(type = Module.class, priority=Priority.LOW, visible=true)
-public class FocusStackGlobal <T extends RealType<T> & NativeType<T>> extends Module implements ActionListener {
+@Plugin(type = Module.class, priority = Priority.LOW, visible = true)
+public class FocusStackGlobal<T extends RealType<T> & NativeType<T>> extends Module implements ActionListener {
     private JFrame frame;
     private DefaultListModel<Ref> listModel = new DefaultListModel<>();
     private JList<Ref> list = new JList<>(listModel);
@@ -257,7 +257,7 @@ public class FocusStackGlobal <T extends RealType<T> & NativeType<T>> extends Mo
         int[] bestSlices = new int[(int) nFrames];
         for (int f = 0; f < nFrames; f++) {
             bestSlices[f] = getOptimalStatSlice(calculationImage, f, channel, stat, minMax);
-            writeProgressStatus(f+1, (int) nFrames, "frames");
+            writeProgressStatus(f + 1, (int) nFrames, "frames");
         }
 
         return bestSlices;
@@ -343,27 +343,27 @@ public class FocusStackGlobal <T extends RealType<T> & NativeType<T>> extends Mo
                 inputIpl.setPosition(c + 1, z + 1, frame + 1);
                 double val = 0;
                 switch (stat) {
-                case MEAN:
-                    val = inputIpl.getProcessor().getStatistics().mean;
-                    break;
-                case STDEV:
-                    val = inputIpl.getProcessor().getStatistics().stdDev;
-                    break;
+                    case MEAN:
+                        val = inputIpl.getProcessor().getStatistics().mean;
+                        break;
+                    case STDEV:
+                        val = inputIpl.getProcessor().getStatistics().stdDev;
+                        break;
                 }
 
                 switch (mode) {
-                case MIN:
-                    if (val < bestVal) {
-                        bestSlice = z;
-                        bestVal = val;
-                    }
-                    break;
-                case MAX:
-                    if (val > bestVal) {
-                        bestSlice = z;
-                        bestVal = val;
-                    }
-                    break;
+                    case MIN:
+                        if (val < bestVal) {
+                            bestSlice = z;
+                            bestVal = val;
+                        }
+                        break;
+                    case MAX:
+                        if (val > bestVal) {
+                            bestSlice = z;
+                            bestVal = val;
+                        }
+                        break;
                 }
             }
         }
@@ -382,7 +382,7 @@ public class FocusStackGlobal <T extends RealType<T> & NativeType<T>> extends Mo
         long nFrames = inputImg.dimension(inputImg.dimensionIndex(Axes.TIME));
         for (int f = 0; f < nFrames; f++) {
             extractSubstack(inputImg, outputImg, bestSlices[f] + relativeStart, bestSlices[f] + relativeEnd, f);
-            writeProgressStatus(f+1, (int) nFrames, "frames");
+            writeProgressStatus(f + 1, (int) nFrames, "frames");
         }
 
         ImagePlus outputImagePlus = ImageJFunctions.wrap(outputImg, outputImageName);
@@ -576,7 +576,7 @@ public class FocusStackGlobal <T extends RealType<T> & NativeType<T>> extends Mo
         if (isSingleSlice(inputImage)) {
             // Adding blank measurements
             updateAndGetImageMeasurementRefs().addBlankMeasurements(inputImage);
-            
+
             if (outputMode.equals(OutputModes.CALCULATE_AND_APPLY)) {
                 Image outputImage = new Image(outputImageName, inputImage.getImagePlus().duplicate());
                 workspace.addImage(outputImage);
@@ -600,52 +600,52 @@ public class FocusStackGlobal <T extends RealType<T> & NativeType<T>> extends Mo
         // specified
         Image calculationImage = inputImage;
         switch (calculationSource) {
-        case CalculationSources.EXTERNAL:
-            calculationImage = workspace.getImage(externalSourceName);
-            break;
+            case CalculationSources.EXTERNAL:
+                calculationImage = workspace.getImage(externalSourceName);
+                break;
         }
 
         // Getting best focus slice indices
         int[] bestSlices;
         switch (bestFocusCalculation) {
-        case BestFocusCalculations.MANUAL:
-            Image refImage = workspace.getImage(referenceImageName);
-            bestSlices = getBestFocusManual(refImage);
-            String metadataString = Arrays.stream(bestSlices).mapToObj(String::valueOf)
-                    .collect(Collectors.joining(","));
-            workspace.getMetadata().put(MetadataNames.SLICES, metadataString);
-            break;
+            case BestFocusCalculations.MANUAL:
+                Image refImage = workspace.getImage(referenceImageName);
+                bestSlices = getBestFocusManual(refImage);
+                String metadataString = Arrays.stream(bestSlices).mapToObj(String::valueOf)
+                        .collect(Collectors.joining(","));
+                workspace.getMetadata().put(MetadataNames.SLICES, metadataString);
+                break;
 
-        case BestFocusCalculations.MIN_MEAN:
-            // Setting the channel number to zero-indexed or -1 if using all channels
-            if (channelMode.equals(ChannelModes.USE_ALL))
-                channel = -1;
-            bestSlices = getBestFocusAuto(inputImage, calculationImage, MEAN, MIN, channel);
-            break;
+            case BestFocusCalculations.MIN_MEAN:
+                // Setting the channel number to zero-indexed or -1 if using all channels
+                if (channelMode.equals(ChannelModes.USE_ALL))
+                    channel = -1;
+                bestSlices = getBestFocusAuto(inputImage, calculationImage, MEAN, MIN, channel);
+                break;
 
-        case BestFocusCalculations.MAX_MEAN:
-            // Setting the channel number to zero-indexed or -1 if using all channels
-            if (channelMode.equals(ChannelModes.USE_ALL))
-                channel = -1;
-            bestSlices = getBestFocusAuto(inputImage, calculationImage, MEAN, MAX, channel);
-            break;
+            case BestFocusCalculations.MAX_MEAN:
+                // Setting the channel number to zero-indexed or -1 if using all channels
+                if (channelMode.equals(ChannelModes.USE_ALL))
+                    channel = -1;
+                bestSlices = getBestFocusAuto(inputImage, calculationImage, MEAN, MAX, channel);
+                break;
 
-        case BestFocusCalculations.MIN_STDEV:
-            // Setting the channel number to zero-indexed or -1 if using all channels
-            if (channelMode.equals(ChannelModes.USE_ALL))
-                channel = -1;
-            bestSlices = getBestFocusAuto(inputImage, calculationImage, STDEV, MIN, channel);
-            break;
+            case BestFocusCalculations.MIN_STDEV:
+                // Setting the channel number to zero-indexed or -1 if using all channels
+                if (channelMode.equals(ChannelModes.USE_ALL))
+                    channel = -1;
+                bestSlices = getBestFocusAuto(inputImage, calculationImage, STDEV, MIN, channel);
+                break;
 
-        case BestFocusCalculations.MAX_STDEV:
-            // Setting the channel number to zero-indexed or -1 if using all channels
-            if (channelMode.equals(ChannelModes.USE_ALL))
-                channel = -1;
-            bestSlices = getBestFocusAuto(inputImage, calculationImage, STDEV, MAX, channel);
-            break;
+            case BestFocusCalculations.MAX_STDEV:
+                // Setting the channel number to zero-indexed or -1 if using all channels
+                if (channelMode.equals(ChannelModes.USE_ALL))
+                    channel = -1;
+                bestSlices = getBestFocusAuto(inputImage, calculationImage, STDEV, MAX, channel);
+                break;
 
-        default:
-            return Status.FAIL;
+            default:
+                return Status.FAIL;
         }
 
         // Applying temporal smoothing of best focus slice index
@@ -713,28 +713,28 @@ public class FocusStackGlobal <T extends RealType<T> & NativeType<T>> extends Mo
 
         returnedParameters.add(parameters.getParameter(REFERENCE_SEPARATOR));
         switch ((String) parameters.getValue(BEST_FOCUS_CALCULATION)) {
-        case BestFocusCalculations.MANUAL:
-            returnedParameters.add(parameters.getParameter(REFERENCE_IMAGE));
-            break;
-
-        case BestFocusCalculations.MIN_MEAN:
-        case BestFocusCalculations.MAX_MEAN:
-        case BestFocusCalculations.MIN_STDEV:
-        case BestFocusCalculations.MAX_STDEV:
-            returnedParameters.add(parameters.getParameter(CALCULATION_SOURCE));
-            switch ((String) parameters.getValue(CALCULATION_SOURCE)) {
-            case CalculationSources.EXTERNAL:
-                returnedParameters.add(parameters.getParameter(EXTERNAL_SOURCE));
+            case BestFocusCalculations.MANUAL:
+                returnedParameters.add(parameters.getParameter(REFERENCE_IMAGE));
                 break;
-            }
 
-            returnedParameters.add(parameters.getParameter(CHANNEL_MODE));
-            switch ((String) parameters.getValue(CHANNEL_MODE)) {
-            case ChannelModes.USE_SINGLE:
-                returnedParameters.add(parameters.getParameter(CHANNEL));
+            case BestFocusCalculations.MIN_MEAN:
+            case BestFocusCalculations.MAX_MEAN:
+            case BestFocusCalculations.MIN_STDEV:
+            case BestFocusCalculations.MAX_STDEV:
+                returnedParameters.add(parameters.getParameter(CALCULATION_SOURCE));
+                switch ((String) parameters.getValue(CALCULATION_SOURCE)) {
+                    case CalculationSources.EXTERNAL:
+                        returnedParameters.add(parameters.getParameter(EXTERNAL_SOURCE));
+                        break;
+                }
+
+                returnedParameters.add(parameters.getParameter(CHANNEL_MODE));
+                switch ((String) parameters.getValue(CHANNEL_MODE)) {
+                    case ChannelModes.USE_SINGLE:
+                        returnedParameters.add(parameters.getParameter(CHANNEL));
+                        break;
+                }
                 break;
-            }
-            break;
         }
 
         returnedParameters.add(parameters.getParameter(SMOOTH_TIMESERIES));
@@ -811,7 +811,8 @@ public class FocusStackGlobal <T extends RealType<T> & NativeType<T>> extends Mo
     void addParameterDescriptions() {
         parameters.get(INPUT_IMAGE).setDescription("Image to extract substack from.");
 
-        parameters.get(OUTPUT_MODE).setDescription("Controls whether the best focus positions are calculated and applied (creating a new image) or simply calculated.  In both cases, statistics for the best focus position (mean, median, minimum, maximum and standard deviation of slices) are stored as measurements associated with the input image.");
+        parameters.get(OUTPUT_MODE).setDescription(
+                "Controls whether the best focus positions are calculated and applied (creating a new image) or simply calculated.  In both cases, statistics for the best focus position (mean, median, minimum, maximum and standard deviation of slices) are stored as measurements associated with the input image.");
 
         parameters.get(OUTPUT_IMAGE).setDescription("Substack image to be added to the current workspace.");
 
@@ -853,7 +854,8 @@ public class FocusStackGlobal <T extends RealType<T> & NativeType<T>> extends Mo
                         + "\" The same image will be used for determination of the best slice and generation of the output substack.</li></ul>");
 
         parameters.get(EXTERNAL_SOURCE).setDescription("If using a separate image to determine the best focus slice (\""
-                + CALCULATION_SOURCE + "\" set to \"" + CalculationSources.EXTERNAL + "\").");
+                + CALCULATION_SOURCE + "\" set to \"" + CalculationSources.EXTERNAL
+                + "\"), this is the image that will be used for that calculation.");
 
         parameters.get(CHANNEL_MODE)
                 .setDescription("How many channels to use when calculating the best-focus slice.  \""
@@ -873,25 +875,25 @@ public class FocusStackGlobal <T extends RealType<T> & NativeType<T>> extends Mo
     @Override
     public void actionPerformed(ActionEvent e) {
         switch (e.getActionCommand()) {
-        case (ADD):
-            addReference();
-            break;
+            case (ADD):
+                addReference();
+                break;
 
-        case (REMOVE):
-            removeReference();
-            break;
+            case (REMOVE):
+                removeReference();
+                break;
 
-        case (FINISH):
-            if (checkEnds()) {
-                complete();
-                frame.dispose();
-                frame = null;
-                displayImagePlus.close();
-            } else {
-                IJ.error("References must be provided for the first and last timepoints");
-            }
+            case (FINISH):
+                if (checkEnds()) {
+                    complete();
+                    frame.dispose();
+                    frame = null;
+                    displayImagePlus.close();
+                } else {
+                    IJ.error("References must be provided for the first and last timepoints");
+                }
 
-            break;
+                break;
         }
     }
 

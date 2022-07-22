@@ -120,7 +120,7 @@ public class BleachingCorrection extends Module {
         // If the image is being saved as a new image, adding it to the workspace
         if (applyToInput) {
             inputImagePlus.setPosition(1, 1, 1);
-            inputImagePlus.updateAndDraw();
+            inputImagePlus.updateChannelAndDraw();
             inputImage.setImagePlus(inputImagePlus);
             if (showOutput)
                 inputImage.showImage();
