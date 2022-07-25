@@ -55,8 +55,8 @@ public class AddPause extends Module {
     @Override
     protected Status process(Workspace workspace) {
         // Getting parameters
-        boolean showImage = parameters.getValue(SHOW_IMAGE);
-        String inputImageName = parameters.getValue(INPUT_IMAGE);
+        boolean showImage = parameters.getValue(SHOW_IMAGE,workspace);
+        String inputImageName = parameters.getValue(INPUT_IMAGE,workspace);
 
         if (showImage) {
             Image inputImage = workspace.getImage(inputImageName);
@@ -106,10 +106,11 @@ public class AddPause extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
+Workspace workspace = null;
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(SHOW_IMAGE));
-        if ((boolean) parameters.getValue(SHOW_IMAGE)) {
+        if ((boolean) parameters.getValue(SHOW_IMAGE,workspace)) {
             returnedParameters.add(parameters.getParameter(INPUT_IMAGE));
         }
 
@@ -119,26 +120,31 @@ public class AddPause extends Module {
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
-    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
-    public MetadataRefs updateAndGetMetadataReferences() {
+public MetadataRefs updateAndGetMetadataReferences() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
+Workspace workspace = null;
         return null;
     }
 

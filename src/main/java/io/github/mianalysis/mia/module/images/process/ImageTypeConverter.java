@@ -210,14 +210,14 @@ public class ImageTypeConverter extends Module {
     @Override
     public Status process(Workspace workspace) {
         // Getting input image
-        String inputImageName = parameters.getValue(INPUT_IMAGE);
+        String inputImageName = parameters.getValue(INPUT_IMAGE,workspace);
         Image inputImage = workspace.getImages().get(inputImageName);
         ImagePlus inputImagePlus = inputImage.getImagePlus();
 
         // Getting parameters
-        boolean applyToInput = parameters.getValue(APPLY_TO_INPUT);
-        String outputType = parameters.getValue(OUTPUT_TYPE);
-        String scalingMode = parameters.getValue(SCALING_MODE);
+        boolean applyToInput = parameters.getValue(APPLY_TO_INPUT,workspace);
+        String outputType = parameters.getValue(OUTPUT_TYPE,workspace);
+        String scalingMode = parameters.getValue(SCALING_MODE,workspace);
 
         // If applying to a new image, the input image is duplicated
         if (!applyToInput) {inputImagePlus = new Duplicator().run(inputImagePlus);}
@@ -231,7 +231,7 @@ public class ImageTypeConverter extends Module {
 
         // Adding output image to workspace if necessary
         if (!applyToInput) {
-            String outputImageName = parameters.getValue(OUTPUT_IMAGE);
+            String outputImageName = parameters.getValue(OUTPUT_IMAGE,workspace);
             writeStatus("Adding image ("+outputImageName+") to workspace");
             Image outputImage = new Image(outputImageName,inputImagePlus);
             setLUTs(outputImage,luts);
@@ -268,13 +268,14 @@ public class ImageTypeConverter extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
+Workspace workspace = null;
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(INPUT_IMAGE));
         returnedParameters.add(parameters.getParameter(APPLY_TO_INPUT));
 
-        if (!(boolean) parameters.getValue(APPLY_TO_INPUT)) {
+        if (!(boolean) parameters.getValue(APPLY_TO_INPUT,workspace)) {
             returnedParameters.add(parameters.getParameter(OUTPUT_IMAGE));
         }
 
@@ -289,26 +290,31 @@ public class ImageTypeConverter extends Module {
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
-    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
-    public MetadataRefs updateAndGetMetadataReferences() {
+public MetadataRefs updateAndGetMetadataReferences() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
+Workspace workspace = null;
         return null;
     }
 

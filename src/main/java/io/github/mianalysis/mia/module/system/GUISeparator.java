@@ -1,12 +1,12 @@
 package io.github.mianalysis.mia.module.system;
 
+import org.scijava.Priority;
+import org.scijava.plugin.Plugin;
+
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.module.Module;
-import org.scijava.Priority;
-import org.scijava.plugin.Plugin;
 import io.github.mianalysis.mia.object.Status;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
@@ -36,7 +36,7 @@ public class GUISeparator extends Module {
         Modules processingModules = new Modules();
 
         // If this separator isn't visible in the processing view it contains no modules
-        if (!((boolean) parameters.getValue(SHOW_PROCESSING)))
+        if (!((boolean) parameters.getValue(SHOW_PROCESSING,null)))
             return processingModules;
 
         boolean record = false;
@@ -54,7 +54,7 @@ public class GUISeparator extends Module {
             // If this module is a visible GUISeparator, stop recording and return the
             // available modules
             if (module instanceof GUISeparator) {
-                if ((boolean) module.getParameterValue(GUISeparator.SHOW_PROCESSING)) {
+                if ((boolean) module.getParameterValue(GUISeparator.SHOW_PROCESSING,null)) {
                     return processingModules;
                 }
             }
@@ -128,31 +128,37 @@ public class GUISeparator extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
+Workspace workspace = null;
         return parameters;
     }
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
-    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
-    public MetadataRefs updateAndGetMetadataReferences() {
+public MetadataRefs updateAndGetMetadataReferences() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
+Workspace workspace = null;
         return null;
     }
 

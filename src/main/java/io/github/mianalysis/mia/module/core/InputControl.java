@@ -143,19 +143,19 @@ public class InputControl extends Module {
     }
 
     public File getRootFile() {
-        return new File((String) parameters.getValue(INPUT_PATH));
+        return new File((String) parameters.getValue(INPUT_PATH,null));
     }
 
     public void addFilenameFilters(FileCrawler fileCrawler) {        
         // Getting filters
-        LinkedHashMap<Integer, Parameters> collections = parameters.getValue(ADD_FILTER);
+        LinkedHashMap<Integer, Parameters> collections = parameters.getValue(ADD_FILTER,null);
 
         // Iterating over each filter
         for (Parameters collection : collections.values()) {
             // If this filter is a filename filter type, add it to the AnalysisRunner
-            String filterSource = collection.getValue(FILTER_SOURCE);
-            String filterValue = collection.getValue(FILTER_VALUE);
-            String filterType = collection.getValue(FILTER_TYPE);
+            String filterSource = collection.getValue(FILTER_SOURCE,null);
+            String filterValue = collection.getValue(FILTER_VALUE,null);
+            String filterType = collection.getValue(FILTER_TYPE,null);
 
             switch (filterSource) {
                 case FilterSources.EXTENSION:
@@ -204,7 +204,7 @@ public class InputControl extends Module {
 
     public TreeMap<Integer, String> getSeriesNumbers(File inputFile) {
         try {
-            switch ((String) parameters.getValue(SERIES_MODE)) {
+            switch ((String) parameters.getValue(SERIES_MODE,null)) {
                 case SeriesModes.ALL_SERIES:
                     return getAllSeriesNumbers(inputFile);
 
@@ -258,12 +258,12 @@ public class InputControl extends Module {
 
         // Creating a Collection of seriesname filters
         HashSet<FileCondition> filters = new HashSet<>();
-        LinkedHashMap<Integer, Parameters> collections = parameters.getValue(ADD_FILTER);
+        LinkedHashMap<Integer, Parameters> collections = parameters.getValue(ADD_FILTER,null);
         for (Parameters collection : collections.values()) {
             // If this filter is a filename filter type, addRef it to the AnalysisRunner
-            String filterSource = collection.getValue(FILTER_SOURCE);
-            String filterValue = collection.getValue(FILTER_VALUE);
-            String filterType = collection.getValue(FILTER_TYPE);
+            String filterSource = collection.getValue(FILTER_SOURCE,null);
+            String filterValue = collection.getValue(FILTER_VALUE,null);
+            String filterType = collection.getValue(FILTER_TYPE,null);
 
             switch (filterSource) {
                 case FilterSources.SERIESNAME:
@@ -273,7 +273,7 @@ public class InputControl extends Module {
             }
         }
 
-        boolean ignoreCase = parameters.getValue(IGNORE_CASE);
+        boolean ignoreCase = parameters.getValue(IGNORE_CASE,null);
         for (int seriesNumber = 0; seriesNumber < reader.getSeriesCount(); seriesNumber++) {
             String name = meta.getImageName(seriesNumber);
 
@@ -330,7 +330,7 @@ public class InputControl extends Module {
             return namesAndNumbers;
         }
 
-        String seriesListString = parameters.getValue(InputControl.SERIES_LIST);
+        String seriesListString = parameters.getValue(InputControl.SERIES_LIST,null);
         int[] seriesList = CommaSeparatedStringInterpreter.interpretIntegers(seriesListString, true,
                 reader.getSeriesCount());
 
@@ -413,6 +413,7 @@ public class InputControl extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
+Workspace workspace = null;
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(MESSAGE_SEPARATOR));
@@ -431,7 +432,7 @@ public class InputControl extends Module {
         }
         returnedParameters.add(parameters.getParameter(LOAD_FIRST_PER_FOLDER));
         returnedParameters.add(parameters.getParameter(LOAD_FIRST_MATCHING_GROUP));
-        if ((boolean) parameters.getValue(LOAD_FIRST_MATCHING_GROUP))
+        if ((boolean) parameters.getValue(LOAD_FIRST_MATCHING_GROUP,null))
             returnedParameters.add(parameters.getParameter(PATTERN));
         returnedParameters.add(parameters.getParameter(REFRESH_FILE));
 
@@ -447,7 +448,7 @@ public class InputControl extends Module {
         returnedParameters.add(parameters.getParameter(SIMULTANEOUS_JOBS));
         // If a the RunMacro module is present, this analysis must be run as a single
         // job
-        if ((int) parameters.getValue(SIMULTANEOUS_JOBS) > 1) {
+        if ((int) parameters.getValue(SIMULTANEOUS_JOBS,null) > 1) {
             for (Module module : modules) {
                 if (module instanceof RunMacro || module instanceof RunMacroOnObjects) {
                     returnedParameters.add(parameters.getParameter(MACRO_WARNING));
@@ -462,17 +463,20 @@ public class InputControl extends Module {
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
-    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+Workspace workspace = null;
         return null;
 
     }
 
     @Override
-    public MetadataRefs updateAndGetMetadataReferences() {
+public MetadataRefs updateAndGetMetadataReferences() {
+Workspace workspace = null;
         MetadataRefs returnedRefs = new MetadataRefs();
 
         // The following are added to the MetadataRefs during Workspace
@@ -490,11 +494,13 @@ public class InputControl extends Module {
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
+Workspace workspace = null;
         return null;
     }
 

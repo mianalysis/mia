@@ -161,14 +161,14 @@ public class FilterSpecificObjectIDs extends AbstractObjectFilter implements Act
     @Override
     protected Status process(Workspace workspace) {
         // Getting input objects
-        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
         Objs inputObjects = workspace.getObjects().get(inputObjectsName);
 
         // Getting parameters
-        String filterMode = parameters.getValue(FILTER_MODE);
-        String outputObjectsName = parameters.getValue(OUTPUT_FILTERED_OBJECTS);
-        boolean showImage = parameters.getValue(SHOW_IMAGE);
-        String displayImageName = parameters.getValue(DISPLAY_IMAGE_NAME);
+        String filterMode = parameters.getValue(FILTER_MODE,workspace);
+        String outputObjectsName = parameters.getValue(OUTPUT_FILTERED_OBJECTS,workspace);
+        boolean showImage = parameters.getValue(SHOW_IMAGE,workspace);
+        String displayImageName = parameters.getValue(DISPLAY_IMAGE_NAME,workspace);
 
         boolean moveObjects = filterMode.equals(FilterModes.MOVE_FILTERED);
         boolean remove = !filterMode.equals(FilterModes.DO_NOTHING);
@@ -209,11 +209,12 @@ public class FilterSpecificObjectIDs extends AbstractObjectFilter implements Act
 
     @Override
     public Parameters updateAndGetParameters() {
+Workspace workspace = null;
         Parameters returnedParameters = new Parameters();
         returnedParameters.addAll(super.updateAndGetParameters());
         returnedParameters.add(parameters.getParameter(FILTER_SEPARATOR));
         returnedParameters.add(parameters.getParameter(SHOW_IMAGE));
-        if ((boolean) parameters.getValue(SHOW_IMAGE)) {
+        if ((boolean) parameters.getValue(SHOW_IMAGE,workspace)) {
             returnedParameters.add(parameters.getParameter(DISPLAY_IMAGE_NAME));
         }
 
@@ -225,22 +226,25 @@ public class FilterSpecificObjectIDs extends AbstractObjectFilter implements Act
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
-    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+Workspace workspace = null;
         return super.updateAndGetObjectMeasurementRefs();
     }
 
     @Override
-    public MetadataRefs updateAndGetMetadataReferences() {
+public MetadataRefs updateAndGetMetadataReferences() {
+Workspace workspace = null;
         MetadataRefs returnedRefs = new MetadataRefs();
 
         // Filter results are stored as a metadata item since they apply to the whole
         // set
-        if ((boolean) parameters.getValue(STORE_RESULTS)) {
-            String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+        if ((boolean) parameters.getValue(STORE_RESULTS,workspace)) {
+            String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
 
             String metadataName = getMetadataName(inputObjectsName);
 

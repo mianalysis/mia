@@ -56,8 +56,8 @@ public class ParentObjectID extends Module {
     @Override
     public Status process(Workspace workspace) {
         // Getting input objects
-        String objectName = parameters.getValue(INPUT_OBJECTS);
-        String parentObjectsName = parameters.getValue(PARENT_OBJECT);
+        String objectName = parameters.getValue(INPUT_OBJECTS,workspace);
+        String parentObjectsName = parameters.getValue(PARENT_OBJECT,workspace);
 
         Objs objects = workspace.getObjects().get(objectName);
         String measurementName = getFullName(parentObjectsName);
@@ -86,7 +86,8 @@ public class ParentObjectID extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
-        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+Workspace workspace = null;
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
         ((ParentObjectsP) parameters.get(PARENT_OBJECT)).setChildObjectsName(inputObjectsName);
 
         return parameters;
@@ -95,15 +96,17 @@ public class ParentObjectID extends Module {
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
-    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+Workspace workspace = null;
         ObjMeasurementRefs returnedRefs = new ObjMeasurementRefs();
 
-        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
-        String parentObjectsName = parameters.getValue(PARENT_OBJECT);
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
+        String parentObjectsName = parameters.getValue(PARENT_OBJECT,workspace);
         
         String measurementName = getFullName(parentObjectsName);
 
@@ -124,17 +127,20 @@ public class ParentObjectID extends Module {
     }
 
     @Override
-    public MetadataRefs updateAndGetMetadataReferences() {
+public MetadataRefs updateAndGetMetadataReferences() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
+Workspace workspace = null;
         return null;
     }
 

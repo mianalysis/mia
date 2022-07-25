@@ -202,14 +202,14 @@ public class FocusStackLocal extends Module {
     @Override
     public Status process(Workspace workspace) {
         // Getting parameters
-        String inputImageName = parameters.getValue(INPUT_IMAGE);
-        String outputMode = parameters.getValue(OUTPUT_MODE);
-        String outputFocusedImageName = parameters.getValue(OUTPUT_FOCUSED_IMAGE);
-        String outputHeightImageName = parameters.getValue(OUTPUT_HEIGHT_IMAGE);
-        boolean useExisting = parameters.getValue(USE_EXISTING_HEIGHT_IMAGE);
-        String inputHeightImageName = parameters.getValue(INPUT_HEIGHT_IMAGE);
-        int range = parameters.getValue(RANGE);
-        boolean smooth = parameters.getValue(SMOOTH_HEIGHT_MAP);
+        String inputImageName = parameters.getValue(INPUT_IMAGE,workspace);
+        String outputMode = parameters.getValue(OUTPUT_MODE,workspace);
+        String outputFocusedImageName = parameters.getValue(OUTPUT_FOCUSED_IMAGE,workspace);
+        String outputHeightImageName = parameters.getValue(OUTPUT_HEIGHT_IMAGE,workspace);
+        boolean useExisting = parameters.getValue(USE_EXISTING_HEIGHT_IMAGE,workspace);
+        String inputHeightImageName = parameters.getValue(INPUT_HEIGHT_IMAGE,workspace);
+        int range = parameters.getValue(RANGE,workspace);
+        boolean smooth = parameters.getValue(SMOOTH_HEIGHT_MAP,workspace);
 
         Image inputImage = workspace.getImage(inputImageName);
 
@@ -280,6 +280,7 @@ public class FocusStackLocal extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
+Workspace workspace = null;
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
@@ -287,7 +288,7 @@ public class FocusStackLocal extends Module {
 
         returnedParameters.add(parameters.getParameter(OUTPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(OUTPUT_MODE));
-        switch ((String) parameters.getValue(OUTPUT_MODE)) {
+        switch ((String) parameters.getValue(OUTPUT_MODE,workspace)) {
             case OutputModes.FOCUSED_IMAGE_AND_HEIGHT_MAP:
                 returnedParameters.add(parameters.getParameter(OUTPUT_FOCUSED_IMAGE));
                 returnedParameters.add(parameters.getParameter(OUTPUT_HEIGHT_IMAGE));
@@ -302,7 +303,7 @@ public class FocusStackLocal extends Module {
 
         returnedParameters.add(parameters.getParameter(FOCUS_SEPARATOR));
         returnedParameters.add(parameters.getParameter(USE_EXISTING_HEIGHT_IMAGE));
-        if ((boolean) parameters.getValue(USE_EXISTING_HEIGHT_IMAGE)) {
+        if ((boolean) parameters.getValue(USE_EXISTING_HEIGHT_IMAGE,workspace)) {
             returnedParameters.add(parameters.getParameter(INPUT_HEIGHT_IMAGE));
         } else {
             returnedParameters.add(parameters.getParameter(RANGE));
@@ -315,26 +316,31 @@ public class FocusStackLocal extends Module {
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
-    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
-    public MetadataRefs updateAndGetMetadataReferences() {
+public MetadataRefs updateAndGetMetadataReferences() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
+Workspace workspace = null;
         return null;
     }
 

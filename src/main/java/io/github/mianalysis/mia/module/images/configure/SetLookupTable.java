@@ -175,15 +175,15 @@ public class SetLookupTable extends Module {
     @Override
     public Status process(Workspace workspace) {
         // Getting input image
-        String inputImageName = parameters.getValue(INPUT_IMAGE);
+        String inputImageName = parameters.getValue(INPUT_IMAGE,workspace);
         Image inputImage = workspace.getImages().get(inputImageName);
 
         // Getting parameters
-        String lookupTableName = parameters.getValue(LOOKUP_TABLE);
-        String channelMode = parameters.getValue(CHANNEL_MODE);
-        String referenceImageName = parameters.getValue(REFERENCE_IMAGE);
-        int channel = parameters.getValue(CHANNEL);
-        String displayMode = parameters.getValue(DISPLAY_MODE);
+        String lookupTableName = parameters.getValue(LOOKUP_TABLE,workspace);
+        String channelMode = parameters.getValue(CHANNEL_MODE,workspace);
+        String referenceImageName = parameters.getValue(REFERENCE_IMAGE,workspace);
+        int channel = parameters.getValue(CHANNEL,workspace);
+        String displayMode = parameters.getValue(DISPLAY_MODE,workspace);
 
         // If this image doesn't exist, skip this module. This returns true, because
         // this isn't terminal for the analysis.
@@ -242,6 +242,7 @@ public class SetLookupTable extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
+Workspace workspace = null;
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
@@ -250,7 +251,7 @@ public class SetLookupTable extends Module {
         returnedParameters.add(parameters.getParameter(LUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(CHANNEL_MODE));
 
-        switch ((String) parameters.getValue(CHANNEL_MODE)) {
+        switch ((String) parameters.getValue(CHANNEL_MODE,workspace)) {
             case ChannelModes.ALL_CHANNELS:
                 returnedParameters.add(parameters.getParameter(LOOKUP_TABLE));
                 returnedParameters.add(parameters.getParameter(DISPLAY_MODE));
@@ -271,26 +272,31 @@ public class SetLookupTable extends Module {
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
-    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
-    public MetadataRefs updateAndGetMetadataReferences() {
+public MetadataRefs updateAndGetMetadataReferences() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
+Workspace workspace = null;
         return null;
     }
 

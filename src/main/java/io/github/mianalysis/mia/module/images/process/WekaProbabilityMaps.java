@@ -197,21 +197,21 @@ public class WekaProbabilityMaps extends Module {
     @Override
     public Status process(Workspace workspace) {
         // Getting input image
-        String inputImageName = parameters.getValue(INPUT_IMAGE);
+        String inputImageName = parameters.getValue(INPUT_IMAGE,workspace);
         Image inputImage = workspace.getImages().get(inputImageName);
         ImagePlus inputImagePlus = inputImage.getImagePlus();
 
         // Getting parameters
-        boolean convertToRGB = parameters.getValue(CONVERT_TO_RGB);
-        String outputImageName = parameters.getValue(OUTPUT_IMAGE);
-        String outputBitDepth = parameters.getValue(OUTPUT_BIT_DEPTH);
-        boolean outputSingleClass = parameters.getValue(OUTPUT_SINGLE_CLASS);
-        int outputClass = parameters.getValue(OUTPUT_CLASS);
-        String pathType = parameters.getValue(PATH_TYPE);
-        String genericFormat = parameters.getValue(GENERIC_FORMAT);
-        String classifierFilePath = parameters.getValue(CLASSIFIER_FILE);
-        int nSimSlices = parameters.getValue(SIMULTANEOUS_SLICES);
-        int tileFactor = parameters.getValue(TILE_FACTOR);
+        boolean convertToRGB = parameters.getValue(CONVERT_TO_RGB,workspace);
+        String outputImageName = parameters.getValue(OUTPUT_IMAGE,workspace);
+        String outputBitDepth = parameters.getValue(OUTPUT_BIT_DEPTH,workspace);
+        boolean outputSingleClass = parameters.getValue(OUTPUT_SINGLE_CLASS,workspace);
+        int outputClass = parameters.getValue(OUTPUT_CLASS,workspace);
+        String pathType = parameters.getValue(PATH_TYPE,workspace);
+        String genericFormat = parameters.getValue(GENERIC_FORMAT,workspace);
+        String classifierFilePath = parameters.getValue(CLASSIFIER_FILE,workspace);
+        int nSimSlices = parameters.getValue(SIMULTANEOUS_SLICES,workspace);
+        int tileFactor = parameters.getValue(TILE_FACTOR,workspace);
 
         // Converting to RGB if requested
         if (convertToRGB) {
@@ -292,6 +292,7 @@ public class WekaProbabilityMaps extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
+Workspace workspace = null;
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
@@ -303,13 +304,13 @@ public class WekaProbabilityMaps extends Module {
         returnedParameters.add(parameters.getParameter(OUTPUT_BIT_DEPTH));
 
         returnedParameters.add(parameters.getParameter(OUTPUT_SINGLE_CLASS));
-        if ((boolean) parameters.getValue(OUTPUT_SINGLE_CLASS)) {
+        if ((boolean) parameters.getValue(OUTPUT_SINGLE_CLASS,workspace)) {
             returnedParameters.add(parameters.getParameter(OUTPUT_CLASS));
         }
 
         returnedParameters.add(parameters.getParameter(CLASSIFIER_SEPARATOR));
         returnedParameters.add(parameters.getParameter(PATH_TYPE));
-        switch ((String) parameters.getValue(PATH_TYPE)) {
+        switch ((String) parameters.getValue(PATH_TYPE,workspace)) {
             case PathTypes.MATCHING_FORMAT:
                 returnedParameters.add(parameters.getParameter(GENERIC_FORMAT));
                 returnedParameters.add(parameters.getParameter(AVAILABLE_METADATA_FIELDS));
@@ -329,26 +330,31 @@ public class WekaProbabilityMaps extends Module {
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
-    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
-    public MetadataRefs updateAndGetMetadataReferences() {
+public MetadataRefs updateAndGetMetadataReferences() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
+Workspace workspace = null;
         return null;
     }
 

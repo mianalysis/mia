@@ -201,25 +201,25 @@ public class ClusterPoints extends Module {
     @Override
     public Status process(Workspace workspace) {
         // Getting objects to measure
-        String inputImageName = parameters.getValue(INPUT_IMAGE);
+        String inputImageName = parameters.getValue(INPUT_IMAGE,workspace);
         Image inputImage = workspace.getImage(inputImageName);
         ImagePlus inputImagePlus = inputImage.getImagePlus();
 
         // Getting output objects name
-        String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);
+        String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS,workspace);
         SpatCal cal = SpatCal.getFromImage(inputImagePlus);
         int nFrames = inputImagePlus.getNFrames();
         double frameInterval = inputImagePlus.getCalibration().frameInterval;
         Objs outputObjects = new Objs(outputObjectsName, cal, nFrames, frameInterval, TemporalUnit.getOMEUnit());
 
         // Getting parameters
-        String binaryLogic = parameters.getValue(BINARY_LOGIC);
+        String binaryLogic = parameters.getValue(BINARY_LOGIC,workspace);
         boolean blackBackground = binaryLogic.equals(BinaryLogic.BLACK_BACKGROUND);
-        String clusteringAlgorithm = parameters.getValue(CLUSTERING_ALGORITHM);
-        int kClusters = parameters.getValue(K_CLUSTERS);
-        int maxIterations = parameters.getValue(MAX_ITERATIONS);
-        double eps = parameters.getValue(EPS);
-        int minPoints = parameters.getValue(MIN_POINTS);
+        String clusteringAlgorithm = parameters.getValue(CLUSTERING_ALGORITHM,workspace);
+        int kClusters = parameters.getValue(K_CLUSTERS,workspace);
+        int maxIterations = parameters.getValue(MAX_ITERATIONS,workspace);
+        double eps = parameters.getValue(EPS,workspace);
+        int minPoints = parameters.getValue(MIN_POINTS,workspace);
 
         // Getting object parameters
         double dppXY = outputObjects.getDppXY();
@@ -284,6 +284,7 @@ public class ClusterPoints extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
+Workspace workspace = null;
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.get(INPUT_SEPARATOR));
@@ -293,12 +294,12 @@ public class ClusterPoints extends Module {
         returnedParameters.add(parameters.getParameter(CLUSTER_SEPARATOR));
         returnedParameters.add(parameters.get(BINARY_LOGIC));
         returnedParameters.add(parameters.getParameter(CLUSTERING_ALGORITHM));
-        if (parameters.getValue(CLUSTERING_ALGORITHM).equals(ClusteringAlgorithms.KMEANSPLUSPLUS)) {
+        if (parameters.getValue(CLUSTERING_ALGORITHM,workspace).equals(ClusteringAlgorithms.KMEANSPLUSPLUS)) {
             // Running KMeans++ clustering
             returnedParameters.add(parameters.getParameter(K_CLUSTERS));
             returnedParameters.add(parameters.getParameter(MAX_ITERATIONS));
 
-        } else if (parameters.getValue(CLUSTERING_ALGORITHM).equals(ClusteringAlgorithms.DBSCAN)) {
+        } else if (parameters.getValue(CLUSTERING_ALGORITHM,workspace).equals(ClusteringAlgorithms.DBSCAN)) {
             // Running DBSCAN clustering
             returnedParameters.add(parameters.getParameter(EPS));
             returnedParameters.add(parameters.getParameter(MIN_POINTS));
@@ -311,27 +312,32 @@ public class ClusterPoints extends Module {
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
-    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
-    public MetadataRefs updateAndGetMetadataReferences() {
+public MetadataRefs updateAndGetMetadataReferences() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
+Workspace workspace = null;
         return null;
 
     }
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
+Workspace workspace = null;
         return null;
     }
 

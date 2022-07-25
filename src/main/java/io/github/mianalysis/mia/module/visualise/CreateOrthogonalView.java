@@ -180,14 +180,14 @@ public class CreateOrthogonalView<T extends RealType<T> & NativeType<T>> extends
     @Override
     public Status process(Workspace workspace) {
         // Loading image
-        String inputImageName = parameters.getValue(INPUT_IMAGE);
+        String inputImageName = parameters.getValue(INPUT_IMAGE,workspace);
         Image inputImage = workspace.getImage(inputImageName);
         Img<T> inputImg = inputImage.getImgPlus();
 
         // Getting parameters
-        String outputImageName = parameters.getValue(OUTPUT_IMAGE);
-        String positionMode = parameters.getValue(POSITION_MODE);
-        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+        String outputImageName = parameters.getValue(OUTPUT_IMAGE,workspace);
+        String positionMode = parameters.getValue(POSITION_MODE,workspace);
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
 
         // Getting input image dimensions
         double xCal = ((ImgPlus<T>) inputImg).averageScale(0);
@@ -256,6 +256,7 @@ public class CreateOrthogonalView<T extends RealType<T> & NativeType<T>> extends
 
     @Override
     public Parameters updateAndGetParameters() {
+Workspace workspace = null;
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
@@ -264,7 +265,7 @@ public class CreateOrthogonalView<T extends RealType<T> & NativeType<T>> extends
 
         returnedParameters.add(parameters.getParameter(ORTHO_SEPARATOR));
         returnedParameters.add(parameters.getParameter(POSITION_MODE));
-        switch ((String) parameters.getValue(POSITION_MODE)) {
+        switch ((String) parameters.getValue(POSITION_MODE,workspace)) {
             case PositionModes.LARGEST_OBJ_CENTROID:
                 returnedParameters.add(parameters.getParameter(INPUT_OBJECTS));
                 break;
@@ -276,26 +277,31 @@ public class CreateOrthogonalView<T extends RealType<T> & NativeType<T>> extends
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
-    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
-    public MetadataRefs updateAndGetMetadataReferences() {
+public MetadataRefs updateAndGetMetadataReferences() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
+Workspace workspace = null;
         return null;
     }
 

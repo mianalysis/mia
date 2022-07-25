@@ -111,22 +111,22 @@ public class ImageSaver extends AbstractImageSaver {
     @Override
     public Status process(Workspace workspace) {
         // Getting input image
-        String inputImageName = parameters.getValue(INPUT_IMAGE);
-        String saveLocation = parameters.getValue(SAVE_LOCATION);
-        String mirroredDirectoryRoot = parameters.getValue(MIRROR_DIRECTORY_ROOT);
-        String filePath = parameters.getValue(SAVE_FILE_PATH);
-        String saveNameMode = parameters.getValue(SAVE_NAME_MODE);
-        String saveFileName = parameters.getValue(SAVE_FILE_NAME);
-        String appendSeriesMode = parameters.getValue(APPEND_SERIES_MODE);
-        String appendDateTimeMode = parameters.getValue(APPEND_DATETIME_MODE);
-        String suffix = parameters.getValue(SAVE_SUFFIX);
-        String fileFormat = parameters.getValue(FILE_FORMAT);
-        String channelMode = parameters.getValue(CHANNEL_MODE);
-        boolean flattenOverlay = parameters.getValue(FLATTEN_OVERLAY);
-        String compressionMode = parameters.getValue(COMPRESSION_MODE);
-        int quality = parameters.getValue(QUALITY);
-        int frameRate = parameters.getValue(FRAME_RATE);
-        boolean saveAsRGB = parameters.getValue(SAVE_AS_RGB);
+        String inputImageName = parameters.getValue(INPUT_IMAGE,workspace);
+        String saveLocation = parameters.getValue(SAVE_LOCATION,workspace);
+        String mirroredDirectoryRoot = parameters.getValue(MIRROR_DIRECTORY_ROOT,workspace);
+        String filePath = parameters.getValue(SAVE_FILE_PATH,workspace);
+        String saveNameMode = parameters.getValue(SAVE_NAME_MODE,workspace);
+        String saveFileName = parameters.getValue(SAVE_FILE_NAME,workspace);
+        String appendSeriesMode = parameters.getValue(APPEND_SERIES_MODE,workspace);
+        String appendDateTimeMode = parameters.getValue(APPEND_DATETIME_MODE,workspace);
+        String suffix = parameters.getValue(SAVE_SUFFIX,workspace);
+        String fileFormat = parameters.getValue(FILE_FORMAT,workspace);
+        String channelMode = parameters.getValue(CHANNEL_MODE,workspace);
+        boolean flattenOverlay = parameters.getValue(FLATTEN_OVERLAY,workspace);
+        String compressionMode = parameters.getValue(COMPRESSION_MODE,workspace);
+        int quality = parameters.getValue(QUALITY,workspace);
+        int frameRate = parameters.getValue(FRAME_RATE,workspace);
+        boolean saveAsRGB = parameters.getValue(SAVE_AS_RGB,workspace);
 
         // Loading the image to save
         Image inputImage = workspace.getImages().get(inputImageName);
@@ -157,15 +157,15 @@ public class ImageSaver extends AbstractImageSaver {
         // (if necessary)
         if (saveLocation.equals(SaveLocations.MATCH_OUTPUT_CONTROL)) {
             OutputControl outputControl = modules.getOutputControl();
-            String exportMode = outputControl.getParameterValue(OutputControl.EXPORT_MODE);
+            String exportMode = outputControl.getParameterValue(OutputControl.EXPORT_MODE,null);
             switch (exportMode) {
                 case OutputControl.ExportModes.INDIVIDUAL_FILES:
-                    String outputSaveLocation = outputControl.getParameterValue(OutputControl.INDIVIDUAL_SAVE_LOCATION);
+                    String outputSaveLocation = outputControl.getParameterValue(OutputControl.INDIVIDUAL_SAVE_LOCATION,null);
                     switch (outputSaveLocation) {
                         case OutputControl.IndividualSaveLocations.MIRRORED_DIRECTORY:
                             saveLocation = SaveLocations.MIRRORED_DIRECTORY;
                             mirroredDirectoryRoot = outputControl
-                                    .getParameterValue(OutputControl.MIRRORED_DIRECTORY_ROOT);
+                                    .getParameterValue(OutputControl.MIRRORED_DIRECTORY_ROOT,null);
                             break;
 
                         case OutputControl.IndividualSaveLocations.SAVE_WITH_INPUT:
@@ -174,14 +174,14 @@ public class ImageSaver extends AbstractImageSaver {
 
                         case OutputControl.IndividualSaveLocations.SPECIFIC_LOCATION:
                             saveLocation = SaveLocations.SPECIFIC_LOCATION;
-                            filePath = outputControl.getParameterValue(SAVE_FILE_PATH);
+                            filePath = outputControl.getParameterValue(SAVE_FILE_PATH,null);
                             break;
                     }
                     break;
 
                 case OutputControl.ExportModes.ALL_TOGETHER:
                 case OutputControl.ExportModes.GROUP_BY_METADATA:
-                    outputSaveLocation = outputControl.getParameterValue(OutputControl.GROUP_SAVE_LOCATION);
+                    outputSaveLocation = outputControl.getParameterValue(OutputControl.GROUP_SAVE_LOCATION,null);
                     switch (outputSaveLocation) {
                         case OutputControl.GroupSaveLocations.SAVE_WITH_INPUT:
                             saveLocation = SaveLocations.SAVE_WITH_INPUT;
@@ -189,7 +189,7 @@ public class ImageSaver extends AbstractImageSaver {
 
                         case OutputControl.GroupSaveLocations.SPECIFIC_LOCATION:
                             saveLocation = SaveLocations.SPECIFIC_LOCATION;
-                            filePath = outputControl.getParameterValue(SAVE_FILE_PATH);
+                            filePath = outputControl.getParameterValue(SAVE_FILE_PATH,null);
                             break;
                     }
                     break;
@@ -274,13 +274,14 @@ public class ImageSaver extends AbstractImageSaver {
 
     @Override
     public Parameters updateAndGetParameters() {
+Workspace workspace = null;
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(LOADER_SEPARATOR));
         returnedParameters.add(parameters.getParameter(INPUT_IMAGE));
         returnedParameters.add(parameters.getParameter(SAVE_LOCATION));
 
-        switch ((String) parameters.getValue(SAVE_LOCATION)) {
+        switch ((String) parameters.getValue(SAVE_LOCATION,workspace)) {
             case SaveLocations.SPECIFIC_LOCATION:
                 returnedParameters.add(parameters.getParameter(SAVE_FILE_PATH));
                 break;
@@ -293,7 +294,7 @@ public class ImageSaver extends AbstractImageSaver {
 
         returnedParameters.add(parameters.getParameter(NAME_SEPARATOR));
         returnedParameters.add(parameters.getParameter(SAVE_NAME_MODE));
-        switch ((String) parameters.getValue(SAVE_NAME_MODE)) {
+        switch ((String) parameters.getValue(SAVE_NAME_MODE,workspace)) {
             case SaveNameModes.SPECIFIC_NAME:
                 returnedParameters.add(parameters.getParameter(SAVE_FILE_NAME));
                 returnedParameters.add(parameters.getParameter(AVAILABLE_METADATA_FIELDS));
@@ -314,26 +315,31 @@ public class ImageSaver extends AbstractImageSaver {
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
-    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
-    public MetadataRefs updateAndGetMetadataReferences() {
+public MetadataRefs updateAndGetMetadataReferences() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
+Workspace workspace = null;
         return null;
     }
 

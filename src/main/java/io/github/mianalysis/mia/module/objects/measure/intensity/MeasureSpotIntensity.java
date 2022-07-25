@@ -92,38 +92,38 @@ public class MeasureSpotIntensity extends Module {
     @Override
     public Status process(Workspace workspace) {
         // Getting image to measure spot intensity for
-        String inputImageName = parameters.getValue(INPUT_IMAGE);
+        String inputImageName = parameters.getValue(INPUT_IMAGE,workspace);
         Image inputImage = workspace.getImages().get(inputImageName);
         ImagePlus ipl = inputImage.getImagePlus();
 
         // Getting objects to measure
-        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
         Objs inputObjects = workspace.getObjects().get(inputObjectsName);
 
         // Getting parameters
-        double radius = parameters.getValue(FIXED_VALUE);
-        boolean calibrated = parameters.getValue(CALIBRATED_UNITS);
-        String radiusSource = parameters.getValue(RADIUS_SOURCE);
-        String radiusMeasurement = parameters.getValue(RADIUS_MEASUREMENT);
-        String parentObjectsName = parameters.getValue(PARENT_OBJECT);
-        String parentRadiusMeasurement = parameters.getValue(PARENT_RADIUS_MEASUREMENT);
+        double radius = parameters.getValue(FIXED_VALUE,workspace);
+        boolean calibrated = parameters.getValue(CALIBRATED_UNITS,workspace);
+        String radiusSource = parameters.getValue(RADIUS_SOURCE,workspace);
+        String radiusMeasurement = parameters.getValue(RADIUS_MEASUREMENT,workspace);
+        String parentObjectsName = parameters.getValue(PARENT_OBJECT,workspace);
+        String parentRadiusMeasurement = parameters.getValue(PARENT_RADIUS_MEASUREMENT,workspace);
 
         // Checking if there are any objects to measure
         if (inputObjects.size() == 0) {
             for (Obj inputObject : inputObjects.values()) {
-                if ((boolean) parameters.getValue(MEASURE_MEAN))
+                if ((boolean) parameters.getValue(MEASURE_MEAN,workspace))
                     inputObject.getParent(inputObjectsName).addMeasurement(
                             new Measurement(getFullName(inputImageName, Measurements.MEAN), Double.NaN));
-                if ((boolean) parameters.getValue(MEASURE_MIN))
+                if ((boolean) parameters.getValue(MEASURE_MIN,workspace))
                     inputObject.getParent(inputObjectsName)
                             .addMeasurement(new Measurement(getFullName(inputImageName, Measurements.MIN), Double.NaN));
-                if ((boolean) parameters.getValue(MEASURE_MAX))
+                if ((boolean) parameters.getValue(MEASURE_MAX,workspace))
                     inputObject.getParent(inputObjectsName)
                             .addMeasurement(new Measurement(getFullName(inputImageName, Measurements.MAX), Double.NaN));
-                if ((boolean) parameters.getValue(MEASURE_STDEV))
+                if ((boolean) parameters.getValue(MEASURE_STDEV,workspace))
                     inputObject.getParent(inputObjectsName).addMeasurement(
                             new Measurement(getFullName(inputImageName, Measurements.STDEV), Double.NaN));
-                if ((boolean) parameters.getValue(MEASURE_SUM))
+                if ((boolean) parameters.getValue(MEASURE_SUM,workspace))
                     inputObject.getParent(inputObjectsName)
                             .addMeasurement(new Measurement(getFullName(inputImageName, Measurements.SUM), Double.NaN));
 
@@ -165,17 +165,17 @@ public class MeasureSpotIntensity extends Module {
                 cs.addMeasure(ipl.getProcessor().getPixelValue(point.x, point.y));
             }
 
-            if ((boolean) parameters.getValue(MEASURE_MEAN))
+            if ((boolean) parameters.getValue(MEASURE_MEAN,workspace))
                 inputObject
                         .addMeasurement(new Measurement(getFullName(inputImageName, Measurements.MEAN), cs.getMean()));
-            if ((boolean) parameters.getValue(MEASURE_MIN))
+            if ((boolean) parameters.getValue(MEASURE_MIN,workspace))
                 inputObject.addMeasurement(new Measurement(getFullName(inputImageName, Measurements.MIN), cs.getMin()));
-            if ((boolean) parameters.getValue(MEASURE_MAX))
+            if ((boolean) parameters.getValue(MEASURE_MAX,workspace))
                 inputObject.addMeasurement(new Measurement(getFullName(inputImageName, Measurements.MAX), cs.getMax()));
-            if ((boolean) parameters.getValue(MEASURE_STDEV))
+            if ((boolean) parameters.getValue(MEASURE_STDEV,workspace))
                 inputObject.addMeasurement(
                         new Measurement(getFullName(inputImageName, Measurements.STDEV), cs.getStd(CumStat.SAMPLE)));
-            if ((boolean) parameters.getValue(MEASURE_SUM))
+            if ((boolean) parameters.getValue(MEASURE_SUM,workspace))
                 inputObject.addMeasurement(new Measurement(getFullName(inputImageName, Measurements.SUM), cs.getSum()));
 
         }
@@ -215,8 +215,9 @@ public class MeasureSpotIntensity extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
-        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
-        String parentObjectsName = parameters.getValue(PARENT_OBJECT);
+Workspace workspace = null;
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
+        String parentObjectsName = parameters.getValue(PARENT_OBJECT,workspace);
 
         Parameters returnedParameters = new Parameters();
 
@@ -226,7 +227,7 @@ public class MeasureSpotIntensity extends Module {
 
         returnedParameters.add(parameters.getParameter(SPOT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(RADIUS_SOURCE));
-        switch ((String) parameters.getValue(RADIUS_SOURCE)) {
+        switch ((String) parameters.getValue(RADIUS_SOURCE,workspace)) {
             case RadiusSources.FIXED_VALUE:
                 returnedParameters.add(parameters.getParameter(FIXED_VALUE));
                 break;
@@ -259,45 +260,47 @@ public class MeasureSpotIntensity extends Module {
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
-    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+Workspace workspace = null;
         ObjMeasurementRefs returnedRefs = new ObjMeasurementRefs();
 
-        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
-        String inputImageName = parameters.getValue(INPUT_IMAGE);
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
+        String inputImageName = parameters.getValue(INPUT_IMAGE,workspace);
 
-        if ((boolean) parameters.getValue(MEASURE_MEAN)) {
+        if ((boolean) parameters.getValue(MEASURE_MEAN,workspace)) {
             String name = getFullName(inputImageName, Measurements.MEAN);
             ObjMeasurementRef reference = objectMeasurementRefs.getOrPut(name);
             reference.setObjectsName(inputObjectsName);
             returnedRefs.add(reference);
         }
 
-        if ((boolean) parameters.getValue(MEASURE_MIN)) {
+        if ((boolean) parameters.getValue(MEASURE_MIN,workspace)) {
             String name = getFullName(inputImageName, Measurements.MIN);
             ObjMeasurementRef reference = objectMeasurementRefs.getOrPut(name);
             reference.setObjectsName(inputObjectsName);
             returnedRefs.add(reference);
         }
 
-        if ((boolean) parameters.getValue(MEASURE_MAX)) {
+        if ((boolean) parameters.getValue(MEASURE_MAX,workspace)) {
             String name = getFullName(inputImageName, Measurements.MAX);
             ObjMeasurementRef reference = objectMeasurementRefs.getOrPut(name);
             reference.setObjectsName(inputObjectsName);
             returnedRefs.add(reference);
         }
 
-        if ((boolean) parameters.getValue(MEASURE_STDEV)) {
+        if ((boolean) parameters.getValue(MEASURE_STDEV,workspace)) {
             String name = getFullName(inputImageName, Measurements.STDEV);
             ObjMeasurementRef reference = objectMeasurementRefs.getOrPut(name);
             reference.setObjectsName(inputObjectsName);
             returnedRefs.add(reference);
         }
 
-        if ((boolean) parameters.getValue(MEASURE_SUM)) {
+        if ((boolean) parameters.getValue(MEASURE_SUM,workspace)) {
             String name = getFullName(inputImageName, Measurements.SUM);
             ObjMeasurementRef reference = objectMeasurementRefs.getOrPut(name);
             reference.setObjectsName(inputObjectsName);
@@ -309,17 +312,20 @@ public class MeasureSpotIntensity extends Module {
     }
 
     @Override
-    public MetadataRefs updateAndGetMetadataReferences() {
+public MetadataRefs updateAndGetMetadataReferences() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
+Workspace workspace = null;
         return null;
     }
 

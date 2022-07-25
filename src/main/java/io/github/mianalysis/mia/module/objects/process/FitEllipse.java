@@ -201,16 +201,16 @@ public class FitEllipse extends Module {
     @Override
     public Status process(Workspace workspace) {
         // Getting input objects
-        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
         Objs inputObjects = workspace.getObjectSet(inputObjectsName);
 
         // Getting parameters
-        String objectOutputMode = parameters.getValue(OBJECT_OUTPUT_MODE);
-        String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);
-        String fittingMode = parameters.getValue(FITTING_MODE);
-        boolean limitAxisLength = parameters.getValue(LIMIT_AXIS_LENGTH);
-        double maxAxisLength = limitAxisLength ? parameters.getValue(MAXIMUM_AXIS_LENGTH) : Double.MAX_VALUE;
-        boolean multithread = parameters.getValue(ENABLE_MULTITHREADING);
+        String objectOutputMode = parameters.getValue(OBJECT_OUTPUT_MODE,workspace);
+        String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS,workspace);
+        String fittingMode = parameters.getValue(FITTING_MODE,workspace);
+        boolean limitAxisLength = parameters.getValue(LIMIT_AXIS_LENGTH,workspace);
+        double maxAxisLength = limitAxisLength ? parameters.getValue(MAXIMUM_AXIS_LENGTH,workspace) : Double.MAX_VALUE;
+        boolean multithread = parameters.getValue(ENABLE_MULTITHREADING,workspace);
 
         // If necessary, creating a new Objs and adding it to the Workspace
         Objs outputObjects = null;
@@ -285,6 +285,7 @@ public class FitEllipse extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
+Workspace workspace = null;
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
@@ -293,12 +294,12 @@ public class FitEllipse extends Module {
         returnedParameters.add(parameters.getParameter(FITTING_SEPARATOR));
         returnedParameters.add(parameters.getParameter(FITTING_MODE));
         returnedParameters.add(parameters.getParameter(LIMIT_AXIS_LENGTH));
-        if ((boolean) parameters.getValue(LIMIT_AXIS_LENGTH))
+        if ((boolean) parameters.getValue(LIMIT_AXIS_LENGTH,workspace))
             returnedParameters.add(parameters.getParameter(MAXIMUM_AXIS_LENGTH));
 
         returnedParameters.add(parameters.getParameter(OUTPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(OBJECT_OUTPUT_MODE));
-        switch ((String) parameters.getValue(OBJECT_OUTPUT_MODE)) {
+        switch ((String) parameters.getValue(OBJECT_OUTPUT_MODE,workspace)) {
             case OutputModes.CREATE_NEW_OBJECT:
                 returnedParameters.add(parameters.getParameter(OUTPUT_OBJECTS));
                 break;
@@ -313,13 +314,15 @@ public class FitEllipse extends Module {
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
-    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+Workspace workspace = null;
         ObjMeasurementRefs returnedRefs = new ObjMeasurementRefs();
-        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
 
         ObjMeasurementRef reference = objectMeasurementRefs.getOrPut(Measurements.X_CENTRE_PX);
         reference.setObjectsName(inputObjectsName);
@@ -404,18 +407,20 @@ public class FitEllipse extends Module {
     }
 
     @Override
-    public MetadataRefs updateAndGetMetadataReferences() {
+public MetadataRefs updateAndGetMetadataReferences() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
+Workspace workspace = null;
         ParentChildRefs returnedRelationships = new ParentChildRefs();
 
-        switch ((String) parameters.getValue(OBJECT_OUTPUT_MODE)) {
+        switch ((String) parameters.getValue(OBJECT_OUTPUT_MODE,workspace)) {
             case OutputModes.CREATE_NEW_OBJECT:
-                String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
-                String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);
+                String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
+                String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS,workspace);
                 returnedRelationships.add(parentChildRefs.getOrPut(inputObjectsName, outputObjectsName));
 
                 break;
@@ -427,6 +432,7 @@ public class FitEllipse extends Module {
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
+Workspace workspace = null;
         return null;
     }
 

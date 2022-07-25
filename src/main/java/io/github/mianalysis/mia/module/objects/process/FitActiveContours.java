@@ -90,16 +90,16 @@ public class FitActiveContours extends Module {
     @Override
     public Status process(Workspace workspace) {
         // Getting input image
-        String inputImageName = parameters.getValue(INPUT_IMAGE);
+        String inputImageName = parameters.getValue(INPUT_IMAGE,workspace);
         Image inputImage = workspace.getImage(inputImageName);
         ImagePlus inputImagePlus = inputImage.getImagePlus();
 
         // Getting input objects
-        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
         Objs inputObjects = workspace.getObjectSet(inputObjectsName);
 
         // Getting output image name
-        String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);
+        String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS,workspace);
         Objs outputObjects = new Objs(outputObjectsName, inputObjects);
 
         // If there are no input objects, creating an empty collection
@@ -109,17 +109,17 @@ public class FitActiveContours extends Module {
         }
 
         // Getting parameters
-        boolean updateInputObjects = parameters.getValue(UPDATE_INPUT_OBJECTS);
-        double nodeDensity = parameters.getValue(NODE_DENSITY);
-        double elasticEnergy = parameters.getValue(ELASTIC_ENERGY);
-        double bendingEnergy = parameters.getValue(BENDING_ENERGY);
-        double pathEnergy = parameters.getValue(IMAGE_PATH_ENERGY);
-        double balloonEnergy = parameters.getValue(BALLOON_ENERGY);
-        int searchRadius = parameters.getValue(SEARCH_RADIUS);
-        int maxInteractions = parameters.getValue(NUMBER_OF_ITERATIONS);
-        boolean useMotionThreshold = parameters.getValue(USE_MOTION_THRESHOLD);
-        double motionThreshold = parameters.getValue(MOTION_THRESHOLD_PX);
-        boolean showContoursRealtime = parameters.getValue(SHOW_CONTOURS_REALTIME);
+        boolean updateInputObjects = parameters.getValue(UPDATE_INPUT_OBJECTS,workspace);
+        double nodeDensity = parameters.getValue(NODE_DENSITY,workspace);
+        double elasticEnergy = parameters.getValue(ELASTIC_ENERGY,workspace);
+        double bendingEnergy = parameters.getValue(BENDING_ENERGY,workspace);
+        double pathEnergy = parameters.getValue(IMAGE_PATH_ENERGY,workspace);
+        double balloonEnergy = parameters.getValue(BALLOON_ENERGY,workspace);
+        int searchRadius = parameters.getValue(SEARCH_RADIUS,workspace);
+        int maxInteractions = parameters.getValue(NUMBER_OF_ITERATIONS,workspace);
+        boolean useMotionThreshold = parameters.getValue(USE_MOTION_THRESHOLD,workspace);
+        double motionThreshold = parameters.getValue(MOTION_THRESHOLD_PX,workspace);
+        boolean showContoursRealtime = parameters.getValue(SHOW_CONTOURS_REALTIME,workspace);
 
         if (!useMotionThreshold)
             motionThreshold = 0;
@@ -266,6 +266,7 @@ public class FitActiveContours extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
+Workspace workspace = null;
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(IMAGE_SEPARATOR));
@@ -275,7 +276,7 @@ public class FitActiveContours extends Module {
         returnedParameters.add(parameters.getParameter(INPUT_OBJECTS));
         returnedParameters.add(parameters.getParameter(UPDATE_INPUT_OBJECTS));
 
-        if (!(boolean) parameters.getValue(UPDATE_INPUT_OBJECTS))
+        if (!(boolean) parameters.getValue(UPDATE_INPUT_OBJECTS,workspace))
             returnedParameters.add(parameters.getParameter(OUTPUT_OBJECTS));
 
         returnedParameters.add(parameters.getParameter(ENERGY_SEPARATOR));
@@ -290,7 +291,7 @@ public class FitActiveContours extends Module {
         returnedParameters.add(parameters.getParameter(NUMBER_OF_ITERATIONS));
 
         returnedParameters.add(parameters.getParameter(USE_MOTION_THRESHOLD));
-        if ((boolean) parameters.getValue(USE_MOTION_THRESHOLD))
+        if ((boolean) parameters.getValue(USE_MOTION_THRESHOLD,workspace))
             returnedParameters.add(parameters.getParameter(MOTION_THRESHOLD_PX));
 
         returnedParameters.add(parameters.getParameter(MISCELLANEOUS_SEPARATOR));
@@ -302,26 +303,31 @@ public class FitActiveContours extends Module {
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
-    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
-    public MetadataRefs updateAndGetMetadataReferences() {
+public MetadataRefs updateAndGetMetadataReferences() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
+Workspace workspace = null;
         return null;
     }
 

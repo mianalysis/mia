@@ -301,10 +301,10 @@ public class Modules extends ArrayList<Module> implements Refs<Module> {
                 continue;
                 
             // Find most recent instance of this object being created
-            for (OutputObjectsP addedObject : addedObjects) {
-                if (addedObject.getValue().equals(objectName))
+            for (OutputObjectsP addedObject : addedObjects)
+                if (addedObject.getValue(null).equals(objectName))
                     sourceParameter = addedObject;
-            }
+            
         }
 
         return sourceParameter;
@@ -365,10 +365,10 @@ public class Modules extends ArrayList<Module> implements Refs<Module> {
             LinkedHashSet<OutputImageP> addedImages = module.getParametersMatchingType(OutputImageP.class);
 
             // Find most recent instance of this object being created
-            for (OutputImageP addedImage : addedImages) {
-                if (addedImage.getValue().equals(imageName))
+            for (OutputImageP addedImage : addedImages)
+                if (addedImage.getValue(null).equals(imageName))
                     sourceParameter = addedImage;
-            }
+            
         }
 
         return sourceParameter;

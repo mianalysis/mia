@@ -436,28 +436,28 @@ public class MeasureObjectCurvature extends Module {
     @Override
     public Status process(Workspace workspace) {
         // Getting parameters
-        String inputObjectName = parameters.getValue(INPUT_OBJECTS);
+        String inputObjectName = parameters.getValue(INPUT_OBJECTS,workspace);
         Objs inputObjects = workspace.getObjects().get(inputObjectName);
-        String objectOutputMode = parameters.getValue(OBJECT_OUTPUT_MODE);
-        String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);
-        int exportEveryNPoints = parameters.getValue(EXPORT_EVERY_N_POINTS);
-        String splineFittingMethod = parameters.getValue(SPLINE_FITTING_METHOD);
-        int nNeighbours = parameters.getValue(N_NEIGHBOURS);
-        int iterations = parameters.getValue(ITERATIONS);
-        double accuracy = parameters.getValue(ACCURACY);
-        boolean useReference = parameters.getValue(RELATE_TO_REFERENCE_POINT);
-        String xReference = parameters.getValue(X_REF_MEASUREMENT);
-        String yReference = parameters.getValue(Y_REF_MEASUREMENT);
-        boolean absoluteCurvature = parameters.getValue(ABSOLUTE_CURVATURE);
-        boolean signedCurvature = parameters.getValue(SIGNED_CURVATURE);
-        boolean calculateEndEndAngle = parameters.getValue(CALCULATE_END_END_ANGLE);
-        int fittingRange = parameters.getValue(FITTING_RANGE_PX);
-        boolean drawSpline = parameters.getValue(DRAW_SPLINE);
-        String inputImageName = parameters.getValue(INPUT_IMAGE);
-        boolean applyToImage = parameters.getValue(APPLY_TO_IMAGE);
-        String outputImageName = parameters.getValue(OUTPUT_IMAGE);
-        double lineWidth = parameters.getValue(LINE_WIDTH);
-        double maxCurvature = parameters.getValue(MAX_CURVATURE);
+        String objectOutputMode = parameters.getValue(OBJECT_OUTPUT_MODE,workspace);
+        String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS,workspace);
+        int exportEveryNPoints = parameters.getValue(EXPORT_EVERY_N_POINTS,workspace);
+        String splineFittingMethod = parameters.getValue(SPLINE_FITTING_METHOD,workspace);
+        int nNeighbours = parameters.getValue(N_NEIGHBOURS,workspace);
+        int iterations = parameters.getValue(ITERATIONS,workspace);
+        double accuracy = parameters.getValue(ACCURACY,workspace);
+        boolean useReference = parameters.getValue(RELATE_TO_REFERENCE_POINT,workspace);
+        String xReference = parameters.getValue(X_REF_MEASUREMENT,workspace);
+        String yReference = parameters.getValue(Y_REF_MEASUREMENT,workspace);
+        boolean absoluteCurvature = parameters.getValue(ABSOLUTE_CURVATURE,workspace);
+        boolean signedCurvature = parameters.getValue(SIGNED_CURVATURE,workspace);
+        boolean calculateEndEndAngle = parameters.getValue(CALCULATE_END_END_ANGLE,workspace);
+        int fittingRange = parameters.getValue(FITTING_RANGE_PX,workspace);
+        boolean drawSpline = parameters.getValue(DRAW_SPLINE,workspace);
+        String inputImageName = parameters.getValue(INPUT_IMAGE,workspace);
+        boolean applyToImage = parameters.getValue(APPLY_TO_IMAGE,workspace);
+        String outputImageName = parameters.getValue(OUTPUT_IMAGE,workspace);
+        double lineWidth = parameters.getValue(LINE_WIDTH,workspace);
+        double maxCurvature = parameters.getValue(MAX_CURVATURE,workspace);
 
         // If necessary, creating a new Objs and adding it to the Workspace
         Objs outputObjects = null;
@@ -601,12 +601,13 @@ public class MeasureObjectCurvature extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
+Workspace workspace = null;
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(INPUT_OBJECTS));
         returnedParameters.add(parameters.getParameter(OBJECT_OUTPUT_MODE));
-        switch ((String) parameters.getValue(OBJECT_OUTPUT_MODE)) {
+        switch ((String) parameters.getValue(OBJECT_OUTPUT_MODE,workspace)) {
             case ObjectOutputModes.CONTROL_POINTS:
             case ObjectOutputModes.FULL_CONTOUR:
                 returnedParameters.add(parameters.getParameter(OUTPUT_OBJECTS));
@@ -617,7 +618,7 @@ public class MeasureObjectCurvature extends Module {
 
         returnedParameters.add(parameters.getParameter(FITTING_SEPARATOR));
         returnedParameters.add(parameters.getParameter(SPLINE_FITTING_METHOD));
-        switch ((String) parameters.getValue(SPLINE_FITTING_METHOD)) {
+        switch ((String) parameters.getValue(SPLINE_FITTING_METHOD,workspace)) {
             case SplineFittingMethods.LOESS:
                 returnedParameters.add(parameters.getParameter(N_NEIGHBOURS));
                 returnedParameters.add(parameters.getParameter(ITERATIONS));
@@ -627,8 +628,8 @@ public class MeasureObjectCurvature extends Module {
 
         returnedParameters.add(parameters.getParameter(MEASUREMENT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(RELATE_TO_REFERENCE_POINT));
-        if ((boolean) parameters.getValue(RELATE_TO_REFERENCE_POINT)) {
-            String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+        if ((boolean) parameters.getValue(RELATE_TO_REFERENCE_POINT,workspace)) {
+            String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
 
             ((ObjectMeasurementP) parameters.getParameter(X_REF_MEASUREMENT)).setObjectName(inputObjectsName);
             ((ObjectMeasurementP) parameters.getParameter(Y_REF_MEASUREMENT)).setObjectName(inputObjectsName);
@@ -640,15 +641,15 @@ public class MeasureObjectCurvature extends Module {
         }
 
         returnedParameters.add(parameters.getParameter(CALCULATE_END_END_ANGLE));
-        if ((boolean) parameters.getValue(CALCULATE_END_END_ANGLE))
+        if ((boolean) parameters.getValue(CALCULATE_END_END_ANGLE,workspace))
             returnedParameters.add(parameters.getParameter(FITTING_RANGE_PX));
 
         returnedParameters.add(parameters.getParameter(RENDERING_SEPARATOR));
         returnedParameters.add(parameters.getParameter(DRAW_SPLINE));
-        if ((boolean) parameters.getValue(DRAW_SPLINE)) {
+        if ((boolean) parameters.getValue(DRAW_SPLINE,workspace)) {
             returnedParameters.add(parameters.getParameter(INPUT_IMAGE));
             returnedParameters.add(parameters.getParameter(APPLY_TO_IMAGE));
-            if (!(boolean) parameters.getValue(APPLY_TO_IMAGE))
+            if (!(boolean) parameters.getValue(APPLY_TO_IMAGE,workspace))
                 returnedParameters.add(parameters.getParameter(OUTPUT_IMAGE));
             returnedParameters.add(parameters.getParameter(LINE_WIDTH));
             returnedParameters.add(parameters.getParameter(MAX_CURVATURE));
@@ -660,13 +661,15 @@ public class MeasureObjectCurvature extends Module {
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
-    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+Workspace workspace = null;
         ObjMeasurementRefs returnedRefs = new ObjMeasurementRefs();
-        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
 
         ObjMeasurementRef meanCurvatureAbsolutePx = objectMeasurementRefs
                 .getOrPut(Measurements.MEAN_ABSOLUTE_CURVATURE_PX);
@@ -728,13 +731,13 @@ public class MeasureObjectCurvature extends Module {
         boolean relateToReference = false;
         boolean absoluteCurvature = false;
         boolean signedCurvature = false;
-        boolean calculateHeadTailAngle = parameters.getValue(CALCULATE_END_END_ANGLE);
+        boolean calculateHeadTailAngle = parameters.getValue(CALCULATE_END_END_ANGLE,workspace);
 
-        if ((boolean) parameters.getValue(RELATE_TO_REFERENCE_POINT)) {
+        if ((boolean) parameters.getValue(RELATE_TO_REFERENCE_POINT,workspace)) {
             relateToReference = true;
-            if ((boolean) parameters.getValue(ABSOLUTE_CURVATURE))
+            if ((boolean) parameters.getValue(ABSOLUTE_CURVATURE,workspace))
                 absoluteCurvature = true;
-            if ((boolean) parameters.getValue(SIGNED_CURVATURE))
+            if ((boolean) parameters.getValue(SIGNED_CURVATURE,workspace))
                 signedCurvature = true;
 
         } else {
@@ -792,17 +795,19 @@ public class MeasureObjectCurvature extends Module {
     }
 
     @Override
-    public MetadataRefs updateAndGetMetadataReferences() {
+public MetadataRefs updateAndGetMetadataReferences() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
+Workspace workspace = null;
         ParentChildRefs refCollection = new ParentChildRefs();
 
-        if (!parameters.getValue(OBJECT_OUTPUT_MODE).equals(ObjectOutputModes.DO_NOT_STORE)) {
-            String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
-            String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);
+        if (!parameters.getValue(OBJECT_OUTPUT_MODE,workspace).equals(ObjectOutputModes.DO_NOT_STORE)) {
+            String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
+            String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS,workspace);
             refCollection.add(parentChildRefs.getOrPut(inputObjectsName, outputObjectsName));
         }
 
@@ -812,6 +817,7 @@ public class MeasureObjectCurvature extends Module {
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
+Workspace workspace = null;
         return null;
     }
 

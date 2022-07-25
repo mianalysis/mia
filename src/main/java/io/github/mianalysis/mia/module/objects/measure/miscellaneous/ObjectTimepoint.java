@@ -48,7 +48,7 @@ public class ObjectTimepoint extends Module {
     @Override
     public Status process(Workspace workspace) {
         // Getting input objects
-        String objectName = parameters.getValue(INPUT_OBJECTS);
+        String objectName = parameters.getValue(INPUT_OBJECTS,workspace);
         Objs objects = workspace.getObjects().get(objectName);
 
         if (objects == null)
@@ -75,20 +75,23 @@ public class ObjectTimepoint extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
+Workspace workspace = null;
         return parameters;
 
     }
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
-    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+Workspace workspace = null;
         ObjMeasurementRefs returnedRefs = new ObjMeasurementRefs();
 
-        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
 
         ObjMeasurementRef ref = objectMeasurementRefs.getOrPut("TIMEPOINT");
         ref.setObjectsName(inputObjectsName);
@@ -99,17 +102,20 @@ public class ObjectTimepoint extends Module {
     }
 
     @Override
-    public MetadataRefs updateAndGetMetadataReferences() {
+public MetadataRefs updateAndGetMetadataReferences() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
+Workspace workspace = null;
         return null;
     }
 

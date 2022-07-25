@@ -404,7 +404,7 @@ public class ComponentFactory {
 
     private JPanel createSummaryExportLabels(boolean includeSummary) {
         Parameters outputParameters = GUI.getModules().getOutputControl().updateAndGetParameters();
-        String exportMode = outputParameters.getValue(OutputControl.EXPORT_MODE);
+        String exportMode = outputParameters.getValue(OutputControl.EXPORT_MODE,null);
         BooleanP exportIndividual = outputParameters.getParameter(OutputControl.EXPORT_INDIVIDUAL_OBJECTS);
         BooleanP exportSummary = outputParameters.getParameter(OutputControl.EXPORT_SUMMARY);
 
@@ -472,7 +472,7 @@ public class ComponentFactory {
 
     private JPanel createExportControls(ExportableRef ref, ExportCheck.Type type) {
         Parameters outputParameters = GUI.getModules().getOutputControl().updateAndGetParameters();
-        String exportMode = outputParameters.getValue(OutputControl.EXPORT_MODE);
+        String exportMode = outputParameters.getValue(OutputControl.EXPORT_MODE,null);
         BooleanP exportIndividual = (BooleanP) outputParameters.getParameter(OutputControl.EXPORT_INDIVIDUAL_OBJECTS);
 
         JPanel controlPanel = new JPanel(new GridBagLayout());

@@ -93,25 +93,25 @@ public class AddText extends AbstractOverlay {
     @Override
     protected Status process(Workspace workspace) {
         // Getting parameters
-        boolean applyToInput = parameters.getValue(APPLY_TO_INPUT);
-        boolean addOutputToWorkspace = parameters.getValue(ADD_OUTPUT_TO_WORKSPACE);
-        String outputImageName = parameters.getValue(OUTPUT_IMAGE);
+        boolean applyToInput = parameters.getValue(APPLY_TO_INPUT,workspace);
+        boolean addOutputToWorkspace = parameters.getValue(ADD_OUTPUT_TO_WORKSPACE,workspace);
+        String outputImageName = parameters.getValue(OUTPUT_IMAGE,workspace);
 
         // Getting input image
-        String inputImageName = parameters.getValue(INPUT_IMAGE);
+        String inputImageName = parameters.getValue(INPUT_IMAGE,workspace);
         Image inputImage = workspace.getImages().get(inputImageName);
         ImagePlus ipl = inputImage.getImagePlus();
 
         // Getting label settings
-        double opacity = parameters.getValue(OPACITY);
-        String text = parameters.getValue(TEXT);
-        int xPosition = parameters.getValue(X_POSITION);
-        int yPosition = parameters.getValue(Y_POSITION);
-        String zRangeString = parameters.getValue(Z_RANGE);
-        String frameRangeString = parameters.getValue(FRAME_RANGE);
-        int labelSize = parameters.getValue(LABEL_SIZE);
-        boolean centreText = parameters.getValue(CENTRE_TEXT);
-        String labelColour = parameters.getValue(LABEL_COLOUR);
+        double opacity = parameters.getValue(OPACITY,workspace);
+        String text = parameters.getValue(TEXT,workspace);
+        int xPosition = parameters.getValue(X_POSITION,workspace);
+        int yPosition = parameters.getValue(Y_POSITION,workspace);
+        String zRangeString = parameters.getValue(Z_RANGE,workspace);
+        String frameRangeString = parameters.getValue(FRAME_RANGE,workspace);
+        int labelSize = parameters.getValue(LABEL_SIZE,workspace);
+        boolean centreText = parameters.getValue(CENTRE_TEXT,workspace);
+        String labelColour = parameters.getValue(LABEL_COLOUR,workspace);
         Color color = ColourFactory.getColour(labelColour);
 
         // Only add output to workspace if not applying to input
@@ -170,15 +170,16 @@ public class AddText extends AbstractOverlay {
 
     @Override
     public Parameters updateAndGetParameters() {
+Workspace workspace = null;
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(INPUT_IMAGE));
         returnedParameters.add(parameters.getParameter(APPLY_TO_INPUT));
-        if (!(boolean) parameters.getValue(APPLY_TO_INPUT)) {
+        if (!(boolean) parameters.getValue(APPLY_TO_INPUT,workspace)) {
             returnedParameters.add(parameters.getParameter(ADD_OUTPUT_TO_WORKSPACE));
 
-            if ((boolean) parameters.getValue(ADD_OUTPUT_TO_WORKSPACE)) {
+            if ((boolean) parameters.getValue(ADD_OUTPUT_TO_WORKSPACE,workspace)) {
                 returnedParameters.add(parameters.getParameter(OUTPUT_IMAGE));
 
             }
@@ -201,26 +202,31 @@ public class AddText extends AbstractOverlay {
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
-    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
-    public MetadataRefs updateAndGetMetadataReferences() {
+public MetadataRefs updateAndGetMetadataReferences() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
+Workspace workspace = null;
         return null;
     }
 

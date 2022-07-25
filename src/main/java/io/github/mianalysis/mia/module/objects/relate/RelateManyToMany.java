@@ -375,13 +375,13 @@ public class RelateManyToMany extends Module {
 
     @Override
     protected Status process(Workspace workspace) {
-        String objectSourceMode = parameters.getValue(OBJECT_SOURCE_MODE);
+        String objectSourceMode = parameters.getValue(OBJECT_SOURCE_MODE,workspace);
 
         // Getting input objects
-        String inputObjects1Name = parameters.getValue(INPUT_OBJECTS_1);
+        String inputObjects1Name = parameters.getValue(INPUT_OBJECTS_1,workspace);
         Objs inputObjects1 = workspace.getObjects().get(inputObjects1Name);
 
-        String inputObjects2Name = parameters.getValue(INPUT_OBJECTS_2);
+        String inputObjects2Name = parameters.getValue(INPUT_OBJECTS_2,workspace);
         Objs inputObjects2;
         
         switch (objectSourceMode) {
@@ -400,17 +400,17 @@ public class RelateManyToMany extends Module {
         }
 
         // Getting parameters
-        boolean createClusterObjects = parameters.getValue(CREATE_CLUSTER_OBJECTS);
-        String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS_NAME);
-        String spatialSeparationMode = parameters.getValue(SPATIAL_SEPARATION_MODE);
-        double maximumSeparation = parameters.getValue(MAXIMUM_SEPARATION);
-        boolean calibratedUnits = parameters.getValue(CALIBRATED_UNITS);
-        boolean acceptAllInside = parameters.getValue(ACCEPT_ALL_INSIDE);
-        double minOverlap1 = parameters.getValue(MINIMUM_OVERLAP_PC_1);
-        double minOverlap2 = parameters.getValue(MINIMUM_OVERLAP_PC_2);
+        boolean createClusterObjects = parameters.getValue(CREATE_CLUSTER_OBJECTS,workspace);
+        String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS_NAME,workspace);
+        String spatialSeparationMode = parameters.getValue(SPATIAL_SEPARATION_MODE,workspace);
+        double maximumSeparation = parameters.getValue(MAXIMUM_SEPARATION,workspace);
+        boolean calibratedUnits = parameters.getValue(CALIBRATED_UNITS,workspace);
+        boolean acceptAllInside = parameters.getValue(ACCEPT_ALL_INSIDE,workspace);
+        double minOverlap1 = parameters.getValue(MINIMUM_OVERLAP_PC_1,workspace);
+        double minOverlap2 = parameters.getValue(MINIMUM_OVERLAP_PC_2,workspace);
         ParameterGroup parameterGroup = parameters.getParameter(ADD_MEASUREMENT);
         LinkedHashMap<Integer, Parameters> parameterCollections = parameterGroup.getCollections(false);
-        boolean linkInSameFrame = parameters.getValue(LINK_IN_SAME_FRAME);
+        boolean linkInSameFrame = parameters.getValue(LINK_IN_SAME_FRAME,workspace);
 
         // Skipping the module if no objects are present in one collection
         if (inputObjects1.size() == 0 || inputObjects2.size() == 0) {
@@ -452,12 +452,12 @@ public class RelateManyToMany extends Module {
 
                 // Testing additional measurements
                 for (Parameters collection : parameterCollections.values()) {
-                    String measurement1 = collection.getValue(MEASUREMENT_1);
+                    String measurement1 = collection.getValue(MEASUREMENT_1, workspace);
                     String measurement2 = objectSourceMode.equals(ObjectSourceModes.SAME_CLASS) ? measurement1
-                            : collection.getValue(MEASUREMENT_2);
+                            : collection.getValue(MEASUREMENT_2, workspace);
 
-                    String calculation = collection.getValue(CALCULATION);
-                    double measurementLimit = collection.getValue(MEASUREMENT_LIMIT);
+                    String calculation = collection.getValue(CALCULATION, workspace);
+                    double measurementLimit = collection.getValue(MEASUREMENT_LIMIT, workspace);
                     if (!testGeneric(object1, object2, measurement1, measurement2, calculation, measurementLimit))
                         linkable = false;
                 }
@@ -551,11 +551,12 @@ public class RelateManyToMany extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
+Workspace workspace = null;
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(OBJECT_SOURCE_MODE));
-        switch ((String) parameters.getValue(OBJECT_SOURCE_MODE)) {
+        switch ((String) parameters.getValue(OBJECT_SOURCE_MODE,workspace)) {
             case ObjectSourceModes.DIFFERENT_CLASSES:
                 returnedParameters.add(parameters.getParameter(INPUT_OBJECTS_1));
                 returnedParameters.add(parameters.getParameter(INPUT_OBJECTS_2));
@@ -566,13 +567,13 @@ public class RelateManyToMany extends Module {
         }
 
         returnedParameters.add(parameters.getParameter(CREATE_CLUSTER_OBJECTS));
-        if ((boolean) parameters.getValue(CREATE_CLUSTER_OBJECTS)) {
+        if ((boolean) parameters.getValue(CREATE_CLUSTER_OBJECTS,workspace)) {
             returnedParameters.add(parameters.getParameter(OUTPUT_OBJECTS_NAME));
         }
 
         returnedParameters.add(parameters.getParameter(SPATIAL_LINKING_SEPARATOR));
         returnedParameters.add(parameters.getParameter(SPATIAL_SEPARATION_MODE));
-        switch ((String) parameters.getValue(SPATIAL_SEPARATION_MODE)) {
+        switch ((String) parameters.getValue(SPATIAL_SEPARATION_MODE,workspace)) {
             case SpatialSeparationModes.CENTROID_SEPARATION:
             case SpatialSeparationModes.SURFACE_SEPARATION:
                 returnedParameters.add(parameters.getParameter(MAXIMUM_SEPARATION));
@@ -597,13 +598,15 @@ public class RelateManyToMany extends Module {
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
-    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
-        String inputObjectsName1 = parameters.getValue(INPUT_OBJECTS_1);
-        String inputObjectsName2 = parameters.getValue(INPUT_OBJECTS_2);
+public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+Workspace workspace = null;
+        String inputObjectsName1 = parameters.getValue(INPUT_OBJECTS_1,workspace);
+        String inputObjectsName2 = parameters.getValue(INPUT_OBJECTS_2,workspace);
 
         ObjMeasurementRefs returnedRefs = new ObjMeasurementRefs();
 
@@ -619,23 +622,25 @@ public class RelateManyToMany extends Module {
     }
 
     @Override
-    public MetadataRefs updateAndGetMetadataReferences() {
+public MetadataRefs updateAndGetMetadataReferences() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
+Workspace workspace = null;
         ParentChildRefs returnedRefs = new ParentChildRefs();
 
         // Getting input objects
-        String inputObjects1Name = parameters.getValue(INPUT_OBJECTS_1);
-        String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS_NAME);
+        String inputObjects1Name = parameters.getValue(INPUT_OBJECTS_1,workspace);
+        String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS_NAME,workspace);
 
         returnedRefs.add(parentChildRefs.getOrPut(outputObjectsName, inputObjects1Name));
 
-        String objectSourceMode = parameters.getValue(OBJECT_SOURCE_MODE);
+        String objectSourceMode = parameters.getValue(OBJECT_SOURCE_MODE,workspace);
         if (objectSourceMode.equals(ObjectSourceModes.DIFFERENT_CLASSES)) {
-            String inputObjects2Name = parameters.getValue(INPUT_OBJECTS_2);
+            String inputObjects2Name = parameters.getValue(INPUT_OBJECTS_2,workspace);
             returnedRefs.add(parentChildRefs.getOrPut(outputObjectsName, inputObjects2Name));
         }
 
@@ -645,12 +650,13 @@ public class RelateManyToMany extends Module {
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
+Workspace workspace = null;
         PartnerRefs returnedRefs = new PartnerRefs();
 
-        String inputObjects1Name = parameters.getValue(INPUT_OBJECTS_1);
-        String inputObjects2Name = parameters.getValue(INPUT_OBJECTS_2);
+        String inputObjects1Name = parameters.getValue(INPUT_OBJECTS_1,workspace);
+        String inputObjects2Name = parameters.getValue(INPUT_OBJECTS_2,workspace);
 
-        switch ((String) parameters.getValue(OBJECT_SOURCE_MODE)) {
+        switch ((String) parameters.getValue(OBJECT_SOURCE_MODE,workspace)) {
             case ObjectSourceModes.DIFFERENT_CLASSES:
                 returnedRefs.add(partnerRefs.getOrPut(inputObjects1Name, inputObjects2Name));
                 break;
@@ -755,13 +761,13 @@ public class RelateManyToMany extends Module {
             public Parameters updateAndGet(Parameters params) {
                 Parameters returnedParameters = new Parameters();
 
-                String objectName1 = parameters.getValue(INPUT_OBJECTS_1);
-                String objectName2 = parameters.getValue(INPUT_OBJECTS_2);
+                String objectName1 = parameters.getValue(INPUT_OBJECTS_1,null);
+                String objectName2 = parameters.getValue(INPUT_OBJECTS_2,null);
 
                 returnedParameters.add(params.getParameter(MEASUREMENT_1));
                 ((ObjectMeasurementP) params.getParameter(MEASUREMENT_1)).setObjectName(objectName1);
 
-                switch ((String) parameters.getValue(OBJECT_SOURCE_MODE)) {
+                switch ((String) parameters.getValue(OBJECT_SOURCE_MODE,null)) {
                     case ObjectSourceModes.DIFFERENT_CLASSES:
                         returnedParameters.add(params.getParameter(MEASUREMENT_2));
                         ((ObjectMeasurementP) params.getParameter(MEASUREMENT_2)).setObjectName(objectName2);

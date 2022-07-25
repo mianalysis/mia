@@ -6,6 +6,7 @@ import io.github.mianalysis.mia.gui.parametercontrols.ParameterControl;
 import io.github.mianalysis.mia.gui.parametercontrols.TextAreaParameter;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.system.GlobalVariables;
+import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.parameters.abstrakt.Parameter;
 import io.github.mianalysis.mia.object.parameters.abstrakt.TextType;
 
@@ -77,7 +78,7 @@ public class TextAreaP extends TextType {
     }
 
     @Override
-    public <T> T getValue() {
+    public <T> T getValue(Workspace workspace) {
         String converted1 = GlobalVariables.convertString(value, module.getModules());
         return (T) applyCalculation(converted1);
 

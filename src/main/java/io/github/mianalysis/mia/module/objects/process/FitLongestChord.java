@@ -132,13 +132,13 @@ public class FitLongestChord extends Module {
     @Override
     public Status process(Workspace workspace) {
         // Getting input objects
-        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
         Objs inputObjects = workspace.getObjectSet(inputObjectsName);
 
         // Getting parameters
-        boolean measureWidth = parameters.getValue(MEASURE_OBJECT_WIDTH);
-        boolean measureOrientation = parameters.getValue(MEASURE_OBJECT_ORIENTATION);
-        boolean storeEndPoints = parameters.getValue(STORE_END_POINTS);
+        boolean measureWidth = parameters.getValue(MEASURE_OBJECT_WIDTH,workspace);
+        boolean measureOrientation = parameters.getValue(MEASURE_OBJECT_ORIENTATION,workspace);
+        boolean storeEndPoints = parameters.getValue(STORE_END_POINTS,workspace);
 
         // Running through each object, taking measurements and adding new object to the
         // workspace where necessary
@@ -172,23 +172,26 @@ public class FitLongestChord extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
+Workspace workspace = null;
         return parameters;
 
     }
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
-    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+Workspace workspace = null;
         ObjMeasurementRefs returnedRefs = new ObjMeasurementRefs();
 
-        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
-        boolean measureWidth = parameters.getValue(MEASURE_OBJECT_WIDTH);
-        boolean measureOrientation = parameters.getValue(MEASURE_OBJECT_ORIENTATION);
-        boolean storeEndPoints = parameters.getValue(STORE_END_POINTS);
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
+        boolean measureWidth = parameters.getValue(MEASURE_OBJECT_WIDTH,workspace);
+        boolean measureOrientation = parameters.getValue(MEASURE_OBJECT_ORIENTATION,workspace);
+        boolean storeEndPoints = parameters.getValue(STORE_END_POINTS,workspace);
 
         ObjMeasurementRef reference = objectMeasurementRefs.getOrPut(Measurements.LENGTH_PX);
         reference.setObjectsName(inputObjectsName);
@@ -305,17 +308,20 @@ public class FitLongestChord extends Module {
     }
 
     @Override
-    public MetadataRefs updateAndGetMetadataReferences() {
+public MetadataRefs updateAndGetMetadataReferences() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
+Workspace workspace = null;
         return null;
     }
 

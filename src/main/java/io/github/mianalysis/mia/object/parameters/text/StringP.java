@@ -4,6 +4,7 @@ import com.drew.lang.annotations.NotNull;
 
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.system.GlobalVariables;
+import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.parameters.abstrakt.Parameter;
 import io.github.mianalysis.mia.object.parameters.abstrakt.TextType;
 
@@ -39,9 +40,10 @@ public class StringP extends TextType {
     }
 
     @Override
-    public <T> T getValue() {
-        String converted1 = GlobalVariables.convertString(value, module.getModules());
-        return (T) applyCalculation(converted1);
+    public <T> T getValue(Workspace workspace) {
+        String converted = GlobalVariables.convertString(value, module.getModules());
+        converted = insertWorkspaceValues(converted, workspace);
+        return (T) applyCalculation(converted);
 
     }
 

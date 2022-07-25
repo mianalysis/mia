@@ -8,6 +8,8 @@ import io.github.mianalysis.mia.gui.parametercontrols.ParameterControl;
 import io.github.mianalysis.mia.gui.parametercontrols.TextParameter;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.system.GlobalVariables;
+import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.parameters.text.StringP;
 import net.objecthunter.exp4j.ExpressionBuilder;
 
 public abstract class TextType extends Parameter {
@@ -43,9 +45,26 @@ public abstract class TextType extends Parameter {
 
             }
         } catch (Exception e) {
-            // If input string contained a metadata reference (e.g. AddCustomMetadataItem may do this), don't output the warning
+            // If input string contained a metadata reference (e.g. AddCustomMetadataItem
+            // may do this), don't output the warning
             if (!string.contains("M{"))
                 MIA.log.writeError(e);
+        }
+
+        return string;
+
+    }
+
+    public static String insertWorkspaceValues(String string, Workspace workspace) {
+        Pattern pattern = Pattern.compile("Me\\{([\\w]+)}");
+        Matcher matcher = pattern.matcher(string);
+
+        while (matcher.find()) {
+            String fullName = matcher.group(0);
+            String metadataName = matcher.group(1);
+            String value = workspace.getMetadata().getAsString(metadataName);
+            string = string.replace(fullName, value);
+            break;
         }
 
         return string;

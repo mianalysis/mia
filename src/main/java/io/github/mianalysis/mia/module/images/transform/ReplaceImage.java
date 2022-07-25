@@ -44,10 +44,10 @@ public class ReplaceImage extends Module {
     @Override
     public Status process(Workspace workspace) {
         // Getting input images
-        String inputImageName1 = parameters.getValue(INPUT_IMAGE1);
+        String inputImageName1 = parameters.getValue(INPUT_IMAGE1,workspace);
         Image inputImage1 = workspace.getImages().get(inputImageName1);
 
-        String inputImageName2 = parameters.getValue(INPUT_IMAGE2);
+        String inputImageName2 = parameters.getValue(INPUT_IMAGE2,workspace);
         Image inputImage2 = workspace.getImages().get(inputImageName2);
         ImagePlus inputImagePlus2 = inputImage2.getImagePlus();
 
@@ -66,31 +66,37 @@ public class ReplaceImage extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
+Workspace workspace = null;
         return parameters;
     }
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
-    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
-    public MetadataRefs updateAndGetMetadataReferences() {
+public MetadataRefs updateAndGetMetadataReferences() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
+Workspace workspace = null;
         return null;
     }
 

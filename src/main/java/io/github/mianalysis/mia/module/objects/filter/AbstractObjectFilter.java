@@ -11,6 +11,7 @@ import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
+import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputObjectsP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
@@ -93,14 +94,15 @@ public abstract class AbstractObjectFilter extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
+        Workspace workspace = null;
         Parameters returnedParameters = new Parameters();
         returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(INPUT_OBJECTS));
 
         returnedParameters.add(parameters.getParameter(FILTER_MODE));
-        if (parameters.getValue(FILTER_MODE).equals(FilterModes.MOVE_FILTERED)) {
+        if (parameters.getValue(FILTER_MODE, workspace).equals(FilterModes.MOVE_FILTERED)) {
             // Determining type of input object
-            String inputObjectName = parameters.getValue(INPUT_OBJECTS);
+            String inputObjectName = parameters.getValue(INPUT_OBJECTS, workspace);
             Parameter objectSourceParameter = modules.getObjectSource(inputObjectName, this);
 
             if (objectSourceParameter != null) {
@@ -113,7 +115,7 @@ public abstract class AbstractObjectFilter extends Module {
                     newOutputObjects.setDescription(oldOutputObjects.getDescription());
                     newOutputObjects.setExported(oldOutputObjects.isExported());
                     newOutputObjects.setNickname(oldOutputObjects.getNickname());
-                    newOutputObjects.setValue(oldOutputObjects.getValue());
+                    newOutputObjects.setValueFromString(oldOutputObjects.getRawStringValue());
                     newOutputObjects.setVisible(oldOutputObjects.isVisible());
                     parameters.add(newOutputObjects);
                 } catch (InstantiationException | IllegalAccessException | IllegalArgumentException
@@ -132,12 +134,14 @@ public abstract class AbstractObjectFilter extends Module {
 
     @Override
     public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+        Workspace workspace = null;
         ObjMeasurementRefs returnedRefs = new ObjMeasurementRefs();
-        
-        // If the filtered objects are to be moved to a new class, assign them the measurements they've lost
-        if (parameters.getValue(FILTER_MODE).equals(FilterModes.MOVE_FILTERED)) {
-            String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
-            String filteredObjectsName = parameters.getValue(OUTPUT_FILTERED_OBJECTS);
+
+        // If the filtered objects are to be moved to a new class, assign them the
+        // measurements they've lost
+        if (parameters.getValue(FILTER_MODE, workspace).equals(FilterModes.MOVE_FILTERED)) {
+            String inputObjectsName = parameters.getValue(INPUT_OBJECTS, workspace);
+            String filteredObjectsName = parameters.getValue(OUTPUT_FILTERED_OBJECTS, workspace);
 
             // Getting object measurement references associated with this object set
             ObjMeasurementRefs references = modules.getObjectMeasurementRefs(inputObjectsName, this);
@@ -147,20 +151,21 @@ public abstract class AbstractObjectFilter extends Module {
                         .add(objectMeasurementRefs.getOrPut(reference.getName()).setObjectsName(filteredObjectsName));
             }
         }
-        
+
         return returnedRefs;
 
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
+        Workspace workspace = null;
         // Where necessary, redirect relationships
         ParentChildRefs returnedRefs = new ParentChildRefs();
 
-        switch ((String) parameters.getValue(FILTER_MODE)) {
+        switch ((String) parameters.getValue(FILTER_MODE, workspace)) {
             case FilterModes.MOVE_FILTERED:
-                String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
-                String outputObjectsName = parameters.getValue(OUTPUT_FILTERED_OBJECTS);
+                String inputObjectsName = parameters.getValue(INPUT_OBJECTS, workspace);
+                String outputObjectsName = parameters.getValue(OUTPUT_FILTERED_OBJECTS, workspace);
 
                 // Getting references up to this location
                 ParentChildRefs currentRefs = modules.getParentChildRefs(this);
@@ -172,9 +177,9 @@ public abstract class AbstractObjectFilter extends Module {
 
                 // Adding relationships where the input object is the child
                 String[] parentNames = currentRefs.getParentNames(inputObjectsName, true);
-                for (String parentName : parentNames) 
+                for (String parentName : parentNames)
                     returnedRefs.add(parentChildRefs.getOrPut(parentName, outputObjectsName));
-            
+
                 break;
 
         }
@@ -185,11 +190,12 @@ public abstract class AbstractObjectFilter extends Module {
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
+Workspace workspace = null;
         PartnerRefs returnedRefs = new PartnerRefs();
 
-        switch ((String) parameters.getValue(FILTER_MODE)) {
+        switch ((String) parameters.getValue(FILTER_MODE, workspace)) {
             case FilterModes.MOVE_FILTERED:
-                String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+                String inputObjectsName = parameters.getValue(INPUT_OBJECTS, workspace);
 
                 // Getting references up to this location
                 PartnerRefs currentRefs = modules.getPartnerRefs(this);
@@ -216,11 +222,16 @@ public abstract class AbstractObjectFilter extends Module {
 
         parameters.get(FILTER_MODE)
                 .setDescription("Controls what happens to objects which don't pass the filter:<br><ul>"
-                        + "<li>\"" + FilterModes.DO_NOTHING + "\" Retains all input objects, irrespective of whether they passed or failed the filter.  This is useful when also storing the filter results as metadata values (i.e. just counting the number of objects which pass the filter).</li>"
+                        + "<li>\"" + FilterModes.DO_NOTHING
+                        + "\" Retains all input objects, irrespective of whether they passed or failed the filter.  This is useful when also storing the filter results as metadata values (i.e. just counting the number of objects which pass the filter).</li>"
 
-                        + "<li>\"" + FilterModes.MOVE_FILTERED + "\" Objects failing the filter are moved to a new object class.  The name of the class is determined by the \""+OUTPUT_FILTERED_OBJECTS+"\" parameter.  All existing measurements and relationships are carried forward into the new object collection.</li>"
+                        + "<li>\"" + FilterModes.MOVE_FILTERED
+                        + "\" Objects failing the filter are moved to a new object class.  The name of the class is determined by the \""
+                        + OUTPUT_FILTERED_OBJECTS
+                        + "\" parameter.  All existing measurements and relationships are carried forward into the new object collection.</li>"
 
-                        + "<li>\"" + FilterModes.REMOVE_FILTERED + "\" (default) Removes objects failing the filter.  Once removed, these objects are unavailable for further use by modules and won't be included in exported results.</li></ul>");
+                        + "<li>\"" + FilterModes.REMOVE_FILTERED
+                        + "\" (default) Removes objects failing the filter.  Once removed, these objects are unavailable for further use by modules and won't be included in exported results.</li></ul>");
 
         parameters.get(OUTPUT_FILTERED_OBJECTS).setDescription(
                 "New object collection containing input objects which did not pass the filter.  These objects are only stored if \""

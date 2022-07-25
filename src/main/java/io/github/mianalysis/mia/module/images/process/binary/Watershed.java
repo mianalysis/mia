@@ -174,23 +174,23 @@ public class Watershed extends Module {
     @Override
     public Status process(Workspace workspace) {
         // Getting input image
-        String inputImageName = parameters.getValue(INPUT_IMAGE);
+        String inputImageName = parameters.getValue(INPUT_IMAGE,workspace);
         Image inputImage = workspace.getImages().get(inputImageName);
         ImagePlus maskIpl = inputImage.getImagePlus();
 
         // Getting parameters
-        boolean applyToInput = parameters.getValue(APPLY_TO_INPUT);
-        String outputImageName = parameters.getValue(OUTPUT_IMAGE);
-        boolean useMarkers = parameters.getValue(USE_MARKERS);
-        String markerImageName = parameters.getValue(MARKER_IMAGE);
-        String intensityMode = parameters.getValue(INTENSITY_MODE);
-        String intensityImageName = parameters.getValue(INTENSITY_IMAGE);
-        int dynamic = parameters.getValue(DYNAMIC);
-        int connectivity = Integer.parseInt(parameters.getValue(CONNECTIVITY));
-        boolean matchZToXY = parameters.getValue(MATCH_Z_TO_X);
-        String binaryLogic = parameters.getValue(BINARY_LOGIC);
+        boolean applyToInput = parameters.getValue(APPLY_TO_INPUT,workspace);
+        String outputImageName = parameters.getValue(OUTPUT_IMAGE,workspace);
+        boolean useMarkers = parameters.getValue(USE_MARKERS,workspace);
+        String markerImageName = parameters.getValue(MARKER_IMAGE,workspace);
+        String intensityMode = parameters.getValue(INTENSITY_MODE,workspace);
+        String intensityImageName = parameters.getValue(INTENSITY_IMAGE,workspace);
+        int dynamic = parameters.getValue(DYNAMIC,workspace);
+        int connectivity = Integer.parseInt(parameters.getValue(CONNECTIVITY,workspace));
+        boolean matchZToXY = parameters.getValue(MATCH_Z_TO_X,workspace);
+        String binaryLogic = parameters.getValue(BINARY_LOGIC,workspace);
         boolean blackBackground = binaryLogic.equals(BinaryLogic.BLACK_BACKGROUND);
-        boolean multithread = parameters.getValue(ENABLE_MULTITHREADING);
+        boolean multithread = parameters.getValue(ENABLE_MULTITHREADING,workspace);
 
         // If applying to a new image, the input image is duplicated
         if (!applyToInput)
@@ -271,26 +271,25 @@ public class Watershed extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
+Workspace workspace = null;
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(INPUT_IMAGE));
         returnedParameters.add(parameters.getParameter(APPLY_TO_INPUT));
 
-        if (!(boolean) parameters.getValue(APPLY_TO_INPUT)) {
+        if (!(boolean) parameters.getValue(APPLY_TO_INPUT,workspace))
             returnedParameters.add(parameters.getParameter(OUTPUT_IMAGE));
-        }
-
+        
         returnedParameters.add(parameters.getParameter(WATERSHED_SEPARATOR));
         returnedParameters.add(parameters.getParameter(USE_MARKERS));
-        if ((boolean) parameters.getValue(USE_MARKERS)) {
+        if ((boolean) parameters.getValue(USE_MARKERS,workspace))
             returnedParameters.add(parameters.getParameter(MARKER_IMAGE));
-        } else {
+        else
             returnedParameters.add(parameters.getParameter(DYNAMIC));
-        }
-
+        
         returnedParameters.add(parameters.getParameter(INTENSITY_MODE));
-        switch ((String) parameters.getValue(INTENSITY_MODE)) {
+        switch ((String) parameters.getValue(INTENSITY_MODE,workspace)) {
             case IntensityModes.DISTANCE:
                 returnedParameters.add(parameters.getParameter(MATCH_Z_TO_X));
                 break;
@@ -311,26 +310,31 @@ public class Watershed extends Module {
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
-    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
-    public MetadataRefs updateAndGetMetadataReferences() {
+public MetadataRefs updateAndGetMetadataReferences() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
+Workspace workspace = null;
         return null;
     }
 

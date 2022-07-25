@@ -386,31 +386,31 @@ public class CalculateNearestNeighbour extends Module {
     @Override
     public Status process(Workspace workspace) {
         // Getting objects to measure
-        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
         Objs inputObjects = workspace.getObjects().get(inputObjectsName);
 
         // Getting parameters
-        String relationshipMode = parameters.getValue(RELATIONSHIP_MODE);
-        String neighbourObjectsName = parameters.getValue(NEIGHBOUR_OBJECTS);
-        String referenceMode = parameters.getValue(REFERENCE_MODE);
-        boolean calculateWithinParent = parameters.getValue(CALCULATE_WITHIN_PARENT);
-        String parentObjectsName = parameters.getValue(PARENT_OBJECTS);
-        boolean limitLinkingDistance = parameters.getValue(LIMIT_LINKING_DISTANCE);
-        double maxLinkingDist = parameters.getValue(MAXIMUM_LINKING_DISTANCE);
-        boolean calibratedDistance = parameters.getValue(CALIBRATED_DISTANCE);
-        boolean linkInSameFrame = parameters.getValue(LINK_IN_SAME_FRAME);
-        boolean exportAllDistances = parameters.getValue(EXPORT_ALL_DISTANCES);
-        String insideOutsideMode = parameters.getValue(INSIDE_OUTSIDE_MODE);
-        boolean includeTimepoints = parameters.getValue(INCLUDE_TIMEPOINTS);
-        boolean includeInputParent = parameters.getValue(INCLUDE_INPUT_PARENT);
-        String inputParentsName = parameters.getValue(INPUT_PARENT);
-        boolean includeNeighbourParent = parameters.getValue(INCLUDE_NEIGHBOUR_PARENT);
-        String neighbourParentsName = parameters.getValue(NEIGHBOUR_PARENT);
-        String saveNameMode = parameters.getValue(SAVE_NAME_MODE);
-        String saveFileName = parameters.getValue(SAVE_FILE_NAME);
-        String appendSeriesMode = parameters.getValue(APPEND_SERIES_MODE);
-        String appendDateTimeMode = parameters.getValue(APPEND_DATETIME_MODE);
-        String suffix = parameters.getValue(SAVE_SUFFIX);
+        String relationshipMode = parameters.getValue(RELATIONSHIP_MODE,workspace);
+        String neighbourObjectsName = parameters.getValue(NEIGHBOUR_OBJECTS,workspace);
+        String referenceMode = parameters.getValue(REFERENCE_MODE,workspace);
+        boolean calculateWithinParent = parameters.getValue(CALCULATE_WITHIN_PARENT,workspace);
+        String parentObjectsName = parameters.getValue(PARENT_OBJECTS,workspace);
+        boolean limitLinkingDistance = parameters.getValue(LIMIT_LINKING_DISTANCE,workspace);
+        double maxLinkingDist = parameters.getValue(MAXIMUM_LINKING_DISTANCE,workspace);
+        boolean calibratedDistance = parameters.getValue(CALIBRATED_DISTANCE,workspace);
+        boolean linkInSameFrame = parameters.getValue(LINK_IN_SAME_FRAME,workspace);
+        boolean exportAllDistances = parameters.getValue(EXPORT_ALL_DISTANCES,workspace);
+        String insideOutsideMode = parameters.getValue(INSIDE_OUTSIDE_MODE,workspace);
+        boolean includeTimepoints = parameters.getValue(INCLUDE_TIMEPOINTS,workspace);
+        boolean includeInputParent = parameters.getValue(INCLUDE_INPUT_PARENT,workspace);
+        String inputParentsName = parameters.getValue(INPUT_PARENT,workspace);
+        boolean includeNeighbourParent = parameters.getValue(INCLUDE_NEIGHBOUR_PARENT,workspace);
+        String neighbourParentsName = parameters.getValue(NEIGHBOUR_PARENT,workspace);
+        String saveNameMode = parameters.getValue(SAVE_NAME_MODE,workspace);
+        String saveFileName = parameters.getValue(SAVE_FILE_NAME,workspace);
+        String appendSeriesMode = parameters.getValue(APPEND_SERIES_MODE,workspace);
+        String appendDateTimeMode = parameters.getValue(APPEND_DATETIME_MODE,workspace);
+        String suffix = parameters.getValue(SAVE_SUFFIX,workspace);
 
         // If there are no input objects skip the module
         if (inputObjects == null)
@@ -565,7 +565,8 @@ public class CalculateNearestNeighbour extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
-        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+Workspace workspace = null;
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
         String neighbourObjectsName;
 
         Parameters returnedParameters = new Parameters();
@@ -574,11 +575,11 @@ public class CalculateNearestNeighbour extends Module {
         returnedParameters.add(parameters.getParameter(INPUT_OBJECTS));
         returnedParameters.add(parameters.getParameter(RELATIONSHIP_MODE));
 
-        switch ((String) parameters.getValue(RELATIONSHIP_MODE)) {
+        switch ((String) parameters.getValue(RELATIONSHIP_MODE,workspace)) {
             case RelationshipModes.DIFFERENT_SET:
             default:
                 returnedParameters.add(parameters.getParameter(NEIGHBOUR_OBJECTS));
-                neighbourObjectsName = parameters.getValue(NEIGHBOUR_OBJECTS);
+                neighbourObjectsName = parameters.getValue(NEIGHBOUR_OBJECTS,workspace);
                 break;
             case RelationshipModes.WITHIN_SAME_SET:
                 neighbourObjectsName = inputObjectsName;
@@ -588,13 +589,13 @@ public class CalculateNearestNeighbour extends Module {
         returnedParameters.add(parameters.getParameter(RELATIONSHIP_SEPARATOR));
         returnedParameters.add(parameters.getParameter(REFERENCE_MODE));
         returnedParameters.add(parameters.getParameter(CALCULATE_WITHIN_PARENT));
-        if ((boolean) parameters.getValue(CALCULATE_WITHIN_PARENT)) {
+        if ((boolean) parameters.getValue(CALCULATE_WITHIN_PARENT,workspace)) {
             returnedParameters.add(parameters.getParameter(PARENT_OBJECTS));
             ((ParentObjectsP) parameters.getParameter(PARENT_OBJECTS)).setChildObjectsName(inputObjectsName);
         }
 
         returnedParameters.add(parameters.getParameter(LIMIT_LINKING_DISTANCE));
-        if ((boolean) parameters.getValue(LIMIT_LINKING_DISTANCE)) {
+        if ((boolean) parameters.getValue(LIMIT_LINKING_DISTANCE,workspace)) {
             returnedParameters.add(parameters.getParameter(MAXIMUM_LINKING_DISTANCE));
             returnedParameters.add(parameters.getParameter(CALIBRATED_DISTANCE));
         }
@@ -602,26 +603,26 @@ public class CalculateNearestNeighbour extends Module {
 
         returnedParameters.add(parameters.getParameter(OUTPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(EXPORT_ALL_DISTANCES));
-        String referenceMode = parameters.getValue(REFERENCE_MODE);
+        String referenceMode = parameters.getValue(REFERENCE_MODE,workspace);
         if (referenceMode.equals(ReferenceModes.SURFACE_3D))
             returnedParameters.add(parameters.getParameter(INSIDE_OUTSIDE_MODE));
 
-        if ((boolean) parameters.getValue(EXPORT_ALL_DISTANCES)) {
+        if ((boolean) parameters.getValue(EXPORT_ALL_DISTANCES,workspace)) {
             returnedParameters.add(parameters.getParameter(INCLUDE_TIMEPOINTS));
             returnedParameters.add(parameters.getParameter(INCLUDE_INPUT_PARENT));
-            if ((boolean) parameters.getValue(INCLUDE_INPUT_PARENT)) {
+            if ((boolean) parameters.getValue(INCLUDE_INPUT_PARENT,workspace)) {
                 returnedParameters.add(parameters.getParameter(INPUT_PARENT));
                 ((ParentObjectsP) parameters.get(INPUT_PARENT)).setChildObjectsName(inputObjectsName);
             }
             returnedParameters.add(parameters.getParameter(INCLUDE_NEIGHBOUR_PARENT));
-            if ((boolean) parameters.getValue(INCLUDE_NEIGHBOUR_PARENT)) {
+            if ((boolean) parameters.getValue(INCLUDE_NEIGHBOUR_PARENT,workspace)) {
                 returnedParameters.add(parameters.getParameter(NEIGHBOUR_PARENT));
                 ((ParentObjectsP) parameters.get(NEIGHBOUR_PARENT)).setChildObjectsName(neighbourObjectsName);
             }
 
             returnedParameters.add(parameters.getParameter(FILE_SAVING_SEPARATOR));
             returnedParameters.add(parameters.getParameter(SAVE_NAME_MODE));
-            switch ((String) parameters.getValue(SAVE_NAME_MODE)) {
+            switch ((String) parameters.getValue(SAVE_NAME_MODE,workspace)) {
                 case SaveNameModes.SPECIFIC_NAME:
                     returnedParameters.add(parameters.getParameter(SAVE_FILE_NAME));
                     break;
@@ -639,20 +640,22 @@ public class CalculateNearestNeighbour extends Module {
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
-    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+Workspace workspace = null;
         ObjMeasurementRefs returnedRefs = new ObjMeasurementRefs();
 
-        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
-        String relationshipMode = parameters.getValue(RELATIONSHIP_MODE);
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
+        String relationshipMode = parameters.getValue(RELATIONSHIP_MODE,workspace);
 
         String neighbourObjectsName = null;
         switch (relationshipMode) {
             case RelationshipModes.DIFFERENT_SET:
-                neighbourObjectsName = parameters.getValue(NEIGHBOUR_OBJECTS);
+                neighbourObjectsName = parameters.getValue(NEIGHBOUR_OBJECTS,workspace);
                 break;
             case RelationshipModes.WITHIN_SAME_SET:
                 neighbourObjectsName = inputObjectsName;
@@ -679,17 +682,20 @@ public class CalculateNearestNeighbour extends Module {
     }
 
     @Override
-    public MetadataRefs updateAndGetMetadataReferences() {
+public MetadataRefs updateAndGetMetadataReferences() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
+Workspace workspace = null;
         return null;
     }
 

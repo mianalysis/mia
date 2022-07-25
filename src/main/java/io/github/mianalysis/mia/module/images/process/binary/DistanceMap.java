@@ -197,15 +197,15 @@ public class DistanceMap extends Module {
     @Override
     public Status process(Workspace workspace) {
         // Getting input image
-        String inputImageName = parameters.getValue(INPUT_IMAGE);
+        String inputImageName = parameters.getValue(INPUT_IMAGE,workspace);
         Image inputImage = workspace.getImages().get(inputImageName);
 
         // Getting parameters
-        String outputImageName = parameters.getValue(OUTPUT_IMAGE);
-        String weightMode = parameters.getValue(WEIGHT_MODE);
-        boolean matchZToXY = parameters.getValue(MATCH_Z_TO_X);
-        String spatialUnits = parameters.getValue(SPATIAL_UNITS_MODE);
-        String binaryLogic = parameters.getValue(BINARY_LOGIC);
+        String outputImageName = parameters.getValue(OUTPUT_IMAGE,workspace);
+        String weightMode = parameters.getValue(WEIGHT_MODE,workspace);
+        boolean matchZToXY = parameters.getValue(MATCH_Z_TO_X,workspace);
+        String spatialUnits = parameters.getValue(SPATIAL_UNITS_MODE,workspace);
+        String binaryLogic = parameters.getValue(BINARY_LOGIC,workspace);
         boolean blackBackground = binaryLogic.equals(BinaryLogic.BLACK_BACKGROUND);
 
         // Running distance map
@@ -245,32 +245,38 @@ public class DistanceMap extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
+Workspace workspace = null;
         return parameters;
 
     }
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
-    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
-    public MetadataRefs updateAndGetMetadataReferences() {
+public MetadataRefs updateAndGetMetadataReferences() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
+Workspace workspace = null;
         return null;
     }
 

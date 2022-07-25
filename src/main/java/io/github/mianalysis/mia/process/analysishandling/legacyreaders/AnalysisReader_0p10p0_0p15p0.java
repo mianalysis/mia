@@ -323,7 +323,7 @@ public class AnalysisReader_0p10p0_0p15p0 {
         LinkedHashSet<OutputObjectsP> availableObjects = modules.getAvailableObjects(null);
         HashSet<String> availableObjectNames = new HashSet<>();
         for (OutputObjectsP availableObject : availableObjects)
-            availableObjectNames.add(availableObject.getValue());
+            availableObjectNames.add(availableObject.getValue(null));
 
         for (Node moduleNode : relationshipsToCovert) {
             NodeList referenceNodes = moduleNode.getChildNodes();

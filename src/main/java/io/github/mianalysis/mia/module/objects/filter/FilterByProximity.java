@@ -96,18 +96,18 @@ public class FilterByProximity extends AbstractObjectFilter {
     @Override
     protected Status process(Workspace workspace) {
         // Getting input objects
-        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
         Objs inputObjects = workspace.getObjects().get(inputObjectsName);
 
         // Getting parameters
-        String filterMode = parameters.getValue(FILTER_MODE);
-        String outputObjectsName = parameters.getValue(OUTPUT_FILTERED_OBJECTS);
-        String referenceMode = parameters.getValue(REFERENCE_MODE);
-        double minSeparation = parameters.getValue(MINIMUM_SEPARATION);
-        boolean calibratedUnits = parameters.getValue(CALIBRATED_UNITS);
-        boolean linkInSameFrame = parameters.getValue(LINK_IN_SAME_FRAME);
-        String filterMethod = parameters.getValue(FILTER_METHOD);
-        String measName = parameters.getValue(MEASUREMENT);
+        String filterMode = parameters.getValue(FILTER_MODE,workspace);
+        String outputObjectsName = parameters.getValue(OUTPUT_FILTERED_OBJECTS,workspace);
+        String referenceMode = parameters.getValue(REFERENCE_MODE,workspace);
+        double minSeparation = parameters.getValue(MINIMUM_SEPARATION,workspace);
+        boolean calibratedUnits = parameters.getValue(CALIBRATED_UNITS,workspace);
+        boolean linkInSameFrame = parameters.getValue(LINK_IN_SAME_FRAME,workspace);
+        String filterMethod = parameters.getValue(FILTER_METHOD,workspace);
+        String measName = parameters.getValue(MEASUREMENT,workspace);
         boolean moveObjects = filterMode.equals(FilterModes.MOVE_FILTERED);
         boolean remove = !filterMode.equals(FilterModes.DO_NOTHING);
 
@@ -189,7 +189,8 @@ public class FilterByProximity extends AbstractObjectFilter {
 
     @Override
     public Parameters updateAndGetParameters() {
-        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+Workspace workspace = null;
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
 
         Parameters returnedParameters = new Parameters();
         returnedParameters.addAll(super.updateAndGetParameters());
@@ -210,17 +211,20 @@ public class FilterByProximity extends AbstractObjectFilter {
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
-    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+Workspace workspace = null;
         return super.updateAndGetObjectMeasurementRefs();
 
     }
 
     @Override
-    public MetadataRefs updateAndGetMetadataReferences() {
+public MetadataRefs updateAndGetMetadataReferences() {
+Workspace workspace = null;
         return null;
     }
 

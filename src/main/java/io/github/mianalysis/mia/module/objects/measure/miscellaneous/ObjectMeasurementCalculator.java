@@ -215,29 +215,29 @@ public class ObjectMeasurementCalculator extends Module {
 
     @Override
     protected Status process(Workspace workspace) {
-        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
         Objs inputObjects = workspace.getObjectSet(inputObjectsName);
 
-        String valueMode1 = parameters.getValue(VALUE_MODE_1);
-        double fixedValue1 = parameters.getValue(FIXED_VALUE_1);
-        String imageName1 = parameters.getValue(IMAGE_1);
-        String imageMeasurement1 = parameters.getValue(IMAGE_MEASUREMENT_1);
-        String measurementName1 = parameters.getValue(MEASUREMENT_1);
-        String refObjectsName1 = parameters.getValue(REFERENCE_OBJECTS_1);
-        String refMeasurementName1 = parameters.getValue(REFERENCE_MEASUREMENT_1);
-        String statisticMode1 = parameters.getValue(STATISTIC_MODE_1);
+        String valueMode1 = parameters.getValue(VALUE_MODE_1,workspace);
+        double fixedValue1 = parameters.getValue(FIXED_VALUE_1,workspace);
+        String imageName1 = parameters.getValue(IMAGE_1,workspace);
+        String imageMeasurement1 = parameters.getValue(IMAGE_MEASUREMENT_1,workspace);
+        String measurementName1 = parameters.getValue(MEASUREMENT_1,workspace);
+        String refObjectsName1 = parameters.getValue(REFERENCE_OBJECTS_1,workspace);
+        String refMeasurementName1 = parameters.getValue(REFERENCE_MEASUREMENT_1,workspace);
+        String statisticMode1 = parameters.getValue(STATISTIC_MODE_1,workspace);
 
-        String valueMode2 = parameters.getValue(VALUE_MODE_2);
-        double fixedValue2 = parameters.getValue(FIXED_VALUE_2);
-        String imageName2 = parameters.getValue(IMAGE_2);
-        String imageMeasurement2 = parameters.getValue(IMAGE_MEASUREMENT_2);
-        String measurementName2 = parameters.getValue(MEASUREMENT_2);
-        String refObjectsName2 = parameters.getValue(REFERENCE_OBJECTS_2);
-        String refMeasurementName2 = parameters.getValue(REFERENCE_MEASUREMENT_2);
-        String statisticMode2 = parameters.getValue(STATISTIC_MODE_2);
+        String valueMode2 = parameters.getValue(VALUE_MODE_2,workspace);
+        double fixedValue2 = parameters.getValue(FIXED_VALUE_2,workspace);
+        String imageName2 = parameters.getValue(IMAGE_2,workspace);
+        String imageMeasurement2 = parameters.getValue(IMAGE_MEASUREMENT_2,workspace);
+        String measurementName2 = parameters.getValue(MEASUREMENT_2,workspace);
+        String refObjectsName2 = parameters.getValue(REFERENCE_OBJECTS_2,workspace);
+        String refMeasurementName2 = parameters.getValue(REFERENCE_MEASUREMENT_2,workspace);
+        String statisticMode2 = parameters.getValue(STATISTIC_MODE_2,workspace);
 
-        String outputMeasurementName = getFullName(parameters.getValue(OUTPUT_MEASUREMENT));
-        String calculationMode = parameters.getValue(CALCULATION_MODE);
+        String outputMeasurementName = getFullName(parameters.getValue(OUTPUT_MEASUREMENT,workspace));
+        String calculationMode = parameters.getValue(CALCULATION_MODE,workspace);
 
         // Getting reference object collections
         double refValue1 = Double.NaN;
@@ -338,7 +338,8 @@ public class ObjectMeasurementCalculator extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
-        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+Workspace workspace = null;
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
 
         Parameters returnedParams = new Parameters();
 
@@ -347,7 +348,7 @@ public class ObjectMeasurementCalculator extends Module {
 
         returnedParams.add(parameters.getParameter(VALUE_SEPARATOR_1));
         returnedParams.add(parameters.getParameter(VALUE_MODE_1));
-        switch ((String) parameters.getValue(VALUE_MODE_1)) {
+        switch ((String) parameters.getValue(VALUE_MODE_1,workspace)) {
             case ValueModes.FIXED:
                 returnedParams.add(parameters.getParameter(FIXED_VALUE_1));
                 break;
@@ -355,7 +356,7 @@ public class ObjectMeasurementCalculator extends Module {
             case ValueModes.IMAGE_MEASUREMENT:
                 returnedParams.add(parameters.getParameter(IMAGE_1));
                 returnedParams.add(parameters.getParameter(IMAGE_MEASUREMENT_1));
-                String imageName1 = parameters.getValue(IMAGE_1);
+                String imageName1 = parameters.getValue(IMAGE_1,workspace);
                 ((ImageMeasurementP) parameters.get(IMAGE_MEASUREMENT_1)).setImageName(imageName1);
                 break;
 
@@ -368,7 +369,7 @@ public class ObjectMeasurementCalculator extends Module {
                 returnedParams.add(parameters.getParameter(REFERENCE_OBJECTS_1));
                 returnedParams.add(parameters.getParameter(REFERENCE_MEASUREMENT_1));
                 returnedParams.add(parameters.getParameter(STATISTIC_MODE_1));
-                String referenceObjectsName1 = parameters.getValue(REFERENCE_OBJECTS_1);
+                String referenceObjectsName1 = parameters.getValue(REFERENCE_OBJECTS_1,workspace);
                 ((ObjectMeasurementP) parameters.getParameter(REFERENCE_MEASUREMENT_1))
                         .setObjectName(referenceObjectsName1);
                 break;
@@ -376,7 +377,7 @@ public class ObjectMeasurementCalculator extends Module {
 
         returnedParams.add(parameters.getParameter(VALUE_SEPARATOR_2));
         returnedParams.add(parameters.getParameter(VALUE_MODE_2));
-        switch ((String) parameters.getValue(VALUE_MODE_2)) {
+        switch ((String) parameters.getValue(VALUE_MODE_2,workspace)) {
             case ValueModes.FIXED:
                 returnedParams.add(parameters.getParameter(FIXED_VALUE_2));
                 break;
@@ -384,7 +385,7 @@ public class ObjectMeasurementCalculator extends Module {
             case ValueModes.IMAGE_MEASUREMENT:
                 returnedParams.add(parameters.getParameter(IMAGE_2));
                 returnedParams.add(parameters.getParameter(IMAGE_MEASUREMENT_2));
-                String imageName2 = parameters.getValue(IMAGE_2);
+                String imageName2 = parameters.getValue(IMAGE_2,workspace);
                 ((ImageMeasurementP) parameters.get(IMAGE_MEASUREMENT_2)).setImageName(imageName2);
                 break;
 
@@ -397,7 +398,7 @@ public class ObjectMeasurementCalculator extends Module {
                 returnedParams.add(parameters.getParameter(REFERENCE_OBJECTS_2));
                 returnedParams.add(parameters.getParameter(REFERENCE_MEASUREMENT_2));
                 returnedParams.add(parameters.getParameter(STATISTIC_MODE_2));
-                String referenceObjectsName2 = parameters.getValue(REFERENCE_OBJECTS_2);
+                String referenceObjectsName2 = parameters.getValue(REFERENCE_OBJECTS_2,workspace);
                 ((ObjectMeasurementP) parameters.getParameter(REFERENCE_MEASUREMENT_2))
                         .setObjectName(referenceObjectsName2);
                 break;
@@ -413,17 +414,19 @@ public class ObjectMeasurementCalculator extends Module {
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
-    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+Workspace workspace = null;
         ObjMeasurementRefs returnedRefs = new ObjMeasurementRefs();
 
         // Creating new MeasurementRef
-        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
 
-        String measurementName = getFullName(parameters.getValue(OUTPUT_MEASUREMENT));
+        String measurementName = getFullName(parameters.getValue(OUTPUT_MEASUREMENT,workspace));
         returnedRefs.add(objectMeasurementRefs.getOrPut(measurementName).setObjectsName(inputObjectsName));
 
         return returnedRefs;
@@ -431,17 +434,20 @@ public class ObjectMeasurementCalculator extends Module {
     }
 
     @Override
-    public MetadataRefs updateAndGetMetadataReferences() {
+public MetadataRefs updateAndGetMetadataReferences() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
+Workspace workspace = null;
         return null;
     }
 

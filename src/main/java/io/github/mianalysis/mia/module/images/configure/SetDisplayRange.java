@@ -30,7 +30,7 @@ import io.github.sjcross.sjcommon.process.IntensityMinMax;
 /**
  * Created by sc13967 on 10/08/2017.
  */
-@Plugin(type = Module.class, priority=Priority.LOW, visible=true)
+@Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class SetDisplayRange extends Module {
     public static final String INPUT_SEPARATOR = "Image input/output";
     public static final String INPUT_IMAGE = "Input image";
@@ -118,26 +118,27 @@ public class SetDisplayRange extends Module {
     @Override
     public String getDescription() {
         return "Set the minimum and maximum displayed intensities for a specified image from the workspace.  Any pixels with intensities outside the set displayed range will be rendered with the corresponding extreme value (i.e. any pixels with intensities less than the minimum display value will be shown with the same as the value at the minimum display value).  Display ranges can be calculated automatically or specified manually.  One or both extrema can be set at a time.<br><br>"
-        
-                + "Note: Unlike the \"" + new NormaliseIntensity(null).getName() + "\" module, pixel values are unchanged by this module.  The only change is to the way ImageJ/Fiji renders the image.";
+
+                + "Note: Unlike the \"" + new NormaliseIntensity(null).getName()
+                + "\" module, pixel values are unchanged by this module.  The only change is to the way ImageJ/Fiji renders the image.";
 
     }
 
     @Override
     public Status process(Workspace workspace) {
         // Getting input image
-        String inputImageName = parameters.getValue(INPUT_IMAGE);
+        String inputImageName = parameters.getValue(INPUT_IMAGE, workspace);
         Image inputImage = workspace.getImages().get(inputImageName);
 
         // Getting parameters
-        boolean applyToInput = parameters.getValue(APPLY_TO_INPUT);
-        String calculationMode = parameters.getValue(CALCULATION_MODE);
-        double clipFractionMin = parameters.getValue(CLIP_FRACTION_MIN);
-        double clipFractionMax = parameters.getValue(CLIP_FRACTION_MAX);
-        boolean setMinimumValue = parameters.getValue(SET_MINIMUM_VALUE);
-        boolean setMaximumValue = parameters.getValue(SET_MAXIMUM_VALUE);
-        double minRange = parameters.getValue(MIN_RANGE);
-        double maxRange = parameters.getValue(MAX_RANGE);
+        boolean applyToInput = parameters.getValue(APPLY_TO_INPUT, workspace);
+        String calculationMode = parameters.getValue(CALCULATION_MODE, workspace);
+        double clipFractionMin = parameters.getValue(CLIP_FRACTION_MIN, workspace);
+        double clipFractionMax = parameters.getValue(CLIP_FRACTION_MAX, workspace);
+        boolean setMinimumValue = parameters.getValue(SET_MINIMUM_VALUE, workspace);
+        boolean setMaximumValue = parameters.getValue(SET_MAXIMUM_VALUE, workspace);
+        double minRange = parameters.getValue(MIN_RANGE, workspace);
+        double maxRange = parameters.getValue(MAX_RANGE, workspace);
 
         // If this image doesn't exist, skip this module. This returns true, because
         // this isn't terminal for the analysis.
@@ -169,7 +170,7 @@ public class SetDisplayRange extends Module {
 
         // If the image is being saved as a new image, adding it to the workspace
         if (!applyToInput) {
-            String outputImageName = parameters.getValue(OUTPUT_IMAGE);
+            String outputImageName = parameters.getValue(OUTPUT_IMAGE, workspace);
             Image outputImage = new Image(outputImageName, inputImagePlus);
             workspace.addImage(outputImage);
             if (showOutput)
@@ -207,19 +208,19 @@ public class SetDisplayRange extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
+        Workspace workspace = null;
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(INPUT_IMAGE));
         returnedParameters.add(parameters.getParameter(APPLY_TO_INPUT));
 
-        if (!(boolean) parameters.getValue(APPLY_TO_INPUT)) {
+        if (!(boolean) parameters.getValue(APPLY_TO_INPUT, workspace))
             returnedParameters.add(parameters.getParameter(OUTPUT_IMAGE));
-        }
 
         returnedParameters.add(parameters.getParameter(RANGE_SEPARATOR));
         returnedParameters.add(parameters.getParameter(CALCULATION_MODE));
-        switch ((String) parameters.getValue(CALCULATION_MODE)) {
+        switch ((String) parameters.getValue(CALCULATION_MODE, workspace)) {
             case CalculationModes.FAST:
             case CalculationModes.PRECISE:
                 returnedParameters.add(parameters.getParameter(CLIP_FRACTION_MIN));
@@ -244,22 +245,26 @@ public class SetDisplayRange extends Module {
     }
 
     @Override
-    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
-    public MetadataRefs updateAndGetMetadataReferences() {
+public MetadataRefs updateAndGetMetadataReferences() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
+Workspace workspace = null;
         return null;
     }
 
@@ -292,17 +297,25 @@ public class SetDisplayRange extends Module {
                 + CalculationModes.FAST
                 + "\" mode.  As such, this method is more precise; however, can take a much longer time (especially for large images).</li></ul>");
 
-        parameters.get(CLIP_FRACTION_MIN).setDescription("Fraction of unique intensities (\""+CalculationModes.PRECISE+"\") or pixels (\""+CalculationModes.FAST+"\") that are clipped when setting the minimum displayed intensity.  Any values below this will be displayed equally with the minimum value of the LUT.");
+        parameters.get(CLIP_FRACTION_MIN).setDescription("Fraction of unique intensities (\"" + CalculationModes.PRECISE
+                + "\") or pixels (\"" + CalculationModes.FAST
+                + "\") that are clipped when setting the minimum displayed intensity.  Any values below this will be displayed equally with the minimum value of the LUT.");
 
-        parameters.get(CLIP_FRACTION_MAX).setDescription("Fraction of unique intensities (\""+CalculationModes.PRECISE+"\") or pixels (\""+CalculationModes.FAST+"\") that are clipped when setting the maximum displayed intensity.  Any values above this will be displayed equally with the maximum value of the LUT.");
+        parameters.get(CLIP_FRACTION_MAX).setDescription("Fraction of unique intensities (\"" + CalculationModes.PRECISE
+                + "\") or pixels (\"" + CalculationModes.FAST
+                + "\") that are clipped when setting the maximum displayed intensity.  Any values above this will be displayed equally with the maximum value of the LUT.");
 
-        parameters.get(SET_MINIMUM_VALUE).setDescription("When selected, the minimum displayed intensity will be updated.  Otherwise, the value will be unchanged.");
+        parameters.get(SET_MINIMUM_VALUE).setDescription(
+                "When selected, the minimum displayed intensity will be updated.  Otherwise, the value will be unchanged.");
 
-        parameters.get(SET_MAXIMUM_VALUE).setDescription("When selected, the maximum displayed intensity will be updated.  Otherwise, the value will be unchanged.");
+        parameters.get(SET_MAXIMUM_VALUE).setDescription(
+                "When selected, the maximum displayed intensity will be updated.  Otherwise, the value will be unchanged.");
 
-        parameters.get(MIN_RANGE).setDescription("If manually setting the minimum displayed intensity, this is the value that will be applied.");
+        parameters.get(MIN_RANGE).setDescription(
+                "If manually setting the minimum displayed intensity, this is the value that will be applied.");
 
-        parameters.get(MAX_RANGE).setDescription("If manually setting the maximum displayed intensity, this is the value that will be applied.");
+        parameters.get(MAX_RANGE).setDescription(
+                "If manually setting the maximum displayed intensity, this is the value that will be applied.");
 
     }
 }

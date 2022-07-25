@@ -98,15 +98,15 @@ public class FilterByMeasurementExtremes extends AbstractObjectFilter {
     @Override
     protected Status process(Workspace workspace) {
         // Getting input objects
-        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
         Objs inputObjects = workspace.getObjects().get(inputObjectsName);
 
         // Getting parameters
-        String filterMode = parameters.getValue(FILTER_MODE);
-        String outputObjectsName = parameters.getValue(OUTPUT_FILTERED_OBJECTS);
-        String filterMethod = parameters.getValue(FILTER_METHOD);
-        boolean perTimepoint = parameters.getValue(PER_TIMEPOINT);
-        String measName = parameters.getValue(MEASUREMENT);
+        String filterMode = parameters.getValue(FILTER_MODE,workspace);
+        String outputObjectsName = parameters.getValue(OUTPUT_FILTERED_OBJECTS,workspace);
+        String filterMethod = parameters.getValue(FILTER_METHOD,workspace);
+        boolean perTimepoint = parameters.getValue(PER_TIMEPOINT,workspace);
+        String measName = parameters.getValue(MEASUREMENT,workspace);
 
         boolean moveObjects = filterMode.equals(FilterModes.MOVE_FILTERED);
         boolean remove = !filterMode.equals(FilterModes.DO_NOTHING);
@@ -163,7 +163,8 @@ public class FilterByMeasurementExtremes extends AbstractObjectFilter {
 
     @Override
     public Parameters updateAndGetParameters() {
-        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+Workspace workspace = null;
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
 
         Parameters returnedParameters = new Parameters();
         returnedParameters.addAll(super.updateAndGetParameters());
@@ -180,17 +181,20 @@ public class FilterByMeasurementExtremes extends AbstractObjectFilter {
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
-    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+Workspace workspace = null;
         return super.updateAndGetObjectMeasurementRefs();
 
     }
 
     @Override
-    public MetadataRefs updateAndGetMetadataReferences() {
+public MetadataRefs updateAndGetMetadataReferences() {
+Workspace workspace = null;
         return null;
     }
 

@@ -71,16 +71,16 @@ public class GenericImageSaver extends AbstractImageSaver {
     @Override
     public Status process(Workspace workspace) {
         // Getting input image
-        String inputImageName = parameters.getValue(INPUT_IMAGE);
-        String genericFormat = parameters.getValue(GENERIC_FORMAT);
-        String appendDateTimeMode = parameters.getValue(APPEND_DATETIME_MODE);
-        String fileFormat = parameters.getValue(FILE_FORMAT);
-        String channelMode = parameters.getValue(CHANNEL_MODE);
-        boolean flattenOverlay = parameters.getValue(FLATTEN_OVERLAY);
-        String compressionMode = parameters.getValue(COMPRESSION_MODE);
-        int quality = parameters.getValue(QUALITY);
-        int frameRate = parameters.getValue(FRAME_RATE);
-        boolean saveAsRGB = parameters.getValue(SAVE_AS_RGB);
+        String inputImageName = parameters.getValue(INPUT_IMAGE,workspace);
+        String genericFormat = parameters.getValue(GENERIC_FORMAT,workspace);
+        String appendDateTimeMode = parameters.getValue(APPEND_DATETIME_MODE,workspace);
+        String fileFormat = parameters.getValue(FILE_FORMAT,workspace);
+        String channelMode = parameters.getValue(CHANNEL_MODE,workspace);
+        boolean flattenOverlay = parameters.getValue(FLATTEN_OVERLAY,workspace);
+        String compressionMode = parameters.getValue(COMPRESSION_MODE,workspace);
+        int quality = parameters.getValue(QUALITY,workspace);
+        int frameRate = parameters.getValue(FRAME_RATE,workspace);
+        boolean saveAsRGB = parameters.getValue(SAVE_AS_RGB,workspace);
 
         // Loading the image to save
         Image inputImage = workspace.getImages().get(inputImageName);
@@ -141,6 +141,7 @@ public class GenericImageSaver extends AbstractImageSaver {
 
     @Override
     public Parameters updateAndGetParameters() {
+Workspace workspace = null;
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(LOADER_SEPARATOR));
@@ -159,26 +160,31 @@ public class GenericImageSaver extends AbstractImageSaver {
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
-    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
-    public MetadataRefs updateAndGetMetadataReferences() {
+public MetadataRefs updateAndGetMetadataReferences() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
+Workspace workspace = null;
         return null;
     }
 

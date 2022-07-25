@@ -7,6 +7,7 @@ import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.gui.parametercontrols.ChoiceArrayParameter;
 import io.github.mianalysis.mia.gui.parametercontrols.ParameterControl;
 import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.object.Workspace;
 
 public abstract class ChoiceType extends Parameter {
     protected String choice = "";
@@ -49,7 +50,7 @@ public abstract class ChoiceType extends Parameter {
     }
 
     @Override
-    public <T> T getValue() {
+    public <T> T getValue(Workspace workspace) {
         return (T) choice;
     }
 

@@ -142,21 +142,21 @@ package io.github.mianalysis.mia.module.objects.measure.intensity;
 //     @Override
 //     public Status process(Workspace workspace) {
 //         // Getting input objects
-//         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+//         String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
 //         Objs inputObjects = workspace.getObjectSet(inputObjectsName);
 
 //         // Getting input image
-//         String inputImageName = parameters.getValue(INPUT_IMAGE);
+//         String inputImageName = parameters.getValue(INPUT_IMAGE,workspace);
 //         Image inputImage = workspace.getImage(inputImageName);
 
 //         // Getting other parameters
-//         String referenceMode = parameters.getValue(REFERENCE_MODE);
-//         String distanceMapImageName = parameters.getValue(DISTANCE_MAP_IMAGE);
-//         String maskingMode = parameters.getValue(MASKING_MODE);
-//         int nRadialSample = parameters.getValue(NUMBER_OF_RADIAL_SAMPLES);
-//         String rangeMode = parameters.getValue(RANGE_MODE);
-//         double minDistance = parameters.getValue(MIN_DISTANCE);
-//         double maxDistance = parameters.getValue(MAX_DISTANCE);
+//         String referenceMode = parameters.getValue(REFERENCE_MODE,workspace);
+//         String distanceMapImageName = parameters.getValue(DISTANCE_MAP_IMAGE,workspace);
+//         String maskingMode = parameters.getValue(MASKING_MODE,workspace);
+//         int nRadialSample = parameters.getValue(NUMBER_OF_RADIAL_SAMPLES,workspace);
+//         String rangeMode = parameters.getValue(RANGE_MODE,workspace);
+//         double minDistance = parameters.getValue(MIN_DISTANCE,workspace);
+//         double maxDistance = parameters.getValue(MAX_DISTANCE,workspace);
 
 //         // Getting the distance map for all objects
 //         Image distanceMap = null;
@@ -240,7 +240,7 @@ package io.github.mianalysis.mia.module.objects.measure.intensity;
 //         returnedParameters.add(parameters.getParameter(INPUT_IMAGE));
 
 //         returnedParameters.add(parameters.getParameter(REFERENCE_MODE));
-//         switch ((String) parameters.getValue(REFERENCE_MODE)) {
+//         switch ((String) parameters.getValue(REFERENCE_MODE,workspace)) {
 //             case ReferenceModes.CUSTOM_DISTANCE_MAP:
 //                 returnedParameters.add(parameters.getParameter(DISTANCE_MAP_IMAGE));
 //                 break;
@@ -250,7 +250,7 @@ package io.github.mianalysis.mia.module.objects.measure.intensity;
 //         returnedParameters.add(parameters.getParameter(NUMBER_OF_RADIAL_SAMPLES));
 
 //         returnedParameters.add(parameters.getParameter(RANGE_MODE));
-//         switch ((String) parameters.getValue(RANGE_MODE)) {
+//         switch ((String) parameters.getValue(RANGE_MODE,workspace)) {
 //             case RangeModes.MANUAL_RANGE:
 //                 returnedParameters.add(parameters.getParameter(MIN_DISTANCE));
 //                 returnedParameters.add(parameters.getParameter(MAX_DISTANCE));
@@ -267,12 +267,12 @@ package io.github.mianalysis.mia.module.objects.measure.intensity;
 //     }
 
 //     @Override
-//     public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+// public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
 //         return null;
 //     }
 
 //     @Override
-//     public MetadataRefs updateAndGetMetadataReferences() {
+// public MetadataRefs updateAndGetMetadataReferences() {
 //         return null;
 //     }
 

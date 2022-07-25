@@ -59,7 +59,7 @@ public class FixedTextCondition extends AbstractWorkspaceHandler {
     }
 
     @Override
-    public Module getRedirectModule() {
+    public Module getRedirectModule(Workspace workspace) {
         // Default redirect module is the next one in the sequence
         int idx = modules.indexOf(this) + 1;
         if (idx >= modules.size())
@@ -67,14 +67,14 @@ public class FixedTextCondition extends AbstractWorkspaceHandler {
         else
             redirectModule = modules.get(idx);
 
-        String testValue = parameters.getValue(TEST_VALUE);
-        LinkedHashMap<Integer, Parameters> collections = parameters.getValue(ADD_CONDITION);
+        String testValue = parameters.getValue(TEST_VALUE,workspace);
+        LinkedHashMap<Integer, Parameters> collections = parameters.getValue(ADD_CONDITION,workspace);
 
         for (Parameters collection : collections.values()) {
-            if (collection.getValue(REFERENCE_VALUE).equals(testValue)) {
-                switch ((String) collection.getValue(CONTINUATION_MODE)) {
+            if (collection.getValue(REFERENCE_VALUE,workspace).equals(testValue)) {
+                switch ((String) collection.getValue(CONTINUATION_MODE,workspace)) {
                     case ContinuationModes.REDIRECT_TO_MODULE:
-                        redirectModule = collection.getValue(REDIRECT_MODULE);
+                        redirectModule = collection.getValue(REDIRECT_MODULE,workspace);
                         break;
                     case ContinuationModes.TERMINATE:
                         redirectModule = null;
@@ -90,13 +90,13 @@ public class FixedTextCondition extends AbstractWorkspaceHandler {
     @Override
     protected Status process(Workspace workspace) {
         // Getting parameters
-        String testValue = parameters.getValue(TEST_VALUE);
-        LinkedHashMap<Integer, Parameters> collections = parameters.getValue(ADD_CONDITION);
-        boolean showRedirectMessage = parameters.getValue(SHOW_REDIRECT_MESSAGE);
+        String testValue = parameters.getValue(TEST_VALUE,workspace);
+        LinkedHashMap<Integer, Parameters> collections = parameters.getValue(ADD_CONDITION,workspace);
+        boolean showRedirectMessage = parameters.getValue(SHOW_REDIRECT_MESSAGE,workspace);
 
         // Getting choice parameters
         for (Parameters collection : collections.values()) {
-            if (collection.getValue(REFERENCE_VALUE).equals(testValue)) {
+            if (collection.getValue(REFERENCE_VALUE,workspace).equals(testValue)) {
                 return processTermination(collection, workspace, showRedirectMessage);
             }
         }
@@ -125,6 +125,7 @@ public class FixedTextCondition extends AbstractWorkspaceHandler {
 
     @Override
     public Parameters updateAndGetParameters() {
+Workspace workspace = null;
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(TEST_VALUE));
@@ -137,26 +138,31 @@ public class FixedTextCondition extends AbstractWorkspaceHandler {
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
-    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
-    public MetadataRefs updateAndGetMetadataReferences() {
+public MetadataRefs updateAndGetMetadataReferences() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
+Workspace workspace = null;
         return null;
     }
 
@@ -190,12 +196,12 @@ public class FixedTextCondition extends AbstractWorkspaceHandler {
 
                 returnedParameters.add(params.getParameter(REFERENCE_VALUE));
                 returnedParameters.add(params.getParameter(CONTINUATION_MODE));
-                switch ((String) params.getValue(CONTINUATION_MODE)) {
+                switch ((String) params.getValue(CONTINUATION_MODE,null)) {
                     case ContinuationModes.REDIRECT_TO_MODULE:
                         returnedParameters.add(params.getParameter(REDIRECT_MODULE));
-                        redirectModule = params.getValue(REDIRECT_MODULE);
+                        redirectModule = params.getValue(REDIRECT_MODULE,null);
                         returnedParameters.add(params.getParameter(SHOW_REDIRECT_MESSAGE));
-                        if ((boolean) params.getValue(SHOW_REDIRECT_MESSAGE)) {
+                        if ((boolean) params.getValue(SHOW_REDIRECT_MESSAGE,null)) {
                             returnedParameters.add(params.getParameter(REDIRECT_MESSAGE));
                         }
                         break;

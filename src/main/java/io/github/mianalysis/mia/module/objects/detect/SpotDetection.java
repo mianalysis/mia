@@ -101,7 +101,7 @@ public class SpotDetection extends Module {
         super("Spot detection", modules);
     }
 
-    public ArrayList<Obj> processStack(Image inputImage, Objs spotObjects, boolean estimateSize) {
+    public ArrayList<Obj> processStack(Image inputImage, Objs spotObjects, boolean estimateSize, Workspace workspace) {
         ImagePlus ipl = inputImage.getImagePlus();
         SpatCal calibration = SpatCal.getFromImage(ipl);
         Calibration cal = ipl.getCalibration();
@@ -110,7 +110,7 @@ public class SpotDetection extends Module {
         // Initialising TrackMate model to store data
         Model model = new Model();
         model.setLogger(Logger.VOID_LOGGER);
-        Settings settings = initialiseSettings(ipl, calibration);
+        Settings settings = initialiseSettings(ipl, calibration, workspace);
         TrackMate trackmate = new TrackMate(model, settings);
 
         if (!trackmate.execDetection())
@@ -130,12 +130,12 @@ public class SpotDetection extends Module {
 
     }
 
-    public Objs processSlice(Image inputImage, Objs spotObjects, boolean estimateSize) {
+    public Objs processSlice(Image inputImage, Objs spotObjects, boolean estimateSize, Workspace workspace) {
         int nSlices = inputImage.getImagePlus().getNSlices();
 
         for (int z=0;z<nSlices;z++) {
             Image sliceImage = ExtractSubstack.extractSubstack(inputImage, "Slice", "1-end", String.valueOf(z+1), "1-end");
-            ArrayList<Obj> newSpots = processStack(sliceImage, spotObjects, estimateSize);
+            ArrayList<Obj> newSpots = processStack(sliceImage, spotObjects, estimateSize, workspace);
 
             // Putting the new spots at the correct Z-plane
             for (Obj newSpot:newSpots)
@@ -147,12 +147,12 @@ public class SpotDetection extends Module {
 
     }
 
-    public Settings initialiseSettings(ImagePlus ipl, SpatCal calibration) {
-        boolean calibratedUnits = parameters.getValue(CALIBRATED_UNITS);
-        boolean subpixelLocalisation = parameters.getValue(DO_SUBPIXEL_LOCALIZATION);
-        boolean medianFiltering = parameters.getValue(DO_MEDIAN_FILTERING);
-        double radius = parameters.getValue(RADIUS);
-        double threshold = parameters.getValue(THRESHOLD);
+    public Settings initialiseSettings(ImagePlus ipl, SpatCal calibration, Workspace workspace) {
+        boolean calibratedUnits = parameters.getValue(CALIBRATED_UNITS,workspace);
+        boolean subpixelLocalisation = parameters.getValue(DO_SUBPIXEL_LOCALIZATION,workspace);
+        boolean medianFiltering = parameters.getValue(DO_MEDIAN_FILTERING,workspace);
+        double radius = parameters.getValue(RADIUS,workspace);
+        double threshold = parameters.getValue(THRESHOLD,workspace);
 
         // Applying conversion to parameters
         if (calibratedUnits)
@@ -175,7 +175,7 @@ public class SpotDetection extends Module {
     public ArrayList<Obj> addSpots(Model model, Objs spotObjects)
             throws IntegerOverflowException {
                 ArrayList<Obj> newSpots = new ArrayList<>();
-        boolean doSubpixel = parameters.getValue(DO_SUBPIXEL_LOCALIZATION);
+        boolean doSubpixel = parameters.getValue(DO_SUBPIXEL_LOCALIZATION,null);
 
         SpotCollection spots = model.getSpots();
         for (Spot spot : spots.iterable(false)) {
@@ -280,10 +280,10 @@ public class SpotDetection extends Module {
     @Override
     public Status process(Workspace workspace) {
         // Getting parameters
-        String inputImageName = parameters.getValue(INPUT_IMAGE);
-        String spotObjectsName = parameters.getValue(OUTPUT_SPOT_OBJECTS);
-        String detectionMode = parameters.getValue(DETECTION_MODE);
-        boolean estimateSize = parameters.getValue(ESTIMATE_SIZE);
+        String inputImageName = parameters.getValue(INPUT_IMAGE,workspace);
+        String spotObjectsName = parameters.getValue(OUTPUT_SPOT_OBJECTS,workspace);
+        String detectionMode = parameters.getValue(DETECTION_MODE,workspace);
+        boolean estimateSize = parameters.getValue(ESTIMATE_SIZE,workspace);
 
         // Loading input image
         Image inputImage = workspace.getImage(inputImageName);
@@ -298,10 +298,10 @@ public class SpotDetection extends Module {
 
         switch (detectionMode) {
             case DetectionModes.SLICE_BY_SLICE:
-                processSlice(inputImage, spotObjects, estimateSize);
+                processSlice(inputImage, spotObjects, estimateSize, workspace);
                 break;
             case DetectionModes.THREE_D:
-                processStack(inputImage, spotObjects, estimateSize);
+                processStack(inputImage, spotObjects, estimateSize, workspace);
                 break;
         }
 
@@ -342,6 +342,7 @@ public class SpotDetection extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
+Workspace workspace = null;
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
@@ -363,13 +364,15 @@ public class SpotDetection extends Module {
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
-    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+Workspace workspace = null;
         ObjMeasurementRefs returnedRefs = new ObjMeasurementRefs();
-        String outputSpotObjectsName = parameters.getValue(OUTPUT_SPOT_OBJECTS);
+        String outputSpotObjectsName = parameters.getValue(OUTPUT_SPOT_OBJECTS,workspace);
 
         ObjMeasurementRef reference = objectMeasurementRefs.getOrPut(Measurements.RADIUS_PX);
         reference.setObjectsName(outputSpotObjectsName);
@@ -386,7 +389,7 @@ public class SpotDetection extends Module {
         reference.setObjectsName(outputSpotObjectsName);
         returnedRefs.add(reference);
 
-        if ((boolean) parameters.getValue(DO_SUBPIXEL_LOCALIZATION)) {
+        if ((boolean) parameters.getValue(DO_SUBPIXEL_LOCALIZATION,workspace)) {
             reference = objectMeasurementRefs.getOrPut(Measurements.X_CENTROID_PX);
             reference.setObjectsName(outputSpotObjectsName);
             returnedRefs.add(reference);
@@ -417,17 +420,20 @@ public class SpotDetection extends Module {
     }
 
     @Override
-    public MetadataRefs updateAndGetMetadataReferences() {
+public MetadataRefs updateAndGetMetadataReferences() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
+Workspace workspace = null;
         return null;
     }
 

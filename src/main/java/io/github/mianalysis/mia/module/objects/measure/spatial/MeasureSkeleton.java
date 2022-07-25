@@ -383,19 +383,19 @@ public class MeasureSkeleton extends Module {
 
     @Override
     protected Status process(Workspace workspace) {
-        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
         Objs inputObjects = workspace.getObjectSet(inputObjectsName);
-        boolean addToWorkspace = parameters.getValue(ADD_SKELETONS_TO_WORKSPACE);
-        String skeletonObjectsName = parameters.getValue(OUTPUT_SKELETON_OBJECTS);
-        String edgeObjectsName = parameters.getValue(OUTPUT_EDGE_OBJECTS);
-        String junctionObjectsName = parameters.getValue(OUTPUT_JUNCTION_OBJECTS);
-        boolean exportLoops = parameters.getValue(EXPORT_LOOP_OBJECTS);
-        String loopObjectsName = parameters.getValue(OUTPUT_LOOP_OBJECTS);
-        boolean exportLargestShortestPath = parameters.getValue(EXPORT_LARGEST_SHORTEST_PATH);
-        String largestShortestPathName = parameters.getValue(OUTPUT_LARGEST_SHORTEST_PATH);
-        double minLength = parameters.getValue(MINIMUM_BRANCH_LENGTH);
-        boolean calibratedUnits = parameters.getValue(CALIBRATED_UNITS);
-        boolean multithread = parameters.getValue(ENABLE_MULTITHREADING);
+        boolean addToWorkspace = parameters.getValue(ADD_SKELETONS_TO_WORKSPACE,workspace);
+        String skeletonObjectsName = parameters.getValue(OUTPUT_SKELETON_OBJECTS,workspace);
+        String edgeObjectsName = parameters.getValue(OUTPUT_EDGE_OBJECTS,workspace);
+        String junctionObjectsName = parameters.getValue(OUTPUT_JUNCTION_OBJECTS,workspace);
+        boolean exportLoops = parameters.getValue(EXPORT_LOOP_OBJECTS,workspace);
+        String loopObjectsName = parameters.getValue(OUTPUT_LOOP_OBJECTS,workspace);
+        boolean exportLargestShortestPath = parameters.getValue(EXPORT_LARGEST_SHORTEST_PATH,workspace);
+        String largestShortestPathName = parameters.getValue(OUTPUT_LARGEST_SHORTEST_PATH,workspace);
+        double minLength = parameters.getValue(MINIMUM_BRANCH_LENGTH,workspace);
+        boolean calibratedUnits = parameters.getValue(CALIBRATED_UNITS,workspace);
+        boolean multithread = parameters.getValue(ENABLE_MULTITHREADING,workspace);
 
         if (inputObjects == null || inputObjects.size() == 0)
             return Status.PASS;
@@ -526,6 +526,7 @@ public class MeasureSkeleton extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
+Workspace workspace = null;
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
@@ -534,19 +535,19 @@ public class MeasureSkeleton extends Module {
         returnedParameters.add(parameters.getParameter(OUTPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(ADD_SKELETONS_TO_WORKSPACE));
 
-        if ((boolean) parameters.getValue(ADD_SKELETONS_TO_WORKSPACE)) {
+        if ((boolean) parameters.getValue(ADD_SKELETONS_TO_WORKSPACE,workspace)) {
             returnedParameters.add(parameters.getParameter(OUTPUT_SKELETON_OBJECTS));
             returnedParameters.add(parameters.getParameter(OUTPUT_EDGE_OBJECTS));
             returnedParameters.add(parameters.getParameter(OUTPUT_JUNCTION_OBJECTS));
 
             returnedParameters.add(parameters.getParameter(EXPORT_LOOP_OBJECTS));
-            if ((boolean) parameters.getValue(EXPORT_LOOP_OBJECTS))
+            if ((boolean) parameters.getValue(EXPORT_LOOP_OBJECTS,workspace))
                 returnedParameters.add(parameters.getParameter(OUTPUT_LOOP_OBJECTS));
 
         }
 
         returnedParameters.add(parameters.getParameter(EXPORT_LARGEST_SHORTEST_PATH));
-        if ((boolean) parameters.getValue(EXPORT_LARGEST_SHORTEST_PATH))
+        if ((boolean) parameters.getValue(EXPORT_LARGEST_SHORTEST_PATH,workspace))
             returnedParameters.add(parameters.getParameter(OUTPUT_LARGEST_SHORTEST_PATH));
 
         returnedParameters.add(parameters.getParameter(SKELETONISATION_SEPARATOR));
@@ -562,14 +563,16 @@ public class MeasureSkeleton extends Module {
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
-    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+Workspace workspace = null;
         ObjMeasurementRefs returnedRefs = new ObjMeasurementRefs();
 
-        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
 
         ObjMeasurementRef ref = objectMeasurementRefs.getOrPut(Measurements.SUM_LENGTH_PX);
         ref.setObjectsName(inputObjectsName);
@@ -578,8 +581,8 @@ public class MeasureSkeleton extends Module {
         ref.setObjectsName(inputObjectsName);
         returnedRefs.add(ref);
 
-        if ((boolean) parameters.getValue(ADD_SKELETONS_TO_WORKSPACE)) {
-            String edgeObjectsName = parameters.getValue(OUTPUT_EDGE_OBJECTS);
+        if ((boolean) parameters.getValue(ADD_SKELETONS_TO_WORKSPACE,workspace)) {
+            String edgeObjectsName = parameters.getValue(OUTPUT_EDGE_OBJECTS,workspace);
             ref = objectMeasurementRefs.getOrPut(Measurements.EDGE_LENGTH_PX);
             ref.setObjectsName(edgeObjectsName);
             returnedRefs.add(ref);
@@ -593,32 +596,34 @@ public class MeasureSkeleton extends Module {
     }
 
     @Override
-    public MetadataRefs updateAndGetMetadataReferences() {
+public MetadataRefs updateAndGetMetadataReferences() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
+Workspace workspace = null;
         ParentChildRefs returnedRefs = new ParentChildRefs();
 
-        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
 
-        if ((boolean) parameters.getValue(ADD_SKELETONS_TO_WORKSPACE)) {
-            String skeletonObjectsName = parameters.getValue(OUTPUT_SKELETON_OBJECTS);
-            String edgeObjectsName = parameters.getValue(OUTPUT_EDGE_OBJECTS);
-            String junctionObjectsName = parameters.getValue(OUTPUT_JUNCTION_OBJECTS);
-            String loopObjectsName = parameters.getValue(OUTPUT_LOOP_OBJECTS);
+        if ((boolean) parameters.getValue(ADD_SKELETONS_TO_WORKSPACE,workspace)) {
+            String skeletonObjectsName = parameters.getValue(OUTPUT_SKELETON_OBJECTS,workspace);
+            String edgeObjectsName = parameters.getValue(OUTPUT_EDGE_OBJECTS,workspace);
+            String junctionObjectsName = parameters.getValue(OUTPUT_JUNCTION_OBJECTS,workspace);
+            String loopObjectsName = parameters.getValue(OUTPUT_LOOP_OBJECTS,workspace);
 
             returnedRefs.add(parentChildRefs.getOrPut(inputObjectsName, skeletonObjectsName));
             returnedRefs.add(parentChildRefs.getOrPut(skeletonObjectsName, edgeObjectsName));
             returnedRefs.add(parentChildRefs.getOrPut(skeletonObjectsName, junctionObjectsName));
-            if ((boolean) parameters.getValue(EXPORT_LOOP_OBJECTS))
+            if ((boolean) parameters.getValue(EXPORT_LOOP_OBJECTS,workspace))
                 returnedRefs.add(parentChildRefs.getOrPut(skeletonObjectsName, loopObjectsName));
 
         }
 
-        if ((boolean) parameters.getValue(EXPORT_LARGEST_SHORTEST_PATH)) {
-            String largestShortestPathName = parameters.getValue(OUTPUT_LARGEST_SHORTEST_PATH);
+        if ((boolean) parameters.getValue(EXPORT_LARGEST_SHORTEST_PATH,workspace)) {
+            String largestShortestPathName = parameters.getValue(OUTPUT_LARGEST_SHORTEST_PATH,workspace);
             returnedRefs.add(parentChildRefs.getOrPut(inputObjectsName, largestShortestPathName));
 
         }
@@ -629,15 +634,16 @@ public class MeasureSkeleton extends Module {
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
+Workspace workspace = null;
         PartnerRefs returnedRefs = new PartnerRefs();
 
-        if ((boolean) parameters.getValue(ADD_SKELETONS_TO_WORKSPACE)) {
-            String edgeObjectsName = parameters.getValue(OUTPUT_EDGE_OBJECTS);
-            String junctionObjectsName = parameters.getValue(OUTPUT_JUNCTION_OBJECTS);
-            String loopObjectsName = parameters.getValue(OUTPUT_LOOP_OBJECTS);
+        if ((boolean) parameters.getValue(ADD_SKELETONS_TO_WORKSPACE,workspace)) {
+            String edgeObjectsName = parameters.getValue(OUTPUT_EDGE_OBJECTS,workspace);
+            String junctionObjectsName = parameters.getValue(OUTPUT_JUNCTION_OBJECTS,workspace);
+            String loopObjectsName = parameters.getValue(OUTPUT_LOOP_OBJECTS,workspace);
 
             returnedRefs.add(partnerRefs.getOrPut(edgeObjectsName, junctionObjectsName));
-            if ((boolean) parameters.getValue(EXPORT_LOOP_OBJECTS)) {
+            if ((boolean) parameters.getValue(EXPORT_LOOP_OBJECTS,workspace)) {
                 returnedRefs.add(partnerRefs.getOrPut(edgeObjectsName, loopObjectsName));
                 returnedRefs.add(partnerRefs.getOrPut(junctionObjectsName, loopObjectsName));
             }

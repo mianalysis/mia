@@ -126,18 +126,18 @@ public class WorkflowHandling extends Module {
     }
 
     Status processTermination(Parameters parameters, Workspace workspace, boolean showRedirectMessage) {
-        String continuationMode = parameters.getValue(CONTINUATION_MODE);
-        String redirectMessage = parameters.getValue(REDIRECT_MESSAGE);
-        String messageLevel = parameters.getValue(MESSAGE_LEVEL);
-        boolean showTerminationWarning = parameters.getValue(SHOW_TERMINATION_WARNING);
-        boolean exportWorkspace = parameters.getValue(EXPORT_WORKSPACE);
-        boolean removeImages = parameters.getValue(REMOVE_IMAGES);
-        boolean removeObjects = parameters.getValue(REMOVE_OBJECTS);
+        String continuationMode = parameters.getValue(CONTINUATION_MODE,workspace);
+        String redirectMessage = parameters.getValue(REDIRECT_MESSAGE,workspace);
+        String messageLevel = parameters.getValue(MESSAGE_LEVEL,workspace);
+        boolean showTerminationWarning = parameters.getValue(SHOW_TERMINATION_WARNING,workspace);
+        boolean exportWorkspace = parameters.getValue(EXPORT_WORKSPACE,workspace);
+        boolean removeImages = parameters.getValue(REMOVE_IMAGES,workspace);
+        boolean removeObjects = parameters.getValue(REMOVE_OBJECTS,workspace);
 
         // If terminate, remove necessary images and objects
         switch (continuationMode) {
             case ContinuationModes.REDIRECT_TO_MODULE:
-                redirectModule = parameters.getValue(REDIRECT_MODULE);
+                redirectModule = parameters.getValue(REDIRECT_MODULE,workspace);
                 if (showRedirectMessage) {
                     Level level = getLevel(messageLevel);
                     MIA.log.write(workspace.getMetadata().insertMetadataValues(redirectMessage), level);
@@ -258,18 +258,18 @@ public class WorkflowHandling extends Module {
     @Override
     protected Status process(Workspace workspace) {
         // Getting parameters
-        String testMode = parameters.getValue(TEST_MODE);
-        String inputImageName = parameters.getValue(INPUT_IMAGE);
-        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
-        String numericFilterMode = parameters.getValue(NUMERIC_FILTER_MODE);
-        String textFilterMode = parameters.getValue(TEXT_FILTER_MODE);
-        String referenceImageMeasurement = parameters.getValue(IMAGE_MEASUREMENT);
-        String referenceMetadataValue = parameters.getValue(METADATA_VALUE);
-        double referenceValueNumber = parameters.getValue(REFERENCE_NUMERIC_VALUE);
-        String referenceValueText = parameters.getValue(REFERENCE_TEXT_VALUE);
-        double fixedValueNumber = parameters.getValue(FIXED_VALUE);
-        String genericFormat = parameters.getValue(GENERIC_FORMAT);
-        boolean showRedirectMessage = parameters.getValue(SHOW_REDIRECT_MESSAGE);
+        String testMode = parameters.getValue(TEST_MODE,workspace);
+        String inputImageName = parameters.getValue(INPUT_IMAGE,workspace);
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
+        String numericFilterMode = parameters.getValue(NUMERIC_FILTER_MODE,workspace);
+        String textFilterMode = parameters.getValue(TEXT_FILTER_MODE,workspace);
+        String referenceImageMeasurement = parameters.getValue(IMAGE_MEASUREMENT,workspace);
+        String referenceMetadataValue = parameters.getValue(METADATA_VALUE,workspace);
+        double referenceValueNumber = parameters.getValue(REFERENCE_NUMERIC_VALUE,workspace);
+        String referenceValueText = parameters.getValue(REFERENCE_TEXT_VALUE,workspace);
+        double fixedValueNumber = parameters.getValue(FIXED_VALUE,workspace);
+        String genericFormat = parameters.getValue(GENERIC_FORMAT,workspace);
+        boolean showRedirectMessage = parameters.getValue(SHOW_REDIRECT_MESSAGE,workspace);
 
         // Running relevant tests
         boolean terminate = false;
@@ -343,11 +343,12 @@ public class WorkflowHandling extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
+Workspace workspace = null;
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(CONDITION_SEPARATOR));
         returnedParameters.add(parameters.getParameter(TEST_MODE));
-        switch ((String) parameters.getValue(TEST_MODE)) {
+        switch ((String) parameters.getValue(TEST_MODE,workspace)) {
             case TestModes.FILE_EXISTS:
             case TestModes.FILE_DOES_NOT_EXIST:
                 returnedParameters.add(parameters.getParameter(GENERIC_FORMAT));
@@ -367,7 +368,7 @@ public class WorkflowHandling extends Module {
                 returnedParameters.add(parameters.getParameter(NUMERIC_FILTER_MODE));
                 returnedParameters.add(parameters.getParameter(REFERENCE_NUMERIC_VALUE));
 
-                String inputImageName = parameters.getValue(INPUT_IMAGE);
+                String inputImageName = parameters.getValue(INPUT_IMAGE,workspace);
                 ImageMeasurementP parameter = parameters.getParameter(IMAGE_MEASUREMENT);
                 parameter.setImageName(inputImageName);
                 break;
@@ -393,12 +394,12 @@ public class WorkflowHandling extends Module {
 
         returnedParameters.add(parameters.getParameter(RESULT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(CONTINUATION_MODE));
-        switch ((String) parameters.getValue(CONTINUATION_MODE)) {
+        switch ((String) parameters.getValue(CONTINUATION_MODE,workspace)) {
             case ContinuationModes.REDIRECT_TO_MODULE:
                 returnedParameters.add(parameters.getParameter(REDIRECT_MODULE));
-                redirectModule = parameters.getValue(REDIRECT_MODULE);
+                redirectModule = parameters.getValue(REDIRECT_MODULE,workspace);
                 returnedParameters.add(parameters.getParameter(SHOW_REDIRECT_MESSAGE));
-                if ((boolean) parameters.getValue(SHOW_REDIRECT_MESSAGE)) {
+                if ((boolean) parameters.getValue(SHOW_REDIRECT_MESSAGE,workspace)) {
                     returnedParameters.add(parameters.getParameter(REDIRECT_MESSAGE));
                     returnedParameters.add(parameters.getParameter(MESSAGE_LEVEL));
                 }
@@ -418,26 +419,31 @@ public class WorkflowHandling extends Module {
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
-    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
-    public MetadataRefs updateAndGetMetadataReferences() {
+public MetadataRefs updateAndGetMetadataReferences() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
+Workspace workspace = null;
         return null;
     }
 

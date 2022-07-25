@@ -79,12 +79,12 @@ public class CombineObjectSets extends Module {
     @Override
     public Status process(Workspace workspace) {
         // Getting input objects
-        String inputObjects1Name = parameters.getValue(INPUT_OBJECTS_1);
+        String inputObjects1Name = parameters.getValue(INPUT_OBJECTS_1,workspace);
         Objs inputObjects1 = workspace.getObjectSet(inputObjects1Name);
-        String inputObjects2Name = parameters.getValue(INPUT_OBJECTS_2);
+        String inputObjects2Name = parameters.getValue(INPUT_OBJECTS_2,workspace);
         Objs inputObjects2 = workspace.getObjectSet(inputObjects2Name);
-        String outputMode = parameters.getValue(OUTPUT_MODE);
-        String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);
+        String outputMode = parameters.getValue(OUTPUT_MODE,workspace);
+        String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS,workspace);
 
         // Doing object merging
         switch (outputMode) {
@@ -138,6 +138,7 @@ public class CombineObjectSets extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
+Workspace workspace = null;
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.get(INPUT_SEPARATOR));
@@ -146,7 +147,7 @@ public class CombineObjectSets extends Module {
 
         returnedParameters.add(parameters.get(OUTPUT_SEPARATOR));
         returnedParameters.add(parameters.get(OUTPUT_MODE));
-        switch ((String) parameters.getValue(OUTPUT_MODE)) {
+        switch ((String) parameters.getValue(OUTPUT_MODE,workspace)) {
             case OutputModes.CREATE_NEW:
                 returnedParameters.add(parameters.get(OUTPUT_OBJECTS));
                 break;
@@ -158,26 +159,31 @@ public class CombineObjectSets extends Module {
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
-    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
-    public MetadataRefs updateAndGetMetadataReferences() {
+public MetadataRefs updateAndGetMetadataReferences() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
+Workspace workspace = null;
         return null;
     }
 

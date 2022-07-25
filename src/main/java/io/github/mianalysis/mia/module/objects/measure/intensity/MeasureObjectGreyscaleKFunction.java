@@ -120,19 +120,19 @@ public class MeasureObjectGreyscaleKFunction extends Module {
     @Override
     public Status process(Workspace workspace) {
         // Getting input objects
-        String inputImageName = parameters.getValue(INPUT_IMAGE);
-        String objectName = parameters.getValue(INPUT_OBJECTS);
+        String inputImageName = parameters.getValue(INPUT_IMAGE,workspace);
+        String objectName = parameters.getValue(INPUT_OBJECTS,workspace);
         Objs objects = workspace.getObjects().get(objectName);
 
-        int minRadius = parameters.getValue(MINIMUM_RADIUS_PX);
-        int maxRadius = parameters.getValue(MAXIMUM_RADIUS_PX);
-        int radiusInc = parameters.getValue(RADIUS_INCREMENT);
+        int minRadius = parameters.getValue(MINIMUM_RADIUS_PX,workspace);
+        int maxRadius = parameters.getValue(MAXIMUM_RADIUS_PX,workspace);
+        int radiusInc = parameters.getValue(RADIUS_INCREMENT,workspace);
 
-        String saveNameMode = parameters.getValue(SAVE_NAME_MODE);
-        String saveFileName = parameters.getValue(SAVE_FILE_NAME);
-        String appendSeriesMode = parameters.getValue(APPEND_SERIES_MODE);
-        String appendDateTimeMode = parameters.getValue(APPEND_DATETIME_MODE);
-        String suffix = parameters.getValue(SAVE_SUFFIX);
+        String saveNameMode = parameters.getValue(SAVE_NAME_MODE,workspace);
+        String saveFileName = parameters.getValue(SAVE_FILE_NAME,workspace);
+        String appendSeriesMode = parameters.getValue(APPEND_SERIES_MODE,workspace);
+        String appendDateTimeMode = parameters.getValue(APPEND_DATETIME_MODE,workspace);
+        String suffix = parameters.getValue(SAVE_SUFFIX,workspace);
 
         SXSSFWorkbook workbook = initialiseWorkbook();
         SXSSFSheet sheet = workbook.getSheetAt(0);
@@ -252,6 +252,7 @@ public class MeasureObjectGreyscaleKFunction extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
+Workspace workspace = null;
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
@@ -265,7 +266,7 @@ public class MeasureObjectGreyscaleKFunction extends Module {
 
         returnedParameters.add(parameters.getParameter(FILE_SAVING_SEPARATOR));
         returnedParameters.add(parameters.getParameter(SAVE_NAME_MODE));
-        switch ((String) parameters.getValue(SAVE_NAME_MODE)) {
+        switch ((String) parameters.getValue(SAVE_NAME_MODE,workspace)) {
             case SaveNameModes.SPECIFIC_NAME:
                 returnedParameters.add(parameters.getParameter(SAVE_FILE_NAME));
                 break;
@@ -281,26 +282,31 @@ public class MeasureObjectGreyscaleKFunction extends Module {
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
-    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
-    public MetadataRefs updateAndGetMetadataReferences() {
+public MetadataRefs updateAndGetMetadataReferences() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
+Workspace workspace = null;
         return null;
     }
 

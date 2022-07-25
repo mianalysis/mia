@@ -159,7 +159,7 @@ public class ModuleListPanel extends JScrollPane {
         for (Module module:modules) {
             // If module is a GUI separator, update expanded status
             if (module instanceof GUISeparator) {
-                expanded = module.getParameterValue(GUISeparator.EXPANDED_EDITING);
+                expanded = module.getParameterValue(GUISeparator.EXPANDED_EDITING,null);
                 expandedStatus.put(module,true); // GUISeparator is always expanded
             } else {
                 expandedStatus.put(module,expanded);

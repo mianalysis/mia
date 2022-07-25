@@ -66,31 +66,31 @@ public class CircleHoughDetection extends AbstractHoughDetection {
     @Override
     public Status process(Workspace workspace) {
         // Getting input image
-        String inputImageName = parameters.getValue(INPUT_IMAGE);
+        String inputImageName = parameters.getValue(INPUT_IMAGE,workspace);
         Image inputImage = workspace.getImage(inputImageName);
         ImagePlus ipl = inputImage.getImagePlus();
 
         // Getting parameters
-        String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);
-        boolean outputTransformImage = parameters.getValue(OUTPUT_TRANSFORM_IMAGE);
-        String outputImageName = parameters.getValue(OUTPUT_IMAGE);
+        String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS,workspace);
+        boolean outputTransformImage = parameters.getValue(OUTPUT_TRANSFORM_IMAGE,workspace);
+        String outputImageName = parameters.getValue(OUTPUT_IMAGE,workspace);
 
         // Getting parameters
-        String xRange = parameters.getValue(X_RANGE);
-        String yRange = parameters.getValue(Y_RANGE);
-        String radiusRange = parameters.getValue(RADIUS_RANGE);
-        int samplingRate = parameters.getValue(DOWNSAMPLE_FACTOR);
-        boolean multithread = parameters.getValue(ENABLE_MULTITHREADING);
-        boolean normaliseScores = parameters.getValue(NORMALISE_SCORES);
-        String detectionMode = parameters.getValue(DETECTION_MODE);
-        double detectionThreshold = parameters.getValue(DETECTION_THRESHOLD);
-        int nObjects = parameters.getValue(NUMBER_OF_OBJECTS);
-        int exclusionRadius = parameters.getValue(EXCLUSION_RADIUS);
-        int radiusResize = parameters.getValue(RADIUS_RESIZE);
-        boolean showTransformImage = parameters.getValue(SHOW_TRANSFORM_IMAGE);
-        boolean showDetectionImage = parameters.getValue(SHOW_DETECTION_IMAGE);
-        boolean showHoughScore = parameters.getValue(SHOW_HOUGH_SCORE);
-        int labelSize = parameters.getValue(LABEL_SIZE);
+        String xRange = parameters.getValue(X_RANGE,workspace);
+        String yRange = parameters.getValue(Y_RANGE,workspace);
+        String radiusRange = parameters.getValue(RADIUS_RANGE,workspace);
+        int samplingRate = parameters.getValue(DOWNSAMPLE_FACTOR,workspace);
+        boolean multithread = parameters.getValue(ENABLE_MULTITHREADING,workspace);
+        boolean normaliseScores = parameters.getValue(NORMALISE_SCORES,workspace);
+        String detectionMode = parameters.getValue(DETECTION_MODE,workspace);
+        double detectionThreshold = parameters.getValue(DETECTION_THRESHOLD,workspace);
+        int nObjects = parameters.getValue(NUMBER_OF_OBJECTS,workspace);
+        int exclusionRadius = parameters.getValue(EXCLUSION_RADIUS,workspace);
+        int radiusResize = parameters.getValue(RADIUS_RESIZE,workspace);
+        boolean showTransformImage = parameters.getValue(SHOW_TRANSFORM_IMAGE,workspace);
+        boolean showDetectionImage = parameters.getValue(SHOW_DETECTION_IMAGE,workspace);
+        boolean showHoughScore = parameters.getValue(SHOW_HOUGH_SCORE,workspace);
+        int labelSize = parameters.getValue(LABEL_SIZE,workspace);
 
         // Storing the image calibration
         SpatCal cal = SpatCal.getFromImage(ipl);
@@ -228,6 +228,7 @@ public class CircleHoughDetection extends AbstractHoughDetection {
 
     @Override
     public Parameters updateAndGetParameters() {
+Workspace workspace = null;
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.addAll(updateAndGetInputParameters());

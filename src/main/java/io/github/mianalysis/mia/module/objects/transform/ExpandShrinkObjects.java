@@ -181,20 +181,20 @@ public class ExpandShrinkObjects extends Module {
     @Override
     public Status process(Workspace workspace) {
         // Getting input objects
-        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
         Objs inputObjects = workspace.getObjectSet(inputObjectsName);
 
         // Getting output image name
-        String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);
+        String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS,workspace);
         Objs outputObjects = new Objs(outputObjectsName, inputObjects);
 
         // Getting parameters
-        boolean updateInputObjects = parameters.getValue(UPDATE_INPUT_OBJECTS);
-        String method = parameters.getValue(METHOD);
-        String radiusChangeSource = parameters.getValue(RADIUS_CHANGE_SOURCE);
-        double radiusChange = parameters.getValue(RADIUS_CHANGE);
-        String measurementName = parameters.getValue(MEASUREMENT);
-        boolean calibratedUnits = parameters.getValue(CALIBRATED_UNITS);
+        boolean updateInputObjects = parameters.getValue(UPDATE_INPUT_OBJECTS,workspace);
+        String method = parameters.getValue(METHOD,workspace);
+        String radiusChangeSource = parameters.getValue(RADIUS_CHANGE_SOURCE,workspace);
+        double radiusChange = parameters.getValue(RADIUS_CHANGE,workspace);
+        String measurementName = parameters.getValue(MEASUREMENT,workspace);
+        boolean calibratedUnits = parameters.getValue(CALIBRATED_UNITS,workspace);
 
         // Storing the image calibration
         Obj firstObj = inputObjects.getFirst();
@@ -297,26 +297,27 @@ public class ExpandShrinkObjects extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
+Workspace workspace = null;
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(INPUT_OBJECTS));
         returnedParameters.add(parameters.getParameter(UPDATE_INPUT_OBJECTS));
 
-        if (!(boolean) parameters.getValue(UPDATE_INPUT_OBJECTS))
+        if (!(boolean) parameters.getValue(UPDATE_INPUT_OBJECTS,workspace))
             returnedParameters.add(parameters.getParameter(OUTPUT_OBJECTS));
 
         returnedParameters.add(parameters.getParameter(PROCESSING_SEPARATOR));
         returnedParameters.add(parameters.getParameter(METHOD));
         returnedParameters.add(parameters.getParameter(RADIUS_CHANGE_SOURCE));
 
-        switch ((String) parameters.getValue(RADIUS_CHANGE_SOURCE)) {
+        switch ((String) parameters.getValue(RADIUS_CHANGE_SOURCE,workspace)) {
             case RadiusChangeSources.FIXED_VALUE:
                 returnedParameters.add(parameters.getParameter(RADIUS_CHANGE));
                 break;
             case RadiusChangeSources.OBJECT_MEASUREMENT:
                 ObjectMeasurementP parameter = parameters.getParameter(MEASUREMENT);
-                parameter.setObjectName(parameters.getValue(INPUT_OBJECTS));
+                parameter.setObjectName(parameters.getValue(INPUT_OBJECTS,workspace));
                 returnedParameters.add(parameters.getParameter(MEASUREMENT));
                 break;
         }
@@ -328,26 +329,30 @@ public class ExpandShrinkObjects extends Module {
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
-    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
-    public MetadataRefs updateAndGetMetadataReferences() {
+public MetadataRefs updateAndGetMetadataReferences() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
+Workspace workspace = null;
         ParentChildRefs returnedRelationships = new ParentChildRefs();
 
-        if (!(boolean) parameters.getValue(UPDATE_INPUT_OBJECTS))
+        if (!(boolean) parameters.getValue(UPDATE_INPUT_OBJECTS,workspace))
             returnedRelationships.add(
-                    parentChildRefs.getOrPut(parameters.getValue(INPUT_OBJECTS), parameters.getValue(OUTPUT_OBJECTS)));
+                    parentChildRefs.getOrPut(parameters.getValue(INPUT_OBJECTS,workspace), parameters.getValue(OUTPUT_OBJECTS,workspace)));
 
         return returnedRelationships;
 
@@ -355,6 +360,7 @@ public class ExpandShrinkObjects extends Module {
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
+Workspace workspace = null;
         return null;
     }
 

@@ -68,7 +68,7 @@ public class AnalysisRunner {
         // Set the number of Fiji threads to maximise the number of jobs, so it doesn't
         // clash with MIA multi-threading. Also, check that no macros are being run
         // (these don't work with simultaneous jobs).
-        int nSimultaneousJobs = inputControl.getParameterValue(InputControl.SIMULTANEOUS_JOBS);
+        int nSimultaneousJobs = inputControl.getParameterValue(InputControl.SIMULTANEOUS_JOBS,null);
         nSimultaneousJobs = Math.min(jobs.size(), nSimultaneousJobs);
         if (analysis.getModules().hasModuleMatchingType(AbstractMacroRunner.class) && nSimultaneousJobs > 1) {
             MIA.log.writeWarning(
@@ -112,7 +112,7 @@ public class AnalysisRunner {
         // Exporting to Excel for Workspaces
         if ((outputControl.isExportAllTogether() || outputControl.isExportGroupedByMetadata()) && exporter != null) {
             MIA.log.writeStatus("Exporting data");
-            File outputFile = new File((String) inputControl.getParameterValue(InputControl.INPUT_PATH));
+            File outputFile = new File((String) inputControl.getParameterValue(InputControl.INPUT_PATH,null));
             String name = outputControl.getGroupOutputPath(outputFile);
             exporter.exportResults(workspaces, analysis, name);
         }
@@ -136,12 +136,12 @@ public class AnalysisRunner {
             return new HashSet<>();
 
         FileCrawler fileCrawler = new FileCrawler(inputFile);
-        fileCrawler.setIgnoreCase(inputControl.getParameterValue(InputControl.IGNORE_CASE));
+        fileCrawler.setIgnoreCase(inputControl.getParameterValue(InputControl.IGNORE_CASE,null));
         inputControl.addFilenameFilters(fileCrawler);
         
-        boolean firstPerFolder = inputControl.getParameterValue(InputControl.LOAD_FIRST_PER_FOLDER);
-        boolean firstMatchingGroup = inputControl.getParameterValue(InputControl.LOAD_FIRST_MATCHING_GROUP);
-        String patternString = inputControl.getParameterValue(InputControl.PATTERN);
+        boolean firstPerFolder = inputControl.getParameterValue(InputControl.LOAD_FIRST_PER_FOLDER,null);
+        boolean firstMatchingGroup = inputControl.getParameterValue(InputControl.LOAD_FIRST_MATCHING_GROUP,null);
+        String patternString = inputControl.getParameterValue(InputControl.PATTERN,null);
         Pattern pattern = firstMatchingGroup ? Pattern.compile(patternString) : null;
         HashSet<String> groups = new HashSet<>();
 
@@ -220,14 +220,14 @@ public class AnalysisRunner {
     }
 
     Exporter initialiseExporter(OutputControl outputControl) {
-        String exportMode = outputControl.getParameterValue(OutputControl.EXPORT_MODE);
-        String metadataItemForGrouping = outputControl.getParameterValue(OutputControl.METADATA_ITEM_FOR_GROUPING);
+        String exportMode = outputControl.getParameterValue(OutputControl.EXPORT_MODE,null);
+        String metadataItemForGrouping = outputControl.getParameterValue(OutputControl.METADATA_ITEM_FOR_GROUPING,null);
         boolean exportXLS = outputControl.isEnabled();
-        boolean exportSummary = outputControl.getParameterValue(OutputControl.EXPORT_SUMMARY);
-        String summaryType = outputControl.getParameterValue(OutputControl.SUMMARY_MODE);
-        boolean exportIndividualObjects = outputControl.getParameterValue(OutputControl.EXPORT_INDIVIDUAL_OBJECTS);
-        String appendDateTimeMode = outputControl.getParameterValue(OutputControl.APPEND_DATETIME_MODE);
-        boolean showObjectCounts = outputControl.getParameterValue(OutputControl.SHOW_OBJECT_COUNTS);
+        boolean exportSummary = outputControl.getParameterValue(OutputControl.EXPORT_SUMMARY,null);
+        String summaryType = outputControl.getParameterValue(OutputControl.SUMMARY_MODE,null);
+        boolean exportIndividualObjects = outputControl.getParameterValue(OutputControl.EXPORT_INDIVIDUAL_OBJECTS,null);
+        String appendDateTimeMode = outputControl.getParameterValue(OutputControl.APPEND_DATETIME_MODE,null);
+        boolean showObjectCounts = outputControl.getParameterValue(OutputControl.SHOW_OBJECT_COUNTS,null);
 
         // Initialising the exporter (if one was requested)
         Exporter exporter = exportXLS ? new Exporter() : null;
@@ -263,7 +263,7 @@ public class AnalysisRunner {
             case OutputControl.SummaryModes.GROUP_BY_METADATA:
                 exporter.setSummaryMode(Exporter.SummaryMode.GROUP_BY_METADATA);
                 exporter.setMetadataItemForSummary(
-                        outputControl.getParameterValue(OutputControl.METADATA_ITEM_FOR_SUMMARY));
+                        outputControl.getParameterValue(OutputControl.METADATA_ITEM_FOR_SUMMARY,null));
                 break;
             }
 
@@ -294,8 +294,8 @@ public class AnalysisRunner {
             try {
                 InputControl inputControl = analysis.getModules().getInputControl();
                 OutputControl outputControl = analysis.getModules().getOutputControl();
-                boolean continuousExport = outputControl.getParameterValue(OutputControl.CONTINUOUS_DATA_EXPORT);
-                int saveNFiles = outputControl.getParameterValue(OutputControl.SAVE_EVERY_N);
+                boolean continuousExport = outputControl.getParameterValue(OutputControl.CONTINUOUS_DATA_EXPORT,null);
+                int saveNFiles = outputControl.getParameterValue(OutputControl.SAVE_EVERY_N,null);
 
                 // Running the current analysis
                 analysis.execute(workspace);

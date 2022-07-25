@@ -160,11 +160,11 @@ public class MeasureObjectIntensity extends Module {
     @Override
     public Status process(Workspace workspace) {
         // Getting input objects
-        String objectName = parameters.getValue(INPUT_OBJECTS);
+        String objectName = parameters.getValue(INPUT_OBJECTS,workspace);
         Objs objects = workspace.getObjects().get(objectName);
 
         // Getting input image
-        String imageName = parameters.getValue(INPUT_IMAGE);
+        String imageName = parameters.getValue(INPUT_IMAGE,workspace);
         Image inputImage = workspace.getImages().get(imageName);
 
         // Measuring intensity for each object and adding the measurement to that object
@@ -174,7 +174,7 @@ public class MeasureObjectIntensity extends Module {
             measureIntensity(object, inputImage,true);
 
             // If specified, measuring weighted centre for intensity
-            if ((boolean) parameters.getValue(MEASURE_WEIGHTED_CENTRE))
+            if ((boolean) parameters.getValue(MEASURE_WEIGHTED_CENTRE,workspace))
                 measureWeightedCentre(object, inputImage, true);
 
             writeProgressStatus(++count, total, "objects");
@@ -203,6 +203,7 @@ public class MeasureObjectIntensity extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
+Workspace workspace = null;
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
@@ -218,15 +219,17 @@ public class MeasureObjectIntensity extends Module {
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
-    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+Workspace workspace = null;
         ObjMeasurementRefs returnedRefs = new ObjMeasurementRefs();
 
-        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
-        String inputImageName = parameters.getValue(INPUT_IMAGE);
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
+        String inputImageName = parameters.getValue(INPUT_IMAGE,workspace);
 
         String name = getFullName(inputImageName, Measurements.MEAN);
         ObjMeasurementRef mean = objectMeasurementRefs.getOrPut(name);
@@ -263,7 +266,7 @@ public class MeasureObjectIntensity extends Module {
                 + " \"" + inputObjectsName + "\" object");
         returnedRefs.add(sum);
 
-        if ((boolean) parameters.getValue(MEASURE_WEIGHTED_CENTRE)) {
+        if ((boolean) parameters.getValue(MEASURE_WEIGHTED_CENTRE,workspace)) {
             name = getFullName(inputImageName, Measurements.X_CENT_MEAN);
             ObjMeasurementRef reference = objectMeasurementRefs.getOrPut(name);
             reference.setObjectsName(inputObjectsName);
@@ -316,17 +319,20 @@ public class MeasureObjectIntensity extends Module {
     }
 
     @Override
-    public MetadataRefs updateAndGetMetadataReferences() {
+public MetadataRefs updateAndGetMetadataReferences() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
+Workspace workspace = null;
         return null;
     }
 

@@ -144,32 +144,32 @@ public class AddTracks extends AbstractOverlay {
     @Override
     public Status process(Workspace workspace) {
         // Getting parameters
-        boolean applyToInput = parameters.getValue(APPLY_TO_INPUT);
-        boolean addOutputToWorkspace = parameters.getValue(ADD_OUTPUT_TO_WORKSPACE);
-        String outputImageName = parameters.getValue(OUTPUT_IMAGE);
-        String spotObjectsName = parameters.getValue(SPOT_OBJECTS);
+        boolean applyToInput = parameters.getValue(APPLY_TO_INPUT,workspace);
+        boolean addOutputToWorkspace = parameters.getValue(ADD_OUTPUT_TO_WORKSPACE,workspace);
+        String outputImageName = parameters.getValue(OUTPUT_IMAGE,workspace);
+        String spotObjectsName = parameters.getValue(SPOT_OBJECTS,workspace);
 
         // Getting input objects
-        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
         Objs inputObjects = workspace.getObjects().get(inputObjectsName);
 
         // Getting input image
-        String inputImageName = parameters.getValue(INPUT_IMAGE);
+        String inputImageName = parameters.getValue(INPUT_IMAGE,workspace);
         Image inputImage = workspace.getImages().get(inputImageName);
         ImagePlus ipl = inputImage.getImagePlus();
 
-        String colourMode = parameters.getValue(COLOUR_MODE);
-        String colourMap = parameters.getValue(COLOUR_MAP);
-        String rangeMinMode = parameters.getValue(RANGE_MINIMUM_MODE);
-        double minValue = parameters.getValue(MINIMUM_VALUE);
-        String rangeMaxMode = parameters.getValue(RANGE_MAXIMUM_MODE);
-        double maxValue = parameters.getValue(MAXIMUM_VALUE);
-        String measurementForColour = parameters.getValue(MEASUREMENT_FOR_COLOUR);
-        boolean limitHistory = parameters.getValue(LIMIT_TRACK_HISTORY);
-        int history = parameters.getValue(TRACK_HISTORY);
+        String colourMode = parameters.getValue(COLOUR_MODE,workspace);
+        String colourMap = parameters.getValue(COLOUR_MAP,workspace);
+        String rangeMinMode = parameters.getValue(RANGE_MINIMUM_MODE,workspace);
+        double minValue = parameters.getValue(MINIMUM_VALUE,workspace);
+        String rangeMaxMode = parameters.getValue(RANGE_MAXIMUM_MODE,workspace);
+        double maxValue = parameters.getValue(MAXIMUM_VALUE,workspace);
+        String measurementForColour = parameters.getValue(MEASUREMENT_FOR_COLOUR,workspace);
+        boolean limitHistory = parameters.getValue(LIMIT_TRACK_HISTORY,workspace);
+        int history = parameters.getValue(TRACK_HISTORY,workspace);
 
-        double opacity = parameters.getValue(OPACITY);
-        double lineWidth = parameters.getValue(LINE_WIDTH);
+        double opacity = parameters.getValue(OPACITY,workspace);
+        double lineWidth = parameters.getValue(LINE_WIDTH,workspace);
 
         // Only add output to workspace if not applying to input
         if (applyToInput)
@@ -180,7 +180,7 @@ public class AddTracks extends AbstractOverlay {
             ipl = new Duplicator().run(ipl);
 
         // Generating colours for each object
-        HashMap<Integer, Color> colours = getColours(inputObjects);
+        HashMap<Integer, Color> colours = getColours(inputObjects, workspace);
 
         HashMap<Integer, Color> instantaneousColours = null;
         if (colourMode.equals(ColourModes.INSTANTANEOUS_MEASUREMENT_VALUE)) {
@@ -265,7 +265,8 @@ public class AddTracks extends AbstractOverlay {
 
     @Override
     public Parameters updateAndGetParameters() {
-        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+Workspace workspace = null;
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
 
         Parameters returnedParameters = new Parameters();
 
@@ -276,33 +277,33 @@ public class AddTracks extends AbstractOverlay {
 
         returnedParameters.add(parameters.getParameter(OUTPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(APPLY_TO_INPUT));
-        if (!(boolean) parameters.getValue(APPLY_TO_INPUT)) {
+        if (!(boolean) parameters.getValue(APPLY_TO_INPUT,workspace)) {
             returnedParameters.add(parameters.getParameter(ADD_OUTPUT_TO_WORKSPACE));
 
-            if ((boolean) parameters.getValue(ADD_OUTPUT_TO_WORKSPACE)) {
+            if ((boolean) parameters.getValue(ADD_OUTPUT_TO_WORKSPACE,workspace)) {
                 returnedParameters.add(parameters.getParameter(OUTPUT_IMAGE));
             }
         }
 
         returnedParameters.addAll(super.updateAndGetParameters(inputObjectsName));
-        if (((String) parameters.getValue(COLOUR_MODE)).equals(ColourModes.INSTANTANEOUS_MEASUREMENT_VALUE)) {
+        if (((String) parameters.getValue(COLOUR_MODE,workspace)).equals(ColourModes.INSTANTANEOUS_MEASUREMENT_VALUE)) {
             returnedParameters.add(parameters.getParameter(LINE_WIDTH));
             returnedParameters.add(parameters.getParameter(COLOUR_MAP));
             returnedParameters.add(parameters.getParameter(MEASUREMENT_FOR_COLOUR));
             ((ObjectMeasurementP) parameters.getParameter(MEASUREMENT_FOR_COLOUR))
-                    .setObjectName(parameters.getValue(SPOT_OBJECTS));
+                    .setObjectName(parameters.getValue(SPOT_OBJECTS,workspace));
             returnedParameters.add(parameters.getParameter(RANGE_MINIMUM_MODE));
-            if (((String) parameters.getValue(RANGE_MINIMUM_MODE)).equals(RangeModes.MANUAL))
+            if (((String) parameters.getValue(RANGE_MINIMUM_MODE,workspace)).equals(RangeModes.MANUAL))
                 returnedParameters.add(parameters.getParameter(MINIMUM_VALUE));
             returnedParameters.add(parameters.getParameter(RANGE_MAXIMUM_MODE));
-            if (((String) parameters.getValue(RANGE_MAXIMUM_MODE)).equals(RangeModes.MANUAL))
+            if (((String) parameters.getValue(RANGE_MAXIMUM_MODE,workspace)).equals(RangeModes.MANUAL))
                 returnedParameters.add(parameters.getParameter(MAXIMUM_VALUE));
         }
 
         returnedParameters.add(parameters.getParameter(RENDERING_SEPARATOR));
         returnedParameters.add(parameters.getParameter(LIMIT_TRACK_HISTORY));
 
-        if ((boolean) parameters.getValue(LIMIT_TRACK_HISTORY))
+        if ((boolean) parameters.getValue(LIMIT_TRACK_HISTORY,workspace))
             returnedParameters.add(parameters.getParameter(TRACK_HISTORY));
         ((ChildObjectsP) parameters.getParameter(SPOT_OBJECTS)).setParentObjectsName(inputObjectsName);
         returnedParameters.add(parameters.getParameter(LINE_WIDTH));
@@ -316,26 +317,31 @@ public class AddTracks extends AbstractOverlay {
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
-    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
-    public MetadataRefs updateAndGetMetadataReferences() {
+public MetadataRefs updateAndGetMetadataReferences() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
+Workspace workspace = null;
         return null;
     }
 

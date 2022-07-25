@@ -77,7 +77,7 @@ public class DoublePTest {
 
         DoubleP doubleP = new DoubleP("Test val",paramTest,2);
 
-        assertEquals(2,doubleP.getValue(),tolerance);
+        assertEquals(2,doubleP.getValue(null),tolerance);
 
     }
 
@@ -88,7 +88,7 @@ public class DoublePTest {
 
         DoubleP doubleP = new DoubleP("Test val",paramTest,3.142);
 
-        assertEquals(3.142,doubleP.getValue(),tolerance);
+        assertEquals(3.142,doubleP.getValue(null),tolerance);
 
     }
 
@@ -99,7 +99,7 @@ public class DoublePTest {
 
         DoubleP doubleP = new DoubleP("Test val",paramTest,1.2345678901);
 
-        assertEquals(1.2345678901,doubleP.getValue(),tolerance);
+        assertEquals(1.2345678901,doubleP.getValue(null),tolerance);
 
     }
 
@@ -110,7 +110,7 @@ public class DoublePTest {
 
         DoubleP doubleP = new DoubleP("Test val",paramTest,6.46E-42);
 
-        assertEquals(6.46E-42,doubleP.getValue(),tolerance);
+        assertEquals(6.46E-42,doubleP.getValue(null),tolerance);
 
     }
 
@@ -122,7 +122,7 @@ public class DoublePTest {
         DoubleP doubleP = new DoubleP("Test val",paramTest,"");
 
         // The following should throw the NumberFormatException
-        assertThrows(NumberFormatException.class,() -> doubleP.getValue());
+        assertThrows(NumberFormatException.class,() -> doubleP.getValue(null));
 
     }
 
@@ -137,7 +137,7 @@ public class DoublePTest {
         assertEquals("Test val",duplicated.getName());
         assertEquals(paramTest,duplicated.getModule());
         assertFalse(duplicated.isVisible());
-        assertEquals(42.54,duplicated.getValue(),tolerance);
+        assertEquals(42.54,duplicated.getValue(null),tolerance);
 
     }
 
@@ -149,7 +149,7 @@ public class DoublePTest {
         DoubleP doubleP = new DoubleP("Test val",paramTest,"");
         doubleP.setValueFromString("2");
 
-        assertEquals(2,doubleP.getValue(),tolerance);
+        assertEquals(2,doubleP.getValue(null),tolerance);
 
     }
 
@@ -161,7 +161,7 @@ public class DoublePTest {
         DoubleP doubleP = new DoubleP("Test val",paramTest,"");
         doubleP.setValueFromString("3.142");
 
-        assertEquals(3.142,doubleP.getValue(),tolerance);
+        assertEquals(3.142,doubleP.getValue(null),tolerance);
 
     }
 
@@ -173,7 +173,7 @@ public class DoublePTest {
         DoubleP doubleP = new DoubleP("Test val",paramTest,"");
         doubleP.setValueFromString("1.2345678901");
 
-        assertEquals(1.2345678901,doubleP.getValue(),tolerance);
+        assertEquals(1.2345678901,doubleP.getValue(null),tolerance);
 
     }
 
@@ -185,7 +185,7 @@ public class DoublePTest {
         DoubleP doubleP = new DoubleP("Test val",paramTest,"");
         doubleP.setValueFromString("6.46E-42");
 
-        assertEquals(6.46E-42,doubleP.getValue(),tolerance);
+        assertEquals(6.46E-42,doubleP.getValue(null),tolerance);
 
     }
 
@@ -198,7 +198,7 @@ public class DoublePTest {
         doubleP.setValueFromString("");
 
         // The following should throw the NumberFormatException
-        assertEquals(12,doubleP.getValue(),tolerance);
+        assertEquals(12,doubleP.getValue(null),tolerance);
 
     }
 
@@ -258,7 +258,7 @@ public class DoublePTest {
 
         assertEquals("Test val",doubleP.getName());
         assertEquals("New nick",doubleP.getNickname());
-        assertEquals(-3.142E4,doubleP.getValue(),tolerance);
+        assertEquals(-3.142E4,doubleP.getValue(null),tolerance);
         assertFalse(doubleP.isVisible());
 
     }

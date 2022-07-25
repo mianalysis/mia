@@ -65,15 +65,15 @@ public class AffineSIFT extends AbstractAffineRegistration {
 
                 // Setting up the parameters
                 SIFTParam siftParam = (SIFTParam) param;
-                siftParam.initialSigma = (float) (double) parameters.getValue(INITIAL_SIGMA);
-                siftParam.steps = parameters.getValue(STEPS);
-                siftParam.minOctaveSize = parameters.getValue(MINIMUM_IMAGE_SIZE);
-                siftParam.maxOctaveSize = parameters.getValue(MAXIMUM_IMAGE_SIZE);
-                siftParam.fdSize = parameters.getValue(FD_SIZE);
-                siftParam.fdBins = parameters.getValue(FD_ORIENTATION_BINS);
-                siftParam.rod = (float) (double) parameters.getValue(ROD);
-                siftParam.maxEpsilon = (float) (double) parameters.getValue(MAX_EPSILON);
-                siftParam.minInlierRatio = (float) (double) parameters.getValue(MIN_INLIER_RATIO);
+                siftParam.initialSigma = (float) (double) parameters.getValue(INITIAL_SIGMA,workspace);
+                siftParam.steps = parameters.getValue(STEPS,workspace);
+                siftParam.minOctaveSize = parameters.getValue(MINIMUM_IMAGE_SIZE,workspace);
+                siftParam.maxOctaveSize = parameters.getValue(MAXIMUM_IMAGE_SIZE,workspace);
+                siftParam.fdSize = parameters.getValue(FD_SIZE,workspace);
+                siftParam.fdBins = parameters.getValue(FD_ORIENTATION_BINS,workspace);
+                siftParam.rod = (float) (double) parameters.getValue(ROD,workspace);
+                siftParam.maxEpsilon = (float) (double) parameters.getValue(MAX_EPSILON,workspace);
+                siftParam.minInlierRatio = (float) (double) parameters.getValue(MIN_INLIER_RATIO,workspace);
 
         }
 
@@ -137,6 +137,7 @@ public class AffineSIFT extends AbstractAffineRegistration {
 
         @Override
         public Parameters updateAndGetParameters() {
+Workspace workspace = null;
                 Parameters returnedParameters = new Parameters();
 
                 returnedParameters.addAll(super.updateAndGetParameters());

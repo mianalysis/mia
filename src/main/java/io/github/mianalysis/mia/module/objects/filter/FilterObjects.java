@@ -438,26 +438,26 @@ public class FilterObjects extends Module implements ActionListener {
     @Override
     public Status process(Workspace workspace) {
         // Getting input objects
-        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
         Objs inputObjects = workspace.getObjects().get(inputObjectsName);
 
         // Getting parameters
-        String filterMode = parameters.getValue(FILTER_MODE);
-        String outputObjectsName = parameters.getValue(OUTPUT_FILTERED_OBJECTS);
-        String method = parameters.getValue(FILTER_METHOD);
-        boolean includeZ = parameters.getValue(INCLUDE_Z_POSITION);
-        String measurement = parameters.getValue(MEASUREMENT);
-        String parentObjectName = parameters.getValue(PARENT_OBJECT);
-        String childObjectsName = parameters.getValue(CHILD_OBJECTS);
-        String referenceMode = parameters.getValue(REFERENCE_MODE);
-        double referenceValue = parameters.getValue(REFERENCE_VALUE);
-        String referenceValueImage = parameters.getValue(REFERENCE_VAL_IMAGE);
-        String referenceValueParent = parameters.getValue(REFERENCE_VAL_PARENT_OBJECT);
-        String referenceImageMeasurement = parameters.getValue(REFERENCE_IMAGE_MEASUREMENT);
-        String referenceObjectMeasurement = parameters.getValue(REFERENCE_OBJECT_MEASUREMENT);
-        double referenceMultiplier = parameters.getValue(REFERENCE_MULTIPLIER);
-        boolean showImage = parameters.getValue(SHOW_IMAGE);
-        String displayImageName = parameters.getValue(DISPLAY_IMAGE_NAME);
+        String filterMode = parameters.getValue(FILTER_MODE,workspace);
+        String outputObjectsName = parameters.getValue(OUTPUT_FILTERED_OBJECTS,workspace);
+        String method = parameters.getValue(FILTER_METHOD,workspace);
+        boolean includeZ = parameters.getValue(INCLUDE_Z_POSITION,workspace);
+        String measurement = parameters.getValue(MEASUREMENT,workspace);
+        String parentObjectName = parameters.getValue(PARENT_OBJECT,workspace);
+        String childObjectsName = parameters.getValue(CHILD_OBJECTS,workspace);
+        String referenceMode = parameters.getValue(REFERENCE_MODE,workspace);
+        double referenceValue = parameters.getValue(REFERENCE_VALUE,workspace);
+        String referenceValueImage = parameters.getValue(REFERENCE_VAL_IMAGE,workspace);
+        String referenceValueParent = parameters.getValue(REFERENCE_VAL_PARENT_OBJECT,workspace);
+        String referenceImageMeasurement = parameters.getValue(REFERENCE_IMAGE_MEASUREMENT,workspace);
+        String referenceObjectMeasurement = parameters.getValue(REFERENCE_OBJECT_MEASUREMENT,workspace);
+        double referenceMultiplier = parameters.getValue(REFERENCE_MULTIPLIER,workspace);
+        boolean showImage = parameters.getValue(SHOW_IMAGE,workspace);
+        String displayImageName = parameters.getValue(DISPLAY_IMAGE_NAME,workspace);
 
         Objs outputObjects = filterMode.equals(FilterModes.MOVE_FILTERED_OBJECTS)
                 ? new Objs(outputObjectsName, inputObjects)
@@ -582,23 +582,24 @@ public class FilterObjects extends Module implements ActionListener {
 
     @Override
     public Parameters updateAndGetParameters() {
-        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+Workspace workspace = null;
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
 
         Parameters returnedParameters = new Parameters();
         returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(INPUT_OBJECTS));
         returnedParameters.add(parameters.getParameter(FILTER_MODE));
-        if (parameters.getValue(FILTER_MODE).equals(FilterModes.MOVE_FILTERED_OBJECTS)) {
+        if (parameters.getValue(FILTER_MODE,workspace).equals(FilterModes.MOVE_FILTERED_OBJECTS)) {
             returnedParameters.add(parameters.getParameter(OUTPUT_FILTERED_OBJECTS));
         }
 
         returnedParameters.add(parameters.getParameter(FILTER_SEPARATOR));
         returnedParameters.add(parameters.getParameter(FILTER_METHOD));
 
-        switch ((String) parameters.getValue(FILTER_METHOD)) {
+        switch ((String) parameters.getValue(FILTER_METHOD,workspace)) {
             case FilterMethods.MISSING_MEASUREMENTS:
                 returnedParameters.add(parameters.getParameter(MEASUREMENT));
-                if (parameters.getValue(INPUT_OBJECTS) != null) {
+                if (parameters.getValue(INPUT_OBJECTS,workspace) != null) {
                     ((ObjectMeasurementP) parameters.getParameter(MEASUREMENT)).setObjectName(inputObjectsName);
                 }
                 break;
@@ -626,7 +627,7 @@ public class FilterObjects extends Module implements ActionListener {
                 ((ObjectMeasurementP) parameters.getParameter(MEASUREMENT)).setObjectName(inputObjectsName);
 
                 returnedParameters.add(parameters.getParameter(REFERENCE_MODE));
-                switch ((String) parameters.getValue(REFERENCE_MODE)) {
+                switch ((String) parameters.getValue(REFERENCE_MODE,workspace)) {
                     case ReferenceModes.FIXED_VALUE:
                         returnedParameters.add(parameters.getParameter(REFERENCE_VALUE));
                         break;
@@ -635,7 +636,7 @@ public class FilterObjects extends Module implements ActionListener {
                         returnedParameters.add(parameters.getParameter(REFERENCE_VAL_IMAGE));
                         returnedParameters.add(parameters.getParameter(REFERENCE_IMAGE_MEASUREMENT));
                         returnedParameters.add(parameters.getParameter(REFERENCE_MULTIPLIER));
-                        String referenceValueImageName = parameters.getValue(REFERENCE_VAL_IMAGE);
+                        String referenceValueImageName = parameters.getValue(REFERENCE_VAL_IMAGE,workspace);
                         ((ImageMeasurementP) parameters.getParameter(REFERENCE_IMAGE_MEASUREMENT))
                                 .setImageName(referenceValueImageName);
                         break;
@@ -644,7 +645,7 @@ public class FilterObjects extends Module implements ActionListener {
                         returnedParameters.add(parameters.getParameter(REFERENCE_VAL_PARENT_OBJECT));
                         returnedParameters.add(parameters.getParameter(REFERENCE_OBJECT_MEASUREMENT));
                         returnedParameters.add(parameters.getParameter(REFERENCE_MULTIPLIER));
-                        String referenceValueParentObjectsName = parameters.getValue(REFERENCE_VAL_PARENT_OBJECT);
+                        String referenceValueParentObjectsName = parameters.getValue(REFERENCE_VAL_PARENT_OBJECT,workspace);
                         ((ParentObjectsP) parameters.getParameter(REFERENCE_VAL_PARENT_OBJECT))
                                 .setChildObjectsName(inputObjectsName);
                         ((ObjectMeasurementP) parameters.getParameter(REFERENCE_OBJECT_MEASUREMENT))
@@ -666,18 +667,20 @@ public class FilterObjects extends Module implements ActionListener {
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
-    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+Workspace workspace = null;
         ObjMeasurementRefs returnedRefs = new ObjMeasurementRefs();
 
         // If the filtered objects are to be moved to a new class, assign them the
         // measurements they've lost
-        if (parameters.getValue(FILTER_MODE).equals(FilterModes.MOVE_FILTERED_OBJECTS)) {
-            String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
-            String filteredObjectsName = parameters.getValue(OUTPUT_FILTERED_OBJECTS);
+        if (parameters.getValue(FILTER_MODE,workspace).equals(FilterModes.MOVE_FILTERED_OBJECTS)) {
+            String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
+            String filteredObjectsName = parameters.getValue(OUTPUT_FILTERED_OBJECTS,workspace);
 
             // Getting object measurement references associated with this object set
             ObjMeasurementRefs references = modules.getObjectMeasurementRefs(inputObjectsName, this);
@@ -696,17 +699,20 @@ public class FilterObjects extends Module implements ActionListener {
     }
 
     @Override
-    public MetadataRefs updateAndGetMetadataReferences() {
+public MetadataRefs updateAndGetMetadataReferences() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
+Workspace workspace = null;
         return null;
     }
 

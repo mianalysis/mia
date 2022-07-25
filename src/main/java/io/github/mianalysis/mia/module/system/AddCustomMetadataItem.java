@@ -43,8 +43,8 @@ public class AddCustomMetadataItem extends Module {
 
     @Override
     protected Status process(Workspace workspace) {
-        String metadataName = parameters.getValue(METADATA_NAME);
-        String metadataValue = parameters.getValue(METADATA_VALUE);
+        String metadataName = parameters.getValue(METADATA_NAME,workspace);
+        String metadataValue = parameters.getValue(METADATA_VALUE,workspace);
 
         // Applying existing metadata values and calculations
         metadataValue = workspace.getMetadata().insertMetadataValues(metadataValue);
@@ -71,24 +71,28 @@ public class AddCustomMetadataItem extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
+Workspace workspace = null;
         return parameters;
     }
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
-    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
-    public MetadataRefs updateAndGetMetadataReferences() {
+public MetadataRefs updateAndGetMetadataReferences() {
+Workspace workspace = null;
         MetadataRefs returnedRefs = new MetadataRefs();
 
-        returnedRefs.add(metadataRefs.getOrPut(parameters.getValue(METADATA_NAME)));
+        returnedRefs.add(metadataRefs.getOrPut(parameters.getValue(METADATA_NAME,workspace)));
 
         return returnedRefs;
 
@@ -96,11 +100,13 @@ public class AddCustomMetadataItem extends Module {
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
+Workspace workspace = null;
         return null;
     }
 

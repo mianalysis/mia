@@ -90,12 +90,12 @@ public class ApplyWekaObjectClassification extends Module {
     @Override
     public Status process(Workspace workspace) {
         // Getting input objects
-        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
         Objs inputObjects = workspace.getObjects().get(inputObjectsName);
 
         // Getting other parameters
-        String classifierPath = parameters.getValue(CLASSIFIER_PATH);
-        boolean applyNormalisation = parameters.getValue(APPLY_NORMALISATION);
+        String classifierPath = parameters.getValue(CLASSIFIER_PATH,workspace);
+        boolean applyNormalisation = parameters.getValue(APPLY_NORMALISATION,workspace);
 
         AbstractClassifier abstractClassifier = null;
         Instances instances = null;
@@ -184,21 +184,24 @@ public class ApplyWekaObjectClassification extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
+Workspace workspace = null;
         return parameters;
     }
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
-    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
-        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+Workspace workspace = null;
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
 
         try {
             // Getting class names
-            String classifierPath = parameters.getValue(CLASSIFIER_PATH);
+            String classifierPath = parameters.getValue(CLASSIFIER_PATH,workspace);
             if (!new File(classifierPath).exists())
                 return null;
                 
@@ -229,17 +232,20 @@ public class ApplyWekaObjectClassification extends Module {
     }
 
     @Override
-    public MetadataRefs updateAndGetMetadataReferences() {
+public MetadataRefs updateAndGetMetadataReferences() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
+Workspace workspace = null;
         return null;
     }
 

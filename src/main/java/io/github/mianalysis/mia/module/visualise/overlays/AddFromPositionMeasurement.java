@@ -135,30 +135,30 @@ public class AddFromPositionMeasurement extends AbstractOverlay {
     @Override
     protected Status process(Workspace workspace) {
         // Getting parameters
-        boolean applyToInput = parameters.getValue(APPLY_TO_INPUT);
-        boolean addOutputToWorkspace = parameters.getValue(ADD_OUTPUT_TO_WORKSPACE);
-        String outputImageName = parameters.getValue(OUTPUT_IMAGE);
+        boolean applyToInput = parameters.getValue(APPLY_TO_INPUT,workspace);
+        boolean addOutputToWorkspace = parameters.getValue(ADD_OUTPUT_TO_WORKSPACE,workspace);
+        String outputImageName = parameters.getValue(OUTPUT_IMAGE,workspace);
 
         // Getting input objects
-        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
         Objs inputObjects = workspace.getObjects().get(inputObjectsName);
 
         // Getting input image
-        String inputImageName = parameters.getValue(INPUT_IMAGE);
+        String inputImageName = parameters.getValue(INPUT_IMAGE,workspace);
         Image inputImage = workspace.getImages().get(inputImageName);
         ImagePlus ipl = inputImage.getImagePlus();
 
-        String xPosMeas = parameters.getValue(X_POSITION_MEASUREMENT);
-        String yPosMeas = parameters.getValue(Y_POSITION_MEASUREMENT);
-        String zPosMeas = parameters.getValue(Z_POSITION_MEASUREMENT);
-        boolean useRadius = parameters.getValue(USE_RADIUS);
-        String tempRadiusMeasurement = parameters.getValue(MEASUREMENT_FOR_RADIUS);
+        String xPosMeas = parameters.getValue(X_POSITION_MEASUREMENT,workspace);
+        String yPosMeas = parameters.getValue(Y_POSITION_MEASUREMENT,workspace);
+        String zPosMeas = parameters.getValue(Z_POSITION_MEASUREMENT,workspace);
+        boolean useRadius = parameters.getValue(USE_RADIUS,workspace);
+        String tempRadiusMeasurement = parameters.getValue(MEASUREMENT_FOR_RADIUS,workspace);
 
-        String pointSize = parameters.getValue(POINT_SIZE);
-        String pointType = parameters.getValue(POINT_TYPE);
-        double lineWidth = parameters.getValue(LINE_WIDTH);
-        boolean renderInAllFrames = parameters.getValue(RENDER_IN_ALL_FRAMES);
-        boolean multithread = parameters.getValue(ENABLE_MULTITHREADING);
+        String pointSize = parameters.getValue(POINT_SIZE,workspace);
+        String pointType = parameters.getValue(POINT_TYPE,workspace);
+        double lineWidth = parameters.getValue(LINE_WIDTH,workspace);
+        boolean renderInAllFrames = parameters.getValue(RENDER_IN_ALL_FRAMES,workspace);
+        boolean multithread = parameters.getValue(ENABLE_MULTITHREADING,workspace);
 
         // Only add output to workspace if not applying to input
         if (applyToInput) addOutputToWorkspace = false;
@@ -171,7 +171,7 @@ public class AddFromPositionMeasurement extends AbstractOverlay {
         String[] posMeasurements = new String[]{xPosMeas, yPosMeas, zPosMeas};
 
         // Generating colours for each object
-        HashMap<Integer,Color> colours = getColours(inputObjects);
+        HashMap<Integer,Color> colours = getColours(inputObjects, workspace);
 
         // If necessary, turning the image into a HyperStack (if 2 dimensions=1 it will be a standard ImagePlus)
         if (!ipl.isComposite() & (ipl.getNSlices() > 1 | ipl.getNFrames() > 1 | ipl.getNChannels() > 1)) {
@@ -251,7 +251,8 @@ public class AddFromPositionMeasurement extends AbstractOverlay {
 
     @Override
     public Parameters updateAndGetParameters() {
-        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+Workspace workspace = null;
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
 
         Parameters returnedParameters = new Parameters();
 
@@ -261,10 +262,10 @@ public class AddFromPositionMeasurement extends AbstractOverlay {
 
         returnedParameters.add(parameters.getParameter(OUTPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(APPLY_TO_INPUT));
-        if (!(boolean) parameters.getValue(APPLY_TO_INPUT)) {
+        if (!(boolean) parameters.getValue(APPLY_TO_INPUT,workspace)) {
             returnedParameters.add(parameters.getParameter(ADD_OUTPUT_TO_WORKSPACE));
 
-            if ((boolean) parameters.getValue(ADD_OUTPUT_TO_WORKSPACE)) {
+            if ((boolean) parameters.getValue(ADD_OUTPUT_TO_WORKSPACE,workspace)) {
                 returnedParameters.add(parameters.getParameter(OUTPUT_IMAGE));
 
             }
@@ -280,7 +281,7 @@ public class AddFromPositionMeasurement extends AbstractOverlay {
         ((ObjectMeasurementP) parameters.getParameter(Z_POSITION_MEASUREMENT)).setObjectName(inputObjectsName);
 
         returnedParameters.add(parameters.getParameter(USE_RADIUS));
-        if ((boolean) parameters.getValue(USE_RADIUS)) {
+        if ((boolean) parameters.getValue(USE_RADIUS,workspace)) {
             returnedParameters.add(parameters.getParameter(MEASUREMENT_FOR_RADIUS));
             ((ObjectMeasurementP) parameters.getParameter(MEASUREMENT_FOR_RADIUS)).setObjectName(inputObjectsName);
         }
@@ -288,7 +289,7 @@ public class AddFromPositionMeasurement extends AbstractOverlay {
         returnedParameters.addAll(super.updateAndGetParameters(inputObjectsName));
 
         returnedParameters.add(parameters.getParameter(RENDERING_SEPARATOR));
-        if ((boolean) parameters.getValue(USE_RADIUS)) {            
+        if ((boolean) parameters.getValue(USE_RADIUS,workspace)) {            
             returnedParameters.add(parameters.getParameter(LINE_WIDTH));
         } else {
             returnedParameters.add(parameters.getParameter(POINT_SIZE));
@@ -305,26 +306,31 @@ public class AddFromPositionMeasurement extends AbstractOverlay {
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
-    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
-    public MetadataRefs updateAndGetMetadataReferences() {
+public MetadataRefs updateAndGetMetadataReferences() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
+Workspace workspace = null;
         return null;
     }
 

@@ -55,8 +55,8 @@ public class RemoveObjects extends Module {
         LinkedHashMap<Integer,Parameters> collections = parameterGroup.getCollections(false);
 
         for (Parameters collection : collections.values()) {
-            String inputObjectsName = collection.getValue(INPUT_OBJECTS);
-            boolean retainMeasurements = collection.getValue(RETAIN_MEASUREMENTS);
+            String inputObjectsName = collection.getValue(INPUT_OBJECTS,null);
+            boolean retainMeasurements = collection.getValue(RETAIN_MEASUREMENTS,null);
 
             // Removing the relevant object set from the workspace
             writeStatus("Removing objects (" + inputObjectsName + ") from workspace");
@@ -83,31 +83,37 @@ public class RemoveObjects extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
+Workspace workspace = null;
         return parameters;
     }
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
-    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
-    public MetadataRefs updateAndGetMetadataReferences() {
+public MetadataRefs updateAndGetMetadataReferences() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
+Workspace workspace = null;
         return null;
     }
 

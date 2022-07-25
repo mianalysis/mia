@@ -60,8 +60,8 @@ public class ProjectObjects extends Module {
 
     @Override
     public Status process(Workspace workspace) {
-        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
-        String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
+        String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS,workspace);
 
         Objs inputObjects = workspace.getObjects().get(inputObjectsName);
         SpatCal calIn = inputObjects.getSpatialCalibration();
@@ -101,29 +101,34 @@ public class ProjectObjects extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
+Workspace workspace = null;
         return parameters;
     }
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
-    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
-    public MetadataRefs updateAndGetMetadataReferences() {
+public MetadataRefs updateAndGetMetadataReferences() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
+Workspace workspace = null;
         ParentChildRefs returnedRelationships = new ParentChildRefs();
 
-        returnedRelationships.add(parentChildRefs.getOrPut(parameters.getValue(INPUT_OBJECTS),parameters.getValue(OUTPUT_OBJECTS)));
+        returnedRelationships.add(parentChildRefs.getOrPut(parameters.getValue(INPUT_OBJECTS,workspace),parameters.getValue(OUTPUT_OBJECTS,workspace)));
 
         return returnedRelationships;
 
@@ -131,6 +136,7 @@ public class ProjectObjects extends Module {
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
+Workspace workspace = null;
         return null;
     }
 

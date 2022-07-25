@@ -483,16 +483,16 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener, K
     @Override
     public Status process(Workspace workspace) {// Local access to this is required for the action listeners
         // Getting parameters
-        String inputImageName = parameters.getValue(INPUT_IMAGE);
-        String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);
-        String type = parameters.getValue(VOLUME_TYPE);
-        boolean outputTracks = parameters.getValue(OUTPUT_TRACKS);
-        String outputTrackObjectsName = parameters.getValue(OUTPUT_TRACK_OBJECTS);
-        boolean spatialInterpolation = parameters.getValue(SPATIAL_INTERPOLATION);
-        boolean temporalInterpolation = parameters.getValue(TEMPORAL_INTERPOLATION);
-        String instructionText = parameters.getValue(INSTRUCTION_TEXT);
-        String selectorType = parameters.getValue(SELECTOR_TYPE);
-        String messageOnImage = parameters.getValue(MESSAGE_ON_IMAGE);
+        String inputImageName = parameters.getValue(INPUT_IMAGE,workspace);
+        String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS,workspace);
+        String type = parameters.getValue(VOLUME_TYPE,workspace);
+        boolean outputTracks = parameters.getValue(OUTPUT_TRACKS,workspace);
+        String outputTrackObjectsName = parameters.getValue(OUTPUT_TRACK_OBJECTS,workspace);
+        boolean spatialInterpolation = parameters.getValue(SPATIAL_INTERPOLATION,workspace);
+        boolean temporalInterpolation = parameters.getValue(TEMPORAL_INTERPOLATION,workspace);
+        String instructionText = parameters.getValue(INSTRUCTION_TEXT,workspace);
+        String selectorType = parameters.getValue(SELECTOR_TYPE,workspace);
+        String messageOnImage = parameters.getValue(MESSAGE_ON_IMAGE,workspace);
 
         // Getting input image
         Image inputImage = workspace.getImage(inputImageName);
@@ -594,6 +594,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener, K
 
     @Override
     public Parameters updateAndGetParameters() {
+Workspace workspace = null;
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.get(INPUT_SEPARATOR));
@@ -605,7 +606,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener, K
         returnedParameters.add(parameters.get(POINT_MODE)); // Must always be visible, as user can change ROI type
         returnedParameters.add(parameters.get(OUTPUT_TRACKS));
 
-        if ((boolean) parameters.getValue(OUTPUT_TRACKS)) {
+        if ((boolean) parameters.getValue(OUTPUT_TRACKS,workspace)) {
             returnedParameters.add(parameters.get(OUTPUT_TRACK_OBJECTS));
             returnedParameters.add(parameters.get(SPATIAL_INTERPOLATION));
             returnedParameters.add(parameters.get(TEMPORAL_INTERPOLATION));
@@ -624,26 +625,30 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener, K
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
-    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
-    public MetadataRefs updateAndGetMetadataReferences() {
+public MetadataRefs updateAndGetMetadataReferences() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
+Workspace workspace = null;
         ParentChildRefs returnedRelationships = new ParentChildRefs();
 
-        if ((boolean) parameters.getValue(OUTPUT_TRACKS))
-            returnedRelationships.add(parentChildRefs.getOrPut(parameters.getValue(OUTPUT_TRACK_OBJECTS),
-                    parameters.getValue(OUTPUT_OBJECTS)));
+        if ((boolean) parameters.getValue(OUTPUT_TRACKS,workspace))
+            returnedRelationships.add(parentChildRefs.getOrPut(parameters.getValue(OUTPUT_TRACK_OBJECTS,workspace),
+                    parameters.getValue(OUTPUT_OBJECTS,workspace)));
 
         return returnedRelationships;
 
@@ -651,6 +656,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener, K
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
+Workspace workspace = null;
         return null;
     }
 
@@ -730,7 +736,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener, K
         }
 
         if (roi.getType() == Roi.POINT)
-            switch ((String) parameters.getValue(POINT_MODE)) {
+            switch ((String) parameters.getValue(POINT_MODE,null)) {
                 case PointModes.INDIVIDUAL_OBJECTS:
                     Point[] points = ((PointRoi) roi).getContainedPoints();
                     for (Point point:points)
@@ -844,7 +850,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener, K
                 continue;
 
             // Creating the new object
-            String type = parameters.getValue(VOLUME_TYPE);
+            String type = parameters.getValue(VOLUME_TYPE,null);
             VolumeType volumeType = VolumeTypesInterface.getVolumeType(type);
             Obj outputObject = outputObjects.createAndAddNewObject(volumeType, ID);
 
@@ -882,7 +888,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener, K
             Obj outputTrack = outputTrackObjects.createAndAddNewObject(VolumeType.POINTLIST, ID);
 
             // Creating the new object
-            String type = parameters.getValue(VOLUME_TYPE);
+            String type = parameters.getValue(VOLUME_TYPE,null);
             VolumeType volumeType = VolumeTypesInterface.getVolumeType(type);
 
             HashMap<Integer, Obj> objectsByT = new HashMap<>();

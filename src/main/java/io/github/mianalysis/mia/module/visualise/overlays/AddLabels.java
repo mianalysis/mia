@@ -275,36 +275,36 @@ public class AddLabels extends AbstractOverlay {
     @Override
     protected Status process(Workspace workspace) {
         // Getting parameters
-        boolean applyToInput = parameters.getValue(APPLY_TO_INPUT);
-        boolean addOutputToWorkspace = parameters.getValue(ADD_OUTPUT_TO_WORKSPACE);
-        String outputImageName = parameters.getValue(OUTPUT_IMAGE);
+        boolean applyToInput = parameters.getValue(APPLY_TO_INPUT,workspace);
+        boolean addOutputToWorkspace = parameters.getValue(ADD_OUTPUT_TO_WORKSPACE,workspace);
+        String outputImageName = parameters.getValue(OUTPUT_IMAGE,workspace);
 
         // Getting input objects
-        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
         Objs inputObjects = workspace.getObjects().get(inputObjectsName);
 
         // Getting input image
-        String inputImageName = parameters.getValue(INPUT_IMAGE);
+        String inputImageName = parameters.getValue(INPUT_IMAGE,workspace);
         Image inputImage = workspace.getImages().get(inputImageName);
         ImagePlus ipl = inputImage.getImagePlus();
 
         // Getting label settings
-        String labelMode = parameters.getValue(LABEL_MODE);
-        int labelSize = parameters.getValue(LABEL_SIZE);
-        int xOffset = parameters.getValue(X_OFFSET);
-        int yOffset = parameters.getValue(Y_OFFSET);
-        int decimalPlaces = parameters.getValue(DECIMAL_PLACES);
-        boolean useScientific = parameters.getValue(USE_SCIENTIFIC);
-        String childObjectsForLabelName = parameters.getValue(CHILD_OBJECTS_FOR_LABEL);
-        String parentObjectsForLabelName = parameters.getValue(PARENT_OBJECT_FOR_LABEL);
-        String partnerObjectsForLabelName = parameters.getValue(PARTNER_OBJECTS_FOR_LABEL);
-        String measurementForLabel = parameters.getValue(MEASUREMENT_FOR_LABEL);
-        String prefix = parameters.getValue(PREFIX);
-        String suffix = parameters.getValue(SUFFIX);
-        String labelPosition = parameters.getValue(LABEL_POSITION);
-        boolean renderInAllSlices = parameters.getValue(RENDER_IN_ALL_OBJECT_SLICES);
-        boolean renderInAllFrames = parameters.getValue(RENDER_IN_ALL_FRAMES);
-        boolean multithread = parameters.getValue(ENABLE_MULTITHREADING);
+        String labelMode = parameters.getValue(LABEL_MODE,workspace);
+        int labelSize = parameters.getValue(LABEL_SIZE,workspace);
+        int xOffset = parameters.getValue(X_OFFSET,workspace);
+        int yOffset = parameters.getValue(Y_OFFSET,workspace);
+        int decimalPlaces = parameters.getValue(DECIMAL_PLACES,workspace);
+        boolean useScientific = parameters.getValue(USE_SCIENTIFIC,workspace);
+        String childObjectsForLabelName = parameters.getValue(CHILD_OBJECTS_FOR_LABEL,workspace);
+        String parentObjectsForLabelName = parameters.getValue(PARENT_OBJECT_FOR_LABEL,workspace);
+        String partnerObjectsForLabelName = parameters.getValue(PARTNER_OBJECTS_FOR_LABEL,workspace);
+        String measurementForLabel = parameters.getValue(MEASUREMENT_FOR_LABEL,workspace);
+        String prefix = parameters.getValue(PREFIX,workspace);
+        String suffix = parameters.getValue(SUFFIX,workspace);
+        String labelPosition = parameters.getValue(LABEL_POSITION,workspace);
+        boolean renderInAllSlices = parameters.getValue(RENDER_IN_ALL_OBJECT_SLICES,workspace);
+        boolean renderInAllFrames = parameters.getValue(RENDER_IN_ALL_FRAMES,workspace);
+        boolean multithread = parameters.getValue(ENABLE_MULTITHREADING,workspace);
 
         // Only add output to workspace if not applying to input
         if (applyToInput)
@@ -315,7 +315,7 @@ public class AddLabels extends AbstractOverlay {
             ipl = new Duplicator().run(ipl);
 
         // Generating colours for each object
-        HashMap<Integer, Color> colours = getColours(inputObjects);
+        HashMap<Integer, Color> colours = getColours(inputObjects, workspace);
         DecimalFormat df = LabelFactory.getDecimalFormat(decimalPlaces, useScientific);
         HashMap<Integer, String> labels = getLabels(inputObjects, labelMode, df, childObjectsForLabelName,
                 parentObjectsForLabelName, partnerObjectsForLabelName, measurementForLabel);
@@ -378,8 +378,9 @@ public class AddLabels extends AbstractOverlay {
 
     @Override
     public Parameters updateAndGetParameters() {
-        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
-        String parentObjectsName = parameters.getValue(PARENT_OBJECT_FOR_LABEL);
+Workspace workspace = null;
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
+        String parentObjectsName = parameters.getValue(PARENT_OBJECT_FOR_LABEL,workspace);
 
         Parameters returnedParameters = new Parameters();
 
@@ -389,10 +390,10 @@ public class AddLabels extends AbstractOverlay {
 
         returnedParameters.add(parameters.getParameter(OUTPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(APPLY_TO_INPUT));
-        if (!(boolean) parameters.getValue(APPLY_TO_INPUT)) {
+        if (!(boolean) parameters.getValue(APPLY_TO_INPUT,workspace)) {
             returnedParameters.add(parameters.getParameter(ADD_OUTPUT_TO_WORKSPACE));
 
-            if ((boolean) parameters.getValue(ADD_OUTPUT_TO_WORKSPACE)) {
+            if ((boolean) parameters.getValue(ADD_OUTPUT_TO_WORKSPACE,workspace)) {
                 returnedParameters.add(parameters.getParameter(OUTPUT_IMAGE));
 
             }
@@ -400,7 +401,7 @@ public class AddLabels extends AbstractOverlay {
 
         returnedParameters.add(parameters.getParameter(CONTENT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(LABEL_MODE));
-        switch ((String) parameters.getValue(LABEL_MODE)) {
+        switch ((String) parameters.getValue(LABEL_MODE,workspace)) {
         case LabelModes.CHILD_COUNT:
             returnedParameters.add(parameters.getParameter(CHILD_OBJECTS_FOR_LABEL));
             ((ChildObjectsP) parameters.getParameter(CHILD_OBJECTS_FOR_LABEL)).setParentObjectsName(inputObjectsName);
@@ -457,26 +458,31 @@ public class AddLabels extends AbstractOverlay {
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
-    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
-    public MetadataRefs updateAndGetMetadataReferences() {
+public MetadataRefs updateAndGetMetadataReferences() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
+Workspace workspace = null;
         return null;
     }
 

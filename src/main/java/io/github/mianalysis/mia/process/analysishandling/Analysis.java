@@ -74,7 +74,7 @@ public class Analysis {
                         break;
                     case REDIRECT:
                         // Getting index of module before one to move to
-                        Module redirectModule = module.getRedirectModule();
+                        Module redirectModule = module.getRedirectModule(workspace);
                         if (redirectModule == null)
                             break;
                         i = modules.indexOf(redirectModule) - 1;

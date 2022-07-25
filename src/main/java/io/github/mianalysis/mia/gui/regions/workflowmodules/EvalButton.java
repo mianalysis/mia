@@ -184,7 +184,7 @@ public class EvalButton extends JButton implements ActionListener {
                 break;
             case REDIRECT:
                 // Getting index of module before one to move to
-                Module redirectModule = module.getRedirectModule();
+                Module redirectModule = module.getRedirectModule(testWorkspace);
                 if (redirectModule == null)
                     status = true;
 

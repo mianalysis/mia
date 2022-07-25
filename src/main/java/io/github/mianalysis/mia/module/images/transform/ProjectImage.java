@@ -149,12 +149,12 @@ public class ProjectImage < T extends RealType< T > & NativeType< T >> extends M
     @Override
     public Status process(Workspace workspace) {
         // Loading image into workspace
-        String inputImageName = parameters.getValue(INPUT_IMAGE);
+        String inputImageName = parameters.getValue(INPUT_IMAGE,workspace);
         Image inputImage = workspace.getImages().get(inputImageName);
 
         // Getting parameters
-        String outputImageName = parameters.getValue(OUTPUT_IMAGE);
-        String projectionMode = parameters.getValue(PROJECTION_MODE);
+        String outputImageName = parameters.getValue(OUTPUT_IMAGE,workspace);
+        String projectionMode = parameters.getValue(PROJECTION_MODE,workspace);
 
         // Create max projection image
         Image outputImage = projectImageInZ(inputImage,outputImageName,projectionMode);
@@ -180,31 +180,37 @@ public class ProjectImage < T extends RealType< T > & NativeType< T >> extends M
 
     @Override
     public Parameters updateAndGetParameters() {
+Workspace workspace = null;
         return parameters;
     }
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
-    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
-    public MetadataRefs updateAndGetMetadataReferences() {
+public MetadataRefs updateAndGetMetadataReferences() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
+Workspace workspace = null;
         return null;
     }
 
@@ -495,15 +501,15 @@ public class ProjectImage < T extends RealType< T > & NativeType< T >> extends M
 //    @Override
 //    public Status process(Workspace workspace) {
 //        // Loading image into workspace
-//        String inputImageName = parameters.getValue(INPUT_IMAGE);
+//        String inputImageName = parameters.getValue(INPUT_IMAGE,workspace);
 //        Image inputImage = workspace.getImages().get(inputImageName);
 //
 //        // Getting parameters
-//        String outputImageName = parameters.getValue(OUTPUT_IMAGE);
-//        String xAxis = parameters.getValue(AXIS_1);
-//        String yAxis = parameters.getValue(AXIS_2);
-//        String projectionAxis = parameters.getValue(PROJECTION_AXIS);
-//        String projectionMode = parameters.getValue(PROJECTION_MODE);
+//        String outputImageName = parameters.getValue(OUTPUT_IMAGE,workspace);
+//        String xAxis = parameters.getValue(AXIS_1,workspace);
+//        String yAxis = parameters.getValue(AXIS_2,workspace);
+//        String projectionAxis = parameters.getValue(PROJECTION_AXIS,workspace);
+//        String projectionMode = parameters.getValue(PROJECTION_MODE,workspace);
 //
 //        // Create max projection image
 //        Image outputImage = project(inputImage,outputImageName,xAxis,yAxis,projectionAxis,projectionMode);
@@ -541,12 +547,12 @@ public class ProjectImage < T extends RealType< T > & NativeType< T >> extends M
 //    }
 //
 //    @Override
-//    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+//public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
 //        return null;
 //    }
 //
 //    @Override
-//    public MetadataRefs updateAndGetMetadataReferences() {
+//public MetadataRefs updateAndGetMetadataReferences() {
 //        return null;
 //    }
 //

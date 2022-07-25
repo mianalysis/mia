@@ -42,7 +42,7 @@ public class Preferences extends Module {
     }
 
     public boolean showDeprecated() {
-        return parameters.getValue(SHOW_DEPRECATED);
+        return parameters.getValue(SHOW_DEPRECATED, null);
     }
 
     public void setShowDeprecated(boolean showDeprecated) {
@@ -52,7 +52,7 @@ public class Preferences extends Module {
     }
 
     public String imageDisplayMode() {
-        return parameters.getValue(IMAGE_DISPLAY_MODE);
+        return parameters.getValue(IMAGE_DISPLAY_MODE, null);
     }
 
     public void setImageDisplayMode(String imageDisplayMode) {
@@ -97,32 +97,38 @@ public class Preferences extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
+Workspace workspace = null;
         return parameters;
 
     }
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
-    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
-    public MetadataRefs updateAndGetMetadataReferences() {
+public MetadataRefs updateAndGetMetadataReferences() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
+Workspace workspace = null;
         return null;
     }
 
@@ -141,8 +147,8 @@ public class Preferences extends Module {
     class Update implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
-            setShowDeprecated(parameters.getValue(SHOW_DEPRECATED));     
-            setImageDisplayMode(parameters.getValue(IMAGE_DISPLAY_MODE));
+            setShowDeprecated(parameters.getValue(SHOW_DEPRECATED, null));     
+            setImageDisplayMode(parameters.getValue(IMAGE_DISPLAY_MODE, null));
         }        
     }
 }

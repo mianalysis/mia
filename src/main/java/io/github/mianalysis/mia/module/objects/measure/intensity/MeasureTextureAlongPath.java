@@ -129,7 +129,7 @@ public class MeasureTextureAlongPath extends Module {
     @Override
     public Status process(Workspace workspace) {
         // Getting input image
-        String inputImageName = parameters.getValue(INPUT_IMAGE);
+        String inputImageName = parameters.getValue(INPUT_IMAGE,workspace);
         Image inputImage = workspace.getImages().get(inputImageName);
         ImagePlus inputImagePlus = inputImage.getImagePlus();
 
@@ -143,7 +143,7 @@ public class MeasureTextureAlongPath extends Module {
         }
 
         // Getting input objects
-        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
         Objs inputObjects = workspace.getObjects().get(inputObjectsName);
 
         // If no objects were detected, skipping this module
@@ -151,7 +151,7 @@ public class MeasureTextureAlongPath extends Module {
             return Status.PASS;
 
         // Getting parameters
-        int offs = parameters.getValue(OFFSET);
+        int offs = parameters.getValue(OFFSET,workspace);
 
         // Initialising the texture calculator
         TextureCalculator textureCalculator = new TextureCalculator();
@@ -186,6 +186,7 @@ public class MeasureTextureAlongPath extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
+Workspace workspace = null;
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
@@ -201,17 +202,19 @@ public class MeasureTextureAlongPath extends Module {
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
-    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+Workspace workspace = null;
         ObjMeasurementRefs returnedRefs = new ObjMeasurementRefs();
 
-        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
-        String inputImageName = parameters.getValue(INPUT_IMAGE);
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
+        String inputImageName = parameters.getValue(INPUT_IMAGE,workspace);
 
-        int offs = parameters.getValue(OFFSET);
+        int offs = parameters.getValue(OFFSET,workspace);
 
         String name = getFullName(inputImageName, Measurements.ASM, offs);
         ObjMeasurementRef asm = objectMeasurementRefs.getOrPut(name);
@@ -238,17 +241,20 @@ public class MeasureTextureAlongPath extends Module {
     }
 
     @Override
-    public MetadataRefs updateAndGetMetadataReferences() {
+public MetadataRefs updateAndGetMetadataReferences() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
+Workspace workspace = null;
         return null;
     }
 

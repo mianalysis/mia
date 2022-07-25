@@ -77,7 +77,7 @@ public class ConcatenateStacks<T extends RealType<T> & NativeType<T>> extends Mo
         ArrayList<Image> available = new ArrayList<>();
 
         for (Parameters collection : collections.values()) {
-            Image image = workspace.getImage(collection.getValue(INPUT_IMAGE));
+            Image image = workspace.getImage(collection.getValue(INPUT_IMAGE,workspace));
             if (image != null)
                 available.add(image);
         }
@@ -331,12 +331,12 @@ public class ConcatenateStacks<T extends RealType<T> & NativeType<T>> extends Mo
     @Override
     protected Status process(Workspace workspace) {
         // Getting parameters
-        boolean allowMissingImages = parameters.getValue(ALLOW_MISSING_IMAGES);
-        String outputImageName = parameters.getValue(OUTPUT_IMAGE);
-        String axisMode = parameters.getValue(AXIS_MODE);
+        boolean allowMissingImages = parameters.getValue(ALLOW_MISSING_IMAGES,workspace);
+        String outputImageName = parameters.getValue(OUTPUT_IMAGE,workspace);
+        String axisMode = parameters.getValue(AXIS_MODE,workspace);
 
         // Creating a collection of images
-        LinkedHashMap<Integer, Parameters> collections = parameters.getValue(ADD_INPUT_IMAGE);
+        LinkedHashMap<Integer, Parameters> collections = parameters.getValue(ADD_INPUT_IMAGE,workspace);
         ArrayList<Image> inputImages = getAvailableImages(workspace, collections);
 
         if (!allowMissingImages && collections.size() != inputImages.size()) {
@@ -385,9 +385,10 @@ public class ConcatenateStacks<T extends RealType<T> & NativeType<T>> extends Mo
 
     @Override
     public Parameters updateAndGetParameters() {
-        boolean allowMissingImages = parameters.getValue(ALLOW_MISSING_IMAGES);
+Workspace workspace = null;
+        boolean allowMissingImages = parameters.getValue(ALLOW_MISSING_IMAGES,workspace);
 
-        LinkedHashMap<Integer, Parameters> collections = parameters.getValue(ADD_INPUT_IMAGE);
+        LinkedHashMap<Integer, Parameters> collections = parameters.getValue(ADD_INPUT_IMAGE,workspace);
         for (Parameters collection : collections.values()) {
             CustomInputImageP parameter = collection.getParameter(INPUT_IMAGE);
             parameter.setAllowMissingImages(allowMissingImages);
@@ -399,26 +400,31 @@ public class ConcatenateStacks<T extends RealType<T> & NativeType<T>> extends Mo
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
-    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
-    public MetadataRefs updateAndGetMetadataReferences() {
+public MetadataRefs updateAndGetMetadataReferences() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
+Workspace workspace = null;
         return null;
     }
 

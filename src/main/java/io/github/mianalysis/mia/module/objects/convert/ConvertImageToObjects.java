@@ -90,13 +90,13 @@ public class ConvertImageToObjects extends Module {
 
     @Override
     public Status process(Workspace workspace) {
-        String inputImageName = parameters.getValue(INPUT_IMAGE);
+        String inputImageName = parameters.getValue(INPUT_IMAGE,workspace);
         Image inputImage = workspace.getImages().get(inputImageName);
 
-        String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);
-        String volumeType = parameters.getValue(VOLUME_TYPE);
-        boolean createParents = parameters.getValue(CREATE_TRACKS);
-        String parentObjectsName = parameters.getValue(TRACK_OBJECTS_NAME);
+        String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS,workspace);
+        String volumeType = parameters.getValue(VOLUME_TYPE,workspace);
+        boolean createParents = parameters.getValue(CREATE_TRACKS,workspace);
+        String parentObjectsName = parameters.getValue(TRACK_OBJECTS_NAME,workspace);
 
         Objs objects = null;
         try {
@@ -137,6 +137,7 @@ public class ConvertImageToObjects extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
+Workspace workspace = null;
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.get(INPUT_SEPARATOR));
@@ -147,7 +148,7 @@ public class ConvertImageToObjects extends Module {
         returnedParameters.add(parameters.get(VOLUME_TYPE));
 
         returnedParameters.add(parameters.get(CREATE_TRACKS));
-        if ((boolean) parameters.getValue(CREATE_TRACKS))
+        if ((boolean) parameters.getValue(CREATE_TRACKS,workspace))
             returnedParameters.add(parameters.get(TRACK_OBJECTS_NAME));
 
         return returnedParameters;
@@ -156,26 +157,30 @@ public class ConvertImageToObjects extends Module {
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
-    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
-    public MetadataRefs updateAndGetMetadataReferences() {
+public MetadataRefs updateAndGetMetadataReferences() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
+Workspace workspace = null;
         ParentChildRefs returnedRelationships = new ParentChildRefs();
 
-        if ((boolean) parameters.getValue(CREATE_TRACKS)) {
-            String childObjectsName = parameters.getValue(OUTPUT_OBJECTS);
-            String parentObjectsName = parameters.getValue(TRACK_OBJECTS_NAME);
+        if ((boolean) parameters.getValue(CREATE_TRACKS,workspace)) {
+            String childObjectsName = parameters.getValue(OUTPUT_OBJECTS,workspace);
+            String parentObjectsName = parameters.getValue(TRACK_OBJECTS_NAME,workspace);
 
             returnedRelationships.add(parentChildRefs.getOrPut(parentObjectsName, childObjectsName));
         }
@@ -186,6 +191,7 @@ public class ConvertImageToObjects extends Module {
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
+Workspace workspace = null;
         return null;
     }
 

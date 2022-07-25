@@ -147,14 +147,14 @@ public abstract class AbstractNumericObjectFilter extends AbstractObjectFilter {
 
     }
 
-    public String getIndividualMeasurementName(String targetName) {
-        String referenceMode = parameters.getValue(REFERENCE_MODE);
-        String filterMethod = parameters.getValue(FILTER_METHOD);
-        double fixedValue = parameters.getValue(REFERENCE_VALUE);
-        String refImage = parameters.getValue(REFERENCE_VAL_IMAGE);
-        String refParent = parameters.getValue(REFERENCE_VAL_PARENT_OBJECT);
-        String refImageMeas = parameters.getValue(REFERENCE_IMAGE_MEASUREMENT);
-        String refParentMeas = parameters.getValue(REFERENCE_OBJECT_MEASUREMENT);
+    public String getIndividualMeasurementName(String targetName, Workspace workspace) {
+        String referenceMode = parameters.getValue(REFERENCE_MODE,workspace);
+        String filterMethod = parameters.getValue(FILTER_METHOD,workspace);
+        double fixedValue = parameters.getValue(REFERENCE_VALUE,workspace);
+        String refImage = parameters.getValue(REFERENCE_VAL_IMAGE,workspace);
+        String refParent = parameters.getValue(REFERENCE_VAL_PARENT_OBJECT,workspace);
+        String refImageMeas = parameters.getValue(REFERENCE_IMAGE_MEASUREMENT,workspace);
+        String refParentMeas = parameters.getValue(REFERENCE_OBJECT_MEASUREMENT,workspace);
 
         switch (referenceMode) {
         case ReferenceModes.FIXED_VALUE:
@@ -170,15 +170,15 @@ public abstract class AbstractNumericObjectFilter extends AbstractObjectFilter {
         }
     }
 
-    public String getSummaryMeasurementName(String targetName) {
-        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
-        String referenceMode = parameters.getValue(REFERENCE_MODE);
-        String filterMethod = parameters.getValue(FILTER_METHOD);
-        double fixedValue = parameters.getValue(REFERENCE_VALUE);
-        String refImage = parameters.getValue(REFERENCE_VAL_IMAGE);
-        String refParent = parameters.getValue(REFERENCE_VAL_PARENT_OBJECT);
-        String refImageMeas = parameters.getValue(REFERENCE_IMAGE_MEASUREMENT);
-        String refMeas = parameters.getValue(REFERENCE_OBJECT_MEASUREMENT);
+    public String getSummaryMeasurementName(String targetName, Workspace workspace) {
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
+        String referenceMode = parameters.getValue(REFERENCE_MODE,workspace);
+        String filterMethod = parameters.getValue(FILTER_METHOD,workspace);
+        double fixedValue = parameters.getValue(REFERENCE_VALUE,workspace);
+        String refImage = parameters.getValue(REFERENCE_VAL_IMAGE,workspace);
+        String refParent = parameters.getValue(REFERENCE_VAL_PARENT_OBJECT,workspace);
+        String refImageMeas = parameters.getValue(REFERENCE_IMAGE_MEASUREMENT,workspace);
+        String refMeas = parameters.getValue(REFERENCE_OBJECT_MEASUREMENT,workspace);
 
         switch (referenceMode) {
         case ReferenceModes.FIXED_VALUE:
@@ -195,13 +195,13 @@ public abstract class AbstractNumericObjectFilter extends AbstractObjectFilter {
     }
 
     public double getReferenceValue(Workspace workspace, Obj inputObject) {
-        String referenceMode = parameters.getValue(REFERENCE_MODE);
-        double fixedValue = parameters.getValue(REFERENCE_VALUE);
-        String refImage = parameters.getValue(REFERENCE_VAL_IMAGE);
-        String refParent = parameters.getValue(REFERENCE_VAL_PARENT_OBJECT);
-        String refImageMeas = parameters.getValue(REFERENCE_IMAGE_MEASUREMENT);
-        String refMeas = parameters.getValue(REFERENCE_OBJECT_MEASUREMENT);
-        double refMultiplier = parameters.getValue(REFERENCE_MULTIPLIER);
+        String referenceMode = parameters.getValue(REFERENCE_MODE,workspace);
+        double fixedValue = parameters.getValue(REFERENCE_VALUE,workspace);
+        String refImage = parameters.getValue(REFERENCE_VAL_IMAGE,workspace);
+        String refParent = parameters.getValue(REFERENCE_VAL_PARENT_OBJECT,workspace);
+        String refImageMeas = parameters.getValue(REFERENCE_IMAGE_MEASUREMENT,workspace);
+        String refMeas = parameters.getValue(REFERENCE_OBJECT_MEASUREMENT,workspace);
+        double refMultiplier = parameters.getValue(REFERENCE_MULTIPLIER,workspace);
 
         // Getting the values to filter on
         double refValue;
@@ -252,7 +252,8 @@ public abstract class AbstractNumericObjectFilter extends AbstractObjectFilter {
 
     @Override
     public Parameters updateAndGetParameters() {
-        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+Workspace workspace = null;
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
 
         Parameters returnedParameters = new Parameters();
         returnedParameters.addAll(super.updateAndGetParameters());
@@ -260,7 +261,7 @@ public abstract class AbstractNumericObjectFilter extends AbstractObjectFilter {
         returnedParameters.add(parameters.getParameter(FILTER_SEPARATOR));
         returnedParameters.add(parameters.getParameter(FILTER_METHOD));
         returnedParameters.add(parameters.getParameter(REFERENCE_MODE));
-        switch ((String) parameters.getValue(REFERENCE_MODE)) {
+        switch ((String) parameters.getValue(REFERENCE_MODE,workspace)) {
         case ReferenceModes.FIXED_VALUE:
             returnedParameters.add(parameters.getParameter(REFERENCE_VALUE));
             break;
@@ -269,7 +270,7 @@ public abstract class AbstractNumericObjectFilter extends AbstractObjectFilter {
             returnedParameters.add(parameters.getParameter(REFERENCE_VAL_IMAGE));
             returnedParameters.add(parameters.getParameter(REFERENCE_IMAGE_MEASUREMENT));
             returnedParameters.add(parameters.getParameter(REFERENCE_MULTIPLIER));
-            String referenceValueImageName = parameters.getValue(REFERENCE_VAL_IMAGE);
+            String referenceValueImageName = parameters.getValue(REFERENCE_VAL_IMAGE,workspace);
             ((ImageMeasurementP) parameters.getParameter(REFERENCE_IMAGE_MEASUREMENT))
                     .setImageName(referenceValueImageName);
             break;
@@ -285,7 +286,7 @@ public abstract class AbstractNumericObjectFilter extends AbstractObjectFilter {
             returnedParameters.add(parameters.getParameter(REFERENCE_VAL_PARENT_OBJECT));
             returnedParameters.add(parameters.getParameter(REFERENCE_OBJECT_MEASUREMENT));
             returnedParameters.add(parameters.getParameter(REFERENCE_MULTIPLIER));
-            String referenceValueParentObjectsName = parameters.getValue(REFERENCE_VAL_PARENT_OBJECT);
+            String referenceValueParentObjectsName = parameters.getValue(REFERENCE_VAL_PARENT_OBJECT,workspace);
             ((ParentObjectsP) parameters.getParameter(REFERENCE_VAL_PARENT_OBJECT))
                     .setChildObjectsName(inputObjectsName);
             ((ObjectMeasurementP) parameters.getParameter(REFERENCE_OBJECT_MEASUREMENT))

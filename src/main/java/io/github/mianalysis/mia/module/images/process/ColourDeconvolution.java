@@ -178,27 +178,27 @@ public class ColourDeconvolution extends Module {
     @Override
     public Status process(Workspace workspace) {
         // Getting input image
-        String inputImageName = parameters.getValue(INPUT_IMAGE);
+        String inputImageName = parameters.getValue(INPUT_IMAGE,workspace);
         Image inputImage = workspace.getImages().get(inputImageName);
         ImagePlus inputImagePlus = inputImage.getImagePlus();
 
         // Getting parameters
-        boolean outputImage1 = parameters.getValue(ENABLE_IM1_OUTPUT);
-        String outputImageName1 = parameters.getValue(OUTPUT_IMAGE_1);
-        boolean outputImage2 = parameters.getValue(ENABLE_IM2_OUTPUT);
-        String outputImageName2 = parameters.getValue(OUTPUT_IMAGE_2);
-        boolean outputImage3 = parameters.getValue(ENABLE_IM3_OUTPUT);
-        String outputImageName3 = parameters.getValue(OUTPUT_IMAGE_3);
-        String stainModel = parameters.getValue(STAIN_MODEL);
-        double r1 = parameters.getValue(R1);
-        double g1 = parameters.getValue(G1);
-        double b1 = parameters.getValue(B1);
-        double r2 = parameters.getValue(R2);
-        double g2 = parameters.getValue(G2);
-        double b2 = parameters.getValue(B2);
-        double r3 = parameters.getValue(R3);
-        double g3 = parameters.getValue(G3);
-        double b3 = parameters.getValue(B3);
+        boolean outputImage1 = parameters.getValue(ENABLE_IM1_OUTPUT,workspace);
+        String outputImageName1 = parameters.getValue(OUTPUT_IMAGE_1,workspace);
+        boolean outputImage2 = parameters.getValue(ENABLE_IM2_OUTPUT,workspace);
+        String outputImageName2 = parameters.getValue(OUTPUT_IMAGE_2,workspace);
+        boolean outputImage3 = parameters.getValue(ENABLE_IM3_OUTPUT,workspace);
+        String outputImageName3 = parameters.getValue(OUTPUT_IMAGE_3,workspace);
+        String stainModel = parameters.getValue(STAIN_MODEL,workspace);
+        double r1 = parameters.getValue(R1,workspace);
+        double g1 = parameters.getValue(G1,workspace);
+        double b1 = parameters.getValue(B1,workspace);
+        double r2 = parameters.getValue(R2,workspace);
+        double g2 = parameters.getValue(G2,workspace);
+        double b2 = parameters.getValue(B2,workspace);
+        double r3 = parameters.getValue(R3,workspace);
+        double g3 = parameters.getValue(G3,workspace);
+        double b3 = parameters.getValue(B3,workspace);
 
         // Running the deconvolution
         StainMatrix stainMatrix;
@@ -267,6 +267,7 @@ public class ColourDeconvolution extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
+Workspace workspace = null;
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.get(INPUT_SEPARATOR));
@@ -274,21 +275,21 @@ public class ColourDeconvolution extends Module {
 
         returnedParameters.add(parameters.get(OUTPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(ENABLE_IM1_OUTPUT));
-        if ((boolean) parameters.getValue(ENABLE_IM1_OUTPUT))
+        if ((boolean) parameters.getValue(ENABLE_IM1_OUTPUT,workspace))
             returnedParameters.add(parameters.getParameter(OUTPUT_IMAGE_1));
 
         returnedParameters.add(parameters.getParameter(ENABLE_IM2_OUTPUT));
-        if ((boolean) parameters.getValue(ENABLE_IM2_OUTPUT))
+        if ((boolean) parameters.getValue(ENABLE_IM2_OUTPUT,workspace))
             returnedParameters.add(parameters.getParameter(OUTPUT_IMAGE_2));
 
         returnedParameters.add(parameters.getParameter(ENABLE_IM3_OUTPUT));
-        if ((boolean) parameters.getValue(ENABLE_IM3_OUTPUT))
+        if ((boolean) parameters.getValue(ENABLE_IM3_OUTPUT,workspace))
             returnedParameters.add(parameters.getParameter(OUTPUT_IMAGE_3));
 
         returnedParameters.add(parameters.get(DECONVOLUTION_SEPARATOR));
         returnedParameters.add(parameters.getParameter(STAIN_MODEL));
 
-        switch ((String) parameters.getValue(STAIN_MODEL)) {
+        switch ((String) parameters.getValue(STAIN_MODEL,workspace)) {
             case StainModels.CUSTOM:
                 returnedParameters.add(parameters.getParameter(R1));
                 returnedParameters.add(parameters.getParameter(G1));
@@ -309,26 +310,31 @@ public class ColourDeconvolution extends Module {
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
-    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
-    public MetadataRefs updateAndGetMetadataReferences() {
+public MetadataRefs updateAndGetMetadataReferences() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
+Workspace workspace = null;
         return null;
     }
 

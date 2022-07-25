@@ -161,10 +161,10 @@ public class RunScript extends Module {
     @Override
     public Status process(Workspace workspace) {
         // Getting input image
-        String scriptMode = parameters.getValue(SCRIPT_MODE);
-        String scriptText = parameters.getValue(SCRIPT_TEXT);
-        String scriptLanguage = parameters.getValue(SCRIPT_LANGUAGE);
-        String scriptFile = parameters.getValue(SCRIPT_FILE);
+        String scriptMode = parameters.getValue(SCRIPT_MODE,workspace);
+        String scriptText = parameters.getValue(SCRIPT_TEXT,workspace);
+        String scriptLanguage = parameters.getValue(SCRIPT_LANGUAGE,workspace);
+        String scriptFile = parameters.getValue(SCRIPT_FILE,workspace);
 
         try {
             Map<String, Object> scriptParameters = new HashMap<>();
@@ -194,17 +194,17 @@ public class RunScript extends Module {
                     .run("script." + extension, scriptText, false, scriptParameters).get();
 
             // Adding output images/objects to the workspace
-            LinkedHashMap<Integer, Parameters> parameterCollections = parameters.getValue(ADD_OUTPUT);
+            LinkedHashMap<Integer, Parameters> parameterCollections = parameters.getValue(ADD_OUTPUT,workspace);
             for (Parameters parameterCollection : parameterCollections.values()) {
-                String outputType = parameterCollection.getValue(OUTPUT_TYPE);
+                String outputType = parameterCollection.getValue(OUTPUT_TYPE, workspace);
                 switch (outputType) {
                     case OutputTypes.IMAGE:
                         if (showOutput)
-                            workspace.getImage(parameterCollection.getValue(OUTPUT_IMAGE)).showImage();
+                            workspace.getImage(parameterCollection.getValue(OUTPUT_IMAGE, workspace)).showImage();
                         break;
                     case OutputTypes.OBJECTS:
                         if (showOutput)
-                            workspace.getObjectSet(parameterCollection.getValue(OUTPUT_OBJECTS))
+                            workspace.getObjectSet(parameterCollection.getValue(OUTPUT_OBJECTS, workspace))
                                     .convertToImageRandomColours().showImage();
                         break;
                 }
@@ -252,11 +252,12 @@ public class RunScript extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
+Workspace workspace = null;
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(SCRIPT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(SCRIPT_MODE));
-        switch ((String) parameters.getValue(SCRIPT_MODE)) {
+        switch ((String) parameters.getValue(SCRIPT_MODE,workspace)) {
             case ScriptModes.SCRIPT_FILE:
                 returnedParameters.add(parameters.getParameter(SCRIPT_FILE));
                 break;
@@ -276,15 +277,16 @@ public class RunScript extends Module {
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
+Workspace workspace = null;
         ImageMeasurementRefs returnedRefs = new ImageMeasurementRefs();
 
         ParameterGroup group = parameters.getParameter(ADD_OUTPUT);
         LinkedHashMap<Integer, Parameters> collections = group.getCollections(true);
 
         for (Parameters collection : collections.values()) {
-            if (collection.getValue(OUTPUT_TYPE).equals(OutputTypes.IMAGE_MEASUREMENT)) {
-                String imageName = collection.getValue(ASSOCIATED_IMAGE);
-                String measurementName = collection.getValue(MEASUREMENT_NAME);
+            if (collection.getValue(OUTPUT_TYPE, workspace).equals(OutputTypes.IMAGE_MEASUREMENT)) {
+                String imageName = collection.getValue(ASSOCIATED_IMAGE, workspace);
+                String measurementName = collection.getValue(MEASUREMENT_NAME, workspace);
                 ImageMeasurementRef ref = imageMeasurementRefs.getOrPut(measurementName);
                 ref.setImageName(imageName);
                 returnedRefs.add(ref);
@@ -296,16 +298,17 @@ public class RunScript extends Module {
     }
 
     @Override
-    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+Workspace workspace = null;
         ObjMeasurementRefs returnedRefs = new ObjMeasurementRefs();
 
         ParameterGroup group = parameters.getParameter(ADD_OUTPUT);
         LinkedHashMap<Integer, Parameters> collections = group.getCollections(true);
 
         for (Parameters collection : collections.values()) {
-            if (collection.getValue(OUTPUT_TYPE).equals(OutputTypes.OBJECT_MEASUREMENT)) {
-                String objectsName = collection.getValue(ASSOCIATED_OBJECTS);
-                String measurementName = collection.getValue(MEASUREMENT_NAME);
+            if (collection.getValue(OUTPUT_TYPE, workspace).equals(OutputTypes.OBJECT_MEASUREMENT)) {
+                String objectsName = collection.getValue(ASSOCIATED_OBJECTS, workspace);
+                String measurementName = collection.getValue(MEASUREMENT_NAME, workspace);
                 ObjMeasurementRef ref = objectMeasurementRefs.getOrPut(measurementName);
                 ref.setObjectsName(objectsName);
                 returnedRefs.add(ref);
@@ -317,15 +320,16 @@ public class RunScript extends Module {
     }
 
     @Override
-    public MetadataRefs updateAndGetMetadataReferences() {
+public MetadataRefs updateAndGetMetadataReferences() {
+Workspace workspace = null;
         MetadataRefs returnedRefs = new MetadataRefs();
 
         ParameterGroup group = parameters.getParameter(ADD_OUTPUT);
         LinkedHashMap<Integer, Parameters> collections = group.getCollections(true);
 
         for (Parameters collection : collections.values()) {
-            if (collection.getValue(OUTPUT_TYPE).equals(OutputTypes.METADATA)) {
-                String metadataName = collection.getValue(METADATA_NAME);
+            if (collection.getValue(OUTPUT_TYPE, workspace).equals(OutputTypes.METADATA)) {
+                String metadataName = collection.getValue(METADATA_NAME, workspace);
                 MetadataRef ref = metadataRefs.getOrPut(metadataName);
                 returnedRefs.add(ref);
             }
@@ -337,16 +341,17 @@ public class RunScript extends Module {
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
+Workspace workspace = null;
         ParentChildRefs returnedRefs = new ParentChildRefs();
 
         ParameterGroup group = parameters.getParameter(ADD_OUTPUT);
         LinkedHashMap<Integer, Parameters> collections = group.getCollections(true);
 
         for (Parameters collection : collections.values()) {
-            switch ((String) collection.getValue(OUTPUT_TYPE)) {
+            switch ((String) collection.getValue(OUTPUT_TYPE, workspace)) {
                 case OutputTypes.PARENT_CHILD:
-                    String parentsName = collection.getValue(PARENT_NAME);
-                    String childrenName = collection.getValue(CHILDREN_NAME);
+                    String parentsName = collection.getValue(PARENT_NAME, workspace);
+                    String childrenName = collection.getValue(CHILDREN_NAME, workspace);
                     ParentChildRef ref = parentChildRefs.getOrPut(parentsName, childrenName);
                     returnedRefs.add(ref);
                     break;
@@ -359,16 +364,17 @@ public class RunScript extends Module {
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
+Workspace workspace = null;
         PartnerRefs returnedRefs = new PartnerRefs();
 
         ParameterGroup group = parameters.getParameter(ADD_OUTPUT);
         LinkedHashMap<Integer, Parameters> collections = group.getCollections(true);
 
         for (Parameters collection : collections.values()) {
-            switch ((String) collection.getValue(OUTPUT_TYPE)) {
+            switch ((String) collection.getValue(OUTPUT_TYPE, workspace)) {
                 case OutputTypes.PARTNERS:
-                    String partnersName1 = collection.getValue(PARTNERS_NAME_1);
-                    String partnersName2 = collection.getValue(PARTNERS_NAME_2);
+                    String partnersName1 = collection.getValue(PARTNERS_NAME_1, workspace);
+                    String partnersName2 = collection.getValue(PARTNERS_NAME_2, workspace);
                     PartnerRef ref = partnerRefs.getOrPut(partnersName1, partnersName2);
                     returnedRefs.add(ref);
                     break;
@@ -458,7 +464,7 @@ public class RunScript extends Module {
                 Parameters returnedParameters = new Parameters();
 
                 returnedParameters.add(params.getParameter(OUTPUT_TYPE));
-                switch ((String) params.getValue(OUTPUT_TYPE)) {
+                switch ((String) params.getValue(OUTPUT_TYPE, null)) {
                     case OutputTypes.IMAGE:
                         returnedParameters.add(params.getParameter(OUTPUT_IMAGE));
                         break;
@@ -509,7 +515,7 @@ public class RunScript extends Module {
             LinkedHashMap<Integer, Parameters> collections = group.getCollections(true);
 
             for (Parameters collection : collections.values())
-                if (collection.getValue(OUTPUT_TYPE).equals(OutputTypes.OBJECTS))
+                if (collection.getValue(OUTPUT_TYPE, null).equals(OutputTypes.OBJECTS))
                     objects.add((OutputObjectsP) collection.getParameter(OUTPUT_OBJECTS));
 
             return objects.stream().map(OutputObjectsP::getObjectsName).distinct().toArray(String[]::new);
@@ -521,7 +527,7 @@ public class RunScript extends Module {
                     OutputObjectsP.class, true);
 
             for (OutputObjectsP currChoice : objects)
-                if (choice.equals(currChoice.getValue()))
+                if (choice.equals(currChoice.getValue(null)))
                     return true;
 
             // If not found yet, it could have been generated in this module
@@ -529,8 +535,8 @@ public class RunScript extends Module {
             LinkedHashMap<Integer, Parameters> collections = group.getCollections(true);
 
             for (Parameters collection : collections.values())
-                if (collection.getValue(OUTPUT_TYPE).equals(OutputTypes.OBJECTS))
-                    if (((String) collection.getValue(OUTPUT_OBJECTS)).equals(choice))
+                if (collection.getValue(OUTPUT_TYPE, null).equals(OutputTypes.OBJECTS))
+                    if (((String) collection.getValue(OUTPUT_OBJECTS, null)).equals(choice))
                         return true;
 
             return false;

@@ -1,12 +1,11 @@
 package io.github.mianalysis.mia.object.parameters.objects;
 
-import javax.swing.JComponent;
 import java.util.LinkedHashSet;
 
 import com.drew.lang.annotations.NotNull;
 
-import io.github.mianalysis.mia.gui.parametercontrols.ParameterControl;
 import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.parameters.abstrakt.Parameter;
 import io.github.mianalysis.mia.object.parameters.abstrakt.TextType;
 
@@ -36,7 +35,7 @@ public class OutputObjectsP extends TextType {
     }
 
     @Override
-    public <T> T getValue() {
+    public <T> T getValue(Workspace workspace) {
         return (T) objectsName;
     }
 

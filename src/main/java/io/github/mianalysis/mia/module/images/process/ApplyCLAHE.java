@@ -104,21 +104,21 @@ public class ApplyCLAHE extends Module {
     @Override
     protected Status process(Workspace workspace) {
         // Getting input image
-        String inputImageName = parameters.getValue(INPUT_IMAGE);
+        String inputImageName = parameters.getValue(INPUT_IMAGE,workspace);
         Image inputImage = workspace.getImages().get(inputImageName);
         ImagePlus inputImagePlus = inputImage.getImagePlus();
 
         // Getting parameters
-        boolean applyToInput = parameters.getValue(APPLY_TO_INPUT);
-        String outputImageName = parameters.getValue(OUTPUT_IMAGE);
-        double blockSize = parameters.getValue(BLOCK_SIZE);
-        boolean calibratedUnits = parameters.getValue(CALIBRATED_UNITS);
-        int histogramBins = parameters.getValue(HISTOGRAM_BINS);
-        float maxSlope = ((Double) parameters.getValue(MAXIMUM_SLOPE)).floatValue();
-        boolean useMask = parameters.getValue(USE_MASK);
-        String maskImageName = parameters.getValue(MASK_IMAGE);
-        boolean fastMode = parameters.getValue(FAST_MODE);
-        boolean multithread = parameters.getValue(ENABLE_MULTITHREADING);
+        boolean applyToInput = parameters.getValue(APPLY_TO_INPUT,workspace);
+        String outputImageName = parameters.getValue(OUTPUT_IMAGE,workspace);
+        double blockSize = parameters.getValue(BLOCK_SIZE,workspace);
+        boolean calibratedUnits = parameters.getValue(CALIBRATED_UNITS,workspace);
+        int histogramBins = parameters.getValue(HISTOGRAM_BINS,workspace);
+        float maxSlope = ((Double) parameters.getValue(MAXIMUM_SLOPE,workspace)).floatValue();
+        boolean useMask = parameters.getValue(USE_MASK,workspace);
+        String maskImageName = parameters.getValue(MASK_IMAGE,workspace);
+        boolean fastMode = parameters.getValue(FAST_MODE,workspace);
+        boolean multithread = parameters.getValue(ENABLE_MULTITHREADING,workspace);
 
         if (calibratedUnits) {
             double dppXY = inputImagePlus.getCalibration().pixelWidth;
@@ -183,13 +183,14 @@ public class ApplyCLAHE extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
+Workspace workspace = null;
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(INPUT_IMAGE));
         returnedParameters.add(parameters.getParameter(APPLY_TO_INPUT));
 
-        if (!(boolean) parameters.getValue(APPLY_TO_INPUT)) {
+        if (!(boolean) parameters.getValue(APPLY_TO_INPUT,workspace)) {
             returnedParameters.add(parameters.getParameter(OUTPUT_IMAGE));
         }
 
@@ -199,7 +200,7 @@ public class ApplyCLAHE extends Module {
         returnedParameters.add(parameters.getParameter(HISTOGRAM_BINS));
         returnedParameters.add(parameters.getParameter(MAXIMUM_SLOPE));
         returnedParameters.add(parameters.getParameter(USE_MASK));
-        if ((boolean) parameters.getValue(USE_MASK)) {
+        if ((boolean) parameters.getValue(USE_MASK,workspace)) {
             returnedParameters.add(parameters.getParameter(MASK_IMAGE));
         }
         returnedParameters.add(parameters.getParameter(FAST_MODE));
@@ -213,26 +214,31 @@ public class ApplyCLAHE extends Module {
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
-    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
-    public MetadataRefs updateAndGetMetadataReferences() {
+public MetadataRefs updateAndGetMetadataReferences() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
+Workspace workspace = null;
         return null;
     }
 

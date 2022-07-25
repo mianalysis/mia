@@ -94,17 +94,17 @@ public class PlotMeasurementsScatter extends Module {
     @Override
     public Status process(Workspace workspace) {
         // Getting input objects
-        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
         Objs inputObjects = workspace.getObjects().get(inputObjectsName);
 
         // Getting parameters
-        String outputImageName = parameters.getValue(OUTPUT_IMAGE);
-        boolean useColour = parameters.getValue(INCLUDE_COLOUR);
-        String measurement1 = parameters.getValue(MEASUREMENT1);
-        String measurement2 = parameters.getValue(MEASUREMENT2);
-        String measurement3 = parameters.getValue(MEASUREMENT3);
-        String colourmap = parameters.getValue(COLOURMAP);
-        boolean showInteractive = parameters.getValue(SHOW_AS_INTERACTIVE_PLOT);
+        String outputImageName = parameters.getValue(OUTPUT_IMAGE,workspace);
+        boolean useColour = parameters.getValue(INCLUDE_COLOUR,workspace);
+        String measurement1 = parameters.getValue(MEASUREMENT1,workspace);
+        String measurement2 = parameters.getValue(MEASUREMENT2,workspace);
+        String measurement3 = parameters.getValue(MEASUREMENT3,workspace);
+        String colourmap = parameters.getValue(COLOURMAP,workspace);
+        boolean showInteractive = parameters.getValue(SHOW_AS_INTERACTIVE_PLOT,workspace);
 
         // Getting measurement values
         double[] measurementValues1 = new double[inputObjects.size()];
@@ -196,6 +196,7 @@ public class PlotMeasurementsScatter extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
+Workspace workspace = null;
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
@@ -207,12 +208,12 @@ public class PlotMeasurementsScatter extends Module {
         returnedParameters.add(parameters.getParameter(MEASUREMENT2));
 
         // Updating measurements with measurement choices from currently-selected object
-        String objectName = parameters.getValue(INPUT_OBJECTS);
+        String objectName = parameters.getValue(INPUT_OBJECTS,workspace);
         ((ObjectMeasurementP) parameters.getParameter(MEASUREMENT1)).setObjectName(objectName);
         ((ObjectMeasurementP) parameters.getParameter(MEASUREMENT2)).setObjectName(objectName);
 
         returnedParameters.add(parameters.getParameter(INCLUDE_COLOUR));
-        if ((boolean) parameters.getValue(INCLUDE_COLOUR)) {
+        if ((boolean) parameters.getValue(INCLUDE_COLOUR,workspace)) {
             returnedParameters.add(parameters.getParameter(MEASUREMENT3));
             returnedParameters.add(parameters.getParameter(COLOURMAP));
             ((ObjectMeasurementP) parameters.getParameter(MEASUREMENT3)).setObjectName(objectName);
@@ -227,26 +228,31 @@ public class PlotMeasurementsScatter extends Module {
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
-    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
-    public MetadataRefs updateAndGetMetadataReferences() {
+public MetadataRefs updateAndGetMetadataReferences() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
+Workspace workspace = null;
         return null;
     }
 

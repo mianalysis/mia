@@ -494,9 +494,9 @@ public class RegisterImages<T extends RealType<T> & NativeType<T>> extends Modul
     public void doAction(Object[] objects) {
         writeStatus("Running test registration");
 
-        String transformationMode = parameters.getValue(TRANSFORMATION_MODE);
-        String fillMode = parameters.getValue(FILL_MODE);
-        boolean multithread = parameters.getValue(ENABLE_MULTITHREADING);
+        String transformationMode = parameters.getValue(TRANSFORMATION_MODE,null);
+        String fillMode = parameters.getValue(FILL_MODE,null);
+        boolean multithread = parameters.getValue(ENABLE_MULTITHREADING,null);
 
         ArrayList<PointPair> pairs = (ArrayList<PointPair>) objects[0];
 
@@ -573,24 +573,24 @@ public class RegisterImages<T extends RealType<T> & NativeType<T>> extends Modul
         IJ.setBackgroundColor(255, 255, 255);
 
         // Getting parameters
-        String inputImageName = parameters.getValue(INPUT_IMAGE);
-        boolean applyToInput = parameters.getValue(APPLY_TO_INPUT);
-        String outputImageName = parameters.getValue(OUTPUT_IMAGE);
-        String alignmentMode = parameters.getValue(ALIGNMENT_MODE);
-        String relativeMode = parameters.getValue(RELATIVE_MODE);
-        String rollingCorrectionMode = parameters.getValue(ROLLING_CORRECTION);
-        int correctionInterval = parameters.getValue(CORRECTION_INTERVAL);
-        String referenceImageName = parameters.getValue(REFERENCE_IMAGE);
-        String calculationSource = parameters.getValue(CALCULATION_SOURCE);
-        String externalSourceName = parameters.getValue(EXTERNAL_SOURCE);
-        int calculationChannel = parameters.getValue(CALCULATION_CHANNEL);
-        double initialSigma = parameters.getValue(INITIAL_SIGMA);
-        String transformationMode = parameters.getValue(TRANSFORMATION_MODE);
-        double rod = parameters.getValue(ROD);
-        double maxEpsilon = parameters.getValue(MAX_EPSILON);
-        double minInlierRatio = parameters.getValue(MIN_INLIER_RATIO);
-        String fillMode = parameters.getValue(FILL_MODE);
-        boolean multithread = parameters.getValue(ENABLE_MULTITHREADING);
+        String inputImageName = parameters.getValue(INPUT_IMAGE,workspace);
+        boolean applyToInput = parameters.getValue(APPLY_TO_INPUT,workspace);
+        String outputImageName = parameters.getValue(OUTPUT_IMAGE,workspace);
+        String alignmentMode = parameters.getValue(ALIGNMENT_MODE,workspace);
+        String relativeMode = parameters.getValue(RELATIVE_MODE,workspace);
+        String rollingCorrectionMode = parameters.getValue(ROLLING_CORRECTION,workspace);
+        int correctionInterval = parameters.getValue(CORRECTION_INTERVAL,workspace);
+        String referenceImageName = parameters.getValue(REFERENCE_IMAGE,workspace);
+        String calculationSource = parameters.getValue(CALCULATION_SOURCE,workspace);
+        String externalSourceName = parameters.getValue(EXTERNAL_SOURCE,workspace);
+        int calculationChannel = parameters.getValue(CALCULATION_CHANNEL,workspace);
+        double initialSigma = parameters.getValue(INITIAL_SIGMA,workspace);
+        String transformationMode = parameters.getValue(TRANSFORMATION_MODE,workspace);
+        double rod = parameters.getValue(ROD,workspace);
+        double maxEpsilon = parameters.getValue(MAX_EPSILON,workspace);
+        double minInlierRatio = parameters.getValue(MIN_INLIER_RATIO,workspace);
+        String fillMode = parameters.getValue(FILL_MODE,workspace);
+        boolean multithread = parameters.getValue(ENABLE_MULTITHREADING,workspace);
 
         inputImage = workspace.getImage(inputImageName);
         if (!applyToInput)
@@ -609,11 +609,11 @@ public class RegisterImages<T extends RealType<T> & NativeType<T>> extends Modul
                 Param param = new Param();
                 param.transformationMode = transformationMode;
                 param.initialSigma = (float) initialSigma;
-                param.steps = parameters.getValue(STEPS);
-                param.minOctaveSize = parameters.getValue(MINIMUM_IMAGE_SIZE);
-                param.maxOctaveSize = parameters.getValue(MAXIMUM_IMAGE_SIZE);
-                param.fdSize = parameters.getValue(FD_SIZE);
-                param.fdBins = parameters.getValue(FD_ORIENTATION_BINS);
+                param.steps = parameters.getValue(STEPS,workspace);
+                param.minOctaveSize = parameters.getValue(MINIMUM_IMAGE_SIZE,workspace);
+                param.maxOctaveSize = parameters.getValue(MAXIMUM_IMAGE_SIZE,workspace);
+                param.fdSize = parameters.getValue(FD_SIZE,workspace);
+                param.fdBins = parameters.getValue(FD_ORIENTATION_BINS,workspace);
                 param.rod = (float) rod;
                 param.maxEpsilon = (float) maxEpsilon;
                 param.minInlierRatio = (float) minInlierRatio;
@@ -694,12 +694,13 @@ public class RegisterImages<T extends RealType<T> & NativeType<T>> extends Modul
 
     @Override
     public Parameters updateAndGetParameters() {
+Workspace workspace = null;
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(INPUT_IMAGE));
         returnedParameters.add(parameters.getParameter(APPLY_TO_INPUT));
-        if (!(boolean) parameters.getValue(APPLY_TO_INPUT))
+        if (!(boolean) parameters.getValue(APPLY_TO_INPUT,workspace))
             returnedParameters.add(parameters.getParameter(OUTPUT_IMAGE));
 
         returnedParameters.add(parameters.getParameter(REGISTRATION_SEPARATOR));
@@ -708,14 +709,14 @@ public class RegisterImages<T extends RealType<T> & NativeType<T>> extends Modul
         returnedParameters.add(parameters.getParameter(FILL_MODE));
         returnedParameters.add(parameters.getParameter(ENABLE_MULTITHREADING));
 
-        switch ((String) parameters.getValue(ALIGNMENT_MODE)) {
+        switch ((String) parameters.getValue(ALIGNMENT_MODE,workspace)) {
             case AlignmentModes.AUTOMATIC:
                 returnedParameters.add(parameters.getParameter(REFERENCE_SEPARATOR));
                 returnedParameters.add(parameters.getParameter(RELATIVE_MODE));
-                switch ((String) parameters.getValue(RELATIVE_MODE)) {
+                switch ((String) parameters.getValue(RELATIVE_MODE,workspace)) {
                     case RelativeModes.PREVIOUS_FRAME:
                         returnedParameters.add(parameters.getParameter(ROLLING_CORRECTION));
-                        switch ((String) parameters.getValue(ROLLING_CORRECTION)) {
+                        switch ((String) parameters.getValue(ROLLING_CORRECTION,workspace)) {
                             case RollingCorrectionModes.EVERY_NTH_FRAME:
                                 returnedParameters.add(parameters.getParameter(CORRECTION_INTERVAL));
                                 break;
@@ -728,7 +729,7 @@ public class RegisterImages<T extends RealType<T> & NativeType<T>> extends Modul
                 }
 
                 returnedParameters.add(parameters.getParameter(CALCULATION_SOURCE));
-                switch ((String) parameters.getValue(CALCULATION_SOURCE)) {
+                switch ((String) parameters.getValue(CALCULATION_SOURCE,workspace)) {
                     case CalculationSources.EXTERNAL:
                         returnedParameters.add(parameters.getParameter(EXTERNAL_SOURCE));
                         break;
@@ -760,10 +761,11 @@ public class RegisterImages<T extends RealType<T> & NativeType<T>> extends Modul
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
+Workspace workspace = null;
         ImageMeasurementRefs returnedRefs = new ImageMeasurementRefs();
 
-        if (parameters.getValue(ALIGNMENT_MODE).equals(AlignmentModes.MANUAL)) {
-            String outputImageName = parameters.getValue(OUTPUT_IMAGE);
+        if (parameters.getValue(ALIGNMENT_MODE,workspace).equals(AlignmentModes.MANUAL)) {
+            String outputImageName = parameters.getValue(OUTPUT_IMAGE,workspace);
 
             returnedRefs.add(imageMeasurementRefs.getOrPut(Measurements.TRANSLATE_X).setImageName(outputImageName));
             returnedRefs.add(imageMeasurementRefs.getOrPut(Measurements.TRANSLATE_Y).setImageName(outputImageName));
@@ -779,22 +781,26 @@ public class RegisterImages<T extends RealType<T> & NativeType<T>> extends Modul
     }
 
     @Override
-    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
-    public MetadataRefs updateAndGetMetadataReferences() {
+public MetadataRefs updateAndGetMetadataReferences() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
+Workspace workspace = null;
         return null;
     }
 

@@ -53,13 +53,13 @@ public class ChannelExtractor extends Module {
     @Override
     public Status process(Workspace workspace) {
         // Loading input image
-        String inputImageName = parameters.getValue(INPUT_IMAGE);
+        String inputImageName = parameters.getValue(INPUT_IMAGE,workspace);
         writeStatus("Loading image ("+inputImageName+") into workspace");
         ImagePlus ipl = workspace.getImages().get(inputImageName).getImagePlus();
 
         // Getting parameters
-        String outputImageName = parameters.getValue(OUTPUT_IMAGE);
-        int channel = parameters.getValue(CHANNEL_TO_EXTRACT);
+        String outputImageName = parameters.getValue(OUTPUT_IMAGE,workspace);
+        int channel = parameters.getValue(CHANNEL_TO_EXTRACT,workspace);
 
         // Getting selected channel
         writeStatus("Extracting channel "+channel);
@@ -89,31 +89,37 @@ public class ChannelExtractor extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
+Workspace workspace = null;
         return parameters;
     }
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
-    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
-    public MetadataRefs updateAndGetMetadataReferences() {
+public MetadataRefs updateAndGetMetadataReferences() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
+Workspace workspace = null;
         return null;
     }
 

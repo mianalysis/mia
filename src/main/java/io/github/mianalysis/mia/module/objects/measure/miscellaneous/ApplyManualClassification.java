@@ -48,11 +48,11 @@ package io.github.mianalysis.mia.module.objects.measure.miscellaneous;
 //    @Override
 //    public Status process(Workspace workspace) {
 //        // Getting input objects
-//        String inputObjectsName = parameters.getValue(TRACK_OBJECTS);
+//        String inputObjectsName = parameters.getValue(TRACK_OBJECTS,workspace);
 //        Objs inputObjects = workspace.getObjects().get(inputObjectsName);
 //
 //        // Getting classification file and storing classifications as HashMap that can be easily read later on
-//        String classificationFilePath = parameters.getValue(CLASSIFICATION_FILE);
+//        String classificationFilePath = parameters.getValue(CLASSIFICATION_FILE,workspace);
 //        try {
 //            BufferedReader bufferedReader = new BufferedReader(new FileReader(classificationFilePath));
 //            String line;
@@ -84,7 +84,7 @@ package io.github.mianalysis.mia.module.objects.measure.miscellaneous;
 //
 //            // Removing objects that don't have an assigned class (first removing the parent-child relationships).
 //            // Otherwise, the class measurement is set to Double.NaN
-//            if (parameters.getValue(REMOVE_MISSING)) {
+//            if (parameters.getValue(REMOVE_MISSING,workspace)) {
 //                for (Obj object : inputObjects.values()) {
 //                    if (object.getMeasurement(Measurements.CLASS) == null) {
 //                        object.removeRelationships();
@@ -126,7 +126,7 @@ package io.github.mianalysis.mia.module.objects.measure.miscellaneous;
 //
 //    @Override
 //    public Parameters updateAndGetParameters() {
-//        String inputObjectsName = parameters.getValue(TRACK_OBJECTS);
+//        String inputObjectsName = parameters.getValue(TRACK_OBJECTS,workspace);
 //
 //        ParameterGroup parameterGroup = parameters.getParameter(ADD_MEASUREMENT);
 //        LinkedHashMap<Integer,Parameters> collections = parameterGroup.getCollections();
@@ -144,11 +144,11 @@ package io.github.mianalysis.mia.module.objects.measure.miscellaneous;
 //    }
 //
 //    @Override
-//    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+//public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
 //        objectMeasurementRefs.setAllAvailable(false);
 //
 //        MeasurementRef classMeas = objectMeasurementRefs.getOrPut(Measurements.CLASS);
-//        classMeas.setObjectsName(parameters.getValue(TRACK_OBJECTS));
+//        classMeas.setObjectsName(parameters.getValue(TRACK_OBJECTS,workspace));
 //        classMeas.setAvailable(true);
 //
 //        return objectMeasurementRefs;
@@ -156,7 +156,7 @@ package io.github.mianalysis.mia.module.objects.measure.miscellaneous;
 //    }
 //
 //    @Override
-//    public MetadataRefs updateAndGetMetadataReferences() {
+//public MetadataRefs updateAndGetMetadataReferences() {
 //        return null;
 //    }
 //

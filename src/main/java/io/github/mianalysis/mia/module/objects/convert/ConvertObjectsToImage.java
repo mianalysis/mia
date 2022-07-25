@@ -94,15 +94,15 @@ public class ConvertObjectsToImage extends Module {
 
   @Override
   public Status process(Workspace workspace) {
-    String objectName = parameters.getValue(INPUT_OBJECTS);
-    String outputImageName = parameters.getValue(OUTPUT_IMAGE);
-    String outputMode = parameters.getValue(OUTPUT_MODE);
-    String colourMode = parameters.getValue(COLOUR_MODE);
-    String singleColourMode = parameters.getValue(SINGLE_COLOUR_MODE);
-    String measurementForColour = parameters.getValue(MEASUREMENT);
-    String childObjectsForColour = parameters.getValue(CHILD_OBJECTS_FOR_COLOUR);
-    String parentForColour = parameters.getValue(PARENT_OBJECT_FOR_COLOUR);
-    String partnerForColour = parameters.getValue(PARTNER_OBJECTS_FOR_COLOUR);
+    String objectName = parameters.getValue(INPUT_OBJECTS,workspace);
+    String outputImageName = parameters.getValue(OUTPUT_IMAGE,workspace);
+    String outputMode = parameters.getValue(OUTPUT_MODE,workspace);
+    String colourMode = parameters.getValue(COLOUR_MODE,workspace);
+    String singleColourMode = parameters.getValue(SINGLE_COLOUR_MODE,workspace);
+    String measurementForColour = parameters.getValue(MEASUREMENT,workspace);
+    String childObjectsForColour = parameters.getValue(CHILD_OBJECTS_FOR_COLOUR,workspace);
+    String parentForColour = parameters.getValue(PARENT_OBJECT_FOR_COLOUR,workspace);
+    String partnerForColour = parameters.getValue(PARTNER_OBJECTS_FOR_COLOUR,workspace);
 
     Objs inputObjects = workspace.getObjects().get(objectName);
 
@@ -219,8 +219,9 @@ public class ConvertObjectsToImage extends Module {
 
   @Override
   public Parameters updateAndGetParameters() {
-    String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
-    String parentObjectsName = parameters.getValue(PARENT_OBJECT_FOR_COLOUR);
+Workspace workspace = null;
+    String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
+    String parentObjectsName = parameters.getValue(PARENT_OBJECT_FOR_COLOUR,workspace);
 
     Parameters returnedParameters = new Parameters();
 
@@ -232,16 +233,16 @@ public class ConvertObjectsToImage extends Module {
     returnedParameters.add(parameters.getParameter(OUTPUT_MODE));
 
     returnedParameters.add(parameters.getParameter(COLOUR_MODE));
-    switch ((String) parameters.getValue(COLOUR_MODE)) {
+    switch ((String) parameters.getValue(COLOUR_MODE,workspace)) {
       case ColourModes.CHILD_COUNT:
         returnedParameters.add(parameters.getParameter(CHILD_OBJECTS_FOR_COLOUR));
-        if (parameters.getValue(INPUT_OBJECTS) != null) {
+        if (parameters.getValue(INPUT_OBJECTS,workspace) != null) {
           ((ChildObjectsP) parameters.getParameter(CHILD_OBJECTS_FOR_COLOUR)).setParentObjectsName(inputObjectsName);
         }
         break;
       case ColourModes.MEASUREMENT_VALUE:
         returnedParameters.add(parameters.getParameter(MEASUREMENT));
-        if (parameters.getValue(INPUT_OBJECTS) != null) {
+        if (parameters.getValue(INPUT_OBJECTS,workspace) != null) {
           ((ObjectMeasurementP) parameters.getParameter(MEASUREMENT)).setObjectName(inputObjectsName);
         }
         break;
@@ -264,7 +265,7 @@ public class ConvertObjectsToImage extends Module {
 
       case ColourModes.PARTNER_COUNT:
         returnedParameters.add(parameters.getParameter(PARTNER_OBJECTS_FOR_COLOUR));
-        if (parameters.getValue(INPUT_OBJECTS) != null) {
+        if (parameters.getValue(INPUT_OBJECTS,workspace) != null) {
           ((PartnerObjectsP) parameters.getParameter(PARTNER_OBJECTS_FOR_COLOUR))
               .setPartnerObjectsName(inputObjectsName);
         }
@@ -280,6 +281,7 @@ public class ConvertObjectsToImage extends Module {
 
   @Override
   public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
+Workspace workspace = null;
     return null;
   }
 
@@ -300,6 +302,7 @@ public class ConvertObjectsToImage extends Module {
 
   @Override
   public PartnerRefs updateAndGetPartnerRefs() {
+Workspace workspace = null;
     return null;
   }
 

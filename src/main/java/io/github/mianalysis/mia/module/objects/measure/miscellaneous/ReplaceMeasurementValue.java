@@ -82,14 +82,14 @@ public class ReplaceMeasurementValue extends Module {
 
     @Override
     protected Status process(Workspace workspace) {
-        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
         Objs inputObjects = workspace.getObjectSet(inputObjectsName);
 
-        String measurementName = parameters.getValue(MEASUREMENT);
-        String replacementCondition = parameters.getValue(REPLACEMENT_CONDITION);
-        double referenceValue = parameters.getValue(REFERENCE_VALUE);
-        String replacementValueType = parameters.getValue(REPLACEMENT_VALUE_TYPE);
-        double replacementValue = parameters.getValue(REPLACEMENT_VALUE);
+        String measurementName = parameters.getValue(MEASUREMENT,workspace);
+        String replacementCondition = parameters.getValue(REPLACEMENT_CONDITION,workspace);
+        double referenceValue = parameters.getValue(REFERENCE_VALUE,workspace);
+        String replacementValueType = parameters.getValue(REPLACEMENT_VALUE_TYPE,workspace);
+        double replacementValue = parameters.getValue(REPLACEMENT_VALUE,workspace);
 
         for (Obj inputObject : inputObjects.values()) {
             Measurement measurement = inputObject.getMeasurement(measurementName);
@@ -167,7 +167,8 @@ public class ReplaceMeasurementValue extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
-        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+Workspace workspace = null;
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
 
         Parameters returnedParams = new Parameters();
 
@@ -177,7 +178,7 @@ public class ReplaceMeasurementValue extends Module {
 
         returnedParams.add(parameters.get(REPLACEMENT_SEPARATOR));
         returnedParams.add(parameters.get(REPLACEMENT_CONDITION));
-        switch ((String) parameters.getValue(REPLACEMENT_CONDITION)) {
+        switch ((String) parameters.getValue(REPLACEMENT_CONDITION,workspace)) {
             case ReplacementConditions.EQUAL_TO:
             case ReplacementConditions.GREATER_THAN:
             case ReplacementConditions.GREATER_THAN_OR_EQUAL_TO:
@@ -189,7 +190,7 @@ public class ReplaceMeasurementValue extends Module {
         }
 
         returnedParams.add(parameters.get(REPLACEMENT_VALUE_TYPE));
-        switch ((String) parameters.getValue(REPLACEMENT_VALUE_TYPE)) {
+        switch ((String) parameters.getValue(REPLACEMENT_VALUE_TYPE,workspace)) {
             case ReplacementValueTypes.NUMBER:
                 returnedParams.add(parameters.get(REPLACEMENT_VALUE));
                 break;
@@ -204,26 +205,31 @@ public class ReplaceMeasurementValue extends Module {
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
-    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
-    public MetadataRefs updateAndGetMetadataReferences() {
+public MetadataRefs updateAndGetMetadataReferences() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
+Workspace workspace = null;
         return null;
     }
 

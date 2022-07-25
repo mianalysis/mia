@@ -132,21 +132,21 @@ public class OutputControl extends AbstractMacroRunner {
     }
 
     public boolean isExportIndividual() {
-        return parameters.getValue(EXPORT_MODE).equals(ExportModes.INDIVIDUAL_FILES);
+        return parameters.getValue(EXPORT_MODE,null).equals(ExportModes.INDIVIDUAL_FILES);
     }
 
     public boolean isExportAllTogether() {
-        return parameters.getValue(EXPORT_MODE).equals(ExportModes.ALL_TOGETHER);
+        return parameters.getValue(EXPORT_MODE,null).equals(ExportModes.ALL_TOGETHER);
     }
 
     public boolean isExportGroupedByMetadata() {
-        return parameters.getValue(EXPORT_MODE).equals(ExportModes.GROUP_BY_METADATA);
+        return parameters.getValue(EXPORT_MODE,null).equals(ExportModes.GROUP_BY_METADATA);
     }
 
     public String getIndividualOutputPath(Metadata metadata) {
-        String mirroredRoot = getParameterValue(MIRRORED_DIRECTORY_ROOT);
-        String saveLocation = getParameterValue(INDIVIDUAL_SAVE_LOCATION);
-        String saveFilePath = getParameterValue(SAVE_FILE_PATH);
+        String mirroredRoot = getParameterValue(MIRRORED_DIRECTORY_ROOT,null);
+        String saveLocation = getParameterValue(INDIVIDUAL_SAVE_LOCATION,null);
+        String saveFilePath = getParameterValue(SAVE_FILE_PATH,null);
 
         File inputFile = metadata.getFile();
 
@@ -193,8 +193,8 @@ public class OutputControl extends AbstractMacroRunner {
     }
 
     public String getGroupOutputPath(File inputFile) {
-        String saveLocation = getParameterValue(GROUP_SAVE_LOCATION);
-        String saveFilePath = getParameterValue(SAVE_FILE_PATH);
+        String saveLocation = getParameterValue(GROUP_SAVE_LOCATION,null);
+        String saveFilePath = getParameterValue(SAVE_FILE_PATH,null);
 
         // Determining the file path
         String path = "";
@@ -219,8 +219,8 @@ public class OutputControl extends AbstractMacroRunner {
     }
 
     String getOutputFilename(File inputFile) {
-        String saveNameMode = getParameterValue(SAVE_NAME_MODE);
-        String saveFileName = getParameterValue(SAVE_FILE_NAME);
+        String saveNameMode = getParameterValue(SAVE_NAME_MODE,null);
+        String saveFileName = getParameterValue(SAVE_FILE_NAME,null);
 
         // Determining the file name
         String name = "";
@@ -243,8 +243,8 @@ public class OutputControl extends AbstractMacroRunner {
     }
 
     String getOutputSuffix() {
-        String seriesMode = modules.getInputControl().getParameterValue(InputControl.SERIES_MODE);
-        String seriesList = modules.getInputControl().getParameterValue(InputControl.SERIES_LIST);
+        String seriesMode = modules.getInputControl().getParameterValue(InputControl.SERIES_MODE,null);
+        String seriesList = modules.getInputControl().getParameterValue(InputControl.SERIES_LIST,null);
 
         // Determining the suffix
         String suffix = "";
@@ -257,14 +257,14 @@ public class OutputControl extends AbstractMacroRunner {
     }
 
     public void runMacro(Workspace workspace) {
-        if (!(boolean) parameters.getValue(RUN_MACRO)) {
+        if (!(boolean) parameters.getValue(RUN_MACRO,null)) {
             return;
         }
 
         MIA.log.writeStatus("Running post-processing macro");
-        String macroMode = parameters.getValue(MACRO_MODE);
-        String macroText = parameters.getValue(MACRO_TEXT);
-        String macroFile = parameters.getValue(MACRO_FILE);
+        String macroMode = parameters.getValue(MACRO_MODE,null);
+        String macroText = parameters.getValue(MACRO_TEXT,null);
+        String macroFile = parameters.getValue(MACRO_FILE,null);
 
         // Setting the MacroHandler to the current workspace
         MacroHandler.setWorkspace(workspace);
@@ -276,7 +276,7 @@ public class OutputControl extends AbstractMacroRunner {
 
         // Appending variables to the front of the macro
         ParameterGroup variableGroup = parameters.getParameter(ADD_VARIABLE);
-        String finalMacroText = AbstractMacroRunner.addVariables(macroText, variableGroup);
+        String finalMacroText = AbstractMacroRunner.addVariables(macroText, variableGroup, workspace);
 
         // Running the macro
         Interpreter interpreter = new Interpreter();
@@ -367,14 +367,15 @@ public class OutputControl extends AbstractMacroRunner {
 
     @Override
     public Parameters updateAndGetParameters() {
+Workspace workspace = null;
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(POSTPROCESSING_SEPARATOR));
         returnedParameters.add(parameters.getParameter(RUN_MACRO));
-        if ((boolean) parameters.getValue(RUN_MACRO)) {
+        if ((boolean) parameters.getValue(RUN_MACRO,null)) {
             returnedParameters.addAll(super.updateAndGetParameters());
             returnedParameters.add(parameters.getParameter(MACRO_MODE));
-            switch ((String) parameters.getValue(MACRO_MODE)) {
+            switch ((String) parameters.getValue(MACRO_MODE,null)) {
                 case MacroModes.MACRO_FILE:
                     returnedParameters.add(parameters.getParameter(MACRO_FILE));
                     break;
@@ -399,7 +400,7 @@ public class OutputControl extends AbstractMacroRunner {
         switch (exportMode.getChoice()) {
             case ExportModes.INDIVIDUAL_FILES:
                 returnedParameters.add(parameters.getParameter(INDIVIDUAL_SAVE_LOCATION));
-                switch ((String) parameters.getValue(INDIVIDUAL_SAVE_LOCATION)) {
+                switch ((String) parameters.getValue(INDIVIDUAL_SAVE_LOCATION,null)) {
                     case IndividualSaveLocations.SPECIFIC_LOCATION:
                         returnedParameters.add(parameters.getParameter(SAVE_FILE_PATH));
                         break;
@@ -411,7 +412,7 @@ public class OutputControl extends AbstractMacroRunner {
             case ExportModes.GROUP_BY_METADATA:
             case ExportModes.ALL_TOGETHER:
                 returnedParameters.add(parameters.getParameter(GROUP_SAVE_LOCATION));
-                switch ((String) parameters.getValue(GROUP_SAVE_LOCATION)) {
+                switch ((String) parameters.getValue(GROUP_SAVE_LOCATION,null)) {
                     case GroupSaveLocations.SPECIFIC_LOCATION:
                         returnedParameters.add(parameters.getParameter(SAVE_FILE_PATH));
                         break;
@@ -420,13 +421,13 @@ public class OutputControl extends AbstractMacroRunner {
         }
 
         returnedParameters.add(parameters.getParameter(SAVE_NAME_MODE));
-        switch ((String) parameters.getValue(SAVE_NAME_MODE)) {
+        switch ((String) parameters.getValue(SAVE_NAME_MODE,null)) {
             case SaveNameModes.SPECIFIC_NAME:
                 returnedParameters.add(parameters.getParameter(SAVE_FILE_NAME));
                 break;
         }
 
-        if (!exportMode.getValue().equals(ExportModes.INDIVIDUAL_FILES)) {
+        if (!exportMode.getValue(null).equals(ExportModes.INDIVIDUAL_FILES)) {
             BooleanP continuousDataExport = (BooleanP) parameters.getParameter(CONTINUOUS_DATA_EXPORT);
             returnedParameters.add(continuousDataExport);
             if (continuousDataExport.isSelected()) {
@@ -441,7 +442,7 @@ public class OutputControl extends AbstractMacroRunner {
         returnedParameters.add(exportSummary);
         if (exportSummary.isSelected()) {
             returnedParameters.add(parameters.getParameter(SUMMARY_MODE));
-            switch ((String) parameters.getValue(SUMMARY_MODE)) {
+            switch ((String) parameters.getValue(SUMMARY_MODE,null)) {
                 case SummaryModes.GROUP_BY_METADATA:
                     returnedParameters.add(parameters.getParameter(METADATA_ITEM_FOR_SUMMARY));
                     break;
@@ -461,26 +462,31 @@ public class OutputControl extends AbstractMacroRunner {
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
-    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
-    public MetadataRefs updateAndGetMetadataReferences() {
+public MetadataRefs updateAndGetMetadataReferences() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
+Workspace workspace = null;
         return null;
     }
 

@@ -127,18 +127,18 @@ public class FilterOnImageEdge extends AbstractObjectFilter {
     @Override
     protected Status process(Workspace workspace) {
         // Getting input objects
-        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
         Objs inputObjects = workspace.getObjects().get(inputObjectsName);
 
         // Getting parameters
-        String filterMode = parameters.getValue(FILTER_MODE);
-        String outputObjectsName = parameters.getValue(OUTPUT_FILTERED_OBJECTS);
-        int maxContact = parameters.getValue(MAXIMUM_CONTACT);
-        boolean removeTop = parameters.getValue(REMOVE_ON_TOP);
-        boolean removeLeft = parameters.getValue(REMOVE_ON_LEFT);
-        boolean removeBottom = parameters.getValue(REMOVE_ON_BOTTOM);
-        boolean removeRight = parameters.getValue(REMOVE_ON_RIGHT);
-        boolean includeZ = parameters.getValue(INCLUDE_Z_POSITION);
+        String filterMode = parameters.getValue(FILTER_MODE,workspace);
+        String outputObjectsName = parameters.getValue(OUTPUT_FILTERED_OBJECTS,workspace);
+        int maxContact = parameters.getValue(MAXIMUM_CONTACT,workspace);
+        boolean removeTop = parameters.getValue(REMOVE_ON_TOP,workspace);
+        boolean removeLeft = parameters.getValue(REMOVE_ON_LEFT,workspace);
+        boolean removeBottom = parameters.getValue(REMOVE_ON_BOTTOM,workspace);
+        boolean removeRight = parameters.getValue(REMOVE_ON_RIGHT,workspace);
+        boolean includeZ = parameters.getValue(INCLUDE_Z_POSITION,workspace);
 
         boolean moveObjects = filterMode.equals(FilterModes.MOVE_FILTERED);
         boolean remove = !filterMode.equals(FilterModes.DO_NOTHING);
@@ -184,6 +184,7 @@ public class FilterOnImageEdge extends AbstractObjectFilter {
 
     @Override
     public Parameters updateAndGetParameters() {
+Workspace workspace = null;
         Parameters returnedParameters = new Parameters();
         returnedParameters.addAll(super.updateAndGetParameters());
 
@@ -202,24 +203,27 @@ public class FilterOnImageEdge extends AbstractObjectFilter {
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
-    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+Workspace workspace = null;
         return super.updateAndGetObjectMeasurementRefs();
 
     }
 
     @Override
-    public MetadataRefs updateAndGetMetadataReferences() {
+public MetadataRefs updateAndGetMetadataReferences() {
+Workspace workspace = null;
         MetadataRefs returnedRefs = new MetadataRefs();
 
         // Filter results are stored as a metadata item since they apply to the whole
         // set
-        if ((boolean) parameters.getValue(STORE_RESULTS)) {
-            String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
-            boolean includeZ = parameters.getValue(INCLUDE_Z_POSITION);
+        if ((boolean) parameters.getValue(STORE_RESULTS,workspace)) {
+            String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
+            boolean includeZ = parameters.getValue(INCLUDE_Z_POSITION,workspace);
 
             String metadataName = getMetadataName(inputObjectsName, includeZ);
 

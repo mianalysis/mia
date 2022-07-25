@@ -64,16 +64,16 @@ public class AffineBlockMatching extends AbstractAffineRegistration {
 
         // Setting up the parameters
         BMParam bmParam = (BMParam) param;
-        bmParam.scale = (float) (double) parameters.getValue(LAYER_SCALE);
-        bmParam.searchR = parameters.getValue(SEARCH_RADIUS);
-        bmParam.blockR = parameters.getValue(BLOCK_RADIUS);
-        bmParam.resolution = parameters.getValue(RESOLUTION);
-        bmParam.minR = (float) (double) parameters.getValue(MIN_PMCC_R);
-        bmParam.maxCurvature = (float) (double) parameters.getValue(MAX_CURVATURE);
-        bmParam.rod = (float) (double) parameters.getValue(ROD);
-        bmParam.sigma = (float) (double) parameters.getValue(LOCAL_REGION_SIGMA);
-        bmParam.maxAbsDisp = (float) (double) parameters.getValue(MAX_ABS_LOCAL_DISPLACEMENT);
-        bmParam.maxRelDisp = (float) (double) parameters.getValue(MAX_REL_LOCAL_DISPLACEMENT);
+        bmParam.scale = (float) (double) parameters.getValue(LAYER_SCALE,workspace);
+        bmParam.searchR = parameters.getValue(SEARCH_RADIUS,workspace);
+        bmParam.blockR = parameters.getValue(BLOCK_RADIUS,workspace);
+        bmParam.resolution = parameters.getValue(RESOLUTION,workspace);
+        bmParam.minR = (float) (double) parameters.getValue(MIN_PMCC_R,workspace);
+        bmParam.maxCurvature = (float) (double) parameters.getValue(MAX_CURVATURE,workspace);
+        bmParam.rod = (float) (double) parameters.getValue(ROD,workspace);
+        bmParam.sigma = (float) (double) parameters.getValue(LOCAL_REGION_SIGMA,workspace);
+        bmParam.maxAbsDisp = (float) (double) parameters.getValue(MAX_ABS_LOCAL_DISPLACEMENT,workspace);
+        bmParam.maxRelDisp = (float) (double) parameters.getValue(MAX_REL_LOCAL_DISPLACEMENT,workspace);
 
     }
 
@@ -152,6 +152,7 @@ public class AffineBlockMatching extends AbstractAffineRegistration {
 
     @Override
     public Parameters updateAndGetParameters() {
+Workspace workspace = null;
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.addAll(super.updateAndGetParameters());

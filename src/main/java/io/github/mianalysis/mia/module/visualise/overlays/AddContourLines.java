@@ -514,29 +514,29 @@ public class AddContourLines extends Module {
     @Override
     protected Status process(Workspace workspace) {
         // Getting parameters
-        boolean applyToInput = parameters.getValue(APPLY_TO_INPUT);
-        boolean addOutputToWorkspace = parameters.getValue(ADD_OUTPUT_TO_WORKSPACE);
-        String outputImageName = parameters.getValue(OUTPUT_IMAGE);
+        boolean applyToInput = parameters.getValue(APPLY_TO_INPUT,workspace);
+        boolean addOutputToWorkspace = parameters.getValue(ADD_OUTPUT_TO_WORKSPACE,workspace);
+        String outputImageName = parameters.getValue(OUTPUT_IMAGE,workspace);
 
         // Getting input image
-        String inputImageName = parameters.getValue(INPUT_IMAGE);
+        String inputImageName = parameters.getValue(INPUT_IMAGE,workspace);
         Image inputImage = workspace.getImages().get(inputImageName);
         ImagePlus ipl = inputImage.getImagePlus();
 
-        double minIntensity = parameters.getValue(MINIMUM_INTENSITY);
-        double maxIntensity = parameters.getValue(MAXIMUM_INTENSITY);
-        int nContours = parameters.getValue(NUMBER_OF_CONTOURS);
-        String contourColourMode = parameters.getValue(CONTOUR_COLOUR_MODE);
-        String contourColour = parameters.getValue(CONTOUR_COLOUR);
-        double lineWidth = parameters.getValue(LINE_WIDTH);
-        int drawEveryNPoints = parameters.getValue(DRAW_EVERY_N_POINTS);
+        double minIntensity = parameters.getValue(MINIMUM_INTENSITY,workspace);
+        double maxIntensity = parameters.getValue(MAXIMUM_INTENSITY,workspace);
+        int nContours = parameters.getValue(NUMBER_OF_CONTOURS,workspace);
+        String contourColourMode = parameters.getValue(CONTOUR_COLOUR_MODE,workspace);
+        String contourColour = parameters.getValue(CONTOUR_COLOUR,workspace);
+        double lineWidth = parameters.getValue(LINE_WIDTH,workspace);
+        int drawEveryNPoints = parameters.getValue(DRAW_EVERY_N_POINTS,workspace);
 
-        boolean showLabels = parameters.getValue(SHOW_LABELS);
-        int decimalPlaces = parameters.getValue(DECIMAL_PLACES);
-        boolean useScientific = parameters.getValue(USE_SCIENTIFIC);
-        String labelColourMode = parameters.getValue(LABEL_COLOUR_MODE);
-        String labelColour = parameters.getValue(LABEL_COLOUR);
-        int labelSize = parameters.getValue(LABEL_SIZE);
+        boolean showLabels = parameters.getValue(SHOW_LABELS,workspace);
+        int decimalPlaces = parameters.getValue(DECIMAL_PLACES,workspace);
+        boolean useScientific = parameters.getValue(USE_SCIENTIFIC,workspace);
+        String labelColourMode = parameters.getValue(LABEL_COLOUR_MODE,workspace);
+        String labelColour = parameters.getValue(LABEL_COLOUR,workspace);
+        int labelSize = parameters.getValue(LABEL_SIZE,workspace);
 
         // Only add output to workspace if not applying to input
         if (applyToInput)
@@ -609,15 +609,16 @@ public class AddContourLines extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
+Workspace workspace = null;
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(INPUT_IMAGE));
         returnedParameters.add(parameters.getParameter(APPLY_TO_INPUT));
-        if (!(boolean) parameters.getValue(APPLY_TO_INPUT)) {
+        if (!(boolean) parameters.getValue(APPLY_TO_INPUT,workspace)) {
             returnedParameters.add(parameters.getParameter(ADD_OUTPUT_TO_WORKSPACE));
 
-            if ((boolean) parameters.getValue(ADD_OUTPUT_TO_WORKSPACE)) {
+            if ((boolean) parameters.getValue(ADD_OUTPUT_TO_WORKSPACE,workspace)) {
                 returnedParameters.add(parameters.getParameter(OUTPUT_IMAGE));
 
             }
@@ -628,7 +629,7 @@ public class AddContourLines extends Module {
         returnedParameters.add(parameters.getParameter(MAXIMUM_INTENSITY));
         returnedParameters.add(parameters.getParameter(NUMBER_OF_CONTOURS));
         returnedParameters.add(parameters.getParameter(CONTOUR_COLOUR_MODE));
-        switch ((String) parameters.getValue(CONTOUR_COLOUR_MODE)) {
+        switch ((String) parameters.getValue(CONTOUR_COLOUR_MODE,workspace)) {
             case ColourModes.SINGLE_COLOUR:
             case ColourModes.SINGLE_COLOUR_GRADIENT:
                 returnedParameters.add(parameters.getParameter(CONTOUR_COLOUR));
@@ -641,11 +642,11 @@ public class AddContourLines extends Module {
 
         returnedParameters.add(parameters.getParameter(LABEL_SEPARATOR));
         returnedParameters.add(parameters.getParameter(SHOW_LABELS));
-        if ((boolean) parameters.getValue(SHOW_LABELS)) {
+        if ((boolean) parameters.getValue(SHOW_LABELS,workspace)) {
             returnedParameters.add(parameters.getParameter(DECIMAL_PLACES));
             returnedParameters.add(parameters.getParameter(USE_SCIENTIFIC));
             returnedParameters.add(parameters.getParameter(LABEL_COLOUR_MODE));
-            switch ((String) parameters.getValue(LABEL_COLOUR_MODE)) {
+            switch ((String) parameters.getValue(LABEL_COLOUR_MODE,workspace)) {
                 case ColourModes.SINGLE_COLOUR:
                 case ColourModes.SINGLE_COLOUR_GRADIENT:
                     returnedParameters.add(parameters.getParameter(LABEL_COLOUR));
@@ -660,26 +661,31 @@ public class AddContourLines extends Module {
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
-    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
-    public MetadataRefs updateAndGetMetadataReferences() {
+public MetadataRefs updateAndGetMetadataReferences() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
+Workspace workspace = null;
         return null;
     }
 

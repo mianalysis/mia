@@ -2,16 +2,15 @@ package io.github.mianalysis.mia.module.objects.relate;
 
 import java.util.Iterator;
 
+import org.scijava.Priority;
+import org.scijava.plugin.Plugin;
+
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.images.process.binary.DistanceMap;
 import io.github.mianalysis.mia.module.images.transform.ProjectImage;
-import io.github.mianalysis.mia.module.Module;
-import org.scijava.Priority;
-import org.scijava.plugin.Plugin;
-
 import io.github.mianalysis.mia.object.Image;
 import io.github.mianalysis.mia.object.Measurement;
 import io.github.mianalysis.mia.object.Obj;
@@ -127,12 +126,12 @@ public class RelateObjects extends Module {
      * Iterates over each testObject, calculating getting the smallest distance to a
      * parentObject. If this is smaller than linkingDistance the link is assigned.
      */
-    public void proximity(Objs parentObjects, Objs childObjects) {
-        boolean linkInSameFrame = parameters.getValue(LINK_IN_SAME_FRAME);
-        String referenceMode = parameters.getValue(REFERENCE_MODE);
-        boolean limitLinking = parameters.getValue(LIMIT_LINKING_BY_DISTANCE);
-        double linkingDistance = parameters.getValue(LINKING_DISTANCE);
-        String insideOutsideMode = parameters.getValue(INSIDE_OUTSIDE_MODE);
+    public void proximity(Objs parentObjects, Objs childObjects, Workspace workspace) {
+        boolean linkInSameFrame = parameters.getValue(LINK_IN_SAME_FRAME,workspace);
+        String referenceMode = parameters.getValue(REFERENCE_MODE,workspace);
+        boolean limitLinking = parameters.getValue(LIMIT_LINKING_BY_DISTANCE,workspace);
+        double linkingDistance = parameters.getValue(LINKING_DISTANCE,workspace);
+        String insideOutsideMode = parameters.getValue(INSIDE_OUTSIDE_MODE,workspace);
 
         int iter = 1;
         int numberOfChildren = childObjects.size();
@@ -194,7 +193,7 @@ public class RelateObjects extends Module {
             // If using centroid to surface proximity and inside only, calculate the
             // fractional distance
             if (referenceMode.equals(ReferenceModes.CENTROID_TO_SURFACE)
-                    && parameters.getValue(INSIDE_OUTSIDE_MODE).equals(InsideOutsideModes.INSIDE_ONLY)) {
+                    && parameters.getValue(INSIDE_OUTSIDE_MODE,workspace).equals(InsideOutsideModes.INSIDE_ONLY)) {
                 calculateFractionalDistance(childObject, minLink, minDist);
             }
 
@@ -209,7 +208,7 @@ public class RelateObjects extends Module {
             }
 
             // Adding measurements to the input object
-            applyMeasurements(childObject, parentObjects, minDist, minLink);
+            applyMeasurements(childObject, parentObjects, minDist, minLink, workspace);
 
             writeProgressStatus(iter++, numberOfChildren, "objects");
 
@@ -237,8 +236,8 @@ public class RelateObjects extends Module {
 
     }
 
-    public void applyMeasurements(Obj childObject, Objs parentObjects, double minDist, Obj minLink) {
-        String referenceMode = parameters.getValue(REFERENCE_MODE);
+    public void applyMeasurements(Obj childObject, Objs parentObjects, double minDist, Obj minLink, Workspace workspace) {
+        String referenceMode = parameters.getValue(REFERENCE_MODE,workspace);
 
         if (minLink != null) {
             double dpp = childObject.getDppXY();
@@ -464,19 +463,19 @@ public class RelateObjects extends Module {
     @Override
     public Status process(Workspace workspace) {
         // Getting input objects
-        String parentObjectName = parameters.getValue(PARENT_OBJECTS);
+        String parentObjectName = parameters.getValue(PARENT_OBJECTS,workspace);
         Objs parentObjects = workspace.getObjects().get(parentObjectName);
 
-        String childObjectName = parameters.getValue(CHILD_OBJECTS);
+        String childObjectName = parameters.getValue(CHILD_OBJECTS,workspace);
         Objs childObjects = workspace.getObjects().get(childObjectName);
 
         // Getting parameters
-        String relateMode = parameters.getValue(RELATE_MODE);
-        boolean linkInSameFrame = parameters.getValue(LINK_IN_SAME_FRAME);
-        double minOverlap = parameters.getValue(MINIMUM_PERCENTAGE_OVERLAP);
-        boolean centroidOverlap = parameters.getValue(REQUIRE_CENTROID_OVERLAP);
-        boolean mergeRelatedObjects = parameters.getValue(MERGE_RELATED_OBJECTS);
-        String relatedObjectsName = parameters.getValue(RELATED_OBJECTS);
+        String relateMode = parameters.getValue(RELATE_MODE,workspace);
+        boolean linkInSameFrame = parameters.getValue(LINK_IN_SAME_FRAME,workspace);
+        double minOverlap = parameters.getValue(MINIMUM_PERCENTAGE_OVERLAP,workspace);
+        boolean centroidOverlap = parameters.getValue(REQUIRE_CENTROID_OVERLAP,workspace);
+        boolean mergeRelatedObjects = parameters.getValue(MERGE_RELATED_OBJECTS,workspace);
+        String relatedObjectsName = parameters.getValue(RELATED_OBJECTS,workspace);
 
         // Removing previous relationships
         parentObjects.removeChildren(childObjectName);
@@ -490,7 +489,7 @@ public class RelateObjects extends Module {
 
             case RelateModes.PROXIMITY:
                 writeStatus("Relating objects by proximity");
-                proximity(parentObjects, childObjects);
+                proximity(parentObjects, childObjects, workspace);
                 break;
 
             case RelateModes.SPATIAL_OVERLAP:
@@ -538,6 +537,7 @@ public class RelateObjects extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
+Workspace workspace = null;
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
@@ -547,12 +547,12 @@ public class RelateObjects extends Module {
         returnedParameters.add(parameters.getParameter(RELATE_SEPARATOR));
         returnedParameters.add(parameters.getParameter(RELATE_MODE));
 
-        String referenceMode = parameters.getValue(REFERENCE_MODE);
-        switch ((String) parameters.getValue(RELATE_MODE)) {
+        String referenceMode = parameters.getValue(REFERENCE_MODE,workspace);
+        switch ((String) parameters.getValue(RELATE_MODE,workspace)) {
             case RelateModes.PROXIMITY:
                 returnedParameters.add(parameters.getParameter(REFERENCE_MODE));
                 returnedParameters.add(parameters.getParameter(LIMIT_LINKING_BY_DISTANCE));
-                if ((boolean) parameters.getValue(LIMIT_LINKING_BY_DISTANCE)) {
+                if ((boolean) parameters.getValue(LIMIT_LINKING_BY_DISTANCE,workspace)) {
                     returnedParameters.add(parameters.getParameter(LINKING_DISTANCE));
                 }
 
@@ -573,7 +573,7 @@ public class RelateObjects extends Module {
 
         returnedParameters.add(parameters.getParameter(OUTPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(MERGE_RELATED_OBJECTS));
-        if ((boolean) parameters.getValue(MERGE_RELATED_OBJECTS)) {
+        if ((boolean) parameters.getValue(MERGE_RELATED_OBJECTS,workspace)) {
             returnedParameters.add(parameters.getParameter(RELATED_OBJECTS));
         }
 
@@ -583,15 +583,17 @@ public class RelateObjects extends Module {
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
-    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+Workspace workspace = null;
         ObjMeasurementRefs returnedRefs = new ObjMeasurementRefs();
 
-        String childObjectsName = parameters.getValue(CHILD_OBJECTS);
-        String parentObjectName = parameters.getValue(PARENT_OBJECTS);
+        String childObjectsName = parameters.getValue(CHILD_OBJECTS,workspace);
+        String parentObjectName = parameters.getValue(PARENT_OBJECTS,workspace);
 
         if (parentObjectName == null || childObjectsName == null)
             return returnedRefs;
@@ -654,9 +656,9 @@ public class RelateObjects extends Module {
         distCentSurfFrac.setObjectsName(childObjectsName);
         overlapPercentage.setObjectsName(childObjectsName);
 
-        switch ((String) parameters.getValue(RELATE_MODE)) {
+        switch ((String) parameters.getValue(RELATE_MODE,workspace)) {
             case RelateModes.PROXIMITY:
-                switch ((String) parameters.getValue(REFERENCE_MODE)) {
+                switch ((String) parameters.getValue(REFERENCE_MODE,workspace)) {
                     case ReferenceModes.CENTROID:
                         returnedRefs.add(distCentPx);
                         returnedRefs.add(distCentCal);
@@ -671,7 +673,7 @@ public class RelateObjects extends Module {
                         returnedRefs.add(distCentSurfPx);
                         returnedRefs.add(distCentSurfCal);
 
-                        if (parameters.getValue(INSIDE_OUTSIDE_MODE).equals(InsideOutsideModes.INSIDE_ONLY)) {
+                        if (parameters.getValue(INSIDE_OUTSIDE_MODE,workspace).equals(InsideOutsideModes.INSIDE_ONLY)) {
                             returnedRefs.add(distCentSurfFrac);
                         }
                         break;
@@ -688,16 +690,18 @@ public class RelateObjects extends Module {
     }
 
     @Override
-    public MetadataRefs updateAndGetMetadataReferences() {
+public MetadataRefs updateAndGetMetadataReferences() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
+Workspace workspace = null;
         ParentChildRefs returnedRelationships = new ParentChildRefs();
 
         returnedRelationships
-                .add(parentChildRefs.getOrPut(parameters.getValue(PARENT_OBJECTS), parameters.getValue(CHILD_OBJECTS)));
+                .add(parentChildRefs.getOrPut(parameters.getValue(PARENT_OBJECTS,workspace), parameters.getValue(CHILD_OBJECTS,workspace)));
 
         return returnedRelationships;
 
@@ -705,6 +709,7 @@ public class RelateObjects extends Module {
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
+Workspace workspace = null;
         return null;
     }
 

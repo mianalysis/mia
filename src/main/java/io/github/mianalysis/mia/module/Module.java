@@ -193,8 +193,8 @@ public abstract class Module extends Ref implements Comparable, SciJavaPlugin {
 
     }
 
-    public <T> T getParameterValue(String name) {
-        return parameters.getParameter(name).getValue();
+    public <T> T getParameterValue(String name, Workspace workspace) {
+        return parameters.getParameter(name).getValue(workspace);
     }
 
     public void setParameterVisibility(String name, boolean visible) {
@@ -353,7 +353,7 @@ public abstract class Module extends Ref implements Comparable, SciJavaPlugin {
         this.deprecated = deprecated;
     }
 
-    public Module getRedirectModule() {
+    public Module getRedirectModule(Workspace workspace) {
         return this.redirectModule;
     }
 

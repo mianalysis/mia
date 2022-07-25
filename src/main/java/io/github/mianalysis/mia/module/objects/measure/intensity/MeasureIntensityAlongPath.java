@@ -299,19 +299,19 @@ public class MeasureIntensityAlongPath extends Module {
     @Override
     public Status process(Workspace workspace) {
         // Getting objects to measure
-        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
         Objs inputObjects = workspace.getObjects().get(inputObjectsName);
 
         // Getting parameters
         ParameterGroup inputImages = parameters.getParameter(MEASURE_ANOTHER_IMAGE);
         LinkedHashMap<Integer, Parameters> imageCollections = inputImages.getCollections(true);
-        boolean includeCentroids = parameters.getValue(INCLUDE_CENTROIDS);
-        boolean includeTimepoints = parameters.getValue(INCLUDE_TIMEPOINTS);
-        String saveNameMode = parameters.getValue(SAVE_NAME_MODE);
-        String saveFileName = parameters.getValue(SAVE_FILE_NAME);
-        String appendSeriesMode = parameters.getValue(APPEND_SERIES_MODE);
-        String appendDateTimeMode = parameters.getValue(APPEND_DATETIME_MODE);
-        String suffix = parameters.getValue(SAVE_SUFFIX);
+        boolean includeCentroids = parameters.getValue(INCLUDE_CENTROIDS,workspace);
+        boolean includeTimepoints = parameters.getValue(INCLUDE_TIMEPOINTS,workspace);
+        String saveNameMode = parameters.getValue(SAVE_NAME_MODE,workspace);
+        String saveFileName = parameters.getValue(SAVE_FILE_NAME,workspace);
+        String appendSeriesMode = parameters.getValue(APPEND_SERIES_MODE,workspace);
+        String appendDateTimeMode = parameters.getValue(APPEND_DATETIME_MODE,workspace);
+        String suffix = parameters.getValue(SAVE_SUFFIX,workspace);
 
         // If there are no input objects skip the module
         if (inputObjects == null)
@@ -323,7 +323,7 @@ public class MeasureIntensityAlongPath extends Module {
         Image[] images = new Image[imageCollections.size()];
         int i = 0;
         for (Parameters imageCollection : imageCollections.values()) {
-            String imageName = imageCollection.getValue(INPUT_IMAGE);
+            String imageName = imageCollection.getValue(INPUT_IMAGE, workspace);
             images[i++] = workspace.getImage(imageName);
         }
 
@@ -383,6 +383,7 @@ public class MeasureIntensityAlongPath extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
+Workspace workspace = null;
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
@@ -397,7 +398,7 @@ public class MeasureIntensityAlongPath extends Module {
 
         returnedParameters.add(parameters.getParameter(FILE_SAVING_SEPARATOR));
         returnedParameters.add(parameters.getParameter(SAVE_NAME_MODE));
-        switch ((String) parameters.getValue(SAVE_NAME_MODE)) {
+        switch ((String) parameters.getValue(SAVE_NAME_MODE,workspace)) {
             case SaveNameModes.SPECIFIC_NAME:
                 returnedParameters.add(parameters.getParameter(SAVE_FILE_NAME));
                 break;
@@ -413,27 +414,32 @@ public class MeasureIntensityAlongPath extends Module {
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
-    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+Workspace workspace = null;
         return null;
 
     }
 
     @Override
-    public MetadataRefs updateAndGetMetadataReferences() {
+public MetadataRefs updateAndGetMetadataReferences() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
+Workspace workspace = null;
         return null;
     }
 

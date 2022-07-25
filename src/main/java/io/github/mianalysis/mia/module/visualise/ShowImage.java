@@ -78,11 +78,11 @@ public class ShowImage extends Module {
 
     @Override
     public Status process(Workspace workspace) {
-        String imageName = parameters.getValue(DISPLAY_IMAGE);
+        String imageName = parameters.getValue(DISPLAY_IMAGE,workspace);
         Image image = workspace.getImage(imageName);
-        String titleMode = parameters.getValue(TITLE_MODE);
-        boolean normalisation = parameters.getValue(QUICK_NORMALISATION);
-        String channelMode = parameters.getValue(CHANNEL_MODE);
+        String titleMode = parameters.getValue(TITLE_MODE,workspace);
+        boolean normalisation = parameters.getValue(QUICK_NORMALISATION,workspace);
+        String channelMode = parameters.getValue(CHANNEL_MODE,workspace);
 
         boolean composite = channelMode.equals(ChannelModes.COMPOSITE);
 
@@ -123,31 +123,37 @@ public class ShowImage extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
+Workspace workspace = null;
         return parameters;
     }
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
-    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
-    public MetadataRefs updateAndGetMetadataReferences() {
+public MetadataRefs updateAndGetMetadataReferences() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
+Workspace workspace = null;
         return null;
     }
 

@@ -130,7 +130,7 @@ public class MeasureObjectTexture extends Module {
     @Override
     public Status process(Workspace workspace) {
         // Getting input image
-        String inputImageName = parameters.getValue(INPUT_IMAGE);
+        String inputImageName = parameters.getValue(INPUT_IMAGE,workspace);
         Image inputImage = workspace.getImages().get(inputImageName);
         ImagePlus inputImagePlus = inputImage.getImagePlus();
 
@@ -144,7 +144,7 @@ public class MeasureObjectTexture extends Module {
         }
 
         // Getting input objects
-        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
         Objs inputObjects = workspace.getObjects().get(inputObjectsName);
 
         // If no objects were detected, skipping this module
@@ -152,10 +152,10 @@ public class MeasureObjectTexture extends Module {
             return Status.PASS;
 
         // Getting parameters
-        double xOffsIn = parameters.getValue(X_OFFSET);
-        double yOffsIn = parameters.getValue(Y_OFFSET);
-        double zOffsIn = parameters.getValue(Z_OFFSET);
-        boolean calibratedOffset = parameters.getValue(CALIBRATED_OFFSET);
+        double xOffsIn = parameters.getValue(X_OFFSET,workspace);
+        double yOffsIn = parameters.getValue(Y_OFFSET,workspace);
+        double zOffsIn = parameters.getValue(Z_OFFSET,workspace);
+        boolean calibratedOffset = parameters.getValue(CALIBRATED_OFFSET,workspace);
 
         double[] offs = new double[] { xOffsIn, yOffsIn, zOffsIn };
 
@@ -198,26 +198,29 @@ public class MeasureObjectTexture extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
+Workspace workspace = null;
         return parameters;
 
     }
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
-    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+Workspace workspace = null;
         ObjMeasurementRefs returnedRefs = new ObjMeasurementRefs();
 
-        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
-        String inputImageName = parameters.getValue(INPUT_IMAGE);
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
+        String inputImageName = parameters.getValue(INPUT_IMAGE,workspace);
 
-        double xOffsIn = parameters.getValue(X_OFFSET);
-        double yOffsIn = parameters.getValue(Y_OFFSET);
-        double zOffsIn = parameters.getValue(Z_OFFSET);
-        boolean calibratedOffset = parameters.getValue(CALIBRATED_OFFSET);
+        double xOffsIn = parameters.getValue(X_OFFSET,workspace);
+        double yOffsIn = parameters.getValue(Y_OFFSET,workspace);
+        double zOffsIn = parameters.getValue(Z_OFFSET,workspace);
+        boolean calibratedOffset = parameters.getValue(CALIBRATED_OFFSET,workspace);
         double[] offs = new double[] { xOffsIn, yOffsIn, zOffsIn };
 
         String name = getFullName(inputImageName, Measurements.ASM, offs, calibratedOffset);
@@ -245,17 +248,20 @@ public class MeasureObjectTexture extends Module {
     }
 
     @Override
-    public MetadataRefs updateAndGetMetadataReferences() {
+public MetadataRefs updateAndGetMetadataReferences() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
+Workspace workspace = null;
         return null;
     }
 

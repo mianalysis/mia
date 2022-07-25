@@ -470,7 +470,7 @@ public class ChildObjectsPTest {
 
         assertEquals("Test param",childObjectsP.getName());
         assertEquals("New nick",childObjectsP.getNickname());
-        assertEquals("Demo obj", childObjectsP.getValue());
+        assertEquals("Demo obj", childObjectsP.getValue(null));
         assertFalse(childObjectsP.isVisible());
 
     }

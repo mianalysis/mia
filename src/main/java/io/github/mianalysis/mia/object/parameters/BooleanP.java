@@ -15,7 +15,7 @@ public class BooleanP extends BooleanType {
 
     @Override
     public <T extends Parameter> T duplicate(Module newModule) {
-        BooleanP newParameter = new BooleanP(name,newModule,getValue(),getDescription());
+        BooleanP newParameter = new BooleanP(name,newModule,getValue(null),getDescription());
         newParameter.setNickname(getNickname());
         newParameter.setVisible(isVisible());
         newParameter.setExported(isExported());

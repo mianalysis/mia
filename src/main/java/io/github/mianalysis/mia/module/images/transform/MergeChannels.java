@@ -180,15 +180,15 @@ public class MergeChannels<T extends RealType<T> & NativeType<T>> extends Module
     @Override
     public Status process(Workspace workspace) {
         // Getting parameters
-        String overwriteMode = parameters.getValue(OVERWRITE_MODE);
-        String outputImageName = parameters.getValue(OUTPUT_IMAGE);
+        String overwriteMode = parameters.getValue(OVERWRITE_MODE,workspace);
+        String outputImageName = parameters.getValue(OUTPUT_IMAGE,workspace);
 
         // Creating a collection of images
-        LinkedHashMap<Integer, Parameters> collections = parameters.getValue(ADD_INPUT_IMAGE);
+        LinkedHashMap<Integer, Parameters> collections = parameters.getValue(ADD_INPUT_IMAGE,workspace);
         Image[] inputImages = new Image[collections.size()];
         int i = 0;
         for (Parameters collection : collections.values()) {
-            inputImages[i++] = workspace.getImage(collection.getValue(INPUT_IMAGE));
+            inputImages[i++] = workspace.getImage(collection.getValue(INPUT_IMAGE,workspace));
         }
 
         Image mergedImage = combineImages(inputImages, outputImageName);
@@ -229,12 +229,13 @@ public class MergeChannels<T extends RealType<T> & NativeType<T>> extends Module
 
     @Override
     public Parameters updateAndGetParameters() {
+Workspace workspace = null;
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(ADD_INPUT_IMAGE));
 
         returnedParameters.add(parameters.getParameter(OVERWRITE_MODE));
-        switch ((String) parameters.getValue(OVERWRITE_MODE)) {
+        switch ((String) parameters.getValue(OVERWRITE_MODE,workspace)) {
             case OverwriteModes.CREATE_NEW:
                 returnedParameters.add(parameters.getParameter(OUTPUT_IMAGE));
                 break;
@@ -249,26 +250,31 @@ public class MergeChannels<T extends RealType<T> & NativeType<T>> extends Module
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
-    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
-    public MetadataRefs updateAndGetMetadataReferences() {
+public MetadataRefs updateAndGetMetadataReferences() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
+Workspace workspace = null;
         return null;
     }
 

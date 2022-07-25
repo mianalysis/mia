@@ -266,20 +266,20 @@ public class ImageCalculator extends Module {
     @Override
     public Status process(Workspace workspace) {
         // Getting input images
-        String inputImageName1 = parameters.getValue(INPUT_IMAGE1);
+        String inputImageName1 = parameters.getValue(INPUT_IMAGE1,workspace);
         Image inputImage1 = workspace.getImages().get(inputImageName1);
         ImagePlus inputImagePlus1 = inputImage1.getImagePlus();
 
-        String inputImageName2 = parameters.getValue(INPUT_IMAGE2);
+        String inputImageName2 = parameters.getValue(INPUT_IMAGE2,workspace);
         Image inputImage2 = workspace.getImages().get(inputImageName2);
         ImagePlus inputImagePlus2 = inputImage2.getImagePlus();
 
         // Getting parameters
-        String overwriteMode = parameters.getValue(OVERWRITE_MODE);
-        String outputImageName = parameters.getValue(OUTPUT_IMAGE);
-        boolean output32Bit = parameters.getValue(OUTPUT_32BIT);
-        String calculationMethod = parameters.getValue(CALCULATION_METHOD);
-        boolean setNaNToZero = parameters.getValue(SET_NAN_TO_ZERO);
+        String overwriteMode = parameters.getValue(OVERWRITE_MODE,workspace);
+        String outputImageName = parameters.getValue(OUTPUT_IMAGE,workspace);
+        boolean output32Bit = parameters.getValue(OUTPUT_32BIT,workspace);
+        String calculationMethod = parameters.getValue(CALCULATION_METHOD,workspace);
+        boolean setNaNToZero = parameters.getValue(SET_NAN_TO_ZERO,workspace);
 
         ImagePlus newIpl = process(inputImagePlus1, inputImagePlus2, calculationMethod, overwriteMode, outputImageName,
                 output32Bit, setNaNToZero);
@@ -342,6 +342,7 @@ public class ImageCalculator extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
+Workspace workspace = null;
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
@@ -349,7 +350,7 @@ public class ImageCalculator extends Module {
         returnedParameters.add(parameters.getParameter(INPUT_IMAGE2));
         returnedParameters.add(parameters.getParameter(OVERWRITE_MODE));
 
-        if (parameters.getValue(OVERWRITE_MODE).equals(OverwriteModes.CREATE_NEW)) {
+        if (parameters.getValue(OVERWRITE_MODE,workspace).equals(OverwriteModes.CREATE_NEW)) {
             returnedParameters.add(parameters.getParameter(OUTPUT_IMAGE));
         }
 
@@ -365,26 +366,31 @@ public class ImageCalculator extends Module {
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
-    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
-    public MetadataRefs updateAndGetMetadataReferences() {
+public MetadataRefs updateAndGetMetadataReferences() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
+Workspace workspace = null;
         return null;
     }
 

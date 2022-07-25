@@ -262,17 +262,17 @@ public class TrackEditor extends Module {
     @Override
     public Status process(Workspace workspace) {
         // Getting input track objects
-        String inputTrackObjectsName = parameters.getValue(INPUT_TRACK_OBJECTS);
+        String inputTrackObjectsName = parameters.getValue(INPUT_TRACK_OBJECTS,workspace);
         Objs trackObjects = workspace.getObjectSet(inputTrackObjectsName);
 
         // Getting input spot objects
-        String inputSpotObjectsName = parameters.getValue(INPUT_SPOT_OBJECTS);
+        String inputSpotObjectsName = parameters.getValue(INPUT_SPOT_OBJECTS,workspace);
         Objs spotObjects = workspace.getObjectSet(inputSpotObjectsName);
 
         // Getting input image
-        String inputImageName = parameters.getValue(DISPLAY_IMAGE);
+        String inputImageName = parameters.getValue(DISPLAY_IMAGE,workspace);
         Image inputImage = workspace.getImage(inputImageName);
-        boolean showProjected = parameters.getValue(SHOW_PROJECTED);
+        boolean showProjected = parameters.getValue(SHOW_PROJECTED,workspace);
 
         // Converting MIA objects and tracks into TrackMate Model format
         Model model = initialiseModel(trackObjects, inputSpotObjectsName);
@@ -356,6 +356,7 @@ public class TrackEditor extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
+Workspace workspace = null;
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
@@ -368,7 +369,7 @@ public class TrackEditor extends Module {
 
         returnedParameters.add(parameters.getParameter(MEASUREMENT_WARNING));
 
-        String objectName = parameters.getValue(INPUT_TRACK_OBJECTS);
+        String objectName = parameters.getValue(INPUT_TRACK_OBJECTS,workspace);
         ((ChildObjectsP) parameters.getParameter(INPUT_SPOT_OBJECTS)).setParentObjectsName(objectName);
 
         return returnedParameters;
@@ -377,26 +378,31 @@ public class TrackEditor extends Module {
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
-    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
-    public MetadataRefs updateAndGetMetadataReferences() {
+public MetadataRefs updateAndGetMetadataReferences() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
+Workspace workspace = null;
         return null;
     }
 

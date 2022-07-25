@@ -68,7 +68,7 @@ public class UnwarpManual<T extends RealType<T> & NativeType<T>> extends Abstrac
 
         // Setting up the parameters
         ManualBUnwarpJParam manualParam = (ManualBUnwarpJParam) param;
-        manualParam.pointSelectionMode = parameters.getValue(POINT_SELECTION_MODE);
+        manualParam.pointSelectionMode = parameters.getValue(POINT_SELECTION_MODE,workspace);
 
         // In test points mode we don't want to update the ROIs, so the workspace is set
         // to null
@@ -76,26 +76,26 @@ public class UnwarpManual<T extends RealType<T> & NativeType<T>> extends Abstrac
             return;
 
         // Getting any ROI attached to the warped image
-        switch ((String) parameters.getValue(CALCULATION_SOURCE)) {
+        switch ((String) parameters.getValue(CALCULATION_SOURCE,workspace)) {
             case CalculationSources.EXTERNAL:
-                String externalSourceName = parameters.getValue(EXTERNAL_SOURCE);
+                String externalSourceName = parameters.getValue(EXTERNAL_SOURCE,workspace);
                 manualParam.warpedRoi = workspace.getImage(externalSourceName).getImagePlus().getRoi();
                 break;
             case CalculationSources.INTERNAL:
-                String inputImageName = parameters.getValue(INPUT_IMAGE);
+                String inputImageName = parameters.getValue(INPUT_IMAGE,workspace);
                 manualParam.warpedRoi = workspace.getImage(inputImageName).getImagePlus().getRoi();
                 break;
         }
 
         // Getting any ROI attached to the reference image
-        switch ((String) parameters.getValue(REFERENCE_MODE)) {
+        switch ((String) parameters.getValue(REFERENCE_MODE,workspace)) {
             case ReferenceModes.FIRST_FRAME:
             case ReferenceModes.PREVIOUS_N_FRAMES:
-                String inputImageName = parameters.getValue(INPUT_IMAGE);
+                String inputImageName = parameters.getValue(INPUT_IMAGE,workspace);
                 manualParam.referenceRoi = workspace.getImage(inputImageName).getImagePlus().getRoi();
                 break;
             case ReferenceModes.SPECIFIC_IMAGE:
-                String referenceImageName = parameters.getValue(REFERENCE_IMAGE);
+                String referenceImageName = parameters.getValue(REFERENCE_IMAGE,workspace);
                 manualParam.referenceRoi = workspace.getImage(referenceImageName).getImagePlus().getRoi();
                 break;
         }
@@ -201,8 +201,8 @@ public class UnwarpManual<T extends RealType<T> & NativeType<T>> extends Abstrac
         ManualBUnwarpJParam params = new ManualBUnwarpJParam();
         getParameters(params, null);
 
-        String fillMode = parameters.getValue(FILL_MODE);
-        boolean multithread = parameters.getValue(ENABLE_MULTITHREADING);
+        String fillMode = parameters.getValue(FILL_MODE,null);
+        boolean multithread = parameters.getValue(ENABLE_MULTITHREADING,null);
 
         ArrayList<PointPair> pairs = (ArrayList<PointPair>) objects[0];
         ImagePlus ipl1 = ((ImagePlus) objects[1]).duplicate();
@@ -256,6 +256,7 @@ public class UnwarpManual<T extends RealType<T> & NativeType<T>> extends Abstrac
 
     @Override
     public Parameters updateAndGetParameters() {
+Workspace workspace = null;
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.addAll(super.updateAndGetParameters());

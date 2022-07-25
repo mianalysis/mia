@@ -4,6 +4,8 @@ import java.util.HashSet;
 
 import org.apache.commons.math3.geometry.euclidean.threed.Line;
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
+import org.scijava.Priority;
+import org.scijava.plugin.Plugin;
 
 import ij.measure.Calibration;
 import io.github.mianalysis.mia.MIA;
@@ -12,10 +14,6 @@ import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.objects.process.GetObjectSurface;
-import io.github.mianalysis.mia.module.Module;
-import org.scijava.Priority;
-import org.scijava.plugin.Plugin;
-
 import io.github.mianalysis.mia.object.Image;
 import io.github.mianalysis.mia.object.Measurement;
 import io.github.mianalysis.mia.object.Obj;
@@ -39,7 +37,7 @@ import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.sjcross.sjcommon.object.Point;
 import io.github.sjcross.sjcommon.object.volume.SpatCal;
 
-@Plugin(type = Module.class, priority=Priority.LOW, visible=true)
+@Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class MeasureSpecificWidth extends Module {
     public static final String INPUT_SEPARATOR = "Object input";
     public static final String INPUT_OBJECTS = "Input objects";
@@ -147,8 +145,8 @@ public class MeasureSpecificWidth extends Module {
         final double dppZ = obj.getSpatialCalibration().dppZ;
 
         // Getting the vector pointing to p2
-        final Vector3D vector1 = new Vector3D(ref1.x, ref1.y, ref1.z * dppZ/dppXY);
-        final Vector3D vector2 = new Vector3D(ref2.x, ref2.y, ref2.z * dppZ/dppXY);
+        final Vector3D vector1 = new Vector3D(ref1.x, ref1.y, ref1.z * dppZ / dppXY);
+        final Vector3D vector2 = new Vector3D(ref2.x, ref2.y, ref2.z * dppZ / dppXY);
         final Line primaryLine = new Line(vector1, vector2, 1.0E-10D);
 
         // Getting surface points
@@ -164,7 +162,7 @@ public class MeasureSpecificWidth extends Module {
         // retained.
         for (final Point<Integer> point : surface.getCoordinateSet()) {
             // Vector representation of current coordinate
-            final Vector3D testVector = new Vector3D(point.x, point.y, point.z * dppZ/dppXY);
+            final Vector3D testVector = new Vector3D(point.x, point.y, point.z * dppZ / dppXY);
 
             // Distance of current point to line. If less than 0.1, we will consider it
             final double distance = primaryLine.distance(testVector);
@@ -210,27 +208,27 @@ public class MeasureSpecificWidth extends Module {
 
     @Override
     protected Status process(final Workspace workspace) {
-        final String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+        final String inputObjectsName = parameters.getValue(INPUT_OBJECTS, workspace);
 
-        final String refMode1 = parameters.getValue(REFERENCE_MODE_1);
-        final String referenceImageName1 = parameters.getValue(REFERENCE_IMAGE_1);
-        final String xPosMeasIm1 = parameters.getValue(X_POSITION_MEASUREMENT_IM_1);
-        final String yPosMeasIm1 = parameters.getValue(Y_POSITION_MEASUREMENT_IM_1);
-        final String zPosMeasIm1 = parameters.getValue(Z_POSITION_MEASUREMENT_IM_1);
-        final String xPosMeasObj1 = parameters.getValue(X_POSITION_MEASUREMENT_OBJ_1);
-        final String yPosMeasObj1 = parameters.getValue(Y_POSITION_MEASUREMENT_OBJ_1);
-        final String zPosMeasObj1 = parameters.getValue(Z_POSITION_MEASUREMENT_OBJ_1);
+        final String refMode1 = parameters.getValue(REFERENCE_MODE_1, workspace);
+        final String referenceImageName1 = parameters.getValue(REFERENCE_IMAGE_1, workspace);
+        final String xPosMeasIm1 = parameters.getValue(X_POSITION_MEASUREMENT_IM_1, workspace);
+        final String yPosMeasIm1 = parameters.getValue(Y_POSITION_MEASUREMENT_IM_1, workspace);
+        final String zPosMeasIm1 = parameters.getValue(Z_POSITION_MEASUREMENT_IM_1, workspace);
+        final String xPosMeasObj1 = parameters.getValue(X_POSITION_MEASUREMENT_OBJ_1, workspace);
+        final String yPosMeasObj1 = parameters.getValue(Y_POSITION_MEASUREMENT_OBJ_1, workspace);
+        final String zPosMeasObj1 = parameters.getValue(Z_POSITION_MEASUREMENT_OBJ_1, workspace);
 
-        final String refMode2 = parameters.getValue(REFERENCE_MODE_2);
-        final String referenceImageName2 = parameters.getValue(REFERENCE_IMAGE_2);
-        final String xPosMeasIm2 = parameters.getValue(X_POSITION_MEASUREMENT_IM_2);
-        final String yPosMeasIm2 = parameters.getValue(Y_POSITION_MEASUREMENT_IM_2);
-        final String zPosMeasIm2 = parameters.getValue(Z_POSITION_MEASUREMENT_IM_2);
-        final String xPosMeasObj2 = parameters.getValue(X_POSITION_MEASUREMENT_OBJ_2);
-        final String yPosMeasObj2 = parameters.getValue(Y_POSITION_MEASUREMENT_OBJ_2);
-        final String zPosMeasObj2 = parameters.getValue(Z_POSITION_MEASUREMENT_OBJ_2);
+        final String refMode2 = parameters.getValue(REFERENCE_MODE_2, workspace);
+        final String referenceImageName2 = parameters.getValue(REFERENCE_IMAGE_2, workspace);
+        final String xPosMeasIm2 = parameters.getValue(X_POSITION_MEASUREMENT_IM_2, workspace);
+        final String yPosMeasIm2 = parameters.getValue(Y_POSITION_MEASUREMENT_IM_2, workspace);
+        final String zPosMeasIm2 = parameters.getValue(Z_POSITION_MEASUREMENT_IM_2, workspace);
+        final String xPosMeasObj2 = parameters.getValue(X_POSITION_MEASUREMENT_OBJ_2, workspace);
+        final String yPosMeasObj2 = parameters.getValue(Y_POSITION_MEASUREMENT_OBJ_2, workspace);
+        final String zPosMeasObj2 = parameters.getValue(Z_POSITION_MEASUREMENT_OBJ_2, workspace);
 
-        final String prefix = parameters.getValue(MEASUREMENT_PREFIX);
+        final String prefix = parameters.getValue(MEASUREMENT_PREFIX, workspace);
 
         final Objs inputObjects = workspace.getObjectSet(inputObjectsName);
 
@@ -324,6 +322,7 @@ public class MeasureSpecificWidth extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
+        Workspace workspace = null;
         final Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
@@ -331,7 +330,7 @@ public class MeasureSpecificWidth extends Module {
 
         returnedParameters.add(parameters.getParameter(REFERENCE_SEPARATOR_1));
         returnedParameters.add(parameters.getParameter(REFERENCE_MODE_1));
-        switch ((String) parameters.getValue(REFERENCE_MODE_1)) {
+        switch ((String) parameters.getValue(REFERENCE_MODE_1, workspace)) {
             case ReferenceModes.IMAGE_MEASUREMENT:
                 returnedParameters.add(parameters.getParameter(REFERENCE_IMAGE_1));
                 returnedParameters.add(parameters.getParameter(X_POSITION_MEASUREMENT_IM_1));
@@ -347,7 +346,7 @@ public class MeasureSpecificWidth extends Module {
 
         returnedParameters.add(parameters.getParameter(REFERENCE_SEPARATOR_2));
         returnedParameters.add(parameters.getParameter(REFERENCE_MODE_2));
-        switch ((String) parameters.getValue(REFERENCE_MODE_2)) {
+        switch ((String) parameters.getValue(REFERENCE_MODE_2, workspace)) {
             case ReferenceModes.IMAGE_MEASUREMENT:
                 returnedParameters.add(parameters.getParameter(REFERENCE_IMAGE_2));
                 returnedParameters.add(parameters.getParameter(X_POSITION_MEASUREMENT_IM_2));
@@ -364,7 +363,7 @@ public class MeasureSpecificWidth extends Module {
         returnedParameters.add(parameters.getParameter(MISCELLANEOUS_SEPARATOR));
         returnedParameters.add(parameters.getParameter(MEASUREMENT_PREFIX));
 
-        final String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+        final String inputObjectsName = parameters.getValue(INPUT_OBJECTS, workspace);
         ((ObjectMeasurementP) parameters.getParameter(X_POSITION_MEASUREMENT_OBJ_1)).setObjectName(inputObjectsName);
         ((ObjectMeasurementP) parameters.getParameter(Y_POSITION_MEASUREMENT_OBJ_1)).setObjectName(inputObjectsName);
         ((ObjectMeasurementP) parameters.getParameter(Z_POSITION_MEASUREMENT_OBJ_1)).setObjectName(inputObjectsName);
@@ -372,12 +371,12 @@ public class MeasureSpecificWidth extends Module {
         ((ObjectMeasurementP) parameters.getParameter(Y_POSITION_MEASUREMENT_OBJ_2)).setObjectName(inputObjectsName);
         ((ObjectMeasurementP) parameters.getParameter(Z_POSITION_MEASUREMENT_OBJ_2)).setObjectName(inputObjectsName);
 
-        final String referenceImageName1 = parameters.getValue(REFERENCE_IMAGE_1);
+        final String referenceImageName1 = parameters.getValue(REFERENCE_IMAGE_1, workspace);
         ((ImageMeasurementP) parameters.getParameter(X_POSITION_MEASUREMENT_IM_1)).setImageName(referenceImageName1);
         ((ImageMeasurementP) parameters.getParameter(Y_POSITION_MEASUREMENT_IM_1)).setImageName(referenceImageName1);
         ((ImageMeasurementP) parameters.getParameter(Z_POSITION_MEASUREMENT_IM_1)).setImageName(referenceImageName1);
 
-        final String referenceImageName2 = parameters.getValue(REFERENCE_IMAGE_2);
+        final String referenceImageName2 = parameters.getValue(REFERENCE_IMAGE_2, workspace);
         ((ImageMeasurementP) parameters.getParameter(X_POSITION_MEASUREMENT_IM_2)).setImageName(referenceImageName2);
         ((ImageMeasurementP) parameters.getParameter(Y_POSITION_MEASUREMENT_IM_2)).setImageName(referenceImageName2);
         ((ImageMeasurementP) parameters.getParameter(Z_POSITION_MEASUREMENT_IM_2)).setImageName(referenceImageName2);
@@ -388,15 +387,17 @@ public class MeasureSpecificWidth extends Module {
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
+        Workspace workspace = null;
         return null;
     }
 
     @Override
     public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+        Workspace workspace = null;
         final ObjMeasurementRefs returnedRefs = new ObjMeasurementRefs();
 
-        final String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
-        final String prefix = parameters.getValue(MEASUREMENT_PREFIX);
+        final String inputObjectsName = parameters.getValue(INPUT_OBJECTS, workspace);
+        final String prefix = parameters.getValue(MEASUREMENT_PREFIX, workspace);
 
         ObjMeasurementRef ref = objectMeasurementRefs.getOrPut(getFullName(Measurements.WIDTH_PX, prefix));
         ref.setObjectsName(inputObjectsName);
@@ -436,23 +437,26 @@ public class MeasureSpecificWidth extends Module {
 
     @Override
     public MetadataRefs updateAndGetMetadataReferences() {
+        Workspace workspace = null;
         return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
+        Workspace workspace = null;
         return null;
     }
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
+        Workspace workspace = null;
         return null;
     }
 
     @Override
     public boolean verify() {
-        String refMode1 = parameters.getValue(REFERENCE_MODE_1);
-        String refMode2 = parameters.getValue(REFERENCE_MODE_2);
+        String refMode1 = parameters.getValue(REFERENCE_MODE_1, null);
+        String refMode2 = parameters.getValue(REFERENCE_MODE_2, null);
 
         if (refMode1.equals(ReferenceModes.CENTROID) && refMode2.equals(ReferenceModes.CENTROID)) {
             MIA.log.writeWarning("Both references can't be set to \"centroid\"");

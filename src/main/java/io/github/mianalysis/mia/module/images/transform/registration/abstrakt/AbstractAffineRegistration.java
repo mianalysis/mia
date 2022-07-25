@@ -248,11 +248,11 @@ public abstract class AbstractAffineRegistration<T extends RealType<T> & NativeT
         super.getParameters(param, workspace);
 
         AffineParam affineParam = (AffineParam) param;
-        affineParam.transformationMode = parameters.getValue(TRANSFORMATION_MODE);
-        affineParam.testFlip = parameters.getValue(TEST_FLIP);
+        affineParam.transformationMode = parameters.getValue(TRANSFORMATION_MODE,workspace);
+        affineParam.testFlip = parameters.getValue(TEST_FLIP,workspace);
 
-        if ((boolean) parameters.getValue(INDEPENDENT_ROTATION)) {
-            int orientationIncrement = parameters.getValue(ORIENTATION_INCREMENT);
+        if ((boolean) parameters.getValue(INDEPENDENT_ROTATION,workspace)) {
+            int orientationIncrement = parameters.getValue(ORIENTATION_INCREMENT,workspace);
             ArrayList<Integer> orientations = getOrientations(orientationIncrement);
             affineParam.orientations = orientations;
         } else {
@@ -260,10 +260,10 @@ public abstract class AbstractAffineRegistration<T extends RealType<T> & NativeT
             affineParam.orientations.add(0);
         }
 
-        affineParam.multithread = parameters.getValue(ENABLE_MULTITHREADING);
-        affineParam.showTransform = parameters.getValue(SHOW_TRANSFORMATION);
-        affineParam.clearBetweenImages = parameters.getValue(CLEAR_BETWEEN_IMAGES);
-        affineParam.imageName = parameters.getValue(INPUT_IMAGE);
+        affineParam.multithread = parameters.getValue(ENABLE_MULTITHREADING,workspace);
+        affineParam.showTransform = parameters.getValue(SHOW_TRANSFORMATION,workspace);
+        affineParam.clearBetweenImages = parameters.getValue(CLEAR_BETWEEN_IMAGES,workspace);
+        affineParam.imageName = parameters.getValue(INPUT_IMAGE,workspace);
 
         if (affineParam.showTransform)
             if (resultsTable == null || affineParam.clearBetweenImages)
@@ -305,6 +305,7 @@ public abstract class AbstractAffineRegistration<T extends RealType<T> & NativeT
 
     @Override
     public Parameters updateAndGetParameters() {
+Workspace workspace = null;
         Parameters returnedParameters = new Parameters();
 
         // Adding all default parameters and adding transformation mode just after
@@ -318,13 +319,13 @@ public abstract class AbstractAffineRegistration<T extends RealType<T> & NativeT
             if (parameter.getName().equals(FILL_MODE)) {
                 returnedParameters.add(parameters.getParameter(TEST_FLIP));
                 returnedParameters.add(parameters.getParameter(INDEPENDENT_ROTATION));
-                if ((boolean) parameters.getValue(INDEPENDENT_ROTATION))
+                if ((boolean) parameters.getValue(INDEPENDENT_ROTATION,workspace))
                     returnedParameters.add(parameters.getParameter(ORIENTATION_INCREMENT));
             }
 
             if (parameter.getName().equals(SHOW_DETECTED_POINTS)) {
                 returnedParameters.add(parameters.getParameter(SHOW_TRANSFORMATION));
-                if ((boolean) parameters.getValue(SHOW_TRANSFORMATION))
+                if ((boolean) parameters.getValue(SHOW_TRANSFORMATION,workspace))
                     returnedParameters.add(parameters.getParameter(CLEAR_BETWEEN_IMAGES));
             }
         }

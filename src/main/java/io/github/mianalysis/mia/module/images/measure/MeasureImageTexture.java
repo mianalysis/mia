@@ -68,15 +68,15 @@ public class MeasureImageTexture extends Module {
     @Override
     public Status process(Workspace workspace) {
         // Getting input image
-        String inputImageName = parameters.getValue(INPUT_IMAGE);
+        String inputImageName = parameters.getValue(INPUT_IMAGE,workspace);
         Image inputImage = workspace.getImages().get(inputImageName);
         ImagePlus inputImagePlus = inputImage.getImagePlus();
 
         // Getting parameters
-        int xOffs = parameters.getValue(X_OFFSET);
-        int yOffs = parameters.getValue(Y_OFFSET);
-        int zOffs = parameters.getValue(Z_OFFSET);
-        boolean calibratedOffset = parameters.getValue(CALIBRATED_OFFSET);
+        int xOffs = parameters.getValue(X_OFFSET,workspace);
+        int yOffs = parameters.getValue(Y_OFFSET,workspace);
+        int zOffs = parameters.getValue(Z_OFFSET,workspace);
+        boolean calibratedOffset = parameters.getValue(CALIBRATED_OFFSET,workspace);
 
         // If using calibrated offset values, determining the closest pixel offset
         if (calibratedOffset) {
@@ -132,14 +132,16 @@ public class MeasureImageTexture extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
+Workspace workspace = null;
         return parameters;
     }
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
+Workspace workspace = null;
         ImageMeasurementRefs returnedRefs = new ImageMeasurementRefs();
 
-        String imageName = parameters.getValue(INPUT_IMAGE);
+        String imageName = parameters.getValue(INPUT_IMAGE,workspace);
 
         ImageMeasurementRef asm = imageMeasurementRefs.getOrPut(Measurements.ASM);
         asm.setImageName(imageName);
@@ -162,22 +164,26 @@ public class MeasureImageTexture extends Module {
     }
 
     @Override
-    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
-    public MetadataRefs updateAndGetMetadataReferences() {
+public MetadataRefs updateAndGetMetadataReferences() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
+Workspace workspace = null;
         return null;
     }
 

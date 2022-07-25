@@ -138,31 +138,31 @@ public class AddArrows extends AbstractOverlay {
     @Override
     protected Status process(Workspace workspace) {
         // Getting parameters
-        boolean applyToInput = parameters.getValue(APPLY_TO_INPUT);
-        boolean addOutputToWorkspace = parameters.getValue(ADD_OUTPUT_TO_WORKSPACE);
-        String outputImageName = parameters.getValue(OUTPUT_IMAGE);
+        boolean applyToInput = parameters.getValue(APPLY_TO_INPUT,workspace);
+        boolean addOutputToWorkspace = parameters.getValue(ADD_OUTPUT_TO_WORKSPACE,workspace);
+        String outputImageName = parameters.getValue(OUTPUT_IMAGE,workspace);
 
         // Getting input objects
-        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
         Objs inputObjects = workspace.getObjects().get(inputObjectsName);
 
         // Getting input image
-        String inputImageName = parameters.getValue(INPUT_IMAGE);
+        String inputImageName = parameters.getValue(INPUT_IMAGE,workspace);
         Image inputImage = workspace.getImages().get(inputImageName);
         ImagePlus ipl = inputImage.getImagePlus();
 
-        String orientationMode = parameters.getValue(ORIENTATION_MODE);
-        String parentForOri = parameters.getValue(PARENT_OBJECT_FOR_ORIENTATION);
-        String measForOri = parameters.getValue(MEASUREMENT_FOR_ORIENTATION);
-        String lengthMode = parameters.getValue(LENGTH_MODE);
-        double lengthValue = parameters.getValue(LENGTH_VALUE);
-        String parentForLength = parameters.getValue(PARENT_OBJECT_FOR_LENGTH);
-        String measurementForLength = parameters.getValue(MEASUREMENT_FOR_LENGTH);
-        double lengthScale = parameters.getValue(LENGTH_SCALE);
-        int headSize = parameters.getValue(HEAD_SIZE);
+        String orientationMode = parameters.getValue(ORIENTATION_MODE,workspace);
+        String parentForOri = parameters.getValue(PARENT_OBJECT_FOR_ORIENTATION,workspace);
+        String measForOri = parameters.getValue(MEASUREMENT_FOR_ORIENTATION,workspace);
+        String lengthMode = parameters.getValue(LENGTH_MODE,workspace);
+        double lengthValue = parameters.getValue(LENGTH_VALUE,workspace);
+        String parentForLength = parameters.getValue(PARENT_OBJECT_FOR_LENGTH,workspace);
+        String measurementForLength = parameters.getValue(MEASUREMENT_FOR_LENGTH,workspace);
+        double lengthScale = parameters.getValue(LENGTH_SCALE,workspace);
+        int headSize = parameters.getValue(HEAD_SIZE,workspace);
 
-        double lineWidth = parameters.getValue(LINE_WIDTH);
-        boolean multithread = parameters.getValue(ENABLE_MULTITHREADING);
+        double lineWidth = parameters.getValue(LINE_WIDTH,workspace);
+        boolean multithread = parameters.getValue(ENABLE_MULTITHREADING,workspace);
 
         // Only add output to workspace if not applying to input
         if (applyToInput)
@@ -173,7 +173,7 @@ public class AddArrows extends AbstractOverlay {
             ipl = new Duplicator().run(ipl);
 
         // Generating colours for each object
-        HashMap<Integer, Color> colours = getColours(inputObjects);
+        HashMap<Integer, Color> colours = getColours(inputObjects, workspace);
 
         // If necessary, turning the image into a HyperStack (if 2 dimensions=1 it will
         // be a standard ImagePlus)
@@ -285,7 +285,8 @@ public class AddArrows extends AbstractOverlay {
 
     @Override
     public Parameters updateAndGetParameters() {
-        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+Workspace workspace = null;
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
 
         Parameters returnedParameters = new Parameters();
 
@@ -295,10 +296,10 @@ public class AddArrows extends AbstractOverlay {
 
         returnedParameters.add(parameters.getParameter(OUTPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(APPLY_TO_INPUT));
-        if (!(boolean) parameters.getValue(APPLY_TO_INPUT)) {
+        if (!(boolean) parameters.getValue(APPLY_TO_INPUT,workspace)) {
             returnedParameters.add(parameters.getParameter(ADD_OUTPUT_TO_WORKSPACE));
 
-            if ((boolean) parameters.getValue(ADD_OUTPUT_TO_WORKSPACE)) {
+            if ((boolean) parameters.getValue(ADD_OUTPUT_TO_WORKSPACE,workspace)) {
                 returnedParameters.add(parameters.getParameter(OUTPUT_IMAGE));
 
             }
@@ -308,43 +309,43 @@ public class AddArrows extends AbstractOverlay {
         
         returnedParameters.add(parameters.getParameter(RENDERING_SEPARATOR));
         returnedParameters.add(parameters.getParameter(ORIENTATION_MODE));
-        switch ((String) parameters.getValue(ORIENTATION_MODE)) {
+        switch ((String) parameters.getValue(ORIENTATION_MODE,workspace)) {
             case OrientationModes.MEASUREMENT:
                 ObjectMeasurementP oriMeasurement = parameters.getParameter(MEASUREMENT_FOR_ORIENTATION);
-                oriMeasurement.setObjectName(parameters.getValue(INPUT_OBJECTS));
+                oriMeasurement.setObjectName(parameters.getValue(INPUT_OBJECTS,workspace));
                 returnedParameters.add(parameters.getParameter(MEASUREMENT_FOR_ORIENTATION));
                 break;
 
             case OrientationModes.PARENT_MEASUREMENT:
                 returnedParameters.add(parameters.getParameter(PARENT_OBJECT_FOR_ORIENTATION));
                 ParentObjectsP parentObjects = parameters.getParameter(PARENT_OBJECT_FOR_ORIENTATION);
-                parentObjects.setChildObjectsName(parameters.getValue(INPUT_OBJECTS));
+                parentObjects.setChildObjectsName(parameters.getValue(INPUT_OBJECTS,workspace));
 
                 oriMeasurement = parameters.getParameter(MEASUREMENT_FOR_ORIENTATION);
-                oriMeasurement.setObjectName(parameters.getValue(PARENT_OBJECT_FOR_ORIENTATION));
+                oriMeasurement.setObjectName(parameters.getValue(PARENT_OBJECT_FOR_ORIENTATION,workspace));
                 returnedParameters.add(parameters.getParameter(MEASUREMENT_FOR_ORIENTATION));
                 break;
         }
 
         returnedParameters.add(parameters.getParameter(LENGTH_MODE));
-        switch ((String) parameters.getValue(LENGTH_MODE)) {
+        switch ((String) parameters.getValue(LENGTH_MODE,workspace)) {
             case LengthModes.FIXED_VALUE:
                 returnedParameters.add(parameters.getParameter(LENGTH_VALUE));
                 break;
 
             case LengthModes.MEASUREMENT:
                 ObjectMeasurementP lengthMeasurement = parameters.getParameter(MEASUREMENT_FOR_LENGTH);
-                lengthMeasurement.setObjectName(parameters.getValue(INPUT_OBJECTS));
+                lengthMeasurement.setObjectName(parameters.getValue(INPUT_OBJECTS,workspace));
                 returnedParameters.add(parameters.getParameter(MEASUREMENT_FOR_LENGTH));
                 break;
 
             case LengthModes.PARENT_MEASUREMENT:
                 returnedParameters.add(parameters.getParameter(PARENT_OBJECT_FOR_LENGTH));
                 ParentObjectsP parentObjects = parameters.getParameter(PARENT_OBJECT_FOR_LENGTH);
-                parentObjects.setChildObjectsName(parameters.getValue(INPUT_OBJECTS));
+                parentObjects.setChildObjectsName(parameters.getValue(INPUT_OBJECTS,workspace));
 
                 lengthMeasurement = parameters.getParameter(MEASUREMENT_FOR_LENGTH);
-                lengthMeasurement.setObjectName(parameters.getValue(PARENT_OBJECT_FOR_LENGTH));
+                lengthMeasurement.setObjectName(parameters.getValue(PARENT_OBJECT_FOR_LENGTH,workspace));
                 returnedParameters.add(parameters.getParameter(MEASUREMENT_FOR_LENGTH));
                 break;
         }
@@ -363,26 +364,31 @@ public class AddArrows extends AbstractOverlay {
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
-    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
-    public MetadataRefs updateAndGetMetadataReferences() {
+public MetadataRefs updateAndGetMetadataReferences() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
+Workspace workspace = null;
         return null;
     }
 

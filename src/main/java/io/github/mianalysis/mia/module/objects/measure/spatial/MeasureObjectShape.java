@@ -136,16 +136,16 @@ public class MeasureObjectShape extends Module {
     @Override
     public Status process(Workspace workspace) {
         // Getting input objects
-        String inputObjectName = parameters.getValue(INPUT_OBJECTS);
+        String inputObjectName = parameters.getValue(INPUT_OBJECTS,workspace);
         Objs inputObjects = workspace.getObjects().get(inputObjectName);
 
         // Getting parameters
-        boolean measureVolume = parameters.getValue(MEASURE_VOLUME);
-        boolean measureProjectedArea = parameters.getValue(MEASURE_PROJECTED_AREA);
-        boolean measureProjectedDiameter = parameters.getValue(MEASURE_PROJECTED_DIA);
-        boolean measureProjectedPerimeter = parameters.getValue(MEASURE_PROJECTED_PERIM);
+        boolean measureVolume = parameters.getValue(MEASURE_VOLUME,workspace);
+        boolean measureProjectedArea = parameters.getValue(MEASURE_PROJECTED_AREA,workspace);
+        boolean measureProjectedDiameter = parameters.getValue(MEASURE_PROJECTED_DIA,workspace);
+        boolean measureProjectedPerimeter = parameters.getValue(MEASURE_PROJECTED_PERIM,workspace);
 
-        boolean multithread = parameters.getValue(ENABLE_MULTITHREADING);
+        boolean multithread = parameters.getValue(ENABLE_MULTITHREADING,workspace);
 
         // Configuring multithreading
         int nThreads = multithread ? Prefs.getThreads() : 1;
@@ -277,20 +277,23 @@ public class MeasureObjectShape extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
+Workspace workspace = null;
         return parameters;
     }
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
-    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+Workspace workspace = null;
         ObjMeasurementRefs returnedRefs = new ObjMeasurementRefs();
-        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
 
-        if ((boolean) parameters.getValue(MEASURE_VOLUME)) {
+        if ((boolean) parameters.getValue(MEASURE_VOLUME,workspace)) {
             ObjMeasurementRef reference = objectMeasurementRefs.getOrPut(Measurements.N_VOXELS);
             returnedRefs.add(reference);
             reference.setObjectsName(inputObjectsName);
@@ -340,7 +343,7 @@ public class MeasureObjectShape extends Module {
 
         }
 
-        if ((boolean) parameters.getValue(MEASURE_PROJECTED_AREA)) {
+        if ((boolean) parameters.getValue(MEASURE_PROJECTED_AREA,workspace)) {
             ObjMeasurementRef reference = objectMeasurementRefs.getOrPut(Measurements.PROJ_AREA_PX);
             returnedRefs.add(reference);
             reference.setObjectsName(inputObjectsName);
@@ -354,7 +357,7 @@ public class MeasureObjectShape extends Module {
                     + "\".  Measured " + "in calibrated (" + SpatialUnit.getOMEUnit().getSymbol() + ") units.");
         }
 
-        if ((boolean) parameters.getValue(MEASURE_PROJECTED_DIA)) {
+        if ((boolean) parameters.getValue(MEASURE_PROJECTED_DIA,workspace)) {
             ObjMeasurementRef reference = objectMeasurementRefs.getOrPut(Measurements.PROJ_DIA_PX);
             returnedRefs.add(reference);
             reference.setObjectsName(inputObjectsName);
@@ -369,7 +372,7 @@ public class MeasureObjectShape extends Module {
                     + "units.");
         }
 
-        if ((boolean) parameters.getValue(MEASURE_PROJECTED_PERIM)) {
+        if ((boolean) parameters.getValue(MEASURE_PROJECTED_PERIM,workspace)) {
             ObjMeasurementRef reference = objectMeasurementRefs.getOrPut(Measurements.PROJ_PERIM_PX);
             returnedRefs.add(reference);
             reference.setObjectsName(inputObjectsName);
@@ -395,17 +398,20 @@ public class MeasureObjectShape extends Module {
     }
 
     @Override
-    public MetadataRefs updateAndGetMetadataReferences() {
+public MetadataRefs updateAndGetMetadataReferences() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
+Workspace workspace = null;
         return null;
     }
 

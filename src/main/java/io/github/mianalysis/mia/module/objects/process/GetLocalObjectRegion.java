@@ -146,12 +146,12 @@ public class GetLocalObjectRegion extends Module {
 
     }
 
-    protected int getRadius(Obj inputObject) {
-        String radiusSource = parameters.getValue(RADIUS_SOURCE);
-        double radius = parameters.getValue(FIXED_VALUE_FOR_RADIUS);
-        String radiusMeasurement = parameters.getValue(RADIUS_MEASUREMENT);
-        String radiusParentObjectsName = parameters.getValue(PARENT_OBJECT_FOR_RADIUS);
-        String radiusUnits = parameters.getValue(RADIUS_SPATIAL_UNITS);
+    protected int getRadius(Obj inputObject, Workspace workspace) {
+        String radiusSource = parameters.getValue(RADIUS_SOURCE,workspace);
+        double radius = parameters.getValue(FIXED_VALUE_FOR_RADIUS,workspace);
+        String radiusMeasurement = parameters.getValue(RADIUS_MEASUREMENT,workspace);
+        String radiusParentObjectsName = parameters.getValue(PARENT_OBJECT_FOR_RADIUS,workspace);
+        String radiusUnits = parameters.getValue(RADIUS_SPATIAL_UNITS,workspace);
 
         switch (radiusSource) {
             case RadiusSources.MEASUREMENT:
@@ -181,16 +181,16 @@ public class GetLocalObjectRegion extends Module {
         }
     }
 
-    protected int[] getCentroid(Obj inputObject) {
-        String centroidSource = parameters.getValue(CENTROID_SOURCE);
-        double xPosition = parameters.getValue(X_POSITION);
-        double yPosition = parameters.getValue(Y_POSITION);
-        double zPosition = parameters.getValue(Z_POSITION);
-        String xMeasurementName = parameters.getValue(X_MEASUREMENT);
-        String yMeasurementName = parameters.getValue(Y_MEASUREMENT);
-        String zMeasurementName = parameters.getValue(Z_MEASUREMENT);
-        String centroidParentObjectsName = parameters.getValue(PARENT_OBJECT_FOR_CENTROID);
-        String centroidUnits = parameters.getValue(CENTROID_SPATIAL_UNITS);
+    protected int[] getCentroid(Obj inputObject, Workspace workspace) {
+        String centroidSource = parameters.getValue(CENTROID_SOURCE,workspace);
+        double xPosition = parameters.getValue(X_POSITION,workspace);
+        double yPosition = parameters.getValue(Y_POSITION,workspace);
+        double zPosition = parameters.getValue(Z_POSITION,workspace);
+        String xMeasurementName = parameters.getValue(X_MEASUREMENT,workspace);
+        String yMeasurementName = parameters.getValue(Y_MEASUREMENT,workspace);
+        String zMeasurementName = parameters.getValue(Z_MEASUREMENT,workspace);
+        String centroidParentObjectsName = parameters.getValue(PARENT_OBJECT_FOR_CENTROID,workspace);
+        String centroidUnits = parameters.getValue(CENTROID_SPATIAL_UNITS,workspace);
 
         if (inputObject.is2D())
             zPosition = 0;
@@ -263,8 +263,8 @@ public class GetLocalObjectRegion extends Module {
     @Override
     public Status process(Workspace workspace) {
         // Getting parameters
-        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
-        String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
+        String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS,workspace);
 
         // Getting input objects
         Objs inputObjects = workspace.getObjects().get(inputObjectsName);
@@ -274,13 +274,13 @@ public class GetLocalObjectRegion extends Module {
 
         // Iterating over each input object, creating an output object
         for (Obj inputObject : inputObjects.values()) {
-            int radius = getRadius(inputObject);
+            int radius = getRadius(inputObject, workspace);
             if (radius == -1) {
                 MIA.log.writeWarning("Could not get radius for object " + inputObject.getID());
                 continue;
             }
 
-            int[] centroid = getCentroid(inputObject);
+            int[] centroid = getCentroid(inputObject, workspace);
             if (centroid == null) {
                 MIA.log.writeWarning("Could not get centroid for object " + inputObject.getID());
                 continue;
@@ -332,9 +332,10 @@ public class GetLocalObjectRegion extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
-        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
-        String parentObjectsForCentroidName = parameters.getValue(PARENT_OBJECT_FOR_CENTROID);
-        String parentObjectsForRadiusName = parameters.getValue(PARENT_OBJECT_FOR_RADIUS);
+Workspace workspace = null;
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
+        String parentObjectsForCentroidName = parameters.getValue(PARENT_OBJECT_FOR_CENTROID,workspace);
+        String parentObjectsForRadiusName = parameters.getValue(PARENT_OBJECT_FOR_RADIUS,workspace);
 
         Parameters returnedParameters = new Parameters();
 
@@ -344,7 +345,7 @@ public class GetLocalObjectRegion extends Module {
 
         returnedParameters.add(parameters.getParameter(CENTROID_SEPARATOR));
         returnedParameters.add(parameters.getParameter(CENTROID_SOURCE));
-        switch ((String) parameters.getValue(CENTROID_SOURCE)) {
+        switch ((String) parameters.getValue(CENTROID_SOURCE,workspace)) {
             case CentroidSources.FIXED_VALUE:
                 returnedParameters.add(parameters.getParameter(X_POSITION));
                 returnedParameters.add(parameters.getParameter(Y_POSITION));
@@ -389,7 +390,7 @@ public class GetLocalObjectRegion extends Module {
 
         returnedParameters.add(parameters.getParameter(RADIUS_SEPARATOR));
         returnedParameters.add(parameters.getParameter(RADIUS_SOURCE));
-        switch ((String) parameters.getValue(RADIUS_SOURCE)) {
+        switch ((String) parameters.getValue(RADIUS_SOURCE,workspace)) {
             case RadiusSources.FIXED_VALUE:
                 returnedParameters.add(parameters.getParameter(FIXED_VALUE_FOR_RADIUS));
                 break;
@@ -417,25 +418,29 @@ public class GetLocalObjectRegion extends Module {
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
-    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
-    public MetadataRefs updateAndGetMetadataReferences() {
+public MetadataRefs updateAndGetMetadataReferences() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
+Workspace workspace = null;
         ParentChildRefs returnedRelationships = new ParentChildRefs();
 
         returnedRelationships
-                .add(parentChildRefs.getOrPut(parameters.getValue(INPUT_OBJECTS), parameters.getValue(OUTPUT_OBJECTS)));
+                .add(parentChildRefs.getOrPut(parameters.getValue(INPUT_OBJECTS,workspace), parameters.getValue(OUTPUT_OBJECTS,workspace)));
 
         return returnedRelationships;
 
@@ -443,6 +448,7 @@ public class GetLocalObjectRegion extends Module {
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
+Workspace workspace = null;
         return null;
     }
 

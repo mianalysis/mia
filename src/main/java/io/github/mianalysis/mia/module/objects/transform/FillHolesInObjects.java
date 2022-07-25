@@ -123,16 +123,16 @@ public class FillHolesInObjects extends Module {
     @Override
     public Status process(Workspace workspace) {
         // Getting input objects
-        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
         Objs inputObjects = workspace.getObjectSet(inputObjectsName);
 
         // Getting output image name
-        String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);
+        String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS,workspace);
         Objs outputObjects = new Objs(outputObjectsName, inputObjects);
 
         // Getting parameters
-        boolean updateInputObjects = parameters.getValue(UPDATE_INPUT_OBJECTS);
-        String method = parameters.getValue(METHOD);
+        boolean updateInputObjects = parameters.getValue(UPDATE_INPUT_OBJECTS,workspace);
+        String method = parameters.getValue(METHOD,workspace);
 
         // Storing the image calibration
         Obj firstObj = inputObjects.getFirst();
@@ -210,13 +210,14 @@ public class FillHolesInObjects extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
+Workspace workspace = null;
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(INPUT_OBJECTS));
         returnedParameters.add(parameters.getParameter(UPDATE_INPUT_OBJECTS));
 
-        if (!(boolean) parameters.getValue(UPDATE_INPUT_OBJECTS)) {
+        if (!(boolean) parameters.getValue(UPDATE_INPUT_OBJECTS,workspace)) {
             returnedParameters.add(parameters.getParameter(OUTPUT_OBJECTS));
         }
 
@@ -229,26 +230,30 @@ public class FillHolesInObjects extends Module {
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
-    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
-    public MetadataRefs updateAndGetMetadataReferences() {
+public MetadataRefs updateAndGetMetadataReferences() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
+Workspace workspace = null;
         ParentChildRefs returnedRelationships = new ParentChildRefs();
 
-        if (!(boolean) parameters.getValue(UPDATE_INPUT_OBJECTS)) {
+        if (!(boolean) parameters.getValue(UPDATE_INPUT_OBJECTS,workspace)) {
             returnedRelationships.add(
-                    parentChildRefs.getOrPut(parameters.getValue(INPUT_OBJECTS), parameters.getValue(OUTPUT_OBJECTS)));
+                    parentChildRefs.getOrPut(parameters.getValue(INPUT_OBJECTS,workspace), parameters.getValue(OUTPUT_OBJECTS,workspace)));
         }
 
         return returnedRelationships;
@@ -257,6 +262,7 @@ public class FillHolesInObjects extends Module {
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
+Workspace workspace = null;
         return null;
     }
 

@@ -67,20 +67,20 @@ public class Create2DIntensityHistogram<T extends RealType<T> & NativeType<T>> e
 
     @Override
     public Status process(Workspace workspace) {
-        String inputImageName1 = parameters.getValue(INPUT_IMAGE1);
+        String inputImageName1 = parameters.getValue(INPUT_IMAGE1,workspace);
         Image inputImage1 = workspace.getImage(inputImageName1);
-        String inputImageName2 = parameters.getValue(INPUT_IMAGE2);
+        String inputImageName2 = parameters.getValue(INPUT_IMAGE2,workspace);
         Image inputImage2 = workspace.getImage(inputImageName2);
 
-        String outputImageName = parameters.getValue(OUTPUT_IMAGE);
-        double minBin1 = parameters.getValue(MIN_BIN_1);
-        double maxBin1 = parameters.getValue(MAX_BIN_1);
-        int nBins1 = parameters.getValue(N_BINS_1);
-        boolean includeTailBin1 = parameters.getValue(INCLUDE_TAIL_BIN_1);
-        double minBin2 = parameters.getValue(MIN_BIN_2);
-        double maxBin2 = parameters.getValue(MAX_BIN_2);
-        int nBins2 = parameters.getValue(N_BINS_2);
-        boolean includeTailBin2 = parameters.getValue(INCLUDE_TAIL_BIN_2);
+        String outputImageName = parameters.getValue(OUTPUT_IMAGE,workspace);
+        double minBin1 = parameters.getValue(MIN_BIN_1,workspace);
+        double maxBin1 = parameters.getValue(MAX_BIN_1,workspace);
+        int nBins1 = parameters.getValue(N_BINS_1,workspace);
+        boolean includeTailBin1 = parameters.getValue(INCLUDE_TAIL_BIN_1,workspace);
+        double minBin2 = parameters.getValue(MIN_BIN_2,workspace);
+        double maxBin2 = parameters.getValue(MAX_BIN_2,workspace);
+        int nBins2 = parameters.getValue(N_BINS_2,workspace);
+        boolean includeTailBin2 = parameters.getValue(INCLUDE_TAIL_BIN_2,workspace);
 
         double[] minVals = new double[] { minBin1, minBin2 };
         double[] maxVals = new double[] { maxBin1, maxBin2 };
@@ -129,31 +129,37 @@ public class Create2DIntensityHistogram<T extends RealType<T> & NativeType<T>> e
 
     @Override
     public Parameters updateAndGetParameters() {
+Workspace workspace = null;
         return parameters;
     }
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
-    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
-    public MetadataRefs updateAndGetMetadataReferences() {
+public MetadataRefs updateAndGetMetadataReferences() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
+Workspace workspace = null;
         return null;
     }
 

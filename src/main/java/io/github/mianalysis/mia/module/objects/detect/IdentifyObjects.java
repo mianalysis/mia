@@ -387,20 +387,20 @@ public class IdentifyObjects extends Module {
     @Override
     public Status process(Workspace workspace) {
         // Getting input image
-        String inputImageName = parameters.getValue(INPUT_IMAGE);
+        String inputImageName = parameters.getValue(INPUT_IMAGE,workspace);
         Image inputImage = workspace.getImage(inputImageName);
 
         // Getting parameters
-        String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);
-        String binaryLogic = parameters.getValue(BINARY_LOGIC);
+        String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS,workspace);
+        String binaryLogic = parameters.getValue(BINARY_LOGIC,workspace);
         boolean blackBackground = binaryLogic.equals(BinaryLogic.BLACK_BACKGROUND);
-        String detectionMode = parameters.getValue(DETECTION_MODE);
-        boolean singleObject = parameters.getValue(SINGLE_OBJECT);
-        String connectivityName = parameters.getValue(CONNECTIVITY);
-        String type = parameters.getValue(VOLUME_TYPE);
+        String detectionMode = parameters.getValue(DETECTION_MODE,workspace);
+        boolean singleObject = parameters.getValue(SINGLE_OBJECT,workspace);
+        String connectivityName = parameters.getValue(CONNECTIVITY,workspace);
+        String type = parameters.getValue(VOLUME_TYPE,workspace);
 
-        boolean multithread = parameters.getValue(ENABLE_MULTITHREADING);
-        int minStripWidth = parameters.getValue(MIN_STRIP_WIDTH);
+        boolean multithread = parameters.getValue(ENABLE_MULTITHREADING,workspace);
+        int minStripWidth = parameters.getValue(MIN_STRIP_WIDTH,workspace);
 
         // Getting options
         int connectivity = getConnectivity(connectivityName);
@@ -443,6 +443,7 @@ public class IdentifyObjects extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
+Workspace workspace = null;
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.get(INPUT_SEPARATOR));
@@ -458,7 +459,7 @@ public class IdentifyObjects extends Module {
 
         returnedParameters.add(parameters.get(EXECUTION_SEPARATOR));
         returnedParameters.add(parameters.get(ENABLE_MULTITHREADING));
-        if ((boolean) parameters.getValue(ENABLE_MULTITHREADING)) {
+        if ((boolean) parameters.getValue(ENABLE_MULTITHREADING,workspace)) {
             returnedParameters.add(parameters.get(MIN_STRIP_WIDTH));
         }
 
@@ -468,26 +469,31 @@ public class IdentifyObjects extends Module {
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
-    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
-    public MetadataRefs updateAndGetMetadataReferences() {
+public MetadataRefs updateAndGetMetadataReferences() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
+Workspace workspace = null;
         return null;
     }
 

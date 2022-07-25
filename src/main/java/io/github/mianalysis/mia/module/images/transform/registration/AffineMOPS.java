@@ -63,14 +63,14 @@ public class AffineMOPS extends AbstractAffineRegistration {
 
                 // Setting up the parameters
                 MOPSParam mopsParam = (MOPSParam) param;
-                mopsParam.initialSigma = (float) (double) parameters.getValue(INITIAL_SIGMA);
-                mopsParam.steps = parameters.getValue(STEPS);
-                mopsParam.minOctaveSize = parameters.getValue(MINIMUM_IMAGE_SIZE);
-                mopsParam.maxOctaveSize = parameters.getValue(MAXIMUM_IMAGE_SIZE);
-                mopsParam.fdSize = parameters.getValue(FD_SIZE);
-                mopsParam.rod = (float) (double) parameters.getValue(ROD);
-                mopsParam.maxEpsilon = (float) (double) parameters.getValue(MAX_EPSILON);
-                mopsParam.minInlierRatio = (float) (double) parameters.getValue(MIN_INLIER_RATIO);
+                mopsParam.initialSigma = (float) (double) parameters.getValue(INITIAL_SIGMA,workspace);
+                mopsParam.steps = parameters.getValue(STEPS,workspace);
+                mopsParam.minOctaveSize = parameters.getValue(MINIMUM_IMAGE_SIZE,workspace);
+                mopsParam.maxOctaveSize = parameters.getValue(MAXIMUM_IMAGE_SIZE,workspace);
+                mopsParam.fdSize = parameters.getValue(FD_SIZE,workspace);
+                mopsParam.rod = (float) (double) parameters.getValue(ROD,workspace);
+                mopsParam.maxEpsilon = (float) (double) parameters.getValue(MAX_EPSILON,workspace);
+                mopsParam.minInlierRatio = (float) (double) parameters.getValue(MIN_INLIER_RATIO,workspace);
 
         }
 
@@ -137,6 +137,7 @@ public class AffineMOPS extends AbstractAffineRegistration {
 
         @Override
         public Parameters updateAndGetParameters() {
+Workspace workspace = null;
                 Parameters returnedParameters = new Parameters();
 
                 returnedParameters.addAll(super.updateAndGetParameters());

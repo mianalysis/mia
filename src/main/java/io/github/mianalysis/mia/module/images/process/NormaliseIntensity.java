@@ -189,21 +189,21 @@ public class NormaliseIntensity extends Module {
     @Override
     public Status process(Workspace workspace) {
         // Getting input image
-        String inputImageName = parameters.getValue(INPUT_IMAGE);
+        String inputImageName = parameters.getValue(INPUT_IMAGE,workspace);
         Image inputImage = workspace.getImages().get(inputImageName);
         ImagePlus inputImagePlus = inputImage.getImagePlus();
 
         // Getting parameters
-        boolean applyToInput = parameters.getValue(APPLY_TO_INPUT);
-        String regionMode = parameters.getValue(REGION_MODE);
-        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
-        String calculationSource = parameters.getValue(CALCULATION_SOURCE);
-        String externalImageName = parameters.getValue(EXTERNAL_SOURCE);
-        String calculationMode = parameters.getValue(CALCULATION_MODE);
-        double clipFractionMin = parameters.getValue(CLIP_FRACTION_MIN);
-        double clipFractionMax = parameters.getValue(CLIP_FRACTION_MAX);
-        double minRange = parameters.getValue(MIN_RANGE);
-        double maxRange = parameters.getValue(MAX_RANGE);
+        boolean applyToInput = parameters.getValue(APPLY_TO_INPUT,workspace);
+        String regionMode = parameters.getValue(REGION_MODE,workspace);
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
+        String calculationSource = parameters.getValue(CALCULATION_SOURCE,workspace);
+        String externalImageName = parameters.getValue(EXTERNAL_SOURCE,workspace);
+        String calculationMode = parameters.getValue(CALCULATION_MODE,workspace);
+        double clipFractionMin = parameters.getValue(CLIP_FRACTION_MIN,workspace);
+        double clipFractionMax = parameters.getValue(CLIP_FRACTION_MAX,workspace);
+        double minRange = parameters.getValue(MIN_RANGE,workspace);
+        double maxRange = parameters.getValue(MAX_RANGE,workspace);
 
         // If applying to a new image, the input image is duplicated
         if (!applyToInput)
@@ -254,7 +254,7 @@ public class NormaliseIntensity extends Module {
 
         // If the image is being saved as a new image, adding it to the workspace
         if (!applyToInput) {
-            String outputImageName = parameters.getValue(OUTPUT_IMAGE);
+            String outputImageName = parameters.getValue(OUTPUT_IMAGE,workspace);
             Image outputImage = new Image(outputImageName, inputImagePlus);
             workspace.addImage(outputImage);
             if (showOutput)
@@ -296,19 +296,20 @@ public class NormaliseIntensity extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
+Workspace workspace = null;
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(INPUT_IMAGE));
         returnedParameters.add(parameters.getParameter(APPLY_TO_INPUT));
 
-        if (!(boolean) parameters.getValue(APPLY_TO_INPUT)) {
+        if (!(boolean) parameters.getValue(APPLY_TO_INPUT,workspace)) {
             returnedParameters.add(parameters.getParameter(OUTPUT_IMAGE));
         }
 
         returnedParameters.add(parameters.getParameter(REGION_SEPARATOR));
         returnedParameters.add(parameters.getParameter(REGION_MODE));
-        switch ((String) parameters.getValue(REGION_MODE)) {
+        switch ((String) parameters.getValue(REGION_MODE,workspace)) {
             case RegionModes.PER_OBJECT:
                 returnedParameters.add(parameters.getParameter(INPUT_OBJECTS));
                 break;
@@ -316,9 +317,9 @@ public class NormaliseIntensity extends Module {
 
         returnedParameters.add(parameters.getParameter(NORMALISATION_SEPARATOR));
 
-        if ((boolean) parameters.getValue(REGION_MODE).equals(RegionModes.ENTIRE_IMAGE)) {
+        if ((boolean) parameters.getValue(REGION_MODE,workspace).equals(RegionModes.ENTIRE_IMAGE)) {
             returnedParameters.add(parameters.getParameter(CALCULATION_SOURCE));
-            switch ((String) parameters.getValue(CALCULATION_SOURCE)) {
+            switch ((String) parameters.getValue(CALCULATION_SOURCE,workspace)) {
                 case CalculationSources.EXTERNAL:
                     returnedParameters.add(parameters.getParameter(EXTERNAL_SOURCE));
                     break;
@@ -326,7 +327,7 @@ public class NormaliseIntensity extends Module {
         }
 
         returnedParameters.add(parameters.getParameter(CALCULATION_MODE));
-        switch ((String) parameters.getValue(CALCULATION_MODE)) {
+        switch ((String) parameters.getValue(CALCULATION_MODE,workspace)) {
             case CalculationModes.FAST:
             case CalculationModes.PRECISE:
                 returnedParameters.add(parameters.getParameter(CLIP_FRACTION_MIN));
@@ -345,26 +346,31 @@ public class NormaliseIntensity extends Module {
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
-    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
-    public MetadataRefs updateAndGetMetadataReferences() {
+public MetadataRefs updateAndGetMetadataReferences() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
+Workspace workspace = null;
         return null;
     }
 

@@ -62,7 +62,7 @@ public class MeasureImageIntensity extends Module {
     @Override
     public Status process(Workspace workspace) {
         // Getting input image
-        String inputImageName = parameters.getValue(INPUT_IMAGE);
+        String inputImageName = parameters.getValue(INPUT_IMAGE,workspace);
         writeStatus("Loading image ("+inputImageName+")");
         Image inputImage = workspace.getImages().get(inputImageName);
         ImagePlus inputImagePlus = inputImage.getImagePlus();
@@ -96,48 +96,50 @@ public class MeasureImageIntensity extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
+Workspace workspace = null;
         return parameters;
     }
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
+Workspace workspace = null;
         ImageMeasurementRefs returnedRefs = new ImageMeasurementRefs();
 
-        String inputImageName = parameters.getValue(INPUT_IMAGE);
+        String inputImageName = parameters.getValue(INPUT_IMAGE,workspace);
 
         ImageMeasurementRef mean = imageMeasurementRefs.getOrPut(Measurements.MEAN);
         mean.setImageName(inputImageName);
-        mean.setDescription("Mean intensity of all pixels in the image \""+parameters.getValue(INPUT_IMAGE)+"\".");
+        mean.setDescription("Mean intensity of all pixels in the image \""+inputImageName+"\".");
         returnedRefs.add(mean);
 
         ImageMeasurementRef median = imageMeasurementRefs.getOrPut(Measurements.MEDIAN);
         median.setImageName(inputImageName);
-        median.setDescription("Median intensity of all pixels in the image \""+parameters.getValue(INPUT_IMAGE)+"\".");
+        median.setDescription("Median intensity of all pixels in the image \""+inputImageName+"\".");
         returnedRefs.add(median);
 
         ImageMeasurementRef mode = imageMeasurementRefs.getOrPut(Measurements.MODE);
         mode.setImageName(inputImageName);
-        mode.setDescription("Mode intensity of all pixels in the image \""+parameters.getValue(INPUT_IMAGE)+"\".");
+        mode.setDescription("Mode intensity of all pixels in the image \""+inputImageName+"\".");
         returnedRefs.add(mode);
 
         ImageMeasurementRef min = imageMeasurementRefs.getOrPut(Measurements.MIN);
         min.setImageName(inputImageName);
-        min.setDescription("Minimum intensity of all pixels in the image \""+parameters.getValue(INPUT_IMAGE)+"\".");
+        min.setDescription("Minimum intensity of all pixels in the image \""+inputImageName+"\".");
         returnedRefs.add(min);
 
         ImageMeasurementRef max = imageMeasurementRefs.getOrPut(Measurements.MAX);
         max.setImageName(inputImageName);
-        max.setDescription("Maximum intensity of all pixels in the image \""+parameters.getValue(INPUT_IMAGE)+"\".");
+        max.setDescription("Maximum intensity of all pixels in the image \""+inputImageName+"\".");
         returnedRefs.add(max);
 
         ImageMeasurementRef stdev = imageMeasurementRefs.getOrPut(Measurements.STDEV);
         stdev.setImageName(inputImageName);
-        stdev.setDescription("Standard deviation of intensity of all pixels in the image \""+parameters.getValue(INPUT_IMAGE)+"\".");        
+        stdev.setDescription("Standard deviation of intensity of all pixels in the image \""+inputImageName+"\".");        
         returnedRefs.add(stdev);
 
         ImageMeasurementRef sum = imageMeasurementRefs.getOrPut(Measurements.SUM);
         sum.setImageName(inputImageName);
-        sum.setDescription("Summed intensity of all pixels in the image \""+parameters.getValue(INPUT_IMAGE)+"\".");
+        sum.setDescription("Summed intensity of all pixels in the image \""+inputImageName+"\".");
         returnedRefs.add(sum);
 
         return returnedRefs;
@@ -145,22 +147,26 @@ public class MeasureImageIntensity extends Module {
     }
 
     @Override
-    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
-    public MetadataRefs updateAndGetMetadataReferences() {
+public MetadataRefs updateAndGetMetadataReferences() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
+Workspace workspace = null;
         return null;
     }
 

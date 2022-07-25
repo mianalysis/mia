@@ -61,14 +61,14 @@ public class BinObjectsByMeasurement extends Module {
     @Override
     public Status process(Workspace workspace) {
         // Getting input objects
-        String inputObjectName = parameters.getValue(INPUT_OBJECTS);
+        String inputObjectName = parameters.getValue(INPUT_OBJECTS,workspace);
         Objs inputObjects = workspace.getObjects().get(inputObjectName);
 
         // Getting parameters
-        String measurementName = parameters.getValue(MEASUREMENT);
-        double smallestBin = parameters.getValue(SMALLEST_BIN_CENTRE);
-        double largestBin = parameters.getValue(LARGEST_BIN_CENTRE);
-        int numberOfBins = parameters.getValue(NUMBER_OF_BINS);
+        String measurementName = parameters.getValue(MEASUREMENT,workspace);
+        double smallestBin = parameters.getValue(SMALLEST_BIN_CENTRE,workspace);
+        double largestBin = parameters.getValue(LARGEST_BIN_CENTRE,workspace);
+        int numberOfBins = parameters.getValue(NUMBER_OF_BINS,workspace);
 
         double binWidth = (largestBin - smallestBin) / (numberOfBins - 1);
 
@@ -118,7 +118,8 @@ public class BinObjectsByMeasurement extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
-        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+Workspace workspace = null;
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
         ((ObjectMeasurementP) parameters.getParameter(MEASUREMENT)).setObjectName(inputObjectsName);
 
         return parameters;
@@ -126,15 +127,17 @@ public class BinObjectsByMeasurement extends Module {
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
-    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+Workspace workspace = null;
         ObjMeasurementRefs returnedRefs = new ObjMeasurementRefs();
 
-        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
-        String measurement = parameters.getValue(MEASUREMENT);
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
+        String measurement = parameters.getValue(MEASUREMENT,workspace);
 
         String name = getFullName(measurement);
         ObjMeasurementRef binMeasurement = objectMeasurementRefs.getOrPut(name);
@@ -146,17 +149,20 @@ public class BinObjectsByMeasurement extends Module {
     }
 
     @Override
-    public MetadataRefs updateAndGetMetadataReferences() {
+public MetadataRefs updateAndGetMetadataReferences() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
+Workspace workspace = null;
         return null;
     }
 

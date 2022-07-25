@@ -216,16 +216,16 @@ public class CreateDistanceMap extends Module {
     @Override
     public Status process(Workspace workspace) {
         // Getting input objects
-        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
         Objs inputObjects = workspace.getObjectSet(inputObjectsName);
 
         // Getting other parameters
-        String outputImageName = parameters.getValue(OUTPUT_IMAGE);
-        String referenceMode = parameters.getValue(REFERENCE_MODE);
-        boolean invertInside = parameters.getValue(INVERT_MAP_WITHIN_OBJECTS);
-        String maskingMode = parameters.getValue(MASKING_MODE);
-        boolean normaliseMap = parameters.getValue(NORMALISE_MAP_PER_OBJECT);
-        String spatialUnits = parameters.getValue(SPATIAL_UNITS_MODE);
+        String outputImageName = parameters.getValue(OUTPUT_IMAGE,workspace);
+        String referenceMode = parameters.getValue(REFERENCE_MODE,workspace);
+        boolean invertInside = parameters.getValue(INVERT_MAP_WITHIN_OBJECTS,workspace);
+        String maskingMode = parameters.getValue(MASKING_MODE,workspace);
+        boolean normaliseMap = parameters.getValue(NORMALISE_MAP_PER_OBJECT,workspace);
+        String spatialUnits = parameters.getValue(SPATIAL_UNITS_MODE,workspace);
 
         // Initialising the distance map
         Image distanceMap = null;
@@ -284,6 +284,7 @@ public class CreateDistanceMap extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
+Workspace workspace = null;
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
@@ -292,14 +293,14 @@ public class CreateDistanceMap extends Module {
 
         returnedParameters.add(parameters.getParameter(DISTANCE_MAP_SEPARATOR));
         returnedParameters.add(parameters.getParameter(REFERENCE_MODE));
-        switch ((String) parameters.getValue(REFERENCE_MODE)) {
+        switch ((String) parameters.getValue(REFERENCE_MODE,workspace)) {
             case ReferenceModes.DISTANCE_FROM_EDGE:
                 returnedParameters.add(parameters.getParameter(INVERT_MAP_WITHIN_OBJECTS));
                 break;
         }
 
         returnedParameters.add(parameters.getParameter(MASKING_MODE));
-        switch ((String) parameters.getValue(MASKING_MODE)) {
+        switch ((String) parameters.getValue(MASKING_MODE,workspace)) {
             case MaskingModes.INSIDE_ONLY:
                 returnedParameters.add(parameters.getParameter(NORMALISE_MAP_PER_OBJECT));
                 break;
@@ -307,8 +308,8 @@ public class CreateDistanceMap extends Module {
 
         // If we're not using the inside-only masking with normalisation, allow the
         // units to be specified.
-        if (!(((String) parameters.getValue(MASKING_MODE)).equals(MaskingModes.INSIDE_ONLY)
-                && (boolean) parameters.getValue(NORMALISE_MAP_PER_OBJECT))) {
+        if (!(((String) parameters.getValue(MASKING_MODE,workspace)).equals(MaskingModes.INSIDE_ONLY)
+                && (boolean) parameters.getValue(NORMALISE_MAP_PER_OBJECT,workspace))) {
             returnedParameters.add(parameters.getParameter(SPATIAL_UNITS_MODE));
         }
 
@@ -318,26 +319,31 @@ public class CreateDistanceMap extends Module {
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
-    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
-    public MetadataRefs updateAndGetMetadataReferences() {
+public MetadataRefs updateAndGetMetadataReferences() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
+Workspace workspace = null;
         return null;
     }
 

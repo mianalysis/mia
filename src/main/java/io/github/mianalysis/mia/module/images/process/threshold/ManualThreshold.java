@@ -108,16 +108,16 @@ public class ManualThreshold extends Module {
     @Override
     public Status process(Workspace workspace) {
         // Getting input image
-        String inputImageName = parameters.getValue(INPUT_IMAGE);
+        String inputImageName = parameters.getValue(INPUT_IMAGE,workspace);
         Image inputImage = workspace.getImages().get(inputImageName);
         ImagePlus inputImagePlus = inputImage.getImagePlus();
 
         // Getting parameters
-        boolean applyToInput = parameters.getValue(APPLY_TO_INPUT);
-        String binaryLogic = parameters.getValue(BINARY_LOGIC);
-        String thresholdSource = parameters.getValue(THRESHOLD_SOURCE);
-        double thresholdValue = parameters.getValue(THRESHOLD_VALUE);
-        String measurementName = parameters.getValue(MEASUREMENT);
+        boolean applyToInput = parameters.getValue(APPLY_TO_INPUT,workspace);
+        String binaryLogic = parameters.getValue(BINARY_LOGIC,workspace);
+        String thresholdSource = parameters.getValue(THRESHOLD_SOURCE,workspace);
+        double thresholdValue = parameters.getValue(THRESHOLD_VALUE,workspace);
+        String measurementName = parameters.getValue(MEASUREMENT,workspace);
 
         if (thresholdSource.equals(ThresholdSources.IMAGE_MEASUREMENT))
             thresholdValue = (int) Math.round(inputImage.getMeasurement(measurementName).getValue());
@@ -138,7 +138,7 @@ public class ManualThreshold extends Module {
                 inputImage.showImage();
 
         } else {
-            String outputImageName = parameters.getValue(OUTPUT_IMAGE);
+            String outputImageName = parameters.getValue(OUTPUT_IMAGE,workspace);
             Image outputImage = new Image(outputImageName, inputImagePlus);
             workspace.addImage(outputImage);
             if (showOutput)
@@ -168,25 +168,26 @@ public class ManualThreshold extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
+Workspace workspace = null;
         Parameters returnedParameters = new Parameters();
         returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(INPUT_IMAGE));
         returnedParameters.add(parameters.getParameter(APPLY_TO_INPUT));
 
-        if (!(boolean) parameters.getValue(APPLY_TO_INPUT)) {
+        if (!(boolean) parameters.getValue(APPLY_TO_INPUT,workspace)) {
             returnedParameters.add(parameters.getParameter(OUTPUT_IMAGE));
         }
 
         returnedParameters.add(parameters.getParameter(THRESHOLD_SEPARATOR));
         returnedParameters.add(parameters.getParameter(THRESHOLD_SOURCE));
 
-        switch ((String) parameters.getValue(THRESHOLD_SOURCE)) {
+        switch ((String) parameters.getValue(THRESHOLD_SOURCE,workspace)) {
             case ThresholdSources.FIXED_VALUE:
                 returnedParameters.add(parameters.getParameter(THRESHOLD_VALUE));
                 break;
             case ThresholdSources.IMAGE_MEASUREMENT:
                 ImageMeasurementP parameter = parameters.getParameter(MEASUREMENT);
-                parameter.setImageName(parameters.getValue(INPUT_IMAGE));
+                parameter.setImageName(parameters.getValue(INPUT_IMAGE,workspace));
                 returnedParameters.add(parameters.getParameter(MEASUREMENT));
                 break;
         }
@@ -199,27 +200,32 @@ public class ManualThreshold extends Module {
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
+Workspace workspace = null;
         return null;
 
     }
 
     @Override
-    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
-    public MetadataRefs updateAndGetMetadataReferences() {
+public MetadataRefs updateAndGetMetadataReferences() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
+Workspace workspace = null;
         return null;
     }
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
+Workspace workspace = null;
         return null;
     }
 
