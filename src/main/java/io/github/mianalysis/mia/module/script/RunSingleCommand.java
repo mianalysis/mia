@@ -13,7 +13,6 @@ import ij.ImageStack;
 import ij.Prefs;
 import ij.plugin.Duplicator;
 import ij.process.ImageProcessor;
-import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;

@@ -64,10 +64,11 @@ public class IntegerP extends TextType {
 
     @Override
     public <T> T getValue(Workspace workspace) {
-        String converted1 = GlobalVariables.convertString(value, module.getModules());
-        String converted2 = applyCalculation(converted1);
+        String converted = GlobalVariables.convertString(value, module.getModules());
+        converted = insertWorkspaceValues(converted, workspace);
+        converted = applyCalculation(converted);
 
-        return (T) (Integer) Integer.parseInt(converted2);
+        return (T) (Integer) Integer.parseInt(converted);
 
     }
 

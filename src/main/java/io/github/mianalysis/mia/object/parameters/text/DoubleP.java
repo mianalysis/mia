@@ -76,10 +76,11 @@ public class DoubleP extends TextType {
 
     @Override
     public <T> T getValue(Workspace workspace) throws NumberFormatException {
-        String converted1 = GlobalVariables.convertString(value, module.getModules());
-        String converted2 = applyCalculation(converted1);
+        String converted = GlobalVariables.convertString(value, module.getModules());
+        converted = insertWorkspaceValues(converted, workspace);
+        converted = applyCalculation(converted);
 
-        return (T) (Double) Double.parseDouble(converted2);
+        return (T) (Double) Double.parseDouble(converted);
 
     }
 

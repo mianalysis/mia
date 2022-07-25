@@ -79,8 +79,10 @@ public class TextAreaP extends TextType {
 
     @Override
     public <T> T getValue(Workspace workspace) {
-        String converted1 = GlobalVariables.convertString(value, module.getModules());
-        return (T) applyCalculation(converted1);
+        String converted = GlobalVariables.convertString(value, module.getModules());
+        converted = insertWorkspaceValues(converted, workspace);
+
+        return (T) applyCalculation(converted);
 
     }
 

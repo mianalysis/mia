@@ -56,14 +56,38 @@ public abstract class TextType extends Parameter {
     }
 
     public static String insertWorkspaceValues(String string, Workspace workspace) {
-        Pattern pattern = Pattern.compile("Me\\{([\\w]+)}");
-        Matcher matcher = pattern.matcher(string);
-
+        // Inserting metadata values
+        Pattern pattern = Pattern.compile("Me\\{([^\\{\\}]+)}");
+        Matcher matcher = pattern.matcher(string);          
         while (matcher.find()) {
             String fullName = matcher.group(0);
             String metadataName = matcher.group(1);
             String value = workspace.getMetadata().getAsString(metadataName);
             string = string.replace(fullName, value);
+            break;
+        }
+
+        // Inserting image measurements
+        pattern = Pattern.compile("Im\\{([^\\{\\}]+)}");
+        matcher = pattern.matcher(string);       
+        while (matcher.find()) {
+            MIA.log.writeDebug("TODO - Insert image measurements");
+            // String fullName = matcher.group(0);
+            // String metadataName = matcher.group(1);
+            // String value = workspace.getMetadata().getAsString(metadataName);
+            // string = string.replace(fullName, value);
+            break;
+        }
+
+        // Insert object collection statistics
+        pattern = Pattern.compile("Os\\{([^\\{\\}]+)}");
+        matcher = pattern.matcher(string);       
+        while (matcher.find()) {
+            MIA.log.writeDebug("TODO - Insert object collection statistics");
+            // String fullName = matcher.group(0);
+            // String metadataName = matcher.group(1);
+            // String value = workspace.getMetadata().getAsString(metadataName);
+            // string = string.replace(fullName, value);
             break;
         }
 

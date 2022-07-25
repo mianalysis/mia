@@ -2,6 +2,7 @@ package io.github.mianalysis.mia.object.parameters.text;
 
 import com.drew.lang.annotations.NotNull;
 
+import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.system.GlobalVariables;
 import io.github.mianalysis.mia.object.Workspace;
