@@ -79,7 +79,6 @@ public class MeasureSkeleton extends Module {
         String EDGE_LENGTH_CAL = "SKELETON // LENGTH_(${SCAL})";
 
     }
-    
 
     public MeasureSkeleton(Modules modules) {
         super("Measure skeleton", modules);
@@ -365,9 +364,14 @@ public class MeasureSkeleton extends Module {
 
     static void addMeasurements(Obj inputObject, SkeletonResult result) {
         double length = 0;
-        for (Graph graph : result.getGraph()) {
-            for (Edge edge : graph.getEdges())
-                length = length + edge.getLength();
+
+        // If the skeleton has no voxels (edge, end or junction), the graphs will be
+        // null
+        if (result.getGraph() != null) {
+            for (Graph graph : result.getGraph()) {
+                for (Edge edge : graph.getEdges())
+                    length = length + edge.getLength();
+            }
         }
 
         double dppXY = inputObject.getDppXY();
@@ -448,6 +452,7 @@ public class MeasureSkeleton extends Module {
             Runnable task = () -> {
                 try {
                     Object[] result = initialiseAnalyzer(inputObject, minLengthFinal, exportLargestShortestPathFinal);
+
                     // Adding the skeleton to the input object
                     if (addToWorkspace) {
 
@@ -467,7 +472,8 @@ public class MeasureSkeleton extends Module {
                         createLargestShortestPath(inputObject, largestShortestPathObjects, (AnalyzeSkeleton_) result[0],
                                 (SkeletonResult) result[1]);
 
-                    addMeasurements(inputObject, (SkeletonResult) result[1]);
+                    if (((SkeletonResult) result[1]) != null)
+                        addMeasurements(inputObject, (SkeletonResult) result[1]);
 
                 } catch (Throwable t) {
                     MIA.log.writeError(t);
