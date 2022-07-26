@@ -27,9 +27,11 @@ import io.github.mianalysis.mia.process.analysishandling.AnalysisReader;
 import io.github.mianalysis.mia.process.analysishandling.AnalysisRunner;
 import io.github.mianalysis.mia.process.logging.BasicLogRenderer;
 import io.github.mianalysis.mia.process.logging.ConsoleRenderer;
+import io.github.mianalysis.mia.process.logging.IJ1Renderer;
 import io.github.mianalysis.mia.process.logging.Log;
 import io.github.mianalysis.mia.process.logging.LogHistory;
 import io.github.mianalysis.mia.process.logging.LogRenderer;
+import io.github.mianalysis.mia.process.logging.LogRenderer.Level;
 import net.imagej.ImageJ;
 import net.imagej.ImageJService;
 
@@ -96,6 +98,7 @@ public class MIA implements Command {
                 log.addRenderer(mainRenderer);
 
             }
+
         } catch (Exception e) {
             // If any exception was thrown, just don't apply the ConsoleRenderer.
         }
