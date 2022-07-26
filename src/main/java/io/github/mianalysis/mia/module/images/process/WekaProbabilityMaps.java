@@ -51,11 +51,14 @@ public class WekaProbabilityMaps extends Module {
     public static final String INPUT_SEPARATOR = "Image input";
     public static final String INPUT_IMAGE = "Input image";
     public static final String CONVERT_TO_RGB = "Convert to RGB";
-    public static final String OUTPUT_SEPARATOR = "Probability image output";
+
+    public static final String OUTPUT_SEPARATOR = "Image output";
+    public static final String OUTPUT_MODE = "Output mode";
     public static final String OUTPUT_IMAGE = "Output image";
     public static final String OUTPUT_BIT_DEPTH = "Output bit depth";
     public static final String OUTPUT_SINGLE_CLASS = "Output single class";
     public static final String OUTPUT_CLASS = "Output class";
+
     public static final String CLASSIFIER_SEPARATOR = "Classifier settings";
     public static final String PATH_TYPE = "Path type";
     public static final String GENERIC_FORMAT = "Generic format";
@@ -66,6 +69,14 @@ public class WekaProbabilityMaps extends Module {
 
     public WekaProbabilityMaps(Modules modules) {
         super("Weka probability maps", modules);
+    }
+
+    public interface OutputModes {
+        String CLASS = "Class";
+        String PROBABILITY = "Probability";
+
+        String[] ALL = new String[] { CLASS, PROBABILITY };
+
     }
 
     public interface OutputBitDepths {
@@ -85,18 +96,26 @@ public class WekaProbabilityMaps extends Module {
 
     }
 
-    public ImagePlus calculateProbabilityMaps(ImagePlus inputImagePlus, String outputImageName,
+    public ImagePlus applyClassifier(ImagePlus inputImagePlus, String outputImageName, String outputMode,
             String classifierFilePath, int nSimSlices, int tileFactor, int bitDepth) {
-        return calculateProbabilityMaps(inputImagePlus, outputImageName, classifierFilePath, nSimSlices, tileFactor,
+        return applyClassifier(inputImagePlus, outputImageName, outputMode, classifierFilePath, nSimSlices, tileFactor,
                 bitDepth, -1);
     }
 
-    public ImagePlus calculateProbabilityMaps(ImagePlus inputImagePlus, String outputImageName,
+    public ImagePlus applyClassifier(ImagePlus inputImagePlus, String outputImageName, String outputMode,
             String classifierFilePath, int nSimSlices, int tileFactor, int bitDepth, int outputClass) {
         // Checking classifier can be loaded
         if (!new File(classifierFilePath).exists()) {
             MIA.log.writeError("Can't find classifier (" + classifierFilePath + ")");
             return null;
+        }
+
+        // Fixing some settings if outputting the class
+        boolean createProbabilityMap = true;
+        if (outputMode.equals(OutputModes.CLASS)) {
+            outputClass = 1;
+            bitDepth = 8;
+            createProbabilityMap = false;
         }
 
         WekaSegmentation wekaSegmentation = new WekaSegmentation();
@@ -135,13 +154,11 @@ public class WekaProbabilityMaps extends Module {
             if (wekaSegmentation.getTrainingInstances() == null)
                 wekaSegmentation.loadClassifier(classifierFilePath);
 
-            if (tileFactor == 1) {
-                wekaSegmentation.applyClassifier(true);
-                iplSingle = wekaSegmentation.getClassifiedImage();
-            } else {
+            if (tileFactor == 1)
+                iplSingle = wekaSegmentation.applyClassifier(iplSingle, nThreads, createProbabilityMap);
+            else
                 iplSingle = wekaSegmentation.applyClassifier(iplSingle, new int[] { tileFactor, tileFactor }, nThreads,
-                        true);
-            }
+                        createProbabilityMap);
 
             // Converting probability image to specified bit depth (it will be 32-bit by
             // default)
@@ -196,13 +213,10 @@ public class WekaProbabilityMaps extends Module {
 
     @Override
     public Status process(Workspace workspace) {
-        // Getting input image
-        String inputImageName = parameters.getValue(INPUT_IMAGE);
-        Image inputImage = workspace.getImages().get(inputImageName);
-        ImagePlus inputImagePlus = inputImage.getImagePlus();
-
         // Getting parameters
+        String inputImageName = parameters.getValue(INPUT_IMAGE);
         boolean convertToRGB = parameters.getValue(CONVERT_TO_RGB);
+        String outputMode = parameters.getValue(OUTPUT_MODE);
         String outputImageName = parameters.getValue(OUTPUT_IMAGE);
         String outputBitDepth = parameters.getValue(OUTPUT_BIT_DEPTH);
         boolean outputSingleClass = parameters.getValue(OUTPUT_SINGLE_CLASS);
@@ -212,6 +226,10 @@ public class WekaProbabilityMaps extends Module {
         String classifierFilePath = parameters.getValue(CLASSIFIER_FILE);
         int nSimSlices = parameters.getValue(SIMULTANEOUS_SLICES);
         int tileFactor = parameters.getValue(TILE_FACTOR);
+
+        // Getting input image
+        Image inputImage = workspace.getImages().get(inputImageName);
+        ImagePlus inputImagePlus = inputImage.getImagePlus();
 
         // Converting to RGB if requested
         if (convertToRGB) {
@@ -238,19 +256,19 @@ public class WekaProbabilityMaps extends Module {
         }
 
         // Running the classifier on each individual stack
-        ImagePlus probabilityMaps = calculateProbabilityMaps(inputImagePlus, outputImageName, classifierFilePath,
+        ImagePlus outputIpl = applyClassifier(inputImagePlus, outputImageName, outputMode, classifierFilePath,
                 nSimSlices, tileFactor, bitDepth, outputClass);
 
         // If the classification failed, a null object is returned
-        if (probabilityMaps == null)
+        if (outputIpl == null)
             return Status.FAIL;
 
-        // Adding the probability maps to the Workspace
-        Image probabilityImage = new Image(outputImageName, probabilityMaps);
-        workspace.addImage(probabilityImage);
+        // Adding the output image (probability maps or classes) to the workspace
+        Image outputImage = new Image(outputImageName, outputIpl);
+        workspace.addImage(outputImage);
 
         if (showOutput)
-            probabilityImage.showImage();
+            outputImage.showImage();
 
         return Status.PASS;
 
@@ -264,7 +282,10 @@ public class WekaProbabilityMaps extends Module {
                 "Converts a composite image to RGB format.  This should be set to match the image-type used for generation of the model."));
 
         parameters.add(new SeparatorP(OUTPUT_SEPARATOR, this));
-        parameters.add(new OutputImageP(OUTPUT_IMAGE, this, "", "Output probability map image."));
+        parameters.add(new ChoiceP(OUTPUT_MODE, this, OutputModes.PROBABILITY, OutputModes.ALL,
+                "Controls whether the output image is a probability map or single channel classified image.  For probabiliy maps, each class is assigned its own channel with floating point values in the range 0-1 depending on the likelihood of that pixel belonging to that class.  With classified images the pixel value corresponds to the most probable class at that position (class numbering starts at 0)."));
+        parameters.add(new OutputImageP(OUTPUT_IMAGE, this, "",
+                "Output image, which can be either a probability map or pre-assigned class image."));
         parameters.add(new ChoiceP(OUTPUT_BIT_DEPTH, this, OutputBitDepths.THIRTY_TWO, OutputBitDepths.ALL,
                 "By default images will be saved as floating point 32-bit (probabilities in the range 0-1); however, they can be converted to 8-bit (probabilities in the range 0-255) or 16-bit (probabilities in the range 0-65535).  This is useful for saving memory or if the output probability map will be passed to image threshold module."));
         parameters.add(new BooleanP(OUTPUT_SINGLE_CLASS, this, false,
@@ -299,12 +320,14 @@ public class WekaProbabilityMaps extends Module {
         returnedParameters.add(parameters.getParameter(CONVERT_TO_RGB));
 
         returnedParameters.add(parameters.getParameter(OUTPUT_SEPARATOR));
+        returnedParameters.add(parameters.getParameter(OUTPUT_MODE));
         returnedParameters.add(parameters.getParameter(OUTPUT_IMAGE));
-        returnedParameters.add(parameters.getParameter(OUTPUT_BIT_DEPTH));
 
-        returnedParameters.add(parameters.getParameter(OUTPUT_SINGLE_CLASS));
-        if ((boolean) parameters.getValue(OUTPUT_SINGLE_CLASS)) {
-            returnedParameters.add(parameters.getParameter(OUTPUT_CLASS));
+        if ((boolean) parameters.getValue(OUTPUT_MODE).equals(OutputModes.PROBABILITY)) {
+            returnedParameters.add(parameters.getParameter(OUTPUT_BIT_DEPTH));
+            returnedParameters.add(parameters.getParameter(OUTPUT_SINGLE_CLASS));
+            if ((boolean) parameters.getValue(OUTPUT_SINGLE_CLASS))
+                returnedParameters.add(parameters.getParameter(OUTPUT_CLASS));
         }
 
         returnedParameters.add(parameters.getParameter(CLASSIFIER_SEPARATOR));
