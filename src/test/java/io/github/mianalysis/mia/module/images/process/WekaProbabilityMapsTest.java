@@ -26,7 +26,7 @@ public class WekaProbabilityMapsTest extends ModuleTest {
 
     @Override
     public void testGetHelp() {
-        assertNotNull(new WekaProbabilityMaps(null).getDescription());
+        assertNotNull(new WekaPixelClassification(null).getDescription());
     }
 
     @Test
@@ -47,11 +47,11 @@ public class WekaProbabilityMapsTest extends ModuleTest {
     Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
     // Initialising BinaryOperations
-    WekaProbabilityMaps wekaProbabilityMaps = new WekaProbabilityMaps(new Modules());
-    wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.INPUT_IMAGE,"Test_image");
-    wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.OUTPUT_IMAGE,"Test_output");
-    wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.CLASSIFIER_FILE,this.getClass().getResource("/images/wekaprobabilitymaps/Example_classifier.model").toURI().getPath());
-    wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.SIMULTANEOUS_SLICES,20);
+    WekaPixelClassification wekaProbabilityMaps = new WekaPixelClassification(new Modules());
+    wekaProbabilityMaps.updateParameterValue(WekaPixelClassification.INPUT_IMAGE,"Test_image");
+    wekaProbabilityMaps.updateParameterValue(WekaPixelClassification.OUTPUT_IMAGE,"Test_output");
+    wekaProbabilityMaps.updateParameterValue(WekaPixelClassification.CLASSIFIER_FILE,this.getClass().getResource("/images/wekaprobabilitymaps/Example_classifier.model").toURI().getPath());
+    wekaProbabilityMaps.updateParameterValue(WekaPixelClassification.SIMULTANEOUS_SLICES,20);
 
     // Running Module
     wekaProbabilityMaps.execute(workspace);
@@ -86,12 +86,12 @@ public class WekaProbabilityMapsTest extends ModuleTest {
     Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
     // Initialising BinaryOperations
-    WekaProbabilityMaps wekaProbabilityMaps = new WekaProbabilityMaps(new
+    WekaPixelClassification wekaProbabilityMaps = new WekaPixelClassification(new
     Modules());
-    wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.INPUT_IMAGE,"Test_image");
-    wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.OUTPUT_IMAGE,"Test_output");
-    wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.CLASSIFIER_FILE,this.getClass().getResource("/images/wekaprobabilitymaps/Example_classifier.model").toURI().getPath());
-    wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.SIMULTANEOUS_SLICES,20);
+    wekaProbabilityMaps.updateParameterValue(WekaPixelClassification.INPUT_IMAGE,"Test_image");
+    wekaProbabilityMaps.updateParameterValue(WekaPixelClassification.OUTPUT_IMAGE,"Test_output");
+    wekaProbabilityMaps.updateParameterValue(WekaPixelClassification.CLASSIFIER_FILE,this.getClass().getResource("/images/wekaprobabilitymaps/Example_classifier.model").toURI().getPath());
+    wekaProbabilityMaps.updateParameterValue(WekaPixelClassification.SIMULTANEOUS_SLICES,20);
 
     // Running Module
     wekaProbabilityMaps.execute(workspace);
@@ -125,12 +125,12 @@ public class WekaProbabilityMapsTest extends ModuleTest {
     Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
     // Initialising BinaryOperations
-    WekaProbabilityMaps wekaProbabilityMaps = new WekaProbabilityMaps(new
+    WekaPixelClassification wekaProbabilityMaps = new WekaPixelClassification(new
     Modules());
-    wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.INPUT_IMAGE,"Test_image");
-    wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.OUTPUT_IMAGE,"Test_output");
-    wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.CLASSIFIER_FILE,this.getClass().getResource("/images/wekaprobabilitymaps/Example_classifier.model").toURI().getPath());
-    wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.SIMULTANEOUS_SLICES,20);
+    wekaProbabilityMaps.updateParameterValue(WekaPixelClassification.INPUT_IMAGE,"Test_image");
+    wekaProbabilityMaps.updateParameterValue(WekaPixelClassification.OUTPUT_IMAGE,"Test_output");
+    wekaProbabilityMaps.updateParameterValue(WekaPixelClassification.CLASSIFIER_FILE,this.getClass().getResource("/images/wekaprobabilitymaps/Example_classifier.model").toURI().getPath());
+    wekaProbabilityMaps.updateParameterValue(WekaPixelClassification.SIMULTANEOUS_SLICES,20);
 
     // Running Module
     wekaProbabilityMaps.execute(workspace);
@@ -164,12 +164,12 @@ public class WekaProbabilityMapsTest extends ModuleTest {
     Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
     // Initialising BinaryOperations
-    WekaProbabilityMaps wekaProbabilityMaps = new WekaProbabilityMaps(new
+    WekaPixelClassification wekaProbabilityMaps = new WekaPixelClassification(new
     Modules());
-    wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.INPUT_IMAGE,"Test_image");
-    wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.OUTPUT_IMAGE,"Test_output");
-    wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.CLASSIFIER_FILE,this.getClass().getResource("/images/wekaprobabilitymaps/Example_classifier.model").toURI().getPath());
-    wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.SIMULTANEOUS_SLICES,20);
+    wekaProbabilityMaps.updateParameterValue(WekaPixelClassification.INPUT_IMAGE,"Test_image");
+    wekaProbabilityMaps.updateParameterValue(WekaPixelClassification.OUTPUT_IMAGE,"Test_output");
+    wekaProbabilityMaps.updateParameterValue(WekaPixelClassification.CLASSIFIER_FILE,this.getClass().getResource("/images/wekaprobabilitymaps/Example_classifier.model").toURI().getPath());
+    wekaProbabilityMaps.updateParameterValue(WekaPixelClassification.SIMULTANEOUS_SLICES,20);
 
     // Running Module
     wekaProbabilityMaps.execute(workspace);
@@ -203,12 +203,12 @@ public class WekaProbabilityMapsTest extends ModuleTest {
     Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
     // Initialising BinaryOperations
-    WekaProbabilityMaps wekaProbabilityMaps = new WekaProbabilityMaps(new
+    WekaPixelClassification wekaProbabilityMaps = new WekaPixelClassification(new
     Modules());
-    wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.INPUT_IMAGE,"Test_image");
-    wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.OUTPUT_IMAGE,"Test_output");
-    wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.CLASSIFIER_FILE,this.getClass().getResource("/images/wekaprobabilitymaps/Example_classifier.model").toURI().getPath());
-    wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.SIMULTANEOUS_SLICES,20);
+    wekaProbabilityMaps.updateParameterValue(WekaPixelClassification.INPUT_IMAGE,"Test_image");
+    wekaProbabilityMaps.updateParameterValue(WekaPixelClassification.OUTPUT_IMAGE,"Test_output");
+    wekaProbabilityMaps.updateParameterValue(WekaPixelClassification.CLASSIFIER_FILE,this.getClass().getResource("/images/wekaprobabilitymaps/Example_classifier.model").toURI().getPath());
+    wekaProbabilityMaps.updateParameterValue(WekaPixelClassification.SIMULTANEOUS_SLICES,20);
 
     // Running Module
     wekaProbabilityMaps.execute(workspace);
@@ -242,12 +242,12 @@ public class WekaProbabilityMapsTest extends ModuleTest {
     Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
     // Initialising BinaryOperations
-    WekaProbabilityMaps wekaProbabilityMaps = new WekaProbabilityMaps(new
+    WekaPixelClassification wekaProbabilityMaps = new WekaPixelClassification(new
     Modules());
-    wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.INPUT_IMAGE,"Test_image");
-    wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.OUTPUT_IMAGE,"Test_output");
-    wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.CLASSIFIER_FILE,this.getClass().getResource("/images/wekaprobabilitymaps/Example_classifier.model").toURI().getPath());
-    wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.SIMULTANEOUS_SLICES,20);
+    wekaProbabilityMaps.updateParameterValue(WekaPixelClassification.INPUT_IMAGE,"Test_image");
+    wekaProbabilityMaps.updateParameterValue(WekaPixelClassification.OUTPUT_IMAGE,"Test_output");
+    wekaProbabilityMaps.updateParameterValue(WekaPixelClassification.CLASSIFIER_FILE,this.getClass().getResource("/images/wekaprobabilitymaps/Example_classifier.model").toURI().getPath());
+    wekaProbabilityMaps.updateParameterValue(WekaPixelClassification.SIMULTANEOUS_SLICES,20);
 
     // Running Module
     wekaProbabilityMaps.execute(workspace);
@@ -281,12 +281,12 @@ public class WekaProbabilityMapsTest extends ModuleTest {
     Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
     // Initialising BinaryOperations
-    WekaProbabilityMaps wekaProbabilityMaps = new WekaProbabilityMaps(new
+    WekaPixelClassification wekaProbabilityMaps = new WekaPixelClassification(new
     Modules());
-    wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.INPUT_IMAGE,"Test_image");
-    wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.OUTPUT_IMAGE,"Test_output");
-    wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.CLASSIFIER_FILE,this.getClass().getResource("/images/wekaprobabilitymaps/Example_classifier.model").toURI().getPath());
-    wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.SIMULTANEOUS_SLICES,20);
+    wekaProbabilityMaps.updateParameterValue(WekaPixelClassification.INPUT_IMAGE,"Test_image");
+    wekaProbabilityMaps.updateParameterValue(WekaPixelClassification.OUTPUT_IMAGE,"Test_output");
+    wekaProbabilityMaps.updateParameterValue(WekaPixelClassification.CLASSIFIER_FILE,this.getClass().getResource("/images/wekaprobabilitymaps/Example_classifier.model").toURI().getPath());
+    wekaProbabilityMaps.updateParameterValue(WekaPixelClassification.SIMULTANEOUS_SLICES,20);
 
     // Running Module
     wekaProbabilityMaps.execute(workspace);
@@ -320,12 +320,12 @@ public class WekaProbabilityMapsTest extends ModuleTest {
     Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
     // Initialising BinaryOperations
-    WekaProbabilityMaps wekaProbabilityMaps = new WekaProbabilityMaps(new
+    WekaPixelClassification wekaProbabilityMaps = new WekaPixelClassification(new
     Modules());
-    wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.INPUT_IMAGE,"Test_image");
-    wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.OUTPUT_IMAGE,"Test_output");
-    wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.CLASSIFIER_FILE,this.getClass().getResource("/images/wekaprobabilitymaps/Example_classifier.model").toURI().getPath());
-    wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.SIMULTANEOUS_SLICES,1);
+    wekaProbabilityMaps.updateParameterValue(WekaPixelClassification.INPUT_IMAGE,"Test_image");
+    wekaProbabilityMaps.updateParameterValue(WekaPixelClassification.OUTPUT_IMAGE,"Test_output");
+    wekaProbabilityMaps.updateParameterValue(WekaPixelClassification.CLASSIFIER_FILE,this.getClass().getResource("/images/wekaprobabilitymaps/Example_classifier.model").toURI().getPath());
+    wekaProbabilityMaps.updateParameterValue(WekaPixelClassification.SIMULTANEOUS_SLICES,1);
 
     // Running Module
     wekaProbabilityMaps.execute(workspace);
@@ -359,12 +359,12 @@ public class WekaProbabilityMapsTest extends ModuleTest {
     Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
     // Initialising BinaryOperations
-    WekaProbabilityMaps wekaProbabilityMaps = new WekaProbabilityMaps(new
+    WekaPixelClassification wekaProbabilityMaps = new WekaPixelClassification(new
     Modules());
-    wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.INPUT_IMAGE,"Test_image");
-    wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.OUTPUT_IMAGE,"Test_output");
-    wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.CLASSIFIER_FILE,this.getClass().getResource("/images/wekaprobabilitymaps/Example_classifier.model").toURI().getPath());
-    wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.SIMULTANEOUS_SLICES,20);
+    wekaProbabilityMaps.updateParameterValue(WekaPixelClassification.INPUT_IMAGE,"Test_image");
+    wekaProbabilityMaps.updateParameterValue(WekaPixelClassification.OUTPUT_IMAGE,"Test_output");
+    wekaProbabilityMaps.updateParameterValue(WekaPixelClassification.CLASSIFIER_FILE,this.getClass().getResource("/images/wekaprobabilitymaps/Example_classifier.model").toURI().getPath());
+    wekaProbabilityMaps.updateParameterValue(WekaPixelClassification.SIMULTANEOUS_SLICES,20);
 
     // Running Module
     wekaProbabilityMaps.execute(workspace);
@@ -399,12 +399,12 @@ public class WekaProbabilityMapsTest extends ModuleTest {
     Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
     // Initialising BinaryOperations
-    WekaProbabilityMaps wekaProbabilityMaps = new WekaProbabilityMaps(new
+    WekaPixelClassification wekaProbabilityMaps = new WekaPixelClassification(new
     Modules());
-    wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.INPUT_IMAGE,"Test_image");
-    wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.OUTPUT_IMAGE,"Test_output");
-    wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.CLASSIFIER_FILE,this.getClass().getResource("/images/wekaprobabilitymaps/Example_classifier.model").toURI().getPath());
-    wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.SIMULTANEOUS_SLICES,1);
+    wekaProbabilityMaps.updateParameterValue(WekaPixelClassification.INPUT_IMAGE,"Test_image");
+    wekaProbabilityMaps.updateParameterValue(WekaPixelClassification.OUTPUT_IMAGE,"Test_output");
+    wekaProbabilityMaps.updateParameterValue(WekaPixelClassification.CLASSIFIER_FILE,this.getClass().getResource("/images/wekaprobabilitymaps/Example_classifier.model").toURI().getPath());
+    wekaProbabilityMaps.updateParameterValue(WekaPixelClassification.SIMULTANEOUS_SLICES,1);
 
     // Running Module
     wekaProbabilityMaps.execute(workspace);
@@ -439,12 +439,12 @@ public class WekaProbabilityMapsTest extends ModuleTest {
     Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
     // Initialising BinaryOperations
-    WekaProbabilityMaps wekaProbabilityMaps = new WekaProbabilityMaps(new
+    WekaPixelClassification wekaProbabilityMaps = new WekaPixelClassification(new
     Modules());
-    wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.INPUT_IMAGE,"Test_image");
-    wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.OUTPUT_IMAGE,"Test_output");
-    wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.CLASSIFIER_FILE,this.getClass().getResource("/images/wekaprobabilitymaps/Example_classifier.model").toURI().getPath());
-    wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.SIMULTANEOUS_SLICES,3);
+    wekaProbabilityMaps.updateParameterValue(WekaPixelClassification.INPUT_IMAGE,"Test_image");
+    wekaProbabilityMaps.updateParameterValue(WekaPixelClassification.OUTPUT_IMAGE,"Test_output");
+    wekaProbabilityMaps.updateParameterValue(WekaPixelClassification.CLASSIFIER_FILE,this.getClass().getResource("/images/wekaprobabilitymaps/Example_classifier.model").toURI().getPath());
+    wekaProbabilityMaps.updateParameterValue(WekaPixelClassification.SIMULTANEOUS_SLICES,3);
 
     // Running Module
     wekaProbabilityMaps.execute(workspace);
@@ -479,12 +479,12 @@ public class WekaProbabilityMapsTest extends ModuleTest {
     Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
     // Initialising BinaryOperations
-    WekaProbabilityMaps wekaProbabilityMaps = new WekaProbabilityMaps(new
+    WekaPixelClassification wekaProbabilityMaps = new WekaPixelClassification(new
     Modules());
-    wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.INPUT_IMAGE,"Test_image");
-    wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.OUTPUT_IMAGE,"Test_output");
-    wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.CLASSIFIER_FILE,this.getClass().getResource("/images/wekaprobabilitymaps/Example_classifier.model").toURI().getPath());
-    wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.SIMULTANEOUS_SLICES,20);
+    wekaProbabilityMaps.updateParameterValue(WekaPixelClassification.INPUT_IMAGE,"Test_image");
+    wekaProbabilityMaps.updateParameterValue(WekaPixelClassification.OUTPUT_IMAGE,"Test_output");
+    wekaProbabilityMaps.updateParameterValue(WekaPixelClassification.CLASSIFIER_FILE,this.getClass().getResource("/images/wekaprobabilitymaps/Example_classifier.model").toURI().getPath());
+    wekaProbabilityMaps.updateParameterValue(WekaPixelClassification.SIMULTANEOUS_SLICES,20);
 
     // Running Module
     wekaProbabilityMaps.execute(workspace);
@@ -518,12 +518,12 @@ public class WekaProbabilityMapsTest extends ModuleTest {
     Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
     // Initialising BinaryOperations
-    WekaProbabilityMaps wekaProbabilityMaps = new WekaProbabilityMaps(new
+    WekaPixelClassification wekaProbabilityMaps = new WekaPixelClassification(new
     Modules());
-    wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.INPUT_IMAGE,"Test_image");
-    wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.OUTPUT_IMAGE,"Test_output");
-    wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.CLASSIFIER_FILE,"");
-    wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.SIMULTANEOUS_SLICES,20);
+    wekaProbabilityMaps.updateParameterValue(WekaPixelClassification.INPUT_IMAGE,"Test_image");
+    wekaProbabilityMaps.updateParameterValue(WekaPixelClassification.OUTPUT_IMAGE,"Test_output");
+    wekaProbabilityMaps.updateParameterValue(WekaPixelClassification.CLASSIFIER_FILE,"");
+    wekaProbabilityMaps.updateParameterValue(WekaPixelClassification.SIMULTANEOUS_SLICES,20);
 
     // Running Module
     Status status = wekaProbabilityMaps.execute(workspace);
