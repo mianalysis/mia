@@ -7,6 +7,7 @@ import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
 
 import ij.IJ;
+import ij.ImageJ;
 import ij.ImagePlus;
 import ij.ImageStack;
 import ij.Prefs;
@@ -154,11 +155,13 @@ public class WekaPixelClassification extends Module {
             if (wekaSegmentation.getTrainingInstances() == null)
                 wekaSegmentation.loadClassifier(classifierFilePath);
 
-            if (tileFactor == 1)
-                iplSingle = wekaSegmentation.applyClassifier(iplSingle, nThreads, createProbabilityMap);
-            else
+            if (tileFactor == 1) {                
+                wekaSegmentation.applyClassifier(createProbabilityMap);
+                iplSingle = wekaSegmentation.getClassifiedImage();
+            } else {
                 iplSingle = wekaSegmentation.applyClassifier(iplSingle, new int[] { tileFactor, tileFactor }, nThreads,
                         createProbabilityMap);
+            }
 
             // Converting probability image to specified bit depth (it will be 32-bit by
             // default)
