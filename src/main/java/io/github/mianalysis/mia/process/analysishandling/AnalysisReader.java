@@ -45,7 +45,9 @@ public class AnalysisReader {
     public static Analysis loadAnalysis()
             throws SAXException, IllegalAccessException, IOException, InstantiationException,
             ParserConfigurationException, ClassNotFoundException, NoSuchMethodException, InvocationTargetException {
-        String previousPath = Prefs.get("MIA.PreviousPath", "");
+        // We always want to open at the last place a workflow was opened from (not just
+        // any file, as images are often in sub-directories).
+        String previousPath = Prefs.get("MIA.PreviousWorkflowPath", "");
         JFileChooser fileChooser = new JFileChooser(previousPath);
         fileChooser.setMultiSelectionEnabled(false);
         fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
@@ -56,8 +58,11 @@ public class AnalysisReader {
         if (file == null)
             return null;
 
+        // Both normal loading (file selection parameters) and the specific workflow
+        // loading should look in this folder.
+        Prefs.set("MIA.PreviousWorkflowPath", file.getAbsolutePath());
         Prefs.set("MIA.PreviousPath", file.getAbsolutePath());
-        
+
         Analysis analysis = loadAnalysis(file);
         analysis.setAnalysisFilename(file.getAbsolutePath());
 
