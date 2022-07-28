@@ -31,10 +31,10 @@ import javax.swing.table.TableRowSorter;
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.gui.GUI;
 import io.github.mianalysis.mia.gui.regions.ClosePanelButton;
-import io.github.mianalysis.mia.object.Colours;
-import io.github.mianalysis.mia.object.Status;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.Workspaces;
+import io.github.mianalysis.mia.object.system.Colours;
+import io.github.mianalysis.mia.object.system.Status;
 import io.github.sjcross.sjcommon.metadataextractors.Metadata;
 
 public class FileListPanel extends JPanel implements MouseListener, TableCellRenderer {

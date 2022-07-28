@@ -26,11 +26,11 @@ import io.github.mianalysis.mia.module.images.transform.Convert3DStack;
 import io.github.mianalysis.mia.module.images.transform.ExtractSubstack;
 import io.github.mianalysis.mia.module.images.transform.ProjectImage;
 import io.github.mianalysis.mia.module.visualise.overlays.AddObjectCentroid;
-import io.github.mianalysis.mia.object.Image;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
-import io.github.mianalysis.mia.object.Status;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
@@ -43,6 +43,7 @@ import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
+import io.github.mianalysis.mia.object.system.Status;
 import io.github.mianalysis.mia.object.units.TemporalUnit;
 import io.github.mianalysis.mia.process.interactable.PointPairSelector.PointPair;
 import io.github.sjcross.sjcommon.object.volume.PointOutOfRangeException;
@@ -483,7 +484,7 @@ public abstract class AbstractRegistration<T extends RealType<T> & NativeType<T>
         // separately
         Image inputImage = workspace.getImage(inputImageName);
         if (!applyToInput)
-            inputImage = new Image(outputImageName, inputImage.getImagePlus().duplicate());
+            inputImage = ImageFactory.createImage(outputImageName, inputImage.getImagePlus().duplicate());
 
         // If comparing to a fixed image, get this now
         Image reference = referenceMode.equals(ReferenceModes.SPECIFIC_IMAGE) ? workspace.getImage(referenceImageName)

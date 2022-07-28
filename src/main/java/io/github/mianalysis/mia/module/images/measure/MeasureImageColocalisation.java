@@ -14,11 +14,11 @@ import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.images.process.InvertIntensity;
 import io.github.mianalysis.mia.module.objects.measure.intensity.MeasureObjectColocalisation;
-import io.github.mianalysis.mia.object.Image;
 import io.github.mianalysis.mia.object.Measurement;
 import io.github.mianalysis.mia.object.Objs;
-import io.github.mianalysis.mia.object.Status;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.ImageMeasurementP;
@@ -33,6 +33,7 @@ import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
+import io.github.mianalysis.mia.object.system.Status;
 import io.github.mianalysis.mia.process.ColourFactory;
 import net.imglib2.RandomAccessible;
 import net.imglib2.RandomAccessibleInterval;
@@ -456,7 +457,7 @@ public class MeasureImageColocalisation<T extends RealType<T> & NativeType<T>> e
         // null is returned
         switch (maskingMode) {
             case MaskingModes.MASK_IMAGE:
-                maskImage = new Image("Mask", maskImage.getImagePlus().duplicate());
+                maskImage = ImageFactory.createImage("Mask", maskImage.getImagePlus().duplicate());
                 if (imageMaskLogic.equals(ImageMaskLogic.MEASURE_ON_BLACK))
                     InvertIntensity.process(maskImage);
                 break;

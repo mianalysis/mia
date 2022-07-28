@@ -11,7 +11,6 @@ import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.object.Measurement;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
-import io.github.mianalysis.mia.object.Status;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.parameters.ObjectMeasurementP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
@@ -19,6 +18,7 @@ import io.github.mianalysis.mia.object.refs.ObjMeasurementRef;
 import io.github.mianalysis.mia.object.refs.collections.ImageMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
+import io.github.mianalysis.mia.object.system.Status;
 
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class FilterByMeasurement extends AbstractNumericObjectFilter {

@@ -18,11 +18,11 @@ import io.github.mianalysis.mia.module.images.process.ImageMath;
 import io.github.mianalysis.mia.module.images.process.InvertIntensity;
 import io.github.mianalysis.mia.module.images.process.binary.BinaryOperations2D;
 import io.github.mianalysis.mia.module.images.process.binary.DistanceMap;
-import io.github.mianalysis.mia.object.Image;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
-import io.github.mianalysis.mia.object.Status;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputObjectsP;
@@ -35,6 +35,7 @@ import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
+import io.github.mianalysis.mia.object.system.Status;
 import io.github.mianalysis.mia.process.ColourFactory;
 import io.github.sjcross.sjcommon.object.Point;
 
@@ -84,7 +85,7 @@ public class CreateDistanceMap extends Module {
 
         // Creating a blank image (8-bit, so binary operations work)
         ImagePlus distanceMapIpl = IJ.createHyperStack(outputImageName, width, height, 1, nZ, nT, 8);
-        Image distanceMap = new Image(outputImageName, distanceMapIpl);
+        Image distanceMap = ImageFactory.createImage(outputImageName, distanceMapIpl);
         inputObjects.applyCalibration(distanceMap);
 
         // Adding a spot to the centre of each object

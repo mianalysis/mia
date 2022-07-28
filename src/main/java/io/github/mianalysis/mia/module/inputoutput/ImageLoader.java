@@ -34,12 +34,11 @@ import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.core.InputControl;
-import io.github.mianalysis.mia.object.Colours;
-import io.github.mianalysis.mia.object.Image;
 import io.github.mianalysis.mia.object.Measurement;
 import io.github.mianalysis.mia.object.Objs;
-import io.github.mianalysis.mia.object.Status;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.FilePathP;
@@ -57,6 +56,8 @@ import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
+import io.github.mianalysis.mia.object.system.Colours;
+import io.github.mianalysis.mia.object.system.Status;
 import io.github.mianalysis.mia.object.units.SpatialUnit;
 import io.github.mianalysis.mia.object.units.TemporalUnit;
 import io.github.sjcross.sjcommon.metadataextractors.CV7000FilenameExtractor;
@@ -1321,7 +1322,7 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
 
         // Adding image to workspace
         writeStatus("Adding image (" + outputImageName + ") to workspace");
-        Image outputImage = new Image(outputImageName, ipl);
+        Image outputImage = ImageFactory.createImage(outputImageName, ipl);
         workspace.addImage(outputImage);
 
         if (showOutput)

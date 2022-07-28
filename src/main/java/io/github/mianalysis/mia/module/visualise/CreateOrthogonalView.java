@@ -23,11 +23,12 @@ import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.Module;
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
-import io.github.mianalysis.mia.object.Image;
+
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
-import io.github.mianalysis.mia.object.Status;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
 import io.github.mianalysis.mia.object.parameters.InputObjectsP;
@@ -39,6 +40,7 @@ import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
+import io.github.mianalysis.mia.object.system.Status;
 
 /**
  * Created by sc13967 on 05/02/2018.
@@ -228,7 +230,7 @@ public class CreateOrthogonalView<T extends RealType<T> & NativeType<T>> extends
 
         // Adding image to workspace
         ImagePlus outputImagePlus = ImageJFunctions.wrap(orthoImg, outputImageName);
-        Image outputImage = new Image(outputImageName, outputImagePlus);
+        Image outputImage = ImageFactory.createImage(outputImageName, outputImagePlus);
         workspace.addImage(outputImage);
 
         // Displaying the image

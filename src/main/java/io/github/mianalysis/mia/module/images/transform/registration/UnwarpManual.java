@@ -23,8 +23,9 @@ import io.github.mianalysis.mia.module.Module;
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
 
-import io.github.mianalysis.mia.object.Image;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.process.interactable.Interactable;
@@ -116,8 +117,8 @@ public class UnwarpManual<T extends RealType<T> & NativeType<T>> extends Abstrac
         ArrayList<PointPair> pairs = null;
         switch (p.pointSelectionMode) {
             case PointSelectionModes.PRESELECTED:
-                pairs = PointPairSelector.getPreselectedPoints(new Image("Warped", warpedIpl),
-                        new Image("Reference", referenceIpl));
+                pairs = PointPairSelector.getPreselectedPoints(ImageFactory.createImage("Warped", warpedIpl),
+                        ImageFactory.createImage("Reference", referenceIpl));
                 break;
             case PointSelectionModes.RUNTIME:
             default:
@@ -209,8 +210,8 @@ public class UnwarpManual<T extends RealType<T> & NativeType<T>> extends Abstrac
         ImagePlus ipl2 = ((ImagePlus) objects[2]).duplicate();
 
         // Duplicating image
-        Image image1 = new Image("Registered", ipl1);
-        Image image2 = new Image("Reference", ipl2);
+        Image image1 = ImageFactory.createImage("Registered", ipl1);
+        Image image2 = ImageFactory.createImage("Reference", ipl2);
 
         ArrayList<Stack<Point>> points = convertPointPairsToPointStacks(pairs);
         Transformation transformation = bUnwarpJ_Mod.computeTransformationBatch(ipl1.getProcessor(),

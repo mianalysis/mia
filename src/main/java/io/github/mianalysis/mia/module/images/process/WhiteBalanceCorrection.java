@@ -10,11 +10,11 @@ import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.object.Image;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
-import io.github.mianalysis.mia.object.Status;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
 import io.github.mianalysis.mia.object.parameters.InputObjectsP;
@@ -26,6 +26,7 @@ import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
+import io.github.mianalysis.mia.object.system.Status;
 import io.github.sjcross.sjcommon.analysis.IntensityCalculator;
 
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
@@ -95,7 +96,7 @@ public class WhiteBalanceCorrection extends Module {
         }
 
         // If applying to a new image, the input image is duplicated
-        if (!applyToInput) {inputImage = new Image(outputImageName,inputImage.getImagePlus().duplicate());}
+        if (!applyToInput) {inputImage = ImageFactory.createImage(outputImageName,inputImage.getImagePlus().duplicate());}
 
         // Getting the reference object.  If there is more than 1 object in the collection, use the largest.
         Obj refObj = null;

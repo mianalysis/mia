@@ -10,9 +10,9 @@ import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Categories;
-import io.github.mianalysis.mia.object.Image;
-import io.github.mianalysis.mia.object.Status;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
 import io.github.mianalysis.mia.object.parameters.OutputImageP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
@@ -22,6 +22,7 @@ import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
+import io.github.mianalysis.mia.object.system.Status;
 
 /**
  * Created by Stephen on 08/05/2017.
@@ -68,7 +69,7 @@ public class ChannelExtractor extends Module {
 
         // Adding image to workspace
         writeStatus("Adding image ("+outputImageName+") to workspace");
-        Image outputImage = new Image(outputImageName,outputChannelImagePlus);
+        Image outputImage = ImageFactory.createImage(outputImageName,outputChannelImagePlus);
         workspace.addImage(outputImage);
 
         if (showOutput) outputImage.showImage();

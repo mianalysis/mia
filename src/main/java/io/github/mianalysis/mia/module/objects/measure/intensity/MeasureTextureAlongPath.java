@@ -17,12 +17,12 @@ import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.images.process.ImageTypeConverter;
 import io.github.mianalysis.mia.module.objects.measure.spatial.MeasureSkeleton;
-import io.github.mianalysis.mia.object.Image;
 import io.github.mianalysis.mia.object.Measurement;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
-import io.github.mianalysis.mia.object.Status;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
 import io.github.mianalysis.mia.object.parameters.InputObjectsP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
@@ -34,6 +34,7 @@ import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
+import io.github.mianalysis.mia.object.system.Status;
 import io.github.sjcross.sjcommon.analysis.TextureCalculator;
 import io.github.sjcross.sjcommon.object.Point;
 
@@ -139,7 +140,7 @@ public class MeasureTextureAlongPath extends Module {
                     "Texture analysis requires an 8-bit image.  Converting to 8-bit with scaling enabled.");
             inputImagePlus = inputImagePlus.duplicate();
             ImageTypeConverter.process(inputImagePlus, 8, ImageTypeConverter.ScalingModes.SCALE);
-            inputImage = new Image(inputImage.getName(), inputImagePlus);
+            inputImage = ImageFactory.createImage(inputImage.getName(), inputImagePlus);
         }
 
         // Getting input objects

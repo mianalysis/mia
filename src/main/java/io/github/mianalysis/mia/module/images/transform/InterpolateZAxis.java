@@ -11,9 +11,9 @@ import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.object.Image;
-import io.github.mianalysis.mia.object.Status;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
 import io.github.mianalysis.mia.object.parameters.OutputImageP;
@@ -24,6 +24,7 @@ import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
+import io.github.mianalysis.mia.object.system.Status;
 
 /**
  * Created by sc13967 on 23/03/2018.
@@ -108,7 +109,7 @@ public class InterpolateZAxis extends Module {
 
         ImagePlus outputImagePlus = matchZToXY(inputImagePlus, interpolationMode);
 
-        Image outputImage = new Image(outputImageName, outputImagePlus);
+        Image outputImage = ImageFactory.createImage(outputImageName, outputImagePlus);
         workspace.addImage(outputImage);
 
         if (showOutput)

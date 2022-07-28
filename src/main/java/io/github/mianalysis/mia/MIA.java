@@ -16,22 +16,19 @@ import org.scijava.ui.UIService;
 
 import com.formdev.flatlaf.FlatLightLaf;
 
-import ij.WindowManager;
 import io.github.mianalysis.mia.gui.GUI;
 import io.github.mianalysis.mia.module.LostAndFound;
 import io.github.mianalysis.mia.moduledependencies.Dependencies;
-import io.github.mianalysis.mia.object.Preferences;
+import io.github.mianalysis.mia.object.system.Preferences;
 import io.github.mianalysis.mia.process.DependencyValidator;
 import io.github.mianalysis.mia.process.analysishandling.Analysis;
 import io.github.mianalysis.mia.process.analysishandling.AnalysisReader;
 import io.github.mianalysis.mia.process.analysishandling.AnalysisRunner;
 import io.github.mianalysis.mia.process.logging.BasicLogRenderer;
 import io.github.mianalysis.mia.process.logging.ConsoleRenderer;
-import io.github.mianalysis.mia.process.logging.IJ1Renderer;
 import io.github.mianalysis.mia.process.logging.Log;
 import io.github.mianalysis.mia.process.logging.LogHistory;
 import io.github.mianalysis.mia.process.logging.LogRenderer;
-import io.github.mianalysis.mia.process.logging.LogRenderer.Level;
 import net.imagej.ImageJ;
 import net.imagej.ImageJService;
 

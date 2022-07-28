@@ -10,12 +10,12 @@ import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.objects.detect.IdentifyObjects;
 import io.github.mianalysis.mia.module.objects.measure.intensity.MeasureObjectIntensity;
 import io.github.mianalysis.mia.module.objects.relate.TrackObjects;
-import io.github.mianalysis.mia.object.Image;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
-import io.github.mianalysis.mia.object.Status;
 import io.github.mianalysis.mia.object.VolumeTypesInterface;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
@@ -28,6 +28,7 @@ import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
+import io.github.mianalysis.mia.object.system.Status;
 import io.github.sjcross.sjcommon.exceptions.IntegerOverflowException;
 import io.github.sjcross.sjcommon.mathfunc.CumStat;
 import io.github.sjcross.sjcommon.object.volume.VolumeType;
@@ -100,7 +101,7 @@ public class ConvertImageToObjects extends Module {
 
         Objs objects = null;
         try {
-            objects = inputImage.convertImageToObjects(volumeType, outputObjectsName);
+            objects = inputImage.convertImageToObjects(VolumeTypesInterface.getVolumeType(volumeType), outputObjectsName);
         } catch (IntegerOverflowException e) {
             return Status.FAIL;
         }

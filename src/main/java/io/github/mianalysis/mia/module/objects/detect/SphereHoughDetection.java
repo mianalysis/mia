@@ -18,18 +18,19 @@ import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.images.transform.ExtractSubstack;
 import io.github.mianalysis.mia.module.images.transform.InterpolateZAxis;
-import io.github.mianalysis.mia.object.Image;
 import io.github.mianalysis.mia.object.Measurement;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
-import io.github.mianalysis.mia.object.Status;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.SeparatorP;
 import io.github.mianalysis.mia.object.parameters.text.DoubleP;
 import io.github.mianalysis.mia.object.parameters.text.IntegerP;
 import io.github.mianalysis.mia.object.parameters.text.StringP;
+import io.github.mianalysis.mia.object.system.Status;
 import io.github.mianalysis.mia.object.units.TemporalUnit;
 import io.github.sjcross.sjcommon.exceptions.IntegerOverflowException;
 import io.github.sjcross.sjcommon.object.volume.PointOutOfRangeException;
@@ -161,7 +162,7 @@ public class SphereHoughDetection extends AbstractHoughDetection {
                     ImagePlus showIpl = new Duplicator().run(transform.getAccumulatorAsImage());
 
                     if (outputTransformImage) {
-                        Image outputImage = new Image(outputImageName, showIpl);
+                        Image outputImage = ImageFactory.createImage(outputImageName, showIpl);
                         workspace.addImage(outputImage);
                     }
                     if (showOutput && showTransformImage) {

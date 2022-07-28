@@ -28,10 +28,10 @@ import io.github.mianalysis.mia.module.images.transform.ConcatenateStacks;
 import io.github.mianalysis.mia.module.images.transform.ExtractSubstack;
 import io.github.mianalysis.mia.module.images.transform.ProjectImage;
 import io.github.mianalysis.mia.module.images.transform.ConcatenateStacks.AxisModes;
-import io.github.mianalysis.mia.object.Image;
 import io.github.mianalysis.mia.object.Measurement;
-import io.github.mianalysis.mia.object.Status;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
@@ -45,6 +45,7 @@ import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
+import io.github.mianalysis.mia.object.system.Status;
 import io.github.mianalysis.mia.process.interactable.Interactable;
 import io.github.mianalysis.mia.process.interactable.PointPairSelector;
 import io.github.mianalysis.mia.process.interactable.PointPairSelector.PointPair;
@@ -506,7 +507,7 @@ public class RegisterImages<T extends RealType<T> & NativeType<T>> extends Modul
 
         // Duplicating image
         ImagePlus dupIpl = inputImage.getImagePlus().duplicate();
-        Image dupImage = new Image("Registered", dupIpl);
+        Image dupImage = ImageFactory.createImage("Registered", dupIpl);
 
         // Getting transform
         Object[] output = getLandmarkTransformation(pairs, transformationMode);
@@ -594,7 +595,7 @@ public class RegisterImages<T extends RealType<T> & NativeType<T>> extends Modul
 
         inputImage = workspace.getImage(inputImageName);
         if (!applyToInput)
-            inputImage = new Image(outputImageName, inputImage.getImagePlus().duplicate());
+            inputImage = ImageFactory.createImage(outputImageName, inputImage.getImagePlus().duplicate());
 
         switch (alignmentMode) {
             case AlignmentModes.AUTOMATIC:
@@ -620,7 +621,7 @@ public class RegisterImages<T extends RealType<T> & NativeType<T>> extends Modul
 
                 // Getting external source image
                 Image externalSource = calculationSource.equals(CalculationSources.EXTERNAL)
-                        ? new Image(externalSourceName,
+                        ? ImageFactory.createImage(externalSourceName,
                                 workspace.getImage(externalSourceName).getImagePlus().duplicate())
                         : null;
 

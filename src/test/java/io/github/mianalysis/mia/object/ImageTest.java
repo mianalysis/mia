@@ -10,6 +10,8 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 import io.github.mianalysis.mia.expectedobjects.ExpectedObjects;
 import io.github.mianalysis.mia.expectedobjects.Objects3D;
+import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageFactory;
 
 import java.net.URLDecoder;
 
@@ -24,7 +26,7 @@ public class ImageTest < T extends RealType< T > & NativeType< T >> {
         // Loading the test image
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/labelledobjects/LabelledObjects5D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
-        Image image = new Image("Test_image",ipl);
+        Image image = ImageFactory.createImage("Test_image",ipl);
 
         // Checking the image has the right name
         assertEquals("Test_image",image.getName());
@@ -49,7 +51,7 @@ public class ImageTest < T extends RealType< T > & NativeType< T >> {
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/labelledobjects/LabelledObjects5D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         ImgPlus<T> img = ImagePlusAdapter.wrapImgPlus(ipl);
-        Image image = new Image("Test_image",img);
+        Image image = ImageFactory.createImage("Test_image",img);
 
         // Checking the image has the right name
         assertEquals("Test_image",image.getName());
@@ -78,7 +80,7 @@ public class ImageTest < T extends RealType< T > & NativeType< T >> {
         // Loading the test image
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/labelledobjects/LabelledObjects3D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
-        Image image = new Image("Test_image",ipl);
+        Image image = ImageFactory.createImage("Test_image",ipl);
 
         // Setting other parameters
         String testObjectsName = "Test objects";
@@ -115,7 +117,7 @@ public class ImageTest < T extends RealType< T > & NativeType< T >> {
         // Loading the test image
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/labelledobjects/LabelledObjects3D_16bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
-        Image image = new Image("Test_image",ipl);
+        Image image = ImageFactory.createImage("Test_image",ipl);
 
         // Setting other parameters
         String testObjectsName = "Test objects";
@@ -147,7 +149,7 @@ public class ImageTest < T extends RealType< T > & NativeType< T >> {
         // Loading the test image
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/labelledobjects/LabelledObjects3D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
-        Image image = new Image("Test_image",ipl);
+        Image image = ImageFactory.createImage("Test_image",ipl);
 
         // Adding a couple of measurements
         image.addMeasurement(new Measurement("Meas 1",1.2));

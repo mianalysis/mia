@@ -12,9 +12,9 @@ import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.object.Image;
-import io.github.mianalysis.mia.object.Status;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
 import io.github.mianalysis.mia.object.parameters.OutputImageP;
@@ -25,6 +25,7 @@ import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
+import io.github.mianalysis.mia.object.system.Status;
 import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
 
@@ -88,7 +89,7 @@ public class ProjectImage < T extends RealType< T > & NativeType< T >> extends M
     public static Image projectImageInZ(Image inputImage, String outputImageName, String projectionMode) {
         // If the image has a single slice we don't need to do the projection
         if (inputImage.getImagePlus().getNSlices() == 1) {
-            return new Image(outputImageName,inputImage.getImagePlus().duplicate());
+            return ImageFactory.createImage(outputImageName,inputImage.getImagePlus().duplicate());
         }
 
         ImagePlus iplOut = null;
@@ -129,7 +130,7 @@ public class ProjectImage < T extends RealType< T > & NativeType< T >> extends M
 
         iplOut.setCalibration(calibrationOut);
 
-        return new Image(outputImageName,iplOut);
+        return ImageFactory.createImage(outputImageName,iplOut);
 
     }
 
@@ -391,7 +392,7 @@ Workspace workspace = null;
 //        ImgPlusTools.applyAxes(proj,outputImagePlus);
 //        outputImagePlus.setCalibration(inputImage.getImagePlus().getCal());
 //
-//        return new Image(outputImageName,outputImagePlus);
+//        return ImageFactory.createImage(outputImageName,outputImagePlus);
 //
 //    }
 //
@@ -429,7 +430,7 @@ Workspace workspace = null;
 //        ImagePlus outputImagePlus = ImageJFunctions.wrap(outImg,outputImageName);
 //        ImgPlusTools.applyAxes(outImg,outputImagePlus);
 //
-//        return new Image(outputImageName,outputImagePlus);
+//        return ImageFactory.createImage(outputImageName,outputImagePlus);
 //
 //    }
 //

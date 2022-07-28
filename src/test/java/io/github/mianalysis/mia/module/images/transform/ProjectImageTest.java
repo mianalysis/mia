@@ -13,9 +13,10 @@ import ij.ImageJ;
 import ij.ImagePlus;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.ModuleTest;
-import io.github.mianalysis.mia.object.Image;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.Workspaces;
+import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageFactory;
 
 
 public class ProjectImageTest extends ModuleTest {
@@ -38,11 +39,11 @@ public class ProjectImageTest extends ModuleTest {
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient2D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
-        Image image = new Image("Test_image",ipl);
+        Image image = ImageFactory.createImage("Test_image",ipl);
         workspace.addImage(image);
 
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/projectimage/NoisyGradient2D_ZMaxProj_8bit.zip").getPath(),"UTF-8");
-        Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
+        Image expectedImage = ImageFactory.createImage("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
         ProjectImage projectImage = new ProjectImage(null);
@@ -74,11 +75,11 @@ public class ProjectImageTest extends ModuleTest {
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient3D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
-        Image image = new Image("Test_image",ipl);
+        Image image = ImageFactory.createImage("Test_image",ipl);
         workspace.addImage(image);
 
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/projectimage/NoisyGradient3D_ZMaxProj_8bit.zip").getPath(),"UTF-8");
-        Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
+        Image expectedImage = ImageFactory.createImage("Expected", IJ.openImage(pathToImage));
 
         // For some reason, 2D images are loaded with pixel depth set to 1
         expectedImage.getImagePlus().getCalibration().pixelDepth = 0.1;
@@ -113,11 +114,11 @@ public class ProjectImageTest extends ModuleTest {
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient4D_ZT_8bit_C1.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
-        Image image = new Image("Test_image",ipl);
+        Image image = ImageFactory.createImage("Test_image",ipl);
         workspace.addImage(image);
 
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/projectimage/NoisyGradient4D_ZMaxProj_8bit.zip").getPath(),"UTF-8");
-        Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
+        Image expectedImage = ImageFactory.createImage("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
         ProjectImage projectImage = new ProjectImage(null);
@@ -150,11 +151,11 @@ public class ProjectImageTest extends ModuleTest {
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient5D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
-        Image image = new Image("Test_image",ipl);
+        Image image = ImageFactory.createImage("Test_image",ipl);
         workspace.addImage(image);
 
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/projectimage/NoisyGradient5D_ZMaxProj_8bit.zip").getPath(),"UTF-8");
-        Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
+        Image expectedImage = ImageFactory.createImage("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
         ProjectImage projectImage = new ProjectImage(null);
@@ -186,11 +187,11 @@ public class ProjectImageTest extends ModuleTest {
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient3D_16bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
-        Image image = new Image("Test_image",ipl);
+        Image image = ImageFactory.createImage("Test_image",ipl);
         workspace.addImage(image);
 
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/projectimage/NoisyGradient3D_ZMaxProj_16bit.zip").getPath(),"UTF-8");
-        Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
+        Image expectedImage = ImageFactory.createImage("Expected", IJ.openImage(pathToImage));
 
         // For some reason, 2D images are loaded with pixel depth set to 1
         expectedImage.getImagePlus().getCalibration().pixelDepth = 0.1;
@@ -226,11 +227,11 @@ public class ProjectImageTest extends ModuleTest {
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient3D_32bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
-        Image image = new Image("Test_image",ipl);
+        Image image = ImageFactory.createImage("Test_image",ipl);
         workspace.addImage(image);
 
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/projectimage/NoisyGradient3D_ZMaxProj_32bit.zip").getPath(),"UTF-8");
-        Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
+        Image expectedImage = ImageFactory.createImage("Expected", IJ.openImage(pathToImage));
 
         // For some reason, 2D images are loaded with pixel depth set to 1
         expectedImage.getImagePlus().getCalibration().pixelDepth = 0.1;
@@ -265,11 +266,11 @@ public class ProjectImageTest extends ModuleTest {
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient4D_ZT_8bit_C1.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
-        Image image = new Image("Test_image",ipl);
+        Image image = ImageFactory.createImage("Test_image",ipl);
         workspace.addImage(image);
 
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/projectimage/NoisyGradient4D_ZMinProj_8bit.zip").getPath(),"UTF-8");
-        Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
+        Image expectedImage = ImageFactory.createImage("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
         ProjectImage projectImage = new ProjectImage(null);
@@ -301,11 +302,11 @@ public class ProjectImageTest extends ModuleTest {
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient4D_ZT_8bit_C1.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
-        Image image = new Image("Test_image",ipl);
+        Image image = ImageFactory.createImage("Test_image",ipl);
         workspace.addImage(image);
 
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/projectimage/NoisyGradient4D_ZAvProj_8bit.zip").getPath(),"UTF-8");
-        Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
+        Image expectedImage = ImageFactory.createImage("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
         ProjectImage projectImage = new ProjectImage(null);
@@ -337,11 +338,11 @@ public class ProjectImageTest extends ModuleTest {
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient4D_ZT_8bit_C1.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
-        Image image = new Image("Test_image",ipl);
+        Image image = ImageFactory.createImage("Test_image",ipl);
         workspace.addImage(image);
 
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/projectimage/NoisyGradient4D_ZMedProj_8bit.zip").getPath(),"UTF-8");
-        Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
+        Image expectedImage = ImageFactory.createImage("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
         ProjectImage projectImage = new ProjectImage(null);
@@ -373,11 +374,11 @@ public class ProjectImageTest extends ModuleTest {
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient4D_ZT_8bit_C1.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
-        Image image = new Image("Test_image",ipl);
+        Image image = ImageFactory.createImage("Test_image",ipl);
         workspace.addImage(image);
 
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/projectimage/NoisyGradient4D_ZStdevProj_8bit.zip").getPath(),"UTF-8");
-        Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
+        Image expectedImage = ImageFactory.createImage("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
         ProjectImage projectImage = new ProjectImage(null);
@@ -409,11 +410,11 @@ public class ProjectImageTest extends ModuleTest {
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient4D_ZT_8bit_C1.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
-        Image image = new Image("Test_image",ipl);
+        Image image = ImageFactory.createImage("Test_image",ipl);
         workspace.addImage(image);
 
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/projectimage/NoisyGradient4D_ZSumProj_8bit.zip").getPath(),"UTF-8");
-        Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
+        Image expectedImage = ImageFactory.createImage("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
         ProjectImage projectImage = new ProjectImage(null);
