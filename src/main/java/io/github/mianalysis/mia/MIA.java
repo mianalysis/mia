@@ -81,8 +81,8 @@ public class MIA implements Command {
     public void run() {
         try {
             preferences = new Preferences(null);
-
-            setLookAndFeel();
+            preferences.setTheme();
+            //preferences.setTheme(preferences.getParameterValue(Preferences.THEME));
 
             if (!headless) {
                 // Before removing the old renderer we want to check the new one can be created
@@ -123,15 +123,15 @@ public class MIA implements Command {
         }
     }
 
-    public void setLookAndFeel() {
-        try {
-            UIManager.put("TitlePane.showIconBesideTitle", true);
-            UIManager.setLookAndFeel(FlatLightLaf.class.getCanonicalName());
-        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException
-                | UnsupportedLookAndFeelException e) {
-            MIA.log.writeError(e);
-        }
-    }
+    // public void setLookAndFeel() {
+    //     try {
+    //         UIManager.put("TitlePane.showIconBesideTitle", true);
+    //         UIManager.setLookAndFeel(FlatLightLaf.class.getCanonicalName());
+    //     } catch (ClassNotFoundException | InstantiationException | IllegalAccessException
+    //             | UnsupportedLookAndFeelException e) {
+    //         MIA.log.writeError(e);
+    //     }
+    // }
 
     public static boolean isImagePlusMode() {
         return imagePlusMode;

@@ -5,6 +5,7 @@ import java.lang.reflect.InvocationTargetException;
 
 import javax.swing.LookAndFeel;
 import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 
 import com.formdev.flatlaf.FlatDarculaLaf;
 import com.formdev.flatlaf.FlatDarkLaf;
@@ -20,7 +21,6 @@ import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
-import io.github.mianalysis.mia.object.parameters.FolderPathP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.SeparatorP;
 import io.github.mianalysis.mia.object.parameters.abstrakt.Parameter;
@@ -35,7 +35,7 @@ import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
  */
 public class Preferences extends Module {
     public static final String GUI_SEPARATOR = "GUI parameters";
-    // public static final String THEME = "Theme";
+    public static final String THEME = "Theme";
     public static final String SHOW_DEPRECATED = "Show deprecated modules (editing mode)";
 
     public static final String WORKFLOW_SEPARATOR = "Workflow parameters";
@@ -46,7 +46,7 @@ public class Preferences extends Module {
     public static final String SPECIFY_CACHE_DIRECTORY = "Specify cache directory";
     public static final String CACHE_DIRECTORY = "Cache directory";
 
-    // private static LookAndFeel ijLAF = UIManager.getLookAndFeel();
+    private static LookAndFeel ijLAF = UIManager.getLookAndFeel();
 
     public interface ImageDisplayModes {
         String COMPOSITE = "Composite";
@@ -56,18 +56,18 @@ public class Preferences extends Module {
 
     }
 
-    // public interface Themes {
-    //     String FLAT_LAF_DARK = "Flat LAF (dark)";
-    //     String FLAT_LAF_DARKULA = "Flat LAF (darkula)";
-    //     String FLAT_LAF_INTELLIJ = "Flat LAF (IntelliJ)";
-    //     String FLAT_LAF_LIGHT = "Flat LAF (light)";
-    //     String MATCH_IMAGEJ = "Match ImageJ";
-    //     String SYSTEM_DEFAULT = "System default";
+    public interface Themes {
+        String FLAT_LAF_DARK = "Flat LAF (dark)";
+        String FLAT_LAF_DARKULA = "Flat LAF (darkula)";
+        String FLAT_LAF_INTELLIJ = "Flat LAF (IntelliJ)";
+        String FLAT_LAF_LIGHT = "Flat LAF (light)";
+        String MATCH_IMAGEJ = "Match ImageJ";
+        String SYSTEM_DEFAULT = "System default";
 
-    //     String[] ALL = new String[] { FLAT_LAF_DARK, FLAT_LAF_DARKULA, FLAT_LAF_INTELLIJ, FLAT_LAF_LIGHT, MATCH_IMAGEJ,
-    //             SYSTEM_DEFAULT };
+        String[] ALL = new String[] { FLAT_LAF_DARK, FLAT_LAF_DARKULA, FLAT_LAF_INTELLIJ, FLAT_LAF_LIGHT, MATCH_IMAGEJ,
+                SYSTEM_DEFAULT };
 
-    // }
+    }
 
     // public interface DataStorageModes {
     //     // String AUTOMATIC = "Automatic"; // This mode will look at each image and send
@@ -79,64 +79,64 @@ public class Preferences extends Module {
 
     // }
 
-    // public static LookAndFeel getThemeClass(String theme) throws ClassNotFoundException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
-    //     switch (theme) {
-    //         case Themes.FLAT_LAF_DARK:
-    //             return new FlatDarkLaf();
-    //         case Themes.FLAT_LAF_DARKULA:
-    //             return new FlatDarculaLaf();
-    //         case Themes.FLAT_LAF_INTELLIJ:
-    //             return new FlatIntelliJLaf();
-    //         case Themes.FLAT_LAF_LIGHT:
-    //             return new FlatLightLaf();
-    //         case Themes.MATCH_IMAGEJ:
-    //             Class<?> clazz = Class.forName(ijLAF.getClass().getCanonicalName());
-    //             Constructor<?> ctor = clazz.getConstructor();
-    //             return (LookAndFeel) ctor.newInstance();
-    //         case Themes.SYSTEM_DEFAULT:
-    //         default:
-    //             clazz = Class.forName(UIManager.getSystemLookAndFeelClassName());
-    //             ctor = clazz.getConstructor();
-    //             return (LookAndFeel) ctor.newInstance();
-    //     }
-    // }
+    public static LookAndFeel getThemeClass(String theme) throws ClassNotFoundException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
+        switch (theme) {
+            case Themes.FLAT_LAF_DARK:
+                return new FlatDarkLaf();
+            case Themes.FLAT_LAF_DARKULA:
+                return new FlatDarculaLaf();
+            case Themes.FLAT_LAF_INTELLIJ:
+                return new FlatIntelliJLaf();
+            case Themes.FLAT_LAF_LIGHT:
+                return new FlatLightLaf();
+            case Themes.MATCH_IMAGEJ:
+                Class<?> clazz = Class.forName(ijLAF.getClass().getCanonicalName());
+                Constructor<?> ctor = clazz.getConstructor();
+                return (LookAndFeel) ctor.newInstance();
+            case Themes.SYSTEM_DEFAULT:
+            default:
+                clazz = Class.forName(UIManager.getSystemLookAndFeelClassName());
+                ctor = clazz.getConstructor();
+                return (LookAndFeel) ctor.newInstance();
+        }
+    }
 
-    // public void setTheme() {
-    //     String theme = parameters.getValue(THEME, null);
+    public void setTheme() {
+        String theme = parameters.getValue(THEME, null);
 
-    //     Prefs.set("MIA.GUI.theme", theme);
-    //     parameters.getParameter(THEME).setValue(theme);
-    //     try {
-    //         LookAndFeel lookAndFeel = getThemeClass(theme);
-    //         UIManager.setLookAndFeel(lookAndFeel);
-    //     } catch (ClassNotFoundException | InstantiationException | IllegalAccessException
-    //             | UnsupportedLookAndFeelException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e) {
-    //         e.printStackTrace();
-    //     }
+        Prefs.set("MIA.GUI.theme", theme);
+        parameters.getParameter(THEME).setValue(theme);
+        try {
+            LookAndFeel lookAndFeel = getThemeClass(theme);
+            UIManager.setLookAndFeel(lookAndFeel);
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException
+                | UnsupportedLookAndFeelException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e) {
+            e.printStackTrace();
+        }
 
-    //     if (GUI.initialised)
-    //         GUI.refreshLookAndFeel();
+        if (GUI.initialised)
+            GUI.refreshLookAndFeel();
 
-    // }
+    }
 
-    // public boolean isDarkTheme(String theme) {
-    //     switch (theme) {
-    //         case Themes.FLAT_LAF_DARK:
-    //         case Themes.FLAT_LAF_DARKULA:
-    //             return true;
-    //         case Themes.FLAT_LAF_INTELLIJ:
-    //         case Themes.FLAT_LAF_LIGHT:
-    //         case Themes.MATCH_IMAGEJ:
-    //         case Themes.SYSTEM_DEFAULT:
-    //         default:
-    //             return false;
+    public boolean isDarkTheme(String theme) {
+        switch (theme) {
+            case Themes.FLAT_LAF_DARK:
+            case Themes.FLAT_LAF_DARKULA:
+                return true;
+            case Themes.FLAT_LAF_INTELLIJ:
+            case Themes.FLAT_LAF_LIGHT:
+            case Themes.MATCH_IMAGEJ:
+            case Themes.SYSTEM_DEFAULT:
+            default:
+                return false;
 
-    //     }
-    // }
+        }
+    }
 
-    // public boolean darkThemeEnabled() {
-    //     return isDarkTheme(parameters.getValue(THEME));
-    // }
+    public boolean darkThemeEnabled() {
+        return isDarkTheme(parameters.getValue(THEME,null));
+    }
 
     public boolean showDeprecated() {
         return parameters.getValue(SHOW_DEPRECATED,null);
@@ -235,14 +235,14 @@ public class Preferences extends Module {
         // GUI parameters
         parameters.add(new SeparatorP(GUI_SEPARATOR, this));
         
-        // Parameter parameter = new ChoiceP(THEME, this, Prefs.get("MIA.GUI.theme", Themes.FLAT_LAF_LIGHT), Themes.ALL);
-        // parameter.getControl().getComponent().addPropertyChangeListener("ToolTipText", evt -> {
-        //     if (evt.getOldValue() != null)
-        //         setTheme();
-        // });
-        // parameters.add(parameter);
+        Parameter parameter = new ChoiceP(THEME, this, Prefs.get("MIA.GUI.theme", Themes.FLAT_LAF_LIGHT), Themes.ALL);
+        parameter.getControl().getComponent().addPropertyChangeListener("ToolTipText", evt -> {
+            if (evt.getOldValue() != null)
+                setTheme();
+        });
+        parameters.add(parameter);
 
-        Parameter parameter = new BooleanP(SHOW_DEPRECATED, this, Prefs.get("MIA.GUI.showDeprecated", false));
+        parameter = new BooleanP(SHOW_DEPRECATED, this, Prefs.get("MIA.GUI.showDeprecated", false));
         parameter.getControl().getComponent().addPropertyChangeListener("ToolTipText", evt -> {
             if (evt.getOldValue() != null)
                 setShowDeprecated();
@@ -289,7 +289,7 @@ public class Preferences extends Module {
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(GUI_SEPARATOR));
-        // returnedParameters.add(parameters.getParameter(THEME));
+        returnedParameters.add(parameters.getParameter(THEME));
         returnedParameters.add(parameters.getParameter(SHOW_DEPRECATED));
 
         returnedParameters.add(parameters.getParameter(WORKFLOW_SEPARATOR));
