@@ -39,7 +39,7 @@ import io.github.sjcross.sjcommon.process.IntensityMinMax;
 /**
  * Created by sc13967 on 10/08/2017.
  */
-@Plugin(type = Module.class, priority=Priority.LOW, visible=true)
+@Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class NormaliseIntensity extends Module {
     public static final String INPUT_SEPARATOR = "Image input/output";
     public static final String INPUT_IMAGE = "Input image";
@@ -51,6 +51,8 @@ public class NormaliseIntensity extends Module {
     public static final String INPUT_OBJECTS = "Input objects";
 
     public static final String NORMALISATION_SEPARATOR = "Intensity normalisation";
+    public static final String CALCULATION_SOURCE = "Calculation source";
+    public static final String EXTERNAL_SOURCE = "External source";
     public static final String CALCULATION_MODE = "Calculation mode";
     public static final String CLIP_FRACTION_MIN = "Clipping fraction (min)";
     public static final String CLIP_FRACTION_MAX = "Clipping fraction (max)";
@@ -79,92 +81,94 @@ public class NormaliseIntensity extends Module {
 
     }
 
-    public static void applyNormalisation(ImagePlus ipl, String calculationMode, double[] clipFraction,
-            @Nullable double[] intRange) {
-        applyNormalisation(ipl, calculationMode, clipFraction, intRange, null);
+    public interface CalculationSources {
+        String INTERNAL = "Internal";
+        String EXTERNAL = "External";
+
+        String[] ALL = new String[] { INTERNAL, EXTERNAL };
+
     }
 
-    public static void applyNormalisation(ImagePlus ipl, String calculationMode, double[] clipFraction,
-            @Nullable double[] intRange, @Nullable Obj maskObject) {
+    public static void applyNormalisationFullImage(ImagePlus ipl, String calculationMode, double[] clipFraction,
+            @Nullable double[] intRange, @Nullable ImagePlus externalIpl) {
         int bitDepth = ipl.getProcessor().getBitDepth();
 
+        // If externalIpl is null, use the input image for calculation
+        if (externalIpl == null)
+            externalIpl = ipl;
+
         // Get min max values for whole stack
-        if (maskObject == null) {
-            for (int c = 1; c <= ipl.getNChannels(); c++) {
-                switch (calculationMode) {
-                    case CalculationModes.FAST:
-                        intRange = IntensityMinMax.getWeightedChannelRangeFast(ipl, c - 1, clipFraction[0],
-                                clipFraction[1]);
-                        break;
+        for (int c = 1; c <= ipl.getNChannels(); c++) {
+            switch (calculationMode) {
+                case CalculationModes.FAST:
+                    intRange = IntensityMinMax.getWeightedChannelRangeFast(externalIpl, c - 1, clipFraction[0],
+                            clipFraction[1]);
+                    break;
 
-                    case CalculationModes.PRECISE:
-                        intRange = IntensityMinMax.getWeightedChannelRangePrecise(ipl, c - 1, clipFraction[0],
-                                clipFraction[1]);
-                        break;
-                }
-
-                if (intRange == null)
-                    return;
-
-                double min = intRange[0];
-                double max = intRange[1];
-
-                // Applying normalisation
-                double factor = bitDepth == 32 ? 1 : Math.pow(2, bitDepth) - 1;
-                double mult = factor / (max - min);
-
-                for (int z = 1; z <= ipl.getNSlices(); z++) {
-                    for (int t = 1; t <= ipl.getNFrames(); t++) {
-                        ipl.setPosition(c, z, t);
-                        ipl.getProcessor().subtract(min);
-                        ipl.getProcessor().multiply(mult);
-                    }
-                }
+                case CalculationModes.PRECISE:
+                    intRange = IntensityMinMax.getWeightedChannelRangePrecise(externalIpl, c - 1, clipFraction[0],
+                            clipFraction[1]);
+                    break;
             }
 
-        } else {
-            for (int c = 1; c <= ipl.getNChannels(); c++) {
-                int frame = maskObject.getT();
-                switch (calculationMode) {
-                    case CalculationModes.FAST:
-                        intRange = IntensityMinMax.getWeightedChannelRangeFast(ipl, maskObject, c - 1, frame,
-                                clipFraction[0], clipFraction[1]);
-                        break;
+            if (intRange == null)
+                return;
 
-                    case CalculationModes.PRECISE:
-                        intRange = IntensityMinMax.getWeightedChannelRangePrecise(ipl, maskObject, c - 1, frame,
-                                clipFraction[0], clipFraction[1]);
-                        break;
-                }
+            double min = intRange[0];
+            double max = intRange[1];
 
-                if (intRange == null)
-                    return;
+            // Applying normalisation
+            double factor = bitDepth == 32 ? 1 : Math.pow(2, bitDepth) - 1;
+            double mult = factor / (max - min);
 
-                double min = intRange[0];
-                double max = intRange[1];
-
-                // Applying normalisation
-                double factor = bitDepth == 32 ? 1 : Math.pow(2, bitDepth) - 1;
-                double mult = factor / (max - min);
-
-                for (Point<Integer> point : maskObject.getCoordinateSet()) {
-                    ipl.setPosition(c, point.getZ() + 1, frame + 1);
-
-                    ImageProcessor ipr = ipl.getProcessor();
-                    double val = ipr.getf(point.getX(), point.getY());
-                    val = (val - min) * mult;
-                    ipl.getProcessor().setf(point.getX(), point.getY(), (float) val);
-
+            for (int z = 1; z <= ipl.getNSlices(); z++) {
+                for (int t = 1; t <= ipl.getNFrames(); t++) {
+                    ipl.setPosition(c, z, t);
+                    ipl.getProcessor().subtract(min);
+                    ipl.getProcessor().multiply(mult);
                 }
             }
         }
+    }
 
-        // Resetting location of the image
-        ipl.setPosition(1, 1, 1);
+    public static void applyNormalisationWithinObjects(ImagePlus ipl, String calculationMode, double[] clipFraction,
+            @Nullable double[] intRange, @Nullable Obj maskObject) {
+        int bitDepth = ipl.getProcessor().getBitDepth();
 
-        // Set brightness/contrast
-        IntensityMinMax.run(ipl, true);
+        for (int c = 1; c <= ipl.getNChannels(); c++) {
+            int frame = maskObject.getT();
+            switch (calculationMode) {
+                case CalculationModes.FAST:
+                    intRange = IntensityMinMax.getWeightedChannelRangeFast(ipl, maskObject, c - 1, frame,
+                            clipFraction[0], clipFraction[1]);
+                    break;
 
+                case CalculationModes.PRECISE:
+                    intRange = IntensityMinMax.getWeightedChannelRangePrecise(ipl, maskObject, c - 1, frame,
+                            clipFraction[0], clipFraction[1]);
+                    break;
+            }
+
+            if (intRange == null)
+                return;
+
+            double min = intRange[0];
+            double max = intRange[1];
+
+            // Applying normalisation
+            double factor = bitDepth == 32 ? 1 : Math.pow(2, bitDepth) - 1;
+            double mult = factor / (max - min);
+
+            for (Point<Integer> point : maskObject.getCoordinateSet()) {
+                ipl.setPosition(c, point.getZ() + 1, frame + 1);
+
+                ImageProcessor ipr = ipl.getProcessor();
+                double val = ipr.getf(point.getX(), point.getY());
+                val = (val - min) * mult;
+                ipl.getProcessor().setf(point.getX(), point.getY(), (float) val);
+
+            }
+        }
     }
 
     @Override
@@ -193,6 +197,8 @@ public class NormaliseIntensity extends Module {
         boolean applyToInput = parameters.getValue(APPLY_TO_INPUT);
         String regionMode = parameters.getValue(REGION_MODE);
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+        String calculationSource = parameters.getValue(CALCULATION_SOURCE);
+        String externalImageName = parameters.getValue(EXTERNAL_SOURCE);
         String calculationMode = parameters.getValue(CALCULATION_MODE);
         double clipFractionMin = parameters.getValue(CLIP_FRACTION_MIN);
         double clipFractionMax = parameters.getValue(CLIP_FRACTION_MAX);
@@ -210,8 +216,10 @@ public class NormaliseIntensity extends Module {
         // Running intensity normalisation
         switch (regionMode) {
             case RegionModes.ENTIRE_IMAGE:
-                writeStatus("Applying entire-image pixel normalisation");
-                applyNormalisation(inputImagePlus, calculationMode, clipFraction, intRange);
+                ImagePlus externalIpl = calculationSource.equals(CalculationSources.EXTERNAL)
+                        ? workspace.getImage(externalImageName).getImagePlus()
+                        : null;
+                applyNormalisationFullImage(inputImagePlus, calculationMode, clipFraction, intRange, externalIpl);
                 break;
 
             case RegionModes.PER_OBJECT:
@@ -219,7 +227,8 @@ public class NormaliseIntensity extends Module {
                 int count = 0;
                 int total = inputObjects.size();
                 for (Obj inputObject : inputObjects.values()) {
-                    applyNormalisation(inputImagePlus, calculationMode, clipFraction, intRange, inputObject);
+                    applyNormalisationWithinObjects(inputImagePlus, calculationMode, clipFraction, intRange,
+                            inputObject);
                     writeProgressStatus(++count, total, "objects");
                 }
                 break;
@@ -230,12 +239,18 @@ public class NormaliseIntensity extends Module {
                 for (int z = 0; z < total; z++) {
                     ImageProcessor ipr = inputImagePlus.getStack().getProcessor(z + 1);
                     ImagePlus tempIpl = new ImagePlus("Temp", ipr);
-                    applyNormalisation(tempIpl, calculationMode, clipFraction, intRange);
+                    applyNormalisationFullImage(tempIpl, calculationMode, clipFraction, intRange, null);
                     inputImagePlus.getStack().setProcessor(tempIpl.getProcessor(), z + 1);
                     writeProgressStatus(++count, total, "slices");
                 }
                 break;
         }
+
+        // Resetting location of the image
+        inputImagePlus.setPosition(1, 1, 1);
+
+        // Set brightness/contrast
+        IntensityMinMax.run(inputImagePlus, true);
 
         // If the image is being saved as a new image, adding it to the workspace
         if (!applyToInput) {
@@ -267,6 +282,8 @@ public class NormaliseIntensity extends Module {
         parameters.add(new InputObjectsP(INPUT_OBJECTS, this));
 
         parameters.add(new SeparatorP(NORMALISATION_SEPARATOR, this));
+        parameters.add(new ChoiceP(CALCULATION_SOURCE, this, CalculationSources.INTERNAL, CalculationSources.ALL));
+        parameters.add(new InputImageP(EXTERNAL_SOURCE, this));
         parameters.add(new ChoiceP(CALCULATION_MODE, this, CalculationModes.FAST, CalculationModes.ALL));
         parameters.add(new DoubleP(CLIP_FRACTION_MIN, this, 0d));
         parameters.add(new DoubleP(CLIP_FRACTION_MAX, this, 0d));
@@ -298,6 +315,16 @@ public class NormaliseIntensity extends Module {
         }
 
         returnedParameters.add(parameters.getParameter(NORMALISATION_SEPARATOR));
+
+        if ((boolean) parameters.getValue(REGION_MODE).equals(RegionModes.ENTIRE_IMAGE)) {
+            returnedParameters.add(parameters.getParameter(CALCULATION_SOURCE));
+            switch ((String) parameters.getValue(CALCULATION_SOURCE)) {
+                case CalculationSources.EXTERNAL:
+                    returnedParameters.add(parameters.getParameter(EXTERNAL_SOURCE));
+                    break;
+            }
+        }
+
         returnedParameters.add(parameters.getParameter(CALCULATION_MODE));
         switch ((String) parameters.getValue(CALCULATION_MODE)) {
             case CalculationModes.FAST:
@@ -365,19 +392,38 @@ public class NormaliseIntensity extends Module {
                 .setDescription("If normalising intensities on an object-by-object basis (\"" + REGION_MODE
                         + "\" set to \"" + RegionModes.PER_OBJECT + "\"), these are the objects that will be used.");
 
-        parameters.get(CALCULATION_MODE).setDescription("Controls how the normalisation is calculated.  In each case, the minimum and maximum intensities are calculated and all values in the output image linearly interpolated between them:<br><ul>"
+        parameters.get(CALCULATION_SOURCE).setDescription(
+                "When applying a single normalisation to the entire image (\"" + REGION_MODE + "\" set to \""
+                        + RegionModes.ENTIRE_IMAGE
+                        + "\"), this parameter controls whether the normalisation range (min, max) will be determined from the input image or another image:<br><ul>"
 
-                + "<li>\"" + CalculationModes.FAST
-                + "\" All intensity values in the image are collected in a histogram.  As such, for 8 and 16-bit this is fast to calculate as there are a limited number of bins.  In this instance, the clip fraction corresponds to the fraction of bins.</li>"
+                        + "<li>\"" + CalculationSources.EXTERNAL
+                        + "\" The image for which the normalisation range is calculated is different to the image that the final normalisation will be applied to.  For example, this could be a single representative slice or substack.  Using this could significantly reduce run-time for large stacks, especially when \""
+                        + CALCULATION_MODE + "\" is set to \"" + CalculationModes.PRECISE + "\".</li>"
 
-                + "<li>\"" + CalculationModes.MANUAL
-                + "\" The minimum and maximum intensities in the final image are manually specified with the \"" + MIN_RANGE
-                + "\" and \"" + MAX_RANGE + "\" parameters.</li>"
+                        + "<li>\"" + CalculationSources.INTERNAL
+                        + "\" The normalisation range will be determined from the same image or stack onto which the normalisation will be applied.</li></ul>");
 
-                + "<li>\"" + CalculationModes.PRECISE
-                + "\" All intensity values are ordered by their intensity and the clip fraction corresponds to the fraction of pixels (rather than the fraction of unique intensities as with \""
-                + CalculationModes.FAST
-                + "\" mode.  As such, this method is more precise; however, can take a much longer time (especially for large images).</li></ul>");
+        parameters.get(EXTERNAL_SOURCE)
+                .setDescription("If using a separate image to determine the normalisation range (\""
+                        + CALCULATION_SOURCE + "\" set to \"" + CalculationSources.EXTERNAL
+                        + "\"), this is the image that will be used for that calculation.");
+
+        parameters.get(CALCULATION_MODE).setDescription(
+                "Controls how the normalisation is calculated.  In each case, the minimum and maximum intensities are calculated and all values in the output image linearly interpolated between them:<br><ul>"
+
+                        + "<li>\"" + CalculationModes.FAST
+                        + "\" All intensity values in the image are collected in a histogram.  As such, for 8 and 16-bit this is fast to calculate as there are a limited number of bins.  In this instance, the clip fraction corresponds to the fraction of bins.</li>"
+
+                        + "<li>\"" + CalculationModes.MANUAL
+                        + "\" The minimum and maximum intensities in the final image are manually specified with the \""
+                        + MIN_RANGE
+                        + "\" and \"" + MAX_RANGE + "\" parameters.</li>"
+
+                        + "<li>\"" + CalculationModes.PRECISE
+                        + "\" All intensity values are ordered by their intensity and the clip fraction corresponds to the fraction of pixels (rather than the fraction of unique intensities as with \""
+                        + CalculationModes.FAST
+                        + "\" mode.  As such, this method is more precise; however, can take a much longer time (especially for large images).</li></ul>");
 
         parameters.get(CLIP_FRACTION_MIN).setDescription("Fraction of unique intensities (\"" + CalculationModes.PRECISE
                 + "\") or pixels (\"" + CalculationModes.FAST

@@ -48,7 +48,7 @@ public class ImageSaver extends AbstractImageSaver {
     public static final String SAVE_FILE_NAME = "File name";
     public static final String AVAILABLE_METADATA_FIELDS = "Available metadata fields";
     public static final String APPEND_SERIES_MODE = "Append series mode";
-    public static final String SAVE_SUFFIX = "Add filename suffix";
+    public static final String SAVE_SUFFIX = "Add filename suffix"; 
 
     public ImageSaver(Modules modules) {
         super("Save image", modules);

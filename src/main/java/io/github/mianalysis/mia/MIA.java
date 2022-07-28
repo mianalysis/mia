@@ -16,6 +16,7 @@ import org.scijava.ui.UIService;
 
 import com.formdev.flatlaf.FlatLightLaf;
 
+import ij.WindowManager;
 import io.github.mianalysis.mia.gui.GUI;
 import io.github.mianalysis.mia.module.LostAndFound;
 import io.github.mianalysis.mia.moduledependencies.Dependencies;

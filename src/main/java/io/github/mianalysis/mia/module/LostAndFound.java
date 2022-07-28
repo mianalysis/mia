@@ -4,7 +4,7 @@ import java.util.HashMap;
 
 import io.github.mianalysis.mia.module.core.InputControl;
 import io.github.mianalysis.mia.module.images.process.ImageMath;
-import io.github.mianalysis.mia.module.images.process.WekaProbabilityMaps;
+import io.github.mianalysis.mia.module.images.process.WekaPixelClassification;
 import io.github.mianalysis.mia.module.images.process.binary.BinaryOperations;
 import io.github.mianalysis.mia.module.images.process.binary.DistanceMap;
 import io.github.mianalysis.mia.module.images.process.binary.ExtendedMinima;
@@ -66,9 +66,9 @@ public class LostAndFound {
         lostModules.put("MOPSRegistration", new AffineMOPS(null).getClass().getSimpleName());
         lostModules.put("RunMacroOnImage", new RunMacro(null).getClass().getSimpleName());
         lostModules.put("RunSingleMacroCommand", new RunSingleCommand(null).getClass().getSimpleName());
-        lostModules.put("SIFTRegistration", new AffineSIFT(null).getClass().getSimpleName());        
+        lostModules.put("SIFTRegistration", new AffineSIFT(null).getClass().getSimpleName());
         lostModules.put("UnwarpImages", new UnwarpAutomatic(null).getClass().getSimpleName());
-       
+        lostModules.put("WekaProbabilityMaps", new WekaPixelClassification(null).getClass().getSimpleName());
 
         /// Populating hard-coded parameter reassignments ///
         HashMap<String, String> currentParameterNames = null;
@@ -120,8 +120,8 @@ public class LostAndFound {
 
         // DistanceMap
         currentParameterNames = new HashMap<>();
-        currentParameterNames.put("Block size (simultaneous slices)", WekaProbabilityMaps.SIMULTANEOUS_SLICES);
-        moduleName = new WekaProbabilityMaps(null).getClass().getSimpleName();
+        currentParameterNames.put("Block size (simultaneous slices)", WekaPixelClassification.SIMULTANEOUS_SLICES);
+        moduleName = new WekaPixelClassification(null).getClass().getSimpleName();
         lostParameterNames.put(moduleName, currentParameterNames);
 
         // ExpandShrinkObjects

@@ -45,7 +45,9 @@ public class AnalysisReader {
     public static Analysis loadAnalysis()
             throws SAXException, IllegalAccessException, IOException, InstantiationException,
             ParserConfigurationException, ClassNotFoundException, NoSuchMethodException, InvocationTargetException {
-        String previousPath = Prefs.get("MIA.PreviousPath", "");
+        // We always want to open at the last place a workflow was opened from (not just
+        // any file, as images are often in sub-directories).
+        String previousPath = Prefs.get("MIA.PreviousWorkflowPath", "");
         JFileChooser fileChooser = new JFileChooser(previousPath);
         fileChooser.setMultiSelectionEnabled(false);
         fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
@@ -56,8 +58,11 @@ public class AnalysisReader {
         if (file == null)
             return null;
 
+        // Both normal loading (file selection parameters) and the specific workflow
+        // loading should look in this folder.
+        Prefs.set("MIA.PreviousWorkflowPath", file.getAbsolutePath());
         Prefs.set("MIA.PreviousPath", file.getAbsolutePath());
-        
+
         Analysis analysis = loadAnalysis(file);
         analysis.setAnalysisFilename(file.getAbsolutePath());
 
@@ -96,10 +101,10 @@ public class AnalysisReader {
         String loadedVersion = versionNode.getNodeValue();
 
         if (VersionUtils.compare(MIA.getVersion(), loadedVersion) != 0) {
-            MIA.log.writeWarning("Loaded workflow created in different version of MIA.");
-            MIA.log.writeWarning("    Workflow will likely still be compatible, but some issues may be encountered.");
-            MIA.log.writeWarning("    Workflow version: " + loadedVersion);
-            MIA.log.writeWarning("    Installed version: " + MIA.getVersion());
+            MIA.log.writeMessage("Loaded workflow created in different version of MIA.");
+            MIA.log.writeMessage("    Workflow will likely still be compatible, but some issues may be encountered.");
+            MIA.log.writeMessage("    Workflow version: " + loadedVersion);
+            MIA.log.writeMessage("    Installed version: " + MIA.getVersion());
         }
 
         if (versionNode == null || VersionUtils.compare("0.10.0", loadedVersion) > 0)

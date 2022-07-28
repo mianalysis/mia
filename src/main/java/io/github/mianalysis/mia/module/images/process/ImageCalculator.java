@@ -1,8 +1,9 @@
 package io.github.mianalysis.mia.module.images.process;
 
-import com.drew.lang.annotations.Nullable;
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
+
+import com.drew.lang.annotations.Nullable;
 
 import ij.IJ;
 import ij.ImagePlus;
@@ -21,6 +22,7 @@ import io.github.mianalysis.mia.object.parameters.InputImageP;
 import io.github.mianalysis.mia.object.parameters.OutputImageP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.SeparatorP;
+import io.github.mianalysis.mia.object.parameters.text.DoubleP;
 import io.github.mianalysis.mia.object.refs.collections.ImageMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
@@ -30,7 +32,7 @@ import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 /**
  * Created by sc13967 on 19/09/2017.
  */
-@Plugin(type = Module.class, priority=Priority.LOW, visible=true)
+@Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class ImageCalculator extends Module {
     public static final String INPUT_SEPARATOR = "Image input/output";
     public static final String INPUT_IMAGE1 = "Input image 1";
@@ -41,6 +43,7 @@ public class ImageCalculator extends Module {
 
     public static final String CALCULATION_SEPARATOR = "Image calculation";
     public static final String CALCULATION_METHOD = "Calculation method";
+    public static final String IMAGE_2_CONTRIBUTION = "Image 2 relative contribution";
     public static final String SET_NAN_TO_ZERO = "Set NaN values to zero";
 
     public ImageCalculator(Modules modules) {
@@ -104,10 +107,16 @@ public class ImageCalculator extends Module {
 
     public static Image process(Image inputImage1, Image inputImage2, String calculationMethod, String overwriteMode,
             @Nullable String outputImageName, boolean output32Bit, boolean setNaNToZero) {
+        return process(inputImage1, inputImage2, calculationMethod, overwriteMode, outputImageName, output32Bit,
+                setNaNToZero, 1);
+    }
+
+    public static Image process(Image inputImage1, Image inputImage2, String calculationMethod, String overwriteMode,
+            @Nullable String outputImageName, boolean output32Bit, boolean setNaNToZero, double im2Contibution) {
         ImagePlus ipl1 = inputImage1.getImagePlus();
         ImagePlus ipl2 = inputImage2.getImagePlus();
         ImagePlus iplOut = process(ipl1, ipl2, calculationMethod, overwriteMode, outputImageName, output32Bit,
-                setNaNToZero);
+                setNaNToZero, im2Contibution);
 
         switch (overwriteMode) {
             case OverwriteModes.CREATE_NEW:
@@ -122,6 +131,15 @@ public class ImageCalculator extends Module {
 
     public static ImagePlus process(ImagePlus imagePlus1, ImagePlus imagePlus2, String calculationMethod,
             String overwriteMode, @Nullable String outputImageName, boolean output32Bit, boolean setNaNToZero) {
+
+        return process(imagePlus1, imagePlus2, calculationMethod, overwriteMode, outputImageName, output32Bit,
+                setNaNToZero, 1);
+
+    }
+
+    public static ImagePlus process(ImagePlus imagePlus1, ImagePlus imagePlus2, String calculationMethod,
+            String overwriteMode, @Nullable String outputImageName, boolean output32Bit, boolean setNaNToZero,
+            double im2Contibution) {
         // If applying to a new image, the input image is duplicated
         switch (overwriteMode) {
             case OverwriteModes.CREATE_NEW:
@@ -199,8 +217,8 @@ public class ImageCalculator extends Module {
                                     break;
 
                                 case CalculationMethods.MEAN:
-                                    val = (imageProcessor1.getPixelValue(x, y) + imageProcessor2.getPixelValue(x, y))
-                                            / 2;
+                                    val = (imageProcessor1.getPixelValue(x, y) + imageProcessor2.getPixelValue(x, y)*im2Contibution)
+                                            / (1+im2Contibution);
                                     break;
 
                                 case CalculationMethods.MIN:
@@ -279,10 +297,11 @@ public class ImageCalculator extends Module {
         String outputImageName = parameters.getValue(OUTPUT_IMAGE);
         boolean output32Bit = parameters.getValue(OUTPUT_32BIT);
         String calculationMethod = parameters.getValue(CALCULATION_METHOD);
+        double im2Contibution = parameters.getValue(IMAGE_2_CONTRIBUTION);
         boolean setNaNToZero = parameters.getValue(SET_NAN_TO_ZERO);
 
         ImagePlus newIpl = process(inputImagePlus1, inputImagePlus2, calculationMethod, overwriteMode, outputImageName,
-                output32Bit, setNaNToZero);
+                output32Bit, setNaNToZero, im2Contibution);
 
         // If the image is being saved as a new image, adding it to the workspace
         switch (overwriteMode) {
@@ -301,7 +320,7 @@ public class ImageCalculator extends Module {
                 break;
 
             case OverwriteModes.OVERWRITE_IMAGE2:
-            inputImage2.getImagePlus().updateChannelAndDraw();
+                inputImage2.getImagePlus().updateChannelAndDraw();
                 if (showOutput)
                     inputImage2.showImage();
                 break;
@@ -334,6 +353,7 @@ public class ImageCalculator extends Module {
         parameters.add(new SeparatorP(CALCULATION_SEPARATOR, this));
         parameters.add(new ChoiceP(CALCULATION_METHOD, this, CalculationMethods.ADD, CalculationMethods.ALL,
                 "The calculation to apply to the two input images."));
+        parameters.add(new DoubleP(IMAGE_2_CONTRIBUTION, this, 1d));
         parameters.add(new BooleanP(SET_NAN_TO_ZERO, this, false,
                 "If input images are 32-bit (or are being converted to 32-bit via \"" + OUTPUT_32BIT
                         + "\" option) the output image can contain NaN (not a number) values in place of any zeros."));
@@ -357,6 +377,8 @@ public class ImageCalculator extends Module {
 
         returnedParameters.add(parameters.getParameter(CALCULATION_SEPARATOR));
         returnedParameters.add(parameters.getParameter(CALCULATION_METHOD));
+        if (((String) parameters.getValue(CALCULATION_METHOD)).equals(CalculationMethods.MEAN))
+            returnedParameters.add(parameters.getParameter(IMAGE_2_CONTRIBUTION));
         returnedParameters.add(parameters.getParameter(SET_NAN_TO_ZERO));
 
         return returnedParameters;
