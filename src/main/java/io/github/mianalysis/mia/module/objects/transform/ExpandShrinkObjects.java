@@ -92,7 +92,7 @@ public class ExpandShrinkObjects extends Module {
 
             case Methods.SHRINK_2D:
             case Methods.SHRINK_3D:
-                borderWidths = new int[][] { { 0, 0 }, { 0, 0 }, { 0, 0 } };
+                borderWidths = new int[][] { { 1, 1 }, { 1, 1 }, { 1, 1 } };
                 break;
         }
 
