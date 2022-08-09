@@ -2,9 +2,10 @@ package io.github.mianalysis.mia.module.images.process;
 
 import java.awt.Color;
 
-import com.drew.lang.annotations.Nullable;
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
+
+import com.drew.lang.annotations.Nullable;
 
 import ij.ImagePlus;
 import ij.plugin.Duplicator;
@@ -124,11 +125,15 @@ public class NormaliseIntensity extends Module {
 
             for (int z = 1; z <= ipl.getNSlices(); z++) {
                 for (int t = 1; t <= ipl.getNFrames(); t++) {
-                    ipl.setPosition(c, z, t);
-                    ipl.getProcessor().subtract(min);
-                    ipl.getProcessor().multiply(mult);
+                    int idx = ipl.getStackIndex(c, z, t);
+                    ImageProcessor ipr = ipl.getStack().getProcessor(idx);
+                    ipr.subtract(min);
+                    ipr.multiply(mult);
                 }
             }
+
+            ipl.updateChannelAndDraw();
+
         }
     }
 
@@ -249,6 +254,7 @@ public class NormaliseIntensity extends Module {
 
         // Resetting location of the image
         inputImagePlus.setPosition(1, 1, 1);
+        inputImagePlus.updateChannelAndDraw();
 
         // Set brightness/contrast
         IntensityMinMax.run(inputImagePlus, true);

@@ -105,7 +105,7 @@ public class DistanceMap extends Module {
             for (int t = 0; t < nFrames; t++) {
                 // Getting the mask image at this timepoint
                 ImagePlus currentIpl = SubHyperstackMaker
-                        .makeSubhyperstack(inputIpl, String.valueOf(c + 1), "1-" + nSlices, String.valueOf(t + 1));
+                        .makeSubhyperstack(inputIpl, String.valueOf(c + 1), "1-" + nSlices, String.valueOf(t + 1)).duplicate();
 
                 currentIpl.setCalibration(inputIpl.getCalibration());
 

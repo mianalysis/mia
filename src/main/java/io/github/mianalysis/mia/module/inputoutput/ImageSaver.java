@@ -39,17 +39,18 @@ import io.github.sjcross.sjcommon.process.IntensityMinMax;
 /**
  * Created by sc13967 on 26/06/2017.
  */
-@Plugin(type = Module.class, priority=Priority.LOW, visible=true)
+@Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class ImageSaver extends AbstractImageSaver {
     public static final String SAVE_LOCATION = "Save location";
     public static final String MIRROR_DIRECTORY_ROOT = "Mirrored directory root";
     public static final String SAVE_FILE_PATH = "File path";
+    public static final String SAVE_FILE_PATH_GENERIC = "File name (generic)";
 
     public static final String SAVE_NAME_MODE = "Save name mode";
     public static final String SAVE_FILE_NAME = "File name";
     public static final String AVAILABLE_METADATA_FIELDS = "Available metadata fields";
     public static final String APPEND_SERIES_MODE = "Append series mode";
-    public static final String SAVE_SUFFIX = "Add filename suffix"; 
+    public static final String SAVE_SUFFIX = "Add filename suffix";
 
     public ImageSaver(Modules modules) {
         super("Save image", modules);
@@ -60,8 +61,10 @@ public class ImageSaver extends AbstractImageSaver {
         String MATCH_OUTPUT_CONTROL = "Match Output Control";
         String SAVE_WITH_INPUT = "Save with input file";
         String SPECIFIC_LOCATION = "Specific location";
+        String SPECIFIC_LOCATION_GENERIC = "Specific location (generic)";
 
-        String[] ALL = new String[] { MIRRORED_DIRECTORY, MATCH_OUTPUT_CONTROL, SAVE_WITH_INPUT, SPECIFIC_LOCATION };
+        String[] ALL = new String[] { MIRRORED_DIRECTORY, MATCH_OUTPUT_CONTROL, SAVE_WITH_INPUT, SPECIFIC_LOCATION,
+                SPECIFIC_LOCATION_GENERIC };
 
     }
 
@@ -96,7 +99,6 @@ public class ImageSaver extends AbstractImageSaver {
         }
     }
 
-
     @Override
     public Category getCategory() {
         return Categories.INPUT_OUTPUT;
@@ -116,6 +118,7 @@ public class ImageSaver extends AbstractImageSaver {
         String saveLocation = parameters.getValue(SAVE_LOCATION,workspace);
         String mirroredDirectoryRoot = parameters.getValue(MIRROR_DIRECTORY_ROOT,workspace);
         String filePath = parameters.getValue(SAVE_FILE_PATH,workspace);
+        String filePathGeneric = parameters.getValue(SAVE_FILE_PATH_GENERIC,workspace);
         String saveNameMode = parameters.getValue(SAVE_NAME_MODE,workspace);
         String saveFileName = parameters.getValue(SAVE_FILE_NAME,workspace);
         String appendSeriesMode = parameters.getValue(APPEND_SERIES_MODE,workspace);
@@ -198,25 +201,35 @@ public class ImageSaver extends AbstractImageSaver {
         }
 
         String path;
-        switch (saveLocation) {
-            case SaveLocations.MIRRORED_DIRECTORY:
-                path = OutputControl.getMirroredDirectory(modules.getInputControl().getRootFile(),
-                        workspace.getMetadata(), mirroredDirectoryRoot);
-                break;
+        try {
+            switch (saveLocation) {
+                case SaveLocations.MIRRORED_DIRECTORY:
+                    path = OutputControl.getMirroredDirectory(modules.getInputControl().getRootFile(),
+                            workspace.getMetadata(), mirroredDirectoryRoot);
+                    break;
 
-            case SaveLocations.SAVE_WITH_INPUT:
-            default:
-                File rootFile = workspace.getMetadata().getFile();
-                path = rootFile.getParent() + File.separator;
-                break;
+                case SaveLocations.SAVE_WITH_INPUT:
+                default:
+                    File rootFile = workspace.getMetadata().getFile();
+                    path = rootFile.getParent() + File.separator;
+                    break;
 
-            case SaveLocations.SPECIFIC_LOCATION:
-                path = filePath + File.separator;
-                break;
+                case SaveLocations.SPECIFIC_LOCATION:
+                    path = filePath + File.separator;
+                    break;
+
+                case SaveLocations.SPECIFIC_LOCATION_GENERIC:
+                    filePath = ImageLoader.getGenericName(workspace.getMetadata(), filePathGeneric);
+                    path = filePath + File.separator;
+                    break;
+            }
+        } catch (ServiceException | DependencyException | IOException | FormatException e) {
+            MIA.log.writeWarning(e);
+            return Status.FAIL;
         }
 
-        String name="";
-        try {            
+        String name;
+        try {
             switch (saveNameMode) {
                 case SaveNameModes.MATCH_INPUT:
                 default:
@@ -262,6 +275,7 @@ public class ImageSaver extends AbstractImageSaver {
         parameters.add(new ChoiceP(SAVE_LOCATION, this, SaveLocations.SAVE_WITH_INPUT, SaveLocations.ALL));
         parameters.add(new FolderPathP(MIRROR_DIRECTORY_ROOT, this));
         parameters.add(new FolderPathP(SAVE_FILE_PATH, this));
+        parameters.add(new StringP(SAVE_FILE_PATH_GENERIC, this));
 
         parameters.add(new ChoiceP(SAVE_NAME_MODE, this, SaveNameModes.MATCH_INPUT, SaveNameModes.ALL));
         parameters.add(new StringP(SAVE_FILE_NAME, this));
@@ -283,12 +297,19 @@ Workspace workspace = null;
         returnedParameters.add(parameters.getParameter(SAVE_LOCATION));
 
         switch ((String) parameters.getValue(SAVE_LOCATION,workspace)) {
+            case SaveLocations.MIRRORED_DIRECTORY:
+                returnedParameters.add(parameters.getParameter(MIRROR_DIRECTORY_ROOT));
+                break;
+
             case SaveLocations.SPECIFIC_LOCATION:
                 returnedParameters.add(parameters.getParameter(SAVE_FILE_PATH));
                 break;
 
-            case SaveLocations.MIRRORED_DIRECTORY:
-                returnedParameters.add(parameters.getParameter(MIRROR_DIRECTORY_ROOT));
+            case SaveLocations.SPECIFIC_LOCATION_GENERIC:
+                returnedParameters.add(parameters.getParameter(SAVE_FILE_PATH_GENERIC));
+                returnedParameters.add(parameters.getParameter(AVAILABLE_METADATA_FIELDS));
+                metadataRefs = modules.getMetadataRefs(this);
+                parameters.getParameter(AVAILABLE_METADATA_FIELDS).setValue(metadataRefs.getMetadataValues());
                 break;
 
         }
@@ -298,9 +319,11 @@ Workspace workspace = null;
         switch ((String) parameters.getValue(SAVE_NAME_MODE,workspace)) {
             case SaveNameModes.SPECIFIC_NAME:
                 returnedParameters.add(parameters.getParameter(SAVE_FILE_NAME));
-                returnedParameters.add(parameters.getParameter(AVAILABLE_METADATA_FIELDS));
-                metadataRefs = modules.getMetadataRefs(this);
-                parameters.getParameter(AVAILABLE_METADATA_FIELDS).setValue(metadataRefs.getMetadataValues());
+                if (!((String) parameters.getValue(SAVE_LOCATION,workspace)).equals(SaveLocations.SPECIFIC_LOCATION_GENERIC)) {
+                    returnedParameters.add(parameters.getParameter(AVAILABLE_METADATA_FIELDS));
+                    metadataRefs = modules.getMetadataRefs(this);
+                    parameters.getParameter(AVAILABLE_METADATA_FIELDS).setValue(metadataRefs.getMetadataValues());
+                }
                 break;
         }
 
@@ -386,7 +409,7 @@ Workspace workspace = null;
 
         parameters.get(AVAILABLE_METADATA_FIELDS).setDescription(
                 "List of the currently-available metadata values for this workspace.  These can be used when compiling a generic filename.");
-            
+
         parameters.get(APPEND_SERIES_MODE).setDescription(
                 "Controls if any series information should be appended to the end of the filename.  This is useful when working with multi-series files, as it should help prevent writing files from multiple runs with the same filename.  Series numbers are prepended by \"S\".  Choices are: "
                         + String.join(", ", AppendSeriesModes.ALL) + ".");

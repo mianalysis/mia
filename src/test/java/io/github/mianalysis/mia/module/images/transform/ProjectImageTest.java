@@ -325,6 +325,7 @@ public class ProjectImageTest extends ModuleTest {
 
         // Checking the output image has the expected calibration
         Image outputImage = workspace.getImage("Test_output");
+        
         assertEquals(expectedImage,outputImage);
 
     }

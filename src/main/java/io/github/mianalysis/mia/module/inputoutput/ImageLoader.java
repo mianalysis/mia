@@ -20,6 +20,7 @@ import com.drew.lang.annotations.Nullable;
 
 import ij.CompositeImage;
 import ij.IJ;
+import ij.ImageJ;
 import ij.ImagePlus;
 import ij.ImageStack;
 import ij.gui.Roi;
@@ -705,10 +706,10 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
 
             for (int c = 0; c < nChannels; c++) {
                 for (int z = 0; z < nSlices; z++) {
-                    int tempIdx = tempIpl.getStackIndex(c + 1, z + 1, 1);
-                    int outputIdx = outputIpl.getStackIndex(c + 1, z + 1, count + 1);
+                    tempIpl.setPosition(c + 1, z + 1, 1);
+                    outputIpl.setPosition(c + 1, z + 1, count + 1);
 
-                    outputIpl.getStack().setProcessor(tempIpl.getStack().getProcessor(tempIdx), outputIdx);
+                    outputIpl.getProcessor().setPixels(tempIpl.getProcessor().getPixels());
 
                 }
             }
@@ -751,6 +752,16 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
         for (int i = 0; i < numberOfZeroes; i++)
             stringBuilder.append("0");
         DecimalFormat df = new DecimalFormat(stringBuilder.toString());
+
+        // This supports the special value "start", which will be the smallest value
+        // starting at 0
+        if (frames.contains("start")) {
+            int minFrame = 0;
+            while (!new File(nameBefore + df.format(minFrame) + nameAfter).exists())
+                minFrame++;
+
+            frames = frames.replace("start", String.valueOf(minFrame));
+        }
 
         // Determining the number of images to load
         int maxFrame = 0;
@@ -797,10 +808,10 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
 
             for (int c = 0; c < nChannels; c++) {
                 for (int z = 0; z < nSlices; z++) {
-                    int tempIdx = tempIpl.getStackIndex(c + 1, z + 1, 1);
-                    int outputIdx = outputIpl.getStackIndex(c + 1, z + 1, count + 1);
+                    tempIpl.setPosition(c + 1, z + 1, 1);
+                    outputIpl.setPosition(c + 1, z + 1, count + 1);
 
-                    outputIpl.getStack().setProcessor(tempIpl.getStack().getProcessor(tempIdx), outputIdx);
+                    outputIpl.getProcessor().setPixels(tempIpl.getProcessor().getPixels());
 
                 }
             }
@@ -1289,7 +1300,8 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
 
         // If necessary, setting the spatial calibration
         if (setSpatialCalibration) {
-            writeStatus("Setting spatial calibration (XY = " + xyCal + ", Z = " + zCal + ")");
+            writeStatus("Setting spatial calibration (XY = " + xyCal + ", Z = " + zCal +
+                    ")");
             Calibration calibration = ipl.getCalibration();
 
             calibration.pixelHeight = xyCal / scaleFactorX;
@@ -1304,11 +1316,13 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
 
         // If necessary, setting the spatial calibration
         if (setTemporalCalibration) {
-            writeStatus("Setting temporal calibration (frame interval = " + frameInterval + ")");
+            writeStatus("Setting temporal calibration (frame interval = " + frameInterval
+                    + ")");
             Calibration calibration = ipl.getCalibration();
 
             calibration.frameInterval = frameInterval;
-            calibration.fps = 1 / TemporalUnit.getOMEUnit().convertValue(frameInterval, UNITS.SECOND);
+            calibration.fps = 1 / TemporalUnit.getOMEUnit().convertValue(frameInterval,
+                    UNITS.SECOND);
             calibration.setTimeUnit(TemporalUnit.getOMEUnit().getSymbol());
 
             ipl.setCalibration(calibration);
@@ -1405,13 +1419,13 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
             case ImportModes.IMAGEJ:
                 break;
 
-            case ImportModes.IMAGE_SEQUENCE_ALPHABETICAL:
-            case ImportModes.IMAGE_SEQUENCE_ZEROS:
-                returnedParameters.add(parameters.getParameter(SEQUENCE_ROOT_NAME));
-                returnedParameters.add(parameters.getParameter(AVAILABLE_METADATA_FIELDS));
-                MetadataRefs metadataRefs = modules.getMetadataRefs(this);
-                parameters.getParameter(AVAILABLE_METADATA_FIELDS).setValue(metadataRefs.getMetadataValues());
-                break;
+                case ImportModes.IMAGE_SEQUENCE_ALPHABETICAL:
+                case ImportModes.IMAGE_SEQUENCE_ZEROS:
+                    returnedParameters.add(parameters.getParameter(SEQUENCE_ROOT_NAME));
+                    returnedParameters.add(parameters.getParameter(AVAILABLE_METADATA_FIELDS));
+                    MetadataRefs metadataRefs = modules.getMetadataRefs(this);
+                    parameters.getParameter(AVAILABLE_METADATA_FIELDS).setValue(metadataRefs.getMetadataValues());
+                    break;
 
             case ImportModes.MATCHING_FORMAT:
                 returnedParameters.add(parameters.getParameter(NAME_FORMAT));
