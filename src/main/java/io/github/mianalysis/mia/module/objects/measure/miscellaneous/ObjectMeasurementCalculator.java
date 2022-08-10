@@ -31,7 +31,7 @@ import io.github.sjcross.sjcommon.mathfunc.CumStat;
 /**
  * Created by Stephen Cross on 19/03/2019.
  */
-@Plugin(type = Module.class, priority=Priority.LOW, visible=true)
+@Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class ObjectMeasurementCalculator extends Module {
     public static final String INPUT_SEPARATOR = "Object input";
     public static final String INPUT_OBJECTS = "Input objects";
@@ -96,10 +96,6 @@ public class ObjectMeasurementCalculator extends Module {
 
     public ObjectMeasurementCalculator(Modules modules) {
         super("Object measurement calculator", modules);
-    }
-
-    public static String getFullName(String measurementName) {
-        return "MEASUREMENT_CALCULATOR // " + measurementName;
     }
 
     public static double getObjectCollectionStatistic(Objs objects, String measurementName, String statistic) {
@@ -202,7 +198,6 @@ public class ObjectMeasurementCalculator extends Module {
         }
     }
 
-
     @Override
     public Category getCategory() {
         return Categories.OBJECTS_MEASURE_MISCELLANEOUS;
@@ -215,29 +210,29 @@ public class ObjectMeasurementCalculator extends Module {
 
     @Override
     protected Status process(Workspace workspace) {
-        String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS, workspace);
         Objs inputObjects = workspace.getObjectSet(inputObjectsName);
 
-        String valueMode1 = parameters.getValue(VALUE_MODE_1,workspace);
-        double fixedValue1 = parameters.getValue(FIXED_VALUE_1,workspace);
-        String imageName1 = parameters.getValue(IMAGE_1,workspace);
-        String imageMeasurement1 = parameters.getValue(IMAGE_MEASUREMENT_1,workspace);
-        String measurementName1 = parameters.getValue(MEASUREMENT_1,workspace);
-        String refObjectsName1 = parameters.getValue(REFERENCE_OBJECTS_1,workspace);
-        String refMeasurementName1 = parameters.getValue(REFERENCE_MEASUREMENT_1,workspace);
-        String statisticMode1 = parameters.getValue(STATISTIC_MODE_1,workspace);
+        String valueMode1 = parameters.getValue(VALUE_MODE_1, workspace);
+        double fixedValue1 = parameters.getValue(FIXED_VALUE_1, workspace);
+        String imageName1 = parameters.getValue(IMAGE_1, workspace);
+        String imageMeasurement1 = parameters.getValue(IMAGE_MEASUREMENT_1, workspace);
+        String measurementName1 = parameters.getValue(MEASUREMENT_1, workspace);
+        String refObjectsName1 = parameters.getValue(REFERENCE_OBJECTS_1, workspace);
+        String refMeasurementName1 = parameters.getValue(REFERENCE_MEASUREMENT_1, workspace);
+        String statisticMode1 = parameters.getValue(STATISTIC_MODE_1, workspace);
 
-        String valueMode2 = parameters.getValue(VALUE_MODE_2,workspace);
-        double fixedValue2 = parameters.getValue(FIXED_VALUE_2,workspace);
-        String imageName2 = parameters.getValue(IMAGE_2,workspace);
-        String imageMeasurement2 = parameters.getValue(IMAGE_MEASUREMENT_2,workspace);
-        String measurementName2 = parameters.getValue(MEASUREMENT_2,workspace);
-        String refObjectsName2 = parameters.getValue(REFERENCE_OBJECTS_2,workspace);
-        String refMeasurementName2 = parameters.getValue(REFERENCE_MEASUREMENT_2,workspace);
-        String statisticMode2 = parameters.getValue(STATISTIC_MODE_2,workspace);
+        String valueMode2 = parameters.getValue(VALUE_MODE_2, workspace);
+        double fixedValue2 = parameters.getValue(FIXED_VALUE_2, workspace);
+        String imageName2 = parameters.getValue(IMAGE_2, workspace);
+        String imageMeasurement2 = parameters.getValue(IMAGE_MEASUREMENT_2, workspace);
+        String measurementName2 = parameters.getValue(MEASUREMENT_2, workspace);
+        String refObjectsName2 = parameters.getValue(REFERENCE_OBJECTS_2, workspace);
+        String refMeasurementName2 = parameters.getValue(REFERENCE_MEASUREMENT_2, workspace);
+        String statisticMode2 = parameters.getValue(STATISTIC_MODE_2, workspace);
 
-        String outputMeasurementName = getFullName(parameters.getValue(OUTPUT_MEASUREMENT,workspace));
-        String calculationMode = parameters.getValue(CALCULATION_MODE,workspace);
+        String outputMeasurementName = parameters.getValue(OUTPUT_MEASUREMENT, workspace);
+        String calculationMode = parameters.getValue(CALCULATION_MODE, workspace);
 
         // Getting reference object collections
         double refValue1 = Double.NaN;
@@ -338,8 +333,8 @@ public class ObjectMeasurementCalculator extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
-Workspace workspace = null;
-        String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
+        Workspace workspace = null;
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS, workspace);
 
         Parameters returnedParams = new Parameters();
 
@@ -348,7 +343,7 @@ Workspace workspace = null;
 
         returnedParams.add(parameters.getParameter(VALUE_SEPARATOR_1));
         returnedParams.add(parameters.getParameter(VALUE_MODE_1));
-        switch ((String) parameters.getValue(VALUE_MODE_1,workspace)) {
+        switch ((String) parameters.getValue(VALUE_MODE_1, workspace)) {
             case ValueModes.FIXED:
                 returnedParams.add(parameters.getParameter(FIXED_VALUE_1));
                 break;
@@ -356,7 +351,7 @@ Workspace workspace = null;
             case ValueModes.IMAGE_MEASUREMENT:
                 returnedParams.add(parameters.getParameter(IMAGE_1));
                 returnedParams.add(parameters.getParameter(IMAGE_MEASUREMENT_1));
-                String imageName1 = parameters.getValue(IMAGE_1,workspace);
+                String imageName1 = parameters.getValue(IMAGE_1, workspace);
                 ((ImageMeasurementP) parameters.get(IMAGE_MEASUREMENT_1)).setImageName(imageName1);
                 break;
 
@@ -369,7 +364,7 @@ Workspace workspace = null;
                 returnedParams.add(parameters.getParameter(REFERENCE_OBJECTS_1));
                 returnedParams.add(parameters.getParameter(REFERENCE_MEASUREMENT_1));
                 returnedParams.add(parameters.getParameter(STATISTIC_MODE_1));
-                String referenceObjectsName1 = parameters.getValue(REFERENCE_OBJECTS_1,workspace);
+                String referenceObjectsName1 = parameters.getValue(REFERENCE_OBJECTS_1, workspace);
                 ((ObjectMeasurementP) parameters.getParameter(REFERENCE_MEASUREMENT_1))
                         .setObjectName(referenceObjectsName1);
                 break;
@@ -377,7 +372,7 @@ Workspace workspace = null;
 
         returnedParams.add(parameters.getParameter(VALUE_SEPARATOR_2));
         returnedParams.add(parameters.getParameter(VALUE_MODE_2));
-        switch ((String) parameters.getValue(VALUE_MODE_2,workspace)) {
+        switch ((String) parameters.getValue(VALUE_MODE_2, workspace)) {
             case ValueModes.FIXED:
                 returnedParams.add(parameters.getParameter(FIXED_VALUE_2));
                 break;
@@ -385,7 +380,7 @@ Workspace workspace = null;
             case ValueModes.IMAGE_MEASUREMENT:
                 returnedParams.add(parameters.getParameter(IMAGE_2));
                 returnedParams.add(parameters.getParameter(IMAGE_MEASUREMENT_2));
-                String imageName2 = parameters.getValue(IMAGE_2,workspace);
+                String imageName2 = parameters.getValue(IMAGE_2, workspace);
                 ((ImageMeasurementP) parameters.get(IMAGE_MEASUREMENT_2)).setImageName(imageName2);
                 break;
 
@@ -398,7 +393,7 @@ Workspace workspace = null;
                 returnedParams.add(parameters.getParameter(REFERENCE_OBJECTS_2));
                 returnedParams.add(parameters.getParameter(REFERENCE_MEASUREMENT_2));
                 returnedParams.add(parameters.getParameter(STATISTIC_MODE_2));
-                String referenceObjectsName2 = parameters.getValue(REFERENCE_OBJECTS_2,workspace);
+                String referenceObjectsName2 = parameters.getValue(REFERENCE_OBJECTS_2, workspace);
                 ((ObjectMeasurementP) parameters.getParameter(REFERENCE_MEASUREMENT_2))
                         .setObjectName(referenceObjectsName2);
                 break;
@@ -414,19 +409,18 @@ Workspace workspace = null;
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
-Workspace workspace = null;
         return null;
     }
 
     @Override
-public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
-Workspace workspace = null;
+    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+        Workspace workspace = null;
         ObjMeasurementRefs returnedRefs = new ObjMeasurementRefs();
 
         // Creating new MeasurementRef
-        String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS, workspace);
 
-        String measurementName = getFullName(parameters.getValue(OUTPUT_MEASUREMENT,workspace));
+        String measurementName = parameters.getValue(OUTPUT_MEASUREMENT, workspace);
         returnedRefs.add(objectMeasurementRefs.getOrPut(measurementName).setObjectsName(inputObjectsName));
 
         return returnedRefs;
@@ -434,20 +428,17 @@ Workspace workspace = null;
     }
 
     @Override
-public MetadataRefs updateAndGetMetadataReferences() {
-Workspace workspace = null;
+    public MetadataRefs updateAndGetMetadataReferences() {
         return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
-Workspace workspace = null;
         return null;
     }
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
-Workspace workspace = null;
         return null;
     }
 

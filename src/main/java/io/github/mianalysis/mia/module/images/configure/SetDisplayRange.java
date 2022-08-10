@@ -3,6 +3,8 @@ package io.github.mianalysis.mia.module.images.configure;
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
 
+import com.drew.lang.annotations.Nullable;
+
 import ij.ImagePlus;
 import ij.plugin.Duplicator;
 import io.github.mianalysis.mia.module.Categories;
@@ -40,6 +42,8 @@ public class SetDisplayRange extends Module {
 
     public static final String RANGE_SEPARATOR = "Intensity range";
     public static final String CALCULATION_MODE = "Calculation mode";
+    public static final String CALCULATION_SOURCE = "Calculation source";
+    public static final String EXTERNAL_SOURCE = "External source";    
     public static final String CLIP_FRACTION_MIN = "Clipping fraction (min)";
     public static final String CLIP_FRACTION_MAX = "Clipping fraction (max)";
     public static final String SET_MINIMUM_VALUE = "Set minimum value";
@@ -57,6 +61,14 @@ public class SetDisplayRange extends Module {
         String PRECISE = "Precise";
 
         String[] ALL = new String[] { FAST, MANUAL, PRECISE };
+
+    }
+
+    public interface CalculationSources {
+        String INTERNAL = "Internal";
+        String EXTERNAL = "External";
+
+        String[] ALL = new String[] { INTERNAL, EXTERNAL };
 
     }
 
@@ -78,7 +90,11 @@ public class SetDisplayRange extends Module {
     }
 
     public static void setDisplayRangeAuto(ImagePlus ipl, String calculationMode, double[] clipFraction,
-            boolean[] setRange) {
+            boolean[] setRange, @Nullable ImagePlus externalIpl) {
+        // If externalIpl is null, use the input image for calculation
+        if (externalIpl == null)
+            externalIpl = ipl;
+
         for (int c = 1; c <= ipl.getNChannels(); c++) {
             // Get min max values for whole stack
             double[] intRange = new double[] { ipl.getDisplayRangeMin(), ipl.getDisplayRangeMax() };
@@ -87,12 +103,12 @@ public class SetDisplayRange extends Module {
             switch (calculationMode) {
                 case CalculationModes.FAST:
                 default:
-                    newIntRange = IntensityMinMax.getWeightedChannelRangeFast(ipl, c - 1, clipFraction[0],
+                    newIntRange = IntensityMinMax.getWeightedChannelRangeFast(externalIpl, c - 1, clipFraction[0],
                             clipFraction[1]);
                     break;
 
                 case CalculationModes.PRECISE:
-                    newIntRange = IntensityMinMax.getWeightedChannelRangePrecise(ipl, c - 1, clipFraction[0],
+                    newIntRange = IntensityMinMax.getWeightedChannelRangePrecise(externalIpl, c - 1, clipFraction[0],
                             clipFraction[1]);
                     break;
             }
@@ -127,12 +143,11 @@ public class SetDisplayRange extends Module {
 
     @Override
     public Status process(Workspace workspace) {
-        // Getting input image
-        String inputImageName = parameters.getValue(INPUT_IMAGE, workspace);
-        Image inputImage = workspace.getImages().get(inputImageName);
-
         // Getting parameters
+        String inputImageName = parameters.getValue(INPUT_IMAGE, workspace);
         boolean applyToInput = parameters.getValue(APPLY_TO_INPUT, workspace);
+        String calculationSource = parameters.getValue(CALCULATION_SOURCE, workspace);
+        String externalImageName = parameters.getValue(EXTERNAL_SOURCE, workspace);
         String calculationMode = parameters.getValue(CALCULATION_MODE, workspace);
         double clipFractionMin = parameters.getValue(CLIP_FRACTION_MIN, workspace);
         double clipFractionMax = parameters.getValue(CLIP_FRACTION_MAX, workspace);
@@ -140,6 +155,9 @@ public class SetDisplayRange extends Module {
         boolean setMaximumValue = parameters.getValue(SET_MAXIMUM_VALUE, workspace);
         double minRange = parameters.getValue(MIN_RANGE, workspace);
         double maxRange = parameters.getValue(MAX_RANGE, workspace);
+
+        // Getting input image
+        Image inputImage = workspace.getImages().get(inputImageName);
 
         // If this image doesn't exist, skip this module. This returns true, because
         // this isn't terminal for the analysis.
@@ -162,7 +180,10 @@ public class SetDisplayRange extends Module {
         switch (calculationMode) {
             case CalculationModes.FAST:
             case CalculationModes.PRECISE:
-                setDisplayRangeAuto(inputImagePlus, calculationMode, clipFraction, setRange);
+                ImagePlus externalIpl = calculationSource.equals(CalculationSources.EXTERNAL)
+                        ? workspace.getImage(externalImageName).getImagePlus()
+                        : null;
+                setDisplayRangeAuto(inputImagePlus, calculationMode, clipFraction, setRange, externalIpl);
                 break;
             case CalculationModes.MANUAL:
                 setDisplayRangeManual(inputImagePlus, calculationMode, manualRange);
@@ -196,6 +217,8 @@ public class SetDisplayRange extends Module {
 
         parameters.add(new SeparatorP(RANGE_SEPARATOR, this));
         parameters.add(new ChoiceP(CALCULATION_MODE, this, CalculationModes.FAST, CalculationModes.ALL));
+        parameters.add(new ChoiceP(CALCULATION_SOURCE, this, CalculationSources.INTERNAL, CalculationSources.ALL));
+        parameters.add(new InputImageP(EXTERNAL_SOURCE, this));
         parameters.add(new DoubleP(CLIP_FRACTION_MIN, this, 0d));
         parameters.add(new DoubleP(CLIP_FRACTION_MAX, this, 0d));
         parameters.add(new BooleanP(SET_MINIMUM_VALUE, this, true));
@@ -221,6 +244,16 @@ public class SetDisplayRange extends Module {
 
         returnedParameters.add(parameters.getParameter(RANGE_SEPARATOR));
         returnedParameters.add(parameters.getParameter(CALCULATION_MODE));
+        
+        if (!((String) parameters.getValue(CALCULATION_MODE, workspace)).equals(CalculationModes.MANUAL)) {
+            returnedParameters.add(parameters.getParameter(CALCULATION_SOURCE));
+            switch ((String) parameters.getValue(CALCULATION_SOURCE, workspace)) {
+                case CalculationSources.EXTERNAL:
+                    returnedParameters.add(parameters.getParameter(EXTERNAL_SOURCE));
+                    break;
+            }
+        }
+
         switch ((String) parameters.getValue(CALCULATION_MODE, workspace)) {
             case CalculationModes.FAST:
             case CalculationModes.PRECISE:
@@ -246,26 +279,22 @@ public class SetDisplayRange extends Module {
     }
 
     @Override
-public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
-Workspace workspace = null;
+    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
         return null;
     }
 
     @Override
-public MetadataRefs updateAndGetMetadataReferences() {
-Workspace workspace = null;
+    public MetadataRefs updateAndGetMetadataReferences() {
         return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
-Workspace workspace = null;
         return null;
     }
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
-Workspace workspace = null;
         return null;
     }
 
@@ -283,6 +312,16 @@ Workspace workspace = null;
 
         parameters.get(OUTPUT_IMAGE).setDescription(
                 "If storing the processed image separately in the workspace, this is the name of the output image.");
+
+        parameters.get(CALCULATION_SOURCE).setDescription(
+                "This parameter controls whether the display range (min, max) will be determined from the input image or another image:<br><ul>"
+
+                        + "<li>\"" + CalculationSources.EXTERNAL
+                        + "\" The image for which the display range is calculated is different to the image that the final display will be applied to.  For example, this could be a single representative slice or substack.  Using this could significantly reduce run-time for large stacks, especially when \""
+                        + CALCULATION_MODE + "\" is set to \"" + CalculationModes.PRECISE + "\".</li>"
+
+                        + "<li>\"" + CalculationSources.INTERNAL
+                        + "\" The display range will be determined from the same image or stack onto which the display will be applied.</li></ul>");
 
         parameters.get(CALCULATION_MODE).setDescription("Controls how the display range is calculated:<br><ul>"
 

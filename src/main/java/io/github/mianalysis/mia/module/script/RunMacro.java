@@ -305,25 +305,21 @@ public class RunMacro extends AbstractMacroRunner {
 
     @Override
     public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
-        Workspace workspace = null;
         return null;
     }
 
     @Override
     public MetadataRefs updateAndGetMetadataReferences() {
-        Workspace workspace = null;
         return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
-        Workspace workspace = null;
         return null;
     }
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
-        Workspace workspace = null;
         return null;
     }
 

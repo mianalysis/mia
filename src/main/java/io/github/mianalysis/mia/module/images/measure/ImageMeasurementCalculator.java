@@ -10,7 +10,6 @@ import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.Measurement;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.image.Image;
-import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.ImageMeasurementP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
@@ -84,10 +83,6 @@ public class ImageMeasurementCalculator extends Module {
         }
     }
 
-    public static String getFullName(String measurementName) {
-        return "MEASUREMENT_CALCULATOR // " + measurementName;
-    }
-
     @Override
     public Category getCategory() {
         return Categories.IMAGES_MEASURE;
@@ -112,7 +107,7 @@ public class ImageMeasurementCalculator extends Module {
         double fixedValue2 = parameters.getValue(FIXED_VALUE_2,workspace);
         String measurementName2 = parameters.getValue(MEASUREMENT_2,workspace);
 
-        String outputMeasurementName = getFullName(parameters.getValue(OUTPUT_MEASUREMENT,workspace));
+        String outputMeasurementName = parameters.getValue(OUTPUT_MEASUREMENT,workspace);
         String calculationMode = parameters.getValue(CALCULATION_MODE,workspace);
 
         // Getting value 1
@@ -225,7 +220,7 @@ Workspace workspace = null;
 
         // Creating new MeasurementRef
         String inputImageName = parameters.getValue(INPUT_IMAGE,null);
-        String measurementName = getFullName(parameters.getValue(OUTPUT_MEASUREMENT,null));
+        String measurementName = parameters.getValue(OUTPUT_MEASUREMENT,null);
 
         returnedRefs.add(imageMeasurementRefs.getOrPut(measurementName).setImageName(inputImageName));
 
@@ -235,26 +230,22 @@ Workspace workspace = null;
 
     @Override
 public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
-Workspace workspace = null;
-        return null;
+return null;
     }
 
     @Override
 public MetadataRefs updateAndGetMetadataReferences() {
-Workspace workspace = null;
-        return null;
+return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
-Workspace workspace = null;
-        return null;
+return null;
     }
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
-Workspace workspace = null;
-        return null;
+return null;
     }
 
     @Override

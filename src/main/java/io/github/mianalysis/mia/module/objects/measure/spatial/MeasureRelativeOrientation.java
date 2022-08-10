@@ -487,7 +487,6 @@ public class MeasureRelativeOrientation extends Module {
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
-        Workspace workspace = null;
         return null;
     }
 
@@ -544,19 +543,16 @@ public class MeasureRelativeOrientation extends Module {
 
     @Override
     public MetadataRefs updateAndGetMetadataReferences() {
-        Workspace workspace = null;
         return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
-        Workspace workspace = null;
         return null;
     }
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
-        Workspace workspace = null;
         return null;
     }
 

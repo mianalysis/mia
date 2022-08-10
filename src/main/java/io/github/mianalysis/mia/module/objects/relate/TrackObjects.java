@@ -695,7 +695,6 @@ public class TrackObjects extends Module {
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
-        Workspace workspace = null;
         return null;
     }
 
@@ -720,7 +719,6 @@ public class TrackObjects extends Module {
 
     @Override
     public MetadataRefs updateAndGetMetadataReferences() {
-        Workspace workspace = null;
         return null;
     }
 

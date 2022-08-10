@@ -218,20 +218,17 @@ Workspace workspace = null;
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
-Workspace workspace = null;
-        return null;
+return null;
     }
 
     @Override
 public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
-Workspace workspace = null;
-        return null;
+return null;
     }
 
     @Override
 public MetadataRefs updateAndGetMetadataReferences() {
-Workspace workspace = null;
-        return null;
+return null;
     }
 
     @Override
@@ -250,8 +247,7 @@ Workspace workspace = null;
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
-Workspace workspace = null;
-        return null;
+return null;
     }
 
     @Override

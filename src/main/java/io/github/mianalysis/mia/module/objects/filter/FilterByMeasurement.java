@@ -136,7 +136,6 @@ public class FilterByMeasurement extends AbstractNumericObjectFilter {
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
-        Workspace workspace = null;
         return null;
     }
 
