@@ -1,10 +1,8 @@
 package io.github.mianalysis.mia;
 
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
 
 import org.apache.maven.model.Model;
 import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
@@ -13,8 +11,6 @@ import org.scijava.command.Command;
 import org.scijava.plugin.Parameter;
 import org.scijava.plugin.Plugin;
 import org.scijava.ui.UIService;
-
-import com.formdev.flatlaf.FlatLightLaf;
 
 import io.github.mianalysis.mia.gui.GUI;
 import io.github.mianalysis.mia.module.LostAndFound;
@@ -104,12 +100,16 @@ public class MIA implements Command {
 
         // Determining the version number from the pom file
         try {
-            FileReader reader = new FileReader("pom.xml");
-            Model model = new MavenXpp3Reader().read(reader);
-            reader.close();
-            version = model.getVersion();
+            if (new File("pom.xml").exists()) {
+                FileReader reader = new FileReader("pom.xml");
+                Model model = new MavenXpp3Reader().read(reader);
+                reader.close();
+                version = model.getVersion();
+            } else {
+                version = getClass().getPackage().getImplementationVersion();
+            }
         } catch (XmlPullParserException | IOException e) {
-            version = getClass().getPackage().getImplementationVersion();
+            e.printStackTrace();
         }
 
         // Run the dependency validator. If updates were required, return.
