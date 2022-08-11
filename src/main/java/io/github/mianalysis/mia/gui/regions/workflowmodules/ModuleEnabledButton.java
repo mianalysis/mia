@@ -24,6 +24,8 @@ public class ModuleEnabledButton extends JButton implements ActionListener {
     private Module module;
     private static final ImageIcon blackIcon = new ImageIcon(
             ModuleEnabledButton.class.getResource("/icons/power_black_strike_12px.png"), "");
+    private static final ImageIcon blackIconDM = new ImageIcon(
+            ModuleEnabledButton.class.getResource("/icons/power_blackDM_strike_12px.png"), "");
     private static final ImageIcon redIcon = new ImageIcon(
             ModuleEnabledButton.class.getResource("/icons/power_red_12px.png"), "");
     private static final ImageIcon redIconDM = new ImageIcon(
@@ -77,7 +79,10 @@ public class ModuleEnabledButton extends JButton implements ActionListener {
             else
                 setIcon(redIcon);
         } else {
-            setIcon(blackIcon);
+            if (MIA.preferences.darkThemeEnabled())
+                setIcon(blackIconDM);
+            else
+                setIcon(blackIcon);
         }
     }
 
