@@ -69,12 +69,14 @@ public class ComponentFactory {
             ComponentFactory.class.getResource("/icons/rightarrow_darkblueDM_12px.png"), "");
     private static final ImageIcon leftArrow = new ImageIcon(
             ComponentFactory.class.getResource("/icons/leftarrow_darkblue_12px.png"), "");
-            private static final ImageIcon leftArrowDM = new ImageIcon(
+    private static final ImageIcon leftArrowDM = new ImageIcon(
             ComponentFactory.class.getResource("/icons/leftarrow_darkblueDM_12px.png"), "");
     // private static final ImageIcon circle = new ImageIcon(
     // ComponentFactory.class.getResource("/Icons/dot_blue_12px.png"), "");
     private static final ImageIcon warningIcon = new ImageIcon(
             ComponentFactory.class.getResource("/icons/warning_red_12px.png"), "");
+    private static final ImageIcon warningIconDM = new ImageIcon(
+            ComponentFactory.class.getResource("/icons/warning_redDM_12px.png"), "");
 
     public ComponentFactory(int elementHeight) {
         this.elementHeight = elementHeight;
@@ -129,7 +131,10 @@ public class ComponentFactory {
 
             if (!parameter.isValid()) {
                 parameterName.setForeground(Colours.getRed(darkMode));
-                parameterName.setIcon(warningIcon);
+                if (darkMode)
+                    parameterName.setIcon(warningIconDM);
+                else
+                    parameterName.setIcon(warningIcon);
             }
 
             c.gridx++;

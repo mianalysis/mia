@@ -27,6 +27,8 @@ public class ModuleName extends JLabel {
             ModuleName.class.getResource("/icons/skiparrow_orangeDM_12px.png"), "");
     private static final ImageIcon warningIcon = new ImageIcon(
             ModuleName.class.getResource("/icons/warning_red_12px.png"), "");
+    private static final ImageIcon warningIconDM = new ImageIcon(
+            ModuleName.class.getResource("/icons/warning_redDM_12px.png"), "");
 
     public ModuleName(Module module, JTable table, boolean isSelected) {
         this.module = module;
@@ -99,7 +101,10 @@ public class ModuleName extends JLabel {
                     + "<br>Status: Skipped" + deprecationMessage + "</html>");
         } else if (module.isEnabled() & !module.isRunnable()) {
             setForeground(Colours.getRed(darkMode));
-            setIcon(warningIcon);
+            if (darkMode)
+                setIcon(warningIconDM);
+            else
+                setIcon(warningIcon);
             setToolTipText("<html>Module: " + module.getName() + "<br>Nickname: " + module.getNickname()
                     + "<br>Status: Error" + deprecationMessage + "</html>");
         } else {

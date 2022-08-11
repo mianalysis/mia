@@ -25,7 +25,7 @@ public class ExportEnableButton extends JButton implements ActionListener {
             ExportEnableButton.class.getResource("/icons/power_black_strike_12px.png"), "");
     private static final ImageIcon greenIcon = new ImageIcon(
             ExportEnableButton.class.getResource("/icons/power_green_12px.png"), "");
-    private static final ImageIcon greenDMIcon = new ImageIcon(
+    private static final ImageIcon greenIconDM = new ImageIcon(
             ExportEnableButton.class.getResource("/icons/power_greenDM_12px.png"), "");
 
     public ExportEnableButton(ExportableRef ref) {
@@ -45,7 +45,7 @@ public class ExportEnableButton extends JButton implements ActionListener {
     public void setIcon() {
         if (ref.isExportGlobal()) {
             if (MIA.preferences.darkThemeEnabled())
-                setIcon(greenDMIcon);
+                setIcon(greenIconDM);
             else
                 setIcon(greenIcon);
         } else {
