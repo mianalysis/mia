@@ -100,8 +100,6 @@ public class MaskObjects<T extends RealType<T> & NativeType<T>> extends Module {
                 location[tAx] = inputObject.getT();
 
             int value = ((UnsignedByteType) randomAccess.setPositionAndGet(location)).get();
-            // randomAccess.setPosition(location);
-            // int value = ((UnsignedByteType) randomAccess.get()).get();
 
             if (value != 0) {
                 try {
