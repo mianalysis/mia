@@ -2,19 +2,19 @@ package io.github.mianalysis.mia.module.inputoutput;
 
 import java.io.File;
 
-import ij.CompositeImage;
-import ij.ImagePlus;
-import ij.process.ImageConverter;
-import io.github.mianalysis.mia.module.Categories;
-import io.github.mianalysis.mia.module.Category;
-import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.module.Module;
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
 
+import ij.CompositeImage;
+import ij.ImagePlus;
+import ij.process.ImageConverter;
+import io.github.mianalysis.mia.MIA;
+import io.github.mianalysis.mia.module.Categories;
+import io.github.mianalysis.mia.module.Category;
+import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.image.Image;
-import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.text.MessageP;
 import io.github.mianalysis.mia.object.parameters.text.StringP;
@@ -134,8 +134,10 @@ public class GenericImageSaver extends AbstractImageSaver {
     protected void initialiseParameters() {
         super.initialiseParameters();
         
+        boolean darkMode = MIA.preferences.darkThemeEnabled();
+        
         parameters.add(new StringP(GENERIC_FORMAT, this));
-        parameters.add(new MessageP(AVAILABLE_METADATA_FIELDS, this, Colours.DARK_BLUE, 170));
+        parameters.add(new MessageP(AVAILABLE_METADATA_FIELDS, this, Colours.getDarkBlue(darkMode), 170));
 
         addParameterDescriptions();
 

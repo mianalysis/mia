@@ -340,6 +340,8 @@ public class TrackEditor extends Module {
 
     @Override
     protected void initialiseParameters() {
+        boolean darkMode = MIA.preferences.darkThemeEnabled();
+
         parameters.add(new SeparatorP(INPUT_SEPARATOR, this));
         parameters.add(new InputObjectsP(INPUT_TRACK_OBJECTS, this));
         parameters.add(new ChildObjectsP(INPUT_SPOT_OBJECTS, this));
@@ -349,7 +351,7 @@ public class TrackEditor extends Module {
         parameters.add(new BooleanP(SHOW_PROJECTED, this, false));
         parameters.add(new MessageP(MEASUREMENT_WARNING, this,
                 "Previously-acquired measurements for spot and track objects may become invalid.  Please reacquire using the relevant measurement modules.",
-                Colours.ORANGE));
+                Colours.getOrange(darkMode)));
 
         addParameterDescriptions();
 

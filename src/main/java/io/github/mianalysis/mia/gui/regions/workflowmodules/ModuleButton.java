@@ -11,6 +11,7 @@ import java.awt.event.MouseListener;
 
 import javax.swing.JToggleButton;
 
+import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.gui.GUI;
 import io.github.mianalysis.mia.gui.regions.RenameListMenu;
 import io.github.mianalysis.mia.module.Module;
@@ -47,16 +48,18 @@ public class ModuleButton extends JToggleButton implements ActionListener, Mouse
     // PUBLIC METHODS
 
     public void updateState() {
+        boolean darkMode = MIA.preferences.darkThemeEnabled();
+        
         setText(module.getNickname());
 
         if (module.getClass() == GUISeparator.class)
-            setForeground(Colours.DARK_BLUE);
+            setForeground(Colours.getDarkBlue(darkMode));
         else if (module.isEnabled() && module.isReachable() && module.isRunnable())
             setForeground(defaultColour);
         else if (module.isEnabled() & !module.isReachable())
-            setForeground(Colours.ORANGE);
+            setForeground(Colours.getOrange(darkMode));
         else if (module.isEnabled() & !module.isRunnable())
-            setForeground(Colours.RED);
+            setForeground(Colours.getRed(darkMode));
         else
             setForeground(Color.GRAY);
 

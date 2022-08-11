@@ -474,6 +474,8 @@ public class ObjectLoader extends Module {
 
     @Override
     protected void initialiseParameters() {
+        boolean darkMode = MIA.preferences.darkThemeEnabled();
+
         parameters.add(new SeparatorP(OUTPUT_SEPARATOR, this));
         parameters.add(new OutputObjectsP(OUTPUT_OBJECTS, this));
 
@@ -481,7 +483,7 @@ public class ObjectLoader extends Module {
         parameters.add(new ChoiceP(COORDINATE_SOURCE, this, CoordinateSources.CURRENT_FILE, CoordinateSources.ALL));
         parameters.add(new ChoiceP(NAME_FORMAT, this, NameFormats.GENERIC, NameFormats.ALL));
         parameters.add(new StringP(GENERIC_FORMAT, this));
-        parameters.add(new MessageP(AVAILABLE_METADATA_FIELDS, this, Colours.DARK_BLUE, 170));
+        parameters.add(new MessageP(AVAILABLE_METADATA_FIELDS, this, Colours.getDarkBlue(darkMode), 170));
         parameters.add(new StringP(PREFIX, this));
         parameters.add(new StringP(SUFFIX, this));
         parameters.add(new StringP(EXTENSION, this));

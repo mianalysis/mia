@@ -198,6 +198,7 @@ public class AnalysisRunner {
 
         if (!checkInputFileValidity(inputPath))
             return null;
+            
         return new File(inputPath);
 
     }

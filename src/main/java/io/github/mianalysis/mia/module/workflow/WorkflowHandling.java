@@ -312,6 +312,8 @@ public class WorkflowHandling extends Module {
 
     @Override
     protected void initialiseParameters() {
+        boolean darkMode = MIA.preferences.darkThemeEnabled();
+
         parameters.add(new SeparatorP(CONDITION_SEPARATOR, this));
         parameters.add(new ChoiceP(TEST_MODE, this, TestModes.IMAGE_MEASUREMENT, TestModes.ALL));
 
@@ -325,7 +327,7 @@ public class WorkflowHandling extends Module {
         parameters.add(new StringP(REFERENCE_TEXT_VALUE, this));
         parameters.add(new DoubleP(FIXED_VALUE, this, 0d));
         parameters.add(new StringP(GENERIC_FORMAT, this));
-        parameters.add(new MessageP(AVAILABLE_METADATA_FIELDS, this, Colours.DARK_BLUE, 170));
+        parameters.add(new MessageP(AVAILABLE_METADATA_FIELDS, this, Colours.getDarkBlue(darkMode), 170));
 
         parameters.add(new SeparatorP(RESULT_SEPARATOR, this));
         parameters.add(new ChoiceP(CONTINUATION_MODE, this, ContinuationModes.TERMINATE, ContinuationModes.ALL));

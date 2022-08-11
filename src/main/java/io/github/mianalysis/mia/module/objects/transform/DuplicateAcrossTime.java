@@ -1,13 +1,13 @@
 package io.github.mianalysis.mia.module.objects.transform;
 
+import org.scijava.Priority;
+import org.scijava.plugin.Plugin;
+
+import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.module.Module;
-import org.scijava.Priority;
-import org.scijava.plugin.Plugin;
-
 import io.github.mianalysis.mia.object.Measurement;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
@@ -182,6 +182,8 @@ public class DuplicateAcrossTime extends Module {
 
     @Override
     protected void initialiseParameters() {
+        boolean darkMode = MIA.preferences.darkThemeEnabled();
+
         parameters.add(new SeparatorP(INPUT_SEPARATOR, this));
         parameters.add(new InputObjectsP(INPUT_OBJECTS, this));
 
@@ -190,7 +192,7 @@ public class DuplicateAcrossTime extends Module {
         parameters.add(new ChoiceP(STORAGE_MODE, this, StorageModes.COMMON_ACROSS_ALL_OBJECTS, StorageModes.ALL));
         parameters.add(new MessageP(COMMON_WARNING, this,
                 "\"Common\" coordinate storage will use a single set of coordinates for all copies of an object.  Therefore, changes made to one object will be reflected in all objects.",
-                Colours.RED));
+                Colours.getRed(darkMode)));
 
         parameters.add(new SeparatorP(FRAME_SEPARATOR, this));
         parameters.add(new ChoiceP(START_FRAME_MODE, this, FrameModes.FIXED_VALUE, FrameModes.ALL));

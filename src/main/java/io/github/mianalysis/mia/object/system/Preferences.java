@@ -1,17 +1,6 @@
 package io.github.mianalysis.mia.object.system;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-
-import javax.swing.LookAndFeel;
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
-
-import com.formdev.flatlaf.FlatDarculaLaf;
-import com.formdev.flatlaf.FlatDarkLaf;
-import com.formdev.flatlaf.FlatIntelliJLaf;
-import com.formdev.flatlaf.FlatLightLaf;
-
+import ij.IJ;
 import ij.Prefs;
 import io.github.mianalysis.mia.gui.GUI;
 import io.github.mianalysis.mia.module.Categories;
@@ -46,8 +35,6 @@ public class Preferences extends Module {
     public static final String SPECIFY_CACHE_DIRECTORY = "Specify cache directory";
     public static final String CACHE_DIRECTORY = "Cache directory";
 
-    private static LookAndFeel ijLAF = UIManager.getLookAndFeel();
-
     public interface ImageDisplayModes {
         String COMPOSITE = "Composite";
         String COLOUR = "Colour";
@@ -56,18 +43,7 @@ public class Preferences extends Module {
 
     }
 
-    public interface Themes {
-        String FLAT_LAF_DARK = "Flat LAF (dark)";
-        String FLAT_LAF_DARKULA = "Flat LAF (darkula)";
-        String FLAT_LAF_INTELLIJ = "Flat LAF (IntelliJ)";
-        String FLAT_LAF_LIGHT = "Flat LAF (light)";
-        String MATCH_IMAGEJ = "Match ImageJ";
-        String SYSTEM_DEFAULT = "System default";
-
-        String[] ALL = new String[] { FLAT_LAF_DARK, FLAT_LAF_DARKULA, FLAT_LAF_INTELLIJ, FLAT_LAF_LIGHT, MATCH_IMAGEJ,
-                SYSTEM_DEFAULT };
-
-    }
+    public interface Themes extends io.github.mianalysis.mia.gui.Themes {};
 
     // public interface DataStorageModes {
     //     // String AUTOMATIC = "Automatic"; // This mode will look at each image and send
@@ -79,63 +55,29 @@ public class Preferences extends Module {
 
     // }
 
-    public static LookAndFeel getThemeClass(String theme) throws ClassNotFoundException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
-        switch (theme) {
-            case Themes.FLAT_LAF_DARK:
-                return new FlatDarkLaf();
-            case Themes.FLAT_LAF_DARKULA:
-                return new FlatDarculaLaf();
-            case Themes.FLAT_LAF_INTELLIJ:
-                return new FlatIntelliJLaf();
-            case Themes.FLAT_LAF_LIGHT:
-                return new FlatLightLaf();
-            case Themes.MATCH_IMAGEJ:
-                Class<?> clazz = Class.forName(ijLAF.getClass().getCanonicalName());
-                Constructor<?> ctor = clazz.getConstructor();
-                return (LookAndFeel) ctor.newInstance();
-            case Themes.SYSTEM_DEFAULT:
-            default:
-                clazz = Class.forName(UIManager.getSystemLookAndFeelClassName());
-                ctor = clazz.getConstructor();
-                return (LookAndFeel) ctor.newInstance();
-        }
-    }
-
     public void setTheme() {
         String theme = parameters.getValue(THEME, null);
 
         Prefs.set("MIA.GUI.theme", theme);
-        parameters.getParameter(THEME).setValue(theme);
-        try {
-            LookAndFeel lookAndFeel = getThemeClass(theme);
-            UIManager.setLookAndFeel(lookAndFeel);
-        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException
-                | UnsupportedLookAndFeelException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e) {
-            e.printStackTrace();
-        }
+        IJ.showMessage("Theme will be applied after restarting Fiji");
+        
+        //// Applying here and now appears to cause a StackOverflowError
+        // parameters.getParameter(THEME).setValue(theme);
+        // try {
+        //     LookAndFeel lookAndFeel = getThemeClass(theme);
+        //     UIManager.setLookAndFeel(lookAndFeel);
+        // } catch (ClassNotFoundException | InstantiationException | IllegalAccessException
+        //         | UnsupportedLookAndFeelException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e) {
+        //     e.printStackTrace();
+        // }
 
-        if (GUI.initialised)
-            GUI.refreshLookAndFeel();
+        // if (GUI.initialised)
+        //     GUI.refreshLookAndFeel();
 
-    }
-
-    public boolean isDarkTheme(String theme) {
-        switch (theme) {
-            case Themes.FLAT_LAF_DARK:
-            case Themes.FLAT_LAF_DARKULA:
-                return true;
-            case Themes.FLAT_LAF_INTELLIJ:
-            case Themes.FLAT_LAF_LIGHT:
-            case Themes.MATCH_IMAGEJ:
-            case Themes.SYSTEM_DEFAULT:
-            default:
-                return false;
-
-        }
     }
 
     public boolean darkThemeEnabled() {
-        return isDarkTheme(parameters.getValue(THEME,null));
+        return io.github.mianalysis.mia.gui.Themes.isDarkTheme(parameters.getValue(THEME,null));
     }
 
     public boolean showDeprecated() {

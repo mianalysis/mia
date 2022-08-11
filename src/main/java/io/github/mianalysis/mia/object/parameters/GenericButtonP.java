@@ -27,6 +27,9 @@ public class GenericButtonP extends Parameter {
             case REFRESH:
                 this.actionListener = getRefreshActionListener();
                 break;
+            case REFRESH_FILE:
+                this.actionListener = getRefreshFileActionListener();
+                break;
             case TEST_MACRO:
                 this.actionListener = getTestMacroActionListener();
                 break;
@@ -147,17 +150,16 @@ public class GenericButtonP extends Parameter {
         return new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                new Thread(() -> {
-                    GUI.addUndo();
+                GUI.addUndo();
 
-                    int idx = GUI.getModules().indexOf(getModule());
-                    if (idx <= GUI.getLastModuleEval() & !(getModule() instanceof OutputControl))
-                        GUI.setLastModuleEval(idx - 1);
+                int idx = GUI.getModules().indexOf(getModule());
+                if (idx <= GUI.getLastModuleEval() & !(getModule() instanceof OutputControl))
+                    GUI.setLastModuleEval(idx - 1);
 
-                    GUI.updateTestFile(true);
-                    GUI.updateModules();
-                    GUI.updateParameters();
-                }).start();
+                GUI.updateTestFile(true);
+                GUI.updateModules();
+                GUI.updateParameters();
+
             }
         };
     }

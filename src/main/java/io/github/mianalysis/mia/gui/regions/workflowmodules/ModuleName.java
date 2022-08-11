@@ -10,6 +10,7 @@ import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.border.EmptyBorder;
 
+import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.system.GUISeparator;
 import io.github.mianalysis.mia.object.system.Colours;
@@ -22,6 +23,8 @@ public class ModuleName extends JLabel {
 
     private static final ImageIcon skipIcon = new ImageIcon(
             ModuleName.class.getResource("/icons/skiparrow_orange_12px.png"), "");
+    private static final ImageIcon skipIconDM = new ImageIcon(
+            ModuleName.class.getResource("/icons/skiparrow_orangeDM_12px.png"), "");
     private static final ImageIcon warningIcon = new ImageIcon(
             ModuleName.class.getResource("/icons/warning_red_12px.png"), "");
 
@@ -29,6 +32,8 @@ public class ModuleName extends JLabel {
         this.module = module;
         this.table = table;
         this.isSelected = isSelected;
+
+        boolean darkMode = MIA.preferences.darkThemeEnabled();
 
         setBorder(new EmptyBorder(2, 5, 0, 0));
         setOpaque(true);
@@ -46,7 +51,7 @@ public class ModuleName extends JLabel {
         updateState();
 
         if (isSelected)
-            setBackground(Colours.LIGHT_BLUE);
+            setBackground(Colours.getLightBlue(darkMode));
         else
             setBackground(table.getBackground());
 
@@ -54,8 +59,11 @@ public class ModuleName extends JLabel {
 
     public void setSelected(boolean isSelected) {
         this.isSelected = isSelected;
+
+        boolean darkMode = MIA.preferences.darkThemeEnabled();
+
         if (isSelected)
-            setBackground(Colours.LIGHT_BLUE);
+            setBackground(Colours.getLightBlue(darkMode));
         else
             setBackground(table.getBackground());
     }
@@ -63,8 +71,10 @@ public class ModuleName extends JLabel {
     public void updateState() {
         setIcon(null);
 
+        boolean darkMode = MIA.preferences.darkThemeEnabled();
+
         if (isSelected)
-            setBackground(Colours.LIGHT_BLUE);
+            setBackground(Colours.getLightBlue(darkMode));
         else
             setBackground(table.getBackground());
 
@@ -73,26 +83,29 @@ public class ModuleName extends JLabel {
             deprecationMessage = " (deprecated)";
 
         if (module instanceof GUISeparator) {
-            setForeground(Colours.DARK_BLUE);
+            setForeground(Colours.getDarkBlue(darkMode));
             setToolTipText("Module separator");
         } else if (module.isEnabled() && module.isReachable() && module.isRunnable()) {
             setForeground(defaultColour);
             setToolTipText("<html>Module: " + module.getName() + "<br>Nickname: " + module.getNickname()
-                    + "<br>Status: OK"+deprecationMessage+"</html>");
+                    + "<br>Status: OK" + deprecationMessage + "</html>");
         } else if (module.isEnabled() & !module.isReachable()) {
-            setForeground(Colours.ORANGE);
-            setIcon(skipIcon);
+            setForeground(Colours.getOrange(darkMode));
+            if (MIA.preferences.darkThemeEnabled())
+                setIcon(skipIconDM);
+            else
+                setIcon(skipIcon);
             setToolTipText("<html>Module: " + module.getName() + "<br>Nickname: " + module.getNickname()
-                    + "<br>Status: Skipped"+deprecationMessage+"</html>");
+                    + "<br>Status: Skipped" + deprecationMessage + "</html>");
         } else if (module.isEnabled() & !module.isRunnable()) {
-            setForeground(Colours.RED);
+            setForeground(Colours.getRed(darkMode));
             setIcon(warningIcon);
             setToolTipText("<html>Module: " + module.getName() + "<br>Nickname: " + module.getNickname()
-                    + "<br>Status: Error"+deprecationMessage+"</html>");
+                    + "<br>Status: Error" + deprecationMessage + "</html>");
         } else {
             setForeground(Color.GRAY);
             setToolTipText("<html>Module: " + module.getName() + "<br>Nickname: " + module.getNickname()
-                    + "<br>Status: Disabled"+deprecationMessage+"</html>");
+                    + "<br>Status: Disabled" + deprecationMessage + "</html>");
         }
 
         if (module.isDeprecated()) {

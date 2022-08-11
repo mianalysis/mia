@@ -272,6 +272,8 @@ public class ImageSaver extends AbstractImageSaver {
     protected void initialiseParameters() {
         super.initialiseParameters();
 
+        boolean darkMode = MIA.preferences.darkThemeEnabled();
+
         parameters.add(new ChoiceP(SAVE_LOCATION, this, SaveLocations.SAVE_WITH_INPUT, SaveLocations.ALL));
         parameters.add(new FolderPathP(MIRROR_DIRECTORY_ROOT, this));
         parameters.add(new FolderPathP(SAVE_FILE_PATH, this));
@@ -279,7 +281,7 @@ public class ImageSaver extends AbstractImageSaver {
 
         parameters.add(new ChoiceP(SAVE_NAME_MODE, this, SaveNameModes.MATCH_INPUT, SaveNameModes.ALL));
         parameters.add(new StringP(SAVE_FILE_NAME, this));
-        parameters.add(new MessageP(AVAILABLE_METADATA_FIELDS, this, Colours.DARK_BLUE, 170));
+        parameters.add(new MessageP(AVAILABLE_METADATA_FIELDS, this, Colours.getDarkBlue(darkMode), 170));
         parameters.add(new ChoiceP(APPEND_SERIES_MODE, this, AppendSeriesModes.SERIES_NUMBER, AppendSeriesModes.ALL));
         parameters.add(new StringP(SAVE_SUFFIX, this));
 

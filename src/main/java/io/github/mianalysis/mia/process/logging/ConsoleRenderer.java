@@ -47,27 +47,27 @@ public class ConsoleRenderer implements LogRenderer {
         levelStatus.put(Level.MESSAGE,true);
 
         Style warningStyle = consoleTextPane.addStyle("Warning style", null);
-        StyleConstants.setForeground(warningStyle, Colours.ORANGE);
+        StyleConstants.setForeground(warningStyle, Colours.getOrange(false));
         logStyles.put(Level.WARNING,warningStyle);
         levelStatus.put(Level.WARNING,true);
 
         Style errorStyle = consoleTextPane.addStyle("Error style", null);
-        StyleConstants.setForeground(errorStyle, Colours.RED);
+        StyleConstants.setForeground(errorStyle, Colours.getRed(false));
         logStyles.put(Level.ERROR,errorStyle);
         levelStatus.put(Level.ERROR,true);
 
         Style debugStyle = consoleTextPane.addStyle("Debug style", null);
-        StyleConstants.setForeground(debugStyle, Colours.BLUE);
+        StyleConstants.setForeground(debugStyle, Colours.getBlue(false));
         logStyles.put(Level.DEBUG,debugStyle);
         levelStatus.put(Level.DEBUG,false);
 
         Style memoryStyle = consoleTextPane.addStyle("Memory style", null);
-        StyleConstants.setForeground(memoryStyle, Colours.GREEN);
+        StyleConstants.setForeground(memoryStyle, Colours.getGreen(false));
         logStyles.put(Level.MEMORY,memoryStyle);
         levelStatus.put(Level.MEMORY,false);
 
         Style statusStyle = consoleTextPane.addStyle("Status style", null);
-        StyleConstants.setForeground(statusStyle, Colours.DARK_GREY);
+        StyleConstants.setForeground(statusStyle, Colours.getDarkGrey(false));
         logStyles.put(Level.STATUS,statusStyle);
         levelStatus.put(Level.STATUS,false);
 

@@ -1,16 +1,25 @@
 package io.github.mianalysis.mia.gui.parametercontrols;
 
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+
+import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JSeparator;
+
+import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.object.parameters.SeparatorP;
 import io.github.mianalysis.mia.object.system.Colours;
-
-import javax.swing.*;
-import java.awt.*;
 
 public class SeparatorParameter extends ParameterControl {
     protected JPanel control;
 
     public SeparatorParameter(SeparatorP parameter) {
         super(parameter);
+
+        boolean darkMode = MIA.preferences.darkThemeEnabled();
 
         control = new JPanel(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
@@ -23,7 +32,7 @@ public class SeparatorParameter extends ParameterControl {
         c.anchor = GridBagConstraints.EAST;
 
         JSeparator separatorLeft = new JSeparator();
-        separatorLeft.setForeground(Colours.DARK_BLUE);
+        separatorLeft.setForeground(Colours.getDarkBlue(darkMode));
         c.weightx = 1;
         c.gridx++;
         c.insets = new Insets(0,0,0,5);
@@ -31,14 +40,14 @@ public class SeparatorParameter extends ParameterControl {
 
         JLabel label = new JLabel();
         label.setText(parameter.getNickname());
-        label.setForeground(Colours.DARK_BLUE);
+        label.setForeground(Colours.getDarkBlue(darkMode));
         c.weightx = 0;
         c.gridx++;
         c.insets = new Insets(0,0,0,0);
         control.add(label,c);
 
         JSeparator separatorRight = new JSeparator();
-        separatorRight.setForeground(Colours.DARK_BLUE);
+        separatorRight.setForeground(Colours.getDarkBlue(darkMode));
         c.weightx = 1;
         c.gridx++;
         c.insets = new Insets(0,5,0,0);

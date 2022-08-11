@@ -177,7 +177,7 @@ public class ProcessingControlPanel extends JScrollPane {
         // Adding title to help window
         JTextPane usageMessage = new JTextPane();
         usageMessage.setContentType("text/html");
-        usageMessage.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
+        usageMessage.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 14));
         usageMessage.setText("<html><center><font face=\"sans-serif\" size=\"3\">"
                 + "To load an existing workflow,<br>click \"Load\" and select a .mia file." + "<br><br>"
                 + "To start creating a new workflow,<br>go to View > Switch to editing view."

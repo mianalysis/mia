@@ -99,12 +99,12 @@ public class FileParameter extends ParameterControl implements ActionListener {
         if (idx <= GUI.getLastModuleEval() & !(module instanceof OutputControl))
             GUI.setLastModuleEval(idx - 1);
 
-        if (module.getClass().isInstance(new InputControl(GUI.getModules()))) {
-            MIA.log.writeStatus("Initialising file");
-            GUI.updateTestFile(true);
-            updateControl();
-            MIA.log.writeStatus("File initialisation complete");
-        }
+        // if (module.getClass().isInstance(new InputControl(GUI.getModules()))) {
+        //     MIA.log.writeStatus("Initialising file");
+        //     GUI.updateTestFile(true);
+        //     updateControl();
+        //     MIA.log.writeStatus("File initialisation complete");
+        // }
 
         GUI.updateModules();
         GUI.updateParameters();

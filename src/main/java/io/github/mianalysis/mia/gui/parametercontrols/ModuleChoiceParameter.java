@@ -12,6 +12,7 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.ListCellRenderer;
 
+import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.gui.GUI;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.core.OutputControl;
@@ -98,8 +99,10 @@ class ModuleListRenderer extends DefaultListCellRenderer {
         if (value == null) 
             return c;
 
+        boolean darkMode = MIA.preferences.darkThemeEnabled();
+
         if (c instanceof JLabel && value instanceof GUISeparator)
-            c.setForeground(Colours.DARK_BLUE);
+            c.setForeground(Colours.getDarkBlue(darkMode));
         
         return c;
     }

@@ -4,6 +4,7 @@ import java.awt.Dimension;
 
 import javax.swing.JProgressBar;
 
+import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.object.system.Colours;
 
 public class ProgressBarPanel extends JProgressBar {
@@ -15,22 +16,27 @@ public class ProgressBarPanel extends JProgressBar {
     public ProgressBarPanel() {
         super(0,100);
 
+        boolean darkMode = MIA.preferences.darkThemeEnabled();
+        
         setValue(0);
         setBorderPainted(false);
         setMinimumSize(new Dimension(1, 15));
         setMaximumSize(new Dimension(1, 15));
         setStringPainted(true);
         setString("");
-        setForeground(Colours.ORANGE);
+        setForeground(Colours.getOrange(darkMode));
         
     }
 
     @Override
     public void setValue(int value) {
         super.setValue(value);
+
+        boolean darkMode = MIA.preferences.darkThemeEnabled();
+
         if (value == 100)
-            setForeground(Colours.GREEN);
+            setForeground(Colours.getGreen(darkMode));
         else
-            setForeground(Colours.BLUE);
+            setForeground(Colours.getBlue(darkMode));
     }
 }

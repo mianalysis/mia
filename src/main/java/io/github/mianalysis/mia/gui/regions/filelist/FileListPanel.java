@@ -255,22 +255,24 @@ public class FileListPanel extends JPanel implements MouseListener, TableCellRen
                 progressBar.setString("");
                 progressBar.setToolTipText(String.valueOf((double) value));
 
+                boolean darkMode = MIA.preferences.darkThemeEnabled();
+
                 // Set a special colour if the analysis is marked as having failed
                 Status status = ((Workspace) model.getValueAt(row, COL_WORKSPACE)).getStatus();
                 switch (status) {
                     case PASS:
                     case REDIRECT:
                         if (progress == 100)
-                            progressBar.setForeground(Colours.GREEN);
+                            progressBar.setForeground(Colours.getGreen(darkMode));
                         else
-                            progressBar.setForeground(Colours.BLUE);
+                            progressBar.setForeground(Colours.getBlue(darkMode));
                         break;
                     case FAIL:
-                        progressBar.setForeground(Colours.RED);
+                        progressBar.setForeground(Colours.getRed(darkMode));
                         break;
                     case TERMINATE:
                     case TERMINATE_SILENT:
-                        progressBar.setForeground(Colours.ORANGE);
+                        progressBar.setForeground(Colours.getOrange(darkMode));
                         break;
                 }
 

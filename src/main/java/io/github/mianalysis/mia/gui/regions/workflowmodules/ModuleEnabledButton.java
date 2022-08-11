@@ -7,6 +7,7 @@ import java.awt.event.ActionListener;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 
+import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.gui.GUI;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
@@ -25,12 +26,20 @@ public class ModuleEnabledButton extends JButton implements ActionListener {
             ModuleEnabledButton.class.getResource("/icons/power_black_strike_12px.png"), "");
     private static final ImageIcon redIcon = new ImageIcon(
             ModuleEnabledButton.class.getResource("/icons/power_red_12px.png"), "");
+    private static final ImageIcon redIconDM = new ImageIcon(
+            ModuleEnabledButton.class.getResource("/icons/power_redDM_12px.png"), "");
     private static final ImageIcon orangeIcon = new ImageIcon(
             ModuleEnabledButton.class.getResource("/icons/power_orange_12px.png"), "");
+    private static final ImageIcon orangeIconDM = new ImageIcon(
+            ModuleEnabledButton.class.getResource("/icons/power_orangeDM_12px.png"), "");
     private static final ImageIcon greenIcon = new ImageIcon(
-            ModuleEnabledButton.class.getResource("/icons/power_brightgreen_12px.png"), "");
+            ModuleEnabledButton.class.getResource("/icons/power_green_12px.png"), "");
+    private static final ImageIcon greenIconDM = new ImageIcon(
+            ModuleEnabledButton.class.getResource("/icons/power_greenDM_12px.png"), "");
     private static final ImageIcon darkBlueIcon = new ImageIcon(
             ModuleEnabledButton.class.getResource("/icons/power_darkblue_12px.png"), "");
+    private static final ImageIcon darkBlueIconDM = new ImageIcon(
+            ModuleEnabledButton.class.getResource("/icons/power_darkblueDM_12px.png"), "");
 
     public ModuleEnabledButton(Module module) {
         this.module = module;
@@ -47,16 +56,29 @@ public class ModuleEnabledButton extends JButton implements ActionListener {
     }
 
     public void updateState() {
-        if (module instanceof GUISeparator && module.isEnabled())
-            setIcon(darkBlueIcon);
-        else if (module.isEnabled() && module.isReachable() && module.isRunnable())
-            setIcon(greenIcon);
-        else if (module.isEnabled() & !module.isReachable())
-            setIcon(orangeIcon);
-        else if (module.isEnabled() & !module.isRunnable())
-            setIcon(redIcon);
-        else
+        if (module instanceof GUISeparator && module.isEnabled()) {
+            if (MIA.preferences.darkThemeEnabled())
+                setIcon(darkBlueIconDM);
+            else
+                setIcon(darkBlueIcon);
+        } else if (module.isEnabled() && module.isReachable() && module.isRunnable()) {
+            if (MIA.preferences.darkThemeEnabled())
+                setIcon(greenIconDM);
+            else
+                setIcon(greenIcon);
+        } else if (module.isEnabled() & !module.isReachable()) {
+            if (MIA.preferences.darkThemeEnabled())
+                setIcon(orangeIconDM);
+            else
+                setIcon(orangeIcon);
+        } else if (module.isEnabled() & !module.isRunnable()) {
+            if (MIA.preferences.darkThemeEnabled())
+                setIcon(redIconDM);
+            else
+                setIcon(redIcon);
+        } else {
             setIcon(blackIcon);
+        }
     }
 
     public Module getModule() {

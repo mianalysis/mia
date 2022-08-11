@@ -62,7 +62,7 @@ import ome.xml.meta.IMetadata;
 /**
  * Created by Stephen on 29/07/2017.
  */
-@Plugin(type = Module.class, priority=Priority.LOW, visible=true)
+@Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class InputControl extends Module {
     public static final String MESSAGE_SEPARATOR = "Message";
     public static final String NO_LOAD_MESSAGE = "No load message";
@@ -143,19 +143,19 @@ public class InputControl extends Module {
     }
 
     public File getRootFile() {
-        return new File((String) parameters.getValue(INPUT_PATH,null));
+        return new File((String) parameters.getValue(INPUT_PATH, null));
     }
 
-    public void addFilenameFilters(FileCrawler fileCrawler) {        
+    public void addFilenameFilters(FileCrawler fileCrawler) {
         // Getting filters
-        LinkedHashMap<Integer, Parameters> collections = parameters.getValue(ADD_FILTER,null);
+        LinkedHashMap<Integer, Parameters> collections = parameters.getValue(ADD_FILTER, null);
 
         // Iterating over each filter
         for (Parameters collection : collections.values()) {
             // If this filter is a filename filter type, add it to the AnalysisRunner
-            String filterSource = collection.getValue(FILTER_SOURCE,null);
-            String filterValue = collection.getValue(FILTER_VALUE,null);
-            String filterType = collection.getValue(FILTER_TYPE,null);
+            String filterSource = collection.getValue(FILTER_SOURCE, null);
+            String filterValue = collection.getValue(FILTER_VALUE, null);
+            String filterType = collection.getValue(FILTER_TYPE, null);
 
             switch (filterSource) {
                 case FilterSources.EXTENSION:
@@ -204,7 +204,7 @@ public class InputControl extends Module {
 
     public TreeMap<Integer, String> getSeriesNumbers(File inputFile) {
         try {
-            switch ((String) parameters.getValue(SERIES_MODE,null)) {
+            switch ((String) parameters.getValue(SERIES_MODE, null)) {
                 case SeriesModes.ALL_SERIES:
                     return getAllSeriesNumbers(inputFile);
 
@@ -245,7 +245,8 @@ public class InputControl extends Module {
         ServiceFactory factory = new ServiceFactory();
         OMEXMLService service = factory.getInstance(OMEXMLService.class);
         IMetadata meta = service.createOMEXMLMetadata();
-        Memoizer reader = new Memoizer(new ImageProcessorReader(new ChannelSeparator(LociPrefs.makeImageReader())),1000);
+        Memoizer reader = new Memoizer(new ImageProcessorReader(new ChannelSeparator(LociPrefs.makeImageReader())),
+                1000);
         reader.setMetadataStore((MetadataStore) meta);
         reader.setGroupFiles(false);
         try {
@@ -258,12 +259,12 @@ public class InputControl extends Module {
 
         // Creating a Collection of seriesname filters
         HashSet<FileCondition> filters = new HashSet<>();
-        LinkedHashMap<Integer, Parameters> collections = parameters.getValue(ADD_FILTER,null);
+        LinkedHashMap<Integer, Parameters> collections = parameters.getValue(ADD_FILTER, null);
         for (Parameters collection : collections.values()) {
             // If this filter is a filename filter type, addRef it to the AnalysisRunner
-            String filterSource = collection.getValue(FILTER_SOURCE,null);
-            String filterValue = collection.getValue(FILTER_VALUE,null);
-            String filterType = collection.getValue(FILTER_TYPE,null);
+            String filterSource = collection.getValue(FILTER_SOURCE, null);
+            String filterValue = collection.getValue(FILTER_VALUE, null);
+            String filterType = collection.getValue(FILTER_TYPE, null);
 
             switch (filterSource) {
                 case FilterSources.SERIESNAME:
@@ -273,13 +274,13 @@ public class InputControl extends Module {
             }
         }
 
-        boolean ignoreCase = parameters.getValue(IGNORE_CASE,null);
+        boolean ignoreCase = parameters.getValue(IGNORE_CASE, null);
         for (int seriesNumber = 0; seriesNumber < reader.getSeriesCount(); seriesNumber++) {
             String name = meta.getImageName(seriesNumber);
 
             boolean pass = true;
             for (FileCondition filter : filters) {
-                if (name != null & !filter.test(new File(name),ignoreCase)) {
+                if (name != null & !filter.test(new File(name), ignoreCase)) {
                     pass = false;
                     break;
                 }
@@ -319,7 +320,8 @@ public class InputControl extends Module {
         ServiceFactory factory = new ServiceFactory();
         OMEXMLService service = factory.getInstance(OMEXMLService.class);
         OMEXMLMetadata meta = service.createOMEXMLMetadata();
-        Memoizer reader = new Memoizer(new ImageProcessorReader(new ChannelSeparator(LociPrefs.makeImageReader())),1000);
+        Memoizer reader = new Memoizer(new ImageProcessorReader(new ChannelSeparator(LociPrefs.makeImageReader())),
+                1000);
         reader.setMetadataStore((MetadataStore) meta);
         reader.setGroupFiles(false);
         try {
@@ -330,7 +332,7 @@ public class InputControl extends Module {
             return namesAndNumbers;
         }
 
-        String seriesListString = parameters.getValue(InputControl.SERIES_LIST,null);
+        String seriesListString = parameters.getValue(InputControl.SERIES_LIST, null);
         int[] seriesList = CommaSeparatedStringInterpreter.interpretIntegers(seriesListString, true,
                 reader.getSeriesCount());
 
@@ -373,10 +375,12 @@ public class InputControl extends Module {
 
     @Override
     protected void initialiseParameters() {
+        boolean darkMode = MIA.preferences.darkThemeEnabled();
+
         parameters.add(new SeparatorP(MESSAGE_SEPARATOR, this));
         parameters.add(new MessageP(NO_LOAD_MESSAGE, this,
                 "\"Input control\" only specifies the path to the root image; no image is loaded into the workspace at this point.  To load images, add one or more \"Load Image\" modules.",
-                Colours.ORANGE));
+                Colours.getOrange(darkMode)));
 
         parameters.add(new SeparatorP(IMPORT_SEPARATOR, this));
         parameters.add(new FileFolderPathP(INPUT_PATH, this));
@@ -405,7 +409,7 @@ public class InputControl extends Module {
         parameters.add(new IntegerP(SIMULTANEOUS_JOBS, this, 1));
         parameters.add(new MessageP(MACRO_WARNING, this,
                 "Analysis can only be run as a single simultaneous job when ImageJ macro module is present.",
-                Colours.RED));
+                Colours.getRed(darkMode)));
 
         addParameterDescriptions();
 
@@ -413,7 +417,7 @@ public class InputControl extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
-Workspace workspace = null;
+        Workspace workspace = null;
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(MESSAGE_SEPARATOR));
@@ -432,7 +436,7 @@ Workspace workspace = null;
         }
         returnedParameters.add(parameters.getParameter(LOAD_FIRST_PER_FOLDER));
         returnedParameters.add(parameters.getParameter(LOAD_FIRST_MATCHING_GROUP));
-        if ((boolean) parameters.getValue(LOAD_FIRST_MATCHING_GROUP,null))
+        if ((boolean) parameters.getValue(LOAD_FIRST_MATCHING_GROUP, null))
             returnedParameters.add(parameters.getParameter(PATTERN));
         returnedParameters.add(parameters.getParameter(REFRESH_FILE));
 
@@ -448,7 +452,7 @@ Workspace workspace = null;
         returnedParameters.add(parameters.getParameter(SIMULTANEOUS_JOBS));
         // If a the RunMacro module is present, this analysis must be run as a single
         // job
-        if ((int) parameters.getValue(SIMULTANEOUS_JOBS,null) > 1) {
+        if ((int) parameters.getValue(SIMULTANEOUS_JOBS, null) > 1) {
             for (Module module : modules) {
                 if (module instanceof RunMacro || module instanceof RunMacroOnObjects) {
                     returnedParameters.add(parameters.getParameter(MACRO_WARNING));
@@ -463,16 +467,16 @@ Workspace workspace = null;
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
-return null;
+        return null;
     }
 
     @Override
-public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
-return null;
+    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+        return null;
     }
 
     @Override
-public MetadataRefs updateAndGetMetadataReferences() {
+    public MetadataRefs updateAndGetMetadataReferences() {
         MetadataRefs returnedRefs = new MetadataRefs();
 
         // The following are added to the MetadataRefs during Workspace
@@ -490,12 +494,12 @@ public MetadataRefs updateAndGetMetadataReferences() {
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
-return null;
+        return null;
     }
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
-return null;
+        return null;
     }
 
     @Override

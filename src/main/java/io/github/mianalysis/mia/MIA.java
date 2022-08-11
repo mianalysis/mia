@@ -3,6 +3,11 @@ package io.github.mianalysis.mia;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+
+import javax.swing.LookAndFeel;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 
 import org.apache.maven.model.Model;
 import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
@@ -12,7 +17,9 @@ import org.scijava.plugin.Parameter;
 import org.scijava.plugin.Plugin;
 import org.scijava.ui.UIService;
 
+import ij.Prefs;
 import io.github.mianalysis.mia.gui.GUI;
+import io.github.mianalysis.mia.gui.Themes;
 import io.github.mianalysis.mia.module.LostAndFound;
 import io.github.mianalysis.mia.moduledependencies.Dependencies;
 import io.github.mianalysis.mia.object.system.Preferences;
@@ -41,9 +48,9 @@ public class MIA implements Command {
 
     public static Preferences preferences;
     public static Log log = new Log(mainRenderer); // This is for testing and headless modes
-    public final static Dependencies dependencies = new Dependencies(); // Maps module dependencies and reports if a
+    public static Dependencies dependencies; // Maps module dependencies and reports if a
                                                                         // module's requirements aren't satisfied
-    public final static LostAndFound lostAndFound = new LostAndFound(); // Maps missing modules and parameters to
+    public static LostAndFound lostAndFound; // Maps missing modules and parameters to
                                                                         // replacements (e.g. if a module was renamed)
 
     /*
@@ -75,12 +82,17 @@ public class MIA implements Command {
 
     @Override
     public void run() {
-        try {
-            preferences = new Preferences(null);
-            preferences.setTheme();
-            //preferences.setTheme(preferences.getParameterValue(Preferences.THEME));
+        if (!headless) {
+            try {
+                String theme = Prefs.get("MIA.GUI.theme", Themes.getDefaultTheme());
+                UIManager.setLookAndFeel(Themes.getThemeClass(theme));
+            } catch (ClassNotFoundException | InstantiationException | IllegalAccessException
+                    | UnsupportedLookAndFeelException | IllegalArgumentException | InvocationTargetException
+                    | NoSuchMethodException | SecurityException e) {
+                e.printStackTrace();
+            }
+            try {
 
-            if (!headless) {
                 // Before removing the old renderer we want to check the new one can be created
                 UIService uiService = ijService.context().getService(UIService.class);
                 LogRenderer newRenderer = new ConsoleRenderer(uiService);
@@ -89,12 +101,14 @@ public class MIA implements Command {
                 mainRenderer = newRenderer;
                 mainRenderer.setWriteEnabled(LogRenderer.Level.DEBUG, debug);
                 log.addRenderer(mainRenderer);
-
+            } catch (Exception e) {
+                // If any exception was thrown, just don't apply the ConsoleRenderer.
             }
-
-        } catch (Exception e) {
-            // If any exception was thrown, just don't apply the ConsoleRenderer.
         }
+
+        preferences = new Preferences(null);
+        dependencies = new Dependencies();
+        lostAndFound = new LostAndFound();
 
         log.addRenderer(logHistory);
 
@@ -124,13 +138,14 @@ public class MIA implements Command {
     }
 
     // public void setLookAndFeel() {
-    //     try {
-    //         UIManager.put("TitlePane.showIconBesideTitle", true);
-    //         UIManager.setLookAndFeel(FlatLightLaf.class.getCanonicalName());
-    //     } catch (ClassNotFoundException | InstantiationException | IllegalAccessException
-    //             | UnsupportedLookAndFeelException e) {
-    //         MIA.log.writeError(e);
-    //     }
+    // try {
+    // UIManager.put("TitlePane.showIconBesideTitle", true);
+    // UIManager.setLookAndFeel(FlatLightLaf.class.getCanonicalName());
+    // } catch (ClassNotFoundException | InstantiationException |
+    // IllegalAccessException
+    // | UnsupportedLookAndFeelException e) {
+    // MIA.log.writeError(e);
+    // }
     // }
 
     public static boolean isImagePlusMode() {

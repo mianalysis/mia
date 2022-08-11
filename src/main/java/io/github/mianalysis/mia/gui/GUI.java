@@ -334,6 +334,8 @@ public class GUI {
         // Setting macro
         MacroHandler.setWorkspace(testWorkspace);
 
+        MIA.log.writeStatus("Test file updated");
+
     }
 
     public static int getLastModuleEval() {

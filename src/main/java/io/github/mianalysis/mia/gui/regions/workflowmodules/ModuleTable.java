@@ -23,6 +23,7 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableModel;
 
+import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.gui.GUI;
 import io.github.mianalysis.mia.gui.GUIAnalysisHandler;
 import io.github.mianalysis.mia.gui.regions.RenameListMenu;
@@ -162,8 +163,10 @@ public class ModuleTable extends JTable implements ActionListener, MouseListener
             label.setBorder(new EmptyBorder(2, 5, 0, 0));
             label.setOpaque(true);
 
+            boolean darkMode = MIA.preferences.darkThemeEnabled();
+            
             if (isSelected)
-                label.setBackground(Colours.LIGHT_BLUE);
+                label.setBackground(Colours.getLightBlue(darkMode));
             else
                 label.setBackground(table.getBackground());
 
