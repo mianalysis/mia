@@ -3,11 +3,6 @@ package io.github.mianalysis.mia;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-
-import javax.swing.LookAndFeel;
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
 
 import org.apache.maven.model.Model;
 import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
@@ -17,9 +12,7 @@ import org.scijava.plugin.Parameter;
 import org.scijava.plugin.Plugin;
 import org.scijava.ui.UIService;
 
-import ij.Prefs;
 import io.github.mianalysis.mia.gui.GUI;
-import io.github.mianalysis.mia.gui.Themes;
 import io.github.mianalysis.mia.module.LostAndFound;
 import io.github.mianalysis.mia.moduledependencies.Dependencies;
 import io.github.mianalysis.mia.object.system.Preferences;
@@ -46,7 +39,7 @@ public class MIA implements Command {
     private static LogHistory logHistory = new LogHistory();
     private final static boolean headless = false; // Determines if there is a GUI
 
-    public static Preferences preferences;
+    public static Preferences preferences = new Preferences(null);;
     public static Log log = new Log(mainRenderer); // This is for testing and headless modes
     public static Dependencies dependencies; // Maps module dependencies and reports if a
                                                                         // module's requirements aren't satisfied
@@ -70,7 +63,6 @@ public class MIA implements Command {
                 new ij.ImageJ();
                 new ImageJ().command().run("io.github.mianalysis.mia.MIA", false);
             } else {
-                preferences = new Preferences(null);
                 Analysis analysis = AnalysisReader.loadAnalysis(args[0]);
                 new AnalysisRunner().run(analysis);
             }
@@ -84,15 +76,6 @@ public class MIA implements Command {
     public void run() {
         if (!headless) {
             try {
-                String theme = Prefs.get("MIA.GUI.theme", Themes.getDefaultTheme());
-                UIManager.setLookAndFeel(Themes.getThemeClass(theme));
-            } catch (ClassNotFoundException | InstantiationException | IllegalAccessException
-                    | UnsupportedLookAndFeelException | IllegalArgumentException | InvocationTargetException
-                    | NoSuchMethodException | SecurityException e) {
-                e.printStackTrace();
-            }
-            try {
-
                 // Before removing the old renderer we want to check the new one can be created
                 UIService uiService = ijService.context().getService(UIService.class);
                 LogRenderer newRenderer = new ConsoleRenderer(uiService);
@@ -106,7 +89,6 @@ public class MIA implements Command {
             }
         }
 
-        preferences = new Preferences(null);
         dependencies = new Dependencies();
         lostAndFound = new LostAndFound();
 

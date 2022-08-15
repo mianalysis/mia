@@ -111,7 +111,7 @@ public class FileParameter extends ParameterControl implements ActionListener {
 
     }
 
-    private String checkPath(String path) {
+    public static String checkPath(String path) {
         File file = new File(path);
 
         // Check if the full path exists
