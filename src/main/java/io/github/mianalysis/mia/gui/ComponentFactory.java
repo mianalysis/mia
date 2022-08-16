@@ -96,7 +96,8 @@ public class ComponentFactory {
         parameterControl.updateControl();
         JComponent parameterComponent = parameterControl.getComponent();
 
-        boolean darkMode = MIA.preferences.darkThemeEnabled();
+        Preferences preferences = MIA.getPreferences();
+boolean darkMode = preferences == null ? false : preferences.darkThemeEnabled();
 
         if (parameter instanceof MessageP || parameter instanceof ObjMeasurementSelectorP) {
             String value = parameter.getAlternativeString();
@@ -255,7 +256,8 @@ public class ComponentFactory {
     }
 
     public JPanel createProcessingSeparator(Module module) {
-        boolean darkMode = MIA.preferences.darkThemeEnabled();
+        Preferences preferences = MIA.getPreferences();
+boolean darkMode = preferences == null ? false : preferences.darkThemeEnabled();
 
         JPanel panel = new JPanel(new GridBagLayout());
 
@@ -279,12 +281,12 @@ public class ComponentFactory {
         BooleanP expandedProcessing = (BooleanP) module.getParameter(GUISeparator.EXPANDED_PROCESSING);
         JLabel leftArrowLabel = new JLabel();
         if (expandedProcessing.isSelected()) {
-            if (MIA.preferences.darkThemeEnabled())
+            if (MIA.getPreferences().darkThemeEnabled())
                 leftArrowLabel.setIcon(downArrowDM);
             else
                 leftArrowLabel.setIcon(downArrow);
         } else {
-            if (MIA.preferences.darkThemeEnabled())
+            if (MIA.getPreferences().darkThemeEnabled())
                 leftArrowLabel.setIcon(rightArrowDM);
             else
                 leftArrowLabel.setIcon(rightArrow);
@@ -321,12 +323,12 @@ public class ComponentFactory {
 
         JLabel rightArrowLabel = new JLabel();
         if (expandedProcessing.isSelected()) {
-            if (MIA.preferences.darkThemeEnabled())
+            if (MIA.getPreferences().darkThemeEnabled())
                 rightArrowLabel.setIcon(downArrowDM);
             else
                 rightArrowLabel.setIcon(downArrow);
         } else {
-            if (MIA.preferences.darkThemeEnabled())
+            if (MIA.getPreferences().darkThemeEnabled())
                 rightArrowLabel.setIcon(leftArrowDM);
             else
                 rightArrowLabel.setIcon(leftArrow);

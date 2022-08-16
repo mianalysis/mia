@@ -10,6 +10,7 @@ import javax.swing.JButton;
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.gui.GUI;
 import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.object.system.Preferences;
 
 /**
  * Created by sc13967 on 07/06/2017.
@@ -66,7 +67,8 @@ public class ShowOutputButton extends JButton implements ActionListener {
     }
 
     public void updateState() {
-        boolean darkMode = MIA.preferences.darkThemeEnabled();
+        Preferences preferences = MIA.getPreferences();
+        boolean darkMode = preferences == null ? false : preferences.darkThemeEnabled();
 
         if ((state && module.isEnabled()) && module.isReachable() && module.isRunnable()) {
             if (darkMode)

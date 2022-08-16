@@ -45,12 +45,12 @@ public class VisibleCheck extends JButton implements ActionListener {
 
     public void updateIcon() {
         if (parameter.isVisible()) {
-            if (MIA.preferences.darkThemeEnabled())
+            if (MIA.getPreferences().darkThemeEnabled())
                 setIcon(openIconDM);
             else
                 setIcon(openIcon);
         } else {
-            if (MIA.preferences.darkThemeEnabled())
+            if (MIA.getPreferences().darkThemeEnabled())
                 setIcon(closedIconDM);
             else
                 setIcon(closedIcon);

@@ -27,6 +27,7 @@ import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Colours;
+import io.github.mianalysis.mia.object.system.Preferences;
 import io.github.mianalysis.mia.object.system.Status;
 import io.github.sjcross.sjcommon.object.Point;
 import io.github.sjcross.sjcommon.object.volume.PointOutOfRangeException;
@@ -34,7 +35,7 @@ import io.github.sjcross.sjcommon.object.volume.PointOutOfRangeException;
 /**
  * Created by sc13967 on 29/06/2017.
  */
-@Plugin(type = Module.class, priority=Priority.LOW, visible=true)
+@Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class DuplicateAcrossTime extends Module {
     public static final String INPUT_SEPARATOR = "Object input";
     public static final String INPUT_OBJECTS = "Input objects";
@@ -135,22 +136,22 @@ public class DuplicateAcrossTime extends Module {
     @Override
     public Status process(Workspace workspace) {
         // Getting input objects
-        String inputObjectName = parameters.getValue(INPUT_OBJECTS,workspace);
+        String inputObjectName = parameters.getValue(INPUT_OBJECTS, workspace);
         Objs inputObjects = workspace.getObjects().get(inputObjectName);
 
         // Getting parameters
-        String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS,workspace);
-        String storageMode = parameters.getValue(STORAGE_MODE,workspace);
-        String startFrameMode = parameters.getValue(START_FRAME_MODE,workspace);
-        int startFrame = parameters.getValue(START_FRAME_FIXED_VALUE,workspace);
-        String startImageName = parameters.getValue(START_FRAME_IMAGE,workspace);
-        String startImageMeasurementName = parameters.getValue(START_FRAME_IMAGE_MEASUREMENT,workspace);
-        int startOffset = parameters.getValue(START_OFFSET,workspace);
-        String endMode = parameters.getValue(END_FRAME_MODE,workspace);
-        int endFrame = parameters.getValue(END_FRAME_FIXED_VALUE,workspace);
-        String endImageName = parameters.getValue(END_FRAME_IMAGE,workspace);
-        String endImageMeasurementName = parameters.getValue(END_FRAME_IMAGE_MEASUREMENT,workspace);
-        int endOffset = parameters.getValue(END_OFFSET,workspace);
+        String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS, workspace);
+        String storageMode = parameters.getValue(STORAGE_MODE, workspace);
+        String startFrameMode = parameters.getValue(START_FRAME_MODE, workspace);
+        int startFrame = parameters.getValue(START_FRAME_FIXED_VALUE, workspace);
+        String startImageName = parameters.getValue(START_FRAME_IMAGE, workspace);
+        String startImageMeasurementName = parameters.getValue(START_FRAME_IMAGE_MEASUREMENT, workspace);
+        int startOffset = parameters.getValue(START_OFFSET, workspace);
+        String endMode = parameters.getValue(END_FRAME_MODE, workspace);
+        int endFrame = parameters.getValue(END_FRAME_FIXED_VALUE, workspace);
+        String endImageName = parameters.getValue(END_FRAME_IMAGE, workspace);
+        String endImageMeasurementName = parameters.getValue(END_FRAME_IMAGE_MEASUREMENT, workspace);
+        int endOffset = parameters.getValue(END_OFFSET, workspace);
 
         // Getting start and end frames
         switch (startFrameMode) {
@@ -182,7 +183,8 @@ public class DuplicateAcrossTime extends Module {
 
     @Override
     protected void initialiseParameters() {
-        boolean darkMode = MIA.preferences.darkThemeEnabled();
+        Preferences preferences = MIA.getPreferences();
+        boolean darkMode = preferences == null ? false : preferences.darkThemeEnabled();
 
         parameters.add(new SeparatorP(INPUT_SEPARATOR, this));
         parameters.add(new InputObjectsP(INPUT_OBJECTS, this));
@@ -212,7 +214,7 @@ public class DuplicateAcrossTime extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
-Workspace workspace = null;
+        Workspace workspace = null;
         Parameters returnedParams = new Parameters();
 
         returnedParams.add(parameters.get(INPUT_SEPARATOR));
@@ -221,7 +223,7 @@ Workspace workspace = null;
         returnedParams.add(parameters.get(OUTPUT_SEPARATOR));
         returnedParams.add(parameters.get(OUTPUT_OBJECTS));
         returnedParams.add(parameters.get(STORAGE_MODE));
-        switch ((String) parameters.getValue(STORAGE_MODE,workspace)) {
+        switch ((String) parameters.getValue(STORAGE_MODE, workspace)) {
             case StorageModes.COMMON_ACROSS_ALL_OBJECTS:
                 returnedParams.add(parameters.get(COMMON_WARNING));
                 break;
@@ -229,7 +231,7 @@ Workspace workspace = null;
 
         returnedParams.add(parameters.get(FRAME_SEPARATOR));
         returnedParams.add(parameters.get(START_FRAME_MODE));
-        switch ((String) parameters.getValue(START_FRAME_MODE,workspace)) {
+        switch ((String) parameters.getValue(START_FRAME_MODE, workspace)) {
             case FrameModes.FIXED_VALUE:
                 returnedParams.add(parameters.get(START_FRAME_FIXED_VALUE));
                 break;
@@ -238,14 +240,14 @@ Workspace workspace = null;
                 returnedParams.add(parameters.get(START_FRAME_IMAGE_MEASUREMENT));
                 returnedParams.add(parameters.get(START_OFFSET));
 
-                String startImageName = parameters.getValue(START_FRAME_IMAGE,workspace);
+                String startImageName = parameters.getValue(START_FRAME_IMAGE, workspace);
                 ((ImageMeasurementP) parameters.get(START_FRAME_IMAGE_MEASUREMENT)).setImageName(startImageName);
                 break;
         }
 
         returnedParams.add(parameters.get(FRAME_SEPARATOR));
         returnedParams.add(parameters.get(END_FRAME_MODE));
-        switch ((String) parameters.getValue(END_FRAME_MODE,workspace)) {
+        switch ((String) parameters.getValue(END_FRAME_MODE, workspace)) {
             case FrameModes.FIXED_VALUE:
                 returnedParams.add(parameters.get(END_FRAME_FIXED_VALUE));
                 break;
@@ -254,7 +256,7 @@ Workspace workspace = null;
                 returnedParams.add(parameters.get(END_FRAME_IMAGE_MEASUREMENT));
                 returnedParams.add(parameters.get(END_OFFSET));
 
-                String endImageName = parameters.getValue(END_FRAME_IMAGE,workspace);
+                String endImageName = parameters.getValue(END_FRAME_IMAGE, workspace);
                 ((ImageMeasurementP) parameters.get(END_FRAME_IMAGE_MEASUREMENT)).setImageName(endImageName);
                 break;
         }
@@ -265,26 +267,26 @@ Workspace workspace = null;
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
-return null;
+        return null;
     }
 
     @Override
-public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
-return null;
+    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+        return null;
     }
 
     @Override
-public MetadataRefs updateAndGetMetadataReferences() {
-return null;
+    public MetadataRefs updateAndGetMetadataReferences() {
+        return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
-Workspace workspace = null;
+        Workspace workspace = null;
         ParentChildRefs returnedRefs = new ParentChildRefs();
 
-        String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
-        String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS,workspace);
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS, workspace);
+        String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS, workspace);
 
         returnedRefs.add(parentChildRefs.getOrPut(inputObjectsName, outputObjectsName));
 
@@ -294,7 +296,7 @@ Workspace workspace = null;
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
-return null;
+        return null;
     }
 
     @Override

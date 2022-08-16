@@ -46,12 +46,12 @@ public class ExportEnableButton extends JButton implements ActionListener {
 
     public void setIcon() {
         if (ref.isExportGlobal()) {
-            if (MIA.preferences.darkThemeEnabled())
+            if (MIA.getPreferences().darkThemeEnabled())
                 setIcon(greenIconDM);
             else
                 setIcon(greenIcon);
         } else {
-            if (MIA.preferences.darkThemeEnabled())
+            if (MIA.getPreferences().darkThemeEnabled())
                 setIcon(blackIconDM);
             else
                 setIcon(blackIcon);

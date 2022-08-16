@@ -72,7 +72,7 @@ public class EvalButton extends JButton implements ActionListener {
 
         // If the module is being currently evaluated
         if (idx == GUI.getModuleBeingEval()) {
-            if (MIA.preferences.darkThemeEnabled())
+            if (MIA.getPreferences().darkThemeEnabled())
                 setIcon(amberIconDM);
             else
                 setIcon(amberIcon);
@@ -84,7 +84,7 @@ public class EvalButton extends JButton implements ActionListener {
 
         if (idx <= GUI.getLastModuleEval()) {
             if (module.isRunnable()) {
-                if (MIA.preferences.darkThemeEnabled()) {
+                if (MIA.getPreferences().darkThemeEnabled()) {
                     setIcon(greenIconDM);
                     setRolloverIcon(greenIconDM);
                 } else {
@@ -92,7 +92,7 @@ public class EvalButton extends JButton implements ActionListener {
                     setRolloverIcon(greenIcon);
                 }
             } else {
-                if (MIA.preferences.darkThemeEnabled()) {
+                if (MIA.getPreferences().darkThemeEnabled()) {
                     setIcon(redClosedIconDM);
                     setRolloverIcon(redClosedIconDM);
                 } else {
@@ -102,7 +102,7 @@ public class EvalButton extends JButton implements ActionListener {
             }
         } else {
             if (module.isRunnable()) {
-                if (MIA.preferences.darkThemeEnabled()) {
+                if (MIA.getPreferences().darkThemeEnabled()) {
                     setIcon(blackIconDM);
                     setRolloverIcon(blackIconDM);
                 } else {
@@ -110,7 +110,7 @@ public class EvalButton extends JButton implements ActionListener {
                     setRolloverIcon(blackIcon);
                 }
             } else {
-                if (MIA.preferences.darkThemeEnabled()) {
+                if (MIA.getPreferences().darkThemeEnabled()) {
                     setIcon(redOpenIconDM);
                     setRolloverIcon(redOpenIconDM);
                 } else {

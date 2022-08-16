@@ -62,19 +62,6 @@ public class Preferences extends Module {
 
     // }
 
-    public Preferences() {
-        super("Preferences", null);
-
-        try {
-            String theme = Prefs.get("MIA.GUI.theme", io.github.mianalysis.mia.gui.Themes.getDefaultTheme());
-            UIManager.setLookAndFeel(io.github.mianalysis.mia.gui.Themes.getThemeClass(theme));
-        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException
-                | UnsupportedLookAndFeelException | IllegalArgumentException | InvocationTargetException
-                | NoSuchMethodException | SecurityException e) {
-            e.printStackTrace();
-        }
-    }
-
     public void setTheme() {
         String theme = parameters.getValue(THEME, null);
 

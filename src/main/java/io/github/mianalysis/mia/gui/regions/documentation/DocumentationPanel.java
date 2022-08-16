@@ -103,7 +103,7 @@ public class DocumentationPanel {
             sb.append("<html><body><div align=\"justify\">");
 
             sb.append("<img src=\"");
-            if (MIA.preferences.darkThemeEnabled())
+            if (MIA.getPreferences().darkThemeEnabled())
                 sb.append(MIA.class.getResource("/images/Logo_text_UoB_64_DM.png").toString());
             else
                 sb.append(MIA.class.getResource("/images/Logo_text_UoB_64.png").toString());
@@ -155,7 +155,7 @@ public class DocumentationPanel {
             sb.append("<html><body><div align=\"justify\">");
 
             sb.append("<img src=\"");
-            if (MIA.preferences.darkThemeEnabled())
+            if (MIA.getPreferences().darkThemeEnabled())
                 sb.append(MIA.class.getResource("/images/Logo_text_UoB_64_DM.png").toString());
             else
                 sb.append(MIA.class.getResource("/images/Logo_text_UoB_64.png").toString());

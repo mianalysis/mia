@@ -32,11 +32,12 @@ import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Colours;
+import io.github.mianalysis.mia.object.system.Preferences;
 import io.github.mianalysis.mia.object.system.Status;
 import io.github.mianalysis.mia.process.ColourFactory;
 import io.github.sjcross.sjcommon.process.CommaSeparatedStringInterpreter;
 
-@Plugin(type = Module.class, priority=Priority.LOW, visible=true)
+@Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class AddText extends AbstractOverlay {
     TextRoi textRoi = null;
     public static final String INPUT_SEPARATOR = "Image input/output";
@@ -96,25 +97,25 @@ public class AddText extends AbstractOverlay {
     @Override
     protected Status process(Workspace workspace) {
         // Getting parameters
-        boolean applyToInput = parameters.getValue(APPLY_TO_INPUT,workspace);
-        boolean addOutputToWorkspace = parameters.getValue(ADD_OUTPUT_TO_WORKSPACE,workspace);
-        String outputImageName = parameters.getValue(OUTPUT_IMAGE,workspace);
+        boolean applyToInput = parameters.getValue(APPLY_TO_INPUT, workspace);
+        boolean addOutputToWorkspace = parameters.getValue(ADD_OUTPUT_TO_WORKSPACE, workspace);
+        String outputImageName = parameters.getValue(OUTPUT_IMAGE, workspace);
 
         // Getting input image
-        String inputImageName = parameters.getValue(INPUT_IMAGE,workspace);
+        String inputImageName = parameters.getValue(INPUT_IMAGE, workspace);
         Image inputImage = workspace.getImages().get(inputImageName);
         ImagePlus ipl = inputImage.getImagePlus();
 
         // Getting label settings
-        double opacity = parameters.getValue(OPACITY,workspace);
-        String text = parameters.getValue(TEXT,workspace);
-        int xPosition = parameters.getValue(X_POSITION,workspace);
-        int yPosition = parameters.getValue(Y_POSITION,workspace);
-        String zRangeString = parameters.getValue(Z_RANGE,workspace);
-        String frameRangeString = parameters.getValue(FRAME_RANGE,workspace);
-        int labelSize = parameters.getValue(LABEL_SIZE,workspace);
-        boolean centreText = parameters.getValue(CENTRE_TEXT,workspace);
-        String labelColour = parameters.getValue(LABEL_COLOUR,workspace);
+        double opacity = parameters.getValue(OPACITY, workspace);
+        String text = parameters.getValue(TEXT, workspace);
+        int xPosition = parameters.getValue(X_POSITION, workspace);
+        int yPosition = parameters.getValue(Y_POSITION, workspace);
+        String zRangeString = parameters.getValue(Z_RANGE, workspace);
+        String frameRangeString = parameters.getValue(FRAME_RANGE, workspace);
+        int labelSize = parameters.getValue(LABEL_SIZE, workspace);
+        boolean centreText = parameters.getValue(CENTRE_TEXT, workspace);
+        String labelColour = parameters.getValue(LABEL_COLOUR, workspace);
         Color color = ColourFactory.getColour(labelColour);
 
         // Only add output to workspace if not applying to input
@@ -148,7 +149,8 @@ public class AddText extends AbstractOverlay {
     protected void initialiseParameters() {
         super.initialiseParameters();
 
-        boolean darkMode = MIA.preferences.darkThemeEnabled();
+        Preferences preferences = MIA.getPreferences();
+        boolean darkMode = preferences == null ? false : preferences.darkThemeEnabled();
 
         parameters.add(new SeparatorP(INPUT_SEPARATOR, this));
         parameters.add(new InputImageP(INPUT_IMAGE, this));
@@ -175,16 +177,16 @@ public class AddText extends AbstractOverlay {
 
     @Override
     public Parameters updateAndGetParameters() {
-Workspace workspace = null;
+        Workspace workspace = null;
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(INPUT_IMAGE));
         returnedParameters.add(parameters.getParameter(APPLY_TO_INPUT));
-        if (!(boolean) parameters.getValue(APPLY_TO_INPUT,workspace)) {
+        if (!(boolean) parameters.getValue(APPLY_TO_INPUT, workspace)) {
             returnedParameters.add(parameters.getParameter(ADD_OUTPUT_TO_WORKSPACE));
 
-            if ((boolean) parameters.getValue(ADD_OUTPUT_TO_WORKSPACE,workspace)) {
+            if ((boolean) parameters.getValue(ADD_OUTPUT_TO_WORKSPACE, workspace)) {
                 returnedParameters.add(parameters.getParameter(OUTPUT_IMAGE));
 
             }
@@ -207,27 +209,27 @@ Workspace workspace = null;
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
-return null;
+        return null;
     }
 
     @Override
-public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
-return null;
+    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+        return null;
     }
 
     @Override
-public MetadataRefs updateAndGetMetadataReferences() {
-return null;
+    public MetadataRefs updateAndGetMetadataReferences() {
+        return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
-return null;
+        return null;
     }
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
-return null;
+        return null;
     }
 
     @Override

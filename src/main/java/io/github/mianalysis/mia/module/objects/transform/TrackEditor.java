@@ -35,7 +35,6 @@ import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.image.Image;
-import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChildObjectsP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
@@ -49,6 +48,7 @@ import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Colours;
+import io.github.mianalysis.mia.object.system.Preferences;
 import io.github.mianalysis.mia.object.system.Status;
 import io.github.sjcross.sjcommon.object.volume.PointOutOfRangeException;
 import io.github.sjcross.sjcommon.object.volume.VolumeType;
@@ -143,7 +143,7 @@ public class TrackEditor extends Module {
             if (spot.getFeatures().containsKey("ID"))
                 continue;
 
-            Obj spotObj = spotObjects.createAndAddNewObject(VolumeType.POINTLIST,++maxID);
+            Obj spotObj = spotObjects.createAndAddNewObject(VolumeType.POINTLIST, ++maxID);
             int x = (int) Math.round(spot.getFeature(Spot.POSITION_X));
             int y = (int) Math.round(spot.getFeature(Spot.POSITION_Y));
             int z = (int) Math.round(spot.getFeature(Spot.POSITION_Z));
@@ -167,7 +167,7 @@ public class TrackEditor extends Module {
         ArrayList<Integer> availableIDs = new ArrayList<>();
         for (Spot spot : spots.iterable(false))
             availableIDs.add((int) Math.round(spot.getFeature("ID")));
-                
+
         Iterator<Integer> iterator = spotObjects.keySet().iterator();
         while (iterator.hasNext()) {
             int ID = iterator.next();
@@ -263,17 +263,17 @@ public class TrackEditor extends Module {
     @Override
     public Status process(Workspace workspace) {
         // Getting input track objects
-        String inputTrackObjectsName = parameters.getValue(INPUT_TRACK_OBJECTS,workspace);
+        String inputTrackObjectsName = parameters.getValue(INPUT_TRACK_OBJECTS, workspace);
         Objs trackObjects = workspace.getObjectSet(inputTrackObjectsName);
 
         // Getting input spot objects
-        String inputSpotObjectsName = parameters.getValue(INPUT_SPOT_OBJECTS,workspace);
+        String inputSpotObjectsName = parameters.getValue(INPUT_SPOT_OBJECTS, workspace);
         Objs spotObjects = workspace.getObjectSet(inputSpotObjectsName);
 
         // Getting input image
-        String inputImageName = parameters.getValue(DISPLAY_IMAGE,workspace);
+        String inputImageName = parameters.getValue(DISPLAY_IMAGE, workspace);
         Image inputImage = workspace.getImage(inputImageName);
-        boolean showProjected = parameters.getValue(SHOW_PROJECTED,workspace);
+        boolean showProjected = parameters.getValue(SHOW_PROJECTED, workspace);
 
         // Converting MIA objects and tracks into TrackMate Model format
         Model model = initialiseModel(trackObjects, inputSpotObjectsName);
@@ -340,7 +340,8 @@ public class TrackEditor extends Module {
 
     @Override
     protected void initialiseParameters() {
-        boolean darkMode = MIA.preferences.darkThemeEnabled();
+        Preferences preferences = MIA.getPreferences();
+        boolean darkMode = preferences == null ? false : preferences.darkThemeEnabled();
 
         parameters.add(new SeparatorP(INPUT_SEPARATOR, this));
         parameters.add(new InputObjectsP(INPUT_TRACK_OBJECTS, this));
@@ -359,7 +360,7 @@ public class TrackEditor extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
-Workspace workspace = null;
+        Workspace workspace = null;
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
@@ -372,7 +373,7 @@ Workspace workspace = null;
 
         returnedParameters.add(parameters.getParameter(MEASUREMENT_WARNING));
 
-        String objectName = parameters.getValue(INPUT_TRACK_OBJECTS,workspace);
+        String objectName = parameters.getValue(INPUT_TRACK_OBJECTS, workspace);
         ((ChildObjectsP) parameters.getParameter(INPUT_SPOT_OBJECTS)).setParentObjectsName(objectName);
 
         return returnedParameters;
@@ -381,27 +382,27 @@ Workspace workspace = null;
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
-return null;
+        return null;
     }
 
     @Override
-public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
-return null;
+    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+        return null;
     }
 
     @Override
-public MetadataRefs updateAndGetMetadataReferences() {
-return null;
+    public MetadataRefs updateAndGetMetadataReferences() {
+        return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
-return null;
+        return null;
     }
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
-return null;
+        return null;
     }
 
     @Override

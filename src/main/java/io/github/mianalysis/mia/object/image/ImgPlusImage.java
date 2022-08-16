@@ -444,8 +444,8 @@ public class ImgPlusImage<T extends RealType<T> & NativeType<T>> extends Image<T
         options.numIoThreads(2);
         options.cellDimensions(cellSize);
         
-        // if (MIA.preferences.isSpecifyCacheDirectory())
-        //     options.cacheDirectory(Paths.get(MIA.preferences.getCacheDirectory()));
+        // if (MIA.getPreferences().isSpecifyCacheDirectory())
+        //     options.cacheDirectory(Paths.get(MIA.getPreferences().getCacheDirectory()));
 
         return options;
 

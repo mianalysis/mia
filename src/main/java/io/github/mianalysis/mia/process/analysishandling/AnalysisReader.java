@@ -167,7 +167,7 @@ public class AnalysisReader {
         String moduleName = FilenameUtils.getExtension(className);
 
         // Checking if this module has been reassigned
-        moduleName = MIA.lostAndFound.findModule(moduleName);
+        moduleName = MIA.getLostAndFound().findModule(moduleName);
 
         // Trying to load from available modules
         for (String availableModuleName : availableModuleNames) {
@@ -188,7 +188,7 @@ public class AnalysisReader {
         Class<Module> clazz = null;
         try {
             String shortName = availableModuleName.substring(availableModuleName.lastIndexOf(".") + 1);
-            if (!MIA.dependencies.compatible(shortName, false)) {
+            if (!MIA.getDependencies().compatible(shortName, false)) {
                 MIA.log.writeWarning("Module \"" + shortName + "\" not available");
                 return null;
             }
@@ -252,7 +252,7 @@ public class AnalysisReader {
         // If parameter isn't found, try the lost and found
         if (parameter == null) {
             String moduleName = module.getClass().getSimpleName();
-            parameterName = MIA.lostAndFound.findParameter(moduleName, parameterName);
+            parameterName = MIA.getLostAndFound().findParameter(moduleName, parameterName);
             if (parameterName.equals("")) // blank parameter names mean that parameter has been removed, but shouldn't
                                           // show a warning
                 return;

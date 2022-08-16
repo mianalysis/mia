@@ -64,10 +64,11 @@ public abstract class ChoiceType extends Parameter {
         super.setAttributesFromXML(node);
 
         NamedNodeMap map = node.getAttributes();
-
+        
         // ChoiceType values can be from hard-coded sources, so we check if they're labelled for reassignment.
         String xmlValue = map.getNamedItem("VALUE").getNodeValue();
-        xmlValue = MIA.lostAndFound.findParameterValue(module.getClass().getSimpleName(), getName(), xmlValue);
+        MIA.log.writeError("Lo "+MIA.getLostAndFound());
+        xmlValue = MIA.getLostAndFound().findParameterValue(module.getClass().getSimpleName(), getName(), xmlValue);
         setValueFromString(xmlValue);
 
         setVisible(Boolean.parseBoolean(map.getNamedItem("VISIBLE").getNodeValue()));

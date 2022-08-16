@@ -139,9 +139,9 @@ public class GUI {
 
             try {
                 // Checking dependencies have been met
-                if (!MIA.dependencies.compatible(shortName, false)) {
+                if (!MIA.getDependencies().compatible(shortName, false)) {
                     MIA.log.writeWarning("Module \"" + shortName + "\" not loaded.  Dependencies not satisfied:");
-                    for (Dependency dependency : MIA.dependencies.getDependencies(shortName, false))
+                    for (Dependency dependency : MIA.getDependencies().getDependencies(shortName, false))
                         if (!dependency.test()) {
                             MIA.log.writeWarning("    Requirement: " + dependency.toString());
                             MIA.log.writeWarning("    Message: " + dependency.getMessage());
@@ -184,7 +184,7 @@ public class GUI {
         for (Parameter parameter : getModules().getOutputControl().getAllParameters().values())
             SwingUtilities.updateComponentTreeUI(parameter.getControl().getComponent());
 
-        for (Parameter parameter : MIA.preferences.getAllParameters().values())
+        for (Parameter parameter : MIA.getPreferences().getAllParameters().values())
             SwingUtilities.updateComponentTreeUI(parameter.getControl().getComponent());
 
         for (Module module : getModules())

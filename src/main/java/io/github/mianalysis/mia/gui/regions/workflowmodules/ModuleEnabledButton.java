@@ -59,27 +59,27 @@ public class ModuleEnabledButton extends JButton implements ActionListener {
 
     public void updateState() {
         if (module instanceof GUISeparator && module.isEnabled()) {
-            if (MIA.preferences.darkThemeEnabled())
+            if (MIA.getPreferences().darkThemeEnabled())
                 setIcon(darkBlueIconDM);
             else
                 setIcon(darkBlueIcon);
         } else if (module.isEnabled() && module.isReachable() && module.isRunnable()) {
-            if (MIA.preferences.darkThemeEnabled())
+            if (MIA.getPreferences().darkThemeEnabled())
                 setIcon(greenIconDM);
             else
                 setIcon(greenIcon);
         } else if (module.isEnabled() & !module.isReachable()) {
-            if (MIA.preferences.darkThemeEnabled())
+            if (MIA.getPreferences().darkThemeEnabled())
                 setIcon(orangeIconDM);
             else
                 setIcon(orangeIcon);
         } else if (module.isEnabled() & !module.isRunnable()) {
-            if (MIA.preferences.darkThemeEnabled())
+            if (MIA.getPreferences().darkThemeEnabled())
                 setIcon(redIconDM);
             else
                 setIcon(redIcon);
         } else {
-            if (MIA.preferences.darkThemeEnabled())
+            if (MIA.getPreferences().darkThemeEnabled())
                 setIcon(blackIconDM);
             else
                 setIcon(blackIcon);

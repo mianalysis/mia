@@ -37,7 +37,7 @@ public class DisableRefsButton extends JButton implements ActionListener {
         setName("DisableAllMeasurements");
         setToolTipText("Disable all measurements");
         addActionListener(this);
-        if (MIA.preferences.darkThemeEnabled())
+        if (MIA.getPreferences().darkThemeEnabled())
             setIcon(iconDM);
         else
             setIcon(icon);

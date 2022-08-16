@@ -31,7 +31,7 @@ public class ImageFactory {
     }
     
     public static <T extends RealType<T> & NativeType<T>> Image<T> createImage(String name, ImagePlus imagePlus) {
-        // switch (MIA.preferences.getDataStorageMode()) {
+        // switch (MIA.getPreferences().getDataStorageMode()) {
         //     case Preferences.DataStorageModes.KEEP_IN_RAM:
         //     default:
                 return new ImagePlusImage(name, imagePlus);
@@ -41,7 +41,7 @@ public class ImageFactory {
     }
 
     public static <T extends RealType<T> & NativeType<T>> Image<T> createImage(String name, ImgPlus img) {
-        // switch (MIA.preferences.getDataStorageMode()) {
+        // switch (MIA.getPreferences().getDataStorageMode()) {
         //     case Preferences.DataStorageModes.KEEP_IN_RAM:
         //     default:
                 return new ImagePlusImage(name, img);

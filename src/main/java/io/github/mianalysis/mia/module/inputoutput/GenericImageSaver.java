@@ -24,6 +24,7 @@ import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Colours;
+import io.github.mianalysis.mia.object.system.Preferences;
 import io.github.mianalysis.mia.object.system.Status;
 import io.github.sjcross.sjcommon.metadataextractors.Metadata;
 import io.github.sjcross.sjcommon.process.IntensityMinMax;
@@ -31,7 +32,7 @@ import io.github.sjcross.sjcommon.process.IntensityMinMax;
 /**
  * Created by sc13967 on 26/06/2017.
  */
-@Plugin(type = Module.class, priority=Priority.LOW, visible=true)
+@Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class GenericImageSaver extends AbstractImageSaver {
     public static final String GENERIC_FORMAT = "Generic format";
     public static final String AVAILABLE_METADATA_FIELDS = "Available metadata fields";
@@ -49,16 +50,14 @@ public class GenericImageSaver extends AbstractImageSaver {
         super("Save image (generic)", modules);
     }
 
-
     public static void makeDirectories(String path) {
         File file = new File(path);
         File directory = file.getParentFile();
 
-        if (!directory.exists()) 
+        if (!directory.exists())
             directory.mkdirs();
 
     }
-    
 
     @Override
     public Category getCategory() {
@@ -67,22 +66,24 @@ public class GenericImageSaver extends AbstractImageSaver {
 
     @Override
     public String getDescription() {
-        return "Save an image/stack from the workspace to file.  Output file locations and filenames are generated from metadata items and fixed values.  This gives greater flexibility to output image locations than the standard \""+ new ImageSaver(null).getName() +"\" module.  To prevent overwriting of previously-saved files, the current date and time can be appended to the end of each filename.  Images can be saved in a variety of formats (AVI, TIF and Zipped TIF).";
+        return "Save an image/stack from the workspace to file.  Output file locations and filenames are generated from metadata items and fixed values.  This gives greater flexibility to output image locations than the standard \""
+                + new ImageSaver(null).getName()
+                + "\" module.  To prevent overwriting of previously-saved files, the current date and time can be appended to the end of each filename.  Images can be saved in a variety of formats (AVI, TIF and Zipped TIF).";
     }
 
     @Override
     public Status process(Workspace workspace) {
         // Getting input image
-        String inputImageName = parameters.getValue(INPUT_IMAGE,workspace);
-        String genericFormat = parameters.getValue(GENERIC_FORMAT,workspace);
-        String appendDateTimeMode = parameters.getValue(APPEND_DATETIME_MODE,workspace);
-        String fileFormat = parameters.getValue(FILE_FORMAT,workspace);
-        String channelMode = parameters.getValue(CHANNEL_MODE,workspace);
-        boolean flattenOverlay = parameters.getValue(FLATTEN_OVERLAY,workspace);
-        String compressionMode = parameters.getValue(COMPRESSION_MODE,workspace);
-        int quality = parameters.getValue(QUALITY,workspace);
-        int frameRate = parameters.getValue(FRAME_RATE,workspace);
-        boolean saveAsRGB = parameters.getValue(SAVE_AS_RGB,workspace);
+        String inputImageName = parameters.getValue(INPUT_IMAGE, workspace);
+        String genericFormat = parameters.getValue(GENERIC_FORMAT, workspace);
+        String appendDateTimeMode = parameters.getValue(APPEND_DATETIME_MODE, workspace);
+        String fileFormat = parameters.getValue(FILE_FORMAT, workspace);
+        String channelMode = parameters.getValue(CHANNEL_MODE, workspace);
+        boolean flattenOverlay = parameters.getValue(FLATTEN_OVERLAY, workspace);
+        String compressionMode = parameters.getValue(COMPRESSION_MODE, workspace);
+        int quality = parameters.getValue(QUALITY, workspace);
+        int frameRate = parameters.getValue(FRAME_RATE, workspace);
+        boolean saveAsRGB = parameters.getValue(SAVE_AS_RGB, workspace);
 
         // Loading the image to save
         Image inputImage = workspace.getImages().get(inputImageName);
@@ -133,9 +134,10 @@ public class GenericImageSaver extends AbstractImageSaver {
     @Override
     protected void initialiseParameters() {
         super.initialiseParameters();
-        
-        boolean darkMode = MIA.preferences.darkThemeEnabled();
-        
+
+        Preferences preferences = MIA.getPreferences();
+        boolean darkMode = preferences == null ? false : preferences.darkThemeEnabled();
+
         parameters.add(new StringP(GENERIC_FORMAT, this));
         parameters.add(new MessageP(AVAILABLE_METADATA_FIELDS, this, Colours.getDarkBlue(darkMode), 170));
 
@@ -145,7 +147,7 @@ public class GenericImageSaver extends AbstractImageSaver {
 
     @Override
     public Parameters updateAndGetParameters() {
-Workspace workspace = null;
+        Workspace workspace = null;
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(LOADER_SEPARATOR));
@@ -164,27 +166,27 @@ Workspace workspace = null;
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
-return null;
+        return null;
     }
 
     @Override
-public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
-return null;
+    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+        return null;
     }
 
     @Override
-public MetadataRefs updateAndGetMetadataReferences() {
-return null;
+    public MetadataRefs updateAndGetMetadataReferences() {
+        return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
-return null;
+        return null;
     }
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
-return null;
+        return null;
     }
 
     @Override
@@ -200,6 +202,6 @@ return null;
 
         parameters.get(AVAILABLE_METADATA_FIELDS).setDescription(
                 "List of the currently-available metadata values for this workspace.  These can be used when compiling a generic filename.");
-        
+
     }
 }

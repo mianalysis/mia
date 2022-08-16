@@ -3,6 +3,10 @@ package io.github.mianalysis.mia;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 
 import org.apache.maven.model.Model;
 import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
@@ -12,6 +16,7 @@ import org.scijava.plugin.Parameter;
 import org.scijava.plugin.Plugin;
 import org.scijava.ui.UIService;
 
+import ij.Prefs;
 import io.github.mianalysis.mia.gui.GUI;
 import io.github.mianalysis.mia.module.LostAndFound;
 import io.github.mianalysis.mia.moduledependencies.Dependencies;
@@ -38,13 +43,13 @@ public class MIA implements Command {
     private static LogRenderer mainRenderer = new BasicLogRenderer();
     private static LogHistory logHistory = new LogHistory();
     private final static boolean headless = false; // Determines if there is a GUI
+    private static Preferences preferences;
+    private static Dependencies dependencies; // Maps module dependencies and reports if a
+    // module's requirements aren't satisfied
+    private static LostAndFound lostAndFound; // Maps missing modules and parameters to
+    // replacements (e.g. if a module was renamed)
 
-    public static Preferences preferences = new Preferences(null);;
     public static Log log = new Log(mainRenderer); // This is for testing and headless modes
-    public static Dependencies dependencies; // Maps module dependencies and reports if a
-                                                                        // module's requirements aren't satisfied
-    public static LostAndFound lostAndFound; // Maps missing modules and parameters to
-                                                                        // replacements (e.g. if a module was renamed)
 
     /*
      * Gearing up for the transition from ImagePlus to ImgLib2 formats. Modules can
@@ -74,6 +79,15 @@ public class MIA implements Command {
 
     @Override
     public void run() {
+        try {
+            String theme = Prefs.get("MIA.GUI.theme", io.github.mianalysis.mia.gui.Themes.getDefaultTheme());
+            UIManager.setLookAndFeel(io.github.mianalysis.mia.gui.Themes.getThemeClass(theme));
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException
+                | UnsupportedLookAndFeelException | IllegalArgumentException | InvocationTargetException
+                | NoSuchMethodException | SecurityException e) {
+            e.printStackTrace();
+        }
+
         if (!headless) {
             try {
                 // Before removing the old renderer we want to check the new one can be created
@@ -89,8 +103,7 @@ public class MIA implements Command {
             }
         }
 
-        dependencies = new Dependencies();
-        lostAndFound = new LostAndFound();
+        preferences = new Preferences(null);
 
         log.addRenderer(logHistory);
 
@@ -168,5 +181,25 @@ public class MIA implements Command {
 
     public static boolean isHeadless() {
         return headless;
+    }
+
+    public static Preferences getPreferences() {
+        return preferences;
+    }
+
+    public static Dependencies getDependencies() {
+        if (dependencies == null)
+            dependencies = new Dependencies();
+
+        return dependencies;
+
+    }
+
+    public static LostAndFound getLostAndFound() {
+        if (lostAndFound == null)
+            lostAndFound = new LostAndFound();
+
+        return lostAndFound;
+
     }
 }

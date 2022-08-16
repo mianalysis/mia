@@ -30,6 +30,7 @@ import io.github.mianalysis.mia.gui.regions.RenameListMenu;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.system.Colours;
+import io.github.mianalysis.mia.object.system.Preferences;
 
 public class ModuleTable extends JTable implements ActionListener, MouseListener, TableCellRenderer {
     private static final String BACKSPACE = "backspace";
@@ -163,8 +164,9 @@ public class ModuleTable extends JTable implements ActionListener, MouseListener
             label.setBorder(new EmptyBorder(2, 5, 0, 0));
             label.setOpaque(true);
 
-            boolean darkMode = MIA.preferences.darkThemeEnabled();
-            
+            Preferences preferences = MIA.getPreferences();
+            boolean darkMode = preferences == null ? false : preferences.darkThemeEnabled();
+
             if (isSelected)
                 label.setBackground(Colours.getLightBlue(darkMode));
             else

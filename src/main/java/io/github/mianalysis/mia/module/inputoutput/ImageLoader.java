@@ -20,7 +20,6 @@ import com.drew.lang.annotations.Nullable;
 
 import ij.CompositeImage;
 import ij.IJ;
-import ij.ImageJ;
 import ij.ImagePlus;
 import ij.ImageStack;
 import ij.gui.Roi;
@@ -58,6 +57,7 @@ import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Colours;
+import io.github.mianalysis.mia.object.system.Preferences;
 import io.github.mianalysis.mia.object.system.Status;
 import io.github.mianalysis.mia.object.units.SpatialUnit;
 import io.github.mianalysis.mia.object.units.TemporalUnit;
@@ -1355,7 +1355,8 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
 
     @Override
     protected void initialiseParameters() {
-        boolean darkMode = MIA.preferences.darkThemeEnabled();
+        Preferences preferences = MIA.getPreferences();
+        boolean darkMode = preferences == null ? false : preferences.darkThemeEnabled();
 
         parameters.add(new SeparatorP(LOADER_SEPARATOR, this));
         parameters.add(new OutputImageP(OUTPUT_IMAGE, this));
@@ -1421,13 +1422,13 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
             case ImportModes.IMAGEJ:
                 break;
 
-                case ImportModes.IMAGE_SEQUENCE_ALPHABETICAL:
-                case ImportModes.IMAGE_SEQUENCE_ZEROS:
-                    returnedParameters.add(parameters.getParameter(SEQUENCE_ROOT_NAME));
-                    returnedParameters.add(parameters.getParameter(AVAILABLE_METADATA_FIELDS));
-                    MetadataRefs metadataRefs = modules.getMetadataRefs(this);
-                    parameters.getParameter(AVAILABLE_METADATA_FIELDS).setValue(metadataRefs.getMetadataValues());
-                    break;
+            case ImportModes.IMAGE_SEQUENCE_ALPHABETICAL:
+            case ImportModes.IMAGE_SEQUENCE_ZEROS:
+                returnedParameters.add(parameters.getParameter(SEQUENCE_ROOT_NAME));
+                returnedParameters.add(parameters.getParameter(AVAILABLE_METADATA_FIELDS));
+                MetadataRefs metadataRefs = modules.getMetadataRefs(this);
+                parameters.getParameter(AVAILABLE_METADATA_FIELDS).setValue(metadataRefs.getMetadataValues());
+                break;
 
             case ImportModes.MATCHING_FORMAT:
                 returnedParameters.add(parameters.getParameter(NAME_FORMAT));
@@ -1585,7 +1586,7 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
-return null;
+        return null;
     }
 
     @Override

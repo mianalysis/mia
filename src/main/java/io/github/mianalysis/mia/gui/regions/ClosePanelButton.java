@@ -21,7 +21,7 @@ public class ClosePanelButton extends JButton implements ActionListener {
     public ClosePanelButton(JPanel panel) {
         this.panel = panel;
 
-        if (MIA.preferences.darkThemeEnabled())
+        if (MIA.getPreferences().darkThemeEnabled())
             setIcon(new ImageIcon(
                     ClosePanelButton.class.getResource("/icons/close_window_darkgreyDM_12px.png"), ""));
         else

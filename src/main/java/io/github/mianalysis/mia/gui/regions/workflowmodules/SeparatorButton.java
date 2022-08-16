@@ -53,18 +53,18 @@ public class SeparatorButton extends JButton implements ActionListener {
     public void setIcon() {
         BooleanP expandedEditing = (BooleanP) module.getParameter(GUISeparator.EXPANDED_EDITING);
         if (expandedEditing.isSelected()) {
-            if (MIA.preferences.darkThemeEnabled())
+            if (MIA.getPreferences().darkThemeEnabled())
                 setIcon(expandedIconDM);
             else
                 setIcon(expandedIcon);
         } else {
             if (left) {
-                if (MIA.preferences.darkThemeEnabled())
+                if (MIA.getPreferences().darkThemeEnabled())
                     setIcon(collapsedLeftIconDM);
                 else
                     setIcon(collapsedLeftIcon);
             } else {
-                if (MIA.preferences.darkThemeEnabled())
+                if (MIA.getPreferences().darkThemeEnabled())
                     setIcon(collapsedRightIconDM);
                 else
                     setIcon(collapsedRightIcon);

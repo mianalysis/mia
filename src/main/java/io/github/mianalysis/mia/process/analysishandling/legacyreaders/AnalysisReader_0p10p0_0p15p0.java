@@ -159,7 +159,7 @@ public class AnalysisReader_0p10p0_0p15p0 {
         String moduleName = FilenameUtils.getExtension(className);
 
         // Checking if this module has been reassigned
-        moduleName = MIA.lostAndFound.findModule(moduleName);
+        moduleName = MIA.getLostAndFound().findModule(moduleName);
 
         // Trying to load from available modules
         for (String availableModuleName : availableModuleNames) {
@@ -236,7 +236,7 @@ public class AnalysisReader_0p10p0_0p15p0 {
             // If parameter isn't found, try the lost and found
             if (parameter == null) {
                 String moduleName = module.getClass().getSimpleName();
-                parameterName = MIA.lostAndFound.findParameter(moduleName, parameterName);
+                parameterName = MIA.getLostAndFound().findParameter(moduleName, parameterName);
                 parameter = module.getParameter(parameterName);
             }
 

@@ -31,7 +31,7 @@ public class ResetExport extends JButton implements ActionListener {
         setFocusPainted(false);
         setSelected(false);
         addActionListener(this);
-        if (MIA.preferences.darkThemeEnabled())
+        if (MIA.getPreferences().darkThemeEnabled())
             setIcon(refreshIconDM);
         else
             setIcon(refreshIcon);

@@ -15,7 +15,7 @@ public class SearchButton extends JButton implements ActionListener {
     public SearchButton(SearchPanel searchPanel) {
         this.searchPanel = searchPanel;
 
-        if (MIA.preferences.darkThemeEnabled())
+        if (MIA.getPreferences().darkThemeEnabled())
             setIcon(new ImageIcon(SearchPanel.class.getResource("/icons/search_darkgreyDM_12px.png"), ""));
         else
             setIcon(new ImageIcon(SearchPanel.class.getResource("/icons/search_black_12px.png"), ""));
