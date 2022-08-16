@@ -67,7 +67,6 @@ public abstract class ChoiceType extends Parameter {
         
         // ChoiceType values can be from hard-coded sources, so we check if they're labelled for reassignment.
         String xmlValue = map.getNamedItem("VALUE").getNodeValue();
-        MIA.log.writeError("Lo "+MIA.getLostAndFound());
         xmlValue = MIA.getLostAndFound().findParameterValue(module.getClass().getSimpleName(), getName(), xmlValue);
         setValueFromString(xmlValue);
 

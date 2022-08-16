@@ -308,7 +308,6 @@ public class ImagePlusImage<T extends RealType<T> & NativeType<T>> extends Image
             return true;
         if (!(obj instanceof Image))
             return false;
-        System.out.println("Passed type check");
 
         Image image2 = (Image) obj;
         ImagePlus imagePlus2 = image2.getImagePlus();
@@ -324,7 +323,6 @@ public class ImagePlusImage<T extends RealType<T> & NativeType<T>> extends Image
             return false;
         if (!calibration1.getUnits().equals(calibration2.getUnits()))
             return false;
-        System.out.println("Passed calibration check");
 
         // Comparing dimensions
         if (imagePlus.getWidth() != imagePlus2.getWidth())
@@ -339,7 +337,6 @@ public class ImagePlusImage<T extends RealType<T> & NativeType<T>> extends Image
             return false;
         if (imagePlus.getBitDepth() != imagePlus2.getBitDepth())
             return false;
-        System.out.println("Passed dimension check");
 
         // Checking the individual image pixel values
         ImageStack ist = imagePlus.getImageStack();
@@ -361,7 +358,6 @@ public class ImagePlusImage<T extends RealType<T> & NativeType<T>> extends Image
                 }
             }
         }
-        System.out.println("Passed intensity check");
 
         return true;
 
