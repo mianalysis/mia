@@ -111,7 +111,7 @@ public class ParametersPanel extends JScrollPane {
         }
 
         // If selected, adding the measurement selector for output control
-        String exportMode = outputControl.getParameterValue(OutputControl.EXPORT_MODE);
+        String exportMode = outputControl.getParameterValue(OutputControl.EXPORT_MODE,null);
         if (module.getClass().isInstance(new OutputControl(modules)) && outputControl.isEnabled() &! exportMode.equals(OutputControl.ExportModes.NONE)) {
             MetadataRefs metadataRefs = modules.getMetadataRefs();
             addRefExportControls(metadataRefs,"Metadata",componentFactory,c);
@@ -243,7 +243,7 @@ public class ParametersPanel extends JScrollPane {
         // Adding title to help window
         JTextPane usageMessage = new JTextPane();
         usageMessage.setContentType("text/html");
-        usageMessage.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
+        usageMessage.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 14));
         usageMessage.setText("<html><center><font face=\"sans-serif\" size=\"3\">" +
                 "To change parameters for an existing module," +
                 "<br>click the module name on the list to the left."+

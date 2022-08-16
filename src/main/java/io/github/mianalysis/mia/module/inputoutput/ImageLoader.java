@@ -20,7 +20,6 @@ import com.drew.lang.annotations.Nullable;
 
 import ij.CompositeImage;
 import ij.IJ;
-import ij.ImageJ;
 import ij.ImagePlus;
 import ij.ImageStack;
 import ij.gui.Roi;
@@ -35,12 +34,11 @@ import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.core.InputControl;
-import io.github.mianalysis.mia.object.Colours;
-import io.github.mianalysis.mia.object.Image;
 import io.github.mianalysis.mia.object.Measurement;
 import io.github.mianalysis.mia.object.Objs;
-import io.github.mianalysis.mia.object.Status;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.FilePathP;
@@ -58,6 +56,9 @@ import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
+import io.github.mianalysis.mia.object.system.Colours;
+import io.github.mianalysis.mia.object.system.Preferences;
+import io.github.mianalysis.mia.object.system.Status;
 import io.github.mianalysis.mia.object.units.SpatialUnit;
 import io.github.mianalysis.mia.object.units.TemporalUnit;
 import io.github.sjcross.sjcommon.metadataextractors.CV7000FilenameExtractor;
@@ -968,7 +969,7 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
 
     }
 
-    private String getYokogawaName(Metadata metadata)
+    private String getYokogawaName(Metadata metadata, int channel)
             throws ServiceException, DependencyException, FormatException, IOException {
 
         // Creating metadata object
@@ -980,7 +981,7 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
         extractor.extract(tempMetadata, metadata.getFile().getName());
 
         // Constructing a new name using the same name format
-        tempMetadata.setChannel(parameters.getValue(CHANNEL));
+        tempMetadata.setChannel(channel);
         final String filename = extractor.construct(tempMetadata);
 
         // Running through files in this folder to find the one matching the pattern
@@ -1069,39 +1070,39 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
     @Override
     public Status process(Workspace workspace) {
         // Getting parameters
-        String outputImageName = parameters.getValue(OUTPUT_IMAGE);
-        String importMode = parameters.getValue(IMPORT_MODE);
-        String filePath = parameters.getValue(FILE_PATH);
-        String sequenceRootName = parameters.getValue(SEQUENCE_ROOT_NAME);
-        String nameFormat = parameters.getValue(NAME_FORMAT);
-        String comment = parameters.getValue(COMMENT);
-        String genericFormat = parameters.getValue(GENERIC_FORMAT);
-        String seriesMode = parameters.getValue(SERIES_MODE);
-        String channels = parameters.getValue(CHANNELS);
-        String slices = parameters.getValue(SLICES);
-        String frames = parameters.getValue(FRAMES);
-        String cropMode = parameters.getValue(CROP_MODE);
-        String referenceImageName = parameters.getValue(REFERENCE_IMAGE);
-        int left = parameters.getValue(LEFT);
-        int top = parameters.getValue(TOP);
-        int width = parameters.getValue(WIDTH);
-        int height = parameters.getValue(HEIGHT);
-        String objectsForLimitsName = parameters.getValue(OBJECTS_FOR_LIMITS);
-        String scaleMode = parameters.getValue(SCALE_MODE);
-        double scaleFactorX = parameters.getValue(SCALE_FACTOR_X);
-        double scaleFactorY = parameters.getValue(SCALE_FACTOR_Y);
-        String dimensionMismatchMode = parameters.getValue(DIMENSION_MISMATCH_MODE);
-        String padIntensityMode = parameters.getValue(PAD_INTENSITY_MODE);
-        boolean setSpatialCalibration = parameters.getValue(SET_SPATIAL_CAL);
-        double xyCal = parameters.getValue(XY_CAL);
-        double zCal = parameters.getValue(Z_CAL);
-        boolean setTemporalCalibration = parameters.getValue(SET_TEMPORAL_CAL);
-        double frameInterval = parameters.getValue(FRAME_INTERVAL);
-        boolean forceBitDepth = parameters.getValue(FORCE_BIT_DEPTH);
-        String outputBitDepth = parameters.getValue(OUTPUT_BIT_DEPTH);
-        double minIntensity = parameters.getValue(MIN_INPUT_INTENSITY);
-        double maxIntensity = parameters.getValue(MAX_INPUT_INTENSITY);
-        String reader = parameters.getValue(READER);
+        String outputImageName = parameters.getValue(OUTPUT_IMAGE, workspace);
+        String importMode = parameters.getValue(IMPORT_MODE, workspace);
+        String filePath = parameters.getValue(FILE_PATH, workspace);
+        String sequenceRootName = parameters.getValue(SEQUENCE_ROOT_NAME, workspace);
+        String nameFormat = parameters.getValue(NAME_FORMAT, workspace);
+        String comment = parameters.getValue(COMMENT, workspace);
+        String genericFormat = parameters.getValue(GENERIC_FORMAT, workspace);
+        String seriesMode = parameters.getValue(SERIES_MODE, workspace);
+        String channels = parameters.getValue(CHANNELS, workspace);
+        String slices = parameters.getValue(SLICES, workspace);
+        String frames = parameters.getValue(FRAMES, workspace);
+        String cropMode = parameters.getValue(CROP_MODE, workspace);
+        String referenceImageName = parameters.getValue(REFERENCE_IMAGE, workspace);
+        int left = parameters.getValue(LEFT, workspace);
+        int top = parameters.getValue(TOP, workspace);
+        int width = parameters.getValue(WIDTH, workspace);
+        int height = parameters.getValue(HEIGHT, workspace);
+        String objectsForLimitsName = parameters.getValue(OBJECTS_FOR_LIMITS, workspace);
+        String scaleMode = parameters.getValue(SCALE_MODE, workspace);
+        double scaleFactorX = parameters.getValue(SCALE_FACTOR_X, workspace);
+        double scaleFactorY = parameters.getValue(SCALE_FACTOR_Y, workspace);
+        String dimensionMismatchMode = parameters.getValue(DIMENSION_MISMATCH_MODE, workspace);
+        String padIntensityMode = parameters.getValue(PAD_INTENSITY_MODE, workspace);
+        boolean setSpatialCalibration = parameters.getValue(SET_SPATIAL_CAL, workspace);
+        double xyCal = parameters.getValue(XY_CAL, workspace);
+        double zCal = parameters.getValue(Z_CAL, workspace);
+        boolean setTemporalCalibration = parameters.getValue(SET_TEMPORAL_CAL, workspace);
+        double frameInterval = parameters.getValue(FRAME_INTERVAL, workspace);
+        boolean forceBitDepth = parameters.getValue(FORCE_BIT_DEPTH, workspace);
+        String outputBitDepth = parameters.getValue(OUTPUT_BIT_DEPTH, workspace);
+        double minIntensity = parameters.getValue(MIN_INPUT_INTENSITY, workspace);
+        double maxIntensity = parameters.getValue(MAX_INPUT_INTENSITY, workspace);
+        String reader = parameters.getValue(READER, workspace);
 
         // Series number comes from the Workspace
         int seriesNumber = 1;
@@ -1111,7 +1112,7 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
                     seriesNumber = workspace.getMetadata().getSeriesNumber();
                     break;
                 case SeriesModes.SPECIFIC_SERIES:
-                    String seriesNumberText = parameters.getValue(SERIES_NUMBER);
+                    String seriesNumberText = parameters.getValue(SERIES_NUMBER, workspace);
                     Metadata metadata = workspace.getMetadata();
                     seriesNumber = (int) Math
                             .round(Double.parseDouble(metadata.insertMetadataValues(seriesNumberText)));
@@ -1234,7 +1235,8 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
                             break;
 
                         case NameFormats.YOKOGAWA:
-                            path = getYokogawaName(workspace.getMetadata());
+                            int channel = parameters.getValue(CHANNEL, workspace);
+                            path = getYokogawaName(workspace.getMetadata(), channel);
                             break;
 
                         case NameFormats.GENERIC:
@@ -1334,7 +1336,7 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
 
         // Adding image to workspace
         writeStatus("Adding image (" + outputImageName + ") to workspace");
-        Image outputImage = new Image(outputImageName, ipl);
+        Image outputImage = ImageFactory.createImage(outputImageName, ipl);
         workspace.addImage(outputImage);
 
         if (showOutput)
@@ -1353,6 +1355,9 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
 
     @Override
     protected void initialiseParameters() {
+        Preferences preferences = MIA.getPreferences();
+        boolean darkMode = preferences == null ? false : preferences.darkThemeEnabled();
+
         parameters.add(new SeparatorP(LOADER_SEPARATOR, this));
         parameters.add(new OutputImageP(OUTPUT_IMAGE, this));
         parameters.add(new ChoiceP(IMPORT_MODE, this, ImportModes.CURRENT_FILE, ImportModes.ALL));
@@ -1362,7 +1367,7 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
         parameters.add(new StringP(COMMENT, this));
         parameters.add(new StringP(EXTENSION, this));
         parameters.add(new StringP(GENERIC_FORMAT, this));
-        parameters.add(new MessageP(AVAILABLE_METADATA_FIELDS, this, Colours.DARK_BLUE, 130));
+        parameters.add(new MessageP(AVAILABLE_METADATA_FIELDS, this, Colours.getDarkBlue(darkMode), 130));
         parameters.add(new BooleanP(INCLUDE_SERIES_NUMBER, this, true));
         parameters.add(new FilePathP(FILE_PATH, this));
         parameters.add(new ChoiceP(SERIES_MODE, this, SeriesModes.CURRENT_SERIES, SeriesModes.ALL));
@@ -1405,12 +1410,13 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
+        Workspace workspace = null;
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(LOADER_SEPARATOR));
         returnedParameters.add(parameters.getParameter(OUTPUT_IMAGE));
         returnedParameters.add(parameters.getParameter(IMPORT_MODE));
-        switch ((String) parameters.getValue(IMPORT_MODE)) {
+        switch ((String) parameters.getValue(IMPORT_MODE, workspace)) {
             case ImportModes.ALL_IN_FOLDER:
             case ImportModes.CURRENT_FILE:
             case ImportModes.IMAGEJ:
@@ -1426,7 +1432,7 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
 
             case ImportModes.MATCHING_FORMAT:
                 returnedParameters.add(parameters.getParameter(NAME_FORMAT));
-                switch ((String) parameters.getValue(NAME_FORMAT)) {
+                switch ((String) parameters.getValue(NAME_FORMAT, workspace)) {
                     case NameFormats.HUYGENS:
                     case NameFormats.INCUCYTE_SHORT:
                         returnedParameters.add(parameters.getParameter(COMMENT));
@@ -1448,42 +1454,42 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
                 break;
         }
 
-        if (parameters.getValue(IMPORT_MODE).equals(ImportModes.CURRENT_FILE)
-                || parameters.getValue(IMPORT_MODE).equals(ImportModes.IMAGE_SEQUENCE_ALPHABETICAL)
-                || parameters.getValue(IMPORT_MODE).equals(ImportModes.IMAGE_SEQUENCE_ZEROS)
-                || parameters.getValue(IMPORT_MODE).equals(ImportModes.SPECIFIC_FILE)
-                || parameters.getValue(IMPORT_MODE).equals(ImportModes.MATCHING_FORMAT)) {
+        if (parameters.getValue(IMPORT_MODE, workspace).equals(ImportModes.CURRENT_FILE)
+                || parameters.getValue(IMPORT_MODE, workspace).equals(ImportModes.IMAGE_SEQUENCE_ALPHABETICAL)
+                || parameters.getValue(IMPORT_MODE, workspace).equals(ImportModes.IMAGE_SEQUENCE_ZEROS)
+                || parameters.getValue(IMPORT_MODE, workspace).equals(ImportModes.SPECIFIC_FILE)
+                || parameters.getValue(IMPORT_MODE, workspace).equals(ImportModes.MATCHING_FORMAT)) {
             returnedParameters.add(parameters.getParameter(READER));
         }
 
-        if (parameters.getValue(READER).equals(Readers.BIOFORMATS)
-                & !parameters.getValue(IMPORT_MODE).equals(ImportModes.IMAGEJ)) {
+        if (parameters.getValue(READER, workspace).equals(Readers.BIOFORMATS)
+                & !parameters.getValue(IMPORT_MODE, workspace).equals(ImportModes.IMAGEJ)) {
             returnedParameters.add(parameters.getParameter(SERIES_MODE));
-            if (parameters.getValue(SERIES_MODE).equals(SeriesModes.SPECIFIC_SERIES))
+            if (parameters.getValue(SERIES_MODE, workspace).equals(SeriesModes.SPECIFIC_SERIES))
                 returnedParameters.add(parameters.getParameter(SERIES_NUMBER));
 
             returnedParameters.add(parameters.getParameter(RANGE_SEPARATOR));
-            if (!(parameters.getValue(IMPORT_MODE).equals(ImportModes.IMAGE_SEQUENCE_ALPHABETICAL)
-                    || parameters.getValue(IMPORT_MODE).equals(ImportModes.IMAGE_SEQUENCE_ZEROS))
-                    && !(parameters.getValue(IMPORT_MODE).equals(ImportModes.MATCHING_FORMAT)
-                            && parameters.getValue(NAME_FORMAT).equals(NameFormats.YOKOGAWA))) {
+            if (!(parameters.getValue(IMPORT_MODE, workspace).equals(ImportModes.IMAGE_SEQUENCE_ALPHABETICAL)
+                    || parameters.getValue(IMPORT_MODE, workspace).equals(ImportModes.IMAGE_SEQUENCE_ZEROS))
+                    && !(parameters.getValue(IMPORT_MODE, workspace).equals(ImportModes.MATCHING_FORMAT)
+                            && parameters.getValue(NAME_FORMAT, workspace).equals(NameFormats.YOKOGAWA))) {
                 returnedParameters.add(parameters.getParameter(CHANNELS));
                 returnedParameters.add(parameters.getParameter(SLICES));
                 returnedParameters.add(parameters.getParameter(FRAMES));
             }
         }
 
-        if (parameters.getValue(IMPORT_MODE).equals(ImportModes.IMAGE_SEQUENCE_ALPHABETICAL)
-                || parameters.getValue(IMPORT_MODE).equals(ImportModes.IMAGE_SEQUENCE_ZEROS)) {
+        if (parameters.getValue(IMPORT_MODE, workspace).equals(ImportModes.IMAGE_SEQUENCE_ALPHABETICAL)
+                || parameters.getValue(IMPORT_MODE, workspace).equals(ImportModes.IMAGE_SEQUENCE_ZEROS)) {
             returnedParameters.add(parameters.getParameter(CHANNELS));
             returnedParameters.add(parameters.getParameter(SLICES));
             returnedParameters.add(parameters.getParameter(FRAMES));
         }
 
-        if (parameters.getValue(READER).equals(Readers.BIOFORMATS)
-                & !parameters.getValue(IMPORT_MODE).equals(ImportModes.IMAGEJ)) {
+        if (parameters.getValue(READER, workspace).equals(Readers.BIOFORMATS)
+                & !parameters.getValue(IMPORT_MODE, workspace).equals(ImportModes.IMAGEJ)) {
             returnedParameters.add(parameters.getParameter(CROP_MODE));
-            switch ((String) parameters.getValue(CROP_MODE)) {
+            switch ((String) parameters.getValue(CROP_MODE, workspace)) {
                 case CropModes.FIXED:
                     returnedParameters.add(parameters.getParameter(LEFT));
                     returnedParameters.add(parameters.getParameter(TOP));
@@ -1499,7 +1505,7 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
             }
 
             returnedParameters.add(parameters.getParameter(SCALE_MODE));
-            switch ((String) parameters.getValue(SCALE_MODE)) {
+            switch ((String) parameters.getValue(SCALE_MODE, workspace)) {
                 case ScaleModes.NO_INTERPOLATION:
                 case ScaleModes.BILINEAR:
                 case ScaleModes.BICUBIC:
@@ -1509,30 +1515,30 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
             }
         }
 
-        if (parameters.getValue(IMPORT_MODE).equals(ImportModes.IMAGE_SEQUENCE_ALPHABETICAL)
-                || parameters.getValue(IMPORT_MODE).equals(ImportModes.IMAGE_SEQUENCE_ZEROS)) {
+        if (parameters.getValue(IMPORT_MODE, workspace).equals(ImportModes.IMAGE_SEQUENCE_ALPHABETICAL)
+                || parameters.getValue(IMPORT_MODE, workspace).equals(ImportModes.IMAGE_SEQUENCE_ZEROS)) {
             returnedParameters.add(parameters.getParameter(DIMENSION_MISMATCH_MODE));
 
-            if (parameters.getValue(DIMENSION_MISMATCH_MODE).equals(DimensionMismatchModes.CENTRE_PAD))
+            if (parameters.getValue(DIMENSION_MISMATCH_MODE, workspace).equals(DimensionMismatchModes.CENTRE_PAD))
                 returnedParameters.add(parameters.getParameter(PAD_INTENSITY_MODE));
         }
 
         returnedParameters.add(parameters.getParameter(CALIBRATION_SEPARATOR));
         returnedParameters.add(parameters.getParameter(SET_SPATIAL_CAL));
-        if ((boolean) parameters.getValue(SET_SPATIAL_CAL)) {
+        if ((boolean) parameters.getValue(SET_SPATIAL_CAL, workspace)) {
             returnedParameters.add(parameters.getParameter(XY_CAL));
             returnedParameters.add(parameters.getParameter(Z_CAL));
         }
 
         returnedParameters.add(parameters.getParameter(SET_TEMPORAL_CAL));
-        if ((boolean) parameters.getValue(SET_TEMPORAL_CAL))
+        if ((boolean) parameters.getValue(SET_TEMPORAL_CAL, workspace))
             returnedParameters.add(parameters.getParameter(FRAME_INTERVAL));
 
-        if (parameters.getValue(READER).equals(Readers.BIOFORMATS)) {
+        if (parameters.getValue(READER, workspace).equals(Readers.BIOFORMATS)) {
             returnedParameters.add(parameters.getParameter(FORCE_BIT_DEPTH));
-            if ((boolean) parameters.getValue(FORCE_BIT_DEPTH)) {
+            if ((boolean) parameters.getValue(FORCE_BIT_DEPTH, workspace)) {
                 returnedParameters.add(parameters.getParameter(OUTPUT_BIT_DEPTH));
-                if (!parameters.getValue(OUTPUT_BIT_DEPTH).equals(OutputBitDepths.THIRTY_TWO)) {
+                if (!parameters.getValue(OUTPUT_BIT_DEPTH, workspace).equals(OutputBitDepths.THIRTY_TWO)) {
                     returnedParameters.add(parameters.getParameter(MIN_INPUT_INTENSITY));
                     returnedParameters.add(parameters.getParameter(MAX_INPUT_INTENSITY));
                 }
@@ -1545,10 +1551,11 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
+        Workspace workspace = null;
         ImageMeasurementRefs returnedRefs = new ImageMeasurementRefs();
-        String outputImageName = parameters.getValue(OUTPUT_IMAGE);
+        String outputImageName = parameters.getValue(OUTPUT_IMAGE, workspace);
 
-        switch ((String) parameters.getValue(CROP_MODE)) {
+        switch ((String) parameters.getValue(CROP_MODE, workspace)) {
             case CropModes.FROM_REFERENCE:
                 returnedRefs.add(imageMeasurementRefs.getOrPut(Measurements.ROI_LEFT).setImageName(outputImageName));
                 returnedRefs.add(imageMeasurementRefs.getOrPut(Measurements.ROI_TOP).setImageName(outputImageName));
@@ -1565,7 +1572,6 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
     @Override
     public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
         return null;
-
     }
 
     @Override
@@ -1588,12 +1594,12 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
         boolean valid = true;
 
         // If using the generic metadata extractor, check the values are available
-        if (parameters.getValue(IMPORT_MODE).equals(ImportModes.MATCHING_FORMAT)) {
+        if (parameters.getValue(IMPORT_MODE, null).equals(ImportModes.MATCHING_FORMAT)) {
             MetadataRefs metadataRefs = modules.getMetadataRefs(this);
 
-            switch ((String) parameters.getValue(NAME_FORMAT)) {
+            switch ((String) parameters.getValue(NAME_FORMAT, null)) {
                 case NameFormats.GENERIC:
-                    String genericFormat = parameters.getValue(GENERIC_FORMAT);
+                    String genericFormat = parameters.getValue(GENERIC_FORMAT, null);
                     valid = metadataRefs.hasRef(genericFormat);
                     parameters.getParameter(GENERIC_FORMAT).setValid(valid);
                     break;

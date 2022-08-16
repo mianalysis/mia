@@ -10,9 +10,9 @@ import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Categories;
-import io.github.mianalysis.mia.object.Image;
-import io.github.mianalysis.mia.object.Status;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
 import io.github.mianalysis.mia.object.parameters.OutputImageP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
@@ -22,6 +22,7 @@ import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
+import io.github.mianalysis.mia.object.system.Status;
 
 /**
  * Created by Stephen on 08/05/2017.
@@ -53,13 +54,13 @@ public class ChannelExtractor extends Module {
     @Override
     public Status process(Workspace workspace) {
         // Loading input image
-        String inputImageName = parameters.getValue(INPUT_IMAGE);
+        String inputImageName = parameters.getValue(INPUT_IMAGE,workspace);
         writeStatus("Loading image ("+inputImageName+") into workspace");
         ImagePlus ipl = workspace.getImages().get(inputImageName).getImagePlus();
 
         // Getting parameters
-        String outputImageName = parameters.getValue(OUTPUT_IMAGE);
-        int channel = parameters.getValue(CHANNEL_TO_EXTRACT);
+        String outputImageName = parameters.getValue(OUTPUT_IMAGE,workspace);
+        int channel = parameters.getValue(CHANNEL_TO_EXTRACT,workspace);
 
         // Getting selected channel
         writeStatus("Extracting channel "+channel);
@@ -68,7 +69,7 @@ public class ChannelExtractor extends Module {
 
         // Adding image to workspace
         writeStatus("Adding image ("+outputImageName+") to workspace");
-        Image outputImage = new Image(outputImageName,outputChannelImagePlus);
+        Image outputImage = ImageFactory.createImage(outputImageName,outputChannelImagePlus);
         workspace.addImage(outputImage);
 
         if (showOutput) outputImage.showImage();
@@ -89,32 +90,33 @@ public class ChannelExtractor extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
+Workspace workspace = null;
         return parameters;
     }
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
-        return null;
+return null;
     }
 
     @Override
-    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
-        return null;
+public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+return null;
     }
 
     @Override
-    public MetadataRefs updateAndGetMetadataReferences() {
-        return null;
+public MetadataRefs updateAndGetMetadataReferences() {
+return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
-        return null;
+return null;
     }
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
-        return null;
+return null;
     }
 
     @Override

@@ -12,8 +12,10 @@ import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.visualise.overlays.AddLabels;
 import io.github.mianalysis.mia.module.visualise.overlays.AddObjectOutline;
-import io.github.mianalysis.mia.object.Image;
 import io.github.mianalysis.mia.object.Objs;
+import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
@@ -107,7 +109,8 @@ public abstract class AbstractHoughDetection extends Module {
         if (showHoughScore) {
             DecimalFormat df = LabelFactory.getDecimalFormat(0, true);
             IDs = LabelFactory.getMeasurementLabels(outputObjects, Measurements.SCORE, df);
-            AddLabels.addOverlay(dispIpl, outputObjects, AddLabels.LabelPositions.CENTRE, IDs, labelSize, 0, 0, colours, false, false, true);
+            AddLabels.addOverlay(dispIpl, outputObjects, AddLabels.LabelPositions.CENTRE, IDs, labelSize, 0, 0, colours,
+                    false, false, true);
         }
 
         AddObjectOutline.addOverlay(dispIpl, outputObjects, 1, 1, colours, false, true);
@@ -150,7 +153,7 @@ public abstract class AbstractHoughDetection extends Module {
         returnedParameters.add(parameters.getParameter(INPUT_IMAGE));
         returnedParameters.add(parameters.getParameter(OUTPUT_OBJECTS));
         returnedParameters.add(parameters.getParameter(OUTPUT_TRANSFORM_IMAGE));
-        if ((boolean) parameters.getValue(OUTPUT_TRANSFORM_IMAGE))
+        if ((boolean) parameters.getValue(OUTPUT_TRANSFORM_IMAGE, null))
             returnedParameters.add(parameters.getParameter(OUTPUT_IMAGE));
 
         return returnedParameters;
@@ -165,7 +168,7 @@ public abstract class AbstractHoughDetection extends Module {
         returnedParameters.add(parameters.getParameter(NORMALISE_SCORES));
 
         returnedParameters.add(parameters.getParameter(DETECTION_MODE));
-        switch ((String) parameters.getValue(DETECTION_MODE)) {
+        switch ((String) parameters.getValue(DETECTION_MODE, null)) {
             case DetectionModes.ALL_ABOVE_SCORE:
                 returnedParameters.add(parameters.getParameter(DETECTION_THRESHOLD));
                 break;
@@ -187,9 +190,9 @@ public abstract class AbstractHoughDetection extends Module {
         returnedParameters.add(parameters.getParameter(VISUALISATION_SEPARATOR));
         returnedParameters.add(parameters.getParameter(SHOW_TRANSFORM_IMAGE));
         returnedParameters.add(parameters.getParameter(SHOW_DETECTION_IMAGE));
-        if ((boolean) parameters.getValue(SHOW_DETECTION_IMAGE)) {
+        if ((boolean) parameters.getValue(SHOW_DETECTION_IMAGE, null)) {
             returnedParameters.add(parameters.getParameter(SHOW_HOUGH_SCORE));
-            if ((boolean) parameters.getValue(SHOW_HOUGH_SCORE))
+            if ((boolean) parameters.getValue(SHOW_HOUGH_SCORE, null))
                 returnedParameters.add(parameters.getParameter(LABEL_SIZE));
         }
 
@@ -204,10 +207,11 @@ public abstract class AbstractHoughDetection extends Module {
 
     @Override
     public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+        Workspace workspace = null;
         ObjMeasurementRefs returnedRefs = new ObjMeasurementRefs();
 
         ObjMeasurementRef score = objectMeasurementRefs.getOrPut(Measurements.SCORE);
-        score.setObjectsName(parameters.getValue(OUTPUT_OBJECTS));
+        score.setObjectsName(parameters.getValue(OUTPUT_OBJECTS, workspace));
         returnedRefs.add(score);
 
         return returnedRefs;
@@ -226,7 +230,7 @@ public abstract class AbstractHoughDetection extends Module {
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
-        return null;
+return null;
     }
 
     @Override

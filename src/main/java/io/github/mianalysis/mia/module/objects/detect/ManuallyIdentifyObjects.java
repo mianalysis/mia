@@ -10,28 +10,41 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.BufferedOutputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
+import java.util.zip.ZipOutputStream;
 
 import javax.swing.BorderFactory;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
-import javax.swing.JComponent;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
-import javax.swing.KeyStroke;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
@@ -42,7 +55,7 @@ import ij.CompositeImage;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.ImageStack;
-import ij.WindowManager;
+import ij.Prefs;
 import ij.gui.Line;
 import ij.gui.OvalRoi;
 import ij.gui.Overlay;
@@ -51,22 +64,24 @@ import ij.gui.PolygonRoi;
 import ij.gui.Roi;
 import ij.gui.TextRoi;
 import ij.gui.Toolbar;
+import ij.io.RoiDecoder;
+import ij.io.RoiEncoder;
 import ij.plugin.Duplicator;
 import ij.plugin.SubHyperstackMaker;
 import ij.process.BinaryInterpolator;
 import ij.process.LUT;
 import io.github.mianalysis.mia.MIA;
+import io.github.mianalysis.mia.gui.parametercontrols.FileParameter;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.objects.relate.TrackObjects;
-import io.github.mianalysis.mia.object.Image;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
-import io.github.mianalysis.mia.object.Status;
 import io.github.mianalysis.mia.object.VolumeTypesInterface;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.image.Image;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
@@ -81,6 +96,7 @@ import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
+import io.github.mianalysis.mia.object.system.Status;
 import io.github.mianalysis.mia.object.units.TemporalUnit;
 import io.github.sjcross.sjcommon.exceptions.IntegerOverflowException;
 import io.github.sjcross.sjcommon.object.volume.PointOutOfRangeException;
@@ -93,6 +109,7 @@ import io.github.sjcross.sjcommon.object.volume.VolumeType;
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class ManuallyIdentifyObjects extends Module implements ActionListener, KeyListener {
     private JFrame frame;
+    private JMenuBar menuBar;
     private JTextField objectNumberField;
     private DefaultListModel<ObjRoi> listModel = new DefaultListModel<>();
     private JList<ObjRoi> list = new JList<>(listModel);
@@ -110,15 +127,23 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener, K
     private Objs outputTrackObjects;
 
     private boolean overflow = false;
+    private String saveObjectsPath = null;
 
+    // Menu bar options
+    private static final String FILE = "File";
+    private static final String LOAD_OBJECTS = "Load objects";
+    private static final String SAVE_OBJECTS = "Save objects";
+    private static final String SAVE_OBJECTS_AS = "Save objects as...";
+
+    // GUI buttons
     private static final String ADD_NEW = "Add new";
     private static final String ADD_EXISTING = "Add to existing";
     private static final String REMOVE = "Remove";
     private static final String FINISH = "Finish";
 
+    // Parameters
     public static final String INPUT_SEPARATOR = "Image input";
     public static final String INPUT_IMAGE = "Input image";
-
     public static final String OUTPUT_SEPARATOR = "Object output";
     public static final String OUTPUT_OBJECTS = "Output objects";
     public static final String VOLUME_TYPE = "Volume type";
@@ -126,7 +151,6 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener, K
     public static final String OUTPUT_TRACK_OBJECTS = "Output track objects";
     public static final String SPATIAL_INTERPOLATION = "Spatial interpolation";
     public static final String TEMPORAL_INTERPOLATION = "Temporal interpolation";
-
     public static final String SELECTION_SEPARATOR = "Object selection controls";
     public static final String INSTRUCTION_TEXT = "Instruction text";
     public static final String SELECTOR_TYPE = "Default selector type";
@@ -217,7 +241,24 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener, K
     private void showOptionsPanel(String instructionText) {
         rois = new HashMap<>();
         maxID = 0;
+
         frame = new JFrame();
+
+        JMenu fileMenu = new JMenu(FILE);
+        JMenuItem loadMenuItem = new JMenuItem(LOAD_OBJECTS);
+        loadMenuItem.addActionListener(this);
+        fileMenu.add(loadMenuItem);
+        JMenuItem saveMenuItem = new JMenuItem(SAVE_OBJECTS);
+        saveMenuItem.addActionListener(this);
+        fileMenu.add(saveMenuItem);
+        JMenuItem saveAsMenuItem = new JMenuItem(SAVE_OBJECTS_AS);
+        saveAsMenuItem.addActionListener(this);
+        fileMenu.add(saveAsMenuItem);
+
+        menuBar = new JMenuBar();
+        menuBar.add(fileMenu);
+        frame.setJMenuBar(menuBar);
+
         frame.setAlwaysOnTop(true);
 
         frame.addWindowListener(new WindowAdapter() {
@@ -252,7 +293,9 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener, K
 
         frame.add(headerLabel, c);
 
-        JLabel sliceNotice = new JLabel("Note: ROIs must be selected slice-by-slice.  Slices can be combined in 3D using \""+ADD_EXISTING+"\".");
+        JLabel sliceNotice = new JLabel(
+                "Note: ROIs must be selected slice-by-slice.  Slices can be combined in 3D using \"" + ADD_EXISTING
+                        + "\".");
         c.gridy++;
         frame.add(sliceNotice, c);
 
@@ -262,7 +305,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener, K
         c.gridy++;
         c.gridwidth = 1;
         frame.add(newObjectButton, c);
-        
+
         displayImagePlus.getWindow().getComponent(0).addKeyListener(this);
 
         JButton existingObjectButton = new JButton("Add to existing object");
@@ -477,22 +520,23 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener, K
                 + "The target object for adding to an existing object is specified using the \"Existing object number\" control (a list of existing object IDs is shown directly below this control)."
                 + "<br><br>References to each selection are displayed below the controls.  Previously-added regions can be re-selected by clicking the relevant reference.  This allows selections to be deleted or used as a basis for further selections."
                 + "<br><br>Once all selections have been made, objects are added to the workspace with the \"" + FINISH
-                + "\" button.<br><br>Objects need to be added slice-by-slice and can be linked in 3D using the \""+ADD_EXISTING+"\" control.";
+                + "\" button.<br><br>Objects need to be added slice-by-slice and can be linked in 3D using the \""
+                + ADD_EXISTING + "\" control.";
     }
 
     @Override
     public Status process(Workspace workspace) {// Local access to this is required for the action listeners
         // Getting parameters
-        String inputImageName = parameters.getValue(INPUT_IMAGE);
-        String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);
-        String type = parameters.getValue(VOLUME_TYPE);
-        boolean outputTracks = parameters.getValue(OUTPUT_TRACKS);
-        String outputTrackObjectsName = parameters.getValue(OUTPUT_TRACK_OBJECTS);
-        boolean spatialInterpolation = parameters.getValue(SPATIAL_INTERPOLATION);
-        boolean temporalInterpolation = parameters.getValue(TEMPORAL_INTERPOLATION);
-        String instructionText = parameters.getValue(INSTRUCTION_TEXT);
-        String selectorType = parameters.getValue(SELECTOR_TYPE);
-        String messageOnImage = parameters.getValue(MESSAGE_ON_IMAGE);
+        String inputImageName = parameters.getValue(INPUT_IMAGE, workspace);
+        String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS, workspace);
+        String type = parameters.getValue(VOLUME_TYPE, workspace);
+        boolean outputTracks = parameters.getValue(OUTPUT_TRACKS, workspace);
+        String outputTrackObjectsName = parameters.getValue(OUTPUT_TRACK_OBJECTS, workspace);
+        boolean spatialInterpolation = parameters.getValue(SPATIAL_INTERPOLATION, workspace);
+        boolean temporalInterpolation = parameters.getValue(TEMPORAL_INTERPOLATION, workspace);
+        String instructionText = parameters.getValue(INSTRUCTION_TEXT, workspace);
+        String selectorType = parameters.getValue(SELECTOR_TYPE, workspace);
+        String messageOnImage = parameters.getValue(MESSAGE_ON_IMAGE, workspace);
 
         // Getting input image
         Image inputImage = workspace.getImage(inputImageName);
@@ -594,6 +638,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener, K
 
     @Override
     public Parameters updateAndGetParameters() {
+        Workspace workspace = null;
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.get(INPUT_SEPARATOR));
@@ -605,7 +650,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener, K
         returnedParameters.add(parameters.get(POINT_MODE)); // Must always be visible, as user can change ROI type
         returnedParameters.add(parameters.get(OUTPUT_TRACKS));
 
-        if ((boolean) parameters.getValue(OUTPUT_TRACKS)) {
+        if ((boolean) parameters.getValue(OUTPUT_TRACKS, workspace)) {
             returnedParameters.add(parameters.get(OUTPUT_TRACK_OBJECTS));
             returnedParameters.add(parameters.get(SPATIAL_INTERPOLATION));
             returnedParameters.add(parameters.get(TEMPORAL_INTERPOLATION));
@@ -639,11 +684,12 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener, K
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
+        Workspace workspace = null;
         ParentChildRefs returnedRelationships = new ParentChildRefs();
 
-        if ((boolean) parameters.getValue(OUTPUT_TRACKS))
-            returnedRelationships.add(parentChildRefs.getOrPut(parameters.getValue(OUTPUT_TRACK_OBJECTS),
-                    parameters.getValue(OUTPUT_OBJECTS)));
+        if ((boolean) parameters.getValue(OUTPUT_TRACKS, workspace))
+            returnedRelationships.add(parentChildRefs.getOrPut(parameters.getValue(OUTPUT_TRACK_OBJECTS, workspace),
+                    parameters.getValue(OUTPUT_OBJECTS, workspace)));
 
         return returnedRelationships;
 
@@ -715,6 +761,21 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener, K
             case (FINISH):
                 processObjectsAndFinish();
                 break;
+
+            case (LOAD_OBJECTS):
+                loadObjects();
+                break;
+
+            case (SAVE_OBJECTS):
+                if (saveObjectsPath == null)
+                    saveObjectsPath = getSavePath();
+                saveObjects(saveObjectsPath);
+                break;
+
+            case (SAVE_OBJECTS_AS):
+                saveObjectsPath = getSavePath();
+                saveObjects(saveObjectsPath);
+                break;
         }
     }
 
@@ -730,11 +791,11 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener, K
         }
 
         if (roi.getType() == Roi.POINT)
-            switch ((String) parameters.getValue(POINT_MODE)) {
+            switch ((String) parameters.getValue(POINT_MODE, null)) {
                 case PointModes.INDIVIDUAL_OBJECTS:
                     Point[] points = ((PointRoi) roi).getContainedPoints();
-                    for (Point point:points)
-                        addSingleRoi(new PointRoi(new int[]{point.x}, new int[]{point.y}, 1));                    
+                    for (Point point : points)
+                        addSingleRoi(new PointRoi(new int[] { point.x }, new int[] { point.y }, 1));
                     break;
                 case PointModes.SINGLE_OBJECT:
                     addSingleRoi(roi);
@@ -742,21 +803,22 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener, K
             }
         else
             addSingleRoi(roi);
-        
+
         // Displaying the ROI on the overlay
         updateOverlay();
 
         // Setting the number field to this number
         objectNumberField.setText(String.valueOf(maxID));
 
-        // Deselecting the current ROI.  This can be re-enabled by selecting it from the list.
+        // Deselecting the current ROI. This can be re-enabled by selecting it from the
+        // list.
         displayImagePlus.killRoi();
 
     }
 
     public void addSingleRoi(Roi roi) {
         int ID = ++maxID;
-        
+
         ArrayList<ObjRoi> currentRois = new ArrayList<>();
 
         ObjRoi objRoi = new ObjRoi(ID, roi, displayImagePlus.getT() - 1, displayImagePlus.getZ());
@@ -844,7 +906,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener, K
                 continue;
 
             // Creating the new object
-            String type = parameters.getValue(VOLUME_TYPE);
+            String type = parameters.getValue(VOLUME_TYPE, null);
             VolumeType volumeType = VolumeTypesInterface.getVolumeType(type);
             Obj outputObject = outputObjects.createAndAddNewObject(volumeType, ID);
 
@@ -882,7 +944,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener, K
             Obj outputTrack = outputTrackObjects.createAndAddNewObject(VolumeType.POINTLIST, ID);
 
             // Creating the new object
-            String type = parameters.getValue(VOLUME_TYPE);
+            String type = parameters.getValue(VOLUME_TYPE, null);
             VolumeType volumeType = VolumeTypesInterface.getVolumeType(type);
 
             HashMap<Integer, Obj> objectsByT = new HashMap<>();
@@ -973,6 +1035,145 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener, K
 
     void displayObject(ObjRoi objRoi) {
         displayImagePlus.setRoi(ObjRoi.duplicateRoi(objRoi.getRoi()));
+    }
+
+    String getSavePath() {
+        String previousPath = Prefs.get("MIA.PreviousPath", "");
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setDialogTitle("Save objects to file");
+        fileChooser.setMultiSelectionEnabled(false);
+        fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+
+        if (previousPath != null) {
+            String path = new File(previousPath).getPath();
+            path = FileParameter.checkPath(path);
+            fileChooser.setCurrentDirectory(new File(path));
+        }
+        fileChooser.showDialog(null, "Save");
+
+        if (fileChooser.getSelectedFile() == null)
+            return null;
+
+        String outPath = fileChooser.getSelectedFile().getAbsolutePath();
+
+        if (!outPath.substring(0, outPath.length() - 4).equals(".zip"))
+            outPath = outPath + ".zip";
+
+        return outPath;
+
+    }
+
+    void saveObjects(String outPath) {
+        try {
+            ZipOutputStream zos = new ZipOutputStream(new BufferedOutputStream(new FileOutputStream(outPath)));
+            DataOutputStream out = new DataOutputStream(new BufferedOutputStream(zos));
+            RoiEncoder re = new RoiEncoder(out);
+
+            for (int ID : rois.keySet()) {
+                ArrayList<ObjRoi> currentRois = rois.get(ID);
+
+                // This Obj may be empty; if so, skip it
+                if (currentRois.size() == 0)
+                    continue;
+
+                for (ObjRoi currentRoi : currentRois) {
+                    String label = currentRoi.getShortString() + ".roi";
+
+                    Roi roi = currentRoi.getRoi();
+                    roi.setPosition(1, currentRoi.z - 1, currentRoi.t - 1);
+
+                    zos.putNextEntry(new ZipEntry(label));
+                    re.write(roi);
+                    out.flush();
+                }
+
+            }
+
+            out.close();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            return;
+        }
+    }
+
+    String getLoadPath() {
+        String previousPath = Prefs.get("MIA.PreviousPath", "");
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setDialogTitle("Objects file to load");
+        fileChooser.setMultiSelectionEnabled(false);
+        fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+
+        if (previousPath != null) {
+            String path = new File(previousPath).getPath();
+            path = FileParameter.checkPath(path);
+            fileChooser.setCurrentDirectory(new File(path));
+        }
+        fileChooser.showDialog(null, "Load");
+
+        if (fileChooser.getSelectedFile() == null)
+            return null;
+
+        return fileChooser.getSelectedFile().getAbsolutePath();
+
+    }
+
+    void loadObjects() {
+        String inPath = getLoadPath();
+
+        Pattern pattern = Pattern.compile("ID([0-9]+)_T([0-9]+)_Z([0-9]+)");
+
+        try {
+            ZipInputStream in = new ZipInputStream(new FileInputStream(inPath));
+            byte[] buf = new byte[1024];
+            int len;
+            ZipEntry entry = in.getNextEntry();
+            while (entry != null) {
+                String name = entry.getName();
+
+                if (name.endsWith(".roi")) {
+                    ByteArrayOutputStream out = new ByteArrayOutputStream();
+                    while ((len = in.read(buf)) > 0)
+                        out.write(buf, 0, len);
+                    out.close();
+                    byte[] bytes = out.toByteArray();
+                    RoiDecoder rd = new RoiDecoder(bytes, name);
+                    Roi roi = rd.getRoi();
+                    if (roi != null) {
+                        name = name.substring(0, name.length() - 4);
+
+                        Matcher matcher = pattern.matcher(name);
+                        if (matcher.matches()) {
+                            int ID = Integer.parseInt(matcher.group(1));
+                            int t = Integer.parseInt(matcher.group(2));
+                            int z = Integer.parseInt(matcher.group(3));
+
+                            rois.putIfAbsent(ID, new ArrayList<ObjRoi>());
+
+                            ArrayList<ObjRoi> currentRois = rois.get(ID);
+                            ObjRoi objRoi = new ObjRoi(ID, roi, t, z);
+                            currentRois.add(objRoi);
+                            rois.put(ID, currentRois);
+
+                            // Adding to the list of objects
+                            addObjectToList(objRoi, ID);
+
+                        }
+                    }
+                }
+                entry = in.getNextEntry();
+            }
+
+            in.close();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            return;
+        }
+
+        // Displaying the ROI on the overlay
+        updateOverlay();
+
     }
 
     static class ObjRoi {
@@ -1093,6 +1294,10 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener, K
         public String toString() {
             return "Object " + String.valueOf(ID) + ", T = " + (t + 1) + ", Z = " + z;
         }
+
+        public String getShortString() {
+            return "ID" + String.valueOf(ID) + "_T" + (t + 1) + "_Z" + z;
+        }
     }
 
     @Override
@@ -1103,18 +1308,18 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener, K
 
         MIA.log.writeDebug(arg0.getKeyCode());
         // TODO Auto-generated method stub
-        
+
     }
 
     @Override
     public void keyReleased(KeyEvent arg0) {
         // TODO Auto-generated method stub
-        
+
     }
 
     @Override
     public void keyTyped(KeyEvent arg0) {
         // TODO Auto-generated method stub
-        
+
     }
 }

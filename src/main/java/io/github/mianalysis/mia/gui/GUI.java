@@ -4,7 +4,6 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
-import java.awt.Toolkit;
 import java.io.File;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Modifier;
@@ -13,6 +12,7 @@ import java.util.TreeMap;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
+import javax.swing.SwingUtilities;
 import javax.swing.ToolTipManager;
 
 import io.github.mianalysis.mia.MIA;
@@ -33,6 +33,7 @@ import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.Workspaces;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.FileFolderPathP;
+import io.github.mianalysis.mia.object.parameters.abstrakt.Parameter;
 import io.github.mianalysis.mia.object.units.SpatialUnit;
 import io.github.mianalysis.mia.object.units.TemporalUnit;
 import io.github.mianalysis.mia.process.analysishandling.Analysis;
@@ -45,7 +46,7 @@ import io.github.sjcross.sjcommon.system.FileCrawler;
  * Created by Stephen on 20/05/2017.
  */
 public class GUI {
-    private static boolean initialised = false;
+    public static boolean initialised = false;
 
     private static Analysis analysis = new Analysis();
     private static AnalysisRunner analysisRunner = new AnalysisRunner();
@@ -138,9 +139,9 @@ public class GUI {
 
             try {
                 // Checking dependencies have been met
-                if (!MIA.dependencies.compatible(shortName, false)) {
+                if (!MIA.getDependencies().compatible(shortName, false)) {
                     MIA.log.writeWarning("Module \"" + shortName + "\" not loaded.  Dependencies not satisfied:");
-                    for (Dependency dependency : MIA.dependencies.getDependencies(shortName, false))
+                    for (Dependency dependency : MIA.getDependencies().getDependencies(shortName, false))
                         if (!dependency.test()) {
                             MIA.log.writeWarning("    Requirement: " + dependency.toString());
                             MIA.log.writeWarning("    Message: " + dependency.getMessage());
@@ -165,6 +166,31 @@ public class GUI {
                 MIA.log.writeWarning(e);
             }
         }
+    }
+
+    public static void refreshLookAndFeel() {
+        if (frame != null)
+            SwingUtilities.updateComponentTreeUI(frame);
+
+        if (processingPanel != null)
+            SwingUtilities.updateComponentTreeUI(processingPanel);
+
+        if (editingPanel != null)
+            SwingUtilities.updateComponentTreeUI(editingPanel);
+
+        for (Parameter parameter : getModules().getInputControl().getAllParameters().values())
+            SwingUtilities.updateComponentTreeUI(parameter.getControl().getComponent());
+
+        for (Parameter parameter : getModules().getOutputControl().getAllParameters().values())
+            SwingUtilities.updateComponentTreeUI(parameter.getControl().getComponent());
+
+        for (Parameter parameter : MIA.getPreferences().getAllParameters().values())
+            SwingUtilities.updateComponentTreeUI(parameter.getControl().getComponent());
+
+        for (Module module : getModules())
+            for (Parameter parameter : module.getAllParameters().values())
+                SwingUtilities.updateComponentTreeUI(parameter.getControl().getComponent());
+
     }
 
     public static void updatePanel() {
@@ -307,6 +333,8 @@ public class GUI {
 
         // Setting macro
         MacroHandler.setWorkspace(testWorkspace);
+
+        MIA.log.writeStatus("Test file updated");
 
     }
 

@@ -34,7 +34,7 @@ public class ModuleListMenu extends JMenu implements Comparable {
     }
 
     public void addMenuItem(Module module) {
-        if (!module.isDeprecated() || MIA.preferences.showDeprecated())
+        if (!module.isDeprecated() || MIA.getPreferences().showDeprecated())
             add(new PopupMenuItem(module, topLevelMenu));
     }
 

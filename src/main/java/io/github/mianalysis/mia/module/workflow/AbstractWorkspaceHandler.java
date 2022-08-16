@@ -3,13 +3,13 @@ package io.github.mianalysis.mia.module.workflow;
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.object.Status;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.ModuleP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.text.StringP;
+import io.github.mianalysis.mia.object.system.Status;
 
 public abstract class AbstractWorkspaceHandler extends Module {
     public static final String CONTINUATION_MODE = "Continuation mode";
@@ -39,12 +39,12 @@ public abstract class AbstractWorkspaceHandler extends Module {
     }
 
     protected Status processTermination(Parameters parameters, Workspace workspace, boolean showRedirectMessage) {
-        String continuationMode = parameters.getValue(CONTINUATION_MODE);
-        String redirectMessage = parameters.getValue(REDIRECT_MESSAGE);
-        boolean showTerminationWarning = parameters.getValue(SHOW_TERMINATION_WARNING);
-        boolean exportWorkspace = parameters.getValue(EXPORT_WORKSPACE);
-        boolean removeImages = parameters.getValue(REMOVE_IMAGES);
-        boolean removeObjects = parameters.getValue(REMOVE_OBJECTS);
+        String continuationMode = parameters.getValue(CONTINUATION_MODE,workspace);
+        String redirectMessage = parameters.getValue(REDIRECT_MESSAGE,workspace);
+        boolean showTerminationWarning = parameters.getValue(SHOW_TERMINATION_WARNING,workspace);
+        boolean exportWorkspace = parameters.getValue(EXPORT_WORKSPACE,workspace);
+        boolean removeImages = parameters.getValue(REMOVE_IMAGES,workspace);
+        boolean removeObjects = parameters.getValue(REMOVE_OBJECTS,workspace);
 
         // If terminate, remove necessary images and objects
         switch (continuationMode) {
@@ -87,6 +87,7 @@ public abstract class AbstractWorkspaceHandler extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
+Workspace workspace = null;
         return parameters;
 
     }

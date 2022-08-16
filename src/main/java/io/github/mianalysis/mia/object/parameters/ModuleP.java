@@ -4,6 +4,7 @@ import io.github.mianalysis.mia.gui.parametercontrols.ModuleChoiceParameter;
 import io.github.mianalysis.mia.gui.parametercontrols.ParameterControl;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.parameters.abstrakt.Parameter;
 
 public class ModuleP extends Parameter {
@@ -89,7 +90,7 @@ public class ModuleP extends Parameter {
     }
 
     @Override
-    public <T> T getValue() {
+    public <T> T getValue(Workspace workspace) {
         return (T) getSelectedModule();
     }
 

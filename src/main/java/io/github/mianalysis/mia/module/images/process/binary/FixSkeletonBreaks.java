@@ -1,18 +1,17 @@
 package io.github.mianalysis.mia.module.images.process.binary;
 
+import org.scijava.Priority;
+import org.scijava.plugin.Plugin;
+
 import ij.ImagePlus;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.images.process.InvertIntensity;
-import io.github.mianalysis.mia.module.Module;
-import org.scijava.Priority;
-import org.scijava.plugin.Plugin;
-
-import io.github.mianalysis.mia.object.Image;
-import io.github.mianalysis.mia.object.Status;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
@@ -27,6 +26,7 @@ import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
+import io.github.mianalysis.mia.object.system.Status;
 import io.github.sjcross.sjcommon.process.skeletontools.BreakFixer;
 
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
@@ -88,22 +88,22 @@ public class FixSkeletonBreaks extends Module {
     @Override
     protected Status process(Workspace workspace) {
         // Getting input image
-        String inputImageName = parameters.getValue(INPUT_IMAGE);
+        String inputImageName = parameters.getValue(INPUT_IMAGE,workspace);
         Image inputImage = workspace.getImages().get(inputImageName);
         ImagePlus inputImagePlus = inputImage.getImagePlus();
 
         // Getting parameters
-        boolean applyToInput = parameters.getValue(APPLY_TO_INPUT);
-        String outputImageName = parameters.getValue(OUTPUT_IMAGE);
-        int nPx = parameters.getValue(N_PX_FOR_FITTING);
-        double maxDist = parameters.getValue(MAX_LINKING_DISTANCE);
-        boolean calibratedUnits = parameters.getValue(CALIBRATED_UNITS);
-        double maxAngle = parameters.getValue(MAX_LINKING_ANGLE);
-        boolean onlyLinkEnds = parameters.getValue(ONLY_LINK_ENDS);
-        double angleWeight = parameters.getValue(ANGLE_WEIGHT);
-        double distanceWeight = parameters.getValue(DISTANCE_WEIGHT);
-        double endWeight = parameters.getValue(END_WEIGHT);
-        String binaryLogic = parameters.getValue(BINARY_LOGIC);
+        boolean applyToInput = parameters.getValue(APPLY_TO_INPUT,workspace);
+        String outputImageName = parameters.getValue(OUTPUT_IMAGE,workspace);
+        int nPx = parameters.getValue(N_PX_FOR_FITTING,workspace);
+        double maxDist = parameters.getValue(MAX_LINKING_DISTANCE,workspace);
+        boolean calibratedUnits = parameters.getValue(CALIBRATED_UNITS,workspace);
+        double maxAngle = parameters.getValue(MAX_LINKING_ANGLE,workspace);
+        boolean onlyLinkEnds = parameters.getValue(ONLY_LINK_ENDS,workspace);
+        double angleWeight = parameters.getValue(ANGLE_WEIGHT,workspace);
+        double distanceWeight = parameters.getValue(DISTANCE_WEIGHT,workspace);
+        double endWeight = parameters.getValue(END_WEIGHT,workspace);
+        String binaryLogic = parameters.getValue(BINARY_LOGIC,workspace);
         boolean blackBackground = binaryLogic.equals(BinaryLogic.BLACK_BACKGROUND);
 
         // Applying calibration
@@ -112,7 +112,7 @@ public class FixSkeletonBreaks extends Module {
 
         // If applying to a new image, the input image is duplicated
         if (!applyToInput) {
-            inputImage = new Image("Temp", inputImagePlus.duplicate());
+            inputImage = ImageFactory.createImage("Temp", inputImagePlus.duplicate());
         }
 
         // Running skeleton break fixing
@@ -122,7 +122,7 @@ public class FixSkeletonBreaks extends Module {
 
         // If the image is being saved as a new image, adding it to the workspace
         if (!applyToInput) {
-            Image outputImage = new Image(outputImageName, inputImage.getImagePlus());
+            Image outputImage = ImageFactory.createImage(outputImageName, inputImage.getImagePlus());
             workspace.addImage(outputImage);
             if (showOutput)
                 outputImage.showImage();
@@ -159,15 +159,15 @@ public class FixSkeletonBreaks extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
+Workspace workspace = null;
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(INPUT_IMAGE));
         returnedParameters.add(parameters.getParameter(APPLY_TO_INPUT));
-        if (!(boolean) parameters.getValue(APPLY_TO_INPUT)) {
+        if (!(boolean) parameters.getValue(APPLY_TO_INPUT,workspace))
             returnedParameters.add(parameters.getParameter(OUTPUT_IMAGE));
-        }
-
+        
         returnedParameters.add(parameters.getParameter(PROCESSING_SEPARATOR));
         returnedParameters.add(parameters.getParameter(N_PX_FOR_FITTING));
         returnedParameters.add(parameters.getParameter(MAX_LINKING_DISTANCE));
@@ -177,7 +177,7 @@ public class FixSkeletonBreaks extends Module {
         returnedParameters.add(parameters.getParameter(ANGLE_WEIGHT));
         returnedParameters.add(parameters.getParameter(DISTANCE_WEIGHT));
 
-        if (!((boolean) parameters.getValue(ONLY_LINK_ENDS)))
+        if (!((boolean) parameters.getValue(ONLY_LINK_ENDS,workspace)))
             returnedParameters.add(parameters.getParameter(END_WEIGHT));
 
         returnedParameters.add(parameters.getParameter(BINARY_LOGIC));
@@ -188,27 +188,27 @@ public class FixSkeletonBreaks extends Module {
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
-        return null;
+return null;
     }
 
     @Override
-    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
-        return null;
+public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+return null;
     }
 
     @Override
-    public MetadataRefs updateAndGetMetadataReferences() {
-        return null;
+public MetadataRefs updateAndGetMetadataReferences() {
+return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
-        return null;
+return null;
     }
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
-        return null;
+return null;
     }
 
     @Override

@@ -13,9 +13,9 @@ import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.object.Image;
-import io.github.mianalysis.mia.object.Status;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
@@ -25,6 +25,7 @@ import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
+import io.github.mianalysis.mia.object.system.Status;
 
 /**
  * Created by sc13967 on 09/02/2018.
@@ -55,8 +56,8 @@ public class AddPause extends Module {
     @Override
     protected Status process(Workspace workspace) {
         // Getting parameters
-        boolean showImage = parameters.getValue(SHOW_IMAGE);
-        String inputImageName = parameters.getValue(INPUT_IMAGE);
+        boolean showImage = parameters.getValue(SHOW_IMAGE,workspace);
+        String inputImageName = parameters.getValue(INPUT_IMAGE,workspace);
 
         if (showImage) {
             Image inputImage = workspace.getImage(inputImageName);
@@ -106,10 +107,11 @@ public class AddPause extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
+Workspace workspace = null;
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(SHOW_IMAGE));
-        if ((boolean) parameters.getValue(SHOW_IMAGE)) {
+        if ((boolean) parameters.getValue(SHOW_IMAGE,workspace)) {
             returnedParameters.add(parameters.getParameter(INPUT_IMAGE));
         }
 
@@ -119,27 +121,27 @@ public class AddPause extends Module {
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
-        return null;
+return null;
     }
 
     @Override
-    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
-        return null;
+public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+return null;
     }
 
     @Override
-    public MetadataRefs updateAndGetMetadataReferences() {
-        return null;
+public MetadataRefs updateAndGetMetadataReferences() {
+return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
-        return null;
+return null;
     }
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
-        return null;
+return null;
     }
 
     @Override

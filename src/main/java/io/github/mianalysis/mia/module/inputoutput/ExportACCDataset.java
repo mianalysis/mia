@@ -17,11 +17,11 @@ import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.object.Image;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
-import io.github.mianalysis.mia.object.Status;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.FolderPathP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
@@ -36,6 +36,7 @@ import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
+import io.github.mianalysis.mia.object.system.Status;
 
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class ExportACCDataset extends Module {
@@ -202,20 +203,20 @@ public class ExportACCDataset extends Module {
 
     @Override
     protected Status process(Workspace workspace) {
-        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
         Objs inputObjects = workspace.getObjectSet(inputObjectsName);
-        String inputRawImageName = parameters.getValue(INPUT_RAW_IMAGE);
+        String inputRawImageName = parameters.getValue(INPUT_RAW_IMAGE,workspace);
         Image inputRawImage = workspace.getImage(inputRawImageName);
-        String inputOverlayImageName = parameters.getValue(INPUT_OVERLAY_IMAGE);
+        String inputOverlayImageName = parameters.getValue(INPUT_OVERLAY_IMAGE,workspace);
         Image inputOverlayImage = workspace.getImage(inputOverlayImageName);
-        String rootFolder = parameters.getValue(ROOT_DATASET_FOLDER);
-        String plateMetadataName = parameters.getValue(PLATE_NAME);
+        String rootFolder = parameters.getValue(ROOT_DATASET_FOLDER,workspace);
+        String plateMetadataName = parameters.getValue(PLATE_NAME,workspace);
         String plateName = workspace.getMetadata().getAsString(plateMetadataName);
-        String rowMetadataName = parameters.getValue(ROW_LETTER);
+        String rowMetadataName = parameters.getValue(ROW_LETTER,workspace);
         String rowLetter = workspace.getMetadata().getAsString(rowMetadataName);
-        String columnMetadataName = parameters.getValue(COLUMN_NUMBER);
+        String columnMetadataName = parameters.getValue(COLUMN_NUMBER,workspace);
         int columnNumber = Integer.parseInt(workspace.getMetadata().getAsString(columnMetadataName));
-        TreeMap<String, Boolean> states = parameters.getValue(MEASUREMENTS);
+        TreeMap<String, Boolean> states = parameters.getValue(MEASUREMENTS,workspace);
 
         // Constructing filename (also removing any slash characters from seriesName)
         String fileName = workspace.getMetadata().getFilename();
@@ -279,6 +280,7 @@ public class ExportACCDataset extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
+Workspace workspace = null;
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
@@ -292,11 +294,11 @@ public class ExportACCDataset extends Module {
         returnedParameters.add(parameters.getParameter(COLUMN_NUMBER));
         returnedParameters.add(parameters.getParameter(MEASUREMENT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(SHOW_MEASUREMENTS));
-        if ((boolean) parameters.getValue(SHOW_MEASUREMENTS)) {
+        if ((boolean) parameters.getValue(SHOW_MEASUREMENTS,workspace)) {
             returnedParameters.add(parameters.getParameter(MEASUREMENTS));
         }
 
-        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
         ObjMeasurementSelectorP parameter = parameters.getParameter(MEASUREMENTS);
         parameter.setObjectName(inputObjectsName);
 
@@ -306,27 +308,27 @@ public class ExportACCDataset extends Module {
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
-        return null;
+return null;
     }
 
     @Override
-    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
-        return null;
+public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+return null;
     }
 
     @Override
-    public MetadataRefs updateAndGetMetadataReferences() {
-        return null;
+public MetadataRefs updateAndGetMetadataReferences() {
+return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
-        return null;
+return null;
     }
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
-        return null;
+return null;
     }
 
     @Override

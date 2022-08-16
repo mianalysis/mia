@@ -10,12 +10,12 @@ import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.objects.detect.IdentifyObjects;
 import io.github.mianalysis.mia.module.objects.measure.intensity.MeasureObjectIntensity;
 import io.github.mianalysis.mia.module.objects.relate.TrackObjects;
-import io.github.mianalysis.mia.object.Image;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
-import io.github.mianalysis.mia.object.Status;
 import io.github.mianalysis.mia.object.VolumeTypesInterface;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
@@ -28,6 +28,7 @@ import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
+import io.github.mianalysis.mia.object.system.Status;
 import io.github.sjcross.sjcommon.exceptions.IntegerOverflowException;
 import io.github.sjcross.sjcommon.mathfunc.CumStat;
 import io.github.sjcross.sjcommon.object.volume.VolumeType;
@@ -90,17 +91,17 @@ public class ConvertImageToObjects extends Module {
 
     @Override
     public Status process(Workspace workspace) {
-        String inputImageName = parameters.getValue(INPUT_IMAGE);
+        String inputImageName = parameters.getValue(INPUT_IMAGE,workspace);
         Image inputImage = workspace.getImages().get(inputImageName);
 
-        String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);
-        String volumeType = parameters.getValue(VOLUME_TYPE);
-        boolean createParents = parameters.getValue(CREATE_TRACKS);
-        String parentObjectsName = parameters.getValue(TRACK_OBJECTS_NAME);
+        String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS,workspace);
+        String volumeType = parameters.getValue(VOLUME_TYPE,workspace);
+        boolean createParents = parameters.getValue(CREATE_TRACKS,workspace);
+        String parentObjectsName = parameters.getValue(TRACK_OBJECTS_NAME,workspace);
 
         Objs objects = null;
         try {
-            objects = inputImage.convertImageToObjects(volumeType, outputObjectsName);
+            objects = inputImage.convertImageToObjects(VolumeTypesInterface.getVolumeType(volumeType), outputObjectsName);
         } catch (IntegerOverflowException e) {
             return Status.FAIL;
         }
@@ -137,6 +138,7 @@ public class ConvertImageToObjects extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
+Workspace workspace = null;
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.get(INPUT_SEPARATOR));
@@ -147,7 +149,7 @@ public class ConvertImageToObjects extends Module {
         returnedParameters.add(parameters.get(VOLUME_TYPE));
 
         returnedParameters.add(parameters.get(CREATE_TRACKS));
-        if ((boolean) parameters.getValue(CREATE_TRACKS))
+        if ((boolean) parameters.getValue(CREATE_TRACKS,workspace))
             returnedParameters.add(parameters.get(TRACK_OBJECTS_NAME));
 
         return returnedParameters;
@@ -156,26 +158,27 @@ public class ConvertImageToObjects extends Module {
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
-        return null;
+return null;
     }
 
     @Override
-    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
-        return null;
+public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+return null;
     }
 
     @Override
-    public MetadataRefs updateAndGetMetadataReferences() {
-        return null;
+public MetadataRefs updateAndGetMetadataReferences() {
+return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
+Workspace workspace = null;
         ParentChildRefs returnedRelationships = new ParentChildRefs();
 
-        if ((boolean) parameters.getValue(CREATE_TRACKS)) {
-            String childObjectsName = parameters.getValue(OUTPUT_OBJECTS);
-            String parentObjectsName = parameters.getValue(TRACK_OBJECTS_NAME);
+        if ((boolean) parameters.getValue(CREATE_TRACKS,workspace)) {
+            String childObjectsName = parameters.getValue(OUTPUT_OBJECTS,workspace);
+            String parentObjectsName = parameters.getValue(TRACK_OBJECTS_NAME,workspace);
 
             returnedRelationships.add(parentChildRefs.getOrPut(parentObjectsName, childObjectsName));
         }
@@ -186,7 +189,7 @@ public class ConvertImageToObjects extends Module {
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
-        return null;
+return null;
     }
 
     @Override

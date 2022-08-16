@@ -1,9 +1,11 @@
 package io.github.mianalysis.mia.object.parameters.abstrakt;
 
-import io.github.mianalysis.mia.module.Module;
+import java.io.File;
 
 import com.drew.lang.annotations.NotNull;
-import java.io.File;
+
+import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.object.Workspace;
 
 public abstract class FileFolderType extends Parameter {
     protected String path = "";
@@ -36,7 +38,7 @@ public abstract class FileFolderType extends Parameter {
     }
 
     @Override
-    public <T> T getValue() {
+    public <T> T getValue(Workspace workspace) {
         return (T) path;
     }
 

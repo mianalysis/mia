@@ -23,8 +23,9 @@ import io.github.mianalysis.mia.module.Module;
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
 
-import io.github.mianalysis.mia.object.Image;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.SeparatorP;
@@ -69,29 +70,29 @@ public class AffineManual<T extends RealType<T> & NativeType<T>> extends Abstrac
 
         // Setting up the parameters
         ManualParam manualParam = (ManualParam) param;
-        manualParam.pointSelectionMode = parameters.getValue(POINT_SELECTION_MODE);
+        manualParam.pointSelectionMode = parameters.getValue(POINT_SELECTION_MODE,workspace);
 
         // Getting any ROI attached to the warped image
-        switch ((String) parameters.getValue(CALCULATION_SOURCE)) {
+        switch ((String) parameters.getValue(CALCULATION_SOURCE,workspace)) {
             case CalculationSources.EXTERNAL:
-                String externalSourceName = parameters.getValue(EXTERNAL_SOURCE);
+                String externalSourceName = parameters.getValue(EXTERNAL_SOURCE,workspace);
                 manualParam.warpedRoi = workspace.getImage(externalSourceName).getImagePlus().getRoi();
                 break;
             case CalculationSources.INTERNAL:
-                String inputImageName = parameters.getValue(INPUT_IMAGE);
+                String inputImageName = parameters.getValue(INPUT_IMAGE,workspace);
                 manualParam.warpedRoi = workspace.getImage(inputImageName).getImagePlus().getRoi();
                 break;
         }
 
         // Getting any ROI attached to the reference image
-        switch ((String) parameters.getValue(REFERENCE_MODE)) {
+        switch ((String) parameters.getValue(REFERENCE_MODE,workspace)) {
             case ReferenceModes.FIRST_FRAME:
             case ReferenceModes.PREVIOUS_N_FRAMES:
-                String inputImageName = parameters.getValue(INPUT_IMAGE);
+                String inputImageName = parameters.getValue(INPUT_IMAGE,workspace);
                 manualParam.referenceRoi = workspace.getImage(inputImageName).getImagePlus().getRoi();
                 break;
             case ReferenceModes.SPECIFIC_IMAGE:
-                String referenceImageName = parameters.getValue(REFERENCE_IMAGE);
+                String referenceImageName = parameters.getValue(REFERENCE_IMAGE,workspace);
                 manualParam.referenceRoi = workspace.getImage(referenceImageName).getImagePlus().getRoi();
                 break;
         }
@@ -111,8 +112,8 @@ public class AffineManual<T extends RealType<T> & NativeType<T>> extends Abstrac
         ArrayList<PointPair> pairs = null;
         switch (p.pointSelectionMode) {
             case PointSelectionModes.PRESELECTED:
-                pairs = PointPairSelector.getPreselectedPoints(new Image("Warped", warpedIpl),
-                        new Image("Reference", referenceIpl));                   
+                pairs = PointPairSelector.getPreselectedPoints(ImageFactory.createImage("Warped", warpedIpl),
+                        ImageFactory.createImage("Reference", referenceIpl));                   
                 break;
             case PointSelectionModes.RUNTIME:
             default:
@@ -163,17 +164,17 @@ public class AffineManual<T extends RealType<T> & NativeType<T>> extends Abstrac
 
     @Override
     public void doAction(Object[] objects) {
-        String transformationMode = parameters.getValue(TRANSFORMATION_MODE);
-        String fillMode = parameters.getValue(FILL_MODE);
-        boolean multithread = parameters.getValue(ENABLE_MULTITHREADING);
+        String transformationMode = parameters.getValue(TRANSFORMATION_MODE,null);
+        String fillMode = parameters.getValue(FILL_MODE,null);
+        boolean multithread = parameters.getValue(ENABLE_MULTITHREADING,null);
 
         ArrayList<PointPair> pairs = (ArrayList<PointPair>) objects[0];
         ImagePlus ipl1 = ((ImagePlus) objects[1]).duplicate();
         ImagePlus ipl2 = ((ImagePlus) objects[2]).duplicate();
 
         // Duplicating image
-        Image image1 = new Image("Registered", ipl1);
-        Image image2 = new Image("Reference", ipl2);
+        Image image1 = ImageFactory.createImage("Registered", ipl1);
+        Image image2 = ImageFactory.createImage("Reference", ipl2);
 
         AbstractAffineModel2D model = getModel(transformationMode);
         final ArrayList<PointMatch> candidates = new ArrayList<PointMatch>();
@@ -217,6 +218,7 @@ public class AffineManual<T extends RealType<T> & NativeType<T>> extends Abstrac
 
     @Override
     public Parameters updateAndGetParameters() {
+Workspace workspace = null;
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.addAll(super.updateAndGetParameters());

@@ -10,8 +10,8 @@ import io.github.mianalysis.mia.macro.MacroHandler;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.script.AbstractMacroRunner;
-import io.github.mianalysis.mia.object.Status;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.system.Status;
 import io.github.mianalysis.mia.process.logging.LogRenderer;
 
 /**
@@ -74,7 +74,7 @@ public class Analysis {
                         break;
                     case REDIRECT:
                         // Getting index of module before one to move to
-                        Module redirectModule = module.getRedirectModule();
+                        Module redirectModule = module.getRedirectModule(workspace);
                         if (redirectModule == null)
                             break;
                         i = modules.indexOf(redirectModule) - 1;

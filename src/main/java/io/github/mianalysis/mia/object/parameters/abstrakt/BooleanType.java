@@ -3,6 +3,7 @@ package io.github.mianalysis.mia.object.parameters.abstrakt;
 import io.github.mianalysis.mia.gui.parametercontrols.BooleanParameter;
 import io.github.mianalysis.mia.gui.parametercontrols.ParameterControl;
 import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.object.Workspace;
 
 public abstract class BooleanType extends Parameter {
     protected boolean selected = false;
@@ -45,7 +46,7 @@ public abstract class BooleanType extends Parameter {
     }
 
     @Override
-    public <T> T getValue() {
+    public <T> T getValue(Workspace workspace) {
         return (T) (Boolean) selected;
     }
 

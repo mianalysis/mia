@@ -15,7 +15,6 @@ import org.w3c.dom.Node;
 
 import ij.Prefs;
 import io.github.mianalysis.mia.MIA;
-import io.github.mianalysis.mia.object.Status;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.ParameterGroup;
@@ -31,6 +30,7 @@ import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
+import io.github.mianalysis.mia.object.system.Status;
 import io.github.mianalysis.mia.process.logging.LogRenderer;
 
 /**
@@ -193,8 +193,8 @@ public abstract class Module extends Ref implements Comparable, SciJavaPlugin {
 
     }
 
-    public <T> T getParameterValue(String name) {
-        return parameters.getParameter(name).getValue();
+    public <T> T getParameterValue(String name, Workspace workspace) {
+        return parameters.getParameter(name).getValue(workspace);
     }
 
     public void setParameterVisibility(String name, boolean visible) {
@@ -353,7 +353,7 @@ public abstract class Module extends Ref implements Comparable, SciJavaPlugin {
         this.deprecated = deprecated;
     }
 
-    public Module getRedirectModule() {
+    public Module getRedirectModule(Workspace workspace) {
         return this.redirectModule;
     }
 

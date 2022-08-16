@@ -13,9 +13,9 @@ import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.object.Image;
-import io.github.mianalysis.mia.object.Status;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
 import io.github.mianalysis.mia.object.parameters.OutputImageP;
@@ -27,6 +27,7 @@ import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
+import io.github.mianalysis.mia.object.system.Status;
 import io.github.sjcross.sjcommon.process.IntensityMinMax;
 import net.imagej.ImgPlus;
 import net.imagej.axis.Axes;
@@ -160,7 +161,7 @@ public class MergeChannels<T extends RealType<T> & NativeType<T>> extends Module
         ipl.setPosition(1, 1, 1);
         ipl.updateChannelAndDraw();
 
-        return new Image(outputImageName, ipl);
+        return ImageFactory.createImage(outputImageName, ipl);
 
     }
 
@@ -180,15 +181,15 @@ public class MergeChannels<T extends RealType<T> & NativeType<T>> extends Module
     @Override
     public Status process(Workspace workspace) {
         // Getting parameters
-        String overwriteMode = parameters.getValue(OVERWRITE_MODE);
-        String outputImageName = parameters.getValue(OUTPUT_IMAGE);
+        String overwriteMode = parameters.getValue(OVERWRITE_MODE,workspace);
+        String outputImageName = parameters.getValue(OUTPUT_IMAGE,workspace);
 
         // Creating a collection of images
-        LinkedHashMap<Integer, Parameters> collections = parameters.getValue(ADD_INPUT_IMAGE);
+        LinkedHashMap<Integer, Parameters> collections = parameters.getValue(ADD_INPUT_IMAGE,workspace);
         Image[] inputImages = new Image[collections.size()];
         int i = 0;
         for (Parameters collection : collections.values()) {
-            inputImages[i++] = workspace.getImage(collection.getValue(INPUT_IMAGE));
+            inputImages[i++] = workspace.getImage(collection.getValue(INPUT_IMAGE,workspace));
         }
 
         Image mergedImage = combineImages(inputImages, outputImageName);
@@ -196,7 +197,7 @@ public class MergeChannels<T extends RealType<T> & NativeType<T>> extends Module
         // If the image is being saved as a new image, adding it to the workspace
         switch (overwriteMode) {
             case OverwriteModes.CREATE_NEW:
-                Image outputImage = new Image(outputImageName, mergedImage.getImagePlus());
+                Image outputImage = ImageFactory.createImage(outputImageName, mergedImage.getImagePlus());
                 workspace.addImage(outputImage);
                 break;
 
@@ -229,12 +230,13 @@ public class MergeChannels<T extends RealType<T> & NativeType<T>> extends Module
 
     @Override
     public Parameters updateAndGetParameters() {
+Workspace workspace = null;
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(ADD_INPUT_IMAGE));
 
         returnedParameters.add(parameters.getParameter(OVERWRITE_MODE));
-        switch ((String) parameters.getValue(OVERWRITE_MODE)) {
+        switch ((String) parameters.getValue(OVERWRITE_MODE,workspace)) {
             case OverwriteModes.CREATE_NEW:
                 returnedParameters.add(parameters.getParameter(OUTPUT_IMAGE));
                 break;
@@ -249,27 +251,27 @@ public class MergeChannels<T extends RealType<T> & NativeType<T>> extends Module
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
-        return null;
+return null;
     }
 
     @Override
-    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
-        return null;
+public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+return null;
     }
 
     @Override
-    public MetadataRefs updateAndGetMetadataReferences() {
-        return null;
+public MetadataRefs updateAndGetMetadataReferences() {
+return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
-        return null;
+return null;
     }
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
-        return null;
+return null;
     }
 
     @Override

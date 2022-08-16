@@ -2,6 +2,7 @@ package io.github.mianalysis.mia.object.parameters;
 
 import java.util.LinkedHashMap;
 
+import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.parameters.abstrakt.Parameter;
 import io.github.mianalysis.mia.object.refs.collections.Refs;
 
@@ -38,8 +39,8 @@ public class Parameters extends LinkedHashMap<String, Parameter> implements Refs
 
     }
 
-    public <T> T getValue(String name) {
-        return getParameter(name).getValue();
+    public <T> T getValue(String name, Workspace workspace) {
+        return getParameter(name).getValue(workspace);
     }
 
     public boolean isVisible(String name) {

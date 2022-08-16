@@ -23,12 +23,12 @@ import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.images.process.ImageTypeConverter;
 import io.github.mianalysis.mia.module.images.process.InvertIntensity;
-import io.github.mianalysis.mia.object.Image;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
-import io.github.mianalysis.mia.object.Status;
 import io.github.mianalysis.mia.object.VolumeTypesInterface;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
@@ -42,6 +42,7 @@ import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
+import io.github.mianalysis.mia.object.system.Status;
 import io.github.mianalysis.mia.object.units.TemporalUnit;
 import io.github.sjcross.sjcommon.exceptions.IntegerOverflowException;
 import io.github.sjcross.sjcommon.object.volume.SpatCal;
@@ -330,7 +331,7 @@ public class IdentifyObjects extends Module {
                 }
 
                 // Converting image to objects
-                Image tempImage = new Image("Temp image", currStack);
+                Image tempImage = ImageFactory.createImage("Temp image", currStack);
                 Objs currOutputObjects = tempImage.convertImageToObjects(type, outputObjectsName, singleObject);
 
                 // If processing each slice separately, offsetting it to the correct Z-position
@@ -387,20 +388,20 @@ public class IdentifyObjects extends Module {
     @Override
     public Status process(Workspace workspace) {
         // Getting input image
-        String inputImageName = parameters.getValue(INPUT_IMAGE);
+        String inputImageName = parameters.getValue(INPUT_IMAGE,workspace);
         Image inputImage = workspace.getImage(inputImageName);
 
         // Getting parameters
-        String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);
-        String binaryLogic = parameters.getValue(BINARY_LOGIC);
+        String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS,workspace);
+        String binaryLogic = parameters.getValue(BINARY_LOGIC,workspace);
         boolean blackBackground = binaryLogic.equals(BinaryLogic.BLACK_BACKGROUND);
-        String detectionMode = parameters.getValue(DETECTION_MODE);
-        boolean singleObject = parameters.getValue(SINGLE_OBJECT);
-        String connectivityName = parameters.getValue(CONNECTIVITY);
-        String type = parameters.getValue(VOLUME_TYPE);
+        String detectionMode = parameters.getValue(DETECTION_MODE,workspace);
+        boolean singleObject = parameters.getValue(SINGLE_OBJECT,workspace);
+        String connectivityName = parameters.getValue(CONNECTIVITY,workspace);
+        String type = parameters.getValue(VOLUME_TYPE,workspace);
 
-        boolean multithread = parameters.getValue(ENABLE_MULTITHREADING);
-        int minStripWidth = parameters.getValue(MIN_STRIP_WIDTH);
+        boolean multithread = parameters.getValue(ENABLE_MULTITHREADING,workspace);
+        int minStripWidth = parameters.getValue(MIN_STRIP_WIDTH,workspace);
 
         // Getting options
         int connectivity = getConnectivity(connectivityName);
@@ -443,6 +444,7 @@ public class IdentifyObjects extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
+Workspace workspace = null;
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.get(INPUT_SEPARATOR));
@@ -458,7 +460,7 @@ public class IdentifyObjects extends Module {
 
         returnedParameters.add(parameters.get(EXECUTION_SEPARATOR));
         returnedParameters.add(parameters.get(ENABLE_MULTITHREADING));
-        if ((boolean) parameters.getValue(ENABLE_MULTITHREADING)) {
+        if ((boolean) parameters.getValue(ENABLE_MULTITHREADING,workspace)) {
             returnedParameters.add(parameters.get(MIN_STRIP_WIDTH));
         }
 
@@ -468,27 +470,27 @@ public class IdentifyObjects extends Module {
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
-        return null;
+return null;
     }
 
     @Override
-    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
-        return null;
+public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+return null;
     }
 
     @Override
-    public MetadataRefs updateAndGetMetadataReferences() {
-        return null;
+public MetadataRefs updateAndGetMetadataReferences() {
+return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
-        return null;
+return null;
     }
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
-        return null;
+return null;
     }
 
     @Override

@@ -16,12 +16,12 @@ import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
 import io.github.mianalysis.mia.module.core.InputControl;
 import io.github.mianalysis.mia.module.system.GlobalVariables;
-import io.github.mianalysis.mia.object.Image;
 import io.github.mianalysis.mia.object.Measurement;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
-import io.github.mianalysis.mia.object.Status;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.FilePathP;
@@ -40,6 +40,7 @@ import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
+import io.github.mianalysis.mia.object.system.Status;
 
 /**
  * Created by sc13967 on 31/01/2018.
@@ -120,20 +121,20 @@ public class RunMacroOnObjects extends AbstractMacroRunner {
     @Override
     public Status process(Workspace workspace) {
         // Getting input image
-        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
-        boolean provideInputImage = parameters.getValue(PROVIDE_INPUT_IMAGE);
-        String inputImageName = parameters.getValue(INPUT_IMAGE);
-        boolean updateInputImage = parameters.getValue(UPDATE_INPUT_IMAGE);
-        String macroMode = parameters.getValue(MACRO_MODE);
-        String macroText = parameters.getValue(MACRO_TEXT);
-        String macroFile = parameters.getValue(MACRO_FILE);
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
+        boolean provideInputImage = parameters.getValue(PROVIDE_INPUT_IMAGE,workspace);
+        String inputImageName = parameters.getValue(INPUT_IMAGE,workspace);
+        boolean updateInputImage = parameters.getValue(UPDATE_INPUT_IMAGE,workspace);
+        String macroMode = parameters.getValue(MACRO_MODE,workspace);
+        String macroText = parameters.getValue(MACRO_TEXT,workspace);
+        String macroFile = parameters.getValue(MACRO_FILE,workspace);
 
         // Getting the input objects
         Objs inputObjects = workspace.getObjectSet(inputObjectsName);
 
         // Getting a list of measurement headings
         ParameterGroup group = parameters.getParameter(ADD_INTERCEPTED_VARIABLE);
-        LinkedHashSet<String> expectedMeasurements = expectedMeasurements(group, VARIABLE);
+        LinkedHashSet<String> expectedMeasurements = expectedMeasurements(group, VARIABLE, workspace);
 
         // If the macro is stored as a file, load this to the macroText string
         if (macroMode.equals(RunMacro.MacroModes.MACRO_FILE)) {
@@ -144,7 +145,7 @@ public class RunMacroOnObjects extends AbstractMacroRunner {
 
         // Appending variables to the front of the macro
         ParameterGroup variableGroup = parameters.getParameter(ADD_VARIABLE);
-        macroText = addVariables(macroText, variableGroup);
+        macroText = addVariables(macroText, variableGroup, workspace);
 
         // If providing the input image direct from the workspace, hide all open windows
         // while the macro runs
@@ -246,13 +247,14 @@ public class RunMacroOnObjects extends AbstractMacroRunner {
 
     @Override
     public Parameters updateAndGetParameters() {
+Workspace workspace = null;
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(INPUT_OBJECTS));
 
         returnedParameters.add(parameters.getParameter(PROVIDE_INPUT_IMAGE));
-        if ((boolean) parameters.getValue(PROVIDE_INPUT_IMAGE)) {
+        if ((boolean) parameters.getValue(PROVIDE_INPUT_IMAGE,workspace)) {
             returnedParameters.add(parameters.getParameter(INPUT_IMAGE));
             returnedParameters.add(parameters.getParameter(UPDATE_INPUT_IMAGE));
         }
@@ -262,7 +264,7 @@ public class RunMacroOnObjects extends AbstractMacroRunner {
 
         returnedParameters.add(parameters.getParameter(MACRO_SEPARATOR));
         returnedParameters.add(parameters.getParameter(MACRO_MODE));
-        switch ((String) parameters.getValue(MACRO_MODE)) {
+        switch ((String) parameters.getValue(MACRO_MODE,workspace)) {
             case MacroModes.MACRO_FILE:
                 returnedParameters.add(parameters.getParameter(MACRO_FILE));
                 break;
@@ -281,17 +283,18 @@ public class RunMacroOnObjects extends AbstractMacroRunner {
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
-        return null;
+return null;
     }
 
     @Override
-    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+Workspace workspace = null;
         ObjMeasurementRefs returnedRefs = new ObjMeasurementRefs();
 
-        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
 
         ParameterGroup group = parameters.getParameter(ADD_INTERCEPTED_VARIABLE);
-        LinkedHashSet<String> expectedMeasurements = expectedMeasurements(group, VARIABLE);
+        LinkedHashSet<String> expectedMeasurements = expectedMeasurements(group, VARIABLE, workspace);
 
         for (String expectedMeasurement : expectedMeasurements) {
             String fullName = getFullName(expectedMeasurement);
@@ -305,18 +308,18 @@ public class RunMacroOnObjects extends AbstractMacroRunner {
     }
 
     @Override
-    public MetadataRefs updateAndGetMetadataReferences() {
-        return null;
+public MetadataRefs updateAndGetMetadataReferences() {
+return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
-        return null;
+return null;
     }
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
-        return null;
+return null;
     }
 
     @Override

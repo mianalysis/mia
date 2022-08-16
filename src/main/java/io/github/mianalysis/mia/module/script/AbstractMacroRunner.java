@@ -7,11 +7,12 @@ import ij.measure.ResultsTable;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.Measurement;
+import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
-import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.ParameterGroup;
 import io.github.mianalysis.mia.object.parameters.ParameterGroup.ParameterUpdaterAndGetter;
+import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.text.DoubleP;
 import io.github.mianalysis.mia.object.parameters.text.StringP;
 
@@ -41,25 +42,25 @@ public abstract class AbstractMacroRunner extends Module {
         return "MACRO // " + assignedName;
     }
 
-    public static String addVariables(String macroString, ParameterGroup group) {
+    public static String addVariables(String macroString, ParameterGroup group, Workspace workspace) {
         StringBuilder sb = new StringBuilder();
 
         LinkedHashMap<Integer, Parameters> collections = group.getCollections(false);
         for (Parameters collection : collections.values()) {
-            String name = collection.getValue(VARIABLE_NAME);
-            String type = collection.getValue(VARIABLE_TYPE);
+            String name = collection.getValue(VARIABLE_NAME, workspace);
+            String type = collection.getValue(VARIABLE_TYPE, workspace);
             String value = "";
 
             switch (type) {
-            case VariableTypes.BOOLEAN:
-                value = (boolean) collection.getValue(VARIABLE_CHECKBOX) ? "true" : "false";
-                break;
-            case VariableTypes.NUMBER:
-                value = collection.getValue(VARIABLE_NUMERIC_VALUE).toString();
-                break;
-            case VariableTypes.TEXT:
-                value = "\"" + collection.getValue(VARIABLE_TEXT_VALUE) + "\"";
-                break;
+                case VariableTypes.BOOLEAN:
+                    value = (boolean) collection.getValue(VARIABLE_CHECKBOX, workspace) ? "true" : "false";
+                    break;
+                case VariableTypes.NUMBER:
+                    value = collection.getValue(VARIABLE_NUMERIC_VALUE, workspace).toString();
+                    break;
+                case VariableTypes.TEXT:
+                    value = "\"" + collection.getValue(VARIABLE_TEXT_VALUE, workspace) + "\"";
+                    break;
             }
 
             // Adding this variable into the code
@@ -76,12 +77,12 @@ public abstract class AbstractMacroRunner extends Module {
 
     }
 
-    public static LinkedHashSet<String> expectedMeasurements(ParameterGroup group, String measurementHeading) {
+    public static LinkedHashSet<String> expectedMeasurements(ParameterGroup group, String measurementHeading, Workspace workspace) {
         LinkedHashSet<String> addedMeasurements = new LinkedHashSet<>();
 
         LinkedHashMap<Integer, Parameters> collections = group.getCollections(false);
         for (Parameters collection : collections.values()) {
-            String heading = collection.getValue(measurementHeading);
+            String heading = collection.getValue(measurementHeading, workspace);
             addedMeasurements.add(heading);
         }
 
@@ -170,16 +171,16 @@ public abstract class AbstractMacroRunner extends Module {
 
                 returnedParameters.add(params.getParameter(VARIABLE_NAME));
                 returnedParameters.add(params.getParameter(VARIABLE_TYPE));
-                switch ((String) params.getValue(VARIABLE_TYPE)) {
-                case VariableTypes.BOOLEAN:
-                    returnedParameters.add(params.getParameter(VARIABLE_CHECKBOX));
-                    break;
-                case VariableTypes.NUMBER:
-                    returnedParameters.add(params.getParameter(VARIABLE_NUMERIC_VALUE));
-                    break;
-                case VariableTypes.TEXT:
-                    returnedParameters.add(params.getParameter(VARIABLE_TEXT_VALUE));
-                    break;
+                switch ((String) params.getValue(VARIABLE_TYPE,null)) {
+                    case VariableTypes.BOOLEAN:
+                        returnedParameters.add(params.getParameter(VARIABLE_CHECKBOX));
+                        break;
+                    case VariableTypes.NUMBER:
+                        returnedParameters.add(params.getParameter(VARIABLE_NUMERIC_VALUE));
+                        break;
+                    case VariableTypes.TEXT:
+                        returnedParameters.add(params.getParameter(VARIABLE_TEXT_VALUE));
+                        break;
                 }
 
                 return returnedParameters;

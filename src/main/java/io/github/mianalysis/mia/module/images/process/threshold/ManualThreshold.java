@@ -13,9 +13,9 @@ import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.images.process.ImageTypeConverter;
 import io.github.mianalysis.mia.module.images.process.InvertIntensity;
-import io.github.mianalysis.mia.object.Image;
-import io.github.mianalysis.mia.object.Status;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.ImageMeasurementP;
@@ -30,6 +30,7 @@ import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
+import io.github.mianalysis.mia.object.system.Status;
 
 /**
  * Created by sc13967 on 06/06/2017.
@@ -108,16 +109,16 @@ public class ManualThreshold extends Module {
     @Override
     public Status process(Workspace workspace) {
         // Getting input image
-        String inputImageName = parameters.getValue(INPUT_IMAGE);
+        String inputImageName = parameters.getValue(INPUT_IMAGE,workspace);
         Image inputImage = workspace.getImages().get(inputImageName);
         ImagePlus inputImagePlus = inputImage.getImagePlus();
 
         // Getting parameters
-        boolean applyToInput = parameters.getValue(APPLY_TO_INPUT);
-        String binaryLogic = parameters.getValue(BINARY_LOGIC);
-        String thresholdSource = parameters.getValue(THRESHOLD_SOURCE);
-        double thresholdValue = parameters.getValue(THRESHOLD_VALUE);
-        String measurementName = parameters.getValue(MEASUREMENT);
+        boolean applyToInput = parameters.getValue(APPLY_TO_INPUT,workspace);
+        String binaryLogic = parameters.getValue(BINARY_LOGIC,workspace);
+        String thresholdSource = parameters.getValue(THRESHOLD_SOURCE,workspace);
+        double thresholdValue = parameters.getValue(THRESHOLD_VALUE,workspace);
+        String measurementName = parameters.getValue(MEASUREMENT,workspace);
 
         if (thresholdSource.equals(ThresholdSources.IMAGE_MEASUREMENT))
             thresholdValue = (int) Math.round(inputImage.getMeasurement(measurementName).getValue());
@@ -138,8 +139,8 @@ public class ManualThreshold extends Module {
                 inputImage.showImage();
 
         } else {
-            String outputImageName = parameters.getValue(OUTPUT_IMAGE);
-            Image outputImage = new Image(outputImageName, inputImagePlus);
+            String outputImageName = parameters.getValue(OUTPUT_IMAGE,workspace);
+            Image outputImage = ImageFactory.createImage(outputImageName, inputImagePlus);
             workspace.addImage(outputImage);
             if (showOutput)
                 outputImage.showImage();
@@ -168,25 +169,26 @@ public class ManualThreshold extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
+Workspace workspace = null;
         Parameters returnedParameters = new Parameters();
         returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(INPUT_IMAGE));
         returnedParameters.add(parameters.getParameter(APPLY_TO_INPUT));
 
-        if (!(boolean) parameters.getValue(APPLY_TO_INPUT)) {
+        if (!(boolean) parameters.getValue(APPLY_TO_INPUT,workspace)) {
             returnedParameters.add(parameters.getParameter(OUTPUT_IMAGE));
         }
 
         returnedParameters.add(parameters.getParameter(THRESHOLD_SEPARATOR));
         returnedParameters.add(parameters.getParameter(THRESHOLD_SOURCE));
 
-        switch ((String) parameters.getValue(THRESHOLD_SOURCE)) {
+        switch ((String) parameters.getValue(THRESHOLD_SOURCE,workspace)) {
             case ThresholdSources.FIXED_VALUE:
                 returnedParameters.add(parameters.getParameter(THRESHOLD_VALUE));
                 break;
             case ThresholdSources.IMAGE_MEASUREMENT:
                 ImageMeasurementP parameter = parameters.getParameter(MEASUREMENT);
-                parameter.setImageName(parameters.getValue(INPUT_IMAGE));
+                parameter.setImageName(parameters.getValue(INPUT_IMAGE,workspace));
                 returnedParameters.add(parameters.getParameter(MEASUREMENT));
                 break;
         }
@@ -199,28 +201,27 @@ public class ManualThreshold extends Module {
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
-        return null;
-
+return null;
     }
 
     @Override
-    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
-        return null;
+public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+return null;
     }
 
     @Override
-    public MetadataRefs updateAndGetMetadataReferences() {
-        return null;
+public MetadataRefs updateAndGetMetadataReferences() {
+return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
-        return null;
+return null;
     }
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
-        return null;
+return null;
     }
 
     @Override

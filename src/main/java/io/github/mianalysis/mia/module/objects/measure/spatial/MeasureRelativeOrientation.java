@@ -13,7 +13,6 @@ import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.Measurement;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
-import io.github.mianalysis.mia.object.Status;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
@@ -27,6 +26,7 @@ import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
+import io.github.mianalysis.mia.object.system.Status;
 import io.github.sjcross.sjcommon.analysis.volume.SurfaceSeparationCalculator;
 import io.github.sjcross.sjcommon.exceptions.IntegerOverflowException;
 import io.github.sjcross.sjcommon.object.Point;
@@ -98,20 +98,21 @@ public class MeasureRelativeOrientation extends Module {
     }
 
     String getMeasurementRef() {
+        Workspace workspace = null;
         String reference = null;
-        switch ((String) parameters.getValue(REFERENCE_MODE)) {
+        switch ((String) parameters.getValue(REFERENCE_MODE, workspace)) {
             case ReferenceModes.IMAGE_CENTRE:
                 reference = "IM_CENTRE";
                 break;
             case ReferenceModes.OBJECT_CENTROID:
-                String referenceObjectsName = parameters.getValue(REFERENCE_OBJECTS);
-                String objectChoiceMode = parameters.getValue(OBJECT_CHOICE_MODE);
+                String referenceObjectsName = parameters.getValue(REFERENCE_OBJECTS, workspace);
+                String objectChoiceMode = parameters.getValue(OBJECT_CHOICE_MODE, workspace);
                 String choice = objectChoiceMode.equals(ObjectChoiceModes.LARGEST_OBJECT) ? "LARGEST" : "SMALLEST";
                 reference = referenceObjectsName + "_" + choice + "_OBJ_CENTROID";
                 break;
             case ReferenceModes.OBJECT_SURFACE:
-                referenceObjectsName = parameters.getValue(REFERENCE_OBJECTS);
-                objectChoiceMode = parameters.getValue(OBJECT_CHOICE_MODE);
+                referenceObjectsName = parameters.getValue(REFERENCE_OBJECTS, workspace);
+                objectChoiceMode = parameters.getValue(OBJECT_CHOICE_MODE, workspace);
                 choice = objectChoiceMode.equals(ObjectChoiceModes.LARGEST_OBJECT) ? "LARGEST" : "SMALLEST";
                 reference = referenceObjectsName + "_" + choice + "_OBJ_SURFACE";
                 break;
@@ -340,19 +341,20 @@ public class MeasureRelativeOrientation extends Module {
     @Override
     public Status process(Workspace workspace) {
         // Getting input objects
-        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS, workspace);
         Objs inputObjects = workspace.getObjectSet(inputObjectsName);
 
         // Getting other parameters
-        // String orientationMode = parameters.getValue(ORIENTATION_MODE);
+        // String orientationMode = parameters.getValue(ORIENTATION_MODE,workspace);
         String orientationMode = OrientationModes.X_Y_PLANE;
-        String xyOriMeasName = parameters.getValue(ORIENTATION_IN_X_Y_MEASUREMENT);
-        // String xzOriMeasName = parameters.getValue(ORIENTATION_IN_XY_Z_MEASUREMENT);
-        String measurementRange = parameters.getValue(MEASUREMENT_RANGE);
-        String referenceMode = parameters.getValue(REFERENCE_MODE);
-        String referenceObjectsName = parameters.getValue(REFERENCE_OBJECTS);
-        String objectChoiceMode = parameters.getValue(OBJECT_CHOICE_MODE);
-        boolean mustBeSameFrame = parameters.getValue(MUST_BE_SAME_FRAME);
+        String xyOriMeasName = parameters.getValue(ORIENTATION_IN_X_Y_MEASUREMENT, workspace);
+        // String xzOriMeasName =
+        // parameters.getValue(ORIENTATION_IN_XY_Z_MEASUREMENT,workspace);
+        String measurementRange = parameters.getValue(MEASUREMENT_RANGE, workspace);
+        String referenceMode = parameters.getValue(REFERENCE_MODE, workspace);
+        String referenceObjectsName = parameters.getValue(REFERENCE_OBJECTS, workspace);
+        String objectChoiceMode = parameters.getValue(OBJECT_CHOICE_MODE, workspace);
+        boolean mustBeSameFrame = parameters.getValue(MUST_BE_SAME_FRAME, workspace);
 
         // Getting measurement reference name
         String measurementReference = getMeasurementRef();
@@ -438,6 +440,7 @@ public class MeasureRelativeOrientation extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
+        Workspace workspace = null;
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
@@ -445,7 +448,7 @@ public class MeasureRelativeOrientation extends Module {
 
         returnedParameters.add(parameters.getParameter(CALCULATION_SEPARATOR));
         // returnedParameters.add(parameters.getParameter(ORIENTATION_MODE));
-        // switch ((String) parameters.getValue(ORIENTATION_MODE)) {
+        // switch ((String) parameters.getValue(ORIENTATION_MODE,workspace)) {
         // case OrientationModes.X_Y_PLANE:
         // returnedParameters.add(parameters.getParameter(ORIENTATION_IN_X_Y_MEASUREMENT));
         // break;
@@ -461,7 +464,7 @@ public class MeasureRelativeOrientation extends Module {
         // break;
         // }
 
-        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS, workspace);
         ((ObjectMeasurementP) parameters.getParameter(ORIENTATION_IN_X_Y_MEASUREMENT)).setObjectName(inputObjectsName);
         // ((ObjectMeasurementP)
         // parameters.getParameter(ORIENTATION_IN_XY_Z_MEASUREMENT)).setObjectName(inputObjectsName);
@@ -469,7 +472,7 @@ public class MeasureRelativeOrientation extends Module {
         returnedParameters.add(parameters.getParameter(MEASUREMENT_RANGE));
 
         returnedParameters.add(parameters.getParameter(REFERENCE_MODE));
-        switch ((String) parameters.getValue(REFERENCE_MODE)) {
+        switch ((String) parameters.getValue(REFERENCE_MODE, workspace)) {
             case ReferenceModes.OBJECT_CENTROID:
             case ReferenceModes.OBJECT_SURFACE:
                 returnedParameters.add(parameters.getParameter(REFERENCE_OBJECTS));
@@ -489,9 +492,10 @@ public class MeasureRelativeOrientation extends Module {
 
     @Override
     public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+        Workspace workspace = null;
         ObjMeasurementRefs returnedRefs = new ObjMeasurementRefs();
 
-        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS, workspace);
 
         String reference = getMeasurementRef();
 
@@ -499,33 +503,33 @@ public class MeasureRelativeOrientation extends Module {
             return returnedRefs;
 
         String referenceDescription = null;
-        switch ((String) parameters.getValue(REFERENCE_MODE)) {
+        switch ((String) parameters.getValue(REFERENCE_MODE, workspace)) {
             case ReferenceModes.IMAGE_CENTRE:
                 referenceDescription = "the centre of the image";
                 break;
             case ReferenceModes.OBJECT_CENTROID:
-                String referenceObjectsName = parameters.getValue(REFERENCE_OBJECTS);
-                String objectChoiceMode = parameters.getValue(OBJECT_CHOICE_MODE);
+                String referenceObjectsName = parameters.getValue(REFERENCE_OBJECTS, workspace);
+                String objectChoiceMode = parameters.getValue(OBJECT_CHOICE_MODE, workspace);
                 String choice = objectChoiceMode.equals(ObjectChoiceModes.LARGEST_OBJECT) ? "LARGEST" : "SMALLEST";
                 referenceDescription = "the centroid of the " + choice + " object in the set " + referenceObjectsName;
                 break;
             case ReferenceModes.OBJECT_SURFACE:
-                referenceObjectsName = parameters.getValue(REFERENCE_OBJECTS);
-                objectChoiceMode = parameters.getValue(OBJECT_CHOICE_MODE);
+                referenceObjectsName = parameters.getValue(REFERENCE_OBJECTS, workspace);
+                objectChoiceMode = parameters.getValue(OBJECT_CHOICE_MODE, workspace);
                 choice = objectChoiceMode.equals(ObjectChoiceModes.LARGEST_OBJECT) ? "LARGEST" : "SMALLEST";
                 referenceDescription = "the closest point of the " + choice + " object in the set "
                         + referenceObjectsName + " to the centroid of the target object";
                 break;
         }
 
-        // switch ((String) parameters.getValue(ORIENTATION_MODE)) {
+        // switch ((String) parameters.getValue(ORIENTATION_MODE,workspace)) {
         // case OrientationModes.X_Y_PLANE:
         String measurementName = getFullName(Measurements.X_Y_REL_ORIENTATION, reference);
         ObjMeasurementRef measurementReference = objectMeasurementRefs.getOrPut(measurementName);
         measurementReference.setObjectsName(inputObjectsName);
         returnedRefs.add(measurementReference);
 
-        String xyOriMeasName = parameters.getValue(ORIENTATION_IN_X_Y_MEASUREMENT);
+        String xyOriMeasName = parameters.getValue(ORIENTATION_IN_X_Y_MEASUREMENT, workspace);
         measurementReference
                 .setDescription("Orientation of the object (specified by the measurements \"" + xyOriMeasName
                         + "\") relative to " + referenceDescription + ". Measured in degrees between 0 and 90.");
@@ -578,18 +582,27 @@ public class MeasureRelativeOrientation extends Module {
 
                         + "<li>\"" + ReferenceModes.OBJECT_CENTROID
                         + "\" Object orientations are compared to the centre of a specific object.  Since only a single object can be used per timepoint, this will be either the smallest or largest object (controlled by \""
-                        + OBJECT_CHOICE_MODE + "\") in the specified collection (\"" + REFERENCE_OBJECTS + "\").  If \""+MUST_BE_SAME_FRAME+"\" is not selected, the same object will be used in all timepoints.</li>"
+                        + OBJECT_CHOICE_MODE + "\") in the specified collection (\"" + REFERENCE_OBJECTS + "\").  If \""
+                        + MUST_BE_SAME_FRAME
+                        + "\" is not selected, the same object will be used in all timepoints.</li>"
 
                         + "<li>\"" + ReferenceModes.OBJECT_SURFACE
                         + "\" Object orientations are compared to the closest point on the surface of a specific object.  In this mode, the reference points can be different for all objects.  Since only a single object can be used per timepoint, this will be either the smallest or largest object (controlled by \""
                         + OBJECT_CHOICE_MODE + "\") in the specified collection (\"" + REFERENCE_OBJECTS
-                        + "\").  If \""+MUST_BE_SAME_FRAME+"\" is not selected, the same object will be used in all timepoints.</li></ul>");
+                        + "\").  If \"" + MUST_BE_SAME_FRAME
+                        + "\" is not selected, the same object will be used in all timepoints.</li></ul>");
 
-        parameters.get(REFERENCE_OBJECTS).setDescription("If \""+REFERENCE_MODE+"\" is set to \""+ReferenceModes.OBJECT_CENTROID+"\" or \""+ReferenceModes.OBJECT_SURFACE+"\", this is the object collection from which the reference object(s) will be drawn.");
+        parameters.get(REFERENCE_OBJECTS)
+                .setDescription("If \"" + REFERENCE_MODE + "\" is set to \"" + ReferenceModes.OBJECT_CENTROID
+                        + "\" or \"" + ReferenceModes.OBJECT_SURFACE
+                        + "\", this is the object collection from which the reference object(s) will be drawn.");
 
-        parameters.get(OBJECT_CHOICE_MODE).setDescription("If \""+REFERENCE_MODE+"\" is set to \""+ReferenceModes.OBJECT_CENTROID+"\" or \""+ReferenceModes.OBJECT_SURFACE+"\", this controls whether the smallest or largest object from that collection will be used as the reference point for relative orientation calculations.");
+        parameters.get(OBJECT_CHOICE_MODE).setDescription("If \"" + REFERENCE_MODE + "\" is set to \""
+                + ReferenceModes.OBJECT_CENTROID + "\" or \"" + ReferenceModes.OBJECT_SURFACE
+                + "\", this controls whether the smallest or largest object from that collection will be used as the reference point for relative orientation calculations.");
 
-        parameters.get(MUST_BE_SAME_FRAME).setDescription("When selected, the reference objects must be in the same frame as the input object being measured.  As such, all the objects in one frame will be compared to a common reference, but won't necessarily have the same reference as an object in another frame.");
+        parameters.get(MUST_BE_SAME_FRAME).setDescription(
+                "When selected, the reference objects must be in the same frame as the input object being measured.  As such, all the objects in one frame will be compared to a common reference, but won't necessarily have the same reference as an object in another frame.");
 
     }
 }

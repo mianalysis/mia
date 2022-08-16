@@ -7,6 +7,7 @@ import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.gui.parametercontrols.ChoiceArrayParameter;
 import io.github.mianalysis.mia.gui.parametercontrols.ParameterControl;
 import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.object.Workspace;
 
 public abstract class ChoiceType extends Parameter {
     protected String choice = "";
@@ -49,7 +50,7 @@ public abstract class ChoiceType extends Parameter {
     }
 
     @Override
-    public <T> T getValue() {
+    public <T> T getValue(Workspace workspace) {
         return (T) choice;
     }
 
@@ -63,10 +64,11 @@ public abstract class ChoiceType extends Parameter {
         super.setAttributesFromXML(node);
 
         NamedNodeMap map = node.getAttributes();
-
+        
         // ChoiceType values can be from hard-coded sources, so we check if they're labelled for reassignment.
         String xmlValue = map.getNamedItem("VALUE").getNodeValue();
-        xmlValue = MIA.lostAndFound.findParameterValue(module.getClass().getSimpleName(), getName(), xmlValue);
+        MIA.log.writeError("Lo "+MIA.getLostAndFound());
+        xmlValue = MIA.getLostAndFound().findParameterValue(module.getClass().getSimpleName(), getName(), xmlValue);
         setValueFromString(xmlValue);
 
         setVisible(Boolean.parseBoolean(map.getNamedItem("VISIBLE").getNodeValue()));

@@ -30,12 +30,12 @@ import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.core.InputControl;
 import io.github.mianalysis.mia.module.visualise.overlays.AddObjectFill;
-import io.github.mianalysis.mia.object.Image;
 import io.github.mianalysis.mia.object.Measurement;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
-import io.github.mianalysis.mia.object.Status;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
@@ -50,6 +50,7 @@ import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
+import io.github.mianalysis.mia.object.system.Status;
 import io.github.mianalysis.mia.object.units.SpatialUnit;
 import io.github.mianalysis.mia.object.units.TemporalUnit;
 import io.github.mianalysis.mia.process.ColourFactory;
@@ -346,27 +347,27 @@ public class RidgeDetection extends Module {
     @Override
     public Status process(Workspace workspace) {
         // Getting input image
-        String inputImageName = parameters.getValue(INPUT_IMAGE);
+        String inputImageName = parameters.getValue(INPUT_IMAGE,workspace);
         Image inputImage = workspace.getImages().get(inputImageName);
 
         // Getting parameters (RidgeDetection plugin wants to use pixel units only)
-        String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);
-        String contourContrast = parameters.getValue(CONTOUR_CONTRAST);
+        String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS,workspace);
+        String contourContrast = parameters.getValue(CONTOUR_CONTRAST,workspace);
         boolean darkLine = contourContrast.equals(ContourContrast.DARK_LINE);
-        double lowerThreshold = parameters.getValue(LOWER_THRESHOLD);
-        double upperThreshold = parameters.getValue(UPPER_THRESHOLD);
-        double sigma = parameters.getValue(SIGMA);
-        boolean calibratedUnits = parameters.getValue(CALIBRATED_UNITS);
-        boolean extendLine = parameters.getValue(EXTEND_LINE);
-        boolean estimateWidth = parameters.getValue(ESTIMATE_WIDTH);
-        String overlapMode = parameters.getValue(OVERLAP_MODE);
-        double minLength = parameters.getValue(MIN_LENGTH);
-        double maxLength = parameters.getValue(MAX_LENGTH);
-        boolean joinAtJunctions = parameters.getValue(JOIN_AT_JUNCTIONS);
-        boolean linkEnds = parameters.getValue(LINK_ENDS);
-        int alignmentRange = parameters.getValue(ALIGNMENT_RANGE);
-        double maxEndSeparation = parameters.getValue(MAXIMUM_END_SEPARATION);
-        double maxEndMisalignment = parameters.getValue(MAXIMUM_END_MISALIGNMENT);
+        double lowerThreshold = parameters.getValue(LOWER_THRESHOLD,workspace);
+        double upperThreshold = parameters.getValue(UPPER_THRESHOLD,workspace);
+        double sigma = parameters.getValue(SIGMA,workspace);
+        boolean calibratedUnits = parameters.getValue(CALIBRATED_UNITS,workspace);
+        boolean extendLine = parameters.getValue(EXTEND_LINE,workspace);
+        boolean estimateWidth = parameters.getValue(ESTIMATE_WIDTH,workspace);
+        String overlapMode = parameters.getValue(OVERLAP_MODE,workspace);
+        double minLength = parameters.getValue(MIN_LENGTH,workspace);
+        double maxLength = parameters.getValue(MAX_LENGTH,workspace);
+        boolean joinAtJunctions = parameters.getValue(JOIN_AT_JUNCTIONS,workspace);
+        boolean linkEnds = parameters.getValue(LINK_ENDS,workspace);
+        int alignmentRange = parameters.getValue(ALIGNMENT_RANGE,workspace);
+        double maxEndSeparation = parameters.getValue(MAXIMUM_END_SEPARATION,workspace);
+        double maxEndMisalignment = parameters.getValue(MAXIMUM_END_MISALIGNMENT,workspace);
 
         // Converting distances to calibrated units if necessary
         if (calibratedUnits) {
@@ -513,6 +514,7 @@ public class RidgeDetection extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
+Workspace workspace = null;
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
@@ -535,7 +537,7 @@ public class RidgeDetection extends Module {
         returnedParameters.add(parameters.getParameter(MAX_LENGTH));
         returnedParameters.add(parameters.getParameter(JOIN_AT_JUNCTIONS));
         returnedParameters.add(parameters.getParameter(LINK_ENDS));
-        if ((boolean) parameters.getValue(LINK_ENDS)) {
+        if ((boolean) parameters.getValue(LINK_ENDS,workspace)) {
             returnedParameters.add(parameters.getParameter(ALIGNMENT_RANGE));
             returnedParameters.add(parameters.getParameter(MAXIMUM_END_SEPARATION));
             returnedParameters.add(parameters.getParameter(MAXIMUM_END_MISALIGNMENT));
@@ -548,38 +550,39 @@ public class RidgeDetection extends Module {
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
-        return null;
+return null;
     }
 
     @Override
-    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+Workspace workspace = null;
         ObjMeasurementRefs returnedRefs = new ObjMeasurementRefs();
 
-        String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);
+        String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS,workspace);
 
         ObjMeasurementRef reference = objectMeasurementRefs.getOrPut(Measurements.LENGTH_PX);
-        reference.setObjectsName(parameters.getValue(OUTPUT_OBJECTS));
+        reference.setObjectsName(parameters.getValue(OUTPUT_OBJECTS,workspace));
         reference.setDescription("Length of detected, \"" + outputObjectsName + "\" ridge object.  Measured in pixel " +
                 "units.");
         returnedRefs.add(reference);
 
         reference = objectMeasurementRefs.getOrPut(Measurements.LENGTH_CAL);
-        reference.setObjectsName(parameters.getValue(OUTPUT_OBJECTS));
+        reference.setObjectsName(parameters.getValue(OUTPUT_OBJECTS,workspace));
         reference.setDescription(
                 "Length of detected, \"" + outputObjectsName + "\" ridge object.  Measured in calibrated " +
                         "(" + SpatialUnit.getOMEUnit().getSymbol() + ") units.");
         returnedRefs.add(reference);
 
-        if ((boolean) parameters.getValue(ESTIMATE_WIDTH)) {
+        if ((boolean) parameters.getValue(ESTIMATE_WIDTH,workspace)) {
             reference = objectMeasurementRefs.getOrPut(Measurements.MEAN_HALFWIDTH_PX);
-            reference.setObjectsName(parameters.getValue(OUTPUT_OBJECTS));
+            reference.setObjectsName(parameters.getValue(OUTPUT_OBJECTS,workspace));
             reference.setDescription(
                     "Mean half width of detected, \"" + outputObjectsName + "\" ridge object.  Half width" +
                             "is from the central (backbone) of the ridge to the edge.  Measured in pixel units.");
             returnedRefs.add(reference);
 
             reference = objectMeasurementRefs.getOrPut(Measurements.STDEV_HALFWIDTH_PX);
-            reference.setObjectsName(parameters.getValue(OUTPUT_OBJECTS));
+            reference.setObjectsName(parameters.getValue(OUTPUT_OBJECTS,workspace));
             reference.setDescription("Standard deviation of the half width of detected, \"" + outputObjectsName + "\" "
                     +
                     "ridge object.  Half width is from the central (backbone) of the ridge to the edge.  Measured in " +
@@ -587,7 +590,7 @@ public class RidgeDetection extends Module {
             returnedRefs.add(reference);
 
             reference = objectMeasurementRefs.getOrPut(Measurements.MEAN_HALFWIDTH_CAL);
-            reference.setObjectsName(parameters.getValue(OUTPUT_OBJECTS));
+            reference.setObjectsName(parameters.getValue(OUTPUT_OBJECTS,workspace));
             reference.setDescription(
                     "Mean half width of detected, \"" + outputObjectsName + "\" ridge object.  Half width" +
                             "is from the central (backbone) of the ridge to the edge.  Measured in calibrated " +
@@ -595,7 +598,7 @@ public class RidgeDetection extends Module {
             returnedRefs.add(reference);
 
             reference = objectMeasurementRefs.getOrPut(Measurements.STDEV_HALFWIDTH_CAL);
-            reference.setObjectsName(parameters.getValue(OUTPUT_OBJECTS));
+            reference.setObjectsName(parameters.getValue(OUTPUT_OBJECTS,workspace));
             reference.setDescription("Standard deviation of the half width of detected, \"" + outputObjectsName + "\" "
                     +
                     "ridge object.  Half width is from the central (backbone) of the ridge to the edge.  Measured in " +
@@ -609,18 +612,18 @@ public class RidgeDetection extends Module {
     }
 
     @Override
-    public MetadataRefs updateAndGetMetadataReferences() {
-        return null;
+public MetadataRefs updateAndGetMetadataReferences() {
+return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
-        return null;
+return null;
     }
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
-        return null;
+return null;
     }
 
     @Override

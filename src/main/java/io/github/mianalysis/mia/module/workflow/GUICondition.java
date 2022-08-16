@@ -2,22 +2,21 @@ package io.github.mianalysis.mia.module.workflow;
 
 import java.util.LinkedHashMap;
 
+import org.scijava.Priority;
+import org.scijava.plugin.Plugin;
+
 import io.github.mianalysis.mia.MIA;
+import io.github.mianalysis.mia.module.Categories;
+import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.system.GlobalVariables;
-import io.github.mianalysis.mia.module.Module;
-import org.scijava.Priority;
-import org.scijava.plugin.Plugin;
-import io.github.mianalysis.mia.module.Category;
-import io.github.mianalysis.mia.module.Categories;
-import io.github.mianalysis.mia.object.Status;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
-import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.ParameterGroup;
 import io.github.mianalysis.mia.object.parameters.ParameterGroup.ParameterUpdaterAndGetter;
+import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.SeparatorP;
 import io.github.mianalysis.mia.object.parameters.text.StringP;
 import io.github.mianalysis.mia.object.refs.collections.ImageMeasurementRefs;
@@ -25,11 +24,12 @@ import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
+import io.github.mianalysis.mia.object.system.Status;
 
 /**
  * Created by Stephen Cross on 23/11/2018.
  */
-@Plugin(type = Module.class, priority=Priority.LOW, visible=true)
+@Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class GUICondition extends AbstractWorkspaceHandler {
     public static final String CONDITION_SEPARATOR = "Condition";
     public static final String CHOICE = "Choice";
@@ -46,7 +46,7 @@ public class GUICondition extends AbstractWorkspaceHandler {
     }
 
     @Override
-    public Module getRedirectModule() {
+    public Module getRedirectModule(Workspace workspace) {
         // Default redirect module is the next one in the sequence
         int idx = modules.indexOf(this) + 1;
         if (idx >= modules.size())
@@ -54,18 +54,18 @@ public class GUICondition extends AbstractWorkspaceHandler {
         else
             redirectModule = modules.get(idx);
 
-        String choice = parameters.getValue(CHOICE);
-        LinkedHashMap<Integer, Parameters> collections = parameters.getValue(ADD_CHOICE);
+        String choice = parameters.getValue(CHOICE, workspace);
+        LinkedHashMap<Integer, Parameters> collections = parameters.getValue(ADD_CHOICE, workspace);
         for (Parameters collection : collections.values()) {
-            if (collection.getValue(CHOICE_NAME).equals(choice)) {
-                switch ((String) collection.getValue(CONTINUATION_MODE)) {
-                case ContinuationModes.REDIRECT_TO_MODULE:
-                    redirectModule = collection.getValue(REDIRECT_MODULE);
-                    break;
-                case ContinuationModes.TERMINATE:
-                default:
-                    redirectModule = null;
-                    break;
+            if (collection.getValue(CHOICE_NAME, workspace).equals(choice)) {
+                switch ((String) collection.getValue(CONTINUATION_MODE, workspace)) {
+                    case ContinuationModes.REDIRECT_TO_MODULE:
+                        redirectModule = collection.getValue(REDIRECT_MODULE, workspace);
+                        break;
+                    case ContinuationModes.TERMINATE:
+                    default:
+                        redirectModule = null;
+                        break;
                 }
             }
         }
@@ -94,16 +94,16 @@ public class GUICondition extends AbstractWorkspaceHandler {
     @Override
     protected Status process(Workspace workspace) {
         // Getting parameters
-        String choice = parameters.getValue(CHOICE);
-        boolean storeAsMetadata = parameters.getValue(STORE_AS_METADATA_ITEM);
-        String metadataName = parameters.getValue(METADATA_NAME);
-        LinkedHashMap<Integer, Parameters> collections = parameters.getValue(ADD_CHOICE);
-        boolean showRedirectMessage = parameters.getValue(SHOW_REDIRECT_MESSAGE);
+        String choice = parameters.getValue(CHOICE, workspace);
+        boolean storeAsMetadata = parameters.getValue(STORE_AS_METADATA_ITEM, workspace);
+        String metadataName = parameters.getValue(METADATA_NAME, workspace);
+        LinkedHashMap<Integer, Parameters> collections = parameters.getValue(ADD_CHOICE, workspace);
+        boolean showRedirectMessage = parameters.getValue(SHOW_REDIRECT_MESSAGE, workspace);
 
         // Getting choice parameters
         Status status = Status.FAIL;
         for (Parameters collection : collections.values()) {
-            if (collection.getValue(CHOICE_NAME).equals(choice)) {
+            if (collection.getValue(CHOICE_NAME, workspace).equals(choice)) {
                 status = processTermination(collection, workspace, showRedirectMessage);
             }
         }
@@ -145,12 +145,13 @@ public class GUICondition extends AbstractWorkspaceHandler {
 
     @Override
     public Parameters updateAndGetParameters() {
+        Workspace workspace = null;
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(CONDITION_SEPARATOR));
         returnedParameters.add(parameters.getParameter(CHOICE));
         returnedParameters.add(parameters.getParameter(STORE_AS_METADATA_ITEM));
-        if ((boolean) parameters.getValue(STORE_AS_METADATA_ITEM))
+        if ((boolean) parameters.getValue(STORE_AS_METADATA_ITEM, workspace))
             returnedParameters.add(parameters.getParameter(METADATA_NAME));
         returnedParameters.add(parameters.getParameter(ADD_CHOICE));
 
@@ -175,10 +176,11 @@ public class GUICondition extends AbstractWorkspaceHandler {
 
     @Override
     public MetadataRefs updateAndGetMetadataReferences() {
+        Workspace workspace = null;
         MetadataRefs returnedRefs = new MetadataRefs();
 
-        if ((boolean) parameters.getValue(STORE_AS_METADATA_ITEM))
-            returnedRefs.add(metadataRefs.getOrPut(parameters.getValue(METADATA_NAME)));
+        if ((boolean) parameters.getValue(STORE_AS_METADATA_ITEM, workspace))
+            returnedRefs.add(metadataRefs.getOrPut(parameters.getValue(METADATA_NAME, workspace)));
 
         return returnedRefs;
 
@@ -213,7 +215,7 @@ public class GUICondition extends AbstractWorkspaceHandler {
 
         parameters.get(METADATA_NAME).setDescription(
                 "Name for selected choice to be stored as metadata using.  The choice will be accessible via this metadata name in subsequent modules and can be exported to the final spreadsheet.");
-                
+
         parameters.get(ADD_CHOICE).setDescription("Add another condition that \"" + CHOICE
                 + "\" can select from.  Each choice can have its own handling outcome (e.g. termination/redirection).");
 
@@ -232,23 +234,23 @@ public class GUICondition extends AbstractWorkspaceHandler {
                 returnedParameters.add(params.getParameter(CHOICE_SEPARATOR));
                 returnedParameters.add(params.getParameter(CHOICE_NAME));
                 returnedParameters.add(params.getParameter(CONTINUATION_MODE));
-                switch ((String) params.getValue(CONTINUATION_MODE)) {
-                case ContinuationModes.REDIRECT_TO_MODULE:
-                    returnedParameters.add(params.getParameter(REDIRECT_MODULE));
-                    redirectModule = params.getValue(REDIRECT_MODULE);
-                    returnedParameters.add(params.getParameter(SHOW_REDIRECT_MESSAGE));
-                    if ((boolean) params.getValue(SHOW_REDIRECT_MESSAGE)) {
-                        returnedParameters.add(params.getParameter(REDIRECT_MESSAGE));
-                    }
-                    break;
-                case ContinuationModes.TERMINATE:
+                switch ((String) params.getValue(CONTINUATION_MODE, null)) {
+                    case ContinuationModes.REDIRECT_TO_MODULE:
+                        returnedParameters.add(params.getParameter(REDIRECT_MODULE));
+                        redirectModule = params.getValue(REDIRECT_MODULE, null);
+                        returnedParameters.add(params.getParameter(SHOW_REDIRECT_MESSAGE));
+                        if ((boolean) params.getValue(SHOW_REDIRECT_MESSAGE, null)) {
+                            returnedParameters.add(params.getParameter(REDIRECT_MESSAGE));
+                        }
+                        break;
+                    case ContinuationModes.TERMINATE:
                     default:
-                    returnedParameters.add(params.getParameter(SHOW_TERMINATION_WARNING));
-                    returnedParameters.add(params.getParameter(EXPORT_WORKSPACE));
-                    returnedParameters.add(params.getParameter(REMOVE_IMAGES));
-                    returnedParameters.add(params.getParameter(REMOVE_OBJECTS));
-                    redirectModule = null;
-                    break;
+                        returnedParameters.add(params.getParameter(SHOW_TERMINATION_WARNING));
+                        returnedParameters.add(params.getParameter(EXPORT_WORKSPACE));
+                        returnedParameters.add(params.getParameter(REMOVE_IMAGES));
+                        returnedParameters.add(params.getParameter(REMOVE_OBJECTS));
+                        redirectModule = null;
+                        break;
                 }
 
                 return returnedParameters;
@@ -262,7 +264,7 @@ public class GUICondition extends AbstractWorkspaceHandler {
 
         int i = 0;
         for (Parameters collection : collections.values()) {
-            choices[i++] = collection.getValue(CHOICE_NAME);
+            choices[i++] = collection.getValue(CHOICE_NAME, null);
         }
 
         return choices;

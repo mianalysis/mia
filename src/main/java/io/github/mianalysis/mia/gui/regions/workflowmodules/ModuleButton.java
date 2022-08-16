@@ -11,11 +11,13 @@ import java.awt.event.MouseListener;
 
 import javax.swing.JToggleButton;
 
+import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.gui.GUI;
 import io.github.mianalysis.mia.gui.regions.RenameListMenu;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.system.GUISeparator;
-import io.github.mianalysis.mia.object.Colours;
+import io.github.mianalysis.mia.object.system.Colours;
+import io.github.mianalysis.mia.object.system.Preferences;
 
 /**
  * Created by Stephen on 20/05/2017.
@@ -47,16 +49,19 @@ public class ModuleButton extends JToggleButton implements ActionListener, Mouse
     // PUBLIC METHODS
 
     public void updateState() {
+        Preferences preferences = MIA.getPreferences();
+        boolean darkMode = preferences == null ? false : preferences.darkThemeEnabled();
+
         setText(module.getNickname());
 
         if (module.getClass() == GUISeparator.class)
-            setForeground(Colours.DARK_BLUE);
+            setForeground(Colours.getDarkBlue(darkMode));
         else if (module.isEnabled() && module.isReachable() && module.isRunnable())
             setForeground(defaultColour);
         else if (module.isEnabled() & !module.isReachable())
-            setForeground(Colours.ORANGE);
+            setForeground(Colours.getOrange(darkMode));
         else if (module.isEnabled() & !module.isRunnable())
-            setForeground(Colours.RED);
+            setForeground(Colours.getRed(darkMode));
         else
             setForeground(Color.GRAY);
 
@@ -72,43 +77,43 @@ public class ModuleButton extends JToggleButton implements ActionListener, Mouse
     public void actionPerformed(ActionEvent e) {
         GUI.setSelectedModules(new Module[] { module });
         GUI.updateModules();
-        GUI.updateParameters();     
+        GUI.updateParameters();
     }
 
     @Override
     public void mouseClicked(MouseEvent e) {
         switch (e.getButton()) {
-        case MouseEvent.BUTTON3:
-            RenameListMenu renameListMenu = new RenameListMenu(module);
-            renameListMenu.show(GUI.getFrame(), 0, 0);
-            renameListMenu.setLocation(MouseInfo.getPointerInfo().getLocation());
-            renameListMenu.setVisible(true);
+            case MouseEvent.BUTTON3:
+                RenameListMenu renameListMenu = new RenameListMenu(module);
+                renameListMenu.show(GUI.getFrame(), 0, 0);
+                renameListMenu.setLocation(MouseInfo.getPointerInfo().getLocation());
+                renameListMenu.setVisible(true);
 
-            break;
+                break;
         }
     }
 
     @Override
     public void mousePressed(MouseEvent e) {
         // TODO Auto-generated method stub
-        
+
     }
 
     @Override
     public void mouseReleased(MouseEvent e) {
         // TODO Auto-generated method stub
-        
+
     }
 
     @Override
     public void mouseEntered(MouseEvent e) {
         // TODO Auto-generated method stub
-        
+
     }
 
     @Override
     public void mouseExited(MouseEvent e) {
         // TODO Auto-generated method stub
-        
+
     }
 }

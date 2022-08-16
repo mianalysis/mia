@@ -7,9 +7,9 @@ import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Categories;
-import io.github.mianalysis.mia.object.Image;
-import io.github.mianalysis.mia.object.Status;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
@@ -20,6 +20,7 @@ import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
+import io.github.mianalysis.mia.object.system.Status;
 import io.github.sjcross.sjcommon.metadataextractors.Metadata;
 
 /**
@@ -78,11 +79,11 @@ public class ShowImage extends Module {
 
     @Override
     public Status process(Workspace workspace) {
-        String imageName = parameters.getValue(DISPLAY_IMAGE);
+        String imageName = parameters.getValue(DISPLAY_IMAGE,workspace);
         Image image = workspace.getImage(imageName);
-        String titleMode = parameters.getValue(TITLE_MODE);
-        boolean normalisation = parameters.getValue(QUICK_NORMALISATION);
-        String channelMode = parameters.getValue(CHANNEL_MODE);
+        String titleMode = parameters.getValue(TITLE_MODE,workspace);
+        boolean normalisation = parameters.getValue(QUICK_NORMALISATION,workspace);
+        String channelMode = parameters.getValue(CHANNEL_MODE,workspace);
 
         boolean composite = channelMode.equals(ChannelModes.COMPOSITE);
 
@@ -123,32 +124,33 @@ public class ShowImage extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
+Workspace workspace = null;
         return parameters;
     }
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
-        return null;
+return null;
     }
 
     @Override
-    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
-        return null;
+public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+return null;
     }
 
     @Override
-    public MetadataRefs updateAndGetMetadataReferences() {
-        return null;
+public MetadataRefs updateAndGetMetadataReferences() {
+return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
-        return null;
+return null;
     }
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
-        return null;
+return null;
     }
 
     @Override

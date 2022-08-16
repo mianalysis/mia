@@ -7,13 +7,18 @@ import java.awt.event.ActionListener;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 
+import io.github.mianalysis.mia.MIA;
+
 public class SearchButton extends JButton implements ActionListener {
     private SearchPanel searchPanel;
 
     public SearchButton(SearchPanel searchPanel) {
         this.searchPanel = searchPanel;
 
-        setIcon(new ImageIcon(SearchPanel.class.getResource("/icons/search_black_12px.png"), ""));
+        if (MIA.getPreferences().darkThemeEnabled())
+            setIcon(new ImageIcon(SearchPanel.class.getResource("/icons/search_darkgreyDM_12px.png"), ""));
+        else
+            setIcon(new ImageIcon(SearchPanel.class.getResource("/icons/search_black_12px.png"), ""));
         setPreferredSize(new Dimension(26, 26));
         setMinimumSize(new Dimension(26, 26));
         setMaximumSize(new Dimension(26, 26));

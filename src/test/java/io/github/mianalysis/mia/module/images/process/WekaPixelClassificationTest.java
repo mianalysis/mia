@@ -14,10 +14,11 @@ import ij.ImagePlus;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.ModuleTest;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.object.Image;
-import io.github.mianalysis.mia.object.Status;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.Workspaces;
+import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageFactory;
+import io.github.mianalysis.mia.object.system.Status;
 
 public class WekaPixelClassificationTest extends ModuleTest {
     @BeforeAll
@@ -40,12 +41,12 @@ public class WekaPixelClassificationTest extends ModuleTest {
     String pathToImage =
     URLDecoder.decode(this.getClass().getResource("/images/wekaprobabilitymaps/NoisyObjects_2D_8bit.zip").getPath(),"UTF-8");
     ImagePlus ipl = IJ.openImage(pathToImage);
-    Image image = new Image("Test_image",ipl);
+    Image image = ImageFactory.createImage("Test_image",ipl);
     workspace.addImage(image);
 
     pathToImage =
     URLDecoder.decode(this.getClass().getResource("/images/wekaprobabilitymaps/NoisyObjects_2D_probability.zip").getPath(),"UTF-8");
-    Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
+    Image expectedImage = ImageFactory.createImage("Expected", IJ.openImage(pathToImage));
 
     // Initialising BinaryOperations
     WekaPixelClassification wekaProbabilityMaps = new WekaPixelClassification(new Modules());
@@ -79,12 +80,12 @@ public class WekaPixelClassificationTest extends ModuleTest {
     String pathToImage =
     URLDecoder.decode(this.getClass().getResource("/images/wekaprobabilitymaps/NoisyObjects_2D_16bit.zip").getPath(),"UTF-8");
     ImagePlus ipl = IJ.openImage(pathToImage);
-    Image image = new Image("Test_image",ipl);
+    Image image = ImageFactory.createImage("Test_image",ipl);
     workspace.addImage(image);
 
     pathToImage =
     URLDecoder.decode(this.getClass().getResource("/images/wekaprobabilitymaps/NoisyObjects_2D_probability.zip").getPath(),"UTF-8");
-    Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
+    Image expectedImage = ImageFactory.createImage("Expected", IJ.openImage(pathToImage));
 
     // Initialising BinaryOperations
     WekaPixelClassification wekaProbabilityMaps = new WekaPixelClassification(new
@@ -118,12 +119,12 @@ public class WekaPixelClassificationTest extends ModuleTest {
     String pathToImage =
     URLDecoder.decode(this.getClass().getResource("/images/wekaprobabilitymaps/NoisyObjects_2D_32bit.zip").getPath(),"UTF-8");
     ImagePlus ipl = IJ.openImage(pathToImage);
-    Image image = new Image("Test_image",ipl);
+    Image image = ImageFactory.createImage("Test_image",ipl);
     workspace.addImage(image);
 
     pathToImage =
     URLDecoder.decode(this.getClass().getResource("/images/wekaprobabilitymaps/NoisyObjects_2D_probability.zip").getPath(),"UTF-8");
-    Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
+    Image expectedImage = ImageFactory.createImage("Expected", IJ.openImage(pathToImage));
 
     // Initialising BinaryOperations
     WekaPixelClassification wekaProbabilityMaps = new WekaPixelClassification(new
@@ -157,12 +158,12 @@ public class WekaPixelClassificationTest extends ModuleTest {
     String pathToImage =
     URLDecoder.decode(this.getClass().getResource("/images/wekaprobabilitymaps/NoisyObjects_3D_8bit.zip").getPath(),"UTF-8");
     ImagePlus ipl = IJ.openImage(pathToImage);
-    Image image = new Image("Test_image",ipl);
+    Image image = ImageFactory.createImage("Test_image",ipl);
     workspace.addImage(image);
 
     pathToImage =
     URLDecoder.decode(this.getClass().getResource("/images/wekaprobabilitymaps/NoisyObjects_3D_probability.zip").getPath(),"UTF-8");
-    Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
+    Image expectedImage = ImageFactory.createImage("Expected", IJ.openImage(pathToImage));
 
     // Initialising BinaryOperations
     WekaPixelClassification wekaProbabilityMaps = new WekaPixelClassification(new
@@ -196,12 +197,12 @@ public class WekaPixelClassificationTest extends ModuleTest {
     String pathToImage =
     URLDecoder.decode(this.getClass().getResource("/images/wekaprobabilitymaps/NoisyObjects_4D_8bit.zip").getPath(),"UTF-8");
     ImagePlus ipl = IJ.openImage(pathToImage);
-    Image image = new Image("Test_image",ipl);
+    Image image = ImageFactory.createImage("Test_image",ipl);
     workspace.addImage(image);
 
     pathToImage =
     URLDecoder.decode(this.getClass().getResource("/images/wekaprobabilitymaps/NoisyObjects_4D_probability.zip").getPath(),"UTF-8");
-    Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
+    Image expectedImage = ImageFactory.createImage("Expected", IJ.openImage(pathToImage));
 
     // Initialising BinaryOperations
     WekaPixelClassification wekaProbabilityMaps = new WekaPixelClassification(new
@@ -235,12 +236,12 @@ public class WekaPixelClassificationTest extends ModuleTest {
     String pathToImage =
     URLDecoder.decode(this.getClass().getResource("/images/wekaprobabilitymaps/NoisyObjects_5D_8bit.zip").getPath(),"UTF-8");
     ImagePlus ipl = IJ.openImage(pathToImage);
-    Image image = new Image("Test_image",ipl);
+    Image image = ImageFactory.createImage("Test_image",ipl);
     workspace.addImage(image);
 
     pathToImage =
     URLDecoder.decode(this.getClass().getResource("/images/wekaprobabilitymaps/NoisyObjects_5D_probability.zip").getPath(),"UTF-8");
-    Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
+    Image expectedImage = ImageFactory.createImage("Expected", IJ.openImage(pathToImage));
 
     // Initialising BinaryOperations
     WekaPixelClassification wekaProbabilityMaps = new WekaPixelClassification(new
@@ -274,12 +275,12 @@ public class WekaPixelClassificationTest extends ModuleTest {
     String pathToImage =
     URLDecoder.decode(this.getClass().getResource("/images/wekaprobabilitymaps/NoisyObjects_3D_channels_8bit.zip").getPath(),"UTF-8");
     ImagePlus ipl = IJ.openImage(pathToImage);
-    Image image = new Image("Test_image",ipl);
+    Image image = ImageFactory.createImage("Test_image",ipl);
     workspace.addImage(image);
 
     pathToImage =
     URLDecoder.decode(this.getClass().getResource("/images/wekaprobabilitymaps/NoisyObjects_3D_channels_probability.zip").getPath(),"UTF-8");
-    Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
+    Image expectedImage = ImageFactory.createImage("Expected", IJ.openImage(pathToImage));
 
     // Initialising BinaryOperations
     WekaPixelClassification wekaProbabilityMaps = new WekaPixelClassification(new
@@ -313,12 +314,12 @@ public class WekaPixelClassificationTest extends ModuleTest {
     String pathToImage =
     URLDecoder.decode(this.getClass().getResource("/images/wekaprobabilitymaps/NoisyObjects_3D_channels_8bit.zip").getPath(),"UTF-8");
     ImagePlus ipl = IJ.openImage(pathToImage);
-    Image image = new Image("Test_image",ipl);
+    Image image = ImageFactory.createImage("Test_image",ipl);
     workspace.addImage(image);
 
     pathToImage =
     URLDecoder.decode(this.getClass().getResource("/images/wekaprobabilitymaps/NoisyObjects_3D_channels_probability.zip").getPath(),"UTF-8");
-    Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
+    Image expectedImage = ImageFactory.createImage("Expected", IJ.openImage(pathToImage));
 
     // Initialising BinaryOperations
     WekaPixelClassification wekaProbabilityMaps = new WekaPixelClassification(new
@@ -352,12 +353,12 @@ public class WekaPixelClassificationTest extends ModuleTest {
     String pathToImage =
     URLDecoder.decode(this.getClass().getResource("/images/wekaprobabilitymaps/NoisyObjects_4D_channels-slice_8bit.zip").getPath(),"UTF-8");
     ImagePlus ipl = IJ.openImage(pathToImage);
-    Image image = new Image("Test_image",ipl);
+    Image image = ImageFactory.createImage("Test_image",ipl);
     workspace.addImage(image);
 
     pathToImage =
     URLDecoder.decode(this.getClass().getResource("/images/wekaprobabilitymaps/NoisyObjects_4D_channels-slice_probability.zip").getPath(),"UTF-8");
-    Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
+    Image expectedImage = ImageFactory.createImage("Expected", IJ.openImage(pathToImage));
 
     // Initialising BinaryOperations
     WekaPixelClassification wekaProbabilityMaps = new WekaPixelClassification(new
@@ -392,12 +393,12 @@ public class WekaPixelClassificationTest extends ModuleTest {
     String pathToImage =
     URLDecoder.decode(this.getClass().getResource("/images/wekaprobabilitymaps/NoisyObjects_4D_channels-slice_8bit.zip").getPath(),"UTF-8");
     ImagePlus ipl = IJ.openImage(pathToImage);
-    Image image = new Image("Test_image",ipl);
+    Image image = ImageFactory.createImage("Test_image",ipl);
     workspace.addImage(image);
 
     pathToImage =
     URLDecoder.decode(this.getClass().getResource("/images/wekaprobabilitymaps/NoisyObjects_4D_channels-slice_probability.zip").getPath(),"UTF-8");
-    Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
+    Image expectedImage = ImageFactory.createImage("Expected", IJ.openImage(pathToImage));
 
     // Initialising BinaryOperations
     WekaPixelClassification wekaProbabilityMaps = new WekaPixelClassification(new
@@ -432,12 +433,12 @@ public class WekaPixelClassificationTest extends ModuleTest {
     String pathToImage =
     URLDecoder.decode(this.getClass().getResource("/images/wekaprobabilitymaps/NoisyObjects_4D_channels-slice_8bit.zip").getPath(),"UTF-8");
     ImagePlus ipl = IJ.openImage(pathToImage);
-    Image image = new Image("Test_image",ipl);
+    Image image = ImageFactory.createImage("Test_image",ipl);
     workspace.addImage(image);
 
     pathToImage =
     URLDecoder.decode(this.getClass().getResource("/images/wekaprobabilitymaps/NoisyObjects_4D_channels-slice_probability.zip").getPath(),"UTF-8");
-    Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
+    Image expectedImage = ImageFactory.createImage("Expected", IJ.openImage(pathToImage));
 
     // Initialising BinaryOperations
     WekaPixelClassification wekaProbabilityMaps = new WekaPixelClassification(new
@@ -472,12 +473,12 @@ public class WekaPixelClassificationTest extends ModuleTest {
     String pathToImage =
     URLDecoder.decode(this.getClass().getResource("/images/wekaprobabilitymaps/NoisyObjects_4D_channels-time_8bit.zip").getPath(),"UTF-8");
     ImagePlus ipl = IJ.openImage(pathToImage);
-    Image image = new Image("Test_image",ipl);
+    Image image = ImageFactory.createImage("Test_image",ipl);
     workspace.addImage(image);
 
     pathToImage =
     URLDecoder.decode(this.getClass().getResource("/images/wekaprobabilitymaps/NoisyObjects_4D_channels-time_probability.zip").getPath(),"UTF-8");
-    Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
+    Image expectedImage = ImageFactory.createImage("Expected", IJ.openImage(pathToImage));
 
     // Initialising BinaryOperations
     WekaPixelClassification wekaProbabilityMaps = new WekaPixelClassification(new
@@ -511,12 +512,12 @@ public class WekaPixelClassificationTest extends ModuleTest {
     String pathToImage =
     URLDecoder.decode(this.getClass().getResource("/images/wekaprobabilitymaps/NoisyObjects_4D_channels-time_8bit.zip").getPath(),"UTF-8");
     ImagePlus ipl = IJ.openImage(pathToImage);
-    Image image = new Image("Test_image",ipl);
+    Image image = ImageFactory.createImage("Test_image",ipl);
     workspace.addImage(image);
 
     pathToImage =
     URLDecoder.decode(this.getClass().getResource("/images/wekaprobabilitymaps/NoisyObjects_4D_channels-time_probability.zip").getPath(),"UTF-8");
-    Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
+    Image expectedImage = ImageFactory.createImage("Expected", IJ.openImage(pathToImage));
 
     // Initialising BinaryOperations
     WekaPixelClassification wekaProbabilityMaps = new WekaPixelClassification(new

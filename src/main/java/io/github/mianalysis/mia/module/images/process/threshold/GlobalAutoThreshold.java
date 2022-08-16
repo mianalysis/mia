@@ -19,12 +19,12 @@ import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.images.process.ImageTypeConverter;
 import io.github.mianalysis.mia.module.images.process.InvertIntensity;
-import io.github.mianalysis.mia.object.Image;
 import io.github.mianalysis.mia.object.Measurement;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
-import io.github.mianalysis.mia.object.Status;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
@@ -40,6 +40,7 @@ import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
+import io.github.mianalysis.mia.object.system.Status;
 
 /**
  * Created by sc13967 on 06/06/2017.
@@ -128,7 +129,7 @@ public class GlobalAutoThreshold extends Module {
 
                     if (inputObjects != null)
                         ipr.setRoi(getRoi(inputObjects, t, z));
-                    
+
                     int[] tempHist = ipr.getHistogram();
 
                     if (inputObjects != null)
@@ -182,7 +183,7 @@ public class GlobalAutoThreshold extends Module {
                 continue;
 
             double[][] extents = inputObject.getExtents(true, false);
-            if ((z-1) < extents[2][0] || (z-1) > extents[2][1])
+            if ((z - 1) < extents[2][0] || (z - 1) > extents[2][1])
                 continue;
 
             Roi currRoi = inputObject.getRoi(z - 1);
@@ -196,14 +197,13 @@ public class GlobalAutoThreshold extends Module {
                 roi.xor(new ShapeRoi(currRoi));
 
         }
-        
+
         return roi;
 
     }
 
-    public void addMeasurements(Image image, double threshold) {
-        String method = parameters.getValue(ALGORITHM);
-        String measurementName = getFullName(Measurements.GLOBAL_VALUE, method);
+    public void addMeasurements(Image image, double threshold, String algorithm) {
+        String measurementName = getFullName(Measurements.GLOBAL_VALUE, algorithm);
 
         image.addMeasurement(new Measurement(measurementName, threshold));
 
@@ -227,20 +227,20 @@ public class GlobalAutoThreshold extends Module {
     @Override
     public Status process(Workspace workspace) {
         // Getting input image
-        String inputImageName = parameters.getValue(INPUT_IMAGE);
+        String inputImageName = parameters.getValue(INPUT_IMAGE, workspace);
         Image inputImage = workspace.getImages().get(inputImageName);
         ImagePlus inputImagePlus = inputImage.getImagePlus();
 
         // Getting parameters
-        String outputMode = parameters.getValue(OUTPUT_MODE);
-        boolean applyToInput = parameters.getValue(APPLY_TO_INPUT);
-        String algorithm = parameters.getValue(ALGORITHM);
-        double thrMult = parameters.getValue(THRESHOLD_MULTIPLIER);
-        String binaryLogic = parameters.getValue(BINARY_LOGIC);
-        boolean useLowerLim = parameters.getValue(USE_LOWER_THRESHOLD_LIMIT);
-        double lowerLim = parameters.getValue(LOWER_THRESHOLD_LIMIT);
-        boolean measureOnObjects = parameters.getValue(MEASURE_ON_OBJECTS);
-        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+        String outputMode = parameters.getValue(OUTPUT_MODE, workspace);
+        boolean applyToInput = parameters.getValue(APPLY_TO_INPUT, workspace);
+        String algorithm = parameters.getValue(ALGORITHM, workspace);
+        double thrMult = parameters.getValue(THRESHOLD_MULTIPLIER, workspace);
+        String binaryLogic = parameters.getValue(BINARY_LOGIC, workspace);
+        boolean useLowerLim = parameters.getValue(USE_LOWER_THRESHOLD_LIMIT, workspace);
+        double lowerLim = parameters.getValue(LOWER_THRESHOLD_LIMIT, workspace);
+        boolean measureOnObjects = parameters.getValue(MEASURE_ON_OBJECTS, workspace);
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS, workspace);
 
         Objs inputObjects = measureOnObjects ? workspace.getObjectSet(inputObjectsName) : null;
         int threshold = 0;
@@ -266,25 +266,25 @@ public class GlobalAutoThreshold extends Module {
 
             // If the image is being saved as a new image, adding it to the workspace
             if (applyToInput) {
-                addMeasurements(inputImage, threshold);
+                addMeasurements(inputImage, threshold, algorithm);
                 if (showOutput)
                     inputImage.showImage();
                 if (showOutput)
                     inputImage.showMeasurements(this);
 
             } else {
-                String outputImageName = parameters.getValue(OUTPUT_IMAGE);
-                Image outputImage = new Image(outputImageName, inputImagePlus);
+                String outputImageName = parameters.getValue(OUTPUT_IMAGE, workspace);
+                Image outputImage = ImageFactory.createImage(outputImageName, inputImagePlus);
                 workspace.addImage(outputImage);
 
-                addMeasurements(outputImage, threshold);
+                addMeasurements(outputImage, threshold, algorithm);
                 if (showOutput)
                     outputImage.showImage();
                 if (showOutput)
                     outputImage.showMeasurements(this);
             }
         } else {
-            addMeasurements(inputImage, threshold);
+            addMeasurements(inputImage, threshold, algorithm);
             if (showOutput)
                 inputImage.showMeasurements(this);
         }
@@ -316,15 +316,16 @@ public class GlobalAutoThreshold extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
+        Workspace workspace = null;
         Parameters returnedParameters = new Parameters();
         returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(INPUT_IMAGE));
         returnedParameters.add(parameters.getParameter(OUTPUT_MODE));
 
-        if (parameters.getValue(OUTPUT_MODE).equals(OutputModes.CALCULATE_AND_APPLY)) {
+        if (parameters.getValue(OUTPUT_MODE, workspace).equals(OutputModes.CALCULATE_AND_APPLY)) {
             returnedParameters.add(parameters.getParameter(APPLY_TO_INPUT));
 
-            if (!(boolean) parameters.getValue(APPLY_TO_INPUT)) {
+            if (!(boolean) parameters.getValue(APPLY_TO_INPUT, workspace)) {
                 returnedParameters.add(parameters.getParameter(OUTPUT_IMAGE));
             }
         }
@@ -334,13 +335,13 @@ public class GlobalAutoThreshold extends Module {
         returnedParameters.add(parameters.getParameter(ALGORITHM));
 
         returnedParameters.add(parameters.getParameter(USE_LOWER_THRESHOLD_LIMIT));
-        if ((boolean) parameters.getValue(USE_LOWER_THRESHOLD_LIMIT))
+        if ((boolean) parameters.getValue(USE_LOWER_THRESHOLD_LIMIT, workspace))
             returnedParameters.add(parameters.getParameter(LOWER_THRESHOLD_LIMIT));
 
         returnedParameters.add(parameters.getParameter(BINARY_LOGIC));
 
         returnedParameters.add(parameters.getParameter(MEASURE_ON_OBJECTS));
-        if ((boolean) parameters.getValue(MEASURE_ON_OBJECTS))
+        if ((boolean) parameters.getValue(MEASURE_ON_OBJECTS, workspace))
             returnedParameters.add(parameters.getParameter(INPUT_OBJECTS));
 
         return returnedParameters;
@@ -349,23 +350,24 @@ public class GlobalAutoThreshold extends Module {
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
+        Workspace workspace = null;
         ImageMeasurementRefs returnedRefs = new ImageMeasurementRefs();
 
         String imageName = "";
-        switch ((String) parameters.getValue(OUTPUT_MODE)) {
+        switch ((String) parameters.getValue(OUTPUT_MODE, workspace)) {
             case OutputModes.CALCULATE_AND_APPLY:
-                if ((boolean) parameters.getValue(APPLY_TO_INPUT)) {
-                    imageName = parameters.getValue(INPUT_IMAGE);
+                if ((boolean) parameters.getValue(APPLY_TO_INPUT, workspace)) {
+                    imageName = parameters.getValue(INPUT_IMAGE, workspace);
                 } else {
-                    imageName = parameters.getValue(OUTPUT_IMAGE);
+                    imageName = parameters.getValue(OUTPUT_IMAGE, workspace);
                 }
                 break;
             case OutputModes.CALCULATE_ONLY:
-                imageName = parameters.getValue(INPUT_IMAGE);
+                imageName = parameters.getValue(INPUT_IMAGE, workspace);
                 break;
         }
 
-        String method = parameters.getValue(ALGORITHM);
+        String method = parameters.getValue(ALGORITHM, workspace);
         String measurementName = getFullName(Measurements.GLOBAL_VALUE, method);
 
         ImageMeasurementRef reference = imageMeasurementRefs.getOrPut(measurementName);
@@ -379,23 +381,23 @@ public class GlobalAutoThreshold extends Module {
     }
 
     @Override
-    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
-        return null;
+public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+return null;
     }
 
     @Override
-    public MetadataRefs updateAndGetMetadataReferences() {
-        return null;
+public MetadataRefs updateAndGetMetadataReferences() {
+return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
-        return null;
+return null;
     }
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
-        return null;
+return null;
     }
 
     @Override

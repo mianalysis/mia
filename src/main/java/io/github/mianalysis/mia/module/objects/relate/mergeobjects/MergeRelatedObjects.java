@@ -9,7 +9,6 @@ import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
-import io.github.mianalysis.mia.object.Status;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.parameters.ChildObjectsP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
@@ -22,6 +21,7 @@ import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
+import io.github.mianalysis.mia.object.system.Status;
 
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class MergeRelatedObjects extends Module {
@@ -125,13 +125,13 @@ public class MergeRelatedObjects extends Module {
     @Override
     protected Status process(Workspace workspace) {
         // Getting input objects
-        String parentObjectName = parameters.getValue(PARENT_OBJECTS);
+        String parentObjectName = parameters.getValue(PARENT_OBJECTS,workspace);
         Objs parentObjects = workspace.getObjects().get(parentObjectName);
 
-        String childObjectsName = parameters.getValue(CHILD_OBJECTS);
-        String outputMode = parameters.getValue(OUTPUT_MODE);
-        String relatedObjectsName = parameters.getValue(OUTPUT_MERGED_OBJECTS);
-        String mergeMode = parameters.getValue(MERGE_MODE);
+        String childObjectsName = parameters.getValue(CHILD_OBJECTS,workspace);
+        String outputMode = parameters.getValue(OUTPUT_MODE,workspace);
+        String relatedObjectsName = parameters.getValue(OUTPUT_MERGED_OBJECTS,workspace);
+        String mergeMode = parameters.getValue(MERGE_MODE,workspace);
 
         switch (outputMode) {
             case OutputModes.CREATE_NEW_OBJECT:
@@ -173,17 +173,18 @@ public class MergeRelatedObjects extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
+Workspace workspace = null;
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.get(INPUT_SEPARATOR));
         returnedParameters.add(parameters.get(PARENT_OBJECTS));
         returnedParameters.add(parameters.get(CHILD_OBJECTS));
         ChildObjectsP childObjectsP = parameters.getParameter(CHILD_OBJECTS);
-        childObjectsP.setParentObjectsName(parameters.getValue(PARENT_OBJECTS));
+        childObjectsP.setParentObjectsName(parameters.getValue(PARENT_OBJECTS,workspace));
 
         returnedParameters.add(parameters.get(OUTPUT_SEPARATOR));
         returnedParameters.add(parameters.get(OUTPUT_MODE));
-        switch ((String) parameters.getValue(OUTPUT_MODE)) {
+        switch ((String) parameters.getValue(OUTPUT_MODE,workspace)) {
             case OutputModes.CREATE_NEW_OBJECT:
                 returnedParameters.add(parameters.get(OUTPUT_MERGED_OBJECTS));
                 returnedParameters.add(parameters.get(MERGE_MODE));
@@ -196,27 +197,28 @@ public class MergeRelatedObjects extends Module {
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
-        return null;
+return null;
     }
 
     @Override
-    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
-        return null;
+public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+return null;
     }
 
     @Override
-    public MetadataRefs updateAndGetMetadataReferences() {
-        return null;
+public MetadataRefs updateAndGetMetadataReferences() {
+return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
+Workspace workspace = null;
         ParentChildRefs returnedRelationships = new ParentChildRefs();
 
-        switch ((String) parameters.getValue(OUTPUT_MODE)) {
+        switch ((String) parameters.getValue(OUTPUT_MODE,workspace)) {
             case OutputModes.CREATE_NEW_OBJECT:
-                returnedRelationships.add(parentChildRefs.getOrPut(parameters.getValue(PARENT_OBJECTS),
-                        parameters.getValue(OUTPUT_MERGED_OBJECTS)));
+                returnedRelationships.add(parentChildRefs.getOrPut(parameters.getValue(PARENT_OBJECTS,workspace),
+                        parameters.getValue(OUTPUT_MERGED_OBJECTS,workspace)));
                 break;
         }
 
@@ -226,7 +228,7 @@ public class MergeRelatedObjects extends Module {
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
-        return null;
+return null;
     }
 
     @Override

@@ -37,13 +37,14 @@ public class DocumentationPanel {
 
     public static void showPony() {
         String pony = "<html><body><div style=\"text-align: center;\">" +
-                "<img src=\""+MIA.class.getResource("/images/Pony.gif").toString()+"\" align=\"middle\">" +
+                "<img src=\"" + MIA.class.getResource("/images/Pony.gif").toString() + "\" align=\"middle\">" +
                 "</div></body></html>";
 
         JFrame frame = showDocumentation(pony);
-        frame.setPreferredSize(new Dimension(400,465));
-        frame.setMinimumSize(new Dimension(400,465));
-        ((JScrollPane) frame.getContentPane().getComponent(0)).setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
+        frame.setPreferredSize(new Dimension(400, 465));
+        frame.setMinimumSize(new Dimension(400, 465));
+        ((JScrollPane) frame.getContentPane().getComponent(0))
+                .setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
         frame.pack();
 
     }
@@ -80,7 +81,7 @@ public class DocumentationPanel {
         return frame;
 
     }
-    
+
     public static String generateAboutGUI() {
         Parser parser = Parser.builder().build();
         HtmlRenderer renderer = HtmlRenderer.builder().build();
@@ -90,19 +91,22 @@ public class DocumentationPanel {
         // pom.xml
         String version = "";
         // try {
-        //     FileReader reader = new FileReader("pom.xml");
-        //     Model model = new MavenXpp3Reader().read(reader);
-        //     reader.close();
-        //     version = new MavenProject(model).getVersion();
+        // FileReader reader = new FileReader("pom.xml");
+        // Model model = new MavenXpp3Reader().read(reader);
+        // reader.close();
+        // version = new MavenProject(model).getVersion();
         // } catch (XmlPullParserException | IOException e) {
-            version = MIA.class.getPackage().getImplementationVersion();
+        version = MIA.class.getPackage().getImplementationVersion();
         // }
 
         try {
             sb.append("<html><body><div align=\"justify\">");
 
             sb.append("<img src=\"");
-            sb.append(MIA.class.getResource("/images/Logo_text_UoB_64.png").toString());
+            if (MIA.getPreferences().darkThemeEnabled())
+                sb.append(MIA.class.getResource("/images/Logo_text_UoB_64_DM.png").toString());
+            else
+                sb.append(MIA.class.getResource("/images/Logo_text_UoB_64.png").toString());
             sb.append("\" align=\"middle\">");
             sb.append("<br><br>");
 
@@ -151,14 +155,18 @@ public class DocumentationPanel {
             sb.append("<html><body><div align=\"justify\">");
 
             sb.append("<img src=\"");
-            sb.append(MIA.class.getResource("/images/Logo_text_UoB_64.png").toString());
+            if (MIA.getPreferences().darkThemeEnabled())
+                sb.append(MIA.class.getResource("/images/Logo_text_UoB_64_DM.png").toString());
+            else
+                sb.append(MIA.class.getResource("/images/Logo_text_UoB_64.png").toString());
             sb.append("\" align=\"middle\">");
             sb.append("<br><br>");
 
             sb.append("<h2>Getting started</h2>");
-            sb.append("<p>For complete guides and tutorials on using MIA please go to <a href=\"https://mianalysis.github.io\">mianalysis.github.io</a>.</p>");
+            sb.append(
+                    "<p>For complete guides and tutorials on using MIA please go to <a href=\"https://mianalysis.github.io\">mianalysis.github.io</a>.</p>");
             sb.append("<br><br>");
-            
+
             sb.append("<h2>Installation</h2>");
             URL url = Resources.getResource("templatemd/installation.md");
             String string = Resources.toString(url, Charsets.UTF_8);

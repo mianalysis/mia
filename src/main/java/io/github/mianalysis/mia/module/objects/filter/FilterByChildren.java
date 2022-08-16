@@ -11,7 +11,6 @@ import org.scijava.plugin.Plugin;
 import io.github.mianalysis.mia.object.Measurement;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
-import io.github.mianalysis.mia.object.Status;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.parameters.ChildObjectsP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
@@ -19,15 +18,15 @@ import io.github.mianalysis.mia.object.refs.ObjMeasurementRef;
 import io.github.mianalysis.mia.object.refs.collections.ImageMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
+import io.github.mianalysis.mia.object.system.Status;
 
-@Plugin(type = Module.class, priority=Priority.LOW, visible=true)
+@Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class FilterByChildren extends AbstractNumericObjectFilter {
     public static final String CHILD_OBJECTS = "Child objects";
 
     public FilterByChildren(Modules modules) {
         super("Number of children", modules);
     }
-
 
     @Override
     public Category getCategory() {
@@ -42,16 +41,16 @@ public class FilterByChildren extends AbstractNumericObjectFilter {
     @Override
     protected Status process(Workspace workspace) {
         // Getting input objects
-        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS, workspace);
         Objs inputObjects = workspace.getObjects().get(inputObjectsName);
 
         // Getting parameters
-        String filterMode = parameters.getValue(FILTER_MODE);
-        String outputObjectsName = parameters.getValue(OUTPUT_FILTERED_OBJECTS);
-        String filterMethod = parameters.getValue(FILTER_METHOD);
-        String childObjectsName = parameters.getValue(CHILD_OBJECTS);
-        boolean storeSummary = parameters.getValue(STORE_SUMMARY_RESULTS);
-        boolean storeIndividual = parameters.getValue(STORE_INDIVIDUAL_RESULTS);
+        String filterMode = parameters.getValue(FILTER_MODE, workspace);
+        String outputObjectsName = parameters.getValue(OUTPUT_FILTERED_OBJECTS, workspace);
+        String filterMethod = parameters.getValue(FILTER_METHOD, workspace);
+        String childObjectsName = parameters.getValue(CHILD_OBJECTS, workspace);
+        boolean storeSummary = parameters.getValue(STORE_SUMMARY_RESULTS, workspace);
+        boolean storeIndividual = parameters.getValue(STORE_INDIVIDUAL_RESULTS, workspace);
 
         boolean moveObjects = filterMode.equals(FilterModes.MOVE_FILTERED);
         boolean remove = !filterMode.equals(FilterModes.DO_NOTHING);
@@ -78,7 +77,7 @@ public class FilterByChildren extends AbstractNumericObjectFilter {
 
             // Adding measurements
             if (storeIndividual) {
-                String measurementName = getIndividualMeasurementName(childObjectsName);
+                String measurementName = getIndividualMeasurementName(childObjectsName, workspace);
                 inputObject.addMeasurement(new Measurement(measurementName, conditionMet ? 1 : 0));
             }
 
@@ -96,7 +95,7 @@ public class FilterByChildren extends AbstractNumericObjectFilter {
 
         // If storing the result, create a new metadata item for it
         if (storeSummary) {
-            String metadataName = getSummaryMeasurementName(childObjectsName);
+            String metadataName = getSummaryMeasurementName(childObjectsName, workspace);
             workspace.getMetadata().put(metadataName, count);
         }
 
@@ -120,13 +119,14 @@ public class FilterByChildren extends AbstractNumericObjectFilter {
 
     @Override
     public Parameters updateAndGetParameters() {
+        Workspace workspace = null;
         Parameters returnedParameters = new Parameters();
         returnedParameters.addAll(super.updateAndGetParameters());
 
-        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS, workspace);
         returnedParameters.add(parameters.getParameter(CHILD_OBJECTS));
         ((ChildObjectsP) parameters.getParameter(CHILD_OBJECTS)).setParentObjectsName(inputObjectsName);
-        
+
         returnedParameters.addAll(updateAndGetMeasurementParameters());
 
         return returnedParameters;
@@ -140,16 +140,17 @@ public class FilterByChildren extends AbstractNumericObjectFilter {
 
     @Override
     public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+        Workspace workspace = null;
         ObjMeasurementRefs returnedRefs = super.updateAndGetObjectMeasurementRefs();
 
-        if ((boolean) parameters.getValue(STORE_INDIVIDUAL_RESULTS)) {
-            String childObjectsName = parameters.getValue(CHILD_OBJECTS);
-            String measurementName = getIndividualMeasurementName(childObjectsName);
-            String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+        if ((boolean) parameters.getValue(STORE_INDIVIDUAL_RESULTS, workspace)) {
+            String childObjectsName = parameters.getValue(CHILD_OBJECTS, workspace);
+            String measurementName = getIndividualMeasurementName(childObjectsName, null);
+            String inputObjectsName = parameters.getValue(INPUT_OBJECTS, workspace);
 
             returnedRefs.add(new ObjMeasurementRef(measurementName, inputObjectsName));
-            if (parameters.getValue(FILTER_MODE).equals(FilterModes.MOVE_FILTERED)) {
-                String outputObjectsName = parameters.getValue(OUTPUT_FILTERED_OBJECTS);
+            if (parameters.getValue(FILTER_MODE, workspace).equals(FilterModes.MOVE_FILTERED)) {
+                String outputObjectsName = parameters.getValue(OUTPUT_FILTERED_OBJECTS, workspace);
                 returnedRefs.add(new ObjMeasurementRef(measurementName, outputObjectsName));
             }
         }
@@ -160,13 +161,14 @@ public class FilterByChildren extends AbstractNumericObjectFilter {
 
     @Override
     public MetadataRefs updateAndGetMetadataReferences() {
+        Workspace workspace = null;
         MetadataRefs returnedRefs = new MetadataRefs();
 
         // Filter results are stored as a metadata item since they apply to the whole
         // set
-        if ((boolean) parameters.getValue(STORE_SUMMARY_RESULTS)) {
-            String childObjectsName = parameters.getValue(CHILD_OBJECTS);
-            String metadataName = getSummaryMeasurementName(childObjectsName);
+        if ((boolean) parameters.getValue(STORE_SUMMARY_RESULTS, workspace)) {
+            String childObjectsName = parameters.getValue(CHILD_OBJECTS, workspace);
+            String metadataName = getSummaryMeasurementName(childObjectsName, null);
 
             returnedRefs.add(metadataRefs.getOrPut(metadataName));
 
@@ -178,8 +180,9 @@ public class FilterByChildren extends AbstractNumericObjectFilter {
     @Override
     protected void addParameterDescriptions() {
         super.addParameterDescriptions();
-        
-        parameters.get(CHILD_OBJECTS).setDescription("Objects will be filtered against the number of children they have from this object collection.");
+
+        parameters.get(CHILD_OBJECTS).setDescription(
+                "Objects will be filtered against the number of children they have from this object collection.");
 
     }
 }

@@ -1,7 +1,9 @@
 package io.github.mianalysis.mia;
 
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
@@ -14,13 +16,11 @@ import org.scijava.plugin.Parameter;
 import org.scijava.plugin.Plugin;
 import org.scijava.ui.UIService;
 
-import com.formdev.flatlaf.FlatLightLaf;
-
-import ij.WindowManager;
+import ij.Prefs;
 import io.github.mianalysis.mia.gui.GUI;
 import io.github.mianalysis.mia.module.LostAndFound;
 import io.github.mianalysis.mia.moduledependencies.Dependencies;
-import io.github.mianalysis.mia.object.Preferences;
+import io.github.mianalysis.mia.object.system.Preferences;
 import io.github.mianalysis.mia.process.DependencyValidator;
 import io.github.mianalysis.mia.process.analysishandling.Analysis;
 import io.github.mianalysis.mia.process.analysishandling.AnalysisReader;
@@ -43,13 +43,13 @@ public class MIA implements Command {
     private static LogRenderer mainRenderer = new BasicLogRenderer();
     private static LogHistory logHistory = new LogHistory();
     private final static boolean headless = false; // Determines if there is a GUI
+    private static Preferences preferences;
+    private static Dependencies dependencies; // Maps module dependencies and reports if a
+    // module's requirements aren't satisfied
+    private static LostAndFound lostAndFound; // Maps missing modules and parameters to
+    // replacements (e.g. if a module was renamed)
 
-    public static Preferences preferences;
     public static Log log = new Log(mainRenderer); // This is for testing and headless modes
-    public final static Dependencies dependencies = new Dependencies(); // Maps module dependencies and reports if a
-                                                                        // module's requirements aren't satisfied
-    public final static LostAndFound lostAndFound = new LostAndFound(); // Maps missing modules and parameters to
-                                                                        // replacements (e.g. if a module was renamed)
 
     /*
      * Gearing up for the transition from ImagePlus to ImgLib2 formats. Modules can
@@ -68,7 +68,6 @@ public class MIA implements Command {
                 new ij.ImageJ();
                 new ImageJ().command().run("io.github.mianalysis.mia.MIA", false);
             } else {
-                preferences = new Preferences(null);
                 Analysis analysis = AnalysisReader.loadAnalysis(args[0]);
                 new AnalysisRunner().run(analysis);
             }
@@ -81,11 +80,16 @@ public class MIA implements Command {
     @Override
     public void run() {
         try {
-            preferences = new Preferences(null);
+            String theme = Prefs.get("MIA.GUI.theme", io.github.mianalysis.mia.gui.Themes.getDefaultTheme());
+            UIManager.setLookAndFeel(io.github.mianalysis.mia.gui.Themes.getThemeClass(theme));
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException
+                | UnsupportedLookAndFeelException | IllegalArgumentException | InvocationTargetException
+                | NoSuchMethodException | SecurityException e) {
+            e.printStackTrace();
+        }
 
-            setLookAndFeel();
-
-            if (!headless) {
+        if (!headless) {
+            try {
                 // Before removing the old renderer we want to check the new one can be created
                 UIService uiService = ijService.context().getService(UIService.class);
                 LogRenderer newRenderer = new ConsoleRenderer(uiService);
@@ -94,22 +98,27 @@ public class MIA implements Command {
                 mainRenderer = newRenderer;
                 mainRenderer.setWriteEnabled(LogRenderer.Level.DEBUG, debug);
                 log.addRenderer(mainRenderer);
-
+            } catch (Exception e) {
+                // If any exception was thrown, just don't apply the ConsoleRenderer.
             }
-        } catch (Exception e) {
-            // If any exception was thrown, just don't apply the ConsoleRenderer.
         }
+
+        preferences = new Preferences(null);
 
         log.addRenderer(logHistory);
 
         // Determining the version number from the pom file
         try {
-            FileReader reader = new FileReader("pom.xml");
-            Model model = new MavenXpp3Reader().read(reader);
-            reader.close();
-            version = model.getVersion();
+            if (new File("pom.xml").exists()) {
+                FileReader reader = new FileReader("pom.xml");
+                Model model = new MavenXpp3Reader().read(reader);
+                reader.close();
+                version = model.getVersion();
+            } else {
+                version = getClass().getPackage().getImplementationVersion();
+            }
         } catch (XmlPullParserException | IOException e) {
-            version = getClass().getPackage().getImplementationVersion();
+            e.printStackTrace();
         }
 
         // Run the dependency validator. If updates were required, return.
@@ -123,15 +132,16 @@ public class MIA implements Command {
         }
     }
 
-    public void setLookAndFeel() {
-        try {
-            UIManager.put("TitlePane.showIconBesideTitle", true);
-            UIManager.setLookAndFeel(FlatLightLaf.class.getCanonicalName());
-        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException
-                | UnsupportedLookAndFeelException e) {
-            MIA.log.writeError(e);
-        }
-    }
+    // public void setLookAndFeel() {
+    // try {
+    // UIManager.put("TitlePane.showIconBesideTitle", true);
+    // UIManager.setLookAndFeel(FlatLightLaf.class.getCanonicalName());
+    // } catch (ClassNotFoundException | InstantiationException |
+    // IllegalAccessException
+    // | UnsupportedLookAndFeelException e) {
+    // MIA.log.writeError(e);
+    // }
+    // }
 
     public static boolean isImagePlusMode() {
         return imagePlusMode;
@@ -171,5 +181,25 @@ public class MIA implements Command {
 
     public static boolean isHeadless() {
         return headless;
+    }
+
+    public static Preferences getPreferences() {
+        return preferences;
+    }
+
+    public static Dependencies getDependencies() {
+        if (dependencies == null)
+            dependencies = new Dependencies();
+
+        return dependencies;
+
+    }
+
+    public static LostAndFound getLostAndFound() {
+        if (lostAndFound == null)
+            lostAndFound = new LostAndFound();
+
+        return lostAndFound;
+
     }
 }

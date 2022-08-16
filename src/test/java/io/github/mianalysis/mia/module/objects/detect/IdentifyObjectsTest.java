@@ -21,11 +21,12 @@ import io.github.mianalysis.mia.expectedobjects.Objects3D;
 import io.github.mianalysis.mia.expectedobjects.Objects4D;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.ModuleTest;
-import io.github.mianalysis.mia.object.Image;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.Workspaces;
+import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.sjcross.sjcommon.object.volume.VolumeType;
 
 /**
@@ -67,7 +68,7 @@ public class IdentifyObjectsTest extends ModuleTest {
                 this.getClass().getResource("/images/binaryobjects/BinaryObjects2D_8bit_blackBG.zip").getPath(),
                 "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
-        Image image = new Image("Test_image", ipl);
+        Image image = ImageFactory.createImage("Test_image", ipl);
         workspace.addImage(image);
 
         // Initialising IdentifyObjects
@@ -121,7 +122,7 @@ public class IdentifyObjectsTest extends ModuleTest {
                 this.getClass().getResource("/images/binaryobjects/BinaryObjects2D_8bit_blackBG.zip").getPath(),
                 "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
-        Image image = new Image("Test_image", ipl);
+        Image image = ImageFactory.createImage("Test_image", ipl);
         workspace.addImage(image);
 
         // Initialising IdentifyObjects
@@ -176,7 +177,7 @@ public class IdentifyObjectsTest extends ModuleTest {
                 this.getClass().getResource("/images/binaryobjects/BinaryObjects2D_8bit_blackBG.zip").getPath(),
                 "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
-        Image image = new Image("Test_image", ipl);
+        Image image = ImageFactory.createImage("Test_image", ipl);
         workspace.addImage(image);
 
         // Initialising IdentifyObjects
@@ -230,7 +231,7 @@ public class IdentifyObjectsTest extends ModuleTest {
                 this.getClass().getResource("/images/binaryobjects/BinaryObjects3D_8bit_blackBG.zip").getPath(),
                 "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
-        Image image = new Image("Test_image", ipl);
+        Image image = ImageFactory.createImage("Test_image", ipl);
         workspace.addImage(image);
 
         // Initialising IdentifyObjects
@@ -285,7 +286,7 @@ public class IdentifyObjectsTest extends ModuleTest {
                 this.getClass().getResource("/images/binaryobjects/BinaryObjects3D_8bit_blackBG.zip").getPath(),
                 "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
-        Image image = new Image("Test_image", ipl);
+        Image image = ImageFactory.createImage("Test_image", ipl);
         workspace.addImage(image);
 
         // Initialising IdentifyObjects
@@ -339,7 +340,7 @@ public class IdentifyObjectsTest extends ModuleTest {
                 this.getClass().getResource("/images/binaryobjects/BinaryObjects3D_8bit_blackBG.zip").getPath(),
                 "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
-        Image image = new Image("Test_image", ipl);
+        Image image = ImageFactory.createImage("Test_image", ipl);
         workspace.addImage(image);
 
         // Initialising IdentifyObjects
@@ -393,7 +394,7 @@ public class IdentifyObjectsTest extends ModuleTest {
                 this.getClass().getResource("/images/binaryobjects/BinaryObjects4D_8bit_blackBG.zip").getPath(),
                 "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
-        Image image = new Image("Test_image", ipl);
+        Image image = ImageFactory.createImage("Test_image", ipl);
         workspace.addImage(image);
 
         // Initialising IdentifyObjects
@@ -448,7 +449,7 @@ public class IdentifyObjectsTest extends ModuleTest {
                 this.getClass().getResource("/images/binaryobjects/BinaryObjects4D_8bit_blackBG.zip").getPath(),
                 "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
-        Image image = new Image("Test_image", ipl);
+        Image image = ImageFactory.createImage("Test_image", ipl);
         workspace.addImage(image);
 
         // Initialising IdentifyObjects
@@ -503,7 +504,7 @@ public class IdentifyObjectsTest extends ModuleTest {
                 this.getClass().getResource("/images/binaryobjects/BinaryObjects4D_8bit_blackBG.zip").getPath(),
                 "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
-        Image image = new Image("Test_image", ipl);
+        Image image = ImageFactory.createImage("Test_image", ipl);
         workspace.addImage(image);
 
         // Initialising IdentifyObjects
@@ -569,7 +570,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         String pathToImage = URLDecoder.decode(
                 this.getClass().getResource("/images/labelledobjects/LabelledObjects3D_8bit.zip").getPath(), "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
-        Image image = new Image("Test_image", ipl);
+        Image image = ImageFactory.createImage("Test_image", ipl);
         workspace.addImage(image);
 
         // Initialising IdentifyObjects
@@ -622,7 +623,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         String pathToImage = URLDecoder.decode(
                 this.getClass().getResource("/images/labelledobjects/LabelledObjects3D_8bit.zip").getPath(), "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
-        Image image = new Image("Test_image", ipl);
+        Image image = ImageFactory.createImage("Test_image", ipl);
         workspace.addImage(image);
 
         // Initialising IdentifyObjects
@@ -675,7 +676,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         String pathToImage = URLDecoder.decode(
                 this.getClass().getResource("/images/labelledobjects/LabelledObjects3D_8bit.zip").getPath(), "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
-        Image image = new Image("Test_image", ipl);
+        Image image = ImageFactory.createImage("Test_image", ipl);
         workspace.addImage(image);
 
         // Initialising IdentifyObjects
@@ -729,7 +730,7 @@ public class IdentifyObjectsTest extends ModuleTest {
                 this.getClass().getResource("/images/binaryobjects/BinaryObjects3D_8bit_whiteBG.zip").getPath(),
                 "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
-        Image image = new Image("Test_image", ipl);
+        Image image = ImageFactory.createImage("Test_image", ipl);
         workspace.addImage(image);
 
         // Initialising IdentifyObjects
@@ -783,7 +784,7 @@ public class IdentifyObjectsTest extends ModuleTest {
                 this.getClass().getResource("/images/binaryobjects/BinaryObjects3D_8bit_whiteBG.zip").getPath(),
                 "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
-        Image image = new Image("Test_image", ipl);
+        Image image = ImageFactory.createImage("Test_image", ipl);
         workspace.addImage(image);
 
         // Initialising IdentifyObjects
@@ -837,7 +838,7 @@ public class IdentifyObjectsTest extends ModuleTest {
                 this.getClass().getResource("/images/binaryobjects/BinaryObjects3D_8bit_whiteBG.zip").getPath(),
                 "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
-        Image image = new Image("Test_image", ipl);
+        Image image = ImageFactory.createImage("Test_image", ipl);
         workspace.addImage(image);
 
         // Initialising IdentifyObjects
@@ -891,7 +892,7 @@ public class IdentifyObjectsTest extends ModuleTest {
                 this.getClass().getResource("/images/binaryobjects/BinaryObjects3D_8bit_blackBG.zip").getPath(),
                 "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
-        Image image = new Image("Test_image", ipl);
+        Image image = ImageFactory.createImage("Test_image", ipl);
         workspace.addImage(image);
 
         // Initialising IdentifyObjects
@@ -946,7 +947,7 @@ public class IdentifyObjectsTest extends ModuleTest {
                 this.getClass().getResource("/images/binaryobjects/BinaryObjects3D_8bit_blackBG.zip").getPath(),
                 "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
-        Image image = new Image("Test_image", ipl);
+        Image image = ImageFactory.createImage("Test_image", ipl);
         workspace.addImage(image);
 
         // Initialising IdentifyObjects
@@ -1001,7 +1002,7 @@ public class IdentifyObjectsTest extends ModuleTest {
                 this.getClass().getResource("/images/binaryobjects/BinaryObjects3D_8bit_blackBG.zip").getPath(),
                 "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
-        Image image = new Image("Test_image", ipl);
+        Image image = ImageFactory.createImage("Test_image", ipl);
         workspace.addImage(image);
 
         // Initialising IdentifyObjects
@@ -1056,7 +1057,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         String pathToImage = URLDecoder.decode(
                 this.getClass().getResource("/images/labelledobjects/LabelledObjects3D_8bit.zip").getPath(), "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
-        Image image = new Image("Test_image", ipl);
+        Image image = ImageFactory.createImage("Test_image", ipl);
         workspace.addImage(image);
 
         // Initialising IdentifyObjects
@@ -1111,7 +1112,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         String pathToImage = URLDecoder.decode(
                 this.getClass().getResource("/images/labelledobjects/LabelledObjects3D_8bit.zip").getPath(), "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
-        Image image = new Image("Test_image", ipl);
+        Image image = ImageFactory.createImage("Test_image", ipl);
         workspace.addImage(image);
 
         // Initialising IdentifyObjects
@@ -1166,7 +1167,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         String pathToImage = URLDecoder.decode(
                 this.getClass().getResource("/images/labelledobjects/LabelledObjects3D_8bit.zip").getPath(), "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
-        Image image = new Image("Test_image", ipl);
+        Image image = ImageFactory.createImage("Test_image", ipl);
         workspace.addImage(image);
 
         // Initialising IdentifyObjects
@@ -1221,7 +1222,7 @@ public class IdentifyObjectsTest extends ModuleTest {
                 this.getClass().getResource("/images/binaryobjects/BinaryObjects3D_16bit_blackBG.zip").getPath(),
                 "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
-        Image image = new Image("Test_image", ipl);
+        Image image = ImageFactory.createImage("Test_image", ipl);
         workspace.addImage(image);
 
         // Initialising IdentifyObjects
@@ -1275,7 +1276,7 @@ public class IdentifyObjectsTest extends ModuleTest {
                 this.getClass().getResource("/images/binaryobjects/BinaryObjects3D_16bit_blackBG.zip").getPath(),
                 "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
-        Image image = new Image("Test_image", ipl);
+        Image image = ImageFactory.createImage("Test_image", ipl);
         workspace.addImage(image);
 
         // Initialising IdentifyObjects
@@ -1329,7 +1330,7 @@ public class IdentifyObjectsTest extends ModuleTest {
                 this.getClass().getResource("/images/binaryobjects/BinaryObjects3D_16bit_blackBG.zip").getPath(),
                 "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
-        Image image = new Image("Test_image", ipl);
+        Image image = ImageFactory.createImage("Test_image", ipl);
         workspace.addImage(image);
 
         // Initialising IdentifyObjects
@@ -1383,7 +1384,7 @@ public class IdentifyObjectsTest extends ModuleTest {
                 this.getClass().getResource("/images/binaryobjects/BinaryObjects3D_32bit_blackBG.zip").getPath(),
                 "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
-        Image image = new Image("Test_image", ipl);
+        Image image = ImageFactory.createImage("Test_image", ipl);
         workspace.addImage(image);
 
         // Initialising IdentifyObjects
@@ -1440,7 +1441,7 @@ public class IdentifyObjectsTest extends ModuleTest {
                 this.getClass().getResource("/images/binaryobjects/BinaryObjects3D_32bit_blackBG.zip").getPath(),
                 "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
-        Image image = new Image("Test_image", ipl);
+        Image image = ImageFactory.createImage("Test_image", ipl);
         workspace.addImage(image);
 
         // Initialising IdentifyObjects
@@ -1497,7 +1498,7 @@ public class IdentifyObjectsTest extends ModuleTest {
                 this.getClass().getResource("/images/binaryobjects/BinaryObjects3D_32bit_blackBG.zip").getPath(),
                 "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
-        Image image = new Image("Test_image", ipl);
+        Image image = ImageFactory.createImage("Test_image", ipl);
         workspace.addImage(image);
 
         // Initialising IdentifyObjects
@@ -1554,7 +1555,7 @@ public class IdentifyObjectsTest extends ModuleTest {
                 this.getClass().getResource("/images/binaryobjects/BinaryObjects3D_8bit_blackBG_204.zip").getPath(),
                 "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
-        Image image = new Image("Test_image", ipl);
+        Image image = ImageFactory.createImage("Test_image", ipl);
         workspace.addImage(image);
 
         // Initialising IdentifyObjects
@@ -1608,7 +1609,7 @@ public class IdentifyObjectsTest extends ModuleTest {
                 this.getClass().getResource("/images/binaryobjects/BinaryObjects3D_8bit_blackBG_204.zip").getPath(),
                 "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
-        Image image = new Image("Test_image", ipl);
+        Image image = ImageFactory.createImage("Test_image", ipl);
         workspace.addImage(image);
 
         // Initialising IdentifyObjects
@@ -1662,7 +1663,7 @@ public class IdentifyObjectsTest extends ModuleTest {
                 this.getClass().getResource("/images/binaryobjects/BinaryObjects3D_8bit_blackBG_204.zip").getPath(),
                 "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
-        Image image = new Image("Test_image", ipl);
+        Image image = ImageFactory.createImage("Test_image", ipl);
         workspace.addImage(image);
 
         // Initialising IdentifyObjects
@@ -1716,7 +1717,7 @@ public class IdentifyObjectsTest extends ModuleTest {
                 this.getClass().getResource("/images/binaryobjects/BinaryObjects3D_16bit_blackBG_15073.zip").getPath(),
                 "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
-        Image image = new Image("Test_image", ipl);
+        Image image = ImageFactory.createImage("Test_image", ipl);
         workspace.addImage(image);
 
         // Initialising IdentifyObjects
@@ -1770,7 +1771,7 @@ public class IdentifyObjectsTest extends ModuleTest {
                 this.getClass().getResource("/images/binaryobjects/BinaryObjects3D_16bit_blackBG_15073.zip").getPath(),
                 "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
-        Image image = new Image("Test_image", ipl);
+        Image image = ImageFactory.createImage("Test_image", ipl);
         workspace.addImage(image);
 
         // Initialising IdentifyObjects
@@ -1824,7 +1825,7 @@ public class IdentifyObjectsTest extends ModuleTest {
                 this.getClass().getResource("/images/binaryobjects/BinaryObjects3D_16bit_blackBG_15073.zip").getPath(),
                 "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
-        Image image = new Image("Test_image", ipl);
+        Image image = ImageFactory.createImage("Test_image", ipl);
         workspace.addImage(image);
 
         // Initialising IdentifyObjects
@@ -1878,7 +1879,7 @@ public class IdentifyObjectsTest extends ModuleTest {
                 this.getClass().getResource("/images/binaryobjects/BinaryObjects3D_32bit_blackBG_-0p54.zip").getPath(),
                 "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
-        Image image = new Image("Test_image", ipl);
+        Image image = ImageFactory.createImage("Test_image", ipl);
         workspace.addImage(image);
 
         // Initialising IdentifyObjects
@@ -1935,7 +1936,7 @@ public class IdentifyObjectsTest extends ModuleTest {
                 this.getClass().getResource("/images/binaryobjects/BinaryObjects3D_32bit_blackBG_-0p54.zip").getPath(),
                 "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
-        Image image = new Image("Test_image", ipl);
+        Image image = ImageFactory.createImage("Test_image", ipl);
         workspace.addImage(image);
 
         // Initialising IdentifyObjects
@@ -1992,7 +1993,7 @@ public class IdentifyObjectsTest extends ModuleTest {
                 this.getClass().getResource("/images/binaryobjects/BinaryObjects3D_32bit_blackBG_-0p54.zip").getPath(),
                 "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
-        Image image = new Image("Test_image", ipl);
+        Image image = ImageFactory.createImage("Test_image", ipl);
         workspace.addImage(image);
 
         // Initialising IdentifyObjects
@@ -2049,7 +2050,7 @@ public class IdentifyObjectsTest extends ModuleTest {
                 this.getClass().getResource("/images/binaryobjects/BinaryObjects2D_8bit_blackBG.zip").getPath(),
                 "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
-        Image image = new Image("Test_image", ipl);
+        Image image = ImageFactory.createImage("Test_image", ipl);
         workspace.addImage(image);
 
         // Initialising IdentifyObjects
@@ -2103,7 +2104,7 @@ public class IdentifyObjectsTest extends ModuleTest {
                 this.getClass().getResource("/images/binaryobjects/BinaryObjects2D_8bit_blackBG.zip").getPath(),
                 "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
-        Image image = new Image("Test_image", ipl);
+        Image image = ImageFactory.createImage("Test_image", ipl);
         workspace.addImage(image);
 
         // Initialising IdentifyObjects
@@ -2157,7 +2158,7 @@ public class IdentifyObjectsTest extends ModuleTest {
                 this.getClass().getResource("/images/binaryobjects/BinaryObjects2D_8bit_blackBG.zip").getPath(),
                 "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
-        Image image = new Image("Test_image", ipl);
+        Image image = ImageFactory.createImage("Test_image", ipl);
         workspace.addImage(image);
 
         // Initialising IdentifyObjects
@@ -2211,7 +2212,7 @@ public class IdentifyObjectsTest extends ModuleTest {
                 this.getClass().getResource("/images/binaryobjects/BinaryObjects3D_8bit_blackBG.zip").getPath(),
                 "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
-        Image image = new Image("Test_image", ipl);
+        Image image = ImageFactory.createImage("Test_image", ipl);
         workspace.addImage(image);
 
         // Initialising IdentifyObjects
@@ -2265,7 +2266,7 @@ public class IdentifyObjectsTest extends ModuleTest {
                 this.getClass().getResource("/images/binaryobjects/BinaryObjects3D_8bit_blackBG.zip").getPath(),
                 "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
-        Image image = new Image("Test_image", ipl);
+        Image image = ImageFactory.createImage("Test_image", ipl);
         workspace.addImage(image);
 
         // Initialising IdentifyObjects
@@ -2319,7 +2320,7 @@ public class IdentifyObjectsTest extends ModuleTest {
                 this.getClass().getResource("/images/binaryobjects/BinaryObjects3D_8bit_blackBG.zip").getPath(),
                 "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
-        Image image = new Image("Test_image", ipl);
+        Image image = ImageFactory.createImage("Test_image", ipl);
         workspace.addImage(image);
 
         // Initialising IdentifyObjects
@@ -2373,7 +2374,7 @@ public class IdentifyObjectsTest extends ModuleTest {
                 this.getClass().getResource("/images/binaryobjects/BinaryObjects4D_8bit_blackBG.zip").getPath(),
                 "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
-        Image image = new Image("Test_image", ipl);
+        Image image = ImageFactory.createImage("Test_image", ipl);
         workspace.addImage(image);
 
         // Initialising IdentifyObjects
@@ -2428,7 +2429,7 @@ public class IdentifyObjectsTest extends ModuleTest {
                 this.getClass().getResource("/images/binaryobjects/BinaryObjects4D_8bit_blackBG.zip").getPath(),
                 "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
-        Image image = new Image("Test_image", ipl);
+        Image image = ImageFactory.createImage("Test_image", ipl);
         workspace.addImage(image);
 
         // Initialising IdentifyObjects
@@ -2483,7 +2484,7 @@ public class IdentifyObjectsTest extends ModuleTest {
                 this.getClass().getResource("/images/binaryobjects/BinaryObjects4D_8bit_blackBG.zip").getPath(),
                 "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
-        Image image = new Image("Test_image", ipl);
+        Image image = ImageFactory.createImage("Test_image", ipl);
         workspace.addImage(image);
 
         // Initialising IdentifyObjects
@@ -2543,7 +2544,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         String pathToImage = URLDecoder.decode(
                 this.getClass().getResource("/images/labelledobjects/LabelledObjects3D_8bit.zip").getPath(), "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
-        Image image = new Image("Test_image", ipl);
+        Image image = ImageFactory.createImage("Test_image", ipl);
         workspace.addImage(image);
 
         // Initialising IdentifyObjects
@@ -2596,7 +2597,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         String pathToImage = URLDecoder.decode(
                 this.getClass().getResource("/images/labelledobjects/LabelledObjects3D_8bit.zip").getPath(), "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
-        Image image = new Image("Test_image", ipl);
+        Image image = ImageFactory.createImage("Test_image", ipl);
         workspace.addImage(image);
 
         // Initialising IdentifyObjects
@@ -2649,7 +2650,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         String pathToImage = URLDecoder.decode(
                 this.getClass().getResource("/images/labelledobjects/LabelledObjects3D_8bit.zip").getPath(), "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
-        Image image = new Image("Test_image", ipl);
+        Image image = ImageFactory.createImage("Test_image", ipl);
         workspace.addImage(image);
 
         // Initialising IdentifyObjects
@@ -2703,7 +2704,7 @@ public class IdentifyObjectsTest extends ModuleTest {
                 this.getClass().getResource("/images/binaryobjects/BinaryObjects3D_8bit_whiteBG.zip").getPath(),
                 "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
-        Image image = new Image("Test_image", ipl);
+        Image image = ImageFactory.createImage("Test_image", ipl);
         workspace.addImage(image);
 
         // Initialising IdentifyObjects
@@ -2757,7 +2758,7 @@ public class IdentifyObjectsTest extends ModuleTest {
                 this.getClass().getResource("/images/binaryobjects/BinaryObjects3D_8bit_whiteBG.zip").getPath(),
                 "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
-        Image image = new Image("Test_image", ipl);
+        Image image = ImageFactory.createImage("Test_image", ipl);
         workspace.addImage(image);
 
         // Initialising IdentifyObjects
@@ -2811,7 +2812,7 @@ public class IdentifyObjectsTest extends ModuleTest {
                 this.getClass().getResource("/images/binaryobjects/BinaryObjects3D_8bit_whiteBG.zip").getPath(),
                 "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
-        Image image = new Image("Test_image", ipl);
+        Image image = ImageFactory.createImage("Test_image", ipl);
         workspace.addImage(image);
 
         // Initialising IdentifyObjects
@@ -2865,7 +2866,7 @@ public class IdentifyObjectsTest extends ModuleTest {
                 this.getClass().getResource("/images/binaryobjects/BinaryObjects3D_8bit_blackBG.zip").getPath(),
                 "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
-        Image image = new Image("Test_image", ipl);
+        Image image = ImageFactory.createImage("Test_image", ipl);
         workspace.addImage(image);
 
         // Initialising IdentifyObjects
@@ -2920,7 +2921,7 @@ public class IdentifyObjectsTest extends ModuleTest {
                 this.getClass().getResource("/images/binaryobjects/BinaryObjects3D_8bit_blackBG.zip").getPath(),
                 "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
-        Image image = new Image("Test_image", ipl);
+        Image image = ImageFactory.createImage("Test_image", ipl);
         workspace.addImage(image);
 
         // Initialising IdentifyObjects
@@ -2975,7 +2976,7 @@ public class IdentifyObjectsTest extends ModuleTest {
                 this.getClass().getResource("/images/binaryobjects/BinaryObjects3D_8bit_blackBG.zip").getPath(),
                 "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
-        Image image = new Image("Test_image", ipl);
+        Image image = ImageFactory.createImage("Test_image", ipl);
         workspace.addImage(image);
 
         // Initialising IdentifyObjects
@@ -3030,7 +3031,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         String pathToImage = URLDecoder.decode(
                 this.getClass().getResource("/images/labelledobjects/LabelledObjects3D_8bit.zip").getPath(), "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
-        Image image = new Image("Test_image", ipl);
+        Image image = ImageFactory.createImage("Test_image", ipl);
         workspace.addImage(image);
 
         // Initialising IdentifyObjects
@@ -3084,7 +3085,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         String pathToImage = URLDecoder.decode(
                 this.getClass().getResource("/images/labelledobjects/LabelledObjects3D_8bit.zip").getPath(), "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
-        Image image = new Image("Test_image", ipl);
+        Image image = ImageFactory.createImage("Test_image", ipl);
         workspace.addImage(image);
 
         // Initialising IdentifyObjects
@@ -3138,7 +3139,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         String pathToImage = URLDecoder.decode(
                 this.getClass().getResource("/images/labelledobjects/LabelledObjects3D_8bit.zip").getPath(), "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
-        Image image = new Image("Test_image", ipl);
+        Image image = ImageFactory.createImage("Test_image", ipl);
         workspace.addImage(image);
 
         // Initialising IdentifyObjects
@@ -3193,7 +3194,7 @@ public class IdentifyObjectsTest extends ModuleTest {
                 this.getClass().getResource("/images/binaryobjects/BinaryObjects3D_16bit_blackBG.zip").getPath(),
                 "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
-        Image image = new Image("Test_image", ipl);
+        Image image = ImageFactory.createImage("Test_image", ipl);
         workspace.addImage(image);
 
         // Initialising IdentifyObjects
@@ -3247,7 +3248,7 @@ public class IdentifyObjectsTest extends ModuleTest {
                 this.getClass().getResource("/images/binaryobjects/BinaryObjects3D_16bit_blackBG.zip").getPath(),
                 "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
-        Image image = new Image("Test_image", ipl);
+        Image image = ImageFactory.createImage("Test_image", ipl);
         workspace.addImage(image);
 
         // Initialising IdentifyObjects
@@ -3301,7 +3302,7 @@ public class IdentifyObjectsTest extends ModuleTest {
                 this.getClass().getResource("/images/binaryobjects/BinaryObjects3D_16bit_blackBG.zip").getPath(),
                 "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
-        Image image = new Image("Test_image", ipl);
+        Image image = ImageFactory.createImage("Test_image", ipl);
         workspace.addImage(image);
 
         // Initialising IdentifyObjects
@@ -3355,7 +3356,7 @@ public class IdentifyObjectsTest extends ModuleTest {
                 this.getClass().getResource("/images/binaryobjects/BinaryObjects3D_32bit_blackBG.zip").getPath(),
                 "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
-        Image image = new Image("Test_image", ipl);
+        Image image = ImageFactory.createImage("Test_image", ipl);
         workspace.addImage(image);
 
         // Initialising IdentifyObjects
@@ -3412,7 +3413,7 @@ public class IdentifyObjectsTest extends ModuleTest {
                 this.getClass().getResource("/images/binaryobjects/BinaryObjects3D_32bit_blackBG.zip").getPath(),
                 "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
-        Image image = new Image("Test_image", ipl);
+        Image image = ImageFactory.createImage("Test_image", ipl);
         workspace.addImage(image);
 
         // Initialising IdentifyObjects
@@ -3469,7 +3470,7 @@ public class IdentifyObjectsTest extends ModuleTest {
                 this.getClass().getResource("/images/binaryobjects/BinaryObjects3D_32bit_blackBG.zip").getPath(),
                 "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
-        Image image = new Image("Test_image", ipl);
+        Image image = ImageFactory.createImage("Test_image", ipl);
         workspace.addImage(image);
 
         // Initialising IdentifyObjects
@@ -3526,7 +3527,7 @@ public class IdentifyObjectsTest extends ModuleTest {
                 this.getClass().getResource("/images/binaryobjects/BinaryObjects3D_8bit_blackBG_204.zip").getPath(),
                 "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
-        Image image = new Image("Test_image", ipl);
+        Image image = ImageFactory.createImage("Test_image", ipl);
         workspace.addImage(image);
 
         // Initialising IdentifyObjects
@@ -3580,7 +3581,7 @@ public class IdentifyObjectsTest extends ModuleTest {
                 this.getClass().getResource("/images/binaryobjects/BinaryObjects3D_8bit_blackBG_204.zip").getPath(),
                 "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
-        Image image = new Image("Test_image", ipl);
+        Image image = ImageFactory.createImage("Test_image", ipl);
         workspace.addImage(image);
 
         // Initialising IdentifyObjects
@@ -3634,7 +3635,7 @@ public class IdentifyObjectsTest extends ModuleTest {
                 this.getClass().getResource("/images/binaryobjects/BinaryObjects3D_8bit_blackBG_204.zip").getPath(),
                 "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
-        Image image = new Image("Test_image", ipl);
+        Image image = ImageFactory.createImage("Test_image", ipl);
         workspace.addImage(image);
 
         // Initialising IdentifyObjects
@@ -3688,7 +3689,7 @@ public class IdentifyObjectsTest extends ModuleTest {
                 this.getClass().getResource("/images/binaryobjects/BinaryObjects3D_16bit_blackBG_15073.zip").getPath(),
                 "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
-        Image image = new Image("Test_image", ipl);
+        Image image = ImageFactory.createImage("Test_image", ipl);
         workspace.addImage(image);
 
         // Initialising IdentifyObjects
@@ -3742,7 +3743,7 @@ public class IdentifyObjectsTest extends ModuleTest {
                 this.getClass().getResource("/images/binaryobjects/BinaryObjects3D_16bit_blackBG_15073.zip").getPath(),
                 "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
-        Image image = new Image("Test_image", ipl);
+        Image image = ImageFactory.createImage("Test_image", ipl);
         workspace.addImage(image);
 
         // Initialising IdentifyObjects
@@ -3796,7 +3797,7 @@ public class IdentifyObjectsTest extends ModuleTest {
                 this.getClass().getResource("/images/binaryobjects/BinaryObjects3D_16bit_blackBG_15073.zip").getPath(),
                 "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
-        Image image = new Image("Test_image", ipl);
+        Image image = ImageFactory.createImage("Test_image", ipl);
         workspace.addImage(image);
 
         // Initialising IdentifyObjects
@@ -3850,7 +3851,7 @@ public class IdentifyObjectsTest extends ModuleTest {
                 this.getClass().getResource("/images/binaryobjects/BinaryObjects3D_32bit_blackBG_-0p54.zip").getPath(),
                 "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
-        Image image = new Image("Test_image", ipl);
+        Image image = ImageFactory.createImage("Test_image", ipl);
         workspace.addImage(image);
 
         // Initialising IdentifyObjects
@@ -3907,7 +3908,7 @@ public class IdentifyObjectsTest extends ModuleTest {
                 this.getClass().getResource("/images/binaryobjects/BinaryObjects3D_32bit_blackBG_-0p54.zip").getPath(),
                 "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
-        Image image = new Image("Test_image", ipl);
+        Image image = ImageFactory.createImage("Test_image", ipl);
         workspace.addImage(image);
 
         // Initialising IdentifyObjects
@@ -3964,7 +3965,7 @@ public class IdentifyObjectsTest extends ModuleTest {
                 this.getClass().getResource("/images/binaryobjects/BinaryObjects3D_32bit_blackBG_-0p54.zip").getPath(),
                 "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
-        Image image = new Image("Test_image", ipl);
+        Image image = ImageFactory.createImage("Test_image", ipl);
         workspace.addImage(image);
 
         // Initialising IdentifyObjects

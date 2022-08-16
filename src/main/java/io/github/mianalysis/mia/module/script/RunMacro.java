@@ -20,10 +20,10 @@ import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.core.InputControl;
 import io.github.mianalysis.mia.module.system.GlobalVariables;
-import io.github.mianalysis.mia.object.Image;
 import io.github.mianalysis.mia.object.Measurement;
-import io.github.mianalysis.mia.object.Status;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.FilePathP;
@@ -42,11 +42,12 @@ import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
+import io.github.mianalysis.mia.object.system.Status;
 
 /**
  * Created by Stephen on 31/01/2018.
  */
-@Plugin(type = Module.class, priority=Priority.LOW, visible=true)
+@Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class RunMacro extends AbstractMacroRunner {
     public static final String INPUT_SEPARATOR = "Image input";
     public static final String PROVIDE_INPUT_IMAGE = "Provide input image";
@@ -78,8 +79,7 @@ public class RunMacro extends AbstractMacroRunner {
     }
 
     static ArrayList<ImagePlus> hideImages() {
-        
-        
+
         ArrayList<ImagePlus> openImages = new ArrayList<>();
         String[] imageTitles = WindowManager.getImageTitles();
         for (String imageTitle : imageTitles) {
@@ -91,7 +91,6 @@ public class RunMacro extends AbstractMacroRunner {
         return openImages;
 
     }
-
 
     @Override
     public Category getCategory() {
@@ -114,19 +113,18 @@ public class RunMacro extends AbstractMacroRunner {
     @Override
     public Status process(Workspace workspace) {
         // Getting input image
-        boolean provideInputImage = parameters.getValue(PROVIDE_INPUT_IMAGE);
-        String inputImageName = parameters.getValue(INPUT_IMAGE);
-        String macroMode = parameters.getValue(MACRO_MODE);
-        String macroText = parameters.getValue(MACRO_TEXT);
-        String macroFile = parameters.getValue(MACRO_FILE);
-        boolean interceptOutputImage = parameters.getValue(INTERCEPT_OUTPUT_IMAGE);
-        boolean applyToInput = parameters.getValue(APPLY_TO_INPUT);
-        String outputImageName = parameters.getValue(OUTPUT_IMAGE);
-
+        boolean provideInputImage = parameters.getValue(PROVIDE_INPUT_IMAGE, workspace);
+        String inputImageName = parameters.getValue(INPUT_IMAGE, workspace);
+        String macroMode = parameters.getValue(MACRO_MODE, workspace);
+        String macroText = parameters.getValue(MACRO_TEXT, workspace);
+        String macroFile = parameters.getValue(MACRO_FILE, workspace);
+        boolean interceptOutputImage = parameters.getValue(INTERCEPT_OUTPUT_IMAGE, workspace);
+        boolean applyToInput = parameters.getValue(APPLY_TO_INPUT, workspace);
+        String outputImageName = parameters.getValue(OUTPUT_IMAGE, workspace);
 
         // Getting a list of measurement headings
         ParameterGroup measurementGroup = parameters.getParameter(ADD_INTERCEPTED_VARIABLE);
-        LinkedHashSet<String> expectedMeasurements = expectedMeasurements(measurementGroup, VARIABLE);
+        LinkedHashSet<String> expectedMeasurements = expectedMeasurements(measurementGroup, VARIABLE, workspace);
 
         // Setting the MacroHandler to the current workspace
         MacroHandler.setWorkspace(workspace);
@@ -145,7 +143,7 @@ public class RunMacro extends AbstractMacroRunner {
 
         // Appending variables to the front of the macro
         ParameterGroup variableGroup = parameters.getParameter(ADD_VARIABLE);
-        String finalMacroText = addVariables(macroText, variableGroup);
+        String finalMacroText = addVariables(macroText, variableGroup, workspace);
 
         // If providing the input image direct from the workspace, hide all open windows
         // while the macro runs
@@ -169,7 +167,6 @@ public class RunMacro extends AbstractMacroRunner {
             return Status.FAIL;
         }
 
-
         // If providing the input image direct from the workspace, re-opening all open
         // windows
         if (provideInputImage)
@@ -182,7 +179,7 @@ public class RunMacro extends AbstractMacroRunner {
                 if (showOutput)
                     inputImage.showImage();
             } else {
-                Image outputImage = new Image(outputImageName, inputImagePlus);
+                Image outputImage = ImageFactory.createImage(outputImageName, inputImagePlus);
                 workspace.addImage(outputImage);
                 if (showOutput)
                     outputImage.showImage();
@@ -235,11 +232,12 @@ public class RunMacro extends AbstractMacroRunner {
 
     @Override
     public Parameters updateAndGetParameters() {
+        Workspace workspace = null;
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(PROVIDE_INPUT_IMAGE));
-        if ((boolean) parameters.getValue(PROVIDE_INPUT_IMAGE)) {
+        if ((boolean) parameters.getValue(PROVIDE_INPUT_IMAGE, workspace)) {
             returnedParameters.add(parameters.getParameter(INPUT_IMAGE));
         }
 
@@ -248,7 +246,7 @@ public class RunMacro extends AbstractMacroRunner {
 
         returnedParameters.add(parameters.getParameter(MACRO_SEPARATOR));
         returnedParameters.add(parameters.getParameter(MACRO_MODE));
-        switch ((String) parameters.getValue(MACRO_MODE)) {
+        switch ((String) parameters.getValue(MACRO_MODE, workspace)) {
             case MacroModes.MACRO_FILE:
                 returnedParameters.add(parameters.getParameter(MACRO_FILE));
                 break;
@@ -260,10 +258,10 @@ public class RunMacro extends AbstractMacroRunner {
 
         returnedParameters.add(parameters.getParameter(IMAGE_OUTPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(INTERCEPT_OUTPUT_IMAGE));
-        if ((boolean) parameters.getValue(INTERCEPT_OUTPUT_IMAGE)) {
-            if ((boolean) parameters.getValue(PROVIDE_INPUT_IMAGE)) {
+        if ((boolean) parameters.getValue(INTERCEPT_OUTPUT_IMAGE, workspace)) {
+            if ((boolean) parameters.getValue(PROVIDE_INPUT_IMAGE, workspace)) {
                 returnedParameters.add(parameters.getParameter(APPLY_TO_INPUT));
-                if (!(boolean) parameters.getValue(APPLY_TO_INPUT)) {
+                if (!(boolean) parameters.getValue(APPLY_TO_INPUT, workspace)) {
                     returnedParameters.add(parameters.getParameter(OUTPUT_IMAGE));
                 }
             } else {
@@ -271,7 +269,7 @@ public class RunMacro extends AbstractMacroRunner {
             }
         }
 
-        if ((boolean) parameters.getValue(PROVIDE_INPUT_IMAGE)) {
+        if ((boolean) parameters.getValue(PROVIDE_INPUT_IMAGE, workspace)) {
             returnedParameters.add(parameters.getParameter(OUTPUT_SEPARATOR));
             returnedParameters.add(parameters.getParameter(ADD_INTERCEPTED_VARIABLE));
         }
@@ -282,16 +280,17 @@ public class RunMacro extends AbstractMacroRunner {
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
+        Workspace workspace = null;
         ImageMeasurementRefs returnedRefs = new ImageMeasurementRefs();
 
         // If no input image is provided, there's nowhere to store the values
-        if (!(boolean) parameters.getValue(PROVIDE_INPUT_IMAGE))
+        if (!(boolean) parameters.getValue(PROVIDE_INPUT_IMAGE, workspace))
             return returnedRefs;
 
-        String inputImage = parameters.getValue(INPUT_IMAGE);
+        String inputImage = parameters.getValue(INPUT_IMAGE, workspace);
 
         ParameterGroup group = parameters.getParameter(ADD_INTERCEPTED_VARIABLE);
-        LinkedHashSet<String> expectedMeasurements = expectedMeasurements(group, VARIABLE);
+        LinkedHashSet<String> expectedMeasurements = expectedMeasurements(group, VARIABLE, workspace);
 
         for (String expectedMeasurement : expectedMeasurements) {
             String fullName = getFullName(expectedMeasurement);

@@ -10,7 +10,6 @@ import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.object.Measurement;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
-import io.github.mianalysis.mia.object.Status;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.InputObjectsP;
@@ -22,6 +21,7 @@ import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
+import io.github.mianalysis.mia.object.system.Status;
 import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.PartnerObjectsP;
 import io.github.sjcross.sjcommon.mathfunc.CumStat;
@@ -114,18 +114,18 @@ public class CalculateStatsForPartners extends Module {
     @Override
     public Status process(Workspace workspace) {
         // Getting input objects
-        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
         Objs inputObjects = workspace.getObjects().get(inputObjectsName);
 
         // Getting other parameters
-        String partnerObjectsName = parameters.getValue(PARTNER_OBJECTS);
-        String measurement = parameters.getValue(MEASUREMENT);
+        String partnerObjectsName = parameters.getValue(PARTNER_OBJECTS,workspace);
+        String measurement = parameters.getValue(MEASUREMENT,workspace);
         boolean[] statsToCalculate = new boolean[5];
-        statsToCalculate[0] = parameters.getValue(CALCULATE_MEAN);
-        statsToCalculate[1] = parameters.getValue(CALCULATE_STD);
-        statsToCalculate[2] = parameters.getValue(CALCULATE_MIN);
-        statsToCalculate[3] = parameters.getValue(CALCULATE_MAX);
-        statsToCalculate[4] = parameters.getValue(CALCULATE_SUM);
+        statsToCalculate[0] = parameters.getValue(CALCULATE_MEAN,workspace);
+        statsToCalculate[1] = parameters.getValue(CALCULATE_STD,workspace);
+        statsToCalculate[2] = parameters.getValue(CALCULATE_MIN,workspace);
+        statsToCalculate[3] = parameters.getValue(CALCULATE_MAX,workspace);
+        statsToCalculate[4] = parameters.getValue(CALCULATE_SUM,workspace);
 
         for (Obj inputObject:inputObjects.values()) {
             processObject(inputObject,partnerObjectsName,measurement,statsToCalculate);
@@ -157,10 +157,11 @@ public class CalculateStatsForPartners extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
-        String objectName = parameters.getValue(INPUT_OBJECTS);
+Workspace workspace = null;
+        String objectName = parameters.getValue(INPUT_OBJECTS,workspace);
         ((PartnerObjectsP) parameters.getParameter(PARTNER_OBJECTS)).setPartnerObjectsName(objectName);
 
-        String partnerObjectsName = parameters.getValue(PARTNER_OBJECTS);
+        String partnerObjectsName = parameters.getValue(PARTNER_OBJECTS,workspace);
         ((ObjectMeasurementP) parameters.getParameter(MEASUREMENT)).setObjectName(partnerObjectsName);
 
         return parameters;
@@ -169,18 +170,19 @@ public class CalculateStatsForPartners extends Module {
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
-        return null;
+return null;
     }
 
     @Override
-    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+Workspace workspace = null;
         ObjMeasurementRefs returnedRefs = new ObjMeasurementRefs();
 
-        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
-        String partnerObjectsName = parameters.getValue(PARTNER_OBJECTS);
-        String measurementName = parameters.getValue(MEASUREMENT);
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
+        String partnerObjectsName = parameters.getValue(PARTNER_OBJECTS,workspace);
+        String measurementName = parameters.getValue(MEASUREMENT,workspace);
 
-        if ((boolean) parameters.getValue(CALCULATE_MEAN)) {
+        if ((boolean) parameters.getValue(CALCULATE_MEAN,workspace)) {
             String name = getFullName(partnerObjectsName,measurementName,Measurements.MEAN);
             ObjMeasurementRef reference = objectMeasurementRefs.getOrPut(name);
             reference.setObjectsName(inputObjectsName);
@@ -189,7 +191,7 @@ public class CalculateStatsForPartners extends Module {
             returnedRefs.add(reference);
         }
 
-        if ((boolean) parameters.getValue(CALCULATE_STD)) {
+        if ((boolean) parameters.getValue(CALCULATE_STD,workspace)) {
             String name = getFullName(partnerObjectsName,measurementName,Measurements.STD);
             ObjMeasurementRef reference = objectMeasurementRefs.getOrPut(name);
             reference.setObjectsName(inputObjectsName);
@@ -198,7 +200,7 @@ public class CalculateStatsForPartners extends Module {
             returnedRefs.add(reference);
         }
 
-        if ((boolean) parameters.getValue(CALCULATE_MIN)) {
+        if ((boolean) parameters.getValue(CALCULATE_MIN,workspace)) {
             String name = getFullName(partnerObjectsName,measurementName,Measurements.MIN);
             ObjMeasurementRef reference = objectMeasurementRefs.getOrPut(name);
             reference.setObjectsName(inputObjectsName);
@@ -207,7 +209,7 @@ public class CalculateStatsForPartners extends Module {
             returnedRefs.add(reference);
         }
 
-        if ((boolean) parameters.getValue(CALCULATE_MAX)) {
+        if ((boolean) parameters.getValue(CALCULATE_MAX,workspace)) {
             String name = getFullName(partnerObjectsName,measurementName,Measurements.MAX);
             ObjMeasurementRef reference = objectMeasurementRefs.getOrPut(name);
             reference.setObjectsName(inputObjectsName);
@@ -216,7 +218,7 @@ public class CalculateStatsForPartners extends Module {
             returnedRefs.add(reference);
         }
 
-        if ((boolean) parameters.getValue(CALCULATE_SUM)) {
+        if ((boolean) parameters.getValue(CALCULATE_SUM,workspace)) {
             String name = getFullName(partnerObjectsName,measurementName,Measurements.SUM);
             ObjMeasurementRef reference = objectMeasurementRefs.getOrPut(name);
             reference.setObjectsName(inputObjectsName);
@@ -230,18 +232,18 @@ public class CalculateStatsForPartners extends Module {
     }
 
     @Override
-    public MetadataRefs updateAndGetMetadataReferences() {
-        return null;
+public MetadataRefs updateAndGetMetadataReferences() {
+return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
-        return null;
+return null;
     }
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
-        return null;
+return null;
     }
 
     @Override

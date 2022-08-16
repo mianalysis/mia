@@ -8,6 +8,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
+import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.gui.GUI;
 import io.github.mianalysis.mia.gui.regions.filelist.FileListPanel;
 import io.github.mianalysis.mia.gui.regions.helpandnotes.HelpPanel;
@@ -20,9 +21,13 @@ public class ClosePanelButton extends JButton implements ActionListener {
     public ClosePanelButton(JPanel panel) {
         this.panel = panel;
 
-        final ImageIcon blackIcon = new ImageIcon(
-                ClosePanelButton.class.getResource("/icons/close_window_darkgrey_12px.png"), "");
-        setIcon(blackIcon);
+        if (MIA.getPreferences().darkThemeEnabled())
+            setIcon(new ImageIcon(
+                    ClosePanelButton.class.getResource("/icons/close_window_darkgreyDM_12px.png"), ""));
+        else
+            setIcon(new ImageIcon(
+                    ClosePanelButton.class.getResource("/icons/close_window_darkgrey_12px.png"), ""));
+
         setPreferredSize(new Dimension(26, 26));
         setMinimumSize(new Dimension(26, 26));
         setMaximumSize(new Dimension(26, 26));

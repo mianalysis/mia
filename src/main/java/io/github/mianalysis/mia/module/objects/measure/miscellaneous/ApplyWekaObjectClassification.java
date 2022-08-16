@@ -17,7 +17,6 @@ import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.Measurement;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
-import io.github.mianalysis.mia.object.Status;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.FilePathP;
@@ -30,6 +29,7 @@ import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
+import io.github.mianalysis.mia.object.system.Status;
 import weka.classifiers.AbstractClassifier;
 import weka.core.Instances;
 import weka.core.SparseInstance;
@@ -90,12 +90,12 @@ public class ApplyWekaObjectClassification extends Module {
     @Override
     public Status process(Workspace workspace) {
         // Getting input objects
-        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
         Objs inputObjects = workspace.getObjects().get(inputObjectsName);
 
         // Getting other parameters
-        String classifierPath = parameters.getValue(CLASSIFIER_PATH);
-        boolean applyNormalisation = parameters.getValue(APPLY_NORMALISATION);
+        String classifierPath = parameters.getValue(CLASSIFIER_PATH,workspace);
+        boolean applyNormalisation = parameters.getValue(APPLY_NORMALISATION,workspace);
 
         AbstractClassifier abstractClassifier = null;
         Instances instances = null;
@@ -184,21 +184,23 @@ public class ApplyWekaObjectClassification extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
+Workspace workspace = null;
         return parameters;
     }
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
-        return null;
+return null;
     }
 
     @Override
-    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
-        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+Workspace workspace = null;
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
 
         try {
             // Getting class names
-            String classifierPath = parameters.getValue(CLASSIFIER_PATH);
+            String classifierPath = parameters.getValue(CLASSIFIER_PATH,workspace);
             if (!new File(classifierPath).exists())
                 return null;
                 
@@ -229,18 +231,18 @@ public class ApplyWekaObjectClassification extends Module {
     }
 
     @Override
-    public MetadataRefs updateAndGetMetadataReferences() {
-        return null;
+public MetadataRefs updateAndGetMetadataReferences() {
+return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
-        return null;
+return null;
     }
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
-        return null;
+return null;
     }
 
     @Override

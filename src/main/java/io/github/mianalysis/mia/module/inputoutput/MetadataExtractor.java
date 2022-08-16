@@ -15,7 +15,6 @@ import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.object.Status;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
@@ -31,6 +30,7 @@ import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
+import io.github.mianalysis.mia.object.system.Status;
 import io.github.sjcross.sjcommon.metadataextractors.CV1000FilenameExtractor;
 import io.github.sjcross.sjcommon.metadataextractors.CV1000FoldernameExtractor;
 import io.github.sjcross.sjcommon.metadataextractors.CV7000FilenameExtractor;
@@ -286,19 +286,19 @@ public class MetadataExtractor extends Module {
     @Override
     public Status process(Workspace workspace) {
         // Getting parameters
-        String extractorMode = parameters.getValue(EXTRACTOR_MODE);
-        String filenameExtractorName = parameters.getValue(FILENAME_EXTRACTOR);
-        String foldernameExtractorName = parameters.getValue(FOLDERNAME_EXTRACTOR);
-        String metadataFileExtractorName = parameters.getValue(METADATA_FILE_EXTRACTOR);
-        String inputSource = parameters.getValue(INPUT_SOURCE);
-        String metadataFilePath = parameters.getValue(METADATA_FILE);
-        String metadataFileName = parameters.getValue(METADATA_FILE_NAME);
-        String metadataItemToMatch = parameters.getValue(METADATA_ITEM_TO_MATCH);
-        String pattern = parameters.getValue(PATTERN);
-        String groups = parameters.getValue(GROUPS);
-        boolean caseInsensitive = parameters.getValue(CASE_INSENSITIVE);
-        boolean regexSplitting = parameters.getValue(REGEX_SPLITTING);
-        String metadataValueName = parameters.getValue(METADATA_VALUE_NAME);
+        String extractorMode = parameters.getValue(EXTRACTOR_MODE,workspace);
+        String filenameExtractorName = parameters.getValue(FILENAME_EXTRACTOR,workspace);
+        String foldernameExtractorName = parameters.getValue(FOLDERNAME_EXTRACTOR,workspace);
+        String metadataFileExtractorName = parameters.getValue(METADATA_FILE_EXTRACTOR,workspace);
+        String inputSource = parameters.getValue(INPUT_SOURCE,workspace);
+        String metadataFilePath = parameters.getValue(METADATA_FILE,workspace);
+        String metadataFileName = parameters.getValue(METADATA_FILE_NAME,workspace);
+        String metadataItemToMatch = parameters.getValue(METADATA_ITEM_TO_MATCH,workspace);
+        String pattern = parameters.getValue(PATTERN,workspace);
+        String groups = parameters.getValue(GROUPS,workspace);
+        boolean caseInsensitive = parameters.getValue(CASE_INSENSITIVE,workspace);
+        boolean regexSplitting = parameters.getValue(REGEX_SPLITTING,workspace);
+        String metadataValueName = parameters.getValue(METADATA_VALUE_NAME,workspace);
 
         // Getting current result
         Metadata metadata = workspace.getMetadata();
@@ -396,14 +396,15 @@ public class MetadataExtractor extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
+Workspace workspace = null;
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(EXTRACTOR_SEPARATOR));
         returnedParameters.add(parameters.getParameter(EXTRACTOR_MODE));
-        switch ((String) parameters.getValue(EXTRACTOR_MODE)) {
+        switch ((String) parameters.getValue(EXTRACTOR_MODE,workspace)) {
         case ExtractorModes.FILENAME_MODE:
             returnedParameters.add(parameters.getParameter(FILENAME_EXTRACTOR));
-            switch ((String) parameters.getValue(FILENAME_EXTRACTOR)) {
+            switch ((String) parameters.getValue(FILENAME_EXTRACTOR,workspace)) {
             case FilenameExtractors.GENERIC:
                 returnedParameters.addAll(getGenericExtractorParameters());
                 break;
@@ -412,7 +413,7 @@ public class MetadataExtractor extends Module {
 
         case ExtractorModes.FOLDERNAME_MODE:
             returnedParameters.add(parameters.getParameter(FOLDERNAME_EXTRACTOR));
-            switch ((String) parameters.getValue(FOLDERNAME_EXTRACTOR)) {
+            switch ((String) parameters.getValue(FOLDERNAME_EXTRACTOR,workspace)) {
             case FoldernameExtractors.GENERIC:
                 returnedParameters.addAll(getGenericExtractorParameters());
                 break;
@@ -421,11 +422,11 @@ public class MetadataExtractor extends Module {
 
         case ExtractorModes.METADATA_FILE_MODE:
             returnedParameters.add(parameters.getParameter(METADATA_FILE_EXTRACTOR));
-            switch ((String) parameters.getValue(METADATA_FILE_EXTRACTOR)) {
+            switch ((String) parameters.getValue(METADATA_FILE_EXTRACTOR,workspace)) {
             case MetadataFileExtractors.CSV_FILE:
                 returnedParameters.add(parameters.getParameter(SOURCE_SEPARATOR));
                 returnedParameters.add(parameters.getParameter(INPUT_SOURCE));
-                switch ((String) parameters.getValue(INPUT_SOURCE)) {
+                switch ((String) parameters.getValue(INPUT_SOURCE,workspace)) {
                 case InputSources.FILE_IN_INPUT_FOLDER:
                     returnedParameters.add(parameters.getParameter(METADATA_FILE_NAME));
                     break;
@@ -438,7 +439,7 @@ public class MetadataExtractor extends Module {
                 returnedParameters.add(parameters.getParameter(METADATA_ITEM_TO_MATCH));
 
                 returnedParameters.add(parameters.getParameter(REGEX_SPLITTING));
-                if ((boolean) parameters.getValue(REGEX_SPLITTING)) {
+                if ((boolean) parameters.getValue(REGEX_SPLITTING,workspace)) {
                     returnedParameters.addAll(getGenericExtractorParameters());
                 } else {
                     returnedParameters.add(parameters.getParameter(METADATA_VALUE_NAME));
@@ -466,14 +467,14 @@ public class MetadataExtractor extends Module {
         returnedParameters.add(parameters.getParameter(CASE_INSENSITIVE));
 
         returnedParameters.add(parameters.getParameter(SHOW_TEST));
-        if ((boolean) parameters.getValue(SHOW_TEST)) {
+        if ((boolean) parameters.getValue(SHOW_TEST,null)) {
             returnedParameters.add(parameters.getParameter(EXAMPLE_STRING));
             returnedParameters.add(parameters.getParameter(IDENTIFIED_GROUPS));
 
-            String pattern = parameters.getValue(PATTERN);
-            String groups = parameters.getValue(GROUPS);
-            boolean caseInsensitive = parameters.getValue(CASE_INSENSITIVE);
-            String exampleString = parameters.getValue(EXAMPLE_STRING);
+            String pattern = parameters.getValue(PATTERN,null);
+            String groups = parameters.getValue(GROUPS,null);
+            boolean caseInsensitive = parameters.getValue(CASE_INSENSITIVE,null);
+            String exampleString = parameters.getValue(EXAMPLE_STRING,null);
             String groupsString = getTestString(pattern, groups, exampleString, caseInsensitive);
             TextAreaP identifiedGroups = parameters.getParameter(IDENTIFIED_GROUPS);
             identifiedGroups.setValue(groupsString);
@@ -488,23 +489,24 @@ public class MetadataExtractor extends Module {
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
-        return null;
+return null;
     }
 
     @Override
-    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
-        return null;
+public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+return null;
     }
 
     @Override
-    public MetadataRefs updateAndGetMetadataReferences() {
+public MetadataRefs updateAndGetMetadataReferences() {
+Workspace workspace = null;
         MetadataRefs returnedRefs = new MetadataRefs();
 
-        switch ((String) parameters.getValue(EXTRACTOR_MODE)) {
+        switch ((String) parameters.getValue(EXTRACTOR_MODE,workspace)) {
         case ExtractorModes.FILENAME_MODE:
-            switch ((String) parameters.getValue(FILENAME_EXTRACTOR)) {
+            switch ((String) parameters.getValue(FILENAME_EXTRACTOR,workspace)) {
             case FilenameExtractors.GENERIC:
-                String groupString = parameters.getValue(GROUPS);
+                String groupString = parameters.getValue(GROUPS,workspace);
                 String[] groups = getGroups(groupString);
                 for (String group : groups)
                     returnedRefs.add(metadataRefs.getOrPut((group)));
@@ -563,9 +565,9 @@ public class MetadataExtractor extends Module {
             break;
 
         case ExtractorModes.FOLDERNAME_MODE:
-            switch ((String) parameters.getValue(FOLDERNAME_EXTRACTOR)) {
+            switch ((String) parameters.getValue(FOLDERNAME_EXTRACTOR,workspace)) {
             case FoldernameExtractors.GENERIC:
-                String groupString = parameters.getValue(GROUPS);
+                String groupString = parameters.getValue(GROUPS,workspace);
                 String[] groups = getGroups(groupString);
                 for (String group : groups)
                     returnedRefs.add(metadataRefs.getOrPut((group)));
@@ -595,26 +597,26 @@ public class MetadataExtractor extends Module {
             break;
 
         case ExtractorModes.METADATA_FILE_MODE:
-            switch ((String) parameters.getValue(METADATA_FILE_EXTRACTOR)) {
+            switch ((String) parameters.getValue(METADATA_FILE_EXTRACTOR,workspace)) {
             case MetadataFileExtractors.OPERA_METADATA_FILE_EXTRACTOR:
                 returnedRefs.add(metadataRefs.getOrPut((Metadata.AREA_NAME)));
                 break;
 
             case MetadataFileExtractors.CSV_FILE:
-                if ((boolean) parameters.getValue(REGEX_SPLITTING)) {
-                    String groupString = parameters.getValue(GROUPS);
+                if ((boolean) parameters.getValue(REGEX_SPLITTING,workspace)) {
+                    String groupString = parameters.getValue(GROUPS,workspace);
                     String[] groups = getGroups(groupString);
                     for (String group : groups)
                         metadataRefs.getOrPut((group));
                 } else {
-                    returnedRefs.add(metadataRefs.getOrPut((parameters.getValue(METADATA_VALUE_NAME))));
+                    returnedRefs.add(metadataRefs.getOrPut((parameters.getValue(METADATA_VALUE_NAME,workspace))));
                 }
                 break;
             }
             break;
 
         case ExtractorModes.SERIES_NAME:
-            String groupString = parameters.getValue(GROUPS);
+            String groupString = parameters.getValue(GROUPS,workspace);
             String[] groups = getGroups(groupString);
             for (String group : groups)
                 returnedRefs.add(metadataRefs.getOrPut((group)));
@@ -633,7 +635,7 @@ public class MetadataExtractor extends Module {
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
-        return null;
+return null;
     }
 
     @Override

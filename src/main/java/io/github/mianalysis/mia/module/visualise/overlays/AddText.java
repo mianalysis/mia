@@ -2,26 +2,27 @@ package io.github.mianalysis.mia.module.visualise.overlays;
 
 import java.awt.Color;
 
+import org.scijava.Priority;
+import org.scijava.plugin.Plugin;
+
 import ij.ImagePlus;
 import ij.gui.TextRoi;
 import ij.plugin.Duplicator;
 import ij.plugin.HyperStackConverter;
-import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.module.Module;
-import org.scijava.Priority;
-import org.scijava.plugin.Plugin;
-import io.github.mianalysis.mia.module.Category;
+import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Categories;
-import io.github.mianalysis.mia.object.Status;
-import io.github.mianalysis.mia.object.Colours;
-import io.github.mianalysis.mia.object.Image;
+import io.github.mianalysis.mia.module.Category;
+import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
 import io.github.mianalysis.mia.object.parameters.OutputImageP;
-import io.github.mianalysis.mia.object.parameters.SeparatorP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
+import io.github.mianalysis.mia.object.parameters.SeparatorP;
 import io.github.mianalysis.mia.object.parameters.text.IntegerP;
 import io.github.mianalysis.mia.object.parameters.text.MessageP;
 import io.github.mianalysis.mia.object.parameters.text.StringP;
@@ -30,10 +31,13 @@ import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
+import io.github.mianalysis.mia.object.system.Colours;
+import io.github.mianalysis.mia.object.system.Preferences;
+import io.github.mianalysis.mia.object.system.Status;
 import io.github.mianalysis.mia.process.ColourFactory;
 import io.github.sjcross.sjcommon.process.CommaSeparatedStringInterpreter;
 
-@Plugin(type = Module.class, priority=Priority.LOW, visible=true)
+@Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class AddText extends AbstractOverlay {
     TextRoi textRoi = null;
     public static final String INPUT_SEPARATOR = "Image input/output";
@@ -93,25 +97,25 @@ public class AddText extends AbstractOverlay {
     @Override
     protected Status process(Workspace workspace) {
         // Getting parameters
-        boolean applyToInput = parameters.getValue(APPLY_TO_INPUT);
-        boolean addOutputToWorkspace = parameters.getValue(ADD_OUTPUT_TO_WORKSPACE);
-        String outputImageName = parameters.getValue(OUTPUT_IMAGE);
+        boolean applyToInput = parameters.getValue(APPLY_TO_INPUT, workspace);
+        boolean addOutputToWorkspace = parameters.getValue(ADD_OUTPUT_TO_WORKSPACE, workspace);
+        String outputImageName = parameters.getValue(OUTPUT_IMAGE, workspace);
 
         // Getting input image
-        String inputImageName = parameters.getValue(INPUT_IMAGE);
+        String inputImageName = parameters.getValue(INPUT_IMAGE, workspace);
         Image inputImage = workspace.getImages().get(inputImageName);
         ImagePlus ipl = inputImage.getImagePlus();
 
         // Getting label settings
-        double opacity = parameters.getValue(OPACITY);
-        String text = parameters.getValue(TEXT);
-        int xPosition = parameters.getValue(X_POSITION);
-        int yPosition = parameters.getValue(Y_POSITION);
-        String zRangeString = parameters.getValue(Z_RANGE);
-        String frameRangeString = parameters.getValue(FRAME_RANGE);
-        int labelSize = parameters.getValue(LABEL_SIZE);
-        boolean centreText = parameters.getValue(CENTRE_TEXT);
-        String labelColour = parameters.getValue(LABEL_COLOUR);
+        double opacity = parameters.getValue(OPACITY, workspace);
+        String text = parameters.getValue(TEXT, workspace);
+        int xPosition = parameters.getValue(X_POSITION, workspace);
+        int yPosition = parameters.getValue(Y_POSITION, workspace);
+        String zRangeString = parameters.getValue(Z_RANGE, workspace);
+        String frameRangeString = parameters.getValue(FRAME_RANGE, workspace);
+        int labelSize = parameters.getValue(LABEL_SIZE, workspace);
+        boolean centreText = parameters.getValue(CENTRE_TEXT, workspace);
+        String labelColour = parameters.getValue(LABEL_COLOUR, workspace);
         Color color = ColourFactory.getColour(labelColour);
 
         // Only add output to workspace if not applying to input
@@ -128,7 +132,7 @@ public class AddText extends AbstractOverlay {
 
         addOverlay(ipl, text, color, labelSize, opacity, xPosition, yPosition, zRange, frameRange, centreText);
 
-        Image outputImage = new Image(outputImageName, ipl);
+        Image outputImage = ImageFactory.createImage(outputImageName, ipl);
 
         // If necessary, adding output image to workspace. This also allows us to show
         // it.
@@ -145,6 +149,9 @@ public class AddText extends AbstractOverlay {
     protected void initialiseParameters() {
         super.initialiseParameters();
 
+        Preferences preferences = MIA.getPreferences();
+        boolean darkMode = preferences == null ? false : preferences.darkThemeEnabled();
+
         parameters.add(new SeparatorP(INPUT_SEPARATOR, this));
         parameters.add(new InputImageP(INPUT_IMAGE, this));
         parameters.add(new BooleanP(APPLY_TO_INPUT, this, false));
@@ -155,7 +162,7 @@ public class AddText extends AbstractOverlay {
         parameters.add(new StringP(TEXT, this));
         parameters.add(new MessageP(DYNAMIC_VALUES, this,
                 "The current slice and/or frame can be inserted into the rendered text by including one of the following: D{FRAME}, D{SLICE}.",
-                Colours.DARK_BLUE));
+                Colours.getDarkBlue(darkMode)));
         parameters.add(new IntegerP(X_POSITION, this, 0));
         parameters.add(new IntegerP(Y_POSITION, this, 0));
         parameters.add(new StringP(Z_RANGE, this, "1-end"));
@@ -170,15 +177,16 @@ public class AddText extends AbstractOverlay {
 
     @Override
     public Parameters updateAndGetParameters() {
+        Workspace workspace = null;
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(INPUT_IMAGE));
         returnedParameters.add(parameters.getParameter(APPLY_TO_INPUT));
-        if (!(boolean) parameters.getValue(APPLY_TO_INPUT)) {
+        if (!(boolean) parameters.getValue(APPLY_TO_INPUT, workspace)) {
             returnedParameters.add(parameters.getParameter(ADD_OUTPUT_TO_WORKSPACE));
 
-            if ((boolean) parameters.getValue(ADD_OUTPUT_TO_WORKSPACE)) {
+            if ((boolean) parameters.getValue(ADD_OUTPUT_TO_WORKSPACE, workspace)) {
                 returnedParameters.add(parameters.getParameter(OUTPUT_IMAGE));
 
             }

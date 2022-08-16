@@ -12,9 +12,9 @@ import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.object.Image;
-import io.github.mianalysis.mia.object.Status;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
 import io.github.mianalysis.mia.object.parameters.OutputImageP;
@@ -25,6 +25,7 @@ import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
+import io.github.mianalysis.mia.object.system.Status;
 import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
 
@@ -88,7 +89,7 @@ public class ProjectImage < T extends RealType< T > & NativeType< T >> extends M
     public static Image projectImageInZ(Image inputImage, String outputImageName, String projectionMode) {
         // If the image has a single slice we don't need to do the projection
         if (inputImage.getImagePlus().getNSlices() == 1) {
-            return new Image(outputImageName,inputImage.getImagePlus().duplicate());
+            return ImageFactory.createImage(outputImageName,inputImage.getImagePlus().duplicate());
         }
 
         ImagePlus iplOut = null;
@@ -129,7 +130,7 @@ public class ProjectImage < T extends RealType< T > & NativeType< T >> extends M
 
         iplOut.setCalibration(calibrationOut);
 
-        return new Image(outputImageName,iplOut);
+        return ImageFactory.createImage(outputImageName,iplOut);
 
     }
 
@@ -149,12 +150,12 @@ public class ProjectImage < T extends RealType< T > & NativeType< T >> extends M
     @Override
     public Status process(Workspace workspace) {
         // Loading image into workspace
-        String inputImageName = parameters.getValue(INPUT_IMAGE);
+        String inputImageName = parameters.getValue(INPUT_IMAGE,workspace);
         Image inputImage = workspace.getImages().get(inputImageName);
 
         // Getting parameters
-        String outputImageName = parameters.getValue(OUTPUT_IMAGE);
-        String projectionMode = parameters.getValue(PROJECTION_MODE);
+        String outputImageName = parameters.getValue(OUTPUT_IMAGE,workspace);
+        String projectionMode = parameters.getValue(PROJECTION_MODE,workspace);
 
         // Create max projection image
         Image outputImage = projectImageInZ(inputImage,outputImageName,projectionMode);
@@ -180,32 +181,33 @@ public class ProjectImage < T extends RealType< T > & NativeType< T >> extends M
 
     @Override
     public Parameters updateAndGetParameters() {
+Workspace workspace = null;
         return parameters;
     }
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
-        return null;
+return null;
     }
 
     @Override
-    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
-        return null;
+public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+return null;
     }
 
     @Override
-    public MetadataRefs updateAndGetMetadataReferences() {
-        return null;
+public MetadataRefs updateAndGetMetadataReferences() {
+return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
-        return null;
+return null;
     }
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
-        return null;
+return null;
     }
 
     @Override
@@ -385,7 +387,7 @@ public class ProjectImage < T extends RealType< T > & NativeType< T >> extends M
 //        ImgPlusTools.applyAxes(proj,outputImagePlus);
 //        outputImagePlus.setCalibration(inputImage.getImagePlus().getCal());
 //
-//        return new Image(outputImageName,outputImagePlus);
+//        return ImageFactory.createImage(outputImageName,outputImagePlus);
 //
 //    }
 //
@@ -423,7 +425,7 @@ public class ProjectImage < T extends RealType< T > & NativeType< T >> extends M
 //        ImagePlus outputImagePlus = ImageJFunctions.wrap(outImg,outputImageName);
 //        ImgPlusTools.applyAxes(outImg,outputImagePlus);
 //
-//        return new Image(outputImageName,outputImagePlus);
+//        return ImageFactory.createImage(outputImageName,outputImagePlus);
 //
 //    }
 //
@@ -495,15 +497,15 @@ public class ProjectImage < T extends RealType< T > & NativeType< T >> extends M
 //    @Override
 //    public Status process(Workspace workspace) {
 //        // Loading image into workspace
-//        String inputImageName = parameters.getValue(INPUT_IMAGE);
+//        String inputImageName = parameters.getValue(INPUT_IMAGE,workspace);
 //        Image inputImage = workspace.getImages().get(inputImageName);
 //
 //        // Getting parameters
-//        String outputImageName = parameters.getValue(OUTPUT_IMAGE);
-//        String xAxis = parameters.getValue(AXIS_1);
-//        String yAxis = parameters.getValue(AXIS_2);
-//        String projectionAxis = parameters.getValue(PROJECTION_AXIS);
-//        String projectionMode = parameters.getValue(PROJECTION_MODE);
+//        String outputImageName = parameters.getValue(OUTPUT_IMAGE,workspace);
+//        String xAxis = parameters.getValue(AXIS_1,workspace);
+//        String yAxis = parameters.getValue(AXIS_2,workspace);
+//        String projectionAxis = parameters.getValue(PROJECTION_AXIS,workspace);
+//        String projectionMode = parameters.getValue(PROJECTION_MODE,workspace);
 //
 //        // Create max projection image
 //        Image outputImage = project(inputImage,outputImageName,xAxis,yAxis,projectionAxis,projectionMode);
@@ -541,12 +543,12 @@ public class ProjectImage < T extends RealType< T > & NativeType< T >> extends M
 //    }
 //
 //    @Override
-//    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+//public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
 //        return null;
 //    }
 //
 //    @Override
-//    public MetadataRefs updateAndGetMetadataReferences() {
+//public MetadataRefs updateAndGetMetadataReferences() {
 //        return null;
 //    }
 //

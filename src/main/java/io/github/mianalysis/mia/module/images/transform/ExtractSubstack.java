@@ -29,9 +29,9 @@ import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.object.Image;
-import io.github.mianalysis.mia.object.Status;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
@@ -44,6 +44,7 @@ import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
+import io.github.mianalysis.mia.object.system.Status;
 import io.github.sjcross.sjcommon.process.CommaSeparatedStringInterpreter;
 
 /**
@@ -190,7 +191,7 @@ public class ExtractSubstack extends Module implements ActionListener {
 
         if (outputImagePlus.isComposite()) ((CompositeImage) outputImagePlus).setMode(CompositeImage.COLOR);
 
-        return new Image(outputImageName,outputImagePlus);
+        return ImageFactory.createImage(outputImageName,outputImagePlus);
 
     }
 
@@ -233,18 +234,18 @@ public class ExtractSubstack extends Module implements ActionListener {
     @Override
     public Status process(Workspace workspace) {
         // Getting input image
-        String inputImageName = parameters.getValue(INPUT_IMAGE);
+        String inputImageName = parameters.getValue(INPUT_IMAGE,workspace);
         Image inputImage = workspace.getImages().get(inputImageName);
 
         // Getting parameters
-        String selectionMode = parameters.getValue(SELECTION_MODE);
-        String outputImageName = parameters.getValue(OUTPUT_IMAGE);
-        String channels = parameters.getValue(CHANNELS);
-        String slices = parameters.getValue(SLICES);
-        String frames = parameters.getValue(FRAMES);
-        boolean enableChannels = parameters.getValue(ENABLE_CHANNELS_SELECTION);
-        boolean enableSlices = parameters.getValue(ENABLE_SLICES_SELECTION);
-        boolean enableFrames = parameters.getValue(ENABLE_FRAMES_SELECTION);
+        String selectionMode = parameters.getValue(SELECTION_MODE,workspace);
+        String outputImageName = parameters.getValue(OUTPUT_IMAGE,workspace);
+        String channels = parameters.getValue(CHANNELS,workspace);
+        String slices = parameters.getValue(SLICES,workspace);
+        String frames = parameters.getValue(FRAMES,workspace);
+        boolean enableChannels = parameters.getValue(ENABLE_CHANNELS_SELECTION,workspace);
+        boolean enableSlices = parameters.getValue(ENABLE_SLICES_SELECTION,workspace);
+        boolean enableFrames = parameters.getValue(ENABLE_FRAMES_SELECTION,workspace);
 
         switch (selectionMode) {
             case SelectionModes.MANUAL:
@@ -312,6 +313,7 @@ public class ExtractSubstack extends Module implements ActionListener {
 
     @Override
     public Parameters updateAndGetParameters() {
+Workspace workspace = null;
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
@@ -324,7 +326,7 @@ public class ExtractSubstack extends Module implements ActionListener {
         returnedParameters.add(parameters.getParameter(FRAMES));
 
         returnedParameters.add(parameters.getParameter(SELECTION_MODE));
-        switch ((String) parameters.getValue(SELECTION_MODE)) {
+        switch ((String) parameters.getValue(SELECTION_MODE,workspace)) {
             case SelectionModes.MANUAL:
                 returnedParameters.add(parameters.getParameter(ENABLE_CHANNELS_SELECTION));
                 returnedParameters.add(parameters.getParameter(ENABLE_SLICES_SELECTION));
@@ -338,27 +340,27 @@ public class ExtractSubstack extends Module implements ActionListener {
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
-        return null;
+return null;
     }
 
     @Override
-    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
-        return null;
+public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+return null;
     }
 
     @Override
-    public MetadataRefs updateAndGetMetadataReferences() {
-        return null;
+public MetadataRefs updateAndGetMetadataReferences() {
+return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
-        return null;
+return null;
     }
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
-        return null;
+return null;
     }
 
     @Override

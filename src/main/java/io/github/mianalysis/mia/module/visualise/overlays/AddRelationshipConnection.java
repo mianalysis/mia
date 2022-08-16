@@ -18,11 +18,11 @@ import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Categories;
-import io.github.mianalysis.mia.object.Status;
-import io.github.mianalysis.mia.object.Image;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChildObjectsP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
@@ -39,6 +39,7 @@ import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
+import io.github.mianalysis.mia.object.system.Status;
 import io.github.mianalysis.mia.process.ColourFactory;
 
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
@@ -407,33 +408,33 @@ public class AddRelationshipConnection extends AbstractOverlay {
     @Override
     protected Status process(Workspace workspace) {
         // Getting parameters
-        boolean applyToInput = parameters.getValue(APPLY_TO_INPUT);
-        boolean addOutputToWorkspace = parameters.getValue(ADD_OUTPUT_TO_WORKSPACE);
-        String outputImageName = parameters.getValue(OUTPUT_IMAGE);
+        boolean applyToInput = parameters.getValue(APPLY_TO_INPUT,workspace);
+        boolean addOutputToWorkspace = parameters.getValue(ADD_OUTPUT_TO_WORKSPACE,workspace);
+        String outputImageName = parameters.getValue(OUTPUT_IMAGE,workspace);
 
         // Getting input objects
-        String lineMode = parameters.getValue(LINE_MODE);
-        String parentObjectsName = parameters.getValue(PARENT_OBJECTS);
-        String childObjects1Name = parameters.getValue(CHILD_OBJECTS_1);
-        String childObjects2Name = parameters.getValue(CHILD_OBJECTS_2);
-        String partnerObjects1Name = parameters.getValue(PARTNER_OBJECTS_1);
-        String partnerObjects2Name = parameters.getValue(PARTNER_OBJECTS_2);
+        String lineMode = parameters.getValue(LINE_MODE,workspace);
+        String parentObjectsName = parameters.getValue(PARENT_OBJECTS,workspace);
+        String childObjects1Name = parameters.getValue(CHILD_OBJECTS_1,workspace);
+        String childObjects2Name = parameters.getValue(CHILD_OBJECTS_2,workspace);
+        String partnerObjects1Name = parameters.getValue(PARTNER_OBJECTS_1,workspace);
+        String partnerObjects2Name = parameters.getValue(PARTNER_OBJECTS_2,workspace);
 
         // Getting input image
-        String inputImageName = parameters.getValue(INPUT_IMAGE);
+        String inputImageName = parameters.getValue(INPUT_IMAGE,workspace);
         Image inputImage = workspace.getImages().get(inputImageName);
         ImagePlus ipl = inputImage.getImagePlus();
 
-        double opacity = parameters.getValue(OPACITY);
-        String renderMode = parameters.getValue(RENDER_MODE);
-        double lineWidth = parameters.getValue(LINE_WIDTH);
-        String pointSize = parameters.getValue(POINT_SIZE);
-        String pointType = parameters.getValue(POINT_TYPE);
-        boolean offset = parameters.getValue(OFFSET_BY_MEASUREMENT);
-        String measName1 = parameters.getValue(MEASUREMENT_NAME_1);
-        String measName2 = parameters.getValue(MEASUREMENT_NAME_2);
-        boolean renderInAllFrames = parameters.getValue(RENDER_IN_ALL_FRAMES);
-        boolean multithread = parameters.getValue(ENABLE_MULTITHREADING);
+        double opacity = parameters.getValue(OPACITY,workspace);
+        String renderMode = parameters.getValue(RENDER_MODE,workspace);
+        double lineWidth = parameters.getValue(LINE_WIDTH,workspace);
+        String pointSize = parameters.getValue(POINT_SIZE,workspace);
+        String pointType = parameters.getValue(POINT_TYPE,workspace);
+        boolean offset = parameters.getValue(OFFSET_BY_MEASUREMENT,workspace);
+        String measName1 = parameters.getValue(MEASUREMENT_NAME_1,workspace);
+        String measName2 = parameters.getValue(MEASUREMENT_NAME_2,workspace);
+        boolean renderInAllFrames = parameters.getValue(RENDER_IN_ALL_FRAMES,workspace);
+        boolean multithread = parameters.getValue(ENABLE_MULTITHREADING,workspace);
 
         // Only add output to workspace if not applying to input
         if (applyToInput)
@@ -446,7 +447,7 @@ public class AddRelationshipConnection extends AbstractOverlay {
         switch (lineMode) {
             case LineModes.BETWEEN_CHILDREN:
                 Objs parentObjects = workspace.getObjectSet(parentObjectsName);
-                HashMap<Integer, Color> colours = getColours(parentObjects);
+                HashMap<Integer, Color> colours = getColours(parentObjects, workspace);
                 addSiblingOverlay(ipl, parentObjects, childObjects1Name, childObjects2Name, renderMode, lineWidth,
                         pointSize, pointType, offset, measName1, measName2, colours, renderInAllFrames,
                         multithread);
@@ -454,20 +455,20 @@ public class AddRelationshipConnection extends AbstractOverlay {
 
             case LineModes.BETWEEN_PARTNERS:
                 Objs partnerObjects1 = workspace.getObjectSet(partnerObjects1Name);
-                colours = getColours(partnerObjects1);
+                colours = getColours(partnerObjects1, workspace);
                 addPartnerOverlay(ipl, partnerObjects1, partnerObjects2Name, renderMode, lineWidth, pointSize,
                         pointType, offset, measName1, measName2, colours, renderInAllFrames, multithread);
                 break;
 
             case LineModes.PARENT_TO_CHILD:
                 parentObjects = workspace.getObjectSet(parentObjectsName);
-                colours = getColours(parentObjects);
+                colours = getColours(parentObjects, workspace);
                 addParentChildOverlay(ipl, parentObjects, childObjects1Name, renderMode, lineWidth, pointSize,
                         pointType, offset, measName1, measName2, colours, renderInAllFrames, multithread);
                 break;
         }
 
-        Image outputImage = new Image(outputImageName, ipl);
+        Image outputImage = ImageFactory.createImage(outputImageName, ipl);
 
         // If necessary, adding output image to workspace. This also allows us to show
         // it.
@@ -517,6 +518,7 @@ public class AddRelationshipConnection extends AbstractOverlay {
 
     @Override
     public Parameters updateAndGetParameters() {
+Workspace workspace = null;
         String refObjectsName = "";
 
         Parameters returnedParameters = new Parameters();
@@ -525,19 +527,19 @@ public class AddRelationshipConnection extends AbstractOverlay {
         returnedParameters.add(parameters.getParameter(INPUT_IMAGE));
         returnedParameters.add(parameters.getParameter(LINE_MODE));
 
-        switch ((String) parameters.getValue(LINE_MODE)) {
+        switch ((String) parameters.getValue(LINE_MODE,workspace)) {
             case LineModes.BETWEEN_CHILDREN:
                 returnedParameters.add(parameters.getParameter(PARENT_OBJECTS));
 
                 ChildObjectsP childObjectsP = parameters.getParameter(CHILD_OBJECTS_1);
-                childObjectsP.setParentObjectsName(parameters.getValue(PARENT_OBJECTS));
+                childObjectsP.setParentObjectsName(parameters.getValue(PARENT_OBJECTS,workspace));
                 returnedParameters.add(childObjectsP);
 
                 childObjectsP = parameters.getParameter(CHILD_OBJECTS_2);
-                childObjectsP.setParentObjectsName(parameters.getValue(PARENT_OBJECTS));
+                childObjectsP.setParentObjectsName(parameters.getValue(PARENT_OBJECTS,workspace));
                 returnedParameters.add(childObjectsP);
 
-                refObjectsName = parameters.getValue(CHILD_OBJECTS_1);
+                refObjectsName = parameters.getValue(CHILD_OBJECTS_1,workspace);
 
                 break;
 
@@ -545,10 +547,10 @@ public class AddRelationshipConnection extends AbstractOverlay {
                 returnedParameters.add(parameters.getParameter(PARTNER_OBJECTS_1));
 
                 PartnerObjectsP partnerObjectsP = parameters.getParameter(PARTNER_OBJECTS_2);
-                partnerObjectsP.setPartnerObjectsName(parameters.getValue(PARTNER_OBJECTS_1));
+                partnerObjectsP.setPartnerObjectsName(parameters.getValue(PARTNER_OBJECTS_1,workspace));
                 returnedParameters.add(partnerObjectsP);
 
-                refObjectsName = parameters.getValue(PARTNER_OBJECTS_1);
+                refObjectsName = parameters.getValue(PARTNER_OBJECTS_1,workspace);
 
                 break;
 
@@ -556,19 +558,19 @@ public class AddRelationshipConnection extends AbstractOverlay {
                 returnedParameters.add(parameters.getParameter(PARENT_OBJECTS));
 
                 childObjectsP = parameters.getParameter(CHILD_OBJECTS_1);
-                childObjectsP.setParentObjectsName(parameters.getValue(PARENT_OBJECTS));
+                childObjectsP.setParentObjectsName(parameters.getValue(PARENT_OBJECTS,workspace));
                 returnedParameters.add(childObjectsP);
 
-                refObjectsName = parameters.getValue(PARENT_OBJECTS);
+                refObjectsName = parameters.getValue(PARENT_OBJECTS,workspace);
 
                 break;
         }
 
         returnedParameters.add(parameters.getParameter(OUTPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(APPLY_TO_INPUT));
-        if (!(boolean) parameters.getValue(APPLY_TO_INPUT)) {
+        if (!(boolean) parameters.getValue(APPLY_TO_INPUT,workspace)) {
             returnedParameters.add(parameters.getParameter(ADD_OUTPUT_TO_WORKSPACE));
-            if ((boolean) parameters.getValue(ADD_OUTPUT_TO_WORKSPACE)) {
+            if ((boolean) parameters.getValue(ADD_OUTPUT_TO_WORKSPACE,workspace)) {
                 returnedParameters.add(parameters.getParameter(OUTPUT_IMAGE));
             }
         }
@@ -577,7 +579,7 @@ public class AddRelationshipConnection extends AbstractOverlay {
 
         returnedParameters.add(parameters.getParameter(RENDERING_SEPARATOR));
         returnedParameters.add(parameters.getParameter(RENDER_MODE));
-        switch ((String) parameters.getValue(RENDER_MODE)) {
+        switch ((String) parameters.getValue(RENDER_MODE,workspace)) {
             case RenderModes.FULL_LINE:
             case RenderModes.HALF_LINE:
                 returnedParameters.add(parameters.getParameter(LINE_WIDTH));
@@ -587,28 +589,28 @@ public class AddRelationshipConnection extends AbstractOverlay {
                 returnedParameters.add(parameters.getParameter(POINT_TYPE));
                 break;
         }
-        switch ((String) parameters.getValue(RENDER_MODE)) {
+        switch ((String) parameters.getValue(RENDER_MODE,workspace)) {
             case RenderModes.HALF_LINE:
             case RenderModes.MIDPOINT_DOT:
                 returnedParameters.add(parameters.getParameter(OFFSET_BY_MEASUREMENT));
-                if ((boolean) parameters.getValue(OFFSET_BY_MEASUREMENT)) {
+                if ((boolean) parameters.getValue(OFFSET_BY_MEASUREMENT,workspace)) {
                     returnedParameters.add(parameters.getParameter(MEASUREMENT_NAME_1));
                     returnedParameters.add(parameters.getParameter(MEASUREMENT_NAME_2));
 
                     String name1 = "";
                     String name2 = "";
-                    switch ((String) parameters.getValue(LINE_MODE)) {
+                    switch ((String) parameters.getValue(LINE_MODE,workspace)) {
                         case LineModes.BETWEEN_CHILDREN:
-                            name1 = parameters.getValue(CHILD_OBJECTS_1);
-                            name2 = parameters.getValue(CHILD_OBJECTS_2);
+                            name1 = parameters.getValue(CHILD_OBJECTS_1,workspace);
+                            name2 = parameters.getValue(CHILD_OBJECTS_2,workspace);
                             break;
                         case LineModes.BETWEEN_PARTNERS:
-                            name1 = parameters.getValue(PARTNER_OBJECTS_1);
-                            name2 = parameters.getValue(PARTNER_OBJECTS_2);
+                            name1 = parameters.getValue(PARTNER_OBJECTS_1,workspace);
+                            name2 = parameters.getValue(PARTNER_OBJECTS_2,workspace);
                             break;
                         case LineModes.PARENT_TO_CHILD:
-                            name1 = parameters.getValue(PARENT_OBJECTS);
-                            name2 = parameters.getValue(CHILD_OBJECTS_1);
+                            name1 = parameters.getValue(PARENT_OBJECTS,workspace);
+                            name2 = parameters.getValue(CHILD_OBJECTS_1,workspace);
                             break;
                     }
 
@@ -630,27 +632,27 @@ public class AddRelationshipConnection extends AbstractOverlay {
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
-        return null;
+return null;
     }
 
     @Override
-    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
-        return null;
+public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+return null;
     }
 
     @Override
-    public MetadataRefs updateAndGetMetadataReferences() {
-        return null;
+public MetadataRefs updateAndGetMetadataReferences() {
+return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
-        return null;
+return null;
     }
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
-        return null;
+return null;
     }
 
     @Override

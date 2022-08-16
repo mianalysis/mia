@@ -10,10 +10,10 @@ import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.object.Image;
 import io.github.mianalysis.mia.object.Objs;
-import io.github.mianalysis.mia.object.Status;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
@@ -27,6 +27,7 @@ import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
+import io.github.mianalysis.mia.object.system.Status;
 import io.github.mianalysis.mia.process.ImgPlusTools;
 import net.imagej.ImgPlus;
 import net.imagej.axis.Axes;
@@ -107,7 +108,7 @@ public class CropImage<T extends RealType<T> & NativeType<T>> extends Module {
         outputImagePlus.setCalibration(calibration);
         ImgPlusTools.applyAxes(outputImg, outputImagePlus);
 
-        return new Image(outputImageName, outputImagePlus);
+        return ImageFactory.createImage(outputImageName, outputImagePlus);
 
     }
 
@@ -124,18 +125,18 @@ public class CropImage<T extends RealType<T> & NativeType<T>> extends Module {
     @Override
     public Status process(Workspace workspace) {
         // Getting input image
-        String inputImageName = parameters.getValue(INPUT_IMAGE);
+        String inputImageName = parameters.getValue(INPUT_IMAGE,workspace);
         Image inputImage = workspace.getImages().get(inputImageName);
 
         // Getting parameters
-        boolean applyToInput = parameters.getValue(APPLY_TO_INPUT);
-        String outputImageName = parameters.getValue(OUTPUT_IMAGE);
-        String limitsMode = parameters.getValue(LIMITS_MODE);
-        int left = parameters.getValue(LEFT);
-        int top = parameters.getValue(TOP);
-        int width = parameters.getValue(WIDTH);
-        int height = parameters.getValue(HEIGHT);
-        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+        boolean applyToInput = parameters.getValue(APPLY_TO_INPUT,workspace);
+        String outputImageName = parameters.getValue(OUTPUT_IMAGE,workspace);
+        String limitsMode = parameters.getValue(LIMITS_MODE,workspace);
+        int left = parameters.getValue(LEFT,workspace);
+        int top = parameters.getValue(TOP,workspace);
+        int width = parameters.getValue(WIDTH,workspace);
+        int height = parameters.getValue(HEIGHT,workspace);
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
 
         switch (limitsMode) {
             case LimitsModes.FROM_OBJECTS:
@@ -193,19 +194,20 @@ public class CropImage<T extends RealType<T> & NativeType<T>> extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
+Workspace workspace = null;
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(INPUT_IMAGE));
         returnedParameters.add(parameters.getParameter(APPLY_TO_INPUT));
 
-        if (!(boolean) parameters.getValue(APPLY_TO_INPUT)) {
+        if (!(boolean) parameters.getValue(APPLY_TO_INPUT,workspace)) {
             returnedParameters.add(parameters.getParameter(OUTPUT_IMAGE));
         }
 
         returnedParameters.add(parameters.getParameter(CROP_SEPARATOR));
         returnedParameters.add(parameters.getParameter(LIMITS_MODE));
-        switch ((String) parameters.getValue(LIMITS_MODE)) {
+        switch ((String) parameters.getValue(LIMITS_MODE,workspace)) {
             case LimitsModes.FIXED_VALUES:
                 returnedParameters.add(parameters.getParameter(LEFT));
                 returnedParameters.add(parameters.getParameter(TOP));
@@ -223,27 +225,27 @@ public class CropImage<T extends RealType<T> & NativeType<T>> extends Module {
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
-        return null;
+return null;
     }
 
     @Override
-    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
-        return null;
+public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+return null;
     }
 
     @Override
-    public MetadataRefs updateAndGetMetadataReferences() {
-        return null;
+public MetadataRefs updateAndGetMetadataReferences() {
+return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
-        return null;
+return null;
     }
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
-        return null;
+return null;
     }
 
     @Override

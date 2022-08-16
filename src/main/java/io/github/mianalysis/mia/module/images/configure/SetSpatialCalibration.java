@@ -13,11 +13,11 @@ import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.object.Image;
 import io.github.mianalysis.mia.object.Measurement;
 import io.github.mianalysis.mia.object.Obj;
-import io.github.mianalysis.mia.object.Status;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.ImageMeasurementP;
@@ -33,6 +33,7 @@ import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
+import io.github.mianalysis.mia.object.system.Status;
 import io.github.mianalysis.mia.object.units.SpatialUnit;
 
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
@@ -158,26 +159,26 @@ public class SetSpatialCalibration extends Module {
 
     @Override
     protected Status process(Workspace workspace) {
-        String inputImageName = parameters.getValue(INPUT_IMAGE);
+        String inputImageName = parameters.getValue(INPUT_IMAGE,workspace);
 
-        String pdSource = parameters.getValue(PD_SOURCE);
-        String axisMode = parameters.getValue(AXIS_MODE);
-        String pdObjectsName = parameters.getValue(OBJECTS_FOR_PD);
-        String pdObjectsMeasName = parameters.getValue(OBJECTS_MEASURUREMENT_FOR_PD);
-        double pdFixedValue = parameters.getValue(FIXED_VALUE_FOR_PD);
-        boolean pdShowImage = parameters.getValue(DISPLAY_IMAGE_PD);
-        boolean pdStoreMeasurement = parameters.getValue(STORE_DISTANCE_AS_MEASUREMENT_PD);
-        String pdImageName = parameters.getValue(IMAGE_FOR_PD);
-        String pdImageMeasName = parameters.getValue(IMAGE_MEASUREMENT_FOR_PD);
+        String pdSource = parameters.getValue(PD_SOURCE,workspace);
+        String axisMode = parameters.getValue(AXIS_MODE,workspace);
+        String pdObjectsName = parameters.getValue(OBJECTS_FOR_PD,workspace);
+        String pdObjectsMeasName = parameters.getValue(OBJECTS_MEASURUREMENT_FOR_PD,workspace);
+        double pdFixedValue = parameters.getValue(FIXED_VALUE_FOR_PD,workspace);
+        boolean pdShowImage = parameters.getValue(DISPLAY_IMAGE_PD,workspace);
+        boolean pdStoreMeasurement = parameters.getValue(STORE_DISTANCE_AS_MEASUREMENT_PD,workspace);
+        String pdImageName = parameters.getValue(IMAGE_FOR_PD,workspace);
+        String pdImageMeasName = parameters.getValue(IMAGE_MEASUREMENT_FOR_PD,workspace);
 
-        String idSource = parameters.getValue(ID_SOURCE);
-        String idObjectsName = parameters.getValue(OBJECTS_FOR_ID);
-        String idObjectsMeasName = parameters.getValue(OBJECTS_MEASURUREMENT_FOR_ID);
-        double idFixedValue = parameters.getValue(FIXED_VALUE_FOR_ID);
-        boolean idShowImage = parameters.getValue(DISPLAY_IMAGE_ID);
-        boolean idStoreMeasurement = parameters.getValue(STORE_DISTANCE_AS_MEASUREMENT_ID);
-        String idImageName = parameters.getValue(IMAGE_FOR_ID);
-        String idImageMeasName = parameters.getValue(IMAGE_MEASUREMENT_FOR_ID);
+        String idSource = parameters.getValue(ID_SOURCE,workspace);
+        String idObjectsName = parameters.getValue(OBJECTS_FOR_ID,workspace);
+        String idObjectsMeasName = parameters.getValue(OBJECTS_MEASURUREMENT_FOR_ID,workspace);
+        double idFixedValue = parameters.getValue(FIXED_VALUE_FOR_ID,workspace);
+        boolean idShowImage = parameters.getValue(DISPLAY_IMAGE_ID,workspace);
+        boolean idStoreMeasurement = parameters.getValue(STORE_DISTANCE_AS_MEASUREMENT_ID,workspace);
+        String idImageName = parameters.getValue(IMAGE_FOR_ID,workspace);
+        String idImageMeasName = parameters.getValue(IMAGE_MEASUREMENT_FOR_ID,workspace);
 
         Image image = workspace.getImage(inputImageName);
 
@@ -269,6 +270,7 @@ public class SetSpatialCalibration extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
+Workspace workspace = null;
         Parameters returnedParams = new Parameters();
 
         returnedParams.add(parameters.get(INPUT_SEPARATOR));
@@ -279,11 +281,11 @@ public class SetSpatialCalibration extends Module {
 
         returnedParams.add(parameters.get(PD_SEPARATOR));
         returnedParams.add(parameters.get(PD_SOURCE));
-        switch ((String) parameters.getValue(PD_SOURCE)) {
+        switch ((String) parameters.getValue(PD_SOURCE,null)) {
             case DistanceSources.FIRST_OBJECT_MEASUREMENT:
                 returnedParams.add(parameters.get(OBJECTS_FOR_PD));
                 returnedParams.add(parameters.get(OBJECTS_MEASURUREMENT_FOR_PD));
-                String objectsName = parameters.getValue(OBJECTS_FOR_PD);
+                String objectsName = parameters.getValue(OBJECTS_FOR_PD,null);
                 ObjectMeasurementP objectMeasurement = (ObjectMeasurementP) parameters
                         .get(OBJECTS_MEASURUREMENT_FOR_PD);
                 objectMeasurement.setObjectName(objectsName);
@@ -302,7 +304,7 @@ public class SetSpatialCalibration extends Module {
             case DistanceSources.IMAGE_MEASUREMENT:
                 returnedParams.add(parameters.get(IMAGE_FOR_PD));
                 returnedParams.add(parameters.get(IMAGE_MEASUREMENT_FOR_PD));
-                String imageName = parameters.getValue(IMAGE_FOR_PD);
+                String imageName = parameters.getValue(IMAGE_FOR_PD,null);
                 ImageMeasurementP imageMeasurement = (ImageMeasurementP) parameters.get(IMAGE_MEASUREMENT_FOR_PD);
                 imageMeasurement.setImageName(imageName);
                 break;
@@ -310,11 +312,11 @@ public class SetSpatialCalibration extends Module {
 
         returnedParams.add(parameters.get(ID_SEPARATOR));
         returnedParams.add(parameters.get(ID_SOURCE));
-        switch ((String) parameters.getValue(ID_SOURCE)) {
+        switch ((String) parameters.getValue(ID_SOURCE,null)) {
             case DistanceSources.FIRST_OBJECT_MEASUREMENT:
                 returnedParams.add(parameters.get(OBJECTS_FOR_ID));
                 returnedParams.add(parameters.get(OBJECTS_MEASURUREMENT_FOR_ID));
-                String objectsName = parameters.getValue(OBJECTS_FOR_ID);
+                String objectsName = parameters.getValue(OBJECTS_FOR_ID,null);
                 ObjectMeasurementP objectMeasurement = (ObjectMeasurementP) parameters
                         .get(OBJECTS_MEASURUREMENT_FOR_ID);
                 objectMeasurement.setObjectName(objectsName);
@@ -332,7 +334,7 @@ public class SetSpatialCalibration extends Module {
             case DistanceSources.IMAGE_MEASUREMENT:
                 returnedParams.add(parameters.get(IMAGE_FOR_ID));
                 returnedParams.add(parameters.get(IMAGE_MEASUREMENT_FOR_ID));
-                String imageName = parameters.getValue(IMAGE_FOR_ID);
+                String imageName = parameters.getValue(IMAGE_FOR_ID,null);
                 ImageMeasurementP imageMeasurement = (ImageMeasurementP) parameters.get(IMAGE_MEASUREMENT_FOR_ID);
                 imageMeasurement.setImageName(imageName);
                 break;
@@ -344,19 +346,20 @@ public class SetSpatialCalibration extends Module {
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
+Workspace workspace = null;
         ImageMeasurementRefs returnedRefs = new ImageMeasurementRefs();
 
-        if (parameters.getValue(PD_SOURCE).equals(DistanceSources.GUI_SELECTION_TEXT)
-                && (boolean) parameters.getValue(STORE_DISTANCE_AS_MEASUREMENT_PD)) {
+        if (parameters.getValue(PD_SOURCE,workspace).equals(DistanceSources.GUI_SELECTION_TEXT)
+                && (boolean) parameters.getValue(STORE_DISTANCE_AS_MEASUREMENT_PD,workspace)) {
             ImageMeasurementRef ref = imageMeasurementRefs.getOrPut(Measurements.PD_DISTANCE);
-            ref.setImageName(parameters.getValue(INPUT_IMAGE));
+            ref.setImageName(parameters.getValue(INPUT_IMAGE,workspace));
             returnedRefs.add(ref);
         }
 
-        if (parameters.getValue(ID_SOURCE).equals(DistanceSources.GUI_SELECTION_TEXT)
-                && (boolean) parameters.getValue(STORE_DISTANCE_AS_MEASUREMENT_ID)) {
+        if (parameters.getValue(ID_SOURCE,workspace).equals(DistanceSources.GUI_SELECTION_TEXT)
+                && (boolean) parameters.getValue(STORE_DISTANCE_AS_MEASUREMENT_ID,workspace)) {
             ImageMeasurementRef ref = imageMeasurementRefs.getOrPut(Measurements.ID_DISTANCE);
-            ref.setImageName(parameters.getValue(INPUT_IMAGE));
+            ref.setImageName(parameters.getValue(INPUT_IMAGE,workspace));
             returnedRefs.add(ref);
         }
 
@@ -365,23 +368,23 @@ public class SetSpatialCalibration extends Module {
     }
 
     @Override
-    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
-        return null;
+public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+return null;
     }
 
     @Override
-    public MetadataRefs updateAndGetMetadataReferences() {
-        return null;
+public MetadataRefs updateAndGetMetadataReferences() {
+return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
-        return null;
+return null;
     }
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
-        return null;
+return null;
     }
 
     @Override
