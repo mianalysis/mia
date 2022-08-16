@@ -5,15 +5,16 @@ import java.net.URLDecoder;
 
 import ij.IJ;
 import ij.ImagePlus;
-import io.github.mianalysis.mia.object.Image;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageFactory;
 
 public class TestUtils {
     public static void addImageToWorkspace(Workspace workspace, String path, String imageName)
             throws UnsupportedEncodingException {
         String pathToImage = URLDecoder.decode(TestUtils.class.getResource(path).getPath(), "UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
-        Image image = new Image(imageName, ipl);
+        Image image = ImageFactory.createImage(imageName, ipl);
         
         workspace.addImage(image);
 
@@ -22,7 +23,7 @@ public class TestUtils {
     public static Image loadImage(String path, String imageName) throws UnsupportedEncodingException {
         String pathToImage = URLDecoder.decode(TestUtils.class.getResource(path).getPath(), "UTF-8");
 
-        return new Image(imageName, IJ.openImage(pathToImage));
+        return ImageFactory.createImage(imageName, IJ.openImage(pathToImage));
 
     }
     

@@ -20,12 +20,12 @@ import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.images.process.ImageMath;
 import io.github.mianalysis.mia.module.images.transform.CropImage;
-import io.github.mianalysis.mia.object.Image;
 import io.github.mianalysis.mia.object.Measurement;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
-import io.github.mianalysis.mia.object.Status;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
@@ -42,6 +42,7 @@ import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
+import io.github.mianalysis.mia.object.system.Status;
 import io.github.sjcross.sjcommon.mathfunc.CumStat;
 import io.github.sjcross.sjcommon.mathfunc.GaussianDistribution2D;
 import io.github.sjcross.sjcommon.object.Point;
@@ -239,7 +240,7 @@ public class FitGaussian2D extends Module {
         // Create blank image
         Obj firstObject = objects.getFirst();
         ImagePlus ipl = IJ.createImage(outputImageName, firstObject.getWidth(), firstObject.getHeight(), 1, 32);
-        Image image = new Image(outputImageName, ipl);
+        Image image = ImageFactory.createImage(outputImageName, ipl);
 
         // Get the image for the first object. Not adding the background to any object,
         // as the average background will
@@ -318,27 +319,27 @@ public class FitGaussian2D extends Module {
     @Override
     public Status process(Workspace workspace) {
         // Getting input image
-        String inputImageName = parameters.getValue(INPUT_IMAGE);
+        String inputImageName = parameters.getValue(INPUT_IMAGE,workspace);
         Image inputImage = workspace.getImage(inputImageName);
         ImagePlus inputImagePlus = inputImage.getImagePlus();
         inputImagePlus = new Duplicator().run(inputImagePlus);
 
         // Getting input objects to refine (if selected by used)
-        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
         Objs inputObjects = workspace.getObjectSet(inputObjectsName);
 
         // Getting parameters
-        String sigmaMode = parameters.getValue(SIGMA_MODE);
-        boolean limitSigma = parameters.getValue(LIMIT_SIGMA_RANGE);
-        double minSigma = parameters.getValue(MIN_SIGMA);
-        double maxSigma = parameters.getValue(MAX_SIGMA);
-        boolean fixedFittingWindow = parameters.getValue(FIXED_FITTING_WINDOW);
-        int windowWidth = parameters.getValue(WINDOW_SIZE);
-        int maxEvaluations = parameters.getValue(MAX_EVALUATIONS);
-        boolean removeUnfit = parameters.getValue(REMOVE_UNFIT);
-        boolean applyVolume = parameters.getValue(APPLY_VOLUME);
-        boolean createGaussianImage = parameters.getValue(CREATE_GAUSSIAN_IMAGE);
-        String gaussianImageName = parameters.getValue(GAUSSIAN_IMAGE);
+        String sigmaMode = parameters.getValue(SIGMA_MODE,workspace);
+        boolean limitSigma = parameters.getValue(LIMIT_SIGMA_RANGE,workspace);
+        double minSigma = parameters.getValue(MIN_SIGMA,workspace);
+        double maxSigma = parameters.getValue(MAX_SIGMA,workspace);
+        boolean fixedFittingWindow = parameters.getValue(FIXED_FITTING_WINDOW,workspace);
+        int windowWidth = parameters.getValue(WINDOW_SIZE,workspace);
+        int maxEvaluations = parameters.getValue(MAX_EVALUATIONS,workspace);
+        boolean removeUnfit = parameters.getValue(REMOVE_UNFIT,workspace);
+        boolean applyVolume = parameters.getValue(APPLY_VOLUME,workspace);
+        boolean createGaussianImage = parameters.getValue(CREATE_GAUSSIAN_IMAGE,workspace);
+        String gaussianImageName = parameters.getValue(GAUSSIAN_IMAGE,workspace);
 
         // Running through each object, doing the fitting
         int count = 0;
@@ -358,11 +359,11 @@ public class FitGaussian2D extends Module {
             switch (sigmaMode) {
                 case SigmaModes.FIXED_VALUE:
                 default:
-                    sigma = (int) Math.ceil(parameters.getValue(SIGMA));
+                    sigma = (int) Math.ceil(parameters.getValue(SIGMA,workspace));
                     break;
                 case SigmaModes.MEASUREMENT:
-                    double multiplier = parameters.getValue(MEASUREMENT_MULTIPLIER);
-                    sigma = (int) Math.ceil(inputObject.getMeasurement(parameters.getValue(SIGMA_MEASUREMENT)).getValue()
+                    double multiplier = parameters.getValue(MEASUREMENT_MULTIPLIER,workspace);
+                    sigma = (int) Math.ceil(inputObject.getMeasurement(parameters.getValue(SIGMA_MEASUREMENT,workspace)).getValue()
                             * multiplier);
                     break;
             }
@@ -384,7 +385,7 @@ public class FitGaussian2D extends Module {
 
             // Cropping image
             inputImagePlus.setPosition(1, z + 1, t + 1);
-            Image preCropImage = new Image("PreCrop", new ImagePlus("Slice", inputImagePlus.getProcessor()));
+            Image preCropImage = ImageFactory.createImage("PreCrop", new ImagePlus("Slice", inputImagePlus.getProcessor()));
             ImageProcessor iprCrop = CropImage
                     .cropImage(preCropImage, "Crop", y - halfW, x - halfW, halfW * 2 + 1, halfW * 2 + 1).getImagePlus()
                     .getProcessor();
@@ -478,6 +479,7 @@ public class FitGaussian2D extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
+Workspace workspace = null;
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
@@ -486,23 +488,23 @@ public class FitGaussian2D extends Module {
 
         returnedParameters.add(parameters.getParameter(FITTING_SEPARATOR));
         returnedParameters.add(parameters.getParameter(SIGMA_MODE));
-        if (parameters.getValue(SIGMA_MODE).equals(SigmaModes.FIXED_VALUE)) {
+        if (parameters.getValue(SIGMA_MODE,workspace).equals(SigmaModes.FIXED_VALUE)) {
             returnedParameters.add(parameters.getParameter(SIGMA));
-        } else if (parameters.getValue(SIGMA_MODE).equals(SigmaModes.MEASUREMENT)) {
+        } else if (parameters.getValue(SIGMA_MODE,workspace).equals(SigmaModes.MEASUREMENT)) {
             returnedParameters.add(parameters.getParameter(SIGMA_MEASUREMENT));
-            String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+            String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
             ((ObjectMeasurementP) parameters.getParameter(SIGMA_MEASUREMENT)).setObjectName(inputObjectsName);
             returnedParameters.add(parameters.getParameter(MEASUREMENT_MULTIPLIER));
         }
 
         returnedParameters.add(parameters.getParameter(LIMIT_SIGMA_RANGE));
-        if ((boolean) parameters.getValue(LIMIT_SIGMA_RANGE)) {
+        if ((boolean) parameters.getValue(LIMIT_SIGMA_RANGE,workspace)) {
             returnedParameters.add(parameters.getParameter(MIN_SIGMA));
             returnedParameters.add(parameters.getParameter(MAX_SIGMA));
         }
 
         returnedParameters.add(parameters.getParameter(FIXED_FITTING_WINDOW));
-        if ((boolean) parameters.getValue(FIXED_FITTING_WINDOW))
+        if ((boolean) parameters.getValue(FIXED_FITTING_WINDOW,workspace))
             returnedParameters.add(parameters.getParameter(WINDOW_SIZE));
 
         returnedParameters.add(parameters.getParameter(MAX_EVALUATIONS));
@@ -512,7 +514,7 @@ public class FitGaussian2D extends Module {
         returnedParameters.add(parameters.getParameter(APPLY_VOLUME));
 
         returnedParameters.add(parameters.getParameter(CREATE_GAUSSIAN_IMAGE));
-        if ((boolean) parameters.getValue(CREATE_GAUSSIAN_IMAGE))
+        if ((boolean) parameters.getValue(CREATE_GAUSSIAN_IMAGE,workspace))
             returnedParameters.add(parameters.getParameter(GAUSSIAN_IMAGE));
 
         return returnedParameters;
@@ -521,13 +523,14 @@ public class FitGaussian2D extends Module {
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
-        return null;
+return null;
     }
 
     @Override
-    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+Workspace workspace = null;
         ObjMeasurementRefs returnedRefs = new ObjMeasurementRefs();
-        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
 
         ObjMeasurementRef reference = objectMeasurementRefs.getOrPut(Measurements.X0_PX);
         reference.setObjectsName(inputObjectsName);
@@ -602,18 +605,18 @@ public class FitGaussian2D extends Module {
     }
 
     @Override
-    public MetadataRefs updateAndGetMetadataReferences() {
-        return null;
+public MetadataRefs updateAndGetMetadataReferences() {
+return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
-        return null;
+return null;
     }
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
-        return null;
+return null;
     }
 
     @Override

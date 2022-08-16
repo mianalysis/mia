@@ -262,7 +262,7 @@ public class FileFolderPathPTest {
 
         assertEquals("Demo path",fileFolderPathP.getName());
         assertEquals("New nick",fileFolderPathP.getNickname());
-        assertEquals("C:\\Users\\Stephen\\myfile.zip",fileFolderPathP.getValue());
+        assertEquals("C:\\Users\\Stephen\\myfile.zip",fileFolderPathP.getValue(null));
         assertFalse(fileFolderPathP.isVisible());
 
     }

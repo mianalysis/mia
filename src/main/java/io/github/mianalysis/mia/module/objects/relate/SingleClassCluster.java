@@ -27,11 +27,11 @@ import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.images.process.binary.DistanceMap;
 import io.github.mianalysis.mia.module.objects.process.GetLocalObjectRegion;
-import io.github.mianalysis.mia.object.Image;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
-import io.github.mianalysis.mia.object.Status;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputObjectsP;
@@ -45,6 +45,7 @@ import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
+import io.github.mianalysis.mia.object.system.Status;
 import io.github.mianalysis.mia.process.ColourFactory;
 import io.github.sjcross.sjcommon.exceptions.IntegerOverflowException;
 import io.github.sjcross.sjcommon.imagej.LUTs;
@@ -219,21 +220,21 @@ public class SingleClassCluster extends Module {
     @Override
     public Status process(Workspace workspace) {
         // Getting objects to measure
-        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
         Objs inputObjects = workspace.getObjects().get(inputObjectsName);
 
         // Getting output objects name
-        String outputObjectsName = parameters.getValue(CLUSTER_OBJECTS);
+        String outputObjectsName = parameters.getValue(CLUSTER_OBJECTS,workspace);
         Objs outputObjects = new Objs(outputObjectsName, inputObjects);
 
         // Getting parameters
-        boolean applyVolume = parameters.getValue(APPLY_VOLUME);
-        String clusteringAlgorithm = parameters.getValue(CLUSTERING_ALGORITHM);
-        int kClusters = parameters.getValue(K_CLUSTERS);
-        int maxIterations = parameters.getValue(MAX_ITERATIONS);
-        double eps = parameters.getValue(EPS);
-        int minPoints = parameters.getValue(MIN_POINTS);
-        boolean linkInSameFrame = parameters.getValue(LINK_IN_SAME_FRAME);
+        boolean applyVolume = parameters.getValue(APPLY_VOLUME,workspace);
+        String clusteringAlgorithm = parameters.getValue(CLUSTERING_ALGORITHM,workspace);
+        int kClusters = parameters.getValue(K_CLUSTERS,workspace);
+        int maxIterations = parameters.getValue(MAX_ITERATIONS,workspace);
+        double eps = parameters.getValue(EPS,workspace);
+        int minPoints = parameters.getValue(MIN_POINTS,workspace);
+        boolean linkInSameFrame = parameters.getValue(LINK_IN_SAME_FRAME,workspace);
 
         // If there are no input objects skipping this module
         Obj firstObject = inputObjects.getFirst();
@@ -344,6 +345,7 @@ public class SingleClassCluster extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
+Workspace workspace = null;
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
@@ -353,12 +355,12 @@ public class SingleClassCluster extends Module {
 
         returnedParameters.add(parameters.getParameter(CLUSTER_SEPARATOR));
         returnedParameters.add(parameters.getParameter(CLUSTERING_ALGORITHM));
-        if (parameters.getValue(CLUSTERING_ALGORITHM).equals(ClusteringAlgorithms.KMEANSPLUSPLUS)) {
+        if (parameters.getValue(CLUSTERING_ALGORITHM,workspace).equals(ClusteringAlgorithms.KMEANSPLUSPLUS)) {
             // Running KMeans++ clustering
             returnedParameters.add(parameters.getParameter(K_CLUSTERS));
             returnedParameters.add(parameters.getParameter(MAX_ITERATIONS));
 
-        } else if (parameters.getValue(CLUSTERING_ALGORITHM).equals(ClusteringAlgorithms.DBSCAN)) {
+        } else if (parameters.getValue(CLUSTERING_ALGORITHM,workspace).equals(ClusteringAlgorithms.DBSCAN)) {
             // Running DBSCAN clustering
             returnedParameters.add(parameters.getParameter(EPS));
             returnedParameters.add(parameters.getParameter(MIN_POINTS));
@@ -373,25 +375,26 @@ public class SingleClassCluster extends Module {
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
-        return null;
+return null;
     }
 
     @Override
-    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
-        return null;
+public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+return null;
     }
 
     @Override
-    public MetadataRefs updateAndGetMetadataReferences() {
-        return null;
+public MetadataRefs updateAndGetMetadataReferences() {
+return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
+Workspace workspace = null;
         ParentChildRefs returnedRelationships = new ParentChildRefs();
 
-        String clusterObjectsName = parameters.getValue(CLUSTER_OBJECTS);
-        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+        String clusterObjectsName = parameters.getValue(CLUSTER_OBJECTS,workspace);
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
 
         returnedRelationships.add(parentChildRefs.getOrPut(clusterObjectsName, inputObjectsName));
 
@@ -401,7 +404,7 @@ public class SingleClassCluster extends Module {
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
-        return null;
+return null;
     }
 
     @Override
@@ -578,9 +581,9 @@ public class SingleClassCluster extends Module {
 // public Objs runKMeansPlusPlus(Objs outputObjects, List<LocationWrapper>
 //// locations, int width, int height, int nSlices, double dppXY, double dppZ,
 //// String calibratedUnits) {
-// String outputObjectsName = parameters.getValue(CLUSTER_OBJECTS);
-// int kClusters = parameters.getValue(K_CLUSTERS);
-// int maxIterations = parameters.getValue(MAX_ITERATIONS);
+// String outputObjectsName = parameters.getValue(CLUSTER_OBJECTS,workspace);
+// int kClusters = parameters.getValue(K_CLUSTERS,workspace);
+// int maxIterations = parameters.getValue(MAX_ITERATIONS,workspace);
 //
 // KMeansPlusPlusClusterer<LocationWrapper> clusterer = new
 //// KMeansPlusPlusClusterer<>(kClusters,maxIterations);
@@ -628,9 +631,9 @@ public class SingleClassCluster extends Module {
 // public Objs runDBSCAN(Objs outputObjects, List<LocationWrapper> locations,
 //// int width, int height, int nSlices, double dppXY, double dppZ, String
 //// calibratedUnits) {
-// String outputObjectsName = parameters.getValue(CLUSTER_OBJECTS);
-// double eps = parameters.getValue(EPS);
-// int minPoints = parameters.getValue(MIN_POINTS);
+// String outputObjectsName = parameters.getValue(CLUSTER_OBJECTS,workspace);
+// double eps = parameters.getValue(EPS,workspace);
+// int minPoints = parameters.getValue(MIN_POINTS,workspace);
 //
 // DBSCANClusterer<LocationWrapper> clusterer = new DBSCANClusterer<>(eps,
 //// minPoints);
@@ -732,21 +735,21 @@ public class SingleClassCluster extends Module {
 // @Override
 // public Status process(Workspace workspace) {
 // // Getting objects to measure
-// String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+// String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
 // Objs inputObjects = workspace.getObjects().get(inputObjectsName);
 //
 // // Getting output objects name
-// String outputObjectsName = parameters.getValue(CLUSTER_OBJECTS);
+// String outputObjectsName = parameters.getValue(CLUSTER_OBJECTS,workspace);
 // Objs outputObjects = new Objs(outputObjectsName);
 //
 // // Getting parameters
-// boolean applyVolume = parameters.getValue(APPLY_VOLUME);
-// String clusteringAlgorithm = parameters.getValue(CLUSTERING_ALGORITHM);
-// int kClusters = parameters.getValue(K_CLUSTERS);
-// int maxIterations = parameters.getValue(MAX_ITERATIONS);
-// double eps = parameters.getValue(EPS);
-// int minPoints = parameters.getValue(MIN_POINTS);
-// boolean linkInSameFrame = parameters.getValue(LINK_IN_SAME_FRAME);
+// boolean applyVolume = parameters.getValue(APPLY_VOLUME,workspace);
+// String clusteringAlgorithm = parameters.getValue(CLUSTERING_ALGORITHM,workspace);
+// int kClusters = parameters.getValue(K_CLUSTERS,workspace);
+// int maxIterations = parameters.getValue(MAX_ITERATIONS,workspace);
+// double eps = parameters.getValue(EPS,workspace);
+// int minPoints = parameters.getValue(MIN_POINTS,workspace);
+// boolean linkInSameFrame = parameters.getValue(LINK_IN_SAME_FRAME,workspace);
 //
 // // If there are no input objects skipping this module
 // Obj firstObject = inputObjects.getFirst();
@@ -872,7 +875,7 @@ public class SingleClassCluster extends Module {
 // returnedParameters.add(parameters.getParameter(APPLY_VOLUME));
 //
 // returnedParameters.add(parameters.getParameter(CLUSTERING_ALGORITHM));
-// switch ((String) parameters.getValue(CLUSTERING_ALGORITHM)) {
+// switch ((String) parameters.getValue(CLUSTERING_ALGORITHM,workspace)) {
 // case ClusteringAlgorithms.DBSCAN:
 // returnedParameters.add(parameters.getParameter(EPS));
 // returnedParameters.add(parameters.getParameter(MIN_POINTS));
@@ -911,8 +914,8 @@ public class SingleClassCluster extends Module {
 // public ParentChildRefs updateAndGetParentChildRefs() {
 // ParentChildRefs returnedRelationships = new ParentChildRefs();
 //
-// String clusterObjectsName = parameters.getValue(CLUSTER_OBJECTS);
-// String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+// String clusterObjectsName = parameters.getValue(CLUSTER_OBJECTS,workspace);
+// String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
 //
 // returnedRelationships.add(parentChildRefs.getOrPut(clusterObjectsName,inputObjectsName));
 //

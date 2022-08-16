@@ -7,10 +7,9 @@ import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.object.Image;
 import io.github.mianalysis.mia.object.Measurement;
-import io.github.mianalysis.mia.object.Status;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.image.Image;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.ImageMeasurementP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
@@ -23,6 +22,7 @@ import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
+import io.github.mianalysis.mia.object.system.Status;
 
 /**
  * Created by Stephen Cross on 19/03/2019.
@@ -83,10 +83,6 @@ public class ImageMeasurementCalculator extends Module {
         }
     }
 
-    public static String getFullName(String measurementName) {
-        return "MEASUREMENT_CALCULATOR // " + measurementName;
-    }
-
     @Override
     public Category getCategory() {
         return Categories.IMAGES_MEASURE;
@@ -100,19 +96,19 @@ public class ImageMeasurementCalculator extends Module {
 
     @Override
     protected Status process(Workspace workspace) {
-        String inputImageName = parameters.getValue(INPUT_IMAGE);
+        String inputImageName = parameters.getValue(INPUT_IMAGE,workspace);
         Image inputImage = workspace.getImage(inputImageName);
 
-        String valueMode1 = parameters.getValue(VALUE_MODE_1);
-        double fixedValue1 = parameters.getValue(FIXED_VALUE_1);
-        String measurementName1 = parameters.getValue(MEASUREMENT_1);
+        String valueMode1 = parameters.getValue(VALUE_MODE_1,workspace);
+        double fixedValue1 = parameters.getValue(FIXED_VALUE_1,workspace);
+        String measurementName1 = parameters.getValue(MEASUREMENT_1,workspace);
 
-        String valueMode2 = parameters.getValue(VALUE_MODE_2);
-        double fixedValue2 = parameters.getValue(FIXED_VALUE_2);
-        String measurementName2 = parameters.getValue(MEASUREMENT_2);
+        String valueMode2 = parameters.getValue(VALUE_MODE_2,workspace);
+        double fixedValue2 = parameters.getValue(FIXED_VALUE_2,workspace);
+        String measurementName2 = parameters.getValue(MEASUREMENT_2,workspace);
 
-        String outputMeasurementName = getFullName(parameters.getValue(OUTPUT_MEASUREMENT));
-        String calculationMode = parameters.getValue(CALCULATION_MODE);
+        String outputMeasurementName = parameters.getValue(OUTPUT_MEASUREMENT,workspace);
+        String calculationMode = parameters.getValue(CALCULATION_MODE,workspace);
 
         // Getting value 1
         double value1 = 0;
@@ -175,16 +171,17 @@ public class ImageMeasurementCalculator extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
+Workspace workspace = null;
         Parameters returnedParams = new Parameters();
 
-        String inputImageName = parameters.getValue(INPUT_IMAGE);
+        String inputImageName = parameters.getValue(INPUT_IMAGE,workspace);
 
         returnedParams.add(parameters.getParameter(INPUT_SEPARATOR));
         returnedParams.add(parameters.getParameter(INPUT_IMAGE));
 
         returnedParams.add(parameters.getParameter(VALUE_SEPARATOR_1));
         returnedParams.add(parameters.getParameter(VALUE_MODE_1));
-        switch ((String) parameters.getValue(VALUE_MODE_1)) {
+        switch ((String) parameters.getValue(VALUE_MODE_1,workspace)) {
             case ValueModes.FIXED:
                 returnedParams.add(parameters.getParameter(FIXED_VALUE_1));
                 break;
@@ -197,7 +194,7 @@ public class ImageMeasurementCalculator extends Module {
 
         returnedParams.add(parameters.getParameter(VALUE_SEPARATOR_2));
         returnedParams.add(parameters.getParameter(VALUE_MODE_2));
-        switch ((String) parameters.getValue(VALUE_MODE_2)) {
+        switch ((String) parameters.getValue(VALUE_MODE_2,workspace)) {
             case ValueModes.FIXED:
                 returnedParams.add(parameters.getParameter(FIXED_VALUE_2));
                 break;
@@ -218,11 +215,12 @@ public class ImageMeasurementCalculator extends Module {
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
+Workspace workspace = null;
         ImageMeasurementRefs returnedRefs = new ImageMeasurementRefs();
 
         // Creating new MeasurementRef
-        String inputImageName = parameters.getValue(INPUT_IMAGE);
-        String measurementName = getFullName(parameters.getValue(OUTPUT_MEASUREMENT));
+        String inputImageName = parameters.getValue(INPUT_IMAGE,null);
+        String measurementName = parameters.getValue(OUTPUT_MEASUREMENT,null);
 
         returnedRefs.add(imageMeasurementRefs.getOrPut(measurementName).setImageName(inputImageName));
 
@@ -231,23 +229,23 @@ public class ImageMeasurementCalculator extends Module {
     }
 
     @Override
-    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
-        return null;
+public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+return null;
     }
 
     @Override
-    public MetadataRefs updateAndGetMetadataReferences() {
-        return null;
+public MetadataRefs updateAndGetMetadataReferences() {
+return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
-        return null;
+return null;
     }
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
-        return null;
+return null;
     }
 
     @Override

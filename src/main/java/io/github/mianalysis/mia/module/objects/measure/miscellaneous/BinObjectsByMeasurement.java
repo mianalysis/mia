@@ -10,7 +10,6 @@ import org.scijava.plugin.Plugin;
 import io.github.mianalysis.mia.object.Measurement;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
-import io.github.mianalysis.mia.object.Status;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.parameters.InputObjectsP;
 import io.github.mianalysis.mia.object.parameters.ObjectMeasurementP;
@@ -24,6 +23,7 @@ import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
+import io.github.mianalysis.mia.object.system.Status;
 
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class BinObjectsByMeasurement extends Module {
@@ -61,14 +61,14 @@ public class BinObjectsByMeasurement extends Module {
     @Override
     public Status process(Workspace workspace) {
         // Getting input objects
-        String inputObjectName = parameters.getValue(INPUT_OBJECTS);
+        String inputObjectName = parameters.getValue(INPUT_OBJECTS,workspace);
         Objs inputObjects = workspace.getObjects().get(inputObjectName);
 
         // Getting parameters
-        String measurementName = parameters.getValue(MEASUREMENT);
-        double smallestBin = parameters.getValue(SMALLEST_BIN_CENTRE);
-        double largestBin = parameters.getValue(LARGEST_BIN_CENTRE);
-        int numberOfBins = parameters.getValue(NUMBER_OF_BINS);
+        String measurementName = parameters.getValue(MEASUREMENT,workspace);
+        double smallestBin = parameters.getValue(SMALLEST_BIN_CENTRE,workspace);
+        double largestBin = parameters.getValue(LARGEST_BIN_CENTRE,workspace);
+        int numberOfBins = parameters.getValue(NUMBER_OF_BINS,workspace);
 
         double binWidth = (largestBin - smallestBin) / (numberOfBins - 1);
 
@@ -118,7 +118,8 @@ public class BinObjectsByMeasurement extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
-        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+Workspace workspace = null;
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
         ((ObjectMeasurementP) parameters.getParameter(MEASUREMENT)).setObjectName(inputObjectsName);
 
         return parameters;
@@ -126,15 +127,16 @@ public class BinObjectsByMeasurement extends Module {
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
-        return null;
+return null;
     }
 
     @Override
-    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+Workspace workspace = null;
         ObjMeasurementRefs returnedRefs = new ObjMeasurementRefs();
 
-        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
-        String measurement = parameters.getValue(MEASUREMENT);
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
+        String measurement = parameters.getValue(MEASUREMENT,workspace);
 
         String name = getFullName(measurement);
         ObjMeasurementRef binMeasurement = objectMeasurementRefs.getOrPut(name);
@@ -146,18 +148,18 @@ public class BinObjectsByMeasurement extends Module {
     }
 
     @Override
-    public MetadataRefs updateAndGetMetadataReferences() {
-        return null;
+public MetadataRefs updateAndGetMetadataReferences() {
+return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
-        return null;
+return null;
     }
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
-        return null;
+return null;
     }
 
     @Override

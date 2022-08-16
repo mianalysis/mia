@@ -124,7 +124,7 @@ public class HelpPanel extends JPanel {
         // Adding title to help window
         JTextPane usageMessage = new JTextPane();
         usageMessage.setContentType("text/html");
-        usageMessage.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
+        usageMessage.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 14));
         usageMessage.setText(
                 "<html><center><font face=\"sans-serif\" size=\"3\">" + "Click a module title to<br>see help about it"
                         + "<br><br>" + "To hide this, click the X button or<br>go to View > Show help panel" + "</font></center></html>");

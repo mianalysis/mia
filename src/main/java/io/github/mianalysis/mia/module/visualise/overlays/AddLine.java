@@ -12,11 +12,12 @@ import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.Module;
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
-import io.github.mianalysis.mia.object.Image;
+
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
-import io.github.mianalysis.mia.object.Status;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.ImageMeasurementP;
@@ -32,6 +33,7 @@ import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
+import io.github.mianalysis.mia.object.system.Status;
 import io.github.mianalysis.mia.process.ColourFactory;
 import io.github.sjcross.sjcommon.object.Point;
 
@@ -148,41 +150,41 @@ public class AddLine extends AbstractOverlay {
     @Override
     protected Status process(final Workspace workspace) {
         // Getting parameters
-        boolean applyToInput = parameters.getValue(APPLY_TO_INPUT);
-        boolean addOutputToWorkspace = parameters.getValue(ADD_OUTPUT_TO_WORKSPACE);
-        String outputImageName = parameters.getValue(OUTPUT_IMAGE);
+        boolean applyToInput = parameters.getValue(APPLY_TO_INPUT,workspace);
+        boolean addOutputToWorkspace = parameters.getValue(ADD_OUTPUT_TO_WORKSPACE,workspace);
+        String outputImageName = parameters.getValue(OUTPUT_IMAGE,workspace);
 
         // Getting input objects
-        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
         Objs inputObjects = workspace.getObjects().get(inputObjectsName);
 
         // Getting input image
-        String inputImageName = parameters.getValue(INPUT_IMAGE);
+        String inputImageName = parameters.getValue(INPUT_IMAGE,workspace);
         Image inputImage = workspace.getImages().get(inputImageName);
         ImagePlus ipl = inputImage.getImagePlus();
 
-        final String refMode1 = parameters.getValue(REFERENCE_MODE_1);
-        final String referenceImageName1 = parameters.getValue(REFERENCE_IMAGE_1);
-        final String xPosMeasIm1 = parameters.getValue(X_POSITION_MEASUREMENT_IM_1);
-        final String yPosMeasIm1 = parameters.getValue(Y_POSITION_MEASUREMENT_IM_1);
-        // final String zPosMeasIm1 = parameters.getValue(Z_POSITION_MEASUREMENT_IM_1);
-        final String xPosMeasObj1 = parameters.getValue(X_POSITION_MEASUREMENT_OBJ_1);
-        final String yPosMeasObj1 = parameters.getValue(Y_POSITION_MEASUREMENT_OBJ_1);
+        final String refMode1 = parameters.getValue(REFERENCE_MODE_1,workspace);
+        final String referenceImageName1 = parameters.getValue(REFERENCE_IMAGE_1,workspace);
+        final String xPosMeasIm1 = parameters.getValue(X_POSITION_MEASUREMENT_IM_1,workspace);
+        final String yPosMeasIm1 = parameters.getValue(Y_POSITION_MEASUREMENT_IM_1,workspace);
+        // final String zPosMeasIm1 = parameters.getValue(Z_POSITION_MEASUREMENT_IM_1,workspace);
+        final String xPosMeasObj1 = parameters.getValue(X_POSITION_MEASUREMENT_OBJ_1,workspace);
+        final String yPosMeasObj1 = parameters.getValue(Y_POSITION_MEASUREMENT_OBJ_1,workspace);
         // final String zPosMeasObj1 =
-        // parameters.getValue(Z_POSITION_MEASUREMENT_OBJ_1);
+        // parameters.getValue(Z_POSITION_MEASUREMENT_OBJ_1,workspace);
 
-        final String refMode2 = parameters.getValue(REFERENCE_MODE_2);
-        final String referenceImageName2 = parameters.getValue(REFERENCE_IMAGE_2);
-        final String xPosMeasIm2 = parameters.getValue(X_POSITION_MEASUREMENT_IM_2);
-        final String yPosMeasIm2 = parameters.getValue(Y_POSITION_MEASUREMENT_IM_2);
-        // final String zPosMeasIm2 = parameters.getValue(Z_POSITION_MEASUREMENT_IM_2);
-        final String xPosMeasObj2 = parameters.getValue(X_POSITION_MEASUREMENT_OBJ_2);
-        final String yPosMeasObj2 = parameters.getValue(Y_POSITION_MEASUREMENT_OBJ_2);
+        final String refMode2 = parameters.getValue(REFERENCE_MODE_2,workspace);
+        final String referenceImageName2 = parameters.getValue(REFERENCE_IMAGE_2,workspace);
+        final String xPosMeasIm2 = parameters.getValue(X_POSITION_MEASUREMENT_IM_2,workspace);
+        final String yPosMeasIm2 = parameters.getValue(Y_POSITION_MEASUREMENT_IM_2,workspace);
+        // final String zPosMeasIm2 = parameters.getValue(Z_POSITION_MEASUREMENT_IM_2,workspace);
+        final String xPosMeasObj2 = parameters.getValue(X_POSITION_MEASUREMENT_OBJ_2,workspace);
+        final String yPosMeasObj2 = parameters.getValue(Y_POSITION_MEASUREMENT_OBJ_2,workspace);
         // final String zPosMeasObj2 =
-        // parameters.getValue(Z_POSITION_MEASUREMENT_OBJ_2);
+        // parameters.getValue(Z_POSITION_MEASUREMENT_OBJ_2,workspace);
 
-        double lineWidth = parameters.getValue(LINE_WIDTH);
-        boolean multithread = parameters.getValue(ENABLE_MULTITHREADING);
+        double lineWidth = parameters.getValue(LINE_WIDTH,workspace);
+        boolean multithread = parameters.getValue(ENABLE_MULTITHREADING,workspace);
 
         Image referenceImage1 = null;
         if (refMode1.equals(ReferenceModes.IMAGE_MEASUREMENT)) {
@@ -203,7 +205,7 @@ public class AddLine extends AbstractOverlay {
             ipl = new Duplicator().run(ipl);
 
         // Generating colours for each object
-        HashMap<Integer, Color> colours = getColours(inputObjects);
+        HashMap<Integer, Color> colours = getColours(inputObjects, workspace);
 
         for (final Obj inputObject : inputObjects.values()) {
             final Point<Double> pos1;
@@ -242,7 +244,7 @@ public class AddLine extends AbstractOverlay {
 
         }
 
-        Image outputImage = new Image(outputImageName, ipl);
+        Image outputImage = ImageFactory.createImage(outputImageName, ipl);
 
         // If necessary, adding output image to workspace. This also allows us to show
         // it.
@@ -298,6 +300,7 @@ public class AddLine extends AbstractOverlay {
 
     @Override
     public Parameters updateAndGetParameters() {
+Workspace workspace = null;
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
@@ -306,21 +309,21 @@ public class AddLine extends AbstractOverlay {
 
         returnedParameters.add(parameters.getParameter(OUTPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(APPLY_TO_INPUT));
-        if (!(boolean) parameters.getValue(APPLY_TO_INPUT)) {
+        if (!(boolean) parameters.getValue(APPLY_TO_INPUT,workspace)) {
             returnedParameters.add(parameters.getParameter(ADD_OUTPUT_TO_WORKSPACE));
 
-            if ((boolean) parameters.getValue(ADD_OUTPUT_TO_WORKSPACE)) {
+            if ((boolean) parameters.getValue(ADD_OUTPUT_TO_WORKSPACE,workspace)) {
                 returnedParameters.add(parameters.getParameter(OUTPUT_IMAGE));
             }
         }
 
-        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
-        String referenceImageName1 = parameters.getValue(REFERENCE_IMAGE_1);
-        String referenceImageName2 = parameters.getValue(REFERENCE_IMAGE_2);
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
+        String referenceImageName1 = parameters.getValue(REFERENCE_IMAGE_1,workspace);
+        String referenceImageName2 = parameters.getValue(REFERENCE_IMAGE_2,workspace);
 
         returnedParameters.add(parameters.getParameter(REFERENCE_SEPARATOR));
         returnedParameters.add(parameters.getParameter(REFERENCE_MODE_1));
-        switch ((String) parameters.getValue(REFERENCE_MODE_1)) {
+        switch ((String) parameters.getValue(REFERENCE_MODE_1,workspace)) {
             case ReferenceModes.IMAGE_MEASUREMENT:
                 returnedParameters.add(parameters.getParameter(REFERENCE_IMAGE_1));
                 returnedParameters.add(parameters.getParameter(X_POSITION_MEASUREMENT_IM_1));
@@ -345,7 +348,7 @@ public class AddLine extends AbstractOverlay {
         }
 
         returnedParameters.add(parameters.getParameter(REFERENCE_MODE_2));
-        switch ((String) parameters.getValue(REFERENCE_MODE_2)) {
+        switch ((String) parameters.getValue(REFERENCE_MODE_2,workspace)) {
             case ReferenceModes.IMAGE_MEASUREMENT:
                 returnedParameters.add(parameters.getParameter(REFERENCE_IMAGE_2));
                 returnedParameters.add(parameters.getParameter(X_POSITION_MEASUREMENT_IM_2));
@@ -389,28 +392,27 @@ public class AddLine extends AbstractOverlay {
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
-        return null;
+return null;
     }
 
     @Override
-    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
-        return null;
-
+public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+return null;
     }
 
     @Override
-    public MetadataRefs updateAndGetMetadataReferences() {
-        return null;
+public MetadataRefs updateAndGetMetadataReferences() {
+return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
-        return null;
+return null;
     }
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
-        return null;
+return null;
     }
 
     @Override

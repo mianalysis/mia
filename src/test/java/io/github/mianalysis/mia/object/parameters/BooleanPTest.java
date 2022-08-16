@@ -23,7 +23,7 @@ public class BooleanPTest {
 
         assertEquals("TestBoo",duplicated.getName());
         assertEquals(paramTest,duplicated.getModule());
-        assertTrue((Boolean) duplicated.getValue());
+        assertTrue((Boolean) duplicated.getValue(null));
 
     }
 
@@ -33,13 +33,13 @@ public class BooleanPTest {
         ParamTest paramTest = new ParamTest(modules);
 
         BooleanP booleanP = new BooleanP("TestBoo",paramTest,true);
-        assertTrue((Boolean) booleanP.getValue());
+        assertTrue((Boolean) booleanP.getValue(null));
 
         booleanP.flipBoolean();
-        assertFalse((Boolean) booleanP.getValue());
+        assertFalse((Boolean) booleanP.getValue(null));
 
         booleanP.flipBoolean();
-        assertTrue((Boolean) booleanP.getValue());
+        assertTrue((Boolean) booleanP.getValue(null));
 
     }
 
@@ -71,10 +71,10 @@ public class BooleanPTest {
         ParamTest paramTest = new ParamTest(modules);
 
         BooleanP booleanP = new BooleanP("TestBoo",paramTest,false);
-        assertFalse((Boolean) booleanP.getValue());
+        assertFalse((Boolean) booleanP.getValue(null));
 
         booleanP.setValueFromString("true");
-        assertTrue((Boolean) booleanP.getValue());
+        assertTrue((Boolean) booleanP.getValue(null));
 
     }
 
@@ -84,10 +84,10 @@ public class BooleanPTest {
         ParamTest paramTest = new ParamTest(modules);
 
         BooleanP booleanP = new BooleanP("TestBoo",paramTest,true);
-        assertTrue((Boolean) booleanP.getValue());
+        assertTrue((Boolean) booleanP.getValue(null));
 
         booleanP.setValueFromString("false");
-        assertFalse((Boolean) booleanP.getValue());
+        assertFalse((Boolean) booleanP.getValue(null));
 
     }
 
@@ -157,7 +157,7 @@ public class BooleanPTest {
 
         assertEquals("TestBoo",booleanP.getName());
         assertEquals("New nick",booleanP.getNickname());
-        assertFalse((Boolean) booleanP.getValue());
+        assertFalse((Boolean) booleanP.getValue(null));
         assertFalse((Boolean) booleanP.isVisible());
 
     }

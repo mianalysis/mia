@@ -29,9 +29,9 @@ import io.github.mianalysis.mia.module.images.process.binary.BinaryOperations2D;
 import io.github.mianalysis.mia.module.images.transform.ExtractSubstack;
 import io.github.mianalysis.mia.module.inputoutput.ImageSaver;
 import io.github.mianalysis.mia.module.objects.measure.intensity.MeasureIntensityAlongPath;
-import io.github.mianalysis.mia.object.Image;
-import io.github.mianalysis.mia.object.Status;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
@@ -44,6 +44,7 @@ import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
+import io.github.mianalysis.mia.object.system.Status;
 
 /**
  * Created by sc13967 on 12/05/2017.
@@ -251,18 +252,18 @@ public class MeasureGreyscaleKFunction extends Module {
 
     @Override
     public Status process(Workspace workspace) {
-        String inputImageName = parameters.getValue(INPUT_IMAGE);
-        boolean useMask = parameters.getValue(USE_MASK);
-        String maskImageName = parameters.getValue(MASK_IMAGE);
-        int minRadius = parameters.getValue(MINIMUM_RADIUS_PX);
-        int maxRadius = parameters.getValue(MAXIMUM_RADIUS_PX);
-        int radiusInc = parameters.getValue(RADIUS_INCREMENT);
+        String inputImageName = parameters.getValue(INPUT_IMAGE,workspace);
+        boolean useMask = parameters.getValue(USE_MASK,workspace);
+        String maskImageName = parameters.getValue(MASK_IMAGE,workspace);
+        int minRadius = parameters.getValue(MINIMUM_RADIUS_PX,workspace);
+        int maxRadius = parameters.getValue(MAXIMUM_RADIUS_PX,workspace);
+        int radiusInc = parameters.getValue(RADIUS_INCREMENT,workspace);
 
-        String saveNameMode = parameters.getValue(SAVE_NAME_MODE);
-        String saveFileName = parameters.getValue(SAVE_FILE_NAME);
-        String appendSeriesMode = parameters.getValue(APPEND_SERIES_MODE);
-        String appendDateTimeMode = parameters.getValue(APPEND_DATETIME_MODE);
-        String suffix = parameters.getValue(SAVE_SUFFIX);
+        String saveNameMode = parameters.getValue(SAVE_NAME_MODE,workspace);
+        String saveFileName = parameters.getValue(SAVE_FILE_NAME,workspace);
+        String appendSeriesMode = parameters.getValue(APPEND_SERIES_MODE,workspace);
+        String appendDateTimeMode = parameters.getValue(APPEND_DATETIME_MODE,workspace);
+        String suffix = parameters.getValue(SAVE_SUFFIX,workspace);
 
         SXSSFWorkbook workbook = initialiseWorkbook();
         SXSSFSheet sheet = workbook.getSheetAt(0);
@@ -361,12 +362,13 @@ public class MeasureGreyscaleKFunction extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
+Workspace workspace = null;
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(INPUT_IMAGE));
         returnedParameters.add(parameters.getParameter(USE_MASK));
-        if ((boolean) parameters.getValue(USE_MASK))
+        if ((boolean) parameters.getValue(USE_MASK,workspace))
             returnedParameters.add(parameters.getParameter(MASK_IMAGE));
 
         returnedParameters.add(parameters.getParameter(FUNCTION_SEPARATOR));
@@ -376,7 +378,7 @@ public class MeasureGreyscaleKFunction extends Module {
 
         returnedParameters.add(parameters.getParameter(FILE_SAVING_SEPARATOR));
         returnedParameters.add(parameters.getParameter(SAVE_NAME_MODE));
-        switch ((String) parameters.getValue(SAVE_NAME_MODE)) {
+        switch ((String) parameters.getValue(SAVE_NAME_MODE,workspace)) {
             case SaveNameModes.SPECIFIC_NAME:
                 returnedParameters.add(parameters.getParameter(SAVE_FILE_NAME));
                 break;
@@ -392,28 +394,27 @@ public class MeasureGreyscaleKFunction extends Module {
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
-        return null;
-
+return null;
     }
 
     @Override
-    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
-        return null;
+public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+return null;
     }
 
     @Override
-    public MetadataRefs updateAndGetMetadataReferences() {
-        return null;
+public MetadataRefs updateAndGetMetadataReferences() {
+return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
-        return null;
+return null;
     }
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
-        return null;
+return null;
     }
 
     @Override

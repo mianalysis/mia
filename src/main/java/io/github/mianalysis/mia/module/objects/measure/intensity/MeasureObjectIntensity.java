@@ -13,12 +13,12 @@ import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.images.transform.ExtractSubstack;
-import io.github.mianalysis.mia.object.Image;
 import io.github.mianalysis.mia.object.Measurement;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
-import io.github.mianalysis.mia.object.Status;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
 import io.github.mianalysis.mia.object.parameters.InputObjectsP;
@@ -30,6 +30,7 @@ import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
+import io.github.mianalysis.mia.object.system.Status;
 import io.github.sjcross.sjcommon.mathfunc.CumStat;
 import io.github.sjcross.sjcommon.object.Point;
 
@@ -160,11 +161,11 @@ public class MeasureObjectIntensity extends Module {
     @Override
     public Status process(Workspace workspace) {
         // Getting input objects
-        String objectName = parameters.getValue(INPUT_OBJECTS);
+        String objectName = parameters.getValue(INPUT_OBJECTS,workspace);
         Objs objects = workspace.getObjects().get(objectName);
 
         // Getting input image
-        String imageName = parameters.getValue(INPUT_IMAGE);
+        String imageName = parameters.getValue(INPUT_IMAGE,workspace);
         Image inputImage = workspace.getImages().get(imageName);
 
         // Measuring intensity for each object and adding the measurement to that object
@@ -174,7 +175,7 @@ public class MeasureObjectIntensity extends Module {
             measureIntensity(object, inputImage,true);
 
             // If specified, measuring weighted centre for intensity
-            if ((boolean) parameters.getValue(MEASURE_WEIGHTED_CENTRE))
+            if ((boolean) parameters.getValue(MEASURE_WEIGHTED_CENTRE,workspace))
                 measureWeightedCentre(object, inputImage, true);
 
             writeProgressStatus(++count, total, "objects");
@@ -203,6 +204,7 @@ public class MeasureObjectIntensity extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
+Workspace workspace = null;
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
@@ -218,15 +220,16 @@ public class MeasureObjectIntensity extends Module {
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
-        return null;
+return null;
     }
 
     @Override
-    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+Workspace workspace = null;
         ObjMeasurementRefs returnedRefs = new ObjMeasurementRefs();
 
-        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
-        String inputImageName = parameters.getValue(INPUT_IMAGE);
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
+        String inputImageName = parameters.getValue(INPUT_IMAGE,workspace);
 
         String name = getFullName(inputImageName, Measurements.MEAN);
         ObjMeasurementRef mean = objectMeasurementRefs.getOrPut(name);
@@ -263,7 +266,7 @@ public class MeasureObjectIntensity extends Module {
                 + " \"" + inputObjectsName + "\" object");
         returnedRefs.add(sum);
 
-        if ((boolean) parameters.getValue(MEASURE_WEIGHTED_CENTRE)) {
+        if ((boolean) parameters.getValue(MEASURE_WEIGHTED_CENTRE,workspace)) {
             name = getFullName(inputImageName, Measurements.X_CENT_MEAN);
             ObjMeasurementRef reference = objectMeasurementRefs.getOrPut(name);
             reference.setObjectsName(inputObjectsName);
@@ -316,18 +319,18 @@ public class MeasureObjectIntensity extends Module {
     }
 
     @Override
-    public MetadataRefs updateAndGetMetadataReferences() {
-        return null;
+public MetadataRefs updateAndGetMetadataReferences() {
+return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
-        return null;
+return null;
     }
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
-        return null;
+return null;
     }
 
     @Override

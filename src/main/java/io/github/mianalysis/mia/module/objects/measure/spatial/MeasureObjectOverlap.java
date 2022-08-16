@@ -17,7 +17,6 @@ import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.Measurement;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
-import io.github.mianalysis.mia.object.Status;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
@@ -30,6 +29,7 @@ import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
+import io.github.mianalysis.mia.object.system.Status;
 import io.github.sjcross.sjcommon.object.volume.Volume;
 
 /**
@@ -110,13 +110,13 @@ public class MeasureObjectOverlap extends Module {
 
     @Override
     public Status process(Workspace workspace) {
-        String objectSourceMode = parameters.getValue(OBJECT_SOURCE_MODE);
+        String objectSourceMode = parameters.getValue(OBJECT_SOURCE_MODE,workspace);
 
         // Getting input objects
-        String inputObjects1Name = parameters.getValue(OBJECT_SET_1);
+        String inputObjects1Name = parameters.getValue(OBJECT_SET_1,workspace);
         Objs inputObjects1 = workspace.getObjects().get(inputObjects1Name);
 
-        String inputObjects2Name = parameters.getValue(OBJECT_SET_2);
+        String inputObjects2Name = parameters.getValue(OBJECT_SET_2,workspace);
         Objs inputObjects2;
 
         switch (objectSourceMode) {
@@ -135,8 +135,8 @@ public class MeasureObjectOverlap extends Module {
         }
 
         // Getting parameters
-        boolean linkInSameFrame = parameters.getValue(LINK_IN_SAME_FRAME);
-        boolean multithread = parameters.getValue(ENABLE_MULTITHREADING);
+        boolean linkInSameFrame = parameters.getValue(LINK_IN_SAME_FRAME,workspace);
+        boolean multithread = parameters.getValue(ENABLE_MULTITHREADING,workspace);
 
         // Configuring multithreading
         int nThreads = multithread ? Prefs.getThreads() : 1;
@@ -241,11 +241,12 @@ public class MeasureObjectOverlap extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
+Workspace workspace = null;
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(OBJECT_SOURCE_MODE));
-        switch ((String) parameters.getValue(OBJECT_SOURCE_MODE)) {
+        switch ((String) parameters.getValue(OBJECT_SOURCE_MODE,workspace)) {
             case ObjectSourceModes.DIFFERENT_CLASSES:
                 returnedParameters.add(parameters.getParameter(OBJECT_SET_1));
                 returnedParameters.add(parameters.getParameter(OBJECT_SET_2));
@@ -266,15 +267,16 @@ public class MeasureObjectOverlap extends Module {
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
-        return null;
+return null;
     }
 
     @Override
-    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+Workspace workspace = null;
         ObjMeasurementRefs returnedRefs = new ObjMeasurementRefs();
-        String objects1Name = parameters.getValue(OBJECT_SET_1);
-        String objects2Name = parameters.getValue(OBJECT_SET_2);
-        if (((String) parameters.getValue(OBJECT_SOURCE_MODE)).equals(ObjectSourceModes.SAME_CLASS))
+        String objects1Name = parameters.getValue(OBJECT_SET_1,workspace);
+        String objects2Name = parameters.getValue(OBJECT_SET_2,workspace);
+        if (((String) parameters.getValue(OBJECT_SOURCE_MODE,workspace)).equals(ObjectSourceModes.SAME_CLASS))
             objects2Name = objects1Name;
 
         String name = getFullName(objects2Name, Measurements.OVERLAP_VOX_1);
@@ -322,18 +324,18 @@ public class MeasureObjectOverlap extends Module {
     }
 
     @Override
-    public MetadataRefs updateAndGetMetadataReferences() {
-        return null;
+public MetadataRefs updateAndGetMetadataReferences() {
+return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
-        return null;
+return null;
     }
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
-        return null;
+return null;
     }
 
     @Override

@@ -14,6 +14,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 
+import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.inputoutput.ImageLoader;
 import io.github.mianalysis.mia.module.objects.detect.IdentifyObjects;
@@ -465,12 +466,12 @@ public class ChildObjectsPTest {
         element.setAttribute("NICKNAME","New nick");
         element.setAttribute("VALUE","Demo obj");
         element.setAttribute("VISIBLE","false");
-
+        
         childObjectsP.setAttributesFromXML(element);
 
         assertEquals("Test param",childObjectsP.getName());
         assertEquals("New nick",childObjectsP.getNickname());
-        assertEquals("Demo obj", childObjectsP.getValue());
+        assertEquals("Demo obj", childObjectsP.getValue(null));
         assertFalse(childObjectsP.isVisible());
 
     }

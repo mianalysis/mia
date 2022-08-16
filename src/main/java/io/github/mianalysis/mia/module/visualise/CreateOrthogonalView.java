@@ -23,11 +23,12 @@ import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.Module;
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
-import io.github.mianalysis.mia.object.Image;
+
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
-import io.github.mianalysis.mia.object.Status;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
 import io.github.mianalysis.mia.object.parameters.InputObjectsP;
@@ -39,6 +40,7 @@ import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
+import io.github.mianalysis.mia.object.system.Status;
 
 /**
  * Created by sc13967 on 05/02/2018.
@@ -180,14 +182,14 @@ public class CreateOrthogonalView<T extends RealType<T> & NativeType<T>> extends
     @Override
     public Status process(Workspace workspace) {
         // Loading image
-        String inputImageName = parameters.getValue(INPUT_IMAGE);
+        String inputImageName = parameters.getValue(INPUT_IMAGE,workspace);
         Image inputImage = workspace.getImage(inputImageName);
         Img<T> inputImg = inputImage.getImgPlus();
 
         // Getting parameters
-        String outputImageName = parameters.getValue(OUTPUT_IMAGE);
-        String positionMode = parameters.getValue(POSITION_MODE);
-        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+        String outputImageName = parameters.getValue(OUTPUT_IMAGE,workspace);
+        String positionMode = parameters.getValue(POSITION_MODE,workspace);
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
 
         // Getting input image dimensions
         double xCal = ((ImgPlus<T>) inputImg).averageScale(0);
@@ -228,7 +230,7 @@ public class CreateOrthogonalView<T extends RealType<T> & NativeType<T>> extends
 
         // Adding image to workspace
         ImagePlus outputImagePlus = ImageJFunctions.wrap(orthoImg, outputImageName);
-        Image outputImage = new Image(outputImageName, outputImagePlus);
+        Image outputImage = ImageFactory.createImage(outputImageName, outputImagePlus);
         workspace.addImage(outputImage);
 
         // Displaying the image
@@ -256,6 +258,7 @@ public class CreateOrthogonalView<T extends RealType<T> & NativeType<T>> extends
 
     @Override
     public Parameters updateAndGetParameters() {
+Workspace workspace = null;
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
@@ -264,7 +267,7 @@ public class CreateOrthogonalView<T extends RealType<T> & NativeType<T>> extends
 
         returnedParameters.add(parameters.getParameter(ORTHO_SEPARATOR));
         returnedParameters.add(parameters.getParameter(POSITION_MODE));
-        switch ((String) parameters.getValue(POSITION_MODE)) {
+        switch ((String) parameters.getValue(POSITION_MODE,workspace)) {
             case PositionModes.LARGEST_OBJ_CENTROID:
                 returnedParameters.add(parameters.getParameter(INPUT_OBJECTS));
                 break;
@@ -276,27 +279,27 @@ public class CreateOrthogonalView<T extends RealType<T> & NativeType<T>> extends
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
-        return null;
+return null;
     }
 
     @Override
-    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
-        return null;
+public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+return null;
     }
 
     @Override
-    public MetadataRefs updateAndGetMetadataReferences() {
-        return null;
+public MetadataRefs updateAndGetMetadataReferences() {
+return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
-        return null;
+return null;
     }
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
-        return null;
+return null;
     }
 
     @Override

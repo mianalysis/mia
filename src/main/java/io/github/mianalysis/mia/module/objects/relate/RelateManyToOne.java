@@ -17,12 +17,12 @@ import io.github.mianalysis.mia.module.Module;
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
 
-import io.github.mianalysis.mia.object.Image;
 import io.github.mianalysis.mia.object.Measurement;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
-import io.github.mianalysis.mia.object.Status;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputObjectsP;
@@ -35,6 +35,7 @@ import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
+import io.github.mianalysis.mia.object.system.Status;
 import io.github.mianalysis.mia.object.units.SpatialUnit;
 import io.github.sjcross.sjcommon.object.Point;
 
@@ -508,23 +509,23 @@ public class RelateManyToOne extends Module {
     @Override
     protected Status process(Workspace workspace) {
         // Getting input objects
-        String parentObjectName = parameters.getValue(PARENT_OBJECTS);
+        String parentObjectName = parameters.getValue(PARENT_OBJECTS,workspace);
         Objs parentObjects = workspace.getObjects().get(parentObjectName);
 
-        String childObjectName = parameters.getValue(CHILD_OBJECTS);
+        String childObjectName = parameters.getValue(CHILD_OBJECTS,workspace);
         Objs childObjects = workspace.getObjects().get(childObjectName);
 
         // Getting parameters
-        String relateMode = parameters.getValue(RELATE_MODE);
-        boolean linkInSameFrame = parameters.getValue(LINK_IN_SAME_FRAME);
-        String referenceMode = parameters.getValue(REFERENCE_MODE);
-        boolean limitLinking = parameters.getValue(LIMIT_LINKING_BY_DISTANCE);
-        double linkingDistance = parameters.getValue(LINKING_DISTANCE);
-        String insideOutsideMode = parameters.getValue(INSIDE_OUTSIDE_MODE);
-        double minOverlap = parameters.getValue(MINIMUM_OVERLAP);
-        boolean centroidOverlap = parameters.getValue(REQUIRE_CENTROID_OVERLAP);
-        boolean calcFrac = parameters.getValue(CALCULATE_FRACTIONAL_DISTANCE);
-        boolean multithread = parameters.getValue(ENABLE_MULTITHREADING);
+        String relateMode = parameters.getValue(RELATE_MODE,workspace);
+        boolean linkInSameFrame = parameters.getValue(LINK_IN_SAME_FRAME,workspace);
+        String referenceMode = parameters.getValue(REFERENCE_MODE,workspace);
+        boolean limitLinking = parameters.getValue(LIMIT_LINKING_BY_DISTANCE,workspace);
+        double linkingDistance = parameters.getValue(LINKING_DISTANCE,workspace);
+        String insideOutsideMode = parameters.getValue(INSIDE_OUTSIDE_MODE,workspace);
+        double minOverlap = parameters.getValue(MINIMUM_OVERLAP,workspace);
+        boolean centroidOverlap = parameters.getValue(REQUIRE_CENTROID_OVERLAP,workspace);
+        boolean calcFrac = parameters.getValue(CALCULATE_FRACTIONAL_DISTANCE,workspace);
+        boolean multithread = parameters.getValue(ENABLE_MULTITHREADING,workspace);
 
         if (!limitLinking)
             linkingDistance = Double.MAX_VALUE;
@@ -604,6 +605,7 @@ public class RelateManyToOne extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
+Workspace workspace = null;
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
@@ -613,12 +615,12 @@ public class RelateManyToOne extends Module {
         returnedParameters.add(parameters.getParameter(RELATIONSHIP_SEPARATOR));
         returnedParameters.add(parameters.getParameter(RELATE_MODE));
 
-        String referenceMode = parameters.getValue(REFERENCE_MODE);
-        switch ((String) parameters.getValue(RELATE_MODE)) {
+        String referenceMode = parameters.getValue(REFERENCE_MODE,workspace);
+        switch ((String) parameters.getValue(RELATE_MODE,workspace)) {
             case RelateModes.PROXIMITY:
                 returnedParameters.add(parameters.getParameter(REFERENCE_MODE));
                 returnedParameters.add(parameters.getParameter(LIMIT_LINKING_BY_DISTANCE));
-                if ((boolean) parameters.getValue(LIMIT_LINKING_BY_DISTANCE))
+                if ((boolean) parameters.getValue(LIMIT_LINKING_BY_DISTANCE,workspace))
                     returnedParameters.add(parameters.getParameter(LINKING_DISTANCE));
                 
                 if (referenceMode.equals(ReferenceModes.CENTROID_TO_SURFACE)) {
@@ -645,22 +647,23 @@ public class RelateManyToOne extends Module {
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
-        return null;
+return null;
     }
 
     @Override
-    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+Workspace workspace = null;
         ObjMeasurementRefs returnedRefs = new ObjMeasurementRefs();
 
-        String childObjectsName = parameters.getValue(CHILD_OBJECTS);
-        String parentObjectName = parameters.getValue(PARENT_OBJECTS);
+        String childObjectsName = parameters.getValue(CHILD_OBJECTS,workspace);
+        String parentObjectName = parameters.getValue(PARENT_OBJECTS,workspace);
 
         if (parentObjectName == null || childObjectsName == null)
             return returnedRefs;
 
-        switch ((String) parameters.getValue(RELATE_MODE)) {
+        switch ((String) parameters.getValue(RELATE_MODE,workspace)) {
             case RelateModes.PROXIMITY:
-                switch ((String) parameters.getValue(REFERENCE_MODE)) {
+                switch ((String) parameters.getValue(REFERENCE_MODE,workspace)) {
                     case ReferenceModes.CENTROID:
                         String measurementName = getFullName(Measurements.DIST_CENTROID_PX, parentObjectName);
                         ObjMeasurementRef distCentPx = objectMeasurementRefs.getOrPut(measurementName);
@@ -725,7 +728,7 @@ public class RelateManyToOne extends Module {
                         distCentSurfCal.setObjectsName(childObjectsName);
                         returnedRefs.add(distCentSurfCal);
 
-                        if ((boolean) parameters.getValue(CALCULATE_FRACTIONAL_DISTANCE)) {
+                        if ((boolean) parameters.getValue(CALCULATE_FRACTIONAL_DISTANCE,workspace)) {
                             measurementName = getFullName(Measurements.DIST_CENT_SURF_FRAC, parentObjectName);
                             ObjMeasurementRef distCentSurfFrac = objectMeasurementRefs.getOrPut(measurementName);
                             distCentSurfFrac.setDescription(
@@ -770,16 +773,17 @@ public class RelateManyToOne extends Module {
     }
 
     @Override
-    public MetadataRefs updateAndGetMetadataReferences() {
-        return null;
+public MetadataRefs updateAndGetMetadataReferences() {
+return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
+Workspace workspace = null;
         ParentChildRefs returnedRelationships = new ParentChildRefs();
 
         returnedRelationships
-                .add(parentChildRefs.getOrPut(parameters.getValue(PARENT_OBJECTS), parameters.getValue(CHILD_OBJECTS)));
+                .add(parentChildRefs.getOrPut(parameters.getValue(PARENT_OBJECTS,workspace), parameters.getValue(CHILD_OBJECTS,workspace)));
 
         return returnedRelationships;
 
@@ -787,7 +791,7 @@ public class RelateManyToOne extends Module {
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
-        return null;
+return null;
     }
 
     @Override

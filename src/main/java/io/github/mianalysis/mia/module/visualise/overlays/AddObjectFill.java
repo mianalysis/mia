@@ -19,11 +19,11 @@ import org.scijava.plugin.Plugin;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Categories;
-import io.github.mianalysis.mia.object.Image;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
-import io.github.mianalysis.mia.object.Status;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
 import io.github.mianalysis.mia.object.parameters.InputObjectsP;
@@ -34,6 +34,7 @@ import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
+import io.github.mianalysis.mia.object.system.Status;
 import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.process.ColourFactory;
 
@@ -180,32 +181,32 @@ public class AddObjectFill extends AbstractOverlay {
     @Override
     protected Status process(Workspace workspace) {
         // Getting parameters
-        boolean applyToInput = parameters.getValue(APPLY_TO_INPUT);
-        boolean addOutputToWorkspace = parameters.getValue(ADD_OUTPUT_TO_WORKSPACE);
-        String outputImageName = parameters.getValue(OUTPUT_IMAGE);
+        boolean applyToInput = parameters.getValue(APPLY_TO_INPUT,workspace);
+        boolean addOutputToWorkspace = parameters.getValue(ADD_OUTPUT_TO_WORKSPACE,workspace);
+        String outputImageName = parameters.getValue(OUTPUT_IMAGE,workspace);
 
         // Getting input objects
-        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
         Objs inputObjects = workspace.getObjects().get(inputObjectsName);
 
         // Getting input image
-        String inputImageName = parameters.getValue(INPUT_IMAGE);
+        String inputImageName = parameters.getValue(INPUT_IMAGE,workspace);
         Image inputImage = workspace.getImages().get(inputImageName);
         ImagePlus ipl = inputImage.getImagePlus();
 
-        boolean renderInAllFrames = parameters.getValue(RENDER_IN_ALL_FRAMES);
-        boolean multithread = parameters.getValue(ENABLE_MULTITHREADING);
+        boolean renderInAllFrames = parameters.getValue(RENDER_IN_ALL_FRAMES,workspace);
+        boolean multithread = parameters.getValue(ENABLE_MULTITHREADING,workspace);
 
         // Duplicating the image, so the original isn't altered
         if (!applyToInput)
             ipl = new Duplicator().run(ipl);
 
         // Generating colours for each object
-        HashMap<Integer, Color> colours = getColours(inputObjects);
+        HashMap<Integer, Color> colours = getColours(inputObjects, workspace);
 
         addOverlay(ipl, inputObjects, colours, renderInAllFrames, multithread);
 
-        Image outputImage = new Image(outputImageName, ipl);
+        Image outputImage = ImageFactory.createImage(outputImageName, ipl);
 
         // If necessary, adding output image to workspace. This also allows us to show
         // it.
@@ -243,7 +244,8 @@ public class AddObjectFill extends AbstractOverlay {
 
     @Override
     public Parameters updateAndGetParameters() {
-        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+Workspace workspace = null;
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
 
         Parameters returnedParameters = new Parameters();
 
@@ -253,9 +255,9 @@ public class AddObjectFill extends AbstractOverlay {
 
         returnedParameters.add(parameters.getParameter(OUTPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(APPLY_TO_INPUT));
-        if (!(boolean) parameters.getValue(APPLY_TO_INPUT)) {
+        if (!(boolean) parameters.getValue(APPLY_TO_INPUT,workspace)) {
             returnedParameters.add(parameters.getParameter(ADD_OUTPUT_TO_WORKSPACE));
-            if ((boolean) parameters.getValue(ADD_OUTPUT_TO_WORKSPACE)) {
+            if ((boolean) parameters.getValue(ADD_OUTPUT_TO_WORKSPACE,workspace)) {
                 returnedParameters.add(parameters.getParameter(OUTPUT_IMAGE));
             }
         }
@@ -274,27 +276,27 @@ public class AddObjectFill extends AbstractOverlay {
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
-        return null;
+return null;
     }
 
     @Override
-    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
-        return null;
+public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+return null;
     }
 
     @Override
-    public MetadataRefs updateAndGetMetadataReferences() {
-        return null;
+public MetadataRefs updateAndGetMetadataReferences() {
+return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
-        return null;
+return null;
     }
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
-        return null;
+return null;
     }
 
     @Override

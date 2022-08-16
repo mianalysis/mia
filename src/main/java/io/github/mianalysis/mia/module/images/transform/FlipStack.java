@@ -17,9 +17,10 @@ import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
-import io.github.mianalysis.mia.object.Image;
-import io.github.mianalysis.mia.object.Status;
+
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
@@ -31,6 +32,7 @@ import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
+import io.github.mianalysis.mia.object.system.Status;
 import io.github.mianalysis.mia.process.ImgPlusTools;
 
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
@@ -112,7 +114,7 @@ public class FlipStack<T extends RealType<T> & NativeType<T>> extends Module {
         outputImagePlus.setCalibration(inputImage.getImagePlus().getCalibration());
         ImgPlusTools.applyAxes(outputImg,outputImagePlus);
 
-        return new Image(outputImageName,outputImagePlus);
+        return ImageFactory.createImage(outputImageName,outputImagePlus);
 
     }
 
@@ -130,13 +132,13 @@ public class FlipStack<T extends RealType<T> & NativeType<T>> extends Module {
     @Override
     protected Status process(Workspace workspace) {
         // Getting input image
-        String inputImageName = parameters.getValue(INPUT_IMAGE);
+        String inputImageName = parameters.getValue(INPUT_IMAGE,workspace);
         Image inputImage = workspace.getImages().get(inputImageName);
 
         // Getting parameters
-        boolean applyToInput = parameters.getValue(APPLY_TO_INPUT);
-        String outputImageName = parameters.getValue(OUTPUT_IMAGE);
-        String axisMode = parameters.getValue(AXIS_MODE);
+        boolean applyToInput = parameters.getValue(APPLY_TO_INPUT,workspace);
+        String outputImageName = parameters.getValue(OUTPUT_IMAGE,workspace);
+        String axisMode = parameters.getValue(AXIS_MODE,workspace);
 
         // If applying to a new image, the input image is duplicated
         if (applyToInput) outputImageName = inputImageName;
@@ -170,13 +172,14 @@ public class FlipStack<T extends RealType<T> & NativeType<T>> extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
+Workspace workspace = null;
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(INPUT_IMAGE));
         returnedParameters.add(parameters.getParameter(APPLY_TO_INPUT));
 
-        if (!(boolean) parameters.getValue(APPLY_TO_INPUT)) {
+        if (!(boolean) parameters.getValue(APPLY_TO_INPUT,workspace)) {
             returnedParameters.add(parameters.getParameter(OUTPUT_IMAGE));
         }
 
@@ -189,27 +192,27 @@ public class FlipStack<T extends RealType<T> & NativeType<T>> extends Module {
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
-        return null;
+return null;
     }
 
     @Override
-    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
-        return null;
+public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+return null;
     }
 
     @Override
-    public MetadataRefs updateAndGetMetadataReferences() {
-        return null;
+public MetadataRefs updateAndGetMetadataReferences() {
+return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
-        return null;
+return null;
     }
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
-        return null;
+return null;
     }
 
     @Override

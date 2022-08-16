@@ -12,12 +12,14 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.ListCellRenderer;
 
+import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.gui.GUI;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.core.OutputControl;
 import io.github.mianalysis.mia.module.system.GUISeparator;
-import io.github.mianalysis.mia.object.Colours;
 import io.github.mianalysis.mia.object.parameters.ModuleP;
+import io.github.mianalysis.mia.object.system.Colours;
+import io.github.mianalysis.mia.object.system.Preferences;
 
 /**
  * Created by sc13967 on 22/05/2017.
@@ -52,8 +54,8 @@ public class ModuleChoiceParameter extends ParameterControl implements ActionLis
         if (idx <= GUI.getLastModuleEval() & !(parameter.getModule() instanceof OutputControl))
             GUI.setLastModuleEval(idx - 1);
 
-            GUI.updateModules();
-            GUI.updateParameters();
+        GUI.updateModules();
+        GUI.updateParameters();
 
         updateControl();
 
@@ -95,12 +97,15 @@ class ModuleListRenderer extends DefaultListCellRenderer {
             boolean cellHasFocus) {
         Component c = defaultRenderer.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
 
-        if (value == null) 
+        if (value == null)
             return c;
 
+        Preferences preferences = MIA.getPreferences();
+        boolean darkMode = preferences == null ? false : preferences.darkThemeEnabled();
+
         if (c instanceof JLabel && value instanceof GUISeparator)
-            c.setForeground(Colours.DARK_BLUE);
-        
+            c.setForeground(Colours.getDarkBlue(darkMode));
+
         return c;
     }
 }

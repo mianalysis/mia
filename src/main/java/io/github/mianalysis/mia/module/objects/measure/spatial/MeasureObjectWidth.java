@@ -16,12 +16,12 @@ import io.github.mianalysis.mia.module.images.process.binary.DistanceMap;
 import io.github.mianalysis.mia.module.objects.convert.CreateDistanceMap;
 import io.github.mianalysis.mia.module.objects.measure.intensity.MeasureObjectIntensity;
 import io.github.mianalysis.mia.module.objects.relate.mergeobjects.MergeRelatedObjects;
-import io.github.mianalysis.mia.object.Image;
 import io.github.mianalysis.mia.object.Measurement;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
-import io.github.mianalysis.mia.object.Status;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.parameters.InputObjectsP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.SeparatorP;
@@ -31,6 +31,7 @@ import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
+import io.github.mianalysis.mia.object.system.Status;
 import io.github.mianalysis.mia.process.ColourFactory;
 import io.github.sjcross.sjcommon.mathfunc.CumStat;
 import sc.fiji.analyzeSkeleton.SkeletonResult;
@@ -73,7 +74,7 @@ public class MeasureObjectWidth extends Module {
     @Override
     public Status process(Workspace workspace) {
         // Getting current objects
-        String inputObjectName = parameters.getValue(INPUT_OBJECTS);
+        String inputObjectName = parameters.getValue(INPUT_OBJECTS,workspace);
         Objs inputObjects = workspace.getObjects().get(inputObjectName);
 
         HashMap<Integer, Float> hues = ColourFactory.getSingleColourValues(inputObjects, ColourFactory.SingleColours.WHITE);
@@ -131,18 +132,20 @@ public class MeasureObjectWidth extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
+Workspace workspace = null;
         return parameters;
     }
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
-        return null;
+return null;
     }
 
     @Override
-    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+Workspace workspace = null;
         ObjMeasurementRefs returnedRefs = new ObjMeasurementRefs();
-        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
 
         ObjMeasurementRef reference = objectMeasurementRefs.getOrPut(Measurements.MEAN_WIDTH_PX);
         reference.setObjectsName(inputObjectsName);
@@ -181,18 +184,18 @@ public class MeasureObjectWidth extends Module {
     }
 
     @Override
-    public MetadataRefs updateAndGetMetadataReferences() {
-        return null;
+public MetadataRefs updateAndGetMetadataReferences() {
+return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
-        return null;
+return null;
     }
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
-        return null;
+return null;
     }
 
     @Override

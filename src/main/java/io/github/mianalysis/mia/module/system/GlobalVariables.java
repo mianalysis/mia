@@ -13,7 +13,6 @@ import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.object.Status;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
@@ -29,6 +28,7 @@ import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
+import io.github.mianalysis.mia.object.system.Status;
 
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class GlobalVariables extends Module {
@@ -67,10 +67,10 @@ public class GlobalVariables extends Module {
 
         while (matcher.find()) {
             String fullName = matcher.group(0);
-            String metadataName = matcher.group(1);
+            String variableName = matcher.group(1);
 
             for (StringP nameP : globalVariables.keySet()) {
-                if (nameP.getValue().equals(metadataName)) {
+                if (nameP.getValue(null).equals(variableName)) {
                     String value = globalVariables.get(nameP);
                     string = string.replace(fullName, value);
                     break;
@@ -93,7 +93,7 @@ public class GlobalVariables extends Module {
 
             boolean found = false;
             for (StringP name : globalVariables.keySet()) {
-                if (name.getValue().equals(metadataName)) {
+                if (name.getValue(null).equals(metadataName)) {
                     found = true;
                     break;
                 }
@@ -145,32 +145,32 @@ public class GlobalVariables extends Module {
 
     @Override
     protected Status process(Workspace workspace) {
-        LinkedHashMap<Integer, Parameters> collections = parameters.getValue(ADD_NEW_VARIABLE);
+        LinkedHashMap<Integer, Parameters> collections = parameters.getValue(ADD_NEW_VARIABLE,workspace);
 
         for (Parameters collection : collections.values()) {
-            if ((boolean) collection.getValue(STORE_AS_METADATA_ITEM)) {
-                String variableName = collection.getValue(VARIABLE_NAME);
-                String variableType = collection.getValue(VARIABLE_TYPE);
+            if ((boolean) collection.getValue(STORE_AS_METADATA_ITEM, workspace)) {
+                String variableName = collection.getValue(VARIABLE_NAME, workspace);
+                String variableType = collection.getValue(VARIABLE_TYPE, workspace);
 
                 switch (variableType) {
                     case VariableTypes.BOOLEAN:
-                        workspace.getMetadata().put(variableName, collection.getValue(VARIABLE_BOOLEAN).toString());
+                        workspace.getMetadata().put(variableName, collection.getValue(VARIABLE_BOOLEAN, workspace).toString());
                         break;
                     case VariableTypes.CHOICE:
-                        workspace.getMetadata().put(variableName, collection.getValue(VARIABLE_CHOICE));
+                        workspace.getMetadata().put(variableName, collection.getValue(VARIABLE_CHOICE, workspace));
                         break;
                     case VariableTypes.FILE:
-                        String path = collection.getValue(VARIABLE_FILE);
+                        String path = collection.getValue(VARIABLE_FILE, workspace);
                         path = path.replace("\\", "\\\\");
                         workspace.getMetadata().put(variableName, path);
                         break;
                     case VariableTypes.FOLDER:
-                        path = collection.getValue(VARIABLE_FOLDER);
+                        path = collection.getValue(VARIABLE_FOLDER, workspace);
                         path = path.replace("\\", "\\\\");
                         workspace.getMetadata().put(variableName, path);
                         break;
                     case VariableTypes.TEXT:
-                        workspace.getMetadata().put(variableName, collection.getValue(VARIABLE_VALUE));
+                        workspace.getMetadata().put(variableName, collection.getValue(VARIABLE_VALUE, workspace));
                         break;
                 }
             }
@@ -202,6 +202,7 @@ public class GlobalVariables extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
+Workspace workspace = null;
         ParameterGroup group = parameters.getParameter(ADD_NEW_VARIABLE);
         if (group == null)
             return parameters;
@@ -210,25 +211,25 @@ public class GlobalVariables extends Module {
         for (Parameters collection : collections.values()) {
             StringP variableName = (StringP) collection.get(VARIABLE_NAME);
             if (isEnabled()) {
-                switch ((String) collection.getValue(VARIABLE_TYPE)) {
+                switch ((String) collection.getValue(VARIABLE_TYPE, workspace)) {
                     case VariableTypes.BOOLEAN:
-                        globalVariables.put(variableName, collection.getValue(VARIABLE_BOOLEAN).toString());
+                        globalVariables.put(variableName, collection.getValue(VARIABLE_BOOLEAN, workspace).toString());
                         break;
                     case VariableTypes.CHOICE:
-                        globalVariables.put(variableName, collection.getValue(VARIABLE_CHOICE));
+                        globalVariables.put(variableName, collection.getValue(VARIABLE_CHOICE, workspace));
                         break;
                     case VariableTypes.FILE:
-                        String path = collection.getValue(VARIABLE_FILE);
+                        String path = collection.getValue(VARIABLE_FILE, workspace);
                         path = path.replace("\\", "\\\\");
                         globalVariables.put(variableName, path);
                         break;
                     case VariableTypes.FOLDER:
-                        path = collection.getValue(VARIABLE_FOLDER);
+                        path = collection.getValue(VARIABLE_FOLDER, workspace);
                         path = path.replace("\\", "\\\\");
                         globalVariables.put(variableName, path);
                         break;
                     case VariableTypes.TEXT:
-                        globalVariables.put(variableName, collection.getValue(VARIABLE_VALUE));
+                        globalVariables.put(variableName, collection.getValue(VARIABLE_VALUE, workspace));
                         break;
                 }
 
@@ -243,23 +244,24 @@ public class GlobalVariables extends Module {
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
-        return null;
+return null;
     }
 
     @Override
-    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
-        return null;
+public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+return null;
     }
 
     @Override
-    public MetadataRefs updateAndGetMetadataReferences() {
+public MetadataRefs updateAndGetMetadataReferences() {
+Workspace workspace = null;
         MetadataRefs returnedRefs = new MetadataRefs();
 
-        LinkedHashMap<Integer, Parameters> collections = parameters.getValue(ADD_NEW_VARIABLE);
+        LinkedHashMap<Integer, Parameters> collections = parameters.getValue(ADD_NEW_VARIABLE,workspace);
 
         for (Parameters collection : collections.values()) {
-            if ((boolean) collection.getValue(STORE_AS_METADATA_ITEM))
-                returnedRefs.add(metadataRefs.getOrPut(collection.getValue(VARIABLE_NAME)));
+            if ((boolean) collection.getValue(STORE_AS_METADATA_ITEM, workspace))
+                returnedRefs.add(metadataRefs.getOrPut(collection.getValue(VARIABLE_NAME, workspace)));
         }
 
         return returnedRefs;
@@ -268,12 +270,12 @@ public class GlobalVariables extends Module {
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
-        return null;
+return null;
     }
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
-        return null;
+return null;
     }
 
     @Override
@@ -349,14 +351,14 @@ public class GlobalVariables extends Module {
                 returnedParameters.add(params.getParameter(VARIABLE_SEPARATOR));
                 returnedParameters.add(params.getParameter(VARIABLE_NAME));
                 returnedParameters.add(params.getParameter(VARIABLE_TYPE));
-                switch ((String) params.getValue(VARIABLE_TYPE)) {
+                switch ((String) params.getValue(VARIABLE_TYPE, null)) {
                     case VariableTypes.BOOLEAN:
                         returnedParameters.add(params.getParameter(VARIABLE_BOOLEAN));
                         break;
                     case VariableTypes.CHOICE:
                         returnedParameters.add(params.getParameter(VARIABLE_CHOICES));
                         returnedParameters.add(params.getParameter(VARIABLE_CHOICE));
-                        String variableChoices = params.getValue(VARIABLE_CHOICES);
+                        String variableChoices = params.getValue(VARIABLE_CHOICES, null);
                         String[] choices = variableChoices.split(",");
                         ((ChoiceP) params.getParameter(VARIABLE_CHOICE)).setChoices(choices);
                         break;

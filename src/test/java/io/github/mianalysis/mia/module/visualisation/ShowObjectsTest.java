@@ -10,8 +10,9 @@ import io.github.mianalysis.mia.expectedobjects.Objects3D;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.ModuleTest;
 import io.github.mianalysis.mia.module.objects.convert.ConvertObjectsToImage;
-import io.github.mianalysis.mia.object.Image;
 import io.github.mianalysis.mia.object.Objs;
+import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.process.ColourFactory;
 import io.github.sjcross.sjcommon.object.volume.VolumeType;
 

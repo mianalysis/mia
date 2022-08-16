@@ -1,23 +1,23 @@
 package io.github.mianalysis.mia.module.workflow;
 
-import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.module.Module;
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
-import io.github.mianalysis.mia.module.Category;
+
 import io.github.mianalysis.mia.module.Categories;
-import io.github.mianalysis.mia.object.Status;
+import io.github.mianalysis.mia.module.Category;
+import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.ModuleP;
+import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.SeparatorP;
 import io.github.mianalysis.mia.object.refs.collections.ImageMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
-import io.github.mianalysis.mia.object.parameters.Parameters;
+import io.github.mianalysis.mia.object.system.Status;
 
 /**
  * Created by Stephen Cross on 23/11/2018.
@@ -42,9 +42,9 @@ public class ModuleIsEnabled extends AbstractWorkspaceHandler {
 
     }
 
-    public boolean testDoRedirect() {
-        String testMode = parameters.getValue(TEST_MODE);
-        Module testModule = parameters.getValue(TEST_MODULE);
+    public boolean testDoRedirect(Workspace workspace) {
+        String testMode = parameters.getValue(TEST_MODE,workspace);
+        Module testModule = parameters.getValue(TEST_MODULE,workspace);
 
         if (testModule == null)
             return false;
@@ -79,9 +79,9 @@ public class ModuleIsEnabled extends AbstractWorkspaceHandler {
     @Override
     protected Status process(Workspace workspace) {
         // Getting parameters
-        boolean showRedirectMessage = parameters.getValue(SHOW_REDIRECT_MESSAGE);
+        boolean showRedirectMessage = parameters.getValue(SHOW_REDIRECT_MESSAGE,workspace);
 
-        if (testDoRedirect())
+        if (testDoRedirect(workspace))
             return processTermination(parameters, workspace, showRedirectMessage);
 
         return Status.PASS;
@@ -105,6 +105,7 @@ public class ModuleIsEnabled extends AbstractWorkspaceHandler {
 
     @Override
     public Parameters updateAndGetParameters() {
+Workspace workspace = null;
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(CONDITION_SEPARATOR));
@@ -113,12 +114,12 @@ public class ModuleIsEnabled extends AbstractWorkspaceHandler {
 
         returnedParameters.add(parameters.getParameter(RESULT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(CONTINUATION_MODE));
-        switch ((String) parameters.getValue(CONTINUATION_MODE)) {
+        switch ((String) parameters.getValue(CONTINUATION_MODE,workspace)) {
             case ContinuationModes.REDIRECT_TO_MODULE:
                 returnedParameters.add(parameters.getParameter(REDIRECT_MODULE));
-                redirectModule = parameters.getValue(REDIRECT_MODULE);
+                redirectModule = parameters.getValue(REDIRECT_MODULE,workspace);
                 returnedParameters.add(parameters.getParameter(SHOW_REDIRECT_MESSAGE));
-                if ((boolean) parameters.getValue(SHOW_REDIRECT_MESSAGE)) {
+                if ((boolean) parameters.getValue(SHOW_REDIRECT_MESSAGE,workspace)) {
                     returnedParameters.add(parameters.getParameter(REDIRECT_MESSAGE));
                 }
                 break;
@@ -137,27 +138,27 @@ public class ModuleIsEnabled extends AbstractWorkspaceHandler {
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
-        return null;
+return null;
     }
 
     @Override
-    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
-        return null;
+public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+return null;
     }
 
     @Override
-    public MetadataRefs updateAndGetMetadataReferences() {
-        return null;
+public MetadataRefs updateAndGetMetadataReferences() {
+return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
-        return null;
+return null;
     }
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
-        return null;
+return null;
     }
 
     @Override

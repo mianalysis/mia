@@ -2,16 +2,16 @@ package io.github.mianalysis.mia.module.objects.filter;
 
 import java.util.Iterator;
 
-import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.module.Module;
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
-import io.github.mianalysis.mia.module.Category;
+
 import io.github.mianalysis.mia.module.Categories;
+import io.github.mianalysis.mia.module.Category;
+import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.Measurement;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
-import io.github.mianalysis.mia.object.Status;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.PartnerObjectsP;
@@ -19,6 +19,7 @@ import io.github.mianalysis.mia.object.refs.ObjMeasurementRef;
 import io.github.mianalysis.mia.object.refs.collections.ImageMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
+import io.github.mianalysis.mia.object.system.Status;
 
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class FilterByPartners extends AbstractNumericObjectFilter {
@@ -43,16 +44,16 @@ public class FilterByPartners extends AbstractNumericObjectFilter {
     @Override
     protected Status process(Workspace workspace) {
         // Getting input objects
-        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
         Objs inputObjects = workspace.getObjects().get(inputObjectsName);
 
         // Getting parameters
-        String filterMode = parameters.getValue(FILTER_MODE);
-        String outputObjectsName = parameters.getValue(OUTPUT_FILTERED_OBJECTS);
-        String filterMethod = parameters.getValue(FILTER_METHOD);
-        String partnerObjectsName = parameters.getValue(PARTNER_OBJECTS);
-        boolean storeSummary = parameters.getValue(STORE_SUMMARY_RESULTS);
-        boolean storeIndividual = parameters.getValue(STORE_INDIVIDUAL_RESULTS);
+        String filterMode = parameters.getValue(FILTER_MODE,workspace);
+        String outputObjectsName = parameters.getValue(OUTPUT_FILTERED_OBJECTS,workspace);
+        String filterMethod = parameters.getValue(FILTER_METHOD,workspace);
+        String partnerObjectsName = parameters.getValue(PARTNER_OBJECTS,workspace);
+        boolean storeSummary = parameters.getValue(STORE_SUMMARY_RESULTS,workspace);
+        boolean storeIndividual = parameters.getValue(STORE_INDIVIDUAL_RESULTS,workspace);
 
         boolean moveObjects = filterMode.equals(FilterModes.MOVE_FILTERED);
         boolean remove = !filterMode.equals(FilterModes.DO_NOTHING);
@@ -79,7 +80,7 @@ public class FilterByPartners extends AbstractNumericObjectFilter {
 
             // Adding measurements
             if (storeIndividual) {
-                String measurementName = getIndividualMeasurementName(partnerObjectsName);
+                String measurementName = getIndividualMeasurementName(partnerObjectsName, workspace);
                 inputObject.addMeasurement(new Measurement(measurementName, conditionMet ? 1 : 0));
             }
 
@@ -97,7 +98,7 @@ public class FilterByPartners extends AbstractNumericObjectFilter {
 
         // If storing the result, create a new metadata item for it
         if (storeSummary) {
-            String metadataName = getSummaryMeasurementName(partnerObjectsName);
+            String metadataName = getSummaryMeasurementName(partnerObjectsName, workspace);
             workspace.getMetadata().put(metadataName, count);
         }
 
@@ -121,10 +122,11 @@ public class FilterByPartners extends AbstractNumericObjectFilter {
 
     @Override
     public Parameters updateAndGetParameters() {
+Workspace workspace = null;
         Parameters returnedParameters = new Parameters();
         returnedParameters.addAll(super.updateAndGetParameters());
 
-        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
         returnedParameters.add(parameters.getParameter(PARTNER_OBJECTS));
         ((PartnerObjectsP) parameters.getParameter(PARTNER_OBJECTS)).setPartnerObjectsName(inputObjectsName);
 
@@ -136,21 +138,22 @@ public class FilterByPartners extends AbstractNumericObjectFilter {
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
-        return null;
+return null;
     }
 
     @Override
-    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+Workspace workspace = null;
         ObjMeasurementRefs returnedRefs = super.updateAndGetObjectMeasurementRefs();
 
-        if ((boolean) parameters.getValue(STORE_INDIVIDUAL_RESULTS)) {
-            String partnerObjectsName = parameters.getValue(PARTNER_OBJECTS);
-            String measurementName = getIndividualMeasurementName(partnerObjectsName);
-            String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+        if ((boolean) parameters.getValue(STORE_INDIVIDUAL_RESULTS,workspace)) {
+            String partnerObjectsName = parameters.getValue(PARTNER_OBJECTS,workspace);
+            String measurementName = getIndividualMeasurementName(partnerObjectsName, null);
+            String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
 
             returnedRefs.add(new ObjMeasurementRef(measurementName, inputObjectsName));
-            if (parameters.getValue(FILTER_MODE).equals(FilterModes.MOVE_FILTERED)) {
-                String outputObjectsName = parameters.getValue(OUTPUT_FILTERED_OBJECTS);
+            if (parameters.getValue(FILTER_MODE,workspace).equals(FilterModes.MOVE_FILTERED)) {
+                String outputObjectsName = parameters.getValue(OUTPUT_FILTERED_OBJECTS,workspace);
                 returnedRefs.add(new ObjMeasurementRef(measurementName, outputObjectsName));
             }
         }
@@ -160,14 +163,15 @@ public class FilterByPartners extends AbstractNumericObjectFilter {
     }
 
     @Override
-    public MetadataRefs updateAndGetMetadataReferences() {
+public MetadataRefs updateAndGetMetadataReferences() {
+Workspace workspace = null;
         MetadataRefs returnedRefs = new MetadataRefs();
 
         // Filter results are stored as a metadata item since they apply to the whole
         // set
-        if ((boolean) parameters.getValue(STORE_SUMMARY_RESULTS)) {
-            String partnerObjectsName = parameters.getValue(PARTNER_OBJECTS);
-            String metadataName = getSummaryMeasurementName(partnerObjectsName);
+        if ((boolean) parameters.getValue(STORE_SUMMARY_RESULTS,workspace)) {
+            String partnerObjectsName = parameters.getValue(PARTNER_OBJECTS,workspace);
+            String metadataName = getSummaryMeasurementName(partnerObjectsName, null);
 
             returnedRefs.add(metadataRefs.getOrPut(metadataName));
 

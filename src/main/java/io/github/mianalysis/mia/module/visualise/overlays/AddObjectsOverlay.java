@@ -33,11 +33,11 @@ import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.object.Image;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
-import io.github.mianalysis.mia.object.Status;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChildObjectsP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
@@ -54,6 +54,7 @@ import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
+import io.github.mianalysis.mia.object.system.Status;
 import io.github.mianalysis.mia.process.ColourFactory;
 import io.github.mianalysis.mia.process.LabelFactory;
 
@@ -736,55 +737,55 @@ public class AddObjectsOverlay extends Module {
     @Override
     public Status process(Workspace workspace) {
         // Getting parameters
-        boolean applyToInput = parameters.getValue(APPLY_TO_INPUT);
-        boolean addOutputToWorkspace = parameters.getValue(ADD_OUTPUT_TO_WORKSPACE);
-        String outputImageName = parameters.getValue(OUTPUT_IMAGE);
-        String positionMode = parameters.getValue(POSITION_MODE);
-        String spotObjectsName = parameters.getValue(SPOT_OBJECTS);
+        boolean applyToInput = parameters.getValue(APPLY_TO_INPUT,workspace);
+        boolean addOutputToWorkspace = parameters.getValue(ADD_OUTPUT_TO_WORKSPACE,workspace);
+        String outputImageName = parameters.getValue(OUTPUT_IMAGE,workspace);
+        String positionMode = parameters.getValue(POSITION_MODE,workspace);
+        String spotObjectsName = parameters.getValue(SPOT_OBJECTS,workspace);
 
         // Getting input objects
-        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
         Objs inputObjects = workspace.getObjects().get(inputObjectsName);
 
         // Getting input image
-        String inputImageName = parameters.getValue(INPUT_IMAGE);
+        String inputImageName = parameters.getValue(INPUT_IMAGE,workspace);
         Image inputImage = workspace.getImages().get(inputImageName);
         ImagePlus ipl = inputImage.getImagePlus();
 
-        String orientationMode = parameters.getValue(ORIENTATION_MODE);
-        String parentForOrientation = parameters.getValue(PARENT_OBJECT_FOR_ORIENTATION);
-        String measurementForOrientation = parameters.getValue(MEASUREMENT_FOR_ORIENTATION);
-        String lengthMode = parameters.getValue(LENGTH_MODE);
-        double lengthValue = parameters.getValue(LENGTH_VALUE);
-        String parentForLength = parameters.getValue(PARENT_OBJECT_FOR_LENGTH);
-        String measurementForLength = parameters.getValue(MEASUREMENT_FOR_LENGTH);
-        double lengthScale = parameters.getValue(LENGTH_SCALE);
-        int headSize = parameters.getValue(HEAD_SIZE);
-        String xPosMeas = parameters.getValue(X_POSITION_MEASUREMENT);
-        String yPosMeas = parameters.getValue(Y_POSITION_MEASUREMENT);
-        String zPosMeas = parameters.getValue(Z_POSITION_MEASUREMENT);
-        boolean useRadius = parameters.getValue(USE_RADIUS);
-        String measurementForRadius = parameters.getValue(MEASUREMENT_FOR_RADIUS);
-        boolean limitHistory = parameters.getValue(LIMIT_TRACK_HISTORY);
-        int history = parameters.getValue(TRACK_HISTORY);
+        String orientationMode = parameters.getValue(ORIENTATION_MODE,workspace);
+        String parentForOrientation = parameters.getValue(PARENT_OBJECT_FOR_ORIENTATION,workspace);
+        String measurementForOrientation = parameters.getValue(MEASUREMENT_FOR_ORIENTATION,workspace);
+        String lengthMode = parameters.getValue(LENGTH_MODE,workspace);
+        double lengthValue = parameters.getValue(LENGTH_VALUE,workspace);
+        String parentForLength = parameters.getValue(PARENT_OBJECT_FOR_LENGTH,workspace);
+        String measurementForLength = parameters.getValue(MEASUREMENT_FOR_LENGTH,workspace);
+        double lengthScale = parameters.getValue(LENGTH_SCALE,workspace);
+        int headSize = parameters.getValue(HEAD_SIZE,workspace);
+        String xPosMeas = parameters.getValue(X_POSITION_MEASUREMENT,workspace);
+        String yPosMeas = parameters.getValue(Y_POSITION_MEASUREMENT,workspace);
+        String zPosMeas = parameters.getValue(Z_POSITION_MEASUREMENT,workspace);
+        boolean useRadius = parameters.getValue(USE_RADIUS,workspace);
+        String measurementForRadius = parameters.getValue(MEASUREMENT_FOR_RADIUS,workspace);
+        boolean limitHistory = parameters.getValue(LIMIT_TRACK_HISTORY,workspace);
+        int history = parameters.getValue(TRACK_HISTORY,workspace);
 
         // Getting colour settings
-        String colourMode = parameters.getValue(COLOUR_MODE);
-        String singleColour = parameters.getValue(SINGLE_COLOUR);
-        String parentObjectsForColourName = parameters.getValue(PARENT_OBJECT_FOR_COLOUR);
-        String measurementForColour = parameters.getValue(MEASUREMENT_FOR_COLOUR);
+        String colourMode = parameters.getValue(COLOUR_MODE,workspace);
+        String singleColour = parameters.getValue(SINGLE_COLOUR,workspace);
+        String parentObjectsForColourName = parameters.getValue(PARENT_OBJECT_FOR_COLOUR,workspace);
+        String measurementForColour = parameters.getValue(MEASUREMENT_FOR_COLOUR,workspace);
 
         // Getting label settings
-        String labelMode = parameters.getValue(LABEL_MODE);
-        int labelSize = parameters.getValue(LABEL_SIZE);
-        int decimalPlaces = parameters.getValue(DECIMAL_PLACES);
-        boolean useScientific = parameters.getValue(USE_SCIENTIFIC);
-        String parentObjectsForLabelName = parameters.getValue(PARENT_OBJECT_FOR_LABEL);
-        String measurementForLabel = parameters.getValue(MEASUREMENT_FOR_LABEL);
+        String labelMode = parameters.getValue(LABEL_MODE,workspace);
+        int labelSize = parameters.getValue(LABEL_SIZE,workspace);
+        int decimalPlaces = parameters.getValue(DECIMAL_PLACES,workspace);
+        boolean useScientific = parameters.getValue(USE_SCIENTIFIC,workspace);
+        String parentObjectsForLabelName = parameters.getValue(PARENT_OBJECT_FOR_LABEL,workspace);
+        String measurementForLabel = parameters.getValue(MEASUREMENT_FOR_LABEL,workspace);
 
-        double lineWidth = parameters.getValue(LINE_WIDTH);
-        boolean renderInAllFrames = parameters.getValue(RENDER_IN_ALL_FRAMES);
-        boolean multithread = parameters.getValue(ENABLE_MULTITHREADING);
+        double lineWidth = parameters.getValue(LINE_WIDTH,workspace);
+        boolean renderInAllFrames = parameters.getValue(RENDER_IN_ALL_FRAMES,workspace);
+        boolean multithread = parameters.getValue(ENABLE_MULTITHREADING,workspace);
 
         // Duplicating the image, so the original isn't altered
         if (!applyToInput)
@@ -835,7 +836,7 @@ public class AddObjectsOverlay extends Module {
             return Status.FAIL;
         }
 
-        Image outputImage = new Image(outputImageName, ipl);
+        Image outputImage = ImageFactory.createImage(outputImageName, ipl);
 
         // If necessary, adding output image to workspace. This also allows us to show
         // it.
@@ -893,64 +894,65 @@ public class AddObjectsOverlay extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
-        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
-        String parentObjectsName = parameters.getValue(PARENT_OBJECT_FOR_COLOUR);
+Workspace workspace = null;
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
+        String parentObjectsName = parameters.getValue(PARENT_OBJECT_FOR_COLOUR,workspace);
 
         Parameters returnedParameters = new Parameters();
         returnedParameters.add(parameters.getParameter(INPUT_IMAGE));
         returnedParameters.add(parameters.getParameter(INPUT_OBJECTS));
         returnedParameters.add(parameters.getParameter(APPLY_TO_INPUT));
 
-        if (!(boolean) parameters.getValue(APPLY_TO_INPUT)) {
+        if (!(boolean) parameters.getValue(APPLY_TO_INPUT,workspace)) {
             returnedParameters.add(parameters.getParameter(ADD_OUTPUT_TO_WORKSPACE));
 
-            if ((boolean) parameters.getValue(ADD_OUTPUT_TO_WORKSPACE)) {
+            if ((boolean) parameters.getValue(ADD_OUTPUT_TO_WORKSPACE,workspace)) {
                 returnedParameters.add(parameters.getParameter(OUTPUT_IMAGE));
 
             }
         }
 
         returnedParameters.add(parameters.getParameter(POSITION_MODE));
-        switch ((String) parameters.getValue(POSITION_MODE)) {
+        switch ((String) parameters.getValue(POSITION_MODE,workspace)) {
             case PositionModes.ARROWS:
                 returnedParameters.add(parameters.getParameter(ORIENTATION_MODE));
-                switch ((String) parameters.getValue(ORIENTATION_MODE)) {
+                switch ((String) parameters.getValue(ORIENTATION_MODE,workspace)) {
                     case OrientationModes.MEASUREMENT:
                         ObjectMeasurementP oriMeasurement = parameters.getParameter(MEASUREMENT_FOR_ORIENTATION);
-                        oriMeasurement.setObjectName(parameters.getValue(INPUT_OBJECTS));
+                        oriMeasurement.setObjectName(parameters.getValue(INPUT_OBJECTS,workspace));
                         returnedParameters.add(parameters.getParameter(MEASUREMENT_FOR_ORIENTATION));
                         break;
 
                     case OrientationModes.PARENT_MEASUREMENT:
                         returnedParameters.add(parameters.getParameter(PARENT_OBJECT_FOR_ORIENTATION));
                         ParentObjectsP parentObjects = parameters.getParameter(PARENT_OBJECT_FOR_ORIENTATION);
-                        parentObjects.setChildObjectsName(parameters.getValue(INPUT_OBJECTS));
+                        parentObjects.setChildObjectsName(parameters.getValue(INPUT_OBJECTS,workspace));
 
                         oriMeasurement = parameters.getParameter(MEASUREMENT_FOR_ORIENTATION);
-                        oriMeasurement.setObjectName(parameters.getValue(PARENT_OBJECT_FOR_ORIENTATION));
+                        oriMeasurement.setObjectName(parameters.getValue(PARENT_OBJECT_FOR_ORIENTATION,workspace));
                         returnedParameters.add(parameters.getParameter(MEASUREMENT_FOR_ORIENTATION));
                         break;
                 }
 
                 returnedParameters.add(parameters.getParameter(LENGTH_MODE));
-                switch ((String) parameters.getValue(LENGTH_MODE)) {
+                switch ((String) parameters.getValue(LENGTH_MODE,workspace)) {
                     case LengthModes.FIXED_VALUE:
                         returnedParameters.add(parameters.getParameter(LENGTH_VALUE));
                         break;
 
                     case LengthModes.MEASUREMENT:
                         ObjectMeasurementP lengthMeasurement = parameters.getParameter(MEASUREMENT_FOR_LENGTH);
-                        lengthMeasurement.setObjectName(parameters.getValue(INPUT_OBJECTS));
+                        lengthMeasurement.setObjectName(parameters.getValue(INPUT_OBJECTS,workspace));
                         returnedParameters.add(parameters.getParameter(MEASUREMENT_FOR_LENGTH));
                         break;
 
                     case LengthModes.PARENT_MEASUREMENT:
                         returnedParameters.add(parameters.getParameter(PARENT_OBJECT_FOR_LENGTH));
                         ParentObjectsP parentObjects = parameters.getParameter(PARENT_OBJECT_FOR_LENGTH);
-                        parentObjects.setChildObjectsName(parameters.getValue(INPUT_OBJECTS));
+                        parentObjects.setChildObjectsName(parameters.getValue(INPUT_OBJECTS,workspace));
 
                         lengthMeasurement = parameters.getParameter(MEASUREMENT_FOR_LENGTH);
-                        lengthMeasurement.setObjectName(parameters.getValue(PARENT_OBJECT_FOR_LENGTH));
+                        lengthMeasurement.setObjectName(parameters.getValue(PARENT_OBJECT_FOR_LENGTH,workspace));
                         returnedParameters.add(parameters.getParameter(MEASUREMENT_FOR_LENGTH));
                         break;
                 }
@@ -970,7 +972,7 @@ public class AddObjectsOverlay extends Module {
                 ((ObjectMeasurementP) parameters.getParameter(Z_POSITION_MEASUREMENT)).setObjectName(inputObjectsName);
 
                 returnedParameters.add(parameters.getParameter(USE_RADIUS));
-                if ((boolean) parameters.getValue(USE_RADIUS)) {
+                if ((boolean) parameters.getValue(USE_RADIUS,workspace)) {
                     returnedParameters.add(parameters.getParameter(MEASUREMENT_FOR_RADIUS));
                     ((ObjectMeasurementP) parameters.getParameter(MEASUREMENT_FOR_RADIUS))
                             .setObjectName(inputObjectsName);
@@ -981,21 +983,21 @@ public class AddObjectsOverlay extends Module {
                 returnedParameters.add(parameters.getParameter(SPOT_OBJECTS));
                 returnedParameters.add(parameters.getParameter(LIMIT_TRACK_HISTORY));
 
-                if ((boolean) parameters.getValue(LIMIT_TRACK_HISTORY))
+                if ((boolean) parameters.getValue(LIMIT_TRACK_HISTORY,workspace))
                     returnedParameters.add(parameters.getParameter(TRACK_HISTORY));
                 ((ChildObjectsP) parameters.getParameter(SPOT_OBJECTS)).setParentObjectsName(inputObjectsName);
                 break;
         }
 
         returnedParameters.add(parameters.getParameter(COLOUR_MODE));
-        switch ((String) parameters.getValue(COLOUR_MODE)) {
+        switch ((String) parameters.getValue(COLOUR_MODE,workspace)) {
             case ColourModes.SINGLE_COLOUR:
                 returnedParameters.add(parameters.getParameter(SINGLE_COLOUR));
                 break;
 
             case ColourModes.MEASUREMENT_VALUE:
                 returnedParameters.add(parameters.getParameter(MEASUREMENT_FOR_COLOUR));
-                if (parameters.getValue(INPUT_OBJECTS) != null) {
+                if (parameters.getValue(INPUT_OBJECTS,workspace) != null) {
                     ObjectMeasurementP colourMeasurement = parameters.getParameter(MEASUREMENT_FOR_COLOUR);
                     colourMeasurement.setObjectName(inputObjectsName);
                 }
@@ -1014,19 +1016,19 @@ public class AddObjectsOverlay extends Module {
 
                 returnedParameters.add(parameters.getParameter(MEASUREMENT_FOR_COLOUR));
                 ObjectMeasurementP colourMeasurement = parameters.getParameter(MEASUREMENT_FOR_COLOUR);
-                colourMeasurement.setObjectName(parameters.getValue(PARENT_OBJECT_FOR_COLOUR));
+                colourMeasurement.setObjectName(parameters.getValue(PARENT_OBJECT_FOR_COLOUR,workspace));
 
                 break;
         }
 
-        if (!parameters.getValue(POSITION_MODE).equals(PositionModes.LABEL_ONLY)) {
+        if (!parameters.getValue(POSITION_MODE,workspace).equals(PositionModes.LABEL_ONLY)) {
             returnedParameters.add(parameters.getParameter(LINE_WIDTH));
         }
 
-        if (parameters.getValue(POSITION_MODE).equals(PositionModes.LABEL_ONLY)) {
+        if (parameters.getValue(POSITION_MODE,workspace).equals(PositionModes.LABEL_ONLY)) {
             returnedParameters.add(parameters.getParameter(LABEL_MODE));
 
-            switch ((String) parameters.getValue(LABEL_MODE)) {
+            switch ((String) parameters.getValue(LABEL_MODE,workspace)) {
                 case LabelModes.MEASUREMENT_VALUE:
                     returnedParameters.add(parameters.getParameter(MEASUREMENT_FOR_LABEL));
                     ((ObjectMeasurementP) parameters.getParameter(MEASUREMENT_FOR_LABEL))
@@ -1057,7 +1059,7 @@ public class AddObjectsOverlay extends Module {
 
         }
 
-        if (!parameters.getValue(POSITION_MODE).equals(PositionModes.TRACKS)) {
+        if (!parameters.getValue(POSITION_MODE,workspace).equals(PositionModes.TRACKS)) {
             returnedParameters.add(parameters.getParameter(RENDER_IN_ALL_FRAMES));
         }
 
@@ -1069,27 +1071,27 @@ public class AddObjectsOverlay extends Module {
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
-        return null;
+return null;
     }
 
     @Override
-    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
-        return null;
+public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+return null;
     }
 
     @Override
-    public MetadataRefs updateAndGetMetadataReferences() {
-        return null;
+public MetadataRefs updateAndGetMetadataReferences() {
+return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
-        return null;
+return null;
     }
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
-        return null;
+return null;
     }
 
     @Override

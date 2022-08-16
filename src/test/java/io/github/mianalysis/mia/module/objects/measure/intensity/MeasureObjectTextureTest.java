@@ -10,9 +10,10 @@ import io.github.mianalysis.mia.expectedobjects.ExpectedObjects;
 import io.github.mianalysis.mia.expectedobjects.Objects2D;
 import io.github.mianalysis.mia.module.ModuleTest;
 import io.github.mianalysis.mia.module.objects.measure.intensity.MeasureObjectTexture;
-import io.github.mianalysis.mia.object.Image;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
+import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.sjcross.sjcommon.analysis.TextureCalculator;
 import io.github.sjcross.sjcommon.object.volume.VolumeType;
 
@@ -68,7 +69,7 @@ public class MeasureObjectTextureTest extends ModuleTest {
         // Loading images
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient2D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
-        Image image = new Image("Im1",ipl);
+        Image image = ImageFactory.createImage("Im1",ipl);
 
         // Initialising the TextureCalculator
         TextureCalculator calculator = new TextureCalculator();
@@ -109,7 +110,7 @@ public class MeasureObjectTextureTest extends ModuleTest {
         // Loading images
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient2D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
-        Image image = new Image("Im1",ipl);
+        Image image = ImageFactory.createImage("Im1",ipl);
 
         // Initialising the TextureCalculator
         TextureCalculator calculator = new TextureCalculator();

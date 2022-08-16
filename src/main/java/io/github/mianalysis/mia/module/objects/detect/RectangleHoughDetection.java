@@ -15,18 +15,19 @@ import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.object.Image;
 import io.github.mianalysis.mia.object.Measurement;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
-import io.github.mianalysis.mia.object.Status;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.SeparatorP;
 import io.github.mianalysis.mia.object.parameters.text.DoubleP;
 import io.github.mianalysis.mia.object.parameters.text.IntegerP;
 import io.github.mianalysis.mia.object.parameters.text.StringP;
+import io.github.mianalysis.mia.object.system.Status;
 import io.github.mianalysis.mia.object.units.TemporalUnit;
 import io.github.sjcross.sjcommon.exceptions.IntegerOverflowException;
 import io.github.sjcross.sjcommon.object.volume.PointOutOfRangeException;
@@ -62,32 +63,32 @@ public class RectangleHoughDetection extends AbstractHoughDetection {
     @Override
     public Status process(Workspace workspace) {
         // Getting input image
-        String inputImageName = parameters.getValue(INPUT_IMAGE);
+        String inputImageName = parameters.getValue(INPUT_IMAGE,workspace);
         Image inputImage = workspace.getImage(inputImageName);
         ImagePlus ipl = inputImage.getImagePlus();
 
         // Getting parameters
-        String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);
-        boolean outputTransformImage = parameters.getValue(OUTPUT_TRANSFORM_IMAGE);
-        String outputImageName = parameters.getValue(OUTPUT_IMAGE);
+        String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS,workspace);
+        boolean outputTransformImage = parameters.getValue(OUTPUT_TRANSFORM_IMAGE,workspace);
+        String outputImageName = parameters.getValue(OUTPUT_IMAGE,workspace);
 
         // Getting parameters
-        String xRange = parameters.getValue(X_RANGE);
-        String yRange = parameters.getValue(Y_RANGE);
-        String widthRange = parameters.getValue(WIDTH_RANGE);
-        String lengthRange = parameters.getValue(LENGTH_RANGE);
-        String oriRange = parameters.getValue(ORIENTATION_RANGE);
-        int samplingRate = parameters.getValue(DOWNSAMPLE_FACTOR);
-        boolean multithread = parameters.getValue(ENABLE_MULTITHREADING);
-        boolean normaliseScores = parameters.getValue(NORMALISE_SCORES);
-        String detectionMode = parameters.getValue(DETECTION_MODE);
-        double detectionThreshold = parameters.getValue(DETECTION_THRESHOLD);
-        int nObjects = parameters.getValue(NUMBER_OF_OBJECTS);
-        int exclusionRadius = parameters.getValue(EXCLUSION_RADIUS);
-        boolean showTransformImage = parameters.getValue(SHOW_TRANSFORM_IMAGE);
-        boolean showDetectionImage = parameters.getValue(SHOW_DETECTION_IMAGE);
-        boolean showHoughScore = parameters.getValue(SHOW_HOUGH_SCORE);
-        int labelSize = parameters.getValue(LABEL_SIZE);
+        String xRange = parameters.getValue(X_RANGE,workspace);
+        String yRange = parameters.getValue(Y_RANGE,workspace);
+        String widthRange = parameters.getValue(WIDTH_RANGE,workspace);
+        String lengthRange = parameters.getValue(LENGTH_RANGE,workspace);
+        String oriRange = parameters.getValue(ORIENTATION_RANGE,workspace);
+        int samplingRate = parameters.getValue(DOWNSAMPLE_FACTOR,workspace);
+        boolean multithread = parameters.getValue(ENABLE_MULTITHREADING,workspace);
+        boolean normaliseScores = parameters.getValue(NORMALISE_SCORES,workspace);
+        String detectionMode = parameters.getValue(DETECTION_MODE,workspace);
+        double detectionThreshold = parameters.getValue(DETECTION_THRESHOLD,workspace);
+        int nObjects = parameters.getValue(NUMBER_OF_OBJECTS,workspace);
+        int exclusionRadius = parameters.getValue(EXCLUSION_RADIUS,workspace);
+        boolean showTransformImage = parameters.getValue(SHOW_TRANSFORM_IMAGE,workspace);
+        boolean showDetectionImage = parameters.getValue(SHOW_DETECTION_IMAGE,workspace);
+        boolean showHoughScore = parameters.getValue(SHOW_HOUGH_SCORE,workspace);
+        int labelSize = parameters.getValue(LABEL_SIZE,workspace);
 
         // Storing the image calibration
         SpatCal cal = SpatCal.getFromImage(ipl);
@@ -133,7 +134,7 @@ public class RectangleHoughDetection extends AbstractHoughDetection {
                         ImagePlus showIpl = new Duplicator().run(transform.getAccumulatorAsImage());
 
                         if (outputTransformImage) {
-                            Image outputImage = new Image(outputImageName, showIpl);
+                            Image outputImage = ImageFactory.createImage(outputImageName, showIpl);
                             workspace.addImage(outputImage);
                         }
                         if (showOutput && showTransformImage) {
@@ -222,6 +223,7 @@ public class RectangleHoughDetection extends AbstractHoughDetection {
 
     @Override
     public Parameters updateAndGetParameters() {
+Workspace workspace = null;
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.addAll(updateAndGetInputParameters());

@@ -14,12 +14,12 @@ import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.images.process.ImageTypeConverter;
-import io.github.mianalysis.mia.object.Image;
 import io.github.mianalysis.mia.object.Measurement;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
-import io.github.mianalysis.mia.object.Status;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
 import io.github.mianalysis.mia.object.parameters.InputObjectsP;
@@ -32,6 +32,7 @@ import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
+import io.github.mianalysis.mia.object.system.Status;
 import io.github.sjcross.sjcommon.analysis.TextureCalculator;
 
 /**
@@ -130,7 +131,7 @@ public class MeasureObjectTexture extends Module {
     @Override
     public Status process(Workspace workspace) {
         // Getting input image
-        String inputImageName = parameters.getValue(INPUT_IMAGE);
+        String inputImageName = parameters.getValue(INPUT_IMAGE,workspace);
         Image inputImage = workspace.getImages().get(inputImageName);
         ImagePlus inputImagePlus = inputImage.getImagePlus();
 
@@ -140,11 +141,11 @@ public class MeasureObjectTexture extends Module {
                     "Texture analysis requires an 8-bit image.  Converting to 8-bit with scaling enabled.");
             inputImagePlus = inputImagePlus.duplicate();
             ImageTypeConverter.process(inputImagePlus, 8, ImageTypeConverter.ScalingModes.SCALE);
-            inputImage = new Image(inputImage.getName(), inputImagePlus);
+            inputImage = ImageFactory.createImage(inputImage.getName(), inputImagePlus);
         }
 
         // Getting input objects
-        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
         Objs inputObjects = workspace.getObjects().get(inputObjectsName);
 
         // If no objects were detected, skipping this module
@@ -152,10 +153,10 @@ public class MeasureObjectTexture extends Module {
             return Status.PASS;
 
         // Getting parameters
-        double xOffsIn = parameters.getValue(X_OFFSET);
-        double yOffsIn = parameters.getValue(Y_OFFSET);
-        double zOffsIn = parameters.getValue(Z_OFFSET);
-        boolean calibratedOffset = parameters.getValue(CALIBRATED_OFFSET);
+        double xOffsIn = parameters.getValue(X_OFFSET,workspace);
+        double yOffsIn = parameters.getValue(Y_OFFSET,workspace);
+        double zOffsIn = parameters.getValue(Z_OFFSET,workspace);
+        boolean calibratedOffset = parameters.getValue(CALIBRATED_OFFSET,workspace);
 
         double[] offs = new double[] { xOffsIn, yOffsIn, zOffsIn };
 
@@ -198,26 +199,28 @@ public class MeasureObjectTexture extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
+Workspace workspace = null;
         return parameters;
 
     }
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
-        return null;
+return null;
     }
 
     @Override
-    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+Workspace workspace = null;
         ObjMeasurementRefs returnedRefs = new ObjMeasurementRefs();
 
-        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
-        String inputImageName = parameters.getValue(INPUT_IMAGE);
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
+        String inputImageName = parameters.getValue(INPUT_IMAGE,workspace);
 
-        double xOffsIn = parameters.getValue(X_OFFSET);
-        double yOffsIn = parameters.getValue(Y_OFFSET);
-        double zOffsIn = parameters.getValue(Z_OFFSET);
-        boolean calibratedOffset = parameters.getValue(CALIBRATED_OFFSET);
+        double xOffsIn = parameters.getValue(X_OFFSET,workspace);
+        double yOffsIn = parameters.getValue(Y_OFFSET,workspace);
+        double zOffsIn = parameters.getValue(Z_OFFSET,workspace);
+        boolean calibratedOffset = parameters.getValue(CALIBRATED_OFFSET,workspace);
         double[] offs = new double[] { xOffsIn, yOffsIn, zOffsIn };
 
         String name = getFullName(inputImageName, Measurements.ASM, offs, calibratedOffset);
@@ -245,18 +248,18 @@ public class MeasureObjectTexture extends Module {
     }
 
     @Override
-    public MetadataRefs updateAndGetMetadataReferences() {
-        return null;
+public MetadataRefs updateAndGetMetadataReferences() {
+return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
-        return null;
+return null;
     }
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
-        return null;
+return null;
     }
 
     @Override

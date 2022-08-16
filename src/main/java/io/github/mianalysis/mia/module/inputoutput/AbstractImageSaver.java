@@ -15,9 +15,7 @@ import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.module.Module;
-import org.scijava.Priority;
-import org.scijava.plugin.Plugin;
+import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
@@ -53,7 +51,6 @@ public abstract class AbstractImageSaver extends Module {
         super(name, modules);
     }
 
-    
     public interface AppendDateTimeModes {
         String ALWAYS = "Always";
         String IF_FILE_EXISTS = "If file exists";
@@ -95,7 +92,6 @@ public abstract class AbstractImageSaver extends Module {
         String[] ALL = new String[] { NONE, JPEG, PNG };
 
     }
-
 
     public static String appendDateTime(String inputName, String appendDateTimeMode) {
         switch (appendDateTimeMode) {
@@ -150,7 +146,6 @@ public abstract class AbstractImageSaver extends Module {
         }
     }
 
-
     @Override
     public Category getCategory() {
         return Categories.INPUT_OUTPUT;
@@ -182,17 +177,18 @@ public abstract class AbstractImageSaver extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
+        Workspace workspace = null;
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(FORMAT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(FILE_FORMAT));
 
-        switch ((String) parameters.getValue(FILE_FORMAT)) {
+        switch ((String) parameters.getValue(FILE_FORMAT, workspace)) {
             case FileFormats.TIF:
             case FileFormats.ZIP:
                 returnedParameters.add(parameters.getParameter(CHANNEL_MODE));
                 returnedParameters.add(parameters.getParameter(FLATTEN_OVERLAY));
-                if (!((boolean) parameters.getValue(FLATTEN_OVERLAY))) {
+                if (!((boolean) parameters.getValue(FLATTEN_OVERLAY, workspace))) {
                     returnedParameters.add(parameters.getParameter(SAVE_AS_RGB));
                 }
 
@@ -200,7 +196,7 @@ public abstract class AbstractImageSaver extends Module {
 
             case FileFormats.AVI:
                 returnedParameters.add(parameters.getParameter(COMPRESSION_MODE));
-                if ((boolean) parameters.getValue(COMPRESSION_MODE).equals(CompressionModes.JPEG)) {
+                if ((boolean) parameters.getValue(COMPRESSION_MODE, workspace).equals(CompressionModes.JPEG)) {
                     returnedParameters.add(parameters.getParameter(QUALITY));
                 }
                 returnedParameters.add(parameters.getParameter(FRAME_RATE));
@@ -218,23 +214,23 @@ public abstract class AbstractImageSaver extends Module {
     }
 
     @Override
-    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
-        return null;
+public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+return null;
     }
 
     @Override
-    public MetadataRefs updateAndGetMetadataReferences() {
-        return null;
+public MetadataRefs updateAndGetMetadataReferences() {
+return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
-        return null;
+return null;
     }
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
-        return null;
+return null;
     }
 
     @Override
@@ -245,30 +241,37 @@ public abstract class AbstractImageSaver extends Module {
     void addParameterDescriptions() {
         parameters.get(INPUT_IMAGE).setDescription("Image to be saved to file.");
 
-        parameters.get(APPEND_DATETIME_MODE).setDescription("Controls under what conditions the time and date will be appended on to the end of the image filename.  This can be used to prevent accidental over-writing of images from previous runs:<br><ul>"
+        parameters.get(APPEND_DATETIME_MODE).setDescription(
+                "Controls under what conditions the time and date will be appended on to the end of the image filename.  This can be used to prevent accidental over-writing of images from previous runs:<br><ul>"
 
-                + "<li>\"" + AppendDateTimeModes.ALWAYS
-                + "\" Always append the time and date on to the end of the filename.</li>"
+                        + "<li>\"" + AppendDateTimeModes.ALWAYS
+                        + "\" Always append the time and date on to the end of the filename.</li>"
 
-                + "<li>\"" + AppendDateTimeModes.IF_FILE_EXISTS
-                + "\" Only append the time and date if the results file already exists.</li>"
+                        + "<li>\"" + AppendDateTimeModes.IF_FILE_EXISTS
+                        + "\" Only append the time and date if the results file already exists.</li>"
 
-                + "<li>\"" + AppendDateTimeModes.NEVER
-                + "\" Never append time and date (unless the file is open and unwritable).</li></ul>");
+                        + "<li>\"" + AppendDateTimeModes.NEVER
+                        + "\" Never append time and date (unless the file is open and unwritable).</li></ul>");
 
         parameters.get(FILE_FORMAT).setDescription("The format the output image will be saved as:<br><ul>"
 
-                + "<li>\"" + FileFormats.AVI + "\" Video written using the stock ImageJ \"<a href=\"https://github.com/imagej/imagej1/blob/master/ij/plugin/filter/AVI_Writer.java\">AVI Writer</a>\".  Videos can use different compression algorithms specified using \""+COMPRESSION_MODE+"\".  Framerate specified by \""+FRAME_RATE+"\" parameter.</li>"
+                + "<li>\"" + FileFormats.AVI
+                + "\" Video written using the stock ImageJ \"<a href=\"https://github.com/imagej/imagej1/blob/master/ij/plugin/filter/AVI_Writer.java\">AVI Writer</a>\".  Videos can use different compression algorithms specified using \""
+                + COMPRESSION_MODE + "\".  Framerate specified by \"" + FRAME_RATE + "\" parameter.</li>"
 
                 + "<li>\"" + FileFormats.TIF + "\" Standard multidimensional (multi-page) TIF image saving.</li>"
 
-                +"<li>\""+FileFormats.ZIP+"\" TIF images stored using ZIP compression.  For images with large homogeneous regions of pixel intensity this can greatly reduce file size in a lossless manner.  Zipped images can be read directly back into ImageJ/Fiji without the need for prior decompression.</li></ul>");
+                + "<li>\"" + FileFormats.ZIP
+                + "\" TIF images stored using ZIP compression.  For images with large homogeneous regions of pixel intensity this can greatly reduce file size in a lossless manner.  Zipped images can be read directly back into ImageJ/Fiji without the need for prior decompression.</li></ul>");
 
-        parameters.get(CHANNEL_MODE).setDescription("Control whether saved images should be in ImageJ \"Composite\" (display all channels simultaneously) or \"Color\" (display one channel at a time) mode.");
+        parameters.get(CHANNEL_MODE).setDescription(
+                "Control whether saved images should be in ImageJ \"Composite\" (display all channels simultaneously) or \"Color\" (display one channel at a time) mode.");
 
-        parameters.get(SAVE_AS_RGB).setDescription("Convert images to RGB prior to saving.  This is useful for displaying multi-channel images to a format that can be easily viewed outside ImageJ.");
+        parameters.get(SAVE_AS_RGB).setDescription(
+                "Convert images to RGB prior to saving.  This is useful for displaying multi-channel images to a format that can be easily viewed outside ImageJ.");
 
-        parameters.get(COMPRESSION_MODE).setDescription("Compression mode used when saving AVI videos (\""+FILE_FORMAT+"\" parameter):<br><ul>"
+        parameters.get(COMPRESSION_MODE).setDescription("Compression mode used when saving AVI videos (\"" + FILE_FORMAT
+                + "\" parameter):<br><ul>"
 
                 + "<li>\"" + CompressionModes.JPEG + "\" Lossy video compression with quality specified by \"" + QUALITY
                 + "\" parameter.  This option is good when reducing video size is more important than retaining perfect image quality.</li>"
@@ -278,7 +281,8 @@ public abstract class AbstractImageSaver extends Module {
 
                 + "<li>\"" + CompressionModes.PNG + "\" PNG video compression.</li></ul>");
 
-        parameters.get(QUALITY).setDescription("Quality of output JPEG-compressed video (values in range 0-100).  For reference, saving AVIs via ImageJ's \"File > Save As...\" menu uses a quality of 90.");
+        parameters.get(QUALITY).setDescription(
+                "Quality of output JPEG-compressed video (values in range 0-100).  For reference, saving AVIs via ImageJ's \"File > Save As...\" menu uses a quality of 90.");
 
         parameters.get(FRAME_RATE).setDescription("Output video framerate (frames per second).");
 

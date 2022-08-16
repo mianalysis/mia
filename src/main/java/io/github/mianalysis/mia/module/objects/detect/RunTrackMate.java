@@ -34,12 +34,12 @@ import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.objects.process.GetLocalObjectRegion;
 import io.github.mianalysis.mia.module.visualise.overlays.AddObjectCentroid;
 import io.github.mianalysis.mia.module.visualise.overlays.AddObjectOutline;
-import io.github.mianalysis.mia.object.Image;
 import io.github.mianalysis.mia.object.Measurement;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
-import io.github.mianalysis.mia.object.Status;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
@@ -55,6 +55,7 @@ import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
+import io.github.mianalysis.mia.object.system.Status;
 import io.github.mianalysis.mia.object.units.SpatialUnit;
 import io.github.mianalysis.mia.object.units.TemporalUnit;
 import io.github.mianalysis.mia.process.ColourFactory;
@@ -118,18 +119,18 @@ public class RunTrackMate extends Module {
         deprecated = true;
     }
 
-    public Settings initialiseSettings(ImagePlus ipl, SpatCal calibration) {
-        boolean calibratedUnits = parameters.getValue(CALIBRATED_UNITS);
-        boolean subpixelLocalisation = parameters.getValue(DO_SUBPIXEL_LOCALIZATION);
-        boolean medianFiltering = parameters.getValue(DO_MEDIAN_FILTERING);
-        double radius = parameters.getValue(RADIUS);
-        double threshold = parameters.getValue(THRESHOLD);
-        String trackingMethod = parameters.getValue(TRACKING_METHOD);
-        double maxLinkDist = parameters.getValue(LINKING_MAX_DISTANCE);
-        double maxGapDist = parameters.getValue(GAP_CLOSING_MAX_DISTANCE);
-        double initialSearchRadius = parameters.getValue(INITIAL_SEARCH_RADIUS);
-        double searchRadius = parameters.getValue(SEARCH_RADIUS);
-        int maxFrameGap = parameters.getValue(MAX_FRAME_GAP);
+    public Settings initialiseSettings(ImagePlus ipl, SpatCal calibration, Workspace workspace) {
+        boolean calibratedUnits = parameters.getValue(CALIBRATED_UNITS,workspace);
+        boolean subpixelLocalisation = parameters.getValue(DO_SUBPIXEL_LOCALIZATION,workspace);
+        boolean medianFiltering = parameters.getValue(DO_MEDIAN_FILTERING,workspace);
+        double radius = parameters.getValue(RADIUS,workspace);
+        double threshold = parameters.getValue(THRESHOLD,workspace);
+        String trackingMethod = parameters.getValue(TRACKING_METHOD,workspace);
+        double maxLinkDist = parameters.getValue(LINKING_MAX_DISTANCE,workspace);
+        double maxGapDist = parameters.getValue(GAP_CLOSING_MAX_DISTANCE,workspace);
+        double initialSearchRadius = parameters.getValue(INITIAL_SEARCH_RADIUS,workspace);
+        double searchRadius = parameters.getValue(SEARCH_RADIUS,workspace);
+        int maxFrameGap = parameters.getValue(MAX_FRAME_GAP,workspace);
 
         // Applying conversion to parameters
         if (calibratedUnits) {
@@ -173,8 +174,8 @@ public class RunTrackMate extends Module {
 
     public Objs getSpots(Model model, SpatCal calibration, int nFrames, double frameInterval)
             throws IntegerOverflowException {
-        String spotObjectsName = parameters.getValue(OUTPUT_SPOT_OBJECTS);
-        boolean doSubpixel = parameters.getValue(DO_SUBPIXEL_LOCALIZATION);
+        String spotObjectsName = parameters.getValue(OUTPUT_SPOT_OBJECTS,null);
+        boolean doSubpixel = parameters.getValue(DO_SUBPIXEL_LOCALIZATION,null);
 
         // Getting trackObjects and adding them to the output trackObjects
         writeStatus("Processing detected objects");
@@ -204,9 +205,9 @@ public class RunTrackMate extends Module {
 
     public Objs[] getSpotsAndTracks(Model model, SpatCal calibration, int nFrames, double frameInterval)
             throws IntegerOverflowException {
-        String spotObjectsName = parameters.getValue(OUTPUT_SPOT_OBJECTS);
-        String trackObjectsName = parameters.getValue(OUTPUT_TRACK_OBJECTS);
-        boolean doSubpixel = parameters.getValue(DO_SUBPIXEL_LOCALIZATION);
+        String spotObjectsName = parameters.getValue(OUTPUT_SPOT_OBJECTS,null);
+        String trackObjectsName = parameters.getValue(OUTPUT_TRACK_OBJECTS,null);
+        boolean doSubpixel = parameters.getValue(DO_SUBPIXEL_LOCALIZATION,null);
 
         // Getting calibration
         Objs spotObjects = new Objs(spotObjectsName, calibration, nFrames, frameInterval, TemporalUnit.getOMEUnit());
@@ -312,8 +313,8 @@ public class RunTrackMate extends Module {
     }
 
     public void showObjects(ImagePlus ipl, Objs spotObjects, boolean estimateSize) {
-        String trackObjectsName = parameters.getValue(OUTPUT_TRACK_OBJECTS);
-        boolean doTracking = parameters.getValue(DO_TRACKING);
+        String trackObjectsName = parameters.getValue(OUTPUT_TRACK_OBJECTS,null);
+        boolean doTracking = parameters.getValue(DO_TRACKING,null);
 
         HashMap<Integer, Float> hues;
         // Colours will depend on the detection/tracking mode
@@ -358,7 +359,7 @@ public class RunTrackMate extends Module {
     @Override
     public Status process(Workspace workspace) {
         // Loading input image
-        String inputImageName = parameters.getValue(INPUT_IMAGE);
+        String inputImageName = parameters.getValue(INPUT_IMAGE,workspace);
         Image inputImage = workspace.getImage(inputImageName);
         ImagePlus ipl = inputImage.getImagePlus();
 
@@ -371,13 +372,13 @@ public class RunTrackMate extends Module {
         double frameInterval = cal.frameInterval;
 
         // Getting parameters
-        boolean doTracking = parameters.getValue(DO_TRACKING);
-        boolean estimateSize = parameters.getValue(ESTIMATE_SIZE);
+        boolean doTracking = parameters.getValue(DO_TRACKING,workspace);
+        boolean estimateSize = parameters.getValue(ESTIMATE_SIZE,workspace);
 
         // Initialising TrackMate model to store data
         Model model = new Model();
         model.setLogger(Logger.VOID_LOGGER);
-        Settings settings = initialiseSettings(ipl, calibration);
+        Settings settings = initialiseSettings(ipl, calibration, workspace);
         TrackMate trackmate = new TrackMate(model, settings);
 
         // Resetting ipl to the input image
@@ -485,6 +486,7 @@ public class RunTrackMate extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
+Workspace workspace = null;
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
@@ -501,10 +503,10 @@ public class RunTrackMate extends Module {
 
         returnedParameters.add(parameters.getParameter(TRACK_SEPARATOR));
         returnedParameters.add(parameters.getParameter(DO_TRACKING));
-        if ((boolean) parameters.getValue(DO_TRACKING)) {
+        if ((boolean) parameters.getValue(DO_TRACKING,workspace)) {
             returnedParameters.add(parameters.getParameter(OUTPUT_TRACK_OBJECTS));
             returnedParameters.add(parameters.getParameter(TRACKING_METHOD));
-            switch ((String) parameters.getValue(TRACKING_METHOD)) {
+            switch ((String) parameters.getValue(TRACKING_METHOD,workspace)) {
                 case TrackingMethods.KALMAN:
                     returnedParameters.add(parameters.get(INITIAL_SEARCH_RADIUS));
                     returnedParameters.add(parameters.get(SEARCH_RADIUS));
@@ -523,13 +525,14 @@ public class RunTrackMate extends Module {
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
-        return null;
+return null;
     }
 
     @Override
-    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+Workspace workspace = null;
         ObjMeasurementRefs returnedRefs = new ObjMeasurementRefs();
-        String outputSpotObjectsName = parameters.getValue(OUTPUT_SPOT_OBJECTS);
+        String outputSpotObjectsName = parameters.getValue(OUTPUT_SPOT_OBJECTS,workspace);
 
         ObjMeasurementRef reference = objectMeasurementRefs.getOrPut(Measurements.RADIUS_PX);
         reference.setObjectsName(outputSpotObjectsName);
@@ -546,7 +549,7 @@ public class RunTrackMate extends Module {
         reference.setObjectsName(outputSpotObjectsName);
         returnedRefs.add(reference);
 
-        if ((boolean) parameters.getValue(DO_SUBPIXEL_LOCALIZATION)) {
+        if ((boolean) parameters.getValue(DO_SUBPIXEL_LOCALIZATION,workspace)) {
             reference = objectMeasurementRefs.getOrPut(Measurements.X_CENTROID_PX);
             reference.setObjectsName(outputSpotObjectsName);
             returnedRefs.add(reference);
@@ -577,17 +580,18 @@ public class RunTrackMate extends Module {
     }
 
     @Override
-    public MetadataRefs updateAndGetMetadataReferences() {
-        return null;
+public MetadataRefs updateAndGetMetadataReferences() {
+return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
+Workspace workspace = null;
         ParentChildRefs returnedRelationships = new ParentChildRefs();
 
-        if ((boolean) parameters.getValue(DO_TRACKING)) {
-            returnedRelationships.add(parentChildRefs.getOrPut(parameters.getValue(OUTPUT_TRACK_OBJECTS),
-                    parameters.getValue(OUTPUT_SPOT_OBJECTS)));
+        if ((boolean) parameters.getValue(DO_TRACKING,workspace)) {
+            returnedRelationships.add(parentChildRefs.getOrPut(parameters.getValue(OUTPUT_TRACK_OBJECTS,workspace),
+                    parameters.getValue(OUTPUT_SPOT_OBJECTS,workspace)));
 
         }
 
@@ -597,7 +601,7 @@ public class RunTrackMate extends Module {
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
-        return null;
+return null;
     }
 
     @Override

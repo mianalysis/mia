@@ -9,7 +9,7 @@ import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.Module;
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
-import io.github.mianalysis.mia.object.Status;
+
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
@@ -21,6 +21,7 @@ import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
+import io.github.mianalysis.mia.object.system.Status;
 
 /**
  * Created by sc13967 on 07/02/2018.
@@ -55,8 +56,8 @@ public class RemoveObjects extends Module {
         LinkedHashMap<Integer,Parameters> collections = parameterGroup.getCollections(false);
 
         for (Parameters collection : collections.values()) {
-            String inputObjectsName = collection.getValue(INPUT_OBJECTS);
-            boolean retainMeasurements = collection.getValue(RETAIN_MEASUREMENTS);
+            String inputObjectsName = collection.getValue(INPUT_OBJECTS,null);
+            boolean retainMeasurements = collection.getValue(RETAIN_MEASUREMENTS,null);
 
             // Removing the relevant object set from the workspace
             writeStatus("Removing objects (" + inputObjectsName + ") from workspace");
@@ -83,32 +84,33 @@ public class RemoveObjects extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
+Workspace workspace = null;
         return parameters;
     }
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
-        return null;
+return null;
     }
 
     @Override
-    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
-        return null;
+public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+return null;
     }
 
     @Override
-    public MetadataRefs updateAndGetMetadataReferences() {
-        return null;
+public MetadataRefs updateAndGetMetadataReferences() {
+return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
-        return null;
+return null;
     }
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
-        return null;
+return null;
     }
 
     @Override

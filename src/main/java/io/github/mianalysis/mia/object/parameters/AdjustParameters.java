@@ -1,8 +1,9 @@
 package io.github.mianalysis.mia.object.parameters;
 
-import io.github.mianalysis.mia.gui.parametercontrols.ParameterControl;
 import io.github.mianalysis.mia.gui.parametercontrols.AdjustParameterGroupButton;
+import io.github.mianalysis.mia.gui.parametercontrols.ParameterControl;
 import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.parameters.abstrakt.Parameter;
 
 /**
@@ -24,7 +25,7 @@ public class AdjustParameters extends Parameter {
     }
 
     @Override
-    public <T> T getValue() {
+    public <T> T getValue(Workspace workspace) {
         return null;
     }
 

@@ -26,11 +26,11 @@ import io.github.mianalysis.mia.module.images.transform.Convert3DStack;
 import io.github.mianalysis.mia.module.images.transform.ExtractSubstack;
 import io.github.mianalysis.mia.module.images.transform.ProjectImage;
 import io.github.mianalysis.mia.module.visualise.overlays.AddObjectCentroid;
-import io.github.mianalysis.mia.object.Image;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
-import io.github.mianalysis.mia.object.Status;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
@@ -43,6 +43,7 @@ import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
+import io.github.mianalysis.mia.object.system.Status;
 import io.github.mianalysis.mia.object.units.TemporalUnit;
 import io.github.mianalysis.mia.process.interactable.PointPairSelector.PointPair;
 import io.github.sjcross.sjcommon.object.volume.PointOutOfRangeException;
@@ -463,27 +464,27 @@ public abstract class AbstractRegistration<T extends RealType<T> & NativeType<T>
     @Override
     public Status process(Workspace workspace) {
         // Getting parameters
-        String inputImageName = parameters.getValue(INPUT_IMAGE);
-        boolean applyToInput = parameters.getValue(APPLY_TO_INPUT);
-        String outputImageName = parameters.getValue(OUTPUT_IMAGE);
-        String regAxis = parameters.getValue(REGISTRATION_AXIS);
-        String otherAxisMode = parameters.getValue(OTHER_AXIS_MODE);
-        String fillMode = parameters.getValue(FILL_MODE);
-        boolean multithread = parameters.getValue(ENABLE_MULTITHREADING);
-        String referenceMode = parameters.getValue(REFERENCE_MODE);
-        int numPrevFrames = parameters.getValue(NUM_PREV_FRAMES);
-        String prevFramesStatMode = parameters.getValue(PREV_FRAMES_STAT_MODE);
-        String referenceImageName = parameters.getValue(REFERENCE_IMAGE);
-        String calculationSource = parameters.getValue(CALCULATION_SOURCE);
-        String externalSourceName = parameters.getValue(EXTERNAL_SOURCE);
-        int calculationChannel = parameters.getValue(CALCULATION_CHANNEL);
-        boolean showDetectedPoints = parameters.getValue(SHOW_DETECTED_POINTS);
+        String inputImageName = parameters.getValue(INPUT_IMAGE,workspace);
+        boolean applyToInput = parameters.getValue(APPLY_TO_INPUT,workspace);
+        String outputImageName = parameters.getValue(OUTPUT_IMAGE,workspace);
+        String regAxis = parameters.getValue(REGISTRATION_AXIS,workspace);
+        String otherAxisMode = parameters.getValue(OTHER_AXIS_MODE,workspace);
+        String fillMode = parameters.getValue(FILL_MODE,workspace);
+        boolean multithread = parameters.getValue(ENABLE_MULTITHREADING,workspace);
+        String referenceMode = parameters.getValue(REFERENCE_MODE,workspace);
+        int numPrevFrames = parameters.getValue(NUM_PREV_FRAMES,workspace);
+        String prevFramesStatMode = parameters.getValue(PREV_FRAMES_STAT_MODE,workspace);
+        String referenceImageName = parameters.getValue(REFERENCE_IMAGE,workspace);
+        String calculationSource = parameters.getValue(CALCULATION_SOURCE,workspace);
+        String externalSourceName = parameters.getValue(EXTERNAL_SOURCE,workspace);
+        int calculationChannel = parameters.getValue(CALCULATION_CHANNEL,workspace);
+        boolean showDetectedPoints = parameters.getValue(SHOW_DETECTED_POINTS,workspace);
 
         // Getting the input image and duplicating if the output will be stored
         // separately
         Image inputImage = workspace.getImage(inputImageName);
         if (!applyToInput)
-            inputImage = new Image(outputImageName, inputImage.getImagePlus().duplicate());
+            inputImage = ImageFactory.createImage(outputImageName, inputImage.getImagePlus().duplicate());
 
         // If comparing to a fixed image, get this now
         Image reference = referenceMode.equals(ReferenceModes.SPECIFIC_IMAGE) ? workspace.getImage(referenceImageName)
@@ -601,12 +602,13 @@ public abstract class AbstractRegistration<T extends RealType<T> & NativeType<T>
 
     @Override
     public Parameters updateAndGetParameters() {
+Workspace workspace = null;
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(INPUT_IMAGE));
         returnedParameters.add(parameters.getParameter(APPLY_TO_INPUT));
-        if (!(boolean) parameters.getValue(APPLY_TO_INPUT)) {
+        if (!(boolean) parameters.getValue(APPLY_TO_INPUT,workspace)) {
             returnedParameters.add(parameters.getParameter(OUTPUT_IMAGE));
         }
 
@@ -621,7 +623,7 @@ public abstract class AbstractRegistration<T extends RealType<T> & NativeType<T>
 
         returnedParameters.add(parameters.getParameter(REFERENCE_SEPARATOR));
         returnedParameters.add(parameters.getParameter(REFERENCE_MODE));
-        switch ((String) parameters.getValue(REFERENCE_MODE)) {
+        switch ((String) parameters.getValue(REFERENCE_MODE,workspace)) {
             case ReferenceModes.PREVIOUS_N_FRAMES:
                 returnedParameters.add(parameters.getParameter(NUM_PREV_FRAMES));
                 returnedParameters.add(parameters.getParameter(PREV_FRAMES_STAT_MODE));
@@ -631,7 +633,7 @@ public abstract class AbstractRegistration<T extends RealType<T> & NativeType<T>
                 break;
         }
         returnedParameters.add(parameters.getParameter(CALCULATION_SOURCE));
-        switch ((String) parameters.getValue(CALCULATION_SOURCE)) {
+        switch ((String) parameters.getValue(CALCULATION_SOURCE,workspace)) {
             case CalculationSources.EXTERNAL:
                 returnedParameters.add(parameters.getParameter(EXTERNAL_SOURCE));
                 break;
@@ -664,7 +666,7 @@ public abstract class AbstractRegistration<T extends RealType<T> & NativeType<T>
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
-        return null;
+return null;
     }
 
     @Override
@@ -763,7 +765,7 @@ public abstract class AbstractRegistration<T extends RealType<T> & NativeType<T>
     }
 
     public void getParameters(Param param, Workspace workspace) {
-        param.fillMode = parameters.getValue(FILL_MODE);
+        param.fillMode = parameters.getValue(FILL_MODE,workspace);
     }
 
     public class Param {

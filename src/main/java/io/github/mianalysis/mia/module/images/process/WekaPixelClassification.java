@@ -20,9 +20,9 @@ import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.inputoutput.ImageLoader;
-import io.github.mianalysis.mia.object.Image;
-import io.github.mianalysis.mia.object.Status;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.FilePathP;
@@ -38,6 +38,7 @@ import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
+import io.github.mianalysis.mia.object.system.Status;
 import io.github.sjcross.sjcommon.metadataextractors.Metadata;
 import loci.common.services.DependencyException;
 import loci.common.services.ServiceException;
@@ -217,18 +218,18 @@ public class WekaPixelClassification extends Module {
     @Override
     public Status process(Workspace workspace) {
         // Getting parameters
-        String inputImageName = parameters.getValue(INPUT_IMAGE);
-        boolean convertToRGB = parameters.getValue(CONVERT_TO_RGB);
-        String outputMode = parameters.getValue(OUTPUT_MODE);
-        String outputImageName = parameters.getValue(OUTPUT_IMAGE);
-        String outputBitDepth = parameters.getValue(OUTPUT_BIT_DEPTH);
-        boolean outputSingleClass = parameters.getValue(OUTPUT_SINGLE_CLASS);
-        int outputClass = parameters.getValue(OUTPUT_CLASS);
-        String pathType = parameters.getValue(PATH_TYPE);
-        String genericFormat = parameters.getValue(GENERIC_FORMAT);
-        String classifierFilePath = parameters.getValue(CLASSIFIER_FILE);
-        int nSimSlices = parameters.getValue(SIMULTANEOUS_SLICES);
-        int tileFactor = parameters.getValue(TILE_FACTOR);
+        String inputImageName = parameters.getValue(INPUT_IMAGE,workspace);
+        boolean convertToRGB = parameters.getValue(CONVERT_TO_RGB,workspace);
+        String outputMode = parameters.getValue(OUTPUT_MODE,workspace);
+        String outputImageName = parameters.getValue(OUTPUT_IMAGE,workspace);
+        String outputBitDepth = parameters.getValue(OUTPUT_BIT_DEPTH,workspace);
+        boolean outputSingleClass = parameters.getValue(OUTPUT_SINGLE_CLASS,workspace);
+        int outputClass = parameters.getValue(OUTPUT_CLASS,workspace);
+        String pathType = parameters.getValue(PATH_TYPE,workspace);
+        String genericFormat = parameters.getValue(GENERIC_FORMAT,workspace);
+        String classifierFilePath = parameters.getValue(CLASSIFIER_FILE,workspace);
+        int nSimSlices = parameters.getValue(SIMULTANEOUS_SLICES,workspace);
+        int tileFactor = parameters.getValue(TILE_FACTOR,workspace);
 
         // Getting input image
         Image inputImage = workspace.getImages().get(inputImageName);
@@ -267,7 +268,7 @@ public class WekaPixelClassification extends Module {
             return Status.FAIL;
 
         // Adding the output image (probability maps or classes) to the workspace
-        Image outputImage = new Image(outputImageName, outputIpl);
+        Image outputImage = ImageFactory.createImage(outputImageName, outputIpl);
         workspace.addImage(outputImage);
 
         if (showOutput)
@@ -316,6 +317,7 @@ public class WekaPixelClassification extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
+Workspace workspace = null;
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
@@ -326,16 +328,16 @@ public class WekaPixelClassification extends Module {
         returnedParameters.add(parameters.getParameter(OUTPUT_MODE));
         returnedParameters.add(parameters.getParameter(OUTPUT_IMAGE));
 
-        if ((boolean) parameters.getValue(OUTPUT_MODE).equals(OutputModes.PROBABILITY)) {
+        if ((boolean) parameters.getValue(OUTPUT_MODE,workspace).equals(OutputModes.PROBABILITY)) {
             returnedParameters.add(parameters.getParameter(OUTPUT_BIT_DEPTH));
             returnedParameters.add(parameters.getParameter(OUTPUT_SINGLE_CLASS));
-            if ((boolean) parameters.getValue(OUTPUT_SINGLE_CLASS))
+            if ((boolean) parameters.getValue(OUTPUT_SINGLE_CLASS,workspace))
                 returnedParameters.add(parameters.getParameter(OUTPUT_CLASS));
         }
 
         returnedParameters.add(parameters.getParameter(CLASSIFIER_SEPARATOR));
         returnedParameters.add(parameters.getParameter(PATH_TYPE));
-        switch ((String) parameters.getValue(PATH_TYPE)) {
+        switch ((String) parameters.getValue(PATH_TYPE,workspace)) {
             case PathTypes.MATCHING_FORMAT:
                 returnedParameters.add(parameters.getParameter(GENERIC_FORMAT));
                 returnedParameters.add(parameters.getParameter(AVAILABLE_METADATA_FIELDS));
@@ -355,27 +357,27 @@ public class WekaPixelClassification extends Module {
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
-        return null;
+return null;
     }
 
     @Override
-    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
-        return null;
+public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+return null;
     }
 
     @Override
-    public MetadataRefs updateAndGetMetadataReferences() {
-        return null;
+public MetadataRefs updateAndGetMetadataReferences() {
+return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
-        return null;
+return null;
     }
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
-        return null;
+return null;
     }
 
     @Override

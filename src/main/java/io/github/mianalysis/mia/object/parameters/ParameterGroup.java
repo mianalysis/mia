@@ -12,6 +12,7 @@ import org.w3c.dom.NodeList;
 import io.github.mianalysis.mia.gui.parametercontrols.AddParametersButton;
 import io.github.mianalysis.mia.gui.parametercontrols.ParameterControl;
 import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.parameters.abstrakt.Parameter;
 import io.github.mianalysis.mia.process.analysishandling.AnalysisReader;
 
@@ -145,7 +146,7 @@ public class ParameterGroup extends Parameter {
     }
 
     @Override
-    public <T> T getValue() {
+    public <T> T getValue(Workspace workspace) {
         return (T) collections;
     }
 

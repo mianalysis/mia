@@ -3,6 +3,7 @@ package io.github.mianalysis.mia.gui.regions.workflowmodules;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -11,9 +12,10 @@ import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.gui.GUI;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.core.InputControl;
 import io.github.mianalysis.mia.module.system.GUISeparator;
-import io.github.mianalysis.mia.object.Status;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.system.Status;
 
 /**
  * Created by Stephen on 08/06/2017.
@@ -29,14 +31,24 @@ public class EvalButton extends JButton implements ActionListener {
     private Module module;
     private static final ImageIcon blackIcon = new ImageIcon(
             EvalButton.class.getResource("/icons/arrowopen_black_12px.png"), "");
+    private static final ImageIcon blackIconDM = new ImageIcon(
+            EvalButton.class.getResource("/icons/arrowopen_blackDM_12px.png"), "");
     private static final ImageIcon amberIcon = new ImageIcon(
             EvalButton.class.getResource("/icons/Dual Ring-1s-12px.gif"), "");
+    private static final ImageIcon amberIconDM = new ImageIcon(
+            EvalButton.class.getResource("/icons/Dual Ring-1s_DM-12px.gif"), "");
     private static final ImageIcon greenIcon = new ImageIcon(
             EvalButton.class.getResource("/icons/arrowclosed_green_12px.png"), "");
+    private static final ImageIcon greenIconDM = new ImageIcon(
+            EvalButton.class.getResource("/icons/arrowclosed_greenDM_12px.png"), "");
     private static final ImageIcon redOpenIcon = new ImageIcon(
             EvalButton.class.getResource("/icons/arrowopen_red_12px.png"), "");
+    private static final ImageIcon redOpenIconDM = new ImageIcon(
+            EvalButton.class.getResource("/icons/arrowopen_redDM_12px.png"), "");
     private static final ImageIcon redClosedIcon = new ImageIcon(
             EvalButton.class.getResource("/icons/arrowclosed_red_12px.png"), "");
+    private static final ImageIcon redClosedIconDM = new ImageIcon(
+            EvalButton.class.getResource("/icons/arrowclosed_redDM_12px.png"), "");
     private static final ImageIcon redStopIcon = new ImageIcon(EvalButton.class.getResource("/icons/x-mark-3-12.png"),
             "");
 
@@ -60,26 +72,51 @@ public class EvalButton extends JButton implements ActionListener {
 
         // If the module is being currently evaluated
         if (idx == GUI.getModuleBeingEval()) {
-            setIcon(amberIcon);
+            if (MIA.getPreferences().darkThemeEnabled())
+                setIcon(amberIconDM);
+            else
+                setIcon(amberIcon);
+
             setRolloverIcon(redStopIcon);
+
             return;
         }
 
         if (idx <= GUI.getLastModuleEval()) {
             if (module.isRunnable()) {
-                setIcon(greenIcon);
-                setRolloverIcon(greenIcon);
+                if (MIA.getPreferences().darkThemeEnabled()) {
+                    setIcon(greenIconDM);
+                    setRolloverIcon(greenIconDM);
+                } else {
+                    setIcon(greenIcon);
+                    setRolloverIcon(greenIcon);
+                }
             } else {
-                setIcon(redClosedIcon);
-                setRolloverIcon(redClosedIcon);
+                if (MIA.getPreferences().darkThemeEnabled()) {
+                    setIcon(redClosedIconDM);
+                    setRolloverIcon(redClosedIconDM);
+                } else {
+                    setIcon(redClosedIcon);
+                    setRolloverIcon(redClosedIcon);
+                }
             }
         } else {
             if (module.isRunnable()) {
-                setIcon(blackIcon);
-                setRolloverIcon(blackIcon);
+                if (MIA.getPreferences().darkThemeEnabled()) {
+                    setIcon(blackIconDM);
+                    setRolloverIcon(blackIconDM);
+                } else {
+                    setIcon(blackIcon);
+                    setRolloverIcon(blackIcon);
+                }
             } else {
-                setIcon(redOpenIcon);
-                setRolloverIcon(redOpenIcon);
+                if (MIA.getPreferences().darkThemeEnabled()) {
+                    setIcon(redOpenIconDM);
+                    setRolloverIcon(redOpenIconDM);
+                } else {
+                    setIcon(redOpenIcon);
+                    setRolloverIcon(redOpenIcon);
+                }
             }
         }
 
@@ -96,6 +133,15 @@ public class EvalButton extends JButton implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         Modules modules = GUI.getModules();
+
+        // Checking a test file is specified, but not loaded or if it's different to
+        // that loaded.
+        String inputControlPath = modules.getInputControl().getParameterValue(InputControl.INPUT_PATH, null);
+        File testWorkspaceFile = GUI.getTestWorkspace().getMetadata().getFile();
+        String testWorkspacePath = testWorkspaceFile == null ? "" : testWorkspaceFile.getAbsolutePath();
+        if (!inputControlPath.equals(testWorkspacePath))
+            GUI.updateTestFile(true);
+
         int idx = modules.indexOf(module);
 
         // If this is the first (non-GUI separator) module, reset the workspace
@@ -184,7 +230,7 @@ public class EvalButton extends JButton implements ActionListener {
                 break;
             case REDIRECT:
                 // Getting index of module before one to move to
-                Module redirectModule = module.getRedirectModule();
+                Module redirectModule = module.getRedirectModule(testWorkspace);
                 if (redirectModule == null)
                     status = true;
 

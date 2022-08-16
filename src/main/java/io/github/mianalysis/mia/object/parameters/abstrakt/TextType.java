@@ -8,6 +8,14 @@ import io.github.mianalysis.mia.gui.parametercontrols.ParameterControl;
 import io.github.mianalysis.mia.gui.parametercontrols.TextParameter;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.system.GlobalVariables;
+import io.github.mianalysis.mia.object.Measurement;
+import io.github.mianalysis.mia.object.Obj;
+import io.github.mianalysis.mia.object.Objs;
+import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageFactory;
+import io.github.sjcross.sjcommon.mathfunc.CumStat;
+import io.github.sjcross.sjcommon.metadataextractors.Metadata;
 import net.objecthunter.exp4j.ExpressionBuilder;
 
 public abstract class TextType extends Parameter {
@@ -43,9 +51,150 @@ public abstract class TextType extends Parameter {
 
             }
         } catch (Exception e) {
-            // If input string contained a metadata reference (e.g. AddCustomMetadataItem may do this), don't output the warning
+            // If input string contained a metadata reference (e.g. AddCustomMetadataItem
+            // may do this), don't output the warning
             if (!string.contains("M{"))
                 MIA.log.writeError(e);
+        }
+
+        return string;
+
+    }
+
+    public static String insertWorkspaceValues(String string, Workspace workspace) {
+        if (workspace == null)
+            return string;
+
+        // Inserting metadata values
+        string = insertMetadataValues(string, workspace);
+
+        // Inserting image measurements
+        string = insertImageMeasurementValues(string, workspace);
+
+        // Insert object collection statistics
+        string = insertObjectMeasurementValues(string, workspace);
+
+        // Insert object count
+        string = insertObjectCountValues(string, workspace);
+
+        return string;
+
+    }
+
+    public static String insertMetadataValues(String string, Workspace workspace) {
+        if (workspace == null)
+            return string;
+
+        // Inserting metadata values
+        Pattern pattern = Pattern.compile("Me\\{([^}]+)}");
+        Matcher matcher = pattern.matcher(string);
+        Metadata metadata = workspace.getMetadata();
+        while (matcher.find()) {
+            String fullName = matcher.group(0);
+            String metadataName = matcher.group(1);
+
+            if (metadata.containsKey(metadataName))
+                string = string.replace(fullName, metadata.getAsString(metadataName));
+
+        }
+
+        return string;
+
+    }
+
+    public static String insertImageMeasurementValues(String string, Workspace workspace) {
+        if (workspace == null)
+            return string;
+
+        Pattern pattern = Pattern.compile("Im\\{([^\\}]+)}");
+        Matcher matcher = pattern.matcher(string);
+        while (matcher.find()) {
+            Pattern imMeasPattern = Pattern.compile("([^\\|]+)\\|([^\\|]+)");
+            Matcher imMeasMatcher = imMeasPattern.matcher(matcher.group(1));
+            if (imMeasMatcher.find()) {
+                Image image = workspace.getImage(imMeasMatcher.group(1));
+                if (image == null)
+                    break;
+
+                Measurement measurement = image.getMeasurement(imMeasMatcher.group(2));
+                if (measurement == null)
+                    break;
+
+                string = string.replace(matcher.group(0), String.valueOf(measurement.getValue()));
+
+            }
+        }
+
+        return string;
+
+    }
+
+    public static String insertObjectMeasurementValues(String string, Workspace workspace) {
+        if (workspace == null)
+            return string;
+
+        Pattern pattern = Pattern.compile("Os\\{([^\\}]+)}");
+        Matcher matcher = pattern.matcher(string);
+        while (matcher.find()) {
+            Pattern objMeasPattern = Pattern.compile("([^\\|]+)\\|([^\\|]+)\\|([^\\|]+)");
+            Matcher objMeasMatcher = objMeasPattern.matcher(matcher.group(1));
+            if (objMeasMatcher.find()) {
+                Objs objs = workspace.getObjectSet(objMeasMatcher.group(1));
+                if (objs == null)
+                    break;
+
+                String measurementName = objMeasMatcher.group(2);
+                String statistic = objMeasMatcher.group(3).toUpperCase();
+                CumStat cs = new CumStat();
+                for (Obj obj : objs.values()) {
+                    Measurement measurement = obj.getMeasurement(measurementName);
+                    if (measurement == null)
+                        continue;
+
+                    cs.addMeasure(measurement.getValue());
+
+                }
+
+                switch (statistic) {
+                    case "MAX":
+                    case "MAXIMUM":
+                        string = string.replace(matcher.group(0), String.valueOf(cs.getMax()));
+                        break;
+                    case "MEAN":
+                        string = string.replace(matcher.group(0), String.valueOf(cs.getMean()));
+                        break;
+                    case "MIN":
+                    case "MINIMUM":
+                        string = string.replace(matcher.group(0), String.valueOf(cs.getMin()));
+                        break;
+                    case "STD":
+                    case "STDEV":
+                        string = string.replace(matcher.group(0), String.valueOf(cs.getStd()));
+                        break;
+                    case "SUM":
+                        string = string.replace(matcher.group(0), String.valueOf(cs.getSum()));
+                        break;
+                }
+            }
+        }
+
+        return string;
+
+    }
+
+    public static String insertObjectCountValues(String string, Workspace workspace) {
+        if (workspace == null)
+            return string;
+
+        Pattern pattern = Pattern.compile("Co\\{([^\\}]+)}");
+        Matcher matcher = pattern.matcher(string);
+        while (matcher.find()) {
+            Objs objs = workspace.getObjectSet(matcher.group(1));
+            if (objs == null)
+                break;
+
+            string = string.replace(matcher.group(0), String.valueOf(objs.size()));
+
         }
 
         return string;

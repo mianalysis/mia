@@ -17,11 +17,11 @@ import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.images.transform.InterpolateZAxis;
-import io.github.mianalysis.mia.object.Image;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
-import io.github.mianalysis.mia.object.Status;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputObjectsP;
@@ -34,6 +34,7 @@ import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
+import io.github.mianalysis.mia.object.system.Status;
 import io.github.mianalysis.mia.process.ColourFactory;
 import io.github.sjcross.sjcommon.imagej.LUTs;
 import io.github.sjcross.sjcommon.object.Point;
@@ -139,7 +140,7 @@ public class ExtractObjectEdges extends Module {
             distIpl = resizer.zScale(distIpl, nSlices, Resizer.IN_PLACE);
         }
 
-        return new Image("Distance",distIpl);
+        return ImageFactory.createImage("Distance",distIpl);
 
     }
 
@@ -178,22 +179,22 @@ public class ExtractObjectEdges extends Module {
     @Override
     public Status process(Workspace workspace) {
         // Getting input objects
-        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
         Objs inputObjects = workspace.getObjects().get(inputObjectsName);
 
         // Getting parameters
-        boolean createEdgeObjects = parameters.getValue(CREATE_EDGE_OBJECTS);
-        boolean createInteriorObjects = parameters.getValue(CREATE_INTERIOR_OBJECTS);
-        String edgeMode = parameters.getValue(EDGE_MODE);
-        double edgeDistance = parameters.getValue(EDGE_DISTANCE);
-        boolean calibratedDistances = parameters.getValue(CALIBRATED_DISTANCES);
-        double edgePercentage = parameters.getValue(EDGE_PERCENTAGE);
+        boolean createEdgeObjects = parameters.getValue(CREATE_EDGE_OBJECTS,workspace);
+        boolean createInteriorObjects = parameters.getValue(CREATE_INTERIOR_OBJECTS,workspace);
+        String edgeMode = parameters.getValue(EDGE_MODE,workspace);
+        double edgeDistance = parameters.getValue(EDGE_DISTANCE,workspace);
+        boolean calibratedDistances = parameters.getValue(CALIBRATED_DISTANCES,workspace);
+        double edgePercentage = parameters.getValue(EDGE_PERCENTAGE,workspace);
 
         // Initialising output edge objects
         String edgeObjectName = null;
         Objs edgeObjects = null;
         if (createEdgeObjects) {
-            edgeObjectName = parameters.getValue(OUTPUT_EDGE_OBJECTS);
+            edgeObjectName = parameters.getValue(OUTPUT_EDGE_OBJECTS,workspace);
             edgeObjects = new Objs(edgeObjectName,inputObjects);
             workspace.addObjects(edgeObjects);
         }
@@ -202,7 +203,7 @@ public class ExtractObjectEdges extends Module {
         String interiorObjectName = null;
         Objs interiorObjects = null;
         if (createInteriorObjects) {
-            interiorObjectName = parameters.getValue(OUTPUT_INTERIOR_OBJECTS);
+            interiorObjectName = parameters.getValue(OUTPUT_INTERIOR_OBJECTS,workspace);
             interiorObjects = new Objs(interiorObjectName,inputObjects);
             workspace.addObjects(interiorObjects);
         }
@@ -258,28 +259,29 @@ public class ExtractObjectEdges extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
+Workspace workspace = null;
         Parameters returnedParameters = new Parameters();
         returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(INPUT_OBJECTS));
 
         returnedParameters.add(parameters.getParameter(CREATE_EDGE_OBJECTS));
-        if ((boolean) parameters.getValue(CREATE_EDGE_OBJECTS)) {
+        if ((boolean) parameters.getValue(CREATE_EDGE_OBJECTS,workspace)) {
             returnedParameters.add(parameters.getParameter(OUTPUT_EDGE_OBJECTS));
         }
 
         returnedParameters.add(parameters.getParameter(CREATE_INTERIOR_OBJECTS));
-        if ((boolean) parameters.getValue(CREATE_INTERIOR_OBJECTS)) {
+        if ((boolean) parameters.getValue(CREATE_INTERIOR_OBJECTS,workspace)) {
             returnedParameters.add(parameters.getParameter(OUTPUT_INTERIOR_OBJECTS));
         }
 
         returnedParameters.add(parameters.getParameter(DISTANCE_SEPARATOR));
         returnedParameters.add(parameters.getParameter(EDGE_MODE));
 
-        if (parameters.getValue(EDGE_MODE).equals(EdgeModes.DISTANCE_FROM_EDGE)) {
+        if (parameters.getValue(EDGE_MODE,workspace).equals(EdgeModes.DISTANCE_FROM_EDGE)) {
             returnedParameters.add(parameters.getParameter(EDGE_DISTANCE));
             returnedParameters.add(parameters.getParameter(CALIBRATED_DISTANCES));
 
-        } else if (parameters.getValue(EDGE_MODE).equals(EdgeModes.PERCENTAGE_FROM_EDGE)) {
+        } else if (parameters.getValue(EDGE_MODE,workspace).equals(EdgeModes.PERCENTAGE_FROM_EDGE)) {
             returnedParameters.add(parameters.getParameter(EDGE_PERCENTAGE));
 
         }
@@ -290,32 +292,33 @@ public class ExtractObjectEdges extends Module {
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
-        return null;
+return null;
     }
 
     @Override
-    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
-        return null;
+public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+return null;
     }
 
     @Override
-    public MetadataRefs updateAndGetMetadataReferences() {
-        return null;
+public MetadataRefs updateAndGetMetadataReferences() {
+return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
+Workspace workspace = null;
         ParentChildRefs returnedRelationships = new ParentChildRefs();
 
-        String inputObjects = parameters.getValue(INPUT_OBJECTS);
+        String inputObjects = parameters.getValue(INPUT_OBJECTS,workspace);
 
-        if ((boolean) parameters.getValue(CREATE_EDGE_OBJECTS)) {
-            String outputEdgeObjects = parameters.getValue(OUTPUT_EDGE_OBJECTS);
+        if ((boolean) parameters.getValue(CREATE_EDGE_OBJECTS,workspace)) {
+            String outputEdgeObjects = parameters.getValue(OUTPUT_EDGE_OBJECTS,workspace);
             returnedRelationships.add(parentChildRefs.getOrPut(inputObjects, outputEdgeObjects));
         }
 
-        if ((boolean) parameters.getValue(CREATE_INTERIOR_OBJECTS)) {
-            String outputInteriorObjects = parameters.getValue(OUTPUT_INTERIOR_OBJECTS);
+        if ((boolean) parameters.getValue(CREATE_INTERIOR_OBJECTS,workspace)) {
+            String outputInteriorObjects = parameters.getValue(OUTPUT_INTERIOR_OBJECTS,workspace);
             returnedRelationships.add(parentChildRefs.getOrPut(inputObjects,outputInteriorObjects));
         }
 
@@ -325,7 +328,7 @@ public class ExtractObjectEdges extends Module {
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
-        return null;
+return null;
     }
 
     @Override

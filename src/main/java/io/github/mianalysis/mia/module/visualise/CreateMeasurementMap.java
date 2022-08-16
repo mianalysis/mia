@@ -18,12 +18,12 @@ import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.object.Image;
 import io.github.mianalysis.mia.object.Measurement;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
-import io.github.mianalysis.mia.object.Status;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputObjectsP;
@@ -38,6 +38,7 @@ import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
+import io.github.mianalysis.mia.object.system.Status;
 import io.github.sjcross.sjcommon.mathfunc.CumStat;
 import io.github.sjcross.sjcommon.mathfunc.Indexer;
 import io.github.sjcross.sjcommon.object.Point;
@@ -300,7 +301,7 @@ public class CreateMeasurementMap extends Module {
             }
         }
 
-        return new Image(outputImageName, outputIpl);
+        return ImageFactory.createImage(outputImageName, outputIpl);
 
     }
 
@@ -317,18 +318,18 @@ public class CreateMeasurementMap extends Module {
     @Override
     public Status process(Workspace workspace) {
         // Getting input objects
-        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
         Objs inputObjects = workspace.getObjectSet(inputObjectsName);
 
         // Getting parameters
-        String outputImageName = parameters.getValue(OUTPUT_IMAGE);
-        String measurementMode = parameters.getValue(MEASUREMENT_MODE);
-        String parentObjectsName = parameters.getValue(PARENT_OBJECT);
-        String measurementName = parameters.getValue(MEASUREMENT);
-        String statistic = parameters.getValue(STATISTIC);
-        int range = parameters.getValue(RANGE);
-        boolean mergeZ = parameters.getValue(MERGE_SLICES);
-        boolean mergeT = parameters.getValue(MERGE_TIME);
+        String outputImageName = parameters.getValue(OUTPUT_IMAGE,workspace);
+        String measurementMode = parameters.getValue(MEASUREMENT_MODE,workspace);
+        String parentObjectsName = parameters.getValue(PARENT_OBJECT,workspace);
+        String measurementName = parameters.getValue(MEASUREMENT,workspace);
+        String statistic = parameters.getValue(STATISTIC,workspace);
+        int range = parameters.getValue(RANGE,workspace);
+        boolean mergeZ = parameters.getValue(MERGE_SLICES,workspace);
+        boolean mergeT = parameters.getValue(MERGE_TIME,workspace);
 
         // Initialising stores
         SpatCal calibration = inputObjects.getSpatialCalibration();
@@ -383,7 +384,8 @@ public class CreateMeasurementMap extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
-        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+Workspace workspace = null;
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
 
         Parameters returnedParameters = new Parameters();
 
@@ -393,7 +395,7 @@ public class CreateMeasurementMap extends Module {
 
         returnedParameters.add(parameters.getParameter(MAP_SEPARATOR));
         returnedParameters.add(parameters.getParameter(MEASUREMENT_MODE));
-        switch ((String) parameters.getValue(MEASUREMENT_MODE)) {
+        switch ((String) parameters.getValue(MEASUREMENT_MODE,workspace)) {
             case MeasurementModes.MEASUREMENT:
                 returnedParameters.add(parameters.getParameter(MEASUREMENT));
                 returnedParameters.add(parameters.getParameter(STATISTIC));
@@ -406,7 +408,7 @@ public class CreateMeasurementMap extends Module {
                 returnedParameters.add(parameters.getParameter(STATISTIC));
 
                 ((ParentObjectsP) parameters.getParameter(PARENT_OBJECT)).setChildObjectsName(inputObjectsName);
-                String parentObjectsName = parameters.getValue(PARENT_OBJECT);
+                String parentObjectsName = parameters.getValue(PARENT_OBJECT,workspace);
                 ((ObjectMeasurementP) parameters.getParameter(MEASUREMENT)).setObjectName(parentObjectsName);
                 break;
         }
@@ -421,27 +423,27 @@ public class CreateMeasurementMap extends Module {
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
-        return null;
+return null;
     }
 
     @Override
-    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
-        return null;
+public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+return null;
     }
 
     @Override
-    public MetadataRefs updateAndGetMetadataReferences() {
-        return null;
+public MetadataRefs updateAndGetMetadataReferences() {
+return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
-        return null;
+return null;
     }
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
-        return null;
+return null;
     }
 
     @Override

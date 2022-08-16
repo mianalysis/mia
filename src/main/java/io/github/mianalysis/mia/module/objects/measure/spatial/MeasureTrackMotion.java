@@ -16,7 +16,6 @@ import io.github.mianalysis.mia.module.objects.relate.TrackObjects;
 import io.github.mianalysis.mia.object.Measurement;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
-import io.github.mianalysis.mia.object.Status;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChildObjectsP;
@@ -30,6 +29,7 @@ import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
+import io.github.mianalysis.mia.object.system.Status;
 import io.github.sjcross.sjcommon.mathfunc.CumStat;
 import io.github.sjcross.sjcommon.object.Point;
 import io.github.sjcross.sjcommon.object.tracks.Timepoint;
@@ -517,14 +517,14 @@ public class MeasureTrackMotion extends Module {
     @Override
     public Status process(Workspace workspace) {
         // Getting input track objects
-        String inputTrackObjectsName = parameters.getValue(INPUT_TRACK_OBJECTS);
+        String inputTrackObjectsName = parameters.getValue(INPUT_TRACK_OBJECTS,workspace);
         Objs trackObjects = workspace.getObjects().get(inputTrackObjectsName);
 
         // Getting input spot objects
-        String inputSpotObjectsName = parameters.getValue(INPUT_SPOT_OBJECTS);
-        boolean subtractAverage = parameters.getValue(SUBTRACT_AVERAGE_MOTION);
-        boolean identifyLeading = parameters.getValue(IDENTIFY_LEADING_POINT);
-        String orientationMode = parameters.getValue(ORIENTATION_MODE);
+        String inputSpotObjectsName = parameters.getValue(INPUT_SPOT_OBJECTS,workspace);
+        boolean subtractAverage = parameters.getValue(SUBTRACT_AVERAGE_MOTION,workspace);
+        boolean identifyLeading = parameters.getValue(IDENTIFY_LEADING_POINT,workspace);
+        String orientationMode = parameters.getValue(ORIENTATION_MODE,workspace);
 
         // If necessary, creating the average track
         Track averageTrack = null;
@@ -581,19 +581,20 @@ public class MeasureTrackMotion extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
+Workspace workspace = null;
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(INPUT_TRACK_OBJECTS));
         returnedParameters.add(parameters.getParameter(INPUT_SPOT_OBJECTS));
 
-        String objectName = parameters.getValue(INPUT_TRACK_OBJECTS);
+        String objectName = parameters.getValue(INPUT_TRACK_OBJECTS,workspace);
         ((ChildObjectsP) parameters.getParameter(INPUT_SPOT_OBJECTS)).setParentObjectsName(objectName);
 
         returnedParameters.add(parameters.getParameter(MEASUREMENT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(SUBTRACT_AVERAGE_MOTION));
         returnedParameters.add(parameters.getParameter(IDENTIFY_LEADING_POINT));
-        if ((boolean) parameters.getValue(IDENTIFY_LEADING_POINT)) {
+        if ((boolean) parameters.getValue(IDENTIFY_LEADING_POINT,workspace)) {
             returnedParameters.add(parameters.getParameter(ORIENTATION_MODE));
         }
 
@@ -603,15 +604,16 @@ public class MeasureTrackMotion extends Module {
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
-        return null;
+return null;
     }
 
     @Override
-    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+Workspace workspace = null;
         ObjMeasurementRefs returnedRefs = new ObjMeasurementRefs();
-        String inputTrackObjects = parameters.getValue(INPUT_TRACK_OBJECTS);
-        String inputSpotObjects = parameters.getValue(INPUT_SPOT_OBJECTS);
-        boolean subtractAverage = parameters.getValue(SUBTRACT_AVERAGE_MOTION);
+        String inputTrackObjects = parameters.getValue(INPUT_TRACK_OBJECTS,workspace);
+        String inputSpotObjects = parameters.getValue(INPUT_SPOT_OBJECTS,workspace);
+        boolean subtractAverage = parameters.getValue(SUBTRACT_AVERAGE_MOTION,workspace);
 
         String name = getFullName(Measurements.DIRECTIONALITY_RATIO, subtractAverage);
         ObjMeasurementRef reference = objectMeasurementRefs.getOrPut(name);
@@ -773,7 +775,7 @@ public class MeasureTrackMotion extends Module {
         reference.setObjectsName(inputSpotObjects);
         returnedRefs.add(reference);
 
-        if ((boolean) parameters.getValue(IDENTIFY_LEADING_POINT)) {
+        if ((boolean) parameters.getValue(IDENTIFY_LEADING_POINT,workspace)) {
             name = getFullName(Measurements.ORIENTATION, subtractAverage);
             reference = objectMeasurementRefs.getOrPut(name);
             reference.setObjectsName(inputSpotObjects);
@@ -801,18 +803,18 @@ public class MeasureTrackMotion extends Module {
     }
 
     @Override
-    public MetadataRefs updateAndGetMetadataReferences() {
-        return null;
+public MetadataRefs updateAndGetMetadataReferences() {
+return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
-        return null;
+return null;
     }
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
-        return null;
+return null;
     }
 
     @Override

@@ -13,9 +13,9 @@ import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.object.Image;
-import io.github.mianalysis.mia.object.Status;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
@@ -28,6 +28,7 @@ import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
+import io.github.mianalysis.mia.object.system.Status;
 
 /**
  * Created by sc13967 on 19/09/2017.
@@ -121,7 +122,7 @@ public class ImageCalculator extends Module {
         switch (overwriteMode) {
             case OverwriteModes.CREATE_NEW:
             default:
-                return new Image(outputImageName, iplOut);
+                return ImageFactory.createImage(outputImageName, iplOut);
             case OverwriteModes.OVERWRITE_IMAGE1:
                 return inputImage1;
             case OverwriteModes.OVERWRITE_IMAGE2:
@@ -284,21 +285,21 @@ public class ImageCalculator extends Module {
     @Override
     public Status process(Workspace workspace) {
         // Getting input images
-        String inputImageName1 = parameters.getValue(INPUT_IMAGE1);
+        String inputImageName1 = parameters.getValue(INPUT_IMAGE1,workspace);
         Image inputImage1 = workspace.getImages().get(inputImageName1);
         ImagePlus inputImagePlus1 = inputImage1.getImagePlus();
 
-        String inputImageName2 = parameters.getValue(INPUT_IMAGE2);
+        String inputImageName2 = parameters.getValue(INPUT_IMAGE2,workspace);
         Image inputImage2 = workspace.getImages().get(inputImageName2);
         ImagePlus inputImagePlus2 = inputImage2.getImagePlus();
 
         // Getting parameters
-        String overwriteMode = parameters.getValue(OVERWRITE_MODE);
-        String outputImageName = parameters.getValue(OUTPUT_IMAGE);
-        boolean output32Bit = parameters.getValue(OUTPUT_32BIT);
-        String calculationMethod = parameters.getValue(CALCULATION_METHOD);
-        double im2Contibution = parameters.getValue(IMAGE_2_CONTRIBUTION);
-        boolean setNaNToZero = parameters.getValue(SET_NAN_TO_ZERO);
+        String overwriteMode = parameters.getValue(OVERWRITE_MODE,workspace);
+        String outputImageName = parameters.getValue(OUTPUT_IMAGE,workspace);
+        boolean output32Bit = parameters.getValue(OUTPUT_32BIT,workspace);
+        String calculationMethod = parameters.getValue(CALCULATION_METHOD,workspace);
+        double im2Contibution = parameters.getValue(IMAGE_2_CONTRIBUTION,workspace);
+        boolean setNaNToZero = parameters.getValue(SET_NAN_TO_ZERO,workspace);
 
         ImagePlus newIpl = process(inputImagePlus1, inputImagePlus2, calculationMethod, overwriteMode, outputImageName,
                 output32Bit, setNaNToZero, im2Contibution);
@@ -307,7 +308,7 @@ public class ImageCalculator extends Module {
         switch (overwriteMode) {
             case OverwriteModes.CREATE_NEW:
                 newIpl.updateChannelAndDraw();
-                Image outputImage = new Image(outputImageName, newIpl);
+                Image outputImage = ImageFactory.createImage(outputImageName, newIpl);
                 workspace.addImage(outputImage);
                 if (showOutput)
                     outputImage.showImage();
@@ -362,6 +363,7 @@ public class ImageCalculator extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
+Workspace workspace = null;
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
@@ -369,7 +371,7 @@ public class ImageCalculator extends Module {
         returnedParameters.add(parameters.getParameter(INPUT_IMAGE2));
         returnedParameters.add(parameters.getParameter(OVERWRITE_MODE));
 
-        if (parameters.getValue(OVERWRITE_MODE).equals(OverwriteModes.CREATE_NEW)) {
+        if (parameters.getValue(OVERWRITE_MODE,workspace).equals(OverwriteModes.CREATE_NEW)) {
             returnedParameters.add(parameters.getParameter(OUTPUT_IMAGE));
         }
 
@@ -377,7 +379,7 @@ public class ImageCalculator extends Module {
 
         returnedParameters.add(parameters.getParameter(CALCULATION_SEPARATOR));
         returnedParameters.add(parameters.getParameter(CALCULATION_METHOD));
-        if (((String) parameters.getValue(CALCULATION_METHOD)).equals(CalculationMethods.MEAN))
+        if (((String) parameters.getValue(CALCULATION_METHOD,workspace)).equals(CalculationMethods.MEAN))
             returnedParameters.add(parameters.getParameter(IMAGE_2_CONTRIBUTION));
         returnedParameters.add(parameters.getParameter(SET_NAN_TO_ZERO));
 
@@ -387,27 +389,27 @@ public class ImageCalculator extends Module {
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
-        return null;
+return null;
     }
 
     @Override
-    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
-        return null;
+public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+return null;
     }
 
     @Override
-    public MetadataRefs updateAndGetMetadataReferences() {
-        return null;
+public MetadataRefs updateAndGetMetadataReferences() {
+return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
-        return null;
+return null;
     }
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
-        return null;
+return null;
     }
 
     @Override

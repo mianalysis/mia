@@ -21,6 +21,7 @@ import javax.swing.JSeparator;
 
 import org.apache.batik.ext.swing.GridBagConstants;
 
+import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.gui.parametercontrols.ParameterControl;
 import io.github.mianalysis.mia.gui.regions.parameterlist.DisableRefsButton;
 import io.github.mianalysis.mia.gui.regions.parameterlist.DisableableCheck;
@@ -38,7 +39,6 @@ import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.core.InputControl;
 import io.github.mianalysis.mia.module.core.OutputControl;
 import io.github.mianalysis.mia.module.system.GUISeparator;
-import io.github.mianalysis.mia.object.Colours;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ObjMeasurementSelectorP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
@@ -50,6 +50,8 @@ import io.github.mianalysis.mia.object.parameters.text.TextAreaP;
 import io.github.mianalysis.mia.object.refs.abstrakt.ExportableRef;
 import io.github.mianalysis.mia.object.refs.abstrakt.SummaryRef;
 import io.github.mianalysis.mia.object.refs.collections.Refs;
+import io.github.mianalysis.mia.object.system.Colours;
+import io.github.mianalysis.mia.object.system.Preferences;
 
 /**
  * Created by Stephen on 23/06/2017.
@@ -59,14 +61,22 @@ public class ComponentFactory {
 
     private static final ImageIcon downArrow = new ImageIcon(
             ComponentFactory.class.getResource("/icons/downarrow_darkblue_12px.png"), "");
+    private static final ImageIcon downArrowDM = new ImageIcon(
+            ComponentFactory.class.getResource("/icons/downarrow_darkblueDM_12px.png"), "");
     private static final ImageIcon rightArrow = new ImageIcon(
             ComponentFactory.class.getResource("/icons/rightarrow_darkblue_12px.png"), "");
+    private static final ImageIcon rightArrowDM = new ImageIcon(
+            ComponentFactory.class.getResource("/icons/rightarrow_darkblueDM_12px.png"), "");
     private static final ImageIcon leftArrow = new ImageIcon(
             ComponentFactory.class.getResource("/icons/leftarrow_darkblue_12px.png"), "");
+    private static final ImageIcon leftArrowDM = new ImageIcon(
+            ComponentFactory.class.getResource("/icons/leftarrow_darkblueDM_12px.png"), "");
     // private static final ImageIcon circle = new ImageIcon(
     // ComponentFactory.class.getResource("/Icons/dot_blue_12px.png"), "");
     private static final ImageIcon warningIcon = new ImageIcon(
             ComponentFactory.class.getResource("/icons/warning_red_12px.png"), "");
+    private static final ImageIcon warningIconDM = new ImageIcon(
+            ComponentFactory.class.getResource("/icons/warning_redDM_12px.png"), "");
 
     public ComponentFactory(int elementHeight) {
         this.elementHeight = elementHeight;
@@ -85,6 +95,9 @@ public class ComponentFactory {
         ParameterControl parameterControl = parameter.getControl();
         parameterControl.updateControl();
         JComponent parameterComponent = parameterControl.getComponent();
+
+        Preferences preferences = MIA.getPreferences();
+boolean darkMode = preferences == null ? false : preferences.darkThemeEnabled();
 
         if (parameter instanceof MessageP || parameter instanceof ObjMeasurementSelectorP) {
             String value = parameter.getAlternativeString();
@@ -118,10 +131,11 @@ public class ComponentFactory {
             paramPanel.add(parameterName, c);
 
             if (!parameter.isValid()) {
-            //     parameterName.setForeground(Color.BLACK);
-            // else {
-                parameterName.setForeground(Colours.RED);
-                parameterName.setIcon(warningIcon);
+                parameterName.setForeground(Colours.getRed(darkMode));
+                if (darkMode)
+                    parameterName.setIcon(warningIconDM);
+                else
+                    parameterName.setIcon(warningIcon);
             }
 
             c.gridx++;
@@ -242,6 +256,9 @@ public class ComponentFactory {
     }
 
     public JPanel createProcessingSeparator(Module module) {
+        Preferences preferences = MIA.getPreferences();
+boolean darkMode = preferences == null ? false : preferences.darkThemeEnabled();
+
         JPanel panel = new JPanel(new GridBagLayout());
 
         GridBagConstraints c = new GridBagConstraints();
@@ -264,18 +281,24 @@ public class ComponentFactory {
         BooleanP expandedProcessing = (BooleanP) module.getParameter(GUISeparator.EXPANDED_PROCESSING);
         JLabel leftArrowLabel = new JLabel();
         if (expandedProcessing.isSelected()) {
-            leftArrowLabel.setIcon(downArrow);
+            if (MIA.getPreferences().darkThemeEnabled())
+                leftArrowLabel.setIcon(downArrowDM);
+            else
+                leftArrowLabel.setIcon(downArrow);
         } else {
-            leftArrowLabel.setIcon(rightArrow);
+            if (MIA.getPreferences().darkThemeEnabled())
+                leftArrowLabel.setIcon(rightArrowDM);
+            else
+                leftArrowLabel.setIcon(rightArrow);
         }
-        
+
         c.insets = new Insets(0, 0, 0, 5);
         c.gridx++;
         panel.add(leftArrowLabel, c);
 
         JSeparator separatorLeft = new JSeparator();
-        separatorLeft.setForeground(Colours.DARK_BLUE);
-        separatorLeft.setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, Colours.DARK_BLUE));
+        separatorLeft.setForeground(Colours.getDarkBlue(darkMode));
+        separatorLeft.setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, Colours.getDarkBlue(darkMode)));
         c.weightx = 1;
         c.gridx++;
         panel.add(separatorLeft, c);
@@ -283,15 +306,15 @@ public class ComponentFactory {
         JLabel label = new JLabel();
         label.setText(module.getNickname());
         label.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
-        label.setForeground(Colours.DARK_BLUE);
+        label.setForeground(Colours.getDarkBlue(darkMode));
         c.weightx = 0;
         c.gridx++;
         c.insets = new Insets(0, 0, 0, 0);
         panel.add(label, c);
 
         JSeparator separatorRight = new JSeparator();
-        separatorRight.setForeground(Colours.DARK_BLUE);
-        separatorRight.setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, Colours.DARK_BLUE));
+        separatorRight.setForeground(Colours.getDarkBlue(darkMode));
+        separatorRight.setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, Colours.getDarkBlue(darkMode)));
         c.weightx = 1;
         c.gridx++;
         c.anchor = GridBagConstants.EAST;
@@ -300,9 +323,15 @@ public class ComponentFactory {
 
         JLabel rightArrowLabel = new JLabel();
         if (expandedProcessing.isSelected()) {
-            rightArrowLabel.setIcon(downArrow);
+            if (MIA.getPreferences().darkThemeEnabled())
+                rightArrowLabel.setIcon(downArrowDM);
+            else
+                rightArrowLabel.setIcon(downArrow);
         } else {
-            rightArrowLabel.setIcon(leftArrow);
+            if (MIA.getPreferences().darkThemeEnabled())
+                rightArrowLabel.setIcon(leftArrowDM);
+            else
+                rightArrowLabel.setIcon(leftArrow);
         }
 
         c.weightx = 0;
@@ -404,7 +433,7 @@ public class ComponentFactory {
 
     private JPanel createSummaryExportLabels(boolean includeSummary) {
         Parameters outputParameters = GUI.getModules().getOutputControl().updateAndGetParameters();
-        String exportMode = outputParameters.getValue(OutputControl.EXPORT_MODE);
+        String exportMode = outputParameters.getValue(OutputControl.EXPORT_MODE, null);
         BooleanP exportIndividual = outputParameters.getParameter(OutputControl.EXPORT_INDIVIDUAL_OBJECTS);
         BooleanP exportSummary = outputParameters.getParameter(OutputControl.EXPORT_SUMMARY);
 
@@ -472,7 +501,7 @@ public class ComponentFactory {
 
     private JPanel createExportControls(ExportableRef ref, ExportCheck.Type type) {
         Parameters outputParameters = GUI.getModules().getOutputControl().updateAndGetParameters();
-        String exportMode = outputParameters.getValue(OutputControl.EXPORT_MODE);
+        String exportMode = outputParameters.getValue(OutputControl.EXPORT_MODE, null);
         BooleanP exportIndividual = (BooleanP) outputParameters.getParameter(OutputControl.EXPORT_INDIVIDUAL_OBJECTS);
 
         JPanel controlPanel = new JPanel(new GridBagLayout());

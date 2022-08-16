@@ -19,9 +19,9 @@ import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.images.process.InvertIntensity;
-import io.github.mianalysis.mia.object.Image;
-import io.github.mianalysis.mia.object.Status;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
@@ -34,6 +34,7 @@ import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
+import io.github.mianalysis.mia.object.system.Status;
 import mpicbg.ij.InverseTransformMapping;
 import mpicbg.models.AbstractAffineModel2D;
 import mpicbg.models.AffineModel2D;
@@ -159,18 +160,18 @@ public class AffineFixedTransform extends Module {
         IJ.setBackgroundColor(255, 255, 255);
 
         // Getting parameters
-        String inputImageName = parameters.getValue(INPUT_IMAGE);
-        boolean applyToInput = parameters.getValue(APPLY_TO_INPUT);
-        String outputImageName = parameters.getValue(OUTPUT_IMAGE);
-        String transform = parameters.getValue(TRANSFORMATION);
-        String fillMode = parameters.getValue(FILL_MODE);
-        boolean multithread = parameters.getValue(ENABLE_MULTITHREADING);
+        String inputImageName = parameters.getValue(INPUT_IMAGE,workspace);
+        boolean applyToInput = parameters.getValue(APPLY_TO_INPUT,workspace);
+        String outputImageName = parameters.getValue(OUTPUT_IMAGE,workspace);
+        String transform = parameters.getValue(TRANSFORMATION,workspace);
+        String fillMode = parameters.getValue(FILL_MODE,workspace);
+        boolean multithread = parameters.getValue(ENABLE_MULTITHREADING,workspace);
 
         // Getting the input image and duplicating if the output will be stored
         // separately
         Image inputImage = workspace.getImage(inputImageName);
         if (!applyToInput)
-            inputImage = new Image(outputImageName, inputImage.getImagePlus().duplicate());
+            inputImage = ImageFactory.createImage(outputImageName, inputImage.getImagePlus().duplicate());
 
         // Applying the transformation
         try {
@@ -207,12 +208,13 @@ public class AffineFixedTransform extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
+Workspace workspace = null;
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(INPUT_IMAGE));
         returnedParameters.add(parameters.getParameter(APPLY_TO_INPUT));
-        if (!(boolean) parameters.getValue(APPLY_TO_INPUT)) {
+        if (!(boolean) parameters.getValue(APPLY_TO_INPUT,workspace)) {
             returnedParameters.add(parameters.getParameter(OUTPUT_IMAGE));
         }
 
@@ -227,27 +229,27 @@ public class AffineFixedTransform extends Module {
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
-        return null;
+return null;
     }
 
     @Override
-    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
-        return null;
+public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+return null;
     }
 
     @Override
-    public MetadataRefs updateAndGetMetadataReferences() {
-        return null;
+public MetadataRefs updateAndGetMetadataReferences() {
+return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
-        return null;
+return null;
     }
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
-        return null;
+return null;
     }
 
     @Override

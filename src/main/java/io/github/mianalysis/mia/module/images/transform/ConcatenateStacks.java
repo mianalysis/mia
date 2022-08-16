@@ -17,9 +17,9 @@ import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.images.configure.SetLookupTable;
-import io.github.mianalysis.mia.object.Image;
-import io.github.mianalysis.mia.object.Status;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
@@ -33,6 +33,7 @@ import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
+import io.github.mianalysis.mia.object.system.Status;
 import io.github.mianalysis.mia.process.ImgPlusTools;
 import net.imagej.ImgPlus;
 import net.imagej.axis.Axes;
@@ -42,6 +43,7 @@ import net.imglib2.Cursor;
 import net.imglib2.RandomAccess;
 import net.imglib2.img.cell.CellImgFactory;
 import net.imglib2.img.display.imagej.ImageJFunctions;
+import net.imglib2.loops.LoopBuilder;
 import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
 import net.imglib2.view.Views;
@@ -77,7 +79,7 @@ public class ConcatenateStacks<T extends RealType<T> & NativeType<T>> extends Mo
         ArrayList<Image> available = new ArrayList<>();
 
         for (Parameters collection : collections.values()) {
-            Image image = workspace.getImage(collection.getValue(INPUT_IMAGE));
+            Image image = workspace.getImage(collection.getValue(INPUT_IMAGE, workspace));
             if (image != null)
                 available.add(image);
         }
@@ -129,32 +131,33 @@ public class ConcatenateStacks<T extends RealType<T> & NativeType<T>> extends Mo
             cursor1.localize(posIn);
 
             // Assigning position
+            long[] location = new long[5];
             if (xIdxIn1 == -1)
-                randomAccess1.setPosition(0, 0);
+                location[0] = 0;
             else
-                randomAccess1.setPosition(posIn[xIdxIn1], 0);
+                location[0] = posIn[xIdxIn1];
 
             if (yIdxIn1 == -1)
-                randomAccess1.setPosition(0, 1);
+                location[1] = 0;
             else
-                randomAccess1.setPosition(posIn[yIdxIn1], 1);
+                location[1] = posIn[yIdxIn1];
 
             if (cIdxIn1 == -1)
-                randomAccess1.setPosition(0, 2);
+                location[2] = 0;
             else
-                randomAccess1.setPosition(posIn[cIdxIn1], 2);
+                location[2] = posIn[cIdxIn1];
 
             if (zIdxIn1 == -1)
-                randomAccess1.setPosition(0, 3);
+                location[3] = 0;
             else
-                randomAccess1.setPosition(posIn[zIdxIn1], 3);
+                location[3] = posIn[zIdxIn1];
 
             if (tIdxIn1 == -1)
-                randomAccess1.setPosition(0, 4);
+                location[4] = 0;
             else
-                randomAccess1.setPosition(posIn[tIdxIn1], 4);
+                location[4] = posIn[tIdxIn1];
 
-            randomAccess1.get().set(cursor1.get());
+            randomAccess1.setPositionAndGet(location).set(cursor1.get());
 
         }
     }
@@ -268,7 +271,7 @@ public class ConcatenateStacks<T extends RealType<T> & NativeType<T>> extends Mo
         outputImagePlus.setCalibration(inputImages.get(0).getImagePlus().getCalibration());
         ImgPlusTools.applyAxes(imgOut, outputImagePlus);
 
-        return new Image(outputImageName, outputImagePlus);
+        return ImageFactory.createImage(outputImageName, outputImagePlus);
 
     }
 
@@ -331,12 +334,12 @@ public class ConcatenateStacks<T extends RealType<T> & NativeType<T>> extends Mo
     @Override
     protected Status process(Workspace workspace) {
         // Getting parameters
-        boolean allowMissingImages = parameters.getValue(ALLOW_MISSING_IMAGES);
-        String outputImageName = parameters.getValue(OUTPUT_IMAGE);
-        String axisMode = parameters.getValue(AXIS_MODE);
+        boolean allowMissingImages = parameters.getValue(ALLOW_MISSING_IMAGES, workspace);
+        String outputImageName = parameters.getValue(OUTPUT_IMAGE, workspace);
+        String axisMode = parameters.getValue(AXIS_MODE, workspace);
 
         // Creating a collection of images
-        LinkedHashMap<Integer, Parameters> collections = parameters.getValue(ADD_INPUT_IMAGE);
+        LinkedHashMap<Integer, Parameters> collections = parameters.getValue(ADD_INPUT_IMAGE, workspace);
         ArrayList<Image> inputImages = getAvailableImages(workspace, collections);
 
         if (!allowMissingImages && collections.size() != inputImages.size()) {
@@ -348,7 +351,7 @@ public class ConcatenateStacks<T extends RealType<T> & NativeType<T>> extends Mo
         // otherwise do concatenation.
         Image outputImage;
         if (inputImages.size() == 1) {
-            outputImage = new Image(outputImageName, inputImages.get(0).getImagePlus());
+            outputImage = ImageFactory.createImage(outputImageName, inputImages.get(0).getImagePlus());
         } else {
             outputImage = concatenateImages(inputImages, axisMode, outputImageName);
         }
@@ -385,9 +388,10 @@ public class ConcatenateStacks<T extends RealType<T> & NativeType<T>> extends Mo
 
     @Override
     public Parameters updateAndGetParameters() {
-        boolean allowMissingImages = parameters.getValue(ALLOW_MISSING_IMAGES);
+        Workspace workspace = null;
+        boolean allowMissingImages = parameters.getValue(ALLOW_MISSING_IMAGES, workspace);
 
-        LinkedHashMap<Integer, Parameters> collections = parameters.getValue(ADD_INPUT_IMAGE);
+        LinkedHashMap<Integer, Parameters> collections = parameters.getValue(ADD_INPUT_IMAGE, workspace);
         for (Parameters collection : collections.values()) {
             CustomInputImageP parameter = collection.getParameter(INPUT_IMAGE);
             parameter.setAllowMissingImages(allowMissingImages);

@@ -23,12 +23,14 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableModel;
 
+import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.gui.GUI;
 import io.github.mianalysis.mia.gui.GUIAnalysisHandler;
 import io.github.mianalysis.mia.gui.regions.RenameListMenu;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.object.Colours;
+import io.github.mianalysis.mia.object.system.Colours;
+import io.github.mianalysis.mia.object.system.Preferences;
 
 public class ModuleTable extends JTable implements ActionListener, MouseListener, TableCellRenderer {
     private static final String BACKSPACE = "backspace";
@@ -162,8 +164,11 @@ public class ModuleTable extends JTable implements ActionListener, MouseListener
             label.setBorder(new EmptyBorder(2, 5, 0, 0));
             label.setOpaque(true);
 
+            Preferences preferences = MIA.getPreferences();
+            boolean darkMode = preferences == null ? false : preferences.darkThemeEnabled();
+
             if (isSelected)
-                label.setBackground(Colours.LIGHT_BLUE);
+                label.setBackground(Colours.getLightBlue(darkMode));
             else
                 label.setBackground(table.getBackground());
 

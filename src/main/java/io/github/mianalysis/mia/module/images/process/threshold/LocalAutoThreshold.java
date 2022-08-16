@@ -12,9 +12,9 @@ import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.images.process.ImageTypeConverter;
 import io.github.mianalysis.mia.module.images.process.InvertIntensity;
-import io.github.mianalysis.mia.object.Image;
-import io.github.mianalysis.mia.object.Status;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
@@ -29,6 +29,7 @@ import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
+import io.github.mianalysis.mia.object.system.Status;
 import io.github.sjcross.sjcommon.filters.AutoLocalThreshold3D;
 
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
@@ -153,22 +154,22 @@ public class LocalAutoThreshold extends Module {
     @Override
     public Status process(Workspace workspace) {
         // Getting input image
-        String inputImageName = parameters.getValue(INPUT_IMAGE);
+        String inputImageName = parameters.getValue(INPUT_IMAGE,workspace);
         Image inputImage = workspace.getImages().get(inputImageName);
         ImagePlus inputImagePlus = inputImage.getImagePlus();
 
         // Getting parameters
-        boolean applyToInput = parameters.getValue(APPLY_TO_INPUT);
-        String thresholdMode = parameters.getValue(THRESHOLD_MODE);
-        String algorithm3D = parameters.getValue(ALGORITHM_3D);
-        String algorithmSlice = parameters.getValue(ALGORITHM_SLICE);
-        double thrMult = parameters.getValue(THRESHOLD_MULTIPLIER);
-        String binaryLogic = parameters.getValue(BINARY_LOGIC);
-        boolean useLowerLim = parameters.getValue(USE_LOWER_THRESHOLD_LIMIT);
-        double lowerLim = parameters.getValue(LOWER_THRESHOLD_LIMIT);
-        double localRadius = parameters.getValue(LOCAL_RADIUS);
-        String spatialUnits = parameters.getValue(SPATIAL_UNITS_MODE);
-        boolean useGlobalZ = parameters.getValue(USE_GLOBAL_Z);
+        boolean applyToInput = parameters.getValue(APPLY_TO_INPUT,workspace);
+        String thresholdMode = parameters.getValue(THRESHOLD_MODE,workspace);
+        String algorithm3D = parameters.getValue(ALGORITHM_3D,workspace);
+        String algorithmSlice = parameters.getValue(ALGORITHM_SLICE,workspace);
+        double thrMult = parameters.getValue(THRESHOLD_MULTIPLIER,workspace);
+        String binaryLogic = parameters.getValue(BINARY_LOGIC,workspace);
+        boolean useLowerLim = parameters.getValue(USE_LOWER_THRESHOLD_LIMIT,workspace);
+        double lowerLim = parameters.getValue(LOWER_THRESHOLD_LIMIT,workspace);
+        double localRadius = parameters.getValue(LOCAL_RADIUS,workspace);
+        String spatialUnits = parameters.getValue(SPATIAL_UNITS_MODE,workspace);
+        boolean useGlobalZ = parameters.getValue(USE_GLOBAL_Z,workspace);
 
         if (spatialUnits.equals(SpatialUnitsModes.CALIBRATED)) {
             localRadius = inputImagePlus.getCalibration().getRawX(localRadius);
@@ -200,8 +201,8 @@ public class LocalAutoThreshold extends Module {
         if (applyToInput) {
             if (showOutput) inputImage.showImage();
         } else {
-            String outputImageName = parameters.getValue(OUTPUT_IMAGE);
-            Image outputImage = new Image(outputImageName,inputImagePlus);
+            String outputImageName = parameters.getValue(OUTPUT_IMAGE,workspace);
+            Image outputImage = ImageFactory.createImage(outputImageName,inputImagePlus);
             workspace.addImage(outputImage);
             if (showOutput) outputImage.showImage();
         }
@@ -235,18 +236,19 @@ public class LocalAutoThreshold extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
+Workspace workspace = null;
         Parameters returnedParameters = new Parameters();
         returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(INPUT_IMAGE));
         returnedParameters.add(parameters.getParameter(APPLY_TO_INPUT));
 
-        if (!(boolean) parameters.getValue(APPLY_TO_INPUT)) {
+        if (!(boolean) parameters.getValue(APPLY_TO_INPUT,workspace)) {
             returnedParameters.add(parameters.getParameter(OUTPUT_IMAGE));
         }
 
         returnedParameters.add(parameters.getParameter(THRESHOLD_SEPARATOR));
         returnedParameters.add(parameters.getParameter(THRESHOLD_MODE));
-        switch ((String) parameters.getValue(THRESHOLD_MODE)) {
+        switch ((String) parameters.getValue(THRESHOLD_MODE,workspace)) {
             case ThresholdModes.SLICE:
                 returnedParameters.add(parameters.getParameter(ALGORITHM_SLICE));
                 returnedParameters.add(parameters.getParameter(LOCAL_RADIUS));
@@ -262,7 +264,7 @@ public class LocalAutoThreshold extends Module {
 
                 // If using an automatic threshold algorithm, we can set a lower threshold limit
                 returnedParameters.add(parameters.getParameter(USE_LOWER_THRESHOLD_LIMIT));
-                if ((boolean) parameters.getValue(USE_LOWER_THRESHOLD_LIMIT)) {
+                if ((boolean) parameters.getValue(USE_LOWER_THRESHOLD_LIMIT,workspace)) {
                     returnedParameters.add(parameters.getParameter(LOWER_THRESHOLD_LIMIT));
                 }
 
@@ -277,28 +279,27 @@ public class LocalAutoThreshold extends Module {
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
-        return null;
-
+return null;
     }
 
     @Override
-    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
-        return null;
+public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+return null;
     }
 
     @Override
-    public MetadataRefs updateAndGetMetadataReferences() {
-        return null;
+public MetadataRefs updateAndGetMetadataReferences() {
+return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
-        return null;
+return null;
     }
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
-        return null;
+return null;
     }
 
     @Override

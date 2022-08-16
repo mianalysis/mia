@@ -52,7 +52,7 @@ public class ResultsPanel extends JPanel {
         for (SearchMatch match : matches) {
             Module module = match.getModule();
 
-            if (!module.isDeprecated() || MIA.preferences.showDeprecated()) {
+            if (!module.isDeprecated() || MIA.getPreferences().showDeprecated()) {
                 JLabel moduleName = new JLabel(module.getName());
                 Font font = new Font(Font.SANS_SERIF, Font.BOLD, 12);
                 if (module.isDeprecated()) {

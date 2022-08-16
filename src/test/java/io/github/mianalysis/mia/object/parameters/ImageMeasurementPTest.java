@@ -304,7 +304,7 @@ public class ImageMeasurementPTest {
 
         assertEquals("Test meas",imageMeasurementP.getName());
         assertEquals("New nick",imageMeasurementP.getNickname());
-        assertEquals("Demo meas", imageMeasurementP.getValue());
+        assertEquals("Demo meas", imageMeasurementP.getValue(null));
         assertFalse(imageMeasurementP.isVisible());
 
     }

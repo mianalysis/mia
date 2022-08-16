@@ -13,10 +13,11 @@ import ij.ImagePlus;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.ModuleTest;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.object.Image;
 import io.github.mianalysis.mia.object.Measurement;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.Workspaces;
+import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageFactory;
 
 
 public class ImageMathTest extends ModuleTest {
@@ -39,11 +40,11 @@ public class ImageMathTest extends ModuleTest {
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient2D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
-        Image image = new Image("Test_image",ipl);
+        Image image = ImageFactory.createImage("Test_image",ipl);
         workspace.addImage(image);
 
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/imagemath/NoisyGradient2D_Add50_8bit.zip").getPath(),"UTF-8");
-        Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
+        Image expectedImage = ImageFactory.createImage("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
         ImageMath imageMath = new ImageMath(new Modules());
@@ -78,11 +79,11 @@ public class ImageMathTest extends ModuleTest {
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient3D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
-        Image image = new Image("Test_image",ipl);
+        Image image = ImageFactory.createImage("Test_image",ipl);
         workspace.addImage(image);
 
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/imagemath/NoisyGradient3D_Add50_8bit.zip").getPath(),"UTF-8");
-        Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
+        Image expectedImage = ImageFactory.createImage("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
         ImageMath imageMath = new ImageMath(new Modules());
@@ -117,11 +118,11 @@ public class ImageMathTest extends ModuleTest {
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient3D_16bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
-        Image image = new Image("Test_image",ipl);
+        Image image = ImageFactory.createImage("Test_image",ipl);
         workspace.addImage(image);
 
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/imagemath/NoisyGradient3D_Add50_16bit.zip").getPath(),"UTF-8");
-        Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
+        Image expectedImage = ImageFactory.createImage("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
         ImageMath imageMath = new ImageMath(new Modules());
@@ -156,11 +157,11 @@ public class ImageMathTest extends ModuleTest {
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient3D_32bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
-        Image image = new Image("Test_image",ipl);
+        Image image = ImageFactory.createImage("Test_image",ipl);
         workspace.addImage(image);
 
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/imagemath/NoisyGradient3D_Add50_32bit.zip").getPath(),"UTF-8");
-        Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
+        Image expectedImage = ImageFactory.createImage("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
         ImageMath imageMath = new ImageMath(new Modules());
@@ -195,11 +196,11 @@ public class ImageMathTest extends ModuleTest {
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient4D_ZT_8bit_C1.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
-        Image image = new Image("Test_image",ipl);
+        Image image = ImageFactory.createImage("Test_image",ipl);
         workspace.addImage(image);
 
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/imagemath/NoisyGradient5D_Add50_8bit_C1.zip").getPath(),"UTF-8");
-        Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
+        Image expectedImage = ImageFactory.createImage("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
         ImageMath imageMath = new ImageMath(new Modules());
@@ -233,11 +234,11 @@ public class ImageMathTest extends ModuleTest {
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient5D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
-        Image image = new Image("Test_image",ipl);
+        Image image = ImageFactory.createImage("Test_image",ipl);
         workspace.addImage(image);
 
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/imagemath/NoisyGradient5D_Add50_8bit.zip").getPath(),"UTF-8");
-        Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
+        Image expectedImage = ImageFactory.createImage("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
         ImageMath imageMath = new ImageMath(new Modules());
@@ -271,11 +272,11 @@ public class ImageMathTest extends ModuleTest {
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient5D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
-        Image image = new Image("Test_image",ipl);
+        Image image = ImageFactory.createImage("Test_image",ipl);
         workspace.addImage(image);
 
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/imagemath/NoisyGradient5D_Add50_8bit.zip").getPath(),"UTF-8");
-        Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
+        Image expectedImage = ImageFactory.createImage("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
         ImageMath imageMath = new ImageMath(new Modules());
@@ -307,14 +308,14 @@ public class ImageMathTest extends ModuleTest {
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient5D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
-        Image image = new Image("Test_image",ipl);
+        Image image = ImageFactory.createImage("Test_image",ipl);
         workspace.addImage(image);
 
         // Adding a measurement to the input image
         image.addMeasurement(new Measurement("Test meas",12.4));
 
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/imagemath/NoisyGradient5D_AddMeas_8bit.zip").getPath(),"UTF-8");
-        Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
+        Image expectedImage = ImageFactory.createImage("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
         ImageMath imageMath = new ImageMath(new Modules());
@@ -350,11 +351,11 @@ public class ImageMathTest extends ModuleTest {
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient3D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
-        Image image = new Image("Test_image",ipl);
+        Image image = ImageFactory.createImage("Test_image",ipl);
         workspace.addImage(image);
 
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/imagemath/NoisyGradient3D_Add-5_8bit.zip").getPath(),"UTF-8");
-        Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
+        Image expectedImage = ImageFactory.createImage("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
         ImageMath imageMath = new ImageMath(new Modules());
@@ -389,11 +390,11 @@ public class ImageMathTest extends ModuleTest {
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient3D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
-        Image image = new Image("Test_image",ipl);
+        Image image = ImageFactory.createImage("Test_image",ipl);
         workspace.addImage(image);
 
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/imagemath/NoisyGradient3D_Subtract12_8bit.zip").getPath(),"UTF-8");
-        Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
+        Image expectedImage = ImageFactory.createImage("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
         ImageMath imageMath = new ImageMath(new Modules());
@@ -428,11 +429,11 @@ public class ImageMathTest extends ModuleTest {
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient3D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
-        Image image = new Image("Test_image",ipl);
+        Image image = ImageFactory.createImage("Test_image",ipl);
         workspace.addImage(image);
 
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/imagemath/NoisyGradient3D_Subtract-12_8bit.zip").getPath(),"UTF-8");
-        Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
+        Image expectedImage = ImageFactory.createImage("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
         ImageMath imageMath = new ImageMath(new Modules());
@@ -467,11 +468,11 @@ public class ImageMathTest extends ModuleTest {
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient3D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
-        Image image = new Image("Test_image",ipl);
+        Image image = ImageFactory.createImage("Test_image",ipl);
         workspace.addImage(image);
 
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/imagemath/NoisyGradient3D_Multiply2p3_8bit.zip").getPath(),"UTF-8");
-        Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
+        Image expectedImage = ImageFactory.createImage("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
         ImageMath imageMath = new ImageMath(new Modules());
@@ -506,11 +507,11 @@ public class ImageMathTest extends ModuleTest {
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient3D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
-        Image image = new Image("Test_image",ipl);
+        Image image = ImageFactory.createImage("Test_image",ipl);
         workspace.addImage(image);
 
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/imagemath/NoisyGradient3D_Multiply-2p3_8bit.zip").getPath(),"UTF-8");
-        Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
+        Image expectedImage = ImageFactory.createImage("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
         ImageMath imageMath = new ImageMath(new Modules());
@@ -545,11 +546,11 @@ public class ImageMathTest extends ModuleTest {
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient3D_32bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
-        Image image = new Image("Test_image",ipl);
+        Image image = ImageFactory.createImage("Test_image",ipl);
         workspace.addImage(image);
 
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/imagemath/NoisyGradient3D_Multiply-2p3_32bit.zip").getPath(),"UTF-8");
-        Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
+        Image expectedImage = ImageFactory.createImage("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
         ImageMath imageMath = new ImageMath(new Modules());
@@ -584,11 +585,11 @@ public class ImageMathTest extends ModuleTest {
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient3D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
-        Image image = new Image("Test_image",ipl);
+        Image image = ImageFactory.createImage("Test_image",ipl);
         workspace.addImage(image);
 
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/imagemath/NoisyGradient3D_Divide0p4_8bit.zip").getPath(),"UTF-8");
-        Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
+        Image expectedImage = ImageFactory.createImage("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
         ImageMath imageMath = new ImageMath(new Modules());
@@ -623,11 +624,11 @@ public class ImageMathTest extends ModuleTest {
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient3D_8bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
-        Image image = new Image("Test_image",ipl);
+        Image image = ImageFactory.createImage("Test_image",ipl);
         workspace.addImage(image);
 
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/imagemath/NoisyGradient3D_Divide-0p6_8bit.zip").getPath(),"UTF-8");
-        Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
+        Image expectedImage = ImageFactory.createImage("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
         ImageMath imageMath = new ImageMath(new Modules());
@@ -662,11 +663,11 @@ public class ImageMathTest extends ModuleTest {
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/noisygradient/NoisyGradient3D_32bit.zip").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
-        Image image = new Image("Test_image",ipl);
+        Image image = ImageFactory.createImage("Test_image",ipl);
         workspace.addImage(image);
 
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/imagemath/NoisyGradient3D_Divide-0p6_32bit.zip").getPath(),"UTF-8");
-        Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
+        Image expectedImage = ImageFactory.createImage("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
         ImageMath imageMath = new ImageMath(new Modules());

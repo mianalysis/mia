@@ -26,9 +26,9 @@ import io.github.mianalysis.mia.module.core.InputControl;
 import io.github.mianalysis.mia.module.images.process.ImageTypeConverter;
 import io.github.mianalysis.mia.module.images.process.InvertIntensity;
 import io.github.mianalysis.mia.module.objects.detect.IdentifyObjects;
-import io.github.mianalysis.mia.object.Image;
-import io.github.mianalysis.mia.object.Status;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
@@ -43,6 +43,7 @@ import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
+import io.github.mianalysis.mia.object.system.Status;
 import io.github.sjcross.sjcommon.exceptions.LongOverflowException;
 
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
@@ -230,23 +231,23 @@ public class FillHolesByVolume extends Module {
     @Override
     public Status process(Workspace workspace) {
         // Getting input image
-        String inputImageName = parameters.getValue(INPUT_IMAGE);
+        String inputImageName = parameters.getValue(INPUT_IMAGE, workspace);
         Image inputImage = workspace.getImages().get(inputImageName);
         ImagePlus inputImagePlus = inputImage.getImagePlus();
 
         // Getting parameters
-        boolean applyToInput = parameters.getValue(APPLY_TO_INPUT);
-        String outputImageName = parameters.getValue(OUTPUT_IMAGE);
-        boolean useMinVolume = parameters.getValue(SET_MINIMUM_VOLUME);
-        boolean useMaxVolume = parameters.getValue(SET_MAXIMUM_VOLUME);
-        double minVolume = parameters.getValue(MINIMUM_VOLUME);
-        double maxVolume = parameters.getValue(MAXIMUM_VOLUME);
-        boolean calibratedUnits = parameters.getValue(CALIBRATED_UNITS);
-        int connectivity = Integer.parseInt(parameters.getValue(CONNECTIVITY));
-        String binaryLogic = parameters.getValue(BINARY_LOGIC);
+        boolean applyToInput = parameters.getValue(APPLY_TO_INPUT, workspace);
+        String outputImageName = parameters.getValue(OUTPUT_IMAGE, workspace);
+        boolean useMinVolume = parameters.getValue(SET_MINIMUM_VOLUME, workspace);
+        boolean useMaxVolume = parameters.getValue(SET_MAXIMUM_VOLUME, workspace);
+        double minVolume = parameters.getValue(MINIMUM_VOLUME, workspace);
+        double maxVolume = parameters.getValue(MAXIMUM_VOLUME, workspace);
+        boolean calibratedUnits = parameters.getValue(CALIBRATED_UNITS, workspace);
+        int connectivity = Integer.parseInt(parameters.getValue(CONNECTIVITY, workspace));
+        String binaryLogic = parameters.getValue(BINARY_LOGIC, workspace);
         boolean blackBackground = binaryLogic.equals(BinaryLogic.BLACK_BACKGROUND);
-        boolean multithread = parameters.getValue(ENABLE_MULTITHREADING);
-        int minStripWidth = parameters.getValue(MIN_STRIP_WIDTH);
+        boolean multithread = parameters.getValue(ENABLE_MULTITHREADING, workspace);
+        int minStripWidth = parameters.getValue(MIN_STRIP_WIDTH, workspace);
 
         // If applying to a new image, the input image is duplicated
         if (!applyToInput)
@@ -276,7 +277,7 @@ public class FillHolesByVolume extends Module {
         // If the image is being saved as a new image, adding it to the workspace
         if (!applyToInput) {
             writeStatus("Adding image (" + outputImageName + ") to workspace");
-            Image outputImage = new Image(outputImageName, inputImagePlus);
+            Image outputImage = ImageFactory.createImage(outputImageName, inputImagePlus);
             workspace.addImage(outputImage);
             if (showOutput)
                 outputImage.showImage();
@@ -317,25 +318,23 @@ public class FillHolesByVolume extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
+Workspace workspace = null;
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(INPUT_IMAGE));
         returnedParameters.add(parameters.getParameter(APPLY_TO_INPUT));
 
-        if (!(boolean) parameters.getValue(APPLY_TO_INPUT)) {
+        if (!(boolean) parameters.getValue(APPLY_TO_INPUT, workspace))
             returnedParameters.add(parameters.getParameter(OUTPUT_IMAGE));
-        }
 
         returnedParameters.add(parameters.getParameter(HOLE_FILLING_SEPARATOR));
         returnedParameters.add(parameters.getParameter(SET_MINIMUM_VOLUME));
-        if ((boolean) parameters.getValue(SET_MINIMUM_VOLUME)) {
+        if ((boolean) parameters.getValue(SET_MINIMUM_VOLUME, workspace))
             returnedParameters.add(parameters.getParameter(MINIMUM_VOLUME));
-        }
         returnedParameters.add(parameters.getParameter(SET_MAXIMUM_VOLUME));
-        if ((boolean) parameters.getValue(SET_MAXIMUM_VOLUME)) {
+        if ((boolean) parameters.getValue(SET_MAXIMUM_VOLUME, workspace))
             returnedParameters.add(parameters.getParameter(MAXIMUM_VOLUME));
-        }
 
         returnedParameters.add(parameters.getParameter(CALIBRATED_UNITS));
         returnedParameters.add(parameters.getParameter(CONNECTIVITY));
@@ -343,9 +342,8 @@ public class FillHolesByVolume extends Module {
 
         returnedParameters.add(parameters.getParameter(EXECUTION_SEPARATOR));
         returnedParameters.add(parameters.getParameter(ENABLE_MULTITHREADING));
-        if ((boolean) parameters.getValue(ENABLE_MULTITHREADING)) {
+        if ((boolean) parameters.getValue(ENABLE_MULTITHREADING, workspace))
             returnedParameters.add(parameters.get(MIN_STRIP_WIDTH));
-        }
 
         return returnedParameters;
 
@@ -353,27 +351,27 @@ public class FillHolesByVolume extends Module {
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
-        return null;
+return null;
     }
 
     @Override
-    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
-        return null;
+public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+return null;
     }
 
     @Override
-    public MetadataRefs updateAndGetMetadataReferences() {
-        return null;
+public MetadataRefs updateAndGetMetadataReferences() {
+return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
-        return null;
+return null;
     }
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
-        return null;
+return null;
     }
 
     @Override

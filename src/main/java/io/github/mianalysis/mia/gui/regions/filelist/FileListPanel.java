@@ -31,10 +31,11 @@ import javax.swing.table.TableRowSorter;
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.gui.GUI;
 import io.github.mianalysis.mia.gui.regions.ClosePanelButton;
-import io.github.mianalysis.mia.object.Colours;
-import io.github.mianalysis.mia.object.Status;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.Workspaces;
+import io.github.mianalysis.mia.object.system.Colours;
+import io.github.mianalysis.mia.object.system.Preferences;
+import io.github.mianalysis.mia.object.system.Status;
 import io.github.sjcross.sjcommon.metadataextractors.Metadata;
 
 public class FileListPanel extends JPanel implements MouseListener, TableCellRenderer {
@@ -58,7 +59,7 @@ public class FileListPanel extends JPanel implements MouseListener, TableCellRen
     public static final int COL_PROGRESS = 4;
 
     HashMap<Integer, TableColumn> columns = new HashMap<>();
-    
+
     private int maxJob = 0;
 
     public FileListPanel(Workspaces workspaces) {
@@ -115,7 +116,7 @@ public class FileListPanel extends JPanel implements MouseListener, TableCellRen
         table.setBackground(null);
         table.setDefaultEditor(Object.class, null);
 
-        TableColumnModel columnModel = table.getColumnModel();        
+        TableColumnModel columnModel = table.getColumnModel();
         columnModel.getColumn(COL_JOB_ID).setCellRenderer(this);
         columnModel.getColumn(COL_WORKSPACE).setCellRenderer(this);
         columnModel.getColumn(COL_SERIESNAME).setCellRenderer(this);
@@ -127,7 +128,7 @@ public class FileListPanel extends JPanel implements MouseListener, TableCellRen
         columns.put(COL_SERIESNAME, columnModel.getColumn(COL_SERIESNAME));
         columns.put(COL_SERIESNUMBER, columnModel.getColumn(COL_SERIESNUMBER));
         columns.put(COL_PROGRESS, columnModel.getColumn(COL_PROGRESS));
-        
+
         columnModel.getColumn(COL_JOB_ID).setPreferredWidth(10);
 
         showColumn(COL_SERIESNAME, false);
@@ -189,7 +190,7 @@ public class FileListPanel extends JPanel implements MouseListener, TableCellRen
 
     public boolean showColumn(int columnIndex, boolean show) {
         TableColumn column = columns.get(columnIndex);
-        
+
         if (show) {
             table.addColumn(column);
         } else {
@@ -225,7 +226,7 @@ public class FileListPanel extends JPanel implements MouseListener, TableCellRen
     public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
             int row, int column) {
         switch (table.getColumnName(column)) {
-            case "#":            
+            case "#":
                 JLabel label = new JLabel();
                 JobNumber jobNumber = (JobNumber) value;
                 label.setText(String.valueOf(jobNumber.getJobNumber()));
@@ -255,22 +256,25 @@ public class FileListPanel extends JPanel implements MouseListener, TableCellRen
                 progressBar.setString("");
                 progressBar.setToolTipText(String.valueOf((double) value));
 
+                Preferences preferences = MIA.getPreferences();
+                boolean darkMode = preferences == null ? false : preferences.darkThemeEnabled();
+
                 // Set a special colour if the analysis is marked as having failed
                 Status status = ((Workspace) model.getValueAt(row, COL_WORKSPACE)).getStatus();
                 switch (status) {
                     case PASS:
                     case REDIRECT:
                         if (progress == 100)
-                            progressBar.setForeground(Colours.GREEN);
+                            progressBar.setForeground(Colours.getGreen(darkMode));
                         else
-                            progressBar.setForeground(Colours.BLUE);
+                            progressBar.setForeground(Colours.getBlue(darkMode));
                         break;
                     case FAIL:
-                        progressBar.setForeground(Colours.RED);
+                        progressBar.setForeground(Colours.getRed(darkMode));
                         break;
                     case TERMINATE:
                     case TERMINATE_SILENT:
-                        progressBar.setForeground(Colours.ORANGE);
+                        progressBar.setForeground(Colours.getOrange(darkMode));
                         break;
                 }
 

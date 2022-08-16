@@ -16,9 +16,9 @@ import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.images.process.ImageMath;
-import io.github.mianalysis.mia.object.Image;
-import io.github.mianalysis.mia.object.Status;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
@@ -31,6 +31,7 @@ import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
+import io.github.mianalysis.mia.object.system.Status;
 import io.github.mianalysis.mia.thirdparty.Stack_Focuser_;
 
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
@@ -71,7 +72,7 @@ public class FocusStackLocal extends Module {
         // If necessary, creating the height image
         ImagePlus heightIpl = createEmptyImage(inputIpl, outputHeightImageName, 16);
         heightIpl.setCalibration(inputIpl.getCalibration());
-        Image heightImage = new Image(outputHeightImageName, heightIpl);
+        Image heightImage = ImageFactory.createImage(outputHeightImageName, heightIpl);
 
         // Getting the image type
         int type = getImageType(ipr);
@@ -119,7 +120,7 @@ public class FocusStackLocal extends Module {
         // Creating array to hold [0] the focused image and [1] the height map
         ImagePlus outputIpl = createEmptyImage(inputIpl, outputImageName, inputIpl.getBitDepth());
         outputIpl.setCalibration(inputIpl.getCalibration());
-        Image outputImage = new Image(outputImageName, outputIpl);
+        Image outputImage = ImageFactory.createImage(outputImageName, outputIpl);
 
         // Getting the image type
         int type = getImageType(ipr);
@@ -202,14 +203,14 @@ public class FocusStackLocal extends Module {
     @Override
     public Status process(Workspace workspace) {
         // Getting parameters
-        String inputImageName = parameters.getValue(INPUT_IMAGE);
-        String outputMode = parameters.getValue(OUTPUT_MODE);
-        String outputFocusedImageName = parameters.getValue(OUTPUT_FOCUSED_IMAGE);
-        String outputHeightImageName = parameters.getValue(OUTPUT_HEIGHT_IMAGE);
-        boolean useExisting = parameters.getValue(USE_EXISTING_HEIGHT_IMAGE);
-        String inputHeightImageName = parameters.getValue(INPUT_HEIGHT_IMAGE);
-        int range = parameters.getValue(RANGE);
-        boolean smooth = parameters.getValue(SMOOTH_HEIGHT_MAP);
+        String inputImageName = parameters.getValue(INPUT_IMAGE,workspace);
+        String outputMode = parameters.getValue(OUTPUT_MODE,workspace);
+        String outputFocusedImageName = parameters.getValue(OUTPUT_FOCUSED_IMAGE,workspace);
+        String outputHeightImageName = parameters.getValue(OUTPUT_HEIGHT_IMAGE,workspace);
+        boolean useExisting = parameters.getValue(USE_EXISTING_HEIGHT_IMAGE,workspace);
+        String inputHeightImageName = parameters.getValue(INPUT_HEIGHT_IMAGE,workspace);
+        int range = parameters.getValue(RANGE,workspace);
+        boolean smooth = parameters.getValue(SMOOTH_HEIGHT_MAP,workspace);
 
         Image inputImage = workspace.getImage(inputImageName);
 
@@ -218,7 +219,7 @@ public class FocusStackLocal extends Module {
         if (useExisting) {
             // Duplicating the image, so the addition doesn't affect it
             heightMap = workspace.getImage(inputHeightImageName);
-            heightMap = new Image(heightMap.getName(), heightMap.getImagePlus().duplicate());
+            heightMap = ImageFactory.createImage(heightMap.getName(), heightMap.getImagePlus().duplicate());
 
             // StackFocuser plugin wants height image indices 1-based, but they're output to
             // the workspace as 0-based for consistency with MIA.
@@ -280,6 +281,7 @@ public class FocusStackLocal extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
+Workspace workspace = null;
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
@@ -287,7 +289,7 @@ public class FocusStackLocal extends Module {
 
         returnedParameters.add(parameters.getParameter(OUTPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(OUTPUT_MODE));
-        switch ((String) parameters.getValue(OUTPUT_MODE)) {
+        switch ((String) parameters.getValue(OUTPUT_MODE,workspace)) {
             case OutputModes.FOCUSED_IMAGE_AND_HEIGHT_MAP:
                 returnedParameters.add(parameters.getParameter(OUTPUT_FOCUSED_IMAGE));
                 returnedParameters.add(parameters.getParameter(OUTPUT_HEIGHT_IMAGE));
@@ -302,7 +304,7 @@ public class FocusStackLocal extends Module {
 
         returnedParameters.add(parameters.getParameter(FOCUS_SEPARATOR));
         returnedParameters.add(parameters.getParameter(USE_EXISTING_HEIGHT_IMAGE));
-        if ((boolean) parameters.getValue(USE_EXISTING_HEIGHT_IMAGE)) {
+        if ((boolean) parameters.getValue(USE_EXISTING_HEIGHT_IMAGE,workspace)) {
             returnedParameters.add(parameters.getParameter(INPUT_HEIGHT_IMAGE));
         } else {
             returnedParameters.add(parameters.getParameter(RANGE));
@@ -315,27 +317,27 @@ public class FocusStackLocal extends Module {
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
-        return null;
+return null;
     }
 
     @Override
-    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
-        return null;
+public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+return null;
     }
 
     @Override
-    public MetadataRefs updateAndGetMetadataReferences() {
-        return null;
+public MetadataRefs updateAndGetMetadataReferences() {
+return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
-        return null;
+return null;
     }
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
-        return null;
+return null;
     }
 
     @Override

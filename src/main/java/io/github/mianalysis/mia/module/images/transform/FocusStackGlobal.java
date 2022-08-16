@@ -44,10 +44,10 @@ import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.object.Image;
 import io.github.mianalysis.mia.object.Measurement;
-import io.github.mianalysis.mia.object.Status;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
@@ -61,6 +61,7 @@ import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
+import io.github.mianalysis.mia.object.system.Status;
 import io.github.mianalysis.mia.process.ImgPlusTools;
 import io.github.sjcross.sjcommon.mathfunc.CumStat;
 
@@ -392,7 +393,7 @@ public class FocusStackGlobal<T extends RealType<T> & NativeType<T>> extends Mod
         ImgPlusTools.applyAxes(outputImg, outputImagePlus);
 
         // Adding the new image to the Workspace
-        return new Image(outputImageName, outputImagePlus);
+        return ImageFactory.createImage(outputImageName, outputImagePlus);
 
     }
 
@@ -555,22 +556,22 @@ public class FocusStackGlobal<T extends RealType<T> & NativeType<T>> extends Mod
         listModel.clear();
 
         // Getting input image
-        String inputImageName = parameters.getValue(INPUT_IMAGE);
+        String inputImageName = parameters.getValue(INPUT_IMAGE,workspace);
         Image inputImage = workspace.getImage(inputImageName);
 
         // Getting other parameters
-        String outputMode = parameters.getValue(OUTPUT_MODE);
-        String outputImageName = parameters.getValue(OUTPUT_IMAGE);
-        String bestFocusCalculation = parameters.getValue(BEST_FOCUS_CALCULATION);
-        int relativeStart = parameters.getValue(RELATIVE_START_SLICE);
-        int relativeEnd = parameters.getValue(RELATIVE_END_SLICE);
-        String calculationSource = parameters.getValue(CALCULATION_SOURCE);
-        String referenceImageName = parameters.getValue(REFERENCE_IMAGE);
-        String externalSourceName = parameters.getValue(EXTERNAL_SOURCE);
-        String channelMode = parameters.getValue(CHANNEL_MODE);
-        int channel = ((int) parameters.getValue(CHANNEL)) - 1;
-        boolean smoothTimeseries = parameters.getValue(SMOOTH_TIMESERIES);
-        int smoothingRange = parameters.getValue(SMOOTHING_RANGE);
+        String outputMode = parameters.getValue(OUTPUT_MODE,workspace);
+        String outputImageName = parameters.getValue(OUTPUT_IMAGE,workspace);
+        String bestFocusCalculation = parameters.getValue(BEST_FOCUS_CALCULATION,workspace);
+        int relativeStart = parameters.getValue(RELATIVE_START_SLICE,workspace);
+        int relativeEnd = parameters.getValue(RELATIVE_END_SLICE,workspace);
+        String calculationSource = parameters.getValue(CALCULATION_SOURCE,workspace);
+        String referenceImageName = parameters.getValue(REFERENCE_IMAGE,workspace);
+        String externalSourceName = parameters.getValue(EXTERNAL_SOURCE,workspace);
+        String channelMode = parameters.getValue(CHANNEL_MODE,workspace);
+        int channel = ((int) parameters.getValue(CHANNEL,workspace)) - 1;
+        boolean smoothTimeseries = parameters.getValue(SMOOTH_TIMESERIES,workspace);
+        int smoothingRange = parameters.getValue(SMOOTHING_RANGE,workspace);
 
         // Checking if there is only a single slice to start with
         if (isSingleSlice(inputImage)) {
@@ -578,7 +579,7 @@ public class FocusStackGlobal<T extends RealType<T> & NativeType<T>> extends Mod
             updateAndGetImageMeasurementRefs().addBlankMeasurements(inputImage);
 
             if (outputMode.equals(OutputModes.CALCULATE_AND_APPLY)) {
-                Image outputImage = new Image(outputImageName, inputImage.getImagePlus().duplicate());
+                Image outputImage = ImageFactory.createImage(outputImageName, inputImage.getImagePlus().duplicate());
                 workspace.addImage(outputImage);
 
                 if (showOutput)
@@ -697,13 +698,14 @@ public class FocusStackGlobal<T extends RealType<T> & NativeType<T>> extends Mod
 
     @Override
     public Parameters updateAndGetParameters() {
+Workspace workspace = null;
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(INPUT_IMAGE));
         returnedParameters.add(parameters.getParameter(OUTPUT_MODE));
 
-        if (parameters.getValue(OUTPUT_MODE).equals(OutputModes.CALCULATE_AND_APPLY))
+        if (parameters.getValue(OUTPUT_MODE,workspace).equals(OutputModes.CALCULATE_AND_APPLY))
             returnedParameters.add(parameters.getParameter(OUTPUT_IMAGE));
 
         returnedParameters.add(parameters.getParameter(CALCULATION_SEPARATOR));
@@ -712,7 +714,7 @@ public class FocusStackGlobal<T extends RealType<T> & NativeType<T>> extends Mod
         returnedParameters.add(parameters.getParameter(RELATIVE_END_SLICE));
 
         returnedParameters.add(parameters.getParameter(REFERENCE_SEPARATOR));
-        switch ((String) parameters.getValue(BEST_FOCUS_CALCULATION)) {
+        switch ((String) parameters.getValue(BEST_FOCUS_CALCULATION,workspace)) {
             case BestFocusCalculations.MANUAL:
                 returnedParameters.add(parameters.getParameter(REFERENCE_IMAGE));
                 break;
@@ -722,14 +724,14 @@ public class FocusStackGlobal<T extends RealType<T> & NativeType<T>> extends Mod
             case BestFocusCalculations.MIN_STDEV:
             case BestFocusCalculations.MAX_STDEV:
                 returnedParameters.add(parameters.getParameter(CALCULATION_SOURCE));
-                switch ((String) parameters.getValue(CALCULATION_SOURCE)) {
+                switch ((String) parameters.getValue(CALCULATION_SOURCE,workspace)) {
                     case CalculationSources.EXTERNAL:
                         returnedParameters.add(parameters.getParameter(EXTERNAL_SOURCE));
                         break;
                 }
 
                 returnedParameters.add(parameters.getParameter(CHANNEL_MODE));
-                switch ((String) parameters.getValue(CHANNEL_MODE)) {
+                switch ((String) parameters.getValue(CHANNEL_MODE,workspace)) {
                     case ChannelModes.USE_SINGLE:
                         returnedParameters.add(parameters.getParameter(CHANNEL));
                         break;
@@ -738,7 +740,7 @@ public class FocusStackGlobal<T extends RealType<T> & NativeType<T>> extends Mod
         }
 
         returnedParameters.add(parameters.getParameter(SMOOTH_TIMESERIES));
-        if ((boolean) parameters.getValue(SMOOTH_TIMESERIES)) {
+        if ((boolean) parameters.getValue(SMOOTH_TIMESERIES,workspace)) {
             returnedParameters.add(parameters.getParameter(SMOOTHING_RANGE));
         }
 
@@ -748,7 +750,8 @@ public class FocusStackGlobal<T extends RealType<T> & NativeType<T>> extends Mod
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
-        String inputImageName = parameters.getValue(INPUT_IMAGE);
+Workspace workspace = null;
+        String inputImageName = parameters.getValue(INPUT_IMAGE,workspace);
 
         ImageMeasurementRefs returnedRefs = new ImageMeasurementRefs();
 
@@ -777,15 +780,16 @@ public class FocusStackGlobal<T extends RealType<T> & NativeType<T>> extends Mod
     }
 
     @Override
-    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
-        return null;
+public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+return null;
     }
 
     @Override
-    public MetadataRefs updateAndGetMetadataReferences() {
+public MetadataRefs updateAndGetMetadataReferences() {
+Workspace workspace = null;
         MetadataRefs returnedRefs = new MetadataRefs();
 
-        if (parameters.getValue(BEST_FOCUS_CALCULATION).equals(BestFocusCalculations.MANUAL)) {
+        if (parameters.getValue(BEST_FOCUS_CALCULATION,workspace).equals(BestFocusCalculations.MANUAL)) {
             returnedRefs.add(metadataRefs.getOrPut(MetadataNames.SLICES));
         }
 
@@ -795,12 +799,12 @@ public class FocusStackGlobal<T extends RealType<T> & NativeType<T>> extends Mod
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
-        return null;
+return null;
     }
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
-        return null;
+return null;
     }
 
     @Override

@@ -27,9 +27,9 @@ import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.images.process.ImageMath;
 import io.github.mianalysis.mia.module.images.process.InvertIntensity;
 import io.github.mianalysis.mia.module.images.transform.InterpolateZAxis;
-import io.github.mianalysis.mia.object.Image;
-import io.github.mianalysis.mia.object.Status;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
@@ -41,6 +41,7 @@ import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
+import io.github.mianalysis.mia.object.system.Status;
 import io.github.sjcross.sjcommon.process.IntensityMinMax;
 
 /**
@@ -338,22 +339,22 @@ public class BinaryOperations extends Module {
     @Override
     public Status process(Workspace workspace) {
         // Getting input image
-        String inputImageName = parameters.getValue(INPUT_IMAGE);
+        String inputImageName = parameters.getValue(INPUT_IMAGE,workspace);
         Image inputImage = workspace.getImages().get(inputImageName);
         ImagePlus inputImagePlus = inputImage.getImagePlus();
 
         // Getting parameters
-        boolean applyToInput = parameters.getValue(APPLY_TO_INPUT);
-        String outputImageName = parameters.getValue(OUTPUT_IMAGE);
-        String operationMode = parameters.getValue(OPERATION_MODE);
-        int numIterations = parameters.getValue(NUM_ITERATIONS);
-        boolean useMarkers = parameters.getValue(USE_MARKERS);
-        String markerImageName = parameters.getValue(MARKER_IMAGE);
-        String intensityMode = parameters.getValue(INTENSITY_MODE);
-        String intensityImageName = parameters.getValue(INTENSITY_IMAGE);
-        int dynamic = parameters.getValue(DYNAMIC);
-        int connectivity = Integer.parseInt(parameters.getValue(CONNECTIVITY));
-        boolean matchZToXY = parameters.getValue(MATCH_Z_TO_X);
+        boolean applyToInput = parameters.getValue(APPLY_TO_INPUT,workspace);
+        String outputImageName = parameters.getValue(OUTPUT_IMAGE,workspace);
+        String operationMode = parameters.getValue(OPERATION_MODE,workspace);
+        int numIterations = parameters.getValue(NUM_ITERATIONS,workspace);
+        boolean useMarkers = parameters.getValue(USE_MARKERS,workspace);
+        String markerImageName = parameters.getValue(MARKER_IMAGE,workspace);
+        String intensityMode = parameters.getValue(INTENSITY_MODE,workspace);
+        String intensityImageName = parameters.getValue(INTENSITY_IMAGE,workspace);
+        int dynamic = parameters.getValue(DYNAMIC,workspace);
+        int connectivity = Integer.parseInt(parameters.getValue(CONNECTIVITY,workspace));
+        boolean matchZToXY = parameters.getValue(MATCH_Z_TO_X,workspace);
 
         // If applying to a new image, the input image is duplicated
         if (!applyToInput) inputImagePlus = new Duplicator().run(inputImagePlus);
@@ -416,7 +417,7 @@ public class BinaryOperations extends Module {
         // If the image is being saved as a new image, adding it to the workspace
         if (!applyToInput) {
             writeStatus("Adding image ("+outputImageName+") to workspace");
-            Image outputImage = new Image(outputImageName,inputImagePlus);
+            Image outputImage = ImageFactory.createImage(outputImageName,inputImagePlus);
             workspace.addImage(outputImage);
 
         }
@@ -446,16 +447,17 @@ public class BinaryOperations extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
+Workspace workspace = null;
         Parameters returnedParameters = new Parameters();
         returnedParameters.add(parameters.getParameter(INPUT_IMAGE));
         returnedParameters.add(parameters.getParameter(APPLY_TO_INPUT));
 
-        if (!(boolean) parameters.getValue(APPLY_TO_INPUT)) {
+        if (!(boolean) parameters.getValue(APPLY_TO_INPUT,workspace)) {
             returnedParameters.add(parameters.getParameter(OUTPUT_IMAGE));
         }
 
         returnedParameters.add(parameters.getParameter(OPERATION_MODE));
-        switch ((String) parameters.getValue(OPERATION_MODE)) {
+        switch ((String) parameters.getValue(OPERATION_MODE,workspace)) {
             case OperationModes.DILATE_2D:
             case OperationModes.DILATE_3D:
             case OperationModes.ERODE_2D:
@@ -469,14 +471,14 @@ public class BinaryOperations extends Module {
 
             case OperationModes.WATERSHED_3D:
                 returnedParameters.add(parameters.getParameter(USE_MARKERS));
-                if ((boolean) parameters.getValue(USE_MARKERS)) {
+                if ((boolean) parameters.getValue(USE_MARKERS,workspace)) {
                     returnedParameters.add(parameters.getParameter(MARKER_IMAGE));
                 } else {
                     returnedParameters.add(parameters.getParameter(DYNAMIC));
                 }
 
                 returnedParameters.add(parameters.getParameter(INTENSITY_MODE));
-                switch ((String) parameters.getValue(INTENSITY_MODE)) {
+                switch ((String) parameters.getValue(INTENSITY_MODE,workspace)) {
                     case IntensityModes.DISTANCE:
                         returnedParameters.add(parameters.getParameter(MATCH_Z_TO_X));
                         break;
@@ -495,27 +497,27 @@ public class BinaryOperations extends Module {
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
-        return null;
+return null;
     }
 
     @Override
-    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
-        return null;
+public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+return null;
     }
 
     @Override
-    public MetadataRefs updateAndGetMetadataReferences() {
-        return null;
+public MetadataRefs updateAndGetMetadataReferences() {
+return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
-        return null;
+return null;
     }
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
-        return null;
+return null;
     }
 
     @Override

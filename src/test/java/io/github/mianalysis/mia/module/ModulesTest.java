@@ -315,7 +315,7 @@ public class ModulesTest<T extends RealType<T> & NativeType<T>> {
             boolean found = false;
             for (Parameter expectedParam : expectedParams) {
                 if (expectedParam.getName().equals(actualParam.getName())
-                        && expectedParam.getValue().equals(actualParam.getValue())) {
+                        && expectedParam.getValue(null).equals(actualParam.getValue(null))) {
                     found = true;
                     break;
                 }
@@ -372,7 +372,7 @@ public class ModulesTest<T extends RealType<T> & NativeType<T>> {
             boolean found = false;
             for (Parameter expectedParam : expectedParams) {
                 if (expectedParam.getName().equals(actualParam.getName())
-                        && expectedParam.getValue().equals(actualParam.getValue())) {
+                        && expectedParam.getValue(null).equals(actualParam.getValue(null))) {
                     found = true;
                     break;
                 }

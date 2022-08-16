@@ -25,9 +25,9 @@ import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.object.Image;
-import io.github.mianalysis.mia.object.Status;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
@@ -41,6 +41,7 @@ import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
+import io.github.mianalysis.mia.object.system.Status;
 import io.github.sjcross.sjcommon.filters.DoG;
 import io.github.sjcross.sjcommon.process.CommaSeparatedStringInterpreter;
 
@@ -478,19 +479,19 @@ public class FilterImage extends Module {
     @Override
     public Status process(Workspace workspace) {
         // Getting input image
-        String inputImageName = parameters.getValue(INPUT_IMAGE);
+        String inputImageName = parameters.getValue(INPUT_IMAGE,workspace);
         Image inputImage = workspace.getImages().get(inputImageName);
         ImagePlus inputImagePlus = inputImage.getImagePlus();
 
         // Getting parameters
-        boolean applyToInput = parameters.getValue(APPLY_TO_INPUT);
-        String outputImageName = parameters.getValue(OUTPUT_IMAGE);
-        String filterMode = parameters.getValue(FILTER_MODE);
-        double filterRadius = parameters.getValue(FILTER_RADIUS);
-        boolean calibratedUnits = parameters.getValue(CALIBRATED_UNITS);
-        String rollingMethod = parameters.getValue(ROLLING_METHOD);
-        String windowIndices = parameters.getValue(WINDOW_INDICES);
-        String contourContrast = parameters.getValue(CONTOUR_CONTRAST);
+        boolean applyToInput = parameters.getValue(APPLY_TO_INPUT,workspace);
+        String outputImageName = parameters.getValue(OUTPUT_IMAGE,workspace);
+        String filterMode = parameters.getValue(FILTER_MODE,workspace);
+        double filterRadius = parameters.getValue(FILTER_RADIUS,workspace);
+        boolean calibratedUnits = parameters.getValue(CALIBRATED_UNITS,workspace);
+        String rollingMethod = parameters.getValue(ROLLING_METHOD,workspace);
+        String windowIndices = parameters.getValue(WINDOW_INDICES,workspace);
+        String contourContrast = parameters.getValue(CONTOUR_CONTRAST,workspace);
 
         if (calibratedUnits)
             filterRadius = inputImagePlus.getCalibration().getRawX(filterRadius);
@@ -553,7 +554,7 @@ public class FilterImage extends Module {
 
         // If the image is being saved as a new image, adding it to the workspace
         if (!applyToInput) {
-            Image outputImage = new Image(outputImageName, inputImagePlus);
+            Image outputImage = ImageFactory.createImage(outputImageName, inputImagePlus);
             workspace.addImage(outputImage);
             if (showOutput)
                 outputImage.showImage();
@@ -586,18 +587,19 @@ public class FilterImage extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
+Workspace workspace = null;
         Parameters returnedParameters = new Parameters();
         returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(INPUT_IMAGE));
         returnedParameters.add(parameters.getParameter(APPLY_TO_INPUT));
 
-        if (!(boolean) parameters.getValue(APPLY_TO_INPUT)) {
+        if (!(boolean) parameters.getValue(APPLY_TO_INPUT,workspace)) {
             returnedParameters.add(parameters.getParameter(OUTPUT_IMAGE));
         }
 
         returnedParameters.add(parameters.getParameter(FILTER_SEPARATOR));
         returnedParameters.add(parameters.getParameter(FILTER_MODE));
-        if (!parameters.getValue(FILTER_MODE).equals(FilterModes.ROLLING_FRAME)) {
+        if (!parameters.getValue(FILTER_MODE,workspace).equals(FilterModes.ROLLING_FRAME)) {
             returnedParameters.add(parameters.getParameter(FILTER_RADIUS));
             returnedParameters.add(parameters.getParameter(CALIBRATED_UNITS));
 
@@ -607,7 +609,7 @@ public class FilterImage extends Module {
 
         }
 
-        if (parameters.getValue(FILTER_MODE).equals(FilterModes.RIDGE_ENHANCEMENT))
+        if (parameters.getValue(FILTER_MODE,workspace).equals(FilterModes.RIDGE_ENHANCEMENT))
             returnedParameters.add(parameters.getParameter(CONTOUR_CONTRAST));
 
         return returnedParameters;
@@ -616,27 +618,27 @@ public class FilterImage extends Module {
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
-        return null;
+return null;
     }
 
     @Override
-    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
-        return null;
+public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+return null;
     }
 
     @Override
-    public MetadataRefs updateAndGetMetadataReferences() {
-        return null;
+public MetadataRefs updateAndGetMetadataReferences() {
+return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
-        return null;
+return null;
     }
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
-        return null;
+return null;
     }
 
     @Override

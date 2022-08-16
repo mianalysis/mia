@@ -14,11 +14,11 @@ import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.images.process.InvertIntensity;
 import io.github.mianalysis.mia.module.objects.measure.intensity.MeasureObjectColocalisation;
-import io.github.mianalysis.mia.object.Image;
 import io.github.mianalysis.mia.object.Measurement;
 import io.github.mianalysis.mia.object.Objs;
-import io.github.mianalysis.mia.object.Status;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.ImageMeasurementP;
@@ -33,6 +33,7 @@ import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
+import io.github.mianalysis.mia.object.system.Status;
 import io.github.mianalysis.mia.process.ColourFactory;
 import net.imglib2.RandomAccessible;
 import net.imglib2.RandomAccessibleInterval;
@@ -426,37 +427,37 @@ public class MeasureImageColocalisation<T extends RealType<T> & NativeType<T>> e
     @Override
     public Status process(Workspace workspace) {
         // Getting input images
-        String imageName1 = parameters.getValue(INPUT_IMAGE_1);
+        String imageName1 = parameters.getValue(INPUT_IMAGE_1,workspace);
         Image image1 = (Image) workspace.getImage(imageName1);
 
-        String imageName2 = parameters.getValue(INPUT_IMAGE_2);
+        String imageName2 = parameters.getValue(INPUT_IMAGE_2,workspace);
         Image image2 = (Image) workspace.getImages().get(imageName2);
 
         // Getting parameters
-        String maskingMode = parameters.getValue(MASKING_MODE);
-        String maskImageName = parameters.getValue(MASK_IMAGE);
+        String maskingMode = parameters.getValue(MASKING_MODE,workspace);
+        String maskImageName = parameters.getValue(MASK_IMAGE,workspace);
         Image maskImage = (Image) workspace.getImage(maskImageName);
-        String imageMaskLogic = parameters.getValue(IMAGE_MASK_LOGIC);
-        String objectName = parameters.getValue(INPUT_OBJECTS);
+        String imageMaskLogic = parameters.getValue(IMAGE_MASK_LOGIC,workspace);
+        String objectName = parameters.getValue(INPUT_OBJECTS,workspace);
         Objs objects = workspace.getObjects().get(objectName);
-        String objectMaskLogic = parameters.getValue(OBJECT_MASK_LOGIC);
-        String thresholdingMode = parameters.getValue(THRESHOLDING_MODE);
-        String imageMeasurementName1 = parameters.getValue(IMAGE_MEASUREMENT_1);
-        String imageMeasurementName2 = parameters.getValue(IMAGE_MEASUREMENT_2);
-        double fixedThreshold1 = parameters.getValue(FIXED_THRESHOLD_1);
-        double fixedThreshold2 = parameters.getValue(FIXED_THRESHOLD_2);
-        String pccImplementationName = parameters.getValue(PCC_IMPLEMENTATION);
-        boolean measureKendalls = parameters.getValue(MEASURE_KENDALLS_RANK);
-        boolean measureLiICQ = parameters.getValue(MEASURE_LI_ICQ);
-        boolean measureManders = parameters.getValue(MEASURE_MANDERS);
-        boolean measurePCC = parameters.getValue(MEASURE_PCC);
-        boolean measureSpearman = parameters.getValue(MEASURE_SPEARMANS_RANK);
+        String objectMaskLogic = parameters.getValue(OBJECT_MASK_LOGIC,workspace);
+        String thresholdingMode = parameters.getValue(THRESHOLDING_MODE,workspace);
+        String imageMeasurementName1 = parameters.getValue(IMAGE_MEASUREMENT_1,workspace);
+        String imageMeasurementName2 = parameters.getValue(IMAGE_MEASUREMENT_2,workspace);
+        double fixedThreshold1 = parameters.getValue(FIXED_THRESHOLD_1,workspace);
+        double fixedThreshold2 = parameters.getValue(FIXED_THRESHOLD_2,workspace);
+        String pccImplementationName = parameters.getValue(PCC_IMPLEMENTATION,workspace);
+        boolean measureKendalls = parameters.getValue(MEASURE_KENDALLS_RANK,workspace);
+        boolean measureLiICQ = parameters.getValue(MEASURE_LI_ICQ,workspace);
+        boolean measureManders = parameters.getValue(MEASURE_MANDERS,workspace);
+        boolean measurePCC = parameters.getValue(MEASURE_PCC,workspace);
+        boolean measureSpearman = parameters.getValue(MEASURE_SPEARMANS_RANK,workspace);
 
         // If objects are to be used as a mask a binary image is created. Otherwise,
         // null is returned
         switch (maskingMode) {
             case MaskingModes.MASK_IMAGE:
-                maskImage = new Image("Mask", maskImage.getImagePlus().duplicate());
+                maskImage = ImageFactory.createImage("Mask", maskImage.getImagePlus().duplicate());
                 if (imageMaskLogic.equals(ImageMaskLogic.MEASURE_ON_BLACK))
                     InvertIntensity.process(maskImage);
                 break;
@@ -560,6 +561,7 @@ public class MeasureImageColocalisation<T extends RealType<T> & NativeType<T>> e
 
     @Override
     public Parameters updateAndGetParameters() {
+Workspace workspace = null;
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
@@ -568,7 +570,7 @@ public class MeasureImageColocalisation<T extends RealType<T> & NativeType<T>> e
 
         returnedParameters.add(parameters.getParameter(MASKING_SEPARATOR));
         returnedParameters.add(parameters.getParameter(MASKING_MODE));
-        switch ((String) parameters.getValue(MASKING_MODE)) {
+        switch ((String) parameters.getValue(MASKING_MODE,null)) {
             case MaskingModes.MASK_IMAGE:
                 returnedParameters.add(parameters.getParameter(MASK_IMAGE));
                 returnedParameters.add(parameters.getParameter(IMAGE_MASK_LOGIC));
@@ -581,13 +583,13 @@ public class MeasureImageColocalisation<T extends RealType<T> & NativeType<T>> e
 
         returnedParameters.add(parameters.getParameter(THRESHOLD_SEPARATOR));
         returnedParameters.add(parameters.getParameter(THRESHOLDING_MODE));
-        switch ((String) parameters.getValue(THRESHOLDING_MODE)) {
+        switch ((String) parameters.getValue(THRESHOLDING_MODE,null)) {
             case ThresholdingModes.IMAGE_MEASUREMENTS:
                 returnedParameters.add(parameters.getParameter(IMAGE_MEASUREMENT_1));
-                String imageName1 = parameters.getValue(INPUT_IMAGE_1);
+                String imageName1 = parameters.getValue(INPUT_IMAGE_1,null);
                 ((ImageMeasurementP) parameters.getParameter(IMAGE_MEASUREMENT_1)).setImageName(imageName1);
                 returnedParameters.add(parameters.getParameter(IMAGE_MEASUREMENT_2));
-                String imageName2 = parameters.getValue(INPUT_IMAGE_2);
+                String imageName2 = parameters.getValue(INPUT_IMAGE_2,null);
                 ((ImageMeasurementP) parameters.getParameter(IMAGE_MEASUREMENT_2)).setImageName(imageName2);
                 break;
             case ThresholdingModes.MANUAL:
@@ -597,9 +599,9 @@ public class MeasureImageColocalisation<T extends RealType<T> & NativeType<T>> e
         }
 
         returnedParameters.add(parameters.getParameter(MEASUREMENT_SEPARATOR));
-        if ((boolean) parameters.getValue(MEASURE_PCC)
-                || ((String) parameters.getValue(THRESHOLDING_MODE)).equals(ThresholdingModes.BISECTION)
-                || ((String) parameters.getValue(THRESHOLDING_MODE)).equals(ThresholdingModes.COSTES)) {
+        if ((boolean) parameters.getValue(MEASURE_PCC,null)
+                || ((String) parameters.getValue(THRESHOLDING_MODE,null)).equals(ThresholdingModes.BISECTION)
+                || ((String) parameters.getValue(THRESHOLDING_MODE,null)).equals(ThresholdingModes.COSTES)) {
             returnedParameters.add(parameters.getParameter(PCC_IMPLEMENTATION));
         }
         returnedParameters.add(parameters.getParameter(MEASURE_KENDALLS_RANK));
@@ -614,12 +616,13 @@ public class MeasureImageColocalisation<T extends RealType<T> & NativeType<T>> e
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
+Workspace workspace = null;
         ImageMeasurementRefs returnedRefs = new ImageMeasurementRefs();
 
-        String inputImage1Name = parameters.getValue(INPUT_IMAGE_1);
-        String inputImage2Name = parameters.getValue(INPUT_IMAGE_2);
+        String inputImage1Name = parameters.getValue(INPUT_IMAGE_1,workspace);
+        String inputImage2Name = parameters.getValue(INPUT_IMAGE_2,workspace);
 
-        switch ((String) parameters.getValue(THRESHOLDING_MODE)) {
+        switch ((String) parameters.getValue(THRESHOLDING_MODE,workspace)) {
             case ThresholdingModes.BISECTION:
             case ThresholdingModes.COSTES:
                 String name = getFullName(inputImage1Name, inputImage2Name, Measurements.THRESHOLD_1);
@@ -645,21 +648,21 @@ public class MeasureImageColocalisation<T extends RealType<T> & NativeType<T>> e
                 break;
         }
 
-        if ((boolean) parameters.getValue(MEASURE_KENDALLS_RANK)) {
+        if ((boolean) parameters.getValue(MEASURE_KENDALLS_RANK,workspace)) {
             String name = getFullName(inputImage1Name, inputImage2Name, Measurements.KENDALLS_TAU);
             ImageMeasurementRef reference = imageMeasurementRefs.getOrPut(name);
             reference.setImageName(inputImage1Name);
             returnedRefs.add(reference);
         }
 
-        if ((boolean) parameters.getValue(MEASURE_LI_ICQ)) {
+        if ((boolean) parameters.getValue(MEASURE_LI_ICQ,workspace)) {
             String name = getFullName(inputImage1Name, inputImage2Name, Measurements.LI_ICQ);
             ImageMeasurementRef reference = imageMeasurementRefs.getOrPut(name);
             reference.setImageName(inputImage1Name);
             returnedRefs.add(reference);
         }
 
-        if ((boolean) parameters.getValue(MEASURE_MANDERS)) {
+        if ((boolean) parameters.getValue(MEASURE_MANDERS,workspace)) {
             String name = getFullName(inputImage1Name, inputImage2Name, Measurements.M1_ABOVE_ZERO);
             ImageMeasurementRef reference = imageMeasurementRefs.getOrPut(name);
             reference.setImageName(inputImage1Name);
@@ -670,7 +673,7 @@ public class MeasureImageColocalisation<T extends RealType<T> & NativeType<T>> e
             reference.setImageName(inputImage1Name);
             returnedRefs.add(reference);
 
-            if (!((String) parameters.getValue(THRESHOLDING_MODE)).equals(ThresholdingModes.NONE)) {
+            if (!((String) parameters.getValue(THRESHOLDING_MODE,workspace)).equals(ThresholdingModes.NONE)) {
                 name = getFullName(inputImage1Name, inputImage2Name, Measurements.M1_ABOVE_THRESHOLD);
                 reference = imageMeasurementRefs.getOrPut(name);
                 reference.setImageName(inputImage1Name);
@@ -683,13 +686,13 @@ public class MeasureImageColocalisation<T extends RealType<T> & NativeType<T>> e
             }
         }
 
-        if ((boolean) parameters.getValue(MEASURE_PCC)) {
+        if ((boolean) parameters.getValue(MEASURE_PCC,workspace)) {
             String name = getFullName(inputImage1Name, inputImage2Name, Measurements.PCC);
             ImageMeasurementRef reference = imageMeasurementRefs.getOrPut(name);
             reference.setImageName(inputImage1Name);
             returnedRefs.add(reference);
 
-            if (!((String) parameters.getValue(THRESHOLDING_MODE)).equals(ThresholdingModes.NONE)) {
+            if (!((String) parameters.getValue(THRESHOLDING_MODE,workspace)).equals(ThresholdingModes.NONE)) {
                 name = getFullName(inputImage1Name, inputImage2Name, Measurements.PCC_BELOW_THRESHOLD);
                 reference = imageMeasurementRefs.getOrPut(name);
                 reference.setImageName(inputImage1Name);
@@ -702,7 +705,7 @@ public class MeasureImageColocalisation<T extends RealType<T> & NativeType<T>> e
             }
         }
 
-        if ((boolean) parameters.getValue(MEASURE_SPEARMANS_RANK)) {
+        if ((boolean) parameters.getValue(MEASURE_SPEARMANS_RANK,workspace)) {
             String name = getFullName(inputImage1Name, inputImage2Name, Measurements.SPEARMAN_RHO);
             ImageMeasurementRef reference = imageMeasurementRefs.getOrPut(name);
             reference.setImageName(inputImage1Name);
@@ -724,23 +727,23 @@ public class MeasureImageColocalisation<T extends RealType<T> & NativeType<T>> e
     }
 
     @Override
-    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
-        return null;
+public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+return null;
     }
 
     @Override
-    public MetadataRefs updateAndGetMetadataReferences() {
-        return null;
+public MetadataRefs updateAndGetMetadataReferences() {
+return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
-        return null;
+return null;
     }
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
-        return null;
+return null;
     }
 
     @Override

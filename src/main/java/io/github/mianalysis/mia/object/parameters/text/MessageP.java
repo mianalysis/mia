@@ -64,7 +64,7 @@ public class MessageP extends TextAreaP {
 
     @Override
     public <T extends Parameter> T duplicate(Module newModule) {
-        MessageP newParameter = new MessageP(name, newModule, getValue(), color, getDescription());
+        MessageP newParameter = new MessageP(name, newModule, getRawStringValue(), color, getDescription());
         
         newParameter.setControlHeight(controlHeight);
         newParameter.setNickname(getNickname());

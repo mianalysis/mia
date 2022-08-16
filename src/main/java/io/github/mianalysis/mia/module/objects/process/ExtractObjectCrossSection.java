@@ -7,12 +7,13 @@ import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.Module;
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
-import io.github.mianalysis.mia.object.Image;
+
 import io.github.mianalysis.mia.object.Measurement;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
-import io.github.mianalysis.mia.object.Status;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.ImageMeasurementP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
@@ -28,6 +29,7 @@ import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
+import io.github.mianalysis.mia.object.system.Status;
 import io.github.sjcross.sjcommon.process.CommaSeparatedStringInterpreter;
 import io.github.sjcross.sjcommon.object.Point;
 import io.github.sjcross.sjcommon.object.volume.PointOutOfRangeException;
@@ -119,16 +121,16 @@ public class ExtractObjectCrossSection extends Module {
     @Override
     public Status process(Workspace workspace) {
         // Getting input objects
-        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
         Objs inputObjects = workspace.getObjects().get(inputObjectsName);
 
         // Getting parameters
-        String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);
-        String referenceMode = parameters.getValue(REFERENCE_MODE);
-        String imageForMeasurementName = parameters.getValue(IMAGE_FOR_MEASUREMENT);
-        String imageMeasurementName = parameters.getValue(IMAGE_MEASUREMENT);
-        String objectMeasurementName = parameters.getValue(OBJECT_MEASUREMENT);
-        String indicesString = parameters.getValue(RELATIVE_SLICE_INDICES);
+        String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS,workspace);
+        String referenceMode = parameters.getValue(REFERENCE_MODE,workspace);
+        String imageForMeasurementName = parameters.getValue(IMAGE_FOR_MEASUREMENT,workspace);
+        String imageMeasurementName = parameters.getValue(IMAGE_MEASUREMENT,workspace);
+        String objectMeasurementName = parameters.getValue(OBJECT_MEASUREMENT,workspace);
+        String indicesString = parameters.getValue(RELATIVE_SLICE_INDICES,workspace);
 
         Objs outputObjects = new Objs(outputObjectsName, inputObjects);
         workspace.addObjects(outputObjects);
@@ -184,6 +186,7 @@ public class ExtractObjectCrossSection extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
+Workspace workspace = null;
         Parameters returnedParameters = new Parameters();
         returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(INPUT_OBJECTS));
@@ -192,17 +195,17 @@ public class ExtractObjectCrossSection extends Module {
         returnedParameters.add(parameters.getParameter(CROSS_SECTION_SEPARATOR));
         returnedParameters.add(parameters.getParameter(REFERENCE_MODE));
 
-        switch ((String) parameters.getValue(REFERENCE_MODE)) {
+        switch ((String) parameters.getValue(REFERENCE_MODE,workspace)) {
             case ReferenceModes.IMAGE_MEASUREMENT:
                 returnedParameters.add(parameters.getParameter(IMAGE_FOR_MEASUREMENT));
                 returnedParameters.add(parameters.getParameter(IMAGE_MEASUREMENT));
-                String imageName = parameters.getValue(IMAGE_FOR_MEASUREMENT);
+                String imageName = parameters.getValue(IMAGE_FOR_MEASUREMENT,workspace);
                 ((ImageMeasurementP) parameters.getParameter(IMAGE_MEASUREMENT)).setImageName(imageName);
 
                 break;
             case ReferenceModes.OBJECT_MEASUREMENT:
                 returnedParameters.add(parameters.getParameter(OBJECT_MEASUREMENT));
-                String objectsName = parameters.getValue(INPUT_OBJECTS);
+                String objectsName = parameters.getValue(INPUT_OBJECTS,workspace);
                 ((ObjectMeasurementP) parameters.getParameter(OBJECT_MEASUREMENT)).setObjectName(objectsName);
                 break;
         }
@@ -215,25 +218,26 @@ public class ExtractObjectCrossSection extends Module {
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
-        return null;
+return null;
     }
 
     @Override
-    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
-        return null;
+public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+return null;
     }
 
     @Override
-    public MetadataRefs updateAndGetMetadataReferences() {
-        return null;
+public MetadataRefs updateAndGetMetadataReferences() {
+return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
+Workspace workspace = null;
         ParentChildRefs returnedRelationships = new ParentChildRefs();
 
-        String inputObjects = parameters.getValue(INPUT_OBJECTS);
-        String outputObjects = parameters.getValue(OUTPUT_OBJECTS);
+        String inputObjects = parameters.getValue(INPUT_OBJECTS,workspace);
+        String outputObjects = parameters.getValue(OUTPUT_OBJECTS,workspace);
 
         returnedRelationships.add(new ParentChildRef(inputObjects, outputObjects));
 
@@ -243,7 +247,7 @@ public class ExtractObjectCrossSection extends Module {
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
-        return null;
+return null;
     }
 
     @Override

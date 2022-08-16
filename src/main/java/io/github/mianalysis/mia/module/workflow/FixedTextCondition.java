@@ -10,7 +10,6 @@ import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.system.GlobalVariables;
-import io.github.mianalysis.mia.object.Status;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.parameters.ParameterGroup;
 import io.github.mianalysis.mia.object.parameters.ParameterGroup.ParameterUpdaterAndGetter;
@@ -22,6 +21,7 @@ import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
+import io.github.mianalysis.mia.object.system.Status;
 
 /**
  * Created by Stephen Cross on 23/11/2018.
@@ -59,7 +59,7 @@ public class FixedTextCondition extends AbstractWorkspaceHandler {
     }
 
     @Override
-    public Module getRedirectModule() {
+    public Module getRedirectModule(Workspace workspace) {
         // Default redirect module is the next one in the sequence
         int idx = modules.indexOf(this) + 1;
         if (idx >= modules.size())
@@ -67,14 +67,14 @@ public class FixedTextCondition extends AbstractWorkspaceHandler {
         else
             redirectModule = modules.get(idx);
 
-        String testValue = parameters.getValue(TEST_VALUE);
-        LinkedHashMap<Integer, Parameters> collections = parameters.getValue(ADD_CONDITION);
+        String testValue = parameters.getValue(TEST_VALUE,workspace);
+        LinkedHashMap<Integer, Parameters> collections = parameters.getValue(ADD_CONDITION,workspace);
 
         for (Parameters collection : collections.values()) {
-            if (collection.getValue(REFERENCE_VALUE).equals(testValue)) {
-                switch ((String) collection.getValue(CONTINUATION_MODE)) {
+            if (collection.getValue(REFERENCE_VALUE,workspace).equals(testValue)) {
+                switch ((String) collection.getValue(CONTINUATION_MODE,workspace)) {
                     case ContinuationModes.REDIRECT_TO_MODULE:
-                        redirectModule = collection.getValue(REDIRECT_MODULE);
+                        redirectModule = collection.getValue(REDIRECT_MODULE,workspace);
                         break;
                     case ContinuationModes.TERMINATE:
                         redirectModule = null;
@@ -90,13 +90,13 @@ public class FixedTextCondition extends AbstractWorkspaceHandler {
     @Override
     protected Status process(Workspace workspace) {
         // Getting parameters
-        String testValue = parameters.getValue(TEST_VALUE);
-        LinkedHashMap<Integer, Parameters> collections = parameters.getValue(ADD_CONDITION);
-        boolean showRedirectMessage = parameters.getValue(SHOW_REDIRECT_MESSAGE);
+        String testValue = parameters.getValue(TEST_VALUE,workspace);
+        LinkedHashMap<Integer, Parameters> collections = parameters.getValue(ADD_CONDITION,workspace);
+        boolean showRedirectMessage = parameters.getValue(SHOW_REDIRECT_MESSAGE,workspace);
 
         // Getting choice parameters
         for (Parameters collection : collections.values()) {
-            if (collection.getValue(REFERENCE_VALUE).equals(testValue)) {
+            if (collection.getValue(REFERENCE_VALUE,workspace).equals(testValue)) {
                 return processTermination(collection, workspace, showRedirectMessage);
             }
         }
@@ -125,6 +125,7 @@ public class FixedTextCondition extends AbstractWorkspaceHandler {
 
     @Override
     public Parameters updateAndGetParameters() {
+Workspace workspace = null;
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(TEST_VALUE));
@@ -137,27 +138,27 @@ public class FixedTextCondition extends AbstractWorkspaceHandler {
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
-        return null;
+return null;
     }
 
     @Override
-    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
-        return null;
+public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+return null;
     }
 
     @Override
-    public MetadataRefs updateAndGetMetadataReferences() {
-        return null;
+public MetadataRefs updateAndGetMetadataReferences() {
+return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
-        return null;
+return null;
     }
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
-        return null;
+return null;
     }
 
     @Override
@@ -190,12 +191,12 @@ public class FixedTextCondition extends AbstractWorkspaceHandler {
 
                 returnedParameters.add(params.getParameter(REFERENCE_VALUE));
                 returnedParameters.add(params.getParameter(CONTINUATION_MODE));
-                switch ((String) params.getValue(CONTINUATION_MODE)) {
+                switch ((String) params.getValue(CONTINUATION_MODE,null)) {
                     case ContinuationModes.REDIRECT_TO_MODULE:
                         returnedParameters.add(params.getParameter(REDIRECT_MODULE));
-                        redirectModule = params.getValue(REDIRECT_MODULE);
+                        redirectModule = params.getValue(REDIRECT_MODULE,null);
                         returnedParameters.add(params.getParameter(SHOW_REDIRECT_MESSAGE));
-                        if ((boolean) params.getValue(SHOW_REDIRECT_MESSAGE)) {
+                        if ((boolean) params.getValue(SHOW_REDIRECT_MESSAGE,null)) {
                             returnedParameters.add(params.getParameter(REDIRECT_MESSAGE));
                         }
                         break;

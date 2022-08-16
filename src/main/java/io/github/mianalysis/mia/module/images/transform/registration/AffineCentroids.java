@@ -59,10 +59,12 @@ public class AffineCentroids extends AbstractAffineRegistration {
 
         // Setting up the parameters
         CentroidParam centroidParam = (CentroidParam) param;
-        centroidParam.centroidObjects = (Objs) workspace.getObjectSet(parameters.getValue(INPUT_OBJECTS));
-        centroidParam.maxSeparation = (float) (double) parameters.getValue(MAXIMUM_SEPARATION);
-        centroidParam.maxEpsilon = (float) (double) parameters.getValue(MAX_EPSILON);
-        centroidParam.minInlierRatio = (float) (double) parameters.getValue(MIN_INLIER_RATIO);
+        centroidParam.centroidObjects = (Objs) workspace.getObjectSet(parameters.getValue(INPUT_OBJECTS,workspace));
+        centroidParam.maxSeparation = (float) (double) parameters.getValue(MAXIMUM_SEPARATION,workspace);
+        centroidParam.maxEpsilon = (float) (double) parameters.getValue(MAX_EPSILON,workspace);
+        centroidParam.minInlierRatio = (float) (double) parameters.getValue(MIN_INLIER_RATIO,workspace);
+        centroidParam.referenceMode = (String) parameters.getValue(REFERENCE_MODE,workspace);
+        centroidParam.numPrevFrames = (int) parameters.getValue(NUM_PREV_FRAMES,workspace);
 
     }
 
@@ -70,8 +72,8 @@ public class AffineCentroids extends AbstractAffineRegistration {
     protected Object[] fitModel(ImageProcessor referenceIpr, ImageProcessor warpedIpr, Param param) {
         CentroidParam p = (CentroidParam) param;
 
-        String referenceMode = parameters.getValue(REFERENCE_MODE);
-        int numPrevFrames = parameters.getValue(NUM_PREV_FRAMES);
+        String referenceMode = p.referenceMode;
+        int numPrevFrames = p.numPrevFrames; 
 
         Objs candidates1 = new Objs("Candidates1", p.centroidObjects);
         Objs candidates2 = new Objs("Candidates2", p.centroidObjects);
@@ -143,6 +145,7 @@ public class AffineCentroids extends AbstractAffineRegistration {
 
     @Override
     public Parameters updateAndGetParameters() {
+Workspace workspace = null;
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.addAll(super.updateAndGetParameters());
@@ -186,6 +189,9 @@ public class AffineCentroids extends AbstractAffineRegistration {
         float minInlierRatio = 0.05f;
 
         Objs centroidObjects = null;
+
+        String referenceMode = null;
+        int numPrevFrames = 0;
 
     }
 }

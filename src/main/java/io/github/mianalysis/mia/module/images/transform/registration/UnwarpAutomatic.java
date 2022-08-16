@@ -90,6 +90,7 @@ public class UnwarpAutomatic extends AbstractBUnwarpJRegistration implements Int
 
     @Override
     public Parameters updateAndGetParameters() {
+Workspace workspace = null;
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.addAll(super.updateAndGetParameters());

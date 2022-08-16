@@ -20,7 +20,7 @@ public class OutputImageP extends StringP {
     }
 
     public String getImageName() {
-        return getValue();
+        return getValue(null);
     }
 
     public void setImageName(String imageName) {

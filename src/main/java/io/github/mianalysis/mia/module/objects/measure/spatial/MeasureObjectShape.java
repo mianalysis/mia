@@ -18,7 +18,6 @@ import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.object.Measurement;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
-import io.github.mianalysis.mia.object.Status;
 import io.github.mianalysis.mia.object.units.SpatialUnit;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
@@ -30,6 +29,7 @@ import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
+import io.github.mianalysis.mia.object.system.Status;
 import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.sjcross.sjcommon.exceptions.IntegerOverflowException;
 import io.github.sjcross.sjcommon.object.Point;
@@ -136,16 +136,16 @@ public class MeasureObjectShape extends Module {
     @Override
     public Status process(Workspace workspace) {
         // Getting input objects
-        String inputObjectName = parameters.getValue(INPUT_OBJECTS);
+        String inputObjectName = parameters.getValue(INPUT_OBJECTS,workspace);
         Objs inputObjects = workspace.getObjects().get(inputObjectName);
 
         // Getting parameters
-        boolean measureVolume = parameters.getValue(MEASURE_VOLUME);
-        boolean measureProjectedArea = parameters.getValue(MEASURE_PROJECTED_AREA);
-        boolean measureProjectedDiameter = parameters.getValue(MEASURE_PROJECTED_DIA);
-        boolean measureProjectedPerimeter = parameters.getValue(MEASURE_PROJECTED_PERIM);
+        boolean measureVolume = parameters.getValue(MEASURE_VOLUME,workspace);
+        boolean measureProjectedArea = parameters.getValue(MEASURE_PROJECTED_AREA,workspace);
+        boolean measureProjectedDiameter = parameters.getValue(MEASURE_PROJECTED_DIA,workspace);
+        boolean measureProjectedPerimeter = parameters.getValue(MEASURE_PROJECTED_PERIM,workspace);
 
-        boolean multithread = parameters.getValue(ENABLE_MULTITHREADING);
+        boolean multithread = parameters.getValue(ENABLE_MULTITHREADING,workspace);
 
         // Configuring multithreading
         int nThreads = multithread ? Prefs.getThreads() : 1;
@@ -277,20 +277,22 @@ public class MeasureObjectShape extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
+Workspace workspace = null;
         return parameters;
     }
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
-        return null;
+return null;
     }
 
     @Override
-    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+Workspace workspace = null;
         ObjMeasurementRefs returnedRefs = new ObjMeasurementRefs();
-        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
 
-        if ((boolean) parameters.getValue(MEASURE_VOLUME)) {
+        if ((boolean) parameters.getValue(MEASURE_VOLUME,workspace)) {
             ObjMeasurementRef reference = objectMeasurementRefs.getOrPut(Measurements.N_VOXELS);
             returnedRefs.add(reference);
             reference.setObjectsName(inputObjectsName);
@@ -340,7 +342,7 @@ public class MeasureObjectShape extends Module {
 
         }
 
-        if ((boolean) parameters.getValue(MEASURE_PROJECTED_AREA)) {
+        if ((boolean) parameters.getValue(MEASURE_PROJECTED_AREA,workspace)) {
             ObjMeasurementRef reference = objectMeasurementRefs.getOrPut(Measurements.PROJ_AREA_PX);
             returnedRefs.add(reference);
             reference.setObjectsName(inputObjectsName);
@@ -354,7 +356,7 @@ public class MeasureObjectShape extends Module {
                     + "\".  Measured " + "in calibrated (" + SpatialUnit.getOMEUnit().getSymbol() + ") units.");
         }
 
-        if ((boolean) parameters.getValue(MEASURE_PROJECTED_DIA)) {
+        if ((boolean) parameters.getValue(MEASURE_PROJECTED_DIA,workspace)) {
             ObjMeasurementRef reference = objectMeasurementRefs.getOrPut(Measurements.PROJ_DIA_PX);
             returnedRefs.add(reference);
             reference.setObjectsName(inputObjectsName);
@@ -369,7 +371,7 @@ public class MeasureObjectShape extends Module {
                     + "units.");
         }
 
-        if ((boolean) parameters.getValue(MEASURE_PROJECTED_PERIM)) {
+        if ((boolean) parameters.getValue(MEASURE_PROJECTED_PERIM,workspace)) {
             ObjMeasurementRef reference = objectMeasurementRefs.getOrPut(Measurements.PROJ_PERIM_PX);
             returnedRefs.add(reference);
             reference.setObjectsName(inputObjectsName);
@@ -395,18 +397,18 @@ public class MeasureObjectShape extends Module {
     }
 
     @Override
-    public MetadataRefs updateAndGetMetadataReferences() {
-        return null;
+public MetadataRefs updateAndGetMetadataReferences() {
+return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
-        return null;
+return null;
     }
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
-        return null;
+return null;
     }
 
     @Override

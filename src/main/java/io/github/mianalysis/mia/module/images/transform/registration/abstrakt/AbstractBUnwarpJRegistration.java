@@ -110,21 +110,21 @@ public abstract class AbstractBUnwarpJRegistration<T extends RealType<T> & Nativ
         BUnwarpJParam bUnwarpParam = (BUnwarpJParam) param;        
 
         // Adding bUnwarpJ-specific parameter object
-        String registrationMode = parameters.getValue(REGISTRATION_MODE);
+        String registrationMode = parameters.getValue(REGISTRATION_MODE,workspace);
         bUnwarpParam.bParam = new bunwarpj.Param();
         bUnwarpParam.bParam.mode = getRegistrationMode(registrationMode);
-        bUnwarpParam.bParam.img_subsamp_fact = parameters.getValue(SUBSAMPLE_FACTOR);
-        bUnwarpParam.bParam.min_scale_deformation = getInitialDeformationMode(parameters.getValue(INITIAL_DEFORMATION_MODE));
-        bUnwarpParam.bParam.max_scale_deformation = getFinalDeformationMode(parameters.getValue(FINAL_DEFORMATION_MODE));
-        bUnwarpParam.bParam.divWeight = parameters.getValue(DIVERGENCE_WEIGHT);
-        bUnwarpParam.bParam.curlWeight = parameters.getValue(CURL_WEIGHT);
-        bUnwarpParam.bParam.landmarkWeight = parameters.getValue(LANDMARK_WEIGHT);
-        bUnwarpParam.bParam.imageWeight = parameters.getValue(IMAGE_WEIGHT);
-        bUnwarpParam.bParam.stopThreshold = parameters.getValue(STOP_THRESHOLD);
+        bUnwarpParam.bParam.img_subsamp_fact = parameters.getValue(SUBSAMPLE_FACTOR,workspace);
+        bUnwarpParam.bParam.min_scale_deformation = getInitialDeformationMode(parameters.getValue(INITIAL_DEFORMATION_MODE,workspace));
+        bUnwarpParam.bParam.max_scale_deformation = getFinalDeformationMode(parameters.getValue(FINAL_DEFORMATION_MODE,workspace));
+        bUnwarpParam.bParam.divWeight = parameters.getValue(DIVERGENCE_WEIGHT,workspace);
+        bUnwarpParam.bParam.curlWeight = parameters.getValue(CURL_WEIGHT,workspace);
+        bUnwarpParam.bParam.landmarkWeight = parameters.getValue(LANDMARK_WEIGHT,workspace);
+        bUnwarpParam.bParam.imageWeight = parameters.getValue(IMAGE_WEIGHT,workspace);
+        bUnwarpParam.bParam.stopThreshold = parameters.getValue(STOP_THRESHOLD,workspace);
         if (registrationMode.equals(RegistrationModes.MONO))
             bUnwarpParam.bParam.consistencyWeight = 10.0;
         else
-            bUnwarpParam.bParam.consistencyWeight = parameters.getValue(CONSISTENCY_WEIGHT);
+            bUnwarpParam.bParam.consistencyWeight = parameters.getValue(CONSISTENCY_WEIGHT,workspace);
     }
     
     @Override
@@ -163,6 +163,7 @@ public abstract class AbstractBUnwarpJRegistration<T extends RealType<T> & Nativ
 
     @Override
     public Parameters updateAndGetParameters() {
+Workspace workspace = null;
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.addAll(super.updateAndGetParameters());
@@ -177,7 +178,7 @@ public abstract class AbstractBUnwarpJRegistration<T extends RealType<T> & Nativ
         returnedParameters.add(parameters.getParameter(LANDMARK_WEIGHT));
         returnedParameters.add(parameters.getParameter(IMAGE_WEIGHT));
 
-        switch ((String) parameters.getValue(REGISTRATION_MODE)) {
+        switch ((String) parameters.getValue(REGISTRATION_MODE,workspace)) {
             case RegistrationModes.ACCURATE:
             case RegistrationModes.FAST:
                 returnedParameters.add(parameters.getParameter(CONSISTENCY_WEIGHT));

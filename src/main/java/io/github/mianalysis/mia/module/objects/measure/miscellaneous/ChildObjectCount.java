@@ -10,7 +10,6 @@ import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.object.measurements.ChildCountMeasurement;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
-import io.github.mianalysis.mia.object.Status;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.parameters.ChildObjectsP;
 import io.github.mianalysis.mia.object.parameters.InputObjectsP;
@@ -21,6 +20,7 @@ import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
+import io.github.mianalysis.mia.object.system.Status;
 import io.github.mianalysis.mia.object.parameters.Parameters;
 
 /**
@@ -54,8 +54,8 @@ public class ChildObjectCount extends Module {
     @Override
     public Status process(Workspace workspace) {
         // Getting input objects
-        String objectName = parameters.getValue(INPUT_OBJECTS);
-        String childObjectsName = parameters.getValue(CHILD_OBJECTS);
+        String objectName = parameters.getValue(INPUT_OBJECTS,workspace);
+        String childObjectsName = parameters.getValue(CHILD_OBJECTS,workspace);
 
         Objs objects = workspace.getObjects().get(objectName);
         String measurementName = getFullName(childObjectsName);
@@ -85,7 +85,8 @@ public class ChildObjectCount extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
-        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+Workspace workspace = null;
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
         ((ChildObjectsP) parameters.get(CHILD_OBJECTS)).setParentObjectsName(inputObjectsName);
 
         return parameters;
@@ -94,15 +95,16 @@ public class ChildObjectCount extends Module {
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
-        return null;
+return null;
     }
 
     @Override
-    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+Workspace workspace = null;
         ObjMeasurementRefs returnedRefs = new ObjMeasurementRefs();
 
-        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
-        String childObjectsName = parameters.getValue(CHILD_OBJECTS);
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
+        String childObjectsName = parameters.getValue(CHILD_OBJECTS,workspace);
 
         String measurementName = getFullName(childObjectsName);
 
@@ -116,18 +118,18 @@ public class ChildObjectCount extends Module {
     }
 
     @Override
-    public MetadataRefs updateAndGetMetadataReferences() {
-        return null;
+public MetadataRefs updateAndGetMetadataReferences() {
+return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
-        return null;
+return null;
     }
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
-        return null;
+return null;
     }
 
     @Override

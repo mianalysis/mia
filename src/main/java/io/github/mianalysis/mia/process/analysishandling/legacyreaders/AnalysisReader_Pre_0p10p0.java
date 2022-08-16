@@ -168,7 +168,7 @@ public class AnalysisReader_Pre_0p10p0 {
         NamedNodeMap moduleAttributes = moduleNode.getAttributes();
         String className = moduleAttributes.getNamedItem("NAME").getNodeValue();
         String moduleName = FilenameUtils.getExtension(className);
-        moduleName = MIA.lostAndFound.findModule(moduleName);
+        moduleName = MIA.getLostAndFound().findModule(moduleName);
 
         for (String availableModule : availableModules) {
             if (moduleName.equals(FilenameUtils.getExtension(availableModule))) {
@@ -306,7 +306,7 @@ public class AnalysisReader_Pre_0p10p0 {
             String parameterValueSource = "";
 
             // Updating parameter names
-            parameterName = MIA.lostAndFound.findParameter(module.getClass().getSimpleName(), parameterName);
+            parameterName = MIA.getLostAndFound().findParameter(module.getClass().getSimpleName(), parameterName);
 
             if (parameterAttributes.getNamedItem("VALUESOURCE") != null)
                 parameterValueSource = parameterAttributes.getNamedItem("VALUESOURCE").getNodeValue();
@@ -314,19 +314,19 @@ public class AnalysisReader_Pre_0p10p0 {
             try {
                 Parameter parameter = parameters.getParameter(parameterName);
                 if (parameter instanceof InputImageP) {
-                    parameterValue = MIA.lostAndFound.findParameterValue(module.getClass().getSimpleName(),
+                    parameterValue = MIA.getLostAndFound().findParameterValue(module.getClass().getSimpleName(),
                             parameterName, parameterValue);
                     ((InputImageP) parameters.getParameter(parameterName)).setImageName(parameterValue);
                 } else if (parameter instanceof OutputImageP) {
                     ((OutputImageP) parameters.getParameter(parameterName)).setImageName(parameterValue);
                 } else if (parameter instanceof InputObjectsP) {
-                    parameterValue = MIA.lostAndFound.findParameterValue(module.getClass().getSimpleName(),
+                    parameterValue = MIA.getLostAndFound().findParameterValue(module.getClass().getSimpleName(),
                             parameterName, parameterValue);
                     ((InputObjectsP) parameters.getParameter(parameterName)).setChoice(parameterValue);
                 } else if (parameter instanceof OutputObjectsP) {
                     ((OutputObjectsP) parameters.getParameter(parameterName)).setObjectsName(parameterValue);
                 } else if (parameter instanceof RemovedImageP) {
-                    parameterValue = MIA.lostAndFound.findParameterValue(module.getClass().getSimpleName(),
+                    parameterValue = MIA.getLostAndFound().findParameterValue(module.getClass().getSimpleName(),
                             parameterName, parameterValue);
                     ((RemovedImageP) parameters.getParameter(parameterName)).setChoice(parameterValue);
                 } else if (parameter instanceof RemovedObjectsP) {
@@ -340,26 +340,26 @@ public class AnalysisReader_Pre_0p10p0 {
                 } else if (parameter instanceof BooleanP) {
                     ((BooleanP) parameters.getParameter(parameterName)).setValueFromString(parameterValue);
                 } else if (parameter instanceof ChoiceP) {
-                    parameterValue = MIA.lostAndFound.findParameterValue(module.getClass().getSimpleName(),
+                    parameterValue = MIA.getLostAndFound().findParameterValue(module.getClass().getSimpleName(),
                             parameterName, parameterValue);
                     ((ChoiceP) parameters.getParameter(parameterName)).setChoice(parameterValue);
                 } else if (parameter instanceof ChildObjectsP) {
-                    parameterValue = MIA.lostAndFound.findParameterValue(module.getClass().getSimpleName(),
+                    parameterValue = MIA.getLostAndFound().findParameterValue(module.getClass().getSimpleName(),
                             parameterName, parameterValue);
                     ((ChildObjectsP) parameters.getParameter(parameterName)).setChoice(parameterValue);
                     ((ChildObjectsP) parameters.getParameter(parameterName)).setParentObjectsName(parameterValueSource);
                 } else if (parameter instanceof ParentObjectsP) {
-                    parameterValue = MIA.lostAndFound.findParameterValue(module.getClass().getSimpleName(),
+                    parameterValue = MIA.getLostAndFound().findParameterValue(module.getClass().getSimpleName(),
                             parameterName, parameterValue);
                     ((ParentObjectsP) parameters.getParameter(parameterName)).setChoice(parameterValue);
                     ((ParentObjectsP) parameters.getParameter(parameterName)).setChildObjectsName(parameterValueSource);
                 } else if (parameter instanceof ImageMeasurementP) {
-                    parameterValue = MIA.lostAndFound.findParameterValue(module.getClass().getSimpleName(),
+                    parameterValue = MIA.getLostAndFound().findParameterValue(module.getClass().getSimpleName(),
                             parameterName, parameterValue);
                     ((ImageMeasurementP) parameters.getParameter(parameterName)).setChoice(parameterValue);
                     ((ImageMeasurementP) parameters.getParameter(parameterName)).setImageName(parameterValueSource);
                 } else if (parameter instanceof ObjectMeasurementP) {
-                    parameterValue = MIA.lostAndFound.findParameterValue(module.getClass().getSimpleName(),
+                    parameterValue = MIA.getLostAndFound().findParameterValue(module.getClass().getSimpleName(),
                             parameterName, parameterValue);
                     ((ObjectMeasurementP) parameters.getParameter(parameterName)).setChoice(parameterValue);
                     ((ObjectMeasurementP) parameters.getParameter(parameterName)).setObjectName(parameterValueSource);
@@ -370,7 +370,7 @@ public class AnalysisReader_Pre_0p10p0 {
                 } else if (parameter instanceof FileFolderPathP) {
                     ((FileFolderPathP) parameters.getParameter(parameterName)).setPath(parameterValue);
                 } else if (parameter instanceof MetadataItemP) {
-                    parameterValue = MIA.lostAndFound.findParameterValue(module.getClass().getSimpleName(),
+                    parameterValue = MIA.getLostAndFound().findParameterValue(module.getClass().getSimpleName(),
                             parameterName, parameterValue);
                     ((MetadataItemP) parameters.getParameter(parameterName)).setChoice(parameterValue);
                 } else if (parameter instanceof TextAreaP) {

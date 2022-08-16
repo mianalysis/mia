@@ -10,9 +10,9 @@ import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.object.Image;
-import io.github.mianalysis.mia.object.Status;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
 import io.github.mianalysis.mia.object.parameters.OutputImageP;
@@ -25,6 +25,7 @@ import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
+import io.github.mianalysis.mia.object.system.Status;
 import net.imglib2.histogram.HistogramNd;
 import net.imglib2.histogram.Real1dBinMapper;
 import net.imglib2.img.display.imagej.ImageJFunctions;
@@ -67,20 +68,20 @@ public class Create2DIntensityHistogram<T extends RealType<T> & NativeType<T>> e
 
     @Override
     public Status process(Workspace workspace) {
-        String inputImageName1 = parameters.getValue(INPUT_IMAGE1);
+        String inputImageName1 = parameters.getValue(INPUT_IMAGE1,workspace);
         Image inputImage1 = workspace.getImage(inputImageName1);
-        String inputImageName2 = parameters.getValue(INPUT_IMAGE2);
+        String inputImageName2 = parameters.getValue(INPUT_IMAGE2,workspace);
         Image inputImage2 = workspace.getImage(inputImageName2);
 
-        String outputImageName = parameters.getValue(OUTPUT_IMAGE);
-        double minBin1 = parameters.getValue(MIN_BIN_1);
-        double maxBin1 = parameters.getValue(MAX_BIN_1);
-        int nBins1 = parameters.getValue(N_BINS_1);
-        boolean includeTailBin1 = parameters.getValue(INCLUDE_TAIL_BIN_1);
-        double minBin2 = parameters.getValue(MIN_BIN_2);
-        double maxBin2 = parameters.getValue(MAX_BIN_2);
-        int nBins2 = parameters.getValue(N_BINS_2);
-        boolean includeTailBin2 = parameters.getValue(INCLUDE_TAIL_BIN_2);
+        String outputImageName = parameters.getValue(OUTPUT_IMAGE,workspace);
+        double minBin1 = parameters.getValue(MIN_BIN_1,workspace);
+        double maxBin1 = parameters.getValue(MAX_BIN_1,workspace);
+        int nBins1 = parameters.getValue(N_BINS_1,workspace);
+        boolean includeTailBin1 = parameters.getValue(INCLUDE_TAIL_BIN_1,workspace);
+        double minBin2 = parameters.getValue(MIN_BIN_2,workspace);
+        double maxBin2 = parameters.getValue(MAX_BIN_2,workspace);
+        int nBins2 = parameters.getValue(N_BINS_2,workspace);
+        boolean includeTailBin2 = parameters.getValue(INCLUDE_TAIL_BIN_2,workspace);
 
         double[] minVals = new double[] { minBin1, minBin2 };
         double[] maxVals = new double[] { maxBin1, maxBin2 };
@@ -94,7 +95,7 @@ public class Create2DIntensityHistogram<T extends RealType<T> & NativeType<T>> e
 
         hist.addData(intervals);
         
-        Image outputImage = new Image(outputImageName, ImageJFunctions.wrapFloat(hist, outputImageName));
+        Image outputImage = ImageFactory.createImage(outputImageName, ImageJFunctions.wrapFloat(hist, outputImageName));
         workspace.addImage(outputImage);
 
         if (showOutput)
@@ -129,32 +130,33 @@ public class Create2DIntensityHistogram<T extends RealType<T> & NativeType<T>> e
 
     @Override
     public Parameters updateAndGetParameters() {
+Workspace workspace = null;
         return parameters;
     }
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
-        return null;
+return null;
     }
 
     @Override
-    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
-        return null;
+public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+return null;
     }
 
     @Override
-    public MetadataRefs updateAndGetMetadataReferences() {
-        return null;
+public MetadataRefs updateAndGetMetadataReferences() {
+return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
-        return null;
+return null;
     }
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
-        return null;
+return null;
     }
 
     @Override

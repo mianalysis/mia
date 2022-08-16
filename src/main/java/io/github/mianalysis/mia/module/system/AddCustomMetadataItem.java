@@ -7,7 +7,6 @@ import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Categories;
-import io.github.mianalysis.mia.object.Status;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.parameters.SeparatorP;
 import io.github.mianalysis.mia.object.parameters.abstrakt.TextType;
@@ -18,6 +17,7 @@ import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
+import io.github.mianalysis.mia.object.system.Status;
 
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class AddCustomMetadataItem extends Module {
@@ -43,8 +43,8 @@ public class AddCustomMetadataItem extends Module {
 
     @Override
     protected Status process(Workspace workspace) {
-        String metadataName = parameters.getValue(METADATA_NAME);
-        String metadataValue = parameters.getValue(METADATA_VALUE);
+        String metadataName = parameters.getValue(METADATA_NAME,workspace);
+        String metadataValue = parameters.getValue(METADATA_VALUE,workspace);
 
         // Applying existing metadata values and calculations
         metadataValue = workspace.getMetadata().insertMetadataValues(metadataValue);
@@ -71,24 +71,26 @@ public class AddCustomMetadataItem extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
+Workspace workspace = null;
         return parameters;
     }
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
-        return null;
+return null;
     }
 
     @Override
-    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
-        return null;
+public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+return null;
     }
 
     @Override
-    public MetadataRefs updateAndGetMetadataReferences() {
+public MetadataRefs updateAndGetMetadataReferences() {
+Workspace workspace = null;
         MetadataRefs returnedRefs = new MetadataRefs();
 
-        returnedRefs.add(metadataRefs.getOrPut(parameters.getValue(METADATA_NAME)));
+        returnedRefs.add(metadataRefs.getOrPut(parameters.getValue(METADATA_NAME,workspace)));
 
         return returnedRefs;
 
@@ -96,12 +98,12 @@ public class AddCustomMetadataItem extends Module {
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
-        return null;
+return null;
     }
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
-        return null;
+return null;
     }
 
     @Override

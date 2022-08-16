@@ -9,6 +9,7 @@ import org.w3c.dom.Node;
 
 import io.github.mianalysis.mia.gui.parametercontrols.ParameterControl;
 import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.refs.abstrakt.Ref;
 
 public abstract class Parameter extends Ref {
@@ -37,7 +38,7 @@ public abstract class Parameter extends Ref {
 
     protected abstract ParameterControl initialiseControl();
 
-    public abstract <T> T getValue();
+    public abstract <T> T getValue(Workspace workspace);
 
     public abstract <T> void setValue(T value);
 
