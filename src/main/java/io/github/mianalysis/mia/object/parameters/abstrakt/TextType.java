@@ -13,7 +13,6 @@ import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.image.Image;
-import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.sjcross.sjcommon.mathfunc.CumStat;
 import io.github.sjcross.sjcommon.metadataextractors.Metadata;
 import net.objecthunter.exp4j.ExpressionBuilder;
@@ -30,7 +29,7 @@ public abstract class TextType extends Parameter {
     public abstract void setValueFromString(String value);
 
     public static boolean containsCalculation(String string) {
-        Pattern pattern = Pattern.compile("C\\{([^}]+)}");
+        Pattern pattern = Pattern.compile("C[ID]?\\{([^}]+)}");
         Matcher matcher = pattern.matcher(string);
 
         return matcher.find();
@@ -39,14 +38,24 @@ public abstract class TextType extends Parameter {
 
     public static String applyCalculation(String string) {
         try {
-            Pattern pattern = Pattern.compile("C\\{([^}]+)}");
+            Pattern pattern = Pattern.compile("(C[ID]?)\\{([^}]+)}");
             Matcher matcher = pattern.matcher(string);
 
             while (matcher.find()) {
                 String fullName = matcher.group(0);
-                String metadataName = matcher.group(1);
+                String type = matcher.group(1);
+                String metadataName = matcher.group(2);
 
                 double valueDouble = new ExpressionBuilder(metadataName).build().evaluate();
+                switch (type) {
+                    case "C":
+                    case "CD":
+                        string = string.replace(fullName, String.valueOf(valueDouble));
+                        break;
+                    case "CI":
+                        string = string.replace(fullName, String.valueOf((int) Math.round(valueDouble)));
+                        break;
+                }
                 string = string.replace(fullName, String.valueOf(valueDouble));
 
             }
