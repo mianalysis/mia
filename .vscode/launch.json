@@ -6,6 +6,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "Launch TextType",
+            "request": "launch",
+            "mainClass": "io.github.mianalysis.mia.object.parameters.abstrakt.TextType",
+            "projectName": "MIA"
+        },
+        {
+            "type": "java",
             "name": "Launch ImageLoader",
             "request": "launch",
             "mainClass": "io.github.mianalysis.mia.module.inputoutput.ImageLoader",
