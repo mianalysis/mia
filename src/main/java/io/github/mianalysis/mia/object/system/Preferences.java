@@ -1,10 +1,5 @@
 package io.github.mianalysis.mia.object.system;
 
-import java.lang.reflect.InvocationTargetException;
-
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
-
 import ij.IJ;
 import ij.Prefs;
 import io.github.mianalysis.mia.gui.GUI;
@@ -18,6 +13,7 @@ import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.SeparatorP;
 import io.github.mianalysis.mia.object.parameters.abstrakt.Parameter;
+import io.github.mianalysis.mia.object.parameters.text.IntegerP;
 import io.github.mianalysis.mia.object.refs.collections.ImageMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
@@ -36,9 +32,11 @@ public class Preferences extends Module {
     public static final String IMAGE_DISPLAY_MODE = "Image display mode";
 
     public static final String DATA_SEPARATOR = "Data parameters";
-    public static final String DATA_STORAGE_MODE = "Data storage mode";
-    public static final String SPECIFY_CACHE_DIRECTORY = "Specify cache directory";
-    public static final String CACHE_DIRECTORY = "Cache directory";
+    public static final String MEMOIZER_THRESHOLD_S = "Memoizer threshold (s)";
+    // public static final String DATA_STORAGE_MODE = "Data storage mode";
+    // public static final String SPECIFY_CACHE_DIRECTORY = "Specify cache
+    // directory";
+    // public static final String CACHE_DIRECTORY = "Cache directory";
 
     public interface ImageDisplayModes {
         String COMPOSITE = "Composite";
@@ -118,6 +116,17 @@ public class Preferences extends Module {
         String imageDisplayMode = parameters.getValue(IMAGE_DISPLAY_MODE, null);
         Prefs.set("MIA.Workflow.imageDisplayMode", imageDisplayMode);
     }
+
+    public int getMemoizerThreshold() {
+        return parameters.getValue(MEMOIZER_THRESHOLD_S, null);
+    }
+
+    public void setMemoizerThreshold(int threshold) {
+        Prefs.set("MIA.data.memoizerThreshold", threshold);
+        parameters.getParameter(MEMOIZER_THRESHOLD_S).setValue(threshold);        
+    }
+
+    
 
     // public String getDataStorageMode() {
     // return parameters.getValue(DATA_STORAGE_MODE,null);
@@ -211,7 +220,9 @@ public class Preferences extends Module {
         parameters.add(parameter);
 
         // Data parameters
-        // parameters.add(new SeparatorP(DATA_SEPARATOR, this));
+        parameters.add(new SeparatorP(DATA_SEPARATOR, this));
+
+        parameters.add(new IntegerP(MEMOIZER_THRESHOLD_S, this, (int) Prefs.get("MIA.data.memoizerThreshold", 3)));
 
         // parameter = new ChoiceP(DATA_STORAGE_MODE, this,
         // Prefs.get("MIA.core.dataStorageMode", DataStorageModes.KEEP_IN_RAM),
@@ -253,7 +264,8 @@ public class Preferences extends Module {
         returnedParameters.add(parameters.getParameter(WORKFLOW_SEPARATOR));
         returnedParameters.add(parameters.getParameter(IMAGE_DISPLAY_MODE));
 
-        // returnedParameters.add(parameters.getParameter(DATA_SEPARATOR));
+        returnedParameters.add(parameters.getParameter(DATA_SEPARATOR));
+        returnedParameters.add(parameters.getParameter(MEMOIZER_THRESHOLD_S));
         // returnedParameters.add(parameters.getParameter(DATA_STORAGE_MODE));
         // switch ((String) parameters.getValue(DATA_STORAGE_MODE,null)) {
         // case DataStorageModes.STREAM_FROM_DRIVE:
@@ -300,6 +312,9 @@ public class Preferences extends Module {
     void addParameterDescriptions() {
         parameters.get(SHOW_DEPRECATED).setDescription(
                 "When selected, deprecated modules will appear in the editing view available modules list.  These modules will be marked with a strikethrough their name, but otherwise act as normal.  Note: Modules marked as deprecated will be removed from future versions of MIA.");
+
+        parameters.get(MEMOIZER_THRESHOLD_S).setDescription(
+                "When loading an image, if BioFormats takes longer than this threshold to read the metadata, a \"bfmemo\" file will be generated.  This file contains the contents of the imported metadata and can be read on subsequent file loads instead of reimporting the metadata.  For very large files, this can cut subsequent file loads from many minutes to seconds.");
 
     }
 

@@ -18,7 +18,6 @@ import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.image.Image;
-import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
 import io.github.mianalysis.mia.object.parameters.InputObjectsP;
@@ -37,7 +36,7 @@ import io.github.sjcross.sjcommon.object.Point;
 /**
  * Created by sc13967 on 05/05/2017.
  */
-@Plugin(type = Module.class, priority=Priority.LOW, visible=true)
+@Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class MeasureObjectIntensity extends Module {
     public static final String INPUT_SEPARATOR = "Object and image input";
     public static final String INPUT_OBJECTS = "Input objects";
@@ -161,21 +160,21 @@ public class MeasureObjectIntensity extends Module {
     @Override
     public Status process(Workspace workspace) {
         // Getting input objects
-        String objectName = parameters.getValue(INPUT_OBJECTS,workspace);
+        String objectName = parameters.getValue(INPUT_OBJECTS, workspace);
         Objs objects = workspace.getObjects().get(objectName);
 
         // Getting input image
-        String imageName = parameters.getValue(INPUT_IMAGE,workspace);
+        String imageName = parameters.getValue(INPUT_IMAGE, workspace);
         Image inputImage = workspace.getImages().get(imageName);
 
         // Measuring intensity for each object and adding the measurement to that object
         int count = 0;
         int total = objects.size();
         for (Obj object : objects.values()) {
-            measureIntensity(object, inputImage,true);
+            measureIntensity(object, inputImage, true);
 
             // If specified, measuring weighted centre for intensity
-            if ((boolean) parameters.getValue(MEASURE_WEIGHTED_CENTRE,workspace))
+            if ((boolean) parameters.getValue(MEASURE_WEIGHTED_CENTRE, workspace))
                 measureWeightedCentre(object, inputImage, true);
 
             writeProgressStatus(++count, total, "objects");
@@ -204,7 +203,6 @@ public class MeasureObjectIntensity extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
-Workspace workspace = null;
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
@@ -220,16 +218,16 @@ Workspace workspace = null;
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
-return null;
+        return null;
     }
 
     @Override
-public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
-Workspace workspace = null;
+    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+        Workspace workspace = null;
         ObjMeasurementRefs returnedRefs = new ObjMeasurementRefs();
 
-        String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
-        String inputImageName = parameters.getValue(INPUT_IMAGE,workspace);
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS, workspace);
+        String inputImageName = parameters.getValue(INPUT_IMAGE, workspace);
 
         String name = getFullName(inputImageName, Measurements.MEAN);
         ObjMeasurementRef mean = objectMeasurementRefs.getOrPut(name);
@@ -266,7 +264,7 @@ Workspace workspace = null;
                 + " \"" + inputObjectsName + "\" object");
         returnedRefs.add(sum);
 
-        if ((boolean) parameters.getValue(MEASURE_WEIGHTED_CENTRE,workspace)) {
+        if ((boolean) parameters.getValue(MEASURE_WEIGHTED_CENTRE, workspace)) {
             name = getFullName(inputImageName, Measurements.X_CENT_MEAN);
             ObjMeasurementRef reference = objectMeasurementRefs.getOrPut(name);
             reference.setObjectsName(inputObjectsName);
@@ -319,18 +317,18 @@ Workspace workspace = null;
     }
 
     @Override
-public MetadataRefs updateAndGetMetadataReferences() {
-return null;
+    public MetadataRefs updateAndGetMetadataReferences() {
+        return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
-return null;
+        return null;
     }
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
-return null;
+        return null;
     }
 
     @Override
