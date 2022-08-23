@@ -12,7 +12,6 @@ import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.Measurement;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.image.Image;
-import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.SeparatorP;
@@ -27,15 +26,14 @@ import io.github.mianalysis.mia.object.system.Status;
 /**
  * Created by sc13967 on 12/05/2017.
  */
-@Plugin(type = Module.class, priority=Priority.LOW, visible=true)
+@Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class MeasureImageIntensity extends Module {
     public static final String INPUT_SEPARATOR = "Image input";
     public static final String INPUT_IMAGE = "Input image";
 
     public MeasureImageIntensity(Modules modules) {
-        super("Measure image intensity",modules);
+        super("Measure image intensity", modules);
     }
-
 
     public interface Measurements {
         String MEAN = "INTENSITY // MEAN";
@@ -47,8 +45,6 @@ public class MeasureImageIntensity extends Module {
         String STDEV = "INTENSITY // STDEV";
 
     }
-
-
 
     @Override
     public Category getCategory() {
@@ -63,14 +59,14 @@ public class MeasureImageIntensity extends Module {
     @Override
     public Status process(Workspace workspace) {
         // Getting input image
-        String inputImageName = parameters.getValue(INPUT_IMAGE,workspace);
-        writeStatus("Loading image ("+inputImageName+")");
+        String inputImageName = parameters.getValue(INPUT_IMAGE, workspace);
+        writeStatus("Loading image (" + inputImageName + ")");
         Image inputImage = workspace.getImages().get(inputImageName);
         ImagePlus inputImagePlus = inputImage.getImagePlus();
 
         // Running measurement
         StackStatistics statistics = new StackStatistics(inputImagePlus);
-        
+
         // Adding measurements to image
         inputImage.addMeasurement(new Measurement(Measurements.MEAN, statistics.mean));
         inputImage.addMeasurement(new Measurement(Measurements.MEDIAN, statistics.median));
@@ -80,7 +76,8 @@ public class MeasureImageIntensity extends Module {
         inputImage.addMeasurement(new Measurement(Measurements.STDEV, statistics.stdDev));
         inputImage.addMeasurement(new Measurement(Measurements.SUM, statistics.mean * statistics.longPixelCount));
 
-        if (showOutput) inputImage.showMeasurements(this);
+        if (showOutput)
+            inputImage.showMeasurements(this);
 
         return Status.PASS;
 
@@ -88,7 +85,7 @@ public class MeasureImageIntensity extends Module {
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new SeparatorP(INPUT_SEPARATOR,this));
+        parameters.add(new SeparatorP(INPUT_SEPARATOR, this));
         parameters.add(new InputImageP(INPUT_IMAGE, this));
 
         addParameterDescriptions();
@@ -97,50 +94,50 @@ public class MeasureImageIntensity extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
-Workspace workspace = null;
+        Workspace workspace = null;
         return parameters;
     }
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
-Workspace workspace = null;
+        Workspace workspace = null;
         ImageMeasurementRefs returnedRefs = new ImageMeasurementRefs();
 
-        String inputImageName = parameters.getValue(INPUT_IMAGE,workspace);
+        String inputImageName = parameters.getValue(INPUT_IMAGE, workspace);
 
         ImageMeasurementRef mean = imageMeasurementRefs.getOrPut(Measurements.MEAN);
         mean.setImageName(inputImageName);
-        mean.setDescription("Mean intensity of all pixels in the image \""+inputImageName+"\".");
+        mean.setDescription("Mean intensity of all pixels in the image \"" + inputImageName + "\".");
         returnedRefs.add(mean);
 
         ImageMeasurementRef median = imageMeasurementRefs.getOrPut(Measurements.MEDIAN);
         median.setImageName(inputImageName);
-        median.setDescription("Median intensity of all pixels in the image \""+inputImageName+"\".");
+        median.setDescription("Median intensity of all pixels in the image \"" + inputImageName + "\".");
         returnedRefs.add(median);
 
         ImageMeasurementRef mode = imageMeasurementRefs.getOrPut(Measurements.MODE);
         mode.setImageName(inputImageName);
-        mode.setDescription("Mode intensity of all pixels in the image \""+inputImageName+"\".");
+        mode.setDescription("Mode intensity of all pixels in the image \"" + inputImageName + "\".");
         returnedRefs.add(mode);
 
         ImageMeasurementRef min = imageMeasurementRefs.getOrPut(Measurements.MIN);
         min.setImageName(inputImageName);
-        min.setDescription("Minimum intensity of all pixels in the image \""+inputImageName+"\".");
+        min.setDescription("Minimum intensity of all pixels in the image \"" + inputImageName + "\".");
         returnedRefs.add(min);
 
         ImageMeasurementRef max = imageMeasurementRefs.getOrPut(Measurements.MAX);
         max.setImageName(inputImageName);
-        max.setDescription("Maximum intensity of all pixels in the image \""+inputImageName+"\".");
+        max.setDescription("Maximum intensity of all pixels in the image \"" + inputImageName + "\".");
         returnedRefs.add(max);
 
         ImageMeasurementRef stdev = imageMeasurementRefs.getOrPut(Measurements.STDEV);
         stdev.setImageName(inputImageName);
-        stdev.setDescription("Standard deviation of intensity of all pixels in the image \""+inputImageName+"\".");        
+        stdev.setDescription("Standard deviation of intensity of all pixels in the image \"" + inputImageName + "\".");
         returnedRefs.add(stdev);
 
         ImageMeasurementRef sum = imageMeasurementRefs.getOrPut(Measurements.SUM);
         sum.setImageName(inputImageName);
-        sum.setDescription("Summed intensity of all pixels in the image \""+inputImageName+"\".");
+        sum.setDescription("Summed intensity of all pixels in the image \"" + inputImageName + "\".");
         returnedRefs.add(sum);
 
         return returnedRefs;
@@ -148,23 +145,23 @@ Workspace workspace = null;
     }
 
     @Override
-public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
-return null;
+    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+        return null;
     }
 
     @Override
-public MetadataRefs updateAndGetMetadataReferences() {
-return null;
+    public MetadataRefs updateAndGetMetadataReferences() {
+        return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
-return null;
+        return null;
     }
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
-return null;
+        return null;
     }
 
     @Override
@@ -173,7 +170,8 @@ return null;
     }
 
     void addParameterDescriptions() {
-        parameters.get(INPUT_IMAGE).setDescription("Image to measure intensity statistics for.  The resulting measurements will be associated with this image for use in subsequent modules.");
+        parameters.get(INPUT_IMAGE).setDescription(
+                "Image to measure intensity statistics for.  The resulting measurements will be associated with this image for use in subsequent modules.");
 
     }
 }

@@ -184,6 +184,9 @@ public class MIA implements Command {
     }
 
     public static Preferences getPreferences() {
+        if (preferences == null)
+            preferences = new Preferences(null);
+
         return preferences;
     }
 

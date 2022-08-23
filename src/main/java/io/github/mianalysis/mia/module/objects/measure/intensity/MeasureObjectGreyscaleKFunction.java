@@ -12,7 +12,6 @@ import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
 
-import ij.IJ;
 import ij.ImagePlus;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
@@ -26,7 +25,6 @@ import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.image.Image;
-import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
 import io.github.mianalysis.mia.object.parameters.InputObjectsP;
@@ -139,7 +137,6 @@ public class MeasureObjectGreyscaleKFunction extends Module {
         SXSSFSheet sheet = workbook.getSheetAt(0);
 
         Image inputImage = workspace.getImage(inputImageName);
-        ImagePlus inputIpl = inputImage.getImagePlus();
 
         int rowI = 1;
         int count = 0;

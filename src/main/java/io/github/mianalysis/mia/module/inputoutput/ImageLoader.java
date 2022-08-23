@@ -304,15 +304,13 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
         ServiceFactory factory = new ServiceFactory();
         OMEXMLService service = factory.getInstance(OMEXMLService.class);
         IMetadata meta = service.createOMEXMLMetadata();
-new DecimalFormat();
+
         Memoizer reader = new Memoizer(new ImageProcessorReader(new ChannelSeparator(LociPrefs.makeImageReader())),
-                1000);
+                MIA.getPreferences().getMemoizerThreshold() * 1000);
         reader.setMetadataStore((MetadataStore) meta);
         reader.setGroupFiles(false);
         reader.setId(path);
         reader.setSeries(seriesNumber - 1);
-
-        Hashtable<String, Object> metag = reader.getGlobalMetadata();
 
         int left = 0;
         int top = 0;

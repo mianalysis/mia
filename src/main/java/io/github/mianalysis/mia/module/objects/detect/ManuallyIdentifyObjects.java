@@ -1302,13 +1302,9 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener, K
 
     @Override
     public void keyPressed(KeyEvent arg0) {
-        if (arg0.getKeyCode() == KeyEvent.VK_SPACE) {
+        if (arg0.getKeyCode() == KeyEvent.VK_SPACE) 
             addNewObject();
-        }
-
-        MIA.log.writeDebug(arg0.getKeyCode());
-        // TODO Auto-generated method stub
-
+        
     }
 
     @Override
