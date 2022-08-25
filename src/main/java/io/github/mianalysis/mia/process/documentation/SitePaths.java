@@ -20,8 +20,8 @@ public class SitePaths {
         paths.put("PATH_USEEXISTING", "${PTR}/html/guides/4useexisting.html");
         paths.put("PATH_EDITINGVIEW", "${PTR}/html/guides/5editingview.html");
         paths.put("PATH_CREATENEW", "${PTR}/html/guides/6createnew.html");
-        paths.put("PATH_RESULTSFORMAT", "${PTR}/html/guides/8resultsformat.html");
-        paths.put("PATH_BATCHPROCESSING", "${PTR}/html/guides/9batchprocessing.html");
+        paths.put("PATH_RESULTSFORMAT", "${PTR}/html/guides/7resultsformat.html");
+        paths.put("PATH_BATCHPROCESSING", "${PTR}/html/guides/8batchprocessing.html");
         paths.put("PATH_TROUBLESHOOTING", "${PTR}/html/guides/troubleshooting.html");
         
         paths.put("PATH_MODULE_LIST", "${PTR}/html/modules/modules.html");
