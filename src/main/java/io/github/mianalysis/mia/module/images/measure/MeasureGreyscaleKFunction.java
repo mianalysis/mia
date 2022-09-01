@@ -26,6 +26,7 @@ import io.github.mianalysis.mia.module.images.process.ImageCalculator;
 import io.github.mianalysis.mia.module.images.process.binary.BinaryOperations2D;
 import io.github.mianalysis.mia.module.images.transform.ExtractSubstack;
 import io.github.mianalysis.mia.module.inputoutput.ImageSaver;
+import io.github.mianalysis.mia.module.inputoutput.abstrakt.AbstractSaver;
 import io.github.mianalysis.mia.module.objects.measure.intensity.MeasureIntensityAlongPath;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.image.Image;
@@ -47,7 +48,7 @@ import io.github.mianalysis.mia.object.system.Status;
  * Created by sc13967 on 12/05/2017.
  */
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
-public class MeasureGreyscaleKFunction extends Module {
+public class MeasureGreyscaleKFunction extends AbstractSaver {
     public static final String INPUT_SEPARATOR = "Image input";
     public static final String INPUT_IMAGE = "Input image";
     public static final String USE_MASK = "Use mask";
@@ -57,22 +58,6 @@ public class MeasureGreyscaleKFunction extends Module {
     public static final String MINIMUM_RADIUS_PX = "Minimum radius (px)";
     public static final String MAXIMUM_RADIUS_PX = "Maximum radius (px)";
     public static final String RADIUS_INCREMENT = "Radius increment (px)";
-
-    public static final String FILE_SAVING_SEPARATOR = "File saving controls";
-    public static final String SAVE_NAME_MODE = "Save name mode";
-    public static final String SAVE_FILE_NAME = "File name";
-    public static final String APPEND_SERIES_MODE = "Append series mode";
-    public static final String APPEND_DATETIME_MODE = "Append date/time mode";
-    public static final String SAVE_SUFFIX = "Add filename suffix";
-
-    public interface SaveNameModes extends ImageSaver.SaveNameModes {
-    }
-
-    public interface AppendSeriesModes extends ImageSaver.AppendSeriesModes {
-    }
-
-    public interface AppendDateTimeModes extends ImageSaver.AppendDateTimeModes {
-    }
 
     public MeasureGreyscaleKFunction(Modules modules) {
         super("Measure greyscale K-function", modules);
@@ -326,8 +311,8 @@ public class MeasureGreyscaleKFunction extends Module {
 
         // Adding last bits to name
         path = path + name;
-        path = ImageSaver.appendSeries(path, workspace, appendSeriesMode);
-        path = ImageSaver.appendDateTime(path, appendDateTimeMode);
+        path = appendSeries(path, workspace, appendSeriesMode);
+        path = appendDateTime(path, appendDateTimeMode);
         path = path + suffix + ".xlsx";
 
         MeasureIntensityAlongPath.writeDistancesFile(workbook, path);
@@ -338,6 +323,8 @@ public class MeasureGreyscaleKFunction extends Module {
 
     @Override
     protected void initialiseParameters() {
+        super.initialiseParameters();
+
         parameters.add(new SeparatorP(INPUT_SEPARATOR, this));
         parameters.add(new InputImageP(INPUT_IMAGE, this));
         parameters.add(new BooleanP(USE_MASK, this, false));
@@ -347,13 +334,6 @@ public class MeasureGreyscaleKFunction extends Module {
         parameters.add(new IntegerP(MINIMUM_RADIUS_PX, this, 3));
         parameters.add(new IntegerP(MAXIMUM_RADIUS_PX, this, 15));
         parameters.add(new IntegerP(RADIUS_INCREMENT, this, 1));
-
-        parameters.add(new SeparatorP(FILE_SAVING_SEPARATOR, this));
-        parameters.add(new ChoiceP(SAVE_NAME_MODE, this, SaveNameModes.MATCH_INPUT, SaveNameModes.ALL));
-        parameters.add(new StringP(SAVE_FILE_NAME, this));
-        parameters.add(new ChoiceP(APPEND_SERIES_MODE, this, AppendSeriesModes.SERIES_NUMBER, AppendSeriesModes.ALL));
-        parameters.add(new ChoiceP(APPEND_DATETIME_MODE, this, AppendDateTimeModes.NEVER, AppendDateTimeModes.ALL));
-        parameters.add(new StringP(SAVE_SUFFIX, this));
 
     }
 
@@ -373,17 +353,7 @@ public class MeasureGreyscaleKFunction extends Module {
         returnedParameters.add(parameters.getParameter(MAXIMUM_RADIUS_PX));
         returnedParameters.add(parameters.getParameter(RADIUS_INCREMENT));
 
-        returnedParameters.add(parameters.getParameter(FILE_SAVING_SEPARATOR));
-        returnedParameters.add(parameters.getParameter(SAVE_NAME_MODE));
-        switch ((String) parameters.getValue(SAVE_NAME_MODE, workspace)) {
-            case SaveNameModes.SPECIFIC_NAME:
-                returnedParameters.add(parameters.getParameter(SAVE_FILE_NAME));
-                break;
-        }
-
-        returnedParameters.add(parameters.getParameter(APPEND_SERIES_MODE));
-        returnedParameters.add(parameters.getParameter(APPEND_DATETIME_MODE));
-        returnedParameters.add(parameters.getParameter(SAVE_SUFFIX));
+        returnedParameters.addAll(super.updateAndGetParameters());
 
         return returnedParameters;
 

@@ -3,26 +3,18 @@ package io.github.mianalysis.mia.module.images.transform.registration;
 import java.util.ArrayList;
 import java.util.Vector;
 
+import org.scijava.Priority;
+import org.scijava.plugin.Plugin;
+
 import ij.ImagePlus;
 import ij.gui.PointRoi;
 import ij.gui.Roi;
 import ij.process.ImageProcessor;
-import mpicbg.ij.InverseTransformMapping;
-import mpicbg.ij.util.Util;
-import mpicbg.models.AbstractAffineModel2D;
-import mpicbg.models.IllDefinedDataPointsException;
-import mpicbg.models.NotEnoughDataPointsException;
-import mpicbg.models.PointMatch;
-import net.imglib2.type.NativeType;
-import net.imglib2.type.numeric.RealType;
 import io.github.mianalysis.mia.MIA;
+import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.images.transform.ConcatenateStacks;
 import io.github.mianalysis.mia.module.images.transform.registration.abstrakt.AbstractAffineRegistration;
-import io.github.mianalysis.mia.module.Module;
-import org.scijava.Priority;
-import org.scijava.plugin.Plugin;
-
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.image.Image;
 import io.github.mianalysis.mia.object.image.ImageFactory;
@@ -32,8 +24,16 @@ import io.github.mianalysis.mia.object.parameters.SeparatorP;
 import io.github.mianalysis.mia.process.interactable.Interactable;
 import io.github.mianalysis.mia.process.interactable.PointPairSelector;
 import io.github.mianalysis.mia.process.interactable.PointPairSelector.PointPair;
+import mpicbg.ij.InverseTransformMapping;
+import mpicbg.ij.util.Util;
+import mpicbg.models.AbstractAffineModel2D;
+import mpicbg.models.IllDefinedDataPointsException;
+import mpicbg.models.NotEnoughDataPointsException;
+import mpicbg.models.PointMatch;
+import net.imglib2.type.NativeType;
+import net.imglib2.type.numeric.RealType;
 
-@Plugin(type = Module.class, priority=Priority.LOW, visible=true)
+@Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class AffineManual<T extends RealType<T> & NativeType<T>> extends AbstractAffineRegistration
         implements Interactable {
     public static final String FEATURE_SEPARATOR = "Feature detection";
@@ -70,29 +70,29 @@ public class AffineManual<T extends RealType<T> & NativeType<T>> extends Abstrac
 
         // Setting up the parameters
         ManualParam manualParam = (ManualParam) param;
-        manualParam.pointSelectionMode = parameters.getValue(POINT_SELECTION_MODE,workspace);
+        manualParam.pointSelectionMode = parameters.getValue(POINT_SELECTION_MODE, workspace);
 
         // Getting any ROI attached to the warped image
-        switch ((String) parameters.getValue(CALCULATION_SOURCE,workspace)) {
+        switch ((String) parameters.getValue(CALCULATION_SOURCE, workspace)) {
             case CalculationSources.EXTERNAL:
-                String externalSourceName = parameters.getValue(EXTERNAL_SOURCE,workspace);
+                String externalSourceName = parameters.getValue(EXTERNAL_SOURCE, workspace);
                 manualParam.warpedRoi = workspace.getImage(externalSourceName).getImagePlus().getRoi();
                 break;
             case CalculationSources.INTERNAL:
-                String inputImageName = parameters.getValue(INPUT_IMAGE,workspace);
+                String inputImageName = parameters.getValue(INPUT_IMAGE, workspace);
                 manualParam.warpedRoi = workspace.getImage(inputImageName).getImagePlus().getRoi();
                 break;
         }
 
         // Getting any ROI attached to the reference image
-        switch ((String) parameters.getValue(REFERENCE_MODE,workspace)) {
+        switch ((String) parameters.getValue(REFERENCE_MODE, workspace)) {
             case ReferenceModes.FIRST_FRAME:
             case ReferenceModes.PREVIOUS_N_FRAMES:
-                String inputImageName = parameters.getValue(INPUT_IMAGE,workspace);
+                String inputImageName = parameters.getValue(INPUT_IMAGE, workspace);
                 manualParam.referenceRoi = workspace.getImage(inputImageName).getImagePlus().getRoi();
                 break;
             case ReferenceModes.SPECIFIC_IMAGE:
-                String referenceImageName = parameters.getValue(REFERENCE_IMAGE,workspace);
+                String referenceImageName = parameters.getValue(REFERENCE_IMAGE, workspace);
                 manualParam.referenceRoi = workspace.getImage(referenceImageName).getImagePlus().getRoi();
                 break;
         }
@@ -108,12 +108,12 @@ public class AffineManual<T extends RealType<T> & NativeType<T>> extends Abstrac
         // Appling any ROIs stored in the parameters
         warpedIpl.setRoi(p.warpedRoi);
         referenceIpl.setRoi(p.referenceRoi);
-        
+
         ArrayList<PointPair> pairs = null;
         switch (p.pointSelectionMode) {
             case PointSelectionModes.PRESELECTED:
                 pairs = PointPairSelector.getPreselectedPoints(ImageFactory.createImage("Warped", warpedIpl),
-                        ImageFactory.createImage("Reference", referenceIpl));                   
+                        ImageFactory.createImage("Reference", referenceIpl));
                 break;
             case PointSelectionModes.RUNTIME:
             default:
@@ -146,7 +146,7 @@ public class AffineManual<T extends RealType<T> & NativeType<T>> extends Abstrac
         }
 
         return new Object[] { model, candidates };
-        
+
     }
 
     public static PointRoi[] createRoiFromPointPairs(ArrayList<PointPair> pairs) {
@@ -164,9 +164,9 @@ public class AffineManual<T extends RealType<T> & NativeType<T>> extends Abstrac
 
     @Override
     public void doAction(Object[] objects) {
-        String transformationMode = parameters.getValue(TRANSFORMATION_MODE,null);
-        String fillMode = parameters.getValue(FILL_MODE,null);
-        boolean multithread = parameters.getValue(ENABLE_MULTITHREADING,null);
+        String transformationMode = parameters.getValue(TRANSFORMATION_MODE, null);
+        String fillMode = parameters.getValue(FILL_MODE, null);
+        boolean multithread = parameters.getValue(ENABLE_MULTITHREADING, null);
 
         ArrayList<PointPair> pairs = (ArrayList<PointPair>) objects[0];
         ImagePlus ipl1 = ((ImagePlus) objects[1]).duplicate();
@@ -218,14 +218,14 @@ public class AffineManual<T extends RealType<T> & NativeType<T>> extends Abstrac
 
     @Override
     public Parameters updateAndGetParameters() {
-Workspace workspace = null;
+        Workspace workspace = null;
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.addAll(super.updateAndGetParameters());
 
         returnedParameters.add(parameters.getParameter(FEATURE_SEPARATOR));
         returnedParameters.add(parameters.getParameter(POINT_SELECTION_MODE));
-        
+
         return returnedParameters;
 
     }
@@ -245,7 +245,7 @@ Workspace workspace = null;
 
     }
 
-public class ManualParam extends AffineParam {
+    public class ManualParam extends AffineParam {
         String pointSelectionMode = PointSelectionModes.RUNTIME;
         Roi warpedRoi = null;
         Roi referenceRoi = null;
