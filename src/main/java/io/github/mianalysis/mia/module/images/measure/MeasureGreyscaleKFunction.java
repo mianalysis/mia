@@ -2,10 +2,8 @@
 
 package io.github.mianalysis.mia.module.images.measure;
 
-import java.io.File;
 import java.util.ArrayList;
 
-import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.math3.distribution.NormalDistribution;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
@@ -25,18 +23,15 @@ import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.images.process.ImageCalculator;
 import io.github.mianalysis.mia.module.images.process.binary.BinaryOperations2D;
 import io.github.mianalysis.mia.module.images.transform.ExtractSubstack;
-import io.github.mianalysis.mia.module.inputoutput.ImageSaver;
 import io.github.mianalysis.mia.module.inputoutput.abstrakt.AbstractSaver;
 import io.github.mianalysis.mia.module.objects.measure.intensity.MeasureIntensityAlongPath;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.image.Image;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
-import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.SeparatorP;
 import io.github.mianalysis.mia.object.parameters.text.IntegerP;
-import io.github.mianalysis.mia.object.parameters.text.StringP;
 import io.github.mianalysis.mia.object.refs.collections.ImageMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
@@ -241,8 +236,6 @@ public class MeasureGreyscaleKFunction extends AbstractSaver {
         int maxRadius = parameters.getValue(MAXIMUM_RADIUS_PX, workspace);
         int radiusInc = parameters.getValue(RADIUS_INCREMENT, workspace);
 
-        String saveNameMode = parameters.getValue(SAVE_NAME_MODE, workspace);
-        String saveFileName = parameters.getValue(SAVE_FILE_NAME, workspace);
         String appendSeriesMode = parameters.getValue(APPEND_SERIES_MODE, workspace);
         String appendDateTimeMode = parameters.getValue(APPEND_DATETIME_MODE, workspace);
         String suffix = parameters.getValue(SAVE_SUFFIX, workspace);
@@ -294,28 +287,16 @@ public class MeasureGreyscaleKFunction extends AbstractSaver {
             }
         }
 
-        File rootFile = workspace.getMetadata().getFile();
-        String path = rootFile.getParent() + File.separator;
-
-        String name;
-        switch (saveNameMode) {
-            case SaveNameModes.MATCH_INPUT:
-            default:
-                name = FilenameUtils.removeExtension(rootFile.getName());
-                break;
-
-            case SaveNameModes.SPECIFIC_NAME:
-                name = FilenameUtils.removeExtension(saveFileName);
-                break;
-        }
+        String outputPath = getOutputPath(modules, workspace);
+        String outputName = getOutputName(modules, workspace);
 
         // Adding last bits to name
-        path = path + name;
-        path = appendSeries(path, workspace, appendSeriesMode);
-        path = appendDateTime(path, appendDateTimeMode);
-        path = path + suffix + ".xlsx";
+        outputPath = outputPath + outputName;
+        outputPath = appendSeries(outputPath, workspace, appendSeriesMode);
+        outputPath = appendDateTime(outputPath, appendDateTimeMode);
+        outputPath = outputPath + suffix + ".xlsx";
 
-        MeasureIntensityAlongPath.writeDistancesFile(workbook, path);
+        MeasureIntensityAlongPath.writeDistancesFile(workbook, outputPath);
 
         return Status.PASS;
 

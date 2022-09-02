@@ -1,9 +1,7 @@
 package io.github.mianalysis.mia.module.inputoutput;
 
-import java.io.File;
 import java.io.IOException;
 
-import org.apache.commons.io.FilenameUtils;
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
 
@@ -17,7 +15,6 @@ import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.module.core.OutputControl;
 import io.github.mianalysis.mia.module.inputoutput.abstrakt.AbstractSaver;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.image.Image;
@@ -34,9 +31,6 @@ import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Status;
 import io.github.sjcross.sjcommon.process.IntensityMinMax;
-import loci.common.services.DependencyException;
-import loci.common.services.ServiceException;
-import loci.formats.FormatException;
 
 /**
  * Created by sc13967 on 26/06/2017.
@@ -144,12 +138,6 @@ public class ImageSaver extends AbstractSaver {
     public Status process(Workspace workspace) {
         // Getting input image
         String inputImageName = parameters.getValue(INPUT_IMAGE, workspace);
-        String saveLocation = parameters.getValue(SAVE_LOCATION, workspace);
-        String mirroredDirectoryRoot = parameters.getValue(MIRROR_DIRECTORY_ROOT, workspace);
-        String filePath = parameters.getValue(SAVE_FILE_PATH, workspace);
-        String filePathGeneric = parameters.getValue(SAVE_FILE_PATH_GENERIC, workspace);
-        String saveNameMode = parameters.getValue(SAVE_NAME_MODE, workspace);
-        String saveFileName = parameters.getValue(SAVE_FILE_NAME, workspace);
         String appendSeriesMode = parameters.getValue(APPEND_SERIES_MODE, workspace);
         String appendDateTimeMode = parameters.getValue(APPEND_DATETIME_MODE, workspace);
         String suffix = parameters.getValue(SAVE_SUFFIX, workspace);
@@ -186,24 +174,23 @@ public class ImageSaver extends AbstractSaver {
             }
         }
 
-        String path = getPath(modules, workspace);        
-
-        
+        String outputPath = getOutputPath(modules, workspace);        
+        String outputName = getOutputName(modules, workspace);
 
         // Adding last bits to name
-        path = path + name;
-        path = appendSeries(path, workspace, appendSeriesMode);
-        path = appendDateTime(path, appendDateTimeMode);
+        outputPath = outputPath + outputName;
+        outputPath = appendSeries(outputPath, workspace, appendSeriesMode);
+        outputPath = appendDateTime(outputPath, appendDateTimeMode);
 
         switch (fileFormat) {
             case FileFormats.AVI:
-                path = path + suffix + ".avi";
-                saveVideo(inputImagePlus, compressionMode, frameRate, quality, path);
+                outputPath = outputPath + suffix + ".avi";
+                saveVideo(inputImagePlus, compressionMode, frameRate, quality, outputPath);
                 break;
             case FileFormats.TIF:
             case FileFormats.ZIP:
-                path = path + suffix + ".tif";
-                saveImage(inputImagePlus, fileFormat, path);
+                outputPath = outputPath + suffix + ".tif";
+                saveImage(inputImagePlus, fileFormat, outputPath);
                 break;
         }
 

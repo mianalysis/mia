@@ -21,7 +21,6 @@ import io.github.mianalysis.mia.object.parameters.text.MessageP;
 import io.github.mianalysis.mia.object.parameters.text.StringP;
 import io.github.mianalysis.mia.object.system.Colours;
 import io.github.mianalysis.mia.object.system.Preferences;
-import io.github.mianalysis.mia.object.system.Status;
 import loci.common.services.DependencyException;
 import loci.common.services.ServiceException;
 import loci.formats.FormatException;
@@ -112,7 +111,7 @@ public abstract class AbstractSaver extends Module {
         }
     }
 
-    public String getPath(Modules modules, Workspace workspace) {
+    public String getOutputPath(Modules modules, Workspace workspace) {
         String saveLocation = parameters.getValue(SAVE_LOCATION, workspace);
         String mirroredDirectoryRoot = parameters.getValue(MIRROR_DIRECTORY_ROOT, workspace);
         String filePath = parameters.getValue(SAVE_FILE_PATH, workspace);
@@ -184,7 +183,7 @@ public abstract class AbstractSaver extends Module {
         }
     }
 
-    public String getName(Modules modules, Workspace workspace) {
+    public String getOutputName(Modules modules, Workspace workspace) {
         String saveNameMode = parameters.getValue(SAVE_NAME_MODE, workspace);
         String saveFileName = parameters.getValue(SAVE_FILE_NAME, workspace);
         try {

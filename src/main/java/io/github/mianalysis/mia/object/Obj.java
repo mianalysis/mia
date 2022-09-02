@@ -368,17 +368,21 @@ public class Obj extends Volume {
         // // Getting the image corresponding to this slice
         // Volume sliceVol = getSlice(slice);
 
-        // Objs objectCollection = new Objs("Slice", sliceVol.getSpatialCalibration(), 1, 1, null);
-        // Obj sliceObj = objectCollection.createAndAddNewObject(sliceVol.getVolumeType(), ID);
+        // Objs objectCollection = new Objs("Slice", sliceVol.getSpatialCalibration(),
+        // 1, 1, null);
+        // Obj sliceObj =
+        // objectCollection.createAndAddNewObject(sliceVol.getVolumeType(), ID);
         // sliceObj.setCoordinateSet(sliceVol.getCoordinateSet());
 
         // // Checking if the object exists in this slice
         // if (sliceVol.size() == 0)
-        //     return null;
+        // return null;
 
-        // HashMap<Integer, Float> hues = ColourFactory.getSingleColourHues(objectCollection,
-        //         ColourFactory.SingleColours.WHITE);
-        // Image objectImage = objectCollection.convertToImage("Output", hues, 8, false);
+        // HashMap<Integer, Float> hues =
+        // ColourFactory.getSingleColourHues(objectCollection,
+        // ColourFactory.SingleColours.WHITE);
+        // Image objectImage = objectCollection.convertToImage("Output", hues, 8,
+        // false);
         // IJ.run(objectImage.getImagePlus(), "Invert", "stack");
 
         // ImageProcessor ipr = objectImage.getImagePlus().getProcessor();
@@ -386,7 +390,7 @@ public class Obj extends Volume {
         // ThresholdToSelection selection = new ThresholdToSelection();
 
         // Roi roi = selection.convert(objectImage.getImagePlus().getProcessor());
-        
+
         Roi roi = super.getRoi(slice);
 
         if (roi == null)
@@ -395,6 +399,19 @@ public class Obj extends Volume {
         rois.put(slice, roi);
 
         return (Roi) roi.clone();
+
+    }
+
+    public HashMap<Integer, Roi> getRois() {
+        // This will access and generate all ROIs for this object
+        double[][] extents = getExtents(true, false);
+        int minZ = (int) Math.round(extents[2][0]);
+        int maxZ = (int) Math.round(extents[2][1]);
+        for (int z = minZ; z <= maxZ; z++)
+            getRoi(z);
+        
+        // For the sake of not wasting memory, this will output the original list of ROIs
+        return rois;
 
     }
 
@@ -439,7 +456,7 @@ public class Obj extends Volume {
 
         ImagePlus ipl = IJ.createHyperStack(imageName, spatCal.width, spatCal.height, 1, spatCal.nSlices, nFrames, 8);
         spatCal.setImageCalibration(ipl);
-        
+
         for (Point<Integer> point : getCoordinateSet()) {
             int idx = ipl.getStackIndex(1, point.getZ() + 1, t + 1);
             ipl.getStack().getProcessor(idx).set(point.getX(), point.getY(), 255);
@@ -585,6 +602,6 @@ public class Obj extends Volume {
             name = name.substring(name.lastIndexOf("//") + 3);
 
         return name;
-        
+
     }
 }

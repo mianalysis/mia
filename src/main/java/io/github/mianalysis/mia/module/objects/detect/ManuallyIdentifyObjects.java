@@ -388,6 +388,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener, K
         // (screenSize.height - frame.getHeight()) / 2);
         frame.setLocation(100, 100);
         frame.setVisible(true);
+        frame.setResizable(false);
 
     }
 

@@ -9,12 +9,12 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.TreeSet;
 
-import com.drew.lang.annotations.Nullable;
-
 import org.apache.commons.math3.exception.MathArithmeticException;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
+
+import com.drew.lang.annotations.Nullable;
 
 import fiji.plugin.trackmate.tracking.sparselap.costmatrix.DefaultCostMatrixCreator;
 import fiji.plugin.trackmate.tracking.sparselap.linker.JaqamanLinker;
@@ -29,7 +29,6 @@ import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.image.Image;
-import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputObjectsP;

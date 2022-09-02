@@ -2,9 +2,6 @@
 
 package io.github.mianalysis.mia.module.objects.measure.intensity;
 
-import java.io.File;
-
-import org.apache.commons.io.FilenameUtils;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.streaming.SXSSFSheet;
@@ -12,7 +9,6 @@ import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
 
-import ij.ImagePlus;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
@@ -20,18 +16,16 @@ import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.images.measure.MeasureGreyscaleKFunction;
 import io.github.mianalysis.mia.module.images.transform.CropImage;
 import io.github.mianalysis.mia.module.images.transform.ExtractSubstack;
-import io.github.mianalysis.mia.module.inputoutput.ImageSaver;
+import io.github.mianalysis.mia.module.inputoutput.abstrakt.AbstractSaver;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.image.Image;
-import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
 import io.github.mianalysis.mia.object.parameters.InputObjectsP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.SeparatorP;
 import io.github.mianalysis.mia.object.parameters.text.IntegerP;
-import io.github.mianalysis.mia.object.parameters.text.StringP;
 import io.github.mianalysis.mia.object.refs.collections.ImageMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
@@ -43,7 +37,7 @@ import io.github.mianalysis.mia.object.system.Status;
  * Created by sc13967 on 08/07/2022.
  */
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
-public class MeasureObjectGreyscaleKFunction extends Module {
+public class MeasureObjectGreyscaleKFunction extends AbstractSaver {
     public static final String INPUT_SEPARATOR = "Object and image input";
     public static final String INPUT_OBJECTS = "Input objects";
     public static final String INPUT_IMAGE = "Input image";
@@ -52,22 +46,6 @@ public class MeasureObjectGreyscaleKFunction extends Module {
     public static final String MINIMUM_RADIUS_PX = "Minimum radius (px)";
     public static final String MAXIMUM_RADIUS_PX = "Maximum radius (px)";
     public static final String RADIUS_INCREMENT = "Radius increment (px)";
-
-    public static final String FILE_SAVING_SEPARATOR = "File saving controls";
-    public static final String SAVE_NAME_MODE = "Save name mode";
-    public static final String SAVE_FILE_NAME = "File name";
-    public static final String APPEND_SERIES_MODE = "Append series mode";
-    public static final String APPEND_DATETIME_MODE = "Append date/time mode";
-    public static final String SAVE_SUFFIX = "Add filename suffix";
-
-    public interface SaveNameModes extends ImageSaver.SaveNameModes {
-    }
-
-    public interface AppendSeriesModes extends ImageSaver.AppendSeriesModes {
-    }
-
-    public interface AppendDateTimeModes extends ImageSaver.AppendDateTimeModes {
-    }
 
     public MeasureObjectGreyscaleKFunction(Modules modules) {
         super("Measure object greyscale K-function", modules);
@@ -119,19 +97,17 @@ public class MeasureObjectGreyscaleKFunction extends Module {
     @Override
     public Status process(Workspace workspace) {
         // Getting input objects
-        String inputImageName = parameters.getValue(INPUT_IMAGE,workspace);
-        String objectName = parameters.getValue(INPUT_OBJECTS,workspace);
+        String inputImageName = parameters.getValue(INPUT_IMAGE, workspace);
+        String objectName = parameters.getValue(INPUT_OBJECTS, workspace);
         Objs objects = workspace.getObjects().get(objectName);
 
-        int minRadius = parameters.getValue(MINIMUM_RADIUS_PX,workspace);
-        int maxRadius = parameters.getValue(MAXIMUM_RADIUS_PX,workspace);
-        int radiusInc = parameters.getValue(RADIUS_INCREMENT,workspace);
+        int minRadius = parameters.getValue(MINIMUM_RADIUS_PX, workspace);
+        int maxRadius = parameters.getValue(MAXIMUM_RADIUS_PX, workspace);
+        int radiusInc = parameters.getValue(RADIUS_INCREMENT, workspace);
 
-        String saveNameMode = parameters.getValue(SAVE_NAME_MODE,workspace);
-        String saveFileName = parameters.getValue(SAVE_FILE_NAME,workspace);
-        String appendSeriesMode = parameters.getValue(APPEND_SERIES_MODE,workspace);
-        String appendDateTimeMode = parameters.getValue(APPEND_DATETIME_MODE,workspace);
-        String suffix = parameters.getValue(SAVE_SUFFIX,workspace);
+        String appendSeriesMode = parameters.getValue(APPEND_SERIES_MODE, workspace);
+        String appendDateTimeMode = parameters.getValue(APPEND_DATETIME_MODE, workspace);
+        String suffix = parameters.getValue(SAVE_SUFFIX, workspace);
 
         SXSSFWorkbook workbook = initialiseWorkbook();
         SXSSFSheet sheet = workbook.getSheetAt(0);
@@ -148,16 +124,17 @@ public class MeasureObjectGreyscaleKFunction extends Module {
             double[][] extents = object.getExtents(true, false);
             int top = (int) Math.round(extents[1][0]);
             int left = (int) Math.round(extents[0][0]);
-            int width = (int) Math.round(extents[0][1]-left)+1;
-            int height = (int) Math.round(extents[1][1]-top)+1;
+            int width = (int) Math.round(extents[0][1] - left) + 1;
+            int height = (int) Math.round(extents[1][1] - top) + 1;
             Image cropImage = CropImage.cropImage(inputImage, "Crop", top, left, width, height);
 
             // Cropping image in Z
             int minZ = (int) Math.round(extents[2][0]);
-            int maxZ = (int) Math.round(extents[2][1]);           
-            Image subsImage = ExtractSubstack.extractSubstack(cropImage, "Substack", "1", (minZ+1)+"-"+(maxZ+1), "1");
+            int maxZ = (int) Math.round(extents[2][1]);
+            Image subsImage = ExtractSubstack.extractSubstack(cropImage, "Substack", "1", (minZ + 1) + "-" + (maxZ + 1),
+                    "1");
 
-            // Getting 
+            // Getting
             Image maskImage = object.getAsTightImage("Mask");
 
             for (int z = 0; z < maskImage.getImagePlus().getNSlices(); z++) {
@@ -199,28 +176,16 @@ public class MeasureObjectGreyscaleKFunction extends Module {
             writeProgressStatus(++count, total, "objects");
         }
 
-        File rootFile = workspace.getMetadata().getFile();
-        String path = rootFile.getParent() + File.separator;
-
-        String name;
-        switch (saveNameMode) {
-            case SaveNameModes.MATCH_INPUT:
-            default:
-                name = FilenameUtils.removeExtension(rootFile.getName());
-                break;
-
-            case SaveNameModes.SPECIFIC_NAME:
-                name = FilenameUtils.removeExtension(saveFileName);
-                break;
-        }
+        String outputPath = getOutputPath(modules, workspace);
+        String outputName = getOutputName(modules, workspace);
 
         // Adding last bits to name
-        path = path + name;
-        path = ImageSaver.appendSeries(path, workspace, appendSeriesMode);
-        path = ImageSaver.appendDateTime(path, appendDateTimeMode);
-        path = path + suffix + ".xlsx";
+        outputPath = outputPath + outputName;
+        outputPath = appendSeries(outputPath, workspace, appendSeriesMode);
+        outputPath = appendDateTime(outputPath, appendDateTimeMode);
+        outputPath = outputPath + suffix + ".xlsx";
 
-        MeasureIntensityAlongPath.writeDistancesFile(workbook, path);
+        MeasureIntensityAlongPath.writeDistancesFile(workbook, outputPath);
 
         return Status.PASS;
 
@@ -228,6 +193,8 @@ public class MeasureObjectGreyscaleKFunction extends Module {
 
     @Override
     protected void initialiseParameters() {
+        super.initialiseParameters();
+
         parameters.add(new SeparatorP(INPUT_SEPARATOR, this));
         parameters.add(new InputObjectsP(INPUT_OBJECTS, this));
         parameters.add(new InputImageP(INPUT_IMAGE, this));
@@ -237,20 +204,13 @@ public class MeasureObjectGreyscaleKFunction extends Module {
         parameters.add(new IntegerP(MAXIMUM_RADIUS_PX, this, 15));
         parameters.add(new IntegerP(RADIUS_INCREMENT, this, 1));
 
-        parameters.add(new SeparatorP(FILE_SAVING_SEPARATOR, this));
-        parameters.add(new ChoiceP(SAVE_NAME_MODE, this, SaveNameModes.MATCH_INPUT, SaveNameModes.ALL));
-        parameters.add(new StringP(SAVE_FILE_NAME, this));
-        parameters.add(new ChoiceP(APPEND_SERIES_MODE, this, AppendSeriesModes.SERIES_NUMBER, AppendSeriesModes.ALL));
-        parameters.add(new ChoiceP(APPEND_DATETIME_MODE, this, AppendDateTimeModes.NEVER, AppendDateTimeModes.ALL));
-        parameters.add(new StringP(SAVE_SUFFIX, this));
-
         addParameterDescriptions();
 
     }
 
     @Override
     public Parameters updateAndGetParameters() {
-Workspace workspace = null;
+        Workspace workspace = null;
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
@@ -262,17 +222,7 @@ Workspace workspace = null;
         returnedParameters.add(parameters.getParameter(MAXIMUM_RADIUS_PX));
         returnedParameters.add(parameters.getParameter(RADIUS_INCREMENT));
 
-        returnedParameters.add(parameters.getParameter(FILE_SAVING_SEPARATOR));
-        returnedParameters.add(parameters.getParameter(SAVE_NAME_MODE));
-        switch ((String) parameters.getValue(SAVE_NAME_MODE,workspace)) {
-            case SaveNameModes.SPECIFIC_NAME:
-                returnedParameters.add(parameters.getParameter(SAVE_FILE_NAME));
-                break;
-        }
-
-        returnedParameters.add(parameters.getParameter(APPEND_SERIES_MODE));
-        returnedParameters.add(parameters.getParameter(APPEND_DATETIME_MODE));
-        returnedParameters.add(parameters.getParameter(SAVE_SUFFIX));
+        returnedParameters.addAll(super.updateAndGetParameters());
 
         return returnedParameters;
 
@@ -280,27 +230,27 @@ Workspace workspace = null;
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
-return null;
+        return null;
     }
 
     @Override
-public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
-return null;
+    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+        return null;
     }
 
     @Override
-public MetadataRefs updateAndGetMetadataReferences() {
-return null;
+    public MetadataRefs updateAndGetMetadataReferences() {
+        return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
-return null;
+        return null;
     }
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
-return null;
+        return null;
     }
 
     @Override
@@ -308,7 +258,7 @@ return null;
         return true;
     }
 
-    void addParameterDescriptions() {
+    protected void addParameterDescriptions() {
 
     }
 }

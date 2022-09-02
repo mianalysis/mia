@@ -8,8 +8,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.LinkedHashMap;
 
-import com.drew.lang.annotations.Nullable;
-
 import org.apache.commons.io.FilenameUtils;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
@@ -17,30 +15,29 @@ import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
-
-import io.github.mianalysis.mia.MIA;
-import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.module.Module;
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
-import io.github.mianalysis.mia.module.Category;
+
+import com.drew.lang.annotations.Nullable;
+
+import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Categories;
-import io.github.mianalysis.mia.module.inputoutput.ImageSaver;
+import io.github.mianalysis.mia.module.Category;
+import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.module.inputoutput.abstrakt.AbstractSaver;
 import io.github.mianalysis.mia.module.objects.relate.RelateManyToOne;
 import io.github.mianalysis.mia.object.Measurement;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
-import io.github.mianalysis.mia.object.units.SpatialUnit;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputObjectsP;
-import io.github.mianalysis.mia.object.parameters.SeparatorP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.ParentObjectsP;
+import io.github.mianalysis.mia.object.parameters.SeparatorP;
 import io.github.mianalysis.mia.object.parameters.text.DoubleP;
-import io.github.mianalysis.mia.object.parameters.text.StringP;
 import io.github.mianalysis.mia.object.refs.ObjMeasurementRef;
 import io.github.mianalysis.mia.object.refs.collections.ImageMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
@@ -48,12 +45,13 @@ import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Status;
+import io.github.mianalysis.mia.object.units.SpatialUnit;
 
 /**
  * Created by sc13967 on 22/06/2017.
  */
-@Plugin(type = Module.class, priority=Priority.LOW, visible=true)
-public class CalculateNearestNeighbour extends Module {
+@Plugin(type = Module.class, priority = Priority.LOW, visible = true)
+public class CalculateNearestNeighbour extends AbstractSaver {
     public static final String INPUT_SEPARATOR = "Objects input";
     public static final String INPUT_OBJECTS = "Input objects";
     public static final String RELATIONSHIP_MODE = "Relationship mode";
@@ -77,13 +75,6 @@ public class CalculateNearestNeighbour extends Module {
     public static final String INCLUDE_NEIGHBOUR_PARENT = "Include neighbour object parent";
     public static final String NEIGHBOUR_PARENT = "Neighbour object parent";
 
-    public static final String FILE_SAVING_SEPARATOR = "File saving controls";
-    public static final String SAVE_NAME_MODE = "Save name mode";
-    public static final String SAVE_FILE_NAME = "File name";
-    public static final String APPEND_SERIES_MODE = "Append series mode";
-    public static final String APPEND_DATETIME_MODE = "Append date/time mode";
-    public static final String SAVE_SUFFIX = "Add filename suffix";
-
     public interface RelationshipModes {
         String WITHIN_SAME_SET = "Within same object set";
         String DIFFERENT_SET = "Different object set";
@@ -103,15 +94,6 @@ public class CalculateNearestNeighbour extends Module {
     }
 
     public interface InsideOutsideModes extends RelateManyToOne.InsideOutsideModes {
-    };
-
-    public interface SaveNameModes extends ImageSaver.SaveNameModes {
-    }
-
-    public interface AppendSeriesModes extends ImageSaver.AppendSeriesModes {
-    }
-
-    public interface AppendDateTimeModes extends ImageSaver.AppendDateTimeModes {
     }
 
     public interface Measurements {
@@ -386,31 +368,31 @@ public class CalculateNearestNeighbour extends Module {
     @Override
     public Status process(Workspace workspace) {
         // Getting objects to measure
-        String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS, workspace);
         Objs inputObjects = workspace.getObjects().get(inputObjectsName);
 
         // Getting parameters
-        String relationshipMode = parameters.getValue(RELATIONSHIP_MODE,workspace);
-        String neighbourObjectsName = parameters.getValue(NEIGHBOUR_OBJECTS,workspace);
-        String referenceMode = parameters.getValue(REFERENCE_MODE,workspace);
-        boolean calculateWithinParent = parameters.getValue(CALCULATE_WITHIN_PARENT,workspace);
-        String parentObjectsName = parameters.getValue(PARENT_OBJECTS,workspace);
-        boolean limitLinkingDistance = parameters.getValue(LIMIT_LINKING_DISTANCE,workspace);
-        double maxLinkingDist = parameters.getValue(MAXIMUM_LINKING_DISTANCE,workspace);
-        boolean calibratedDistance = parameters.getValue(CALIBRATED_DISTANCE,workspace);
-        boolean linkInSameFrame = parameters.getValue(LINK_IN_SAME_FRAME,workspace);
-        boolean exportAllDistances = parameters.getValue(EXPORT_ALL_DISTANCES,workspace);
-        String insideOutsideMode = parameters.getValue(INSIDE_OUTSIDE_MODE,workspace);
-        boolean includeTimepoints = parameters.getValue(INCLUDE_TIMEPOINTS,workspace);
-        boolean includeInputParent = parameters.getValue(INCLUDE_INPUT_PARENT,workspace);
-        String inputParentsName = parameters.getValue(INPUT_PARENT,workspace);
-        boolean includeNeighbourParent = parameters.getValue(INCLUDE_NEIGHBOUR_PARENT,workspace);
-        String neighbourParentsName = parameters.getValue(NEIGHBOUR_PARENT,workspace);
-        String saveNameMode = parameters.getValue(SAVE_NAME_MODE,workspace);
-        String saveFileName = parameters.getValue(SAVE_FILE_NAME,workspace);
-        String appendSeriesMode = parameters.getValue(APPEND_SERIES_MODE,workspace);
-        String appendDateTimeMode = parameters.getValue(APPEND_DATETIME_MODE,workspace);
-        String suffix = parameters.getValue(SAVE_SUFFIX,workspace);
+        String relationshipMode = parameters.getValue(RELATIONSHIP_MODE, workspace);
+        String neighbourObjectsName = parameters.getValue(NEIGHBOUR_OBJECTS, workspace);
+        String referenceMode = parameters.getValue(REFERENCE_MODE, workspace);
+        boolean calculateWithinParent = parameters.getValue(CALCULATE_WITHIN_PARENT, workspace);
+        String parentObjectsName = parameters.getValue(PARENT_OBJECTS, workspace);
+        boolean limitLinkingDistance = parameters.getValue(LIMIT_LINKING_DISTANCE, workspace);
+        double maxLinkingDist = parameters.getValue(MAXIMUM_LINKING_DISTANCE, workspace);
+        boolean calibratedDistance = parameters.getValue(CALIBRATED_DISTANCE, workspace);
+        boolean linkInSameFrame = parameters.getValue(LINK_IN_SAME_FRAME, workspace);
+        boolean exportAllDistances = parameters.getValue(EXPORT_ALL_DISTANCES, workspace);
+        String insideOutsideMode = parameters.getValue(INSIDE_OUTSIDE_MODE, workspace);
+        boolean includeTimepoints = parameters.getValue(INCLUDE_TIMEPOINTS, workspace);
+        boolean includeInputParent = parameters.getValue(INCLUDE_INPUT_PARENT, workspace);
+        String inputParentsName = parameters.getValue(INPUT_PARENT, workspace);
+        boolean includeNeighbourParent = parameters.getValue(INCLUDE_NEIGHBOUR_PARENT, workspace);
+        String neighbourParentsName = parameters.getValue(NEIGHBOUR_PARENT, workspace);
+        String saveNameMode = parameters.getValue(SAVE_NAME_MODE, workspace);
+        String saveFileName = parameters.getValue(SAVE_FILE_NAME, workspace);
+        String appendSeriesMode = parameters.getValue(APPEND_SERIES_MODE, workspace);
+        String appendDateTimeMode = parameters.getValue(APPEND_DATETIME_MODE, workspace);
+        String suffix = parameters.getValue(SAVE_SUFFIX, workspace);
 
         // If there are no input objects skip the module
         if (inputObjects == null)
@@ -482,26 +464,14 @@ public class CalculateNearestNeighbour extends Module {
             if (!includeNeighbourParent)
                 neighbourParentsName = null;
 
-            File rootFile = workspace.getMetadata().getFile();
-            String path = rootFile.getParent() + File.separator;
-
-            String name;
-            switch (saveNameMode) {
-                case SaveNameModes.MATCH_INPUT:
-                default:
-                    name = FilenameUtils.removeExtension(rootFile.getName());
-                    break;
-
-                case SaveNameModes.SPECIFIC_NAME:
-                    name = FilenameUtils.removeExtension(saveFileName);
-                    break;
-            }
+            String outputPath = getOutputPath(modules, workspace);
+            String outputName = getOutputName(modules, workspace);
 
             // Adding last bits to name
-            path = path + name;
-            path = ImageSaver.appendSeries(path, workspace, appendSeriesMode);
-            path = ImageSaver.appendDateTime(path, appendDateTimeMode);
-            path = path + suffix + ".xlsx";
+            outputPath = outputPath + outputName;
+            outputPath = appendSeries(outputPath, workspace, appendSeriesMode);
+            outputPath = appendDateTime(outputPath, appendDateTimeMode);
+            outputPath = outputPath + suffix + ".xlsx";
 
             // Applying inside/outside policy
             for (LinkedHashMap<Obj, Double> collection : distances.values()) {
@@ -515,7 +485,7 @@ public class CalculateNearestNeighbour extends Module {
             // Writing distances to file
             SXSSFWorkbook workbook = exportDistances(distances, inputObjectsName, nearestNeighbourName,
                     includeTimepoints, linkInSameFrame, inputParentsName, neighbourParentsName);
-            writeDistancesFile(workbook, path);
+            writeDistancesFile(workbook, outputPath);
 
         }
 
@@ -528,6 +498,8 @@ public class CalculateNearestNeighbour extends Module {
 
     @Override
     protected void initialiseParameters() {
+        super.initialiseParameters();
+
         parameters.add(new SeparatorP(INPUT_SEPARATOR, this));
         parameters.add(new InputObjectsP(INPUT_OBJECTS, this));
         parameters.add(new ChoiceP(RELATIONSHIP_MODE, this, RelationshipModes.WITHIN_SAME_SET, RelationshipModes.ALL));
@@ -552,21 +524,14 @@ public class CalculateNearestNeighbour extends Module {
         parameters.add(new BooleanP(INCLUDE_NEIGHBOUR_PARENT, this, false));
         parameters.add(new ParentObjectsP(NEIGHBOUR_PARENT, this));
 
-        parameters.add(new SeparatorP(FILE_SAVING_SEPARATOR, this));
-        parameters.add(new ChoiceP(SAVE_NAME_MODE, this, SaveNameModes.MATCH_INPUT, SaveNameModes.ALL));
-        parameters.add(new StringP(SAVE_FILE_NAME, this));
-        parameters.add(new ChoiceP(APPEND_SERIES_MODE, this, AppendSeriesModes.SERIES_NUMBER, AppendSeriesModes.ALL));
-        parameters.add(new ChoiceP(APPEND_DATETIME_MODE, this, AppendDateTimeModes.NEVER, AppendDateTimeModes.ALL));
-        parameters.add(new StringP(SAVE_SUFFIX, this));
-
         addParameterDescriptions();
 
     }
 
     @Override
     public Parameters updateAndGetParameters() {
-Workspace workspace = null;
-        String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
+        Workspace workspace = null;
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS, workspace);
         String neighbourObjectsName;
 
         Parameters returnedParameters = new Parameters();
@@ -575,11 +540,11 @@ Workspace workspace = null;
         returnedParameters.add(parameters.getParameter(INPUT_OBJECTS));
         returnedParameters.add(parameters.getParameter(RELATIONSHIP_MODE));
 
-        switch ((String) parameters.getValue(RELATIONSHIP_MODE,workspace)) {
+        switch ((String) parameters.getValue(RELATIONSHIP_MODE, workspace)) {
             case RelationshipModes.DIFFERENT_SET:
             default:
                 returnedParameters.add(parameters.getParameter(NEIGHBOUR_OBJECTS));
-                neighbourObjectsName = parameters.getValue(NEIGHBOUR_OBJECTS,workspace);
+                neighbourObjectsName = parameters.getValue(NEIGHBOUR_OBJECTS, workspace);
                 break;
             case RelationshipModes.WITHIN_SAME_SET:
                 neighbourObjectsName = inputObjectsName;
@@ -589,13 +554,13 @@ Workspace workspace = null;
         returnedParameters.add(parameters.getParameter(RELATIONSHIP_SEPARATOR));
         returnedParameters.add(parameters.getParameter(REFERENCE_MODE));
         returnedParameters.add(parameters.getParameter(CALCULATE_WITHIN_PARENT));
-        if ((boolean) parameters.getValue(CALCULATE_WITHIN_PARENT,workspace)) {
+        if ((boolean) parameters.getValue(CALCULATE_WITHIN_PARENT, workspace)) {
             returnedParameters.add(parameters.getParameter(PARENT_OBJECTS));
             ((ParentObjectsP) parameters.getParameter(PARENT_OBJECTS)).setChildObjectsName(inputObjectsName);
         }
 
         returnedParameters.add(parameters.getParameter(LIMIT_LINKING_DISTANCE));
-        if ((boolean) parameters.getValue(LIMIT_LINKING_DISTANCE,workspace)) {
+        if ((boolean) parameters.getValue(LIMIT_LINKING_DISTANCE, workspace)) {
             returnedParameters.add(parameters.getParameter(MAXIMUM_LINKING_DISTANCE));
             returnedParameters.add(parameters.getParameter(CALIBRATED_DISTANCE));
         }
@@ -603,34 +568,24 @@ Workspace workspace = null;
 
         returnedParameters.add(parameters.getParameter(OUTPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(EXPORT_ALL_DISTANCES));
-        String referenceMode = parameters.getValue(REFERENCE_MODE,workspace);
+        String referenceMode = parameters.getValue(REFERENCE_MODE, workspace);
         if (referenceMode.equals(ReferenceModes.SURFACE_3D))
             returnedParameters.add(parameters.getParameter(INSIDE_OUTSIDE_MODE));
 
-        if ((boolean) parameters.getValue(EXPORT_ALL_DISTANCES,workspace)) {
+        if ((boolean) parameters.getValue(EXPORT_ALL_DISTANCES, workspace)) {
             returnedParameters.add(parameters.getParameter(INCLUDE_TIMEPOINTS));
             returnedParameters.add(parameters.getParameter(INCLUDE_INPUT_PARENT));
-            if ((boolean) parameters.getValue(INCLUDE_INPUT_PARENT,workspace)) {
+            if ((boolean) parameters.getValue(INCLUDE_INPUT_PARENT, workspace)) {
                 returnedParameters.add(parameters.getParameter(INPUT_PARENT));
                 ((ParentObjectsP) parameters.get(INPUT_PARENT)).setChildObjectsName(inputObjectsName);
             }
             returnedParameters.add(parameters.getParameter(INCLUDE_NEIGHBOUR_PARENT));
-            if ((boolean) parameters.getValue(INCLUDE_NEIGHBOUR_PARENT,workspace)) {
+            if ((boolean) parameters.getValue(INCLUDE_NEIGHBOUR_PARENT, workspace)) {
                 returnedParameters.add(parameters.getParameter(NEIGHBOUR_PARENT));
                 ((ParentObjectsP) parameters.get(NEIGHBOUR_PARENT)).setChildObjectsName(neighbourObjectsName);
             }
 
-            returnedParameters.add(parameters.getParameter(FILE_SAVING_SEPARATOR));
-            returnedParameters.add(parameters.getParameter(SAVE_NAME_MODE));
-            switch ((String) parameters.getValue(SAVE_NAME_MODE,workspace)) {
-                case SaveNameModes.SPECIFIC_NAME:
-                    returnedParameters.add(parameters.getParameter(SAVE_FILE_NAME));
-                    break;
-            }
-
-            returnedParameters.add(parameters.getParameter(APPEND_SERIES_MODE));
-            returnedParameters.add(parameters.getParameter(APPEND_DATETIME_MODE));
-            returnedParameters.add(parameters.getParameter(SAVE_SUFFIX));
+            returnedParameters.addAll(super.updateAndGetParameters());
 
         }
 
@@ -640,21 +595,21 @@ Workspace workspace = null;
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
-return null;
+        return null;
     }
 
     @Override
-public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
-Workspace workspace = null;
+    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+        Workspace workspace = null;
         ObjMeasurementRefs returnedRefs = new ObjMeasurementRefs();
 
-        String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
-        String relationshipMode = parameters.getValue(RELATIONSHIP_MODE,workspace);
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS, workspace);
+        String relationshipMode = parameters.getValue(RELATIONSHIP_MODE, workspace);
 
         String neighbourObjectsName = null;
         switch (relationshipMode) {
             case RelationshipModes.DIFFERENT_SET:
-                neighbourObjectsName = parameters.getValue(NEIGHBOUR_OBJECTS,workspace);
+                neighbourObjectsName = parameters.getValue(NEIGHBOUR_OBJECTS, workspace);
                 break;
             case RelationshipModes.WITHIN_SAME_SET:
                 neighbourObjectsName = inputObjectsName;
@@ -681,18 +636,18 @@ Workspace workspace = null;
     }
 
     @Override
-public MetadataRefs updateAndGetMetadataReferences() {
-return null;
+    public MetadataRefs updateAndGetMetadataReferences() {
+        return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
-return null;
+        return null;
     }
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
-return null;
+        return null;
     }
 
     @Override
@@ -700,7 +655,9 @@ return null;
         return true;
     }
 
-    void addParameterDescriptions() {
+    protected void addParameterDescriptions() {
+        super.addParameterDescriptions();
+        
         parameters.get(INPUT_OBJECTS).setDescription(
                 "Objects for which the distance to a closest neighbour will be calculated.  The closest distance will be stored as a measurement associated with this object.");
 
@@ -772,36 +729,6 @@ return null;
         parameters.get(NEIGHBOUR_PARENT).setDescription("Parent object collection of the neighbour object.  If \""
                 + INCLUDE_NEIGHBOUR_PARENT
                 + "\" is selected, the corresponding parent ID number will be included as a column in the output distances spreadsheet.");
-
-        parameters.get(SAVE_NAME_MODE)
-                .setDescription("Controls how saved distance file names will be generated.<br><ul>" +
-
-                        "<li>\"" + SaveNameModes.MATCH_INPUT
-                        + "\" Use the same name as the root file for this workspace (i.e. the input file in \"Input control\".</li>"
-
-                        + "<li>\"" + SaveNameModes.SPECIFIC_NAME
-                        + "\" Use a specific name for the output file.  Care should be taken with this when working in batch mode as it's easy to continuously write over output files from other runs.</li></ul>");
-
-        parameters.get(SAVE_FILE_NAME).setDescription(
-                "Filename for saved distance file.  Note: Care should be taken with this when working in batch mode as it's easy to continuously write over output files from other runs.");
-
-        parameters.get(APPEND_SERIES_MODE).setDescription(
-                "Controls if any series information should be appended to the end of the filename.  This is useful when working with multi-series files, as it should help prevent writing files from multiple runs with the same filename.  Series numbers are prepended by \"S\".  Choices are: "
-                        + String.join(", ", AppendSeriesModes.ALL) + ".");
-
-        parameters.get(APPEND_DATETIME_MODE).setDescription(
-                "Controls under what conditions the time and date will be appended on to the end of the distance file filename.  This can be used to prevent accidental over-writing of files from previous runs:<br><ul>"
-
-                        + "<li>\"" + AppendDateTimeModes.ALWAYS
-                        + "\" Always append the time and date on to the end of the filename.</li>"
-
-                        + "<li>\"" + AppendDateTimeModes.IF_FILE_EXISTS
-                        + "\" Only append the time and date if the results file already exists.</li>"
-
-                        + "<li>\"" + AppendDateTimeModes.NEVER
-                        + "\" Never append time and date (unless the file is open and unwritable).</li></ul>");
-
-        parameters.get(SAVE_SUFFIX).setDescription("A custom suffix to be added to each filename.");
 
     }
 }
