@@ -822,7 +822,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener, K
 
         ArrayList<ObjRoi> currentRois = new ArrayList<>();
 
-        ObjRoi objRoi = new ObjRoi(ID, roi, displayImagePlus.getT() - 1, displayImagePlus.getZ());
+        ObjRoi objRoi = new ObjRoi(ID, roi, displayImagePlus.getT() - 1, displayImagePlus.getZ() - 1);
         currentRois.add(objRoi);
         rois.put(ID, currentRois);
 
@@ -845,7 +845,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener, K
 
         // Adding the ROI to our current collection
         ArrayList<ObjRoi> currentRois = rois.get(ID);
-        ObjRoi objRoi = new ObjRoi(ID, roi, displayImagePlus.getT() - 1, displayImagePlus.getZ());
+        ObjRoi objRoi = new ObjRoi(ID, roi, displayImagePlus.getT() - 1, displayImagePlus.getZ() - 1);
         currentRois.add(objRoi);
         rois.put(ID, currentRois);
 
@@ -924,7 +924,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener, K
                     int y = (int) Math.round(point.getY());
                     if (x >= 0 && x < displayImagePlus.getWidth() && y >= 0 && y < displayImagePlus.getHeight()) {
                         try {
-                            outputObject.add(x, y, z - 1);
+                            outputObject.add(x, y, z);
                         } catch (PointOutOfRangeException e) {
                         }
                     }
@@ -974,7 +974,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener, K
                     int y = (int) Math.round(point.getY());
                     if (x >= 0 && x < displayImagePlus.getWidth() && y >= 0 && y < displayImagePlus.getHeight()) {
                         try {
-                            outputObject.add(x, y, z - 1);
+                            outputObject.add(x, y, z);
                         } catch (PointOutOfRangeException e) {
                         }
                     }
@@ -1122,7 +1122,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener, K
     void loadObjects() {
         String inPath = getLoadPath();
 
-        Pattern pattern = Pattern.compile("ID([0-9]+)_T([0-9]+)_Z([0-9]+)");
+        Pattern pattern = Pattern.compile("ID([0-9]+)_TR([\\-0-9]+)_T([0-9]+)_Z([0-9]+)");
 
         try {
             ZipInputStream in = new ZipInputStream(new FileInputStream(inPath));
@@ -1146,8 +1146,9 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener, K
                         Matcher matcher = pattern.matcher(name);
                         if (matcher.matches()) {
                             int ID = Integer.parseInt(matcher.group(1));
-                            int t = Integer.parseInt(matcher.group(2));
-                            int z = Integer.parseInt(matcher.group(3));
+                            // No need to load track (group 2)
+                            int t = Integer.parseInt(matcher.group(3)) - 1;
+                            int z = Integer.parseInt(matcher.group(4)) - 1;
 
                             rois.putIfAbsent(ID, new ArrayList<ObjRoi>());
 
@@ -1293,19 +1294,19 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener, K
 
         @Override
         public String toString() {
-            return "Object " + String.valueOf(ID) + ", T = " + (t + 1) + ", Z = " + z;
+            return "Object " + String.valueOf(ID) + ", T = " + (t + 1) + ", Z = " + (z + 1);
         }
 
         public String getShortString() {
-            return "ID" + String.valueOf(ID) + "_T" + (t + 1) + "_Z" + z;
+            return "ID" + String.valueOf(ID) + "_TR-1_T" + (t + 1) + "_Z" + (z + 1);
         }
     }
 
     @Override
     public void keyPressed(KeyEvent arg0) {
-        if (arg0.getKeyCode() == KeyEvent.VK_SPACE) 
+        if (arg0.getKeyCode() == KeyEvent.VK_SPACE)
             addNewObject();
-        
+
     }
 
     @Override

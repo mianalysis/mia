@@ -132,8 +132,8 @@ public class LoadObjectsFromROIs extends Module {
                 if (matcher.matches()) {
                     int oid = Integer.parseInt(matcher.group(1));
                     int tid = Integer.parseInt(matcher.group(2));
-                    int t = Integer.parseInt(matcher.group(3));
-                    int z = Integer.parseInt(matcher.group(4));
+                    int t = Integer.parseInt(matcher.group(3))-1;
+                    int z = Integer.parseInt(matcher.group(4))-1;
 
                     if (!outputObjects.keySet().contains(oid))
                         outputObjects.createAndAddNewObject(VolumeType.QUADTREE, oid);
