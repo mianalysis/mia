@@ -8,7 +8,6 @@ import java.util.regex.Pattern;
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
 
-import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
@@ -30,7 +29,7 @@ import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Status;
 
-@Plugin(type = Module.class, priority=Priority.LOW, visible=true)
+@Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class GlobalVariables extends Module {
     public static final String VARIABLE_SEPARATOR = "Variable settings";
     public static final String ADD_NEW_VARIABLE = "Add new variable";
@@ -124,9 +123,9 @@ public class GlobalVariables extends Module {
                 module.updateAndGetParameters();
             }
         }
-        
+
         // for (StringP k:globalVariables.keySet())
-        //     MIA.log.writeDebug(k.getValue() + "_" + globalVariables.get(k));
+        // MIA.log.writeDebug(k.getValue() + "_" + globalVariables.get(k));
     }
 
     public static int count() {
@@ -145,7 +144,7 @@ public class GlobalVariables extends Module {
 
     @Override
     protected Status process(Workspace workspace) {
-        LinkedHashMap<Integer, Parameters> collections = parameters.getValue(ADD_NEW_VARIABLE,workspace);
+        LinkedHashMap<Integer, Parameters> collections = parameters.getValue(ADD_NEW_VARIABLE, workspace);
 
         for (Parameters collection : collections.values()) {
             if ((boolean) collection.getValue(STORE_AS_METADATA_ITEM, workspace)) {
@@ -154,7 +153,8 @@ public class GlobalVariables extends Module {
 
                 switch (variableType) {
                     case VariableTypes.BOOLEAN:
-                        workspace.getMetadata().put(variableName, collection.getValue(VARIABLE_BOOLEAN, workspace).toString());
+                        workspace.getMetadata().put(variableName,
+                                collection.getValue(VARIABLE_BOOLEAN, workspace).toString());
                         break;
                     case VariableTypes.CHOICE:
                         workspace.getMetadata().put(variableName, collection.getValue(VARIABLE_CHOICE, workspace));
@@ -202,7 +202,7 @@ public class GlobalVariables extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
-Workspace workspace = null;
+        Workspace workspace = null;
         ParameterGroup group = parameters.getParameter(ADD_NEW_VARIABLE);
         if (group == null)
             return parameters;
@@ -244,20 +244,20 @@ Workspace workspace = null;
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
-return null;
+        return null;
     }
 
     @Override
-public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
-return null;
+    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+        return null;
     }
 
     @Override
-public MetadataRefs updateAndGetMetadataReferences() {
-Workspace workspace = null;
+    public MetadataRefs updateAndGetMetadataReferences() {
+        Workspace workspace = null;
         MetadataRefs returnedRefs = new MetadataRefs();
 
-        LinkedHashMap<Integer, Parameters> collections = parameters.getValue(ADD_NEW_VARIABLE,workspace);
+        LinkedHashMap<Integer, Parameters> collections = parameters.getValue(ADD_NEW_VARIABLE, workspace);
 
         for (Parameters collection : collections.values()) {
             if ((boolean) collection.getValue(STORE_AS_METADATA_ITEM, workspace))
@@ -270,12 +270,12 @@ Workspace workspace = null;
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
-return null;
+        return null;
     }
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
-return null;
+        return null;
     }
 
     @Override

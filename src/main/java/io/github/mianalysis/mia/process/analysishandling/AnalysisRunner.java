@@ -39,16 +39,13 @@ public class AnalysisRunner {
     private final static DecimalFormat dfInt = new DecimalFormat("0");
     private final static DecimalFormat dfDec = new DecimalFormat("0.00");
 
+
     // PUBLIC METHODS
 
     public void run(Analysis analysis) throws InterruptedException, IOException {
-        // Resetting progress display
-        GUI.updateProgressBar(0);
-        GUI.resetJobNumbers();
         MIA.clearLogHistory();
         counter = 0;
 
-        // Get jobs and exit if no images found
         HashSet<Job> jobs = getJobs(analysis);
         if (jobs.size() == 0) {
             MIA.log.writeWarning("No valid images found at specified path");
@@ -100,8 +97,10 @@ public class AnalysisRunner {
 
         }
 
-        for (Workspace workspace : workspaces)
+        for (Workspace workspace : workspaces) {
+            AnalysisTester.testModules(analysis.getModules(),workspace);
             pool.submit(createRunnable(analysis, workspace, exporter));
+        }
 
         // Telling the pool not to accept any more jobs and to wait until all queued
         // jobs have completed
@@ -122,7 +121,8 @@ public class AnalysisRunner {
 
         // Cleaning up
         MIA.log.writeStatus("Complete!");
-        GUI.updateProgressBar(100);
+        if (!MIA.isHeadless())
+            GUI.updateProgressBar(100);
 
     }
 

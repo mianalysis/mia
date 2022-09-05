@@ -3,7 +3,9 @@ package io.github.mianalysis.mia.process.analysishandling;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 import javax.swing.JFileChooser;
@@ -14,6 +16,7 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.io.IOUtils;
 import org.scijava.util.VersionUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
@@ -85,13 +88,15 @@ public class AnalysisReader {
             throws IOException, ClassNotFoundException, ParserConfigurationException, SAXException,
             IllegalAccessException, InstantiationException, NoSuchMethodException, InvocationTargetException {
         MIA.log.writeStatus("Loading analysis");
-        GUI.updateProgressBar(0);
+
+        if (!MIA.isHeadless())
+            GUI.updateProgressBar(0);
 
         if (xml.startsWith("\uFEFF"))
             xml = xml.substring(1);
 
         DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
-        DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
+        DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();    
         Document doc = documentBuilder.parse(new InputSource(new ByteArrayInputStream(xml.getBytes("UTF-8"))));
         doc.getDocumentElement().normalize();
 

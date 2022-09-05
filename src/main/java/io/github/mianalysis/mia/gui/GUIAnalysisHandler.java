@@ -94,6 +94,8 @@ public class GUIAnalysisHandler {
         MIA.log.writeStatus("Running");
         Thread t = new Thread(() -> {
             try {
+                GUI.updateProgressBar(0);
+                GUI.resetJobNumbers();
                 GUI.getAnalysisRunner().run(GUI.getAnalysis());
             } catch (IOException e) {
                 MIA.log.writeError(e);

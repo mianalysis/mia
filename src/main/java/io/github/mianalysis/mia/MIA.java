@@ -19,6 +19,7 @@ import org.scijava.ui.UIService;
 import ij.Prefs;
 import io.github.mianalysis.mia.gui.GUI;
 import io.github.mianalysis.mia.module.LostAndFound;
+import io.github.mianalysis.mia.module.core.InputControl;
 import io.github.mianalysis.mia.moduledependencies.Dependencies;
 import io.github.mianalysis.mia.object.system.Preferences;
 import io.github.mianalysis.mia.process.DependencyValidator;
@@ -42,7 +43,7 @@ public class MIA implements Command {
     private static boolean debug = false;
     private static LogRenderer mainRenderer = new BasicLogRenderer();
     private static LogHistory logHistory = new LogHistory();
-    private final static boolean headless = false; // Determines if there is a GUI
+    private static boolean headless = false; // Determines if there is a GUI
     private static Preferences preferences;
     private static Dependencies dependencies; // Maps module dependencies and reports if a
     // module's requirements aren't satisfied
@@ -60,6 +61,12 @@ public class MIA implements Command {
     @Parameter
     public static ImageJService ijService;
 
+    @Parameter(label = "Workflow file path", required = true)
+    public String workflowPath;
+
+    @Parameter(label = "Input file path", required = true)
+    public String inputFilePath;
+
     public static void main(String[] args) throws Exception {
         debug = true;
 
@@ -67,8 +74,12 @@ public class MIA implements Command {
             if (args.length == 0) {
                 new ij.ImageJ();
                 new ImageJ().command().run("io.github.mianalysis.mia.MIA", false);
-            } else {
+            } else if (args.length == 1) {
                 Analysis analysis = AnalysisReader.loadAnalysis(args[0]);
+                new AnalysisRunner().run(analysis);
+            } else if (args.length == 2) {
+                Analysis analysis = AnalysisReader.loadAnalysis(args[0]);
+                analysis.getModules().getInputControl().updateParameterValue(InputControl.INPUT_PATH, args[1]);
                 new AnalysisRunner().run(analysis);
             }
 
@@ -79,6 +90,26 @@ public class MIA implements Command {
 
     @Override
     public void run() {
+        // If parameters are specified, running in headless mode
+        try {
+            if (workflowPath != null) {
+                headless = true;
+                if (inputFilePath == null) {
+                    Analysis analysis = AnalysisReader.loadAnalysis(new File(workflowPath));                    
+                    new AnalysisRunner().run(analysis);
+                } else {
+                    Analysis analysis = AnalysisReader.loadAnalysis(new File(workflowPath));
+                    analysis.getModules().getInputControl().updateParameterValue(InputControl.INPUT_PATH,
+                            inputFilePath);
+                    new AnalysisRunner().run(analysis);
+                }
+                return;
+            }            
+        } catch (Exception e) {
+            e.printStackTrace();
+            return;
+        }
+
         try {
             String theme = Prefs.get("MIA.GUI.theme", io.github.mianalysis.mia.gui.Themes.getDefaultTheme());
             UIManager.setLookAndFeel(io.github.mianalysis.mia.gui.Themes.getThemeClass(theme));

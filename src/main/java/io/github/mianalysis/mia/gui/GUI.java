@@ -246,8 +246,8 @@ public class GUI {
 
     }
 
-    public static void updateModuleStates() {
-        AnalysisTester.testModules(getModules());
+    public static void updateModuleStates() {        
+        AnalysisTester.testModules(getModules(),testWorkspace);
         mainPanel.updateModuleStates();
     }
 
