@@ -20,12 +20,12 @@ import io.github.mianalysis.mia.object.system.Colours;
 /**
  * Created by Stephen Cross on 14/06/2019.
  */
-public class ConsoleRenderer implements LogRenderer {
+public class ConsoleRenderer extends LogRenderer {
     private UIService uiService = null;
     private JTextPane consoleTextPane = null;
 
     private HashMap<Level,Style> logStyles = new HashMap<>();
-    private HashMap<Level,Boolean> levelStatus = new HashMap<>();
+    
 
 
     // CONSTRUCTOR
@@ -77,6 +77,10 @@ public class ConsoleRenderer implements LogRenderer {
     // PUBLIC METHODS
 
     public void write(String message, Level level) {
+        write(message, level, -1);
+    }
+
+    public void write(String message, Level level, int progress) {
         // If this level isn't currently being written, skip it
         if (!levelStatus.get(level)) return;
 
@@ -106,16 +110,5 @@ public class ConsoleRenderer implements LogRenderer {
     public JTextPane getConsoleTextPane() {
         return consoleTextPane;
 
-    }
-
-
-    @Override
-    public boolean isWriteEnabled(Level level) {
-        return levelStatus.get(level);
-    }
-
-    @Override
-    public void setWriteEnabled(Level level, boolean writeEnabled) {
-        levelStatus.put(level,writeEnabled);
     }
 }

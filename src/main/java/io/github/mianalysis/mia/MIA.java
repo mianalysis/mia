@@ -14,7 +14,6 @@ import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.scijava.command.Command;
 import org.scijava.plugin.Parameter;
 import org.scijava.plugin.Plugin;
-import org.scijava.ui.UIService;
 
 import ij.Prefs;
 import io.github.mianalysis.mia.gui.GUI;
@@ -27,7 +26,7 @@ import io.github.mianalysis.mia.process.analysishandling.Analysis;
 import io.github.mianalysis.mia.process.analysishandling.AnalysisReader;
 import io.github.mianalysis.mia.process.analysishandling.AnalysisRunner;
 import io.github.mianalysis.mia.process.logging.BasicLogRenderer;
-import io.github.mianalysis.mia.process.logging.ConsoleRenderer;
+import io.github.mianalysis.mia.process.logging.HeadlessRenderer;
 import io.github.mianalysis.mia.process.logging.Log;
 import io.github.mianalysis.mia.process.logging.LogHistory;
 import io.github.mianalysis.mia.process.logging.LogRenderer;
@@ -91,25 +90,49 @@ public class MIA implements Command {
     @Override
     public void run() {
         // If parameters are specified, running in headless mode
+        if (workflowPath == null)
+            runInteractive();
+        else
+            runHeadless();
+
+    }
+
+    public void runHeadless() {
+        headless = true;
+
         try {
-            if (workflowPath != null) {
-                headless = true;
-                if (inputFilePath == null) {
-                    Analysis analysis = AnalysisReader.loadAnalysis(new File(workflowPath));                    
-                    new AnalysisRunner().run(analysis);
-                } else {
-                    Analysis analysis = AnalysisReader.loadAnalysis(new File(workflowPath));
-                    analysis.getModules().getInputControl().updateParameterValue(InputControl.INPUT_PATH,
-                            inputFilePath);
-                    new AnalysisRunner().run(analysis);
-                }
-                return;
-            }            
+            try {
+                // Before removing the old renderer we want to check the new one can be created
+                HeadlessRenderer newRenderer = new HeadlessRenderer();
+                HeadlessRenderer.setShowProgress(true);
+                HeadlessRenderer.setProgress(0);
+                newRenderer.setWriteEnabled(LogRenderer.Level.DEBUG, debug);
+                
+                log.removeRenderer(mainRenderer);
+                log.addRenderer(mainRenderer);
+
+                mainRenderer = newRenderer;
+                
+            } catch (Exception e) {
+                // If any exception was thrown, just don't apply the ConsoleRenderer.
+            }
+
+            if (inputFilePath == null) {
+                Analysis analysis = AnalysisReader.loadAnalysis(new File(workflowPath));
+                new AnalysisRunner().run(analysis);
+            } else {
+                Analysis analysis = AnalysisReader.loadAnalysis(new File(workflowPath));
+                analysis.getModules().getInputControl().updateParameterValue(InputControl.INPUT_PATH,
+                        inputFilePath);
+                new AnalysisRunner().run(analysis);
+            }
         } catch (Exception e) {
             e.printStackTrace();
             return;
         }
+    }
 
+    public void runInteractive() {
         try {
             String theme = Prefs.get("MIA.GUI.theme", io.github.mianalysis.mia.gui.Themes.getDefaultTheme());
             UIManager.setLookAndFeel(io.github.mianalysis.mia.gui.Themes.getThemeClass(theme));
@@ -119,19 +142,19 @@ public class MIA implements Command {
             e.printStackTrace();
         }
 
-        if (!headless) {
-            try {
-                // Before removing the old renderer we want to check the new one can be created
-                UIService uiService = ijService.context().getService(UIService.class);
-                LogRenderer newRenderer = new ConsoleRenderer(uiService);
-                log.removeRenderer(mainRenderer);
+        try {
+            // Before removing the old renderer we want to check the new one can be created
+            // UIService uiService = ijService.context().getService(UIService.class);
+            // LogRenderer newRenderer = new ConsoleRenderer(uiService);
+            HeadlessRenderer newRenderer = new HeadlessRenderer();
+            newRenderer.setShowProgress(true);
+            log.removeRenderer(mainRenderer);
 
-                mainRenderer = newRenderer;
-                mainRenderer.setWriteEnabled(LogRenderer.Level.DEBUG, debug);
-                log.addRenderer(mainRenderer);
-            } catch (Exception e) {
-                // If any exception was thrown, just don't apply the ConsoleRenderer.
-            }
+            mainRenderer = newRenderer;
+            mainRenderer.setWriteEnabled(LogRenderer.Level.DEBUG, debug);
+            log.addRenderer(mainRenderer);
+        } catch (Exception e) {
+            // If any exception was thrown, just don't apply the ConsoleRenderer.
         }
 
         preferences = new Preferences(null);
@@ -162,17 +185,6 @@ public class MIA implements Command {
             MIA.log.writeError(e);
         }
     }
-
-    // public void setLookAndFeel() {
-    // try {
-    // UIManager.put("TitlePane.showIconBesideTitle", true);
-    // UIManager.setLookAndFeel(FlatLightLaf.class.getCanonicalName());
-    // } catch (ClassNotFoundException | InstantiationException |
-    // IllegalAccessException
-    // | UnsupportedLookAndFeelException e) {
-    // MIA.log.writeError(e);
-    // }
-    // }
 
     public static boolean isImagePlusMode() {
         return imagePlusMode;

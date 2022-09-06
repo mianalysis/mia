@@ -2,8 +2,7 @@ package io.github.mianalysis.mia.process.logging;
 
 import java.util.HashMap;
 
-public class LogHistory implements LogRenderer {
-    private HashMap<Level,Boolean> levelStatus = new HashMap<>();
+public class LogHistory extends LogRenderer {
     private static HashMap<Level,String> logHistory = new HashMap<>();
 
     public LogHistory() {
@@ -25,16 +24,6 @@ public class LogHistory implements LogRenderer {
         logHistory.putIfAbsent(level, "");
         logHistory.put(level, logHistory.get(level) + message);
         
-    }
-
-    @Override
-    public boolean isWriteEnabled(Level level) {
-        return levelStatus.get(level);
-    }
-
-    @Override
-    public void setWriteEnabled(Level level, boolean writeEnabled) {
-        levelStatus.put(level, writeEnabled);
     }
     
     public String getLogHistory(Level level) {

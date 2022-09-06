@@ -12,6 +12,7 @@ import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.script.AbstractMacroRunner;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.system.Status;
+import io.github.mianalysis.mia.process.logging.HeadlessRenderer;
 import io.github.mianalysis.mia.process.logging.LogRenderer;
 
 /**
@@ -93,9 +94,12 @@ public class Analysis {
             // Updating progress bar
             double fractionComplete = ((double) (i + 1)) / ((double) modules.size());
             workspace.setProgress(fractionComplete);
-            if (!MIA.isHeadless())
-                GUI.updateProgressBar();
 
+            // if (MIA.isHeadless())
+                HeadlessRenderer.setProgress(workspace.getWorkspaces());
+            // else
+                GUI.updateProgressBar();
+            
         }
 
         // We're only interested in the measurements now, so clearing images and object
