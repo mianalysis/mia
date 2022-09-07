@@ -14,10 +14,12 @@ import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.scijava.command.Command;
 import org.scijava.plugin.Parameter;
 import org.scijava.plugin.Plugin;
+import org.scijava.ui.UIService;
 
 import ij.Prefs;
 import io.github.mianalysis.mia.gui.GUI;
 import io.github.mianalysis.mia.module.LostAndFound;
+import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.core.InputControl;
 import io.github.mianalysis.mia.moduledependencies.Dependencies;
 import io.github.mianalysis.mia.object.system.Preferences;
@@ -26,6 +28,7 @@ import io.github.mianalysis.mia.process.analysishandling.Analysis;
 import io.github.mianalysis.mia.process.analysishandling.AnalysisReader;
 import io.github.mianalysis.mia.process.analysishandling.AnalysisRunner;
 import io.github.mianalysis.mia.process.logging.BasicLogRenderer;
+import io.github.mianalysis.mia.process.logging.ConsoleRenderer;
 import io.github.mianalysis.mia.process.logging.HeadlessRenderer;
 import io.github.mianalysis.mia.process.logging.Log;
 import io.github.mianalysis.mia.process.logging.LogHistory;
@@ -63,8 +66,26 @@ public class MIA implements Command {
     @Parameter(label = "Workflow file path", required = true)
     public String workflowPath;
 
-    @Parameter(label = "Input file path", required = true)
+    @Parameter(label = "Input file path", required = false)
     public String inputFilePath;
+
+    @Parameter(label = "showDebug", required = false)
+    public boolean showDebug = false;
+
+    @Parameter(label = "showMemory", required = false)
+    public boolean showMemory = false;
+
+    @Parameter(label = "showMessage", required = false)
+    public boolean showMessage = true;
+
+    @Parameter(label = "showStatus", required = false)
+    public boolean showStatus = true;
+
+    @Parameter(label = "showWarning", required = false)
+    public boolean showWarning = true;
+
+    @Parameter(label = "verbose", required = false)
+    public boolean verbose = false;
 
     public static void main(String[] args) throws Exception {
         debug = true;
@@ -101,26 +122,29 @@ public class MIA implements Command {
         headless = true;
 
         try {
-            try {
-                // Before removing the old renderer we want to check the new one can be created
-                HeadlessRenderer newRenderer = new HeadlessRenderer();
-                HeadlessRenderer.setShowProgress(true);
-                HeadlessRenderer.setProgress(0);
-                newRenderer.setWriteEnabled(LogRenderer.Level.DEBUG, debug);
-                
-                log.removeRenderer(mainRenderer);
-                log.addRenderer(mainRenderer);
+            // Before removing the old renderer we want to check the new one can be created
+            HeadlessRenderer newRenderer = new HeadlessRenderer();
+            HeadlessRenderer.setShowProgress(true);
+            HeadlessRenderer.setProgress(0);
 
-                mainRenderer = newRenderer;
-                
-            } catch (Exception e) {
-                // If any exception was thrown, just don't apply the ConsoleRenderer.
-            }
+            newRenderer.setWriteEnabled(LogRenderer.Level.DEBUG, showDebug);
+            newRenderer.setWriteEnabled(LogRenderer.Level.MEMORY, showMemory);
+            newRenderer.setWriteEnabled(LogRenderer.Level.MESSAGE, showMessage);
+            newRenderer.setWriteEnabled(LogRenderer.Level.STATUS, showStatus);
+            newRenderer.setWriteEnabled(LogRenderer.Level.WARNING, showWarning);
+
+            log.removeRenderer(mainRenderer);
+            log.addRenderer(newRenderer);
+
+            mainRenderer = newRenderer;
+            
+            Module.setVerbose(verbose);
 
             if (inputFilePath == null) {
                 Analysis analysis = AnalysisReader.loadAnalysis(new File(workflowPath));
                 new AnalysisRunner().run(analysis);
             } else {
+                MIA.log.writeDebug(inputFilePath);
                 Analysis analysis = AnalysisReader.loadAnalysis(new File(workflowPath));
                 analysis.getModules().getInputControl().updateParameterValue(InputControl.INPUT_PATH,
                         inputFilePath);
@@ -128,8 +152,10 @@ public class MIA implements Command {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            return;
         }
+
+        java.lang.System.exit(0);
+
     }
 
     public void runInteractive() {
@@ -144,10 +170,8 @@ public class MIA implements Command {
 
         try {
             // Before removing the old renderer we want to check the new one can be created
-            // UIService uiService = ijService.context().getService(UIService.class);
-            // LogRenderer newRenderer = new ConsoleRenderer(uiService);
-            HeadlessRenderer newRenderer = new HeadlessRenderer();
-            newRenderer.setShowProgress(true);
+            UIService uiService = ijService.context().getService(UIService.class);
+            LogRenderer newRenderer = new ConsoleRenderer(uiService);
             log.removeRenderer(mainRenderer);
 
             mainRenderer = newRenderer;

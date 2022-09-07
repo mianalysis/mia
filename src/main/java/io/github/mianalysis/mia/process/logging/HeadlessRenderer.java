@@ -39,25 +39,23 @@ public class HeadlessRenderer extends LogRenderer {
         switch (level) {
             default:
             case WARNING:
-                System.err.println("\033[2K\u001B[33m[" + level.toString() + "] " + message);
+                System.out.println("\033[2K\u001B[33m[" + level.toString() + "] " + message);
                 break;
             case MESSAGE:
-                System.err.println("\033[2K\u001B[37m[" + level.toString() + "] " + message);
+                System.out.println("\033[2K\u001B[37m[" + level.toString() + "] " + message);
                 break;
             case MEMORY:
-                System.err.println("\033[2K\u001B[32m[" + level.toString() + "] " + message);
+                System.out.println("\033[2K\u001B[32m[" + level.toString() + "] " + message);
                 break;
             case DEBUG:
                 System.out.println("\033[2K\u001B[36m[" + level.toString() + "] " + message);
                 break;
             case STATUS:
                 if (showProgress) {
-                    // Pattern pattern = Pattern.compile("[(.+)](.+)");
-                    // Matcher matcher = pattern.matcher(message);
-                    // if (matcher.find()) {
-                    //     matcher
-                    // }
-                    
+                    Matcher matcher = Pattern.compile("\\[(.+)\\](.+)").matcher(message);
+                    if (matcher.find())
+                        message = matcher.group(1) + " ║" + matcher.group(2);
+                                        
                     System.out.print("\033[2K\u001B[37m" + getProgressString(progress) + message + "\r");
                 } else
                     System.out.print("\033[2K\u001B[37m[" + level.toString() + "] " + message + "\r");
@@ -121,7 +119,7 @@ public class HeadlessRenderer extends LogRenderer {
         while (progressString.length() < nBlocks)
             progressString += " ";
 
-        return " ║ " + progress + "% ║ " + progressString + " ║ ";
+        return progress + "% ║ " + progressString + " ║ ";
 
     }
 }

@@ -95,9 +95,9 @@ public class Analysis {
             double fractionComplete = ((double) (i + 1)) / ((double) modules.size());
             workspace.setProgress(fractionComplete);
 
-            // if (MIA.isHeadless())
+            if (MIA.isHeadless())
                 HeadlessRenderer.setProgress(workspace.getWorkspaces());
-            // else
+            else
                 GUI.updateProgressBar();
             
         }

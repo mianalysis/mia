@@ -58,6 +58,7 @@ import io.github.mianalysis.mia.object.refs.MetadataRef;
 import io.github.mianalysis.mia.object.refs.ObjMeasurementRef;
 import io.github.mianalysis.mia.process.ClassHunter;
 import io.github.mianalysis.mia.process.analysishandling.Analysis;
+import io.github.mianalysis.mia.process.logging.HeadlessRenderer;
 
 /**
  * Created by Stephen on 23/06/2017.
@@ -78,7 +79,7 @@ public class AnalysisReader_Pre_0p10p0 {
             return null;
 
         Prefs.set("MIA.PreviousPath", file.getAbsolutePath());
-            
+
         Analysis analysis = loadAnalysis(file);
         analysis.setAnalysisFilename(file.getAbsolutePath());
 
@@ -101,7 +102,11 @@ public class AnalysisReader_Pre_0p10p0 {
             throws IOException, ClassNotFoundException, ParserConfigurationException, SAXException,
             IllegalAccessException, InstantiationException, NoSuchMethodException, InvocationTargetException {
         MIA.log.writeStatus("Loading analysis");
-        GUI.updateProgressBar(0);
+
+        if (MIA.isHeadless())
+            HeadlessRenderer.setProgress(0);
+        else
+            GUI.updateProgressBar(0);
 
         if (xml.startsWith("\uFEFF")) {
             xml = xml.substring(1);
@@ -147,7 +152,12 @@ public class AnalysisReader_Pre_0p10p0 {
 
             MIA.log.writeStatus("Processed " + i + " of " + moduleNodes.getLength() + " modules ("
                     + Math.floorDiv(100 * i, moduleNodes.getLength()) + "%)");
-            GUI.updateProgressBar(100 * Math.floorDiv(i, moduleNodes.getLength()));
+            
+            int progress = 100 * Math.floorDiv(i, moduleNodes.getLength());
+            if (MIA.isHeadless())
+                HeadlessRenderer.setProgress(progress);
+            else
+                GUI.updateProgressBar(progress);
 
         }
 
