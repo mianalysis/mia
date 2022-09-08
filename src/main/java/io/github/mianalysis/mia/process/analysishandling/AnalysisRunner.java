@@ -46,6 +46,8 @@ public class AnalysisRunner {
         MIA.clearLogHistory();
         counter = 0;
 
+        AnalysisTester.testModules(analysis.getModules(), null);
+
         HashSet<Job> jobs = getJobs(analysis);
         if (jobs.size() == 0) {
             MIA.log.writeWarning("No valid images found at specified path");
@@ -58,8 +60,9 @@ public class AnalysisRunner {
         // Initialising Exporter
         Exporter exporter = initialiseExporter(outputControl);
 
-        // Set verbose
-        Module.setVerbose(jobs.size() == 1);
+        // Set verbose if showing the GUI
+        if (!MIA.isHeadless())
+            Module.setVerbose(jobs.size() == 1);
 
         // Setting up the pool
         // Set the number of Fiji threads to maximise the number of jobs, so it doesn't
@@ -97,11 +100,9 @@ public class AnalysisRunner {
 
         }
 
-        for (Workspace workspace : workspaces) {
-            AnalysisTester.testModules(analysis.getModules(), workspace);
+        for (Workspace workspace : workspaces)            
             pool.submit(createRunnable(analysis, workspace, exporter));
-        }
-
+        
         // Telling the pool not to accept any more jobs and to wait until all queued
         // jobs have completed
         pool.shutdown();
@@ -120,12 +121,14 @@ public class AnalysisRunner {
         outputControl.runMacro(workspaces.iterator().next());
 
         // Cleaning up
-        MIA.log.writeStatus("Complete!");
-        if (MIA.isHeadless())
+        
+        if (MIA.isHeadless()) {
             HeadlessRenderer.setProgress(100);
-        else
+            MIA.log.writeStatus("Complete!\n");
+        } else {
             GUI.updateProgressBar(100);
-
+            MIA.log.writeStatus("Complete!");
+        }
     }
 
     public HashSet<Job> getJobs(Analysis analysis) {
@@ -134,7 +137,7 @@ public class AnalysisRunner {
         InputControl inputControl = analysis.getModules().getInputControl();
 
         File inputFile = getInputFile(inputControl);
-        MIA.log.writeDebug("Input file "+inputFile);
+
         if (inputFile == null)
             return new HashSet<>();
 
@@ -155,15 +158,12 @@ public class AnalysisRunner {
 
         File rootFolder = fileCrawler.getRootFolderAsFile();
         if (rootFolder.isFile()) {
-            MIA.log.writeDebug("Is file");
             TreeMap<Integer, String> seriesNumbers = inputControl.getSeriesNumbers(rootFolder);
             for (int seriesNumber : seriesNumbers.keySet())
                 jobs.add(new Job(rootFolder, seriesNumber, seriesNumbers.get(seriesNumber), 0));
 
         } else {
-            MIA.log.writeDebug("Is folder");
             File next = fileCrawler.getNextValidFileInStructure();
-            MIA.log.writeDebug("Next "+next);
             int loadTotal = 0;
             while (next != null && fileCrawler.getCurrentFolderAsFolder() != null) {
                 boolean load = true;
@@ -201,7 +201,6 @@ public class AnalysisRunner {
 
     public File getInputFile(InputControl inputControl) {
         String inputPath = ((FileFolderPathP) inputControl.getParameter(InputControl.INPUT_PATH)).getPath();
-        MIA.log.writeDebug("Input path "+inputPath);
 
         if (!checkInputFileValidity(inputPath))
             return null;

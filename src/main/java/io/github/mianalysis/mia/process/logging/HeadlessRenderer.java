@@ -39,29 +39,28 @@ public class HeadlessRenderer extends LogRenderer {
         switch (level) {
             default:
             case WARNING:
-                System.out.println("\033[2K\u001B[33m[" + level.toString() + "] " + message);
+                System.out.println("\033[2K\u001B[33m[" + level.toString() + "] " + message+"\u001B[37m");
                 break;
             case MESSAGE:
-                System.out.println("\033[2K\u001B[37m[" + level.toString() + "] " + message);
+                System.out.println("\033[2K\u001B[37m[" + level.toString() + "] " + message+"\u001B[37m");
                 break;
             case MEMORY:
-                System.out.println("\033[2K\u001B[32m[" + level.toString() + "] " + message);
+                System.out.println("\033[2K\u001B[32m[" + level.toString() + "] " + message+"\u001B[37m");
                 break;
             case DEBUG:
-                System.out.println("\033[2K\u001B[36m[" + level.toString() + "] " + message);
+                System.out.println("\033[2K\u001B[36m[" + level.toString() + "] " + message+"\u001B[37m");
                 break;
             case STATUS:
                 if (showProgress) {
                     Matcher matcher = Pattern.compile("\\[(.+)\\](.+)").matcher(message);
                     if (matcher.find())
                         message = matcher.group(1) + " ║" + matcher.group(2);
-                                        
-                    System.out.print("\033[2K\u001B[37m" + getProgressString(progress) + message + "\r");
+                    System.out.print("\033[2K\u001B[37m" + getProgressString(progress) + message + "\u001B[37m\r");
                 } else
-                    System.out.print("\033[2K\u001B[37m[" + level.toString() + "] " + message + "\r");
+                    System.out.print("\033[2K\u001B[37m[" + level.toString() + "] " + message +"\u001B[37m\r");
                 break;
             case ERROR:
-                System.err.println("\033[2K\u001B[31m[" + level.toString() + "] " + message);
+                System.err.println("\033[2K\u001B[31m[" + level.toString() + "] " + message+"\u001B[37m");
                 break;
         }
     }
@@ -100,26 +99,32 @@ public class HeadlessRenderer extends LogRenderer {
         int nBlocks = 25;
         double pcPerBlock = 100d / nBlocks;
 
+        String startPad = "";
+        if (progress < 10)
+            startPad += "  ";
+        else if (progress < 100)
+            startPad += " ";
+
         int nFullBlocks = (int) Math.floor((double) progress / pcPerBlock);
-        double remainder = ((double) progress / pcPerBlock) - nFullBlocks;
 
         String progressString = "";
         for (int i = 0; i < nFullBlocks; i++)
             progressString += "█";
 
-        if (remainder == 0)
-            progressString += " ";
-        else if (remainder < 0.25)
-            progressString += "░";
+        double remainder = ((double) progress / pcPerBlock) - nFullBlocks;
+        if (remainder < 0.25)
+            progressString += "";
         else if (remainder < 0.5)
-            progressString += "▒";
+            progressString += "\u258E";
         else if (remainder < 0.75)
-            progressString += "▓";
+            progressString += "\u258C";
+        else if (remainder < 1)
+            progressString += "\u258A";
 
         while (progressString.length() < nBlocks)
             progressString += " ";
 
-        return progress + "% ║ " + progressString + " ║ ";
+        return startPad + progress + "% ║ " + progressString + " ║ ";
 
     }
 }

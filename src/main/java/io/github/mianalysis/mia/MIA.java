@@ -66,25 +66,25 @@ public class MIA implements Command {
     @Parameter(label = "Workflow file path", required = true)
     public String workflowPath;
 
-    @Parameter(label = "Input file path", required = false)
+    @Parameter(label = "Input file path", required = false, persist = false)
     public String inputFilePath;
 
-    @Parameter(label = "showDebug", required = false)
+    @Parameter(label = "showDebug", required = false, persist = false)
     public boolean showDebug = false;
 
-    @Parameter(label = "showMemory", required = false)
+    @Parameter(label = "showMemory", required = false, persist = false)
     public boolean showMemory = false;
 
-    @Parameter(label = "showMessage", required = false)
+    @Parameter(label = "showMessage", required = false, persist = false)
     public boolean showMessage = true;
 
-    @Parameter(label = "showStatus", required = false)
+    @Parameter(label = "showStatus", required = false, persist = false)
     public boolean showStatus = true;
 
-    @Parameter(label = "showWarning", required = false)
+    @Parameter(label = "showWarning", required = false, persist = false)
     public boolean showWarning = true;
 
-    @Parameter(label = "verbose", required = false)
+    @Parameter(label = "verbose", required = false, persist = false)
     public boolean verbose = false;
 
     public static void main(String[] args) throws Exception {
@@ -137,14 +137,14 @@ public class MIA implements Command {
             log.addRenderer(newRenderer);
 
             mainRenderer = newRenderer;
-            
-            Module.setVerbose(verbose);
 
+            version = extractVersion();
+            Module.setVerbose(verbose);
+            
             if (inputFilePath == null) {
                 Analysis analysis = AnalysisReader.loadAnalysis(new File(workflowPath));
                 new AnalysisRunner().run(analysis);
             } else {
-                MIA.log.writeDebug(inputFilePath);
                 Analysis analysis = AnalysisReader.loadAnalysis(new File(workflowPath));
                 analysis.getModules().getInputControl().updateParameterValue(InputControl.INPUT_PATH,
                         inputFilePath);
@@ -181,23 +181,10 @@ public class MIA implements Command {
             // If any exception was thrown, just don't apply the ConsoleRenderer.
         }
 
-        preferences = new Preferences(null);
-
+        preferences = new Preferences(null);        
         log.addRenderer(logHistory);
-
-        // Determining the version number from the pom file
-        try {
-            if (new File("pom.xml").exists()) {
-                FileReader reader = new FileReader("pom.xml");
-                Model model = new MavenXpp3Reader().read(reader);
-                reader.close();
-                version = model.getVersion();
-            } else {
-                version = getClass().getPackage().getImplementationVersion();
-            }
-        } catch (XmlPullParserException | IOException e) {
-            e.printStackTrace();
-        }
+        
+        version = extractVersion();
 
         // Run the dependency validator. If updates were required, return.
         if (DependencyValidator.run())
@@ -208,6 +195,25 @@ public class MIA implements Command {
         } catch (Exception e) {
             MIA.log.writeError(e);
         }
+    }
+
+    private static String extractVersion() {
+        // Determining the version number from the pom file
+        try {
+            if (new File("pom.xml").exists()) {
+                FileReader reader = new FileReader("pom.xml");
+                Model model = new MavenXpp3Reader().read(reader);
+                reader.close();
+                return model.getVersion();
+            } else {
+                return MIA.class.getPackage().getImplementationVersion();
+            }
+        } catch (XmlPullParserException | IOException e) {
+            e.printStackTrace();
+        }
+
+        return "";
+        
     }
 
     public static boolean isImagePlusMode() {

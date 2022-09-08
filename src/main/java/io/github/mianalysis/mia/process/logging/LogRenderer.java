@@ -4,7 +4,6 @@ import java.util.HashMap;
 
 public abstract class LogRenderer {
     protected HashMap<Level,Boolean> levelStatus = new HashMap<>();
-    protected int progress = -1;
     
     public enum Level {
         MESSAGE, WARNING, ERROR, DEBUG, MEMORY, STATUS;
