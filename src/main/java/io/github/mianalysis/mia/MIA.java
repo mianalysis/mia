@@ -4,6 +4,9 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.regex.Pattern;
 
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
@@ -14,25 +17,29 @@ import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.scijava.command.Command;
 import org.scijava.plugin.Parameter;
 import org.scijava.plugin.Plugin;
-import org.scijava.ui.UIService;
 
 import ij.Prefs;
 import io.github.mianalysis.mia.gui.GUI;
 import io.github.mianalysis.mia.module.LostAndFound;
 import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.core.InputControl;
+import io.github.mianalysis.mia.module.system.GlobalVariables;
 import io.github.mianalysis.mia.moduledependencies.Dependencies;
+import io.github.mianalysis.mia.object.parameters.ParameterGroup;
+import io.github.mianalysis.mia.object.parameters.Parameters;
+import io.github.mianalysis.mia.object.parameters.text.StringP;
 import io.github.mianalysis.mia.object.system.Preferences;
 import io.github.mianalysis.mia.process.DependencyValidator;
 import io.github.mianalysis.mia.process.analysishandling.Analysis;
 import io.github.mianalysis.mia.process.analysishandling.AnalysisReader;
 import io.github.mianalysis.mia.process.analysishandling.AnalysisRunner;
 import io.github.mianalysis.mia.process.logging.BasicLogRenderer;
-import io.github.mianalysis.mia.process.logging.ConsoleRenderer;
 import io.github.mianalysis.mia.process.logging.HeadlessRenderer;
 import io.github.mianalysis.mia.process.logging.Log;
 import io.github.mianalysis.mia.process.logging.LogHistory;
 import io.github.mianalysis.mia.process.logging.LogRenderer;
+import io.github.mianalysis.mia.process.logging.LogRenderer.Level;
 import net.imagej.ImageJ;
 import net.imagej.ImageJService;
 
@@ -87,6 +94,9 @@ public class MIA implements Command {
     @Parameter(label = "verbose", required = false, persist = false)
     public boolean verbose = false;
 
+    @Parameter(label = "variables", required = false, persist = false)
+    public String variables;
+
     public static void main(String[] args) throws Exception {
         debug = true;
 
@@ -140,22 +150,56 @@ public class MIA implements Command {
 
             version = extractVersion();
             Module.setVerbose(verbose);
-            
+
+            Analysis analysis;
             if (inputFilePath == null) {
-                Analysis analysis = AnalysisReader.loadAnalysis(new File(workflowPath));
-                new AnalysisRunner().run(analysis);
+                analysis = AnalysisReader.loadAnalysis(new File(workflowPath));
             } else {
-                Analysis analysis = AnalysisReader.loadAnalysis(new File(workflowPath));
+                analysis = AnalysisReader.loadAnalysis(new File(workflowPath));
                 analysis.getModules().getInputControl().updateParameterValue(InputControl.INPUT_PATH,
                         inputFilePath);
-                new AnalysisRunner().run(analysis);
             }
+
+            // Inserting variables
+            if (variables != null)
+                applyGlobalVariables(analysis.getModules(), variables);
+
+            // Running analysis
+            new AnalysisRunner().run(analysis);
+
         } catch (Exception e) {
             e.printStackTrace();
         }
 
         java.lang.System.exit(0);
 
+    }
+
+    private void applyGlobalVariables(Modules modules, String variables) {
+        String[] variablesArray = variables.split(";");
+        for (String variable : variablesArray) {
+            String[] splitVariables = variable.split(":");
+            String newVariableName = splitVariables[0];
+            String newVariableValue = splitVariables[1];
+
+            for (Module module : modules.values()) {
+                if (module instanceof GlobalVariables && module.isEnabled()) {
+                    ParameterGroup group = module.getAllParameters().getParameter(GlobalVariables.ADD_NEW_VARIABLE);
+                    if (group == null)
+                        continue;
+
+                    LinkedHashMap<Integer, Parameters> collections = group.getCollections(false);
+                    for (Parameters collection : collections.values()) {
+                        String variableName = collection.getValue(GlobalVariables.VARIABLE_NAME, null);
+                        if (!variableName.equals(newVariableName))
+                            continue;
+
+                        collection.getParameter(GlobalVariables.VARIABLE_VALUE).setValue(newVariableValue);
+
+                    }
+                }
+            }
+        }
     }
 
     public void runInteractive() {
@@ -170,8 +214,12 @@ public class MIA implements Command {
 
         try {
             // Before removing the old renderer we want to check the new one can be created
-            UIService uiService = ijService.context().getService(UIService.class);
-            LogRenderer newRenderer = new ConsoleRenderer(uiService);
+            // UIService uiService = ijService.context().getService(UIService.class);
+            // LogRenderer newRenderer = new ConsoleRenderer(uiService);
+            HeadlessRenderer newRenderer = new HeadlessRenderer();
+            newRenderer.setShowProgress(true);
+            newRenderer.setWriteEnabled(Level.STATUS, true);
+
             log.removeRenderer(mainRenderer);
 
             mainRenderer = newRenderer;
@@ -181,9 +229,9 @@ public class MIA implements Command {
             // If any exception was thrown, just don't apply the ConsoleRenderer.
         }
 
-        preferences = new Preferences(null);        
+        preferences = new Preferences(null);
         log.addRenderer(logHistory);
-        
+
         version = extractVersion();
 
         // Run the dependency validator. If updates were required, return.
@@ -213,7 +261,7 @@ public class MIA implements Command {
         }
 
         return "";
-        
+
     }
 
     public static boolean isImagePlusMode() {

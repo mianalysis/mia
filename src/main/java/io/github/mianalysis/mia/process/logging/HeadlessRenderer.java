@@ -1,5 +1,7 @@
 package io.github.mianalysis.mia.process.logging;
 
+import java.io.PrintStream;
+import java.io.UnsupportedEncodingException;
 import java.text.DecimalFormat;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -54,10 +56,11 @@ public class HeadlessRenderer extends LogRenderer {
                 if (showProgress) {
                     Matcher matcher = Pattern.compile("\\[(.+)\\](.+)").matcher(message);
                     if (matcher.find())
-                        message = matcher.group(1) + " ║" + matcher.group(2);
+                        message = matcher.group(1) + " |" + matcher.group(2);
                     System.out.print("\033[2K\u001B[37m" + getProgressString(progress) + message + "\u001B[37m\r");
-                } else
+                } else {
                     System.out.print("\033[2K\u001B[37m[" + level.toString() + "] " + message +"\u001B[37m\r");
+                }
                 break;
             case ERROR:
                 System.err.println("\033[2K\u001B[31m[" + level.toString() + "] " + message+"\u001B[37m");
@@ -107,24 +110,26 @@ public class HeadlessRenderer extends LogRenderer {
 
         int nFullBlocks = (int) Math.floor((double) progress / pcPerBlock);
 
-        String progressString = "";
+        String progressString = "";        
         for (int i = 0; i < nFullBlocks; i++)
-            progressString += "█";
+            progressString += "#";
+            // progressString += "█";
 
-        double remainder = ((double) progress / pcPerBlock) - nFullBlocks;
-        if (remainder < 0.25)
-            progressString += "";
-        else if (remainder < 0.5)
-            progressString += "\u258E";
-        else if (remainder < 0.75)
-            progressString += "\u258C";
-        else if (remainder < 1)
-            progressString += "\u258A";
+        // The following will look prettier, but isn't compatible with some systems
+        // double remainder = ((double) progress / pcPerBlock) - nFullBlocks;
+        // if (remainder < 0.25)
+        //     progressString += "";
+        // else if (remainder < 0.5)
+        //     progressString += "\u258E";
+        // else if (remainder < 0.75)
+        //     progressString += "\u258C";
+        // else if (remainder < 1)
+        //     progressString += "\u258A";
 
         while (progressString.length() < nBlocks)
             progressString += " ";
 
-        return startPad + progress + "% ║ " + progressString + " ║ ";
+        return startPad + progress + "% | " + progressString + " | ";
 
     }
 }
