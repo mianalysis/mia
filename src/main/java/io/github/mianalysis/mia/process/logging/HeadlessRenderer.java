@@ -1,7 +1,5 @@
 package io.github.mianalysis.mia.process.logging;
 
-import java.io.PrintStream;
-import java.io.UnsupportedEncodingException;
 import java.text.DecimalFormat;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -12,8 +10,6 @@ import io.github.mianalysis.mia.object.Workspaces;
  * Created by Stephen Cross on 14/06/2019.
  */
 public class HeadlessRenderer extends LogRenderer {
-    private static int progress = 0;
-    private static boolean showProgress = false;
     DecimalFormat df = new DecimalFormat("#.0");
 
     // CONSTRUCTOR
@@ -76,26 +72,6 @@ public class HeadlessRenderer extends LogRenderer {
     public void write(String message, Level level, Workspaces workspaces) {
         int progress = (int) Math.round(workspaces.getOverallProgress() * 100);
         write(message, level, progress);
-    }
-
-    public static boolean isShowProgress() {
-        return showProgress;
-    }
-
-    public static void setShowProgress(boolean showProgress) {
-        HeadlessRenderer.showProgress = showProgress;
-    }
-
-    public static double getProgress() {
-        return progress;
-    }
-
-    public static void setProgress(int progress) {
-        HeadlessRenderer.progress = progress;
-    }
-
-    public static void setProgress(Workspaces workspaces) {
-        progress = (int) Math.round(workspaces.getOverallProgress() * 100);
     }
 
     protected String getProgressString(int progress) {

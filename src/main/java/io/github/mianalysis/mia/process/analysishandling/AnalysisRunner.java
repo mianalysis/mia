@@ -24,7 +24,7 @@ import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.Workspaces;
 import io.github.mianalysis.mia.object.parameters.FileFolderPathP;
 import io.github.mianalysis.mia.process.exporting.Exporter;
-import io.github.mianalysis.mia.process.logging.HeadlessRenderer;
+import io.github.mianalysis.mia.process.logging.LogRenderer;
 import io.github.sjcross.sjcommon.system.FileCrawler;
 
 /**
@@ -123,7 +123,7 @@ public class AnalysisRunner {
         // Cleaning up
         
         if (MIA.isHeadless()) {
-            HeadlessRenderer.setProgress(100);
+            LogRenderer.setProgress(100);
             MIA.log.writeStatus("Complete!\n");
         } else {
             GUI.updateProgressBar(100);

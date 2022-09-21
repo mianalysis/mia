@@ -37,7 +37,7 @@ import io.github.mianalysis.mia.object.refs.MetadataRef;
 import io.github.mianalysis.mia.object.refs.ObjMeasurementRef;
 import io.github.mianalysis.mia.process.analysishandling.legacyreaders.AnalysisReader_0p10p0_0p15p0;
 import io.github.mianalysis.mia.process.analysishandling.legacyreaders.AnalysisReader_Pre_0p10p0;
-import io.github.mianalysis.mia.process.logging.HeadlessRenderer;
+import io.github.mianalysis.mia.process.logging.LogRenderer;
 
 /**
  * Created by sc13967 on 23/06/2017.
@@ -88,7 +88,7 @@ public class AnalysisReader {
         MIA.log.writeStatus("Loading analysis");
 
         if (MIA.isHeadless())
-            HeadlessRenderer.setProgress(0);
+            LogRenderer.setProgress(0);
         else
             GUI.updateProgressBar(0);
 

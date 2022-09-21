@@ -47,7 +47,7 @@ import io.github.mianalysis.mia.object.refs.PartnerRef;
 import io.github.mianalysis.mia.object.refs.abstrakt.SummaryRef;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.process.analysishandling.Analysis;
-import io.github.mianalysis.mia.process.logging.HeadlessRenderer;
+import io.github.mianalysis.mia.process.logging.LogRenderer;
 
 /**
  * Created by sc13967 on 23/06/2017.
@@ -91,9 +91,9 @@ public class AnalysisReader_0p10p0_0p15p0 {
             throws IOException, ClassNotFoundException, ParserConfigurationException, SAXException,
             IllegalAccessException, InstantiationException, NoSuchMethodException, InvocationTargetException {
         MIA.log.writeStatus("Loading analysis");
-        
+
         if (MIA.isHeadless())
-            HeadlessRenderer.setProgress(0);
+            LogRenderer.setProgress(0);
         else
             GUI.updateProgressBar(0);
 

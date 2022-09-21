@@ -57,11 +57,11 @@ public interface Themes {
                 return true;
             case Themes.FLAT_LAF_INTELLIJ:
             case Themes.FLAT_LAF_LIGHT:
-            case Themes.MATCH_IMAGEJ:
             case Themes.SYSTEM_DEFAULT:
             default:
                 return false;
-
+            case Themes.MATCH_IMAGEJ:
+                return true;
         }
     }
 

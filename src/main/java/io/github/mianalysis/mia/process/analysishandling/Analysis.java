@@ -96,10 +96,10 @@ public class Analysis {
             workspace.setProgress(fractionComplete);
 
             if (MIA.isHeadless())
-                HeadlessRenderer.setProgress(workspace.getWorkspaces());
+                LogRenderer.setProgress(workspace.getWorkspaces());
             else
                 GUI.updateProgressBar();
-            
+
         }
 
         // We're only interested in the measurements now, so clearing images and object

@@ -21,10 +21,10 @@ import io.github.mianalysis.mia.object.system.Colours;
  * Created by Stephen Cross on 14/06/2019.
  */
 public class ConsoleRenderer extends LogRenderer {
-    private UIService uiService = null;
-    private JTextPane consoleTextPane = null;
+    protected UIService uiService = null;
+    protected JTextPane consoleTextPane = null;
 
-    private HashMap<Level,Style> logStyles = new HashMap<>();
+    protected HashMap<Level,Style> logStyles = new HashMap<>();
     
 
 
