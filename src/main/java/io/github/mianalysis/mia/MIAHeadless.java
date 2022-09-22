@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.LinkedHashMap;
 
+import org.scijava.ItemVisibility;
 import org.scijava.command.Command;
 import org.scijava.plugin.Parameter;
 import org.scijava.plugin.Plugin;
@@ -19,39 +20,50 @@ import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.process.analysishandling.Analysis;
 import io.github.mianalysis.mia.process.analysishandling.AnalysisReader;
 import io.github.mianalysis.mia.process.analysishandling.AnalysisRunner;
-import io.github.mianalysis.mia.process.logging.ConsoleRenderer;
 import io.github.mianalysis.mia.process.logging.HeadlessRenderer;
 import io.github.mianalysis.mia.process.logging.ImageJGUIRenderer;
 import io.github.mianalysis.mia.process.logging.LogRenderer;
 
 @Plugin(type = Command.class, menuPath = "Plugins>ModularImageAnalysis (MIA)>MIA (headless)", visible = true)
 public class MIAHeadless extends MIA {
+    @Parameter (required = false, visibility = ItemVisibility.MESSAGE)
+    private String workFlowSelectionMessage = "<html><b>Workflow selection</b></html>";
+
     @Parameter(label = "Workflow file path", required = true)
     public File workflowPath = null;
 
-    @Parameter(label = "Input file path", required = false, persist = false)
-    public File inputFilePath = null;
+    @Parameter (required = false, visibility = ItemVisibility.MESSAGE)
+    private String workFlowConfigMessage = "<html><b>Workflow configuration (optional)</b></html>";
 
-    @Parameter(label = "showDebug", required = false, persist = false)
+    // The following currently has to be a String as there's seemingly no way to select either a file or folder
+    @Parameter(label = "Input file path", required = false, persist = false)
+    public String inputFilePath = null;
+
+    @Parameter(label = "Variables", required = false, persist = false)
+    public String variables = null;
+
+    @Parameter (required = false, visibility = ItemVisibility.MESSAGE)
+    private String loggingMessage = "<html><b>Logging configuration</b></html>";
+
+    @Parameter(label = "Show debug", required = false, persist = false)
     public boolean showDebug = false;
 
-    @Parameter(label = "showMemory", required = false, persist = false)
+    @Parameter(label = "Show memory", required = false, persist = false)
     public boolean showMemory = false;
 
-    @Parameter(label = "showMessage", required = false, persist = false)
+    @Parameter(label = "Show message", required = false, persist = false)
     public boolean showMessage = true;
 
-    @Parameter(label = "showStatus", required = false, persist = false)
+    @Parameter(label = "Show status", required = false, persist = false)
     public boolean showStatus = true;
 
-    @Parameter(label = "showWarning", required = false, persist = false)
+    @Parameter(label = "Show warning", required = false, persist = false)
     public boolean showWarning = true;
 
-    @Parameter(label = "verbose", required = false, persist = false)
+    @Parameter(label = "Verbose messages", required = false, persist = false)
     public boolean verbose = false;
 
-    @Parameter(label = "variables", required = false, persist = false)
-    public String variables = null;
+
 
     @Override
     public void run() {
@@ -67,7 +79,7 @@ public class MIAHeadless extends MIA {
             } else {
                 UIService uiService = ijService.context().getService(UIService.class);
                 newRenderer = new ImageJGUIRenderer(uiService);
-                
+
             }
 
             newRenderer.setWriteEnabled(LogRenderer.Level.DEBUG, showDebug);
@@ -89,7 +101,7 @@ public class MIAHeadless extends MIA {
             } else {
                 analysis = AnalysisReader.loadAnalysis(workflowPath);
                 analysis.getModules().getInputControl().updateParameterValue(InputControl.INPUT_PATH,
-                        inputFilePath.getAbsolutePath());
+                        inputFilePath);
             }
 
             // Inserting variables
