@@ -19,7 +19,6 @@ import io.github.mianalysis.mia.module.visualise.overlays.AddAllObjectPoints;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.image.Image;
-import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.parameters.ChildObjectsP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputObjectsP;
@@ -157,10 +156,9 @@ public class ConvertObjectsToImage extends Module {
         break;
     }
 
-    if (colourMode.equals(ColourModes.SINGLE_COLOUR) && singleColourMode.equals(SingleColourModes.B_ON_W)) {
+    if (colourMode.equals(ColourModes.SINGLE_COLOUR) && singleColourMode.equals(SingleColourModes.B_ON_W))
       InvertIntensity.process(outputImage);
-    }
-
+    
     // Applying spatial calibration from template image
     Calibration calibration = inputObjects.getSpatialCalibration().createImageCalibration();
     outputImage.getImagePlus().setCalibration(calibration);

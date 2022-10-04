@@ -1227,9 +1227,6 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener, K
                 case Roi.POLYLINE:
                     polyRoi = (PolygonRoi) roi;
 
-                    if (polyRoi.getStrokeWidth() > 0)
-                        MIA.log.writeWarning("Thick lines currently unsupported.  Using backbone only.");
-
                     x = polyRoi.getXCoordinates();
                     xx = new int[x.length];
                     for (int i = 0; i < x.length; i++)
@@ -1245,9 +1242,6 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener, K
 
                 case Roi.LINE:
                     Line line = (Line) roi;
-
-                    if (line.getStrokeWidth() > 0)
-                        MIA.log.writeWarning("Thick lines currently unsupported.  Using backbone only.");
 
                     newRoi = new Line(line.x1, line.y1, line.x2, line.y2);
                     break;
