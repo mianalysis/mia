@@ -84,6 +84,32 @@ public class FilterImageMSTest extends ModuleTest {
     }
 
     /**
+     * Parameterized test run with 8-bit bit depth and all dimensions and filters.
+     * The reduced testing here is to keep storage requirements down.
+     * 
+     * @throws UnsupportedEncodingException
+     */
+    @ParameterizedTest
+    @MethodSource("dimFilterInputProvider")
+    void test8Bit(Dimension dimension, Filter filter) throws UnsupportedEncodingException {
+        runTest(dimension, BitDepth.B8, filter, 3);
+
+    }
+
+    /**
+     * Parameterized test run with all bit depths for D4ZT dimension and 2D mean
+     * filter only. The reduced testing here is to keep storage requirements down.
+     * 
+     * @throws UnsupportedEncodingException
+     */
+    @ParameterizedTest
+    @MethodSource("bitdepthInputProvider")
+    void testAllBitDepths_D4ZT_FMEAN(BitDepth bitDepth) throws UnsupportedEncodingException {
+        runTest(Dimension.D4ZT, bitDepth, Filter.FMEAN2D, 3);
+
+    }
+
+        /**
      * Performs the test
      * 
      * @throws UnsupportedEncodingException
@@ -185,37 +211,12 @@ public class FilterImageMSTest extends ModuleTest {
 
     }
 
-    /**
+        /**
      * Test to check this module has an assigned description
      */
     @Override
     public void testGetHelp() {
         assertNotNull(new FilterImage(null).getDescription());
     }
-
-    /**
-     * Parameterized test run with 8-bit bit depth and all dimensions and filters.
-     * The reduced testing here is to keep storage requirements down.
-     * 
-     * @throws UnsupportedEncodingException
-     */
-    @ParameterizedTest
-    @MethodSource("dimFilterInputProvider")
-    void test8Bit(Dimension dimension, Filter filter) throws UnsupportedEncodingException {
-        runTest(dimension, BitDepth.B8, filter, 3);
-
-    }
-
-    /**
-     * Parameterized test run with all bit depths for D4ZT dimension and 2D mean
-     * filter only. The reduced testing here is to keep storage requirements down.
-     * 
-     * @throws UnsupportedEncodingException
-     */
-    @ParameterizedTest
-    @MethodSource("bitdepthInputProvider")
-    void testAllBitDepths_D4ZT_FMEAN(BitDepth bitDepth) throws UnsupportedEncodingException {
-        runTest(Dimension.D4ZT, bitDepth, Filter.FMEAN2D, 3);
-
-    }
+    
 }

@@ -1,7 +1,7 @@
 package io.github.mianalysis.enums;
 
 public enum BitDepth {
-    B8,
-    B16,
-    B32
+    B8,     // 8-bit
+    B16,    // 16-bit
+    B32     // 32-bit
 }
