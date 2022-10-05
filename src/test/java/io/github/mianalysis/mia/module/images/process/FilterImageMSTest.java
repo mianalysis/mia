@@ -26,21 +26,21 @@ import io.github.mianalysis.mia.object.image.ImageFactory;
 public class FilterImageMSTest extends ModuleTest {
 
     enum Filter {
-        FDOG2D, // 2D difference of Gaussian
+        // FDOG2D, // 2D difference of Gaussian
         FGAUSS2D, // 2D Gaussian
-        FGAUSS3D, // 3D Gaussian
-        FGRAD2D, // 2D gradient
+        // FGAUSS3D, // 3D Gaussian
+        // FGRAD2D, // 2D gradient
         FMAX2D, // 2D maximum
-        FMAX3D, // 3D maximum
+        // FMAX3D, // 3D maximum
         FMEAN2D, // 2D mean
-        FMEAN3D, // 3D mean
+        // FMEAN3D, // 3D mean
         FMEDIAN2D, // 2D median
-        FMEDIAN3D, // 3D median
+        // FMEDIAN3D, // 3D median
         FMIN2D, // 2D minimum
-        FMIN3D, // 3D minimum
+        // FMIN3D, // 3D minimum
         // FRIDGE2D, // 2D ridge enhancement
         FVAR2D, // 2D variance
-        FVAR3D, // 3D variance
+        // FVAR3D, // 3D variance
 
     }
 
@@ -147,42 +147,42 @@ public class FilterImageMSTest extends ModuleTest {
         filterImage.updateParameterValue(FilterImage.CALIBRATED_UNITS, false);
 
         switch (filter) {
-            case FDOG2D:
-                filterImage.updateParameterValue(FilterImage.FILTER_MODE, FilterImage.FilterModes.DOG2D);
-                break;
+            // case FDOG2D:
+            //     filterImage.updateParameterValue(FilterImage.FILTER_MODE, FilterImage.FilterModes.DOG2D);
+            //     break;
             case FGAUSS2D:
                 filterImage.updateParameterValue(FilterImage.FILTER_MODE, FilterImage.FilterModes.GAUSSIAN2D);
                 break;
-            case FGAUSS3D:
-                filterImage.updateParameterValue(FilterImage.FILTER_MODE, FilterImage.FilterModes.GAUSSIAN3D);
-                break;
-            case FGRAD2D:
-                filterImage.updateParameterValue(FilterImage.FILTER_MODE, FilterImage.FilterModes.GRADIENT2D);
-                break;
+            // case FGAUSS3D:
+            //     filterImage.updateParameterValue(FilterImage.FILTER_MODE, FilterImage.FilterModes.GAUSSIAN3D);
+            //     break;
+            // case FGRAD2D:
+            //     filterImage.updateParameterValue(FilterImage.FILTER_MODE, FilterImage.FilterModes.GRADIENT2D);
+            //     break;
             case FMAX2D:
                 filterImage.updateParameterValue(FilterImage.FILTER_MODE, FilterImage.FilterModes.MAXIMUM2D);
                 break;
-            case FMAX3D:
-                filterImage.updateParameterValue(FilterImage.FILTER_MODE, FilterImage.FilterModes.MAXIMUM3D);
-                break;
+            // case FMAX3D:
+            //     filterImage.updateParameterValue(FilterImage.FILTER_MODE, FilterImage.FilterModes.MAXIMUM3D);
+            //     break;
             case FMEAN2D:
                 filterImage.updateParameterValue(FilterImage.FILTER_MODE, FilterImage.FilterModes.MEAN2D);
                 break;
-            case FMEAN3D:
-                filterImage.updateParameterValue(FilterImage.FILTER_MODE, FilterImage.FilterModes.MEAN3D);
-                break;
+            // case FMEAN3D:
+            //     filterImage.updateParameterValue(FilterImage.FILTER_MODE, FilterImage.FilterModes.MEAN3D);
+            //     break;
             case FMEDIAN2D:
                 filterImage.updateParameterValue(FilterImage.FILTER_MODE, FilterImage.FilterModes.MEDIAN2D);
                 break;
-            case FMEDIAN3D:
-                filterImage.updateParameterValue(FilterImage.FILTER_MODE, FilterImage.FilterModes.MEDIAN3D);
-                break;
+            // case FMEDIAN3D:
+            //     filterImage.updateParameterValue(FilterImage.FILTER_MODE, FilterImage.FilterModes.MEDIAN3D);
+            //     break;
             case FMIN2D:
                 filterImage.updateParameterValue(FilterImage.FILTER_MODE, FilterImage.FilterModes.MINIMUM2D);
                 break;
-            case FMIN3D:
-                filterImage.updateParameterValue(FilterImage.FILTER_MODE, FilterImage.FilterModes.MINIMUM3D);
-                break;
+            // case FMIN3D:
+            //     filterImage.updateParameterValue(FilterImage.FILTER_MODE, FilterImage.FilterModes.MINIMUM3D);
+            //     break;
             // case FRIDGE2D:
             // filterImage.updateParameterValue(FilterImage.FILTER_MODE,
             // FilterImage.FilterModes.RIDGE_ENHANCEMENT);
@@ -190,9 +190,9 @@ public class FilterImageMSTest extends ModuleTest {
             case FVAR2D:
                 filterImage.updateParameterValue(FilterImage.FILTER_MODE, FilterImage.FilterModes.VARIANCE2D);
                 break;
-            case FVAR3D:
-                filterImage.updateParameterValue(FilterImage.FILTER_MODE, FilterImage.FilterModes.VARIANCE3D);
-                break;
+            // case FVAR3D:
+            //     filterImage.updateParameterValue(FilterImage.FILTER_MODE, FilterImage.FilterModes.VARIANCE3D);
+            //     break;
         }
 
         filterImage.updateParameterValue(FilterImage.FILTER_RADIUS, radius);
