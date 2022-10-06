@@ -8,11 +8,13 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.stream.Stream;
 
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import ij.IJ;
+import ij.ImageJ;
 import ij.ImagePlus;
 import io.github.mianalysis.enums.BitDepth;
 import io.github.mianalysis.enums.Dimension;
@@ -28,10 +30,10 @@ public class FilterImageMSTest extends ModuleTest {
     enum Filter {
         // FDOG2D, // 2D difference of Gaussian
         FGAUSS2D, // 2D Gaussian
-        // FGAUSS3D, // 3D Gaussian
+        FGAUSS3D, // 3D Gaussian
         // FGRAD2D, // 2D gradient
         FMAX2D, // 2D maximum
-        // FMAX3D, // 3D maximum
+        FMAX3D, // 3D maximum
         FMEAN2D, // 2D mean
         // FMEAN3D, // 3D mean
         FMEDIAN2D, // 2D median
@@ -109,7 +111,15 @@ public class FilterImageMSTest extends ModuleTest {
 
     }
 
-        /**
+    /*
+     * Used for testing a single set of parameters
+     */
+    @Test
+    void singleTest() throws UnsupportedEncodingException {
+        runTest(Dimension.D3C, BitDepth.B8, Filter.FGAUSS3D, 3);
+    }
+
+    /**
      * Performs the test
      * 
      * @throws UnsupportedEncodingException
@@ -148,41 +158,47 @@ public class FilterImageMSTest extends ModuleTest {
 
         switch (filter) {
             // case FDOG2D:
-            //     filterImage.updateParameterValue(FilterImage.FILTER_MODE, FilterImage.FilterModes.DOG2D);
-            //     break;
+            // filterImage.updateParameterValue(FilterImage.FILTER_MODE,
+            // FilterImage.FilterModes.DOG2D);
+            // break;
             case FGAUSS2D:
                 filterImage.updateParameterValue(FilterImage.FILTER_MODE, FilterImage.FilterModes.GAUSSIAN2D);
                 break;
-            // case FGAUSS3D:
-            //     filterImage.updateParameterValue(FilterImage.FILTER_MODE, FilterImage.FilterModes.GAUSSIAN3D);
-            //     break;
+            case FGAUSS3D:
+                filterImage.updateParameterValue(FilterImage.FILTER_MODE,
+                        FilterImage.FilterModes.GAUSSIAN3D);
+                break;
             // case FGRAD2D:
-            //     filterImage.updateParameterValue(FilterImage.FILTER_MODE, FilterImage.FilterModes.GRADIENT2D);
-            //     break;
+            // filterImage.updateParameterValue(FilterImage.FILTER_MODE,
+            // FilterImage.FilterModes.GRADIENT2D);
+            // break;
             case FMAX2D:
                 filterImage.updateParameterValue(FilterImage.FILTER_MODE, FilterImage.FilterModes.MAXIMUM2D);
                 break;
-            // case FMAX3D:
-            //     filterImage.updateParameterValue(FilterImage.FILTER_MODE, FilterImage.FilterModes.MAXIMUM3D);
-            //     break;
+            case FMAX3D:
+                filterImage.updateParameterValue(FilterImage.FILTER_MODE, FilterImage.FilterModes.MAXIMUM3D);
+                break;
             case FMEAN2D:
                 filterImage.updateParameterValue(FilterImage.FILTER_MODE, FilterImage.FilterModes.MEAN2D);
                 break;
             // case FMEAN3D:
-            //     filterImage.updateParameterValue(FilterImage.FILTER_MODE, FilterImage.FilterModes.MEAN3D);
-            //     break;
+            // filterImage.updateParameterValue(FilterImage.FILTER_MODE,
+            // FilterImage.FilterModes.MEAN3D);
+            // break;
             case FMEDIAN2D:
                 filterImage.updateParameterValue(FilterImage.FILTER_MODE, FilterImage.FilterModes.MEDIAN2D);
                 break;
             // case FMEDIAN3D:
-            //     filterImage.updateParameterValue(FilterImage.FILTER_MODE, FilterImage.FilterModes.MEDIAN3D);
-            //     break;
+            // filterImage.updateParameterValue(FilterImage.FILTER_MODE,
+            // FilterImage.FilterModes.MEDIAN3D);
+            // break;
             case FMIN2D:
                 filterImage.updateParameterValue(FilterImage.FILTER_MODE, FilterImage.FilterModes.MINIMUM2D);
                 break;
             // case FMIN3D:
-            //     filterImage.updateParameterValue(FilterImage.FILTER_MODE, FilterImage.FilterModes.MINIMUM3D);
-            //     break;
+            // filterImage.updateParameterValue(FilterImage.FILTER_MODE,
+            // FilterImage.FilterModes.MINIMUM3D);
+            // break;
             // case FRIDGE2D:
             // filterImage.updateParameterValue(FilterImage.FILTER_MODE,
             // FilterImage.FilterModes.RIDGE_ENHANCEMENT);
@@ -191,8 +207,9 @@ public class FilterImageMSTest extends ModuleTest {
                 filterImage.updateParameterValue(FilterImage.FILTER_MODE, FilterImage.FilterModes.VARIANCE2D);
                 break;
             // case FVAR3D:
-            //     filterImage.updateParameterValue(FilterImage.FILTER_MODE, FilterImage.FilterModes.VARIANCE3D);
-            //     break;
+            // filterImage.updateParameterValue(FilterImage.FILTER_MODE,
+            // FilterImage.FilterModes.VARIANCE3D);
+            // break;
         }
 
         filterImage.updateParameterValue(FilterImage.FILTER_RADIUS, radius);
@@ -207,16 +224,21 @@ public class FilterImageMSTest extends ModuleTest {
 
         // Checking the output image has the expected calibration
         Image outputImage = workspace.getImage("Test_output");
+
+        // new ImageJ();
+        // expectedImage.showImage();
+        // outputImage.showImage();
+        // IJ.runMacro("waitForUser");
         assertEquals(expectedImage, outputImage);
 
     }
 
-        /**
+    /**
      * Test to check this module has an assigned description
      */
     @Override
     public void testGetHelp() {
         assertNotNull(new FilterImage(null).getDescription());
     }
-    
+
 }
