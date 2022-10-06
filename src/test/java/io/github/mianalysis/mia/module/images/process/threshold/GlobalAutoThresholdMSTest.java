@@ -49,12 +49,24 @@ public class GlobalAutoThresholdMSTest extends ModuleTest {
     /**
      * Generates all permutations
      */
-    public static Stream<Arguments> dimThresholdLogicInputProvider() {
+    public static Stream<Arguments> thresholdLogicInputProvider() {
         Stream.Builder<Arguments> argumentBuilder = Stream.builder();
-        for (Dimension dimension : Dimension.values())
             for (Threshold threshold : Threshold.values())
                 for (Logic logic : Logic.values())
-                    argumentBuilder.add(Arguments.of(dimension, threshold, logic));
+                    argumentBuilder.add(Arguments.of(threshold, logic));
+
+        return argumentBuilder.build();
+
+    }
+
+    /**
+     * Generates all permutations
+     */
+    public static Stream<Arguments> dimLogicInputProvider() {
+        Stream.Builder<Arguments> argumentBuilder = Stream.builder();
+            for (Dimension dimension : Dimension.values())
+                for (Logic logic : Logic.values())
+                    argumentBuilder.add(Arguments.of(dimension, logic));
 
         return argumentBuilder.build();
 
@@ -67,9 +79,22 @@ public class GlobalAutoThresholdMSTest extends ModuleTest {
      * @throws UnsupportedEncodingException
      */
     @ParameterizedTest
-    @MethodSource("dimThresholdLogicInputProvider")
-    void testAll(Dimension dimension, Threshold threshold, Logic logic) throws UnsupportedEncodingException {
-        runTest(dimension, threshold, logic);
+    @MethodSource("thresholdLogicInputProvider")
+    void testAllD3T(Threshold threshold, Logic logic) throws UnsupportedEncodingException {
+        runTest(Dimension.D3T, threshold, logic);
+
+    }
+
+    /**
+     * Parameterized test run with 8-bit bit depth and all dimensions, all threshold algorithms and all logics. 
+     * The reduced testing here is to keep storage requirements down.
+     * 
+     * @throws UnsupportedEncodingException
+     */
+    @ParameterizedTest
+    @MethodSource("dimLogicInputProvider")
+    void testAllTHUANG(Dimension dimension, Logic logic) throws UnsupportedEncodingException {
+        runTest(dimension, Threshold.THUANG, logic);
 
     }
 
