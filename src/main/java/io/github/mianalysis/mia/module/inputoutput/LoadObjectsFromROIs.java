@@ -1,9 +1,9 @@
 package io.github.mianalysis.mia.module.inputoutput;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
@@ -52,9 +52,6 @@ import loci.common.services.DependencyException;
 import loci.common.services.ServiceException;
 import loci.formats.FormatException;
 
-/**
- * Created by sc13967 on 26/06/2017.
- */
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class LoadObjectsFromROIs extends Module {
     public static final String LOADER_SEPARATOR = "Object loading";
@@ -92,77 +89,109 @@ public class LoadObjectsFromROIs extends Module {
     }
 
     public static void loadObjects(String filePath, Objs outputObjects, @Nullable Objs trackObjects) {
-        Pattern pattern = Pattern.compile("ID([0-9]+)_TR([\\-0-9]+)_T([0-9]+)_Z([0-9]+)");
-
-        // This map contains each track (track IDs as keys). Each value is itself a map
-        // of timepoints and the associated object IDs.
-        // HashMap<Integer, HashMap<Integer, Integer>> trackLinks = trackObjects == null
-        // ? null : new HashMap<>();
+        byte[] buf = new byte[1024];
+        int len;
 
         try {
-            ZipInputStream in = new ZipInputStream(new FileInputStream(filePath));
-            byte[] buf = new byte[1024];
-            int len;
-            ZipEntry entry = in.getNextEntry();
-
-            while (entry != null) {
-                String name = entry.getName();
-
-                if (!name.endsWith(".roi")) {
-                    entry = in.getNextEntry();
-                    continue;
-                }
-
+            if (filePath.endsWith(".roi")) {
+                // Loading a single ROI from .roi
+                FileInputStream in = new FileInputStream(filePath);
                 ByteArrayOutputStream out = new ByteArrayOutputStream();
+
                 while ((len = in.read(buf)) > 0)
                     out.write(buf, 0, len);
                 out.close();
+
+                String name = new File(filePath).getName();
 
                 byte[] bytes = out.toByteArray();
                 RoiDecoder rd = new RoiDecoder(bytes, name);
                 Roi roi = rd.getRoi();
 
                 if (roi == null) {
-                    entry = in.getNextEntry();
-                    continue;
-                }
+                    in.close();
+                    return;
+                }                    
 
-                name = name.substring(0, name.length() - 4);
-                Matcher matcher = pattern.matcher(name);
-                if (matcher.matches()) {
-                    int oid = Integer.parseInt(matcher.group(1));
-                    int tid = Integer.parseInt(matcher.group(2));
-                    int t = Integer.parseInt(matcher.group(3))-1;
-                    int z = Integer.parseInt(matcher.group(4))-1;
+                addRoi(outputObjects, trackObjects, roi, name);
 
-                    if (!outputObjects.keySet().contains(oid))
-                        outputObjects.createAndAddNewObject(VolumeType.QUADTREE, oid);
-                    Obj outputObject = outputObjects.get(oid);
+                in.close();
 
-                    if (trackObjects != null && tid != -1) {
-                        if (!trackObjects.keySet().contains(tid))
-                            trackObjects.createAndAddNewObject(VolumeType.QUADTREE, tid);
-                        Obj trackObject = trackObjects.get(tid);
-                        trackObject.addChild(outputObject);
-                        outputObject.addParent(trackObject);
+            } else if (filePath.endsWith(".zip")) {
+                // Loading multiple ROIs from .zip
+                ZipInputStream in = new ZipInputStream(new FileInputStream(filePath));
+                ZipEntry entry = in.getNextEntry();
+
+                while (entry != null) {
+                    String name = entry.getName();
+                    MIA.log.writeDebug("N " + name);
+
+                    if (!name.endsWith(".roi")) {
+                        entry = in.getNextEntry();
+                        continue;
                     }
 
-                    outputObject.addPointsFromRoi(roi, z);
-                    outputObject.setT(t);
+                    ByteArrayOutputStream out = new ByteArrayOutputStream();
+                    while ((len = in.read(buf)) > 0)
+                        out.write(buf, 0, len);
+                    out.close();
+
+                    byte[] bytes = out.toByteArray();
+                    RoiDecoder rd = new RoiDecoder(bytes, name);
+                    Roi roi = rd.getRoi();
+
+                    if (roi == null) {
+                        entry = in.getNextEntry();
+                        continue;
+                    }
+
+                    addRoi(outputObjects, trackObjects, roi, name);
+
+                    entry = in.getNextEntry();
 
                 }
 
-                entry = in.getNextEntry();
-
+                in.close();
             }
-
-            in.close();
-
-        } catch (
-
-        IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
             return;
+        }
+    }
+
+    static void addRoi(Objs outputObjects, Objs trackObjects, Roi roi, String name) {
+        Pattern pattern = Pattern.compile("ID([0-9]+)_TR([\\-0-9]+)_T([0-9]+)_Z([0-9]+)");
+
+        name = name.substring(0, name.length() - 4);
+        Matcher matcher = pattern.matcher(name);
+        if (matcher.matches()) {
+            int oid = Integer.parseInt(matcher.group(1));
+            int tid = Integer.parseInt(matcher.group(2));
+            int t = Integer.parseInt(matcher.group(3)) - 1;
+            int z = Integer.parseInt(matcher.group(4)) - 1;
+
+            if (!outputObjects.keySet().contains(oid))
+                outputObjects.createAndAddNewObject(VolumeType.QUADTREE, oid);
+            Obj outputObject = outputObjects.get(oid);
+
+            if (trackObjects != null && tid != -1) {
+                if (!trackObjects.keySet().contains(tid))
+                    trackObjects.createAndAddNewObject(VolumeType.QUADTREE, tid);
+                Obj trackObject = trackObjects.get(tid);
+                trackObject.addChild(outputObject);
+                outputObject.addParent(trackObject);
+            }
+
+            outputObject.addPointsFromRoi(roi, z);
+            outputObject.setT(t);
+
+        } else {
+            // If the name doesn't match, just add it at the first location with the next ID
+            // number.
+            Obj outputObject = outputObjects.createAndAddNewObject(VolumeType.QUADTREE);
+            outputObject.addPointsFromRoi(roi, 0);
+            outputObject.setT(0);
+
         }
     }
 
