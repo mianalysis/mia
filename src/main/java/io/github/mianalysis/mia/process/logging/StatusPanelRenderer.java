@@ -1,12 +1,9 @@
 package io.github.mianalysis.mia.process.logging;
 
-import javax.swing.*;
-import java.util.HashMap;
+import javax.swing.JLabel;
 
-public class StatusPanelRenderer implements LogRenderer {
+public class StatusPanelRenderer extends LogRenderer {
     private final JLabel textField;
-
-    private HashMap<Level,Boolean> levelStatus = new HashMap<>();
 
     public StatusPanelRenderer(JLabel textField) {
         this.textField = textField;
@@ -23,15 +20,5 @@ public class StatusPanelRenderer implements LogRenderer {
     @Override
     public void write(String message, Level level) {
         if (levelStatus.get(level)) textField.setText(message);
-    }
-
-    @Override
-    public boolean isWriteEnabled(Level level) {
-        return levelStatus.get(level);
-    }
-
-    @Override
-    public void setWriteEnabled(Level level, boolean writeEnabled) {
-        levelStatus.put(level,writeEnabled);
     }
 }

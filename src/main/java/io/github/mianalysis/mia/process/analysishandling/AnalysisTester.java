@@ -11,10 +11,9 @@ import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.parameters.abstrakt.Parameter;
 
 public class AnalysisTester {
-    public static int testModules(Modules modules) {
+    public static int testModules(Modules modules, Workspace workspace) {
         GlobalVariables.updateVariables(modules);
-        Workspace workspace = GUI.getTestWorkspace();
-
+        
         // Setting all module runnable states to false
         for (Module module : modules) {
             module.setRunnable(false);

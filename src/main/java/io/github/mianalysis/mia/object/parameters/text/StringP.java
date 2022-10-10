@@ -2,7 +2,6 @@ package io.github.mianalysis.mia.object.parameters.text;
 
 import com.drew.lang.annotations.NotNull;
 
-import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.system.GlobalVariables;
 import io.github.mianalysis.mia.object.Workspace;
@@ -13,21 +12,21 @@ public class StringP extends TextType {
     protected String value = "";
 
     public StringP(String name, Module module) {
-        super(name,module);
+        super(name, module);
     }
 
     public StringP(String name, Module module, @NotNull String value) {
-        super(name,module);
+        super(name, module);
         this.value = value;
     }
 
     public StringP(String name, Module module, @NotNull String value, String description) {
-        super(name,module,description);
+        super(name, module, description);
         this.value = value;
     }
 
     public void setValue(String value) {
-            this.value = value;
+        this.value = value;
     }
 
     @Override
@@ -55,7 +54,7 @@ public class StringP extends TextType {
 
     @Override
     public <T extends Parameter> T duplicate(Module newModule) {
-        StringP newParameter = new StringP(name,newModule,value,getDescription());
+        StringP newParameter = new StringP(name, newModule, value, getDescription());
 
         newParameter.setNickname(getNickname());
         newParameter.setVisible(isVisible());

@@ -29,13 +29,12 @@ import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.module.inputoutput.ImageSaver;
+import io.github.mianalysis.mia.module.inputoutput.abstrakt.AbstractSaver;
 import io.github.mianalysis.mia.module.objects.measure.spatial.MeasureSkeleton;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.image.Image;
-import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
@@ -60,7 +59,7 @@ import io.github.sjcross.sjcommon.object.volume.VolumeType;
  * Created by sc13967 on 22/06/2017.
  */
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
-public class MeasureIntensityAlongPath extends Module {
+public class MeasureIntensityAlongPath extends AbstractSaver {
     public static final String INPUT_SEPARATOR = "Object input";
     public static final String INPUT_OBJECTS = "Input objects";
 
@@ -72,27 +71,12 @@ public class MeasureIntensityAlongPath extends Module {
     public static final String INCLUDE_CENTROIDS = "Include centroids";
     public static final String INCLUDE_TIMEPOINTS = "Include timepoints";
 
-    public static final String FILE_SAVING_SEPARATOR = "File saving controls";
-    public static final String SAVE_NAME_MODE = "Save name mode";
-    public static final String SAVE_FILE_NAME = "File name";
-    public static final String APPEND_SERIES_MODE = "Append series mode";
-    public static final String APPEND_DATETIME_MODE = "Append date/time mode";
-    public static final String SAVE_SUFFIX = "Add filename suffix";
-
-    public interface SaveNameModes extends ImageSaver.SaveNameModes {
-    }
-
-    public interface AppendSeriesModes extends ImageSaver.AppendSeriesModes {
-    }
-
-    public interface AppendDateTimeModes extends ImageSaver.AppendDateTimeModes {
-    }
-
     public MeasureIntensityAlongPath(Modules modules) {
         super("Measure intensity along path", modules);
     }
 
-    public static SXSSFWorkbook process(Objs objects, Image[] images, boolean includeCentroids, boolean includeTimepoints) {
+    public static SXSSFWorkbook process(Objs objects, Image[] images, boolean includeCentroids,
+            boolean includeTimepoints) {
         // Creating workbook
         SXSSFWorkbook workbook = new SXSSFWorkbook();
         Sheet[] sheets = new Sheet[images.length];
@@ -109,7 +93,8 @@ public class MeasureIntensityAlongPath extends Module {
 
     }
 
-    public static void process(Obj object, Image image, Sheet sheet, boolean includeCentroids, boolean includeTimepoints) {
+    public static void process(Obj object, Image image, Sheet sheet, boolean includeCentroids,
+            boolean includeTimepoints) {
         if (object.size() < 2)
             return;
 
@@ -231,7 +216,8 @@ public class MeasureIntensityAlongPath extends Module {
 
     }
 
-    public static void addProfileToSheet(Sheet sheet, Obj object, LinkedHashMap<?, Double> profile, boolean includeCentroids,
+    public static void addProfileToSheet(Sheet sheet, Obj object, LinkedHashMap<?, Double> profile,
+            boolean includeCentroids,
             boolean includeTimepoints) {
         int colCount = 0;
         int rowCount = sheet.getLastRowNum() + 1;
@@ -242,7 +228,7 @@ public class MeasureIntensityAlongPath extends Module {
         if (includeCentroids) {
             row.createCell(colCount++).setCellValue(object.getXMean(true));
             row.createCell(colCount++).setCellValue(object.getYMean(true));
-            row.createCell(colCount++).setCellValue(object.getZMean(true,false));
+            row.createCell(colCount++).setCellValue(object.getZMean(true, false));
         }
 
         if (includeTimepoints)
@@ -300,19 +286,17 @@ public class MeasureIntensityAlongPath extends Module {
     @Override
     public Status process(Workspace workspace) {
         // Getting objects to measure
-        String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS, workspace);
         Objs inputObjects = workspace.getObjects().get(inputObjectsName);
 
         // Getting parameters
         ParameterGroup inputImages = parameters.getParameter(MEASURE_ANOTHER_IMAGE);
         LinkedHashMap<Integer, Parameters> imageCollections = inputImages.getCollections(true);
-        boolean includeCentroids = parameters.getValue(INCLUDE_CENTROIDS,workspace);
-        boolean includeTimepoints = parameters.getValue(INCLUDE_TIMEPOINTS,workspace);
-        String saveNameMode = parameters.getValue(SAVE_NAME_MODE,workspace);
-        String saveFileName = parameters.getValue(SAVE_FILE_NAME,workspace);
-        String appendSeriesMode = parameters.getValue(APPEND_SERIES_MODE,workspace);
-        String appendDateTimeMode = parameters.getValue(APPEND_DATETIME_MODE,workspace);
-        String suffix = parameters.getValue(SAVE_SUFFIX,workspace);
+        boolean includeCentroids = parameters.getValue(INCLUDE_CENTROIDS, workspace);
+        boolean includeTimepoints = parameters.getValue(INCLUDE_TIMEPOINTS, workspace);
+        String appendSeriesMode = parameters.getValue(APPEND_SERIES_MODE, workspace);
+        String appendDateTimeMode = parameters.getValue(APPEND_DATETIME_MODE, workspace);
+        String suffix = parameters.getValue(SAVE_SUFFIX, workspace);
 
         // If there are no input objects skip the module
         if (inputObjects == null)
@@ -330,28 +314,16 @@ public class MeasureIntensityAlongPath extends Module {
 
         SXSSFWorkbook workbook = process(inputObjects, images, includeCentroids, includeTimepoints);
 
-        File rootFile = workspace.getMetadata().getFile();
-        String path = rootFile.getParent() + File.separator;
-
-        String name;
-        switch (saveNameMode) {
-            case SaveNameModes.MATCH_INPUT:
-            default:
-                name = FilenameUtils.removeExtension(rootFile.getName());
-                break;
-
-            case SaveNameModes.SPECIFIC_NAME:
-                name = FilenameUtils.removeExtension(saveFileName);
-                break;
-        }
+        String outputPath = getOutputPath(modules, workspace);
+        String outputName = getOutputName(modules, workspace);
 
         // Adding last bits to name
-        path = path + name;
-        path = ImageSaver.appendSeries(path, workspace, appendSeriesMode);
-        path = ImageSaver.appendDateTime(path, appendDateTimeMode);
-        path = path + suffix + ".xlsx";
+        outputPath = outputPath + outputName;
+        outputPath = appendSeries(outputPath, workspace, appendSeriesMode);
+        outputPath = appendDateTime(outputPath, appendDateTimeMode);
+        outputPath = outputPath + suffix + ".xlsx";
 
-        writeDistancesFile(workbook, path);
+        writeDistancesFile(workbook, outputPath);
 
         return Status.PASS;
 
@@ -359,6 +331,8 @@ public class MeasureIntensityAlongPath extends Module {
 
     @Override
     protected void initialiseParameters() {
+        super.initialiseParameters();
+
         parameters.add(new SeparatorP(INPUT_SEPARATOR, this));
         parameters.add(new InputObjectsP(INPUT_OBJECTS, this));
 
@@ -371,20 +345,12 @@ public class MeasureIntensityAlongPath extends Module {
         parameters.add(new BooleanP(INCLUDE_CENTROIDS, this, false));
         parameters.add(new BooleanP(INCLUDE_TIMEPOINTS, this, false));
 
-        parameters.add(new SeparatorP(FILE_SAVING_SEPARATOR, this));
-        parameters.add(new ChoiceP(SAVE_NAME_MODE, this, SaveNameModes.MATCH_INPUT, SaveNameModes.ALL));
-        parameters.add(new StringP(SAVE_FILE_NAME, this));
-        parameters.add(new ChoiceP(APPEND_SERIES_MODE, this, AppendSeriesModes.SERIES_NUMBER, AppendSeriesModes.ALL));
-        parameters.add(new ChoiceP(APPEND_DATETIME_MODE, this, AppendDateTimeModes.NEVER, AppendDateTimeModes.ALL));
-        parameters.add(new StringP(SAVE_SUFFIX, this));
-
         addParameterDescriptions();
 
     }
 
     @Override
     public Parameters updateAndGetParameters() {
-Workspace workspace = null;
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
@@ -397,17 +363,7 @@ Workspace workspace = null;
         returnedParameters.add(parameters.getParameter(INCLUDE_CENTROIDS));
         returnedParameters.add(parameters.getParameter(INCLUDE_TIMEPOINTS));
 
-        returnedParameters.add(parameters.getParameter(FILE_SAVING_SEPARATOR));
-        returnedParameters.add(parameters.getParameter(SAVE_NAME_MODE));
-        switch ((String) parameters.getValue(SAVE_NAME_MODE,workspace)) {
-            case SaveNameModes.SPECIFIC_NAME:
-                returnedParameters.add(parameters.getParameter(SAVE_FILE_NAME));
-                break;
-        }
-
-        returnedParameters.add(parameters.getParameter(APPEND_SERIES_MODE));
-        returnedParameters.add(parameters.getParameter(APPEND_DATETIME_MODE));
-        returnedParameters.add(parameters.getParameter(SAVE_SUFFIX));
+        returnedParameters.addAll(super.updateAndGetParameters());
 
         return returnedParameters;
 
@@ -415,27 +371,27 @@ Workspace workspace = null;
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
-return null;
+        return null;
     }
 
     @Override
-public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
-return null;
+    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+        return null;
     }
 
     @Override
-public MetadataRefs updateAndGetMetadataReferences() {
-return null;
+    public MetadataRefs updateAndGetMetadataReferences() {
+        return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
-return null;
+        return null;
     }
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
-return null;
+        return null;
     }
 
     @Override
@@ -443,7 +399,9 @@ return null;
         return true;
     }
 
-    void addParameterDescriptions() {
+    protected void addParameterDescriptions() {
+        super.addParameterDescriptions();
+        
         parameters.get(INPUT_OBJECTS).setDescription("Objects for which intensity profiles will be generated.");
 
         Parameters collection = ((ParameterGroup) parameters.get(MEASURE_ANOTHER_IMAGE)).getTemplateParameters();
@@ -459,36 +417,6 @@ return null;
 
         parameters.get(INCLUDE_TIMEPOINTS)
                 .setDescription("Include a column recording the timepoint that the objects were present in.");
-
-        parameters.get(SAVE_NAME_MODE)
-                .setDescription("Controls how saved profile file names will be generated.<br><ul>" +
-
-                        "<li>\"" + SaveNameModes.MATCH_INPUT
-                        + "\" Use the same name as the root file for this workspace (i.e. the input file in \"Input control\".</li>"
-
-                        + "<li>\"" + SaveNameModes.SPECIFIC_NAME
-                        + "\" Use a specific name for the output file.  Care should be taken with this when working in batch mode as it's easy to continuously write over output files from other runs.</li></ul>");
-
-        parameters.get(SAVE_FILE_NAME).setDescription(
-                "Filename for saved distance file.  Note: Care should be taken with this when working in batch mode as it's easy to continuously write over output files from other runs.");
-
-        parameters.get(APPEND_SERIES_MODE).setDescription(
-                "Controls if any series information should be appended to the end of the filename.  This is useful when working with multi-series files, as it should help prevent writing files from multiple runs with the same filename.  Series numbers are prepended by \"S\".  Choices are: "
-                        + String.join(", ", AppendSeriesModes.ALL) + ".");
-
-        parameters.get(APPEND_DATETIME_MODE).setDescription(
-                "Controls under what conditions the time and date will be appended on to the end of the profile file filename.  This can be used to prevent accidental over-writing of files from previous runs:<br><ul>"
-
-                        + "<li>\"" + AppendDateTimeModes.ALWAYS
-                        + "\" Always append the time and date on to the end of the filename.</li>"
-
-                        + "<li>\"" + AppendDateTimeModes.IF_FILE_EXISTS
-                        + "\" Only append the time and date if the results file already exists.</li>"
-
-                        + "<li>\"" + AppendDateTimeModes.NEVER
-                        + "\" Never append time and date (unless the file is open and unwritable).</li></ul>");
-
-        parameters.get(SAVE_SUFFIX).setDescription("A custom suffix to be added to each filename.");
 
     }
 }

@@ -444,7 +444,7 @@ public abstract class Module extends Ref implements Comparable, SciJavaPlugin {
         writeStatus(message, name);
     }
 
-    protected static void writeStatus(String message, String moduleName) {
+    public static void writeStatus(String message, String moduleName) {
         if (verbose)
             MIA.log.writeStatus("[" + moduleName + "] " + message);
     }
@@ -453,7 +453,7 @@ public abstract class Module extends Ref implements Comparable, SciJavaPlugin {
         writeProgressStatus(count, total, featureBeingProcessed, name);
     }
 
-    protected static void writeProgressStatus(int count, int total, String featureBeingProcessed, String moduleName) {
+    public static void writeProgressStatus(int count, int total, String featureBeingProcessed, String moduleName) {
         if (verbose)
             writeStatus("Processed " + count + " of " + total + " " + featureBeingProcessed + " ("
                     + Math.floorDiv(100 * count, total) + "%)", moduleName);

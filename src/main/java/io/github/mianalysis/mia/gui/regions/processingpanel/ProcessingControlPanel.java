@@ -60,7 +60,7 @@ public class ProcessingControlPanel extends JScrollPane {
 
         AnalysisTester.testModule(inputControl, GUI.getModules());
         AnalysisTester.testModule(outputControl, GUI.getModules());
-        AnalysisTester.testModules(GUI.getModules());
+        AnalysisTester.testModules(GUI.getModules(),GUI.getTestWorkspace());
 
         Analysis analysis = GUI.getAnalysis();
         ComponentFactory componentFactory = GUI.getComponentFactory();

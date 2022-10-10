@@ -37,6 +37,7 @@ import io.github.mianalysis.mia.object.refs.MetadataRef;
 import io.github.mianalysis.mia.object.refs.ObjMeasurementRef;
 import io.github.mianalysis.mia.process.analysishandling.legacyreaders.AnalysisReader_0p10p0_0p15p0;
 import io.github.mianalysis.mia.process.analysishandling.legacyreaders.AnalysisReader_Pre_0p10p0;
+import io.github.mianalysis.mia.process.logging.LogRenderer;
 
 /**
  * Created by sc13967 on 23/06/2017.
@@ -85,7 +86,11 @@ public class AnalysisReader {
             throws IOException, ClassNotFoundException, ParserConfigurationException, SAXException,
             IllegalAccessException, InstantiationException, NoSuchMethodException, InvocationTargetException {
         MIA.log.writeStatus("Loading analysis");
-        GUI.updateProgressBar(0);
+
+        if (MIA.isHeadless())
+            LogRenderer.setProgress(0);
+        else
+            GUI.updateProgressBar(0);
 
         if (xml.startsWith("\uFEFF"))
             xml = xml.substring(1);

@@ -139,7 +139,17 @@ public class EvalButton extends JButton implements ActionListener {
         String inputControlPath = modules.getInputControl().getParameterValue(InputControl.INPUT_PATH, null);
         File testWorkspaceFile = GUI.getTestWorkspace().getMetadata().getFile();
         String testWorkspacePath = testWorkspaceFile == null ? "" : testWorkspaceFile.getAbsolutePath();
-        if (!inputControlPath.equals(testWorkspacePath)) {
+
+        boolean reload = true;
+        if (new File(inputControlPath).isFile())
+            reload = !inputControlPath.equals(testWorkspacePath);
+        else 
+            if (testWorkspaceFile != null)
+                reload = !testWorkspacePath.contains(inputControlPath);
+
+        // || new File(inputControlPath).isDirectory() &!
+        // inputControlPath.equals(testWorkspacePath)) {
+        if (reload) {
             // Make first module look like it's being evaluated while the test file updates
             GUI.setLastModuleEval(-1);
             if (modules.size() > 2)

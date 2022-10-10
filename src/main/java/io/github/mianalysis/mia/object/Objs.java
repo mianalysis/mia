@@ -12,6 +12,7 @@ import ij.measure.ResultsTable;
 import ome.units.UNITS;
 import ome.units.quantity.Time;
 import ome.units.unit.Unit;
+import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.image.Image;
@@ -70,6 +71,9 @@ public class Objs extends LinkedHashMap<Integer, Obj> {
     public Obj createAndAddNewObject(VolumeType volumeType, int ID) {
         Obj newObject = new Obj(this, volumeType, ID);
         add(newObject);
+
+        // Updating the maxID if necessary
+        maxID = Math.max(maxID, ID);
 
         return newObject;
 
@@ -217,6 +221,10 @@ public class Objs extends LinkedHashMap<Integer, Obj> {
     }
 
     public Image convertToImage(String outputName, HashMap<Integer, Float> hues, int bitDepth, boolean nanBackground) {
+        return convertToImage(outputName, hues, bitDepth, nanBackground, false);
+    }
+
+    public Image convertToImage(String outputName, HashMap<Integer, Float> hues, int bitDepth, boolean nanBackground, boolean verbose) {
         // Create output image
         Image image = createImage(outputName, bitDepth);
 
@@ -225,8 +233,11 @@ public class Objs extends LinkedHashMap<Integer, Obj> {
             setNaNBackground(image.getImagePlus());
 
         // Labelling pixels in image
-        for (Obj object : values())
+        int count = 0;
+        for (Obj object : values()) {
             object.addToImage(image, hues.get(object.getID()));
+            Module.writeProgressStatus(++count, size(), "objects", "Object collection");
+        }            
 
         // Assigning the spatial cal from the cal
         spatCal.setImageCalibration(image.getImagePlus());

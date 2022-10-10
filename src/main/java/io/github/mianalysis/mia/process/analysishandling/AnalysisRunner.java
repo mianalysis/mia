@@ -24,6 +24,7 @@ import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.Workspaces;
 import io.github.mianalysis.mia.object.parameters.FileFolderPathP;
 import io.github.mianalysis.mia.process.exporting.Exporter;
+import io.github.mianalysis.mia.process.logging.LogRenderer;
 import io.github.sjcross.sjcommon.system.FileCrawler;
 
 /**
@@ -42,13 +43,11 @@ public class AnalysisRunner {
     // PUBLIC METHODS
 
     public void run(Analysis analysis) throws InterruptedException, IOException {
-        // Resetting progress display
-        GUI.updateProgressBar(0);
-        GUI.resetJobNumbers();
         MIA.clearLogHistory();
         counter = 0;
 
-        // Get jobs and exit if no images found
+        AnalysisTester.testModules(analysis.getModules(), null);
+
         HashSet<Job> jobs = getJobs(analysis);
         if (jobs.size() == 0) {
             MIA.log.writeWarning("No valid images found at specified path");
@@ -61,14 +60,15 @@ public class AnalysisRunner {
         // Initialising Exporter
         Exporter exporter = initialiseExporter(outputControl);
 
-        // Set verbose
-        Module.setVerbose(jobs.size() == 1);
+        // Set verbose if showing the GUI
+        if (!MIA.isHeadless())
+            Module.setVerbose(jobs.size() == 1);
 
         // Setting up the pool
         // Set the number of Fiji threads to maximise the number of jobs, so it doesn't
         // clash with MIA multi-threading. Also, check that no macros are being run
         // (these don't work with simultaneous jobs).
-        int nSimultaneousJobs = inputControl.getParameterValue(InputControl.SIMULTANEOUS_JOBS,null);
+        int nSimultaneousJobs = inputControl.getParameterValue(InputControl.SIMULTANEOUS_JOBS, null);
         nSimultaneousJobs = Math.min(jobs.size(), nSimultaneousJobs);
         if (analysis.getModules().hasModuleMatchingType(AbstractMacroRunner.class) && nSimultaneousJobs > 1) {
             MIA.log.writeWarning(
@@ -100,9 +100,9 @@ public class AnalysisRunner {
 
         }
 
-        for (Workspace workspace : workspaces)
+        for (Workspace workspace : workspaces)            
             pool.submit(createRunnable(analysis, workspace, exporter));
-
+        
         // Telling the pool not to accept any more jobs and to wait until all queued
         // jobs have completed
         pool.shutdown();
@@ -112,7 +112,7 @@ public class AnalysisRunner {
         // Exporting to Excel for Workspaces
         if ((outputControl.isExportAllTogether() || outputControl.isExportGroupedByMetadata()) && exporter != null) {
             MIA.log.writeStatus("Exporting data");
-            File outputFile = new File((String) inputControl.getParameterValue(InputControl.INPUT_PATH,null));
+            File outputFile = new File((String) inputControl.getParameterValue(InputControl.INPUT_PATH, null));
             String name = outputControl.getGroupOutputPath(outputFile);
             exporter.exportResults(workspaces, analysis, name);
         }
@@ -121,9 +121,14 @@ public class AnalysisRunner {
         outputControl.runMacro(workspaces.iterator().next());
 
         // Cleaning up
-        MIA.log.writeStatus("Complete!");
-        GUI.updateProgressBar(100);
-
+        
+        if (MIA.isHeadless()) {
+            LogRenderer.setProgress(100);
+            MIA.log.writeStatus("Complete!\n");
+        } else {
+            GUI.updateProgressBar(100);
+            MIA.log.writeStatus("Complete!");
+        }
     }
 
     public HashSet<Job> getJobs(Analysis analysis) {
@@ -132,16 +137,17 @@ public class AnalysisRunner {
         InputControl inputControl = analysis.getModules().getInputControl();
 
         File inputFile = getInputFile(inputControl);
+
         if (inputFile == null)
             return new HashSet<>();
 
         FileCrawler fileCrawler = new FileCrawler(inputFile);
-        fileCrawler.setIgnoreCase(inputControl.getParameterValue(InputControl.IGNORE_CASE,null));
+        fileCrawler.setIgnoreCase(inputControl.getParameterValue(InputControl.IGNORE_CASE, null));
         inputControl.addFilenameFilters(fileCrawler);
-        
-        boolean firstPerFolder = inputControl.getParameterValue(InputControl.LOAD_FIRST_PER_FOLDER,null);
-        boolean firstMatchingGroup = inputControl.getParameterValue(InputControl.LOAD_FIRST_MATCHING_GROUP,null);
-        String patternString = inputControl.getParameterValue(InputControl.PATTERN,null);
+
+        boolean firstPerFolder = inputControl.getParameterValue(InputControl.LOAD_FIRST_PER_FOLDER, null);
+        boolean firstMatchingGroup = inputControl.getParameterValue(InputControl.LOAD_FIRST_MATCHING_GROUP, null);
+        String patternString = inputControl.getParameterValue(InputControl.PATTERN, null);
         Pattern pattern = firstMatchingGroup ? Pattern.compile(patternString) : null;
         HashSet<String> groups = new HashSet<>();
 
@@ -198,7 +204,7 @@ public class AnalysisRunner {
 
         if (!checkInputFileValidity(inputPath))
             return null;
-            
+
         return new File(inputPath);
 
     }
@@ -221,14 +227,16 @@ public class AnalysisRunner {
     }
 
     Exporter initialiseExporter(OutputControl outputControl) {
-        String exportMode = outputControl.getParameterValue(OutputControl.EXPORT_MODE,null);
-        String metadataItemForGrouping = outputControl.getParameterValue(OutputControl.METADATA_ITEM_FOR_GROUPING,null);
+        String exportMode = outputControl.getParameterValue(OutputControl.EXPORT_MODE, null);
+        String metadataItemForGrouping = outputControl.getParameterValue(OutputControl.METADATA_ITEM_FOR_GROUPING,
+                null);
         boolean exportXLS = outputControl.isEnabled();
-        boolean exportSummary = outputControl.getParameterValue(OutputControl.EXPORT_SUMMARY,null);
-        String summaryType = outputControl.getParameterValue(OutputControl.SUMMARY_MODE,null);
-        boolean exportIndividualObjects = outputControl.getParameterValue(OutputControl.EXPORT_INDIVIDUAL_OBJECTS,null);
-        String appendDateTimeMode = outputControl.getParameterValue(OutputControl.APPEND_DATETIME_MODE,null);
-        boolean showObjectCounts = outputControl.getParameterValue(OutputControl.SHOW_OBJECT_COUNTS,null);
+        boolean exportSummary = outputControl.getParameterValue(OutputControl.EXPORT_SUMMARY, null);
+        String summaryType = outputControl.getParameterValue(OutputControl.SUMMARY_MODE, null);
+        boolean exportIndividualObjects = outputControl.getParameterValue(OutputControl.EXPORT_INDIVIDUAL_OBJECTS,
+                null);
+        String appendDateTimeMode = outputControl.getParameterValue(OutputControl.APPEND_DATETIME_MODE, null);
+        boolean showObjectCounts = outputControl.getParameterValue(OutputControl.SHOW_OBJECT_COUNTS, null);
 
         // Initialising the exporter (if one was requested)
         Exporter exporter = exportXLS ? new Exporter() : null;
@@ -239,47 +247,47 @@ public class AnalysisRunner {
             exporter.setExportIndividualObjects(exportIndividualObjects);
 
             switch (exportMode) {
-            case OutputControl.ExportModes.ALL_TOGETHER:
-                exporter.setExportMode(Exporter.ExportMode.ALL_TOGETHER);
-                break;
+                case OutputControl.ExportModes.ALL_TOGETHER:
+                    exporter.setExportMode(Exporter.ExportMode.ALL_TOGETHER);
+                    break;
 
-            case OutputControl.ExportModes.GROUP_BY_METADATA:
-                exporter.setExportMode(Exporter.ExportMode.GROUP_BY_METADATA);
-                break;
+                case OutputControl.ExportModes.GROUP_BY_METADATA:
+                    exporter.setExportMode(Exporter.ExportMode.GROUP_BY_METADATA);
+                    break;
 
-            case OutputControl.ExportModes.INDIVIDUAL_FILES:
-                exporter.setExportMode(Exporter.ExportMode.INDIVIDUAL_FILES);
-                break;
+                case OutputControl.ExportModes.INDIVIDUAL_FILES:
+                    exporter.setExportMode(Exporter.ExportMode.INDIVIDUAL_FILES);
+                    break;
             }
 
             switch (summaryType) {
-            case OutputControl.SummaryModes.ONE_AVERAGE_PER_FILE:
-                exporter.setSummaryMode(Exporter.SummaryMode.PER_FILE);
-                break;
+                case OutputControl.SummaryModes.ONE_AVERAGE_PER_FILE:
+                    exporter.setSummaryMode(Exporter.SummaryMode.PER_FILE);
+                    break;
 
-            case OutputControl.SummaryModes.AVERAGE_PER_TIMEPOINT:
-                exporter.setSummaryMode(Exporter.SummaryMode.PER_TIMEPOINT_PER_FILE);
-                break;
+                case OutputControl.SummaryModes.AVERAGE_PER_TIMEPOINT:
+                    exporter.setSummaryMode(Exporter.SummaryMode.PER_TIMEPOINT_PER_FILE);
+                    break;
 
-            case OutputControl.SummaryModes.GROUP_BY_METADATA:
-                exporter.setSummaryMode(Exporter.SummaryMode.GROUP_BY_METADATA);
-                exporter.setMetadataItemForSummary(
-                        outputControl.getParameterValue(OutputControl.METADATA_ITEM_FOR_SUMMARY,null));
-                break;
+                case OutputControl.SummaryModes.GROUP_BY_METADATA:
+                    exporter.setSummaryMode(Exporter.SummaryMode.GROUP_BY_METADATA);
+                    exporter.setMetadataItemForSummary(
+                            outputControl.getParameterValue(OutputControl.METADATA_ITEM_FOR_SUMMARY, null));
+                    break;
             }
 
             switch (appendDateTimeMode) {
-            case OutputControl.AppendDateTimeModes.ALWAYS:
-                exporter.setAppendDateTimeMode(Exporter.AppendDateTimeMode.ALWAYS);
-                break;
+                case OutputControl.AppendDateTimeModes.ALWAYS:
+                    exporter.setAppendDateTimeMode(Exporter.AppendDateTimeMode.ALWAYS);
+                    break;
 
-            case OutputControl.AppendDateTimeModes.IF_FILE_EXISTS:
-                exporter.setAppendDateTimeMode(Exporter.AppendDateTimeMode.IF_FILE_EXISTS);
-                break;
+                case OutputControl.AppendDateTimeModes.IF_FILE_EXISTS:
+                    exporter.setAppendDateTimeMode(Exporter.AppendDateTimeMode.IF_FILE_EXISTS);
+                    break;
 
-            case OutputControl.AppendDateTimeModes.NEVER:
-                exporter.setAppendDateTimeMode(Exporter.AppendDateTimeMode.NEVER);
-                break;
+                case OutputControl.AppendDateTimeModes.NEVER:
+                    exporter.setAppendDateTimeMode(Exporter.AppendDateTimeMode.NEVER);
+                    break;
             }
         }
 
@@ -295,8 +303,8 @@ public class AnalysisRunner {
             try {
                 InputControl inputControl = analysis.getModules().getInputControl();
                 OutputControl outputControl = analysis.getModules().getOutputControl();
-                boolean continuousExport = outputControl.getParameterValue(OutputControl.CONTINUOUS_DATA_EXPORT,null);
-                int saveNFiles = outputControl.getParameterValue(OutputControl.SAVE_EVERY_N,null);
+                boolean continuousExport = outputControl.getParameterValue(OutputControl.CONTINUOUS_DATA_EXPORT, null);
+                int saveNFiles = outputControl.getParameterValue(OutputControl.SAVE_EVERY_N, null);
 
                 // Running the current analysis
                 analysis.execute(workspace);
@@ -340,9 +348,9 @@ public class AnalysisRunner {
     }
 
     public static void stopAnalysis() {
-        MIA.log.writeWarning("STOPPING");        
+        MIA.log.writeWarning("STOPPING");
         Prefs.setThreads(origThreads);
-        
+
         GUI.setModuleBeingEval(-1);
         GUI.updateModules();
         GUI.updateParameters();

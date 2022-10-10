@@ -2,9 +2,14 @@ package io.github.mianalysis;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.util.stream.Stream;
+
+import org.junit.jupiter.params.provider.Arguments;
 
 import ij.IJ;
 import ij.ImagePlus;
+import io.github.mianalysis.enums.Dimension;
+import io.github.mianalysis.enums.Logic;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.image.Image;
 import io.github.mianalysis.mia.object.image.ImageFactory;

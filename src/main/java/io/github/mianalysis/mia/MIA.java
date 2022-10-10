@@ -19,6 +19,7 @@ import org.scijava.ui.UIService;
 import ij.Prefs;
 import io.github.mianalysis.mia.gui.GUI;
 import io.github.mianalysis.mia.module.LostAndFound;
+import io.github.mianalysis.mia.module.core.InputControl;
 import io.github.mianalysis.mia.moduledependencies.Dependencies;
 import io.github.mianalysis.mia.object.system.Preferences;
 import io.github.mianalysis.mia.process.DependencyValidator;
@@ -36,17 +37,17 @@ import net.imagej.ImageJService;
 /**
  * Created by Stephen Cross on 14/07/2017.
  */
-@Plugin(type = Command.class, menuPath = "Plugins>ModularImageAnalysis (MIA)", visible = true)
+@Plugin(type = Command.class, menuPath = "Plugins>ModularImageAnalysis (MIA)>MIA", visible = true)
 public class MIA implements Command {
-    private static String version = "";
-    private static boolean debug = false;
-    private static LogRenderer mainRenderer = new BasicLogRenderer();
-    private static LogHistory logHistory = new LogHistory();
-    private final static boolean headless = false; // Determines if there is a GUI
-    private static Preferences preferences;
-    private static Dependencies dependencies; // Maps module dependencies and reports if a
+    protected static String version = "";
+    protected static boolean debug = false;
+    protected static LogRenderer mainRenderer = new BasicLogRenderer();
+    protected static LogHistory logHistory = new LogHistory();
+    protected static boolean headless = false; // Determines if there is a GUI
+    protected static Preferences preferences;
+    protected static Dependencies dependencies; // Maps module dependencies and reports if a
     // module's requirements aren't satisfied
-    private static LostAndFound lostAndFound; // Maps missing modules and parameters to
+    protected static LostAndFound lostAndFound; // Maps missing modules and parameters to
     // replacements (e.g. if a module was renamed)
 
     public static Log log = new Log(mainRenderer); // This is for testing and headless modes
@@ -55,7 +56,7 @@ public class MIA implements Command {
      * Gearing up for the transition from ImagePlus to ImgLib2 formats. Modules can
      * use this to addRef compatibility.
      */
-    private static final boolean imagePlusMode = true;
+    protected static final boolean imagePlusMode = true;
 
     @Parameter
     public static ImageJService ijService;
@@ -67,8 +68,12 @@ public class MIA implements Command {
             if (args.length == 0) {
                 new ij.ImageJ();
                 new ImageJ().command().run("io.github.mianalysis.mia.MIA", false);
-            } else {
+            } else if (args.length == 1) {
                 Analysis analysis = AnalysisReader.loadAnalysis(args[0]);
+                new AnalysisRunner().run(analysis);
+            } else if (args.length == 2) {
+                Analysis analysis = AnalysisReader.loadAnalysis(args[0]);
+                analysis.getModules().getInputControl().updateParameterValue(InputControl.INPUT_PATH, args[1]);
                 new AnalysisRunner().run(analysis);
             }
 
@@ -88,38 +93,23 @@ public class MIA implements Command {
             e.printStackTrace();
         }
 
-        if (!headless) {
-            try {
-                // Before removing the old renderer we want to check the new one can be created
-                UIService uiService = ijService.context().getService(UIService.class);
-                LogRenderer newRenderer = new ConsoleRenderer(uiService);
-                log.removeRenderer(mainRenderer);
+        try {
+            // Before removing the old renderer we want to check the new one can be created
+            UIService uiService = ijService.context().getService(UIService.class);
+            LogRenderer newRenderer = new ConsoleRenderer(uiService);
+            log.removeRenderer(mainRenderer);
 
-                mainRenderer = newRenderer;
-                mainRenderer.setWriteEnabled(LogRenderer.Level.DEBUG, debug);
-                log.addRenderer(mainRenderer);
-            } catch (Exception e) {
-                // If any exception was thrown, just don't apply the ConsoleRenderer.
-            }
+            mainRenderer = newRenderer;
+            mainRenderer.setWriteEnabled(LogRenderer.Level.DEBUG, debug);
+            log.addRenderer(mainRenderer);
+        } catch (Exception e) {
+            // If any exception was thrown, just don't apply the ConsoleRenderer.
         }
 
         preferences = new Preferences(null);
-
         log.addRenderer(logHistory);
 
-        // Determining the version number from the pom file
-        try {
-            if (new File("pom.xml").exists()) {
-                FileReader reader = new FileReader("pom.xml");
-                Model model = new MavenXpp3Reader().read(reader);
-                reader.close();
-                version = model.getVersion();
-            } else {
-                version = getClass().getPackage().getImplementationVersion();
-            }
-        } catch (XmlPullParserException | IOException e) {
-            e.printStackTrace();
-        }
+        version = extractVersion();
 
         // Run the dependency validator. If updates were required, return.
         if (DependencyValidator.run())
@@ -132,16 +122,24 @@ public class MIA implements Command {
         }
     }
 
-    // public void setLookAndFeel() {
-    // try {
-    // UIManager.put("TitlePane.showIconBesideTitle", true);
-    // UIManager.setLookAndFeel(FlatLightLaf.class.getCanonicalName());
-    // } catch (ClassNotFoundException | InstantiationException |
-    // IllegalAccessException
-    // | UnsupportedLookAndFeelException e) {
-    // MIA.log.writeError(e);
-    // }
-    // }
+    protected static String extractVersion() {
+        // Determining the version number from the pom file
+        try {
+            if (new File("pom.xml").exists()) {
+                FileReader reader = new FileReader("pom.xml");
+                Model model = new MavenXpp3Reader().read(reader);
+                reader.close();
+                return model.getVersion();
+            } else {
+                return MIA.class.getPackage().getImplementationVersion();
+            }
+        } catch (XmlPullParserException | IOException e) {
+            e.printStackTrace();
+        }
+
+        return "";
+
+    }
 
     public static boolean isImagePlusMode() {
         return imagePlusMode;

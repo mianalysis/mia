@@ -268,7 +268,7 @@ public class EditingPanel extends AbstractPanel {
 
     @Override
     public void updateModules() {
-        AnalysisTester.testModules(GUI.getModules());
+        AnalysisTester.testModules(GUI.getModules(),GUI.getTestWorkspace());
         modulesPanel.updatePanel();
     }
 

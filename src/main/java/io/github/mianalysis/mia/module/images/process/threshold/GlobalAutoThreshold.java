@@ -5,14 +5,12 @@ package io.github.mianalysis.mia.module.images.process.threshold;
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
 
-import ij.IJ;
 import ij.ImagePlus;
 import ij.gui.Roi;
 import ij.gui.ShapeRoi;
 import ij.plugin.Duplicator;
 import ij.process.AutoThresholder;
 import ij.process.ImageProcessor;
-import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
