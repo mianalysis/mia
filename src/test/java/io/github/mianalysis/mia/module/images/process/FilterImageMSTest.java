@@ -28,21 +28,21 @@ import io.github.mianalysis.mia.object.image.ImageFactory;
 public class FilterImageMSTest extends ModuleTest {
 
     enum Filter {
-        FDOG2D, // 2D difference of Gaussian
+        // FDOG2D, // 2D difference of Gaussian
         FGAUSS2D, // 2D Gaussian
-        // FGAUSS3D, // 3D Gaussian
+        FGAUSS3D, // 3D Gaussian
         FGRAD2D, // 2D gradient
         FMAX2D, // 2D maximum
         FMAX3D, // 3D maximum
         FMEAN2D, // 2D mean
-        // FMEAN3D, // 3D mean
+        FMEAN3D, // 3D mean
         FMEDIAN2D, // 2D median
-        // FMEDIAN3D, // 3D median
+        FMEDIAN3D, // 3D median
         FMIN2D, // 2D minimum
-        // FMIN3D, // 3D minimum
+        FMIN3D, // 3D minimum
         // FRIDGE2D, // 2D ridge enhancement
         FVAR2D, // 2D variance
-        // FVAR3D, // 3D variance
+        FVAR3D, // 3D variance
 
     }
 
@@ -93,8 +93,8 @@ public class FilterImageMSTest extends ModuleTest {
      */
     @ParameterizedTest
     @MethodSource("dimFilterInputProvider")
-    void test8Bit_PixelUnits(Dimension dimension, Filter filter) throws UnsupportedEncodingException {
-        runTest(dimension, BitDepth.B8, filter, 3, false);
+    void test8Bit_PixelUnits_CreateNew(Dimension dimension, Filter filter) throws UnsupportedEncodingException {
+        runTest(dimension, BitDepth.B8, filter, 3, false, false);
 
     }
 
@@ -106,8 +106,8 @@ public class FilterImageMSTest extends ModuleTest {
      */
     @ParameterizedTest
     @MethodSource("dimFilterInputProvider")
-    void test8Bit_CalibratedUnits(Dimension dimension, Filter filter) throws UnsupportedEncodingException {
-        runTest(dimension, BitDepth.B8, filter, 0.06, true);
+    void test8Bit_CalibratedUnits_CreateNew(Dimension dimension, Filter filter) throws UnsupportedEncodingException {
+        runTest(dimension, BitDepth.B8, filter, 0.06, true, false);
 
     }
 
@@ -119,8 +119,8 @@ public class FilterImageMSTest extends ModuleTest {
      */
     @ParameterizedTest
     @MethodSource("bitdepthInputProvider")
-    void testAllBitDepths_PixelUnits_D4ZT_FMEAN(BitDepth bitDepth) throws UnsupportedEncodingException {
-        runTest(Dimension.D4ZT, bitDepth, Filter.FMEAN2D, 3, false);
+    void testAllBitDepths_PixelUnits_D4ZT_FMEAN_CreateNew(BitDepth bitDepth) throws UnsupportedEncodingException {
+        runTest(Dimension.D4ZT, bitDepth, Filter.FMEAN2D, 3, false, false);
 
     }
 
@@ -132,17 +132,69 @@ public class FilterImageMSTest extends ModuleTest {
      */
     @ParameterizedTest
     @MethodSource("bitdepthInputProvider")
-    void testAllBitDepths_CalibratedUnits_D4ZT_FMEAN(BitDepth bitDepth) throws UnsupportedEncodingException {
-        runTest(Dimension.D4ZT, bitDepth, Filter.FMEAN2D, 0.06, true);
+    void testAllBitDepths_CalibratedUnits_D4ZT_FMEAN_CreateNew(BitDepth bitDepth) throws UnsupportedEncodingException {
+        runTest(Dimension.D4ZT, bitDepth, Filter.FMEAN2D, 0.06, true, false);
+
+    }
+
+    /**
+     * Parameterized test run with 8-bit bit depth and all dimensions and filters.
+     * The reduced testing here is to keep storage requirements down.
+     * 
+     * @throws UnsupportedEncodingException
+     */
+    @ParameterizedTest
+    @MethodSource("dimFilterInputProvider")
+    void test8Bit_PixelUnits_Apply(Dimension dimension, Filter filter) throws UnsupportedEncodingException {
+        runTest(dimension, BitDepth.B8, filter, 3, false, true);
+
+    }
+
+    /**
+     * Parameterized test run with 8-bit bit depth and all dimensions and filters.
+     * The reduced testing here is to keep storage requirements down.
+     * 
+     * @throws UnsupportedEncodingException
+     */
+    @ParameterizedTest
+    @MethodSource("dimFilterInputProvider")
+    void test8Bit_CalibratedUnits_Apply(Dimension dimension, Filter filter) throws UnsupportedEncodingException {
+        runTest(dimension, BitDepth.B8, filter, 0.06, true, true);
+
+    }
+
+    /**
+     * Parameterized test run with all bit depths for D4ZT dimension and 2D mean
+     * filter only. The reduced testing here is to keep storage requirements down.
+     * 
+     * @throws UnsupportedEncodingException
+     */
+    @ParameterizedTest
+    @MethodSource("bitdepthInputProvider")
+    void testAllBitDepths_PixelUnits_D4ZT_FMEAN_Apply(BitDepth bitDepth) throws UnsupportedEncodingException {
+        runTest(Dimension.D4ZT, bitDepth, Filter.FMEAN2D, 3, false, true);
+
+    }
+
+    /**
+     * Parameterized test run with all bit depths for D4ZT dimension and 2D mean
+     * filter only. The reduced testing here is to keep storage requirements down.
+     * 
+     * @throws UnsupportedEncodingException
+     */
+    @ParameterizedTest
+    @MethodSource("bitdepthInputProvider")
+    void testAllBitDepths_CalibratedUnits_D4ZT_FMEAN_Apply(BitDepth bitDepth) throws UnsupportedEncodingException {
+        runTest(Dimension.D4ZT, bitDepth, Filter.FMEAN2D, 0.06, true, true);
 
     }
 
     // /*
-    // * Used for testing a single set of parameters
-    // */
+    //  * Used for testing a single set of parameters
+    //  */
     // @Test
     // void singleTest() throws UnsupportedEncodingException {
-    // runTest(Dimension.D4ZT, BitDepth.B8, Filter.FDOG2D, 3, false);
+    //     runTest(Dimension.D2, BitDepth.B8, Filter.FVAR3D, 3, false, false);
     // }
 
     /**
@@ -150,7 +202,8 @@ public class FilterImageMSTest extends ModuleTest {
      * 
      * @throws UnsupportedEncodingException
      */
-    public static void runTest(Dimension dimension, BitDepth bitDepth, Filter filter, double radius, boolean calibrated)
+    public static void runTest(Dimension dimension, BitDepth bitDepth, Filter filter, double radius, boolean calibrated,
+            boolean applyToInput)
             throws UnsupportedEncodingException {
         // Checks input image and expected images are available. If not found, the test
         // skips
@@ -172,7 +225,7 @@ public class FilterImageMSTest extends ModuleTest {
         String radiusStr = Integer.toString((int) (calibrated ? radius / ipl.getCalibration().pixelWidth : radius));
         String expectedName = "/msimages/filterimage/FilterImage_" + dimension + "_" + bitDepth + "_" + filter + "_R"
                 + radiusStr + ".zip";
-        System.err.println(expectedName);
+
         assumeTrue(FilterImageMSTest.class.getResource(expectedName) != null);
 
         String expectedPath = URLDecoder.decode(FilterImageMSTest.class.getResource(expectedName).getPath(), "UTF-8");
@@ -181,21 +234,21 @@ public class FilterImageMSTest extends ModuleTest {
         // Initialising module and setting parameters
         FilterImage filterImage = new FilterImage(new Modules());
         filterImage.updateParameterValue(FilterImage.INPUT_IMAGE, "Test_image");
-        filterImage.updateParameterValue(FilterImage.APPLY_TO_INPUT, false);
-        filterImage.updateParameterValue(FilterImage.OUTPUT_IMAGE, "Test_output");
-        filterImage.updateParameterValue(FilterImage.CALIBRATED_UNITS, calibrated);
+        filterImage.updateParameterValue(FilterImage.APPLY_TO_INPUT, applyToInput);
+        if (!applyToInput)
+            filterImage.updateParameterValue(FilterImage.OUTPUT_IMAGE, "Test_output");
 
         switch (filter) {
-            case FDOG2D:
-                filterImage.updateParameterValue(FilterImage.FILTER_MODE, FilterImage.FilterModes.DOG2D);
-                break;
+            // case FDOG2D:
+            // filterImage.updateParameterValue(FilterImage.FILTER_MODE,
+            // FilterImage.FilterModes.DOG2D);
+            // break;
             case FGAUSS2D:
                 filterImage.updateParameterValue(FilterImage.FILTER_MODE, FilterImage.FilterModes.GAUSSIAN2D);
                 break;
-            // case FGAUSS3D:
-            // filterImage.updateParameterValue(FilterImage.FILTER_MODE,
-            // FilterImage.FilterModes.GAUSSIAN3D);
-            // break;
+            case FGAUSS3D:
+                filterImage.updateParameterValue(FilterImage.FILTER_MODE, FilterImage.FilterModes.GAUSSIAN3D);
+                break;
             case FGRAD2D:
                 filterImage.updateParameterValue(FilterImage.FILTER_MODE, FilterImage.FilterModes.GRADIENT2D);
                 break;
@@ -208,24 +261,21 @@ public class FilterImageMSTest extends ModuleTest {
             case FMEAN2D:
                 filterImage.updateParameterValue(FilterImage.FILTER_MODE, FilterImage.FilterModes.MEAN2D);
                 break;
-            // case FMEAN3D:
-            // filterImage.updateParameterValue(FilterImage.FILTER_MODE,
-            // FilterImage.FilterModes.MEAN3D);
-            // break;
+            case FMEAN3D:
+                filterImage.updateParameterValue(FilterImage.FILTER_MODE, FilterImage.FilterModes.MEAN3D);
+                break;
             case FMEDIAN2D:
                 filterImage.updateParameterValue(FilterImage.FILTER_MODE, FilterImage.FilterModes.MEDIAN2D);
                 break;
-            // case FMEDIAN3D:
-            // filterImage.updateParameterValue(FilterImage.FILTER_MODE,
-            // FilterImage.FilterModes.MEDIAN3D);
-            // break;
+            case FMEDIAN3D:
+                filterImage.updateParameterValue(FilterImage.FILTER_MODE, FilterImage.FilterModes.MEDIAN3D);
+                break;
             case FMIN2D:
                 filterImage.updateParameterValue(FilterImage.FILTER_MODE, FilterImage.FilterModes.MINIMUM2D);
                 break;
-            // case FMIN3D:
-            // filterImage.updateParameterValue(FilterImage.FILTER_MODE,
-            // FilterImage.FilterModes.MINIMUM3D);
-            // break;
+            case FMIN3D:
+                filterImage.updateParameterValue(FilterImage.FILTER_MODE, FilterImage.FilterModes.MINIMUM3D);
+                break;
             // case FRIDGE2D:
             // filterImage.updateParameterValue(FilterImage.FILTER_MODE,
             // FilterImage.FilterModes.RIDGE_ENHANCEMENT);
@@ -233,31 +283,40 @@ public class FilterImageMSTest extends ModuleTest {
             case FVAR2D:
                 filterImage.updateParameterValue(FilterImage.FILTER_MODE, FilterImage.FilterModes.VARIANCE2D);
                 break;
-            // case FVAR3D:
-            // filterImage.updateParameterValue(FilterImage.FILTER_MODE,
-            // FilterImage.FilterModes.VARIANCE3D);
-            // break;
+            case FVAR3D:
+                filterImage.updateParameterValue(FilterImage.FILTER_MODE, FilterImage.FilterModes.VARIANCE3D);
+                break;
         }
 
         filterImage.updateParameterValue(FilterImage.FILTER_RADIUS, radius);
+        filterImage.updateParameterValue(FilterImage.CALIBRATED_UNITS, calibrated);
 
         // Running Module
         filterImage.execute(workspace);
 
         // Checking the images in the workspace
-        assertEquals(2, workspace.getImages().size());
-        assertNotNull(workspace.getImage("Test_image"));
-        assertNotNull(workspace.getImage("Test_output"));
+        if (applyToInput) {
+            assertEquals(1, workspace.getImages().size());
+            assertNotNull(workspace.getImage("Test_image"));
 
-        // Checking the output image has the expected calibration
-        Image outputImage = workspace.getImage("Test_output");
+            Image outputImage = workspace.getImage("Test_image");
+            assertEquals(expectedImage, outputImage);
 
-        // new ImageJ();
-        // expectedImage.showImage();
-        // outputImage.showImage();
-        // IJ.runMacro("waitForUser");
-        assertEquals(expectedImage, outputImage);
+        } else {
+            assertEquals(2, workspace.getImages().size());
+            assertNotNull(workspace.getImage("Test_image"));
+            assertNotNull(workspace.getImage("Test_output"));
 
+            Image outputImage = workspace.getImage("Test_output");
+
+            // new ImageJ();
+            // expectedImage.showImage();
+            // outputImage.showImage();
+            // IJ.runMacro("waitForUser");
+
+            assertEquals(expectedImage, outputImage);
+
+        }
     }
 
     /**

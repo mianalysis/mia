@@ -5,7 +5,6 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import com.drew.lang.annotations.Nullable;
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
 
@@ -13,10 +12,8 @@ import ij.IJ;
 import ij.ImagePlus;
 import ij.ImageStack;
 import ij.Prefs;
-import ij.plugin.SubHyperstackMaker;
 import ij.process.StackProcessor;
 import inra.ijpb.morphology.MinimaAndMaxima3D;
-import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
@@ -24,6 +21,7 @@ import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.image.Image;
 import io.github.mianalysis.mia.object.image.ImageFactory;
+import io.github.mianalysis.mia.object.image.ImagePlusImage;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
@@ -112,7 +110,7 @@ public class ExtendedMinima extends Module {
 
                 Runnable task = () -> {
                     // Getting maskIpl for this timepoint
-                    ImageStack timepoint = getSetStack(inputIpl, finalT, finalC, null);
+                    ImageStack timepoint = ImagePlusImage.getSetStack(inputIpl, finalT, finalC, null);
 
                     if (timepoint == null)
                         return;
@@ -131,7 +129,7 @@ public class ExtendedMinima extends Module {
                         new StackProcessor(timepoint).invert();
 
                     // Replacing the maskIpl intensity
-                    getSetStack(outputIpl, finalT, finalC, timepoint);
+                    ImagePlusImage.getSetStack(outputIpl, finalT, finalC, timepoint);
 
                     writeProgressStatus(count.incrementAndGet(), nTotal, "stacks", moduleName);
 
@@ -149,25 +147,6 @@ public class ExtendedMinima extends Module {
 
         return ImageFactory.createImage(outputImageName, outputIpl);
 
-    }
-
-    synchronized private static ImageStack getSetStack(ImagePlus inputImagePlus, int timepoint, int channel,
-            @Nullable ImageStack toPut) {
-        int nSlices = inputImagePlus.getNSlices();
-        if (toPut == null) {
-            // Get mode
-            return SubHyperstackMaker.makeSubhyperstack(inputImagePlus, channel + "-" + channel, "1-" + nSlices,
-                    timepoint + "-" + timepoint).getStack();
-        } else {
-            for (int z = 1; z <= inputImagePlus.getNSlices(); z++) {
-                inputImagePlus.setPosition(channel, z, timepoint);
-                inputImagePlus.setProcessor(toPut.getProcessor(z));
-            }
-
-            inputImagePlus.updateAndDraw();
-
-            return null;
-        }
     }
 
     @Override
