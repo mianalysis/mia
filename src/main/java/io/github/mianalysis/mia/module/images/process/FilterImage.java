@@ -2,7 +2,6 @@ package io.github.mianalysis.mia.module.images.process;
 
 import java.util.ArrayList;
 
-import org.apache.poi.ss.formula.functions.T;
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
 
@@ -15,11 +14,11 @@ import ij.ImageStack;
 import ij.plugin.Duplicator;
 import ij.plugin.Filters3D;
 import ij.plugin.GaussianBlur3D;
+import ij.plugin.ImageCalculator;
 import ij.plugin.SubHyperstackMaker;
 import ij.plugin.ZProjector;
 import ij.plugin.filter.RankFilters;
 import ij.process.FloatProcessor;
-import ij.process.ImageProcessor;
 import inra.ijpb.morphology.Morphology;
 import inra.ijpb.morphology.strel.DiskStrel;
 import io.github.mianalysis.mia.module.Categories;
@@ -44,8 +43,8 @@ import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Status;
-import io.github.sjcross.sjcommon.filters.DoG;
 import io.github.sjcross.sjcommon.process.CommaSeparatedStringInterpreter;
+import net.imagej.ops.segment.detectRidges.RidgeDetectionUtils;
 
 /**
  * Created by Stephen on 30/05/2017.
@@ -216,6 +215,28 @@ public class FilterImage extends Module {
         inputImagePlus.setPosition(1, 1, 1);
         inputImagePlus.updateChannelAndDraw();
 
+    }
+
+    public static void runDoG2DFilter(ImagePlus imagePlus, double sigma) {
+        // We want to output a 32-bit image
+        ImageTypeConverter.process(imagePlus, 32, ImageTypeConverter.ScalingModes.CLIP);
+
+        for (int z = 1; z <= imagePlus.getNSlices(); z++) {
+            for (int c = 1; c <= imagePlus.getNChannels(); c++) {
+                for (int t = 1; t <= imagePlus.getNFrames(); t++) {
+                    imagePlus.setPosition(c, z, t);
+                    ImagePlus ipl1 = new ImagePlus("1",imagePlus.getProcessor().duplicate());
+                    ImagePlus ipl2 = new ImagePlus("2",imagePlus.getProcessor().duplicate());
+
+                    runGaussian2DFilter(ipl1, sigma);
+                    runGaussian2DFilter(ipl2, sigma*1.6);
+            
+                    imagePlus.setProcessor(ImageCalculator.run(ipl1, ipl2, "Subtract").getProcessor());
+
+                }
+            }
+        }
+        imagePlus.setPosition(1, 1, 1);
     }
 
     public static void runGaussian2DFilter(ImagePlus imagePlus, double sigma) {
@@ -518,7 +539,7 @@ public class FilterImage extends Module {
 
             case FilterModes.DOG2D:
                 writeStatus("Applying " + filterMode + " filter");
-                DoG.run(inputImagePlus, filterRadius, true);
+                runDoG2DFilter(inputImagePlus, filterRadius);
                 break;
 
             case FilterModes.GAUSSIAN2D:
