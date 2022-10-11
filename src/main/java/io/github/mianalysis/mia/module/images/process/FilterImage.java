@@ -163,8 +163,6 @@ public class FilterImage extends Module {
     public static void apply3DFilter(ImagePlus inputImagePlus, String filterMode, float filterRadius) {
         String moduleName = new FilterImage(null).getName();
 
-        int width = inputImagePlus.getWidth();
-        int height = inputImagePlus.getHeight();
         int nChannels = inputImagePlus.getNChannels();
         int nSlices = inputImagePlus.getNSlices();
         int nFrames = inputImagePlus.getNFrames();
