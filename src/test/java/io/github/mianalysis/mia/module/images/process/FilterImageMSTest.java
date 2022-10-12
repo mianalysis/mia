@@ -118,7 +118,7 @@ public class FilterImageMSTest extends ModuleTest {
     //  */
     // @Test
     // void singleTest() throws UnsupportedEncodingException {
-    //     runTest(Dimension.D2, BitDepth.B8, Filter.FDOG2D, 3, false, OutputMode.CREATE_NEW);
+    //     runTest(Dimension.D3Z, BitDepth.B8, Filter.FGAUSS2D, 3, false, OutputMode.CREATE_NEW);
     // }
 
     /**
