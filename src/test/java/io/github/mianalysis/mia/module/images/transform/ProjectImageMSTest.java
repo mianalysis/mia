@@ -8,13 +8,11 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.stream.Stream;
 
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import ij.IJ;
-import ij.ImageJ;
 import ij.ImagePlus;
 import io.github.mianalysis.enums.BitDepth;
 import io.github.mianalysis.enums.Dimension;
@@ -24,6 +22,7 @@ import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.Workspaces;
 import io.github.mianalysis.mia.object.image.Image;
 import io.github.mianalysis.mia.object.image.ImageFactory;
+import io.github.mianalysis.mia.object.system.Status;
 
 public class ProjectImageMSTest extends ModuleTest {
     enum Axis {
@@ -172,7 +171,8 @@ public class ProjectImageMSTest extends ModuleTest {
         }
 
         // Running Module
-        projectImage.execute(workspace);
+        Status status = projectImage.execute(workspace);
+        assertEquals(Status.PASS, status);
 
         // Checking the images in the workspace
         assertEquals(2, workspace.getImages().size());

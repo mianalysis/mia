@@ -22,6 +22,7 @@ import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.Workspaces;
 import io.github.mianalysis.mia.object.image.Image;
 import io.github.mianalysis.mia.object.image.ImageFactory;
+import io.github.mianalysis.mia.object.system.Status;
 
 /**
  * Created by Gemma and George on 05/10/2022.
@@ -171,7 +172,8 @@ public class GlobalAutoThresholdMSTest extends ModuleTest {
         }
 
         // Running Module
-        module.execute(workspace);
+        Status status = module.execute(workspace);
+        assertEquals(Status.PASS, status);
 
         // Checking the images in the workspace
         assertEquals(2, workspace.getImages().size());
