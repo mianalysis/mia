@@ -8,11 +8,13 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.stream.Stream;
 
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import ij.IJ;
+import ij.ImageJ;
 import ij.ImagePlus;
 import io.github.mianalysis.enums.BitDepth;
 import io.github.mianalysis.enums.Calibration;
@@ -24,6 +26,7 @@ import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.Workspaces;
 import io.github.mianalysis.mia.object.image.Image;
 import io.github.mianalysis.mia.object.image.ImageFactory;
+import io.github.mianalysis.mia.object.image.ImageType;
 import io.github.mianalysis.mia.object.system.Status;
 
 public class FilterImageMSTest extends ModuleTest {
@@ -56,7 +59,8 @@ public class FilterImageMSTest extends ModuleTest {
             for (Filter filter : Filter.values())
                 for (Calibration calibration : Calibration.values())
                     for (OutputMode outputMode : OutputMode.values())
-                        argumentBuilder.add(Arguments.of(dimension, filter, calibration, outputMode));
+                        for (ImageType imageType : ImageType.values())
+                            argumentBuilder.add(Arguments.of(dimension, filter, calibration, outputMode, imageType));
 
         return argumentBuilder.build();
 
@@ -70,7 +74,8 @@ public class FilterImageMSTest extends ModuleTest {
         for (BitDepth bitDepth : BitDepth.values())
             for (Calibration calibration : Calibration.values())
                 for (OutputMode outputMode : OutputMode.values())
-                    argumentBuilder.add(Arguments.of(bitDepth, calibration, outputMode));
+                    for (ImageType imageType : ImageType.values())
+                        argumentBuilder.add(Arguments.of(bitDepth, calibration, outputMode, imageType));
 
         return argumentBuilder.build();
 
@@ -84,13 +89,14 @@ public class FilterImageMSTest extends ModuleTest {
      */
     @ParameterizedTest
     @MethodSource("dimFilterInputProvider")
-    void test8Bit(Dimension dimension, Filter filter, Calibration calibration, OutputMode outputMode)
+    void test8Bit(Dimension dimension, Filter filter, Calibration calibration, OutputMode outputMode,
+            ImageType imageType)
             throws UnsupportedEncodingException {
         switch (calibration) {
             case CALIBRATED:
-                runTest(dimension, BitDepth.B8, filter, 0.06, true, outputMode);
+                runTest(dimension, BitDepth.B8, filter, 0.06, true, outputMode, imageType);
             case UNCALIBRATED:
-                runTest(dimension, BitDepth.B8, filter, 3, false, outputMode);
+                runTest(dimension, BitDepth.B8, filter, 3, false, outputMode, imageType);
         }
     }
 
@@ -102,13 +108,14 @@ public class FilterImageMSTest extends ModuleTest {
      */
     @ParameterizedTest
     @MethodSource("bitdepthInputProvider")
-    void testAllBitDepths_D4ZT_FMEAN(BitDepth bitDepth, Calibration calibration, OutputMode outputMode)
+    void testAllBitDepths_D4ZT_FMEAN(BitDepth bitDepth, Calibration calibration, OutputMode outputMode,
+            ImageType imageType)
             throws UnsupportedEncodingException {
         switch (calibration) {
             case CALIBRATED:
-                runTest(Dimension.D4ZT, bitDepth, Filter.FMEAN2D, 0.06, true, outputMode);
+                runTest(Dimension.D4ZT, bitDepth, Filter.FMEAN2D, 0.06, true, outputMode, imageType);
             case UNCALIBRATED:
-                runTest(Dimension.D4ZT, bitDepth, Filter.FMEAN2D, 3, false, outputMode);
+                runTest(Dimension.D4ZT, bitDepth, Filter.FMEAN2D, 3, false, outputMode, imageType);
         }
     }
 
@@ -117,7 +124,7 @@ public class FilterImageMSTest extends ModuleTest {
     //  */
     // @Test
     // void singleTest() throws UnsupportedEncodingException {
-    //     runTest(Dimension.D3Z, BitDepth.B8, Filter.FGAUSS2D, 3, false, OutputMode.CREATE_NEW);
+    //     runTest(Dimension.D3C, BitDepth.B8, Filter.FMAX2D, 3, false, OutputMode.APPLY_TO_INPUT, ImageType.IMGLIB2);
     // }
 
     /**
@@ -126,7 +133,7 @@ public class FilterImageMSTest extends ModuleTest {
      * @throws UnsupportedEncodingException
      */
     public static void runTest(Dimension dimension, BitDepth bitDepth, Filter filter, double radius,
-            boolean calibrated, OutputMode outputMode)
+            boolean calibrated, OutputMode outputMode, ImageType imageType)
             throws UnsupportedEncodingException {
         boolean applyToInput = outputMode.equals(OutputMode.APPLY_TO_INPUT);
 
@@ -143,7 +150,7 @@ public class FilterImageMSTest extends ModuleTest {
         // Loading the test image and adding to workspace
         String inputPath = URLDecoder.decode(FilterImageMSTest.class.getResource(inputName).getPath(), "UTF-8");
         ImagePlus ipl = IJ.openImage(inputPath);
-        Image image = ImageFactory.createImage("Test_image", ipl);
+        Image image = ImageFactory.createImage("Test_image", ipl, imageType);
         workspace.addImage(image);
 
         // Loading the expected image
@@ -153,7 +160,7 @@ public class FilterImageMSTest extends ModuleTest {
         assumeTrue(FilterImageMSTest.class.getResource(expectedName) != null);
 
         String expectedPath = URLDecoder.decode(FilterImageMSTest.class.getResource(expectedName).getPath(), "UTF-8");
-        Image expectedImage = ImageFactory.createImage("Expected", IJ.openImage(expectedPath));
+        Image expectedImage = ImageFactory.createImage("Expected", IJ.openImage(expectedPath), imageType);
 
         // Initialising module and setting parameters
         FilterImage filterImage = new FilterImage(new Modules());
@@ -224,6 +231,12 @@ public class FilterImageMSTest extends ModuleTest {
             assertNotNull(workspace.getImage("Test_image"));
 
             Image outputImage = workspace.getImage("Test_image");
+
+            // new ImageJ();
+            // expectedImage.showImage();
+            // outputImage.showImage();
+            // IJ.runMacro("waitForUser");
+
             assertEquals(expectedImage, outputImage);
 
         } else {

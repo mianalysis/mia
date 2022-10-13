@@ -22,6 +22,7 @@ import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.Workspaces;
 import io.github.mianalysis.mia.object.image.Image;
 import io.github.mianalysis.mia.object.image.ImageFactory;
+import io.github.mianalysis.mia.object.image.ImageType;
 import io.github.mianalysis.mia.object.system.Status;
 
 public class ProjectImageMSTest extends ModuleTest {
@@ -50,7 +51,8 @@ public class ProjectImageMSTest extends ModuleTest {
         for (Dimension dimension : Dimension.values())
             for (Axis axis : Axis.values())
                 for (Mode mode : Mode.values())
-                    argumentBuilder.add(Arguments.of(dimension, axis, mode));
+                    for (ImageType imageType : ImageType.values())
+                        argumentBuilder.add(Arguments.of(dimension, axis, mode, imageType));
 
         return argumentBuilder.build();
 
@@ -62,7 +64,8 @@ public class ProjectImageMSTest extends ModuleTest {
     public static Stream<Arguments> bitdepthInputProvider() {
         Stream.Builder<Arguments> argumentBuilder = Stream.builder();
         for (BitDepth bitDepth : BitDepth.values())
-            argumentBuilder.add(Arguments.of(bitDepth));
+            for (ImageType imageType : ImageType.values())
+                argumentBuilder.add(Arguments.of(bitDepth, imageType));
 
         return argumentBuilder.build();
 
@@ -77,9 +80,9 @@ public class ProjectImageMSTest extends ModuleTest {
      */
     @ParameterizedTest
     @MethodSource("dimFilterInputProvider")
-    void test8Bit(Dimension dimension, Axis axis, Mode mode)
+    void test8Bit(Dimension dimension, Axis axis, Mode mode, ImageType imageType)
             throws UnsupportedEncodingException {
-        runTest(dimension, BitDepth.B8, axis, mode);
+        runTest(dimension, BitDepth.B8, axis, mode, imageType);
     }
 
     /**
@@ -91,17 +94,17 @@ public class ProjectImageMSTest extends ModuleTest {
      */
     @ParameterizedTest
     @MethodSource("bitdepthInputProvider")
-    void testAllBitDepths_D4ZT_MAVERAGE(BitDepth bitDepth)
+    void testAllBitDepths_D4ZT_MAVERAGE(BitDepth bitDepth, ImageType imageType)
             throws UnsupportedEncodingException {
-        runTest(Dimension.D4ZT, bitDepth, Axis.AZ, Mode.MAVERAGE);
+        runTest(Dimension.D4ZT, bitDepth, Axis.AZ, Mode.MAVERAGE, imageType);
     }
 
     // /*
-    //  * Used for testing a single set of parameters
-    //  */
+    // * Used for testing a single set of parameters
+    // */
     // @Test
     // void singleTest() throws UnsupportedEncodingException {
-    //     runTest(Dimension.D3Z, BitDepth.B8, Axis.AZ, Mode.MAVERAGE);
+    // runTest(Dimension.D3Z, BitDepth.B8, Axis.AZ, Mode.MAVERAGE);
     // }
 
     /**
@@ -109,7 +112,7 @@ public class ProjectImageMSTest extends ModuleTest {
      * 
      * @throws UnsupportedEncodingException
      */
-    public static void runTest(Dimension dimension, BitDepth bitDepth, Axis axis, Mode mode)
+    public static void runTest(Dimension dimension, BitDepth bitDepth, Axis axis, Mode mode, ImageType imageType)
             throws UnsupportedEncodingException {
         // Checks input image and expected images are available. If not found, the test
         // skips
@@ -124,7 +127,7 @@ public class ProjectImageMSTest extends ModuleTest {
         // Loading the test image and adding to workspace
         String inputPath = URLDecoder.decode(ProjectImageMSTest.class.getResource(inputName).getPath(), "UTF-8");
         ImagePlus ipl = IJ.openImage(inputPath);
-        Image image = ImageFactory.createImage("Test_image", ipl);
+        Image image = ImageFactory.createImage("Test_image", ipl, imageType);
         workspace.addImage(image);
 
         // Loading the expected image
@@ -133,7 +136,7 @@ public class ProjectImageMSTest extends ModuleTest {
         assumeTrue(ProjectImageMSTest.class.getResource(expectedName) != null);
 
         String expectedPath = URLDecoder.decode(ProjectImageMSTest.class.getResource(expectedName).getPath(), "UTF-8");
-        Image expectedImage = ImageFactory.createImage("Expected", IJ.openImage(expectedPath));
+        Image expectedImage = ImageFactory.createImage("Expected", IJ.openImage(expectedPath), imageType);
 
         // When loading a 2D image (but not a single-slice hyperstack), ImageJ will
         // disregard any Z-axis spatial calibration. Since this calibration will be

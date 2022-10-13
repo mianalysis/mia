@@ -9,6 +9,8 @@ import de.biomedical_imaging.ij.steger.Convol;
 import de.biomedical_imaging.ij.steger.LinesUtil;
 import de.biomedical_imaging.ij.steger.Position;
 import fiji.stacks.Hyperstack_rearranger;
+import ij.IJ;
+import ij.ImageJ;
 import ij.ImagePlus;
 import ij.ImageStack;
 import ij.plugin.Duplicator;
@@ -194,17 +196,17 @@ public class FilterImage extends Module {
         for (int c = 1; c <= nChannels; c++) {
             for (int t = 1; t <= nFrames; t++) {
                 ImagePlus iplOrig = SubHyperstackMaker.makeSubhyperstack(inputImagePlus, c + "-" + c, "1-" + nSlices,
-                        t + "-" + t);              
+                        t + "-" + t);
 
                 if (filterMode.equals(FilterModes.GAUSSIAN3D)) {
                     GaussianBlur3D.blur(iplOrig, filterRadius, filterRadius,
-                        filterRadius);
+                            filterRadius);
 
                 } else {
                     ImageStack istFilt = Filters3D.filter(iplOrig.getStack(), filter, filterRadius, filterRadius,
-                        filterRadius);
+                            filterRadius);
                     ImagePlusImage.getSetStack(inputImagePlus, t, c, istFilt);
-                    
+
                 }
 
                 writeProgressStatus(count++, total, "images", moduleName);
@@ -225,12 +227,12 @@ public class FilterImage extends Module {
             for (int c = 1; c <= imagePlus.getNChannels(); c++) {
                 for (int t = 1; t <= imagePlus.getNFrames(); t++) {
                     imagePlus.setPosition(c, z, t);
-                    ImagePlus ipl1 = new ImagePlus("1",imagePlus.getProcessor().duplicate());
-                    ImagePlus ipl2 = new ImagePlus("2",imagePlus.getProcessor().duplicate());
+                    ImagePlus ipl1 = new ImagePlus("1", imagePlus.getProcessor().duplicate());
+                    ImagePlus ipl2 = new ImagePlus("2", imagePlus.getProcessor().duplicate());
 
                     runGaussian2DFilter(ipl1, sigma);
-                    runGaussian2DFilter(ipl2, sigma*1.6);
-            
+                    runGaussian2DFilter(ipl2, sigma * 1.6);
+
                     imagePlus.setProcessor(ImageCalculator.run(ipl1, ipl2, "Subtract").getProcessor());
 
                 }
@@ -565,14 +567,16 @@ public class FilterImage extends Module {
         }
 
         // If the image is being saved as a new image, adding it to the workspace
-        if (!applyToInput) {
+        if (applyToInput) {
+            // Reapplying the image in case it was an ImgLib2            
+            inputImage.setImagePlus(inputImagePlus);
+            if (showOutput)
+                inputImage.showImage();
+        } else {
             Image outputImage = ImageFactory.createImage(outputImageName, inputImagePlus);
             workspace.addImage(outputImage);
             if (showOutput)
                 outputImage.showImage();
-        } else {
-            if (showOutput)
-                inputImage.showImage();
         }
 
         return Status.PASS;

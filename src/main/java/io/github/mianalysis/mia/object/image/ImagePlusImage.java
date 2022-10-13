@@ -290,7 +290,8 @@ public class ImagePlusImage<T extends RealType<T> & NativeType<T>> extends Image
         Calibration calibration = imagePlus.getCalibration();
 
         hash = 31 * hash + ((Number) calibration.pixelWidth).hashCode();
-        hash = 31 * hash + ((Number) calibration.pixelDepth).hashCode();
+        if (imagePlus.getNSlices() > 1)
+            hash = 31 * hash + ((Number) calibration.pixelDepth).hashCode();
         hash = 31 * hash + calibration.getUnits().toUpperCase().hashCode();
 
         hash = 31 * hash + imagePlus.getWidth();
@@ -337,7 +338,7 @@ public class ImagePlusImage<T extends RealType<T> & NativeType<T>> extends Image
 
         if (calibration1.pixelWidth != calibration2.pixelWidth)
             return false;
-        if (calibration1.pixelDepth != calibration2.pixelDepth)
+        if (imagePlus.getNSlices() > 1 && calibration1.pixelDepth != calibration2.pixelDepth)
             return false;
         if (!calibration1.getUnits().equals(calibration2.getUnits()))
             return false;

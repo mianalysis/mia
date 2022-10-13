@@ -1,18 +1,22 @@
 package io.github.mianalysis.mia.module.images.process;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assumptions.assumeFalse;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.stream.Stream;
 
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import ij.IJ;
+import ij.ImageJ;
 import ij.ImagePlus;
 import io.github.mianalysis.enums.BitDepth;
 import io.github.mianalysis.enums.Dimension;
@@ -23,6 +27,7 @@ import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.Workspaces;
 import io.github.mianalysis.mia.object.image.Image;
 import io.github.mianalysis.mia.object.image.ImageFactory;
+import io.github.mianalysis.mia.object.image.ImageType;
 import io.github.mianalysis.mia.object.system.Status;
 
 public class InvertIntensityMSTest extends ModuleTest {
@@ -33,7 +38,8 @@ public class InvertIntensityMSTest extends ModuleTest {
         Stream.Builder<Arguments> argumentBuilder = Stream.builder();
         for (Dimension dimension : Dimension.values())
             for (OutputMode outputMode : OutputMode.values())
-                argumentBuilder.add(Arguments.of(dimension, outputMode));
+                for (ImageType imageType : ImageType.values())
+                    argumentBuilder.add(Arguments.of(dimension, outputMode, imageType));
 
         return argumentBuilder.build();
 
@@ -46,7 +52,8 @@ public class InvertIntensityMSTest extends ModuleTest {
         Stream.Builder<Arguments> argumentBuilder = Stream.builder();
         for (BitDepth bitDepth : BitDepth.values())
             for (OutputMode outputMode : OutputMode.values())
-                argumentBuilder.add(Arguments.of(bitDepth, outputMode));
+                for (ImageType imageType : ImageType.values())
+                    argumentBuilder.add(Arguments.of(bitDepth, outputMode, imageType));
 
         return argumentBuilder.build();
 
@@ -60,9 +67,9 @@ public class InvertIntensityMSTest extends ModuleTest {
      */
     @ParameterizedTest
     @MethodSource("dimFilterInputProvider")
-    void test8Bit(Dimension dimension, OutputMode outputMode)
+    void test8Bit(Dimension dimension, OutputMode outputMode, ImageType imageType)
             throws UnsupportedEncodingException {
-        runTest(dimension, BitDepth.B8, outputMode);
+        runTest(dimension, BitDepth.B8, outputMode, imageType);
     }
 
     /**
@@ -73,17 +80,27 @@ public class InvertIntensityMSTest extends ModuleTest {
      */
     @ParameterizedTest
     @MethodSource("bitdepthInputProvider")
-    void testAllBitDepths_D4ZT_MAVERAGE(BitDepth bitDepth, OutputMode outputMode)
+    void testAllBitDepths_D4ZT_MAVERAGE(BitDepth bitDepth, OutputMode outputMode, ImageType imageType)
             throws UnsupportedEncodingException {
-        runTest(Dimension.D4ZT, bitDepth, outputMode);
+        assumeFalse(bitDepth == BitDepth.B32);
+        runTest(Dimension.D4ZT, bitDepth, outputMode, imageType);
     }
+
+    // /*
+    // * Used for testing a single set of parameters
+    // */
+    // @Test
+    // void singleTest() throws UnsupportedEncodingException {
+    // runTest(Dimension.D4ZT, BitDepth.B32, OutputMode.APPLY_TO_INPUT,
+    // ImageType.IMGLIB2);
+    // }
 
     /**
      * Performs the test
      * 
      * @throws UnsupportedEncodingException
      */
-    public static void runTest(Dimension dimension, BitDepth bitDepth, OutputMode outputMode)
+    public static void runTest(Dimension dimension, BitDepth bitDepth, OutputMode outputMode, ImageType imageType)
             throws UnsupportedEncodingException {
         boolean applyToInput = outputMode.equals(OutputMode.APPLY_TO_INPUT);
 
@@ -100,7 +117,7 @@ public class InvertIntensityMSTest extends ModuleTest {
         // Loading the test image and adding to workspace
         String inputPath = URLDecoder.decode(InvertIntensityMSTest.class.getResource(inputName).getPath(), "UTF-8");
         ImagePlus ipl = IJ.openImage(inputPath);
-        Image image = ImageFactory.createImage("Test_image", ipl);
+        Image image = ImageFactory.createImage("Test_image", ipl, imageType);
         workspace.addImage(image);
 
         // Loading the expected image
@@ -109,7 +126,7 @@ public class InvertIntensityMSTest extends ModuleTest {
 
         String expectedPath = URLDecoder.decode(InvertIntensityMSTest.class.getResource(expectedName).getPath(),
                 "UTF-8");
-        Image expectedImage = ImageFactory.createImage("Expected", IJ.openImage(expectedPath));
+        Image expectedImage = ImageFactory.createImage("Expected", IJ.openImage(expectedPath), imageType);
 
         // Initialising module and setting parameters
         InvertIntensity invertIntensity = new InvertIntensity(new Modules());
@@ -127,6 +144,11 @@ public class InvertIntensityMSTest extends ModuleTest {
             assertNotNull(workspace.getImage("Test_image"));
 
             Image outputImage = workspace.getImage("Test_image");
+            // new ImageJ();
+            // expectedImage.showImage();
+            // outputImage.showImage();
+            // IJ.runMacro("waitForUser");
+
             assertEquals(expectedImage, outputImage);
 
         } else {
@@ -135,6 +157,12 @@ public class InvertIntensityMSTest extends ModuleTest {
             assertNotNull(workspace.getImage("Test_output"));
 
             Image outputImage = workspace.getImage("Test_output");
+
+            // new ImageJ();
+            // expectedImage.showImage();
+            // outputImage.showImage();
+            // IJ.runMacro("waitForUser");
+
             assertEquals(expectedImage, outputImage);
 
         }

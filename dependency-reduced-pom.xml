@@ -3,14 +3,14 @@
   <parent>
     <artifactId>pom-scijava</artifactId>
     <groupId>org.scijava</groupId>
-    <version>31.1.0</version>
+    <version>33.2.0</version>
     <relativePath>pom.xml</relativePath>
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <groupId>io.github.mianalysis</groupId>
   <artifactId>MIA</artifactId>
   <name>MIA</name>
-  <version>1.1.2-SNAPSHOT</version>
+  <version>1.1.2</version>
   <description>ModularImageAnalysis (MIA) is an ImageJ plugin which provides a modular framework for assembling image and object analysis workflows. Detected objects can be transformed, filtered, measured and related. Analysis workflows are batch-enabled by default, allowing easy processing of high-content datasets.</description>
   <url>https://github.com/mianalysis/mia</url>
   <issueManagement>
@@ -200,13 +200,9 @@
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-engine</artifactId>
-      <version>5.7.1</version>
+      <version>5.8.1</version>
       <scope>test</scope>
       <exclusions>
-        <exclusion>
-          <artifactId>apiguardian-api</artifactId>
-          <groupId>org.apiguardian</groupId>
-        </exclusion>
         <exclusion>
           <artifactId>junit-platform-engine</artifactId>
           <groupId>org.junit.platform</groupId>
@@ -215,21 +211,25 @@
           <artifactId>junit-jupiter-api</artifactId>
           <groupId>org.junit.jupiter</groupId>
         </exclusion>
+        <exclusion>
+          <artifactId>apiguardian-api</artifactId>
+          <groupId>org.apiguardian</groupId>
+        </exclusion>
       </exclusions>
     </dependency>
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-params</artifactId>
-      <version>5.7.1</version>
+      <version>5.8.1</version>
       <scope>test</scope>
       <exclusions>
         <exclusion>
-          <artifactId>apiguardian-api</artifactId>
-          <groupId>org.apiguardian</groupId>
-        </exclusion>
-        <exclusion>
           <artifactId>junit-jupiter-api</artifactId>
           <groupId>org.junit.jupiter</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>apiguardian-api</artifactId>
+          <groupId>org.apiguardian</groupId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -413,7 +413,7 @@
     <dependency>
       <groupId>ome</groupId>
       <artifactId>bio-formats_plugins</artifactId>
-      <version>6.7.0</version>
+      <version>6.10.1</version>
       <scope>provided</scope>
       <exclusions>
         <exclusion>
@@ -453,7 +453,7 @@
     <dependency>
       <groupId>ome</groupId>
       <artifactId>formats-bsd</artifactId>
-      <version>6.7.0</version>
+      <version>6.10.1</version>
       <scope>provided</scope>
       <exclusions>
         <exclusion>
@@ -463,10 +463,6 @@
         <exclusion>
           <artifactId>xalan</artifactId>
           <groupId>xalan</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>xml-apis</artifactId>
-          <groupId>xml-apis</groupId>
         </exclusion>
         <exclusion>
           <artifactId>specification</artifactId>
@@ -489,6 +485,10 @@
           <groupId>com.esotericsoftware</groupId>
         </exclusion>
         <exclusion>
+          <artifactId>commons-lang</artifactId>
+          <groupId>commons-lang</groupId>
+        </exclusion>
+        <exclusion>
           <artifactId>perf4j</artifactId>
           <groupId>org.perf4j</groupId>
         </exclusion>
@@ -507,6 +507,14 @@
         <exclusion>
           <artifactId>xercesImpl</artifactId>
           <groupId>xerces</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>xml-apis</artifactId>
+          <groupId>xml-apis</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>snakeyaml</artifactId>
+          <groupId>org.yaml</groupId>
         </exclusion>
         <exclusion>
           <artifactId>ome-common</artifactId>
@@ -529,7 +537,7 @@
     <dependency>
       <groupId>ome</groupId>
       <artifactId>formats-gpl</artifactId>
-      <version>6.7.0</version>
+      <version>6.10.1</version>
       <scope>provided</scope>
       <exclusions>
         <exclusion>
@@ -545,7 +553,7 @@
           <groupId>org.openmicroscopy</groupId>
         </exclusion>
         <exclusion>
-          <artifactId>cdm</artifactId>
+          <artifactId>cdm-core</artifactId>
           <groupId>edu.ucar</groupId>
         </exclusion>
         <exclusion>
@@ -555,6 +563,10 @@
         <exclusion>
           <artifactId>joda-time</artifactId>
           <groupId>joda-time</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>aircompressor</artifactId>
+          <groupId>io.airlift</groupId>
         </exclusion>
         <exclusion>
           <artifactId>json</artifactId>
@@ -585,7 +597,7 @@
     <dependency>
       <groupId>net.imagej</groupId>
       <artifactId>imagej</artifactId>
-      <version>2.3.0</version>
+      <version>2.9.0</version>
       <scope>provided</scope>
       <exclusions>
         <exclusion>
@@ -669,7 +681,7 @@
     <dependency>
       <groupId>net.imagej</groupId>
       <artifactId>imagej-ui-swing</artifactId>
-      <version>0.23.2</version>
+      <version>0.23.3</version>
       <scope>provided</scope>
       <exclusions>
         <exclusion>
@@ -679,10 +691,6 @@
         <exclusion>
           <artifactId>imglib2-roi</artifactId>
           <groupId>net.imglib2</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>jfreechart</artifactId>
-          <groupId>org.jfree</groupId>
         </exclusion>
         <exclusion>
           <artifactId>jhotdraw</artifactId>
@@ -709,7 +717,7 @@
     <dependency>
       <groupId>net.imagej</groupId>
       <artifactId>imagej-ops</artifactId>
-      <version>0.45.8</version>
+      <version>0.48.0</version>
       <scope>provided</scope>
       <exclusions>
         <exclusion>
@@ -781,7 +789,7 @@
     <dependency>
       <groupId>sc.fiji</groupId>
       <artifactId>Auto_Local_Threshold</artifactId>
-      <version>1.10.1</version>
+      <version>1.11.0</version>
       <scope>provided</scope>
       <exclusions>
         <exclusion>
@@ -861,7 +869,7 @@
     <dependency>
       <groupId>sc.fiji</groupId>
       <artifactId>Fiji_Plugins</artifactId>
-      <version>3.1.1</version>
+      <version>3.1.2</version>
       <scope>provided</scope>
       <exclusions>
         <exclusion>
@@ -891,10 +899,6 @@
         <exclusion>
           <artifactId>jgraphx</artifactId>
           <groupId>com.github.vlsi.mxgraph</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>gson</artifactId>
-          <groupId>com.google.code.gson</groupId>
         </exclusion>
         <exclusion>
           <artifactId>opencsv</artifactId>
@@ -943,10 +947,6 @@
         <exclusion>
           <artifactId>jama</artifactId>
           <groupId>gov.nist.math</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>jfreechart</artifactId>
-          <groupId>org.jfree</groupId>
         </exclusion>
         <exclusion>
           <artifactId>fiji-lib</artifactId>
