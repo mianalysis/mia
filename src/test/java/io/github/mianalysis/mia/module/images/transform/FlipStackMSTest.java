@@ -87,14 +87,6 @@ public class FlipStackMSTest extends ModuleTest {
         runTest(Dimension.D4ZT, bitDepth, Axis.AZ, outputMode);
     }
 
-    // /*
-    //  * Used for testing a single set of parameters
-    //  */
-    // @Test
-    // void singleTest() throws UnsupportedEncodingException {
-    //     runTest(Dimension.D4CZ, BitDepth.B8, Axis.AC, OutputMode.CREATE_NEW);
-    // }
-
     /**
      * Performs the test
      * 
@@ -169,12 +161,6 @@ public class FlipStackMSTest extends ModuleTest {
             assertNotNull(workspace.getImage("Test_output"));
 
             Image outputImage = workspace.getImage("Test_output");
-
-            // new ImageJ();
-            // expectedImage.showImage();
-            // outputImage.showImage();
-            // IJ.runMacro("waitForUser");
-
             assertEquals(expectedImage, outputImage);
 
         }
