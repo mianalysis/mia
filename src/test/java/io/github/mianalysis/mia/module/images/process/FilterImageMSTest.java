@@ -8,13 +8,11 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.stream.Stream;
 
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import ij.IJ;
-import ij.ImageJ;
 import ij.ImagePlus;
 import io.github.mianalysis.enums.BitDepth;
 import io.github.mianalysis.enums.Calibration;
@@ -44,7 +42,8 @@ public class FilterImageMSTest extends ModuleTest {
         FMEDIAN3D, // 3D median
         FMIN2D, // 2D minimum
         FMIN3D, // 3D minimum
-        // FRIDGE2D, // 2D ridge enhancement
+        FRIDGEDARK2D, // 2D ridge enhancement (dark line)
+        FRIDGELIGHT2D, // 2D ridge enhancement (light line)
         FVAR2D, // 2D variance
         FVAR3D, // 3D variance
 
@@ -118,14 +117,6 @@ public class FilterImageMSTest extends ModuleTest {
                 runTest(Dimension.D4ZT, bitDepth, Filter.FMEAN2D, 3, false, outputMode, imageType);
         }
     }
-
-    // /*
-    //  * Used for testing a single set of parameters
-    //  */
-    // @Test
-    // void singleTest() throws UnsupportedEncodingException {
-    //     runTest(Dimension.D3C, BitDepth.B8, Filter.FMAX2D, 3, false, OutputMode.APPLY_TO_INPUT, ImageType.IMGLIB2);
-    // }
 
     /**
      * Performs the test
@@ -206,10 +197,14 @@ public class FilterImageMSTest extends ModuleTest {
             case FMIN3D:
                 filterImage.updateParameterValue(FilterImage.FILTER_MODE, FilterImage.FilterModes.MINIMUM3D);
                 break;
-            // case FRIDGE2D:
-            // filterImage.updateParameterValue(FilterImage.FILTER_MODE,
-            // FilterImage.FilterModes.RIDGE_ENHANCEMENT);
-            // break;
+            case FRIDGEDARK2D:
+                filterImage.updateParameterValue(FilterImage.FILTER_MODE, FilterImage.FilterModes.RIDGE_ENHANCEMENT);
+                filterImage.updateParameterValue(FilterImage.CONTOUR_CONTRAST, FilterImage.ContourContrast.DARK_LINE);
+                break;
+            case FRIDGELIGHT2D:
+                filterImage.updateParameterValue(FilterImage.FILTER_MODE, FilterImage.FilterModes.RIDGE_ENHANCEMENT);
+                filterImage.updateParameterValue(FilterImage.CONTOUR_CONTRAST, FilterImage.ContourContrast.LIGHT_LINE);
+                break;
             case FVAR2D:
                 filterImage.updateParameterValue(FilterImage.FILTER_MODE, FilterImage.FilterModes.VARIANCE2D);
                 break;
@@ -231,12 +226,6 @@ public class FilterImageMSTest extends ModuleTest {
             assertNotNull(workspace.getImage("Test_image"));
 
             Image outputImage = workspace.getImage("Test_image");
-
-            // new ImageJ();
-            // expectedImage.showImage();
-            // outputImage.showImage();
-            // IJ.runMacro("waitForUser");
-
             assertEquals(expectedImage, outputImage);
 
         } else {
@@ -245,12 +234,6 @@ public class FilterImageMSTest extends ModuleTest {
             assertNotNull(workspace.getImage("Test_output"));
 
             Image outputImage = workspace.getImage("Test_output");
-
-            // new ImageJ();
-            // expectedImage.showImage();
-            // outputImage.showImage();
-            // IJ.runMacro("waitForUser");
-
             assertEquals(expectedImage, outputImage);
 
         }
@@ -263,5 +246,4 @@ public class FilterImageMSTest extends ModuleTest {
     public void testGetHelp() {
         assertNotNull(new FilterImage(null).getDescription());
     }
-
 }

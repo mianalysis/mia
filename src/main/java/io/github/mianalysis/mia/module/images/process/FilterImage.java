@@ -9,8 +9,6 @@ import de.biomedical_imaging.ij.steger.Convol;
 import de.biomedical_imaging.ij.steger.LinesUtil;
 import de.biomedical_imaging.ij.steger.Position;
 import fiji.stacks.Hyperstack_rearranger;
-import ij.IJ;
-import ij.ImageJ;
 import ij.ImagePlus;
 import ij.ImageStack;
 import ij.plugin.Duplicator;
@@ -20,7 +18,7 @@ import ij.plugin.ImageCalculator;
 import ij.plugin.SubHyperstackMaker;
 import ij.plugin.ZProjector;
 import ij.plugin.filter.RankFilters;
-import ij.process.FloatProcessor;
+import ij.process.ImageProcessor;
 import inra.ijpb.morphology.Morphology;
 import inra.ijpb.morphology.strel.DiskStrel;
 import io.github.mianalysis.mia.module.Categories;
@@ -46,7 +44,6 @@ import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Status;
 import io.github.sjcross.sjcommon.process.CommaSeparatedStringInterpreter;
-import net.imagej.ops.segment.detectRidges.RidgeDetectionUtils;
 
 /**
  * Created by Stephen on 30/05/2017.
@@ -282,14 +279,12 @@ public class FilterImage extends Module {
             for (int c = 1; c <= ipl.getNChannels(); c++) {
                 for (int t = 1; t <= ipl.getNFrames(); t++) {
                     int idx = ipl.getStackIndex(c, z, t);
-                    float[] image = (float[]) ipl.getStack().getProcessor(idx).getPixels();
+                    ImageProcessor ipr = ipl.getStack().getProcessor(idx);
+                    float[] image = (float[]) ipr.getPixels();
 
                     float[] kRR = new float[width * height];
                     float[] kRC = new float[width * height];
                     float[] kCC = new float[width * height];
-                    float[] ev = new float[width * height];
-                    for (int i = 0; i < ev.length; i++)
-                        ev[i] = 0;
 
                     double[] eigval = new double[2];
                     double[][] eigvec = new double[2][2];
@@ -306,18 +301,16 @@ public class FilterImage extends Module {
 
                             double val = eigval[0] * mult;
                             if (val > 0.0)
-                                ev[l] = (float) val;
+                                ipr.setf(x, y, (float) val);
+                            else
+                                ipr.setf(x, y, 0);
                         }
                     }
-
-                    FloatProcessor fp = new FloatProcessor(width, height);
-                    fp.setPixels(ev);
-                    ipl.getStack().setProcessor(fp, idx);
-
                 }
             }
         }
         ipl.updateAndDraw();
+
     }
 
     public static void runRollingFrameFilter(ImagePlus inputImagePlus, String windowIndices, String rollingMethod) {
@@ -568,7 +561,7 @@ public class FilterImage extends Module {
 
         // If the image is being saved as a new image, adding it to the workspace
         if (applyToInput) {
-            // Reapplying the image in case it was an ImgLib2            
+            // Reapplying the image in case it was an ImgLib2
             inputImage.setImagePlus(inputImagePlus);
             if (showOutput)
                 inputImage.showImage();
