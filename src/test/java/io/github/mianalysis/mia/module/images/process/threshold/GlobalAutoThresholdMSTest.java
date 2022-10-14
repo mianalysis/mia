@@ -16,12 +16,14 @@ import ij.IJ;
 import ij.ImagePlus;
 import io.github.mianalysis.enums.Dimension;
 import io.github.mianalysis.enums.Logic;
+import io.github.mianalysis.enums.OutputMode;
 import io.github.mianalysis.mia.module.ModuleTest;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.Workspaces;
 import io.github.mianalysis.mia.object.image.Image;
 import io.github.mianalysis.mia.object.image.ImageFactory;
+import io.github.mianalysis.mia.object.image.ImageType;
 import io.github.mianalysis.mia.object.system.Status;
 
 /**
@@ -55,22 +57,26 @@ public class GlobalAutoThresholdMSTest extends ModuleTest {
         for (Dimension dimension : Dimension.values())
             for (Threshold threshold : Threshold.values())
                 for (Logic logic : Logic.values())
-                    argumentBuilder.add(Arguments.of(dimension, threshold, logic));
+                    for (OutputMode outputMode : OutputMode.values())
+                        for (ImageType imageType : ImageType.values())
+                            argumentBuilder.add(Arguments.of(dimension, threshold, logic, outputMode, imageType));
 
         return argumentBuilder.build();
 
     }
 
     /**
-     * Parameterized test run with 8-bit bit depth and all dimensions, all threshold algorithms and all logics. 
+     * Parameterized test run with 8-bit bit depth and all dimensions, all threshold
+     * algorithms and all logics.
      * The reduced testing here is to keep storage requirements down.
      * 
      * @throws UnsupportedEncodingException
      */
     @ParameterizedTest
     @MethodSource("dimThresholdLogicInputProvider")
-    void testAll(Dimension dimension, Threshold threshold, Logic logic) throws UnsupportedEncodingException {
-        runTest(dimension, threshold, logic);
+    void testAll(Dimension dimension, Threshold threshold, Logic logic, OutputMode outputMode, ImageType imageType)
+            throws UnsupportedEncodingException {
+        runTest(dimension, threshold, logic, outputMode, imageType);
 
     }
 
@@ -79,8 +85,10 @@ public class GlobalAutoThresholdMSTest extends ModuleTest {
      * 
      * @throws UnsupportedEncodingException
      */
-    public static void runTest(Dimension dimension, Threshold threshold, Logic logic)
+    public static void runTest(Dimension dimension, Threshold threshold, Logic logic, OutputMode outputMode, ImageType imageType)
             throws UnsupportedEncodingException {
+                boolean applyToInput = outputMode.equals(OutputMode.APPLY_TO_INPUT);
+
         // Checks input image and expected images are available. If not found, the test
         // skips
         String inputName = "/msimages/noisygradient/NoisyGradient_" + dimension + "_B8.zip";
@@ -98,17 +106,17 @@ public class GlobalAutoThresholdMSTest extends ModuleTest {
         // Loading the test image and adding to workspace
         String inputPath = URLDecoder.decode(GlobalAutoThresholdMSTest.class.getResource(inputName).getPath(), "UTF-8");
         ImagePlus ipl = IJ.openImage(inputPath);
-        Image image = ImageFactory.createImage("Test_image", ipl);
+        Image image = ImageFactory.createImage("Test_image", ipl, imageType);
         workspace.addImage(image);
 
         String expectedPath = URLDecoder.decode(GlobalAutoThresholdMSTest.class.getResource(expectedName).getPath(),
                 "UTF-8");
-        Image expectedImage = ImageFactory.createImage("Expected", IJ.openImage(expectedPath));
+        Image expectedImage = ImageFactory.createImage("Expected", IJ.openImage(expectedPath), imageType);
 
         // Initialising module and setting parameters
         GlobalAutoThreshold module = new GlobalAutoThreshold(new Modules());
         module.updateParameterValue(GlobalAutoThreshold.INPUT_IMAGE, "Test_image");
-        module.updateParameterValue(GlobalAutoThreshold.APPLY_TO_INPUT, false);
+        module.updateParameterValue(GlobalAutoThreshold.APPLY_TO_INPUT, applyToInput);
         module.updateParameterValue(GlobalAutoThreshold.OUTPUT_IMAGE, "Test_output");
 
         switch (threshold) {
@@ -176,13 +184,22 @@ public class GlobalAutoThresholdMSTest extends ModuleTest {
         assertEquals(Status.PASS, status);
 
         // Checking the images in the workspace
-        assertEquals(2, workspace.getImages().size());
-        assertNotNull(workspace.getImage("Test_image"));
-        assertNotNull(workspace.getImage("Test_output"));
+        if (applyToInput) {
+            assertEquals(1, workspace.getImages().size());
+            assertNotNull(workspace.getImage("Test_image"));
 
-        // Checking the output image has the expected calibration
-        Image outputImage = workspace.getImage("Test_output");
-        assertEquals(expectedImage, outputImage);
+            Image outputImage = workspace.getImage("Test_image");
+            assertEquals(expectedImage, outputImage);
+
+        } else {
+            assertEquals(2, workspace.getImages().size());
+            assertNotNull(workspace.getImage("Test_image"));
+            assertNotNull(workspace.getImage("Test_output"));
+
+            Image outputImage = workspace.getImage("Test_output");
+            assertEquals(expectedImage, outputImage);
+
+        }
 
     }
 

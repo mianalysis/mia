@@ -144,11 +144,6 @@ public class InvertIntensityMSTest extends ModuleTest {
             assertNotNull(workspace.getImage("Test_image"));
 
             Image outputImage = workspace.getImage("Test_image");
-            // new ImageJ();
-            // expectedImage.showImage();
-            // outputImage.showImage();
-            // IJ.runMacro("waitForUser");
-
             assertEquals(expectedImage, outputImage);
 
         } else {
@@ -157,16 +152,9 @@ public class InvertIntensityMSTest extends ModuleTest {
             assertNotNull(workspace.getImage("Test_output"));
 
             Image outputImage = workspace.getImage("Test_output");
-
-            // new ImageJ();
-            // expectedImage.showImage();
-            // outputImage.showImage();
-            // IJ.runMacro("waitForUser");
-
             assertEquals(expectedImage, outputImage);
 
         }
-
     }
 
     /**
