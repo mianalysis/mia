@@ -32,7 +32,7 @@ import io.github.mianalysis.mia.object.system.Status;
 /**
  * Created by sc13967 on 06/06/2017.
  */
-@Plugin(type = Module.class, priority=Priority.LOW, visible=true)
+@Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class BinaryOperations2D extends Module {
     public static final String INPUT_SEPARATOR = "Image input/output";
     public static final String INPUT_IMAGE = "Input image";
@@ -86,8 +86,7 @@ public class BinaryOperations2D extends Module {
                 break;
 
             case OperationModes.DISTANCE_MAP:
-                if (!blackBackground)
-                    InvertIntensity.process(ipl);
+                IJ.run(ipl, "Options...", "iterations=" + numIterations + " count=" + count + " do=Nothing " + bg);
                 IJ.run(ipl, "Distance Map", "stack");
                 break;
 
@@ -102,6 +101,7 @@ public class BinaryOperations2D extends Module {
                 break;
 
             case OperationModes.OUTLINE:
+                IJ.run(ipl, "Options...", "iterations=" + numIterations + " count=" + count + " do=Nothing " + bg);
                 IJ.run(ipl, "Outline", bg + " stack");
                 break;
 
@@ -111,20 +111,17 @@ public class BinaryOperations2D extends Module {
                 break;
 
             case OperationModes.VORONOI:
-                if (!blackBackground)
-                    InvertIntensity.process(ipl);
+                IJ.run(ipl, "Options...", "iterations=" + numIterations + " count=" + count + " do=Nothing " + bg);
                 IJ.run(ipl, "Voronoi", " stack");
                 break;
 
             case OperationModes.ULTIMATE_POINTS:
-                if (!blackBackground)
-                    InvertIntensity.process(ipl);
+                IJ.run(ipl, "Options...", "iterations=" + numIterations + " count=" + count + " do=Nothing " + bg);
                 IJ.run(ipl, "Ultimate Points", " stack");
                 break;
 
             case OperationModes.WATERSHED:
-                if (!blackBackground)
-                    InvertIntensity.process(ipl);
+                IJ.run(ipl, "Options...", "iterations=" + numIterations + " count=" + count + " do=Nothing " + bg);
                 IJ.run(ipl, "Watershed", " stack");
                 break;
 
@@ -138,24 +135,26 @@ public class BinaryOperations2D extends Module {
 
     @Override
     public String getDescription() {
-        return "Applies stock ImageJ binary operations to an image in the workspace.  This image will be 8-bit with binary logic determined by the \"" + BINARY_LOGIC + "\" parameter.  All operations are performed in 2D, with higher dimensionality stacks being processed slice-by-slice.";
+        return "Applies stock ImageJ binary operations to an image in the workspace.  This image will be 8-bit with binary logic determined by the \""
+                + BINARY_LOGIC
+                + "\" parameter.  All operations are performed in 2D, with higher dimensionality stacks being processed slice-by-slice.";
 
     }
 
     @Override
     public Status process(Workspace workspace) {
         // Getting input image
-        String inputImageName = parameters.getValue(INPUT_IMAGE,workspace);
+        String inputImageName = parameters.getValue(INPUT_IMAGE, workspace);
         Image inputImage = workspace.getImages().get(inputImageName);
         ImagePlus inputImagePlus = inputImage.getImagePlus();
 
         // Getting parameters
-        boolean applyToInput = parameters.getValue(APPLY_TO_INPUT,workspace);
-        String outputImageName = parameters.getValue(OUTPUT_IMAGE,workspace);
-        String operationMode = parameters.getValue(OPERATION_MODE,workspace);
-        int numIterations = parameters.getValue(NUM_ITERATIONS,workspace);
-        int count = parameters.getValue(COUNT,workspace);
-        String binaryLogic = parameters.getValue(BINARY_LOGIC,workspace);
+        boolean applyToInput = parameters.getValue(APPLY_TO_INPUT, workspace);
+        String outputImageName = parameters.getValue(OUTPUT_IMAGE, workspace);
+        String operationMode = parameters.getValue(OPERATION_MODE, workspace);
+        int numIterations = parameters.getValue(NUM_ITERATIONS, workspace);
+        int count = parameters.getValue(COUNT, workspace);
+        String binaryLogic = parameters.getValue(BINARY_LOGIC, workspace);
         boolean blackBackground = binaryLogic.equals(BinaryLogic.BLACK_BACKGROUND);
 
         // If applying to a new image, the input image is duplicated
@@ -165,17 +164,15 @@ public class BinaryOperations2D extends Module {
         process(inputImagePlus, operationMode, numIterations, count, blackBackground);
 
         // If the image is being saved as a new image, adding it to the workspace
-        if (!applyToInput) {
-            writeStatus("Adding image (" + outputImageName + ") to workspace");
+        if (applyToInput) {
+            inputImage.setImagePlus(inputImagePlus);
+            if (showOutput)
+                inputImage.showImage();
+        } else {
             Image outputImage = ImageFactory.createImage(outputImageName, inputImagePlus);
             workspace.addImage(outputImage);
             if (showOutput)
                 outputImage.showImage();
-
-        } else {
-            if (showOutput)
-                inputImage.showImage();
-
         }
 
         return Status.PASS;
@@ -200,19 +197,19 @@ public class BinaryOperations2D extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
-Workspace workspace = null;
+        Workspace workspace = null;
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(INPUT_IMAGE));
         returnedParameters.add(parameters.getParameter(APPLY_TO_INPUT));
 
-        if (!(boolean) parameters.getValue(APPLY_TO_INPUT,workspace))
+        if (!(boolean) parameters.getValue(APPLY_TO_INPUT, workspace))
             returnedParameters.add(parameters.getParameter(OUTPUT_IMAGE));
-        
+
         returnedParameters.add(parameters.getParameter(OPERATION_SEPARATOR));
         returnedParameters.add(parameters.getParameter(OPERATION_MODE));
-        switch ((String) parameters.getValue(OPERATION_MODE,workspace)) {
+        switch ((String) parameters.getValue(OPERATION_MODE, workspace)) {
             case OperationModes.DILATE:
             case OperationModes.ERODE:
             case OperationModes.FILL_HOLES:
@@ -230,27 +227,27 @@ Workspace workspace = null;
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
-return null;
+        return null;
     }
 
     @Override
-public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
-return null;
+    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+        return null;
     }
 
     @Override
-public MetadataRefs updateAndGetMetadataReferences() {
-return null;
+    public MetadataRefs updateAndGetMetadataReferences() {
+        return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
-return null;
+        return null;
     }
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
-return null;
+        return null;
     }
 
     @Override
@@ -261,7 +258,7 @@ return null;
     void addParameterDescriptions() {
         parameters.get(INPUT_IMAGE).setDescription(
                 "Image from workspace to apply binary operation to.  This image will be 8-bit with binary logic determined by the \""
-                + BINARY_LOGIC + "\" parameter.");
+                        + BINARY_LOGIC + "\" parameter.");
 
         parameters.get(APPLY_TO_INPUT).setDescription(
                 "When selected, the post-operation image will overwrite the input image in the workspace.  Otherwise, the image will be saved to the workspace with the name specified by the \""
@@ -307,6 +304,6 @@ return null;
                 "The minimum number of connected background or foreground for an erosion or dilation process to occur, respectively.");
 
         parameters.get(BINARY_LOGIC).setDescription(BinaryLogicInterface.getDescription());
-        
+
     }
 }
