@@ -72,6 +72,9 @@ public class Objs extends LinkedHashMap<Integer, Obj> {
         Obj newObject = new Obj(this, volumeType, ID);
         add(newObject);
 
+        // Updating the maxID if necessary
+        maxID = Math.max(maxID, ID);
+
         return newObject;
 
     }

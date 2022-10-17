@@ -1,5 +1,7 @@
 package io.github.mianalysis.mia.module.core;
 
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.io.File;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -438,13 +440,15 @@ public class InputControl extends Module {
         }
         returnedParameters.add(parameters.getParameter(LOAD_FIRST_PER_FOLDER));
         returnedParameters.add(parameters.getParameter(LOAD_FIRST_MATCHING_GROUP));
-        if ((boolean) parameters.getValue(LOAD_FIRST_MATCHING_GROUP, null))
+        if ((boolean) parameters.getValue(LOAD_FIRST_MATCHING_GROUP, workspace))
             returnedParameters.add(parameters.getParameter(PATTERN));
         returnedParameters.add(parameters.getParameter(REFRESH_FILE));
 
         returnedParameters.add(parameters.getParameter(CALIBRATION_SEPARATOR));
         returnedParameters.add(parameters.getParameter(SPATIAL_UNIT));
+        SpatialUnit.setUnit(((ChoiceP) parameters.getParameter(InputControl.SPATIAL_UNIT)).getChoice());
         returnedParameters.add(parameters.getParameter(TEMPORAL_UNIT));
+        TemporalUnit.setUnit(((ChoiceP) parameters.getParameter(InputControl.TEMPORAL_UNIT)).getChoice());
 
         returnedParameters.add(parameters.getParameter(FILTER_SEPARATOR));
         returnedParameters.add(parameters.getParameter(IGNORE_CASE));
@@ -454,7 +458,7 @@ public class InputControl extends Module {
         returnedParameters.add(parameters.getParameter(SIMULTANEOUS_JOBS));
         // If a the RunMacro module is present, this analysis must be run as a single
         // job
-        if ((int) parameters.getValue(SIMULTANEOUS_JOBS, null) > 1) {
+        if ((int) parameters.getValue(SIMULTANEOUS_JOBS, workspace) > 1) {
             for (Module module : modules) {
                 if (module instanceof RunMacro || module instanceof RunMacroOnObjects) {
                     returnedParameters.add(parameters.getParameter(MACRO_WARNING));

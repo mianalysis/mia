@@ -292,8 +292,6 @@ public class GUI {
         // workspace
         InputControl inputControl = analysis.getModules().getInputControl();
         String inputPath = ((FileFolderPathP) inputControl.getParameter(InputControl.INPUT_PATH)).getPath();
-        SpatialUnit.setUnit(((ChoiceP) inputControl.getParameter(InputControl.SPATIAL_UNIT)).getChoice());
-        TemporalUnit.setUnit(((ChoiceP) inputControl.getParameter(InputControl.TEMPORAL_UNIT)).getChoice());
 
         // Getting the next file
         File nextFile = null;

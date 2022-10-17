@@ -1,7 +1,15 @@
 package io.github.mianalysis.mia.module.visualise.overlays;
 
 import java.awt.Color;
+import java.text.DateFormat;
+import java.time.Duration;
+import java.time.Period;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.TemporalAccessor;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+import org.apache.commons.lang.time.DurationFormatUtils;
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
 
@@ -34,8 +42,10 @@ import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Colours;
 import io.github.mianalysis.mia.object.system.Preferences;
 import io.github.mianalysis.mia.object.system.Status;
+import io.github.mianalysis.mia.object.units.TemporalUnit;
 import io.github.mianalysis.mia.process.ColourFactory;
 import io.github.sjcross.sjcommon.process.CommaSeparatedStringInterpreter;
+import ome.units.UNITS;
 
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class AddText extends AbstractOverlay {
@@ -65,15 +75,19 @@ public class AddText extends AbstractOverlay {
             int yPosition, int[] zRange, int[] frameRange, boolean centreText) {
         // If necessary, turning the image into a HyperStack (if 2 dimensions=1 it will
         // be a standard ImagePlus)
-        if (!ipl.isComposite() & (ipl.getNSlices() > 1 | ipl.getNFrames() > 1 | ipl.getNChannels() > 1)) {
+        if (!ipl.isComposite() & (ipl.getNSlices() > 1 | ipl.getNFrames() > 1 | ipl.getNChannels() > 1))
             ipl = HyperStackConverter.toHyperStack(ipl, ipl.getNChannels(), ipl.getNSlices(), ipl.getNFrames());
-        }
 
+        // Getting frame interval in second units
+        long frameIntervalMs = TemporalUnit.getOMEUnit()
+                .convertValue(ipl.getCalibration().frameInterval, UNITS.MILLISECOND).longValue();
+        
         for (int z : zRange) {
             for (int f : frameRange) {
-                String finalText = replaceDynamicValues(text, f, z);
+                String replacedText = replaceDynamicValues(text, f, z);
+                replacedText = replaceTimeValues(replacedText, frameIntervalMs, f);
                 double[] location = new double[] { xPosition, yPosition, z };
-                AddLabels.addOverlay(ipl, finalText, location, f, color, labelSize, centreText);
+                AddLabels.addOverlay(ipl, replacedText, location, f, color, labelSize, centreText);
             }
         }
     }
@@ -81,6 +95,21 @@ public class AddText extends AbstractOverlay {
     public static String replaceDynamicValues(String text, int f, int z) {
         text = text.replace("D{FRAME}", String.valueOf(f));
         return text.replace("D{SLICE}", String.valueOf(z));
+
+    }
+
+    public static String replaceTimeValues(String text, long frameIntervalMs, int f) {
+        Pattern pattern = Pattern.compile("T\\{([^\\{}]+)}");
+        Matcher matcher = pattern.matcher(text);
+
+        if (matcher.matches()) {
+            String format = matcher.group(1);
+
+            String formatted = DurationFormatUtils.formatDuration(frameIntervalMs * (f-1), format);
+            text = text.replace("T{" + format + "}", formatted);
+        }
+
+        return text;
 
     }
 
@@ -161,7 +190,7 @@ public class AddText extends AbstractOverlay {
         parameters.add(new SeparatorP(RENDERING_SEPARATOR, this));
         parameters.add(new StringP(TEXT, this));
         parameters.add(new MessageP(DYNAMIC_VALUES, this,
-                "The current slice and/or frame can be inserted into the rendered text by including one of the following: D{FRAME}, D{SLICE}.",
+                "The current slice and/or frame can be inserted into the rendered text by including one of the following: D{FRAME}, D{SLICE}.  Elapsed time can be inserted in the form T{HH:mm:ss.SSS}.",
                 Colours.getDarkBlue(darkMode)));
         parameters.add(new IntegerP(X_POSITION, this, 0));
         parameters.add(new IntegerP(Y_POSITION, this, 0));
@@ -259,7 +288,7 @@ public class AddText extends AbstractOverlay {
         parameters.get(OUTPUT_IMAGE).setDescription(
                 "The name of the new image to be saved to the workspace (if not applying the changes directly to the input image).");
 
-        parameters.get(TEXT).setDescription("Fixed text to be displayed");
+        parameters.get(TEXT).setDescription("Fixed text to be displayed.  The current slice and frame numbers can be inserted using \"D{SLICE}\" and \"D{FRAME}\".  Similarly, it's possible to insert the elapsed frame time in the form \"T{HH:mm:ss.SSS}\" (where this example would give hours:minutes:seconds.millis).  The full description of supported time values can be found <a href=\"https://docs.oracle.com/javase/8/docs/api/java/time/format/DateTimeFormatter.html\">here</a>.");
 
         parameters.get(X_POSITION).setDescription(
                 "Horizontal location of the text to be displayed.  Specified in pixel units relative to the left of the image (x=0).");

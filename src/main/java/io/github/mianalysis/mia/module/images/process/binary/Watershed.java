@@ -8,14 +8,11 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
 
-import com.drew.lang.annotations.Nullable;
-
 import ij.IJ;
 import ij.ImagePlus;
 import ij.ImageStack;
 import ij.Prefs;
 import ij.plugin.Duplicator;
-import ij.plugin.SubHyperstackMaker;
 import inra.ijpb.binary.BinaryImages;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
@@ -25,6 +22,7 @@ import io.github.mianalysis.mia.module.images.process.InvertIntensity;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.image.Image;
 import io.github.mianalysis.mia.object.image.ImageFactory;
+import io.github.mianalysis.mia.object.image.ImagePlusImage;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
@@ -109,9 +107,9 @@ public class Watershed extends Module {
 
                 Runnable task = () -> {
                     // Getting maskIpl for this timepoint
-                    ImageStack timepointMask = getSetStack(maskIpl, finalT, finalC, null);
-                    ImageStack timepointIntensity = getSetStack(intensityIpl, finalT, finalC, null);
-                    ImageStack timepointMarker = getSetStack(markerIpl, finalT, finalC, null);
+                    ImageStack timepointMask = ImagePlusImage.getSetStack(maskIpl, finalT, finalC, null);
+                    ImageStack timepointIntensity = ImagePlusImage.getSetStack(intensityIpl, finalT, finalC, null);
+                    ImageStack timepointMarker = ImagePlusImage.getSetStack(markerIpl, finalT, finalC, null);
                     timepointMarker = BinaryImages.componentsLabeling(timepointMarker, connectivity, 32);
 
                     timepointMask = inra.ijpb.watershed.Watershed.computeWatershed(timepointIntensity, timepointMarker,
@@ -131,7 +129,7 @@ public class Watershed extends Module {
                         IJ.run(timepointMaskIpl, "Invert LUT", "");
 
                     // Replacing the maskIpl intensity
-                    getSetStack(maskIpl, finalT, finalC, timepointMaskIpl.getStack());
+                    ImagePlusImage.getSetStack(maskIpl, finalT, finalC, timepointMaskIpl.getStack());
 
                     writeProgressStatus(count.incrementAndGet(), nTotal, "stacks", name);
 
@@ -143,23 +141,6 @@ public class Watershed extends Module {
         pool.shutdown();
         pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS); // i.e. never terminate early
 
-    }
-
-    synchronized private static ImageStack getSetStack(ImagePlus inputImagePlus, int timepoint, int channel,
-            @Nullable ImageStack toPut) {
-        int nSlices = inputImagePlus.getNSlices();
-        if (toPut == null) {
-            // Get mode
-            return SubHyperstackMaker.makeSubhyperstack(inputImagePlus, channel + "-" + channel, "1-" + nSlices,
-                    timepoint + "-" + timepoint).getStack();
-        } else {
-            for (int z = 1; z <= inputImagePlus.getNSlices(); z++) {
-                inputImagePlus.setPosition(channel, z, timepoint);
-                inputImagePlus.setProcessor(toPut.getProcessor(z));
-            }
-            inputImagePlus.updateAndDraw();
-            return null;
-        }
     }
 
     @Override

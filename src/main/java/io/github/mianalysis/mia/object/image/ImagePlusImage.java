@@ -10,6 +10,7 @@ import ij.ImageStack;
 import ij.gui.Overlay;
 import ij.measure.Calibration;
 import ij.plugin.Duplicator;
+import ij.plugin.SubHyperstackMaker;
 import ij.process.ImageProcessor;
 import ij.process.ImageStatistics;
 import ij.process.LUT;
@@ -264,6 +265,23 @@ public class ImagePlusImage<T extends RealType<T> & NativeType<T>> extends Image
 
     }
 
+    public synchronized static ImageStack getSetStack(ImagePlus inputImagePlus, int timepoint, int channel,
+            @Nullable ImageStack toPut) {
+        int nSlices = inputImagePlus.getNSlices();
+        if (toPut == null) {
+            // Get mode
+            return SubHyperstackMaker.makeSubhyperstack(inputImagePlus, channel + "-" + channel, "1-" + nSlices,
+                    timepoint + "-" + timepoint).getStack();
+        } else {
+            for (int z = 1; z <= inputImagePlus.getNSlices(); z++) {
+                inputImagePlus.setPosition(channel, z, timepoint);
+                inputImagePlus.setProcessor(toPut.getProcessor(z));
+            }
+            inputImagePlus.updateAndDraw();
+            return null;
+        }
+    }
+
     @Override
     public int hashCode() {
         int hash = 1;
@@ -272,7 +290,8 @@ public class ImagePlusImage<T extends RealType<T> & NativeType<T>> extends Image
         Calibration calibration = imagePlus.getCalibration();
 
         hash = 31 * hash + ((Number) calibration.pixelWidth).hashCode();
-        hash = 31 * hash + ((Number) calibration.pixelDepth).hashCode();
+        if (imagePlus.getNSlices() > 1)
+            hash = 31 * hash + ((Number) calibration.pixelDepth).hashCode();
         hash = 31 * hash + calibration.getUnits().toUpperCase().hashCode();
 
         hash = 31 * hash + imagePlus.getWidth();
@@ -319,7 +338,7 @@ public class ImagePlusImage<T extends RealType<T> & NativeType<T>> extends Image
 
         if (calibration1.pixelWidth != calibration2.pixelWidth)
             return false;
-        if (calibration1.pixelDepth != calibration2.pixelDepth)
+        if (imagePlus.getNSlices() > 1 && calibration1.pixelDepth != calibration2.pixelDepth)
             return false;
         if (!calibration1.getUnits().equals(calibration2.getUnits()))
             return false;

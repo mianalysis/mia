@@ -161,10 +161,10 @@ public class RunScript extends Module {
     @Override
     public Status process(Workspace workspace) {
         // Getting input image
-        String scriptMode = parameters.getValue(SCRIPT_MODE,workspace);
-        String scriptText = parameters.getValue(SCRIPT_TEXT,workspace);
-        String scriptLanguage = parameters.getValue(SCRIPT_LANGUAGE,workspace);
-        String scriptFile = parameters.getValue(SCRIPT_FILE,workspace);
+        String scriptMode = parameters.getValue(SCRIPT_MODE, workspace);
+        String scriptText = parameters.getValue(SCRIPT_TEXT, workspace);
+        String scriptLanguage = parameters.getValue(SCRIPT_LANGUAGE, workspace);
+        String scriptFile = parameters.getValue(SCRIPT_FILE, workspace);
 
         try {
             Map<String, Object> scriptParameters = new HashMap<>();
@@ -193,20 +193,31 @@ public class RunScript extends Module {
             ScriptModule scriptModule = scriptService
                     .run("script." + extension, scriptText, false, scriptParameters).get();
 
-            // Adding output images/objects to the workspace
-            LinkedHashMap<Integer, Parameters> parameterCollections = parameters.getValue(ADD_OUTPUT,workspace);
-            for (Parameters parameterCollection : parameterCollections.values()) {
-                String outputType = parameterCollection.getValue(OUTPUT_TYPE, workspace);
-                switch (outputType) {
-                    case OutputTypes.IMAGE:
-                        if (showOutput)
+            // Displaying output images/objects
+            if (showOutput) {
+                LinkedHashMap<Integer, Parameters> parameterCollections = parameters.getValue(ADD_OUTPUT, workspace);
+                for (Parameters parameterCollection : parameterCollections.values()) {
+                    String outputType = parameterCollection.getValue(OUTPUT_TYPE, workspace);
+                    switch (outputType) {
+                        case OutputTypes.IMAGE:
                             workspace.getImage(parameterCollection.getValue(OUTPUT_IMAGE, workspace)).showImage();
-                        break;
-                    case OutputTypes.OBJECTS:
-                        if (showOutput)
+                            break;
+                        case OutputTypes.IMAGE_MEASUREMENT:
+                            workspace.getImage(parameterCollection.getValue(ASSOCIATED_IMAGE, workspace))
+                                    .showMeasurements(this);
+                            break;
+                        case OutputTypes.METADATA:
+                            workspace.showMetadata(this);
+                            break;
+                        case OutputTypes.OBJECTS:
                             workspace.getObjectSet(parameterCollection.getValue(OUTPUT_OBJECTS, workspace))
                                     .convertToImageRandomColours().showImage();
-                        break;
+                            break;
+                        case OutputTypes.OBJECT_MEASUREMENT:
+                            workspace.getObjectSet(parameterCollection.getValue(ASSOCIATED_OBJECTS, workspace))
+                                    .showMeasurements(this, modules);
+                            break;
+                    }
                 }
             }
 
@@ -252,12 +263,12 @@ public class RunScript extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
-Workspace workspace = null;
+        Workspace workspace = null;
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(SCRIPT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(SCRIPT_MODE));
-        switch ((String) parameters.getValue(SCRIPT_MODE,workspace)) {
+        switch ((String) parameters.getValue(SCRIPT_MODE, workspace)) {
             case ScriptModes.SCRIPT_FILE:
                 returnedParameters.add(parameters.getParameter(SCRIPT_FILE));
                 break;
@@ -277,7 +288,7 @@ Workspace workspace = null;
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
-Workspace workspace = null;
+        Workspace workspace = null;
         ImageMeasurementRefs returnedRefs = new ImageMeasurementRefs();
 
         ParameterGroup group = parameters.getParameter(ADD_OUTPUT);
@@ -298,8 +309,8 @@ Workspace workspace = null;
     }
 
     @Override
-public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
-Workspace workspace = null;
+    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+        Workspace workspace = null;
         ObjMeasurementRefs returnedRefs = new ObjMeasurementRefs();
 
         ParameterGroup group = parameters.getParameter(ADD_OUTPUT);
@@ -320,8 +331,8 @@ Workspace workspace = null;
     }
 
     @Override
-public MetadataRefs updateAndGetMetadataReferences() {
-Workspace workspace = null;
+    public MetadataRefs updateAndGetMetadataReferences() {
+        Workspace workspace = null;
         MetadataRefs returnedRefs = new MetadataRefs();
 
         ParameterGroup group = parameters.getParameter(ADD_OUTPUT);
@@ -341,7 +352,7 @@ Workspace workspace = null;
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
-Workspace workspace = null;
+        Workspace workspace = null;
         ParentChildRefs returnedRefs = new ParentChildRefs();
 
         ParameterGroup group = parameters.getParameter(ADD_OUTPUT);
@@ -364,7 +375,7 @@ Workspace workspace = null;
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
-Workspace workspace = null;
+        Workspace workspace = null;
         PartnerRefs returnedRefs = new PartnerRefs();
 
         ParameterGroup group = parameters.getParameter(ADD_OUTPUT);

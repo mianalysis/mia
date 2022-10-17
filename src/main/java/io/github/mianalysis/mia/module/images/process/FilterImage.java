@@ -14,10 +14,10 @@ import ij.ImageStack;
 import ij.plugin.Duplicator;
 import ij.plugin.Filters3D;
 import ij.plugin.GaussianBlur3D;
+import ij.plugin.ImageCalculator;
 import ij.plugin.SubHyperstackMaker;
 import ij.plugin.ZProjector;
 import ij.plugin.filter.RankFilters;
-import ij.process.FloatProcessor;
 import ij.process.ImageProcessor;
 import inra.ijpb.morphology.Morphology;
 import inra.ijpb.morphology.strel.DiskStrel;
@@ -28,6 +28,7 @@ import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.image.Image;
 import io.github.mianalysis.mia.object.image.ImageFactory;
+import io.github.mianalysis.mia.object.image.ImagePlusImage;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
@@ -42,13 +43,12 @@ import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Status;
-import io.github.sjcross.sjcommon.filters.DoG;
 import io.github.sjcross.sjcommon.process.CommaSeparatedStringInterpreter;
 
 /**
  * Created by Stephen on 30/05/2017.
  */
-@Plugin(type = Module.class, priority=Priority.LOW, visible=true)
+@Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class FilterImage extends Module {
     public static final String INPUT_SEPARATOR = "Image input/output";
     public static final String INPUT_IMAGE = "Input image";
@@ -161,8 +161,6 @@ public class FilterImage extends Module {
     public static void apply3DFilter(ImagePlus inputImagePlus, String filterMode, float filterRadius) {
         String moduleName = new FilterImage(null).getName();
 
-        int width = inputImagePlus.getWidth();
-        int height = inputImagePlus.getHeight();
         int nChannels = inputImagePlus.getNChannels();
         int nSlices = inputImagePlus.getNSlices();
         int nFrames = inputImagePlus.getNFrames();
@@ -187,9 +185,8 @@ public class FilterImage extends Module {
         }
 
         // Variance 3D will output a 32-bit image
-        if (filterMode.equals(FilterModes.VARIANCE3D)) {
+        if (filterMode.equals(FilterModes.VARIANCE3D))
             ImageTypeConverter.process(inputImagePlus, 32, ImageTypeConverter.ScalingModes.CLIP);
-        }
 
         int count = 0;
         int total = inputImagePlus.getNChannels() * inputImagePlus.getNFrames();
@@ -197,19 +194,16 @@ public class FilterImage extends Module {
             for (int t = 1; t <= nFrames; t++) {
                 ImagePlus iplOrig = SubHyperstackMaker.makeSubhyperstack(inputImagePlus, c + "-" + c, "1-" + nSlices,
                         t + "-" + t);
-                ImageStack istFilt = Filters3D.filter(iplOrig.getStack(), filter, filterRadius, filterRadius,
-                        filterRadius);
 
-                for (int z = 1; z <= istFilt.getSize(); z++) {
-                    inputImagePlus.setPosition(c, z, t);
-                    ImageProcessor iprOrig = inputImagePlus.getProcessor();
-                    ImageProcessor iprFilt = istFilt.getProcessor(z);
+                if (filterMode.equals(FilterModes.GAUSSIAN3D)) {
+                    GaussianBlur3D.blur(iplOrig, filterRadius, filterRadius,
+                            filterRadius);
 
-                    for (int x = 0; x < width; x++) {
-                        for (int y = 0; y < height; y++) {
-                            iprOrig.setf(x, y, iprFilt.getf(x, y));
-                        }
-                    }
+                } else {
+                    ImageStack istFilt = Filters3D.filter(iplOrig.getStack(), filter, filterRadius, filterRadius,
+                            filterRadius);
+                    ImagePlusImage.getSetStack(inputImagePlus, t, c, istFilt);
+
                 }
 
                 writeProgressStatus(count++, total, "images", moduleName);
@@ -220,6 +214,28 @@ public class FilterImage extends Module {
         inputImagePlus.setPosition(1, 1, 1);
         inputImagePlus.updateChannelAndDraw();
 
+    }
+
+    public static void runDoG2DFilter(ImagePlus imagePlus, double sigma) {
+        // We want to output a 32-bit image
+        ImageTypeConverter.process(imagePlus, 32, ImageTypeConverter.ScalingModes.CLIP);
+
+        for (int z = 1; z <= imagePlus.getNSlices(); z++) {
+            for (int c = 1; c <= imagePlus.getNChannels(); c++) {
+                for (int t = 1; t <= imagePlus.getNFrames(); t++) {
+                    imagePlus.setPosition(c, z, t);
+                    ImagePlus ipl1 = new ImagePlus("1", imagePlus.getProcessor().duplicate());
+                    ImagePlus ipl2 = new ImagePlus("2", imagePlus.getProcessor().duplicate());
+
+                    runGaussian2DFilter(ipl1, sigma);
+                    runGaussian2DFilter(ipl2, sigma * 1.6);
+
+                    imagePlus.setProcessor(ImageCalculator.run(ipl1, ipl2, "Subtract").getProcessor());
+
+                }
+            }
+        }
+        imagePlus.setPosition(1, 1, 1);
     }
 
     public static void runGaussian2DFilter(ImagePlus imagePlus, double sigma) {
@@ -263,14 +279,12 @@ public class FilterImage extends Module {
             for (int c = 1; c <= ipl.getNChannels(); c++) {
                 for (int t = 1; t <= ipl.getNFrames(); t++) {
                     int idx = ipl.getStackIndex(c, z, t);
-                    float[] image = (float[]) ipl.getStack().getProcessor(idx).getPixels();
+                    ImageProcessor ipr = ipl.getStack().getProcessor(idx);
+                    float[] image = (float[]) ipr.getPixels();
 
                     float[] kRR = new float[width * height];
                     float[] kRC = new float[width * height];
                     float[] kCC = new float[width * height];
-                    float[] ev = new float[width * height];
-                    for (int i = 0; i < ev.length; i++)
-                        ev[i] = 0;
 
                     double[] eigval = new double[2];
                     double[][] eigvec = new double[2][2];
@@ -287,18 +301,16 @@ public class FilterImage extends Module {
 
                             double val = eigval[0] * mult;
                             if (val > 0.0)
-                                ev[l] = (float) val;
+                                ipr.setf(x, y, (float) val);
+                            else
+                                ipr.setf(x, y, 0);
                         }
                     }
-
-                    FloatProcessor fp = new FloatProcessor(width, height);
-                    fp.setPixels(ev);
-                    ipl.getStack().setProcessor(fp, idx);
-
                 }
             }
         }
         ipl.updateAndDraw();
+
     }
 
     public static void runRollingFrameFilter(ImagePlus inputImagePlus, String windowIndices, String rollingMethod) {
@@ -315,7 +327,7 @@ public class FilterImage extends Module {
         ImagePlus tempImagePlus = new Duplicator().run(inputImagePlus);
 
         // Getting list of frames
-        int[] offsets = CommaSeparatedStringInterpreter.interpretIntegers(windowIndices, true,0);
+        int[] offsets = CommaSeparatedStringInterpreter.interpretIntegers(windowIndices, true, 0);
 
         // Running through each frame, calculating the local average
         for (int f = 1; f <= inputImagePlus.getNFrames(); f++) {
@@ -472,26 +484,25 @@ public class FilterImage extends Module {
 
     @Override
     public String getDescription() {
-        return "Apply intensity filters to an image in the workspace."
-                + "<br>Note: 3D median filter is currently incompatible with 5D hyperstacks";
+        return "Apply intensity filters to an image (or image stack) in the workspace.  Filters are applied to each Z-stack independently (i.e. channels and timepoints do not interact with each other).";
     }
 
     @Override
     public Status process(Workspace workspace) {
         // Getting input image
-        String inputImageName = parameters.getValue(INPUT_IMAGE,workspace);
+        String inputImageName = parameters.getValue(INPUT_IMAGE, workspace);
         Image inputImage = workspace.getImages().get(inputImageName);
         ImagePlus inputImagePlus = inputImage.getImagePlus();
 
         // Getting parameters
-        boolean applyToInput = parameters.getValue(APPLY_TO_INPUT,workspace);
-        String outputImageName = parameters.getValue(OUTPUT_IMAGE,workspace);
-        String filterMode = parameters.getValue(FILTER_MODE,workspace);
-        double filterRadius = parameters.getValue(FILTER_RADIUS,workspace);
-        boolean calibratedUnits = parameters.getValue(CALIBRATED_UNITS,workspace);
-        String rollingMethod = parameters.getValue(ROLLING_METHOD,workspace);
-        String windowIndices = parameters.getValue(WINDOW_INDICES,workspace);
-        String contourContrast = parameters.getValue(CONTOUR_CONTRAST,workspace);
+        boolean applyToInput = parameters.getValue(APPLY_TO_INPUT, workspace);
+        String outputImageName = parameters.getValue(OUTPUT_IMAGE, workspace);
+        String filterMode = parameters.getValue(FILTER_MODE, workspace);
+        double filterRadius = parameters.getValue(FILTER_RADIUS, workspace);
+        boolean calibratedUnits = parameters.getValue(CALIBRATED_UNITS, workspace);
+        String rollingMethod = parameters.getValue(ROLLING_METHOD, workspace);
+        String windowIndices = parameters.getValue(WINDOW_INDICES, workspace);
+        String contourContrast = parameters.getValue(CONTOUR_CONTRAST, workspace);
 
         if (calibratedUnits)
             filterRadius = inputImagePlus.getCalibration().getRawX(filterRadius);
@@ -499,7 +510,7 @@ public class FilterImage extends Module {
         // If applying to a new image, the input image is duplicated
         if (!applyToInput)
             inputImagePlus = inputImagePlus.duplicate();
-        
+
         // Applying smoothing filter
         switch (filterMode) {
             case FilterModes.MAXIMUM2D:
@@ -511,6 +522,7 @@ public class FilterImage extends Module {
                 apply2DFilter(inputImagePlus, filterMode, filterRadius);
                 break;
 
+            case FilterModes.GAUSSIAN3D:
             case FilterModes.MAXIMUM3D:
             case FilterModes.MEAN3D:
             case FilterModes.MEDIAN3D:
@@ -522,17 +534,12 @@ public class FilterImage extends Module {
 
             case FilterModes.DOG2D:
                 writeStatus("Applying " + filterMode + " filter");
-                DoG.run(inputImagePlus, filterRadius, true);
+                runDoG2DFilter(inputImagePlus, filterRadius);
                 break;
 
             case FilterModes.GAUSSIAN2D:
                 writeStatus("Applying " + filterMode + " filter");
                 runGaussian2DFilter(inputImagePlus, filterRadius);
-                break;
-
-            case FilterModes.GAUSSIAN3D:
-                writeStatus("Applying " + filterMode + " filter");
-                GaussianBlur3D.blur(inputImagePlus, filterRadius, filterRadius, filterRadius);
                 break;
 
             case FilterModes.GRADIENT2D:
@@ -553,14 +560,16 @@ public class FilterImage extends Module {
         }
 
         // If the image is being saved as a new image, adding it to the workspace
-        if (!applyToInput) {
+        if (applyToInput) {
+            // Reapplying the image in case it was an ImgLib2
+            inputImage.setImagePlus(inputImagePlus);
+            if (showOutput)
+                inputImage.showImage();
+        } else {
             Image outputImage = ImageFactory.createImage(outputImageName, inputImagePlus);
             workspace.addImage(outputImage);
             if (showOutput)
                 outputImage.showImage();
-        } else {
-            if (showOutput)
-                inputImage.showImage();
         }
 
         return Status.PASS;
@@ -587,19 +596,19 @@ public class FilterImage extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
-Workspace workspace = null;
+        Workspace workspace = null;
         Parameters returnedParameters = new Parameters();
         returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(INPUT_IMAGE));
         returnedParameters.add(parameters.getParameter(APPLY_TO_INPUT));
 
-        if (!(boolean) parameters.getValue(APPLY_TO_INPUT,workspace)) {
+        if (!(boolean) parameters.getValue(APPLY_TO_INPUT, workspace)) {
             returnedParameters.add(parameters.getParameter(OUTPUT_IMAGE));
         }
 
         returnedParameters.add(parameters.getParameter(FILTER_SEPARATOR));
         returnedParameters.add(parameters.getParameter(FILTER_MODE));
-        if (!parameters.getValue(FILTER_MODE,workspace).equals(FilterModes.ROLLING_FRAME)) {
+        if (!parameters.getValue(FILTER_MODE, workspace).equals(FilterModes.ROLLING_FRAME)) {
             returnedParameters.add(parameters.getParameter(FILTER_RADIUS));
             returnedParameters.add(parameters.getParameter(CALIBRATED_UNITS));
 
@@ -609,7 +618,7 @@ Workspace workspace = null;
 
         }
 
-        if (parameters.getValue(FILTER_MODE,workspace).equals(FilterModes.RIDGE_ENHANCEMENT))
+        if (parameters.getValue(FILTER_MODE, workspace).equals(FilterModes.RIDGE_ENHANCEMENT))
             returnedParameters.add(parameters.getParameter(CONTOUR_CONTRAST));
 
         return returnedParameters;
@@ -618,27 +627,27 @@ Workspace workspace = null;
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
-return null;
+        return null;
     }
 
     @Override
-public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
-return null;
+    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+        return null;
     }
 
     @Override
-public MetadataRefs updateAndGetMetadataReferences() {
-return null;
+    public MetadataRefs updateAndGetMetadataReferences() {
+        return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
-return null;
+        return null;
     }
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
-return null;
+        return null;
     }
 
     @Override
