@@ -54,12 +54,11 @@ public class GlobalAutoThresholdMSTest extends ModuleTest {
      */
     public static Stream<Arguments> thresholdLogicInputProvider() {
         Stream.Builder<Arguments> argumentBuilder = Stream.builder();
-        for (Dimension dimension : Dimension.values())
-            for (Threshold threshold : Threshold.values())
-                for (Logic logic : Logic.values())
-                    for (OutputMode outputMode : OutputMode.values())
-                        for (ImageType imageType : ImageType.values())
-                            argumentBuilder.add(Arguments.of(dimension, threshold, logic, outputMode, imageType));
+        for (Threshold threshold : Threshold.values())
+            for (Logic logic : Logic.values())
+                for (OutputMode outputMode : OutputMode.values())
+                    for (ImageType imageType : ImageType.values())
+                        argumentBuilder.add(Arguments.of(threshold, logic, outputMode, imageType));
 
         return argumentBuilder.build();
 
@@ -70,27 +69,42 @@ public class GlobalAutoThresholdMSTest extends ModuleTest {
      */
     public static Stream<Arguments> dimLogicInputProvider() {
         Stream.Builder<Arguments> argumentBuilder = Stream.builder();
-            for (Dimension dimension : Dimension.values())
-                for (Logic logic : Logic.values())
-                    argumentBuilder.add(Arguments.of(dimension, logic));
+        for (Dimension dimension : Dimension.values())
+            for (Logic logic : Logic.values())
+
+                for (OutputMode outputMode : OutputMode.values())
+                    for (ImageType imageType : ImageType.values())
+                        argumentBuilder.add(Arguments.of(dimension, logic, outputMode, imageType));
 
         return argumentBuilder.build();
 
     }
-    
+
     /**
-     * Parameterized test run with 8-bit bit depth and all dimensions, all threshold algorithms and all logics. 
-     * Parameterized test run with 8-bit bit depth and all dimensions, all threshold
-     * algorithms and all logics.
-     * The reduced testing here is to keep storage requirements down.
+     * Parameterized test run with 8-bit bit depth only D3T dimension only with all
+     * threshold algorithms and all logics.
      * 
      * @throws UnsupportedEncodingException
      */
     @ParameterizedTest
-    @MethodSource("dimThresholdLogicInputProvider")
-    void testAll(Dimension dimension, Threshold threshold, Logic logic, OutputMode outputMode, ImageType imageType)
+    @MethodSource("thresholdLogicInputProvider")
+    void testAll(Threshold threshold, Logic logic, OutputMode outputMode, ImageType imageType)
             throws UnsupportedEncodingException {
-        runTest(dimension, threshold, logic, outputMode, imageType);
+        runTest(Dimension.D3T, threshold, logic, outputMode, imageType);
+
+    }
+
+    /**
+     * Parameterized test run with 8-bit bit depth and all dimensions and all logics
+     * for Huang algorithm only.
+     * 
+     * @throws UnsupportedEncodingException
+     */
+    @ParameterizedTest
+    @MethodSource("dimLogicInputProvider")
+    void testAllTHUANG(Dimension dimension, Logic logic, OutputMode outputMode, ImageType imageType)
+            throws UnsupportedEncodingException {
+        runTest(dimension, Threshold.THUANG, logic, outputMode, imageType);
 
     }
 
@@ -99,9 +113,11 @@ public class GlobalAutoThresholdMSTest extends ModuleTest {
      * 
      * @throws UnsupportedEncodingException
      */
-    public static void runTest(Dimension dimension, Threshold threshold, Logic logic, OutputMode outputMode, ImageType imageType)
+    public static void runTest(Dimension dimension, Threshold threshold, Logic logic, OutputMode outputMode,
+            ImageType imageType)
             throws UnsupportedEncodingException {
-                boolean applyToInput = outputMode.equals(OutputMode.APPLY_TO_INPUT);
+        boolean applyToInput = outputMode.equals(OutputMode.APPLY_TO_INPUT);
+
         // Checks input image and expected images are available. If not found, the test
         // skips
         String inputName = "/msimages/noisygradient/NoisyGradient_" + dimension + "_B8.zip";
@@ -213,7 +229,6 @@ public class GlobalAutoThresholdMSTest extends ModuleTest {
             assertEquals(expectedImage, outputImage);
 
         }
-
     }
 
     /**

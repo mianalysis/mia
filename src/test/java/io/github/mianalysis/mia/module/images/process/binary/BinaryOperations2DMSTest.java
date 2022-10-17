@@ -101,7 +101,6 @@ public class BinaryOperations2DMSTest extends ModuleTest {
 
         String expectedName = "/msimages/binaryoperations2D/BinaryOps2D_" + dimension + "_B8_" + filter + "_" + logic
                 + "_C" + count + "_I" + nIterations + ".zip";
-        System.err.println(expectedName);
         assumeTrue(BinaryOperations2DMSTest.class.getResource(expectedName) != null);
 
         // Doing the main part of the test

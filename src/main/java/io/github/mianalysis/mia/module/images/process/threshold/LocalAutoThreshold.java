@@ -171,10 +171,9 @@ public class LocalAutoThreshold extends Module {
         String spatialUnits = parameters.getValue(SPATIAL_UNITS_MODE,workspace);
         boolean useGlobalZ = parameters.getValue(USE_GLOBAL_Z,workspace);
 
-        if (spatialUnits.equals(SpatialUnitsModes.CALIBRATED)) {
+        if (spatialUnits.equals(SpatialUnitsModes.CALIBRATED))
             localRadius = inputImagePlus.getCalibration().getRawX(localRadius);
-        }
-
+        
         // If applying to a new image, the input image is duplicated
         if (!applyToInput) {inputImagePlus = new Duplicator().run(inputImagePlus);}
 
@@ -199,6 +198,7 @@ public class LocalAutoThreshold extends Module {
 
         // If the image is being saved as a new image, adding it to the workspace
         if (applyToInput) {
+            inputImage.setImagePlus(inputImagePlus);
             if (showOutput) inputImage.showImage();
         } else {
             String outputImageName = parameters.getValue(OUTPUT_IMAGE,workspace);
