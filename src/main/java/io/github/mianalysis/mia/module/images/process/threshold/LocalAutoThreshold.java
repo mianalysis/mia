@@ -225,7 +225,7 @@ public class LocalAutoThreshold extends Module {
         parameters.add(new DoubleP(THRESHOLD_MULTIPLIER, this,1.0));
         parameters.add(new BooleanP(USE_LOWER_THRESHOLD_LIMIT, this, false));
         parameters.add(new DoubleP(LOWER_THRESHOLD_LIMIT, this, 0.0));
-        parameters.add(new DoubleP(LOCAL_RADIUS, this, 15.0));
+        parameters.add(new DoubleP(LOCAL_RADIUS, this, 24));
         parameters.add(new ChoiceP(SPATIAL_UNITS_MODE, this, SpatialUnitsModes.PIXELS, SpatialUnitsModes.ALL));
         parameters.add(new BooleanP(USE_GLOBAL_Z,this,false));
         parameters.add(new ChoiceP(BINARY_LOGIC, this, BinaryLogic.BLACK_BACKGROUND, BinaryLogic.ALL));

@@ -27,7 +27,7 @@ import io.github.mianalysis.mia.object.image.ImageType;
 import io.github.mianalysis.mia.object.system.Status;
 
 /**
- * Created by Gemma and George on 05/10/2022.
+ * Created by Gemma and BIG George on 05/10/2022.
  */
 public class GlobalAutoThresholdMSTest extends ModuleTest {
 
@@ -52,7 +52,7 @@ public class GlobalAutoThresholdMSTest extends ModuleTest {
     /**
      * Generates all permutations
      */
-    public static Stream<Arguments> dimThresholdLogicInputProvider() {
+    public static Stream<Arguments> thresholdLogicInputProvider() {
         Stream.Builder<Arguments> argumentBuilder = Stream.builder();
         for (Dimension dimension : Dimension.values())
             for (Threshold threshold : Threshold.values())
@@ -66,6 +66,20 @@ public class GlobalAutoThresholdMSTest extends ModuleTest {
     }
 
     /**
+     * Generates all permutations
+     */
+    public static Stream<Arguments> dimLogicInputProvider() {
+        Stream.Builder<Arguments> argumentBuilder = Stream.builder();
+            for (Dimension dimension : Dimension.values())
+                for (Logic logic : Logic.values())
+                    argumentBuilder.add(Arguments.of(dimension, logic));
+
+        return argumentBuilder.build();
+
+    }
+    
+    /**
+     * Parameterized test run with 8-bit bit depth and all dimensions, all threshold algorithms and all logics. 
      * Parameterized test run with 8-bit bit depth and all dimensions, all threshold
      * algorithms and all logics.
      * The reduced testing here is to keep storage requirements down.
@@ -88,7 +102,6 @@ public class GlobalAutoThresholdMSTest extends ModuleTest {
     public static void runTest(Dimension dimension, Threshold threshold, Logic logic, OutputMode outputMode, ImageType imageType)
             throws UnsupportedEncodingException {
                 boolean applyToInput = outputMode.equals(OutputMode.APPLY_TO_INPUT);
-
         // Checks input image and expected images are available. If not found, the test
         // skips
         String inputName = "/msimages/noisygradient/NoisyGradient_" + dimension + "_B8.zip";
