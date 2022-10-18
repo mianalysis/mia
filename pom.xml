@@ -315,6 +315,14 @@
             <scope>${scp}</scope>
         </dependency>
 
+        <!-- THE FOLLOWING DEPENDENCY IS JUST UNTIL SCIJAVA POM MOVES FROM 1.53t, which has a Z-projector bug -->
+        <dependency>
+            <groupId>net.imagej</groupId>
+            <artifactId>ij</artifactId>
+            <version>1.53u</version>
+        </dependency>
+        
+
         <dependency>
             <groupId>mpicbg</groupId>
             <artifactId>mpicbg</artifactId>

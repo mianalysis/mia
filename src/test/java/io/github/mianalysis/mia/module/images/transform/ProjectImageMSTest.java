@@ -8,14 +8,18 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.stream.Stream;
 
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.scijava.Context;
 
 import ij.IJ;
 import ij.ImagePlus;
 import io.github.mianalysis.enums.BitDepth;
 import io.github.mianalysis.enums.Dimension;
+import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.ModuleTest;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.Workspace;
@@ -24,6 +28,8 @@ import io.github.mianalysis.mia.object.image.Image;
 import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.image.ImageType;
 import io.github.mianalysis.mia.object.system.Status;
+import net.imagej.ImageJ;
+import net.imagej.ImageJService;
 
 public class ProjectImageMSTest extends ModuleTest {
     enum Axis {
@@ -42,6 +48,16 @@ public class ProjectImageMSTest extends ModuleTest {
         MSTDEV,
         MSUM
     }
+
+    // @Parameter
+    // public static ImageJService ijService;
+
+    @BeforeEach
+    public void setIJService() {
+        ImageJ ij = new ImageJ();        
+        Context context = ( Context ) IJ.runPlugIn( "org.scijava.Context", "" );
+        MIA.ijService = (ImageJService) context.getService(ImageJService.class);
+    } 
 
     /**
      * Generates dimension, mode and axis permutations
@@ -100,11 +116,11 @@ public class ProjectImageMSTest extends ModuleTest {
     }
 
     // /*
-    // * Used for testing a single set of parameters
-    // */
+    //  * Used for testing a single set of parameters
+    //  */
     // @Test
     // void singleTest() throws UnsupportedEncodingException {
-    // runTest(Dimension.D3Z, BitDepth.B8, Axis.AZ, Mode.MAVERAGE);
+    //     runTest(Dimension.D5, BitDepth.B8, Axis.AZ, Mode.MAVERAGE, ImageType.IMGLIB2);
     // }
 
     /**
@@ -114,6 +130,8 @@ public class ProjectImageMSTest extends ModuleTest {
      */
     public static void runTest(Dimension dimension, BitDepth bitDepth, Axis axis, Mode mode, ImageType imageType)
             throws UnsupportedEncodingException {
+        long t1 = System.currentTimeMillis();
+
         // Checks input image and expected images are available. If not found, the test
         // skips
         String inputName = "/msimages/noisygradient/NoisyGradient_" + dimension + "_" + bitDepth + ".zip";
@@ -184,12 +202,16 @@ public class ProjectImageMSTest extends ModuleTest {
 
         Image outputImage = workspace.getImage("Test_output");
 
-        // new ImageJ();
+        // new ij.ImageJ();
         // expectedImage.showImage();
         // outputImage.showImage();
         // IJ.runMacro("waitForUser");
 
         assertEquals(expectedImage, outputImage);
+
+        long t2 = System.currentTimeMillis();
+        // double dt = (double) (t2-t1))*1E-3;
+        System.out.println(t2 - t1);
 
     }
 

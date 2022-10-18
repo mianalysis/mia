@@ -13,6 +13,7 @@ import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.images.process.ImageMath;
+import io.github.mianalysis.mia.module.images.process.ImageTypeConverter;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.image.Image;
 import io.github.mianalysis.mia.object.image.ImageFactory;
@@ -95,16 +96,22 @@ public class ProjectImage<T extends RealType<T> & NativeType<T>> extends Module 
             if (projectionMode.equals(ProjectionModes.STDEV)) {
                 ImagePlus tempIpl = inputImage.getImagePlus().duplicate();
                 ImageMath.process(tempIpl, ImageMath.CalculationTypes.MULTIPLY, 0);
+                ImageTypeConverter.process(tempIpl, 32, ImageTypeConverter.ScalingModes.CLIP);
                 return ImageFactory.createImage(outputImageName, tempIpl);
             } else {
-                return ImageFactory.createImage(outputImageName, inputImage.getImagePlus().duplicate());
+                ImagePlus tempIpl = inputImage.getImagePlus().duplicate();
+                if (projectionMode.equals(ProjectionModes.AVERAGE) || projectionMode.equals(ProjectionModes.SUM))
+                    ImageTypeConverter.process(tempIpl, 32, ImageTypeConverter.ScalingModes.CLIP);
+                return ImageFactory.createImage(outputImageName, tempIpl);
             }
         }
 
         ImagePlus iplOut = null;
         switch (projectionMode) {
             case ProjectionModes.AVERAGE:
-                iplOut = ZProjector.run(inputImage.getImagePlus(), "avg all");
+                ImagePlus tempIpl = inputImage.getImagePlus();
+                ImageTypeConverter.process(tempIpl, 32, ImageTypeConverter.ScalingModes.CLIP);
+                iplOut = ZProjector.run(tempIpl, "avg all");
                 break;
 
             case ProjectionModes.MIN:
