@@ -37,7 +37,7 @@ public class ProjectImageMSTest extends ModuleTest {
         // AY,
         // AC,
         AZ,
-        // AT
+        AT
     }
 
     enum Mode {
@@ -54,10 +54,10 @@ public class ProjectImageMSTest extends ModuleTest {
 
     @BeforeEach
     public void setIJService() {
-        ImageJ ij = new ImageJ();        
-        Context context = ( Context ) IJ.runPlugIn( "org.scijava.Context", "" );
+        ImageJ ij = new ImageJ();
+        Context context = (Context) IJ.runPlugIn("org.scijava.Context", "");
         MIA.ijService = (ImageJService) context.getService(ImageJService.class);
-    } 
+    }
 
     /**
      * Generates dimension, mode and axis permutations
@@ -120,7 +120,7 @@ public class ProjectImageMSTest extends ModuleTest {
     //  */
     // @Test
     // void singleTest() throws UnsupportedEncodingException {
-    //     runTest(Dimension.D5, BitDepth.B8, Axis.AZ, Mode.MAVERAGE, ImageType.IMGLIB2);
+    //     runTest(Dimension.D3T, BitDepth.B8, Axis.AT, Mode.MMAX, ImageType.IMGLIB2);
     // }
 
     /**
@@ -166,28 +166,40 @@ public class ProjectImageMSTest extends ModuleTest {
             expectedImage.getImagePlus().getCalibration().pixelDepth = 0.1;
 
         // Initialising module and setting parameters
-        ProjectImage projectImage = new ProjectImage(new Modules());
-        projectImage.updateParameterValue(ProjectImage.INPUT_IMAGE, "Test_image");
-        projectImage.updateParameterValue(ProjectImage.OUTPUT_IMAGE, "Test_output");
+        ProjectImage2 projectImage = new ProjectImage2(new Modules());
+        projectImage.updateParameterValue(ProjectImage2.INPUT_IMAGE, "Test_image");
+        projectImage.updateParameterValue(ProjectImage2.OUTPUT_IMAGE, "Test_output");
 
         switch (mode) {
             case MAVERAGE:
-                projectImage.updateParameterValue(ProjectImage.PROJECTION_MODE, ProjectImage.ProjectionModes.AVERAGE);
+                projectImage.updateParameterValue(ProjectImage2.PROJECTION_MODE, ProjectImage2.ProjectionModes.AVERAGE);
                 break;
             case MMAX:
-                projectImage.updateParameterValue(ProjectImage.PROJECTION_MODE, ProjectImage.ProjectionModes.MAX);
+                projectImage.updateParameterValue(ProjectImage2.PROJECTION_MODE, ProjectImage2.ProjectionModes.MAX);
                 break;
             case MMEDIAN:
-                projectImage.updateParameterValue(ProjectImage.PROJECTION_MODE, ProjectImage.ProjectionModes.MEDIAN);
+                projectImage.updateParameterValue(ProjectImage2.PROJECTION_MODE, ProjectImage2.ProjectionModes.MEDIAN);
                 break;
             case MMIN:
-                projectImage.updateParameterValue(ProjectImage.PROJECTION_MODE, ProjectImage.ProjectionModes.MIN);
+                projectImage.updateParameterValue(ProjectImage2.PROJECTION_MODE, ProjectImage2.ProjectionModes.MIN);
                 break;
             case MSTDEV:
-                projectImage.updateParameterValue(ProjectImage.PROJECTION_MODE, ProjectImage.ProjectionModes.STDEV);
+                projectImage.updateParameterValue(ProjectImage2.PROJECTION_MODE, ProjectImage2.ProjectionModes.STDEV);
                 break;
             case MSUM:
-                projectImage.updateParameterValue(ProjectImage.PROJECTION_MODE, ProjectImage.ProjectionModes.SUM);
+                projectImage.updateParameterValue(ProjectImage2.PROJECTION_MODE, ProjectImage2.ProjectionModes.SUM);
+                break;
+        }
+
+        switch (axis) {
+            // case AC:
+            //     projectImage.updateParameterValue(ProjectImage2.PROJECTION_AXIS, ProjectImage2.AxisModes.CHANNEL);
+            //     break;
+            case AT:
+                projectImage.updateParameterValue(ProjectImage2.PROJECTION_AXIS, ProjectImage2.AxisModes.TIME);
+                break;
+            case AZ:
+                projectImage.updateParameterValue(ProjectImage2.PROJECTION_AXIS, ProjectImage2.AxisModes.Z);
                 break;
         }
 
@@ -210,8 +222,7 @@ public class ProjectImageMSTest extends ModuleTest {
         assertEquals(expectedImage, outputImage);
 
         long t2 = System.currentTimeMillis();
-        // double dt = (double) (t2-t1))*1E-3;
-        System.out.println(t2 - t1);
+        // System.out.println(t2 - t1);
 
     }
 
