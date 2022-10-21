@@ -52,8 +52,8 @@ public class ProjectImage2<T extends RealType<T> & NativeType<T>> extends Module
     public static final String INPUT_IMAGE = "Input image";
     public static final String OUTPUT_IMAGE = "Output image";
     public static final String PROJECTION_SEPARATOR = "Image projection";
-    public static final String AXIS_1 = "Axis 2";
-    public static final String AXIS_2 = "Axis 1";
+    // public static final String AXIS_1 = "Axis 2";
+    // public static final String AXIS_2 = "Axis 1";
     public static final String PROJECTION_AXIS = "Projection axis";
     public static final String PROJECTION_MODE = "Projection mode";
 
@@ -197,7 +197,6 @@ public class ProjectImage2<T extends RealType<T> & NativeType<T>> extends Module
         // Apply transformation
         UnaryComputerOp mean_op = (UnaryComputerOp) ops.op(getProjection(projectionMode), img);
         ops.transform().project(proj, perm, mean_op, 2);
-        MIA.log.writeWarning("Problem with average projection in 5D (doesn't do projection on first channel)");
         
         // Update axes
         int dOut = 0;
@@ -376,7 +375,7 @@ public class ProjectImage2<T extends RealType<T> & NativeType<T>> extends Module
         // parameters.add(new ChoiceP(AXIS_1, this, AxisModes.X, AxisModes.ALL));
         // parameters.add(new ChoiceP(AXIS_2, this, AxisModes.Y, AxisModes.ALL));
         parameters.add(new ChoiceP(PROJECTION_AXIS, this, AxisModes.Z, AxisModes.ALL));
-        parameters.add(new ChoiceP(PROJECTION_MODE, this, ProjectionModes.AVERAGE, ProjectionModes.ALL));
+        parameters.add(new ChoiceP(PROJECTION_MODE, this, ProjectionModes.MAX, ProjectionModes.ALL));
 
     }
 

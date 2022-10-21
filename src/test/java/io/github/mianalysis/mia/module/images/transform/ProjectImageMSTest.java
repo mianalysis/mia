@@ -35,7 +35,7 @@ public class ProjectImageMSTest extends ModuleTest {
     enum Axis {
         // AX,
         // AY,
-        // AC,
+        AC,
         AZ,
         AT
     }
@@ -48,9 +48,6 @@ public class ProjectImageMSTest extends ModuleTest {
         MSTDEV,
         MSUM
     }
-
-    // @Parameter
-    // public static ImageJService ijService;
 
     @BeforeEach
     public void setIJService() {
@@ -90,7 +87,6 @@ public class ProjectImageMSTest extends ModuleTest {
     /**
      * Parameterized test run with 8-bit bit depth and all dimensions, axes and
      * modes.
-     * The reduced testing here is to keep storage requirements down.
      * 
      * @throws UnsupportedEncodingException
      */
@@ -102,17 +98,29 @@ public class ProjectImageMSTest extends ModuleTest {
     }
 
     /**
-     * Parameterized test run with all bit depths for maximum Z-projected D4ZT
-     * stack. The
-     * reduced testing here is to keep storage requirements down.
+     * Parameterized test run with all bit depths for average Z-projected D4ZT
+     * stack. 
      * 
      * @throws UnsupportedEncodingException
      */
     @ParameterizedTest
     @MethodSource("bitdepthInputProvider")
-    void testAllBitDepths_D4ZT_MAVERAGE(BitDepth bitDepth, ImageType imageType)
+    void testAllBitDepths_D4ZT_MAVERAGE_AZ(BitDepth bitDepth, ImageType imageType)
             throws UnsupportedEncodingException {
         runTest(Dimension.D4ZT, bitDepth, Axis.AZ, Mode.MAVERAGE, imageType);
+    }
+
+    /**
+     * Parameterized test run with all bit depths for maximum Z-projected D4ZT
+     * stack. 
+     * 
+     * @throws UnsupportedEncodingException
+     */
+    @ParameterizedTest
+    @MethodSource("bitdepthInputProvider")
+    void testAllBitDepths_D4ZT_MMAX_AZ(BitDepth bitDepth, ImageType imageType)
+            throws UnsupportedEncodingException {
+        runTest(Dimension.D4ZT, bitDepth, Axis.AZ, Mode.MMAX, imageType);
     }
 
     // /*
@@ -192,9 +200,9 @@ public class ProjectImageMSTest extends ModuleTest {
         }
 
         switch (axis) {
-            // case AC:
-            //     projectImage.updateParameterValue(ProjectImage2.PROJECTION_AXIS, ProjectImage2.AxisModes.CHANNEL);
-            //     break;
+            case AC:
+                projectImage.updateParameterValue(ProjectImage2.PROJECTION_AXIS, ProjectImage2.AxisModes.CHANNEL);
+                break;
             case AT:
                 projectImage.updateParameterValue(ProjectImage2.PROJECTION_AXIS, ProjectImage2.AxisModes.TIME);
                 break;
