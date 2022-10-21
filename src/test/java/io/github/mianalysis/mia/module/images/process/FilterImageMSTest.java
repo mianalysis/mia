@@ -94,8 +94,10 @@ public class FilterImageMSTest extends ModuleTest {
         switch (calibration) {
             case CALIBRATED:
                 runTest(dimension, BitDepth.B8, filter, 0.06, true, outputMode, imageType);
+                break;
             case UNCALIBRATED:
                 runTest(dimension, BitDepth.B8, filter, 3, false, outputMode, imageType);
+                break;
         }
     }
 
@@ -113,8 +115,10 @@ public class FilterImageMSTest extends ModuleTest {
         switch (calibration) {
             case CALIBRATED:
                 runTest(Dimension.D4ZT, bitDepth, Filter.FMEAN2D, 0.06, true, outputMode, imageType);
+                break;
             case UNCALIBRATED:
                 runTest(Dimension.D4ZT, bitDepth, Filter.FMEAN2D, 3, false, outputMode, imageType);
+                break;
         }
     }
 
