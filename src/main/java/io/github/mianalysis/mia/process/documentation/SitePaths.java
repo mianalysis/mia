@@ -13,24 +13,25 @@ public class SitePaths {
     }
 
     public SitePaths() {
-        paths.put("PATH_GETTINGSTARTED", "${PTR}/html/guides/1gettingstarted.html");
-        paths.put("PATH_EXAMPLEWORKFLOWS", "${PTR}/html/guides/2exampleworkflows.html");
-        paths.put("PATH_MIASTRUCTURE", "${PTR}/html/guides/3miastructure.html");
-        paths.put("PATH_PROCESSINGVIEW", "${PTR}/html/guides/3processingview.html");
-        paths.put("PATH_USEEXISTING", "${PTR}/html/guides/4useexisting.html");
-        paths.put("PATH_EDITINGVIEW", "${PTR}/html/guides/5editingview.html");
-        paths.put("PATH_CREATENEW", "${PTR}/html/guides/6createnew.html");
-        paths.put("PATH_RESULTSFORMAT", "${PTR}/html/guides/7resultsformat.html");
-        paths.put("PATH_BATCHPROCESSING", "${PTR}/html/guides/8batchprocessing.html");
-        paths.put("PATH_TROUBLESHOOTING", "${PTR}/html/guides/troubleshooting.html");
+        paths.put("PATH_GETTINGSTARTED", "${PTR}/guides/gettingstarted.html");
+        paths.put("PATH_EXAMPLEWORKFLOWS", "${PTR}/guides/exampleworkflows.html");
+        paths.put("PATH_MIASTRUCTURE", "${PTR}/guides/miastructure.html");
+        paths.put("PATH_PROCESSINGVIEW", "${PTR}/guides/processingview.html");
+        paths.put("PATH_USEEXISTING", "${PTR}/guides/useexisting.html");
+        paths.put("PATH_EDITINGVIEW", "${PTR}/guides/editingview.html");
+        paths.put("PATH_CREATENEW", "${PTR}/guides/createnew.html");
+        paths.put("PATH_RESULTSFORMAT", "${PTR}/guides/resultsformat.html");
+        paths.put("PATH_BATCHPROCESSING", "${PTR}/guides/batchprocessing.html");
+        paths.put("PATH_RUNNINGHEADLESS", "${PTR}/guides/runningheadless.html");
+        paths.put("PATH_TROUBLESHOOTING", "${PTR}/guides/troubleshooting.html");
         
-        paths.put("PATH_MODULE_LIST", "${PTR}/html/modules/modules.html");
-        paths.put("PATH_MODULE_INPUTCONTROL", "${PTR}/html/modules/core/inputcontrol.html");
-        paths.put("PATH_MODULE_OUTPUTCONTROL", "${PTR}/html/modules/core/outputcontrol.html");
-        paths.put("PATH_MODULE_INPUTOUTPUT", "${PTR}/html/modules/inputoutput/inputoutput.html");        
-        paths.put("PATH_MODULE_LOADIMAGE", "${PTR}/html/modules/inputoutput/loadimage.html");        
+        paths.put("PATH_MODULE_LIST", "${PTR}/modules/modules.html");
+        paths.put("PATH_MODULE_INPUTCONTROL", "${PTR}/modules/core/inputcontrol.html");
+        paths.put("PATH_MODULE_OUTPUTCONTROL", "${PTR}/modules/core/outputcontrol.html");
+        paths.put("PATH_MODULE_INPUTOUTPUT", "${PTR}/modules/inputoutput/inputoutput.html");        
+        paths.put("PATH_MODULE_LOADIMAGE", "${PTR}/modules/inputoutput/loadimage.html");        
 
-        paths.put("PATH_PUBLICATIONS", "${PTR}/html/publications.html");
+        paths.put("PATH_PUBLICATIONS", "${PTR}/publications.html");
         
     }
 

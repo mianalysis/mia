@@ -5,6 +5,8 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -18,7 +20,7 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 public class GuideGenerator extends AbstractGenerator {
-    private boolean verbose = true;
+    private boolean verbose = false;
     private SitePaths sitePaths = new SitePaths();
 
     @Override
@@ -33,10 +35,9 @@ public class GuideGenerator extends AbstractGenerator {
 
     public void generateGuideListPages(File file) throws IOException {
         // Setting the path and ensuring the folder exists
-        String pathToRoot = getPathToRoot(file) + "..";
-        String categorySaveName = getSaveName(file);
+        String pathToRoot = getPathToRoot(file);
         String categoryPath = getPath(file);
-        String path = "docs/html/";
+        String path = "docs/";
         new File(path + categoryPath).mkdirs();
 
         // Initialise HTML document
@@ -111,7 +112,7 @@ public class GuideGenerator extends AbstractGenerator {
         // Add packages content to page
         page = page.replace("${MAIN_CONTENT}", mainContent);
 
-        FileWriter writer = new FileWriter(path + categoryPath + "/" + categorySaveName + ".html");
+        FileWriter writer = new FileWriter(path + categoryPath + "/index.html");
         writer.write(page);
         writer.flush();
         writer.close();
@@ -126,9 +127,9 @@ public class GuideGenerator extends AbstractGenerator {
     public void generateGuidePage(File guide) throws IOException {
         if (verbose)
             System.out.println("Generating guide page \"" + guide.getName() + "\"");
-        String pathToRoot = getPathToRoot(guide.getParentFile()) + "..";
+        String pathToRoot = getPathToRoot(guide.getParentFile());
         String guidePath = getPath(guide);
-        String path = "docs/html/";
+        String path = "docs/";
 
         // Initialise HTML document
         String page = getPageTemplate("src/main/resources/templatehtml/pagetemplate.html", pathToRoot);
@@ -211,14 +212,22 @@ public class GuideGenerator extends AbstractGenerator {
 
     String getPathToRoot(File file) {
         if (file.getName().equals("guides"))
-            return "../";
+            return "..";
 
         return getPathToRoot(file.getParentFile()) + "../";
 
     }
 
     String getSaveName(File file) {
-        return file.getName().toLowerCase().replace(" ", "").replace(".html", "");
+        String fullName = file.getName().toLowerCase().replace(" ", "");
+        Pattern pattern = Pattern.compile("[0-9]+(.+)\\.html");
+        Matcher matcher = pattern.matcher(fullName);
+
+        if (matcher.find())
+            return matcher.group(1);
+        else
+            return fullName.replace(".html", "");
+
     }
 
     String appendPath(File file, String pathToRoot) {

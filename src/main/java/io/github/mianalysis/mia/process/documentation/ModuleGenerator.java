@@ -20,6 +20,7 @@ import io.github.mianalysis.mia.object.parameters.abstrakt.Parameter;
 import io.github.mianalysis.mia.object.refs.abstrakt.Ref;
 
 public class ModuleGenerator extends AbstractGenerator {
+    private boolean verbose = false;
     private TreeMap<String, Module> modules;
 
     public ModuleGenerator() {
@@ -36,10 +37,9 @@ public class ModuleGenerator extends AbstractGenerator {
 
     public void generateModuleListPages(Category category) throws IOException {
         // Setting the path and ensuring the folder exists
-        String pathToRoot = getCatgoryPathToRoot(category) + "..";
-        String categorySaveName = getSaveName(category);
+        String pathToRoot = getCatgoryPathToRoot(category);
         String categoryPath = getCategoryPath(category);
-        String path = "docs/html/";
+        String path = "docs/";
         new File(path + categoryPath).mkdirs();
 
         // Initialise HTML document
@@ -61,7 +61,7 @@ public class ModuleGenerator extends AbstractGenerator {
             cardContent = cardContent.replace("${CARD_TEXT}", childCategory.getDescription());
             cardContent = cardContent.replace("${CARD_BUTTON}", "See modules");
             cardContent = cardContent.replace("${TARGET_PATH}",
-                    getCategoryPath(childCategory) + "/" + getSaveName(childCategory));
+                    getCategoryPath(childCategory) + "/index");
             categoryContent = categoryContent + cardContent;
         }
         mainContent = mainContent.replace("${CATEGORY_CARDS}", categoryContent);
@@ -70,6 +70,9 @@ public class ModuleGenerator extends AbstractGenerator {
         String moduleContent = "";
         for (Module module : modules.values()) {
             if (module.getCategory() == category) {
+                if (verbose)
+                    System.out.println("Generating category page \"" + module.getCategory().getName() + "\"");
+
                 String cardContent = getPageTemplate("src/main/resources/templatehtml/modulecardtemplate.html",
                         pathToRoot);
                 cardContent = cardContent.replace("${CARD_TITLE}", module.getName());
@@ -84,7 +87,7 @@ public class ModuleGenerator extends AbstractGenerator {
         // Add packages content to page
         page = page.replace("${MAIN_CONTENT}", mainContent);
 
-        FileWriter writer = new FileWriter(path + categoryPath + "/" + categorySaveName + ".html");
+        FileWriter writer = new FileWriter(path + categoryPath + "/index.html");
         writer.write(page);
         writer.flush();
         writer.close();
@@ -97,10 +100,13 @@ public class ModuleGenerator extends AbstractGenerator {
 
     public void generateModulePages() throws IOException {
         for (Module module : modules.values()) {
+            if (verbose)
+                System.out.println("Generating module page \"" + module.getName() + "\"");
+
             Category category = module.getCategory();
-            String pathToRoot = getCatgoryPathToRoot(category) + "..";
+            String pathToRoot = getCatgoryPathToRoot(category);
             String categoryPath = getCategoryPath(category);
-            String path = "docs/html/";
+            String path = "docs/";
             String moduleSaveName = getSaveName(module);
 
             // Initialise HTML document
@@ -131,7 +137,7 @@ public class ModuleGenerator extends AbstractGenerator {
     }
 
     String appendCategoryPath(Category category, String pathToRoot) {
-        String categoryPath = pathToRoot + "/html" + getCategoryPath(category) + "/" + getSaveName(category) + ".html";
+        String categoryPath = pathToRoot + getCategoryPath(category) + "/index.html";
         String categoryContent = "<a href=\"" + categoryPath + "\">" + category.getName() + "</a>";
 
         if (category.getParent() == null)
@@ -178,10 +184,10 @@ public class ModuleGenerator extends AbstractGenerator {
     }
 
     String getCatgoryPathToRoot(Category category) {
-        if (category == null)
-            return "";
+        if (category.getParent() == null)
+            return "..";
 
-        return getCatgoryPathToRoot(category.getParent()) + "../";
+        return "../" + getCatgoryPathToRoot(category.getParent());
 
     }
 

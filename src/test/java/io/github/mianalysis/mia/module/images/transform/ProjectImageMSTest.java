@@ -8,8 +8,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.stream.Stream;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -49,8 +48,8 @@ public class ProjectImageMSTest extends ModuleTest {
         MSUM
     }
 
-    @BeforeEach
-    public void setIJService() {
+    @BeforeAll
+    public static void setIJService() {
         ImageJ ij = new ImageJ();
         Context context = (Context) IJ.runPlugIn("org.scijava.Context", "");
         MIA.ijService = (ImageJService) context.getService(ImageJService.class);
