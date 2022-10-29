@@ -8,17 +8,14 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.stream.Stream;
 
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.scijava.Context;
 
 import ij.IJ;
 import ij.ImagePlus;
 import io.github.mianalysis.enums.BitDepth;
 import io.github.mianalysis.enums.Dimension;
-import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.ModuleTest;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.Workspace;
@@ -27,8 +24,6 @@ import io.github.mianalysis.mia.object.image.Image;
 import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.image.ImageType;
 import io.github.mianalysis.mia.object.system.Status;
-import net.imagej.ImageJ;
-import net.imagej.ImageJService;
 
 public class ProjectImageMSTest extends ModuleTest {
     enum Axis {
@@ -46,13 +41,6 @@ public class ProjectImageMSTest extends ModuleTest {
         MMAX,
         MSTDEV,
         MSUM
-    }
-
-    @BeforeAll
-    public static void setIJService() {
-        ImageJ ij = new ImageJ();
-        Context context = (Context) IJ.runPlugIn("org.scijava.Context", "");
-        MIA.ijService = (ImageJService) context.getService(ImageJService.class);
     }
 
     /**
@@ -173,40 +161,40 @@ public class ProjectImageMSTest extends ModuleTest {
             expectedImage.getImagePlus().getCalibration().pixelDepth = 0.1;
 
         // Initialising module and setting parameters
-        ProjectImage2 projectImage = new ProjectImage2(new Modules());
-        projectImage.updateParameterValue(ProjectImage2.INPUT_IMAGE, "Test_image");
-        projectImage.updateParameterValue(ProjectImage2.OUTPUT_IMAGE, "Test_output");
+        ProjectImage projectImage = new ProjectImage(new Modules());
+        projectImage.updateParameterValue(ProjectImage.INPUT_IMAGE, "Test_image");
+        projectImage.updateParameterValue(ProjectImage.OUTPUT_IMAGE, "Test_output");
 
         switch (mode) {
             case MAVERAGE:
-                projectImage.updateParameterValue(ProjectImage2.PROJECTION_MODE, ProjectImage2.ProjectionModes.AVERAGE);
+                projectImage.updateParameterValue(ProjectImage.PROJECTION_MODE, ProjectImage.ProjectionModes.AVERAGE);
                 break;
             case MMAX:
-                projectImage.updateParameterValue(ProjectImage2.PROJECTION_MODE, ProjectImage2.ProjectionModes.MAX);
+                projectImage.updateParameterValue(ProjectImage.PROJECTION_MODE, ProjectImage.ProjectionModes.MAX);
                 break;
             case MMEDIAN:
-                projectImage.updateParameterValue(ProjectImage2.PROJECTION_MODE, ProjectImage2.ProjectionModes.MEDIAN);
+                projectImage.updateParameterValue(ProjectImage.PROJECTION_MODE, ProjectImage.ProjectionModes.MEDIAN);
                 break;
             case MMIN:
-                projectImage.updateParameterValue(ProjectImage2.PROJECTION_MODE, ProjectImage2.ProjectionModes.MIN);
+                projectImage.updateParameterValue(ProjectImage.PROJECTION_MODE, ProjectImage.ProjectionModes.MIN);
                 break;
             case MSTDEV:
-                projectImage.updateParameterValue(ProjectImage2.PROJECTION_MODE, ProjectImage2.ProjectionModes.STDEV);
+                projectImage.updateParameterValue(ProjectImage.PROJECTION_MODE, ProjectImage.ProjectionModes.STDEV);
                 break;
             case MSUM:
-                projectImage.updateParameterValue(ProjectImage2.PROJECTION_MODE, ProjectImage2.ProjectionModes.SUM);
+                projectImage.updateParameterValue(ProjectImage.PROJECTION_MODE, ProjectImage.ProjectionModes.SUM);
                 break;
         }
 
         switch (axis) {
             case AC:
-                projectImage.updateParameterValue(ProjectImage2.PROJECTION_AXIS, ProjectImage2.AxisModes.CHANNEL);
+                projectImage.updateParameterValue(ProjectImage.PROJECTION_AXIS, ProjectImage.AxisModes.CHANNEL);
                 break;
             case AT:
-                projectImage.updateParameterValue(ProjectImage2.PROJECTION_AXIS, ProjectImage2.AxisModes.TIME);
+                projectImage.updateParameterValue(ProjectImage.PROJECTION_AXIS, ProjectImage.AxisModes.TIME);
                 break;
             case AZ:
-                projectImage.updateParameterValue(ProjectImage2.PROJECTION_AXIS, ProjectImage2.AxisModes.Z);
+                projectImage.updateParameterValue(ProjectImage.PROJECTION_AXIS, ProjectImage.AxisModes.Z);
                 break;
         }
 

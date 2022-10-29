@@ -437,10 +437,6 @@
           <groupId>com.jgoodies</groupId>
         </exclusion>
         <exclusion>
-          <artifactId>ij</artifactId>
-          <groupId>net.imagej</groupId>
-        </exclusion>
-        <exclusion>
           <artifactId>logback-core</artifactId>
           <groupId>ch.qos.logback</groupId>
         </exclusion>
@@ -773,10 +769,6 @@
       <scope>provided</scope>
       <exclusions>
         <exclusion>
-          <artifactId>ij</artifactId>
-          <groupId>net.imagej</groupId>
-        </exclusion>
-        <exclusion>
           <artifactId>joml</artifactId>
           <groupId>org.joml</groupId>
         </exclusion>
@@ -791,24 +783,12 @@
       <artifactId>Auto_Local_Threshold</artifactId>
       <version>1.11.0</version>
       <scope>provided</scope>
-      <exclusions>
-        <exclusion>
-          <artifactId>ij</artifactId>
-          <groupId>net.imagej</groupId>
-        </exclusion>
-      </exclusions>
     </dependency>
     <dependency>
       <groupId>sc.fiji</groupId>
       <artifactId>bUnwarpJ_</artifactId>
       <version>2.6.13</version>
       <scope>provided</scope>
-      <exclusions>
-        <exclusion>
-          <artifactId>ij</artifactId>
-          <groupId>net.imagej</groupId>
-        </exclusion>
-      </exclusions>
     </dependency>
     <dependency>
       <groupId>sc.fiji</groupId>
@@ -836,10 +816,6 @@
           <artifactId>imglib2</artifactId>
           <groupId>net.imglib2</groupId>
         </exclusion>
-        <exclusion>
-          <artifactId>ij</artifactId>
-          <groupId>net.imagej</groupId>
-        </exclusion>
       </exclusions>
     </dependency>
     <dependency>
@@ -847,24 +823,12 @@
       <artifactId>Colour_Deconvolution</artifactId>
       <version>3.0.3</version>
       <scope>provided</scope>
-      <exclusions>
-        <exclusion>
-          <artifactId>ij</artifactId>
-          <groupId>net.imagej</groupId>
-        </exclusion>
-      </exclusions>
     </dependency>
     <dependency>
       <groupId>sc.fiji</groupId>
       <artifactId>CorrectBleach_</artifactId>
       <version>2.0.3</version>
       <scope>provided</scope>
-      <exclusions>
-        <exclusion>
-          <artifactId>ij</artifactId>
-          <groupId>net.imagej</groupId>
-        </exclusion>
-      </exclusions>
     </dependency>
     <dependency>
       <groupId>sc.fiji</groupId>
@@ -875,10 +839,6 @@
         <exclusion>
           <artifactId>fiji-lib</artifactId>
           <groupId>sc.fiji</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>ij</artifactId>
-          <groupId>net.imagej</groupId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -968,10 +928,6 @@
           <artifactId>imglib2</artifactId>
           <groupId>net.imglib2</groupId>
         </exclusion>
-        <exclusion>
-          <artifactId>ij</artifactId>
-          <groupId>net.imagej</groupId>
-        </exclusion>
       </exclusions>
     </dependency>
     <dependency>
@@ -1012,10 +968,6 @@
           <artifactId>imglib2</artifactId>
           <groupId>net.imglib2</groupId>
         </exclusion>
-        <exclusion>
-          <artifactId>ij</artifactId>
-          <groupId>net.imagej</groupId>
-        </exclusion>
       </exclusions>
     </dependency>
     <dependency>
@@ -1027,10 +979,6 @@
         <exclusion>
           <artifactId>jama</artifactId>
           <groupId>gov.nist.math</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>ij</artifactId>
-          <groupId>net.imagej</groupId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -1044,10 +992,6 @@
           <artifactId>jama</artifactId>
           <groupId>gov.nist.math</groupId>
         </exclusion>
-        <exclusion>
-          <artifactId>ij</artifactId>
-          <groupId>net.imagej</groupId>
-        </exclusion>
       </exclusions>
     </dependency>
     <dependency>
@@ -1059,10 +1003,6 @@
         <exclusion>
           <artifactId>commons-lang3</artifactId>
           <groupId>org.apache.commons</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>ij</artifactId>
-          <groupId>net.imagej</groupId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -1079,10 +1019,6 @@
         <exclusion>
           <artifactId>jama</artifactId>
           <groupId>gov.nist.math</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>ij</artifactId>
-          <groupId>net.imagej</groupId>
         </exclusion>
       </exclusions>
     </dependency>

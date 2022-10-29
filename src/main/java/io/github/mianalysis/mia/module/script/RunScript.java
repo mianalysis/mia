@@ -33,6 +33,7 @@ import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.system.GlobalVariables;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.Workspaces;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.FilePathP;
 import io.github.mianalysis.mia.object.parameters.GenericButtonP;
@@ -188,10 +189,7 @@ public class RunScript extends Module {
                 scriptParameters.put("thisModule", this);
 
             // Running script
-            ScriptService scriptService = MIA.ijService.getContext().getService(ScriptService.class);
-            // MIA.scriptService.setContext(MIA.context);
-            ScriptModule scriptModule = scriptService
-                    .run("script." + extension, scriptText, false, scriptParameters).get();
+            ScriptModule scriptModule = MIA.getScriptService().run("." + extension, scriptText, false, scriptParameters).get();
 
             // Displaying output images/objects
             if (showOutput) {
@@ -223,7 +221,7 @@ public class RunScript extends Module {
 
         } catch (InterruptedException e) {
             // Do nothing as the user has selected this
-        } catch (ExecutionException | IOException e) {
+        } catch (Exception e) {
             MIA.log.writeError(e);
         }
 
