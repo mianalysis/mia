@@ -18,9 +18,9 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
-import java.util.concurrent.ExecutionException;
 
 import org.apache.commons.io.FilenameUtils;
+import org.scijava.Context;
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
 import org.scijava.script.ScriptModule;
@@ -33,7 +33,6 @@ import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.system.GlobalVariables;
 import io.github.mianalysis.mia.object.Workspace;
-import io.github.mianalysis.mia.object.Workspaces;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.FilePathP;
 import io.github.mianalysis.mia.object.parameters.GenericButtonP;
@@ -167,13 +166,18 @@ public class RunScript extends Module {
         String scriptLanguage = parameters.getValue(SCRIPT_LANGUAGE, workspace);
         String scriptFile = parameters.getValue(SCRIPT_FILE, workspace);
 
-        try {
+        // try {
             Map<String, Object> scriptParameters = new HashMap<>();
             String extension = "";
             switch (scriptMode) {
                 case ScriptModes.SCRIPT_FILE:
                     extension = FilenameUtils.getExtension(scriptFile);
-                    scriptText = new String(Files.readAllBytes(Paths.get(scriptFile)), StandardCharsets.UTF_8);
+                    try {
+                        scriptText = new String(Files.readAllBytes(Paths.get(scriptFile)), StandardCharsets.UTF_8);
+                    } catch (IOException e1) {
+                        e1.printStackTrace();
+                        return Status.FAIL;                        
+                    }
                     scriptText = GlobalVariables.convertString(scriptText, modules);
                     scriptText = TextType.applyCalculation(scriptText);
                     break;
@@ -189,7 +193,11 @@ public class RunScript extends Module {
                 scriptParameters.put("thisModule", this);
 
             // Running script
-            ScriptModule scriptModule = MIA.getScriptService().run("." + extension, scriptText, false, scriptParameters).get();
+            try {
+                ScriptModule scriptModule = MIA.getScriptService().run("." + extension, scriptText, false, scriptParameters).get();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
 
             // Displaying output images/objects
             if (showOutput) {
@@ -219,11 +227,11 @@ public class RunScript extends Module {
                 }
             }
 
-        } catch (InterruptedException e) {
-            // Do nothing as the user has selected this
-        } catch (Exception e) {
-            MIA.log.writeError(e);
-        }
+        // } catch (InterruptedException e) {
+        //     // Do nothing as the user has selected this
+        // } catch (Exception e) {
+        //     MIA.log.writeError(e);
+        // }
 
         return Status.PASS;
 

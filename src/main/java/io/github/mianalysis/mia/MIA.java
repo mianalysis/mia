@@ -219,7 +219,7 @@ public class MIA implements Command {
     }
 
     public static ImageJService getIJService() {
-        if (ijService == null) {
+        if (headless || ijService == null) {
             Context context = (Context) ij.IJ.runPlugIn("org.scijava.Context", "");
             ijService = (ImageJService) context.getService(ImageJService.class);
         }
@@ -229,7 +229,7 @@ public class MIA implements Command {
     }
 
     public static OpService getOpService() {
-        if (opService == null) {
+        if (headless || opService == null) {
             Context context = (Context) ij.IJ.runPlugIn("org.scijava.Context", "");
             opService = (OpService) context.getService(OpService.class);
         }
@@ -239,7 +239,7 @@ public class MIA implements Command {
     }
 
     public static PluginService getPluginService() {
-        if (opService == null) {
+        if (headless || opService == null) {
             Context context = (Context) ij.IJ.runPlugIn("org.scijava.Context", "");
             pluginService = (PluginService) context.getService(PluginService.class);
         }
@@ -249,7 +249,7 @@ public class MIA implements Command {
     }
 
     public static ScriptService getScriptService() {
-        if (scriptService == null) {
+        if (headless || scriptService == null) {
             Context context = (Context) ij.IJ.runPlugIn("org.scijava.Context", "");
             scriptService = (ScriptService) context.getService(ScriptService.class);
         }
