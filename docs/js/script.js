@@ -1,4 +1,4 @@
-function copyCode1Windows(currButton, currElement) {
+function copyCode(currButton, currElement) {
   // Getting the active code
   var currText = document.getElementById(currElement).querySelector(".active").textContent.trim();
 
