@@ -28,8 +28,7 @@ public class Splash extends JWindow {
     public Splash() {        
         // Determine special date
         String suffix = getSpecialSuffix();
-
-        blankLogo = new ImageIcon(Splash.class.getResource("/images/Logo_splash."+suffix+"png"));
+        blankLogo = new ImageIcon(Splash.class.getResource("/images/Logo_splash"+suffix+".png"));
 
         label = new JLabel("", blankLogo, SwingConstants.CENTER);
         label.setOpaque(false);

@@ -42,9 +42,9 @@ public class MainGenerator {
         deleteFolders(root);
 
         // Creating HTML files
-        new IndexGenerator().generate();
-        new ModuleGenerator().generate();
+        new IndexGenerator().generate();        
         new GuideGenerator().generate();
+        new ModuleGenerator().generate();
         new PublicationsGenerator().generate();
         new AboutGenerator().generate();
 
