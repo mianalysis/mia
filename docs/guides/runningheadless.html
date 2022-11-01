@@ -198,29 +198,29 @@ cd .\fiji-win64\Fiji.app</code></pre>
       <div class="tab-pane fade show active" id="code2-area-linux" role="tabpanel" aria-labelledby="code2-tab-linux">
         <pre><code id="code2-linux" class="language-bash"># Commands for Bash
 # Marking MIA and IJPB-plugins for installation
-./ImageJ-linux64 --update add-update-site MIA https://sites.imagej.net/ModularImageAnalysis/
-./ImageJ-linux64 --update add-update-site IJPB-plugins https://sites.imagej.net/IJPB-plugins
+./ImageJ-linux64 --headless --update add-update-site MIA https://sites.imagej.net/ModularImageAnalysis/
+./ImageJ-linux64 --headless --update add-update-site IJPB-plugins https://sites.imagej.net/IJPB-plugins
 
 # Performing update
-./ImageJ-linux64 --update update</code></pre>
+./ImageJ-linux64 --headless --update update</code></pre>
       </div>
       <div class="tab-pane fade" id="code2-area-mac" role="tabpanel" aria-labelledby="code2-tab-mac">
         <pre><code id="code2-mac" class="language-bash"># Commands for Bash
 # Marking MIA and IJPB-plugins for installation
-./ImageJ-macosx --update add-update-site MIA https://sites.imagej.net/ModularImageAnalysis/
-./ImageJ-macosx --update add-update-site IJPB-plugins https://sites.imagej.net/IJPB-plugins
+./ImageJ-macosx --headless --update add-update-site MIA https://sites.imagej.net/ModularImageAnalysis/
+./ImageJ-macosx --headless --update add-update-site IJPB-plugins https://sites.imagej.net/IJPB-plugins
 
 # Performing update
-./ImageJ-macosx --update update</code></pre>
+./ImageJ-macosx --headless --update update</code></pre>
       </div>
       <div class="tab-pane fade" id="code2-area-windows" role="tabpanel" aria-labelledby="code2-tab-windows">
         <pre><code id="code2-windows" class="language-powershell"># Commands for Windows PowerShell
 # Marking MIA and IJPB-plugins for installation
-.\ImageJ-win64 --console --update add-update-site MIA https://sites.imagej.net/ModularImageAnalysis/
-.\ImageJ-win64 --console --update add-update-site IJPB-plugins https://sites.imagej.net/IJPB-plugins
+.\ImageJ-win64 --headless --console --update add-update-site MIA https://sites.imagej.net/ModularImageAnalysis/
+.\ImageJ-win64 --headless --console --update add-update-site IJPB-plugins https://sites.imagej.net/IJPB-plugins
 
 # Performing update
-.\ImageJ-win64 --console --update update</code></pre>
+.\ImageJ-win64 --headless --console --update update</code></pre>
       </div>
     </div>
   </div>
@@ -254,14 +254,139 @@ cd .\fiji-win64\Fiji.app</code></pre>
 
     <div class="tab-content pt-2 pl-1 text-left" id="code3-content">
       <div class="tab-pane fade show active" id="code3-area-linux" role="tabpanel" aria-labelledby="code3-tab-linux">
-        <pre><code id="code3-linux" class="language-bash">[LINUX CODE]</code></pre>
+        <pre><code id="code3-linux" class="language-bash"># Commands for Bash
+# (Optional) Download example workflow to user folder
+wget https://github.com/mianalysis/mia-examples/archive/refs/tags/v1.0.0.zip -O ~/example.zip
+unzip ~/example.zip -d ~/
+rm ~/example.zip
+
+# Defining workflow path as a variable
+wfPath=~/mia-examples-1.0.0/Ex1_NucleiSegmentation/Ex1_NucleiSegmentation.mia
+
+# Running a workflow on a specified single file
+inPath=~/mia-examples-1.0.0/Ex1_NucleiSegmentation/Ex1_3DStack1.tif
+./ImageJ-linux64 --headless --run "MIA (headless)" "workflowPath='$wfPath', inputPath='$inPath'"
+
+# Running a workflow on a specified folder with verbose output
+inPath=~/mia-examples-1.0.0/Ex1_NucleiSegmentation/
+./ImageJ-linux64 --headless --run "MIA (headless)" "workflowPath='$wfPath', inputPath='$inPath', verbose=true"</code></pre>
       </div>
       <div class="tab-pane fade" id="code3-area-mac" role="tabpanel" aria-labelledby="code3-tab-mac">
-        <pre><code id="code3-mac" class="language-bash">[MAC CODE]</code></pre>
+        <pre><code id="code3-mac" class="language-bash"># Commands for Bash
+# (Optional) Download example workflow to user folder
+curl https://github.com/mianalysis/mia-examples/archive/refs/tags/v1.0.0.zip -O ~/example.zip
+unzip ~/example.zip -d ~/
+rm ~/example.zip
+
+# Defining workflow path as a variable
+wfPath=~/mia-examples-1.0.0/Ex1_NucleiSegmentation/Ex1_NucleiSegmentation.mia
+
+# Running a workflow on a specified single file
+inPath=~/mia-examples-1.0.0/Ex1_NucleiSegmentation/Ex1_3DStack1.tif
+./ImageJ-macosx --headless --run "MIA (headless)" "workflowPath='$wfPath', inputPath='$inPath'"
+
+# Running a workflow on a specified folder with verbose output
+inPath=~/mia-examples-1.0.0/Ex1_NucleiSegmentation/
+./ImageJ-macosx --headless --run "MIA (headless)" "workflowPath='$wfPath', inputPath='$inPath', verbose=true"</code></pre>
       </div>
       <div class="tab-pane fade" id="code3-area-windows" role="tabpanel" aria-labelledby="code3-tab-windows">
-        <pre><code id="code3-windows" class="language-powershell">.\ImageJ-win64 --headless --console --run "MIA (headless)" "workflowPath='C:\\Users'"</code></pre>
+        <pre><code id="code3-windows" class="language-powershell"># Commands for Windows PowerShell
+# (Optional) Download example workflow to user folder
+Invoke-WebRequest https://github.com/mianalysis/mia-examples/archive/refs/tags/v1.0.0.zip -OutFile ~/example.zip
+Expand-Archive ~\example.zip -DestinationPath ~\
+rm ~\example.zip
+
+# Defining workflow path as a variable
+$wfPath="'$HOME\mia-examples-1.0.0\Ex1_NucleiSegmentation\Ex1_NucleiSegmentation.mia'"
+
+# Running a workflow on a specified single file
+$inPath="'$HOME\mia-examples-1.0.0\Ex1_NucleiSegmentation\Ex1_3DStack1.tif'"
+.\ImageJ-win64 --console --headless --run "MIA (headless)" "workflowPath=$wfPath, inputFilePath=$inPath"
+
+# Running a workflow on a specified folder with verbose output
+$inPath="'$HOME\mia-examples-1.0.0\Ex1_NucleiSegmentation\'"
+.\ImageJ-win64 --console --headless --run "MIA (headless)" "workflowPath=$wfPath, inputFilePath=$inPath, verbose=true"</code></pre>
       </div>
+    </div>
+  </div>
+
+  <div class="container mia-text-container text-center">
+    <p class="mia-heading mt-5">Arguments</p>
+    <div class="mia-text-block mx-auto">
+      <table class="table table-striped">
+        <thead class="mia-main-text-small mia-bold">
+          <tr>
+            <td>Argument</td>
+            <td>Required?</td>
+            <td>Default value</td>
+            <td>Description</td>
+          </tr>
+        </thead>
+        <tbody class="mia-main-text-small">
+          <tr>
+            <td>workflowPath</td>
+            <td>Required</td>
+            <td>N/A</td>
+            <td>Path to .mia workflow file. This can either be relative to the current directory or an absolute system
+              path.</td>
+          </tr>
+          <tr>
+            <td>inputPath</td>
+            <td>Optional</td>
+            <td>[Blank]</td>
+            <td>If set, this will override the "Input path" file/folder set in the specified workflow. When left blank,
+              the "Input path" of the workflow file will be used.</td>
+          </tr>
+          <tr>
+            <td>variables</td>
+            <td>Optional</td>
+            <td>[Blank]</td>
+            <td>Global variables (i.e. those specified as name-value pairs in a "Global Variables" module) can be
+              overridden using the form "name1:value1;name2:value2;etc.".</td>
+          </tr>
+          <tr>
+            <td>showDebug</td>
+            <td>Optional</td>
+            <td>false</td>
+            <td>Display any debug messages encountered during workflow execution to the terminal. Debug messages are
+              displayed in blue.</td>
+          </tr>
+          <tr>
+            <td>showMemory</td>
+            <td>Optional</td>
+            <td>false</td>
+            <td>Following execution of each module the current memory usage and elapsed time are displayed in the
+              terminal. Memory messages are displayed in green.</td>
+          </tr>
+          <tr>
+            <td>showMessage</td>
+            <td>Optional</td>
+            <td>true</td>
+            <td>Display any general messages encountered during workflow execution to the terminal. Debug messages are
+              displayed in white.</td>
+          </tr>
+          <tr>
+            <td>showStatus</td>
+            <td>Optional</td>
+            <td>true</td>
+            <td>Display module status updates in the terminal. Status messages are displayed in blue.</td>
+          </tr>
+          <tr>
+            <td>showWarning</td>
+            <td>Optional</td>
+            <td>true</td>
+            <td>Display any warning messages encountered during workflow execution to the terminal. Warning messages are
+              displayed in orange.</td>
+          </tr>
+          <tr>
+            <td>verbose</td>
+            <td>Optional</td>
+            <td>false</td>
+            <td>If processing multiple files/series (i.e. "batch mode"), verbose mode will display the current module
+              status, rather than the number of jobs completed.</td>
+          </tr>
+        </tbody>
+      </table>
     </div>
   </div>
 

@@ -31,22 +31,22 @@ public class MainGenerator {
         deleteFolders(root);
         root.mkdir();
 
-        root = new File("docs/modules");
-        deleteFolders(root);
-        root.mkdir();
+        // root = new File("docs/modules");
+        // deleteFolders(root);
+        // root.mkdir();
 
-        root = new File("docs/about.html");
-        deleteFolders(root);
+        // root = new File("docs/about.html");
+        // deleteFolders(root);
 
-        root = new File("docs/publications.html");
-        deleteFolders(root);
+        // root = new File("docs/publications.html");
+        // deleteFolders(root);
 
         // Creating HTML files
         new IndexGenerator().generate();        
         new GuideGenerator().generate();
-        new ModuleGenerator().generate();
-        new PublicationsGenerator().generate();
-        new AboutGenerator().generate();
+        // new ModuleGenerator().generate();
+        // new PublicationsGenerator().generate();
+        // new AboutGenerator().generate();
 
         // Creating README.md
         generateReadmeMarkdown();
