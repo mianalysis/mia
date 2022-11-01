@@ -11,7 +11,9 @@
   <!-- CSS -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css"
     integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.6.0/build/styles/default.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/9000.0.1/themes/prism-tomorrow.min.css"
+    integrity="sha512-kSwGoyIkfz4+hMo5jkJngSByil9jxJPKbweYec/UgS+S1EgE45qm4Gea7Ks2oxQ7qiYyyZRn66A9df2lMtjIsw=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
   <link href="../css/style.css" rel="stylesheet">
 
   <!-- Javascript -->
@@ -21,10 +23,15 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx"
     crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.6.0/build/highlight.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.6.0/build/languages/bash.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.6.0/build/languages/powershell.min.js"></script>
-  <script>hljs.highlightAll();</script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/9000.0.1/prism.min.js"
+    integrity="sha512-UOoJElONeUNzQbbKQbjldDf9MwOHqxNz49NNJJ1d90yp+X9edsHyJoAs6O4K19CZGaIdjI5ohK+O2y5lBTW6uQ=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/9000.0.1/components/prism-bash.min.js"
+    integrity="sha512-35RBtvuCKWANuRid6RXP2gYm4D5RMieVL/xbp6KiMXlIqgNrI7XRUh9HurE8lKHW4aRpC0TZU3ZfqG8qmQ35zA=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/9000.0.1/components/prism-powershell.min.js"
+    integrity="sha512-dnJS1fxEUNZirzvtoG39P8JWa8DajX420LajzUbn+taV6hd9BfnHHgpPAWNADYjNRPT1Gt4v4/XGMULqi0uqVQ=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
   <script src="../js/script.js"></script>
 </head>
 
@@ -80,40 +87,60 @@
 
 <div class="container mia-text-container text-center">
     
-        <div class="mia-text-block mx-auto">
-            <p class="mia-heading">Introduction</p>
-            <div class="mia-main-text">MIA is in ongoing development and from time-to-time, issues may arise.  Below are listed some common problems and solutions.  For any problems not covered in the table (or if you have concerns something isn't working correctly), please submit an <a href="https://github.com/mianalysis/mia/issues">issue</a> via GitHub.</div>
-        </div>
+    <div class="mia-text-block mx-auto">
+        <p class="mia-heading">Introduction</p>
+        <div class="mia-main-text">MIA is in ongoing development and from time-to-time, issues may arise. Below are
+            listed some common problems and solutions. For any problems not covered in the table (or if you have
+            concerns something isn't working correctly), please submit an <a
+                href="https://github.com/mianalysis/mia/issues">issue</a> via GitHub.</div>
+    </div>
 
-        <div class="mia-text-block mx-auto">
-            <table class="table table-striped">
-                <thead class="mia-main-text-small mia-bold">
-                    <tr>
-                        <td>Problem</td>
-                        <td>Solution</td>
-                    </tr>
-                </thead>
-                <tbody class="mia-main-text-small text-left">
-                    <tr>
-                        <td>"Module [name] not loaded.  Dependencies not satisfied" displayed when starting MIA</td>
-                        <td>Certain modules require specific versions of other plugins to be installed.  The warning message should list the required version of that plugin.  You can check what version of a plugin is currently installed by looking in the "plugins" folder of your Fiji installation.</td>
-                    </tr>
-                    <tr>
-                        <td>"Loaded workflow created in different version of MIA." displayed when loading a workflow</td>                        
-                        <td>On its own this warning doesn't necessarily mean anything won't work as expected; however, to ensure the workflow operates as intended, it's advisable to install the same version of MIA as that used to prepare the workflow.  Subsequent lines of this warning should indicate the version used to create the workflow.</td>
-                    </tr>
-                    <tr>
-                        <td>"Module [name] not found (skipping)" displayed when loading a workflow</td>
-                        <td>If loading a workflow prepared in an older version of MIA, the module in question may have been removed.  Similarly, if the workflow is from a newer version of MIA, this module may not yet have been added.  To fix this, install the MIA version matching that used to create the workflow.</td>
-                    </tr>
-                    <tr>
-                        <td>"Parameter not found.  Module: [name].  Parameter: [name].  Value: [name]." displayed when loading a workflow</td>                        
-                        <td>If loading a workflow prepared in an older version of MIA, the parameter in question may have been renamed or removed.  To fix this, install the MIA version matching that used to create the workflow.</td>
-                    </tr>
-                </tbody>
-            </table>
+    <div class="mia-text-block mx-auto">
+        <table class="table table-striped">
+            <thead class="mia-main-text-small mia-bold">
+                <tr>
+                    <td>Problem</td>
+                    <td>Solution</td>
+                </tr>
+            </thead>
+            <tbody class="mia-main-text-small text-left">
+                <tr>
+                    <td>"Module [name] not loaded. Dependencies not satisfied" displayed when starting MIA</td>
+                    <td>Certain modules require specific versions of other plugins to be installed. The warning message
+                        should list the required version of that plugin. You can check what version of a plugin is
+                        currently installed by looking in the "plugins" folder of your Fiji installation.</td>
+                </tr>
+                <tr>
+                    <td>"Loaded workflow created in different version of MIA." displayed when loading a workflow</td>
+                    <td>On its own this warning doesn't necessarily mean anything won't work as expected; however, to
+                        ensure the workflow operates as intended, it's advisable to install the same version of MIA as
+                        that used to prepare the workflow. Subsequent lines of this warning should indicate the version
+                        used to create the workflow.</td>
+                </tr>
+                <tr>
+                    <td>"Module [name] not found (skipping)" displayed when loading a workflow</td>
+                    <td>If loading a workflow prepared in an older version of MIA, the module in question may have been
+                        removed. Similarly, if the workflow is from a newer version of MIA, this module may not yet have
+                        been added. To fix this, install the MIA version matching that used to create the workflow.</td>
+                </tr>
+                <tr>
+                    <td>"Parameter not found. Module: [name]. Parameter: [name]. Value: [name]." displayed when loading
+                        a workflow</td>
+                    <td>If loading a workflow prepared in an older version of MIA, the parameter in question may have
+                        been renamed or removed. To fix this, install the MIA version matching that used to create the
+                        workflow.</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="mia-text-block mx-auto">
+        <p class="mia-heading">Navigation</p>
+        <div class="mia-main-text">
+            Previous: <a href="../guides/runningheadless.html">Running headless</a>
         </div>
-    
+    </div>
+
 </div>
 
   <!-- Footer -->

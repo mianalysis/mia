@@ -7,5 +7,5 @@ function copyCode(currButton, currElement) {
 
   // Alert the copied text
   document.getElementById(currButton).textContent = "Copied";
-  setTimeout(() => document.getElementById(currButton).textContent = "Copy", 3000);
+  setTimeout(() => document.getElementById(currButton).textContent = "Copy", 2000);
 }

@@ -17,11 +17,15 @@
     <p class="mia-heading">Installing Fiji</p>
     <div class="container">
       <div class="row">
-        <div class="col-12 col-md-6">
-          <ul class="nav nav-pills mb-3" id="code1-tablist" role="tablist">
+        <div class="col-10">
+          <ul class="nav nav-pills" id="code1-tablist" role="tablist">
             <li class="nav-item">
               <a class="nav-link active" id="code1-tab-linux" data-toggle="pill" href="#code1-area-linux" role="tab"
                 aria-controls="code1-area-linux" aria-selected="true">Linux</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" id="code1-tab-mac" data-toggle="pill" href="#code1-area-mac" role="tab"
+                aria-controls="code1-area-mac" aria-selected="false">Mac</a>
             </li>
             <li class="nav-item">
               <a class="nav-link" id="code1-tab-windows" data-toggle="pill" href="#code1-area-windows" role="tab"
@@ -29,22 +33,55 @@
             </li>
           </ul>
         </div>
-        <div class="col-12 col-md-6 text-right">
-          <button type="button" class="btn btn-outline-secondary" id="code1-button"
-            onclick="copyCode1Windows('code1-button', 'code1-content')">Copy</button>
+        <div class="col-2 text-right">
+          <button type="button" class="btn" id="code1-button"
+            onclick="copyCode('code1-button', 'code1-content')">Copy</button>
         </div>
       </div>
     </div>
 
     <div class="tab-content pt-2 pl-1 text-left" id="code1-content">
       <div class="tab-pane fade show active" id="code1-area-linux" role="tabpanel" aria-labelledby="code1-tab-linux">
-        <pre><code id="code1-linux" class="language-bash">wget https://downloads.imagej.net/fiji/latest/fiji-linux64.zip
+        <pre><code id="code1-linux" class="language-bash"># Commands for Bash
+# Downloading the latest copy of Fiji for 64-bit Linux 
+wget https://downloads.imagej.net/fiji/latest/fiji-linux64.zip
+
+# Unzipping archive
 unzip fiji-linux64.zip
+
+# Removing downloaded zip archive
 rm fiji-linux64.zip
+
+# Moving into extracted directory
 cd Fiji.app/</code></pre>
       </div>
+      <div class="tab-pane fade" id="code1-area-mac" role="tabpanel" aria-labelledby="code1-tab-mac">
+        <pre><code id="code1-mac" class="language-bash"># Commands for Bash
+# Downloading the latest copy of Fiji for 64-bit MacOS
+curl -O https://downloads.imagej.net/fiji/latest/fiji-macosx.zip
+
+# Unzipping archive
+unzip fiji-macosx.zip -d 
+
+# Removing downloaded zip archive
+rm fiji-macosx.zip
+
+# Moving into extracted directory
+cd Fiji.app/Contents/MacOS</code></pre>
+      </div>
       <div class="tab-pane fade" id="code1-area-windows" role="tabpanel" aria-labelledby="code1-tab-windows">
-        <pre><code id="code1-windows" class="language-powershell">[WINDOWS CODE]</code></pre>
+        <pre><code id="code1-windows" class="language-powershell"># Commands for Windows PowerShell
+# Downloading the latest copy of Fiji for 64-bit Windows
+Invoke-WebRequest https://downloads.imagej.net/fiji/latest/fiji-win64.zip
+
+# Unzipping archive
+Expand-Archive .\fiji-win64.zip
+
+# Removing downloaded zip archive
+Remove-Item .\fiji-win64.zip
+
+# Moving into extracted directory
+cd .\fiji-win64\Fiji.app</code></pre>
       </div>
     </div>
   </div>
@@ -53,11 +90,15 @@ cd Fiji.app/</code></pre>
     <p class="mia-heading">Installing MIA</p>
     <div class="container">
       <div class="row">
-        <div class="col-12 col-md-6">
-          <ul class="nav nav-pills mb-3" id="code2-tablist" role="tablist">
+        <div class="col-10">
+          <ul class="nav nav-pills" id="code2-tablist" role="tablist">
             <li class="nav-item">
               <a class="nav-link active" id="code2-tab-linux" data-toggle="pill" href="#code2-area-linux" role="tab"
                 aria-controls="code2-area-linux" aria-selected="true">Linux</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" id="code2-tab-mac" data-toggle="pill" href="#code2-area-mac" role="tab"
+                aria-controls="code2-area-mac" aria-selected="false">Mac</a>
             </li>
             <li class="nav-item">
               <a class="nav-link" id="code2-tab-windows" data-toggle="pill" href="#code2-area-windows" role="tab"
@@ -65,21 +106,40 @@ cd Fiji.app/</code></pre>
             </li>
           </ul>
         </div>
-        <div class="col-12 col-md-6 text-right">
-          <button type="button" class="btn btn-outline-secondary" id="code2-button"
-            onclick="copycode2Windows('code2-button', 'code2-content')">Copy</button>
+        <div class="col-2 text-right">
+          <button type="button" class="btn" id="code2-button"
+            onclick="copyCode('code2-button', 'code2-content')">Copy</button>
         </div>
       </div>
     </div>
 
     <div class="tab-content pt-2 pl-1 text-left" id="code2-content">
       <div class="tab-pane fade show active" id="code2-area-linux" role="tabpanel" aria-labelledby="code2-tab-linux">
-        <pre><code id="code2-linux" class="language-bash">./ImageJ-linux64 --update add-update-site MIA https://sites.imagej.net/ModularImageAnalysis/
+        <pre><code id="code2-linux" class="language-bash"># Commands for Bash
+# Marking MIA and IJPB-plugins for installation
+./ImageJ-linux64 --update add-update-site MIA https://sites.imagej.net/ModularImageAnalysis/
 ./ImageJ-linux64 --update add-update-site IJPB-plugins https://sites.imagej.net/IJPB-plugins
+
+# Performing update
 ./ImageJ-linux64 --update update</code></pre>
       </div>
+      <div class="tab-pane fade" id="code2-area-mac" role="tabpanel" aria-labelledby="code2-tab-mac">
+        <pre><code id="code2-mac" class="language-bash"># Commands for Bash
+# Marking MIA and IJPB-plugins for installation
+./ImageJ-macosx --update add-update-site MIA https://sites.imagej.net/ModularImageAnalysis/
+./ImageJ-macosx --update add-update-site IJPB-plugins https://sites.imagej.net/IJPB-plugins
+
+# Performing update
+./ImageJ-macosx --update update</code></pre>
+      </div>
       <div class="tab-pane fade" id="code2-area-windows" role="tabpanel" aria-labelledby="code2-tab-windows">
-        <pre><code id="code2-windows" class="language-powershell">[WINDOWS CODE]</code></pre>
+        <pre><code id="code2-windows" class="language-powershell"># Commands for Windows PowerShell
+# Marking MIA and IJPB-plugins for installation
+.\ImageJ-win64 --console --update add-update-site MIA https://sites.imagej.net/ModularImageAnalysis/
+.\ImageJ-win64 --console --update add-update-site IJPB-plugins https://sites.imagej.net/IJPB-plugins
+
+# Performing update
+.\ImageJ-win64 --console --update update</code></pre>
       </div>
     </div>
   </div>
@@ -88,11 +148,15 @@ cd Fiji.app/</code></pre>
     <p class="mia-heading">Running a workflow</p>
     <div class="container">
       <div class="row">
-        <div class="col-12 col-md-6">
-          <ul class="nav nav-pills mb-3" id="code3-tablist" role="tablist">
+        <div class="col-10">
+          <ul class="nav nav-pills" id="code3-tablist" role="tablist">
             <li class="nav-item">
               <a class="nav-link active" id="code3-tab-linux" data-toggle="pill" href="#code3-area-linux" role="tab"
                 aria-controls="code3-area-linux" aria-selected="true">Linux</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" id="code3-tab-mac" data-toggle="pill" href="#code3-area-mac" role="tab"
+                aria-controls="code3-area-mac" aria-selected="true">Mac</a>
             </li>
             <li class="nav-item">
               <a class="nav-link" id="code3-tab-windows" data-toggle="pill" href="#code3-area-windows" role="tab"
@@ -100,9 +164,9 @@ cd Fiji.app/</code></pre>
             </li>
           </ul>
         </div>
-        <div class="col-12 col-md-6 text-right">
-          <button type="button" class="btn btn-outline-secondary" id="code3-button"
-            onclick="copycode3Windows('code3-button', 'code3-content')">Copy</button>
+        <div class="col-2 text-right">
+          <button type="button" class="btn" id="code3-button"
+            onclick="copyCode('code3-button', 'code3-content')">Copy</button>
         </div>
       </div>
     </div>
@@ -110,6 +174,9 @@ cd Fiji.app/</code></pre>
     <div class="tab-content pt-2 pl-1 text-left" id="code3-content">
       <div class="tab-pane fade show active" id="code3-area-linux" role="tabpanel" aria-labelledby="code3-tab-linux">
         <pre><code id="code3-linux" class="language-bash">[LINUX CODE]</code></pre>
+      </div>
+      <div class="tab-pane fade" id="code3-area-mac" role="tabpanel" aria-labelledby="code3-tab-mac">
+        <pre><code id="code3-mac" class="language-bash">[MAC CODE]</code></pre>
       </div>
       <div class="tab-pane fade" id="code3-area-windows" role="tabpanel" aria-labelledby="code3-tab-windows">
         <pre><code id="code3-windows" class="language-powershell">.\ImageJ-win64 --headless --console --run "MIA (headless)" "workflowPath='C:\\Users'"</code></pre>
