@@ -2,19 +2,30 @@
 
 <head>
   <meta name="title" content="Running headless" />
-  <meta name="description" content="DESCRIPTION HERE" />
+  <meta name="description" content="Running workflows directly from terminal" />
 </head>
 
 <body>
   <div class="mia-text-block mx-auto">
     <p class="mia-heading">Introduction</p>
     <div class="mia-main-text">
-      INTRO HERE
+      Using MIA's headless mode it's possible to run workflows without opening a graphical Fiji environment. This
+      enables running workflows on terminal-only systems such as compute clusters. It also provides more fine-grain
+      control
+      for multi-folder batch processing and facilitates performing higher-level workflows such as parameter-sweeps.
     </div>
   </div>
 
-  <div class="container mia-text-container text-center">
+  <div class="container mia-text-container text-center" id="installing_fiji">
     <p class="mia-heading">Installing Fiji</p>
+    <div class="mia-main-text pb-2">
+      Headless running of workflows can be performed using any copy of Fiji with a standard MIA install. If you've
+      already got a copy of Fiji and MIA, you can proceed to <a href="#running">running a workflow</a>. On systems
+      lacking a graphical interface (e.g. servers), Fiji and be installed using the following system-specific
+      commands. Following this, MIA is installed using the steps outlined in <a href="#installing_mia">installing
+        MIA</a>.
+    </div>
+    <br />
     <ul class="nav nav-pills" id="code1-tablist" role="tablist">
       <li class="nav-item">
         <a class="nav-link active" id="code1-tab-linux" data-toggle="pill" href="#code1-area-linux" role="tab"
@@ -30,7 +41,7 @@
       </li>
     </ul>
 
-    <div class="tab-content pt-2 text-left mia-code" id="code1-content">
+    <div class="tab-content pt-2 pb-4 text-left mia-code" id="code1-content">
       <div class="copy-button">
         <button type="button" class="btn btn-outline-light btn-sm" id="code1-button"
           onclick="copyCode('code1-button', 'code1-content')">Copy</button>
@@ -80,8 +91,13 @@ cd .\fiji-win64\Fiji.app</code></pre>
     </div>
   </div>
 
-  <div class="container mia-text-container text-center">
+  <div class="container mia-text-container text-center" id="installing_mia">
     <p class="mia-heading">Installing MIA</p>
+    <div class="mia-main-text pb-2">
+      With Fiji installed, we can now install MIA and any relevant dependencies. The following system-specific commands
+      will perform these operations.
+    </div>
+    <br />
     <ul class="nav nav-pills" id="code2-tablist" role="tablist">
       <li class="nav-item">
         <a class="nav-link active" id="code2-tab-linux" data-toggle="pill" href="#code2-area-linux" role="tab"
@@ -97,7 +113,7 @@ cd .\fiji-win64\Fiji.app</code></pre>
       </li>
     </ul>
 
-    <div class="tab-content pt-2 text-left mia-code" id="code2-content">
+    <div class="tab-content pt-2 pb-4 text-left mia-code" id="code2-content">
       <div class="copy-button">
         <button type="button" class="btn btn-outline-light btn-sm" id="code2-button"
           onclick="copyCode('code2-button', 'code2-content')">Copy</button>
@@ -132,8 +148,12 @@ cd .\fiji-win64\Fiji.app</code></pre>
     </div>
   </div>
 
-  <div class="container mia-text-container text-center">
+  <div class="container mia-text-container text-center" id="running">
     <p class="mia-heading">Running a workflow</p>
+    <div class="mia-main-text pb-2">
+The following commands will run an example workflow (that from the <a href="https://github.com/mianalysis/mia-examples">MIA-examples</a> repository) in headless mode.  The first few optional steps will perform this download; however they're not required if you'd rather run any other workflow you may already have.
+    </div>
+    <br />
     <ul class="nav nav-pills" id="code3-tablist" role="tablist">
       <li class="nav-item">
         <a class="nav-link active" id="code3-tab-linux" data-toggle="pill" href="#code3-area-linux" role="tab"
@@ -149,7 +169,7 @@ cd .\fiji-win64\Fiji.app</code></pre>
       </li>
     </ul>
 
-    <div class="tab-content pt-2 text-left mia-code" id="code3-content">
+    <div class="tab-content pt-2 pb-4text-left mia-code" id="code3-content">
       <div class="copy-button">
         <button type="button" class="btn btn-outline-light btn-sm" id="code3-button"
           onclick="copyCode('code3-button', 'code3-content')">Copy</button>
