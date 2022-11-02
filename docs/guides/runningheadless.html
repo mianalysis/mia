@@ -96,32 +96,30 @@
 
   <div class="container mia-text-container text-center">
     <p class="mia-heading">Installing Fiji</p>
-    <div class="container">
-      <div class="row">
-        <div class="col-10">
-          <ul class="nav nav-pills" id="code1-tablist" role="tablist">
-            <li class="nav-item">
-              <a class="nav-link active" id="code1-tab-linux" data-toggle="pill" href="#code1-area-linux" role="tab"
-                aria-controls="code1-area-linux" aria-selected="true">Linux</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" id="code1-tab-mac" data-toggle="pill" href="#code1-area-mac" role="tab"
-                aria-controls="code1-area-mac" aria-selected="false">Mac</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" id="code1-tab-windows" data-toggle="pill" href="#code1-area-windows" role="tab"
-                aria-controls="code1-area-windows" aria-selected="false">Windows</a>
-            </li>
-          </ul>
-        </div>
-        <div class="col-2 text-right">
-          <button type="button" class="btn" id="code1-button"
-            onclick="copyCode('code1-button', 'code1-content')">Copy</button>
-        </div>
+    <div class="row pl-0 pr-0">
+      <div class="col-9">
+        <ul class="nav nav-pills" id="code1-tablist" role="tablist">
+          <li class="nav-item">
+            <a class="nav-link active" id="code1-tab-linux" data-toggle="pill" href="#code1-area-linux" role="tab"
+              aria-controls="code1-area-linux" aria-selected="true">Linux</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" id="code1-tab-mac" data-toggle="pill" href="#code1-area-mac" role="tab"
+              aria-controls="code1-area-mac" aria-selected="false">Mac</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" id="code1-tab-windows" data-toggle="pill" href="#code1-area-windows" role="tab"
+              aria-controls="code1-area-windows" aria-selected="false">Windows</a>
+          </li>
+        </ul>
+      </div>
+      <div class="col-3 text-right">
+        <button type="button" class="btn" id="code1-button"
+          onclick="copyCode('code1-button', 'code1-content')">Copy</button>
       </div>
     </div>
 
-    <div class="tab-content pt-2 pl-1 text-left" id="code1-content">
+    <div class="tab-content pt-2 text-left" id="code1-content">
       <div class="tab-pane fade show active" id="code1-area-linux" role="tabpanel" aria-labelledby="code1-tab-linux">
         <pre><code id="code1-linux" class="language-bash"># Commands for Bash
 # Downloading the latest copy of Fiji for 64-bit Linux 
@@ -169,32 +167,30 @@ cd .\fiji-win64\Fiji.app</code></pre>
 
   <div class="container mia-text-container text-center">
     <p class="mia-heading">Installing MIA</p>
-    <div class="container">
-      <div class="row">
-        <div class="col-10">
-          <ul class="nav nav-pills" id="code2-tablist" role="tablist">
-            <li class="nav-item">
-              <a class="nav-link active" id="code2-tab-linux" data-toggle="pill" href="#code2-area-linux" role="tab"
-                aria-controls="code2-area-linux" aria-selected="true">Linux</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" id="code2-tab-mac" data-toggle="pill" href="#code2-area-mac" role="tab"
-                aria-controls="code2-area-mac" aria-selected="false">Mac</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" id="code2-tab-windows" data-toggle="pill" href="#code2-area-windows" role="tab"
-                aria-controls="code2-area-windows" aria-selected="false">Windows</a>
-            </li>
-          </ul>
-        </div>
-        <div class="col-2 text-right">
-          <button type="button" class="btn" id="code2-button"
-            onclick="copyCode('code2-button', 'code2-content')">Copy</button>
-        </div>
+    <div class="row pl-0 pr-0">
+      <div class="col-9">
+        <ul class="nav nav-pills" id="code2-tablist" role="tablist">
+          <li class="nav-item">
+            <a class="nav-link active" id="code2-tab-linux" data-toggle="pill" href="#code2-area-linux" role="tab"
+              aria-controls="code2-area-linux" aria-selected="true">Linux</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" id="code2-tab-mac" data-toggle="pill" href="#code2-area-mac" role="tab"
+              aria-controls="code2-area-mac" aria-selected="false">Mac</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" id="code2-tab-windows" data-toggle="pill" href="#code2-area-windows" role="tab"
+              aria-controls="code2-area-windows" aria-selected="false">Windows</a>
+          </li>
+        </ul>
+      </div>
+      <div class="col-3 text-right">
+        <button type="button" class="btn" id="code2-button"
+          onclick="copyCode('code2-button', 'code2-content')">Copy</button>
       </div>
     </div>
 
-    <div class="tab-content pt-2 pl-1 text-left" id="code2-content">
+    <div class="tab-content pt-2 text-left" id="code2-content">
       <div class="tab-pane fade show active" id="code2-area-linux" role="tabpanel" aria-labelledby="code2-tab-linux">
         <pre><code id="code2-linux" class="language-bash"># Commands for Bash
 # Marking MIA and IJPB-plugins for installation
@@ -227,9 +223,8 @@ cd .\fiji-win64\Fiji.app</code></pre>
 
   <div class="container mia-text-container text-center">
     <p class="mia-heading">Running a workflow</p>
-    <div class="container">
-      <div class="row">
-        <div class="col-10">
+      <div class="row pl-0 pr-0">
+        <div class="col-9">
           <ul class="nav nav-pills" id="code3-tablist" role="tablist">
             <li class="nav-item">
               <a class="nav-link active" id="code3-tab-linux" data-toggle="pill" href="#code3-area-linux" role="tab"
@@ -245,14 +240,13 @@ cd .\fiji-win64\Fiji.app</code></pre>
             </li>
           </ul>
         </div>
-        <div class="col-2 text-right">
+        <div class="col-3 text-right">
           <button type="button" class="btn" id="code3-button"
             onclick="copyCode('code3-button', 'code3-content')">Copy</button>
         </div>
       </div>
-    </div>
 
-    <div class="tab-content pt-2 pl-1 text-left" id="code3-content">
+    <div class="tab-content pt-2 text-left" id="code3-content">
       <div class="tab-pane fade show active" id="code3-area-linux" role="tabpanel" aria-labelledby="code3-tab-linux">
         <pre><code id="code3-linux" class="language-bash"># Commands for Bash
 # (Optional) Download example workflow to user folder
@@ -311,79 +305,95 @@ $inPath="'$HOME\mia-examples-1.0.0\Ex1_NucleiSegmentation\'"
   </div>
 
   <div class="container mia-text-container text-center">
-    <p class="mia-heading mt-5">Arguments</p>
+    <p class="mia-heading mt-5">Required arguments</p>
     <div class="mia-text-block mx-auto">
       <table class="table table-striped">
         <thead class="mia-main-text-small mia-bold">
           <tr>
             <td>Argument</td>
-            <td>Required?</td>
-            <td>Default value</td>
             <td>Description</td>
           </tr>
         </thead>
         <tbody class="mia-main-text-small">
           <tr>
             <td>workflowPath</td>
-            <td>Required</td>
-            <td>N/A</td>
             <td>Path to .mia workflow file. This can either be relative to the current directory or an absolute system
               path.</td>
           </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p class="mia-heading mt-5">Optional arguments</p>
+    <div class="mia-text-block mx-auto">
+      <table class="table table-striped">
+        <thead class="mia-main-text-small mia-bold">
+          <tr>
+            <td>Argument</td>
+            <td>Description</td>
+          </tr>
+        </thead>
+        <tbody class="mia-main-text-small">
           <tr>
             <td>inputPath</td>
-            <td>Optional</td>
-            <td>[Blank]</td>
             <td>If set, this will override the "Input path" file/folder set in the specified workflow. When left blank,
-              the "Input path" of the workflow file will be used.</td>
+              the "Input path" of the workflow file will be used.
+              <br />
+              Default value = [Blank]
+            </td>
           </tr>
           <tr>
             <td>variables</td>
-            <td>Optional</td>
-            <td>[Blank]</td>
             <td>Global variables (i.e. those specified as name-value pairs in a "Global Variables" module) can be
-              overridden using the form "name1:value1;name2:value2;etc.".</td>
+              overridden using the form "name1:value1; name2:value2; etc.".
+              <br />
+              Default value = [Blank]
+            </td>
           </tr>
           <tr>
             <td>showDebug</td>
-            <td>Optional</td>
-            <td>false</td>
             <td>Display any debug messages encountered during workflow execution to the terminal. Debug messages are
-              displayed in blue.</td>
+              displayed in blue.
+              <br />
+              Default value = false
+            </td>
           </tr>
           <tr>
             <td>showMemory</td>
-            <td>Optional</td>
-            <td>false</td>
             <td>Following execution of each module the current memory usage and elapsed time are displayed in the
-              terminal. Memory messages are displayed in green.</td>
+              terminal. Memory messages are displayed in green.
+              <br />
+              Default value = false
+            </td>
           </tr>
           <tr>
             <td>showMessage</td>
-            <td>Optional</td>
-            <td>true</td>
             <td>Display any general messages encountered during workflow execution to the terminal. Debug messages are
-              displayed in white.</td>
+              displayed in white.<br />
+              Default value = true</td>
           </tr>
           <tr>
             <td>showStatus</td>
-            <td>Optional</td>
-            <td>true</td>
-            <td>Display module status updates in the terminal. Status messages are displayed in blue.</td>
+            <td>Display module status updates in the terminal. Status messages are displayed in blue.
+              <br />
+              Default value = true
+            </td>
           </tr>
           <tr>
             <td>showWarning</td>
-            <td>Optional</td>
-            <td>true</td>
             <td>Display any warning messages encountered during workflow execution to the terminal. Warning messages are
-              displayed in orange.</td>
+              displayed in orange.
+              <br />
+              Default value = true
+            </td>
           </tr>
           <tr>
             <td>verbose</td>
-            <td>Optional</td>
-            <td>false</td>
             <td>If processing multiple files/series (i.e. "batch mode"), verbose mode will display the current module
-              status, rather than the number of jobs completed.</td>
+              status, rather than the number of jobs completed.
+              <br />
+              Default value = false
+            </td>
           </tr>
         </tbody>
       </table>
@@ -414,7 +424,7 @@ $inPath="'$HOME\mia-examples-1.0.0\Ex1_NucleiSegmentation\'"
             <img class="mia-footer-logo" src="../img/logos/twitter_64.png">
         </div>
         <div class="col-3 mia-footer text-center">
-          <a href="https://www.youtube.com/channel/UCF66uvu7b13SlrS7iI7R5kw/">
+          <a href="https://www.youtube.com/@mianalysis">
             <img class="mia-footer-logo" src="../img/logos/youtube_64.png">
         </div>
         <div class="col-3 mia-footer text-right">

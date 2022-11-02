@@ -131,8 +131,8 @@ public class MIAHeadless extends MIA {
         String[] variablesArray = variables.split(";");
         for (String variable : variablesArray) {
             String[] splitVariables = variable.split(":");
-            String newVariableName = splitVariables[0];
-            String newVariableValue = splitVariables[1];
+            String newVariableName = splitVariables[0].trim();
+            String newVariableValue = splitVariables[1].trim();
 
             for (Module module : modules.values()) {
                 if (module instanceof GlobalVariables && module.isEnabled()) {
