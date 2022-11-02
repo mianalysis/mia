@@ -96,31 +96,27 @@
 
   <div class="container mia-text-container text-center">
     <p class="mia-heading">Installing Fiji</p>
-    <div class="row pl-0 pr-0">
-      <div class="col-9">
-        <ul class="nav nav-pills" id="code1-tablist" role="tablist">
-          <li class="nav-item">
-            <a class="nav-link active" id="code1-tab-linux" data-toggle="pill" href="#code1-area-linux" role="tab"
-              aria-controls="code1-area-linux" aria-selected="true">Linux</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" id="code1-tab-mac" data-toggle="pill" href="#code1-area-mac" role="tab"
-              aria-controls="code1-area-mac" aria-selected="false">Mac</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" id="code1-tab-windows" data-toggle="pill" href="#code1-area-windows" role="tab"
-              aria-controls="code1-area-windows" aria-selected="false">Windows</a>
-          </li>
-        </ul>
-      </div>
-      <div class="col-3 text-right">
-        <button type="button" class="btn" id="code1-button"
+    <ul class="nav nav-pills" id="code1-tablist" role="tablist">
+      <li class="nav-item">
+        <a class="nav-link active" id="code1-tab-linux" data-toggle="pill" href="#code1-area-linux" role="tab"
+          aria-controls="code1-area-linux" aria-selected="true">Linux</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" id="code1-tab-mac" data-toggle="pill" href="#code1-area-mac" role="tab"
+          aria-controls="code1-area-mac" aria-selected="false">Mac</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" id="code1-tab-windows" data-toggle="pill" href="#code1-area-windows" role="tab"
+          aria-controls="code1-area-windows" aria-selected="false">Windows</a>
+      </li>
+    </ul>
+
+    <div class="tab-content pt-2 text-left mia-code" id="code1-content">
+      <div class="copy-button">
+        <button type="button" class="btn btn-outline-light btn-sm" id="code1-button"
           onclick="copyCode('code1-button', 'code1-content')">Copy</button>
       </div>
-    </div>
-
-    <div class="tab-content pt-2 text-left" id="code1-content">
-      <div class="tab-pane fade show active" id="code1-area-linux" role="tabpanel" aria-labelledby="code1-tab-linux">
+      <div class="tab-pane show active" id="code1-area-linux" role="tabpanel" aria-labelledby="code1-tab-linux">
         <pre><code id="code1-linux" class="language-bash"># Commands for Bash
 # Downloading the latest copy of Fiji for 64-bit Linux 
 wget https://downloads.imagej.net/fiji/latest/fiji-linux64.zip
@@ -134,7 +130,7 @@ rm fiji-linux64.zip
 # Moving into extracted directory
 cd Fiji.app/</code></pre>
       </div>
-      <div class="tab-pane fade" id="code1-area-mac" role="tabpanel" aria-labelledby="code1-tab-mac">
+      <div class="tab-pane" id="code1-area-mac" role="tabpanel" aria-labelledby="code1-tab-mac">
         <pre><code id="code1-mac" class="language-bash"># Commands for Bash
 # Downloading the latest copy of Fiji for 64-bit MacOS
 curl -O https://downloads.imagej.net/fiji/latest/fiji-macosx.zip
@@ -148,7 +144,7 @@ rm fiji-macosx.zip
 # Moving into extracted directory
 cd Fiji.app/Contents/MacOS</code></pre>
       </div>
-      <div class="tab-pane fade" id="code1-area-windows" role="tabpanel" aria-labelledby="code1-tab-windows">
+      <div class="tab-pane" id="code1-area-windows" role="tabpanel" aria-labelledby="code1-tab-windows">
         <pre><code id="code1-windows" class="language-powershell"># Commands for Windows PowerShell
 # Downloading the latest copy of Fiji for 64-bit Windows
 Invoke-WebRequest https://downloads.imagej.net/fiji/latest/fiji-win64.zip
@@ -167,30 +163,26 @@ cd .\fiji-win64\Fiji.app</code></pre>
 
   <div class="container mia-text-container text-center">
     <p class="mia-heading">Installing MIA</p>
-    <div class="row pl-0 pr-0">
-      <div class="col-9">
-        <ul class="nav nav-pills" id="code2-tablist" role="tablist">
-          <li class="nav-item">
-            <a class="nav-link active" id="code2-tab-linux" data-toggle="pill" href="#code2-area-linux" role="tab"
-              aria-controls="code2-area-linux" aria-selected="true">Linux</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" id="code2-tab-mac" data-toggle="pill" href="#code2-area-mac" role="tab"
-              aria-controls="code2-area-mac" aria-selected="false">Mac</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" id="code2-tab-windows" data-toggle="pill" href="#code2-area-windows" role="tab"
-              aria-controls="code2-area-windows" aria-selected="false">Windows</a>
-          </li>
-        </ul>
-      </div>
-      <div class="col-3 text-right">
-        <button type="button" class="btn" id="code2-button"
+    <ul class="nav nav-pills" id="code2-tablist" role="tablist">
+      <li class="nav-item">
+        <a class="nav-link active" id="code2-tab-linux" data-toggle="pill" href="#code2-area-linux" role="tab"
+          aria-controls="code2-area-linux" aria-selected="true">Linux</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" id="code2-tab-mac" data-toggle="pill" href="#code2-area-mac" role="tab"
+          aria-controls="code2-area-mac" aria-selected="false">Mac</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" id="code2-tab-windows" data-toggle="pill" href="#code2-area-windows" role="tab"
+          aria-controls="code2-area-windows" aria-selected="false">Windows</a>
+      </li>
+    </ul>
+
+    <div class="tab-content pt-2 text-left mia-code" id="code2-content">
+      <div class="copy-button">
+        <button type="button" class="btn btn-outline-light btn-sm" id="code2-button"
           onclick="copyCode('code2-button', 'code2-content')">Copy</button>
       </div>
-    </div>
-
-    <div class="tab-content pt-2 text-left" id="code2-content">
       <div class="tab-pane fade show active" id="code2-area-linux" role="tabpanel" aria-labelledby="code2-tab-linux">
         <pre><code id="code2-linux" class="language-bash"># Commands for Bash
 # Marking MIA and IJPB-plugins for installation
@@ -223,30 +215,26 @@ cd .\fiji-win64\Fiji.app</code></pre>
 
   <div class="container mia-text-container text-center">
     <p class="mia-heading">Running a workflow</p>
-      <div class="row pl-0 pr-0">
-        <div class="col-9">
-          <ul class="nav nav-pills" id="code3-tablist" role="tablist">
-            <li class="nav-item">
-              <a class="nav-link active" id="code3-tab-linux" data-toggle="pill" href="#code3-area-linux" role="tab"
-                aria-controls="code3-area-linux" aria-selected="true">Linux</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" id="code3-tab-mac" data-toggle="pill" href="#code3-area-mac" role="tab"
-                aria-controls="code3-area-mac" aria-selected="true">Mac</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" id="code3-tab-windows" data-toggle="pill" href="#code3-area-windows" role="tab"
-                aria-controls="code3-area-windows" aria-selected="false">Windows</a>
-            </li>
-          </ul>
-        </div>
-        <div class="col-3 text-right">
-          <button type="button" class="btn" id="code3-button"
-            onclick="copyCode('code3-button', 'code3-content')">Copy</button>
-        </div>
-      </div>
+    <ul class="nav nav-pills" id="code3-tablist" role="tablist">
+      <li class="nav-item">
+        <a class="nav-link active" id="code3-tab-linux" data-toggle="pill" href="#code3-area-linux" role="tab"
+          aria-controls="code3-area-linux" aria-selected="true">Linux</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" id="code3-tab-mac" data-toggle="pill" href="#code3-area-mac" role="tab"
+          aria-controls="code3-area-mac" aria-selected="true">Mac</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" id="code3-tab-windows" data-toggle="pill" href="#code3-area-windows" role="tab"
+          aria-controls="code3-area-windows" aria-selected="false">Windows</a>
+      </li>
+    </ul>
 
-    <div class="tab-content pt-2 text-left" id="code3-content">
+    <div class="tab-content pt-2 text-left mia-code" id="code3-content">
+      <div class="copy-button">
+        <button type="button" class="btn btn-outline-light btn-sm" id="code3-button"
+          onclick="copyCode('code3-button', 'code3-content')">Copy</button>
+      </div>
       <div class="tab-pane fade show active" id="code3-area-linux" role="tabpanel" aria-labelledby="code3-tab-linux">
         <pre><code id="code3-linux" class="language-bash"># Commands for Bash
 # (Optional) Download example workflow to user folder
