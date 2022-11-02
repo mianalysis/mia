@@ -55,7 +55,7 @@ cd Fiji.app/</code></pre>
 curl -O https://downloads.imagej.net/fiji/latest/fiji-macosx.zip
 
 # Unzipping archive
-unzip fiji-macosx.zip -d 
+unzip fiji-macosx.zip -d .
 
 # Removing downloaded zip archive
 rm fiji-macosx.zip
@@ -175,8 +175,8 @@ inPath=~/mia-examples-1.0.0/Ex1_NucleiSegmentation/
       <div class="tab-pane fade" id="code3-area-mac" role="tabpanel" aria-labelledby="code3-tab-mac">
         <pre><code id="code3-mac" class="language-bash"># Commands for Bash
 # (Optional) Download example workflow to user folder
-curl https://github.com/mianalysis/mia-examples/archive/refs/tags/v1.0.0.zip -O ~/example.zip
-unzip ~/example.zip -d ~/
+curl https://github.com/mianalysis/mia-examples/archive/refs/tags/v1.0.0.zip -o ~/example.zip
+ERROR unzip ~/example.zip -d ~/
 rm ~/example.zip
 
 # Defining workflow path as a variable
