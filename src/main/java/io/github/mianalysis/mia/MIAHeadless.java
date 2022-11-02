@@ -36,8 +36,8 @@ public class MIAHeadless extends MIA {
     private String workFlowConfigMessage = "<html><b>Workflow configuration (optional)</b></html>";
 
     // The following currently has to be a String as there's seemingly no way to select either a file or folder
-    @Parameter(label = "Input file path", required = false, persist = false)
-    public String inputFilePath = null;
+    @Parameter(label = "Input path", required = false, persist = false)
+    public String inputPath = null;
 
     @Parameter(label = "Variables", required = false, persist = false)
     public String variables = null;
@@ -96,12 +96,12 @@ public class MIAHeadless extends MIA {
             Module.setVerbose(verbose);
 
             Analysis analysis;
-            if (inputFilePath == null) {
+            if (inputPath == null) {
                 analysis = AnalysisReader.loadAnalysis(workflowPath);
             } else {
                 analysis = AnalysisReader.loadAnalysis(workflowPath);
                 analysis.getModules().getInputControl().updateParameterValue(InputControl.INPUT_PATH,
-                        inputFilePath);
+                        inputPath);
             }
 
             // Inserting variables
@@ -131,8 +131,8 @@ public class MIAHeadless extends MIA {
         String[] variablesArray = variables.split(";");
         for (String variable : variablesArray) {
             String[] splitVariables = variable.split(":");
-            String newVariableName = splitVariables[0];
-            String newVariableValue = splitVariables[1];
+            String newVariableName = splitVariables[0].trim();
+            String newVariableValue = splitVariables[1].trim();
 
             for (Module module : modules.values()) {
                 if (module instanceof GlobalVariables && module.isEnabled()) {

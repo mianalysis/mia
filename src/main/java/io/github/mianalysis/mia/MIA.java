@@ -11,11 +11,15 @@ import javax.swing.UnsupportedLookAndFeelException;
 import org.apache.maven.model.Model;
 import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
+import org.scijava.Context;
 import org.scijava.command.Command;
 import org.scijava.plugin.Parameter;
 import org.scijava.plugin.Plugin;
+import org.scijava.plugin.PluginService;
+import org.scijava.script.ScriptService;
 import org.scijava.ui.UIService;
 
+import ij.IJ;
 import ij.Prefs;
 import io.github.mianalysis.mia.gui.GUI;
 import io.github.mianalysis.mia.module.LostAndFound;
@@ -33,6 +37,7 @@ import io.github.mianalysis.mia.process.logging.LogHistory;
 import io.github.mianalysis.mia.process.logging.LogRenderer;
 import net.imagej.ImageJ;
 import net.imagej.ImageJService;
+import net.imagej.ops.OpService;
 
 /**
  * Created by Stephen Cross on 14/07/2017.
@@ -59,7 +64,16 @@ public class MIA implements Command {
     protected static final boolean imagePlusMode = true;
 
     @Parameter
-    public static ImageJService ijService;
+    protected static ImageJService ijService;
+
+    @Parameter
+    protected static OpService opService;
+
+    @Parameter
+    protected static PluginService pluginService;
+
+    @Parameter
+    protected static ScriptService scriptService;
 
     public static void main(String[] args) throws Exception {
         debug = true;
@@ -202,5 +216,61 @@ public class MIA implements Command {
 
         return lostAndFound;
 
+    }
+
+    public static ImageJService getIJService() {
+        if (headless || ijService == null) {
+            Context context = (Context) ij.IJ.runPlugIn("org.scijava.Context", "");
+            ijService = (ImageJService) context.getService(ImageJService.class);
+        }
+
+        return ijService;
+
+    }
+
+    public static OpService getOpService() {
+        if (headless || opService == null) {
+            Context context = (Context) ij.IJ.runPlugIn("org.scijava.Context", "");
+            opService = (OpService) context.getService(OpService.class);
+        }
+
+        return opService;
+
+    }
+
+    public static PluginService getPluginService() {
+        if (headless || opService == null) {
+            Context context = (Context) ij.IJ.runPlugIn("org.scijava.Context", "");
+            pluginService = (PluginService) context.getService(PluginService.class);
+        }
+
+        return pluginService;
+
+    }
+
+    public static ScriptService getScriptService() {
+        if (headless || scriptService == null) {
+            Context context = (Context) ij.IJ.runPlugIn("org.scijava.Context", "");
+            scriptService = (ScriptService) context.getService(ScriptService.class);
+        }
+
+        return scriptService;
+
+    }
+
+    public static void setIJService(ImageJService ijService) {
+        MIA.ijService = ijService;
+    }
+
+    public static void setOpService(OpService opService) {
+        MIA.opService = opService;
+    }
+
+    public static void setPluginService(PluginService pluginService) {
+        MIA.pluginService = pluginService;
+    }
+
+    public static void setScriptService(ScriptService scriptService) {
+        MIA.scriptService = scriptService;
     }
 }

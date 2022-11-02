@@ -16,7 +16,7 @@ public class PublicationsGenerator extends AbstractGenerator {
         HtmlRenderer renderer = HtmlRenderer.builder().build();
         
         // Generate module list HTML document
-        String pathToRoot = "..";
+        String pathToRoot = ".";
         String page = getPageTemplate("src/main/resources/templatehtml/pagetemplate.html", pathToRoot);
         page = setNavbarActive(page, Page.PUBLICATIONS);
 
@@ -44,7 +44,7 @@ public class PublicationsGenerator extends AbstractGenerator {
 
         page = page.replace("${MAIN_CONTENT}", mainContent);
 
-        FileWriter writer = new FileWriter("docs/html/publications.html");
+        FileWriter writer = new FileWriter("docs/publications.html");
         writer.write(page);
         writer.flush();
         writer.close();

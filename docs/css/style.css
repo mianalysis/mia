@@ -1,3 +1,13 @@
+.mia-code {
+  position: relative;
+}
+
+.copy-button {
+  position: absolute;
+  right: 15px;
+  top: 30px;
+}
+
 .mia-name, .mia-name:link, .mia-name:visited, .mia-name:hover, .mia-name:active {
     color: #424242;
     font-size: 1.2rem;

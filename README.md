@@ -34,7 +34,7 @@ Note: If installing MIA manually, the ModularImageAnalysis update site should be
 
 Using MIA
 ------------
-Guides for using MIA can be found [here](https://mianalysis.github.io/mia/html/guides/guides.html).  There are also example workflows in the [mia_examples](https://github.com/mianalysis/mia_examples) repository (with more to be added over time).
+Guides for using MIA can be found [here](https://mianalysis.github.io/mia/guides).  There are also example workflows in the [mia-examples](https://github.com/mianalysis/mia-examples) repository (with more to be added over time).
 
 
 Acknowledgements

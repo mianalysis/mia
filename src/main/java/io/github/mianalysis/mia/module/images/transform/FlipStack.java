@@ -90,11 +90,9 @@ public class FlipStack<T extends RealType<T> & NativeType<T>> extends Module {
 
         // Determining the axis index
         int axisIndex = getAxesIndex(inputImg, axis);
-        if (axisIndex == -1) {
-            MIA.log.writeError("[FlipStack] Specified axis for image flipping doesn't exist.");
-            return null;
-        }
-
+        if (axisIndex == -1)
+            return ImageFactory.createImage(outputImageName, inputImage.getImagePlus());
+        
         long[] offsetIn = new long[inputImg.numDimensions()];
         long[] offsetOut = new long[outputImg.numDimensions()];
         offsetOut[axisIndex] = -dims[axisIndex] + 1;

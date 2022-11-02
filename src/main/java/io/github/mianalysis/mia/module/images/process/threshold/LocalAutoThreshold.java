@@ -101,13 +101,13 @@ public class LocalAutoThreshold extends Module {
     }
 
 
-    public void applyLocalThresholdToStack(ImagePlus inputImagePlus, String algorithm, double localRadius) {
+    public void applyLocalThresholdToStack(ImagePlus inputImagePlus, String algorithm, double localRadius, boolean blackBackground) {
         // Applying threshold
         for (int z = 1; z <= inputImagePlus.getNSlices(); z++) {
             for (int c = 1; c <= inputImagePlus.getNChannels(); c++) {
                 for (int t = 1; t <= inputImagePlus.getNFrames(); t++) {
                     inputImagePlus.setPosition(c, z, t);
-                    Object[] results = new Auto_Local_Threshold().exec(inputImagePlus,algorithm,(int) localRadius,0,0,true);
+                    Object[] results = new Auto_Local_Threshold().exec(inputImagePlus,algorithm,(int) localRadius,0,0,blackBackground);
                     inputImagePlus.setProcessor(((ImagePlus) results[0]).getProcessor());
 
                 }
@@ -118,7 +118,7 @@ public class LocalAutoThreshold extends Module {
     }
 
     public void applyLocalThreshold3D(ImagePlus inputImagePlus, String algorithm, double localRadius, double thrMult,
-                                      boolean useLowerLim, double lowerLim, boolean globalZ) {
+                                      boolean useLowerLim, double lowerLim, boolean globalZ, boolean blackBackground) {
 
         double localRadiusZ;
         if (globalZ) {
@@ -130,7 +130,7 @@ public class LocalAutoThreshold extends Module {
         AutoLocalThreshold3D alt3D = new AutoLocalThreshold3D();
         if (useLowerLim) alt3D.setLowerThreshold((int) lowerLim);
 
-        alt3D.exec(inputImagePlus,algorithm,(int) Math.round(localRadius),(int) Math.round(localRadiusZ),thrMult,0,0,true);
+        alt3D.exec(inputImagePlus,algorithm,(int) Math.round(localRadius),(int) Math.round(localRadiusZ),thrMult,0,0,blackBackground);
 
     }
 
@@ -171,10 +171,9 @@ public class LocalAutoThreshold extends Module {
         String spatialUnits = parameters.getValue(SPATIAL_UNITS_MODE,workspace);
         boolean useGlobalZ = parameters.getValue(USE_GLOBAL_Z,workspace);
 
-        if (spatialUnits.equals(SpatialUnitsModes.CALIBRATED)) {
+        if (spatialUnits.equals(SpatialUnitsModes.CALIBRATED))
             localRadius = inputImagePlus.getCalibration().getRawX(localRadius);
-        }
-
+        
         // If applying to a new image, the input image is duplicated
         if (!applyToInput) {inputImagePlus = new Duplicator().run(inputImagePlus);}
 
@@ -182,23 +181,26 @@ public class LocalAutoThreshold extends Module {
         if (inputImagePlus.getBitDepth() != 8)
             ImageTypeConverter.process(inputImagePlus,8,ImageTypeConverter.ScalingModes.FILL);
         
+        boolean blackBackground = binaryLogic.equals(BinaryLogic.BLACK_BACKGROUND);
+
         switch (thresholdMode) {
             case ThresholdModes.SLICE:
                 writeStatus("Applying "+algorithmSlice+" threshold slice-by-slice");
-                applyLocalThresholdToStack(inputImagePlus,algorithmSlice,localRadius);
+                applyLocalThresholdToStack(inputImagePlus,algorithmSlice,localRadius,blackBackground);
                 break;
 
             case ThresholdModes.THREE_D:
                 writeStatus("Applying "+algorithm3D+" threshold in 3D");
-                applyLocalThreshold3D(inputImagePlus,algorithm3D,localRadius,thrMult,useLowerLim,lowerLim,useGlobalZ);
+                applyLocalThreshold3D(inputImagePlus,algorithm3D,localRadius,thrMult,useLowerLim,lowerLim,useGlobalZ,blackBackground);
                 break;
         }
 
-        if (binaryLogic.equals(BinaryLogic.WHITE_BACKGROUND))
-                InvertIntensity.process(inputImagePlus);
+        // if (binaryLogic.equals(BinaryLogic.WHITE_BACKGROUND))
+        //         InvertIntensity.process(inputImagePlus);
 
         // If the image is being saved as a new image, adding it to the workspace
         if (applyToInput) {
+            inputImage.setImagePlus(inputImagePlus);
             if (showOutput) inputImage.showImage();
         } else {
             String outputImageName = parameters.getValue(OUTPUT_IMAGE,workspace);
@@ -225,7 +227,7 @@ public class LocalAutoThreshold extends Module {
         parameters.add(new DoubleP(THRESHOLD_MULTIPLIER, this,1.0));
         parameters.add(new BooleanP(USE_LOWER_THRESHOLD_LIMIT, this, false));
         parameters.add(new DoubleP(LOWER_THRESHOLD_LIMIT, this, 0.0));
-        parameters.add(new DoubleP(LOCAL_RADIUS, this, 15.0));
+        parameters.add(new DoubleP(LOCAL_RADIUS, this, 24));
         parameters.add(new ChoiceP(SPATIAL_UNITS_MODE, this, SpatialUnitsModes.PIXELS, SpatialUnitsModes.ALL));
         parameters.add(new BooleanP(USE_GLOBAL_Z,this,false));
         parameters.add(new ChoiceP(BINARY_LOGIC, this, BinaryLogic.BLACK_BACKGROUND, BinaryLogic.ALL));

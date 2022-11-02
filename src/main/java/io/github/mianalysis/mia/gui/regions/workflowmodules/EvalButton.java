@@ -147,8 +147,6 @@ public class EvalButton extends JButton implements ActionListener {
             if (testWorkspaceFile != null)
                 reload = !testWorkspacePath.contains(inputControlPath);
 
-        // || new File(inputControlPath).isDirectory() &!
-        // inputControlPath.equals(testWorkspacePath)) {
         if (reload) {
             // Make first module look like it's being evaluated while the test file updates
             GUI.setLastModuleEval(-1);
@@ -172,11 +170,10 @@ public class EvalButton extends JButton implements ActionListener {
             GUI.getTestWorkspace().clearAllImages(false);
             GUI.getTestWorkspace().clearAllObjects(false);
             GUI.getTestWorkspace().clearMetadata();
-
         }
 
         // If it's currently evaluating, this will kill the thread
-        if (idx == GUI.getModuleBeingEval()) {
+        if (idx == GUI.getModuleBeingEval() &! reload) {
             MIA.log.writeStatus("Stopping");
             GUI.setModuleBeingEval(-1);
             GUI.updateModuleStates();

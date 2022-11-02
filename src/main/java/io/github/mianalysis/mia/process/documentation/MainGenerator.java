@@ -15,60 +15,36 @@ public class MainGenerator {
 
     public static void main(String[] args) {
         try {
-            if (args == null || args.length == 0)
-                new MainGenerator().run();
-            else
-                new MainGenerator().run(args);
-            
+            new MainGenerator().run();
+
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public void run(String[] componentsToGenerate) throws IOException {
-        // Clearing existing HTML files
-        File root = new File("docs/html");
-        root.mkdir();
-
-        for (String componentToGenerate : componentsToGenerate) {
-            System.out.println("Generating "+componentToGenerate);
-            if (componentToGenerate.equals(INDEX)) {
-                deleteFolders(new File(root.getAbsolutePath() + "index.html"));
-                new IndexGenerator().generate();
-            }
-    
-            if (componentToGenerate.equals(MODULES)) {
-                deleteFolders(new File(root.getAbsolutePath() + "html/modules"));
-                new ModuleGenerator().generate();
-            }
-    
-            if (componentToGenerate.equals(GUIDES)) {
-                deleteFolders(new File(root.getAbsolutePath() + "html/guides"));
-                new GuideGenerator().generate();
-            }
-    
-            if (componentToGenerate.equals(PUBLICATIONS)) {
-                deleteFolders(new File(root.getAbsolutePath() + "html/publications.html"));
-                new PublicationsGenerator().generate();
-            }   
-
-            if (componentToGenerate.equals(ABOUT)) {
-                deleteFolders(new File(root.getAbsolutePath() + "html/about.html"));
-                new AboutGenerator().generate();
-            }   
-        }
-    }
-
     public void run() throws IOException {
         // Clearing existing HTML files
-        File root = new File("docs/html");
+        File root = new File("docs/index.html");
+        // deleteFolders(root);
+
+        root = new File("docs/guides");
         deleteFolders(root);
         root.mkdir();
 
+        root = new File("docs/modules");
+        deleteFolders(root);
+        root.mkdir();
+
+        root = new File("docs/about.html");
+        deleteFolders(root);
+
+        root = new File("docs/publications.html");
+        deleteFolders(root);
+
         // Creating HTML files
-        new IndexGenerator().generate();
-        new ModuleGenerator().generate();
+        new IndexGenerator().generate();        
         new GuideGenerator().generate();
+        new ModuleGenerator().generate();
         new PublicationsGenerator().generate();
         new AboutGenerator().generate();
 
@@ -109,7 +85,8 @@ public class MainGenerator {
             sb.append("\n\n");
 
             sb.append("Using MIA").append("\n").append("------------").append("\n");
-            sb.append("Guides for using MIA can be found [here](https://mianalysis.github.io/mia/html/guides/guides.html).  There are also example workflows in the [mia_examples](https://github.com/mianalysis/mia_examples) repository (with more to be added over time).\n");
+            sb.append(
+                    "Guides for using MIA can be found [here](https://mianalysis.github.io/mia/guides).  There are also example workflows in the [mia-examples](https://github.com/mianalysis/mia-examples) repository (with more to be added over time).\n");
             sb.append("\n\n");
 
             sb.append("Acknowledgements").append("\n").append("------------").append("\n");

@@ -6,6 +6,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "Launch RunScript",
+            "request": "launch",
+            "mainClass": "io.github.mianalysis.mia.module.script.RunScript",
+            "projectName": "MIA"
+        },
+        {
+            "type": "java",
             "name": "Launch MIAHeadless",
             "request": "launch",
             "mainClass": "io.github.mianalysis.mia.MIAHeadless",

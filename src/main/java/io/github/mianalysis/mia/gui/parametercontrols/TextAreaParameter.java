@@ -12,10 +12,9 @@ import javax.swing.JComponent;
 import javax.swing.JEditorPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 import javax.swing.text.Document;
 import javax.swing.text.PlainDocument;
-
-import org.scijava.ui.swing.script.EditorPane;
 
 import io.github.mianalysis.mia.gui.GUI;
 import io.github.mianalysis.mia.module.core.OutputControl;
@@ -23,7 +22,7 @@ import io.github.mianalysis.mia.object.parameters.text.TextAreaP;
 
 public class TextAreaParameter extends ParameterControl implements FocusListener {
     protected JPanel control;
-    private  EditorPane textArea;
+    private  JTextArea textArea;
     private JScrollPane objectsScrollPane;
     private String prevString = "";
 
@@ -52,8 +51,7 @@ public class TextAreaParameter extends ParameterControl implements FocusListener
         c.weighty = 1;
         c.fill = GridBagConstraints.BOTH;
 
-        // Uses the SciJava EditorPane as this gives us some extra right-click functionality
-        textArea = new EditorPane();
+        textArea = new JTextArea();
         
         Document document = textArea.getDocument();
         if (document instanceof PlainDocument) {

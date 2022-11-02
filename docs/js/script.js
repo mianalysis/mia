@@ -1,25 +1,11 @@
-const $dropdown = $(".dropdown");
-const $dropdownToggle = $(".dropdown-toggle");
-const $dropdownMenu = $(".dropdown-menu");
-const showClass = "show";
+function copyCode(currButton, currElement) {
+  // Getting the active code
+  var currText = document.getElementById(currElement).querySelector(".active").textContent.trim();
 
-$(window).on("load resize", function () {  
-  if (this.matchMedia("(min-width: 640px)").matches) {    
-    $dropdown.hover(
-      function () {
-        const $this = $(this);
-        $this.addClass(showClass);
-        $this.find($dropdownToggle).attr("aria-expanded", "true");
-        $this.find($dropdownMenu).addClass(showClass);
-      },
-      function() {
-        const $this = $(this);
-        $this.removeClass(showClass);
-        $this.find($dropdownToggle).attr("aria-expanded", "false");
-        $this.find($dropdownMenu).removeClass(showClass);
-      }
-    );
-  } else {
-    $dropdown.off("mouseenter mouseleave");
-  }
-});
+  // Copy the text inside the text field
+  navigator.clipboard.writeText(currText);
+
+  // Alert the copied text
+  document.getElementById(currButton).textContent = "Copied";
+  setTimeout(() => document.getElementById(currButton).textContent = "Copy", 2000);
+}
