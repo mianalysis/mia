@@ -102,7 +102,7 @@
     <div class="mia-main-text pb-2">
       Headless running of workflows can be performed using any copy of Fiji with a standard MIA install. If you've
       already got a copy of Fiji and MIA, you can proceed to <a href="#running">running a workflow</a>. On systems
-      lacking a graphical interface (e.g. servers), Fiji and be installed using the following system-specific
+      lacking a graphical interface (e.g. servers), Fiji can be installed using the following system-specific
       commands. Following this, MIA is installed using the steps outlined in <a href="#installing_mia">installing
         MIA</a>.
     </div>
@@ -232,7 +232,12 @@ cd .\fiji-win64\Fiji.app</code></pre>
   <div class="container mia-text-container text-center" id="running">
     <p class="mia-heading">Running a workflow</p>
     <div class="mia-main-text pb-2">
-The following commands will run an example workflow (that from the <a href="https://github.com/mianalysis/mia-examples">MIA-examples</a> repository) in headless mode.  The first few optional steps will perform this download; however they're not required if you'd rather run any other workflow you may already have.
+      The following commands will run a workflow in headless mode. Examples are given for running both a single file and
+      also a folder (batch mode). Headless mode can be configured with multiple optional parameters which are listed in
+      <a href="#optional_arguments">optional arguments</a>. Arguments are specified as a comma-separated list of names
+      and values. If you don't have a workflow to hand, you can download the example
+      workflow (from the <a href="https://github.com/mianalysis/mia-examples">MIA-examples</a> repository) using the
+      first few optional commands.  Note: Headless running requires MIA version 1.1.2 or newer.
     </div>
     <br />
     <ul class="nav nav-pills" id="code3-tablist" role="tablist">
@@ -294,9 +299,9 @@ inPath=~/mia-examples-1.0.0/Ex1_NucleiSegmentation/
       <div class="tab-pane fade" id="code3-area-windows" role="tabpanel" aria-labelledby="code3-tab-windows">
         <pre><code id="code3-windows" class="language-powershell"># Commands for Windows PowerShell
 # (Optional) Download example workflow to user folder
-Invoke-WebRequest https://github.com/mianalysis/mia-examples/archive/refs/tags/v1.0.0.zip -OutFile ~/example.zip
-Expand-Archive ~\example.zip -DestinationPath ~\
-rm ~\example.zip
+Invoke-WebRequest https://github.com/mianalysis/mia-examples/archive/refs/tags/v1.0.0.zip -OutFile $HOME/example.zip
+Expand-Archive $HOME\example.zip -DestinationPath ~\
+rm $HOME\example.zip
 
 # Defining workflow path as a variable
 $wfPath="'$HOME\mia-examples-1.0.0\Ex1_NucleiSegmentation\Ex1_NucleiSegmentation.mia'"
@@ -313,7 +318,13 @@ $inPath="'$HOME\mia-examples-1.0.0\Ex1_NucleiSegmentation\'"
   </div>
 
   <div class="container mia-text-container text-center">
-    <p class="mia-heading mt-5">Required arguments</p>
+    <p class="mia-heading mt-5" id="required_arguments">Required arguments</p>
+    <div class="mia-main-text pb-2">
+      Currently, headless running only requires a single argument specifying the path to a pre-configured MIA workflow. In such a
+      case, the file to be processed is that specified in the workflow file's "Input path". To run a different file,
+      please use the "inputPath" <a href="#optional_arguments">optional argument</a>.
+    </div>
+    <br />
     <div class="mia-text-block mx-auto">
       <table class="table table-striped">
         <thead class="mia-main-text-small mia-bold">
@@ -332,7 +343,14 @@ $inPath="'$HOME\mia-examples-1.0.0\Ex1_NucleiSegmentation\'"
       </table>
     </div>
 
-    <p class="mia-heading mt-5">Optional arguments</p>
+    <p class="mia-heading mt-5" id="optional_arguments">Optional arguments</p>
+    <div class="mia-main-text pb-2">
+      Workflow execution can be configured using additional optional arguments. Arguably the most important optional
+      arguments are "inputPath", which allows specific files/folders to be processed, and "variables", through which
+      global variables in a workflow can be modified. The remainder of the arguments (e.g. "showMemory" and "verbose")
+      control the text displayed in the terminal during execution.
+    </div>
+    <br />
     <div class="mia-text-block mx-auto">
       <table class="table table-striped">
         <thead class="mia-main-text-small mia-bold">
@@ -435,10 +453,14 @@ $inPath="'$HOME\mia-examples-1.0.0\Ex1_NucleiSegmentation\'"
           <a href="https://www.youtube.com/@mianalysis">
             <img class="mia-footer-logo" src="../img/logos/youtube_64.png">
         </div>
-        <div class="col-3 mia-footer text-right">
+        <div class="col-3 mia-footer d-sm-none text-right">
           <a href="https://github.com/mianalysis/mia/">
-            <img class="mia-footer-logo" src="../img/logos/GitHub-Mark-Light-64px.png"><img height="32"
-              src="../img/logos/GitHub_Logo_White.png" height="32px">
+            <img class="mia-footer-logo" src="../img/logos/GitHub-Mark-Light-64px.png">
+          </a>
+        </div>
+        <div class="col-3 mia-footer d-none d-sm-block text-right">
+          <a href="https://github.com/mianalysis/mia/">
+            <img class="mia-footer-logo" src="../img/logos/GitHub-Mark-Light-64px.png"><img class="mia-footer-logo" src="../img/logos/GitHub_Logo_White.png">
           </a>
         </div>
       </div>
