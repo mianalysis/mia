@@ -205,7 +205,7 @@ footer {
     background-color: #424242;
 }
 
-@media (min-width: 640px) { 
+@media (min-width: 770px) { 
   .mia-carousel-button {padding: .375rem .375rem;}
   .mia-carousel-indicators {display:flex}
 

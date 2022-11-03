@@ -2,19 +2,30 @@
 
 <head>
   <meta name="title" content="Running headless" />
-  <meta name="description" content="DESCRIPTION HERE" />
+  <meta name="description" content="Running workflows directly from terminal" />
 </head>
 
 <body>
   <div class="mia-text-block mx-auto">
     <p class="mia-heading">Introduction</p>
     <div class="mia-main-text">
-      INTRO HERE
+      Using MIA's headless mode it's possible to run workflows without opening a graphical Fiji environment. This
+      enables running workflows on terminal-only systems such as compute clusters. It also provides more fine-grain
+      control
+      for multi-folder batch processing and facilitates performing higher-level workflows such as parameter-sweeps.
     </div>
   </div>
 
-  <div class="container mia-text-container text-center">
+  <div class="container mia-text-container text-center" id="installing_fiji">
     <p class="mia-heading">Installing Fiji</p>
+    <div class="mia-main-text pb-2">
+      Headless running of workflows can be performed using any copy of Fiji with a standard MIA install. If you've
+      already got a copy of Fiji and MIA, you can proceed to <a href="#running">running a workflow</a>. On systems
+      lacking a graphical interface (e.g. servers), Fiji can be installed using the following system-specific
+      commands. Following this, MIA is installed using the steps outlined in <a href="#installing_mia">installing
+        MIA</a>.
+    </div>
+    <br />
     <ul class="nav nav-pills" id="code1-tablist" role="tablist">
       <li class="nav-item">
         <a class="nav-link active" id="code1-tab-linux" data-toggle="pill" href="#code1-area-linux" role="tab"
@@ -30,7 +41,7 @@
       </li>
     </ul>
 
-    <div class="tab-content pt-2 text-left mia-code" id="code1-content">
+    <div class="tab-content pt-2 pb-4 text-left mia-code" id="code1-content">
       <div class="copy-button">
         <button type="button" class="btn btn-outline-light btn-sm" id="code1-button"
           onclick="copyCode('code1-button', 'code1-content')">Copy</button>
@@ -80,8 +91,13 @@ cd .\fiji-win64\Fiji.app</code></pre>
     </div>
   </div>
 
-  <div class="container mia-text-container text-center">
+  <div class="container mia-text-container text-center" id="installing_mia">
     <p class="mia-heading">Installing MIA</p>
+    <div class="mia-main-text pb-2">
+      With Fiji installed, we can now install MIA and any relevant dependencies. The following system-specific commands
+      will perform these operations.
+    </div>
+    <br />
     <ul class="nav nav-pills" id="code2-tablist" role="tablist">
       <li class="nav-item">
         <a class="nav-link active" id="code2-tab-linux" data-toggle="pill" href="#code2-area-linux" role="tab"
@@ -97,7 +113,7 @@ cd .\fiji-win64\Fiji.app</code></pre>
       </li>
     </ul>
 
-    <div class="tab-content pt-2 text-left mia-code" id="code2-content">
+    <div class="tab-content pt-2 pb-4 text-left mia-code" id="code2-content">
       <div class="copy-button">
         <button type="button" class="btn btn-outline-light btn-sm" id="code2-button"
           onclick="copyCode('code2-button', 'code2-content')">Copy</button>
@@ -132,8 +148,17 @@ cd .\fiji-win64\Fiji.app</code></pre>
     </div>
   </div>
 
-  <div class="container mia-text-container text-center">
+  <div class="container mia-text-container text-center" id="running">
     <p class="mia-heading">Running a workflow</p>
+    <div class="mia-main-text pb-2">
+      The following commands will run a workflow in headless mode. Examples are given for running both a single file and
+      also a folder (batch mode). Headless mode can be configured with multiple optional parameters which are listed in
+      <a href="#optional_arguments">optional arguments</a>. Arguments are specified as a comma-separated list of names
+      and values. If you don't have a workflow to hand, you can download the example
+      workflow (from the <a href="https://github.com/mianalysis/mia-examples">MIA-examples</a> repository) using the
+      first few optional commands.  Note: Headless running requires MIA version 1.1.2 or newer.
+    </div>
+    <br />
     <ul class="nav nav-pills" id="code3-tablist" role="tablist">
       <li class="nav-item">
         <a class="nav-link active" id="code3-tab-linux" data-toggle="pill" href="#code3-area-linux" role="tab"
@@ -149,7 +174,7 @@ cd .\fiji-win64\Fiji.app</code></pre>
       </li>
     </ul>
 
-    <div class="tab-content pt-2 text-left mia-code" id="code3-content">
+    <div class="tab-content pt-2 pb-4text-left mia-code" id="code3-content">
       <div class="copy-button">
         <button type="button" class="btn btn-outline-light btn-sm" id="code3-button"
           onclick="copyCode('code3-button', 'code3-content')">Copy</button>
@@ -193,9 +218,9 @@ inPath=~/mia-examples-1.0.0/Ex1_NucleiSegmentation/
       <div class="tab-pane fade" id="code3-area-windows" role="tabpanel" aria-labelledby="code3-tab-windows">
         <pre><code id="code3-windows" class="language-powershell"># Commands for Windows PowerShell
 # (Optional) Download example workflow to user folder
-Invoke-WebRequest https://github.com/mianalysis/mia-examples/archive/refs/tags/v1.0.0.zip -OutFile ~/example.zip
-Expand-Archive ~\example.zip -DestinationPath ~\
-rm ~\example.zip
+Invoke-WebRequest https://github.com/mianalysis/mia-examples/archive/refs/tags/v1.0.0.zip -OutFile $HOME/example.zip
+Expand-Archive $HOME\example.zip -DestinationPath ~\
+rm $HOME\example.zip
 
 # Defining workflow path as a variable
 $wfPath="'$HOME\mia-examples-1.0.0\Ex1_NucleiSegmentation\Ex1_NucleiSegmentation.mia'"
@@ -212,7 +237,13 @@ $inPath="'$HOME\mia-examples-1.0.0\Ex1_NucleiSegmentation\'"
   </div>
 
   <div class="container mia-text-container text-center">
-    <p class="mia-heading mt-5">Required arguments</p>
+    <p class="mia-heading mt-5" id="required_arguments">Required arguments</p>
+    <div class="mia-main-text pb-2">
+      Currently, headless running only requires a single argument specifying the path to a pre-configured MIA workflow. In such a
+      case, the file to be processed is that specified in the workflow file's "Input path". To run a different file,
+      please use the "inputPath" <a href="#optional_arguments">optional argument</a>.
+    </div>
+    <br />
     <div class="mia-text-block mx-auto">
       <table class="table table-striped">
         <thead class="mia-main-text-small mia-bold">
@@ -231,7 +262,14 @@ $inPath="'$HOME\mia-examples-1.0.0\Ex1_NucleiSegmentation\'"
       </table>
     </div>
 
-    <p class="mia-heading mt-5">Optional arguments</p>
+    <p class="mia-heading mt-5" id="optional_arguments">Optional arguments</p>
+    <div class="mia-main-text pb-2">
+      Workflow execution can be configured using additional optional arguments. Arguably the most important optional
+      arguments are "inputPath", which allows specific files/folders to be processed, and "variables", through which
+      global variables in a workflow can be modified. The remainder of the arguments (e.g. "showMemory" and "verbose")
+      control the text displayed in the terminal during execution.
+    </div>
+    <br />
     <div class="mia-text-block mx-auto">
       <table class="table table-striped">
         <thead class="mia-main-text-small mia-bold">
