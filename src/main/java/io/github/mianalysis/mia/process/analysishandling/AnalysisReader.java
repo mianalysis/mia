@@ -30,6 +30,7 @@ import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.core.InputControl;
 import io.github.mianalysis.mia.module.core.OutputControl;
+import io.github.mianalysis.mia.moduledependencies.Dependency;
 import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.abstrakt.Parameter;
 import io.github.mianalysis.mia.object.refs.ImageMeasurementRef;
@@ -182,7 +183,22 @@ public class AnalysisReader {
         }
 
         // If no module was found matching that name an error message is displayed
-        MIA.log.writeWarning("Module \"" + moduleName + "\" not found (skipping)");
+        int count = 0;
+        for (Dependency dependency : MIA.getDependencies().getDependencies(moduleName, false))
+            if (!dependency.test())
+                count++;
+
+        if (count > 0) {
+            MIA.log.writeWarning("Module \"" + moduleName
+                    + "\" not found (skipping).  This is due to the following dependency issues:");
+            for (Dependency dependency : MIA.getDependencies().getDependencies(moduleName, false))
+                if (!dependency.test()) {
+                    MIA.log.writeWarning("    Requirement: " + dependency.toString());
+                    MIA.log.writeWarning("    Message: " + dependency.getMessage());
+                }
+        } else {
+            MIA.log.writeWarning("Module \"" + moduleName + "\" not found (skipping)");
+        }
 
         return null;
 
@@ -194,11 +210,18 @@ public class AnalysisReader {
         try {
             String shortName = availableModuleName.substring(availableModuleName.lastIndexOf(".") + 1);
             if (!MIA.getDependencies().compatible(shortName, false)) {
-                MIA.log.writeWarning("Module \"" + shortName + "\" not available");
+                MIA.log.writeWarning(
+                        "Module \"" + shortName + "\" not available due to the following dependency issues:");
+                for (Dependency dependency : MIA.getDependencies().getDependencies(shortName, false))
+                    if (!dependency.test()) {
+                        MIA.log.writeWarning("    Requirement: " + dependency.toString());
+                        MIA.log.writeWarning("    Message: " + dependency.getMessage());
+                    }
                 return null;
             }
 
             clazz = (Class<Module>) Class.forName(availableModuleName);
+            
         } catch (ClassNotFoundException e) {
             MIA.log.writeError(e);
         }

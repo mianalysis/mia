@@ -11,7 +11,7 @@ public class LogHistory extends LogRenderer {
         levelStatus.put(Level.MEMORY,false);
         levelStatus.put(Level.MESSAGE,false);
         levelStatus.put(Level.STATUS,false);
-        levelStatus.put(Level.WARNING,false);
+        levelStatus.put(Level.WARNING,true);
 
     }
 

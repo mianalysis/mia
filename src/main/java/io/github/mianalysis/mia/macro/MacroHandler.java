@@ -77,7 +77,6 @@ public class MacroHandler implements MacroExtension {
         ArrayList<MacroOperation> macroOperations = new ArrayList<>();
         for (String clazz : clazzes) {
             try {
-
                 macroOperations.add((MacroOperation) Class.forName(clazz).getDeclaredConstructor(MacroExtension.class)
                         .newInstance(macroHandler));
             } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException

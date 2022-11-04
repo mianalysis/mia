@@ -31,11 +31,8 @@ import io.github.mianalysis.mia.module.inputoutput.ImageLoader;
 import io.github.mianalysis.mia.moduledependencies.Dependency;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.Workspaces;
-import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.FileFolderPathP;
 import io.github.mianalysis.mia.object.parameters.abstrakt.Parameter;
-import io.github.mianalysis.mia.object.units.SpatialUnit;
-import io.github.mianalysis.mia.object.units.TemporalUnit;
 import io.github.mianalysis.mia.process.analysishandling.Analysis;
 import io.github.mianalysis.mia.process.analysishandling.AnalysisRunner;
 import io.github.mianalysis.mia.process.analysishandling.AnalysisTester;
@@ -139,16 +136,9 @@ public class GUI {
 
             try {
                 // Checking dependencies have been met
-                if (!MIA.getDependencies().compatible(shortName, false)) {
-                    MIA.log.writeWarning("Module \"" + shortName + "\" not loaded.  Dependencies not satisfied:");
-                    for (Dependency dependency : MIA.getDependencies().getDependencies(shortName, false))
-                        if (!dependency.test()) {
-                            MIA.log.writeWarning("    Requirement: " + dependency.toString());
-                            MIA.log.writeWarning("    Message: " + dependency.getMessage());
-                        }
+                if (!MIA.getDependencies().compatible(shortName, false))
                     continue;
-                }
-
+                
                 Class<? extends Module> clazz = (Class<? extends Module>) Class.forName(detectedModuleName);
                 if (clazz != InputControl.class && clazz != OutputControl.class) {
                     // Skip any abstract Modules
