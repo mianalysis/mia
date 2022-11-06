@@ -182,7 +182,7 @@ cd .\fiji-win64\Fiji.app</code></pre>
       <div class="tab-pane fade show active" id="code3-area-linux" role="tabpanel" aria-labelledby="code3-tab-linux">
         <pre><code id="code3-linux" class="language-bash"># Commands for Bash
 # (Optional) Download example workflow to user folder
-wget https://github.com/mianalysis/mia-examples/archive/refs/tags/v1.0.0.zip -O ~/example.zip
+wget https://github.com/mianalysis/mia-examples/archive/refs/tags/v1.0.0/Ex1_only.zip -O ~/example.zip
 unzip ~/example.zip -d ~/
 rm ~/example.zip
 
@@ -200,8 +200,8 @@ inPath=~/mia-examples-1.0.0/Ex1_NucleiSegmentation/
       <div class="tab-pane fade" id="code3-area-mac" role="tabpanel" aria-labelledby="code3-tab-mac">
         <pre><code id="code3-mac" class="language-bash"># Commands for Bash
 # (Optional) Download example workflow to user folder
-curl https://github.com/mianalysis/mia-examples/archive/refs/tags/v1.0.0.zip -o ~/example.zip
-ERROR unzip ~/example.zip -d ~/
+curl https://github.com/mianalysis/mia-examples/releases/download/v1.0.0/Ex1_only.zip -o ~/example.zip
+unzip ~/example.zip -d ~/
 rm ~/example.zip
 
 # Defining workflow path as a variable
@@ -218,7 +218,7 @@ inPath=~/mia-examples-1.0.0/Ex1_NucleiSegmentation/
       <div class="tab-pane fade" id="code3-area-windows" role="tabpanel" aria-labelledby="code3-tab-windows">
         <pre><code id="code3-windows" class="language-powershell"># Commands for Windows PowerShell
 # (Optional) Download example workflow to user folder
-Invoke-WebRequest https://github.com/mianalysis/mia-examples/archive/refs/tags/v1.0.0.zip -OutFile $HOME/example.zip
+Invoke-WebRequest https://github.com/mianalysis/mia-examples/archive/refs/tags/v1.0.0/Ex1_only.zip -OutFile $HOME/example.zip
 Expand-Archive $HOME\example.zip -DestinationPath ~\
 rm $HOME\example.zip
 
@@ -227,11 +227,11 @@ $wfPath="'$HOME\mia-examples-1.0.0\Ex1_NucleiSegmentation\Ex1_NucleiSegmentation
 
 # Running a workflow on a specified single file
 $inPath="'$HOME\mia-examples-1.0.0\Ex1_NucleiSegmentation\Ex1_3DStack1.tif'"
-.\ImageJ-win64 --console --headless --run "MIA (headless)" "workflowPath=$wfPath, inputFilePath=$inPath"
+.\ImageJ-win64 --console --headless --run "MIA (headless)" "workflowPath=$wfPath, inputPath=$inPath"
 
 # Running a workflow on a specified folder with verbose output
 $inPath="'$HOME\mia-examples-1.0.0\Ex1_NucleiSegmentation\'"
-.\ImageJ-win64 --console --headless --run "MIA (headless)" "workflowPath=$wfPath, inputFilePath=$inPath, verbose=true"</code></pre>
+.\ImageJ-win64 --console --headless --run "MIA (headless)" "workflowPath=$wfPath, inputPath=$inPath, verbose=true"</code></pre>
       </div>
     </div>
   </div>
