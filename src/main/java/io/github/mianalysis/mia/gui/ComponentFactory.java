@@ -97,7 +97,7 @@ public class ComponentFactory {
         JComponent parameterComponent = parameterControl.getComponent();
 
         Preferences preferences = MIA.getPreferences();
-boolean darkMode = preferences == null ? false : preferences.darkThemeEnabled();
+        boolean darkMode = preferences == null ? false : preferences.darkThemeEnabled();
 
         if (parameter instanceof MessageP || parameter instanceof ObjMeasurementSelectorP) {
             String value = parameter.getAlternativeString();
@@ -257,7 +257,7 @@ boolean darkMode = preferences == null ? false : preferences.darkThemeEnabled();
 
     public JPanel createProcessingSeparator(Module module) {
         Preferences preferences = MIA.getPreferences();
-boolean darkMode = preferences == null ? false : preferences.darkThemeEnabled();
+        boolean darkMode = preferences == null ? false : preferences.darkThemeEnabled();
 
         JPanel panel = new JPanel(new GridBagLayout());
 

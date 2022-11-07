@@ -1,7 +1,5 @@
 package io.github.mianalysis.mia.module.core;
 
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
 import java.io.File;
 import java.util.HashMap;
 import java.util.HashSet;
