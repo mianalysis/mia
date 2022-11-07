@@ -3,6 +3,7 @@ package io.github.mianalysis.mia.gui.regions.menubar;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.List;
 
 import javax.swing.JMenuItem;
 
@@ -10,7 +11,9 @@ import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.gui.GUI;
 import io.github.mianalysis.mia.gui.GUIAnalysisHandler;
 import io.github.mianalysis.mia.gui.regions.documentation.DocumentationPanel;
+import io.github.mianalysis.mia.module.AvailableModules;
 import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.moduledependencies.Dependency;
 
 /**
  * Created by stephen on 28/07/2017.
@@ -38,8 +41,9 @@ public class MenuItem extends JMenuItem implements ActionListener {
     public static final String SILENCE_ALL = "Hide output for all modules";
     public static final String PROCESSING_VIEW = "Switch to processing view";
     public static final String EDITING_VIEW = "Switch to editing view";
-    public static final String SHOW_ABOUT = "About...";
-    public static final String SHOW_GETTING_STARTED = "Getting started...";
+    public static final String SHOW_ABOUT = "About";
+    public static final String SHOW_GETTING_STARTED = "Getting started";
+    public static final String SHOW_UNAVAILABLE_MODULES = "Unavailable modules";
     public static final String SHOW_PONY = "Pony?";
 
     public MenuItem(String command) {
@@ -145,6 +149,30 @@ public class MenuItem extends JMenuItem implements ActionListener {
 
             case SHOW_GETTING_STARTED:
                 DocumentationPanel.showGettingStarted();
+                break;
+
+            case SHOW_UNAVAILABLE_MODULES:
+                MIA.log.writeMessage("The following modules could not be loaded due to missing/incompatible dependencies:");
+
+                int count = 0;
+                List<String> detectedModuleNames = AvailableModules.getModuleNames(false);
+                for (String detectedModuleName : detectedModuleNames) {
+                    String shortName = detectedModuleName.substring(detectedModuleName.lastIndexOf(".") + 1);
+                    // Checking dependencies have been met
+                    if (!MIA.getDependencies().compatible(shortName, false)) {
+                        MIA.log.writeMessage("Module \"" + shortName + "\":");
+                        for (Dependency dependency : MIA.getDependencies().getDependencies(shortName, false))
+                            if (!dependency.test()) {
+                                MIA.log.writeMessage("    Requirement: " + dependency.toString());
+                                MIA.log.writeMessage("    Message: " + dependency.getMessage());
+                            }
+                        count++;
+                    }
+                }
+
+                if (count == 0)
+                MIA.log.writeMessage("All modules meet dependency requirements!");
+
                 break;
 
             case SHOW_PONY:

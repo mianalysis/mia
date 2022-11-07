@@ -112,6 +112,7 @@ public class CustomMenuBar extends JMenuBar implements ActionListener {
         helpMenu.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
         helpMenu.add(new MenuItem(MenuItem.SHOW_ABOUT));
         helpMenu.add(new MenuItem(MenuItem.SHOW_GETTING_STARTED));
+        helpMenu.add(new MenuItem(MenuItem.SHOW_UNAVAILABLE_MODULES));
 
         helpMenu.add(logMenu);
         logMenu.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
@@ -129,7 +130,7 @@ public class CustomMenuBar extends JMenuBar implements ActionListener {
         logMenu.add(menuLogCheckbox);
 
         level = Level.MESSAGE;
-        renderer.setWriteEnabled(level, Prefs.get("MIA.Log.Message", false));
+        renderer.setWriteEnabled(level, Prefs.get("MIA.Log.Message", true));
         menuLogCheckbox = new MenuLogCheckbox(level, renderer.isWriteEnabled(level));
         logMenu.add(menuLogCheckbox);
 

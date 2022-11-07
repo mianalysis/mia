@@ -8,7 +8,7 @@ public class IJ1Renderer extends LogRenderer {
         levelStatus.put(Level.ERROR, true); // While this can be turned off during a session, it should always re-enable
                                             // by default
         levelStatus.put(Level.MEMORY, false);
-        levelStatus.put(Level.MESSAGE, false);
+        levelStatus.put(Level.MESSAGE, true);
         levelStatus.put(Level.STATUS, false);
         levelStatus.put(Level.WARNING, true);
 

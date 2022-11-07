@@ -11,7 +11,7 @@ import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.refs.ImageMeasurementRef;
 import io.github.mianalysis.mia.object.refs.collections.ImageMeasurementRefs;
 
-@Plugin(type = MacroOperation.class, priority=Priority.LOW, visible=true)
+@Plugin(type = MacroOperation.class, priority = Priority.LOW, visible = true)
 public class MIA_ListImageMeasurementNames extends MacroOperation {
     public MIA_ListImageMeasurementNames(MacroExtension theHandler) {
         super(theHandler);
@@ -32,17 +32,18 @@ public class MIA_ListImageMeasurementNames extends MacroOperation {
 
         // Getting a list of Images in the Workspace
         ImageMeasurementRefs measurements = modules.getImageMeasurementRefs(imageName);
-        for (ImageMeasurementRef measurement:measurements.values()) {
-            if (row != 0) rt.incrementCounter();
+        for (ImageMeasurementRef measurement : measurements.values()) {
+            if (row != 0)
+                rt.incrementCounter();
 
-            rt.setValue("Measurement name",row,measurement.getName());
-            rt.setValue("Measurement nickname",row,measurement.getNickname());
+            rt.setValue("Measurement name", row, measurement.getName());
+            rt.setValue("Measurement nickname", row, measurement.getNickname());
 
             row++;
 
         }
 
-        rt.show("Measurements for \""+imageName+"\" image");
+        rt.show("Measurements for \"" + imageName + "\" image");
 
         return null;
 
@@ -55,8 +56,6 @@ public class MIA_ListImageMeasurementNames extends MacroOperation {
 
     @Override
     public String getDescription() {
-        return "Returns a list of available measurements for the specified image." +
-                "\n\nUse the macro Ext.MIA_ShowAllImageMeasurements(imageName) to get a table containing all measurement values for the image." +
-                "\n\nUse the macro Ext.MIA_GetImageMeasurement(imageName, measurementID) to get a specific measurement value for a specific image.";
+        return "Returns a list of available measurements for the specified image.  Use the macro Ext.MIA_ShowAllImageMeasurements(imageName) to get a table containing all measurement values for the image.  Use the macro Ext.MIA_GetImageMeasurement(imageName, measurementID) to get a specific measurement value for a specific image.";
     }
 }

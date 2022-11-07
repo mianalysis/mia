@@ -11,7 +11,7 @@ import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.refs.ObjMeasurementRef;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 
-@Plugin(type = MacroOperation.class, priority=Priority.LOW, visible=true)
+@Plugin(type = MacroOperation.class, priority = Priority.LOW, visible = true)
 public class MIA_ListObjectMeasurementNames extends MacroOperation {
     public MIA_ListObjectMeasurementNames(MacroExtension theHandler) {
         super(theHandler);
@@ -32,17 +32,18 @@ public class MIA_ListObjectMeasurementNames extends MacroOperation {
 
         // Getting a list of Images in the Workspace
         ObjMeasurementRefs measurements = modules.getObjectMeasurementRefs(objectName);
-        for (ObjMeasurementRef measurement:measurements.values()) {
-            if (row != 0) rt.incrementCounter();
+        for (ObjMeasurementRef measurement : measurements.values()) {
+            if (row != 0)
+                rt.incrementCounter();
 
-            rt.setValue("Measurement name",row,measurement.getName());
-            rt.setValue("Measurement nickname",row,measurement.getNickname());
+            rt.setValue("Measurement name", row, measurement.getName());
+            rt.setValue("Measurement nickname", row, measurement.getNickname());
 
             row++;
 
         }
 
-        rt.show("Measurements for \""+objectName+"\" objects");
+        rt.show("Measurements for \"" + objectName + "\" objects");
 
         return null;
 
@@ -55,8 +56,6 @@ public class MIA_ListObjectMeasurementNames extends MacroOperation {
 
     @Override
     public String getDescription() {
-        return "Returns a list of available measurements for the specified object." +
-                "\n\nUse the macro Ext.MIA_ShowAllObjectMeasurements(objectsName) to get a table containing all measurement values for all objects." +
-                "\n\nUse the macro Ext.MIA_GetObjectMeasurement(objectsName, objectID, measurementID) to get a specific measurement value for a specific object.";
+        return "Returns a list of available measurements for the specified object.  Use the macro Ext.MIA_ShowAllObjectMeasurements(objectsName) to get a table containing all measurement values for all objects.  Use the macro Ext.MIA_GetObjectMeasurement(objectsName, objectID, measurementID) to get a specific measurement value for a specific object.";
     }
 }

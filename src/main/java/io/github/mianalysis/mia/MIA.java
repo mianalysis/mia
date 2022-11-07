@@ -101,6 +101,7 @@ public class MIA implements Command {
         try {
             String theme = Prefs.get("MIA.GUI.theme", io.github.mianalysis.mia.gui.Themes.getDefaultTheme());
             UIManager.setLookAndFeel(io.github.mianalysis.mia.gui.Themes.getThemeClass(theme));
+            UIManager.put("TitlePane.showIconBesideTitle", true);
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException
                 | UnsupportedLookAndFeelException | IllegalArgumentException | InvocationTargetException
                 | NoSuchMethodException | SecurityException e) {

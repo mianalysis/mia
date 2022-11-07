@@ -618,9 +618,9 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener, K
         parameters.add(new SeparatorP(OUTPUT_SEPARATOR, this));
         parameters.add(new OutputObjectsP(OUTPUT_OBJECTS, this));
         parameters.add(new ChoiceP(VOLUME_TYPE, this, VolumeTypes.POINTLIST, VolumeTypes.ALL));
+        parameters.add(new BooleanP(SPATIAL_INTERPOLATION, this, false));
         parameters.add(new BooleanP(OUTPUT_TRACKS, this, false));
         parameters.add(new OutputTrackObjectsP(OUTPUT_TRACK_OBJECTS, this));
-        parameters.add(new BooleanP(SPATIAL_INTERPOLATION, this, false));
         parameters.add(new BooleanP(TEMPORAL_INTERPOLATION, this, false));
 
         parameters.add(new SeparatorP(SELECTION_SEPARATOR, this));
@@ -649,14 +649,12 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener, K
         returnedParameters.add(parameters.get(OUTPUT_OBJECTS));
         returnedParameters.add(parameters.get(VOLUME_TYPE));
         returnedParameters.add(parameters.get(POINT_MODE)); // Must always be visible, as user can change ROI type
+        returnedParameters.add(parameters.get(SPATIAL_INTERPOLATION));
         returnedParameters.add(parameters.get(OUTPUT_TRACKS));
 
         if ((boolean) parameters.getValue(OUTPUT_TRACKS, workspace)) {
             returnedParameters.add(parameters.get(OUTPUT_TRACK_OBJECTS));
-            returnedParameters.add(parameters.get(SPATIAL_INTERPOLATION));
             returnedParameters.add(parameters.get(TEMPORAL_INTERPOLATION));
-        } else {
-            returnedParameters.add(parameters.get(SPATIAL_INTERPOLATION));
         }
 
         returnedParameters.add(parameters.get(SELECTION_SEPARATOR));
