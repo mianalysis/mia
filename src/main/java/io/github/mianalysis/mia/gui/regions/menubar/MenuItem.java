@@ -152,10 +152,22 @@ public class MenuItem extends JMenuItem implements ActionListener {
                 break;
 
             case SHOW_UNAVAILABLE_MODULES:
-                MIA.log.writeMessage("The following modules could not be loaded due to missing/incompatible dependencies:");
-
                 int count = 0;
                 List<String> detectedModuleNames = AvailableModules.getModuleNames(false);
+                for (String detectedModuleName : detectedModuleNames) {
+                    String shortName = detectedModuleName.substring(detectedModuleName.lastIndexOf(".") + 1);
+                    // Checking dependencies have been met
+                    if (!MIA.getDependencies().compatible(shortName, false))
+                        count++;
+                }
+
+                if (count == 0) {
+                    MIA.log.writeMessage("All modules meet dependency requirements!");
+                    return;
+                }
+
+                MIA.log.writeMessage(
+                        "The following modules could not be loaded due to missing/incompatible dependencies:");
                 for (String detectedModuleName : detectedModuleNames) {
                     String shortName = detectedModuleName.substring(detectedModuleName.lastIndexOf(".") + 1);
                     // Checking dependencies have been met
@@ -166,12 +178,8 @@ public class MenuItem extends JMenuItem implements ActionListener {
                                 MIA.log.writeMessage("    Requirement: " + dependency.toString());
                                 MIA.log.writeMessage("    Message: " + dependency.getMessage());
                             }
-                        count++;
                     }
                 }
-
-                if (count == 0)
-                MIA.log.writeMessage("All modules meet dependency requirements!");
 
                 break;
 
