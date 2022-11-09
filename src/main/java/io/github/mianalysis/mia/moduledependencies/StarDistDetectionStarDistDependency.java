@@ -4,7 +4,7 @@ import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
 
 @Plugin(type = Dependency.class, priority = Priority.LOW, visible = true)
-public class StarDistDetectionDependency extends Dependency {
+public class StarDistDetectionStarDistDependency extends Dependency {
     @Override
     public String getModuleName() {
         return "StarDistDetection";
