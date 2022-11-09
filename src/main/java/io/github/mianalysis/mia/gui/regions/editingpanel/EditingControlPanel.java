@@ -15,6 +15,7 @@ import javax.swing.border.EtchedBorder;
 import io.github.mianalysis.mia.gui.GUI;
 import io.github.mianalysis.mia.gui.regions.abstrakt.AnalysisControlButton;
 import io.github.mianalysis.mia.gui.regions.abstrakt.ModuleControlButton;
+import io.github.mianalysis.mia.gui.regions.availablemodulelist.ListUnavailableModules;
 import io.github.mianalysis.mia.gui.regions.availablemodulelist.ModuleListMenu;
 import io.github.mianalysis.mia.gui.regions.availablemodulelist.SearchForModuleItem;
 import io.github.mianalysis.mia.module.Categories;
@@ -143,6 +144,11 @@ public class EditingControlPanel extends JPanel {
         Category root = Categories.getRootCategory();
         moduleListMenu.removeAll();
         addCategoryModules(moduleListMenu, null, root);
+
+        // Optionally, adding unavailable modules
+        ListUnavailableModules listUnavailableModules = new ListUnavailableModules();
+        if (listUnavailableModules.getUnavailableCount() > 0)
+            moduleListMenu.add(listUnavailableModules);
 
         moduleListMenu.add(new SearchForModuleItem());
 

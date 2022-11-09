@@ -763,6 +763,30 @@
       </exclusions>
     </dependency>
     <dependency>
+      <groupId>de.csbdresden</groupId>
+      <artifactId>csbdeep</artifactId>
+      <version>0.6.0</version>
+      <scope>provided</scope>
+      <exclusions>
+        <exclusion>
+          <artifactId>proto</artifactId>
+          <groupId>org.tensorflow</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>libtensorflow</artifactId>
+          <groupId>org.tensorflow</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>imagej-tensorflow</artifactId>
+          <groupId>net.imagej</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>scijava-plugins-io-table</artifactId>
+          <groupId>org.scijava</groupId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
       <groupId>sc.fiji</groupId>
       <artifactId>AnalyzeSkeleton_</artifactId>
       <version>3.4.2</version>
@@ -841,6 +865,12 @@
           <groupId>sc.fiji</groupId>
         </exclusion>
       </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>com.github.stardist</groupId>
+      <artifactId>stardist-imagej</artifactId>
+      <version>0.3.0</version>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>sc.fiji</groupId>
