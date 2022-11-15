@@ -259,7 +259,7 @@ public class ClusterPoints extends Module {
         workspace.addObjects(outputObjects);
 
         if (showOutput)
-            outputObjects.convertToImageRandomColours().showImage();
+            outputObjects.convertToImageIDColours().showImage();
 
         return Status.PASS;
 

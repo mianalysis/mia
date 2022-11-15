@@ -296,7 +296,7 @@ public class GetLocalObjectRegion extends Module {
 
         // Showing objects
         if (showOutput)
-            outputObjects.convertToImageRandomColours().showImage();
+            outputObjects.convertToImageIDColours().showImage();
 
         return Status.PASS;
 

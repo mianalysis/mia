@@ -245,7 +245,7 @@ public class LoadObjectsFromROIs extends Module {
             if (assignTracks)
                 TrackObjects.showObjects(outputObjects, trackObjectsName);
             else
-                outputObjects.convertToImageRandomColours().showImage();
+                outputObjects.convertToImageIDColours().showImage();
 
         return Status.PASS;
 

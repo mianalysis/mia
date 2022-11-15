@@ -604,7 +604,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener, K
             if (outputTracks)
                 TrackObjects.showObjects(outputObjects, outputTrackObjectsName);
             else
-                outputObjects.convertToImageRandomColours().showImage();
+                outputObjects.convertToImageIDColours().showImage();
 
         return Status.PASS;
 

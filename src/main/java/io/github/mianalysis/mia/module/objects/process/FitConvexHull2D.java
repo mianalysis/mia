@@ -93,7 +93,7 @@ public class FitConvexHull2D extends Module {
         }
 
         if (showOutput)
-            outputObjects.convertToImageRandomColours().showImage();
+            outputObjects.convertToImageIDColours().showImage();
 
         return Status.PASS;
 

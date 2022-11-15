@@ -217,7 +217,7 @@ public class RunScript extends Module {
                             break;
                         case OutputTypes.OBJECTS:
                             workspace.getObjectSet(parameterCollection.getValue(OUTPUT_OBJECTS, workspace))
-                                    .convertToImageRandomColours().showImage();
+                                    .convertToImageIDColours().showImage();
                             break;
                         case OutputTypes.OBJECT_MEASUREMENT:
                             workspace.getObjectSet(parameterCollection.getValue(ASSOCIATED_OBJECTS, workspace))

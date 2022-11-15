@@ -121,8 +121,8 @@ public class Watershed extends Module {
                     IJ.setRawThreshold(timepointMaskIpl, 0, 0, null);
                     IJ.run(timepointMaskIpl, "Convert to Mask", "method=Default background=Light");
                     if (blackBackground)
-                        IJ.run(timepointMaskIpl, "Invert", "stack");                        
-                    
+                        IJ.run(timepointMaskIpl, "Invert", "stack");
+
                     IJ.run(timepointMaskIpl, "8-bit", null);
 
                     if (timepointMaskIpl.isInvertedLut())
@@ -156,23 +156,23 @@ public class Watershed extends Module {
     @Override
     public Status process(Workspace workspace) {
         // Getting input image
-        String inputImageName = parameters.getValue(INPUT_IMAGE,workspace);
+        String inputImageName = parameters.getValue(INPUT_IMAGE, workspace);
         Image inputImage = workspace.getImages().get(inputImageName);
         ImagePlus maskIpl = inputImage.getImagePlus();
 
         // Getting parameters
-        boolean applyToInput = parameters.getValue(APPLY_TO_INPUT,workspace);
-        String outputImageName = parameters.getValue(OUTPUT_IMAGE,workspace);
-        boolean useMarkers = parameters.getValue(USE_MARKERS,workspace);
-        String markerImageName = parameters.getValue(MARKER_IMAGE,workspace);
-        String intensityMode = parameters.getValue(INTENSITY_MODE,workspace);
-        String intensityImageName = parameters.getValue(INTENSITY_IMAGE,workspace);
-        int dynamic = parameters.getValue(DYNAMIC,workspace);
-        int connectivity = Integer.parseInt(parameters.getValue(CONNECTIVITY,workspace));
-        boolean matchZToXY = parameters.getValue(MATCH_Z_TO_X,workspace);
-        String binaryLogic = parameters.getValue(BINARY_LOGIC,workspace);
+        boolean applyToInput = parameters.getValue(APPLY_TO_INPUT, workspace);
+        String outputImageName = parameters.getValue(OUTPUT_IMAGE, workspace);
+        boolean useMarkers = parameters.getValue(USE_MARKERS, workspace);
+        String markerImageName = parameters.getValue(MARKER_IMAGE, workspace);
+        String intensityMode = parameters.getValue(INTENSITY_MODE, workspace);
+        String intensityImageName = parameters.getValue(INTENSITY_IMAGE, workspace);
+        int dynamic = parameters.getValue(DYNAMIC, workspace);
+        int connectivity = Integer.parseInt(parameters.getValue(CONNECTIVITY, workspace));
+        boolean matchZToXY = parameters.getValue(MATCH_Z_TO_X, workspace);
+        String binaryLogic = parameters.getValue(BINARY_LOGIC, workspace);
         boolean blackBackground = binaryLogic.equals(BinaryLogic.BLACK_BACKGROUND);
-        boolean multithread = parameters.getValue(ENABLE_MULTITHREADING,workspace);
+        boolean multithread = parameters.getValue(ENABLE_MULTITHREADING, workspace);
 
         // If applying to a new image, the input image is duplicated
         if (!applyToInput)
@@ -253,25 +253,25 @@ public class Watershed extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
-Workspace workspace = null;
+        Workspace workspace = null;
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(INPUT_IMAGE));
         returnedParameters.add(parameters.getParameter(APPLY_TO_INPUT));
 
-        if (!(boolean) parameters.getValue(APPLY_TO_INPUT,workspace))
+        if (!(boolean) parameters.getValue(APPLY_TO_INPUT, workspace))
             returnedParameters.add(parameters.getParameter(OUTPUT_IMAGE));
-        
+
         returnedParameters.add(parameters.getParameter(WATERSHED_SEPARATOR));
         returnedParameters.add(parameters.getParameter(USE_MARKERS));
-        if ((boolean) parameters.getValue(USE_MARKERS,workspace))
+        if ((boolean) parameters.getValue(USE_MARKERS, workspace))
             returnedParameters.add(parameters.getParameter(MARKER_IMAGE));
         else
             returnedParameters.add(parameters.getParameter(DYNAMIC));
-        
+
         returnedParameters.add(parameters.getParameter(INTENSITY_MODE));
-        switch ((String) parameters.getValue(INTENSITY_MODE,workspace)) {
+        switch ((String) parameters.getValue(INTENSITY_MODE, workspace)) {
             case IntensityModes.DISTANCE:
                 returnedParameters.add(parameters.getParameter(MATCH_Z_TO_X));
                 break;
@@ -292,27 +292,27 @@ Workspace workspace = null;
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
-return null;
+        return null;
     }
 
     @Override
-public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
-return null;
+    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+        return null;
     }
 
     @Override
-public MetadataRefs updateAndGetMetadataReferences() {
-return null;
+    public MetadataRefs updateAndGetMetadataReferences() {
+        return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
-return null;
+        return null;
     }
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
-return null;
+        return null;
     }
 
     @Override

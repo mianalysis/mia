@@ -558,7 +558,7 @@ public class MeasureObjectCurvature extends Module {
         if (showOutput)
             inputObjects.showMeasurements(this, modules);
         if (showOutput & !objectOutputMode.equals(ObjectOutputModes.DO_NOT_STORE)) {
-            outputObjects.convertToImageRandomColours().showImage();
+            outputObjects.convertToImageIDColours().showImage();
         }
 
         return Status.PASS;
