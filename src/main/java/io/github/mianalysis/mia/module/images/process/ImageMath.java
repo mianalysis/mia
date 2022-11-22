@@ -40,7 +40,7 @@ public class ImageMath extends Module {
     public static final String OUTPUT_IMAGE = "Output image";
 
     public static final String CALCULATION_SEPARATOR = "Image calculation";
-    public static final String CALCULATION_TYPE = "Calculation";
+    public static final String CALCULATION_MODE = "Calculation";
     public static final String VALUE_SOURCE = "Value source";
     public static final String IMAGE_FOR_MEASUREMENT = "Image for measurement";
     public static final String MEASUREMENT = "Measurement";
@@ -50,7 +50,7 @@ public class ImageMath extends Module {
         super("Image math", modules);
     }
 
-    public interface CalculationTypes {
+    public interface CalculationModes {
         String ABSOLUTE = "Absolute";
         String ADD = "Add";
         String DIVIDE = "Divide";
@@ -82,31 +82,31 @@ public class ImageMath extends Module {
         for (int i = 0; i < ist.size(); i++) {
             ImageProcessor ipr = ist.getProcessor(i + 1);
             switch (calculationType) {
-            case CalculationTypes.ABSOLUTE:
+            case CalculationModes.ABSOLUTE:
                 ipr.abs();
                 break;
 
-            case CalculationTypes.ADD:
+            case CalculationModes.ADD:
                 ipr.add(mathValue);
                 break;
 
-            case CalculationTypes.DIVIDE:
+            case CalculationModes.DIVIDE:
                 ipr.multiply(1 / mathValue);
                 break;
 
-            case CalculationTypes.MULTIPLY:
+            case CalculationModes.MULTIPLY:
                 ipr.multiply(mathValue);
                 break;
 
-            case CalculationTypes.SQUARE:
+            case CalculationModes.SQUARE:
                 ipr.sqr();
                 break;
 
-            case CalculationTypes.SQUAREROOT:
+            case CalculationModes.SQUAREROOT:
                 ipr.sqrt();
                 break;
 
-            case CalculationTypes.SUBTRACT:
+            case CalculationModes.SUBTRACT:
                 ipr.subtract(mathValue);
                 break;
             }
@@ -121,7 +121,7 @@ public class ImageMath extends Module {
     @Override
     public String getDescription() {
         return "Applies a mathematical operation to all pixels of the input image stack.  Operations that can be performed are: "
-                + String.join(", ", CalculationTypes.ALL);
+                + String.join(", ", CalculationModes.ALL);
     }
 
     @Override
@@ -134,7 +134,7 @@ public class ImageMath extends Module {
         // Getting parameters
         boolean applyToInput = parameters.getValue(APPLY_TO_INPUT,workspace);
         String outputImageName = parameters.getValue(OUTPUT_IMAGE,workspace);
-        String calculationType = parameters.getValue(CALCULATION_TYPE,workspace);
+        String calculationType = parameters.getValue(CALCULATION_MODE,workspace);
         String valueSource = parameters.getValue(VALUE_SOURCE,workspace);
         String imageForMeasurementName = parameters.getValue(IMAGE_FOR_MEASUREMENT,workspace);
         String measurement = parameters.getValue(MEASUREMENT,workspace);
@@ -181,7 +181,7 @@ public class ImageMath extends Module {
         parameters.add(new OutputImageP(OUTPUT_IMAGE, this));
 
         parameters.add(new SeparatorP(CALCULATION_SEPARATOR, this));
-        parameters.add(new ChoiceP(CALCULATION_TYPE, this, CalculationTypes.ADD, CalculationTypes.ALL));
+        parameters.add(new ChoiceP(CALCULATION_MODE, this, CalculationModes.ADD, CalculationModes.ALL));
         parameters.add(new ChoiceP(VALUE_SOURCE, this, ValueSources.FIXED, ValueSources.ALL));
         parameters.add(new InputImageP(IMAGE_FOR_MEASUREMENT, this));
         parameters.add(new ImageMeasurementP(MEASUREMENT, this));
@@ -205,12 +205,12 @@ Workspace workspace = null;
         }
 
         returnedParameters.add(parameters.getParameter(CALCULATION_SEPARATOR));
-        returnedParameters.add(parameters.getParameter(CALCULATION_TYPE));
-        switch ((String) parameters.getValue(CALCULATION_TYPE,workspace)) {
-        case CalculationTypes.ADD:
-        case CalculationTypes.DIVIDE:
-        case CalculationTypes.MULTIPLY:
-        case CalculationTypes.SUBTRACT:
+        returnedParameters.add(parameters.getParameter(CALCULATION_MODE));
+        switch ((String) parameters.getValue(CALCULATION_MODE,workspace)) {
+        case CalculationModes.ADD:
+        case CalculationModes.DIVIDE:
+        case CalculationModes.MULTIPLY:
+        case CalculationModes.SUBTRACT:
             returnedParameters.add(parameters.getParameter(VALUE_SOURCE));
             switch ((String) parameters.getValue(VALUE_SOURCE,workspace)) {
             case ValueSources.FIXED:
@@ -277,9 +277,9 @@ return null;
         parameters.get(OUTPUT_IMAGE).setDescription("If \"" + APPLY_TO_INPUT
                 + "\" is not selected, the post-operation image will be saved to the workspace with this name.");
 
-        parameters.get(CALCULATION_TYPE).setDescription(
+        parameters.get(CALCULATION_MODE).setDescription(
                 "Controls the mathematical operation being applied to all pixels of this image.  Choices are: "
-                        + String.join(", ", CalculationTypes.ALL));
+                        + String.join(", ", CalculationModes.ALL));
 
         parameters.get(VALUE_SOURCE).setDescription(
                 "For calculations that require a specific value (i.e. addition, subtraction, etc.) this parameter controls how the value is defined:<br><ul>"

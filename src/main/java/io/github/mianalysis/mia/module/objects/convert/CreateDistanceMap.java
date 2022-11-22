@@ -120,7 +120,7 @@ public class CreateDistanceMap extends Module {
 
         // If selected, inverting the inside of the object, so values here are negative
         if (invertInside)
-            ImageMath.process(insideDistImage, ImageMath.CalculationTypes.MULTIPLY, -1.0);
+            ImageMath.process(insideDistImage, ImageMath.CalculationModes.MULTIPLY, -1.0);
 
         // Compiling the distance map
         return ImageCalculator.process(insideDistImage, outsideDistImage, ImageCalculator.CalculationMethods.ADD,
@@ -146,7 +146,7 @@ public class CreateDistanceMap extends Module {
             InvertIntensity.process(objIpl);
 
         // Normalising the mask
-        ImageMath.process(objIpl, ImageMath.CalculationTypes.DIVIDE, 255);
+        ImageMath.process(objIpl, ImageMath.CalculationModes.DIVIDE, 255);
 
         // Applying the mask
         String calculationMode = ImageCalculator.CalculationMethods.MULTIPLY;

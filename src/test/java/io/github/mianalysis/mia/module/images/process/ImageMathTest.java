@@ -52,7 +52,7 @@ public class ImageMathTest extends ModuleTest {
         imageMath.updateParameterValue(ImageMath.INPUT_IMAGE,"Test_image");
         imageMath.updateParameterValue(ImageMath.OUTPUT_IMAGE,"Test_output");
         imageMath.updateParameterValue(ImageMath.APPLY_TO_INPUT,false);
-        imageMath.updateParameterValue(ImageMath.CALCULATION_TYPE,ImageMath.CalculationTypes.ADD);
+        imageMath.updateParameterValue(ImageMath.CALCULATION_MODE,ImageMath.CalculationModes.ADD);
         imageMath.updateParameterValue(ImageMath.VALUE_SOURCE,ImageMath.ValueSources.FIXED);
         imageMath.updateParameterValue(ImageMath.MATH_VALUE,50d);
 
@@ -91,7 +91,7 @@ public class ImageMathTest extends ModuleTest {
         imageMath.updateParameterValue(ImageMath.INPUT_IMAGE,"Test_image");
         imageMath.updateParameterValue(ImageMath.OUTPUT_IMAGE,"Test_output");
         imageMath.updateParameterValue(ImageMath.APPLY_TO_INPUT,false);
-        imageMath.updateParameterValue(ImageMath.CALCULATION_TYPE,ImageMath.CalculationTypes.ADD);
+        imageMath.updateParameterValue(ImageMath.CALCULATION_MODE,ImageMath.CalculationModes.ADD);
         imageMath.updateParameterValue(ImageMath.VALUE_SOURCE,ImageMath.ValueSources.FIXED);
         imageMath.updateParameterValue(ImageMath.MATH_VALUE,50d);
 
@@ -130,7 +130,7 @@ public class ImageMathTest extends ModuleTest {
         imageMath.updateParameterValue(ImageMath.INPUT_IMAGE,"Test_image");
         imageMath.updateParameterValue(ImageMath.OUTPUT_IMAGE,"Test_output");
         imageMath.updateParameterValue(ImageMath.APPLY_TO_INPUT,false);
-        imageMath.updateParameterValue(ImageMath.CALCULATION_TYPE,ImageMath.CalculationTypes.ADD);
+        imageMath.updateParameterValue(ImageMath.CALCULATION_MODE,ImageMath.CalculationModes.ADD);
         imageMath.updateParameterValue(ImageMath.VALUE_SOURCE,ImageMath.ValueSources.FIXED);
         imageMath.updateParameterValue(ImageMath.MATH_VALUE,50d);
 
@@ -169,7 +169,7 @@ public class ImageMathTest extends ModuleTest {
         imageMath.updateParameterValue(ImageMath.INPUT_IMAGE,"Test_image");
         imageMath.updateParameterValue(ImageMath.OUTPUT_IMAGE,"Test_output");
         imageMath.updateParameterValue(ImageMath.APPLY_TO_INPUT,false);
-        imageMath.updateParameterValue(ImageMath.CALCULATION_TYPE,ImageMath.CalculationTypes.ADD);
+        imageMath.updateParameterValue(ImageMath.CALCULATION_MODE,ImageMath.CalculationModes.ADD);
         imageMath.updateParameterValue(ImageMath.VALUE_SOURCE,ImageMath.ValueSources.FIXED);
         imageMath.updateParameterValue(ImageMath.MATH_VALUE,50d);
 
@@ -208,7 +208,7 @@ public class ImageMathTest extends ModuleTest {
         imageMath.updateParameterValue(ImageMath.INPUT_IMAGE,"Test_image");
         imageMath.updateParameterValue(ImageMath.OUTPUT_IMAGE,"Test_output");
         imageMath.updateParameterValue(ImageMath.APPLY_TO_INPUT,false);
-        imageMath.updateParameterValue(ImageMath.CALCULATION_TYPE,ImageMath.CalculationTypes.ADD);
+        imageMath.updateParameterValue(ImageMath.CALCULATION_MODE,ImageMath.CalculationModes.ADD);
         imageMath.updateParameterValue(ImageMath.VALUE_SOURCE,ImageMath.ValueSources.FIXED);
         imageMath.updateParameterValue(ImageMath.MATH_VALUE,50d);
 
@@ -246,7 +246,7 @@ public class ImageMathTest extends ModuleTest {
         imageMath.updateParameterValue(ImageMath.INPUT_IMAGE,"Test_image");
         imageMath.updateParameterValue(ImageMath.OUTPUT_IMAGE,"Test_output");
         imageMath.updateParameterValue(ImageMath.APPLY_TO_INPUT,false);
-        imageMath.updateParameterValue(ImageMath.CALCULATION_TYPE,ImageMath.CalculationTypes.ADD);
+        imageMath.updateParameterValue(ImageMath.CALCULATION_MODE,ImageMath.CalculationModes.ADD);
         imageMath.updateParameterValue(ImageMath.VALUE_SOURCE,ImageMath.ValueSources.FIXED);
         imageMath.updateParameterValue(ImageMath.MATH_VALUE,50d);
 
@@ -283,7 +283,7 @@ public class ImageMathTest extends ModuleTest {
         imageMath.initialiseParameters();
         imageMath.updateParameterValue(ImageMath.INPUT_IMAGE,"Test_image");
         imageMath.updateParameterValue(ImageMath.APPLY_TO_INPUT,true);
-        imageMath.updateParameterValue(ImageMath.CALCULATION_TYPE,ImageMath.CalculationTypes.ADD);
+        imageMath.updateParameterValue(ImageMath.CALCULATION_MODE,ImageMath.CalculationModes.ADD);
         imageMath.updateParameterValue(ImageMath.VALUE_SOURCE,ImageMath.ValueSources.FIXED);
         imageMath.updateParameterValue(ImageMath.MATH_VALUE,50d);
 
@@ -323,7 +323,7 @@ public class ImageMathTest extends ModuleTest {
         imageMath.updateParameterValue(ImageMath.INPUT_IMAGE,"Test_image");
         imageMath.updateParameterValue(ImageMath.OUTPUT_IMAGE,"Test_output");
         imageMath.updateParameterValue(ImageMath.APPLY_TO_INPUT,false);
-        imageMath.updateParameterValue(ImageMath.CALCULATION_TYPE,ImageMath.CalculationTypes.ADD);
+        imageMath.updateParameterValue(ImageMath.CALCULATION_MODE,ImageMath.CalculationModes.ADD);
         imageMath.updateParameterValue(ImageMath.VALUE_SOURCE, ImageMath.ValueSources.MEASUREMENT);
         imageMath.updateParameterValue(ImageMath.IMAGE_FOR_MEASUREMENT,"Test_image");
         imageMath.updateParameterValue(ImageMath.MEASUREMENT,"Test meas");
@@ -363,7 +363,7 @@ public class ImageMathTest extends ModuleTest {
         imageMath.updateParameterValue(ImageMath.INPUT_IMAGE,"Test_image");
         imageMath.updateParameterValue(ImageMath.OUTPUT_IMAGE,"Test_output");
         imageMath.updateParameterValue(ImageMath.APPLY_TO_INPUT,false);
-        imageMath.updateParameterValue(ImageMath.CALCULATION_TYPE,ImageMath.CalculationTypes.ADD);
+        imageMath.updateParameterValue(ImageMath.CALCULATION_MODE,ImageMath.CalculationModes.ADD);
         imageMath.updateParameterValue(ImageMath.VALUE_SOURCE,ImageMath.ValueSources.FIXED);
         imageMath.updateParameterValue(ImageMath.MATH_VALUE,-5d);
 
@@ -402,7 +402,7 @@ public class ImageMathTest extends ModuleTest {
         imageMath.updateParameterValue(ImageMath.INPUT_IMAGE,"Test_image");
         imageMath.updateParameterValue(ImageMath.OUTPUT_IMAGE,"Test_output");
         imageMath.updateParameterValue(ImageMath.APPLY_TO_INPUT,false);
-        imageMath.updateParameterValue(ImageMath.CALCULATION_TYPE,ImageMath.CalculationTypes.SUBTRACT);
+        imageMath.updateParameterValue(ImageMath.CALCULATION_MODE,ImageMath.CalculationModes.SUBTRACT);
         imageMath.updateParameterValue(ImageMath.VALUE_SOURCE,ImageMath.ValueSources.FIXED);
         imageMath.updateParameterValue(ImageMath.MATH_VALUE,12d);
 
@@ -441,7 +441,7 @@ public class ImageMathTest extends ModuleTest {
         imageMath.updateParameterValue(ImageMath.INPUT_IMAGE,"Test_image");
         imageMath.updateParameterValue(ImageMath.OUTPUT_IMAGE,"Test_output");
         imageMath.updateParameterValue(ImageMath.APPLY_TO_INPUT,false);
-        imageMath.updateParameterValue(ImageMath.CALCULATION_TYPE,ImageMath.CalculationTypes.SUBTRACT);
+        imageMath.updateParameterValue(ImageMath.CALCULATION_MODE,ImageMath.CalculationModes.SUBTRACT);
         imageMath.updateParameterValue(ImageMath.VALUE_SOURCE,ImageMath.ValueSources.FIXED);
         imageMath.updateParameterValue(ImageMath.MATH_VALUE,-12d);
 
@@ -480,7 +480,7 @@ public class ImageMathTest extends ModuleTest {
         imageMath.updateParameterValue(ImageMath.INPUT_IMAGE,"Test_image");
         imageMath.updateParameterValue(ImageMath.OUTPUT_IMAGE,"Test_output");
         imageMath.updateParameterValue(ImageMath.APPLY_TO_INPUT,false);
-        imageMath.updateParameterValue(ImageMath.CALCULATION_TYPE,ImageMath.CalculationTypes.MULTIPLY);
+        imageMath.updateParameterValue(ImageMath.CALCULATION_MODE,ImageMath.CalculationModes.MULTIPLY);
         imageMath.updateParameterValue(ImageMath.VALUE_SOURCE,ImageMath.ValueSources.FIXED);
         imageMath.updateParameterValue(ImageMath.MATH_VALUE,2.3d);
 
@@ -519,7 +519,7 @@ public class ImageMathTest extends ModuleTest {
         imageMath.updateParameterValue(ImageMath.INPUT_IMAGE,"Test_image");
         imageMath.updateParameterValue(ImageMath.OUTPUT_IMAGE,"Test_output");
         imageMath.updateParameterValue(ImageMath.APPLY_TO_INPUT,false);
-        imageMath.updateParameterValue(ImageMath.CALCULATION_TYPE,ImageMath.CalculationTypes.MULTIPLY);
+        imageMath.updateParameterValue(ImageMath.CALCULATION_MODE,ImageMath.CalculationModes.MULTIPLY);
         imageMath.updateParameterValue(ImageMath.VALUE_SOURCE,ImageMath.ValueSources.FIXED);
         imageMath.updateParameterValue(ImageMath.MATH_VALUE,-2.3d);
 
@@ -558,7 +558,7 @@ public class ImageMathTest extends ModuleTest {
         imageMath.updateParameterValue(ImageMath.INPUT_IMAGE,"Test_image");
         imageMath.updateParameterValue(ImageMath.OUTPUT_IMAGE,"Test_output");
         imageMath.updateParameterValue(ImageMath.APPLY_TO_INPUT,false);
-        imageMath.updateParameterValue(ImageMath.CALCULATION_TYPE,ImageMath.CalculationTypes.MULTIPLY);
+        imageMath.updateParameterValue(ImageMath.CALCULATION_MODE,ImageMath.CalculationModes.MULTIPLY);
         imageMath.updateParameterValue(ImageMath.VALUE_SOURCE,ImageMath.ValueSources.FIXED);
         imageMath.updateParameterValue(ImageMath.MATH_VALUE,-2.3d);
 
@@ -597,7 +597,7 @@ public class ImageMathTest extends ModuleTest {
         imageMath.updateParameterValue(ImageMath.INPUT_IMAGE,"Test_image");
         imageMath.updateParameterValue(ImageMath.OUTPUT_IMAGE,"Test_output");
         imageMath.updateParameterValue(ImageMath.APPLY_TO_INPUT,false);
-        imageMath.updateParameterValue(ImageMath.CALCULATION_TYPE,ImageMath.CalculationTypes.DIVIDE);
+        imageMath.updateParameterValue(ImageMath.CALCULATION_MODE,ImageMath.CalculationModes.DIVIDE);
         imageMath.updateParameterValue(ImageMath.VALUE_SOURCE,ImageMath.ValueSources.FIXED);
         imageMath.updateParameterValue(ImageMath.MATH_VALUE,0.4d);
 
@@ -636,7 +636,7 @@ public class ImageMathTest extends ModuleTest {
         imageMath.updateParameterValue(ImageMath.INPUT_IMAGE,"Test_image");
         imageMath.updateParameterValue(ImageMath.OUTPUT_IMAGE,"Test_output");
         imageMath.updateParameterValue(ImageMath.APPLY_TO_INPUT,false);
-        imageMath.updateParameterValue(ImageMath.CALCULATION_TYPE,ImageMath.CalculationTypes.DIVIDE);
+        imageMath.updateParameterValue(ImageMath.CALCULATION_MODE,ImageMath.CalculationModes.DIVIDE);
         imageMath.updateParameterValue(ImageMath.VALUE_SOURCE,ImageMath.ValueSources.FIXED);
         imageMath.updateParameterValue(ImageMath.MATH_VALUE,-0.6d);
 
@@ -675,7 +675,7 @@ public class ImageMathTest extends ModuleTest {
         imageMath.updateParameterValue(ImageMath.INPUT_IMAGE,"Test_image");
         imageMath.updateParameterValue(ImageMath.OUTPUT_IMAGE,"Test_output");
         imageMath.updateParameterValue(ImageMath.APPLY_TO_INPUT,false);
-        imageMath.updateParameterValue(ImageMath.CALCULATION_TYPE,ImageMath.CalculationTypes.DIVIDE);
+        imageMath.updateParameterValue(ImageMath.CALCULATION_MODE,ImageMath.CalculationModes.DIVIDE);
         imageMath.updateParameterValue(ImageMath.VALUE_SOURCE,ImageMath.ValueSources.FIXED);
         imageMath.updateParameterValue(ImageMath.MATH_VALUE,-0.6d);
 

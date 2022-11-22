@@ -178,7 +178,7 @@ public class DistanceMap extends Module {
 
     public static void applyCalibratedUnits(Image inputImage, double dppXY) {
         ImageTypeConverter.process(inputImage, 32, ImageTypeConverter.ScalingModes.CLIP);
-        ImageMath.process(inputImage, ImageMath.CalculationTypes.MULTIPLY, dppXY);
+        ImageMath.process(inputImage, ImageMath.CalculationModes.MULTIPLY, dppXY);
 
     }
 

@@ -261,7 +261,7 @@ public class FitGaussian2D extends Module {
 
         // Determining the average background and adding this on to the image
         double BG = getMeanBackground(objects);
-        ImageMath.process(image.getImagePlus(), ImageMath.CalculationTypes.ADD, BG);
+        ImageMath.process(image.getImagePlus(), ImageMath.CalculationModes.ADD, BG);
 
         return image;
 

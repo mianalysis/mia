@@ -112,7 +112,7 @@ public class GrowObjects extends Module {
             default:
                 // No intensity image, so creating blank (black) image
                 Image intensityImage = objects.convertToImageRandomColours();
-                ImageMath.process(intensityImage, ImageMath.CalculationTypes.MULTIPLY, 0);
+                ImageMath.process(intensityImage, ImageMath.CalculationModes.MULTIPLY, 0);
                 return intensityImage;
             case GrowthModes.FROM_IMAGE:
                 Image fullIntensityImage = workspace.getImage(intensityImageName);
@@ -137,7 +137,7 @@ public class GrowObjects extends Module {
             // No mask image, so creating blank (white) image
             maskImage = objects.convertToImageIDColours();
             ImageTypeConverter.process(maskImage, 8, ImageTypeConverter.ScalingModes.CLIP);
-            ImageMath.process(maskImage, ImageMath.CalculationTypes.ADD, 255);
+            ImageMath.process(maskImage, ImageMath.CalculationModes.ADD, 255);
         }
 
         return maskImage;

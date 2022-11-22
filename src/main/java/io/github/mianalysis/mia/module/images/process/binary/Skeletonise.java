@@ -72,7 +72,7 @@ public class Skeletonise extends Module {
         }
 
         // Multiplying back to the range 0-255
-        ImageMath.process(ipl, ImageMath.CalculationTypes.MULTIPLY, 255);
+        ImageMath.process(ipl, ImageMath.CalculationModes.MULTIPLY, 255);
 
         // Inverting back to original logic
         if (!blackBackground)

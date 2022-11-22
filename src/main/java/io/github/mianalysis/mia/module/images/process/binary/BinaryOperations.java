@@ -190,8 +190,8 @@ public class BinaryOperations extends Module {
         // Creating duplicates of the input image
         ipl = new Duplicator().run(ipl);
         ImagePlus maskIpl = new Duplicator().run(ipl);
-        ImageMath.process(maskIpl, ImageMath.CalculationTypes.MULTIPLY, 0);
-        ImageMath.process(maskIpl, ImageMath.CalculationTypes.ADD, 255);
+        ImageMath.process(maskIpl, ImageMath.CalculationModes.MULTIPLY, 0);
+        ImageMath.process(maskIpl, ImageMath.CalculationModes.ADD, 255);
 
         ipl.setStack(new GeodesicDistanceMap3D().process(ipl,maskIpl,"Dist",ChamferMask3D.SVENSSON_3_4_5_7,true).getStack());
 
