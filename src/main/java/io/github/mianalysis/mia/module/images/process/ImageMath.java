@@ -156,17 +156,16 @@ public class ImageMath extends Module {
         process(inputImagePlus, calculationType, mathValue);
 
         // If the image is being saved as a new image, adding it to the workspace
-        if (!applyToInput) {
-            writeStatus("Adding image (" + outputImageName + ") to workspace");
+        if (applyToInput) {
+            // Reapplying the image in case it was an ImgLib2
+            inputImage.setImagePlus(inputImagePlus);
+            if (showOutput)
+                inputImage.showImage();
+        } else {
             Image outputImage = ImageFactory.createImage(outputImageName, inputImagePlus);
             workspace.addImage(outputImage);
             if (showOutput)
                 outputImage.showImage();
-
-        } else {
-            if (showOutput)
-                inputImage.showImage();
-
         }
 
         return Status.PASS;

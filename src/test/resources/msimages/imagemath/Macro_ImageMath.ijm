@@ -3,55 +3,45 @@ name = getTitle();
 bits = split(name, "_.");
 dim = bits[1]
 
+if (indexOf(name, "B8") == -1) {
+	return;
+}
 
-print(
-//run("Duplicate...", "duplicate");
-//run("Options...", "iterations=1 count=1 "+bw+" do=Erode stack");
-//saveAs("ZIP", outputPath + "BinaryOps2D_"+ dim +"_B8_FERODE_"+logic+"_C1_I1.zip");
-//close();
-//
-//run("Duplicate...", "duplicate");
-//run("Options...", "iterations=1 count=1 "+bw+" do=Dilate stack");
-//saveAs("ZIP", outputPath + "BinaryOps2D_"+ dim +"_B8_FDILATE_"+logic+"_C1_I1.zip");
-//close();
-//
-//run("Duplicate...", "duplicate");
-//run("Options...", "iterations=1 count=1 "+bw+" do=Nothing");
-//run("Distance Map", "stack");
-//saveAs("ZIP", outputPath + "BinaryOps2D_"+ dim +"_B8_FDISTANCE_MAP_"+logic+"_C1_I1.zip");
-//close();
-//
-//run("Duplicate...", "duplicate");
-//run("Options...", "iterations=1 count=1 "+bw+" do=Outline stack");
-//saveAs("ZIP", outputPath + "BinaryOps2D_"+ dim +"_B8_FOUTLINE_"+logic+"_C1_I1.zip");
-//close();
-//
-//run("Duplicate...", "duplicate");
-//run("Options...", "iterations=1 count=1 "+bw+" do=[Fill Holes] stack");
-//saveAs("ZIP", outputPath + "BinaryOps2D_"+ dim +"_B8_FFILL_HOLES_"+logic+"_C1_I1.zip");
-//close();
-//
-//run("Duplicate...", "duplicate");
-//run("Options...", "iterations=1 count=1 "+bw+" do=Skeletonize stack");
-//saveAs("ZIP", outputPath + "BinaryOps2D_"+ dim +"_B8_FSKELETONISE_"+logic+"_C1_I1.zip");
-//close();
-//
-//run("Duplicate...", "duplicate");
-//run("Options...", "iterations=1 count=1 "+bw+" do=Nothing");
-//run("Ultimate Points", "stack");
-//saveAs("ZIP", outputPath + "BinaryOps2D_"+ dim +"_B8_FULTIMATE_POINTS_"+logic+"_C1_I1.zip");
-//close();
-//
-//run("Duplicate...", "duplicate");
-//run("Options...", "iterations=1 count=1 "+bw+" do=Nothing");
-//run("Voronoi", "stack");
-//saveAs("ZIP", outputPath + "BinaryOps2D_"+ dim +"_B8_FVORONOI_"+logic+"_C1_I1.zip");
-//close();
-//
-//run("Duplicate...", "duplicate");
-//run("Options...", "iterations=1 count=1 "+bw+" do=Nothing");
-//run("Watershed", "stack");
-//saveAs("ZIP", outputPath + "BinaryOps2D_"+ dim +"_B8_FWATERSHED_"+logic+"_C1_I1.zip");
-//close();
-//
-//close();
+if (indexOf(name, "D3Z") == -1) {
+	return;
+}
+
+run("Duplicate...", "duplicate");
+run("Add...", "value=3.2 stack");
+saveAs("ZIP", outputPath + "ImageMath_"+ dim +"_B8_OADD_V3.2.zip");
+close();
+
+run("Duplicate...", "duplicate");
+run("Subtract...", "value=3.2 stack");
+saveAs("ZIP", outputPath + "ImageMath_"+ dim +"_B8_OSUBTRACT_V3.2.zip");
+close();
+
+run("Duplicate...", "duplicate");
+run("Divide...", "value=3.2 stack");
+saveAs("ZIP", outputPath + "ImageMath_"+ dim +"_B8_ODIVIDE_V3.2.zip");
+close();
+
+run("Duplicate...", "duplicate");
+run("Multiply...", "value=3.2 stack");
+saveAs("ZIP", outputPath + "ImageMath_"+ dim +"_B8_OMULTIPLY_V3.2.zip");
+close();
+
+run("Duplicate...", "duplicate");
+run("Square");
+saveAs("ZIP", outputPath + "ImageMath_"+ dim +"_B8_OSQUARE.zip");
+close();
+
+run("Duplicate...", "duplicate");
+run("Square Root");
+saveAs("ZIP", outputPath + "ImageMath_"+ dim +"_B8_OSQRT.zip");
+close();
+
+run("Duplicate...", "duplicate");
+// Absolute will do nothing for an 8-bit image
+saveAs("ZIP", outputPath + "ImageMath_"+ dim +"_B8_OABSOLUTE.zip");
+close();
