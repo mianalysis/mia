@@ -8,7 +8,6 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.stream.Stream;
 
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -16,7 +15,6 @@ import org.junit.jupiter.params.provider.MethodSource;
 import com.drew.lang.annotations.Nullable;
 
 import ij.IJ;
-import ij.ImageJ;
 import ij.ImagePlus;
 import io.github.mianalysis.enums.BitDepth;
 import io.github.mianalysis.enums.Dimension;
@@ -52,6 +50,11 @@ public class ImageMathMSTest {
         SIMAGE
     }
 
+    enum Convert32 {
+        C32T,
+        C32F
+    }
+
     public static Stream<Arguments> variableOperationInputProvider() {
         Stream.Builder<Arguments> argumentBuilder = Stream.builder();
         for (Operation operation : VariableOperation.values())
@@ -84,7 +87,9 @@ public class ImageMathMSTest {
                 for (OutputMode outputMode : OutputMode.values())
                     for (ImageType imageType : ImageType.values())
                         for (ValueSource valueSource : ValueSource.values())
-                            argumentBuilder.add(Arguments.of(bitDepth, operation, outputMode, imageType, valueSource));
+                            for (Convert32 convert32 : Convert32.values())
+                                argumentBuilder.add(Arguments.of(bitDepth, operation, outputMode, convert32, imageType,
+                                        valueSource));
 
         return argumentBuilder.build();
 
@@ -108,7 +113,8 @@ public class ImageMathMSTest {
             for (Operation operation : SingleOperation.values())
                 for (OutputMode outputMode : OutputMode.values())
                     for (ImageType imageType : ImageType.values())
-                        argumentBuilder.add(Arguments.of(bitDepth, operation, outputMode, imageType));
+                        for (Convert32 convert32 : Convert32.values())
+                            argumentBuilder.add(Arguments.of(bitDepth, operation, outputMode, convert32, imageType));
 
         return argumentBuilder.build();
 
@@ -119,7 +125,7 @@ public class ImageMathMSTest {
     void test8BitVariableOperation3p2(Dimension dimension, Operation operation, OutputMode outputMode,
             ImageType imageType, ValueSource valueSource)
             throws UnsupportedEncodingException {
-        runTest(dimension, BitDepth.B8, operation, 3.2, outputMode, imageType, valueSource);
+        runTest(dimension, BitDepth.B8, operation, 3.2, outputMode, Convert32.C32F, imageType, valueSource);
 
     }
 
@@ -128,7 +134,7 @@ public class ImageMathMSTest {
     void test8bitD3ZVariableOperationm3p2(Operation operation, OutputMode outputMode, ImageType imageType,
             ValueSource valueSource)
             throws UnsupportedEncodingException {
-        runTest(Dimension.D3Z, BitDepth.B8, operation, -3.2, outputMode, imageType, valueSource);
+        runTest(Dimension.D3Z, BitDepth.B8, operation, -3.2, outputMode, Convert32.C32F, imageType, valueSource);
 
     }
 
@@ -137,16 +143,16 @@ public class ImageMathMSTest {
     void test8bitD3ZVariableOperationNaN(Operation operation, OutputMode outputMode, ImageType imageType,
             ValueSource valueSource)
             throws UnsupportedEncodingException {
-        runTest(Dimension.D3Z, BitDepth.B8, operation, Double.NaN, outputMode, imageType, valueSource);
+        runTest(Dimension.D3Z, BitDepth.B8, operation, Double.NaN, outputMode, Convert32.C32F, imageType, valueSource);
 
     }
 
     @ParameterizedTest
     @MethodSource("bitDepthVariableOperationInputProvider")
-    void testBitDepthD3ZVariableOperration3p2(BitDepth bitDepth, Operation operation, OutputMode outputMode, ImageType imageType,
-            ValueSource valueSource)
+    void testBitDepthD3ZVariableOperration3p2(BitDepth bitDepth, Operation operation, OutputMode outputMode,
+            Convert32 convert32, ImageType imageType, ValueSource valueSource)
             throws UnsupportedEncodingException {
-        runTest(Dimension.D3Z, bitDepth, operation, 3.2, outputMode, imageType, valueSource);
+        runTest(Dimension.D3Z, bitDepth, operation, 3.2, outputMode, convert32, imageType, valueSource);
 
     }
 
@@ -154,28 +160,21 @@ public class ImageMathMSTest {
     @MethodSource("dimSingleOperationInputProvider")
     void test8BitSingleOperation(Dimension dimension, Operation operation, OutputMode outputMode, ImageType imageType)
             throws UnsupportedEncodingException {
-        runTest(dimension, BitDepth.B8, operation, Double.NaN, outputMode, imageType, null);
+        runTest(dimension, BitDepth.B8, operation, Double.NaN, outputMode, Convert32.C32F, imageType, null);
 
     }
 
     @ParameterizedTest
     @MethodSource("bitDepthSingleOperationInputProvider")
-    void testD3ZSingleOperation(BitDepth bitDepth, Operation operation, OutputMode outputMode, ImageType imageType)
+    void testD3ZSingleOperation(BitDepth bitDepth, Operation operation, OutputMode outputMode, Convert32 convert32,
+            ImageType imageType)
             throws UnsupportedEncodingException {
-        runTest(Dimension.D3Z, bitDepth, operation, Double.NaN, outputMode, imageType, null);
+        runTest(Dimension.D3Z, bitDepth, operation, Double.NaN, outputMode, convert32, imageType, null);
 
     }
 
-    // @Test
-    // void testTest()
-    // throws UnsupportedEncodingException {
-    // runTest(Dimension.D3Z, BitDepth.B8, Operation.OADD, 3.2,
-    // OutputMode.CREATE_NEW, ImageType.IMAGEPLUS, ValueSource.SFIXED);
-
-    // }
-
     public static void runTest(Dimension dimension, BitDepth bitDepth, Operation operation, double value,
-            OutputMode outputMode, ImageType imageType, @Nullable ValueSource valueSource)
+            OutputMode outputMode, Convert32 convert32, ImageType imageType, @Nullable ValueSource valueSource)
             throws UnsupportedEncodingException {
         boolean applyToInput = outputMode.equals(OutputMode.APPLY_TO_INPUT);
 
@@ -201,6 +200,15 @@ public class ImageMathMSTest {
         imageMath.updateParameterValue(ImageMath.APPLY_TO_INPUT, applyToInput);
         if (!applyToInput)
             imageMath.updateParameterValue(ImageMath.OUTPUT_IMAGE, "Test_output");
+
+        switch (convert32) {
+            case C32F:
+                imageMath.updateParameterValue(ImageMath.OUTPUT_32BIT, false);
+                break;
+            case C32T:
+                imageMath.updateParameterValue(ImageMath.OUTPUT_32BIT, true);
+                break;
+        }
 
         String valueString = "";
         if (operation instanceof VariableOperation) {
@@ -255,7 +263,7 @@ public class ImageMathMSTest {
 
         // Loading the expected image
         String expectedName = "/msimages/imagemath/ImageMath_" + dimension + "_" + bitDepth + "_" + operation
-                + valueString + ".zip";
+                + valueString + "_" + convert32 + ".zip";
         assumeTrue(FilterImageMSTest.class.getResource(expectedName) != null);
 
         String expectedPath = URLDecoder.decode(FilterImageMSTest.class.getResource(expectedName).getPath(), "UTF-8");
