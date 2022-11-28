@@ -7,13 +7,14 @@ import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.scijava.Priority;
+import org.scijava.io.location.FileLocation;
+import org.scijava.io.location.Location;
 import org.scijava.plugin.Plugin;
 
 import com.drew.lang.annotations.NotNull;
@@ -68,6 +69,9 @@ import io.github.sjcross.sjcommon.metadataextractors.Metadata;
 import io.github.sjcross.sjcommon.metadataextractors.NameExtractor;
 import io.github.sjcross.sjcommon.process.CommaSeparatedStringInterpreter;
 import io.github.sjcross.sjcommon.system.FileCrawler;
+import io.scif.Plane;
+import io.scif.Reader;
+import io.scif.SCIFIO;
 import loci.common.DebugTools;
 import loci.common.services.DependencyException;
 import loci.common.services.ServiceException;
@@ -136,6 +140,14 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
     public static final String OUTPUT_BIT_DEPTH = "Output bit depth";
     public static final String MIN_INPUT_INTENSITY = "Minimum input intensity";
     public static final String MAX_INPUT_INTENSITY = "Maximum input intensity";
+
+    public static void main(String[] args) throws io.scif.FormatException, IOException {
+        SCIFIO scifio = new SCIFIO();
+        String path = "C:\\Users\\steph\\Desktop\\lumen_area.tif";
+        Reader reader = scifio.initializer().initializeReader(new FileLocation(path));
+        Plane plane = reader.openPlane(0, 0);
+        System.out.println(plane.getLengths()[0]);
+    }
 
     public ImageLoader(Modules modules) {
         super("Load image", modules);
