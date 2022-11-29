@@ -1,7 +1,11 @@
 package io.github.mianalysis.mia.object.image;
 
+import java.util.Iterator;
+
 import ij.ImagePlus;
 import io.github.mianalysis.mia.MIA;
+import io.github.mianalysis.mia.object.ImgPlusCoordinateIterator;
+import io.github.sjcross.sjcommon.object.Point;
 import io.github.sjcross.sjcommon.object.volume.SpatCal;
 import net.imagej.ImgPlus;
 import net.imagej.axis.Axes;
@@ -210,19 +214,19 @@ public class ImgPlusTools {
             } else if (axisType == Axes.CHANNEL) {
                 interval[0][i] = c[0];
                 if (c[1] == -1)
-                    interval[1][i] = img.dimension(i)-1;
+                    interval[1][i] = img.dimension(i) - 1;
                 else
                     interval[1][i] = c[1];
             } else if (axisType == Axes.Z) {
                 interval[0][i] = z[0];
                 if (z[1] == -1)
-                    interval[1][i] = img.dimension(i)-1;
+                    interval[1][i] = img.dimension(i) - 1;
                 else
                     interval[1][i] = z[1];
             } else if (axisType == Axes.TIME) {
                 interval[0][i] = t[0];
                 if (t[1] == -1)
-                    interval[1][i] = img.dimension(i)-1;
+                    interval[1][i] = img.dimension(i) - 1;
                 else
                     interval[1][i] = t[1];
             }
@@ -298,5 +302,10 @@ public class ImgPlusTools {
     public static <T extends RealType<T> & NativeType<T>> void reportDimensions(RandomAccessibleInterval<T> rai) {
         for (int i = 0; i < rai.numDimensions(); i++)
             MIA.log.writeDebug("Index " + i + ": Length=" + rai.dimension(i));
+    }
+
+    public static <T extends RealType<T> & NativeType<T>> Iterator<net.imglib2.Point> wrapPointIterator(
+            Iterator<Point<Integer>> iterator, ImgPlus<T> imgPlus, int c, int t) {
+        return new ImgPlusCoordinateIterator<T>(iterator, imgPlus, c, t);
     }
 }

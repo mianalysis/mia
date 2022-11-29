@@ -3,10 +3,10 @@ package io.github.mianalysis.mia.module.images.transform;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 
-import com.drew.lang.annotations.NotNull;
-
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
+
+import com.drew.lang.annotations.NotNull;
 
 import ij.ImagePlus;
 import ij.plugin.HyperStackConverter;
@@ -20,6 +20,7 @@ import io.github.mianalysis.mia.module.images.configure.SetLookupTable;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.image.Image;
 import io.github.mianalysis.mia.object.image.ImageFactory;
+import io.github.mianalysis.mia.object.image.ImgPlusTools;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
@@ -34,7 +35,6 @@ import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Status;
-import io.github.mianalysis.mia.process.ImgPlusTools;
 import net.imagej.ImgPlus;
 import net.imagej.axis.Axes;
 import net.imagej.axis.AxisType;
@@ -43,7 +43,6 @@ import net.imglib2.Cursor;
 import net.imglib2.RandomAccess;
 import net.imglib2.img.cell.CellImgFactory;
 import net.imglib2.img.display.imagej.ImageJFunctions;
-import net.imglib2.loops.LoopBuilder;
 import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
 import net.imglib2.view.Views;
@@ -255,10 +254,9 @@ public class ConcatenateStacks<T extends RealType<T> & NativeType<T>> extends Mo
         ImgPlus<T> imgOut = concatenateImages(im1, im2, axis);
 
         // Appending any additional images
-        for (int i = 2; i < inputImages.size(); i++) {
+        for (int i = 2; i < inputImages.size(); i++)
             imgOut = concatenateImages(imgOut, inputImages.get(i).getImgPlus(), axis);
-        }
-
+        
         // If concatenation failed (for example, if the dimensions were inconsistent) it
         // returns null
         if (imgOut == null)
@@ -269,7 +267,7 @@ public class ConcatenateStacks<T extends RealType<T> & NativeType<T>> extends Mo
         // by duplicating it
         ImagePlus outputImagePlus = ImageJFunctions.wrap(imgOut, outputImageName).duplicate();
         outputImagePlus.setCalibration(inputImages.get(0).getImagePlus().getCalibration());
-        ImgPlusTools.applyAxes(imgOut, outputImagePlus);
+        ImgPlusTools.applyDimensions(imgOut, outputImagePlus);
 
         return ImageFactory.createImage(outputImageName, outputImagePlus);
 

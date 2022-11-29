@@ -4,6 +4,7 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.util.HashSet;
 import java.util.List;
 
 import javax.swing.JFileChooser;
@@ -184,9 +185,11 @@ public class AnalysisReader {
 
         // If no module was found matching that name an error message is displayed
         int count = 0;
-        for (Dependency dependency : MIA.getDependencies().getDependencies(moduleName, false))
-            if (!dependency.test())
-                count++;
+        HashSet<Dependency> dependencies = MIA.getDependencies().getDependencies(moduleName, false);
+        if (dependencies != null)
+            for (Dependency dependency : dependencies)
+                if (!dependency.test())
+                    count++;
 
         if (count > 0) {
             MIA.log.writeWarning("Module \"" + moduleName
@@ -221,7 +224,7 @@ public class AnalysisReader {
             }
 
             clazz = (Class<Module>) Class.forName(availableModuleName);
-            
+
         } catch (ClassNotFoundException e) {
             MIA.log.writeError(e);
         }

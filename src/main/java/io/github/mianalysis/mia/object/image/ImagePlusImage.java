@@ -203,11 +203,8 @@ public class ImagePlusImage<T extends RealType<T> & NativeType<T>> extends Image
         ImagePlus dispIpl = new Duplicator().run(imagePlus);
         dispIpl.setOverlay(overlay);
         dispIpl.setTitle(title);
-        if (normalise) {
-            ImageStatistics stats = dispIpl.getStatistics();
-            if (stats.min != stats.max)
-                IntensityMinMax.run(dispIpl, true);
-        }
+        if (normalise)
+            IntensityMinMax.run(dispIpl, true);
 
         dispIpl.setPosition(1, 1, 1);
         dispIpl.updateChannelAndDraw();
@@ -259,9 +256,10 @@ public class ImagePlusImage<T extends RealType<T> & NativeType<T>> extends Image
             this.imagePlus = null;
             return;
         }
-        
+
         // Duplicating ensures any cached images are moved to RAM
         imagePlus = ImageJFunctions.wrap(img, name).duplicate();
+        ImgPlusTools.applyDimensions(img, imagePlus);
 
     }
 

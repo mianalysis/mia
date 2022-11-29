@@ -1,9 +1,10 @@
 package io.github.mianalysis.mia.object;
 
-import java.awt.Shape;
 import java.awt.Polygon;
 import java.awt.Rectangle;
+import java.awt.Shape;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 
 import ij.IJ;
@@ -18,6 +19,9 @@ import io.github.sjcross.sjcommon.object.Point;
 import io.github.sjcross.sjcommon.object.volume.PointOutOfRangeException;
 import io.github.sjcross.sjcommon.object.volume.Volume;
 import io.github.sjcross.sjcommon.object.volume.VolumeType;
+import net.imagej.ImgPlus;
+import net.imglib2.type.NativeType;
+import net.imglib2.type.numeric.RealType;
 
 /**
  * Created by Stephen on 30/04/2017.
@@ -556,6 +560,10 @@ public class Obj extends Volume {
         getCoordinateSet().removeIf(point -> point.getX() < 0 || point.getX() >= width || point.getY() < 0
                 || point.getY() >= height || point.getZ() < 0 || point.getZ() >= nSlices);
 
+    }
+
+    public <T extends RealType<T> & NativeType<T>> Iterator<net.imglib2.Point> getImgPlusCoordinateIterator(ImgPlus<T> imgPlus, int c) {
+        return new ImgPlusCoordinateIterator<>(getCoordinateIterator(), imgPlus, c, T);
     }
 
     public void clearROIs() {

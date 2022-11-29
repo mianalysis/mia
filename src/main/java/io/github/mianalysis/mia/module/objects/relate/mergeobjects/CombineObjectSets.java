@@ -1,12 +1,12 @@
 package io.github.mianalysis.mia.module.objects.relate.mergeobjects;
 
-import io.github.mianalysis.mia.module.Module;
-import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.module.Module;
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
-import io.github.mianalysis.mia.module.Category;
+
 import io.github.mianalysis.mia.module.Categories;
+import io.github.mianalysis.mia.module.Category;
+import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
@@ -25,7 +25,7 @@ import io.github.mianalysis.mia.object.system.Status;
 /**
  * Created by sc13967 on 31/01/2018.
  */
-@Plugin(type = Module.class, priority=Priority.LOW, visible=true)
+@Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class CombineObjectSets extends Module {
     public static final String INPUT_SEPARATOR = "Objects input";
     public static final String INPUT_OBJECTS_1 = "Input objects 1";
@@ -56,14 +56,13 @@ public class CombineObjectSets extends Module {
         }
     }
 
-    static void combineAndAdd(Objs targetObjects, Objs sourceObjects) {
+    public static void combineAndAdd(Objs targetObjects, Objs sourceObjects) {
         for (Obj obj : sourceObjects.values()) {
             Obj newObj = targetObjects.createAndAddNewObject(obj.getVolumeType());
             newObj.setCoordinateSet(obj.getCoordinateSet().duplicate());
             newObj.setT(obj.getT());
         }
     }
-
 
     @Override
     public Category getCategory() {
@@ -73,18 +72,18 @@ public class CombineObjectSets extends Module {
     @Override
     public String getDescription() {
         return "Combines the objects from two collections stored in the workspace.  Either the objects from one collection can be added to the other or they can both be combined into a new collection, which is added to the workspace.<br><br>Note: Any objects added to another collection (either the \"other\" object collection or to a new collection) are duplicates of the original objects.  These duplicates contain the same spatial and temporal information, but do not contain the relationship or measurement information of the originals.  The original objects are unaffected by this module.";
-        
+
     }
 
     @Override
     public Status process(Workspace workspace) {
         // Getting input objects
-        String inputObjects1Name = parameters.getValue(INPUT_OBJECTS_1,workspace);
+        String inputObjects1Name = parameters.getValue(INPUT_OBJECTS_1, workspace);
         Objs inputObjects1 = workspace.getObjectSet(inputObjects1Name);
-        String inputObjects2Name = parameters.getValue(INPUT_OBJECTS_2,workspace);
+        String inputObjects2Name = parameters.getValue(INPUT_OBJECTS_2, workspace);
         Objs inputObjects2 = workspace.getObjectSet(inputObjects2Name);
-        String outputMode = parameters.getValue(OUTPUT_MODE,workspace);
-        String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS,workspace);
+        String outputMode = parameters.getValue(OUTPUT_MODE, workspace);
+        String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS, workspace);
 
         // Doing object merging
         switch (outputMode) {
@@ -138,7 +137,7 @@ public class CombineObjectSets extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
-Workspace workspace = null;
+        Workspace workspace = null;
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.get(INPUT_SEPARATOR));
@@ -147,7 +146,7 @@ Workspace workspace = null;
 
         returnedParameters.add(parameters.get(OUTPUT_SEPARATOR));
         returnedParameters.add(parameters.get(OUTPUT_MODE));
-        switch ((String) parameters.getValue(OUTPUT_MODE,workspace)) {
+        switch ((String) parameters.getValue(OUTPUT_MODE, workspace)) {
             case OutputModes.CREATE_NEW:
                 returnedParameters.add(parameters.get(OUTPUT_OBJECTS));
                 break;
@@ -159,27 +158,27 @@ Workspace workspace = null;
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
-return null;
+        return null;
     }
 
     @Override
-public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
-return null;
+    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+        return null;
     }
 
     @Override
-public MetadataRefs updateAndGetMetadataReferences() {
-return null;
+    public MetadataRefs updateAndGetMetadataReferences() {
+        return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
-return null;
+        return null;
     }
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
-return null;
+        return null;
     }
 
     @Override

@@ -14,6 +14,7 @@ import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.image.Image;
 import io.github.mianalysis.mia.object.image.ImageFactory;
+import io.github.mianalysis.mia.object.image.ImgPlusTools;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
@@ -28,7 +29,6 @@ import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Status;
-import io.github.mianalysis.mia.process.ImgPlusTools;
 import net.imagej.ImgPlus;
 import net.imagej.axis.Axes;
 import net.imglib2.Cursor;
@@ -106,7 +106,7 @@ public class CropImage<T extends RealType<T> & NativeType<T>> extends Module {
         // strangely, but this can be remedied by duplicating it
         ImagePlus outputImagePlus = ImageJFunctions.wrap(outputImg, outputImageName).duplicate();
         outputImagePlus.setCalibration(calibration);
-        ImgPlusTools.applyAxes(outputImg, outputImagePlus);
+        ImgPlusTools.applyDimensions(outputImg, outputImagePlus);
 
         return ImageFactory.createImage(outputImageName, outputImagePlus);
 

@@ -122,37 +122,37 @@ public class ColourFactory {
             float H = 0f;
 
             switch (colour) {
-            case "":
-            case SingleColours.WHITE:
-                H = Float.MAX_VALUE;
-                break;
-            case SingleColours.BLACK:
-                H = Float.MIN_VALUE;
-                break;
-            case SingleColours.RED:
-                H = 0f;
-                break;
-            case SingleColours.ORANGE:
-                H = 0.078f;
-                break;
-            case SingleColours.YELLOW:
-                H = 0.157f;
-                break;
-            case SingleColours.GREEN:
-                H = 0.314f;
-                break;
-            case SingleColours.CYAN:
-                H = 0.471f;
-                break;
-            case SingleColours.BLUE:
-                H = 0.627f;
-                break;
-            case SingleColours.VIOLET:
-                H = 0.706f;
-                break;
-            case SingleColours.MAGENTA:
-                H = 0.784f;
-                break;
+                case "":
+                case SingleColours.WHITE:
+                    H = Float.MAX_VALUE;
+                    break;
+                case SingleColours.BLACK:
+                    H = Float.MIN_VALUE;
+                    break;
+                case SingleColours.RED:
+                    H = 0f;
+                    break;
+                case SingleColours.ORANGE:
+                    H = 0.078f;
+                    break;
+                case SingleColours.YELLOW:
+                    H = 0.157f;
+                    break;
+                case SingleColours.GREEN:
+                    H = 0.314f;
+                    break;
+                case SingleColours.CYAN:
+                    H = 0.471f;
+                    break;
+                case SingleColours.BLUE:
+                    H = 0.627f;
+                    break;
+                case SingleColours.VIOLET:
+                    H = 0.706f;
+                    break;
+                case SingleColours.MAGENTA:
+                    H = 0.784f;
+                    break;
             }
 
             hues.put(ID, H);
@@ -175,12 +175,12 @@ public class ColourFactory {
         return colours;
 
     }
-    
+
     public static HashMap<Integer, Color> valueToColour(HashMap<Integer, Float> hues) {
         HashMap<Integer, Color> colours = new HashMap<>();
         for (int idx : hues.keySet())
             colours.put(idx, Color.getHSBColor(hues.get(idx) + 1E-8f, 1f, 1f));
-        
+
         return colours;
 
     }
@@ -391,28 +391,28 @@ public class ColourFactory {
 
     public static Color getColour(String colour) {
         switch (colour) {
-        default:
-        case "":
-        case SingleColours.WHITE:
-            return Color.WHITE;
-        case SingleColours.BLACK:
-            return Color.BLACK;
-        case SingleColours.RED:
-            return Color.RED;
-        case SingleColours.ORANGE:
-            return Color.ORANGE;
-        case SingleColours.YELLOW:
-            return Color.YELLOW;
-        case SingleColours.GREEN:
-            return Color.GREEN;
-        case SingleColours.CYAN:
-            return Color.CYAN;
-        case SingleColours.BLUE:
-            return Color.BLUE;
-        case SingleColours.VIOLET:
-            return Color.getHSBColor(0.706f, 1, 1);
-        case SingleColours.MAGENTA:
-            return Color.MAGENTA;
+            default:
+            case "":
+            case SingleColours.WHITE:
+                return Color.WHITE;
+            case SingleColours.BLACK:
+                return Color.BLACK;
+            case SingleColours.RED:
+                return Color.RED;
+            case SingleColours.ORANGE:
+                return Color.ORANGE;
+            case SingleColours.YELLOW:
+                return Color.YELLOW;
+            case SingleColours.GREEN:
+                return Color.GREEN;
+            case SingleColours.CYAN:
+                return Color.CYAN;
+            case SingleColours.BLUE:
+                return Color.BLUE;
+            case SingleColours.VIOLET:
+                return Color.getHSBColor(0.706f, 1, 1);
+            case SingleColours.MAGENTA:
+                return Color.MAGENTA;
         }
     }
 
@@ -449,31 +449,31 @@ public class ColourFactory {
 
             IndexColorModel cm = null;
             switch (colourMode) {
-            case ColourMaps.BLACK_FIRE:
-                cm = LUTs.BlackFire().getColorModel();
-                break;
-            case ColourMaps.ICE:
-                cm = LUTs.Ice().getColorModel();
-                break;
-            case ColourMaps.PHYSICS:
-                cm = LUTs.Physics().getColorModel();
-                break;
-            case ColourMaps.RANDOM:
-                cm = LUTs.Random(false).getColorModel();
-                break;
-            case ColourMaps.JET:
-                cm = LUTs.Jet().getColorModel();
-                break;
-            case ColourMaps.SPECTRUM:
-            default:
-                cm = LUTs.Spectrum().getColorModel();
-                break;
-            case ColourMaps.THERMAL:
-                cm = LUTs.Thermal().getColorModel();
-                break;
+                case ColourMaps.BLACK_FIRE:
+                    cm = LUTs.BlackFire().getColorModel();
+                    break;
+                case ColourMaps.ICE:
+                    cm = LUTs.Ice().getColorModel();
+                    break;
+                case ColourMaps.PHYSICS:
+                    cm = LUTs.Physics().getColorModel();
+                    break;
+                case ColourMaps.RANDOM:
+                    cm = LUTs.Random(false, false).getColorModel();
+                    break;
+                case ColourMaps.JET:
+                    cm = LUTs.Jet().getColorModel();
+                    break;
+                case ColourMaps.SPECTRUM:
+                default:
+                    cm = LUTs.Spectrum().getColorModel();
+                    break;
+                case ColourMaps.THERMAL:
+                    cm = LUTs.Thermal().getColorModel();
+                    break;
             }
 
-            int idx = (int) Math.round(value * 255);      
+            int idx = (int) Math.round(value * 255);
             color = new Color(cm.getRed(idx), cm.getGreen(idx), cm.getBlue(idx));
 
         }
