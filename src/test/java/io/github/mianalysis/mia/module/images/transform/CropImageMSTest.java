@@ -17,6 +17,7 @@ import ij.ImagePlus;
 import io.github.mianalysis.enums.BitDepth;
 import io.github.mianalysis.enums.Dimension;
 import io.github.mianalysis.enums.OutputMode;
+import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.ModuleTest;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.Workspace;
@@ -27,15 +28,21 @@ import io.github.mianalysis.mia.object.image.ImageType;
 import io.github.mianalysis.mia.object.system.Status;
 
 public class CropImageMSTest extends ModuleTest {
+    enum LimitsMode {
+        LFIXED,
+        LOBJECTS
+    }
+
     /**
      * Generates dimension permutations
      */
     public static Stream<Arguments> dimInputProvider() {
         Stream.Builder<Arguments> argumentBuilder = Stream.builder();
         for (Dimension dimension : Dimension.values())
-            for (OutputMode outputMode : OutputMode.values())
-                for (ImageType imageType : ImageType.values())
-                    argumentBuilder.add(Arguments.of(dimension, outputMode, imageType));
+            for (LimitsMode limitsMode : LimitsMode.values())
+                for (OutputMode outputMode : OutputMode.values())
+                    for (ImageType imageType : ImageType.values())
+                        argumentBuilder.add(Arguments.of(dimension, limitsMode, outputMode, imageType));
 
         return argumentBuilder.build();
 
@@ -47,26 +54,64 @@ public class CropImageMSTest extends ModuleTest {
     public static Stream<Arguments> bitdepthInputProvider() {
         Stream.Builder<Arguments> argumentBuilder = Stream.builder();
         for (BitDepth bitDepth : BitDepth.values())
-            for (OutputMode outputMode : OutputMode.values())
-                for (ImageType imageType : ImageType.values())
-                    argumentBuilder.add(Arguments.of(bitDepth, outputMode, imageType));
+            for (LimitsMode limitsMode : LimitsMode.values())
+                for (OutputMode outputMode : OutputMode.values())
+                    for (ImageType imageType : ImageType.values())
+                        argumentBuilder.add(Arguments.of(bitDepth, limitsMode, outputMode, imageType));
 
         return argumentBuilder.build();
 
     }
 
+    /*
+     * Normal crop within limits (all dimensions, 8-bit)
+     */
     @ParameterizedTest
     @MethodSource("dimInputProvider")
-    void test8Bit_X12Y5W23H6(Dimension dimension, OutputMode outputMode, ImageType imageType)
+    void test8Bit_X12Y15W23H6(Dimension dimension, LimitsMode limitsMode, OutputMode outputMode, ImageType imageType)
             throws UnsupportedEncodingException {
-        runTest(dimension, BitDepth.B8, 12, 5, 23, 6, outputMode, imageType);
+        runTest(dimension, BitDepth.B8, limitsMode, 12, 15, 23, 6, outputMode, imageType);
     }
 
+    /*
+     * Negative value for one input (all dimensions, 8-bit)
+     */
+    @ParameterizedTest
+    @MethodSource("dimInputProvider")
+    void test8Bit_Xm12Y15W23H6(Dimension dimension, LimitsMode limitsMode, OutputMode outputMode, ImageType imageType)
+            throws UnsupportedEncodingException {
+        runTest(dimension, BitDepth.B8, limitsMode, -12, 15, 23, 6, outputMode, imageType);
+    }
+
+    /*
+     * Negative width (all dimensions, 8-bit)
+     */
+    @ParameterizedTest
+    @MethodSource("dimInputProvider")
+    void test8Bit_X12Y15W23Hm6(Dimension dimension, LimitsMode limitsMode, OutputMode outputMode, ImageType imageType)
+            throws UnsupportedEncodingException {
+        runTest(dimension, BitDepth.B8, limitsMode, 12, 15, 23, -6, outputMode, imageType);
+    }
+
+    /*
+     * Height beyond limit (all dimensions, 8-bit)
+     */
+    @ParameterizedTest
+    @MethodSource("dimInputProvider")
+    void test8Bit_X12Y15W23H90(Dimension dimension, LimitsMode limitsMode, OutputMode outputMode, ImageType imageType)
+            throws UnsupportedEncodingException {
+        runTest(dimension, BitDepth.B8, limitsMode, 12, 15, 23, 90, outputMode, imageType);
+    }
+
+    /*
+     * All within limits (D4ZT dimension, all bit depths)
+     */
     @ParameterizedTest
     @MethodSource("bitdepthInputProvider")
-    void testAllBitDepths_D4ZT_X12Y5W23H6(BitDepth bitDepth, OutputMode outputMode, ImageType imageType)
+    void testAllBitDepths_D4ZT_X12Y15W23H6(BitDepth bitDepth, LimitsMode limitsMode, OutputMode outputMode,
+            ImageType imageType)
             throws UnsupportedEncodingException {
-        runTest(Dimension.D4ZT, bitDepth, 12, 5, 23, 6, outputMode, imageType);
+        runTest(Dimension.D4ZT, bitDepth, limitsMode, 12, 15, 23, 6, outputMode, imageType);
     }
 
     /**
@@ -74,7 +119,8 @@ public class CropImageMSTest extends ModuleTest {
      * 
      * @throws UnsupportedEncodingException
      */
-    public static void runTest(Dimension dimension, BitDepth bitDepth, int x, int y, int w, int h,
+    public static void runTest(Dimension dimension, BitDepth bitDepth, LimitsMode limitsMode, int x, int y, int w,
+            int h,
             OutputMode outputMode, ImageType imageType)
             throws UnsupportedEncodingException {
         boolean applyToInput = outputMode.equals(OutputMode.APPLY_TO_INPUT);
@@ -108,11 +154,25 @@ public class CropImageMSTest extends ModuleTest {
         cropImage.updateParameterValue(CropImage.INPUT_IMAGE, "Test_image");
         cropImage.updateParameterValue(CropImage.APPLY_TO_INPUT, applyToInput);
         cropImage.updateParameterValue(CropImage.OUTPUT_IMAGE, "Test_output");
-        cropImage.updateParameterValue(CropImage.LIMITS_MODE, CropImage.LimitsModes.FIXED_VALUES);
-        cropImage.updateParameterValue(CropImage.LEFT, x);
-        cropImage.updateParameterValue(CropImage.TOP, y);
-        cropImage.updateParameterValue(CropImage.WIDTH, w);
-        cropImage.updateParameterValue(CropImage.HEIGHT, h);
+        switch (limitsMode) {
+            case LFIXED:
+                cropImage.updateParameterValue(CropImage.LIMITS_MODE, CropImage.LimitsModes.FIXED_VALUES);
+                cropImage.updateParameterValue(CropImage.LEFT, x);
+                cropImage.updateParameterValue(CropImage.TOP, y);
+                cropImage.updateParameterValue(CropImage.WIDTH, w);
+                cropImage.updateParameterValue(CropImage.HEIGHT, h);
+                break;
+            case LOBJECTS:
+                cropImage.updateParameterValue(CropImage.LIMITS_MODE, CropImage.LimitsModes.FROM_OBJECTS);
+                cropImage.updateParameterValue(CropImage.LEFT, 0);
+                cropImage.updateParameterValue(CropImage.TOP, 0);
+                cropImage.updateParameterValue(CropImage.WIDTH, 0);
+                cropImage.updateParameterValue(CropImage.HEIGHT, 0);
+                
+                MIA.log.writeDebug("Need to generate (or load) objects with limits matching those specified as inputs.");
+                // cropImage.updateParameterValue(CropImage.INPUT_OBJECTS, "LimitsObjects");
+                break;
+        }
 
         // Running Module
         Status status = cropImage.execute(workspace);
