@@ -598,17 +598,17 @@ Workspace workspace = null;
                 break;
         }
 
-        returnedParameters.add(parameters.getParameter(MEASUREMENT_SEPARATOR));
-        if ((boolean) parameters.getValue(MEASURE_PCC,null)
-                || ((String) parameters.getValue(THRESHOLDING_MODE,null)).equals(ThresholdingModes.BISECTION)
-                || ((String) parameters.getValue(THRESHOLDING_MODE,null)).equals(ThresholdingModes.COSTES)) {
-            returnedParameters.add(parameters.getParameter(PCC_IMPLEMENTATION));
-        }
+        returnedParameters.add(parameters.getParameter(MEASUREMENT_SEPARATOR));        
         returnedParameters.add(parameters.getParameter(MEASURE_KENDALLS_RANK));
         returnedParameters.add(parameters.getParameter(MEASURE_LI_ICQ));
         returnedParameters.add(parameters.getParameter(MEASURE_MANDERS));
         returnedParameters.add(parameters.getParameter(MEASURE_PCC));
         returnedParameters.add(parameters.getParameter(MEASURE_SPEARMANS_RANK));
+        if ((boolean) parameters.getValue(MEASURE_PCC,null)
+                || ((String) parameters.getValue(THRESHOLDING_MODE,null)).equals(ThresholdingModes.BISECTION)
+                || ((String) parameters.getValue(THRESHOLDING_MODE,null)).equals(ThresholdingModes.COSTES)) {
+            returnedParameters.add(parameters.getParameter(PCC_IMPLEMENTATION));
+        }
 
         return returnedParameters;
 

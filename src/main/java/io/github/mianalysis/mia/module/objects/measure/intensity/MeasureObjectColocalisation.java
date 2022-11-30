@@ -18,7 +18,6 @@ import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.image.Image;
-import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.ImageMeasurementP;
@@ -266,16 +265,16 @@ Workspace workspace = null;
         }
 
         returnedParameters.add(parameters.getParameter(MEASUREMENT_SEPARATOR));
-        if ((boolean) parameters.getValue(MEASURE_PCC,workspace)
-                || ((String) parameters.getValue(THRESHOLDING_MODE,workspace)).equals(ThresholdingModes.BISECTION)
-                || ((String) parameters.getValue(THRESHOLDING_MODE,workspace)).equals(ThresholdingModes.COSTES)) {
-            returnedParameters.add(parameters.getParameter(PCC_IMPLEMENTATION));
-        }
         returnedParameters.add(parameters.getParameter(MEASURE_KENDALLS_RANK));
         returnedParameters.add(parameters.getParameter(MEASURE_LI_ICQ));
         returnedParameters.add(parameters.getParameter(MEASURE_MANDERS));
         returnedParameters.add(parameters.getParameter(MEASURE_PCC));
         returnedParameters.add(parameters.getParameter(MEASURE_SPEARMANS_RANK));
+        if ((boolean) parameters.getValue(MEASURE_PCC,workspace)
+                || ((String) parameters.getValue(THRESHOLDING_MODE,workspace)).equals(ThresholdingModes.BISECTION)
+                || ((String) parameters.getValue(THRESHOLDING_MODE,workspace)).equals(ThresholdingModes.COSTES)) {
+            returnedParameters.add(parameters.getParameter(PCC_IMPLEMENTATION));
+        }
 
         return returnedParameters;
 
