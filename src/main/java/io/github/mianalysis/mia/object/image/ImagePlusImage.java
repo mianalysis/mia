@@ -193,12 +193,12 @@ public class ImagePlusImage<T extends RealType<T> & NativeType<T>> extends Image
         }
     }
 
-    public void showImage(String title, @Nullable LUT lut, boolean normalise, boolean composite) {
+    public void show(String title, @Nullable LUT lut, boolean normalise, boolean composite) {
         // Show using this overlay
-        showImage(title, lut, normalise, composite, imagePlus.getOverlay());
+        show(title, lut, normalise, composite, imagePlus.getOverlay());
     }
 
-    public void showImage(String title, @Nullable LUT lut, boolean normalise, boolean composite, Overlay overlay) {
+    public void show(String title, @Nullable LUT lut, boolean normalise, boolean composite, Overlay overlay) {
         // Adds the specified overlay rather than the overlay associated with this image
         ImagePlus dispIpl = new Duplicator().run(imagePlus);
         dispIpl.setOverlay(overlay);

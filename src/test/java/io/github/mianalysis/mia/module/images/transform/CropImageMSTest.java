@@ -20,6 +20,7 @@ import io.github.mianalysis.enums.OutputMode;
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.ModuleTest;
 import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.Workspaces;
 import io.github.mianalysis.mia.object.image.Image;
@@ -30,7 +31,7 @@ import io.github.mianalysis.mia.object.system.Status;
 public class CropImageMSTest extends ModuleTest {
     enum LimitsMode {
         LFIXED,
-        LOBJECTS
+        // LOBJECTS
     }
 
     /**
@@ -114,6 +115,11 @@ public class CropImageMSTest extends ModuleTest {
         runTest(Dimension.D4ZT, bitDepth, limitsMode, 12, 15, 23, 6, outputMode, imageType);
     }
 
+    // @Test
+    // void test() throws UnsupportedEncodingException {
+    //     runTest(Dimension.D4CT, BitDepth.B8, LimitsMode.LFIXED, 12, 15, 23, 6, OutputMode.CREATE_NEW, ImageType.IMAGEPLUS);
+    // }
+
     /**
      * Performs the test
      * 
@@ -162,16 +168,16 @@ public class CropImageMSTest extends ModuleTest {
                 cropImage.updateParameterValue(CropImage.WIDTH, w);
                 cropImage.updateParameterValue(CropImage.HEIGHT, h);
                 break;
-            case LOBJECTS:
-                cropImage.updateParameterValue(CropImage.LIMITS_MODE, CropImage.LimitsModes.FROM_OBJECTS);
-                cropImage.updateParameterValue(CropImage.LEFT, 0);
-                cropImage.updateParameterValue(CropImage.TOP, 0);
-                cropImage.updateParameterValue(CropImage.WIDTH, 0);
-                cropImage.updateParameterValue(CropImage.HEIGHT, 0);
+            // case LOBJECTS:
+            //     cropImage.updateParameterValue(CropImage.LIMITS_MODE, CropImage.LimitsModes.FROM_OBJECTS);
+            //     cropImage.updateParameterValue(CropImage.LEFT, 0);
+            //     cropImage.updateParameterValue(CropImage.TOP, 0);
+            //     cropImage.updateParameterValue(CropImage.WIDTH, 0);
+            //     cropImage.updateParameterValue(CropImage.HEIGHT, 0);
                 
-                MIA.log.writeDebug("Need to generate (or load) objects with limits matching those specified as inputs.");
-                // cropImage.updateParameterValue(CropImage.INPUT_OBJECTS, "LimitsObjects");
-                break;
+            //     MIA.log.writeDebug("Need to generate (or load) objects with limits matching those specified as inputs.");
+            //     // cropImage.updateParameterValue(CropImage.INPUT_OBJECTS, "LimitsObjects");
+            //     break;
         }
 
         // Running Module
@@ -192,6 +198,12 @@ public class CropImageMSTest extends ModuleTest {
             assertNotNull(workspace.getImage("Test_output"));
 
             Image outputImage = workspace.getImage("Test_output");
+
+            // new ImageJ();
+            // expectedImage.showImage();
+            // outputImage.showImage();
+            // IJ.runMacro("waitForUser");
+
             assertEquals(expectedImage, outputImage);
 
         }

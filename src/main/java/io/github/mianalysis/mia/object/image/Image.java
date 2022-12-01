@@ -27,15 +27,15 @@ import net.imglib2.type.numeric.RealType;
 /**
  * Created by stephen on 30/04/2017.
  */
-public abstract class Image <T extends RealType<T> & NativeType<T>> {
+public abstract class Image<T extends RealType<T> & NativeType<T>> {
     protected String name;
     protected LinkedHashMap<String, Measurement> measurements = new LinkedHashMap<>();
 
     // Abstract methods
 
-    public abstract void showImage(String title, @Nullable LUT lut, boolean normalise, boolean composite);
+    public abstract void show(String title, @Nullable LUT lut, boolean normalise, boolean composite);
 
-    public abstract void showImage(String title, @Nullable LUT lut, boolean normalise, boolean composite,
+    public abstract void show(String title, @Nullable LUT lut, boolean normalise, boolean composite,
             Overlay overlay);
 
     public abstract ImagePlus getImagePlus();
@@ -61,7 +61,6 @@ public abstract class Image <T extends RealType<T> & NativeType<T>> {
     public abstract Overlay getOverlay();
 
     public abstract void setOverlay(Overlay overlay);
-
 
     // PUBLIC METHODS
 
@@ -95,28 +94,69 @@ public abstract class Image <T extends RealType<T> & NativeType<T>> {
 
     }
 
+    public void show(String title, LUT lut, Overlay overlay) {
+        show(title, lut, true, false, overlay);
+    }
+
+    public void show(String title, LUT lut) {
+        show(title, lut, true, false);
+    }
+
+    public void show(String title) {
+        show(title, LUT.createLutFromColor(Color.WHITE));
+    }
+
+    public void show(LUT lut) {
+        show(name, lut);
+    }
+
+    public void show() {
+        show(name, null);
+    }
+
+    public void show(Overlay overlay) {
+        show(name, null, overlay);
+    }
+
+    @Deprecated
+    public void showImage(String title, @Nullable LUT lut, boolean normalise, boolean composite) {
+        show(title, lut, normalise, composite);
+    }
+
+    @Deprecated
+    public void showImage(String title, @Nullable LUT lut, boolean normalise, boolean composite,
+            Overlay overlay) {
+        show(title, lut, normalise, composite, overlay);
+    }
+
+    @Deprecated
     public void showImage(String title, LUT lut, Overlay overlay) {
-        showImage(title, lut, true, false, overlay);
+        show(title, lut, true, false, overlay);
     }
 
+    @Deprecated
     public void showImage(String title, LUT lut) {
-        showImage(title, lut, true, false);
+        show(title, lut, true, false);
     }
 
+    @Deprecated
     public void showImage(String title) {
-        showImage(title, LUT.createLutFromColor(Color.WHITE));
+        show(title, LUT.createLutFromColor(Color.WHITE));
     }
 
+    @Deprecated
     public void showImage(LUT lut) {
-        showImage(name, lut);
+        show(name, lut);
     }
 
+    @Deprecated
     public void showImage() {
-        showImage(name, null);
+        show(name, null);
     }
 
+    @Deprecated
     public void showImage(Overlay overlay) {
-        showImage(name, null, overlay);
+        show(name, null, overlay);
     }
 
     /**
