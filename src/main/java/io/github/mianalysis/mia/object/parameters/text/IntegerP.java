@@ -36,7 +36,7 @@ public class IntegerP extends TextType {
 
     public void setValue(String value) {
         // Checking this is valid
-        if (GlobalVariables.containsValue(value) || containsCalculation(value)) {
+        if (GlobalVariables.containsValue(value) || containsReference(value)) {
             this.value = value;
         } else {
             try {
