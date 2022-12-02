@@ -12,6 +12,7 @@ ModularImageAnalysis (MIA) is an ImageJ plugin which provides a modular framewor
 
 For the full documentation, please go to [mianalysis.github.io](https://mianalysis.github.io)
 
+![](https://github.com/mianalysis/mia/blob/main/docs/img/carousel/carousel1.png)
 
 Installation
 ------------
