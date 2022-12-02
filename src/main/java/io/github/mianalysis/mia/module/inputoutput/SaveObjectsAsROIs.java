@@ -2,6 +2,7 @@ package io.github.mianalysis.mia.module.inputoutput;
 
 import java.io.BufferedOutputStream;
 import java.io.DataOutputStream;
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.HashMap;
@@ -167,6 +168,9 @@ public class SaveObjectsAsROIs extends AbstractSaver {
         String outputPath = getOutputPath(modules, workspace);
         String outputName = getOutputName(modules, workspace);
 
+        // Ensuring folders have been created
+        new File(outputPath).mkdirs();
+        
         // Adding last bits to name
         outputPath = outputPath + outputName;
         outputPath = appendSeries(outputPath, workspace, appendSeriesMode);
