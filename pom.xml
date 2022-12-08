@@ -84,6 +84,11 @@
         <scp>compile</scp>
         <license.licenseName>GNU General Public License v3+</license.licenseName>
         <license.copyrightOwners>Stephen Cross</license.copyrightOwners>
+        
+        <protobuf.version>3.2.0</protobuf.version>
+		<tensorflow.version>1.15.0</tensorflow.version>
+		<jna.version>5.11.0</jna.version>
+		<imagej-tensorflow.version>1.1.6</imagej-tensorflow.version>
     </properties>
 
     <mailingLists>
@@ -312,6 +317,12 @@
             <groupId>com.github.stardist</groupId>
             <artifactId>stardist-imagej</artifactId>
             <version>0.3.0</version>
+            <scope>${scp}</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.github.deepimagej</groupId>
+            <artifactId>deepimagej-plugin</artifactId>
+            <version>2.1.15</version>
             <scope>${scp}</scope>
         </dependency>
         <dependency>
