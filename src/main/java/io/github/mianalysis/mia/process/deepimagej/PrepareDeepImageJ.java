@@ -1,7 +1,9 @@
 package io.github.mianalysis.mia.process.deepimagej;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -34,6 +36,14 @@ public class PrepareDeepImageJ implements PlugIn {
     // "models" + File.separator;
     private static String path = "C:\\Users\\steph\\Programs\\Fiji.app\\models\\";
     private static HashMap<String, DeepImageJ> dps = list(path);
+
+    public interface Formats {
+        String PYTORCH = "Pytorch";
+        String TENSORFLOW = "Tensorflow";
+
+        String[] ALL = new String[]{PYTORCH, TENSORFLOW};
+
+    }
 
     public static void main(String[] args) {
         ImagePlus imp = IJ.openImage(
@@ -98,12 +108,60 @@ public class PrepareDeepImageJ implements PlugIn {
         for (DeepImageJ dp : dps.values())
             if (dp.getName().equals(modelName)) {
                 if (dp.params.framework.toLowerCase().equals("tensorflow/pytorch"))
-                    return new String[] { "Pytorch", "Tensorflow" };
+                    return new String[] { Formats.PYTORCH, Formats.TENSORFLOW };
                 else if (dp.params.framework.toLowerCase().equals("pytorch"))
-                    return new String[] { "Pytorch" };
+                    return new String[] { Formats.PYTORCH };
                 else if (dp.params.framework.toLowerCase().equals("tensorflow"))
-                    return new String[] { "Tensorflow" };
+                    return new String[] { Formats.TENSORFLOW };
             }
+
+        return new String[0];
+
+    }
+
+    public static String[] getPreprocessings(String modelName) {
+        for (DeepImageJ dp : dps.values()) {
+            if (dp.getName().equals(modelName)) {
+                int count = 0;
+                for (String preKey:dp.params.pre.keySet())
+                    if (dp.params.pre.get(preKey) != null)
+                        count = count + dp.params.pre.get(preKey).length;
+                    
+                String[] choices = new String[count];
+                count = 0;
+                for (String preKey:dp.params.pre.keySet())
+                    if (dp.params.pre.get(preKey) != null)
+                    for (String currPre:dp.params.pre.get(preKey))
+                        choices[count++] = currPre;
+
+                return choices;
+
+            }
+        }
+
+        return new String[0];
+        
+    }
+
+    public static String[] getPostprocessings(String modelName) {
+        for (DeepImageJ dp : dps.values()) {
+            if (dp.getName().equals(modelName)) {
+                int count = 0;
+                for (String postKey:dp.params.post.keySet())
+                    if (dp.params.post.get(postKey) != null)
+                        count = count + dp.params.post.get(postKey).length;
+                    
+                String[] choices = new String[count];
+                count = 0;
+                for (String postKey:dp.params.post.keySet())
+                    if (dp.params.post.get(postKey) != null)
+                    for (String currPost:dp.params.post.get(postKey))
+                        choices[count++] = currPost;
+
+                return choices;
+
+            }
+        }
 
         return new String[0];
         
