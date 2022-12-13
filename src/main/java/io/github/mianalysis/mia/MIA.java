@@ -19,7 +19,6 @@ import org.scijava.plugin.PluginService;
 import org.scijava.script.ScriptService;
 import org.scijava.ui.UIService;
 
-import ij.IJ;
 import ij.Prefs;
 import io.github.mianalysis.mia.gui.GUI;
 import io.github.mianalysis.mia.module.LostAndFound;

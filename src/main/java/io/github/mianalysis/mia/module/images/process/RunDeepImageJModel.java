@@ -5,6 +5,7 @@ import org.scijava.plugin.Plugin;
 
 import deepimagej.DeepImageJ;
 import ij.ImagePlus;
+import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
@@ -18,11 +19,15 @@ import io.github.mianalysis.mia.object.parameters.InputImageP;
 import io.github.mianalysis.mia.object.parameters.OutputImageP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.SeparatorP;
+import io.github.mianalysis.mia.object.parameters.text.MessageP;
+import io.github.mianalysis.mia.object.parameters.text.StringP;
 import io.github.mianalysis.mia.object.refs.collections.ImageMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
+import io.github.mianalysis.mia.object.system.Colours;
+import io.github.mianalysis.mia.object.system.Preferences;
 import io.github.mianalysis.mia.object.system.Status;
 import io.github.mianalysis.mia.process.deepimagej.PrepareDeepImageJ;
 
@@ -30,15 +35,16 @@ import io.github.mianalysis.mia.process.deepimagej.PrepareDeepImageJ;
 public class RunDeepImageJModel extends Module {
     public static final String INPUT_SEPARATOR = "Image input/output";
     public static final String INPUT_IMAGE = "Input image";
+    public static final String AXES_ORDER = "Axes order";
     public static final String OUTPUT_IMAGE = "Output image";
 
     public static final String MODEL_SEPARATOR = "Model controls";
     public static final String MODEL = "Model";
     public static final String FORMAT = "Format";
-    public static final String USE_PREPROCESSING = "Use preprocessing";
     public static final String PREPROCESSING = "Preprocessing";
     public static final String USE_POSTPROCESSING = "Use postprocessing";
     public static final String POSTPROCESSING = "Postprocessing";
+    // public static final String PATCH_SIZE = "Patch size";
 
     public interface Models {
         String[] ALL = PrepareDeepImageJ.getAvailableModels();
@@ -69,10 +75,10 @@ public class RunDeepImageJModel extends Module {
         String outputImageName = parameters.getValue(OUTPUT_IMAGE, workspace);
         String modelName = parameters.getValue(MODEL, workspace);
         String format = parameters.getValue(FORMAT, workspace);
-        boolean usePreprocessing = parameters.getValue(USE_PREPROCESSING, workspace);
         String preprocessing = parameters.getValue(PREPROCESSING, workspace);
         boolean usePostprocessing = parameters.getValue(USE_POSTPROCESSING, workspace);
         String postprocessing = parameters.getValue(POSTPROCESSING, workspace);
+        // String patchSize = parameters.getValue(PATCH_SIZE, workspace);
 
         // Get input image
         Image inputImage = workspace.getImage(inputImageName);
@@ -82,17 +88,18 @@ public class RunDeepImageJModel extends Module {
         DeepImageJ model = PrepareDeepImageJ.getModel(modelName);
 
         // Updating pre and post processing options
-        if (PrepareDeepImageJ.getPreprocessings(modelName).length == 0 || !usePreprocessing)
+        if (PrepareDeepImageJ.getPreprocessings(modelName).length == 0)
             preprocessing = "no preprocessing";
         if (PrepareDeepImageJ.getPostprocessings(modelName).length == 0 || !usePostprocessing)
             postprocessing = "no postprocessing";
 
         PrepareDeepImageJ pDIJ = new PrepareDeepImageJ();
-        ImagePlus outputIpl = pDIJ.runModel(inputIpl, model, format, preprocessing, postprocessing, "X,Y,C",
-                "400,400,1");
+        String patchSize = PrepareDeepImageJ.getOptimalPatch(modelName);
+        ImagePlus outputIpl = pDIJ.runModel(inputIpl, model, format, preprocessing, postprocessing, patchSize);
 
         // Storing output image
         Image outputImage = ImageFactory.createImage(outputImageName, outputIpl);
+        workspace.addImage(outputImage);
 
         if (showOutput)
             outputImage.show();
@@ -103,44 +110,48 @@ public class RunDeepImageJModel extends Module {
 
     @Override
     protected void initialiseParameters() {
-        System.err.println("NEED TO CHANGE PATH TO MODEL FOLDER");
+        Preferences preferences = MIA.getPreferences();
+        boolean darkMode = preferences == null ? false : preferences.darkThemeEnabled();
+
         parameters.add(new SeparatorP(INPUT_SEPARATOR, this));
         parameters.add(new InputImageP(INPUT_IMAGE, this));
+        parameters.add(new MessageP(AXES_ORDER, this, Colours.getBlue(darkMode), 20));
         parameters.add(new OutputImageP(OUTPUT_IMAGE, this));
 
         parameters.add(new SeparatorP(MODEL_SEPARATOR, this));
         parameters.add(new ChoiceP(MODEL, this, "", Models.ALL));
         parameters.add(new ChoiceP(FORMAT, this, "", new String[0]));
-        parameters.add(new BooleanP(USE_PREPROCESSING, this, false));
         parameters.add(new ChoiceP(PREPROCESSING, this, "", new String[0]));
         parameters.add(new BooleanP(USE_POSTPROCESSING, this, false));
         parameters.add(new ChoiceP(POSTPROCESSING, this, "", new String[0]));
+        // parameters.add(new StringP(PATCH_SIZE, this, ""));
 
     }
 
     @Override
     public Parameters updateAndGetParameters() {
         Workspace workspace = null;
+        String modelName = parameters.getValue(MODEL, workspace);
+
         Parameters returnedParameters = new Parameters();
         returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(INPUT_IMAGE));
+        returnedParameters.add(parameters.getParameter(AXES_ORDER));
+        ((MessageP) parameters.get(AXES_ORDER))
+                .setValue("Selected model requires input image axes to be in the order: "
+                        + PrepareDeepImageJ.getAxes(modelName));
         returnedParameters.add(parameters.getParameter(OUTPUT_IMAGE));
 
         returnedParameters.add(parameters.getParameter(MODEL_SEPARATOR));
         returnedParameters.add(parameters.getParameter(MODEL));
-
-        String modelName = parameters.getValue(MODEL, workspace);
 
         ((ChoiceP) parameters.get(FORMAT)).setChoices(PrepareDeepImageJ.getFormats(modelName));
         returnedParameters.add(parameters.getParameter(FORMAT));
 
         String[] preprocessingChoices = PrepareDeepImageJ.getPreprocessings(modelName);
         if (preprocessingChoices.length > 0) {
-            returnedParameters.add(parameters.getParameter(USE_PREPROCESSING));
-            if ((boolean) parameters.getValue(USE_PREPROCESSING, workspace)) {
-                ((ChoiceP) parameters.get(PREPROCESSING)).setChoices(preprocessingChoices);
-                returnedParameters.add(parameters.getParameter(PREPROCESSING));
-            }
+            ((ChoiceP) parameters.get(PREPROCESSING)).setChoices(preprocessingChoices);
+            returnedParameters.add(parameters.getParameter(PREPROCESSING));
         }
 
         String[] postprocessingChoices = PrepareDeepImageJ.getPostprocessings(modelName);
@@ -151,6 +162,10 @@ public class RunDeepImageJModel extends Module {
                 returnedParameters.add(parameters.getParameter(POSTPROCESSING));
             }
         }
+
+        // returnedParameters.add(parameters.getParameter(PATCH_SIZE));
+        // ((StringP)
+        // parameters.get(PATCH_SIZE)).setValue(PrepareDeepImageJ.getOptimalPatch(modelName));
 
         return returnedParameters;
 
