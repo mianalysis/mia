@@ -873,6 +873,62 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
+      <groupId>com.github.deepimagej</groupId>
+      <artifactId>deepimagej-plugin</artifactId>
+      <version>2.1.15</version>
+      <scope>provided</scope>
+      <exclusions>
+        <exclusion>
+          <artifactId>protobuf-java</artifactId>
+          <groupId>com.google.protobuf</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>libtensorflow_jni</artifactId>
+          <groupId>org.tensorflow</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>api</artifactId>
+          <groupId>ai.djl</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>pytorch-native-auto</artifactId>
+          <groupId>ai.djl.pytorch</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>pytorch-engine</artifactId>
+          <groupId>ai.djl.pytorch</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>jna</artifactId>
+          <groupId>net.java.dev.jna</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>npy</artifactId>
+          <groupId>org.jetbrains.bio</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>kotlin-stdlib</artifactId>
+          <groupId>org.jetbrains.kotlin</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>proto</artifactId>
+          <groupId>org.tensorflow</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>libtensorflow</artifactId>
+          <groupId>org.tensorflow</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>snakeyaml</artifactId>
+          <groupId>org.yaml</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>imagej-tensorflow</artifactId>
+          <groupId>net.imagej</groupId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
       <groupId>sc.fiji</groupId>
       <artifactId>TrackMate</artifactId>
       <version>7.6.0</version>
@@ -1078,12 +1134,16 @@
     </plugins>
   </reporting>
   <properties>
-    <license.licenseName>GNU General Public License v3+</license.licenseName>
-    <license.copyrightOwners>Stephen Cross</license.copyrightOwners>
-    <maven.compiler.source>1.8</maven.compiler.source>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <imagej-tensorflow.version>1.1.6</imagej-tensorflow.version>
+    <tensorflow.version>1.15.0</tensorflow.version>
     <maven.compiler.target>1.8</maven.compiler.target>
     <scp>compile</scp>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <license.copyrightOwners>Stephen Cross</license.copyrightOwners>
+    <jna.version>5.11.0</jna.version>
     <dependency.locations.selected>false</dependency.locations.selected>
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <license.licenseName>GNU General Public License v3+</license.licenseName>
+    <protobuf.version>3.2.0</protobuf.version>
   </properties>
 </project>

@@ -363,7 +363,7 @@ public class PrepareDeepImageJ implements PlugIn {
         if (rp != null)
             rp.setService(null);
 
-        ImagePlus outputIpl = calculateImage(imp, rp, service, dp).duplicate();
+        ImagePlus outputIpl = calculateImage(imp, rp, service, dp);
         service.shutdown();
 
         return outputIpl;
@@ -462,16 +462,20 @@ public class PrepareDeepImageJ implements PlugIn {
 
         ImagePlus ipl = null;
         Iterator<Object> iter = output.values().iterator();
+        int minID = 0;
         while (iter.hasNext()) {
             Object nx = iter.next();
-            if (nx != null)
-                ipl = (ImagePlus) nx;
+            if (nx != null && nx instanceof ImagePlus && ((ImagePlus) nx).getProcessor() != null) {
+                ImagePlus currIpl = (ImagePlus) nx;
+                currIpl.hide();
+                if (currIpl.getID() < minID) {
+                    ipl = currIpl;
+                    minID = currIpl.getID();
+                }                    
+            }
         }
 
-        if (ipl != null && ipl.isVisible())
-            ipl.hide();
-
-        return ipl;
+        return ipl.duplicate();
 
     }
 }
