@@ -2,12 +2,14 @@ package io.github.mianalysis.mia.module.images.transform;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.fail;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.stream.Stream;
 
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -17,9 +19,9 @@ import ij.ImagePlus;
 import io.github.mianalysis.enums.BitDepth;
 import io.github.mianalysis.enums.Dimension;
 import io.github.mianalysis.enums.OutputMode;
-import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.ModuleTest;
 import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.Workspaces;
@@ -27,11 +29,28 @@ import io.github.mianalysis.mia.object.image.Image;
 import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.image.ImageType;
 import io.github.mianalysis.mia.object.system.Status;
+import io.github.sjcross.sjcommon.object.volume.PointOutOfRangeException;
+import io.github.sjcross.sjcommon.object.volume.SpatCal;
+import io.github.sjcross.sjcommon.object.volume.VolumeType;
 
 public class CropImageMSTest extends ModuleTest {
     enum LimitsMode {
         LFIXED,
-        // LOBJECTS
+        LOBJECTS
+    }
+
+    /**
+     * Generates dimension permutations
+     */
+    public static Stream<Arguments> dimProvider() {
+        Stream.Builder<Arguments> argumentBuilder = Stream.builder();
+        for (Dimension dimension : Dimension.values())
+            for (OutputMode outputMode : OutputMode.values())
+                for (ImageType imageType : ImageType.values())
+                    argumentBuilder.add(Arguments.of(dimension, outputMode, imageType));
+
+        return argumentBuilder.build();
+
     }
 
     /**
@@ -75,36 +94,6 @@ public class CropImageMSTest extends ModuleTest {
     }
 
     /*
-     * Negative value for one input (all dimensions, 8-bit)
-     */
-    @ParameterizedTest
-    @MethodSource("dimInputProvider")
-    void test8Bit_Xm12Y15W23H6(Dimension dimension, LimitsMode limitsMode, OutputMode outputMode, ImageType imageType)
-            throws UnsupportedEncodingException {
-        runTest(dimension, BitDepth.B8, limitsMode, -12, 15, 23, 6, outputMode, imageType);
-    }
-
-    /*
-     * Negative width (all dimensions, 8-bit)
-     */
-    @ParameterizedTest
-    @MethodSource("dimInputProvider")
-    void test8Bit_X12Y15W23Hm6(Dimension dimension, LimitsMode limitsMode, OutputMode outputMode, ImageType imageType)
-            throws UnsupportedEncodingException {
-        runTest(dimension, BitDepth.B8, limitsMode, 12, 15, 23, -6, outputMode, imageType);
-    }
-
-    /*
-     * Height beyond limit (all dimensions, 8-bit)
-     */
-    @ParameterizedTest
-    @MethodSource("dimInputProvider")
-    void test8Bit_X12Y15W23H90(Dimension dimension, LimitsMode limitsMode, OutputMode outputMode, ImageType imageType)
-            throws UnsupportedEncodingException {
-        runTest(dimension, BitDepth.B8, limitsMode, 12, 15, 23, 90, outputMode, imageType);
-    }
-
-    /*
      * All within limits (D4ZT dimension, all bit depths)
      */
     @ParameterizedTest
@@ -115,10 +104,35 @@ public class CropImageMSTest extends ModuleTest {
         runTest(Dimension.D4ZT, bitDepth, limitsMode, 12, 15, 23, 6, outputMode, imageType);
     }
 
-    // @Test
-    // void test() throws UnsupportedEncodingException {
-    //     runTest(Dimension.D4CT, BitDepth.B8, LimitsMode.LFIXED, 12, 15, 23, 6, OutputMode.CREATE_NEW, ImageType.IMAGEPLUS);
-    // }
+    /*
+     * Negative value for one input (all dimensions, 8-bit)
+     */
+    @ParameterizedTest
+    @MethodSource("dimProvider")
+    void test8Bit_Xm12Y15W23H6(Dimension dimension, OutputMode outputMode, ImageType imageType)
+            throws UnsupportedEncodingException {
+        runTest(dimension, BitDepth.B8, LimitsMode.LFIXED, -12, 15, 23, 6, outputMode, imageType);
+    }
+
+    /*
+     * Height beyond limit (all dimensions, 8-bit)
+     */
+    @ParameterizedTest
+    @MethodSource("dimProvider")
+    void test8Bit_X12Y15W23H90(Dimension dimension, OutputMode outputMode, ImageType imageType)
+            throws UnsupportedEncodingException {
+        runTest(dimension, BitDepth.B8, LimitsMode.LFIXED, 12, 15, 23, 90, outputMode, imageType);
+    }
+
+    /*
+     * Negative height
+     */
+    @Test
+    void test8Bit_X12Y15W23Hm6()
+            throws UnsupportedEncodingException {
+        runTest(Dimension.D2, BitDepth.B8, LimitsMode.LFIXED, 12, 15, 23, -6, OutputMode.CREATE_NEW,
+                ImageType.IMAGEPLUS);
+    }
 
     /**
      * Performs the test
@@ -126,8 +140,7 @@ public class CropImageMSTest extends ModuleTest {
      * @throws UnsupportedEncodingException
      */
     public static void runTest(Dimension dimension, BitDepth bitDepth, LimitsMode limitsMode, int x, int y, int w,
-            int h,
-            OutputMode outputMode, ImageType imageType)
+            int h, OutputMode outputMode, ImageType imageType)
             throws UnsupportedEncodingException {
         boolean applyToInput = outputMode.equals(OutputMode.APPLY_TO_INPUT);
 
@@ -147,13 +160,15 @@ public class CropImageMSTest extends ModuleTest {
         Image image = ImageFactory.createImage("Test_image", ipl, imageType);
         workspace.addImage(image);
 
-        // Loading the expected image
-        String expectedName = "/msimages/cropimage/CropImage_" + dimension + "_" + bitDepth + "_X" + x + "_Y" + y + "_W"
-                + w + "_H" + h + ".zip";
-        assumeTrue(CropImageMSTest.class.getResource(expectedName) != null);
-
-        String expectedPath = URLDecoder.decode(CropImageMSTest.class.getResource(expectedName).getPath(), "UTF-8");
-        Image expectedImage = ImageFactory.createImage("Expected", IJ.openImage(expectedPath), imageType);
+        // Loading the expected image (if we're expecting one)
+        Image expectedImage = null;
+        if (w >= 0 && h >= 0) {
+            String expectedName = "/msimages/cropimage/CropImage_" + dimension + "_" + bitDepth + "_X" + x + "_Y" + y
+                    + "_W" + w + "_H" + h + ".zip";
+            assumeTrue(CropImageMSTest.class.getResource(expectedName) != null);
+            String expectedPath = URLDecoder.decode(CropImageMSTest.class.getResource(expectedName).getPath(), "UTF-8");
+            expectedImage = ImageFactory.createImage("Expected", IJ.openImage(expectedPath), imageType);
+        }
 
         // Initialising module and setting parameters
         CropImage cropImage = new CropImage(new Modules());
@@ -168,20 +183,37 @@ public class CropImageMSTest extends ModuleTest {
                 cropImage.updateParameterValue(CropImage.WIDTH, w);
                 cropImage.updateParameterValue(CropImage.HEIGHT, h);
                 break;
-            // case LOBJECTS:
-            //     cropImage.updateParameterValue(CropImage.LIMITS_MODE, CropImage.LimitsModes.FROM_OBJECTS);
-            //     cropImage.updateParameterValue(CropImage.LEFT, 0);
-            //     cropImage.updateParameterValue(CropImage.TOP, 0);
-            //     cropImage.updateParameterValue(CropImage.WIDTH, 0);
-            //     cropImage.updateParameterValue(CropImage.HEIGHT, 0);
-                
-            //     MIA.log.writeDebug("Need to generate (or load) objects with limits matching those specified as inputs.");
-            //     // cropImage.updateParameterValue(CropImage.INPUT_OBJECTS, "LimitsObjects");
-            //     break;
+            case LOBJECTS:
+                cropImage.updateParameterValue(CropImage.LIMITS_MODE,
+                        CropImage.LimitsModes.FROM_OBJECTS);
+                cropImage.updateParameterValue(CropImage.LEFT, 0);
+                cropImage.updateParameterValue(CropImage.TOP, 0);
+                cropImage.updateParameterValue(CropImage.WIDTH, 0);
+                cropImage.updateParameterValue(CropImage.HEIGHT, 0);
+                cropImage.updateParameterValue(CropImage.INPUT_OBJECTS, "LimitsObjects");
+
+                SpatCal spatCal = SpatCal.getFromImage(ipl);
+                Objs limitsObjects = new Objs("LimitsObjects", spatCal, 1, 1, null);
+                Obj limitObject = limitsObjects.createAndAddNewObject(VolumeType.POINTLIST);
+                try {
+                    limitObject.add(x, y, 0);
+                    limitObject.add(x + w - 1, y + h - 1, 0);
+                } catch (PointOutOfRangeException e) {
+                    fail("Can't add object points");
+                }
+                workspace.addObjects(limitsObjects);
+
+                break;
         }
 
         // Running Module
         Status status = cropImage.execute(workspace);
+
+        if (w < 0 || h < 0) {
+            assertEquals(Status.FAIL, status);
+            return;
+        }
+
         assertEquals(Status.PASS, status);
 
         // Checking the images in the workspace
@@ -198,16 +230,9 @@ public class CropImageMSTest extends ModuleTest {
             assertNotNull(workspace.getImage("Test_output"));
 
             Image outputImage = workspace.getImage("Test_output");
-
-            // new ImageJ();
-            // expectedImage.showImage();
-            // outputImage.showImage();
-            // IJ.runMacro("waitForUser");
-
             assertEquals(expectedImage, outputImage);
 
         }
-
     }
 
     /**

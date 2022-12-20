@@ -2,7 +2,7 @@ outputPath = "C:/Users/steph/Documents/Programming/Java Projects/mia/src/test/re
 x = 12;
 y = 15;
 w = 23;
-h = 6;
+h = 90;
 
 name = getTitle();
 bits = split(name, "_.");

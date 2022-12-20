@@ -387,7 +387,7 @@ public class FitGaussian2D extends Module {
             inputImagePlus.setPosition(1, z + 1, t + 1);
             Image preCropImage = ImageFactory.createImage("PreCrop", new ImagePlus("Slice", inputImagePlus.getProcessor()));
             ImageProcessor iprCrop = CropImage
-                    .cropImage(preCropImage, "Crop", y - halfW, x - halfW, halfW * 2 + 1, halfW * 2 + 1).getImagePlus()
+                    .cropImage(preCropImage, "Crop", x - halfW, y - halfW, halfW * 2 + 1, halfW * 2 + 1).getImagePlus()
                     .getProcessor();
 
             // Estimating parameters

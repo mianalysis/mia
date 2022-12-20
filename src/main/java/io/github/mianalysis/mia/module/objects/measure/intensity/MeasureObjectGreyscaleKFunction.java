@@ -126,7 +126,7 @@ public class MeasureObjectGreyscaleKFunction extends AbstractSaver {
             int left = (int) Math.round(extents[0][0]);
             int width = (int) Math.round(extents[0][1] - left) + 1;
             int height = (int) Math.round(extents[1][1] - top) + 1;
-            Image cropImage = CropImage.cropImage(inputImage, "Crop", top, left, width, height);
+            Image cropImage = CropImage.cropImage(inputImage, "Crop", left, top, width, height);
 
             // Cropping image in Z
             int minZ = (int) Math.round(extents[2][0]);
