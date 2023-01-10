@@ -12,6 +12,7 @@ import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.border.EtchedBorder;
 
+import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.gui.GUI;
 import io.github.mianalysis.mia.gui.regions.abstrakt.AnalysisControlButton;
 import io.github.mianalysis.mia.gui.regions.abstrakt.ModuleControlButton;
@@ -141,6 +142,10 @@ public class EditingControlPanel extends JPanel {
     }
 
     public void listAvailableModules() {
+        // Making sure the available modules have been loaded
+        for (Module module:GUI.getAvailableModules())
+            module.getCategory();
+        
         Category root = Categories.getRootCategory();
         moduleListMenu.removeAll();
         addCategoryModules(moduleListMenu, null, root);

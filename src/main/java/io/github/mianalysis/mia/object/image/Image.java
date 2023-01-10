@@ -17,6 +17,8 @@ import io.github.mianalysis.mia.object.Measurement;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.VolumeTypesInterface;
+import io.github.mianalysis.mia.object.image.renderer.ImagePlusRenderer;
+import io.github.mianalysis.mia.object.image.renderer.ImageRenderer;
 import io.github.mianalysis.mia.object.refs.ImageMeasurementRef;
 import io.github.mianalysis.mia.object.refs.collections.ImageMeasurementRefs;
 import io.github.sjcross.sjcommon.object.volume.VolumeType;
@@ -28,9 +30,23 @@ import net.imglib2.type.numeric.RealType;
  * Created by stephen on 30/04/2017.
  */
 public abstract class Image<T extends RealType<T> & NativeType<T>> {
+    protected static ImageRenderer defaultRenderer = null; // If specified, all new images will use this
+
     protected String name;
     protected LinkedHashMap<String, Measurement> measurements = new LinkedHashMap<>();
+    protected ImageRenderer renderer;
+    
 
+    // Constructor
+
+    public Image() {
+        if (defaultRenderer == null)
+            renderer = getImageRenderer();
+        else
+            renderer = getDefaultRenderer();
+    }
+
+    
     // Abstract methods
 
     public abstract void show(String title, @Nullable LUT lut, boolean normalise, boolean composite);
@@ -62,6 +78,7 @@ public abstract class Image<T extends RealType<T> & NativeType<T>> {
 
     public abstract void setOverlay(Overlay overlay);
 
+
     // PUBLIC METHODS
 
     public Objs convertImageToObjects(String outputObjectsName) {
@@ -92,6 +109,26 @@ public abstract class Image<T extends RealType<T> & NativeType<T>> {
     public Measurement getMeasurement(String name) {
         return measurements.get(name);
 
+    }
+
+    public static ImageRenderer getDefaultRenderer() {
+        return defaultRenderer;
+    }
+
+    public static void setDefaultRenderer(ImageRenderer imageRenderer) {
+        defaultRenderer = imageRenderer;
+    }
+
+    public ImageRenderer getImageRenderer() {
+        if (renderer == null)
+            return new ImagePlusRenderer();
+
+        return renderer;
+        
+    }
+
+    public void setImageRenderer(ImageRenderer imageRenderer) {
+        this.renderer = imageRenderer;
     }
 
     public void show(String title, LUT lut, Overlay overlay) {

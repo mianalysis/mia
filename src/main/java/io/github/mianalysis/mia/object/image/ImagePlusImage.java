@@ -4,15 +4,12 @@ import java.util.HashMap;
 
 import com.drew.lang.annotations.Nullable;
 
-import ij.CompositeImage;
 import ij.ImagePlus;
 import ij.ImageStack;
 import ij.gui.Overlay;
 import ij.measure.Calibration;
-import ij.plugin.Duplicator;
 import ij.plugin.SubHyperstackMaker;
 import ij.process.ImageProcessor;
-import ij.process.ImageStatistics;
 import ij.process.LUT;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
@@ -21,7 +18,6 @@ import io.github.sjcross.sjcommon.object.Point;
 import io.github.sjcross.sjcommon.object.volume.PointOutOfRangeException;
 import io.github.sjcross.sjcommon.object.volume.SpatCal;
 import io.github.sjcross.sjcommon.object.volume.VolumeType;
-import io.github.sjcross.sjcommon.process.IntensityMinMax;
 import net.imagej.ImgPlus;
 import net.imglib2.img.ImagePlusAdapter;
 import net.imglib2.img.display.imagej.ImageJFunctions;
@@ -194,30 +190,14 @@ public class ImagePlusImage<T extends RealType<T> & NativeType<T>> extends Image
     }
 
     public void show(String title, @Nullable LUT lut, boolean normalise, boolean composite) {
+        System.out.println(renderer.getClass());
+        
         // Show using this overlay
         show(title, lut, normalise, composite, imagePlus.getOverlay());
     }
 
     public void show(String title, @Nullable LUT lut, boolean normalise, boolean composite, Overlay overlay) {
-        // Adds the specified overlay rather than the overlay associated with this image
-        ImagePlus dispIpl = new Duplicator().run(imagePlus);
-        dispIpl.setOverlay(overlay);
-        dispIpl.setTitle(title);
-        if (normalise)
-            IntensityMinMax.run(dispIpl, true);
-
-        dispIpl.setPosition(1, 1, 1);
-        dispIpl.updateChannelAndDraw();
-        if (lut != null && dispIpl.getBitDepth() != 24)
-            dispIpl.setLut(lut);
-
-        if (composite && dispIpl.getNChannels() > 1)
-            dispIpl.setDisplayMode(CompositeImage.COMPOSITE);
-        else
-            dispIpl.setDisplayMode(CompositeImage.COLOR);
-
-        dispIpl.repaintWindow();
-        dispIpl.show();
+        renderer.render(this, title, lut, normalise, composite, overlay);
     }
 
     public ImagePlusImage duplicate(String outputImageName) {
