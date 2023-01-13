@@ -8,14 +8,12 @@ import org.scijava.plugin.Plugin;
 
 import ij.ImagePlus;
 import ij.plugin.Duplicator;
-import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.image.Image;
-import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
@@ -36,7 +34,7 @@ public class AddPause extends Module {
     public static final String SHOW_IMAGE = "Show image";
     public static final String INPUT_IMAGE = "Input image";
 
-    private static final String RESUME = "Resume";
+    private static final String CONTINUE = "Continue";
     private static final String TERMINATE = "Terminate";
 
     public AddPause(Modules modules) {
@@ -66,7 +64,7 @@ public class AddPause extends Module {
             showIpl.show();
         }
 
-        String[] options = {RESUME,TERMINATE};
+        String[] options = {CONTINUE,TERMINATE};
         JOptionPane optionPane = new JOptionPane("Execution paused.  What would you like to do?",JOptionPane.QUESTION_MESSAGE,JOptionPane.OK_CANCEL_OPTION,null,options);
         JDialog dialog = optionPane.createDialog(null, "Execution paused");
         dialog.setModal(false);
@@ -83,7 +81,7 @@ public class AddPause extends Module {
         }
 
         switch ((String) optionPane.getValue()) {
-            case RESUME:
+            case CONTINUE:
                 return Status.PASS;
 
             case TERMINATE:
