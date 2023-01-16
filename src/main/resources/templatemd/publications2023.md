@@ -1,0 +1,1 @@
+Olenik, M., _et al._, "Fluctuations of cell geometry and their nonequilibrium thermodynamics in living epithelial tissue", _Phys. Rev. E_ (2023) **107** 014403, doi: 10.1103/PhysRevE.107.014403

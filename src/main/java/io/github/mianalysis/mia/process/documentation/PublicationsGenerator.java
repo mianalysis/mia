@@ -22,7 +22,11 @@ public class PublicationsGenerator extends AbstractGenerator {
 
         String mainContent = getPageTemplate("src/main/resources/templatehtml/publicationstemplate.html", pathToRoot);
 
-        String content = new String(Files.readAllBytes(Paths.get("src/main/resources/templatemd/publications2022.md")));
+        String content = new String(Files.readAllBytes(Paths.get("src/main/resources/templatemd/publications2023.md")));
+        content = renderer.render(parser.parse(content));
+        mainContent = mainContent.replace("${PUBLICATIONS_2023}", content);
+
+        content = new String(Files.readAllBytes(Paths.get("src/main/resources/templatemd/publications2022.md")));
         content = renderer.render(parser.parse(content));
         mainContent = mainContent.replace("${PUBLICATIONS_2022}", content);
 
