@@ -48,8 +48,7 @@ public class PrepareDeepImageJ implements PlugIn {
         ImagePlus imp = IJ.openImage(
                 "C:\\Users\\steph\\Programs\\Fiji.app\\models\\cell-segmentation-from-membrane-staining-for-plant-tissues_tensorflow_saved_model_bundle_06122022_153116\\exampleImage.tif");
         DeepImageJ model = getModel("Cell Segmentation from Membrane Staining for Plant Tissues");
-        ImagePlus outputIpl = new PrepareDeepImageJ().runModel(imp, model, "Tensorflow", "per_sample_scale_range.ijm",
-                "no postprocessing", "256,256,8,1");
+        ImagePlus outputIpl = new PrepareDeepImageJ().runModel(imp, model, "Tensorflow", true, false, "256,256,8,1");
         outputIpl.duplicate().show();
     }
 
@@ -65,8 +64,7 @@ public class PrepareDeepImageJ implements PlugIn {
         ImagePlus imp = IJ.openImage(
                 "C:\\Users\\steph\\Documents\\People\\Qiao Tong\\2022-10-06 DL scale segmentation\\TIF\\Test_raw\\Test\\OSX_mCH_4M_D10_REGEN_ALP_S33.tif");
         DeepImageJ model = getModel("my_model");
-        new PrepareDeepImageJ().runModel(imp, model, "Tensorflow", "no preprocessing", "no postprocessing",
-                "400,400,1");
+        new PrepareDeepImageJ().runModel(imp, model, "Tensorflow", false, false, "400,400,1");
     }
 
     public static HashMap<String, DeepImageJ> list(String modelDir) {
@@ -237,7 +235,8 @@ public class PrepareDeepImageJ implements PlugIn {
 
     }
 
-    public ImagePlus runModel(ImagePlus imp, DeepImageJ dp, String format, String preprocessing, String postprocessing,
+    public ImagePlus runModel(ImagePlus imp, DeepImageJ dp, String format, boolean usePreprocessing,
+            boolean usePostprocessing,
             String patchString) {
         String loadInfo = "ImageJ";
 
@@ -264,10 +263,19 @@ public class PrepareDeepImageJ implements PlugIn {
 
         MIA.log.writeDebug(
                 "DeepImageJ appears to be able to accept 2 input and output macros - need to look into this");
-        if (!preprocessing.equals("no preprocessing"))
-            dp.params.firstPreprocessing = dp.getPath() + File.separator + preprocessing;
-        if (!postprocessing.equals("no postprocessing"))
-            dp.params.firstPostprocessing = dp.getPath() + File.separator + postprocessing;
+        if (usePreprocessing) {
+            String[] preprocessing = getPreprocessings(dp.getName());
+            dp.params.firstPreprocessing = dp.getPath() + File.separator + preprocessing[0];
+            if (preprocessing.length > 1)
+                dp.params.secondPreprocessing = dp.getPath() + File.separator + preprocessing[1];
+        }
+
+        if (usePostprocessing) {
+            String[] postprocessing = getPostprocessings(dp.getName());
+            dp.params.firstPostprocessing = dp.getPath() + File.separator + postprocessing[0];
+            if (postprocessing.length > 1)
+                dp.params.secondPostprocessing = dp.getPath() + File.separator + postprocessing[1];
+        }
 
         int[] patch = null;
         for (DijTensor inp : dp.params.inputList) {
@@ -461,17 +469,20 @@ public class PrepareDeepImageJ implements PlugIn {
         }
 
         ImagePlus ipl = null;
-        Iterator<Object> iter = output.values().iterator();
+        for (String k:output.keySet())
+            MIA.log.writeDebug("KEY "+k);
+        Iterator<Object> iter = output.values().iterator();        
         int minID = 0;
         while (iter.hasNext()) {
             Object nx = iter.next();
+            MIA.log.writeDebug("OUTPUT "+nx);
             if (nx != null && nx instanceof ImagePlus && ((ImagePlus) nx).getProcessor() != null) {
                 ImagePlus currIpl = (ImagePlus) nx;
                 currIpl.hide();
                 if (currIpl.getID() < minID) {
                     ipl = currIpl;
                     minID = currIpl.getID();
-                }                    
+                }
             }
         }
 

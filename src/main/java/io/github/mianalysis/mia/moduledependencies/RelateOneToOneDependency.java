@@ -12,7 +12,7 @@ public class RelateOneToOneDependency extends Dependency {
 
     @Override
     public String getClassName() {
-        return "fiji.plugin.trackmate.tracking.sparselap.costmatrix.DefaultCostMatrixCreator";
+        return "fiji.plugin.trackmate.tracking.jaqaman.JaqamanLinker";
     }
 
     @Override

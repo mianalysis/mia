@@ -943,7 +943,7 @@
     <dependency>
       <groupId>sc.fiji</groupId>
       <artifactId>TrackMate</artifactId>
-      <version>7.6.0</version>
+      <version>7.10.0</version>
       <scope>provided</scope>
       <exclusions>
         <exclusion>
@@ -975,10 +975,6 @@
           <groupId>org.apache.xmlgraphics</groupId>
         </exclusion>
         <exclusion>
-          <artifactId>fontchooser</artifactId>
-          <groupId>org.drjekyll</groupId>
-        </exclusion>
-        <exclusion>
           <artifactId>jdom2</artifactId>
           <groupId>org.jdom</groupId>
         </exclusion>
@@ -989,6 +985,10 @@
         <exclusion>
           <artifactId>javaGeom</artifactId>
           <groupId>math.geom2d</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>fontchooser</artifactId>
+          <groupId>org.drjekyll</groupId>
         </exclusion>
         <exclusion>
           <artifactId>imglib2-ij</artifactId>

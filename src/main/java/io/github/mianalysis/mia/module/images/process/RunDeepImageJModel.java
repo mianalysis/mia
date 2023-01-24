@@ -41,9 +41,9 @@ public class RunDeepImageJModel extends Module {
     public static final String MODEL_SEPARATOR = "Model controls";
     public static final String MODEL = "Model";
     public static final String FORMAT = "Format";
-    public static final String PREPROCESSING = "Preprocessing";
+    // public static final String PREPROCESSING = "Preprocessing";
     public static final String USE_POSTPROCESSING = "Use postprocessing";
-    public static final String POSTPROCESSING = "Postprocessing";
+    // public static final String POSTPROCESSING = "Postprocessing";
     // public static final String PATCH_SIZE = "Patch size";
 
     public interface Models {
@@ -75,9 +75,9 @@ public class RunDeepImageJModel extends Module {
         String outputImageName = parameters.getValue(OUTPUT_IMAGE, workspace);
         String modelName = parameters.getValue(MODEL, workspace);
         String format = parameters.getValue(FORMAT, workspace);
-        String preprocessing = parameters.getValue(PREPROCESSING, workspace);
+        // String preprocessing = parameters.getValue(PREPROCESSING, workspace);
         boolean usePostprocessing = parameters.getValue(USE_POSTPROCESSING, workspace);
-        String postprocessing = parameters.getValue(POSTPROCESSING, workspace);
+        // String postprocessing = parameters.getValue(POSTPROCESSING, workspace);
         // String patchSize = parameters.getValue(PATCH_SIZE, workspace);
 
         // Get input image
@@ -88,14 +88,15 @@ public class RunDeepImageJModel extends Module {
         DeepImageJ model = PrepareDeepImageJ.getModel(modelName);
 
         // Updating pre and post processing options
+        boolean usePreprocessing = true;        
         if (PrepareDeepImageJ.getPreprocessings(modelName).length == 0)
-            preprocessing = "no preprocessing";
-        if (PrepareDeepImageJ.getPostprocessings(modelName).length == 0 || !usePostprocessing)
-            postprocessing = "no postprocessing";
+            usePostprocessing = false;
+        if (PrepareDeepImageJ.getPostprocessings(modelName).length == 0)
+            usePostprocessing = false;
 
         PrepareDeepImageJ pDIJ = new PrepareDeepImageJ();
         String patchSize = PrepareDeepImageJ.getOptimalPatch(modelName);
-        ImagePlus outputIpl = pDIJ.runModel(inputIpl, model, format, preprocessing, postprocessing, patchSize);
+        ImagePlus outputIpl = pDIJ.runModel(inputIpl, model, format, usePreprocessing, usePostprocessing, patchSize);
 
         // Storing output image
         Image outputImage = ImageFactory.createImage(outputImageName, outputIpl);
@@ -121,9 +122,9 @@ public class RunDeepImageJModel extends Module {
         parameters.add(new SeparatorP(MODEL_SEPARATOR, this));
         parameters.add(new ChoiceP(MODEL, this, "", Models.ALL));
         parameters.add(new ChoiceP(FORMAT, this, "", new String[0]));
-        parameters.add(new ChoiceP(PREPROCESSING, this, "", new String[0]));
+        // parameters.add(new ChoiceP(PREPROCESSING, this, "", new String[0]));
         parameters.add(new BooleanP(USE_POSTPROCESSING, this, false));
-        parameters.add(new ChoiceP(POSTPROCESSING, this, "", new String[0]));
+        // parameters.add(new ChoiceP(POSTPROCESSING, this, "", new String[0]));
         // parameters.add(new StringP(PATCH_SIZE, this, ""));
 
     }
@@ -148,19 +149,19 @@ public class RunDeepImageJModel extends Module {
         ((ChoiceP) parameters.get(FORMAT)).setChoices(PrepareDeepImageJ.getFormats(modelName));
         returnedParameters.add(parameters.getParameter(FORMAT));
 
-        String[] preprocessingChoices = PrepareDeepImageJ.getPreprocessings(modelName);
-        if (preprocessingChoices.length > 0) {
-            ((ChoiceP) parameters.get(PREPROCESSING)).setChoices(preprocessingChoices);
-            returnedParameters.add(parameters.getParameter(PREPROCESSING));
-        }
+        // String[] preprocessingChoices = PrepareDeepImageJ.getPreprocessings(modelName);
+        // if (preprocessingChoices.length > 0) {
+        //     ((ChoiceP) parameters.get(PREPROCESSING)).setChoices(preprocessingChoices);
+        //     returnedParameters.add(parameters.getParameter(PREPROCESSING));
+        // }
 
         String[] postprocessingChoices = PrepareDeepImageJ.getPostprocessings(modelName);
         if (postprocessingChoices.length > 0) {
             returnedParameters.add(parameters.getParameter(USE_POSTPROCESSING));
-            if ((boolean) parameters.getValue(USE_POSTPROCESSING, workspace)) {
-                ((ChoiceP) parameters.get(POSTPROCESSING)).setChoices(postprocessingChoices);
-                returnedParameters.add(parameters.getParameter(POSTPROCESSING));
-            }
+            // if ((boolean) parameters.getValue(USE_POSTPROCESSING, workspace)) {
+            //     ((ChoiceP) parameters.get(POSTPROCESSING)).setChoices(postprocessingChoices);
+            //     returnedParameters.add(parameters.getParameter(POSTPROCESSING));
+            // }
         }
 
         // returnedParameters.add(parameters.getParameter(PATCH_SIZE));

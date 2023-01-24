@@ -12,7 +12,7 @@ public class RunTrackMateDependency extends Dependency {
 
     @Override
     public String getClassName() {
-        return "fiji.plugin.trackmate.TrackMate";
+        return "fiji.plugin.trackmate.tracking.jaqaman.SparseLAPTrackerFactory";
     }
 
     @Override
@@ -22,7 +22,7 @@ public class RunTrackMateDependency extends Dependency {
 
     @Override
     public String getVersionThreshold() {
-        return "7.2.0";
+        return "7.10.0";
     }
 
     @Override

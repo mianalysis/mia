@@ -174,7 +174,11 @@ public class AnalysisReader {
         String moduleName = FilenameUtils.getExtension(className);
 
         // Checking if this module has been reassigned
-        moduleName = MIA.getLostAndFound().findModule(moduleName);
+        try {
+            moduleName = MIA.getLostAndFound().findModule(moduleName);
+        } catch (Exception e) {
+            MIA.log.writeWarning("Unable to load module \""+moduleName+"\"");
+        }
 
         // Trying to load from available modules
         for (String availableModuleName : availableModuleNames) {

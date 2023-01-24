@@ -12,7 +12,7 @@ public class TrackObjectsDependency extends Dependency {
 
     @Override
     public String getClassName() {
-        return "fiji.plugin.trackmate.tracking.sparselap.costmatrix.DefaultCostMatrixCreator";
+        return "fiji.plugin.trackmate.tracking.jaqaman.JaqamanLinker";
     }
 
     @Override
