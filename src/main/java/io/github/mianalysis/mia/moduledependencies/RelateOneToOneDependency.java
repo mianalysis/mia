@@ -22,7 +22,7 @@ public class RelateOneToOneDependency extends Dependency {
 
     @Override
     public String getVersionThreshold() {
-        return "0.0.0";
+        return "7.10.0";
     }
 
     @Override

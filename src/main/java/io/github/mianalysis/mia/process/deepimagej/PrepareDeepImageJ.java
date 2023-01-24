@@ -261,20 +261,22 @@ public class PrepareDeepImageJ implements PlugIn {
         dp.params.firstPostprocessing = null;
         dp.params.secondPostprocessing = null;
 
-        MIA.log.writeDebug(
-                "DeepImageJ appears to be able to accept 2 input and output macros - need to look into this");
         if (usePreprocessing) {
             String[] preprocessing = getPreprocessings(dp.getName());
-            dp.params.firstPreprocessing = dp.getPath() + File.separator + preprocessing[0];
-            if (preprocessing.length > 1)
-                dp.params.secondPreprocessing = dp.getPath() + File.separator + preprocessing[1];
+            if (preprocessing.length > 0) {
+                dp.params.firstPreprocessing = dp.getPath() + File.separator + preprocessing[0];
+                if (preprocessing.length > 1)
+                    dp.params.secondPreprocessing = dp.getPath() + File.separator + preprocessing[1];
+            }
         }
 
         if (usePostprocessing) {
             String[] postprocessing = getPostprocessings(dp.getName());
-            dp.params.firstPostprocessing = dp.getPath() + File.separator + postprocessing[0];
-            if (postprocessing.length > 1)
-                dp.params.secondPostprocessing = dp.getPath() + File.separator + postprocessing[1];
+            if (postprocessing.length > 0) {
+                dp.params.firstPostprocessing = dp.getPath() + File.separator + postprocessing[0];
+                if (postprocessing.length > 1)
+                    dp.params.secondPostprocessing = dp.getPath() + File.separator + postprocessing[1];
+            }
         }
 
         int[] patch = null;
@@ -469,13 +471,13 @@ public class PrepareDeepImageJ implements PlugIn {
         }
 
         ImagePlus ipl = null;
-        for (String k:output.keySet())
-            MIA.log.writeDebug("KEY "+k);
-        Iterator<Object> iter = output.values().iterator();        
+        for (String k : output.keySet())
+            MIA.log.writeDebug("KEY " + k);
+        Iterator<Object> iter = output.values().iterator();
         int minID = 0;
         while (iter.hasNext()) {
             Object nx = iter.next();
-            MIA.log.writeDebug("OUTPUT "+nx);
+            MIA.log.writeDebug("OUTPUT " + nx);
             if (nx != null && nx instanceof ImagePlus && ((ImagePlus) nx).getProcessor() != null) {
                 ImagePlus currIpl = (ImagePlus) nx;
                 currIpl.hide();
