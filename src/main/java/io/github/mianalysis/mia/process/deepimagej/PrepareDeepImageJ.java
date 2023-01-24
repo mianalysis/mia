@@ -471,13 +471,13 @@ public class PrepareDeepImageJ implements PlugIn {
         }
 
         ImagePlus ipl = null;
-        for (String k : output.keySet())
-            MIA.log.writeDebug("KEY " + k);
+        // for (String k : output.keySet())
+        //     MIA.log.writeDebug("KEY " + k);
         Iterator<Object> iter = output.values().iterator();
         int minID = 0;
         while (iter.hasNext()) {
             Object nx = iter.next();
-            MIA.log.writeDebug("OUTPUT " + nx);
+            // MIA.log.writeDebug("OUTPUT " + nx);
             if (nx != null && nx instanceof ImagePlus && ((ImagePlus) nx).getProcessor() != null) {
                 ImagePlus currIpl = (ImagePlus) nx;
                 currIpl.hide();
