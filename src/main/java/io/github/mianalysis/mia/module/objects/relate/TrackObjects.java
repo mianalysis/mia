@@ -16,8 +16,8 @@ import org.scijava.plugin.Plugin;
 
 import com.drew.lang.annotations.Nullable;
 
-import fiji.plugin.trackmate.tracking.sparselap.costmatrix.DefaultCostMatrixCreator;
-import fiji.plugin.trackmate.tracking.sparselap.linker.JaqamanLinker;
+import fiji.plugin.trackmate.tracking.jaqaman.JaqamanLinker;
+import fiji.plugin.trackmate.tracking.jaqaman.costmatrix.DefaultCostMatrixCreator;
 import ij.ImagePlus;
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Categories;

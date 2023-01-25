@@ -62,7 +62,7 @@ import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Status;
-import io.github.mianalysis.mia.process.ImgPlusTools;
+import io.github.mianalysis.mia.object.image.ImgPlusTools;
 import io.github.sjcross.sjcommon.mathfunc.CumStat;
 
 import net.imagej.ImgPlus;
@@ -390,7 +390,7 @@ public class FocusStackGlobal<T extends RealType<T> & NativeType<T>> extends Mod
         outputImagePlus.setCalibration(inputImage.getImagePlus().getCalibration());
         if (outputImg.dimension(outputImg.dimensionIndex(Axes.Z)) == 1)
             outputImagePlus.getCalibration().pixelDepth = 1;
-        ImgPlusTools.applyAxes(outputImg, outputImagePlus);
+        ImgPlusTools.applyDimensions(outputImg, outputImagePlus);
 
         // Adding the new image to the Workspace
         return ImageFactory.createImage(outputImageName, outputImagePlus);

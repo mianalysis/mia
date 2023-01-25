@@ -80,7 +80,7 @@ public class MeasureObjectWidth extends Module {
         HashMap<Integer, Float> hues = ColourFactory.getSingleColourValues(inputObjects, ColourFactory.SingleColours.WHITE);
         Image binaryImage = inputObjects.convertToImage("Binary", hues, 8, false);
         Image distanceMap = DistanceMap.process(binaryImage, "DistanceMapTemp", true, DistanceMap.WeightModes.WEIGHTS_3_4_5_7, false, false);
-        ImageMath.process(distanceMap, ImageMath.CalculationTypes.MULTIPLY, 2);
+        ImageMath.process(distanceMap, ImageMath.CalculationModes.MULTIPLY, 2);
         
         // Getting the centroids of each and saving them to the objects
         for (Obj inputObject : inputObjects.values()) {

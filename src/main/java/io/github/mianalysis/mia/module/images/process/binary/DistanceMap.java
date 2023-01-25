@@ -75,7 +75,8 @@ public class DistanceMap extends Module {
 
     public static ImagePlus process(ImagePlus inputIpl, String outputImageName, boolean blackBackground,
             String weightMode, boolean matchZToXY, boolean verbose) {
-        return process(ImageFactory.createImage(inputIpl.getTitle(), inputIpl), outputImageName, blackBackground, weightMode,
+        return process(ImageFactory.createImage(inputIpl.getTitle(), inputIpl), outputImageName, blackBackground,
+                weightMode,
                 matchZToXY, verbose).getImagePlus();
     }
 
@@ -105,7 +106,8 @@ public class DistanceMap extends Module {
             for (int t = 0; t < nFrames; t++) {
                 // Getting the mask image at this timepoint
                 ImagePlus currentIpl = SubHyperstackMaker
-                        .makeSubhyperstack(inputIpl, String.valueOf(c + 1), "1-" + nSlices, String.valueOf(t + 1)).duplicate();
+                        .makeSubhyperstack(inputIpl, String.valueOf(c + 1), "1-" + nSlices, String.valueOf(t + 1))
+                        .duplicate();
 
                 currentIpl.setCalibration(inputIpl.getCalibration());
 
@@ -178,7 +180,7 @@ public class DistanceMap extends Module {
 
     public static void applyCalibratedUnits(Image inputImage, double dppXY) {
         ImageTypeConverter.process(inputImage, 32, ImageTypeConverter.ScalingModes.CLIP);
-        ImageMath.process(inputImage, ImageMath.CalculationTypes.MULTIPLY, dppXY);
+        ImageMath.process(inputImage, ImageMath.CalculationModes.MULTIPLY, dppXY);
 
     }
 
@@ -198,15 +200,15 @@ public class DistanceMap extends Module {
     @Override
     public Status process(Workspace workspace) {
         // Getting input image
-        String inputImageName = parameters.getValue(INPUT_IMAGE,workspace);
+        String inputImageName = parameters.getValue(INPUT_IMAGE, workspace);
         Image inputImage = workspace.getImages().get(inputImageName);
 
         // Getting parameters
-        String outputImageName = parameters.getValue(OUTPUT_IMAGE,workspace);
-        String weightMode = parameters.getValue(WEIGHT_MODE,workspace);
-        boolean matchZToXY = parameters.getValue(MATCH_Z_TO_X,workspace);
-        String spatialUnits = parameters.getValue(SPATIAL_UNITS_MODE,workspace);
-        String binaryLogic = parameters.getValue(BINARY_LOGIC,workspace);
+        String outputImageName = parameters.getValue(OUTPUT_IMAGE, workspace);
+        String weightMode = parameters.getValue(WEIGHT_MODE, workspace);
+        boolean matchZToXY = parameters.getValue(MATCH_Z_TO_X, workspace);
+        String spatialUnits = parameters.getValue(SPATIAL_UNITS_MODE, workspace);
+        String binaryLogic = parameters.getValue(BINARY_LOGIC, workspace);
         boolean blackBackground = binaryLogic.equals(BinaryLogic.BLACK_BACKGROUND);
 
         // Running distance map
@@ -246,34 +248,33 @@ public class DistanceMap extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
-Workspace workspace = null;
         return parameters;
 
     }
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
-return null;
+        return null;
     }
 
     @Override
-public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
-return null;
+    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+        return null;
     }
 
     @Override
-public MetadataRefs updateAndGetMetadataReferences() {
-return null;
+    public MetadataRefs updateAndGetMetadataReferences() {
+        return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
-return null;
+        return null;
     }
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
-return null;
+        return null;
     }
 
     @Override

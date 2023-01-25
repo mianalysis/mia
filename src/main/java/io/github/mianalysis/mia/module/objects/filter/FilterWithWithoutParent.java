@@ -116,7 +116,7 @@ public class FilterWithWithoutParent extends AbstractObjectFilter {
         }
 
         // Showing objects
-        if (showOutput) inputObjects.convertToImageRandomColours().showImage();
+        if (showOutput) inputObjects.convertToImageIDColours().showImage();
 
         return Status.PASS;
 

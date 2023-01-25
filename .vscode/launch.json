@@ -6,6 +6,20 @@
     "configurations": [
         {
             "type": "java",
+            "name": "Launch PrepareDeepImageJ",
+            "request": "launch",
+            "mainClass": "io.github.mianalysis.mia.process.deepimagej.PrepareDeepImageJ",
+            "projectName": "MIA"
+        },
+        {
+            "type": "java",
+            "name": "Launch RunDeepImageJModel",
+            "request": "launch",
+            "mainClass": "io.github.mianalysis.mia.module.images.process.RunDeepImageJModel",
+            "projectName": "MIA"
+        },
+        {
+            "type": "java",
             "name": "Launch RunScript",
             "request": "launch",
             "mainClass": "io.github.mianalysis.mia.module.script.RunScript",

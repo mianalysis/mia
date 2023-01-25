@@ -186,9 +186,9 @@ public class FillHolesInObjects extends Module {
         // Displaying updated objects
         if (showOutput) {
             if (updateInputObjects)
-                inputObjects.convertToImageRandomColours().showImage();
+                inputObjects.convertToImageIDColours().showImage();
             else
-                outputObjects.convertToImageRandomColours().showImage();
+                outputObjects.convertToImageIDColours().showImage();
         }
 
         return Status.PASS;

@@ -96,14 +96,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import com.drew.lang.annotations.Nullable;
-
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
 
-import fiji.plugin.trackmate.tracking.sparselap.costmatrix.DefaultCostMatrixCreator;
-import fiji.plugin.trackmate.tracking.sparselap.linker.JaqamanLinker;
-import io.github.mianalysis.mia.MIA;
+import com.drew.lang.annotations.Nullable;
+
+import fiji.plugin.trackmate.tracking.jaqaman.JaqamanLinker;
+import fiji.plugin.trackmate.tracking.jaqaman.costmatrix.DefaultCostMatrixCreator;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;

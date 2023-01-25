@@ -10,7 +10,7 @@
 
     <groupId>io.github.mianalysis</groupId>
     <artifactId>MIA</artifactId>
-    <version>1.2.0</version>
+    <version>1.2.1</version>
     <packaging>jar</packaging>
     <name>MIA</name>
     <url>https://github.com/mianalysis/mia</url>
@@ -84,6 +84,11 @@
         <scp>compile</scp>
         <license.licenseName>GNU General Public License v3+</license.licenseName>
         <license.copyrightOwners>Stephen Cross</license.copyrightOwners>
+        
+        <protobuf.version>3.2.0</protobuf.version>
+		<tensorflow.version>1.15.0</tensorflow.version>
+		<jna.version>5.11.0</jna.version>
+		<imagej-tensorflow.version>1.1.6</imagej-tensorflow.version>
     </properties>
 
     <mailingLists>
@@ -315,9 +320,15 @@
             <scope>${scp}</scope>
         </dependency>
         <dependency>
+            <groupId>com.github.deepimagej</groupId>
+            <artifactId>deepimagej-plugin</artifactId>
+            <version>2.1.15</version>
+            <scope>${scp}</scope>
+        </dependency>
+        <dependency>
             <groupId>sc.fiji</groupId>
             <artifactId>TrackMate</artifactId>
-            <version>7.6.0</version>
+            <version>7.10.0</version>
             <scope>${scp}</scope>
         </dependency>
         <dependency>
@@ -372,10 +383,10 @@
         <dependency>
             <groupId>com.github.sjcross</groupId>
             <artifactId>sjcommon</artifactId>
-            <version>1.12.2</version>
+            <version>v1.12.3</version>
             <!-- <groupId>io.github.sjcross</groupId>
             <artifactId>sjcommon</artifactId>
-            <version>1.12.2</version> -->
+            <version>1.12.3</version> -->
         </dependency>
     </dependencies>
 
@@ -438,6 +449,18 @@
                         </goals>
                     </execution>
                 </executions>
+                <configuration>
+                    <filters>
+                        <filter>
+                            <artifact>*:*</artifact>
+                            <excludes>
+                                <exclude>META-INF/*.SF</exclude>
+                                <exclude>META-INF/*.DSA</exclude>
+                                <exclude>META-INF/*.RSA</exclude>
+                            </excludes>
+                        </filter>
+                    </filters>
+                </configuration>
             </plugin>
 
             <plugin>

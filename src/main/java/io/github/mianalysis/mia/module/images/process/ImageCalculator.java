@@ -62,15 +62,17 @@ public class ImageCalculator extends Module {
 
     public interface CalculationMethods {
         String ADD = "Add image 1 and image 2";
+        String AND = "Image 1 AND image 2 (binary)";
         String DIFFERENCE = "Difference of image 1 and image 2";
         String DIVIDE = "Divide image 1 by image 2";
         String MAX = "Maximum of image 1 and image 2";
         String MEAN = "Mean of image 1 and image 2";
         String MIN = "Minimum of image 1 and image 2";
+        String NOT = "Image 1 NOT image 2 (binary)";
         String MULTIPLY = "Multiply image 1 and image 2";
         String SUBTRACT = "Subtract image 2 from image 1";
 
-        String[] ALL = new String[] { ADD, DIFFERENCE, DIVIDE, MAX, MEAN, MIN, MULTIPLY, SUBTRACT };
+        String[] ALL = new String[] { ADD, AND, DIFFERENCE, DIVIDE, MAX, MEAN, MIN, MULTIPLY, NOT, SUBTRACT };
 
     }
 
@@ -170,9 +172,11 @@ public class ImageCalculator extends Module {
         int nFrames = imagePlus1.getNFrames();
 
         // If necessary, converting NaN values to zero
-        if (setNaNToZero && (imagePlus1.getBitDepth() == 32 || imagePlus2.getBitDepth() == 32)) {
+        if (setNaNToZero && (imagePlus1.getBitDepth() == 32 || imagePlus2.getBitDepth() == 32))
             removeNaNs(imagePlus1, imagePlus2);
-        }
+
+        // Getting max val for masking operations
+        int maxVal = (int) Math.round(Math.pow(2, imagePlus2.getBitDepth()) - 1);
 
         // Checking the number of dimensions. If a dimension of image2 is 1 this
         // dimension is used for all images.
@@ -191,6 +195,12 @@ public class ImageCalculator extends Module {
                             switch (calculationMethod) {
                                 case CalculationMethods.ADD:
                                     val = imageProcessor1.getPixelValue(x, y) + imageProcessor2.getPixelValue(x, y);
+                                    break;
+
+                                case CalculationMethods.AND:
+                                    val = imageProcessor2.getPixelValue(x, y) == maxVal
+                                            ? imageProcessor1.getPixelValue(x, y)
+                                            : 0;
                                     break;
 
                                 case CalculationMethods.DIFFERENCE:
@@ -218,8 +228,9 @@ public class ImageCalculator extends Module {
                                     break;
 
                                 case CalculationMethods.MEAN:
-                                    val = (imageProcessor1.getPixelValue(x, y) + imageProcessor2.getPixelValue(x, y)*im2Contibution)
-                                            / (1+im2Contibution);
+                                    val = (imageProcessor1.getPixelValue(x, y)
+                                            + imageProcessor2.getPixelValue(x, y) * im2Contibution)
+                                            / (1 + im2Contibution);
                                     break;
 
                                 case CalculationMethods.MIN:
@@ -229,6 +240,12 @@ public class ImageCalculator extends Module {
 
                                 case CalculationMethods.MULTIPLY:
                                     val = imageProcessor1.getPixelValue(x, y) * imageProcessor2.getPixelValue(x, y);
+                                    break;
+
+                                case CalculationMethods.NOT:
+                                    val = imageProcessor2.getPixelValue(x, y) != maxVal
+                                            ? imageProcessor1.getPixelValue(x, y)
+                                            : 0;
                                     break;
 
                                 case CalculationMethods.SUBTRACT:
@@ -285,21 +302,21 @@ public class ImageCalculator extends Module {
     @Override
     public Status process(Workspace workspace) {
         // Getting input images
-        String inputImageName1 = parameters.getValue(INPUT_IMAGE1,workspace);
+        String inputImageName1 = parameters.getValue(INPUT_IMAGE1, workspace);
         Image inputImage1 = workspace.getImages().get(inputImageName1);
         ImagePlus inputImagePlus1 = inputImage1.getImagePlus();
 
-        String inputImageName2 = parameters.getValue(INPUT_IMAGE2,workspace);
+        String inputImageName2 = parameters.getValue(INPUT_IMAGE2, workspace);
         Image inputImage2 = workspace.getImages().get(inputImageName2);
         ImagePlus inputImagePlus2 = inputImage2.getImagePlus();
 
         // Getting parameters
-        String overwriteMode = parameters.getValue(OVERWRITE_MODE,workspace);
-        String outputImageName = parameters.getValue(OUTPUT_IMAGE,workspace);
-        boolean output32Bit = parameters.getValue(OUTPUT_32BIT,workspace);
-        String calculationMethod = parameters.getValue(CALCULATION_METHOD,workspace);
-        double im2Contibution = parameters.getValue(IMAGE_2_CONTRIBUTION,workspace);
-        boolean setNaNToZero = parameters.getValue(SET_NAN_TO_ZERO,workspace);
+        String overwriteMode = parameters.getValue(OVERWRITE_MODE, workspace);
+        String outputImageName = parameters.getValue(OUTPUT_IMAGE, workspace);
+        boolean output32Bit = parameters.getValue(OUTPUT_32BIT, workspace);
+        String calculationMethod = parameters.getValue(CALCULATION_METHOD, workspace);
+        double im2Contibution = parameters.getValue(IMAGE_2_CONTRIBUTION, workspace);
+        boolean setNaNToZero = parameters.getValue(SET_NAN_TO_ZERO, workspace);
 
         ImagePlus newIpl = process(inputImagePlus1, inputImagePlus2, calculationMethod, overwriteMode, outputImageName,
                 output32Bit, setNaNToZero, im2Contibution);
@@ -363,7 +380,7 @@ public class ImageCalculator extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
-Workspace workspace = null;
+        Workspace workspace = null;
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
@@ -371,7 +388,7 @@ Workspace workspace = null;
         returnedParameters.add(parameters.getParameter(INPUT_IMAGE2));
         returnedParameters.add(parameters.getParameter(OVERWRITE_MODE));
 
-        if (parameters.getValue(OVERWRITE_MODE,workspace).equals(OverwriteModes.CREATE_NEW)) {
+        if (parameters.getValue(OVERWRITE_MODE, workspace).equals(OverwriteModes.CREATE_NEW)) {
             returnedParameters.add(parameters.getParameter(OUTPUT_IMAGE));
         }
 
@@ -379,7 +396,7 @@ Workspace workspace = null;
 
         returnedParameters.add(parameters.getParameter(CALCULATION_SEPARATOR));
         returnedParameters.add(parameters.getParameter(CALCULATION_METHOD));
-        if (((String) parameters.getValue(CALCULATION_METHOD,workspace)).equals(CalculationMethods.MEAN))
+        if (((String) parameters.getValue(CALCULATION_METHOD, workspace)).equals(CalculationMethods.MEAN))
             returnedParameters.add(parameters.getParameter(IMAGE_2_CONTRIBUTION));
         returnedParameters.add(parameters.getParameter(SET_NAN_TO_ZERO));
 
@@ -389,27 +406,27 @@ Workspace workspace = null;
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
-return null;
+        return null;
     }
 
     @Override
-public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
-return null;
+    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+        return null;
     }
 
     @Override
-public MetadataRefs updateAndGetMetadataReferences() {
-return null;
+    public MetadataRefs updateAndGetMetadataReferences() {
+        return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
-return null;
+        return null;
     }
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
-return null;
+        return null;
     }
 
     @Override

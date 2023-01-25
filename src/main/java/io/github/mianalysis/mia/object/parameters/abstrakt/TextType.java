@@ -28,11 +28,23 @@ public abstract class TextType extends Parameter {
 
     public abstract void setValueFromString(String value);
 
-    public static boolean containsCalculation(String string) {
-        Pattern pattern = Pattern.compile("C[ID]?\\{([^}]+)}");
-        Matcher matcher = pattern.matcher(string);
+    public static boolean containsReference(String string) {
+        if (Pattern.compile("C[ID]?\\{([^}]+)}").matcher(string).find())
+            return true;
 
-        return matcher.find();
+        if (Pattern.compile("Me\\{([^}]+)}").matcher(string).find())
+            return true;
+
+        if (Pattern.compile("Im\\{([^}]+)}").matcher(string).find())
+            return true;
+
+        if (Pattern.compile("Oc\\{([^}]+)}").matcher(string).find())
+            return true;
+
+        if (Pattern.compile("Os\\{([^}]+)}").matcher(string).find())
+            return true;
+
+        return false;
 
     }
 

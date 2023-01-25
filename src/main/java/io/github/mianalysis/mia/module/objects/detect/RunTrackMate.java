@@ -19,10 +19,9 @@ import fiji.plugin.trackmate.TrackMate;
 import fiji.plugin.trackmate.TrackModel;
 import fiji.plugin.trackmate.detection.DetectorKeys;
 import fiji.plugin.trackmate.detection.LogDetectorFactory;
-import fiji.plugin.trackmate.tracking.LAPUtils;
 import fiji.plugin.trackmate.tracking.TrackerKeys;
+import fiji.plugin.trackmate.tracking.jaqaman.SparseLAPTrackerFactory;
 import fiji.plugin.trackmate.tracking.kalman.KalmanTrackerFactory;
-import fiji.plugin.trackmate.tracking.sparselap.SparseLAPTrackerFactory;
 import ij.ImagePlus;
 import ij.measure.Calibration;
 import ij.plugin.Duplicator;
@@ -39,7 +38,6 @@ import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.image.Image;
-import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
@@ -151,15 +149,15 @@ public class RunTrackMate extends Module {
 
         switch (trackingMethod) {
             case TrackingMethods.KALMAN:
-                settings.trackerFactory = new KalmanTrackerFactory();
-                settings.trackerSettings = LAPUtils.getDefaultLAPSettingsMap();
+                settings.trackerFactory = new KalmanTrackerFactory();                
+                settings.trackerSettings = settings.trackerFactory.getDefaultSettings();
                 settings.trackerSettings.put(TrackerKeys.KEY_LINKING_MAX_DISTANCE, initialSearchRadius);
                 settings.trackerSettings.put(TrackerKeys.KEY_GAP_CLOSING_MAX_FRAME_GAP, maxFrameGap);
-                settings.trackerSettings.put(KalmanTrackerFactory.KEY_KALMAN_SEARCH_RADIUS, searchRadius);
+                settings.trackerSettings.put(TrackerKeys.KEY_KALMAN_SEARCH_RADIUS, searchRadius);
                 break;
             case TrackingMethods.SIMPLE:
                 settings.trackerFactory = new SparseLAPTrackerFactory();
-                settings.trackerSettings = LAPUtils.getDefaultLAPSettingsMap();
+                settings.trackerSettings = settings.trackerFactory.getDefaultSettings();
                 settings.trackerSettings.put(TrackerKeys.KEY_ALLOW_TRACK_SPLITTING, false);
                 settings.trackerSettings.put(TrackerKeys.KEY_ALLOW_TRACK_MERGING, false);
                 settings.trackerSettings.put(TrackerKeys.KEY_LINKING_MAX_DISTANCE, maxLinkDist);

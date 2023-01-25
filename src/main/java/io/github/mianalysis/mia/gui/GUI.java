@@ -28,7 +28,6 @@ import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.core.InputControl;
 import io.github.mianalysis.mia.module.core.OutputControl;
 import io.github.mianalysis.mia.module.inputoutput.ImageLoader;
-import io.github.mianalysis.mia.moduledependencies.Dependency;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.Workspaces;
 import io.github.mianalysis.mia.object.parameters.FileFolderPathP;

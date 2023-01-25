@@ -223,7 +223,7 @@ public class FocusStackLocal extends Module {
 
             // StackFocuser plugin wants height image indices 1-based, but they're output to
             // the workspace as 0-based for consistency with MIA.
-            ImageMath.process(heightMap, ImageMath.CalculationTypes.ADD, 1);
+            ImageMath.process(heightMap, ImageMath.CalculationModes.ADD, 1);
         } else {
             heightMap = getHeightMap(inputImage, outputHeightImageName, range, smooth);
         }
@@ -246,7 +246,7 @@ public class FocusStackLocal extends Module {
             case OutputModes.HEIGHT_MAP_ONLY:
                 // Converting StackFocuser's 1-based height map image back to 0-based for
                 // consistency with MIA
-                ImageMath.process(heightMap, ImageMath.CalculationTypes.SUBTRACT, 1);
+                ImageMath.process(heightMap, ImageMath.CalculationModes.SUBTRACT, 1);
 
                 if (showOutput)
                     heightMap.showImage();

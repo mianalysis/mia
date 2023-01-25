@@ -204,10 +204,10 @@ public class MaskObjects<T extends RealType<T> & NativeType<T>> extends Module {
         if (showOutput) {
             switch (outputMode) {
                 case OutputModes.CREATE_NEW_OBJECT:
-                    outputObjects.convertToImageRandomColours().showImage();
+                    outputObjects.convertToImageIDColours().showImage();
                     break;
                 case OutputModes.UPDATE_INPUT:
-                    inputObjects.convertToImageRandomColours().showImage();
+                    inputObjects.convertToImageIDColours().showImage();
                     break;
             }
         }

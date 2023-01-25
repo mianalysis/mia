@@ -18,7 +18,6 @@ import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.image.Image;
-import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.ImageMeasurementP;
@@ -138,8 +137,8 @@ public class MeasureObjectColocalisation<T extends RealType<T> & NativeType<T>> 
             int left = (int) Math.round(extents[0][0]);
             int width = (int) Math.round(extents[0][1] - extents[0][0]+1);
             int height = (int) Math.round(extents[1][1] - extents[1][0]+1);
-            Image crop1 = CropImage.cropImage(image1, "Crop1", top, left, width, height);
-            Image crop2 = CropImage.cropImage(image2, "Crop2", top, left, width, height);
+            Image crop1 = CropImage.cropImage(image1, "Crop1", left, top, width, height);
+            Image crop2 = CropImage.cropImage(image2, "Crop2", left, top, width, height);
 
             Image timepoint1 = ExtractSubstack.extractSubstack(crop1, "Timepoint1", "1-end", "1-end",
                     String.valueOf(inputObject.getT() + 1));
@@ -266,16 +265,16 @@ Workspace workspace = null;
         }
 
         returnedParameters.add(parameters.getParameter(MEASUREMENT_SEPARATOR));
-        if ((boolean) parameters.getValue(MEASURE_PCC,workspace)
-                || ((String) parameters.getValue(THRESHOLDING_MODE,workspace)).equals(ThresholdingModes.BISECTION)
-                || ((String) parameters.getValue(THRESHOLDING_MODE,workspace)).equals(ThresholdingModes.COSTES)) {
-            returnedParameters.add(parameters.getParameter(PCC_IMPLEMENTATION));
-        }
         returnedParameters.add(parameters.getParameter(MEASURE_KENDALLS_RANK));
         returnedParameters.add(parameters.getParameter(MEASURE_LI_ICQ));
         returnedParameters.add(parameters.getParameter(MEASURE_MANDERS));
         returnedParameters.add(parameters.getParameter(MEASURE_PCC));
         returnedParameters.add(parameters.getParameter(MEASURE_SPEARMANS_RANK));
+        if ((boolean) parameters.getValue(MEASURE_PCC,workspace)
+                || ((String) parameters.getValue(THRESHOLDING_MODE,workspace)).equals(ThresholdingModes.BISECTION)
+                || ((String) parameters.getValue(THRESHOLDING_MODE,workspace)).equals(ThresholdingModes.COSTES)) {
+            returnedParameters.add(parameters.getParameter(PCC_IMPLEMENTATION));
+        }
 
         return returnedParameters;
 

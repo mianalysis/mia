@@ -7,8 +7,8 @@ import java.util.Vector;
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
 
-import fiji.plugin.trackmate.tracking.sparselap.costmatrix.DefaultCostMatrixCreator;
-import fiji.plugin.trackmate.tracking.sparselap.linker.JaqamanLinker;
+import fiji.plugin.trackmate.tracking.jaqaman.JaqamanLinker;
+import fiji.plugin.trackmate.tracking.jaqaman.costmatrix.DefaultCostMatrixCreator;
 import ij.process.ImageProcessor;
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Module;

@@ -1,20 +1,19 @@
 package io.github.mianalysis.mia.object.image;
 
-import java.nio.file.Paths;
 import java.util.HashMap;
 
 import com.drew.lang.annotations.Nullable;
 
-import ij.CompositeImage;
 import ij.ImagePlus;
 import ij.ImageStack;
 import ij.gui.Overlay;
 import ij.measure.Calibration;
 import ij.process.ImageProcessor;
 import ij.process.LUT;
-import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
+import io.github.mianalysis.mia.object.image.renderer.ImageRenderer;
+import io.github.mianalysis.mia.object.image.renderer.ImgPlusRenderer;
 import io.github.mianalysis.mia.object.units.TemporalUnit;
 import io.github.sjcross.sjcommon.object.Point;
 import io.github.sjcross.sjcommon.object.volume.PointOutOfRangeException;
@@ -47,7 +46,7 @@ public class ImgPlusImage<T extends RealType<T> & NativeType<T>> extends Image<T
         this.name = name;
         this.img = ImagePlusAdapter.wrapImgPlus(imagePlus);
         this.overlay = imagePlus.getOverlay();
-        
+
     }
 
     public ImgPlusImage(String name, ImgPlus<T> img) {
@@ -56,7 +55,6 @@ public class ImgPlusImage<T extends RealType<T> & NativeType<T>> extends Image<T
 
     }
 
-    
     // PUBLIC METHODS
 
     public Objs initialiseEmptyObjs(String outputObjectsName) {
@@ -258,34 +256,20 @@ public class ImgPlusImage<T extends RealType<T> & NativeType<T>> extends Image<T
         }
     }
 
-    public void showImage(String title, @Nullable LUT lut, boolean normalise, boolean composite) {
+    public void show(String title, @Nullable LUT lut, boolean normalise, boolean composite) {
         // Show using this overlay
-        showImage(title, lut, normalise, composite, overlay);
+        show(title, lut, normalise, composite, overlay);
     }
 
-    public void showImage(String title, @Nullable LUT lut, boolean normalise, boolean composite, Overlay overlay) {
-        // Adds the specified overlay rather than the overlay associated with this image
-        ImagePlus ipl = getImagePlus();
-        
-        if (lut != null && ipl.getBitDepth() != 24)
-            ipl.setLut(lut);
-            
-        if (composite && ipl.getNChannels() > 1)
-            ipl.setDisplayMode(CompositeImage.COMPOSITE);
-        else 
-            ipl.setDisplayMode(CompositeImage.COLOR);
-        
-        setCalibration(ipl, img);
-        ipl.setOverlay(overlay);
-        
-        ipl.show();
+    public void show(String title, @Nullable LUT lut, boolean normalise, boolean composite, Overlay overlay) {
+        renderer.render(this, title, lut, normalise, composite, overlay);
 
     }
 
     public ImgPlusImage<T> duplicate(String outputImageName) {
         ImgPlus<T> outImg = ImgPlusTools.createNewImgPlus(img, img.firstElement());
         LoopBuilder.setImages(img, outImg).forEachPixel((i, o) -> o.set(i));
-        
+
         ImgPlusImage<T> outImage = new ImgPlusImage<>(outputImageName, outImg);
         outImage.setOverlay(overlay.duplicate());
 
@@ -307,7 +291,7 @@ public class ImgPlusImage<T extends RealType<T> & NativeType<T>> extends Image<T
         RandomAccessibleInterval<T> rai = ImgPlusTools.forceImgPlusToXYCZT(img);
 
         ImagePlus ipl = ImageJFunctions.wrap(rai, name);
-        setCalibration(ipl, img);        
+        setCalibration(ipl, img);
         ipl.setOverlay(overlay);
 
         return ipl.duplicate();
@@ -319,8 +303,8 @@ public class ImgPlusImage<T extends RealType<T> & NativeType<T>> extends Image<T
             this.img = null;
             this.overlay = null;
             return;
-        }        
-        
+        }
+
         this.img = ImagePlusAdapter.wrapImgPlus(imagePlus);
         this.overlay = imagePlus.getOverlay();
     }
@@ -341,8 +325,8 @@ public class ImgPlusImage<T extends RealType<T> & NativeType<T>> extends Image<T
         Calibration calibration = imagePlus.getCalibration();
 
         hash = 31 * hash + ((Number) calibration.pixelWidth).hashCode();
-            if (imagePlus.getNSlices() > 1)
-        hash = 31 * hash + ((Number) calibration.pixelDepth).hashCode();
+        if (imagePlus.getNSlices() > 1)
+            hash = 31 * hash + ((Number) calibration.pixelDepth).hashCode();
         hash = 31 * hash + calibration.getUnits().toUpperCase().hashCode();
 
         hash = 31 * hash + imagePlus.getWidth();
@@ -444,9 +428,9 @@ public class ImgPlusImage<T extends RealType<T> & NativeType<T>> extends Image<T
         DiskCachedCellImgOptions options = DiskCachedCellImgOptions.options();
         options.numIoThreads(2);
         options.cellDimensions(cellSize);
-        
+
         // if (MIA.getPreferences().isSpecifyCacheDirectory())
-        //     options.cacheDirectory(Paths.get(MIA.getPreferences().getCacheDirectory()));
+        // options.cacheDirectory(Paths.get(MIA.getPreferences().getCacheDirectory()));
 
         return options;
 

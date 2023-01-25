@@ -14,6 +14,7 @@ import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.image.Image;
 import io.github.mianalysis.mia.object.image.ImageFactory;
+import io.github.mianalysis.mia.object.image.ImgPlusTools;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
@@ -28,7 +29,6 @@ import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Status;
-import io.github.mianalysis.mia.process.ImgPlusTools;
 import net.imagej.ImgPlus;
 import net.imagej.axis.Axes;
 import net.imglib2.Cursor;
@@ -39,7 +39,7 @@ import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
 import net.imglib2.view.Views;
 
-@Plugin(type = Module.class, priority=Priority.LOW, visible=true)
+@Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class CropImage<T extends RealType<T> & NativeType<T>> extends Module {
     public static final String INPUT_SEPARATOR = "Image input/output";
     public static final String INPUT_IMAGE = "Input image";
@@ -66,12 +66,22 @@ public class CropImage<T extends RealType<T> & NativeType<T>> extends Module {
     }
 
     public static <T extends RealType<T> & NativeType<T>> Image cropImage(Image inputImage, String outputImageName,
-            int top, int left, int width, int height) {
+            int left, int top, int width, int height) {
         Calibration calibration = inputImage.getImagePlus().getCalibration();
         ImgPlus<T> inputImg = inputImage.getImgPlus();
 
         int xIdx = inputImg.dimensionIndex(Axes.X);
         int yIdx = inputImg.dimensionIndex(Axes.Y);
+
+        // Ensuring crop region is within limits
+        int right = left + width;
+        int bottom = top + height;
+        top = Math.max(0, top);
+        left = Math.max(0, left);
+        right = Math.min((int) inputImg.dimension(xIdx), right);
+        bottom = Math.min((int) inputImg.dimension(yIdx), bottom);
+        width = right - left;
+        height = bottom - top;
 
         long[] offsetIn = new long[inputImg.numDimensions()];
         long[] dimsIn = new long[inputImg.numDimensions()];
@@ -106,7 +116,7 @@ public class CropImage<T extends RealType<T> & NativeType<T>> extends Module {
         // strangely, but this can be remedied by duplicating it
         ImagePlus outputImagePlus = ImageJFunctions.wrap(outputImg, outputImageName).duplicate();
         outputImagePlus.setCalibration(calibration);
-        ImgPlusTools.applyAxes(outputImg, outputImagePlus);
+        ImgPlusTools.applyDimensions(outputImg, outputImagePlus);
 
         return ImageFactory.createImage(outputImageName, outputImagePlus);
 
@@ -125,18 +135,18 @@ public class CropImage<T extends RealType<T> & NativeType<T>> extends Module {
     @Override
     public Status process(Workspace workspace) {
         // Getting input image
-        String inputImageName = parameters.getValue(INPUT_IMAGE,workspace);
+        String inputImageName = parameters.getValue(INPUT_IMAGE, workspace);
         Image inputImage = workspace.getImages().get(inputImageName);
 
         // Getting parameters
-        boolean applyToInput = parameters.getValue(APPLY_TO_INPUT,workspace);
-        String outputImageName = parameters.getValue(OUTPUT_IMAGE,workspace);
-        String limitsMode = parameters.getValue(LIMITS_MODE,workspace);
-        int left = parameters.getValue(LEFT,workspace);
-        int top = parameters.getValue(TOP,workspace);
-        int width = parameters.getValue(WIDTH,workspace);
-        int height = parameters.getValue(HEIGHT,workspace);
-        String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
+        boolean applyToInput = parameters.getValue(APPLY_TO_INPUT, workspace);
+        String outputImageName = parameters.getValue(OUTPUT_IMAGE, workspace);
+        String limitsMode = parameters.getValue(LIMITS_MODE, workspace);
+        int left = parameters.getValue(LEFT, workspace);
+        int top = parameters.getValue(TOP, workspace);
+        int width = parameters.getValue(WIDTH, workspace);
+        int height = parameters.getValue(HEIGHT, workspace);
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS, workspace);
 
         switch (limitsMode) {
             case LimitsModes.FROM_OBJECTS:
@@ -154,20 +164,25 @@ public class CropImage<T extends RealType<T> & NativeType<T>> extends Module {
                 break;
         }
 
+        if (width < 0 || height < 0) {
+            MIA.log.writeWarning("Crop width or height was less than 0.  Module execution failed.");
+            return Status.FAIL;
+        }
+
         // Applying crop
-        Image outputImage = cropImage(inputImage, outputImageName, top, left, width, height);
+        Image outputImage = cropImage(inputImage, outputImageName, left, top, width, height);
 
         // If the image is being saved as a new image, adding it to the workspace
         if (applyToInput) {
             inputImage.setImagePlus(outputImage.getImagePlus());
             if (showOutput)
-                inputImage.showImage();
+                inputImage.show();
 
         } else {
             writeStatus("Adding image (" + outputImageName + ") to workspace");
             workspace.addImage(outputImage);
             if (showOutput)
-                outputImage.showImage();
+                outputImage.show();
         }
 
         return Status.PASS;
@@ -194,20 +209,20 @@ public class CropImage<T extends RealType<T> & NativeType<T>> extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
-Workspace workspace = null;
+        Workspace workspace = null;
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(INPUT_IMAGE));
         returnedParameters.add(parameters.getParameter(APPLY_TO_INPUT));
 
-        if (!(boolean) parameters.getValue(APPLY_TO_INPUT,workspace)) {
+        if (!(boolean) parameters.getValue(APPLY_TO_INPUT, workspace)) {
             returnedParameters.add(parameters.getParameter(OUTPUT_IMAGE));
         }
 
         returnedParameters.add(parameters.getParameter(CROP_SEPARATOR));
         returnedParameters.add(parameters.getParameter(LIMITS_MODE));
-        switch ((String) parameters.getValue(LIMITS_MODE,workspace)) {
+        switch ((String) parameters.getValue(LIMITS_MODE, workspace)) {
             case LimitsModes.FIXED_VALUES:
                 returnedParameters.add(parameters.getParameter(LEFT));
                 returnedParameters.add(parameters.getParameter(TOP));
@@ -225,27 +240,27 @@ Workspace workspace = null;
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
-return null;
+        return null;
     }
 
     @Override
-public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
-return null;
+    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+        return null;
     }
 
     @Override
-public MetadataRefs updateAndGetMetadataReferences() {
-return null;
+    public MetadataRefs updateAndGetMetadataReferences() {
+        return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
-return null;
+        return null;
     }
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
-return null;
+        return null;
     }
 
     @Override

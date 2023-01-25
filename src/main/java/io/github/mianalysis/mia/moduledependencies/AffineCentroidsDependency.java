@@ -12,7 +12,7 @@ public class AffineCentroidsDependency extends Dependency {
 
     @Override
     public String getClassName() {
-        return "fiji.plugin.trackmate.tracking.sparselap.costmatrix.DefaultCostMatrixCreator";
+        return "fiji.plugin.trackmate.tracking.jaqaman.JaqamanLinker";
     }
 
     @Override
@@ -22,7 +22,7 @@ public class AffineCentroidsDependency extends Dependency {
 
     @Override
     public String getVersionThreshold() {
-        return "0.0.0";
+        return "7.10.0";
     }
 
     @Override

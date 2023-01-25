@@ -9,10 +9,6 @@ import ij.IJ;
 import ij.ImagePlus;
 import ij.measure.Calibration;
 import ij.measure.ResultsTable;
-import ome.units.UNITS;
-import ome.units.quantity.Time;
-import ome.units.unit.Unit;
-import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.image.Image;
@@ -26,6 +22,9 @@ import io.github.sjcross.sjcommon.object.Point;
 import io.github.sjcross.sjcommon.object.volume.PointOutOfRangeException;
 import io.github.sjcross.sjcommon.object.volume.SpatCal;
 import io.github.sjcross.sjcommon.object.volume.VolumeType;
+import ome.units.UNITS;
+import ome.units.quantity.Time;
+import ome.units.unit.Unit;
 
 /**
  * Created by sc13967 on 12/05/2017.
@@ -257,6 +256,24 @@ public class Objs extends LinkedHashMap<Integer, Obj> {
 
         ImagePlus dispIpl = dispImage.getImagePlus();
         dispIpl.setLut(LUTs.Random(true));
+        dispIpl.setPosition(1, 1, 1);
+        dispIpl.updateChannelAndDraw();
+
+        return dispImage;
+
+    }
+
+    public Image convertToImageIDColours() {
+        HashMap<Integer, Float> hues = ColourFactory.getIDHues(this,false);
+        Image dispImage = convertToImage(name, hues, 32, false);
+
+        if (dispImage == null)
+            return null;
+        if (dispImage.getImagePlus() == null)
+            return null;
+
+        ImagePlus dispIpl = dispImage.getImagePlus();
+        dispIpl.setLut(LUTs.Random(true,false));
         dispIpl.setPosition(1, 1, 1);
         dispIpl.updateChannelAndDraw();
 
@@ -508,6 +525,27 @@ public class Objs extends LinkedHashMap<Integer, Obj> {
         }
 
         return referenceObject;
+
+    }
+
+    public Objs getObjectsInFrame(String outputObjectsName, int frame) {
+        Objs outputObjects = new Objs(outputObjectsName, this);
+
+        // Setting output objects collection to have one frame
+        outputObjects.setNFrmes(1);
+
+        // Iterating over objects, getting those in this frame
+        for (Obj obj:values()) {
+            if (obj.getT() == frame) {   
+                Obj outputObject = new Obj(outputObjects, obj.getVolumeType(), obj.getID());
+                outputObject.setCoordinateSet(obj.getCoordinateSet().duplicate());
+                outputObject.setT(0);
+                outputObjects.add(outputObject);
+            }
+        }
+
+
+        return outputObjects;
 
     }
 

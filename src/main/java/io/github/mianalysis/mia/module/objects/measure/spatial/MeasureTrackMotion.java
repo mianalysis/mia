@@ -38,7 +38,7 @@ import io.github.sjcross.sjcommon.object.tracks.Track;
 /**
  * Created by Stephen Cross on 24/05/2017.
  */
-@Plugin(type = Module.class, priority=Priority.LOW, visible=true)
+@Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class MeasureTrackMotion extends Module {
     public static final String INPUT_SEPARATOR = "Input objects";
     public static final String INPUT_TRACK_OBJECTS = "Input track objects";
@@ -192,7 +192,8 @@ public class MeasureTrackMotion extends Module {
             Timepoint<Double> firstPoint = track.values().iterator().next();
             Timepoint<Double> lastPoint = null;
             Iterator<Timepoint<Double>> iterator = track.values().iterator();
-            while (iterator.hasNext()) lastPoint = iterator.next();
+            while (iterator.hasNext())
+                lastPoint = iterator.next();
 
             int duration = track.getDuration();
             String name = getFullName(Measurements.DURATION, averageSubtracted);
@@ -517,14 +518,14 @@ public class MeasureTrackMotion extends Module {
     @Override
     public Status process(Workspace workspace) {
         // Getting input track objects
-        String inputTrackObjectsName = parameters.getValue(INPUT_TRACK_OBJECTS,workspace);
+        String inputTrackObjectsName = parameters.getValue(INPUT_TRACK_OBJECTS, workspace);
         Objs trackObjects = workspace.getObjects().get(inputTrackObjectsName);
 
         // Getting input spot objects
-        String inputSpotObjectsName = parameters.getValue(INPUT_SPOT_OBJECTS,workspace);
-        boolean subtractAverage = parameters.getValue(SUBTRACT_AVERAGE_MOTION,workspace);
-        boolean identifyLeading = parameters.getValue(IDENTIFY_LEADING_POINT,workspace);
-        String orientationMode = parameters.getValue(ORIENTATION_MODE,workspace);
+        String inputSpotObjectsName = parameters.getValue(INPUT_SPOT_OBJECTS, workspace);
+        boolean subtractAverage = parameters.getValue(SUBTRACT_AVERAGE_MOTION, workspace);
+        boolean identifyLeading = parameters.getValue(IDENTIFY_LEADING_POINT, workspace);
+        String orientationMode = parameters.getValue(ORIENTATION_MODE, workspace);
 
         // If necessary, creating the average track
         Track averageTrack = null;
@@ -581,20 +582,20 @@ public class MeasureTrackMotion extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
-Workspace workspace = null;
+        Workspace workspace = null;
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(INPUT_TRACK_OBJECTS));
         returnedParameters.add(parameters.getParameter(INPUT_SPOT_OBJECTS));
 
-        String objectName = parameters.getValue(INPUT_TRACK_OBJECTS,workspace);
+        String objectName = parameters.getValue(INPUT_TRACK_OBJECTS, workspace);
         ((ChildObjectsP) parameters.getParameter(INPUT_SPOT_OBJECTS)).setParentObjectsName(objectName);
 
         returnedParameters.add(parameters.getParameter(MEASUREMENT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(SUBTRACT_AVERAGE_MOTION));
         returnedParameters.add(parameters.getParameter(IDENTIFY_LEADING_POINT));
-        if ((boolean) parameters.getValue(IDENTIFY_LEADING_POINT,workspace)) {
+        if ((boolean) parameters.getValue(IDENTIFY_LEADING_POINT, workspace)) {
             returnedParameters.add(parameters.getParameter(ORIENTATION_MODE));
         }
 
@@ -604,16 +605,16 @@ Workspace workspace = null;
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
-return null;
+        return null;
     }
 
     @Override
-public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
-Workspace workspace = null;
+    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+        Workspace workspace = null;
         ObjMeasurementRefs returnedRefs = new ObjMeasurementRefs();
-        String inputTrackObjects = parameters.getValue(INPUT_TRACK_OBJECTS,workspace);
-        String inputSpotObjects = parameters.getValue(INPUT_SPOT_OBJECTS,workspace);
-        boolean subtractAverage = parameters.getValue(SUBTRACT_AVERAGE_MOTION,workspace);
+        String inputTrackObjects = parameters.getValue(INPUT_TRACK_OBJECTS, workspace);
+        String inputSpotObjects = parameters.getValue(INPUT_SPOT_OBJECTS, workspace);
+        boolean subtractAverage = parameters.getValue(SUBTRACT_AVERAGE_MOTION, workspace);
 
         String name = getFullName(Measurements.DIRECTIONALITY_RATIO, subtractAverage);
         ObjMeasurementRef reference = objectMeasurementRefs.getOrPut(name);
@@ -775,7 +776,7 @@ Workspace workspace = null;
         reference.setObjectsName(inputSpotObjects);
         returnedRefs.add(reference);
 
-        if ((boolean) parameters.getValue(IDENTIFY_LEADING_POINT,workspace)) {
+        if ((boolean) parameters.getValue(IDENTIFY_LEADING_POINT, workspace)) {
             name = getFullName(Measurements.ORIENTATION, subtractAverage);
             reference = objectMeasurementRefs.getOrPut(name);
             reference.setObjectsName(inputSpotObjects);
@@ -803,18 +804,18 @@ Workspace workspace = null;
     }
 
     @Override
-public MetadataRefs updateAndGetMetadataReferences() {
-return null;
+    public MetadataRefs updateAndGetMetadataReferences() {
+        return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
-return null;
+        return null;
     }
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
-return null;
+        return null;
     }
 
     @Override
@@ -838,9 +839,14 @@ return null;
         parameters.get(SUBTRACT_AVERAGE_MOTION).setDescription(
                 "When selected, the average motion of all points between two frames is subtracted from the motion prior to calculation of any track measurements.  This can be used as a crude form of drift correction; however, it only works for global drift (where the whole sample moved together) and is less robust with few tracked objects.  Ideally, drift would be removed from the input images using image registration prior to object detection.");
 
-        parameters.get(IDENTIFY_LEADING_POINT).setDescription("When selected, the \"leading point\" of each object in the track will be determined and stored as X,Y,Z coordinate measurements associated with the relevant object.  The orientation of the track at that location will also be calculated.  In this instance, \"leading point\" refers to the front-most point in the object when considering the direction the object is moving in that frame.  This can be calculated relative to the previous frame, next frame or both previous and next frames (controlled by the \""+ORIENTATION_MODE+"\" parameter).");
+        parameters.get(IDENTIFY_LEADING_POINT).setDescription(
+                "When selected, the \"leading point\" of each object in the track will be determined and stored as X,Y,Z coordinate measurements associated with the relevant object.  The orientation of the track at that location will also be calculated.  In this instance, \"leading point\" refers to the front-most point in the object when considering the direction the object is moving in that frame.  This can be calculated relative to the previous frame, next frame or both previous and next frames (controlled by the \""
+                        + ORIENTATION_MODE + "\" parameter).");
 
-        parameters.get(ORIENTATION_MODE).setDescription("If calculating the leading point of each object in each track (\""+IDENTIFY_LEADING_POINT+"\" selected), this controls whether the instantaneous orientation of the track is determined relative to the previous frame, next frame or both previous and next frames.");
+        parameters.get(ORIENTATION_MODE)
+                .setDescription("If calculating the leading point of each object in each track (\""
+                        + IDENTIFY_LEADING_POINT
+                        + "\" selected), this controls whether the instantaneous orientation of the track is determined relative to the previous frame, next frame or both previous and next frames.");
 
     }
 }

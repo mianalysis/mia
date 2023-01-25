@@ -7,13 +7,14 @@ import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.scijava.Priority;
+import org.scijava.io.location.FileLocation;
+import org.scijava.io.location.Location;
 import org.scijava.plugin.Plugin;
 
 import com.drew.lang.annotations.NotNull;
@@ -68,6 +69,9 @@ import io.github.sjcross.sjcommon.metadataextractors.Metadata;
 import io.github.sjcross.sjcommon.metadataextractors.NameExtractor;
 import io.github.sjcross.sjcommon.process.CommaSeparatedStringInterpreter;
 import io.github.sjcross.sjcommon.system.FileCrawler;
+import io.scif.Plane;
+import io.scif.Reader;
+import io.scif.SCIFIO;
 import loci.common.DebugTools;
 import loci.common.services.DependencyException;
 import loci.common.services.ServiceException;
@@ -87,6 +91,7 @@ import ome.units.quantity.Time;
 import ome.units.unit.Unit;
 import ome.xml.meta.IMetadata;
 import ome.xml.model.primitives.Color;
+import ome.xml.model.primitives.PositiveInteger;
 
 /**
  * Created by Stephen on 15/05/2017.
@@ -102,17 +107,19 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
     public static final String COMMENT = "Comment";
     public static final String EXTENSION = "Extension";
     public static final String GENERIC_FORMAT = "Generic format";
+    public static final String CHANNEL = "Channel";
     public static final String AVAILABLE_METADATA_FIELDS = "Available metadata fields";
     public static final String INCLUDE_SERIES_NUMBER = "Include series number";
     public static final String FILE_PATH = "File path";
     public static final String SERIES_MODE = "Series mode";
     public static final String SERIES_NUMBER = "Series number";
 
-    public static final String RANGE_SEPARATOR = "Dimension ranges and cropping";
+    public static final String RANGE_SEPARATOR = "Dimension ranges";
     public static final String CHANNELS = "Channels";
     public static final String SLICES = "Slices";
     public static final String FRAMES = "Frames";
-    public static final String CHANNEL = "Channel";
+
+    public static final String CROP_SEPARATOR = "Image cropping";
     public static final String CROP_MODE = "Crop mode";
     public static final String REFERENCE_IMAGE = "Reference image";
     public static final String LEFT = "Left coordinate";
@@ -120,6 +127,8 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
     public static final String WIDTH = "Width";
     public static final String HEIGHT = "Height";
     public static final String OBJECTS_FOR_LIMITS = "Objects for limits";
+
+    public static final String SCALE_SEPARATOR = "Image scaling";
     public static final String SCALE_MODE = "Scale mode";
     public static final String SCALE_FACTOR_X = "X scale factor";
     public static final String SCALE_FACTOR_Y = "Y scale factor";
@@ -136,6 +145,13 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
     public static final String OUTPUT_BIT_DEPTH = "Output bit depth";
     public static final String MIN_INPUT_INTENSITY = "Minimum input intensity";
     public static final String MAX_INPUT_INTENSITY = "Maximum input intensity";
+
+    public static void main(String[] args) throws io.scif.FormatException, IOException {
+        SCIFIO scifio = new SCIFIO();
+        String path = "C:\\Users\\steph\\Desktop\\lumen_area.tif";
+        Reader reader = scifio.initializer().initializeReader(new FileLocation(path));
+        Plane plane = reader.openPlane(0, 0);
+        System.out.println(plane.getLengths()[0]);    }
 
     public ImageLoader(Modules modules) {
         super("Load image", modules);
@@ -1380,6 +1396,8 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
         parameters.add(new StringP(SLICES, this, "1-end"));
         parameters.add(new StringP(FRAMES, this, "1-end"));
         parameters.add(new IntegerP(CHANNEL, this, 1));
+
+        parameters.add(new SeparatorP(CROP_SEPARATOR, this));
         parameters.add(new ChoiceP(CROP_MODE, this, CropModes.NONE, CropModes.ALL));
         parameters.add(new InputImageP(REFERENCE_IMAGE, this));
         parameters.add(new IntegerP(LEFT, this, 0));
@@ -1387,6 +1405,8 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
         parameters.add(new IntegerP(WIDTH, this, 512));
         parameters.add(new IntegerP(HEIGHT, this, 512));
         parameters.add(new InputObjectsP(OBJECTS_FOR_LIMITS, this));
+
+        parameters.add(new SeparatorP(SCALE_SEPARATOR, this));
         parameters.add(new ChoiceP(SCALE_MODE, this, ScaleModes.NONE, ScaleModes.ALL));
         parameters.add(new DoubleP(SCALE_FACTOR_X, this, 1));
         parameters.add(new DoubleP(SCALE_FACTOR_Y, this, 1));
@@ -1469,11 +1489,11 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
             if (parameters.getValue(SERIES_MODE, workspace).equals(SeriesModes.SPECIFIC_SERIES))
                 returnedParameters.add(parameters.getParameter(SERIES_NUMBER));
 
-            returnedParameters.add(parameters.getParameter(RANGE_SEPARATOR));
             if (!(parameters.getValue(IMPORT_MODE, workspace).equals(ImportModes.IMAGE_SEQUENCE_ALPHABETICAL)
                     || parameters.getValue(IMPORT_MODE, workspace).equals(ImportModes.IMAGE_SEQUENCE_ZEROS))
                     && !(parameters.getValue(IMPORT_MODE, workspace).equals(ImportModes.MATCHING_FORMAT)
                             && parameters.getValue(NAME_FORMAT, workspace).equals(NameFormats.YOKOGAWA))) {
+                returnedParameters.add(parameters.getParameter(RANGE_SEPARATOR));
                 returnedParameters.add(parameters.getParameter(CHANNELS));
                 returnedParameters.add(parameters.getParameter(SLICES));
                 returnedParameters.add(parameters.getParameter(FRAMES));
@@ -1489,6 +1509,7 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
 
         if (parameters.getValue(READER, workspace).equals(Readers.BIOFORMATS)
                 & !parameters.getValue(IMPORT_MODE, workspace).equals(ImportModes.IMAGEJ)) {
+            returnedParameters.add(parameters.getParameter(CROP_SEPARATOR));
             returnedParameters.add(parameters.getParameter(CROP_MODE));
             switch ((String) parameters.getValue(CROP_MODE, workspace)) {
                 case CropModes.FIXED:
@@ -1505,6 +1526,7 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
                     break;
             }
 
+            returnedParameters.add(parameters.getParameter(SCALE_SEPARATOR));
             returnedParameters.add(parameters.getParameter(SCALE_MODE));
             switch ((String) parameters.getValue(SCALE_MODE, workspace)) {
                 case ScaleModes.NO_INTERPOLATION:

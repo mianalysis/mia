@@ -83,7 +83,7 @@ public class ProjectObjects extends Module {
         workspace.addObjects(outputObjects);
 
         // Showing objects
-        if (showOutput) outputObjects.convertToImageRandomColours().showImage();
+        if (showOutput) outputObjects.convertToImageIDColours().showImage();
 
         return Status.PASS;
 

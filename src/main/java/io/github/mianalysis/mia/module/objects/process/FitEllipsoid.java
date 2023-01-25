@@ -294,7 +294,7 @@
 //         if (showOutput) {
 //             inputObjects.showMeasurements(this, modules);
 //             if (!objectOutputMode.equals(OutputModes.DO_NOT_STORE)) {
-//                 outputObjects.convertToImageRandomColours().showImage();
+//                 outputObjects.convertToImageIDColours().showImage();
 //             }
 //         }
 
