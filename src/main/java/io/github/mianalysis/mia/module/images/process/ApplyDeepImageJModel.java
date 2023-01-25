@@ -4,6 +4,7 @@ import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
 
 import deepimagej.DeepImageJ;
+import ij.IJ;
 import ij.ImagePlus;
 import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Categories;
@@ -93,7 +94,7 @@ public class ApplyDeepImageJModel extends Module {
         PrepareDeepImageJ pDIJ = new PrepareDeepImageJ();
         String patchSize = PrepareDeepImageJ.getOptimalPatch(modelName);
         ImagePlus outputIpl = pDIJ.runModel(inputIpl, model, format, usePreprocessing, usePostprocessing, patchSize);
-
+        
         // Storing output image
         Image outputImage = ImageFactory.createImage(outputImageName, outputIpl);
         workspace.addImage(outputImage);

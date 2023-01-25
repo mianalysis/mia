@@ -151,8 +151,7 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
         String path = "C:\\Users\\steph\\Desktop\\lumen_area.tif";
         Reader reader = scifio.initializer().initializeReader(new FileLocation(path));
         Plane plane = reader.openPlane(0, 0);
-        System.out.println(plane.getLengths()[0]);
-    }
+        System.out.println(plane.getLengths()[0]);    }
 
     public ImageLoader(Modules modules) {
         super("Load image", modules);
