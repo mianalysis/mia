@@ -18,7 +18,7 @@ import io.github.mianalysis.mia.module.objects.measure.spatial.MeasureObjectCent
 import io.github.mianalysis.mia.module.objects.measure.spatial.MeasureObjectShape;
 import io.github.mianalysis.mia.module.objects.relate.SingleClassCluster;
 import io.github.mianalysis.mia.module.objects.relate.TrackObjects;
-import io.github.mianalysis.mia.module.system.RemoveImage;
+import io.github.mianalysis.mia.module.system.RemoveImages;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.OutputImageP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
@@ -51,10 +51,10 @@ public class ModulesTest<T extends RealType<T> & NativeType<T>> {
         filterImage.updateParameterValue(FilterImage.OUTPUT_IMAGE, im2Name);
         modules.add(filterImage);
 
-        RemoveImage removeImage = new RemoveImage(new Modules());
-        ParameterGroup group = removeImage.getParameter(RemoveImage.REMOVE_ANOTHER_IMAGE);
+        RemoveImages removeImage = new RemoveImages(new Modules());
+        ParameterGroup group = removeImage.getParameter(RemoveImages.REMOVE_ANOTHER_IMAGE);
         Parameters collection = group.addParameters();
-        collection.updateValue(RemoveImage.INPUT_IMAGE, im1Name);
+        collection.updateValue(RemoveImages.INPUT_IMAGE, im1Name);
         modules.add(removeImage);
 
         LinkedHashSet<OutputImageP> availableImages = modules.getAvailableImages(null);

@@ -1,12 +1,9 @@
 package io.github.mianalysis.mia.module.objects.process.tools;
 
-import ij.IJ;
-import ij.ImagePlus;
 import ij.gui.Roi;
 import ij.process.ByteProcessor;
 import ij.process.EllipseFitter;
 import ij.process.ImageProcessor;
-import io.github.mianalysis.mia.MIA;
 import io.github.sjcross.sjcommon.object.Point;
 import io.github.sjcross.sjcommon.object.volume.PointOutOfRangeException;
 import io.github.sjcross.sjcommon.object.volume.Volume;
