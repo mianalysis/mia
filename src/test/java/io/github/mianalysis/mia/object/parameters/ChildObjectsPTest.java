@@ -14,7 +14,6 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 
-import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.inputoutput.ImageLoader;
 import io.github.mianalysis.mia.module.objects.detect.IdentifyObjects;

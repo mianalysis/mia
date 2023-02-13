@@ -170,35 +170,40 @@ public class ExtractSubstack extends Module implements ActionListener {
 
     }
 
-    public static Image extractSubstack(Image inputImage, String outputImageName, String channels, String slices, String frames) {
-        ImagePlus inputImagePlus = inputImage.getImagePlus();
-
-        int[] channelsList = CommaSeparatedStringInterpreter.interpretIntegers(channels,true,inputImagePlus.getNChannels());
-        int[] slicesList = CommaSeparatedStringInterpreter.interpretIntegers(slices,true,inputImagePlus.getNSlices());
-        int[] framesList = CommaSeparatedStringInterpreter.interpretIntegers(frames,true,inputImagePlus.getNFrames());
+    public static ImagePlus extractSubstack(ImagePlus inputIpl, String outputImageName, String channels, String slices, String frames) {
+        int[] channelsList = CommaSeparatedStringInterpreter.interpretIntegers(channels,true,inputIpl.getNChannels());
+        int[] slicesList = CommaSeparatedStringInterpreter.interpretIntegers(slices,true,inputIpl.getNSlices());
+        int[] framesList = CommaSeparatedStringInterpreter.interpretIntegers(frames,true,inputIpl.getNFrames());
 
         List<Integer> cList = java.util.Arrays.stream(channelsList).boxed().collect(Collectors.toList());
         List<Integer> zList = java.util.Arrays.stream(slicesList).boxed().collect(Collectors.toList());
         List<Integer> tList = java.util.Arrays.stream(framesList).boxed().collect(Collectors.toList());
 
-        if (!checkLimits(inputImage,cList,zList,tList)) return null;
+        if (!checkLimits(inputIpl,cList,zList,tList)) return null;
 
         // Generating the substack and adding to the workspace
-        ImagePlus outputImagePlus = SubHyperstackMaker.makeSubhyperstack(inputImagePlus,cList,zList,tList).duplicate();
-        outputImagePlus.setCalibration(inputImagePlus.getCalibration());
-
-        
+        ImagePlus outputImagePlus = SubHyperstackMaker.makeSubhyperstack(inputIpl,cList,zList,tList).duplicate();
+        outputImagePlus.setCalibration(inputIpl.getCalibration());
 
         if (outputImagePlus.isComposite()) ((CompositeImage) outputImagePlus).setMode(CompositeImage.COLOR);
 
-        return ImageFactory.createImage(outputImageName,outputImagePlus);
+        return outputImagePlus;
 
     }
 
-    static boolean checkLimits(Image inputImage, List<Integer> cList, List<Integer> zList, List<Integer> tList) {
-        int nChannels = inputImage.getImagePlus().getNChannels();
-        int nSlices = inputImage.getImagePlus().getNSlices();
-        int nFrames = inputImage.getImagePlus().getNFrames();
+    public static Image extractSubstack(Image inputImage, String outputImageName, String channels, String slices, String frames) {
+        ImagePlus inputIpl = inputImage.getImagePlus();
+
+        ImagePlus outputIpl = extractSubstack(inputIpl, outputImageName, channels, slices, frames);
+
+        return ImageFactory.createImage(outputImageName,outputIpl);
+
+    }
+
+    static boolean checkLimits(ImagePlus inputIpl, List<Integer> cList, List<Integer> zList, List<Integer> tList) {
+        int nChannels = inputIpl.getNChannels();
+        int nSlices = inputIpl.getNSlices();
+        int nFrames = inputIpl.getNFrames();
 
         for (int c:cList) if (c>nChannels) {
             MIA.log.writeError("Channel index ("+c+") outside range (1-"+nChannels+").  Skipping image.");
@@ -216,6 +221,10 @@ public class ExtractSubstack extends Module implements ActionListener {
         }
 
         return true;
+    }
+
+    static boolean checkLimits(Image inputImage, List<Integer> cList, List<Integer> zList, List<Integer> tList) {
+        return checkLimits(inputImage.getImagePlus(), cList, zList, tList);
 
     }
 

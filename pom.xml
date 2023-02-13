@@ -10,7 +10,7 @@
 
     <groupId>io.github.mianalysis</groupId>
     <artifactId>MIA</artifactId>
-    <version>1.2.2-SNAPSHOT</version>
+    <version>1.2.2</version>
     <packaging>jar</packaging>
     <name>MIA</name>
     <url>https://github.com/mianalysis/mia</url>

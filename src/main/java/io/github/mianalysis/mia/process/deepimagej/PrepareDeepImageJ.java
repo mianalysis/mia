@@ -182,10 +182,9 @@ public class PrepareDeepImageJ implements PlugIn {
 
     }
 
-    public static String getOptimalPatch(String modelName) {
+    public static String getOptimalPatch(String modelName, ImagePlus ipl) {
         for (DeepImageJ dp : dps.values()) {
             if (dp.getName().equals(modelName)) {
-                MIA.log.writeDebug(dp.params.allowPatching);
                 // Get basic specifications for the input from the yaml
                 String tensorForm = dp.params.inputList.get(0).form;
                 // Minimum size if it is not fixed, 0s if it is
@@ -203,7 +202,7 @@ public class PrepareDeepImageJ implements PlugIn {
                 // Get the axes given by the yaml without batch
                 String[] dim = DijTensor.getWorkingDims(tensorForm);
 
-                return ArrayOperations.optimalPatch(null, haloVals, dim, step, min, dp.params.allowPatching);
+                return ArrayOperations.optimalPatch(ipl, haloVals, dim, step, min, dp.params.allowPatching);
 
             }
         }
