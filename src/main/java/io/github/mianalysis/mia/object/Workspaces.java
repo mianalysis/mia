@@ -17,7 +17,6 @@ public class Workspaces extends LinkedHashSet<Workspace> {
     private static final long serialVersionUID = -2388993934322564718L;
     private int maxID = 0;
 
-
     // PUBLIC METHODS
 
     /*
@@ -31,12 +30,12 @@ public class Workspaces extends LinkedHashSet<Workspace> {
         return workspace;
 
     }
-    
+
     public Workspace getWorkspace(int ID) {
-        for (Workspace workspace : this) 
+        for (Workspace workspace : this)
             if (workspace.getID() == ID)
                 return workspace;
-        
+
         // If no Workspace had this ID, return null
         return null;
 
@@ -71,18 +70,22 @@ public class Workspaces extends LinkedHashSet<Workspace> {
             // sense to do any images)
             LinkedHashMap<String,Objs> currObjects = currWorkspace.getObjects();
             for (String objName:currObjects.keySet()) {
-                // If this is the first time these objects have been added, create a blank Objs
-                if (metadataWorkspace.getObjectSet(objName) == null) {
-                    metadataWorkspace.addObjects(new Objs(objName,null));
-                }
+                // If there are no current objects, skip this
+                Objs currObjectSet = currObjects.get(objName);
+                if (currObjectSet == null)
+                    continue;
 
-                // If a collection of these objects already exists, addRef to this
+                // If this is the first time these objects have been added, create a blank Objs
+                if (metadataWorkspace.getObjectSet(objName) == null)
+                    metadataWorkspace.addObjects(new Objs(objName,currObjectSet));
+                
+                // If a collection of these objects already exists, add to this
                 Objs coreSet = metadataWorkspace.getObjectSet(objName);
-                for (Obj currObject:currObjects.get(objName).values()) {
+                for (Obj currObject:currObjectSet.values())
                     // Adding the object and incrementing the count (a new ID has to be assigned for this to prevent
                     // clashes between workspaces)
                     coreSet.put(coreSet.getAndIncrementID(),currObject);
-                }
+                
             }
         }
 
@@ -91,7 +94,7 @@ public class Workspaces extends LinkedHashSet<Workspace> {
     }
 
     public synchronized void resetProgress() {
-        for (Workspace workspace:this) {
+        for (Workspace workspace : this) {
             workspace.setProgress(0);
         }
     }
@@ -102,7 +105,7 @@ public class Workspaces extends LinkedHashSet<Workspace> {
             cs.addMeasure(workspace.getProgress());
 
         // Subtracting 1 from the total, so it doesn't hit 100% until exporting is done
-        return cs.getMean()-0.01;
+        return cs.getMean() - 0.01;
 
     }
 }
