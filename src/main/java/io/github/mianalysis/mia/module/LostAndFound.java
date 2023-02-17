@@ -41,6 +41,7 @@ import io.github.mianalysis.mia.module.script.RunMacro;
 import io.github.mianalysis.mia.module.script.RunSingleCommand;
 import io.github.mianalysis.mia.module.system.GUISeparator;
 import io.github.mianalysis.mia.module.system.GlobalVariables;
+import io.github.mianalysis.mia.module.system.RemoveImages;
 import io.github.mianalysis.mia.module.visualise.PlotMeasurementsScatter;
 import io.github.mianalysis.mia.module.workflow.WorkflowHandling;
 import io.github.mianalysis.mia.object.units.SpatialUnit;
@@ -64,6 +65,7 @@ public class LostAndFound {
         lostModules.put("ManualRegistration", new AffineManual(null).getClass().getSimpleName());
         lostModules.put("ManualUnwarp", new UnwarpManual(null).getClass().getSimpleName());
         lostModules.put("MOPSRegistration", new AffineMOPS(null).getClass().getSimpleName());
+        lostModules.put("RemoveImage", new RemoveImages(null).getClass().getSimpleName());
         lostModules.put("RunMacroOnImage", new RunMacro(null).getClass().getSimpleName());
         lostModules.put("RunSingleMacroCommand", new RunSingleCommand(null).getClass().getSimpleName());
         lostModules.put("SIFTRegistration", new AffineSIFT(null).getClass().getSimpleName());

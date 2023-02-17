@@ -353,7 +353,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener, K
         frame.add(objectsScrollPane, c);
 
         overlayCheck = new JCheckBox("Show all selections");
-        overlayCheck.setSelected(false);
+        overlayCheck.setSelected(true);
         overlayCheck.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -370,7 +370,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener, K
 
         labelCheck = new JCheckBox("Show labels");
         labelCheck.setSelected(true);
-        labelCheck.setEnabled(false);
+        labelCheck.setEnabled(true);
         labelCheck.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -560,7 +560,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener, K
         origOverlay = displayImagePlus.getOverlay();
         overlay = new Overlay();
         displayImagePlus.setOverlay(overlay);
-        displayImagePlus.setHideOverlay(true);
+        displayImagePlus.setHideOverlay(false);
         updateOverlay();
 
         // Initialising output objects
@@ -604,7 +604,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener, K
             if (outputTracks)
                 TrackObjects.showObjects(outputObjects, outputTrackObjectsName);
             else
-                outputObjects.convertToImageIDColours().showImage();
+                outputObjects.convertToImageIDColours().show();
 
         return Status.PASS;
 

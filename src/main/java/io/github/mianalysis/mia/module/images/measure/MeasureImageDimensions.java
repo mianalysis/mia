@@ -43,6 +43,7 @@ public class MeasureImageDimensions extends Module {
         String DIST_PER_SLICE_Z = "DISTANCE_PER_SLICE_Z_(${SCAL})";
         String FRAME_INTERVAL = "FRAME_INTERVAL_(${TCAL})";
         String FPS = "FRAMES_PER_SECOND";
+        String BIT_DEPTH = "BIT_DEPTH";
 
     }
 
@@ -92,6 +93,9 @@ public class MeasureImageDimensions extends Module {
 
         double fps = inputImagePlus.getCalibration().fps;
         inputImage.addMeasurement(new Measurement(getFullName(Measurements.FPS), fps));
+
+        int bitDepth = inputImagePlus.getBitDepth();
+        inputImage.addMeasurement(new Measurement(getFullName(Measurements.BIT_DEPTH), bitDepth));
 
         if (showOutput)
             inputImage.showMeasurements(this);
@@ -183,6 +187,12 @@ public class MeasureImageDimensions extends Module {
         reference = imageMeasurementRefs.getOrPut(name);
         reference.setImageName(inputImageName);
         reference.setDescription("Number of frames per second.");
+        returnedRefs.add(reference);
+
+        name = getFullName(Measurements.BIT_DEPTH);
+        reference = imageMeasurementRefs.getOrPut(name);
+        reference.setImageName(inputImageName);
+        reference.setDescription("Number of bits used to store each pixel.");
         returnedRefs.add(reference);
 
         return returnedRefs;

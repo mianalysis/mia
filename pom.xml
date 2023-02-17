@@ -10,7 +10,7 @@
 
     <groupId>io.github.mianalysis</groupId>
     <artifactId>MIA</artifactId>
-    <version>1.2.1</version>
+    <version>1.2.2</version>
     <packaging>jar</packaging>
     <name>MIA</name>
     <url>https://github.com/mianalysis/mia</url>
@@ -370,7 +370,7 @@
         <dependency>
             <groupId>org.bonej</groupId>
             <artifactId>bonej-legacy-util_</artifactId>
-            <version>7.0.13</version>
+            <version>7.0.14</version>
             <scope>${scp}</scope>
         </dependency>
 

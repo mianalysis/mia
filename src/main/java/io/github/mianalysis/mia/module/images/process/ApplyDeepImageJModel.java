@@ -21,6 +21,7 @@ import io.github.mianalysis.mia.object.parameters.OutputImageP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.SeparatorP;
 import io.github.mianalysis.mia.object.parameters.text.MessageP;
+import io.github.mianalysis.mia.object.parameters.text.StringP;
 import io.github.mianalysis.mia.object.refs.collections.ImageMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
@@ -42,6 +43,9 @@ public class ApplyDeepImageJModel extends Module {
     public static final String MODEL = "Model";
     public static final String FORMAT = "Format";
     public static final String USE_POSTPROCESSING = "Use postprocessing";
+    public static final String PATCH_SIZE = "Patch size";
+
+    private String currModelName = "";
 
     public interface Models {
         String[] ALL = PrepareDeepImageJ.getAvailableModels();
@@ -75,7 +79,7 @@ public class ApplyDeepImageJModel extends Module {
         // String preprocessing = parameters.getValue(PREPROCESSING, workspace);
         boolean usePostprocessing = parameters.getValue(USE_POSTPROCESSING, workspace);
         // String postprocessing = parameters.getValue(POSTPROCESSING, workspace);
-        // String patchSize = parameters.getValue(PATCH_SIZE, workspace);
+        String patchSize = parameters.getValue(PATCH_SIZE, workspace);
 
         // Get input image
         Image inputImage = workspace.getImage(inputImageName);
@@ -92,9 +96,8 @@ public class ApplyDeepImageJModel extends Module {
             usePostprocessing = false;
 
         PrepareDeepImageJ pDIJ = new PrepareDeepImageJ();
-        String patchSize = PrepareDeepImageJ.getOptimalPatch(modelName);
         ImagePlus outputIpl = pDIJ.runModel(inputIpl, model, format, usePreprocessing, usePostprocessing, patchSize);
-        
+
         // Storing output image
         Image outputImage = ImageFactory.createImage(outputImageName, outputIpl);
         workspace.addImage(outputImage);
@@ -122,7 +125,7 @@ public class ApplyDeepImageJModel extends Module {
         // parameters.add(new ChoiceP(PREPROCESSING, this, "", new String[0]));
         parameters.add(new BooleanP(USE_POSTPROCESSING, this, false));
         // parameters.add(new ChoiceP(POSTPROCESSING, this, "", new String[0]));
-        // parameters.add(new StringP(PATCH_SIZE, this, ""));
+        parameters.add(new StringP(PATCH_SIZE, this, ""));
 
         addParameterDescriptions();
 
@@ -151,6 +154,16 @@ public class ApplyDeepImageJModel extends Module {
         String[] postprocessingChoices = PrepareDeepImageJ.getPostprocessings(modelName);
         if (postprocessingChoices.length > 0)
             returnedParameters.add(parameters.getParameter(USE_POSTPROCESSING));
+
+        if (!currModelName.equals(modelName)) {
+            // We don't know the actual image size, so creating a small one.
+            ImagePlus testIpl = IJ.createHyperStack("Test", 10, 10, 10, 10, 10, 8);
+            String patchSize = PrepareDeepImageJ.getOptimalPatch(modelName, testIpl);
+            parameters.getParameter(PATCH_SIZE).setValue(patchSize);
+        }
+        returnedParameters.add(parameters.getParameter(PATCH_SIZE));
+
+        currModelName = modelName;
 
         return returnedParameters;
 
