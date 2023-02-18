@@ -1012,19 +1012,23 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener, K
         int ID = objRoi.getID();
 
         // Adding overlay showing ROI and its ID number
-        overlay.add(ObjRoi.duplicateRoi(roi));
+        Roi overlayRoi = ObjRoi.duplicateRoi(roi);
+        if (displayImagePlus.isHyperStack())
+            overlayRoi.setPosition(1, objRoi.getZ() + 1, objRoi.getT() + 1);
+        else
+            overlayRoi.setPosition(Math.max(Math.max(1, objRoi.getZ() + 1), objRoi.getT() + 1));
+        overlay.add(overlayRoi);
 
         // Adding label (if necessary)
         if (labelCheck.isSelected()) {
             double[] centroid = roi.getContourCentroid();
             TextRoi textRoi = new TextRoi(centroid[0], centroid[1], String.valueOf(ID));
 
-            if (displayImagePlus.isHyperStack()) {
-                textRoi.setPosition(1, displayImagePlus.getZ(), displayImagePlus.getT());
-            } else {
-                int pos = Math.max(Math.max(1, displayImagePlus.getZ()), displayImagePlus.getT());
-                textRoi.setPosition(pos);
-            }
+            if (displayImagePlus.isHyperStack())
+                textRoi.setPosition(1, objRoi.getZ() + 1, objRoi.getT() + 1);
+            else
+                textRoi.setPosition(Math.max(Math.max(1, objRoi.getZ() + 1), objRoi.getT() + 1));
+
             overlay.add(textRoi);
         }
 
