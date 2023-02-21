@@ -1,4 +1,6 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
@@ -10,7 +12,7 @@
 
     <groupId>io.github.mianalysis</groupId>
     <artifactId>MIA</artifactId>
-    <version>1.2.3-SNAPSHOT</version>
+    <version>1.2.3</version>
     <packaging>jar</packaging>
     <name>MIA</name>
     <url>https://github.com/mianalysis/mia</url>
@@ -84,11 +86,11 @@
         <scp>compile</scp>
         <license.licenseName>GNU General Public License v3+</license.licenseName>
         <license.copyrightOwners>Stephen Cross</license.copyrightOwners>
-        
+
         <protobuf.version>3.2.0</protobuf.version>
-		<tensorflow.version>1.15.0</tensorflow.version>
-		<jna.version>5.11.0</jna.version>
-		<imagej-tensorflow.version>1.1.6</imagej-tensorflow.version>
+        <tensorflow.version>1.15.0</tensorflow.version>
+        <jna.version>5.11.0</jna.version>
+        <imagej-tensorflow.version>1.1.6</imagej-tensorflow.version>
     </properties>
 
     <mailingLists>
@@ -271,7 +273,7 @@
             <artifactId>imagej-ops</artifactId>
             <scope>${scp}</scope>
         </dependency>
-        
+
         <dependency>
             <groupId>de.csbdresden</groupId>
             <artifactId>csbdeep</artifactId>
@@ -338,13 +340,14 @@
             <scope>${scp}</scope>
         </dependency>
 
-        <!-- THE FOLLOWING DEPENDENCY IS JUST UNTIL SCIJAVA POM MOVES FROM 1.53t, which has a Z-projector bug -->
+        <!-- THE FOLLOWING DEPENDENCY IS JUST UNTIL SCIJAVA POM MOVES FROM 1.53t, which has a
+        Z-projector bug -->
         <dependency>
             <groupId>net.imagej</groupId>
             <artifactId>ij</artifactId>
             <version>1.53u</version>
         </dependency>
-        
+
 
         <dependency>
             <groupId>mpicbg</groupId>
@@ -478,7 +481,8 @@
                             <excludeScope>provided</excludeScope>
                             <includeScope>runtime</includeScope>
 
-                            <excludeArtifactIds>commons-codec,commons-collections4,commons-io,guava,ij,jama,javassist,junit,MorphoLibJ_,Skeletonize3D_,vecmath</excludeArtifactIds>
+                            <excludeArtifactIds>
+                                commons-codec,commons-collections4,commons-io,guava,ij,jama,javassist,junit,MorphoLibJ_,Skeletonize3D_,vecmath</excludeArtifactIds>
 
                             <outputDirectory>${project.build.directory}/jars/</outputDirectory>
                             <overWriteReleases>false</overWriteReleases>

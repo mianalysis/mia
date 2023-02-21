@@ -129,7 +129,7 @@ import io.github.mianalysis.mia.process.ColourFactory;
 import io.github.sjcross.sjcommon.imagej.LUTs;
 import io.github.sjcross.sjcommon.object.volume.VolumeType;
 
-@Plugin(type = Module.class, priority=Priority.LOW, visible=true)
+@Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class RelateManyToMany extends Module {
     public static final String INPUT_SEPARATOR = "Objects input/output";
     public static final String OBJECT_SOURCE_MODE = "Object source mode";
@@ -143,8 +143,11 @@ public class RelateManyToMany extends Module {
     public static final String MAXIMUM_SEPARATION = "Maximum separation";
     public static final String CALIBRATED_UNITS = "Calibrated units";
     public static final String ACCEPT_ALL_INSIDE = "Accept all fully enclosed objects";
+    public static final String THRESHOLD_MODE = "Threshold mode";
     public static final String MINIMUM_OVERLAP_PC_1 = "Minimum overlap of object 1 (%)";
     public static final String MINIMUM_OVERLAP_PC_2 = "Minimum overlap of object 2 (%)";
+    public static final String HIGHER_OVERLAP_PC = "Higher overlap threshold (%)";
+    public static final String LOWER_OVERLAP_PC = "Lower overlap threshold (%)";
 
     public static final String ADDITIONAL_MEASUREMENTS_SEPARATOR = "Additional measurement settings";
     public static final String ADD_MEASUREMENT = "Add measurement";
@@ -173,6 +176,14 @@ public class RelateManyToMany extends Module {
 
     }
 
+    public interface ThresholdModes {
+        String FIXED_THRESHOLDS = "Fixed thresholds";
+        String FLEXIBLE_THRESHOLDS = "Flexible thresholds";
+
+        String[] ALL = new String[] { FIXED_THRESHOLDS, FLEXIBLE_THRESHOLDS };
+
+    }
+
     public interface Calculations {
         String DIFFERENCE = "Difference";
         String SUM = "Sum";
@@ -187,7 +198,7 @@ public class RelateManyToMany extends Module {
     }
 
     public static String getFullName(String objectName, String measurement) {
-        return "RELATE_ONE_TO_ONE // " + measurement.substring(0, measurement.length() - 1) + "_" + objectName;
+        return "RELATE_ONE_TO_ONE // " + measurement.substring(0, measurement.length()) + "_" + objectName;
 
     }
 
@@ -204,7 +215,8 @@ public class RelateManyToMany extends Module {
 
     }
 
-    static boolean testSpatialOverlap(Obj object1, Obj object2, double minOverlap1, double minOverlap2) {
+    static boolean testSpatialOverlap(Obj object1, Obj object2, String thresholdMode, double minOverlap1,
+            double minOverlap2) {
         // If comparing objects in the same class they will eventually test themselves
         if (object1 == object2)
             return false;
@@ -220,8 +232,14 @@ public class RelateManyToMany extends Module {
         double overlapPercentage2 = 100 * overlap / object2.size();
 
         // Checking the minimum overlaps have been met
-        return overlapPercentage1 >= minOverlap1 && overlapPercentage2 >= minOverlap2;
-
+        switch (thresholdMode) {
+            case ThresholdModes.FIXED_THRESHOLDS:
+            default:
+                return overlapPercentage1 >= minOverlap1 && overlapPercentage2 >= minOverlap2;
+            case ThresholdModes.FLEXIBLE_THRESHOLDS:
+                return Math.max(overlapPercentage1, overlapPercentage2) >= minOverlap1
+                        && Math.min(overlapPercentage1, overlapPercentage2) >= minOverlap2;
+        }
     }
 
     static boolean testSurfaceSeparation(Obj object1, Obj object2, double maxSeparation, boolean acceptAllInside) {
@@ -325,7 +343,7 @@ public class RelateManyToMany extends Module {
 
     }
 
-    static Objs createClusters(Objs outputObjects, HashMap<Obj, Integer> assignments) {        
+    static Objs createClusters(Objs outputObjects, HashMap<Obj, Integer> assignments) {
         for (Obj object : assignments.keySet()) {
             int groupID = assignments.get(object);
 
@@ -348,13 +366,11 @@ public class RelateManyToMany extends Module {
 
     static void applyMeasurements(Objs objCollection, HashMap<Obj, Integer> assignments,
             String linkedObjectName) {
-        for (Obj object : objCollection.values()) {
-            if (assignments.containsKey(object)) {
+        for (Obj object : objCollection.values())
+            if (object.getPartners(linkedObjectName) != null && object.getPartners(linkedObjectName).size() > 0)
                 object.addMeasurement(new Measurement(getFullName(linkedObjectName, Measurements.WAS_LINKED), 1));
-            } else {
+            else
                 object.addMeasurement(new Measurement(getFullName(linkedObjectName, Measurements.WAS_LINKED), 0));
-            }
-        }
     }
 
     public RelateManyToMany(Modules modules) {
@@ -375,15 +391,15 @@ public class RelateManyToMany extends Module {
 
     @Override
     protected Status process(Workspace workspace) {
-        String objectSourceMode = parameters.getValue(OBJECT_SOURCE_MODE,workspace);
+        String objectSourceMode = parameters.getValue(OBJECT_SOURCE_MODE, workspace);
 
         // Getting input objects
-        String inputObjects1Name = parameters.getValue(INPUT_OBJECTS_1,workspace);
+        String inputObjects1Name = parameters.getValue(INPUT_OBJECTS_1, workspace);
         Objs inputObjects1 = workspace.getObjects().get(inputObjects1Name);
 
-        String inputObjects2Name = parameters.getValue(INPUT_OBJECTS_2,workspace);
+        String inputObjects2Name = parameters.getValue(INPUT_OBJECTS_2, workspace);
         Objs inputObjects2;
-        
+
         switch (objectSourceMode) {
             default:
                 MIA.log.writeError("Unknown object source mode");
@@ -400,22 +416,31 @@ public class RelateManyToMany extends Module {
         }
 
         // Getting parameters
-        boolean createClusterObjects = parameters.getValue(CREATE_CLUSTER_OBJECTS,workspace);
-        String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS_NAME,workspace);
-        String spatialSeparationMode = parameters.getValue(SPATIAL_SEPARATION_MODE,workspace);
-        double maximumSeparation = parameters.getValue(MAXIMUM_SEPARATION,workspace);
-        boolean calibratedUnits = parameters.getValue(CALIBRATED_UNITS,workspace);
-        boolean acceptAllInside = parameters.getValue(ACCEPT_ALL_INSIDE,workspace);
-        double minOverlap1 = parameters.getValue(MINIMUM_OVERLAP_PC_1,workspace);
-        double minOverlap2 = parameters.getValue(MINIMUM_OVERLAP_PC_2,workspace);
+        boolean createClusterObjects = parameters.getValue(CREATE_CLUSTER_OBJECTS, workspace);
+        String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS_NAME, workspace);
+        String spatialSeparationMode = parameters.getValue(SPATIAL_SEPARATION_MODE, workspace);
+        double maximumSeparation = parameters.getValue(MAXIMUM_SEPARATION, workspace);
+        boolean calibratedUnits = parameters.getValue(CALIBRATED_UNITS, workspace);
+        boolean acceptAllInside = parameters.getValue(ACCEPT_ALL_INSIDE, workspace);
+        String thresholdMode = parameters.getValue(THRESHOLD_MODE, workspace);
+        double minOverlap1 = parameters.getValue(MINIMUM_OVERLAP_PC_1, workspace);
+        double minOverlap2 = parameters.getValue(MINIMUM_OVERLAP_PC_2, workspace);
+        double higherThresh = parameters.getValue(HIGHER_OVERLAP_PC, workspace);
+        double lowerThresh = parameters.getValue(LOWER_OVERLAP_PC, workspace);
         ParameterGroup parameterGroup = parameters.getParameter(ADD_MEASUREMENT);
         LinkedHashMap<Integer, Parameters> parameterCollections = parameterGroup.getCollections(false);
-        boolean linkInSameFrame = parameters.getValue(LINK_IN_SAME_FRAME,workspace);
+        boolean linkInSameFrame = parameters.getValue(LINK_IN_SAME_FRAME, workspace);
 
         // Skipping the module if no objects are present in one collection
         if (inputObjects1.size() == 0 || inputObjects2.size() == 0) {
             workspace.addObjects(new Objs(outputObjectsName, inputObjects1));
             return Status.PASS;
+        }
+
+        if (spatialSeparationMode.equals(SpatialSeparationModes.SPATIAL_OVERLAP)
+                && thresholdMode.equals(ThresholdModes.FLEXIBLE_THRESHOLDS)) {
+            minOverlap1 = higherThresh;
+            minOverlap2 = lowerThresh;
         }
 
         Obj firstObj = inputObjects1.getFirst();
@@ -441,7 +466,7 @@ public class RelateManyToMany extends Module {
                             linkable = false;
                         break;
                     case SpatialSeparationModes.SPATIAL_OVERLAP:
-                        if (!testSpatialOverlap(object1, object2, minOverlap1, minOverlap2))
+                        if (!testSpatialOverlap(object1, object2, thresholdMode, minOverlap1, minOverlap2))
                             linkable = false;
                         break;
                     case SpatialSeparationModes.SURFACE_SEPARATION:
@@ -510,6 +535,11 @@ public class RelateManyToMany extends Module {
             }
         }
 
+        if (showOutput) {
+            inputObjects1.showMeasurements(this, modules);
+            inputObjects2.showMeasurements(this, modules);
+        }
+
         return Status.PASS;
 
     }
@@ -530,8 +560,11 @@ public class RelateManyToMany extends Module {
         parameters.add(new DoubleP(MAXIMUM_SEPARATION, this, 1.0));
         parameters.add(new BooleanP(CALIBRATED_UNITS, this, false));
         parameters.add(new BooleanP(ACCEPT_ALL_INSIDE, this, true));
+        parameters.add(new ChoiceP(THRESHOLD_MODE, this, ThresholdModes.FIXED_THRESHOLDS, ThresholdModes.ALL));
         parameters.add(new DoubleP(MINIMUM_OVERLAP_PC_1, this, 50.0));
         parameters.add(new DoubleP(MINIMUM_OVERLAP_PC_2, this, 50.0));
+        parameters.add(new DoubleP(HIGHER_OVERLAP_PC, this, 50.0));
+        parameters.add(new DoubleP(LOWER_OVERLAP_PC, this, 0.0));
 
         parameters.add(new SeparatorP(ADDITIONAL_MEASUREMENTS_SEPARATOR, this));
 
@@ -551,12 +584,12 @@ public class RelateManyToMany extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
-Workspace workspace = null;
+        Workspace workspace = null;
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(OBJECT_SOURCE_MODE));
-        switch ((String) parameters.getValue(OBJECT_SOURCE_MODE,workspace)) {
+        switch ((String) parameters.getValue(OBJECT_SOURCE_MODE, workspace)) {
             case ObjectSourceModes.DIFFERENT_CLASSES:
                 returnedParameters.add(parameters.getParameter(INPUT_OBJECTS_1));
                 returnedParameters.add(parameters.getParameter(INPUT_OBJECTS_2));
@@ -567,13 +600,13 @@ Workspace workspace = null;
         }
 
         returnedParameters.add(parameters.getParameter(CREATE_CLUSTER_OBJECTS));
-        if ((boolean) parameters.getValue(CREATE_CLUSTER_OBJECTS,workspace)) {
+        if ((boolean) parameters.getValue(CREATE_CLUSTER_OBJECTS, workspace)) {
             returnedParameters.add(parameters.getParameter(OUTPUT_OBJECTS_NAME));
         }
 
         returnedParameters.add(parameters.getParameter(SPATIAL_LINKING_SEPARATOR));
         returnedParameters.add(parameters.getParameter(SPATIAL_SEPARATION_MODE));
-        switch ((String) parameters.getValue(SPATIAL_SEPARATION_MODE,workspace)) {
+        switch ((String) parameters.getValue(SPATIAL_SEPARATION_MODE, workspace)) {
             case SpatialSeparationModes.CENTROID_SEPARATION:
             case SpatialSeparationModes.SURFACE_SEPARATION:
                 returnedParameters.add(parameters.getParameter(MAXIMUM_SEPARATION));
@@ -581,8 +614,17 @@ Workspace workspace = null;
                 returnedParameters.add(parameters.getParameter(ACCEPT_ALL_INSIDE));
                 break;
             case SpatialSeparationModes.SPATIAL_OVERLAP:
-                returnedParameters.add(parameters.getParameter(MINIMUM_OVERLAP_PC_1));
-                returnedParameters.add(parameters.getParameter(MINIMUM_OVERLAP_PC_2));
+                returnedParameters.add(parameters.getParameter(THRESHOLD_MODE));
+                switch ((String) parameters.getValue(THRESHOLD_MODE, workspace)) {
+                    case ThresholdModes.FIXED_THRESHOLDS:
+                        returnedParameters.add(parameters.getParameter(MINIMUM_OVERLAP_PC_1));
+                        returnedParameters.add(parameters.getParameter(MINIMUM_OVERLAP_PC_2));
+                        break;
+                    case ThresholdModes.FLEXIBLE_THRESHOLDS:
+                        returnedParameters.add(parameters.getParameter(HIGHER_OVERLAP_PC));
+                        returnedParameters.add(parameters.getParameter(LOWER_OVERLAP_PC));
+                        break;
+                }
                 break;
         }
 
@@ -598,14 +640,14 @@ Workspace workspace = null;
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
-return null;
+        return null;
     }
 
     @Override
-public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
-Workspace workspace = null;
-        String inputObjectsName1 = parameters.getValue(INPUT_OBJECTS_1,workspace);
-        String inputObjectsName2 = parameters.getValue(INPUT_OBJECTS_2,workspace);
+    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+        Workspace workspace = null;
+        String inputObjectsName1 = parameters.getValue(INPUT_OBJECTS_1, workspace);
+        String inputObjectsName2 = parameters.getValue(INPUT_OBJECTS_2, workspace);
 
         ObjMeasurementRefs returnedRefs = new ObjMeasurementRefs();
 
@@ -616,29 +658,36 @@ Workspace workspace = null;
         reference.setDescription("Was this \"" + inputObjectsName1 + "\" object linked with a \"" + inputObjectsName2
                 + "\" object.  Linked objects have a value of \"1\" and unlinked objects have a value of \"0\".");
 
+        name = getFullName(inputObjectsName1, Measurements.WAS_LINKED);
+        reference = objectMeasurementRefs.getOrPut(name);
+        reference.setObjectsName(inputObjectsName2);
+        returnedRefs.add(reference);
+        reference.setDescription("Was this \"" + inputObjectsName2 + "\" object linked with a \"" + inputObjectsName1
+                + "\" object.  Linked objects have a value of \"1\" and unlinked objects have a value of \"0\".");
+
         return returnedRefs;
 
     }
 
     @Override
-public MetadataRefs updateAndGetMetadataReferences() {
-return null;
+    public MetadataRefs updateAndGetMetadataReferences() {
+        return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
-Workspace workspace = null;
+        Workspace workspace = null;
         ParentChildRefs returnedRefs = new ParentChildRefs();
 
         // Getting input objects
-        String inputObjects1Name = parameters.getValue(INPUT_OBJECTS_1,workspace);
-        String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS_NAME,workspace);
+        String inputObjects1Name = parameters.getValue(INPUT_OBJECTS_1, workspace);
+        String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS_NAME, workspace);
 
         returnedRefs.add(parentChildRefs.getOrPut(outputObjectsName, inputObjects1Name));
 
-        String objectSourceMode = parameters.getValue(OBJECT_SOURCE_MODE,workspace);
+        String objectSourceMode = parameters.getValue(OBJECT_SOURCE_MODE, workspace);
         if (objectSourceMode.equals(ObjectSourceModes.DIFFERENT_CLASSES)) {
-            String inputObjects2Name = parameters.getValue(INPUT_OBJECTS_2,workspace);
+            String inputObjects2Name = parameters.getValue(INPUT_OBJECTS_2, workspace);
             returnedRefs.add(parentChildRefs.getOrPut(outputObjectsName, inputObjects2Name));
         }
 
@@ -648,13 +697,13 @@ Workspace workspace = null;
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
-Workspace workspace = null;
+        Workspace workspace = null;
         PartnerRefs returnedRefs = new PartnerRefs();
 
-        String inputObjects1Name = parameters.getValue(INPUT_OBJECTS_1,workspace);
-        String inputObjects2Name = parameters.getValue(INPUT_OBJECTS_2,workspace);
+        String inputObjects1Name = parameters.getValue(INPUT_OBJECTS_1, workspace);
+        String inputObjects2Name = parameters.getValue(INPUT_OBJECTS_2, workspace);
 
-        switch ((String) parameters.getValue(OBJECT_SOURCE_MODE,workspace)) {
+        switch ((String) parameters.getValue(OBJECT_SOURCE_MODE, workspace)) {
             case ObjectSourceModes.DIFFERENT_CLASSES:
                 returnedRefs.add(partnerRefs.getOrPut(inputObjects1Name, inputObjects2Name));
                 break;
@@ -759,13 +808,13 @@ Workspace workspace = null;
             public Parameters updateAndGet(Parameters params) {
                 Parameters returnedParameters = new Parameters();
 
-                String objectName1 = parameters.getValue(INPUT_OBJECTS_1,null);
-                String objectName2 = parameters.getValue(INPUT_OBJECTS_2,null);
+                String objectName1 = parameters.getValue(INPUT_OBJECTS_1, null);
+                String objectName2 = parameters.getValue(INPUT_OBJECTS_2, null);
 
                 returnedParameters.add(params.getParameter(MEASUREMENT_1));
                 ((ObjectMeasurementP) params.getParameter(MEASUREMENT_1)).setObjectName(objectName1);
 
-                switch ((String) parameters.getValue(OBJECT_SOURCE_MODE,null)) {
+                switch ((String) parameters.getValue(OBJECT_SOURCE_MODE, null)) {
                     case ObjectSourceModes.DIFFERENT_CLASSES:
                         returnedParameters.add(params.getParameter(MEASUREMENT_2));
                         ((ObjectMeasurementP) params.getParameter(MEASUREMENT_2)).setObjectName(objectName2);
