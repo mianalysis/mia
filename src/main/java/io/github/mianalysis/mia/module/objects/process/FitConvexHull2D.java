@@ -1,7 +1,5 @@
 package io.github.mianalysis.mia.module.objects.process;
 
-import java.awt.Polygon;
-
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
 
@@ -62,7 +60,7 @@ public class FitConvexHull2D extends Module {
 
     @Override
     public String getDescription() {
-        return "Fit 2D convex hull to a 2D object.  If objects are in 3D, a Z-projection of the object is used.<br><br>"
+        return "Fit 2D convex hull to a 2D object.  If objects are in 3D, a convex hull is fit slice-by-slice.<br><br>"
                 +
                 "Uses the ImageJ \"Fit convex hull\" function.";
     }

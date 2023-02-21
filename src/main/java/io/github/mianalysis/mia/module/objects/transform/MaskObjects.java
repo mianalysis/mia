@@ -1,6 +1,7 @@
 package io.github.mianalysis.mia.module.objects.transform;
 
 import java.util.HashMap;
+import java.util.Iterator;
 
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
@@ -15,7 +16,7 @@ import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.image.Image;
-import io.github.mianalysis.mia.object.image.ImageFactory;
+import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
 import io.github.mianalysis.mia.object.parameters.InputObjectsP;
@@ -49,6 +50,7 @@ public class MaskObjects<T extends RealType<T> & NativeType<T>> extends Module {
     public static final String MASK_MODE = "Mask mode";
     public static final String MASK_OBJECTS = "Mask objects";
     public static final String MASK_IMAGE = "Mask image";
+    public static final String REMOVE_EMPTY_OBJECTS = "Remove empty objects";
 
     public interface MaskModes {
         String MASK_FROM_IMAGE = "Mask from image";
@@ -138,6 +140,7 @@ public class MaskObjects<T extends RealType<T> & NativeType<T>> extends Module {
         String maskMode = parameters.getValue(MASK_MODE, workspace);
         String maskObjectsName = parameters.getValue(MASK_OBJECTS, workspace);
         String maskImageName = parameters.getValue(MASK_IMAGE, workspace);
+        boolean removeEmptyObjects = parameters.getValue(REMOVE_EMPTY_OBJECTS, workspace);
 
         // If masking by objects, converting mask objects to an image
         Image maskImage;
@@ -201,13 +204,21 @@ public class MaskObjects<T extends RealType<T> & NativeType<T>> extends Module {
 
         }
 
+        // Removing any objects which now have no volume
+        if (removeEmptyObjects) {
+            Iterator<Obj> iterator = inputObjects.values().iterator();
+            while (iterator.hasNext())
+                if (iterator.next().getCoordinateSet().size() == 0)
+                    iterator.remove();
+        }
+
         if (showOutput) {
             switch (outputMode) {
                 case OutputModes.CREATE_NEW_OBJECT:
-                    outputObjects.convertToImageIDColours().showImage();
+                    outputObjects.convertToImageIDColours().show();
                     break;
                 case OutputModes.UPDATE_INPUT:
-                    inputObjects.convertToImageIDColours().showImage();
+                    inputObjects.convertToImageIDColours().show();
                     break;
             }
         }
@@ -227,6 +238,7 @@ public class MaskObjects<T extends RealType<T> & NativeType<T>> extends Module {
         parameters.add(new ChoiceP(MASK_MODE, this, MaskModes.MASK_FROM_IMAGE, MaskModes.ALL));
         parameters.add(new InputObjectsP(MASK_OBJECTS, this));
         parameters.add(new InputImageP(MASK_IMAGE, this));
+        parameters.add(new BooleanP(REMOVE_EMPTY_OBJECTS, this, false));
 
         addParameterDescriptions();
 
@@ -341,6 +353,9 @@ public class MaskObjects<T extends RealType<T> & NativeType<T>> extends Module {
 
         parameters.get(MASK_OBJECTS).setDescription(
                 "Object collection to use as mask on input objects.  Depending on which object-masking mode is selected, the input objects will either have coordinates coincident with these objects removed or retained.");
+
+        parameters.get(REMOVE_EMPTY_OBJECTS).setDescription(
+                "When selected, any objects which have no volume following masking will be removed.");
 
     }
 }
