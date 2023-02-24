@@ -215,11 +215,11 @@ public class Watershed extends Module {
             Image outputImage = ImageFactory.createImage(outputImageName, maskIpl);
             workspace.addImage(outputImage);
             if (showOutput)
-                outputImage.showImage();
+                outputImage.show();
 
         } else {
             if (showOutput)
-                inputImage.showImage();
+                inputImage.show();
 
         }
 

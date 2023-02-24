@@ -145,9 +145,9 @@ public class MeasureObjectColocalisation<T extends RealType<T> & NativeType<T>> 
             Image timepoint2 = ExtractSubstack.extractSubstack(crop2, "Timepoint2", "1-end", "1-end",
                     String.valueOf(inputObject.getT() + 1));
 
-            // timepoint1.showImage();
-            // timepoint2.showImage();
-            // maskImage.showImage();
+            // timepoint1.show();
+            // timepoint2.show();
+            // maskImage.show();
 
             // Creating data container against which all algorithms will be run
             DataContainer<T> data = MeasureImageColocalisation.prepareDataContainer(timepoint1, timepoint2, maskImage);

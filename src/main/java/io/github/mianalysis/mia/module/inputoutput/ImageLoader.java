@@ -1357,7 +1357,7 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
         workspace.addImage(outputImage);
 
         if (showOutput)
-            outputImage.showImage();
+            outputImage.show();
 
         // If a crop was drawn, recording these coordinates as an image measurement
         switch (cropMode) {

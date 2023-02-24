@@ -206,7 +206,7 @@ public class RunScript extends Module {
                     String outputType = parameterCollection.getValue(OUTPUT_TYPE, workspace);
                     switch (outputType) {
                         case OutputTypes.IMAGE:
-                            workspace.getImage(parameterCollection.getValue(OUTPUT_IMAGE, workspace)).showImage();
+                            workspace.getImage(parameterCollection.getValue(OUTPUT_IMAGE, workspace)).show();
                             break;
                         case OutputTypes.IMAGE_MEASUREMENT:
                             workspace.getImage(parameterCollection.getValue(ASSOCIATED_IMAGE, workspace))
@@ -217,7 +217,7 @@ public class RunScript extends Module {
                             break;
                         case OutputTypes.OBJECTS:
                             workspace.getObjectSet(parameterCollection.getValue(OUTPUT_OBJECTS, workspace))
-                                    .convertToImageIDColours().showImage();
+                                    .convertToImageIDColours().show();
                             break;
                         case OutputTypes.OBJECT_MEASUREMENT:
                             workspace.getObjectSet(parameterCollection.getValue(ASSOCIATED_OBJECTS, workspace))

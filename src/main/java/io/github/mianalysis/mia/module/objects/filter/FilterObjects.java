@@ -548,7 +548,7 @@ public class FilterObjects extends Module implements ActionListener {
 
         // Showing objects
         if (showOutput)
-            inputObjects.convertToImageIDColours().showImage();
+            inputObjects.convertToImageIDColours().show();
 
         return Status.PASS;
 

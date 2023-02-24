@@ -99,7 +99,7 @@ public class Create2DIntensityHistogram<T extends RealType<T> & NativeType<T>> e
         workspace.addImage(outputImage);
 
         if (showOutput)
-            outputImage.showImage();
+            outputImage.show();
 
         return Status.PASS;
 

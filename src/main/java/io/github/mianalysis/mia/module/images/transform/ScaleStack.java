@@ -172,7 +172,7 @@ public class ScaleStack<T extends RealType<T> & NativeType<T>> extends Module {
         Image outputImage = ImageFactory.createImage(outputImageName, outputIpl);
 
         if (showOutput)
-            outputImage.showImage();
+            outputImage.show();
 
         workspace.addImage(outputImage);
 

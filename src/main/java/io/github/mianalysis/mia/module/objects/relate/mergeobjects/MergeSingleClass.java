@@ -80,7 +80,7 @@ public class MergeSingleClass extends Module {
 
         // Showing objects
         if (showOutput)
-            outputObjects.convertToImageIDColours().showImage();
+            outputObjects.convertToImageIDColours().show();
 
         return Status.PASS;
 

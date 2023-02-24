@@ -72,7 +72,7 @@ public class ChannelExtractor extends Module {
         Image outputImage = ImageFactory.createImage(outputImageName,outputChannelImagePlus);
         workspace.addImage(outputImage);
 
-        if (showOutput) outputImage.showImage();
+        if (showOutput) outputImage.show();
 
         return Status.PASS;
 

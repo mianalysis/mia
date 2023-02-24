@@ -564,12 +564,12 @@ public class FilterImage extends Module {
             // Reapplying the image in case it was an ImgLib2
             inputImage.setImagePlus(inputImagePlus);
             if (showOutput)
-                inputImage.showImage();
+                inputImage.show();
         } else {
             Image outputImage = ImageFactory.createImage(outputImageName, inputImagePlus);
             workspace.addImage(outputImage);
             if (showOutput)
-                outputImage.showImage();
+                outputImage.show();
         }
 
         return Status.PASS;

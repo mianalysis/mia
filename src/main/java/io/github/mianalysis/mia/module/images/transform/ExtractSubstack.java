@@ -295,7 +295,7 @@ public class ExtractSubstack extends Module implements ActionListener {
         
         // If selected, displaying the image
         if (showOutput)
-            outputImage.showImage();
+            outputImage.show();
 
         return Status.PASS;
 

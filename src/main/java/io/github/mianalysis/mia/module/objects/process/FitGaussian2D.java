@@ -439,7 +439,7 @@ public class FitGaussian2D extends Module {
             inputObjects.showMeasurements(this, modules);
 
             if (createGaussianImage)
-                gaussianImage.showImage();
+                gaussianImage.show();
 
             // Also show output objects, if storing coordinates is somehow enabled
 

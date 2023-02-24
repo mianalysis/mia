@@ -142,14 +142,14 @@ public class MergeRelatedObjects extends Module {
 
                 workspace.addObjects(relatedObjects);
                 if (showOutput)
-                    relatedObjects.convertToImageIDColours().showImage();
+                    relatedObjects.convertToImageIDColours().show();
 
                 break;
 
             case OutputModes.UPDATE_PARENT:
                 mergeRelatedObjectsUpdateParent(parentObjects, childObjectsName, mergeMode);
                 if (showOutput)
-                    parentObjects.convertToImageIDColours().showImage();
+                    parentObjects.convertToImageIDColours().show();
                 break;
         }
         return Status.PASS;

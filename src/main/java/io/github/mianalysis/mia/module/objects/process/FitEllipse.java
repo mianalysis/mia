@@ -255,7 +255,7 @@ public class FitEllipse extends Module {
         if (showOutput) {
             inputObjects.showMeasurements(this, modules);
             if (!objectOutputMode.equals(OutputModes.DO_NOT_STORE))
-                outputObjects.convertToImageIDColours().showImage();            
+                outputObjects.convertToImageIDColours().show();            
         }
 
         return Status.PASS;

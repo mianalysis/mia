@@ -260,7 +260,7 @@ public class CreateDistanceMap extends Module {
         // Adding distance map to output and showing
         workspace.addImage(distanceMap);
         if (showOutput)
-            distanceMap.showImage();
+            distanceMap.show();
 
         return Status.PASS;
 

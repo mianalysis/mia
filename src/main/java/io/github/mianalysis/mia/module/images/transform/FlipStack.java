@@ -144,7 +144,7 @@ public class FlipStack<T extends RealType<T> & NativeType<T>> extends Module {
         Image outputImage = applyFlip(inputImage, axisMode, outputImageName);
         if (outputImage == null) return Status.FAIL;
 
-        if (showOutput) outputImage.showImage();
+        if (showOutput) outputImage.show();
         if (applyToInput) {
             inputImage.setImagePlus(outputImage.getImagePlus());
         } else {

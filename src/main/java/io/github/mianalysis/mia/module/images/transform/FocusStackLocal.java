@@ -235,7 +235,7 @@ public class FocusStackLocal extends Module {
                 Image outputImage = focusStack(inputImage, outputFocusedImageName, heightMap);
                 workspace.addImage(outputImage);
                 if (showOutput)
-                    outputImage.showImage();
+                    outputImage.show();
 
                 break;
         }
@@ -249,7 +249,7 @@ public class FocusStackLocal extends Module {
                 ImageMath.process(heightMap, ImageMath.CalculationModes.SUBTRACT, 1);
 
                 if (showOutput)
-                    heightMap.showImage();
+                    heightMap.show();
 
                 workspace.addImage(heightMap);
                 break;

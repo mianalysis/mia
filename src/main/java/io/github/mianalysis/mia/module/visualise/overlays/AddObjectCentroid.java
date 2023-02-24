@@ -232,7 +232,7 @@ public class AddObjectCentroid extends AbstractOverlay {
         if (addOutputToWorkspace)
             workspace.addImage(outputImage);
         if (showOutput)
-            outputImage.showImage();
+            outputImage.show();
 
         return Status.PASS;
 

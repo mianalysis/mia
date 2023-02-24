@@ -161,7 +161,7 @@ public class ExtractObjectCrossSection extends Module {
         }
 
         if (showOutput)
-            outputObjects.convertToImageIDColours().showImage();
+            outputObjects.convertToImageIDColours().show();
 
         return Status.PASS;
 
