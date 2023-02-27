@@ -18,7 +18,7 @@ public class ShowProcessingTitleCheck extends JCheckBox implements ActionListene
         this.module = module;
 
         this.setSelected(module.canShowProcessingTitle());
-        setText("Show basic title  ");
+        setText("Show title in processing view  ");
         addActionListener(this);
 
     }
