@@ -224,7 +224,7 @@ public class DistanceMap extends Module {
         writeStatus("Adding image (" + outputImageName + ") to workspace");
         workspace.addImage(distanceMap);
         if (showOutput)
-            distanceMap.showImage();
+            distanceMap.show();
 
         return Status.PASS;
 

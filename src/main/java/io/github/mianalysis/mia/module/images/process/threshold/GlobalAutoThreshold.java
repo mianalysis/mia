@@ -267,7 +267,7 @@ public class GlobalAutoThreshold extends Module {
                 inputImage.setImagePlus(inputImagePlus);
                 addMeasurements(inputImage, threshold, algorithm);
                 if (showOutput)
-                    inputImage.showImage();
+                    inputImage.show();
                 if (showOutput)
                     inputImage.showMeasurements(this);
 
@@ -278,7 +278,7 @@ public class GlobalAutoThreshold extends Module {
 
                 addMeasurements(outputImage, threshold, algorithm);
                 if (showOutput)
-                    outputImage.showImage();
+                    outputImage.show();
                 if (showOutput)
                     outputImage.showMeasurements(this);
             }

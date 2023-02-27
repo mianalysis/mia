@@ -91,7 +91,7 @@ public class CombineObjectSets extends Module {
                 combineAndAdd(inputObjects1, inputObjects2);
 
                 if (showOutput)
-                    inputObjects1.convertToImageIDColours().showImage();
+                    inputObjects1.convertToImageIDColours().show();
 
                 break;
 
@@ -99,7 +99,7 @@ public class CombineObjectSets extends Module {
                 combineAndAdd(inputObjects2, inputObjects1);
 
                 if (showOutput)
-                    inputObjects2.convertToImageIDColours().showImage();
+                    inputObjects2.convertToImageIDColours().show();
 
                 break;
 
@@ -112,7 +112,7 @@ public class CombineObjectSets extends Module {
                 workspace.addObjects(outputObjects);
 
                 if (showOutput)
-                    outputObjects.convertToImageIDColours().showImage();
+                    outputObjects.convertToImageIDColours().show();
 
                 break;
         }

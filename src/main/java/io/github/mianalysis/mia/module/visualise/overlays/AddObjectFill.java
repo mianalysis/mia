@@ -213,7 +213,7 @@ public class AddObjectFill extends AbstractOverlay {
         if (!applyToInput && addOutputToWorkspace)
             workspace.addImage(outputImage);
         if (showOutput)
-            outputImage.showImage();
+            outputImage.show();
 
         return Status.PASS;
 

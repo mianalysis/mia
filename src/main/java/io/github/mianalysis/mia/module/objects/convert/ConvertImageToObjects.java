@@ -112,7 +112,7 @@ public class ConvertImageToObjects extends Module {
             if (createParents)
                 TrackObjects.showObjects(objects, parentObjectsName);
             else
-                objects.convertToImageIDColours().showImage();
+                objects.convertToImageIDColours().show();
 
         workspace.addObjects(objects);
 

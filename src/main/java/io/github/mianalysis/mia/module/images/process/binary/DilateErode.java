@@ -185,11 +185,11 @@ public class DilateErode extends Module {
             workspace.addImage(outputImage);
 
             if (showOutput)
-                outputImage.showImage();
+                outputImage.show();
 
         } else {
             if (showOutput)
-                inputImage.showImage();
+                inputImage.show();
 
         }
 

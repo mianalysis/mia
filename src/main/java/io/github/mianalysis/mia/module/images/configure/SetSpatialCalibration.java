@@ -230,7 +230,7 @@ public class SetSpatialCalibration extends Module {
         }
 
         if (showOutput)
-            image.showImage();
+            image.show();
 
         return Status.PASS;
 

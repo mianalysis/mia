@@ -13,6 +13,7 @@ import ij.IJ;
 import ij.ImagePlus;
 import ij.ImageStack;
 import ij.Prefs;
+import ij.plugin.CanvasResizer;
 import ij.plugin.HyperStackConverter;
 import ij.plugin.SubHyperstackMaker;
 import ij.process.ImageProcessor;
@@ -306,7 +307,7 @@ public abstract class AbstractRegistration<T extends RealType<T> & NativeType<T>
                     int finalZ = z;
                     int finalT = t;
 
-                    Runnable task = () -> {                        
+                    Runnable task = () -> {
                         ImageProcessor slice = getSetStack(inputIpl, finalT, finalC, finalZ, null).getProcessor();
                         int fillValue = getFillValue(fillMode, slice);
                         ImageProcessor alignedSlice = applyTransform(slice, transform, fillValue);
@@ -464,21 +465,21 @@ public abstract class AbstractRegistration<T extends RealType<T> & NativeType<T>
     @Override
     public Status process(Workspace workspace) {
         // Getting parameters
-        String inputImageName = parameters.getValue(INPUT_IMAGE,workspace);
-        boolean applyToInput = parameters.getValue(APPLY_TO_INPUT,workspace);
-        String outputImageName = parameters.getValue(OUTPUT_IMAGE,workspace);
-        String regAxis = parameters.getValue(REGISTRATION_AXIS,workspace);
-        String otherAxisMode = parameters.getValue(OTHER_AXIS_MODE,workspace);
-        String fillMode = parameters.getValue(FILL_MODE,workspace);
-        boolean multithread = parameters.getValue(ENABLE_MULTITHREADING,workspace);
-        String referenceMode = parameters.getValue(REFERENCE_MODE,workspace);
-        int numPrevFrames = parameters.getValue(NUM_PREV_FRAMES,workspace);
-        String prevFramesStatMode = parameters.getValue(PREV_FRAMES_STAT_MODE,workspace);
-        String referenceImageName = parameters.getValue(REFERENCE_IMAGE,workspace);
-        String calculationSource = parameters.getValue(CALCULATION_SOURCE,workspace);
-        String externalSourceName = parameters.getValue(EXTERNAL_SOURCE,workspace);
-        int calculationChannel = parameters.getValue(CALCULATION_CHANNEL,workspace);
-        boolean showDetectedPoints = parameters.getValue(SHOW_DETECTED_POINTS,workspace);
+        String inputImageName = parameters.getValue(INPUT_IMAGE, workspace);
+        boolean applyToInput = parameters.getValue(APPLY_TO_INPUT, workspace);
+        String outputImageName = parameters.getValue(OUTPUT_IMAGE, workspace);
+        String regAxis = parameters.getValue(REGISTRATION_AXIS, workspace);
+        String otherAxisMode = parameters.getValue(OTHER_AXIS_MODE, workspace);
+        String fillMode = parameters.getValue(FILL_MODE, workspace);
+        boolean multithread = parameters.getValue(ENABLE_MULTITHREADING, workspace);
+        String referenceMode = parameters.getValue(REFERENCE_MODE, workspace);
+        int numPrevFrames = parameters.getValue(NUM_PREV_FRAMES, workspace);
+        String prevFramesStatMode = parameters.getValue(PREV_FRAMES_STAT_MODE, workspace);
+        String referenceImageName = parameters.getValue(REFERENCE_IMAGE, workspace);
+        String calculationSource = parameters.getValue(CALCULATION_SOURCE, workspace);
+        String externalSourceName = parameters.getValue(EXTERNAL_SOURCE, workspace);
+        int calculationChannel = parameters.getValue(CALCULATION_CHANNEL, workspace);
+        boolean showDetectedPoints = parameters.getValue(SHOW_DETECTED_POINTS, workspace);
 
         // Getting the input image and duplicating if the output will be stored
         // separately
@@ -502,6 +503,19 @@ public abstract class AbstractRegistration<T extends RealType<T> & NativeType<T>
             case CalculationSources.INTERNAL:
                 calculationImage = ExtractSubstack.extractSubstack(inputImage, "CalcIm", calcC, "1-end", "1-end");
                 break;
+        }
+
+        ImagePlus inputIpl = inputImage.getImagePlus();
+        ImagePlus referenceIpl = reference.getImagePlus();
+        ImagePlus calculationIpl = calculationImage.getImagePlus();
+        int outW = Math.max(Math.max(inputIpl.getWidth(), referenceIpl.getWidth()), calculationIpl.getWidth());
+        int outH = Math.max(Math.max(inputIpl.getHeight(), referenceIpl.getHeight()), calculationIpl.getHeight());
+        inputIpl.setStack(new CanvasResizer().expandStack(inputIpl.getImageStack(), outW, outH, 0, 0));
+        calculationIpl.setStack(new CanvasResizer().expandStack(calculationIpl.getImageStack(), outW, outH, 0, 0));
+        if (referenceIpl != null) {
+            reference = ImageFactory.createImage(reference.getName(), reference.getImagePlus().duplicate());
+            referenceIpl = reference.getImagePlus();
+            referenceIpl.setStack(new CanvasResizer().expandStack(referenceIpl.getImageStack(), outW, outH, 0, 0));
         }
 
         // Registration will be performed in time, so ensure actual axis to be
@@ -559,9 +573,9 @@ public abstract class AbstractRegistration<T extends RealType<T> & NativeType<T>
 
         if (showOutput) {
             if (referenceMode.equals(ReferenceModes.SPECIFIC_IMAGE)) {
-                createOverlay(inputImage, reference).showImage();
+                createOverlay(inputImage, reference).show();
             } else {
-                inputImage.showImage();
+                inputImage.show();
             }
         }
 
@@ -602,13 +616,13 @@ public abstract class AbstractRegistration<T extends RealType<T> & NativeType<T>
 
     @Override
     public Parameters updateAndGetParameters() {
-Workspace workspace = null;
+        Workspace workspace = null;
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(INPUT_IMAGE));
         returnedParameters.add(parameters.getParameter(APPLY_TO_INPUT));
-        if (!(boolean) parameters.getValue(APPLY_TO_INPUT,workspace)) {
+        if (!(boolean) parameters.getValue(APPLY_TO_INPUT, workspace)) {
             returnedParameters.add(parameters.getParameter(OUTPUT_IMAGE));
         }
 
@@ -623,7 +637,7 @@ Workspace workspace = null;
 
         returnedParameters.add(parameters.getParameter(REFERENCE_SEPARATOR));
         returnedParameters.add(parameters.getParameter(REFERENCE_MODE));
-        switch ((String) parameters.getValue(REFERENCE_MODE,workspace)) {
+        switch ((String) parameters.getValue(REFERENCE_MODE, workspace)) {
             case ReferenceModes.PREVIOUS_N_FRAMES:
                 returnedParameters.add(parameters.getParameter(NUM_PREV_FRAMES));
                 returnedParameters.add(parameters.getParameter(PREV_FRAMES_STAT_MODE));
@@ -633,7 +647,7 @@ Workspace workspace = null;
                 break;
         }
         returnedParameters.add(parameters.getParameter(CALCULATION_SOURCE));
-        switch ((String) parameters.getValue(CALCULATION_SOURCE,workspace)) {
+        switch ((String) parameters.getValue(CALCULATION_SOURCE, workspace)) {
             case CalculationSources.EXTERNAL:
                 returnedParameters.add(parameters.getParameter(EXTERNAL_SOURCE));
                 break;
@@ -666,7 +680,7 @@ Workspace workspace = null;
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
-return null;
+        return null;
     }
 
     @Override
@@ -765,7 +779,7 @@ return null;
     }
 
     public void getParameters(Param param, Workspace workspace) {
-        param.fillMode = parameters.getValue(FILL_MODE,workspace);
+        param.fillMode = parameters.getValue(FILL_MODE, workspace);
     }
 
     public class Param {

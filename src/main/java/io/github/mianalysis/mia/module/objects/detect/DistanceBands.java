@@ -308,7 +308,7 @@ public class DistanceBands<T extends RealType<T> & NativeType<T>> extends Module
 
         // Showing objects
         if (showOutput)
-            bandObjects.convertToImageIDColours().showImage();
+            bandObjects.convertToImageIDColours().show();
 
         return Status.PASS;
 

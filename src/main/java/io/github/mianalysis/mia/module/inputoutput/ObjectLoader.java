@@ -465,7 +465,7 @@ public class ObjectLoader extends Module {
         loadObjects(outputObjects, inputFile, workspace, parentObjects);
 
         if (showOutput)
-            outputObjects.convertToImageIDColours().showImage();
+            outputObjects.convertToImageIDColours().show();
 
         return Status.PASS;
 

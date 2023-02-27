@@ -104,7 +104,7 @@ public class FilterByPartners extends AbstractNumericObjectFilter {
 
         // Showing objects
         if (showOutput)
-            inputObjects.convertToImageIDColours().showImage();
+            inputObjects.convertToImageIDColours().show();
 
         return Status.PASS;
 

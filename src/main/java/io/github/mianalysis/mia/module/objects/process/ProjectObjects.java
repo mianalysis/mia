@@ -83,7 +83,7 @@ public class ProjectObjects extends Module {
         workspace.addObjects(outputObjects);
 
         // Showing objects
-        if (showOutput) outputObjects.convertToImageIDColours().showImage();
+        if (showOutput) outputObjects.convertToImageIDColours().show();
 
         return Status.PASS;
 

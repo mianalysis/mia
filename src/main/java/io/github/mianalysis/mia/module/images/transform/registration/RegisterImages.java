@@ -8,9 +8,10 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-import com.drew.lang.annotations.Nullable;
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
+
+import com.drew.lang.annotations.Nullable;
 
 import ij.IJ;
 import ij.ImagePlus;
@@ -27,7 +28,6 @@ import io.github.mianalysis.mia.module.images.process.InvertIntensity;
 import io.github.mianalysis.mia.module.images.transform.ConcatenateStacks;
 import io.github.mianalysis.mia.module.images.transform.ExtractSubstack;
 import io.github.mianalysis.mia.module.images.transform.ProjectImage;
-import io.github.mianalysis.mia.module.images.transform.ConcatenateStacks.AxisModes;
 import io.github.mianalysis.mia.object.Measurement;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.image.Image;
@@ -542,7 +542,7 @@ public class RegisterImages<T extends RealType<T> & NativeType<T>> extends Modul
         images.add(reference);
         images.add(dupImage);
         ConcatenateStacks.concatenateImages(images, ConcatenateStacks.AxisModes.CHANNEL, "Registration comparison")
-                .showImage();
+                .show();
 
     }
 
@@ -630,9 +630,9 @@ public class RegisterImages<T extends RealType<T> & NativeType<T>> extends Modul
 
                 if (showOutput) {
                     if (relativeMode.equals(RelativeModes.SPECIFIC_IMAGE)) {
-                        createOverlay(inputImage, reference).showImage();
+                        createOverlay(inputImage, reference).show();
                     } else {
-                        inputImage.showImage();
+                        inputImage.show();
                     }
                 }
 
@@ -643,7 +643,7 @@ public class RegisterImages<T extends RealType<T> & NativeType<T>> extends Modul
                 processManual(inputImage, transformationMode, multithread, fillMode, reference);
 
                 if (showOutput)
-                    inputImage.showImage();
+                    inputImage.show();
 
                 break;
         }

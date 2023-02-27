@@ -124,7 +124,6 @@ public class LoadObjectsFromROIs extends Module {
 
                 while (entry != null) {
                     String name = entry.getName();
-                    MIA.log.writeDebug("N " + name);
 
                     if (!name.endsWith(".roi")) {
                         entry = in.getNextEntry();
@@ -245,7 +244,7 @@ public class LoadObjectsFromROIs extends Module {
             if (assignTracks)
                 TrackObjects.showObjects(outputObjects, trackObjectsName);
             else
-                outputObjects.convertToImageIDColours().showImage();
+                outputObjects.convertToImageIDColours().show();
 
         return Status.PASS;
 

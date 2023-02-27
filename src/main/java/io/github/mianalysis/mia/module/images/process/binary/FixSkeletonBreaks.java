@@ -125,10 +125,10 @@ public class FixSkeletonBreaks extends Module {
             Image outputImage = ImageFactory.createImage(outputImageName, inputImage.getImagePlus());
             workspace.addImage(outputImage);
             if (showOutput)
-                outputImage.showImage();
+                outputImage.show();
         } else {
             if (showOutput)
-                inputImage.showImage();
+                inputImage.show();
         }
 
         return Status.PASS;

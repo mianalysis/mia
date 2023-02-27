@@ -843,7 +843,7 @@ public class AddObjectsOverlay extends Module {
         if (addOutputToWorkspace)
             workspace.addImage(outputImage);
         if (showOutput)
-            outputImage.showImage();
+            outputImage.show();
 
         return Status.PASS;
 

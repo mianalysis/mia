@@ -583,7 +583,7 @@ public class FocusStackGlobal<T extends RealType<T> & NativeType<T>> extends Mod
                 workspace.addImage(outputImage);
 
                 if (showOutput)
-                    outputImage.showImage();
+                    outputImage.show();
             }
 
             return Status.PASS;
@@ -663,7 +663,7 @@ public class FocusStackGlobal<T extends RealType<T> & NativeType<T>> extends Mod
             workspace.addImage(outputImage);
 
             if (showOutput)
-                outputImage.showImage();
+                outputImage.show();
         }
 
         return Status.PASS;

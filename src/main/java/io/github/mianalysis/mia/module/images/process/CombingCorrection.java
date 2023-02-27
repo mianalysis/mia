@@ -73,10 +73,10 @@ public class CombingCorrection extends Module {
         if (!applyToInput) {
             Image outputImage = ImageFactory.createImage(outputImageName,inputImagePlus);
             workspace.addImage(outputImage);
-            if (showOutput) outputImage.showImage();
+            if (showOutput) outputImage.show();
 
         } else {
-            if (showOutput) inputImage.showImage();
+            if (showOutput) inputImage.show();
 
         }
 

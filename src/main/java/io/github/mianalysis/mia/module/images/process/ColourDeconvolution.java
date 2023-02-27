@@ -216,21 +216,21 @@ public class ColourDeconvolution extends Module {
             Image outImage1 = ImageFactory.createImage(outputImageName1, outputImagePluses[0]);
             workspace.addImage(outImage1);
             if (showOutput)
-                outImage1.showImage();
+                outImage1.show();
         }
 
         if (outputImage2) {
             Image outImage2 = ImageFactory.createImage(outputImageName2, outputImagePluses[1]);
             workspace.addImage(outImage2);
             if (showOutput)
-                outImage2.showImage();
+                outImage2.show();
         }
 
         if (outputImage3) {
             Image outImage3 = ImageFactory.createImage(outputImageName3, outputImagePluses[2]);
             workspace.addImage(outImage3);
             if (showOutput)
-                outImage3.showImage();
+                outImage3.show();
         }
 
         return Status.PASS;

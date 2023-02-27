@@ -272,7 +272,7 @@ public class WekaPixelClassification extends Module {
         workspace.addImage(outputImage);
 
         if (showOutput)
-            outputImage.showImage();
+            outputImage.show();
 
         return Status.PASS;
 

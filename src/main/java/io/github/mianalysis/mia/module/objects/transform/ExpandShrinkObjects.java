@@ -267,9 +267,9 @@ public class ExpandShrinkObjects extends Module {
         // Displaying updated objects
         if (showOutput) {
             if (updateInputObjects)
-                inputObjects.convertToImageIDColours().showImage();
+                inputObjects.convertToImageIDColours().show();
             else
-                outputObjects.convertToImageIDColours().showImage();
+                outputObjects.convertToImageIDColours().show();
         }
 
         return Status.PASS;
