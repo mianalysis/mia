@@ -4,10 +4,10 @@ import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.system.GlobalVariables;
 import io.github.mianalysis.mia.object.Workspace;
+import io.github.mianalysis.mia.object.parameters.abstrakt.NumberType;
 import io.github.mianalysis.mia.object.parameters.abstrakt.Parameter;
-import io.github.mianalysis.mia.object.parameters.abstrakt.TextType;
 
-public class IntegerP extends TextType {
+public class IntegerP extends NumberType {
     protected String value;
 
     public IntegerP(String name, Module module, int value) {
