@@ -170,7 +170,7 @@ public class FitEllipsoid extends Module {
     }
 
     public void addMeasurements(Obj inputObject, EllipsoidCalculator calculator) {
-        if (calculator == null) {
+        if (calculator == null || calculator.getCentroid() == null) {
             inputObject.addMeasurement(new Measurement(Measurements.X_CENT_PX, Double.NaN));
             inputObject.addMeasurement(new Measurement(Measurements.X_CENT_CAL, Double.NaN));
             inputObject.addMeasurement(new Measurement(Measurements.Y_CENT_PX, Double.NaN));
