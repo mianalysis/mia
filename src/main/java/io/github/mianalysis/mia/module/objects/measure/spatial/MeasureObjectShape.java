@@ -1,28 +1,35 @@
 package io.github.mianalysis.mia.module.objects.measure.spatial;
 
+import java.util.Map;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.scijava.Priority;
+import org.scijava.plugin.Plugin;
+
+import ij.ImagePlus;
 import ij.Prefs;
+import inra.ijpb.measure.IntrinsicVolumes3D;
+import inra.ijpb.measure.region3d.IntrinsicVolumesAnalyzer3D;
+import inra.ijpb.measure.region3d.IntrinsicVolumesAnalyzer3D.Result;
 import io.github.mianalysis.mia.MIA;
+import io.github.mianalysis.mia.module.Categories;
+import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.objects.process.ProjectObjects;
-import io.github.mianalysis.mia.module.Module;
-import org.scijava.Priority;
-import org.scijava.plugin.Plugin;
-import io.github.mianalysis.mia.module.Category;
-import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.object.Measurement;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
-import io.github.mianalysis.mia.object.units.SpatialUnit;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
+import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputObjectsP;
+import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.SeparatorP;
+import io.github.mianalysis.mia.object.parameters.choiceinterfaces.ConnectivityInterface;
 import io.github.mianalysis.mia.object.refs.ObjMeasurementRef;
 import io.github.mianalysis.mia.object.refs.collections.ImageMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
@@ -30,14 +37,14 @@ import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Status;
-import io.github.mianalysis.mia.object.parameters.Parameters;
+import io.github.mianalysis.mia.object.units.SpatialUnit;
 import io.github.sjcross.sjcommon.exceptions.IntegerOverflowException;
 import io.github.sjcross.sjcommon.object.Point;
 
 /**
  * Created by sc13967 on 29/06/2017.
  */
-@Plugin(type = Module.class, priority=Priority.LOW, visible=true)
+@Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class MeasureObjectShape extends Module {
     public static final String INPUT_SEPARATOR = "Object input";
     public static final String INPUT_OBJECTS = "Input objects";
@@ -47,12 +54,26 @@ public class MeasureObjectShape extends Module {
     public static final String MEASURE_PROJECTED_AREA = "Measure projected area";
     public static final String MEASURE_PROJECTED_DIA = "Measure projected diameter";
     public static final String MEASURE_PROJECTED_PERIM = "Measure projected perimeter";
+    public static final String MEASURE_3D_METRICS = "Measure 3D metrics";
+    public static final String CONNECTIVITY = "Connectivity";
+    public static final String SURFACE_AREA_METHOD = "Surface area method";
 
     public static final String EXECUTION_SEPARATOR = "Execution controls";
     public static final String ENABLE_MULTITHREADING = "Enable multithreading";
 
     public MeasureObjectShape(Modules modules) {
         super("Measure object shape", modules);
+    }
+
+    public interface Connectivity extends ConnectivityInterface {
+    }
+
+    public interface SurfaceAreaMethods {
+        String THREE = "3";
+        String THIRTEEN = "13";
+
+        String[] ALL = new String[] { THREE, THIRTEEN };
+
     }
 
     public interface Measurements {
@@ -70,6 +91,10 @@ public class MeasureObjectShape extends Module {
         String PROJ_PERIM_PX = "SHAPE // PROJ_PERIM_(PX)";
         String PROJ_PERIM_CAL = "SHAPE // PROJ_PERIM_(${SCAL})";
         String PROJ_CIRCULARITY = "SHAPE // PROJ_CIRCULARITY";
+        String SURFACE_AREA_CAL = "SHAPE // SURFACE_AREA_(${SCAL}²)";
+        String MEAN_BREADTH_CAL = "SHAPE // MEAN_BREADTH_(${SCAL})";
+        String SPHERICITY = "SHAPE // SPHERICITY";
+        String EULER_NUMBER = "SHAPE // EULER_NUMBER";
 
     }
 
@@ -123,6 +148,23 @@ public class MeasureObjectShape extends Module {
 
     }
 
+    public void measure3DMetrics(Obj inputObject, int connectivity, int surfaceAreaMethod) {
+        ImagePlus tightIpl = inputObject.getAsTightImage("Object").getImagePlus();
+
+        IntrinsicVolumesAnalyzer3D analyser = new IntrinsicVolumesAnalyzer3D();
+        analyser.setConnectivity(connectivity);
+        analyser.setDirectionNumber(surfaceAreaMethod);
+
+        Map<Integer, Result> results = new IntrinsicVolumesAnalyzer3D().analyzeRegions(tightIpl);
+        Result result = results.values().iterator().next();
+        
+        inputObject.addMeasurement(new Measurement(Measurements.SURFACE_AREA_CAL, result.surfaceArea));
+        inputObject.addMeasurement(new Measurement(Measurements.MEAN_BREADTH_CAL, result.meanBreadth));
+        inputObject.addMeasurement(new Measurement(Measurements.EULER_NUMBER, result.eulerNumber));
+        inputObject.addMeasurement(new Measurement(Measurements.SPHERICITY, IntrinsicVolumes3D.sphericity(result.volume, result.surfaceArea)));
+        
+    }
+
     @Override
     public Category getCategory() {
         return Categories.OBJECTS_MEASURE_SPATIAL;
@@ -130,22 +172,24 @@ public class MeasureObjectShape extends Module {
 
     @Override
     public String getDescription() {
-        return "Measures various spatial metrics for each object in a specified object collection from the workspace.  Measurements are associated with the relevant input object.  When dealing with 3D objects (those with coordinates spanning multiple Z-slices) a 2D projection into the XY plane will be used.";
+        return "Measures various spatial metrics for each object in a specified object collection from the workspace.  Measurements are associated with the relevant input object.  When dealing with 3D objects (those with coordinates spanning multiple Z-slices) a 2D projection into the XY plane will be used.  3D metrics are calculated using the \"<a href=\"https://github.com/ijpb/MorphoLibJ\">MorphoLibJ</a>\" plugin.";
     }
 
     @Override
     public Status process(Workspace workspace) {
-        // Getting input objects
-        String inputObjectName = parameters.getValue(INPUT_OBJECTS,workspace);
-        Objs inputObjects = workspace.getObjects().get(inputObjectName);
-
         // Getting parameters
-        boolean measureVolume = parameters.getValue(MEASURE_VOLUME,workspace);
-        boolean measureProjectedArea = parameters.getValue(MEASURE_PROJECTED_AREA,workspace);
-        boolean measureProjectedDiameter = parameters.getValue(MEASURE_PROJECTED_DIA,workspace);
-        boolean measureProjectedPerimeter = parameters.getValue(MEASURE_PROJECTED_PERIM,workspace);
+        String inputObjectName = parameters.getValue(INPUT_OBJECTS, workspace);
+        boolean measureVolume = parameters.getValue(MEASURE_VOLUME, workspace);
+        boolean measureProjectedArea = parameters.getValue(MEASURE_PROJECTED_AREA, workspace);
+        boolean measureProjectedDiameter = parameters.getValue(MEASURE_PROJECTED_DIA, workspace);
+        boolean measureProjectedPerimeter = parameters.getValue(MEASURE_PROJECTED_PERIM, workspace);
+        boolean measure3dMetrics = parameters.getValue(MEASURE_3D_METRICS, workspace);
+        int connectivity = Integer.parseInt(parameters.getValue(CONNECTIVITY, workspace));
+        int surfaceAreaMethod = Integer.parseInt(parameters.getValue(SURFACE_AREA_METHOD, workspace));
+        boolean multithread = parameters.getValue(ENABLE_MULTITHREADING, workspace);
 
-        boolean multithread = parameters.getValue(ENABLE_MULTITHREADING,workspace);
+        // Getting input objects
+        Objs inputObjects = workspace.getObjects().get(inputObjectName);
 
         // Configuring multithreading
         int nThreads = multithread ? Prefs.getThreads() : 1;
@@ -232,6 +276,9 @@ public class MeasureObjectShape extends Module {
 
                 }
 
+                if (measure3dMetrics)
+                    measure3DMetrics(inputObject,connectivity,surfaceAreaMethod);
+                
                 // Clearing the projected object from memory to save some space
                 if (projectedObject != null & !inputObject.is2D())
                     inputObject.clearProjected();
@@ -267,6 +314,9 @@ public class MeasureObjectShape extends Module {
         parameters.add(new BooleanP(MEASURE_PROJECTED_AREA, this, false));
         parameters.add(new BooleanP(MEASURE_PROJECTED_DIA, this, false));
         parameters.add(new BooleanP(MEASURE_PROJECTED_PERIM, this, false));
+        parameters.add(new BooleanP(MEASURE_3D_METRICS, this, false));
+        parameters.add(new ChoiceP(CONNECTIVITY, this, Connectivity.TWENTYSIX, Connectivity.ALL));
+        parameters.add(new ChoiceP(SURFACE_AREA_METHOD, this, SurfaceAreaMethods.THIRTEEN, SurfaceAreaMethods.ALL));
 
         parameters.add(new SeparatorP(EXECUTION_SEPARATOR, this));
         parameters.add(new BooleanP(ENABLE_MULTITHREADING, this, true));
@@ -277,22 +327,43 @@ public class MeasureObjectShape extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
-Workspace workspace = null;
-        return parameters;
+        Workspace workspace = null;
+        Parameters returnedParameters = new Parameters();
+
+        returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
+        returnedParameters.add(parameters.getParameter(INPUT_OBJECTS));
+
+        returnedParameters.add(parameters.getParameter(MEASUREMENT_SEPARATOR));
+        returnedParameters.add(parameters.getParameter(MEASURE_VOLUME));
+        returnedParameters.add(parameters.getParameter(MEASURE_PROJECTED_AREA));
+        returnedParameters.add(parameters.getParameter(MEASURE_PROJECTED_DIA));
+        returnedParameters.add(parameters.getParameter(MEASURE_PROJECTED_PERIM));
+        returnedParameters.add(parameters.getParameter(MEASURE_3D_METRICS));
+
+        if ((Boolean) parameters.getValue(MEASURE_3D_METRICS, workspace)) {
+            returnedParameters.add(parameters.getParameter(CONNECTIVITY));
+            returnedParameters.add(parameters.getParameter(SURFACE_AREA_METHOD));
+        }
+
+        returnedParameters.add(parameters.getParameter(EXECUTION_SEPARATOR));
+        returnedParameters.add(parameters.getParameter(ENABLE_MULTITHREADING));
+
+        return returnedParameters;
+
     }
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
-return null;
+        return null;
     }
 
     @Override
-public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
-Workspace workspace = null;
+    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+        Workspace workspace = null;
         ObjMeasurementRefs returnedRefs = new ObjMeasurementRefs();
-        String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS, workspace);
 
-        if ((boolean) parameters.getValue(MEASURE_VOLUME,workspace)) {
+        if ((boolean) parameters.getValue(MEASURE_VOLUME, workspace)) {
             ObjMeasurementRef reference = objectMeasurementRefs.getOrPut(Measurements.N_VOXELS);
             returnedRefs.add(reference);
             reference.setObjectsName(inputObjectsName);
@@ -342,7 +413,7 @@ Workspace workspace = null;
 
         }
 
-        if ((boolean) parameters.getValue(MEASURE_PROJECTED_AREA,workspace)) {
+        if ((boolean) parameters.getValue(MEASURE_PROJECTED_AREA, workspace)) {
             ObjMeasurementRef reference = objectMeasurementRefs.getOrPut(Measurements.PROJ_AREA_PX);
             returnedRefs.add(reference);
             reference.setObjectsName(inputObjectsName);
@@ -356,7 +427,7 @@ Workspace workspace = null;
                     + "\".  Measured " + "in calibrated (" + SpatialUnit.getOMEUnit().getSymbol() + ") units.");
         }
 
-        if ((boolean) parameters.getValue(MEASURE_PROJECTED_DIA,workspace)) {
+        if ((boolean) parameters.getValue(MEASURE_PROJECTED_DIA, workspace)) {
             ObjMeasurementRef reference = objectMeasurementRefs.getOrPut(Measurements.PROJ_DIA_PX);
             returnedRefs.add(reference);
             reference.setObjectsName(inputObjectsName);
@@ -371,7 +442,7 @@ Workspace workspace = null;
                     + "units.");
         }
 
-        if ((boolean) parameters.getValue(MEASURE_PROJECTED_PERIM,workspace)) {
+        if ((boolean) parameters.getValue(MEASURE_PROJECTED_PERIM, workspace)) {
             ObjMeasurementRef reference = objectMeasurementRefs.getOrPut(Measurements.PROJ_PERIM_PX);
             returnedRefs.add(reference);
             reference.setObjectsName(inputObjectsName);
@@ -392,23 +463,47 @@ Workspace workspace = null;
 
         }
 
+        if ((boolean) parameters.getValue(MEASURE_3D_METRICS, workspace)) {
+            ObjMeasurementRef reference = objectMeasurementRefs.getOrPut(Measurements.SURFACE_AREA_CAL);
+            returnedRefs.add(reference);
+            reference.setObjectsName(inputObjectsName);
+            reference.setDescription("Surface area of the 3D object, \"" + inputObjectsName + "\".  Measured in calibrated units.");
+
+            reference = objectMeasurementRefs.getOrPut(Measurements.SPHERICITY);
+            returnedRefs.add(reference);
+            reference.setObjectsName(inputObjectsName);
+            reference.setDescription("Sphericity of the 3D object, \"" + inputObjectsName + "\".  This is defined as <i>36*pi*(V^2)/(S^3)</i>, where <i>V</i> is the object volume and <i>S</i> is the surface area.");
+
+            reference = objectMeasurementRefs.getOrPut(Measurements.EULER_NUMBER);
+            returnedRefs.add(reference);
+            reference.setObjectsName(inputObjectsName);
+            reference.setDescription("The Euler number of the 3D object, \"" + inputObjectsName + "\".  A detailed description of MorphoLibJ's Euler number implementation can be found \"<a href=\"https://imagej.net/plugins/morpholibj\">here</a>\".");
+
+            reference = objectMeasurementRefs.getOrPut(Measurements.MEAN_BREADTH_CAL);
+            returnedRefs.add(reference);
+            reference.setObjectsName(inputObjectsName);
+            reference.setDescription("The mean breadth of the 3D object, \"" + inputObjectsName + "\".  Measured in calibrated units.  A detailed description of MorphoLibJ's mean breadth calculation can be found \"<a href=\"https://imagej.net/plugins/morpholibj\">here</a>\".");
+
+            
+        }
+
         return returnedRefs;
 
     }
 
     @Override
-public MetadataRefs updateAndGetMetadataReferences() {
-return null;
+    public MetadataRefs updateAndGetMetadataReferences() {
+        return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
-return null;
+        return null;
     }
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
-return null;
+        return null;
     }
 
     @Override

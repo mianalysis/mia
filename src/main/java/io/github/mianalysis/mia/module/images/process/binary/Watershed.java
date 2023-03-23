@@ -30,6 +30,7 @@ import io.github.mianalysis.mia.object.parameters.OutputImageP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.SeparatorP;
 import io.github.mianalysis.mia.object.parameters.choiceinterfaces.BinaryLogicInterface;
+import io.github.mianalysis.mia.object.parameters.choiceinterfaces.ConnectivityInterface;
 import io.github.mianalysis.mia.object.parameters.text.IntegerP;
 import io.github.mianalysis.mia.object.refs.collections.ImageMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
@@ -73,12 +74,7 @@ public class Watershed extends Module {
 
     }
 
-    public interface Connectivity {
-        String SIX = "6";
-        String TWENTYSIX = "26";
-
-        String[] ALL = new String[] { SIX, TWENTYSIX };
-
+    public interface Connectivity extends ConnectivityInterface {
     }
 
     public static void process(ImagePlus intensityIpl, ImagePlus markerIpl, ImagePlus maskIpl, boolean blackBackground,

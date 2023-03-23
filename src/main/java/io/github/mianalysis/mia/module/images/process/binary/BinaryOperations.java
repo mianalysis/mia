@@ -35,6 +35,7 @@ import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
 import io.github.mianalysis.mia.object.parameters.OutputImageP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
+import io.github.mianalysis.mia.object.parameters.choiceinterfaces.ConnectivityInterface;
 import io.github.mianalysis.mia.object.parameters.text.IntegerP;
 import io.github.mianalysis.mia.object.refs.collections.ImageMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
@@ -93,12 +94,7 @@ public class BinaryOperations extends Module {
 
     }
 
-    public interface Connectivity3D {
-        String SIX = "6";
-        String TWENTYSIX = "26";
-
-        String[] ALL = new String[]{SIX,TWENTYSIX};
-
+    public interface Connectivity extends ConnectivityInterface {
     }
 
 
@@ -438,7 +434,7 @@ public class BinaryOperations extends Module {
         parameters.add(new ChoiceP(INTENSITY_MODE,this,IntensityModes.DISTANCE,IntensityModes.ALL));
         parameters.add(new InputImageP(INTENSITY_IMAGE,this));
         parameters.add(new IntegerP(DYNAMIC,this,1));
-        parameters.add(new ChoiceP(CONNECTIVITY,this,Connectivity3D.SIX,Connectivity3D.ALL));
+        parameters.add(new ChoiceP(CONNECTIVITY,this,Connectivity.SIX,Connectivity.ALL));
         parameters.add(new BooleanP(MATCH_Z_TO_X,this,true));
 
         addParameterDescriptions();
@@ -590,9 +586,9 @@ return null;
 
         parameters.get(CONNECTIVITY).setDescription("(3D watershed only) Controls which adjacent pixels are considered:<br><ul>"
 
-        +"<li>\""+Connectivity3D.SIX+"\" Only pixels immediately next to the active pixel are considered.  These are the pixels on the four \"cardinal\" directions plus the pixels immediately above and below the current pixel.  If working in 2D, 4-way connectivity is used.</li>"
+        +"<li>\""+Connectivity.SIX+"\" Only pixels immediately next to the active pixel are considered.  These are the pixels on the four \"cardinal\" directions plus the pixels immediately above and below the current pixel.  If working in 2D, 4-way connectivity is used.</li>"
 
-        +"<li>\""+Connectivity3D.TWENTYSIX+"\" In addition to the core 6-pixels, all immediately diagonal pixels are used.  If working in 2D, 8-way connectivity is used.</li>");
+        +"<li>\""+Connectivity.TWENTYSIX+"\" In addition to the core 6-pixels, all immediately diagonal pixels are used.  If working in 2D, 8-way connectivity is used.</li>");
 
         parameters.get(MATCH_Z_TO_X).setDescription("When selected, an image is interpolated in Z (so that all pixels are isotropic) prior to calculation of a distance map.  This prevents warping of the distance map along the Z-axis if XY and Z sampling aren't equal.");
 
