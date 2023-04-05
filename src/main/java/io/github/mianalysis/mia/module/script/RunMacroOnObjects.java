@@ -130,7 +130,7 @@ public class RunMacroOnObjects extends AbstractMacroRunner {
         String macroFile = parameters.getValue(MACRO_FILE,workspace);
 
         // Getting the input objects
-        Objs inputObjects = workspace.getObjectSet(inputObjectsName);
+        Objs inputObjects = workspace.getObjects(inputObjectsName);
 
         // Getting a list of measurement headings
         ParameterGroup group = parameters.getParameter(ADD_INTERCEPTED_VARIABLE);

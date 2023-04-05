@@ -446,7 +446,7 @@ public class AddRelationshipConnection extends AbstractOverlay {
 
         switch (lineMode) {
             case LineModes.BETWEEN_CHILDREN:
-                Objs parentObjects = workspace.getObjectSet(parentObjectsName);
+                Objs parentObjects = workspace.getObjects(parentObjectsName);
                 HashMap<Integer, Color> colours = getColours(parentObjects, workspace);
                 addSiblingOverlay(ipl, parentObjects, childObjects1Name, childObjects2Name, renderMode, lineWidth,
                         pointSize, pointType, offset, measName1, measName2, colours, renderInAllFrames,
@@ -454,14 +454,14 @@ public class AddRelationshipConnection extends AbstractOverlay {
                 break;
 
             case LineModes.BETWEEN_PARTNERS:
-                Objs partnerObjects1 = workspace.getObjectSet(partnerObjects1Name);
+                Objs partnerObjects1 = workspace.getObjects(partnerObjects1Name);
                 colours = getColours(partnerObjects1, workspace);
                 addPartnerOverlay(ipl, partnerObjects1, partnerObjects2Name, renderMode, lineWidth, pointSize,
                         pointType, offset, measName1, measName2, colours, renderInAllFrames, multithread);
                 break;
 
             case LineModes.PARENT_TO_CHILD:
-                parentObjects = workspace.getObjectSet(parentObjectsName);
+                parentObjects = workspace.getObjects(parentObjectsName);
                 colours = getColours(parentObjects, workspace);
                 addParentChildOverlay(ipl, parentObjects, childObjects1Name, renderMode, lineWidth, pointSize,
                         pointType, offset, measName1, measName2, colours, renderInAllFrames, multithread);

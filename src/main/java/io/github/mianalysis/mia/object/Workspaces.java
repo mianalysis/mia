@@ -76,11 +76,11 @@ public class Workspaces extends LinkedHashSet<Workspace> {
                     continue;
 
                 // If this is the first time these objects have been added, create a blank Objs
-                if (metadataWorkspace.getObjectSet(objName) == null)
+                if (metadataWorkspace.getObjects(objName) == null)
                     metadataWorkspace.addObjects(new Objs(objName,currObjectSet));
                 
                 // If a collection of these objects already exists, add to this
-                Objs coreSet = metadataWorkspace.getObjectSet(objName);
+                Objs coreSet = metadataWorkspace.getObjects(objName);
                 for (Obj currObject:currObjectSet.values())
                     // Adding the object and incrementing the count (a new ID has to be assigned for this to prevent
                     // clashes between workspaces)

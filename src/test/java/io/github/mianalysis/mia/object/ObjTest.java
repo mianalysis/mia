@@ -375,13 +375,14 @@ public class ObjTest {
             throws IntegerOverflowException, PointOutOfRangeException {
 
         SpatCal calibration = new SpatCal(2.0, 1.0, "PX", 5, 7, 5);
-        Objs objects = new Objs("Obj", calibration, 1, 0.02, UNITS.SECOND);
-        Obj obj1 = objects.createAndAddNewObject(volumeType);
+        Objs objects1 = new Objs("Obj", calibration, 1, 0.02, UNITS.SECOND);
+        Obj obj1 = objects1.createAndAddNewObject(volumeType);
         obj1.setT(1);
         obj1.add(1, 3, 4);
         obj1.add(3, 5, 1);
 
-        Obj obj2 = objects.createAndAddNewObject(volumeType);
+        Objs objects2 = new Objs("Obj", calibration, 1, 0.02, UNITS.SECOND);
+        Obj obj2 = objects2.createAndAddNewObject(volumeType);
         obj2.setT(1);
         obj2.add(1, 3, 4);
         obj2.add(3, 5, 1);
@@ -395,13 +396,14 @@ public class ObjTest {
     public void testHashCodeDifferentOrder(VolumeType volumeType)
             throws IntegerOverflowException, PointOutOfRangeException {
         SpatCal calibration = new SpatCal(2.0, 1.0, "PX", 5, 7, 5);
-        Objs objects = new Objs("Obj", calibration, 1, 0.02, UNITS.SECOND);
-        Obj obj1 = objects.createAndAddNewObject(volumeType);
+        Objs objects1 = new Objs("Obj", calibration, 1, 0.02, UNITS.SECOND);
+        Obj obj1 = objects1.createAndAddNewObject(volumeType);
         obj1.setT(1);
         obj1.add(1, 3, 4);
         obj1.add(3, 5, 1);
 
-        Obj obj2 = objects.createAndAddNewObject(volumeType);
+        Objs objects2 = new Objs("Obj", calibration, 1, 0.02, UNITS.SECOND);
+        Obj obj2 = objects2.createAndAddNewObject(volumeType);
         obj2.setT(1);
         obj2.add(3, 5, 1);
         obj2.add(1, 3, 4);
@@ -415,13 +417,14 @@ public class ObjTest {
     public void testHashCodeDifferentNames(VolumeType volumeType)
             throws IntegerOverflowException, PointOutOfRangeException {
         SpatCal calibration = new SpatCal(2.0, 1.0, "PX", 5, 7, 5);
-        Objs objects = new Objs("Obj", calibration, 1, 0.02, UNITS.SECOND);
-        Obj obj1 = objects.createAndAddNewObject(volumeType);
+        Objs objects1 = new Objs("Obj", calibration, 1, 0.02, UNITS.SECOND);
+        Obj obj1 = objects1.createAndAddNewObject(volumeType);
         obj1.setT(1);
         obj1.add(1, 3, 4);
         obj1.add(3, 5, 1);
 
-        Obj obj2 = objects.createAndAddNewObject(volumeType);
+        Objs objects2 = new Objs("Obj", calibration, 1, 0.02, UNITS.SECOND);
+        Obj obj2 = objects2.createAndAddNewObject(volumeType);
         obj2.setT(1);
         obj2.add(1, 3, 4);
         obj2.add(3, 5, 1);
@@ -493,13 +496,14 @@ public class ObjTest {
     @EnumSource(VolumeType.class)
     public void testEqualsSameObject(VolumeType volumeType) throws IntegerOverflowException, PointOutOfRangeException {
         SpatCal calibration = new SpatCal(2.0, 1.0, "PX", 5, 7, 5);
-        Objs objects = new Objs("Obj", calibration, 1, 0.02, UNITS.SECOND);
-        Obj obj1 = objects.createAndAddNewObject(volumeType);
+        Objs objects1 = new Objs("Obj", calibration, 1, 0.02, UNITS.SECOND);
+        Obj obj1 = objects1.createAndAddNewObject(volumeType);
         obj1.setT(1);
         obj1.add(1, 3, 4);
         obj1.add(3, 5, 1);
 
-        Obj obj2 = objects.createAndAddNewObject(volumeType);
+        Objs objects2 = new Objs("Obj", calibration, 1, 0.02, UNITS.SECOND);
+        Obj obj2 = objects2.createAndAddNewObject(volumeType);
         obj2.setT(1);
         obj2.add(1, 3, 4);
         obj2.add(3, 5, 1);
@@ -514,13 +518,14 @@ public class ObjTest {
     public void testEqualsDifferentOrder(VolumeType volumeType)
             throws IntegerOverflowException, PointOutOfRangeException {
         SpatCal calibration = new SpatCal(2.0, 1.0, "PX", 5, 7, 5);
-        Objs objects = new Objs("Obj", calibration, 1, 0.02, UNITS.SECOND);
-        Obj obj1 = objects.createAndAddNewObject(volumeType);
+        Objs objects1 = new Objs("Obj", calibration, 1, 0.02, UNITS.SECOND);
+        Obj obj1 = objects1.createAndAddNewObject(volumeType);
         obj1.setT(1);
         obj1.add(1, 3, 4);
         obj1.add(3, 5, 1);
 
-        Obj obj2 = objects.createAndAddNewObject(volumeType);
+        Objs objects2 = new Objs("Obj", calibration, 1, 0.02, UNITS.SECOND);
+        Obj obj2 = objects2.createAndAddNewObject(volumeType);
         obj2.setT(1);
         obj2.add(3, 5, 1);
         obj2.add(1, 3, 4);
@@ -535,13 +540,14 @@ public class ObjTest {
     public void testEqualsDifferentNames(VolumeType volumeType)
             throws IntegerOverflowException, PointOutOfRangeException {
         SpatCal calibration = new SpatCal(2.0, 1.0, "PX", 5, 7, 5);
-        Objs objects = new Objs("Obj", calibration, 1, 0.02, UNITS.SECOND);
-        Obj obj1 = objects.createAndAddNewObject(volumeType);
+        Objs objects1 = new Objs("Obj", calibration, 1, 0.02, UNITS.SECOND);
+        Obj obj1 = objects1.createAndAddNewObject(volumeType);
         obj1.setT(1);
         obj1.add(1, 3, 4);
         obj1.add(3, 5, 1);
 
-        Obj obj2 = objects.createAndAddNewObject(volumeType);
+        Objs objects2 = new Objs("Obj", calibration, 1, 0.02, UNITS.SECOND);
+        Obj obj2 = objects2.createAndAddNewObject(volumeType);
         obj2.setT(1);
         obj2.add(1, 3, 4);
         obj2.add(3, 5, 1);

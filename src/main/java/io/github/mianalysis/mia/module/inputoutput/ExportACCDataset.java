@@ -204,7 +204,7 @@ public class ExportACCDataset extends Module {
     @Override
     protected Status process(Workspace workspace) {
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
-        Objs inputObjects = workspace.getObjectSet(inputObjectsName);
+        Objs inputObjects = workspace.getObjects(inputObjectsName);
         String inputRawImageName = parameters.getValue(INPUT_RAW_IMAGE,workspace);
         Image inputRawImage = workspace.getImage(inputRawImageName);
         String inputOverlayImageName = parameters.getValue(INPUT_OVERLAY_IMAGE,workspace);

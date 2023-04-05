@@ -229,7 +229,7 @@ public class NormaliseIntensity extends Module {
                 break;
 
             case RegionModes.PER_OBJECT:
-                Objs inputObjects = workspace.getObjectSet(inputObjectsName);
+                Objs inputObjects = workspace.getObjects(inputObjectsName);
                 int count = 0;
                 int total = inputObjects.size();
                 for (Obj inputObject : inputObjects.values()) {

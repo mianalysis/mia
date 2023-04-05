@@ -1153,7 +1153,7 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
                 crop = getCropROI(referenceImage);
                 break;
             case CropModes.OBJECT_COLLECTION_LIMITS:
-                Objs objectsForLimits = workspace.getObjectSet(objectsForLimitsName);
+                Objs objectsForLimits = workspace.getObjects(objectsForLimitsName);
                 int[][] limits = objectsForLimits.getSpatialExtents();
                 crop = new int[] { limits[0][0], limits[1][0], limits[0][1] - limits[0][0],
                         limits[1][1] - limits[1][0] };

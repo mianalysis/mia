@@ -62,7 +62,7 @@ public class MeasureObjectLimits extends Module {
     @Override
     protected Status process(Workspace workspace) {
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
-        Objs inputObjects = workspace.getObjectSet(inputObjectsName);
+        Objs inputObjects = workspace.getObjects(inputObjectsName);
 
         for (Obj inputObject:inputObjects.values()) {
             double[][] extentsPx = inputObject.getExtents(true,true);

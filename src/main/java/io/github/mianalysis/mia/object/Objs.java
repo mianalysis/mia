@@ -346,12 +346,11 @@ public class Objs extends LinkedHashMap<Integer, Obj> {
      * Returns the Obj with coordinates matching the Obj passed as an argument.
      * Useful for unit tests.
      */
-    public Obj getByEquals(Obj referenceObj) {
-        for (Obj testObj : values()) {
-            if (testObj.equals(referenceObj))
+    public Obj getByEqualsIgnoreNameAndID(Obj referenceObj) {
+        for (Obj testObj : values())
+            if (testObj.equalsIgnoreNameAndID(referenceObj))
                 return testObj;
-        }
-
+        
         return null;
 
     }

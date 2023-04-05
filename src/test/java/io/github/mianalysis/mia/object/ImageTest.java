@@ -102,7 +102,7 @@ public class ImageTest < T extends RealType< T > & NativeType< T >> {
 
         for (Obj object:expectedObjects.values()) {
             // Identifying the matching object.  If this is null, one isn't found
-            Obj actualObject = actualObjects.getByEquals(object);
+            Obj actualObject = actualObjects.getByEqualsIgnoreNameAndID(object);
             assertNotNull(actualObject);
         }
     }
@@ -139,7 +139,7 @@ public class ImageTest < T extends RealType< T > & NativeType< T >> {
 
         for (Obj object:expectedObjects.values()) {
             // Identifying the matching object.  If this is null, one isn't found
-            Obj actualObject = actualObjects.getByEquals(object);
+            Obj actualObject = actualObjects.getByEqualsIgnoreNameAndID(object);
             assertNotNull(actualObject);
         }
     }

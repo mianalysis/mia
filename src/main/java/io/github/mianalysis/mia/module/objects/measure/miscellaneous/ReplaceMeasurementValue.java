@@ -83,7 +83,7 @@ public class ReplaceMeasurementValue extends Module {
     @Override
     protected Status process(Workspace workspace) {
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
-        Objs inputObjects = workspace.getObjectSet(inputObjectsName);
+        Objs inputObjects = workspace.getObjects(inputObjectsName);
 
         String measurementName = parameters.getValue(MEASUREMENT,workspace);
         String replacementCondition = parameters.getValue(REPLACEMENT_CONDITION,workspace);

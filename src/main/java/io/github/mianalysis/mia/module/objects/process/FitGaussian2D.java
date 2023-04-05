@@ -326,7 +326,7 @@ public class FitGaussian2D extends Module {
 
         // Getting input objects to refine (if selected by used)
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
-        Objs inputObjects = workspace.getObjectSet(inputObjectsName);
+        Objs inputObjects = workspace.getObjects(inputObjectsName);
 
         // Getting parameters
         String sigmaMode = parameters.getValue(SIGMA_MODE,workspace);

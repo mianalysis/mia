@@ -105,7 +105,7 @@ public class SetSpatialCalibration extends Module {
     }
 
     public static double getFirstObjectMeasurement(Workspace workspace, String objectsName, String measurementName) {
-        Obj firstObj = workspace.getObjectSet(objectsName).getFirst();
+        Obj firstObj = workspace.getObjects(objectsName).getFirst();
         if (firstObj == null) {
             MIA.log.writeWarning("No object to provide distance.  Setting calibration to NaN.");
             return Double.NaN;

@@ -43,9 +43,9 @@ public class WorkspaceTest {
 
         // Checking the workspace behaved as expected
         assertEquals(1,workspace.getObjects().size());
-        assertNotNull(workspace.getObjectSet("Obj"));
-        assertNull(workspace.getObjectSet("Neww obj"));
-        assertEquals(1,workspace.getObjectSet("Obj").size());
+        assertNotNull(workspace.getObjects("Obj"));
+        assertNull(workspace.getObjects("Neww obj"));
+        assertEquals(1,workspace.getObjects("Obj").size());
 
     }
 
@@ -162,24 +162,24 @@ public class WorkspaceTest {
 
         // Checking current state of the workspace
         assertEquals(2,workspace.getObjects().size());
-        assertEquals(1,workspace.getObjectSet("Obj").getFirst().getMeasurements().size());
-        assertEquals(3,workspace.getObjectSet("Obj").getFirst().size());
-        assertTrue(workspace.getObjectSet("Obj").getFirst().getSurfaceXCoords().size() != 0);
-        assertEquals(1,workspace.getObjectSet("Other obj").getFirst().getMeasurements().size());
-        assertEquals(3,workspace.getObjectSet("Other obj").getFirst().size());
-        assertTrue(workspace.getObjectSet("Other obj").getFirst().getSurfaceXCoords().size() != 0);
+        assertEquals(1,workspace.getObjects("Obj").getFirst().getMeasurements().size());
+        assertEquals(3,workspace.getObjects("Obj").getFirst().size());
+        assertTrue(workspace.getObjects("Obj").getFirst().getSurfaceXCoords().size() != 0);
+        assertEquals(1,workspace.getObjects("Other obj").getFirst().getMeasurements().size());
+        assertEquals(3,workspace.getObjects("Other obj").getFirst().size());
+        assertTrue(workspace.getObjects("Other obj").getFirst().getSurfaceXCoords().size() != 0);
 
         // Clearing objects
         workspace.clearAllObjects(true);
 
         // Checking post-clear state of the workspace
         assertEquals(2,workspace.getObjects().size());
-        assertEquals(1,workspace.getObjectSet("Obj").getFirst().getMeasurements().size());
-        assertEquals(0,workspace.getObjectSet("Obj").getFirst().size());
-        assertTrue(workspace.getObjectSet("Obj").getFirst().getSurfaceXCoords().size() == 0);
-        assertEquals(1,workspace.getObjectSet("Other obj").getFirst().getMeasurements().size());
-        assertEquals(0,workspace.getObjectSet("Other obj").getFirst().size());
-        assertTrue(workspace.getObjectSet("Other obj").getFirst().getSurfaceXCoords().size() == 0);
+        assertEquals(1,workspace.getObjects("Obj").getFirst().getMeasurements().size());
+        assertEquals(0,workspace.getObjects("Obj").getFirst().size());
+        assertTrue(workspace.getObjects("Obj").getFirst().getSurfaceXCoords().size() == 0);
+        assertEquals(1,workspace.getObjects("Other obj").getFirst().getMeasurements().size());
+        assertEquals(0,workspace.getObjects("Other obj").getFirst().size());
+        assertTrue(workspace.getObjects("Other obj").getFirst().getSurfaceXCoords().size() == 0);
 
     }
 
@@ -227,20 +227,20 @@ public class WorkspaceTest {
 
         // Checking current state of the workspace
         assertEquals(2,workspace.getObjects().size());
-        assertEquals(1,workspace.getObjectSet("Obj").getFirst().getMeasurements().size());
-        assertEquals(3,workspace.getObjectSet("Obj").getFirst().size());
-        assertTrue(workspace.getObjectSet("Obj").getFirst().getSurface().size() != 0);
-        assertEquals(1,workspace.getObjectSet("Other obj").getFirst().getMeasurements().size());
-        assertEquals(3,workspace.getObjectSet("Other obj").getFirst().size());
-        assertTrue(workspace.getObjectSet("Other obj").getFirst().getSurface().size() != 0);
+        assertEquals(1,workspace.getObjects("Obj").getFirst().getMeasurements().size());
+        assertEquals(3,workspace.getObjects("Obj").getFirst().size());
+        assertTrue(workspace.getObjects("Obj").getFirst().getSurface().size() != 0);
+        assertEquals(1,workspace.getObjects("Other obj").getFirst().getMeasurements().size());
+        assertEquals(3,workspace.getObjects("Other obj").getFirst().size());
+        assertTrue(workspace.getObjects("Other obj").getFirst().getSurface().size() != 0);
 
         // Clearing objects
         workspace.clearAllObjects(false);
 
         // Checking post-clear state of the workspace
         assertEquals(0,workspace.getObjects().size());
-        assertNull(workspace.getObjectSet("Obj"));
-        assertNull(workspace.getObjectSet("Other obj"));
+        assertNull(workspace.getObjects("Obj"));
+        assertNull(workspace.getObjects("Other obj"));
 
     }
 
@@ -276,14 +276,14 @@ public class WorkspaceTest {
 
         assertEquals(3,singleTimepoints.size());
         assertEquals(2, singleTimepoints.get(0).getObjects().size());
-        assertEquals(1,singleTimepoints.get(0).getObjectSet("Obj").size());
-        assertEquals(1,singleTimepoints.get(0).getObjectSet("Other obj").size());
+        assertEquals(1,singleTimepoints.get(0).getObjects("Obj").size());
+        assertEquals(1,singleTimepoints.get(0).getObjects("Other obj").size());
         assertEquals(1,singleTimepoints.get(1).getObjects().size());
-        assertEquals(1,singleTimepoints.get(1).getObjectSet("Obj").size());
-        assertNull(singleTimepoints.get(1).getObjectSet("Other obj"));
+        assertEquals(1,singleTimepoints.get(1).getObjects("Obj").size());
+        assertNull(singleTimepoints.get(1).getObjects("Other obj"));
         assertEquals(1,singleTimepoints.get(2).getObjects().size());
-        assertNull(singleTimepoints.get(2).getObjectSet("Obj"));
-        assertEquals(1,singleTimepoints.get(2).getObjectSet("Other obj").size());
+        assertNull(singleTimepoints.get(2).getObjects("Obj"));
+        assertEquals(1,singleTimepoints.get(2).getObjects("Other obj").size());
 
     }
 }
