@@ -523,7 +523,7 @@ public class Exporter {
                     cell = summaryHeaderRow.createCell(headerCol.get());
                     cell.setCellValue(summaryDataName);
                     cell.setCellStyle(cellStyle);
-                    addComment(cell, "Num of \"" + availableObjectName + "\" objects.");
+                    // addComment(cell, "Num of \"" + availableObjectName + "\" objects.");
                     colNumbers.put(summaryDataName, headerCol.getAndIncrement());
                 }
 
@@ -860,7 +860,7 @@ public class Exporter {
                 measurementNames.putIfAbsent(objectName, new LinkedHashMap<>());
                 measurementNames.get(objectName).put(col, objectMeasurement.getName());
                 cell = objectHeaderRow.createCell(col++);
-                addComment(cell, objectMeasurement.getDescription());
+                // addComment(cell, objectMeasurement.getDescription());
                 cell.setCellValue(objectMeasurement.getNickname());
                 cell.setCellStyle(cellStyle);
 
