@@ -240,7 +240,7 @@ public class GlobalAutoThreshold extends Module {
         boolean measureOnObjects = parameters.getValue(MEASURE_ON_OBJECTS, workspace);
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS, workspace);
 
-        Objs inputObjects = measureOnObjects ? workspace.getObjectSet(inputObjectsName) : null;
+        Objs inputObjects = measureOnObjects ? workspace.getObjects(inputObjectsName) : null;
         int threshold = 0;
 
         // Calculating the threshold based on the selected algorithm

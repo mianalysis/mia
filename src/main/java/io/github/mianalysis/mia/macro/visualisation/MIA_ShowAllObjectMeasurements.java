@@ -22,7 +22,7 @@ public class MIA_ShowAllObjectMeasurements extends MacroOperation {
 
     @Override
     public String action(Object[] objects, Workspace workspace, Modules modules) {
-        Objs objCollection = workspace.getObjectSet((String) objects[0]);
+        Objs objCollection = workspace.getObjects((String) objects[0]);
 
         objCollection.showAllMeasurements();
 

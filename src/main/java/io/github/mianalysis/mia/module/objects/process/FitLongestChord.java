@@ -63,7 +63,7 @@ public class FitLongestChord extends Module {
 
     }
 
-    public void processObject(Obj object, boolean measureWidth, boolean measureOrientation, boolean storeEndPoints) {
+    public static void processObject(Obj object, boolean measureWidth, boolean measureOrientation, boolean storeEndPoints) {
         double dppXY = object.getDppXY();
 
         LongestChordCalculator calculator = new LongestChordCalculator(object);
@@ -133,7 +133,7 @@ public class FitLongestChord extends Module {
     public Status process(Workspace workspace) {
         // Getting input objects
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
-        Objs inputObjects = workspace.getObjectSet(inputObjectsName);
+        Objs inputObjects = workspace.getObjects(inputObjectsName);
 
         // Getting parameters
         boolean measureWidth = parameters.getValue(MEASURE_OBJECT_WIDTH,workspace);

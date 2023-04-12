@@ -150,7 +150,7 @@ public class CropImage<T extends RealType<T> & NativeType<T>> extends Module {
 
         switch (limitsMode) {
             case LimitsModes.FROM_OBJECTS:
-                Objs inputObjects = workspace.getObjectSet(inputObjectsName);
+                Objs inputObjects = workspace.getObjects(inputObjectsName);
                 int[][] extents = inputObjects.getSpatialExtents();
 
                 if (extents == null) {

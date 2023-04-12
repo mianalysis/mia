@@ -200,7 +200,7 @@ public class ObjsTest {
         testObj.add(3,2,2);
         testObj.add(2,2,9);
 
-        Obj actual = collection.getByEquals(testObj);
+        Obj actual = collection.getByEqualsIgnoreNameAndID(testObj);
 
         assertEquals(obj2,actual);
         assertEquals(obj2.getID(),actual.getID());

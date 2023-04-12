@@ -17,7 +17,6 @@ import ij.plugin.Duplicator;
 import ij.plugin.SubHyperstackMaker;
 import ij.process.ImageProcessor;
 import inra.ijpb.binary.conncomp.FloodFillComponentsLabeling3D;
-import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
@@ -36,6 +35,7 @@ import io.github.mianalysis.mia.object.parameters.OutputImageP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.SeparatorP;
 import io.github.mianalysis.mia.object.parameters.choiceinterfaces.BinaryLogicInterface;
+import io.github.mianalysis.mia.object.parameters.choiceinterfaces.ConnectivityInterface;
 import io.github.mianalysis.mia.object.parameters.text.DoubleP;
 import io.github.mianalysis.mia.object.parameters.text.IntegerP;
 import io.github.mianalysis.mia.object.refs.collections.ImageMeasurementRefs;
@@ -66,12 +66,7 @@ public class FillHolesByVolume extends Module {
     public static final String ENABLE_MULTITHREADING = "Enable multithreading";
     public static final String MIN_STRIP_WIDTH = "Minimum strip width (px)";
 
-    public interface Connectivity {
-        String SIX = "6";
-        String TWENTYSIX = "26";
-
-        String[] ALL = new String[] { SIX, TWENTYSIX };
-
+    public interface Connectivity extends ConnectivityInterface {
     }
 
     public interface BinaryLogic extends BinaryLogicInterface {

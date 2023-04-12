@@ -231,7 +231,7 @@ public class MeasureSpecificWidth extends Module {
 
         final String prefix = parameters.getValue(MEASUREMENT_PREFIX, workspace);
 
-        final Objs inputObjects = workspace.getObjectSet(inputObjectsName);
+        final Objs inputObjects = workspace.getObjects(inputObjectsName);
 
         Image referenceImage1 = null;
         if (refMode1.equals(ReferenceModes.IMAGE_MEASUREMENT)) {

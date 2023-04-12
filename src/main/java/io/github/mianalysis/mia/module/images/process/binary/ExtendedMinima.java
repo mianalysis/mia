@@ -29,6 +29,7 @@ import io.github.mianalysis.mia.object.parameters.OutputImageP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.SeparatorP;
 import io.github.mianalysis.mia.object.parameters.choiceinterfaces.BinaryLogicInterface;
+import io.github.mianalysis.mia.object.parameters.choiceinterfaces.ConnectivityInterface;
 import io.github.mianalysis.mia.object.parameters.text.IntegerP;
 import io.github.mianalysis.mia.object.refs.collections.ImageMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
@@ -40,7 +41,7 @@ import io.github.mianalysis.mia.object.system.Status;
 /**
  * Created by sc13967 on 07/03/2018.
  */
-@Plugin(type = Module.class, priority=Priority.LOW, visible=true)
+@Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class ExtendedMinima extends Module {
     public static final String INPUT_SEPARATOR = "Image input/output";
     public static final String INPUT_IMAGE = "Input image";
@@ -68,12 +69,7 @@ public class ExtendedMinima extends Module {
 
     }
 
-    public interface Connectivity {
-        String SIX = "6";
-        String TWENTYSIX = "26";
-
-        String[] ALL = new String[] { SIX, TWENTYSIX };
-
+    public interface Connectivity extends ConnectivityInterface {
     }
 
     public interface BinaryLogic extends BinaryLogicInterface {
@@ -162,18 +158,18 @@ public class ExtendedMinima extends Module {
     @Override
     public Status process(Workspace workspace) {
         // Getting input image
-        String inputImageName = parameters.getValue(INPUT_IMAGE,workspace);
+        String inputImageName = parameters.getValue(INPUT_IMAGE, workspace);
         Image inputImage = workspace.getImages().get(inputImageName);
 
         // Getting parameters
-        boolean applyToInput = parameters.getValue(APPLY_TO_INPUT,workspace);
-        String outputImageName = parameters.getValue(OUTPUT_IMAGE,workspace);
-        String minimaMaximaMode = parameters.getValue(MINIMA_MAXIMA_MODE,workspace);
-        int dynamic = parameters.getValue(DYNAMIC,workspace);
-        int connectivity = Integer.parseInt(parameters.getValue(CONNECTIVITY,workspace));
-        String binaryLogic = parameters.getValue(BINARY_LOGIC,workspace);
+        boolean applyToInput = parameters.getValue(APPLY_TO_INPUT, workspace);
+        String outputImageName = parameters.getValue(OUTPUT_IMAGE, workspace);
+        String minimaMaximaMode = parameters.getValue(MINIMA_MAXIMA_MODE, workspace);
+        int dynamic = parameters.getValue(DYNAMIC, workspace);
+        int connectivity = Integer.parseInt(parameters.getValue(CONNECTIVITY, workspace));
+        String binaryLogic = parameters.getValue(BINARY_LOGIC, workspace);
         boolean blackBackground = binaryLogic.equals(BinaryLogic.BLACK_BACKGROUND);
-        boolean multithread = parameters.getValue(ENABLE_MULTITHREADING,workspace);
+        boolean multithread = parameters.getValue(ENABLE_MULTITHREADING, workspace);
 
         // Getting region minima
         Image outputImage;
@@ -222,16 +218,16 @@ public class ExtendedMinima extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
-Workspace workspace = null;
+        Workspace workspace = null;
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(INPUT_IMAGE));
         returnedParameters.add(parameters.getParameter(APPLY_TO_INPUT));
 
-        if (!(boolean) parameters.getValue(APPLY_TO_INPUT,workspace))
+        if (!(boolean) parameters.getValue(APPLY_TO_INPUT, workspace))
             returnedParameters.add(parameters.getParameter(OUTPUT_IMAGE));
-        
+
         returnedParameters.add(parameters.getParameter(EXTENDED_MINIMA_SEPARATOR));
         returnedParameters.add(parameters.getParameter(MINIMA_MAXIMA_MODE));
         returnedParameters.add(parameters.getParameter(DYNAMIC));
@@ -247,27 +243,27 @@ Workspace workspace = null;
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
-return null;
+        return null;
     }
 
     @Override
-public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
-return null;
+    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+        return null;
     }
 
     @Override
-public MetadataRefs updateAndGetMetadataReferences() {
-return null;
+    public MetadataRefs updateAndGetMetadataReferences() {
+        return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
-return null;
+        return null;
     }
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
-return null;
+        return null;
     }
 
     @Override
@@ -283,7 +279,8 @@ return null;
                         + OUTPUT_IMAGE + "\" parameter.");
 
         parameters.get(OUTPUT_IMAGE).setDescription("If \"" + APPLY_TO_INPUT
-                + "\" is not selected, the post-operation image will be saved to the workspace with this name.  This image will be 8-bit with binary logic determined by the \"" + BINARY_LOGIC + "\" parameter.");
+                + "\" is not selected, the post-operation image will be saved to the workspace with this name.  This image will be 8-bit with binary logic determined by the \""
+                + BINARY_LOGIC + "\" parameter.");
 
         parameters.get(MINIMA_MAXIMA_MODE).setDescription(
                 "Controls whether the module will detect minima or maxima in the input intensity image");

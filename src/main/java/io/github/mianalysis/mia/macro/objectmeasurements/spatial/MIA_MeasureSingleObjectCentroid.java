@@ -29,7 +29,7 @@ public class MIA_MeasureSingleObjectCentroid extends MacroOperation {
 
         String units = SpatialUnit.getOMEUnit().getSymbol();
 
-        Obj inputObject = workspace.getObjectSet(inputObjectsName).get(inputObjectsID);
+        Obj inputObject = workspace.getObjects(inputObjectsName).get(inputObjectsID);
 
         ResultsTable resultsTable = new ResultsTable();
         resultsTable.setValue("X-mean (px)",0,inputObject.getXMean(true));

@@ -87,7 +87,7 @@ public class WhiteBalanceCorrection extends Module {
         boolean applyToInput = parameters.getValue(APPLY_TO_INPUT,workspace);
         String outputImageName = parameters.getValue(OUTPUT_IMAGE,workspace);
         String refObjectsName = parameters.getValue(REFERENCE_OBJECT,workspace);
-        Objs refObjects = workspace.getObjectSet(refObjectsName);
+        Objs refObjects = workspace.getObjects(refObjectsName);
 
         // Checking input image has 3 channels
         if (inputImage.getImagePlus().getNChannels() != 3) {

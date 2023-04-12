@@ -11,6 +11,8 @@ import java.util.concurrent.TimeUnit;
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
 
+import com.drew.lang.annotations.Nullable;
+
 import ij.ImagePlus;
 import ij.ImageStack;
 import ij.Prefs;
@@ -78,6 +80,9 @@ public class AddLabels extends AbstractOverlay {
 
     public static final String LOCATION_SEPARATOR = "Overlay location";
     public static final String LABEL_POSITION = "Label position";
+    public static final String X_POSITION_MEASUREMENT = "X-position measurement";
+    public static final String Y_POSITION_MEASUREMENT = "Y-position measurement";
+    public static final String Z_POSITION_MEASUREMENT = "Z-position measurement";
     public static final String RENDER_IN_ALL_OBJECT_SLICES = "Render in all object slices";
     public static final String RENDER_IN_ALL_FRAMES = "Render in all frames";
 
@@ -94,8 +99,9 @@ public class AddLabels extends AbstractOverlay {
     public interface LabelPositions {
         String CENTRE = "Centre of object";
         String INSIDE = "Inside largest part of object";
+        String OBJECT_MEASUREMENT = "Object measurement";
 
-        String[] ALL = new String[] { CENTRE, INSIDE };
+        String[] ALL = new String[] { CENTRE, INSIDE, OBJECT_MEASUREMENT };
 
     }
 
@@ -136,15 +142,39 @@ public class AddLabels extends AbstractOverlay {
 
     }
 
+    public static double[] getMeasurementObjectLocation(Obj obj, String[] measurements) {
+        double x;
+        double y;
+        double z;
+
+        if (obj.getMeasurement(measurements[0]) != null)
+            x = obj.getMeasurement(measurements[0]).getValue();
+        else
+            x = 0;
+
+        if (obj.getMeasurement(measurements[1]) != null)
+            y = obj.getMeasurement(measurements[1]).getValue();
+        else
+            y = 0;
+
+        if (obj.getMeasurement(measurements[2]) != null)
+            z = obj.getMeasurement(measurements[2]).getValue();
+        else
+            z = 0;
+
+        // Returning this point
+        return new double[] { x, y, z };
+
+    }
+
     public static void addOverlay(ImagePlus ipl, Objs inputObjects, String labelPosition,
             HashMap<Integer, String> labels, int labelSize, int xOffset, int yOffset, HashMap<Integer, Color> colours,
-            boolean renderInAllSlices, boolean renderInAllFrames, boolean multithread) {
+            boolean renderInAllSlices, boolean renderInAllFrames, boolean multithread, @Nullable String[] measurementNames) {
         // If necessary, turning the image into a HyperStack (if 2 dimensions=1 it will
         // be a standard ImagePlus)
-        if (!ipl.isComposite() & (ipl.getNSlices() > 1 | ipl.getNFrames() > 1 | ipl.getNChannels() > 1)) {
+        if (!ipl.isComposite() & (ipl.getNSlices() > 1 | ipl.getNFrames() > 1 | ipl.getNChannels() > 1))
             ipl = HyperStackConverter.toHyperStack(ipl, ipl.getNChannels(), ipl.getNSlices(), ipl.getNFrames());
-        }
-
+        
         // Adding the overlay element
         try {
             int nThreads = multithread ? Prefs.getThreads() : 1;
@@ -168,13 +198,16 @@ public class AddLabels extends AbstractOverlay {
 
                     double[] location;
                     switch (labelPosition) {
-                    case LabelPositions.CENTRE:
-                    default:
-                        location = getMeanObjectLocation(object);
-                        break;
-                    case LabelPositions.INSIDE:
-                        location = getInsideObjectLocation(object);
-                        break;
+                        case LabelPositions.CENTRE:
+                        default:
+                            location = getMeanObjectLocation(object);
+                            break;
+                        case LabelPositions.INSIDE:
+                            location = getInsideObjectLocation(object);
+                            break;
+                        case LabelPositions.OBJECT_MEASUREMENT:
+                            location = getMeasurementObjectLocation(object, measurementNames);
+                            break;
                     }
 
                     location[0] = location[0] + xOffset;
@@ -234,19 +267,20 @@ public class AddLabels extends AbstractOverlay {
             String childObjectsForLabelName, String parentObjectsForLabelName, String partnerObjectsForLabelName,
             String measurementForLabel) {
         switch (labelMode) {
-        case LabelModes.CHILD_COUNT:
-            return LabelFactory.getChildCountLabels(inputObjects, childObjectsForLabelName, df);
-        case LabelModes.ID:
-            return LabelFactory.getIDLabels(inputObjects, df);
-        case LabelModes.MEASUREMENT_VALUE:
-            return LabelFactory.getMeasurementLabels(inputObjects, measurementForLabel, df);
-        case LabelModes.PARENT_ID:
-            return LabelFactory.getParentIDLabels(inputObjects, parentObjectsForLabelName, df);
-        case LabelModes.PARENT_MEASUREMENT_VALUE:
-            return LabelFactory.getParentMeasurementLabels(inputObjects, parentObjectsForLabelName, measurementForLabel,
-                    df);
-        case LabelModes.PARTNER_COUNT:
-            return LabelFactory.getPartnerCountLabels(inputObjects, partnerObjectsForLabelName, df);
+            case LabelModes.CHILD_COUNT:
+                return LabelFactory.getChildCountLabels(inputObjects, childObjectsForLabelName, df);
+            case LabelModes.ID:
+                return LabelFactory.getIDLabels(inputObjects, df);
+            case LabelModes.MEASUREMENT_VALUE:
+                return LabelFactory.getMeasurementLabels(inputObjects, measurementForLabel, df);
+            case LabelModes.PARENT_ID:
+                return LabelFactory.getParentIDLabels(inputObjects, parentObjectsForLabelName, df);
+            case LabelModes.PARENT_MEASUREMENT_VALUE:
+                return LabelFactory.getParentMeasurementLabels(inputObjects, parentObjectsForLabelName,
+                        measurementForLabel,
+                        df);
+            case LabelModes.PARTNER_COUNT:
+                return LabelFactory.getPartnerCountLabels(inputObjects, partnerObjectsForLabelName, df);
         }
 
         return null;
@@ -276,36 +310,41 @@ public class AddLabels extends AbstractOverlay {
     @Override
     protected Status process(Workspace workspace) {
         // Getting parameters
-        boolean applyToInput = parameters.getValue(APPLY_TO_INPUT,workspace);
-        boolean addOutputToWorkspace = parameters.getValue(ADD_OUTPUT_TO_WORKSPACE,workspace);
-        String outputImageName = parameters.getValue(OUTPUT_IMAGE,workspace);
+        boolean applyToInput = parameters.getValue(APPLY_TO_INPUT, workspace);
+        boolean addOutputToWorkspace = parameters.getValue(ADD_OUTPUT_TO_WORKSPACE, workspace);
+        String outputImageName = parameters.getValue(OUTPUT_IMAGE, workspace);
 
         // Getting input objects
-        String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS, workspace);
         Objs inputObjects = workspace.getObjects().get(inputObjectsName);
 
         // Getting input image
-        String inputImageName = parameters.getValue(INPUT_IMAGE,workspace);
+        String inputImageName = parameters.getValue(INPUT_IMAGE, workspace);
         Image inputImage = workspace.getImages().get(inputImageName);
         ImagePlus ipl = inputImage.getImagePlus();
 
         // Getting label settings
-        String labelMode = parameters.getValue(LABEL_MODE,workspace);
-        int labelSize = parameters.getValue(LABEL_SIZE,workspace);
-        int xOffset = parameters.getValue(X_OFFSET,workspace);
-        int yOffset = parameters.getValue(Y_OFFSET,workspace);
-        int decimalPlaces = parameters.getValue(DECIMAL_PLACES,workspace);
-        boolean useScientific = parameters.getValue(USE_SCIENTIFIC,workspace);
-        String childObjectsForLabelName = parameters.getValue(CHILD_OBJECTS_FOR_LABEL,workspace);
-        String parentObjectsForLabelName = parameters.getValue(PARENT_OBJECT_FOR_LABEL,workspace);
-        String partnerObjectsForLabelName = parameters.getValue(PARTNER_OBJECTS_FOR_LABEL,workspace);
-        String measurementForLabel = parameters.getValue(MEASUREMENT_FOR_LABEL,workspace);
-        String prefix = parameters.getValue(PREFIX,workspace);
-        String suffix = parameters.getValue(SUFFIX,workspace);
-        String labelPosition = parameters.getValue(LABEL_POSITION,workspace);
-        boolean renderInAllSlices = parameters.getValue(RENDER_IN_ALL_OBJECT_SLICES,workspace);
-        boolean renderInAllFrames = parameters.getValue(RENDER_IN_ALL_FRAMES,workspace);
-        boolean multithread = parameters.getValue(ENABLE_MULTITHREADING,workspace);
+        String labelMode = parameters.getValue(LABEL_MODE, workspace);
+        int labelSize = parameters.getValue(LABEL_SIZE, workspace);
+        int xOffset = parameters.getValue(X_OFFSET, workspace);
+        int yOffset = parameters.getValue(Y_OFFSET, workspace);
+        int decimalPlaces = parameters.getValue(DECIMAL_PLACES, workspace);
+        boolean useScientific = parameters.getValue(USE_SCIENTIFIC, workspace);
+        String childObjectsForLabelName = parameters.getValue(CHILD_OBJECTS_FOR_LABEL, workspace);
+        String parentObjectsForLabelName = parameters.getValue(PARENT_OBJECT_FOR_LABEL, workspace);
+        String partnerObjectsForLabelName = parameters.getValue(PARTNER_OBJECTS_FOR_LABEL, workspace);
+        String measurementForLabel = parameters.getValue(MEASUREMENT_FOR_LABEL, workspace);
+        String prefix = parameters.getValue(PREFIX, workspace);
+        String suffix = parameters.getValue(SUFFIX, workspace);
+        String labelPosition = parameters.getValue(LABEL_POSITION, workspace);
+        String xPosMeas = parameters.getValue(X_POSITION_MEASUREMENT, workspace);
+        String yPosMeas = parameters.getValue(Y_POSITION_MEASUREMENT, workspace);
+        String zPosMeas = parameters.getValue(Z_POSITION_MEASUREMENT, workspace);
+        boolean renderInAllSlices = parameters.getValue(RENDER_IN_ALL_OBJECT_SLICES, workspace);
+        boolean renderInAllFrames = parameters.getValue(RENDER_IN_ALL_FRAMES, workspace);
+        boolean multithread = parameters.getValue(ENABLE_MULTITHREADING, workspace);
+
+        String[] measurementNames = new String[]{xPosMeas,yPosMeas,zPosMeas};
 
         // Only add output to workspace if not applying to input
         if (applyToInput)
@@ -323,7 +362,7 @@ public class AddLabels extends AbstractOverlay {
         appendPrefixSuffix(labels, prefix, suffix);
 
         addOverlay(ipl, inputObjects, labelPosition, labels, labelSize, xOffset, yOffset, colours, renderInAllSlices,
-                renderInAllFrames, multithread);
+                renderInAllFrames, multithread, measurementNames);
 
         Image outputImage = ImageFactory.createImage(outputImageName, ipl);
 
@@ -367,6 +406,9 @@ public class AddLabels extends AbstractOverlay {
 
         parameters.add(new SeparatorP(LOCATION_SEPARATOR, this));
         parameters.add(new ChoiceP(LABEL_POSITION, this, LabelPositions.CENTRE, LabelPositions.ALL));
+        parameters.add(new ObjectMeasurementP(X_POSITION_MEASUREMENT, this));
+        parameters.add(new ObjectMeasurementP(Y_POSITION_MEASUREMENT, this));
+        parameters.add(new ObjectMeasurementP(Z_POSITION_MEASUREMENT, this));
         parameters.add(new BooleanP(RENDER_IN_ALL_OBJECT_SLICES, this, false));
         parameters.add(new BooleanP(RENDER_IN_ALL_FRAMES, this, false));
 
@@ -379,9 +421,9 @@ public class AddLabels extends AbstractOverlay {
 
     @Override
     public Parameters updateAndGetParameters() {
-Workspace workspace = null;
-        String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
-        String parentObjectsName = parameters.getValue(PARENT_OBJECT_FOR_LABEL,workspace);
+        Workspace workspace = null;
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS, workspace);
+        String parentObjectsName = parameters.getValue(PARENT_OBJECT_FOR_LABEL, workspace);
 
         Parameters returnedParameters = new Parameters();
 
@@ -391,10 +433,10 @@ Workspace workspace = null;
 
         returnedParameters.add(parameters.getParameter(OUTPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(APPLY_TO_INPUT));
-        if (!(boolean) parameters.getValue(APPLY_TO_INPUT,workspace)) {
+        if (!(boolean) parameters.getValue(APPLY_TO_INPUT, workspace)) {
             returnedParameters.add(parameters.getParameter(ADD_OUTPUT_TO_WORKSPACE));
 
-            if ((boolean) parameters.getValue(ADD_OUTPUT_TO_WORKSPACE,workspace)) {
+            if ((boolean) parameters.getValue(ADD_OUTPUT_TO_WORKSPACE, workspace)) {
                 returnedParameters.add(parameters.getParameter(OUTPUT_IMAGE));
 
             }
@@ -402,37 +444,41 @@ Workspace workspace = null;
 
         returnedParameters.add(parameters.getParameter(CONTENT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(LABEL_MODE));
-        switch ((String) parameters.getValue(LABEL_MODE,workspace)) {
-        case LabelModes.CHILD_COUNT:
-            returnedParameters.add(parameters.getParameter(CHILD_OBJECTS_FOR_LABEL));
-            ((ChildObjectsP) parameters.getParameter(CHILD_OBJECTS_FOR_LABEL)).setParentObjectsName(inputObjectsName);
-            break;
+        switch ((String) parameters.getValue(LABEL_MODE, workspace)) {
+            case LabelModes.CHILD_COUNT:
+                returnedParameters.add(parameters.getParameter(CHILD_OBJECTS_FOR_LABEL));
+                ((ChildObjectsP) parameters.getParameter(CHILD_OBJECTS_FOR_LABEL))
+                        .setParentObjectsName(inputObjectsName);
+                break;
 
-        case LabelModes.MEASUREMENT_VALUE:
-            returnedParameters.add(parameters.getParameter(MEASUREMENT_FOR_LABEL));
-            ((ObjectMeasurementP) parameters.getParameter(MEASUREMENT_FOR_LABEL)).setObjectName(inputObjectsName);
-            break;
+            case LabelModes.MEASUREMENT_VALUE:
+                returnedParameters.add(parameters.getParameter(MEASUREMENT_FOR_LABEL));
+                ((ObjectMeasurementP) parameters.getParameter(MEASUREMENT_FOR_LABEL)).setObjectName(inputObjectsName);
+                break;
 
-        case LabelModes.PARENT_ID:
-            returnedParameters.add(parameters.getParameter(PARENT_OBJECT_FOR_LABEL));
-            ((ParentObjectsP) parameters.getParameter(PARENT_OBJECT_FOR_LABEL)).setChildObjectsName(inputObjectsName);
-            break;
+            case LabelModes.PARENT_ID:
+                returnedParameters.add(parameters.getParameter(PARENT_OBJECT_FOR_LABEL));
+                ((ParentObjectsP) parameters.getParameter(PARENT_OBJECT_FOR_LABEL))
+                        .setChildObjectsName(inputObjectsName);
+                break;
 
-        case LabelModes.PARENT_MEASUREMENT_VALUE:
-            returnedParameters.add(parameters.getParameter(PARENT_OBJECT_FOR_LABEL));
-            ((ParentObjectsP) parameters.getParameter(PARENT_OBJECT_FOR_LABEL)).setChildObjectsName(inputObjectsName);
+            case LabelModes.PARENT_MEASUREMENT_VALUE:
+                returnedParameters.add(parameters.getParameter(PARENT_OBJECT_FOR_LABEL));
+                ((ParentObjectsP) parameters.getParameter(PARENT_OBJECT_FOR_LABEL))
+                        .setChildObjectsName(inputObjectsName);
 
-            returnedParameters.add(parameters.getParameter(MEASUREMENT_FOR_LABEL));
-            if (parentObjectsName != null) {
-                ((ObjectMeasurementP) parameters.getParameter(MEASUREMENT_FOR_LABEL)).setObjectName(parentObjectsName);
-            }
-            break;
+                returnedParameters.add(parameters.getParameter(MEASUREMENT_FOR_LABEL));
+                if (parentObjectsName != null) {
+                    ((ObjectMeasurementP) parameters.getParameter(MEASUREMENT_FOR_LABEL))
+                            .setObjectName(parentObjectsName);
+                }
+                break;
 
-        case LabelModes.PARTNER_COUNT:
-            returnedParameters.add(parameters.getParameter(PARTNER_OBJECTS_FOR_LABEL));
-            ((PartnerObjectsP) parameters.getParameter(PARTNER_OBJECTS_FOR_LABEL))
-                    .setPartnerObjectsName(inputObjectsName);
-            break;
+            case LabelModes.PARTNER_COUNT:
+                returnedParameters.add(parameters.getParameter(PARTNER_OBJECTS_FOR_LABEL));
+                ((PartnerObjectsP) parameters.getParameter(PARTNER_OBJECTS_FOR_LABEL))
+                        .setPartnerObjectsName(inputObjectsName);
+                break;
         }
 
         returnedParameters.add(parameters.getParameter(DECIMAL_PLACES));
@@ -447,7 +493,17 @@ Workspace workspace = null;
 
         returnedParameters.add(parameters.getParameter(LOCATION_SEPARATOR));
         returnedParameters.add(parameters.getParameter(LABEL_POSITION));
-        returnedParameters.add(parameters.getParameter(RENDER_IN_ALL_OBJECT_SLICES));
+        if (parameters.getValue(LABEL_POSITION, workspace).equals(LabelPositions.OBJECT_MEASUREMENT)) {
+            returnedParameters.add(parameters.getParameter(X_POSITION_MEASUREMENT));
+            returnedParameters.add(parameters.getParameter(Y_POSITION_MEASUREMENT));
+            returnedParameters.add(parameters.getParameter(Z_POSITION_MEASUREMENT));
+
+            ((ObjectMeasurementP) parameters.getParameter(X_POSITION_MEASUREMENT)).setObjectName(inputObjectsName);
+            ((ObjectMeasurementP) parameters.getParameter(Y_POSITION_MEASUREMENT)).setObjectName(inputObjectsName);
+            ((ObjectMeasurementP) parameters.getParameter(Z_POSITION_MEASUREMENT)).setObjectName(inputObjectsName);
+        } else {
+            returnedParameters.add(parameters.getParameter(RENDER_IN_ALL_OBJECT_SLICES));
+        }
         returnedParameters.add(parameters.getParameter(RENDER_IN_ALL_FRAMES));
 
         returnedParameters.add(parameters.getParameter(EXECUTION_SEPARATOR));
@@ -459,27 +515,27 @@ Workspace workspace = null;
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
-return null;
+        return null;
     }
 
     @Override
-public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
-return null;
+    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+        return null;
     }
 
     @Override
-public MetadataRefs updateAndGetMetadataReferences() {
-return null;
+    public MetadataRefs updateAndGetMetadataReferences() {
+        return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
-return null;
+        return null;
     }
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
-return null;
+        return null;
     }
 
     @Override
@@ -575,7 +631,19 @@ return null;
                         + "\" Labels will be placed at the centroid (average coordinate location) of each object.  This position won't necessarily coincide with a region corresponding to that object.  For example, the centroid of a crescent shape won't lie on the crescent itself.</li>"
 
                         + "<li>\"" + LabelPositions.INSIDE
-                        + "\" Labels will be placed coinciden with the largest region of each object.  This ensures the label is placed directly over the relevant object.</li></ul>");
+                        + "\" Labels will be placed coincident with the largest region of each object.  This ensures the label is placed directly over the relevant object.</li></ul>"
+
+                        + "<li>\"" + LabelPositions.OBJECT_MEASUREMENT
+                        + "\" Labels will be placed coincident with the specified measurements for each object.</li></ul>");
+
+        parameters.get(X_POSITION_MEASUREMENT).setDescription(
+                "Object measurement specifying the X-position of the label.  Measurement value must be specified in pixel units.");
+
+        parameters.get(Y_POSITION_MEASUREMENT).setDescription(
+                "Object measurement specifying the Y-position of the label.  Measurement value must be specified in pixel units.");
+
+        parameters.get(Z_POSITION_MEASUREMENT).setDescription(
+                "Object measurement specifying the Z-position (slice) of the label.  Measurement value must be specified in slice units.");
 
         parameters.get(RENDER_IN_ALL_OBJECT_SLICES)
                 .setDescription("Display overlay elements in all slices corresponding to that object.");

@@ -30,7 +30,7 @@ public class MIA_GetSliceAsROI extends MacroOperation {
         int slice = (int) Math.round((Double) objects[2]);        
 
         // Getting the input objects
-        Objs inputObjects = workspace.getObjectSet(inputObjectsName);
+        Objs inputObjects = workspace.getObjects(inputObjectsName);
         if (inputObjects == null)
             return "";
         

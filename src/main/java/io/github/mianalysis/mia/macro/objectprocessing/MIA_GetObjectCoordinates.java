@@ -28,7 +28,7 @@ public class MIA_GetObjectCoordinates extends MacroOperation {
         int inputObjectsID = (int) Math.round((Double) objects[1]);
 
         // Getting the input objects
-        Objs inputObjects = workspace.getObjectSet(inputObjectsName);
+        Objs inputObjects = workspace.getObjects(inputObjectsName);
         if (inputObjects == null)
             return "";
         

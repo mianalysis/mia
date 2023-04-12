@@ -12,7 +12,7 @@
 
     <groupId>io.github.mianalysis</groupId>
     <artifactId>MIA</artifactId>
-    <version>1.2.4</version>
+    <version>1.2.5</version>
     <packaging>jar</packaging>
     <name>MIA</name>
     <url>https://github.com/mianalysis/mia</url>
@@ -191,13 +191,20 @@
         <dependency>
             <groupId>org.apache.poi</groupId>
             <artifactId>poi</artifactId>
-            <version>5.2.0</version>
+            <version>5.2.3</version>
         </dependency>
 
         <dependency>
             <groupId>org.apache.poi</groupId>
+            <artifactId>poi-ooxml-lite</artifactId>
+            <version>5.2.3</version>
+        </dependency>
+
+        
+        <dependency>
+            <groupId>org.apache.poi</groupId>
             <artifactId>poi-ooxml</artifactId>
-            <version>5.2.0</version>
+            <version>5.2.3</version>
             <exclusions>
                 <exclusion>
                     <groupId>xml-apis</groupId>
@@ -384,12 +391,12 @@
         </dependency>
 
         <dependency>
-            <groupId>com.github.sjcross</groupId>
+            <!-- <groupId>com.github.sjcross</groupId>
             <artifactId>sjcommon</artifactId>
-            <version>v1.12.3</version>
-            <!-- <groupId>io.github.sjcross</groupId>
+            <version>v1.12.3</version> -->
+            <groupId>io.github.sjcross</groupId>
             <artifactId>sjcommon</artifactId>
-            <version>1.12.3</version> -->
+            <version>1.12.3</version>
         </dependency>
     </dependencies>
 

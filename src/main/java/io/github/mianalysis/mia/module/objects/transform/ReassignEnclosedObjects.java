@@ -103,7 +103,7 @@ public class ReassignEnclosedObjects extends Module {
     @Override
     public Status process(Workspace workspace) {
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS, workspace);
-        Objs inputObjects = workspace.getObjectSet(inputObjectsName);
+        Objs inputObjects = workspace.getObjects(inputObjectsName);
 
         int count = 0;
         try {

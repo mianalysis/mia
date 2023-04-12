@@ -134,7 +134,7 @@ public class MaskObjects<T extends RealType<T> & NativeType<T>> extends Module {
     protected Status process(Workspace workspace) {
         // Getting input objects
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS, workspace);
-        Objs inputObjects = workspace.getObjectSet(inputObjectsName);
+        Objs inputObjects = workspace.getObjects(inputObjectsName);
 
         // Getting mask image/objects
         String maskMode = parameters.getValue(MASK_MODE, workspace);
@@ -153,7 +153,7 @@ public class MaskObjects<T extends RealType<T> & NativeType<T>> extends Module {
                 break;
             case MaskModes.MASK_FROM_OBJECTS_REMOVE_OVERLAP:
             case MaskModes.MASK_FROM_OBJECTS_RETAIN_OVERLAP:
-                Objs maskObjects = workspace.getObjectSet(maskObjectsName);
+                Objs maskObjects = workspace.getObjects(maskObjectsName);
                 HashMap<Integer, Float> hues = ColourFactory.getSingleColourValues(maskObjects,
                         ColourFactory.SingleColours.WHITE);
                 maskImage = maskObjects.convertToImage("Mask", hues, 8, false);

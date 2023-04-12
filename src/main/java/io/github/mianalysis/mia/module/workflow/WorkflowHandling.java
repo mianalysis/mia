@@ -298,7 +298,7 @@ public class WorkflowHandling extends Module {
                 terminate = testTextMetadata(metadataValue, textFilterMode, referenceValueText);
                 break;
             case TestModes.OBJECT_COUNT:
-                Objs inputObjects = workspace.getObjectSet(inputObjectsName);
+                Objs inputObjects = workspace.getObjects(inputObjectsName);
                 terminate = testObjectCount(inputObjects, numericFilterMode, referenceValueNumber);
                 break;
         }

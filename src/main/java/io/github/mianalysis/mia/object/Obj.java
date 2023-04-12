@@ -413,8 +413,9 @@ public class Obj extends Volume {
         int maxZ = (int) Math.round(extents[2][1]);
         for (int z = minZ; z <= maxZ; z++)
             getRoi(z);
-        
-        // For the sake of not wasting memory, this will output the original list of ROIs
+
+        // For the sake of not wasting memory, this will output the original list of
+        // ROIs
         return rois;
 
     }
@@ -562,7 +563,8 @@ public class Obj extends Volume {
 
     }
 
-    public <T extends RealType<T> & NativeType<T>> Iterator<net.imglib2.Point> getImgPlusCoordinateIterator(ImgPlus<T> imgPlus, int c) {
+    public <T extends RealType<T> & NativeType<T>> Iterator<net.imglib2.Point> getImgPlusCoordinateIterator(
+            ImgPlus<T> imgPlus, int c) {
         return new ImgPlusCoordinateIterator<>(getCoordinateIterator(), imgPlus, c, T);
     }
 
@@ -579,13 +581,34 @@ public class Obj extends Volume {
 
     @Override
     public int hashCode() {
-        // Updating the hash for time-point. ID, measurements and relationships aren't
+        // Updating the hash for time-point. Measurements and relationships aren't
         // included; only spatial location.
-        return super.hashCode() * 31 + getT();
+        return super.hashCode() * 31 + getID() * 31 + getT() * 31 + getName().hashCode();
     }
 
     @Override
     public boolean equals(Object obj) {
+        int T = getT();
+
+        if (!super.equals(obj))
+            return false;
+
+        if (obj == this)
+            return true;
+        if (!(obj instanceof Obj))
+            return false;
+
+        if (ID != ((Obj) obj).getID())
+            return false;
+
+        if (T != ((Obj) obj).getT())
+            return false;
+
+        return (getName().equals(((Obj) obj).getName()));
+
+    }
+
+    public boolean equalsIgnoreNameAndID(Object obj) {
         int T = getT();
 
         if (!super.equals(obj))

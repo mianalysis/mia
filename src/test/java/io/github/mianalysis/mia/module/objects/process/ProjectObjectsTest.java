@@ -66,19 +66,19 @@ public class ProjectObjectsTest extends ModuleTest {
 
         // Testing there are now 2 sets of objects in the workspace and they have the expected names
         assertEquals(2,workspace.getObjects().size());
-        assertNotNull(workspace.getObjectSet(inputObjectsName));
-        assertNotNull(workspace.getObjectSet(outputObjectsName));
+        assertNotNull(workspace.getObjects(inputObjectsName));
+        assertNotNull(workspace.getObjects(outputObjectsName));
 
         // Testing number of objects in projected set
-        assertEquals(8,workspace.getObjectSet(outputObjectsName).size());
+        assertEquals(8,workspace.getObjects(outputObjectsName).size());
 
         // Getting expected and actual objects
         Objs expectedObjects = new Objects2D(volumeType).getObjects("Expected",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
-        Objs actualObjects = workspace.getObjectSet(outputObjectsName);
+        Objs actualObjects = workspace.getObjects(outputObjectsName);
 
         for (Obj object:actualObjects.values()) {
             // Identifying the matching object.  If this is null, one isn't found
-            Obj expectedObject = expectedObjects.getByEquals(object);
+            Obj expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
             assertNotNull(expectedObject);
 
         }

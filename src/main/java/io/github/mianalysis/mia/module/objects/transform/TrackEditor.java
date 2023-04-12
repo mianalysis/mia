@@ -264,11 +264,11 @@ public class TrackEditor extends Module {
     public Status process(Workspace workspace) {
         // Getting input track objects
         String inputTrackObjectsName = parameters.getValue(INPUT_TRACK_OBJECTS, workspace);
-        Objs trackObjects = workspace.getObjectSet(inputTrackObjectsName);
+        Objs trackObjects = workspace.getObjects(inputTrackObjectsName);
 
         // Getting input spot objects
         String inputSpotObjectsName = parameters.getValue(INPUT_SPOT_OBJECTS, workspace);
-        Objs spotObjects = workspace.getObjectSet(inputSpotObjectsName);
+        Objs spotObjects = workspace.getObjects(inputSpotObjectsName);
 
         // Getting input image
         String inputImageName = parameters.getValue(DISPLAY_IMAGE, workspace);

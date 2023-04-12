@@ -342,7 +342,7 @@ public class MeasureRelativeOrientation extends Module {
     public Status process(Workspace workspace) {
         // Getting input objects
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS, workspace);
-        Objs inputObjects = workspace.getObjectSet(inputObjectsName);
+        Objs inputObjects = workspace.getObjects(inputObjectsName);
 
         // Getting other parameters
         // String orientationMode = parameters.getValue(ORIENTATION_MODE,workspace);
@@ -370,14 +370,14 @@ public class MeasureRelativeOrientation extends Module {
 
             case ReferenceModes.OBJECT_CENTROID:
                 int nFrames = inputObjects.getTemporalLimits()[1] + 1;
-                Objs referenceObjects = workspace.getObjectSet(referenceObjectsName);
+                Objs referenceObjects = workspace.getObjects(referenceObjectsName);
                 referencePoints = getObjectCentroidRefs(referenceObjects, objectChoiceMode, orientationMode, nFrames,
                         mustBeSameFrame);
                 break;
 
             case ReferenceModes.OBJECT_SURFACE:
                 nFrames = inputObjects.getTemporalLimits()[1] + 1;
-                referenceObjects = workspace.getObjectSet(referenceObjectsName);
+                referenceObjects = workspace.getObjects(referenceObjectsName);
                 referencePoints = getObjectCentroidSurfaceRefs(inputObjects, referenceObjects, objectChoiceMode,
                         orientationMode, nFrames, mustBeSameFrame);
                 break;

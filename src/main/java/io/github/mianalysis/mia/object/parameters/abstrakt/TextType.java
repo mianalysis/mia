@@ -160,7 +160,7 @@ public abstract class TextType extends Parameter {
             Pattern objMeasPattern = Pattern.compile("([^\\|]+)\\|([^\\|]+)\\|([^\\|]+)");
             Matcher objMeasMatcher = objMeasPattern.matcher(matcher.group(1));
             if (objMeasMatcher.find()) {
-                Objs objs = workspace.getObjectSet(objMeasMatcher.group(1));
+                Objs objs = workspace.getObjects(objMeasMatcher.group(1));
                 if (objs == null)
                     break;
 
@@ -210,7 +210,7 @@ public abstract class TextType extends Parameter {
         Pattern pattern = Pattern.compile("Co\\{([^\\}]+)}");
         Matcher matcher = pattern.matcher(string);
         while (matcher.find()) {
-            Objs objs = workspace.getObjectSet(matcher.group(1));
+            Objs objs = workspace.getObjects(matcher.group(1));
             if (objs == null)
                 break;
 

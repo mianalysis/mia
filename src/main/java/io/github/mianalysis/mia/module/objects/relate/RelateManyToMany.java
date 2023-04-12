@@ -504,7 +504,7 @@ public class RelateManyToMany extends Module {
 
         if (createClusterObjects) {
             // Remove any previously-assigned relationships (from previous runs)
-            if (workspace.getObjectSet(outputObjectsName) != null) {
+            if (workspace.getObjects(outputObjectsName) != null) {
                 inputObjects1.removeParents(outputObjectsName);
                 inputObjects2.removeParents(outputObjectsName);
                 workspace.removeObjects(outputObjectsName, false);

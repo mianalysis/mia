@@ -285,6 +285,7 @@ public class ModulesTest<T extends RealType<T> & NativeType<T>> {
         measureObjectShape.updateParameterValue(MeasureObjectShape.MEASURE_PROJECTED_AREA, false);
         measureObjectShape.updateParameterValue(MeasureObjectShape.MEASURE_PROJECTED_DIA, true);
         measureObjectShape.updateParameterValue(MeasureObjectShape.MEASURE_PROJECTED_PERIM, false);
+        measureObjectShape.updateParameterValue(MeasureObjectShape.MEASURE_3D_METRICS, false);
         modules.add(measureObjectShape);
 
         MeasureObjectTexture measureObjectTexture = new MeasureObjectTexture(new Modules());
@@ -305,11 +306,12 @@ public class ModulesTest<T extends RealType<T> & NativeType<T>> {
         expectedParams.add(new BooleanP(MeasureObjectShape.MEASURE_PROJECTED_DIA, measureObjectShape, true));
         expectedParams.add(new BooleanP(MeasureObjectShape.MEASURE_PROJECTED_AREA, measureObjectShape, false));
         expectedParams.add(new BooleanP(MeasureObjectShape.MEASURE_PROJECTED_PERIM, measureObjectShape, false));
+        expectedParams.add(new BooleanP(MeasureObjectShape.MEASURE_3D_METRICS, measureObjectShape, false));
         expectedParams.add(new BooleanP(MeasureObjectShape.ENABLE_MULTITHREADING, measureObjectShape, true));
         expectedParams.add(new BooleanP(MeasureObjectTexture.CALIBRATED_OFFSET, measureObjectShape, false));
 
         // Checking the parameters are what are expected
-        assertEquals(6, actualParams.size());
+        assertEquals(7, actualParams.size());
 
         for (Parameter actualParam : actualParams) {
             boolean found = false;
@@ -344,6 +346,7 @@ public class ModulesTest<T extends RealType<T> & NativeType<T>> {
         measureObjectShape.updateParameterValue(MeasureObjectShape.MEASURE_PROJECTED_DIA, true);
         measureObjectShape.updateParameterValue(MeasureObjectShape.MEASURE_PROJECTED_AREA, false);
         measureObjectShape.updateParameterValue(MeasureObjectShape.MEASURE_PROJECTED_PERIM, false);
+        measureObjectShape.updateParameterValue(MeasureObjectShape.MEASURE_3D_METRICS, false);
         modules.add(measureObjectShape);
 
         MeasureObjectTexture measureObjectTexture = new MeasureObjectTexture(new Modules());
@@ -363,10 +366,11 @@ public class ModulesTest<T extends RealType<T> & NativeType<T>> {
         expectedParams.add(new BooleanP(MeasureObjectShape.MEASURE_PROJECTED_DIA, measureObjectShape, true));
         expectedParams.add(new BooleanP(MeasureObjectShape.MEASURE_PROJECTED_AREA, measureObjectShape, false));
         expectedParams.add(new BooleanP(MeasureObjectShape.MEASURE_PROJECTED_PERIM, measureObjectShape, false));
+        expectedParams.add(new BooleanP(MeasureObjectShape.MEASURE_3D_METRICS, measureObjectShape, false));
         expectedParams.add(new BooleanP(MeasureObjectShape.ENABLE_MULTITHREADING, measureObjectShape, true));
 
         // Checking the parameters are what are expected
-        assertEquals(5, actualParams.size());
+        assertEquals(6, actualParams.size());
 
         for (Parameter actualParam : actualParams) {
             boolean found = false;

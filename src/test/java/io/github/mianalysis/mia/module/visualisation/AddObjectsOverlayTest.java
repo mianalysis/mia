@@ -111,7 +111,7 @@ public class AddObjectsOverlayTest extends ModuleTest {
                 .updateParameterValue(AddObjectsOverlay.LIMIT_TRACK_HISTORY,false);
 
 //        HashMap<Integer, Color> colours = testObjects.getHues(Objs.ColourModes.PARENT_ID,trackObjectsName, false);
-//        Objs trackObjects = workspace.getObjectSet(trackObjectsName);
+//        Objs trackObjects = workspace.getObjects(trackObjectsName);
 //        addObjectsOverlay.createTrackOverlay(ipl,trackObjects,colours);
 
         new ImageJ();

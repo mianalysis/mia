@@ -1,5 +1,7 @@
 package io.github.mianalysis.mia.module.objects.relate.mergeobjects;
 
+import java.util.LinkedHashMap;
+
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
 
@@ -7,6 +9,7 @@ import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
+import io.github.mianalysis.mia.object.Measurement;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
@@ -48,19 +51,36 @@ public class CombineObjectSets extends Module {
         super("Combine object sets", modules);
     }
 
-    public static void combineAndCreate(Objs inputObjects, Objs outputObjects) {
-        for (Obj obj : inputObjects.values()) {
-            Obj newObj = outputObjects.createAndAddNewObject(obj.getVolumeType());
-            newObj.setCoordinateSet(obj.getCoordinateSet().duplicate());
-            newObj.setT(obj.getT());
-        }
-    }
-
-    public static void combineAndAdd(Objs targetObjects, Objs sourceObjects) {
+    public static void addObjects(Objs targetObjects, Objs sourceObjects) {
         for (Obj obj : sourceObjects.values()) {
             Obj newObj = targetObjects.createAndAddNewObject(obj.getVolumeType());
             newObj.setCoordinateSet(obj.getCoordinateSet().duplicate());
             newObj.setT(obj.getT());
+
+            // Transferring parents
+            LinkedHashMap<String, Obj> parents = obj.getParents(false);
+            newObj.setParents(parents);
+            for (Obj parent : parents.values())
+                parent.addChild(newObj);
+
+            // Transferring children
+            LinkedHashMap<String, Objs> children = obj.getChildren();
+            newObj.setChildren(children);
+            for (Objs childSet : children.values())
+                for (Obj child : childSet.values())
+                    child.addParent(newObj);
+
+            // Transferring partners
+            LinkedHashMap<String, Objs> partners = obj.getPartners();
+            newObj.setPartners(partners);
+            for (Objs partnerSet : partners.values())
+                for (Obj partner : partnerSet.values())
+                    partner.addPartner(newObj);
+
+            // Transferring measurements
+            LinkedHashMap<String, Measurement> measurements = obj.getMeasurements();
+            newObj.setMeasurements(measurements);
+
         }
     }
 
@@ -71,7 +91,7 @@ public class CombineObjectSets extends Module {
 
     @Override
     public String getDescription() {
-        return "Combines the objects from two collections stored in the workspace.  Either the objects from one collection can be added to the other or they can both be combined into a new collection, which is added to the workspace.<br><br>Note: Any objects added to another collection (either the \"other\" object collection or to a new collection) are duplicates of the original objects.  These duplicates contain the same spatial and temporal information, but do not contain the relationship or measurement information of the originals.  The original objects are unaffected by this module.";
+        return "Combines the objects from two collections stored in the workspace.  Either the objects from one collection can be added to the other or they can both be combined into a new collection, which is added to the workspace.<br><br>Note: Any objects added to another collection (either the \"other\" object collection or to a new collection) are duplicates of the original objects.  These duplicates contain the same spatial and temporal information as well as any relationship connections and measurements.  The original objects are unaffected by this module.";
 
     }
 
@@ -79,16 +99,16 @@ public class CombineObjectSets extends Module {
     public Status process(Workspace workspace) {
         // Getting input objects
         String inputObjects1Name = parameters.getValue(INPUT_OBJECTS_1, workspace);
-        Objs inputObjects1 = workspace.getObjectSet(inputObjects1Name);
+        Objs inputObjects1 = workspace.getObjects(inputObjects1Name);
         String inputObjects2Name = parameters.getValue(INPUT_OBJECTS_2, workspace);
-        Objs inputObjects2 = workspace.getObjectSet(inputObjects2Name);
+        Objs inputObjects2 = workspace.getObjects(inputObjects2Name);
         String outputMode = parameters.getValue(OUTPUT_MODE, workspace);
         String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS, workspace);
 
         // Doing object merging
         switch (outputMode) {
             case OutputModes.ADD_TO_OBJECTS_1:
-                combineAndAdd(inputObjects1, inputObjects2);
+                addObjects(inputObjects1, inputObjects2);
 
                 if (showOutput)
                     inputObjects1.convertToImageIDColours().show();
@@ -96,7 +116,7 @@ public class CombineObjectSets extends Module {
                 break;
 
             case OutputModes.ADD_TO_OBJECTS_2:
-                combineAndAdd(inputObjects2, inputObjects1);
+                addObjects(inputObjects2, inputObjects1);
 
                 if (showOutput)
                     inputObjects2.convertToImageIDColours().show();
@@ -105,8 +125,8 @@ public class CombineObjectSets extends Module {
 
             case OutputModes.CREATE_NEW:
                 Objs outputObjects = new Objs(outputObjectsName, inputObjects1);
-                combineAndCreate(inputObjects1, outputObjects);
-                combineAndCreate(inputObjects2, outputObjects);
+                addObjects(inputObjects1, outputObjects);
+                addObjects(inputObjects2, outputObjects);
 
                 // Adding the combined objects to the workspace
                 workspace.addObjects(outputObjects);

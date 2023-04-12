@@ -10,7 +10,7 @@
   <groupId>io.github.mianalysis</groupId>
   <artifactId>MIA</artifactId>
   <name>MIA</name>
-  <version>1.2.4</version>
+  <version>1.2.5</version>
   <description>ModularImageAnalysis (MIA) is an ImageJ plugin which provides a modular framework for assembling image and object analysis workflows. Detected objects can be transformed, filtered, measured and related. Analysis workflows are batch-enabled by default, allowing easy processing of high-content datasets.</description>
   <url>https://github.com/mianalysis/mia</url>
   <issueManagement>
@@ -515,10 +515,6 @@
         <exclusion>
           <artifactId>xercesImpl</artifactId>
           <groupId>xerces</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>xml-apis</artifactId>
-          <groupId>xml-apis</groupId>
         </exclusion>
         <exclusion>
           <artifactId>snakeyaml</artifactId>

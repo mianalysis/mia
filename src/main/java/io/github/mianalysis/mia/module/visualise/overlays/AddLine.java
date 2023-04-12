@@ -3,16 +3,16 @@ package io.github.mianalysis.mia.module.visualise.overlays;
 import java.awt.Color;
 import java.util.HashMap;
 
+import org.scijava.Priority;
+import org.scijava.plugin.Plugin;
+
 import ij.ImagePlus;
 import ij.gui.Line;
 import ij.plugin.Duplicator;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
-import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.Module;
-import org.scijava.Priority;
-import org.scijava.plugin.Plugin;
-
+import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
@@ -34,7 +34,6 @@ import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Status;
-import io.github.mianalysis.mia.process.ColourFactory;
 import io.github.sjcross.sjcommon.object.Point;
 
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
@@ -120,7 +119,7 @@ public class AddLine extends AbstractOverlay {
     }
 
     public static void addOverlay(ImagePlus ipl, Color colour, double lineWidth, Point<Double> pos1,
-            Point<Double> pos2, int t) {
+            Point<Double> pos2, int t) {                
                 if (ipl.getOverlay() == null)
                 ipl.setOverlay(new ij.gui.Overlay());
             ij.gui.Overlay ovl = ipl.getOverlay();

@@ -389,7 +389,7 @@ public class MeasureSkeleton extends Module {
     @Override
     protected Status process(Workspace workspace) {
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
-        Objs inputObjects = workspace.getObjectSet(inputObjectsName);
+        Objs inputObjects = workspace.getObjects(inputObjectsName);
         boolean addToWorkspace = parameters.getValue(ADD_SKELETONS_TO_WORKSPACE,workspace);
         String skeletonObjectsName = parameters.getValue(OUTPUT_SKELETON_OBJECTS,workspace);
         String edgeObjectsName = parameters.getValue(OUTPUT_EDGE_OBJECTS,workspace);

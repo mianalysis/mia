@@ -395,6 +395,11 @@ public class RelateOneToOne extends Module {
         if (createClusterObjects)
             workspace.addObjects(outputObjects);
 
+        if (showOutput) {
+            inputObjects1.showMeasurements(this, modules);
+            inputObjects2.showMeasurements(this, modules);
+        }
+
         return Status.PASS;
 
     }

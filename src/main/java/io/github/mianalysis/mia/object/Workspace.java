@@ -159,8 +159,14 @@ public class Workspace {
 
     }
 
-    public Objs getObjectSet(String name) {
+    public Objs getObjects(String name) {
         return objects.get(name);
+
+    }
+
+    @Deprecated
+    public Objs getObjectSet(String name) {
+        return getObjects(name);
 
     }
 
@@ -184,12 +190,12 @@ public class Workspace {
                 }
 
                 // Adding the current Obj to the new Workspace
-                if (workspaceList.get(t).getObjectSet(obj.getName()) == null) {
+                if (workspaceList.get(t).getObjects(obj.getName()) == null) {
                     Objs currObjects = new Objs(obj.getName(), obj.getObjectCollection());
                     workspaceList.get(t).addObjects(currObjects);
                 }
                 
-                workspaceList.get(t).getObjectSet(obj.getName()).add(obj);
+                workspaceList.get(t).getObjects(obj.getName()).add(obj);
 
             }
         }

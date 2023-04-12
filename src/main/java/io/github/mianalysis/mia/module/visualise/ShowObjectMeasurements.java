@@ -49,7 +49,7 @@ public class ShowObjectMeasurements extends Module {
     protected Status process(Workspace workspace) {
         String inputObjects = parameters.getValue(INPUT_OBJECTS,workspace);
 
-        if (showOutput) workspace.getObjectSet(inputObjects).showAllMeasurements();
+        if (showOutput) workspace.getObjects(inputObjects).showAllMeasurements();
 
         return Status.PASS;
 

@@ -29,7 +29,7 @@ public class MIA_GetObjectMeasurement extends MacroOperation {
         String measurementName = (String) objects[2];
 
         // Getting the object set
-        Objs objCollection = workspace.getObjectSet(objectName);
+        Objs objCollection = workspace.getObjects(objectName);
         if (objCollection == null) return "";
 
         // Getting the object

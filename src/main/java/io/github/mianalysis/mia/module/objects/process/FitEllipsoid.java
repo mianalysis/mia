@@ -170,7 +170,7 @@ public class FitEllipsoid extends Module {
     }
 
     public void addMeasurements(Obj inputObject, EllipsoidCalculator calculator) {
-        if (calculator == null) {
+        if (calculator == null || calculator.getCentroid() == null) {
             inputObject.addMeasurement(new Measurement(Measurements.X_CENT_PX, Double.NaN));
             inputObject.addMeasurement(new Measurement(Measurements.X_CENT_CAL, Double.NaN));
             inputObject.addMeasurement(new Measurement(Measurements.Y_CENT_PX, Double.NaN));
@@ -245,7 +245,7 @@ public class FitEllipsoid extends Module {
     public Status process(Workspace workspace) {
         // Getting input objects
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS, workspace);
-        Objs inputObjects = workspace.getObjectSet(inputObjectsName);
+        Objs inputObjects = workspace.getObjects(inputObjectsName);
 
         // Getting parameters
         String objectOutputMode = parameters.getValue(OBJECT_OUTPUT_MODE, workspace);

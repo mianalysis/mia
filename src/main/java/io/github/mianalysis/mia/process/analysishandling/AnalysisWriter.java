@@ -52,7 +52,7 @@ public class AnalysisWriter {
         Transformer transformer = TransformerFactory.newInstance().newTransformer();
         transformer.transform(new DOMSource(doc), new StreamResult(outputStream));
         outputStream.close();
-
+        
         MIA.log.writeStatus("File saved (" + FilenameUtils.getName(outputFileName) + ")");
 
     }

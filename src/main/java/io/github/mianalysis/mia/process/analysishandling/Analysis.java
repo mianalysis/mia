@@ -12,7 +12,6 @@ import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.script.AbstractMacroRunner;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.system.Status;
-import io.github.mianalysis.mia.process.logging.HeadlessRenderer;
 import io.github.mianalysis.mia.process.logging.LogRenderer;
 
 /**

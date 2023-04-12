@@ -79,25 +79,16 @@ public class AddObjectOutline extends AbstractOverlay {
         try {
             // If necessary, turning the image into a HyperStack (if 2 dimensions=1 it will
             // be a standard ImagePlus)
-            if (!ipl.isComposite() & (ipl.getNSlices() > 1 | ipl.getNFrames() > 1 | ipl.getNChannels() > 1)) {
+            if (!ipl.isComposite() & (ipl.getNSlices() > 1 | ipl.getNFrames() > 1 | ipl.getNChannels() > 1))
                 ipl = HyperStackConverter.toHyperStack(ipl, ipl.getNChannels(), ipl.getNSlices(), ipl.getNFrames());
-            }
-
-            // Counting number of overlays to add
-            int tempTotal = 0;
-            int nFrames = renderInAllFrames ? ipl.getNFrames() : 1;
-            for (Obj object : inputObjects.values()) {
-                double[][] extents = object.getExtents(true, false);
-                tempTotal = tempTotal + ((int) extents[2][1] - (int) extents[2][0] + 1) * nFrames;
-            }
-            int total = tempTotal;
-
+            
             int nThreads = multithread ? Prefs.getThreads() : 1;
             ThreadPoolExecutor pool = new ThreadPoolExecutor(nThreads, nThreads, 0L, TimeUnit.MILLISECONDS,
                     new LinkedBlockingQueue<>());
 
             // Running through each object, adding it to the overlay along with an ID label
             AtomicInteger count = new AtomicInteger(1);
+            int total = inputObjects.size();
             for (Obj object : inputObjects.values()) {
                 ImagePlus finalIpl = ipl;
 
@@ -124,10 +115,10 @@ public class AddObjectOutline extends AbstractOverlay {
                         for (int z = minZ; z <= maxZ; z++) {
                             Color colour = colours.get(object.getID());
                             addOverlay(object, finalIpl, colour, lineInterpolation, lineWidth, t, z);
-                            writeProgressStatus(count.getAndIncrement(), total, "objects", name);
-
+                            
                         }
                     }
+                    writeProgressStatus(count.getAndIncrement(), total, "objects", name);
                 };
                 pool.submit(task);
             }
@@ -140,6 +131,10 @@ public class AddObjectOutline extends AbstractOverlay {
             return;
         }
     }
+
+    static void addOverlay(Obj object, ImagePlus ipl, Color colour, double lineInterpolation, double lineWidth) {
+
+            }
 
     static void addOverlay(Obj object, ImagePlus ipl, Color colour, double lineInterpolation, double lineWidth, int t,
             int z) {

@@ -211,7 +211,7 @@ public class ObjectMeasurementCalculator extends Module {
     @Override
     protected Status process(Workspace workspace) {
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS, workspace);
-        Objs inputObjects = workspace.getObjectSet(inputObjectsName);
+        Objs inputObjects = workspace.getObjects(inputObjectsName);
 
         String valueMode1 = parameters.getValue(VALUE_MODE_1, workspace);
         double fixedValue1 = parameters.getValue(FIXED_VALUE_1, workspace);
@@ -238,11 +238,11 @@ public class ObjectMeasurementCalculator extends Module {
         double refValue1 = Double.NaN;
         double refValue2 = Double.NaN;
         if (valueMode1.equals(ValueModes.OBJECT_COLLECTION_STATISTIC)) {
-            Objs refObjects1 = workspace.getObjectSet(refObjectsName1);
+            Objs refObjects1 = workspace.getObjects(refObjectsName1);
             refValue1 = getObjectCollectionStatistic(refObjects1, refMeasurementName1, statisticMode1);
         }
         if (valueMode2.equals(ValueModes.OBJECT_COLLECTION_STATISTIC)) {
-            Objs refObjects2 = workspace.getObjectSet(refObjectsName2);
+            Objs refObjects2 = workspace.getObjects(refObjectsName2);
             refValue2 = getObjectCollectionStatistic(refObjects2, refMeasurementName2, statisticMode2);
         }
 

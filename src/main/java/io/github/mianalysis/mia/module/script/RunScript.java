@@ -216,11 +216,11 @@ public class RunScript extends Module {
                             workspace.showMetadata(this);
                             break;
                         case OutputTypes.OBJECTS:
-                            workspace.getObjectSet(parameterCollection.getValue(OUTPUT_OBJECTS, workspace))
+                            workspace.getObjects(parameterCollection.getValue(OUTPUT_OBJECTS, workspace))
                                     .convertToImageIDColours().show();
                             break;
                         case OutputTypes.OBJECT_MEASUREMENT:
-                            workspace.getObjectSet(parameterCollection.getValue(ASSOCIATED_OBJECTS, workspace))
+                            workspace.getObjects(parameterCollection.getValue(ASSOCIATED_OBJECTS, workspace))
                                     .showMeasurements(this, modules);
                             break;
                     }

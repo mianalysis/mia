@@ -64,7 +64,7 @@ public class GetObjectSurface extends Module {
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
         String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS,workspace);
 
-        Objs inputObjects = workspace.getObjectSet(inputObjectsName);
+        Objs inputObjects = workspace.getObjects(inputObjectsName);
         Objs outputObjects = new Objs(outputObjectsName, inputObjects);
 
         for (Obj inputObject : inputObjects.values())
