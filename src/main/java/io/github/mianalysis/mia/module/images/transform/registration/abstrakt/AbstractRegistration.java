@@ -506,13 +506,14 @@ public abstract class AbstractRegistration<T extends RealType<T> & NativeType<T>
         }
 
         ImagePlus inputIpl = inputImage.getImagePlus();
-        ImagePlus referenceIpl = reference.getImagePlus();
-        ImagePlus calculationIpl = calculationImage.getImagePlus();
-        int outW = Math.max(Math.max(inputIpl.getWidth(), referenceIpl.getWidth()), calculationIpl.getWidth());
-        int outH = Math.max(Math.max(inputIpl.getHeight(), referenceIpl.getHeight()), calculationIpl.getHeight());
-        inputIpl.setStack(new CanvasResizer().expandStack(inputIpl.getImageStack(), outW, outH, 0, 0));
-        calculationIpl.setStack(new CanvasResizer().expandStack(calculationIpl.getImageStack(), outW, outH, 0, 0));
-        if (referenceIpl != null) {
+        if (reference != null) {
+            ImagePlus referenceIpl = reference.getImagePlus();
+            ImagePlus calculationIpl = calculationImage.getImagePlus();
+            int outW = Math.max(Math.max(inputIpl.getWidth(), referenceIpl.getWidth()), calculationIpl.getWidth());
+            int outH = Math.max(Math.max(inputIpl.getHeight(), referenceIpl.getHeight()), calculationIpl.getHeight());
+            inputIpl.setStack(new CanvasResizer().expandStack(inputIpl.getImageStack(), outW, outH, 0, 0));
+            calculationIpl.setStack(new CanvasResizer().expandStack(calculationIpl.getImageStack(), outW, outH, 0, 0));
+
             reference = ImageFactory.createImage(reference.getName(), reference.getImagePlus().duplicate());
             referenceIpl = reference.getImagePlus();
             referenceIpl.setStack(new CanvasResizer().expandStack(referenceIpl.getImageStack(), outW, outH, 0, 0));
