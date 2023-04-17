@@ -163,7 +163,7 @@ public class SaveObjectsAsROIs extends AbstractSaver {
         if (!addTrackID)
             parentObjectsName = null;
 
-        Objs inputObjects = workspace.getObjectSet(inputObjectsName);
+        Objs inputObjects = workspace.getObjects(inputObjectsName);
 
         String outputPath = getOutputPath(modules, workspace);
         String outputName = getOutputName(modules, workspace);

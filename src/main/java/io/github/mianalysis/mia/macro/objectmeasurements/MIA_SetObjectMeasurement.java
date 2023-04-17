@@ -30,7 +30,7 @@ public class MIA_SetObjectMeasurement extends MacroOperation {
         double measurementValue = (double) objects[3];
 
         // Getting the object set
-        Objs objCollection = workspace.getObjectSet(objectName);
+        Objs objCollection = workspace.getObjects(objectName);
         if (objCollection == null) return "";
 
         // Getting the object

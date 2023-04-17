@@ -384,6 +384,7 @@ public abstract class Module extends Ref implements Comparable, SciJavaPlugin {
         newModule.setShowOutput(showOutput);
         newModule.setNotes(notes);
         newModule.setCanBeDisabled(canBeDisabled);
+        newModule.setShowProcessingViewTitle(showProcessingViewTitle);
 
         Parameters newParameters = newModule.getAllParameters();
         for (Parameter parameter : parameters.values()) {

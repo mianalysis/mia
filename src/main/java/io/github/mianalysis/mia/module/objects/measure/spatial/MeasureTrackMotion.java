@@ -552,12 +552,12 @@ public class MeasureTrackMotion extends Module {
 
         // Determining the leading point in the object (to next object)
         if (identifyLeading) {
-            Objs spotObjects = workspace.getObjectSet(inputSpotObjectsName);
+            Objs spotObjects = workspace.getObjects(inputSpotObjectsName);
             identifyLeading(spotObjects, orientationMode);
         }
 
         if (showOutput)
-            workspace.getObjectSet(inputSpotObjectsName).showMeasurements(this, modules);
+            workspace.getObjects(inputSpotObjectsName).showMeasurements(this, modules);
         if (showOutput)
             trackObjects.showMeasurements(this, modules);
 

@@ -125,7 +125,7 @@ public class FillHolesInObjects extends Module {
     public Status process(Workspace workspace) {
         // Getting input objects
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
-        Objs inputObjects = workspace.getObjectSet(inputObjectsName);
+        Objs inputObjects = workspace.getObjects(inputObjectsName);
 
         // Getting output image name
         String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS,workspace);

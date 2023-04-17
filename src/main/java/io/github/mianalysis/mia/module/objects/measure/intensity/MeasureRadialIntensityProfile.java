@@ -143,7 +143,7 @@ package io.github.mianalysis.mia.module.objects.measure.intensity;
 //     public Status process(Workspace workspace) {
 //         // Getting input objects
 //         String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
-//         Objs inputObjects = workspace.getObjectSet(inputObjectsName);
+//         Objs inputObjects = workspace.getObjects(inputObjectsName);
 
 //         // Getting input image
 //         String inputImageName = parameters.getValue(INPUT_IMAGE,workspace);

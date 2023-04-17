@@ -187,7 +187,7 @@ public class AddTracks extends AbstractOverlay {
         HashMap<Integer, Color> instantaneousColours = null;
         if (colourMode.equals(ColourModes.INSTANTANEOUS_MEASUREMENT_VALUE)) {
             String[] elements = spotObjectsName.split(" // ");
-            Objs spotObjects = workspace.getObjectSet(elements[elements.length - 1]);
+            Objs spotObjects = workspace.getObjects(elements[elements.length - 1]);
             double[] range = new double[] { Double.NaN, Double.NaN };
             if (rangeMinMode.equals(RangeModes.MANUAL))
                 range[0] = minValue;

@@ -59,7 +59,7 @@ public class AffineCentroids extends AbstractAffineRegistration {
 
         // Setting up the parameters
         CentroidParam centroidParam = (CentroidParam) param;
-        centroidParam.centroidObjects = (Objs) workspace.getObjectSet(parameters.getValue(INPUT_OBJECTS,workspace));
+        centroidParam.centroidObjects = (Objs) workspace.getObjects(parameters.getValue(INPUT_OBJECTS,workspace));
         centroidParam.maxSeparation = (float) (double) parameters.getValue(MAXIMUM_SEPARATION,workspace);
         centroidParam.maxEpsilon = (float) (double) parameters.getValue(MAX_EPSILON,workspace);
         centroidParam.minInlierRatio = (float) (double) parameters.getValue(MIN_INLIER_RATIO,workspace);

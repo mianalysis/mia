@@ -209,7 +209,7 @@ public class CreateOrthogonalView<T extends RealType<T> & NativeType<T>> extends
             // break;
 
             case PositionModes.LARGEST_OBJ_CENTROID:
-                Objs inputObjects = workspace.getObjectSet(inputObjectsName);
+                Objs inputObjects = workspace.getObjects(inputObjectsName);
                 long[] centres = getLargestObjectCentroid(inputObjects);
 
                 // If no objects were present, create a blank image

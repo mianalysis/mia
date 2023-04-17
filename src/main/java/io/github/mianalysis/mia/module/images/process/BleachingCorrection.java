@@ -96,7 +96,7 @@ public class BleachingCorrection extends Module {
 
         Roi roi = null;
         if (useRoiObjects) {
-            Objs roiObjects = workspace.getObjectSet(roiObjectsName);
+            Objs roiObjects = workspace.getObjects(roiObjectsName);
             Obj roiObject = roiObjects.getAsSingleObject();
             roiObject.setCoordinateSet(roiObject.getProjected().getCoordinateSet());
             roi = roiObject.getRoi(0);

@@ -65,16 +65,16 @@ public class CombineObjectSetsTest extends ModuleTest {
         workspace.addObjects(expectedOutputObj);
 
         // Getting actual output objects
-        Objs actualOutputObj = workspace.getObjectSet("Output_obj");
+        Objs actualOutputObj = workspace.getObjects("Output_obj");
 
         // Checking the number of detected objects
         assertEquals(33,actualOutputObj.size());
-        assertEquals(8,workspace.getObjectSet("Input_obj_1").size());
-        assertEquals(25,workspace.getObjectSet("Input_obj_2").size());
+        assertEquals(8,workspace.getObjects("Input_obj_1").size());
+        assertEquals(25,workspace.getObjects("Input_obj_2").size());
 
         for (Obj object:actualOutputObj.values()) {
             // Identifying the matching object.  If this is null, one isn't found
-            Obj expectedObject = expectedOutputObj.getByEquals(object);
+            Obj expectedObject = expectedOutputObj.getByEqualsIgnoreNameAndID(object);
             assertNotNull(expectedObject);
 
         }

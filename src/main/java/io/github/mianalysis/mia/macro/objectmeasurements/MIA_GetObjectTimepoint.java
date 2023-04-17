@@ -27,7 +27,7 @@ public class MIA_GetObjectTimepoint extends MacroOperation {
         int objectID = (int) Math.round((Double) objects[1]);
 
         // Getting the object set
-        Objs objCollection = workspace.getObjectSet(objectName);
+        Objs objCollection = workspace.getObjects(objectName);
         if (objCollection == null) return "";
 
         // Getting the object

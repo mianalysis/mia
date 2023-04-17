@@ -202,7 +202,7 @@ public class FitEllipse extends Module {
     public Status process(Workspace workspace) {
         // Getting input objects
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
-        Objs inputObjects = workspace.getObjectSet(inputObjectsName);
+        Objs inputObjects = workspace.getObjects(inputObjectsName);
 
         // Getting parameters
         String objectOutputMode = parameters.getValue(OBJECT_OUTPUT_MODE,workspace);

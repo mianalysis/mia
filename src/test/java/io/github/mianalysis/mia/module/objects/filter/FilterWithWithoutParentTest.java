@@ -74,9 +74,9 @@ public class FilterWithWithoutParentTest extends ModuleTest {
         filterWithWithoutParent.execute(workspace);
 
         // Checking basic facts
-        assertNotNull(workspace.getObjectSet("TestObj"));
-        assertEquals(8, workspace.getObjectSet("TestObj").values().size());
-        assertEquals(expectedPassObjects, workspace.getObjectSet("TestObj"));
+        assertNotNull(workspace.getObjects("TestObj"));
+        assertEquals(8, workspace.getObjects("TestObj").values().size());
+        assertEquals(expectedPassObjects, workspace.getObjects("TestObj"));
 
         String metadataName = FilterWithWithoutParent.getMetadataName("TestObj",
                 FilterWithWithoutParent.FilterMethods.WITH_PARENT, "Parents");
@@ -136,23 +136,23 @@ public class FilterWithWithoutParentTest extends ModuleTest {
         filterWithWithoutParent.execute(workspace);
 
         // Checking basic facts                
-        assertNotNull(workspace.getObjectSet("TestObj"));
-        assertEquals(5, workspace.getObjectSet("TestObj").values().size());
-        Objs actualPassObjects = workspace.getObjectSet("TestObj");
+        assertNotNull(workspace.getObjects("TestObj"));
+        assertEquals(5, workspace.getObjects("TestObj").values().size());
+        Objs actualPassObjects = workspace.getObjects("TestObj");
         for (Obj expectedPassObject : expectedPassObjects.values()) {
             Obj actualPassObject = actualPassObjects.get(expectedPassObject.getID());
             assertEquals(expectedPassObject, actualPassObject);
         }
-        // assertEquals(expectedPassObjects,workspace.getObjectSet("TestObj"));
+        // assertEquals(expectedPassObjects,workspace.getObjects("TestObj"));
 
-        assertNotNull(workspace.getObjectSet("Output"));
-        assertEquals(3, workspace.getObjectSet("Output").values().size());
-        Objs actualFailObjects = workspace.getObjectSet("Output");
+        assertNotNull(workspace.getObjects("Output"));
+        assertEquals(3, workspace.getObjects("Output").values().size());
+        Objs actualFailObjects = workspace.getObjects("Output");
         for (Obj expectedFailObject : expectedFailObjects.values()) {
             Obj actualFailObject = actualFailObjects.get(expectedFailObject.getID());
             assertEquals(expectedFailObject, actualFailObject);
         }
-        // assertEquals(expectedFailObjects,workspace.getObjectSet("Output"));
+        // assertEquals(expectedFailObjects,workspace.getObjects("Output"));
 
     }
 
@@ -203,9 +203,9 @@ public class FilterWithWithoutParentTest extends ModuleTest {
         filterWithWithoutParent.execute(workspace);
 
         // Checking basic facts
-        assertNotNull(workspace.getObjectSet("TestObj"));
-        assertEquals(5,workspace.getObjectSet("TestObj").values().size());
-        assertEquals(expectedPassObjects,workspace.getObjectSet("TestObj"));
+        assertNotNull(workspace.getObjects("TestObj"));
+        assertEquals(5,workspace.getObjects("TestObj").values().size());
+        assertEquals(expectedPassObjects,workspace.getObjects("TestObj"));
 
     }
 
@@ -256,9 +256,9 @@ public class FilterWithWithoutParentTest extends ModuleTest {
         filterWithWithoutParent.execute(workspace);
 
         // Checking basic facts
-        assertNotNull(workspace.getObjectSet("TestObj"));
-        assertEquals(8,workspace.getObjectSet("TestObj").values().size());
-        assertEquals(expectedPassObjects,workspace.getObjectSet("TestObj"));
+        assertNotNull(workspace.getObjects("TestObj"));
+        assertEquals(8,workspace.getObjects("TestObj").values().size());
+        assertEquals(expectedPassObjects,workspace.getObjects("TestObj"));
 
     }
 
@@ -312,13 +312,13 @@ public class FilterWithWithoutParentTest extends ModuleTest {
         filterWithWithoutParent.execute(workspace);
 
         // Checking basic facts
-        assertNotNull(workspace.getObjectSet("TestObj"));
-        assertEquals(3,workspace.getObjectSet("TestObj").values().size());
-        assertEquals(expectedPassObjects,workspace.getObjectSet("TestObj"));
+        assertNotNull(workspace.getObjects("TestObj"));
+        assertEquals(3,workspace.getObjects("TestObj").values().size());
+        assertEquals(expectedPassObjects,workspace.getObjects("TestObj"));
 
-        assertNotNull(workspace.getObjectSet("Output"));
-        assertEquals(5,workspace.getObjectSet("Output").values().size());
-        assertEquals(expectedFailObjects,workspace.getObjectSet("Output"));
+        assertNotNull(workspace.getObjects("Output"));
+        assertEquals(5,workspace.getObjects("Output").values().size());
+        assertEquals(expectedFailObjects,workspace.getObjects("Output"));
 
     }
 
@@ -368,9 +368,9 @@ public class FilterWithWithoutParentTest extends ModuleTest {
         filterWithWithoutParent.execute(workspace);
 
         // Checking basic facts
-        assertNotNull(workspace.getObjectSet("TestObj"));
-        assertEquals(3,workspace.getObjectSet("TestObj").values().size());
-        assertEquals(expectedPassObjects,workspace.getObjectSet("TestObj"));
+        assertNotNull(workspace.getObjects("TestObj"));
+        assertEquals(3,workspace.getObjects("TestObj").values().size());
+        assertEquals(expectedPassObjects,workspace.getObjects("TestObj"));
 
     }
 
@@ -416,8 +416,8 @@ public class FilterWithWithoutParentTest extends ModuleTest {
         filterWithWithoutParent.execute(workspace);
 
         // Checking basic facts
-        assertNotNull(workspace.getObjectSet("TestObj"));
-        assertEquals(3,workspace.getObjectSet("TestObj").values().size());
+        assertNotNull(workspace.getObjects("TestObj"));
+        assertEquals(3,workspace.getObjects("TestObj").values().size());
 
     }
 }

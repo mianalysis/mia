@@ -87,7 +87,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getObjects().size());
 
         // Getting the object set
-        Objs actualObjects = workspace.getObjectSet("Test_output_objects");
+        Objs actualObjects = workspace.getObjects("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -104,7 +104,7 @@ public class IdentifyObjectsTest extends ModuleTest {
 
         for (Obj object : actualObjects.values()) {
             // Identifying the matching object. If this is null, one isn't found
-            Obj expectedObject = expectedObjects.getByEquals(object);
+            Obj expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
             assertNotNull(expectedObject);
 
         }
@@ -142,7 +142,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getObjects().size());
 
         // Getting the object set
-        Objs actualObjects = workspace.getObjectSet("Test_output_objects");
+        Objs actualObjects = workspace.getObjects("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -159,7 +159,7 @@ public class IdentifyObjectsTest extends ModuleTest {
 
         for (Obj object : actualObjects.values()) {
             // Identifying the matching object. If this is null, one isn't found
-            Obj expectedObject = expectedObjects.getByEquals(object);
+            Obj expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
             assertNotNull(expectedObject);
 
         }
@@ -196,7 +196,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getObjects().size());
 
         // Getting the object set
-        Objs actualObjects = workspace.getObjectSet("Test_output_objects");
+        Objs actualObjects = workspace.getObjects("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -213,7 +213,7 @@ public class IdentifyObjectsTest extends ModuleTest {
 
         for (Obj object : actualObjects.values()) {
             // Identifying the matching object. If this is null, one isn't found
-            Obj expectedObject = expectedObjects.getByEquals(object);
+            Obj expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
             assertNotNull(expectedObject);
 
         }
@@ -251,7 +251,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getObjects().size());
 
         // Getting the object set
-        Objs actualObjects = workspace.getObjectSet("Test_output_objects");
+        Objs actualObjects = workspace.getObjects("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -268,7 +268,7 @@ public class IdentifyObjectsTest extends ModuleTest {
 
         for (Obj object : actualObjects.values()) {
             // Identifying the matching object. If this is null, one isn't found
-            Obj expectedObject = expectedObjects.getByEquals(object);
+            Obj expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
             assertNotNull(expectedObject);
 
         }
@@ -305,7 +305,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getObjects().size());
 
         // Getting the object set
-        Objs actualObjects = workspace.getObjectSet("Test_output_objects");
+        Objs actualObjects = workspace.getObjects("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -322,7 +322,7 @@ public class IdentifyObjectsTest extends ModuleTest {
 
         for (Obj object : actualObjects.values()) {
             // Identifying the matching object. If this is null, one isn't found
-            Obj expectedObject = expectedObjects.getByEquals(object);
+            Obj expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
             assertNotNull(expectedObject);
 
         }
@@ -359,7 +359,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getObjects().size());
 
         // Getting the object set
-        Objs actualObjects = workspace.getObjectSet("Test_output_objects");
+        Objs actualObjects = workspace.getObjects("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -376,7 +376,7 @@ public class IdentifyObjectsTest extends ModuleTest {
 
         for (Obj object : actualObjects.values()) {
             // Identifying the matching object. If this is null, one isn't found
-            Obj expectedObject = expectedObjects.getByEquals(object);
+            Obj expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
             assertNotNull(expectedObject);
 
         }
@@ -413,7 +413,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getObjects().size());
 
         // Getting the object set
-        Objs actualObjects = workspace.getObjectSet("Test_output_objects");
+        Objs actualObjects = workspace.getObjects("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -431,7 +431,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         int count = 0;
         for (Obj object : actualObjects.values()) {
             // Identifying the matching object. If this is null, one isn't found
-            Obj expectedObject = expectedObjects.getByEquals(object);
+            Obj expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
             assertNotNull(expectedObject);
 
         }
@@ -468,7 +468,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getObjects().size());
 
         // Getting the object set
-        Objs actualObjects = workspace.getObjectSet("Test_output_objects");
+        Objs actualObjects = workspace.getObjects("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -486,7 +486,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         int count = 0;
         for (Obj object : actualObjects.values()) {
             // Identifying the matching object. If this is null, one isn't found
-            Obj expectedObject = expectedObjects.getByEquals(object);
+            Obj expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
             assertNotNull(expectedObject);
 
         }
@@ -523,7 +523,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getObjects().size());
 
         // Getting the object set
-        Objs actualObjects = workspace.getObjectSet("Test_output_objects");
+        Objs actualObjects = workspace.getObjects("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -541,7 +541,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         int count = 0;
         for (Obj object : actualObjects.values()) {
             // Identifying the matching object. If this is null, one isn't found
-            Obj expectedObject = expectedObjects.getByEquals(object);
+            Obj expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
             assertNotNull(expectedObject);
 
         }
@@ -589,7 +589,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getObjects().size());
 
         // Getting the object set
-        Objs actualObjects = workspace.getObjectSet("Test_output_objects");
+        Objs actualObjects = workspace.getObjects("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -606,7 +606,7 @@ public class IdentifyObjectsTest extends ModuleTest {
 
         for (Obj object : actualObjects.values()) {
             // Identifying the matching object. If this is null, one isn't found
-            Obj expectedObject = expectedObjects.getByEquals(object);
+            Obj expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
             assertNotNull(expectedObject);
 
         }
@@ -642,7 +642,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getObjects().size());
 
         // Getting the object set
-        Objs actualObjects = workspace.getObjectSet("Test_output_objects");
+        Objs actualObjects = workspace.getObjects("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -659,7 +659,7 @@ public class IdentifyObjectsTest extends ModuleTest {
 
         for (Obj object : actualObjects.values()) {
             // Identifying the matching object. If this is null, one isn't found
-            Obj expectedObject = expectedObjects.getByEquals(object);
+            Obj expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
             assertNotNull(expectedObject);
 
         }
@@ -695,7 +695,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getObjects().size());
 
         // Getting the object set
-        Objs actualObjects = workspace.getObjectSet("Test_output_objects");
+        Objs actualObjects = workspace.getObjects("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -712,7 +712,7 @@ public class IdentifyObjectsTest extends ModuleTest {
 
         for (Obj object : actualObjects.values()) {
             // Identifying the matching object. If this is null, one isn't found
-            Obj expectedObject = expectedObjects.getByEquals(object);
+            Obj expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
             assertNotNull(expectedObject);
 
         }
@@ -749,7 +749,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getObjects().size());
 
         // Getting the object set
-        Objs actualObjects = workspace.getObjectSet("Test_output_objects");
+        Objs actualObjects = workspace.getObjects("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -766,7 +766,7 @@ public class IdentifyObjectsTest extends ModuleTest {
 
         for (Obj object : actualObjects.values()) {
             // Identifying the matching object. If this is null, one isn't found
-            Obj expectedObject = expectedObjects.getByEquals(object);
+            Obj expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
             assertNotNull(expectedObject);
 
         }
@@ -803,7 +803,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getObjects().size());
 
         // Getting the object set
-        Objs actualObjects = workspace.getObjectSet("Test_output_objects");
+        Objs actualObjects = workspace.getObjects("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -820,7 +820,7 @@ public class IdentifyObjectsTest extends ModuleTest {
 
         for (Obj object : actualObjects.values()) {
             // Identifying the matching object. If this is null, one isn't found
-            Obj expectedObject = expectedObjects.getByEquals(object);
+            Obj expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
             assertNotNull(expectedObject);
 
         }
@@ -857,7 +857,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getObjects().size());
 
         // Getting the object set
-        Objs actualObjects = workspace.getObjectSet("Test_output_objects");
+        Objs actualObjects = workspace.getObjects("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -874,7 +874,7 @@ public class IdentifyObjectsTest extends ModuleTest {
 
         for (Obj object : actualObjects.values()) {
             // Identifying the matching object. If this is null, one isn't found
-            Obj expectedObject = expectedObjects.getByEquals(object);
+            Obj expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
             assertNotNull(expectedObject);
 
         }
@@ -912,7 +912,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getObjects().size());
 
         // Getting the object set
-        Objs actualObjects = workspace.getObjectSet("Test_output_objects");
+        Objs actualObjects = workspace.getObjects("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -929,7 +929,7 @@ public class IdentifyObjectsTest extends ModuleTest {
 
         for (Obj object : actualObjects.values()) {
             // Identifying the matching object. If this is null, one isn't found
-            Obj expectedObject = expectedObjects.getByEquals(object);
+            Obj expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
             assertNotNull(expectedObject);
 
         }
@@ -967,7 +967,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getObjects().size());
 
         // Getting the object set
-        Objs actualObjects = workspace.getObjectSet("Test_output_objects");
+        Objs actualObjects = workspace.getObjects("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -984,7 +984,7 @@ public class IdentifyObjectsTest extends ModuleTest {
 
         for (Obj object : actualObjects.values()) {
             // Identifying the matching object. If this is null, one isn't found
-            Obj expectedObject = expectedObjects.getByEquals(object);
+            Obj expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
             assertNotNull(expectedObject);
 
         }
@@ -1022,7 +1022,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getObjects().size());
 
         // Getting the object set
-        Objs actualObjects = workspace.getObjectSet("Test_output_objects");
+        Objs actualObjects = workspace.getObjects("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -1039,7 +1039,7 @@ public class IdentifyObjectsTest extends ModuleTest {
 
         for (Obj object : actualObjects.values()) {
             // Identifying the matching object. If this is null, one isn't found
-            Obj expectedObject = expectedObjects.getByEquals(object);
+            Obj expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
             assertNotNull(expectedObject);
 
         }
@@ -1077,7 +1077,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getObjects().size());
 
         // Getting the object set
-        Objs actualObjects = workspace.getObjectSet("Test_output_objects");
+        Objs actualObjects = workspace.getObjects("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -1094,7 +1094,7 @@ public class IdentifyObjectsTest extends ModuleTest {
 
         for (Obj object : actualObjects.values()) {
             // Identifying the matching object. If this is null, one isn't found
-            Obj expectedObject = expectedObjects.getByEquals(object);
+            Obj expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
             assertNotNull(expectedObject);
 
         }
@@ -1132,7 +1132,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getObjects().size());
 
         // Getting the object set
-        Objs actualObjects = workspace.getObjectSet("Test_output_objects");
+        Objs actualObjects = workspace.getObjects("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -1149,7 +1149,7 @@ public class IdentifyObjectsTest extends ModuleTest {
 
         for (Obj object : actualObjects.values()) {
             // Identifying the matching object. If this is null, one isn't found
-            Obj expectedObject = expectedObjects.getByEquals(object);
+            Obj expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
             assertNotNull(expectedObject);
 
         }
@@ -1187,7 +1187,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getObjects().size());
 
         // Getting the object set
-        Objs actualObjects = workspace.getObjectSet("Test_output_objects");
+        Objs actualObjects = workspace.getObjects("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -1204,7 +1204,7 @@ public class IdentifyObjectsTest extends ModuleTest {
 
         for (Obj object : actualObjects.values()) {
             // Identifying the matching object. If this is null, one isn't found
-            Obj expectedObject = expectedObjects.getByEquals(object);
+            Obj expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
             assertNotNull(expectedObject);
 
         }
@@ -1241,7 +1241,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getObjects().size());
 
         // Getting the object set
-        Objs actualObjects = workspace.getObjectSet("Test_output_objects");
+        Objs actualObjects = workspace.getObjects("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -1258,7 +1258,7 @@ public class IdentifyObjectsTest extends ModuleTest {
 
         for (Obj object : actualObjects.values()) {
             // Identifying the matching object. If this is null, one isn't found
-            Obj expectedObject = expectedObjects.getByEquals(object);
+            Obj expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
             assertNotNull(expectedObject);
 
         }
@@ -1295,7 +1295,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getObjects().size());
 
         // Getting the object set
-        Objs actualObjects = workspace.getObjectSet("Test_output_objects");
+        Objs actualObjects = workspace.getObjects("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -1312,7 +1312,7 @@ public class IdentifyObjectsTest extends ModuleTest {
 
         for (Obj object : actualObjects.values()) {
             // Identifying the matching object. If this is null, one isn't found
-            Obj expectedObject = expectedObjects.getByEquals(object);
+            Obj expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
             assertNotNull(expectedObject);
 
         }
@@ -1349,7 +1349,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getObjects().size());
 
         // Getting the object set
-        Objs actualObjects = workspace.getObjectSet("Test_output_objects");
+        Objs actualObjects = workspace.getObjects("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -1366,7 +1366,7 @@ public class IdentifyObjectsTest extends ModuleTest {
 
         for (Obj object : actualObjects.values()) {
             // Identifying the matching object. If this is null, one isn't found
-            Obj expectedObject = expectedObjects.getByEquals(object);
+            Obj expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
             assertNotNull(expectedObject);
 
         }
@@ -1403,7 +1403,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getObjects().size());
 
         // Getting the object set
-        Objs actualObjects = workspace.getObjectSet("Test_output_objects");
+        Objs actualObjects = workspace.getObjects("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -1423,7 +1423,7 @@ public class IdentifyObjectsTest extends ModuleTest {
 
         for (Obj object : actualObjects.values()) {
             // Identifying the matching object. If this is null, one isn't found
-            Obj expectedObject = expectedObjects.getByEquals(object);
+            Obj expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
             assertNotNull(expectedObject);
 
         }
@@ -1460,7 +1460,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getObjects().size());
 
         // Getting the object set
-        Objs actualObjects = workspace.getObjectSet("Test_output_objects");
+        Objs actualObjects = workspace.getObjects("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -1480,7 +1480,7 @@ public class IdentifyObjectsTest extends ModuleTest {
 
         for (Obj object : actualObjects.values()) {
             // Identifying the matching object. If this is null, one isn't found
-            Obj expectedObject = expectedObjects.getByEquals(object);
+            Obj expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
             assertNotNull(expectedObject);
 
         }
@@ -1517,7 +1517,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getObjects().size());
 
         // Getting the object set
-        Objs actualObjects = workspace.getObjectSet("Test_output_objects");
+        Objs actualObjects = workspace.getObjects("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -1537,7 +1537,7 @@ public class IdentifyObjectsTest extends ModuleTest {
 
         for (Obj object : actualObjects.values()) {
             // Identifying the matching object. If this is null, one isn't found
-            Obj expectedObject = expectedObjects.getByEquals(object);
+            Obj expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
             assertNotNull(expectedObject);
 
         }
@@ -1574,7 +1574,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getObjects().size());
 
         // Getting the object set
-        Objs actualObjects = workspace.getObjectSet("Test_output_objects");
+        Objs actualObjects = workspace.getObjects("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -1591,7 +1591,7 @@ public class IdentifyObjectsTest extends ModuleTest {
 
         for (Obj object : actualObjects.values()) {
             // Identifying the matching object. If this is null, one isn't found
-            Obj expectedObject = expectedObjects.getByEquals(object);
+            Obj expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
             assertNotNull(expectedObject);
 
         }
@@ -1628,7 +1628,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getObjects().size());
 
         // Getting the object set
-        Objs actualObjects = workspace.getObjectSet("Test_output_objects");
+        Objs actualObjects = workspace.getObjects("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -1645,7 +1645,7 @@ public class IdentifyObjectsTest extends ModuleTest {
 
         for (Obj object : actualObjects.values()) {
             // Identifying the matching object. If this is null, one isn't found
-            Obj expectedObject = expectedObjects.getByEquals(object);
+            Obj expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
             assertNotNull(expectedObject);
 
         }
@@ -1682,7 +1682,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getObjects().size());
 
         // Getting the object set
-        Objs actualObjects = workspace.getObjectSet("Test_output_objects");
+        Objs actualObjects = workspace.getObjects("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -1699,7 +1699,7 @@ public class IdentifyObjectsTest extends ModuleTest {
 
         for (Obj object : actualObjects.values()) {
             // Identifying the matching object. If this is null, one isn't found
-            Obj expectedObject = expectedObjects.getByEquals(object);
+            Obj expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
             assertNotNull(expectedObject);
 
         }
@@ -1736,7 +1736,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getObjects().size());
 
         // Getting the object set
-        Objs actualObjects = workspace.getObjectSet("Test_output_objects");
+        Objs actualObjects = workspace.getObjects("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -1753,7 +1753,7 @@ public class IdentifyObjectsTest extends ModuleTest {
 
         for (Obj object : actualObjects.values()) {
             // Identifying the matching object. If this is null, one isn't found
-            Obj expectedObject = expectedObjects.getByEquals(object);
+            Obj expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
             assertNotNull(expectedObject);
 
         }
@@ -1790,7 +1790,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getObjects().size());
 
         // Getting the object set
-        Objs actualObjects = workspace.getObjectSet("Test_output_objects");
+        Objs actualObjects = workspace.getObjects("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -1807,7 +1807,7 @@ public class IdentifyObjectsTest extends ModuleTest {
 
         for (Obj object : actualObjects.values()) {
             // Identifying the matching object. If this is null, one isn't found
-            Obj expectedObject = expectedObjects.getByEquals(object);
+            Obj expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
             assertNotNull(expectedObject);
 
         }
@@ -1844,7 +1844,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getObjects().size());
 
         // Getting the object set
-        Objs actualObjects = workspace.getObjectSet("Test_output_objects");
+        Objs actualObjects = workspace.getObjects("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -1861,7 +1861,7 @@ public class IdentifyObjectsTest extends ModuleTest {
 
         for (Obj object : actualObjects.values()) {
             // Identifying the matching object. If this is null, one isn't found
-            Obj expectedObject = expectedObjects.getByEquals(object);
+            Obj expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
             assertNotNull(expectedObject);
 
         }
@@ -1898,7 +1898,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getObjects().size());
 
         // Getting the object set
-        Objs actualObjects = workspace.getObjectSet("Test_output_objects");
+        Objs actualObjects = workspace.getObjects("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -1918,7 +1918,7 @@ public class IdentifyObjectsTest extends ModuleTest {
 
         for (Obj object : actualObjects.values()) {
             // Identifying the matching object. If this is null, one isn't found
-            Obj expectedObject = expectedObjects.getByEquals(object);
+            Obj expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
             assertNotNull(expectedObject);
 
         }
@@ -1955,7 +1955,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getObjects().size());
 
         // Getting the object set
-        Objs actualObjects = workspace.getObjectSet("Test_output_objects");
+        Objs actualObjects = workspace.getObjects("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -1975,7 +1975,7 @@ public class IdentifyObjectsTest extends ModuleTest {
 
         for (Obj object : actualObjects.values()) {
             // Identifying the matching object. If this is null, one isn't found
-            Obj expectedObject = expectedObjects.getByEquals(object);
+            Obj expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
             assertNotNull(expectedObject);
 
         }
@@ -2012,7 +2012,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getObjects().size());
 
         // Getting the object set
-        Objs actualObjects = workspace.getObjectSet("Test_output_objects");
+        Objs actualObjects = workspace.getObjects("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -2032,7 +2032,7 @@ public class IdentifyObjectsTest extends ModuleTest {
 
         for (Obj object : actualObjects.values()) {
             // Identifying the matching object. If this is null, one isn't found
-            Obj expectedObject = expectedObjects.getByEquals(object);
+            Obj expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
             assertNotNull(expectedObject);
 
         }
@@ -2069,7 +2069,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getObjects().size());
 
         // Getting the object set
-        Objs actualObjects = workspace.getObjectSet("Test_output_objects");
+        Objs actualObjects = workspace.getObjects("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -2086,7 +2086,7 @@ public class IdentifyObjectsTest extends ModuleTest {
 
         for (Obj object : actualObjects.values()) {
             // Identifying the matching object. If this is null, one isn't found
-            Obj expectedObject = expectedObjects.getByEquals(object);
+            Obj expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
             assertNotNull(expectedObject);
 
         }
@@ -2123,7 +2123,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getObjects().size());
 
         // Getting the object set
-        Objs actualObjects = workspace.getObjectSet("Test_output_objects");
+        Objs actualObjects = workspace.getObjects("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -2140,7 +2140,7 @@ public class IdentifyObjectsTest extends ModuleTest {
 
         for (Obj object : actualObjects.values()) {
             // Identifying the matching object. If this is null, one isn't found
-            Obj expectedObject = expectedObjects.getByEquals(object);
+            Obj expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
             assertNotNull(expectedObject);
 
         }
@@ -2177,7 +2177,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getObjects().size());
 
         // Getting the object set
-        Objs actualObjects = workspace.getObjectSet("Test_output_objects");
+        Objs actualObjects = workspace.getObjects("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -2194,7 +2194,7 @@ public class IdentifyObjectsTest extends ModuleTest {
 
         for (Obj object : actualObjects.values()) {
             // Identifying the matching object. If this is null, one isn't found
-            Obj expectedObject = expectedObjects.getByEquals(object);
+            Obj expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
             assertNotNull(expectedObject);
 
         }
@@ -2231,7 +2231,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getObjects().size());
 
         // Getting the object set
-        Objs actualObjects = workspace.getObjectSet("Test_output_objects");
+        Objs actualObjects = workspace.getObjects("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -2248,7 +2248,7 @@ public class IdentifyObjectsTest extends ModuleTest {
 
         for (Obj object : actualObjects.values()) {
             // Identifying the matching object. If this is null, one isn't found
-            Obj expectedObject = expectedObjects.getByEquals(object);
+            Obj expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
             assertNotNull(expectedObject);
 
         }
@@ -2285,7 +2285,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getObjects().size());
 
         // Getting the object set
-        Objs actualObjects = workspace.getObjectSet("Test_output_objects");
+        Objs actualObjects = workspace.getObjects("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -2302,7 +2302,7 @@ public class IdentifyObjectsTest extends ModuleTest {
 
         for (Obj object : actualObjects.values()) {
             // Identifying the matching object. If this is null, one isn't found
-            Obj expectedObject = expectedObjects.getByEquals(object);
+            Obj expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
             assertNotNull(expectedObject);
 
         }
@@ -2339,7 +2339,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getObjects().size());
 
         // Getting the object set
-        Objs actualObjects = workspace.getObjectSet("Test_output_objects");
+        Objs actualObjects = workspace.getObjects("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -2356,7 +2356,7 @@ public class IdentifyObjectsTest extends ModuleTest {
 
         for (Obj object : actualObjects.values()) {
             // Identifying the matching object. If this is null, one isn't found
-            Obj expectedObject = expectedObjects.getByEquals(object);
+            Obj expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
             assertNotNull(expectedObject);
 
         }
@@ -2393,7 +2393,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getObjects().size());
 
         // Getting the object set
-        Objs actualObjects = workspace.getObjectSet("Test_output_objects");
+        Objs actualObjects = workspace.getObjects("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -2411,7 +2411,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         int count = 0;
         for (Obj object : actualObjects.values()) {
             // Identifying the matching object. If this is null, one isn't found
-            Obj expectedObject = expectedObjects.getByEquals(object);
+            Obj expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
             assertNotNull(expectedObject);
 
         }
@@ -2448,7 +2448,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getObjects().size());
 
         // Getting the object set
-        Objs actualObjects = workspace.getObjectSet("Test_output_objects");
+        Objs actualObjects = workspace.getObjects("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -2466,7 +2466,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         int count = 0;
         for (Obj object : actualObjects.values()) {
             // Identifying the matching object. If this is null, one isn't found
-            Obj expectedObject = expectedObjects.getByEquals(object);
+            Obj expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
             assertNotNull(expectedObject);
 
         }
@@ -2503,7 +2503,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getObjects().size());
 
         // Getting the object set
-        Objs actualObjects = workspace.getObjectSet("Test_output_objects");
+        Objs actualObjects = workspace.getObjects("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -2521,7 +2521,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         int count = 0;
         for (Obj object : actualObjects.values()) {
             // Identifying the matching object. If this is null, one isn't found
-            Obj expectedObject = expectedObjects.getByEquals(object);
+            Obj expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
             assertNotNull(expectedObject);
 
         }
@@ -2563,7 +2563,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getObjects().size());
 
         // Getting the object set
-        Objs actualObjects = workspace.getObjectSet("Test_output_objects");
+        Objs actualObjects = workspace.getObjects("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -2580,7 +2580,7 @@ public class IdentifyObjectsTest extends ModuleTest {
 
         for (Obj object : actualObjects.values()) {
             // Identifying the matching object. If this is null, one isn't found
-            Obj expectedObject = expectedObjects.getByEquals(object);
+            Obj expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
             assertNotNull(expectedObject);
 
         }
@@ -2616,7 +2616,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getObjects().size());
 
         // Getting the object set
-        Objs actualObjects = workspace.getObjectSet("Test_output_objects");
+        Objs actualObjects = workspace.getObjects("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -2633,7 +2633,7 @@ public class IdentifyObjectsTest extends ModuleTest {
 
         for (Obj object : actualObjects.values()) {
             // Identifying the matching object. If this is null, one isn't found
-            Obj expectedObject = expectedObjects.getByEquals(object);
+            Obj expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
             assertNotNull(expectedObject);
 
         }
@@ -2669,7 +2669,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getObjects().size());
 
         // Getting the object set
-        Objs actualObjects = workspace.getObjectSet("Test_output_objects");
+        Objs actualObjects = workspace.getObjects("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -2686,7 +2686,7 @@ public class IdentifyObjectsTest extends ModuleTest {
 
         for (Obj object : actualObjects.values()) {
             // Identifying the matching object. If this is null, one isn't found
-            Obj expectedObject = expectedObjects.getByEquals(object);
+            Obj expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
             assertNotNull(expectedObject);
 
         }
@@ -2723,7 +2723,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getObjects().size());
 
         // Getting the object set
-        Objs actualObjects = workspace.getObjectSet("Test_output_objects");
+        Objs actualObjects = workspace.getObjects("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -2740,7 +2740,7 @@ public class IdentifyObjectsTest extends ModuleTest {
 
         for (Obj object : actualObjects.values()) {
             // Identifying the matching object. If this is null, one isn't found
-            Obj expectedObject = expectedObjects.getByEquals(object);
+            Obj expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
             assertNotNull(expectedObject);
 
         }
@@ -2777,7 +2777,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getObjects().size());
 
         // Getting the object set
-        Objs actualObjects = workspace.getObjectSet("Test_output_objects");
+        Objs actualObjects = workspace.getObjects("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -2794,7 +2794,7 @@ public class IdentifyObjectsTest extends ModuleTest {
 
         for (Obj object : actualObjects.values()) {
             // Identifying the matching object. If this is null, one isn't found
-            Obj expectedObject = expectedObjects.getByEquals(object);
+            Obj expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
             assertNotNull(expectedObject);
 
         }
@@ -2831,7 +2831,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getObjects().size());
 
         // Getting the object set
-        Objs actualObjects = workspace.getObjectSet("Test_output_objects");
+        Objs actualObjects = workspace.getObjects("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -2848,7 +2848,7 @@ public class IdentifyObjectsTest extends ModuleTest {
 
         for (Obj object : actualObjects.values()) {
             // Identifying the matching object. If this is null, one isn't found
-            Obj expectedObject = expectedObjects.getByEquals(object);
+            Obj expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
             assertNotNull(expectedObject);
 
         }
@@ -2886,7 +2886,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getObjects().size());
 
         // Getting the object set
-        Objs actualObjects = workspace.getObjectSet("Test_output_objects");
+        Objs actualObjects = workspace.getObjects("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -2903,7 +2903,7 @@ public class IdentifyObjectsTest extends ModuleTest {
 
         for (Obj object : actualObjects.values()) {
             // Identifying the matching object. If this is null, one isn't found
-            Obj expectedObject = expectedObjects.getByEquals(object);
+            Obj expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
             assertNotNull(expectedObject);
 
         }
@@ -2941,7 +2941,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getObjects().size());
 
         // Getting the object set
-        Objs actualObjects = workspace.getObjectSet("Test_output_objects");
+        Objs actualObjects = workspace.getObjects("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -2958,7 +2958,7 @@ public class IdentifyObjectsTest extends ModuleTest {
 
         for (Obj object : actualObjects.values()) {
             // Identifying the matching object. If this is null, one isn't found
-            Obj expectedObject = expectedObjects.getByEquals(object);
+            Obj expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
             assertNotNull(expectedObject);
 
         }
@@ -2996,7 +2996,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getObjects().size());
 
         // Getting the object set
-        Objs actualObjects = workspace.getObjectSet("Test_output_objects");
+        Objs actualObjects = workspace.getObjects("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -3013,7 +3013,7 @@ public class IdentifyObjectsTest extends ModuleTest {
 
         for (Obj object : actualObjects.values()) {
             // Identifying the matching object. If this is null, one isn't found
-            Obj expectedObject = expectedObjects.getByEquals(object);
+            Obj expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
             assertNotNull(expectedObject);
 
         }
@@ -3051,7 +3051,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getObjects().size());
 
         // Getting the object set
-        Objs actualObjects = workspace.getObjectSet("Test_output_objects");
+        Objs actualObjects = workspace.getObjects("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -3068,7 +3068,7 @@ public class IdentifyObjectsTest extends ModuleTest {
 
         for (Obj object : actualObjects.values()) {
             // Identifying the matching object. If this is null, one isn't found
-            Obj expectedObject = expectedObjects.getByEquals(object);
+            Obj expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
             assertNotNull(expectedObject);
 
         }
@@ -3105,7 +3105,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getObjects().size());
 
         // Getting the object set
-        Objs actualObjects = workspace.getObjectSet("Test_output_objects");
+        Objs actualObjects = workspace.getObjects("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -3122,7 +3122,7 @@ public class IdentifyObjectsTest extends ModuleTest {
 
         for (Obj object : actualObjects.values()) {
             // Identifying the matching object. If this is null, one isn't found
-            Obj expectedObject = expectedObjects.getByEquals(object);
+            Obj expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
             assertNotNull(expectedObject);
 
         }
@@ -3159,7 +3159,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getObjects().size());
 
         // Getting the object set
-        Objs actualObjects = workspace.getObjectSet("Test_output_objects");
+        Objs actualObjects = workspace.getObjects("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -3176,7 +3176,7 @@ public class IdentifyObjectsTest extends ModuleTest {
 
         for (Obj object : actualObjects.values()) {
             // Identifying the matching object. If this is null, one isn't found
-            Obj expectedObject = expectedObjects.getByEquals(object);
+            Obj expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
             assertNotNull(expectedObject);
 
         }
@@ -3213,7 +3213,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getObjects().size());
 
         // Getting the object set
-        Objs actualObjects = workspace.getObjectSet("Test_output_objects");
+        Objs actualObjects = workspace.getObjects("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -3230,7 +3230,7 @@ public class IdentifyObjectsTest extends ModuleTest {
 
         for (Obj object : actualObjects.values()) {
             // Identifying the matching object. If this is null, one isn't found
-            Obj expectedObject = expectedObjects.getByEquals(object);
+            Obj expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
             assertNotNull(expectedObject);
 
         }
@@ -3267,7 +3267,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getObjects().size());
 
         // Getting the object set
-        Objs actualObjects = workspace.getObjectSet("Test_output_objects");
+        Objs actualObjects = workspace.getObjects("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -3284,7 +3284,7 @@ public class IdentifyObjectsTest extends ModuleTest {
 
         for (Obj object : actualObjects.values()) {
             // Identifying the matching object. If this is null, one isn't found
-            Obj expectedObject = expectedObjects.getByEquals(object);
+            Obj expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
             assertNotNull(expectedObject);
 
         }
@@ -3321,7 +3321,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getObjects().size());
 
         // Getting the object set
-        Objs actualObjects = workspace.getObjectSet("Test_output_objects");
+        Objs actualObjects = workspace.getObjects("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -3338,7 +3338,7 @@ public class IdentifyObjectsTest extends ModuleTest {
 
         for (Obj object : actualObjects.values()) {
             // Identifying the matching object. If this is null, one isn't found
-            Obj expectedObject = expectedObjects.getByEquals(object);
+            Obj expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
             assertNotNull(expectedObject);
 
         }
@@ -3375,7 +3375,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getObjects().size());
 
         // Getting the object set
-        Objs actualObjects = workspace.getObjectSet("Test_output_objects");
+        Objs actualObjects = workspace.getObjects("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -3395,7 +3395,7 @@ public class IdentifyObjectsTest extends ModuleTest {
 
         for (Obj object : actualObjects.values()) {
             // Identifying the matching object. If this is null, one isn't found
-            Obj expectedObject = expectedObjects.getByEquals(object);
+            Obj expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
             assertNotNull(expectedObject);
 
         }
@@ -3432,7 +3432,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getObjects().size());
 
         // Getting the object set
-        Objs actualObjects = workspace.getObjectSet("Test_output_objects");
+        Objs actualObjects = workspace.getObjects("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -3452,7 +3452,7 @@ public class IdentifyObjectsTest extends ModuleTest {
 
         for (Obj object : actualObjects.values()) {
             // Identifying the matching object. If this is null, one isn't found
-            Obj expectedObject = expectedObjects.getByEquals(object);
+            Obj expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
             assertNotNull(expectedObject);
 
         }
@@ -3489,7 +3489,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getObjects().size());
 
         // Getting the object set
-        Objs actualObjects = workspace.getObjectSet("Test_output_objects");
+        Objs actualObjects = workspace.getObjects("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -3509,7 +3509,7 @@ public class IdentifyObjectsTest extends ModuleTest {
 
         for (Obj object : actualObjects.values()) {
             // Identifying the matching object. If this is null, one isn't found
-            Obj expectedObject = expectedObjects.getByEquals(object);
+            Obj expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
             assertNotNull(expectedObject);
 
         }
@@ -3546,7 +3546,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getObjects().size());
 
         // Getting the object set
-        Objs actualObjects = workspace.getObjectSet("Test_output_objects");
+        Objs actualObjects = workspace.getObjects("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -3563,7 +3563,7 @@ public class IdentifyObjectsTest extends ModuleTest {
 
         for (Obj object : actualObjects.values()) {
             // Identifying the matching object. If this is null, one isn't found
-            Obj expectedObject = expectedObjects.getByEquals(object);
+            Obj expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
             assertNotNull(expectedObject);
 
         }
@@ -3600,7 +3600,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getObjects().size());
 
         // Getting the object set
-        Objs actualObjects = workspace.getObjectSet("Test_output_objects");
+        Objs actualObjects = workspace.getObjects("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -3617,7 +3617,7 @@ public class IdentifyObjectsTest extends ModuleTest {
 
         for (Obj object : actualObjects.values()) {
             // Identifying the matching object. If this is null, one isn't found
-            Obj expectedObject = expectedObjects.getByEquals(object);
+            Obj expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
             assertNotNull(expectedObject);
 
         }
@@ -3654,7 +3654,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getObjects().size());
 
         // Getting the object set
-        Objs actualObjects = workspace.getObjectSet("Test_output_objects");
+        Objs actualObjects = workspace.getObjects("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -3671,7 +3671,7 @@ public class IdentifyObjectsTest extends ModuleTest {
 
         for (Obj object : actualObjects.values()) {
             // Identifying the matching object. If this is null, one isn't found
-            Obj expectedObject = expectedObjects.getByEquals(object);
+            Obj expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
             assertNotNull(expectedObject);
 
         }
@@ -3708,7 +3708,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getObjects().size());
 
         // Getting the object set
-        Objs actualObjects = workspace.getObjectSet("Test_output_objects");
+        Objs actualObjects = workspace.getObjects("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -3725,7 +3725,7 @@ public class IdentifyObjectsTest extends ModuleTest {
 
         for (Obj object : actualObjects.values()) {
             // Identifying the matching object. If this is null, one isn't found
-            Obj expectedObject = expectedObjects.getByEquals(object);
+            Obj expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
             assertNotNull(expectedObject);
 
         }
@@ -3762,7 +3762,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getObjects().size());
 
         // Getting the object set
-        Objs actualObjects = workspace.getObjectSet("Test_output_objects");
+        Objs actualObjects = workspace.getObjects("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -3779,7 +3779,7 @@ public class IdentifyObjectsTest extends ModuleTest {
 
         for (Obj object : actualObjects.values()) {
             // Identifying the matching object. If this is null, one isn't found
-            Obj expectedObject = expectedObjects.getByEquals(object);
+            Obj expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
             assertNotNull(expectedObject);
 
         }
@@ -3816,7 +3816,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getObjects().size());
 
         // Getting the object set
-        Objs actualObjects = workspace.getObjectSet("Test_output_objects");
+        Objs actualObjects = workspace.getObjects("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -3833,7 +3833,7 @@ public class IdentifyObjectsTest extends ModuleTest {
 
         for (Obj object : actualObjects.values()) {
             // Identifying the matching object. If this is null, one isn't found
-            Obj expectedObject = expectedObjects.getByEquals(object);
+            Obj expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
             assertNotNull(expectedObject);
 
         }
@@ -3870,7 +3870,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getObjects().size());
 
         // Getting the object set
-        Objs actualObjects = workspace.getObjectSet("Test_output_objects");
+        Objs actualObjects = workspace.getObjects("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -3890,7 +3890,7 @@ public class IdentifyObjectsTest extends ModuleTest {
 
         for (Obj object : actualObjects.values()) {
             // Identifying the matching object. If this is null, one isn't found
-            Obj expectedObject = expectedObjects.getByEquals(object);
+            Obj expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
             assertNotNull(expectedObject);
 
         }
@@ -3927,7 +3927,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getObjects().size());
 
         // Getting the object set
-        Objs actualObjects = workspace.getObjectSet("Test_output_objects");
+        Objs actualObjects = workspace.getObjects("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -3947,7 +3947,7 @@ public class IdentifyObjectsTest extends ModuleTest {
 
         for (Obj object : actualObjects.values()) {
             // Identifying the matching object. If this is null, one isn't found
-            Obj expectedObject = expectedObjects.getByEquals(object);
+            Obj expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
             assertNotNull(expectedObject);
 
         }
@@ -3984,7 +3984,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertEquals(1, workspace.getObjects().size());
 
         // Getting the object set
-        Objs actualObjects = workspace.getObjectSet("Test_output_objects");
+        Objs actualObjects = workspace.getObjects("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects", actualObjects.getName());
@@ -4004,7 +4004,7 @@ public class IdentifyObjectsTest extends ModuleTest {
 
         for (Obj object : actualObjects.values()) {
             // Identifying the matching object. If this is null, one isn't found
-            Obj expectedObject = expectedObjects.getByEquals(object);
+            Obj expectedObject = expectedObjects.getByEqualsIgnoreNameAndID(object);
             assertNotNull(expectedObject);
 
         }

@@ -414,7 +414,7 @@ public class CalculateNearestNeighbour extends AbstractSaver {
         String nearestNeighbourName = null;
         switch (relationshipMode) {
             case RelationshipModes.DIFFERENT_SET:
-                neighbourObjects = workspace.getObjectSet(neighbourObjectsName);
+                neighbourObjects = workspace.getObjects(neighbourObjectsName);
                 nearestNeighbourName = neighbourObjectsName;
                 break;
 

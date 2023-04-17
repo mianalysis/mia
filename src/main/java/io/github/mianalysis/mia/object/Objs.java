@@ -30,9 +30,6 @@ import ome.units.unit.Unit;
  * Created by sc13967 on 12/05/2017.
  */
 public class Objs extends LinkedHashMap<Integer, Obj> {
-    /**
-     *
-     */
     private static final long serialVersionUID = 7383226061156796558L;
     private String name;
     private int maxID = 0;
@@ -349,12 +346,11 @@ public class Objs extends LinkedHashMap<Integer, Obj> {
      * Returns the Obj with coordinates matching the Obj passed as an argument.
      * Useful for unit tests.
      */
-    public Obj getByEquals(Obj referenceObj) {
-        for (Obj testObj : values()) {
-            if (testObj.equals(referenceObj))
+    public Obj getByEqualsIgnoreNameAndID(Obj referenceObj) {
+        for (Obj testObj : values())
+            if (testObj.equalsIgnoreNameAndID(referenceObj))
                 return testObj;
-        }
-
+        
         return null;
 
     }

@@ -35,6 +35,7 @@ import io.github.mianalysis.mia.object.parameters.InputImageP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.SeparatorP;
 import io.github.mianalysis.mia.object.parameters.choiceinterfaces.BinaryLogicInterface;
+import io.github.mianalysis.mia.object.parameters.choiceinterfaces.ConnectivityInterface;
 import io.github.mianalysis.mia.object.parameters.objects.OutputObjectsP;
 import io.github.mianalysis.mia.object.parameters.text.IntegerP;
 import io.github.mianalysis.mia.object.refs.collections.ImageMeasurementRefs;
@@ -82,12 +83,7 @@ public class IdentifyObjects extends Module {
 
     }
 
-    public interface Connectivity {
-        String SIX = "6";
-        String TWENTYSIX = "26";
-
-        String[] ALL = new String[] { SIX, TWENTYSIX };
-
+    public interface Connectivity extends ConnectivityInterface {
     }
 
     public interface VolumeTypes extends VolumeTypesInterface {

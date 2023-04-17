@@ -2,12 +2,14 @@ package io.github.mianalysis.mia.module.objects.filter;
 
 import java.util.Iterator;
 
-import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.module.Module;
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
-import io.github.mianalysis.mia.module.Category;
+
+import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Categories;
+import io.github.mianalysis.mia.module.Category;
+import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.Measurement;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
@@ -65,7 +67,7 @@ public class FilterByMeasurement extends AbstractNumericObjectFilter {
             // Skipping this object if it doesn't have the measurement
             Measurement measurement = inputObject.getMeasurement(measName);
             if (measurement == null)
-                continue;
+                continue;    
 
             double value = measurement.getValue();
             double refValue = getReferenceValue(workspace, inputObject);
@@ -90,7 +92,7 @@ public class FilterByMeasurement extends AbstractNumericObjectFilter {
             }
         }
 
-        // If moving objects, addRef them to the workspace
+        // If moving objects, add them to the workspace
         if (moveObjects)
             workspace.addObjects(outputObjects);
 

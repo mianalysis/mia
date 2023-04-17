@@ -69,8 +69,8 @@ public class MeasureObjectShapeTest extends ModuleTest {
         assertEquals(1,workspace.getObjects().size());
 
         // Checking the number of objects in the set
-        assertNotNull(workspace.getObjectSet(inputObjectsName));
-        assertEquals(8,workspace.getObjectSet(inputObjectsName).size());
+        assertNotNull(workspace.getObjects(inputObjectsName));
+        assertEquals(8,workspace.getObjects(inputObjectsName).size());
 
         // Running through each object, checking it has the expected number of measurements and the expected value
         for (Obj testObject:testObjects.values()) {

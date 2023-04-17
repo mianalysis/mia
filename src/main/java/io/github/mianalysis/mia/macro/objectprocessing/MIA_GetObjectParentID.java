@@ -28,7 +28,7 @@ public class MIA_GetObjectParentID extends MacroOperation {
         String parentObjectsName = (String) objects[2];
 
         // Getting the children of the input object
-        Objs inputObjects = workspace.getObjectSet(inputObjectsName);
+        Objs inputObjects = workspace.getObjects(inputObjectsName);
         if (inputObjects == null) return "";
         Obj inputObject = inputObjects.get(objectID);
         Obj parentObject = inputObject.getParent(parentObjectsName);
