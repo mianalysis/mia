@@ -1065,6 +1065,74 @@
       </exclusions>
     </dependency>
     <dependency>
+      <groupId>org.bytedeco</groupId>
+      <artifactId>javacv-platform</artifactId>
+      <version>1.5.2</version>
+      <scope>provided</scope>
+      <exclusions>
+        <exclusion>
+          <artifactId>javacv</artifactId>
+          <groupId>org.bytedeco</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>openblas-platform</artifactId>
+          <groupId>org.bytedeco</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>opencv-platform</artifactId>
+          <groupId>org.bytedeco</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>ffmpeg-platform</artifactId>
+          <groupId>org.bytedeco</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>flycapture-platform</artifactId>
+          <groupId>org.bytedeco</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>libdc1394-platform</artifactId>
+          <groupId>org.bytedeco</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>libfreenect-platform</artifactId>
+          <groupId>org.bytedeco</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>libfreenect2-platform</artifactId>
+          <groupId>org.bytedeco</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>librealsense-platform</artifactId>
+          <groupId>org.bytedeco</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>librealsense2-platform</artifactId>
+          <groupId>org.bytedeco</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>videoinput-platform</artifactId>
+          <groupId>org.bytedeco</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>artoolkitplus-platform</artifactId>
+          <groupId>org.bytedeco</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>flandmark-platform</artifactId>
+          <groupId>org.bytedeco</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>leptonica-platform</artifactId>
+          <groupId>org.bytedeco</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>tesseract-platform</artifactId>
+          <groupId>org.bytedeco</groupId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
       <groupId>mpicbg</groupId>
       <artifactId>mpicbg</artifactId>
       <version>1.4.2</version>
