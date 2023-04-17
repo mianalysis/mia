@@ -12,4 +12,5 @@ target/site/*
 !target/site/images/
 
 *.log
+.vscode/settings.json
 lib/macosx/.crashed
