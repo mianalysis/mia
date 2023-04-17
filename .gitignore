@@ -12,3 +12,4 @@ target/site/*
 !target/site/images/
 
 *.log
+lib/macosx/.crashed
