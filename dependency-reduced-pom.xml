@@ -10,7 +10,7 @@
   <groupId>io.github.mianalysis</groupId>
   <artifactId>MIA</artifactId>
   <name>MIA</name>
-  <version>1.2.5</version>
+  <version>1.2.6-SNAPSHOT</version>
   <description>ModularImageAnalysis (MIA) is an ImageJ plugin which provides a modular framework for assembling image and object analysis workflows. Detected objects can be transformed, filtered, measured and related. Analysis workflows are batch-enabled by default, allowing easy processing of high-content datasets.</description>
   <url>https://github.com/mianalysis/mia</url>
   <issueManagement>
@@ -1061,74 +1061,6 @@
         <exclusion>
           <artifactId>imglib2</artifactId>
           <groupId>net.imglib2</groupId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-    <dependency>
-      <groupId>org.bytedeco</groupId>
-      <artifactId>javacv-platform</artifactId>
-      <version>1.5.2</version>
-      <scope>provided</scope>
-      <exclusions>
-        <exclusion>
-          <artifactId>javacv</artifactId>
-          <groupId>org.bytedeco</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>openblas-platform</artifactId>
-          <groupId>org.bytedeco</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>opencv-platform</artifactId>
-          <groupId>org.bytedeco</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>ffmpeg-platform</artifactId>
-          <groupId>org.bytedeco</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>flycapture-platform</artifactId>
-          <groupId>org.bytedeco</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>libdc1394-platform</artifactId>
-          <groupId>org.bytedeco</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>libfreenect-platform</artifactId>
-          <groupId>org.bytedeco</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>libfreenect2-platform</artifactId>
-          <groupId>org.bytedeco</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>librealsense-platform</artifactId>
-          <groupId>org.bytedeco</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>librealsense2-platform</artifactId>
-          <groupId>org.bytedeco</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>videoinput-platform</artifactId>
-          <groupId>org.bytedeco</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>artoolkitplus-platform</artifactId>
-          <groupId>org.bytedeco</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>flandmark-platform</artifactId>
-          <groupId>org.bytedeco</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>leptonica-platform</artifactId>
-          <groupId>org.bytedeco</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>tesseract-platform</artifactId>
-          <groupId>org.bytedeco</groupId>
         </exclusion>
       </exclusions>
     </dependency>

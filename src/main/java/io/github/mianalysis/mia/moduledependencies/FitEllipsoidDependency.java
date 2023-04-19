@@ -17,7 +17,7 @@ public class FitEllipsoidDependency extends Dependency {
 
     @Override
     public String getMessage() {
-        return "Please install BoneJ dependency";
+        return "Please enable BoneJ update site (see https://imagej.net/plugins/bonej for more information)";
     }
     
     @Override

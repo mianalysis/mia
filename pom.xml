@@ -346,12 +346,12 @@
             <scope>${scp}</scope>
         </dependency>
         
-        <dependency>
+        <!-- <dependency>
             <groupId>org.bytedeco</groupId>
             <artifactId>javacv-platform</artifactId>
             <version>1.5.2</version>
             <scope>${scp}</scope>
-          </dependency>
+        </dependency> -->
 
         <!-- <dependency>
             <groupId>org.bytedeco</groupId>
@@ -421,10 +421,10 @@
         <dependency>
             <!-- <groupId>com.github.sjcross</groupId>
             <artifactId>sjcommon</artifactId>
-            <version>v1.12.3</version> -->
+            <version>v1.12.5</version> -->
             <groupId>io.github.sjcross</groupId>
             <artifactId>sjcommon</artifactId>
-            <version>1.12.3</version>
+            <version>1.12.5</version>
         </dependency>
     </dependencies>
 
