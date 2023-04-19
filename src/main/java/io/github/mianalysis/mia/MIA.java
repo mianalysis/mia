@@ -24,8 +24,6 @@ import io.github.mianalysis.mia.gui.GUI;
 import io.github.mianalysis.mia.module.LostAndFound;
 import io.github.mianalysis.mia.module.core.InputControl;
 import io.github.mianalysis.mia.moduledependencies.Dependencies;
-import io.github.mianalysis.mia.object.image.Image;
-import io.github.mianalysis.mia.object.image.renderer.ImgPlusRenderer;
 import io.github.mianalysis.mia.object.system.Preferences;
 import io.github.mianalysis.mia.process.DependencyValidator;
 import io.github.mianalysis.mia.process.analysishandling.Analysis;
