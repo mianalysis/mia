@@ -14,4 +14,3 @@ target/site/*
 *.log
 .vscode/settings.json
 lib/macosx/.crashed
-.vscode/settings.json
