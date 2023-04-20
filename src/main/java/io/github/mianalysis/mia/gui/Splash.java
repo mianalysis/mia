@@ -7,13 +7,13 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import javax.swing.ImageIcon;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JWindow;
 import javax.swing.SwingConstants;
 
 
-public class Splash extends JWindow {
+public class Splash extends JFrame {
     /**
      *
      */
@@ -31,19 +31,21 @@ public class Splash extends JWindow {
         blankLogo = new ImageIcon(Splash.class.getResource("/images/Logo_splash"+suffix+".png"));
 
         label = new JLabel("", blankLogo, SwingConstants.CENTER);
-        label.setOpaque(false);
+        // label.setOpaque(false);
+        label.setBackground(new Color(0,100,0,100));
 
         final JPanel pane = new JPanel();
-		pane.setOpaque(false);
+		// pane.setOpaque(false);
 		pane.setLayout(new BorderLayout());
 		pane.add(label, BorderLayout.CENTER);
+        pane.setBackground(new Color(100,0,0,100));
 		setContentPane(pane);
+        setUndecorated(true);
 		pack();
-
-        setAlwaysOnTop(true);
+        
 		setLocationRelativeTo(null);
-		setBackground(new Color(0, 0, 0, 0));
-
+        setBackground(new Color(0,0,0,0));
+        getRootPane().setBackground(new Color(0,0,0,0));
         
     }
 
