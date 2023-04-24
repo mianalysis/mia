@@ -149,7 +149,7 @@ public class FilterByProximity extends AbstractObjectFilter {
                 if (inputObject == sortedObject)
                     continue;
 
-                if (scores.get(inputObject) < minSeparation && remove)
+                if (scores.containsKey(inputObject) && scores.get(inputObject) < minSeparation && remove)
                     processRemoval(inputObject, outputObjects, iterator);
 
             }

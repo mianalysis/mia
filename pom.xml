@@ -6,13 +6,13 @@
     <parent>
         <groupId>org.scijava</groupId>
         <artifactId>pom-scijava</artifactId>
-        <version>33.2.0</version>
+        <version>34.1.0</version>
         <relativePath />
     </parent>
 
     <groupId>io.github.mianalysis</groupId>
     <artifactId>MIA</artifactId>
-    <version>1.2.5</version>
+    <version>1.2.6-SNAPSHOT</version>
     <packaging>jar</packaging>
     <name>MIA</name>
     <url>https://github.com/mianalysis/mia</url>
@@ -185,7 +185,7 @@
         <dependency>
             <groupId>com.formdev</groupId>
             <artifactId>flatlaf</artifactId>
-            <version>2.4</version>
+            <version>3.1.1</version>
         </dependency>
 
         <dependency>
@@ -199,7 +199,6 @@
             <artifactId>poi-ooxml-lite</artifactId>
             <version>5.2.3</version>
         </dependency>
-
         
         <dependency>
             <groupId>org.apache.poi</groupId>
@@ -346,6 +345,35 @@
             <version>3.3.2</version>
             <scope>${scp}</scope>
         </dependency>
+        
+        <!-- <dependency>
+            <groupId>org.bytedeco</groupId>
+            <artifactId>javacv-platform</artifactId>
+            <version>1.5.2</version>
+            <scope>${scp}</scope>
+        </dependency> -->
+
+        <!-- <dependency>
+            <groupId>org.bytedeco</groupId>
+            <artifactId>javacv</artifactId>
+            <version>1.4.4</version>
+        </dependency>
+        <dependency>
+            <groupId>org.bytedeco</groupId>
+            <artifactId>javacpp</artifactId>
+            <version>1.4.4</version>
+        </dependency>
+        <dependency>
+            <groupId>org.bytedeco</groupId>
+            <artifactId>ffmpeg</artifactId>
+            <version>4.0.1-1.4.4</version>
+        </dependency>
+        <dependency>
+            <groupId>org.bytedeco.javacpp-presets</groupId>
+            <artifactId>opencv</artifactId>
+            <version>4.0.1-1.4.4</version>
+        </dependency> -->
+        
 
         <!-- THE FOLLOWING DEPENDENCY IS JUST UNTIL SCIJAVA POM MOVES FROM 1.53t, which has a
         Z-projector bug -->
@@ -391,12 +419,12 @@
         </dependency>
 
         <dependency>
-            <!-- <groupId>com.github.sjcross</groupId>
+            <groupId>com.github.sjcross</groupId>
             <artifactId>sjcommon</artifactId>
-            <version>v1.12.3</version> -->
-            <groupId>io.github.sjcross</groupId>
+            <version>v1.12.5</version>
+            <!-- <groupId>io.github.sjcross</groupId>
             <artifactId>sjcommon</artifactId>
-            <version>1.12.3</version>
+            <version>1.12.3</version> -->
         </dependency>
     </dependencies>
 

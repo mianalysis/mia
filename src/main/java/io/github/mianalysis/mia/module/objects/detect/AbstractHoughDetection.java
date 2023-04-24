@@ -109,8 +109,8 @@ public abstract class AbstractHoughDetection extends Module {
         if (showHoughScore) {
             DecimalFormat df = LabelFactory.getDecimalFormat(0, true);
             IDs = LabelFactory.getMeasurementLabels(outputObjects, Measurements.SCORE, df);
-            AddLabels.addOverlay(dispIpl, outputObjects, AddLabels.LabelPositions.CENTRE, IDs, labelSize, 0, 0, colours,
-                    false, false, true, null);
+            AddLabels.addOverlay(dispIpl, outputObjects, AddLabels.LabelPositions.CENTRE, IDs, labelSize, 0, 0, true, colours,
+                    false, false, true, null, null);
         }
 
         AddObjectOutline.addOverlay(dispIpl, outputObjects, 1, 1, colours, false, true);

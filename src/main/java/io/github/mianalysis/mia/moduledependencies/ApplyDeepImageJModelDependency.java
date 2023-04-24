@@ -17,7 +17,7 @@ public class ApplyDeepImageJModelDependency extends Dependency {
 
     @Override
     public String getMessage() {
-        return "Please enable DeepImageJ update site (see https://github.com/deepimagej/deepimagej-plugin/wiki/Installation-requirements for more information)";
+        return "Please enable DeepImageJ update site (see https://deepimagej.github.io/download.html for more information)";
     }
 
     @Override
