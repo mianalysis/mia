@@ -384,12 +384,12 @@
         </dependency>
 
 
-        <dependency>
+        <!-- <dependency>
             <groupId>mpicbg</groupId>
             <artifactId>mpicbg</artifactId>
             <version>1.4.2</version>
             <scope>${scp}</scope>
-        </dependency>
+        </dependency> -->
 
         <dependency>
             <groupId>fr.inra.ijpb</groupId>
