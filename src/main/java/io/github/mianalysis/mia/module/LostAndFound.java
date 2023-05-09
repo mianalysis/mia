@@ -26,6 +26,7 @@ import io.github.mianalysis.mia.module.inputoutput.ObjectLoader;
 import io.github.mianalysis.mia.module.objects.convert.ConvertImageToObjects;
 import io.github.mianalysis.mia.module.objects.convert.CreateDistanceMap;
 import io.github.mianalysis.mia.module.objects.detect.CircleHoughDetection;
+import io.github.mianalysis.mia.module.objects.filter.FilterByMeasurementExtremes;
 import io.github.mianalysis.mia.module.objects.measure.intensity.MeasureObjectIntensity;
 import io.github.mianalysis.mia.module.objects.measure.miscellaneous.ReplaceMeasurementValue;
 import io.github.mianalysis.mia.module.objects.measure.spatial.CalculateNearestNeighbour;
@@ -307,6 +308,17 @@ public class LostAndFound {
         moduleName = new AffineMOPS(null).getClass().getSimpleName();
         lostParameterValues.put(moduleName, currentParameterValues);
         moduleName = new AffineSIFT(null).getClass().getSimpleName();
+        lostParameterValues.put(moduleName, currentParameterValues);
+
+        // FilterByMeasurementExtremes
+        currentValues = new HashMap<>();
+        currentValues.put("Remove object with largest measurement", FilterByMeasurementExtremes.FilterMethods.REMOVE_LARGEST);
+        currentValues.put("Remove object with smallest measurement", FilterByMeasurementExtremes.FilterMethods.REMOVE_SMALLEST);
+        currentValues.put("Retain object with largest measurement", FilterByMeasurementExtremes.FilterMethods.RETAIN_LARGEST);
+        currentValues.put("Retain object with smallest measurement", FilterByMeasurementExtremes.FilterMethods.RETAIN_SMALLEST);
+        currentParameterValues = new HashMap<>();
+        currentParameterValues.put(FilterByMeasurementExtremes.FILTER_METHOD, currentValues);
+        moduleName = new FilterByMeasurementExtremes(null).getClass().getSimpleName();
         lostParameterValues.put(moduleName, currentParameterValues);
 
         // CalculateNearestNeighbour

@@ -12,8 +12,6 @@ import ij.process.ImageProcessor;
 import ij.process.LUT;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
-import io.github.mianalysis.mia.object.image.renderer.ImageRenderer;
-import io.github.mianalysis.mia.object.image.renderer.ImgPlusRenderer;
 import io.github.mianalysis.mia.object.units.TemporalUnit;
 import io.github.sjcross.sjcommon.object.Point;
 import io.github.sjcross.sjcommon.object.volume.PointOutOfRangeException;
