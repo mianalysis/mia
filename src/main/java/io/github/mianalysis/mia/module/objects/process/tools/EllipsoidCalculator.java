@@ -1,6 +1,6 @@
 package io.github.mianalysis.mia.module.objects.process.tools;
 
-import org.bonej.geometry.EllipsoidMod;
+import org.bonej.geometry.Ellipsoid;
 import org.bonej.geometry.FitEllipsoid;
 
 import io.github.mianalysis.mia.MIA;
@@ -13,7 +13,7 @@ import io.github.sjcross.sjcommon.object.volume.VolumeType;
 
 public class EllipsoidCalculator {
     private final Volume volume;
-    private EllipsoidMod ell;
+    private Ellipsoid ell;
 
     public static void main(String[] args) {
         SpatCal spatCal = new SpatCal(1, 1, "px", 200, 200, 20);
@@ -105,7 +105,7 @@ public class EllipsoidCalculator {
      * @param ell
      * @param volume
      */
-    EllipsoidCalculator(EllipsoidMod ell, Volume volume) throws RuntimeException {
+    EllipsoidCalculator(Ellipsoid ell, Volume volume) throws RuntimeException {
         this.ell = ell;
         this.volume = volume;
     }
@@ -127,7 +127,7 @@ public class EllipsoidCalculator {
         }
 
         try {
-            ell = new EllipsoidMod(FitEllipsoid.yuryPetrov(coords));
+            ell = new Ellipsoid(FitEllipsoid.yuryPetrov(coords));
             double[] ellCent = ell.getCentre();
             ell.setCentroid(ellCent[0] + xCent, ellCent[1] + yCent, ellCent[2] + zCent);
         } catch (RuntimeException e) {

@@ -205,6 +205,7 @@ public class SpotDetection extends Module {
 
         spotObject.addMeasurement(new Measurement(Measurements.RADIUS_PX, spot.getFeature(Spot.RADIUS)));
         spotObject.addMeasurement(new Measurement(Measurements.RADIUS_CAL, spot.getFeature(Spot.RADIUS) * dppXY));
+        spotObject.addMeasurement(new Measurement(Measurements.QUALITY, spot.getFeature(Spot.QUALITY)));
 
         if (doSubpixel) {
             spotObject.addMeasurement(new Measurement(Measurements.X_CENTROID_PX, spot.getFeature(Spot.POSITION_X)));
