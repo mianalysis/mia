@@ -43,6 +43,10 @@ public class AnalysisRunner {
     // PUBLIC METHODS
 
     public void run(Analysis analysis) throws InterruptedException, IOException {
+        run(analysis, true);
+    }
+
+    public void run(Analysis analysis, boolean clearMemoryAtEnd) throws InterruptedException, IOException {
         MIA.clearLogHistory();
         counter = 0;
 
@@ -101,7 +105,7 @@ public class AnalysisRunner {
         }
 
         for (Workspace workspace : workspaces)            
-            pool.submit(createRunnable(analysis, workspace, exporter));
+            pool.submit(createRunnable(analysis, workspace, exporter, clearMemoryAtEnd));
         
         // Telling the pool not to accept any more jobs and to wait until all queued
         // jobs have completed
@@ -121,7 +125,6 @@ public class AnalysisRunner {
         outputControl.runMacro(workspaces.iterator().next());
 
         // Cleaning up
-        
         if (MIA.isHeadless()) {
             LogRenderer.setProgress(100);
             MIA.log.writeStatus("Complete!\n");
@@ -295,7 +298,7 @@ public class AnalysisRunner {
 
     }
 
-    Runnable createRunnable(Analysis analysis, Workspace workspace, Exporter exporter) {
+    Runnable createRunnable(Analysis analysis, Workspace workspace, Exporter exporter, boolean clearMemoryAtEnd) {
         return () -> {
             File file = workspace.getMetadata().getFile();
             int seriesNumber = workspace.getMetadata().getSeriesNumber();
@@ -307,7 +310,7 @@ public class AnalysisRunner {
                 int saveNFiles = outputControl.getParameterValue(OutputControl.SAVE_EVERY_N, null);
 
                 // Running the current analysis
-                analysis.execute(workspace);
+                analysis.execute(workspace, clearMemoryAtEnd);
 
                 // Getting the number of completed and total tasks
                 incrementCounter();
@@ -321,8 +324,10 @@ public class AnalysisRunner {
                 if (outputControl.isExportIndividual()) {
                     String name = outputControl.getIndividualOutputPath(workspace.getMetadata());
                     exporter.exportResults(workspace, analysis, name);
-                    workspace.clearAllObjects(false);
-                    workspace.clearAllImages(false);
+                    if (clearMemoryAtEnd) {
+                        workspace.clearAllObjects(false);
+                        workspace.clearAllImages(false);
+                    }
                 } else if (continuousExport && getCounter() % saveNFiles == 0) {
                     String name = outputControl.getGroupOutputPath(inputControl.getRootFile());
                     exporter.exportResults(workspace, analysis, name);

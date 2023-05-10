@@ -37,11 +37,15 @@ public class Analysis {
     public void initialise() {
     }
 
+    public boolean execute(Workspace workspace) {
+        return execute(workspace, true);
+    }
+
     /*
      * The method that gets called by the AnalysisRunner. This shouldn't have any
      * user interaction elements
      */
-    public boolean execute(Workspace workspace) {
+    public boolean execute(Workspace workspace, boolean clearMemoryAtEnd) {
         MIA.log.writeDebug("Processing file \"" + workspace.getMetadata().getFile().getAbsolutePath() + "\"");
 
         // Setting the MacroHandler to the current workspace (only if macro modules are
@@ -103,9 +107,10 @@ public class Analysis {
 
         // We're only interested in the measurements now, so clearing images and object
         // coordinates
-        workspace.clearAllImages(true);
-        workspace.clearAllObjects(true);
-
+        if (clearMemoryAtEnd) {
+            workspace.clearAllImages(true);
+            workspace.clearAllObjects(true);
+        }
         // If enabled, write the current memory usage to the console
         if (MIA.getMainRenderer().isWriteEnabled(LogRenderer.Level.MEMORY)) {
             double totalMemory = Runtime.getRuntime().totalMemory();
