@@ -8,6 +8,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
+import org.apache.commons.lang.SystemUtils;
+
 import deepimagej.DeepImageJ;
 import deepimagej.DeepLearningModel;
 import deepimagej.RunnerProgress;
@@ -22,7 +24,6 @@ import deepimagej.tools.ModelLoader;
 import deepimagej.tools.StartTensorflowService;
 import deepimagej.tools.SystemUsage;
 import ij.IJ;
-import ij.ImageJ;
 import ij.ImagePlus;
 import ij.plugin.PlugIn;
 import io.github.mianalysis.mia.MIA;
@@ -43,18 +44,12 @@ public class PrepareDeepImageJ implements PlugIn {
 
     }
 
-    public static void main(String[] args) {
-        new ImageJ();
-        ImagePlus imp = IJ.openImage(
-                "C:\\Users\\steph\\Programs\\Fiji.app\\models\\cell-segmentation-from-membrane-staining-for-plant-tissues_tensorflow_saved_model_bundle_06122022_153116\\exampleImage.tif");
-        DeepImageJ model = getModel("Cell Segmentation from Membrane Staining for Plant Tissues");
-        ImagePlus outputIpl = new PrepareDeepImageJ().runModel(imp, model, "Tensorflow", true, false, "256,256,8,1");
-        outputIpl.duplicate().show();
-    }
-
     public static String getModelsPath() {
         if (MIA.isDebug())
-            return "C:\\Users\\steph\\Programs\\Fiji.app\\models\\";
+            if (SystemUtils.OS_NAME.equals("Mac OS X"))
+                return "/Users/sc13967/Applications/Fiji.app/models/";
+            else
+                return "C:\\Users\\steph\\Programs\\Fiji.app\\models\\";
         else
             return IJ.getDirectory("imagej") + File.separator + "models" + File.separator;
     }

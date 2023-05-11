@@ -6,6 +6,20 @@
     "configurations": [
         {
             "type": "java",
+            "name": "Analysis",
+            "request": "launch",
+            "mainClass": "io.github.mianalysis.mia.process.analysishandling.Analysis",
+            "projectName": "MIA"
+        },
+        {
+            "type": "java",
+            "name": "MIA_RunWorkflow",
+            "request": "launch",
+            "mainClass": "io.github.mianalysis.mia.macro.general.MIA_RunWorkflow",
+            "projectName": "MIA"
+        },
+        {
+            "type": "java",
             "name": "ShowQuadtree",
             "request": "launch",
             "mainClass": "io.github.mianalysis.mia.ShowQuadtree",
