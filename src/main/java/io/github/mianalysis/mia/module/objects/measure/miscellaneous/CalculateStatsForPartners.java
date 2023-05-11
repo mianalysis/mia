@@ -142,7 +142,7 @@ public class CalculateStatsForPartners extends Module {
         // Getting other parameters
         String partnerObjectsName = parameters.getValue(PARTNER_OBJECTS, workspace);
         String measurement = parameters.getValue(MEASUREMENT, workspace);
-        boolean[] statsToCalculate = new boolean[5];
+        boolean[] statsToCalculate = new boolean[6];
         statsToCalculate[0] = parameters.getValue(CALCULATE_MEAN, workspace);
         statsToCalculate[1] = parameters.getValue(CALCULATE_STD, workspace);
         statsToCalculate[2] = parameters.getValue(CALCULATE_MIN, workspace);
