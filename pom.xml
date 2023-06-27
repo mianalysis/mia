@@ -12,7 +12,7 @@
 
     <groupId>io.github.mianalysis</groupId>
     <artifactId>MIA</artifactId>
-    <version>1.2.7</version>
+    <version>1.2.8-SNAPSHOT</version>
     <packaging>jar</packaging>
     <name>MIA</name>
     <url>https://github.com/mianalysis/mia</url>
@@ -419,13 +419,11 @@
         </dependency>
 
         <dependency>
-            <groupId>com.github.mcib3d</groupId>
-            <artifactId>ABSnake</artifactId>
-            <version>-SNAPSHOT</version>
-            <!-- <groupId>io.github.sjcross</groupId>
-            <artifactId>sjcommon</artifactId>
-            <version>1.12.3</version> -->
+            <groupId>net.sourceforge.tess4j</groupId>
+            <artifactId>tess4j</artifactId>
+            <version>5.7.0</version>
         </dependency>
+
 
         <dependency>
             <groupId>com.github.sjcross</groupId>
