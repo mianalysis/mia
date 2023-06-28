@@ -13,6 +13,13 @@ ModularImageAnalysis (MIA) is an ImageJ plugin which provides a modular framewor
 For the full documentation, please go to [mianalysis.github.io](https://mianalysis.github.io)
 
 
+![](./docs/img/carousel/carousel1.png)
+
+Poster
+------------
+
+<a href="https://github.com/mianalysis/mia/tree/main/docs/img/posters/CBIAS_poster_2022.jpg"><img src="./docs/img/posters/CBIAS_poster_2022_thumb.jpg" height=50 align="middle"></a> You can check out the latest MIA poster from CBIAS 2022 [here](./docs/img/posters/CBIAS_poster_2022.jpg)
+
 Installation
 ------------
 ### Via the update site

@@ -1,0 +1,2 @@
+
+<a href="https://github.com/mianalysis/mia/tree/main/docs/img/posters/CBIAS_poster_2022.jpg"><img src="./docs/img/posters/CBIAS_poster_2022_thumb.jpg" height=50 align="middle"></a> You can check out the latest MIA poster from CBIAS 2022 [here](./docs/img/posters/CBIAS_poster_2022.jpg)

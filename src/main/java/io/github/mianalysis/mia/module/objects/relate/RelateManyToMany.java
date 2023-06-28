@@ -155,8 +155,6 @@ public class RelateManyToMany extends Module {
     public static final String MEASUREMENT_2 = "Measurement 2";
     public static final String CALCULATION = "Calculation";
     public static final String MEASUREMENT_LIMIT = "Measurement limit";
-
-    public static final String MISCELLANEOUS_SEPARATOR = "Miscellaneous settings";
     public static final String LINK_IN_SAME_FRAME = "Only link objects in same frame";
 
     public interface ObjectSourceModes {
@@ -575,7 +573,6 @@ public class RelateManyToMany extends Module {
         collection.add(new DoubleP(MEASUREMENT_LIMIT, this, 1));
         parameters.add(new ParameterGroup(ADD_MEASUREMENT, this, collection, 0, getUpdaterAndGetter()));
 
-        parameters.add(new SeparatorP(MISCELLANEOUS_SEPARATOR, this));
         parameters.add(new BooleanP(LINK_IN_SAME_FRAME, this, true));
 
         addParameterDescriptions();
@@ -631,7 +628,6 @@ public class RelateManyToMany extends Module {
         returnedParameters.add(parameters.getParameter(ADDITIONAL_MEASUREMENTS_SEPARATOR));
         returnedParameters.add(parameters.getParameter(ADD_MEASUREMENT));
 
-        returnedParameters.add(parameters.getParameter(MISCELLANEOUS_SEPARATOR));
         returnedParameters.add(parameters.getParameter(LINK_IN_SAME_FRAME));
 
         return returnedParameters;

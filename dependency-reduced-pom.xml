@@ -10,7 +10,7 @@
   <groupId>io.github.mianalysis</groupId>
   <artifactId>MIA</artifactId>
   <name>MIA</name>
-  <version>1.2.7</version>
+  <version>1.2.8-SNAPSHOT</version>
   <description>ModularImageAnalysis (MIA) is an ImageJ plugin which provides a modular framework for assembling image and object analysis workflows. Detected objects can be transformed, filtered, measured and related. Analysis workflows are batch-enabled by default, allowing easy processing of high-content datasets.</description>
   <url>https://github.com/mianalysis/mia</url>
   <issueManagement>
@@ -737,6 +737,10 @@
           <groupId>org.ojalgo</groupId>
         </exclusion>
         <exclusion>
+          <artifactId>jama</artifactId>
+          <groupId>gov.nist.math</groupId>
+        </exclusion>
+        <exclusion>
           <artifactId>imglib2</artifactId>
           <groupId>net.imglib2</groupId>
         </exclusion>
@@ -887,10 +891,6 @@
           <groupId>ai.djl.pytorch</groupId>
         </exclusion>
         <exclusion>
-          <artifactId>jna</artifactId>
-          <groupId>net.java.dev.jna</groupId>
-        </exclusion>
-        <exclusion>
           <artifactId>npy</artifactId>
           <groupId>org.jetbrains.bio</groupId>
         </exclusion>
@@ -979,6 +979,10 @@
           <groupId>com.itextpdf</groupId>
         </exclusion>
         <exclusion>
+          <artifactId>jama</artifactId>
+          <groupId>gov.nist.math</groupId>
+        </exclusion>
+        <exclusion>
           <artifactId>fiji-lib</artifactId>
           <groupId>sc.fiji</groupId>
         </exclusion>
@@ -1011,6 +1015,18 @@
           <groupId>sc.fiji</groupId>
         </exclusion>
         <exclusion>
+          <artifactId>VIB-lib</artifactId>
+          <groupId>sc.fiji</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>vecmath</artifactId>
+          <groupId>org.scijava</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>weka-dev</artifactId>
+          <groupId>nz.ac.waikato.cms.weka</groupId>
+        </exclusion>
+        <exclusion>
           <artifactId>imglib2-algorithm-gpl</artifactId>
           <groupId>net.imglib2</groupId>
         </exclusion>
@@ -1033,6 +1049,12 @@
       <artifactId>MorphoLibJ_</artifactId>
       <version>1.5.0</version>
       <scope>provided</scope>
+      <exclusions>
+        <exclusion>
+          <artifactId>jama</artifactId>
+          <groupId>gov.nist.math</groupId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>de.biomedical-imaging.imagej</groupId>
@@ -1055,6 +1077,10 @@
         <exclusion>
           <artifactId>Skeletonize3D_</artifactId>
           <groupId>sc.fiji</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>jama</artifactId>
+          <groupId>gov.nist.math</groupId>
         </exclusion>
       </exclusions>
     </dependency>
