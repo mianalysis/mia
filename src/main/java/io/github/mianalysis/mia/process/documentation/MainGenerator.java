@@ -84,7 +84,7 @@ public class MainGenerator {
                 "![](./docs/img/carousel/carousel1.png)");
             sb.append("\n\n");
 
-            sb.append("Poster").append("\n").append("------------").append("\n");
+            sb.append("Preprint and poster").append("\n").append("------------").append("\n");
             sb.append(new String(Files.readAllBytes(Paths.get("src/main/resources/templatemd/poster.md"))));
             sb.append("\n\n");
 
