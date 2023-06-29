@@ -6,6 +6,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "ApplyDeepLearningModel",
+            "request": "launch",
+            "mainClass": "io.github.mianalysis.mia.module.images.process.ApplyDeepLearningModel",
+            "projectName": "MIA"
+        },
+        {
+            "type": "java",
             "name": "Analysis",
             "request": "launch",
             "mainClass": "io.github.mianalysis.mia.process.analysishandling.Analysis",

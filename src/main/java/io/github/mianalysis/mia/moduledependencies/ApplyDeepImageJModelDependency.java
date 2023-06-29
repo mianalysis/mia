@@ -22,7 +22,7 @@ public class ApplyDeepImageJModelDependency extends Dependency {
 
     @Override
     public String getVersionThreshold() {
-        return "0.0.0";
+        return "3.0.3";
     }
 
     @Override

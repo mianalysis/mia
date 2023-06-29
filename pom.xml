@@ -199,7 +199,7 @@
             <artifactId>poi-ooxml-lite</artifactId>
             <version>5.2.3</version>
         </dependency>
-        
+
         <dependency>
             <groupId>org.apache.poi</groupId>
             <artifactId>poi-ooxml</artifactId>
@@ -334,6 +334,15 @@
             <scope>${scp}</scope>
         </dependency>
         <dependency>
+			<groupId>org.yaml</groupId>
+			<artifactId>snakeyaml</artifactId>
+		</dependency>
+        <dependency>
+            <groupId>io.bioimage</groupId>
+            <artifactId>dl-modelrunner</artifactId>
+            <version>0.3.10</version>
+        </dependency>
+        <dependency>
             <groupId>sc.fiji</groupId>
             <artifactId>TrackMate</artifactId>
             <version>7.10.0</version>
@@ -345,7 +354,7 @@
             <version>3.3.2</version>
             <scope>${scp}</scope>
         </dependency>
-        
+
         <!-- <dependency>
             <groupId>org.bytedeco</groupId>
             <artifactId>javacv-platform</artifactId>
@@ -373,7 +382,7 @@
             <artifactId>opencv</artifactId>
             <version>4.0.1-1.4.4</version>
         </dependency> -->
-        
+
 
         <!-- THE FOLLOWING DEPENDENCY IS JUST UNTIL SCIJAVA POM MOVES FROM 1.53t, which has a
         Z-projector bug -->
