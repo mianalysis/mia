@@ -4,6 +4,7 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -28,7 +29,7 @@ public class GuideGenerator extends AbstractGenerator {
         String path = GuideGenerator.class.getResource("/guides").getPath();
         path = path.replace("%20", " ");
         File guideRoot = new File(path);
-        
+
         generateGuideListPages(guideRoot);
 
     }
@@ -80,9 +81,12 @@ public class GuideGenerator extends AbstractGenerator {
         }
         mainContent = mainContent.replace("${CATEGORY_CARDS}", categoryContent);
 
-        // Finding guides in this category and adding them to this page
+        // Finding guides in this category, sorting by number, then adding them to this page
         String guideContent = "";
-        for (File guide : file.listFiles()) {            
+        File[] guideFiles = file.listFiles();
+        Arrays.sort(guideFiles);
+
+        for (File guide : guideFiles) {      
             // We won't want to process categories or the metadata files for categories
             if (guide.isDirectory() || guide.getName().subSequence(0,1).equals("_"))
                 continue;
