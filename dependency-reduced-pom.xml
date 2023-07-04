@@ -509,10 +509,6 @@
           <groupId>xerces</groupId>
         </exclusion>
         <exclusion>
-          <artifactId>snakeyaml</artifactId>
-          <groupId>org.yaml</groupId>
-        </exclusion>
-        <exclusion>
           <artifactId>ome-common</artifactId>
           <groupId>org.openmicroscopy</groupId>
         </exclusion>
@@ -673,10 +669,6 @@
       <scope>provided</scope>
       <exclusions>
         <exclusion>
-          <artifactId>imglib2</artifactId>
-          <groupId>net.imglib2</groupId>
-        </exclusion>
-        <exclusion>
           <artifactId>imglib2-roi</artifactId>
           <groupId>net.imglib2</groupId>
         </exclusion>
@@ -741,10 +733,6 @@
           <groupId>gov.nist.math</groupId>
         </exclusion>
         <exclusion>
-          <artifactId>imglib2</artifactId>
-          <groupId>net.imglib2</groupId>
-        </exclusion>
-        <exclusion>
           <artifactId>imglib2-roi</artifactId>
           <groupId>net.imglib2</groupId>
         </exclusion>
@@ -788,10 +776,6 @@
           <artifactId>joml</artifactId>
           <groupId>org.joml</groupId>
         </exclusion>
-        <exclusion>
-          <artifactId>imglib2</artifactId>
-          <groupId>net.imglib2</groupId>
-        </exclusion>
       </exclusions>
     </dependency>
     <dependency>
@@ -826,10 +810,6 @@
         </exclusion>
         <exclusion>
           <artifactId>imglib2-algorithm</artifactId>
-          <groupId>net.imglib2</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>imglib2</artifactId>
           <groupId>net.imglib2</groupId>
         </exclusion>
       </exclusions>
@@ -905,10 +885,6 @@
         <exclusion>
           <artifactId>libtensorflow</artifactId>
           <groupId>org.tensorflow</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>snakeyaml</artifactId>
-          <groupId>org.yaml</groupId>
         </exclusion>
         <exclusion>
           <artifactId>imagej-tensorflow</artifactId>
@@ -998,10 +974,6 @@
           <artifactId>imagej-common</artifactId>
           <groupId>net.imagej</groupId>
         </exclusion>
-        <exclusion>
-          <artifactId>imglib2</artifactId>
-          <groupId>net.imglib2</groupId>
-        </exclusion>
       </exclusions>
     </dependency>
     <dependency>
@@ -1037,10 +1009,6 @@
         <exclusion>
           <artifactId>fiji-lib</artifactId>
           <groupId>sc.fiji</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>imglib2</artifactId>
-          <groupId>net.imglib2</groupId>
         </exclusion>
       </exclusions>
     </dependency>

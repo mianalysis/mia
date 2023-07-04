@@ -17,6 +17,7 @@
 // import org.yaml.snakeyaml.Yaml;
 
 // import deepimagej.ImagePlus2TensorNew;
+// import ij.ImagePlus;
 // import io.bioimage.modelrunner.bioimageio.BioimageioRepo;
 // import io.bioimage.modelrunner.engine.installation.EngineManagement;
 // import io.bioimage.modelrunner.model.Model;
@@ -28,6 +29,7 @@
 // import io.github.mianalysis.mia.module.Modules;
 // import io.github.mianalysis.mia.object.Workspace;
 // import io.github.mianalysis.mia.object.image.Image;
+// import io.github.mianalysis.mia.object.image.ImageFactory;
 // import io.github.mianalysis.mia.object.parameters.ChoiceP;
 // import io.github.mianalysis.mia.object.parameters.InputImageP;
 // import io.github.mianalysis.mia.object.parameters.OutputImageP;
@@ -57,19 +59,19 @@
 
 //     private static HashMap<String, String> modelPaths = getModelPaths(modelsDir);
 
-//     public static void main(String[] args) {
-        
-//         String modelPath = modelPaths.values().iterator().next();
-//             try {
-//                 // Ensuring the correct engine is installed
-//                 boolean ins = EngineManagement.installEnginesinDirForModelInFolder(modelPath, enginesDir);
-//                 System.out.println(ins);
-//                 Model model = Model.createBioimageioModel(modelPath, enginesDir);
-//             } catch (Exception e) {
-//                 e.printStackTrace();
-//             }
-        
-//     }
+//     // public static void main(String[] args) {
+
+//     //     String modelPath = modelPaths.values().iterator().next();
+//     //     try {
+//     //         // Ensuring the correct engine is installed
+//     //         boolean ins = EngineManagement.installEnginesinDirForModelInFolder(modelPath, enginesDir);
+//     //         System.out.println(ins);
+//     //         Model model = Model.createBioimageioModel(modelPath, enginesDir);
+//     //     } catch (Exception e) {
+//     //         e.printStackTrace();
+//     //     }
+
+//     // }
 
 //     public interface Models {
 //         String[] ALL = modelPaths.keySet().toArray(new String[modelPaths.size()]);
@@ -117,8 +119,6 @@
 
 //     }
 
-    
-
 //     @Override
 //     protected Status process(Workspace workspace) {
 //         // Getting parameters
@@ -135,40 +135,33 @@
 //             // It's necessary to connect to BioimageioRepo, else we get exceptions
 //             BioimageioRepo.connect();
 //             EngineManagement.installEnginesinDirForModelInFolder(modelPath, enginesDir);
-            
+
 //             // Creating the model
 //             Model model = Model.createBioimageioModel(modelPath, enginesDir);
 
-//             RandomAccessibleInterval<FloatType> inputRAI = ImagePlus2TensorNew.imPlus2tensor(inputImage.getImagePlus(), "bcyx");
-//             Tensor inputTensor = Tensor.build("inp", "bcyx", inputRAI);
-//             Tensor outputTensor = Tensor.buildEmptyTensor("ou", "bcyx");
-            
+//             RandomAccessibleInterval<FloatType> inputRAI = ImagePlus2TensorNew.imPlus2tensor(inputImage.getImagePlus(),
+//                     "bcyx");
+//             Tensor inputTensor = Tensor.build("input0", "bcyx", inputRAI);
+//             Tensor outputTensor = Tensor.buildEmptyTensor("output0", "bcyx");
+
 //             List<Tensor<?>> inputTensors = new ArrayList<Tensor<?>>();
 //             List<Tensor<?>> outputTensors = new ArrayList<Tensor<?>>();
 //             inputTensors.add(inputTensor);
 //             outputTensors.add(outputTensor);
 //             model.runModel(inputTensors, outputTensors);
 
+//             ImagePlus iplOut = ImagePlus2TensorNew.tensor2ImagePlus(outputTensor.getData(), "bcyx");
+
+//             // Storing output image
+//             Image outputImage = ImageFactory.createImage(outputImageName, iplOut);
+//             workspace.addImage(outputImage);
+
+//             if (showOutput)
+//                 outputImage.show();
+
 //         } catch (Exception e) {
 //             e.printStackTrace();
 //         }
-
-//         // Creating model
-//         // String modelPath = modelPaths.get(modelName);
-//         // try {
-//         //     Model model = Model.createBioimageioModel(modelPath, enginesDir);
-//         //     MIA.log.writeDebug(model);
-//         // } catch (Exception e) {
-//         //     MIA.log.writeError(e);
-//         //     return Status.FAIL;
-//         // }
-
-//         // Storing output image
-//         // Image outputImage = ImageFactory.createImage(outputImageName, outputIpl);
-//         // workspace.addImage(outputImage);
-
-//         // if (showOutput)
-//         // outputImage.show();
 
 //         return Status.PASS;
 
