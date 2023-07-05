@@ -26,7 +26,6 @@ import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.VolumeTypesInterface;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.image.Image;
-import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.InputObjectsP;
 import io.github.mianalysis.mia.object.parameters.Parameters;
@@ -102,6 +101,7 @@ public class MeasureSkeleton extends Module {
         try {
             AnalyzeSkeleton_ analyzeSkeleton = new AnalyzeSkeleton_();
             analyzeSkeleton.setup("", skeletonImage.getImagePlus());
+
             SkeletonResult skeletonResult = analyzeSkeleton.run(AnalyzeSkeleton_.NONE, minLengthFinal,
                     exportLargestShortestPathFinal, skeletonImage.getImagePlus(), true, false);
 

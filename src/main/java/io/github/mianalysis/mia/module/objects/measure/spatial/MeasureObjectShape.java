@@ -69,8 +69,8 @@ public class MeasureObjectShape extends Module {
     }
 
     public interface SurfaceAreaMethods {
-        String THREE = "3";
-        String THIRTEEN = "13";
+        String THREE = "3 directions";
+        String THIRTEEN = "13 directions";
 
         String[] ALL = new String[] { THREE, THIRTEEN };
 
