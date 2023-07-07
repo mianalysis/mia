@@ -95,24 +95,24 @@ public class ScaleStack<T extends RealType<T> & NativeType<T>> extends Module {
     @Override
     protected Status process(Workspace workspace) {
         // Getting parameters
-        String inputImageName = parameters.getValue(INPUT_IMAGE,workspace);
-        String outputImageName = parameters.getValue(OUTPUT_IMAGE,workspace);
-        String interpolationMode = ((String) parameters.getValue(INTERPOLATION_MODE,workspace)).toLowerCase();
-        String xScaleMode = parameters.getValue(X_SCALE_MODE,workspace);
-        int xResolution = parameters.getValue(X_RESOLUTION,workspace);
-        String xImageName = parameters.getValue(X_IMAGE,workspace);
-        boolean xAdoptCalibration = parameters.getValue(X_ADOPT_CALIBRATION,workspace);
-        double xScaleFactor = parameters.getValue(X_SCALE_FACTOR,workspace);
-        String yScaleMode = parameters.getValue(Y_SCALE_MODE,workspace);
-        int yResolution = parameters.getValue(Y_RESOLUTION,workspace);
-        String yImageName = parameters.getValue(Y_IMAGE,workspace);
-        boolean yAdoptCalibration = parameters.getValue(Y_ADOPT_CALIBRATION,workspace);
-        double yScaleFactor = parameters.getValue(Y_SCALE_FACTOR,workspace);
-        String zScaleMode = parameters.getValue(Z_SCALE_MODE,workspace);
-        int zResolution = parameters.getValue(Z_RESOLUTION,workspace);
-        String zImageName = parameters.getValue(Z_IMAGE,workspace);
-        boolean zAdoptCalibration = parameters.getValue(Z_ADOPT_CALIBRATION,workspace);
-        double zScaleFactor = parameters.getValue(Z_SCALE_FACTOR,workspace);
+        String inputImageName = parameters.getValue(INPUT_IMAGE, workspace);
+        String outputImageName = parameters.getValue(OUTPUT_IMAGE, workspace);
+        String interpolationMode = ((String) parameters.getValue(INTERPOLATION_MODE, workspace)).toLowerCase();
+        String xScaleMode = parameters.getValue(X_SCALE_MODE, workspace);
+        int xResolution = parameters.getValue(X_RESOLUTION, workspace);
+        String xImageName = parameters.getValue(X_IMAGE, workspace);
+        boolean xAdoptCalibration = parameters.getValue(X_ADOPT_CALIBRATION, workspace);
+        double xScaleFactor = parameters.getValue(X_SCALE_FACTOR, workspace);
+        String yScaleMode = parameters.getValue(Y_SCALE_MODE, workspace);
+        int yResolution = parameters.getValue(Y_RESOLUTION, workspace);
+        String yImageName = parameters.getValue(Y_IMAGE, workspace);
+        boolean yAdoptCalibration = parameters.getValue(Y_ADOPT_CALIBRATION, workspace);
+        double yScaleFactor = parameters.getValue(Y_SCALE_FACTOR, workspace);
+        String zScaleMode = parameters.getValue(Z_SCALE_MODE, workspace);
+        int zResolution = parameters.getValue(Z_RESOLUTION, workspace);
+        String zImageName = parameters.getValue(Z_IMAGE, workspace);
+        boolean zAdoptCalibration = parameters.getValue(Z_ADOPT_CALIBRATION, workspace);
+        double zScaleFactor = parameters.getValue(Z_SCALE_FACTOR, workspace);
 
         Image inputImage = workspace.getImages().get(inputImageName);
 
@@ -216,7 +216,7 @@ public class ScaleStack<T extends RealType<T> & NativeType<T>> extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
-Workspace workspace = null;
+        Workspace workspace = null;
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
@@ -228,7 +228,7 @@ Workspace workspace = null;
 
         returnedParameters.add(parameters.getParameter(X_AXIS_SEPARATOR));
         returnedParameters.add(parameters.getParameter(X_SCALE_MODE));
-        switch ((String) parameters.getValue(X_SCALE_MODE,workspace)) {
+        switch ((String) parameters.getValue(X_SCALE_MODE, workspace)) {
             case ScaleModes.FIXED_RESOLUTION:
                 returnedParameters.add(parameters.getParameter(X_RESOLUTION));
                 break;
@@ -243,7 +243,7 @@ Workspace workspace = null;
 
         returnedParameters.add(parameters.getParameter(Y_AXIS_SEPARATOR));
         returnedParameters.add(parameters.getParameter(Y_SCALE_MODE));
-        switch ((String) parameters.getValue(Y_SCALE_MODE,workspace)) {
+        switch ((String) parameters.getValue(Y_SCALE_MODE, workspace)) {
             case ScaleModes.FIXED_RESOLUTION:
                 returnedParameters.add(parameters.getParameter(Y_RESOLUTION));
                 break;
@@ -258,7 +258,7 @@ Workspace workspace = null;
 
         returnedParameters.add(parameters.getParameter(Z_AXIS_SEPARATOR));
         returnedParameters.add(parameters.getParameter(Z_SCALE_MODE));
-        switch ((String) parameters.getValue(Z_SCALE_MODE,workspace)) {
+        switch ((String) parameters.getValue(Z_SCALE_MODE, workspace)) {
             case ScaleModes.FIXED_RESOLUTION:
                 returnedParameters.add(parameters.getParameter(Z_RESOLUTION));
                 break;
@@ -277,27 +277,27 @@ Workspace workspace = null;
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
-return null;
+        return null;
     }
 
     @Override
-public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
-return null;
+    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+        return null;
     }
 
     @Override
-public MetadataRefs updateAndGetMetadataReferences() {
-return null;
+    public MetadataRefs updateAndGetMetadataReferences() {
+        return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
-return null;
+        return null;
     }
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
-return null;
+        return null;
     }
 
     @Override

@@ -141,6 +141,7 @@ public class RelateOneToOne extends Module {
     public static final String CALIBRATED_UNITS = "Calibrated units";
     public static final String MINIMUM_OVERLAP_PC_1 = "Minimum overlap of object 1 (%)";
     public static final String MINIMUM_OVERLAP_PC_2 = "Minimum overlap of object 2 (%)";
+    public static final String LINK_IN_SAME_FRAME = "Only link objects in same frame";
 
     
     public interface RelationshipModes {
@@ -165,13 +166,17 @@ public class RelateOneToOne extends Module {
 
     }
 
-    public static ArrayList<Linkable> getCentroidSeparationLinkables(Objs inputObjects1, Objs inputObjects2,
+    public static ArrayList<Linkable> getCentroidSeparationLinkables(Objs inputObjects1, Objs inputObjects2, boolean linkInSameFrame, 
             double maxSeparation) {
         ArrayList<Linkable> linkables = new ArrayList<>();
 
         // Getting linkable objects
         for (Obj object1 : inputObjects1.values()) {
             for (Obj object2 : inputObjects2.values()) {
+                // Testing if the two objects are in the same frame (if this matters)
+                if (linkInSameFrame && object1.getT() != object2.getT())
+                    continue;
+
                 // Calculating the separation between the two objects
                 double overlap = object1.getCentroidSeparation(object2, true);
 
@@ -185,13 +190,17 @@ public class RelateOneToOne extends Module {
 
     }
 
-    public static ArrayList<Linkable> getSpatialOverlapLinkables(Objs inputObjects1, Objs inputObjects2,
+    public static ArrayList<Linkable> getSpatialOverlapLinkables(Objs inputObjects1, Objs inputObjects2, boolean linkInSameFrame, 
             double minOverlap1, double minOverlap2) {
         ArrayList<Linkable> linkables = new ArrayList<>();
 
         // Calculating the overlaps
         for (Obj object1 : inputObjects1.values()) {
             for (Obj object2 : inputObjects2.values()) {
+                // Testing if the two objects are in the same frame (if this matters)
+                if (linkInSameFrame && object1.getT() != object2.getT())
+                    continue;
+
                 // Calculate the overlap between the two objects
                 double overlap = object1.getOverlap(object2);
 
@@ -352,6 +361,7 @@ public class RelateOneToOne extends Module {
         boolean calibratedUnits = parameters.getValue(CALIBRATED_UNITS,workspace);
         double minOverlap1 = parameters.getValue(MINIMUM_OVERLAP_PC_1,workspace);
         double minOverlap2 = parameters.getValue(MINIMUM_OVERLAP_PC_2,workspace);
+        boolean linkInSameFrame = parameters.getValue(LINK_IN_SAME_FRAME,workspace);
 
         // Skipping the module if no objects are present in one collection
         if (inputObjects1.size() == 0 || inputObjects2.size() == 0) {
@@ -372,11 +382,11 @@ public class RelateOneToOne extends Module {
         switch (relationshipMode) {
             case RelationshipModes.CENTROID_SEPARATION:
             default:
-                linkables = getCentroidSeparationLinkables(inputObjects1, inputObjects2, maximumSeparation);
+                linkables = getCentroidSeparationLinkables(inputObjects1, inputObjects2, linkInSameFrame, maximumSeparation);
                 break;
 
             case RelationshipModes.SPATIAL_OVERLAP:
-                linkables = getSpatialOverlapLinkables(inputObjects1, inputObjects2, minOverlap1, minOverlap2);
+                linkables = getSpatialOverlapLinkables(inputObjects1, inputObjects2, linkInSameFrame, minOverlap1, minOverlap2);
                 break;
         }
 
@@ -418,6 +428,7 @@ public class RelateOneToOne extends Module {
         parameters.add(new BooleanP(CALIBRATED_UNITS, this, false));
         parameters.add(new DoubleP(MINIMUM_OVERLAP_PC_1, this, 50.0));
         parameters.add(new DoubleP(MINIMUM_OVERLAP_PC_2, this, 50.0));
+        parameters.add(new BooleanP(LINK_IN_SAME_FRAME, this, true));
 
         addParameterDescriptions();
 
@@ -448,6 +459,8 @@ Workspace workspace = null;
                 returnedParameters.add(parameters.getParameter(MINIMUM_OVERLAP_PC_2));
                 break;
         }
+
+        returnedParameters.add(parameters.getParameter(LINK_IN_SAME_FRAME));
 
         return returnedParameters;
 
@@ -602,6 +615,9 @@ Workspace workspace = null;
         parameters.get(MINIMUM_OVERLAP_PC_2).setDescription("If \"" + RELATIONSHIP_MODE + "\" is set to \""
                 + RelationshipModes.SPATIAL_OVERLAP
                 + "\", this is the minimum percentage overlap the second object must have with the other object for the two objects to be related.");
+
+        parameters.get(LINK_IN_SAME_FRAME).setDescription(
+                "When selected, objects must be in the same time frame for them to be linked.");
 
     }
 }

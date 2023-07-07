@@ -18,6 +18,7 @@ import org.scijava.plugin.Plugin;
 import org.scijava.plugin.PluginService;
 import org.scijava.script.ScriptService;
 import org.scijava.ui.UIService;
+import org.scijava.util.VersionUtils;
 
 import ij.Prefs;
 import io.github.mianalysis.mia.gui.GUI;
@@ -129,6 +130,9 @@ public class MIA implements Command {
         // Run the dependency validator. If updates were required, return.
         if (DependencyValidator.run())
             return;
+
+        // Check Kryo version
+        kryoCheck();
 
         try {
             new GUI();
@@ -273,5 +277,19 @@ public class MIA implements Command {
 
     public static void setScriptService(ScriptService scriptService) {
         MIA.scriptService = scriptService;
+    }
+
+    // Checking if Kryo is greater than or equal to version 5.4.0.  
+    // If it isn't, the Memoizer will be disabled (an issue since Bio-Formats 6.14.0)
+    // Once Fiji's "Java8" update site uses kryo 5.4.0 this function can be disabled
+    public static boolean kryoCheck() {
+        try {
+            Class.forName("com.esotericsoftware.kryo.util.DefaultInstantiatorStrategy");
+            return true;
+        } catch (ClassNotFoundException e) {
+            // Setting directly, so it doesn't change the saved Preference
+            MIA.getPreferences().getAllParameters().updateValue(Preferences.USE_MEMOIZER, false);
+            return false;
+        }
     }
 }

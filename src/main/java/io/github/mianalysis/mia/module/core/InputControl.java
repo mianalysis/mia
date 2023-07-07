@@ -50,6 +50,7 @@ import io.github.sjcross.sjcommon.system.FileCrawler;
 import loci.common.DebugTools;
 import loci.common.services.ServiceFactory;
 import loci.formats.ChannelSeparator;
+import loci.formats.IFormatReader;
 import loci.formats.Memoizer;
 import loci.formats.MissingLibraryException;
 import loci.formats.UnknownFormatException;
@@ -246,8 +247,7 @@ public class InputControl extends Module {
         ServiceFactory factory = new ServiceFactory();
         OMEXMLService service = factory.getInstance(OMEXMLService.class);
         IMetadata meta = service.createOMEXMLMetadata();
-        Memoizer reader = new Memoizer(new ImageProcessorReader(new ChannelSeparator(LociPrefs.makeImageReader())),
-                MIA.getPreferences().getMemoizerThreshold() * 1000);
+        IFormatReader reader = MIA.getPreferences().getReader(new ImageProcessorReader(new ChannelSeparator(LociPrefs.makeImageReader())));
         reader.setMetadataStore((MetadataStore) meta);
         reader.setGroupFiles(false);
         try {
@@ -321,8 +321,7 @@ public class InputControl extends Module {
         ServiceFactory factory = new ServiceFactory();
         OMEXMLService service = factory.getInstance(OMEXMLService.class);
         OMEXMLMetadata meta = service.createOMEXMLMetadata();
-        Memoizer reader = new Memoizer(new ImageProcessorReader(new ChannelSeparator(LociPrefs.makeImageReader())),
-                MIA.getPreferences().getMemoizerThreshold() * 1000);
+        IFormatReader reader = MIA.getPreferences().getReader(new ImageProcessorReader(new ChannelSeparator(LociPrefs.makeImageReader())));
         reader.setMetadataStore((MetadataStore) meta);
         reader.setGroupFiles(false);
         try {

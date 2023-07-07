@@ -98,7 +98,7 @@ public class CircleHoughDetection extends AbstractHoughDetection {
         int nFrames = ipl.getNFrames();
         double frameInterval = ipl.getCalibration().frameInterval;
         Objs outputObjects = new Objs(outputObjectsName, cal, nFrames, frameInterval, TemporalUnit.getOMEUnit());
-
+        
         xRange = resampleRange(xRange, samplingRate);
         yRange = resampleRange(yRange, samplingRate);
         radiusRange = resampleRange(radiusRange, samplingRate);

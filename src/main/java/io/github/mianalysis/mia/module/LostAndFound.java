@@ -31,6 +31,7 @@ import io.github.mianalysis.mia.module.objects.measure.intensity.MeasureObjectIn
 import io.github.mianalysis.mia.module.objects.measure.miscellaneous.ReplaceMeasurementValue;
 import io.github.mianalysis.mia.module.objects.measure.spatial.CalculateNearestNeighbour;
 import io.github.mianalysis.mia.module.objects.measure.spatial.MeasureObjectCurvature;
+import io.github.mianalysis.mia.module.objects.measure.spatial.MeasureObjectShape;
 import io.github.mianalysis.mia.module.objects.process.FitActiveContours;
 import io.github.mianalysis.mia.module.objects.process.FitConvexHull2D;
 import io.github.mianalysis.mia.module.objects.process.FitGaussian2D;
@@ -350,7 +351,7 @@ public class LostAndFound {
         lostParameterValues.put(moduleName, currentParameterValues);
 
         // InputControl
-        currentValues = new HashMap<>();
+        currentValues = new HashMap<>(); 
         currentValues.put("METRE", SpatialUnit.AvailableUnits.METRE);
         currentValues.put("CENTIMETRE", SpatialUnit.AvailableUnits.CENTIMETRE);
         currentValues.put("MILLIMETRE", SpatialUnit.AvailableUnits.MILLIMETRE);
@@ -360,6 +361,15 @@ public class LostAndFound {
         currentParameterValues = new HashMap<>();
         currentParameterValues.put(InputControl.SPATIAL_UNIT, currentValues);
         moduleName = new InputControl(null).getClass().getSimpleName();
+        lostParameterValues.put(moduleName, currentParameterValues);
+
+        // MeasureObjectShape
+        currentValues = new HashMap<>();
+        currentValues.put("3", MeasureObjectShape.SurfaceAreaMethods.THREE);
+        currentValues.put("13", MeasureObjectShape.SurfaceAreaMethods.THIRTEEN);
+        currentParameterValues = new HashMap<>();
+        currentParameterValues.put(MeasureObjectShape.SURFACE_AREA_METHOD, currentValues);
+        moduleName = new MeasureObjectShape(null).getClass().getSimpleName();
         lostParameterValues.put(moduleName, currentParameterValues);
 
         // MetadataExtractor
@@ -440,3 +450,4 @@ public class LostAndFound {
 
     }
 }
+// <3 Ada and Evelyn 

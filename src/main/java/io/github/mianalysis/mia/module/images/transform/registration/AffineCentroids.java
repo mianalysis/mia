@@ -90,7 +90,7 @@ public class AffineCentroids extends AbstractAffineRegistration {
             }
         }
 
-        ArrayList<Linkable> linkables = RelateOneToOne.getCentroidSeparationLinkables(candidates1, candidates2,
+        ArrayList<Linkable> linkables = RelateOneToOne.getCentroidSeparationLinkables(candidates1, candidates2, false,
                 p.maxSeparation);
         DefaultCostMatrixCreator<Integer, Integer> creator = RelateOneToOne.getCostMatrixCreator(linkables);
         JaqamanLinker<Integer, Integer> linker = new JaqamanLinker<>(creator);

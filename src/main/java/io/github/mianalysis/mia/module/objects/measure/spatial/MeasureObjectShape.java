@@ -69,8 +69,8 @@ public class MeasureObjectShape extends Module {
     }
 
     public interface SurfaceAreaMethods {
-        String THREE = "3";
-        String THIRTEEN = "13";
+        String THREE = "3 directions";
+        String THIRTEEN = "13 directions";
 
         String[] ALL = new String[] { THREE, THIRTEEN };
 
@@ -96,6 +96,16 @@ public class MeasureObjectShape extends Module {
         String SPHERICITY = "SHAPE // SPHERICITY";
         String EULER_NUMBER = "SHAPE // EULER_NUMBER";
 
+    }
+
+    public static int getSurfaceAreaMethod(String surfaceAreaMethod) {
+        switch (surfaceAreaMethod) {
+            case SurfaceAreaMethods.THIRTEEN:
+            return 13;
+            case SurfaceAreaMethods.THREE:
+            default:
+            return 3;
+        }
     }
 
     public double calculateBaseAreaPx(Obj object) {
@@ -157,12 +167,13 @@ public class MeasureObjectShape extends Module {
 
         Map<Integer, Result> results = new IntrinsicVolumesAnalyzer3D().analyzeRegions(tightIpl);
         Result result = results.values().iterator().next();
-        
+
         inputObject.addMeasurement(new Measurement(Measurements.SURFACE_AREA_CAL, result.surfaceArea));
         inputObject.addMeasurement(new Measurement(Measurements.MEAN_BREADTH_CAL, result.meanBreadth));
         inputObject.addMeasurement(new Measurement(Measurements.EULER_NUMBER, result.eulerNumber));
-        inputObject.addMeasurement(new Measurement(Measurements.SPHERICITY, IntrinsicVolumes3D.sphericity(result.volume, result.surfaceArea)));
-        
+        inputObject.addMeasurement(new Measurement(Measurements.SPHERICITY,
+                IntrinsicVolumes3D.sphericity(result.volume, result.surfaceArea)));
+
     }
 
     @Override
@@ -185,8 +196,10 @@ public class MeasureObjectShape extends Module {
         boolean measureProjectedPerimeter = parameters.getValue(MEASURE_PROJECTED_PERIM, workspace);
         boolean measure3dMetrics = parameters.getValue(MEASURE_3D_METRICS, workspace);
         int connectivity = Integer.parseInt(parameters.getValue(CONNECTIVITY, workspace));
-        int surfaceAreaMethod = Integer.parseInt(parameters.getValue(SURFACE_AREA_METHOD, workspace));
+        String surfaceAreaMethodStr = parameters.getValue(SURFACE_AREA_METHOD, workspace);
         boolean multithread = parameters.getValue(ENABLE_MULTITHREADING, workspace);
+
+        int surfaceAreaMethodInt = getSurfaceAreaMethod(surfaceAreaMethodStr);
 
         // Getting input objects
         Objs inputObjects = workspace.getObjects().get(inputObjectName);
@@ -277,8 +290,8 @@ public class MeasureObjectShape extends Module {
                 }
 
                 if (measure3dMetrics)
-                    measure3DMetrics(inputObject,connectivity,surfaceAreaMethod);
-                
+                    measure3DMetrics(inputObject, connectivity, surfaceAreaMethodInt);
+
                 // Clearing the projected object from memory to save some space
                 if (projectedObject != null & !inputObject.is2D())
                     inputObject.clearProjected();
@@ -467,24 +480,27 @@ public class MeasureObjectShape extends Module {
             ObjMeasurementRef reference = objectMeasurementRefs.getOrPut(Measurements.SURFACE_AREA_CAL);
             returnedRefs.add(reference);
             reference.setObjectsName(inputObjectsName);
-            reference.setDescription("Surface area of the 3D object, \"" + inputObjectsName + "\".  Measured in calibrated units.");
+            reference.setDescription(
+                    "Surface area of the 3D object, \"" + inputObjectsName + "\".  Measured in calibrated units.");
 
             reference = objectMeasurementRefs.getOrPut(Measurements.SPHERICITY);
             returnedRefs.add(reference);
             reference.setObjectsName(inputObjectsName);
-            reference.setDescription("Sphericity of the 3D object, \"" + inputObjectsName + "\".  This is defined as <i>36*pi*(V^2)/(S^3)</i>, where <i>V</i> is the object volume and <i>S</i> is the surface area.");
+            reference.setDescription("Sphericity of the 3D object, \"" + inputObjectsName
+                    + "\".  This is defined as <i>36*pi*(V^2)/(S^3)</i>, where <i>V</i> is the object volume and <i>S</i> is the surface area.");
 
             reference = objectMeasurementRefs.getOrPut(Measurements.EULER_NUMBER);
             returnedRefs.add(reference);
             reference.setObjectsName(inputObjectsName);
-            reference.setDescription("The Euler number of the 3D object, \"" + inputObjectsName + "\".  A detailed description of MorphoLibJ's Euler number implementation can be found \"<a href=\"https://imagej.net/plugins/morpholibj\">here</a>\".");
+            reference.setDescription("The Euler number of the 3D object, \"" + inputObjectsName
+                    + "\".  A detailed description of MorphoLibJ's Euler number implementation can be found \"<a href=\"https://imagej.net/plugins/morpholibj\">here</a>\".");
 
             reference = objectMeasurementRefs.getOrPut(Measurements.MEAN_BREADTH_CAL);
             returnedRefs.add(reference);
             reference.setObjectsName(inputObjectsName);
-            reference.setDescription("The mean breadth of the 3D object, \"" + inputObjectsName + "\".  Measured in calibrated units.  A detailed description of MorphoLibJ's mean breadth calculation can be found \"<a href=\"https://imagej.net/plugins/morpholibj\">here</a>\".");
+            reference.setDescription("The mean breadth of the 3D object, \"" + inputObjectsName
+                    + "\".  Measured in calibrated units.  A detailed description of MorphoLibJ's mean breadth calculation can be found \"<a href=\"https://imagej.net/plugins/morpholibj\">here</a>\".");
 
-            
         }
 
         return returnedRefs;

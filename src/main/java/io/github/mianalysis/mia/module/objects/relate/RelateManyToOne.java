@@ -514,7 +514,6 @@ public class RelateManyToOne extends Module {
 
         // Getting parameters
         String relateMode = parameters.getValue(RELATE_MODE,workspace);
-        boolean linkInSameFrame = parameters.getValue(LINK_IN_SAME_FRAME,workspace);
         String referenceMode = parameters.getValue(REFERENCE_MODE,workspace);
         boolean limitLinking = parameters.getValue(LIMIT_LINKING_BY_DISTANCE,workspace);
         double linkingDistance = parameters.getValue(LINKING_DISTANCE,workspace);
@@ -522,6 +521,7 @@ public class RelateManyToOne extends Module {
         double minOverlap = parameters.getValue(MINIMUM_OVERLAP,workspace);
         boolean centroidOverlap = parameters.getValue(REQUIRE_CENTROID_OVERLAP,workspace);
         boolean calcFrac = parameters.getValue(CALCULATE_FRACTIONAL_DISTANCE,workspace);
+        boolean linkInSameFrame = parameters.getValue(LINK_IN_SAME_FRAME,workspace);
         boolean multithread = parameters.getValue(ENABLE_MULTITHREADING,workspace);
 
         if (!limitLinking)

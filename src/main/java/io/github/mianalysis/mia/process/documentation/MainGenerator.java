@@ -80,6 +80,14 @@ public class MainGenerator {
             sb.append(new String(Files.readAllBytes(Paths.get("src/main/resources/templatemd/introduction.md"))));
             sb.append("\n\n");
 
+            sb.append(
+                "![](./docs/img/carousel/carousel1.png)");
+            sb.append("\n\n");
+
+            sb.append("Preprint and poster").append("\n").append("------------").append("\n");
+            sb.append(new String(Files.readAllBytes(Paths.get("src/main/resources/templatemd/poster.md"))));
+            sb.append("\n\n");
+
             sb.append("Installation").append("\n").append("------------").append("\n");
             sb.append(new String(Files.readAllBytes(Paths.get("src/main/resources/templatemd/installation.md"))));
             sb.append("\n\n");

@@ -6,13 +6,13 @@
     <parent>
         <groupId>org.scijava</groupId>
         <artifactId>pom-scijava</artifactId>
-        <version>34.1.0</version>
+        <version>35.1.1</version>
         <relativePath />
     </parent>
 
     <groupId>io.github.mianalysis</groupId>
     <artifactId>MIA</artifactId>
-    <version>1.2.7</version>
+    <version>1.2.8</version>
     <packaging>jar</packaging>
     <name>MIA</name>
     <url>https://github.com/mianalysis/mia</url>
@@ -199,7 +199,7 @@
             <artifactId>poi-ooxml-lite</artifactId>
             <version>5.2.3</version>
         </dependency>
-        
+
         <dependency>
             <groupId>org.apache.poi</groupId>
             <artifactId>poi-ooxml</artifactId>
@@ -237,9 +237,9 @@
         </dependency>
 
         <dependency>
-            <groupId>ome</groupId>
-            <artifactId>formats-bsd</artifactId>
-            <scope>${scp}</scope>
+            <groupId>com.esotericsoftware</groupId>
+            <artifactId>kryo</artifactId>
+            <version>4.0.2</version>
         </dependency>
 
         <dependency>
@@ -334,6 +334,15 @@
             <scope>${scp}</scope>
         </dependency>
         <dependency>
+            <groupId>org.yaml</groupId>
+            <artifactId>snakeyaml</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.bioimage</groupId>
+            <artifactId>dl-modelrunner</artifactId>
+            <version>0.3.10</version>
+        </dependency>
+        <dependency>
             <groupId>sc.fiji</groupId>
             <artifactId>TrackMate</artifactId>
             <version>7.10.0</version>
@@ -345,7 +354,7 @@
             <version>3.3.2</version>
             <scope>${scp}</scope>
         </dependency>
-        
+
         <!-- <dependency>
             <groupId>org.bytedeco</groupId>
             <artifactId>javacv-platform</artifactId>
@@ -373,7 +382,7 @@
             <artifactId>opencv</artifactId>
             <version>4.0.1-1.4.4</version>
         </dependency> -->
-        
+
 
         <!-- THE FOLLOWING DEPENDENCY IS JUST UNTIL SCIJAVA POM MOVES FROM 1.53t, which has a
         Z-projector bug -->
@@ -419,13 +428,11 @@
         </dependency>
 
         <dependency>
-            <groupId>com.github.mcib3d</groupId>
-            <artifactId>ABSnake</artifactId>
-            <version>-SNAPSHOT</version>
-            <!-- <groupId>io.github.sjcross</groupId>
-            <artifactId>sjcommon</artifactId>
-            <version>1.12.3</version> -->
+            <groupId>net.sourceforge.tess4j</groupId>
+            <artifactId>tess4j</artifactId>
+            <version>5.7.0</version>
         </dependency>
+
 
         <dependency>
             <groupId>com.github.sjcross</groupId>
