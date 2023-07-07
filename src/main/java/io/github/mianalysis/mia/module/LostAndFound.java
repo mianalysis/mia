@@ -351,7 +351,7 @@ public class LostAndFound {
         lostParameterValues.put(moduleName, currentParameterValues);
 
         // InputControl
-        currentValues = new HashMap<>();
+        currentValues = new HashMap<>(); 
         currentValues.put("METRE", SpatialUnit.AvailableUnits.METRE);
         currentValues.put("CENTIMETRE", SpatialUnit.AvailableUnits.CENTIMETRE);
         currentValues.put("MILLIMETRE", SpatialUnit.AvailableUnits.MILLIMETRE);
@@ -450,3 +450,4 @@ public class LostAndFound {
 
     }
 }
+// <3 Ada and Evelyn 

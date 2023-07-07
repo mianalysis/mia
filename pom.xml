@@ -6,13 +6,13 @@
     <parent>
         <groupId>org.scijava</groupId>
         <artifactId>pom-scijava</artifactId>
-        <version>34.1.0</version>
+        <version>35.1.1</version>
         <relativePath />
     </parent>
 
     <groupId>io.github.mianalysis</groupId>
     <artifactId>MIA</artifactId>
-    <version>1.2.8-SNAPSHOT</version>
+    <version>1.2.8</version>
     <packaging>jar</packaging>
     <name>MIA</name>
     <url>https://github.com/mianalysis/mia</url>
@@ -237,9 +237,9 @@
         </dependency>
 
         <dependency>
-            <groupId>ome</groupId>
-            <artifactId>formats-bsd</artifactId>
-            <scope>${scp}</scope>
+            <groupId>com.esotericsoftware</groupId>
+            <artifactId>kryo</artifactId>
+            <version>4.0.2</version>
         </dependency>
 
         <dependency>
@@ -334,9 +334,9 @@
             <scope>${scp}</scope>
         </dependency>
         <dependency>
-			<groupId>org.yaml</groupId>
-			<artifactId>snakeyaml</artifactId>
-		</dependency>
+            <groupId>org.yaml</groupId>
+            <artifactId>snakeyaml</artifactId>
+        </dependency>
         <dependency>
             <groupId>io.bioimage</groupId>
             <artifactId>dl-modelrunner</artifactId>

@@ -1,7 +1,10 @@
 package io.github.mianalysis.mia.object.system;
 
+import java.awt.Color;
+
 import ij.IJ;
 import ij.Prefs;
+import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.gui.GUI;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
@@ -14,11 +17,14 @@ import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.SeparatorP;
 import io.github.mianalysis.mia.object.parameters.abstrakt.Parameter;
 import io.github.mianalysis.mia.object.parameters.text.IntegerP;
+import io.github.mianalysis.mia.object.parameters.text.MessageP;
 import io.github.mianalysis.mia.object.refs.collections.ImageMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
+import loci.formats.IFormatReader;
+import loci.formats.Memoizer;
 
 /**
  * Created by Stephen on 24/08/2021.
@@ -32,7 +38,9 @@ public class Preferences extends Module {
     public static final String IMAGE_DISPLAY_MODE = "Image display mode";
 
     public static final String DATA_SEPARATOR = "Data parameters";
+    public static final String USE_MEMOIZER = "Use memoizer";
     public static final String MEMOIZER_THRESHOLD_S = "Memoizer threshold (s)";
+    public static final String KRYO_MESSAGE = "Kryo message";
     // public static final String DATA_STORAGE_MODE = "Data storage mode";
     // public static final String SPECIFY_CACHE_DIRECTORY = "Specify cache
     // directory";
@@ -117,16 +125,37 @@ public class Preferences extends Module {
         Prefs.set("MIA.Workflow.imageDisplayMode", imageDisplayMode);
     }
 
+    public boolean useMemoizer() {
+        return parameters.getValue(USE_MEMOIZER, null);
+    }
+
+    public void setUseMemoizer(boolean useMemoizer) {
+        Prefs.set("MIA.data.useMemoizer", useMemoizer);
+        parameters.getParameter(USE_MEMOIZER).setValue(useMemoizer);
+    }
+
+    public void setUseMemoizer() {
+        boolean useMemoizer = parameters.getValue(USE_MEMOIZER, null);
+        Prefs.set("MIA.data.useMemoizer", useMemoizer);
+    }
+
     public int getMemoizerThreshold() {
         return parameters.getValue(MEMOIZER_THRESHOLD_S, null);
     }
 
     public void setMemoizerThreshold(int threshold) {
         Prefs.set("MIA.data.memoizerThreshold", threshold);
-        parameters.getParameter(MEMOIZER_THRESHOLD_S).setValue(threshold);        
+        parameters.getParameter(MEMOIZER_THRESHOLD_S).setValue(threshold);
     }
 
-    
+    public IFormatReader getReader(IFormatReader reader) {
+        if ((boolean) parameters.getValue(USE_MEMOIZER, null)) {
+            int memoizerThreshold = parameters.getValue(MEMOIZER_THRESHOLD_S, null);
+            return new Memoizer(reader, memoizerThreshold * 1000);
+        } else {
+            return reader;
+        }
+    }
 
     // public String getDataStorageMode() {
     // return parameters.getValue(DATA_STORAGE_MODE,null);
@@ -222,7 +251,16 @@ public class Preferences extends Module {
         // Data parameters
         parameters.add(new SeparatorP(DATA_SEPARATOR, this));
 
-        parameters.add(new IntegerP(MEMOIZER_THRESHOLD_S, this, (int) Prefs.get("MIA.data.memoizerThreshold", 3)));
+        parameter = new BooleanP(USE_MEMOIZER, this, Prefs.get("MIA.data.useMemoizer", false));
+        parameter.getControl().getComponent().addPropertyChangeListener("ToolTipText", evt -> {
+            if (evt.getOldValue() != null)
+                setUseMemoizer();
+        });
+        parameters.add(parameter);
+        parameters.add(new IntegerP(MEMOIZER_THRESHOLD_S, this,
+                (int) Prefs.get("MIA.data.memoizerThreshold", 3)));
+
+        parameters.add(new MessageP(KRYO_MESSAGE, this, "Memoizer requires Kryo version 5.4.0 or greater", Color.ORANGE));
 
         // parameter = new ChoiceP(DATA_STORAGE_MODE, this,
         // Prefs.get("MIA.core.dataStorageMode", DataStorageModes.KEEP_IN_RAM),
@@ -265,7 +303,13 @@ public class Preferences extends Module {
         returnedParameters.add(parameters.getParameter(IMAGE_DISPLAY_MODE));
 
         returnedParameters.add(parameters.getParameter(DATA_SEPARATOR));
-        returnedParameters.add(parameters.getParameter(MEMOIZER_THRESHOLD_S));
+        if (MIA.kryoCheck()) {
+            returnedParameters.add(parameters.getParameter(USE_MEMOIZER));
+            if ((boolean) parameters.getValue(USE_MEMOIZER, null))
+                returnedParameters.add(parameters.getParameter(MEMOIZER_THRESHOLD_S));
+        } else {
+            returnedParameters.add(parameters.get(KRYO_MESSAGE));
+        }
         // returnedParameters.add(parameters.getParameter(DATA_STORAGE_MODE));
         // switch ((String) parameters.getValue(DATA_STORAGE_MODE,null)) {
         // case DataStorageModes.STREAM_FROM_DRIVE:

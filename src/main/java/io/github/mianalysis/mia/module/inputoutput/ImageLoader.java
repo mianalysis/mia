@@ -78,6 +78,7 @@ import loci.common.services.ServiceException;
 import loci.common.services.ServiceFactory;
 import loci.formats.ChannelSeparator;
 import loci.formats.FormatException;
+import loci.formats.IFormatReader;
 import loci.formats.Memoizer;
 import loci.formats.meta.MetadataStore;
 import loci.formats.services.OMEXMLService;
@@ -151,7 +152,8 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
         String path = "C:\\Users\\steph\\Desktop\\lumen_area.tif";
         Reader reader = scifio.initializer().initializeReader(new FileLocation(path));
         Plane plane = reader.openPlane(0, 0);
-        System.out.println(plane.getLengths()[0]);    }
+        System.out.println(plane.getLengths()[0]);
+    }
 
     public ImageLoader(Modules modules) {
         super("Load image", modules);
@@ -321,8 +323,8 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
         OMEXMLService service = factory.getInstance(OMEXMLService.class);
         IMetadata meta = service.createOMEXMLMetadata();
 
-        Memoizer reader = new Memoizer(new ImageProcessorReader(new ChannelSeparator(LociPrefs.makeImageReader())),
-                MIA.getPreferences().getMemoizerThreshold() * 1000);
+        IFormatReader reader = MIA.getPreferences()
+                .getReader(new ImageProcessorReader(new ChannelSeparator(LociPrefs.makeImageReader())));
         reader.setMetadataStore((MetadataStore) meta);
         reader.setGroupFiles(false);
         reader.setId(path);
@@ -400,8 +402,13 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
                         return null;
                     }
 
-                    ImageProcessor ip = ((ImageProcessorReader) reader.getReader()).openProcessors(idx, left, top,
-                            width, height)[0];
+                    ImageProcessor ip = null;
+                    if (reader instanceof Memoizer)
+                        ip = ((ImageProcessorReader) ((Memoizer) reader).getReader()).openProcessors(idx, left, top,
+                                width, height)[0];
+                    else
+                        ip = ((ImageProcessorReader) reader).openProcessors(idx, left, top,
+                                width, height)[0];
 
                     // If forcing bit depth
                     if (intRange != null) {
