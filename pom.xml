@@ -333,7 +333,7 @@
             <version>2.1.15</version>
             <scope>${scp}</scope>
         </dependency>
-        <dependency>
+        <!-- <dependency>
             <groupId>org.yaml</groupId>
             <artifactId>snakeyaml</artifactId>
         </dependency>
@@ -341,7 +341,7 @@
             <groupId>io.bioimage</groupId>
             <artifactId>dl-modelrunner</artifactId>
             <version>0.3.10</version>
-        </dependency>
+        </dependency> -->
         <dependency>
             <groupId>sc.fiji</groupId>
             <artifactId>TrackMate</artifactId>
@@ -383,7 +383,6 @@
             <version>4.0.1-1.4.4</version>
         </dependency> -->
 
-
         <!-- THE FOLLOWING DEPENDENCY IS JUST UNTIL SCIJAVA POM MOVES FROM 1.53t, which has a
         Z-projector bug -->
         <dependency>
@@ -391,14 +390,6 @@
             <artifactId>ij</artifactId>
             <version>1.53u</version>
         </dependency>
-
-
-        <!-- <dependency>
-            <groupId>mpicbg</groupId>
-            <artifactId>mpicbg</artifactId>
-            <version>1.4.2</version>
-            <scope>${scp}</scope>
-        </dependency> -->
 
         <dependency>
             <groupId>fr.inra.ijpb</groupId>
@@ -426,13 +417,6 @@
             <artifactId>commonmark</artifactId>
             <version>0.17.0</version>
         </dependency>
-
-        <dependency>
-            <groupId>net.sourceforge.tess4j</groupId>
-            <artifactId>tess4j</artifactId>
-            <version>5.7.0</version>
-        </dependency>
-
 
         <dependency>
             <groupId>com.github.sjcross</groupId>
