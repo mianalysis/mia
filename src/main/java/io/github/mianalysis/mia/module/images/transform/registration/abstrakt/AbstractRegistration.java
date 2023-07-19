@@ -308,12 +308,12 @@ public abstract class AbstractRegistration<T extends RealType<T> & NativeType<T>
                     int finalT = t;
 
                     Runnable task = () -> {
-                        ImageProcessor slice = getSetStack(inputIpl, finalT, finalC, finalZ, null).getProcessor();
+                        ImageProcessor slice = getSetSlice(inputIpl, finalT, finalC, finalZ, null).getProcessor();
                         int fillValue = getFillValue(fillMode, slice);
                         ImageProcessor alignedSlice = applyTransform(slice, transform, fillValue);
                         alignedSlice.setMinAndMax(slice.getMin(), slice.getMax());
 
-                        getSetStack(inputIpl, finalT, finalC, finalZ, alignedSlice);
+                        getSetSlice(inputIpl, finalT, finalC, finalZ, alignedSlice);
 
                     };
                     pool.submit(task);
@@ -409,7 +409,7 @@ public abstract class AbstractRegistration<T extends RealType<T> & NativeType<T>
 
     }
 
-    synchronized public static ImagePlus getSetStack(ImagePlus inputImagePlus, int timepoint, int channel, int slice,
+    synchronized public static ImagePlus getSetSlice(ImagePlus inputImagePlus, int timepoint, int channel, int slice,
             @Nullable ImageProcessor toPut) {
         if (toPut == null) {
             // Get mode

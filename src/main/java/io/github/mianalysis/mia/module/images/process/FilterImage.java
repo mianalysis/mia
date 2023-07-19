@@ -182,6 +182,7 @@ public class FilterImage extends Module {
             case FilterModes.VARIANCE3D:
                 filter = Filters3D.VAR;
                 break;
+                
         }
 
         // Variance 3D will output a 32-bit image
@@ -198,6 +199,7 @@ public class FilterImage extends Module {
                 if (filterMode.equals(FilterModes.GAUSSIAN3D)) {
                     GaussianBlur3D.blur(iplOrig, filterRadius, filterRadius,
                             filterRadius);
+                    ImagePlusImage.getSetStack(inputImagePlus, t, c, iplOrig.getStack());
 
                 } else {
                     ImageStack istFilt = Filters3D.filter(iplOrig.getStack(), filter, filterRadius, filterRadius,

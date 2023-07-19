@@ -10,6 +10,8 @@ target/*
 target/site/*
 !target/site/dependencies.html
 !target/site/images/
+models/*
+lib/*
 
 *.log
 .vscode/settings.json

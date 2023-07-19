@@ -82,6 +82,7 @@ import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.VolumeTypesInterface;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.image.Image;
+import io.github.mianalysis.mia.object.image.ImagePlusImage;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
@@ -429,6 +430,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener, K
             if (!checkStackForInterpolation(sliceIpl.getStack()))
                 continue;
             binaryInterpolator.run(sliceIpl.getStack());
+            ImagePlusImage.getSetStack(binaryIpl, t, 1, sliceIpl.getStack());
         }
     }
 

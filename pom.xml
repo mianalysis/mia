@@ -6,13 +6,13 @@
     <parent>
         <groupId>org.scijava</groupId>
         <artifactId>pom-scijava</artifactId>
-        <version>35.1.1</version>
+        <version>36.0.0</version>
         <relativePath />
     </parent>
 
     <groupId>io.github.mianalysis</groupId>
     <artifactId>MIA</artifactId>
-    <version>1.2.8</version>
+    <version>1.2.9</version>
     <packaging>jar</packaging>
     <name>MIA</name>
     <url>https://github.com/mianalysis/mia</url>
@@ -382,14 +382,6 @@
             <artifactId>opencv</artifactId>
             <version>4.0.1-1.4.4</version>
         </dependency> -->
-
-        <!-- THE FOLLOWING DEPENDENCY IS JUST UNTIL SCIJAVA POM MOVES FROM 1.53t, which has a
-        Z-projector bug -->
-        <dependency>
-            <groupId>net.imagej</groupId>
-            <artifactId>ij</artifactId>
-            <version>1.53u</version>
-        </dependency>
 
         <dependency>
             <groupId>fr.inra.ijpb</groupId>

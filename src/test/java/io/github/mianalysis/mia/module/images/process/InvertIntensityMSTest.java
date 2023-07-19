@@ -14,6 +14,7 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import ij.IJ;
+import ij.ImageJ;
 import ij.ImagePlus;
 import io.github.mianalysis.enums.BitDepth;
 import io.github.mianalysis.enums.Dimension;
@@ -77,7 +78,7 @@ public class InvertIntensityMSTest extends ModuleTest {
      */
     @ParameterizedTest
     @MethodSource("bitdepthInputProvider")
-    void testAllBitDepths_D4ZT_MAVERAGE(BitDepth bitDepth, OutputMode outputMode, ImageType imageType)
+    void testAllBitDepths_D4ZT(BitDepth bitDepth, OutputMode outputMode, ImageType imageType)
             throws UnsupportedEncodingException {
         assumeFalse(bitDepth == BitDepth.B32);
         runTest(Dimension.D4ZT, bitDepth, outputMode, imageType);
