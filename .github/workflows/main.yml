@@ -7,8 +7,8 @@ on:
     
 jobs:
   generate_job:
-    runs-on:  'windows-latest'
+    runs-on:  'ubuntu-latest'
     
     steps:
       - name: Invoke documentation generator
-        run: curl -X POST -H 'Authorization: token ${{DOC_TOKEN}}' -d '{"event_type": "generate"} https://api.github.com/repos/mianalysis/mianalysis.github.io/dispatches
+        run: curl -X POST -H 'Accept: application/vnd.github+json' -H 'Authorization: token ${{DOC_TOKEN}}' -d '{"event_type": "generate"}' https://api.github.com/repos/mianalysis/mianalysis.github.io/dispatches
