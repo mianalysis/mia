@@ -115,12 +115,12 @@ public class AffineFixedTransform extends Module {
                     int finalT = t;
 
                     Runnable task = () -> {
-                        ImageProcessor slice = getSetStack(inputIpl, finalT, finalC, finalZ, null).getProcessor();
+                        ImageProcessor slice = getSetSlice(inputIpl, finalT, finalC, finalZ, null).getProcessor();
 
                         ImageProcessor alignedSlice = applyTransform(slice, mapping);
                         alignedSlice.setMinAndMax(slice.getMin(), slice.getMax());
 
-                        getSetStack(inputIpl, finalT, finalC, finalZ, alignedSlice);
+                        getSetSlice(inputIpl, finalT, finalC, finalZ, alignedSlice);
 
                     };
                     pool.submit(task);
@@ -136,7 +136,7 @@ public class AffineFixedTransform extends Module {
 
     }
 
-    synchronized public static ImagePlus getSetStack(ImagePlus inputImagePlus, int timepoint, int channel, int slice,
+    synchronized public static ImagePlus getSetSlice(ImagePlus inputImagePlus, int timepoint, int channel, int slice,
             @Nullable ImageProcessor toPut) {
         if (toPut == null) {
             // Get mode

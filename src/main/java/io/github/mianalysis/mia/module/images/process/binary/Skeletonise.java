@@ -4,6 +4,7 @@ import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
 
 import ij.ImagePlus;
+import ij.ImageStack;
 import ij.plugin.SubHyperstackMaker;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
@@ -11,9 +12,11 @@ import io.github.mianalysis.mia.module.Module;
 import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.module.images.process.ImageMath;
 import io.github.mianalysis.mia.module.images.process.InvertIntensity;
+import io.github.mianalysis.mia.module.images.transform.registration.abstrakt.AbstractRegistration;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.image.Image;
 import io.github.mianalysis.mia.object.image.ImageFactory;
+import io.github.mianalysis.mia.object.image.ImagePlusImage;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
@@ -68,6 +71,8 @@ public class Skeletonise extends Module {
                 skeletonize3d.setup("arg", iplOrig);
                 skeletonize3d.run(iplOrig.getProcessor());
 
+                ImagePlusImage.getSetStack(ipl, t, c, iplOrig.getStack());
+                
             }
         }
 

@@ -409,14 +409,14 @@ public class RegisterImages<T extends RealType<T> & NativeType<T>> extends Modul
                     int finalT = t;
 
                     Runnable task = () -> {
-                        ImageProcessor slice = getSetStack(inputIpl, finalT, finalC, finalZ, null).getProcessor();
+                        ImageProcessor slice = getSetSlice(inputIpl, finalT, finalC, finalZ, null).getProcessor();
                         slice.setInterpolationMethod(ImageProcessor.BILINEAR);
                         ImageProcessor alignedSlice = slice.createProcessor(referenceIpr.getWidth(),
                                 referenceIpr.getHeight());
                         alignedSlice.setMinAndMax(slice.getMin(), slice.getMax());
                         mapping.mapInterpolated(slice, alignedSlice);
 
-                        getSetStack(inputIpl, finalT, finalC, finalZ, alignedSlice);
+                        getSetSlice(inputIpl, finalT, finalC, finalZ, alignedSlice);
 
                     };
                     pool.submit(task);
@@ -432,7 +432,7 @@ public class RegisterImages<T extends RealType<T> & NativeType<T>> extends Modul
 
     }
 
-    synchronized private static ImagePlus getSetStack(ImagePlus inputImagePlus, int timepoint, int channel, int slice,
+    synchronized private static ImagePlus getSetSlice(ImagePlus inputImagePlus, int timepoint, int channel, int slice,
             @Nullable ImageProcessor toPut) {
         if (toPut == null) {
             // Get mode

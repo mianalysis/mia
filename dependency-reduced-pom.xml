@@ -3,14 +3,14 @@
   <parent>
     <artifactId>pom-scijava</artifactId>
     <groupId>org.scijava</groupId>
-    <version>35.1.1</version>
+    <version>36.0.0</version>
     <relativePath>pom.xml</relativePath>
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <groupId>io.github.mianalysis</groupId>
   <artifactId>MIA</artifactId>
   <name>MIA</name>
-  <version>1.2.8</version>
+  <version>1.2.9</version>
   <description>ModularImageAnalysis (MIA) is an ImageJ plugin which provides a modular framework for assembling image and object analysis workflows. Detected objects can be transformed, filtered, measured and related. Analysis workflows are batch-enabled by default, allowing easy processing of high-content datasets.</description>
   <url>https://github.com/mianalysis/mia</url>
   <issueManagement>
@@ -425,7 +425,7 @@
     <dependency>
       <groupId>ome</groupId>
       <artifactId>bio-formats_plugins</artifactId>
-      <version>6.13.0</version>
+      <version>6.14.0</version>
       <scope>provided</scope>
       <exclusions>
         <exclusion>
@@ -448,12 +448,16 @@
           <artifactId>jgoodies-forms</artifactId>
           <groupId>com.jgoodies</groupId>
         </exclusion>
+        <exclusion>
+          <artifactId>ij</artifactId>
+          <groupId>net.imagej</groupId>
+        </exclusion>
       </exclusions>
     </dependency>
     <dependency>
       <groupId>ome</groupId>
       <artifactId>formats-bsd</artifactId>
-      <version>6.13.0</version>
+      <version>6.14.0</version>
       <scope>provided</scope>
       <exclusions>
         <exclusion>
@@ -529,7 +533,7 @@
     <dependency>
       <groupId>ome</groupId>
       <artifactId>formats-gpl</artifactId>
-      <version>6.13.0</version>
+      <version>6.14.0</version>
       <scope>provided</scope>
       <exclusions>
         <exclusion>
@@ -577,7 +581,7 @@
     <dependency>
       <groupId>net.imagej</groupId>
       <artifactId>imagej</artifactId>
-      <version>2.13.1</version>
+      <version>2.14.0</version>
       <scope>provided</scope>
       <exclusions>
         <exclusion>
@@ -601,15 +605,15 @@
           <groupId>io.scif</groupId>
         </exclusion>
         <exclusion>
+          <artifactId>imagej-deprecated</artifactId>
+          <groupId>net.imagej</groupId>
+        </exclusion>
+        <exclusion>
           <artifactId>imagej-mesh-io</artifactId>
           <groupId>net.imagej</groupId>
         </exclusion>
         <exclusion>
           <artifactId>imagej-plugins-batch</artifactId>
-          <groupId>net.imagej</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>imagej-deprecated</artifactId>
           <groupId>net.imagej</groupId>
         </exclusion>
         <exclusion>
@@ -650,6 +654,14 @@
         </exclusion>
         <exclusion>
           <artifactId>scijava-plugins-text-plain</artifactId>
+          <groupId>org.scijava</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>script-editor-jython</artifactId>
+          <groupId>org.scijava</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>script-editor-scala</artifactId>
           <groupId>org.scijava</groupId>
         </exclusion>
       </exclusions>
@@ -773,6 +785,10 @@
       <scope>provided</scope>
       <exclusions>
         <exclusion>
+          <artifactId>ij</artifactId>
+          <groupId>net.imagej</groupId>
+        </exclusion>
+        <exclusion>
           <artifactId>joml</artifactId>
           <groupId>org.joml</groupId>
         </exclusion>
@@ -787,12 +803,24 @@
       <artifactId>Auto_Local_Threshold</artifactId>
       <version>1.11.0</version>
       <scope>provided</scope>
+      <exclusions>
+        <exclusion>
+          <artifactId>ij</artifactId>
+          <groupId>net.imagej</groupId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>sc.fiji</groupId>
       <artifactId>bUnwarpJ_</artifactId>
       <version>2.6.13</version>
       <scope>provided</scope>
+      <exclusions>
+        <exclusion>
+          <artifactId>ij</artifactId>
+          <groupId>net.imagej</groupId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>sc.fiji</groupId>
@@ -820,6 +848,10 @@
           <artifactId>imglib2</artifactId>
           <groupId>net.imglib2</groupId>
         </exclusion>
+        <exclusion>
+          <artifactId>ij</artifactId>
+          <groupId>net.imagej</groupId>
+        </exclusion>
       </exclusions>
     </dependency>
     <dependency>
@@ -827,12 +859,24 @@
       <artifactId>Colour_Deconvolution</artifactId>
       <version>3.0.3</version>
       <scope>provided</scope>
+      <exclusions>
+        <exclusion>
+          <artifactId>ij</artifactId>
+          <groupId>net.imagej</groupId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>sc.fiji</groupId>
       <artifactId>CorrectBleach_</artifactId>
       <version>2.1.0</version>
       <scope>provided</scope>
+      <exclusions>
+        <exclusion>
+          <artifactId>ij</artifactId>
+          <groupId>net.imagej</groupId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>sc.fiji</groupId>
@@ -843,6 +887,10 @@
         <exclusion>
           <artifactId>fiji-lib</artifactId>
           <groupId>sc.fiji</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>ij</artifactId>
+          <groupId>net.imagej</groupId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -904,6 +952,10 @@
         </exclusion>
         <exclusion>
           <artifactId>imagej-tensorflow</artifactId>
+          <groupId>net.imagej</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>ij</artifactId>
           <groupId>net.imagej</groupId>
         </exclusion>
       </exclusions>
@@ -994,6 +1046,10 @@
           <artifactId>imglib2</artifactId>
           <groupId>net.imglib2</groupId>
         </exclusion>
+        <exclusion>
+          <artifactId>ij</artifactId>
+          <groupId>net.imagej</groupId>
+        </exclusion>
       </exclusions>
     </dependency>
     <dependency>
@@ -1034,6 +1090,10 @@
           <artifactId>imglib2</artifactId>
           <groupId>net.imglib2</groupId>
         </exclusion>
+        <exclusion>
+          <artifactId>ij</artifactId>
+          <groupId>net.imagej</groupId>
+        </exclusion>
       </exclusions>
     </dependency>
     <dependency>
@@ -1046,6 +1106,10 @@
           <artifactId>jama</artifactId>
           <groupId>gov.nist.math</groupId>
         </exclusion>
+        <exclusion>
+          <artifactId>ij</artifactId>
+          <groupId>net.imagej</groupId>
+        </exclusion>
       </exclusions>
     </dependency>
     <dependency>
@@ -1057,6 +1121,10 @@
         <exclusion>
           <artifactId>commons-lang3</artifactId>
           <groupId>org.apache.commons</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>ij</artifactId>
+          <groupId>net.imagej</groupId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -1073,6 +1141,10 @@
         <exclusion>
           <artifactId>jama</artifactId>
           <groupId>gov.nist.math</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>ij</artifactId>
+          <groupId>net.imagej</groupId>
         </exclusion>
       </exclusions>
     </dependency>
