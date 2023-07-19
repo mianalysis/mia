@@ -11,4 +11,4 @@ jobs:
     
     steps:
       - name: Invoke documentation generator
-        run: curl --request POST "https://api.github.com/repos/mianalysis/mianalysis.github.io/dispatches" --header 'Accept=application/vnd.github.v3+json' --header 'Authorization=token ${{secrets.DOCS_TOKEN}}' --data '{"event_type":"generate"}'
+        run: curl -X POST -H 'Authorization=token ${{secrets.DOCS_TOKEN}}' -d '{"event_type":"generate"}' https://api.github.com/repos/mianalysis/mianalysis.github.io/dispatches
