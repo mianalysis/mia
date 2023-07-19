@@ -2,8 +2,7 @@ name: RunDocGenerator
 
 on:
   release:
-    types:
-    - created
+      types: [created]
     
 jobs:
   generate_job:
