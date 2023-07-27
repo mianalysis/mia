@@ -1164,6 +1164,9 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener, K
                             // Adding to the list of objects
                             addObjectToList(objRoi, ID);
 
+                            // Updating maxID if necessary
+                            maxID = Math.max(maxID, ID);
+
                         }
                     }
                 }
