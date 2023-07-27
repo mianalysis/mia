@@ -165,6 +165,8 @@ public class MIA implements Command {
     }
 
     public static String getVersion() {
+        if (version.equals(""))
+            version = extractVersion();
         return version;
     }
 

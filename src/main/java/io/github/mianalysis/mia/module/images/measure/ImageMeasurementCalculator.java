@@ -96,19 +96,19 @@ public class ImageMeasurementCalculator extends Module {
 
     @Override
     protected Status process(Workspace workspace) {
-        String inputImageName = parameters.getValue(INPUT_IMAGE,workspace);
+        String inputImageName = parameters.getValue(INPUT_IMAGE, workspace);
         Image inputImage = workspace.getImage(inputImageName);
 
-        String valueMode1 = parameters.getValue(VALUE_MODE_1,workspace);
-        double fixedValue1 = parameters.getValue(FIXED_VALUE_1,workspace);
-        String measurementName1 = parameters.getValue(MEASUREMENT_1,workspace);
+        String valueMode1 = parameters.getValue(VALUE_MODE_1, workspace);
+        double fixedValue1 = parameters.getValue(FIXED_VALUE_1, workspace);
+        String measurementName1 = parameters.getValue(MEASUREMENT_1, workspace);
 
-        String valueMode2 = parameters.getValue(VALUE_MODE_2,workspace);
-        double fixedValue2 = parameters.getValue(FIXED_VALUE_2,workspace);
-        String measurementName2 = parameters.getValue(MEASUREMENT_2,workspace);
+        String valueMode2 = parameters.getValue(VALUE_MODE_2, workspace);
+        double fixedValue2 = parameters.getValue(FIXED_VALUE_2, workspace);
+        String measurementName2 = parameters.getValue(MEASUREMENT_2, workspace);
 
-        String outputMeasurementName = parameters.getValue(OUTPUT_MEASUREMENT,workspace);
-        String calculationMode = parameters.getValue(CALCULATION_MODE,workspace);
+        String outputMeasurementName = parameters.getValue(OUTPUT_MEASUREMENT, workspace);
+        String calculationMode = parameters.getValue(CALCULATION_MODE, workspace);
 
         // Getting value 1
         double value1 = 0;
@@ -137,7 +137,7 @@ public class ImageMeasurementCalculator extends Module {
 
         // Adding the new measurement
         inputImage.addMeasurement(new Measurement(outputMeasurementName, result));
-        
+
         // Showing results
         if (showOutput)
             inputImage.showMeasurements(this);
@@ -171,17 +171,17 @@ public class ImageMeasurementCalculator extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
-Workspace workspace = null;
+        Workspace workspace = null;
         Parameters returnedParams = new Parameters();
 
-        String inputImageName = parameters.getValue(INPUT_IMAGE,workspace);
+        String inputImageName = parameters.getValue(INPUT_IMAGE, workspace);
 
         returnedParams.add(parameters.getParameter(INPUT_SEPARATOR));
         returnedParams.add(parameters.getParameter(INPUT_IMAGE));
 
         returnedParams.add(parameters.getParameter(VALUE_SEPARATOR_1));
         returnedParams.add(parameters.getParameter(VALUE_MODE_1));
-        switch ((String) parameters.getValue(VALUE_MODE_1,workspace)) {
+        switch ((String) parameters.getValue(VALUE_MODE_1, workspace)) {
             case ValueModes.FIXED:
                 returnedParams.add(parameters.getParameter(FIXED_VALUE_1));
                 break;
@@ -194,7 +194,7 @@ Workspace workspace = null;
 
         returnedParams.add(parameters.getParameter(VALUE_SEPARATOR_2));
         returnedParams.add(parameters.getParameter(VALUE_MODE_2));
-        switch ((String) parameters.getValue(VALUE_MODE_2,workspace)) {
+        switch ((String) parameters.getValue(VALUE_MODE_2, workspace)) {
             case ValueModes.FIXED:
                 returnedParams.add(parameters.getParameter(FIXED_VALUE_2));
                 break;
@@ -215,12 +215,11 @@ Workspace workspace = null;
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
-Workspace workspace = null;
         ImageMeasurementRefs returnedRefs = new ImageMeasurementRefs();
 
         // Creating new MeasurementRef
-        String inputImageName = parameters.getValue(INPUT_IMAGE,null);
-        String measurementName = parameters.getValue(OUTPUT_MEASUREMENT,null);
+        String inputImageName = parameters.getValue(INPUT_IMAGE, null);
+        String measurementName = parameters.getValue(OUTPUT_MEASUREMENT, null);
 
         returnedRefs.add(imageMeasurementRefs.getOrPut(measurementName).setImageName(inputImageName));
 
@@ -229,23 +228,23 @@ Workspace workspace = null;
     }
 
     @Override
-public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
-return null;
+    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+        return null;
     }
 
     @Override
-public MetadataRefs updateAndGetMetadataReferences() {
-return null;
+    public MetadataRefs updateAndGetMetadataReferences() {
+        return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
-return null;
+        return null;
     }
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
-return null;
+        return null;
     }
 
     @Override

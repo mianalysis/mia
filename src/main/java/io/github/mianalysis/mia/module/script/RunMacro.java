@@ -193,6 +193,9 @@ public class RunMacro extends AbstractMacroRunner {
                 Measurement measurement = new Measurement(getFullName(expectedMeasurement), value);
                 inputImage.addMeasurement(measurement);
             }
+
+            if (showOutput && expectedMeasurements.size() != 0)
+                inputImage.showMeasurements(this);
         }
 
         return Status.PASS;
