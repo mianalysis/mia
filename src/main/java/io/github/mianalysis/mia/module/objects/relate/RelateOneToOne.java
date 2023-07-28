@@ -127,7 +127,7 @@ import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Status;
 
-@Plugin(type = Module.class, priority=Priority.LOW, visible=true)
+@Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class RelateOneToOne extends Module {
     public static final String INPUT_SEPARATOR = "Objects input/output";
     public final static String INPUT_OBJECTS_1 = "Input objects 1";
@@ -143,7 +143,6 @@ public class RelateOneToOne extends Module {
     public static final String MINIMUM_OVERLAP_PC_2 = "Minimum overlap of object 2 (%)";
     public static final String LINK_IN_SAME_FRAME = "Only link objects in same frame";
 
-    
     public interface RelationshipModes {
         String CENTROID_SEPARATION = "Centroid separation";
         String SPATIAL_OVERLAP = "Spatial overlap";
@@ -166,7 +165,8 @@ public class RelateOneToOne extends Module {
 
     }
 
-    public static ArrayList<Linkable> getCentroidSeparationLinkables(Objs inputObjects1, Objs inputObjects2, boolean linkInSameFrame, 
+    public static ArrayList<Linkable> getCentroidSeparationLinkables(Objs inputObjects1, Objs inputObjects2,
+            boolean linkInSameFrame,
             double maxSeparation) {
         ArrayList<Linkable> linkables = new ArrayList<>();
 
@@ -180,9 +180,10 @@ public class RelateOneToOne extends Module {
                 // Calculating the separation between the two objects
                 double overlap = object1.getCentroidSeparation(object2, true);
 
-                // Only add if within the linking limit.  Adds 0.1 as 0 scores potentially cause problems with the link optimisation
+                // Only add if within the linking limit. Adds 0.1 as 0 scores potentially cause
+                // problems with the link optimisation
                 if (overlap <= maxSeparation)
-                    linkables.add(new Linkable(overlap+0.1, object1.getID(), object2.getID()));
+                    linkables.add(new Linkable(overlap + 0.1, object1.getID(), object2.getID()));
             }
         }
 
@@ -190,7 +191,8 @@ public class RelateOneToOne extends Module {
 
     }
 
-    public static ArrayList<Linkable> getSpatialOverlapLinkables(Objs inputObjects1, Objs inputObjects2, boolean linkInSameFrame, 
+    public static ArrayList<Linkable> getSpatialOverlapLinkables(Objs inputObjects1, Objs inputObjects2,
+            boolean linkInSameFrame,
             double minOverlap1, double minOverlap2) {
         ArrayList<Linkable> linkables = new ArrayList<>();
 
@@ -252,7 +254,7 @@ public class RelateOneToOne extends Module {
         Objs outputObjects = null;
         if (outputObjectsName != null)
             outputObjects = new Objs(outputObjectsName, inputObjects1);
-        
+
         JaqamanLinker<Integer, Integer> linker = new JaqamanLinker<>(creator);
         if (!linker.checkInput() || !linker.process())
             return outputObjects;
@@ -274,7 +276,7 @@ public class RelateOneToOne extends Module {
             // Creating new object
             if (outputObjectsName != null)
                 createClusterObject(object1, object2, outputObjects);
-            
+
         }
 
         return outputObjects;
@@ -338,7 +340,6 @@ public class RelateOneToOne extends Module {
 
     }
 
-
     @Override
     public Category getCategory() {
         return Categories.OBJECTS_RELATE;
@@ -347,21 +348,21 @@ public class RelateOneToOne extends Module {
     @Override
     protected Status process(Workspace workspace) {
         // Getting input objects
-        String inputObjects1Name = parameters.getValue(INPUT_OBJECTS_1,workspace);
+        String inputObjects1Name = parameters.getValue(INPUT_OBJECTS_1, workspace);
         Objs inputObjects1 = workspace.getObjects().get(inputObjects1Name);
 
-        String inputObjects2Name = parameters.getValue(INPUT_OBJECTS_2,workspace);
+        String inputObjects2Name = parameters.getValue(INPUT_OBJECTS_2, workspace);
         Objs inputObjects2 = workspace.getObjects().get(inputObjects2Name);
 
         // Getting parameters
-        boolean createClusterObjects = parameters.getValue(CREATE_CLUSTER_OBJECTS,workspace);
-        String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS_NAME,workspace);
-        String relationshipMode = parameters.getValue(RELATIONSHIP_MODE,workspace);
-        double maximumSeparation = parameters.getValue(MAXIMUM_SEPARATION,workspace);
-        boolean calibratedUnits = parameters.getValue(CALIBRATED_UNITS,workspace);
-        double minOverlap1 = parameters.getValue(MINIMUM_OVERLAP_PC_1,workspace);
-        double minOverlap2 = parameters.getValue(MINIMUM_OVERLAP_PC_2,workspace);
-        boolean linkInSameFrame = parameters.getValue(LINK_IN_SAME_FRAME,workspace);
+        boolean createClusterObjects = parameters.getValue(CREATE_CLUSTER_OBJECTS, workspace);
+        String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS_NAME, workspace);
+        String relationshipMode = parameters.getValue(RELATIONSHIP_MODE, workspace);
+        double maximumSeparation = parameters.getValue(MAXIMUM_SEPARATION, workspace);
+        boolean calibratedUnits = parameters.getValue(CALIBRATED_UNITS, workspace);
+        double minOverlap1 = parameters.getValue(MINIMUM_OVERLAP_PC_1, workspace);
+        double minOverlap2 = parameters.getValue(MINIMUM_OVERLAP_PC_2, workspace);
+        boolean linkInSameFrame = parameters.getValue(LINK_IN_SAME_FRAME, workspace);
 
         // Skipping the module if no objects are present in one collection
         if (inputObjects1.size() == 0 || inputObjects2.size() == 0) {
@@ -382,11 +383,13 @@ public class RelateOneToOne extends Module {
         switch (relationshipMode) {
             case RelationshipModes.CENTROID_SEPARATION:
             default:
-                linkables = getCentroidSeparationLinkables(inputObjects1, inputObjects2, linkInSameFrame, maximumSeparation);
+                linkables = getCentroidSeparationLinkables(inputObjects1, inputObjects2, linkInSameFrame,
+                        maximumSeparation);
                 break;
 
             case RelationshipModes.SPATIAL_OVERLAP:
-                linkables = getSpatialOverlapLinkables(inputObjects1, inputObjects2, linkInSameFrame, minOverlap1, minOverlap2);
+                linkables = getSpatialOverlapLinkables(inputObjects1, inputObjects2, linkInSameFrame, minOverlap1,
+                        minOverlap2);
                 break;
         }
 
@@ -394,7 +397,7 @@ public class RelateOneToOne extends Module {
         if (linkables.size() != 0) {
             // Creating cost matrix and checking creator was created
             DefaultCostMatrixCreator<Integer, Integer> creator = getCostMatrixCreator(linkables);
-            
+
             if (creator != null)
                 outputObjects = assignLinks(inputObjects1, inputObjects2, creator, outputObjectsName);
         }
@@ -436,20 +439,20 @@ public class RelateOneToOne extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
-Workspace workspace = null;
+        Workspace workspace = null;
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(INPUT_OBJECTS_1));
         returnedParameters.add(parameters.getParameter(INPUT_OBJECTS_2));
         returnedParameters.add(parameters.getParameter(CREATE_CLUSTER_OBJECTS));
-        if ((boolean) parameters.getValue(CREATE_CLUSTER_OBJECTS,workspace)) {
+        if ((boolean) parameters.getValue(CREATE_CLUSTER_OBJECTS, workspace)) {
             returnedParameters.add(parameters.getParameter(OUTPUT_OBJECTS_NAME));
         }
 
         returnedParameters.add(parameters.getParameter(RELATIONSHIP_SEPARATOR));
         returnedParameters.add(parameters.getParameter(RELATIONSHIP_MODE));
-        switch ((String) parameters.getValue(RELATIONSHIP_MODE,workspace)) {
+        switch ((String) parameters.getValue(RELATIONSHIP_MODE, workspace)) {
             case RelationshipModes.CENTROID_SEPARATION:
                 returnedParameters.add(parameters.getParameter(MAXIMUM_SEPARATION));
                 returnedParameters.add(parameters.getParameter(CALIBRATED_UNITS));
@@ -468,15 +471,15 @@ Workspace workspace = null;
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
-return null;
+        return null;
     }
 
     @Override
-public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
-Workspace workspace = null;
-        String inputObjectsName1 = parameters.getValue(INPUT_OBJECTS_1,workspace);
-        String inputObjectsName2 = parameters.getValue(INPUT_OBJECTS_2,workspace);
-        String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS_NAME,workspace);
+    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+        Workspace workspace = null;
+        String inputObjectsName1 = parameters.getValue(INPUT_OBJECTS_1, workspace);
+        String inputObjectsName2 = parameters.getValue(INPUT_OBJECTS_2, workspace);
+        String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS_NAME, workspace);
 
         ObjMeasurementRefs returnedRefs = new ObjMeasurementRefs();
 
@@ -527,20 +530,20 @@ Workspace workspace = null;
     }
 
     @Override
-public MetadataRefs updateAndGetMetadataReferences() {
-return null;
+    public MetadataRefs updateAndGetMetadataReferences() {
+        return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
-Workspace workspace = null;
+        Workspace workspace = null;
         ParentChildRefs returnedRefs = new ParentChildRefs();
 
-        if ((boolean) parameters.getValue(CREATE_CLUSTER_OBJECTS,workspace)) {
+        if ((boolean) parameters.getValue(CREATE_CLUSTER_OBJECTS, workspace)) {
             // Getting input objects
-            String inputObjects1Name = parameters.getValue(INPUT_OBJECTS_1,workspace);
-            String inputObjects2Name = parameters.getValue(INPUT_OBJECTS_2,workspace);
-            String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS_NAME,workspace);
+            String inputObjects1Name = parameters.getValue(INPUT_OBJECTS_1, workspace);
+            String inputObjects2Name = parameters.getValue(INPUT_OBJECTS_2, workspace);
+            String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS_NAME, workspace);
 
             returnedRefs.add(parentChildRefs.getOrPut(outputObjectsName, inputObjects1Name));
             returnedRefs.add(parentChildRefs.getOrPut(outputObjectsName, inputObjects2Name));
@@ -553,11 +556,11 @@ Workspace workspace = null;
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
-Workspace workspace = null;
+        Workspace workspace = null;
         PartnerRefs returnedRefs = new PartnerRefs();
 
-        String inputObjects1Name = parameters.getValue(INPUT_OBJECTS_1,workspace);
-        String inputObjects2Name = parameters.getValue(INPUT_OBJECTS_2,workspace);
+        String inputObjects1Name = parameters.getValue(INPUT_OBJECTS_1, workspace);
+        String inputObjects2Name = parameters.getValue(INPUT_OBJECTS_2, workspace);
 
         returnedRefs.add(partnerRefs.getOrPut(inputObjects1Name, inputObjects2Name));
 

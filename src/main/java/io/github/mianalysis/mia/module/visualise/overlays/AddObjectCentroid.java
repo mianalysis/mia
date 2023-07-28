@@ -6,17 +6,18 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
+import org.scijava.Priority;
+import org.scijava.plugin.Plugin;
+
 import ij.ImagePlus;
 import ij.Prefs;
 import ij.gui.PointRoi;
 import ij.plugin.Duplicator;
 import ij.plugin.HyperStackConverter;
-import io.github.mianalysis.mia.module.Modules;
-import io.github.mianalysis.mia.module.Module;
-import org.scijava.Priority;
-import org.scijava.plugin.Plugin;
-import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Categories;
+import io.github.mianalysis.mia.module.Category;
+import io.github.mianalysis.mia.module.Module;
+import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
@@ -27,6 +28,7 @@ import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
 import io.github.mianalysis.mia.object.parameters.InputObjectsP;
 import io.github.mianalysis.mia.object.parameters.OutputImageP;
+import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.SeparatorP;
 import io.github.mianalysis.mia.object.refs.collections.ImageMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
@@ -34,8 +36,6 @@ import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Status;
-import io.github.mianalysis.mia.object.parameters.Parameters;
-import io.github.mianalysis.mia.process.ColourFactory;
 
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class AddObjectCentroid extends AbstractOverlay {
@@ -153,31 +153,31 @@ public class AddObjectCentroid extends AbstractOverlay {
 
     static int getSize(String size) {
         switch (size) {
-        case PointSizes.TINY:
-            return 0;
-        case PointSizes.SMALL:
-        default:
-            return 1;
-        case PointSizes.MEDIUM:
-            return 2;
-        case PointSizes.LARGE:
-            return 3;
-        case PointSizes.EXTRA_LARGE:
-            return 4;
+            case PointSizes.TINY:
+                return 0;
+            case PointSizes.SMALL:
+            default:
+                return 1;
+            case PointSizes.MEDIUM:
+                return 2;
+            case PointSizes.LARGE:
+                return 3;
+            case PointSizes.EXTRA_LARGE:
+                return 4;
         }
     }
 
     static int getType(String type) {
         switch (type) {
-        case PointTypes.HYBRID:
-            return 0;
-        case PointTypes.CROSS:
-            return 1;
-        case PointTypes.DOT:
-            return 2;
-        case PointTypes.CIRCLE:
-        default:
-            return 3;
+            case PointTypes.HYBRID:
+                return 0;
+            case PointTypes.CROSS:
+                return 1;
+            case PointTypes.DOT:
+                return 2;
+            case PointTypes.CIRCLE:
+            default:
+                return 3;
         }
     }
 
@@ -194,23 +194,23 @@ public class AddObjectCentroid extends AbstractOverlay {
     @Override
     protected Status process(Workspace workspace) {
         // Getting parameters
-        boolean applyToInput = parameters.getValue(APPLY_TO_INPUT,workspace);
-        boolean addOutputToWorkspace = parameters.getValue(ADD_OUTPUT_TO_WORKSPACE,workspace);
-        String outputImageName = parameters.getValue(OUTPUT_IMAGE,workspace);
+        boolean applyToInput = parameters.getValue(APPLY_TO_INPUT, workspace);
+        boolean addOutputToWorkspace = parameters.getValue(ADD_OUTPUT_TO_WORKSPACE, workspace);
+        String outputImageName = parameters.getValue(OUTPUT_IMAGE, workspace);
 
         // Getting input objects
-        String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS, workspace);
         Objs inputObjects = workspace.getObjects().get(inputObjectsName);
 
         // Getting input image
-        String inputImageName = parameters.getValue(INPUT_IMAGE,workspace);
+        String inputImageName = parameters.getValue(INPUT_IMAGE, workspace);
         Image inputImage = workspace.getImages().get(inputImageName);
         ImagePlus ipl = inputImage.getImagePlus();
 
-        String pointSize = parameters.getValue(POINT_SIZE,workspace);
-        String pointType = parameters.getValue(POINT_TYPE,workspace);
-        boolean renderInAllFrames = parameters.getValue(RENDER_IN_ALL_FRAMES,workspace);
-        boolean multithread = parameters.getValue(ENABLE_MULTITHREADING,workspace);
+        String pointSize = parameters.getValue(POINT_SIZE, workspace);
+        String pointType = parameters.getValue(POINT_TYPE, workspace);
+        boolean renderInAllFrames = parameters.getValue(RENDER_IN_ALL_FRAMES, workspace);
+        boolean multithread = parameters.getValue(ENABLE_MULTITHREADING, workspace);
 
         // Only add output to workspace if not applying to input
         if (applyToInput)
@@ -265,8 +265,8 @@ public class AddObjectCentroid extends AbstractOverlay {
 
     @Override
     public Parameters updateAndGetParameters() {
-Workspace workspace = null;
-        String inputObjectsName = parameters.getValue(INPUT_OBJECTS,workspace);
+        Workspace workspace = null;
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS, workspace);
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
@@ -275,10 +275,10 @@ Workspace workspace = null;
 
         returnedParameters.add(parameters.getParameter(OUTPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(APPLY_TO_INPUT));
-        if (!(boolean) parameters.getValue(APPLY_TO_INPUT,workspace)) {
+        if (!(boolean) parameters.getValue(APPLY_TO_INPUT, workspace)) {
             returnedParameters.add(parameters.getParameter(ADD_OUTPUT_TO_WORKSPACE));
 
-            if ((boolean) parameters.getValue(ADD_OUTPUT_TO_WORKSPACE,workspace)) {
+            if ((boolean) parameters.getValue(ADD_OUTPUT_TO_WORKSPACE, workspace)) {
                 returnedParameters.add(parameters.getParameter(OUTPUT_IMAGE));
 
             }
@@ -300,27 +300,27 @@ Workspace workspace = null;
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
-return null;
+        return null;
     }
 
     @Override
-public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
-return null;
+    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+        return null;
     }
 
     @Override
-public MetadataRefs updateAndGetMetadataReferences() {
-return null;
+    public MetadataRefs updateAndGetMetadataReferences() {
+        return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
-return null;
+        return null;
     }
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
-return null;
+        return null;
     }
 
     @Override
