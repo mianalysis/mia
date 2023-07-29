@@ -44,7 +44,7 @@ import net.imagej.ops.OpService;
  */
 @Plugin(type = Command.class, menuPath = "Plugins>ModularImageAnalysis (MIA)>MIA", visible = true)
 public class MIA implements Command {
-    protected static String version = "";
+    private static String version = null;
     protected static boolean debug = false;
     protected static LogRenderer mainRenderer = new BasicLogRenderer();
     protected static LogHistory logHistory = new LogHistory();
@@ -125,8 +125,6 @@ public class MIA implements Command {
         preferences = new Preferences(null);
         log.addRenderer(logHistory);
 
-        version = extractVersion();
-
         // Run the dependency validator. If updates were required, return.
         if (DependencyValidator.run())
             return;
@@ -141,7 +139,7 @@ public class MIA implements Command {
         }
     }
 
-    protected static String extractVersion() {
+    private static String extractVersion() {
         // Determining the version number from the pom file
         try {
             if (new File("pom.xml").exists()) {
@@ -165,6 +163,10 @@ public class MIA implements Command {
     }
 
     public static String getVersion() {
+        if (version == null) {
+            version = extractVersion();
+        }
+
         return version;
     }
 
