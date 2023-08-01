@@ -96,7 +96,7 @@ public class MainGenerator {
 
             sb.append("Using MIA").append("\n").append("------------").append("\n");
             sb.append(
-                    "Guides for using MIA can be found [here](https://mianalysis.github.io/mia/guides).  There are also example workflows in the [mia-examples](https://github.com/mianalysis/mia-examples) repository (with more to be added over time).\n");
+                    "Guides for using MIA can be found [here](https://mianalysis.github.io/guides).  There are also example workflows in the [mia-examples](https://github.com/mianalysis/mia-examples) repository (with more to be added over time).\n");
             sb.append("\n\n");
 
             sb.append("Contributing").append("\n").append("------------").append("\n");
