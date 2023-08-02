@@ -112,10 +112,10 @@
         <a class="nav-link active" id="code1-tab-linux" data-toggle="pill" href="#code1-area-linux" role="tab"
           aria-controls="code1-area-linux" aria-selected="true">Linux</a>
       </li>
-      <!-- <li class="nav-item">
+      <li class="nav-item">
         <a class="nav-link" id="code1-tab-mac" data-toggle="pill" href="#code1-area-mac" role="tab"
           aria-controls="code1-area-mac" aria-selected="false">Mac</a>
-      </li> -->
+      </li>
       <li class="nav-item">
         <a class="nav-link" id="code1-tab-windows" data-toggle="pill" href="#code1-area-windows" role="tab"
           aria-controls="code1-area-windows" aria-selected="false">Windows</a>
@@ -141,7 +141,7 @@ rm fiji-linux64.zip
 # Moving into extracted directory
 cd Fiji.app/</code></pre>
       </div>
-      <!-- <div class="tab-pane" id="code1-area-mac" role="tabpanel" aria-labelledby="code1-tab-mac">
+      <div class="tab-pane" id="code1-area-mac" role="tabpanel" aria-labelledby="code1-tab-mac">
         <pre><code id="code1-mac" class="language-bash"># Commands for Bash
 # Downloading the latest copy of Fiji for 64-bit MacOS
 curl -O https://downloads.imagej.net/fiji/latest/fiji-macosx.zip
@@ -154,11 +154,11 @@ rm fiji-macosx.zip
 
 # Moving into extracted directory
 cd Fiji.app/Contents/MacOS</code></pre>
-      </div> -->
+      </div>
       <div class="tab-pane" id="code1-area-windows" role="tabpanel" aria-labelledby="code1-tab-windows">
         <pre><code id="code1-windows" class="language-powershell"># Commands for Windows PowerShell
 # Downloading the latest copy of Fiji for 64-bit Windows
-Invoke-WebRequest https://downloads.imagej.net/fiji/latest/fiji-win64.zip
+Invoke-WebRequest https://downloads.imagej.net/fiji/latest/fiji-win64.zip -OutFile .\fiji-win64.zip
 
 # Unzipping archive
 Expand-Archive .\fiji-win64.zip
@@ -184,10 +184,10 @@ cd .\fiji-win64\Fiji.app</code></pre>
         <a class="nav-link active" id="code2-tab-linux" data-toggle="pill" href="#code2-area-linux" role="tab"
           aria-controls="code2-area-linux" aria-selected="true">Linux</a>
       </li>
-      <!-- <li class="nav-item">
+      <li class="nav-item">
         <a class="nav-link" id="code2-tab-mac" data-toggle="pill" href="#code2-area-mac" role="tab"
           aria-controls="code2-area-mac" aria-selected="false">Mac</a>
-      </li> -->
+      </li>
       <li class="nav-item">
         <a class="nav-link" id="code2-tab-windows" data-toggle="pill" href="#code2-area-windows" role="tab"
           aria-controls="code2-area-windows" aria-selected="false">Windows</a>
@@ -208,16 +208,15 @@ cd .\fiji-win64\Fiji.app</code></pre>
 # Performing update
 ./ImageJ-linux64 --headless --update update</code></pre>
       </div>
-      <!-- <div class="tab-pane" id="code2-area-mac" role="tabpanel" aria-labelledby="code2-tab-mac">
-        NEEDS UPDATING WHEN RELEASED TO REMOVE # FROM ARGUMENTS
+      <div class="tab-pane" id="code2-area-mac" role="tabpanel" aria-labelledby="code2-tab-mac">
         <pre><code id="code2-mac" class="language-bash"># Commands for Bash
 # Marking MIA and IJPB-plugins for installation
-./ImageJ-macosx -#-headless -#-update add-update-site MIA https://sites.imagej.net/ModularImageAnalysis/
-./ImageJ-macosx -#-headless -#-update add-update-site IJPB-plugins https://sites.imagej.net/IJPB-plugins
+./ImageJ-macosx --headless --update add-update-site MIA https://sites.imagej.net/ModularImageAnalysis/
+./ImageJ-macosx --headless --update add-update-site IJPB-plugins https://sites.imagej.net/IJPB-plugins
 
 # Performing update
-./ImageJ-macosx -#-headless -#-update update</code></pre>
-      </div> -->
+./ImageJ-macosx --headless --update update</code></pre>
+      </div>
       <div class="tab-pane" id="code2-area-windows" role="tabpanel" aria-labelledby="code2-tab-windows">
         <pre><code id="code2-windows" class="language-powershell"># Commands for Windows PowerShell
 # Marking MIA and IJPB-plugins for installation
@@ -238,7 +237,7 @@ cd .\fiji-win64\Fiji.app</code></pre>
       <a href="#optional_arguments">optional arguments</a>. Arguments are specified as a comma-separated list of names
       and values. If you don't have a workflow to hand, you can download the example
       workflow (from the <a href="https://github.com/mianalysis/mia-examples">MIA-examples</a> repository) using the
-      first few optional commands.  Note: Headless running requires MIA version 1.2.0 or newer.
+      first few optional commands. Note: Headless running requires MIA version 1.2.0 or newer.
     </div>
     <br />
     <ul class="nav nav-pills" id="code3-tablist" role="tablist">
@@ -246,10 +245,10 @@ cd .\fiji-win64\Fiji.app</code></pre>
         <a class="nav-link active" id="code3-tab-linux" data-toggle="pill" href="#code3-area-linux" role="tab"
           aria-controls="code3-area-linux" aria-selected="true">Linux</a>
       </li>
-      <!-- <li class="nav-item">
+      <li class="nav-item">
         <a class="nav-link" id="code3-tab-mac" data-toggle="pill" href="#code3-area-mac" role="tab"
           aria-controls="code3-area-mac" aria-selected="true">Mac</a>
-      </li> -->
+      </li>
       <li class="nav-item">
         <a class="nav-link" id="code3-tab-windows" data-toggle="pill" href="#code3-area-windows" role="tab"
           aria-controls="code3-area-windows" aria-selected="false">Windows</a>
@@ -264,56 +263,55 @@ cd .\fiji-win64\Fiji.app</code></pre>
       <div class="tab-pane show active" id="code3-area-linux" role="tabpanel" aria-labelledby="code3-tab-linux">
         <pre><code id="code3-linux" class="language-bash"># Commands for Bash
 # (Optional) Download example workflow to user folder
-wget https://github.com/mianalysis/mia-examples/releases/download/v1.0.0/Ex1_only.zip -O ~/example.zip
-unzip ~/example.zip -d ~/
-rm ~/example.zip
+wget https://github.com/mianalysis/mia-examples/archive/refs/tags/v1.0.5.zip -O ~/HeadlessExample.zip
+unzip ~/HeadlessExample.zip -d ~/
+rm ~/HeadlessExample.zip
 
 # Defining workflow path as a variable
-wfPath=~/Ex1_only/Ex1_NucleiSegmentation.mia
+wfPath=~/mia-examples-1.0.5/Ex1_NucleiSegmentation/Ex1_NucleiSegmentation.mia
 
 # Running a workflow on a specified single file
-inPath=~/Ex1_only/Ex1_3DStack1.tif
+inPath=~/mia-examples-1.0.5/Ex1_NucleiSegmentation/Ex1_3DStack1.tif
 ./ImageJ-linux64 --headless --run "MIA (headless)" "workflowPath='$wfPath', inputPath='$inPath'"
 
 # Running a workflow on a specified folder with verbose output
-inPath=~/Ex1_only/
+inPath=~/mia-examples-1.0.5/Ex1_NucleiSegmentation/
 ./ImageJ-linux64 --headless --run "MIA (headless)" "workflowPath='$wfPath', inputPath='$inPath', verbose=true"</code></pre>
       </div>
-      <!-- <div class="tab-pane" id="code3-area-mac" role="tabpanel" aria-labelledby="code3-tab-mac">
-        NEEDS UPDATING WHEN RELEASED TO REMOVE # FROM ARGUMENTS
+      <div class="tab-pane" id="code3-area-mac" role="tabpanel" aria-labelledby="code3-tab-mac">
         <pre><code id="code3-mac" class="language-bash"># Commands for Bash
 # (Optional) Download example workflow to user folder
-curl https://github.com/mianalysis/mia-examples/releases/download/v1.0.0/Ex1_only.zip -o ~/example.zip
-unzip ~/example.zip -d ~/
-rm ~/example.zip
+curl https://codeload.github.com/mianalysis/mia-examples/zip/refs/tags/v1.0.5 -o ~/HeadlessExample.zip
+unzip ~/HeadlessExample.zip -d ~/
+rm ~/HeadlessExample.zip
 
 # Defining workflow path as a variable
-wfPath=~/mia-examples-1.0.0/Ex1_NucleiSegmentation/Ex1_NucleiSegmentation.mia
+wfPath=~/mia-examples-1.0.5/Ex1_NucleiSegmentation/Ex1_NucleiSegmentation.mia
 
 # Running a workflow on a specified single file (execution may take a few seconds to start)
-inPath=~/mia-examples-1.0.0/Ex1_NucleiSegmentation/Ex1_3DStack1.tif
-./ImageJ-macosx -#-headless -#-run "MIA (headless)" "workflowPath='$wfPath', inputPath='$inPath'"
+inPath=~/mia-examples-1.0.5/Ex1_NucleiSegmentation/Ex1_3DStack1.tif
+./ImageJ-macosx --headless --run "MIA (headless)" "workflowPath='$wfPath', inputPath='$inPath'"
 
 # Running a workflow on a specified folder with verbose output
-inPath=~/mia-examples-1.0.0/Ex1_NucleiSegmentation/
-./ImageJ-macosx -#-headless -#-run "MIA (headless)" "workflowPath='$wfPath', inputPath='$inPath', verbose=true"</code></pre>
-      </div> -->
+inPath=~/mia-examples-1.0.5/Ex1_NucleiSegmentation/
+./ImageJ-macosx --headless --run "MIA (headless)" "workflowPath='$wfPath', inputPath='$inPath', verbose=true"</code></pre>
+      </div>
       <div class="tab-pane" id="code3-area-windows" role="tabpanel" aria-labelledby="code3-tab-windows">
         <pre><code id="code3-windows" class="language-powershell"># Commands for Windows PowerShell
 # (Optional) Download example workflow to user folder
-Invoke-WebRequest https://github.com/mianalysis/mia-examples/releases/download/v1.0.0/Ex1_only.zip -OutFile $HOME/example.zip
-Expand-Archive $HOME\example.zip -DestinationPath ~\
-rm $HOME\example.zip
+Invoke-WebRequest https://github.com/mianalysis/mia-examples/archive/refs/tags/v1.0.5.zip -OutFile $HOME/HeadlessExample.zip
+Expand-Archive $HOME\HeadlessExample.zip -DestinationPath ~\
+rm $HOME\HeadlessExample.zip
 
 # Defining workflow path as a variable
-$wfPath="'$HOME\Ex1_only\Ex1_NucleiSegmentation.mia'"
+$wfPath="'$HOME\mia-examples-1.0.5\Ex1_NucleiSegmentation\Ex1_NucleiSegmentation.mia'"
 
 # Running a workflow on a specified single file
-$inPath="'$HOME\Ex1_only\Ex1_3DStack1.tif'"
+$inPath="'$HOME\mia-examples-1.0.5\Ex1_NucleiSegmentation\Ex1_3DStack1.tif'"
 .\ImageJ-win64 --console --headless --run "MIA (headless)" "workflowPath=$wfPath, inputPath=$inPath"
 
 # Running a workflow on a specified folder with verbose output
-$inPath="'$HOME\Ex1_only\'"
+$inPath="'$HOME\mia-examples-1.0.5\Ex1_NucleiSegmentation\'"
 .\ImageJ-win64 --console --headless --run "MIA (headless)" "workflowPath=$wfPath, inputPath=$inPath, verbose=true"</code></pre>
       </div>
     </div>
@@ -322,7 +320,8 @@ $inPath="'$HOME\Ex1_only\'"
   <div class="container mia-text-container text-center">
     <p class="mia-heading mt-5" id="required_arguments">Required arguments</p>
     <div class="mia-main-text pb-2">
-      Currently, headless running only requires a single argument specifying the path to a pre-configured MIA workflow. In such a
+      Currently, headless running only requires a single argument specifying the path to a pre-configured MIA workflow.
+      In such a
       case, the file to be processed is that specified in the workflow file's "Input path". To run a different file,
       please use the "inputPath" <a href="#optional_arguments">optional argument</a>.
     </div>
