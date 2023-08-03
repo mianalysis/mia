@@ -40,6 +40,10 @@ import io.github.mianalysis.mia.object.system.Status;
 /**
  * Created by sc13967 on 26/06/2017.
  */
+
+/**
+* 
+*/
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class SaveObjectsAsROIs extends AbstractSaver {
 

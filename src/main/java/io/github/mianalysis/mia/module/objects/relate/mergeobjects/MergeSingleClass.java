@@ -21,6 +21,10 @@ import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Status;
 
+
+/**
+* Combines all objects at a single timepoint from a specific object collection into a single object.  Due to the fact objects are stored in 3D, there are still separate objects for each timepoint.
+*/
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class MergeSingleClass extends Module {
 

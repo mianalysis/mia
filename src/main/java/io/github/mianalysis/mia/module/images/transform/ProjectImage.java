@@ -46,6 +46,10 @@ import net.imglib2.view.Views;
 /**
  * Created by sc13967 on 04/05/2017.
  */
+
+/**
+* 
+*/
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class ProjectImage<T extends RealType<T> & NativeType<T>> extends Module {
 

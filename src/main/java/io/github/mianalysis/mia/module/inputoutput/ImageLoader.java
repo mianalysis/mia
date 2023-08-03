@@ -97,6 +97,10 @@ import ome.xml.model.primitives.PositiveInteger;
 /**
  * Created by Stephen on 15/05/2017.
  */
+
+/**
+* Load image into MIA workspace.  This module can be configured to import images from a variety of locations (selected using the "Import mode" control).
+*/
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
 

@@ -50,6 +50,12 @@ import io.github.sjcross.sjcommon.object.Point;
 /**
  * Created by sc13967 on 05/06/2017.
  */
+
+/**
+* Gaussian spot fitting.  Can take objects as estimated locations.
+***Only works in 2D***
+***Only works for refinement of existing spots***
+*/
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class FitGaussian2D extends Module {
 

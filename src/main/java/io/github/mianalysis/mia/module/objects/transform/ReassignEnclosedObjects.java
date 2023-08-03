@@ -26,6 +26,10 @@ import io.github.sjcross.sjcommon.exceptions.IntegerOverflowException;
 import io.github.sjcross.sjcommon.object.Point;
 import io.github.sjcross.sjcommon.object.volume.PointOutOfRangeException;
 
+
+/**
+* Any objects entirely enclosed by another object in the same collection are reassigned as being part of the enclosing object.  This operation removes the enclosed object as a separate entity.<br><br>Note: MIA objects do not permit duplication of the same coordinate within a single object, so any duplicate coordinates will be ignored (i.e. only one copy will be stored).
+*/
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class ReassignEnclosedObjects extends Module {
 

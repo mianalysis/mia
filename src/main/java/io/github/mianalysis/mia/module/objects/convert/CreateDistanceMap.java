@@ -39,6 +39,10 @@ import io.github.mianalysis.mia.object.system.Status;
 import io.github.mianalysis.mia.process.ColourFactory;
 import io.github.sjcross.sjcommon.object.Point;
 
+
+/**
+* Creates a distance map for a selected object set.  Pixels in the output image are encoded with the distance to the nearest image edge or centroid (depending on setting).  A single distance map image is created for all objects in the specified set.  Uses the plugin "<a href="https://github.com/ijpb/MorphoLibJ">MorphoLibJ</a>".
+*/
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class CreateDistanceMap extends Module {
 

@@ -35,6 +35,10 @@ import io.github.sjcross.sjcommon.object.volume.PointOutOfRangeException;
  * Returns a spherical object around a point object. This is useful for
  * calculating local object features.
  */
+
+/**
+* Creates a local object region (sphere or circle) for each object in a specified object collection.  The radius of each local region can be based on a fixed value, or taken from an object measurement.  Similarly, the output sphere or circle can either be centred on the input object centroid or a location specified by XYZ measurements.  Local object regions are stored as children of their respective input object.
+*/
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class GetLocalObjectRegion extends Module {
 

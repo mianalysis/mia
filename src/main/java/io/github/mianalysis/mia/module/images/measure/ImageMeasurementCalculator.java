@@ -27,6 +27,10 @@ import io.github.mianalysis.mia.object.system.Status;
 /**
  * Created by Stephen Cross on 19/03/2019.
  */
+
+/**
+* Perform a mathematical operation on measurements associated with an image.  The calculation can replace either or both input image measurements with fixed values.  The resulting measurement is associated with the input image as a new measurement.
+*/
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class ImageMeasurementCalculator extends Module {
 

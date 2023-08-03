@@ -66,6 +66,10 @@ import mpicbg.models.TranslationModel2D;
 import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
 
+
+/**
+* DEPRECATED: Please use separate automatic and manual modules instead.<br><br>Apply slice-by-slice (2D) affine-based image registration to a multi-dimensional stack.  Images can be aligned relative to the first frame in the stack, the previous frame or a separate image in the workspace.  The registration transform can also be calculated from a separate stack to the one that it will be applied to.  Registration is performed along the time axes and applied equally to all Z-slices.  For greater control (including registration along Z) please use separate automatic and manual modules instead.<br><br>This module uses the <a href="https://imagej.net/Feature_Extraction">Feature Extraction</a> and <a href="https://imagej.net/Linear_Stack_Alignment_with_SIFT">Linear Stack Alignment with SIFT</a> plugins to detect SIFT ("Scale Invariant Feature Transform") features from the input images and calculate and apply the necessary 2D affine transforms.<br><br>Note: The SIFT-algorithm is protected by U.S. Patent 6,711,293: Method and apparatus for identifying scale invariant features in an image and use of same for locating an object in an image by the University of British Columbia. That is, for commercial applications the permission of the author is required. Anything else is published under the terms of the GPL, so feel free to use it for academic or personal purposes.<br><br>References:<ul><li>Lowe, David G. "Object recognition from local scale-invariant features". <i>Proceedings of the International Conference on Computer Vision</i> <b>2</b> (1999) 1150–1157.</li><li>Lowe, David G. "Distinctive Image Features from Scale-Invariant Keypoints". <i>International Journal of Computer Vision</i> <b>60</b> (2004) 91–110.</li></ul>
+*/
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class RegisterImages<T extends RealType<T> & NativeType<T>> extends Module implements Interactable {
 

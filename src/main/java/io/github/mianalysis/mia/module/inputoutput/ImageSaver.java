@@ -36,6 +36,10 @@ import io.github.sjcross.sjcommon.process.IntensityMinMax;
 /**
  * Created by sc13967 on 26/06/2017.
  */
+
+/**
+* Save an image/stack from the workspace to file.  These files can be placed in the same folder as the input file, located in a specific folder or placed in a directory structure mirroring the input structure, but based at a new location.  For greater flexibility in output file locations and filenames, the "Save image (generic)" module can be used.  To prevent overwriting of previously-saved files, the current date and time can be appended to the end of each filename.  Images can be saved in a variety of formats (AVI, TIF and Zipped TIF).
+*/
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class ImageSaver extends AbstractSaver {
 

@@ -47,6 +47,10 @@ import io.github.mianalysis.mia.process.ColourFactory;
 import io.github.sjcross.sjcommon.process.CommaSeparatedStringInterpreter;
 import ome.units.UNITS;
 
+
+/**
+* Adds an overlay to the specified input image showing a fixed text label.  Slice and frame indices can be dynamically inserted into the text using keywords.
+*/
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class AddText extends AbstractOverlay {
     TextRoi textRoi = null;

@@ -47,6 +47,10 @@ import io.github.sjcross.sjcommon.process.activecontour.visualisation.GridOverla
 /**
  * Created by sc13967 on 16/01/2018.
  */
+
+/**
+* Uses active contours to fit a 2D concave hull to specified objects.  The 2D perimeter of each input object is converted to a closed contour, the position of which is optimised in order to minimise various internal (contour) and external (image) energies.  Internal energies are elasticity and bending of the contour, which aim to minimise point-point separation and adjacent segment alignment, respectively.  External energies are provided by the image intensity along the path and are minimised when the contour sits in dark areas of the image.  Energies are iteratively optimised using a greedy algorithm which tests each point along the contour at all points within a specified search radius, taking the lowest energy point as the new location.  For more information on active contours, see Kass, M.; Witkin, A.; Terzopoulos, D., "Snakes: Active contour models",  <i>International Journal of Computer Vision</i>, 1988, <b>1</b>, 321.
+*/
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class FitActiveContours extends Module {
 

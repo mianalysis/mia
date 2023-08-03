@@ -37,6 +37,10 @@ import io.github.sjcross.sjcommon.object.Point;
 /**
  * Created by sc13967 on 04/05/2017.
  */
+
+/**
+* Relate objects of two classes based on a variety of metrics (e.g. spatial overlap or proximity).  The assigned relationships are of the form many-to-one, where many input "child" objects can be related to at most, one "parent" object.  Measurements associated with this relationship (e.g. distance from child to parent surface) are stored as measurements of the relevant child object.
+*/
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class RelateObjects extends Module {
 

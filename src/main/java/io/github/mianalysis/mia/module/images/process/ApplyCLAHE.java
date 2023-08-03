@@ -37,6 +37,10 @@ import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Status;
 import mpicbg.ij.clahe.Flat;
 
+
+/**
+* Applies the MPICBG implementation of CLAHE (Contrast Limited Adaptive Histogram Equalization).  This module runs the Image "<a href="https://imagej.net/Enhance_Local_Contrast_(CLAHE)">CLAHE</a>" plugin.
+*/
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class ApplyCLAHE extends Module {
 

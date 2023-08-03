@@ -23,6 +23,10 @@ import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.system.Status;
 
+
+/**
+* Filter an object collection based on contact of each object with the image edge.  Contact is considered as a case where an object pixel is in the outer-most row, column or slice  of an image (e.g. x = 0 or y = max_value).  The maximum number of contact pixels before an object is removed can be set to permit a degree of contact.  Objects identified as being in contact with the image edge can be removed from the input collection, moved to another collection (and removed from the input collection) or simply counted (but retained in the input collection).  The number of objects failing the filter can be stored as a metadata value.  <br><br>Image edge filters can be used when counting the number of objects in a field of view - in this case, typically two adjacent edges are removed (e.g. bottom and right) to prevent over-counting.  Alternatively, removing objects on all edges can be performed when measuring whole-object properties such as area or volume to prevent under-measuring values.
+*/
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class FilterOnImageEdge extends AbstractObjectFilter {
 

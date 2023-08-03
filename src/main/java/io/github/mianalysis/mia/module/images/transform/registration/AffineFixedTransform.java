@@ -39,6 +39,10 @@ import mpicbg.ij.InverseTransformMapping;
 import mpicbg.models.AbstractAffineModel2D;
 import mpicbg.models.AffineModel2D;
 
+
+/**
+* 
+*/
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class AffineFixedTransform extends Module {
 

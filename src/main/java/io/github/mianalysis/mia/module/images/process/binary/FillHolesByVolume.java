@@ -46,6 +46,10 @@ import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Status;
 import io.github.sjcross.sjcommon.exceptions.LongOverflowException;
 
+
+/**
+* Performs a volume-limited 3D fill holes operation on an input binary image.  This operation will change all background pixels in a region which is fully enclosed by foreground pixels to foreground.  The volume of holes to be filled can be restricted with both minimum and maximum permissible holes.  This image will be 8-bit with binary logic determined by the "Binary logic" parameter.  Uses the plugin "<a href="https://github.com/ijpb/MorphoLibJ">MorphoLibJ</a>".
+*/
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class FillHolesByVolume extends Module {
 

@@ -27,6 +27,10 @@ import java.util.ArrayList;
 /**
  * Created by sc13967 on 11/05/2017.
  */
+
+/**
+* Measure mean XYZ centroid for all objects in an object collection.  <br><br>Note: Z-coordinates are specified in terms of slices (not pixels).
+*/
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class MeasureObjectCentroid extends Module {
 

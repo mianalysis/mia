@@ -61,6 +61,10 @@ import io.github.mianalysis.mia.process.LabelFactory;
 /**
  * Created by sc13967 on 17/05/2017.
  */
+
+/**
+* DEPRECATED - Please use individual overlay modules (e.g. "Add labels", "Add object outline", etc.).<br><br>Adds an overlay to the specified input image which can represent each specified input object.  This module can render many different types of overlay; options include: All points, Arrows, Centroid, Label only, Outline, Position measurements, Tracks
+*/
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class AddObjectsOverlay extends Module {
 

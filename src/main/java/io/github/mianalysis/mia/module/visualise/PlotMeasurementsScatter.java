@@ -35,6 +35,10 @@ import io.github.sjcross.sjcommon.mathfunc.CumStat;
 /**
  * Created by sc13967 on 19/05/2017.
  */
+
+/**
+* Creates an ImageJ scatter plot of two measurements associated with specified objects.  A third measurement can be encoded as point colour.  The output plot can either be displayed immediately in an interactive ImageJ plotting window or stored as an image to the MIA workspace (allowing it to subsequently be saved to file).
+*/
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class PlotMeasurementsScatter extends Module {
 

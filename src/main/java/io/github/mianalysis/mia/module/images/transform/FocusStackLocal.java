@@ -34,6 +34,10 @@ import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Status;
 import io.github.mianalysis.mia.thirdparty.Stack_Focuser_;
 
+
+/**
+* Focuses a Z-stack into a single plane using the StackFocuser ImageJ plugin.  Best focus position is determined at each 2D pixel location, with the final image being comprised of the pixels from the slice with the best focus at that location.  Each channel and timepoint is focused separately.  Prior to application, the focus map can be median filtered to remove outliers.  Height maps can be stored and used in additional "Focus stack (local)" instances, thus allowing height maps to be edited prior to use.<br><br>Uses the <a href="https://imagej.nih.gov/ij/plugins/download/Stack_Focuser_.java">StackFocuser</a> plugin created by Mikhail Umorin (source code downloaded on 06-June-2018).
+*/
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class FocusStackLocal extends Module {
 

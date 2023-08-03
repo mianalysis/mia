@@ -36,6 +36,10 @@ import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Status;
 import io.github.mianalysis.mia.object.units.SpatialUnit;
 
+
+/**
+* Update spatial calibration for XY and Z axes based on defined physical and corresponding image (pixel) distances.  Both physical and image distances can be drawn from a variety of sources including image and object measurements, fixed values and user-defined values (specified at runtime).  Calibration can be applied to XY and Z axes simultaneously or independently.
+*/
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class SetSpatialCalibration extends Module {
 

@@ -27,6 +27,10 @@ import ome.units.quantity.Time;
 import ome.units.unit.Unit;
 
 
+
+/**
+* 
+*/
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class ProjectObjects extends Module {
 

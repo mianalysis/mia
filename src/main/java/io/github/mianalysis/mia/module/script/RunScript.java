@@ -63,6 +63,10 @@ import io.github.mianalysis.mia.object.system.Status;
 /**
  * Created by Stephen on 12/05/2021.
  */
+
+/**
+* Run Fiji-compatible scripts directly within a MIA workflow.  These can be used to perform advanced actions, such as making measurements that aren't explicitly supported in MIA or running additional plugins.  Each script has access to the current workspace, thus providing a route to interact with and specify new images and objects.  Scripts also have access to this module, which in turn can be used to access all modules in the current workflow.  Scripts are run once per workflow execution.
+*/
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class RunScript extends Module {
 

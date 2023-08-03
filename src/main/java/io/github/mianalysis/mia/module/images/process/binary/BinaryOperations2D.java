@@ -32,6 +32,10 @@ import io.github.mianalysis.mia.object.system.Status;
 /**
  * Created by sc13967 on 06/06/2017.
  */
+
+/**
+* Applies stock ImageJ binary operations to an image in the workspace.  This image will be 8-bit with binary logic determined by the "Binary logic" parameter.  All operations are performed in 2D, with higher dimensionality stacks being processed slice-by-slice.
+*/
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class BinaryOperations2D extends Module {
 

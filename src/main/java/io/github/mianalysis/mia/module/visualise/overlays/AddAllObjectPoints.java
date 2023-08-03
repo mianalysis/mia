@@ -37,6 +37,10 @@ import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Status;
 
+
+/**
+* Adds an overlay to the specified input image with all points in the specified input objects rendered as small circles.
+*/
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class AddAllObjectPoints extends AbstractOverlay {
 

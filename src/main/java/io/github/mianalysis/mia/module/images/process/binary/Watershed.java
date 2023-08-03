@@ -39,6 +39,10 @@ import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Status;
 
+
+/**
+* Peforms a watershed transform on a specified input image.  This process is able to split separate regions of a single connected foreground region as long as the sub-regions are connected by narrow necks (e.g. snowman shape).  Background lines are drawn between each sub-region such that they are no longer connected.  This can use specific markers and be run in either distance or intensity-based modes.  Uses the plugin "<a href="https://github.com/ijpb/MorphoLibJ">MorphoLibJ</a>".
+*/
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class Watershed extends Module {
 

@@ -33,6 +33,10 @@ import io.github.mianalysis.mia.object.system.Status;
 /**
  * Created by sc13967 on 19/09/2017.
  */
+
+/**
+* Apply pixel-wise intensity calculations for two images of matching dimensions.<br><br>Note: Images to be processed must have matching spatial dimensions and intensity bit-depths.
+*/
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class ImageCalculator extends Module {
 

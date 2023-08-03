@@ -38,6 +38,10 @@ import io.github.mianalysis.mia.object.system.Status;
 import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.process.ColourFactory;
 
+
+/**
+* Adds an overlay to the specified input image showing the extent of each specified input object as a filled shape.  The opacity of the filled shape can be varied to see the image underneath.
+*/
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class AddObjectFill extends AbstractOverlay {
 

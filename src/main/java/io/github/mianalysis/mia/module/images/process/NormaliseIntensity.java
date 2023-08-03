@@ -41,6 +41,11 @@ import io.github.sjcross.sjcommon.process.IntensityMinMax;
 /**
  * Created by sc13967 on 10/08/2017.
  */
+
+/**
+* Sets the intensity to maximise the dynamic range of the image.
+"Clipping fraction" is the fraction of pixels at either end of the range that gets clipped.The "Per object" region mode will normalise all pixels within each object.<br><br>Note: This module will change pixel intensities.  To set the display range without altering pixel intensities, use the "Set intensity display range" module
+*/
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class NormaliseIntensity extends Module {
 

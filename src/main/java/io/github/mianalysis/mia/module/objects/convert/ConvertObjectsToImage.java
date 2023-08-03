@@ -41,6 +41,10 @@ import io.github.sjcross.sjcommon.process.IntensityMinMax;
 /**
  * Created by sc13967 on 04/05/2017.
  */
+
+/**
+* Creates an image showing all objects in a specified collection.  The value (intensity) of each pixel can be based on object (or relative) ID numbers as well as various metrics, such as measurements or relationship counts.  Output images will be 32-bit type, except when in "Random colour" or "Single colour" modes, which are 8-bit as the extra precision is not required.<br><br>Note: This output method is unable to correctly render overlapping objects (those with any matching coordinates); as such, the output image will show the result for one of objects for these coordinates.
+*/
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class ConvertObjectsToImage extends Module {
 

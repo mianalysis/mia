@@ -44,6 +44,10 @@ import net.imglib2.type.numeric.RealType;
 /**
  * Created by sc13967 on 06/06/2017.
  */
+
+/**
+* 
+*/
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class DistanceBands<T extends RealType<T> & NativeType<T>> extends Module {
 

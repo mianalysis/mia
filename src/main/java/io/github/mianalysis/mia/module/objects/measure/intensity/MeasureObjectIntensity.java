@@ -36,6 +36,10 @@ import io.github.sjcross.sjcommon.object.Point;
 /**
  * Created by sc13967 on 05/05/2017.
  */
+
+/**
+* Measure intensity of each object in a specified image.  Measurements of intensity are taken at all pixel coordinates corresponding to each object.  By default, basic measurements such as mean, minimum and maximum will be calculated.  Additional measurements can optionally be enabled.
+*/
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class MeasureObjectIntensity extends Module {
 

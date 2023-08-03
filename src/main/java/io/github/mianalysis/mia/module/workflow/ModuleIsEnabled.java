@@ -22,6 +22,10 @@ import io.github.mianalysis.mia.object.system.Status;
 /**
  * Created by Stephen Cross on 23/11/2018.
  */
+
+/**
+* Implement workflow handling outcome based on whether another module is enabled or disabled.  Outcomes can include termination of the analysis and redirection of the active module to another part of the workflow.  Redirection allows parts of the analysis to skipped.<br><br>Note: This only applies to modules explictly enabled/disabled by the user.  It does not apply to modules that are inactive due to invalid parameters (modules highlighted in red in the module list).
+*/
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class ModuleIsEnabled extends AbstractWorkspaceHandler {
 

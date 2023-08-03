@@ -39,6 +39,10 @@ import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
 import net.imglib2.type.numeric.integer.UnsignedByteType;
 
+
+/**
+* Applies the mask image to the specified object collection.  Any object coordinates coincident with black pixels (intensity 0) will be removed.
+*/
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class MaskObjects<T extends RealType<T> & NativeType<T>> extends Module {
 

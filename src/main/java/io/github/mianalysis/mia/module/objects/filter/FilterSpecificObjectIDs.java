@@ -40,6 +40,10 @@ import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.system.Status;
 import io.github.sjcross.sjcommon.process.CommaSeparatedStringInterpreter;
 
+
+/**
+* Filter an object collection based on user-defined list of object ID numbers.  When the module executes, the user is presented with a dialog box where they can enter a comma-separated list of object IDs to remove.  Once the list is complete, the user presses "OK" to proceed.  All objects with ID numbers matching those in the list can be removed from the input collection, moved to another collection (and removed from the input collection) or simply counted (but retained in the input collection).  To assist with selection of ID numbers, an optional image can be displayed - this could be pre-prepared to display object ID numbers using the "Add labels" module.  The number of objects specified for removal can be stored as a metadata value.
+*/
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class FilterSpecificObjectIDs extends AbstractObjectFilter implements ActionListener {
 

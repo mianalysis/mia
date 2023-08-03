@@ -129,6 +129,10 @@ import io.github.mianalysis.mia.process.ColourFactory;
 import io.github.sjcross.sjcommon.imagej.LUTs;
 import io.github.sjcross.sjcommon.object.volume.VolumeType;
 
+
+/**
+* Relate objects of two classes based on spatial proximity or overlap.  With this module, each object from a collection can be linked to an unlimited number of other objects (see "Relate many-to-one" and "Relate one-to-one" modules for alternatives).  As such, the assigned relationships can form a network of relationships, with each object connected to multiple others.  Related objects are assigned partner relationships and can optionally also be related by a common cluster (parent) object.  Measurements associated with these relationship (e.g. a record of whether each object was linked) are stored as measurements of the relevant object.
+*/
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class RelateManyToMany extends Module {
 

@@ -24,6 +24,10 @@ import io.github.mianalysis.mia.object.system.Status;
 import io.github.sjcross.sjcommon.object.volume.PointOutOfRangeException;
 import io.github.sjcross.sjcommon.object.volume.VolumeType;
 
+
+/**
+* Fit 2D convex hull to a 2D object.  If objects are in 3D, a convex hull is fit slice-by-slice.<br><br>Uses the ImageJ "Fit convex hull" function.
+*/
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class FitConvexHull2D extends Module {
 

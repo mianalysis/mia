@@ -50,6 +50,10 @@ import io.github.mianalysis.mia.object.units.SpatialUnit;
 /**
  * Created by sc13967 on 22/06/2017.
  */
+
+/**
+* Measures the shortest distance between all objects in the specified input collection and all other objects in the same, or a different collection.  The shortest distance (nearest neighbour distance) is recorded as a measurement associated with the input object.  Optionally, the distances between all objects can be calculated and exported as a standalone spreadsheet.
+*/
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class CalculateNearestNeighbour extends AbstractSaver {
 

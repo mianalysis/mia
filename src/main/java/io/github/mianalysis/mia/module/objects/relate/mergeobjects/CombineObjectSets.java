@@ -28,6 +28,10 @@ import io.github.mianalysis.mia.object.system.Status;
 /**
  * Created by sc13967 on 31/01/2018.
  */
+
+/**
+* Combines the objects from two collections stored in the workspace.  Either the objects from one collection can be added to the other or they can both be combined into a new collection, which is added to the workspace.<br><br>Note: Any objects added to another collection (either the "other" object collection or to a new collection) are duplicates of the original objects.  These duplicates contain the same spatial and temporal information as well as any relationship connections and measurements.  The original objects are unaffected by this module.
+*/
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class CombineObjectSets extends Module {
 

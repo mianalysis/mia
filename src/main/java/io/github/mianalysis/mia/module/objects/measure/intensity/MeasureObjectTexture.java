@@ -39,6 +39,10 @@ import io.github.sjcross.sjcommon.analysis.TextureCalculator;
  * Takes a set of objects and measures intensity texture values on a provided
  * image. Measurements are stored with the objects.
  */
+
+/**
+* Calculates Haralick's texture features for each object in a collection for a specific image.  Each point in each object is compared to a corresponding point, a defined offset away (e.g. x-offset = 1, y-offset=0, z-offset=0 to compare to the pixel immediately right of each pixel).  The intensities of each point pair are added to a 2D gray-level co-occurrence matrix (GLCM) from which measures of angular second moment, contrast, correlation and entropy can be calculated.<br><br>Robert M Haralick; K Shanmugam; Its'hak Dinstein, "Textural Features for Image Classification" <i>IEEE Transactions on Systems, Man, and Cybernetics. SMC-3</i> (1973) <b>6</b> 610–621.
+*/
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class MeasureObjectTexture extends Module {
 

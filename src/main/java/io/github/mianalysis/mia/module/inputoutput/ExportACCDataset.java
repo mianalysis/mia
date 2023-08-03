@@ -38,6 +38,10 @@ import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Status;
 
+
+/**
+* Exports objects and associated measurements in the Advanced Cell Classifier (ACC) format.  The output dataset can be loaded into ACC, where machine learning can be applied to classify objects in a GUI-based environment.  This module allows specific measurements to be exported from all those associated with the input objects.  For more information on the format, please visit the <a href="https://www.cellclassifier.org/">Advanced Cell Classifier documentation</a>.
+*/
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class ExportACCDataset extends Module {
 
@@ -109,7 +113,7 @@ public class ExportACCDataset extends Module {
 
     @Override
     public String getDescription() {
-        return "Exports objects and associated measurements in the Advanced Cell Classifier (ACC) format.  The output dataset can be loaded into ACC, where machine learning can be applied to classify objects in a GUI-based environment.  This module allows specific measurements to be exported from all those associated with the input objects.  For more information on the format, please visit the <a href=\"https://www.cellclassifier.org/>Advanced Cell Classifier documentation</>.";
+        return "Exports objects and associated measurements in the Advanced Cell Classifier (ACC) format.  The output dataset can be loaded into ACC, where machine learning can be applied to classify objects in a GUI-based environment.  This module allows specific measurements to be exported from all those associated with the input objects.  For more information on the format, please visit the <a href=\"https://www.cellclassifier.org/\">Advanced Cell Classifier documentation</a>.";
 
     }
 

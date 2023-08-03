@@ -53,6 +53,10 @@ import sc.fiji.coloc.algorithms.SpearmanRankCorrelation;
 import sc.fiji.coloc.gadgets.DataContainer;
 import sc.fiji.coloc.gadgets.ThresholdMode;
 
+
+/**
+* Calculates colocalisation of two input images.  All measurements are associated with the first input image.  Measurements can be restricted to specific region using image or object-based masking.  To measure colocalisation on an object-by-object basis please use the "Measure object colocalisation" module.<br><br>All calculations are performed using the <a href="https://imagej.net/plugins/coloc-2">Coloc2 plugin</a>.
+*/
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class MeasureImageColocalisation<T extends RealType<T> & NativeType<T>> extends Module {
 

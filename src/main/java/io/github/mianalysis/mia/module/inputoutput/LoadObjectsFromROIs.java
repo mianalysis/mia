@@ -52,6 +52,10 @@ import loci.common.services.DependencyException;
 import loci.common.services.ServiceException;
 import loci.formats.FormatException;
 
+
+/**
+* 
+*/
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class LoadObjectsFromROIs extends Module {
 

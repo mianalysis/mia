@@ -20,6 +20,11 @@ import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Status;
 
+
+/**
+* This module duplicates an image into another, existing, image.  
+This is useful when dealing with optional modules, where a specific input is required later on.
+*/
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class ReplaceImage extends Module {
     public static final String INPUT_IMAGE1 = "Input image 1 (to be replaced)";

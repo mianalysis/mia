@@ -58,6 +58,10 @@ import io.github.sjcross.sjcommon.object.volume.VolumeType;
 /**
  * Created by sc13967 on 22/06/2017.
  */
+
+/**
+* Measures the intensity profile along the pixel-wide backbone of an object and outputs this profile to .xlsx file.  Input objects are skeletonised to single pixel-wide representations prior to measurement; however, pre-skeletonised objects can also be processed.<br><br>Output results are stored in a multi-sheet .xlsx file, where each sheet includes the profile for a specific input image.  Each row of a sheet contains the profile for a single object.  Profiles are linearly-interpolated such that each measured position along a profile is 1px from the previous.<br><br>Note: Objects must either form a single line (i.e. not contain multiple branches) or reduce to a single line during skeletonisation.  No profile will be recorded for any objects which fail this requirement.
+*/
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class MeasureIntensityAlongPath extends AbstractSaver {
 

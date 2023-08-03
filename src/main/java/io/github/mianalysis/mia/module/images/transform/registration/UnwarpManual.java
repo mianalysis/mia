@@ -33,6 +33,10 @@ import io.github.mianalysis.mia.process.interactable.PointPairSelector;
 import io.github.mianalysis.mia.process.interactable.PointPairSelector.PointPair;
 import io.github.mianalysis.mia.thirdparty.bUnwarpJ_Mod;
 
+
+/**
+* Apply 2D B-spline unwarping transforms to align images from the workspace to other images from the workspace using manually-selected reference points.  When the module runs, the input and reference images are displayed. The user then selects matching points on each image and clicks "Add pair(s)". Points must be added in the same order on each image (ID numbers next to each point provide a reference). Points are shown in the control window and can be deleted by highlighting the relevant entry and clicking "Remove pair". Finally, the alignment is accepted by clicking "Finish adding pairs", at which point the images are closed and the transform is applied.  If multiple slices/timepoints are to be aligned, the next image pair will immediately be displayed and the processes is repeated.  The transformed input image can either overwrite the input image in the workspace, or be saved to the workspace with a new name.Alignments are calculated using the <a href="https://imagej.net/BUnwarpJ">BUnwarpJ</a> image transformation library.
+*/
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class UnwarpManual<T extends RealType<T> & NativeType<T>> extends AbstractBUnwarpJRegistration
         implements Interactable {

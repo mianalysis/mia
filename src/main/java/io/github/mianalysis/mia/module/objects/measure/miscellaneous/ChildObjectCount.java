@@ -26,6 +26,10 @@ import io.github.mianalysis.mia.object.parameters.Parameters;
 /**
  * Created by sc13967 on 05/05/2017.
  */
+
+/**
+* Calculates the number of children from a specific class.  Measurements are assigned to all objects in the input collection.  Unlike normal measurements, this value is evaluated at the time of use, so should always be up to date.
+*/
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class ChildObjectCount extends Module {
 

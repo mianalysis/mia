@@ -36,6 +36,10 @@ import io.github.mianalysis.mia.object.system.Status;
 import io.github.mianalysis.mia.object.units.SpatialUnit;
 import io.github.sjcross.sjcommon.object.Point;
 
+
+/**
+* Relate objects of two classes based on a variety of metrics (e.g. spatial overlap or proximity).  The assigned relationships are of the form many-to-one, where many input "child" objects can be related to at most, one "parent" object (see "Relate many-to-many" and "Relate one-to-one" modules for alternatives).  Measurements associated with this relationship (e.g. distance from child to parent surface) are stored as measurements of the relevant child object.
+*/
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class RelateManyToOne extends Module {
 

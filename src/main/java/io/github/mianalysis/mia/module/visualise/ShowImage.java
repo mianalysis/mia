@@ -25,6 +25,10 @@ import io.github.sjcross.sjcommon.metadataextractors.Metadata;
 /**
  * Created by sc13967 on 03/05/2017.
  */
+
+/**
+* Display any image held in the current workspace.  Images are displayed using the standard ImageJ image window, so can be accessed/manipulated by any ImageJ/Fiji feature.  Displayed images are duplicates of the image stored in the workspace, so modification of a displayed image won't alter the original.
+*/
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class ShowImage extends Module {
 

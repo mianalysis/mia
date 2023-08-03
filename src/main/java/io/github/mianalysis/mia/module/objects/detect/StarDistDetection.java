@@ -69,6 +69,10 @@ import net.imglib2.util.ValuePair;
 import net.imglib2.view.IntervalView;
 import net.imglib2.view.Views;
 
+
+/**
+* Implements the StarDist plugin to detect objects.  For more information on StarDist please see <a href="https://imagej.net/plugins/stardist">https://imagej.net/plugins/stardist</a>.
+*/
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class StarDistDetection extends Module {
 

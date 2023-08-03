@@ -34,6 +34,10 @@ import io.github.mianalysis.mia.object.system.Status;
 /**
  * Created by sc13967 on 07/06/2017.
  */
+
+/**
+* Change the bit-depth of an image stack.  This module provides multiple ways to handle the intensity transformation from one bit-depth to another.<br><br>Note: Different scaling modes currently only apply when reducing the bit-depth of an image.  As such, converting from 8-bit to 16-bit will always result in direct conversion of intensities.
+*/
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class ImageTypeConverter extends Module {
 

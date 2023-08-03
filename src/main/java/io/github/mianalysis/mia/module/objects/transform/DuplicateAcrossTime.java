@@ -35,6 +35,10 @@ import io.github.sjcross.sjcommon.object.volume.PointOutOfRangeException;
 /**
  * Created by sc13967 on 29/06/2017.
  */
+
+/**
+* Creates a copy of objects across all frames in the specified image stack.  Duplicated objects can either have their own set of coordinates or all share the set from the input object.  While sharing coordinates across all timepoints can be much more memory efficient (no redundant duplication of data is required), any change to the coordinates in one frame will result in the change being mirrored across all timepoints, so this mode should be used with care.
+*/
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class DuplicateAcrossTime extends Module {
 

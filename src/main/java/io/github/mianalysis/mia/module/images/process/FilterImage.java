@@ -48,6 +48,10 @@ import io.github.sjcross.sjcommon.process.CommaSeparatedStringInterpreter;
 /**
  * Created by Stephen on 30/05/2017.
  */
+
+/**
+* Apply intensity filters to an image (or image stack) in the workspace.  Filters are applied to each Z-stack independently (i.e. channels and timepoints do not interact with each other).
+*/
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class FilterImage extends Module {
 

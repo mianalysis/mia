@@ -39,6 +39,10 @@ import io.github.mianalysis.mia.process.ColourFactory;
 import io.github.sjcross.sjcommon.object.Point;
 import io.github.sjcross.sjcommon.object.volume.VolumeType;
 
+
+/**
+* 
+*/
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class GrowObjects extends Module {
 

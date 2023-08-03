@@ -35,6 +35,10 @@ import io.github.sjcross.sjcommon.object.volume.VolumeType;
 /**
  * Created by sc13967 on 04/05/2017.
  */
+
+/**
+* Converts objects encoded in a labelled image stack back into objects.  Each output object is comprised of all pixels in a single timepoint with the same pixel intensity.  As such, pixels need not be in direct contact to be assigned the same object.  For objects tracked through time, the image intensity can be interpreted as the ID of a parent track object.<br><br>Note: This module has different behaviour to the "Identify objects" module, which takes a binary image, identifies contiguous foreground regions and assigns new object IDs.
+*/
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class ConvertImageToObjects extends Module {
 

@@ -36,6 +36,10 @@ import io.github.mianalysis.mia.object.system.Status;
 /**
  * Created by sc13967 on 30/11/2017.
  */
+
+/**
+* Apply bleaching correction to a specified image.  This adjusts intensities in all frames (after the first) to match the histogram distribution of the first frame.  It is intended to account for any fluorophore bleaching that occurs during acquisition of a timecourse.<br><br>This macro runs the Fiji bleaching correction plugin, "<a href="https://imagej.net/Bleach_Correction">Bleach Correction</a>".
+*/
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class BleachingCorrection extends Module {
 

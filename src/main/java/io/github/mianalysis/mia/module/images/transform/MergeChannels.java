@@ -43,6 +43,10 @@ import net.imglib2.view.Views;
 /**
  * Created by sc13967 on 22/02/2018.
  */
+
+/**
+* DEPRECATED: This Module has been superseeded by the more generalised "Concatenate stacks" Module.  It will be removed in a future release.<br><br>Combines image stacks as different channels.  Output is automatically converted to a composite image.
+*/
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class MergeChannels<T extends RealType<T> & NativeType<T>> extends Module {
 

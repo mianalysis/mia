@@ -75,6 +75,10 @@ import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
 import net.imglib2.view.Views;
 
+
+/**
+* Extract a Z-substack from an input stack based on either manually-selected slices, or an automatically-calculated best-focus slice.  For automated methods, best focus is determined using intensity statistics (e.g. largest variance) of all pixels in each slice.  When in manual mode, only the best focus slice for the first and last timepoints need be specified (all others will be estimated using polynomial spline interpolation); however, more frames can be specified if preferred.<br><br>Irrespective of the calculation method (manual or automatic), it's possible to extract a fixed number of slices above and below the determined best-focus slice.
+*/
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class FocusStackGlobal<T extends RealType<T> & NativeType<T>> extends Module implements ActionListener {
     private JFrame frame;

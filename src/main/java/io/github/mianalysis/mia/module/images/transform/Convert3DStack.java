@@ -30,6 +30,10 @@ import io.github.mianalysis.mia.object.system.Status;
 /**
  * Created by sc13967 on 19/06/2017.
  */
+
+/**
+* Emsures 3D stacks (or 4D with multiple channels) are of the expected type (timeseries or Z-stack).  This module verifies the singular dimension of a 3D stack is correct for the specified output type (e.g. single slice when dealing with timeseries).  Any stacks which are not in the expected order have their T and Z axes swapped.
+*/
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class Convert3DStack extends Module {
 

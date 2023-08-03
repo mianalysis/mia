@@ -36,6 +36,10 @@ import signalprocesser.voronoi.representation.triangulation.TriangulationReprese
 import signalprocesser.voronoi.representation.triangulation.TriangulationRepresentation.CalcCutOff;
 import signalprocesser.voronoi.shapegeneration.ShapeGeneration;
 
+
+/**
+* Fits a 2D concave hull to all objects in a collection.  Each input object will be fit with a single concave hull.  Even for non-contiguous input objects, a single concave hull will be created.  The smoothness of the output hull is controlled by the "range" parameter, with smaller range values more closely following the surface of the object.  Larger range values should be used to overcome gaps in object edges.<br><br>Generated concave hulls are set as children of their respective input object.  If objects are in 3D, a Z-projection of the object is used.<br><br>The implementation used in this module ("chi-shapes") is entirely from the "Concave hulls" library by Glenn Hudson and Matt Duckham (<a href="https://archive.md/l3Un5#selection-571.0-587.218">link</a>).  A paper with full details of the characteristic hulls algorithm is published in Pattern Recognition:<br><br>Duckham, M., Kulik, L., Worboys, M.F., Galton, A. (2008) "Efficient generation of simple polygons for characterizing the shape of a set of points in the plane", <i>Pattern Recognition</i>, <b>41</b>, 3224-3236 (<a href="https://archive.md/o/l3Un5/www.geosensor.net/papers/duckham08.PR.pdf">PDF</a>, <a href="https://archive.md/o/l3Un5/dx.doi.org/10.1016/j.patcog.2008.03.023">DOI</a>).
+*/
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class FitConcaveHull2D extends Module {
 

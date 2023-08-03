@@ -35,6 +35,10 @@ import io.github.sjcross.sjcommon.object.volume.SpatCal;
 import io.github.sjcross.sjcommon.object.volume.Volume;
 import io.github.sjcross.sjcommon.object.volume.VolumeType;
 
+
+/**
+* Measures the orientation of each object relative to a specific point.  Orientation of the objects themselves is provided by a previously-calculated measurement associated with each object.  The relative orientation is the angle between the vector specified by this measurement and a vector passing from the object centroid to a specific point.<br><br>Note: Currently only works for X-Y plane measurements
+*/
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class MeasureRelativeOrientation extends Module {
 

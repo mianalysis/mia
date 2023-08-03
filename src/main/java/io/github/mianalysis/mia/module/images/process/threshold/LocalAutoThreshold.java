@@ -32,6 +32,10 @@ import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Status;
 import io.github.sjcross.sjcommon.filters.AutoLocalThreshold3D;
 
+
+/**
+* Binarise an image in the workspace such that the output only has pixel values of 0 and 255.  Uses the built-in ImageJ global and 2D local auto-thresholding algorithms.<br><br>Note: Currently only works on 8-bit images.  Images with other bit depths will be automatically converted to 8-bit based on the "Fill target range (normalise)" scaling method from the "Image type converter" module.
+*/
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class LocalAutoThreshold extends Module {
 

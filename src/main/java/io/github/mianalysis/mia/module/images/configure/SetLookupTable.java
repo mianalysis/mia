@@ -28,6 +28,10 @@ import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Status;
 import io.github.sjcross.sjcommon.imagej.LUTs;
 
+
+/**
+* Set look-up table (LUT) for an image or a specific channel of an image.  The look-up table determines what colour ImageJ will render each intensity value of an image.
+*/
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class SetLookupTable extends Module {
 

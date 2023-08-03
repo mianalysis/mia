@@ -56,6 +56,10 @@ import io.github.sjcross.sjcommon.object.volume.VolumeType;
 /**
  * Created by sc13967 on 21/06/2017.
  */
+
+/**
+* Clusters objects (based on centroid locations) using K-Means++ and/or DBSCAN algorithms.  In K-Means++ [1], an optimisation of the standard K-Means algorithm, the points are assigned to a pre-determined number of clusters such that each point is assigned to its closest cluster mean position (this process is repeated until the cluster assignments stabilise or a maximum number of iterations is reached).  For DBSCAN [2], points are clustered based on a minimum number of neighbours within a specified spatial range.  As such, this algorithm doesn't require prior knowledge of the number of clusters.  Both algorithms use their respective <a href="https://commons.apache.org/proper/commons-math/">Apache Commons Math implementations.</a><br><br>References:<br>[1] Arthur, D.; Vassilvitskii, S. (2007). "k-means++: the advantages of careful seeding." <i>Proceedings of the eighteenth annual ACM-SIAM symposium on Discrete algorithms. Society for Industrial and Applied Mathematics Philadelphia, PA, USA.</i> pp. 1027–1035<br>[2] Ester, M.; Kriegel, H.-P.; Sander, J.; Xu, X. (1996). "A density-based algorithm for discovering clusters in large spatial databases with noise." <i>Proceedings of the Second International Conference on Knowledge Discovery and Data Mining (KDD-96). AAAI Press.</i> pp. 226–231
+*/
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class ClusterPoints extends Module {
 

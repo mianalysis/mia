@@ -43,6 +43,10 @@ import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Status;
 
+
+/**
+* Adds an overlay to the specified input image representing each object by a single marker.  Unlike "Add object centroid" the position of the marker is determined by measurements associated with the relevant object.
+*/
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class AddFromPositionMeasurement extends AbstractOverlay {
 

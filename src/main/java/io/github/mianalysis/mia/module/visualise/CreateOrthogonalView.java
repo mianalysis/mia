@@ -45,6 +45,10 @@ import io.github.mianalysis.mia.object.system.Status;
 /**
  * Created by sc13967 on 05/02/2018.
  */
+
+/**
+* Create a montage image showing orthogonal views of a specified input image from the workspace.  Orthogonal views are taken in the XY, XZ and YZ planes and all share a common coordinate.  This common coordinate can be the centre of the image or the centre of the largest object in a specified object collection.  The output orthogonal view is stored in the workspace as a separate image.
+*/
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class CreateOrthogonalView<T extends RealType<T> & NativeType<T>> extends Module {
 

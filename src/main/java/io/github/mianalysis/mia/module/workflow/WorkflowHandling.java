@@ -46,6 +46,10 @@ import loci.formats.FormatException;
 /**
  * Created by Stephen Cross on 23/11/2018.
  */
+
+/**
+* Implement workflow handling outcome based on a variety of metrics (e.g. object counts, image measurements, metadata values).  Outcomes can include termination of the analysis and redirection of the active module to another part of the workflow.  Redirection allows parts of the analysis to skipped.
+*/
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class WorkflowHandling extends Module {
 

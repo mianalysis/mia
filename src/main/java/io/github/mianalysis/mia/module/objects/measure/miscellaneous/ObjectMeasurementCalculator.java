@@ -31,6 +31,10 @@ import io.github.sjcross.sjcommon.mathfunc.CumStat;
 /**
  * Created by Stephen Cross on 19/03/2019.
  */
+
+/**
+* Perform a mathematical operation on measurements associated with each object of an object collection in the workspace.  The calculation can replace either or both values with fixed values, measurements associated with an image or a statistic of all measurements associated with another object collection (e.g. the mean volume of all objects).  The resulting measurements are associated with the corresponding input objects as new measurements.
+*/
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class ObjectMeasurementCalculator extends Module {
 

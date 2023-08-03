@@ -48,6 +48,10 @@ import io.github.sjcross.sjcommon.object.voxels.BresenhamLine;
 /**
  * Created by sc13967 on 24/01/2018.
  */
+
+/**
+* Fits a 2D spline to the backbone of objects.  Each object in the input collection will be reduced to a single (longest skeleton path) backbone, which will be fit with the spline.  Local curvature of the spline can be calculated and any measurements will be assigned to the relevant object (irrespective of whether spline objects are exported).  Curvature values can be calculated as "absolute" (always greater than 0, irrespective of the direction of curvature), or "signed" (sign dependent on direction of curvature, but requires the "start" end of the backbone to be specified).<br><br>Note: Spline fitting will be performed in 2D, so any 3D objects will be projected into a single plane first.
+*/
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class MeasureObjectCurvature extends Module {
 

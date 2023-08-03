@@ -37,6 +37,10 @@ import io.github.sjcross.sjcommon.object.volume.PointOutOfRangeException;
 /**
  * Created by sc13967 on 16/01/2018.
  */
+
+/**
+* Expands or shrinks all objects in a specified object collection from the workspace.  Expand and shrink operations can be performed in 2D or 3D.  These are effectively binary dilate and erode operations, respectively.  Input objects can be updated with the post-hole filling coordinates, or all output objects can be stored in the workspace as a new collection.<br><br>Note: MIA permits object overlap, so objects may share coordinates.  This is important to consider if subsequently converting objects to an image, where it's not possible to represent both objects in shared pixels.
+*/
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class ExpandShrinkObjects extends Module {
 

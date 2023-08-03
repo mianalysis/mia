@@ -31,6 +31,10 @@ import io.github.sjcross.sjcommon.object.Point;
  * region around each point to be measured. Intensity traces are stored as
  * HCMultiMeasurements
  */
+
+/**
+* DEPRECATED: Please use separate "Get local object region" and "Measure object intensity" modules.<br><br>Measures the intensity of an image for a circular (2D object*) or spherical (3D object*) region coincident with the mean centroid of each object in a specified object collection.  Measurements are associated with the corresponding input objects.  The radius of the measurement region can be specified as a fixed value or determined on an object-by-object basis from associated object (or parent) measurements.<br><br>Note: This module differs from the "Measure object intensity" module, which measures the intensity of all coordinates of an object.<br><br>* 2D objects are defined as objects identified from a single-slice image.  Objects with coordinates confined to a single plane, but identified from a 3D image stack are still considered 3D objects.
+*/
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class MeasureSpotIntensity extends Module {
 

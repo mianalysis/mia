@@ -22,6 +22,10 @@ import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Status;
 import io.github.sjcross.sjcommon.object.volume.Volume;
 
+
+/**
+* Create surface objects for each input object.  Surface coordinates are those with at least one non-object neighbouring pixel (using 6-way connectivity).  Surfaces are stored as children of the input object.
+*/
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class GetObjectSurface extends Module {
 

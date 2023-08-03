@@ -52,6 +52,10 @@ import io.github.mianalysis.mia.object.system.Status;
 import io.github.mianalysis.mia.process.LabelFactory;
 import io.github.sjcross.sjcommon.object.Point;
 
+
+/**
+* Adds an overlay to the specified input image with each object represented by a text label.  The label can include information such as measurements, associated object counts or ID numbers.
+*/
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class AddLabels extends AbstractOverlay {
     TextRoi textRoi = null;

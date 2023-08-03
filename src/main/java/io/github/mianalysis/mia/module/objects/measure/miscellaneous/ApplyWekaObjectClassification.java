@@ -36,6 +36,10 @@ import weka.core.SparseInstance;
 import weka.filters.Filter;
 import weka.filters.unsupervised.attribute.Normalize;
 
+
+/**
+* Apply a previously-prepared WEKA object classifier to a specified object collection from the workspace.  Classification can be based on a range of measurements associated with the input objects.  All measurements used to create this model should be present in the input objects and have the same names (i.e. measurement names shouldn't be changed during preparation of training data).<br><br>The probability of each input object belonging to each class is output as a measurement associated with that object.  Each object also has a class index (based on the order the classes are listed in the .model file) indicating the most probable class that object belongs to.
+*/
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class ApplyWekaObjectClassification extends Module {
 

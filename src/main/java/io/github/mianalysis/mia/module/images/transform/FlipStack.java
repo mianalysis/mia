@@ -34,6 +34,10 @@ import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
 import net.imglib2.view.Views;
 
+
+/**
+* Flips the order of slices in stack.  This operation can be performed on the channel, time or Z axis.
+*/
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class FlipStack<T extends RealType<T> & NativeType<T>> extends Module {
 

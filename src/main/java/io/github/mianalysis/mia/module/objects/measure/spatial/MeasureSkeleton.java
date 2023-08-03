@@ -50,6 +50,10 @@ import sc.fiji.analyzeSkeleton.Point;
 import sc.fiji.analyzeSkeleton.SkeletonResult;
 import sc.fiji.analyzeSkeleton.Vertex;
 
+
+/**
+* Creates and measures the skeletonised form of specified input objects.  This module uses the <a href="https://imagej.net/AnalyzeSkeleton">AnalyzeSkeleton</a> plugin by Ignacio Arganda-Carreras.<br><br>The optional, output skeleton object acts solely as a linking object for the edge, junction and loop objects.  It doesn't itself hold any coordinate data.
+*/
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class MeasureSkeleton extends Module {
 

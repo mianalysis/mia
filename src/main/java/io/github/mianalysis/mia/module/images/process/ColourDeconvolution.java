@@ -33,6 +33,10 @@ import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Status;
 import sc.fiji.colourDeconvolution.StainMatrix;
 
+
+/**
+* Applies the <a href="https://imagej.net/plugins/colour-deconvolution">Colour Deconvolution</a> plugin to unmix an RGB image (stored in the workspace) into up to three separate channels, which are output as separate images.  The input image can be stored as either an RGB or composite image.  This process is only applicable to images created via subtractive mixing (e.g. histological staining), not to additive methods (e.g. fluorescence).
+*/
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class ColourDeconvolution extends Module {
 

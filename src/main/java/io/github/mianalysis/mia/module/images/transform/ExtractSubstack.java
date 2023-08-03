@@ -50,6 +50,10 @@ import io.github.sjcross.sjcommon.process.CommaSeparatedStringInterpreter;
 /**
  * Created by sc13967 on 18/01/2018.
  */
+
+/**
+* Extract a substack from the specified input image in terms of channels, slices and frames.  The output image is saved to the workspace for use later on in the workflow.
+*/
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class ExtractSubstack extends Module implements ActionListener {
 

@@ -27,6 +27,10 @@ import mpicbg.models.SpringMesh;
 import mpicbg.models.TranslationModel2D;
 import mpicbg.models.Vertex;
 
+
+/**
+* Apply slice-by-slice (2D) affine-based image registration to a multi-dimensional stack.  Images can be aligned relative to the first frame in the stack, the previous frame or a separate image in the workspace.  The registration transform can also be calculated from a separate stack to the one that it will be applied to.  Registration can be performed along either the time or Z axes.  The non-registered axis (e.g. time axis when registering in Z) can be "linked" (all frames given the same registration) or "independent" (each stack registered separately).<br><br>This module uses the <a href="https://github.com/fiji/blockmatching">Block Matching</a> plugin and associated MPICBG tools to detect matching regions from the input images and calculate and apply the necessary 2D affine transforms.
+*/
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class AffineBlockMatching extends AbstractAffineRegistration {
 

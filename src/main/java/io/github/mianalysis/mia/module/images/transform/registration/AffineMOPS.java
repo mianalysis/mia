@@ -23,6 +23,10 @@ import io.github.mianalysis.mia.object.parameters.SeparatorP;
 import io.github.mianalysis.mia.object.parameters.text.DoubleP;
 import io.github.mianalysis.mia.object.parameters.text.IntegerP;
 
+
+/**
+* Apply slice-by-slice (2D) affine-based image registration to a multi-dimensional stack.  Images can be aligned relative to the first frame in the stack, the previous frame or a separate image in the workspace.  The registration transform can also be calculated from a separate stack to the one that it will be applied to.  Registration can be performed along either the time or Z axes.  The non-registered axis (e.g. time axis when registering in Z) can be "linked" (all frames given the same registration) or "independent" (each stack registered separately).<br><br>This module uses the <a href="https://imagej.net/Feature_Extraction">Feature Extraction</a> plugin and associated MPICBG tools to detect MOPS ("Multi-Scale Oriented Patches") features from the input images and calculate and apply the necessary 2D affine transforms.<br><br>References: Brown, Matthew and Szeliski, Richard "Multi-image feature matching using multi-scale oriented patches". US Patent 7,382,897 (June 3, 2008).
+*/
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class AffineMOPS extends AbstractAffineRegistration {
 

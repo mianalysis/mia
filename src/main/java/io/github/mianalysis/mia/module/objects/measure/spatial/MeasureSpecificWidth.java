@@ -38,6 +38,10 @@ import io.github.mianalysis.mia.object.system.Status;
 import io.github.sjcross.sjcommon.object.Point;
 import io.github.sjcross.sjcommon.object.volume.SpatCal;
 
+
+/**
+* Measures the width of the object along the axis passing through two specified reference points.  Reference points can be the object centroid, an image measurement or a measurement associated with the object.  Widths are determined as the distance between the two points along the reference line with the greatest separation (i.e. it doesn't matter if there are gaps between them).
+*/
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class MeasureSpecificWidth extends Module {
 

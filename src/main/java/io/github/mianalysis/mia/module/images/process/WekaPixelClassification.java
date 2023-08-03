@@ -48,6 +48,10 @@ import trainableSegmentation.WekaSegmentation;
 /**
  * Created by sc13967 on 22/03/2018.
  */
+
+/**
+* Performs pixel classification using the WEKA Trainable Segmentation plugin.<br><br>This module loads a previously-saved WEKA classifier model and applies it to the input image.  It then returns the multi-channel probability map.<br><br>Image stacks are processed in 2D, one slice at a time.
+*/
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class WekaPixelClassification extends Module {
 

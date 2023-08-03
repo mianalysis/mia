@@ -50,19 +50,16 @@ public class AddJavaDocToModules {
 
             // }
 
-            // // Replace module description
-            // String parameterName = parameter.getName();
-            // String description = parameter.getDescription();
+            // Replace module description
+            // Find parameter declaration line
+            Pattern pattern = Pattern.compile("\\n@Plugin\\(type = Module.class");
+            Matcher matcher = pattern.matcher(code);
 
-            // // Find parameter declaration line
-            // Pattern pattern = Pattern.compile("\\n[^\\n]+ = \""+parameterName+"\";");
-            // Matcher matcher = pattern.matcher(code);
-
-            // if (matcher.find()) {
-            //     String textBefore = code.substring(0, matcher.start());
-            //     String textAfter = code.substring(matcher.start());
-            //     code = textBefore+"\n\n\t/**\n\t* "+description+"\n\t*/"+textAfter;
-            // }
+            if (matcher.find()) {
+                String textBefore = code.substring(0, matcher.start());
+                String textAfter = code.substring(matcher.start());
+                code = textBefore+"\n\n/**\n* "+modules.get(moduleName).getDescription()+"\n*/"+textAfter;
+            }
 
 
             FileWriter fileWriter = new FileWriter(path);

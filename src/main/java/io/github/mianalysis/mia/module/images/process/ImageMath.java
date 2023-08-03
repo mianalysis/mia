@@ -32,6 +32,10 @@ import io.github.mianalysis.mia.object.system.Status;
 /**
  * Created by sc13967 on 19/09/2017.
  */
+
+/**
+* Applies a mathematical operation to all pixels of the input image stack.  Operations that can be performed are: Absolute, Add, Divide, Multiply, Square, Squareroot, Subtract
+*/
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class ImageMath extends Module {
 

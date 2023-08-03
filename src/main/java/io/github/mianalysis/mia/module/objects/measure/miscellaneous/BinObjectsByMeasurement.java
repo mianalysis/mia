@@ -25,6 +25,10 @@ import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Status;
 
+
+/**
+* Distribute objects into a set of "bins" based on a measurement associated with each object.  Bins are evenly distributed between manually-specified smallest and largest bin centres.  The assigned bin for each object is stored as a new measurement associated with that object.
+*/
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class BinObjectsByMeasurement extends Module {
 

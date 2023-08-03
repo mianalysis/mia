@@ -32,6 +32,10 @@ import io.github.mianalysis.mia.object.system.Preferences;
 import io.github.mianalysis.mia.object.system.Status;
 import io.github.mianalysis.mia.process.deepimagej.PrepareDeepImageJ;
 
+
+/**
+* Uses <a href="https://deepimagej.github.io/deepimagej/">DeepImageJ</a> to run Tensorflow and Pytorch models from the <a href="https://bioimage.io/#/">BioImage Model Zoo</a>.  This module will detect and run any models already installed in the active copy of Fiji.
+*/
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class ApplyDeepImageJModel extends Module {
 

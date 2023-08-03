@@ -58,6 +58,10 @@ import io.github.sjcross.sjcommon.process.CommaSeparatedStringInterpreter;
 /**
  * Created by sc13967 on 23/05/2017.
  */
+
+/**
+* DEPRECATED:  Please use individual filter modules instead (e.g. "Based on measurement").<br><br>Filter an object collection based on a variety of properties.  Objects that satisfy the relevant condition can be removed from the input collection, moved to another collection (and removed from the input collection) or simply counted (but retained in the input collection).
+*/
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class FilterObjects extends Module implements ActionListener {
 

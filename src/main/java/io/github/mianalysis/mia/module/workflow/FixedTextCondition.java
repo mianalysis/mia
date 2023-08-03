@@ -26,6 +26,10 @@ import io.github.mianalysis.mia.object.system.Status;
 /**
  * Created by Stephen Cross on 23/11/2018.
  */
+
+/**
+* Implement variable workflow handling outcomes based on comparison of a fixed text value against a series of fixed conditions.  If the text test value matches any of the conditions the workflow handling outcome associated with that condition will be implemented.  Outcomes can include termination of the analysis and redirection of the active module to another part of the workflow.  Redirection allows parts of the analysis to be looped, or sections of the workflow to be skipped.<br><br>An example usage case for fixed text conditions is implementing the same behaviour at multiple parts of the workflow without having to control them individually.  This can be achieved using a global variable (see "Global variables" module).  The global variable could be specified once, early on in the analysis, then used as "Test value" in this module.  As such, it's possible to only specify the value once, but refer to it in multiple "Fixed text condition" modules.  Note: The global variables module allows variables to be user-selected from a drop-down list, negating risk of mis-typing parameter names that will be compared in this module.
+*/
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class FixedTextCondition extends AbstractWorkspaceHandler {
 

@@ -30,6 +30,10 @@ import io.github.mianalysis.mia.object.system.Status;
 import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
 
+
+/**
+* Applies independent X,Y and Z-axis scaling to an input image.  Output dimensions can be specified explicitly, matched to another image in the workspace or calculated with a scaling factor.
+*/
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class ScaleStack<T extends RealType<T> & NativeType<T>> extends Module {
 

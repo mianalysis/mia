@@ -51,6 +51,10 @@ import io.github.sjcross.sjcommon.object.volume.SpatCal;
 /**
  * Created by sc13967 on 06/06/2017.
  */
+
+/**
+* Creates objects from an input binary image.  Each object is identified in 3D as a contiguous region of foreground labelled pixels.  All coordinates corresponding to that object are stored for use later.<br><br>Note: Input binary images must be 8-bit and only contain values 0 and 255.<br><br>Note: Uses MorphoLibJ to perform connected components labelling in 3D.
+*/
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class IdentifyObjects extends Module {
 

@@ -42,6 +42,10 @@ import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Status;
 import io.github.mianalysis.mia.process.ColourFactory;
 
+
+/**
+* Adds an overlay to the specified input image with each object represented by an arrow.  The size, colour and orientation of each arrow can be fixed or based on a measurement value.
+*/
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class AddArrows extends AbstractOverlay {
 

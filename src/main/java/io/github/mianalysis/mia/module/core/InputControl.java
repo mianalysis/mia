@@ -64,6 +64,10 @@ import ome.xml.meta.IMetadata;
 /**
  * Created by Stephen on 29/07/2017.
  */
+
+/**
+* Select which file(s) or folder(s) MIA will process through.  If a file is selected, that file alone will be processed; however, selecting a folder will cause the system to iterate over all files and sub-folders within that folder.  Each file identified here will initialise its own workspace.  <br><br>It is possible to add filters to limit which files are used.  Multiple filters can be applied.<br><br>n.b. This module simply creates the workspace for subsequent analysis; no images are automatically loaded at this point.  To load image data to the workspace use the "Load image" module.
+*/
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class InputControl extends Module {
 

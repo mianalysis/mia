@@ -27,6 +27,10 @@ import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Status;
 import io.github.sjcross.sjcommon.mathfunc.CumStat;
 
+
+/**
+* Calculates statistics for a measurement associated with all partner objects of an input object.  The calculated statistics are stored as new measurements, associated with the relevant input object.  For example, calculating the summed volume of all partner objects (from a specified collection) of each input object.
+*/
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class CalculateStatsForPartners extends Module {
 

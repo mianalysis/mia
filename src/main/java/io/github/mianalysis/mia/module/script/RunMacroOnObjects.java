@@ -45,6 +45,10 @@ import io.github.mianalysis.mia.object.system.Status;
 /**
  * Created by sc13967 on 31/01/2018.
  */
+
+/**
+* Run a specific ImageJ macro once per object from a specified input object collection (as opposed to the "Run macro" module, which runs once per analysis run).  This module can optionally open an image into ImageJ for the macro to run on.  Variables assigned during the macro can be extracted and stored as measurements associated with the current object.<br><br>Note: ImageJ can only run one macro at a time, so by using this module the "Simultaneous jobs" parameter of the "Input control" module must be set to 1.<br><br>Note: When this module runs, all windows currently open in ImageJ will be automatically hidden, then re-opened upon macro completion.  This is to prevent accidental interference while the macro is running.  It also allows the macro to run much faster (batch mode).  To keep images open while the macro is running (for example, during debugging) start the macro with the command "setBatchMode(false)".
+*/
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class RunMacroOnObjects extends AbstractMacroRunner {
 

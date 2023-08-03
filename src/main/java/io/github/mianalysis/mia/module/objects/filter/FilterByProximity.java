@@ -28,6 +28,10 @@ import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.system.Status;
 
+
+/**
+* Filters objects in close XY proximity based on a specific measurement.  For two, or more, objects within close proximity of each other the object with the largest (or smallest) measurement will be retained, whilst the others will be removed.  This can be used to filter instances of the same object being detected multiple times.  Distances are only considered in XY.  Any Z-axis information on object position will be ignored.
+*/
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class FilterByProximity extends AbstractObjectFilter {
 

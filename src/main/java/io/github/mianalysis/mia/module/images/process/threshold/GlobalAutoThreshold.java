@@ -43,6 +43,10 @@ import io.github.mianalysis.mia.object.system.Status;
 /**
  * Created by sc13967 on 06/06/2017.
  */
+
+/**
+* Binarise an image in the workspace such that the output only has pixel values of 0 and 255.  Uses the built-in ImageJ global <a href="https://imagej.net/Auto_Threshold">auto-thresholding algorithms</a>.<br><br>Note: Currently only works on 8-bit images.  Images with other bit depths will be automatically converted to 8-bit based on the "Fill target range (normalise)" scaling method from the "Image type converter" module.
+*/
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class GlobalAutoThreshold extends Module {
 

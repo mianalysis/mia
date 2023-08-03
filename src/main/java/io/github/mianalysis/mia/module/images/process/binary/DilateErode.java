@@ -36,6 +36,10 @@ import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Status;
 import net.imglib2.img.imageplus.ImagePlusImg;
 
+
+/**
+* Applies binary dilate or erode operations to an image in the workspace.  Dilate will expand all foreground-labelled regions by a specified number of pixels, while erode will shrink all foreground-labelled regions by the same ammount.<br><br>This image will be 8-bit with binary logic determined by the "Binary logic" parameter.  If 2D operations are applied on higher dimensionality images the operations will be performed in a slice-by-slice manner.  All operations (both 2D and 3D) use the plugin "<a href="https://github.com/ijpb/MorphoLibJ">MorphoLibJ</a>".
+*/
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class DilateErode extends Module {
 

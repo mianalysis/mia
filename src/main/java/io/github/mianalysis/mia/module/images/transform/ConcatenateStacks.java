@@ -47,6 +47,10 @@ import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
 import net.imglib2.view.Views;
 
+
+/**
+* Combine two or more image stacks into a single stack.  This module allows images to be combined along any of the axes X,Y,C,Z or T.<br><br>Note: Image stack dimensions and bit-depths must be compatible.
+*/
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class ConcatenateStacks<T extends RealType<T> & NativeType<T>> extends Module {
 

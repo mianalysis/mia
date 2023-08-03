@@ -35,6 +35,10 @@ import io.github.sjcross.sjcommon.object.volume.Volume;
 /**
  * Created by sc13967 on 07/02/2018.
  */
+
+/**
+* Calculates the overlap of each object in an object collection with any object from another collection.  Overlaps are calculated for both specified object collections and are stored as measurements associated with the relevant object.  Overlap can occur for multiple objects; however, doubly-overlapped regions will only be counted once (i.e. an object can have no more than 100% overlap).  For example, an object in the first collection with 20% overlap with one object and 12% overlap with another would receive an overlap measurement of 32% (assuming the two overlapping objects weren't themselves overlapped in the overlapping region).
+*/
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class MeasureObjectOverlap extends Module {
 

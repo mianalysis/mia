@@ -39,6 +39,10 @@ import sc.fiji.analyzeSkeleton.SkeletonResult;
 /**
  * Created by sc13967 on 11/05/2017.
  */
+
+/**
+* 
+*/
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class MeasureObjectWidth extends Module {
 

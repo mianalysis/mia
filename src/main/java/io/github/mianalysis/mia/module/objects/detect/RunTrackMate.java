@@ -67,6 +67,10 @@ import io.github.sjcross.sjcommon.process.IntensityMinMax;
 /**
  * Created by sc13967 on 15/05/2017.
  */
+
+/**
+* Uses the TrackMate plugin included with Fiji to detect and track spots in images.  For more information, see the <a href="https://imagej.net/TrackMate">TrackMate</a> documentation.
+*/
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class RunTrackMate extends Module {
 

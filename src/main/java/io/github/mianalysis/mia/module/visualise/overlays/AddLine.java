@@ -36,6 +36,10 @@ import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Status;
 import io.github.sjcross.sjcommon.object.Point;
 
+
+/**
+* Draws an overlay line between two specified points.<br><br>Note: This currently only works in 2D.
+*/
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class AddLine extends AbstractOverlay {
 

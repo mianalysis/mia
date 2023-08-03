@@ -56,6 +56,10 @@ import util.opencsv.CSVReader;
 /**
  * Created by sc13967 on 12/05/2017.
  */
+
+/**
+* Load centroid coordinates of pre-detected objects from file.  Loaded objects are stored in a single object collection and are represented by a single coordinate point.  For example, this module could be used to import detections from another piece of software or from a previous analysis run.
+*/
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class ObjectLoader extends Module {
 

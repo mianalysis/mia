@@ -36,6 +36,10 @@ import io.github.mianalysis.mia.object.system.Status;
 /**
  * Created by sc13967 on 08/07/2022.
  */
+
+/**
+* Measure's Ripley's K-function for greyscale images on an object-by-object basis.  This method is re-written from the publication "Extending Ripley’s K-Function to Quantify Aggregation in 2-D Grayscale Images" by M. Amgad, et al. (doi: 10.1371/journal.pone.0144404).  Results are output to an Excel spreadsheet, with one file per input image.
+*/
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class MeasureObjectGreyscaleKFunction extends AbstractSaver {
 

@@ -29,6 +29,10 @@ import io.github.mianalysis.mia.object.system.Status;
 /**
  * Created by sc13967 on 23/03/2018.
  */
+
+/**
+* Interpolates Z-axis of image to match XY spatial calibration
+*/
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class InterpolateZAxis extends Module {
 

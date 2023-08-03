@@ -29,6 +29,10 @@ import mpicbg.models.NotEnoughDataPointsException;
 import mpicbg.models.Point;
 import mpicbg.models.PointMatch;
 
+
+/**
+* Apply slice-by-slice (2D) affine-based image registration to a multi-dimensional stack.  Images can be aligned relative to the first frame in the stack, the previous frame or a separate image in the workspace.  The registration transform can also be calculated from a separate stack to the one that it will be applied to.  Registration can be performed along either the time or Z axes.  The non-registered axis (e.g. time axis when registering in Z) can be "linked" (all frames given the same registration) or "independent" (each stack registered separately).<br><br>This module uses centroids of previously-detected objects as the reference points for image alignment
+*/
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class AffineCentroids extends AbstractAffineRegistration {
 

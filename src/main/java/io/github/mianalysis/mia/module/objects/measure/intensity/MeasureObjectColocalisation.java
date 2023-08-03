@@ -38,6 +38,10 @@ import net.imglib2.type.numeric.RealType;
 import sc.fiji.coloc.algorithms.MissingPreconditionException;
 import sc.fiji.coloc.gadgets.DataContainer;
 
+
+/**
+* Calculates colocalisation of two input images individually for each object.  Measurements for each object only consider pixels within that object.  All measurements are associated with the relevant object.  Colocalisation analysis has many potential pitfalls, so users are advised to read the Fiji <a href="https://imagej.net/imaging/colocalization-analysis">Colocalization analysis</a> page and/or the <a href="https://journals.physiology.org/doi/full/10.1152/ajpcell.00462.2010">Dunn et al 2011 review</a>.<br><br>All calculations are performed using the <a href="https://imagej.net/plugins/coloc-2">Coloc2 plugin</a>.
+*/
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class MeasureObjectColocalisation<T extends RealType<T> & NativeType<T>> extends Module {
 

@@ -54,6 +54,10 @@ import io.github.sjcross.sjcommon.object.volume.VolumeType;
 /**
  * Created by sc13967 on 20/09/2017.
  */
+
+/**
+* Track objects between frames.  Tracks are produced as separate "parent" objects to the "child" spots.  Track objects only serve to link different timepoint instances of objects together.  As such, track objects store no coordinate information.<br><br>Uses the <a href="https://imagej.net/plugins/trackmate/">TrackMate</a> implementation of the Jaqaman linear assignment problem solving algorithm (Jaqaman, et al., Nature Methods, 2008).  The implementation utilises sparse matrices for calculating costs in order to minimise memory overhead.<br><br>Note: Leading point determination currently only works in 2D
+*/
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class TrackObjects extends Module {
 

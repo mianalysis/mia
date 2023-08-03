@@ -107,6 +107,10 @@ import io.github.sjcross.sjcommon.object.volume.VolumeType;
 /**
  * Created by sc13967 on 27/02/2018.
  */
+
+/**
+* Manually create objects using the ImageJ selection tools.  Selected regions can be interpolated in Z and T to speed up the object creation process.<br><br>This module will display a control panel and an image onto which selections are made.  <br><br>Following selection of a region to be included in the object, the user can either add this region to a new object ("Add new" button), or add it to an existing object ("Add to existing" button).  The target object for adding to an existing object is specified using the "Existing object number" control (a list of existing object IDs is shown directly below this control).<br><br>References to each selection are displayed below the controls.  Previously-added regions can be re-selected by clicking the relevant reference.  This allows selections to be deleted or used as a basis for further selections.<br><br>Once all selections have been made, objects are added to the workspace with the "Finish" button.<br><br>Objects need to be added slice-by-slice and can be linked in 3D using the "Add to existing" control.
+*/
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class ManuallyIdentifyObjects extends Module implements ActionListener, KeyListener {
     private JFrame frame;

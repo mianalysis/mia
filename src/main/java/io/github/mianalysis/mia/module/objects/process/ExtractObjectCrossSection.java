@@ -39,6 +39,10 @@ import io.github.sjcross.sjcommon.object.volume.VolumeType;
 /**
  * Created by sc13967 on 01/08/2017.
  */
+
+/**
+* Extracts XY-plane cross-sections of specified objects.  The extracted cross-sections are stored as separate objects, which are children of the associated input object.  Slice indicies can be specified as fixed values or relative to image/object measurements (e.g. relative to the object centroids).
+*/
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class ExtractObjectCrossSection extends Module {
 

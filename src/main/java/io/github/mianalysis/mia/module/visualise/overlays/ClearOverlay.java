@@ -42,6 +42,10 @@ import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Status;
 import io.github.mianalysis.mia.process.ColourFactory;
 
+
+/**
+* Removes any overlay elements from specified image.
+*/
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class ClearOverlay extends AbstractOverlay {
 

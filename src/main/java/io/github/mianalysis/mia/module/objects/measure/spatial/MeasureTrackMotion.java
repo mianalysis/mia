@@ -38,6 +38,10 @@ import io.github.sjcross.sjcommon.object.tracks.Track;
 /**
  * Created by Stephen Cross on 24/05/2017.
  */
+
+/**
+* Measures various motion metrics for tracked objects.  Global motion statistics (e.g. total path length) are stored as measurements associated with the input track objects, whilst instantaneous motion statistics (e.g. instantaneous x-velocity) are associated with the input spot objects.
+*/
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class MeasureTrackMotion extends Module {
 

@@ -39,6 +39,10 @@ import io.github.sjcross.sjcommon.analysis.TextureCalculator;
 import io.github.sjcross.sjcommon.object.Point;
 
 
+
+/**
+* Texture measures, largely from  Robert M. Haralick, K. Shanmugam, and Its'hak Dinstein, "Textural Features for Image Classification", IEEE Transactions on Systems, Man, and Cybernetics, 1973, SMC-3 (6): 610–621
+*/
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class MeasureTextureAlongPath extends Module {
 

@@ -42,6 +42,10 @@ import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Status;
 import io.github.mianalysis.mia.process.ColourFactory;
 
+
+/**
+* Adds a series of line overlays, representing various relationship scenarios.  Lines extend between centroids of two objects.  Depicted relationships can be between mutual child of the same parent object, between partner objects of between children and parents.
+*/
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class AddRelationshipConnection extends AbstractOverlay {
 

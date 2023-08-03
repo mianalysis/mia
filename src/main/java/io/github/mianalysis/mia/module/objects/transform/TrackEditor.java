@@ -56,6 +56,10 @@ import io.github.sjcross.sjcommon.object.volume.VolumeType;
 /**
  * Created by Stephen on 13/05/2021.
  */
+
+/**
+* Display TrackMate's TrackScheme track editor to allow tracks to be re-linked between detected objects.  TrackScheme also allows individual timepoint objects to be deleted.  TrackScheme represents the connectivity within a track (i.e. between instances in different timepoints) as a graph, which can be adjusted by deleting and drawing lines between each timepoint instance.  Interaction with the TrackScheme window can be directly visualised on the accompanying overlay image.<br><br>Full details on using TrackScheme can be found at <a href="https://imagej.net/plugins/trackmate/trackscheme">https://imagej.net/plugins/trackmate/trackscheme</a>.<br><br>Note: This module will update the existing spot (individual timepoint instances) and track objects.  As such, any track-related measurements will still be available, but may no longer be valid.  They can be re-calculated by re-running the relevant measurement modules.
+*/
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class TrackEditor extends Module {
 

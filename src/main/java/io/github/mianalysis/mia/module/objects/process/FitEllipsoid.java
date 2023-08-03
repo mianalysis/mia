@@ -39,6 +39,10 @@ import io.github.sjcross.sjcommon.object.volume.Volume;
 /**
  * Created by sc13967 on 19/06/2018.
  */
+
+/**
+* Fit ellipsoids to all objects in a collection using "<a href="https://imagej.net/BoneJ">BoneJ</a>".  Fit ellipsoids can be stored either as new objects, or replacing the input object coordinates.<br><br>Note: If updating input objects with ellipsoid coordinates, measurements associated with the input object (e.g. spatial measurements) will still be available, but may no longer be valid.
+*/
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class FitEllipsoid extends Module {
 

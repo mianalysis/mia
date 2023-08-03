@@ -45,6 +45,10 @@ import io.github.sjcross.sjcommon.object.Point;
 import io.github.sjcross.sjcommon.object.volume.SpatCal;
 import io.github.sjcross.sjcommon.object.voxels.MidpointCircle;
 
+
+/**
+* Creates a map of object measurements.  Each pixel of the output map is a combination of all object measurements at that location.  Measurements can be taken from the input objects themselves or from associated parent objects.  Multiple Z-slices and/or timepoints can be combined into a single slice.  The outmap is blurred with a Gaussian function to show smooth transitions between regions.
+*/
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class CreateMeasurementMap extends Module {
 

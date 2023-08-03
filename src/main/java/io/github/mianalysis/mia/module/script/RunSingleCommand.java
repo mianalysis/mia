@@ -36,6 +36,10 @@ import io.github.mianalysis.mia.object.system.Status;
 /**
  * Created by sc13967 on 31/01/2018.
  */
+
+/**
+* Run a single command on an image from the workspace.   This module only runs commands of the format "run([COMMAND], [ARGUMENTS])".  For example, the command "run("Subtract Background...", "rolling=50 stack");" would be specified with the "Command" parameter set to "Subtract Background..." and the "Parameters" parameter set to "rolling=50 stack".  For more advanced macro processing please use the "Run macro" module.
+*/
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class RunSingleCommand extends Module {
 

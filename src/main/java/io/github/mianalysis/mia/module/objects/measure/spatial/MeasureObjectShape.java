@@ -44,6 +44,10 @@ import io.github.sjcross.sjcommon.object.Point;
 /**
  * Created by sc13967 on 29/06/2017.
  */
+
+/**
+* Measures various spatial metrics for each object in a specified object collection from the workspace.  Measurements are associated with the relevant input object.  When dealing with 3D objects (those with coordinates spanning multiple Z-slices) a 2D projection into the XY plane will be used.  3D metrics are calculated using the "<a href="https://github.com/ijpb/MorphoLibJ">MorphoLibJ</a>" plugin.
+*/
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class MeasureObjectShape extends Module {
 

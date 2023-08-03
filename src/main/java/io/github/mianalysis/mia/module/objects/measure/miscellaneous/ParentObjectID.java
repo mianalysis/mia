@@ -28,6 +28,10 @@ import io.github.mianalysis.mia.object.parameters.ParentObjectsP;
 /**
  * Created by sc13967 on 05/05/2017.
  */
+
+/**
+* Stores the ID number of an associated parent from a specific class.  Associated IDs are stored as measurements and are assigned to all objects in the input collection.  Unlike normal measurements, this value is evaluated at the time of use, so should always be up to date.
+*/
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class ParentObjectID extends Module {
 

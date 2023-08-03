@@ -25,6 +25,10 @@ import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Status;
 import io.github.sjcross.sjcommon.filters.CombingCorrector;
 
+
+/**
+* Applies an integer pixel row shift to every other row (starting with top-most row).
+*/
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class CombingCorrection extends Module {
 

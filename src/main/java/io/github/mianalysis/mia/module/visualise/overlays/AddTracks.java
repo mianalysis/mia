@@ -48,6 +48,10 @@ import io.github.mianalysis.mia.process.ColourFactory;
 /**
  * Created by sc13967 on 17/05/2017.
  */
+
+/**
+* Adds an overlay to the specified input image showing the path of each track object.  The line is drawn between object centroids.
+*/
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class AddTracks extends AbstractOverlay {
 

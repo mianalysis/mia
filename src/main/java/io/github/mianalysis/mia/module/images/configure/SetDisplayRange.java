@@ -33,6 +33,10 @@ import io.github.sjcross.sjcommon.process.IntensityMinMax;
 /**
  * Created by sc13967 on 10/08/2017.
  */
+
+/**
+* Set the minimum and maximum displayed intensities for a specified image from the workspace.  Any pixels with intensities outside the set displayed range will be rendered with the corresponding extreme value (i.e. any pixels with intensities less than the minimum display value will be shown with the same as the value at the minimum display value).  Display ranges can be calculated automatically or specified manually.  One or both extrema can be set at a time.<br><br>Note: Unlike the "Normalise intensity" module, pixel values are unchanged by this module.  The only change is to the way ImageJ/Fiji renders the image.
+*/
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class SetDisplayRange extends Module {
 

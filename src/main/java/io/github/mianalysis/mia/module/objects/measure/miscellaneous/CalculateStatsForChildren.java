@@ -27,6 +27,10 @@ import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Status;
 import io.github.sjcross.sjcommon.mathfunc.CumStat;
 
+
+/**
+* Calculates statistics for a measurement associated with all child objects of parent object.  The calculated statistics are stored as new measurements, associated with the relevant parent object.  For example, calculating the summed volume of all child objects (from a specified collection) of each parent object.
+*/
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class CalculateStatsForChildren extends Module {
 

@@ -127,6 +127,10 @@ import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Status;
 
+
+/**
+* Relate objects of two classes based on spatial proximity or overlap.  With this module, each object from a collection can only be linked to one other object (see "Relate many-to-many" and "Relate many-to-one" modules for alternatives).  The assignments are chosen to give the optimal overall relationship connectivity.  As such, an object may not be linked to its own best match if that best match is itself closer still to another object.  Related objects are assigned partner relationships and can optionally also be related by a common cluster (parent) object.  Measurements associated with this relationship (e.g. distance to the related object) are stored as measurements of the relevant object.
+*/
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class RelateOneToOne extends Module {
 

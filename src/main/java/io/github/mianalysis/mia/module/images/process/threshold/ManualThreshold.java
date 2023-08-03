@@ -35,6 +35,10 @@ import io.github.mianalysis.mia.object.system.Status;
 /**
  * Created by sc13967 on 06/06/2017.
  */
+
+/**
+* Binarises an image (or image stack) using a fixed intensity threshold.  The input threshold can be a single value (same for all images) or taken from a measurement associated with the image to be binarised.
+*/
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class ManualThreshold extends Module {
 

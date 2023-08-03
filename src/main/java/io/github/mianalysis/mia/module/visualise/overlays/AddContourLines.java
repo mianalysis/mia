@@ -52,6 +52,10 @@ import io.github.mianalysis.mia.process.LabelFactory;
 import io.github.sjcross.sjcommon.imagej.LUTs;
 import io.github.sjcross.sjcommon.mathfunc.CumStat;
 
+
+/**
+* Adds overlay contour lines (and optional labels) to an image.  Lines correspond to contours of constant intensity in the input image.
+*/
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class AddContourLines extends Module {
 

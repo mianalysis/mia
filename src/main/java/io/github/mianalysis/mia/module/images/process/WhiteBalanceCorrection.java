@@ -29,6 +29,10 @@ import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Status;
 import io.github.sjcross.sjcommon.analysis.IntensityCalculator;
 
+
+/**
+* Apply whitebalance correction to an image based on a reference region (specified as an object).<br><br>Method based on the <a href="https://github.com/pmascalchi/ImageJ_Auto-white-balance-correction">macro</a> by Patrice Mascalchi ().
+*/
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class WhiteBalanceCorrection extends Module {
 

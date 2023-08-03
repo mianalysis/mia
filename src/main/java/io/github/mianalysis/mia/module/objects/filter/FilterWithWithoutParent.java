@@ -22,6 +22,10 @@ import io.github.mianalysis.mia.object.system.Status;
 import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.object.parameters.ParentObjectsP;
 
+
+/**
+* Filter an object collection based on the presence of a specific parent for each object.  Objects which do/don't have the relevant parent can be removed from the input collection, moved to another collection (and removed from the input collection) or simply counted (but retained in the input collection).  The number of objects failing the filter can be stored as a metadata value.
+*/
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class FilterWithWithoutParent extends AbstractObjectFilter {
 

@@ -32,6 +32,10 @@ import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Status;
 import sc.fiji.skeletonize3D.Skeletonize3D_;
 
+
+/**
+* Creates an skeletonised representation of a specific binary image in the workspace.  The input and output images will be 8-bit with binary logic determined by the "Binary logic" parameter.  Each minima will show the lowest local intensity region within a specific dynamic range.  Local variation greater than this dynamic will result in the creation of more minima.  Uses the plugin "<a href="https://github.com/ijpb/MorphoLibJ">MorphoLibJ</a>".
+*/
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class Skeletonise extends Module {
 

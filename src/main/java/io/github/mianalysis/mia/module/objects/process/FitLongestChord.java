@@ -29,6 +29,10 @@ import io.github.sjcross.sjcommon.mathfunc.CumStat;
 /**
  * Created by sc13967 on 20/06/2018.
  */
+
+/**
+* Measures the longest chord of each object in a specified object collection from the workspace.  The longest chord of an object is defined as the line passing between the two furthest-spaced points on the surface of the object.  This can act as an approximate measure of object length.  In addition to the longest chord length, the distance of all object surface points from the longest chord can be measured, which themselves act as an approximation of object width.
+*/
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class FitLongestChord extends Module {
 
