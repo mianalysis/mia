@@ -39,20 +39,72 @@ import io.github.mianalysis.mia.process.ColourFactory;
 import io.github.sjcross.sjcommon.object.Point;
 import io.github.sjcross.sjcommon.object.volume.VolumeType;
 
+
+/**
+* 
+*/
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class GrowObjects extends Module {
+
+	/**
+	* 
+	*/
     public static final String INPUT_SEPARATOR = "Object input/output";
+
+	/**
+	* 
+	*/
     public static final String INPUT_OBJECTS = "Input objects";
+
+	/**
+	* 
+	*/
     public static final String OUTPUT_OBJECTS = "Output objects";
 
+
+	/**
+	* 
+	*/
     public static final String GROWTH_SEPARATOR = "Growth controls";
+
+	/**
+	* 
+	*/
     public static final String STARTING_OBJECT_MODE = "Starting object mode";
+
+	/**
+	* 
+	*/
     public static final String GROWTH_MODE = "Growth mode";
+
+	/**
+	* 
+	*/
     public static final String INTENSITY_IMAGE = "Intensity image";
+
+	/**
+	* 
+	*/
     public static final String MASK_OUTPUT_OBJECTS = "Mask output objects";
+
+	/**
+	* 
+	*/
     public static final String MASK_IMAGE = "Mask image";
+
+	/**
+	* 
+	*/
     public static final String BINARY_LOGIC = "Binary logic";
+
+	/**
+	* 
+	*/
     public static final String CONNECTIVITY = "Connectivity";
+
+	/**
+	* 
+	*/
     public static final String EXCLUDE_INPUT_REGIONS = "Exclude input regions";
 
     public interface StartingObjectModes {

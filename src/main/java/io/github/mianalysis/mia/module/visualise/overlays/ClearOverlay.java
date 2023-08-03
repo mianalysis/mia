@@ -42,14 +42,42 @@ import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Status;
 import io.github.mianalysis.mia.process.ColourFactory;
 
+
+/**
+* Removes any overlay elements from specified image.
+*/
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class ClearOverlay extends AbstractOverlay {
+
+	/**
+	* 
+	*/
     public static final String INPUT_SEPARATOR = "Image input";
+
+	/**
+	* Image for which overlay will be cleared
+	*/
     public static final String INPUT_IMAGE = "Input image";
     
+
+	/**
+	* 
+	*/
     public static final String OUTPUT_SEPARATOR = "Image output";
+
+	/**
+	* Determines if the modifications made to the input image (removed overlay) will be applied to that image or directed to a new image.  When selected, the input image will be updated.
+	*/
     public static final String APPLY_TO_INPUT = "Apply to input image";
+
+	/**
+	* If the modifications (overlay) aren't being applied directly to the input image, this control will determine if a separate image containing the overlay should be saved to the workspace.
+	*/
     public static final String ADD_OUTPUT_TO_WORKSPACE = "Add output image to workspace";
+
+	/**
+	* The name of the new image to be saved to the workspace (if not applying the changes directly to the input image).
+	*/
     public static final String OUTPUT_IMAGE = "Output image";
     
     

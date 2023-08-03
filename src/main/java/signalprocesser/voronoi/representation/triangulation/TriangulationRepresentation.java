@@ -344,10 +344,6 @@ public class TriangulationRepresentation extends AbstractRepresentation {
     /* ***************************************************** */
     // Get outer boundary
     
-    /**
-     * Note: the first point is also readded to the list as the last point
-     *  so that a connected set of points is returned for a shape
-     */
     public ArrayList<VPoint> getPointsFormingOutterBoundary() {
         // Find an outer edge
         VHalfEdge outeredge = findOuterEdge();

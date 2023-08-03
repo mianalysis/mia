@@ -107,6 +107,10 @@ import io.github.sjcross.sjcommon.object.volume.VolumeType;
 /**
  * Created by sc13967 on 27/02/2018.
  */
+
+/**
+* Manually create objects using the ImageJ selection tools.  Selected regions can be interpolated in Z and T to speed up the object creation process.<br><br>This module will display a control panel and an image onto which selections are made.  <br><br>Following selection of a region to be included in the object, the user can either add this region to a new object ("Add new" button), or add it to an existing object ("Add to existing" button).  The target object for adding to an existing object is specified using the "Existing object number" control (a list of existing object IDs is shown directly below this control).<br><br>References to each selection are displayed below the controls.  Previously-added regions can be re-selected by clicking the relevant reference.  This allows selections to be deleted or used as a basis for further selections.<br><br>Once all selections have been made, objects are added to the workspace with the "Finish" button.<br><br>Objects need to be added slice-by-slice and can be linked in 3D using the "Add to existing" control.
+*/
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class ManuallyIdentifyObjects extends Module implements ActionListener, KeyListener {
     private JFrame frame;
@@ -143,19 +147,71 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener, K
     private static final String FINISH = "Finish";
 
     // Parameters
+
+	/**
+	* 
+	*/
     public static final String INPUT_SEPARATOR = "Image input";
+
+	/**
+	* Image onto which selections will be drawn.  This will be displayed automatically when the module runs.
+	*/
     public static final String INPUT_IMAGE = "Input image";
+
+	/**
+	* 
+	*/
     public static final String OUTPUT_SEPARATOR = "Object output";
+
+	/**
+	* Objects created by this module.
+	*/
     public static final String OUTPUT_OBJECTS = "Output objects";
+
+	/**
+	* The method used to store pixel coordinates.  This only affects performance and memory usage, there is no difference in results obtained using difference storage methods.<br><ul><li>"Pointlist" (default) stores object coordinates as a list of XYZ coordinates.  This is most efficient for small objects, very thin objects or objects with lots of holes.</li><li>"Octree" stores objects in an octree format.  Here, the coordinate space is broken down into cubes of different sizes, each of which is marked as foreground (i.e. an object) or background.  Octrees are most efficient when there are lots of large cubic regions of the same label, as the space can be represented by larger (and thus fewer) cubes.  This is best used when there are large, completely solid objects.  If z-axis sampling is much larger than xy-axis sampling, it's typically best to opt for the quadtree method.</li><li>"Quadtree" stores objects in a quadtree format.  Here, each Z-plane of the object is broken down into squares of different sizes, each of which is marked as foreground (i.e. an object) or background.  Quadtrees are most efficient when there are lots of large square regions of the same label, as the space can be represented by larger (and thus fewer) squares.  This is best used when there are large, completely solid objects.</li></ul>
+	*/
     public static final String VOLUME_TYPE = "Volume type";
+
+	/**
+	* When selected, the same object can be identified across multiple timepoints.  The same ID should be used for all objects in this "track" - this will become the ID of the track object itself, while each timepoint instance will be assigned its own unique ID.  This feature also enables the use of temporal intepolation of objects.
+	*/
     public static final String OUTPUT_TRACKS = "Output tracks";
+
+	/**
+	* Name of track objects to be added to the workspace.  These will be parents of the individual timepoint instances and provide a way of grouping all the individual timepoint instances of a particular object.  Track objects themselves do not contain any coordinate information.
+	*/
     public static final String OUTPUT_TRACK_OBJECTS = "Output track objects";
+
+	/**
+	* Interpolate objects in Z.  Objects assigned the same ID will be interpolated to appear in all slices between the top-most and bottom-most specific slices.  Specified regions must contain a degree of overlap (higher overlap will give better results).
+	*/
     public static final String SPATIAL_INTERPOLATION = "Spatial interpolation";
+
+	/**
+	* Interpolate objects across multiple frames.  Objects assigned the same ID will be interpolated to appear in all frames between the first and last specified timepoints.  Specified regions must contain a degree of overlap (higher overlap will give better results).
+	*/
     public static final String TEMPORAL_INTERPOLATION = "Temporal interpolation";
+
+	/**
+	* 
+	*/
     public static final String SELECTION_SEPARATOR = "Object selection controls";
+
+	/**
+	* Text that will be displayed to the user on the object selection control panel.  This can inform them of the steps they need to take to select the objects.
+	*/
     public static final String INSTRUCTION_TEXT = "Instruction text";
+
+	/**
+	* Default region drawing tool to enable.  This tool can be changed by the user when selecting regions.  Choices are: Freehand line, Freehand region, Line, Oval, Points, Polygon, Rectangle, Segmented line, Wand (tracing) tool.
+	*/
     public static final String SELECTOR_TYPE = "Default selector type";
     public static final String POINT_MODE = "Point mode (point-type ROIs only)";
+
+	/**
+	* Message to display in title of image.
+	*/
     public static final String MESSAGE_ON_IMAGE = "Message on image";
 
     public ManuallyIdentifyObjects(Modules modules) {

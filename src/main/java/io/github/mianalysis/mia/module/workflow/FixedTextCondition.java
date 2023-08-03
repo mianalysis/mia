@@ -26,13 +26,33 @@ import io.github.mianalysis.mia.object.system.Status;
 /**
  * Created by Stephen Cross on 23/11/2018.
  */
+
+/**
+* Implement variable workflow handling outcomes based on comparison of a fixed text value against a series of fixed conditions.  If the text test value matches any of the conditions the workflow handling outcome associated with that condition will be implemented.  Outcomes can include termination of the analysis and redirection of the active module to another part of the workflow.  Redirection allows parts of the analysis to be looped, or sections of the workflow to be skipped.<br><br>An example usage case for fixed text conditions is implementing the same behaviour at multiple parts of the workflow without having to control them individually.  This can be achieved using a global variable (see "Global variables" module).  The global variable could be specified once, early on in the analysis, then used as "Test value" in this module.  As such, it's possible to only specify the value once, but refer to it in multiple "Fixed text condition" modules.  Note: The global variables module allows variables to be user-selected from a drop-down list, negating risk of mis-typing parameter names that will be compared in this module.
+*/
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class FixedTextCondition extends AbstractWorkspaceHandler {
+
+	/**
+	* 
+	*/
     public static final String CONDITION_SEPARATOR = "Condition";
+
+	/**
+	* Text value that will tested.  If this matches any of the reference values listed within this module the relevant workflow operation (e.g. termination/redirection) will be implemented.  This text value could be a global variable.
+	*/
     public static final String TEST_VALUE = "Test value";
+
+	/**
+	* Add another condition that "Test value" can be compared against.  Each condition can have its own handling outcome (e.g. termination/redirection).
+	*/
     public static final String ADD_CONDITION = "Add condition";
     public static final String REFERENCE_VALUE = "Reference value";
 
+
+	/**
+	* 
+	*/
     public static final String RESULT_SEPARATOR = "Result";
 
     public FixedTextCondition(Modules modules) {

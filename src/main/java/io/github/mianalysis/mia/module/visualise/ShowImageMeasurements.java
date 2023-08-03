@@ -21,9 +21,21 @@ import io.github.mianalysis.mia.object.parameters.Parameters;
 /**
  * Created by Stephen Cross on 14/10/2019.
  */
+
+/**
+* Displays all measurements associated with an image.
+*/
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class ShowImageMeasurements extends Module {
+
+	/**
+	* 
+	*/
     public static final String INPUT_SEPARATOR = "Input";
+
+	/**
+	* Image to display all measurements for.
+	*/
     public static final String INPUT_IMAGE = "Input image";
 
     public ShowImageMeasurements(Modules modules) {

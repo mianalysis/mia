@@ -29,14 +29,46 @@ import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.system.Status;
 
+
+/**
+* Filter an object collection to remove/retain the object with the largest/smallest value for a specific measurement.  The objects identified for removal can be indeed removed from the input collection, moved to another collection (and removed from the input collection) or simply counted (but retained in the input collection).
+*/
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class FilterByMeasurementExtremes extends AbstractObjectFilter {
+
+	/**
+	* 
+	*/
     public static final String FILTER_SEPARATOR = "Object filtering";
+
+	/**
+	* Controls what happens to objects which don't pass the filter:<br><br>- "Remove with largest measurements" Remove the object with the largest value measurement specified by "Measurement to filter on".<br><br>- "Remove with smallest measurements" Remove the object with the smallest value measurement specified by "Measurement to filter on".<br><br>- "Retain with largest measurements" Retain only the object with the largest value measurement specified by "Measurement to filter on".<br><br>- "Retain with smallest measurements" Retain only the object with the smallest value measurement specified by "Measurement to filter on".<br>
+	*/
     public static final String FILTER_METHOD = "Method for filtering";
+
+	/**
+	* When selected, the measurements will be considered on a timepoint-by-timepoint basis.  For example, if retaining the object with the largest measurement, the object in each timepoint with the largest measurement would be retained; however, when not selected, only one object in the entire timeseries would be retained.
+	*/
     public static final String PER_TIMEPOINT = "Filter per timepoint";
+
+	/**
+	* 
+	*/
     public static final String PER_PARENT = "Filter per parent object";
+
+	/**
+	* 
+	*/
     public static final String PARENT_OBJECT = "Parent object";
+
+	/**
+	* Objects will be filtered against their value of this measurement.  Objects missing this measurement are not removed; however, they can be removed by using the module "With / without measurement".
+	*/
     public static final String MEASUREMENT = "Measurement to filter on";
+
+	/**
+	* Number of objects with the most extreme measurements to remove or retain.  If an insufficient number of objects are available, the most possible will be used.
+	*/
     public static final String N_MEASUREMENTS = "Number of measurements";
     
     public FilterByMeasurementExtremes(Modules modules) {

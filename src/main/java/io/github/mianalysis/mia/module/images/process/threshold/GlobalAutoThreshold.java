@@ -43,21 +43,77 @@ import io.github.mianalysis.mia.object.system.Status;
 /**
  * Created by sc13967 on 06/06/2017.
  */
+
+/**
+* Binarise an image in the workspace such that the output only has pixel values of 0 and 255.  Uses the built-in ImageJ global <a href="https://imagej.net/Auto_Threshold">auto-thresholding algorithms</a>.<br><br>Note: Currently only works on 8-bit images.  Images with other bit depths will be automatically converted to 8-bit based on the "Fill target range (normalise)" scaling method from the "Image type converter" module.
+*/
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class GlobalAutoThreshold extends Module {
+
+	/**
+	* 
+	*/
     public static final String INPUT_SEPARATOR = "Image input/output";
+
+	/**
+	* Image to apply threshold to.
+	*/
     public static final String INPUT_IMAGE = "Input image";
+
+	/**
+	* Controls if the threshold is applied to the input image or only calculated and stored as a measurement:<br><ul><li>"Calculate and apply" Calculate the threshold and apply it to the input image.  Whether the binarised image updates the input image or is saved as a separate image to the workspace is controlled by the "Apply to input image" parameter.  In this mode the calculated threshold is still stored as a measurement of the input image.</li><li>"Calculate only" Calculate the threshold, but do not apply it to the input image.  The calculated threshold is only stored as a measurement of the input image.</li></ul>
+	*/
     public static final String OUTPUT_MODE = "Output mode";
+
+	/**
+	* Select if the threshold should be applied directly to the input image, or if it should be applied to a duplicate, then stored as a different image in the workspace.
+	*/
     public static final String APPLY_TO_INPUT = "Apply to input image";
+
+	/**
+	* Name of the output image created during the thresholding process.  This image will be added to the workspace.
+	*/
     public static final String OUTPUT_IMAGE = "Output image";
 
+
+	/**
+	* 
+	*/
     public static final String THRESHOLD_SEPARATOR = "Threshold controls";
+
+	/**
+	* Global thresholding algorithm to use.  Choices are: Huang, Intermodes, IsoData, Li, MaxEntropy, Mean, MinError, Minimum, Moments, Otsu, Percentile, RenyiEntropy, Shanbhag, Triangle, Yen.
+	*/
     public static final String ALGORITHM = "Algorithm";
+
+	/**
+	* Prior to application of automatically-calculated thresholds the threshold value is multiplied by this value.  This allows the threshold to be systematically increased or decreased.  For example, a "Threshold multiplier" of 0.9 applied to an automatically-calculated threshold of 200 will see the image thresholded at the level 180.
+	*/
     public static final String THRESHOLD_MULTIPLIER = "Threshold multiplier";
+
+	/**
+	* Limit the lowest threshold that can be applied to the image.  This is used to prevent unintentional segmentation of an image containing only background (i.e. no features present).
+	*/
     public static final String USE_LOWER_THRESHOLD_LIMIT = "Use lower threshold limit";
+
+	/**
+	* Lowest absolute threshold value that can be applied.
+	*/
     public static final String LOWER_THRESHOLD_LIMIT = "Lower threshold limit";
+
+	/**
+	* Controls whether objects are considered to be white (255 intensity) on a black (0 intensity) background, or black on a white background.
+	*/
     public static final String BINARY_LOGIC = "Binary logic";
+
+	/**
+	* 
+	*/
     public static final String MEASURE_ON_OBJECTS = "Measure on objects";
+
+	/**
+	* 
+	*/
     public static final String INPUT_OBJECTS = "Input objects";
 
     public GlobalAutoThreshold(Modules modules) {

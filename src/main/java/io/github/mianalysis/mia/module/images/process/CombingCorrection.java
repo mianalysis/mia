@@ -25,13 +25,37 @@ import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Status;
 import io.github.sjcross.sjcommon.filters.CombingCorrector;
 
+
+/**
+* Applies an integer pixel row shift to every other row (starting with top-most row).
+*/
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class CombingCorrection extends Module {
+
+	/**
+	* 
+	*/
     public static final String INPUT_SEPARATOR = "Image input/output";
+
+	/**
+	* Image to which the correction will be applied.
+	*/
     public static final String INPUT_IMAGE = "Input image";
+
+	/**
+	* When selected, the input image will be updated to contain the corrected image.  Otherwise, the corrected image will be stored separately in the workspace (name controlled by "Output image" parameter).
+	*/
     public static final String APPLY_TO_INPUT = "Apply to input image";
+
+	/**
+	* Output image with correction applied.
+	*/
     public static final String OUTPUT_IMAGE = "Output image";
 
+
+	/**
+	* 
+	*/
     public static final String CORRECTION_SEPARATOR = "Combing correction";
     public static final String OFFSET = "Offset (px)";
 

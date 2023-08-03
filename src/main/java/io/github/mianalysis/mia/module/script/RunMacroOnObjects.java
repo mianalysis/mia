@@ -45,20 +45,76 @@ import io.github.mianalysis.mia.object.system.Status;
 /**
  * Created by sc13967 on 31/01/2018.
  */
+
+/**
+* Run a specific ImageJ macro once per object from a specified input object collection (as opposed to the "Run macro" module, which runs once per analysis run).  This module can optionally open an image into ImageJ for the macro to run on.  Variables assigned during the macro can be extracted and stored as measurements associated with the current object.<br><br>Note: ImageJ can only run one macro at a time, so by using this module the "Simultaneous jobs" parameter of the "Input control" module must be set to 1.<br><br>Note: When this module runs, all windows currently open in ImageJ will be automatically hidden, then re-opened upon macro completion.  This is to prevent accidental interference while the macro is running.  It also allows the macro to run much faster (batch mode).  To keep images open while the macro is running (for example, during debugging) start the macro with the command "setBatchMode(false)".
+*/
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class RunMacroOnObjects extends AbstractMacroRunner {
+
+	/**
+	* 
+	*/
     public static final String INPUT_SEPARATOR = "Image and object input";
+
+	/**
+	* The specified macro will be run once on each of the objects from this object collection.  No information (e.g. assigned variables) is transferred between macro runs.
+	*/
     public static final String INPUT_OBJECTS = "Input objects";
+
+	/**
+	* When selected, a specified image from the workspace will be opened prior to running the macro.  This image will be the "active" image the macro runs on.
+	*/
     public static final String PROVIDE_INPUT_IMAGE = "Provide input image";
+
+	/**
+	* If "Provide input image" is selected, this is the image that will be loaded into the macro.  A duplicate of this image is made, so the image stored in the workspace will not be affected by any processing in the macro.
+	*/
     public static final String INPUT_IMAGE = "Input image";
+
+	/**
+	* When selected (and "Provide input image" is also selected), the input image will be updated to the currently-active image at the end of each iteration.  This allows all object runs for a macro to alter the input image..
+	*/
     public static final String UPDATE_INPUT_IMAGE = "Update image after each run";
+
+	/**
+	* 
+	*/
     public static final String VARIABLE_SEPARATOR = "Variables input";
+
+	/**
+	* 
+	*/
     public static final String MACRO_SEPARATOR = "Macro definition";
+
+	/**
+	* Select the source for the macro code:<br><ul><li>"Macro file" Load the macro from the file specified by the "Macro file" parameter.</li><li>"Macro text" Macro code is written directly into the "Macro text" box.</li></ul>
+	*/
     public static final String MACRO_MODE = "Macro mode";
+
+	/**
+	* Macro code to be executed.  MIA macro commands are enabled using the "run("Enable MIA Extensions");" command which is included by default.  This should always be the first line of a macro if these commands are needed.
+	*/
     public static final String MACRO_TEXT = "Macro text";
+
+	/**
+	* Select a macro file (.ijm) to be run by this module.  As with the "Macro text" parameter, this macro should start with the "run("Enable MIA Extensions");" command.
+	*/
     public static final String MACRO_FILE = "Macro file";
+
+	/**
+	* This button refreshes the macro code as stored within MIA.  Clicking this will create an "undo" checkpoint and validate any global variables that have been used.
+	*/
     public static final String REFRESH_BUTTON = "Refresh parameters";
+
+	/**
+	* 
+	*/
     public static final String OUTPUT_SEPARATOR = "Measurement output";
+
+	/**
+	* This allows variables assigned in the macro to be stored as measurements associated with the current object.
+	*/
     public static final String ADD_INTERCEPTED_VARIABLE = "Intercept variable as measurement";
     public static final String VARIABLE = "Variable";
 

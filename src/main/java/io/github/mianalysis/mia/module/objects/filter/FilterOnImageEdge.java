@@ -23,15 +23,51 @@ import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.system.Status;
 
+
+/**
+* Filter an object collection based on contact of each object with the image edge.  Contact is considered as a case where an object pixel is in the outer-most row, column or slice  of an image (e.g. x = 0 or y = max_value).  The maximum number of contact pixels before an object is removed can be set to permit a degree of contact.  Objects identified as being in contact with the image edge can be removed from the input collection, moved to another collection (and removed from the input collection) or simply counted (but retained in the input collection).  The number of objects failing the filter can be stored as a metadata value.  <br><br>Image edge filters can be used when counting the number of objects in a field of view - in this case, typically two adjacent edges are removed (e.g. bottom and right) to prevent over-counting.  Alternatively, removing objects on all edges can be performed when measuring whole-object properties such as area or volume to prevent under-measuring values.
+*/
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class FilterOnImageEdge extends AbstractObjectFilter {
+
+	/**
+	* 
+	*/
     public static final String FILTER_SEPARATOR = "Object filtering";
+
+	/**
+	* Maximum number of object pixels which can lie along any of the specified edges without the object being removed.  This provides tolerance for objects which only just make contact with the image edge.
+	*/
     public static final String MAXIMUM_CONTACT = "Maximum permitted contact";
+
+	/**
+	* When selected, object pixels which make contact with the top of the image (y = 0) will count towards the "Maximum permitted contact" limit.  If not selected, pixels along this edge will be ignored (i.e. contact won't lead to object removal).
+	*/
     public static final String REMOVE_ON_TOP = "Remove on top";
+
+	/**
+	* When selected, object pixels which make contact with the left side of the image (x = 0) will count towards the "Maximum permitted contact" limit.  If not selected, pixels along this edge will be ignored (i.e. contact won't lead to object removal).
+	*/
     public static final String REMOVE_ON_LEFT = "Remove on left";
+
+	/**
+	* When selected, object pixels which make contact with the bottom of the image (y = max_value) will count towards the "Maximum permitted contact" limit.  If not selected, pixels along this edge will be ignored (i.e. contact won't lead to object removal).
+	*/
     public static final String REMOVE_ON_BOTTOM = "Remove on bottom";
+
+	/**
+	* When selected, object pixels which make contact with the right side of the image (x = max_value) will count towards the "Maximum permitted contact" limit.  If not selected, pixels along this edge will be ignored (i.e. contact won't lead to object removal).
+	*/
     public static final String REMOVE_ON_RIGHT = "Remove on right";
+
+	/**
+	* When selected, object pixels which make contact with the lower (z = 0) and upper (z = max_value) slices of the image stack will count towards the "Maximum permitted contact" limit.  If not selected, pixels along this edge will be ignored (i.e. contact won't lead to object removal).  If enabled for single slice stacks all objects will removed.
+	*/
     public static final String INCLUDE_Z_POSITION = "Include Z-position";
+
+	/**
+	* When selected, the number of removed (or moved) objects is counted and stored as a metadata item (name in the format "FILTER // NUM_[inputObjectsName] TOUCHING_IM_EDGE (3D)").
+	*/
     public static final String STORE_RESULTS = "Store filter results";
 
     public FilterOnImageEdge(Modules modules) {

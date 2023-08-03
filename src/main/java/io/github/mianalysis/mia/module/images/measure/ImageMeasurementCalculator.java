@@ -27,23 +27,79 @@ import io.github.mianalysis.mia.object.system.Status;
 /**
  * Created by Stephen Cross on 19/03/2019.
  */
+
+/**
+* Perform a mathematical operation on measurements associated with an image.  The calculation can replace either or both input image measurements with fixed values.  The resulting measurement is associated with the input image as a new measurement.
+*/
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class ImageMeasurementCalculator extends Module {
+
+	/**
+	* 
+	*/
     public static final String INPUT_SEPARATOR = "Image input";
+
+	/**
+	* Image from the workspace to perform the measurement calculation for.
+	*/
     public static final String INPUT_IMAGE = "Input image";
 
+
+	/**
+	* 
+	*/
     public static final String VALUE_SEPARATOR_1 = "Value 1 selection";
+
+	/**
+	* Controls how the first value in the calculation is defined:<br><ul><li>"Fixed" A single, fixed value defined by "Fixed value 1"is used.</li><li>"Measurement" A measurement associated with the input image and defined by "Measurement 1" is used.</li></ul>
+	*/
     public static final String VALUE_MODE_1 = "Value mode 1";
+
+	/**
+	* Fixed value to use in the calculation when "Value mode 1" is in "Fixed" mode.
+	*/
     public static final String FIXED_VALUE_1 = "Fixed value 1";
+
+	/**
+	* Measurement associated with the input image to use in the calculation when "Value mode 1" is in "Measurement" mode.
+	*/
     public static final String MEASUREMENT_1 = "Measurement 1";
 
+
+	/**
+	* 
+	*/
     public static final String VALUE_SEPARATOR_2 = "Value 2 selection";
+
+	/**
+	* Controls how the second value in the calculation is defined:<br><ul><li>"Fixed" A single, fixed value defined by "Fixed value 2"is used.</li><li>"Measurement" A measurement associated with the input image and defined by "Measurement 2" is used.</li></ul>
+	*/
     public static final String VALUE_MODE_2 = "Value mode 2";
+
+	/**
+	* Fixed value to use in the calculation when "Value mode 2" is in "Fixed" mode.
+	*/
     public static final String FIXED_VALUE_2 = "Fixed value 2";
+
+	/**
+	* Measurement associated with the input image to use in the calculation when "Value mode 2" is in "Measurement" mode.
+	*/
     public static final String MEASUREMENT_2 = "Measurement 2";
 
+
+	/**
+	* 
+	*/
     public static final String CALCULATION_SEPARATOR = "Measurement calculation";
+
+	/**
+	* The value resulting from the calculation will be stored as a new measurement with this name.  This output measurement will be associated with the input image
+	*/
     public static final String OUTPUT_MEASUREMENT = "Output measurement";
+
+	/**
+	* Calculation to perform.  Choices are: Add value 1 and value 2, Divide value 1 by value 2, Multiply value 1 and value 2, Subtract value 2 from value 1.
+	*/
     public static final String CALCULATION_MODE = "Calculation mode";
 
     public interface ValueModes {

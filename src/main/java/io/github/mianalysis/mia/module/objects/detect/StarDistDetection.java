@@ -69,26 +69,94 @@ import net.imglib2.util.ValuePair;
 import net.imglib2.view.IntervalView;
 import net.imglib2.view.Views;
 
+
+/**
+* Implements the StarDist plugin to detect objects.  For more information on StarDist please see <a href="https://imagej.net/plugins/stardist">https://imagej.net/plugins/stardist</a>.
+*/
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class StarDistDetection extends Module {
+
+	/**
+	* 
+	*/
     public static final String INPUT_SEPARATOR = "Image input/object output";
+
+	/**
+	* 
+	*/
     public static final String INPUT_IMAGE = "Input image";
+
+	/**
+	* 
+	*/
     public static final String OUTPUT_OBJECTS = "Output objects";
 
+
+	/**
+	* 
+	*/
     public static final String MODEL_SEPARATOR = "Model settings";
+
+	/**
+	* 
+	*/
     public static final String MODEL_MODE = "Model mode";
+
+	/**
+	* 
+	*/
     public static final String MODEL_NAME = "Model name";
+
+	/**
+	* 
+	*/
     public static final String MODEL_PATH = "Model path";
 
+
+	/**
+	* 
+	*/
     public static final String PREDICTION_SEPARATOR = "Prediction settings";
+
+	/**
+	* 
+	*/
     public static final String NORMALISE_INPUT = "Normalise image";
+
+	/**
+	* 
+	*/
     public static final String PERCENTILE_LOW = "Percentile low";
+
+	/**
+	* 
+	*/
     public static final String PERCENTILE_HIGH = "Percentile high";
+
+	/**
+	* 
+	*/
     public static final String NUMBER_OF_TILES = "Number of tiles";
 
+
+	/**
+	* 
+	*/
     public static final String NMS_SEPARATOR = "NMS post-processing";
+
+	/**
+	* 
+	*/
     public static final String PROB_THRESHOLD = "Probability threshold";
+
+	/**
+	* 
+	*/
     public static final String OVERLAP_THRESHOLD = "Overlap threshold";
+
+	/**
+	* 
+	*/
     public static final String BOUNDARY_EXCLUSION = "Boundary exclusion";
 
     // From

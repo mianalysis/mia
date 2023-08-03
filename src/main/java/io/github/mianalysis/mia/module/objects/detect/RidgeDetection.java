@@ -23,7 +23,6 @@ import de.biomedical_imaging.ij.steger.Lines;
 import de.biomedical_imaging.ij.steger.OverlapOption;
 import ij.ImagePlus;
 import ij.measure.Calibration;
-import io.github.mianalysis.mia.MIA;
 import io.github.mianalysis.mia.module.Categories;
 import io.github.mianalysis.mia.module.Category;
 import io.github.mianalysis.mia.module.Module;
@@ -35,7 +34,6 @@ import io.github.mianalysis.mia.object.Obj;
 import io.github.mianalysis.mia.object.Objs;
 import io.github.mianalysis.mia.object.Workspace;
 import io.github.mianalysis.mia.object.image.Image;
-import io.github.mianalysis.mia.object.image.ImageFactory;
 import io.github.mianalysis.mia.object.parameters.BooleanP;
 import io.github.mianalysis.mia.object.parameters.ChoiceP;
 import io.github.mianalysis.mia.object.parameters.InputImageP;
@@ -64,26 +62,98 @@ import io.github.sjcross.sjcommon.process.skeletontools.BreakFixer;
 /**
  * Created by sc13967 on 30/05/2017.
  */
+
+/**
+* Detects ridge objects in an image from the workspace.  A ridge is considered as a line of higher (or lower) intensity pixels in an image.  Ridges are output as objects to the workspace with relevant measurements associated with each object (e.g. ridge length).  This module uses the "<a href="https://imagej.net/Ridge_Detection">Ridge Detection</a>" plugin, which itself is based on the paper "An Unbiased Detector of Curvilinear Structures" (Steger, C., <i>IEEE Transactions on Pattern Analysis and Machine Intelligence</i> (1998) <b>20</b> 113–125).<br><br>Note: This module detects ridges in 2D, but can be run on multi-dimensional images.  For higher dimensionality images than 2D, ridge detection is performed slice-by-slice, with output objects confined to a single slice.
+*/
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class RidgeDetection extends Module {
+
+	/**
+	* 
+	*/
     public static final String INPUT_SEPARATOR = "Image input/object output";
+
+	/**
+	* Image from the workspace on which ridges will be identified.  This can be a multi-dimensional image, although ridges are currently only detected in 2D.  In the case of higher-dimensionality images, ridges are detected on a slice-by-slice basis.
+	*/
     public static final String INPUT_IMAGE = "Input image";
+
+	/**
+	* Output ridge objects, which will be added to the workspace.  These objects will have measurements associated with them.
+	*/
     public static final String OUTPUT_OBJECTS = "Output objects";
 
+
+	/**
+	* 
+	*/
     public static final String DETECTION_SEPARATOR = "Detection settings";
+
+	/**
+	* Controls if we are detecting dark lines on a lighter background or light lines on a darker background.
+	*/
     public static final String CONTOUR_CONTRAST = "Contour contrast";
+
+	/**
+	* Lower response threshold for points on a line to be accepted.  This threshold is based on the value of points after the ridge enhancement filtering and is not a reflection of their absolute pixel intensities.
+	*/
     public static final String LOWER_THRESHOLD = "Lower threshold";
+
+	/**
+	* Upper response threshold for points on a line to be accepted.  This threshold is based on the value of points after the ridge enhancement filtering and is not a reflection of their absolute pixel intensities.
+	*/
     public static final String UPPER_THRESHOLD = "Upper threshold";
+
+	/**
+	* Sigma of the derivatives to be applied to the input image when detecting ridges.  This is related to the width of the lines to be detected and is greater than or equal to "width/(2*sqrt(3))".
+	*/
     public static final String SIGMA = "Sigma";
+
+	/**
+	* When selected, spatial values are assumed to be specified in calibrated units (as defined by the "Input control" parameter "Spatial unit").  Otherwise, pixel units are assumed.
+	*/
     public static final String CALIBRATED_UNITS = "Calibrated units";
+
+	/**
+	* Lines are extended in an attempt to locate more junction points.
+	*/
     public static final String EXTEND_LINE = "Extend line";
+
+	/**
+	* When this is selected, the width of each line is estimated.  All points within the width extents of each line are included in the output objects (i.e. output objects are broad).  When not selected, the output objects have single pixel width.  If estimating width, width-based measurements will be associated with each output object.
+	*/
     public static final String ESTIMATE_WIDTH = "Estimate width";
+
+	/**
+	* Controls how intersecting lines should be handled.  For more information see <a href="https://imagej.net/Ridge_Detection.html#Overlap_resolution">https://imagej.net/Ridge_Detection.html#Overlap_resolution</a>.<br><ul><li>"None" Ridges are terminated at line intersections, so two overlapping ridges will likely be identified as at least four separate ridge objects.</li><li>"Slope" When selected, this will attempt to resolve ridge overlaps such that two overlapping ridges would be identified as two separate objects.  Ridges output in this manner can have common, shared paths (i.e. during the overlap region).</li></ul>
+	*/
     public static final String OVERLAP_MODE = "Overlap mode";
 
+
+	/**
+	* 
+	*/
     public static final String REFINEMENT_SEPARATOR = "Refinement settings";
+
+	/**
+	* Minimum length of a detected line for it to be retained and output.  Specified in pixel units, unless "Calibrated units" is selected.
+	*/
     public static final String MIN_LENGTH = "Minimum length";
+
+	/**
+	* Maximum length of a detected line for it to be retained and output.  Specified in pixel units, unless "Calibrated units" is selected.
+	*/
     public static final String MAX_LENGTH = "Maximum length";
+
+	/**
+	* 
+	*/
     public static final String JOIN_AT_JUNCTIONS = "Join at junctions";
+
+	/**
+	* When selected, ridges with ends in close proximity will be linked into a single object.
+	*/
     public static final String LINK_ENDS = "Link ends";
     public static final String ALIGNMENT_RANGE = "Alignment range (px)";
     public static final String MAXIMUM_END_SEPARATION = "Maximum end separation (px)";

@@ -36,13 +36,37 @@ import io.github.sjcross.sjcommon.object.Point;
 /**
  * Created by sc13967 on 05/05/2017.
  */
+
+/**
+* Measure intensity of each object in a specified image.  Measurements of intensity are taken at all pixel coordinates corresponding to each object.  By default, basic measurements such as mean, minimum and maximum will be calculated.  Additional measurements can optionally be enabled.
+*/
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class MeasureObjectIntensity extends Module {
+
+	/**
+	* 
+	*/
     public static final String INPUT_SEPARATOR = "Object and image input";
+
+	/**
+	* Objects from the workspace for which intensities will be measured.
+	*/
     public static final String INPUT_OBJECTS = "Input objects";
+
+	/**
+	* Image from which pixel intensities will be measured.  This image can be 8-bit, 16-bit or 32-bit.  Measurements are always taken from the first channel if more than one channel is present (to measure additional channels, please first use the "Extract substack" module).
+	*/
     public static final String INPUT_IMAGE = "Input image";
 
+
+	/**
+	* 
+	*/
     public static final String WEIGHTED_CENTRE_SEPARATOR = "Weighted centre";
+
+	/**
+	* When selected, the intensity-weighted centroid of each input object will be calculated.  With this, the greater the intensity in a particular region of an object, the more the "centre of mass" will be drawn towards it.
+	*/
     public static final String MEASURE_WEIGHTED_CENTRE = "Measure weighted centre";
 
     public MeasureObjectIntensity(Modules modules) {

@@ -33,10 +33,22 @@ import mpicbg.models.PointMatch;
 import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
 
+
+/**
+* Apply 2D affine transforms to align images from the workspace to other images from the workspace using manually-selected reference points.  When the module runs, the input and reference images are displayed. The user then selects matching points on each image and clicks "Add pair(s)". Points must be added in the same order on each image (ID numbers next to each point provide a reference). Points are shown in the control window and can be deleted by highlighting the relevant entry and clicking "Remove pair". Finally, the alignment is accepted by clicking "Finish adding pairs", at which point the images are closed and the transform is applied.  If multiple slices/timepoints are to be aligned, the next image pair will immediately be displayed and the processes is repeated.  The transformed input image can either overwrite the input image in the workspace, or be saved to the workspace with a new name.Alignments are calculated using the <a href="https://github.com/axtimwalde/mpicbg">MPICBG</a> image transformation library.
+*/
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class AffineManual<T extends RealType<T> & NativeType<T>> extends AbstractAffineRegistration
         implements Interactable {
+
+	/**
+	* 
+	*/
     public static final String FEATURE_SEPARATOR = "Feature detection";
+
+	/**
+	* The source for points to be used in calculation of image registration:<br><ul><li>"Pre-selected points" Points have been previously-selected on the input images as multi-point ROIs.  These points are passed directly into the registration calculation.  This negates the need for user-interaction at runtime.</li><li>"Select at runtime" Points must be manually-selected by the user at analysis runtime.  The two images to be aligned are displayed and a dialog box opens to allow selection of point pairs.  Point pairs must be added in the same order on each image.  For images where multiple slices/timepoints need to be registered, image pairs will be opened sequentially, with the point selections from the previous slice/timepoint being pre-selected for convenience.</li></ul>
+	*/
     public static final String POINT_SELECTION_MODE = "Point selection mode";
 
     public interface PointSelectionModes {

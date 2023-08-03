@@ -29,14 +29,42 @@ import io.github.sjcross.sjcommon.mathfunc.CumStat;
 /**
  * Created by sc13967 on 20/06/2018.
  */
+
+/**
+* Measures the longest chord of each object in a specified object collection from the workspace.  The longest chord of an object is defined as the line passing between the two furthest-spaced points on the surface of the object.  This can act as an approximate measure of object length.  In addition to the longest chord length, the distance of all object surface points from the longest chord can be measured, which themselves act as an approximation of object width.
+*/
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class FitLongestChord extends Module {
+
+	/**
+	* 
+	*/
     public static final String INPUT_SEPARATOR = "Object input";
+
+	/**
+	* Objects from workspace to measure longest chord for.  Measurements will be associated with the corresponding object in this collection.
+	*/
     public static final String INPUT_OBJECTS = "Input objects";
 
+
+	/**
+	* 
+	*/
     public static final String CALCULATION_SEPARATOR = "Longest chord calculation";
+
+	/**
+	* When selected the width of the object from the longest chord will be estimated.  The distance of all object surface points (those with at least one non-object neighbour in 4/6-way connectivity) from the longest chord are calculated.  Statistics (mean, minimum, maximum, sum and standard deviation) of these distances for an object are stored as measurements associated with that object.
+	*/
     public static final String MEASURE_OBJECT_WIDTH = "Measure object width";
+
+	/**
+	* When selected, the orientation of the line in the XY plane is measured and this measurement associated with the corresponding object.  Orientations are reported in degree units and are relative to positive x-axis (positive above x-axis, negative below x-axis).
+	*/
     public static final String MEASURE_OBJECT_ORIENTATION = "Measure object orientation";
+
+	/**
+	* When selected, the two coordinates corresponding to the end points of the longest chord (the two furthest-spaced points on the object surface) are stored as measurements associated with the corresponding input object.
+	*/
     public static final String STORE_END_POINTS = "Store end points";
 
 

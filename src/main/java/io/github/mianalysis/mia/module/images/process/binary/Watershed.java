@@ -39,24 +39,88 @@ import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Status;
 
+
+/**
+* Peforms a watershed transform on a specified input image.  This process is able to split separate regions of a single connected foreground region as long as the sub-regions are connected by narrow necks (e.g. snowman shape).  Background lines are drawn between each sub-region such that they are no longer connected.  This can use specific markers and be run in either distance or intensity-based modes.  Uses the plugin "<a href="https://github.com/ijpb/MorphoLibJ">MorphoLibJ</a>".
+*/
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class Watershed extends Module {
+
+	/**
+	* 
+	*/
     public static final String INPUT_SEPARATOR = "Image input/output";
+
+	/**
+	* Image from workspace to apply watershed transform to.  This image will be 8-bit with binary logic determined by the "Binary logic" parameter.
+	*/
     public static final String INPUT_IMAGE = "Input image";
+
+	/**
+	* When selected, the post-operation image will overwrite the input image in the workspace.  Otherwise, the image will be saved to the workspace with the name specified by the "Output image" parameter.
+	*/
     public static final String APPLY_TO_INPUT = "Apply to input image";
+
+	/**
+	* If "Apply to input image" is not selected, the post-operation image will be saved to the workspace with this name.
+	*/
     public static final String OUTPUT_IMAGE = "Output image";
 
+
+	/**
+	* 
+	*/
     public static final String WATERSHED_SEPARATOR = "Watershed controls";
+
+	/**
+	* When selected, this option allows the use of markers to define the starting point of each region.  The marker image to use is specified using the "Input marker image" parameter.  If not selected, a distance map will be generated for the input binary image and extended minima created according to the dynamic specified by "Dynamic".
+	*/
     public static final String USE_MARKERS = "Use markers";
+
+	/**
+	* Marker image to be used if "Use markers" is selected.  This image must be of equal dimensions to the input image (to which the transform will be applied).  This image will be 8-bit with binary logic determined by the "Binary logic" parameter.
+	*/
     public static final String MARKER_IMAGE = "Input marker image";
+
+	/**
+	* Controls the source for the intensity image against which the watershed transform will be computed.  Irrespective of mode, the image (raw image or object distance map) will act as a surface that the starting points will evolve up until adjacent regions come into contact (at which point creating a dividing line between the two):<br><ul><li>"Distance" A distance map will be created from the input binary image and used as the surface against which the watershed regions will evolve.</li><li>"Input image intensity" The watershed regions will evolve against an image from the workspace.  This image will be unaffected by this process.  The image should have lower intensity coincident with the markers, rising to higher intensity along the boundaries between regions. </li></ul>
+	*/
     public static final String INTENSITY_MODE = "Intensity mode";
+
+	/**
+	* If "Intensity mode" is set to "Input image intensity", this is the image from the workspace against which the watershed regions will evolve.  The image should have lower intensity coincident with the markers, rising to higher intensity along the boundaries between regions.
+	*/
     public static final String INTENSITY_IMAGE = "Intensity image";
+
+	/**
+	* If "Use markers" is not selected, the initial region markers will be created by generating a distance map for the input binary image and calculating the extended minima.  This parameter specifies the maximum permitted pixel intensity difference for a single marker.  Local intensity differences greater than this will result in creation of more markers.  The smaller the dynamic value is, the more the watershed transform will split the image.
+	*/
     public static final String DYNAMIC = "Dynamic";
+
+	/**
+	* Controls which adjacent pixels are considered:<br><ul><li>"6" Only pixels immediately next to the active pixel are considered.  These are the pixels on the four "cardinal" directions plus the pixels immediately above and below the current pixel.  If working in 2D, 4-way connectivity is used.</li><li>"26" In addition to the core 6-pixels, all immediately diagonal pixels are used.  If working in 2D, 8-way connectivity is used.</li></ul>
+	*/
     public static final String CONNECTIVITY = "Connectivity";
+
+	/**
+	* When selected, an image is interpolated in Z (so that all pixels are isotropic) prior to calculation of a distance map.  This prevents warping of the distance map along the Z-axis if XY and Z sampling aren't equal.
+	*/
     public static final String MATCH_Z_TO_X = "Match Z to XY";
+
+	/**
+	* Controls whether objects are considered to be white (255 intensity) on a black (0 intensity) background, or black on a white background.
+	*/
     public static final String BINARY_LOGIC = "Binary logic";
 
+
+	/**
+	* 
+	*/
     public static final String EXECUTION_SEPARATOR = "Execution controls";
+
+	/**
+	* Process multiple 3D stacks simultaneously.  Since the watershed transform is applied on a single 3D stack at a time, multithreading only works for images with multiple channels or timepoints (other stacks will still work, but won't see a speed improvement).  This can provide a speed improvement when working on a computer with a multi-core CPU.
+	*/
     public static final String ENABLE_MULTITHREADING = "Enable multithreading";
 
     public interface BinaryLogic extends BinaryLogicInterface {

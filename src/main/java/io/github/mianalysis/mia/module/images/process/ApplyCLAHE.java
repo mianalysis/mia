@@ -37,23 +37,79 @@ import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Status;
 import mpicbg.ij.clahe.Flat;
 
+
+/**
+* Applies the MPICBG implementation of CLAHE (Contrast Limited Adaptive Histogram Equalization).  This module runs the Image "<a href="https://imagej.net/Enhance_Local_Contrast_(CLAHE)">CLAHE</a>" plugin.
+*/
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class ApplyCLAHE extends Module {
+
+	/**
+	* 
+	*/
     public static final String INPUT_SEPARATOR = "Image input/output";
+
+	/**
+	* Image to apply CLAHE to.
+	*/
     public static final String INPUT_IMAGE = "Input image";
+
+	/**
+	* Select if CLAHE should be applied directly to the input image, or if it should be applied to a duplicate, then stored as a different image in the workspace.
+	*/
     public static final String APPLY_TO_INPUT = "Apply to input image";
+
+	/**
+	* Name of the output image created during the CLAHE process.  This image will be added to the workspace.
+	*/
     public static final String OUTPUT_IMAGE = "Output image";
 
+
+	/**
+	* 
+	*/
     public static final String CLAHE_SEPARATOR = "CLAHE controls";
+
+	/**
+	* "The size of the local region around a pixel for which the histogram is equalized. This size should be larger than the size of features to be preserved".  Description taken from <a href="https://imagej.net/plugins/clahe">https://imagej.net/plugins/clahe</a>
+	*/
     public static final String BLOCK_SIZE = "Blocksize";
+
+	/**
+	* Choose if block size is specified in pixel (set to "false") or calibrated (set to "true") units.  What units are used are controlled from "Input control".
+	*/
     public static final String CALIBRATED_UNITS = "Calibrated units";
+
+	/**
+	* "The number of histogram bins used for histogram equalization. The implementation internally works with byte resolution, so values larger than 256 are not meaningful. This value also limits the quantification of the output when processing 8bit gray or 24bit RGB images. The number of histogram bins should be smaller than the number of pixels in a block".  Description taken from <a href="https://imagej.net/plugins/clahe">https://imagej.net/plugins/clahe</a>
+	*/
     public static final String HISTOGRAM_BINS = "Histogram bins";
+
+	/**
+	* "Limits the contrast stretch in the intensity transfer function. Very large values will let the histogram equalization do whatever it wants to do, that is result in maximal local contrast. The value 1 will result in the original image".  Description taken from <a href="https://imagej.net/plugins/clahe">https://imagej.net/plugins/clahe</a>
+	*/
     public static final String MAXIMUM_SLOPE = "Maximum slope";
+
+	/**
+	* When selected, only pixels coincident with the white (255 intensity) part of the mask image (specified by the "Mask image" parameter) are processed.  All other pixels will retain their initial value
+	*/
     public static final String USE_MASK = "Use mask";
+
+	/**
+	* Image to use for masking when "Use mask" is selected.  Only pixels in the input image coincident with white (255 intensity) pixels in this mask will be processed.
+	*/
     public static final String MASK_IMAGE = "Mask image";
     public static final String FAST_MODE = "Fast (less accurate)";
 
+
+	/**
+	* 
+	*/
     public static final String EXECUTION_SEPARATOR = "Execution controls";
+
+	/**
+	* Process multiple slices independently.  This can provide a speed improvement when working on a computer with a multi-core CPU.
+	*/
     public static final String ENABLE_MULTITHREADING = "Enable multithreading";
 
     public ApplyCLAHE(Modules modules) {

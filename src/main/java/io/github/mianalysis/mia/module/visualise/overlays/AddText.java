@@ -47,24 +47,88 @@ import io.github.mianalysis.mia.process.ColourFactory;
 import io.github.sjcross.sjcommon.process.CommaSeparatedStringInterpreter;
 import ome.units.UNITS;
 
+
+/**
+* Adds an overlay to the specified input image showing a fixed text label.  Slice and frame indices can be dynamically inserted into the text using keywords.
+*/
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class AddText extends AbstractOverlay {
     TextRoi textRoi = null;
+
+	/**
+	* 
+	*/
     public static final String INPUT_SEPARATOR = "Image input/output";
+
+	/**
+	* Image onto which overlay will be rendered.  Input image will only be updated if "Apply to input image" is enabled, otherwise the image containing the overlay will be stored as a new image with name specified by "Output image".
+	*/
     public static final String INPUT_IMAGE = "Input image";
+
+	/**
+	* Image onto which overlay will be rendered.  Input image will only be updated if "Apply to input image" is enabled, otherwise the image containing the overlay will be stored as a new image with name specified by "Output image".
+	*/
     public static final String APPLY_TO_INPUT = "Apply to input image";
+
+	/**
+	* If the modifications (overlay) aren't being applied directly to the input image, this control will determine if a separate image containing the overlay should be saved to the workspace.
+	*/
     public static final String ADD_OUTPUT_TO_WORKSPACE = "Add output image to workspace";
+
+	/**
+	* The name of the new image to be saved to the workspace (if not applying the changes directly to the input image).
+	*/
     public static final String OUTPUT_IMAGE = "Output image";
 
+
+	/**
+	* 
+	*/
     public static final String RENDERING_SEPARATOR = "Overlay rendering";
+
+	/**
+	* Fixed text to be displayed.  The current slice and frame numbers can be inserted using "D{SLICE}" and "D{FRAME}".  Similarly, it's possible to insert the elapsed frame time in the form "T{HH:mm:ss.SSS}" (where this example would give hours:minutes:seconds.millis).  The full description of supported time values can be found <a href="https://docs.oracle.com/javase/8/docs/api/java/time/format/DateTimeFormatter.html">here</a>.
+	*/
     public static final String TEXT = "Text";
+
+	/**
+	* 
+	*/
     public static final String DYNAMIC_VALUES = "Available dynamic values";
+
+	/**
+	* Horizontal location of the text to be displayed.  Specified in pixel units relative to the left of the image (x=0).
+	*/
     public static final String X_POSITION = "X-position";
+
+	/**
+	* Vertical location of the text to be displayed.  Specified in pixel units relative to the top of the image (y=0).
+	*/
     public static final String Y_POSITION = "Y-position";
+
+	/**
+	* Z-slices on which to display the text.  This is specified as a comma-separated list of slice indices.  The keyword "end" is used to denote the final slice in the stack and will be interpreted automatically.  Accepted formats are "[VALUE]" for a single index, "[RANGE START]-[RANGE END]" for a complete range of indices and "[RANGE START]-[RANGE-END]-[INTERVAL]" for indices evenly spaced at the specified interval.
+	*/
     public static final String Z_RANGE = "Z-range";
+
+	/**
+	* Frames on which to display the text.  This is specified as a comma-separated list of frame indices.  The keyword "end" is used to denote the final frame in the stack and will be interpreted automatically.  Accepted formats are "[VALUE]" for a single index, "[RANGE START]-[RANGE END]" for a complete range of indices and "[RANGE START]-[RANGE-END]-[INTERVAL]" for indices evenly spaced at the specified interval.
+	*/
     public static final String FRAME_RANGE = "Frame-range";
+
+	/**
+	* When selected, text will be centred on the specified XY coordinate.  Otherwise, text will be based with its top-left corner at the specified coordinate.
+	*/
     public static final String CENTRE_TEXT = "Centre text";
+
+	/**
+	* Font size of the text label.
+	*/
     public static final String LABEL_SIZE = "Label size";
+
+	/**
+	* Colour of the text label.  Choices are: White, Black, Red, Orange, Yellow, Green, Cyan, Blue, Violet, Magenta.
+	*/
     public static final String LABEL_COLOUR = "Label colour";
 
     public AddText(Modules modules) {

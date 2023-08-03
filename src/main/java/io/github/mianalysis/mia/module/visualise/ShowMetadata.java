@@ -22,8 +22,16 @@ import io.github.mianalysis.mia.object.system.Status;
 /**
  * Created by Stephen Cross on 14/10/2019.
  */
+
+/**
+* Displays all measurements associated with an image.
+*/
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class ShowMetadata extends Module {
+
+	/**
+	* 
+	*/
     public static final String MESSAGE = "Message";
 
     public ShowMetadata(Modules modules) {

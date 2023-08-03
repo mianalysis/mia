@@ -28,14 +28,46 @@ import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.system.Status;
 
+
+/**
+* Filters objects in close XY proximity based on a specific measurement.  For two, or more, objects within close proximity of each other the object with the largest (or smallest) measurement will be retained, whilst the others will be removed.  This can be used to filter instances of the same object being detected multiple times.  Distances are only considered in XY.  Any Z-axis information on object position will be ignored.
+*/
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class FilterByProximity extends AbstractObjectFilter {
+
+	/**
+	* 
+	*/
     public static final String FILTER_SEPARATOR = "Object filtering";
+
+	/**
+	* Controls the method used for determining the nearest neighbour distances:<br><ul><li>"Centroid (2D)" Distances are between the input and neighbour object centroids, but only in the XY plane.  These distances are always positive; increasing as the distance between centroids increases.</li><li>"Centroid (3D)" Distances are between the input and neighbour object centroids.  These distances are always positive; increasing as the distance between centroids increases.</li><li>"Surface (2D)" Distances are between the closest points on the input and neighbour surfaces, but only in the XY plane.  These distances increase in magnitude the greater the minimum input-neighbour object surface distance is; however, they are assigned a positive value if the closest input object surface point is outside the neighbour and a negative value if the closest input object surface point is inside the neighbour.  For example, a closest input object surface point 5px outside the neighbour will be simply "5px", whereas a closest input object surface point 5px from the surface, but contained within the neighbour object will be recorded as "-5px".  Note: Any instances where the input and neighbour object surfaces overlap will be recorded as "0px" distance.</li><li>"Surface (3D)" Distances are between the closest points on the input and neighbour surfaces.  These distances increase in magnitude the greater the minimum input-neighbour object surface distance is; however, they are assigned a positive value if the closest input object surface point is outside the neighbour and a negative value if the closest input object surface point is inside the neighbour.  For example, a closest input object surface point 5px outside the neighbour will be simply "5px", whereas a closest input object surface point 5px from the surface, but contained within the neighbour object will be recorded as "-5px".  Note: Any instances where the input and neighbour object surfaces overlap will be recorded as "0px" distance.</li></ul>
+	*/
     public static final String REFERENCE_MODE = "Reference mode";
+
+	/**
+	* Minimum allowed distance in XY plane for two objects to co-exist.  Any objects with XY separation smaller than this value will be subject to filtering, where the "less suitable" (depending on filter settings) object will be removed.
+	*/
     public static final String MINIMUM_SEPARATION = "Minimum separation";
+
+	/**
+	* When selected, object-object distances are to be specified in calibrated units; otherwise, units are specified in pixels.
+	*/
     public static final String CALIBRATED_UNITS = "Calibrated units";
+
+	/**
+	* When selected, objects must be in the same time frame for them to be linked.
+	*/
     public static final String LINK_IN_SAME_FRAME = "Only link objects in same frame";
+
+	/**
+	* For objects closer than the value specified by "Minimum separation" this parameter controls which will be retained.
+	*/
     public static final String FILTER_METHOD = "Method for filtering";
+
+	/**
+	* Objects will be filtered against their value of this measurement.  Objects missing this measurement are not removed; however, they can be removed by using the module "With / without measurement".
+	*/
     public static final String MEASUREMENT = "Measurement to filter on";
 
     public FilterByProximity(Modules modules) {

@@ -26,11 +26,23 @@ import io.github.mianalysis.mia.object.system.Status;
 /**
  * Created by sc13967 on 07/02/2018.
  */
+
+/**
+* Removes the specified object set(s) from the workspace.  Doing this helps keep memory usage down.  Measurements associated with an object set can be retained for further use.
+*/
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class RemoveObjects extends Module {
+
+	/**
+	* 
+	*/
     public static final String REMOVAL_SEPARATOR = "Objects to remove";
     public static final String INPUT_OBJECTS = "Input objects";
     public static final String RETAIN_MEASUREMENTS = "Retain measurements";
+
+	/**
+	* Mark another object set from the workspace for removal.
+	*/
     public static final String REMOVE_ANOTHER_OBJECT_SET = "Remove another object set";
 
     public RemoveObjects(Modules modules) {

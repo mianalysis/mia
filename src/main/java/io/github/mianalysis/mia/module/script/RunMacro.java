@@ -47,22 +47,86 @@ import io.github.mianalysis.mia.object.system.Status;
 /**
  * Created by Stephen on 31/01/2018.
  */
+
+/**
+* Run a specific ImageJ macro once (as opposed to the "Run macro on objects" module, which runs once per object).  This module can optionally open an image into ImageJ for the macro to run on.  It can also intercept the output image and store it in the MIA workspace.  Variables assigned during the macro can be extracted and stored as measurements associated with the input image.<br><br>Note: ImageJ can only run one macro at a time, so by using this module the "Simultaneous jobs" parameter of the "Input control" module must be set to 1.<br><br>Note: When this module runs, all windows currently open in ImageJ will be automatically hidden, then re-opened upon macro completion.  This is to prevent accidental interference while the macro is running.  It also allows the macro to run much faster (batch mode).  To keep images open while the macro is running (for example, during debugging) start the macro with the command "setBatchMode(false)".
+*/
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class RunMacro extends AbstractMacroRunner {
+
+	/**
+	* 
+	*/
     public static final String INPUT_SEPARATOR = "Image input";
+
+	/**
+	* When selected, a specified image from the workspace will be opened prior to running the macro.  This image will be the "active" image the macro runs on.
+	*/
     public static final String PROVIDE_INPUT_IMAGE = "Provide input image";
+
+	/**
+	* If "Provide input image" is selected, this is the image that will be loaded into the macro.  A duplicate of this image is made, so the image stored in the workspace will not be affected by any processing in the macro.  The final active image once the macro has completed can be stored in the workspace using the "Intercept output image" parameter.
+	*/
     public static final String INPUT_IMAGE = "Input image";
+
+	/**
+	* 
+	*/
     public static final String VARIABLE_SEPARATOR = "Variables input";
+
+	/**
+	* 
+	*/
     public static final String MACRO_SEPARATOR = "Macro definition";
+
+	/**
+	* Select the source for the macro code:<br><ul><li>"Macro file" Load the macro from the file specified by the "Macro file" parameter.</li><li>"Macro text" Macro code is written directly into the "Macro text" box.</li></ul>
+	*/
     public static final String MACRO_MODE = "Macro mode";
+
+	/**
+	* Macro code to be executed.  MIA macro commands are enabled using the "run("Enable MIA Extensions");" command which is included by default.  This should always be the first line of a macro if these commands are needed.
+	*/
     public static final String MACRO_TEXT = "Macro text";
+
+	/**
+	* Select a macro file (.ijm) to run once, after all analysis runs have completed.
+	*/
     public static final String MACRO_FILE = "Macro file";
+
+	/**
+	* This button refreshes the macro code as stored within MIA.  Clicking this will create an "undo" checkpoint.
+	*/
     public static final String REFRESH_BUTTON = "Refresh macro";
+
+	/**
+	* 
+	*/
     public static final String IMAGE_OUTPUT_SEPARATOR = "Image output";
+
+	/**
+	* When selected, the image currently active in ImageJ at completion of the macro can be stored into the workspace.  This can either overwrite the input image in the workspace or be stored as a new image (controlled by "Apply to input image").
+	*/
     public static final String INTERCEPT_OUTPUT_IMAGE = "Intercept output image";
+
+	/**
+	* When this and "Intercept output image" are selected, the image active in ImageJ at completion of the macro will update the input image in the MIA workspace.  Otherwise, the actie image will be stored as a new image in the workspace with the name specified by "Output image".
+	*/
     public static final String APPLY_TO_INPUT = "Apply to input image";
+
+	/**
+	* When "Intercept output image" is selected, but not updating the input image, the image active in ImageJ at completion of the macro will be stored in the MIA workspace with this name.  This image will be accessible to other modules using this name.
+	*/
     public static final String OUTPUT_IMAGE = "Output image";
+
+	/**
+	* 
+	*/
     public static final String OUTPUT_SEPARATOR = "Measurement output";
+
+	/**
+	* This allows variables assigned in the macro to be stored as measurements associated with the input image.
+	*/
     public static final String ADD_INTERCEPTED_VARIABLE = "Intercept variable as measurement";
     public static final String VARIABLE = "Variable";
 

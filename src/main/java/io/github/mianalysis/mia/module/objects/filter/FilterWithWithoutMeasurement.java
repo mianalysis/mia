@@ -22,11 +22,31 @@ import io.github.mianalysis.mia.object.refs.collections.MetadataRefs;
 import io.github.mianalysis.mia.object.refs.collections.ObjMeasurementRefs;
 import io.github.mianalysis.mia.object.system.Status;
 
+
+/**
+* Filter an object collection based on the presence of a specific measurement for each object.  Objects which do/don't have the relevant measurement can be removed from the input collection, moved to another collection (and removed from the input collection) or simply counted (but retained in the input collection).  The number of objects failing the filter can be stored as a metadata value.
+*/
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class FilterWithWithoutMeasurement extends AbstractObjectFilter {
+
+	/**
+	* 
+	*/
     public static final String FILTER_SEPARATOR = "Object filtering";
+
+	/**
+	* Controls whether objects are removed when a specific measurement is present or not:<br><br>- "Remove objects without measurement" Objects without the measurement specified by "Measurement to filter on" are removed, counted or moved (depending on the "Filter mode" parameter).<br><br>- "Remove objects with measurement" Objects with the measurement specified by "Measurement to filter on" are removed, counted or moved (depending on the "Filter mode" parameter).<br>
+	*/
     public static final String FILTER_METHOD = "Method for filtering";
+
+	/**
+	* Measurement to filter by.  The presence or absence of this measurement will determine which of the input objects are counted, removed or moved (depending on the "Filter mode" parameter).
+	*/
     public static final String MEASUREMENT = "Measurement to filter on";
+
+	/**
+	* When selected, the number of removed (or moved) objects is counted and stored as a metadata item (name in the format "FILTER // NUM_[inputObjectsName] WITHOUT [measurementName] MEASUREMENT").
+	*/
     public static final String STORE_RESULTS = "Store filter results";
 
     public FilterWithWithoutMeasurement(Modules modules) {

@@ -44,21 +44,73 @@ import io.github.sjcross.sjcommon.object.Point;
 /**
  * Created by sc13967 on 29/06/2017.
  */
+
+/**
+* Measures various spatial metrics for each object in a specified object collection from the workspace.  Measurements are associated with the relevant input object.  When dealing with 3D objects (those with coordinates spanning multiple Z-slices) a 2D projection into the XY plane will be used.  3D metrics are calculated using the "<a href="https://github.com/ijpb/MorphoLibJ">MorphoLibJ</a>" plugin.
+*/
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class MeasureObjectShape extends Module {
+
+	/**
+	* 
+	*/
     public static final String INPUT_SEPARATOR = "Object input";
+
+	/**
+	* Input objects from workspace.  Shape metrics will be calculated for each object and stored as measurements associated with that object.
+	*/
     public static final String INPUT_OBJECTS = "Input objects";
 
+
+	/**
+	* 
+	*/
     public static final String MEASUREMENT_SEPARATOR = "Measurement selection";
+
+	/**
+	* When selected, 3D volume metrics will be calculated for each input object.  Metrics are: volume (px³), volume (calibrated_units³), number of voxels, base area (px²), base area (calibrated_units²), height (n_slices) and height (calibrated_units).
+	*/
     public static final String MEASURE_VOLUME = "Measure volume";
+
+	/**
+	* When selected, 2D area metrics will be calculated for each input object.  For 3D objects, a 2D projection in the XY plane is used for measurements.  This projection includes all XY coordinates present in any Z-slice.  Metrics are: area (px²) and area (calibrated_units²).
+	*/
     public static final String MEASURE_PROJECTED_AREA = "Measure projected area";
+
+	/**
+	* When selected, the diameter of 2D objects will be calculated for each input object.  For 3D objects, a 2D projection in the XY plane is used for measurements.  This projection includes all XY coordinates present in any Z-slice.  Metrics are: diameter (px) and diameter (calibrated_units).
+	*/
     public static final String MEASURE_PROJECTED_DIA = "Measure projected diameter";
+
+	/**
+	* When selected, the perimeter and circularity of 2D objects will be calculated for each input object.  For 3D objects, a 2D projection in the XY plane is used for measurements.  This projection includes all XY coordinates present in any Z-slice.  Metrics are: perimeter (px), perimeter (calibrated_units) and circularity.
+	*/
     public static final String MEASURE_PROJECTED_PERIM = "Measure projected perimeter";
+
+	/**
+	* 
+	*/
     public static final String MEASURE_3D_METRICS = "Measure 3D metrics";
+
+	/**
+	* 
+	*/
     public static final String CONNECTIVITY = "Connectivity";
+
+	/**
+	* 
+	*/
     public static final String SURFACE_AREA_METHOD = "Surface area method";
 
+
+	/**
+	* 
+	*/
     public static final String EXECUTION_SEPARATOR = "Execution controls";
+
+	/**
+	* Process multiple input objects simultaneously.  This can provide a speed improvement when working on a computer with a multi-core CPU.
+	*/
     public static final String ENABLE_MULTITHREADING = "Enable multithreading";
 
     public MeasureObjectShape(Modules modules) {

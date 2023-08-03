@@ -33,20 +33,68 @@ import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Status;
 import sc.fiji.colourDeconvolution.StainMatrix;
 
+
+/**
+* Applies the <a href="https://imagej.net/plugins/colour-deconvolution">Colour Deconvolution</a> plugin to unmix an RGB image (stored in the workspace) into up to three separate channels, which are output as separate images.  The input image can be stored as either an RGB or composite image.  This process is only applicable to images created via subtractive mixing (e.g. histological staining), not to additive methods (e.g. fluorescence).
+*/
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class ColourDeconvolution extends Module {
+
+	/**
+	* 
+	*/
     public static final String INPUT_SEPARATOR = "Image input";
+
+	/**
+	* Image from the workspace to apply unmixing to.  This can be stored as either an RGB or composite image.
+	*/
     public static final String INPUT_IMAGE = "Input image";
 
+
+	/**
+	* 
+	*/
     public static final String OUTPUT_SEPARATOR = "Image output";
+
+	/**
+	* When selected, the first stain in the stain matrix will be output to the workspace with the name specified by "Output image 1 name"
+	*/
     public static final String ENABLE_IM1_OUTPUT = "Output image 1";
+
+	/**
+	* Name to assign to first stain image, if output to the workspace.
+	*/
     public static final String OUTPUT_IMAGE_1 = "Output image 1 name";
+
+	/**
+	* When selected, the second stain in the stain matrix will be output to the workspace with the name specified by "Output image 2 name"
+	*/
     public static final String ENABLE_IM2_OUTPUT = "Output image 2";
+
+	/**
+	* Name to assign to second stain image, if output to the workspace.
+	*/
     public static final String OUTPUT_IMAGE_2 = "Output image 2 name";
+
+	/**
+	* When selected, the third stain in the stain matrix will be output to the workspace with the name specified by "Output image 3 name"
+	*/
     public static final String ENABLE_IM3_OUTPUT = "Output image 3";
+
+	/**
+	* Name to assign to third stain image, if output to the workspace.
+	*/
     public static final String OUTPUT_IMAGE_3 = "Output image 3 name";
 
+
+	/**
+	* 
+	*/
     public static final String DECONVOLUTION_SEPARATOR = "Deconvolution controls";
+
+	/**
+	* Stain models to apply to input image.  If set to "Custom (user values)" the individual RGB components for each channel can be specified.  Model choices are: Alcian blue and H,Azan-Mallory,Brilliant_Blue,CMY,FastRed FastBlue DAB,Feulgen Light Green,Giemsa,H AEC,HandE,HandE 2,HandE DAB,H DAB,H PAS,Masson Trichrome,Methyl Green DAB,RGB,Custom (user values)
+	*/
     public static final String STAIN_MODEL = "Stain model";
     public static final String R1 = "Stain 1 (red)";
     public static final String G1 = "Stain 1 (green)";

@@ -28,14 +28,42 @@ import io.github.mianalysis.mia.object.system.Status;
 /**
  * Created by sc13967 on 31/01/2018.
  */
+
+/**
+* Combines the objects from two collections stored in the workspace.  Either the objects from one collection can be added to the other or they can both be combined into a new collection, which is added to the workspace.<br><br>Note: Any objects added to another collection (either the "other" object collection or to a new collection) are duplicates of the original objects.  These duplicates contain the same spatial and temporal information as well as any relationship connections and measurements.  The original objects are unaffected by this module.
+*/
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class CombineObjectSets extends Module {
+
+	/**
+	* 
+	*/
     public static final String INPUT_SEPARATOR = "Objects input";
+
+	/**
+	* First of two object collections to combine.  Depending on the choice for parameter "Output mode", this collection may be updated to include the objects from the second collection ("Input objects 2").
+	*/
     public static final String INPUT_OBJECTS_1 = "Input objects 1";
+
+	/**
+	* Second of two object collections to combine.  Depending on the choice for parameter "Output mode", this collection may be updated to include the objects from the first collection ("Input objects 2").
+	*/
     public static final String INPUT_OBJECTS_2 = "Input objects 2";
 
+
+	/**
+	* 
+	*/
     public static final String OUTPUT_SEPARATOR = "Objects output";
+
+	/**
+	* Controls where the combined object collections are stored:<br><ul><li>"Add set objects 2 to set 1" Duplicates of all objects in the second collection ("Input objects 2") are made and added to the first collection ("Input objects 1").</li><li>"Add set objects 1 to set 2" Duplicates of all objects in the first collection ("Input objects 1") are made and added to the second collection ("Input objects 1").</li><li>"Create new object set". Duplicates of all objects in the first ("Input objects 1") and second ("Input objects 2") collections are made and added to a new collection with name specified by "Output objects"</li></ul>
+	*/
     public static final String OUTPUT_MODE = "Output mode";
+
+	/**
+	* Name of the combined output collection to be added to the workspace if "Output mode" is set to "Create new object set".
+	*/
     public static final String OUTPUT_OBJECTS = "Output objects";
 
     public interface OutputModes {

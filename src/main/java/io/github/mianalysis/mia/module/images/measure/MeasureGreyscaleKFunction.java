@@ -42,13 +42,37 @@ import io.github.mianalysis.mia.object.system.Status;
 /**
  * Created by sc13967 on 12/05/2017.
  */
+
+/**
+* Measure's Ripley's K-function for greyscale images.  This method is re-written from the publication "Extending Ripley’s K-Function to Quantify Aggregation in 2-D Grayscale Images" by M. Amgad, et al. (doi: 10.1371/journal.pone.0144404).  Results are output to an Excel spreadsheet, with one file per input image.
+*/
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class MeasureGreyscaleKFunction extends AbstractSaver {
+
+	/**
+	* 
+	*/
     public static final String INPUT_SEPARATOR = "Image input";
+
+	/**
+	* 
+	*/
     public static final String INPUT_IMAGE = "Input image";
+
+	/**
+	* 
+	*/
     public static final String USE_MASK = "Use mask";
+
+	/**
+	* 
+	*/
     public static final String MASK_IMAGE = "Mask image";
 
+
+	/**
+	* 
+	*/
     public static final String FUNCTION_SEPARATOR = "K-function controls";
     public static final String MINIMUM_RADIUS_PX = "Minimum radius (px)";
     public static final String MAXIMUM_RADIUS_PX = "Maximum radius (px)";

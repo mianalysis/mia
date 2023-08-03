@@ -31,33 +31,129 @@ import io.github.sjcross.sjcommon.mathfunc.CumStat;
 /**
  * Created by Stephen Cross on 19/03/2019.
  */
+
+/**
+* Perform a mathematical operation on measurements associated with each object of an object collection in the workspace.  The calculation can replace either or both values with fixed values, measurements associated with an image or a statistic of all measurements associated with another object collection (e.g. the mean volume of all objects).  The resulting measurements are associated with the corresponding input objects as new measurements.
+*/
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class ObjectMeasurementCalculator extends Module {
+
+	/**
+	* 
+	*/
     public static final String INPUT_SEPARATOR = "Object input";
+
+	/**
+	* Object collection from the workspace to perform the measurement calculation for.  The specified calculation will be performed once per object in the collection.
+	*/
     public static final String INPUT_OBJECTS = "Input objects";
 
+
+	/**
+	* 
+	*/
     public static final String VALUE_SEPARATOR_1 = "Value 1 selection";
+
+	/**
+	* Controls how the first value in the calculation is defined:<br><ul><li>"Fixed" A single, fixed value defined by "Fixed value 1"is used.</li><li>"Image measurement" A measurement associated with an image (specified by "Image 1") and defined by "Image measurement 1" is used.</li><li>"Measurement" A measurement associated with the input object and defined by "Measurement 1" is used.</li><li>"Object collection statistic" A statistic (specified by "Statistic mode 1") of a measurement (specified by "Reference measurement 1") associated with all objects in an object collection (specified by "Reference objects 1") is used.  For example, the mean object volume.  Note: The object collection used to calculate the statistic doesn't have to be the same as the input object collection.</li></ul>
+	*/
     public static final String VALUE_MODE_1 = "Value mode 1";
+
+	/**
+	* Fixed value to use in the calculation when "Value mode 1" is in "Fixed" mode.
+	*/
     public static final String FIXED_VALUE_1 = "Fixed value 1";
+
+	/**
+	* A measurement associated with this image will be used in the calculated when "Value mode 1" is in "Image measurement" mode.
+	*/
     public static final String IMAGE_1 = "Image 1";
+
+	/**
+	* Measurement associated with an image (specified by "Image 1") to use in the calculation when "Value mode 1" is in "Image measurement" mode.
+	*/
     public static final String IMAGE_MEASUREMENT_1 = "Image measurement 1";
+
+	/**
+	* Measurement, associated with the current object, to use in the calculation when "Value mode 1" is in "Measurement" mode.
+	*/
     public static final String MEASUREMENT_1 = "Measurement 1";
+
+	/**
+	* Object collection for which a statistic of an associated measurement will be used in the calculation when "Value mode 1" is in "Object collection statistic" mode.
+	*/
     public static final String REFERENCE_OBJECTS_1 = "Reference objects 1";
+
+	/**
+	* Measurement associated with the objects in the collection specified by "Reference objects 1".  A statistic of all object measurements will be used in the calculation when "Value mode 1" is in "Object collection statistic" mode.
+	*/
     public static final String REFERENCE_MEASUREMENT_1 = "Reference measurement 1";
+
+	/**
+	* Statistic to apply to all measurements (specified by "Reference measurement 1") of an object collection (specified by "Reference objects 1").  The resulting value will be used in the calculation when "Value mode 1" is in "Object collection statistic" mode.  Choices are: First value, Last value, Minimum, Mean, Maximum, Range, Standard deviation, Sum.
+	*/
     public static final String STATISTIC_MODE_1 = "Statistic mode 1";
 
+
+	/**
+	* 
+	*/
     public static final String VALUE_SEPARATOR_2 = "Value 2 selection";
+
+	/**
+	* Controls how the second value in the calculation is defined:<br><ul><li>"Fixed" A single, fixed value defined by "Fixed value 2"is used.</li><li>"Image measurement" A measurement associated with an image (specified by "Image 2") and defined by "Image measurement 2" is used.</li><li>"Measurement" A measurement associated with the input object and defined by "Measurement 2" is used.</li><li>"Object collection statistic" A statistic (specified by "Statistic mode 2") of a measurement (specified by "Reference measurement 2") associated with all objects in an object collection (specified by "Reference objects 2") is used.  For example, the mean object volume.  Note: The object collection used to calculate the statistic doesn't have to be the same as the input object collection.</li></ul>
+	*/
     public static final String VALUE_MODE_2 = "Value mode 2";
+
+	/**
+	* Fixed value to use in the calculation when "Value mode 2" is in "Fixed" mode.
+	*/
     public static final String FIXED_VALUE_2 = "Fixed value 2";
+
+	/**
+	* A measurement associated with this image will be used in the calculated when "Value mode 2" is in "Image measurement" mode.
+	*/
     public static final String IMAGE_2 = "Image 2";
+
+	/**
+	* Measurement associated with an image (specified by "Image 2") to use in the calculation when "Value mode 2" is in "Image measurement" mode.
+	*/
     public static final String IMAGE_MEASUREMENT_2 = "Image measurement 2";
+
+	/**
+	* Measurement, associated with the current object, to use in the calculation when "Value mode 2" is in "Measurement" mode.
+	*/
     public static final String MEASUREMENT_2 = "Measurement 2";
+
+	/**
+	* Object collection for which a statistic of an associated measurement will be used in the calculation when "Value mode 2" is in "Object collection statistic" mode.
+	*/
     public static final String REFERENCE_OBJECTS_2 = "Reference objects 2";
+
+	/**
+	* Measurement associated with the objects in the collection specified by "Reference objects 2".  A statistic of all object measurements will be used in the calculation when "Value mode 2" is in "Object collection statistic" mode.
+	*/
     public static final String REFERENCE_MEASUREMENT_2 = "Reference measurement 2";
+
+	/**
+	* Statistic to apply to all measurements (specified by "Reference measurement 2") of an object collection (specified by "Reference objects 2").  The resulting value will be used in the calculation when "Value mode 2" is in "Object collection statistic" mode.  Choices are: First value, Last value, Minimum, Mean, Maximum, Range, Standard deviation, Sum.
+	*/
     public static final String STATISTIC_MODE_2 = "Statistic mode 2";
 
+
+	/**
+	* 
+	*/
     public static final String CALCULATION_SEPARATOR = "Measurement calculation";
+
+	/**
+	* The value resulting from the calculation will be stored as a new measurement with this name.  This output measurement will be associated with the corresponding object from the input object collection.
+	*/
     public static final String OUTPUT_MEASUREMENT = "Output measurement";
+
+	/**
+	* Calculation to perform.  Choices are: Add measurement 1 and measurement 2, Divide measurement 1 by measurement 2, Multiply measurement 1 and measurement 2, Subtract measurement 2 from measurement 1.
+	*/
     public static final String CALCULATION_MODE = "Calculation mode";
 
     public interface ValueModes {

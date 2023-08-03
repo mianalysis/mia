@@ -38,21 +38,69 @@ import io.github.mianalysis.mia.object.system.Status;
 import io.github.mianalysis.mia.object.parameters.Parameters;
 import io.github.mianalysis.mia.process.ColourFactory;
 
+
+/**
+* Adds an overlay to the specified input image showing the extent of each specified input object as a filled shape.  The opacity of the filled shape can be varied to see the image underneath.
+*/
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class AddObjectFill extends AbstractOverlay {
+
+	/**
+	* 
+	*/
     public static final String INPUT_SEPARATOR = "Image and object input";
+
+	/**
+	* Image onto which overlay will be rendered.  Input image will only be updated if "Apply to input image" is enabled, otherwise the image containing the overlay will be stored as a new image with name specified by "Output image".
+	*/
     public static final String INPUT_IMAGE = "Input image";
+
+	/**
+	* Objects to represent as overlays.
+	*/
     public static final String INPUT_OBJECTS = "Input objects";
 
+
+	/**
+	* 
+	*/
     public static final String OUTPUT_SEPARATOR = "Image output";
+
+	/**
+	* Determines if the modifications made to the input image (added overlay elements) will be applied to that image or directed to a new image.  When selected, the input image will be updated.
+	*/
     public static final String APPLY_TO_INPUT = "Apply to input image";
+
+	/**
+	* If the modifications (overlay) aren't being applied directly to the input image, this control will determine if a separate image containing the overlay should be saved to the workspace.
+	*/
     public static final String ADD_OUTPUT_TO_WORKSPACE = "Add output image to workspace";
+
+	/**
+	* The name of the new image to be saved to the workspace (if not applying the changes directly to the input image).
+	*/
     public static final String OUTPUT_IMAGE = "Output image";
 
+
+	/**
+	* 
+	*/
     public static final String RENDERING_SEPARATOR = "Overlay rendering";
+
+	/**
+	* Display the overlay elements in all frames (time axis) of the input image stack, irrespective of whether the object was present in that frame.
+	*/
     public static final String RENDER_IN_ALL_FRAMES = "Render in all frames";
 
+
+	/**
+	* 
+	*/
     public static final String EXECUTION_SEPARATOR = "Execution controls";
+
+	/**
+	* Process multiple overlay elements simultaneously.  This can provide a speed improvement when working on a computer with a multi-core CPU.
+	*/
     public static final String ENABLE_MULTITHREADING = "Enable multithreading";
 
     public AddObjectFill(Modules modules) {

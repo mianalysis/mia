@@ -52,18 +52,62 @@ import loci.common.services.DependencyException;
 import loci.common.services.ServiceException;
 import loci.formats.FormatException;
 
+
+/**
+* 
+*/
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class LoadObjectsFromROIs extends Module {
+
+	/**
+	* 
+	*/
     public static final String LOADER_SEPARATOR = "Object loading";
+
+	/**
+	* 
+	*/
     public static final String OUTPUT_OBJECTS = "Output objects";
+
+	/**
+	* 
+	*/
     public static final String ASSIGN_TRACKS = "Assign tracks";
+
+	/**
+	* 
+	*/
     public static final String TRACK_OBJECTS = "Output track objects";
+
+	/**
+	* 
+	*/
     public static final String REFERENCE_IMAGE = "Reference image";
 
+
+	/**
+	* 
+	*/
     public static final String PATH_SEPARATOR = "File path controls";
+
+	/**
+	* 
+	*/
     public static final String FILE_PATH_MODE = "File path mode";
+
+	/**
+	* 
+	*/
     public static final String SPECIFIC_FILE_PATH = "Specific file path";
+
+	/**
+	* 
+	*/
     public static final String GENERIC_FILE_PATH = "Generic file path";
+
+	/**
+	* 
+	*/
     public static final String AVAILABLE_METADATA_FIELDS = "Available metadata fields";
 
     public interface FilePathModes {

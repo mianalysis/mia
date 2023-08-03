@@ -56,15 +56,43 @@ import io.github.sjcross.sjcommon.object.volume.VolumeType;
 /**
  * Created by Stephen on 13/05/2021.
  */
+
+/**
+* Display TrackMate's TrackScheme track editor to allow tracks to be re-linked between detected objects.  TrackScheme also allows individual timepoint objects to be deleted.  TrackScheme represents the connectivity within a track (i.e. between instances in different timepoints) as a graph, which can be adjusted by deleting and drawing lines between each timepoint instance.  Interaction with the TrackScheme window can be directly visualised on the accompanying overlay image.<br><br>Full details on using TrackScheme can be found at <a href="https://imagej.net/plugins/trackmate/trackscheme">https://imagej.net/plugins/trackmate/trackscheme</a>.<br><br>Note: This module will update the existing spot (individual timepoint instances) and track objects.  As such, any track-related measurements will still be available, but may no longer be valid.  They can be re-calculated by re-running the relevant measurement modules.
+*/
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class TrackEditor extends Module {
+
+	/**
+	* 
+	*/
     public static final String INPUT_SEPARATOR = "Object input";
+
+	/**
+	* Track objects that will be edited.  This same object collection will be updated by this module; however, all track objects will effectively be new, so any previous measurements and relationships will be lost.
+	*/
     public static final String INPUT_TRACK_OBJECTS = "Input track objects";
+
+	/**
+	* Spot objects for the selected tracks that will be edited.  These "spot" objects are the individual timepoint instances of the tracks.  This same object collection will be updated by this module and all spot objects (unless deleted during editing) will be retained; however, as their associated tracks may be different, any track-related measurements may become invalid.  Track measurements should be re-calculated using the relevant modules.
+	*/
     public static final String INPUT_SPOT_OBJECTS = "Input spot objects";
 
+
+	/**
+	* 
+	*/
     public static final String DISPLAY_SEPARATOR = "Display controls";
+
+	/**
+	* In addition to the graph-based TrackScheme editor, tracks and spots will be displayed as an overlay on this image.
+	*/
     public static final String DISPLAY_IMAGE = "Display image";
     public static final String SHOW_PROJECTED = "Show projected (3D only)";
+
+	/**
+	* 
+	*/
     public static final String MEASUREMENT_WARNING = "Measurement warning";
 
     public TrackEditor(Modules modules) {

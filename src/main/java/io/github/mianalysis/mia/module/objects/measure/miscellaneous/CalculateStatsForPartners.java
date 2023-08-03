@@ -27,19 +27,67 @@ import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Status;
 import io.github.sjcross.sjcommon.mathfunc.CumStat;
 
+
+/**
+* Calculates statistics for a measurement associated with all partner objects of an input object.  The calculated statistics are stored as new measurements, associated with the relevant input object.  For example, calculating the summed volume of all partner objects (from a specified collection) of each input object.
+*/
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class CalculateStatsForPartners extends Module {
+
+	/**
+	* 
+	*/
     public static final String INPUT_SEPARATOR = "Objects input";
+
+	/**
+	* Input object collection from the workspace for which statistics of partner object measurements will be calculated.  This object collection is a partner to those selected by the "Partner objects" parameter.  Statistics for one measurement associated with all partners of each input object will be calculated and added to this object as a new measurement.
+	*/
     public static final String INPUT_OBJECTS = "Input objects";
+
+	/**
+	* Input object collection from the workspace, where these objects are partners of the collection selected by the "Input objects" parameter.)
+	*/
     public static final String PARTNER_OBJECTS = "Partner objects";
 
+
+	/**
+	* 
+	*/
     public static final String STATISTIC_SEPARATOR = "Statistics";
+
+	/**
+	* Measurement associated with the partner objects for which statistics will be calculated.  Statistics will be calculated for all partners of an input object.
+	*/
     public static final String MEASUREMENT = "Measurement";
+
+	/**
+	* When selected, the mean value of the measurements will be calculated and added to the relevant input object.
+	*/
     public static final String CALCULATE_MEAN = "Calculate mean";
+
+	/**
+	* When selected, the median value of the measurements will be calculated and added to the relevant input object.
+	*/
     public static final String CALCULATE_MEDIAN = "Calculate median";
+
+	/**
+	* When selected, the standard deviation of the measurements will be calculated and added to the relevant input object.
+	*/
     public static final String CALCULATE_STD = "Calculate standard deviation";
+
+	/**
+	* When selected, the minimum value of the measurements will be calculated and added to the relevant input object.
+	*/
     public static final String CALCULATE_MIN = "Calculate minimum";
+
+	/**
+	* When selected, the maximum value of the measurements will be calculated and added to the relevant input object.
+	*/
     public static final String CALCULATE_MAX = "Calculate maximum";
+
+	/**
+	* When selected, the sum of the measurements will be calculated and added to the relevant input object.
+	*/
     public static final String CALCULATE_SUM = "Calculate sum";
 
     public CalculateStatsForPartners(Modules modules) {

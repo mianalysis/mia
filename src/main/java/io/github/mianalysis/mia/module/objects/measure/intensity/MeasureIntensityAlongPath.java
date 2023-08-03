@@ -58,17 +58,49 @@ import io.github.sjcross.sjcommon.object.volume.VolumeType;
 /**
  * Created by sc13967 on 22/06/2017.
  */
+
+/**
+* Measures the intensity profile along the pixel-wide backbone of an object and outputs this profile to .xlsx file.  Input objects are skeletonised to single pixel-wide representations prior to measurement; however, pre-skeletonised objects can also be processed.<br><br>Output results are stored in a multi-sheet .xlsx file, where each sheet includes the profile for a specific input image.  Each row of a sheet contains the profile for a single object.  Profiles are linearly-interpolated such that each measured position along a profile is 1px from the previous.<br><br>Note: Objects must either form a single line (i.e. not contain multiple branches) or reduce to a single line during skeletonisation.  No profile will be recorded for any objects which fail this requirement.
+*/
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class MeasureIntensityAlongPath extends AbstractSaver {
+
+	/**
+	* 
+	*/
     public static final String INPUT_SEPARATOR = "Object input";
+
+	/**
+	* Objects for which intensity profiles will be generated.
+	*/
     public static final String INPUT_OBJECTS = "Input objects";
 
+
+	/**
+	* 
+	*/
     public static final String IMAGE_SEPARATOR = "Image input";
     public static final String INPUT_IMAGE = "Input image";
+
+	/**
+	* Include another image from the workspace to be measured.  Each separate image will be measured at the same spatial points and be saved to a separate sheet of the .xlsx file.
+	*/
     public static final String MEASURE_ANOTHER_IMAGE = "Measure another image";
 
+
+	/**
+	* 
+	*/
     public static final String OUTPUT_SEPARATOR = "Data output";
+
+	/**
+	* Include columns recording the XYZ object centroid in pixel (or slice) units.
+	*/
     public static final String INCLUDE_CENTROIDS = "Include centroids";
+
+	/**
+	* Include a column recording the timepoint that the objects were present in.
+	*/
     public static final String INCLUDE_TIMEPOINTS = "Include timepoints";
 
     public MeasureIntensityAlongPath(Modules modules) {

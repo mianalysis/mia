@@ -39,16 +39,52 @@ import mpicbg.ij.InverseTransformMapping;
 import mpicbg.models.AbstractAffineModel2D;
 import mpicbg.models.AffineModel2D;
 
+
+/**
+* 
+*/
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class AffineFixedTransform extends Module {
+
+	/**
+	* 
+	*/
     public static final String INPUT_SEPARATOR = "Image input/output";
+
+	/**
+	* 
+	*/
     public static final String INPUT_IMAGE = "Input image";
+
+	/**
+	* 
+	*/
     public static final String APPLY_TO_INPUT = "Apply to input image";
+
+	/**
+	* 
+	*/
     public static final String OUTPUT_IMAGE = "Output image";
 
+
+	/**
+	* 
+	*/
     public static final String REGISTRATION_SEPARATOR = "Registration controls";
+
+	/**
+	* 
+	*/
     public static final String TRANSFORMATION = "Transformation";
+
+	/**
+	* 
+	*/
     public static final String FILL_MODE = "Fill mode";
+
+	/**
+	* 
+	*/
     public static final String ENABLE_MULTITHREADING = "Enable multithreading";
 
     public AffineFixedTransform(Modules modules) {

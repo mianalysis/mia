@@ -199,7 +199,7 @@ public abstract class Image<T extends RealType<T> & NativeType<T>> {
     /**
      * Displays measurement values from a specific Module
      *
-     * @param module
+     * @param module Module for which to display measurements
      */
     public void showMeasurements(Module module) {
         // Getting MeasurementReferences

@@ -42,33 +42,129 @@ import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Status;
 import io.github.mianalysis.mia.process.ColourFactory;
 
+
+/**
+* Adds a series of line overlays, representing various relationship scenarios.  Lines extend between centroids of two objects.  Depicted relationships can be between mutual child of the same parent object, between partner objects of between children and parents.
+*/
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class AddRelationshipConnection extends AbstractOverlay {
+
+	/**
+	* 
+	*/
     public static final String INPUT_SEPARATOR = "Image and object input";
+
+	/**
+	* Image onto which overlay will be rendered.  Input image will only be updated if "Apply to input image" is enabled, otherwise the image containing the overlay will be stored as a new image with name specified by "Output image".
+	*/
     public static final String INPUT_IMAGE = "Input image";
+
+	/**
+	* Controls what object-object relationships will be represented by the lines.  In all cases, lines are drawn between object centroids, although the line start and end points can be offset along the line when the "Offset by measurement" setting is selected:<br><br>- "Between children" Draw lines between all objects in two child object sets of a common parent object ("Parent objects").  This will result in all permutations of lines between one child object set and the other  The child object sets are selected with the "Child objects 1" and "Child objects 2" parameters.<br><br>- "Between partners" Draw lines between all partner objects.  The two partner object sets are selected using the "Partner objects 1" and "Partner objects 2" parameters.<br><br>- "Parent to child" Draw lines between parent objects and all their children.  Parent objects are selected using the "Parent objects" parameter and children using the "Child objects 1" parameter..<br>
+	*/
     public static final String LINE_MODE = "Line mode";
+
+	/**
+	* Used to select the parent object of the two child object sets when in "Between children" mode, or to select the parent objects in "Parent to child" mode.
+	*/
     public static final String PARENT_OBJECTS = "Parent objects";
+
+	/**
+	* Selects the first child objects set when in "Between children" mode, or the (only) child set when in "Parent to child" mode.
+	*/
     public static final String CHILD_OBJECTS_1 = "Child objects 1";
+
+	/**
+	* Selects the second child objects set when in "Between children" mode.
+	*/
     public static final String CHILD_OBJECTS_2 = "Child objects 2";
+
+	/**
+	* Selects the first partner objects set when in "Between partners" mode.
+	*/
     public static final String PARTNER_OBJECTS_1 = "Partner objects 1";
+
+	/**
+	* Selects the second partner objects set when in "Between partners" mode.
+	*/
     public static final String PARTNER_OBJECTS_2 = "Partner objects 2";
 
+
+	/**
+	* 
+	*/
     public static final String OUTPUT_SEPARATOR = "Image output";
+
+	/**
+	* Determines if the modifications made to the input image (added overlay elements) will be applied to that image or directed to a new image.  When selected, the input image will be updated.
+	*/
     public static final String APPLY_TO_INPUT = "Apply to input image";
+
+	/**
+	* If the modifications (overlay) aren't being applied directly to the input image, this control will determine if a separate image containing the overlay should be saved to the workspace.
+	*/
     public static final String ADD_OUTPUT_TO_WORKSPACE = "Add output image to workspace";
+
+	/**
+	* The name of the new image to be saved to the workspace (if not applying the changes directly to the input image).
+	*/
     public static final String OUTPUT_IMAGE = "Output image";
 
+
+	/**
+	* 
+	*/
     public static final String RENDERING_SEPARATOR = "Overlay rendering";
+
+	/**
+	* Controls how the line is displayed between the centroids of the relevant two objects:<br><br>- "Full line" Draws a complete line between the two centroids (unless "Offset by measurement" is selected, in which case the line won't necessarily begin at the centroid).<br><br>- "Half line" Draws a line between the first object (either "Child objects 1", "Partner objects 1" or "Parent objects" when in "Between children", "Between partners" or "Parent to child" modes, respectively) and the mid-point between the two relevant objects.  Any offsets applied when "Offset by measurement" is selected still apply.<br><br>- "Midpoint dot" Draws a dot half way between the two relevant objects (no line is drawn).<br>
+	*/
     public static final String RENDER_MODE = "Render mode";
+
+	/**
+	* Width of the rendered lines.  Specified in pixel units.
+	*/
     public static final String LINE_WIDTH = "Line width";
+
+	/**
+	* Size of each overlay marker.  Choices are: Tiny, Small, Medium, Large, Extra large.
+	*/
     public static final String POINT_SIZE = "Point size";
+
+	/**
+	* Type of overlay marker used to represent each object.  Choices are: Circle, Cross, Dot, Hybrid.
+	*/
     public static final String POINT_TYPE = "Point type";
+
+	/**
+	* When selected, the lines at either end can start a fraction of the way between the two relevant object centroids.  Separate offsets are applied at each end, with measurements providing the offset values selected using the "Measurement name 1" and "Measurement name 2" parameters.  For example.  This is useful when it is preferable to not have the line extend all the way between centroids.
+	*/
     public static final String OFFSET_BY_MEASUREMENT = "Offset by measurement";
+
+	/**
+	* Object measurement specifying offset to be applied to the line start point.  Offsets are fractional values, specifying the proportion of the line to ignore.  For example, dual offsets of 0.25 will result in a line half the usual length.
+	*/
     public static final String MEASUREMENT_NAME_1 = "Measurement name 1";
+
+	/**
+	* Object measurement specifying offset to be applied to the line end point.  Offsets are fractional values, specifying the proportion of the line to ignore.  For example, dual offsets of 0.25 will result in a line half the usual length.
+	*/
     public static final String MEASUREMENT_NAME_2 = "Measurement name 2";
+
+	/**
+	* Display the overlay elements in all frames (time axis) of the input image stack, irrespective of whether the object was present in that frame.
+	*/
     public static final String RENDER_IN_ALL_FRAMES = "Render in all frames";
 
+
+	/**
+	* 
+	*/
     public static final String EXECUTION_SEPARATOR = "Execution controls";
+
+	/**
+	* Process multiple overlay elements simultaneously.  This can provide a speed improvement when working on a computer with a multi-core CPU.
+	*/
     public static final String ENABLE_MULTITHREADING = "Enable multithreading";
 
     public interface LineModes {

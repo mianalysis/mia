@@ -25,9 +25,21 @@ import io.github.mianalysis.mia.object.system.Status;
 /**
  * Created by sc13967 on 05/05/2017.
  */
+
+/**
+* Store object timepoint as a measurement.  Timepoint counting starts at 0 (e.g. the third frame will have a timepoint of 2).
+*/
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class ObjectTimepoint extends Module {
+
+	/**
+	* 
+	*/
     public static final String INPUT_SEPARATOR = "Object and image input";
+
+	/**
+	* Objects from the workspace.  Each object in this collection will have the index of timepoint it's present in stored as a measurement.  Note: Timepoint indexing starts at 0.
+	*/
     public static final String INPUT_OBJECTS = "Input objects";
 
     public ObjectTimepoint(Modules modules) {

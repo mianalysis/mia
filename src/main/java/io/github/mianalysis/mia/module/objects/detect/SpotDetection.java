@@ -62,19 +62,67 @@ import io.github.sjcross.sjcommon.process.IntensityMinMax;
 /**
  * Created by sc13967 on 15/05/2017.
  */
+
+/**
+* Detects spot-like features in 2D and 3D using TrackMate's LogDetector.  By default, detected spots are stored as individual, single pixel, objects centred on the detected feature.  Optionally, spots can be given area or volume based on the estimated size of the spot.  Adds measurements to each output spot for estimated radius and quality.  If sub-pixel localisation is specified, the sub-pixel centroid location in X,Y and Z is also stored as a measurement.<br><br>For more information, see the <a href="https://imagej.net/TrackMate">TrackMate</a> documentation.
+*/
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class SpotDetection extends Module {
+
+	/**
+	* 
+	*/
     public static final String INPUT_SEPARATOR = "Image input, object output";
+
+	/**
+	* Image in which to detect spots.
+	*/
     public static final String INPUT_IMAGE = "Input image";
+
+	/**
+	* Spot objects that will be added to the workspace.
+	*/
     public static final String OUTPUT_SPOT_OBJECTS = "Output spot objects";
 
+
+	/**
+	* 
+	*/
     public static final String SPOT_SEPARATOR = "Spot detection";
+
+	/**
+	* 
+	*/
     public static final String DETECTION_MODE = "Detection mode";
+
+	/**
+	* Enable if spatial parameters (e.g. "Radius") are being specified in calibrated units.  If disabled, parameters are assumed to be specified in pixel units.
+	*/
     public static final String CALIBRATED_UNITS = "Calibrated units";
+
+	/**
+	* Enable TrackMate's "Subpixel localisation" functionality.  When enabled, subpixel centroid coordinates will be stored as measurements associated with each detected object.
+	*/
     public static final String DO_SUBPIXEL_LOCALIZATION = "Do sub-pixel localisation";
+
+	/**
+	* Enable TrackMate's "Median filtering" functionality.
+	*/
     public static final String DO_MEDIAN_FILTERING = "Median filtering";
+
+	/**
+	* Expected radius of spots in the input image.  Specified in pixel units, unless "Calibrated units" is selected.
+	*/
     public static final String RADIUS = "Radius";
+
+	/**
+	* Threshold for spot detection.  Threshold is applied to filtered image (Laplacian of Gaussian), so will be affected by the specified "Radius" value.  Increase this value to make detection more selective (i.e. detect fewer spots).
+	*/
     public static final String THRESHOLD = "Threshold";
+
+	/**
+	* When enabled, output spot objects will have explicit size (rather than a single, centroid coordinate) determined by the TrackMate-calculated estimated diameter.
+	*/
     public static final String ESTIMATE_SIZE = "Estimate spot size";
 
     public interface DetectionModes {

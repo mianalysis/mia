@@ -42,31 +42,115 @@ import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Status;
 import io.github.mianalysis.mia.process.ColourFactory;
 
+
+/**
+* Adds an overlay to the specified input image with each object represented by an arrow.  The size, colour and orientation of each arrow can be fixed or based on a measurement value.
+*/
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class AddArrows extends AbstractOverlay {
+
+	/**
+	* 
+	*/
     public static final String INPUT_SEPARATOR = "Image and object input";
+
+	/**
+	* Image onto which overlay will be rendered.  Input image will only be updated if "Apply to input image" is enabled, otherwise the image containing the overlay will be stored as a new image with name specified by "Output image".
+	*/
     public static final String INPUT_IMAGE = "Input image";
+
+	/**
+	* Objects to represent as overlays.
+	*/
     public static final String INPUT_OBJECTS = "Input objects";
 
+
+	/**
+	* 
+	*/
     public static final String OUTPUT_SEPARATOR = "Image output";
+
+	/**
+	* Determines if the modifications made to the input image (added overlay elements) will be applied to that image or directed to a new image.  When selected, the input image will be updated.
+	*/
     public static final String APPLY_TO_INPUT = "Apply to input image";
+
+	/**
+	* If the modifications (overlay) aren't being applied directly to the input image, this control will determine if a separate image containing the overlay should be saved to the workspace.
+	*/
     public static final String ADD_OUTPUT_TO_WORKSPACE = "Add output image to workspace";
+
+	/**
+	* The name of the new image to be saved to the workspace (if not applying the changes directly to the input image).
+	*/
     public static final String OUTPUT_IMAGE = "Output image";
 
+
+	/**
+	* 
+	*/
     public static final String RENDERING_SEPARATOR = "Overlay rendering";
+
+	/**
+	* Source for arrow orientation values:<br><ul><li>"Measurement" Orientation of arrows will be based on the measurement specified by the parameter "Measurement for orientation" for each object.</li><li>"Parent measurement" Orientation of arrows will be based on the measurement specified by the parameter "Measurement for orientation" taken from a parent of each object.  The parent object providing this measurement is specified by the parameter "Parent object for orientation".</li></ul>
+	*/
     public static final String ORIENTATION_MODE = "Arrow orientation mode";
+
+	/**
+	* Parent objects providing the measurements on which the orientation of the arrows are based.
+	*/
     public static final String PARENT_OBJECT_FOR_ORIENTATION = "Parent object for orientation";
+
+	/**
+	* Measurement that defines the orientation of each arrow.  Measurements should be supplied in degree units.
+	*/
     public static final String MEASUREMENT_FOR_ORIENTATION = "Measurement for orientation";
+
+	/**
+	* Method for determining the length of arrows:<br><ul><li>"Fixed value" All arrows are the same length.  Length is controlled by the "Length value (px)" parameter.</li><li>"Measurement" Arrow length is proportional to the measurement value specified by the "Measurement for length" parameter.  Absolute arrow lengths are adjusted by the "Arrow length scale" multiplication factor.</li><li>"Parent measurement" Arrow length is proportional to a parent object measurement value.  The parent is specified by the "Parent object for length" parameter and the measurement value by "Measurement for length".  Absolute arrow lengths are adjusted by the "Arrow length scale" multiplication factor.</li></ul>
+	*/
     public static final String LENGTH_MODE = "Arrow length mode";
     public static final String LENGTH_VALUE = "Length value (px)";
+
+	/**
+	* Parent objects from which the arrow length measurements will be taken.
+	*/
     public static final String PARENT_OBJECT_FOR_LENGTH = "Parent object for length";
+
+	/**
+	* Measurement value that will be used to control the arrow length.  This value is adjusted using the "Arrow length scale" muliplication factor.
+	*/
     public static final String MEASUREMENT_FOR_LENGTH = "Measurement for length";
+
+	/**
+	* Measurement values will be multiplied by this value prior to being used to control the arrow length.  Each arrow will be <i>MeasurementValue*LengthScale</i> pixels long.
+	*/
     public static final String LENGTH_SCALE = "Arrow length scale";
+
+	/**
+	* Size of the arrow head.  This should be an integer between 0 and 30, where 0 is the smallest possible head and 30 is the largest.
+	*/
     public static final String HEAD_SIZE = "Head size";
+
+	/**
+	* Width of the rendered lines.  Specified in pixel units.
+	*/
     public static final String LINE_WIDTH = "Line width";
+
+	/**
+	* Display overlay elements in all frames, irrespective of whether each object is present in that frame.
+	*/
     public static final String RENDER_IN_ALL_FRAMES = "Render in all frames";
 
+
+	/**
+	* 
+	*/
     public static final String EXECUTION_SEPARATOR = "Execution controls";
+
+	/**
+	* Process multiple overlay elements simultaneously.  This can provide a speed improvement when working on a computer with a multi-core CPU.
+	*/
     public static final String ENABLE_MULTITHREADING = "Enable multithreading";
 
     public AddArrows(Modules modules) {

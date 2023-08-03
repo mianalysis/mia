@@ -39,18 +39,66 @@ import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
 import net.imglib2.view.Views;
 
+
+/**
+* Crop an image in X and Y using pre-defined limits or limits based on the extents of objects in a collection.  Any pixels outside the specified limits are discarded.<br><br>Note: The x-min, y-min, width and height limits used here are in the same order and format as those output by ImageJ's default rectangle region of interest tool (i.e. displayed in the status bar of the ImageJ control panel).
+*/
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class CropImage<T extends RealType<T> & NativeType<T>> extends Module {
+
+	/**
+	* 
+	*/
     public static final String INPUT_SEPARATOR = "Image input/output";
+
+	/**
+	* Image from workspace to apply crop process to.
+	*/
     public static final String INPUT_IMAGE = "Input image";
+
+	/**
+	* Select if the crop should be applied directly to the input image, or if it should be applied to a duplicate, then stored as a different image in the workspace.
+	*/
     public static final String APPLY_TO_INPUT = "Apply to input image";
+
+	/**
+	* Name of the output image created during the cropping process if storing the cropped image as a new image in the workspace ("Apply to input image" parameter).
+	*/
     public static final String OUTPUT_IMAGE = "Output image";
+
+	/**
+	* 
+	*/
     public static final String CROP_SEPARATOR = "Crop selection";
+
+	/**
+	* Controls how the limits for the cropped region are specified:<br><ul><li>"Fixed values" The input image will be cropped to the region specified by the fixed values, "Left coordinate", "Top coordinate", "Width" and "Height".</li><li>"Object collection limits" The input image will be cropped to the region corresponding to the limits of the object collection specified by "Input objects"</li></ul>
+	*/
     public static final String LIMITS_MODE = "Limits mode";
+
+	/**
+	* Left crop coordinate.  All pixels with x-coordinates lower than this will be removed.  Specified in pixel units with indexing starting at 0.
+	*/
     public static final String LEFT = "Left coordinate";
+
+	/**
+	* Top crop coordinate.  All pixels with y-coordinates lower than this will be removed.  Specified in pixel units with indexing starting at 0.
+	*/
     public static final String TOP = "Top coordinate";
+
+	/**
+	* Width (number of columns) of the output cropped region.  Specified in pixel units.
+	*/
     public static final String WIDTH = "Width";
+
+	/**
+	* Height (number of rows) of the output cropped region.  Specified in pixel units.
+	*/
     public static final String HEIGHT = "Height";
+
+	/**
+	* When "Limits mode" is set to "Object collection limits", these are the objects that will be used to define the cropped region.
+	*/
     public static final String INPUT_OBJECTS = "Input objects";
 
     public interface LimitsModes {

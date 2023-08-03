@@ -24,9 +24,21 @@ import io.github.mianalysis.mia.object.refs.collections.ParentChildRefs;
 import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Status;
 
+
+/**
+* Measure dimensions of an image and store the values as measurements associated with that image.
+*/
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class MeasureImageDimensions extends Module {
+
+	/**
+	* 
+	*/
     public static final String INPUT_SEPARATOR = "Image input";
+
+	/**
+	* Image to measure dimensions for.
+	*/
     public final static String INPUT_IMAGE = "Input image";
 
     public MeasureImageDimensions(Modules modules) {

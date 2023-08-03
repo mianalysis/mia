@@ -36,19 +36,63 @@ import io.github.mianalysis.mia.object.refs.collections.PartnerRefs;
 import io.github.mianalysis.mia.object.system.Status;
 import io.github.sjcross.sjcommon.object.Point;
 
+
+/**
+* Draws an overlay line between two specified points.<br><br>Note: This currently only works in 2D.
+*/
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class AddLine extends AbstractOverlay {
+
+	/**
+	* 
+	*/
     public static final String INPUT_SEPARATOR = "Image and object input";
+
+	/**
+	* Image onto which overlay will be rendered.  Input image will only be updated if "Apply to input image" is enabled, otherwise the image containing the overlay will be stored as a new image with name specified by "Output image".
+	*/
     public static final String INPUT_IMAGE = "Input image";
+
+	/**
+	* Objects to represent as overlays.
+	*/
     public static final String INPUT_OBJECTS = "Input objects";
 
+
+	/**
+	* 
+	*/
     public static final String OUTPUT_SEPARATOR = "Image output";
+
+	/**
+	* Determines if the modifications made to the input image (added overlay elements) will be applied to that image or directed to a new image.  When selected, the input image will be updated.
+	*/
     public static final String APPLY_TO_INPUT = "Apply to input image";
+
+	/**
+	* If the modifications (overlay) aren't being applied directly to the input image, this control will determine if a separate image containing the overlay should be saved to the workspace.
+	*/
     public static final String ADD_OUTPUT_TO_WORKSPACE = "Add output image to workspace";
+
+	/**
+	* The name of the new image to be saved to the workspace (if not applying the changes directly to the input image).
+	*/
     public static final String OUTPUT_IMAGE = "Output image";
 
+
+	/**
+	* 
+	*/
     public static final String REFERENCE_SEPARATOR = "Reference selection";
+
+	/**
+	* Controls for the location of the first end of the line to be drawn:<br><br>- "Object centroid" This end of the line is coincident with the centre of the input object.<br><br>- "Image measurement" This end of the line is coincident with a pair of XY measurements taken from an image.  The image to be used is selected with the "Reference image 1" parameter and the measurements by the "X-pos. image meas. 1 (px)" and "Y-pos. image meas. 1 (px)" parameters.<br><br>- "Object measurement" This end of the line is coincident with a pair of XY measurements taken from the current object.  The measurements are selected with the "X-pos. object meas. 1 (px)" and "Y-pos. object meas. 1 (px)" parameters.<br>
+	*/
     public static final String REFERENCE_MODE_1 = "Reference mode 1";
+
+	/**
+	* Image providing the XY coordinate measurements to be used as the location of the first end of the line.
+	*/
     public static final String REFERENCE_IMAGE_1 = "Reference image 1";
     public static final String X_POSITION_MEASUREMENT_IM_1 = "X-pos. image meas. 1 (px)";
     public static final String Y_POSITION_MEASUREMENT_IM_1 = "Y-pos. image meas. 1 (px)";
@@ -58,7 +102,15 @@ public class AddLine extends AbstractOverlay {
     public static final String Y_POSITION_MEASUREMENT_OBJ_1 = "Y-pos. object meas. 1 (px)";
     // public static final String Z_POSITION_MEASUREMENT_OBJ_1 = "Z-pos. object
     // meas. 1 (slice)";
+
+	/**
+	* Controls for the location of the second end of the line to be drawn:<br><br>- "Object centroid" This end of the line is coincident with the centre of the input object.<br><br>- "Image measurement" This end of the line is coincident with a pair of XY measurements taken from an image.  The image to be used is selected with the "Reference image 2" parameter and the measurements by the "X-pos. image meas. 2 (px)" and "Y-pos. image meas. 2 (px)" parameters.<br><br>- "Object measurement" This end of the line is coincident with a pair of XY measurements taken from the current object.  The measurements are selected with the "X-pos. object meas. 2 (px)" and "Y-pos. object meas. 2 (px)" parameters.<br>
+	*/
     public static final String REFERENCE_MODE_2 = "Reference mode 2";
+
+	/**
+	* Image providing the XY coordinate measurements to be used as the location of the second end of the line.
+	*/
     public static final String REFERENCE_IMAGE_2 = "Reference image 2";
     public static final String X_POSITION_MEASUREMENT_IM_2 = "X-pos. image meas. 2 (px)";
     public static final String Y_POSITION_MEASUREMENT_IM_2 = "Y-pos. image meas. 2 (px)";
@@ -69,10 +121,26 @@ public class AddLine extends AbstractOverlay {
     // public static final String Z_POSITION_MEASUREMENT_OBJ_2 = "Z-pos. object
     // meas. 2 (slice)";
 
+
+	/**
+	* 
+	*/
     public static final String RENDERING_SEPARATOR = "Overlay rendering";
+
+	/**
+	* Width of the rendered lines.  Specified in pixel units.
+	*/
     public static final String LINE_WIDTH = "Line width";
 
+
+	/**
+	* 
+	*/
     public static final String EXECUTION_SEPARATOR = "Execution controls";
+
+	/**
+	* Process multiple overlay elements simultaneously.  This can provide a speed improvement when working on a computer with a multi-core CPU.
+	*/
     public static final String ENABLE_MULTITHREADING = "Enable multithreading";
 
     public interface ReferenceModes {

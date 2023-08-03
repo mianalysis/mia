@@ -33,11 +33,23 @@ import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
 import net.imglib2.type.numeric.real.FloatType;
 
+
+/**
+* Creates a 2D intensity histogram for a pair of specified images.  Intensities along the x-axis correspond to the first input image and those along the y-axis to the second input image.  Output histogram is saved to the workspace as an image.  Works for N-dimensional image stacks (must have the same dimensions).  Uses the ImgLib2 implementation ND intensity histograms.
+*/
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class Create2DIntensityHistogram<T extends RealType<T> & NativeType<T>> extends Module {
+
+	/**
+	* 
+	*/
     public static final String INPUT_SEPARATOR = "Image input/output";
     public final static String INPUT_IMAGE1 = "Input image 1 (x-axis)";
     public final static String INPUT_IMAGE2 = "Input image 2 (y-axis)";
+
+	/**
+	* Output 2D intensity histogram, which will be saved to the workspace.
+	*/
     public final static String OUTPUT_IMAGE = "Output image";
 
     public static final String HISTOGRAM_SEPARATOR_1 = "Histogram controls (image 1)";

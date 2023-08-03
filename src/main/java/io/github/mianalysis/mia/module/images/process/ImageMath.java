@@ -32,19 +32,67 @@ import io.github.mianalysis.mia.object.system.Status;
 /**
  * Created by sc13967 on 19/09/2017.
  */
+
+/**
+* Applies a mathematical operation to all pixels of the input image stack.  Operations that can be performed are: Absolute, Add, Divide, Multiply, Square, Squareroot, Subtract
+*/
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class ImageMath extends Module {
+
+	/**
+	* 
+	*/
     public static final String INPUT_SEPARATOR = "Image input/output";
+
+	/**
+	* Image from workspace to apply calculation to.  This image can be of any bit depth.
+	*/
     public static final String INPUT_IMAGE = "Input image";
+
+	/**
+	* When selected, the post-operation image will overwrite the input image in the workspace.  Otherwise, the image will be saved to the workspace with the name specified by the "Output image" parameter.
+	*/
     public static final String APPLY_TO_INPUT = "Apply to input image";
+
+	/**
+	* If "Apply to input image" is not selected, the post-operation image will be saved to the workspace with this name.
+	*/
     public static final String OUTPUT_IMAGE = "Output image";
+
+	/**
+	* When enabled, the calculation will be performed on 32-bit float values.  This is useful if the calculation is likely to create negative or decimal values.  The output image will also be stored in the workspace as a 32-bit float image.
+	*/
     public static final String OUTPUT_32BIT = "Output 32-bit image";
 
+
+	/**
+	* 
+	*/
     public static final String CALCULATION_SEPARATOR = "Image calculation";
+
+	/**
+	* Controls the mathematical operation being applied to all pixels of this image.  Choices are: Absolute, Add, Divide, Multiply, Square, Squareroot, Subtract
+	*/
     public static final String CALCULATION_MODE = "Calculation";
+
+	/**
+	* For calculations that require a specific value (i.e. addition, subtraction, etc.) this parameter controls how the value is defined:<br><ul><li>"Fixed value" A fixed value is specified using the "Value" parameter.  This value is the same for all images processed by this module..</li><li>"Image measurement value" The value is taken from a measurement associated with the input image.  Values obtained in this way can be different from image to image.</li></ul>
+	*/
     public static final String VALUE_SOURCE = "Value source";
+
+	/**
+	* If "Value source" is set to "Image measurement value", this is the image that the measurement will be taken from.  It can be any image in the workspace, not necessarily the image to which the math operation is being applied.
+	*/
     public static final String IMAGE_FOR_MEASUREMENT = "Image for measurement";
+
+	/**
+	* If "Value source" is set to "Image measurement value", this is the measurement associated with the image specified by "Image for measurement" that will be used in the calculation.
+	*/
     public static final String MEASUREMENT = "Measurement";
+
+	/**
+	* If "Value source" is set to "Fixed value", this is the value that will be used in the calculation.
+	*/
     public static final String MATH_VALUE = "Value";
 
     public ImageMath(Modules modules) {
