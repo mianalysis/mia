@@ -56,37 +56,129 @@ import io.github.sjcross.sjcommon.object.volume.VolumeType;
  */
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class TrackObjects extends Module {
+
+	/**
+	* 
+	*/
     public static final String INPUT_SEPARATOR = "Object input/output";
+
+	/**
+	* Objects present in individual timepoints which will be tracked across multiple frames.  These objects will become children of their assigned "track" parent.
+	*/
     public static final String INPUT_OBJECTS = "Input objects";
+
+	/**
+	* Output track objects to be stored in the workspace.  These objects will contain no spatial information, rather they act as (parent) linking  objects for the individual timepoint instances of the tracked object.
+	*/
     public static final String TRACK_OBJECTS = "Output track objects";
 
+
+	/**
+	* 
+	*/
     public static final String SPATIAL_SEPARATOR = "Spatial cost";
+
+	/**
+	* The spatial cost for linking objects together:<br><ul><li>"Absolute overlap" Tracks will be assigned in order to maxmimise the spatial overlap between objects in adjacent frames.  This linking method uses the full 3D volume of the objects being tracked.  Note: There is no consideration of distance between objects, so non-overlapping objects next to each other will score equally to non-overlapping objects far away (not taking additional linking weights and restrictions into account).</li><li>"Centroid" Tracks will be assigned in order to minimise the total distance between object centroids.  This linking method doesn't take object size and shape into account (unless included via volume weighting), but will work at all object separations.</li></ul>
+	*/
     public static final String LINKING_METHOD = "Linking method";
+
+	/**
+	* If "Linking method" is set to "Absolute overlap", this is the minimum absolute spatial overlap (number of coincident pixels/voxels) two objects must have for them to be considered as candidates for linking.
+	*/
     public static final String MINIMUM_OVERLAP = "Minimum overlap";
     public static final String MAXIMUM_LINKING_DISTANCE = "Maximum linking distance (px)";
 
+
+	/**
+	* 
+	*/
     public static final String TEMPORAL_SEPARATOR = "Temporal cost";
+
+	/**
+	* When non-zero, an additional cost will be included that penalises linking objects with large temporal separations.  The frame gap between candidate objects will be multiplied by this weight.  For example, if calculating spatial costs using centroid spatial separation, a frame gap weight of 1 will equally weight 1 frame of temporal separation to 1 pixel of spatial separation.  The larger the weight, the more this frame gap will contribute towards the total linking cost.
+	*/
     public static final String FRAME_GAP_WEIGHTING = "Frame gap weighting";
+
+	/**
+	* Maximum number of missing frames for an object to still be tracked.  A single object undetected for longer than this would be identified as two separate tracks.
+	*/
     public static final String MAXIMUM_MISSING_FRAMES = "Maximum number of missing frames";
+
+	/**
+	* When selected, points will be preferentially linked to tracks containing more previous points.  For example, in cases where an object was detected twice in one timepoint this will favour linking to the original track, rather than establishing the on-going track from the new point.
+	*/
     public static final String FAVOUR_ESTABLISHED_TRACKS = "Favour established tracks";
+
+	/**
+	* If "Favour established tracks" is selected this is the weight assigned to the existing track duration.  Track duration costs are calculated as 1 minus the ratio of frames in which the track was detected (up to the previous time-point).
+	*/
     public static final String TRACK_LENGTH_WEIGHTING = "Track length weighting";
 
+
+	/**
+	* 
+	*/
     public static final String VOLUME_SEPARATOR = "Volume cost";
     public static final String USE_VOLUME = "Use volume (minimise volume change)";
+
+	/**
+	* If "Use volume (minimise volume change)" is enabled, this is the weight assigned to the difference in volume of the candidate objects for linking.  The difference in volume between candidate objects is multiplied by this weight.  The larger the weight, the more this difference in volume will contribute towards the total linking cost.
+	*/
     public static final String VOLUME_WEIGHTING = "Volume weighting";
     public static final String MAXIMUM_VOLUME_CHANGE = "Maximum volume change (px^3)";
 
+
+	/**
+	* 
+	*/
     public static final String DIRECTION_SEPARATOR = "Direction cost";
+
+	/**
+	* Controls whether cost terms will be included based on the direction a tracked object is moving in:<br><ul><li>"None" No direction-based cost terms will be included.</li><li>"Absolute orientation 2D" Costs will be calculated based on the absolute orientation a candidate object would be moving in.  For example, if objects are known to be moving in one particular direction, this can favour links moving that way rather than the opposite direction.</li><li>"Relative to previous step" Costs will be calculated based on the previous trajectory of a track.  This can be used to minimise rapid changes in direction if tracked objects are expected to move smoothly.</li></ul>
+	*/
     public static final String DIRECTION_WEIGHTING_MODE = "Direction weighting mode";
+
+	/**
+	* 
+	*/
     public static final String ORIENTATION_RANGE_MODE = "Orientation range mode";
+
+	/**
+	* If "Direction weighting mode" is set to "Absolute orientation 2D", this is the preferred direction that a track should be moving in.  Orientation is measured in degree units and is positive above the x-axis and negative below it.
+	*/
     public static final String PREFERRED_DIRECTION = "Preferred direction";
+
+	/**
+	* If using directional weighting ("Direction weighting mode" not set to "None"), this is the maximum deviation in direction from the preferred direction that a candidate object can have.  For absolute linking, this is relative to the preferred direction and for relative linking, this is relative to the previous frame.
+	*/
     public static final String DIRECTION_TOLERANCE = "Direction tolerance";
+
+	/**
+	* If using directional weighting ("Direction weighting mode" not set to "None"), the angular difference (in degrees) between the candidate track direction and the reference direction will be muliplied by this weight.  The larger the weight, the more this angular difference will contribute towards the total linking cost.
+	*/
     public static final String DIRECTION_WEIGHTING = "Direction weighting";
 
+
+	/**
+	* 
+	*/
     public static final String MEASUREMENT_SEPARATOR = "Measurement cost";
     public static final String USE_MEASUREMENT = "Use measurement (minimise change)";
+
+	/**
+	* If "Use measurement (minimise change)" is selected, this is the measurement (associated with the input objects) for which variation within a track will be minimised.
+	*/
     public static final String MEASUREMENT = "Measurement";
+
+	/**
+	* If "Use measurement (minimise change)" is selected, the difference in measurement associated with a candidate object and the previous instance in a target track will be multiplied by this value.  The larger the weight, the more this difference in measurement will contribute towards the total linking cost.
+	*/
     public static final String MEASUREMENT_WEIGHTING = "Measurement weighting";
+
+	/**
+	* If "Use measurement (minimise change)" is selected, this is the maximum amount the measurement can change between consecutive instances in a track.  Variations greater than this will result in the track being split into two.
+	*/
     public static final String MAXIMUM_MEASUREMENT_CHANGE = "Maximum measurement change";
 
     public TrackObjects(Modules modules) {

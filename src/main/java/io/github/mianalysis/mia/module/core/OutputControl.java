@@ -45,33 +45,133 @@ import io.github.sjcross.sjcommon.metadataextractors.Metadata;
  */
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class OutputControl extends AbstractMacroRunner {
+
+	/**
+	* 
+	*/
     public static final String POSTPROCESSING_SEPARATOR = "Post-processing";
+
+	/**
+	* When selected, a final macro can be run once all the analysis runs (jobs) have been completed.  By using the workspace handling macros ("MIA_GetListOfWorkspaceIDs" and "MIA_SetActiveWorkspace") it's possible to switch between workspaces, thus facilitating dataset-wide analyses.  This macro will be executed only once as part of the final data exporting phase of the analysis.
+	*/
     public static final String RUN_MACRO = "Run macro";
+
+	/**
+	* Select the source for the macro code:<br><ul><li>"Macro file" Load the macro from the file specified by the "Macro file" parameter.</li><li>"Macro text" Macro code is written directly into the "Macro text" box.</li></ul>
+	*/
     public static final String MACRO_MODE = "Macro mode";
+
+	/**
+	* Macro code to be executed.  MIA macro commands are enabled using the "run("Enable MIA Extensions");" command which is included by default.  This should always be the first line of a macro if these commands are needed.
+	*/
     public static final String MACRO_TEXT = "Macro text";
+
+	/**
+	* Select a macro file (.ijm) to run once, after all analysis runs have completed.
+	*/
     public static final String MACRO_FILE = "Macro file";
+
+	/**
+	* Runs the macro on the currently-active workspace.  This requires that the analysis has been run at least once already, either by clicking the "Run" button or by evaluating all modules (or some, if not all required for macro) using the arrow buttons.
+	*/
     public static final String TEST_BUTTON = "Test macro";
 
+
+	/**
+	* 
+	*/
     public static final String EXPORT_SEPARATOR = "Core export controls";
+
+	/**
+	* Controls the number of results spreadsheets that are exported and what they contain:<br><ul><li>"All together" Results from all current analysis runs are grouped into a single spreadsheet.  The same sheets are used for all runs, so it's necessary to include a filename (and where necessary, a series name/number) metadata identifier.  Unless "Save name mode" is set to "Specific name", this file is named after the input file/folder.</li><li>"Group by metadata" Results are grouped and exported by a specific metadata item associated with each analysis run.  Unless "Save name mode" is set to "Specific name", the files are named in the format "[input file/folder name]_[metadata name]-[metadata value]".  The metadata item to group on is specified by the "Metadata item for grouping" parameter.</li><li>"Individual files" A separate results spreadsheet is saved for each analysis run.</li><li>"None" No results spreadsheets are exported.</li></ul>
+	*/
     public static final String EXPORT_MODE = "Export mode";
+
+	/**
+	* If "Export mode" is set to "Group by metadata" this parameter controls where the grouped (by metadata) results files are saved:<br><ul><li>"Save with input file" The files are saved in the same folder as the input file.  If a folder was selected as the input, the result files are saved directly inside that folder.</li><li>"Specific location" The files are all saved in a single folder specified by the "File path" parameter.</li></ul>
+	*/
     public static final String GROUP_SAVE_LOCATION = "Group save location";
+
+	/**
+	* If "Export mode" is set to "Individual files" this parameter controls where the individual results files are saved:<br><ul><li>"Mirrored directory" The files are saved in a mirrored directory structure.  This structure has the same folder layout as all subfolders of the specified input folder.  The root location of the mirrored structure is specified by the "Mirrored directory root" parameter.</li><li>"Save with input file" The files are saved in the same folder as the input file.  If a folder was selected as the input, the result files are saved directly inside that folder.</li><li>"Specific location" The files are all saved in a single folder specified by the "File path" parameter.</li></ul>
+	*/
     public static final String INDIVIDUAL_SAVE_LOCATION = "Individual save location";
+
+	/**
+	* If using a mirrored directory structure for the results files, this parameter specifies the output structure root.  Subfolders will be created within this root folder that have identical structure to the subfolders of the input folder.
+	*/
     public static final String MIRRORED_DIRECTORY_ROOT = "Mirrored directory root";
+
+	/**
+	* The path to the folder where results will be saved if using a specific folder path.
+	*/
     public static final String SAVE_FILE_PATH = "File path";
+
+	/**
+	* Controls how the output results filename is generated:<br><ul><li>"Match input file/folder name" Results files are stored with the same name as the input file/folder (depending on the "Export mode" parameter).</li><li>"Specific name" Results files are stored with a specific name, specified by "File name".</li></ul>
+	*/
     public static final String SAVE_NAME_MODE = "Save name mode";
+
+	/**
+	* Name to save the results file with if saving results files with a specific name ("Save name mode" parameter).
+	*/
     public static final String SAVE_FILE_NAME = "File name";
+
+	/**
+	* If "Export mode" is set to "Group by metadata", results will be grouped and saved by the value of this metadata item associated with each analysis run.  There will be one results spreadsheet for each unique value of this metadata item.
+	*/
     public static final String METADATA_ITEM_FOR_GROUPING = "Metadata item for grouping";
+
+	/**
+	* When selected, the results spreadsheet(s) can be exported at intervals during a multi-analysis run.  They will be exported every N runs, where N is controlled by the "Save every n files" parameter.  The spreadsheet(s) will still be stored when all analysis runs have completed.
+	*/
     public static final String CONTINUOUS_DATA_EXPORT = "Continuous data export";
+
+	/**
+	* If "Continuous data export" is enabled, the current version of the spreadsheet will be exported after every N analysis runs.  This means if the analysis fails or the computer crashes, results collected so far are not lost.
+	*/
     public static final String SAVE_EVERY_N = "Save every n files";
+
+	/**
+	* Controls under what conditions the time and date will be appended on to the end of the results file filename.  This can be used to prevent accidental over-writing of results files from previous runs:<br><ul><li>"Always" Always append the time and date on to the end of the filename.</li><li>"If file exists" Only append the time and date if the results file already exists.</li><li>"Never" Never append time and date (unless the file is open and unwritable).</li></ul>
+	*/
     public static final String APPEND_DATETIME_MODE = "Append date/time mode";
 
+
+	/**
+	* 
+	*/
     public static final String SUMMARY_SEPARATOR = "Summary sheet";
+
+	/**
+	* When selected, a summary sheet will be added to the results spreadsheet.  The summary sheet contains either (1) one row per input image file, (2) one row per timepoint per image file or (3) one row per metadata item.  The export mode is controlled by the "Summary mode" parameter.  This sheet is given the name "SUMMARY" and contains statistics for measurements (mean, min, max, standard deviation and sum), object counts and metadata items.
+	*/
     public static final String EXPORT_SUMMARY = "Export summary";
+
+	/**
+	* Controls the form of the summary sheet (if "Export summary" is selected):<br><ul><li>"Per timepoint per input file" Each timepoint of each input image file is summarised in a separate row.</li><li>"Group by metadata" All files matching a specific metadata value are averaged and summarised in a separate row (i.e. one row per unique metadata item).</li><li>"Per input file" Each input image file is summarised in a separate row.</li></ul>
+	*/
     public static final String SUMMARY_MODE = "Summary mode";
+
+	/**
+	* The metadata item to group the rows of the summary sheet by if "Summary mode" is set to "Group by metadata".
+	*/
     public static final String METADATA_ITEM_FOR_SUMMARY = "Metadata item for summary";
+
+	/**
+	* When selected, the "Summary" results sheet displays columns reporting the number of objects per object collection.
+	*/
     public static final String SHOW_OBJECT_COUNTS = "Show object counts";
+
+	/**
+	* When selected, individual results sheets will be created for each object collection.  In these sheets, each object in that collection is summarised per row.  The individual object sheets have the same name as their corresponding object collection.
+	*/
     public static final String EXPORT_INDIVIDUAL_OBJECTS = "Export individual objects";
 
+
+	/**
+	* 
+	*/
     public static final String MEASUREMENT_SEPARATOR = "Measurement selection";
 
     public OutputControl(Modules modules) {

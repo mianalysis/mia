@@ -24,9 +24,25 @@ import io.github.mianalysis.mia.object.parameters.ParentObjectsP;
 
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class FilterWithWithoutParent extends AbstractObjectFilter {
+
+	/**
+	* 
+	*/
     public static final String FILTER_SEPARATOR = "Object filtering";
+
+	/**
+	* Controls whether objects are removed when a specific parent object is present or not:<br><br>- "Remove objects without parent" Objects without the parent specified by "Parent object" are removed, counted or moved (depending on the "Filter mode" parameter).<br><br>- "Remove objects with parent" Objects with the parent specified by "Parent object" are removed, counted or moved (depending on the "Filter mode" parameter).<br>
+	*/
     public static final String FILTER_METHOD = "Method for filtering";
+
+	/**
+	* Parent object to filter by.  The presence or absence of this relationship will determine which of the input objects are counted, removed or moved (depending on the "Filter mode" parameter).
+	*/
     public static final String PARENT_OBJECT = "Parent object";
+
+	/**
+	* When selected, the number of removed (or moved) objects is counted and stored as a metadata item (name in the format "FILTER // NUM_[inputObjectsName] WITHOUT [parentObjectsName] PARENT").
+	*/
     public static final String STORE_RESULTS = "Store filter results";
 
     public FilterWithWithoutParent(Modules modules) {

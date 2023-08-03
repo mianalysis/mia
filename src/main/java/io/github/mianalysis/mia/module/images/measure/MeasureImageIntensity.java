@@ -28,7 +28,15 @@ import io.github.mianalysis.mia.object.system.Status;
  */
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class MeasureImageIntensity extends Module {
+
+	/**
+	* 
+	*/
     public static final String INPUT_SEPARATOR = "Image input";
+
+	/**
+	* Image to measure intensity statistics for.  The resulting measurements will be associated with this image for use in subsequent modules.
+	*/
     public static final String INPUT_IMAGE = "Input image";
 
     public MeasureImageIntensity(Modules modules) {

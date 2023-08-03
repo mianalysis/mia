@@ -41,10 +41,26 @@ import io.github.sjcross.sjcommon.object.Point;
 
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class MeasureTextureAlongPath extends Module {
+
+	/**
+	* 
+	*/
     public static final String INPUT_SEPARATOR = "Object and image input";
+
+	/**
+	* Objects for which image texture along will be generated along the object backbone.
+	*/
     public static final String INPUT_OBJECTS = "Input objects";
+
+	/**
+	* Image for which the texture will be measured.
+	*/
     public static final String INPUT_IMAGE = "Input image";
 
+
+	/**
+	* 
+	*/
     public static final String MEASUREMENT_SEPARATOR = "Measurement selection";
     public static final String OFFSET = "Offset (px)";
 

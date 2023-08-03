@@ -28,14 +28,46 @@ import io.github.mianalysis.mia.object.system.Status;
 
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class ReplaceMeasurementValue extends Module {
+
+	/**
+	* 
+	*/
     public static final String INPUT_SEPARATOR = "Object/measurement input";
+
+	/**
+	* Objects from the workspace for which specific measurement values will be replaced.  Any object measurements with values matching the specified criteria will be replaced by another specified value.
+	*/
     public static final String INPUT_OBJECTS = "Input objects";
+
+	/**
+	* Measurement associated with the input objects.  Any object measurements with values matching the specified criteria will be replaced by another specified value.
+	*/
     public static final String MEASUREMENT = "Measurement";
 
+
+	/**
+	* 
+	*/
     public static final String REPLACEMENT_SEPARATOR = "Measurement replacement";
+
+	/**
+	* Controls under what condition the input object measurement (specified by "Measurement") will be replaced by the specified value.  Note: "NaN" stands for "Not a Number" and can arise from certain calculations (e.g. division of 0 by 0) or if a measurement couldn't be made (e.g. fitting an ellipse to an object with too few coordinates).  Choices are: Is NaN, Is not NaN, Less than, Less than or equal to, Equal to, Greater than or equal to, Greater than, Not equal to.
+	*/
     public static final String REPLACEMENT_CONDITION = "Replacement condition";
+
+	/**
+	* If "Replacement condition" is set to a numeric condition (e.g. less than), this value will be used as the threshold against which the measurement value will be tested.
+	*/
     public static final String REFERENCE_VALUE = "Reference value";
+
+	/**
+	* Controls what type of value any measurements identified for replacement will be replaced by:<br><ul><li>"NaN (not a number)" Measurement values will be replaced by NaN (not a number).</li><li>"Number" Measurement values will be replaced by the numeric value specified by "Replacement value".</li><li>"Negative infinity" Measurement values will be replaced by the specific "negative infinity" value.</li><li>"Positive infinity" Measurement values will be replaced by the specific "positive infinity" value.</li></ul>
+	*/
     public static final String REPLACEMENT_VALUE_TYPE = "Replacement value type";
+
+	/**
+	* Value to replace identified measurements with if "Replacement value type" is set to "Number" mode.
+	*/
     public static final String REPLACEMENT_VALUE = "Replacement value";
 
     public interface ReplacementConditions {

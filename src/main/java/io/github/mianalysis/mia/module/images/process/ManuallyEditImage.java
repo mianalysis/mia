@@ -30,12 +30,36 @@ import io.github.mianalysis.mia.object.system.Status;
 
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class ManuallyEditImage extends Module {
+
+	/**
+	* 
+	*/
     public static final String INPUT_SEPARATOR = "Image input/output";
+
+	/**
+	* Image from workspace to manually edit.  When this module executes the image will be displayed along with a dialog box allowing the user to identify when editing is complete.  Depending on the "Apply to input image" parameter, the edits will either be applied directly to this input image or stored in a separate image in the workspace.
+	*/
     public static final String INPUT_IMAGE = "Input image";
+
+	/**
+	* When selected, the edited image will overwrite the input image in the workspace.  Otherwise, the image will be saved to the workspace with the name specified by the "Output image" parameter.
+	*/
     public static final String APPLY_TO_INPUT = "Apply to input image";
+
+	/**
+	* If "Apply to input image" is not selected, the edited image will be saved to the workspace with this name.
+	*/
     public static final String OUTPUT_IMAGE = "Output image";
 
+
+	/**
+	* 
+	*/
     public static final String DISPLAY_SEPARATOR = "Display controls";
+
+	/**
+	* Select whether multi-channel images should be displayed as composites (show all channels overlaid) or individually (the displayed channel is controlled by the "C" slider at the bottom of the image window).
+	*/
     public static final String CHANNEL_MODE = "Channel mode";
 
     public interface ChannelModes extends ShowImage.ChannelModes {

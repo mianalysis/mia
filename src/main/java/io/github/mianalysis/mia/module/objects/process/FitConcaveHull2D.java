@@ -38,10 +38,26 @@ import signalprocesser.voronoi.shapegeneration.ShapeGeneration;
 
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class FitConcaveHull2D extends Module {
+
+	/**
+	* 
+	*/
     public static final String INPUT_SEPARATOR = "Object input/output";
+
+	/**
+	* Input objects to create 2D concave hulls for.  Each convex hull will be a child of its respective input object.
+	*/
     public static final String INPUT_OBJECTS = "Input objects";
+
+	/**
+	* Output concave hull objects will be stored in the workspace with this name.  Each concave hull object will be a child of the input object it was created from.
+	*/
     public static final String OUTPUT_OBJECTS = "Output objects";
 
+
+	/**
+	* 
+	*/
     public static final String HULL_SEPARATOR = "Concave hull controls";
     public static final String RANGE_PX = "Range (px)";
 

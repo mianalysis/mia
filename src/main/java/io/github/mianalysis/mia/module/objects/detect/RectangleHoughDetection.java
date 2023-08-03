@@ -38,6 +38,10 @@ import io.github.sjcross.sjcommon.process.houghtransform.transforms.RectangleTra
 
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class RectangleHoughDetection extends AbstractHoughDetection {
+
+	/**
+	* 
+	*/
     public static final String RANGE_SEPARATOR = "Parameter ranges";
     public static final String X_RANGE = "X range (px)";
     public static final String Y_RANGE = "Y range (px)";

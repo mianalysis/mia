@@ -36,12 +36,36 @@ import net.imglib2.view.Views;
 
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class FlipStack<T extends RealType<T> & NativeType<T>> extends Module {
+
+	/**
+	* 
+	*/
     public static final String INPUT_SEPARATOR = "Image input/output";
+
+	/**
+	* Image to process.
+	*/
     public static final String INPUT_IMAGE = "Input image";
+
+	/**
+	* If selected, the flipped image will replace the input image in the workspace.  All measurements associated with the input image will be transferred to the flipped image.
+	*/
     public static final String APPLY_TO_INPUT = "Apply to input image";
+
+	/**
+	* Name of the output flipped image.
+	*/
     public static final String OUTPUT_IMAGE = "Output image";
 
+
+	/**
+	* 
+	*/
     public static final String FLIP_SEPARATOR = "Stack flip controls";
+
+	/**
+	* Axis along which to flip the image.
+	*/
     public static final String AXIS_MODE = "Axis mode";
 
     public FlipStack(Modules modules) {

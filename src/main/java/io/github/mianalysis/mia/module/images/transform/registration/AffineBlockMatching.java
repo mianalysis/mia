@@ -29,14 +29,42 @@ import mpicbg.models.Vertex;
 
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class AffineBlockMatching extends AbstractAffineRegistration {
+
+	/**
+	* 
+	*/
     public static final String FEATURE_SEPARATOR = "Feature detection";
+
+	/**
+	* Scale factor applied to input image prior to alignment of blocks.  This can be used to reduce the computational cost of performing the registration.  For example, a scale of 0.5 will reduce the size of the image used in the alignment process.  Note: The final registration will be applied to the original size images.
+	*/
     public static final String LAYER_SCALE = "Layer scale";
     public static final String SEARCH_RADIUS = "Search radius (px)";
     public static final String BLOCK_RADIUS = "Block radius (px)";
+
+	/**
+	* The number of vertices in the spring mesh, with higher numbers giving smoother results.
+	*/
     public static final String RESOLUTION = "Resolution";
+
+	/**
+	* "The PMCC coefficent <i>r</i> of a patch around the vertex and the overlapping patch in the other image is used as the quality measure for a match.  The threshold for minimal PMCC <i>r</i> can be higher for aligning the same signal than for aligning changing signals. Higher values will lead to more matches rejected and thus less false positives.".  Description taken from <a href="https://imagej.net/Elastic_Alignment_and_Montage.html">https://imagej.net/Elastic_Alignment_and_Montage.html</a>
+	*/
     public static final String MIN_PMCC_R = "Minimal PMCC r";
+
+	/**
+	* "The maximal curvature ratio is the threshold for edge responses. The value must be greater than 1.0. Higher values will accept more matches alongside elongated structures and thus lead to potentially more false positives.".  Description taken from <a href="https://imagej.net/Elastic_Alignment_and_Montage.html">https://imagej.net/Elastic_Alignment_and_Montage.html</a>
+	*/
     public static final String MAX_CURVATURE = "Maximal curvature ratio";
+
+	/**
+	* "Correspondence candidates from local descriptor matching are accepted only if the Euclidean distance to the nearest neighbour is significantly smaller than that to the next nearest neighbour. Lowe (2004) suggests a ratio of r=0.8 which requires some increase when matching things that appear significantly distorted.".  Description taken from <a href="https://imagej.net/Feature_Extraction">https://imagej.net/Feature_Extraction</a>
+	*/
     public static final String ROD = "Closest/next closest ratio";
+
+	/**
+	* "The local smoothness filter inspects each match and compares how well the estimated translational offset agrees with all other matches weighted by their distance to the inspected match. To that end, a local linear transformation (typically rigid) is calculated using weighted least squares. The weight for each match is defined by a Gaussian radial distribution function (RDF) centered at the reference match.  This parameter controls sigma for this RDF. A match is rejected if its transfer error relative to the estimated linear transformation is larger than an absolute threshold or larger than k× the average transfer error of all weighted matches (k is specified in the relative field).  "Description taken from <a href="https://imagej.net/Elastic_Alignment_and_Montage.html">https://imagej.net/Elastic_Alignment_and_Montage.html</a>
+	*/
     public static final String LOCAL_REGION_SIGMA = "Local region sigma";
     public static final String MAX_ABS_LOCAL_DISPLACEMENT = "Maximal absolute local displacement (px)";
     public static final String MAX_REL_LOCAL_DISPLACEMENT = "Maximal relative local displacement (px)";

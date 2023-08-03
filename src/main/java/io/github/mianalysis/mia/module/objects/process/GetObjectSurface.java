@@ -24,8 +24,20 @@ import io.github.sjcross.sjcommon.object.volume.Volume;
 
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class GetObjectSurface extends Module {
+
+	/**
+	* 
+	*/
     public static final String INPUT_SEPARATOR = "Image input, object output";
+
+	/**
+	* Input objects to extract surface from.
+	*/
     public static final String INPUT_OBJECTS = "Input objects";
+
+	/**
+	* Output surface objects to be stored in the workspace.
+	*/
     public static final String OUTPUT_OBJECTS = "Output objects";
 
     public static Obj getSurface(Obj inputObject, Objs outputObjects, boolean assignRelationships) {

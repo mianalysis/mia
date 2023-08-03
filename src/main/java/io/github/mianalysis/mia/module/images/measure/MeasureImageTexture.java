@@ -32,13 +32,41 @@ import io.github.sjcross.sjcommon.analysis.TextureCalculator;
  */
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class MeasureImageTexture extends Module {
+
+	/**
+	* 
+	*/
     public static final String INPUT_SEPARATOR = "Image input";
+
+	/**
+	* Image from the workspace for which texture metrics will be calculated.  Texture measurements will be assigned to this image.
+	*/
     public static final String INPUT_IMAGE = "Input image";
 
+
+	/**
+	* 
+	*/
     public static final String TEXTURE_SEPARATOR = "Texture calculation";
+
+	/**
+	* Each pixel in the input image will be compared to the pixel a defined offset-away.  This parameter controls the x-axis offset.  Offset specified in pixel units unless "Calibrated offset" is selected.  If using calibrated units, the offset will be rounded to the closest integer value.
+	*/
     public static final String X_OFFSET = "X-offset";
+
+	/**
+	* Each pixel in the input image will be compared to the pixel a defined offset-away.  This parameter controls the y-axis offset.  Offset specified in pixel units unless "Calibrated offset" is selected.  If using calibrated units, the offset will be rounded to the closest integer value.
+	*/
     public static final String Y_OFFSET = "Y-offset";
+
+	/**
+	* Each pixel in the input image will be compared to the pixel a defined offset-away.  This parameter controls the z-axis offset.  Offset specified in pixel units unless "Calibrated offset" is selected.  If using calibrated units, the offset will be rounded to the closest integer value.
+	*/
     public static final String Z_OFFSET = "Z-offset";
+
+	/**
+	* When selected, offsets are specified in calibrated units.  Otherwise, offsets are assumed to be in pixel units.
+	*/
     public static final String CALIBRATED_OFFSET = "Calibrated offset";
 
     public MeasureImageTexture(Modules modules) {

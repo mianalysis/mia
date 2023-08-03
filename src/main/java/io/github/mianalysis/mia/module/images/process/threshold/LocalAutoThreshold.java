@@ -34,21 +34,69 @@ import io.github.sjcross.sjcommon.filters.AutoLocalThreshold3D;
 
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class LocalAutoThreshold extends Module {
+
+	/**
+	* 
+	*/
     public static final String INPUT_SEPARATOR = "Image input/output";
+
+	/**
+	* Image to apply threshold to.
+	*/
     public static final String INPUT_IMAGE = "Input image";
+
+	/**
+	* Select if the threshold should be applied directly to the input image, or if it should be applied to a duplicate, then stored as a different image in the workspace.
+	*/
     public static final String APPLY_TO_INPUT = "Apply to input image";
+
+	/**
+	* Name of the output image created during the thresholding process.  This image will be added to the workspace.
+	*/
     public static final String OUTPUT_IMAGE = "Output image";
 
+
+	/**
+	* 
+	*/
     public static final String THRESHOLD_SEPARATOR = "Threshold controls";
+
+	/**
+	* Local thresholding algorithm mode to use.<br><ul><li>"Slice-by-slice" Local thresholds are applied to a multidimensional image stack one 2D image at a time.  Images are processed independently.</li><li>"3D" Local threshold algorithms are calculated in 3D and applied to all slices of an image in a single run.  This is more computationally expensive.</li></ul>
+	*/
     public static final String THRESHOLD_MODE = "Threshold mode";
     public static final String ALGORITHM_3D = "Algorithm (3D)";
     public static final String ALGORITHM_SLICE = "Algorithm (slice-by-slice)";
+
+	/**
+	* Prior to application of automatically-calculated thresholds the threshold value is multiplied by this value.  This allows the threshold to be systematically increased or decreased.  For example, a "Threshold multiplier" of 0.9 applied to an automatically-calculated threshold of 200 will see the image thresholded at the level 180.
+	*/
     public static final String THRESHOLD_MULTIPLIER = "Threshold multiplier";
+
+	/**
+	* Limit the lowest threshold that can be applied to the image.  This is used to prevent unintentional segmentation of an image containing only background (i.e. no features present).
+	*/
     public static final String USE_LOWER_THRESHOLD_LIMIT = "Use lower threshold limit";
+
+	/**
+	* Lowest absolute threshold value that can be applied.
+	*/
     public static final String LOWER_THRESHOLD_LIMIT = "Lower threshold limit";
+
+	/**
+	* Radius of region to be used when calculating local intensity thresholds.  Units controlled by "Spatial units mode" control.
+	*/
     public static final String LOCAL_RADIUS = "Local radius";
+
+	/**
+	* Controls whether spatial values are assumed to be specified in calibrated units (as defined by the "Input control" parameter "Spatial unit") or pixel units.
+	*/
     public static final String SPATIAL_UNITS_MODE = "Spatial units mode";
     public static final String USE_GLOBAL_Z = "Use full Z-range (\"Global Z\")";
+
+	/**
+	* Controls whether objects are considered to be white (255 intensity) on a black (0 intensity) background, or black on a white background.
+	*/
     public static final String BINARY_LOGIC = "Binary logic";
 
 

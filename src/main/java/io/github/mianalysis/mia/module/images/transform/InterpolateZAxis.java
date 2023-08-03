@@ -31,11 +31,31 @@ import io.github.mianalysis.mia.object.system.Status;
  */
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class InterpolateZAxis extends Module {
+
+	/**
+	* 
+	*/
     public static final String INPUT_SEPARATOR = "Image input/output";
+
+	/**
+	* Input image to which the Z-axis interpolation will be applied.
+	*/
     public static final String INPUT_IMAGE = "Input image";
+
+	/**
+	* Output image with Z-axis interpolation applied.  This image will be stored in the workspace and be accessible using this name.
+	*/
     public static final String OUTPUT_IMAGE = "Output image";
 
+
+	/**
+	* 
+	*/
     public static final String INTERPOLATION_SEPARATOR = "Interpolation options";
+
+	/**
+	* Controls how interpolated pixel values are calculated.
+	*/
     public static final String INTERPOLATION_MODE = "Interpolation mode";
 
     public interface InterpolationModes {

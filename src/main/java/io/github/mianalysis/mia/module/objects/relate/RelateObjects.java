@@ -39,22 +39,70 @@ import io.github.sjcross.sjcommon.object.Point;
  */
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class RelateObjects extends Module {
+
+	/**
+	* 
+	*/
     public static final String INPUT_SEPARATOR = "Object input";
     public static final String PARENT_OBJECTS = "Parent (larger) objects";
     public static final String CHILD_OBJECTS = "Child (smaller) objects";
 
+
+	/**
+	* 
+	*/
     public static final String RELATE_SEPARATOR = "Relation controls";
+
+	/**
+	* The metric by which parent and child objects will be related:<br><ul><li>"Matching IDs" Parents and children will be related if they have the same ID number.  Since object ID numbers are unique within an object collection there will always be no more than one parent to a child.</li><li>"Proximity" Children are related to the spatially-closest object from the parent collection.  The exact distances used (e.g. centroid to centroid or surface to surface) are controlled by the "Reference point" parameter.</li><li>"Spatial overlap" Children are related to the object from the parent collection they have the greatest spatial overlap with.  Spatial overlap is defined as the number of coincident object coordinates.</li></ul>
+	*/
     public static final String RELATE_MODE = "Method to relate objects";
+
+	/**
+	* Controls the method used for determining proximity-based relationships:<br><ul><li>"Centroid" Distances are from child object centroids to parent object centroids.  These distances are always positive; increasing as the distance between centroids increases.</li><li>"Child centroid to parent surface" Distances are from child object centroids to the closest point on parent object surfaces.  These distances increase in magnitude the further from the parent surface a child centroid is; however, they are assigned a positive value if the child is outside the parent and a negative value if the child is inside the parent.  For example, a centroid 5px outside the object will be simply "5px", whereas a centroid 5px from the surface, but contained within the parent object will be recorded as "-5px".</li><li>"Surface" Distances are between the closest points on the child and parent surfaces.  These distances increase in magnitude the greater the minimum parent-child surface distance is; however, they are assigned a positive value if the closest child surface point is outside the parent and a negative value if the closest child surface point is inside the parent.  For example, a closest child surface point 5px outside the object will be simply "5px", whereas a closest child surface point 5px from the surface, but contained within the parent object will be recorded as "-5px".  Note: Any instances where the child and parent surfaces overlap will be recorded as "0px" distance.</li></ul>
+	*/
     public static final String REFERENCE_MODE = "Reference point";
+
+	/**
+	* When selected, objects will only be related if the distance between them (as calculated by the "Reference point" metric) is less than or equal to the distance defined by "Maximum linking distance (px)".
+	*/
     public static final String LIMIT_LINKING_BY_DISTANCE = "Limit linking by distance";
     public static final String LINKING_DISTANCE = "Maximum linking distance (px)";
+
+	/**
+	* When relating children to parent surfaces it's possible to only include children inside, outside or on the edge of the parent.This parameter controls which children are allowed to be related to the parents.  Choices are: Inside and outside (all distances), Inside only (distances less than 0), Inside and on surface (distances less than or equal to 0), On surface only (distances equal to 0), Outside and on surface (distances greater than or equal to 0), Outside only (distances greater than 0).
+	*/
     public static final String INSIDE_OUTSIDE_MODE = "Inside/outside mode";
+
+	/**
+	* Percentage of total child volume overlapping with the parent object.
+	*/
     public static final String MINIMUM_PERCENTAGE_OVERLAP = "Minimum percentage overlap";
+
+	/**
+	* When selected, child objects are only related to a parent if their centroid is inside the parent object (i.e. the child object centroid is coincident with a parent object coordinate).
+	*/
     public static final String REQUIRE_CENTROID_OVERLAP = "Require centroid overlap";
+
+	/**
+	* When selected, child and parent objects must be in the same time frame for them to be linked.
+	*/
     public static final String LINK_IN_SAME_FRAME = "Only link objects in same frame";
 
+
+	/**
+	* 
+	*/
     public static final String OUTPUT_SEPARATOR = "Object output";
+
+	/**
+	* When selected, any merged children and parents will be removed from their respective object collections, combined into a single object (one merged object per parent and associated children) and stored in a new object collection.
+	*/
     public static final String MERGE_RELATED_OBJECTS = "Merge related objects";
+
+	/**
+	* If "Merge related objects" is selected, this is the name of the output related objects collection that will be stored in the workspace.
+	*/
     public static final String RELATED_OBJECTS = "Output overlapping objects";
 
     public RelateObjects(Modules modules) {
@@ -370,10 +418,6 @@ public class RelateObjects extends Module {
         }
     }
 
-    /**
-     * Returns false if the inside/outside policy fails (i.e. the policy is "inside
-     * only" and minDist is positive)
-     */
     public static boolean applyInsideOutsidePolicy(double minDist, String insideOutsideMode) {
         switch (insideOutsideMode) {
             case InsideOutsideModes.INSIDE_ONLY:

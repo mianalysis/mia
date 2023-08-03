@@ -29,7 +29,15 @@ import java.util.ArrayList;
  */
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class MeasureObjectCentroid extends Module {
+
+	/**
+	* 
+	*/
     public static final String INPUT_SEPARATOR = "Object input";
+
+	/**
+	* Objects to measure mean XYZ centroid for.  Measurements will be associated with each object.
+	*/
     public static final String INPUT_OBJECTS = "Input objects";
 
     public MeasureObjectCentroid(Modules modules) {

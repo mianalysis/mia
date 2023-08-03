@@ -22,6 +22,10 @@ import io.github.mianalysis.mia.object.system.Status;
 
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class FilterByChildren extends AbstractNumericObjectFilter {
+
+	/**
+	* Objects will be filtered against the number of children they have from this object collection.
+	*/
     public static final String CHILD_OBJECTS = "Child objects";
 
     public FilterByChildren(Modules modules) {

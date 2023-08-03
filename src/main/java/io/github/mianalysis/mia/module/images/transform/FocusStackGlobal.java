@@ -89,23 +89,83 @@ public class FocusStackGlobal<T extends RealType<T> & NativeType<T>> extends Mod
     private static final String REMOVE = "Remove";
     private static final String FINISH = "Finish";
 
+
+	/**
+	* 
+	*/
     public static final String INPUT_SEPARATOR = "Image input/output";
+
+	/**
+	* Image to extract substack from.
+	*/
     public static final String INPUT_IMAGE = "Input image";
+
+	/**
+	* Controls whether the best focus positions are calculated and applied (creating a new image) or simply calculated.  In both cases, statistics for the best focus position (mean, median, minimum, maximum and standard deviation of slices) are stored as measurements associated with the input image.
+	*/
     public static final String OUTPUT_MODE = "Output mode";
+
+	/**
+	* Substack image to be added to the current workspace.
+	*/
     public static final String OUTPUT_IMAGE = "Output image";
 
+
+	/**
+	* 
+	*/
     public static final String CALCULATION_SEPARATOR = "Best focus calculation";
+
+	/**
+	* Method for determining the best-focus slice.<br><ul><li>"Manual" Displays a control window, allowing the user to specify reference slices.  These slices should be at the same true z-plane.  Once complete, a substack will be extracted a specific number of slices above and below the reference plane (defined by "Relative start slice" and "Relative end slice".  If references aren't specific for all timepoints, the missing frames will be estimated using polynomial spline interpolation.</li><li>"Smallest mean intensity" The reference slice is taken as the slice with the minimum mean intensity.</li><li>"Largest mean intensity" The reference slice is taken as the slice with the maximum mean intensity.</li><li>"Smallest standard deviation" The reference slice is taken as the slice with the minimum intensity standard deviation.</li><li>"Largest standard deviation" The reference slice is taken as the slice with the maximum intensity standard deviation.</li></ul>
+	*/
     public static final String BEST_FOCUS_CALCULATION = "Best-focus calculation";
+
+	/**
+	* If using manual selection of best focus slices, this is the image that will be shown to the user.  While it doesn't need to be the input image (the one the output substack will be generated from), it must have the same number of slices and timepoints as the input.
+	*/
     public static final String REFERENCE_IMAGE = "Reference image";
+
+	/**
+	* Index of start slice relative to determined best-focus slice (i.e. -5 is 5 slices below the best-focus).
+	*/
     public static final String RELATIVE_START_SLICE = "Relative start slice";
+
+	/**
+	* Index of end slice relative to determined best-focus slice (i.e. 5 is 5 slices above the best-focus).
+	*/
     public static final String RELATIVE_END_SLICE = "Relative end slice";
+
+	/**
+	* Apply median filter to best focus slice index over time.  This should smooth the transitions over time (prevent large jumps between frames).
+	*/
     public static final String SMOOTH_TIMESERIES = "Smooth timeseries";
     public static final String SMOOTHING_RANGE = "Smoothing range (odd numbers)";
 
+
+	/**
+	* 
+	*/
     public static final String REFERENCE_SEPARATOR = "Reference controls";
+
+	/**
+	* When using automatic best focus slice determination this controls the image source:<br><ul><li>"External" The image for which intensity statistics are calculated is different to the image that the final substack will be created from.  For example, this could be an filtered version of the input image to enhance structures when in focus.</li><li>"Internal" The same image will be used for determination of the best slice and generation of the output substack.</li></ul>
+	*/
     public static final String CALCULATION_SOURCE = "Calculation source";
+
+	/**
+	* If using a separate image to determine the best focus slice ("Calculation source" set to "External"), this is the image that will be used for that calculation.
+	*/
     public static final String EXTERNAL_SOURCE = "External source";
+
+	/**
+	* How many channels to use when calculating the best-focus slice.  "Use all channels" will use all channels, whereas "Use single channel" will base the calculation on a single, user-defined channel.
+	*/
     public static final String CHANNEL_MODE = "Channel mode";
+
+	/**
+	* Channel to base the best-focus calculation on.
+	*/
     public static final String CHANNEL = "Channel";
 
     public FocusStackGlobal(Modules modules) {

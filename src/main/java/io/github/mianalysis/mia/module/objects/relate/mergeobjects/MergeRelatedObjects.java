@@ -25,13 +25,41 @@ import io.github.mianalysis.mia.object.system.Status;
 
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class MergeRelatedObjects extends Module {
+
+	/**
+	* 
+	*/
     public static final String INPUT_SEPARATOR = "Object input";
+
+	/**
+	* Input parent objects for merging.  If "Output mode" is set to "Merge children into parent" all the coordinates from child objects will be added to this object.  However, if operating in "Create new object" mode and "Merge mode" is set to "Merge parents and children", coordinates from parent objects will be added to the new merged objects.
+	*/
     public static final String PARENT_OBJECTS = "Parent objects";
+
+	/**
+	* Child objects of the input parent.  If "Output mode" is set to "Merge children into parent" all the coordinates from these objects will be added to their respective parent.  However, if operating in "Create new object" coordinates from these objects will be added to the new merged objects.
+	*/
     public static final String CHILD_OBJECTS = "Child objects";
 
+
+	/**
+	* 
+	*/
     public static final String OUTPUT_SEPARATOR = "Object output";
+
+	/**
+	* Controls where the merged object coordinates are output to:<br><ul><li>"Create new object" For each input parent, a new merged object will be created.  These merged objects are themselves children of the parent object.</li><li>"Merge children into parent" Combined coordinates (original coordinates from parent and coordinates of children) are added to this parent object.  Note: In this mode the coordinates of the parent object are being updated, so any previously-measured object properties may be invalid (i.e. they are not updated).  To update such measurements it's necessary to re-run the relevant measurement modules.</li></ul>
+	*/
     public static final String OUTPUT_MODE = "Output mode";
+
+	/**
+	* If outputting new merged objects (as opposed to updating the parent), objects will be stored with this reference name.
+	*/
     public static final String OUTPUT_MERGED_OBJECTS = "Output overlapping objects";
+
+	/**
+	* When in "Create new object" mode, this parameter controls what coordinates are added to the new merged objects:<ul><li>"Merge children only" Only coordinates from child objects are added to the merged object.  In this mode, coordinates for the parent are ignored.</li><li>"Merge parents and children" Coordinates from both the parent and child objects are added to the new merged object.</li></ul>
+	*/
     public static final String MERGE_MODE = "Merge mode";
 
     public interface OutputModes {

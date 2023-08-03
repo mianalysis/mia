@@ -184,7 +184,7 @@ public class EllipsoidCalculator {
      * Gives an approximation of the surface area, which has a relative error of
      * 1.061% (Knud Thomsen's formula)
      * 
-     * @return
+     * @return surface area
      */
     public double getSurfaceArea() {
         if (ell == null)

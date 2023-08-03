@@ -30,8 +30,20 @@ import io.github.mianalysis.mia.object.system.Status;
  */
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class AddPause extends Module {
+
+	/**
+	* 
+	*/
     public static final String PAUSE_SEPARATOR = "Pause controls";
+
+	/**
+	* When selected, an image from the workspace can be automatically displayed when this module executes.
+	*/
     public static final String SHOW_IMAGE = "Show image";
+
+	/**
+	* If "Show image" is selected, this image will be displayed when the module executes.
+	*/
     public static final String INPUT_IMAGE = "Input image";
 
     private static final String CONTINUE = "Continue";

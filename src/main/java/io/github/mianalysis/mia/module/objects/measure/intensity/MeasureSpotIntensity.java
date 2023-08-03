@@ -33,23 +33,87 @@ import io.github.sjcross.sjcommon.object.Point;
  */
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class MeasureSpotIntensity extends Module {
+
+	/**
+	* 
+	*/
     public static final String INPUT_SEPARATOR = "Object and image input";
+
+	/**
+	* Image from the workspace to measure the intensity of.
+	*/
     public static final String INPUT_IMAGE = "Input image";
+
+	/**
+	* Object collection from the workspace for which spot intensities will be measured.  One spot will be measured for each object.
+	*/
     public static final String INPUT_OBJECTS = "Input spot objects";
 
+
+	/**
+	* 
+	*/
     public static final String SPOT_SEPARATOR = "Spot size control";
+
+	/**
+	* Controls how the radius of the spot is defined:<br><ul><li>"Fixed value" A single radius, defined by "Fixed value" will be used for all objects.</li><li>"Measurement" The radius will be equal to the value of a measurement (specified by "Radius measurement") associated with the object being measured.  Radii will potentially be different for each object.</li><li>"Parent measurement" The radius will be equal to the value of a measurement (specified by "Parent radius measurement") associated a parent of the object being measured (specified by "Parent object").  Radii will potentially be different for each object..</li></ul>
+	*/
     public static final String RADIUS_SOURCE = "Radius value source";
+
+	/**
+	* Fixed spot radius to use for all object measurements when "Radius value source" is in "Fixed value" mode.
+	*/
     public static final String FIXED_VALUE = "Fixed value";
+
+	/**
+	* Measurement associated with the input object.  This will be used as spot the radius for spot intensity measurements when "Radius value source" is in "Measurement" mode.
+	*/
     public static final String RADIUS_MEASUREMENT = "Radius measurement";
+
+	/**
+	* Parent object of the input object being measured.  This parent will provide the measurement (specified by "Parent radius measurement") to be used as the spot radius for spot intensity measurements when "Radius value source" is in "Parent measurement" mode.
+	*/
     public static final String PARENT_OBJECT = "Parent object";
+
+	/**
+	* Measurement associated with a parent of the input object.  This will be used as the spot radius for spot intensity measurements when "Radius value source" is in "Parent measurement" mode.
+	*/
     public static final String PARENT_RADIUS_MEASUREMENT = "Parent radius measurement";
+
+	/**
+	* When selected, spot radius values (irrespective of whether they are fixed values, measurements or parent measurements) are assumed to be specified in calibrated units (as defined by the "Input control" parameter "Spatial unit").  Otherwise, pixel units are assumed.
+	*/
     public static final String CALIBRATED_UNITS = "Calibrated units";
 
+
+	/**
+	* 
+	*/
     public static final String MEASUREMENT_SEPARATOR = "Measurement selection";
+
+	/**
+	* When selected, the mean intensity of all coordinates in the spot is calculated and stored as a measurement associated with the input object.
+	*/
     public static final String MEASURE_MEAN = "Measure mean";
+
+	/**
+	* When selected, the standard deviation of intensity of all coordinates in the spot is calculated and stored as a measurement associated with the input object.
+	*/
     public static final String MEASURE_STDEV = "Measure standard deviation";
+
+	/**
+	* When selected, the minimum intensity of all coordinates in the spot is calculated and stored as a measurement associated with the input object.
+	*/
     public static final String MEASURE_MIN = "Measure minimum";
+
+	/**
+	* When selected, the maximum intensity of all coordinates in the spot is calculated and stored as a measurement associated with the input object.
+	*/
     public static final String MEASURE_MAX = "Measure maximum";
+
+	/**
+	* When selected, the summed intensity of all coordinates in the spot is calculated and stored as a measurement associated with the input object.
+	*/
     public static final String MEASURE_SUM = "Measure sum";
 
     public interface RadiusSources extends GetLocalObjectRegion.RadiusSources {

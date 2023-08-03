@@ -23,9 +23,25 @@ import io.github.mianalysis.mia.object.system.Status;
  */
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class GUISeparator extends Module {
+
+	/**
+	* 
+	*/
     public static final String VISIBILITY_SEPARATOR = "Separator visibility";
+
+	/**
+	* Display this GUI separator in the processing view.  When this parameter is selected, this separator will still only be shown if at least one of the following is true:<br><ul><li>The separator (and thus all associated modules) can be enabled/disabled from the processing view.  This is done by ticking "Can be disabled" at the top of this module in editing view.  Enabling/disabling a GUI separator will automatically apply the same state to all modules contained within (i.e. between this separator and the next separator).  If the separator can be enabled/disabled from processing view the power icon will be shown in green when enabled or in black with a strikethrough when disabled; however, if it can't be enabled/disabled, the power icon will be greyed out.</li><li>At least one module associated with this separator (a module between this separator and the next) can be disabled from the processing view.  Modules can be set to allow enabling/disabling from processing view by ticking "Can be disabled" at the top of the relevant module parameter control in editing view.</li><li>At least one parameter from a module associated with this separator (a module between this separator and the next) can be set from the processing view.  Parameters can be set as visible in processing view by clicking the eyeball icon to the right of that parameter in editing view.  When a module is visible an open eye is shown, while this is a closed eye when it's not visible (default option).</li></ul>
+	*/
     public static final String SHOW_PROCESSING = "Show in processing view";
+
+	/**
+	* In processing view, all controls between this separator and the next can be displayed/hidden by clicking the blue arrows either side of the separator bar.  This parameter controls if this parameter is in the expanded (controls displayed) or collapsed (controls hidden) state.  When the expansion state is changed from the processing view, this parameter is automatically updated.
+	*/
     public static final String EXPANDED_PROCESSING = "Expanded in processing view";
+
+	/**
+	* In editing view, all modules in the module list between this separator and the next can be displayed/hidden by clicking the blue arrows either side of module button.  This parameter controls if this parameter is in the expanded (modules displayed) or collapsed (modules hidden) state.  When the expansion state is changed from the editing view, this parameter is automatically updated.
+	*/
     public static final String EXPANDED_EDITING = "Expanded in editing view";
 
     public GUISeparator(Modules modules) {

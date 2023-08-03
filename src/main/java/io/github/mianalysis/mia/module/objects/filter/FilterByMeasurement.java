@@ -24,6 +24,10 @@ import io.github.mianalysis.mia.object.system.Status;
 
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class FilterByMeasurement extends AbstractNumericObjectFilter {
+
+	/**
+	* Objects will be filtered against their value of this measurement.  Objects missing this measurement are not removed; however, they can be removed by using the module "With / without measurement".
+	*/
     public static final String MEASUREMENT = "Measurement to filter on";
 
     public FilterByMeasurement(Modules modules) {

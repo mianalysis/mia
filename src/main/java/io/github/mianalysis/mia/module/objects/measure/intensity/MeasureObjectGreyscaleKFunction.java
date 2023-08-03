@@ -38,10 +38,26 @@ import io.github.mianalysis.mia.object.system.Status;
  */
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class MeasureObjectGreyscaleKFunction extends AbstractSaver {
+
+	/**
+	* 
+	*/
     public static final String INPUT_SEPARATOR = "Object and image input";
+
+	/**
+	* 
+	*/
     public static final String INPUT_OBJECTS = "Input objects";
+
+	/**
+	* 
+	*/
     public static final String INPUT_IMAGE = "Input image";
 
+
+	/**
+	* 
+	*/
     public static final String FUNCTION_SEPARATOR = "K-function controls";
     public static final String MINIMUM_RADIUS_PX = "Minimum radius (px)";
     public static final String MAXIMUM_RADIUS_PX = "Maximum radius (px)";

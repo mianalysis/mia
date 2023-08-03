@@ -22,7 +22,15 @@ import io.github.mianalysis.mia.object.units.SpatialUnit;
 
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class MeasureObjectLimits extends Module {
+
+	/**
+	* 
+	*/
     public static final String INPUT_SEPARATOR = "Object input";
+
+	/**
+	* Objects to measure spatial limits for.  Measurements will be associated with each object.
+	*/
     public static final String INPUT_OBJECTS = "Input objects";
 
     public MeasureObjectLimits(Modules modules) {

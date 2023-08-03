@@ -42,10 +42,30 @@ import io.github.mianalysis.mia.object.system.Status;
  */
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class SaveObjectsAsROIs extends AbstractSaver {
+
+	/**
+	* 
+	*/
     public static final String LOADER_SEPARATOR = "Object output";
+
+	/**
+	* 
+	*/
     public static final String INPUT_OBJECTS = "Input objects";
+
+	/**
+	* 
+	*/
     public static final String ADD_TRACK_ID = "Add track ID";
+
+	/**
+	* 
+	*/
     public static final String TRACK_OBJECTS = "Track objects";
+
+	/**
+	* 
+	*/
     public static final String FILE_MODE = "File mode";
 
     public interface FileModes {

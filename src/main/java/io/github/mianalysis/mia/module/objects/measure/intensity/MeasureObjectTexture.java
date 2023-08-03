@@ -41,14 +41,46 @@ import io.github.sjcross.sjcommon.analysis.TextureCalculator;
  */
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class MeasureObjectTexture extends Module {
+
+	/**
+	* 
+	*/
     public static final String INPUT_SEPARATOR = "Object and image input";
+
+	/**
+	* Objects from the workspace for which the corresponding texture of the image (specified by "Input image") will be calculated.  Textures will be calculated for each coordinate of each object and will include instances where the corresponding point (the intensity at the specified offset) is outside the object.  Texture measurements will be assigned to the relevant objects.
+	*/
     public static final String INPUT_OBJECTS = "Input objects";
+
+	/**
+	* Image from the workspace from which texture metrics for each object will be calculated.
+	*/
     public static final String INPUT_IMAGE = "Input image";
 
+
+	/**
+	* 
+	*/
     public static final String TEXTURE_SEPARATOR = "Texture calculation";
+
+	/**
+	* Each pixel in the input image will be compared to the pixel a defined offset-away.  This parameter controls the x-axis offset.  Offset specified in pixel units unless "Calibrated offset" is selected.  If using calibrated units, the offset will be rounded to the closest integer value.
+	*/
     public static final String X_OFFSET = "X-offset";
+
+	/**
+	* Each pixel in the input image will be compared to the pixel a defined offset-away.  This parameter controls the y-axis offset.  Offset specified in pixel units unless "Calibrated offset" is selected.  If using calibrated units, the offset will be rounded to the closest integer value.
+	*/
     public static final String Y_OFFSET = "Y-offset";
+
+	/**
+	* Each pixel in the input image will be compared to the pixel a defined offset-away.  This parameter controls the z-axis offset.  Offset specified in pixel units unless "Calibrated offset" is selected.  If using calibrated units, the offset will be rounded to the closest integer value.
+	*/
     public static final String Z_OFFSET = "Z-offset";
+
+	/**
+	* When selected, offsets are specified in calibrated units.  Otherwise, offsets are assumed to be in pixel units.
+	*/
     public static final String CALIBRATED_OFFSET = "Calibrated offset";
 
     public MeasureObjectTexture(Modules modules) {

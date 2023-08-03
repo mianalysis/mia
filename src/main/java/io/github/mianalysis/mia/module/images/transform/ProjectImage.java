@@ -48,13 +48,37 @@ import net.imglib2.view.Views;
  */
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class ProjectImage<T extends RealType<T> & NativeType<T>> extends Module {
+
+	/**
+	* 
+	*/
     public static final String INPUT_SEPARATOR = "Image input/output";
+
+	/**
+	* 
+	*/
     public static final String INPUT_IMAGE = "Input image";
+
+	/**
+	* 
+	*/
     public static final String OUTPUT_IMAGE = "Output image";
+
+	/**
+	* 
+	*/
     public static final String PROJECTION_SEPARATOR = "Image projection";
     // public static final String AXIS_1 = "Axis 2";
     // public static final String AXIS_2 = "Axis 1";
+
+	/**
+	* 
+	*/
     public static final String PROJECTION_AXIS = "Projection axis";
+
+	/**
+	* 
+	*/
     public static final String PROJECTION_MODE = "Projection mode";
 
     public ProjectImage(Modules modules) {

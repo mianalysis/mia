@@ -26,7 +26,15 @@ import io.github.mianalysis.mia.object.system.Status;
 
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class MeasureImageDimensions extends Module {
+
+	/**
+	* 
+	*/
     public static final String INPUT_SEPARATOR = "Image input";
+
+	/**
+	* Image to measure dimensions for.
+	*/
     public final static String INPUT_IMAGE = "Input image";
 
     public MeasureImageDimensions(Modules modules) {

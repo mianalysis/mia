@@ -29,7 +29,15 @@ import io.github.mianalysis.mia.object.system.Status;
  */
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class ChannelExtractor extends Module {
+
+	/**
+	* Multi-channel image to extract a channel from.  This image is unaffected by the extraction process (i.e. its channel count doesn't decrease by 1).
+	*/
     public static final String INPUT_IMAGE = "Input image";
+
+	/**
+	* The extracted channel will be stored in the workspace under this name.
+	*/
     public static final String OUTPUT_IMAGE = "Output image";
     public static final String CHANNEL_TO_EXTRACT = "Channel to extract (>= 1)";
 

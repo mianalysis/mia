@@ -26,8 +26,20 @@ import io.github.sjcross.sjcommon.object.volume.VolumeType;
 
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class FitConvexHull2D extends Module {
+
+	/**
+	* 
+	*/
     public static final String INPUT_SEPARATOR = "Object input/output";
+
+	/**
+	* Input objects to create 2D convex hulls for.  Each convex hull will be a child of its respective input object.
+	*/
     public static final String INPUT_OBJECTS = "Input objects";
+
+	/**
+	* Output convex hull objects will be stored in the workspace with this name.  Each convex hull object will be a child of the input object it was created from.
+	*/
     public static final String OUTPUT_OBJECTS = "Output objects";
     
     public Obj processObject(Obj inputObject, Objs outputObjects) {

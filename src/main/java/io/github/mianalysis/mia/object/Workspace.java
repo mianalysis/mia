@@ -80,6 +80,7 @@ public class Workspace {
 
     /**
      * Used to reduce memory of the workspace (particularly for batch processing).
+     * @param retainMeasurements When true, measurements associated with this image will be retained, while the pixel information will be cleared
      */
     public void clearAllImages(boolean retainMeasurements) {
         if (retainMeasurements) {

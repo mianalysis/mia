@@ -48,21 +48,77 @@ import io.github.sjcross.sjcommon.exceptions.LongOverflowException;
 
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class FillHolesByVolume extends Module {
+
+	/**
+	* 
+	*/
     public static final String INPUT_SEPARATOR = "Image input, object output";
+
+	/**
+	* Image from workspace to apply fill holes operation to.  This image will be 8-bit with binary logic determined by the "Binary logic" parameter.
+	*/
     public static final String INPUT_IMAGE = "Input image";
+
+	/**
+	* When selected, the post-operation image will overwrite the input image in the workspace.  Otherwise, the image will be saved to the workspace with the name specified by the "Output image" parameter.
+	*/
     public static final String APPLY_TO_INPUT = "Apply to input image";
+
+	/**
+	* If "Apply to input image" is not selected, the post-operation image will be saved to the workspace with this name.
+	*/
     public static final String OUTPUT_IMAGE = "Output image";
 
+
+	/**
+	* 
+	*/
     public static final String HOLE_FILLING_SEPARATOR = "Hole filling controls";
+
+	/**
+	* When selected, a minimum permitted volume for binary holes can be set.  Any holes with volumes smaller than this value will be removed.
+	*/
     public static final String SET_MINIMUM_VOLUME = "Set minimum volume";
+
+	/**
+	* If "Set minimum volume" is selected, this is the minimum volume each hole must have for it to be retained.  Volumes are specified in units controlled by the "Calibrated units" parameter.
+	*/
     public static final String MINIMUM_VOLUME = "Minimum permitted volume";
+
+	/**
+	* When selected, a maximum permitted volume for binary holes can be set.  Any holes with volumes larger than this value will be removed.
+	*/
     public static final String SET_MAXIMUM_VOLUME = "Set maximum volume";
+
+	/**
+	* If "Set maximum volume" is selected, this is the maximum volume each hole must have for it to be retained.  Volumes are specified in units controlled by the "Calibrated units" parameter.
+	*/
     public static final String MAXIMUM_VOLUME = "Maximum permitted volume";
+
+	/**
+	* When selected, hole size limits are assumed to be specified in calibrated units (as defined by the "Input control" parameter "Spatial unit").  Otherwise, pixel units are assumed.
+	*/
     public static final String CALIBRATED_UNITS = "Calibrated units";
+
+	/**
+	* Controls which adjacent pixels are considered:<br><ul><li>"6" Only pixels immediately next to the active pixel are considered.  These are the pixels on the four "cardinal" directions plus the pixels immediately above and below the current pixel.  If working in 2D, 4-way connectivity is used.</li><li>"26" In addition to the core 6-pixels, all immediately diagonal pixels are used.  If working in 2D, 8-way connectivity is used.</li></ul>
+	*/
     public static final String CONNECTIVITY = "Connectivity";
+
+	/**
+	* Controls whether objects are considered to be white (255 intensity) on a black (0 intensity) background, or black on a white background.
+	*/
     public static final String BINARY_LOGIC = "Binary logic";
 
+
+	/**
+	* 
+	*/
     public static final String EXECUTION_SEPARATOR = "Execution controls";
+
+	/**
+	* Break the image down into strips, each one processed on a separate CPU thread.  The overhead required to do this means it's best for large multi-core CPUs, but should be left disabled for small images or on CPUs with few cores.
+	*/
     public static final String ENABLE_MULTITHREADING = "Enable multithreading";
     public static final String MIN_STRIP_WIDTH = "Minimum strip width (px)";
 

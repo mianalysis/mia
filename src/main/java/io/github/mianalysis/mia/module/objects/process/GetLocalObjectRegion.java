@@ -37,26 +37,98 @@ import io.github.sjcross.sjcommon.object.volume.PointOutOfRangeException;
  */
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class GetLocalObjectRegion extends Module {
+
+	/**
+	* 
+	*/
     public static final String INPUT_SEPARATOR = "Object input/output";
+
+	/**
+	* Object collection from the workspace for which local object regions will be generated.  One region will be generated for each object and assigned as a child of the respective input object.
+	*/
     public static final String INPUT_OBJECTS = "Input objects";
+
+	/**
+	* Output local region objects to add to the workspace.  Each local object region is a sphere with centroid coincident with the centroid of the corresponding input object.  These objects are assigned as a child of their respective input object.
+	*/
     public static final String OUTPUT_OBJECTS = "Output objects";
 
+
+	/**
+	* 
+	*/
     public static final String CENTROID_SEPARATOR = "Centroid controls";
+
+	/**
+	* Controls how the centroid location of the output sphere/circle is defined:<br><ul><li>"Fixed value" A specific centroid location, defined by "X position", "Y position" and "Z position", will be used for all objects.</li><li>"Measurement" The centroid will be equal to the values of specific measurements (specified by "X-measurement", "Y-measurement" and "Z-measurement") associated with the object being measured.  Centroids will potentially be different for each object.</li><li>"Object centroid" The output objects will be centred on the centroid of the corresponding input object.</li><li>"Parent measurement" The centroid will be equal to the values of specific measurements (specified by "X-measurement", "Y-measurement" and "Z-measurement") associated a parent of the object being measured (specified by "Parent object for centroid").  Centroids will potentially be different for each object.</li></ul>
+	*/
     public static final String CENTROID_SOURCE = "Centoid value source";
+
+	/**
+	* Fixed X-coordinate of the centroid to use for generating all local object regions when "Centoid value source" is in "Fixed value" mode.
+	*/
     public static final String X_POSITION = "X position";
+
+	/**
+	* Fixed Y-coordinate of the centroid to use for generating all local object regions when "Centoid value source" is in "Fixed value" mode.
+	*/
     public static final String Y_POSITION = "Y position";
+
+	/**
+	* Fixed Z-coordinate of the centroid to use for generating all local object regions when "Centoid value source" is in "Fixed value" mode.
+	*/
     public static final String Z_POSITION = "Z position";
+
+	/**
+	* Measurement associated with the input or specified parent object.  This will be used as X-centroid for generating the local object region when "Centoid value source" is in "Measurement" or "Parent measurement" mode.
+	*/
     public static final String X_MEASUREMENT = "X-measurement";
+
+	/**
+	* Measurement associated with the input or specified parent object.  This will be used as Y-centroid for generating the local object region when "Centoid value source" is in "Measurement" or "Parent measurement" mode.
+	*/
     public static final String Y_MEASUREMENT = "Y-measurement";
+
+	/**
+	* Measurement associated with the input or specified parent object.  This will be used as Z-centroid for generating the local object region when "Centoid value source" is in "Measurement" or "Parent measurement" mode.
+	*/
     public static final String Z_MEASUREMENT = "Z-measurement";
+
+	/**
+	* Parent object of the input object being processed.  This parent will provide the measurements (specified by "X-measurement", "Y-measurement" and "Z-measurement") to be used as the spot centroid location for generating the local object region when "Centoid value source" is in "Parent measurement" mode.
+	*/
     public static final String PARENT_OBJECT_FOR_CENTROID = "Parent object for centroid";
+
+	/**
+	* Controls whether spot centroid values (irrespective of whether they are fixed values, measurements or parent measurements) are assumed to be specified in calibrated units (as defined by the "Input control" parameter "Spatial unit") or pixel units.
+	*/
     public static final String CENTROID_SPATIAL_UNITS = "Centroid spatial units";
 
+
+	/**
+	* 
+	*/
     public static final String RADIUS_SEPARATOR = "Radius controls";
+
+	/**
+	* Controls how the radius of the output sphere/circle is defined:<br><ul><li>"Fixed value" A single radius, defined by "Radius (px)", will be used for all objects.</li><li>"Measurement" The radius will be equal to the value of a measurement (specified by "Radius measurement") associated with the object being measured.  Radii will potentially be different for each object.</li><li>"Parent measurement" The radius will be equal to the value of a measurement (specified by "Radius measurement") associated a parent of the object being measured (specified by "Parent object for radius").  Radii will potentially be different for each object.</li><li>"Single point" The output objects will all be a single point corresponding to the centroid of the input object.</li></ul>
+	*/
     public static final String RADIUS_SOURCE = "Radius value source";
     public static final String FIXED_VALUE_FOR_RADIUS = "Radius (px)";
+
+	/**
+	* Measurement associated with the input or specified parent object.  This will be used as spot the radius for generating the local object region when "Radius value source" is in "Measurement" or "Parent measurement" mode.
+	*/
     public static final String RADIUS_MEASUREMENT = "Radius measurement";
+
+	/**
+	* Parent object of the input object being processed.  This parent will provide the measurement (specified by "Radius measurement") to be used as the spot radius for generating the local object region when "Radius value source" is in "Parent measurement" mode.
+	*/
     public static final String PARENT_OBJECT_FOR_RADIUS = "Parent object for radius";
+
+	/**
+	* Controls whether spot radius values (irrespective of whether they are fixed values, measurements or parent measurements) are assumed to be specified in calibrated units (as defined by the "Input control" parameter "Spatial unit") or pixel units.
+	*/
     public static final String RADIUS_SPATIAL_UNITS = "Radius spatial units";
 
     public interface CentroidSources {

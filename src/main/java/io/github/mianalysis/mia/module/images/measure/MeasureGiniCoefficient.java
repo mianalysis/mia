@@ -36,9 +36,25 @@ import net.imglib2.type.numeric.RealType;
  */
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class MeasureGiniCoefficient<T extends RealType<T> & NativeType<T>> extends Module {
+
+	/**
+	* 
+	*/
     public static final String INPUT_SEPARATOR = "Image input";
+
+	/**
+	* 
+	*/
     public static final String INPUT_IMAGE = "Input image";
+
+	/**
+	* 
+	*/
     public static final String USE_MASK = "Use mask";
+
+	/**
+	* 
+	*/
     public static final String MASK_IMAGE = "Mask image";
 
     public MeasureGiniCoefficient(Modules modules) {

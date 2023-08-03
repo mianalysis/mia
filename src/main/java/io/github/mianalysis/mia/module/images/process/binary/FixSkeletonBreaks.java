@@ -31,20 +31,72 @@ import io.github.sjcross.sjcommon.process.skeletontools.BreakFixer;
 
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class FixSkeletonBreaks extends Module {
+
+	/**
+	* 
+	*/
     public static final String INPUT_SEPARATOR = "Image input/output";
+
+	/**
+	* Image to apply break correction to.  This image will be 8-bit with binary logic determined by the "Binary logic" parameter.
+	*/
     public static final String INPUT_IMAGE = "Input image";
+
+	/**
+	* Select if the correction should be applied directly to the input image, or if it should be applied to a duplicate, then stored as a different image in the workspace.
+	*/
     public static final String APPLY_TO_INPUT = "Apply to input image";
+
+	/**
+	* Name of the output image created during processing.  This image will be added to the workspace.
+	*/
     public static final String OUTPUT_IMAGE = "Output image";
 
+
+	/**
+	* 
+	*/
     public static final String PROCESSING_SEPARATOR = "Processing options";
+
+	/**
+	* Number of pixels at the end of a branch to be used for determination of branch orientation.
+	*/
     public static final String N_PX_FOR_FITTING = "Number of end pixels to fit";
+
+	/**
+	* Maximum break distance that can be bridged.  Specified in pixels unless "Calibrated units" is enabled.
+	*/
     public static final String MAX_LINKING_DISTANCE = "Maximum linking distance";
+
+	/**
+	* Select whether "Maximum linking distance" should be specified in pixel (false) or calibrated (true) units.
+	*/
     public static final String CALIBRATED_UNITS = "Calibrated units";
     public static final String MAX_LINKING_ANGLE = "Maximum linking angle (degrees)";
+
+	/**
+	* Only remove breaks between pixels at branch ends.  When disabled, an end can link into the middle of another branch.
+	*/
     public static final String ONLY_LINK_ENDS = "Only link ends";
+
+	/**
+	* Weight applied to orientation mismatch of ends.  This controls how important orientation mismatches are when considering multiple candidate fixes.  The larger this is, the more likely ends need to be well aligned to be chosen for linking.
+	*/
     public static final String ANGLE_WEIGHT = "Angle weight";
+
+	/**
+	* Weight applied to distance between candidate ends.  This controls how important minimising the distance between candidate ends is when multiple candidate fixes are available.  The larger than is, the more likely ends will need to be in close proximity to be chosen for linking.
+	*/
     public static final String DISTANCE_WEIGHT = "Distance weight";
+
+	/**
+	* Weight applied to preference for linking end points. The larger this is, the more likely the points chosen for linking will be ends of the skeleton (rather than mid-points).
+	*/
     public static final String END_WEIGHT = "End weight";
+
+	/**
+	* Controls whether objects are considered to be white (255 intensity) on a black (0 intensity) background, or black on a white background.
+	*/
     public static final String BINARY_LOGIC = "Binary logic";
 
     public interface BinaryLogic extends BinaryLogicInterface {

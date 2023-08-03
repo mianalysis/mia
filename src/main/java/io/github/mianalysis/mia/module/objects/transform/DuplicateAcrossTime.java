@@ -37,24 +37,92 @@ import io.github.sjcross.sjcommon.object.volume.PointOutOfRangeException;
  */
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class DuplicateAcrossTime extends Module {
+
+	/**
+	* 
+	*/
     public static final String INPUT_SEPARATOR = "Object input";
+
+	/**
+	* Input objects to duplicate across multiple timepoints.
+	*/
     public static final String INPUT_OBJECTS = "Input objects";
 
+
+	/**
+	* 
+	*/
     public static final String OUTPUT_SEPARATOR = "Object output";
+
+	/**
+	* Output duplicated objects which will be added to the workspace.
+	*/
     public static final String OUTPUT_OBJECTS = "Output objects";
+
+	/**
+	* Controls whether the duplicated objects share the same common coordinate set or each have their own.  A duplicated coordinate set will use a lot less memory (as no redundant duplication of data is required), but should be used with caution, as any change to the coordinates in one frame will result in the change being mirrored across all timepoints.
+	*/
     public static final String STORAGE_MODE = "Coordinates storage mode";
+
+	/**
+	* 
+	*/
     public static final String COMMON_WARNING = "Common warning";
 
+
+	/**
+	* 
+	*/
     public static final String FRAME_SEPARATOR = "Frame range";
+
+	/**
+	* Specifies the source for the first timepoint the objects will be created for:<br><ul><li>"Fixed value" The first timepoint will be controlled by the value specified in the "Start frame fixed value" parameter.</li><li>"Image measurement" The first timepoint will be taken from a measurement ("Start frame image measurement" parameter) assigned to the image specified by "Start frame image".</li></ul>
+	*/
     public static final String START_FRAME_MODE = "Start frame mode";
+
+	/**
+	* If "Start frame mode" is set to "Fixed value", this is the fixed value that will be used as the first timepoint for the output duplicated objects.
+	*/
     public static final String START_FRAME_FIXED_VALUE = "Start frame fixed value";
+
+	/**
+	* If "Start frame mode" is set to "Image measurement", this is the image from which the measurerment "Start frame image measurement" will be taken.
+	*/
     public static final String START_FRAME_IMAGE = "Start frame image";
+
+	/**
+	* If "Start frame mode" is set to "Image measurement", this is the measurement that will be used as the first timepoint for the duplicated objects.
+	*/
     public static final String START_FRAME_IMAGE_MEASUREMENT = "Start frame image measurement";
+
+	/**
+	* If "Start frame mode" is set to "Image measurement", the first frame can be offset relative to the specified measurement by this number of frames.  For example, if the provided measurement is 5 and an offset of -1 is used, the first frame in the duplicated set will be 4.
+	*/
     public static final String START_OFFSET = "Start frame offset";
+
+	/**
+	* Specifies the source for the last timepoint the objects will be created for:<br><ul><li>"Fixed value" The last timepoint will be controlled by the value specified in the "End frame fixed value" parameter.</li><li>"Image measurement" The last timepoint will be taken from a measurement ("End frame image measurement" parameter) assigned to the image specified by "End frame image".</li></ul>
+	*/
     public static final String END_FRAME_MODE = "End frame mode";
+
+	/**
+	* If "End frame mode" is set to "Fixed value", this is the fixed value that will be used as the last timepoint for the output duplicated objects.
+	*/
     public static final String END_FRAME_FIXED_VALUE = "End frame fixed value";
+
+	/**
+	* If "End frame mode" is set to "Image measurement", this is the image from which the measurerment "End frame image measurement" will be taken.
+	*/
     public static final String END_FRAME_IMAGE = "End frame image";
+
+	/**
+	* If "End frame mode" is set to "Image measurement", this is the measurement that will be used as the last timepoint for the duplicated objects.
+	*/
     public static final String END_FRAME_IMAGE_MEASUREMENT = "End frame image measurement";
+
+	/**
+	* If "End frame mode" is set to "Image measurement", the end frame can be offset relative to the specified measurement by this number of frames.  For example, if the provided measurement is 5 and an offset of -1 is used, the last frame in the duplicated set will be 4.
+	*/
     public static final String END_OFFSET = "End frame offset";
 
     public interface StorageModes {

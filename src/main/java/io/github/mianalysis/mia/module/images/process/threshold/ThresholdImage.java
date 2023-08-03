@@ -43,22 +43,82 @@ import io.github.sjcross.sjcommon.filters.AutoLocalThreshold3D;
  */
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class ThresholdImage extends Module {
+
+	/**
+	* 
+	*/
     public static final String INPUT_SEPARATOR = "Image input/output";
+
+	/**
+	* Image to apply threshold to.
+	*/
     public static final String INPUT_IMAGE = "Input image";
+
+	/**
+	* Select if the threshold should be applied directly to the input image, or if it should be applied to a duplicate, then stored as a different image in the workspace.
+	*/
     public static final String APPLY_TO_INPUT = "Apply to input image";
+
+	/**
+	* Name of the output image created during the thresholding process.  This image will be added to the workspace.
+	*/
     public static final String OUTPUT_IMAGE = "Output image";
 
+
+	/**
+	* 
+	*/
     public static final String THRESHOLD_SEPARATOR = "Threshold controls";
+
+	/**
+	* Class of threshold to be applied.<br><br> - "Global" (default) will apply a constant, automatically-determined threshold value to all pixels in the image.  This is best when the image is uniformly illuminated.<br><br> - " Local" will apply a variable threshold to each pixel in the image based on the local intensity around that pixel.  This is best when one region of the image is brighter than another, for example, due to heterogeneous illumination.  The size of the local region is determined by the user.<br><br> - " Manual" will apply a fixed threshold value to all pixels in the image.<br>
+	*/
     public static final String THRESHOLD_TYPE = "Threshold type";
+
+	/**
+	* Global thresholding algorithm to use.
+	*/
     public static final String GLOBAL_ALGORITHM = "Global threshold algorithm";
+
+	/**
+	* Local thresholding algorithm to use.
+	*/
     public static final String LOCAL_ALGORITHM = "Local threshold algorithm";
+
+	/**
+	* Prior to application of automatically-calculated thresholds the threshold value is multiplied by this value.  This allows the threshold to be systematically increased or decreased.  For example, a "Threshold multiplier" of 0.9 applied to an automatically-calculated threshold of 200 will see the image thresholded at the level 180.
+	*/
     public static final String THRESHOLD_MULTIPLIER = "Threshold multiplier";
+
+	/**
+	* Limit the lowest threshold that can be applied to the image.  This is used to prevent unintentional segmentation of an image containing only background (i.e. no features present).
+	*/
     public static final String USE_LOWER_THRESHOLD_LIMIT = "Use lower threshold limit";
+
+	/**
+	* Lowest absolute threshold value that can be applied.
+	*/
     public static final String LOWER_THRESHOLD_LIMIT = "Lower threshold limit";
+
+	/**
+	* Radius of region to be used when calculating local intensity thresholds.  Units controlled by "Spatial units mode" control.
+	*/
     public static final String LOCAL_RADIUS = "Local radius";
+
+	/**
+	* Controls whether spatial values are assumed to be specified in calibrated units (as defined by the "Input control" parameter "Spatial unit") or pixel units.
+	*/
     public static final String SPATIAL_UNITS_MODE = "Spatial units mode";
+
+	/**
+	* Absolute manual threshold value that will be applied to all pixels.
+	*/
     public static final String THRESHOLD_VALUE = "Threshold value";
     public static final String USE_GLOBAL_Z = "Use full Z-range (\"Global Z\")";
+
+	/**
+	* Controls the logic of the output image in terms of what is considered foreground and background.
+	*/
     public static final String WHITE_BACKGROUND = "Black objects/white background";
 
     public ThresholdImage(Modules modules) {

@@ -60,15 +60,43 @@ import io.github.sjcross.sjcommon.object.volume.VolumeType;
  */
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class MeasureIntensityAlongPath extends AbstractSaver {
+
+	/**
+	* 
+	*/
     public static final String INPUT_SEPARATOR = "Object input";
+
+	/**
+	* Objects for which intensity profiles will be generated.
+	*/
     public static final String INPUT_OBJECTS = "Input objects";
 
+
+	/**
+	* 
+	*/
     public static final String IMAGE_SEPARATOR = "Image input";
     public static final String INPUT_IMAGE = "Input image";
+
+	/**
+	* Include another image from the workspace to be measured.  Each separate image will be measured at the same spatial points and be saved to a separate sheet of the .xlsx file.
+	*/
     public static final String MEASURE_ANOTHER_IMAGE = "Measure another image";
 
+
+	/**
+	* 
+	*/
     public static final String OUTPUT_SEPARATOR = "Data output";
+
+	/**
+	* Include columns recording the XYZ object centroid in pixel (or slice) units.
+	*/
     public static final String INCLUDE_CENTROIDS = "Include centroids";
+
+	/**
+	* Include a column recording the timepoint that the objects were present in.
+	*/
     public static final String INCLUDE_TIMEPOINTS = "Include timepoints";
 
     public MeasureIntensityAlongPath(Modules modules) {

@@ -38,14 +38,46 @@ import io.github.mianalysis.mia.object.system.Status;
  */
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class BleachingCorrection extends Module {
+
+	/**
+	* 
+	*/
     public static final String INPUT_SEPARATOR = "Image input/output";
+
+	/**
+	* Image from workspace to apply bleaching correction process to.
+	*/
     public static final String INPUT_IMAGE = "Input image";
+
+	/**
+	* When selected, the post-operation image will overwrite the input image in the workspace.  Otherwise, the image will be saved to the workspace with the name specified by the "Output image" parameter.
+	*/
     public static final String APPLY_TO_INPUT = "Apply to input image";
+
+	/**
+	* If "Apply to input image" is not selected, the post-operation image will be saved to the workspace with this name.
+	*/
     public static final String OUTPUT_IMAGE = "Output image";
 
+
+	/**
+	* 
+	*/
     public static final String CORRECTION_SEPARATOR = "Correction controls";
+
+	/**
+	* Controls the bleach correction algorithm to use:<br><ul><li>"Exponential fit" Assumes the bleaching process is controlled by a mono-exponential decay.  Will fail if the signal does not decay over time.  Calculation can be performed using a single ROI for all frames.</li><li>"Histogram matching" Adjusts image intensities so that the histograms match that from the first frame.</li><li>"Simple ratio" Normalises images to have the same mean intensity.  Calculation can be performed using a single ROI for all frames.</li></ul>
+	*/
     public static final String CORRECTION_MODE = "Correction mode";
+
+	/**
+	* When selected, the bleaching and associated intensity correction will be calculated based on the pixels within a region of interest (specified as the objects of collection "ROI objects").  A single ROI is used for all frames (i.e. the region can't be different from frame to frame).
+	*/
     public static final String USE_ROI_OBJECTS = "Use ROI objects";
+
+	/**
+	* If "Use ROI objects" is selected, this is the object collection which will act as the region of interest for calculating the bleaching.  Since only a single ROI can be used, all objects in this collection are reduced down into a single frame and timepoint.
+	*/
     public static final String ROI_OBJECTS = "ROI objects";
 
     public interface CorrectionModes {

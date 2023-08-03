@@ -32,12 +32,36 @@ import io.github.mianalysis.mia.object.system.Status;
  */
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class Convert3DStack extends Module {
+
+	/**
+	* 
+	*/
     public static final String IMAGE_SEPARATOR = "Image input/output";
+
+	/**
+	* Image from workspace to test T and Z inversion of.
+	*/
     public static final String INPUT_IMAGE = "Input image";
+
+	/**
+	* When selected, the post-operation image will overwrite the input image in the workspace.  Otherwise, the image will be saved to the workspace with the name specified by the "Output image" parameter.
+	*/
     public static final String APPLY_TO_INPUT = "Apply to input image";
+
+	/**
+	* If "Apply to input image" is not selected, the post-operation image will be saved to the workspace with this name.
+	*/
     public static final String OUTPUT_IMAGE = "Output image";
 
+
+	/**
+	* 
+	*/
     public static final String CONVERSION_SEPARTOR = "Stack conversion";
+
+	/**
+	* Controls the expected stack output type.  Any input stacks which do not match this format are updated to give the expected order.  Choices are: Output timeseries, Output Z-stack.
+	*/
     public static final String MODE = "Mode";
 
     public interface Modes {

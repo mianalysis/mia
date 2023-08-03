@@ -48,29 +48,121 @@ import loci.formats.FormatException;
  */
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class WorkflowHandling extends Module {
+
+	/**
+	* 
+	*/
     public static final String CONDITION_SEPARATOR = "Condition";
+
+	/**
+	* Controls what condition is being tested:<br><ul><li>"Image measurement" Numeric filter against a measurement (specified by "Image measurement") associated with an image from the workspace (specified by "Input image").</li><li>"Metadata numeric value" Numeric filter against a metadata value (specified by "Metadata value") associated with the workspace.  Metadata values are stored as text, but this filter will attempt to parse any numeric values as numbers.  Text comparison can be done using "Metadata text value" mode.</li><li>"Metadata text value" Text filter against a metadata value (specified by "Metadata value") associated with the workspace.  This filter compares for exact text matches to a reference, specified by "Reference text value"</li><li>"File exists" Checks if a specified file exists on the accessible computer filesystem.</li><li>"File doesn't exist" Checks if a specified file doesn't exist on the accessible computer filesystem.</li><li>"Fixed value" Numeric filter against a fixed value.</li><li>"Object count" Numeric filter against the number of objects contained in an object collection stored in the workspace (specified by "Input objects").</li></ul>
+	*/
     public static final String TEST_MODE = "Test mode";
+
+	/**
+	* If testing against an image measurement ("Test mode" set to "Image measurement"), this is the image from which that measurement will be taken.
+	*/
     public static final String INPUT_IMAGE = "Input image";
+
+	/**
+	* If testing against an object count ("Test mode" set to "Object count"), this is the object collection which will be counted.
+	*/
     public static final String INPUT_OBJECTS = "Input objects";
+
+	/**
+	* If testing against an image measurement ("Test mode" set to "Image measurement"), this is the measurement from the image (specified by "Input image") that will be tested.
+	*/
     public static final String IMAGE_MEASUREMENT = "Image measurement";
+
+	/**
+	* If testing against a metadata value (either text or numeric) associated with the active workspace ("Test mode" set to "Metadata text value"), this is the value that will be tested.
+	*/
     public static final String METADATA_VALUE = "Metadata value";
+
+	/**
+	* If testing against a fixed numeric value ("Test mode" set to "Fixed value"), this is the value that will be tested.
+	*/
     public static final String FIXED_VALUE = "Fixed value";
+
+	/**
+	* Numeric comparison used to determine whether the test passes or fails.  Choices are: Less than, Less than or equal to, Equal to, Greater than or equal to, Greater than, Not equal to.
+	*/
     public static final String NUMERIC_FILTER_MODE = "Numeric filter mode";
+
+	/**
+	* Text comparison used to determine whether the test passes or fails.  Choices are: Contains, Does not contain, Equal to, Not equal to.
+	*/
     public static final String TEXT_FILTER_MODE = "Text filter mode";
+
+	/**
+	* If testing against a numeric value, this is the reference value against which it will be tested.  What classes as a pass or fail is determined by the parameter "Numeric filter mode".
+	*/
     public static final String REFERENCE_NUMERIC_VALUE = "Reference numeric value";
+
+	/**
+	* If testing against a text value, this is the reference value against which it will be tested.  What classes as a pass or fail is determined by the parameter "Text filter mode".
+	*/
     public static final String REFERENCE_TEXT_VALUE = "Reference text value";
+
+	/**
+	* Format for a generic filename.  Plain text can be mixed with global variables or metadata values currently stored in the workspace.  Global variables are specified using the "V{name}" notation, where "name" is the name of the variable to insert.  Similarly, metadata values are specified with the "M{name}" notation.
+	*/
     public static final String GENERIC_FORMAT = "Generic format";
+
+	/**
+	* List of the currently-available metadata values for this workspace.  These can be used when compiling a generic filename.
+	*/
     public static final String AVAILABLE_METADATA_FIELDS = "Available metadata fields";
 
+
+	/**
+	* 
+	*/
     public static final String RESULT_SEPARATOR = "Result";
+
+	/**
+	* Controls what happens if the termination/redirection condition is met:<br><ul><li>"Redirect to module" The analysis workflow will skip to the module specified by the "Redirect module" parameter.  Any modules between the present module and the target module will not be evaluated.</li><li>"Terminate" The analysis will stop evaluating any further modules.</li></ul>
+	*/
     public static final String CONTINUATION_MODE = "Continuation mode";
+
+	/**
+	* If the condition is met, the workflow will redirect to this module.  In doing so, it will skip evaluation of any modules between the present module and this module.
+	*/
     public static final String REDIRECT_MODULE = "Redirect module";
+
+	/**
+	* Controls if a message should be displayed in the log if redirection occurs.
+	*/
     public static final String SHOW_REDIRECT_MESSAGE = "Show redirect message";
+
+	/**
+	* Message to display if redirection occurs.
+	*/
     public static final String REDIRECT_MESSAGE = "Redirect message";
+
+	/**
+	* Controls the logging level in which the message will be displayed.  Warnings are enabled for users by default, but debug and message aren't.
+	*/
     public static final String MESSAGE_LEVEL = "Message level";
+
+	/**
+	* 
+	*/
     public static final String SHOW_TERMINATION_WARNING = "Show termination warning";
+
+	/**
+	* Controls if the workspace should still be exported to the output Excel spreadsheet if termination occurs.
+	*/
     public static final String EXPORT_WORKSPACE = "Export terminated workspaces";
+
+	/**
+	* Controls if objects should be completely removed from the workspace along with any associated measurements if termination occurs.
+	*/
     public static final String REMOVE_OBJECTS = "Remove objects from workspace";
+
+	/**
+	* Controls if images should be completely removed from the workspace along with any associated measurements if termination occurs.
+	*/
     public static final String REMOVE_IMAGES = "Remove images from workspace";
 
     public WorkflowHandling(Modules modules) {

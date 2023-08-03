@@ -52,24 +52,88 @@ import sc.fiji.analyzeSkeleton.Vertex;
 
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class MeasureSkeleton extends Module {
+
+	/**
+	* 
+	*/
     public static final String INPUT_SEPARATOR = "Object input";
+
+	/**
+	* Input objects from the workspace to be skeletonised.  These can be either 2D or 3D objects.  Skeleton measurements will be added to this object.
+	*/
     public static final String INPUT_OBJECTS = "Input objects";
 
+
+	/**
+	* 
+	*/
     public static final String OUTPUT_SEPARATOR = "Object output";
+
+	/**
+	* When selected, the coordinates for the various skeleton components (edges, junctions and loops) will be stored as new objects.  These objects will all be children of a parent "Skeleton" object, which itself will be a child of the corresponding input object.
+	*/
     public static final String ADD_SKELETONS_TO_WORKSPACE = "Add skeletons to workspace";
+
+	/**
+	* If "Add skeletons to workspace" is selected, a single "Skeleton" object will be created per input object.  This skeleton object will act as a linking object (parent) for the edges, junctions and loops that comprise that skeleton.  As such, the skeleton object itself doesn't store any coordinate information.
+	*/
     public static final String OUTPUT_SKELETON_OBJECTS = "Output skeleton objects";
+
+	/**
+	* If "Add skeletons to workspace" is selected, the edges of each skeleton will be stored in these objects.  An "Edge" is comprised of a continuous run of points each with one (end points) or two neighbours.  These edge objects are children of a "Skeleton" object (specified by the "Output skeleton objects" parameter), which itself is the child of the corresponding input object.  Each edge object has a partner relationship with its adjacent "Junction" and (optionally) "Loop" objects (specified by the "Output junction objects" and "Output loop objects" parameters, respectively).
+	*/
     public static final String OUTPUT_EDGE_OBJECTS = "Output edge objects";
+
+	/**
+	* If "Add skeletons to workspace" is selected, the junctions of each skeleton will be stored in these objects.  A "Junction" is comprised of a contiguous regions of points each with three or neighbours.  These junction objects are children of a "Skeleton" object (specified by the "Output skeleton objects" parameter), which itself is the child of the corresponding input object.  Each junction object has a partner relationship with its adjacent "Edge" and (optionally) "Loop" objects (specified by the "Output edge objects" and "Output loop objects" parameters, respectively).
+	*/
     public static final String OUTPUT_JUNCTION_OBJECTS = "Output junction objects";
+
+	/**
+	* When selected (and if "Add skeletons to workspace" is also selected), the loops of each skeleton will be stored in the workspace as new objects.  The name for the output loop objects is determined by the "Output loop objects" parameter.
+	*/
     public static final String EXPORT_LOOP_OBJECTS = "Export loop objects";
+
+	/**
+	* If both "Add skeletons to workspace" and "Export loop objects" are selected, the loops of each skeleton will be stored in these objects.  A "Loop" is comprised of a continuous region of points bounded on all sides by either "Edge" or "Junction" points.  These loop objects are children of a "Skeleton" object (specified by the "Output skeleton objects" parameter), which itself is the child of the corresponding input object.  Each loop object has a partner relationship with its adjacent "Edge" and "Junction" objects (specified by the "Output edge objects" and "Output junction objects" parameters, respectively).
+	*/
     public static final String OUTPUT_LOOP_OBJECTS = "Output loop objects";
+
+	/**
+	* When selected, the largest shortest path between any two points in the skeleton will be stored in the workspace as a new object.  For each input object, the shortest path between all point pairs within the skeleton is calculated and the largest of all these paths stored as a new object.  The name for the output largest shortest path object associated with each input object is determined by the "Output largest shortest path" parameter.  <a href="https://imagej.net/plugins/analyze-skeleton/">Analyse Skeleton</a> calculates the largest shortest path using <a href="https://en.wikipedia.org/wiki/Floyd%E2%80%93Warshall_algorithm">Floyd-Warshall algorithm</a>.  Note: These objects are not the same as the <a href="https://en.wikipedia.org/wiki/Longest_path_problem">longest possible path</a>.
+	*/
     public static final String EXPORT_LARGEST_SHORTEST_PATH = "Export largest shortest path";
+
+	/**
+	* If "Export largest shortest path"is selected, the largest shortest path for each skeleton will be stored in the workspace.  For each skeleton, the shortest path between all point pairs is calculated; the largest shortest path is the longest of all these paths.  The largest shortest path objects are children of the corresponding input object.
+	*/
     public static final String OUTPUT_LARGEST_SHORTEST_PATH = "Output largest shortest path";
 
+
+	/**
+	* 
+	*/
     public static final String SKELETONISATION_SEPARATOR = "Skeletonisation settings";
+
+	/**
+	* The minimum length of a branch (edge terminating in point with just one neighbour) for it to be included in skeleton measurements and (optionally) exported as an object.
+	*/
     public static final String MINIMUM_BRANCH_LENGTH = "Minimum branch length";
+
+	/**
+	* When selected, spatial values are assumed to be specified in calibrated units (as defined by the "Input control" parameter "Spatial unit").  Otherwise, pixel units are assumed.
+	*/
     public static final String CALIBRATED_UNITS = "Calibrated units";
 
+
+	/**
+	* 
+	*/
     public static final String EXECUTION_SEPARATOR = "Execution controls";
+
+	/**
+	* Break the image down into strips, each one processed on a separate CPU thread.  The overhead required to do this means it's best for large multi-core CPUs, but should be left disabled for small images or on CPUs with few cores.
+	*/
     public static final String ENABLE_MULTITHREADING = "Enable multithreading";
 
     public interface Measurements {

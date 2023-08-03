@@ -41,7 +41,15 @@ import sc.fiji.analyzeSkeleton.SkeletonResult;
  */
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class MeasureObjectWidth extends Module {
+
+	/**
+	* 
+	*/
     public static final String INPUT_SEPARATOR = "Object input";
+
+	/**
+	* 
+	*/
     public static final String INPUT_OBJECTS = "Input objects";
 
     public MeasureObjectWidth(Modules modules) {

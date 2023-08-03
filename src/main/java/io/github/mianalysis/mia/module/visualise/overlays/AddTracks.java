@@ -50,22 +50,74 @@ import io.github.mianalysis.mia.process.ColourFactory;
  */
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class AddTracks extends AbstractOverlay {
+
+	/**
+	* 
+	*/
     public static final String INPUT_SEPARATOR = "Image and object input";
+
+	/**
+	* Image onto which overlay will be rendered.  Input image will only be updated if "Apply to input image" is enabled, otherwise the image containing the overlay will be stored as a new image with name specified by "Output image".
+	*/
     public static final String INPUT_IMAGE = "Input image";
+
+	/**
+	* Track objects to render in the overlay.  Track objects themselves don't contain any coordinate information, they simply act as links between the different "Spot objects" children in each frame of the track.
+	*/
     public static final String INPUT_OBJECTS = "Input objects";
+
+	/**
+	* Objects present in each frame of this track.  These are children of the "Input objects" and provide the coordinate information for each frame.
+	*/
     public static final String SPOT_OBJECTS = "Spot objects";
 
+
+	/**
+	* 
+	*/
     public static final String OUTPUT_SEPARATOR = "Image output";
+
+	/**
+	* Determines if the modifications made to the input image (added overlay elements) will be applied to that image or directed to a new image.  When selected, the input image will be updated.
+	*/
     public static final String APPLY_TO_INPUT = "Apply to input image";
+
+	/**
+	* If the modifications (overlay) aren't being applied directly to the input image, this control will determine if a separate image containing the overlay should be saved to the workspace.
+	*/
     public static final String ADD_OUTPUT_TO_WORKSPACE = "Add output image to workspace";
+
+	/**
+	* The name of the new image to be saved to the workspace (if not applying the changes directly to the input image).
+	*/
     public static final String OUTPUT_IMAGE = "Output image";
 
+
+	/**
+	* 
+	*/
     public static final String RENDERING_SEPARATOR = "Overlay rendering";
+
+	/**
+	* When enabled, segments of a track will only be displayed for a finite number of frames after the timepoint they correspond to.  This gives the effect of a moving tail behind the object and can be use to prevent the overlay image becoming too cluttered for long/dense videos.  The duration of the track history is specified by the "Track history (frames)" parameter.
+	*/
     public static final String LIMIT_TRACK_HISTORY = "Limit track history";
     public static final String TRACK_HISTORY = "Track history (frames)";
+
+	/**
+	* Width of the rendered lines.  Specified in pixel units.
+	*/
     public static final String LINE_WIDTH = "Line width";
 
+
+	/**
+	* 
+	*/
     public static final String EXECUTION_SEPARATOR = "Execution controls";
+
+	/**
+	* Process multiple overlay elements simultaneously.  This can provide a speed improvement when working on a computer with a multi-core CPU.
+	*/
     public static final String ENABLE_MULTITHREADING = "Enable multithreading";
 
     public AddTracks(Modules modules) {

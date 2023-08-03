@@ -58,16 +58,52 @@ import io.github.sjcross.sjcommon.object.volume.VolumeType;
  */
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class ClusterPoints extends Module {
+
+	/**
+	* 
+	*/
     public static final String INPUT_SEPARATOR = "Image input, object output";
+
+	/**
+	* 
+	*/
     public static final String INPUT_IMAGE = "Input image";
+
+	/**
+	* 
+	*/
     public static final String OUTPUT_OBJECTS = "Output objects";
 
+
+	/**
+	* 
+	*/
     public static final String CLUSTER_SEPARATOR = "Cluster controls";
+
+	/**
+	* 
+	*/
     public static final String BINARY_LOGIC = "Binary logic";
+
+	/**
+	* The clustering algorithm to use:<br><ul><li>"DBSCAN" Points are clustered based on a minimum number of neighbours ("Minimum number of points per cluster") within a specified distance ("Neighbourhood for clustering (epsilon)").  All proximal points which satisfy these criteria are added to a common cluster.  This uses the <a href="https://commons.apache.org/proper/commons-math/javadocs/api-3.6/org/apache/commons/math3/stat/clustering/DBSCANClusterer.html">Apache Commons Math3</a> implementation of DBSCAN, which describes the algorithm as: "A point p is density connected to another point q, if there exists a chain of points pi, with i = 1 .. n and p1 = p and pn = q, such that each pair (pi, pi+1) is directly density-reachable. A point q is directly density-reachable from point p if it is in the ε-neighborhood of this point.".</li><li>"KMeans++" Points are assigned into a pre-determined number of clusters (defined by "Number of clusters"), with each point assigned to the cluster with the closest centroid.  Since the cluster centroids will vary with each added point, this process is optimised iteratively.  The algorithm continues until either no points switch clusters or the maximum number of allowed iterations ("Maximum number of iterations") is reached.</li></ul>
+	*/
     public static final String CLUSTERING_ALGORITHM = "Clustering algorithm";
+
+	/**
+	* If "Clustering algorithm" is set to "KMeans++", this is the number of clusters the points will be assigned to.
+	*/
     public static final String K_CLUSTERS = "Number of clusters";
+
+	/**
+	* If "Clustering algorithm" is set to "KMeans++", this is the maximum number of optimisation iterations that will be performed.  If cluster assignment has stabilised prior to reaching this number of iterations the algorithm will terminate early.
+	*/
     public static final String MAX_ITERATIONS = "Maximum number of iterations";
     public static final String EPS = "Neighbourhood for clustering (epsilon)";
+
+	/**
+	* If "Clustering algorithm" is set to "DBSCAN", this is the minimum number of neighbour points which must be within a specified distance ("Neighbourhood for clustering (epsilon)") of a point for that point to be included in the cluster.
+	*/
     public static final String MIN_POINTS = "Minimum number of points per cluster";
 
     public ClusterPoints(Modules modules) {

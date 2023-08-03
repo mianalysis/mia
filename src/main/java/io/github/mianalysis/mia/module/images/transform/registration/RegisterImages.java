@@ -68,35 +68,123 @@ import net.imglib2.type.numeric.RealType;
 
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class RegisterImages<T extends RealType<T> & NativeType<T>> extends Module implements Interactable {
+
+	/**
+	* 
+	*/
     public static final String INPUT_SEPARATOR = "Image input/output";
+
+	/**
+	* Image from workspace to apply registration to.
+	*/
     public static final String INPUT_IMAGE = "Input image";
+
+	/**
+	* When selected, the post-operation image will overwrite the input image in the workspace.  Otherwise, the image will be saved to the workspace with the name specified by the "Output image" parameter.
+	*/
     public static final String APPLY_TO_INPUT = "Apply to input image";
+
+	/**
+	* If "Apply to input image" is not selected, the post-operation image will be saved to the workspace with this name.
+	*/
     public static final String OUTPUT_IMAGE = "Output image";
 
+
+	/**
+	* 
+	*/
     public static final String REGISTRATION_SEPARATOR = "Registration controls";
+
+	/**
+	* Controls whether the registration is determined automatically through SIFT feature extraction or manually, by a user selecting reference points on a pair of images.
+	*/
     public static final String ALIGNMENT_MODE = "Alignment mode";
+
+	/**
+	* Controls the type of registration being applied:<br><ul><li>"Affine" Applies the full affine transformation, whereby the input image can undergo translation, rotation, reflection, scaling and shear.</li><li>"Rigid" Applies only translation and rotation to the input image.  As such, all features should remain the same size.</li><li>"Similarity" Applies translation, rotating and linear scaling to the input image.</li><li>"Translation" Applies only translation (motion within the 2D plane) to the input image.</li></ul>
+	*/
     public static final String TRANSFORMATION_MODE = "Transformation mode";
+
+	/**
+	* When selected, certain parts of the registration process will be run on multiple threads of the CPU.  This can provide a speed improvement when working on a computer with a multi-core CPU.
+	*/
     public static final String ENABLE_MULTITHREADING = "Enable multithreading";
+
+	/**
+	* Controls what intensity any border pixels will have.  "Borders" in this case correspond to strips/wedges at the image edge corresponding to regions outside the initial image (e.g. the right-side of an output image when the input was translated to the left).   Choices are: Black, White.
+	*/
     public static final String FILL_MODE = "Fill mode";
 
+
+	/**
+	* 
+	*/
     public static final String REFERENCE_SEPARATOR = "Reference image source";
+
+	/**
+	* Controls what reference image each image will be compared to:<br><ul><li>"First frame" All images will be compared to the first frame (or slice when in Z-axis mode).  For image sequences which continuously evolve over time (e.g. cells dividing) this can lead to reduced likelihood of successfully calculating the transform over time.</li><li>"Previous frame" Each image will be compared to the frame (or slice when in Z-axis mode) immediately before it.  This copes better with image sequences which continuously evolve over time, but can also lead to compounding errors over time (errors in registration get propagated to all remaining slices).</li><li>"Specific image" All images will be compared to a separate 2D image from the workspace.  The image to compare to is selected using the "Reference image" parameter.</li></ul>
+	*/
     public static final String RELATIVE_MODE = "Relative mode";
+
+	/**
+	* Controls whether the entire stack is moved at specific intervals.  When enabled ("Every nth frame"), any remaining unregistered images will be moved to match the present transform.  This is only available when registering relative to the previous frame and is intended to prevent the difference between the previous frame (registered) and unregistered images becoming too large.  The frame interval at which this transformation is applied to the unregistered images is specified using "Correction interval".  Note: This can lead to images becoming increasingly blurry as they are passed through multiple interpolation steps.
+	*/
     public static final String ROLLING_CORRECTION = "Rolling correction";
+
+	/**
+	* If applying rolling correction, this is the frame interval at which the transformation will be applied to the unregistered images.
+	*/
     public static final String CORRECTION_INTERVAL = "Correction interval";
+
+	/**
+	* If "Relative mode" is set to "Specific image" mode, all input images will be registered relative to this image.  This image must only have a single channel, slice and timepoint.
+	*/
     public static final String REFERENCE_IMAGE = "Reference image";
+
+	/**
+	* Controls whether the input image will be used to calculate the registration transform or whether it will be determined from a separate image:<br><ul><li>"External" The transform is calculated from a separate image from the workspace (specified using "External source").  This could be an image with enhanced contrast (to enable better feature extraction), but where the enhancements are not desired in the output registered image.  The external image must be the same length along the registration axis.  The non-registration axis will have a maximum intensity projection applied prior to calculation of transform.</li><li>"Internal" The transform is calculated from the input image.</li></ul>
+	*/
     public static final String CALCULATION_SOURCE = "Calculation source";
+
+	/**
+	* If "Calculation source" is set to "External", registration transforms will be calculated using this image from the workspace.  This image will be unaffected by the process.
+	*/
     public static final String EXTERNAL_SOURCE = "External source";
+
+	/**
+	* If calculating the registration transform from a multi-channel image stack, the transform will be determined from this channel only.  Irrespectively, for multi-channel image stacks, the calculated transform will be applied equally to all channels.
+	*/
     public static final String CALCULATION_CHANNEL = "Calculation channel";
 
     public static final String FEATURE_SEPARATOR = "Feature detection (SIFT)";
     public static final String INITIAL_SIGMA = "Initial Gaussian blur (px)";
+
+	/**
+	* "Keypoint candidates are extracted at all scales between maximum image size and minimum image size. This Scale Space is represented in octaves each covering a fixed number of discrete scale steps from σ0 to 2σ0. More steps result in more but eventually less stable keypoint candidates. Tip: Keep 3 as suggested by Lowe (2004) and do not use more than 10.".  Description taken from <a href="https://imagej.net/Feature_Extraction">https://imagej.net/Feature_Extraction</a>
+	*/
     public static final String STEPS = "Steps per scale";
     public static final String MINIMUM_IMAGE_SIZE = "Minimum image size (px)";
     public static final String MAXIMUM_IMAGE_SIZE = "Maximum image size (px)";
+
+	/**
+	* "The SIFT-descriptor consists of n×n gradient histograms, each from a 4×4px block. n is this value. Lowe (2004) uses n=4. We found larger descriptors with n=8 perform better for Transmission Electron Micrographs from serial sections.".  Description taken from <a href="https://imagej.net/Feature_Extraction">https://imagej.net/Feature_Extraction</a>
+	*/
     public static final String FD_SIZE = "Feature descriptor size";
+
+	/**
+	* "For SIFT-descriptors, this is the number of orientation bins b per 4×4px block as described above. Tip: Keep the default value b=8 as suggested by Lowe (2004).".  Description taken from <a href="https://imagej.net/Feature_Extraction">https://imagej.net/Feature_Extraction</a>
+	*/
     public static final String FD_ORIENTATION_BINS = "Feature descriptor orientation bins";
+
+	/**
+	* "Correspondence candidates from local descriptor matching are accepted only if the Euclidean distance to the nearest neighbour is significantly smaller than that to the next nearest neighbour. Lowe (2004) suggests a ratio of r=0.8 which requires some increase when matching things that appear significantly distorted.".  Description taken from <a href="https://imagej.net/Feature_Extraction">https://imagej.net/Feature_Extraction</a>
+	*/
     public static final String ROD = "Closest/next closest ratio";
     public static final String MAX_EPSILON = "Maximal alignment error (px)";
+
+	/**
+	* "The ratio of the number of true matches to the number of all matches including both true and false used by RANSAC. 0.05 means that minimally 5% of all matches are expected to be good while 0.9 requires that 90% of the matches were good. Only transformations with this minimal ratio of true consent matches are accepted. Tip: Do not go below 0.05 (and only if 5% is more than about 7 matches) except with a very small maximal alignment error to avoid wrong solutions.".  Description taken from <a href="https://imagej.net/Feature_Extraction">https://imagej.net/Feature_Extraction</a>
+	*/
     public static final String MIN_INLIER_RATIO = "Inlier ratio";
 
     private Image inputImage;

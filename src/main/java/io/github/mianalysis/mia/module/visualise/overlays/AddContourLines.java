@@ -54,29 +54,113 @@ import io.github.sjcross.sjcommon.mathfunc.CumStat;
 
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class AddContourLines extends Module {
+
+	/**
+	* 
+	*/
     public static final String INPUT_SEPARATOR = "Image input/output";
+
+	/**
+	* Image onto which overlay will be rendered.  Input image will only be updated if "Apply to input image" is enabled, otherwise the image containing the overlay will be stored as a new image with name specified by "Output image".
+	*/
     public static final String INPUT_IMAGE = "Input image";
+
+	/**
+	* Determines if the modifications made to the input image (added overlay elements) will be applied to that image or directed to a new image.  When selected, the input image will be updated.
+	*/
     public static final String APPLY_TO_INPUT = "Apply to input image";
+
+	/**
+	* If the modifications (overlay) aren't being applied directly to the input image, this control will determine if a separate image containing the overlay should be saved to the workspace.
+	*/
     public static final String ADD_OUTPUT_TO_WORKSPACE = "Add output image to workspace";
+
+	/**
+	* The name of the new image to be saved to the workspace (if not applying the changes directly to the input image).
+	*/
     public static final String OUTPUT_IMAGE = "Output image";
 
+
+	/**
+	* 
+	*/
     public static final String COLOUR_SEPARATOR = "Contour colours";
+
+	/**
+	* Minimum contour magnitude to display.
+	*/
     public static final String MINIMUM_INTENSITY = "Minimum intensity";
+
+	/**
+	* Maximum contour magnitude to display.
+	*/
     public static final String MAXIMUM_INTENSITY = "Maximum intensity";
+
+	/**
+	* Number of different contour magnitudes to display.  Contour lines are equally spaced in magnitude between "Minimum intensity" and "Maximum intensity".
+	*/
     public static final String NUMBER_OF_CONTOURS = "Number of contours";
+
+	/**
+	* Determines the colour look-up table to use when rendering the contours.  Colour corresponds to the magnitude of that contour line:<br><br>- "Black fire" Standard ImageJ "Fire" look-up table.  Values taken from "https://github.com/imagej/ImageJA/blob/master/src/main/java/ij/LookUpTable.java".<br><br>- "Ice" Standard ImageJ "Ice" look-up table.  Values taken from "https://github.com/imagej/ImageJA/blob/master/src/main/java/ij/LookUpTable.java".<br><br>- "Jet" Look-up table with colour progression blue, cyan, green, yellow, orange, red.<br><br>- "Physics" Standard Fiji "Physics" look-up table.  Values taken from "https://github.com/fiji/fiji/tree/master/luts/physics.lut".<br><br>- "Random" Random sequence of colours.<br><br>- "Single colour" All contour lines have the same colour, determined by the "Contour colour" parameter.<br><br>- "Single colour gradient" Single colour gradient from the colour determined by the "Contour colour" parameter (lowest magnitude contour line) and white (highest magnitude contour line).<br><br>- "Spectrum" Standard ImageJ "Spectrum" look-up table.  Values taken from "https://github.com/imagej/ImageJA/blob/master/src/main/java/ij/LookUpTable.java".<br><br>- "Thermal" Standard Fiji "Thermal" look-up table.  Values taken from "https://github.com/fiji/fiji/tree/master/luts/Thermal.lut".<br>
+	*/
     public static final String CONTOUR_COLOUR_MODE = "Contour colour mode";
+
+	/**
+	* Contour colour used when "Contour colour mode" is set to either "Single colour" or "Single colour gradient".  Choices are: White, Black, Red, Orange, Yellow, Green, Cyan, Blue, Violet, Magenta.
+	*/
     public static final String CONTOUR_COLOUR = "Contour colour";
 
+
+	/**
+	* 
+	*/
     public static final String RENDERING_SEPARATOR = "Contour rendering";
+
+	/**
+	* Width of the rendered lines.  Specified in pixel units.
+	*/
     public static final String LINE_WIDTH = "Line width";
+
+	/**
+	* Specifies the interval between plotted points on the contour line.  This is useful when there are a lot of contour lines in an image and where a reduction in line precision isn't problematic.  Plotting fewer points will reduce the memory required to store/display overlays.
+	*/
     public static final String DRAW_EVERY_N_POINTS = "Draw every N points";
 
+
+	/**
+	* 
+	*/
     public static final String LABEL_SEPARATOR = "Label rendering";
+
+	/**
+	* Display magnitude values as text on each contour line.  Labels are placed randomly on each contour and are oriented in line with the local contour line.
+	*/
     public static final String SHOW_LABELS = "Show labels";
+
+	/**
+	* Number of decimal places to use when displaying numeric values.
+	*/
     public static final String DECIMAL_PLACES = "Decimal places";
+
+	/**
+	* When enabled, numeric values will be displayed in the format <i>1.23E-3</i>.  Otherwise, the same value would appear as <i>0.00123</i>.
+	*/
     public static final String USE_SCIENTIFIC = "Use scientific notation";
+
+	/**
+	* Determines the colour look-up table to use when rendering the contour labels.  Colour corresponds to the magnitude of that contour line:<br><br>- "Black fire" Standard ImageJ "Fire" look-up table.  Values taken from "https://github.com/imagej/ImageJA/blob/master/src/main/java/ij/LookUpTable.java".<br><br>- "Ice" Standard ImageJ "Ice" look-up table.  Values taken from "https://github.com/imagej/ImageJA/blob/master/src/main/java/ij/LookUpTable.java".<br><br>- "Jet" Look-up table with colour progression blue, cyan, green, yellow, orange, red.<br><br>- "Physics" Standard Fiji "Physics" look-up table.  Values taken from "https://github.com/fiji/fiji/tree/master/luts/physics.lut".<br><br>- "Random" Random sequence of colours.<br><br>- "Single colour" All contour line labels have the same colour, determined by the "Contour colour" parameter.<br><br>- "Single colour gradient" Single colour gradient from the colour determined by the "Contour colour" parameter (lowest magnitude contour line label) and white (highest magnitude contour line label).<br><br>- "Spectrum" Standard ImageJ "Spectrum" look-up table.  Values taken from "https://github.com/imagej/ImageJA/blob/master/src/main/java/ij/LookUpTable.java".<br><br>- "Thermal" Standard Fiji "Thermal" look-up table.  Values taken from "https://github.com/fiji/fiji/tree/master/luts/Thermal.lut".<br>
+	*/
     public static final String LABEL_COLOUR_MODE = "Label colour mode";
+
+	/**
+	* Contour line label colour used when "Contour colour mode" is set to either "Single colour" or "Single colour gradient".  Choices are: White, Black, Red, Orange, Yellow, Green, Cyan, Blue, Violet, Magenta.
+	*/
     public static final String LABEL_COLOUR = "Label colour";
+
+	/**
+	* Font size of the text label.
+	*/
     public static final String LABEL_SIZE = "Label size";
 
     public interface ColourModes {
@@ -725,7 +809,7 @@ return null;
                         + "\" Standard ImageJ \"Ice\" look-up table.  Values taken from \"https://github.com/imagej/ImageJA/blob/master/src/main/java/ij/LookUpTable.java\".<br>"
 
                         + "<br>- \"" + ColourModes.JET
-                        + "\" Look-up table with colour progression blue > cyan > green > yellow > orange > red.<br>"
+                        + "\" Look-up table with colour progression blue, cyan, green, yellow, orange, red.<br>"
 
                         + "<br>- \"" + ColourModes.PHYSICS
                         + "\" Standard Fiji \"Physics\" look-up table.  Values taken from \"https://github.com/fiji/fiji/tree/master/luts/physics.lut\".<br>"
@@ -775,7 +859,7 @@ return null;
                         + "\" Standard ImageJ \"Ice\" look-up table.  Values taken from \"https://github.com/imagej/ImageJA/blob/master/src/main/java/ij/LookUpTable.java\".<br>"
 
                         + "<br>- \"" + ColourModes.JET
-                        + "\" Look-up table with colour progression blue > cyan > green > yellow > orange > red.<br>"
+                        + "\" Look-up table with colour progression blue, cyan, green, yellow, orange, red.<br>"
 
                         + "<br>- \"" + ColourModes.PHYSICS
                         + "\" Standard Fiji \"Physics\" look-up table.  Values taken from \"https://github.com/fiji/fiji/tree/master/luts/physics.lut\".<br>"

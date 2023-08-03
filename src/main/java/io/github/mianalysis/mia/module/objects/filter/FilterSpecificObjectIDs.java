@@ -42,9 +42,25 @@ import io.github.sjcross.sjcommon.process.CommaSeparatedStringInterpreter;
 
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class FilterSpecificObjectIDs extends AbstractObjectFilter implements ActionListener {
+
+	/**
+	* 
+	*/
     public static final String FILTER_SEPARATOR = "Object filtering";
+
+	/**
+	* When selected, a specific image will be displayed when this module executes.  This can be used to display a pre-prepared, object ID-labelled image to the user, thus acting as a reference for which object IDs to remove.  The image to be displayed is set using the "Image to display" parameter.
+	*/
     public static final String SHOW_IMAGE = "Show image";
+
+	/**
+	* Image to display when the module executes.  For example, this could be a pre-prepared image with object IDs inserted as text overlays using the "Add labels" module.
+	*/
     public static final String DISPLAY_IMAGE_NAME = "Image to display";
+
+	/**
+	* When selected, the number of removed (or moved) objects is counted and stored as a metadata item (name in the format "FILTER // NUM_[inputObjectsName]_BY_ID").
+	*/
     public static final String STORE_RESULTS = "Store filter results";
 
     private static final String OK = "OK";

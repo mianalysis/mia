@@ -36,13 +36,41 @@ import io.github.mianalysis.mia.object.system.Status;
  */
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class ImageTypeConverter extends Module {
+
+	/**
+	* 
+	*/
     public static final String INPUT_SEPARATOR = "Image input/output";
+
+	/**
+	* Input image to be converted to another bit-depth.
+	*/
     public static final String INPUT_IMAGE = "Input image";
+
+	/**
+	* If selected, the converted image will replace the input image in the workspace.  All measurements associated with the input image will be transferred to the converted image.
+	*/
     public static final String APPLY_TO_INPUT = "Apply to input image";
+
+	/**
+	* Name of the output converted image.
+	*/
     public static final String OUTPUT_IMAGE = "Output image";
+
+	/**
+	* Target bit-depth to convert the image to.  Pixel intensities will lie within the following ranges for each bit-depth: 8-bit (0-255), 16-bit (0-65535), 32-bit (floating point precision).
+	*/
     public static final String OUTPUT_TYPE = "Output image type";
 
+
+	/**
+	* 
+	*/
     public static final String CONVERSION_SEPARATOR = "Image type conversion";
+
+	/**
+	* Method for calculating the intensity transformation between the input and output bit-depths:<br><ul><li>"Clip (direct conversion)" Will convert directly from the input to output bit-depth without performing any intensity scaling.  As such, any input intensities outside the available range of the output bit-depth will be clipped to the closest possible value.  For example, an input 16-bit image with intensity range 234-34563 converted to 8-bit will have an output range of 234-255.</li><li>"Fill target range (normalise)" Will stretch the input intensity range to fill the available output intensity range.  For example, an input 16-bit image with intensity range 234-34563 converted to 8-bit will have an output range of 0-255.  Images converted to 32-bit will be scaled to the range 0-1.</li><li>"Scale proportionally" Will proportionately scale intensities such that the input and output intensity ranges fill their respective bit-depths by equal amounts.  For example, an input 16-bit image with intensity range 234-34563 converted to 8-bit will have an output range of 1-135.</li></ul>
+	*/
     public static final String SCALING_MODE = "Scaling mode";
 
     public ImageTypeConverter(Modules modules) {

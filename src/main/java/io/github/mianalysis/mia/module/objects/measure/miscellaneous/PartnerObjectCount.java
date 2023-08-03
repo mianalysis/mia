@@ -28,8 +28,20 @@ import io.github.mianalysis.mia.object.parameters.Parameters;
  */
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class PartnerObjectCount extends Module {
+
+	/**
+	* 
+	*/
     public static final String INPUT_SEPARATOR = "Object and image input";
+
+	/**
+	* For each object in this collection the number of associated partner objects (from the collection specified by "Partner objects") will be calculated.  The count is stored as a measurement associated with each input object.  The measurement is evaluated at the time of access (unlike "normal" measurements which have fixed values), so should always be correct.
+	*/
     public static final String INPUT_OBJECTS = "Input objects";
+
+	/**
+	* Partner objects to be counted.
+	*/
     public static final String PARTNER_OBJECTS = "Partner objects";
 
     public PartnerObjectCount(Modules modules) {

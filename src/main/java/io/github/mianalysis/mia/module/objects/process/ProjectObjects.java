@@ -29,8 +29,20 @@ import ome.units.unit.Unit;
 
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class ProjectObjects extends Module {
+
+	/**
+	* 
+	*/
     public static final String INPUT_SEPARATOR = "Object input/output";
+
+	/**
+	* Objects to be projected into the xy-plane.  Tese are related as a parent of their respective projected object.
+	*/
     public static final String INPUT_OBJECTS = "Input objects";
+
+	/**
+	* Output projected objects to be stored in the workspace.  These are related as children of the respective input object.
+	*/
     public static final String OUTPUT_OBJECTS = "Output objects";
 
     public ProjectObjects(Modules modules) {

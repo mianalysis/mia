@@ -38,12 +38,36 @@ import io.github.sjcross.sjcommon.object.volume.PointOutOfRangeException;
  */
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class FillHolesInObjects extends Module {
+
+	/**
+	* 
+	*/
     public static final String INPUT_SEPARATOR = "Object input/output";
+
+	/**
+	* Object collection from the workspace to apply fill holes operation to.
+	*/
     public static final String INPUT_OBJECTS = "Input objects";
+
+	/**
+	* When selected, the post-operation objects will update the input objects in the workspace (all measurements and relationships will be retained).  Otherwise, the objects will be saved to the workspace in a new collection with the name specified by the "Output objects" parameter.  Note: If updating the objects, any previously-measured object properties (e.g. object volume) may become invalid.  To update such measurements it's necessary to re-run the relevant measurement modules.
+	*/
     public static final String UPDATE_INPUT_OBJECTS = "Update input objects";
+
+	/**
+	* If "Update input objects" is not selected, the post-operation objects will be saved to the workspace in a new collection with this name.
+	*/
     public static final String OUTPUT_OBJECTS = "Output objects";
 
+
+	/**
+	* 
+	*/
     public static final String PROCESSING_SEPARATOR = "Processing options";
+
+	/**
+	* Controls whether the holes are filled in 2D or 3D:<br><ul><li>"Fill holes 2D" Holes are considered on a slice-by-slice basis (i.e. 4-way connectivity within a slice).  This can be applied to both 2D and 3D objects.</li><li>"Fill holes 2D" Holes are considered in 3D (i.e. 6-way connectivity).  Note: If a 2D object (either from a 2D or 3D source) is loaded, no holes will be filled, as the top and bottom will be considered "open".</li></ul>
+	*/
     public static final String METHOD = "Method";
 
     public FillHolesInObjects(Modules modules) {

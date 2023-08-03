@@ -31,9 +31,25 @@ import io.github.sjcross.sjcommon.analysis.IntensityCalculator;
 
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class WhiteBalanceCorrection extends Module {
+
+	/**
+	* 
+	*/
     public static final String INPUT_SEPARATOR = "Image input/output";
+
+	/**
+	* Image to apply white balance correction to.
+	*/
     public static final String INPUT_IMAGE = "Input image";
+
+	/**
+	* Select if the white balance correction should be applied directly to the input image, or if it should be applied to a duplicate, then stored as a different image in the workspace.
+	*/
     public static final String APPLY_TO_INPUT = "Apply to input image";
+
+	/**
+	* Name of the output image created during the correction process.  This image will be added to the workspace.
+	*/
     public static final String OUTPUT_IMAGE = "Output image";
     public static final String REFERENCE_OBJECT = "Reference object(s)";
 

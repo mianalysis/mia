@@ -40,24 +40,76 @@ import sc.fiji.coloc.gadgets.DataContainer;
 
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class MeasureObjectColocalisation<T extends RealType<T> & NativeType<T>> extends Module {
+
+	/**
+	* 
+	*/
     public static final String INPUT_SEPARATOR = "Input separator";
+
+	/**
+	* Objects for which colocalisation will be measured.  For each object, colocalisation will be independently measured for the pixels coincident with the object's coordinates.  Measurements will be associated with the corresponding object.
+	*/
     public static final String INPUT_OBJECTS = "Input objects";
+
+	/**
+	* First image for which colocalisation will be calculated.
+	*/
     public static final String INPUT_IMAGE_1 = "Input image 1";
+
+	/**
+	* Second image for which colocalisation will be calculated.
+	*/
     public static final String INPUT_IMAGE_2 = "Input image 2";
 
+
+	/**
+	* 
+	*/
     public static final String THRESHOLD_SEPARATOR = "Threshold controls";
+
+	/**
+	* Controls how the thresholds for measurements such as Manders' are set:<br><ul><li>"Bisection (correlation)" A faster method to calculate thresholds than the Costes approach.</li><li>"Costes (correlation)" The "standard" method to calculate thresholds for Manders' colocalisation measures.  This approach sets the thresholds for the two input images such that the pixels with intensities lower than their respective thresholds don't have any statistical correlation (i.e. have PCC values less than or equal to 0).  This is based on Costes' 2004 paper (Costes et al., <i>Biophys. J.</i> <b>86</b> (2004) 3993–4003.</li><li>"Image measurements" Thresholds for each image will be set equal to measurements associated with each object.</li><li>"Manual" Threshold values are manually set from user-defined values ("Threshold (C1)" and "Threshold (C2)" parameters).</li><li>"None" No threshold is set.  In this instance, Manders' metrics will only be calculated above zero intensity rather than both above zero and above the thresholds.  Similarly, Pearson's correlation coefficients will only be calculated for the entire region (after masking) rather than also for above and below the thresholds.</li></ul>
+	*/
     public static final String THRESHOLDING_MODE = "Thresholding mode";
     public static final String IMAGE_MEASUREMENT_1 = "Image measurement (C1)";
     public static final String IMAGE_MEASUREMENT_2 = "Image measurement (C2)";
     public static final String FIXED_THRESHOLD_1 = "Threshold (C1)";
     public static final String FIXED_THRESHOLD_2 = "Threshold (C2)";
 
+
+	/**
+	* 
+	*/
     public static final String MEASUREMENT_SEPARATOR = "Measurement controls";
+
+	/**
+	* Controls whether PCC should be calculated using the classic algorithm or using the Coloc2-default "fast" method.
+	*/
     public static final String PCC_IMPLEMENTATION = "PCC implementation";
+
+	/**
+	* When selected, Kendall's rank correlation will be calculated.  This works in a similar manner to Pearson's PCC, except it's calculated on ranked data rather than raw pixel intensities.
+	*/
     public static final String MEASURE_KENDALLS_RANK = "Measure Kendall's Rank Correlation";
+
+	/**
+	* When selected, Li's ICQ (intensity correlation quotient) will be calculated.  This measure reports the frequency with which both corresponding pixels for both channels are either both above or both below their respective means.  Values are scaled into the range -0.5 to +0.5, with values below 0 corresponding to anti-correlation and values above 0 indicating correlation.
+	*/
     public static final String MEASURE_LI_ICQ = "Measure Li's ICQ";
+
+	/**
+	* When selected, Manders' M1 and M2 coefficients will be calculated.  "Proportional to the amount of fluorescence of the colocalizing pixels or voxels in each colour channel. You can get more details in Manders et al. Values range from 0 to 1, expressing the fraction of intensity in a channel that is located in pixels where there is above zero (or threshold) intensity in the other colour channel." Description taken from <a href="https://imagej.net/imaging/colocalization-analysis">https://imagej.net/imaging/colocalization-analysis</a>
+	*/
     public static final String MEASURE_MANDERS = "Measure Manders' Correlation";
+
+	/**
+	* When selected, Pearson's Correlation Coefficient (PCC) will be calculated.  "It is not sensitive to differences in mean signal intensities or range, or a zero offset between the two components. The result is +1 for perfect correlation, 0 for no correlation, and -1 for perfect anti-correlation. Noise makes the value closer to 0 than it should be." Description taken from <a href="https://imagej.net/imaging/colocalization-analysis">https://imagej.net/imaging/colocalization-analysis</a>
+	*/
     public static final String MEASURE_PCC = "Measure PCC";
+
+	/**
+	* When selected, Spearman's rank correlation will be calculated.  Spearman's rho is calculated in a similar manner to Pearson's PCC, except the image intensities are replaced by their respective rank.  Spearman's correlation works with monotonic relationships.  As with PCC, values are in the range -1 to +1.
+	*/
     public static final String MEASURE_SPEARMANS_RANK = "Measure Spearman's Rank Correlation";
 
     public MeasureObjectColocalisation(Modules modules) {

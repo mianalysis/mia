@@ -38,12 +38,32 @@ import io.github.mianalysis.mia.object.units.SpatialUnit;
 
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class SetSpatialCalibration extends Module {
+
+	/**
+	* 
+	*/
     public static final String INPUT_SEPARATOR = "Image input";
+
+	/**
+	* Image to which spatial calibration specified in this module will be applied.
+	*/
     public static final String INPUT_IMAGE = "Input image";
 
+
+	/**
+	* 
+	*/
     public static final String CALIBRATION_SEPARATOR = "Calibration controls";
+
+	/**
+	* Controls to which image axes the spatial calibration specified in this module will applied:<br><ul><li>"XY" Calibration will be applied to X and Y axes only.  Z axis will retain its existing calibration.</li><li>"XY and Z" Calibration will be applied equally to XY and Z axes.</li><li>"Z" Calibration will be applied to Z axis only.  X and Y axes will retain their existing calibrations.</li></ul>
+	*/
     public static final String AXIS_MODE = "Axis mode";
 
+
+	/**
+	* 
+	*/
     public static final String PD_SEPARATOR = "Physical distance controls";
     public static final String PD_SOURCE = "Physical distance (PD) source";
     public static final String OBJECTS_FOR_PD = "Objects for measurement (PD)";
@@ -54,6 +74,10 @@ public class SetSpatialCalibration extends Module {
     public static final String IMAGE_FOR_PD = "Image for measurement (PD)";
     public static final String IMAGE_MEASUREMENT_FOR_PD = "Image measurement (PD)";
 
+
+	/**
+	* 
+	*/
     public static final String ID_SEPARATOR = "Image distance controls";
     public static final String ID_SOURCE = "Image distance (ID) source";
     public static final String OBJECTS_FOR_ID = "Objects for measurement (ID)";

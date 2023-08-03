@@ -37,13 +37,41 @@ import io.github.sjcross.sjcommon.object.volume.VolumeType;
  */
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class ConvertImageToObjects extends Module {
+
+	/**
+	* 
+	*/
     public static final String INPUT_SEPARATOR = "Image input";
+
+	/**
+	* Labelled image to convert to objects.  The background (non-object region) of this image should be black (0 intensity) and all pixels corresponding to the same object should have the same value.  Objects can only exist in a single timepoint, so pixels of the same intensity but in different timepoints will be assigned to different objects.
+	*/
     public static final String INPUT_IMAGE = "Input image";
 
+
+	/**
+	* 
+	*/
     public static final String OUTPUT_SEPARATOR = "Object output";
+
+	/**
+	* Output objects created by the conversion process.  These will be stored in the workspace and be accessible via this name.
+	*/
     public static final String OUTPUT_OBJECTS = "Output objects";
+
+	/**
+	* The method used to store pixel coordinates.  This only affects performance and memory usage, there is no difference in results obtained using difference storage methods.<br><ul><li>"Pointlist" (default) stores object coordinates as a list of XYZ coordinates.  This is most efficient for small objects, very thin objects or objects with lots of holes.</li><li>"Octree" stores objects in an octree format.  Here, the coordinate space is broken down into cubes of different sizes, each of which is marked as foreground (i.e. an object) or background.  Octrees are most efficient when there are lots of large cubic regions of the same label, as the space can be represented by larger (and thus fewer) cubes.  This is best used when there are large, completely solid objects.  If z-axis sampling is much larger than xy-axis sampling, it's typically best to opt for the quadtree method.</li><li>"Quadtree" stores objects in a quadtree format.  Here, each Z-plane of the object is broken down into squares of different sizes, each of which is marked as foreground (i.e. an object) or background.  Quadtrees are most efficient when there are lots of large square regions of the same label, as the space can be represented by larger (and thus fewer) squares.  This is best used when there are large, completely solid objects.</li></ul>
+	*/
     public static final String VOLUME_TYPE = "Volume type";
+
+	/**
+	* When selected, the intensity of the image for each object will be assumed as corresponding to the ID of a parent track object.  This allows track relationships for objects present in multiple timepoints to be loaded back into MIA.
+	*/
     public static final String CREATE_TRACKS = "Create track objects";
+
+	/**
+	* If creating track objects ("Create track objects" is selected), this is the name of the output tracks.  These will be parents of the output objects.
+	*/
     public static final String TRACK_OBJECTS_NAME = "Output track objects name";
 
     public ConvertImageToObjects(Modules modules) {

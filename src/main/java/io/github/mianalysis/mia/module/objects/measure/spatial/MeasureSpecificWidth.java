@@ -40,11 +40,31 @@ import io.github.sjcross.sjcommon.object.volume.SpatCal;
 
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class MeasureSpecificWidth extends Module {
+
+	/**
+	* 
+	*/
     public static final String INPUT_SEPARATOR = "Object input";
+
+	/**
+	* Objects for which specific widths will be calculated.  Width measurements will be associated with these objects.
+	*/
     public static final String INPUT_OBJECTS = "Input objects";
 
+
+	/**
+	* 
+	*/
     public static final String REFERENCE_SEPARATOR_1 = "Reference 1 selection";
+
+	/**
+	* The source of the first reference point coordinates:<br><ul><li>"Object centroid" Reference point will be positioned coincident with the centroid of the object being measured.</li><li>"Image measurement" X, Y and Z location of the reference point will be equal to specified measurement values associated with the image (set by "Reference image 1").</li><li>"Object measurement" X, Y and Z location of the reference point will be equal to the specified measurememnt values associated with the object being measured.</li></ul>
+	*/
     public static final String REFERENCE_MODE_1 = "Reference mode 1";
+
+	/**
+	* If "Reference mode 1" is set to "Image measurement", this is the image that will provide the measurements determining the X, Y and Z location of the first reference point.
+	*/
     public static final String REFERENCE_IMAGE_1 = "Reference image 1";
     public static final String X_POSITION_MEASUREMENT_IM_1 = "X-pos. image meas. 1 (px)";
     public static final String Y_POSITION_MEASUREMENT_IM_1 = "Y-pos. image meas. 1 (px)";
@@ -53,8 +73,20 @@ public class MeasureSpecificWidth extends Module {
     public static final String Y_POSITION_MEASUREMENT_OBJ_1 = "Y-pos. object meas. 1 (px)";
     public static final String Z_POSITION_MEASUREMENT_OBJ_1 = "Z-pos. object meas. 1 (slice)";
 
+
+	/**
+	* 
+	*/
     public static final String REFERENCE_SEPARATOR_2 = "Reference 2 selection";
+
+	/**
+	* The source of the second reference point coordinates:<br><ul><li>"Object centroid" Reference point will be positioned coincident with the centroid of the object being measured.</li><li>"Image measurement" X, Y and Z location of the reference point will be equal to specified measurement values associated with the image (set by "Reference image 1").</li><li>"Object measurement" X, Y and Z location of the reference point will be equal to the specified measurememnt values associated with the object being measured.</li></ul>
+	*/
     public static final String REFERENCE_MODE_2 = "Reference mode 2";
+
+	/**
+	* If "Reference mode 2" is set to "Image measurement", this is the image that will provide the measurements determining the X, Y and Z location of the second reference point.
+	*/
     public static final String REFERENCE_IMAGE_2 = "Reference image 2";
     public static final String X_POSITION_MEASUREMENT_IM_2 = "X-pos. image meas. 2 (px)";
     public static final String Y_POSITION_MEASUREMENT_IM_2 = "Y-pos. image meas. 2 (px)";
@@ -63,7 +95,15 @@ public class MeasureSpecificWidth extends Module {
     public static final String Y_POSITION_MEASUREMENT_OBJ_2 = "Y-pos. object meas. 2 (px)";
     public static final String Z_POSITION_MEASUREMENT_OBJ_2 = "Z-pos. object meas. 2 (slice)";
 
+
+	/**
+	* 
+	*/
     public static final String MISCELLANEOUS_SEPARATOR = "Miscellaneous controls";
+
+	/**
+	* The output measurement names will be prefixed with this value (although it can be left blank).  Using a prefix for these measurements allows multiple different widths to be output by multiple copies of this module.
+	*/
     public static final String MEASUREMENT_PREFIX = "Measurement prefix";
 
     public interface ReferenceModes {

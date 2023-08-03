@@ -49,27 +49,103 @@ import io.github.sjcross.sjcommon.metadataextractors.OperaFoldernameExtractor;
  */
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class MetadataExtractor extends Module {
+
+	/**
+	* 
+	*/
     public static final String EXTRACTOR_SEPARATOR = "Metadata extractor selection";
+
+	/**
+	* Data source for metadata extraction:<br><ul><li>"Filename" Metadata taken from filename (not including folder path)</li><li>"Foldername" Metadata taken from parent foldername (incuding full system path to that folder)</li><li>"Metadata file" Metadata taken from a separate file, specified by the "Metadata file" parameter</li><li>"Series name" Metadata taken from seriesname (if not from a multi-series file, this is just the filename)</li></ul>
+	*/
     public static final String EXTRACTOR_MODE = "Extractor mode";
+
+	/**
+	* The format of the filename to be converted to metadata values:<br><ul><li>"Generic" Name format is compiled using regular expressions defined in the "Pattern" parameter.  Each group (pattern enclosed in parenthesis) specified in the pattern is assigned to a metadata value.  Metadata value names are defined by the comma-separated list defined in "Groups (comma separated)".</li><li>"CV1000 filename" The Yokogawa CellVoyager CV1000 format (e.g. W1F001T0001Z00C1.tif)</li><li>"CV7000 filename" The Yokogawa CellVoyager CV7000 format (e.g. AssayPlate_Greiner_#655090_C02_T0001F001L01A01Z01C01.tif)</li><li>"IncuCyte long filename" The Incucyte long format, where each timepoint is stored as a separate image file and accordingly the filename records the time of acquisition (e.g. MySample1_A1_1_2021y08m06d_11h39m.tif)</li><li>"IncuCyte short filename" The Incucyte short format, where all timepoints are stored in a single file and the filename only records the well and field (e.g. MySample1_A1_1.tif)</li><li>"Opera filename" The Perkin Elmer Opera LX name format, which specifies row, column and field (e.g. 001001001.flex)</li></ul>
+	*/
     public static final String FILENAME_EXTRACTOR = "Filename extractor";
+
+	/**
+	* The format of the foldername to be converted to metadata values:<br><ul><li>"<li>"Generic" Name format is compiled using regular expressions defined in the "Pattern" parameter.  Each group (pattern enclosed in parenthesis) specified in the pattern is assigned to a metadata value.  Metadata value names are defined by the comma-separated list defined in "Groups (comma separated)".</li><li>"CV1000 foldername" The Yokogawa CV1000 format (e.g. 20210806T113905_10x_K01_MySample1)</li><li>"Opera measurement foldername" The Perkin Elmer Opera LX foldername format (e.g. Meas_01(2021-08-06_11-39-05))</li></ul>
+	*/
     public static final String FOLDERNAME_EXTRACTOR = "Foldername extractor";
 
+
+	/**
+	* 
+	*/
     public static final String SOURCE_SEPARATOR = "Metadata source";
+
+	/**
+	* The format of the metadata file to be converted to metadata values:<br><ul><li>"CSV file" Metadata values stored in a two-column CSV file, where the first column defines an identifier to the current file being processed (e.g. filename, or series name) and the second column defines a value that will be assigned as metadata.  Optionally, this value can be split into multiple metadata values using a regular expression.</li><li>"Opera file (.flex)" Specifically extracts the "Area name" property from the current .flex file.</li></ul>
+	*/
     public static final String METADATA_FILE_EXTRACTOR = "Metadata file extractor";
+
+	/**
+	* If extracting metadata from a CSV file, this controls whether a single, static CSV file is used or whether there is one provided (with a fixed name) in the current folder (i.e where the current image file is loaded from).
+	*/
     public static final String INPUT_SOURCE = "Input source";
+
+	/**
+	* If extracting metadata from a static CSV file (i.e. the same file for all processed images), this is the path to that metadata CSV file.
+	*/
     public static final String METADATA_FILE = "Metadata file";
+
+	/**
+	* If extracting metadata from a dynamic CSV file (i.e. the file is in the current image folder), this is the name of that metadata CSV file (it must be the same name in all folders).
+	*/
     public static final String METADATA_FILE_NAME = "Metadata file name";
+
+	/**
+	* For CSV-based metadata extraction, the first column of the CSV file identifies which row to read.  This parameter defines the source (e.g. filename, series name, etc.).  Choices are: File in input folder,Static file
+	*/
     public static final String METADATA_ITEM_TO_MATCH = "Metadata item to match";
+
+	/**
+	* When selected, the metadata value taken from a CSV file will itself be broken down into multiple metadata values using a regular expressions
+	*/
     public static final String REGEX_SPLITTING = "Split using regular expressions";
 
+
+	/**
+	* 
+	*/
     public static final String REGEX_SEPARATOR = "Regular expression controls";
+
+	/**
+	* Regular expression pattern to use when interpreting generic metadata formats.  This pattern must contain at least one group (specified using standard regex parenthesis notation).
+	*/
     public static final String PATTERN = "Pattern";
     public static final String GROUPS = "Groups (comma separated)";
+
+	/**
+	* When selected regular expression matches will be found irrespective of case.
+	*/
     public static final String CASE_INSENSITIVE = "Case insensitive";
+
+	/**
+	* When selected (and constructing a regular expression extractor), an example string can be provided and the identified groups displayed.  This allows for regular expression forms to be tested during workflow assembly.
+	*/
     public static final String SHOW_TEST = "Show pattern matching test";
+
+	/**
+	* If testing a regular expression form ("Show pattern matching test" selected), this is the example string which will be processed and broken down into its individual metadata values.
+	*/
     public static final String EXAMPLE_STRING = "Example string";
+
+	/**
+	* If testing a regular expression form ("Show pattern matching test" selected), the extracted metadata values will be displayed here.
+	*/
     public static final String IDENTIFIED_GROUPS = "Identified groups";
+
+	/**
+	* If a metadata value loaded from CSV is not to be sub-divided into multiple metadata values, the entire value loaded will be stored as a metadata item with this name.
+	*/
     public static final String METADATA_VALUE_NAME = "Metadata value name";
+
+	/**
+	* When testing regular expression forms, clicking this button will test the extraction and display any detected metadata values in the "Identified groups" window.
+	*/
     public static final String REFRESH_BUTTON = "Refresh parameters";
 
     public MetadataExtractor(Modules modules) {

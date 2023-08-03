@@ -20,10 +20,6 @@ import io.github.mianalysis.mia.module.Modules;
 import io.github.mianalysis.mia.object.parameters.abstrakt.Parameter;
 
 public class AddJavaDocToModules {
-    /**
-     * 
-     */
-    public String a = "d";
     public static void main(String[] args) throws IOException {
         TreeMap<String,Module> modules = getModules();
         for (String moduleName:modules.keySet()) {
@@ -37,22 +33,37 @@ public class AddJavaDocToModules {
                 sb.append(iter.next()).append("\n");
             String code = sb.toString();
 
-            // Iterate over each parameter in module, adding description
-            for (Parameter parameter:modules.get(moduleName).getAllParameters().values()) {
-                String parameterName = parameter.getName();
-                String description = parameter.getDescription();
+            // // Iterate over each parameter in module, adding description
+            // for (Parameter parameter:modules.get(moduleName).getAllParameters().values()) {
+            //     String parameterName = parameter.getName();
+            //     String description = parameter.getDescription();
 
-                // Find parameter declaration line
-                Pattern pattern = Pattern.compile("\\n[^\\n]+ = \""+parameterName+"\";");
-                Matcher matcher = pattern.matcher(code);
+            //     // Find parameter declaration line
+            //     Pattern pattern = Pattern.compile("\\n[^\\n]+ = \""+parameterName+"\";");
+            //     Matcher matcher = pattern.matcher(code);
 
-                if (matcher.find()) {
-                    String textBefore = code.substring(0, matcher.start());
-                    String textAfter = code.substring(matcher.start());
-                    code = textBefore+"\n\n\t/**\n\t* "+description+"\n\t*/"+textAfter;
-                }
+            //     if (matcher.find()) {
+            //         String textBefore = code.substring(0, matcher.start());
+            //         String textAfter = code.substring(matcher.start());
+            //         code = textBefore+"\n\n\t/**\n\t* "+description+"\n\t*/"+textAfter;
+            //     }
 
-            }
+            // }
+
+            // // Replace module description
+            // String parameterName = parameter.getName();
+            // String description = parameter.getDescription();
+
+            // // Find parameter declaration line
+            // Pattern pattern = Pattern.compile("\\n[^\\n]+ = \""+parameterName+"\";");
+            // Matcher matcher = pattern.matcher(code);
+
+            // if (matcher.find()) {
+            //     String textBefore = code.substring(0, matcher.start());
+            //     String textAfter = code.substring(matcher.start());
+            //     code = textBefore+"\n\n\t/**\n\t* "+description+"\n\t*/"+textAfter;
+            // }
+
 
             FileWriter fileWriter = new FileWriter(path);
             fileWriter.write(code);

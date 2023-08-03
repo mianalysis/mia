@@ -39,16 +39,56 @@ import io.github.sjcross.sjcommon.object.volume.PointOutOfRangeException;
  */
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class ExpandShrinkObjects extends Module {
+
+	/**
+	* 
+	*/
     public static final String INPUT_SEPARATOR = "Object input/output";
+
+	/**
+	* Object collection from the workspace to apply the expand or shrink operation to.
+	*/
     public static final String INPUT_OBJECTS = "Input objects";
+
+	/**
+	* When selected, the post-operation objects will update the input objects in the workspace (all measurements and relationships will be retained).  Otherwise, the objects will be saved to the workspace in a new collection with the name specified by the "Output objects" parameter.  Note: If updating the objects, any previously-measured object properties (e.g. object volume) may become invalid.  To update such measurements it's necessary to re-run the relevant measurement modules.
+	*/
     public static final String UPDATE_INPUT_OBJECTS = "Update input objects";
+
+	/**
+	* If "Update input objects" is not selected, the post-operation objects will be saved to the workspace in a new collection with this name.
+	*/
     public static final String OUTPUT_OBJECTS = "Output objects";
 
+
+	/**
+	* 
+	*/
     public static final String PROCESSING_SEPARATOR = "Processing options";
+
+	/**
+	* Controls which expand or shrink operation is applied to the input objects:<br><ul><li>"Expand 2D" Adds any non-object coordinates within "Radius change" of the object to the object.  This operates in a slice-by-slice manner, irrespective of whether a 2D or 3D object is provided.  This effectively runs a 2D binary dilation operation on each object. Uses ImageJ implementation.</li><li>"Expand 3D" Adds any non-object coordinates within "Radius change" of the object to the object.  This effectively runs a 3D binary dilation operation on each object.  Uses MorphoLibJ implementation.</li><li>"Shrink 2D" Removes any object coordinates within "Radius change" of the object boundary from the object.  This operates in a slice-by-slice manner, irrespective of whether a 2D or 3D object is provided.  This effectively runs a 2D binary erosion operation on each object.  Uses ImageJ implementation.</li><li>"Shrink 3D" Removes any object coordinates within "Radius change" of the object boundary from the object.  This effectively runs a 3D binary erosion operation on each object.  Uses MorphoLibJ implementation.</li></ul>
+	*/
     public static final String METHOD = "Method";
+
+	/**
+	* 
+	*/
     public static final String RADIUS_CHANGE_SOURCE = "Radius change source";
+
+	/**
+	* Distance from the object boundary to test for potential inclusion or removal of coordinates.  When expanding, any non-object coordinates within this distance of the object are included in the object.  While shrinking, any object coordinates within this distance of the object boundary are removed from the object.  This value is assumed specified in pixel coordinates unless "Calibrated units" is selected.
+	*/
     public static final String RADIUS_CHANGE = "Radius change";
+
+	/**
+	* 
+	*/
     public static final String MEASUREMENT = "Measurement";
+
+	/**
+	* When selected, "Radius change" is assumed to be specified in calibrated units (as defined by the "Input control" parameter "Spatial unit").  Otherwise, pixel units are assumed.
+	*/
     public static final String CALIBRATED_UNITS = "Calibrated units";
 
     public ExpandShrinkObjects(Modules modules) {

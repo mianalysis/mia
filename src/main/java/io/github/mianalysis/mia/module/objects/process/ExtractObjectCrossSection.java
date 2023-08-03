@@ -41,15 +41,51 @@ import io.github.sjcross.sjcommon.object.volume.VolumeType;
  */
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class ExtractObjectCrossSection extends Module {
+
+	/**
+	* 
+	*/
     public static final String INPUT_SEPARATOR = "Object input/output";
+
+	/**
+	* Input objects from workspace for which cross-sections will be extracted.  Output cross-section objects will be stored as children associated with the relevant input object.
+	*/
     public static final String INPUT_OBJECTS = "Input objects";
+
+	/**
+	* Output cross-section objects.  These will be stored in the workspace with this name.  These objects will be children of their respective input object.
+	*/
     public static final String OUTPUT_OBJECTS = "Output objects";
 
+
+	/**
+	* 
+	*/
     public static final String CROSS_SECTION_SEPARATOR = "Cross-section controls";
+
+	/**
+	* The source for the reference Z-position for each object:<br><ul><li>"Absolute" The slice indices specified by "Relative slice indices" correspond to the absolute slice index of the coordinates.  For example, an index of 0 will extract the first slice and indices of "3-5" will load the 4th, 5th and 6th slices (note the use of zero-based indexing).</li><li>"Image measurement" The reference slice index will be taken from a measurement (specified by "Image measurement") associated with an image from the workspace (specified by "Image for measurement").  The slices indices specified by "Relative slice indices" will be relative to this measurement value.  For example, with an image measurement of 4 and specified index of "-2", the 3rd slice will be extracted (i.e. 2 below 4 using zero-based indexing).</li><li>"Object measurement" The reference slice index will be taken from a measurement (specified by "Object measurement") associated with the object being processed.  The slices indices specified by "Relative slice indices" will be relative to this measurement value.  For example, for an object with measurement value of 2 and specified index of "3", the 6th slice will be extracted (i.e. 3 above 2 using zero-based indexing).</li></ul>
+	*/
     public static final String REFERENCE_MODE = "Reference mode";
+
+	/**
+	* Slices from the input objects will be extracted at these relative indices (relative to the position specified the "Reference mode" and associated parameters).  Indices can be specified as a comma-separated list, using a range (e.g. "4-7" will extract relative indices 4,5,6 and 7) or as a range extracting every nth slice (e.g. "4-10-2" will extract slices 4,6,8 and 10).  The "end" keyword will be converted to the maximum slice index at runtime.
+	*/
     public static final String RELATIVE_SLICE_INDICES = "Relative slice indices";
+
+	/**
+	* If "Reference mode" is set to "Image measurement", this is the measurement (associated with the image specified by "Image for measurement") which will act as the reference slice index against which the relative slice indices are calculated.
+	*/
     public static final String IMAGE_MEASUREMENT = "Image measurement";
+
+	/**
+	* If "Reference mode" is set to "Image measurement", this is the image from which the reference measurement (specified by "Image measurement") will be taken.
+	*/
     public static final String IMAGE_FOR_MEASUREMENT = "Image for measurement";
+
+	/**
+	* If "Reference mode" is set to "Object measurement", this is the measurement (associated with the relevant input object) which will act as the reference slice index against which the relative slice indices are calculated.
+	*/
     public static final String OBJECT_MEASUREMENT = "Object measurement";
 
     public interface ReferenceModes {

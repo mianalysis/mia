@@ -32,6 +32,10 @@ import io.github.mianalysis.mia.object.system.Status;
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class GlobalVariables extends Module {
     public static final String VARIABLE_SEPARATOR = "Variable settings";
+
+	/**
+	* Add a new global variable.  Added variables can be removed using the "Remove" button.
+	*/
     public static final String ADD_NEW_VARIABLE = "Add new variable";
     public static final String VARIABLE_NAME = "Variable name";
     public static final String VARIABLE_TYPE = "Variable type";

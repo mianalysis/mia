@@ -35,9 +35,17 @@ import net.imglib2.type.numeric.real.FloatType;
 
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class Create2DIntensityHistogram<T extends RealType<T> & NativeType<T>> extends Module {
+
+	/**
+	* 
+	*/
     public static final String INPUT_SEPARATOR = "Image input/output";
     public final static String INPUT_IMAGE1 = "Input image 1 (x-axis)";
     public final static String INPUT_IMAGE2 = "Input image 2 (y-axis)";
+
+	/**
+	* Output 2D intensity histogram, which will be saved to the workspace.
+	*/
     public final static String OUTPUT_IMAGE = "Output image";
 
     public static final String HISTOGRAM_SEPARATOR_1 = "Histogram controls (image 1)";

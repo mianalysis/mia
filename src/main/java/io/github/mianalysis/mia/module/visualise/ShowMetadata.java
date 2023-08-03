@@ -24,6 +24,10 @@ import io.github.mianalysis.mia.object.system.Status;
  */
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class ShowMetadata extends Module {
+
+	/**
+	* 
+	*/
     public static final String MESSAGE = "Message";
 
     public ShowMetadata(Modules modules) {

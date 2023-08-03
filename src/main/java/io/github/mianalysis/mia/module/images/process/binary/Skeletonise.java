@@ -34,12 +34,36 @@ import sc.fiji.skeletonize3D.Skeletonize3D_;
 
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class Skeletonise extends Module {
+
+	/**
+	* 
+	*/
     public static final String INPUT_SEPARATOR = "Image input/output";
+
+	/**
+	* Image from workspace to apply 3D skeletonisation operation to.  This image will be 8-bit with binary logic determined by the "Binary logic" parameter.
+	*/
     public static final String INPUT_IMAGE = "Input image";
+
+	/**
+	* When selected, the post-operation image will overwrite the input image in the workspace.  Otherwise, the image will be saved to the workspace with the name specified by the "Output image" parameter.
+	*/
     public static final String APPLY_TO_INPUT = "Apply to input image";
+
+	/**
+	* If "Apply to input image" is not selected, the post-operation image will be saved to the workspace with this name.
+	*/
     public static final String OUTPUT_IMAGE = "Output image";
 
+
+	/**
+	* 
+	*/
     public static final String SKELETONISE_SEPARATOR = "Skeletonise controls";
+
+	/**
+	* Controls whether objects are considered to be white (255 intensity) on a black (0 intensity) background, or black on a white background.
+	*/
     public static final String BINARY_LOGIC = "Binary logic";
 
     public interface BinaryLogic extends BinaryLogicInterface {

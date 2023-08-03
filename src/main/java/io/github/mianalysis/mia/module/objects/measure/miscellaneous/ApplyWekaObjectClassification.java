@@ -38,11 +38,31 @@ import weka.filters.unsupervised.attribute.Normalize;
 
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class ApplyWekaObjectClassification extends Module {
+
+	/**
+	* 
+	*/
     public static final String INPUT_SEPARATOR = "Objects input";
+
+	/**
+	* Input objects from workspace which will be classified based on model specified by "Classifier path" parameter.
+	*/
     public static final String INPUT_OBJECTS = "Input objects";
 
+
+	/**
+	* 
+	*/
     public static final String CLASSIFIER_SEPARATOR = "Classifier controls";
+
+	/**
+	* WEKA model (.model extension) that will be used to classify input objects based on a variety of measurements.  This model must be created in the <a href="https://www.cs.waikato.ac.nz/ml/index.html">WEKA software</a>.  All measurements used to create this model should be present in the input objects and have the same names (i.e. measurement names shouldn't be changed during preparation of training data).
+	*/
     public static final String CLASSIFIER_PATH = "Classifier path";
+
+	/**
+	* When selected, measurements will be normalised (set to the range 0-1) within their respective classes.
+	*/
     public static final String APPLY_NORMALISATION = "Apply normalisation";
 
     public ApplyWekaObjectClassification(Modules modules) {

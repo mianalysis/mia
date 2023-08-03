@@ -31,12 +31,32 @@ import io.github.mianalysis.mia.object.system.Status;
  */
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class GUICondition extends AbstractWorkspaceHandler {
+
+	/**
+	* 
+	*/
     public static final String CONDITION_SEPARATOR = "Condition";
+
+	/**
+	* Currently-selected choice from the available set (all choices added via "Add choice" option).  The relevant workflow operation (e.g. termination/redirection) will be implemented for the selected condition.  This control can be made visible in the processing view, so users can select between a set of pre-determined outcomes.
+	*/
     public static final String CHOICE = "Choice";
+
+	/**
+	* When selected, the selected choice will be stored as a metadata item.  This allows it to be exported to the final spreadsheet.
+	*/
     public static final String STORE_AS_METADATA_ITEM = "Store as metadata item";
+
+	/**
+	* Name for selected choice to be stored as metadata using.  The choice will be accessible via this metadata name in subsequent modules and can be exported to the final spreadsheet.
+	*/
     public static final String METADATA_NAME = "Metadata name";
 
     public static final String CHOICE_SEPARATOR = "Choice settings";
+
+	/**
+	* Add another condition that "Choice" can select from.  Each choice can have its own handling outcome (e.g. termination/redirection).
+	*/
     public static final String ADD_CHOICE = "Add choice";
     public static final String CHOICE_NAME = "Choice name";
 

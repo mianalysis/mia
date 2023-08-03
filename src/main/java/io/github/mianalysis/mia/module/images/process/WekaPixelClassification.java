@@ -50,23 +50,87 @@ import trainableSegmentation.WekaSegmentation;
  */
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class WekaPixelClassification extends Module {
+
+	/**
+	* 
+	*/
     public static final String INPUT_SEPARATOR = "Image input";
+
+	/**
+	* Image to apply pixel classification to.
+	*/
     public static final String INPUT_IMAGE = "Input image";
+
+	/**
+	* Converts a composite image to RGB format.  This should be set to match the image-type used for generation of the model.
+	*/
     public static final String CONVERT_TO_RGB = "Convert to RGB";
 
+
+	/**
+	* 
+	*/
     public static final String OUTPUT_SEPARATOR = "Image output";
+
+	/**
+	* Controls whether the output image is a probability map or single channel classified image.  For probabiliy maps, each class is assigned its own channel with floating point values in the range 0-1 depending on the likelihood of that pixel belonging to that class.  With classified images the pixel value corresponds to the most probable class at that position (class numbering starts at 0).
+	*/
     public static final String OUTPUT_MODE = "Output mode";
+
+	/**
+	* Output image, which can be either a probability map or pre-assigned class image.
+	*/
     public static final String OUTPUT_IMAGE = "Output image";
+
+	/**
+	* By default images will be saved as floating point 32-bit (probabilities in the range 0-1); however, they can be converted to 8-bit (probabilities in the range 0-255) or 16-bit (probabilities in the range 0-65535).  This is useful for saving memory or if the output probability map will be passed to image threshold module.
+	*/
     public static final String OUTPUT_BIT_DEPTH = "Output bit depth";
+
+	/**
+	* Allows a single class (image channel) to be output.  This is another feature for reducing memory usage.
+	*/
     public static final String OUTPUT_SINGLE_CLASS = "Output single class";
+
+	/**
+	* Class (image channel) to be output.  Channel numbering starts at 1.
+	*/
     public static final String OUTPUT_CLASS = "Output class";
 
+
+	/**
+	* 
+	*/
     public static final String CLASSIFIER_SEPARATOR = "Classifier settings";
+
+	/**
+	* Method to use for generation of the classifier filename:<br><ul><li>"Matching format" Will generate a name from metadata values stored in the current workspace.  This is useful if the classifier varies from input file to input file.</li><li>"Specific file" Will load the classifier file at a specific location.  This is useful if the same file is to be used for all input files.</li></ul>
+	*/
     public static final String PATH_TYPE = "Path type";
+
+	/**
+	* Format for a generic filename.  Plain text can be mixed with global variables or metadata values currently stored in the workspace.  Global variables are specified using the "V{name}" notation, where "name" is the name of the variable to insert.  Similarly, metadata values are specified with the "M{name}" notation.
+	*/
     public static final String GENERIC_FORMAT = "Generic format";
+
+	/**
+	* List of the currently-available metadata values for this workspace.  These can be used when compiling a generic filename.
+	*/
     public static final String AVAILABLE_METADATA_FIELDS = "Available metadata fields";
+
+	/**
+	* Path to the classifier file (.model extension).  This file needs to be created manually using the WEKA Trainable Segmentation plugin included with Fiji.
+	*/
     public static final String CLASSIFIER_FILE = "Classifier file path";
+
+	/**
+	* Number of image slices to process at any given time.  This reduces the memory footprint of the module, but can slow down processing.
+	*/
     public static final String SIMULTANEOUS_SLICES = "Simultaneous slices";
+
+	/**
+	* Number of tiles per dimension each image will be subdivided into for processing.  For example, a tile factor of 2 will divide the image into a 2x2 grid of tiles.  This reduces the memory footprint of the module.
+	*/
     public static final String TILE_FACTOR = "Tile factor";
 
     public WekaPixelClassification(Modules modules) {

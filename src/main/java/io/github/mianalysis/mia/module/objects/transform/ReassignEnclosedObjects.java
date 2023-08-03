@@ -28,6 +28,10 @@ import io.github.sjcross.sjcommon.object.volume.PointOutOfRangeException;
 
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class ReassignEnclosedObjects extends Module {
+
+	/**
+	* Object collection to process for enclosed objects.  Objects in this collection will be updated as a result of this module (enclosed objects will be removed as separate entities and their coordinates will be added to the enclosing object).
+	*/
     public static final String INPUT_OBJECTS = "Input objects";
 
     public ReassignEnclosedObjects(Modules modules) {

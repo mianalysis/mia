@@ -49,13 +49,37 @@ import net.imglib2.view.Views;
 
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class ConcatenateStacks<T extends RealType<T> & NativeType<T>> extends Module {
+
+	/**
+	* 
+	*/
     public static final String INPUT_SEPARATOR = "Image input";
+
+	/**
+	* Add another image for concatenation.
+	*/
     public static final String ADD_INPUT_IMAGE = "Add image";
     public static final String INPUT_IMAGE = "Input image";
+
+	/**
+	* If enabled, the moduule can ignore any images specified for inclusion that aren't present in the workspace.  This is useful if an image's existence is dependent on optional modules.
+	*/
     public static final String ALLOW_MISSING_IMAGES = "Allow missing images";
 
+
+	/**
+	* 
+	*/
     public static final String OUTPUT_SEPARATOR = "Image output";
+
+	/**
+	* The resultant image of concatenation to be added to the workspace.
+	*/
     public static final String OUTPUT_IMAGE = "Output image";
+
+	/**
+	* Axis along which to concatenate input images.
+	*/
     public static final String AXIS_MODE = "Axis mode";
 
     public ConcatenateStacks(Modules modules) {

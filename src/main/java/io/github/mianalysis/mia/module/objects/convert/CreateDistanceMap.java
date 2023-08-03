@@ -41,15 +41,51 @@ import io.github.sjcross.sjcommon.object.Point;
 
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class CreateDistanceMap extends Module {
+
+	/**
+	* 
+	*/
     public static final String INPUT_SEPARATOR = "Objects input / image output";
+
+	/**
+	* Objects from workspace for which distance map will be created.  A single distance map will be created for all objects.
+	*/
     public static final String INPUT_OBJECTS = "Input objects";
+
+	/**
+	* Output distance map image which will be added to the workspace.  This will contain the distance map for each object.
+	*/
     public static final String OUTPUT_IMAGE = "Output image";
 
+
+	/**
+	* 
+	*/
     public static final String DISTANCE_MAP_SEPARATOR = "Distance map controls";
+
+	/**
+	* Controls where the distances are calculated from:<br><ul><li>"Distance from object centroid" Each pixel is encoded with the distance from the centre of the respective object.</li><li>"Distance from object edge" Each pixel is encoded with the distance from the edge of the respective object.</li></ul>
+	*/
     public static final String REFERENCE_MODE = "Reference mode";
+
+	/**
+	* When selected (and "Reference mode" is set to "Distance from object edge"), the distance map will be inverted, such that the distances inside objects are also positive.  If not selected, the distances inside objects will be negative.  Distance values outside objects are always positive.
+	*/
     public static final String INVERT_MAP_WITHIN_OBJECTS = "Invert map within objects";
+
+	/**
+	* Controls which regions of the image are displayed:<br><ul><li>"Inside and outside" Distances both inside and outside the objects are non-zero.</li><li>"Inside only" Distances are shown inside each object, but are set to zero for all pixels outside an object.</li><li>"Outside only" Distances are shown outside each object, but are set to zero for all pixels inside an object.</li></ul>
+	*/
     public static final String MASKING_MODE = "Masking mode";
+
+	/**
+	* When selected, the distance values inside each object are normalised to the range 0-1.  Normalisation is performed on an object-by-object basis, so the absolute distance values cannot be directly compared between objects.
+	*/
     public static final String NORMALISE_MAP_PER_OBJECT = "Normalise map per object";
+
+	/**
+	* Controls whether spatial values are assumed to be specified in calibrated units (as defined by the "Input control" parameter "Spatial unit") or pixel units.
+	*/
     public static final String SPATIAL_UNITS_MODE = "Spatial units mode";
 
     public CreateDistanceMap(Modules modules) {

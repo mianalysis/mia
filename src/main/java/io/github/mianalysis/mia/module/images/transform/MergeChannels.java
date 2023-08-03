@@ -45,9 +45,21 @@ import net.imglib2.view.Views;
  */
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class MergeChannels<T extends RealType<T> & NativeType<T>> extends Module {
+
+	/**
+	* Add another image to be included in output merged image.  All added images must have the same X,Y,Z and T dimensions.
+	*/
     public static final String ADD_INPUT_IMAGE = "Add image";
     public static final String INPUT_IMAGE = "Input image";
+
+	/**
+	* Controls where the output image is stored:<br><ul><li>"Create new image" Stores the merged image as a new image in the workspace with the name specified by "Output image".</li><li>"Overwrite image" Overwrite the image specified by the index "Image index to overwrite (greater than or equal to 1)" in the workspace with the merged image.</li></ul>
+	*/
     public static final String OVERWRITE_MODE = "Overwrite mode";
+
+	/**
+	* Name for the output merged image to be stored in the workspace with.
+	*/
     public static final String OUTPUT_IMAGE = "Output image";
     public static final String IMAGE_INDEX_TO_OVERWRITE = "Image index to overwrite (>= 1)";
 
@@ -294,7 +306,7 @@ return null;
                 + OUTPUT_IMAGE + "\".</li>"
 
                 + "<li>\"" + OverwriteModes.OVERWRITE_IMAGE + "\" Overwrite the image specified by the index \""
-                + IMAGE_INDEX_TO_OVERWRITE + "\" in the workspace with the merged image.");
+                + IMAGE_INDEX_TO_OVERWRITE + "\" in the workspace with the merged image.</li></ul>");
 
         parameters.get(OUTPUT_IMAGE)
                 .setDescription("Name for the output merged image to be stored in the workspace with.");

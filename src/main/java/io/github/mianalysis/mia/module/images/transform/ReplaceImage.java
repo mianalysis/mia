@@ -23,6 +23,10 @@ import io.github.mianalysis.mia.object.system.Status;
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class ReplaceImage extends Module {
     public static final String INPUT_IMAGE1 = "Input image 1 (to be replaced)";
+
+	/**
+	* The image to copy pixel intensities from
+	*/
     public static final String INPUT_IMAGE2 = "Input image 2";
 
     public ReplaceImage(Modules modules) {

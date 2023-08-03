@@ -46,24 +46,92 @@ import net.imglib2.type.numeric.RealType;
  */
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class DistanceBands<T extends RealType<T> & NativeType<T>> extends Module {
+
+	/**
+	* 
+	*/
     public static final String INPUT_SEPARATOR = "Image input";
+
+	/**
+	* 
+	*/
     public static final String INPUT_IMAGE = "Input image";
+
+	/**
+	* 
+	*/
     public static final String BINARY_LOGIC = "Binary logic";
 
+
+	/**
+	* 
+	*/
     public static final String OUTPUT_SEPARATOR = "Object output";
+
+	/**
+	* 
+	*/
     public static final String OUTPUT_OBJECTS = "Output objects";
+
+	/**
+	* 
+	*/
     public static final String BAND_MODE = "Band mode";
+
+	/**
+	* 
+	*/
     public static final String VOLUME_TYPE = "Volume type";
+
+	/**
+	* 
+	*/
     public static final String MERGE_BANDS = "Merge bands";
 
+
+	/**
+	* 
+	*/
     public static final String BAND_SEPARATOR = "Band controls";
+
+	/**
+	* 
+	*/
     public static final String MATCH_Z_TO_X = "Match Z to XY";
+
+	/**
+	* 
+	*/
     public static final String WEIGHT_MODE = "Weight mode";
+
+	/**
+	* 
+	*/
     public static final String BAND_WIDTH = "Band width";
+
+	/**
+	* 
+	*/
     public static final String SPATIAL_UNITS_MODE = "Spatial units mode";
+
+	/**
+	* 
+	*/
     public static final String APPLY_MINIMUM_BAND_DISTANCE = "Apply minimum band distance";
+
+	/**
+	* 
+	*/
     public static final String MINIMUM_BAND_DISTANCE = "Minimum band distance";
+
+	/**
+	* 
+	*/
     public static final String APPLY_MAXIMUM_BAND_DISTANCE = "Apply maximum band distance";
+
+	/**
+	* 
+	*/
     public static final String MAXIMUM_BAND_DISTANCE = "Maximum band distance";
 
     public DistanceBands(Modules modules) {

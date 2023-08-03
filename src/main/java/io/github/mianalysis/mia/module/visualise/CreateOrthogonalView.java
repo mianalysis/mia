@@ -47,12 +47,36 @@ import io.github.mianalysis.mia.object.system.Status;
  */
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class CreateOrthogonalView<T extends RealType<T> & NativeType<T>> extends Module {
+
+	/**
+	* 
+	*/
     public static final String INPUT_SEPARATOR = "Image input/output";
+
+	/**
+	* Image from workspace for which orthogonal view will be generated.  This image will not be affected by the process.
+	*/
     public static final String INPUT_IMAGE = "Input image";
+
+	/**
+	* Output orthogonal image showing orthogonal views in XY, XZ and YZ planes.  The output image will be formed from three panels, showing the orthogonal views, with white pixels elsewhere.  This image will be stored in the workspace using this name.
+	*/
     public static final String OUTPUT_IMAGE = "Output image";
 
+
+	/**
+	* 
+	*/
     public static final String ORTHO_SEPARATOR = "Orthogonal view controls";
+
+	/**
+	* Controls how the orthogonal views are generated:<br><ul><li>"Image centre" Orthogonal views are extracted as single slices from the input image.  The views share a common coordinate, coincident with the centre of the image.</li><li>"Centroid of largest object" Orthogonal views are extracted as single slices from the input image.  The views share a common coordinate, coincident with the centre of the largest object from the collection specified by "Input objects".</li></ul>
+	*/
     public static final String POSITION_MODE = "Position mode";
+
+	/**
+	* If "Position mode" is set to "Centroid of largest object", the orthogonal views will be positioned coincident with the centroid of the largest object from this collection.
+	*/
     public static final String INPUT_OBJECTS = "Input objects";
 
     public CreateOrthogonalView(Modules modules) {

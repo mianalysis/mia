@@ -24,9 +24,25 @@ import io.github.mianalysis.mia.object.system.Status;
 
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class FilterWithWithoutMeasurement extends AbstractObjectFilter {
+
+	/**
+	* 
+	*/
     public static final String FILTER_SEPARATOR = "Object filtering";
+
+	/**
+	* Controls whether objects are removed when a specific measurement is present or not:<br><br>- "Remove objects without measurement" Objects without the measurement specified by "Measurement to filter on" are removed, counted or moved (depending on the "Filter mode" parameter).<br><br>- "Remove objects with measurement" Objects with the measurement specified by "Measurement to filter on" are removed, counted or moved (depending on the "Filter mode" parameter).<br>
+	*/
     public static final String FILTER_METHOD = "Method for filtering";
+
+	/**
+	* Measurement to filter by.  The presence or absence of this measurement will determine which of the input objects are counted, removed or moved (depending on the "Filter mode" parameter).
+	*/
     public static final String MEASUREMENT = "Measurement to filter on";
+
+	/**
+	* When selected, the number of removed (or moved) objects is counted and stored as a metadata item (name in the format "FILTER // NUM_[inputObjectsName] WITHOUT [measurementName] MEASUREMENT").
+	*/
     public static final String STORE_RESULTS = "Store filter results";
 
     public FilterWithWithoutMeasurement(Modules modules) {

@@ -49,28 +49,96 @@ import io.github.sjcross.sjcommon.process.activecontour.visualisation.GridOverla
  */
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class FitActiveContours extends Module {
+
+	/**
+	* 
+	*/
     public static final String IMAGE_SEPARATOR = "Image input";
+
+	/**
+	* Image from the workspace to which the contours will be fit.  The intensity of this image will contribute to the external forces applied to the contour.  For example, the contour will attempt to minimise the intensity along the path of the contour.
+	*/
     public static final String INPUT_IMAGE = "Input image";
 
+
+	/**
+	* 
+	*/
     public static final String OBJECTS_SEPARATOR = "Objects input/output";
+
+	/**
+	* Objects from the workspace to which active contours will be fit.  Active contours are fit in 2D to the object points from the first slice.  As such, input objects can be stored in 3D space, but only a single slice will be fit.
+	*/
     public static final String INPUT_OBJECTS = "Input objects";
+
+	/**
+	* When selected, the input objects will have their coordinates replaced with the coordinates from the fit contour.  Applied coordinates will be solid within the boundary of the associated contour.
+	*/
     public static final String UPDATE_INPUT_OBJECTS = "Update input objects";
+
+	/**
+	* If "Update input objects" is not selected, this is the name with which the output contour objects will be stored in the workspace.
+	*/
     public static final String OUTPUT_OBJECTS = "Output objects";
 
+
+	/**
+	* 
+	*/
     public static final String ENERGY_SEPARATOR = "Energy terms";
+
+	/**
+	* Density of coordinates along the perimeter of the input object that will be used as control points in the contour.  Density is specified as a decimal in the range 0-1, where densities approaching 0 have fewer points and a density of 1 includes all points on the object perimeter.
+	*/
     public static final String NODE_DENSITY = "Node density";
+
+	/**
+	* Weight assigned to the elastic energy of the contour.  The elastic energy grows with increasing separation between adjacent points along the contour.  During optimisation, the contour will attempt to minimise the elastic energy by reducing the separation between adjacent points (i.e. the contour will shrink).  The greater the associated weight, the more this term will contribute to the overall energy of the contour.  Larger weights will cause the contour to shrink more readily.
+	*/
     public static final String ELASTIC_ENERGY = "Elastic energy contribution";
+
+	/**
+	* Weight assigned to the bending energy of the contour.  The bending energy grows as the angle between adjacent segments also increases.  During optimisation, the contour will attempt to minimise the bending energy by reducing small bends in the contour.  The lowest bending energy state for a contour is a perfect circle.  The greater the associated weight, the more this term will contribute to the overall energy of the contour.  Larger weights will cause the contour to become smoother.
+	*/
     public static final String BENDING_ENERGY = "Bending energy contribution";
+
+	/**
+	* Weight assigned to the external (image) energy of the contour.  The image path energy is equal to the intensity of the pixels along the path.  During optimisation, the contour will attempt to minimise the image path energy by sitting along low intensity lines in the image.  The greater the associated weight, the more this term will contribute to the overall energy of the contour.  Larger weights will cause the contour to stick to dark regions more readily, but may also cause it to get stuck on local minima in the image.
+	*/
     public static final String IMAGE_PATH_ENERGY = "Image path energy contribution";
+
+	/**
+	* Weight assigned to the balloon energy of the contour.  The balloon energy pushes the contour outwards in at attempt to overcome the elastic energy-induced shrinkage.  The greater the associated weight, the more this term will contribute to the overall energy of the contour.  Larger weights will cause the contour to grow outwards faster.
+	*/
     public static final String BALLOON_ENERGY = "Balloon energy contribution";
 
+
+	/**
+	* 
+	*/
     public static final String OPTIMISATION_SEPARATOR = "Optimisation controls";
     public static final String SEARCH_RADIUS = "Search radius (px)";
+
+	/**
+	* The maximum number of optimisation iterations that will be completed.  If contour stability has not been reached by this number of iterations, the contour at this point will be exported.
+	*/
     public static final String NUMBER_OF_ITERATIONS = "Maximum number of iterations";
+
+	/**
+	* When selected, optimisation of the contour can be terminated early if successive iterations don't yield sufficient motion (i.e. the contour has reached stability).  The threshold amount of motion is specified by "Motion threshold (px)".  Early termination of optimisation for stable contours will result in a speed increase for this module.
+	*/
     public static final String USE_MOTION_THRESHOLD = "Use motion threshold";
     public static final String MOTION_THRESHOLD_PX = "Motion threshold (px)";
 
+
+	/**
+	* 
+	*/
     public static final String MISCELLANEOUS_SEPARATOR = "Miscellaneous";
+
+	/**
+	* When selected, the contour evolution will be displayed on the input image in realtime.  This may be useful for optimising weight parameters.
+	*/
     public static final String SHOW_CONTOURS_REALTIME = "Show contours in realtime";
 
     public FitActiveContours(Modules modules) {

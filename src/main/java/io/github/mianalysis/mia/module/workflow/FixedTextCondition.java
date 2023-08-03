@@ -28,11 +28,27 @@ import io.github.mianalysis.mia.object.system.Status;
  */
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class FixedTextCondition extends AbstractWorkspaceHandler {
+
+	/**
+	* 
+	*/
     public static final String CONDITION_SEPARATOR = "Condition";
+
+	/**
+	* Text value that will tested.  If this matches any of the reference values listed within this module the relevant workflow operation (e.g. termination/redirection) will be implemented.  This text value could be a global variable.
+	*/
     public static final String TEST_VALUE = "Test value";
+
+	/**
+	* Add another condition that "Test value" can be compared against.  Each condition can have its own handling outcome (e.g. termination/redirection).
+	*/
     public static final String ADD_CONDITION = "Add condition";
     public static final String REFERENCE_VALUE = "Reference value";
 
+
+	/**
+	* 
+	*/
     public static final String RESULT_SEPARATOR = "Result";
 
     public FixedTextCondition(Modules modules) {

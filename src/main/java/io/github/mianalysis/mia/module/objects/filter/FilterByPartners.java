@@ -23,6 +23,10 @@ import io.github.mianalysis.mia.object.system.Status;
 
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class FilterByPartners extends AbstractNumericObjectFilter {
+
+	/**
+	* Objects will be filtered against the number of partners they have from this object collection.
+	*/
     public static final String PARTNER_OBJECTS = "Partner objects";
 
     public FilterByPartners(Modules modules) {

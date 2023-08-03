@@ -23,8 +23,20 @@ import io.github.mianalysis.mia.object.system.Status;
 
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class MergeSingleClass extends Module {
+
+	/**
+	* 
+	*/
     public final static String INPUT_SEPARATOR = "Object input";
+
+	/**
+	* Input object collection that will have all objects from each timepoint merged into a single object.
+	*/
     public final static String INPUT_OBJECTS = "Input objects";
+
+	/**
+	* Output merged objects (one per input timepoint).  These objects will be stored in the workspace and accessible via this name.
+	*/
     public static final String OUTPUT_OBJECTS = "Output merged objects";
 
     public MergeSingleClass(Modules modules) {

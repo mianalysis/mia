@@ -27,12 +27,36 @@ import io.github.sjcross.sjcommon.metadataextractors.Metadata;
  */
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class ShowImage extends Module {
+
+	/**
+	* 
+	*/
     public static final String INPUT_SEPARATOR = "Image input";
+
+	/**
+	* Image to display.
+	*/
     public final static String DISPLAY_IMAGE = "Display image";
 
+
+	/**
+	* 
+	*/
     public static final String DISPLAY_SEPARATOR = "Display controls";
+
+	/**
+	* Select what title the image window should have.<br><br>- "Image name" Set the image window title to the name of the image.<br><br>- "Filename" Set the image window title to the filename of the root file for this workspace (i.e. the file set in "Input control".<br><br>- "Image and filename" Set the image window title to a composite of the filename of the root file for this workspace and the name of the image.
+	*/
     public static final String TITLE_MODE = "Title mode";
+
+	/**
+	* Before displaying the image, apply quick normalisation to improve contrast.  The minimum and maximum displayed intensities are simply set to the minimum and maximum pixel intensities contained within the image stack.
+	*/
     public static final String QUICK_NORMALISATION = "Quick normalisation";
+
+	/**
+	* Select whether multi-channel images should be displayed as composites (show all channels overlaid) or individually (the displayed channel is controlled by the "C" slider at the bottom of the image window).
+	*/
     public static final String CHANNEL_MODE = "Channel mode";
 
 

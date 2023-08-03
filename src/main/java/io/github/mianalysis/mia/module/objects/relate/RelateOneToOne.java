@@ -129,18 +129,58 @@ import io.github.mianalysis.mia.object.system.Status;
 
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class RelateOneToOne extends Module {
+
+	/**
+	* 
+	*/
     public static final String INPUT_SEPARATOR = "Objects input/output";
+
+	/**
+	* First objection collection from the workspace to relate objects for.  These objects will be related to the objects from the collection specified by "Input objects 2".  Related objects will be given partner relationships and optionally (depending on the state of "Create cluster objects") be related by a common parent cluster object.
+	*/
     public final static String INPUT_OBJECTS_1 = "Input objects 1";
+
+	/**
+	* Second objection collection from the workspace to relate objects for.  These objects will be related to the objects from the collection specified by "Input objects 1".  Related objects will be given partner relationships and optionally (depending on the state of "Create cluster objects") be related by a common parent cluster object.
+	*/
     public final static String INPUT_OBJECTS_2 = "Input objects 2";
+
+	/**
+	* When selected, new "cluster" objects will be created and added to the workspace.  These objects contain no spatial information, but act as links between all objects that were related.  Both objects identified as relating to each other are stored as children of the same cluster object.
+	*/
     public static final String CREATE_CLUSTER_OBJECTS = "Create cluster objects";
+
+	/**
+	* If storing cluster objects (when "Create cluster objects" is selected), the output cluster objects will be added to the workspace with this name.
+	*/
     public static final String OUTPUT_OBJECTS_NAME = "Output cluster objects";
 
+
+	/**
+	* 
+	*/
     public static final String RELATIONSHIP_SEPARATOR = "Relationship settings";
+
+	/**
+	* Controls the type of calculation used when determining which objects are related:<br><ul><li>"Centroid separation" Distances are calculated from object centroid to object centroid.  These distances are always positive; increasing as the distance between centroids increases.</li><li>"Spatial overlap" The percentage of each object, which overlaps with another object is calculated.</li></ul>
+	*/
     public static final String RELATIONSHIP_MODE = "Relationship mode";
+
+	/**
+	* If "Relationship mode" is set to "Centroid separation", this is the maximum separation two objects can have and still be related.
+	*/
     public static final String MAXIMUM_SEPARATION = "Maximum separation";
+
+	/**
+	* When selected, spatial values are assumed to be specified in calibrated units (as defined by the "Input control" parameter "Spatial unit").  Otherwise, pixel units are assumed.
+	*/
     public static final String CALIBRATED_UNITS = "Calibrated units";
     public static final String MINIMUM_OVERLAP_PC_1 = "Minimum overlap of object 1 (%)";
     public static final String MINIMUM_OVERLAP_PC_2 = "Minimum overlap of object 2 (%)";
+
+	/**
+	* When selected, objects must be in the same time frame for them to be linked.
+	*/
     public static final String LINK_IN_SAME_FRAME = "Only link objects in same frame";
 
     public interface RelationshipModes {
@@ -600,7 +640,7 @@ public class RelateOneToOne extends Module {
                         + "\" Distances are calculated from object centroid to object centroid.  These distances are always positive; increasing as the distance between centroids increases.</li>"
 
                         + "<li>\"" + RelationshipModes.SPATIAL_OVERLAP
-                        + "\" The percentage of each object, which overlaps with another object is calculated.</li>");
+                        + "\" The percentage of each object, which overlaps with another object is calculated.</li></ul>");
 
         parameters.get(MAXIMUM_SEPARATION)
                 .setDescription("If \"" + RELATIONSHIP_MODE + "\" is set to \"" + RelationshipModes.CENTROID_SEPARATION

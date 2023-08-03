@@ -47,20 +47,76 @@ import io.github.sjcross.sjcommon.object.volume.PointOutOfRangeException;
 */
 @Plugin(type = Module.class, priority=Priority.LOW, visible=true)
 public class ExtractObjectEdges extends Module {
+
+	/**
+	* 
+	*/
     public static final String INPUT_SEPARATOR = "Object input/output";
+
+	/**
+	* Objects from workspace for which edge and/or interior regions will be extracted.  Any extracted regions will be children of the associated input objects.
+	*/
     public static final String INPUT_OBJECTS = "Input objects";
+
+	/**
+	* When selected, an edge object will be created for each input object.  Edge objects contain only coordinates from the input object within a given distance of the object edge.  Output edge objects will be children associated with the relevant input object.  The edge objects will be stored in the workspace with the name specified by "Output edge objects".
+	*/
     public static final String CREATE_EDGE_OBJECTS = "Create edge objects";
+
+	/**
+	* If "Create edge objects" is selected, this is the name assigned to output edge objects.
+	*/
     public static final String OUTPUT_EDGE_OBJECTS = "Output edge objects";
+
+	/**
+	* When selected, an interior object will be created for each input object.  Interior objects contain only coordinates from the input object a given distance from the object edge or greater (i.e. they contain any points from the input object which aren't assigned as "edge" objects).  Output interior objects will be children associated with the relevant input object.  The interior objects will be stored in the workspace with the name specified by "Output interior objects".
+	*/
     public static final String CREATE_INTERIOR_OBJECTS = "Create interior objects";
+
+	/**
+	* If "Create interior objects" is selected, this is the name assigned to output interior objects.
+	*/
     public static final String OUTPUT_INTERIOR_OBJECTS = "Output interior objects";
     
+
+	/**
+	* 
+	*/
     public static final String DISTANCE_SEPARATOR = "Distance controls";
+
+	/**
+	* Controls how the boundary between "edge" and "interior" objects is defined:<br><ul><li>"Distance to edge" The boundary is defined by a fixed distance value specified by "Distance".  Any input object coordinates within (less than or equal to) this distance of the object edge can be output as "edge" coordinates, otherwise they can be output as "interior" coordinates.</li><li>"Object measurement" The boundary is defined by a measurement value associated with each object.  The measurement is specified by "Measurement name".  Any input object coordinates within (less than or equal to) this distance of the object edge can be output as "edge" coordinates, otherwise they can be output as "interior" coordinates.</li><li>"Parent object measurement" The boundary is defined by a measurement value associated with a parent of each object.  The measurement is specified by "Parent measurement name".  Any input object coordinates within (less than or equal to) this distance of the object edge can be output as "edge" coordinates, otherwise they can be output as "interior" coordinates.</li><li>"Percentage of maximum distance to edge" The boundary is defined as a percentage of the maximum distance from the edge of the object to its centroid.  As such, this boundary value will vary from object to object in terms of the absolute width of edge objects.</li></ul>
+	*/
     public static final String EDGE_MODE = "Edge determination";
+
+	/**
+	* If "Edge determination" is set to "Distance to edge", this is the fixed distance value that defines the boundary between edge and interior objects.  It is assumed to be specified in pixel units unless "Calibrated distances" is selected, in which case they are assumed in calibrated units.
+	*/
     public static final String EDGE_DISTANCE = "Distance";
+
+	/**
+	* If "Edge determination" is set to "Object measurement", this is the object measurement (associated with the object being processed) that defines the boundary between edge and interior objects.  It is assumed to be specified in pixel units unless "Calibrated distances" is selected, in which case they are assumed in calibrated units.
+	*/
     public static final String MEASUREMENT_NAME = "Measurement name";
+
+	/**
+	* If "Edge determination" is set to "Parent object measurement", this is the parent of the input object that will be used as a source for the edge width measurement specified by "Parent object measurement".
+	*/
     public static final String PARENT_OBJECTS = "Parent objects";
+
+	/**
+	* If "Edge determination" is set to "Parent object measurement", this is the object measurement (associated with a parent of the object being processed) that defines the boundary between edge and interior objects.  It is assumed to be specified in pixel units unless "Calibrated distances" is selected, in which case they are assumed in calibrated units.
+	*/
     public static final String PARENT_MEASUREMENT_NAME = "Parent measurement name";
+
+	/**
+	* When selected, the fixed boundary distance specified by "Distance" is assumed to be in calibrated units.  Otherwise, the fixed distance is in pixel units.
+	*/
     public static final String CALIBRATED_DISTANCES = "Calibrated distances";
+
+	/**
+	* If "Edge determination" is set to "Percentage of maximum distance to edge", this is the percentage of the maximum centroid-edge distance for an object that will be used to calculate the edge/interior boundary location.  Percentages approaching 0% will put the boundary increasingly close to the object edge (more detected as "interiors"), while percentages approaching 100% will have the boundary increasingly close to the object centroid (more detected as "edges").
+	*/
     public static final String EDGE_PERCENTAGE = "Percentage";
     
     public enum Mode {INTERIOR, EDGE}

@@ -29,17 +29,61 @@ import io.github.sjcross.sjcommon.mathfunc.CumStat;
 
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class CalculateStatsForChildren extends Module {
+
+	/**
+	* 
+	*/
     public static final String INPUT_SEPARATOR = "Objects input";
+
+	/**
+	* Input object collection from the workspace for which statistics of child object measurements will be calculated.  This object collection is a parent to those selected by the "Child objects" parameter.  Statistics for one measurement associated with all children of each input parent object will be calculated and added to this object as a new measurement.
+	*/
     public static final String PARENT_OBJECTS = "Parent objects";
+
+	/**
+	* Input object collection from the workspace, where these objects are children of the collection selected by the "Parent objects" parameter.)
+	*/
     public static final String CHILD_OBJECTS = "Child objects";
 
+
+	/**
+	* 
+	*/
     public static final String STATISTIC_SEPARATOR = "Statistics";
+
+	/**
+	* Measurement associated with the child objects for which statistics will be calculated.  Statistics will be calculated for all children of a parent object.
+	*/
     public static final String MEASUREMENT = "Measurement";
+
+	/**
+	* When selected, the mean value of the measurements will be calculated and added to the relevant parent object.
+	*/
     public static final String CALCULATE_MEAN = "Calculate mean";
+
+	/**
+	* When selected, the median value of the measurements will be calculated and added to the relevant parent object.
+	*/
     public static final String CALCULATE_MEDIAN = "Calculate median";
+
+	/**
+	* When selected, the standard deviation of the measurements will be calculated and added to the relevant parent object.
+	*/
     public static final String CALCULATE_STD = "Calculate standard deviation";
+
+	/**
+	* When selected, the minimum value of the measurements will be calculated and added to the relevant parent object.
+	*/
     public static final String CALCULATE_MIN = "Calculate minimum";
+
+	/**
+	* When selected, the maximum value of the measurements will be calculated and added to the relevant parent object.
+	*/
     public static final String CALCULATE_MAX = "Calculate maximum";
+
+	/**
+	* When selected, the sum of the measurements will be calculated and added to the relevant parent object.
+	*/
     public static final String CALCULATE_SUM = "Calculate sum";
 
     public CalculateStatsForChildren(Modules modules) {

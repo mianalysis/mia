@@ -42,19 +42,63 @@ import io.github.sjcross.sjcommon.object.volume.Volume;
  */
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class FitEllipse extends Module {
+
+	/**
+	* 
+	*/
     public static final String INPUT_SEPARATOR = "Object input";
+
+	/**
+	* Objects from workspace to which ellipses will be fit.  Objects stored in 3D will be projected into the XY 2D plane (using the "Project objects" module) prior to fitting.  If a projected object is used, any output measurements and relationships are still applied to the input object (the projected object is discarded after use).  Measurements made by this module are associated with these input objects, irrespective of whether the fit ellipses are also stored as objects.
+	*/
     public static final String INPUT_OBJECTS = "Input objects";
 
+
+	/**
+	* 
+	*/
     public static final String FITTING_SEPARATOR = "Ellipse fitting";
+
+	/**
+	* Controls which object coordinates are used for ellipse fitting:<br><ul><li>"Fit to whole" All coordinates for the input object are passed to the ellipse fitter.</li><li>"Fit to surface" (default) Only surface coordinates of the input object are passed to the ellipse fitter.  Surface coordinates are calculated using 4-way connectivity.</li></ul>
+	*/
     public static final String FITTING_MODE = "Fitting mode";
+
+	/**
+	* When selected, all axes of the the fit ellipses must be shorter than the length specified by "Maximum axis length".  This helps filter out mis-fit ellipses and prevents unnecessary, massive memory use when storing ellipses.
+	*/
     public static final String LIMIT_AXIS_LENGTH = "Limit axis length";
+
+	/**
+	* Maximum length of any fit ellipse axis as measured in pixel units.  This is onyl used if "Limit axis length" is selected.
+	*/
     public static final String MAXIMUM_AXIS_LENGTH = "Maximum axis length";
 
+
+	/**
+	* 
+	*/
     public static final String OUTPUT_SEPARATOR = "Object output";
+
+	/**
+	* Controls whether the fit ellipse is stored as an object in the workspace:<br><ul><li>"Create new objects" Fit ellipses are stored as new objects in the workspace (name specified by "Output objects").  Ellipses are "solid" objects, irrespective of whether they were only fit to input object surface coordinates.  Ellipse objects are children of the input objects to which they were fit.  If outputting ellipse objects, any measurements are still only applied to the corresponding input objects.</li><li>"Do not store" (default) The ellipse coordinates are not stored.</li><li>"Update input objects" The coordinates of the input object are removed and replaced with the fit ellipse coordinates.  Note: Measurements associated with the input object (e.g. spatial measurements) will still be available, but may no longer be valid.</li></ul>
+	*/
     public static final String OBJECT_OUTPUT_MODE = "Object output mode";
+
+	/**
+	* Name assigned to output ellipse objects if "Object output mode" is in "Create new objects" mode.
+	*/
     public static final String OUTPUT_OBJECTS = "Output objects";
 
+
+	/**
+	* 
+	*/
     public static final String EXECUTION_SEPARATOR = "Execution controls";
+
+	/**
+	* Process multiple input objects simultaneously.  This can provide a speed improvement when working on a computer with a multi-core CPU.
+	*/
     public static final String ENABLE_MULTITHREADING = "Enable multithreading";
 
     public FitEllipse(Modules modules) {

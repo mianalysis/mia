@@ -52,27 +52,107 @@ import io.github.mianalysis.mia.object.units.SpatialUnit;
  */
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class CalculateNearestNeighbour extends AbstractSaver {
+
+	/**
+	* 
+	*/
     public static final String INPUT_SEPARATOR = "Objects input";
+
+	/**
+	* Objects for which the distance to a closest neighbour will be calculated.  The closest distance will be stored as a measurement associated with this object.
+	*/
     public static final String INPUT_OBJECTS = "Input objects";
+
+	/**
+	* Controls whether the nearest neighbour distance from each input object will be calculated relative to all other objects in that input collection ("Within same object set") or to all objects in another object collection ("Different object set").
+	*/
     public static final String RELATIONSHIP_MODE = "Relationship mode";
+
+	/**
+	* If "Relationship mode" is set to "Different object set", the distance from the input objects to these objects will be calculated and the shortest distance recorded.
+	*/
     public static final String NEIGHBOUR_OBJECTS = "Neighbour objects";
 
+
+	/**
+	* 
+	*/
     public static final String RELATIONSHIP_SEPARATOR = "Relationship settings";
+
+	/**
+	* Controls the method used for determining the nearest neighbour distances:<br><ul><li>"Centroid (2D)" Distances are between the input and neighbour object centroids, but only in the XY plane.  These distances are always positive; increasing as the distance between centroids increases.</li><li>"Centroid (3D)" Distances are between the input and neighbour object centroids.  These distances are always positive; increasing as the distance between centroids increases.</li><li>"Surface (2D)" Distances are between the closest points on the input and neighbour surfaces, but only in the XY plane.  These distances increase in magnitude the greater the minimum input-neighbour object surface distance is; however, they are assigned a positive value if the closest input object surface point is outside the neighbour and a negative value if the closest input object surface point is inside the neighbour.  For example, a closest input object surface point 5px outside the neighbour will be simply "5px", whereas a closest input object surface point 5px from the surface, but contained within the neighbour object will be recorded as "-5px".  Note: Any instances where the input and neighbour object surfaces overlap will be recorded as "0px" distance.</li><li>"Surface (3D)" Distances are between the closest points on the input and neighbour surfaces.  These distances increase in magnitude the greater the minimum input-neighbour object surface distance is; however, they are assigned a positive value if the closest input object surface point is outside the neighbour and a negative value if the closest input object surface point is inside the neighbour.  For example, a closest input object surface point 5px outside the neighbour will be simply "5px", whereas a closest input object surface point 5px from the surface, but contained within the neighbour object will be recorded as "-5px".  Note: Any instances where the input and neighbour object surfaces overlap will be recorded as "0px" distance.</li></ul>
+	*/
     public static final String REFERENCE_MODE = "Reference mode";
+
+	/**
+	* When selected, only distances between objects within the same parent (specified by "Parent objects") will be considered.
+	*/
     public static final String CALCULATE_WITHIN_PARENT = "Only calculate for objects in same parent";
+
+	/**
+	* When "Only calculate for objects in same parent" is selected, objects must have this same parent to have their nearest neighbour distances calculated.
+	*/
     public static final String PARENT_OBJECTS = "Parent objects";
+
+	/**
+	* When selected, nearest neighbour distances will only be calculated if that distance (as calculated by the "Reference mode" metric) is less than or equal to the distance defined by "Maximum linking distance".
+	*/
     public static final String LIMIT_LINKING_DISTANCE = "Limit linking distance";
+
+	/**
+	* If "Limit linking distance" is selected, this is the maximum permitted distance between objects for them to have their nearest neighbour distance recorded.
+	*/
     public static final String MAXIMUM_LINKING_DISTANCE = "Maximum linking distance";
+
+	/**
+	* When selected, linking distances are to be specified in calibrated units; otherwise, units are specified in pixels.
+	*/
     public static final String CALIBRATED_DISTANCE = "Calibrated distance";
+
+	/**
+	* When selected, objects must be in the same time frame for them to be linked.
+	*/
     public static final String LINK_IN_SAME_FRAME = "Only link objects in same frame";
 
+
+	/**
+	* 
+	*/
     public static final String OUTPUT_SEPARATOR = "Data output";
+
+	/**
+	* For each analysis run, create a separate spreadsheet file, which records the distance of all objects to all other objects.
+	*/
     public static final String EXPORT_ALL_DISTANCES = "Export all distances";
+
+	/**
+	* When relating objects by surfaces it's possible to only consider objects inside, outside or on the edge of the neighbouring object.  This parameter controls which objects are allowed to be related to a neighbour.  Choices are: Inside and outside (all distances), Inside only (distances less than 0), Inside and on surface (distances less than or equal to 0), On surface only (distances = 0), Outside and on surface (distances greater than or equal to 0), Outside only (distances greater than 0).
+	*/
     public static final String INSIDE_OUTSIDE_MODE = "Inside/outside mode";
+
+	/**
+	* Include a column recording the timepoint that the objects were present in.  If only linking objects in the same frame, there will be a single timepoint column; however, if links are permitted between objects in different timepoints, a timepoint colummn for each of the related objects will be included.
+	*/
     public static final String INCLUDE_TIMEPOINTS = "Include timepoints";
+
+	/**
+	* Include a column recording the ID number of a specific parent of the input object.  For example, this could be a track ID number.
+	*/
     public static final String INCLUDE_INPUT_PARENT = "Include input object parent";
+
+	/**
+	* Parent object collection of the input object.  If "Include input object parent" is selected, the corresponding parent ID number will be included as a column in the output distances spreadsheet.
+	*/
     public static final String INPUT_PARENT = "Input object parent";
+
+	/**
+	* Include a column recording the ID number of a specific parent of the neighbour object.  For example, this could be a track ID number.
+	*/
     public static final String INCLUDE_NEIGHBOUR_PARENT = "Include neighbour object parent";
+
+	/**
+	* Parent object collection of the neighbour object.  If "Include neighbour object parent" is selected, the corresponding parent ID number will be included as a column in the output distances spreadsheet.
+	*/
     public static final String NEIGHBOUR_PARENT = "Neighbour object parent";
 
     public interface RelationshipModes {
