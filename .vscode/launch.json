@@ -6,6 +6,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "AddJavaDocToModules",
+            "request": "launch",
+            "mainClass": "io.github.mianalysis.mia.process.documentation.AddJavaDocToModules",
+            "projectName": "MIA"
+        },
+        {
+            "type": "java",
             "name": "ApplyDeepLearningModel",
             "request": "launch",
             "mainClass": "io.github.mianalysis.mia.module.images.process.ApplyDeepLearningModel",
