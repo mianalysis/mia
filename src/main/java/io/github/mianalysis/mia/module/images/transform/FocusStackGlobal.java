@@ -97,7 +97,7 @@ public class FocusStackGlobal<T extends RealType<T> & NativeType<T>> extends Mod
 	/**
 	* 
 	*/
-    public static final String INPUT_SEPARATOR = "Image input/output";
+    private static final String INPUT_SEPARATOR = "Image input/output";
 
 	/**
 	* Image to extract substack from.
@@ -437,7 +437,7 @@ public class FocusStackGlobal<T extends RealType<T> & NativeType<T>> extends Mod
 
     }
 
-    Image extract(Image inputImage, int relativeStart, int relativeEnd, int[] bestSlices,
+    public static <T extends RealType<T> & NativeType<T>> Image extract(Image<T> inputImage, int relativeStart, int relativeEnd, int[] bestSlices,
             String outputImageName) {
         // Creating the empty container image
         ImgPlus<T> inputImg = inputImage.getImgPlus();
@@ -447,7 +447,7 @@ public class FocusStackGlobal<T extends RealType<T> & NativeType<T>> extends Mod
         long nFrames = inputImg.dimension(inputImg.dimensionIndex(Axes.TIME));
         for (int f = 0; f < nFrames; f++) {
             extractSubstack(inputImg, outputImg, bestSlices[f] + relativeStart, bestSlices[f] + relativeEnd, f);
-            writeProgressStatus(f + 1, (int) nFrames, "frames");
+            writeProgressStatus(f + 1, (int) nFrames, "frames","Focus stack (global)");
         }
 
         ImagePlus outputImagePlus = ImageJFunctions.wrap(outputImg, outputImageName);
