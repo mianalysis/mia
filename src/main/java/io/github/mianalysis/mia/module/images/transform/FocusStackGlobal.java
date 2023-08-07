@@ -75,10 +75,19 @@ import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
 import net.imglib2.view.Views;
 
-
 /**
-* Extract a Z-substack from an input stack based on either manually-selected slices, or an automatically-calculated best-focus slice.  For automated methods, best focus is determined using intensity statistics (e.g. largest variance) of all pixels in each slice.  When in manual mode, only the best focus slice for the first and last timepoints need be specified (all others will be estimated using polynomial spline interpolation); however, more frames can be specified if preferred.<br><br>Irrespective of the calculation method (manual or automatic), it's possible to extract a fixed number of slices above and below the determined best-focus slice.
-*/
+ * Extract a Z-substack from an input stack based on either manually-selected
+ * slices, or an automatically-calculated best-focus slice. For automated
+ * methods, best focus is determined using intensity statistics (e.g. largest
+ * variance) of all pixels in each slice. When in manual mode, only the best
+ * focus slice for the first and last timepoints need be specified (all others
+ * will be estimated using polynomial spline interpolation); however, more
+ * frames can be specified if preferred.<br>
+ * <br>
+ * Irrespective of the calculation method (manual or automatic), it's possible
+ * to extract a fixed number of slices above and below the determined best-focus
+ * slice.
+ */
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class FocusStackGlobal<T extends RealType<T> & NativeType<T>> extends Module implements ActionListener {
     private JFrame frame;
@@ -93,83 +102,119 @@ public class FocusStackGlobal<T extends RealType<T> & NativeType<T>> extends Mod
     private static final String REMOVE = "Remove";
     private static final String FINISH = "Finish";
 
-
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     private static final String INPUT_SEPARATOR = "Image input/output";
 
-	/**
-	* Image to extract substack from.
-	*/
+    /**
+     * Image to extract substack from.
+     */
     public static final String INPUT_IMAGE = "Input image";
 
-	/**
-	* Controls whether the best focus positions are calculated and applied (creating a new image) or simply calculated.  In both cases, statistics for the best focus position (mean, median, minimum, maximum and standard deviation of slices) are stored as measurements associated with the input image.
-	*/
+    /**
+     * Controls whether the best focus positions are calculated and applied
+     * (creating a new image) or simply calculated. In both cases, statistics for
+     * the best focus position (mean, median, minimum, maximum and standard
+     * deviation of slices) are stored as measurements associated with the input
+     * image.
+     */
     public static final String OUTPUT_MODE = "Output mode";
 
-	/**
-	* Substack image to be added to the current workspace.
-	*/
+    /**
+     * Substack image to be added to the current workspace.
+     */
     public static final String OUTPUT_IMAGE = "Output image";
 
-
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String CALCULATION_SEPARATOR = "Best focus calculation";
 
-	/**
-	* Method for determining the best-focus slice.<br><ul><li>"Manual" Displays a control window, allowing the user to specify reference slices.  These slices should be at the same true z-plane.  Once complete, a substack will be extracted a specific number of slices above and below the reference plane (defined by "Relative start slice" and "Relative end slice".  If references aren't specific for all timepoints, the missing frames will be estimated using polynomial spline interpolation.</li><li>"Smallest mean intensity" The reference slice is taken as the slice with the minimum mean intensity.</li><li>"Largest mean intensity" The reference slice is taken as the slice with the maximum mean intensity.</li><li>"Smallest standard deviation" The reference slice is taken as the slice with the minimum intensity standard deviation.</li><li>"Largest standard deviation" The reference slice is taken as the slice with the maximum intensity standard deviation.</li></ul>
-	*/
+    /**
+     * Method for determining the best-focus slice.<br>
+     * <ul>
+     * <li>"Manual" Displays a control window, allowing the user to specify
+     * reference slices. These slices should be at the same true z-plane. Once
+     * complete, a substack will be extracted a specific number of slices above and
+     * below the reference plane (defined by "Relative start slice" and "Relative
+     * end slice". If references aren't specific for all timepoints, the missing
+     * frames will be estimated using polynomial spline interpolation.</li>
+     * <li>"Smallest mean intensity" The reference slice is taken as the slice with
+     * the minimum mean intensity.</li>
+     * <li>"Largest mean intensity" The reference slice is taken as the slice with
+     * the maximum mean intensity.</li>
+     * <li>"Smallest standard deviation" The reference slice is taken as the slice
+     * with the minimum intensity standard deviation.</li>
+     * <li>"Largest standard deviation" The reference slice is taken as the slice
+     * with the maximum intensity standard deviation.</li>
+     * </ul>
+     */
     public static final String BEST_FOCUS_CALCULATION = "Best-focus calculation";
 
-	/**
-	* If using manual selection of best focus slices, this is the image that will be shown to the user.  While it doesn't need to be the input image (the one the output substack will be generated from), it must have the same number of slices and timepoints as the input.
-	*/
+    /**
+     * If using manual selection of best focus slices, this is the image that will
+     * be shown to the user. While it doesn't need to be the input image (the one
+     * the output substack will be generated from), it must have the same number of
+     * slices and timepoints as the input.
+     */
     public static final String REFERENCE_IMAGE = "Reference image";
 
-	/**
-	* Index of start slice relative to determined best-focus slice (i.e. -5 is 5 slices below the best-focus).
-	*/
+    /**
+     * Index of start slice relative to determined best-focus slice (i.e. -5 is 5
+     * slices below the best-focus).
+     */
     public static final String RELATIVE_START_SLICE = "Relative start slice";
 
-	/**
-	* Index of end slice relative to determined best-focus slice (i.e. 5 is 5 slices above the best-focus).
-	*/
+    /**
+     * Index of end slice relative to determined best-focus slice (i.e. 5 is 5
+     * slices above the best-focus).
+     */
     public static final String RELATIVE_END_SLICE = "Relative end slice";
 
-	/**
-	* Apply median filter to best focus slice index over time.  This should smooth the transitions over time (prevent large jumps between frames).
-	*/
+    /**
+     * Apply median filter to best focus slice index over time. This should smooth
+     * the transitions over time (prevent large jumps between frames).
+     */
     public static final String SMOOTH_TIMESERIES = "Smooth timeseries";
     public static final String SMOOTHING_RANGE = "Smoothing range (odd numbers)";
 
-
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String REFERENCE_SEPARATOR = "Reference controls";
 
-	/**
-	* When using automatic best focus slice determination this controls the image source:<br><ul><li>"External" The image for which intensity statistics are calculated is different to the image that the final substack will be created from.  For example, this could be an filtered version of the input image to enhance structures when in focus.</li><li>"Internal" The same image will be used for determination of the best slice and generation of the output substack.</li></ul>
-	*/
+    /**
+     * When using automatic best focus slice determination this controls the image
+     * source:<br>
+     * <ul>
+     * <li>"External" The image for which intensity statistics are calculated is
+     * different to the image that the final substack will be created from. For
+     * example, this could be an filtered version of the input image to enhance
+     * structures when in focus.</li>
+     * <li>"Internal" The same image will be used for determination of the best
+     * slice and generation of the output substack.</li>
+     * </ul>
+     */
     public static final String CALCULATION_SOURCE = "Calculation source";
 
-	/**
-	* If using a separate image to determine the best focus slice ("Calculation source" set to "External"), this is the image that will be used for that calculation.
-	*/
+    /**
+     * If using a separate image to determine the best focus slice ("Calculation
+     * source" set to "External"), this is the image that will be used for that
+     * calculation.
+     */
     public static final String EXTERNAL_SOURCE = "External source";
 
-	/**
-	* How many channels to use when calculating the best-focus slice.  "Use all channels" will use all channels, whereas "Use single channel" will base the calculation on a single, user-defined channel.
-	*/
+    /**
+     * How many channels to use when calculating the best-focus slice. "Use all
+     * channels" will use all channels, whereas "Use single channel" will base the
+     * calculation on a single, user-defined channel.
+     */
     public static final String CHANNEL_MODE = "Channel mode";
 
-	/**
-	* Channel to base the best-focus calculation on.
-	*/
+    /**
+     * Channel to base the best-focus calculation on.
+     */
     public static final String CHANNEL = "Channel";
 
     public FocusStackGlobal(Modules modules) {
@@ -437,7 +482,8 @@ public class FocusStackGlobal<T extends RealType<T> & NativeType<T>> extends Mod
 
     }
 
-    public static <T extends RealType<T> & NativeType<T>> Image extract(Image<T> inputImage, int relativeStart, int relativeEnd, int[] bestSlices,
+    public static <T extends RealType<T> & NativeType<T>> Image extract(Image<T> inputImage, int relativeStart,
+            int relativeEnd, int[] bestSlices,
             String outputImageName) {
         // Creating the empty container image
         ImgPlus<T> inputImg = inputImage.getImgPlus();
@@ -447,7 +493,7 @@ public class FocusStackGlobal<T extends RealType<T> & NativeType<T>> extends Mod
         long nFrames = inputImg.dimension(inputImg.dimensionIndex(Axes.TIME));
         for (int f = 0; f < nFrames; f++) {
             extractSubstack(inputImg, outputImg, bestSlices[f] + relativeStart, bestSlices[f] + relativeEnd, f);
-            writeProgressStatus(f + 1, (int) nFrames, "frames","Focus stack (global)");
+            writeProgressStatus(f + 1, (int) nFrames, "frames", "Focus stack (global)");
         }
 
         ImagePlus outputImagePlus = ImageJFunctions.wrap(outputImg, outputImageName);
@@ -560,7 +606,7 @@ public class FocusStackGlobal<T extends RealType<T> & NativeType<T>> extends Mod
         }
     }
 
-    private int[] rollingMedianFilter(int[] vals, int range) {
+    public static int[] rollingMedianFilter(int[] vals, int range) {
         // Getting the half width (odd numbers need to subtract 1)
         int halfW = (range - range % 2) / 2;
 
@@ -620,22 +666,22 @@ public class FocusStackGlobal<T extends RealType<T> & NativeType<T>> extends Mod
         listModel.clear();
 
         // Getting input image
-        String inputImageName = parameters.getValue(INPUT_IMAGE,workspace);
+        String inputImageName = parameters.getValue(INPUT_IMAGE, workspace);
         Image inputImage = workspace.getImage(inputImageName);
 
         // Getting other parameters
-        String outputMode = parameters.getValue(OUTPUT_MODE,workspace);
-        String outputImageName = parameters.getValue(OUTPUT_IMAGE,workspace);
-        String bestFocusCalculation = parameters.getValue(BEST_FOCUS_CALCULATION,workspace);
-        int relativeStart = parameters.getValue(RELATIVE_START_SLICE,workspace);
-        int relativeEnd = parameters.getValue(RELATIVE_END_SLICE,workspace);
-        String calculationSource = parameters.getValue(CALCULATION_SOURCE,workspace);
-        String referenceImageName = parameters.getValue(REFERENCE_IMAGE,workspace);
-        String externalSourceName = parameters.getValue(EXTERNAL_SOURCE,workspace);
-        String channelMode = parameters.getValue(CHANNEL_MODE,workspace);
-        int channel = ((int) parameters.getValue(CHANNEL,workspace)) - 1;
-        boolean smoothTimeseries = parameters.getValue(SMOOTH_TIMESERIES,workspace);
-        int smoothingRange = parameters.getValue(SMOOTHING_RANGE,workspace);
+        String outputMode = parameters.getValue(OUTPUT_MODE, workspace);
+        String outputImageName = parameters.getValue(OUTPUT_IMAGE, workspace);
+        String bestFocusCalculation = parameters.getValue(BEST_FOCUS_CALCULATION, workspace);
+        int relativeStart = parameters.getValue(RELATIVE_START_SLICE, workspace);
+        int relativeEnd = parameters.getValue(RELATIVE_END_SLICE, workspace);
+        String calculationSource = parameters.getValue(CALCULATION_SOURCE, workspace);
+        String referenceImageName = parameters.getValue(REFERENCE_IMAGE, workspace);
+        String externalSourceName = parameters.getValue(EXTERNAL_SOURCE, workspace);
+        String channelMode = parameters.getValue(CHANNEL_MODE, workspace);
+        int channel = ((int) parameters.getValue(CHANNEL, workspace)) - 1;
+        boolean smoothTimeseries = parameters.getValue(SMOOTH_TIMESERIES, workspace);
+        int smoothingRange = parameters.getValue(SMOOTHING_RANGE, workspace);
 
         // Checking if there is only a single slice to start with
         if (isSingleSlice(inputImage)) {
@@ -762,14 +808,14 @@ public class FocusStackGlobal<T extends RealType<T> & NativeType<T>> extends Mod
 
     @Override
     public Parameters updateAndGetParameters() {
-Workspace workspace = null;
+        Workspace workspace = null;
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(INPUT_IMAGE));
         returnedParameters.add(parameters.getParameter(OUTPUT_MODE));
 
-        if (parameters.getValue(OUTPUT_MODE,workspace).equals(OutputModes.CALCULATE_AND_APPLY))
+        if (parameters.getValue(OUTPUT_MODE, workspace).equals(OutputModes.CALCULATE_AND_APPLY))
             returnedParameters.add(parameters.getParameter(OUTPUT_IMAGE));
 
         returnedParameters.add(parameters.getParameter(CALCULATION_SEPARATOR));
@@ -778,7 +824,7 @@ Workspace workspace = null;
         returnedParameters.add(parameters.getParameter(RELATIVE_END_SLICE));
 
         returnedParameters.add(parameters.getParameter(REFERENCE_SEPARATOR));
-        switch ((String) parameters.getValue(BEST_FOCUS_CALCULATION,workspace)) {
+        switch ((String) parameters.getValue(BEST_FOCUS_CALCULATION, workspace)) {
             case BestFocusCalculations.MANUAL:
                 returnedParameters.add(parameters.getParameter(REFERENCE_IMAGE));
                 break;
@@ -788,14 +834,14 @@ Workspace workspace = null;
             case BestFocusCalculations.MIN_STDEV:
             case BestFocusCalculations.MAX_STDEV:
                 returnedParameters.add(parameters.getParameter(CALCULATION_SOURCE));
-                switch ((String) parameters.getValue(CALCULATION_SOURCE,workspace)) {
+                switch ((String) parameters.getValue(CALCULATION_SOURCE, workspace)) {
                     case CalculationSources.EXTERNAL:
                         returnedParameters.add(parameters.getParameter(EXTERNAL_SOURCE));
                         break;
                 }
 
                 returnedParameters.add(parameters.getParameter(CHANNEL_MODE));
-                switch ((String) parameters.getValue(CHANNEL_MODE,workspace)) {
+                switch ((String) parameters.getValue(CHANNEL_MODE, workspace)) {
                     case ChannelModes.USE_SINGLE:
                         returnedParameters.add(parameters.getParameter(CHANNEL));
                         break;
@@ -804,7 +850,7 @@ Workspace workspace = null;
         }
 
         returnedParameters.add(parameters.getParameter(SMOOTH_TIMESERIES));
-        if ((boolean) parameters.getValue(SMOOTH_TIMESERIES,workspace)) {
+        if ((boolean) parameters.getValue(SMOOTH_TIMESERIES, workspace)) {
             returnedParameters.add(parameters.getParameter(SMOOTHING_RANGE));
         }
 
@@ -814,8 +860,8 @@ Workspace workspace = null;
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
-Workspace workspace = null;
-        String inputImageName = parameters.getValue(INPUT_IMAGE,workspace);
+        Workspace workspace = null;
+        String inputImageName = parameters.getValue(INPUT_IMAGE, workspace);
 
         ImageMeasurementRefs returnedRefs = new ImageMeasurementRefs();
 
@@ -844,16 +890,16 @@ Workspace workspace = null;
     }
 
     @Override
-public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
-return null;
+    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+        return null;
     }
 
     @Override
-public MetadataRefs updateAndGetMetadataReferences() {
-Workspace workspace = null;
+    public MetadataRefs updateAndGetMetadataReferences() {
+        Workspace workspace = null;
         MetadataRefs returnedRefs = new MetadataRefs();
 
-        if (parameters.getValue(BEST_FOCUS_CALCULATION,workspace).equals(BestFocusCalculations.MANUAL)) {
+        if (parameters.getValue(BEST_FOCUS_CALCULATION, workspace).equals(BestFocusCalculations.MANUAL)) {
             returnedRefs.add(metadataRefs.getOrPut(MetadataNames.SLICES));
         }
 
@@ -863,12 +909,12 @@ Workspace workspace = null;
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
-return null;
+        return null;
     }
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
-return null;
+        return null;
     }
 
     @Override
