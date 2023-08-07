@@ -92,7 +92,6 @@ public class MIAHeadless extends MIA {
             log.addRenderer(newRenderer);
             mainRenderer = newRenderer;
 
-            version = extractVersion();
             Module.setVerbose(verbose);
 
             Analysis analysis;

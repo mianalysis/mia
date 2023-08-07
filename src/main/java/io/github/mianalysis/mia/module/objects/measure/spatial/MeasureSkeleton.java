@@ -195,8 +195,7 @@ public class MeasureSkeleton extends Module {
         int yOffs = (int) Math.round(extents[1][0]);
         int zOffs = (int) Math.round(extents[2][0]);
 
-        // The Skeleton object doesn't contain any coordinate data, it just links
-        // branches, junctions and loops.
+        // The Skeleton object links branches, junctions and loops.
         Obj skeletonObject = skeletonObjects.createAndAddNewObject(VolumeType.POINTLIST);
         skeletonObject.setT(inputObject.getT());
         if (addRelationship) {
@@ -294,6 +293,7 @@ public class MeasureSkeleton extends Module {
         // Adding coordinates
         for (Point point : edge.getSlabs()) {
             try {
+                skeletonObject.add(point.x + xOffs, point.y + yOffs, point.z + zOffs);
                 edgeObject.add(point.x + xOffs, point.y + yOffs, point.z + zOffs);
             } catch (PointOutOfRangeException e) {
             }
@@ -313,6 +313,7 @@ public class MeasureSkeleton extends Module {
         // Adding coordinates
         for (Point point : junction.getPoints()) {
             try {
+                skeletonObject.add(point.x + xOffs, point.y + yOffs, point.z + zOffs);
                 junctionObject.add(point.x + xOffs, point.y + yOffs, point.z + zOffs);
             } catch (PointOutOfRangeException e) {
             }
@@ -565,8 +566,10 @@ public class MeasureSkeleton extends Module {
 
         if (showOutput) {
             inputObjects.showMeasurements(this, modules);
-            if (addToWorkspace)
+            if (addToWorkspace) {
                 edgeObjects.showMeasurements(this, modules);
+                skeletonObjects.convertToImageIDColours().show();
+            }
         }
 
         return Status.PASS;

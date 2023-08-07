@@ -64,96 +64,140 @@ import io.github.sjcross.sjcommon.process.skeletontools.BreakFixer;
  */
 
 /**
-* Detects ridge objects in an image from the workspace.  A ridge is considered as a line of higher (or lower) intensity pixels in an image.  Ridges are output as objects to the workspace with relevant measurements associated with each object (e.g. ridge length).  This module uses the "<a href="https://imagej.net/Ridge_Detection">Ridge Detection</a>" plugin, which itself is based on the paper "An Unbiased Detector of Curvilinear Structures" (Steger, C., <i>IEEE Transactions on Pattern Analysis and Machine Intelligence</i> (1998) <b>20</b> 113–125).<br><br>Note: This module detects ridges in 2D, but can be run on multi-dimensional images.  For higher dimensionality images than 2D, ridge detection is performed slice-by-slice, with output objects confined to a single slice.
-*/
+ * Detects ridge objects in an image from the workspace. A ridge is considered
+ * as a line of higher (or lower) intensity pixels in an image. Ridges are
+ * output as objects to the workspace with relevant measurements associated with
+ * each object (e.g. ridge length). This module uses the
+ * "<a href="https://imagej.net/Ridge_Detection">Ridge Detection</a>" plugin,
+ * which itself is based on the paper "An Unbiased Detector of Curvilinear
+ * Structures" (Steger, C., <i>IEEE Transactions on Pattern Analysis and Machine
+ * Intelligence</i> (1998) <b>20</b> 113–125).<br>
+ * <br>
+ * Note: This module detects ridges in 2D, but can be run on multi-dimensional
+ * images. For higher dimensionality images than 2D, ridge detection is
+ * performed slice-by-slice, with output objects confined to a single slice.
+ */
 @Plugin(type = Module.class, priority = Priority.LOW, visible = true)
 public class RidgeDetection extends Module {
 
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String INPUT_SEPARATOR = "Image input/object output";
 
-	/**
-	* Image from the workspace on which ridges will be identified.  This can be a multi-dimensional image, although ridges are currently only detected in 2D.  In the case of higher-dimensionality images, ridges are detected on a slice-by-slice basis.
-	*/
+    /**
+     * Image from the workspace on which ridges will be identified. This can be a
+     * multi-dimensional image, although ridges are currently only detected in 2D.
+     * In the case of higher-dimensionality images, ridges are detected on a
+     * slice-by-slice basis.
+     */
     public static final String INPUT_IMAGE = "Input image";
 
-	/**
-	* Output ridge objects, which will be added to the workspace.  These objects will have measurements associated with them.
-	*/
+    /**
+     * Output ridge objects, which will be added to the workspace. These objects
+     * will have measurements associated with them.
+     */
     public static final String OUTPUT_OBJECTS = "Output objects";
 
-
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String DETECTION_SEPARATOR = "Detection settings";
 
-	/**
-	* Controls if we are detecting dark lines on a lighter background or light lines on a darker background.
-	*/
+    /**
+     * Controls if we are detecting dark lines on a lighter background or light
+     * lines on a darker background.
+     */
     public static final String CONTOUR_CONTRAST = "Contour contrast";
 
-	/**
-	* Lower response threshold for points on a line to be accepted.  This threshold is based on the value of points after the ridge enhancement filtering and is not a reflection of their absolute pixel intensities.
-	*/
+    /**
+     * Lower response threshold for points on a line to be accepted. This threshold
+     * is based on the value of points after the ridge enhancement filtering and is
+     * not a reflection of their absolute pixel intensities.
+     */
     public static final String LOWER_THRESHOLD = "Lower threshold";
 
-	/**
-	* Upper response threshold for points on a line to be accepted.  This threshold is based on the value of points after the ridge enhancement filtering and is not a reflection of their absolute pixel intensities.
-	*/
+    /**
+     * Upper response threshold for points on a line to be accepted. This threshold
+     * is based on the value of points after the ridge enhancement filtering and is
+     * not a reflection of their absolute pixel intensities.
+     */
     public static final String UPPER_THRESHOLD = "Upper threshold";
 
-	/**
-	* Sigma of the derivatives to be applied to the input image when detecting ridges.  This is related to the width of the lines to be detected and is greater than or equal to "width/(2*sqrt(3))".
-	*/
+    /**
+     * Sigma of the derivatives to be applied to the input image when detecting
+     * ridges. This is related to the width of the lines to be detected and is
+     * greater than or equal to "width/(2*sqrt(3))".
+     */
     public static final String SIGMA = "Sigma";
 
-	/**
-	* When selected, spatial values are assumed to be specified in calibrated units (as defined by the "Input control" parameter "Spatial unit").  Otherwise, pixel units are assumed.
-	*/
+    /**
+     * When selected, spatial values are assumed to be specified in calibrated units
+     * (as defined by the "Input control" parameter "Spatial unit"). Otherwise,
+     * pixel units are assumed.
+     */
     public static final String CALIBRATED_UNITS = "Calibrated units";
 
-	/**
-	* Lines are extended in an attempt to locate more junction points.
-	*/
+    /**
+     * Lines are extended in an attempt to locate more junction points.
+     */
     public static final String EXTEND_LINE = "Extend line";
 
-	/**
-	* When this is selected, the width of each line is estimated.  All points within the width extents of each line are included in the output objects (i.e. output objects are broad).  When not selected, the output objects have single pixel width.  If estimating width, width-based measurements will be associated with each output object.
-	*/
+    /**
+     * When this is selected, the width of each line is estimated and exported as a
+     * measurement. This allows the output objects to be exported as "wide" objects,
+     * although only if "Apply width to output" is also selected.
+     */
     public static final String ESTIMATE_WIDTH = "Estimate width";
 
-	/**
-	* Controls how intersecting lines should be handled.  For more information see <a href="https://imagej.net/Ridge_Detection.html#Overlap_resolution">https://imagej.net/Ridge_Detection.html#Overlap_resolution</a>.<br><ul><li>"None" Ridges are terminated at line intersections, so two overlapping ridges will likely be identified as at least four separate ridge objects.</li><li>"Slope" When selected, this will attempt to resolve ridge overlaps such that two overlapping ridges would be identified as two separate objects.  Ridges output in this manner can have common, shared paths (i.e. during the overlap region).</li></ul>
-	*/
+    /**
+     * When selected, the output ridge objects will have the width applied (rather
+     * than having single pixel width).
+     */
+    public static final String APPLY_WIDTH_TO_OUTPUT = "Apply width to output";
+
+    /**
+     * Controls how intersecting lines should be handled. For more information see
+     * <a href=
+     * "https://imagej.net/Ridge_Detection.html#Overlap_resolution">https://imagej.net/Ridge_Detection.html#Overlap_resolution</a>.<br>
+     * <ul>
+     * <li>"None" Ridges are terminated at line intersections, so two overlapping
+     * ridges will likely be identified as at least four separate ridge
+     * objects.</li>
+     * <li>"Slope" When selected, this will attempt to resolve ridge overlaps such
+     * that two overlapping ridges would be identified as two separate objects.
+     * Ridges output in this manner can have common, shared paths (i.e. during the
+     * overlap region).</li>
+     * </ul>
+     */
     public static final String OVERLAP_MODE = "Overlap mode";
 
-
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String REFINEMENT_SEPARATOR = "Refinement settings";
 
-	/**
-	* Minimum length of a detected line for it to be retained and output.  Specified in pixel units, unless "Calibrated units" is selected.
-	*/
+    /**
+     * Minimum length of a detected line for it to be retained and output. Specified
+     * in pixel units, unless "Calibrated units" is selected.
+     */
     public static final String MIN_LENGTH = "Minimum length";
 
-	/**
-	* Maximum length of a detected line for it to be retained and output.  Specified in pixel units, unless "Calibrated units" is selected.
-	*/
+    /**
+     * Maximum length of a detected line for it to be retained and output. Specified
+     * in pixel units, unless "Calibrated units" is selected.
+     */
     public static final String MAX_LENGTH = "Maximum length";
 
-	/**
-	* 
-	*/
+    /**
+    * 
+    */
     public static final String JOIN_AT_JUNCTIONS = "Join at junctions";
 
-	/**
-	* When selected, ridges with ends in close proximity will be linked into a single object.
-	*/
+    /**
+     * When selected, ridges with ends in close proximity will be linked into a
+     * single object.
+     */
     public static final String LINK_ENDS = "Link ends";
     public static final String ALIGNMENT_RANGE = "Alignment range (px)";
     public static final String MAXIMUM_END_SEPARATION = "Maximum end separation (px)";
@@ -339,7 +383,7 @@ public class RidgeDetection extends Module {
 
     }
 
-    public static void addLine(Obj outputObject, int z, Line line, @Nullable CumStat width) {
+    public static void addLine(Obj outputObject, int z, Line line, @Nullable CumStat width, boolean applyWidthToOutput) {
         // Adding coordinates for the current line
         float[] x = line.getXCoordinates();
         float[] y = line.getYCoordinates();
@@ -355,8 +399,11 @@ public class RidgeDetection extends Module {
             // If necessary, calculating width
             if (width != null) {
                 float halfWidth = (widthL[i] + widthR[i]) / 2;
-                addPointWidth(outputObject, x[i], y[i], z, halfWidth);
                 width.addMeasure(halfWidth);
+
+                if (applyWidthToOutput)
+                    addPointWidth(outputObject, x[i], y[i], z, halfWidth);
+                
             }
         }
     }
@@ -417,27 +464,28 @@ public class RidgeDetection extends Module {
     @Override
     public Status process(Workspace workspace) {
         // Getting input image
-        String inputImageName = parameters.getValue(INPUT_IMAGE,workspace);
+        String inputImageName = parameters.getValue(INPUT_IMAGE, workspace);
         Image inputImage = workspace.getImages().get(inputImageName);
 
         // Getting parameters (RidgeDetection plugin wants to use pixel units only)
-        String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS,workspace);
-        String contourContrast = parameters.getValue(CONTOUR_CONTRAST,workspace);
+        String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS, workspace);
+        String contourContrast = parameters.getValue(CONTOUR_CONTRAST, workspace);
         boolean darkLine = contourContrast.equals(ContourContrast.DARK_LINE);
-        double lowerThreshold = parameters.getValue(LOWER_THRESHOLD,workspace);
-        double upperThreshold = parameters.getValue(UPPER_THRESHOLD,workspace);
-        double sigma = parameters.getValue(SIGMA,workspace);
-        boolean calibratedUnits = parameters.getValue(CALIBRATED_UNITS,workspace);
-        boolean extendLine = parameters.getValue(EXTEND_LINE,workspace);
-        boolean estimateWidth = parameters.getValue(ESTIMATE_WIDTH,workspace);
-        String overlapMode = parameters.getValue(OVERLAP_MODE,workspace);
-        double minLength = parameters.getValue(MIN_LENGTH,workspace);
-        double maxLength = parameters.getValue(MAX_LENGTH,workspace);
-        boolean joinAtJunctions = parameters.getValue(JOIN_AT_JUNCTIONS,workspace);
-        boolean linkEnds = parameters.getValue(LINK_ENDS,workspace);
-        int alignmentRange = parameters.getValue(ALIGNMENT_RANGE,workspace);
-        double maxEndSeparation = parameters.getValue(MAXIMUM_END_SEPARATION,workspace);
-        double maxEndMisalignment = parameters.getValue(MAXIMUM_END_MISALIGNMENT,workspace);
+        double lowerThreshold = parameters.getValue(LOWER_THRESHOLD, workspace);
+        double upperThreshold = parameters.getValue(UPPER_THRESHOLD, workspace);
+        double sigma = parameters.getValue(SIGMA, workspace);
+        boolean calibratedUnits = parameters.getValue(CALIBRATED_UNITS, workspace);
+        boolean extendLine = parameters.getValue(EXTEND_LINE, workspace);
+        boolean estimateWidth = parameters.getValue(ESTIMATE_WIDTH, workspace);
+        boolean applyWidthToOutput = parameters.getValue(APPLY_WIDTH_TO_OUTPUT, workspace);
+        String overlapMode = parameters.getValue(OVERLAP_MODE, workspace);
+        double minLength = parameters.getValue(MIN_LENGTH, workspace);
+        double maxLength = parameters.getValue(MAX_LENGTH, workspace);
+        boolean joinAtJunctions = parameters.getValue(JOIN_AT_JUNCTIONS, workspace);
+        boolean linkEnds = parameters.getValue(LINK_ENDS, workspace);
+        int alignmentRange = parameters.getValue(ALIGNMENT_RANGE, workspace);
+        double maxEndSeparation = parameters.getValue(MAXIMUM_END_SEPARATION, workspace);
+        double maxEndMisalignment = parameters.getValue(MAXIMUM_END_MISALIGNMENT, workspace);
 
         // Converting distances to calibrated units if necessary
         if (calibratedUnits) {
@@ -516,7 +564,7 @@ public class RidgeDetection extends Module {
                             width = new CumStat();
 
                         for (Line line : lineGroup) {
-                            addLine(outputObject, z, line, width);
+                            addLine(outputObject, z, line, width, applyWidthToOutput);
                             estimatedLength += line.estimateLength();
                         }
 
@@ -567,6 +615,7 @@ public class RidgeDetection extends Module {
         parameters.add(new BooleanP(CALIBRATED_UNITS, this, false));
         parameters.add(new BooleanP(EXTEND_LINE, this, false));
         parameters.add(new BooleanP(ESTIMATE_WIDTH, this, false));
+        parameters.add(new BooleanP(APPLY_WIDTH_TO_OUTPUT, this, true));
         parameters.add(new ChoiceP(OVERLAP_MODE, this, OverlapModes.NONE, OverlapModes.ALL));
 
         parameters.add(new SeparatorP(REFINEMENT_SEPARATOR, this));
@@ -584,7 +633,7 @@ public class RidgeDetection extends Module {
 
     @Override
     public Parameters updateAndGetParameters() {
-Workspace workspace = null;
+        Workspace workspace = null;
         Parameters returnedParameters = new Parameters();
 
         returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
@@ -600,6 +649,9 @@ Workspace workspace = null;
         returnedParameters.add(parameters.getParameter(CALIBRATED_UNITS));
         returnedParameters.add(parameters.getParameter(EXTEND_LINE));
         returnedParameters.add(parameters.getParameter(ESTIMATE_WIDTH));
+        if ((boolean) parameters.getValue(ESTIMATE_WIDTH, workspace)) {
+            returnedParameters.add(parameters.getParameter(APPLY_WIDTH_TO_OUTPUT));
+        }
         returnedParameters.add(parameters.getParameter(OVERLAP_MODE));
 
         returnedParameters.add(parameters.getParameter(REFINEMENT_SEPARATOR));
@@ -607,7 +659,7 @@ Workspace workspace = null;
         returnedParameters.add(parameters.getParameter(MAX_LENGTH));
         returnedParameters.add(parameters.getParameter(JOIN_AT_JUNCTIONS));
         returnedParameters.add(parameters.getParameter(LINK_ENDS));
-        if ((boolean) parameters.getValue(LINK_ENDS,workspace)) {
+        if ((boolean) parameters.getValue(LINK_ENDS, workspace)) {
             returnedParameters.add(parameters.getParameter(ALIGNMENT_RANGE));
             returnedParameters.add(parameters.getParameter(MAXIMUM_END_SEPARATION));
             returnedParameters.add(parameters.getParameter(MAXIMUM_END_MISALIGNMENT));
@@ -620,39 +672,39 @@ Workspace workspace = null;
 
     @Override
     public ImageMeasurementRefs updateAndGetImageMeasurementRefs() {
-return null;
+        return null;
     }
 
     @Override
-public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
-Workspace workspace = null;
+    public ObjMeasurementRefs updateAndGetObjectMeasurementRefs() {
+        Workspace workspace = null;
         ObjMeasurementRefs returnedRefs = new ObjMeasurementRefs();
 
-        String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS,workspace);
+        String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS, workspace);
 
         ObjMeasurementRef reference = objectMeasurementRefs.getOrPut(Measurements.LENGTH_PX);
-        reference.setObjectsName(parameters.getValue(OUTPUT_OBJECTS,workspace));
+        reference.setObjectsName(parameters.getValue(OUTPUT_OBJECTS, workspace));
         reference.setDescription("Length of detected, \"" + outputObjectsName + "\" ridge object.  Measured in pixel " +
                 "units.");
         returnedRefs.add(reference);
 
         reference = objectMeasurementRefs.getOrPut(Measurements.LENGTH_CAL);
-        reference.setObjectsName(parameters.getValue(OUTPUT_OBJECTS,workspace));
+        reference.setObjectsName(parameters.getValue(OUTPUT_OBJECTS, workspace));
         reference.setDescription(
                 "Length of detected, \"" + outputObjectsName + "\" ridge object.  Measured in calibrated " +
                         "(" + SpatialUnit.getOMEUnit().getSymbol() + ") units.");
         returnedRefs.add(reference);
 
-        if ((boolean) parameters.getValue(ESTIMATE_WIDTH,workspace)) {
+        if ((boolean) parameters.getValue(ESTIMATE_WIDTH, workspace)) {
             reference = objectMeasurementRefs.getOrPut(Measurements.MEAN_HALFWIDTH_PX);
-            reference.setObjectsName(parameters.getValue(OUTPUT_OBJECTS,workspace));
+            reference.setObjectsName(parameters.getValue(OUTPUT_OBJECTS, workspace));
             reference.setDescription(
                     "Mean half width of detected, \"" + outputObjectsName + "\" ridge object.  Half width" +
                             "is from the central (backbone) of the ridge to the edge.  Measured in pixel units.");
             returnedRefs.add(reference);
 
             reference = objectMeasurementRefs.getOrPut(Measurements.STDEV_HALFWIDTH_PX);
-            reference.setObjectsName(parameters.getValue(OUTPUT_OBJECTS,workspace));
+            reference.setObjectsName(parameters.getValue(OUTPUT_OBJECTS, workspace));
             reference.setDescription("Standard deviation of the half width of detected, \"" + outputObjectsName + "\" "
                     +
                     "ridge object.  Half width is from the central (backbone) of the ridge to the edge.  Measured in " +
@@ -660,7 +712,7 @@ Workspace workspace = null;
             returnedRefs.add(reference);
 
             reference = objectMeasurementRefs.getOrPut(Measurements.MEAN_HALFWIDTH_CAL);
-            reference.setObjectsName(parameters.getValue(OUTPUT_OBJECTS,workspace));
+            reference.setObjectsName(parameters.getValue(OUTPUT_OBJECTS, workspace));
             reference.setDescription(
                     "Mean half width of detected, \"" + outputObjectsName + "\" ridge object.  Half width" +
                             "is from the central (backbone) of the ridge to the edge.  Measured in calibrated " +
@@ -668,7 +720,7 @@ Workspace workspace = null;
             returnedRefs.add(reference);
 
             reference = objectMeasurementRefs.getOrPut(Measurements.STDEV_HALFWIDTH_CAL);
-            reference.setObjectsName(parameters.getValue(OUTPUT_OBJECTS,workspace));
+            reference.setObjectsName(parameters.getValue(OUTPUT_OBJECTS, workspace));
             reference.setDescription("Standard deviation of the half width of detected, \"" + outputObjectsName + "\" "
                     +
                     "ridge object.  Half width is from the central (backbone) of the ridge to the edge.  Measured in " +
@@ -682,18 +734,18 @@ Workspace workspace = null;
     }
 
     @Override
-public MetadataRefs updateAndGetMetadataReferences() {
-return null;
+    public MetadataRefs updateAndGetMetadataReferences() {
+        return null;
     }
 
     @Override
     public ParentChildRefs updateAndGetParentChildRefs() {
-return null;
+        return null;
     }
 
     @Override
     public PartnerRefs updateAndGetPartnerRefs() {
-return null;
+        return null;
     }
 
     @Override
@@ -728,7 +780,11 @@ return null;
         parameters.get(EXTEND_LINE).setDescription("Lines are extended in an attempt to locate more junction points.");
 
         parameters.get(ESTIMATE_WIDTH).setDescription(
-                "When this is selected, the width of each line is estimated.  All points within the width extents of each line are included in the output objects (i.e. output objects are broad).  When not selected, the output objects have single pixel width.  If estimating width, width-based measurements will be associated with each output object.");
+                "When this is selected, the width of each line is estimated and exported as a measurement.  This allows the output objects to be exported as \"wide\" objects, although only if "
+                        + APPLY_WIDTH_TO_OUTPUT + " is also selected");
+
+        parameters.get(APPLY_WIDTH_TO_OUTPUT).setDescription(
+                "When selected, the output ridge objects will have the width applied (rather than having single pixel width).");
 
         parameters.get(OVERLAP_MODE).setDescription(
                 "Controls how intersecting lines should be handled.  For more information see <a href=\"https://imagej.net/Ridge_Detection.html#Overlap_resolution\"/>.<br><ul>"
